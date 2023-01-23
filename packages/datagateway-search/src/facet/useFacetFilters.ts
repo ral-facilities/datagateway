@@ -1,17 +1,22 @@
 import React from 'react';
-import { FiltersType, parseSearchToQuery } from 'datagateway-common';
+import {
+  FiltersType,
+  parseSearchToQuery,
+  SearchFilter,
+} from 'datagateway-common';
 import { useHistory, useLocation } from 'react-router-dom';
+import isEqual from 'lodash.isequal';
 
 function useFacetFilters(): {
   selectedFacetFilters: FiltersType;
   addFacetFilter: (options: {
     dimension: string;
-    filterValue: string;
+    filterValue: SearchFilter;
     applyImmediately: boolean;
   }) => void;
   removeFacetFilter: (options: {
     dimension: string;
-    filterValue: string;
+    filterValue: SearchFilter;
     applyImmediately: boolean;
   }) => void;
   applyFacetFilters: () => void;
@@ -34,7 +39,7 @@ function useFacetFilters(): {
     applyImmediately,
   }: {
     dimension: string;
-    filterValue: string;
+    filterValue: SearchFilter;
     applyImmediately: boolean;
   }): void => {
     const filterKey = dimension.toLocaleLowerCase();
@@ -64,7 +69,7 @@ function useFacetFilters(): {
     applyImmediately,
   }: {
     dimension: string;
-    filterValue: string;
+    filterValue: SearchFilter;
     applyImmediately: boolean;
   }): void => {
     const filterKey = dimension.toLocaleLowerCase();
@@ -75,9 +80,9 @@ function useFacetFilters(): {
         return prevFilter;
       }
 
-      // new facet filter excluding the classification label that has been unselected
+      // new facet filters excluding the filter that should be removed
       const dimensionFilters = prevFilterValue?.filter(
-        (value) => value !== filterValue
+        (value) => !isEqual(value, filterValue)
       );
 
       if (dimensionFilters && dimensionFilters.length > 0) {

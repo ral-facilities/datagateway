@@ -7,6 +7,7 @@ import {
   formatBytes,
   ISISDatafileDetailsPanel,
   parseSearchToQuery,
+  SearchFilter,
   SearchResponse,
   SearchResultSource,
   Table,
@@ -136,7 +137,10 @@ const DatafileSearchTable = ({
     [fetchNextPage]
   );
 
-  const removeFilterChip = (dimension: string, filterValue: string): void => {
+  const removeFilterChip = (
+    dimension: string,
+    filterValue: SearchFilter
+  ): void => {
     removeFacetFilter({ dimension, filterValue, applyImmediately: true });
   };
 
@@ -318,6 +322,8 @@ const DatafileSearchTable = ({
       <Grid item xs={2} sx={{ height: '100%' }}>
         {data?.pages && (
           <FacetPanel
+            allIds={aggregatedIds}
+            entityName="Datafile"
             facetClassification={facetClassificationFromSearchResponses(
               data.pages
             )}

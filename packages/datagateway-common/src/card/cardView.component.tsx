@@ -1,9 +1,10 @@
 import {
-  Box,
-  Chip,
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Box,
+  Chip,
+  Divider,
   FormControl,
   Grid,
   InputLabel,
@@ -11,12 +12,11 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  Pagination,
   Paper,
+  Select,
   TableSortLabel,
   Typography,
-  Select,
-  Divider,
-  Pagination,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -24,17 +24,16 @@ import ArrowTooltip from '../arrowtooltip.component';
 import {
   Entity,
   Filter,
-  Order,
-  SortType,
   FiltersType,
-  UpdateMethod,
+  Order,
   SearchFilter,
+  SortType,
+  UpdateMethod,
 } from '../app.types';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import AdvancedFilter from './advancedFilter.component';
 import EntityCard, { EntityImageDetails } from './entityCard.component';
-import ParameterFilters from './parameterFilters.component';
 import { DatasearchType } from '../api';
 
 const SelectedChips = styled('ul')(({ theme }) => ({
@@ -167,7 +166,6 @@ function CVPagination(
 const CardView = (props: CardViewProps): React.ReactElement => {
   // Props.
   const {
-    entityName,
     data,
     totalDataCount,
     customFilters,
@@ -179,7 +177,6 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     onFilter,
     onSort,
     onResultsChange,
-    allIds,
   } = props;
 
   // Get card information.
@@ -367,18 +364,6 @@ const CardView = (props: CardViewProps): React.ReactElement => {
 
     setSelectedChips(selectedChips);
   }, [customFilters, filters]);
-
-  const parameterNames = React.useMemo(() => {
-    const parameterNames: string[] = [];
-    Object.entries(filtersInfo).forEach(([filterKey, info]) => {
-      if (filterKey.includes('parameter')) {
-        Object.keys(info.items).forEach((label) => {
-          parameterNames.push(label);
-        });
-      }
-    });
-    return parameterNames;
-  }, [filtersInfo]);
 
   React.useEffect(() => {
     if (filterUpdate && loadedData) setFilterUpdate(false);
@@ -746,17 +731,6 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                           }
                         )}
                     </Box>
-                    {allIds && entityName && (
-                      <Box p={2}>
-                        <ParameterFilters
-                          entityName={entityName}
-                          parameterNames={parameterNames}
-                          allIds={allIds}
-                          changeFilter={changeFilter}
-                          setFilterUpdate={setFilterUpdate}
-                        />
-                      </Box>
-                    )}
                   </Paper>
                 </Grid>
               )}

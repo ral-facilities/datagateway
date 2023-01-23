@@ -6,6 +6,7 @@ import {
   type UseQueryResult,
   useQuery,
   useInfiniteQuery,
+  UseQueryOptions,
 } from 'react-query';
 import { useSelector } from 'react-redux';
 import { StateType } from '..';
@@ -179,11 +180,17 @@ export const fetchLuceneFacets = async (
     });
 };
 
-export const useLuceneFacet = (
+export const useLuceneFacet = <TSelectData,>(
   datasearchType: DatasearchType,
   facetRequests: FacetRequest[],
-  facetFilters: FiltersType
-): UseQueryResult<SearchResponse, AxiosError> => {
+  facetFilters: FiltersType,
+  options: UseQueryOptions<
+    SearchResponse,
+    AxiosError,
+    TSelectData,
+    [string, DatasearchType, FacetRequest[], FiltersType]
+  > = {}
+): UseQueryResult<TSelectData, AxiosError> => {
   const icatUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.icatUrl
   );
@@ -191,7 +198,7 @@ export const useLuceneFacet = (
   return useQuery<
     SearchResponse,
     AxiosError,
-    SearchResponse,
+    TSelectData,
     [string, DatasearchType, FacetRequest[], FiltersType]
   >(
     ['facet', datasearchType, facetRequests, facetFilters],
@@ -207,8 +214,8 @@ export const useLuceneFacet = (
       onError: (error) => {
         handleICATError(error);
       },
-      enabled: false,
       getNextPageParam: (lastPage, _) => lastPage.search_after,
+      ...options,
     }
   );
 };

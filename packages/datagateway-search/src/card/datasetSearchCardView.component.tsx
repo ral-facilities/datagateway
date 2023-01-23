@@ -17,6 +17,7 @@ import {
   formatCountOrSize,
   ISISDatasetDetailsPanel,
   parseSearchToQuery,
+  SearchFilter,
   SearchResponse,
   SearchResultSource,
   tableLink,
@@ -167,37 +168,34 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
     return parsedFilters;
   }, [filters]);
 
-  const { paginatedSource, aggregatedIds, customFilters, aborted } =
-    React.useMemo(() => {
-      if (data) {
-        const aggregatedIds = data.pages
-          .map((response) => mapIds(response))
-          .flat();
-        const minResult = (page ? page - 1 : 0) * (results ?? 10);
-        const maxResult = (page ?? 1) * (results ?? 10);
-        if (hasNextPage && aggregatedIds.length < maxResult) {
-          fetchNextPage();
-        }
-        console.log('pages', data?.pages);
-        const aggregatedSource = data.pages
-          .map((response) => mapSource(response))
-          .flat();
-        console.log('aggregated source', aggregatedSource);
-        return {
-          paginatedSource: aggregatedSource.slice(minResult, maxResult),
-          aggregatedIds: aggregatedIds,
-          customFilters: mapFacets(data.pages),
-          aborted: data.pages[data.pages.length - 1].aborted,
-        };
-      } else {
-        return {
-          paginatedSource: [],
-          aggregatedIds: [],
-          customFilters: [],
-          aborted: false,
-        };
+  const { paginatedSource, aggregatedIds, aborted } = React.useMemo(() => {
+    if (data) {
+      const aggregatedIds = data.pages
+        .map((response) => mapIds(response))
+        .flat();
+      const minResult = (page ? page - 1 : 0) * (results ?? 10);
+      const maxResult = (page ?? 1) * (results ?? 10);
+      if (hasNextPage && aggregatedIds.length < maxResult) {
+        fetchNextPage();
       }
-    }, [data, fetchNextPage, hasNextPage, mapFacets, page, results]);
+      const aggregatedSource = data.pages
+        .map((response) => mapSource(response))
+        .flat();
+      return {
+        paginatedSource: aggregatedSource.slice(minResult, maxResult),
+        aggregatedIds: aggregatedIds,
+        customFilters: mapFacets(data.pages),
+        aborted: data.pages[data.pages.length - 1].aborted,
+      };
+    } else {
+      return {
+        paginatedSource: [],
+        aggregatedIds: [],
+        customFilters: [],
+        aborted: false,
+      };
+    }
+  }, [data, fetchNextPage, hasNextPage, mapFacets, page, results]);
 
   const handleSort = useSort();
   const pushFilter = usePushDatasetFilter();
@@ -302,8 +300,6 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
       linkType = 'dataset'
     ): React.ReactElement | string => {
       const linkURL = genericLinkURL(datasetData, linkType);
-      console.log('link url', linkURL);
-      console.log('dataset data', datasetData);
       if (datasetData['investigation.title'] && linkURL) {
         return linkType === 'investigation'
           ? tableLink(linkURL, datasetData['investigation.title'])
@@ -427,8 +423,6 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
 
   const moreInformation = React.useCallback(
     (dataset: SearchResultSource) => {
-      console.log('moreinformation');
-
       const datasetsURL = hierarchyLinkURL(dataset);
 
       if (hierarchy === 'isis') {
@@ -486,7 +480,10 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
     [hierarchy, aggregatedIds, sizeQueries, paginatedSource]
   );
 
-  const removeFilterChip = (dimension: string, filterValue: string): void => {
+  const removeFilterChip = (
+    dimension: string,
+    filterValue: SearchFilter
+  ): void => {
     removeFacetFilter({ dimension, filterValue, applyImmediately: true });
   };
 
@@ -500,6 +497,8 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
       <Grid item xs={2} sx={{ height: '100%' }}>
         {data?.pages && (
           <FacetPanel
+            allIds={aggregatedIds}
+            entityName="Dataset"
             facetClassification={facetClassificationFromSearchResponses(
               data.pages
             )}
@@ -560,7 +559,6 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
                 information={information}
                 moreInformation={moreInformation}
                 buttons={buttons}
-                customFilters={customFilters}
               />
             )}
           </div>

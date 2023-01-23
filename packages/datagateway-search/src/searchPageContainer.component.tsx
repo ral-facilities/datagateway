@@ -291,7 +291,6 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   }, [location.pathname, view, replaceView]);
 
   const initiateSearch = React.useCallback(() => {
-    console.log('initiate searchText', searchText);
     // TODO: should probably combine all search params into one object then push it to the URL.
     pushSearchText(searchText);
     pushSearchRestrict(shouldRestrictSearch);

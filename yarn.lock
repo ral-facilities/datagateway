@@ -3454,6 +3454,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/lodash.isequal@npm:^4.5.6":
+  version: 4.5.6
+  resolution: "@types/lodash.isequal@npm:4.5.6"
+  dependencies:
+    "@types/lodash": "*"
+  checksum: 0f065989408a9e0584e6c27495be2cd4602e62650f55266aa195812582444463c0c8570c674ae84f947c11748f49ab43fd5b482fa120e08eeee4c23b162edc38
+  languageName: node
+  linkType: hard
+
 "@types/lodash.memoize@npm:4.1.6":
   version: 4.1.6
   resolution: "@types/lodash.memoize@npm:4.1.6"
@@ -4075,7 +4084,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@welldone-software/why-did-you-render@npm:7.0.1":
+"@welldone-software/why-did-you-render@npm:7.0.1, @welldone-software/why-did-you-render@npm:^7.0.1":
   version: 7.0.1
   resolution: "@welldone-software/why-did-you-render@npm:7.0.1"
   dependencies:
@@ -6637,6 +6646,7 @@ __metadata:
     "@types/history": 4.7.11
     "@types/jest": 29.2.1
     "@types/jsrsasign": 10.5.2
+    "@types/lodash.isequal": ^4.5.6
     "@types/node": 18.11.9
     "@types/react": 17.0.39
     "@types/react-dom": 17.0.11
@@ -6647,6 +6657,7 @@ __metadata:
     "@types/redux-mock-store": 1.0.3
     "@typescript-eslint/eslint-plugin": 5.46.1
     "@typescript-eslint/parser": 5.46.1
+    "@welldone-software/why-did-you-render": ^7.0.1
     "@wojtekmaj/enzyme-adapter-react-17": 0.6.6
     axios: 0.27.2
     babel-eslint: 10.1.0
@@ -6671,6 +6682,7 @@ __metadata:
     i18next-http-backend: 2.1.0
     jsrsasign: 10.6.0
     lint-staged: 13.1.0
+    lodash.isequal: ^4.5.0
     loglevel: 1.8.0
     prettier: 2.8.0
     react: 17.0.2

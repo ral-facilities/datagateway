@@ -5,6 +5,7 @@ import {
   AccordionSummary as MuiAccordionSummary,
   Box,
   Button,
+  Divider,
   List,
   styled,
   Typography,
@@ -13,7 +14,8 @@ import { ExpandMore } from '@mui/icons-material';
 import ToggleableFilterItem from './toggleableFilterItem.component';
 import { FacetClassification } from '../../facet';
 import { useTranslation } from 'react-i18next';
-import { FiltersType } from 'datagateway-common';
+import { DatasearchType, FiltersType, SearchFilter } from 'datagateway-common';
+import ParameterFilters from './parameterFilters/parameterFilters.component';
 
 const PanelContainer = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -52,10 +54,12 @@ interface FacetPanelProps {
    * Facet classifications on the search result set.
    */
   facetClassification: FacetClassification;
+
   /**
    * The currently selected filters.
    */
   selectedFacetFilters: FiltersType;
+
   /**
    * Called when a filter is added by the user. The dimension and the value of the filter is passed.
    * For example, `dimension` can be "investigation.type.name" and `filterValue` can be `"experiment"`,
@@ -64,7 +68,8 @@ interface FacetPanelProps {
    * @param dimension The dimension of the added filter. For example investigation.type.name (Investigation type)
    * @param filterValue The value of the added filter.
    */
-  onAddFilter: (dimension: string, filterValue: string) => void;
+  onAddFilter: (dimension: string, filterValue: SearchFilter) => void;
+
   /**
    * Called when a filter is removed by the user.
    *
@@ -72,12 +77,20 @@ interface FacetPanelProps {
    * @param filterValue The value of the removed filter.
    * @see FacetPanelProps.onAddFilter
    */
-  onRemoveFilter: (dimension: string, filterValue: string) => void;
+  onRemoveFilter: (dimension: string, filterValue: SearchFilter) => void;
+
   /**
    * Called when the selected filters are applied by the user. The search data should refresh
    * to reflect the applied filters.
    */
   onApplyFacetFilters: () => void;
+
+  /**
+   * Aggregated IDs of the search result rows.
+   */
+  allIds: number[];
+
+  entityName: DatasearchType;
 }
 
 /**
@@ -96,6 +109,8 @@ function FacetPanel({
   onAddFilter,
   onRemoveFilter,
   onApplyFacetFilters,
+  allIds,
+  entityName,
 }: FacetPanelProps): JSX.Element {
   const [t] = useTranslation();
 
@@ -160,12 +175,63 @@ function FacetPanel({
                     }
                   )}
                 </List>
+                {areParameterFiltersAvailable(dimension) && (
+                  <>
+                    <Divider />
+                    <Typography variant="subtitle1" mx={2} mt={1}>
+                      Parameter filters
+                    </Typography>
+                    <Box pb={2} px={2}>
+                      <ParameterFilters
+                        allIds={allIds}
+                        entityName={entityName}
+                        selectedFilters={
+                          (selectedFacetFilters[
+                            dimension.split('.')[0].toLocaleLowerCase()
+                          ] as SearchFilter[]) ?? []
+                        }
+                        setFilterUpdate={(_) => {
+                          // TODO
+                        }}
+                        changeFilter={(
+                          filterKey,
+                          filterValue,
+                          shouldRemoveFilter
+                        ) => {
+                          if (shouldRemoveFilter) {
+                            onRemoveFilter(filterKey, filterValue);
+                          } else {
+                            onAddFilter(filterKey, filterValue);
+                          }
+                        }}
+                        parameterNames={Object.keys(classifications)}
+                      />
+                    </Box>
+                  </>
+                )}
               </AccordionDetails>
             </Accordion>
           )
         )}
       </Box>
     </PanelContainer>
+  );
+}
+
+/**
+ * Given a facet dimension, determine whether parameter filters are available for it.
+ * Parameter filters only apply to InvestigationParameter, DatasetParameter and DatafileParameter dimensions.
+ *
+ * This is used to check whether the parameter filters UI should be shown.
+ *
+ * @see ParameterFilters
+ */
+function areParameterFiltersAvailable(dimension: string): boolean {
+  const l = dimension.toLocaleLowerCase();
+  return (
+    l === 'investigationparameter.type.name' ||
+    l === 'datasetparameter.type.name' ||
+    l === 'datafileparameter.type.name'
   );
 }
 

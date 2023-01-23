@@ -7,6 +7,7 @@ import {
   type FacilityCycle,
   ISISDatasetDetailsPanel,
   parseSearchToQuery,
+  SearchFilter,
   type SearchResponse,
   type SearchResultSource,
   Table,
@@ -60,8 +61,6 @@ const DatasetSearchTable = ({
   const maxNumResults = useSelector(
     (state: StateType) => state.dgsearch.maxNumResults
   );
-
-  console.log('dataset enabled', dataset);
 
   const { fetchNextPage, data, hasNextPage, refetch, isFetching } =
     useLuceneSearchInfinite(
@@ -135,7 +134,10 @@ const DatasetSearchTable = ({
     [fetchNextPage]
   );
 
-  const removeFilterChip = (dimension: string, filterValue: string): void => {
+  const removeFilterChip = (
+    dimension: string,
+    filterValue: SearchFilter
+  ): void => {
     removeFacetFilter({ dimension, filterValue, applyImmediately: true });
   };
 
@@ -380,8 +382,6 @@ const DatasetSearchTable = ({
     [hierarchy, hierarchyLinkURL, push]
   );
 
-  console.log('isFetching', isFetching);
-
   return (
     <Grid
       data-testid="dataset-search-table"
@@ -392,6 +392,8 @@ const DatasetSearchTable = ({
       <Grid item xs={2} sx={{ height: '100%' }}>
         {data?.pages && (
           <FacetPanel
+            allIds={aggregatedIds}
+            entityName="Dataset"
             facetClassification={facetClassificationFromSearchResponses(
               data.pages
             )}

@@ -1,61 +1,45 @@
 import React from 'react';
 import { Grid, TextField, Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { SearchFilter } from '../app.types';
-import { DatasearchType } from '..';
+import type { SearchFilter, DatasearchType } from 'datagateway-common';
 
 interface ParameterNumericRangeProps {
   entityName: DatasearchType;
   parameterTypeName: string;
+  onApplyRange: (min: number, max: number, unit: string) => void;
   changeFilter: (key: string, value: SearchFilter, remove?: boolean) => void;
   setFilterUpdate: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const ParameterNumericRange = (
-  props: ParameterNumericRangeProps
-): React.ReactElement => {
+export const ParameterNumericRange = ({
+  entityName,
+  parameterTypeName,
+  onApplyRange,
+  changeFilter,
+  setFilterUpdate,
+}: ParameterNumericRangeProps): React.ReactElement => {
   const [t] = useTranslation();
-
-  const { entityName, parameterTypeName, changeFilter, setFilterUpdate } =
-    props;
 
   const [units, setUnits] = React.useState('');
   const [min, setMin] = React.useState('');
   const [max, setMax] = React.useState('');
+
   const onUnitsChange = (event: React.ChangeEvent<{ value: string }>): void => {
     setUnits(event.target.value);
   };
+
   const onMinChange = (event: React.ChangeEvent<{ value: string }>): void => {
     setMin(event.target.value);
   };
+
   const onMaxChange = (event: React.ChangeEvent<{ value: string }>): void => {
     setMax(event.target.value);
   };
+
   const applyRange = (): void => {
-    const label =
-      units === '' ? `${min} to ${max}` : `${min} to ${max} (${units})`;
-    const filter =
-      units === ''
-        ? {
-            field: 'numericValue',
-            from: Number(min),
-            to: Number(max),
-            key: label,
-          }
-        : {
-            field: 'numericValue',
-            from: Number(min),
-            to: Number(max),
-            key: label,
-            units: units,
-          };
-    changeFilter(`${entityName.toLowerCase()}parameter`, {
-      key: `${entityName.toLowerCase()}parameter.numericValue.${parameterTypeName}`,
-      label: label,
-      filter: [filter, { field: 'type.name', value: parameterTypeName }],
-    });
-    setFilterUpdate(true);
+    onApplyRange(Number(min), Number(max), units);
   };
+
   const handleKeyDown = (e: React.KeyboardEvent): void => {
     if (e.key === 'Enter' && units !== '' && min !== '' && max !== '')
       applyRange();

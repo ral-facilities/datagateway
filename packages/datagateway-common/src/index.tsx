@@ -36,8 +36,6 @@ export type {
   CVCustomFilters,
 } from './card/cardView.component';
 export { default as AdvancedFilter } from './card/advancedFilter.component';
-export { default as ParameterFilters } from './card/parameterFilters.component';
-export type { ParameterValueFilter } from './card/parameterFilterItem.component';
 
 export * from './state/actions/index';
 export * from './state/middleware/dgcommon.middleware';

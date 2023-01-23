@@ -9,6 +9,7 @@ import {
   InvestigationDetailsPanel,
   ISISInvestigationDetailsPanel,
   parseSearchToQuery,
+  SearchFilter,
   SearchResponse,
   SearchResultSource,
   Table,
@@ -43,12 +44,9 @@ interface InvestigationTableProps {
 const InvestigationSearchTable = ({
   hierarchy,
 }: InvestigationTableProps): React.ReactElement => {
-  console.log('Investigation search table');
-
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
   const location = useLocation();
-  console.log('location', location);
   const { push } = useHistory();
   const queryParams = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -57,8 +55,6 @@ const InvestigationSearchTable = ({
   const { startDate, endDate, sort, filters, restrict, investigation } =
     queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
-
-  console.log('investigation search table searchText', searchText);
 
   const selectAllSetting = useSelector(
     (state: StateType) => state.dgsearch.selectAllSetting
@@ -73,8 +69,6 @@ const InvestigationSearchTable = ({
   );
 
   const [t] = useTranslation();
-
-  console.log('investigation enabled', investigation);
 
   // this is only used for pagination in the table
   // the initial data fetching is triggered by the search button
@@ -163,7 +157,10 @@ const InvestigationSearchTable = ({
     [fetchNextPage]
   );
 
-  const removeFilterChip = (dimension: string, filterValue: string): void => {
+  const removeFilterChip = (
+    dimension: string,
+    filterValue: SearchFilter
+  ): void => {
     removeFacetFilter({ dimension, filterValue, applyImmediately: true });
   };
 
@@ -417,6 +414,8 @@ const InvestigationSearchTable = ({
       <Grid item xs={2} sx={{ height: '100%' }}>
         {data?.pages && (
           <FacetPanel
+            allIds={aggregatedIds}
+            entityName="Investigation"
             facetClassification={facetClassificationFromSearchResponses(
               data.pages
             )}

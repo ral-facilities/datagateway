@@ -1,45 +1,45 @@
 import {
+  Assessment,
   CalendarToday,
   ConfirmationNumber,
   Fingerprint,
   Public,
-  Assessment,
 } from '@mui/icons-material';
 import {
+  AddToCartButton,
+  ArrowTooltip,
   CardView,
+  DLSVisitDetailsPanel,
+  DownloadButton,
+  FacilityCycle,
+  formatBytes,
   formatCountOrSize,
   Investigation,
+  InvestigationDetailsPanel,
+  ISISInvestigationDetailsPanel,
   parseSearchToQuery,
+  SearchFilter,
+  SearchResponse,
+  SearchResultSource,
+  tableLink,
+  useAllFacilityCycles,
   useInvestigationsDatasetCount,
+  useInvestigationSizes,
+  useLuceneSearchInfinite,
+  usePushInvestigationFilter,
   usePushPage,
   usePushResults,
   useSort,
-  useAllFacilityCycles,
-  tableLink,
-  FacilityCycle,
-  useInvestigationSizes,
-  ArrowTooltip,
-  AddToCartButton,
-  DownloadButton,
-  InvestigationDetailsPanel,
-  ISISInvestigationDetailsPanel,
-  DLSVisitDetailsPanel,
-  SearchResultSource,
-  useLuceneSearchInfinite,
-  SearchResponse,
-  usePushInvestigationFilter,
-  FiltersType,
-  formatBytes,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
 import {
-  Typography,
-  Paper,
-  Link as MuiLink,
-  styled,
   Grid,
+  Link as MuiLink,
+  Paper,
+  styled,
+  Typography,
 } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
@@ -307,14 +307,6 @@ const InvestigationCardView = (
     }
   }, [data, fetchNextPage, hasNextPage, mapFacets, page, results]);
 
-  const parsedFilters = React.useMemo(() => {
-    const parsedFilters = {} as FiltersType;
-    Object.entries(filters).forEach((v) => {
-      parsedFilters[v[0].substring(14)] = v[1]; // 14 skips "investigation."
-    });
-    return parsedFilters;
-  }, [filters]);
-
   // hierarchy === 'isis' ? data : undefined is a 'hack' to only perform
   // the correct calculation queries for each facility
   const datasetCountQueries = useInvestigationsDatasetCount(
@@ -474,7 +466,10 @@ const InvestigationCardView = (
     [hierarchy, hierarchyLinkURL, push]
   );
 
-  const removeFilterChip = (dimension: string, filterValue: string): void => {
+  const removeFilterChip = (
+    dimension: string,
+    filterValue: SearchFilter
+  ): void => {
     removeFacetFilter({ dimension, filterValue, applyImmediately: true });
   };
 
@@ -515,6 +510,8 @@ const InvestigationCardView = (
       <Grid item xs={2} sx={{ height: '100%' }}>
         {data?.pages && (
           <FacetPanel
+            allIds={aggregatedIds}
+            entityName="Investigation"
             facetClassification={facetClassificationFromSearchResponses(
               data.pages
             )}
@@ -566,7 +563,7 @@ const InvestigationCardView = (
                 onResultsChange={pushResults}
                 loadedData={!isLoading}
                 loadedCount={!isLoading}
-                filters={parsedFilters}
+                filters={filters}
                 sort={sort}
                 page={page}
                 results={results}
