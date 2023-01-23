@@ -162,17 +162,12 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
   );
 
   const isParentSelected = React.useMemo(() => {
-    return (
-      cartItems?.some(
-        (cartItem) =>
-          cartItem.entityType === 'dataset' &&
-          cartItem.entityId.toString() === datasetId
-      ) ||
-      cartItems?.some(
-        (cartItem) =>
-          cartItem.entityType === 'investigation' &&
-          cartItem.entityId.toString() === investigationId
-      )
+    return cartItems?.some(
+      (cartItem) =>
+        (cartItem.entityType === 'dataset' &&
+          cartItem.entityId.toString() === datasetId) ||
+        (cartItem.entityType === 'investigation' &&
+          cartItem.entityId.toString() === investigationId)
     );
   }, [cartItems, datasetId, investigationId]);
 
