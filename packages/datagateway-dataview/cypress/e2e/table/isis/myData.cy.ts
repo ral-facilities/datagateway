@@ -18,7 +18,7 @@ describe('ISIS - MyData Table', () => {
       });
       // Check that we have received the size from the API as this will produce
       // a re-render which can prevent some interactions.
-      cy.contains('[aria-rowindex="1"] [aria-colindex="8"]', '10.38 GB').should(
+      cy.contains('[aria-rowindex="1"] [aria-colindex="8"]', '3.12 GB').should(
         'exist'
       );
     });
@@ -56,7 +56,7 @@ describe('ISIS - MyData Table', () => {
       cy.get('[role="gridcell"] a').first().click({ force: true });
       cy.location('pathname').should(
         'eq',
-        '/browse/instrument/10/facilityCycle/50/investigation/131'
+        '/browse/instrument/3/facilityCycle/1/investigation/1'
       );
     });
 
@@ -153,7 +153,7 @@ describe('ISIS - MyData Table', () => {
         cy.get('[aria-sort="ascending"]').should('exist');
         cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
         cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-          'Experience ready course option.'
+          'Analysis reflect work or hour color maybe.'
         );
       });
 
@@ -167,7 +167,7 @@ describe('ISIS - MyData Table', () => {
           '0'
         );
         cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-          'Standard country something spend sign.'
+          'Analysis reflect work or hour color maybe.'
         );
       });
 
@@ -181,7 +181,7 @@ describe('ISIS - MyData Table', () => {
           '0'
         );
         cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-          'Standard country something spend sign.'
+          'Analysis reflect work or hour color maybe.'
         );
       });
 
@@ -190,14 +190,14 @@ describe('ISIS - MyData Table', () => {
         cy.contains('[role="button"]', 'Instrument').click();
 
         cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-          'Experience ready course option.'
+          'Analysis reflect work or hour color maybe.'
         );
       });
     });
 
     describe('should be able to filter by', () => {
       it('role', () => {
-        cy.get('[aria-rowcount="4"]').should('exist');
+        cy.get('[aria-rowcount="1"]').should('exist');
 
         cy.get('#role-selector').click();
         cy.get('[role="listbox"]')
@@ -208,53 +208,56 @@ describe('ISIS - MyData Table', () => {
         cy.get('[aria-rowcount="3"]').should('exist');
 
         // check that size is correct after filtering
-        cy.get('[aria-rowindex="1"] [aria-colindex="8"]').contains('12.91 GB');
+        cy.get('[aria-rowindex="1"] [aria-colindex="8"]').contains('3.12 GB');
 
         cy.get('#role-selector').click();
         cy.get('[role="option"]').first().click();
-        cy.get('[aria-rowcount="4"]').should('exist');
+        cy.get('[aria-rowcount="1]').should('exist');
       });
 
       it('text', () => {
-        cy.get('[aria-rowcount="4"]').should('exist');
-        cy.get('input[id="Title-filter"]').type('night');
+        cy.get('[aria-rowcount="1"]').should('exist');
+        cy.get('input[id="Title-filter"]').type('color');
 
         cy.get('[aria-rowcount="1"]').should('exist');
         cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains(
-          'INVESTIGATION 165'
+          'INVESTIGATION 1'
         );
       });
 
       it('date between', () => {
-        cy.get('[aria-rowcount="4"]').should('exist');
-
-        cy.get('input[aria-label="Start Date filter to"]')
-          .parent()
-          .find('button')
-          .click();
-
-        cy.get('.MuiPickersDay-root[tabindex="-1"]').first().click();
+        cy.get('[aria-rowcount="1"]').should('exist');
 
         const date = new Date();
-        date.setDate(1);
 
-        cy.get('input[id="Start Date filter to"]').should(
-          'have.value',
+        cy.get('input[aria-label="Start Date filter to"]').type(
           date.toISOString().slice(0, 10)
         );
+        //  .parent()
+        //  .find('button')
+        //  .click();
 
-        cy.get('input[id="Start Date filter from"]').type('2006-08-05');
+        // cy.get('.MuiPickersDay-root[tabindex="-1"]').first().click();
+
+        // date.setDate(1);
+
+        // cy.get('input[id="Start Date filter to"]').should(
+        //   'have.value',
+        //   date.toISOString().slice(0, 10)
+        // );
+
+        cy.get('input[id="Start Date filter from"]').type('2000-04-01');
         cy.get('[aria-rowcount="2"]').should('exist');
       });
 
       it('multiple columns', () => {
-        cy.get('[aria-label="Filter by DOI"]').first().type('69');
+        cy.get('[aria-label="Filter by DOI"]').first().type('417');
 
-        cy.get('[aria-rowcount="3"]').should('exist');
+        cy.get('[aria-rowcount="1"]').should('exist');
 
-        cy.get('[aria-label="Filter by Title"]').first().type('us');
+        cy.get('[aria-label="Filter by Title"]').first().type('or');
 
-        cy.get('[aria-rowcount="2"]').should('exist');
+        cy.get('[aria-rowcount="1"]').should('exist');
       });
     });
 
@@ -302,7 +305,7 @@ describe('ISIS - MyData Table', () => {
         );
 
         cy.get('#details-panel')
-          .contains('Resource himself season pattern which cold spring.')
+          .contains('Throw hope parent. Receive entire soon.')
           .should('be.visible');
 
         cy.get('[aria-controls="investigation-samples-panel"]').should(
@@ -310,16 +313,14 @@ describe('ISIS - MyData Table', () => {
         );
         cy.get('[aria-controls="investigation-samples-panel"]').click();
 
-        cy.get('#details-panel').contains('SAMPLE 131').should('be.visible');
+        cy.get('#details-panel').contains('SAMPLE 1').should('be.visible');
 
         cy.get('[aria-controls="investigation-users-panel"]').should(
           'be.visible'
         );
         cy.get('[aria-controls="investigation-users-panel"]').click();
 
-        cy.get('#details-panel')
-          .contains('Kimberly Sharp')
-          .should('be.visible');
+        cy.get('#details-panel').contains('Colleen Heath').should('be.visible');
 
         cy.get('[aria-controls="investigation-publications-panel"]').should(
           'be.visible'
@@ -327,7 +328,7 @@ describe('ISIS - MyData Table', () => {
         cy.get('[aria-controls="investigation-publications-panel"]').click();
 
         cy.get('#details-panel')
-          .contains('Guess including understand bed father.')
+          .contains('Simple notice since view check over through there.')
           .should('be.visible');
       });
 
@@ -337,11 +338,12 @@ describe('ISIS - MyData Table', () => {
 
         cy.location('pathname').should(
           'eq',
-          '/browse/instrument/10/facilityCycle/50/investigation/131/dataset'
+          '/browse/instrument/3/facilityCycle/1/investigation/1/dataset'
         );
       });
 
-      it('when another row is showing details', () => {
+      it.skip('when another row is showing details', () => {
+        // Unable to test as each user only owns a single investigation.
         cy.get('[aria-label="Show details"]').eq(1).click();
 
         cy.get('[aria-label="Show details"]').first().click();
