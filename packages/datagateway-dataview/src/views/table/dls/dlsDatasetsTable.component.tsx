@@ -124,9 +124,7 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
       {
         icon: ConfirmationNumber,
         label: t('datasets.datafile_count'),
-        dataKey: 'datafileCount',
-        cellContentRenderer: (cellProps: TableCellProps): number | string =>
-          cellProps.rowData.fileCount,
+        dataKey: 'fileCount',
         disableSort: true,
       },
       {
