@@ -25,7 +25,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../state/app.types';
-import { TableCellProps, IndexRange } from 'react-virtualized';
+import { IndexRange } from 'react-virtualized';
 
 interface DatasetTableProps {
   investigationId: string;
@@ -125,9 +125,7 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
       {
         icon: ConfirmationNumber,
         label: t('datasets.datafile_count'),
-        dataKey: 'datafileCount',
-        cellContentRenderer: (cellProps: TableCellProps): number | string =>
-          cellProps.rowData.fileCount,
+        dataKey: 'fileCount',
         disableSort: true,
       },
       {
