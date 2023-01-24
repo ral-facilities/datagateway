@@ -1,12 +1,4 @@
-import {
-  Button,
-  Divider,
-  Grid,
-  styled,
-  Tab,
-  Tabs,
-  Typography,
-} from '@mui/material';
+import { Divider, Grid, styled, Tab, Tabs, Typography } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
@@ -47,11 +39,9 @@ const VisitDetailsPanel = (
   const { rowData, detailsPanelResize } = props;
   const [t] = useTranslation();
   const { data } = useInvestigationDetails(rowData.id);
-  const { data: size, refetch: fetchSize } = rowData.fileSize;
   const investigationData: Investigation = {
     ...data,
     ...(rowData as Investigation),
-    size,
   };
   const selectedTab = useSelector<
     StateType,
@@ -205,23 +195,7 @@ const VisitDetailsPanel = (
               {t('investigations.details.size')}
             </Typography>
             <Typography>
-              <b>
-                {investigationData.size !== undefined ? (
-                  formatBytes(investigationData.size)
-                ) : (
-                  <Button
-                    onClick={() => {
-                      fetchSize();
-                    }}
-                    variant="outlined"
-                    color="secondary"
-                    size="small"
-                    id="calculate-size-btn"
-                  >
-                    {t('investigations.details.calculate')}
-                  </Button>
-                )}
-              </b>
+              <b>{formatBytes(rowData.fileSize)}</b>
             </Typography>
           </Grid>
         </StyledGrid>
