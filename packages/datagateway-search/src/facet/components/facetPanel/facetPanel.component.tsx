@@ -114,6 +114,8 @@ function FacetPanel({
 }: FacetPanelProps): JSX.Element {
   const [t] = useTranslation();
 
+  const classifications = Object.entries(facetClassification);
+
   return (
     <PanelContainer>
       <Box
@@ -122,15 +124,15 @@ function FacetPanel({
         justifyContent="space-between"
         width="100%"
       >
-        <Typography variant="h6">Filters</Typography>
-        <Button onClick={onApplyFacetFilters}>Apply</Button>
+        <Typography variant="h6">{t('facetPanel.title')}</Typography>
+        <Button onClick={onApplyFacetFilters}>{t('facetPanel.apply')}</Button>
       </Box>
 
-      <Box width="100%" sx={{ marginTop: 1, marginBottom: 2 }}>
-        {/* For each facet classification on the search data,
+      {classifications.length > 0 ? (
+        <Box width="100%" sx={{ marginTop: 1, marginBottom: 2 }}>
+          {/* For each facet classification on the search data,
             render a new Accordion that expands to show the available filter values on that facet (dimension). */}
-        {Object.entries(facetClassification).map(
-          ([dimension, classifications]) => (
+          {classifications.map(([dimension, classifications]) => (
             <Accordion key={dimension} disableGutters elevation={0}>
               <AccordionSummary
                 expandIcon={<ExpandMore />}
@@ -212,9 +214,13 @@ function FacetPanel({
                 )}
               </AccordionDetails>
             </Accordion>
-          )
-        )}
-      </Box>
+          ))}
+        </Box>
+      ) : (
+        <Typography color="text.secondary" sx={{ mt: 1 }}>
+          {t('facetPanel.noFilters')}
+        </Typography>
+      )}
     </PanelContainer>
   );
 }
