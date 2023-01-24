@@ -26,9 +26,17 @@ interface ParameterValueFilter {
   valueType: ParameterValueType;
 }
 
+interface ParameterValueFacet {
+  label: string;
+  count: number;
+  from?: number;
+  to?: number;
+}
+
 export { PARAMETER_VALUE_TYPE };
 export type {
   ParameterValueType,
   ParameterValueFilter,
+  ParameterValueFacet,
   NewParameterValueFilter,
 };

@@ -15,6 +15,7 @@ interface ParameterFiltersProps {
   parameterNames: string[];
   allIds: number[];
   selectedFilters: SearchFilter[];
+  onAddParameterFilter: (filterKey: string, filterValue: SearchFilter) => void;
   changeFilter: (key: string, value: SearchFilter, remove?: boolean) => void;
   setFilterUpdate: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -29,6 +30,7 @@ const ParameterFilters = ({
   parameterNames,
   allIds,
   selectedFilters,
+  onAddParameterFilter,
   changeFilter,
   setFilterUpdate,
 }: ParameterFiltersProps): React.ReactElement => {
@@ -50,6 +52,14 @@ const ParameterFilters = ({
   function closeNewParameterFilterCreator(): void {
     setIsNewFilterPopoverVisible(false);
     setPopoverAnchor(null);
+  }
+
+  function addNewParameterFilter(
+    filterKey: string,
+    filterValue: SearchFilter
+  ): void {
+    onAddParameterFilter(filterKey, filterValue);
+    setIsNewFilterPopoverVisible(false);
   }
 
   return (
@@ -107,6 +117,7 @@ const ParameterFilters = ({
           allIds={allIds}
           entityName={entityName}
           parameterNames={parameterNames}
+          onAddFilter={addNewParameterFilter}
         />
       </Popover>
     </Box>

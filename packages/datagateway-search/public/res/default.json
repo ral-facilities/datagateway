@@ -170,6 +170,28 @@
     "datafile.datafileformat.name": "Format",
     "datafileparameter.type.name": "Parameter name"
   },
+  "parameterFilters": {
+    "selectedParameterFilterList": "Selected parameter filters",
+    "creator": {
+      "title": "New parameter filter",
+      "message": {
+        "parameterNameNotSelected": "Parameter name not selected",
+        "parameterTypeNotSelected": "Parameter type not selected",
+        "parameterNameAndTypeNotSelected": "Parameter name and type not selected"
+      },
+      "labels": {
+        "parameterNameSelect": "Parameter name",
+        "parameterDateTimeSelect": "Parameter is in",
+        "parameterStringSelect": "Parameter equals"
+      },
+      "addFilter": "Add filter"
+    },
+    "valueType": {
+      "dateTime": "Date and time",
+      "numeric": "Numeric",
+      "string": "String"
+    }
+  },
   "datafileparameter": {
     "type": {
       "name": "Parameter Name"

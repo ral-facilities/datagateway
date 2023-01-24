@@ -190,6 +190,7 @@ function FacetPanel({
                             dimension.split('.')[0].toLocaleLowerCase()
                           ] as SearchFilter[]) ?? []
                         }
+                        onAddParameterFilter={onAddFilter}
                         setFilterUpdate={(_) => {
                           // TODO
                         }}
