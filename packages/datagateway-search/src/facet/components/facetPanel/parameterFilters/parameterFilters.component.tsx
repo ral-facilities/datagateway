@@ -23,6 +23,10 @@ interface ParameterFiltersProps {
   allIds: number[];
   selectedFilters: SearchFilter[];
   onAddParameterFilter: (filterKey: string, filterValue: SearchFilter) => void;
+  onRemoveParameterFilter: (
+    filterKey: string,
+    filterValue: SearchFilter
+  ) => void;
   changeFilter: (key: string, value: SearchFilter, remove?: boolean) => void;
   setFilterUpdate: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -38,6 +42,7 @@ const ParameterFilters = ({
   allIds,
   selectedFilters,
   onAddParameterFilter,
+  onRemoveParameterFilter,
   changeFilter,
   setFilterUpdate,
 }: ParameterFiltersProps): React.ReactElement => {
@@ -67,6 +72,13 @@ const ParameterFilters = ({
   ): void {
     onAddParameterFilter(filterKey, filterValue);
     closeNewParameterFilterCreator();
+  }
+
+  function removeParameterFilter(filterValue: SearchFilter): void {
+    onRemoveParameterFilter(
+      `${entityName.toLowerCase()}parameter`,
+      filterValue
+    );
   }
 
   const selectedParameterFilters = selectedFilters.filter(
@@ -107,8 +119,9 @@ const ParameterFilters = ({
         >
           {selectedParameterFilters.map((filter, index) => (
             <ParameterFilterItem
-              filter={filter}
               key={`${filter.key}:${filter.label}`}
+              filter={filter}
+              onRemove={removeParameterFilter}
             />
           ))}
         </List>

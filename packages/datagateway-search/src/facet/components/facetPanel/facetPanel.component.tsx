@@ -190,6 +190,7 @@ function FacetPanel({
                           ] as SearchFilter[]) ?? []
                         }
                         onAddParameterFilter={onAddFilter}
+                        onRemoveParameterFilter={onRemoveFilter}
                         setFilterUpdate={(_) => {
                           // TODO
                         }}

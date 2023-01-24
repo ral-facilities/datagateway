@@ -1,6 +1,12 @@
 import React from 'react';
 import { NestedFilter } from 'datagateway-common';
-import { ListItem, ListItemText } from '@mui/material';
+import { IconButton, ListItem, ListItemText } from '@mui/material';
+import { Close } from '@mui/icons-material';
+
+interface ParameterFilterItemProps {
+  filter: NestedFilter;
+  onRemove: (removedFilter: NestedFilter) => void;
+}
 
 /**
  * Shows a parameter filter in a formatted user-friendly way.
@@ -8,14 +14,22 @@ import { ListItem, ListItemText } from '@mui/material';
  */
 function ParameterFilterItem({
   filter,
-}: {
-  filter: NestedFilter;
-}): JSX.Element {
+  onRemove,
+}: ParameterFilterItemProps): JSX.Element {
   return (
-    <ListItem dense disableGutters key={`${filter.key}:${filter.label}`}>
-      <ListItemText>
-        {filter.key.split('.').at(-1)}: {filter.label}
-      </ListItemText>
+    <ListItem
+      dense
+      disableGutters
+      key={`${filter.key}:${filter.label}`}
+      secondaryAction={
+        <IconButton size="small" onClick={() => onRemove(filter)}>
+          <Close fontSize="inherit" />
+        </IconButton>
+      }
+    >
+      <ListItemText
+        primary={`${filter.key.split('.').at(-1)}: ${filter.label}`}
+      />
     </ListItem>
   );
 }
