@@ -1,5 +1,12 @@
 import React from 'react';
-import { Box, Button, List, Popover } from '@mui/material';
+import {
+  Box,
+  IconButton,
+  List,
+  Popover,
+  Stack,
+  Typography,
+} from '@mui/material';
 import { Add } from '@mui/icons-material';
 import type {
   DatasearchType,
@@ -59,47 +66,57 @@ const ParameterFilters = ({
     filterValue: SearchFilter
   ): void {
     onAddParameterFilter(filterKey, filterValue);
-    setIsNewFilterPopoverVisible(false);
+    closeNewParameterFilterCreator();
   }
+
+  const selectedParameterFilters = selectedFilters.filter(
+    (filter): filter is NestedFilter =>
+      typeof filter !== 'string' && 'filter' in filter
+  );
 
   return (
     <Box
       display="flex"
       flexDirection="column"
       justifyContent="center"
-      alignItems="center"
       width="100%"
     >
-      {selectedFilters.length > 0 && (
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        sx={{ width: '100%' }}
+      >
+        <Typography variant="subtitle1">
+          {t('parameterFilters.title')}
+        </Typography>
+        <IconButton
+          aria-label={t('parameterFilters.addFilter')}
+          size="small"
+          onClick={openNewParameterFilterCreator}
+        >
+          <Add />
+        </IconButton>
+      </Stack>
+      {selectedParameterFilters.length > 0 ? (
         <List
           dense
           disablePadding
           aria-label={t('parameterFilters.selectedParameterFilterList')}
           sx={{ width: '100%' }}
         >
-          {selectedFilters
-            .filter(
-              (filter): filter is NestedFilter =>
-                typeof filter !== 'string' && 'filter' in filter
-            )
-            .map((filter, index) => (
-              <ParameterFilterItem
-                filter={filter}
-                key={`${filter.key}:${filter.label}`}
-              />
-            ))}
+          {selectedParameterFilters.map((filter, index) => (
+            <ParameterFilterItem
+              filter={filter}
+              key={`${filter.key}:${filter.label}`}
+            />
+          ))}
         </List>
+      ) : (
+        <Typography variant="body2" color="text.secondary">
+          {t('parameterFilters.noFilters')}
+        </Typography>
       )}
-      <Button
-        disableElevation
-        variant="outlined"
-        size="small"
-        startIcon={<Add />}
-        sx={{ width: '100%', mt: 1 }}
-        onClick={openNewParameterFilterCreator}
-      >
-        Filter Parameter Value
-      </Button>
       <Popover
         open={isNewFilterPopoverVisible}
         anchorEl={popoverAnchor}
@@ -118,6 +135,7 @@ const ParameterFilters = ({
           entityName={entityName}
           parameterNames={parameterNames}
           onAddFilter={addNewParameterFilter}
+          onClose={closeNewParameterFilterCreator}
         />
       </Popover>
     </Box>

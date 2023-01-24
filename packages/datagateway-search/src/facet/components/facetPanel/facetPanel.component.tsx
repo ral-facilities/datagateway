@@ -180,10 +180,7 @@ function FacetPanel({
                 {areParameterFiltersAvailable(dimension) && (
                   <>
                     <Divider />
-                    <Typography variant="subtitle1" mx={2} mt={1}>
-                      Parameter filters
-                    </Typography>
-                    <Box pb={2} px={2}>
+                    <Box pl={2} pr={1} py={2}>
                       <ParameterFilters
                         allIds={allIds}
                         entityName={entityName}

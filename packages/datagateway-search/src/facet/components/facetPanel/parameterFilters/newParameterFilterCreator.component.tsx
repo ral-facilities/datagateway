@@ -2,6 +2,7 @@ import React from 'react';
 import {
   Button,
   Divider,
+  IconButton,
   MenuItem,
   Stack,
   TextField,
@@ -17,12 +18,14 @@ import type ParameterValueSelectorProps from './valueSelectors/parameterValueSel
 import ParameterNumericRange from './valueSelectors/parameterNumericRange.component';
 import ParameterFacetList from './valueSelectors/parameterFacetList.component';
 import ParameterDateTimeSelector from './valueSelectors/parameterDateTimeSelector.component';
+import { Close } from '@mui/icons-material';
 
 interface NewParameterFilterCreatorProps {
   allIds: number[];
   entityName: DatasearchType;
   parameterNames: string[];
   onAddFilter: (filterKey: string, filterValue: SearchFilter) => void;
+  onClose: () => void;
 }
 
 interface ParameterValueFacet {
@@ -53,6 +56,7 @@ function NewParameterFilterCreator({
   entityName,
   parameterNames,
   onAddFilter,
+  onClose,
 }: NewParameterFilterCreatorProps): JSX.Element {
   const [t] = useTranslation();
 
@@ -129,9 +133,19 @@ function NewParameterFilterCreator({
 
   return (
     <Stack sx={{ width: 300, p: 2 }} gap={2}>
-      <Typography variant="subtitle1">
-        {t('parameterFilters.creator.title')}
-      </Typography>
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        sx={{ mr: -1 }}
+      >
+        <Typography variant="subtitle1" gutterBottom={false}>
+          {t('parameterFilters.creator.title')}
+        </Typography>
+        <IconButton size="small" onClick={onClose}>
+          <Close />
+        </IconButton>
+      </Stack>
       <Stack gap={1}>
         <TextField
           select
