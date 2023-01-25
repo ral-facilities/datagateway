@@ -1451,7 +1451,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.14.5, @babel/runtime@npm:^7.16.3, @babel/runtime@npm:^7.17.2, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.18.9, @babel/runtime@npm:^7.19.4, @babel/runtime@npm:^7.20.6, @babel/runtime@npm:^7.20.7, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.2, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.14.5, @babel/runtime@npm:^7.16.3, @babel/runtime@npm:^7.17.2, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.18.9, @babel/runtime@npm:^7.19.4, @babel/runtime@npm:^7.20.6, @babel/runtime@npm:^7.20.7, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.2, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.7.6, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
   version: 7.20.13
   resolution: "@babel/runtime@npm:7.20.13"
   dependencies:
@@ -6486,7 +6486,7 @@ __metadata:
     eslint-plugin-cypress: 2.12.1
     eslint-plugin-prettier: 4.2.1
     hex-to-rgba: 2.0.1
-    history: 4.10.1
+    history: 5.3.0
     i18next: 22.0.3
     lint-staged: 13.1.0
     lodash.debounce: 4.0.8
@@ -6566,7 +6566,7 @@ __metadata:
     eslint-plugin-cypress: 2.12.1
     eslint-plugin-prettier: 4.2.1
     express: 4.18.1
-    history: 4.10.1
+    history: 5.3.0
     i18next: 22.0.3
     i18next-browser-languagedetector: 7.0.0
     i18next-http-backend: 2.1.0
@@ -6636,7 +6636,7 @@ __metadata:
     eslint-config-react-app: 7.0.0
     eslint-plugin-cypress: 2.12.1
     eslint-plugin-prettier: 4.2.1
-    history: 4.10.1
+    history: 5.3.0
     i18next: 22.0.3
     i18next-browser-languagedetector: 7.0.0
     i18next-http-backend: 2.1.0
@@ -6705,7 +6705,7 @@ __metadata:
     eslint-plugin-cypress: 2.12.1
     eslint-plugin-prettier: 4.2.1
     express: 4.18.1
-    history: 4.10.1
+    history: 5.3.0
     i18next: 22.0.3
     i18next-browser-languagedetector: 7.0.0
     i18next-http-backend: 2.1.0
@@ -9071,7 +9071,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"history@npm:4.10.1, history@npm:^4.9.0":
+"history@npm:5.3.0":
+  version: 5.3.0
+  resolution: "history@npm:5.3.0"
+  dependencies:
+    "@babel/runtime": ^7.7.6
+  checksum: d73c35df49d19ac172f9547d30a21a26793e83f16a78386d99583b5bf1429cc980799fcf1827eb215d31816a6600684fba9686ce78104e23bd89ec239e7c726f
+  languageName: node
+  linkType: hard
+
+"history@npm:^4.9.0":
   version: 4.10.1
   resolution: "history@npm:4.10.1"
   dependencies:
