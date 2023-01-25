@@ -131,17 +131,17 @@ describe('Investigations Cards', () => {
     cy.get('[data-testid="advanced-filters-link"]').click();
     cy.get('[aria-label="Filter by Title"]')
       .first()
-      .type('wall')
+      .type('off')
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
         timeout: 10000,
       });
     cy.get('[data-testid="card"]')
       .first()
-      .contains('Ground able strategy pay clearly');
+      .contains('Customer home food important.');
 
     cy.get('input[id="Start Date filter from"]')
       .click()
-      .type('2011-01-01')
+      .type('2014-01-01')
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
         timeout: 10000,
       });
@@ -163,8 +163,6 @@ describe('Investigations Cards', () => {
     );
     cy.get('[data-testid="card"]')
       .first()
-      .contains(
-        'Ground able strategy pay clearly performance wall understand.'
-      );
+      .contains('Spend well red behind tough drug.');
   });
 });

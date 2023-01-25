@@ -60,7 +60,7 @@ describe('Investigation search tab', () => {
     cy.wait(1000);
     // Check that "select all" and individual selection are equivalent
     let i = 1;
-    while (i < 16) {
+    while (i < 5) {
       cy.get(`[aria-rowindex="${i}"] [aria-colindex="1"]`).click();
       cy.wait('@topcat', { timeout: 10000 });
       i++;

@@ -93,9 +93,7 @@ describe('SearchPageContainer Component', () => {
 
       cy.get('[aria-rowcount="4"]').should('exist');
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
-        'Majority about dog idea bag summer. Heavy general fall huge whether hard success imagine.'
-      );
+      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('18');
     });
 
     it('should be able to click clear filters button to clear filters', () => {
@@ -141,7 +139,7 @@ describe('SearchPageContainer Component', () => {
     it('should be able to switch between tabs', () => {
       cy.get('[aria-label="Search table"]')
         .contains('Dataset')
-        .contains('5')
+        .contains('2')
         .click();
 
       cy.get('[aria-label="Search table"]')
@@ -151,7 +149,7 @@ describe('SearchPageContainer Component', () => {
 
       cy.get('[aria-label="Search table"]')
         .contains('Investigation')
-        .contains('2')
+        .contains('5')
         .click();
     });
 

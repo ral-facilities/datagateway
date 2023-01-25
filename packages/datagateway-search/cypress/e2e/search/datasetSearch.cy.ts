@@ -65,7 +65,7 @@ describe('Dataset search tab', () => {
 
     // Check that "select all" and individual selection are equivalent
     let i = 1;
-    while (i < 5) {
+    while (i < 3) {
       cy.get(`[aria-rowindex="${i}"] [aria-colindex="1"]`)
         .click()
         .wait('@topcat', { timeout: 10000 });
