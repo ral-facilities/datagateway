@@ -13,9 +13,7 @@ import {
   useAllFacilityCycles,
   useCart,
   useDatasetCount,
-  useDatasetsDatafileCount,
   useDatasetsInfinite,
-  useDatasetSizes,
   useIds,
   useLuceneSearch,
   useRemoveFromCart,
@@ -97,6 +95,8 @@ describe('Dataset table component', () => {
         createTime: '2019-07-23',
         startDate: '2019-07-24',
         endDate: '2019-07-25',
+        fileSize: 1,
+        fileCount: 1,
         investigation: {
           id: 2,
           title: 'Investigation test title',
@@ -170,30 +170,6 @@ describe('Dataset table component', () => {
     (useAllFacilityCycles as jest.Mock).mockReturnValue({
       data: [],
     });
-    (useDatasetsDatafileCount as jest.Mock).mockImplementation((datasets) =>
-      (datasets
-        ? 'pages' in datasets
-          ? datasets.pages.flat()
-          : datasets
-        : []
-      ).map(() => ({
-        data: 1,
-        isFetching: false,
-        isSuccess: true,
-      }))
-    );
-    (useDatasetSizes as jest.Mock).mockImplementation((datasets) =>
-      (datasets
-        ? 'pages' in datasets
-          ? datasets.pages.flat()
-          : datasets
-        : []
-      ).map(() => ({
-        data: 1,
-        isFetching: false,
-        isSuccess: true,
-      }))
-    );
   });
 
   afterEach(() => {
@@ -257,8 +233,6 @@ describe('Dataset table component', () => {
 
     expect(useAddToCart).toHaveBeenCalledWith('dataset');
     expect(useRemoveFromCart).toHaveBeenCalledWith('dataset');
-    expect(useDatasetsDatafileCount).toHaveBeenCalledWith({ pages: [rowData] });
-    expect(useDatasetSizes).toHaveBeenCalledWith(undefined);
   });
 
   it('calls fetchNextPage function of useDatafilesInfinite when loadMoreRows is called', () => {
@@ -497,12 +471,7 @@ describe('Dataset table component', () => {
     expect(consoleSpy).not.toHaveBeenCalled();
   });
 
-  it('renders generic link & pending count correctly', () => {
-    (useDatasetsDatafileCount as jest.Mock).mockImplementation(() => [
-      {
-        isFetching: true,
-      },
-    ]);
+  it('renders generic link & count correctly', () => {
     const wrapper = createWrapper('data');
 
     expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
@@ -511,7 +480,7 @@ describe('Dataset table component', () => {
     expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
       'Dataset test name'
     );
-    expect(wrapper.find('[aria-colindex=4]').text()).toEqual('Calculating...');
+    expect(wrapper.find('[aria-colindex=4]').text()).toEqual('1');
   });
 
   it('renders DLS link correctly', () => {
@@ -538,9 +507,6 @@ describe('Dataset table component', () => {
     });
 
     const wrapper = createWrapper('isis');
-
-    expect(useDatasetSizes).toHaveBeenCalledWith({ pages: [rowData] });
-    expect(useDatasetsDatafileCount).toHaveBeenCalledWith(undefined);
 
     expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
       `/browse/instrument/4/facilityCycle/6/investigation/2/dataset/1`

@@ -12,7 +12,6 @@ import {
   useInvestigationCount,
   useInvestigationsDatasetCount,
   useInvestigationsInfinite,
-  useInvestigationSizes,
   useLuceneSearch,
   useRemoveFromCart,
   ISISInvestigationDetailsPanel,
@@ -101,6 +100,8 @@ describe('Investigation Search Table component', () => {
         visitId: '1',
         doi: 'doi 1',
         size: 1,
+        fileSize: 1,
+        fileCount: 1,
         investigationInstruments: [
           {
             id: 1,
@@ -178,18 +179,6 @@ describe('Investigation Search Table component', () => {
           isSuccess: true,
         }))
     );
-    (useInvestigationSizes as jest.Mock).mockImplementation((investigations) =>
-      (investigations
-        ? 'pages' in investigations
-          ? investigations.pages.flat()
-          : investigations
-        : []
-      ).map(() => ({
-        data: 1,
-        isFetching: false,
-        isSuccess: true,
-      }))
-    );
   });
 
   afterEach(() => {
@@ -256,7 +245,6 @@ describe('Investigation Search Table component', () => {
     expect(useInvestigationsDatasetCount).toHaveBeenCalledWith({
       pages: [rowData],
     });
-    expect(useInvestigationSizes).toHaveBeenCalledWith(undefined);
   });
 
   it('calls fetchNextPage function of useDatafilesInfinite when loadMoreRows is called', () => {
@@ -559,7 +547,6 @@ describe('Investigation Search Table component', () => {
 
     const wrapper = createWrapper('isis');
 
-    expect(useInvestigationSizes).toHaveBeenCalledWith({ pages: [rowData] });
     expect(useInvestigationsDatasetCount).toHaveBeenCalledWith(undefined);
 
     expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(

@@ -10,6 +10,8 @@ Object {
       "createTime": "2019-07-23",
       "doi": "doi 1",
       "endDate": "2019-07-25",
+      "fileCount": 1,
+      "fileSize": 1,
       "id": 1,
       "investigationInstruments": Array [
         Object {

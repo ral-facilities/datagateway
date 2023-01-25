@@ -6,7 +6,6 @@ import {
   useInvestigationCount,
   useInvestigationsPaginated,
   useInvestigationsDatasetCount,
-  useInvestigationSizes,
   Investigation,
   StateType,
   AdvancedFilter,
@@ -78,6 +77,8 @@ describe('Investigation - Card View', () => {
         title: 'Test 1',
         visitId: '1',
         doi: 'doi 1',
+        fileSize: 1,
+        fileCount: 1,
         investigationInstruments: [
           {
             id: 3,
@@ -147,19 +148,6 @@ describe('Investigation - Card View', () => {
         }))
     );
 
-    (useInvestigationSizes as jest.Mock).mockImplementation((investigations) =>
-      (investigations
-        ? 'pages' in investigations
-          ? investigations.pages.flat()
-          : investigations
-        : []
-      ).map(() => ({
-        data: 1,
-        isFetching: false,
-        isSuccess: true,
-      }))
-    );
-
     window.scrollTo = jest.fn();
   });
 
@@ -211,7 +199,6 @@ describe('Investigation - Card View', () => {
       },
     ]);
     expect(useInvestigationsDatasetCount).toHaveBeenCalledWith(cardData);
-    expect(useInvestigationSizes).toHaveBeenCalledWith(undefined);
   });
 
   it('updates filter query params on text filter', () => {
@@ -329,7 +316,6 @@ describe('Investigation - Card View', () => {
 
     const wrapper = createWrapper('isis');
 
-    expect(useInvestigationSizes).toHaveBeenCalledWith(cardData);
     expect(useInvestigationsDatasetCount).toHaveBeenCalledWith(undefined);
 
     expect(wrapper.find(CardView).find('a').first().prop('href')).toEqual(

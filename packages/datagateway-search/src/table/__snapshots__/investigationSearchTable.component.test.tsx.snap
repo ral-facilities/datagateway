@@ -61,6 +61,8 @@ Object {
         "id": 2,
         "name": "facility name",
       },
+      "fileCount": 1,
+      "fileSize": 1,
       "id": 1,
       "investigationInstruments": Array [
         Object {

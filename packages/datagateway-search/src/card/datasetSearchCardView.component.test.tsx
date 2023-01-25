@@ -7,8 +7,6 @@ import {
   Dataset,
   useLuceneSearch,
   useAllFacilityCycles,
-  useDatasetSizes,
-  useDatasetsDatafileCount,
   CardView,
   DLSDatasetDetailsPanel,
   ISISDatasetDetailsPanel,
@@ -73,6 +71,8 @@ describe('Dataset - Card View', () => {
         createTime: '2019-07-23',
         startDate: '2019-07-24',
         endDate: '2019-07-25',
+        fileSize: 1,
+        fileCount: 1,
         investigation: {
           id: 2,
           title: 'Investigation test title',
@@ -141,30 +141,6 @@ describe('Dataset - Card View', () => {
     (useAllFacilityCycles as jest.Mock).mockReturnValue({
       data: [],
     });
-    (useDatasetsDatafileCount as jest.Mock).mockImplementation((datasets) =>
-      (datasets
-        ? 'pages' in datasets
-          ? datasets.pages.flat()
-          : datasets
-        : []
-      ).map(() => ({
-        data: 1,
-        isFetching: false,
-        isSuccess: true,
-      }))
-    );
-    (useDatasetSizes as jest.Mock).mockImplementation((datasets) =>
-      (datasets
-        ? 'pages' in datasets
-          ? datasets.pages.flat()
-          : datasets
-        : []
-      ).map(() => ({
-        data: 1,
-        isFetching: false,
-        isSuccess: true,
-      }))
-    );
 
     window.scrollTo = jest.fn();
   });
@@ -214,8 +190,6 @@ describe('Dataset - Card View', () => {
         }),
       },
     ]);
-    expect(useDatasetsDatafileCount).toHaveBeenCalledWith(cardData);
-    expect(useDatasetSizes).toHaveBeenCalledWith(undefined);
   });
 
   it('updates filter query params on text filter', () => {
@@ -287,12 +261,7 @@ describe('Dataset - Card View', () => {
     expect(() => createWrapper()).not.toThrowError();
   });
 
-  it('renders generic link & pending count correctly', () => {
-    (useDatasetsDatafileCount as jest.Mock).mockImplementation(() => [
-      {
-        isFetching: true,
-      },
-    ]);
+  it('renders generic link & count correctly', () => {
     const wrapper = createWrapper();
 
     expect(wrapper.find(CardView).find('a').first().prop('href')).toEqual(
@@ -307,7 +276,7 @@ describe('Dataset - Card View', () => {
         .first()
         .find('[data-testid="card-info-data-datasets.datafile_count"]')
         .text()
-    ).toEqual('Calculating...');
+    ).toEqual('1');
   });
 
   it("renders DLS link correctly and doesn't allow for download", () => {
@@ -336,9 +305,6 @@ describe('Dataset - Card View', () => {
     });
 
     const wrapper = createWrapper('isis');
-
-    expect(useDatasetSizes).toHaveBeenCalledWith(cardData);
-    expect(useDatasetsDatafileCount).toHaveBeenCalledWith(undefined);
 
     expect(wrapper.find(CardView).find('a').first().prop('href')).toEqual(
       `/browse/instrument/4/facilityCycle/6/investigation/2/dataset/1`

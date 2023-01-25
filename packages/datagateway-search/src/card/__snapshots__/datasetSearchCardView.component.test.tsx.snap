@@ -9,6 +9,8 @@ Object {
     Object {
       "createTime": "2019-07-23",
       "endDate": "2019-07-25",
+      "fileCount": 1,
+      "fileSize": 1,
       "id": 1,
       "investigation": Object {
         "doi": "doi 1",
