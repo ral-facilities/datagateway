@@ -4,6 +4,8 @@ exports[`DLS Visits - Card View renders correctly 1`] = `
 Object {
   "data": Array [
     Object {
+      "fileCount": 1,
+      "fileSize": 1,
       "id": 1,
       "name": "Test 1",
       "title": "Test 1",

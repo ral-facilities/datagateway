@@ -12,7 +12,6 @@ import {
   useAddToCart,
   useRemoveFromCart,
   useISISInvestigationsInfinite,
-  useInvestigationSizes,
   useInvestigationDetails,
   Table,
   DownloadButton,
@@ -153,11 +152,6 @@ describe('ISIS Investigations table component', () => {
       data: { pages: [rowData] },
       fetchNextPage: jest.fn(),
     });
-    (useInvestigationSizes as jest.Mock).mockReturnValue([
-      {
-        data: 1,
-      },
-    ]);
     (useISISInvestigationIds as jest.Mock).mockReturnValue({
       data: [1],
       isLoading: false,
@@ -199,9 +193,6 @@ describe('ISIS Investigations table component', () => {
       parseInt(instrumentChildId),
       studyHierarchy
     );
-    expect(useInvestigationSizes).toHaveBeenCalledWith({
-      pages: [rowData],
-    });
     expect(useISISInvestigationIds).toHaveBeenCalledWith(
       parseInt(instrumentId),
       parseInt(instrumentChildId),

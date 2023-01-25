@@ -61,6 +61,8 @@ describe('DLS Datasets - Card View', () => {
         name: 'Test 1',
         modTime: '2019-07-23',
         createTime: '2019-07-23',
+        fileSize: 1,
+        fileCount: 1,
       },
     ];
     history = createMemoryHistory();

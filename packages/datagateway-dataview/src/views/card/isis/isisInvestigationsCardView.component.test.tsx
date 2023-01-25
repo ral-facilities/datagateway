@@ -5,7 +5,6 @@ import {
   useISISInvestigationsPaginated,
   useISISInvestigationCount,
   Investigation,
-  useInvestigationSizes,
   AddToCartButton,
   DownloadButton,
   ISISInvestigationDetailsPanel,
@@ -105,7 +104,6 @@ describe('ISIS Investigations - Card View', () => {
       data: cardData,
       isLoading: false,
     });
-    (useInvestigationSizes as jest.Mock).mockReturnValue([{ data: 1 }]);
 
     // Prevent error logging
     window.scrollTo = jest.fn();
@@ -135,7 +133,6 @@ describe('ISIS Investigations - Card View', () => {
       parseInt(instrumentChildId),
       studyHierarchy
     );
-    expect(useInvestigationSizes).toHaveBeenCalledWith(cardData);
   });
 
   it('correct link used when NOT in studyHierarchy', () => {
@@ -282,7 +279,6 @@ describe('ISIS Investigations - Card View', () => {
   it('renders fine with incomplete data', () => {
     (useISISInvestigationCount as jest.Mock).mockReturnValueOnce({});
     (useISISInvestigationsPaginated as jest.Mock).mockReturnValueOnce({});
-    (useInvestigationSizes as jest.Mock).mockReturnValueOnce([{ data: 0 }]);
 
     expect(() => createWrapper()).not.toThrowError();
   });

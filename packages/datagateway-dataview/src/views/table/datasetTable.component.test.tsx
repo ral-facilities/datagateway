@@ -7,7 +7,6 @@ import {
   useAddToCart,
   useRemoveFromCart,
   useDatasetsInfinite,
-  useDatasetsDatafileCount,
   DatasetDetailsPanel,
 } from 'datagateway-common';
 import React from 'react';
@@ -106,7 +105,6 @@ describe('Dataset table component', () => {
       data: { pages: [rowData] },
       fetchNextPage: jest.fn(),
     });
-    (useDatasetsDatafileCount as jest.Mock).mockReturnValue([{ data: 1 }]);
     (useIds as jest.Mock).mockReturnValue({
       data: [1],
       isLoading: false,
@@ -149,9 +147,6 @@ describe('Dataset table component', () => {
         }),
       },
     ]);
-    expect(useDatasetsDatafileCount).toHaveBeenCalledWith({
-      pages: [rowData],
-    });
     expect(useIds).toHaveBeenCalledWith(
       'dataset',
       [

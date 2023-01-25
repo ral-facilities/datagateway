@@ -30,8 +30,7 @@ Object {
       "label": "datasets.name",
     },
     Object {
-      "cellContentRenderer": [Function],
-      "dataKey": "datafileCount",
+      "dataKey": "fileCount",
       "disableSort": true,
       "icon": Object {
         "$$typeof": Symbol(react.memo),

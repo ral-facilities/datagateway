@@ -7,7 +7,6 @@ import {
   Dataset,
   dGCommonInitialState,
   useDatasetDetails,
-  useDatasetSizes,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -62,6 +61,8 @@ describe('ISIS Dataset Landing page', () => {
     startDate: '2019-06-10',
     endDate: '2019-06-11',
     complete: true,
+    fileSize: 1,
+    fileCount: 1,
     type: {
       id: 1,
       name: 'Type 1',
@@ -80,9 +81,6 @@ describe('ISIS Dataset Landing page', () => {
     (useDatasetDetails as jest.Mock).mockReturnValue({
       data: initialData,
     });
-    (useDatasetSizes as jest.Mock).mockReturnValue({
-      data: 1,
-    });
   });
 
   afterEach(() => {
@@ -93,7 +91,6 @@ describe('ISIS Dataset Landing page', () => {
     createWrapper();
 
     expect(useDatasetDetails).toHaveBeenCalledWith(87);
-    expect(useDatasetSizes).toHaveBeenCalledWith(initialData);
   });
 
   it('links to the correct url in the datafiles tab for both hierarchies and both views', () => {
@@ -142,7 +139,6 @@ describe('ISIS Dataset Landing page', () => {
       data: undefined,
     });
     createWrapper();
-    expect(useDatasetSizes).toHaveBeenCalledWith(undefined);
   });
 
   it('incomplete datasets render correctly', () => {

@@ -12,7 +12,6 @@ import {
   useInvestigationCount,
   useInvestigationDetails,
   useInvestigationsInfinite,
-  useInvestigationSizes,
   useRemoveFromCart,
 } from 'datagateway-common';
 import { mount, ReactWrapper } from 'enzyme';
@@ -154,11 +153,6 @@ describe('ISIS MyData table component', () => {
       data: { pages: [rowData] },
       fetchNextPage: jest.fn(),
     });
-    (useInvestigationSizes as jest.Mock).mockReturnValue([
-      {
-        data: 1,
-      },
-    ]);
     (useIds as jest.Mock).mockReturnValue({
       data: [1],
       isLoading: false,
@@ -225,9 +219,6 @@ describe('ISIS MyData table component', () => {
         ]),
       },
     ]);
-    expect(useInvestigationSizes).toHaveBeenCalledWith({
-      pages: [rowData],
-    });
     expect(useIds).toHaveBeenCalledWith(
       'investigation',
       [

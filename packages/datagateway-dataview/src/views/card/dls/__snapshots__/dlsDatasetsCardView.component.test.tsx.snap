@@ -8,6 +8,8 @@ Object {
   "data": Array [
     Object {
       "createTime": "2019-07-23",
+      "fileCount": 1,
+      "fileSize": 1,
       "id": 1,
       "modTime": "2019-07-23",
       "name": "Test 1",

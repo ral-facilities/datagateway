@@ -7,7 +7,6 @@ import {
   useAddToCart,
   useRemoveFromCart,
   useInvestigationsInfinite,
-  useInvestigationSizes,
   InvestigationDetailsPanel,
 } from 'datagateway-common';
 import React from 'react';
@@ -117,7 +116,6 @@ describe('Investigation table component', () => {
       data: { pages: [rowData] },
       fetchNextPage: jest.fn(),
     });
-    (useInvestigationSizes as jest.Mock).mockReturnValue({ data: 1 });
     (useIds as jest.Mock).mockReturnValue({
       data: [1],
       isLoading: false,
@@ -152,9 +150,6 @@ describe('Investigation table component', () => {
         }),
       },
     ]);
-    expect(useInvestigationSizes).toHaveBeenCalledWith({
-      pages: [rowData],
-    });
     expect(useIds).toHaveBeenCalledWith('investigation', undefined, true);
     expect(useCart).toHaveBeenCalled();
     expect(useAddToCart).toHaveBeenCalledWith('investigation');

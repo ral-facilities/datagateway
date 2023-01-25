@@ -77,6 +77,8 @@ describe('DLS Visits table component', () => {
         visitId: '1',
         doi: 'doi 1',
         size: 1,
+        fileSize: 1,
+        fileCount: 1,
         investigationInstruments: [
           {
             id: 1,

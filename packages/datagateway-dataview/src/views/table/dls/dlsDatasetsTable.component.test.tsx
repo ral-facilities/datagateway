@@ -7,7 +7,6 @@ import {
   useRemoveFromCart,
   useDatasetsInfinite,
   Dataset,
-  useDatasetsDatafileCount,
   DLSDatasetDetailsPanel,
 } from 'datagateway-common';
 import React from 'react';
@@ -85,6 +84,8 @@ describe('DLS Dataset table component', () => {
         size: 1,
         modTime: '2019-07-23',
         createTime: '2019-07-23',
+        fileSize: 1,
+        fileCount: 1,
       },
     ];
     history = createMemoryHistory();
@@ -120,7 +121,6 @@ describe('DLS Dataset table component', () => {
       mutate: jest.fn(),
       isLoading: false,
     });
-    (useDatasetsDatafileCount as jest.Mock).mockReturnValue([{ data: 1 }]);
   });
 
   afterEach(() => {
@@ -151,9 +151,6 @@ describe('DLS Dataset table component', () => {
         }),
       },
     ]);
-    expect(useDatasetsDatafileCount).toHaveBeenCalledWith({
-      pages: [rowData],
-    });
     expect(useIds).toHaveBeenCalledWith(
       'dataset',
       [
