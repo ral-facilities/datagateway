@@ -212,7 +212,7 @@ describe('ISIS - MyData Table', () => {
 
         cy.get('#role-selector').click();
         cy.get('[role="option"]').first().click();
-        cy.get('[aria-rowcount="1]').should('exist');
+        cy.get('[aria-rowcount="1"]').should('exist');
       });
 
       it('text', () => {

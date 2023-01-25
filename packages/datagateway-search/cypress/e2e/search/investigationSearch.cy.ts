@@ -43,7 +43,7 @@ describe('Investigation search tab', () => {
 
   it('should be able to search by title text', () => {
     cy.clearDownloadCart();
-    cy.get('#filled-search').type('dog');
+    cy.get('#filled-search').type('strategy');
 
     cy.get('[aria-label="Submit search"]')
       .click()
@@ -51,7 +51,7 @@ describe('Investigation search tab', () => {
         timeout: 10000,
       });
 
-    cy.get('[aria-rowcount="9"]').should('exist');
+    cy.get('[aria-rowcount="5"]').should('exist');
 
     cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains('1-903289-21-1');
 
@@ -85,10 +85,10 @@ describe('Investigation search tab', () => {
 
     cy.get('[aria-label="Search table"]')
       .contains('Investigation')
-      .contains('8')
+      .contains('9')
       .click();
 
-    cy.get('[aria-rowcount="8"]').should('exist');
+    cy.get('[aria-rowcount="9"]').should('exist');
 
     cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains('0-9896224-6-0');
   });
@@ -129,7 +129,7 @@ describe('Investigation search tab', () => {
   });
 
   it('should link to an investigation', () => {
-    cy.get('#filled-search').type('dog');
+    cy.get('#filled-search').type('strategy');
 
     cy.get('[aria-label="Submit search"]')
       .click()

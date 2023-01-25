@@ -94,7 +94,7 @@ describe('SearchPageContainer Component', () => {
       cy.get('[aria-rowcount="4"]').should('exist');
 
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
-        'Prove begin boy those always dream write inside. Cold drop season bill treat her wife. Nearly represent fire debate fish. Skin understand risk.'
+        'Majority about dog idea bag summer. Heavy general fall huge whether hard success imagine.'
       );
     });
 
@@ -146,12 +146,12 @@ describe('SearchPageContainer Component', () => {
 
       cy.get('[aria-label="Search table"]')
         .contains('Datafile')
-        .contains('36')
+        .contains('44')
         .click();
 
       cy.get('[aria-label="Search table"]')
         .contains('Investigation')
-        .contains('9')
+        .contains('2')
         .click();
     });
 
@@ -188,7 +188,7 @@ describe('SearchPageContainer Component', () => {
       });
       cy.get('[aria-label="Search table"]')
         .contains('Datafile')
-        .contains('187')
+        .contains('300')
         .click();
       cy.get('[aria-rowcount="50"]').should('exist');
       cy.get('[aria-label="grid"]').scrollTo('bottom');
@@ -338,7 +338,7 @@ describe('SearchPageContainer Component', () => {
         .should('not.exist');
       cy.get('[aria-label="Search table"]')
         .contains('Dataset')
-        .contains('5')
+        .contains('2')
         .should('exist');
     });
 
@@ -427,11 +427,11 @@ describe('SearchPageContainer Component', () => {
         .should('exist');
       cy.get('[aria-label="Search table"]')
         .contains('Dataset')
-        .contains('6')
+        .contains('3')
         .should('exist');
       cy.get('[aria-label="Search table"]')
         .contains('Datafile')
-        .contains('45')
+        .contains('36')
         .should('exist');
     });
   });
