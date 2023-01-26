@@ -233,18 +233,6 @@ describe('ISIS - MyData Table', () => {
         cy.get('input[aria-label="Start Date filter to"]').type(
           date.toISOString().slice(0, 10)
         );
-        //  .parent()
-        //  .find('button')
-        //  .click();
-
-        // cy.get('.MuiPickersDay-root[tabindex="-1"]').first().click();
-
-        // date.setDate(1);
-
-        // cy.get('input[id="Start Date filter to"]').should(
-        //   'have.value',
-        //   date.toISOString().slice(0, 10)
-        // );
 
         cy.get('input[id="Start Date filter from"]').type('2000-04-01');
         cy.get('[aria-rowcount="1"]').should('exist');

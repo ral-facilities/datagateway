@@ -125,16 +125,6 @@ describe('ISIS - Datafiles Table', () => {
         cy.get('input[aria-label="Modified Time filter to"]').type(
           date.toISOString().slice(0, 10)
         );
-        //.parent()
-        //.find('button')
-        //.click();
-
-        //cy.get('.MuiPickersDay-root[tabindex="-1"]').first().click();
-
-        //cy.get('input[id="Modified Time filter to"]').should(
-        //  'have.value',
-        //  date.toISOString().slice(0, 10)
-        //);
 
         cy.get('[aria-rowcount="15"]').should('exist');
         cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(

@@ -139,12 +139,6 @@ describe('Investigations Cards', () => {
 
     cy.get('[data-testid="card"]')
       .first()
-      .then(($ele) => {
-        cy.log($ele.text());
-      });
-
-    cy.get('[data-testid="card"]')
-      .first()
       .contains('Customer home food important.');
 
     cy.get('[data-testid="advanced-filters-link"]').click();
