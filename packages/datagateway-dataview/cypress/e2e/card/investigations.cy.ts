@@ -137,7 +137,10 @@ describe('Investigations Cards', () => {
       });
     cy.get('[data-testid="investigation-card-title"]')
       .first()
-      .contains('Customer home food important.');
+      .contains(
+        'Customer home food important. Offer analysis spring prepare. ' +
+          'Fear good foot security may moment. First risk six of. Woman look tree until wide spring understand.'
+      );
 
     cy.get('input[id="Start Date filter from"]')
       .click()
