@@ -1,3 +1,5 @@
+import { delay } from 'cypress/types/bluebird';
+
 describe('Investigations Cards', () => {
   beforeEach(() => {
     cy.intercept('**/investigations/count*').as('getInvestigationsCount');
@@ -126,7 +128,12 @@ describe('Investigations Cards', () => {
 
     cy.get('[data-testid="advanced-filters-link"]').click();
 
-    cy.get('[aria-label="Filter by Title"]').first().type('off');
+    cy.get('[aria-label="Filter by Title"]')
+      .first()
+      .type('off', { delay: 20 })
+      .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
+        timeout: 10000,
+      });
 
     cy.get('[data-testid="card"]')
       .first()
