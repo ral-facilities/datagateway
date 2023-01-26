@@ -4,11 +4,7 @@ describe('Investigations Cards', () => {
     cy.intercept('**/investigations?order*').as('getInvestigationsOrder');
     cy.login();
     cy.visit('/browse/investigation').wait(
-      [
-        '@getInvestigationsCount',
-        '@getInvestigationsOrder',
-        '@getInvestigationsOrder',
-      ],
+      ['@getInvestigationsCount', '@getInvestigationsOrder'],
       { timeout: 15000 }
     );
     cy.get('[aria-label="page view Display as cards"]').click();
@@ -129,12 +125,14 @@ describe('Investigations Cards', () => {
       .contains('Address certain professor.');
 
     cy.get('[data-testid="advanced-filters-link"]').click();
+
     cy.get('[aria-label="Filter by Title"]')
       .first()
       .type('off')
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
         timeout: 30000,
       });
+
     cy.get('[data-testid="card"]')
       .first()
       .then(($ele) => {
