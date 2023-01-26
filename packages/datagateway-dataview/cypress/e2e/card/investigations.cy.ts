@@ -135,7 +135,7 @@ describe('Investigations Cards', () => {
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
         timeout: 10000,
       });
-    cy.get('[data-testid="card"]')
+    cy.get('[data-testid="investigation-card-title"]')
       .first()
       .contains('Customer home food important.');
 

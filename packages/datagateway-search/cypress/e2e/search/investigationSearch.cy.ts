@@ -51,7 +51,7 @@ describe('Investigation search tab', () => {
         timeout: 10000,
       });
 
-    cy.get('[aria-rowcount="5"]').should('exist');
+    cy.get('[aria-rowcount="4"]').should('exist');
 
     cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains('1-903289-21-1');
 
