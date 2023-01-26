@@ -357,6 +357,7 @@ const VirtualizedTable = React.memo(
                               })
                             }
                             loading={loading ?? false}
+                            parentSelected={parentSelected ?? false}
                             onCheck={onCheck}
                             onUncheck={onUncheck}
                           />
