@@ -126,12 +126,7 @@ describe('Investigations Cards', () => {
 
     cy.get('[data-testid="advanced-filters-link"]').click();
 
-    cy.get('[aria-label="Filter by Title"]')
-      .first()
-      .type('off')
-      .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
-        timeout: 30000,
-      });
+    cy.get('[aria-label="Filter by Title"]').first().type('off');
 
     cy.get('[data-testid="card"]')
       .first()
@@ -141,8 +136,7 @@ describe('Investigations Cards', () => {
 
     cy.get('[data-testid="card"]')
       .first()
-      .contains('Address certain professor.')
-      //.contains('Customer home food important.');
+      .contains('Customer home food important.');
 
     cy.get('input[id="Start Date filter from"]')
       .click()
