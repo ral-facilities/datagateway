@@ -135,6 +135,8 @@ describe('Investigations Cards', () => {
         timeout: 10000,
       });
 
+    cy.get('[data-testid="advanced-filters-link"]').click();
+
     cy.get('[data-testid="card"]')
       .first()
       .then(($ele) => {
