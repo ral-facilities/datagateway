@@ -137,7 +137,12 @@ describe('Investigations Cards', () => {
       });
     cy.get('[data-testid="card"]')
       .first()
-      .should('exist')
+      .then(($ele) => {
+        cy.log($ele.text());
+      });
+
+    cy.get('[data-testid="card"]')
+      .first()
       .contains('Customer home food important.');
 
     cy.get('input[id="Start Date filter from"]')
