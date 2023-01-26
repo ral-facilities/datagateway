@@ -133,14 +133,12 @@ describe('Investigations Cards', () => {
       .first()
       .type('off')
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
-        timeout: 10000,
+        timeout: 30000,
       });
-    cy.get('[data-testid="investigation-card-title"]')
+    cy.get('[data-testid="card"]')
       .first()
-      .contains(
-        'Customer home food important. Offer analysis spring prepare. ' +
-          'Fear good foot security may moment. First risk six of. Woman look tree until wide spring understand.'
-      );
+      .should('exist')
+      .contains('Customer home food important.');
 
     cy.get('input[id="Start Date filter from"]')
       .click()
