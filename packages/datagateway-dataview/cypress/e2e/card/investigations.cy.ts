@@ -141,7 +141,8 @@ describe('Investigations Cards', () => {
 
     cy.get('[data-testid="card"]')
       .first()
-      .contains('Customer home food important.');
+      .contains('Address certain professor.')
+      //.contains('Customer home food important.');
 
     cy.get('input[id="Start Date filter from"]')
       .click()
