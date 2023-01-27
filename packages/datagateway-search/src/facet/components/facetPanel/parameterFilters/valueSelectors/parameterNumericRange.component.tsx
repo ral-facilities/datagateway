@@ -80,13 +80,15 @@ function ParameterNumericRange({
       alignItems="center"
       gap={1}
       sx={{ marginBottom: 0 }}
+      data-testid="parameter-numeric-range-selector"
     >
       <TextField
         fullWidth
         variant="outlined"
         size="small"
         type="number"
-        label={t('filter.parameter.min')}
+        label={t('parameterFilters.creator.labels.parameterNumericRange.min')}
+        id="parameter-numeric-range-min"
         value={min}
         inputProps={{
           max: Number(max),
@@ -100,7 +102,8 @@ function ParameterNumericRange({
         variant="outlined"
         size="small"
         type="number"
-        label={t('filter.parameter.max')}
+        label={t('parameterFilters.creator.labels.parameterNumericRange.max')}
+        id="parameter-numeric-range-max"
         aria-valuemin={Number(min)}
         value={max}
         inputProps={{
@@ -113,7 +116,8 @@ function ParameterNumericRange({
         fullWidth
         variant="outlined"
         size="small"
-        label={t('filter.parameter.units')}
+        label={t('parameterFilters.creator.labels.parameterNumericRange.unit')}
+        id="parameter-numeric-range-unit"
         value={units}
         onChange={onUnitsChange}
         onKeyDown={handleKeyDown}

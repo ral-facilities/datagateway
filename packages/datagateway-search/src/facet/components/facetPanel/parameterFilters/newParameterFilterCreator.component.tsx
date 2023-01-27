@@ -132,7 +132,7 @@ function NewParameterFilterCreator({
   }
 
   return (
-    <Stack sx={{ width: 300, p: 2 }} gap={2}>
+    <Stack sx={{ width: 300, p: 2 }} gap={2} data-testid="new-parameter-filter">
       <Stack
         direction="row"
         justifyContent="space-between"
@@ -165,10 +165,9 @@ function NewParameterFilterCreator({
           select
           size="small"
           id="parameter-value-type-select"
-          label="Type"
+          label={t('parameterFilters.creator.labels.parameterValueTypeSelect')}
           value={valueType}
           onChange={(e) => changeValueType(e.target.value)}
-          sx={{ mt: 0.5 }}
         >
           {Object.values(PARAMETER_VALUE_TYPE).map((value) => (
             <MenuItem key={value} value={value}>

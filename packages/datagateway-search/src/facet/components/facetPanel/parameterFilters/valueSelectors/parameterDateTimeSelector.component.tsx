@@ -120,6 +120,7 @@ function ParameterDateTimeSelector({
         select
         size="small"
         label={t('parameterFilters.creator.labels.parameterDateTimeSelect')}
+        data-testid="parameter-date-time-selector"
         value={selectedFacet?.label}
       >
         {facets.map((facet, index) => (
