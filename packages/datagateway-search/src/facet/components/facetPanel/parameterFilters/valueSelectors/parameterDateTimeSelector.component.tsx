@@ -109,7 +109,9 @@ function ParameterDateTimeSelector({
     return (
       <Stack direction="row" alignItems="center" gap={1}>
         <CircularProgress size={24} />
-        <Typography color="text.secondary">Loading...</Typography>
+        <Typography color="text.secondary">
+          {t('parameterFilters.creator.loading')}
+        </Typography>
       </Stack>
     );
   }
@@ -121,7 +123,7 @@ function ParameterDateTimeSelector({
         size="small"
         label={t('parameterFilters.creator.labels.parameterDateTimeSelect')}
         data-testid="parameter-date-time-selector"
-        value={selectedFacet?.label}
+        value={selectedFacet?.label ?? null}
       >
         {facets.map((facet, index) => (
           <MenuItem

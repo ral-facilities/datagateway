@@ -62,8 +62,10 @@ function ParameterFacetList({
   if (isLoadingFacets) {
     return (
       <Stack direction="row" alignItems="center" gap={1}>
-        <CircularProgress size={24} />
-        <Typography color="text.secondary">Loading...</Typography>
+        <CircularProgress size={24} />`{' '}
+        <Typography color="text.secondary">
+          {t('parameterFilters.creator.loading')}
+        </Typography>
       </Stack>
     );
   }
