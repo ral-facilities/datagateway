@@ -114,6 +114,7 @@ export interface TableActionProps {
 
 interface VirtualizedTableProps {
   loading?: boolean;
+  parentSelected?: boolean;
   data: Entity[];
   columns: ColumnType[];
   loadMoreRows?: (offsetParams: IndexRange) => Promise<unknown>;
@@ -154,6 +155,7 @@ const VirtualizedTable = React.memo(
       onCheck,
       onUncheck,
       loading,
+      parentSelected,
       totalRowCount,
       detailsPanel,
       sort,
@@ -355,6 +357,7 @@ const VirtualizedTable = React.memo(
                               })
                             }
                             loading={loading ?? false}
+                            parentSelected={parentSelected ?? false}
                             onCheck={onCheck}
                             onUncheck={onUncheck}
                           />
@@ -375,6 +378,7 @@ const VirtualizedTable = React.memo(
                           lastChecked={lastChecked}
                           setLastChecked={setLastChecked}
                           loading={loading ?? false}
+                          parentSelected={parentSelected ?? false}
                         />
                       )}
                     />
