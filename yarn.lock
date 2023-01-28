@@ -3384,23 +3384,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:*":
+"@types/jest@npm:*, @types/jest@npm:29.4.0":
   version: 29.4.0
   resolution: "@types/jest@npm:29.4.0"
   dependencies:
     expect: ^29.0.0
     pretty-format: ^29.0.0
   checksum: 23760282362a252e6690314584d83a47512d4cd61663e957ed3398ecf98195fe931c45606ee2f9def12f8ed7d8aa102d492ec42d26facdaf8b78094a31e6568e
-  languageName: node
-  linkType: hard
-
-"@types/jest@npm:29.2.1":
-  version: 29.2.1
-  resolution: "@types/jest@npm:29.2.1"
-  dependencies:
-    expect: ^29.0.0
-    pretty-format: ^29.0.0
-  checksum: 5610c9a44c57f6dc39cf54429ea8d04574ad4c3e3ddf9a2621882aa94a0758a42ca97a0d0aec41a8d0b149fa63bf3d077d1f07c1f1d82e3d89ad7408de211255
   languageName: node
   linkType: hard
 
@@ -6465,7 +6455,7 @@ __metadata:
     "@testing-library/react-hooks": 8.0.1
     "@testing-library/user-event": 14.4.1
     "@types/enzyme": 3.10.10
-    "@types/jest": 29.2.1
+    "@types/jest": 29.4.0
     "@types/lodash.debounce": 4.0.6
     "@types/node": 18.11.9
     "@types/react": 17.0.39
@@ -6532,7 +6522,7 @@ __metadata:
     "@testing-library/user-event": 14.4.3
     "@types/enzyme": 3.10.10
     "@types/history": 4.7.11
-    "@types/jest": 29.2.1
+    "@types/jest": 29.4.0
     "@types/jsrsasign": 10.5.2
     "@types/lodash.debounce": 4.0.6
     "@types/lodash.memoize": 4.1.6
@@ -6611,7 +6601,7 @@ __metadata:
     "@testing-library/react": 12.1.3
     "@testing-library/react-hooks": 8.0.1
     "@testing-library/user-event": 14.4.2
-    "@types/jest": 29.2.1
+    "@types/jest": 29.4.0
     "@types/jsrsasign": 10.5.2
     "@types/lodash.chunk": 4.2.6
     "@types/node": 18.11.9
@@ -6675,7 +6665,7 @@ __metadata:
     "@testing-library/react": 12.1.3
     "@types/enzyme": 3.10.10
     "@types/history": 4.7.11
-    "@types/jest": 29.2.1
+    "@types/jest": 29.4.0
     "@types/jsrsasign": 10.5.2
     "@types/node": 18.11.9
     "@types/react": 17.0.39
