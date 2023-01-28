@@ -4184,10 +4184,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@zeit/schemas@npm:2.21.0":
-  version: 2.21.0
-  resolution: "@zeit/schemas@npm:2.21.0"
-  checksum: 59d4f0851dd6ff7a56ebab66f51af36bcebe9ac81377c1a9f85a97769c894f22168bbe88c47978964d95dd8ef76e9d25d2ed5a5131905d2aea703423fe3930ad
+"@zeit/schemas@npm:2.29.0":
+  version: 2.29.0
+  resolution: "@zeit/schemas@npm:2.29.0"
+  checksum: 3cea06bb67d790336aca0cc17580fd492ff3fc66ef4d180dce7053ff7ff54ab81b56bf718ba6f537148c581161d06306a481ec218d540bff922e0e009844ffd1
   languageName: node
   linkType: hard
 
@@ -6589,7 +6589,7 @@ __metadata:
     redux-logger: 3.0.6
     redux-mock-store: 1.5.4
     redux-thunk: 2.4.1
-    serve: 14.1.1
+    serve: 14.2.0
     single-spa-react: 4.6.1
     start-server-and-test: 1.15.0
     tslib: 2.4.0
@@ -6653,7 +6653,7 @@ __metadata:
     react-router-dom: 5.3.0
     react-scripts: 5.0.0
     react-virtualized: 9.22.3
-    serve: 14.1.1
+    serve: 14.2.0
     single-spa-react: 4.6.1
     start-server-and-test: 1.15.0
     tslib: 2.4.0
@@ -6727,7 +6727,7 @@ __metadata:
     redux-mock-store: 1.5.4
     redux-thunk: 2.4.1
     resize-observer-polyfill: 1.5.1
-    serve: 14.1.1
+    serve: 14.2.0
     single-spa-react: 4.6.1
     start-server-and-test: 1.15.0
     tslib: 2.4.0
@@ -14757,11 +14757,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"serve@npm:14.1.1":
-  version: 14.1.1
-  resolution: "serve@npm:14.1.1"
+"serve@npm:14.2.0":
+  version: 14.2.0
+  resolution: "serve@npm:14.2.0"
   dependencies:
-    "@zeit/schemas": 2.21.0
+    "@zeit/schemas": 2.29.0
     ajv: 8.11.0
     arg: 5.0.2
     boxen: 7.0.0
@@ -14774,7 +14774,7 @@ __metadata:
     update-check: 1.5.4
   bin:
     serve: build/main.js
-  checksum: 7db310dfbe05699b51b1ff5932598c666cecceceb7a5dfaf0b04bb90a7f5fdca4c4dd5eaa1224e0df35fdd6a59c5ca98a730aca99bb7765e003a8236e6e81743
+  checksum: a1c26e6c3dd0c482589b39a105e2f09bebf20ee8a0358accd5d64b313952ad3e1a56b8af2bdfef269f9fd37140b4f6c940d12395c851e4a46dfdace8f97616e4
   languageName: node
   linkType: hard
 
