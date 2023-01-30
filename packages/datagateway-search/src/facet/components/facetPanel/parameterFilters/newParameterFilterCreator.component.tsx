@@ -142,7 +142,11 @@ function NewParameterFilterCreator({
         <Typography variant="subtitle1" gutterBottom={false}>
           {t('parameterFilters.creator.title')}
         </Typography>
-        <IconButton size="small" onClick={onClose}>
+        <IconButton
+          aria-label={t('parameterFilters.creator.close')}
+          size="small"
+          onClick={onClose}
+        >
           <Close />
         </IconButton>
       </Stack>
