@@ -69,10 +69,6 @@ function ParameterNumericRange({
     setMax(event.target.value);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent): void => {
-    if (e.key === 'Enter' && units !== '') applyRange();
-  };
-
   return (
     <Stack
       direction="column"
@@ -95,7 +91,6 @@ function ParameterNumericRange({
         }}
         aria-valuemax={Number(max)}
         onChange={onMinChange}
-        onKeyDown={handleKeyDown}
       />
       <TextField
         fullWidth
@@ -110,7 +105,6 @@ function ParameterNumericRange({
           min: Number(min),
         }}
         onChange={onMaxChange}
-        onKeyDown={handleKeyDown}
       />
       <TextField
         fullWidth
@@ -120,7 +114,6 @@ function ParameterNumericRange({
         id="parameter-numeric-range-unit"
         value={units}
         onChange={onUnitsChange}
-        onKeyDown={handleKeyDown}
       />
     </Stack>
   );
