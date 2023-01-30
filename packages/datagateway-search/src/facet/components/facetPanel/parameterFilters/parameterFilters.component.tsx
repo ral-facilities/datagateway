@@ -27,8 +27,6 @@ interface ParameterFiltersProps {
     filterKey: string,
     filterValue: SearchFilter
   ) => void;
-  changeFilter: (key: string, value: SearchFilter, remove?: boolean) => void;
-  setFilterUpdate: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 /**
@@ -43,8 +41,6 @@ const ParameterFilters = ({
   selectedFilters,
   onAddParameterFilter,
   onRemoveParameterFilter,
-  changeFilter,
-  setFilterUpdate,
 }: ParameterFiltersProps): React.ReactElement => {
   const [t] = useTranslation();
 
@@ -92,6 +88,7 @@ const ParameterFilters = ({
       flexDirection="column"
       justifyContent="center"
       width="100%"
+      data-testid="parameter-filters"
     >
       <Stack
         direction="row"
@@ -117,7 +114,7 @@ const ParameterFilters = ({
           aria-label={t('parameterFilters.selectedParameterFilterList')}
           sx={{ width: '100%' }}
         >
-          {selectedParameterFilters.map((filter, index) => (
+          {selectedParameterFilters.map((filter) => (
             <ParameterFilterItem
               key={`${filter.key}:${filter.label}`}
               filter={filter}

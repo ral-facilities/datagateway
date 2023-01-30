@@ -191,20 +191,6 @@ function FacetPanel({
                         }
                         onAddParameterFilter={onAddFilter}
                         onRemoveParameterFilter={onRemoveFilter}
-                        setFilterUpdate={(_) => {
-                          // TODO
-                        }}
-                        changeFilter={(
-                          filterKey,
-                          filterValue,
-                          shouldRemoveFilter
-                        ) => {
-                          if (shouldRemoveFilter) {
-                            onRemoveFilter(filterKey, filterValue);
-                          } else {
-                            onAddFilter(filterKey, filterValue);
-                          }
-                        }}
                         parameterNames={Object.keys(classifications)}
                       />
                     </Box>

@@ -3,25 +3,30 @@ import { render, screen, within } from '@testing-library/react';
 import FacetPanel from './facetPanel.component';
 import { FacetClassification } from '../../facet';
 import userEvent from '@testing-library/user-event';
-
-const testFacetClassification: FacetClassification = {
-  'investigation.type.name': {
-    experiment: 300,
-    calibration: 200,
-  },
-  'investigationparameter.type.name': {
-    bcat_inv_str: 299,
-    run_number_range: 400,
-  },
-};
+import { DatasearchType } from 'datagateway-common';
 
 describe('facetPanel', () => {
+  const TEST_FACET_CLASSIFICATION: FacetClassification = {
+    'investigation.type.name': {
+      experiment: 300,
+      calibration: 200,
+    },
+    'investigationparameter.type.name': {
+      bcat_inv_str: 299,
+      run_number_range: 400,
+    },
+  };
+  const TEST_ENTITY_NAME: DatasearchType = 'Investigation';
+  const TEST_IDS = [123, 456, 789];
+
   it('renders facets as list of accordions that expands to reveal filters', async () => {
     const user = userEvent.setup();
 
     render(
       <FacetPanel
-        facetClassification={testFacetClassification}
+        entityName={TEST_ENTITY_NAME}
+        allIds={TEST_IDS}
+        facetClassification={TEST_FACET_CLASSIFICATION}
         selectedFacetFilters={{}}
         onAddFilter={jest.fn()}
         onRemoveFilter={jest.fn()}
@@ -131,7 +136,9 @@ describe('facetPanel', () => {
 
     render(
       <FacetPanel
-        facetClassification={testFacetClassification}
+        entityName={TEST_ENTITY_NAME}
+        allIds={TEST_IDS}
+        facetClassification={TEST_FACET_CLASSIFICATION}
         selectedFacetFilters={{
           'investigation.type.name': ['experiment'],
           'investigationparameter.type.name': ['bcat_inv_str'],
@@ -173,19 +180,96 @@ describe('facetPanel', () => {
     expect(within(bcatInvStrFilterItem).getByRole('checkbox')).toBeChecked();
   });
 
-  it('calls the given callback when a filter is added/removed', async () => {
+  it('reflects the changes when a filter is added', async () => {
     const user = userEvent.setup();
     const onAddFilter = jest.fn();
-    const onRemoveFilter = jest.fn();
 
-    render(
+    const { rerender } = render(
       <FacetPanel
-        facetClassification={testFacetClassification}
+        entityName={TEST_ENTITY_NAME}
+        allIds={TEST_IDS}
+        facetClassification={TEST_FACET_CLASSIFICATION}
         selectedFacetFilters={{
           'investigation.type.name': ['experiment'],
           'investigationparameter.type.name': ['bcat_inv_str'],
         }}
         onAddFilter={onAddFilter}
+        onRemoveFilter={jest.fn()}
+        onApplyFacetFilters={jest.fn()}
+      />
+    );
+
+    // open investigation type filter panel
+    await user.click(
+      screen.getByRole('button', {
+        name: 'Toggle facetDimensionLabel.investigation.type.name filter panel',
+      })
+    );
+    // open investigation parameter type filter panel
+    await user.click(
+      screen.getByRole('button', {
+        name: 'Toggle facetDimensionLabel.investigationparameter.type.name filter panel',
+      })
+    );
+    await user.click(
+      within(
+        screen.getByLabelText(
+          'facetDimensionLabel.investigation.type.name filter panel'
+        )
+      ).getByRole('button', { name: 'Add calibration filter' })
+    );
+
+    rerender(
+      <FacetPanel
+        entityName={TEST_ENTITY_NAME}
+        allIds={TEST_IDS}
+        facetClassification={TEST_FACET_CLASSIFICATION}
+        selectedFacetFilters={{
+          'investigation.type.name': ['experiment', 'calibration'],
+          'investigationparameter.type.name': ['bcat_inv_str'],
+        }}
+        onAddFilter={onAddFilter}
+        onRemoveFilter={jest.fn()}
+        onApplyFacetFilters={jest.fn()}
+      />
+    );
+
+    expect(onAddFilter).toHaveBeenLastCalledWith(
+      'investigation.type.name',
+      'calibration'
+    );
+
+    const investigationFilterPanel = within(
+      screen.getByLabelText(
+        'facetDimensionLabel.investigation.type.name filter panel'
+      )
+    );
+    expect(
+      investigationFilterPanel.queryByRole('button', {
+        name: 'Add calibration filter',
+      })
+    ).toBeNull();
+    expect(
+      investigationFilterPanel.getByRole('button', {
+        name: 'Remove calibration filter',
+      })
+    ).toBeInTheDocument();
+  });
+
+  it('reflects the changes when a filter is removed', async () => {
+    const user = userEvent.setup();
+    const onRemoveFilter = jest.fn();
+
+    const { rerender } = render(
+      <FacetPanel
+        entityName={TEST_ENTITY_NAME}
+        allIds={TEST_IDS}
+        facetClassification={TEST_FACET_CLASSIFICATION}
+        selectedFacetFilters={{
+          'investigation.type.name': ['experiment'],
+          'investigationparameter.type.name': ['bcat_inv_str'],
+        }}
+        onAddFilter={jest.fn()}
         onRemoveFilter={onRemoveFilter}
         onApplyFacetFilters={jest.fn()}
       />
@@ -211,22 +295,40 @@ describe('facetPanel', () => {
     ).getByRole('button', { name: 'Remove experiment filter' });
     await user.click(experimentFilterItem);
 
+    // pretend the selected filters are updated
+    rerender(
+      <FacetPanel
+        entityName={TEST_ENTITY_NAME}
+        allIds={TEST_IDS}
+        facetClassification={TEST_FACET_CLASSIFICATION}
+        selectedFacetFilters={{
+          'investigationparameter.type.name': ['bcat_inv_str'],
+        }}
+        onAddFilter={jest.fn()}
+        onRemoveFilter={onRemoveFilter}
+        onApplyFacetFilters={jest.fn()}
+      />
+    );
+
     expect(onRemoveFilter).toHaveBeenLastCalledWith(
       'investigation.type.name',
       'experiment'
     );
 
-    const runNumberRangeFilterItem = within(
-      screen.getByLabelText(
-        'facetDimensionLabel.investigationparameter.type.name filter panel'
-      )
-    ).getByRole('button', { name: 'Add run_number_range filter' });
-    await user.click(runNumberRangeFilterItem);
-
-    expect(onAddFilter).toHaveBeenLastCalledWith(
-      'investigationparameter.type.name',
-      'run_number_range'
-    );
+    expect(
+      within(
+        screen.getByLabelText(
+          'facetDimensionLabel.investigation.type.name filter panel'
+        )
+      ).queryByRole('button', { name: 'Remove experiment filter' })
+    ).toBeNull();
+    expect(
+      within(
+        screen.getByLabelText(
+          'facetDimensionLabel.investigation.type.name filter panel'
+        )
+      ).getByRole('button', { name: 'Add experiment filter' })
+    ).toBeInTheDocument();
   });
 
   it('calls the given callback when filters are applied', async () => {
@@ -235,7 +337,9 @@ describe('facetPanel', () => {
 
     render(
       <FacetPanel
-        facetClassification={testFacetClassification}
+        entityName={TEST_ENTITY_NAME}
+        allIds={TEST_IDS}
+        facetClassification={TEST_FACET_CLASSIFICATION}
         selectedFacetFilters={{
           'investigation.type.name': ['experiment'],
           'investigationparameter.type.name': ['bcat_inv_str'],
@@ -246,8 +350,144 @@ describe('facetPanel', () => {
       />
     );
 
-    await user.click(screen.getByRole('button', { name: 'Apply' }));
+    await user.click(screen.getByRole('button', { name: 'facetPanel.apply' }));
 
     expect(onApplyFacetFilters).toHaveBeenCalledTimes(1);
+  });
+
+  describe('shows parameter filter', () => {
+    it('for investigation parameters', async () => {
+      const user = userEvent.setup();
+
+      render(
+        <FacetPanel
+          entityName="Investigation"
+          allIds={TEST_IDS}
+          facetClassification={TEST_FACET_CLASSIFICATION}
+          selectedFacetFilters={{
+            'investigation.type.name': ['experiment'],
+            'investigationparameter.type.name': ['bcat_inv_str'],
+          }}
+          onAddFilter={jest.fn()}
+          onRemoveFilter={jest.fn()}
+          onApplyFacetFilters={jest.fn()}
+        />
+      );
+
+      // open investigation parameter type filter panel
+      await user.click(
+        screen.getByRole('button', {
+          name: 'Toggle facetDimensionLabel.investigationparameter.type.name filter panel',
+        })
+      );
+
+      expect(screen.getByTestId('parameter-filters')).toBeInTheDocument();
+    });
+
+    it('for dataset parameters', async () => {
+      const user = userEvent.setup();
+
+      render(
+        <FacetPanel
+          entityName="Dataset"
+          allIds={TEST_IDS}
+          facetClassification={{
+            'datasetparameter.type.name': {
+              bcat_inv_str: 299,
+              run_number_range: 400,
+            },
+          }}
+          selectedFacetFilters={{}}
+          onAddFilter={jest.fn()}
+          onRemoveFilter={jest.fn()}
+          onApplyFacetFilters={jest.fn()}
+        />
+      );
+
+      // open dataset parameter type filter panel
+      await user.click(
+        screen.getByRole('button', {
+          name: 'Toggle facetDimensionLabel.datasetparameter.type.name filter panel',
+        })
+      );
+
+      expect(screen.getByTestId('parameter-filters')).toBeInTheDocument();
+    });
+
+    it('for datafile parameters', async () => {
+      const user = userEvent.setup();
+
+      render(
+        <FacetPanel
+          entityName="Datafile"
+          allIds={TEST_IDS}
+          facetClassification={{
+            'datafileparameter.type.name': {
+              bcat_inv_str: 299,
+              run_number_range: 400,
+            },
+          }}
+          selectedFacetFilters={{}}
+          onAddFilter={jest.fn()}
+          onRemoveFilter={jest.fn()}
+          onApplyFacetFilters={jest.fn()}
+        />
+      );
+
+      // open datafile parameter type filter panel
+      await user.click(
+        screen.getByRole('button', {
+          name: 'Toggle facetDimensionLabel.datafileparameter.type.name filter panel',
+        })
+      );
+
+      expect(screen.getByTestId('parameter-filters')).toBeInTheDocument();
+    });
+  });
+
+  it('shows selected parameter filters in the parameter name filter panel', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <FacetPanel
+        entityName={TEST_ENTITY_NAME}
+        allIds={TEST_IDS}
+        facetClassification={TEST_FACET_CLASSIFICATION}
+        selectedFacetFilters={{
+          'investigation.type.name': ['experiment'],
+          'investigationparameter.type.name': ['bcat_inv_str'],
+          investigationparameter: [
+            {
+              filter: [],
+              key: 'investigationparameter.type.stringValue.bcat_inv_str',
+              label: 'Test Label',
+            },
+          ],
+        }}
+        onAddFilter={jest.fn()}
+        onRemoveFilter={jest.fn()}
+        onApplyFacetFilters={jest.fn()}
+      />
+    );
+
+    // open datafile parameter type filter panel
+    await user.click(
+      screen.getByRole('button', {
+        name: 'Toggle facetDimensionLabel.investigationparameter.type.name filter panel',
+      })
+    );
+
+    const selectedParameterFilterList = screen.getByRole('list', {
+      name: 'parameterFilters.selectedParameterFilterList',
+    });
+    const listItems = within(selectedParameterFilterList).getAllByRole(
+      'listitem'
+    );
+
+    expect(selectedParameterFilterList).toBeInTheDocument();
+    expect(listItems).toHaveLength(1);
+    expect(
+      within(listItems[0]).getByText('bcat_inv_str: Test Label')
+    ).toBeInTheDocument();
   });
 });
