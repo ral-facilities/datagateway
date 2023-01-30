@@ -2,6 +2,7 @@ import React from 'react';
 import { NestedFilter } from 'datagateway-common';
 import { IconButton, ListItem, ListItemText } from '@mui/material';
 import { Close } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 
 interface ParameterFilterItemProps {
   filter: NestedFilter;
@@ -16,20 +17,27 @@ function ParameterFilterItem({
   filter,
   onRemove,
 }: ParameterFilterItemProps): JSX.Element {
+  const [t] = useTranslation();
+  const userLabel = `${filter.key.split('.').at(-1)}: ${filter.label}`;
+
   return (
     <ListItem
       dense
       disableGutters
       key={`${filter.key}:${filter.label}`}
       secondaryAction={
-        <IconButton size="small" onClick={() => onRemove(filter)}>
+        <IconButton
+          aria-label={t('parameterFilters.removeFilter', {
+            filterLabel: userLabel,
+          })}
+          size="small"
+          onClick={() => onRemove(filter)}
+        >
           <Close fontSize="inherit" />
         </IconButton>
       }
     >
-      <ListItemText
-        primary={`${filter.key.split('.').at(-1)}: ${filter.label}`}
-      />
+      <ListItemText primary={userLabel} />
     </ListItem>
   );
 }
