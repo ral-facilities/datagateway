@@ -242,8 +242,9 @@ export const useLuceneSearchInfinite = (
     // and we are searching investigation, only investigation.type.name will be added to the final filter object.
     luceneParams.filters = Object.entries(facetFilters).reduce<FiltersType>(
       (filters, [filterKey, filterValue]) => {
-        if (filterKey.startsWith(datasearchType.toLocaleLowerCase())) {
-          filters[filterKey] = filterValue;
+        if (new RegExp(`^${datasearchType}.*`, 'i').test(filterKey)) {
+          const k = filterKey[0].toLocaleLowerCase() + filterKey.substring(1);
+          filters[k] = filterValue;
         }
         return filters;
       },
