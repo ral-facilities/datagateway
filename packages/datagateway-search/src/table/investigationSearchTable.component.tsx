@@ -70,10 +70,7 @@ const InvestigationSearchTable = ({
 
   const [t] = useTranslation();
 
-  // this is only used for pagination in the table
-  // the initial data fetching is triggered by the search button
-  // in searchPageContainer.
-  const { fetchNextPage, data, hasNextPage, refetch, isFetching } =
+  const { fetchNextPage, data, hasNextPage, isFetching } =
     useLuceneSearchInfinite(
       'Investigation',
       {
@@ -434,10 +431,7 @@ const InvestigationSearchTable = ({
                 applyImmediately: false,
               })
             }
-            onApplyFacetFilters={() => {
-              applyFacetFilters();
-              refetch();
-            }}
+            onApplyFacetFilters={applyFacetFilters}
           />
         )}
       </Grid>

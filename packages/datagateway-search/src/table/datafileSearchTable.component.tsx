@@ -60,7 +60,7 @@ const DatafileSearchTable = ({
     (state: StateType) => state.dgsearch.maxNumResults
   );
 
-  const { fetchNextPage, data, hasNextPage, refetch, isFetching } =
+  const { fetchNextPage, data, hasNextPage, isFetching } =
     useLuceneSearchInfinite(
       'Datafile',
       {
@@ -342,10 +342,7 @@ const DatafileSearchTable = ({
                 applyImmediately: false,
               })
             }
-            onApplyFacetFilters={() => {
-              applyFacetFilters();
-              refetch();
-            }}
+            onApplyFacetFilters={applyFacetFilters}
           />
         )}
       </Grid>
