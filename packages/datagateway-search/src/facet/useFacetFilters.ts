@@ -42,7 +42,9 @@ function useFacetFilters(): {
     filterValue: SearchFilter;
     applyImmediately: boolean;
   }): void => {
-    const filterKey = dimension.toLocaleLowerCase();
+    console.log({ dimension, filterValue });
+
+    const filterKey = dimension;
 
     setSelectedFacetFilters((prevFilter) => {
       const prevFilterValue = prevFilter[filterKey];
@@ -72,7 +74,7 @@ function useFacetFilters(): {
     filterValue: SearchFilter;
     applyImmediately: boolean;
   }): void => {
-    const filterKey = dimension.toLocaleLowerCase();
+    const filterKey = dimension;
 
     setSelectedFacetFilters((prevFilter) => {
       const prevFilterValue = prevFilter[filterKey];
@@ -100,14 +102,14 @@ function useFacetFilters(): {
 
   const applyFacetFilters = React.useCallback((): void => {
     const searchParams = new URLSearchParams(location.search);
-    const filters = Object.entries(selectedFacetFilters).reduce<FiltersType>(
-      (obj, [dimension, value]) => {
-        obj[dimension.toLocaleLowerCase()] = value;
-        return obj;
-      },
-      {}
-    );
-    searchParams.set('filters', JSON.stringify(filters));
+    // const filters = Object.entries(selectedFacetFilters).reduce<FiltersType>(
+    //   (obj, [dimension, value]) => {
+    //     obj[dimension.toLocaleLowerCase()] = value;
+    //     return obj;
+    //   },
+    //   {}
+    // );
+    searchParams.set('filters', JSON.stringify(selectedFacetFilters));
     push({ search: `?${searchParams.toString()}` });
   }, [location.search, push, selectedFacetFilters]);
 

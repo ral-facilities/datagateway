@@ -351,7 +351,7 @@ const DatafileSearchTable = ({
           filters={filters}
           onRemoveFilter={removeFilterChip}
         />
-        <Paper variant="outlined" sx={{ height: '100%' }}>
+        <Paper variant="outlined" sx={{ height: '100%', marginTop: 1 }}>
           <div>
             {aborted ? (
               <Paper>

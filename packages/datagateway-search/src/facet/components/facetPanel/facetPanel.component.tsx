@@ -154,7 +154,7 @@ function FacetPanel({
                   {Object.entries(classifications).map(
                     ([classificationLabel, count]) => {
                       const selectedFilterValue =
-                        selectedFacetFilters[dimension.toLocaleLowerCase()];
+                        selectedFacetFilters[dimension];
                       const isItemSelected =
                         Array.isArray(selectedFilterValue) &&
                         selectedFilterValue.includes(classificationLabel);
