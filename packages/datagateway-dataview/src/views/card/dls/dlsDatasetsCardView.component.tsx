@@ -140,10 +140,11 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
           entityType="dataset"
           allIds={data?.map((dataset) => dataset.id) ?? []}
           entityId={dataset.id}
+          parentId={investigationId}
         />
       ),
     ],
-    [data]
+    [data, investigationId]
   );
 
   return (

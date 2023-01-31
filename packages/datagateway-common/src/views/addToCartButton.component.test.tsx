@@ -112,6 +112,31 @@ describe('Generic add to cart button', () => {
     );
   });
 
+  it('renders as disabled with tooltip when parent entity selected', () => {
+    (useCart as jest.Mock).mockReturnValueOnce({
+      data: [
+        {
+          entityId: 1,
+          entityType: 'investigation',
+          id: 1,
+          name: 'test',
+          parentEntities: [],
+        },
+      ],
+      isLoading: false,
+    });
+    const wrapper = createWrapper({
+      allIds: [1, 2],
+      entityId: 2,
+      entityType: 'dataset',
+      parentId: '1',
+    });
+    expect(wrapper.find('button').prop('disabled')).toBe(true);
+    expect(wrapper.find('StyledTooltip').prop('title')).toEqual(
+      'buttons.parent_selected_tooltip'
+    );
+  });
+
   it('calls addToCart action on button press with item not in cart', () => {
     const entityType = 'investigation';
     const wrapper = createWrapper({
