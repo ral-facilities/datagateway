@@ -86,6 +86,11 @@ interface FacetPanelProps {
   onApplyFacetFilters: () => void;
 
   /**
+   * Whether the apply button for applying filters should be shown.
+   */
+  showApplyButton: boolean;
+
+  /**
    * Aggregated IDs of the search result rows.
    */
   allIds: number[];
@@ -111,6 +116,7 @@ function FacetPanel({
   onApplyFacetFilters,
   allIds,
   entityName,
+  showApplyButton,
 }: FacetPanelProps): JSX.Element {
   const [t] = useTranslation();
 
@@ -125,7 +131,9 @@ function FacetPanel({
         width="100%"
       >
         <Typography variant="h6">{t('facetPanel.title')}</Typography>
-        <Button onClick={onApplyFacetFilters}>{t('facetPanel.apply')}</Button>
+        {showApplyButton && (
+          <Button onClick={onApplyFacetFilters}>{t('facetPanel.apply')}</Button>
+        )}
       </Box>
 
       {classifications.length > 0 ? (

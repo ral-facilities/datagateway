@@ -269,6 +269,7 @@ const InvestigationCardView = (
     addFacetFilter,
     removeFacetFilter,
     applyFacetFilters,
+    haveUnappliedFilters,
   } = useFacetFilters();
 
   useSearchResultCounter({
@@ -512,6 +513,7 @@ const InvestigationCardView = (
           <FacetPanel
             allIds={aggregatedIds}
             entityName="Investigation"
+            showApplyButton={haveUnappliedFilters}
             facetClassification={facetClassificationFromSearchResponses(
               data.pages
             )}

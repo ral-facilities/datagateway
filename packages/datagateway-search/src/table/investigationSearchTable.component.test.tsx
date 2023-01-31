@@ -289,11 +289,14 @@ describe('Investigation Search Table component', () => {
     expect(rows).toHaveLength(1);
 
     // check that facet filter panel is present
-    expect(screen.getByText('Filters')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Apply' })).toBeInTheDocument();
+    expect(screen.getByText('facetPanel.title')).toBeInTheDocument();
+    // apply filter button should be invisible initially
+    expect(
+      screen.queryByRole('button', { name: 'facetPanel.apply' })
+    ).toBeNull();
 
     const accordion = screen.getByRole('button', {
-      name: 'Toggle facetDimensionLabel.investigation.type.name filter panel',
+      name: 'Toggle facetDimensionLabel.Investigation.type.name filter panel',
     });
 
     expect(accordion).toBeInTheDocument();
@@ -301,7 +304,7 @@ describe('Investigation Search Table component', () => {
     await user.click(accordion);
 
     const filterPanel = await screen.getByLabelText(
-      'facetDimensionLabel.investigation.type.name filter panel'
+      'facetDimensionLabel.Investigation.type.name filter panel'
     );
 
     expect(filterPanel).toBeInTheDocument();
@@ -495,7 +498,7 @@ describe('Investigation Search Table component', () => {
     // expand accordion
     await user.click(
       await screen.findByRole('button', {
-        name: 'Toggle facetDimensionLabel.investigation.type.name filter panel',
+        name: 'Toggle facetDimensionLabel.Investigation.type.name filter panel',
       })
     );
     // select the filter
@@ -505,7 +508,7 @@ describe('Investigation Search Table component', () => {
       })
     );
     // apply the filter
-    await user.click(screen.getByRole('button', { name: 'Apply' }));
+    await user.click(screen.getByRole('button', { name: 'facetPanel.apply' }));
 
     // when filter is applied, the fake axios get will return nothing
     // so we should expect no rows in the table
@@ -516,7 +519,7 @@ describe('Investigation Search Table component', () => {
     // expand accordion
     await user.click(
       await screen.findByRole('button', {
-        name: 'Toggle facetDimensionLabel.investigation.type.name filter panel',
+        name: 'Toggle facetDimensionLabel.Investigation.type.name filter panel',
       })
     );
 
@@ -532,7 +535,7 @@ describe('Investigation Search Table component', () => {
     expect(selectedFilters).toBeInTheDocument();
     expect(
       within(selectedFilters).getByText(
-        'facetDimensionLabel.investigation.type.name: calibration'
+        'facetDimensionLabel.Investigation.type.name: calibration'
       )
     ).toBeInTheDocument();
 
@@ -550,7 +553,7 @@ describe('Investigation Search Table component', () => {
     searchParams.append(
       'filters',
       JSON.stringify({
-        'investigation.type.name': ['experiment'],
+        'Investigation.type.name': ['experiment'],
       })
     );
     history.replace({ search: `?${searchParams.toString()}` });
@@ -567,7 +570,7 @@ describe('Investigation Search Table component', () => {
     // expand accordion
     await user.click(
       await screen.findByRole('button', {
-        name: 'Toggle facetDimensionLabel.investigation.type.name filter panel',
+        name: 'Toggle facetDimensionLabel.Investigation.type.name filter panel',
       })
     );
 
@@ -593,7 +596,7 @@ describe('Investigation Search Table component', () => {
     searchParams.append(
       'filters',
       JSON.stringify({
-        'investigation.type.name': ['experiment'],
+        'Investigation.type.name': ['experiment'],
       })
     );
     history.replace({ search: `?${searchParams.toString()}` });
@@ -604,7 +607,7 @@ describe('Investigation Search Table component', () => {
 
     expect(
       within(selectedFilterChips).getByRole('button', {
-        name: 'facetDimensionLabel.investigation.type.name: experiment',
+        name: 'facetDimensionLabel.Investigation.type.name: experiment',
       })
     ).toBeInTheDocument();
 
@@ -618,7 +621,7 @@ describe('Investigation Search Table component', () => {
     // expand accordion
     await user.click(
       await screen.findByRole('button', {
-        name: 'Toggle facetDimensionLabel.investigation.type.name filter panel',
+        name: 'Toggle facetDimensionLabel.Investigation.type.name filter panel',
       })
     );
 
@@ -629,21 +632,21 @@ describe('Investigation Search Table component', () => {
     );
 
     // apply the changes
-    await user.click(screen.getByRole('button', { name: 'Apply' }));
+    await user.click(screen.getByRole('button', { name: 'facetPanel.apply' }));
 
     expect(await findAllRows()).toHaveLength(1);
 
     // check that the filter chip is removed
     expect(
       within(selectedFilterChips).queryByRole('button', {
-        name: 'facetDimensionLabel.investigation.type.name: experiment',
+        name: 'facetDimensionLabel.Investigation.type.name: experiment',
       })
     ).toBeNull();
 
     // expand accordion
     await user.click(
       await screen.findByRole('button', {
-        name: 'Toggle facetDimensionLabel.investigation.type.name filter panel',
+        name: 'Toggle facetDimensionLabel.Investigation.type.name filter panel',
       })
     );
 
@@ -661,7 +664,7 @@ describe('Investigation Search Table component', () => {
     searchParams.append(
       'filters',
       JSON.stringify({
-        'investigation.type.name': ['calibration'],
+        'Investigation.type.name': ['calibration'],
       })
     );
     history.replace({ search: `?${searchParams.toString()}` });
@@ -677,7 +680,7 @@ describe('Investigation Search Table component', () => {
 
     const selectedFilterChips = screen.getByLabelText('selectedFilters');
     const chip = within(selectedFilterChips).getByRole('button', {
-      name: 'facetDimensionLabel.investigation.type.name: calibration',
+      name: 'facetDimensionLabel.Investigation.type.name: calibration',
     });
 
     await user.click(within(chip).getByTestId('CancelIcon'));
@@ -687,14 +690,14 @@ describe('Investigation Search Table component', () => {
     // check that the filter chip is removed
     expect(
       within(selectedFilterChips).queryByRole('button', {
-        name: 'facetDimensionLabel.investigation.type.name: calibration',
+        name: 'facetDimensionLabel.Investigation.type.name: calibration',
       })
     ).toBeNull();
 
     // expand accordion
     await user.click(
       await screen.findByRole('button', {
-        name: 'Toggle facetDimensionLabel.investigation.type.name filter panel',
+        name: 'Toggle facetDimensionLabel.Investigation.type.name filter panel',
       })
     );
 

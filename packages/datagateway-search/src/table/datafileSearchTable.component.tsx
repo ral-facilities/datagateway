@@ -128,6 +128,7 @@ const DatafileSearchTable = ({
     addFacetFilter,
     removeFacetFilter,
     applyFacetFilters,
+    haveUnappliedFilters,
   } = useFacetFilters();
 
   const handleSort = useSort();
@@ -324,6 +325,7 @@ const DatafileSearchTable = ({
           <FacetPanel
             allIds={aggregatedIds}
             entityName="Datafile"
+            showApplyButton={haveUnappliedFilters}
             facetClassification={facetClassificationFromSearchResponses(
               data.pages
             )}

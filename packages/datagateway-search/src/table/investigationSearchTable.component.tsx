@@ -108,6 +108,7 @@ const InvestigationSearchTable = ({
     addFacetFilter,
     removeFacetFilter,
     applyFacetFilters,
+    haveUnappliedFilters,
   } = useFacetFilters();
 
   useSearchResultCounter({
@@ -414,6 +415,7 @@ const InvestigationSearchTable = ({
           <FacetPanel
             allIds={aggregatedIds}
             entityName="Investigation"
+            showApplyButton={haveUnappliedFilters}
             facetClassification={facetClassificationFromSearchResponses(
               data.pages
             )}

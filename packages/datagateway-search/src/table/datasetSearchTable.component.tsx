@@ -92,6 +92,7 @@ const DatasetSearchTable = ({
     addFacetFilter,
     removeFacetFilter,
     applyFacetFilters,
+    haveUnappliedFilters,
   } = useFacetFilters();
 
   useSearchResultCounter({
@@ -394,6 +395,7 @@ const DatasetSearchTable = ({
           <FacetPanel
             allIds={aggregatedIds}
             entityName="Dataset"
+            showApplyButton={haveUnappliedFilters}
             facetClassification={facetClassificationFromSearchResponses(
               data.pages
             )}

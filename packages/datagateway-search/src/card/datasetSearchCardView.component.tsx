@@ -99,6 +99,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
     addFacetFilter,
     removeFacetFilter,
     applyFacetFilters,
+    haveUnappliedFilters,
   } = useFacetFilters();
 
   useSearchResultCounter({
@@ -499,6 +500,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
           <FacetPanel
             allIds={aggregatedIds}
             entityName="Dataset"
+            showApplyButton={haveUnappliedFilters}
             facetClassification={facetClassificationFromSearchResponses(
               data.pages
             )}

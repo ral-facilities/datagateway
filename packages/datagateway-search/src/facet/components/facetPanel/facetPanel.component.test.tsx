@@ -24,6 +24,7 @@ describe('facetPanel', () => {
 
     render(
       <FacetPanel
+        showApplyButton={false}
         entityName={TEST_ENTITY_NAME}
         allIds={TEST_IDS}
         facetClassification={TEST_FACET_CLASSIFICATION}
@@ -136,6 +137,7 @@ describe('facetPanel', () => {
 
     render(
       <FacetPanel
+        showApplyButton={false}
         entityName={TEST_ENTITY_NAME}
         allIds={TEST_IDS}
         facetClassification={TEST_FACET_CLASSIFICATION}
@@ -183,9 +185,11 @@ describe('facetPanel', () => {
   it('reflects the changes when a filter is added', async () => {
     const user = userEvent.setup();
     const onAddFilter = jest.fn();
+    const onApplyFacetFilters = jest.fn();
 
     const { rerender } = render(
       <FacetPanel
+        showApplyButton={false}
         entityName={TEST_ENTITY_NAME}
         allIds={TEST_IDS}
         facetClassification={TEST_FACET_CLASSIFICATION}
@@ -195,20 +199,19 @@ describe('facetPanel', () => {
         }}
         onAddFilter={onAddFilter}
         onRemoveFilter={jest.fn()}
-        onApplyFacetFilters={jest.fn()}
+        onApplyFacetFilters={onApplyFacetFilters}
       />
     );
+
+    // apply button should not be visible when no changes are made to filters
+    expect(
+      screen.queryByRole('button', { name: 'facetPanel.apply' })
+    ).toBeNull();
 
     // open investigation type filter panel
     await user.click(
       screen.getByRole('button', {
         name: 'Toggle facetDimensionLabel.investigation.type.name filter panel',
-      })
-    );
-    // open investigation parameter type filter panel
-    await user.click(
-      screen.getByRole('button', {
-        name: 'Toggle facetDimensionLabel.investigationparameter.type.name filter panel',
       })
     );
     await user.click(
@@ -221,6 +224,7 @@ describe('facetPanel', () => {
 
     rerender(
       <FacetPanel
+        showApplyButton
         entityName={TEST_ENTITY_NAME}
         allIds={TEST_IDS}
         facetClassification={TEST_FACET_CLASSIFICATION}
@@ -230,7 +234,7 @@ describe('facetPanel', () => {
         }}
         onAddFilter={onAddFilter}
         onRemoveFilter={jest.fn()}
-        onApplyFacetFilters={jest.fn()}
+        onApplyFacetFilters={onApplyFacetFilters}
       />
     );
 
@@ -254,14 +258,20 @@ describe('facetPanel', () => {
         name: 'Remove calibration filter',
       })
     ).toBeInTheDocument();
+
+    // apply the filter
+    await user.click(screen.getByRole('button', { name: 'facetPanel.apply' }));
+    expect(onApplyFacetFilters).toHaveBeenCalledTimes(1);
   });
 
   it('reflects the changes when a filter is removed', async () => {
     const user = userEvent.setup();
     const onRemoveFilter = jest.fn();
+    const onApplyFacetFilters = jest.fn();
 
     const { rerender } = render(
       <FacetPanel
+        showApplyButton={false}
         entityName={TEST_ENTITY_NAME}
         allIds={TEST_IDS}
         facetClassification={TEST_FACET_CLASSIFICATION}
@@ -275,16 +285,15 @@ describe('facetPanel', () => {
       />
     );
 
+    // apply button should not be visible when no changes are made to filters
+    expect(
+      screen.queryByRole('button', { name: 'facetPanel.apply' })
+    ).toBeNull();
+
     // open investigation type filter panel
     await user.click(
       screen.getByRole('button', {
         name: 'Toggle facetDimensionLabel.investigation.type.name filter panel',
-      })
-    );
-    // open investigation parameter type filter panel
-    await user.click(
-      screen.getByRole('button', {
-        name: 'Toggle facetDimensionLabel.investigationparameter.type.name filter panel',
       })
     );
 
@@ -298,6 +307,7 @@ describe('facetPanel', () => {
     // pretend the selected filters are updated
     rerender(
       <FacetPanel
+        showApplyButton
         entityName={TEST_ENTITY_NAME}
         allIds={TEST_IDS}
         facetClassification={TEST_FACET_CLASSIFICATION}
@@ -306,7 +316,7 @@ describe('facetPanel', () => {
         }}
         onAddFilter={jest.fn()}
         onRemoveFilter={onRemoveFilter}
-        onApplyFacetFilters={jest.fn()}
+        onApplyFacetFilters={onApplyFacetFilters}
       />
     );
 
@@ -329,29 +339,9 @@ describe('facetPanel', () => {
         )
       ).getByRole('button', { name: 'Add experiment filter' })
     ).toBeInTheDocument();
-  });
 
-  it('calls the given callback when filters are applied', async () => {
-    const onApplyFacetFilters = jest.fn();
-    const user = userEvent.setup();
-
-    render(
-      <FacetPanel
-        entityName={TEST_ENTITY_NAME}
-        allIds={TEST_IDS}
-        facetClassification={TEST_FACET_CLASSIFICATION}
-        selectedFacetFilters={{
-          'investigation.type.name': ['experiment'],
-          'investigationparameter.type.name': ['bcat_inv_str'],
-        }}
-        onAddFilter={jest.fn()}
-        onRemoveFilter={jest.fn()}
-        onApplyFacetFilters={onApplyFacetFilters}
-      />
-    );
-
+    // apply the filter
     await user.click(screen.getByRole('button', { name: 'facetPanel.apply' }));
-
     expect(onApplyFacetFilters).toHaveBeenCalledTimes(1);
   });
 
@@ -361,6 +351,7 @@ describe('facetPanel', () => {
 
       render(
         <FacetPanel
+          showApplyButton={false}
           entityName="Investigation"
           allIds={TEST_IDS}
           facetClassification={TEST_FACET_CLASSIFICATION}
@@ -389,6 +380,7 @@ describe('facetPanel', () => {
 
       render(
         <FacetPanel
+          showApplyButton={false}
           entityName="Dataset"
           allIds={TEST_IDS}
           facetClassification={{
@@ -419,6 +411,7 @@ describe('facetPanel', () => {
 
       render(
         <FacetPanel
+          showApplyButton={false}
           entityName="Datafile"
           allIds={TEST_IDS}
           facetClassification={{
@@ -450,6 +443,7 @@ describe('facetPanel', () => {
 
     render(
       <FacetPanel
+        showApplyButton={false}
         entityName={TEST_ENTITY_NAME}
         allIds={TEST_IDS}
         facetClassification={TEST_FACET_CLASSIFICATION}

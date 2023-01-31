@@ -20,6 +20,7 @@ function useFacetFilters(): {
     applyImmediately: boolean;
   }) => void;
   applyFacetFilters: () => void;
+  haveUnappliedFilters: boolean;
 } {
   const location = useLocation();
   const { push } = useHistory();
@@ -33,6 +34,8 @@ function useFacetFilters(): {
   const [selectedFacetFilters, setSelectedFacetFilters] =
     React.useState<FiltersType>({});
 
+  const haveUnappliedFilters = !isEqual(filters, selectedFacetFilters);
+
   const addFacetFilter = ({
     dimension,
     filterValue,
@@ -42,8 +45,6 @@ function useFacetFilters(): {
     filterValue: SearchFilter;
     applyImmediately: boolean;
   }): void => {
-    console.log({ dimension, filterValue });
-
     const filterKey = dimension;
 
     setSelectedFacetFilters((prevFilter) => {
@@ -129,6 +130,7 @@ function useFacetFilters(): {
     addFacetFilter,
     removeFacetFilter,
     applyFacetFilters,
+    haveUnappliedFilters,
   };
 }
 

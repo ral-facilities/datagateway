@@ -117,7 +117,7 @@ describe('Dataset table component', () => {
           {
             data: {
               dimensions: {
-                'dataset.name': {
+                'Dataset.name': {
                   asd: 1,
                 },
               },
@@ -181,7 +181,7 @@ describe('Dataset table component', () => {
     cartItems = [];
     searchResponse = {
       dimensions: {
-        'dataset.name': {
+        'Dataset.name': {
           asd: 1,
         },
       },
@@ -255,11 +255,14 @@ describe('Dataset table component', () => {
     expect(rows).toHaveLength(1);
 
     // check that facet filter panel is present
-    expect(screen.getByText('Filters')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Apply' })).toBeInTheDocument();
+    expect(screen.getByText('facetPanel.title')).toBeInTheDocument();
+    // apply filter button should be invisible initially
+    expect(
+      screen.queryByRole('button', { name: 'facetPanel.apply' })
+    ).toBeNull();
 
     const accordion = screen.getByRole('button', {
-      name: 'Toggle facetDimensionLabel.dataset.name filter panel',
+      name: 'Toggle facetDimensionLabel.Dataset.name filter panel',
     });
 
     expect(accordion).toBeInTheDocument();
@@ -267,7 +270,7 @@ describe('Dataset table component', () => {
     await user.click(accordion);
 
     const filterPanel = await screen.getByLabelText(
-      'facetDimensionLabel.dataset.name filter panel'
+      'facetDimensionLabel.Dataset.name filter panel'
     );
 
     expect(filterPanel).toBeInTheDocument();
@@ -391,7 +394,7 @@ describe('Dataset table component', () => {
     // expand accordion
     await user.click(
       await screen.findByRole('button', {
-        name: 'Toggle facetDimensionLabel.dataset.name filter panel',
+        name: 'Toggle facetDimensionLabel.Dataset.name filter panel',
       })
     );
     // select the filter
@@ -401,7 +404,7 @@ describe('Dataset table component', () => {
       })
     );
     // apply the filter
-    await user.click(screen.getByRole('button', { name: 'Apply' }));
+    await user.click(screen.getByRole('button', { name: 'facetPanel.apply' }));
 
     // when filter is applied, the fake axios get will return nothing
     // so we should expect no rows in the table
@@ -412,7 +415,7 @@ describe('Dataset table component', () => {
     // expand accordion
     await user.click(
       await screen.findByRole('button', {
-        name: 'Toggle facetDimensionLabel.dataset.name filter panel',
+        name: 'Toggle facetDimensionLabel.Dataset.name filter panel',
       })
     );
 
@@ -427,7 +430,7 @@ describe('Dataset table component', () => {
     // the selected filters should be displayed
     expect(selectedFilters).toBeInTheDocument();
     expect(
-      within(selectedFilters).getByText('facetDimensionLabel.dataset.name: asd')
+      within(selectedFilters).getByText('facetDimensionLabel.Dataset.name: asd')
     ).toBeInTheDocument();
   });
 
@@ -436,7 +439,7 @@ describe('Dataset table component', () => {
     searchParams.append(
       'filters',
       JSON.stringify({
-        'dataset.name': ['asd'],
+        'Dataset.name': ['asd'],
       })
     );
     history.replace({ search: `?${searchParams.toString()}` });
@@ -453,7 +456,7 @@ describe('Dataset table component', () => {
     // expand accordion
     await user.click(
       await screen.findByRole('button', {
-        name: 'Toggle facetDimensionLabel.dataset.name filter panel',
+        name: 'Toggle facetDimensionLabel.Dataset.name filter panel',
       })
     );
 
@@ -471,7 +474,7 @@ describe('Dataset table component', () => {
     searchParams.append(
       'filters',
       JSON.stringify({
-        'dataset.name': ['asd'],
+        'Dataset.name': ['asd'],
       })
     );
     history.replace({ search: `?${searchParams.toString()}` });
@@ -482,7 +485,7 @@ describe('Dataset table component', () => {
 
     expect(
       within(selectedFilterChips).getByRole('button', {
-        name: 'facetDimensionLabel.dataset.name: asd',
+        name: 'facetDimensionLabel.Dataset.name: asd',
       })
     ).toBeInTheDocument();
 
@@ -496,7 +499,7 @@ describe('Dataset table component', () => {
     // expand accordion
     await user.click(
       await screen.findByRole('button', {
-        name: 'Toggle facetDimensionLabel.dataset.name filter panel',
+        name: 'Toggle facetDimensionLabel.Dataset.name filter panel',
       })
     );
 
@@ -507,21 +510,21 @@ describe('Dataset table component', () => {
     );
 
     // apply the changes
-    await user.click(screen.getByRole('button', { name: 'Apply' }));
+    await user.click(screen.getByRole('button', { name: 'facetPanel.apply' }));
 
     expect(await findAllRows()).toHaveLength(1);
 
     // check that the filter chip is removed
     expect(
       within(selectedFilterChips).queryByRole('button', {
-        name: 'facetDimensionLabel.dataset.name: paper',
+        name: 'facetDimensionLabel.Dataset.name: paper',
       })
     ).toBeNull();
 
     // expand accordion
     await user.click(
       await screen.findByRole('button', {
-        name: 'Toggle facetDimensionLabel.dataset.name filter panel',
+        name: 'Toggle facetDimensionLabel.Dataset.name filter panel',
       })
     );
 
@@ -539,7 +542,7 @@ describe('Dataset table component', () => {
     searchParams.append(
       'filters',
       JSON.stringify({
-        'dataset.name': ['asd'],
+        'Dataset.name': ['asd'],
       })
     );
     history.replace({ search: `?${searchParams.toString()}` });
@@ -555,7 +558,7 @@ describe('Dataset table component', () => {
 
     const selectedFilterChips = screen.getByLabelText('selectedFilters');
     const chip = within(selectedFilterChips).getByRole('button', {
-      name: 'facetDimensionLabel.dataset.name: asd',
+      name: 'facetDimensionLabel.Dataset.name: asd',
     });
 
     await user.click(within(chip).getByTestId('CancelIcon'));
@@ -565,14 +568,14 @@ describe('Dataset table component', () => {
     // check that the filter chip is removed
     expect(
       within(selectedFilterChips).queryByRole('button', {
-        name: 'facetDimensionLabel.dataset.name: asd',
+        name: 'facetDimensionLabel.Dataset.name: asd',
       })
     ).toBeNull();
 
     // expand accordion
     await user.click(
       await screen.findByRole('button', {
-        name: 'Toggle facetDimensionLabel.dataset.name filter panel',
+        name: 'Toggle facetDimensionLabel.Dataset.name filter panel',
       })
     );
 
