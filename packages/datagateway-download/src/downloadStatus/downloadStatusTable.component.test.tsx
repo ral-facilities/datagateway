@@ -342,7 +342,7 @@ describe('Download Status Table', () => {
     cleanupDatePickerWorkaround();
   });
 
-  it('should show download progress ui if enabled', async () => {
+  it('should display download progress ui if enabled', async () => {
     (
       getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>
     ).mockResolvedValue(20);
@@ -365,6 +365,54 @@ describe('Download Status Table', () => {
         expect(progressBar).toBeInTheDocument();
       }
       for (const progressText of screen.getAllByText('20%')) {
+        expect(progressText).toBeInTheDocument();
+      }
+    });
+  });
+
+  it('should refresh download progress when refresh button is clicked', async () => {
+    (
+      getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>
+    ).mockResolvedValue(30);
+
+    renderComponent({
+      settings: {
+        ...mockedSettings,
+        uiFeatures: {
+          downloadProgress: true,
+        },
+      },
+    });
+
+    await waitFor(() => {
+      for (const progressBar of screen.getAllByRole('progressbar')) {
+        expect(progressBar).toBeInTheDocument();
+      }
+      for (const progressText of screen.getAllByText('30%')) {
+        expect(progressText).toBeInTheDocument();
+      }
+    });
+
+    // pretend the server returns an updated value
+    (
+      getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>
+    ).mockResolvedValue(50);
+
+    // pretend table is refreshed
+    renderComponent({
+      settings: {
+        ...mockedSettings,
+        uiFeatures: {
+          downloadProgress: true,
+        },
+      },
+    });
+
+    await waitFor(() => {
+      for (const progressBar of screen.getAllByRole('progressbar')) {
+        expect(progressBar).toBeInTheDocument();
+      }
+      for (const progressText of screen.getAllByText('50%')) {
         expect(progressText).toBeInTheDocument();
       }
     });
