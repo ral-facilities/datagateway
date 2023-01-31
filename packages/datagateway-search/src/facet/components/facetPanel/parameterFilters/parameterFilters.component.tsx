@@ -71,10 +71,7 @@ const ParameterFilters = ({
   }
 
   function removeParameterFilter(filterValue: SearchFilter): void {
-    onRemoveParameterFilter(
-      `${entityName.toLowerCase()}parameter`,
-      filterValue
-    );
+    onRemoveParameterFilter(`${entityName}Parameter`, filterValue);
   }
 
   const selectedParameterFilters = selectedFilters.filter(

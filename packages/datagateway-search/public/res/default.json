@@ -163,17 +163,22 @@
     }
   },
   "facetDimensionLabel": {
-    "investigation.type.name": "Type",
-    "investigationparameter.type.name": "Parameter name",
-    "sample.type.name": "Sample",
-    "dataset.type.name": "Type",
-    "datafile.datafileformat.name": "Format",
-    "datafileparameter.type.name": "Parameter name"
+    "Investigation.type.name": "Type",
+    "InvestigationParameter.type.name": "Parameter name",
+    "Sample.type.name": "Sample",
+    "Dataset.type.name": "Type",
+    "Datafile.datafileFormat.name": "Format",
+    "DatafileParameter.type.name": "Parameter name"
   },
   "parameterFilters": {
+    "title": "Parameter filters",
+    "addFilter": "Add",
     "selectedParameterFilterList": "Selected parameter filters",
+    "noFilters": "No parameter filters",
     "creator": {
+      "close": "Close new parameter filter",
       "title": "New parameter filter",
+      "loading": "Loading…",
       "message": {
         "parameterNameNotSelected": "Parameter name not selected",
         "parameterTypeNotSelected": "Parameter type not selected",
@@ -181,10 +186,17 @@
       },
       "labels": {
         "parameterNameSelect": "Parameter name",
+        "parameterValueTypeSelect": "Parameter type",
         "parameterDateTimeSelect": "Parameter is in",
-        "parameterStringSelect": "Parameter equals"
+        "parameterStringSelect": "Parameter equals",
+        "parameterNumericRange": {
+          "min": "Minimum value",
+          "max": "Maximum value",
+          "unit": "Unit of value"
+        }
       },
-      "addFilter": "Add filter"
+      "addFilter": "Add filter",
+      "removeFilter": "Remove {{filterLabel} filter"
     },
     "valueType": {
       "dateTime": "Date and time",
@@ -228,6 +240,11 @@
       "units": "Units",
       "apply": "Apply"
     }
+  },
+  "facetPanel": {
+    "title": "Filters",
+    "apply": "Apply",
+    "noFilters": "No filters available"
   },
   "buttons": {
     "add_to_cart": "Add to selection",

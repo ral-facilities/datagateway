@@ -74,7 +74,7 @@ function NewParameterFilterCreator({
 
   function addFilter(): void {
     if (filterValue) {
-      onAddFilter(`${entityName.toLowerCase()}parameter`, filterValue);
+      onAddFilter(`${entityName}Parameter`, filterValue);
     }
   }
 

@@ -138,15 +138,15 @@ function FacetPanel({
                 expandIcon={<ExpandMore />}
                 aria-controls={`${dimension}-filter-panel`}
                 aria-label={`Toggle ${t(
-                  `facetDimensionLabel.${dimension.toLocaleLowerCase()}`
+                  `facetDimensionLabel.${dimension}`
                 )} filter panel`}
               >
-                {t(`facetDimensionLabel.${dimension.toLocaleLowerCase()}`)}
+                {t(`facetDimensionLabel.${dimension}`)}
               </AccordionSummary>
               <AccordionDetails
                 sx={{ padding: 0 }}
                 aria-label={`${t(
-                  `facetDimensionLabel.${dimension.toLocaleLowerCase()}`
+                  `facetDimensionLabel.${dimension}`
                 )} filter panel`}
                 id={`${dimension}-filter-panel`}
               >
@@ -186,7 +186,7 @@ function FacetPanel({
                         entityName={entityName}
                         selectedFilters={
                           (selectedFacetFilters[
-                            dimension.split('.')[0].toLocaleLowerCase()
+                            dimension.split('.')[0]
                           ] as SearchFilter[]) ?? []
                         }
                         onAddParameterFilter={onAddFilter}
