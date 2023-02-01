@@ -28,10 +28,13 @@ const createTestQueryClient = (): QueryClient =>
     },
   });
 
-const renderComponent = ({ settings = mockedSettings } = {}): RenderResult =>
+const renderComponent = ({
+  settings = mockedSettings,
+  queryClient = createTestQueryClient(),
+} = {}): RenderResult =>
   render(
     <DownloadSettingsContext.Provider value={settings}>
-      <QueryClientProvider client={createTestQueryClient()}>
+      <QueryClientProvider client={queryClient}>
         <DownloadStatusTable
           refreshTable={false}
           setRefreshTable={jest.fn()}
@@ -83,17 +86,19 @@ describe('Download Status Table', () => {
     ).toBeInTheDocument();
   });
 
-  it('should refresh data when required', async () => {
+  it('should refresh data & download progress when required', async () => {
+    (
+      getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>
+    ).mockResolvedValue(30);
+    const settings = {
+      ...mockedSettings,
+      uiFeatures: {
+        downloadProgress: true,
+      },
+    };
+
     const queryClient = createTestQueryClient();
-    const { rerender } = render(
-      <QueryClientProvider client={queryClient}>
-        <DownloadStatusTable
-          refreshTable={false}
-          setRefreshTable={jest.fn()}
-          setLastCheckedTimestamp={jest.fn()}
-        />
-      </QueryClientProvider>
-    );
+    const { rerender } = renderComponent({ settings, queryClient });
 
     expect(await screen.findByText('test-file-1')).toBeInTheDocument();
     expect(await screen.findByText('test-file-2')).toBeInTheDocument();
@@ -101,24 +106,42 @@ describe('Download Status Table', () => {
     expect(await screen.findByText('test-file-4')).toBeInTheDocument();
     expect(await screen.findByText('test-file-5')).toBeInTheDocument();
 
-    // pretend server returned a different list
-    (fetchDownloads as jest.Mock).mockReturnValueOnce([]);
+    await waitFor(() => {
+      for (const progressBar of screen.getAllByRole('progressbar')) {
+        expect(progressBar).toBeInTheDocument();
+      }
+      for (const progressText of screen.getAllByText('30%')) {
+        expect(progressText).toBeInTheDocument();
+      }
+    });
+
+    // pretend server returned a different list (with only the restoring download)
+    (fetchDownloads as jest.Mock).mockReturnValueOnce([mockDownloadItems[2]]);
+    // pretend the server returns an updated value
+    (
+      getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>
+    ).mockResolvedValue(50);
     rerender(
-      <QueryClientProvider client={queryClient}>
-        <DownloadStatusTable
-          refreshTable
-          setRefreshTable={jest.fn()}
-          setLastCheckedTimestamp={jest.fn()}
-        />
-      </QueryClientProvider>
+      <DownloadSettingsContext.Provider value={settings}>
+        <QueryClientProvider client={queryClient}>
+          <DownloadStatusTable
+            refreshTable
+            setRefreshTable={jest.fn()}
+            setLastCheckedTimestamp={jest.fn()}
+          />
+        </QueryClientProvider>
+      </DownloadSettingsContext.Provider>
     );
 
     await waitFor(() => {
+      expect(screen.getByText('test-file-3')).toBeInTheDocument();
       expect(screen.queryByText('test-file-1')).toBeNull();
       expect(screen.queryByText('test-file-2')).toBeNull();
-      expect(screen.queryByText('test-file-3')).toBeNull();
       expect(screen.queryByText('test-file-4')).toBeNull();
       expect(screen.queryByText('test-file-5')).toBeNull();
+
+      expect(screen.getByRole('progressbar')).toBeInTheDocument();
+      expect(screen.getByText('50%')).toBeInTheDocument();
     });
   });
 
@@ -365,54 +388,6 @@ describe('Download Status Table', () => {
         expect(progressBar).toBeInTheDocument();
       }
       for (const progressText of screen.getAllByText('20%')) {
-        expect(progressText).toBeInTheDocument();
-      }
-    });
-  });
-
-  it('should refresh download progress when refresh button is clicked', async () => {
-    (
-      getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>
-    ).mockResolvedValue(30);
-
-    renderComponent({
-      settings: {
-        ...mockedSettings,
-        uiFeatures: {
-          downloadProgress: true,
-        },
-      },
-    });
-
-    await waitFor(() => {
-      for (const progressBar of screen.getAllByRole('progressbar')) {
-        expect(progressBar).toBeInTheDocument();
-      }
-      for (const progressText of screen.getAllByText('30%')) {
-        expect(progressText).toBeInTheDocument();
-      }
-    });
-
-    // pretend the server returns an updated value
-    (
-      getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>
-    ).mockResolvedValue(50);
-
-    // pretend table is refreshed
-    renderComponent({
-      settings: {
-        ...mockedSettings,
-        uiFeatures: {
-          downloadProgress: true,
-        },
-      },
-    });
-
-    await waitFor(() => {
-      for (const progressBar of screen.getAllByRole('progressbar')) {
-        expect(progressBar).toBeInTheDocument();
-      }
-      for (const progressText of screen.getAllByText('50%')) {
         expect(progressText).toBeInTheDocument();
       }
     });
