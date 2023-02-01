@@ -134,6 +134,16 @@ export interface Study {
   studyInvestigations?: StudyInvestigation[];
 }
 
+export interface dataPublication {
+  id: number;
+  pid: string;
+  title: string;
+  modTime: string;
+  createTime: string;
+  description?: string;
+  startDate?: string;
+}
+
 interface InstrumentScientist {
   id: number;
   instrument?: Instrument;
@@ -273,6 +283,7 @@ export const EntityTypes: string[] = [
   'instrument',
   'facility',
   'study',
+  'dataPublication',
 ];
 
 // TODO: type these properly
