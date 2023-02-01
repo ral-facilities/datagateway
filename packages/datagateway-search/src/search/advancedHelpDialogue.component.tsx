@@ -411,7 +411,7 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
             <Link
               target="_blank"
               rel="noopener"
-              href="https://lucene.apache.org/core/8_6_0/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#package_description"
+              href="https://lucene.apache.org/core/8_11_2/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#package_description"
             >
               here
             </Link>
