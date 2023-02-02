@@ -2,6 +2,13 @@
 export const MicroFrontendId = 'scigateway';
 export const MicroFrontendToken = `${MicroFrontendId}:token`;
 
+export const FACILITY_NAME = {
+  isis: 'isis',
+  dls: 'dls',
+} as const;
+
+export type FacilityName = typeof FACILITY_NAME[keyof typeof FACILITY_NAME];
+
 // TODO: type entities properly; DownloadCartItem does not
 //       include string indexing due to DownloadCartTableItem
 export interface Investigation {
