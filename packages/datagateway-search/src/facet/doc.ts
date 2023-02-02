@@ -13,18 +13,44 @@
  * - the display size of the phone
  * - the type of the charging port (USB-C? micro USB?)
  *
- * # datagateway-search
- * In the context of datagateway-search, search data can be faceted by passing {@link FacetRequest}
- * to the search API call:
+ * ## datagateway-search
+ * In the context of datagateway-search, search data can be faceted based on different facets (also called dimensions).
+ * For example, search results for Investigations can be filtered based on the investigation type.
  *
- * - `FacetRequest.target`: The name of the entity (that is linked to the search data) to be used to perform faceted search.
- *   For example, `Investigation` can be a target, which requests the data to be classified using its own fields,
- *   like `Investigation.type`.
- *   `InvestigationParameter` can also be a target, which classifies `Investigation`s based on the parameters that each has.
- *   (Side note: the reason why `InvestigationParameter` isn't included in the `Investigation` target,
- *   even though there is `Investigation.parameters` field, is because each investigation can have multiple parameters.
- *   Therefore, it has to be requested separately unlike `InvestigationType`, the entity for `Investigation.type`,
- *   which has a 1 to 1 relationship to `Investigation` (each `Investigation` can only have 1 `InvestigationType`))
+ * What filters are available depends on what is returned in the search response ({@link SearchResponse}).
+ * The `dimensions` property contains dimensions that the results can be filtered on.
+ * For example, the dimensions of a search response for searching through investigations can look like this:
+ *
+ * ```
+ * {
+ *   dimensions: {
+ *     'Investigation.type.name': {
+ *       calibration: 100,
+ *       experiment: 234,
+ *     }
+ *   }
+ * }
+ * ```
+ *
+ * The dimensions object indicates that there are 100 investigations that are of type 'calibration', and 234 that are of type 'experiment'.
+ * 'Investigation.type.name' can be seen as a path that drills down to the InvestigationType entity, which has a `name` field:
+ *
+ * ```
+ * Investigation entity {
+ *   `type` field: InvestigationType (1..1) {
+ *     name: string
+ *   }
+ * }
+ * ```
+ *
+ * This link provides the schema for the Investigation entity. https://repo.icatproject.org/site/icat/server/5.0.0/schema.html#Investigation
+ *
+ * Based on that dimensions object, the search results can be filtered by `Investigation.type.name` (investigation type).
+ * For example, "only show investigations that have type "calibration").
+ * This filtering operation can be done through `FacetPanel`.
+ *
+ * @see https://repo.icatproject.org/site/icat/server/5.0.0/schema.html
+ * @see https://en.wikipedia.org/wiki/Faceted_search
+ * @see https://www.algolia.com/blog/ux/faceted-search-an-overview/
  */
-
 export {};
