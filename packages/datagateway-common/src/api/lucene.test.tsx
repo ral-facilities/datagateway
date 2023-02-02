@@ -1,9 +1,16 @@
 import { renderHook } from '@testing-library/react-hooks';
-import axios from 'axios';
-import { LuceneSearchParams, useLuceneSearchInfinite } from '.';
+import axios, { type AxiosError } from 'axios';
+import {
+  LUCENE_ERROR_CODE,
+  type LuceneError,
+  type LuceneSearchParams,
+  useLuceneSearchInfinite,
+} from '.';
 import handleICATError from '../handleICATError';
 import { createReactQueryWrapper } from '../setupTests';
-import { FiltersType } from '../app.types';
+import type { FiltersType } from '../app.types';
+import { NotificationType } from '../state/actions/actions.types';
+import type { DeepPartial } from 'redux';
 
 jest.mock('../handleICATError');
 
@@ -179,5 +186,171 @@ describe('Lucene actions', () => {
         },
       }
     );
+  });
+
+  describe('sends a special notification', () => {
+    const ogDispatchEvent = document.dispatchEvent;
+    const mockDispatchEvent = jest.fn();
+
+    beforeEach(() => {
+      document.dispatchEvent = mockDispatchEvent;
+    });
+
+    afterEach(() => {
+      mockDispatchEvent.mockClear();
+    });
+
+    afterAll(() => {
+      document.dispatchEvent = ogDispatchEvent;
+    });
+
+    it('on search timeout error', async () => {
+      const luceneSearchParams: LuceneSearchParams = {
+        searchText: '*',
+        startDate: null,
+        endDate: new Date(2020, 11, 31),
+        maxCount: 300,
+      };
+
+      (axios.get as jest.Mock).mockRejectedValue({
+        code: 500,
+        response: {
+          data: {
+            code: LUCENE_ERROR_CODE.internal,
+            message: 'Search cancelled for exceeding 5 seconds',
+          },
+        },
+      });
+
+      const { result, waitFor } = renderHook(
+        () => useLuceneSearchInfinite('Dataset', luceneSearchParams, {}),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      await waitFor(() => result.current.isError);
+
+      expect(mockDispatchEvent).toHaveBeenCalledTimes(1);
+      const callArgs = mockDispatchEvent.mock.calls[0];
+      expect((callArgs[0] as CustomEvent).detail.type).toEqual(
+        NotificationType
+      );
+      expect((callArgs[0] as CustomEvent).detail.payload).toEqual({
+        severity: 'error',
+        message: `Unable to complete requested search in under 5 seconds. To ensure searches complete quickly, please try:
+- Only searching "my data"
+- Only searching the type of entity you need results for
+- Using less wildcard characters in the search term(s)
+- Making the search term(s) more specific
+- Using the default relevancy based sorting`,
+      });
+    });
+
+    it('on bad search text error', async () => {
+      const luceneSearchParams: LuceneSearchParams = {
+        searchText: '*',
+        startDate: null,
+        endDate: new Date(2020, 11, 31),
+        maxCount: 300,
+      };
+
+      (axios.get as jest.Mock).mockRejectedValue({
+        code: 500,
+        response: {
+          data: {
+            code: LUCENE_ERROR_CODE.badParameter,
+            message: 'bad search query',
+          },
+        },
+      });
+
+      const { result, waitFor } = renderHook(
+        () => useLuceneSearchInfinite('Dataset', luceneSearchParams, {}),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      await waitFor(() => result.current.isError);
+
+      expect(mockDispatchEvent).toHaveBeenCalledTimes(1);
+      const callArgs = mockDispatchEvent.mock.calls[0];
+      expect((callArgs[0] as CustomEvent).detail.type).toEqual(
+        NotificationType
+      );
+      expect((callArgs[0] as CustomEvent).detail.payload).toEqual({
+        severity: 'error',
+        message: `Syntax error found in the provided search text. Please refer to the full help for search syntax, or try:
+- Replacing \\ characters with spaces (unless being used to escape another special character)
+- Surrounding text containing other special characters with double quotes`,
+      });
+    });
+  });
+
+  describe('handles error generically', () => {
+    it('for other types of errors', async () => {
+      const luceneSearchParams: LuceneSearchParams = {
+        searchText: '*',
+        startDate: null,
+        endDate: new Date(2020, 11, 31),
+        maxCount: 300,
+      };
+
+      const axiosError: DeepPartial<AxiosError<LuceneError>> = {
+        code: '500',
+        response: {
+          data: {
+            code: 'SESSION',
+            message: 'some random message',
+          },
+        },
+      };
+
+      (axios.get as jest.Mock).mockRejectedValue(axiosError);
+
+      const { result, waitFor } = renderHook(
+        () => useLuceneSearchInfinite('Dataset', luceneSearchParams, {}),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      await waitFor(() => result.current.isError);
+
+      expect(handleICATError).toHaveBeenCalledWith(axiosError);
+    });
+
+    it('for other internal errors', async () => {
+      const luceneSearchParams: LuceneSearchParams = {
+        searchText: '*',
+        startDate: null,
+        endDate: new Date(2020, 11, 31),
+        maxCount: 300,
+      };
+
+      const axiosError: DeepPartial<AxiosError<LuceneError>> = {
+        code: '500',
+        response: {
+          data: {
+            code: LUCENE_ERROR_CODE.internal,
+            message: 'some other internal error',
+          },
+        },
+      };
+
+      (axios.get as jest.Mock).mockRejectedValue(axiosError);
+
+      const { result, waitFor } = renderHook(
+        () => useLuceneSearchInfinite('Dataset', luceneSearchParams, {}),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      await waitFor(() => result.current.isError);
+
+      expect(handleICATError).toHaveBeenCalledWith(axiosError);
+    });
   });
 });
