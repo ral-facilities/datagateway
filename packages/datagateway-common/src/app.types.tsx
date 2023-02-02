@@ -134,14 +134,15 @@ export interface Study {
   studyInvestigations?: StudyInvestigation[];
 }
 
-export interface dataPublication {
+export interface DataPublication {
   id: number;
   pid: string;
   title: string;
   modTime: string;
   createTime: string;
   description?: string;
-  startDate?: string;
+  publicationDate?: string;
+  users: User[];
 }
 
 interface InstrumentScientist {
