@@ -156,19 +156,6 @@ export const useDataPublication = (
             id: { eq: dataPublicationId },
           }),
         },
-        // {
-        //   filterType: 'include',
-        //   filterValue: JSON.stringify([
-        //     {
-        //       studyInvestigations: {
-        //         investigation: [
-        //           { investigationUsers: 'user' },
-        //           { investigationInstruments: 'instrument' },
-        //         ],
-        //       },
-        //     },
-        //   ]),
-        // },
       ]);
     },
     {

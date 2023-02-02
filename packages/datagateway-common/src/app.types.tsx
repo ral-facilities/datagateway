@@ -142,7 +142,7 @@ export interface DataPublication {
   createTime: string;
   description?: string;
   publicationDate?: string;
-  users: User[];
+  users?: User[];
 }
 
 interface InstrumentScientist {
