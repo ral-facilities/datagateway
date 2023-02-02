@@ -574,7 +574,7 @@ describe('SearchTabs', () => {
     // apply some filters
     await user.click(
       screen.getByRole('button', {
-        name: 'Toggle facetDimensionLabel.investigation.type.name filter panel',
+        name: 'Toggle facetDimensionLabel.Investigation.type.name filter panel',
       })
     );
     await user.click(
@@ -582,7 +582,7 @@ describe('SearchTabs', () => {
     );
 
     isFilterApplied = true;
-    await user.click(screen.getByRole('button', { name: 'Apply' }));
+    await user.click(screen.getByRole('button', { name: 'facetPanel.apply' }));
 
     expect(await within(investigationTab).findByText('?')).toBeInTheDocument();
   });

@@ -145,7 +145,7 @@ describe('ParameterFacetList', () => {
     );
 
     expect(onNewFilter).toHaveBeenCalledWith({
-      key: `investigationparameter.stringValue.bcat_inv_str`,
+      key: `InvestigationParameter.stringValue.bcat_inv_str`,
       label: 'PARAMETER STRING VALUE',
       filter: [
         { field: 'stringValue', value: 'PARAMETER STRING VALUE' },

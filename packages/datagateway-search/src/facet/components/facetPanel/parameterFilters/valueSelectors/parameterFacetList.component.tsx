@@ -50,7 +50,7 @@ function ParameterFacetList({
   function selectFacet(facet: ParameterValueFacet): void {
     setSelectedFacet(facet);
     onNewFilter({
-      key: `${entityName.toLowerCase()}parameter.stringValue.${parameterName}`,
+      key: `${entityName}Parameter.stringValue.${parameterName}`,
       label: facet.label,
       filter: [
         { field: 'stringValue', value: facet.label },

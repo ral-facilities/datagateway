@@ -59,12 +59,10 @@ describe('ParameterFilters', () => {
         selectedFilters={[
           {
             filter: [],
-            key: 'investigationparameter.type.stringValue.bcat_inv_str',
+            key: 'InvestigationParameter.type.stringValue.bcat_inv_str',
             label: 'Test Label',
           },
         ]}
-        changeFilter={jest.fn()}
-        setFilterUpdate={jest.fn()}
         onAddParameterFilter={jest.fn()}
         onRemoveParameterFilter={jest.fn()}
       />,
@@ -103,8 +101,6 @@ describe('ParameterFilters', () => {
           'string-filter',
           { field: 'unrelated', from: 0, to: 1 },
         ]}
-        changeFilter={jest.fn()}
-        setFilterUpdate={jest.fn()}
         onAddParameterFilter={jest.fn()}
         onRemoveParameterFilter={jest.fn()}
       />,
@@ -130,8 +126,6 @@ describe('ParameterFilters', () => {
         parameterNames={TEST_PARAMETER_NAMES}
         allIds={TEST_IDS}
         selectedFilters={[]}
-        changeFilter={jest.fn()}
-        setFilterUpdate={jest.fn()}
         onAddParameterFilter={jest.fn()}
         onRemoveParameterFilter={jest.fn()}
       />,
@@ -163,8 +157,6 @@ describe('ParameterFilters', () => {
         parameterNames={TEST_PARAMETER_NAMES}
         allIds={TEST_IDS}
         selectedFilters={[]}
-        changeFilter={jest.fn()}
-        setFilterUpdate={jest.fn()}
         onAddParameterFilter={onAddParameterFilter}
         onRemoveParameterFilter={jest.fn()}
       />,
@@ -233,9 +225,9 @@ describe('ParameterFilters', () => {
     );
 
     expect(onAddParameterFilter).toHaveBeenCalledWith(
-      'investigationparameter',
+      'InvestigationParameter',
       {
-        key: `investigationparameter.stringValue.bcat_inv_str`,
+        key: `InvestigationParameter.stringValue.bcat_inv_str`,
         label: 'PARAMETER STRING VALUE',
         filter: [
           { field: 'stringValue', value: 'PARAMETER STRING VALUE' },
@@ -253,12 +245,10 @@ describe('ParameterFilters', () => {
         selectedFilters={[
           {
             filter: [],
-            key: 'investigationparameter.stringValue.bcat_inv_str',
+            key: 'InvestigationParameter.stringValue.bcat_inv_str',
             label: 'PARAMETER STRING VALUE',
           },
         ]}
-        changeFilter={jest.fn()}
-        setFilterUpdate={jest.fn()}
         onAddParameterFilter={onAddParameterFilter}
         onRemoveParameterFilter={jest.fn()}
       />
@@ -292,12 +282,10 @@ describe('ParameterFilters', () => {
         selectedFilters={[
           {
             filter: [],
-            key: 'investigationparameter.stringValue.bcat_inv_str',
+            key: 'InvestigationParameter.stringValue.bcat_inv_str',
             label: 'PARAMETER STRING VALUE',
           },
         ]}
-        changeFilter={jest.fn()}
-        setFilterUpdate={jest.fn()}
         onAddParameterFilter={jest.fn()}
         onRemoveParameterFilter={onRemoveParameterFilter}
       />,
@@ -322,10 +310,10 @@ describe('ParameterFilters', () => {
     );
 
     expect(onRemoveParameterFilter).toHaveBeenCalledWith(
-      'investigationparameter',
+      'InvestigationParameter',
       {
         filter: [],
-        key: 'investigationparameter.stringValue.bcat_inv_str',
+        key: 'InvestigationParameter.stringValue.bcat_inv_str',
         label: 'PARAMETER STRING VALUE',
       }
     );
@@ -336,8 +324,6 @@ describe('ParameterFilters', () => {
         parameterNames={TEST_PARAMETER_NAMES}
         allIds={TEST_IDS}
         selectedFilters={[]}
-        changeFilter={jest.fn()}
-        setFilterUpdate={jest.fn()}
         onAddParameterFilter={jest.fn()}
         onRemoveParameterFilter={onRemoveParameterFilter}
       />

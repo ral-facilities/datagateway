@@ -44,7 +44,7 @@ function ParameterNumericRange({
 
     onNewFilter({
       label,
-      key: `${entityName.toLowerCase()}parameter.numericValue.${parameterName}`,
+      key: `${entityName}Parameter.numericValue.${parameterName}`,
       filter: [filter, { field: 'type.name', value: parameterName }],
     });
   }, [entityName, max, min, onNewFilter, onResetFilter, parameterName, units]);

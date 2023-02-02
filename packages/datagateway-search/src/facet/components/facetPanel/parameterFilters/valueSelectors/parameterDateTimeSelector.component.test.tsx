@@ -149,7 +149,7 @@ describe('ParameterDateTimeSelector', () => {
     );
 
     expect(onNewFilter).toHaveBeenCalledWith({
-      key: `investigationparameter.dateTimeValue.bcat_inv_str`,
+      key: `InvestigationParameter.dateTimeValue.bcat_inv_str`,
       label: '2020',
       filter: [
         {

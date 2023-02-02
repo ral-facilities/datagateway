@@ -25,8 +25,7 @@ import {
   SortType,
   useCart,
   usePushCurrentTab,
-  usePushSearchRestrict,
-  usePushSearchText,
+  usePushQueryParams,
   useUpdateQueryParam,
   useUpdateView,
   ViewButton,
@@ -247,9 +246,8 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
 
   const pushView = useUpdateView('push');
   const replaceView = useUpdateView('replace');
-  const pushSearchText = usePushSearchText();
   const pushCurrentTab = usePushCurrentTab();
-  const pushSearchRestrict = usePushSearchRestrict();
+  const pushQueryParams = usePushQueryParams();
   const replaceFilters = useUpdateQueryParam('filters', 'replace');
   const replacePage = useUpdateQueryParam('page', 'replace');
   const replaceResults = useUpdateQueryParam('results', 'replace');
@@ -291,9 +289,10 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   }, [location.pathname, view, replaceView]);
 
   const initiateSearch = React.useCallback(() => {
-    // TODO: should probably combine all search params into one object then push it to the URL.
-    pushSearchText(searchText);
-    pushSearchRestrict(shouldRestrictSearch);
+    pushQueryParams({
+      searchText,
+      restrict: shouldRestrictSearch,
+    });
 
     localStorage.removeItem('investigationFilters');
     localStorage.removeItem('datasetFilters');
@@ -309,9 +308,8 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
 
     setIsSearchInitiated(true);
   }, [
-    pushSearchText,
+    pushQueryParams,
     searchText,
-    pushSearchRestrict,
     shouldRestrictSearch,
     queryParams.filters,
     queryParams.page,

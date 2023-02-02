@@ -331,8 +331,8 @@ describe('NewParameterFilterCreator', () => {
     expect(addFilterButton).toBeEnabled();
     await user.click(addFilterButton);
 
-    expect(onAddFilter).toHaveBeenCalledWith('investigationparameter', {
-      key: `investigationparameter.stringValue.bcat_inv_str`,
+    expect(onAddFilter).toHaveBeenCalledWith('InvestigationParameter', {
+      key: `InvestigationParameter.stringValue.bcat_inv_str`,
       label: 'PARAMETER STRING VALUE',
       filter: [
         { field: 'stringValue', value: 'PARAMETER STRING VALUE' },

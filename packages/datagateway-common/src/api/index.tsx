@@ -190,6 +190,26 @@ export const parseQueryToSearch = (query: QueryParams): URLSearchParams => {
   return queryParams;
 };
 
+export const usePushQueryParams = (): ((
+  newQueryParams: Partial<QueryParams>
+) => void) => {
+  const location = useLocation();
+  const { push } = useHistory();
+
+  return React.useCallback(
+    (newQueryParams: Partial<QueryParams>) => {
+      const currentQueryParams = parseSearchToQuery(location.search);
+      push({
+        search: `?${parseQueryToSearch({
+          ...currentQueryParams,
+          ...newQueryParams,
+        }).toString()}`,
+      });
+    },
+    [location.search, push]
+  );
+};
+
 /**
  * Convert Sort and Filter types to datagateway-api compatible URLSearchParams
  */
@@ -592,17 +612,20 @@ export const useUpdateView = (
 };
 
 export const usePushSearchText = (): ((searchText: string) => void) => {
+  const location = useLocation();
   const { push } = useHistory();
 
   return React.useCallback(
     (searchText: string) => {
       const query = {
-        ...parseSearchToQuery(window.location.search),
+        ...parseSearchToQuery(location.search),
         searchText,
       };
-      push(`?${parseQueryToSearch(query).toString()}`);
+      push({
+        search: `?${parseQueryToSearch(query).toString()}`,
+      });
     },
-    [push]
+    [location.search, push]
   );
 };
 
@@ -611,19 +634,20 @@ export const usePushSearchToggles = (): ((
   datafile: boolean,
   investigation: boolean
 ) => void) => {
+  const location = useLocation();
   const { push } = useHistory();
 
   return React.useCallback(
     (dataset: boolean, datafile: boolean, investigation: boolean) => {
       const query = {
-        ...parseSearchToQuery(window.location.search),
+        ...parseSearchToQuery(location.search),
         dataset,
         datafile,
         investigation,
       };
       push(`?${parseQueryToSearch(query).toString()}`);
     },
-    [push]
+    [location.search, push]
   );
 };
 
@@ -678,17 +702,18 @@ export const usePushSearchEndDate = (): ((endDate: Date | null) => void) => {
 };
 
 export const usePushSearchRestrict = (): ((restrict: boolean) => void) => {
+  const location = useLocation();
   const { push } = useHistory();
 
   return React.useCallback(
     (restrict: boolean) => {
       const query = {
-        ...parseSearchToQuery(window.location.search),
+        ...parseSearchToQuery(location.search),
         restrict,
       };
       push(`?${parseQueryToSearch(query).toString()}`);
     },
-    [push]
+    [location.search, push]
   );
 };
 

@@ -29,7 +29,7 @@ import {
 } from './state/actions/actions';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import type { RenderResult } from '@testing-library/react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import type { UserEvent } from '@testing-library/user-event/dist/types/setup';
 import type { DeepPartial } from 'redux';
 import userEvent from '@testing-library/user-event';
@@ -854,7 +854,9 @@ describe('SearchPageContainer - Tests', () => {
       wrapper.update();
     });
 
-    expect(pushSpy).toHaveBeenCalledWith('?searchText=test');
+    expect(pushSpy).toHaveBeenCalledWith({
+      search: '?searchText=test',
+    });
   });
 
   it('shows SelectionAlert banner when item selected', async () => {
@@ -1047,7 +1049,7 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('initiates search when the URL is changed', async () => {
-    const { rerender } = renderComponent();
+    renderComponent();
 
     (axios.get as jest.Mock).mockClear();
 
@@ -1062,49 +1064,37 @@ describe('SearchPageContainer - Tests', () => {
       screen.getByRole('button', { name: 'searchBox.search_button_arialabel' })
     );
 
-    rerender(
-      <Provider store={configureStore([thunk])(state)}>
-        <Router history={history}>
-          <QueryClientProvider client={queryClient}>
-            <SearchPageContainer />
-          </QueryClientProvider>
-        </Router>
-      </Provider>
-    );
-
-    await waitFor(() => {
-      expect(axios.get).toHaveBeenNthCalledWith(
-        1,
-        'https://example.com/icat/search/documents',
-        {
-          params: {
-            maxCount: 100,
-            minCount: 10,
-            restrict: true,
-            search_after: '',
-            sort: {},
-            query: {
-              target: 'Investigation',
-              text: 'neutron AND scattering',
-              facets: [
-                {
-                  target: 'Investigation',
-                },
-                {
-                  dimensions: [{ dimension: 'type.name' }],
-                  target: 'InvestigationParameter',
-                },
-                {
-                  dimensions: [{ dimension: 'type.name' }],
-                  target: 'Sample',
-                },
-              ],
-            },
-            sessionId: null,
+    expect(axios.get).toHaveBeenNthCalledWith(
+      1,
+      'https://example.com/icat/search/documents',
+      {
+        params: {
+          maxCount: 100,
+          minCount: 10,
+          restrict: true,
+          search_after: '',
+          sort: {},
+          query: {
+            target: 'Investigation',
+            text: 'neutron AND scattering',
+            facets: [
+              {
+                target: 'Investigation',
+              },
+              {
+                dimensions: [{ dimension: 'type.name' }],
+                target: 'InvestigationParameter',
+              },
+              {
+                dimensions: [{ dimension: 'type.name' }],
+                target: 'Sample',
+              },
+            ],
           },
-        }
-      );
-    });
+          sessionId: null,
+        },
+      }
+    );
   });
 
   it('switches view button display name when clicked', async () => {

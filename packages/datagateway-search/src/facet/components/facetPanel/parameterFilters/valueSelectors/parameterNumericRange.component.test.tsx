@@ -70,9 +70,9 @@ describe('ParameterNumericRange', () => {
       '10'
     );
 
-    expect(onNewFilter).toHaveBeenCalledWith({
+    expect(onNewFilter).toHaveBeenLastCalledWith({
       label: '1 to 10',
-      key: `investigationparameter.numericValue.bcat_inv_str`,
+      key: `InvestigationParameter.numericValue.bcat_inv_str`,
       filter: [
         {
           field: 'numericValue',
@@ -119,7 +119,7 @@ describe('ParameterNumericRange', () => {
 
     expect(onNewFilter).toHaveBeenLastCalledWith({
       label: '1 to 10 (cm)',
-      key: `investigationparameter.numericValue.bcat_inv_str`,
+      key: `InvestigationParameter.numericValue.bcat_inv_str`,
       filter: [
         {
           field: 'numericValue',

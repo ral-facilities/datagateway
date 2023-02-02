@@ -88,7 +88,7 @@ function ParameterDateTimeSelector({
   function selectFacet(facet: ParameterValueFacet): void {
     setSelectedFacet(facet);
     onNewFilter({
-      key: `${entityName.toLowerCase()}parameter.dateTimeValue.${parameterName}`,
+      key: `${entityName}Parameter.dateTimeValue.${parameterName}`,
       label: facet.label,
       filter: [
         {
@@ -123,7 +123,7 @@ function ParameterDateTimeSelector({
         size="small"
         label={t('parameterFilters.creator.labels.parameterDateTimeSelect')}
         data-testid="parameter-date-time-selector"
-        value={selectedFacet?.label ?? null}
+        value={selectedFacet?.label ?? ''}
       >
         {facets.map((facet, index) => (
           <MenuItem
