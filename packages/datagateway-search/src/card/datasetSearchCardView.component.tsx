@@ -6,8 +6,10 @@ import {
 import { styled } from '@mui/material';
 import {
   AddToCartButton,
-  buildDatasetUrl,
-  buildInvestigationUrl,
+  buildDatafileTableUrlForDataset,
+  buildDatasetLandingUrl,
+  buildDatasetTableUrlForInvestigation,
+  buildInvestigationLandingUrl,
   CardView,
   Dataset,
   DatasetDetailsPanel,
@@ -123,11 +125,13 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
       // Provide both the dataKey (for tooltip) and content to render.
       dataKey: 'name',
       content: (dataset: Dataset) => {
-        const url = buildDatasetUrl({
-          dataset,
-          facilityName: hierarchy,
-          showLanding: hierarchy === FACILITY_NAME.isis,
-        });
+        const url =
+          hierarchy === FACILITY_NAME.isis
+            ? buildDatasetLandingUrl(dataset)
+            : buildDatafileTableUrlForDataset({
+                dataset,
+                facilityName: hierarchy,
+              });
         return url ? tableLink(url, dataset.name) : dataset.name;
       },
       filterComponent: textFilter,
@@ -173,11 +177,13 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
           const investigation = dataset.investigation;
           if (!investigation) return '';
 
-          const url = buildInvestigationUrl({
-            investigation,
-            facilityName: hierarchy,
-            showLanding: true,
-          });
+          const url =
+            hierarchy === FACILITY_NAME.isis
+              ? buildInvestigationLandingUrl(investigation)
+              : buildDatasetTableUrlForInvestigation({
+                  investigation,
+                  facilityName: hierarchy,
+                });
           return url
             ? tableLink(url, investigation.title)
             : investigation.title;
@@ -212,22 +218,16 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
     (dataset: Dataset) => {
       switch (hierarchy) {
         case FACILITY_NAME.isis:
-          const datasetsUrl = buildDatasetUrl({
+          const datasetsUrl = buildDatafileTableUrlForDataset({
             dataset,
-            facilityName: FACILITY_NAME.isis,
-            showLanding: false,
+            facilityName: hierarchy,
           });
-
           return (
             <ISISDatasetDetailsPanel
               rowData={dataset}
-              viewDatafiles={
-                datasetsUrl
-                  ? (_) => {
-                      push(datasetsUrl);
-                    }
-                  : undefined
-              }
+              viewDatafiles={() => {
+                if (datasetsUrl) push(datasetsUrl);
+              }}
             />
           );
 

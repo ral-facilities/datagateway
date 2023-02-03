@@ -9,7 +9,6 @@ import { Link as MuiLink, styled, Typography } from '@mui/material';
 import {
   AddToCartButton,
   ArrowTooltip,
-  buildInvestigationUrl,
   CardView,
   DLSVisitDetailsPanel,
   DownloadButton,
@@ -33,6 +32,7 @@ import {
   useSort,
   useTextFilter,
 } from 'datagateway-common';
+import { buildDatasetTableUrlForInvestigation } from 'datagateway-common/lib/urlBuilders';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
@@ -126,10 +126,9 @@ const InvestigationCardView = (
       // Provide both the dataKey (for tooltip) and content to render.
       dataKey: 'title',
       content: (investigation: Investigation) => {
-        const url = buildInvestigationUrl({
+        const url = buildDatasetTableUrlForInvestigation({
           investigation,
           facilityName: hierarchy,
-          showLanding: false,
         });
         return url ? tableLink(url, investigation.title) : investigation.title;
       },
@@ -245,21 +244,16 @@ const InvestigationCardView = (
     (investigation: Investigation) => {
       switch (hierarchy) {
         case FACILITY_NAME.isis:
-          const url = buildInvestigationUrl({
+          const url = buildDatasetTableUrlForInvestigation({
             investigation,
-            facilityName: hierarchy,
-            showLanding: false,
+            facilityName: FACILITY_NAME.isis,
           });
           return (
             <ISISInvestigationDetailsPanel
               rowData={investigation}
-              viewDatasets={
-                url
-                  ? (_) => {
-                      push(url);
-                    }
-                  : undefined
-              }
+              viewDatasets={() => {
+                if (url) push(url);
+              }}
             />
           );
 

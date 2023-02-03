@@ -37,6 +37,11 @@ if (typeof window.URL.revokeObjectURL === 'undefined') {
 // Add in ResizeObserver as it's not in Jest's environment
 global.ResizeObserver = require('resize-observer-polyfill');
 
+if (!global.structuredClone) {
+  // structuredClone not available in jest/node <17, so this is a quick polyfill that should do the exact same thing
+  global.structuredClone = (obj: unknown) => JSON.parse(JSON.stringify(obj));
+}
+
 // these are used for testing async actions
 export let actions: Action[] = [];
 export const resetActions = (): void => {

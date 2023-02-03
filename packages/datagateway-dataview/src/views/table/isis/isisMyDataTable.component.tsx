@@ -1,12 +1,22 @@
 import {
+  Assessment,
+  CalendarToday,
+  Fingerprint,
+  Public,
+  Save,
+  Subject,
+} from '@mui/icons-material';
+import {
   ColumnType,
+  externalSiteLink,
+  FACILITY_NAME,
   formatCountOrSize,
   Investigation,
+  ISISInvestigationDetailsPanel,
   parseSearchToQuery,
   readSciGatewayToken,
   Table,
   tableLink,
-  externalSiteLink,
   useAddToCart,
   useCart,
   useDateFilter,
@@ -14,28 +24,20 @@ import {
   useInvestigationCount,
   useInvestigationsInfinite,
   useInvestigationSizes,
-  useSort,
   useRemoveFromCart,
+  useSort,
   useTextFilter,
-  ISISInvestigationDetailsPanel,
-  buildInvestigationUrl,
-  FACILITY_NAME,
 } from 'datagateway-common';
+import {
+  buildDatasetTableUrlForInvestigation,
+  buildInvestigationLandingUrl,
+} from 'datagateway-common/lib/urlBuilders';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import { useHistory, useLocation } from 'react-router-dom';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { StateType } from '../../../state/app.types';
-
-import {
-  Subject,
-  Fingerprint,
-  Public,
-  Save,
-  Assessment,
-  CalendarToday,
-} from '@mui/icons-material';
-import { useSelector } from 'react-redux';
-import { useLocation, useHistory } from 'react-router-dom';
 
 const ISISMyDataTable = (): React.ReactElement => {
   const selectAllSetting = useSelector(
@@ -134,18 +136,17 @@ const ISISMyDataTable = (): React.ReactElement => {
 
   const detailsPanel = React.useCallback(
     ({ rowData, detailsPanelResize }) => {
-      const investigationUrl = buildInvestigationUrl({
+      const datasetTableUrl = buildDatasetTableUrlForInvestigation({
         facilityName: FACILITY_NAME.isis,
         investigation: rowData as Investigation,
-        showLanding: false,
       });
       return (
         <ISISInvestigationDetailsPanel
           rowData={rowData}
           detailsPanelResize={detailsPanelResize}
-          viewDatasets={
-            investigationUrl ? (_) => push(investigationUrl) : undefined
-          }
+          viewDatasets={() => {
+            if (datasetTableUrl) push(datasetTableUrl);
+          }}
         />
       );
     },
@@ -160,14 +161,10 @@ const ISISMyDataTable = (): React.ReactElement => {
         dataKey: 'title',
         cellContentRenderer: (cellProps: TableCellProps) => {
           const investigationData = cellProps.rowData as Investigation;
-          const url = buildInvestigationUrl({
-            facilityName: FACILITY_NAME.isis,
-            investigation: investigationData as Investigation,
-            showLanding: true,
-          });
+          const url = buildInvestigationLandingUrl(investigationData);
           return url
             ? tableLink(
-                `${url}/${investigationData.id}`,
+                url,
                 investigationData.title,
                 view,
                 'isis-mydata-table-title'
@@ -206,11 +203,7 @@ const ISISMyDataTable = (): React.ReactElement => {
         dataKey: 'name',
         cellContentRenderer: (cellProps: TableCellProps) => {
           const investigationData = cellProps.rowData as Investigation;
-          const url = buildInvestigationUrl({
-            facilityName: FACILITY_NAME.isis,
-            investigation: investigationData,
-            showLanding: true,
-          });
+          const url = buildInvestigationLandingUrl(investigationData);
           return url
             ? tableLink(url, investigationData.name, view)
             : investigationData.name;
@@ -226,9 +219,8 @@ const ISISMyDataTable = (): React.ReactElement => {
           if (investigationData?.investigationInstruments?.[0]?.instrument) {
             return investigationData.investigationInstruments[0].instrument
               .fullName;
-          } else {
-            return '';
           }
+          return '';
         },
         filterComponent: textFilter,
       },

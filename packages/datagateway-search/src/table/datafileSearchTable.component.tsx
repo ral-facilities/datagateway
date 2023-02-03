@@ -1,14 +1,16 @@
-import React from 'react';
 import {
-  buildDatafileUrl,
-  buildDatasetUrl,
+  buildDatafileTableUrlForDataset,
+  buildDatasetLandingUrl,
+  buildUrlToDatafileTableContainingDatafile,
   ColumnType,
   Datafile,
   DatafileDetailsPanel,
   Dataset,
   DLSDatafileDetailsPanel,
+  FACILITY_NAME,
   formatBytes,
   ISISDatafileDetailsPanel,
+  isLandingPageSupportedForHierarchy,
   parseSearchToQuery,
   Table,
   tableLink,
@@ -23,10 +25,11 @@ import {
   useSort,
   useTextFilter,
 } from 'datagateway-common';
-import { IndexRange, TableCellProps } from 'react-virtualized';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+import { IndexRange, TableCellProps } from 'react-virtualized';
 import { StateType } from '../state/app.types';
 
 interface DatafileSearchTableProps {
@@ -154,12 +157,12 @@ const DatafileSearchTable = (
         label: t('datafiles.name'),
         dataKey: 'name',
         cellContentRenderer: (cellProps: TableCellProps) => {
-          const datafileData = cellProps.rowData as Datafile;
-          const link = buildDatafileUrl({
+          const datafile = cellProps.rowData as Datafile;
+          const link = buildUrlToDatafileTableContainingDatafile({
+            datafile,
             facilityName: hierarchy,
-            datafile: datafileData,
           });
-          return link ? tableLink(link, datafileData.name) : datafileData.name;
+          return link ? tableLink(link, datafile.name) : datafile.name;
         },
         filterComponent: textFilter,
       },
@@ -183,11 +186,12 @@ const DatafileSearchTable = (
           const dataset = datafileData.dataset;
           if (!dataset) return '';
 
-          const link = buildDatasetUrl({
-            dataset,
-            facilityName: hierarchy,
-            showLanding: hierarchy === 'isis',
-          });
+          const link = isLandingPageSupportedForHierarchy(hierarchy)
+            ? buildDatasetLandingUrl(dataset)
+            : buildDatafileTableUrlForDataset({
+                dataset,
+                facilityName: hierarchy,
+              });
           return link ? tableLink(link, dataset.name) : dataset.name;
         },
         filterComponent: textFilter,
@@ -202,8 +206,9 @@ const DatafileSearchTable = (
   );
 
   let detailsPanel = DatafileDetailsPanel;
-  if (hierarchy === 'isis') detailsPanel = ISISDatafileDetailsPanel;
-  else if (hierarchy === 'dls') detailsPanel = DLSDatafileDetailsPanel;
+  if (hierarchy === FACILITY_NAME.isis) detailsPanel = ISISDatafileDetailsPanel;
+  else if (hierarchy === FACILITY_NAME.dls)
+    detailsPanel = DLSDatafileDetailsPanel;
 
   return (
     <Table
