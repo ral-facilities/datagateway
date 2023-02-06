@@ -1,21 +1,16 @@
-import React from 'react';
-import { mount } from 'enzyme';
+import { render, RenderResult, screen } from '@testing-library/react';
 import {
   Investigation,
-  Instrument,
-  FacilityCycle,
-  useInvestigation,
-  useFacilityCyclesByInvestigation,
-  useInstrumentsPaginated,
   NotificationType,
+  useInvestigation,
 } from 'datagateway-common';
-import { Router } from 'react-router-dom';
-import { ReactWrapper } from 'enzyme';
-import { QueryClientProvider, QueryClient } from 'react-query';
-import DoiRedirect from './doiRedirect.component';
 import { createLocation, createMemoryHistory } from 'history';
 import log from 'loglevel';
+import * as React from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { Router } from 'react-router-dom';
 import { AnyAction } from 'redux';
+import DoiRedirect from './doiRedirect.component';
 
 // jest.mock('loglevel');
 
@@ -47,18 +42,16 @@ jest.mock('react-router-dom', () => {
 describe('DOI Redirect page', () => {
   let history;
   let mockInvestigationData: Investigation[] = [];
-  let mockInstrumentData: Instrument[] = [];
-  let mockFacilityCycleData: FacilityCycle[] = [];
 
-  const createWrapper = (): ReactWrapper => {
-    return mount(
+  function renderComponent(): RenderResult {
+    return render(
       <Router history={history}>
         <QueryClientProvider client={new QueryClient()}>
           <DoiRedirect />
         </QueryClientProvider>
       </Router>
     );
-  };
+  }
 
   beforeEach(() => {
     history = createMemoryHistory({
@@ -72,35 +65,32 @@ describe('DOI Redirect page', () => {
         title: 'Investigation 1',
         visitId: '1',
         startDate: '2022-04-01 00:00:00',
-      },
-    ];
-    mockInstrumentData = [
-      {
-        id: 2,
-        name: 'instrument1',
-      },
-    ];
-    mockFacilityCycleData = [
-      {
-        id: 3,
-        name: 'facilitycycle1',
-        startDate: '2022-04-01 00:00:00',
-        endDate: '2022-04-02 00:00:00',
+        investigationInstruments: [
+          {
+            id: 401,
+            instrument: {
+              id: 2,
+              name: 'instrument1',
+            },
+          },
+        ],
+        investigationFacilityCycles: [
+          {
+            id: 633,
+            facilityCycle: {
+              id: 3,
+              name: 'facilitycycle1',
+              startDate: '2022-04-01 00:00:00',
+              endDate: '2022-04-02 00:00:00',
+            },
+          },
+        ],
       },
     ];
 
     (useInvestigation as jest.Mock).mockReturnValue({
       data: mockInvestigationData,
       isLoading: false,
-    });
-    (useInstrumentsPaginated as jest.Mock).mockReturnValue({
-      data: mockInstrumentData,
-      isLoading: false,
-    });
-    (useFacilityCyclesByInvestigation as jest.Mock).mockReturnValue({
-      data: mockFacilityCycleData,
-      isLoading: false,
-      isIdle: false,
     });
   });
 
@@ -109,20 +99,8 @@ describe('DOI Redirect page', () => {
   });
 
   it('redirects to correct link when everything loads correctly', async () => {
-    createWrapper();
+    renderComponent();
 
-    expect(useInvestigation).toHaveBeenCalledWith(1);
-    expect(useInstrumentsPaginated).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'investigationInstruments.investigation.id': { eq: 1 },
-        }),
-      },
-    ]);
-    expect(useFacilityCyclesByInvestigation).toHaveBeenCalledWith(
-      '2022-04-01 00:00:00'
-    );
     expect(history.location.pathname).toBe(
       '/browse/instrument/2/facilityCycle/3/investigation/1/dataset'
     );
@@ -133,51 +111,14 @@ describe('DOI Redirect page', () => {
       data: [],
       isLoading: true,
     });
-    let wrapper = createWrapper();
 
-    expect(wrapper.find('Preloader').exists()).toBe(true);
-    expect(wrapper.find('Preloader').prop('loading')).toBe(true);
+    renderComponent();
 
-    (useInvestigation as jest.Mock).mockReturnValue({
-      data: mockInvestigationData,
-      isLoading: false,
-    });
-    (useInstrumentsPaginated as jest.Mock).mockReturnValue({
-      data: [],
-      isLoading: true,
-    });
-    wrapper = createWrapper();
-
-    expect(wrapper.find('Preloader').exists()).toBe(true);
-    expect(wrapper.find('Preloader').prop('loading')).toBe(true);
-
-    (useInstrumentsPaginated as jest.Mock).mockReturnValue({
-      data: mockInstrumentData,
-      isLoading: false,
-    });
-    (useFacilityCyclesByInvestigation as jest.Mock).mockReturnValue({
-      data: [],
-      isLoading: true,
-      isIdle: false,
-    });
-    wrapper = createWrapper();
-
-    expect(wrapper.find('Preloader').exists()).toBe(true);
-    expect(wrapper.find('Preloader').prop('loading')).toBe(true);
-
-    (useFacilityCyclesByInvestigation as jest.Mock).mockReturnValue({
-      data: [],
-      isLoading: false,
-      isIdle: true,
-    });
-    wrapper = createWrapper();
-
-    expect(wrapper.find('Preloader').exists()).toBe(true);
-    expect(wrapper.find('Preloader').prop('loading')).toBe(true);
+    expect(screen.getByRole('progressbar')).toBeInTheDocument();
   });
 
   it('throws error and redirects to homepage if data invalid', async () => {
-    let events = [];
+    const events = [];
 
     document.dispatchEvent = (e: Event) => {
       events.push(e as CustomEvent<AnyAction>);
@@ -187,58 +128,8 @@ describe('DOI Redirect page', () => {
       data: [],
       isLoading: false,
     });
-    createWrapper();
 
-    expect(history.location.pathname).toBe('/datagateway');
-    expect(log.error).toHaveBeenCalledWith('Invalid DOI redirect');
-    expect(events.length).toBe(1);
-    expect(events[0].detail).toEqual({
-      type: NotificationType,
-      payload: {
-        severity: 'error',
-        message:
-          'Cannot read the investigation. You may not have read access, or it may not be published yet.',
-      },
-    });
-
-    history.push('/doi-redirect/LILS/investigation/1');
-    events = [];
-    (log.error as jest.Mock).mockClear();
-    (useInvestigation as jest.Mock).mockReturnValue({
-      data: mockInvestigationData,
-      isLoading: false,
-    });
-    (useInstrumentsPaginated as jest.Mock).mockReturnValue({
-      data: [],
-      isLoading: false,
-    });
-    createWrapper();
-
-    expect(history.location.pathname).toBe('/datagateway');
-    expect(log.error).toHaveBeenCalledWith('Invalid DOI redirect');
-    expect(events.length).toBe(1);
-    expect(events[0].detail).toEqual({
-      type: NotificationType,
-      payload: {
-        severity: 'error',
-        message:
-          'Cannot read the investigation. You may not have read access, or it may not be published yet.',
-      },
-    });
-
-    history.push('/doi-redirect/LILS/investigation/1');
-    events = [];
-    (log.error as jest.Mock).mockClear();
-    (useInstrumentsPaginated as jest.Mock).mockReturnValue({
-      data: mockInstrumentData,
-      isLoading: false,
-    });
-    (useFacilityCyclesByInvestigation as jest.Mock).mockReturnValue({
-      data: [],
-      isLoading: false,
-      isIdle: false,
-    });
-    createWrapper();
+    renderComponent();
 
     expect(history.location.pathname).toBe('/datagateway');
     expect(log.error).toHaveBeenCalledWith('Invalid DOI redirect');
