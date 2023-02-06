@@ -3,6 +3,7 @@
 exports[`Investigation details panel component renders correctly 1`] = `
 <Styled(ForwardRef(Grid))
   container={true}
+  data-testid="investigation-details-panel"
   direction="column"
   id="details-panel"
 >
