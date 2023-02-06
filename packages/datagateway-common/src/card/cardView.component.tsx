@@ -716,25 +716,26 @@ const CardView = (props: CardViewProps): React.ReactElement => {
         {/* Card data */}
         <Grid item xs={12} md={9}>
           {/* Selected filters array */}
-          {selectedFilters.length > 0 && (filterUpdate || totalDataCount > 0) && (
-            <SelectedChips>
-              {selectedFilters.map((filter, filterIndex) => (
-                <li key={filterIndex}>
-                  {filter.items.map((item, itemIndex) => (
-                    <Chip
-                      key={itemIndex}
-                      sx={{ margin: 0.5 }}
-                      label={`${filter.label} - ${item}`}
-                      onDelete={() => {
-                        changeFilter(filter.filterKey, item, true);
-                        setFilterUpdate(true);
-                      }}
-                    />
-                  ))}
-                </li>
-              ))}
-            </SelectedChips>
-          )}
+          {selectedFilters.length > 0 &&
+            (filterUpdate || totalDataCount > 0) && (
+              <SelectedChips>
+                {selectedFilters.map((filter, filterIndex) => (
+                  <li key={filterIndex}>
+                    {filter.items.map((item, itemIndex) => (
+                      <Chip
+                        key={itemIndex}
+                        sx={{ margin: 0.5 }}
+                        label={`${filter.label} - ${item}`}
+                        onDelete={() => {
+                          changeFilter(filter.filterKey, item, true);
+                          setFilterUpdate(true);
+                        }}
+                      />
+                    ))}
+                  </li>
+                ))}
+              </SelectedChips>
+            )}
 
           {/* List of cards */}
           {hasFilteredResults ? (
