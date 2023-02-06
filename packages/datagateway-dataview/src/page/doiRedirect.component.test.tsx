@@ -12,8 +12,6 @@ import { Router } from 'react-router-dom';
 import { AnyAction } from 'redux';
 import DoiRedirect from './doiRedirect.component';
 
-// jest.mock('loglevel');
-
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
 
@@ -21,8 +19,6 @@ jest.mock('datagateway-common', () => {
     __esModule: true,
     ...originalModule,
     useInvestigation: jest.fn(),
-    useInstrumentsPaginated: jest.fn(),
-    useFacilityCyclesByInvestigation: jest.fn(),
   };
 });
 
