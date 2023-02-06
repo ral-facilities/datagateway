@@ -140,3 +140,41 @@ exports[`Investigation Search Table component renders title and DOI as links 2`]
   doi 1
 </a>
 `;
+
+exports[`Investigation Search Table component renders title, visit ID, Name and DOI as links 1`] = `
+<a
+  class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
+  href="/browse/investigation/1/dataset"
+>
+  Test Title 1
+</a>
+`;
+
+exports[`Investigation Search Table component renders title, visit ID, Name and DOI as links 2`] = `
+Array [
+  <span
+    aria-label="1"
+    class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+    data-mui-internal-clone-element="true"
+  >
+    1
+  </span>,
+  <span
+    aria-label="1"
+    class="MuiTypography-root MuiTypography-body2 MuiTypography-noWrap css-cvfmw9-MuiTypography-root"
+    data-mui-internal-clone-element="true"
+  >
+    1
+  </span>,
+]
+`;
+
+exports[`Investigation Search Table component renders title, visit ID, Name and DOI as links 3`] = `
+<a
+  class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
+  data-testid="investigation-search-table-doi-link"
+  href="https://doi.org/doi 1"
+>
+  doi 1
+</a>
+`;
