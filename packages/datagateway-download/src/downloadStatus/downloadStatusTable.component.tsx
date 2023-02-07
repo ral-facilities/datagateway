@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Grid, IconButton, LinearProgress, Paper } from '@mui/material';
 
 import {
@@ -20,7 +20,9 @@ import { useTranslation } from 'react-i18next';
 import { toDate } from 'date-fns-tz';
 import { format } from 'date-fns';
 import DownloadProgressIndicator from './downloadProgressIndicator.component';
+import { useQueryClient } from 'react-query';
 import {
+  QueryKey,
   useDownloadOrRestoreDownload,
   useDownloads,
 } from '../downloadApiHooks';
@@ -39,6 +41,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
   const settings = React.useContext(DownloadSettingsContext);
   const [t] = useTranslation();
   const { formatDownload } = useDownloadFormatter();
+  const queryClient = useQueryClient();
 
   // Sorting columns
   const [sort, setSort] = React.useState<{ [column: string]: Order }>({
@@ -53,7 +56,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
     data: downloads,
     isLoading,
     isFetched,
-    refetch,
+    refetch: refetchDownloads,
     dataUpdatedAt,
   } = useDownloads({
     select: (data) => data.map(formatDownload),
@@ -65,10 +68,14 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
     setLastCheckedTimestamp,
   } = props;
 
-  const refreshTable = React.useCallback(async () => {
-    await refetch();
+  const refreshTable = useCallback(async () => {
+    await Promise.all([
+      // mark download progress queries as invalid so that react-query will refetch them as well.
+      queryClient.invalidateQueries(QueryKey.DOWNLOAD_PROGRESS),
+      refetchDownloads(),
+    ]);
     setRefreshTable(false);
-  }, [refetch, setRefreshTable]);
+  }, [queryClient, refetchDownloads, setRefreshTable]);
 
   // detect table refresh and refetch data if needed
   React.useEffect(() => {

@@ -1,6 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import SelectHeader from './selectHeader.component';
+import SelectCell from '../cellRenderers/selectCell.component';
 
 describe('Select column header component', () => {
   const setLastChecked = jest.fn();
@@ -53,6 +54,17 @@ describe('Select column header component', () => {
       <SelectHeader
         {...selectHeaderProps}
         loading={true}
+        selectedRows={undefined}
+      />
+    );
+    expect(wrapper).toMatchSnapshot();
+  });
+
+  it('renders correctly when selectedRows parentSelected is true', () => {
+    const wrapper = shallow(
+      <SelectCell
+        {...selectHeaderProps}
+        parentSelected={true}
         selectedRows={undefined}
       />
     );

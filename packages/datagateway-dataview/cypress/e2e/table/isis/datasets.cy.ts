@@ -201,7 +201,7 @@ describe('ISIS - Datasets Table', () => {
         .find('button')
         .click();
 
-      cy.get('.MuiPickersDay-root[tabindex="-1"]').first().click();
+      cy.get('.MuiPickersDay-root[type="button"]').first().click();
 
       const date = new Date();
       date.setDate(1);
