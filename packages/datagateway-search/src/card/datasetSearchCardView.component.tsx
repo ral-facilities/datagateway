@@ -12,7 +12,6 @@ import {
   DLSDatasetDetailsPanel,
   DownloadButton,
   FacilityCycle,
-  FiltersType,
   formatBytes,
   formatCountOrSize,
   ISISDatasetDetailsPanel,
@@ -160,14 +159,6 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
     },
     [t]
   );
-
-  const parsedFilters = React.useMemo(() => {
-    const parsedFilters = {} as FiltersType;
-    Object.entries(filters).forEach((v) => {
-      parsedFilters[v[0].substring(8)] = v[1]; // "dataset." is 8 characters
-    });
-    return parsedFilters;
-  }, [filters]);
 
   const { paginatedSource, aggregatedIds, aborted } = React.useMemo(() => {
     if (data) {
@@ -552,7 +543,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
                 onResultsChange={pushResults}
                 loadedData={!isLoading}
                 loadedCount={!isLoading}
-                filters={parsedFilters}
+                filters={{}}
                 sort={{}}
                 page={page}
                 results={results}
