@@ -70,7 +70,6 @@ const InvestigationSearchTable = ({
 
   const [t] = useTranslation();
 
-  console.log('new filters', filters);
   const { fetchNextPage, data, hasNextPage, isFetching } =
     useLuceneSearchInfinite(
       'Investigation',

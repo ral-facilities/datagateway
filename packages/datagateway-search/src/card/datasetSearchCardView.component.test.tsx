@@ -235,7 +235,6 @@ describe('Dataset - Card View', () => {
 
   it('does not render ISIS link when instrumentId cannot be found', async () => {
     axios.get = jest.fn((url: string) => {
-      console.log('url', url);
       if (/\/facilitycycles$/.test(url)) {
         return Promise.resolve({
           data: [

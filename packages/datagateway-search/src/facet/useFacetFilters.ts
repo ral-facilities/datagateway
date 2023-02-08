@@ -103,13 +103,6 @@ function useFacetFilters(): {
 
   const applyFacetFilters = React.useCallback((): void => {
     const searchParams = new URLSearchParams(location.search);
-    // const filters = Object.entries(selectedFacetFilters).reduce<FiltersType>(
-    //   (obj, [dimension, value]) => {
-    //     obj[dimension.toLocaleLowerCase()] = value;
-    //     return obj;
-    //   },
-    //   {}
-    // );
     searchParams.set('filters', JSON.stringify(selectedFacetFilters));
     push({ search: `?${searchParams.toString()}` });
   }, [location.search, push, selectedFacetFilters]);

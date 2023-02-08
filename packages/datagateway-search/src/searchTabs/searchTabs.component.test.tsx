@@ -33,7 +33,6 @@ describe('SearchTabs', () => {
   ): Promise<Partial<AxiosResponse>> => {
     if (/\/search\/documents$/.test(url)) {
       const searchType: DatasearchType = config.params.query.target;
-      console.log('type', searchType);
       let searchResponse: SearchResponse;
       switch (searchType) {
         case 'Investigation':

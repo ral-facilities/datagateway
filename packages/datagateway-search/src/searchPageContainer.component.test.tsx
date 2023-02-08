@@ -132,7 +132,6 @@ describe('SearchPageContainer - Tests', () => {
     };
 
     (axios.get as jest.Mock).mockImplementation((url) => {
-      console.log('url', url);
       if (url.includes('count')) {
         return Promise.resolve({ data: 0 });
       } else {

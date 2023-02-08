@@ -10,7 +10,6 @@ describe('Datafile search tab', () => {
   beforeEach(() => {
     cy.login();
     cy.visit('/search/data/');
-    // cy.intercept(`**/topcat/user/cart*`, { statusCode: 200 });
     cy.intercept('**/search/documents*', {
       fixture: 'datafileSearchResults.json',
     });

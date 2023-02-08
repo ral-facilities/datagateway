@@ -43,7 +43,6 @@ export const readSciGatewayToken = () => {
   const token = window.localStorage.getItem('scigateway:token');
   let sessionId = null;
   let username = null;
-  console.log('sessionId', sessionId);
   if (token) {
     const parsedToken = JSON.parse(parseJwt(token));
     if (parsedToken.sessionId) sessionId = parsedToken.sessionId;
