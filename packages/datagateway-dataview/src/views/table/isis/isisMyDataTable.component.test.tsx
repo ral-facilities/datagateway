@@ -453,8 +453,6 @@ describe('ISIS MyData table component', () => {
       await within(row).findByRole('button', { name: 'Show details' })
     );
 
-    screen.debug(undefined, 100000000000);
-
     expect(
       await screen.findByTestId('isis-investigation-details-panel')
     ).toBeInTheDocument();
