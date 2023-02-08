@@ -31,7 +31,7 @@ import {
 import {
   buildDatasetTableUrlForInvestigation,
   buildInvestigationLandingUrl,
-} from 'datagateway-common/lib/urlBuilders';
+} from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
