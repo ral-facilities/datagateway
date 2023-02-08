@@ -43,9 +43,6 @@ function ToggleableFilterItem({
               selected ? 'Remove' : 'Add'
             } ${classificationLabel} filter`,
           }}
-          onChange={(event) =>
-            onSelect(classificationLabel, event.target.checked)
-          }
         />
       </ListItemIcon>
       <ListItemText>
