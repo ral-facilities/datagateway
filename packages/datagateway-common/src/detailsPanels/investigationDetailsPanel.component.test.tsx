@@ -1,16 +1,17 @@
-import React from 'react';
-import { shallow } from 'enzyme';
+import * as React from 'react';
 import InvestigationDetailsPanel from './investigationDetailsPanel.component';
-import { Investigation } from '../app.types';
+import { Investigation, SearchResultSource } from '../app.types';
+import { render, screen } from '@testing-library/react';
 
 describe('Investigation details panel component', () => {
-  let rowData: Investigation;
-  const detailsPanelResize = jest.fn();
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
-  beforeEach(() => {
-    rowData = {
+  it('shows investigation details correctly', () => {
+    const rowData: Investigation = {
       id: 1,
-      title: 'Test 1',
+      title: 'Test title 1',
       name: 'Test 1',
       summary: 'foo bar',
       visitId: '1',
@@ -40,19 +41,62 @@ describe('Investigation details panel component', () => {
       startDate: '2019-06-10',
       endDate: '2019-06-11',
     };
+
+    render(<InvestigationDetailsPanel rowData={rowData} />);
+
+    expect(screen.getByText('Test title 1')).toBeInTheDocument();
+    expect(screen.getByText('Test 1')).toBeInTheDocument();
+    expect(screen.getByText('2019-06-10')).toBeInTheDocument();
+    expect(screen.getByText('2019-06-11')).toBeInTheDocument();
   });
 
-  afterEach(() => {
-    jest.clearAllMocks();
+  it('shows investigation details of search result source correctly', () => {
+    const rowData: SearchResultSource = {
+      id: 1,
+      title: 'Test title 1',
+      name: 'Test 1',
+      summary: 'foo bar',
+      visitId: '1',
+      doi: 'doi 1',
+      startDate: 1563922800000,
+      endDate: 1564009200000,
+    };
+
+    render(<InvestigationDetailsPanel rowData={rowData} />);
+
+    expect(screen.getByText('Test title 1')).toBeInTheDocument();
+    expect(screen.getByText('Test 1')).toBeInTheDocument();
+    expect(screen.getByText('2019-07-24 00:00:00')).toBeInTheDocument();
+    expect(screen.getByText('2019-07-25 00:00:00')).toBeInTheDocument();
   });
 
-  it('renders correctly', () => {
-    const wrapper = shallow(
-      <InvestigationDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-      />
+  it('shows start/end date as unknown if not provided', () => {
+    const rowData: SearchResultSource = {
+      id: 1,
+      title: 'Test title 1',
+      name: 'Test 1',
+      summary: 'foo bar',
+      visitId: '1',
+      doi: 'doi 1',
+      startDate: 1563922800000,
+    };
+
+    const { rerender } = render(
+      <InvestigationDetailsPanel rowData={rowData} />
     );
-    expect(wrapper).toMatchSnapshot();
+
+    expect(screen.getByText('Test title 1')).toBeInTheDocument();
+    expect(screen.getByText('Test 1')).toBeInTheDocument();
+    expect(screen.getByText('2019-07-24 00:00:00')).toBeInTheDocument();
+    expect(screen.getByText('app.unknown')).toBeInTheDocument();
+
+    rowData.endDate = 1564009200000;
+    delete rowData.startDate;
+    rerender(<InvestigationDetailsPanel rowData={rowData} />);
+
+    expect(screen.getByText('Test title 1')).toBeInTheDocument();
+    expect(screen.getByText('Test 1')).toBeInTheDocument();
+    expect(screen.getByText('2019-07-25 00:00:00')).toBeInTheDocument();
+    expect(screen.getByText('app.unknown')).toBeInTheDocument();
   });
 });
