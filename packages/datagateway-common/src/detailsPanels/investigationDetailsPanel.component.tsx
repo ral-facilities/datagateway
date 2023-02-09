@@ -1,7 +1,7 @@
 import React from 'react';
 import { Divider, Grid, styled, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import type { Investigation, SearchResultSource } from '../app.types';
+import type { Entity, Investigation, SearchResultSource } from '../app.types';
 import { format } from 'date-fns';
 
 const StyledGrid = styled(Grid)(({ theme }) => ({
@@ -13,14 +13,15 @@ const StyledDivider = styled(Divider)(({ theme }) => ({
 }));
 
 interface InvestigationDetailsPanelProps {
-  rowData: Investigation | SearchResultSource;
+  rowData: Entity;
   detailsPanelResize?: () => void;
 }
 
 const InvestigationDetailsPanel = (
   props: InvestigationDetailsPanelProps
 ): React.ReactElement => {
-  const { detailsPanelResize, rowData: investigationData } = props;
+  const { detailsPanelResize, rowData } = props;
+  const investigationData = rowData as Investigation | SearchResultSource;
 
   const [t] = useTranslation();
 
