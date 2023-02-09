@@ -19,6 +19,7 @@ import {
 } from '../../state/actions/actions.types';
 import type { StateType } from '../../state/app.types';
 import type { Action } from '../../state/reducers/createReducer';
+import { format, parse } from 'date-fns';
 
 const StyledGrid = styled(Grid)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -90,6 +91,11 @@ const VisitDetailsPanel = (
       changeTab(DEFAULT_TAB);
     }
   }, [data, selectedTab, changeTab]);
+
+  function formatParameterDateTimeValue(dateTime: string): string {
+    const date = parse(dateTime, 'yyyy-MM-dd HH:mm:ssXXX', new Date());
+    return format(date, 'yyyy-MM-dd');
+  }
 
   return (
     <div
@@ -353,7 +359,9 @@ const VisitDetailsPanel = (
                           <Typography>
                             <b>
                               {parameter.dateTimeValue &&
-                                parameter.dateTimeValue.split(' ')[0]}
+                                formatParameterDateTimeValue(
+                                  parameter.dateTimeValue
+                                )}
                             </b>
                           </Typography>
                         </Grid>
