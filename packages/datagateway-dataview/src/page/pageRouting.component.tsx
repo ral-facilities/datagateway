@@ -34,6 +34,7 @@ import DatasetCardView from '../views/card/datasetCardView.component';
 import ISISInstrumentsCardView from '../views/card/isis/isisInstrumentsCardView.component';
 import ISISStudiesCardView from '../views/card/isis/isisStudiesCardView.component';
 import ISISStudyLanding from '../views/landing/isis/isisStudyLanding.component';
+import ISISDataPublicationLanding from '../views/landing/isis/isisDataPublicationLanding.component';
 import ISISFacilityCyclesCardView from '../views/card/isis/isisFacilityCyclesCardView.component';
 import ISISInvestigationsCardView from '../views/card/isis/isisInvestigationsCardView.component';
 import ISISInvestigationLanding from '../views/landing/isis/isisInvestigationLanding.component';
@@ -461,6 +462,17 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
               proposalName={match.params.proposalName as string}
               investigationId={match.params.investigationId as string}
               datasetId={match.params.datasetId as string}
+            />
+          )}
+        />
+
+        {/* ISIS dataPublications routes */}
+        <Route
+          exact
+          path={paths.landing.isisDataPublicationLanding}
+          render={({ match }) => (
+            <ISISDataPublicationLanding
+              dataPublicationId={match.params.dataPublicationId as string}
             />
           )}
         />

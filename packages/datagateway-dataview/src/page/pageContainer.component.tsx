@@ -93,6 +93,8 @@ export const paths = {
     isis: '/my-data/ISIS',
   },
   landing: {
+    isisDataPublicationLanding:
+      '/browseDataPublications/dataPublication/:dataPublicationId',
     isisInvestigationLanding:
       '/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation/:investigationId',
     isisDatasetLanding:
