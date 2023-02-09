@@ -134,6 +134,17 @@ export interface Study {
   studyInvestigations?: StudyInvestigation[];
 }
 
+// export interface DataCollection {
+//   id: number;
+//   dataCollectionInvestigation
+// }
+
+export interface DataPublicationUser {
+  id: number;
+  contributorType: string;
+  fullName: string;
+}
+
 export interface DataPublication {
   id: number;
   pid: string;
@@ -142,7 +153,7 @@ export interface DataPublication {
   createTime: string;
   description?: string;
   publicationDate?: string;
-  users?: User[];
+  users?: DataPublicationUser[];
 }
 
 interface InstrumentScientist {

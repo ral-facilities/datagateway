@@ -156,6 +156,10 @@ export const useDataPublication = (
             id: { eq: dataPublicationId },
           }),
         },
+        {
+          filterType: 'include',
+          filterValue: JSON.stringify('users'),
+        },
       ]);
     },
     {
