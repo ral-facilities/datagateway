@@ -1,6 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Preloader component does not render when the site is not loading 1`] = `<div />`;
+exports[`Preloader component does not render when the site is not loading 1`] = `
+<DocumentFragment>
+  <div />
+</DocumentFragment>
+`;
 
 exports[`Preloader component renders when the site is loading 1`] = `
 <DocumentFragment>

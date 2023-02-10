@@ -96,7 +96,7 @@ const InvestigationDetailsPanel = (
 
   return (
     <div
-      data-testid="investigation-details-panel"
+      data-testid="isis-investigation-details-panel"
       id="details-panel"
       style={{ minWidth: 0 }}
     >

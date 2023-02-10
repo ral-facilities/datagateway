@@ -3,6 +3,7 @@
 exports[`Datafile details panel component renders correctly 1`] = `
 <DocumentFragment>
   <div
+    data-testid="dls-datafile-details-panel"
     id="details-panel"
     style="min-width: 0;"
   >

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography, Grid, Divider, styled } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { useDatafileDetails } from '../../api/datafiles';
+import { useDatafileDetails } from '../../api';
 import { Datafile, Entity } from '../../app.types';
 import { formatBytes } from '../../table/cellRenderers/cellContentRenderers';
 
@@ -33,7 +33,7 @@ const DatafileDetailsPanel = (
 
   return (
     <div
-      data-testid="datafile-details-panel"
+      data-testid="dls-datafile-details-panel"
       id="details-panel"
       style={{ minWidth: 0 }}
     >
