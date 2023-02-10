@@ -1,21 +1,15 @@
-import { Accordion, Chip } from '@mui/material';
-import { mount, ReactWrapper } from 'enzyme';
-import React from 'react';
+import * as React from 'react';
 import axios from 'axios';
-import { CardViewProps, default as CardView } from './cardView.component';
+import CardView, { type CardViewProps } from './cardView.component';
 import { TextColumnFilter } from '..';
-import { Entity, Investigation } from '../app.types';
+import type { Entity, Investigation } from '../app.types';
 import { render, screen, waitFor, within } from '@testing-library/react';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
+import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 
 describe('Card View', () => {
   let props: CardViewProps;
   let user: UserEvent;
-
-  const createWrapper = (props: CardViewProps): ReactWrapper => {
-    return mount(<CardView {...props} />);
-  };
 
   const onFilter = jest.fn();
   const onPageChange = jest.fn();
@@ -170,7 +164,7 @@ describe('Card View', () => {
     expect(onFilter).toHaveBeenNthCalledWith(4, 'type.id', null);
   });
 
-  it('custom filter applied when non-custom filter already in state', () => {
+  it('custom filter applied when non-custom filter already in state', async () => {
     const updatedProps = {
       ...props,
       customFilters: [
@@ -191,19 +185,24 @@ describe('Card View', () => {
       ],
       filters: { 'type.id': { value: 'abc', type: 'include' } },
     };
-    const wrapper = createWrapper(updatedProps);
-    expect(
-      wrapper.find('[data-testid="card"]').at(0).find(Chip).text()
-    ).toEqual('1');
+
+    render(<CardView {...updatedProps} />);
+
+    for (const elem of within(
+      screen.getByLabelText('Filter by Type ID 1')
+    ).getAllByText('1')) {
+      expect(elem).toBeInTheDocument();
+    }
 
     // Open custom filters
-    const typePanel = wrapper.find(Accordion).first();
-    typePanel.find('div').at(1).simulate('click');
-    expect(typePanel.find(Chip).first().text()).toEqual('1');
-    expect(typePanel.find(Chip).last().text()).toEqual('2');
+    await user.click(await screen.findByText('Type ID'));
+
+    const chipList = within(await screen.findByLabelText('filter-by-list'));
+    expect(chipList.getByLabelText('1')).toBeInTheDocument();
+    expect(chipList.getByLabelText('2')).toBeInTheDocument();
 
     // Apply custom filters
-    typePanel.find(Chip).first().find('div').simulate('click');
+    await user.click(chipList.getByLabelText('1'));
     expect(onPageChange).toHaveBeenNthCalledWith(1, 1);
     expect(onFilter).toHaveBeenNthCalledWith(1, 'type.id', ['1']);
   });
