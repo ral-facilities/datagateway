@@ -50,26 +50,20 @@ const ArrowTooltip = (
 
   const tooltipResizeObserver = React.useRef<ResizeObserver>(
     new ResizeObserver((entries) => {
-      const tooltipElement = entries[0].target;
+      const tooltipTargetElement = entries[0].target;
       // Check that the element has been rendered and set the viewable
       // as false before checking to see the element has exceeded maximum width.
-      if (
-        tooltipElement !== null &&
-        entries.length > 0 &&
-        entries[0].borderBoxSize.length > 0
-      ) {
+      if (tooltipTargetElement && entries[0].borderBoxSize.length > 0) {
         // Width of the tooltip contents including padding and borders
         // This is rounded as window.innerWidth and tooltip.scrollWidth are always integer
-        const borderBoxWidth = Math.round(
+        const currentTargetWidth = Math.round(
           entries[0].borderBoxSize[0].inlineSize
         );
+        const minWidthToFitContentOfTarget = tooltipTargetElement.scrollWidth;
+        const isContentOfTargetOverflowing =
+          minWidthToFitContentOfTarget > currentTargetWidth;
 
-        // have tooltip appear only when visible text width is smaller than full text width.
-        if (tooltipElement && borderBoxWidth < tooltipElement.scrollWidth) {
-          setTooltipVisible(true);
-        } else {
-          setTooltipVisible(false);
-        }
+        setTooltipVisible(isContentOfTargetOverflowing);
       }
     })
   );
@@ -79,16 +73,14 @@ const ArrowTooltip = (
   const tooltipRef = React.useCallback((container: HTMLDivElement) => {
     if (container !== null) {
       tooltipResizeObserver.current.observe(container);
-    }
-    // When element is unmounted we know container is null so time to clean up
-    else {
-      if (tooltipResizeObserver.current)
-        tooltipResizeObserver.current.disconnect();
+    } else if (tooltipResizeObserver.current) {
+      // When element is unmounted we know container is null so time to clean up
+      tooltipResizeObserver.current.disconnect();
     }
   }, []);
 
   let shouldDisableHoverListener = !isTooltipVisible;
-  //Allow disableHoverListener to be overidden
+  // Allow disableHoverListener to be overridden
   if (disableHoverListener !== undefined)
     shouldDisableHoverListener = disableHoverListener;
 
