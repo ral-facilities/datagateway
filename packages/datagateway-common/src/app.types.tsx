@@ -134,10 +134,28 @@ export interface Study {
   studyInvestigations?: StudyInvestigation[];
 }
 
-// export interface DataCollection {
-//   id: number;
-//   dataCollectionInvestigation
-// }
+export interface DataCollectionDatafile {
+  id: number;
+  datafile: Datafile;
+}
+
+export interface DataCollectionDataset {
+  id: number;
+  dataset: Dataset;
+}
+
+export interface DataCollectionInvestigation {
+  id: number;
+  investigation: Investigation;
+}
+
+export interface DataCollection {
+  id: number;
+  dataCollectionInvestigations?: DataCollectionInvestigation[];
+  dataCollectionDatasets?: DataCollectionDataset[];
+  dataCollectionDatafiles?: DataCollectionDatafile[];
+  dataPublications?: DataPublication[];
+}
 
 export interface DataPublicationUser {
   id: number;
