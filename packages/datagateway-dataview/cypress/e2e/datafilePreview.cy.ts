@@ -81,15 +81,15 @@ describe('Datafile preview', () => {
   });
 
   it('should have a copy link button that copies the link to the current datafile to the clipboard', () => {
-    cy.wrap(
-      Cypress.automation('remote:debugger:protocol', {
-        command: 'Browser.grantPermissions', //Allow browser to access clipboard
-        params: {
-          permissions: ['clipboardReadWrite', 'clipboardSanitizedWrite'],
-          origin: window.location.origin,
-        },
-      })
-    );
+    //cy.wrap(
+    //  Cypress.automation('remote:debugger:protocol', {
+    //    command: 'Browser.grantPermissions', //Allow browser to access clipboard
+    //    params: {
+    //      permissions: ['clipboardReadWrite', 'clipboardSanitizedWrite'],
+    //      origin: window.location.origin,
+    //    },
+    //  })
+    //);
     cy.contains('Copy link').click();
     cy.get('@copy').should(
       'be.calledOnceWithExactly',
