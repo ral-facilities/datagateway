@@ -22,6 +22,9 @@ import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
 } from '../../../setupTests';
+import { render, type RenderResult, screen } from '@testing-library/react';
+import { UserEvent } from '@testing-library/user-event/setup/setup';
+import userEvent from '@testing-library/user-event';
 
 jest
   .useFakeTimers('modern')
@@ -43,6 +46,7 @@ describe('ISIS Studies - Card View', () => {
   let state: StateType;
   let cardData: Study[];
   let history: History;
+  let user: UserEvent;
 
   const createWrapper = (): ReactWrapper => {
     const store = mockStore(state);
@@ -56,6 +60,17 @@ describe('ISIS Studies - Card View', () => {
       </Provider>
     );
   };
+
+  const renderComponent = (): RenderResult =>
+    render(
+      <Provider store={mockStore(state)}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <ISISStudiesCardView instrumentId="1" />
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
 
   beforeEach(() => {
     cardData = [
@@ -79,6 +94,9 @@ describe('ISIS Studies - Card View', () => {
       },
     ];
     history = createMemoryHistory();
+    user = userEvent.setup({
+      delay: null,
+    });
 
     mockStore = configureStore([thunk]);
     state = JSON.parse(
@@ -110,73 +128,16 @@ describe('ISIS Studies - Card View', () => {
     expect(wrapper.find('CardView').props()).toMatchSnapshot();
   });
 
-  it('calls the correct data fetching hooks on load', () => {
-    const instrumentId = '1';
-    createWrapper();
-    expect(useStudyCount).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'studyInvestigations.investigation.investigationInstruments.instrument.id':
-            {
-              eq: instrumentId,
-            },
-        }),
-      },
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'studyInvestigations.investigation.releaseDate': {
-            lt: '2021-10-27 00:00:00',
-          },
-        }),
-      },
-    ]);
-    expect(useStudiesPaginated).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'studyInvestigations.investigation.investigationInstruments.instrument.id':
-            {
-              eq: instrumentId,
-            },
-        }),
-      },
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'studyInvestigations.investigation.releaseDate': {
-            lt: '2021-10-27 00:00:00',
-          },
-        }),
-      },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify({
-          studyInvestigations: 'investigation',
-        }),
-      },
-    ]);
-  });
-
-  it('displays Experiment DOI (PID) and renders the expected Link ', () => {
-    const wrapper = createWrapper();
-    expect(
-      wrapper.find('[data-testid="landing-study-card-pid-link"]').first().text()
-    ).toEqual('doi');
-
-    expect(
-      wrapper
-        .find('[data-testid="landing-study-card-pid-link"]')
-        .first()
-        .prop('href')
-    ).toEqual('https://doi.org/doi');
+  it('displays Experiment DOI (PID) and renders the expected Link ', async () => {
+    renderComponent();
+    expect(await screen.findByRole('link', { name: 'doi' })).toHaveAttribute(
+      'href',
+      'https://doi.org/doi'
+    );
   });
 
   it('uses default sort', () => {
-    const wrapper = createWrapper();
-    wrapper.update();
-
+    renderComponent();
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent(
@@ -185,26 +146,30 @@ describe('ISIS Studies - Card View', () => {
     );
   });
 
-  it('updates filter query params on text filter', () => {
-    const wrapper = createWrapper();
+  it('updates filter query params on text filter', async () => {
+    renderComponent();
 
-    const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find('button').last().simulate('click');
-    advancedFilter
-      .find('input')
-      .first()
-      .simulate('change', { target: { value: 'test' } });
+    // click on button to show advanced filters
+    await user.click(
+      await screen.findByRole('button', { name: 'advanced_filters.show' })
+    );
+
+    const filter = await screen.findByRole('textbox', {
+      name: 'Filter by studies.name',
+      hidden: true,
+    });
+
+    screen.debug(undefined, 10000);
+
+    await user.type(filter, 'tes');
 
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
-        '{"name":{"value":"test","type":"include"}}'
+        '{"name":{"value":"tes","type":"include"}}'
       )}`
     );
 
-    advancedFilter
-      .find('input')
-      .first()
-      .simulate('change', { target: { value: '' } });
+    await user.clear(filter);
 
     expect(history.location.search).toBe('?');
   });

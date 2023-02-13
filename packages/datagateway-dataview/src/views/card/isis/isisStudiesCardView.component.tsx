@@ -29,6 +29,8 @@ interface ISISStudiesCVProps {
 const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
   const { instrumentId } = props;
 
+  console.log('ISISStudiesCardView');
+
   const [t] = useTranslation();
   const location = useLocation();
 
@@ -191,6 +193,7 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
 
   return (
     <CardView
+      data-testid="isis-studies-card-view"
       data={aggregatedData ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}
