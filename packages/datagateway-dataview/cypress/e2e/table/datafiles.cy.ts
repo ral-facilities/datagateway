@@ -200,7 +200,6 @@ describe('Datafiles Table', () => {
 
     it('date between', () => {
       cy.get('input[id="Modified Time filter from"]').type('2019-01-01');
-
       const date = new Date();
       cy.get('input[aria-label="Modified Time filter to"]').type(
         date.toISOString().slice(0, 10)

@@ -137,7 +137,7 @@ describe('DLS - Visits Cards', () => {
         .parent()
         .find('button')
         .click();
-      cy.get('.MuiPickersDay-root[tabindex="-1"]')
+      cy.get('.MuiPickersDay-root[type="button"]')
         .first()
         .click()
         .wait(['@getInvestigationsCount'], { timeout: 10000 });

@@ -100,7 +100,7 @@ describe('ISIS - FacilityCycles Cards', () => {
         .parent()
         .find('button')
         .click();
-      cy.get('.MuiPickersDay-root[tabindex="-1"]')
+      cy.get('.MuiPickersDay-root[type="button"]')
         .first()
         .click()
         .wait(['@getFacilityCyclesCount'], { timeout: 10000 });

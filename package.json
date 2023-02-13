@@ -9,7 +9,9 @@
     "husky": "8.0.1"
   },
   "resolutions": {
-    "@types/react": "17.0.39"
+    "@types/react": "17.0.39",
+    "@typescript-eslint/eslint-plugin": "5.49.0",
+    "@typescript-eslint/parser": "5.49.0"
   },
   "scripts": {
     "build": "yarn workspaces foreach --interlaced --verbose --parallel --jobs 3 --exclude datagateway-common run build",

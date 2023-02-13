@@ -130,7 +130,7 @@ describe('DLS - Datasets Cards', () => {
         .parent()
         .find('button')
         .click();
-      cy.get('.MuiPickersDay-root[tabindex="-1"]')
+      cy.get('.MuiPickersDay-root[type="button"]')
         .first()
         .click()
         .wait(['@getDatasetsCount'], { timeout: 10000 });

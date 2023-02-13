@@ -120,7 +120,6 @@ describe('ISIS - Datafiles Table', () => {
 
       it('date between', () => {
         cy.get('input[id="Modified Time filter from"]').type('2018-08-12');
-
         const date = new Date();
         cy.get('input[aria-label="Modified Time filter to"]').type(
           date.toISOString().slice(0, 10)
