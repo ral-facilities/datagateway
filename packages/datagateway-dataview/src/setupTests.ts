@@ -3,16 +3,11 @@ import '@testing-library/jest-dom';
 // Blob implementation in jsdom is not complete (https://github.com/jsdom/jsdom/issues/2555)
 // blob-polyfill fills in the gap
 import 'blob-polyfill';
-import Enzyme from 'enzyme';
-import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { Action } from 'redux';
 import { StateType } from './state/app.types';
 import { initialState as dgDataViewInitialState } from './state/reducers/dgdataview.reducer';
 import { dGCommonInitialState } from 'datagateway-common';
 import { screen, within } from '@testing-library/react';
-
-// Unofficial React 17 Enzyme adapter
-Enzyme.configure({ adapter: new Adapter() });
 
 function noOp(): void {
   // required as work-around for enzyme/jest environment not implementing window.URL.createObjectURL method

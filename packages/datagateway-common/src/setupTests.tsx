@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import '@testing-library/jest-dom';
 import React from 'react';
-import Enzyme from 'enzyme';
-import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { Action } from 'redux';
 import { StateType } from './state/app.types';
 import { initialState } from './state/reducers/dgcommon.reducer';
@@ -14,9 +12,6 @@ import { Router } from 'react-router-dom';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import { createMemoryHistory, History } from 'history';
-
-// Unofficial React 17 Enzyme adapter
-Enzyme.configure({ adapter: new Adapter() });
 
 if (typeof window.URL.createObjectURL === 'undefined') {
   // required as work-around for enzyme/jest environment not implementing window.URL.createObjectURL method
