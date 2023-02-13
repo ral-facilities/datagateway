@@ -4,7 +4,7 @@ import {
   useDatasetCount,
   useDatasetsPaginated,
 } from 'datagateway-common';
-import React from 'react';
+import * as React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
@@ -212,7 +212,7 @@ describe('ISIS Datasets - Card View', () => {
     await user.click(await screen.findByLabelText('card-more-info-expand'));
 
     expect(
-      await screen.findByTestId('dataset-details-panel')
+      await screen.findByTestId('isis-dataset-details-panel')
     ).toBeInTheDocument();
 
     await user.click(

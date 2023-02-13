@@ -423,7 +423,7 @@ describe('ISIS Investigations table component', () => {
       await screen.findByRole('button', { name: 'Show details' })
     );
     expect(
-      await screen.findByTestId('investigation-details-panel')
+      await screen.findByTestId('isis-investigation-details-panel')
     ).toBeTruthy();
   });
 

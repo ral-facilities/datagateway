@@ -342,7 +342,7 @@ describe('ISIS Investigations - Card View', () => {
     renderComponent();
     await user.click(await screen.findByLabelText('card-more-info-expand'));
     expect(
-      await screen.findByTestId('investigation-details-panel')
+      await screen.findByTestId('isis-investigation-details-panel')
     ).toBeTruthy();
     await user.click(
       await screen.findByRole('tab', {

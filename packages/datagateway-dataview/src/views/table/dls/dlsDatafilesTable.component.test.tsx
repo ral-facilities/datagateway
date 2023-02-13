@@ -359,6 +359,8 @@ describe('DLS datafiles table component', () => {
       await screen.findByRole('button', { name: 'Show details' })
     );
 
-    expect(await screen.findByTestId('datafile-details-panel')).toBeTruthy();
+    expect(
+      await screen.findByTestId('dls-datafile-details-panel')
+    ).toBeTruthy();
   });
 });

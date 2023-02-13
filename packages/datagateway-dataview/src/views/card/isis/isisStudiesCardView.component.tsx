@@ -29,8 +29,6 @@ interface ISISStudiesCVProps {
 const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
   const { instrumentId } = props;
 
-  console.log('ISISStudiesCardView');
-
   const [t] = useTranslation();
   const location = useLocation();
 

@@ -283,7 +283,7 @@ describe('ISIS Dataset table component', () => {
     );
 
     expect(
-      await screen.findByTestId('dataset-details-panel')
+      await screen.findByTestId('isis-dataset-details-panel')
     ).toBeInTheDocument();
   });
 
