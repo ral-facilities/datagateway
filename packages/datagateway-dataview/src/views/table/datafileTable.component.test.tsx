@@ -121,7 +121,7 @@ describe('Datafile table component', () => {
 
               return Promise.resolve({
                 data: {
-                  cardItems: [],
+                  cartItems: [],
                 },
               });
             }
