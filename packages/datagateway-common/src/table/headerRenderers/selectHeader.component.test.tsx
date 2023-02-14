@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import * as React from 'react';
 import SelectHeader from './selectHeader.component';
+import SelectCell from '../cellRenderers/selectCell.component';
 
 describe('Select column header component', () => {
   let user: UserEvent;
@@ -64,6 +65,17 @@ describe('Select column header component', () => {
       />
     );
     expect(asFragment()).toMatchSnapshot();
+  });
+
+  it('renders correctly when selectedRows parentSelected is true', () => {
+    const wrapper = shallow(
+      <SelectCell
+        {...selectHeaderProps}
+        parentSelected={true}
+        selectedRows={undefined}
+      />
+    );
+    expect(wrapper).toMatchSnapshot();
   });
 
   it('calls onCheck when not all rows are selected and the checkbox is clicked', async () => {

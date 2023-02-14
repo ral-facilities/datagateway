@@ -161,6 +161,49 @@ exports[`Select column header component renders correctly when selectedRows is u
 </DocumentFragment>
 `;
 
+exports[`Select column header component renders correctly when selectedRows parentSelected is true 1`] = `
+<ForwardRef(TableCell)
+  component="div"
+  padding="checkbox"
+  size="small"
+  variant="body"
+>
+  <StyledTooltip
+    placement="right"
+    title="buttons.parent_selected_tooltip"
+  >
+    <span>
+      <ForwardRef(Checkbox)
+        checkedIcon={
+          <Memo
+            fontSize="small"
+          />
+        }
+        className="tour-dataview-add-to-cart"
+        disabled={true}
+        icon={
+          <Memo
+            fontSize="small"
+          />
+        }
+        inputProps={
+          Object {
+            "aria-label": "select row undefined",
+          }
+        }
+        onClick={[Function]}
+        size="small"
+        style={
+          Object {
+            "padding": "inherit",
+          }
+        }
+      />
+    </span>
+  </StyledTooltip>
+</ForwardRef(TableCell)>
+`;
+
 exports[`Select column header component renders correctly when unchecked 1`] = `
 <DocumentFragment>
   <div

@@ -144,6 +144,7 @@ const ISISDatasetsCardView = (
             entityType="dataset"
             allIds={data?.map((dataset) => dataset.id) ?? []}
             entityId={dataset.id}
+            parentId={investigationId}
           />
           <DownloadButton
             entityType="dataset"
@@ -156,7 +157,7 @@ const ISISDatasetsCardView = (
         </ActionButtonsContainer>
       ),
     ],
-    [data, sizeQueries]
+    [data, sizeQueries, investigationId]
   );
 
   const moreInformation = React.useCallback(

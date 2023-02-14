@@ -96,8 +96,8 @@ describe('Investigation Search Table component', () => {
     rowData = [
       {
         id: 1,
-        title: 'Test 1',
-        name: 'Test 1',
+        title: 'Test Title 1',
+        name: 'Test Name 1',
         summary: 'foo bar',
         visitId: '1',
         doi: 'doi 1',
@@ -124,8 +124,8 @@ describe('Investigation Search Table component', () => {
             },
             investigation: {
               id: 1,
-              title: 'Test 1',
-              name: 'Test 1',
+              title: 'Test Title 1',
+              name: 'Test Name 1',
               visitId: '1',
             },
           },
@@ -239,7 +239,7 @@ describe('Investigation Search Table component', () => {
         findCellInRow(row, {
           columnIndex: await findColumnIndexByName('investigations.title'),
         })
-      ).getByText('Test 1')
+      ).getByText('Test Title 1')
     ).toBeInTheDocument();
     expect(
       within(
@@ -253,7 +253,7 @@ describe('Investigation Search Table component', () => {
         findCellInRow(row, {
           columnIndex: await findColumnIndexByName('investigations.name'),
         })
-      ).getByText('Test 1')
+      ).getByText('Test Name 1')
     ).toBeInTheDocument();
     expect(
       within(
@@ -335,7 +335,7 @@ describe('Investigation Search Table component', () => {
         findCellInRow(row, {
           columnIndex: await findColumnIndexByName('investigations.title'),
         })
-      ).getByText('Test 1')
+      ).getByText('Test Title 1')
     ).toBeInTheDocument();
     expect(
       within(
@@ -349,7 +349,7 @@ describe('Investigation Search Table component', () => {
         findCellInRow(row, {
           columnIndex: await findColumnIndexByName('investigations.name'),
         })
-      ).getByText('Test 1')
+      ).getByText('Test Name 1')
     ).toBeInTheDocument();
     expect(
       within(
@@ -608,7 +608,7 @@ describe('Investigation Search Table component', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders title, visit ID, Name and DOI as links', async () => {
+  it('renders title and DOI as links', async () => {
     renderComponent();
 
     const titleColIndex = await findColumnIndexByName('investigations.title');
@@ -630,9 +630,9 @@ describe('Investigation Search Table component', () => {
     });
 
     expect(
-      within(titleCell).getByRole('link', { name: 'Test 1' })
+      within(titleCell).getByRole('link', { name: 'Test Title 1' })
     ).toBeInTheDocument();
-    expect(within(nameCell).getByText('Test 1')).toBeInTheDocument();
+    expect(within(nameCell).getByText('Test Name 1')).toBeInTheDocument();
     expect(
       within(doiCell).getByRole('link', { name: 'doi 1' })
     ).toBeInTheDocument();
@@ -682,7 +682,7 @@ describe('Investigation Search Table component', () => {
     });
 
     expect(
-      within(titleCell).getByRole('link', { name: 'Test 1' })
+      within(titleCell).getByRole('link', { name: 'Test Title 1' })
     ).toHaveAttribute('href', '/browse/investigation/1/dataset');
     expect(
       within(datafileCountCell).getByText('Calculating...')
@@ -697,10 +697,10 @@ describe('Investigation Search Table component', () => {
     const titleCell = await findCellInRow(row, { columnIndex: titleColIndex });
 
     expect(
-      within(titleCell).getByRole('link', { name: 'Test 1' })
+      within(titleCell).getByRole('link', { name: 'Test Title 1' })
     ).toHaveAttribute(
       'href',
-      '/browse/proposal/Test 1/investigation/1/dataset'
+      '/browse/proposal/Test Name 1/investigation/1/dataset'
     );
     expect(screen.queryByRole('checkbox', { name: 'select row 0' })).toBeNull();
   });
@@ -726,7 +726,7 @@ describe('Investigation Search Table component', () => {
     const sizeCell = await findCellInRow(row, { columnIndex: sizeColIndex });
 
     expect(
-      within(titleCell).getByRole('link', { name: 'Test 1' })
+      within(titleCell).getByRole('link', { name: 'Test Title 1' })
     ).toHaveAttribute(
       'href',
       '/browse/instrument/3/facilityCycle/2/investigation/1/dataset'
@@ -758,9 +758,9 @@ describe('Investigation Search Table component', () => {
     const titleCell = await findCellInRow(row, { columnIndex: titleColIndex });
 
     expect(
-      within(titleCell).queryByRole('link', { name: 'Test 1' })
+      within(titleCell).queryByRole('link', { name: 'Test Title 1' })
     ).toBeNull();
-    expect(within(titleCell).getByText('Test 1')).toBeInTheDocument();
+    expect(within(titleCell).getByText('Test Title 1')).toBeInTheDocument();
   });
 
   it('does not render ISIS link when facilityCycleId cannot be found', async () => {
@@ -771,9 +771,9 @@ describe('Investigation Search Table component', () => {
     const titleCell = await findCellInRow(row, { columnIndex: titleColIndex });
 
     expect(
-      within(titleCell).queryByRole('link', { name: 'Test 1' })
+      within(titleCell).queryByRole('link', { name: 'Test Title 1' })
     ).toBeNull();
-    expect(within(titleCell).getByText('Test 1')).toBeInTheDocument();
+    expect(within(titleCell).getByText('Test Title 1')).toBeInTheDocument();
   });
 
   it('does not render ISIS link when facilityCycleId has incompatible dates', async () => {
@@ -795,8 +795,8 @@ describe('Investigation Search Table component', () => {
     const titleCell = await findCellInRow(row, { columnIndex: titleColIndex });
 
     expect(
-      within(titleCell).queryByRole('link', { name: 'Test 1' })
+      within(titleCell).queryByRole('link', { name: 'Test Title 1' })
     ).toBeNull();
-    expect(within(titleCell).getByText('Test 1')).toBeInTheDocument();
+    expect(within(titleCell).getByText('Test Title 1')).toBeInTheDocument();
   });
 });

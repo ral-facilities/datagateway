@@ -18,12 +18,14 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { UserEvent } from '@testing-library/user-event/setup/setup';
+import { DownloadCartItem } from '../app.types';
 
 describe('Generic add to cart button', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let user: UserEvent;
   let holder: HTMLElement;
+  let cartItems: DownloadCartItem[];
 
   function renderComponent(props: AddToCartButtonProps): RenderResult {
     const store = mockStore(state);
@@ -39,6 +41,7 @@ describe('Generic add to cart button', () => {
   }
 
   beforeEach(() => {
+    cartItems = [];
     user = userEvent.setup();
     state = JSON.parse(
       JSON.stringify({
@@ -58,9 +61,7 @@ describe('Generic add to cart button', () => {
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/.*\/user\/cart\/.*$/.test(url)) {
           return Promise.resolve({
-            data: {
-              cartItems: [],
-            },
+            data: { cartItems },
           });
         }
         return Promise.reject(`Endpoint not mocked: ${url}`);
@@ -142,6 +143,37 @@ describe('Generic add to cart button', () => {
 
     expect(
       await screen.findByText('buttons.cart_loading_failed_tooltip')
+    ).toBeInTheDocument();
+  });
+
+  it('renders as disabled with tooltip when parent entity selected', async () => {
+    cartItems = [
+      {
+        entityId: 1,
+        entityType: 'investigation',
+        id: 1,
+        name: 'test',
+        parentEntities: [],
+      },
+    ];
+
+    renderComponent({
+      allIds: [1, 2],
+      entityId: 2,
+      entityType: 'dataset',
+      parentId: '1',
+    });
+
+    const addToCartButton = await screen.findByRole('button', {
+      name: 'buttons.add_to_cart',
+    });
+
+    expect(addToCartButton).toBeDisabled();
+
+    await user.hover(addToCartButton.parentElement);
+
+    expect(
+      await screen.findByText('buttons.parent_selected_tooltip')
     ).toBeInTheDocument();
   });
 

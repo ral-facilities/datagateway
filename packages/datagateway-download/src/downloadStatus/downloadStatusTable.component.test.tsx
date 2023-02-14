@@ -28,10 +28,13 @@ const createTestQueryClient = (): QueryClient =>
     },
   });
 
-const renderComponent = ({ settings = mockedSettings } = {}): RenderResult =>
+const renderComponent = ({
+  settings = mockedSettings,
+  queryClient = createTestQueryClient(),
+} = {}): RenderResult =>
   render(
     <DownloadSettingsContext.Provider value={settings}>
-      <QueryClientProvider client={createTestQueryClient()}>
+      <QueryClientProvider client={queryClient}>
         <DownloadStatusTable
           refreshTable={false}
           setRefreshTable={jest.fn()}
@@ -83,17 +86,19 @@ describe('Download Status Table', () => {
     ).toBeInTheDocument();
   });
 
-  it('should refresh data when required', async () => {
+  it('should refresh data & download progress when required', async () => {
+    (
+      getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>
+    ).mockResolvedValue(30);
+    const settings = {
+      ...mockedSettings,
+      uiFeatures: {
+        downloadProgress: true,
+      },
+    };
+
     const queryClient = createTestQueryClient();
-    const { rerender } = render(
-      <QueryClientProvider client={queryClient}>
-        <DownloadStatusTable
-          refreshTable={false}
-          setRefreshTable={jest.fn()}
-          setLastCheckedTimestamp={jest.fn()}
-        />
-      </QueryClientProvider>
-    );
+    const { rerender } = renderComponent({ settings, queryClient });
 
     expect(await screen.findByText('test-file-1')).toBeInTheDocument();
     expect(await screen.findByText('test-file-2')).toBeInTheDocument();
@@ -101,24 +106,42 @@ describe('Download Status Table', () => {
     expect(await screen.findByText('test-file-4')).toBeInTheDocument();
     expect(await screen.findByText('test-file-5')).toBeInTheDocument();
 
-    // pretend server returned a different list
-    (fetchDownloads as jest.Mock).mockReturnValueOnce([]);
+    await waitFor(() => {
+      for (const progressBar of screen.getAllByRole('progressbar')) {
+        expect(progressBar).toBeInTheDocument();
+      }
+      for (const progressText of screen.getAllByText('30%')) {
+        expect(progressText).toBeInTheDocument();
+      }
+    });
+
+    // pretend server returned a different list (with only the restoring download)
+    (fetchDownloads as jest.Mock).mockReturnValueOnce([mockDownloadItems[2]]);
+    // pretend the server returns an updated value
+    (
+      getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>
+    ).mockResolvedValue(50);
     rerender(
-      <QueryClientProvider client={queryClient}>
-        <DownloadStatusTable
-          refreshTable
-          setRefreshTable={jest.fn()}
-          setLastCheckedTimestamp={jest.fn()}
-        />
-      </QueryClientProvider>
+      <DownloadSettingsContext.Provider value={settings}>
+        <QueryClientProvider client={queryClient}>
+          <DownloadStatusTable
+            refreshTable
+            setRefreshTable={jest.fn()}
+            setLastCheckedTimestamp={jest.fn()}
+          />
+        </QueryClientProvider>
+      </DownloadSettingsContext.Provider>
     );
 
     await waitFor(() => {
+      expect(screen.getByText('test-file-3')).toBeInTheDocument();
       expect(screen.queryByText('test-file-1')).toBeNull();
       expect(screen.queryByText('test-file-2')).toBeNull();
-      expect(screen.queryByText('test-file-3')).toBeNull();
       expect(screen.queryByText('test-file-4')).toBeNull();
       expect(screen.queryByText('test-file-5')).toBeNull();
+
+      expect(screen.getByRole('progressbar')).toBeInTheDocument();
+      expect(screen.getByText('50%')).toBeInTheDocument();
     });
   });
 
@@ -265,7 +288,7 @@ describe('Download Status Table', () => {
     expect(screen.getByText('test-file-3')).toBeInTheDocument();
     expect(screen.getByText('test-file-4')).toBeInTheDocument();
     expect(screen.getByText('test-file-5')).toBeInTheDocument();
-  }, 10000);
+  });
 
   it('should filter data when date filter is altered', async () => {
     applyDatePickerWorkaround();
@@ -279,7 +302,7 @@ describe('Download Status Table', () => {
     });
 
     // Type into date from filter textbox
-    await user.type(dateFromFilterInput, '2020-01-01 00:00');
+    await user.type(dateFromFilterInput, '2020-01-01 00:00:00');
 
     // Should show all files
     expect(await screen.findByText('test-file-1')).toBeInTheDocument();
@@ -289,7 +312,7 @@ describe('Download Status Table', () => {
     expect(await screen.findByText('test-file-5')).toBeInTheDocument();
 
     // Type into date to filter textbox
-    await user.type(dateToFilterInput, '2020-01-02 23:59');
+    await user.type(dateToFilterInput, '2020-01-02 23:59:00');
 
     // Should show no files
     await waitFor(() => {
@@ -304,8 +327,8 @@ describe('Download Status Table', () => {
     await user.clear(dateFromFilterInput);
     await user.clear(dateToFilterInput);
     // Type into both date filters
-    await user.type(dateFromFilterInput, '2020-02-26 00:00');
-    await user.type(dateToFilterInput, '2020-02-27 23:59');
+    await user.type(dateFromFilterInput, '2020-02-26 00:00:00');
+    await user.type(dateToFilterInput, '2020-02-27 23:59:00');
 
     // Should show only test-file-2 and test-file-3
     expect(await screen.findByText('test-file-2')).toBeInTheDocument();
@@ -318,7 +341,7 @@ describe('Download Status Table', () => {
     await user.clear(dateFromFilterInput);
     await user.clear(dateToFilterInput);
     // Type into only date from filter
-    await user.type(dateFromFilterInput, '2020-02-27 00:00');
+    await user.type(dateFromFilterInput, '2020-02-27 00:00:00');
 
     // Should show test-file-3, test-file-4 and test-file-5
     expect(await screen.findByText('test-file-3')).toBeInTheDocument();
@@ -330,7 +353,7 @@ describe('Download Status Table', () => {
     // Clear date from filter textbox
     await user.clear(dateFromFilterInput);
     // Type into only date to filter
-    await user.type(dateToFilterInput, '2020-02-27 00:00');
+    await user.type(dateToFilterInput, '2020-02-27 00:00:00');
 
     // Should show only test-file-1 and test-file-2
     expect(await screen.findByText('test-file-1')).toBeInTheDocument();
@@ -340,9 +363,9 @@ describe('Download Status Table', () => {
     expect(screen.queryByText('test-file-5')).toBeNull();
 
     cleanupDatePickerWorkaround();
-  }, 10000);
+  });
 
-  it('should show download progress ui if enabled', async () => {
+  it('should display download progress ui if enabled', async () => {
     (
       getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>
     ).mockResolvedValue(20);

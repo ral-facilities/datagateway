@@ -3,7 +3,7 @@ import Table, { ColumnType } from './table.component';
 import { formatBytes } from './cellRenderers/cellContentRenderers';
 import { TableCellProps } from 'react-virtualized';
 import TextColumnFilter from './columnFilters/textColumnFilter.component';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 
@@ -63,11 +63,14 @@ describe('Table component', () => {
     render(<Table {...tableProps} />);
 
     // expect "Test 1" and "Test 2" column to exist
-    expect(await screen.findByText('Test 1')).toBeInTheDocument();
-    expect(await screen.findByText('Test 2')).toBeInTheDocument();
+    const columnHeaders = await screen.findAllByRole('columnheader');
+    expect(within(columnHeaders[0]).getByText('Test 1')).toBeInTheDocument();
+    expect(within(columnHeaders[1]).getByText('Test 2')).toBeInTheDocument();
 
-    expect(await screen.findByText('test1')).toBeInTheDocument();
-    expect(await screen.findByText('2 B')).toBeInTheDocument();
+    const rows = await screen.findAllByRole('row');
+    const cellsInFirstRow = within(rows[1]).getAllByRole('gridcell');
+    expect(within(cellsInFirstRow[0]).getByText('test1')).toBeInTheDocument();
+    expect(within(cellsInFirstRow[1]).getByText('2 B')).toBeInTheDocument();
   });
 
   it('calls onSort function when sort label clicked', async () => {

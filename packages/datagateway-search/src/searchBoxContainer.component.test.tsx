@@ -1,10 +1,13 @@
-import React from 'react';
-import { ShallowWrapper, shallow } from 'enzyme';
+import * as React from 'react';
 
 import SearchBoxContainer from './searchBoxContainer.component';
 import SearchBoxContainerSide from './searchBoxContainerSide.component';
-import { useSelector } from 'react-redux';
+import { Provider, useSelector } from 'react-redux';
 import { initialState } from './state/reducers/dgsearch.reducer';
+import { render, type RenderResult, screen } from '@testing-library/react';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { MemoryRouter } from 'react-router-dom';
 
 jest.mock('loglevel');
 
@@ -14,15 +17,22 @@ jest.mock('react-redux', () => ({
 }));
 
 describe('SearchBoxContainer - Tests', () => {
-  const createWrapper = (): ShallowWrapper => {
-    return shallow(
-      <SearchBoxContainer
-        initiateSearch={jest.fn()}
-        onSearchTextChange={jest.fn()}
-        searchText=""
-      />
+  const renderComponent = (): RenderResult =>
+    render(
+      <MemoryRouter>
+        <Provider
+          store={configureStore([thunk])({
+            dgsearch: initialState,
+          })}
+        >
+          <SearchBoxContainer
+            initiateSearch={jest.fn()}
+            onSearchTextChange={jest.fn()}
+            searchText="initial search text"
+          />
+        </Provider>
+      </MemoryRouter>
     );
-  };
 
   beforeEach(() => {
     useSelector.mockImplementation(() => {
@@ -31,24 +41,42 @@ describe('SearchBoxContainer - Tests', () => {
   });
 
   it('renders searchBoxContainer correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper).toMatchSnapshot();
+    renderComponent();
+
+    // check that search box is shown
+    expect(
+      screen.getByRole('searchbox', { name: 'searchBox.search_text_arialabel' })
+    ).toHaveValue('initial search text');
+
+    // check that links are shown correctly
+    expect(
+      screen.getByRole('link', { name: '"instrument calibration"' })
+    ).toHaveAttribute('href', '/searchBox.examples_label_link1');
+    expect(
+      screen.getByRole('link', { name: 'neutron AND scattering' })
+    ).toHaveAttribute('href', '/searchBox.examples_label_link2');
+
+    screen.debug(undefined, 100000);
+
+    // check that limited results message is shown
+    expect(
+      screen.getByText('searchBox.limited_results_message', { exact: false })
+    ).toBeInTheDocument();
   });
 });
 
 describe('SearchBoxContainerSide - Tests', () => {
-  const createWrapper = (): ShallowWrapper => {
-    return shallow(
+  const renderComponent = (): RenderResult =>
+    render(
       <SearchBoxContainerSide
         initiateSearch={jest.fn()}
         onSearchTextChange={jest.fn()}
         searchText=""
       />
     );
-  };
 
   it('renders searchBoxContainerSide correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper).toMatchSnapshot();
+    const { asFragment } = renderComponent();
+    expect(asFragment()).toMatchSnapshot();
   });
 });

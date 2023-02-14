@@ -475,17 +475,17 @@ describe('Date filter component', () => {
         name: 'test filter from',
       });
 
-      await user.type(startDateFilterInput, '2019-08-06 00:00');
+      await user.type(startDateFilterInput, '2019-08-06 00:00:00');
 
       expect(onChange).toHaveBeenLastCalledWith({
-        startDate: '2019-08-06 00:00',
+        startDate: '2019-08-06 00:00:00',
       });
 
       rerender(
         <DateColumnFilter
           filterByTime
           {...baseProps}
-          value={{ startDate: '2019-08-06 00:00' }}
+          value={{ startDate: '2019-08-06 00:00:00' }}
         />
       );
 
@@ -493,11 +493,11 @@ describe('Date filter component', () => {
         name: 'test filter to',
       });
 
-      await user.type(endDateFilterInput, '2019-08-06 23:59');
+      await user.type(endDateFilterInput, '2019-08-06 23:59:00');
 
       expect(onChange).toHaveBeenLastCalledWith({
-        startDate: '2019-08-06 00:00',
-        endDate: '2019-08-06 23:59',
+        startDate: '2019-08-06 00:00:00',
+        endDate: '2019-08-06 23:59:00',
       });
 
       rerender(
@@ -505,8 +505,8 @@ describe('Date filter component', () => {
           filterByTime
           {...baseProps}
           value={{
-            startDate: '2019-08-06 00:00',
-            endDate: '2019-08-06 23:59',
+            startDate: '2019-08-06 00:00:00',
+            endDate: '2019-08-06 23:59:00',
           }}
         />
       );
@@ -514,7 +514,7 @@ describe('Date filter component', () => {
       await user.clear(startDateFilterInput);
 
       expect(onChange).toHaveBeenLastCalledWith({
-        endDate: '2019-08-06 23:59',
+        endDate: '2019-08-06 23:59:00',
       });
 
       rerender(
@@ -522,8 +522,7 @@ describe('Date filter component', () => {
           filterByTime
           {...baseProps}
           value={{
-            startDate: '2019-08-06 00:00',
-            endDate: '2019-08-06 23:59',
+            endDate: '2019-08-06 23:59:00',
           }}
         />
       );
@@ -562,26 +561,26 @@ describe('Date filter component', () => {
       expect(onChange).not.toHaveBeenCalled();
 
       await user.clear(startDateFilterInput);
-      await user.type(startDateFilterInput, '2019-08-06 00:00');
+      await user.type(startDateFilterInput, '2019-08-06 00:00:00');
 
       expect(onChange).toHaveBeenLastCalledWith({
-        startDate: '2019-08-06 00:00',
+        startDate: '2019-08-06 00:00:00',
       });
 
       rerender(
         <DateColumnFilter
           filterByTime
           {...baseProps}
-          value={{ startDate: '2019-08-06 00:00' }}
+          value={{ startDate: '2019-08-06 00:00:00' }}
         />
       );
 
       await user.clear(endDateFilterInput);
-      await user.type(endDateFilterInput, '2019-08-07 00:00');
+      await user.type(endDateFilterInput, '2019-08-07 00:00:00');
 
       expect(onChange).toHaveBeenLastCalledWith({
-        startDate: '2019-08-06 00:00',
-        endDate: '2019-08-07 00:00',
+        startDate: '2019-08-06 00:00:00',
+        endDate: '2019-08-07 00:00:00',
       });
 
       rerender(
@@ -589,8 +588,8 @@ describe('Date filter component', () => {
           filterByTime
           {...baseProps}
           value={{
-            startDate: '2019-08-06 00:00',
-            endDate: '2019-08-07 00:00',
+            startDate: '2019-08-06 00:00:00',
+            endDate: '2019-08-07 00:00:00',
           }}
         />
       );
@@ -599,7 +598,7 @@ describe('Date filter component', () => {
       await user.type(startDateFilterInput, '2');
 
       expect(onChange).toHaveBeenLastCalledWith({
-        endDate: '2019-08-07 00:00',
+        endDate: '2019-08-07 00:00:00',
       });
 
       rerender(
@@ -607,7 +606,7 @@ describe('Date filter component', () => {
           filterByTime
           {...baseProps}
           value={{
-            endDate: '2019-08-07 00:00',
+            endDate: '2019-08-07 00:00:00',
           }}
         />
       );
@@ -625,15 +624,15 @@ describe('Date filter component', () => {
         label: 'test',
         onChange,
         value: {
-          startDate: '2019-13-09 00:00',
-          endDate: '2019-08-32 00:00',
+          startDate: '2019-13-09 00:00:00',
+          endDate: '2019-08-32 00:00:00',
         },
       };
 
       render(<DateColumnFilter filterByTime {...baseProps} />);
 
       const errorMessages = await screen.findAllByText(
-        'Date-time format: yyyy-MM-dd HH:mm.'
+        'Date-time format: yyyy-MM-dd HH:mm:ss.'
       );
       for (const element of errorMessages) {
         expect(element).toBeInTheDocument();
@@ -647,15 +646,15 @@ describe('Date filter component', () => {
         label: 'test',
         onChange,
         value: {
-          startDate: '2019-13-09 00:60',
-          endDate: '2019-08-32 24:00',
+          startDate: '2019-13-09 00:60:00',
+          endDate: '2019-08-32 24:00:00',
         },
       };
 
       render(<DateColumnFilter filterByTime {...baseProps} />);
 
       const errorMessages = await screen.findAllByText(
-        'Date-time format: yyyy-MM-dd HH:mm.'
+        'Date-time format: yyyy-MM-dd HH:mm:ss.'
       );
       for (const element of errorMessages) {
         expect(element).toBeInTheDocument();
@@ -669,8 +668,8 @@ describe('Date filter component', () => {
         label: 'test',
         onChange,
         value: {
-          startDate: '2019-08-08 12:00',
-          endDate: '2019-08-08 11:00',
+          startDate: '2019-08-08 12:00:00',
+          endDate: '2019-08-08 11:00:00',
         },
       };
 

@@ -12,11 +12,11 @@ import { Router } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import DoiRedirect from './doiRedirect.component';
 import { createLocation, createMemoryHistory } from 'history';
-import * as log from 'loglevel';
+import log from 'loglevel';
 import { AnyAction } from 'redux';
 import { render, type RenderResult, screen } from '@testing-library/react';
 
-jest.mock('loglevel');
+// jest.mock('loglevel');
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');

@@ -208,20 +208,12 @@ describe('Admin Download Status Table', () => {
       },
       `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.userName asc, download.id ASC LIMIT 0, 50`
     );
-  }, 10000);
+  });
 
   describe('text filters', () => {
-    beforeEach(() => {
-      jest.useFakeTimers();
-    });
-
-    afterEach(() => {
-      jest.useRealTimers();
-    });
-
     it('should filter username properly', async () => {
-      jest.useFakeTimers();
       renderComponent();
+      await flushPromises();
 
       // Table is sorted by createdAt desc by default
       // To keep working test, we will remove all sorts on the table beforehand
@@ -233,7 +225,7 @@ describe('Admin Download Status Table', () => {
       );
 
       await user.type(usernameFilterInput, 'test user');
-      jest.runAllTimers();
+      await flushPromises();
 
       expect(fetchAdminDownloads).toHaveBeenCalledWith(
         {
@@ -244,7 +236,7 @@ describe('Admin Download Status Table', () => {
       );
 
       await user.clear(usernameFilterInput);
-      jest.runAllTimers();
+      await flushPromises();
 
       expect(fetchAdminDownloads).toHaveBeenCalledWith(
         {
@@ -253,13 +245,11 @@ describe('Admin Download Status Table', () => {
         },
         `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.id ASC LIMIT 0, 50`
       );
-
-      jest.useRealTimers();
-    }, 10000);
+    });
 
     it('should filter download availability properly', async () => {
-      jest.useFakeTimers();
       renderComponent();
+      await flushPromises();
 
       // Table is sorted by createdAt desc by default
       // To keep working test, we will remove all sorts on the table beforehand
@@ -271,7 +261,7 @@ describe('Admin Download Status Table', () => {
       );
 
       await user.type(availabilityFilterInput, 'downloadStatus.complete');
-      jest.runAllTimers();
+      await flushPromises();
 
       expect(fetchAdminDownloads).toHaveBeenCalledWith(
         {
@@ -288,7 +278,7 @@ describe('Admin Download Status Table', () => {
       await user.click(
         within(await screen.findByRole('listbox')).getByText('Exclude')
       );
-      jest.runAllTimers();
+      await flushPromises();
 
       expect(fetchAdminDownloads).toHaveBeenCalledWith(
         {
@@ -299,7 +289,7 @@ describe('Admin Download Status Table', () => {
       );
 
       await user.clear(availabilityFilterInput);
-      jest.runAllTimers();
+      await flushPromises();
 
       expect(fetchAdminDownloads).toHaveBeenCalledWith(
         {
@@ -308,14 +298,13 @@ describe('Admin Download Status Table', () => {
         },
         `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.id ASC LIMIT 0, 50`
       );
-
-      jest.useRealTimers();
-    }, 10000);
+    });
   });
 
   it('sends filter request on date filter', async () => {
     applyDatePickerWorkaround();
     renderComponent();
+    await flushPromises();
 
     // Table is sorted by createdAt desc by default
     // To keep working test, we will remove all sorts on the table beforehand
@@ -325,7 +314,8 @@ describe('Admin Download Status Table', () => {
     const dateFromFilterInput = screen.getByRole('textbox', {
       name: 'downloadStatus.createdAt filter from',
     });
-    await user.type(dateFromFilterInput, '2020-01-01 00:00');
+    await user.type(dateFromFilterInput, '2020-01-01 00:00:00');
+    await flushPromises();
 
     expect(fetchAdminDownloads).toHaveBeenCalledWith(
       {
@@ -339,7 +329,8 @@ describe('Admin Download Status Table', () => {
     const dateToFilterInput = screen.getByRole('textbox', {
       name: 'downloadStatus.createdAt filter to',
     });
-    await user.type(dateToFilterInput, '2020-01-02 23:59');
+    await user.type(dateToFilterInput, '2020-01-02 23:59:00');
+    await flushPromises();
 
     // have to wrap the expect in a waitFor because for some reason
     // await user.type doesn't wait until the full thing is typed in before resolving
@@ -356,6 +347,7 @@ describe('Admin Download Status Table', () => {
 
     await user.clear(dateFromFilterInput);
     await user.clear(dateToFilterInput);
+    await flushPromises();
 
     expect(fetchAdminDownloads).toHaveBeenCalledWith(
       {
@@ -366,7 +358,7 @@ describe('Admin Download Status Table', () => {
     );
 
     cleanupDatePickerWorkaround();
-  }, 10000);
+  });
 
   it('should send restore item and item status requests when restore button is clicked', async () => {
     renderComponent();
@@ -414,29 +406,25 @@ describe('Admin Download Status Table', () => {
       })
     );
 
+    await flushPromises();
+
     expect(
       await screen.findByRole('button', {
         name: 'downloadStatus.pause {filename:test-file-4}',
       })
     ).toBeInTheDocument();
-  }, 10000);
+  });
 
   it('should send pause restore request when pause button is clicked', async () => {
     renderComponent();
 
     await flushPromises();
 
-    // without waitFor,
-    // toBeInTheDocument will complain it can't find the element
-    // even though findBy didn't throw...
-    // (it throws when the elemenet actually doesn't exist)
-    await waitFor(async () => {
-      expect(
-        await screen.findByRole('button', {
-          name: 'downloadStatus.pause {filename:test-file-3}',
-        })
-      ).toBeInTheDocument();
-    });
+    expect(
+      await screen.findByRole('button', {
+        name: 'downloadStatus.pause {filename:test-file-3}',
+      })
+    ).toBeInTheDocument();
 
     (fetchAdminDownloads as jest.Mock).mockImplementation(
       (
@@ -467,6 +455,8 @@ describe('Admin Download Status Table', () => {
       })
     );
 
+    await flushPromises();
+
     expect(
       await screen.findByRole('button', {
         name: 'downloadStatus.resume {filename:test-file-3}',
@@ -479,13 +469,11 @@ describe('Admin Download Status Table', () => {
 
     await flushPromises();
 
-    await waitFor(() => {
-      expect(
-        screen.getByRole('button', {
-          name: 'downloadStatus.resume {filename:test-file-5}',
-        })
-      ).toBeInTheDocument();
-    });
+    expect(
+      screen.getByRole('button', {
+        name: 'downloadStatus.resume {filename:test-file-5}',
+      })
+    ).toBeInTheDocument();
 
     (fetchAdminDownloads as jest.Mock).mockImplementation(
       (
@@ -515,6 +503,8 @@ describe('Admin Download Status Table', () => {
         name: 'downloadStatus.resume {filename:test-file-5}',
       })
     );
+
+    await flushPromises();
 
     expect(
       await screen.findByRole('button', {

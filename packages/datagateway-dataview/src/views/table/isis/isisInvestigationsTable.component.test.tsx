@@ -427,8 +427,10 @@ describe('ISIS Investigations table component', () => {
     ).toBeTruthy();
   });
 
-  it('renders details panel with datasets link and can navigate', async () => {
-    renderComponent();
+  it('displays details panel when expanded', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeFalsy();
+    wrapper.find('[aria-label="Show details"]').last().simulate('click');
 
     await user.click(
       await screen.findByRole('button', { name: 'Show details' })
