@@ -5,6 +5,11 @@ export const MicroFrontendToken = `${MicroFrontendId}:token`;
 export const FACILITY_NAME = {
   isis: 'isis',
   dls: 'dls',
+
+  /**
+   * Used for test ICATs.
+   */
+  lils: 'LILS',
 } as const;
 
 export type FacilityName = typeof FACILITY_NAME[keyof typeof FACILITY_NAME];
