@@ -5,15 +5,8 @@ import configureStore from 'redux-mock-store';
 import type { StateType } from '../../../state/app.types';
 import {
   dGCommonInitialState,
+  DownloadCartItem,
   type Investigation,
-  useAddToCart,
-  useCart,
-  useInvestigationDetails,
-  useInvestigationSizes,
-  useISISInvestigationCount,
-  useISISInvestigationIds,
-  useISISInvestigationsInfinite,
-  useRemoveFromCart,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -38,23 +31,7 @@ import {
 } from '@testing-library/react';
 import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
-
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    useISISInvestigationCount: jest.fn(),
-    useISISInvestigationsInfinite: jest.fn(),
-    useInvestigationSizes: jest.fn(),
-    useISISInvestigationIds: jest.fn(),
-    useCart: jest.fn(),
-    useAddToCart: jest.fn(),
-    useRemoveFromCart: jest.fn(),
-    useInvestigationDetails: jest.fn(),
-  };
-});
+import axios, { AxiosResponse } from 'axios';
 
 describe('ISIS Investigations table component', () => {
   let mockStore;
@@ -63,6 +40,8 @@ describe('ISIS Investigations table component', () => {
   let history: History;
   let replaceSpy: jest.SpyInstance;
   let user: UserEvent;
+  let cartItems: DownloadCartItem[];
+  let holder: HTMLElement;
 
   const renderComponent = (studyHierarchy = false): RenderResult => {
     const store = mockStore(state);
@@ -82,6 +61,7 @@ describe('ISIS Investigations table component', () => {
   };
 
   beforeEach(() => {
+    cartItems = [];
     rowData = [
       {
         id: 1,
@@ -120,6 +100,10 @@ describe('ISIS Investigations table component', () => {
     replaceSpy = jest.spyOn(history, 'replace');
     user = userEvent.setup();
 
+    holder = document.createElement('div');
+    holder.setAttribute('id', 'datagateway-dataview');
+    document.body.appendChild(holder);
+
     mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
@@ -128,50 +112,111 @@ describe('ISIS Investigations table component', () => {
       })
     );
 
-    (useCart as jest.Mock).mockReturnValue({
-      data: [],
-      isLoading: false,
-    });
-    (useISISInvestigationCount as jest.Mock).mockReturnValue({
-      data: 0,
-    });
-    (useISISInvestigationsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
-    });
-    (useInvestigationSizes as jest.Mock).mockReturnValue([
-      {
-        data: 1,
-        isSuccess: true,
-      },
-    ]);
-    (useISISInvestigationIds as jest.Mock).mockReturnValue({
-      data: [1],
-      isLoading: false,
-    });
-    (useAddToCart as jest.Mock).mockReturnValue({
-      mutate: jest.fn(),
-      isLoading: false,
-    });
-    (useRemoveFromCart as jest.Mock).mockReturnValue({
-      mutate: jest.fn(),
-      isLoading: false,
-    });
-    (useInvestigationDetails as jest.Mock).mockReturnValue({
-      data: [],
-    });
+    axios.get = jest
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/\/user\/cart\/$/.test(url)) {
+          // fetch download cart
+          return Promise.resolve({
+            data: { cartItems },
+          });
+        }
+
+        if (/\/user\/getSize$/.test(url)) {
+          // fetch investigation size
+          return Promise.resolve({
+            data: 1,
+          });
+        }
+
+        if (
+          /\/instruments\/4\/facilitycycles\/5\/investigations\/count$/.test(
+            url
+          )
+        ) {
+          // fetch investigations count
+          return Promise.resolve({
+            data: rowData.length,
+          });
+        }
+
+        if (/\/instruments\/4\/facilitycycles\/5\/investigations$/.test(url)) {
+          // investigations infinite
+          return Promise.resolve({
+            data: rowData,
+          });
+        }
+
+        if (/\/investigations$/.test(url)) {
+          return Promise.resolve({
+            data: rowData,
+          });
+        }
+
+        if (/\/investigations\/count$/.test(url)) {
+          return Promise.resolve({
+            data: rowData.length,
+          });
+        }
+
+        console.log('url', url);
+        return Promise.reject(`Endpoint not mocked: ${url}`);
+      });
+
+    axios.post = jest
+      .fn()
+      .mockImplementation(
+        (url: string, data: unknown): Promise<Partial<AxiosResponse>> => {
+          if (/\/user\/cart\/\/cartItems$/.test(url)) {
+            const isRemove: boolean = JSON.parse(
+              (data as URLSearchParams).get('remove')
+            );
+
+            if (isRemove) {
+              cartItems = [];
+
+              return Promise.resolve({
+                data: {
+                  cartItems: [],
+                },
+              });
+            }
+
+            cartItems = [
+              ...cartItems,
+              {
+                id: 123,
+                entityId: 1,
+                entityType: 'investigation',
+                name: 'download cart item name',
+                parentEntities: [],
+              },
+            ];
+
+            return Promise.resolve({
+              data: { cartItems },
+            });
+          }
+
+          return Promise.reject(`Endpoint not mocked: ${url}`);
+        }
+      );
   });
 
   afterEach(() => {
+    document.body.removeChild(holder);
     jest.clearAllMocks();
   });
 
   it('renders correctly', async () => {
     renderComponent();
 
-    const rows = await findAllRows();
-    // should have 1 row in the table
-    expect(rows).toHaveLength(1);
+    let rows: HTMLElement[] = [];
+    await waitFor(async () => {
+      rows = await findAllRows();
+      // should have 1 row in the table
+      expect(rows).toHaveLength(1);
+    });
 
     // check that column headers are shown correctly.
     expect(
@@ -332,70 +377,55 @@ describe('ISIS Investigations table component', () => {
     );
   });
 
-  it('calls addToCart mutate function on unchecked checkbox click', async () => {
-    const addToCart = jest.fn();
-    (useAddToCart as jest.Mock).mockReturnValue({
-      mutate: addToCart,
-      loading: false,
-    });
+  it('adds selected row to cart if unselected; removes it from cart otherwise', async () => {
     renderComponent();
 
+    // wait for rows to show up
+    await waitFor(async () => {
+      expect(await findAllRows()).toHaveLength(1);
+    });
+
+    // row should not be selected initially as the cart is empty
+    expect(
+      await screen.findByRole('checkbox', { name: 'select row 0' })
+    ).not.toBeChecked();
+
+    // select the row
     await user.click(
       await screen.findByRole('checkbox', { name: 'select row 0' })
     );
 
-    expect(addToCart).toHaveBeenCalledWith([1]);
-  });
-
-  it('calls removeFromCart mutate function on checked checkbox click', async () => {
-    (useCart as jest.Mock).mockReturnValue({
-      data: [
-        {
-          entityId: 1,
-          entityType: 'investigation',
-          id: 1,
-          name: 'test',
-          parentEntities: [],
-        },
-      ],
-      isLoading: false,
-    });
-
-    const removeFromCart = jest.fn();
-    (useRemoveFromCart as jest.Mock).mockReturnValue({
-      mutate: removeFromCart,
-      loading: false,
-    });
-
-    renderComponent();
-
-    await user.click(
+    // investigation should be added to the cart
+    expect(
       await screen.findByRole('checkbox', { name: 'select row 0' })
-    );
+    ).toBeChecked();
 
-    expect(removeFromCart).toHaveBeenCalledWith([1]);
+    // unselect the row
+    await user.click(screen.getByRole('checkbox', { name: 'select row 0' }));
+
+    // investigation should be removed from the cart
+    expect(
+      await screen.findByRole('checkbox', { name: 'select row 0' })
+    ).not.toBeChecked();
   });
 
   it('selected rows only considers relevant cart items', async () => {
-    (useCart as jest.Mock).mockReturnValueOnce({
-      data: [
-        {
-          entityId: 2,
-          entityType: 'investigation',
-          id: 1,
-          name: 'test',
-          parentEntities: [],
-        },
-        {
-          entityId: 1,
-          entityType: 'dataset',
-          id: 2,
-          name: 'test',
-          parentEntities: [],
-        },
-      ],
-      isLoading: false,
-    });
+    cartItems = [
+      {
+        entityId: 2,
+        entityType: 'investigation',
+        id: 1,
+        name: 'test',
+        parentEntities: [],
+      },
+      {
+        entityId: 1,
+        entityType: 'dataset',
+        id: 2,
+        name: 'test',
+        parentEntities: [],
+      },
+    ];
 
     renderComponent();
 
@@ -425,26 +455,6 @@ describe('ISIS Investigations table component', () => {
     expect(
       await screen.findByTestId('isis-investigation-details-panel')
     ).toBeTruthy();
-  });
-
-  it('displays details panel when expanded', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').last().simulate('click');
-
-    await user.click(
-      await screen.findByRole('button', { name: 'Show details' })
-    );
-
-    await user.click(
-      await screen.findByRole('tab', {
-        name: 'investigations.details.datasets',
-      })
-    );
-
-    expect(history.location.pathname).toBe(
-      '/browse/instrument/4/facilityCycle/5/investigation/1/dataset'
-    );
   });
 
   it('renders title and DOI as links', async () => {
@@ -484,48 +494,37 @@ describe('ISIS Investigations table component', () => {
   });
 
   it('gracefully handles empty Study Investigation and investigationUsers', async () => {
-    (useISISInvestigationsInfinite as jest.Mock).mockReturnValue({
-      data: {
-        pages: [
-          {
-            ...rowData[0],
-            investigationUsers: [],
-            studyInvestigations: [],
-          },
-        ],
+    rowData = [
+      {
+        ...rowData[0],
+        investigationUsers: [],
+        studyInvestigations: [],
       },
-      fetchNextPage: jest.fn(),
-    });
+    ];
 
     renderComponent();
 
-    const rows = await screen.findAllByRole('row');
-    // 2 rows expected, 1 for the header row, and 1 for the items in rowData.
-    expect(rows).toHaveLength(2);
+    await waitFor(async () => {
+      expect(await findAllRows()).toHaveLength(1);
+    });
   });
 
   it('gracefully handles missing Study from Study Investigation object and missing User from investigationUsers object', async () => {
-    (useISISInvestigationsInfinite as jest.Mock).mockClear();
-    (useISISInvestigationsInfinite as jest.Mock).mockReturnValue({
-      data: {
-        pages: [
+    rowData = [
+      {
+        ...rowData[0],
+        investigationUsers: [
           {
-            ...rowData[0],
-            investigationUsers: [
-              {
-                id: 1,
-              },
-            ],
-            studyInvestigations: [
-              {
-                id: 6,
-              },
-            ],
+            id: 1,
+          },
+        ],
+        studyInvestigations: [
+          {
+            id: 6,
           },
         ],
       },
-      fetchNextPage: jest.fn(),
-    });
+    ];
 
     renderComponent();
 

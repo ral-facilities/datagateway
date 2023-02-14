@@ -118,7 +118,6 @@ describe('Investigation table component', () => {
         }
 
         if (/\/investigations$/.test(url)) {
-          // datafiles infinite
           return Promise.resolve({
             data: rowData,
           });
