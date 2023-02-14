@@ -34,8 +34,23 @@ const fetchFacilityCycles = (
     );
   }
 
+  params.append(
+    'where',
+    JSON.stringify({
+      'investigationFacilityCycles.investigation.investigationInstruments.instrument.id':
+        {
+          eq: instrumentId,
+        },
+    })
+  );
+  // Distinct is needed as otherwise it returns duplicate cycles for every cycle with a unique investigation with the matching instrument id
+  params.append(
+    'distinct',
+    JSON.stringify(['id', 'name', 'startDate', 'endDate'])
+  );
+
   return axios
-    .get(`${apiUrl}/instruments/${instrumentId}/facilitycycles`, {
+    .get(`${apiUrl}/facilitycycles`, {
       params,
       headers: {
         Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
@@ -167,8 +182,23 @@ const fetchFacilityCycleCount = (
   const params = getApiParams({ filters, sort: {} });
   params.delete('order');
 
+  params.append(
+    'where',
+    JSON.stringify({
+      'investigationFacilityCycles.investigation.investigationInstruments.instrument.id':
+        {
+          eq: instrumentId,
+        },
+    })
+  );
+  // Distinct is needed as otherwise it returns duplicate cycles for every cycle with a unique investigation with the matching instrument id
+  params.append(
+    'distinct',
+    JSON.stringify(['id', 'name', 'startDate', 'endDate'])
+  );
+
   return axios
-    .get(`${apiUrl}/instruments/${instrumentId}/facilitycycles/count`, {
+    .get(`${apiUrl}/facilitycycles/count`, {
       params,
       headers: {
         Authorization: `Bearer ${readSciGatewayToken().sessionId}`,

@@ -107,9 +107,22 @@ describe('facility cycle api functions', () => {
       );
       params.append('skip', JSON.stringify(20));
       params.append('limit', JSON.stringify(20));
+      params.append(
+        'where',
+        JSON.stringify({
+          'investigationFacilityCycles.investigation.investigationInstruments.instrument.id':
+            {
+              eq: 1,
+            },
+        })
+      );
+      params.append(
+        'distinct',
+        JSON.stringify(['id', 'name', 'startDate', 'endDate'])
+      );
 
       expect(axios.get).toHaveBeenCalledWith(
-        'https://example.com/api/instruments/1/facilitycycles',
+        'https://example.com/api/facilitycycles',
         expect.objectContaining({
           params,
         })
@@ -136,9 +149,22 @@ describe('facility cycle api functions', () => {
       params.append('order', JSON.stringify('id asc'));
       params.append('skip', JSON.stringify(0));
       params.append('limit', JSON.stringify(10));
+      params.append(
+        'where',
+        JSON.stringify({
+          'investigationFacilityCycles.investigation.investigationInstruments.instrument.id':
+            {
+              eq: 1,
+            },
+        })
+      );
+      params.append(
+        'distinct',
+        JSON.stringify(['id', 'name', 'startDate', 'endDate'])
+      );
 
       expect(axios.get).toHaveBeenCalledWith(
-        'https://example.com/api/instruments/1/facilitycycles',
+        'https://example.com/api/facilitycycles',
         expect.objectContaining({
           params,
         })
@@ -177,9 +203,22 @@ describe('facility cycle api functions', () => {
       );
       params.append('skip', JSON.stringify(0));
       params.append('limit', JSON.stringify(50));
+      params.append(
+        'where',
+        JSON.stringify({
+          'investigationFacilityCycles.investigation.investigationInstruments.instrument.id':
+            {
+              eq: 1,
+            },
+        })
+      );
+      params.append(
+        'distinct',
+        JSON.stringify(['id', 'name', 'startDate', 'endDate'])
+      );
 
       expect(axios.get).toHaveBeenCalledWith(
-        'https://example.com/api/instruments/1/facilitycycles',
+        'https://example.com/api/facilitycycles',
         expect.objectContaining({
           params,
         })
@@ -199,7 +238,7 @@ describe('facility cycle api functions', () => {
 
       expect(axios.get).toHaveBeenNthCalledWith(
         2,
-        'https://example.com/api/instruments/1/facilitycycles',
+        'https://example.com/api/facilitycycles',
         expect.objectContaining({
           params,
         })
@@ -232,9 +271,22 @@ describe('facility cycle api functions', () => {
       params.append('order', JSON.stringify('id asc'));
       params.append('skip', JSON.stringify(0));
       params.append('limit', JSON.stringify(50));
+      params.append(
+        'where',
+        JSON.stringify({
+          'investigationFacilityCycles.investigation.investigationInstruments.instrument.id':
+            {
+              eq: 1,
+            },
+        })
+      );
+      params.append(
+        'distinct',
+        JSON.stringify(['id', 'name', 'startDate', 'endDate'])
+      );
 
       expect(axios.get).toHaveBeenCalledWith(
-        'https://example.com/api/instruments/1/facilitycycles',
+        'https://example.com/api/facilitycycles',
         expect.objectContaining({
           params,
         })
@@ -264,9 +316,23 @@ describe('facility cycle api functions', () => {
           name: { ilike: 'test' },
         })
       );
+      params.append(
+        'where',
+        JSON.stringify({
+          'investigationFacilityCycles.investigation.investigationInstruments.instrument.id':
+            {
+              eq: 1,
+            },
+        })
+      );
+      // Distinct is needed as otherwise it returns duplicate cycles for every cycle with a unique investigation with the matching instrument id
+      params.append(
+        'distinct',
+        JSON.stringify(['id', 'name', 'startDate', 'endDate'])
+      );
 
       expect(axios.get).toHaveBeenCalledWith(
-        'https://example.com/api/instruments/1/facilitycycles/count',
+        'https://example.com/api/facilitycycles/count',
         expect.objectContaining({
           params,
         })
@@ -287,8 +353,23 @@ describe('facility cycle api functions', () => {
 
       await waitFor(() => result.current.isError);
 
+      params.append(
+        'where',
+        JSON.stringify({
+          'investigationFacilityCycles.investigation.investigationInstruments.instrument.id':
+            {
+              eq: 1,
+            },
+        })
+      );
+      // Distinct is needed as otherwise it returns duplicate cycles for every cycle with a unique investigation with the matching instrument id
+      params.append(
+        'distinct',
+        JSON.stringify(['id', 'name', 'startDate', 'endDate'])
+      );
+
       expect(axios.get).toHaveBeenCalledWith(
-        'https://example.com/api/instruments/1/facilitycycles/count',
+        'https://example.com/api/facilitycycles/count',
         expect.objectContaining({
           params,
         })
