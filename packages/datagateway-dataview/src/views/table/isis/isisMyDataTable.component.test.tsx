@@ -445,9 +445,14 @@ describe('ISIS MyData table component', () => {
 
   it('displays details panel when expanded', async () => {
     renderComponent();
+
+    // find the first row
+    const row = await findRowAt(0);
+
     await user.click(
-      await screen.findByRole('button', { name: 'Show details' })
+      await within(row).findByRole('button', { name: 'Show details' })
     );
+
     expect(
       await screen.findByTestId('isis-investigation-details-panel')
     ).toBeInTheDocument();

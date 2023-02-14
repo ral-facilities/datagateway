@@ -211,8 +211,6 @@ describe('Dataset - Card View', () => {
   it('updates sort query params on sort', async () => {
     renderComponent();
 
-    screen.debug(undefined, 10000000);
-
     await user.click(
       await screen.findByRole('button', { name: 'Sort by DATASETS.NAME' })
     );

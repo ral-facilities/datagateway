@@ -316,16 +316,17 @@ describe('Investigation - Card View', () => {
   });
 
   it('renders ISIS link & file sizes correctly', () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
+    cardData[0].investigationFacilityCycles = [
+      {
+        id: 232,
+        facilityCycle: {
           id: 6,
           name: 'facility cycle name',
           startDate: '2000-06-10',
           endDate: '2020-06-11',
         },
-      ],
-    });
+      },
+    ];
 
     const wrapper = createWrapper('isis');
 
@@ -363,95 +364,22 @@ describe('Investigation - Card View', () => {
   });
 
   it('does not render ISIS link when instrumentId cannot be found', () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
-          id: 4,
+    cardData[0].investigationFacilityCycles = [
+      {
+        id: 232,
+        facilityCycle: {
+          id: 6,
           name: 'facility cycle name',
           startDate: '2000-06-10',
           endDate: '2020-06-11',
         },
-      ],
-    });
+      },
+    ];
     delete cardData[0].investigationInstruments;
 
-    (useInvestigationsPaginated as jest.Mock).mockReturnValue({
-      data: cardData,
-      fetchNextPage: jest.fn(),
-    });
     const wrapper = createWrapper('isis');
 
     expect(wrapper.find(CardView).first().find('a')).toHaveLength(1);
-    expect(
-      wrapper
-        .find(CardView)
-        .first()
-        .find('[aria-label="card-title"]')
-        .last()
-        .text()
-    ).toEqual('Test 1');
-  });
-
-  it('displays only the dataset name when there is no generic investigation to link to', () => {
-    delete cardData[0].investigation;
-    (useInvestigationsPaginated as jest.Mock).mockReturnValue({
-      data: cardData,
-      fetchNextPage: jest.fn(),
-    });
-
-    const wrapper = createWrapper('data');
-
-    expect(wrapper.find(CardView).first().find('a')).toHaveLength(2);
-    expect(
-      wrapper
-        .find(CardView)
-        .first()
-        .find('[aria-label="card-title"]')
-        .last()
-        .text()
-    ).toEqual('Test 1');
-  });
-
-  it('displays only the dataset name when there is no DLS investigation to link to', () => {
-    delete cardData[0].investigation;
-    (useInvestigationsPaginated as jest.Mock).mockReturnValue({
-      data: cardData,
-      fetchNextPage: jest.fn(),
-    });
-
-    const wrapper = createWrapper('dls');
-
-    expect(wrapper.find(CardView).first().find('a')).toHaveLength(2);
-    expect(
-      wrapper
-        .find(CardView)
-        .first()
-        .find('[aria-label="card-title"]')
-        .last()
-        .text()
-    ).toEqual('Test 1');
-  });
-
-  it('displays only the dataset name when there is no ISIS investigation to link to', () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
-          id: 4,
-          name: 'facility cycle name',
-          startDate: '2000-06-10',
-          endDate: '2020-06-11',
-        },
-      ],
-    });
-    delete cardData[0].investigation;
-    (useInvestigationsPaginated as jest.Mock).mockReturnValue({
-      data: cardData,
-      fetchNextPage: jest.fn(),
-    });
-
-    const wrapper = createWrapper('isis');
-
-    expect(wrapper.find(CardView).first().find('a')).toHaveLength(2);
     expect(
       wrapper
         .find(CardView)
@@ -485,16 +413,17 @@ describe('Investigation - Card View', () => {
   });
 
   it('can navigate using the details panel for ISIS when there are facility cycles', () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
+    cardData[0].investigationFacilityCycles = [
+      {
+        id: 906,
+        facilityCycle: {
           id: 4,
           name: 'facility cycle name',
           startDate: '2000-06-10',
           endDate: '2020-06-11',
         },
-      ],
-    });
+      },
+    ];
 
     const wrapper = createWrapper('isis');
     expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeFalsy();

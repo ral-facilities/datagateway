@@ -10,6 +10,7 @@ import {
   FACILITY_NAME,
   formatCountOrSize,
   ISISDatasetDetailsPanel,
+  isLandingPageSupportedForHierarchy,
   parseSearchToQuery,
   Table,
   tableLink,
@@ -26,7 +27,6 @@ import {
   useSort,
   useTextFilter,
 } from 'datagateway-common';
-import { isLandingPageSupportedForHierarchy } from 'datagateway-common/src';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
