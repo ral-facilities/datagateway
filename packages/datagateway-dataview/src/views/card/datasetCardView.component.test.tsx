@@ -4,7 +4,7 @@ import {
   useDatasetCount,
   useDatasetsPaginated,
 } from 'datagateway-common';
-import React from 'react';
+import * as React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
@@ -95,7 +95,7 @@ describe('Dataset - Card View', () => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly', async () => {
+  it('renders datasets as cards', async () => {
     renderComponent();
 
     const cards = await screen.findAllByTestId('card');
@@ -168,6 +168,11 @@ describe('Dataset - Card View', () => {
         card.getByTestId('card-info-data-datasets.modified_time')
       ).getByText('2019-07-23')
     ).toBeInTheDocument();
+
+    // check that buttons are displayed correctly
+    expect(
+      card.getByRole('button', { name: 'buttons.add_to_cart' })
+    ).toBeInTheDocument();
   });
 
   it('updates filter query params on text filter', async () => {
@@ -235,13 +240,6 @@ describe('Dataset - Card View', () => {
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"asc"}')}`
     );
-  });
-
-  it('renders buttons correctly', async () => {
-    renderComponent();
-    expect(
-      await screen.findByRole('button', { name: 'buttons.add_to_cart' })
-    ).toBeInTheDocument();
   });
 
   it('renders fine with incomplete data', () => {
