@@ -55,6 +55,7 @@ const ISISDataPublicationsCardView = (
         }),
       },
     ]);
+
   const { isLoading: dataLoading, data } = useDataPublicationsPaginated([
     {
       filterType: 'where',
