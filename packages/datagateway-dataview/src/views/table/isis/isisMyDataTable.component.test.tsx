@@ -291,6 +291,8 @@ describe('ISIS MyData table component', () => {
       hidden: true,
     });
 
+    await user.type(filterInput, 'test');
+
     // user.type inputs the given string character by character to simulate user typing
     // each keystroke of user.type creates a new entry in the history stack
     // so the initial entry + 4 characters in "test" = 5 entries

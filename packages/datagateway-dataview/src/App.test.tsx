@@ -1,6 +1,6 @@
 import * as React from 'react';
 import App from './App';
-import * as log from 'loglevel';
+import log from 'loglevel';
 import { render, screen, waitFor } from '@testing-library/react';
 import PageContainer from './page/pageContainer.component';
 import { configureApp, settingsLoaded } from './state/actions';

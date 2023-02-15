@@ -75,7 +75,7 @@ exports[`HomePage translated homepage renders correctly 1`] = `
                 class="MuiBox-root css-1yuhvjn"
               >
                 <a
-                  class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-sghohy-MuiButtonBase-root-MuiButton-root"
+                  class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-sghohy-MuiButtonBase-root-MuiButton-root"
                   data-testid="browse-button"
                   href="/home_page.browse.link"
                   tabindex="0"
@@ -142,7 +142,7 @@ exports[`HomePage translated homepage renders correctly 1`] = `
                 class="MuiBox-root css-8xl60i"
               >
                 <a
-                  class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-sghohy-MuiButtonBase-root-MuiButton-root"
+                  class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-sghohy-MuiButtonBase-root-MuiButton-root"
                   data-testid="search-button"
                   href="/home_page.search.link"
                   tabindex="0"
@@ -194,7 +194,7 @@ exports[`HomePage translated homepage renders correctly 1`] = `
                 class="MuiBox-root css-8xl60i"
               >
                 <a
-                  class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-sghohy-MuiButtonBase-root-MuiButton-root"
+                  class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-sghohy-MuiButtonBase-root-MuiButton-root"
                   data-testid="download-button"
                   href="/home_page.download.link"
                   tabindex="0"
@@ -234,7 +234,7 @@ exports[`HomePage translated homepage renders correctly 1`] = `
                   class="MuiBox-root css-8xl60i"
                 >
                   <a
-                    class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-1m6sz6p-MuiButtonBase-root-MuiButton-root"
+                    class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-1m6sz6p-MuiButtonBase-root-MuiButton-root"
                     data-testid="facility-button"
                     href="home_page.facility.link"
                     tabindex="0"
