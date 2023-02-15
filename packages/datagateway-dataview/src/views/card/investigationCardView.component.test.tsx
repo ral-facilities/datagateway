@@ -1,9 +1,7 @@
 import {
   dGCommonInitialState,
+  DownloadCartItem,
   Investigation,
-  useInvestigationCount,
-  useInvestigationsDatasetCount,
-  useInvestigationsPaginated,
 } from 'datagateway-common';
 import * as React from 'react';
 import { Provider } from 'react-redux';
@@ -19,21 +17,15 @@ import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
 } from '../../setupTests';
-import { render, type RenderResult, screen } from '@testing-library/react';
+import {
+  render,
+  type RenderResult,
+  screen,
+  within,
+} from '@testing-library/react';
 import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
-
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    useInvestigationCount: jest.fn(),
-    useInvestigationsPaginated: jest.fn(),
-    useInvestigationsDatasetCount: jest.fn(),
-  };
-});
+import axios, { AxiosResponse } from 'axios';
 
 describe('Investigation - Card View', () => {
   let mockStore;
@@ -41,6 +33,7 @@ describe('Investigation - Card View', () => {
   let cardData: Investigation[];
   let history: History;
   let user: UserEvent;
+  let cartItems: DownloadCartItem[];
 
   const renderComponent = (): RenderResult =>
     render(
@@ -54,13 +47,17 @@ describe('Investigation - Card View', () => {
     );
 
   beforeEach(() => {
+    cartItems = [];
     cardData = [
       {
         id: 1,
-        title: 'Test 1',
-        name: 'Test 1',
-        visitId: '1',
+        title: 'Test title 1',
+        summary: 'Test summary',
+        name: 'Test name 1',
+        visitId: 'visit id 1',
         doi: 'doi 1',
+        startDate: '2020-01-01',
+        endDate: '2020-01-02',
       },
     ];
     history = createMemoryHistory();
@@ -74,15 +71,33 @@ describe('Investigation - Card View', () => {
       })
     );
 
-    (useInvestigationCount as jest.Mock).mockReturnValue({
-      data: 1,
-      isLoading: false,
-    });
-    (useInvestigationsPaginated as jest.Mock).mockReturnValue({
-      data: cardData,
-      isLoading: false,
-    });
-    (useInvestigationsDatasetCount as jest.Mock).mockReturnValue({ data: 1 });
+    axios.get = jest
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (url.includes('/investigations/count')) {
+          return Promise.resolve({
+            data: 1,
+          });
+        }
+
+        if (url.includes('/investigations')) {
+          return Promise.resolve({
+            data: cardData,
+          });
+        }
+
+        if (url.includes('/datasets/count')) {
+          return Promise.resolve({
+            data: 1,
+          });
+        }
+
+        if (url.includes('/user/cart')) {
+          return Promise.resolve({
+            data: { cartItems },
+          });
+        }
+      });
 
     // Prevent error logging
     window.scrollTo = jest.fn();
@@ -90,6 +105,121 @@ describe('Investigation - Card View', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  it('renders investigations as cards', async () => {
+    renderComponent();
+
+    const cards = await screen.findAllByTestId('card');
+    expect(cards).toHaveLength(1);
+
+    const card = within(cards[0]);
+
+    // check that title & description is displayed correctly
+    expect(
+      within(card.getByLabelText('card-title')).getByRole('link', {
+        name: 'Test title 1',
+      })
+    ).toHaveAttribute('href', '/browse/investigation/1/dataset');
+    expect(
+      within(card.getByLabelText('card-description')).getByText('Test summary')
+    ).toBeInTheDocument();
+
+    // check that investigation doi is displayed correctly
+    expect(
+      within(card.getByTestId('card-info-investigations.doi')).getByTestId(
+        'PublicIcon'
+      )
+    ).toBeInTheDocument();
+    expect(card.getByTestId('card-info-investigations.doi')).toHaveTextContent(
+      'investigations.doi'
+    );
+    expect(
+      within(card.getByTestId('card-info-data-investigations.doi')).getByRole(
+        'link',
+        { name: 'doi 1' }
+      )
+    ).toHaveAttribute('href', 'https://doi.org/doi 1');
+
+    // check that visit id is displayed correctly
+    expect(
+      card.getByTestId('card-info-investigations.visit_id')
+    ).toHaveTextContent('investigations.visit_id');
+    expect(
+      within(card.getByTestId('card-info-investigations.visit_id')).getByTestId(
+        'FingerprintIcon'
+      )
+    ).toBeInTheDocument();
+    expect(
+      within(
+        card.getByTestId('card-info-data-investigations.visit_id')
+      ).getByText('visit id 1')
+    ).toBeInTheDocument();
+
+    // check that investigation name is displayed correctly
+    expect(
+      card.getByTestId('card-info-investigations.details.name')
+    ).toHaveTextContent('investigations.details.name');
+    expect(
+      within(
+        card.getByTestId('card-info-investigations.details.name')
+      ).getByTestId('FingerprintIcon')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        card.getByTestId('card-info-data-investigations.details.name')
+      ).getByText('Test name 1')
+    ).toBeInTheDocument();
+
+    // check that investigation dataset count is displayed correctly
+    expect(
+      card.getByTestId('card-info-investigations.dataset_count')
+    ).toHaveTextContent('investigations.dataset_count');
+    expect(
+      within(
+        card.getByTestId('card-info-investigations.dataset_count')
+      ).getByTestId('ConfirmationNumberIcon')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        card.getByTestId('card-info-data-investigations.dataset_count')
+      ).getByText('1')
+    ).toBeInTheDocument();
+
+    // check that investigation start date is displayed correctly
+    expect(
+      card.getByTestId('card-info-investigations.details.start_date')
+    ).toHaveTextContent('investigations.details.start_date');
+    expect(
+      within(
+        card.getByTestId('card-info-investigations.details.start_date')
+      ).getByTestId('CalendarTodayIcon')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        card.getByTestId('card-info-data-investigations.details.start_date')
+      ).getByText('2020-01-01')
+    ).toBeInTheDocument();
+
+    // check that investigation start date is displayed correctly
+    expect(
+      card.getByTestId('card-info-investigations.details.end_date')
+    ).toHaveTextContent('investigations.details.end_date');
+    expect(
+      within(
+        card.getByTestId('card-info-investigations.details.end_date')
+      ).getByTestId('CalendarTodayIcon')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        card.getByTestId('card-info-data-investigations.details.end_date')
+      ).getByText('2020-01-02')
+    ).toBeInTheDocument();
+
+    // check that card buttons are displayed correctly
+    expect(
+      card.getByRole('button', { name: 'buttons.add_to_cart' })
+    ).toBeInTheDocument();
   });
 
   it('updates filter query params on text filter', async () => {
@@ -143,14 +273,6 @@ describe('Investigation - Card View', () => {
     cleanupDatePickerWorkaround();
   });
 
-  it('displays DOI and renders the expected Link ', async () => {
-    renderComponent();
-    expect(await screen.findByRole('link', { name: 'doi 1' })).toHaveAttribute(
-      'href',
-      'https://doi.org/doi 1'
-    );
-  });
-
   it('updates sort query params on sort', async () => {
     renderComponent();
 
@@ -163,21 +285,5 @@ describe('Investigation - Card View', () => {
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"title":"asc"}')}`
     );
-  });
-
-  it('renders buttons correctly', async () => {
-    renderComponent();
-    expect(
-      await screen.findByRole('button', { name: 'buttons.add_to_cart' })
-    ).toBeInTheDocument();
-  });
-
-  it('renders fine with incomplete data', () => {
-    (useInvestigationCount as jest.Mock).mockReturnValueOnce({});
-    (useInvestigationsPaginated as jest.Mock).mockReturnValueOnce({});
-    (useInvestigationsDatasetCount as jest.Mock).mockReturnValueOnce([
-      { data: 0 },
-    ]);
-    expect(() => renderComponent()).not.toThrowError();
   });
 });
