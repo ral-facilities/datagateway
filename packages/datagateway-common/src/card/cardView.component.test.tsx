@@ -22,24 +22,24 @@ describe('Card View', () => {
       {
         id: 1,
         title: 'Test 1',
-        name: 'Test 1',
-        visitId: '1',
+        name: 'Test name 1',
+        visitId: 'visit id 1',
         type: { id: 1, name: '1' },
         facility: { id: 1, name: '1' },
       },
       {
         id: 2,
         title: 'Test 2',
-        name: 'Test 2',
-        visitId: '2',
+        name: 'Test name 2',
+        visitId: 'visit id 2',
         type: { id: 1, name: '1' },
         facility: { id: 1, name: '1' },
       },
       {
         id: 3,
         title: 'Test 3',
-        name: 'Test 3',
-        visitId: '3',
+        name: 'Test name 3',
+        visitId: 'visit id 3',
         type: { id: 1, name: '1' },
         facility: { id: 1, name: '1' },
       },
@@ -78,135 +78,6 @@ describe('Card View', () => {
     expect(asFragment()).toMatchSnapshot();
   });
 
-  it('applying custom filter on panel and on card', async () => {
-    let updatedProps = {
-      ...props,
-      customFilters: [
-        {
-          label: 'Type ID',
-          dataKey: 'type.id',
-          filterItems: [
-            {
-              name: '1',
-              count: '1',
-            },
-            {
-              name: '2',
-              count: '1',
-            },
-          ],
-        },
-      ],
-    };
-
-    const { rerender } = render(<CardView {...updatedProps} />);
-
-    // Open custom filters
-    await user.click(await screen.findByText('Type ID'));
-
-    const chipList = within(await screen.findByLabelText('filter-by-list'));
-    expect(chipList.getByLabelText('1')).toBeInTheDocument();
-    expect(chipList.getByLabelText('2')).toBeInTheDocument();
-
-    // Apply custom filters
-    await user.click(chipList.getByLabelText('1'));
-    expect(onPageChange).toHaveBeenNthCalledWith(1, 1);
-    expect(onFilter).toHaveBeenNthCalledWith(1, 'type.id', ['1']);
-
-    // Mock result of actions
-    updatedProps = {
-      ...updatedProps,
-      page: 1,
-      filters: { 'type.id': ['1'] },
-    };
-
-    // Mock console.error() when updating the filter panels. We use Accordions
-    // with dynamic default values, which works, but would log an error.
-    jest.spyOn(console, 'error').mockImplementationOnce(jest.fn());
-    rerender(<CardView {...updatedProps} />);
-
-    // Apply second filter
-    await user.click(
-      within(await screen.findByLabelText('filter-by-list')).getByText('2')
-    );
-
-    expect(onPageChange).toHaveBeenNthCalledWith(2, 1);
-    expect(onFilter).toHaveBeenNthCalledWith(2, 'type.id', ['1', '2']);
-
-    // Mock result of actions
-    updatedProps = {
-      ...updatedProps,
-      filters: { 'type.id': ['1', '2'] },
-    };
-    rerender(<CardView {...updatedProps} />);
-
-    // Remove filter
-    expect(await screen.findByText('Type ID - 1')).toBeInTheDocument();
-    // focus on the chip, then press the backspace key to remove the chip
-    screen.getByText('Type ID - 1').parentElement.focus();
-    await user.keyboard('{Backspace}');
-    expect(onPageChange).toHaveBeenNthCalledWith(3, 1);
-    expect(onFilter).toHaveBeenNthCalledWith(3, 'type.id', ['2']);
-
-    // Mock result of actions
-    updatedProps = {
-      ...updatedProps,
-      filters: { 'type.id': ['2'] },
-    };
-    rerender(<CardView {...updatedProps} />);
-
-    // Remove second filter
-    expect(await screen.findByText('Type ID - 2')).toBeInTheDocument();
-    // focus on the chip, then press the backspace key to remove the chip
-    screen.getByText('Type ID - 2').parentElement.focus();
-    await user.keyboard('{Backspace}');
-    expect(onPageChange).toHaveBeenNthCalledWith(4, 1);
-    expect(onFilter).toHaveBeenNthCalledWith(4, 'type.id', null);
-  });
-
-  it('custom filter applied when non-custom filter already in state', async () => {
-    const updatedProps = {
-      ...props,
-      customFilters: [
-        {
-          label: 'Type ID',
-          dataKey: 'type.id',
-          filterItems: [
-            {
-              name: '1',
-              count: '1',
-            },
-            {
-              name: '2',
-              count: '1',
-            },
-          ],
-        },
-      ],
-      filters: { 'type.id': { value: 'abc', type: 'include' } },
-    };
-
-    render(<CardView {...updatedProps} />);
-
-    for (const elem of within(
-      screen.getByLabelText('Filter by Type ID 1')
-    ).getAllByText('1')) {
-      expect(elem).toBeInTheDocument();
-    }
-
-    // Open custom filters
-    await user.click(await screen.findByText('Type ID'));
-
-    const chipList = within(await screen.findByLabelText('filter-by-list'));
-    expect(chipList.getByLabelText('1')).toBeInTheDocument();
-    expect(chipList.getByLabelText('2')).toBeInTheDocument();
-
-    // Apply custom filters
-    await user.click(chipList.getByLabelText('1'));
-    expect(onPageChange).toHaveBeenNthCalledWith(1, 1);
-    expect(onFilter).toHaveBeenNthCalledWith(1, 'type.id', ['1']);
-  });
-
   it('advancedFilter displayed when filter component given', async () => {
     const textFilter = (label: string, dataKey: string): React.ReactElement => (
       <TextColumnFilter
@@ -223,10 +94,16 @@ describe('Card View', () => {
         filterComponent: textFilter,
       },
     };
+
     render(<CardView {...updatedProps} />);
-    for (const element of await screen.findAllByText('Title')) {
-      expect(element).toBeInTheDocument();
-    }
+
+    await user.click(
+      screen.getByRole('button', { name: 'advanced_filters.show' })
+    );
+
+    expect(
+      screen.getByRole('textbox', { name: 'Filter by Title', hidden: true })
+    ).toBeInTheDocument();
   });
 
   it('filter message displayed when loadedData and totalDataCount is 0', async () => {
@@ -244,40 +121,102 @@ describe('Card View', () => {
   it('buttons display correctly', async () => {
     const updatedProps = {
       ...props,
-      buttons: [(entity: Entity) => <button>TEST</button>],
+      buttons: [(entity: Entity) => <button>{entity.name}</button>],
     };
+
     render(<CardView {...updatedProps} />);
-    for (const btn of await screen.findAllByRole('button', { name: 'TEST' })) {
-      expect(btn).toBeInTheDocument();
-    }
+
+    const cards = screen.getAllByTestId('card');
+
+    expect(
+      within(within(cards[0]).getByLabelText('card-buttons')).getByRole(
+        'button',
+        { name: 'Test name 1' }
+      )
+    ).toBeInTheDocument();
+    expect(
+      within(within(cards[1]).getByLabelText('card-buttons')).getByRole(
+        'button',
+        { name: 'Test name 2' }
+      )
+    ).toBeInTheDocument();
+    expect(
+      within(within(cards[2]).getByLabelText('card-buttons')).getByRole(
+        'button',
+        { name: 'Test name 3' }
+      )
+    ).toBeInTheDocument();
   });
 
   it('moreInformation displays correctly', async () => {
-    const moreInformation = (entity: Entity): React.ReactElement => <p>TEST</p>;
+    const moreInformation = (entity: Entity): React.ReactElement => (
+      <p>More information for {entity.name}</p>
+    );
     const updatedProps = {
       ...props,
       moreInformation: moreInformation,
     };
+
     render(<CardView {...updatedProps} />);
-    for (const element of await screen.findAllByLabelText(
-      'card-more-information'
-    )) {
-      expect(element).toBeInTheDocument();
-    }
+
+    const cards = screen.getAllByTestId('card');
+
+    await user.click(
+      within(cards[0]).getByRole('button', { name: 'card-more-info-expand' })
+    );
+    expect(
+      within(
+        within(cards[0]).getByLabelText('card-more-info-details')
+      ).getByText('More information for Test name 1')
+    ).toBeInTheDocument();
+
+    await user.click(
+      within(cards[1]).getByRole('button', { name: 'card-more-info-expand' })
+    );
+    expect(
+      within(
+        within(cards[1]).getByLabelText('card-more-info-details')
+      ).getByText('More information for Test name 2')
+    ).toBeInTheDocument();
+
+    await user.click(
+      within(cards[2]).getByRole('button', { name: 'card-more-info-expand' })
+    );
+    expect(
+      within(
+        within(cards[2]).getByLabelText('card-more-info-details')
+      ).getByText('More information for Test name 3')
+    ).toBeInTheDocument();
   });
 
   it('title.content displays correctly', async () => {
     const content = (entity: Entity): React.ReactElement => (
-      <p id="test-title-content">TEST</p>
+      <p>Custom {entity.title}</p>
     );
     const updatedProps = {
       ...props,
       title: { dataKey: 'title', content: content },
     };
+
     render(<CardView {...updatedProps} />);
-    for (const element of await screen.findAllByText('TEST')) {
-      expect(element).toBeInTheDocument();
-    }
+
+    const cards = screen.getAllByTestId('card');
+
+    expect(
+      within(within(cards[0]).getByLabelText('card-title')).getByText(
+        'Custom Test 1'
+      )
+    ).toBeInTheDocument();
+    expect(
+      within(within(cards[1]).getByLabelText('card-title')).getByText(
+        'Custom Test 2'
+      )
+    ).toBeInTheDocument();
+    expect(
+      within(within(cards[2]).getByLabelText('card-title')).getByText(
+        'Custom Test 3'
+      )
+    ).toBeInTheDocument();
   });
 
   it('sort applied correctly', async () => {
@@ -393,25 +332,46 @@ describe('Card View', () => {
         {
           dataKey: 'name',
           label: 'Name',
-          content: (entity: Entity) => 'Content',
+          content: (entity: Entity) => entity.name,
         },
       ],
       page: 1,
     };
     render(<CardView {...updatedProps} />);
 
-    for (const element of await screen.findAllByText('visitId:')) {
-      expect(element).toBeInTheDocument();
-    }
-    for (const element of await screen.findAllByText('1')) {
-      expect(element).toBeInTheDocument();
-    }
-    for (const element of await screen.findAllByText('Name:')) {
-      expect(element).toBeInTheDocument();
-    }
-    for (const element of await screen.findAllByText('Content')) {
-      expect(element).toBeInTheDocument();
-    }
+    const cards = await screen.findAllByTestId('card');
+
+    expect(within(cards[0]).getByText('visitId:')).toBeInTheDocument();
+    expect(within(cards[0]).getByText('visit id 1')).toBeInTheDocument();
+    expect(within(cards[0]).getByText('Name:')).toBeInTheDocument();
+    expect(
+      within(cards[0]).getByLabelText('card-description')
+    ).toHaveTextContent('Test name 1');
+    // information content is wrapped with ArrowTooltip, which automatically gives its child
+    // an aria-label that is the same as the content of the tooltip
+    expect(within(cards[0]).getByLabelText('Test name 1')).toHaveTextContent(
+      'Test name 1'
+    );
+
+    expect(within(cards[1]).getByText('visitId:')).toBeInTheDocument();
+    expect(within(cards[1]).getByText('visit id 2')).toBeInTheDocument();
+    expect(within(cards[1]).getByText('Name:')).toBeInTheDocument();
+    expect(
+      within(cards[1]).getByLabelText('card-description')
+    ).toHaveTextContent('Test name 2');
+    expect(within(cards[1]).getByLabelText('Test name 2')).toHaveTextContent(
+      'Test name 2'
+    );
+
+    expect(within(cards[2]).getByText('visitId:')).toBeInTheDocument();
+    expect(within(cards[2]).getByText('visit id 3')).toBeInTheDocument();
+    expect(within(cards[2]).getByText('Name:')).toBeInTheDocument();
+    expect(
+      within(cards[2]).getByLabelText('card-description')
+    ).toHaveTextContent('Test name 3');
+    expect(within(cards[2]).getByLabelText('Test name 3')).toHaveTextContent(
+      'Test name 3'
+    );
 
     // Click to sort ascending
     await user.click(
@@ -429,19 +389,31 @@ describe('Card View', () => {
         {
           dataKey: 'name',
           label: 'Name',
-          content: (entity: Entity) => 'Content',
+          content: (entity: Entity) => entity.name,
           noTooltip: true,
         },
       ],
     };
+
     render(<CardView {...updatedProps} />);
 
-    for (const element of await screen.findAllByText('Name:')) {
-      expect(element).toBeInTheDocument();
-    }
-    for (const element of await screen.findAllByText('Content')) {
-      expect(element).toBeInTheDocument();
-    }
+    const cards = await screen.findAllByTestId('card');
+
+    expect(within(cards[0]).getByText('Name:')).toBeInTheDocument();
+    expect(
+      within(cards[0]).getByLabelText('card-description')
+    ).toHaveTextContent('Test name 1');
+    expect(
+      within(cards[0]).getByTestId(`card-info-data-Name`)
+    ).toHaveTextContent('Test name 1');
+
+    expect(within(cards[1]).getByText('Name:')).toBeInTheDocument();
+    expect(
+      within(cards[1]).getByLabelText('card-description')
+    ).toHaveTextContent('Test name 2');
+    expect(
+      within(cards[1]).getByTestId(`card-info-data-Name`)
+    ).toHaveTextContent('Test name 2');
   });
 
   it('cannot sort when fields are disabled', async () => {
@@ -470,6 +442,7 @@ describe('Card View', () => {
       resultsOptions: [1],
       results: 1,
     };
+
     render(<CardView {...updatedProps} />);
 
     await user.click(
