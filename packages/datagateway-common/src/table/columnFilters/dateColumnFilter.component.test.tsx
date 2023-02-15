@@ -426,7 +426,7 @@ describe('Date filter component', () => {
       }
     });
 
-    it('useTextFilter hook returns a function which can generate a working text filter', async () => {
+    it('useDateFilter hook returns a function which can generate a working date filter', async () => {
       const pushFilter = jest.fn();
       (usePushFilter as jest.Mock).mockImplementation(() => pushFilter);
 
