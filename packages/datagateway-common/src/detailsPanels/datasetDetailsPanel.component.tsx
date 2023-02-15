@@ -38,8 +38,7 @@ const DatasetDetailsPanel = (
       <Grid item xs>
         <Typography variant="h6">
           <b>{datasetData.name}</b>
-        </Typography>{' '}
-        T
+        </Typography>
         <StyledDivider />
       </Grid>
       <Grid item xs>
