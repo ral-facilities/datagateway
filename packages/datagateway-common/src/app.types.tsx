@@ -172,6 +172,7 @@ export interface DataPublication {
   description?: string;
   publicationDate?: string;
   users?: DataPublicationUser[];
+  content?: DataCollection;
 }
 
 interface InstrumentScientist {

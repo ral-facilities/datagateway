@@ -160,6 +160,18 @@ export const useDataPublication = (
           filterType: 'include',
           filterValue: JSON.stringify('users'),
         },
+        {
+          filterType: 'include',
+          filterValue: JSON.stringify({
+            content: {
+              dataCollectionInvestigations: {
+                investigation: {
+                  investigationInstruments: 'instrument',
+                },
+              },
+            },
+          }),
+        },
       ]);
     },
     {

@@ -1,4 +1,5 @@
 import {
+  Box,
   Divider,
   Grid,
   Link as MuiLink,
@@ -9,6 +10,7 @@ import {
   Typography,
 } from '@mui/material';
 import {
+  Assessment,
   CalendarToday,
   Fingerprint,
   Public,
@@ -19,11 +21,17 @@ import {
   useDataPublication,
   ArrowTooltip,
   getTooltipText,
+  Investigation,
+  tableLink,
+  AddToCartButton,
+  ViewsType,
+  parseSearchToQuery,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import Branding from './isisBranding.component';
 import CitationFormatter from '../../citationFormatter.component';
+import { useHistory, useLocation } from 'react-router-dom';
 
 const Subheading = styled(Typography)(({ theme }) => ({
   marginTop: theme.spacing(1),
@@ -51,6 +59,15 @@ const ShortInfoValue = styled(Typography)({
   textOverflow: 'ellipsis',
 });
 
+const ActionButtonsContainer = styled('div')(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  '& button': {
+    margin: 'auto',
+    marginTop: theme.spacing(1),
+  },
+}));
+
 export interface FormattedUser {
   contributorType: string;
   fullName: string;
@@ -60,11 +77,86 @@ interface LandingPageProps {
   dataPublicationId: string;
 }
 
+interface LinkedInvestigationProps {
+  investigation: Investigation;
+  urlPrefix: string;
+  view: ViewsType;
+}
+
+const LinkedInvestigation = (
+  props: LinkedInvestigationProps
+): React.ReactElement => {
+  const [t] = useTranslation();
+
+  const investigation = props.investigation;
+
+  const shortInvestigationInfo = [
+    {
+      content: (entity: Investigation) => entity.name,
+      label: t('investigations.name'),
+      icon: <Fingerprint sx={shortInfoIconStyle} />,
+    },
+    {
+      content: (entity: Investigation) =>
+        entity.investigationInstruments?.[0]?.instrument?.name,
+      label: t('investigations.instrument'),
+      icon: <Assessment sx={shortInfoIconStyle} />,
+    },
+    {
+      content: (entity: Investigation) => entity.releaseDate?.slice(0, 10),
+      label: t('investigations.release_date'),
+      icon: <CalendarToday sx={shortInfoIconStyle} />,
+    },
+  ];
+
+  return (
+    <div>
+      <Subheading
+        variant="h6"
+        align="center"
+        data-testid="landing-study-part-label"
+      >
+        {tableLink(
+          `${props.urlPrefix}/investigation/${investigation.id}`,
+          `${t('investigations.visit_id')}: ${investigation.visitId}`,
+          props.view
+        )}
+      </Subheading>
+      {shortInvestigationInfo.map((field, i) => (
+        <ShortInfoRow key={i}>
+          <ShortInfoLabel>
+            {field.icon}
+            {field.label}:
+          </ShortInfoLabel>
+          <ArrowTooltip title={getTooltipText(field.content(investigation))}>
+            <ShortInfoValue>{field.content(investigation)}</ShortInfoValue>
+          </ArrowTooltip>
+        </ShortInfoRow>
+      ))}
+      <ActionButtonsContainer>
+        <AddToCartButton
+          entityType="investigation"
+          allIds={[investigation.id]}
+          entityId={investigation.id}
+        />
+      </ActionButtonsContainer>
+    </div>
+  );
+};
+
 const LandingPage = (props: LandingPageProps): React.ReactElement => {
   const [t] = useTranslation();
+  const { push } = useHistory();
+  const location = useLocation();
+  const { view } = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
 
   const [value, setValue] = React.useState<'details'>('details');
   const { dataPublicationId } = props;
+
+  const urlPrefix = `/browseDataPublications/dataPublication/${dataPublicationId}`;
 
   const { data } = useDataPublication(parseInt(dataPublicationId));
 
@@ -191,11 +283,6 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       icon: <Public sx={shortInfoIconStyle} />,
     },
     {
-      content: (entity: DataPublication) => entity.title,
-      label: t('datapublications.title'),
-      icon: <Fingerprint sx={shortInfoIconStyle} />,
-    },
-    {
       content: function distributionFormat(entity: DataPublication) {
         return (
           <MuiLink href="http://www.isis.stfc.ac.uk/groups/computing/isis-raw-file-format11200.html">
@@ -207,8 +294,21 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       icon: <Storage sx={shortInfoIconStyle} />,
     },
     {
-      content: (entity: DataPublication) => entity?.createTime,
-      label: t('datapublications.createTime'),
+      content: (entity: DataPublication) =>
+        entity?.content?.dataCollectionInvestigations?.[0]?.investigation?.startDate?.slice(
+          0,
+          10
+        ),
+      label: t('datapublications.start_date'),
+      icon: <CalendarToday sx={shortInfoIconStyle} />,
+    },
+    {
+      content: (entity: DataPublication) =>
+        entity?.content?.dataCollectionInvestigations?.[0]?.investigation?.endDate?.slice(
+          0,
+          10
+        ),
+      label: t('datapublications.end_date'),
       icon: <CalendarToday sx={shortInfoIconStyle} />,
     },
   ];
@@ -232,6 +332,17 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 aria-controls="datapublication-details-panel"
                 label={t('datapublications.details.label')}
                 value="details"
+              />
+              <Tab
+                id="datapublication-investigations-tab"
+                label={t('datapublications.details.investigations')}
+                onClick={() =>
+                  push(
+                    view
+                      ? `${urlPrefix}/investigation?view=${view}`
+                      : `${urlPrefix}/investigation`
+                  )
+                }
               />
             </Tabs>
             <Divider />
@@ -307,6 +418,23 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                   </ShortInfoRow>
                 )
             )}
+            {/* Parts */}
+            {data?.map((dataPublication, i) => (
+              <Box key={i} sx={{ my: 1 }}>
+                <Divider />
+                {dataPublication?.content?.dataCollectionInvestigations?.[0]
+                  ?.investigation && (
+                  <LinkedInvestigation
+                    investigation={
+                      dataPublication?.content
+                        ?.dataCollectionInvestigations?.[0]?.investigation
+                    }
+                    urlPrefix={urlPrefix}
+                    view={view}
+                  />
+                )}
+              </Box>
+            ))}
           </Grid>
         </Grid>
       </Grid>

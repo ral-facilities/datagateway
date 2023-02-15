@@ -127,7 +127,7 @@
   },
   "investigations": {
     "title": "Title",
-    "name": "Name",
+    "name": "RB Number",
     "principal_investigators": "Principal Investigator",
     "end_date": "End Date",
     "start_date": "Start Date",
