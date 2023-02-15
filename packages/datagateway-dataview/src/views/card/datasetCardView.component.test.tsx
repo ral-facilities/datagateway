@@ -1,5 +1,5 @@
 import {
-  Dataset,
+  type Dataset,
   dGCommonInitialState,
   useDatasetCount,
   useDatasetsPaginated,
@@ -9,16 +9,21 @@ import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { StateType } from '../../state/app.types';
+import type { StateType } from '../../state/app.types';
 import DatasetCardView from './datasetCardView.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { createMemoryHistory, History } from 'history';
+import { createMemoryHistory, type History } from 'history';
 import { initialState as dgDataViewInitialState } from '../../state/reducers/dgdataview.reducer';
 import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
 } from '../../setupTests';
-import { render, type RenderResult, screen } from '@testing-library/react';
+import {
+  render,
+  type RenderResult,
+  screen,
+  within,
+} from '@testing-library/react';
 import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 
@@ -56,9 +61,11 @@ describe('Dataset - Card View', () => {
       {
         id: 1,
         name: 'Test 1',
+        description: 'Test description',
         size: 1,
         modTime: '2019-07-23',
         createTime: '2019-07-23',
+        datafileCount: 1,
       },
     ];
     history = createMemoryHistory();
@@ -88,10 +95,79 @@ describe('Dataset - Card View', () => {
     jest.clearAllMocks();
   });
 
-  // TODO: this results in a huge snapshot diff, so this is skipped for now
-  it.skip('renders correctly', () => {
-    const { asFragment } = renderComponent();
-    expect(asFragment()).toMatchSnapshot();
+  it('renders correctly', async () => {
+    renderComponent();
+
+    const cards = await screen.findAllByTestId('card');
+    expect(cards).toHaveLength(1);
+
+    const card = within(cards[0]);
+
+    // check that title & description is displayed correctly
+    expect(
+      within(card.getByLabelText('card-title')).getByRole('link', {
+        name: 'Test 1',
+      })
+    ).toHaveAttribute('href', '/browse/investigation/1/dataset/1/datafile');
+    expect(
+      within(card.getByLabelText('card-description')).getByText(
+        'Test description'
+      )
+    ).toBeInTheDocument();
+
+    // check that datafile count is displayed correctly
+    expect(
+      card.getByTestId('card-info-datasets.datafile_count')
+    ).toBeInTheDocument();
+    expect(
+      within(card.getByTestId('card-info-datasets.datafile_count')).getByTestId(
+        'ConfirmationNumberIcon'
+      )
+    ).toBeInTheDocument();
+    expect(
+      card.getByTestId('card-info-datasets.datafile_count')
+    ).toHaveTextContent('datasets.datafile_count');
+    expect(
+      within(
+        card.getByTestId('card-info-data-datasets.datafile_count')
+      ).getByText('1')
+    ).toBeInTheDocument();
+
+    // check that datafile create time is displayed correctly
+    expect(
+      card.getByTestId('card-info-datasets.create_time')
+    ).toBeInTheDocument();
+    expect(
+      card.getByTestId('card-info-datasets.create_time')
+    ).toHaveTextContent('datasets.create_time');
+    expect(
+      within(card.getByTestId('card-info-datasets.create_time')).getByTestId(
+        'CalendarTodayIcon'
+      )
+    ).toBeInTheDocument();
+    expect(
+      within(card.getByTestId('card-info-data-datasets.create_time')).getByText(
+        '2019-07-23'
+      )
+    ).toBeInTheDocument();
+
+    // check that datafile modified time is displayed correctly
+    expect(
+      card.getByTestId('card-info-datasets.modified_time')
+    ).toBeInTheDocument();
+    expect(
+      card.getByTestId('card-info-datasets.modified_time')
+    ).toHaveTextContent('datasets.modified_time');
+    expect(
+      within(card.getByTestId('card-info-datasets.modified_time')).getByTestId(
+        'CalendarTodayIcon'
+      )
+    ).toBeInTheDocument();
+    expect(
+      within(
+        card.getByTestId('card-info-data-datasets.modified_time')
+      ).getByText('2019-07-23')
+    ).toBeInTheDocument();
   });
 
   it('updates filter query params on text filter', async () => {
