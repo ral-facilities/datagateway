@@ -5,12 +5,17 @@ import thunk from 'redux-thunk';
 import { Router } from 'react-router-dom';
 import { dGCommonInitialState } from 'datagateway-common';
 import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
-import { StateType } from '../state/app.types';
-import { createLocation, createMemoryHistory, History } from 'history';
+import type { StateType } from '../state/app.types';
+import { createLocation, createMemoryHistory, type History } from 'history';
 import PageBreadcrumbs from './breadcrumbs.component';
 import axios from 'axios';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { render, type RenderResult, screen } from '@testing-library/react';
+import {
+  render,
+  type RenderResult,
+  screen,
+  within,
+} from '@testing-library/react';
 
 jest.mock('loglevel');
 
@@ -117,9 +122,9 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
     expect(axios.get).not.toBeCalled();
 
     expect(await screen.findByText('breadcrumbs.home')).toBeInTheDocument();
-    expect(
-      await screen.findByText('breadcrumbs.investigation')
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('Breadcrumb-base')).toHaveTextContent(
+      'breadcrumbs.investigation'
+    );
   });
 
   it('generic route renders correctly at the dataset level and requests the investigation entity', async () => {
@@ -143,11 +148,21 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
     });
 
     expect(await screen.findByText('breadcrumbs.home')).toBeInTheDocument();
+    const baseBreadcrumb = screen.getByTestId('Breadcrumb-base');
+    expect(baseBreadcrumb).toHaveAttribute(
+      'href',
+      '/browse/investigation?view=card'
+    );
+    expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.investigation');
+
+    const breadcrumbs = screen.getAllByTestId(/^Breadcrumb-hierarchy-\d+$/);
+    expect(within(breadcrumbs[0]).getByText('Title 1')).toBeInTheDocument();
+
     expect(
-      await screen.findByRole('link', { name: 'breadcrumbs.investigation' })
-    ).toHaveAttribute('href', '/browse/investigation?view=card');
-    expect(await screen.findByText('Title 1')).toBeInTheDocument();
-    expect(await screen.findByText('breadcrumbs.dataset')).toBeInTheDocument();
+      within(screen.getByTestId('Breadcrumb-last')).getByText(
+        'breadcrumbs.dataset'
+      )
+    ).toBeInTheDocument();
   });
 
   it('generic route renders correctly at the datafile level and requests the investigation & dataset entities', async () => {
@@ -172,12 +187,19 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
     });
 
     expect(await screen.findByText('breadcrumbs.home')).toBeInTheDocument();
+    const baseBreadcrumb = screen.getByTestId('Breadcrumb-base');
+    expect(baseBreadcrumb).toHaveAttribute('href', '/browse/investigation');
+    expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.investigation');
+
+    const breadcrumbs = screen.getAllByTestId(/^Breadcrumb-hierarchy-\d+$/);
+    expect(within(breadcrumbs[0]).getByText('Title 1')).toBeInTheDocument();
+    expect(within(breadcrumbs[1]).getByText('Name 1')).toBeInTheDocument();
+
     expect(
-      await screen.findByRole('link', { name: 'breadcrumbs.investigation' })
-    ).toHaveAttribute('href', '/browse/investigation');
-    expect(await screen.findByText('Title 1')).toBeInTheDocument();
-    expect(await screen.findByText('Name 1')).toBeInTheDocument();
-    expect(await screen.findByText('breadcrumbs.datafile')).toBeInTheDocument();
+      within(screen.getByTestId('Breadcrumb-last')).getByText(
+        'breadcrumbs.datafile'
+      )
+    ).toBeInTheDocument();
   });
 
   it('DLS route renders correctly at the base level and does not request', async () => {
@@ -191,7 +213,8 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
     expect(axios.get).not.toBeCalled();
 
     expect(await screen.findByText('breadcrumbs.home')).toBeInTheDocument();
-    expect(await screen.findByText('breadcrumbs.proposal')).toBeInTheDocument();
+    const baseBreadcrumb = screen.getByTestId('Breadcrumb-base');
+    expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.proposal');
   });
 
   it('DLS route renders correctly at the investigation level and requests the proposal entity', async () => {
@@ -214,10 +237,9 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
     );
 
     expect(await screen.findByText('breadcrumbs.home')).toBeInTheDocument();
-    expect(
-      await screen.findByRole('link', { name: 'breadcrumbs.proposal' })
-    ).toHaveAttribute('href', '/browse/proposal');
-    expect(await screen.findByText('Title 1')).toBeInTheDocument();
+    const baseBreadcrumb = screen.getByTestId('Breadcrumb-base');
+    expect(baseBreadcrumb).toHaveAttribute('href', '/browse/proposal');
+    expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.proposal');
   });
 
   it('DLS route renders correctly at the dataset level and requests the proposal & investigation entities', async () => {
@@ -246,14 +268,23 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
     });
 
     expect(await screen.findByText('breadcrumbs.home')).toBeInTheDocument();
+    const baseBreadcrumb = screen.getByTestId('Breadcrumb-base');
+    expect(baseBreadcrumb).toHaveAttribute('href', '/browse/proposal');
+    expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.proposal');
+
+    const breadcrumbs = screen.getAllByTestId(/^Breadcrumb-hierarchy-\d+$/);
+    expect(breadcrumbs[0]).toHaveAttribute(
+      'href',
+      '/browse/proposal/INVESTIGATION 1/investigation'
+    );
+    expect(within(breadcrumbs[0]).getByText('Title 1')).toBeInTheDocument();
+    expect(within(breadcrumbs[1]).getByText('1')).toBeInTheDocument();
+
     expect(
-      await screen.findByRole('link', { name: 'breadcrumbs.proposal' })
-    ).toHaveAttribute('href', '/browse/proposal');
-    expect(
-      await screen.findByRole('link', { name: 'Title 1' })
-    ).toHaveAttribute('href', '/browse/proposal/INVESTIGATION 1/investigation');
-    expect(await screen.findByText('1')).toBeInTheDocument();
-    expect(await screen.findByText('breadcrumbs.dataset')).toBeInTheDocument();
+      within(screen.getByTestId('Breadcrumb-last')).getByText(
+        'breadcrumbs.dataset'
+      )
+    ).toBeInTheDocument();
   });
 
   it('DLS route renders correctly at the datafile level and requests the proposal, investigation and dataset entities', async () => {
@@ -287,18 +318,28 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
     });
 
     expect(await screen.findByText('breadcrumbs.home')).toBeInTheDocument();
-    expect(
-      await screen.findByRole('link', { name: 'breadcrumbs.proposal' })
-    ).toHaveAttribute('href', '/browse/proposal');
-    expect(
-      await screen.findByRole('link', { name: 'Title 1' })
-    ).toHaveAttribute('href', '/browse/proposal/INVESTIGATION 1/investigation');
-    expect(await screen.findByRole('link', { name: '1' })).toHaveAttribute(
+    const baseBreadcrumb = screen.getByTestId('Breadcrumb-base');
+    expect(baseBreadcrumb).toHaveAttribute('href', '/browse/proposal');
+    expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.proposal');
+
+    const breadcrumbs = screen.getAllByTestId(/^Breadcrumb-hierarchy-\d+$/);
+    expect(breadcrumbs[0]).toHaveAttribute(
+      'href',
+      '/browse/proposal/INVESTIGATION 1/investigation'
+    );
+    expect(within(breadcrumbs[0]).getByText('Title 1')).toBeInTheDocument();
+    expect(breadcrumbs[1]).toHaveAttribute(
       'href',
       '/browse/proposal/INVESTIGATION 1/investigation/1/dataset'
     );
-    expect(await screen.findByText('Name 1')).toBeInTheDocument();
-    expect(await screen.findByText('breadcrumbs.datafile')).toBeInTheDocument();
+    expect(within(breadcrumbs[1]).getByText('1')).toBeInTheDocument();
+    expect(within(breadcrumbs[2]).getByText('Name 1')).toBeInTheDocument();
+
+    expect(
+      within(screen.getByTestId('Breadcrumb-last')).getByText(
+        'breadcrumbs.datafile'
+      )
+    ).toBeInTheDocument();
   });
 
   it('ISIS route renders correctly at the base level and does not request', async () => {
@@ -312,9 +353,9 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
     expect(axios.get).not.toHaveBeenCalled();
 
     expect(await screen.findByText('breadcrumbs.home')).toBeInTheDocument();
-    expect(
-      await screen.findByText('breadcrumbs.instrument')
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('Breadcrumb-base')).toHaveTextContent(
+      'breadcrumbs.instrument'
+    );
   });
 
   it('ISIS route renders correctly at the facility cycle level and requests the instrument entity', async () => {
@@ -333,12 +374,17 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
     });
 
     expect(await screen.findByText('breadcrumbs.home')).toBeInTheDocument();
+    const baseBreadcrumb = screen.getByTestId('Breadcrumb-base');
+    expect(baseBreadcrumb).toHaveAttribute('href', '/browse/instrument');
+    expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.instrument');
+
+    const breadcrumbs = screen.getAllByTestId(/^Breadcrumb-hierarchy-\d+$/);
+    expect(within(breadcrumbs[0]).getByText('Name 1')).toBeInTheDocument();
+
     expect(
-      await screen.findByRole('link', { name: 'breadcrumbs.instrument' })
-    ).toHaveAttribute('href', '/browse/instrument');
-    expect(await screen.findByText('Name 1')).toBeInTheDocument();
-    expect(
-      await screen.findByText('breadcrumbs.facilityCycle')
+      within(screen.getByTestId('Breadcrumb-last')).getByText(
+        'breadcrumbs.facilityCycle'
+      )
     ).toBeInTheDocument();
   });
 
@@ -363,16 +409,22 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
     });
 
     expect(await screen.findByText('breadcrumbs.home')).toBeInTheDocument();
-    expect(
-      await screen.findByRole('link', { name: 'breadcrumbs.instrument' })
-    ).toHaveAttribute('href', '/browse/instrument');
-    expect(await screen.findByRole('link', { name: 'Name 1' })).toHaveAttribute(
+    const baseBreadcrumb = screen.getByTestId('Breadcrumb-base');
+    expect(baseBreadcrumb).toHaveAttribute('href', '/browse/instrument');
+    expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.instrument');
+
+    const breadcrumbs = screen.getAllByTestId(/^Breadcrumb-hierarchy-\d+$/);
+    expect(breadcrumbs[0]).toHaveAttribute(
       'href',
       '/browse/instrument/1/facilityCycle'
     );
-    expect(await screen.findAllByText('Name 1')).toHaveLength(2);
+    expect(within(breadcrumbs[0]).getByText('Name 1')).toBeInTheDocument();
+    expect(within(breadcrumbs[1]).getByText('Name 1')).toBeInTheDocument();
+
     expect(
-      await screen.findByText('breadcrumbs.investigation')
+      within(screen.getByTestId('Breadcrumb-last')).getByText(
+        'breadcrumbs.investigation'
+      )
     ).toBeInTheDocument();
   });
 
@@ -402,25 +454,32 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
     });
 
     expect(await screen.findByText('breadcrumbs.home')).toBeInTheDocument();
-    expect(
-      await screen.findByRole('link', { name: 'breadcrumbs.instrument' })
-    ).toHaveAttribute('href', '/browse/instrument');
-    expect(
-      (await screen.findAllByRole('link', { name: 'Name 1' }))[0]
-    ).toHaveAttribute('href', '/browse/instrument/1/facilityCycle');
-    expect(
-      (await screen.findAllByRole('link', { name: 'Name 1' }))[1]
-    ).toHaveAttribute(
+    const baseBreadcrumb = screen.getByTestId('Breadcrumb-base');
+    expect(baseBreadcrumb).toHaveAttribute('href', '/browse/instrument');
+    expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.instrument');
+
+    const breadcrumbs = screen.getAllByTestId(/^Breadcrumb-hierarchy-\d+$/);
+    expect(breadcrumbs[0]).toHaveAttribute(
+      'href',
+      '/browse/instrument/1/facilityCycle'
+    );
+    expect(within(breadcrumbs[0]).getByText('Name 1')).toBeInTheDocument();
+    expect(breadcrumbs[1]).toHaveAttribute(
       'href',
       '/browse/instrument/1/facilityCycle/1/investigation'
     );
-    expect(
-      await screen.findByRole('link', { name: 'Title 1' })
-    ).toHaveAttribute(
+    expect(within(breadcrumbs[1]).getByText('Name 1')).toBeInTheDocument();
+    expect(breadcrumbs[2]).toHaveAttribute(
       'href',
       '/browse/instrument/1/facilityCycle/1/investigation/1'
     );
-    expect(await screen.findByText('breadcrumbs.dataset')).toBeInTheDocument();
+    expect(within(breadcrumbs[2]).getByText('Title 1')).toBeInTheDocument();
+
+    expect(
+      within(screen.getByTestId('Breadcrumb-last')).getByText(
+        'breadcrumbs.dataset'
+      )
+    ).toBeInTheDocument();
   });
 
   it('ISIS route renders correctly at the datafile level and requests the instrument, facility cycle, investigation and dataset entities', async () => {
@@ -454,30 +513,31 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
     });
 
     expect(await screen.findByText('breadcrumbs.home')).toBeInTheDocument();
-    expect(
-      await screen.findByRole('link', { name: 'breadcrumbs.instrument' })
-    ).toHaveAttribute('href', '/browse/instrument');
-    expect(
-      (await screen.findAllByRole('link', { name: 'Name 1' }))[0]
-    ).toHaveAttribute('href', '/browse/instrument/1/facilityCycle');
-    expect(
-      (await screen.findAllByRole('link', { name: 'Name 1' }))[1]
-    ).toHaveAttribute(
+    const baseBreadcrumb = screen.getByTestId('Breadcrumb-base');
+    expect(baseBreadcrumb).toHaveAttribute('href', '/browse/instrument');
+    expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.instrument');
+
+    const breadcrumbs = screen.getAllByTestId(/^Breadcrumb-hierarchy-\d+$/);
+    expect(breadcrumbs[0]).toHaveAttribute(
+      'href',
+      '/browse/instrument/1/facilityCycle'
+    );
+    expect(within(breadcrumbs[0]).getByText('Name 1')).toBeInTheDocument();
+    expect(breadcrumbs[1]).toHaveAttribute(
       'href',
       '/browse/instrument/1/facilityCycle/1/investigation'
     );
-    expect(
-      (await screen.findAllByRole('link', { name: 'Name 1' }))[2]
-    ).toHaveAttribute(
-      'href',
-      '/browse/instrument/1/facilityCycle/1/investigation/1/dataset/1'
-    );
-    expect(
-      await screen.findByRole('link', { name: 'Title 1' })
-    ).toHaveAttribute(
+    expect(within(breadcrumbs[1]).getByText('Name 1')).toBeInTheDocument();
+    expect(breadcrumbs[2]).toHaveAttribute(
       'href',
       '/browse/instrument/1/facilityCycle/1/investigation/1'
     );
-    expect(await screen.findByText('breadcrumbs.datafile')).toBeInTheDocument();
+    expect(within(breadcrumbs[2]).getByText('Title 1')).toBeInTheDocument();
+
+    expect(
+      within(screen.getByTestId('Breadcrumb-last')).getByText(
+        'breadcrumbs.datafile'
+      )
+    ).toBeInTheDocument();
   });
 });
