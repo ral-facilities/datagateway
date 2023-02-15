@@ -56,8 +56,6 @@ describe('SearchBoxContainer - Tests', () => {
       screen.getByRole('link', { name: 'neutron AND scattering' })
     ).toHaveAttribute('href', '/searchBox.examples_label_link2');
 
-    screen.debug(undefined, 100000);
-
     // check that limited results message is shown
     expect(
       screen.getByText('searchBox.limited_results_message', { exact: false })

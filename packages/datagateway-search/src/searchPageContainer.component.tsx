@@ -149,15 +149,11 @@ const getToggle = (pathname: string, view: ViewsType): boolean => {
   return getPathMatch(pathname)
     ? view
       ? view === 'card'
-        ? true
-        : false
       : getView() === 'card'
-      ? true
-      : false
     : false;
 };
 
-const TopSearchBoxPaper = styled(Paper)(({ theme }) => ({
+const TopSearchBoxPaper = styled(Paper)({
   height: '100%',
   // make width of box bigger on smaller screens to prevent overflow
   // decreasing the space for the search results
@@ -166,17 +162,17 @@ const TopSearchBoxPaper = styled(Paper)(({ theme }) => ({
     width: '98%',
   },
   margin: '0 auto',
-}));
+});
 
-const SideSearchBoxPaper = styled(Paper)(({ theme }) => ({
+const SideSearchBoxPaper = styled(Paper)({
   height: '100%',
   width: '100%',
-}));
+});
 
 const DataViewPaper = styled(Paper, {
   shouldForwardProp: (prop) => prop !== 'view' && prop !== 'containerHeight',
 })<{ view: ViewsType; containerHeight: string }>(
-  ({ theme, view, containerHeight }) => ({
+  ({ view, containerHeight }) => ({
     // Only use height for the paper component if the view is table.
     // also ensure we account for the potential horizontal scrollbar
     height: view !== 'card' ? containerHeight : 'auto',
@@ -465,7 +461,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const username = readSciGatewayToken().username;
   const loggedInAnonymously = username === null || username === 'anon/anon';
 
-  const disabled = Object.keys(queryParams.filters).length !== 0 ? false : true;
+  const disabled = Object.keys(queryParams.filters).length === 0;
 
   const pushFilters = useUpdateQueryParam('filters', 'push');
 
