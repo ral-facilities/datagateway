@@ -75,6 +75,7 @@ export interface FormattedUser {
 
 interface LandingPageProps {
   dataPublicationId: string;
+  instrumentId: string;
 }
 
 interface LinkedInvestigationProps {
@@ -154,9 +155,11 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   );
 
   const [value, setValue] = React.useState<'details'>('details');
-  const { dataPublicationId } = props;
+  const { instrumentId, dataPublicationId } = props;
 
-  const urlPrefix = `/browseDataPublications/dataPublication/${dataPublicationId}`;
+  const pathRoot = 'browseDataPublications';
+  const instrumentChild = 'dataPublication';
+  const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${dataPublicationId}`;
 
   const { data } = useDataPublication(parseInt(dataPublicationId));
 

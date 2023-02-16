@@ -136,26 +136,26 @@ export const checkStudyId = memoize(unmemoizedCheckStudyId, (...args) =>
 
 const unmemoizedCheckInstrumentId = (
   instrumentId: number,
-  studyId: number
+  dataPublicationId: number
 ): Promise<boolean> => {
   const params = new URLSearchParams();
   params.append(
     'where',
     JSON.stringify({
-      id: { eq: studyId },
+      id: { eq: dataPublicationId },
     })
   );
   params.append(
     'where',
     JSON.stringify({
-      'studyInvestigations.investigation.investigationInstruments.instrument.id':
+      'content.dataCollectionInvestigations.investigation.investigationInstruments.instrument.id':
         {
           eq: instrumentId,
         },
     })
   );
   return axios
-    .get(`${apiUrl}/studies/`, {
+    .get(`${apiUrl}/datapublications/`, {
       params,
       headers: {
         Authorization: `Bearer ${readSciGatewayToken().sessionId}`,

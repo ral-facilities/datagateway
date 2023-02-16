@@ -20,6 +20,7 @@ import DLSDatafilesTable from '../views/table/dls/dlsDatafilesTable.component';
 
 import ISISInstrumentsTable from '../views/table/isis/isisInstrumentsTable.component';
 import ISISStudiesTable from '../views/table/isis/isisStudiesTable.component';
+import ISISDataPublicationsTable from '../views/table/isis/isisDataPublicationsTable.component';
 import ISISFacilityCyclesTable from '../views/table/isis/isisFacilityCyclesTable.component';
 import ISISInvestigationsTable from '../views/table/isis/isisInvestigationsTable.component';
 import ISISDatasetsTable from '../views/table/isis/isisDatasetsTable.component';
@@ -34,6 +35,7 @@ import DatasetCardView from '../views/card/datasetCardView.component';
 import ISISInstrumentsCardView from '../views/card/isis/isisInstrumentsCardView.component';
 import ISISStudiesCardView from '../views/card/isis/isisStudiesCardView.component';
 import ISISStudyLanding from '../views/landing/isis/isisStudyLanding.component';
+import ISISDataPublicationsCardView from '../views/card/isis/isisDataPublicationsCardView.component';
 import ISISDataPublicationLanding from '../views/landing/isis/isisDataPublicationLanding.component';
 import ISISFacilityCyclesCardView from '../views/card/isis/isisFacilityCyclesCardView.component';
 import ISISInvestigationsCardView from '../views/card/isis/isisInvestigationsCardView.component';
@@ -278,6 +280,23 @@ const SafeISISStudyLanding = React.memo(
 );
 SafeISISStudyLanding.displayName = 'SafeISISStudyLanding';
 
+const SafeISISDataPublicationLanding = React.memo(
+  (props: {
+    instrumentId: string;
+    dataPublicationId: string;
+  }): React.ReactElement => {
+    const SafeISISDataPublicationLanding = withIdCheck(
+      checkInstrumentId(
+        parseInt(props.instrumentId),
+        parseInt(props.dataPublicationId)
+      )
+    )(ISISDataPublicationLanding);
+
+    return <SafeISISDataPublicationLanding {...props} />;
+  }
+);
+SafeISISDataPublicationLanding.displayName = 'SafeISISDataPublicationLanding';
+
 const SafeDLSDatafilesTable = React.memo(
   (props: {
     proposalName: string;
@@ -466,17 +485,6 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           )}
         />
 
-        {/* ISIS dataPublications routes */}
-        <Route
-          exact
-          path={paths.landing.isisDataPublicationLanding}
-          render={({ match }) => (
-            <ISISDataPublicationLanding
-              dataPublicationId={match.params.dataPublicationId as string}
-            />
-          )}
-        />
-
         {/* ISIS studyHierarchy routes */}
         <Route
           exact
@@ -587,6 +595,122 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
               studyHierarchy={true}
               instrumentId={match.params.instrumentId as string}
               instrumentChildId={match.params.studyId as string}
+              investigationId={match.params.investigationId as string}
+              datasetId={match.params.datasetId as string}
+            />
+          )}
+        />
+
+        {/* ISIS dataPublications routes */}
+        <Route
+          exact
+          path={paths.dataPublications.toggle.isisInstrument}
+          render={() =>
+            this.props.view === 'card' ? (
+              <ISISInstrumentsCardView studyHierarchy={true} key="true" />
+            ) : (
+              <ISISInstrumentsTable studyHierarchy={true} key="true" />
+            )
+          }
+        />
+        <Route
+          exact
+          path={paths.dataPublications.toggle.isisDataPublication}
+          render={({ match }) =>
+            this.props.view === 'card' ? (
+              <ISISDataPublicationsCardView
+                instrumentId={match.params.instrumentId as string}
+              />
+            ) : (
+              <ISISDataPublicationsTable
+                instrumentId={match.params.instrumentId as string}
+              />
+            )
+          }
+        />
+        <Route
+          exact
+          path={paths.dataPublications.landing.isisDataPublicationLanding}
+          render={({ match }) => (
+            <SafeISISDataPublicationLanding
+              instrumentId={match.params.instrumentId as string}
+              dataPublicationId={match.params.dataPublicationId as string}
+            />
+          )}
+        />
+        <Route
+          exact
+          path={paths.dataPublications.toggle.isisInvestigation}
+          render={({ match }) =>
+            this.props.view === 'card' ? (
+              <ISISInvestigationsCardView
+                studyHierarchy={true}
+                instrumentId={match.params.instrumentId as string}
+                instrumentChildId={match.params.dataPublicationId as string}
+              />
+            ) : (
+              <ISISInvestigationsTable
+                studyHierarchy={true}
+                instrumentId={match.params.instrumentId as string}
+                instrumentChildId={match.params.dataPublicationId as string}
+              />
+            )
+          }
+        />
+        <Route
+          exact
+          path={paths.dataPublications.landing.isisInvestigationLanding}
+          render={({ match }) => (
+            <SafeISISInvestigationLanding
+              studyHierarchy={true}
+              instrumentId={match.params.instrumentId as string}
+              instrumentChildId={match.params.dataPublicationId as string}
+              investigationId={match.params.investigationId as string}
+            />
+          )}
+        />
+        <Route
+          exact
+          path={paths.dataPublications.toggle.isisDataset}
+          render={({ match }) =>
+            this.props.view === 'card' ? (
+              <SafeISISDatasetsCardView
+                studyHierarchy={true}
+                instrumentId={match.params.instrumentId as string}
+                instrumentChildId={match.params.dataPublicationId as string}
+                investigationId={match.params.investigationId as string}
+              />
+            ) : (
+              <SafeISISDatasetsTable
+                studyHierarchy={true}
+                instrumentId={match.params.instrumentId as string}
+                instrumentChildId={match.params.dataPublicationId as string}
+                investigationId={match.params.investigationId as string}
+              />
+            )
+          }
+        />
+        <Route
+          exact
+          path={paths.dataPublications.landing.isisDatasetLanding}
+          render={({ match }) => (
+            <SafeISISDatasetLanding
+              studyHierarchy={true}
+              instrumentId={match.params.instrumentId as string}
+              instrumentChildId={match.params.dataPublicationId as string}
+              investigationId={match.params.investigationId as string}
+              datasetId={match.params.datasetId as string}
+            />
+          )}
+        />
+        <Route
+          exact
+          path={paths.dataPublications.standard.isisDatafile}
+          render={({ match }) => (
+            <SafeISISDatafilesTable
+              studyHierarchy={true}
+              instrumentId={match.params.instrumentId as string}
+              instrumentChildId={match.params.dataPublicationId as string}
               investigationId={match.params.investigationId as string}
               datasetId={match.params.datasetId as string}
             />

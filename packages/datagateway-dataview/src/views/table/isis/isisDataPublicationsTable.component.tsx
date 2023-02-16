@@ -138,19 +138,19 @@ const ISISDataPublicationsTable = (
       {
         icon: CalendarToday,
         label: t('datapublications.start_date'),
-        dataKey: 'dataCollectionInvestigations.investigation.startDate',
+        dataKey: 'content.dataCollectionInvestigations.investigation.startDate',
         cellContentRenderer: (cellProps: TableCellProps) =>
           cellProps.rowData?.content?.dataCollectionInvestigations?.[0]?.investigation?.startDate?.slice(
             0,
             10
           ) ?? '',
         filterComponent: dateFilter,
-        defaultSort: 'desc',
+        // defaultSort: 'desc',
       },
       {
         icon: CalendarToday,
         label: t('datapublications.end_date'),
-        dataKey: 'dataCollectionInvestigations.investigation.endDate',
+        dataKey: 'content.dataCollectionInvestigations.investigation.endDate',
         cellContentRenderer: (cellProps: TableCellProps) =>
           cellProps.rowData?.content?.dataCollectionInvestigations?.[0]?.investigation?.startDate?.slice(
             0,
