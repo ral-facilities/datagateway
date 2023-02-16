@@ -17,13 +17,13 @@ import SubjectIcon from '@mui/icons-material/Subject';
 import { useLocation } from 'react-router-dom';
 
 interface ISISInstrumentsTableProps {
-  studyHierarchy: boolean;
+  dataPublication: boolean;
 }
 
 const ISISInstrumentsTable = (
   props: ISISInstrumentsTableProps
 ): React.ReactElement => {
-  const { studyHierarchy } = props;
+  const { dataPublication } = props;
 
   const location = useLocation();
   const [t] = useTranslation();
@@ -58,8 +58,10 @@ const ISISInstrumentsTable = (
   );
 
   const columns: ColumnType[] = React.useMemo(() => {
-    const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
-    const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
+    const pathRoot = dataPublication ? 'browseDataPublications' : 'browse';
+    const instrumentChild = dataPublication
+      ? 'dataPublication'
+      : 'facilityCycle';
     return [
       {
         icon: SubjectIcon,
@@ -84,7 +86,7 @@ const ISISInstrumentsTable = (
         filterComponent: textFilter,
       },
     ];
-  }, [t, textFilter, view, studyHierarchy]);
+  }, [t, textFilter, view, dataPublication]);
 
   return (
     <Table

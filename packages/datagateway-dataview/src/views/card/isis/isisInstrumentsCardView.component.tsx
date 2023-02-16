@@ -20,13 +20,13 @@ import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 
 interface ISISInstrumentsCVProps {
-  studyHierarchy: boolean;
+  dataPublication: boolean;
 }
 
 const ISISInstrumentsCardView = (
   props: ISISInstrumentsCVProps
 ): React.ReactElement => {
-  const { studyHierarchy } = props;
+  const { dataPublication } = props;
   const [t] = useTranslation();
   const location = useLocation();
 
@@ -46,8 +46,10 @@ const ISISInstrumentsCardView = (
   const { isLoading: dataLoading, data } = useInstrumentsPaginated();
 
   const title: CardViewDetails = React.useMemo(() => {
-    const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
-    const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
+    const pathRoot = dataPublication ? 'browseDataPublications' : 'browse';
+    const instrumentChild = dataPublication
+      ? 'dataPublication'
+      : 'facilityCycle';
     return {
       label: t('instruments.name'),
       dataKey: 'fullName',
@@ -61,7 +63,7 @@ const ISISInstrumentsCardView = (
       filterComponent: textFilter,
       defaultSort: 'asc',
     };
-  }, [t, textFilter, view, studyHierarchy]);
+  }, [t, textFilter, view, dataPublication]);
 
   const description: CardViewDetails = React.useMemo(
     () => ({

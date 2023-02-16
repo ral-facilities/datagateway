@@ -40,13 +40,13 @@ import { useHistory, useLocation } from 'react-router-dom';
 interface ISISInvestigationsTableProps {
   instrumentId: string;
   instrumentChildId: string;
-  studyHierarchy: boolean;
+  dataPublication: boolean;
 }
 
 const ISISInvestigationsTable = (
   props: ISISInvestigationsTableProps
 ): React.ReactElement => {
-  const { instrumentId, instrumentChildId, studyHierarchy } = props;
+  const { instrumentId, instrumentChildId, dataPublication } = props;
   const selectAllSetting = useSelector(
     (state: StateType) => state.dgdataview.selectAllSetting
   );
@@ -62,17 +62,17 @@ const ISISInvestigationsTable = (
   const { data: totalDataCount } = useISISInvestigationCount(
     parseInt(instrumentId),
     parseInt(instrumentChildId),
-    studyHierarchy
+    dataPublication
   );
   const { fetchNextPage, data } = useISISInvestigationsInfinite(
     parseInt(instrumentId),
     parseInt(instrumentChildId),
-    studyHierarchy
+    dataPublication
   );
   const { data: allIds, isLoading: allIdsLoading } = useISISInvestigationIds(
     parseInt(instrumentId),
     parseInt(instrumentChildId),
-    studyHierarchy,
+    dataPublication,
     selectAllSetting
   );
   const { data: cartItems, isLoading: cartLoading } = useCart();
@@ -120,8 +120,8 @@ const ISISInvestigationsTable = (
 
   const sizeQueries = useInvestigationSizes(data);
 
-  const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
-  const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
+  const pathRoot = dataPublication ? 'browseDataPublications' : 'browse';
+  const instrumentChild = dataPublication ? 'dataPublication' : 'facilityCycle';
   const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation`;
 
   const detailsPanel = React.useCallback(

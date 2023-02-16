@@ -43,13 +43,13 @@ const ActionButtonsContainer = styled('div')(({ theme }) => ({
 interface ISISInvestigationsCardViewProps {
   instrumentId: string;
   instrumentChildId: string;
-  studyHierarchy: boolean;
+  dataPublication: boolean;
 }
 
 const ISISInvestigationsCardView = (
   props: ISISInvestigationsCardViewProps
 ): React.ReactElement => {
-  const { instrumentId, instrumentChildId, studyHierarchy } = props;
+  const { instrumentId, instrumentChildId, dataPublication } = props;
 
   const [t] = useTranslation();
   const location = useLocation();
@@ -72,17 +72,17 @@ const ISISInvestigationsCardView = (
     useISISInvestigationCount(
       parseInt(instrumentId),
       parseInt(instrumentChildId),
-      studyHierarchy
+      dataPublication
     );
   const { data, isLoading: dataLoading } = useISISInvestigationsPaginated(
     parseInt(instrumentId),
     parseInt(instrumentChildId),
-    studyHierarchy
+    dataPublication
   );
   const sizeQueries = useInvestigationSizes(data);
 
-  const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
-  const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
+  const pathRoot = dataPublication ? 'browseDataPublications' : 'browse';
+  const instrumentChild = dataPublication ? 'dataPublication' : 'facilityCycle';
   const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation`;
 
   const title: CardViewDetails = React.useMemo(
