@@ -1,184 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
-<Styled(ForwardRef(Box))>
-  <ForwardRef(Grid)
-    container={true}
-    direction="row"
-    id="container-searchbox"
-    justifyContent="center"
-  >
-    <ForwardRef(Grid)
-      item={true}
-      style={
-        Object {
-          "flexGrow": 1,
-        }
-      }
-      xs="auto"
-    >
-      <SearchTextBox
-        initiateSearch={[MockFunction]}
-        onChange={[MockFunction]}
-        searchText=""
-      />
-    </ForwardRef(Grid)>
-    <ForwardRef(Grid)
-      item={true}
-      sx={
-        Object {
-          "marginTop": "8px",
-        }
-      }
-    >
-      <Connect(CheckboxesGroup) />
-    </ForwardRef(Grid)>
-    <ForwardRef(Grid)
-      item={true}
-      sx={
-        Object {
-          "marginTop": "8px",
-        }
-      }
-    >
-      <Connect(SelectDates)
-        initiateSearch={[MockFunction]}
-      />
-    </ForwardRef(Grid)>
-    <ForwardRef(Grid)
-      item={true}
-      sx={
-        Object {
-          "display": "flex",
-          "marginLeft": "6px",
-          "marginTop": "24px",
-        }
-      }
-    >
-      <TranslatedSearchButton
-        initiateSearch={[MockFunction]}
-      />
-    </ForwardRef(Grid)>
-  </ForwardRef(Grid)>
-  <div
-    style={
-      Object {
-        "display": "flex",
-      }
-    }
-  >
-    <ForwardRef(Typography)
-      sx={
-        Object {
-          "color": [Function],
-          "fontSize": "14px",
-          "textAlign": "left",
-        }
-      }
-    >
-      <Trans
-        i18nKey="searchBox.examples_label"
-        t={[Function]}
-      >
-        For example
-        <ForwardRef(Link)
-          component={
-            Object {
-              "$$typeof": Symbol(react.forward_ref),
-              "propTypes": Object {
-                "innerRef": [Function],
-                "onClick": [Function],
-                "replace": [Function],
-                "target": [Function],
-                "to": [Function],
-              },
-              "render": [Function],
-            }
-          }
-          sx={
-            Object {
-              "fontWeight": "bold",
-            }
-          }
-          to="searchBox.examples_label_link1"
-        >
-          "instrument calibration"
-        </ForwardRef(Link)>
-        or
-         
-        <ForwardRef(Link)
-          component={
-            Object {
-              "$$typeof": Symbol(react.forward_ref),
-              "propTypes": Object {
-                "innerRef": [Function],
-                "onClick": [Function],
-                "replace": [Function],
-                "target": [Function],
-                "to": [Function],
-              },
-              "render": [Function],
-            }
-          }
-          sx={
-            Object {
-              "fontWeight": "bold",
-            }
-          }
-          to="searchBox.examples_label_link2"
-        >
-          neutron AND scattering
-        </ForwardRef(Link)>
-        .
-      </Trans>
-       
-      <AdvancedHelpDialogue />
-    </ForwardRef(Typography)>
-    <ForwardRef(Box)
-      sx={
-        Object {
-          "color": [Function],
-          "fontSize": "14px",
-          "marginLeft": "auto",
-          "textAlign": "right",
-        }
-      }
-    >
-      <div
-        style={
-          Object {
-            "alignItems": "center",
-            "display": "flex",
-            "flexWrap": "nowrap",
-          }
-        }
-      >
-        <Memo(ForwardRef(InfoOutlinedIcon))
-          fontSize="small"
-          sx={
-            Object {
-              "color": [Function],
-            }
-          }
-        />
-         
-        <ForwardRef(Typography)
-          display="inline"
-          sx={
-            Object {
-              "fontSize": "14px",
-              "paddingLeft": "6px",
-            }
-          }
-        >
-          searchBox.limited_results_message {maxNumResults:{tabs:{datasetTab:false,datafileTab:false,investigationTab:false},selectAllSetting:true,settingsLoaded:false,sideLayout:false,searchableEntities:[investigation,dataset,datafile],maxNumResults:300}}
-        </ForwardRef(Typography)>
-      </div>
-    </ForwardRef(Box)>
-  </div>
-</Styled(ForwardRef(Box))>
-`;
-
 exports[`SearchBoxContainerSide - Tests renders searchBoxContainerSide correctly 1`] = `
 <DocumentFragment>
   <div
@@ -249,7 +70,7 @@ exports[`SearchBoxContainerSide - Tests renders searchBoxContainerSide correctly
                 aria-invalid="false"
                 aria-label="searchBox.start_date_arialabel"
                 class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedEnd css-nxo287-MuiInputBase-input-MuiOutlinedInput-input"
-                id="mui-1"
+                id="mui-3"
                 placeholder="searchBox.start_date"
                 type="tel"
                 value=""
@@ -305,7 +126,7 @@ exports[`SearchBoxContainerSide - Tests renders searchBoxContainerSide correctly
                 aria-invalid="false"
                 aria-label="searchBox.end_date_arialabel"
                 class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedEnd css-nxo287-MuiInputBase-input-MuiOutlinedInput-input"
-                id="mui-2"
+                id="mui-4"
                 placeholder="searchBox.end_date"
                 type="tel"
                 value=""
