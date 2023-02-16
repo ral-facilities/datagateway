@@ -95,8 +95,8 @@ export const checkInstrumentAndFacilityCycleId = memoize(
   (...args) => JSON.stringify(args)
 );
 
-const unmemoizedCheckStudyId = (
-  studyId: number,
+const unmemoizedCheckDataPublicationId = (
+  dataPublicationId: number,
   investigationId: number
 ): Promise<boolean> => {
   const params = new URLSearchParams();
@@ -109,8 +109,8 @@ const unmemoizedCheckStudyId = (
   params.append(
     'where',
     JSON.stringify({
-      'studyInvestigations.study.id': {
-        eq: studyId,
+      'dataCollectionInvestigations.dataCollection.dataPublications.id': {
+        eq: dataPublicationId,
       },
     })
   );
@@ -130,8 +130,9 @@ const unmemoizedCheckStudyId = (
     });
 };
 
-export const checkStudyId = memoize(unmemoizedCheckStudyId, (...args) =>
-  JSON.stringify(args)
+export const checkDataPublicationId = memoize(
+  unmemoizedCheckDataPublicationId,
+  (...args) => JSON.stringify(args)
 );
 
 const unmemoizedCheckInstrumentId = (
