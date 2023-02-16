@@ -558,13 +558,13 @@ const fetchISISInvestigations = (
 export const useISISInvestigationsPaginated = (
   instrumentId: number,
   instrumentChildId: number,
-  studyHierarchy: boolean
+  dataPublication: boolean
 ): UseQueryResult<Investigation[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters, sort, page, results } = parseSearchToQuery(location.search);
-  const queryKey = studyHierarchy
-    ? 'ISISStudyInvestigation'
+  const queryKey = dataPublication
+    ? 'ISISDataPublicationInvestigation'
     : 'ISISFacilityCycleinvestigation';
 
   const includeFilter = {
@@ -572,9 +572,6 @@ export const useISISInvestigationsPaginated = (
     filterValue: JSON.stringify([
       {
         investigationInstruments: 'instrument',
-      },
-      {
-        studyInvestigations: 'study',
       },
       {
         investigationUsers: 'user',
@@ -609,7 +606,7 @@ export const useISISInvestigationsPaginated = (
       const { sort, filters, page, results } = params.queryKey[3];
       const startIndex = (page - 1) * results;
       const stopIndex = startIndex + results - 1;
-      if (studyHierarchy) {
+      if (dataPublication) {
         return fetchInvestigations(
           apiUrl,
           { sort, filters },
@@ -623,7 +620,8 @@ export const useISISInvestigationsPaginated = (
             {
               filterType: 'where',
               filterValue: JSON.stringify({
-                'studyInvestigations.study.id': { eq: instrumentChildId },
+                'dataCollectionInvestigations.dataCollection.dataPublications.id':
+                  { eq: instrumentChildId },
               }),
             },
             includeFilter,
@@ -659,12 +657,12 @@ export const useISISInvestigationsPaginated = (
 export const useISISInvestigationsInfinite = (
   instrumentId: number,
   instrumentChildId: number,
-  studyHierarchy: boolean
+  dataPublication: boolean
 ): UseInfiniteQueryResult<Investigation[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters, sort } = parseSearchToQuery(location.search);
-  const queryKey = studyHierarchy
+  const queryKey = dataPublication
     ? 'ISISStudyInvestigation'
     : 'ISISFacilityCycleinvestigation';
 
@@ -673,9 +671,6 @@ export const useISISInvestigationsInfinite = (
     filterValue: JSON.stringify([
       {
         investigationInstruments: 'instrument',
-      },
-      {
-        studyInvestigations: 'study',
       },
       {
         investigationUsers: 'user',
@@ -693,7 +688,7 @@ export const useISISInvestigationsInfinite = (
     (params) => {
       const { sort, filters } = params.queryKey[3];
       const offsetParams = params.pageParam ?? { startIndex: 0, stopIndex: 49 };
-      if (studyHierarchy) {
+      if (dataPublication) {
         return fetchInvestigations(
           apiUrl,
           { sort, filters },
@@ -707,7 +702,8 @@ export const useISISInvestigationsInfinite = (
             {
               filterType: 'where',
               filterValue: JSON.stringify({
-                'studyInvestigations.study.id': { eq: instrumentChildId },
+                'dataCollectionInvestigations.dataCollection.dataPublications.id':
+                  { eq: instrumentChildId },
               }),
             },
             includeFilter,
@@ -761,13 +757,13 @@ const fetchISISInvestigationCount = (
 export const useISISInvestigationCount = (
   instrumentId: number,
   instrumentChildId: number,
-  studyHierarchy: boolean
+  dataPublication: boolean
 ): UseQueryResult<number, AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters } = parseSearchToQuery(location.search);
-  const queryKey = studyHierarchy
-    ? 'ISISStudyInvestigation'
+  const queryKey = dataPublication
+    ? 'ISISDataPublicationInvestigation'
     : 'ISISFacilityCycleinvestigation';
 
   return useQuery<
@@ -779,7 +775,7 @@ export const useISISInvestigationCount = (
     ['count', queryKey, instrumentId, instrumentChildId, { filters }],
     (params) => {
       const { filters } = params.queryKey[4];
-      if (studyHierarchy) {
+      if (dataPublication) {
         return fetchInvestigationCount(apiUrl, filters, [
           {
             filterType: 'where',
@@ -790,7 +786,8 @@ export const useISISInvestigationCount = (
           {
             filterType: 'where',
             filterValue: JSON.stringify({
-              'studyInvestigations.study.id': { eq: instrumentChildId },
+              'dataCollectionInvestigations.dataCollection.dataPublications.id':
+                { eq: instrumentChildId },
             }),
           },
         ]);
@@ -842,13 +839,13 @@ const fetchAllISISInvestigationIds = (
 export const useISISInvestigationIds = (
   instrumentId: number,
   instrumentChildId: number,
-  studyHierarchy: boolean,
+  dataPublication: boolean,
   enabled = true
 ): UseQueryResult<number[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters } = parseSearchToQuery(location.search);
-  const queryKey = studyHierarchy
+  const queryKey = dataPublication
     ? 'ISISStudyInvestigationIds'
     : 'ISISFacilityCycleinvestigationIds';
 
@@ -861,7 +858,7 @@ export const useISISInvestigationIds = (
     [queryKey, instrumentId, instrumentChildId, { filters }],
     (params) => {
       const { filters } = params.queryKey[3];
-      if (studyHierarchy) {
+      if (dataPublication) {
         return fetchIds(apiUrl, 'investigation', filters, [
           {
             filterType: 'where',
@@ -872,7 +869,8 @@ export const useISISInvestigationIds = (
           {
             filterType: 'where',
             filterValue: JSON.stringify({
-              'studyInvestigations.study.id': { eq: instrumentChildId },
+              'dataCollectionInvestigations.dataCollection.dataPublications.id':
+                { eq: instrumentChildId },
             }),
           },
         ]);
