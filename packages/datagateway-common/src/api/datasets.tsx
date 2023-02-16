@@ -24,6 +24,7 @@ import {
 } from 'react-query';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 import { fetchDatafileCountQuery } from './datafiles';
+import retryICATErrors from './retryICATErrors';
 
 const fetchDatasets = (
   apiUrl: string,
@@ -88,6 +89,7 @@ export const useDataset = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
     }
   );
 };
@@ -132,6 +134,7 @@ export const useDatasetsPaginated = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
     }
   );
 };
@@ -164,6 +167,7 @@ export const useDatasetsInfinite = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
     }
   );
 };
@@ -214,6 +218,8 @@ export const useDatasetSize = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
+
       enabled: false,
     }
   );
@@ -252,6 +258,7 @@ export const useDatasetSizes = (
         onError: (error) => {
           handleICATError(error, false);
         },
+        retry: retryICATErrors,
         staleTime: Infinity,
       };
     });
@@ -334,6 +341,7 @@ export const useDatasetsDatafileCount = (
         onError: (error) => {
           handleICATError(error, false);
         },
+        retry: retryICATErrors,
         staleTime: Infinity,
       };
     });
@@ -432,6 +440,7 @@ export const useDatasetCount = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
     }
   );
 };
@@ -466,6 +475,7 @@ export const useDatasetDetails = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
     }
   );
 };

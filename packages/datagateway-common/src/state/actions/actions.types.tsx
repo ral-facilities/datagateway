@@ -261,6 +261,7 @@ export interface PluginRoute {
   link: string;
   displayName: string;
   admin?: boolean;
+  hideFromMenu?: boolean;
   order: number;
 }
 

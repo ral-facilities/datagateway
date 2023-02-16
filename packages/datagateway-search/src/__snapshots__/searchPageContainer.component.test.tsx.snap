@@ -146,6 +146,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                             "startDate": null,
                           },
                         ],
+                        "retry": [Function],
                       },
                       "currentResultState": Object {
                         "data": undefined,
@@ -181,6 +182,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                             "startDate": null,
                           },
                         ],
+                        "retry": [Function],
                       },
                       "previousQueryResult": undefined,
                       "previousSelectError": null,
@@ -208,6 +210,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                         "startDate": null,
                       },
                     ],
+                    "retry": [Function],
                   },
                   "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
                   "queryKey": Array [
@@ -311,6 +314,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                             "startDate": null,
                           },
                         ],
+                        "retry": [Function],
                       },
                       "currentResultState": Object {
                         "data": undefined,
@@ -346,6 +350,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                             "startDate": null,
                           },
                         ],
+                        "retry": [Function],
                       },
                       "previousQueryResult": undefined,
                       "previousSelectError": null,
@@ -373,6 +378,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                         "startDate": null,
                       },
                     ],
+                    "retry": [Function],
                   },
                   "queryHash": "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
                   "queryKey": Array [
@@ -476,6 +482,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                             "startDate": null,
                           },
                         ],
+                        "retry": [Function],
                       },
                       "currentResultState": Object {
                         "data": undefined,
@@ -511,6 +518,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                             "startDate": null,
                           },
                         ],
+                        "retry": [Function],
                       },
                       "previousQueryResult": undefined,
                       "previousSelectError": null,
@@ -538,6 +546,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                         "startDate": null,
                       },
                     ],
+                    "retry": [Function],
                   },
                   "queryHash": "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
                   "queryKey": Array [
@@ -632,6 +641,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                         "queryFn": [Function],
                         "queryHash": "[\\"cart\\"]",
                         "queryKey": "cart",
+                        "retry": [Function],
                         "staleTime": 0,
                       },
                       "currentResultState": Object {
@@ -659,6 +669,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                         "queryFn": [Function],
                         "queryHash": "[\\"cart\\"]",
                         "queryKey": "cart",
+                        "retry": [Function],
                         "staleTime": 0,
                       },
                       "previousQueryResult": undefined,
@@ -678,6 +689,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                     "queryFn": [Function],
                     "queryHash": "[\\"cart\\"]",
                     "queryKey": "cart",
+                    "retry": [Function],
                     "staleTime": 0,
                   },
                   "queryHash": "[\\"cart\\"]",
@@ -766,6 +778,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                         "queryFn": [Function],
                         "queryHash": "[\\"cart\\"]",
                         "queryKey": "cart",
+                        "retry": [Function],
                         "staleTime": 0,
                       },
                       "currentResultState": Object {
@@ -793,6 +806,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                         "queryFn": [Function],
                         "queryHash": "[\\"cart\\"]",
                         "queryKey": "cart",
+                        "retry": [Function],
                         "staleTime": 0,
                       },
                       "previousQueryResult": undefined,
@@ -812,6 +826,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                     "queryFn": [Function],
                     "queryHash": "[\\"cart\\"]",
                     "queryKey": "cart",
+                    "retry": [Function],
                     "staleTime": 0,
                   },
                   "queryHash": "[\\"cart\\"]",
@@ -907,6 +922,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                             "startDate": null,
                           },
                         ],
+                        "retry": [Function],
                       },
                       "currentResultState": Object {
                         "data": undefined,
@@ -942,6 +958,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                             "startDate": null,
                           },
                         ],
+                        "retry": [Function],
                       },
                       "previousQueryResult": undefined,
                       "previousSelectError": null,
@@ -969,6 +986,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                         "startDate": null,
                       },
                     ],
+                    "retry": [Function],
                   },
                   "queryHash": "[\\"search\\",\\"Datafile\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
                   "queryKey": Array [
@@ -1072,6 +1090,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                             "startDate": null,
                           },
                         ],
+                        "retry": [Function],
                       },
                       "currentResultState": Object {
                         "data": undefined,
@@ -1107,6 +1126,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                             "startDate": null,
                           },
                         ],
+                        "retry": [Function],
                       },
                       "previousQueryResult": undefined,
                       "previousSelectError": null,
@@ -1134,6 +1154,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                         "startDate": null,
                       },
                     ],
+                    "retry": [Function],
                   },
                   "queryHash": "[\\"search\\",\\"Dataset\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
                   "queryKey": Array [
@@ -1237,6 +1258,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                             "startDate": null,
                           },
                         ],
+                        "retry": [Function],
                       },
                       "currentResultState": Object {
                         "data": undefined,
@@ -1272,6 +1294,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                             "startDate": null,
                           },
                         ],
+                        "retry": [Function],
                       },
                       "previousQueryResult": undefined,
                       "previousSelectError": null,
@@ -1299,6 +1322,7 @@ exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] =
                         "startDate": null,
                       },
                     ],
+                    "retry": [Function],
                   },
                   "queryHash": "[\\"search\\",\\"Investigation\\",{\\"endDate\\":null,\\"searchText\\":\\"\\",\\"startDate\\":null}]",
                   "queryKey": Array [

@@ -22,12 +22,6 @@ describe('Admin Download Status', () => {
     });
   });
 
-  afterEach(() => {
-    // Ensure to clear sessionStorage to prevent the app
-    // storing tab data.
-    sessionStorage.clear();
-  });
-
   it('should load correctly and display admin download status table', () => {
     cy.title().should('equal', 'DataGateway Download');
     cy.get('#datagateway-download').should('be.visible');
@@ -59,6 +53,14 @@ describe('Admin Download Status', () => {
 
   describe('should be able to sort download items by', () => {
     it('ascending order', () => {
+      // Table is sorted by Requested Date by default. To keep working test, we will remove all sorts on the table beforehand
+      cy.get('.react-draggable')
+        .eq(7)
+        .trigger('mousedown')
+        .trigger('mousemove', { clientX: 800 })
+        .trigger('mouseup');
+      cy.contains('[role="button"]', 'Requested Date').click();
+
       cy.get('.react-draggable')
         .eq(4)
         .trigger('mousedown')
@@ -75,6 +77,14 @@ describe('Admin Download Status', () => {
     });
 
     it('descending order', () => {
+      // Table is sorted by Requested Date by default. To keep working test, we will remove all sorts on the table beforehand
+      cy.get('.react-draggable')
+        .eq(7)
+        .trigger('mousedown')
+        .trigger('mousemove', { clientX: 800 })
+        .trigger('mouseup');
+      cy.contains('[role="button"]', 'Requested Date').click();
+
       cy.get('.react-draggable')
         .eq(4)
         .trigger('mousedown')
@@ -96,6 +106,14 @@ describe('Admin Download Status', () => {
     });
 
     it('no order', () => {
+      // Table is sorted by Requested Date by default. To keep working test, we will remove all sorts on the table beforehand
+      cy.get('.react-draggable')
+        .eq(7)
+        .trigger('mousedown')
+        .trigger('mousemove', { clientX: 800 })
+        .trigger('mouseup');
+      cy.contains('[role="button"]', 'Requested Date').click();
+
       cy.get('.react-draggable')
         .eq(3)
         .trigger('mousedown')
@@ -122,6 +140,14 @@ describe('Admin Download Status', () => {
     });
 
     it('multiple columns', () => {
+      // Table is sorted by Requested Date by default. To keep working test, we will remove all sorts on the table beforehand
+      cy.get('.react-draggable')
+        .eq(7)
+        .trigger('mousedown')
+        .trigger('mousemove', { clientX: 800 })
+        .trigger('mouseup');
+      cy.contains('[role="button"]', 'Requested Date').click();
+
       cy.get('.react-draggable')
         .eq(4)
         .trigger('mousedown')

@@ -59,7 +59,9 @@ const AdminDownloadStatusTable: React.FC = () => {
   // Load the settings for use
   const settings = React.useContext(DownloadSettingsContext);
   // Sorting columns
-  const [sort, setSort] = React.useState<{ [column: string]: Order }>({});
+  const [sort, setSort] = React.useState<{ [column: string]: Order }>({
+    createdAt: 'desc',
+  });
   const [filters, setFilters] = React.useState<{
     [column: string]:
       | { value?: string | number; type: string }
@@ -84,19 +86,15 @@ const AdminDownloadStatusTable: React.FC = () => {
   }, [t]);
 
   const buildQueryOffset = useCallback(() => {
-    let queryOffset = `WHERE UPPER(download.facilityName) = '${settings.facilityName}'`;
+    let queryOffset = `WHERE download.facilityName = '${settings.facilityName}'`;
     for (const [column, filter] of Object.entries(filters)) {
       if (typeof filter === 'object') {
         if (!Array.isArray(filter)) {
           if ('startDate' in filter || 'endDate' in filter) {
-            const startDate = filter.startDate
-              ? `${filter.startDate} 00:00:00`
-              : '0000-01-01 00:00:00';
-            const endDate = filter.endDate
-              ? `${filter.endDate} 23:59:59`
-              : '9999-12-31 23:59:59';
+            const startDate = filter.startDate ?? '0001-01-01 00:00';
+            const endDate = filter.endDate ?? '9999-12-31 23:59';
 
-            queryOffset += ` AND UPPER(download.${column}) BETWEEN {ts '${startDate}'} AND {ts '${endDate}'}`;
+            queryOffset += ` AND download.${column} BETWEEN {ts '${startDate}'} AND {ts '${endDate}'}`;
           }
 
           if ('type' in filter && filter.type) {
@@ -118,9 +116,9 @@ const AdminDownloadStatusTable: React.FC = () => {
 
     queryOffset += ' ORDER BY';
     for (const [column, order] of Object.entries(sort)) {
-      queryOffset += ` UPPER(download.${column}) ${order},`;
+      queryOffset += ` download.${column} ${order},`;
     }
-    queryOffset += ' UPPER(download.id) ASC';
+    queryOffset += ' download.id ASC';
 
     return queryOffset;
   }, [filters, settings.facilityName, sort]);
@@ -259,6 +257,7 @@ const AdminDownloadStatusTable: React.FC = () => {
         }
       }}
       value={filters[dataKey] as DateFilter}
+      filterByTime
     />
   );
 
@@ -428,7 +427,7 @@ const AdminDownloadStatusTable: React.FC = () => {
                                   facilityName: settings.facilityName,
                                   downloadApiUrl: settings.downloadApiUrl,
                                 },
-                                `WHERE UPPER(download.id) = ${downloadItem.id}`
+                                `WHERE download.id = ${downloadItem.id}`
                               ).then((downloads) => {
                                 const formattedDownload = formatDownloads(
                                   downloads

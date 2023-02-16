@@ -424,4 +424,11 @@ describe('PageContainer - Tests', () => {
       wrapper.find('PageBreadcrumbs').prop('landingPageEntities')
     ).toEqual(['study', 'investigation', 'dataset']);
   });
+
+  it('does not fetch cart when on homepage (cart request errors when user is viewing homepage unauthenticated)', () => {
+    history.replace(paths.homepage);
+    createWrapper();
+
+    expect(useCart).not.toHaveBeenCalled();
+  });
 });

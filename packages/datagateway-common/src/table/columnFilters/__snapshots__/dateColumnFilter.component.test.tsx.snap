@@ -1,5 +1,315 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Date filter component DatePicker functionality useTextFilter hook returns a function which can generate a working text filter 1`] = `
+<form>
+  <MuiPickersUtilsProvider
+    utils={[Function]}
+  >
+    <PickerWithState
+      KeyboardButtonProps={
+        Object {
+          "aria-label": "Start Date filter from, date picker",
+          "size": "small",
+        }
+      }
+      allowKeyboardControl={true}
+      aria-hidden="true"
+      cancelLabel={
+        <span
+          style={
+            Object {
+              "color": undefined,
+            }
+          }
+        >
+          Cancel
+        </span>
+      }
+      clearLabel={
+        <span
+          style={
+            Object {
+              "color": undefined,
+            }
+          }
+        >
+          Clear
+        </span>
+      }
+      clearable={true}
+      color="secondary"
+      format="yyyy-MM-dd"
+      id="Start Date filter from"
+      inputProps={
+        Object {
+          "aria-label": "Start Date filter",
+        }
+      }
+      invalidDateMessage="Date format: yyyy-MM-dd."
+      maxDate={2100-01-01T00:00:00.000Z}
+      maxDateMessage="Invalid date range"
+      minDate={1900-01-01T00:00:00.000Z}
+      minDateMessage="Date should not be before minimal date"
+      okLabel={
+        <span
+          style={
+            Object {
+              "color": undefined,
+            }
+          }
+        >
+          OK
+        </span>
+      }
+      onChange={[Function]}
+      openTo="date"
+      placeholder="From..."
+      style={
+        Object {
+          "whiteSpace": "nowrap",
+        }
+      }
+      value={null}
+      views={
+        Array [
+          "year",
+          "month",
+          "date",
+        ]
+      }
+    />
+    <PickerWithState
+      KeyboardButtonProps={
+        Object {
+          "aria-label": "Start Date filter to, date picker",
+          "size": "small",
+        }
+      }
+      allowKeyboardControl={true}
+      aria-hidden="true"
+      cancelLabel={
+        <span
+          style={
+            Object {
+              "color": undefined,
+            }
+          }
+        >
+          Cancel
+        </span>
+      }
+      clearLabel={
+        <span
+          style={
+            Object {
+              "color": undefined,
+            }
+          }
+        >
+          Clear
+        </span>
+      }
+      clearable={true}
+      color="secondary"
+      format="yyyy-MM-dd"
+      id="Start Date filter to"
+      inputProps={
+        Object {
+          "aria-label": "Start Date filter",
+        }
+      }
+      invalidDateMessage="Date format: yyyy-MM-dd."
+      maxDate={2100-01-01T00:00:00.000Z}
+      maxDateMessage="Date should not be after maximal date"
+      minDate={1984-01-01T00:00:00.000Z}
+      minDateMessage="Invalid date range"
+      okLabel={
+        <span
+          style={
+            Object {
+              "color": undefined,
+            }
+          }
+        >
+          OK
+        </span>
+      }
+      onChange={[Function]}
+      openTo="date"
+      placeholder="To..."
+      style={
+        Object {
+          "whiteSpace": "nowrap",
+        }
+      }
+      value={null}
+      views={
+        Array [
+          "year",
+          "month",
+          "date",
+        ]
+      }
+    />
+  </MuiPickersUtilsProvider>
+</form>
+`;
+
+exports[`Date filter component DateTimePicker functionality useTextFilter hook returns a function which can generate a working text filter 1`] = `
+<form>
+  <MuiPickersUtilsProvider
+    utils={[Function]}
+  >
+    <PickerWithState
+      KeyboardButtonProps={
+        Object {
+          "aria-label": "Start Date filter from, date picker",
+          "size": "small",
+        }
+      }
+      allowKeyboardControl={true}
+      aria-hidden="true"
+      cancelLabel={
+        <span
+          style={
+            Object {
+              "color": undefined,
+            }
+          }
+        >
+          Cancel
+        </span>
+      }
+      clearLabel={
+        <span
+          style={
+            Object {
+              "color": undefined,
+            }
+          }
+        >
+          Clear
+        </span>
+      }
+      clearable={true}
+      color="secondary"
+      format="yyyy-MM-dd"
+      id="Start Date filter from"
+      inputProps={
+        Object {
+          "aria-label": "Start Date filter",
+        }
+      }
+      invalidDateMessage="Date format: yyyy-MM-dd."
+      maxDate={2100-01-01T00:00:00.000Z}
+      maxDateMessage="Invalid date range"
+      minDate={1900-01-01T00:00:00.000Z}
+      minDateMessage="Date should not be before minimal date"
+      okLabel={
+        <span
+          style={
+            Object {
+              "color": undefined,
+            }
+          }
+        >
+          OK
+        </span>
+      }
+      onChange={[Function]}
+      openTo="date"
+      placeholder="From..."
+      style={
+        Object {
+          "whiteSpace": "nowrap",
+        }
+      }
+      value={null}
+      views={
+        Array [
+          "year",
+          "month",
+          "date",
+        ]
+      }
+    />
+    <PickerWithState
+      KeyboardButtonProps={
+        Object {
+          "aria-label": "Start Date filter to, date picker",
+          "size": "small",
+        }
+      }
+      allowKeyboardControl={true}
+      aria-hidden="true"
+      cancelLabel={
+        <span
+          style={
+            Object {
+              "color": undefined,
+            }
+          }
+        >
+          Cancel
+        </span>
+      }
+      clearLabel={
+        <span
+          style={
+            Object {
+              "color": undefined,
+            }
+          }
+        >
+          Clear
+        </span>
+      }
+      clearable={true}
+      color="secondary"
+      format="yyyy-MM-dd"
+      id="Start Date filter to"
+      inputProps={
+        Object {
+          "aria-label": "Start Date filter",
+        }
+      }
+      invalidDateMessage="Date format: yyyy-MM-dd."
+      maxDate={2100-01-01T00:00:00.000Z}
+      maxDateMessage="Date should not be after maximal date"
+      minDate={1984-01-01T00:00:00.000Z}
+      minDateMessage="Invalid date range"
+      okLabel={
+        <span
+          style={
+            Object {
+              "color": undefined,
+            }
+          }
+        >
+          OK
+        </span>
+      }
+      onChange={[Function]}
+      openTo="date"
+      placeholder="To..."
+      style={
+        Object {
+          "whiteSpace": "nowrap",
+        }
+      }
+      value={null}
+      views={
+        Array [
+          "year",
+          "month",
+          "date",
+        ]
+      }
+    />
+  </MuiPickersUtilsProvider>
+</form>
+`;
+
 exports[`Date filter component renders correctly 1`] = `
 <form>
   <MuiPickersUtilsProvider
@@ -143,161 +453,6 @@ exports[`Date filter component renders correctly 1`] = `
         }
       }
       value={2000-01-01T00:00:00.000Z}
-      views={
-        Array [
-          "year",
-          "month",
-          "date",
-        ]
-      }
-    />
-  </MuiPickersUtilsProvider>
-</form>
-`;
-
-exports[`Date filter component useTextFilter hook returns a function which can generate a working text filter 1`] = `
-<form>
-  <MuiPickersUtilsProvider
-    utils={[Function]}
-  >
-    <PickerWithState
-      KeyboardButtonProps={
-        Object {
-          "aria-label": "Start Date filter from, date picker",
-          "size": "small",
-        }
-      }
-      allowKeyboardControl={true}
-      aria-hidden="true"
-      cancelLabel={
-        <span
-          style={
-            Object {
-              "color": undefined,
-            }
-          }
-        >
-          Cancel
-        </span>
-      }
-      clearLabel={
-        <span
-          style={
-            Object {
-              "color": undefined,
-            }
-          }
-        >
-          Clear
-        </span>
-      }
-      clearable={true}
-      color="secondary"
-      format="yyyy-MM-dd"
-      id="Start Date filter from"
-      inputProps={
-        Object {
-          "aria-label": "Start Date filter",
-        }
-      }
-      invalidDateMessage="Date format: yyyy-MM-dd."
-      maxDate={2100-01-01T00:00:00.000Z}
-      maxDateMessage="Invalid date range"
-      minDate={1900-01-01T00:00:00.000Z}
-      minDateMessage="Date should not be before minimal date"
-      okLabel={
-        <span
-          style={
-            Object {
-              "color": undefined,
-            }
-          }
-        >
-          OK
-        </span>
-      }
-      onChange={[Function]}
-      openTo="date"
-      placeholder="From..."
-      style={
-        Object {
-          "whiteSpace": "nowrap",
-        }
-      }
-      value={null}
-      views={
-        Array [
-          "year",
-          "month",
-          "date",
-        ]
-      }
-    />
-    <PickerWithState
-      KeyboardButtonProps={
-        Object {
-          "aria-label": "Start Date filter to, date picker",
-          "size": "small",
-        }
-      }
-      allowKeyboardControl={true}
-      aria-hidden="true"
-      cancelLabel={
-        <span
-          style={
-            Object {
-              "color": undefined,
-            }
-          }
-        >
-          Cancel
-        </span>
-      }
-      clearLabel={
-        <span
-          style={
-            Object {
-              "color": undefined,
-            }
-          }
-        >
-          Clear
-        </span>
-      }
-      clearable={true}
-      color="secondary"
-      format="yyyy-MM-dd"
-      id="Start Date filter to"
-      inputProps={
-        Object {
-          "aria-label": "Start Date filter",
-        }
-      }
-      invalidDateMessage="Date format: yyyy-MM-dd."
-      maxDate={2100-01-01T00:00:00.000Z}
-      maxDateMessage="Date should not be after maximal date"
-      minDate={1984-01-01T00:00:00.000Z}
-      minDateMessage="Invalid date range"
-      okLabel={
-        <span
-          style={
-            Object {
-              "color": undefined,
-            }
-          }
-        >
-          OK
-        </span>
-      }
-      onChange={[Function]}
-      openTo="date"
-      placeholder="To..."
-      style={
-        Object {
-          "whiteSpace": "nowrap",
-        }
-      }
-      value={null}
       views={
         Array [
           "year",

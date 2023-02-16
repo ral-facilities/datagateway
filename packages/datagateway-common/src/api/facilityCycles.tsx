@@ -13,6 +13,7 @@ import {
   useInfiniteQuery,
   UseInfiniteQueryResult,
 } from 'react-query';
+import retryICATErrors from './retryICATErrors';
 
 const fetchFacilityCycles = (
   apiUrl: string,
@@ -69,7 +70,57 @@ export const useAllFacilityCycles = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
       enabled,
+    }
+  );
+};
+
+const fetchFacilityCyclesByInvestigation = (
+  apiUrl: string,
+  investigationStartDate: string | undefined
+): Promise<FacilityCycle[]> => {
+  const params = new URLSearchParams();
+  params.append(
+    'where',
+    JSON.stringify({ startDate: { lte: investigationStartDate } })
+  );
+  params.append(
+    'where',
+    JSON.stringify({ endDate: { gte: investigationStartDate } })
+  );
+  return axios
+    .get(`${apiUrl}/facilitycycles`, {
+      params,
+      headers: {
+        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+      },
+    })
+    .then((response) => {
+      return response.data;
+    });
+};
+
+export const useFacilityCyclesByInvestigation = (
+  investigationStartDate?: string
+): UseQueryResult<FacilityCycle[], AxiosError> => {
+  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+
+  return useQuery<
+    FacilityCycle[],
+    AxiosError,
+    FacilityCycle[],
+    [string, string?]
+  >(
+    ['facilityCycle', investigationStartDate],
+    () => fetchFacilityCyclesByInvestigation(apiUrl, investigationStartDate),
+    {
+      onError: (error) => {
+        handleICATError(error);
+      },
+      retry: retryICATErrors,
+
+      enabled: !!investigationStartDate,
     }
   );
 };
@@ -119,6 +170,7 @@ export const useFacilityCyclesPaginated = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
     }
   );
 };
@@ -151,6 +203,7 @@ export const useFacilityCyclesInfinite = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
     }
   );
 };
@@ -197,6 +250,7 @@ export const useFacilityCycleCount = (
       onError: (error) => {
         handleICATError(error);
       },
+      retry: retryICATErrors,
     }
   );
 };

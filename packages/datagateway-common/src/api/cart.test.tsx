@@ -119,10 +119,15 @@ describe('Cart api functions', () => {
       expect(result.current.data).toEqual(mockData.cartItems);
     });
 
-    it('sends axios request to add item to cart once mutate function is called and calls handleICATError on failure', async () => {
-      (axios.post as jest.Mock).mockRejectedValue({
-        message: 'Test error message',
-      });
+    it('sends axios request to add item to cart once mutate function is called and calls handleICATError on failure, with a retry on code 431', async () => {
+      (axios.post as jest.MockedFunction<typeof axios.post>)
+        .mockRejectedValueOnce({
+          code: '431',
+          message: 'Test 431 error message',
+        })
+        .mockRejectedValue({
+          message: 'Test error message',
+        });
 
       const { result, waitFor } = renderHook(() => useAddToCart('dataset'), {
         wrapper: createReactQueryWrapper(),
@@ -133,8 +138,10 @@ describe('Cart api functions', () => {
 
       result.current.mutate([1, 2]);
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => result.current.isError, { timeout: 2000 });
 
+      expect(result.current.failureCount).toBe(2);
+      expect(handleICATError).toHaveBeenCalledTimes(1);
       expect(handleICATError).toHaveBeenCalledWith({
         message: 'Test error message',
       });
@@ -143,7 +150,7 @@ describe('Cart api functions', () => {
 
   describe('useRemoveFromCart', () => {
     it('sends axios request to remove item from cart once mutate function is called and returns successful response', async () => {
-      (axios.delete as jest.Mock).mockResolvedValue({
+      (axios.post as jest.Mock).mockResolvedValue({
         data: mockData,
       });
 
@@ -161,22 +168,28 @@ describe('Cart api functions', () => {
 
       await waitFor(() => result.current.isSuccess);
 
-      expect(axios.delete).toHaveBeenCalledWith(
+      const params = new URLSearchParams();
+      params.append('sessionId', '');
+      params.append('items', 'dataset 1, dataset 2');
+      params.append('remove', 'true');
+
+      expect(axios.post).toHaveBeenCalledWith(
         'https://example.com/topcat/user/cart/TEST/cartItems',
-        {
-          params: {
-            sessionId: null,
-            items: 'dataset 1, dataset 2',
-          },
-        }
+
+        params
       );
       expect(result.current.data).toEqual(mockData.cartItems);
     });
 
-    it('sends axios request to remove item from cart once mutate function is called and calls handleICATError on failure', async () => {
-      (axios.delete as jest.Mock).mockRejectedValue({
-        message: 'Test error message',
-      });
+    it('sends axios request to remove item from cart once mutate function is called and calls handleICATError on failure, with a retry on code 431', async () => {
+      (axios.post as jest.MockedFunction<typeof axios.post>)
+        .mockRejectedValueOnce({
+          code: '431',
+          message: 'Test 431 error message',
+        })
+        .mockRejectedValue({
+          message: 'Test error message',
+        });
 
       const { result, waitFor } = renderHook(
         () => useRemoveFromCart('dataset'),
@@ -185,13 +198,15 @@ describe('Cart api functions', () => {
         }
       );
 
-      expect(axios.delete).not.toHaveBeenCalled();
+      expect(axios.post).not.toHaveBeenCalled();
       expect(result.current.isIdle).toBe(true);
 
       result.current.mutate([1, 2]);
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => result.current.isError, { timeout: 2000 });
 
+      expect(result.current.failureCount).toBe(2);
+      expect(handleICATError).toHaveBeenCalledTimes(1);
       expect(handleICATError).toHaveBeenCalledWith({
         message: 'Test error message',
       });
