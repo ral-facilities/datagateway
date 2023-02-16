@@ -31,7 +31,6 @@ export * from './facilityCycles';
 export * from './instruments';
 export * from './investigations';
 export * from './datafiles';
-export * from './studies';
 export * from './dataPublications';
 export * from './datasets';
 export * from './lucene';
