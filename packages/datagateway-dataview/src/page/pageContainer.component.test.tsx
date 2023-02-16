@@ -5,15 +5,15 @@ import { StateType } from '../state/app.types';
 import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
 import {
   dGCommonInitialState,
+  DownloadCartItem,
   readSciGatewayToken,
-  useCart,
 } from 'datagateway-common';
 import { createLocation, createMemoryHistory, History } from 'history';
 import { Router } from 'react-router-dom';
 
 import PageContainer, { paths } from './pageContainer.component';
 import { checkInstrumentId, checkInvestigationId } from './idCheckFunctions';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import {
   QueryClient,
   QueryClientProvider,
@@ -26,6 +26,7 @@ import {
   type RenderResult,
   screen,
   waitFor,
+  within,
 } from '@testing-library/react';
 import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
@@ -39,7 +40,6 @@ jest.mock('datagateway-common', () => {
   return {
     __esModule: true,
     ...originalModule,
-    useCart: jest.fn(() => ({ data: [] })),
     // mock table and cardview to opt out of rendering them in these tests as there's no need
     Table: jest.fn(() => 'MockedTable'),
     CardView: jest.fn(() => 'MockedCardView'),
@@ -60,6 +60,8 @@ describe('PageContainer - Tests', () => {
   let queryClient: QueryClient;
   let history: History;
   let user: UserEvent;
+  let cartItems: DownloadCartItem[];
+  let holder: HTMLElement;
 
   const renderComponent = (
     h: History = history,
@@ -87,25 +89,51 @@ describe('PageContainer - Tests', () => {
   };
 
   beforeEach(() => {
-    (axios.get as jest.Mock).mockImplementation((url: string) => {
-      if (url.includes('count')) {
-        return Promise.resolve({ data: 0 });
-      } else {
-        return Promise.resolve({ data: [] });
-      }
-    });
     queryClient = new QueryClient();
     history = createMemoryHistory({
       initialEntries: ['/'],
     });
     user = userEvent.setup();
+
+    holder = document.createElement('div');
+    holder.setAttribute('id', 'datagateway-search');
+    document.body.appendChild(holder);
+
     (useQueryClient as jest.Mock).mockReturnValue({
       getQueryData: jest.fn(() => 0),
     });
+
+    (axios.get as jest.Mock).mockImplementation(
+      (url: string): Promise<Partial<AxiosResponse>> => {
+        if (url.includes('count')) {
+          return Promise.resolve({ data: 0 });
+        }
+
+        if (url.includes('/user/cart')) {
+          return Promise.resolve({
+            data: { cartItems },
+          });
+        }
+
+        if (/.*\/\w+\/\d+$/.test(url)) {
+          // fetch entity information
+          return Promise.resolve({
+            data: {
+              id: 1,
+              name: 'Name 1',
+              title: 'Title 1',
+              visitId: '1',
+            },
+          });
+        }
+
+        return Promise.resolve({ data: [] });
+      }
+    );
   });
 
   afterEach(() => {
-    (useCart as jest.Mock).mockClear();
+    document.body.removeChild(holder);
   });
 
   it('displays the correct entity count', async () => {
@@ -192,7 +220,7 @@ describe('PageContainer - Tests', () => {
     history.replace(
       '/my-data/DLS?filters=%7B"startDate"%3A%7B"endDate"%3A" ' +
         dateNow +
-        '"%7D%2C"title"%3A%7B"value"%3A"test"%2C"type"%3A"include"%7D%7D&sort=%7B"startDate"%3A"desc"%7D'
+        '"%7D%2C"title"%3A%7B"value"%3A"test"%2C"type"%3A"include"%7D%7D&sort=%7B%22startDate%22%3A%22desc%22%7D'
     );
     const response = { username: 'SomePerson' };
     (readSciGatewayToken as jest.Mock).mockReturnValue(response);
@@ -207,7 +235,7 @@ describe('PageContainer - Tests', () => {
     expect(history.location.search).toEqual(
       '?filters=%7B%22startDate%22%3A%7B%22endDate%22%3A%22' +
         dateNow +
-        '%22%7D%7D'
+        '%22%7D%7D&sort=%7B%22startDate%22%3A%22desc%22%7D'
     );
 
     (readSciGatewayToken as jest.Mock).mockClear();
@@ -335,26 +363,21 @@ describe('PageContainer - Tests', () => {
 
   it('shows SelectionAlert banner when item selected', async () => {
     // Supply data to make SelectionAlert display
-    (useCart as jest.Mock).mockReturnValueOnce({
-      data: [
-        {
-          entityId: 1,
-          entityType: 'dataset',
-          id: 1,
-          name: 'Test 1',
-          parentEntities: [],
-        },
-      ],
-    });
+    cartItems = [
+      {
+        entityId: 1,
+        entityType: 'dataset',
+        id: 1,
+        name: 'Test 1',
+        parentEntities: [],
+      },
+    ];
     renderComponent();
 
     expect(await screen.findByLabelText('selection-alert')).toBeInTheDocument();
   });
 
   it('does not show SelectionAlert banner when no items are selected', async () => {
-    (useCart as jest.Mock).mockReturnValueOnce({
-      data: [],
-    });
     renderComponent();
 
     await waitFor(() => {
@@ -364,17 +387,15 @@ describe('PageContainer - Tests', () => {
 
   it('opens download plugin when link in SelectionAlert clicked', async () => {
     // Supply data to make SelectionAlert display
-    (useCart as jest.Mock).mockReturnValueOnce({
-      data: [
-        {
-          entityId: 1,
-          entityType: 'dataset',
-          id: 1,
-          name: 'Test 1',
-          parentEntities: [],
-        },
-      ],
-    });
+    cartItems = [
+      {
+        entityId: 1,
+        entityType: 'dataset',
+        id: 1,
+        name: 'Test 1',
+        parentEntities: [],
+      },
+    ];
     renderComponent();
 
     await user.click(
@@ -385,16 +406,33 @@ describe('PageContainer - Tests', () => {
   });
 
   it('shows breadcrumb according to the current path', async () => {
-    history.replace(paths.toggle.isisInvestigation);
+    history.replace('/browse/instrument/1/facilityCycle/1/investigation');
     renderComponent();
 
     expect(await screen.findByText('breadcrumbs.home')).toBeInTheDocument();
+    const baseBreadcrumb = screen.getByTestId('Breadcrumb-base');
+    expect(baseBreadcrumb).toHaveAttribute('href', '/browse/instrument');
+    expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.instrument');
+
+    const breadcrumbs = screen.getAllByTestId(/^Breadcrumb-hierarchy-\d+$/);
+    expect(breadcrumbs[0]).toHaveAttribute(
+      'href',
+      '/browse/instrument/1/facilityCycle'
+    );
+    expect(within(breadcrumbs[0]).getByText('Name 1')).toBeInTheDocument();
+    expect(within(breadcrumbs[1]).getByText('Name 1')).toBeInTheDocument();
+
+    expect(
+      within(screen.getByTestId('Breadcrumb-last')).getByText(
+        'breadcrumbs.investigation'
+      )
+    ).toBeInTheDocument();
   });
 
   it('does not fetch cart when on homepage (cart request errors when user is viewing homepage unauthenticated)', () => {
     history.replace(paths.homepage);
     renderComponent();
 
-    expect(useCart).not.toHaveBeenCalled();
+    expect(axios.get).not.toHaveBeenCalledWith('/user/cart');
   });
 });
