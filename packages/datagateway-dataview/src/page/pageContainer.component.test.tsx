@@ -194,9 +194,10 @@ describe('PageContainer - Tests', () => {
   });
 
   it('display loading bar when loading true', async () => {
-    (useIsFetching as jest.Mock).mockReturnValueOnce(1);
+    (useIsFetching as jest.Mock).mockReturnValue(1);
     renderComponent();
     expect(await screen.findByRole('progressbar')).toBeInTheDocument();
+    (useIsFetching as jest.Mock).mockReturnValue(0);
   });
 
   it('display clear filters button and clear for filters onClick', async () => {
@@ -325,11 +326,13 @@ describe('PageContainer - Tests', () => {
     renderComponent();
 
     expect(history.location.search).toBe('?view=card');
+
+    localStorage.removeItem('dataView');
   });
 
   it('displays warning label when browsing data anonymously', async () => {
     const response = { username: 'anon/anon' };
-    (readSciGatewayToken as jest.Mock).mockReturnValueOnce(response);
+    (readSciGatewayToken as jest.Mock).mockReturnValue(response);
 
     renderComponent();
 
