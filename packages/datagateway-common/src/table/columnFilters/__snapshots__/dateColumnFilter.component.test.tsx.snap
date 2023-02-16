@@ -3,7 +3,7 @@
 exports[`Date filter component CustomClearButton renders correctly 1`] = `
 <DocumentFragment>
   <button
-    class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-lu2usf-MuiButtonBase-root-MuiButton-root"
+    class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-lu2usf-MuiButtonBase-root-MuiButton-root"
     role="button"
     tabindex="0"
     type="button"
@@ -16,7 +16,7 @@ exports[`Date filter component CustomClearButton renders correctly 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Date filter component DatePicker functionality useTextFilter hook returns a function which can generate a working text filter 1`] = `
+exports[`Date filter component DatePicker functionality useDateFilter hook returns a function which can generate a working date filter 1`] = `
 <DocumentFragment>
   <form>
     <div

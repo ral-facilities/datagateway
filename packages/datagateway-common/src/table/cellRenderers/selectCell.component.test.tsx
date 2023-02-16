@@ -80,10 +80,10 @@ describe('Select cell component', () => {
   });
 
   it('renders correctly when selectedRows parentSelected is true', () => {
-    const wrapper = shallow(
+    const { asFragment } = render(
       <SelectCell {...selectCellProps} parentSelected={true} />
     );
-    expect(wrapper).toMatchSnapshot();
+    expect(asFragment()).toMatchSnapshot();
   });
 
   it('calls setLastChecked when checkbox is clicked', async () => {

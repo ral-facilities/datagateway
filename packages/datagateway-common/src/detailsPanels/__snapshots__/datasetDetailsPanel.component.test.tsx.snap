@@ -17,7 +17,6 @@ exports[`Dataset details panel component renders correctly 1`] = `
           Test 1
         </b>
       </h6>
-       T
       <hr
         class="MuiDivider-root MuiDivider-fullWidth css-k7lt0k-MuiDivider-root"
       />

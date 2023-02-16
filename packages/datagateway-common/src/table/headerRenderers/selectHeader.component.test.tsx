@@ -68,14 +68,14 @@ describe('Select column header component', () => {
   });
 
   it('renders correctly when selectedRows parentSelected is true', () => {
-    const wrapper = shallow(
+    const { asFragment } = render(
       <SelectCell
         {...selectHeaderProps}
         parentSelected={true}
         selectedRows={undefined}
       />
     );
-    expect(wrapper).toMatchSnapshot();
+    expect(asFragment()).toMatchSnapshot();
   });
 
   it('calls onCheck when not all rows are selected and the checkbox is clicked', async () => {

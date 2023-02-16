@@ -11,7 +11,7 @@ exports[`Select cell component renders correctly when checked 1`] = `
       data-mui-internal-clone-element="true"
     >
       <span
-        class="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary Mui-checked tour-dataview-add-to-cart css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root"
+        class="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary Mui-checked MuiCheckbox-root MuiCheckbox-colorPrimary tour-dataview-add-to-cart css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root"
         style="padding: inherit;"
       >
         <input
@@ -53,7 +53,7 @@ exports[`Select cell component renders correctly when selectedRows is undefined 
     >
       <span
         aria-disabled="true"
-        class="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary Mui-disabled PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary Mui-disabled tour-dataview-add-to-cart css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root"
+        class="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary Mui-disabled PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary Mui-disabled MuiCheckbox-root MuiCheckbox-colorPrimary tour-dataview-add-to-cart css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root"
         style="padding: inherit;"
         tabindex="-1"
       >
@@ -93,7 +93,7 @@ exports[`Select cell component renders correctly when selectedRows loading is tr
     >
       <span
         aria-disabled="true"
-        class="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary Mui-disabled PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary Mui-disabled tour-dataview-add-to-cart css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root"
+        class="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary Mui-disabled PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary Mui-disabled MuiCheckbox-root MuiCheckbox-colorPrimary tour-dataview-add-to-cart css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root"
         style="padding: inherit;"
         tabindex="-1"
       >
@@ -122,47 +122,43 @@ exports[`Select cell component renders correctly when selectedRows loading is tr
 `;
 
 exports[`Select cell component renders correctly when selectedRows parentSelected is true 1`] = `
-<ForwardRef(TableCell)
-  component="div"
-  padding="checkbox"
-  size="small"
-  variant="body"
->
-  <StyledTooltip
-    placement="right"
-    title="buttons.parent_selected_tooltip"
+<DocumentFragment>
+  <div
+    class="MuiTableCell-root MuiTableCell-body MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall css-2u8re1-MuiTableCell-root"
   >
-    <span>
-      <ForwardRef(Checkbox)
-        checked={false}
-        checkedIcon={
-          <Memo
-            fontSize="small"
+    <span
+      aria-label="buttons.parent_selected_tooltip"
+      class=""
+      data-mui-internal-clone-element="true"
+    >
+      <span
+        aria-disabled="true"
+        class="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary Mui-disabled PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary Mui-disabled MuiCheckbox-root MuiCheckbox-colorPrimary tour-dataview-add-to-cart css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root"
+        style="padding: inherit;"
+        tabindex="-1"
+      >
+        <input
+          aria-label="select row 2"
+          class="PrivateSwitchBase-input css-1m9pwf3"
+          data-indeterminate="false"
+          disabled=""
+          type="checkbox"
+        />
+        <svg
+          aria-hidden="true"
+          class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-ptiqhd-MuiSvgIcon-root"
+          data-testid="CheckBoxOutlineBlankIcon"
+          focusable="false"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
           />
-        }
-        className="tour-dataview-add-to-cart"
-        disabled={true}
-        icon={
-          <Memo
-            fontSize="small"
-          />
-        }
-        inputProps={
-          Object {
-            "aria-label": "select row 2",
-          }
-        }
-        onClick={[Function]}
-        size="small"
-        style={
-          Object {
-            "padding": "inherit",
-          }
-        }
-      />
+        </svg>
+      </span>
     </span>
-  </StyledTooltip>
-</ForwardRef(TableCell)>
+  </div>
+</DocumentFragment>
 `;
 
 exports[`Select cell component renders correctly when unchecked 1`] = `
@@ -176,7 +172,7 @@ exports[`Select cell component renders correctly when unchecked 1`] = `
       data-mui-internal-clone-element="true"
     >
       <span
-        class="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary tour-dataview-add-to-cart css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root"
+        class="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-root MuiCheckbox-colorPrimary tour-dataview-add-to-cart css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root"
         style="padding: inherit;"
       >
         <input

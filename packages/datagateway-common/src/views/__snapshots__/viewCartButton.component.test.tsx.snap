@@ -9,7 +9,7 @@ exports[`Generic cart button renders correctly 1`] = `
     type="button"
   >
     <span
-      class="MuiBadge-root BaseBadge-root css-1c32n2y-MuiBadge-root"
+      class="MuiBadge-root MuiBadge-root css-1c32n2y-MuiBadge-root"
     >
       <svg
         aria-hidden="true"
@@ -23,7 +23,7 @@ exports[`Generic cart button renders correctly 1`] = `
         />
       </svg>
       <span
-        class="MuiBadge-badge MuiBadge-standard MuiBadge-invisible MuiBadge-anchorOriginTopRight MuiBadge-anchorOriginTopRightRectangular MuiBadge-overlapRectangular MuiBadge-colorPrimary BaseBadge-badge css-106c1u2-MuiBadge-badge"
+        class="MuiBadge-badge MuiBadge-standard MuiBadge-invisible MuiBadge-anchorOriginTopRight MuiBadge-anchorOriginTopRightRectangular MuiBadge-overlapRectangular MuiBadge-colorPrimary MuiBadge-badge css-106c1u2-MuiBadge-badge"
       />
     </span>
     <span
