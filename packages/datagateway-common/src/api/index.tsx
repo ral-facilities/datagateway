@@ -365,11 +365,12 @@ export const useUpdateQueryParam = (
   type: 'filters' | 'sort' | 'page' | 'results',
   updateMethod: 'push' | 'replace'
 ): ((param: FiltersType | SortType | number | null) => void) => {
+  const location = useLocation();
   const { push, replace } = useHistory();
   const functionToUse = updateMethod === 'push' ? push : replace;
   return React.useCallback(
     (param: FiltersType | SortType | number | null) => {
-      const query = parseSearchToQuery(window.location.search);
+      const query = parseSearchToQuery(location.search);
 
       if (type === 'filters') {
         query.filters = param as FiltersType;
@@ -383,7 +384,7 @@ export const useUpdateQueryParam = (
 
       functionToUse({ search: `?${parseQueryToSearch(query).toString()}` });
     },
-    [type, functionToUse]
+    [location.search, type, functionToUse]
   );
 };
 

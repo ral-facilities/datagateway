@@ -412,7 +412,7 @@ describe('Datafile search table component', () => {
     await user.click(within(row).getByRole('button', { name: 'Show details' }));
 
     expect(
-      await screen.findByTestId('datafile-details-panel')
+      await screen.findByTestId('isis-datafile-details-panel')
     ).toBeInTheDocument();
   });
 
@@ -423,7 +423,7 @@ describe('Datafile search table component', () => {
     await user.click(within(row).getByRole('button', { name: 'Show details' }));
 
     expect(
-      await screen.findByTestId('datafile-details-panel')
+      await screen.findByTestId('dls-datafile-details-panel')
     ).toBeInTheDocument();
   });
 

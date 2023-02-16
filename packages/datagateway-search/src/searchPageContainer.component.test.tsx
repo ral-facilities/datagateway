@@ -203,13 +203,13 @@ describe('SearchPageContainer - Tests', () => {
       screen.getByRole('button', { name: 'app.clear_filters' })
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('tab', { name: 'tabs.investigation' })
+      screen.getByRole('tab', { name: 'tabs.investigation 0' })
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('tab', { name: 'tabs.dataset' })
+      screen.getByRole('tab', { name: 'tabs.dataset 0' })
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('tab', { name: 'tabs.datafile' })
+      screen.getByRole('tab', { name: 'tabs.datafile 0' })
     ).toBeInTheDocument();
   });
 
@@ -256,21 +256,17 @@ describe('SearchPageContainer - Tests', () => {
   it('clears filters when clear filters button is clicked', async () => {
     const user = userEvent.setup();
 
-    renderComponent();
-
-    history.push({
-      pathname: '/search/data',
-      search:
-        '?filters=%7B"title"%3A%7B"value"%3A"spend"%2C"type"%3A"include"%7D%7D',
-    });
-
-    await user.click(
-      screen.getByRole('button', { name: 'searchBox.search_button_arialabel' })
+    history.replace(
+      '/search/data?searchText=test&filters=%7B"title"%3A%7B"value"%3A"spend"%2C"type"%3A"include"%7D%7D'
     );
 
-    await user.click(screen.getByRole('button', { name: 'app.clear_filters' }));
+    renderComponent();
 
-    expect(history.location.search).toEqual('?');
+    await user.click(
+      await screen.findByRole('button', { name: 'app.clear_filters' })
+    );
+
+    expect(history.location.search).toEqual('?searchText=test');
   });
 
   it('disables clear filters button when there is no filter applied', async () => {
@@ -346,7 +342,7 @@ describe('SearchPageContainer - Tests', () => {
     );
 
     expect(
-      screen.getByRole('tab', { name: 'tabs.investigation' })
+      screen.getByRole('tab', { name: 'tabs.investigation 0' })
     ).toBeInTheDocument();
     expect(screen.queryByRole('tab', { name: 'tabs.dataset' })).toBeNull();
     expect(screen.queryByRole('tab', { name: 'tabs.datafile' })).toBeNull();

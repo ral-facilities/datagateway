@@ -66,11 +66,19 @@ describe('SearchBoxContainer - Tests', () => {
 describe('SearchBoxContainerSide - Tests', () => {
   const renderComponent = (): RenderResult =>
     render(
-      <SearchBoxContainerSide
-        initiateSearch={jest.fn()}
-        onSearchTextChange={jest.fn()}
-        searchText=""
-      />
+      <MemoryRouter>
+        <Provider
+          store={configureStore([thunk])({
+            dgsearch: initialState,
+          })}
+        >
+          <SearchBoxContainerSide
+            initiateSearch={jest.fn()}
+            onSearchTextChange={jest.fn()}
+            searchText=""
+          />
+        </Provider>
+      </MemoryRouter>
     );
 
   it('renders searchBoxContainerSide correctly', () => {

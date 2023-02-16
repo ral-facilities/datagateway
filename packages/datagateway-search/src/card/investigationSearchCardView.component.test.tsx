@@ -430,7 +430,7 @@ describe('Investigation - Card View', () => {
       await screen.findByRole('button', { name: 'card-more-info-expand' })
     );
     expect(
-      await screen.findByTestId('investigation-details-panel')
+      await screen.findByTestId('isis-investigation-details-panel')
     ).toBeTruthy();
   });
 
@@ -451,7 +451,7 @@ describe('Investigation - Card View', () => {
       await screen.findByRole('button', { name: 'card-more-info-expand' })
     );
     expect(
-      await screen.findByTestId('investigation-details-panel')
+      await screen.findByTestId('isis-investigation-details-panel')
     ).toBeTruthy();
 
     await user.click(

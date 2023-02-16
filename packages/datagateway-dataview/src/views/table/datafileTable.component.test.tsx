@@ -373,8 +373,6 @@ describe('Datafile table component', () => {
       within(rows[0]).getByRole('button', { name: 'Show details' })
     );
 
-    screen.debug(undefined, 1000000);
-
     expect(
       await screen.findByTestId('datafile-details-panel')
     ).toBeInTheDocument();

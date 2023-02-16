@@ -3,7 +3,7 @@
 exports[`DatePicker component tests CustomClearButton renders correctly 1`] = `
 <DocumentFragment>
   <button
-    class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-lu2usf-MuiButtonBase-root-MuiButton-root"
+    class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-lu2usf-MuiButtonBase-root-MuiButton-root"
     role="button"
     tabindex="0"
     type="button"

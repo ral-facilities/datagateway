@@ -239,8 +239,6 @@ describe('ISIS Investigation Landing page', () => {
       screen.queryAllByLabelText(/landing-investigation-reference-\d+$/)
     ).toHaveLength(0);
 
-    screen.debug(undefined, 10000000);
-
     // short format information should be visible
     expect(screen.getByText('investigations.visit_id:')).toBeInTheDocument();
     expect(screen.getByText('visit id 1')).toBeInTheDocument();

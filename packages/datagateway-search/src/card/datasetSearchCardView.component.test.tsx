@@ -457,7 +457,9 @@ describe('Dataset - Card View', () => {
     await user.click(
       await screen.findByRole('button', { name: 'card-more-info-expand' })
     );
-    expect(await screen.findByTestId('dataset-details-panel')).toBeTruthy();
+    expect(
+      await screen.findByTestId('isis-dataset-details-panel')
+    ).toBeTruthy();
   });
 
   it('can navigate using the details panel for ISIS when there are facility cycles', async () => {
@@ -476,7 +478,9 @@ describe('Dataset - Card View', () => {
     await user.click(
       await screen.findByRole('button', { name: 'card-more-info-expand' })
     );
-    expect(await screen.findByTestId('dataset-details-panel')).toBeTruthy();
+    expect(
+      await screen.findByTestId('isis-dataset-details-panel')
+    ).toBeTruthy();
 
     await user.click(
       await screen.findByRole('tab', { name: 'datasets.details.datafiles' })

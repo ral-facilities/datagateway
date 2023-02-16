@@ -380,7 +380,6 @@ const CardView = (props: CardViewProps): React.ReactElement => {
       // Add a filter item.
       updateItems.push(filterValue);
       onPageChange(1);
-      console.log('updatedItems', updateItems);
       onFilter(filterKey, updateItems);
     } else {
       if (updateItems.length > 0 && updateItems.includes(filterValue)) {
@@ -392,7 +391,6 @@ const CardView = (props: CardViewProps): React.ReactElement => {
           updateItems.splice(i, 1);
           onPageChange(1);
           if (updateItems.length > 0) {
-            console.log('updatedItems', updateItems);
             onFilter(filterKey, updateItems);
           } else {
             onFilter(filterKey, null);

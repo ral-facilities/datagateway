@@ -149,7 +149,6 @@ const CheckboxesGroup = (props: CheckBoxStoreProps): React.ReactElement => {
 };
 
 const mapStateToProps = (state: StateType): CheckBoxStoreProps => {
-  console.log('state', state);
   return {
     sideLayout: state.dgsearch.sideLayout,
     searchableEntities: state.dgsearch.searchableEntities,

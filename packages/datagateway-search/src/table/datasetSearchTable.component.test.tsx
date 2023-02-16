@@ -489,7 +489,7 @@ describe('Dataset table component', () => {
     await user.click(within(row).getByRole('button', { name: 'Show details' }));
 
     expect(
-      await screen.findByTestId('dataset-details-panel')
+      await screen.findByTestId('isis-dataset-details-panel')
     ).toBeInTheDocument();
   });
 
@@ -512,7 +512,7 @@ describe('Dataset table component', () => {
     await user.click(within(row).getByRole('button', { name: 'Show details' }));
 
     expect(
-      await screen.findByTestId('dataset-details-panel')
+      await screen.findByTestId('isis-dataset-details-panel')
     ).toBeInTheDocument();
 
     await user.click(

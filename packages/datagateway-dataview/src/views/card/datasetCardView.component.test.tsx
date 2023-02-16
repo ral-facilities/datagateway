@@ -211,8 +211,6 @@ describe('Dataset - Card View', () => {
       await screen.findByRole('button', { name: 'advanced_filters.show' })
     );
 
-    screen.debug(undefined, 100000);
-
     const filter = await screen.findByRole('textbox', {
       name: 'datasets.modified_time filter to',
     });

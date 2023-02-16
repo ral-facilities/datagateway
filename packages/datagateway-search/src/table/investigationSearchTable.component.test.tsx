@@ -565,7 +565,7 @@ describe('Investigation Search Table component', () => {
     await user.click(within(row).getByRole('button', { name: 'Show details' }));
 
     expect(
-      await screen.findByTestId('investigation-details-panel')
+      await screen.findByTestId('isis-investigation-details-panel')
     ).toBeInTheDocument();
   });
 
