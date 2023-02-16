@@ -19,7 +19,6 @@ import DLSDatasetsTable from '../views/table/dls/dlsDatasetsTable.component';
 import DLSDatafilesTable from '../views/table/dls/dlsDatafilesTable.component';
 
 import ISISInstrumentsTable from '../views/table/isis/isisInstrumentsTable.component';
-import ISISStudiesTable from '../views/table/isis/isisStudiesTable.component';
 import ISISDataPublicationsTable from '../views/table/isis/isisDataPublicationsTable.component';
 import ISISFacilityCyclesTable from '../views/table/isis/isisFacilityCyclesTable.component';
 import ISISInvestigationsTable from '../views/table/isis/isisInvestigationsTable.component';
@@ -33,7 +32,6 @@ import InvestigationCardView from '../views/card/investigationCardView.component
 import DatasetCardView from '../views/card/datasetCardView.component';
 
 import ISISInstrumentsCardView from '../views/card/isis/isisInstrumentsCardView.component';
-import ISISStudiesCardView from '../views/card/isis/isisStudiesCardView.component';
 import ISISStudyLanding from '../views/landing/isis/isisStudyLanding.component';
 import ISISDataPublicationsCardView from '../views/card/isis/isisDataPublicationsCardView.component';
 import ISISDataPublicationLanding from '../views/landing/isis/isisDataPublicationLanding.component';
@@ -53,7 +51,7 @@ import {
   checkInvestigationId,
   checkInstrumentAndFacilityCycleId,
   checkInstrumentId,
-  checkStudyId,
+  checkDataPublicationId,
   checkDatafileId,
 } from './idCheckFunctions';
 
@@ -87,16 +85,16 @@ const SafeISISDatafilesTable = React.memo(
     instrumentChildId: string;
     investigationId: string;
     datasetId: string;
-    studyHierarchy: boolean;
+    dataPublication: boolean;
   }): React.ReactElement => {
-    const SafeISISDatafilesTable = props.studyHierarchy
+    const SafeISISDatafilesTable = props.dataPublication
       ? withIdCheck(
           Promise.all([
             checkInstrumentId(
               parseInt(props.instrumentId),
               parseInt(props.instrumentChildId)
             ),
-            checkStudyId(
+            checkDataPublicationId(
               parseInt(props.instrumentChildId),
               parseInt(props.investigationId)
             ),
@@ -132,16 +130,16 @@ const SafeISISDatasetLanding = React.memo(
     instrumentChildId: string;
     investigationId: string;
     datasetId: string;
-    studyHierarchy: boolean;
+    dataPublication: boolean;
   }): React.ReactElement => {
-    const SafeISISDatasetLanding = props.studyHierarchy
+    const SafeISISDatasetLanding = props.dataPublication
       ? withIdCheck(
           Promise.all([
             checkInstrumentId(
               parseInt(props.instrumentId),
               parseInt(props.instrumentChildId)
             ),
-            checkStudyId(
+            checkDataPublicationId(
               parseInt(props.instrumentChildId),
               parseInt(props.investigationId)
             ),
@@ -175,16 +173,16 @@ const SafeISISDatasetsTable = React.memo(
     instrumentId: string;
     instrumentChildId: string;
     investigationId: string;
-    studyHierarchy: boolean;
+    dataPublication: boolean;
   }): React.ReactElement => {
-    const SafeISISDatasetsTable = props.studyHierarchy
+    const SafeISISDatasetsTable = props.dataPublication
       ? withIdCheck(
           Promise.all([
             checkInstrumentId(
               parseInt(props.instrumentId),
               parseInt(props.instrumentChildId)
             ),
-            checkStudyId(
+            checkDataPublicationId(
               parseInt(props.instrumentChildId),
               parseInt(props.investigationId)
             ),
@@ -208,16 +206,16 @@ const SafeISISDatasetsCardView = React.memo(
     instrumentId: string;
     instrumentChildId: string;
     investigationId: string;
-    studyHierarchy: boolean;
+    dataPublication: boolean;
   }): React.ReactElement => {
-    const SafeISISDatasetsCardView = props.studyHierarchy
+    const SafeISISDatasetsCardView = props.dataPublication
       ? withIdCheck(
           Promise.all([
             checkInstrumentId(
               parseInt(props.instrumentId),
               parseInt(props.instrumentChildId)
             ),
-            checkStudyId(
+            checkDataPublicationId(
               parseInt(props.instrumentChildId),
               parseInt(props.investigationId)
             ),
@@ -241,16 +239,16 @@ const SafeISISInvestigationLanding = React.memo(
     instrumentId: string;
     instrumentChildId: string;
     investigationId: string;
-    studyHierarchy: boolean;
+    dataPublication: boolean;
   }): React.ReactElement => {
-    const SafeISISInvestigationLanding = props.studyHierarchy
+    const SafeISISInvestigationLanding = props.dataPublication
       ? withIdCheck(
           Promise.all([
             checkInstrumentId(
               parseInt(props.instrumentId),
               parseInt(props.instrumentChildId)
             ),
-            checkStudyId(
+            checkDataPublicationId(
               parseInt(props.instrumentChildId),
               parseInt(props.investigationId)
             ),
@@ -485,131 +483,15 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           )}
         />
 
-        {/* ISIS studyHierarchy routes */}
-        <Route
-          exact
-          path={paths.studyHierarchy.toggle.isisInstrument}
-          render={() =>
-            this.props.view === 'card' ? (
-              <ISISInstrumentsCardView studyHierarchy={true} key="true" />
-            ) : (
-              <ISISInstrumentsTable studyHierarchy={true} key="true" />
-            )
-          }
-        />
-        <Route
-          exact
-          path={paths.studyHierarchy.toggle.isisStudy}
-          render={({ match }) =>
-            this.props.view === 'card' ? (
-              <ISISStudiesCardView
-                instrumentId={match.params.instrumentId as string}
-              />
-            ) : (
-              <ISISStudiesTable
-                instrumentId={match.params.instrumentId as string}
-              />
-            )
-          }
-        />
-        <Route
-          exact
-          path={paths.studyHierarchy.landing.isisStudyLanding}
-          render={({ match }) => (
-            <SafeISISStudyLanding
-              instrumentId={match.params.instrumentId as string}
-              studyId={match.params.studyId as string}
-            />
-          )}
-        />
-        <Route
-          exact
-          path={paths.studyHierarchy.toggle.isisInvestigation}
-          render={({ match }) =>
-            this.props.view === 'card' ? (
-              <ISISInvestigationsCardView
-                studyHierarchy={true}
-                instrumentId={match.params.instrumentId as string}
-                instrumentChildId={match.params.studyId as string}
-              />
-            ) : (
-              <ISISInvestigationsTable
-                studyHierarchy={true}
-                instrumentId={match.params.instrumentId as string}
-                instrumentChildId={match.params.studyId as string}
-              />
-            )
-          }
-        />
-        <Route
-          exact
-          path={paths.studyHierarchy.landing.isisInvestigationLanding}
-          render={({ match }) => (
-            <SafeISISInvestigationLanding
-              studyHierarchy={true}
-              instrumentId={match.params.instrumentId as string}
-              instrumentChildId={match.params.studyId as string}
-              investigationId={match.params.investigationId as string}
-            />
-          )}
-        />
-        <Route
-          exact
-          path={paths.studyHierarchy.toggle.isisDataset}
-          render={({ match }) =>
-            this.props.view === 'card' ? (
-              <SafeISISDatasetsCardView
-                studyHierarchy={true}
-                instrumentId={match.params.instrumentId as string}
-                instrumentChildId={match.params.studyId as string}
-                investigationId={match.params.investigationId as string}
-              />
-            ) : (
-              <SafeISISDatasetsTable
-                studyHierarchy={true}
-                instrumentId={match.params.instrumentId as string}
-                instrumentChildId={match.params.studyId as string}
-                investigationId={match.params.investigationId as string}
-              />
-            )
-          }
-        />
-        <Route
-          exact
-          path={paths.studyHierarchy.landing.isisDatasetLanding}
-          render={({ match }) => (
-            <SafeISISDatasetLanding
-              studyHierarchy={true}
-              instrumentId={match.params.instrumentId as string}
-              instrumentChildId={match.params.studyId as string}
-              investigationId={match.params.investigationId as string}
-              datasetId={match.params.datasetId as string}
-            />
-          )}
-        />
-        <Route
-          exact
-          path={paths.studyHierarchy.standard.isisDatafile}
-          render={({ match }) => (
-            <SafeISISDatafilesTable
-              studyHierarchy={true}
-              instrumentId={match.params.instrumentId as string}
-              instrumentChildId={match.params.studyId as string}
-              investigationId={match.params.investigationId as string}
-              datasetId={match.params.datasetId as string}
-            />
-          )}
-        />
-
         {/* ISIS dataPublications routes */}
         <Route
           exact
           path={paths.dataPublications.toggle.isisInstrument}
           render={() =>
             this.props.view === 'card' ? (
-              <ISISInstrumentsCardView studyHierarchy={true} key="true" />
+              <ISISInstrumentsCardView dataPublication={true} key="true" />
             ) : (
-              <ISISInstrumentsTable studyHierarchy={true} key="true" />
+              <ISISInstrumentsTable dataPublication={true} key="true" />
             )
           }
         />
@@ -644,13 +526,13 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           render={({ match }) =>
             this.props.view === 'card' ? (
               <ISISInvestigationsCardView
-                studyHierarchy={true}
+                dataPublication={true}
                 instrumentId={match.params.instrumentId as string}
                 instrumentChildId={match.params.dataPublicationId as string}
               />
             ) : (
               <ISISInvestigationsTable
-                studyHierarchy={true}
+                dataPublication={true}
                 instrumentId={match.params.instrumentId as string}
                 instrumentChildId={match.params.dataPublicationId as string}
               />
@@ -662,7 +544,7 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           path={paths.dataPublications.landing.isisInvestigationLanding}
           render={({ match }) => (
             <SafeISISInvestigationLanding
-              studyHierarchy={true}
+              dataPublication={true}
               instrumentId={match.params.instrumentId as string}
               instrumentChildId={match.params.dataPublicationId as string}
               investigationId={match.params.investigationId as string}
@@ -675,14 +557,14 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           render={({ match }) =>
             this.props.view === 'card' ? (
               <SafeISISDatasetsCardView
-                studyHierarchy={true}
+                dataPublication={true}
                 instrumentId={match.params.instrumentId as string}
                 instrumentChildId={match.params.dataPublicationId as string}
                 investigationId={match.params.investigationId as string}
               />
             ) : (
               <SafeISISDatasetsTable
-                studyHierarchy={true}
+                dataPublication={true}
                 instrumentId={match.params.instrumentId as string}
                 instrumentChildId={match.params.dataPublicationId as string}
                 investigationId={match.params.investigationId as string}
@@ -695,7 +577,7 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           path={paths.dataPublications.landing.isisDatasetLanding}
           render={({ match }) => (
             <SafeISISDatasetLanding
-              studyHierarchy={true}
+              dataPublication={true}
               instrumentId={match.params.instrumentId as string}
               instrumentChildId={match.params.dataPublicationId as string}
               investigationId={match.params.investigationId as string}
@@ -708,7 +590,7 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           path={paths.dataPublications.standard.isisDatafile}
           render={({ match }) => (
             <SafeISISDatafilesTable
-              studyHierarchy={true}
+              dataPublication={true}
               instrumentId={match.params.instrumentId as string}
               instrumentChildId={match.params.dataPublicationId as string}
               investigationId={match.params.investigationId as string}
@@ -723,9 +605,9 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           path={paths.toggle.isisInstrument}
           render={() =>
             this.props.view === 'card' ? (
-              <ISISInstrumentsCardView studyHierarchy={false} key="false" />
+              <ISISInstrumentsCardView dataPublication={false} key="false" />
             ) : (
-              <ISISInstrumentsTable studyHierarchy={false} key="false" />
+              <ISISInstrumentsTable dataPublication={false} key="false" />
             )
           }
         />
@@ -750,13 +632,13 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           render={({ match }) =>
             this.props.view === 'card' ? (
               <ISISInvestigationsCardView
-                studyHierarchy={false}
+                dataPublication={false}
                 instrumentId={match.params.instrumentId as string}
                 instrumentChildId={match.params.facilityCycleId as string}
               />
             ) : (
               <ISISInvestigationsTable
-                studyHierarchy={false}
+                dataPublication={false}
                 instrumentId={match.params.instrumentId as string}
                 instrumentChildId={match.params.facilityCycleId as string}
               />
@@ -768,7 +650,7 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           path={paths.landing.isisInvestigationLanding}
           render={({ match }) => (
             <SafeISISInvestigationLanding
-              studyHierarchy={false}
+              dataPublication={false}
               instrumentId={match.params.instrumentId as string}
               instrumentChildId={match.params.facilityCycleId as string}
               investigationId={match.params.investigationId as string}
@@ -781,14 +663,14 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           render={({ match }) =>
             this.props.view === 'card' ? (
               <SafeISISDatasetsCardView
-                studyHierarchy={false}
+                dataPublication={false}
                 instrumentId={match.params.instrumentId as string}
                 instrumentChildId={match.params.facilityCycleId as string}
                 investigationId={match.params.investigationId as string}
               />
             ) : (
               <SafeISISDatasetsTable
-                studyHierarchy={false}
+                dataPublication={false}
                 instrumentId={match.params.instrumentId as string}
                 instrumentChildId={match.params.facilityCycleId as string}
                 investigationId={match.params.investigationId as string}
@@ -801,7 +683,7 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           path={paths.landing.isisDatasetLanding}
           render={({ match }) => (
             <SafeISISDatasetLanding
-              studyHierarchy={false}
+              dataPublication={false}
               instrumentId={match.params.instrumentId as string}
               instrumentChildId={match.params.facilityCycleId as string}
               investigationId={match.params.investigationId as string}
@@ -814,7 +696,7 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           path={paths.standard.isisDatafile}
           render={({ match }) => (
             <SafeISISDatafilesTable
-              studyHierarchy={false}
+              dataPublication={false}
               instrumentId={match.params.instrumentId as string}
               instrumentChildId={match.params.facilityCycleId as string}
               investigationId={match.params.investigationId as string}

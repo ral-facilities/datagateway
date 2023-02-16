@@ -120,29 +120,6 @@ export const paths = {
     dlsDatafile:
       '/browse/proposal/:proposalName/investigation/:investigationId/dataset/:datasetId/datafile',
   },
-  studyHierarchy: {
-    root: '/browseStudyHierarchy',
-    toggle: {
-      isisInstrument: '/browseStudyHierarchy/instrument',
-      isisStudy: '/browseStudyHierarchy/instrument/:instrumentId/study',
-      isisInvestigation:
-        '/browseStudyHierarchy/instrument/:instrumentId/study/:studyId/investigation',
-      isisDataset:
-        '/browseStudyHierarchy/instrument/:instrumentId/study/:studyId/investigation/:investigationId/dataset',
-    },
-    standard: {
-      isisDatafile:
-        '/browseStudyHierarchy/instrument/:instrumentId/study/:studyId/investigation/:investigationId/dataset/:datasetId/datafile',
-    },
-    landing: {
-      isisStudyLanding:
-        '/browseStudyHierarchy/instrument/:instrumentId/study/:studyId',
-      isisInvestigationLanding:
-        '/browseStudyHierarchy/instrument/:instrumentId/study/:studyId/investigation/:investigationId',
-      isisDatasetLanding:
-        '/browseStudyHierarchy/instrument/:instrumentId/study/:studyId/investigation/:investigationId/dataset/:datasetId',
-    },
-  },
   dataPublications: {
     root: '/browseDataPublications',
     toggle: {
@@ -175,14 +152,14 @@ export const paths = {
 };
 
 const togglePaths = Object.values(paths.toggle).concat(
-  Object.values(paths.studyHierarchy.toggle)
+  Object.values(paths.dataPublications.toggle)
 );
 
 // ISIS base paths - required for linking to correct search view
 const isisPaths = [
   paths.myData.isis,
   paths.toggle.isisInstrument,
-  paths.studyHierarchy.root,
+  paths.dataPublications.root,
 ];
 
 // DLS base paths - required for linking to correct search view
@@ -204,12 +181,12 @@ const NavBar = React.memo(
     const [t] = useTranslation();
     const isStudyHierarchy =
       useRouteMatch([
-        ...Object.values(paths.studyHierarchy.toggle),
-        ...Object.values(paths.studyHierarchy.standard),
+        ...Object.values(paths.dataPublications.toggle),
+        ...Object.values(paths.dataPublications.standard),
       ]) !== null;
     const isISISRoute = useRouteMatch(isisPaths) !== null;
     const landingPages = isStudyHierarchy
-      ? paths.studyHierarchy.landing
+      ? paths.dataPublications.landing
       : isISISRoute
       ? paths.landing
       : [];
@@ -228,7 +205,7 @@ const NavBar = React.memo(
             aria-label="page-breadcrumbs"
           >
             {/* don't show breadcrumbs on /my-data - only on browse */}
-            <Route path={[paths.root, paths.studyHierarchy.root]}>
+            <Route path={[paths.root, paths.dataPublications.root]}>
               <PageBreadcrumbs landingPageEntities={landingPageEntities} />
             </Route>
           </Grid>
@@ -295,8 +272,8 @@ const NavBar = React.memo(
             path={Object.values(paths.myData).concat(
               Object.values(paths.toggle),
               Object.values(paths.standard),
-              Object.values(paths.studyHierarchy.toggle),
-              Object.values(paths.studyHierarchy.standard)
+              Object.values(paths.dataPublications.toggle),
+              Object.values(paths.dataPublications.standard)
             )}
             render={() => {
               return (
@@ -467,7 +444,7 @@ const ViewRouting = React.memo(
           exact
           path={[
             ...Object.values(paths.landing),
-            ...Object.values(paths.studyHierarchy.landing),
+            ...Object.values(paths.dataPublications.landing),
             ...Object.values(paths.preview),
           ]}
           render={() => (
@@ -709,8 +686,8 @@ const DataviewPageContainer: React.FC = () => {
                 path={Object.values(paths.myData).concat(
                   Object.values(paths.toggle),
                   Object.values(paths.standard),
-                  Object.values(paths.studyHierarchy.toggle),
-                  Object.values(paths.studyHierarchy.standard)
+                  Object.values(paths.dataPublications.toggle),
+                  Object.values(paths.dataPublications.standard)
                 )}
                 render={() => (
                   <ClearFiltersButton
