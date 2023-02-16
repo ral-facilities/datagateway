@@ -19,7 +19,7 @@
     "home": "Home",
     "instrument_other": "Instruments",
     "facilityCycle_other": "Facility Cycles",
-    "study_other": "Experiments",
+    "dataPublication_other": "Experiments",
     "proposal_other": "Proposals",
     "investigation_other": "Investigations",
     "dataset_other": "Datasets",
@@ -92,6 +92,7 @@
     "name": "Name",
     "title": "Title",
     "pid": "DOI",
+    "id": "Data Publication ID",
     "end_date": "End Date",
     "start_date": "Start Date",
     "details": {
