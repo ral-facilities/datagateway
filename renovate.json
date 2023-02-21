@@ -4,7 +4,8 @@
     "config:base",
     "schedule:nonOfficeHours",
     ":maintainLockFilesWeekly",
-    "npm:unpublishSafe"
+    "npm:unpublishSafe",
+    "helpers:pinGitHubActionDigests"
   ],
   "postUpdateOptions": ["yarnDedupeHighest"],
   "labels": ["dependencies"],
