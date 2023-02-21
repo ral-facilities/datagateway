@@ -3,8 +3,8 @@ import {
   ConfirmationNumber,
   Fingerprint,
   Public,
-} from '@material-ui/icons';
-import { Link as MuiLink } from '@material-ui/core';
+} from '@mui/icons-material';
+import { Link as MuiLink } from '@mui/material';
 import {
   CardView,
   formatCountOrSize,
@@ -45,10 +45,8 @@ const InvestigationCardView = (): React.ReactElement => {
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
-  const {
-    data: totalDataCount,
-    isLoading: countLoading,
-  } = useInvestigationCount();
+  const { data: totalDataCount, isLoading: countLoading } =
+    useInvestigationCount();
 
   const { isLoading: dataLoading, data } = useInvestigationsPaginated([
     {

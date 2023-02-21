@@ -1,61 +1,54 @@
 import React from 'react';
 import { TableCellProps, TableCellRenderer } from 'react-virtualized';
-import { Divider, TableCell, Typography } from '@material-ui/core';
+import { Divider, SxProps, TableCell, Typography } from '@mui/material';
 import ArrowTooltip, { getTooltipText } from '../../arrowtooltip.component';
 
 type CellRendererProps = TableCellProps & {
-  className: string;
+  sx: SxProps;
   cellContentRenderer?: TableCellRenderer;
 };
 
-const DataCell = React.memo(
-  (props: CellRendererProps): React.ReactElement => {
-    const { className, dataKey, rowData, cellContentRenderer } = props;
+const DataCell = React.memo((props: CellRendererProps): React.ReactElement => {
+  const { sx, dataKey, rowData, cellContentRenderer } = props;
 
-    // use . in dataKey name to drill down into nested row data
-    // if cellContentRenderer not provided
-    const cellContent = cellContentRenderer
-      ? cellContentRenderer(props)
-      : dataKey.split('.').reduce(function (prev, curr) {
-          return prev ? prev[curr] : null;
-        }, rowData);
+  // use . in dataKey name to drill down into nested row data
+  // if cellContentRenderer not provided
+  const cellContent = cellContentRenderer
+    ? cellContentRenderer(props)
+    : dataKey.split('.').reduce(function (prev, curr) {
+        return prev ? prev[curr] : null;
+      }, rowData);
 
-    return (
-      <TableCell
-        size="small"
-        component="div"
-        className={className}
-        variant="body"
+  return (
+    <TableCell size="small" component="div" sx={sx} variant="body">
+      <ArrowTooltip
+        title={getTooltipText(cellContent)}
+        enterDelay={500}
+        sx={{ flex: 1 }}
       >
-        <ArrowTooltip
-          title={getTooltipText(cellContent)}
-          enterDelay={500}
-          style={{ flex: 1 }}
-        >
-          <Typography variant="body2" noWrap>
-            {cellContent}
-          </Typography>
-        </ArrowTooltip>
-        <div
-          style={{
-            marginLeft: 18,
-            paddingLeft: '4px',
-            paddingRight: '4px',
+        <Typography variant="body2" noWrap component="span">
+          {cellContent}
+        </Typography>
+      </ArrowTooltip>
+      <div
+        style={{
+          marginLeft: 18,
+          paddingLeft: '4px',
+          paddingRight: '4px',
+          height: '100%',
+        }}
+      >
+        <Divider
+          orientation="vertical"
+          flexItem
+          sx={{
             height: '100%',
           }}
-        >
-          <Divider
-            orientation="vertical"
-            flexItem
-            style={{
-              height: '100%',
-            }}
-          />
-        </div>
-      </TableCell>
-    );
-  }
-);
+        />
+      </div>
+    </TableCell>
+  );
+});
 DataCell.displayName = 'DataCell';
 
 export default DataCell;

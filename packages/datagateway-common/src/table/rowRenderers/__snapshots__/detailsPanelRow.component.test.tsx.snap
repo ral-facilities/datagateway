@@ -1,14 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Details panel row component renders correctly 1`] = `
-<div
+<ForwardRef(Box)
   className="test-class"
   key="1"
-  style={
+  sx={
     Object {
       "display": "flex",
       "flexDirection": "column",
       "height": 30,
+      "paddingRight": 15,
     }
   }
 >
@@ -20,6 +21,7 @@ exports[`Details panel row component renders correctly 1`] = `
       Object {
         "height": 30,
         "paddingRight": 15,
+        "position": "static",
         "width": 30,
       }
     }
@@ -37,5 +39,5 @@ exports[`Details panel row component renders correctly 1`] = `
       rowData="test"
     />
   </div>
-</div>
+</ForwardRef(Box)>
 `;

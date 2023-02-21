@@ -1,4 +1,3 @@
-import { createMount } from '@material-ui/core/test-utils';
 import {
   Dataset,
   dGCommonInitialState,
@@ -13,15 +12,20 @@ import {
 } from 'datagateway-common';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router';
+import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../../state/app.types';
 import { initialState } from '../../state/reducers/dgdataview.reducer';
 import DatasetTable from './datasetTable.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../../setupTests';
+import { render, RenderResult } from '@testing-library/react';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -40,7 +44,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('Dataset table component', () => {
-  let mount;
   let mockStore;
   let state: StateType;
   let rowData: Dataset[];
@@ -59,8 +62,20 @@ describe('Dataset table component', () => {
     );
   };
 
+  const createRTLWrapper = (): RenderResult => {
+    const store = mockStore(state);
+    return render(
+      <Provider store={store}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <DatasetTable investigationId="1" />
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+  };
+
   beforeEach(() => {
-    mount = createMount();
     rowData = [
       {
         id: 1,
@@ -82,6 +97,7 @@ describe('Dataset table component', () => {
 
     (useCart as jest.Mock).mockReturnValue({
       data: [],
+      isLoading: false,
     });
     (useDatasetCount as jest.Mock).mockReturnValue({
       data: 0,
@@ -93,6 +109,7 @@ describe('Dataset table component', () => {
     (useDatasetsDatafileCount as jest.Mock).mockReturnValue([{ data: 1 }]);
     (useIds as jest.Mock).mockReturnValue({
       data: [1],
+      isLoading: false,
     });
     (useAddToCart as jest.Mock).mockReturnValue({
       mutate: jest.fn(),
@@ -105,7 +122,6 @@ describe('Dataset table component', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -176,7 +192,7 @@ describe('Dataset table component', () => {
 
     const filterInput = wrapper
       .find('[aria-label="Filter by datasets.name"]')
-      .first();
+      .last();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
@@ -195,6 +211,8 @@ describe('Dataset table component', () => {
   });
 
   it('updates filter query params on date filter', () => {
+    applyDatePickerWorkaround();
+
     const wrapper = createWrapper();
 
     const filterInput = wrapper.find(
@@ -213,6 +231,8 @@ describe('Dataset table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
+
+    cleanupDatePickerWorkaround();
   });
 
   it('updates sort query params on sort', () => {
@@ -237,7 +257,7 @@ describe('Dataset table component', () => {
     });
     const wrapper = createWrapper();
 
-    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
+    wrapper.find('[aria-label="select row 0"]').last().simulate('click');
 
     expect(addToCart).toHaveBeenCalledWith([1]);
   });
@@ -253,6 +273,7 @@ describe('Dataset table component', () => {
           parentEntities: [],
         },
       ],
+      isLoading: false,
     });
 
     const removeFromCart = jest.fn();
@@ -263,7 +284,7 @@ describe('Dataset table component', () => {
 
     const wrapper = createWrapper();
 
-    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
+    wrapper.find('[aria-label="select row 0"]').last().simulate('click');
 
     expect(removeFromCart).toHaveBeenCalledWith([1]);
   });
@@ -286,6 +307,7 @@ describe('Dataset table component', () => {
           parentEntities: [],
         },
       ],
+      isLoading: false,
     });
 
     const wrapper = createWrapper();
@@ -311,16 +333,14 @@ describe('Dataset table component', () => {
   it('displays details panel when expanded', () => {
     const wrapper = createWrapper();
     expect(wrapper.find(DatasetDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+    wrapper.find('[aria-label="Show details"]').last().simulate('click');
 
     expect(wrapper.find(DatasetDetailsPanel).exists()).toBeTruthy();
   });
 
   it('renders Dataset title as a link', () => {
-    const wrapper = createWrapper();
+    const wrapper = createRTLWrapper();
 
-    expect(
-      wrapper.find('[aria-colindex=3]').find('p').children()
-    ).toMatchSnapshot();
+    expect(wrapper.getByText('Test 1')).toMatchSnapshot();
   });
 });

@@ -1,9 +1,8 @@
 import React from 'react';
-import { createShallow } from '@material-ui/core/test-utils';
+import { shallow } from 'enzyme';
 import ExpandCell from './expandCell.component';
 
 describe('Expand cell component', () => {
-  let shallow;
   const setExpandedIndex = jest.fn();
   const expandCellProps = {
     columnIndex: 1,
@@ -11,14 +10,9 @@ describe('Expand cell component', () => {
     isScrolling: false,
     rowIndex: 1,
     rowData: '',
-    className: 'test-class',
     expandedIndex: 1,
     setExpandedIndex,
   };
-
-  beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'div' });
-  });
 
   afterEach(() => {
     setExpandedIndex.mockClear();

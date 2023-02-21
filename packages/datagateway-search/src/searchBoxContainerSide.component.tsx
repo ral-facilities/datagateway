@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Grid, Box } from '@material-ui/core';
+import { Grid, Box } from '@mui/material';
 
 import SelectDates from './search/datePicker.component';
 import CheckboxesGroup from './search/checkBoxes.component';
@@ -22,7 +22,7 @@ const SearchBoxContainerSide = (
     <Grid
       container
       direction="column"
-      justify="flex-start"
+      justifyContent="flex-start"
       alignItems="stretch"
       id="container-searchbox"
     >

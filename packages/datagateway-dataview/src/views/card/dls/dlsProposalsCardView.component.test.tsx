@@ -1,5 +1,3 @@
-import { Link } from '@material-ui/core';
-import { createMount } from '@material-ui/core/test-utils';
 import {
   AdvancedFilter,
   dGCommonInitialState,
@@ -7,10 +5,10 @@ import {
   useInvestigationsPaginated,
   Investigation,
 } from 'datagateway-common';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router';
+import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
@@ -31,7 +29,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('DLS Proposals - Card View', () => {
-  let mount;
   let mockStore;
   let state: StateType;
   let cardData: Investigation[];
@@ -51,7 +48,6 @@ describe('DLS Proposals - Card View', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
     cardData = [
       {
         id: 1,
@@ -84,7 +80,6 @@ describe('DLS Proposals - Card View', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -116,7 +111,7 @@ describe('DLS Proposals - Card View', () => {
     const wrapper = createWrapper();
 
     const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find(Link).simulate('click');
+    advancedFilter.find('button').simulate('click');
     advancedFilter
       .find('input')
       .first()

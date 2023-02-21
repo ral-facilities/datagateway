@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Data column header component renders correctly with filter but no sort 1`] = `
-<div
-  aria-sort={null}
-  className="MuiTableCell-root MuiTableCell-head test-class MuiTableCell-sizeSmall"
-  role="cell"
+<ForwardRef(TableCell)
+  component="div"
+  size="small"
+  variant="head"
 >
   <div
     style={
@@ -14,18 +14,18 @@ exports[`Data column header component renders correctly with filter but no sort 
       }
     }
   >
-    <Styled(MuiBox)
+    <ForwardRef(Box)
       display="flex"
     >
-      <Styled(MuiBox)
+      <ForwardRef(Box)
         marginRight={1}
       >
         <Icon />
-      </Styled(MuiBox)>
-      <Styled(MuiBox)>
-        <WithStyles(ForwardRef(Typography))
+      </ForwardRef(Box)>
+      <ForwardRef(Box)>
+        <ForwardRef(Typography)
           noWrap={true}
-          style={
+          sx={
             Object {
               "fontSize": "inherit",
               "lineHeight": "inherit",
@@ -33,9 +33,9 @@ exports[`Data column header component renders correctly with filter but no sort 
           }
         >
           Test
-        </WithStyles(ForwardRef(Typography))>
-      </Styled(MuiBox)>
-    </Styled(MuiBox)>
+        </ForwardRef(Typography)>
+      </ForwardRef(Box)>
+    </ForwardRef(Box)>
     <TextColumnFilter
       label="Test"
       onChange={[MockFunction]}
@@ -78,10 +78,10 @@ exports[`Data column header component renders correctly with filter but no sort 
         }
       }
     >
-      <WithStyles(ForwardRef(Divider))
+      <ForwardRef(Divider)
         flexItem={true}
         orientation="vertical"
-        style={
+        sx={
           Object {
             "height": "100%",
           }
@@ -89,14 +89,14 @@ exports[`Data column header component renders correctly with filter but no sort 
       />
     </div>
   </Draggable>
-</div>
+</ForwardRef(TableCell)>
 `;
 
 exports[`Data column header component renders correctly with sort and filter 1`] = `
-<div
-  aria-sort={null}
-  className="MuiTableCell-root MuiTableCell-head test-class MuiTableCell-sizeSmall"
-  role="cell"
+<ForwardRef(TableCell)
+  component="div"
+  size="small"
+  variant="head"
 >
   <div
     style={
@@ -106,23 +106,23 @@ exports[`Data column header component renders correctly with sort and filter 1`]
       }
     }
   >
-    <Styled(MuiBox)
+    <ForwardRef(Box)
       display="flex"
     >
-      <Styled(MuiBox)
+      <ForwardRef(Box)
         marginRight={1}
       >
         <Icon />
-      </Styled(MuiBox)>
-      <Styled(MuiBox)>
-        <WithStyles(ForwardRef(TableSortLabel))
+      </ForwardRef(Box)>
+      <ForwardRef(Box)>
+        <ForwardRef(TableSortLabel)
           active={false}
           className="tour-dataview-sort"
           onClick={[Function]}
         >
-          <WithStyles(ForwardRef(Typography))
+          <ForwardRef(Typography)
             noWrap={true}
-            style={
+            sx={
               Object {
                 "fontSize": "inherit",
                 "lineHeight": "inherit",
@@ -130,10 +130,10 @@ exports[`Data column header component renders correctly with sort and filter 1`]
             }
           >
             Test
-          </WithStyles(ForwardRef(Typography))>
-        </WithStyles(ForwardRef(TableSortLabel))>
-      </Styled(MuiBox)>
-    </Styled(MuiBox)>
+          </ForwardRef(Typography)>
+        </ForwardRef(TableSortLabel)>
+      </ForwardRef(Box)>
+    </ForwardRef(Box)>
     <TextColumnFilter
       label="Test"
       onChange={[MockFunction]}
@@ -176,10 +176,10 @@ exports[`Data column header component renders correctly with sort and filter 1`]
         }
       }
     >
-      <WithStyles(ForwardRef(Divider))
+      <ForwardRef(Divider)
         flexItem={true}
         orientation="vertical"
-        style={
+        sx={
           Object {
             "height": "100%",
           }
@@ -187,14 +187,14 @@ exports[`Data column header component renders correctly with sort and filter 1`]
       />
     </div>
   </Draggable>
-</div>
+</ForwardRef(TableCell)>
 `;
 
 exports[`Data column header component renders correctly with sort but no filter 1`] = `
-<div
-  aria-sort={null}
-  className="MuiTableCell-root MuiTableCell-head test-class MuiTableCell-sizeSmall"
-  role="cell"
+<ForwardRef(TableCell)
+  component="div"
+  size="small"
+  variant="head"
 >
   <div
     style={
@@ -204,23 +204,23 @@ exports[`Data column header component renders correctly with sort but no filter 
       }
     }
   >
-    <Styled(MuiBox)
+    <ForwardRef(Box)
       display="flex"
     >
-      <Styled(MuiBox)
+      <ForwardRef(Box)
         marginRight={1}
       >
         <Icon />
-      </Styled(MuiBox)>
-      <Styled(MuiBox)>
-        <WithStyles(ForwardRef(TableSortLabel))
+      </ForwardRef(Box)>
+      <ForwardRef(Box)>
+        <ForwardRef(TableSortLabel)
           active={false}
           className="tour-dataview-sort"
           onClick={[Function]}
         >
-          <WithStyles(ForwardRef(Typography))
+          <ForwardRef(Typography)
             noWrap={true}
-            style={
+            sx={
               Object {
                 "fontSize": "inherit",
                 "lineHeight": "inherit",
@@ -228,10 +228,10 @@ exports[`Data column header component renders correctly with sort but no filter 
             }
           >
             Test
-          </WithStyles(ForwardRef(Typography))>
-        </WithStyles(ForwardRef(TableSortLabel))>
-      </Styled(MuiBox)>
-    </Styled(MuiBox)>
+          </ForwardRef(Typography)>
+        </ForwardRef(TableSortLabel)>
+      </ForwardRef(Box)>
+    </ForwardRef(Box)>
   </div>
   <Draggable
     allowAnyClick={false}
@@ -270,10 +270,10 @@ exports[`Data column header component renders correctly with sort but no filter 
         }
       }
     >
-      <WithStyles(ForwardRef(Divider))
+      <ForwardRef(Divider)
         flexItem={true}
         orientation="vertical"
-        style={
+        sx={
           Object {
             "height": "100%",
           }
@@ -281,14 +281,14 @@ exports[`Data column header component renders correctly with sort but no filter 
       />
     </div>
   </Draggable>
-</div>
+</ForwardRef(TableCell)>
 `;
 
 exports[`Data column header component renders correctly without sort or filter 1`] = `
-<div
-  aria-sort={null}
-  className="MuiTableCell-root MuiTableCell-head test-class MuiTableCell-sizeSmall"
-  role="cell"
+<ForwardRef(TableCell)
+  component="div"
+  size="small"
+  variant="head"
 >
   <div
     style={
@@ -298,18 +298,18 @@ exports[`Data column header component renders correctly without sort or filter 1
       }
     }
   >
-    <Styled(MuiBox)
+    <ForwardRef(Box)
       display="flex"
     >
-      <Styled(MuiBox)
+      <ForwardRef(Box)
         marginRight={1}
       >
         <Icon />
-      </Styled(MuiBox)>
-      <Styled(MuiBox)>
-        <WithStyles(ForwardRef(Typography))
+      </ForwardRef(Box)>
+      <ForwardRef(Box)>
+        <ForwardRef(Typography)
           noWrap={true}
-          style={
+          sx={
             Object {
               "fontSize": "inherit",
               "lineHeight": "inherit",
@@ -317,9 +317,9 @@ exports[`Data column header component renders correctly without sort or filter 1
           }
         >
           Test
-        </WithStyles(ForwardRef(Typography))>
-      </Styled(MuiBox)>
-    </Styled(MuiBox)>
+        </ForwardRef(Typography)>
+      </ForwardRef(Box)>
+    </ForwardRef(Box)>
   </div>
   <Draggable
     allowAnyClick={false}
@@ -358,10 +358,10 @@ exports[`Data column header component renders correctly without sort or filter 1
         }
       }
     >
-      <WithStyles(ForwardRef(Divider))
+      <ForwardRef(Divider)
         flexItem={true}
         orientation="vertical"
-        style={
+        sx={
           Object {
             "height": "100%",
           }
@@ -369,5 +369,5 @@ exports[`Data column header component renders correctly without sort or filter 1
       />
     </div>
   </Draggable>
-</div>
+</ForwardRef(TableCell)>
 `;

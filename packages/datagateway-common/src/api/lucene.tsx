@@ -1,4 +1,3 @@
-import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import axios, { AxiosError } from 'axios';
 import { format, set } from 'date-fns';
 import { useQuery, UseQueryResult } from 'react-query';
@@ -23,8 +22,8 @@ export type LuceneSearchParams = UrlBuilderParameters & {
 
 interface UrlBuilderParameters {
   searchText: string;
-  startDate: MaterialUiPickersDate;
-  endDate: MaterialUiPickersDate;
+  startDate: Date | null;
+  endDate: Date | null;
 }
 
 const urlParamsBuilder = (

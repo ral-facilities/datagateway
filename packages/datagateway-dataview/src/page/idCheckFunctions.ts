@@ -6,21 +6,22 @@ import {
   ConfigureURLsType,
   readSciGatewayToken,
 } from 'datagateway-common';
+import { Datafile } from 'datagateway-common/lib/app.types';
 import { Middleware, Dispatch, AnyAction } from 'redux';
 import memoize from 'lodash.memoize';
 
 let apiUrl = '';
 
 // this is so that idCheckFunctions have access to the apiUrl
-export const saveApiUrlMiddleware: Middleware = (() => (
-  next: Dispatch<AnyAction>
-) => (action: AnyAction): AnyAction => {
-  if (action.type === ConfigureURLsType) {
-    apiUrl = action.payload.urls.apiUrl;
-  }
+export const saveApiUrlMiddleware: Middleware = (() =>
+  (next: Dispatch<AnyAction>) =>
+  (action: AnyAction): AnyAction => {
+    if (action.type === ConfigureURLsType) {
+      apiUrl = action.payload.urls.apiUrl;
+    }
 
-  return next(action);
-}) as Middleware;
+    return next(action);
+  }) as Middleware;
 
 const unmemoizedCheckInvestigationId = (
   investigationId: number,
@@ -147,9 +148,10 @@ const unmemoizedCheckInstrumentId = (
   params.append(
     'where',
     JSON.stringify({
-      'studyInvestigations.investigation.investigationInstruments.instrument.id': {
-        eq: instrumentId,
-      },
+      'studyInvestigations.investigation.investigationInstruments.instrument.id':
+        {
+          eq: instrumentId,
+        },
     })
   );
   return axios
@@ -195,4 +197,37 @@ export const unmemoizedCheckProposalName = (
 export const checkProposalName = memoize(
   unmemoizedCheckProposalName,
   (...args) => JSON.stringify(args)
+);
+
+export const unmemoizedCheckDatafileId = (
+  investigationId: Investigation['id'],
+  datasetId: Dataset['id'],
+  datafileId: Datafile['id']
+): Promise<boolean> =>
+  axios
+    .get(`${apiUrl}/datafiles`, {
+      params: {
+        include: JSON.stringify(['dataset', 'dataset.investigation']),
+        where: JSON.stringify({ id: { eq: datafileId } }),
+      },
+      headers: {
+        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+      },
+    })
+    .then((response: AxiosResponse<Datafile[]>) => {
+      if (response.data.length <= 0) return false;
+      const datafile = response.data[0];
+      return (
+        datafile.id === datafileId &&
+        datafile.dataset?.id === datasetId &&
+        datafile.dataset?.investigation?.id === investigationId
+      );
+    })
+    .catch((error) => {
+      handleICATError(error);
+      return false;
+    });
+
+export const checkDatafileId = memoize(unmemoizedCheckDatafileId, (...args) =>
+  JSON.stringify(args)
 );

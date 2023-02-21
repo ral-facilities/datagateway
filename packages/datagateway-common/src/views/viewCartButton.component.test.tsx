@@ -1,18 +1,16 @@
 import React from 'react';
-import { createMount } from '@material-ui/core/test-utils';
 import configureStore from 'redux-mock-store';
 import { initialState as dGCommonInitialState } from '../state/reducers/dgcommon.reducer';
 import { StateType } from '../state/app.types';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { MemoryRouter } from 'react-router';
-import { ReactWrapper } from 'enzyme';
+import { MemoryRouter } from 'react-router-dom';
+import { mount, ReactWrapper, shallow } from 'enzyme';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import ViewCartButton, { CartProps } from './viewCartButton.component';
-import { Badge } from '@material-ui/core';
+import { Badge } from '@mui/material';
 
 describe('Generic cart button', () => {
-  let mount;
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let props: CartProps;
@@ -33,8 +31,6 @@ describe('Generic cart button', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
-
     props = {
       cartItems: [],
       navigateToDownload: navigateToDownload,
@@ -55,20 +51,19 @@ describe('Generic cart button', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
     navigateToDownload.mockClear();
   });
 
   it('renders correctly', () => {
-    const wrapper = createWrapper(props);
+    const wrapper = shallow(<ViewCartButton {...props} />);
     expect(wrapper).toMatchSnapshot();
   });
 
   it('calls the navigate to download plugin when the cart clicked', () => {
     const wrapper = createWrapper(props);
 
-    wrapper.find('[aria-label="app.cart_arialabel"]').first().simulate('click');
+    wrapper.find('[aria-label="app.cart_arialabel"]').last().simulate('click');
 
     expect(navigateToDownload).toHaveBeenCalledTimes(1);
   });

@@ -8,27 +8,21 @@ import {
   Grid,
   IconButton,
   CircularProgress,
-  Theme,
-} from '@material-ui/core';
-import Tab from '@material-ui/core/Tab';
+  styled,
+  Tab,
+} from '@mui/material';
 
 import DownloadCartTable from '../downloadCart/downloadCartTable.component';
 import DownloadStatusTable from '../downloadStatus/downloadStatusTable.component';
 
-import RefreshIcon from '@material-ui/icons/Refresh';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import BlackTooltip from '../tooltip.component';
 import { useTranslation } from 'react-i18next';
-import { StyleRules, createStyles, withStyles } from '@material-ui/core/styles';
 
-const paperStyles = (theme: Theme): StyleRules =>
-  createStyles({
-    root: {
-      flexGrow: 1,
-      backgroundColor: theme.palette.background.default,
-    },
-  });
-
-const StyledPaper = withStyles(paperStyles)(Paper);
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  flexGrow: 1,
+  backgroundColor: theme.palette.background.default,
+}));
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -52,9 +46,10 @@ function TabPanel(props: TabPanelProps): React.ReactElement {
   );
 }
 
-function a11yProps(
-  index: number
-): { id: string; [ariaControls: string]: string } {
+function a11yProps(index: number): {
+  id: string;
+  [ariaControls: string]: string;
+} {
   return {
     id: `tab-${index}`,
     'aria-controls': `tabpanel-${index}`,
@@ -65,7 +60,7 @@ const DownloadTabs: React.FC = () => {
   // Set the initial tab.
   const [selectedTab, setSelectedTab] = React.useState(0);
   const [refreshDownloads, setRefreshDownloads] = React.useState(false);
-  const [lastChecked, setLastChecked] = React.useState('');
+  const [lastCheckedTimestamp, setLastCheckedTimestamp] = React.useState(0);
   const [t] = useTranslation();
 
   const handleChange = (
@@ -135,6 +130,7 @@ const DownloadTabs: React.FC = () => {
                       'downloadTab.refresh_download_status_arialabel'
                     )}
                     onClick={() => setRefreshDownloads(true)}
+                    size="large"
                   >
                     <RefreshIcon />
                   </IconButton>
@@ -146,7 +142,8 @@ const DownloadTabs: React.FC = () => {
               <Typography variant="subtitle1" component="h3">
                 {!refreshDownloads ? (
                   <p style={{ paddingLeft: '10px ' }}>
-                    <b>{t('downloadTab.last_checked')}: </b> {lastChecked}
+                    <b>{t('downloadTab.last_checked')}: </b>{' '}
+                    {new Date(lastCheckedTimestamp).toLocaleString()}
                   </p>
                 ) : (
                   <p style={{ paddingLeft: '20px ' }}>
@@ -161,7 +158,7 @@ const DownloadTabs: React.FC = () => {
             <DownloadStatusTable
               refreshTable={refreshDownloads}
               setRefreshTable={setRefreshDownloads}
-              setLastChecked={() => setLastChecked(new Date().toLocaleString())}
+              setLastCheckedTimestamp={setLastCheckedTimestamp}
             />
           </Grid>
         </Grid>

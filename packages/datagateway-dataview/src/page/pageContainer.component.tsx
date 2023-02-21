@@ -4,15 +4,11 @@ import {
   Paper,
   Typography,
   Theme,
-  withStyles,
-  createStyles,
   IconButton,
-  makeStyles,
-} from '@material-ui/core';
-
-import SearchIcon from '@material-ui/icons/Search';
-import InfoIcon from '@material-ui/icons/Info';
-import { StyleRules } from '@material-ui/core/styles';
+  styled,
+} from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import InfoIcon from '@mui/icons-material/Info';
 import {
   Sticky,
   ViewsType,
@@ -36,6 +32,7 @@ import {
   useLocation,
   useHistory,
   useRouteMatch,
+  matchPath,
 } from 'react-router-dom';
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageRouting from './pageRouting.component';
@@ -45,62 +42,45 @@ import DoiRedirect from './doiRedirect.component';
 import RoleSelector from '../views/roleSelector.component';
 import { useIsFetching, useQueryClient } from 'react-query';
 
-const usePaperStyles = makeStyles<Theme, { tablePaperHeight: string }>(
-  (theme: Theme) =>
-    createStyles({
-      cardPaper: { backgroundColor: 'inherit' },
-      tablePaper: {
-        height: ({ tablePaperHeight }) => tablePaperHeight,
-        width: '100%',
-        minHeight: 500,
-        backgroundColor: 'inherit',
-        overflowX: 'auto',
-      },
-      tablePaperMessage: {
-        //Footer is 36px
-        height: 'calc(100vh - 244px - 4rem - 36px)',
-        width: '100%',
-        backgroundColor: 'inherit',
-        overflowX: 'auto',
-      },
-      noResultsPaper: {
-        padding: theme.spacing(2),
-        marginTop: theme.spacing(2),
-        marginBottom: theme.spacing(2),
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        maxWidth: '960px',
-      },
-    })
-);
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+const getTablePaperStyle = (
+  displayFilterMessage: boolean,
+  tablePaperHeight: string
+) => {
+  return {
+    height: displayFilterMessage
+      ? 'calc(100vh - 244px - 4rem - 36px)' // Footer is 36px
+      : tablePaperHeight,
+    width: '100%',
+    backgroundColor: 'inherit',
+    overflowX: 'auto',
+  };
+};
 
-const useNavBarStyles = makeStyles(
-  (theme: Theme): StyleRules =>
-    createStyles({
-      openDataPaper: {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        backgroundColor: (theme as any).colours?.warning,
-        display: 'flex',
-        flexDirection: 'column',
-        paddingLeft: 0,
-        paddingRight: 20,
-        justifyContent: 'center',
-      },
-      openDataInfoIcon: {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        color: (theme as any).colours?.information,
-      },
-    })
-);
+const cardPaperStyle = { backgroundColor: 'inherit' };
 
-const gridStyles = (theme: Theme): StyleRules =>
-  createStyles({
-    root: {
-      backgroundColor: theme.palette.background.default,
-    },
-  });
+const NoResultsPaper = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(2),
+  marginTop: theme.spacing(2),
+  marginBottom: theme.spacing(2),
+  marginLeft: 'auto',
+  marginRight: 'auto',
+  maxWidth: '960px',
+}));
 
-const StyledGrid = withStyles(gridStyles)(Grid);
+const OpenDataPaper = styled(Paper)(({ theme }) => ({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  backgroundColor: (theme as any).colours?.warning,
+  display: 'flex',
+  flexDirection: 'column',
+  paddingLeft: 0,
+  paddingRight: 20,
+  justifyContent: 'center',
+}));
+
+const StyledGrid = styled(Grid)(({ theme }) => ({
+  backgroundColor: theme.palette.background.default,
+}));
 
 // Define all the supported paths for data-view.
 export const paths = {
@@ -163,6 +143,11 @@ export const paths = {
         '/browseStudyHierarchy/instrument/:instrumentId/study/:studyId/investigation/:investigationId/dataset/:datasetId',
     },
   },
+  // defines routes for datafile previews
+  preview: {
+    isisDatafilePreview:
+      '/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation/:investigationId/dataset/:datasetId/datafile/:datafileId',
+  },
 };
 
 const togglePaths = Object.values(paths.toggle).concat(
@@ -179,12 +164,10 @@ const isisPaths = [
 // DLS base paths - required for linking to correct search view
 const dlsPaths = [paths.myData.dls, paths.toggle.dlsProposal];
 
-const BlackTextTypography = withStyles({
-  root: {
-    color: '#000000',
-    fontSize: '16px',
-  },
-})(Typography);
+const BlackTextTypography = styled(Typography)({
+  color: '#000000',
+  fontSize: '16px',
+});
 
 const NavBar = React.memo(
   (
@@ -195,7 +178,6 @@ const NavBar = React.memo(
     } & CartProps
   ): React.ReactElement => {
     const [t] = useTranslation();
-    const classes = useNavBarStyles();
     const isStudyHierarchy =
       useRouteMatch([
         ...Object.values(paths.studyHierarchy.toggle),
@@ -229,17 +211,16 @@ const NavBar = React.memo(
 
           {props.loggedInAnonymously || isStudyHierarchy ? (
             <Grid item>
-              <Paper square className={classes.openDataPaper}>
+              <OpenDataPaper square>
                 <Grid
                   container
                   direction="row"
                   alignItems="center"
-                  justify="center"
+                  justifyContent="center"
                   aria-label="open-data-warning"
                 >
                   <Grid item>
                     <ArrowTooltip
-                      interactive
                       title={
                         <h4>
                           {isStudyHierarchy
@@ -260,9 +241,16 @@ const NavBar = React.memo(
                     >
                       <IconButton
                         disableRipple
-                        style={{ backgroundColor: 'transparent' }}
+                        sx={{ backgroundColor: 'transparent' }}
+                        size="large"
                       >
-                        <InfoIcon className={classes.openDataInfoIcon} />
+                        <InfoIcon
+                          sx={{
+                            color: (theme: Theme) =>
+                              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                              (theme as any).colours?.information,
+                          }}
+                        />
                       </IconButton>
                     </ArrowTooltip>
                   </Grid>
@@ -272,7 +260,7 @@ const NavBar = React.memo(
                     </BlackTextTypography>
                   </Grid>
                 </Grid>
-              </Paper>
+              </OpenDataPaper>
             </Grid>
           ) : null}
 
@@ -290,7 +278,7 @@ const NavBar = React.memo(
               return (
                 <Grid
                   className="tour-dataview-results"
-                  style={{ textAlign: 'center' }}
+                  sx={{ textAlign: 'center' }}
                   item
                   sm={2}
                   xs={3}
@@ -298,7 +286,7 @@ const NavBar = React.memo(
                 >
                   <Paper
                     square
-                    style={{
+                    sx={{
                       backgroundColor: 'inherit',
                       height: '100%',
                       display: 'flex',
@@ -316,29 +304,30 @@ const NavBar = React.memo(
           />
           <Paper
             square
-            style={{
+            sx={{
               backgroundColor: 'inherit',
               display: 'flex',
-              paddingLeft: 6,
-              paddingRight: 6,
+              paddingLeft: '6px',
+              paddingRight: '6px',
             }}
           >
             <IconButton
               className="tour-dataview-search-icon"
               onClick={props.navigateToSearch}
               aria-label="view-search"
-              style={{ margin: 'auto' }}
+              sx={{ margin: 'auto' }}
+              size="large"
             >
               <SearchIcon />
             </IconButton>
           </Paper>
           <Paper
             square
-            style={{
+            sx={{
               backgroundColor: 'inherit',
               display: 'flex',
-              paddingLeft: 6,
-              paddingRight: 6,
+              paddingLeft: '6px',
+              paddingRight: '6px',
             }}
           >
             <ViewCartButton
@@ -386,17 +375,17 @@ const StyledRouting = (props: {
   // Chrome's display is 1px shorter than Firefox's, so we subtract 1px extra to account for this
   // We also don't want the <LinearProgress> bar to push the page down so subtract the height of this (4px if on-screen)
   // Additional rows of breadcrumbs also push the page down so subtract the height of the breadcrumb div
-  const tablePaperHeight = `calc(100vh - 180px - 36px - 1px - ${linearProgressHeight} - ${breadcrumbHeight})`;
+  const tablePaperHeight = `calc(100vh - 152px - 36px - 1px - ${linearProgressHeight} - ${breadcrumbHeight})`;
 
   const [t] = useTranslation();
-  const paperClasses = usePaperStyles({ tablePaperHeight });
-  const tableClassName = displayFilterMessage
-    ? paperClasses.tablePaperMessage
-    : paperClasses.tablePaper;
+  const tableClassStyle = getTablePaperStyle(
+    displayFilterMessage,
+    tablePaperHeight
+  );
   return (
     <div>
       {viewStyle !== 'card' && displayFilterMessage && (
-        <Paper className={paperClasses.noResultsPaper}>
+        <NoResultsPaper>
           <Typography
             align="center"
             variant="h6"
@@ -405,13 +394,12 @@ const StyledRouting = (props: {
           >
             {t('loading.filter_message')}
           </Typography>
-        </Paper>
+        </NoResultsPaper>
       )}
       <Paper
         square
-        className={`${
-          viewStyle === 'card' ? paperClasses.cardPaper : tableClassName
-        } tour-dataview-data`}
+        sx={viewStyle === 'card' ? cardPaperStyle : tableClassStyle}
+        className="tour-dataview-data"
       >
         <PageRouting
           loggedInAnonymously={loggedInAnonymously}
@@ -440,16 +428,24 @@ const ViewRouting = React.memo(
       loggedInAnonymously,
       linearProgressHeight,
     } = props;
-    const displayFilterMessage = loadedCount && totalDataCount === 0;
+    const displayFilterMessage =
+      loadedCount &&
+      totalDataCount === 0 &&
+      !matchPath(location.pathname, {
+        path: Object.values(paths.preview),
+        exact: true,
+      });
 
     return (
       <SwitchRouting>
         {/* For "landing" paths, don't use a containing Paper */}
         <Route
           exact
-          path={Object.values(paths.landing).concat(
-            Object.values(paths.studyHierarchy.landing)
-          )}
+          path={[
+            ...Object.values(paths.landing),
+            ...Object.values(paths.studyHierarchy.landing),
+            ...Object.values(paths.preview),
+          ]}
           render={() => (
             <PageRouting
               loggedInAnonymously={loggedInAnonymously}
@@ -528,9 +524,10 @@ const DataviewPageContainer: React.FC = () => {
   const location = useLocation();
   const { push } = useHistory();
   const prevLocationRef = React.useRef(location);
-  const { view } = React.useMemo(() => parseSearchToQuery(location.search), [
-    location.search,
-  ]);
+  const { view } = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
   const [totalDataCount, setTotalDataCount] = React.useState(0);
 
   // exclude size and count queries from showing the linear progress bar for performance
@@ -625,9 +622,10 @@ const DataviewPageContainer: React.FC = () => {
   const username = readSciGatewayToken().username;
   const loggedInAnonymously = username === null || username === 'anon/anon';
 
-  const { filters } = React.useMemo(() => parseSearchToQuery(location.search), [
-    location.search,
-  ]);
+  const { filters } = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
 
   const dlsDefaultFilters = {
     startDate: {

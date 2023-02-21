@@ -1,6 +1,14 @@
 # Changelog
 
-## [v1.1.0](https://github.com/ral-facilities/datagateway/tree/v1.1.0) (2022-06-21)
+## [v1.1.1](https://github.com/ral-facilities/datagateway/tree/v1.1.1) (2022-08-24)
+
+[Full Changelog](https://github.com/ral-facilities/datagateway/compare/v1.1.0...v1.1.1)
+
+**Fixed bugs:**
+
+- \#1397 - make fileCountMax / totalSizeMax optional [\#1398](https://github.com/ral-facilities/datagateway/pull/1398) ([louise-davies](https://github.com/louise-davies))
+
+## [v1.1.0](https://github.com/ral-facilities/datagateway/tree/v1.1.0) (2022-06-23)
 
 [Full Changelog](https://github.com/ral-facilities/datagateway/compare/v1.0.0...v1.1.0)
 
@@ -15,7 +23,6 @@
 
 **Fixed bugs:**
 
-- Errors when multi selecting items for the cart [\#1210](https://github.com/ral-facilities/datagateway/issues/1210)
 - Bugfix/disable download button \#1261 [\#1266](https://github.com/ral-facilities/datagateway/pull/1266) ([louise-davies](https://github.com/louise-davies))
 - Bugfix/fix token refresh error \#1257 [\#1262](https://github.com/ral-facilities/datagateway/pull/1262) ([louise-davies](https://github.com/louise-davies))
 - \#1196 - Use MUI theme background colour for breadcrumb gaps [\#1253](https://github.com/ral-facilities/datagateway/pull/1253) ([louise-davies](https://github.com/louise-davies))
@@ -27,13 +34,16 @@
 **Security fixes:**
 
 - Bump async from 2.6.3 to 2.6.4 [\#1274](https://github.com/ral-facilities/datagateway/pull/1274) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump ejs from 3.1.6 to 3.1.7 [\#1245](https://github.com/ral-facilities/datagateway/pull/1245) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump minimist from 1.2.5 to 1.2.6 [\#1197](https://github.com/ral-facilities/datagateway/pull/1197) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump node-forge from 1.2.1 to 1.3.0 [\#1179](https://github.com/ral-facilities/datagateway/pull/1179) ([dependabot[bot]](https://github.com/apps/dependabot))
 
 **Merged pull requests:**
 
+- Release v1.1.0 [\#1296](https://github.com/ral-facilities/datagateway/pull/1296) ([louise-davies](https://github.com/louise-davies))
 - Merge main into develop  [\#1288](https://github.com/ral-facilities/datagateway/pull/1288) ([louise-davies](https://github.com/louise-davies))
-- Bump ejs from 3.1.6 to 3.1.7 [\#1245](https://github.com/ral-facilities/datagateway/pull/1245) ([dependabot[bot]](https://github.com/apps/dependabot))
-- Bump node-forge from 1.2.1 to 1.3.0 [\#1179](https://github.com/ral-facilities/datagateway/pull/1179) ([dependabot[bot]](https://github.com/apps/dependabot))
+
+
 
 ## [v1.0.0](https://github.com/ral-facilities/datagateway/tree/v1.0.0) (2022-03-31)
 

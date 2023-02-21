@@ -1,5 +1,4 @@
 import React from 'react';
-import { createMount } from '@material-ui/core/test-utils';
 import {
   dGCommonInitialState,
   useAllFacilityCycles,
@@ -19,16 +18,19 @@ import {
 import InvestigationSearchCardView from './investigationSearchCardView.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router';
-import { ReactWrapper } from 'enzyme';
+import { Router } from 'react-router-dom';
+import { mount, ReactWrapper } from 'enzyme';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 
-// this is a dependency of react-router so we already have it
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { createMemoryHistory, History } from 'history';
 import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
-import { Link, ListItemText } from '@material-ui/core';
+import { ListItemText } from '@mui/material';
+
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../setupTests';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -46,7 +48,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('Investigation - Card View', () => {
-  let mount;
   let mockStore;
   let state: StateType;
   let cardData: Investigation[];
@@ -65,7 +66,6 @@ describe('Investigation - Card View', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
     cardData = [
       {
         id: 1,
@@ -164,7 +164,6 @@ describe('Investigation - Card View', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -219,7 +218,7 @@ describe('Investigation - Card View', () => {
     const wrapper = createWrapper();
 
     const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find(Link).simulate('click');
+    advancedFilter.find('button').first().simulate('click');
     advancedFilter
       .find('input')
       .first()
@@ -240,10 +239,12 @@ describe('Investigation - Card View', () => {
   });
 
   it('updates filter query params on date filter', () => {
+    applyDatePickerWorkaround();
+
     const wrapper = createWrapper();
 
     const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find(Link).simulate('click');
+    advancedFilter.find('button').first().simulate('click');
     advancedFilter
       .find('input')
       .last()
@@ -259,6 +260,8 @@ describe('Investigation - Card View', () => {
       .simulate('change', { target: { value: '' } });
 
     expect(history.location.search).toBe('?');
+
+    cleanupDatePickerWorkaround();
   });
 
   it('updates sort query params on sort', () => {
@@ -266,7 +269,7 @@ describe('Investigation - Card View', () => {
 
     const button = wrapper.find(ListItemText).first();
     expect(button.text()).toEqual('investigations.title');
-    button.simulate('click');
+    button.find('div').simulate('click');
 
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"title":"asc"}')}`
@@ -380,7 +383,12 @@ describe('Investigation - Card View', () => {
 
     expect(wrapper.find(CardView).first().find('a')).toHaveLength(1);
     expect(
-      wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
+      wrapper
+        .find(CardView)
+        .first()
+        .find('[aria-label="card-title"]')
+        .last()
+        .text()
     ).toEqual('Test 1');
   });
 
@@ -395,7 +403,12 @@ describe('Investigation - Card View', () => {
 
     expect(wrapper.find(CardView).first().find('a')).toHaveLength(2);
     expect(
-      wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
+      wrapper
+        .find(CardView)
+        .first()
+        .find('[aria-label="card-title"]')
+        .last()
+        .text()
     ).toEqual('Test 1');
   });
 
@@ -410,7 +423,12 @@ describe('Investigation - Card View', () => {
 
     expect(wrapper.find(CardView).first().find('a')).toHaveLength(2);
     expect(
-      wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
+      wrapper
+        .find(CardView)
+        .first()
+        .find('[aria-label="card-title"]')
+        .last()
+        .text()
     ).toEqual('Test 1');
   });
 
@@ -435,7 +453,12 @@ describe('Investigation - Card View', () => {
 
     expect(wrapper.find(CardView).first().find('a')).toHaveLength(2);
     expect(
-      wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
+      wrapper
+        .find(CardView)
+        .first()
+        .find('[aria-label="card-title"]')
+        .last()
+        .text()
     ).toEqual('Test 1');
   });
 
@@ -444,7 +467,7 @@ describe('Investigation - Card View', () => {
     expect(wrapper.find(InvestigationDetailsPanel).exists()).toBeFalsy();
     wrapper
       .find('[aria-label="card-more-info-expand"]')
-      .first()
+      .last()
       .simulate('click');
 
     expect(wrapper.find(InvestigationDetailsPanel).exists()).toBeTruthy();
@@ -455,7 +478,7 @@ describe('Investigation - Card View', () => {
     expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeFalsy();
     wrapper
       .find('[aria-label="card-more-info-expand"]')
-      .first()
+      .last()
       .simulate('click');
 
     expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeTruthy();
@@ -477,12 +500,12 @@ describe('Investigation - Card View', () => {
     expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeFalsy();
     wrapper
       .find('[aria-label="card-more-info-expand"]')
-      .first()
+      .last()
       .simulate('click');
 
     expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeTruthy();
 
-    wrapper.find('#investigation-datasets-tab').first().simulate('click');
+    wrapper.find('#investigation-datasets-tab').last().simulate('click');
     expect(history.location.pathname).toBe(
       '/browse/instrument/4/facilityCycle/4/investigation/1/dataset'
     );
@@ -493,7 +516,7 @@ describe('Investigation - Card View', () => {
     expect(wrapper.find(DLSVisitDetailsPanel).exists()).toBeFalsy();
     wrapper
       .find('[aria-label="card-more-info-expand"]')
-      .first()
+      .last()
       .simulate('click');
 
     expect(wrapper.find(DLSVisitDetailsPanel).exists()).toBeTruthy();

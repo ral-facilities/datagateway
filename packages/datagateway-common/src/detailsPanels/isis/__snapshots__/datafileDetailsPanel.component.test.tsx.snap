@@ -1,95 +1,283 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Datafile details panel component renders correctly 1`] = `
-Object {
-  "detailsPanelResize": [MockFunction] {
-    "calls": Array [
-      Array [],
-    ],
-    "results": Array [
-      Object {
-        "type": "return",
-        "value": undefined,
-      },
-    ],
-  },
-  "rowData": Object {
-    "createTime": "2019-06-11",
-    "description": "Test description",
-    "id": 1,
-    "location": "/test/location",
-    "modTime": "2019-06-10",
-    "name": "Test 1",
-  },
-}
+exports[`Datafile details panel component should render correctly 1`] = `
+<DocumentFragment>
+  <div
+    id="details-panel"
+    style="min-width: 0;"
+  >
+    <div
+      class="MuiTabs-root css-1ujnqem-MuiTabs-root"
+    >
+      <div
+        class="MuiTabs-scrollableX MuiTabs-hideScrollbar css-agdkjh-MuiTabs-scrollbarSize"
+        style="width: 99px; height: 99px; position: absolute; top: -9999px; overflow: scroll;"
+      />
+      <div
+        class="MuiTabs-scroller MuiTabs-hideScrollbar MuiTabs-scrollableX css-69z67c-MuiTabs-scroller"
+        style="margin-bottom: 0px;"
+      >
+        <div
+          aria-label="datafiles.details.tabs_label"
+          class="MuiTabs-flexContainer css-heg063-MuiTabs-flexContainer"
+          role="tablist"
+        >
+          <button
+            aria-controls="datafile-details-panel"
+            aria-selected="true"
+            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary Mui-selected css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
+            id="datafile-details-tab"
+            role="tab"
+            tabindex="0"
+            type="button"
+          >
+            datafiles.details.label
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+        </div>
+        <span
+          class="MuiTabs-indicator css-11yukd5-MuiTabs-indicator"
+          style="left: 0px; width: 0px;"
+        />
+      </div>
+    </div>
+    <div
+      aria-labelledby="datafile-details-tab"
+      hidden=""
+      id="datafile-details-panel"
+      role="tabpanel"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column css-jddpo1-MuiGrid-root"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <h6
+            class="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+          >
+            <b>
+              Test 1
+            </b>
+          </h6>
+          <hr
+            class="MuiDivider-root MuiDivider-fullWidth css-k7lt0k-MuiDivider-root"
+          />
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            datafiles.details.description
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              Test description
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            datafiles.details.location
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              /test/location
+            </b>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
 `;
 
-exports[`Datafile details panel component renders parameters tab when present in the data 1`] = `
-Object {
-  "detailsPanelResize": [MockFunction] {
-    "calls": Array [
-      Array [],
-    ],
-    "results": Array [
-      Object {
-        "type": "return",
-        "value": undefined,
-      },
-    ],
-  },
-  "rowData": Object {
-    "createTime": "2019-06-11",
-    "description": "Test description",
-    "id": 1,
-    "location": "/test/location",
-    "modTime": "2019-06-10",
-    "name": "Test 1",
-    "parameters": Array [
-      Object {
-        "id": 2,
-        "stringValue": "String test",
-        "type": Object {
-          "id": 3,
-          "name": "String parameter",
-          "units": "foo/s",
-          "valueType": "STRING",
-        },
-      },
-      Object {
-        "id": 4,
-        "numericValue": 1337,
-        "type": Object {
-          "id": 5,
-          "name": "Numeric parameter",
-          "units": "bar/s",
-          "valueType": "NUMERIC",
-        },
-      },
-      Object {
-        "dateTimeValue": "2019-09-10 11:48:00",
-        "id": 6,
-        "type": Object {
-          "id": 7,
-          "name": "Datetime parameter",
-          "units": "baz/s",
-          "valueType": "DATE_AND_TIME",
-        },
-      },
-      Object {
-        "dateTimeValue": "2019-09-10 11:48:00",
-        "id": 8,
-        "type": Object {
-          "id": 9,
-          "name": "Invalid parameter",
-          "units": "n/a",
-          "valueType": "",
-        },
-      },
-      Object {
-        "id": 10,
-        "stringValue": "Missing PARAMETERTYPE",
-      },
-    ],
-  },
-}
+exports[`Datafile details panel component should render parameters tab when present in the data 1`] = `
+<DocumentFragment>
+  <div
+    id="details-panel"
+    style="min-width: 0;"
+  >
+    <div
+      class="MuiTabs-root css-1ujnqem-MuiTabs-root"
+    >
+      <div
+        class="MuiTabs-scrollableX MuiTabs-hideScrollbar css-agdkjh-MuiTabs-scrollbarSize"
+        style="width: 99px; height: 99px; position: absolute; top: -9999px; overflow: scroll;"
+      />
+      <div
+        class="MuiTabs-scroller MuiTabs-hideScrollbar MuiTabs-scrollableX css-69z67c-MuiTabs-scroller"
+        style="margin-bottom: 0px;"
+      >
+        <div
+          aria-label="datafiles.details.tabs_label"
+          class="MuiTabs-flexContainer css-heg063-MuiTabs-flexContainer"
+          role="tablist"
+        >
+          <button
+            aria-controls="datafile-details-panel"
+            aria-selected="true"
+            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary Mui-selected css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
+            id="datafile-details-tab"
+            role="tab"
+            tabindex="0"
+            type="button"
+          >
+            datafiles.details.label
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+          <button
+            aria-controls="datafile-parameters-panel"
+            aria-selected="false"
+            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
+            id="datafile-parameters-tab"
+            role="tab"
+            tabindex="-1"
+            type="button"
+          >
+            datafiles.details.parameters.label
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+        </div>
+        <span
+          class="MuiTabs-indicator css-11yukd5-MuiTabs-indicator"
+          style="left: 0px; width: 0px;"
+        />
+      </div>
+    </div>
+    <div
+      aria-labelledby="datafile-details-tab"
+      hidden=""
+      id="datafile-details-panel"
+      role="tabpanel"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column css-jddpo1-MuiGrid-root"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <h6
+            class="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+          >
+            <b>
+              Test 1
+            </b>
+          </h6>
+          <hr
+            class="MuiDivider-root MuiDivider-fullWidth css-k7lt0k-MuiDivider-root"
+          />
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            datafiles.details.description
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              Test description
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            datafiles.details.location
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              /test/location
+            </b>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      aria-labelledby="datafile-parameters-tab"
+      hidden=""
+      id="datafile-parameters-panel"
+      role="tabpanel"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column css-jddpo1-MuiGrid-root"
+        id="parameter-grid"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            String parameter
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              String test
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            Numeric parameter
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              1337
+            </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            Datetime parameter
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <b>
+              2019-09-10
+            </b>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
 `;

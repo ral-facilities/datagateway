@@ -1,5 +1,4 @@
 import React from 'react';
-import { createMount } from '@material-ui/core/test-utils';
 import ISISInvestigationLanding from './isisInvestigationLanding.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import configureStore from 'redux-mock-store';
@@ -11,10 +10,10 @@ import {
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';
 import { QueryClientProvider, QueryClient } from 'react-query';
-import { Router } from 'react-router';
+import { Router } from 'react-router-dom';
 import { flushPromises } from '../../../setupTests';
 import { act } from 'react-dom/test-utils';
 
@@ -30,7 +29,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('ISIS Investigation Landing page', () => {
-  let mount;
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let history: History;
@@ -168,8 +166,6 @@ describe('ISIS Investigation Landing page', () => {
   const noPublication: never[] = [];
 
   beforeEach(() => {
-    mount = createMount();
-
     state = JSON.parse(
       JSON.stringify({
         dgdataview: dgDataViewInitialState,
@@ -189,7 +185,6 @@ describe('ISIS Investigation Landing page', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -223,7 +218,7 @@ describe('ISIS Investigation Landing page', () => {
 
     facilityCycleWrapper
       .find('#investigation-datasets-tab')
-      .first()
+      .last()
       .simulate('click');
 
     expect(history.location.pathname).toBe(
@@ -233,7 +228,7 @@ describe('ISIS Investigation Landing page', () => {
     history.replace('/?view=card');
     const studyWrapper = createWrapper(true);
 
-    studyWrapper.find('#investigation-datasets-tab').first().simulate('click');
+    studyWrapper.find('#investigation-datasets-tab').last().simulate('click');
 
     expect(history.location.pathname).toBe(
       '/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset'
@@ -258,7 +253,7 @@ describe('ISIS Investigation Landing page', () => {
 
     expect(
       wrapper.find('[aria-label="landing-investigation-users-label"]')
-    ).toHaveLength(3);
+    ).toHaveLength(4);
     expect(
       wrapper.find('[aria-label="landing-investigation-user-0"]').first().text()
     ).toEqual('Principal Investigator: John Smith');
@@ -318,7 +313,7 @@ describe('ISIS Investigation Landing page', () => {
 
     expect(
       wrapper.find('[aria-label="landing-investigation-publications-label"]')
-    ).toHaveLength(3);
+    ).toHaveLength(4);
     expect(
       wrapper
         .find('[aria-label="landing-investigation-reference-0"]')
@@ -344,7 +339,7 @@ describe('ISIS Investigation Landing page', () => {
 
     expect(
       wrapper.find('[aria-label="landing-investigation-samples-label"]')
-    ).toHaveLength(3);
+    ).toHaveLength(4);
     expect(
       wrapper
         .find('[aria-label="landing-investigation-sample-0"]')

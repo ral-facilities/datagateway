@@ -1,18 +1,22 @@
 import React from 'react';
 import { StateType } from '../state/app.types';
 import { Provider } from 'react-redux';
-import { createMount } from '@material-ui/core/test-utils';
+import { mount, ReactWrapper, shallow } from 'enzyme';
 import configureStore from 'redux-mock-store';
-import SelectDates from './datePicker.component';
+import SelectDates, { CustomClearButton } from './datePicker.component';
 import thunk from 'redux-thunk';
 import { Router } from 'react-router-dom';
 import { initialState } from '../state/reducers/dgsearch.reducer';
 import { createMemoryHistory, History } from 'history';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../setupTests';
+import { PickersActionBarProps } from '@mui/x-date-pickers/PickersActionBar';
 
 jest.mock('loglevel');
 
 describe('DatePicker component tests', () => {
-  let mount;
   let state: StateType;
   let mockStore;
   let testStore;
@@ -32,7 +36,8 @@ describe('DatePicker component tests', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
+    applyDatePickerWorkaround();
+
     history = createMemoryHistory();
     pushSpy = jest.spyOn(history, 'push');
 
@@ -59,7 +64,8 @@ describe('DatePicker component tests', () => {
   });
 
   afterEach(() => {
-    testInitiateSearch.mockClear();
+    jest.clearAllMocks();
+    cleanupDatePickerWorkaround();
   });
 
   it('renders correctly', () => {
@@ -68,17 +74,40 @@ describe('DatePicker component tests', () => {
     );
 
     const wrapper = createWrapper();
-    const startDateInput = wrapper.find(
-      '[aria-label="searchBox.start_date_arialabel"]'
-    );
+    const startDateInput = wrapper
+      .find('[aria-label="searchBox.start_date_arialabel"]')
+      .last();
     expect(startDateInput.exists());
     expect(startDateInput.instance().value).toEqual('2021-10-26');
 
-    const endDateInput = wrapper.find(
-      '[aria-label="searchBox.end_date_arialabel"]'
-    );
+    const endDateInput = wrapper
+      .find('[aria-label="searchBox.end_date_arialabel"]')
+      .last();
     expect(endDateInput.exists());
     expect(endDateInput.instance().value).toEqual('2021-10-28');
+  });
+
+  describe('CustomClearButton', () => {
+    const onClear = jest.fn();
+    let props: PickersActionBarProps;
+
+    beforeEach(() => {
+      props = {
+        onClear: onClear,
+      };
+    });
+
+    it('renders correctly', () => {
+      const wrapper = shallow(<CustomClearButton {...props} />);
+      expect(wrapper).toMatchSnapshot();
+    });
+
+    it('calls onClear when button clicked', () => {
+      const wrapper = shallow(<CustomClearButton {...props} />);
+      const button = wrapper.find('[role="button"]');
+      button.simulate('click');
+      expect(onClear).toHaveBeenCalled();
+    });
   });
 
   describe('Start date box', () => {
@@ -86,9 +115,9 @@ describe('DatePicker component tests', () => {
       history.replace('/?searchText=&investigation=false');
 
       const wrapper = createWrapper();
-      const startDateInput = wrapper.find(
-        '[aria-label="searchBox.start_date_arialabel"]'
-      );
+      const startDateInput = wrapper
+        .find('[aria-label="searchBox.start_date_arialabel"]')
+        .last();
       startDateInput.instance().value = '2012 01 01';
       startDateInput.simulate('change');
 
@@ -101,9 +130,9 @@ describe('DatePicker component tests', () => {
       );
 
       const wrapper = createWrapper();
-      const startDateInput = wrapper.find(
-        '[aria-label="searchBox.start_date_arialabel"]'
-      );
+      const startDateInput = wrapper
+        .find('[aria-label="searchBox.start_date_arialabel"]')
+        .last();
       startDateInput.simulate('keydown', { key: 'Enter' });
       expect(testInitiateSearch).toHaveBeenCalled();
     });
@@ -112,9 +141,9 @@ describe('DatePicker component tests', () => {
       history.replace('/?searchText=&investigation=false&startDate=2012-01-01');
 
       const wrapper = createWrapper();
-      const startDateInput = wrapper.find(
-        '[aria-label="searchBox.start_date_arialabel"]'
-      );
+      const startDateInput = wrapper
+        .find('[aria-label="searchBox.start_date_arialabel"]')
+        .last();
       startDateInput.simulate('keydown', { key: 'Enter' });
       expect(testInitiateSearch).toHaveBeenCalled();
     });
@@ -123,9 +152,9 @@ describe('DatePicker component tests', () => {
       history.replace('/?searchText=&investigation=false&endDate=2012-01-01');
 
       const wrapper = createWrapper();
-      const startDateInput = wrapper.find(
-        '[aria-label="searchBox.start_date_arialabel"]'
-      );
+      const startDateInput = wrapper
+        .find('[aria-label="searchBox.start_date_arialabel"]')
+        .last();
       startDateInput.simulate('keydown', { key: 'Enter' });
       expect(testInitiateSearch).toHaveBeenCalled();
     });
@@ -135,9 +164,9 @@ describe('DatePicker component tests', () => {
 
       const wrapper = createWrapper();
 
-      const startDateInput = wrapper.find(
-        '[aria-label="searchBox.start_date_arialabel"]'
-      );
+      const startDateInput = wrapper
+        .find('[aria-label="searchBox.start_date_arialabel"]')
+        .last();
       startDateInput.simulate('keydown', { key: 'Enter' });
       expect(testInitiateSearch).toHaveBeenCalled();
     });
@@ -146,9 +175,9 @@ describe('DatePicker component tests', () => {
       history.replace('/?searchText=&investigation=false');
 
       const wrapper = createWrapper();
-      const startDateInput = wrapper.find(
-        '[aria-label="searchBox.start_date_arialabel"]'
-      );
+      const startDateInput = wrapper
+        .find('[aria-label="searchBox.start_date_arialabel"]')
+        .last();
       startDateInput.instance().value = '2012 01 35';
       startDateInput.simulate('change');
 
@@ -161,14 +190,14 @@ describe('DatePicker component tests', () => {
       history.replace('/?searchText=&investigation=false');
 
       const wrapper = createWrapper();
-      const startDateInput = wrapper.find(
-        '[aria-label="searchBox.start_date_arialabel"]'
-      );
+      const startDateInput = wrapper
+        .find('[aria-label="searchBox.start_date_arialabel"]')
+        .last();
       startDateInput.instance().value = '3000 01 01';
       startDateInput.simulate('change');
 
       expect(wrapper.find('.MuiFormHelperText-filled').first().text()).toEqual(
-        'searchBox.invalid_date_range_message'
+        'searchBox.invalid_date_message'
       );
     });
 
@@ -176,9 +205,9 @@ describe('DatePicker component tests', () => {
       history.replace('/?searchText=&investigation=false&endDate=2011-11-21');
 
       const wrapper = createWrapper();
-      const startDateInput = wrapper.find(
-        '[aria-label="searchBox.start_date_arialabel"]'
-      );
+      const startDateInput = wrapper
+        .find('[aria-label="searchBox.start_date_arialabel"]')
+        .last();
       startDateInput.instance().value = '2012 01 01';
       startDateInput.simulate('change');
 
@@ -191,9 +220,9 @@ describe('DatePicker component tests', () => {
       history.replace('/?searchText=&investigation=false&startDate=2011-14-21');
 
       const wrapper = createWrapper();
-      const startDateInput = wrapper.find(
-        '[aria-label="searchBox.start_date_arialabel"]'
-      );
+      const startDateInput = wrapper
+        .find('[aria-label="searchBox.start_date_arialabel"]')
+        .last();
       expect(startDateInput.instance().value).toEqual('');
     });
   });
@@ -203,9 +232,9 @@ describe('DatePicker component tests', () => {
       history.replace('/?searchText=&investigation=false');
 
       const wrapper = createWrapper();
-      const endDateInput = wrapper.find(
-        '[aria-label="searchBox.end_date_arialabel"]'
-      );
+      const endDateInput = wrapper
+        .find('[aria-label="searchBox.end_date_arialabel"]')
+        .last();
       endDateInput.instance().value = '2000 01 01';
       endDateInput.simulate('change');
       expect(pushSpy).toHaveBeenCalledWith('?endDate=2000-01-01');
@@ -217,9 +246,9 @@ describe('DatePicker component tests', () => {
       );
 
       const wrapper = createWrapper();
-      const endDateInput = wrapper.find(
-        '[aria-label="searchBox.end_date_arialabel"]'
-      );
+      const endDateInput = wrapper
+        .find('[aria-label="searchBox.end_date_arialabel"]')
+        .last();
       endDateInput.simulate('keydown', { key: 'Enter' });
       expect(testInitiateSearch).toHaveBeenCalled();
     });
@@ -228,9 +257,9 @@ describe('DatePicker component tests', () => {
       history.replace('/?searchText=&investigation=false&startDate=2012-01-01');
 
       const wrapper = createWrapper();
-      const endDateInput = wrapper.find(
-        '[aria-label="searchBox.end_date_arialabel"]'
-      );
+      const endDateInput = wrapper
+        .find('[aria-label="searchBox.end_date_arialabel"]')
+        .last();
       endDateInput.simulate('keydown', { key: 'Enter' });
       expect(testInitiateSearch).toHaveBeenCalled();
     });
@@ -239,9 +268,9 @@ describe('DatePicker component tests', () => {
       history.replace('/?searchText=&investigation=false&endDate=2012-01-01');
 
       const wrapper = createWrapper();
-      const endDateInput = wrapper.find(
-        '[aria-label="searchBox.end_date_arialabel"]'
-      );
+      const endDateInput = wrapper
+        .find('[aria-label="searchBox.end_date_arialabel"]')
+        .last();
       endDateInput.simulate('keydown', { key: 'Enter' });
       expect(testInitiateSearch).toHaveBeenCalled();
     });
@@ -250,9 +279,9 @@ describe('DatePicker component tests', () => {
       history.replace('/?searchText=&investigation=false');
 
       const wrapper = createWrapper();
-      const endDateInput = wrapper.find(
-        '[aria-label="searchBox.end_date_arialabel"]'
-      );
+      const endDateInput = wrapper
+        .find('[aria-label="searchBox.end_date_arialabel"]')
+        .last();
       endDateInput.simulate('keydown', { key: 'Enter' });
       expect(testInitiateSearch).toHaveBeenCalled();
     });
@@ -261,13 +290,13 @@ describe('DatePicker component tests', () => {
       history.replace('/?searchText=&investigation=false');
 
       const wrapper = createWrapper();
-      const endDateInput = wrapper.find(
-        '[aria-label="searchBox.end_date_arialabel"]'
-      );
+      const endDateInput = wrapper
+        .find('[aria-label="searchBox.end_date_arialabel"]')
+        .last();
       endDateInput.instance().value = '2012 01 35';
       endDateInput.simulate('change');
 
-      expect(wrapper.find('.MuiFormHelperText-filled').text()).toEqual(
+      expect(wrapper.find('.MuiFormHelperText-filled').last().text()).toEqual(
         'searchBox.invalid_date_message'
       );
     });
@@ -276,14 +305,14 @@ describe('DatePicker component tests', () => {
       history.replace('/?searchText=&investigation=false');
 
       const wrapper = createWrapper();
-      const endDateInput = wrapper.find(
-        '[aria-label="searchBox.end_date_arialabel"]'
-      );
+      const endDateInput = wrapper
+        .find('[aria-label="searchBox.end_date_arialabel"]')
+        .last();
       endDateInput.instance().value = '1203 01 01';
       endDateInput.simulate('change');
 
       expect(wrapper.find('.MuiFormHelperText-filled').last().text()).toEqual(
-        'searchBox.invalid_date_range_message'
+        'searchBox.invalid_date_message'
       );
     });
 
@@ -291,9 +320,9 @@ describe('DatePicker component tests', () => {
       history.replace('/?searchText=&investigation=false&startDate=2011-11-21');
 
       const wrapper = createWrapper();
-      const endDateInput = wrapper.find(
-        '[aria-label="searchBox.end_date_arialabel"]'
-      );
+      const endDateInput = wrapper
+        .find('[aria-label="searchBox.end_date_arialabel"]')
+        .last();
       endDateInput.instance().value = '2010 01 01';
       endDateInput.simulate('change');
 
@@ -306,9 +335,9 @@ describe('DatePicker component tests', () => {
       history.replace('/?searchText=&investigation=false&endDate=2011-14-21');
 
       const wrapper = createWrapper();
-      const endDateInput = wrapper.find(
-        '[aria-label="searchBox.end_date_arialabel"]'
-      );
+      const endDateInput = wrapper
+        .find('[aria-label="searchBox.end_date_arialabel"]')
+        .last();
       expect(endDateInput.instance().value).toEqual('');
     });
   });

@@ -55,7 +55,8 @@ export const readSciGatewayToken = () => {
 };
 
 Cypress.Commands.add('login', (credentials) => {
-  return cy.readFile('server/e2e-settings.json').then((settings) => {
+  return cy.request('datagateway-dataview-settings.json').then((response) => {
+    const settings = response.body;
     let body = {
       username: '',
       password: '',
@@ -82,7 +83,8 @@ Cypress.Commands.add('login', (credentials) => {
 });
 
 Cypress.Commands.add('clearDownloadCart', () => {
-  return cy.readFile('server/e2e-settings.json').then((settings) => {
+  return cy.request('datagateway-dataview-settings.json').then((response) => {
+    const settings = response.body;
     cy.request({
       method: 'DELETE',
       url: `${settings.downloadApiUrl}/user/cart/${settings.facilityName}/cartItems`,
@@ -91,5 +93,22 @@ Cypress.Commands.add('clearDownloadCart', () => {
         items: '*',
       },
     });
+  });
+});
+
+// https://github.com/cypress-io/cypress/issues/877
+Cypress.Commands.add('isScrolledTo', { prevSubject: true }, (element) => {
+  cy.get(element).should(($el) => {
+    const bottom = Cypress.$(cy.state('window')).height();
+    const rect = $el[0].getBoundingClientRect();
+
+    expect(rect.top).not.to.be.greaterThan(
+      bottom,
+      `Expected element not to be below the visible scrolled area`
+    );
+    expect(rect.top).to.be.greaterThan(
+      0 - rect.height,
+      `Expected element not to be above the visible scrolled area`
+    );
   });
 });

@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ErrorFallback should should render an error message for when app fails catastrophically 1`] = `
+<DocumentFragment>
+  <div
+    class="error"
+  >
+    <div
+      style="padding: 20px; background: red; color: white; margin: 5px;"
+    >
+      Something went wrong...
+    </div>
+  </div>
+</DocumentFragment>
+`;
