@@ -12,8 +12,7 @@ COPY . .
 RUN echo "REACT_APP_DATAVIEW_BUILD_DIRECTORY=$HOST_URL/datagateway-dataview/" > packages/datagateway-dataview/.env.production \
   && echo "REACT_APP_DOWNLOAD_BUILD_DIRECTORY=$HOST_URL/datagateway-download/" > packages/datagateway-download/.env.production \
   && echo "REACT_APP_SEARCH_BUILD_DIRECTORY=$HOST_URL/datagateway-search/" > packages/datagateway-search/.env.production \
-  # TODO: use yarn install --production - https://github.com/ral-facilities/datagateway/issues/1155
-  && yarn install \
+  && yarn workspaces focus --all --production \
   && yarn build
 
 # Put the output of the build into an apache server
