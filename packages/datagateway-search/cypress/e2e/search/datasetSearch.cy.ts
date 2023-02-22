@@ -61,7 +61,7 @@ describe('Dataset search tab', () => {
 
     cy.get('[aria-rowcount="2"]').should('exist');
 
-    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 30');
+    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 31');
 
     // Check that "select all" and individual selection are equivalent
     let i = 1;

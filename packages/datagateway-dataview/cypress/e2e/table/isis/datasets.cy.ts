@@ -244,7 +244,7 @@ describe('ISIS - Datasets Table', () => {
 
       cy.get('#details-panel')
         .contains(
-          'Official wife war together miss. Box usually discover first born. Very character policy enter adult. Maybe arm city alone end air.'
+          'Example early fight chance culture fill either collection. Someone similar space few should lawyer various quite. Page discuss so music worker lawyer'
         )
         .should('be.visible');
 

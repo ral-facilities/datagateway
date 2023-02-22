@@ -139,7 +139,7 @@ describe('SearchPageContainer Component', () => {
     it('should be able to switch between tabs', () => {
       cy.get('[aria-label="Search table"]')
         .contains('Dataset')
-        .contains('2')
+        .contains('3')
         .click();
 
       cy.get('[aria-label="Search table"]')
@@ -336,7 +336,7 @@ describe('SearchPageContainer Component', () => {
         .should('not.exist');
       cy.get('[aria-label="Search table"]')
         .contains('Dataset')
-        .contains('2')
+        .contains('3')
         .should('exist');
     });
 
@@ -425,7 +425,7 @@ describe('SearchPageContainer Component', () => {
         .should('exist');
       cy.get('[aria-label="Search table"]')
         .contains('Dataset')
-        .contains('3')
+        .contains('5')
         .should('exist');
       cy.get('[aria-label="Search table"]')
         .contains('Datafile')
