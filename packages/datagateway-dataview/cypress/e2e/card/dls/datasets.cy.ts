@@ -55,7 +55,7 @@ describe('DLS - Datasets Cards', () => {
     cy.get('[data-testid="card"]')
       .first()
       .get('[aria-label="card-more-information"]')
-      .contains('DATASETTYPE 1');
+      .contains('DATASETTYPE 3');
   });
 
   describe('should be able to sort by', () => {

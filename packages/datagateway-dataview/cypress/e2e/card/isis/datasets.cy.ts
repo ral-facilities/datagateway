@@ -53,7 +53,7 @@ describe('ISIS - Datasets Cards', () => {
     cy.get('[data-testid="card"]')
       .first()
       .get('[aria-label="card-more-information"]')
-      .contains('DATASETTYPE 2');
+      .contains('DATASETTYPE 1');
     cy.get('#dataset-datafiles-tab').click({ force: true });
     cy.location('pathname').should(
       'eq',
