@@ -1,26 +1,29 @@
 import {
+  ColumnType,
+  externalSiteLink,
+  filterStudyInfoInvestigations,
+  getStudyInfoInvestigation,
+  parseSearchToQuery,
+  Study,
   Table,
   tableLink,
-  parseSearchToQuery,
-  useStudiesInfinite,
-  useStudyCount,
-  ColumnType,
-  getStudyInfoInvestigation,
-  Study,
   useDateFilter,
   useSort,
+  useStudiesInfinite,
+  useStudyCount,
   useTextFilter,
-  externalSiteLink,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 
-import PublicIcon from '@material-ui/icons/Public';
-import FingerprintIcon from '@material-ui/icons/Fingerprint';
-import SubjectIcon from '@material-ui/icons/Subject';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import { useLocation } from 'react-router';
+import {
+  CalendarToday,
+  Fingerprint,
+  Public,
+  Subject,
+} from '@mui/icons-material';
+import { useLocation } from 'react-router-dom';
 import { format, set } from 'date-fns';
 
 interface ISISStudiesTableProps {
@@ -48,9 +51,10 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
     {
       filterType: 'where',
       filterValue: JSON.stringify({
-        'studyInvestigations.investigation.investigationInstruments.instrument.id': {
-          eq: instrumentId,
-        },
+        'studyInvestigations.investigation.investigationInstruments.instrument.id':
+          {
+            eq: instrumentId,
+          },
       }),
     },
     {
@@ -67,9 +71,10 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
     {
       filterType: 'where',
       filterValue: JSON.stringify({
-        'studyInvestigations.investigation.investigationInstruments.instrument.id': {
-          eq: instrumentId,
-        },
+        'studyInvestigations.investigation.investigationInstruments.instrument.id':
+          {
+            eq: instrumentId,
+          },
       }),
     },
     {
@@ -89,9 +94,23 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
     },
   ]);
 
+  /* istanbul ignore next */
   const aggregatedData: Study[] = React.useMemo(
-    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
-    [data]
+    () =>
+      data?.pages.flat().reduce<Study[]>((studies, study) => {
+        const firstInvestigationMatched = filterStudyInfoInvestigations(
+          study,
+          filters
+        )?.[0];
+        studies.push({
+          ...study,
+          studyInvestigations: firstInvestigationMatched
+            ? [firstInvestigationMatched]
+            : study.studyInvestigations,
+        });
+        return studies;
+      }, []) ?? [],
+    [data, filters]
   );
 
   const textFilter = useTextFilter(filters);
@@ -108,19 +127,20 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
     const instrumentChild = 'study';
     return [
       {
-        icon: FingerprintIcon,
+        icon: Fingerprint,
         label: t('studies.name'),
         dataKey: 'name',
         cellContentRenderer: (cellProps: TableCellProps) =>
           tableLink(
             `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${cellProps.rowData.id}`,
             cellProps.rowData.name,
-            view
+            view,
+            'isis-study-table-name'
           ),
         filterComponent: textFilter,
       },
       {
-        icon: SubjectIcon,
+        icon: Subject,
         label: t('studies.title'),
         dataKey: 'studyInvestigations.investigation.title',
         cellContentRenderer: (cellProps: TableCellProps) =>
@@ -128,7 +148,7 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: PublicIcon,
+        icon: Public,
         label: t('studies.pid'),
         dataKey: 'pid',
         cellContentRenderer: (cellProps: TableCellProps) => {
@@ -144,7 +164,7 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('studies.start_date'),
         dataKey: 'studyInvestigations.investigation.startDate',
         cellContentRenderer: (cellProps: TableCellProps) =>
@@ -154,7 +174,7 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
         defaultSort: 'desc',
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('studies.end_date'),
         dataKey: 'studyInvestigations.investigation.endDate',
         cellContentRenderer: (cellProps: TableCellProps) =>

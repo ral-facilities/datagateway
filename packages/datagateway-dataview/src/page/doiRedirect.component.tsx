@@ -9,7 +9,7 @@ import {
 import React from 'react';
 import { Redirect, useParams } from 'react-router-dom';
 import { paths } from './pageContainer.component';
-import * as log from 'loglevel';
+import log from 'loglevel';
 
 type DoiRedirectRouteParams = {
   facilityName: string;
@@ -25,23 +25,19 @@ const DoiRedirect: React.FC = () => {
 
   const investigationId = parseInt(entityId);
 
-  const {
-    data: investigations,
-    isLoading: investigationLoading,
-  } = useInvestigation(investigationId);
+  const { data: investigations, isLoading: investigationLoading } =
+    useInvestigation(investigationId);
   const investigation = investigations?.[0];
 
-  const {
-    data: instruments,
-    isLoading: instrumentLoading,
-  } = useInstrumentsPaginated([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'investigationInstruments.investigation.id': { eq: investigationId },
-      }),
-    },
-  ]);
+  const { data: instruments, isLoading: instrumentLoading } =
+    useInstrumentsPaginated([
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'investigationInstruments.investigation.id': { eq: investigationId },
+        }),
+      },
+    ]);
   const instrument = instruments?.[0];
 
   const {

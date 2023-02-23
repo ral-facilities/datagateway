@@ -1,42 +1,40 @@
 import React from 'react';
-import {
-  Typography,
-  Grid,
-  createStyles,
-  makeStyles,
-  Theme,
-  Divider,
-  Tabs,
-  Tab,
-} from '@material-ui/core';
+import { Typography, Grid, Divider, Tabs, Tab, styled } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from 'react-redux';
 import { Datafile, Entity } from '../../app.types';
-import { useDatafileDetails } from '../../api/datafiles';
+import { useDatafileDetails } from '../../api';
+import type { IsisDatafileDetailsPanelChangeTabPayload } from '../../state/actions/actions.types';
+import { IsisDatafileDetailsPanelChangeTabType } from '../../state/actions/actions.types';
+import type { StateType } from '../../state/app.types';
+import type { Action } from '../../state/reducers/createReducer';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(2),
-    },
-    divider: {
-      marginBottom: theme.spacing(2),
-    },
-  })
-);
+const DEFAULT_TAB: IsisDatafileDetailsPanelTab = 'details';
+
+const StyledGrid = styled(Grid)(({ theme }) => ({
+  padding: theme.spacing(2),
+}));
+
+const StyledDivider = styled(Divider)(({ theme }) => ({
+  marginBottom: theme.spacing(2),
+}));
 
 interface DatafileDetailsPanelProps {
   rowData: Entity;
   detailsPanelResize?: () => void;
 }
 
+/**
+ * Available tabs in the ISIS datafile details panel.
+ */
+export type IsisDatafileDetailsPanelTab = 'details' | 'parameters';
+
 const DatafileDetailsPanel = (
   props: DatafileDetailsPanelProps
 ): React.ReactElement => {
   const { rowData, detailsPanelResize } = props;
-  const [value, setValue] = React.useState<'details' | 'parameters'>('details');
-  const [t] = useTranslation();
-  const classes = useStyles();
 
+  const [t] = useTranslation();
   const { data } = useDatafileDetails(rowData.id, [
     {
       filterType: 'include',
@@ -46,18 +44,55 @@ const DatafileDetailsPanel = (
     },
   ]);
   const datafileData: Datafile = { ...data, ...(rowData as Datafile) };
+  const selectedTab = useSelector<
+    StateType,
+    IsisDatafileDetailsPanelTab | undefined
+  >(
+    (state) =>
+      data && state.dgcommon.isisDatafileDetailsPanel[data.id]?.selectedTab
+  );
+  const dispatch = useDispatch();
+
+  const changeTab = React.useCallback(
+    (newTab: IsisDatafileDetailsPanelTab) => {
+      const id = data?.id;
+      if (id) {
+        dispatch<Action>({
+          type: IsisDatafileDetailsPanelChangeTabType,
+          payload: {
+            newTab,
+            datafileId: id,
+          } as IsisDatafileDetailsPanelChangeTabPayload,
+        });
+      }
+    },
+    [data?.id, dispatch]
+  );
 
   React.useLayoutEffect(() => {
-    if (detailsPanelResize) detailsPanelResize();
-  }, [value, detailsPanelResize]);
+    if (detailsPanelResize && selectedTab) {
+      detailsPanelResize();
+    }
+  }, [selectedTab, detailsPanelResize]);
+
+  React.useEffect(() => {
+    if (data && !selectedTab) {
+      // register the selected tab for this datafile's details panel
+      // for the first time.
+      // go to the default tab on first render
+      changeTab(DEFAULT_TAB);
+    }
+  }, [selectedTab, data, changeTab]);
 
   return (
     <div id="details-panel" style={{ minWidth: 0 }}>
       <Tabs
         variant="scrollable"
+        textColor="secondary"
+        indicatorColor="secondary"
         scrollButtons="auto"
-        value={value}
-        onChange={(event, newValue) => setValue(newValue)}
+        value={selectedTab ?? DEFAULT_TAB}
+        onChange={(event, newValue) => changeTab(newValue)}
         aria-label={t('datafiles.details.tabs_label')}
       >
         <Tab
@@ -79,14 +114,14 @@ const DatafileDetailsPanel = (
         id="datafile-details-panel"
         aria-labelledby="datafile-details-tab"
         role="tabpanel"
-        hidden={value !== 'details'}
+        hidden={selectedTab !== 'details'}
       >
-        <Grid container className={classes.root} direction="column">
+        <StyledGrid container direction="column">
           <Grid item xs>
             <Typography variant="h6">
               <b>{datafileData.name}</b>
             </Typography>
-            <Divider className={classes.divider} />
+            <StyledDivider />
           </Grid>
           <Grid item xs>
             <Typography variant="overline">
@@ -112,21 +147,16 @@ const DatafileDetailsPanel = (
               </b>
             </Typography>
           </Grid>
-        </Grid>
+        </StyledGrid>
       </div>
       {datafileData.parameters && (
         <div
           id="datafile-parameters-panel"
           aria-labelledby="datafile-parameters-tab"
           role="tabpanel"
-          hidden={value !== 'parameters'}
+          hidden={selectedTab !== 'parameters'}
         >
-          <Grid
-            id="parameter-grid"
-            container
-            className={classes.root}
-            direction="column"
-          >
+          <StyledGrid id="parameter-grid" container direction="column">
             {datafileData.parameters.length > 0 ? (
               datafileData.parameters.map((parameter) => {
                 if (parameter.type) {
@@ -179,7 +209,7 @@ const DatafileDetailsPanel = (
                 <b>{t('datafiles.details.parameters.no_parameters')}</b>
               </Typography>
             )}
-          </Grid>
+          </StyledGrid>
         </div>
       )}
     </div>

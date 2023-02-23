@@ -1,14 +1,12 @@
 import React from 'react';
-import { createMount } from '@material-ui/core/test-utils';
 import CitationFormatter from './citationFormatter.component';
 import axios from 'axios';
 import { flushPromises } from '../setupTests';
 import { act } from 'react-dom/test-utils';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 describe('Citation formatter component tests', () => {
-  let mount;
   let queryClient;
 
   const props = {
@@ -29,7 +27,6 @@ describe('Citation formatter component tests', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
     queryClient = new QueryClient({
       defaultOptions: {
         queries: {
@@ -211,7 +208,7 @@ describe('Citation formatter component tests', () => {
       'John Smith; 2019: title, doi_constants.publisher.name, https://doi.org/test'
     );
 
-    wrapper.find('#citation-formatter-copy-citation').first().simulate('click');
+    wrapper.find('#citation-formatter-copy-citation').last().simulate('click');
 
     expect(testWriteText).toHaveBeenCalledWith(
       'John Smith; 2019: title, doi_constants.publisher.name, https://doi.org/test'

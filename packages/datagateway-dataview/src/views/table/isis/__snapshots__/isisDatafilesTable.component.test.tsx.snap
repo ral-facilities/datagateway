@@ -4,20 +4,12 @@ exports[`ISIS datafiles table component renders correctly 1`] = `
 Object {
   "actions": Array [
     [Function],
+    [Function],
   ],
+  "actionsWidth": 96,
   "allIds": Array [
     1,
   ],
-  "classes": Object {
-    "flexContainer": "VirtualizedTable-flexContainer-2",
-    "headerFlexContainer": "VirtualizedTable-headerFlexContainer-3",
-    "headerTableCell": "VirtualizedTable-headerTableCell-8",
-    "table": "VirtualizedTable-table-1",
-    "tableCell": "VirtualizedTable-tableCell-6",
-    "tableNoPadding": "VirtualizedTable-tableNoPadding-7",
-    "tableRow": "VirtualizedTable-tableRow-4",
-    "tableRowHover": "VirtualizedTable-tableRowHover-5",
-  },
   "columns": Array [
     Object {
       "dataKey": "name",
@@ -90,6 +82,7 @@ Object {
   "onCheck": [MockFunction],
   "onSort": [Function],
   "onUncheck": [MockFunction],
+  "parentSelected": false,
   "selectedRows": Array [],
   "sort": Object {
     "modTime": "desc",

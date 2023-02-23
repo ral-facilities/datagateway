@@ -3,7 +3,7 @@ import {
   ConfirmationNumber,
   CalendarToday,
   Fingerprint,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import {
   CardView,
   Dataset,
@@ -31,26 +31,22 @@ import {
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
-import { createStyles, makeStyles, Theme } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
+import { styled } from '@mui/material';
 
 interface DatasetCardViewProps {
   hierarchy: string;
 }
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    actionButtons: {
-      display: 'flex',
-      flexDirection: 'column',
-      '& button': {
-        marginTop: theme.spacing(1),
-        margin: 'auto',
-      },
-    },
-  })
-);
+const ActionButtonDiv = styled('div')(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  '& button': {
+    margin: 'auto',
+    marginTop: theme.spacing(1),
+  },
+}));
 
 const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
   const { hierarchy } = props;
@@ -59,9 +55,10 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
 
   const location = useLocation();
   const { push } = useHistory();
-  const queryParams = React.useMemo(() => parseSearchToQuery(location.search), [
-    location.search,
-  ]);
+  const queryParams = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
   const { startDate, endDate } = queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
@@ -347,14 +344,12 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
     [hierarchy, hierarchyLinkURL, push]
   );
 
-  const classes = useStyles();
-
   const buttons = React.useMemo(
     () =>
       hierarchy !== 'dls'
         ? [
             (dataset: Dataset) => (
-              <div className={classes.actionButtons}>
+              <ActionButtonDiv>
                 <AddToCartButton
                   entityType="dataset"
                   allIds={data?.map((dataset) => dataset.id) ?? []}
@@ -368,7 +363,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
                     data ? sizeQueries[data.indexOf(dataset)]?.data ?? -1 : -1
                   }
                 />
-              </div>
+              </ActionButtonDiv>
             ),
           ]
         : [
@@ -381,7 +376,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
             ),
           ],
 
-    [classes.actionButtons, data, hierarchy, sizeQueries]
+    [data, hierarchy, sizeQueries]
   );
 
   return (

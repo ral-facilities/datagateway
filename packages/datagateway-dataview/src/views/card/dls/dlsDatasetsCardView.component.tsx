@@ -18,10 +18,10 @@ import {
   AddToCartButton,
   DLSDatasetDetailsPanel,
 } from 'datagateway-common';
-import { CalendarToday } from '@material-ui/icons';
-import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
+import { CalendarToday } from '@mui/icons-material';
+import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 
 interface DLSDatasetsCVProps {
   proposalName: string;
@@ -140,10 +140,11 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
           entityType="dataset"
           allIds={data?.map((dataset) => dataset.id) ?? []}
           entityId={dataset.id}
+          parentId={investigationId}
         />
       ),
     ],
-    [data]
+    [data, investigationId]
   );
 
   return (

@@ -1,7 +1,9 @@
 import { AxiosError } from 'axios';
 
 const retryICATErrors = (failureCount: number, error: AxiosError): boolean => {
-  const message = error.response?.data.message ?? error.message;
+  const message =
+    (error as AxiosError<{ message?: string }>).response?.data?.message ??
+    error.message;
   if (
     error.response?.status === 403 ||
     // TopCAT doesn't set 403 for session ID failure, so detect by looking at the message

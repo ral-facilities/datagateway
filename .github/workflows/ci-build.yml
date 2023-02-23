@@ -14,30 +14,19 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
-          node-version: '14.x'
+          node-version: '16.x'
+          cache: 'yarn'
 
-      # Cache yarn dependencies/ restore the cached dependencies during future workflows
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-      - name: Cache yarn dependencies
-        uses: actions/cache@v2
-        id: yarn-cache
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
       - name: Install dependencies
         # Ubuntu 16+ does not install libgconf-2-4 by default, so we need to install it ourselves (for Cypress)
         run: |
           npm config set scripts-prepend-node-path true
           sudo apt-get install libgconf-2-4
-          yarn --frozen-lockfile
+          yarn --immutable
 
       # Linting and unit testing
       - name: Run linting
@@ -48,28 +37,28 @@ jobs:
       # Test coverage upload
       - name: Upload unit test coverage for the Common package
         if: success()
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v3
         with:
           directory: ./packages/datagateway-common/
           flags: common
           fail_ci_if_error: true
       - name: Upload unit test coverage for the DataView package
         if: success()
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v3
         with:
           directory: ./packages/datagateway-dataview/
           flags: dataview
           fail_ci_if_error: true
       - name: Upload unit test coverage for the Search package
         if: success()
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v3
         with:
           directory: ./packages/datagateway-search/
           flags: search
           fail_ci_if_error: true
       - name: Upload unit test coverage for the Download package
         if: success()
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v3
         with:
           directory: ./packages/datagateway-download/
           flags: download
@@ -80,23 +69,24 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Add apt repo
         run: sudo add-apt-repository universe
       - name: Setup Java
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
+          distribution: 'zulu'
           java-version: 8
           java-package: jdk
       - name: Setup Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: 3.6
           architecture: x64
 
       # ICAT Ansible clone and install dependencies
       - name: Checkout icat-ansible
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: icatproject-contrib/icat-ansible
           ref: master
@@ -146,47 +136,36 @@ jobs:
           cd /home/runner/install/icat.server/ && ./setup -vv install
 
       - name: Checkout datagateway-api
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-          ref: v1.0.1
+          ref: v6.0.0
 
       # DataGateway API file setup
+      - name: Create search_api_mapping.json
+        run: cp datagateway-api/datagateway_api/search_api_mapping.json.example datagateway-api/datagateway_api/search_api_mapping.json
       - name: Create log file
-        run: touch logs.log
-      - name: Configure log file location
-        run: echo "`jq -r --arg REPO_DIR "$GITHUB_WORKSPACE/logs.log" \
-          '.log_location=$REPO_DIR' datagateway-api/datagateway_api/config.json.example`" > datagateway-api/datagateway_api/config.json.example
-      - name: Configure API backend
-        run: echo "`jq -r --arg BACKEND "python_icat" \
-          '.backend=$BACKEND' datagateway-api/datagateway_api/config.json.example`" > datagateway-api/datagateway_api/config.json.example
-      - name: Set debug mode to true
-        run: |
-          sed -i -e "s/\"debug_mode\": false,/\"debug_mode\": true,/" datagateway-api/datagateway_api/config.json.example
-      - name: Set log level to DEBUG
-        run: |
-          sed -i -e "s/\"log_level\": \"WARN\",/\"log_level\": \"DEBUG\",/" datagateway-api/datagateway_api/config.json.example
-      - name: Create config.json
-        run: cp datagateway-api/datagateway_api/config.json.example datagateway-api/datagateway_api/config.json
+        run: touch datagateway-api/datagateway_api/logs.log
+
+      - name: Create config.yaml
+        run: cp datagateway-api/datagateway_api/config.yaml.example datagateway-api/datagateway_api/config.yaml
 
       # DataGateway API dependencies
       - name: Install Poetry
         run: pip install poetry
       - name: Install dependencies
-        run: cd datagateway-api; poetry install
+        run: cd datagateway-api/; poetry install
       - name: Add dummy data to icatdb
         run: |
-          cd datagateway-api; poetry run python -m util.icat_db_generator
+          cd datagateway-api/; poetry run python -m util.icat_db_generator
 
       - name: Start API
-        run: cd datagateway-api; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
+        run: cd datagateway-api/; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
 
       # E2E tests
-      - name: Checkout repo
-        uses: actions/checkout@v2
       - name: Setup Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: '14.x'
       # Cache yarn dependencies/ restore the cached dependencies during future workflows
@@ -194,7 +173,7 @@ jobs:
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
       - name: Cache yarn dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: yarn-cache
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
@@ -207,11 +186,12 @@ jobs:
           npm config set scripts-prepend-node-path true
           sudo apt-get install libgconf-2-4
           yarn --frozen-lockfile
+
       - name: Run datagateway-dataview e2e tests
         run: yarn workspace datagateway-dataview run e2e
       - name: Upload Cypress screenshots
         if: failure()
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: DataView-Screenshots
           path: packages/datagateway-dataview/cypress/screenshots
@@ -221,23 +201,24 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Add apt repo
         run: sudo add-apt-repository universe
       - name: Setup Java
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
+          distribution: 'zulu'
           java-version: 8
           java-package: jdk
       - name: Setup Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: 3.6
           architecture: x64
 
       # ICAT Ansible clone and install dependencies
       - name: Checkout icat-ansible
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: icatproject-contrib/icat-ansible
           ref: master
@@ -303,47 +284,36 @@ jobs:
         run: rm -f login_output
 
       - name: Checkout datagateway-api
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-          ref: v1.0.1
+          ref: v6.0.0
 
       # DataGateway API file setup
+      - name: Create search_api_mapping.json
+        run: cp datagateway-api/datagateway_api/search_api_mapping.json.example datagateway-api/datagateway_api/search_api_mapping.json
       - name: Create log file
-        run: touch logs.log
-      - name: Configure log file location
-        run: echo "`jq -r --arg REPO_DIR "$GITHUB_WORKSPACE/logs.log" \
-          '.log_location=$REPO_DIR' datagateway-api/datagateway_api/config.json.example`" > datagateway-api/datagateway_api/config.json.example
-      - name: Configure API backend
-        run: echo "`jq -r --arg BACKEND "python_icat" \
-          '.backend=$BACKEND' datagateway-api/datagateway_api/config.json.example`" > datagateway-api/datagateway_api/config.json.example
-      - name: Set debug mode to true
-        run: |
-          sed -i -e "s/\"debug_mode\": false,/\"debug_mode\": true,/" datagateway-api/datagateway_api/config.json.example
-      - name: Set log level to DEBUG
-        run: |
-          sed -i -e "s/\"log_level\": \"WARN\",/\"log_level\": \"DEBUG\",/" datagateway-api/datagateway_api/config.json.example
-      - name: Create config.json
-        run: cp datagateway-api/datagateway_api/config.json.example datagateway-api/datagateway_api/config.json
+        run: touch datagateway-api/datagateway_api/logs.log
+
+      - name: Create config.yaml
+        run: cp datagateway-api/datagateway_api/config.yaml.example datagateway-api/datagateway_api/config.yaml
 
       # DataGateway API dependencies
       - name: Install Poetry
         run: pip install poetry
       - name: Install dependencies
-        run: cd datagateway-api; poetry install
+        run: cd datagateway-api/; poetry install
       - name: Add dummy data to icatdb
         run: |
-          cd datagateway-api; poetry run python -m util.icat_db_generator
+          cd datagateway-api/; poetry run python -m util.icat_db_generator
 
       - name: Start API
-        run: cd datagateway-api; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
+        run: cd datagateway-api/; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
 
       # E2E tests
-      - name: Checkout repo
-        uses: actions/checkout@v2
       - name: Setup Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: '14.x'
       # Cache yarn dependencies/ restore the cached dependencies during future workflows
@@ -351,7 +321,7 @@ jobs:
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
       - name: Cache yarn dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: yarn-cache
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
@@ -364,11 +334,12 @@ jobs:
           npm config set scripts-prepend-node-path true
           sudo apt-get install libgconf-2-4
           yarn --frozen-lockfile
+
       - name: Run datagateway-download e2e tests
         run: yarn workspace datagateway-download run e2e
       - name: Upload Cypress screenshots
         if: failure()
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: Download-Screenshots
           path: packages/datagateway-download/cypress/screenshots
@@ -378,23 +349,24 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Add apt repo
         run: sudo add-apt-repository universe
       - name: Setup Java
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
+          distribution: 'zulu'
           java-version: 8
           java-package: jdk
       - name: Setup Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: 3.6
           architecture: x64
 
       # ICAT Ansible clone and install dependencies
       - name: Checkout icat-ansible
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: icatproject-contrib/icat-ansible
           ref: master
@@ -442,38 +414,29 @@ jobs:
           cd /home/runner/install/icat.server/ && ./setup -vv install
 
       - name: Checkout datagateway-api
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-          ref: v1.0.1
+          ref: v6.0.0
 
       # DataGateway API file setup
+      - name: Create search_api_mapping.json
+        run: cp datagateway-api/datagateway_api/search_api_mapping.json.example datagateway-api/datagateway_api/search_api_mapping.json
       - name: Create log file
-        run: touch logs.log
-      - name: Configure log file location
-        run: echo "`jq -r --arg REPO_DIR "$GITHUB_WORKSPACE/logs.log" \
-          '.log_location=$REPO_DIR' datagateway-api/datagateway_api/config.json.example`" > datagateway-api/datagateway_api/config.json.example
-      - name: Configure API backend
-        run: echo "`jq -r --arg BACKEND "python_icat" \
-          '.backend=$BACKEND' datagateway-api/datagateway_api/config.json.example`" > datagateway-api/datagateway_api/config.json.example
-      - name: Set debug mode to true
-        run: |
-          sed -i -e "s/\"debug_mode\": false,/\"debug_mode\": true,/" datagateway-api/datagateway_api/config.json.example
-      - name: Set log level to DEBUG
-        run: |
-          sed -i -e "s/\"log_level\": \"WARN\",/\"log_level\": \"DEBUG\",/" datagateway-api/datagateway_api/config.json.example
-      - name: Create config.json
-        run: cp datagateway-api/datagateway_api/config.json.example datagateway-api/datagateway_api/config.json
+        run: touch datagateway-api/datagateway_api/logs.log
+
+      - name: Create config.yaml
+        run: cp datagateway-api/datagateway_api/config.yaml.example datagateway-api/datagateway_api/config.yaml
 
       # DataGateway API dependencies
       - name: Install Poetry
         run: pip install poetry
       - name: Install dependencies
-        run: cd datagateway-api; poetry install
+        run: cd datagateway-api/; poetry install
       - name: Add dummy data to icatdb
         run: |
-          cd datagateway-api; poetry run python -m util.icat_db_generator
+          cd datagateway-api/; poetry run python -m util.icat_db_generator
 
       # Recreate Lucene indexes
       - name: Login to ICAT
@@ -494,13 +457,11 @@ jobs:
         run: rm -f login_output
 
       - name: Start API
-        run: cd datagateway-api; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
+        run: cd datagateway-api/; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
 
       # E2E tests
-      - name: Checkout repo
-        uses: actions/checkout@v2
       - name: Setup Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: '14.x'
       # Cache yarn dependencies/ restore the cached dependencies during future workflows
@@ -508,7 +469,7 @@ jobs:
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
       - name: Cache yarn dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: yarn-cache
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
@@ -521,11 +482,12 @@ jobs:
           npm config set scripts-prepend-node-path true
           sudo apt-get install libgconf-2-4
           yarn --frozen-lockfile
+
       - name: Run datagateway-search e2e tests
         run: yarn workspace datagateway-search run e2e
       - name: Upload Cypress screenshots
         if: failure()
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: Search-Screenshots
           path: packages/datagateway-search/cypress/screenshots

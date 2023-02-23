@@ -1,11 +1,9 @@
 import React from 'react';
-import { createMount } from '@material-ui/core/test-utils';
 import { initialState } from '../state/reducers/dgsearch.reducer';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../state/app.types';
 import {
   dGCommonInitialState,
-  handleICATError,
   Investigation,
   useAddToCart,
   useAllFacilityCycles,
@@ -23,13 +21,16 @@ import {
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import { QueryClientProvider, QueryClient } from 'react-query';
-// this is a dependency of react-router so we already have it
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { createMemoryHistory, History } from 'history';
 import { Router } from 'react-router-dom';
 import InvestigationSearchTable from './investigationSearchTable.component';
+import { render, RenderResult } from '@testing-library/react';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../setupTests';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -52,7 +53,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('Investigation Search Table component', () => {
-  let mount;
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let history: History;
@@ -71,8 +71,19 @@ describe('Investigation Search Table component', () => {
     );
   };
 
+  const createRTLWrapper = (hierarchy?: string): RenderResult => {
+    return render(
+      <Provider store={mockStore(state)}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <InvestigationSearchTable hierarchy={hierarchy ?? ''} />
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+  };
+
   beforeEach(() => {
-    mount = createMount();
     history = createMemoryHistory();
 
     state = JSON.parse(
@@ -84,8 +95,8 @@ describe('Investigation Search Table component', () => {
     rowData = [
       {
         id: 1,
-        title: 'Test 1',
-        name: 'Test 1',
+        title: 'Test Title 1',
+        name: 'Test Name 1',
         summary: 'foo bar',
         visitId: '1',
         doi: 'doi 1',
@@ -111,8 +122,8 @@ describe('Investigation Search Table component', () => {
             },
             investigation: {
               id: 1,
-              title: 'Test 1',
-              name: 'Test 1',
+              title: 'Test Title 1',
+              name: 'Test Name 1',
               visitId: '1',
             },
           },
@@ -127,6 +138,7 @@ describe('Investigation Search Table component', () => {
     ];
     (useCart as jest.Mock).mockReturnValue({
       data: [],
+      isLoading: false,
     });
     (useLuceneSearch as jest.Mock).mockReturnValue({
       data: [],
@@ -140,6 +152,7 @@ describe('Investigation Search Table component', () => {
     });
     (useIds as jest.Mock).mockReturnValue({
       data: [1],
+      isLoading: false,
     });
     (useAddToCart as jest.Mock).mockReturnValue({
       mutate: jest.fn(),
@@ -180,18 +193,7 @@ describe('Investigation Search Table component', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
-    (handleICATError as jest.Mock).mockClear();
-    (useCart as jest.Mock).mockClear();
-    (useLuceneSearch as jest.Mock).mockClear();
-    (useInvestigationCount as jest.Mock).mockClear();
-    (useInvestigationsInfinite as jest.Mock).mockClear();
-    (useIds as jest.Mock).mockClear();
-    (useAddToCart as jest.Mock).mockClear();
-    (useRemoveFromCart as jest.Mock).mockClear();
-    (useAllFacilityCycles as jest.Mock).mockClear();
-    (useInvestigationsDatasetCount as jest.Mock).mockClear();
-    (useInvestigationSizes as jest.Mock).mockClear();
+    jest.clearAllMocks();
   });
 
   it('renders correctly', () => {
@@ -297,7 +299,7 @@ describe('Investigation Search Table component', () => {
 
     const filterInput = wrapper
       .find('[aria-label="Filter by investigations.title"]')
-      .first();
+      .last();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
@@ -316,6 +318,8 @@ describe('Investigation Search Table component', () => {
   });
 
   it('updates filter query params on date filter', () => {
+    applyDatePickerWorkaround();
+
     const wrapper = createWrapper();
 
     const filterInput = wrapper.find(
@@ -334,6 +338,8 @@ describe('Investigation Search Table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
+
+    cleanupDatePickerWorkaround();
   });
 
   it('updates sort query params on sort', () => {
@@ -358,7 +364,7 @@ describe('Investigation Search Table component', () => {
     });
     const wrapper = createWrapper();
 
-    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
+    wrapper.find('[aria-label="select row 0"]').last().simulate('click');
 
     expect(addToCart).toHaveBeenCalledWith([1]);
   });
@@ -374,6 +380,7 @@ describe('Investigation Search Table component', () => {
           parentEntities: [],
         },
       ],
+      isLoading: false,
     });
 
     const removeFromCart = jest.fn();
@@ -384,7 +391,7 @@ describe('Investigation Search Table component', () => {
 
     const wrapper = createWrapper();
 
-    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
+    wrapper.find('[aria-label="select row 0"]').last().simulate('click');
 
     expect(removeFromCart).toHaveBeenCalledWith([1]);
   });
@@ -407,6 +414,7 @@ describe('Investigation Search Table component', () => {
           parentEntities: [],
         },
       ],
+      isLoading: false,
     });
 
     const wrapper = createWrapper();
@@ -440,7 +448,7 @@ describe('Investigation Search Table component', () => {
   it('displays generic details panel when expanded', () => {
     const wrapper = createWrapper();
     expect(wrapper.find(InvestigationDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+    wrapper.find('[aria-label="Show details"]').last().simulate('click');
 
     expect(wrapper.find(InvestigationDetailsPanel).exists()).toBeTruthy();
   });
@@ -448,7 +456,7 @@ describe('Investigation Search Table component', () => {
   it('displays correct details panel for ISIS when expanded', () => {
     const wrapper = createWrapper('isis');
     expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+    wrapper.find('[aria-label="Show details"]').last().simulate('click');
     expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeTruthy();
   });
 
@@ -466,10 +474,10 @@ describe('Investigation Search Table component', () => {
 
     const wrapper = createWrapper('isis');
     expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+    wrapper.find('[aria-label="Show details"]').last().simulate('click');
     expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeTruthy();
 
-    wrapper.find('#investigation-datasets-tab').first().simulate('click');
+    wrapper.find('#investigation-datasets-tab').last().simulate('click');
     expect(history.location.pathname).toBe(
       '/browse/instrument/3/facilityCycle/4/investigation/1/dataset'
     );
@@ -478,28 +486,16 @@ describe('Investigation Search Table component', () => {
   it('displays correct details panel for DLS when expanded', () => {
     const wrapper = createWrapper('dls');
     expect(wrapper.find(DLSVisitDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+    wrapper.find('[aria-label="Show details"]').last().simulate('click');
     expect(wrapper.find(DLSVisitDetailsPanel).exists()).toBeTruthy();
   });
 
-  it('renders title, visit ID, Name and DOI as links', () => {
-    const wrapper = createWrapper();
+  it('renders title and DOI as links', () => {
+    const wrapper = createRTLWrapper();
 
-    expect(
-      wrapper.find('[aria-colindex=3]').find('p').children()
-    ).toMatchSnapshot();
+    expect(wrapper.getByText('Test Title 1')).toMatchSnapshot();
 
-    expect(
-      wrapper.find('[aria-colindex=4]').find('p').children()
-    ).toMatchSnapshot();
-
-    expect(
-      wrapper.find('[aria-colindex=5]').find('p').children()
-    ).toMatchSnapshot();
-
-    expect(
-      wrapper.find('[aria-colindex=6]').find('p').children()
-    ).toMatchSnapshot();
+    expect(wrapper.getByText('doi 1')).toMatchSnapshot();
   });
 
   it('renders fine with incomplete data', () => {
@@ -535,7 +531,7 @@ describe('Investigation Search Table component', () => {
     expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
       '/browse/investigation/1/dataset'
     );
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test 1');
+    expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test Title 1');
     expect(wrapper.find('[aria-colindex=7]').text()).toEqual('Calculating...');
   });
 
@@ -543,9 +539,9 @@ describe('Investigation Search Table component', () => {
     const wrapper = createWrapper('dls');
 
     expect(wrapper.find('[aria-colindex=2]').find('a').prop('href')).toEqual(
-      '/browse/proposal/Test 1/investigation/1/dataset'
+      '/browse/proposal/Test Name 1/investigation/1/dataset'
     );
-    expect(wrapper.find('[aria-colindex=2]').text()).toEqual('Test 1');
+    expect(wrapper.find('[aria-colindex=2]').text()).toEqual('Test Title 1');
     expect(wrapper.find('[aria-label="select row 0"]')).toHaveLength(0);
   });
 
@@ -569,7 +565,7 @@ describe('Investigation Search Table component', () => {
     expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
       '/browse/instrument/3/facilityCycle/2/investigation/1/dataset'
     );
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test 1');
+    expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test Title 1');
     expect(wrapper.find('[aria-colindex=7]').text()).toEqual('1 B');
   });
 
@@ -593,14 +589,14 @@ describe('Investigation Search Table component', () => {
     const wrapper = createWrapper('isis');
 
     expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test 1');
+    expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test Title 1');
   });
 
   it('does not render ISIS link when facilityCycleId cannot be found', () => {
     const wrapper = createWrapper('isis');
 
     expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test 1');
+    expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test Title 1');
   });
 
   it('does not render ISIS link when facilityCycleId has incompatible dates', () => {
@@ -618,6 +614,6 @@ describe('Investigation Search Table component', () => {
     const wrapper = createWrapper('isis');
 
     expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test 1');
+    expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test Title 1');
   });
 });

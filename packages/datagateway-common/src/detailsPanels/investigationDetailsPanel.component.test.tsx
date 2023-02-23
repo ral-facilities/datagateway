@@ -1,15 +1,13 @@
 import React from 'react';
-import { createShallow } from '@material-ui/core/test-utils';
+import { shallow } from 'enzyme';
 import InvestigationDetailsPanel from './investigationDetailsPanel.component';
 import { Investigation } from '../app.types';
 
 describe('Investigation details panel component', () => {
-  let shallow;
   let rowData: Investigation;
   const detailsPanelResize = jest.fn();
 
   beforeEach(() => {
-    shallow = createShallow();
     rowData = {
       id: 1,
       title: 'Test 1',
@@ -33,6 +31,9 @@ describe('Investigation details panel component', () => {
           study: {
             id: 12,
             pid: 'study pid',
+            name: 'study',
+            modTime: '2019-06-10',
+            createTime: '2019-06-11',
           },
         },
       ],

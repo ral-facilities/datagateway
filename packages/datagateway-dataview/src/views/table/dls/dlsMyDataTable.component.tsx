@@ -19,12 +19,14 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 
-import SubjectIcon from '@material-ui/icons/Subject';
-import FingerprintIcon from '@material-ui/icons/Fingerprint';
-import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
-import AssessmentIcon from '@material-ui/icons/Assessment';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import { useLocation } from 'react-router';
+import {
+  Subject,
+  Fingerprint,
+  ConfirmationNumber,
+  Assessment,
+  CalendarToday,
+} from '@mui/icons-material';
+import { useLocation } from 'react-router-dom';
 
 const DLSMyDataTable = (): React.ReactElement => {
   const [t] = useTranslation();
@@ -63,10 +65,18 @@ const DLSMyDataTable = (): React.ReactElement => {
 
   const datasetCountQueries = useInvestigationsDatasetCount(data);
 
-  const aggregatedData: Investigation[] = React.useMemo(
-    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
-    [data]
-  );
+  /* istanbul ignore next */
+  const aggregatedData: Investigation[] = React.useMemo(() => {
+    if (data) {
+      if ('pages' in data) {
+        return data.pages.flat();
+      } else if ((data as unknown) instanceof Array) {
+        return data;
+      }
+    }
+
+    return [];
+  }, [data]);
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
@@ -81,7 +91,7 @@ const DLSMyDataTable = (): React.ReactElement => {
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: SubjectIcon,
+        icon: Subject,
         label: t('investigations.title'),
         dataKey: 'title',
         cellContentRenderer: (cellProps: TableCellProps) => {
@@ -96,7 +106,7 @@ const DLSMyDataTable = (): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: FingerprintIcon,
+        icon: Fingerprint,
         label: t('investigations.visit_id'),
         dataKey: 'visitId',
         cellContentRenderer: (cellProps: TableCellProps) => {
@@ -104,13 +114,14 @@ const DLSMyDataTable = (): React.ReactElement => {
           return tableLink(
             `/browse/proposal/${investigationData.name}/investigation/${investigationData.id}/dataset`,
             investigationData.visitId,
-            view
+            view,
+            'dls-mydata-table-visitId'
           );
         },
         filterComponent: textFilter,
       },
       {
-        icon: ConfirmationNumberIcon,
+        icon: ConfirmationNumber,
         label: t('investigations.dataset_count'),
         dataKey: 'datasetCount',
         cellContentRenderer: (cellProps: TableCellProps): number | string =>
@@ -118,7 +129,7 @@ const DLSMyDataTable = (): React.ReactElement => {
         disableSort: true,
       },
       {
-        icon: AssessmentIcon,
+        icon: Assessment,
         label: t('investigations.instrument'),
         dataKey: 'investigationInstruments.instrument.fullName',
         cellContentRenderer: (cellProps: TableCellProps) => {
@@ -133,14 +144,14 @@ const DLSMyDataTable = (): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('investigations.start_date'),
         dataKey: 'startDate',
         filterComponent: dateFilter,
         defaultSort: 'desc',
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
 
         label: t('investigations.end_date'),
         dataKey: 'endDate',

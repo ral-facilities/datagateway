@@ -2,28 +2,30 @@ import React from 'react';
 import {
   Typography,
   Grid,
-  createStyles,
-  makeStyles,
-  Theme,
   Divider,
   Tabs,
   Tab,
   Link as MuiLink,
-} from '@material-ui/core';
+  styled,
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { useInvestigationDetails } from '../../api/investigations';
+import { useDispatch, useSelector } from 'react-redux';
+import { useInvestigationDetails } from '../../api';
 import { Entity, Investigation } from '../../app.types';
+import type { IsisInvestigationDetailsPanelChangeTabPayload } from '../../state/actions/actions.types';
+import { IsisInvestigationDetailsPanelChangeTabType } from '../../state/actions/actions.types';
+import type { StateType } from '../../state/app.types';
+import type { Action } from '../../state/reducers/createReducer';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(2),
-    },
-    divider: {
-      marginBottom: theme.spacing(2),
-    },
-  })
-);
+const DEFAULT_TAB: IsisInvestigationDetailsPanelTab = 'details';
+
+const StyledGrid = styled(Grid)(({ theme }) => ({
+  padding: theme.spacing(2),
+}));
+
+const StyledDivider = styled(Divider)(({ theme }) => ({
+  marginBottom: theme.spacing(2),
+}));
 
 interface InvestigationDetailsPanelProps {
   rowData: Entity;
@@ -31,35 +33,76 @@ interface InvestigationDetailsPanelProps {
   viewDatasets?: (id: number) => void;
 }
 
+/**
+ * Available tabs for the ISIS investigation details panel.
+ */
+export type IsisInvestigationDetailsPanelTab =
+  | 'details'
+  | 'users'
+  | 'samples'
+  | 'publications'
+  | 'view';
+
 const InvestigationDetailsPanel = (
   props: InvestigationDetailsPanelProps
 ): React.ReactElement => {
   const { rowData, viewDatasets, detailsPanelResize } = props;
-  const [value, setValue] = React.useState<
-    'details' | 'users' | 'samples' | 'publications'
-  >('details');
 
   const [t] = useTranslation();
-
-  const classes = useStyles();
-
   const { data } = useInvestigationDetails(rowData.id);
   const investigationData: Investigation = {
     ...data,
     ...(rowData as Investigation),
   };
+  const selectedTab = useSelector<
+    StateType,
+    IsisInvestigationDetailsPanelTab | undefined
+  >(
+    (state) =>
+      data && state.dgcommon.isisInvestigationDetailsPanel[data.id]?.selectedTab
+  );
+  const dispatch = useDispatch();
+
+  const changeTab = React.useCallback(
+    (newTab: IsisInvestigationDetailsPanelTab) => {
+      const id = data?.id;
+      // we don't want the view datasets tab to be selected
+      // because it only acts as a button to the datafile table and should not be selectable
+      if (id && newTab !== 'view') {
+        dispatch<Action>({
+          type: IsisInvestigationDetailsPanelChangeTabType,
+          payload: {
+            newTab,
+            investigationId: id,
+          } as IsisInvestigationDetailsPanelChangeTabPayload,
+        });
+      }
+    },
+    [data?.id, dispatch]
+  );
 
   React.useLayoutEffect(() => {
-    if (detailsPanelResize) detailsPanelResize();
-  }, [value, detailsPanelResize]);
+    if (detailsPanelResize && selectedTab) detailsPanelResize();
+  }, [selectedTab, detailsPanelResize]);
+
+  React.useEffect(() => {
+    if (data && !selectedTab) {
+      // register the selected tab for this investigation's details panel
+      // for the first time.
+      // go to the default tab on first render
+      changeTab(DEFAULT_TAB);
+    }
+  }, [data, selectedTab, changeTab]);
 
   return (
     <div id="details-panel" style={{ minWidth: 0 }}>
       <Tabs
         variant="scrollable"
+        textColor="secondary"
+        indicatorColor="secondary"
         scrollButtons="auto"
-        value={value}
-        onChange={(event, newValue) => setValue(newValue)}
+        value={selectedTab ?? DEFAULT_TAB}
+        onChange={(event, newValue) => changeTab(newValue)}
         aria-label={t('investigations.details.tabs_label')}
       >
         <Tab
@@ -97,6 +140,7 @@ const InvestigationDetailsPanel = (
             id="investigation-datasets-tab"
             label={t('investigations.details.datasets')}
             onClick={() => viewDatasets(investigationData.id)}
+            value="view"
           />
         )}
       </Tabs>
@@ -104,14 +148,14 @@ const InvestigationDetailsPanel = (
         id="investigation-details-panel"
         aria-labelledby="investigation-details-tab"
         role="tabpanel"
-        hidden={value !== 'details'}
+        hidden={selectedTab !== 'details'}
       >
-        <Grid container className={classes.root} direction="column">
+        <StyledGrid container direction="column">
           <Grid item xs>
             <Typography variant="h6">
               <b>{investigationData.name}</b>
             </Typography>
-            <Divider className={classes.divider} />
+            <StyledDivider />
           </Grid>
           <Grid item xs>
             <Typography variant="overline">
@@ -207,16 +251,16 @@ const InvestigationDetailsPanel = (
               </b>
             </Typography>
           </Grid>
-        </Grid>
+        </StyledGrid>
       </div>
       {investigationData.investigationUsers && (
         <div
           id="investigation-users-panel"
           aria-labelledby="investigation-users-tab"
           role="tabpanel"
-          hidden={value !== 'users'}
+          hidden={selectedTab !== 'users'}
         >
-          <Grid container className={classes.root} direction="column">
+          <StyledGrid container direction="column">
             <Typography variant="overline">
               {t('investigations.details.users.name', {
                 count: investigationData.investigationUsers.length,
@@ -244,7 +288,7 @@ const InvestigationDetailsPanel = (
                 <b>{t('investigations.details.users.no_name')}</b>
               </Typography>
             )}
-          </Grid>
+          </StyledGrid>
         </div>
       )}
       {investigationData.samples && (
@@ -252,9 +296,9 @@ const InvestigationDetailsPanel = (
           id="investigation-samples-panel"
           aria-labelledby="investigation-samples-tab"
           role="tabpanel"
-          hidden={value !== 'samples'}
+          hidden={selectedTab !== 'samples'}
         >
-          <Grid container className={classes.root} direction="column">
+          <StyledGrid container direction="column">
             <Typography variant="overline">
               {t('investigations.details.samples.name', {
                 count: investigationData.samples.length,
@@ -271,11 +315,11 @@ const InvestigationDetailsPanel = (
                 );
               })
             ) : (
-              <Typography data-testid="investigation-details-panel-no-samples">
+              <Typography>
                 <b>{t('investigations.details.samples.no_samples')}</b>
               </Typography>
             )}
-          </Grid>
+          </StyledGrid>
         </div>
       )}
       {investigationData.publications && (
@@ -283,9 +327,9 @@ const InvestigationDetailsPanel = (
           id="investigation-publications-panel"
           aria-labelledby="investigation-publications-tab"
           role="tabpanel"
-          hidden={value !== 'publications'}
+          hidden={selectedTab !== 'publications'}
         >
-          <Grid container className={classes.root} direction="column">
+          <StyledGrid container direction="column">
             <Typography variant="overline">
               {t('investigations.details.publications.reference', {
                 count: investigationData.publications.length,
@@ -308,7 +352,7 @@ const InvestigationDetailsPanel = (
                 </b>
               </Typography>
             )}
-          </Grid>
+          </StyledGrid>
         </div>
       )}
     </div>

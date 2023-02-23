@@ -21,9 +21,11 @@ export interface FeatureSwitches {}
 export interface ConfigureBreadcrumbSettingsPayload {
   settings: BreadcrumbSettings;
 }
+
 export interface ConfigureSelectAllSettingPayload {
   settings: boolean;
 }
+
 export interface ConfigurePluginHostSettingPayload {
   settings: string;
 }

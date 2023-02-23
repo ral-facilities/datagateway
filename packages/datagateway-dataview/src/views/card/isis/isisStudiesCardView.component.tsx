@@ -2,6 +2,7 @@ import React from 'react';
 import {
   CardView,
   CardViewDetails,
+  filterStudyInfoInvestigations,
   getStudyInfoInvestigation,
   parseSearchToQuery,
   Study,
@@ -15,12 +16,11 @@ import {
   useStudyCount,
   useTextFilter,
 } from 'datagateway-common';
-import PublicIcon from '@material-ui/icons/Public';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import { Public, CalendarToday } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import { format, set } from 'date-fns';
-import { Link as MuiLink } from '@material-ui/core';
+import { Link as MuiLink } from '@mui/material';
 
 interface ISISStudiesCVProps {
   instrumentId: string;
@@ -54,9 +54,10 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
     {
       filterType: 'where',
       filterValue: JSON.stringify({
-        'studyInvestigations.investigation.investigationInstruments.instrument.id': {
-          eq: instrumentId,
-        },
+        'studyInvestigations.investigation.investigationInstruments.instrument.id':
+          {
+            eq: instrumentId,
+          },
       }),
     },
     {
@@ -73,9 +74,10 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
     {
       filterType: 'where',
       filterValue: JSON.stringify({
-        'studyInvestigations.investigation.investigationInstruments.instrument.id': {
-          eq: instrumentId,
-        },
+        'studyInvestigations.investigation.investigationInstruments.instrument.id':
+          {
+            eq: instrumentId,
+          },
       }),
     },
     {
@@ -139,13 +141,13 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
             )
           );
         },
-        icon: PublicIcon,
+        icon: Public,
         label: t('studies.pid'),
         dataKey: 'pid',
         filterComponent: textFilter,
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('studies.start_date'),
         dataKey: 'studyInvestigations.investigation.startDate',
         content: (study: Study) =>
@@ -154,7 +156,7 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
         defaultSort: 'desc',
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('studies.end_date'),
         dataKey: 'studyInvestigations.investigation.endDate',
         content: (study: Study) =>
@@ -165,9 +167,31 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
     [dateFilter, t, textFilter]
   );
 
+  const aggregatedData = React.useMemo(
+    () =>
+      // for each Investigation in studyInvestigations that matches the current filter
+      // create a new Study object with the studyInvestigations array
+      // having only one StudyInvestigation (& Investigation) object in it
+      // so that each matched Investigation appears as a separate card
+      data?.reduce<Study[]>((studies, study) => {
+        const firstInvestigationMatched = filterStudyInfoInvestigations(
+          study,
+          filters
+        )?.[0];
+        studies.push({
+          ...study,
+          studyInvestigations: firstInvestigationMatched
+            ? [firstInvestigationMatched]
+            : study.studyInvestigations,
+        });
+        return studies;
+      }, []),
+    [data, filters]
+  );
+
   return (
     <CardView
-      data={data ?? []}
+      data={aggregatedData ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}
       onFilter={pushFilter}

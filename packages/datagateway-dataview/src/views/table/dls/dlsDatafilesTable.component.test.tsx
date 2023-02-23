@@ -1,4 +1,3 @@
-import { createMount } from '@material-ui/core/test-utils';
 import {
   dGCommonInitialState,
   useDatafileCount,
@@ -8,18 +7,23 @@ import {
   useRemoveFromCart,
   useDatafilesInfinite,
   Datafile,
+  DLSDatafileDetailsPanel,
 } from 'datagateway-common';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router';
+import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import DLSDatafilesTable from './dlsDatafilesTable.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../../../setupTests';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -38,7 +42,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('DLS datafiles table component', () => {
-  let mount;
   let mockStore;
   let state: StateType;
   let rowData: Datafile[];
@@ -58,7 +61,6 @@ describe('DLS datafiles table component', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
     rowData = [
       {
         id: 1,
@@ -81,6 +83,7 @@ describe('DLS datafiles table component', () => {
 
     (useCart as jest.Mock).mockReturnValue({
       data: [],
+      isLoading: false,
     });
     (useDatafileCount as jest.Mock).mockReturnValue({
       data: 0,
@@ -91,6 +94,7 @@ describe('DLS datafiles table component', () => {
     });
     (useIds as jest.Mock).mockReturnValue({
       data: [1],
+      isLoading: false,
     });
     (useAddToCart as jest.Mock).mockReturnValue({
       mutate: jest.fn(),
@@ -103,7 +107,6 @@ describe('DLS datafiles table component', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -184,7 +187,7 @@ describe('DLS datafiles table component', () => {
 
     const filterInput = wrapper
       .find('[aria-label="Filter by datafiles.name"]')
-      .first();
+      .last();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
@@ -203,6 +206,8 @@ describe('DLS datafiles table component', () => {
   });
 
   it('updates filter query params on date filter', () => {
+    applyDatePickerWorkaround();
+
     const wrapper = createWrapper();
 
     const filterInput = wrapper.find(
@@ -223,6 +228,8 @@ describe('DLS datafiles table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
+
+    cleanupDatePickerWorkaround();
   });
 
   it('uses default sort', () => {
@@ -257,7 +264,7 @@ describe('DLS datafiles table component', () => {
     });
     const wrapper = createWrapper();
 
-    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
+    wrapper.find('[aria-label="select row 0"]').last().simulate('click');
 
     expect(addToCart).toHaveBeenCalledWith([1]);
   });
@@ -273,6 +280,7 @@ describe('DLS datafiles table component', () => {
           parentEntities: [],
         },
       ],
+      isLoading: false,
     });
 
     const removeFromCart = jest.fn();
@@ -283,7 +291,7 @@ describe('DLS datafiles table component', () => {
 
     const wrapper = createWrapper();
 
-    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
+    wrapper.find('[aria-label="select row 0"]').last().simulate('click');
 
     expect(removeFromCart).toHaveBeenCalledWith([1]);
   });
@@ -306,13 +314,14 @@ describe('DLS datafiles table component', () => {
           parentEntities: [],
         },
       ],
+      isLoading: false,
     });
 
     const wrapper = createWrapper();
 
     const selectAllCheckbox = wrapper
       .find('[aria-label="select all rows"]')
-      .first();
+      .last();
 
     expect(selectAllCheckbox.prop('checked')).toEqual(false);
     expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
@@ -348,5 +357,13 @@ describe('DLS datafiles table component', () => {
     expect(
       wrapper.find('button[aria-label="datafiles.download"]')
     ).toHaveLength(0);
+  });
+
+  it('displays details panel when expanded', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.find(DLSDatafileDetailsPanel).exists()).toBeFalsy();
+    wrapper.find('[aria-label="Show details"]').last().simulate('click');
+
+    expect(wrapper.find(DLSDatafileDetailsPanel).exists()).toBeTruthy();
   });
 });

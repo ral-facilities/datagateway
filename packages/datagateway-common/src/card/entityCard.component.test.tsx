@@ -1,12 +1,10 @@
-import { Link } from '@material-ui/core';
-import { createMount, createShallow } from '@material-ui/core/test-utils';
+import { Link } from '@mui/material';
+import { mount, shallow } from 'enzyme';
 import React from 'react';
 import { Investigation } from '../app.types';
 import EntityCard from './entityCard.component';
 
 describe('Card', () => {
-  let shallow;
-  let mount;
   const entity: Investigation = {
     id: 1,
     title: 'Title',
@@ -14,15 +12,6 @@ describe('Card', () => {
     summary: 'Test Description',
     visitId: '2',
   };
-
-  beforeEach(() => {
-    shallow = createShallow();
-    mount = createMount();
-  });
-
-  afterEach(() => {
-    mount.cleanUp();
-  });
 
   it('renders correctly', () => {
     const wrapper = shallow(
@@ -103,7 +92,7 @@ describe('Card', () => {
       'entity_card.show_more'
     );
 
-    wrapper.find(Link).simulate('click');
+    wrapper.find(Link).find('a').simulate('click');
     expect(wrapper.find('[aria-label="card-description-link"]').text()).toEqual(
       'entity_card.show_less'
     );
@@ -209,6 +198,8 @@ describe('Card', () => {
     // Click on the expansion panel to view more information area.
     wrapper
       .find('[aria-label="card-more-info-expand"]')
+      .first()
+      .find('div')
       .first()
       .simulate('click');
 

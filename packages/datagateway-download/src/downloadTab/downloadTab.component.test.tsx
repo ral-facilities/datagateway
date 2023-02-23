@@ -1,52 +1,78 @@
-import React from 'react';
-import { createShallow, createMount } from '@material-ui/core/test-utils';
-import DownloadTabs from './downloadTab.component';
-import { act } from 'react-dom/test-utils';
-import { flushPromises } from '../setupTests';
-import { DownloadSettingsContext } from '../ConfigProvider';
+import type { RenderResult } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { UserEvent } from '@testing-library/user-event/dist/types/setup';
+import { fetchDownloadCart } from 'datagateway-common';
 import { createMemoryHistory } from 'history';
-import { Router } from 'react-router-dom';
-import { ReactWrapper } from 'enzyme';
+import * as React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { Router } from 'react-router-dom';
+import { DownloadSettingsContext } from '../ConfigProvider';
+import {
+  downloadDeleted,
+  fetchDownloads,
+  getDatafileCount,
+  getDataUrl,
+  getSize,
+  removeAllDownloadCartItems,
+  removeFromCart,
+} from '../downloadApi';
+import { mockCartItems, mockDownloadItems, mockedSettings } from '../testData';
+import DownloadTabs from './downloadTab.component';
 
-// Create our mocked datagateway-download settings file.
-const mockedSettings = {
-  facilityName: 'LILS',
-  apiUrl: 'https://example.com/api',
-  downloadApiUrl: 'https://example.com/downloadApi',
-  idsUrl: 'https://example.com/ids',
-  accessMethods: {
-    https: {
-      idsUrl: 'https://example.com/ids',
-      displayName: 'HTTPS',
-      description: 'Example description for HTTPS access method.',
-    },
-    globus: {
-      idsUrl: 'https://example.com/ids',
-      displayName: 'Globus',
-      description: 'Example description for Globus access method.',
-    },
-  },
-};
+jest.mock('datagateway-common', () => {
+  const og = jest.requireActual('datagateway-common');
+  return {
+    __esModule: true,
+    ...og,
+    fetchDownloadCart: jest.fn(),
+  };
+});
+jest.mock('../downloadApi');
 
 describe('DownloadTab', () => {
-  let shallow;
-  let mount;
   let history;
+  let holder;
+  let user: UserEvent;
 
   beforeEach(() => {
-    shallow = createShallow();
-    mount = createMount();
     history = createMemoryHistory();
+    user = userEvent.setup();
+
+    holder = document.createElement('div');
+    holder.setAttribute('id', 'datagateway-download');
+    document.body.appendChild(holder);
+
+    (downloadDeleted as jest.Mock).mockImplementation(() => Promise.resolve());
+    (fetchDownloads as jest.Mock).mockImplementation(() =>
+      Promise.resolve(mockDownloadItems)
+    );
+    (getDataUrl as jest.Mock).mockImplementation(() => '/getData');
+    (
+      fetchDownloadCart as jest.MockedFunction<typeof fetchDownloadCart>
+    ).mockResolvedValue(mockCartItems);
+    (
+      removeAllDownloadCartItems as jest.MockedFunction<
+        typeof removeAllDownloadCartItems
+      >
+    ).mockResolvedValue(null);
+    (
+      removeFromCart as jest.MockedFunction<typeof removeFromCart>
+    ).mockImplementation((entityType, entityIds) => {
+      return Promise.resolve(
+        mockCartItems.filter((item) => !entityIds.includes(item.entityId))
+      );
+    });
+
+    (getSize as jest.MockedFunction<typeof getSize>).mockResolvedValue(1);
+    (
+      getDatafileCount as jest.MockedFunction<typeof getDatafileCount>
+    ).mockResolvedValue(7);
   });
 
-  afterEach(() => {
-    mount.cleanUp();
-  });
-
-  const createWrapper = (): ReactWrapper => {
+  const renderComponent = (): RenderResult => {
     const queryClient = new QueryClient();
-    return mount(
+    return render(
       <Router history={history}>
         <DownloadSettingsContext.Provider value={mockedSettings}>
           <QueryClientProvider client={queryClient}>
@@ -57,119 +83,46 @@ describe('DownloadTab', () => {
     );
   };
 
-  it('renders correctly', () => {
-    const wrapper = shallow(<DownloadTabs />);
-    expect(wrapper).toMatchSnapshot();
+  it('should render correctly', () => {
+    const { asFragment } = renderComponent();
+    expect(asFragment()).toMatchSnapshot();
   });
 
   it('shows the appropriate table when clicking between tabs', async () => {
-    const wrapper = createWrapper();
+    renderComponent();
 
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
+    // go to downloads tab
 
-    expect(
-      wrapper.exists('[aria-label="downloadTab.download_cart_panel_arialabel"]')
-    ).toBe(true);
-    expect(
-      wrapper
-        .find('div[aria-label="downloadTab.download_cart_panel_arialabel"]')
-        .props().hidden
-    ).toBe(false);
+    await user.click(await screen.findByText('downloadTab.downloads_tab'));
 
-    expect(
-      wrapper.exists(
-        '[aria-label="downloadTab.download_status_panel_arialabel"]'
-      )
-    ).toBe(true);
-    expect(
-      wrapper
-        .find('div[aria-label="downloadTab.download_status_panel_arialabel"]')
-        .props().hidden
-    ).toBe(true);
-
-    // Click on the downloads tab and the refresh downloads button.
-    await act(async () => {
-      wrapper
-        .find('button[aria-label="downloadTab.downloads_tab_arialabel"]')
-        .simulate('click');
-
-      await flushPromises();
-      wrapper.update();
-
+    await waitFor(async () => {
       expect(
-        wrapper
-          .find('div[aria-label="downloadTab.download_status_panel_arialabel"]')
-          .props().hidden
-      ).toBe(false);
-
+        await screen.findByLabelText(
+          'downloadTab.download_cart_panel_arialabel'
+        )
+      ).not.toBeVisible();
       expect(
-        wrapper.exists(
-          '[aria-label="downloadTab.refresh_download_status_arialabel"]'
+        await screen.findByLabelText(
+          'downloadTab.download_status_panel_arialabel'
         )
-      ).toBe(true);
-
-      wrapper
-        .find(
-          'button[aria-label="downloadTab.refresh_download_status_arialabel"]'
-        )
-        .simulate('click');
-
-      await flushPromises();
-      wrapper.update();
+      ).toBeVisible();
     });
 
     // Return back to the cart tab.
-    await act(async () => {
-      wrapper
-        .find('button[aria-label="downloadTab.cart_tab_arialabel"]')
-        .simulate('click');
-      await flushPromises();
-      wrapper.update();
 
+    await user.click(await screen.findByText('downloadTab.cart_tab'));
+
+    await waitFor(async () => {
       expect(
-        wrapper
-          .find('div[aria-label="downloadTab.download_status_panel_arialabel"]')
-          .props().hidden
-      ).toBe(true);
+        await screen.findByLabelText(
+          'downloadTab.download_cart_panel_arialabel'
+        )
+      ).toBeVisible();
+      expect(
+        await screen.findByLabelText(
+          'downloadTab.download_status_panel_arialabel'
+        )
+      ).not.toBeVisible();
     });
-  });
-
-  it('renders the selections tab on each mount', async () => {
-    let wrapper = createWrapper();
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    // Navigate to downloads tab
-    await act(async () => {
-      wrapper
-        .find('button[aria-label="downloadTab.downloads_tab_arialabel"]')
-        .simulate('click');
-
-      await flushPromises();
-      wrapper.update();
-    });
-
-    // Recreate the wrapper and expect it to show the selections tab.
-    wrapper = createWrapper();
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(
-      wrapper.exists('[aria-label="downloadTab.download_cart_panel_arialabel"]')
-    ).toBe(true);
-    expect(
-      wrapper
-        .find('div[aria-label="downloadTab.download_cart_panel_arialabel"]')
-        .props().hidden
-    ).toBe(false);
   });
 });

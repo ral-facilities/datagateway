@@ -1,5 +1,4 @@
 import React from 'react';
-import { createMount } from '@material-ui/core/test-utils';
 import ISISDatasetsTable from './isisDatasetsTable.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import configureStore from 'redux-mock-store';
@@ -20,10 +19,15 @@ import {
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { Router } from 'react-router';
+import { Router } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactWrapper } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
+import { render, RenderResult } from '@testing-library/react';
 import { createMemoryHistory, History } from 'history';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../../../setupTests';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -42,7 +46,6 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('ISIS Dataset table component', () => {
-  let mount;
   let mockStore;
   let state: StateType;
   let rowData: Dataset[];
@@ -70,8 +73,29 @@ describe('ISIS Dataset table component', () => {
     );
   };
 
+  const createRTLWrapper = (
+    element: React.ReactElement = (
+      <ISISDatasetsTable
+        studyHierarchy={false}
+        instrumentId="1"
+        instrumentChildId="2"
+        investigationId="3"
+      />
+    )
+  ): RenderResult => {
+    const store = mockStore(state);
+    return render(
+      <Provider store={store}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            {element}
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+  };
+
   beforeEach(() => {
-    mount = createMount();
     rowData = [
       {
         id: 1,
@@ -93,6 +117,7 @@ describe('ISIS Dataset table component', () => {
 
     (useCart as jest.Mock).mockReturnValue({
       data: [],
+      isLoading: false,
     });
     (useDatasetCount as jest.Mock).mockReturnValue({
       data: 0,
@@ -103,6 +128,7 @@ describe('ISIS Dataset table component', () => {
     });
     (useIds as jest.Mock).mockReturnValue({
       data: [1],
+      isLoading: false,
     });
     (useAddToCart as jest.Mock).mockReturnValue({
       mutate: jest.fn(),
@@ -116,7 +142,6 @@ describe('ISIS Dataset table component', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
@@ -187,7 +212,7 @@ describe('ISIS Dataset table component', () => {
 
     const filterInput = wrapper
       .find('[aria-label="Filter by datasets.name"]')
-      .first();
+      .last();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
@@ -206,6 +231,8 @@ describe('ISIS Dataset table component', () => {
   });
 
   it('updates filter query params on date filter', () => {
+    applyDatePickerWorkaround();
+
     const wrapper = createWrapper();
 
     const filterInput = wrapper.find(
@@ -224,6 +251,8 @@ describe('ISIS Dataset table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
+
+    cleanupDatePickerWorkaround();
   });
 
   it('uses default sort', () => {
@@ -258,7 +287,7 @@ describe('ISIS Dataset table component', () => {
     });
     const wrapper = createWrapper();
 
-    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
+    wrapper.find('[aria-label="select row 0"]').last().simulate('click');
 
     expect(addToCart).toHaveBeenCalledWith([1]);
   });
@@ -274,6 +303,7 @@ describe('ISIS Dataset table component', () => {
           parentEntities: [],
         },
       ],
+      isLoading: false,
     });
 
     const removeFromCart = jest.fn();
@@ -284,7 +314,7 @@ describe('ISIS Dataset table component', () => {
 
     const wrapper = createWrapper();
 
-    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
+    wrapper.find('[aria-label="select row 0"]').last().simulate('click');
 
     expect(removeFromCart).toHaveBeenCalledWith([1]);
   });
@@ -307,6 +337,7 @@ describe('ISIS Dataset table component', () => {
           parentEntities: [],
         },
       ],
+      isLoading: false,
     });
 
     const wrapper = createWrapper();
@@ -332,7 +363,7 @@ describe('ISIS Dataset table component', () => {
   it('displays details panel when expanded', () => {
     const wrapper = createWrapper();
     expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+    wrapper.find('[aria-label="Show details"]').last().simulate('click');
 
     expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeTruthy();
   });
@@ -347,26 +378,21 @@ describe('ISIS Dataset table component', () => {
       })
     );
 
-    detailsPanelWrapper
-      .find('#dataset-datafiles-tab')
-      .first()
-      .simulate('click');
+    detailsPanelWrapper.find('#dataset-datafiles-tab').last().simulate('click');
     expect(history.location.pathname).toBe(
       '/browse/instrument/1/facilityCycle/2/investigation/3/dataset/1/datafile'
     );
   });
 
   it('renders dataset name as a link', () => {
-    const wrapper = createWrapper();
+    const wrapper = createRTLWrapper();
 
-    expect(
-      wrapper.find('[aria-colindex=3]').find('p').children()
-    ).toMatchSnapshot();
+    expect(wrapper.getByText('Test 1')).toMatchSnapshot();
   });
 
   it('renders dataset name as a link in StudyHierarchy', () => {
     const store = mockStore(state);
-    const wrapper = mount(
+    const wrapper = render(
       <Provider store={store}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
@@ -381,9 +407,7 @@ describe('ISIS Dataset table component', () => {
       </Provider>
     );
 
-    expect(
-      wrapper.find('[aria-colindex=3]').find('p').children()
-    ).toMatchSnapshot();
+    expect(wrapper.getByText('Test 1')).toMatchSnapshot();
   });
 
   it('renders actions correctly', () => {

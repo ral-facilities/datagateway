@@ -1,6 +1,7 @@
 import React from 'react';
-import { createShallow, createMount } from '@material-ui/core/test-utils';
+import { shallow, mount } from 'enzyme';
 import DateColumnFilter, {
+  CustomClearButton,
   datesEqual,
   updateFilter,
   useDateFilter,
@@ -8,19 +9,22 @@ import DateColumnFilter, {
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from 'react-test-renderer';
 import { usePushFilter } from '../../api';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../../setupTests';
+import { PickersActionBarProps } from '@mui/x-date-pickers/PickersActionBar';
+
 jest.mock('../../api');
 
 describe('Date filter component', () => {
-  let shallow;
-  let mount;
-
   beforeEach(() => {
-    shallow = createShallow();
-    mount = createMount();
+    applyDatePickerWorkaround();
   });
 
   afterEach(() => {
-    mount.cleanUp();
+    cleanupDatePickerWorkaround();
+    jest.clearAllMocks();
   });
 
   it('renders correctly', () => {
@@ -201,6 +205,29 @@ describe('Date filter component', () => {
         startDate: '2019-09-18',
         endDate: '2019-09-19',
       });
+    });
+  });
+
+  describe('CustomClearButton', () => {
+    const onClear = jest.fn();
+    let props: PickersActionBarProps;
+
+    beforeEach(() => {
+      props = {
+        onClear: onClear,
+      };
+    });
+
+    it('renders correctly', () => {
+      const wrapper = shallow(<CustomClearButton {...props} />);
+      expect(wrapper).toMatchSnapshot();
+    });
+
+    it('calls onClear when button clicked', () => {
+      const wrapper = shallow(<CustomClearButton {...props} />);
+      const button = wrapper.find('[role="button"]');
+      button.simulate('click');
+      expect(onClear).toHaveBeenCalled();
     });
   });
 
@@ -399,7 +426,7 @@ describe('Date filter component', () => {
   });
 
   describe('DateTimePicker functionality', () => {
-    it('calls the onChange method correctly when filling out the date/time inputs', () => {
+    it('calls the onChange method correctly when filling out the date-time inputs', () => {
       const onChange = jest.fn();
 
       const baseProps = {
@@ -410,44 +437,44 @@ describe('Date filter component', () => {
       const wrapper = mount(<DateColumnFilter filterByTime {...baseProps} />);
 
       const startDateFilterInput = wrapper.find('input').first();
-      startDateFilterInput.instance().value = '2019-08-06 00:00';
+      startDateFilterInput.instance().value = '2019-08-06 00:00:00';
       startDateFilterInput.simulate('change');
 
       expect(onChange).toHaveBeenLastCalledWith({
-        startDate: '2019-08-06 00:00',
+        startDate: '2019-08-06 00:00:00',
       });
 
       wrapper.setProps({
         ...baseProps,
-        value: { startDate: '2019-08-06 00:00' },
+        value: { startDate: '2019-08-06 00:00:00' },
       });
       const endDateFilterInput = wrapper.find('input').last();
-      endDateFilterInput.instance().value = '2019-08-06 23:59';
+      endDateFilterInput.instance().value = '2019-08-06 23:59:00';
       endDateFilterInput.simulate('change');
 
       expect(onChange).toHaveBeenLastCalledWith({
-        startDate: '2019-08-06 00:00',
-        endDate: '2019-08-06 23:59',
+        startDate: '2019-08-06 00:00:00',
+        endDate: '2019-08-06 23:59:00',
       });
 
       wrapper.setProps({
         ...baseProps,
         value: {
-          startDate: '2019-08-06 00:00',
-          endDate: '2019-08-06 23:59',
+          startDate: '2019-08-06 00:00:00',
+          endDate: '2019-08-06 23:59:00',
         },
       });
       startDateFilterInput.instance().value = '';
       startDateFilterInput.simulate('change');
 
       expect(onChange).toHaveBeenLastCalledWith({
-        endDate: '2019-08-06 23:59',
+        endDate: '2019-08-06 23:59:00',
       });
 
       wrapper.setProps({
         ...baseProps,
         value: {
-          endDate: '2019-08-06 23:59',
+          endDate: '2019-08-06 23:59:00',
         },
       });
       endDateFilterInput.instance().value = '';
@@ -478,43 +505,43 @@ describe('Date filter component', () => {
 
       expect(onChange).not.toHaveBeenCalled();
 
-      startDateFilterInput.instance().value = '2019-08-06 00:00';
+      startDateFilterInput.instance().value = '2019-08-06 00:00:00';
       startDateFilterInput.simulate('change');
 
       expect(onChange).toHaveBeenLastCalledWith({
-        startDate: '2019-08-06 00:00',
+        startDate: '2019-08-06 00:00:00',
       });
 
       wrapper.setProps({
         ...baseProps,
-        value: { startDate: '2019-08-06 00:00' },
+        value: { startDate: '2019-08-06 00:00:00' },
       });
-      endDateFilterInput.instance().value = '2019-08-07 00:00';
+      endDateFilterInput.instance().value = '2019-08-07 00:00:00';
       endDateFilterInput.simulate('change');
 
       expect(onChange).toHaveBeenLastCalledWith({
-        startDate: '2019-08-06 00:00',
-        endDate: '2019-08-07 00:00',
+        startDate: '2019-08-06 00:00:00',
+        endDate: '2019-08-07 00:00:00',
       });
 
       wrapper.setProps({
         ...baseProps,
         value: {
-          startDate: '2019-08-06 00:00',
-          endDate: '2019-08-07 00:00',
+          startDate: '2019-08-06 00:00:00',
+          endDate: '2019-08-07 00:00:00',
         },
       });
       startDateFilterInput.instance().value = '2';
       startDateFilterInput.simulate('change');
 
       expect(onChange).toHaveBeenLastCalledWith({
-        endDate: '2019-08-07 00:00',
+        endDate: '2019-08-07 00:00:00',
       });
 
       wrapper.setProps({
         ...baseProps,
         value: {
-          endDate: '2019-08-07 00:00',
+          endDate: '2019-08-07 00:00:00',
         },
       });
       endDateFilterInput.instance().value = '201';
@@ -530,8 +557,8 @@ describe('Date filter component', () => {
         label: 'test',
         onChange,
         value: {
-          startDate: '2019-13-09 00:00',
-          endDate: '2019-08-32 00:00',
+          startDate: '2019-13-09 00:00:00',
+          endDate: '2019-08-32 00:00:00',
         },
       };
 
@@ -539,7 +566,7 @@ describe('Date filter component', () => {
 
       expect(wrapper.find('p.Mui-error')).toHaveLength(2);
       expect(wrapper.find('p.Mui-error').first().text()).toEqual(
-        'Date format: yyyy-MM-dd HH:mm.'
+        'Date-time format: yyyy-MM-dd HH:mm:ss.'
       );
     });
 
@@ -550,8 +577,8 @@ describe('Date filter component', () => {
         label: 'test',
         onChange,
         value: {
-          startDate: '2019-13-09 00:60',
-          endDate: '2019-08-32 24:00',
+          startDate: '2019-13-09 00:60:00',
+          endDate: '2019-08-32 24:00:00',
         },
       };
 
@@ -559,19 +586,19 @@ describe('Date filter component', () => {
 
       expect(wrapper.find('p.Mui-error')).toHaveLength(2);
       expect(wrapper.find('p.Mui-error').first().text()).toEqual(
-        'Date format: yyyy-MM-dd HH:mm.'
+        'Date-time format: yyyy-MM-dd HH:mm:ss.'
       );
     });
 
-    it('displays error for invalid date/time range', () => {
+    it('displays error for invalid date-time range', () => {
       const onChange = jest.fn();
 
       const baseProps = {
         label: 'test',
         onChange,
         value: {
-          startDate: '2019-08-08 12:00',
-          endDate: '2019-08-08 11:00',
+          startDate: '2019-08-08 12:00:00',
+          endDate: '2019-08-08 11:00:00',
         },
       };
 
@@ -579,7 +606,7 @@ describe('Date filter component', () => {
 
       expect(wrapper.find('p.Mui-error')).toHaveLength(2);
       expect(wrapper.find('p.Mui-error').first().text()).toEqual(
-        'Invalid date/time range'
+        'Invalid date-time range'
       );
     });
 
@@ -601,16 +628,16 @@ describe('Date filter component', () => {
 
       const mountWrapper = mount(dateFilter);
       const startDateFilterInput = mountWrapper.find('input').first();
-      startDateFilterInput.instance().value = '2021-08-09 00:00';
+      startDateFilterInput.instance().value = '2021-08-09 00:00:00';
       startDateFilterInput.simulate('change');
 
       expect(pushFilter).toHaveBeenLastCalledWith('startDate', {
-        startDate: '2021-08-09 00:00',
+        startDate: '2021-08-09 00:00:00',
       });
 
       mountWrapper.setProps({
         ...mountWrapper.props(),
-        value: { startDate: '2021-08-09 00:00' },
+        value: { startDate: '2021-08-09 00:00:00' },
       });
       startDateFilterInput.instance().value = '';
       startDateFilterInput.simulate('change');

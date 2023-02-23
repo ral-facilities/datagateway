@@ -1,7 +1,6 @@
 import React from 'react';
-import { ReactWrapper } from 'enzyme';
+import { ShallowWrapper, shallow } from 'enzyme';
 
-import { createShallow } from '@material-ui/core/test-utils';
 import SearchBoxContainer from './searchBoxContainer.component';
 import SearchBoxContainerSide from './searchBoxContainerSide.component';
 import { useSelector } from 'react-redux';
@@ -15,46 +14,41 @@ jest.mock('react-redux', () => ({
 }));
 
 describe('SearchBoxContainer - Tests', () => {
-  let shallow;
-
-  const testInitiateSearch = jest.fn();
-
-  const createWrapper = (path: string): ReactWrapper => {
-    return shallow(<SearchBoxContainer initiateSearch={testInitiateSearch} />);
+  const createWrapper = (): ShallowWrapper => {
+    return shallow(
+      <SearchBoxContainer
+        initiateSearch={jest.fn()}
+        onSearchTextChange={jest.fn()}
+        searchText=""
+      />
+    );
   };
 
   beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'Grid' });
     useSelector.mockImplementation(() => {
       return initialState;
     });
   });
 
   it('renders searchBoxContainer correctly', () => {
-    const wrapper = createWrapper('/');
-
+    const wrapper = createWrapper();
     expect(wrapper).toMatchSnapshot();
   });
 });
 
 describe('SearchBoxContainerSide - Tests', () => {
-  let shallow;
-
-  const testInitiateSearch = jest.fn();
-
-  const createWrapper = (path: string): ReactWrapper => {
+  const createWrapper = (): ShallowWrapper => {
     return shallow(
-      <SearchBoxContainerSide initiateSearch={testInitiateSearch} />
+      <SearchBoxContainerSide
+        initiateSearch={jest.fn()}
+        onSearchTextChange={jest.fn()}
+        searchText=""
+      />
     );
   };
 
-  beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'Grid' });
-  });
-
   it('renders searchBoxContainerSide correctly', () => {
-    const wrapper = createWrapper('/');
-
+    const wrapper = createWrapper();
     expect(wrapper).toMatchSnapshot();
   });
 });

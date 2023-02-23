@@ -1,13 +1,5 @@
 import React from 'react';
 import {
-  Typography,
-  Grid,
-  createStyles,
-  makeStyles,
-  Theme,
-  Divider,
-} from '@material-ui/core';
-import {
   Table,
   investigationLink,
   externalSiteLink,
@@ -24,78 +16,22 @@ import {
   useSort,
   useTextFilter,
   useDateFilter,
-  DetailsPanelProps,
   useInvestigationSizes,
+  InvestigationDetailsPanel,
 } from 'datagateway-common';
 import { StateType } from '../../state/app.types';
 import { useSelector } from 'react-redux';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import SubjectIcon from '@material-ui/icons/Subject';
-import FingerprintIcon from '@material-ui/icons/Fingerprint';
-import PublicIcon from '@material-ui/icons/Public';
-import SaveIcon from '@material-ui/icons/Save';
-import AssessmentIcon from '@material-ui/icons/Assessment';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(2),
-    },
-    divider: {
-      marginBottom: theme.spacing(2),
-    },
-  })
-);
-
-export const InvestigationDetailsPanel = (
-  props: DetailsPanelProps
-): React.ReactElement => {
-  const classes = useStyles();
-  const [t] = useTranslation();
-  const investigationData = props.rowData as Investigation;
-  return (
-    <Grid
-      id="details-panel"
-      container
-      className={classes.root}
-      direction="column"
-    >
-      <Grid item xs>
-        <Typography variant="h6">
-          <b>{investigationData.title}</b>
-        </Typography>
-        <Divider className={classes.divider} />
-      </Grid>
-      <Grid item xs>
-        <Typography variant="overline">
-          {t('investigations.details.name')}
-        </Typography>
-        <Typography>
-          <b>{investigationData.name}</b>
-        </Typography>
-      </Grid>
-      <Grid item xs>
-        <Typography variant="overline">
-          {t('investigations.details.start_date')}
-        </Typography>
-        <Typography>
-          <b>{investigationData.startDate}</b>
-        </Typography>
-      </Grid>
-      <Grid item xs>
-        <Typography variant="overline">
-          {t('investigations.details.end_date')}
-        </Typography>
-        <Typography>
-          <b>{investigationData.endDate}</b>
-        </Typography>
-      </Grid>
-    </Grid>
-  );
-};
+import {
+  Subject,
+  Fingerprint,
+  Public,
+  Save,
+  Assessment,
+  CalendarToday,
+} from '@mui/icons-material';
 
 const InvestigationTable = (): React.ReactElement => {
   const selectAllSetting = useSelector(
@@ -118,20 +54,29 @@ const InvestigationTable = (): React.ReactElement => {
       }),
     },
   ]);
-  const { data: allIds } = useIds('investigation', undefined, selectAllSetting);
-  const { data: cartItems } = useCart();
-  const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
-    'investigation'
+  const { data: allIds, isLoading: allIdsLoading } = useIds(
+    'investigation',
+    undefined,
+    selectAllSetting
   );
-  const {
-    mutate: removeFromCart,
-    isLoading: removeFromCartLoading,
-  } = useRemoveFromCart('investigation');
+  const { data: cartItems, isLoading: cartLoading } = useCart();
+  const { mutate: addToCart, isLoading: addToCartLoading } =
+    useAddToCart('investigation');
+  const { mutate: removeFromCart, isLoading: removeFromCartLoading } =
+    useRemoveFromCart('investigation');
 
-  const aggregatedData: Investigation[] = React.useMemo(
-    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
-    [data]
-  );
+  /* istanbul ignore next */
+  const aggregatedData: Investigation[] = React.useMemo(() => {
+    if (data) {
+      if ('pages' in data) {
+        return data.pages.flat();
+      } else if ((data as unknown) instanceof Array) {
+        return data;
+      }
+    }
+
+    return [];
+  }, [data]);
 
   const selectedRows = React.useMemo(
     () =>
@@ -161,7 +106,7 @@ const InvestigationTable = (): React.ReactElement => {
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: SubjectIcon,
+        icon: Subject,
         label: t('investigations.title'),
         dataKey: 'title',
         cellContentRenderer: (cellProps: TableCellProps) => {
@@ -176,20 +121,20 @@ const InvestigationTable = (): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: FingerprintIcon,
+        icon: Fingerprint,
         label: t('investigations.visit_id'),
         dataKey: 'visitId',
         filterComponent: textFilter,
       },
       {
-        icon: FingerprintIcon,
+        icon: Fingerprint,
         label: t('investigations.name'),
         dataKey: 'name',
         filterComponent: textFilter,
         disableSort: true,
       },
       {
-        icon: PublicIcon,
+        icon: Public,
         label: t('investigations.doi'),
         dataKey: 'doi',
         cellContentRenderer: (cellProps: TableCellProps) => {
@@ -204,7 +149,7 @@ const InvestigationTable = (): React.ReactElement => {
       },
 
       {
-        icon: SaveIcon,
+        icon: Save,
         label: t('investigations.size'),
         dataKey: 'size',
         cellContentRenderer: (cellProps: TableCellProps): number | string =>
@@ -212,7 +157,7 @@ const InvestigationTable = (): React.ReactElement => {
         disableSort: true,
       },
       {
-        icon: AssessmentIcon,
+        icon: Assessment,
         label: t('investigations.instrument'),
         dataKey: 'investigationInstruments.instrument.name',
         cellContentRenderer: (cellProps: TableCellProps) => {
@@ -227,7 +172,7 @@ const InvestigationTable = (): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
 
         label: t('investigations.start_date'),
         dataKey: 'startDate',
@@ -239,7 +184,7 @@ const InvestigationTable = (): React.ReactElement => {
         },
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('investigations.end_date'),
         dataKey: 'endDate',
         filterComponent: dateFilter,
@@ -255,7 +200,12 @@ const InvestigationTable = (): React.ReactElement => {
 
   return (
     <Table
-      loading={addToCartLoading || removeFromCartLoading}
+      loading={
+        addToCartLoading ||
+        removeFromCartLoading ||
+        cartLoading ||
+        allIdsLoading
+      }
       data={aggregatedData}
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}

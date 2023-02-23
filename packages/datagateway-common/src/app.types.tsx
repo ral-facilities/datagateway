@@ -191,6 +191,13 @@ export interface DownloadCart {
   userName: string;
 }
 
+export type DownloadStatus =
+  | 'PREPARING'
+  | 'RESTORING'
+  | 'PAUSED'
+  | 'COMPLETE'
+  | 'EXPIRED';
+
 export interface Download {
   createdAt: string;
   downloadItems: DownloadItem[];
@@ -204,16 +211,23 @@ export interface Download {
   preparedId: string;
   sessionId: string;
   size: number;
-  status: 'PREPARING' | 'RESTORING' | 'PAUSED' | 'COMPLETE' | 'EXPIRED';
+  status: DownloadStatus;
   transport: string;
   userName: string;
   email?: string;
 }
 
-export interface FormattedDownload
-  extends Omit<Download, 'status' | 'isDeleted'> {
-  isDeleted: string;
-  status: string;
+export interface FormattedDownload extends Download {
+  /**
+   * User-facing label of {@link Download.isDeleted}
+   */
+  formattedIsDeleted: string;
+
+  /**
+   * User-facing label of {@link Download.status}
+   */
+  formattedStatus: string;
+
   [key: string]: string | number | boolean | DownloadItem[] | undefined;
 }
 

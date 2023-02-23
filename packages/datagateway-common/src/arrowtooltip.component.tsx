@@ -1,20 +1,6 @@
 import React from 'react';
 import ResizeObserver from 'resize-observer-polyfill';
-import Tooltip, { TooltipProps } from '@material-ui/core/Tooltip';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-
-const useStylesArrow = makeStyles((theme: Theme) =>
-  createStyles({
-    tooltip: {
-      position: 'relative',
-      backgroundColor: theme.palette.common.black,
-      fontSize: '0.875rem',
-    },
-    arrow: {
-      color: theme.palette.common.black,
-    },
-  })
-);
+import { Tooltip, TooltipProps } from '@mui/material';
 
 export const getTooltipText = (node: React.ReactNode): string => {
   if (typeof node === 'string') return node;
@@ -26,6 +12,33 @@ export const getTooltipText = (node: React.ReactNode): string => {
   return '';
 };
 
+const tooltipComponentProps = {
+  tooltip: {
+    sx: {
+      position: 'relative',
+      backgroundColor: 'common.black',
+      fontSize: '0.875rem',
+    },
+  },
+  arrow: {
+    sx: {
+      color: 'common.black',
+    },
+  },
+};
+
+export const StyledTooltip = React.forwardRef(
+  (props: TooltipProps, ref): React.ReactElement => (
+    <Tooltip
+      ref={ref}
+      componentsProps={tooltipComponentProps}
+      {...props}
+      arrow
+    />
+  )
+);
+StyledTooltip.displayName = 'StyledTooltip';
+
 const ArrowTooltip = (
   props: TooltipProps & {
     disableHoverListener?: boolean;
@@ -33,10 +46,7 @@ const ArrowTooltip = (
 ): React.ReactElement => {
   const { disableHoverListener, ...tooltipProps } = props;
 
-  const { ...classes } = useStylesArrow();
-
   const [isTooltipVisible, setTooltipVisible] = React.useState(false);
-  const [open, setOpen] = React.useState(false);
 
   const tooltipResizeObserver = React.useRef<ResizeObserver>(
     new ResizeObserver((entries) => {
@@ -77,39 +87,16 @@ const ArrowTooltip = (
     }
   }, []);
 
-  const handleKeyDown = React.useCallback((e) => {
-    if (e.key === 'Escape') {
-      onClose();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const onClose = (): void => {
-    window.removeEventListener('keydown', handleKeyDown);
-    setOpen(false);
-  };
-
-  const onOpen = (): void => {
-    window.addEventListener('keydown', handleKeyDown);
-    setOpen(true);
-  };
-
   let shouldDisableHoverListener = !isTooltipVisible;
   //Allow disableHoverListener to be overidden
   if (disableHoverListener !== undefined)
     shouldDisableHoverListener = disableHoverListener;
 
   return (
-    <Tooltip
+    <StyledTooltip
       ref={tooltipRef}
-      classes={classes}
       {...tooltipProps}
       disableHoverListener={shouldDisableHoverListener}
-      arrow={true}
-      onOpen={onOpen}
-      onClose={onClose}
-      open={open}
-      data-testid={`arrow-tooltip-component-${open}`}
     />
   );
 };

@@ -13,7 +13,7 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
-import SubjectIcon from '@material-ui/icons/Subject';
+import SubjectIcon from '@mui/icons-material/Subject';
 import { useLocation } from 'react-router-dom';
 
 interface ISISInstrumentsTableProps {
@@ -36,10 +36,18 @@ const ISISInstrumentsTable = (
   const { data: totalDataCount } = useInstrumentCount();
   const { fetchNextPage, data } = useInstrumentsInfinite();
 
-  const aggregatedData: Instrument[] = React.useMemo(
-    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
-    [data]
-  );
+  /* istanbul ignore next */
+  const aggregatedData: Instrument[] = React.useMemo(() => {
+    if (data) {
+      if ('pages' in data) {
+        return data.pages.flat();
+      } else if ((data as unknown) instanceof Array) {
+        return data;
+      }
+    }
+
+    return [];
+  }, [data]);
 
   const textFilter = useTextFilter(filters);
   const handleSort = useSort();

@@ -1,7 +1,3 @@
-import {
-  createGenerateClassName,
-  StylesProvider,
-} from '@material-ui/core/styles';
 import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
 import {
   DGCommonMiddleware,
@@ -18,7 +14,7 @@ import {
   Action,
   // eslint-disable-next-line import/no-extraneous-dependencies
 } from 'history';
-import * as log from 'loglevel';
+import log from 'loglevel';
 import React from 'react';
 import { batch, connect, Provider } from 'react-redux';
 import { AnyAction, applyMiddleware, compose, createStore, Store } from 'redux';
@@ -80,15 +76,6 @@ history.listen = (fn) => {
 
 const middleware = [thunk, routerMiddleware(history), DGCommonMiddleware];
 
-const generateClassName = createGenerateClassName({
-  productionPrefix: 'dgws',
-
-  // Only set disable when we are in production and not running e2e tests;
-  // ensures class selectors are working on tests.
-  disableGlobal:
-    process.env.NODE_ENV === 'production' && !process.env.REACT_APP_E2E_TESTING,
-});
-
 if (process.env.NODE_ENV === `development`) {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   const logger = (createLogger as any)({ collapsed: true });
@@ -121,6 +108,7 @@ document.addEventListener(MicroFrontendId, (e) => {
 
 class App extends React.Component<unknown, { hasError: boolean }> {
   store: Store;
+
   public constructor(props: unknown) {
     super(props);
     this.state = { hasError: false };
@@ -187,19 +175,17 @@ class App extends React.Component<unknown, { hasError: boolean }> {
           <Provider store={this.store}>
             <ConnectedRouter history={history}>
               <QueryClientProvider client={queryClient}>
-                <StylesProvider generateClassName={generateClassName}>
-                  <DGThemeProvider>
-                    <ConnectedPreloader>
-                      <React.Suspense
-                        fallback={
-                          <Preloader loading={true}>Finished loading</Preloader>
-                        }
-                      >
-                        <SearchPageContainer />
-                      </React.Suspense>
-                    </ConnectedPreloader>
-                  </DGThemeProvider>
-                </StylesProvider>
+                <DGThemeProvider>
+                  <ConnectedPreloader>
+                    <React.Suspense
+                      fallback={
+                        <Preloader loading={true}>Finished loading</Preloader>
+                      }
+                    >
+                      <SearchPageContainer />
+                    </React.Suspense>
+                  </ConnectedPreloader>
+                </DGThemeProvider>
                 <ReactQueryDevtools initialIsOpen={false} />
               </QueryClientProvider>
             </ConnectedRouter>

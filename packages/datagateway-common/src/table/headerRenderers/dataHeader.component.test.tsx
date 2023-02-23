@@ -1,19 +1,16 @@
 import React from 'react';
-import { createMount, createShallow } from '@material-ui/core/test-utils';
+import { mount, shallow } from 'enzyme';
 import DataHeader from './dataHeader.component';
 import TextColumnFilter from '../columnFilters/textColumnFilter.component';
-import { TableSortLabel } from '@material-ui/core';
+import { TableSortLabel } from '@mui/material';
 
 describe('Data column header component', () => {
-  let shallow;
-  let mount;
   const onSort = jest.fn();
   const resizeColumn = jest.fn();
   const dataHeaderProps = {
     label: 'Test',
     labelString: 'Test',
     dataKey: 'test',
-    className: 'test-class',
     sort: {},
     onSort,
     resizeColumn,
@@ -28,11 +25,6 @@ describe('Data column header component', () => {
   ): React.ReactElement => (
     <TextColumnFilter label={label} onChange={jest.fn()} value={undefined} />
   );
-
-  beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'div' });
-    mount = createMount();
-  });
 
   afterEach(() => {
     onSort.mockClear();

@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import * as log from 'loglevel';
+import log from 'loglevel';
 import {
   NotificationType,
   InvalidateTokenType,
@@ -7,7 +7,9 @@ import {
 import { MicroFrontendId } from './app.types';
 
 const handleICATError = (error: AxiosError, broadcast = true): void => {
-  const message = error.response?.data.message ?? error.message;
+  const message =
+    (error as AxiosError<{ message?: string }>).response?.data?.message ??
+    error.message;
   log.error(message);
   if (broadcast) {
     if (
@@ -20,13 +22,18 @@ const handleICATError = (error: AxiosError, broadcast = true): void => {
         message.toUpperCase().includes('SESSION')
       )
     ) {
+      let broadcastMessage = message;
+      // no reponse so it's a network error
+      if (!error.response)
+        broadcastMessage =
+          'Network Error, please reload the page or try again later';
       document.dispatchEvent(
         new CustomEvent(MicroFrontendId, {
           detail: {
             type: NotificationType,
             payload: {
               severity: 'error',
-              message: message,
+              message: broadcastMessage,
             },
           },
         })

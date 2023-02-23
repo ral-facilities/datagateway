@@ -1,46 +1,26 @@
 import React from 'react';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import FormControl from '@material-ui/core/FormControl';
-import Checkbox from '@material-ui/core/Checkbox';
-import { connect } from 'react-redux';
-import { StateType } from '../state/app.types';
-import { useTranslation } from 'react-i18next';
-import { parseSearchToQuery, usePushSearchToggles } from 'datagateway-common';
-import { useLocation } from 'react-router-dom';
 import {
+  Theme,
+  FormControl,
+  Checkbox,
   FormHelperText,
   InputLabel,
   ListItemText,
   MenuItem,
   Select,
-} from '@material-ui/core';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      display: 'flex',
-    },
-    formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120,
-      maxWidth: 300,
-    },
-    formLabel: {
-      margin: 'auto',
-      marginRight: theme.spacing(2),
-    },
-    select: {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      color: (theme as any).colours?.contrastGrey,
-    },
-  })
-);
+  SelectChangeEvent,
+} from '@mui/material';
+import { connect } from 'react-redux';
+import { StateType } from '../state/app.types';
+import { useTranslation } from 'react-i18next';
+import { parseSearchToQuery, usePushSearchToggles } from 'datagateway-common';
+import { useLocation } from 'react-router-dom';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
   PaperProps: {
-    style: {
+    sx: {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
       width: 250,
     },
@@ -60,7 +40,6 @@ interface SearchToggle {
 }
 
 const CheckboxesGroup = (props: CheckBoxStoreProps): React.ReactElement => {
-  const classes = useStyles();
   const [t] = useTranslation();
   const { searchableEntities } = props;
 
@@ -99,7 +78,7 @@ const CheckboxesGroup = (props: CheckBoxStoreProps): React.ReactElement => {
       ariaLabel: t('searchBox.checkboxes.datafile_arialabel'),
     });
 
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>): void => {
+  const handleChange = (event: SelectChangeEvent<string[]>): void => {
     const newValues = event.target.value as string[];
 
     pushSearchToggles(
@@ -112,11 +91,13 @@ const CheckboxesGroup = (props: CheckBoxStoreProps): React.ReactElement => {
   const error = searchToggles.filter((toggle) => toggle.value).length === 0;
 
   return (
-    <div className={classes.root}>
+    <div style={{ display: 'flex' }}>
       <FormControl
         required
         error={error}
-        className={`${classes.formControl} tour-search-checkbox`}
+        className="tour-search-checkbox"
+        sx={{ margin: 1, minWidth: '120px', maxWidth: '300px' }}
+        variant="standard"
       >
         {error && (
           <InputLabel
@@ -130,7 +111,10 @@ const CheckboxesGroup = (props: CheckBoxStoreProps): React.ReactElement => {
         <Select
           {...(error ? { labelId: 'search-entities-checkbox-label' } : {})}
           id="search-entities-menu"
-          className={classes.select}
+          sx={{
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            color: (theme: Theme) => (theme as any).colours?.contrastGrey,
+          }}
           multiple
           value={searchToggles
             .filter((toggle) => toggle.value)
@@ -155,7 +139,7 @@ const CheckboxesGroup = (props: CheckBoxStoreProps): React.ReactElement => {
           ))}
         </Select>
         {error && (
-          <FormHelperText style={{ marginLeft: '14px', marginRight: '14px' }}>
+          <FormHelperText sx={{ marginLeft: '14px', marginRight: '14px' }}>
             {t('searchBox.checkboxes.types_error')}
           </FormHelperText>
         )}
