@@ -34,8 +34,7 @@ describe('Breadcrumbs Component', () => {
     // Get the investigation name.
     cy.get('[data-testid="Breadcrumb-hierarchy-1"]').should(
       'have.text',
-      'Including spend increase ability music skill former. Agreement director concern once technology sometimes someone staff.' +
-        '\nSuccess pull bar. Laugh senior example.'
+      'Analysis reflect work or hour color maybe.\nMuch team discussion message weight.'
     );
 
     // Ensure current page is datasets.
@@ -57,8 +56,7 @@ describe('Breadcrumbs Component', () => {
     cy.get('[data-testid="Breadcrumb-hierarchy-1"]')
       .should(
         'have.text',
-        'Including spend increase ability music skill former. Agreement director ' +
-          'concern once technology sometimes someone staff.\nSuccess pull bar. Laugh senior example.'
+        'Analysis reflect work or hour color maybe.\nMuch team discussion message weight.'
       )
       .should('have.attr', 'href', '/browse/investigation/1/dataset');
 
@@ -95,8 +93,7 @@ describe('Breadcrumbs Component', () => {
     cy.get('[data-testid="Breadcrumb-hierarchy-1"]')
       .should(
         'have.text',
-        'Including spend increase ability music skill former. Agreement director ' +
-          'concern once technology sometimes someone staff.\nSuccess pull bar. Laugh senior example.'
+        'Analysis reflect work or hour color maybe.\nMuch team discussion message weight.'
       )
       .should('have.attr', 'href', '/browse/investigation/1/dataset');
 
@@ -114,8 +111,7 @@ describe('Breadcrumbs Component', () => {
 
     cy.get('[data-testid="Breadcrumb-hierarchy-1"]').should(
       'have.text',
-      'Including spend increase ability music skill former. Agreement director ' +
-        'concern once technology sometimes someone staff.\nSuccess pull bar. Laugh senior example.'
+      'Analysis reflect work or hour color maybe.\nMuch team discussion message weight.'
     );
 
     cy.get('[data-testid="Breadcrumb-last"]').contains('Datasets');
@@ -144,11 +140,11 @@ describe('Breadcrumbs Component', () => {
 
     // The hover tool tip has an enter delay of 100ms.
     // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.contains('span', 'Including spend')
+    cy.contains('span', 'Analysis reflect')
       .trigger('mouseover', { force: true })
       .wait(300)
       .get('[role="tooltip"]')
-      .contains('Including spend');
+      .contains('Analysis reflect');
   });
 
   it('breadcrumbs should be sticky', () => {

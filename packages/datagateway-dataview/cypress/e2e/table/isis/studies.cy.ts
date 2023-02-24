@@ -22,7 +22,7 @@ describe('ISIS - Studies Table', () => {
     cy.get('[role="gridcell"] a').first().click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browseStudyHierarchy/instrument/1/study/314'
+      '/browseStudyHierarchy/instrument/1/study/196'
     );
   });
 
@@ -118,7 +118,7 @@ describe('ISIS - Studies Table', () => {
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Western year few however.'
+        'Already medical seek take military rise.'
       );
     });
 
@@ -133,7 +133,7 @@ describe('ISIS - Studies Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Religious production expect those security door.'
+        'Now easy life approach manage why me.'
       );
     });
 
@@ -151,7 +151,7 @@ describe('ISIS - Studies Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'He represent address cut environmental special size. Activity entire which reality not. Better focus people receive.'
+        'Already medical seek take military rise.'
       );
     });
 
@@ -160,7 +160,7 @@ describe('ISIS - Studies Table', () => {
       cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Help music rate image common worry reason. Rich green either require. Garden leader answer sort generation. Question decision window send food loss society.'
+        'Fine strong education fill maintain.'
       );
     });
   });
@@ -176,23 +176,23 @@ describe('ISIS - Studies Table', () => {
 
       cy.get('[aria-rowcount="3"]').should('exist');
       cy.get('[aria-rowindex="3"] [aria-colindex="2"]').contains(
-        'Help music rate image common worry reason.'
+        'Rather outside source away.'
       );
     });
 
     it('date between', () => {
       cy.get('input[id="Start Date filter from"]').type('2010-04-02');
 
-      cy.get('[aria-rowcount="5"]').should('exist');
-      cy.get('[aria-rowindex="5"] [aria-colindex="2"]').contains(
-        'Old ok order wall bank.'
+      cy.get('[aria-rowcount="2"]').should('exist');
+      cy.get('[aria-rowindex="2"] [aria-colindex="2"]').contains(
+        'Difference customer building will suffer nothing.'
       );
     });
 
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Name"]').first().type('1');
 
-      cy.get('[aria-label="Filter by Title"]').first().type('science');
+      cy.get('[aria-label="Filter by Title"]').first().type('maintain');
 
       cy.get('[aria-rowcount="1"]').should('exist');
     });
