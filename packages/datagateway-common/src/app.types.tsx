@@ -20,7 +20,6 @@ export interface Investigation {
   investigationUsers?: InvestigationUser[];
   samples?: Sample[];
   publications?: Publication[];
-  studyInvestigations?: StudyInvestigation[];
   facility?: Facility;
   datasets?: Dataset[];
   type?: InvestigationType;
@@ -114,24 +113,6 @@ export interface InvestigationType {
   id: number;
   name: string;
   description?: string;
-}
-
-export interface StudyInvestigation {
-  id: number;
-  study?: Study;
-  investigation?: Investigation;
-}
-
-export interface Study {
-  id: number;
-  pid: string;
-  name: string;
-  modTime: string;
-  createTime: string;
-  description?: string;
-  startDate?: string;
-  endDate?: string;
-  studyInvestigations?: StudyInvestigation[];
 }
 
 export interface DataCollectionDatafile {
@@ -291,8 +272,7 @@ export type ICATEntity =
   | Datafile
   | Instrument
   | FacilityCycle
-  | StudyInvestigation
-  | Study;
+  | DataPublication;
 
 export type Entity = (
   | ICATEntity
