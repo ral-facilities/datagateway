@@ -293,7 +293,6 @@ export const EntityTypes: string[] = [
   'facilityCycle',
   'instrument',
   'facility',
-  'study',
   'dataPublication',
 ];
 
