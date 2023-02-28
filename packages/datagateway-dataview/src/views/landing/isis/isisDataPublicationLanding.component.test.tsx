@@ -23,7 +23,7 @@ jest.mock('datagateway-common', () => {
   };
 });
 
-describe('ISIS Study Landing page', () => {
+describe('ISIS Data Publication Landing page', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let history: History;

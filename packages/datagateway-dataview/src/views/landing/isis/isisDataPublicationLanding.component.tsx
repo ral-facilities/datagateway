@@ -69,7 +69,7 @@ const ActionButtonsContainer = styled('div')(({ theme }) => ({
 }));
 
 export interface FormattedUser {
-  contributorType: string;
+  contributorType?: string;
   fullName: string;
 }
 

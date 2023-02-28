@@ -153,6 +153,7 @@ const ISISDataPublicationsCardView = (
 
   return (
     <CardView
+      data-testid="isis-dataPublications-card-view"
       data={data ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}

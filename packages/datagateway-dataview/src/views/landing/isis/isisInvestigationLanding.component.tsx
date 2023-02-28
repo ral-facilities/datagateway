@@ -76,7 +76,7 @@ const ActionButtonsContainer = styled('div')(({ theme }) => ({
 }));
 
 interface FormattedUser {
-  role: string;
+  role?: string;
   fullName: string;
 }
 

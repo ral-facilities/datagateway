@@ -14,7 +14,7 @@ import { Mark } from 'datagateway-common';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import axios, { AxiosError } from 'axios';
-import { FormattedUser } from './landing/isis/isisStudyLanding.component';
+import { FormattedUser } from './landing/isis/isisDataPublicationLanding.component';
 import { useQuery, UseQueryResult } from 'react-query';
 
 const Subheading = styled(Typography)(({ theme }) => ({

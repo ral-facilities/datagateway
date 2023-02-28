@@ -32,7 +32,6 @@ import InvestigationCardView from '../views/card/investigationCardView.component
 import DatasetCardView from '../views/card/datasetCardView.component';
 
 import ISISInstrumentsCardView from '../views/card/isis/isisInstrumentsCardView.component';
-import ISISStudyLanding from '../views/landing/isis/isisStudyLanding.component';
 import ISISDataPublicationsCardView from '../views/card/isis/isisDataPublicationsCardView.component';
 import ISISDataPublicationLanding from '../views/landing/isis/isisDataPublicationLanding.component';
 import ISISFacilityCyclesCardView from '../views/card/isis/isisFacilityCyclesCardView.component';
@@ -266,17 +265,6 @@ const SafeISISInvestigationLanding = React.memo(
   }
 );
 SafeISISInvestigationLanding.displayName = 'SafeISISInvestigationLanding';
-
-const SafeISISStudyLanding = React.memo(
-  (props: { instrumentId: string; studyId: string }): React.ReactElement => {
-    const SafeISISStudyLanding = withIdCheck(
-      checkInstrumentId(parseInt(props.instrumentId), parseInt(props.studyId))
-    )(ISISStudyLanding);
-
-    return <SafeISISStudyLanding {...props} />;
-  }
-);
-SafeISISStudyLanding.displayName = 'SafeISISStudyLanding';
 
 const SafeISISDataPublicationLanding = React.memo(
   (props: {
