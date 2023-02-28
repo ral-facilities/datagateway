@@ -195,12 +195,12 @@ export const FetchFacilityCycleCountFailureType =
 export const FetchFacilityCycleCountSuccessType =
   'datagateway_common:fetch_facility_cycle_count_success';
 
-export const FetchStudiesRequestType =
-  'datagateway_common:fetch_studies_request';
-export const FetchStudiesFailureType =
-  'datagateway_common:fetch_studies_failure';
-export const FetchStudiesSuccessType =
-  'datagateway_common:fetch_studies_success';
+export const FetchDataPublicationsRequestType =
+  'datagateway_common:fetch_data_publications_request';
+export const FetchDataPublicationsFailureType =
+  'datagateway_common:fetch_data_publications_failure';
+export const FetchDataPublicationsSuccessType =
+  'datagateway_common:fetch_data_publications_success';
 
 export const FetchStudyCountRequestType =
   'datagateway_common:fetch_study_count_request';
