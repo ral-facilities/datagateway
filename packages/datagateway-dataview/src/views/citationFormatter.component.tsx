@@ -99,7 +99,7 @@ const CitationFormatter = (
     props,
     t('doi_constants.publisher.name'),
     format,
-    t('studies.details.citation_formatter.locale')
+    t('data_publications.details.citation_formatter.locale')
   );
 
   const handleChange = (event: SelectChangeEvent<string>): void => {
@@ -108,7 +108,7 @@ const CitationFormatter = (
 
   //Information on available formats can be found here: https://citationstyles.org/developers/
   let citationFormats: string[] = t(
-    'studies.details.citation_formatter.formats',
+    'data_publications.details.citation_formatter.formats',
     { returnObjects: true }
   );
   //When testing can't easily mock i18next data, but citationFormats.map will fail if
@@ -119,13 +119,13 @@ const CitationFormatter = (
   return (
     <Box className="tour-dataview-citation-formatter">
       <Subheading variant="h6" data-testid="citation-formatter-title">
-        {t('studies.details.citation_formatter.label')}
+        {t('data_publications.details.citation_formatter.label')}
       </Subheading>
       <Typography data-testid="citation-formatter-details">
-        {t('studies.details.citation_formatter.details') +
+        {t('data_publications.details.citation_formatter.details') +
           (doi
             ? ` ${t(
-                'studies.details.citation_formatter.details_select_format'
+                'data_publications.details.citation_formatter.details_select_format'
               )}`
             : '')}
       </Typography>
@@ -137,13 +137,15 @@ const CitationFormatter = (
               defaultValue="default"
               onChange={handleChange}
               aria-label={t(
-                'studies.details.citation_formatter.select_arialabel'
+                'data_publications.details.citation_formatter.select_arialabel'
               )}
               aria-describedby="citation-formatter-error-message"
               variant="standard"
             >
               <MenuItem value="default">
-                {t('studies.details.citation_formatter.default_format')}
+                {t(
+                  'data_publications.details.citation_formatter.default_format'
+                )}
               </MenuItem>
               {citationFormats.map((format) => (
                 <MenuItem key={format} value={format}>
@@ -161,7 +163,7 @@ const CitationFormatter = (
           </div>
           {error && (
             <FormHelperText id="citation-formatter-error-message">
-              {t('studies.details.citation_formatter.error')}
+              {t('data_publications.details.citation_formatter.error')}
             </FormHelperText>
           )}
         </FormControl>
@@ -175,7 +177,7 @@ const CitationFormatter = (
         <Button
           id="citation-formatter-copy-citation"
           aria-label={t(
-            'studies.details.citation_formatter.copy_citation_arialabel'
+            'data_publications.details.citation_formatter.copy_citation_arialabel'
           )}
           variant="contained"
           color="primary"
@@ -189,7 +191,7 @@ const CitationFormatter = (
             }
           }}
         >
-          {t('studies.details.citation_formatter.copy_citation')}
+          {t('data_publications.details.citation_formatter.copy_citation')}
         </Button>
       ) : (
         <Button
@@ -199,7 +201,7 @@ const CitationFormatter = (
           size="small"
           startIcon={<Mark size={20} visible={true} />}
         >
-          {t('studies.details.citation_formatter.copied_citation')}
+          {t('data_publications.details.citation_formatter.copied_citation')}
         </Button>
       )}
     </Box>

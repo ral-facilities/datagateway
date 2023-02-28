@@ -1,11 +1,5 @@
-import { Link as MuiLink, styled } from '@mui/material';
-import {
-  Fingerprint,
-  Public,
-  Save,
-  Person,
-  CalendarToday,
-} from '@mui/icons-material';
+import { styled } from '@mui/material';
+import { Fingerprint, Save, Person, CalendarToday } from '@mui/icons-material';
 import {
   CardView,
   CardViewDetails,
@@ -116,24 +110,6 @@ const ISISInvestigationsCardView = (
         icon: Fingerprint,
         label: t('investigations.name'),
         dataKey: 'name',
-        filterComponent: textFilter,
-      },
-      {
-        content: function doiFormat(entity: Investigation) {
-          return (
-            entity?.studyInvestigations?.[0]?.study?.pid && (
-              <MuiLink
-                href={`https://doi.org/${entity.studyInvestigations[0].study.pid}`}
-                data-testid="isis-investigations-card-doi-link"
-              >
-                {entity.studyInvestigations[0].study?.pid}
-              </MuiLink>
-            )
-          );
-        },
-        icon: Public,
-        label: t('investigations.doi'),
-        dataKey: 'studyInvestigations[0].study.pid',
         filterComponent: textFilter,
       },
       {
