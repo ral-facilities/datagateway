@@ -701,7 +701,7 @@ export const fetchFilterCountQuery = (
     | 'facilityCycle'
     | 'instrument'
     | 'facility'
-    | 'study',
+    | 'dataPublication',
   additionalFilters?: AdditionalFilters
 ): Promise<number> => {
   const params = new URLSearchParams();
@@ -737,7 +737,7 @@ export const useCustomFilterCount = (
     | 'facilityCycle'
     | 'instrument'
     | 'facility'
-    | 'study',
+    | 'dataPublication',
   filterKey: string,
   filterIds: string[] | undefined,
   additionalFilters?: {
@@ -760,7 +760,7 @@ export const useCustomFilterCount = (
         | 'facilityCycle'
         | 'instrument'
         | 'facility'
-        | 'study'
+        | 'dataPublication'
       ),
       string,
       string,
