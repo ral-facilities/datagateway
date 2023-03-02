@@ -44,7 +44,7 @@ describe('DLS - Datasets Cards', () => {
     cy.get('[data-testid="card"]')
       .first()
       .get('[aria-label="card-more-information"]')
-      .contains('DATASET 241');
+      .contains('DATASET 241')
       .contains('DATASET 61');
     cy.get('[data-testid="card"]')
       .first()
