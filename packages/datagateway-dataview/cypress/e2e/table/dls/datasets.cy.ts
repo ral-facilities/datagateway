@@ -251,10 +251,10 @@ describe('DLS - Datasets Table', () => {
     it('and view the dataset type panel', () => {
       // need to wait for counts to finish, otherwise cypress might interact with the details panel
       // too quickly and it rerenders during the test
-      cy.contains('[aria-rowindex="1"] [aria-colindex="2"]', '30').should(
+      cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '30').should(
         'exist'
       );
-      cy.contains('[aria-rowindex="2"] [aria-colindex="2"]', '30').should(
+      cy.contains('[aria-rowindex="2"] [aria-colindex="4"]', '30').should(
         'exist'
       );
 
@@ -291,6 +291,6 @@ describe('DLS - Datasets Table', () => {
         timeout: 10000,
       });
 
-    cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('30');
+    cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('30');
   });
 });
