@@ -18,7 +18,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '14.x'
+          node-version: '16.x'
           cache: 'yarn'
 
       - name: Install dependencies
@@ -140,7 +140,7 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-          ref: v6.0.0
+          ref: v6.3.1
 
       # DataGateway API file setup
       - name: Create search_api_mapping.json
@@ -288,7 +288,7 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-          ref: v6.0.0
+          ref: v6.3.1
 
       # DataGateway API file setup
       - name: Create search_api_mapping.json
@@ -418,7 +418,7 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-          ref: v6.0.0
+          ref: v6.3.1
 
       # DataGateway API file setup
       - name: Create search_api_mapping.json

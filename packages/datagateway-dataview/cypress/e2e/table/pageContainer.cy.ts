@@ -27,7 +27,7 @@ describe('PageContainer Component', () => {
       cy.get('input[id="Title-filter"]').type('South');
       cy.wait('@getInvestigations');
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('36');
+      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('24');
 
       cy.get('[data-testid="clear-filters-button"]').click();
       cy.url().should('eq', url);
@@ -52,7 +52,7 @@ describe('PageContainer Component', () => {
     // Check that the entity count has displayed correctly.
     cy.get('[aria-label="view-count"]')
       .should('be.visible')
-      .contains('Results: 239');
+      .contains('Results: 59');
   });
 
   it('should display number of items in cart correctly', () => {

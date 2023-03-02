@@ -111,7 +111,7 @@ describe('DLS - Visits Table', () => {
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('42');
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('70');
     });
 
     it('descending order', () => {
@@ -124,7 +124,7 @@ describe('DLS - Visits Table', () => {
         'opacity',
         '0'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('42');
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('70');
     });
 
     it('no order', () => {
@@ -140,23 +140,23 @@ describe('DLS - Visits Table', () => {
         'opacity',
         '0'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('42');
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('70');
     });
 
     it('multiple columns', () => {
       cy.contains('[role="button"]', 'Start Date').click();
       cy.contains('[role="button"]', 'Visit ID').click();
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('42');
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('70');
     });
   });
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Visit ID"]').first().type('42');
+      cy.get('[aria-label="Filter by Visit ID"]').first().type('70');
 
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('42');
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('70');
     });
 
     it('date between', () => {
@@ -178,13 +178,13 @@ describe('DLS - Visits Table', () => {
       );
 
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('42');
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('70');
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Visit ID"]').first().type('42');
+      cy.get('[aria-label="Filter by Visit ID"]').first().type('70');
 
-      cy.get('[aria-label="Filter by Instrument').first().type('INSTRUMENT 8');
+      cy.get('[aria-label="Filter by Instrument').first().type('INSTRUMENT 3');
 
       cy.get('[aria-rowcount="1"').should('exist');
     });
@@ -244,7 +244,7 @@ describe('DLS - Visits Table', () => {
 
       cy.get('[aria-controls="visit-users-panel"]').click();
       cy.get('#visit-users-panel').should('not.have.attr', 'hidden');
-      cy.get('#details-panel').contains('Andrea Clayton').should('be.visible');
+      cy.get('#details-panel').contains('Colleen Heath').should('be.visible');
 
       cy.get('[aria-controls="visit-samples-panel"]').click();
       cy.get('#visit-samples-panel').should('not.have.attr', 'hidden');
@@ -253,7 +253,7 @@ describe('DLS - Visits Table', () => {
       cy.get('[aria-controls="visit-publications-panel"]').click();
       cy.get('#visit-publications-panel').should('not.have.attr', 'hidden');
       cy.get('#details-panel').contains(
-        'Eat interest seem black easy various. Choose outside develop deep another mouth. Project business base.'
+        'Simple notice since view check over through there. Hotel provide available a air avoid beautiful technology.'
       );
     });
 
