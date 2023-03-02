@@ -256,9 +256,6 @@ describe('DLS - Datasets Table', () => {
 
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.contains('#calculate-size-btn', 'Calculate')
-        .should('exist')
-        .click({ force: true });
       cy.contains('4.55 GB', { timeout: 10000 })
         .scrollIntoView()
         .should('be.visible');
@@ -278,9 +275,6 @@ describe('DLS - Datasets Table', () => {
 
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.contains('#calculate-size-btn', 'Calculate')
-        .should('exist')
-        .click({ force: true });
       cy.contains('0 B', { timeout: 10000 })
         .scrollIntoView()
         .should('be.visible');

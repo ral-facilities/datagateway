@@ -43,7 +43,6 @@ describe('DLS - Visits Cards', () => {
       .first()
       .get('[aria-label="card-more-information"]')
       .contains('INVESTIGATION 1');
-    cy.get('#calculate-size-btn').click({ force: true });
     cy.get('[data-testid="card"]')
       .first()
       .get('[aria-label="card-more-information"]')

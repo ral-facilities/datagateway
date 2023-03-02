@@ -207,9 +207,6 @@ describe('DLS - Visits Table', () => {
       );
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.contains('#calculate-size-btn', 'Calculate')
-        .should('exist')
-        .click({ force: true });
       cy.contains('11.01 GB', { timeout: 10000 })
         .scrollIntoView()
         .should('be.visible');
@@ -227,9 +224,6 @@ describe('DLS - Visits Table', () => {
       );
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.contains('#calculate-size-btn', 'Calculate')
-        .should('exist')
-        .click({ force: true });
       cy.contains('0 B', { timeout: 10000 })
         .scrollIntoView()
         .should('be.visible');
