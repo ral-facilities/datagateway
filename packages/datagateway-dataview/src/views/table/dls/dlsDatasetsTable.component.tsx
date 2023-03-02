@@ -159,6 +159,14 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
     [cartItems, selectAllSetting, allIds]
   );
 
+  const isParentSelected = React.useMemo(() => {
+    return cartItems?.some(
+      (cartItem) =>
+        cartItem.entityType === 'investigation' &&
+        cartItem.entityId.toString() === investigationId
+    );
+  }, [cartItems, investigationId]);
+
   return (
     <Table
       loading={
@@ -167,6 +175,7 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
         cartLoading ||
         allIdsLoading
       }
+      parentSelected={isParentSelected}
       data={aggregatedData}
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}

@@ -118,6 +118,14 @@ const ISISDatasetsTable = (
     return [];
   }, [data]);
 
+  const isParentSelected = React.useMemo(() => {
+    return cartItems?.some(
+      (cartItem) =>
+        cartItem.entityType === 'investigation' &&
+        cartItem.entityId.toString() === investigationId
+    );
+  }, [cartItems, investigationId]);
+
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
@@ -190,6 +198,7 @@ const ISISDatasetsTable = (
         cartLoading ||
         allIdsLoading
       }
+      parentSelected={isParentSelected}
       data={aggregatedData}
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}

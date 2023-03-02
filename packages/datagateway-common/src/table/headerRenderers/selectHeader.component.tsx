@@ -12,6 +12,7 @@ import { StyledTooltip } from '../../arrowtooltip.component';
 type SelectHeaderProps = TableHeaderProps & {
   sx: SxProps;
   loading: boolean;
+  parentSelected: boolean;
   selectedRows: number[] | undefined;
   totalRowCount: number;
   onCheck: (selectedIds: number[]) => void;
@@ -29,6 +30,7 @@ const SelectHeader = React.memo(
       onUncheck,
       allIds,
       loading,
+      parentSelected,
     } = props;
     const { t } = useTranslation();
 
@@ -42,10 +44,12 @@ const SelectHeader = React.memo(
       >
         <StyledTooltip
           title={
-            !loading && typeof selectedRows === 'undefined'
+            !loading && !parentSelected && typeof selectedRows === 'undefined'
               ? t<string, string>('buttons.cart_loading_failed_tooltip')
               : loading
               ? t<string, string>('buttons.cart_loading_tooltip')
+              : parentSelected
+              ? t<string, string>('buttons.parent_selected_tooltip')
               : ''
           }
           placement="right"
@@ -57,7 +61,9 @@ const SelectHeader = React.memo(
                 selectedRows.length > 0 &&
                 selectedRows.length < totalRowCount
               }
-              disabled={loading || typeof selectedRows === 'undefined'}
+              disabled={
+                loading || parentSelected || typeof selectedRows === 'undefined'
+              }
               icon={<CheckBoxOutlineBlank fontSize="small" />}
               checkedIcon={<CheckBoxIcon fontSize="small" />}
               indeterminateIcon={<IndeterminateCheckBox fontSize="small" />}

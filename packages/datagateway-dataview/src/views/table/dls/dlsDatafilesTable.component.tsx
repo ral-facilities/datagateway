@@ -164,6 +164,16 @@ const DLSDatafilesTable = (
     [cartItems, selectAllSetting, allIds]
   );
 
+  const isParentSelected = React.useMemo(() => {
+    return cartItems?.some(
+      (cartItem) =>
+        (cartItem.entityType === 'dataset' &&
+          cartItem.entityId.toString() === datasetId) ||
+        (cartItem.entityType === 'investigation' &&
+          cartItem.entityId.toString() === investigationId)
+    );
+  }, [cartItems, datasetId, investigationId]);
+
   return (
     <Table
       loading={
@@ -172,6 +182,7 @@ const DLSDatafilesTable = (
         cartLoading ||
         allIdsLoading
       }
+      parentSelected={isParentSelected}
       data={aggregatedData}
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}

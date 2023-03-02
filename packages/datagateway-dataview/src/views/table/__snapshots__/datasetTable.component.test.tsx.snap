@@ -85,6 +85,7 @@ Object {
   "onCheck": [MockFunction],
   "onSort": [Function],
   "onUncheck": [MockFunction],
+  "parentSelected": false,
   "selectedRows": Array [],
   "sort": Object {},
   "totalRowCount": 0,
