@@ -30,13 +30,13 @@ describe('DLS - MyData Table', () => {
       cy.url().should('include', 'filters');
 
       cy.url().then((url) => {
-        cy.get('[aria-rowcount="4"]').should('exist');
-        cy.get('input[id="Title-filter"]').type('night');
+        cy.get('[aria-rowcount="1"]').should('exist');
+        cy.get('input[id="Title-filter"]').type('analysis');
 
         cy.wait('@getInvestigations');
 
         cy.get('[aria-rowcount="1"]').should('exist');
-        cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('56');
+        cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('70');
 
         cy.get('[data-testid="clear-filters-button"]').click();
         cy.url().should('eq', url);
@@ -48,7 +48,7 @@ describe('DLS - MyData Table', () => {
 
       cy.location('pathname').should(
         'eq',
-        '/browse/proposal/INVESTIGATION%20131/investigation/131/dataset'
+        '/browse/proposal/INVESTIGATION%201/investigation/1/dataset'
       );
     });
 
@@ -143,7 +143,7 @@ describe('DLS - MyData Table', () => {
         cy.get('[aria-sort="ascending"]').should('exist');
         cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
         cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-          'Experience ready course option.'
+          'Analysis reflect work or hour color maybe.'
         );
       });
 
@@ -157,7 +157,7 @@ describe('DLS - MyData Table', () => {
           '0'
         );
         cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-          'Standard country something spend sign.'
+          'Analysis reflect work or hour color maybe.'
         );
       });
 
@@ -171,7 +171,7 @@ describe('DLS - MyData Table', () => {
           '0'
         );
         cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-          'Standard country something spend sign.'
+          'Analysis reflect work or hour color maybe.'
         );
       });
 
@@ -180,67 +180,58 @@ describe('DLS - MyData Table', () => {
         cy.contains('[role="button"]', 'Instrument').click();
 
         cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-          'Experience ready course option.'
+          'Analysis reflect work or hour color maybe.'
         );
       });
     });
 
     describe('should be able to filter by', () => {
       it('role', () => {
-        cy.get('[aria-rowcount="4"]').should('exist');
+        cy.get('[aria-rowcount="1"]').should('exist');
 
         cy.get('#role-selector').click();
         cy.get('[role="listbox"]')
           .find('[role="option"]')
-          .should('have.length', 3);
+          .should('have.length', 2);
         cy.get('[role="option"][data-value="PI"]').click();
 
-        cy.get('[aria-rowcount="3"]').should('exist');
+        cy.get('[aria-rowcount="1"]').should('exist');
 
         cy.get('#role-selector').click();
         cy.get('[role="option"]').first().click();
-        cy.get('[aria-rowcount="4"]').should('exist');
+        cy.get('[aria-rowcount="1"]').should('exist');
       });
 
       it('text', () => {
-        cy.get('[aria-rowcount="4"]').should('exist');
-        cy.get('input[id="Title-filter"]').type('night');
+        cy.get('[aria-rowcount="1"]').should('exist');
+        cy.get('input[id="Title-filter"]').type('work');
 
         cy.get('[aria-rowcount="1"]').should('exist');
-        cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('56');
+        cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('70');
       });
 
       it('date between', () => {
-        cy.get('[aria-rowcount="4"]').should('exist');
-
-        cy.get('input[aria-label="Start Date filter to"]')
-          .parent()
-          .find('button')
-          .click();
-
-        cy.get('.MuiPickersDay-root[type="button"]').first().click();
+        cy.get('[aria-rowcount="1"]').should('exist');
 
         const date = new Date();
-        date.setDate(1);
 
-        cy.get('input[id="Start Date filter to"]').should(
-          'have.value',
+        cy.get('input[aria-label="Start Date filter to"]').type(
           date.toISOString().slice(0, 10)
         );
 
-        cy.get('[aria-rowcount="4"]').should('exist');
+        cy.get('[aria-rowcount="1"]').should('exist');
 
-        cy.get('input[id="Start Date filter from"]').type('2006-04-04');
+        cy.get('input[id="Start Date filter from"]').type('2000-04-01');
 
-        cy.get('[aria-rowcount="2"]').should('exist');
+        cy.get('[aria-rowcount="1"]').should('exist');
       });
 
       it('multiple columns', () => {
-        cy.get('input[id="Start Date filter from"]').first().type('2003-04-04');
+        cy.get('input[id="Start Date filter from"]').first().type('2000-04-01');
 
-        cy.get('[aria-rowcount="3"]').should('exist');
+        cy.get('[aria-rowcount="1"]').should('exist');
 
-        cy.get('[aria-label="Filter by Title"]').first().type('us');
+        cy.get('[aria-label="Filter by Title"]').first().type('or');
 
         cy.get('[aria-rowcount="1"]').should('exist');
       });
@@ -263,22 +254,21 @@ describe('DLS - MyData Table', () => {
 
         cy.get('[aria-controls="visit-samples-panel"]').click();
         cy.get('#visit-samples-panel').should('not.have.attr', 'hidden');
-        cy.get('#details-panel').contains('SAMPLE 131').should('be.visible');
+        cy.get('#details-panel').contains('SAMPLE 1').should('be.visible');
 
         cy.get('[aria-controls="visit-users-panel"]').click();
         cy.get('#visit-users-panel').should('not.have.attr', 'hidden');
-        cy.get('#details-panel')
-          .contains('Kimberly Sharp')
-          .should('be.visible');
+        cy.get('#details-panel').contains('Colleen Heath').should('be.visible');
 
         cy.get('[aria-controls="visit-publications-panel"]').click();
         cy.get('#visit-publications-panel').should('not.have.attr', 'hidden');
         cy.get('#details-panel').contains(
-          'Guess including understand bed father.'
+          'Throw hope parent. Receive entire soon.'
         );
       });
 
-      it('when another row is showing details', () => {
+      it.skip('when another row is showing details', () => {
+        //Unable to test as each user only owns one investigation
         cy.get('[aria-label="Show details"]').eq(1).click();
 
         cy.get('[aria-label="Show details"]').first().click();

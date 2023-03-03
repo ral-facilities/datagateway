@@ -17,7 +17,7 @@ describe('ISIS - FacilityCycles Table', () => {
     cy.get('[role="gridcell"] a').first().click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/79/investigation'
+      '/browse/instrument/1/facilityCycle/19/investigation'
     );
   });
 
@@ -106,7 +106,7 @@ describe('ISIS - FacilityCycles Table', () => {
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        '2000-04-02 00:00:00+00:00'
+        '2004-06-03 00:00:00+00:00'
       );
     });
 
@@ -121,7 +121,7 @@ describe('ISIS - FacilityCycles Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        '2019-08-04 00:00:00+00:00'
+        '2004-08-04 00:00:00+00:00'
       );
     });
 
@@ -139,7 +139,7 @@ describe('ISIS - FacilityCycles Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        '2000-04-02 00:00:00+00:00'
+        '2004-06-03 00:00:00+00:00'
       );
     });
 
@@ -148,23 +148,23 @@ describe('ISIS - FacilityCycles Table', () => {
       cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        '2000-04-02 00:00:00+00:00'
+        '2004-06-03 00:00:00+00:00'
       );
     });
   });
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Name"]').first().type('2010');
+      cy.get('[aria-label="Filter by Name"]').first().type('3');
 
-      cy.get('[aria-rowcount="2"]').should('exist');
-      cy.get('[aria-rowindex="2"] [aria-colindex="2"]').contains(
-        '2010-06-03 00:00:00+00:00'
+      cy.get('[aria-rowcount="1"]').should('exist');
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+        '2004-06-03 00:00:00+00:00'
       );
     });
 
     it('date between', () => {
-      cy.get('input[id="Start Date filter from"]').type('2010-04-02');
+      cy.get('input[id="Start Date filter from"]').type('204-04-02');
 
       cy.get('input[aria-label="Start Date filter to"]')
         .parent()
@@ -181,16 +181,16 @@ describe('ISIS - FacilityCycles Table', () => {
         date.toISOString().slice(0, 10)
       );
 
-      cy.get('[aria-rowcount="19"]').should('exist');
+      cy.get('[aria-rowcount="2"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        '2019-08-04 00:00:00+00:00'
+        '2004-08-04 00:00:00+00:00'
       );
     });
 
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Name"]').first().type('3');
 
-      cy.get('input[id="Start Date filter from"]').type('2019-06-03');
+      cy.get('input[id="Start Date filter from"]').type('204-08-03');
 
       cy.get('[aria-rowcount="1"]').should('exist');
     });

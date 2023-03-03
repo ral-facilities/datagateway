@@ -33,7 +33,7 @@ describe('SearchPageContainer Component', () => {
     );
   });
 
-  describe('SearchPageContianer Components', () => {
+  describe('SearchPageContainer Components', () => {
     beforeEach(() => {
       cy.login();
       cy.visit('/search/data/');
@@ -91,11 +91,9 @@ describe('SearchPageContainer Component', () => {
       cy.get('[id="simple-tab-dataset"]').click();
       cy.get('[id="simple-tab-investigation"]').click();
 
-      cy.get('[aria-rowcount="3"]').should('exist');
+      cy.get('[aria-rowcount="4"]').should('exist');
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Energy place money bad authority. Poor community technology against happy. Detail customer management together dog. Put name war sometimes rise sport your. Imagine across mother herself then.'
-      );
+      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('18');
     });
 
     it('should be able to click clear filters button to clear filters', () => {
@@ -109,10 +107,10 @@ describe('SearchPageContainer Component', () => {
           }
         );
 
-        cy.get('[aria-rowcount="3"]').should('exist');
+        cy.get('[aria-rowcount="4"]').should('exist');
 
         cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-          'Energy place money bad authority. Poor community technology against happy. Detail customer management together dog. Put name war sometimes rise sport your. Imagine across mother herself then.'
+          'Prove begin boy those always dream write inside. Cold drop season bill treat her wife. Nearly represent fire debate fish. Skin understand risk.'
         );
 
         cy.get('[data-testid="clear-filters-button"]').click();
@@ -141,17 +139,17 @@ describe('SearchPageContainer Component', () => {
     it('should be able to switch between tabs', () => {
       cy.get('[aria-label="Search table"]')
         .contains('Dataset')
-        .contains('14')
+        .contains('3')
         .click();
 
       cy.get('[aria-label="Search table"]')
         .contains('Datafile')
-        .contains('300')
+        .contains('44')
         .click();
 
       cy.get('[aria-label="Search table"]')
         .contains('Investigation')
-        .contains('15')
+        .contains('5')
         .click();
     });
 
@@ -181,6 +179,11 @@ describe('SearchPageContainer Component', () => {
     });
 
     it('should be able to scroll down and load more rows', () => {
+      cy.get('[aria-label="Search text input"').clear();
+      cy.get('[aria-label="Submit search"]').click();
+      cy.wait(['@investigations', '@investigations', '@investigationsCount'], {
+        timeout: 10000,
+      });
       cy.get('[aria-label="Search table"]')
         .contains('Datafile')
         .contains('300')
@@ -333,7 +336,7 @@ describe('SearchPageContainer Component', () => {
         .should('not.exist');
       cy.get('[aria-label="Search table"]')
         .contains('Dataset')
-        .contains('14')
+        .contains('3')
         .should('exist');
     });
 
@@ -399,13 +402,13 @@ describe('SearchPageContainer Component', () => {
 
       cy.get('[aria-label="Search table"]')
         .contains('Investigation')
-        .contains('8')
+        .contains('2')
         .should('exist');
     });
 
     it('should be able to load results from a URL', () => {
       cy.visit(
-        '/search/data/?view=card&searchText=test&startDate=2009-01-01'
+        '/search/data/?view=card&searchText=test&startDate=2000-06-01'
       ).wait(['@investigations', '@investigations', '@investigationsCount'], {
         timeout: 10000,
       });
@@ -418,15 +421,15 @@ describe('SearchPageContainer Component', () => {
 
       cy.get('[aria-label="Search table"]')
         .contains('Investigation')
-        .contains('4')
+        .contains('1')
         .should('exist');
       cy.get('[aria-label="Search table"]')
         .contains('Dataset')
-        .contains('7')
+        .contains('5')
         .should('exist');
       cy.get('[aria-label="Search table"]')
         .contains('Datafile')
-        .contains('300')
+        .contains('36')
         .should('exist');
     });
   });

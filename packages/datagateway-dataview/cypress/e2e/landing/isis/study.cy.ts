@@ -1,13 +1,13 @@
 describe('ISIS - Study Landing', () => {
   beforeEach(() => {
     cy.login();
-    cy.visit('/browseStudyHierarchy/instrument/1/study/4');
+    cy.visit('/browseStudyHierarchy/instrument/1/study/14');
   });
 
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');
-    cy.contains('He represent address cut environmental special size').should(
+    cy.contains('Already medical seek take military rise.').should(
       'be.visible'
     );
   });
@@ -16,7 +16,7 @@ describe('ISIS - Study Landing', () => {
     cy.get('#study-investigations-tab').first().click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browseStudyHierarchy/instrument/1/study/4/investigation'
+      '/browseStudyHierarchy/instrument/1/study/14/investigation'
     );
   });
 
@@ -27,15 +27,15 @@ describe('ISIS - Study Landing', () => {
       .click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browseStudyHierarchy/instrument/1/study/4/investigation/16'
+      '/browseStudyHierarchy/instrument/1/study/14/investigation/41'
     );
   });
 
   it('should be able to click a DOI render the correct webpage ', () => {
-    cy.contains('1-314-79096-X').should(
+    cy.contains('1-71395-013-8').should(
       'have.attr',
       'href',
-      'https://doi.org/1-314-79096-X'
+      'https://doi.org/1-71395-013-8'
     );
   });
 
@@ -83,7 +83,7 @@ describe('ISIS - Study Landing', () => {
         ],
       },
     ]);
-    cy.visit('/browseStudyHierarchy/instrument/1/study/4');
+    cy.visit('/browseStudyHierarchy/instrument/1/study/14');
     cy.get('#datagateway-dataview').should('be.visible');
     cy.contains('10.5286/ISIS.E.RB1810842').should('be.visible');
   });
@@ -91,13 +91,13 @@ describe('ISIS - Study Landing', () => {
   it('should disable the hover tool tip by pressing escape', () => {
     cy.intercept('**/studies?*', [
       {
-        id: 101224979,
+        id: 14,
         pid: '10.5286/ISIS.E.RB1810842',
         studyInvestigations: [
           {
             createId: 'uows/1050072',
             createTime: '2019-02-07 15:27:19.790000+00:00',
-            id: 101224981,
+            id: 10,
           },
         ],
       },
@@ -139,7 +139,7 @@ describe('ISIS - Study Landing', () => {
       '@misc{dr sabrina gaertner_mr vincent deguin_dr pierre ghesquiere_dr claire...}',
     ]);
 
-    cy.visit('/browseStudyHierarchy/instrument/1/study/4');
+    cy.visit('/browseStudyHierarchy/instrument/1/study/14');
     cy.get('#datagateway-dataview').should('be.visible');
     cy.contains('10.5286/ISIS.E.RB1810842').should('be.visible');
     cy.get('[data-testid="citation-formatter-citation"]').contains(
@@ -175,7 +175,7 @@ describe('ISIS - Study Landing', () => {
     cy.intercept('**/text/x-bibliography/invaliddoi?*', {
       statusCode: 503,
     });
-    cy.visit('/browseStudyHierarchy/instrument/1/study/4');
+    cy.visit('/browseStudyHierarchy/instrument/1/study/14');
     cy.get('#datagateway-dataview').should('be.visible');
     cy.contains('invaliddoi').should('be.visible');
 
