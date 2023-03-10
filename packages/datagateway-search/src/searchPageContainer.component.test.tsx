@@ -8,7 +8,7 @@ import {
   dGCommonInitialState,
   type DownloadCartItem,
 } from 'datagateway-common';
-import { createMemoryHistory, type History } from 'history';
+import { createMemoryHistory, createPath, type History } from 'history';
 import { Router } from 'react-router-dom';
 import SearchPageContainer, {
   getFilters,
@@ -70,6 +70,31 @@ describe('SearchPageContainer - Tests', () => {
     queryClient = new QueryClient();
     history = createMemoryHistory({
       initialEntries: ['/search/data'],
+    });
+    delete window.location;
+    window.location = new URL(`http://localhost/search/data`);
+
+    // below code keeps window.location in sync with history changes
+    // (needed because useUpdateQueryParam uses window.location not history)
+    const historyReplace = history.replace;
+    const historyReplaceSpy = jest.spyOn(history, 'replace');
+    historyReplaceSpy.mockImplementation((args) => {
+      historyReplace(args);
+      if (typeof args === 'string') {
+        window.location = new URL(`http://localhost${args}`);
+      } else {
+        window.location = new URL(`http://localhost${createPath(args)}`);
+      }
+    });
+    const historyPush = history.push;
+    const historyPushSpy = jest.spyOn(history, 'push');
+    historyPushSpy.mockImplementation((args) => {
+      historyPush(args);
+      if (typeof args === 'string') {
+        window.location = new URL(`http://localhost${args}`);
+      } else {
+        window.location = new URL(`http://localhost${createPath(args)}`);
+      }
     });
 
     window.localStorage.__proto__.removeItem = jest.fn();

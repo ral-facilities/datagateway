@@ -8,7 +8,12 @@ import {
   DownloadCartItem,
   readSciGatewayToken,
 } from 'datagateway-common';
-import { createLocation, createMemoryHistory, History } from 'history';
+import {
+  createLocation,
+  createMemoryHistory,
+  createPath,
+  History,
+} from 'history';
 import { Router } from 'react-router-dom';
 
 import PageContainer, { paths } from './pageContainer.component';
@@ -94,6 +99,32 @@ describe('PageContainer - Tests', () => {
       initialEntries: ['/'],
     });
     user = userEvent.setup();
+
+    delete window.location;
+    window.location = new URL(`http://localhost/`);
+
+    // below code keeps window.location in sync with history changes
+    // (needed because useUpdateQueryParam uses window.location not history)
+    const historyReplace = history.replace;
+    const historyReplaceSpy = jest.spyOn(history, 'replace');
+    historyReplaceSpy.mockImplementation((args) => {
+      historyReplace(args);
+      if (typeof args === 'string') {
+        window.location = new URL(`http://localhost${args}`);
+      } else {
+        window.location = new URL(`http://localhost${createPath(args)}`);
+      }
+    });
+    const historyPush = history.push;
+    const historyPushSpy = jest.spyOn(history, 'push');
+    historyPushSpy.mockImplementation((args) => {
+      historyPush(args);
+      if (typeof args === 'string') {
+        window.location = new URL(`http://localhost${args}`);
+      } else {
+        window.location = new URL(`http://localhost${createPath(args)}`);
+      }
+    });
 
     holder = document.createElement('div');
     holder.setAttribute('id', 'datagateway-search');
