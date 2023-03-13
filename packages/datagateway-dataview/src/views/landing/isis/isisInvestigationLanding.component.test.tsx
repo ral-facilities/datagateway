@@ -1,17 +1,26 @@
-import React from 'react';
+import * as React from 'react';
 import ISISInvestigationLanding from './isisInvestigationLanding.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../../../state/app.types';
-import { dGCommonInitialState, useInvestigation } from 'datagateway-common';
+import {
+  dGCommonInitialState,
+  useInvestigation,
+  useInvestigationSizes,
+} from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { mount, ReactWrapper } from 'enzyme';
 import { createMemoryHistory, History } from 'history';
-import { QueryClientProvider, QueryClient } from 'react-query';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { Router } from 'react-router-dom';
-import { flushPromises } from '../../../setupTests';
-import { act } from 'react-dom/test-utils';
+import {
+  render,
+  type RenderResult,
+  screen,
+  within,
+} from '@testing-library/react';
+import { UserEvent } from '@testing-library/user-event/setup/setup';
+import userEvent from '@testing-library/user-event';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -28,11 +37,11 @@ describe('ISIS Investigation Landing page', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let history: History;
+  let user: UserEvent;
 
-  const createWrapper = (studyHierarchy = false): ReactWrapper => {
-    const store = mockStore(state);
-    return mount(
-      <Provider store={store}>
+  const renderComponent = (studyHierarchy = false): RenderResult =>
+    render(
+      <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
             <ISISInvestigationLanding
@@ -45,17 +54,19 @@ describe('ISIS Investigation Landing page', () => {
         </Router>
       </Provider>
     );
-  };
 
   const initialData = [
     {
       id: 1,
-      title: 'Test 1',
+      title: 'Test title 1',
       name: 'Test 1',
       summary: 'foo bar',
-      visitId: '1',
+      visitId: 'visit id 1',
       doi: 'doi 1',
       size: 1,
+      facility: {
+        name: 'LILS',
+      },
       investigationInstruments: [
         {
           id: 1,
@@ -169,248 +180,399 @@ describe('ISIS Investigation Landing page', () => {
       })
     );
     history = createMemoryHistory();
+    user = userEvent.setup();
 
     (useInvestigation as jest.Mock).mockReturnValue({
       data: initialData,
     });
+    (useInvestigationSizes as jest.Mock).mockReturnValue([
+      {
+        isSuccess: true,
+        data: 1,
+      },
+    ]);
   });
 
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('calls the correct data fetching hooks', () => {
-    createWrapper();
+  it('renders landing for investigation correctly', () => {
+    renderComponent();
 
-    expect(useInvestigation).toHaveBeenCalledWith(1, [
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify([
-          {
-            investigationUsers: 'user',
-          },
-          'samples',
-          'publications',
-          'datasets',
-          {
-            studyInvestigations: 'study',
-          },
-          {
-            investigationInstruments: 'instrument',
-          },
-        ]),
-      },
-    ]);
-  });
-
-  it('links to the correct url in the datafiles tab for both hierarchies and both views', () => {
-    const facilityCycleWrapper = createWrapper();
-
-    facilityCycleWrapper
-      .find('#investigation-datasets-tab')
-      .last()
-      .simulate('click');
-
-    expect(history.location.pathname).toBe(
-      '/browse/instrument/4/facilityCycle/5/investigation/1/dataset'
-    );
-
-    history.replace('/?view=card');
-    const studyWrapper = createWrapper(true);
-
-    studyWrapper.find('#investigation-datasets-tab').last().simulate('click');
-
-    expect(history.location.pathname).toBe(
-      '/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset'
-    );
-    expect(history.location.search).toBe('?view=card');
-  });
-
-  it('users displayed correctly', () => {
-    let wrapper = createWrapper();
-
+    // branding should be visible
+    expect(screen.getByRole('img', { name: 'STFC Logo' })).toBeInTheDocument();
     expect(
-      wrapper.find('[aria-label="landing-investigation-users-label"]')
-    ).toHaveLength(0);
+      screen.getByText('doi_constants.branding.title')
+    ).toBeInTheDocument();
+    expect(screen.getByText('doi_constants.branding.body')).toBeInTheDocument();
+
+    // investigation details should be visible
+    expect(screen.getByText('Test title 1')).toBeInTheDocument();
+    expect(screen.getByText('foo bar')).toBeInTheDocument();
+
+    // publisher section should be visible
+    expect(screen.getByText('studies.details.publisher')).toBeInTheDocument();
     expect(
-      wrapper.find('[aria-label="landing-investigation-user-0"]')
+      screen.getByText('doi_constants.publisher.name')
+    ).toBeInTheDocument();
+
+    // investigation samples should be hidden (initial data does not have samples)
+    expect(
+      screen.queryByText('investigations.details.samples.label')
+    ).toBeNull();
+    expect(
+      screen.queryByText('investigations.details.samples.no_samples')
+    ).toBeNull();
+    expect(
+      screen.queryAllByLabelText(/landing-investigation-sample-\d+$/)
     ).toHaveLength(0);
 
+    // publication section should be hidden (initial data does not have publications)
+    expect(
+      screen.queryByText('investigations.details.publications.label')
+    ).toBeNull();
+    expect(
+      screen.queryByText('investigations.details.publications.no_publications')
+    ).toBeNull();
+    expect(
+      screen.queryAllByLabelText(/landing-investigation-reference-\d+$/)
+    ).toHaveLength(0);
+
+    // short format information should be visible
+    expect(screen.getByText('investigations.visit_id:')).toBeInTheDocument();
+    expect(screen.getByText('visit id 1')).toBeInTheDocument();
+    expect(screen.getByText('investigations.doi:')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'doi 1' })).toHaveAttribute(
+      'href',
+      'https://doi.org/doi 1'
+    );
+    expect(screen.getByText('investigations.parent_doi:')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'study pid' })).toHaveAttribute(
+      'href',
+      'https://doi.org/study pid'
+    );
+    expect(screen.getByText('investigations.name:')).toBeInTheDocument();
+    expect(screen.getByText('Test 1')).toBeInTheDocument();
+    expect(screen.getByText('investigations.size:')).toBeInTheDocument();
+    expect(screen.getByText('1 B')).toBeInTheDocument();
+    expect(
+      screen.getByText('investigations.details.facility:')
+    ).toBeInTheDocument();
+    expect(screen.getByText('LILS')).toBeInTheDocument();
+    expect(screen.getByText('investigations.instrument:')).toBeInTheDocument();
+    expect(screen.getByText('LARMOR')).toBeInTheDocument();
+    expect(screen.getByText('studies.details.format:')).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: 'doi_constants.distribution.format' })
+    ).toHaveAttribute(
+      'href',
+      'https://www.isis.stfc.ac.uk/Pages/ISIS-Raw-File-Format.aspx'
+    );
+    expect(screen.queryByText('investigations.release_date:')).toBeNull();
+    expect(screen.getByText('investigations.start_date:')).toBeInTheDocument();
+    expect(screen.getByText('2019-06-10')).toBeInTheDocument();
+    expect(screen.getByText('investigations.end_date:')).toBeInTheDocument();
+    expect(screen.getByText('2019-06-11')).toBeInTheDocument();
+
+    const actionButtonContainer = screen.getByTestId(
+      'investigation-landing-action-container'
+    );
+
+    // actions should be visible
+    expect(actionButtonContainer).toBeInTheDocument();
+    expect(
+      within(actionButtonContainer).getByRole('button', {
+        name: 'buttons.add_to_cart',
+      })
+    ).toBeInTheDocument();
+  });
+
+  describe('renders datasets for the investigation correctly', () => {
+    it('for facility cycle hierarchy and normal view', () => {
+      renderComponent();
+
+      expect(
+        screen.getByRole('link', { name: 'datasets.dataset: dataset 1' })
+      ).toHaveAttribute(
+        'href',
+        '/browse/instrument/4/facilityCycle/5/investigation/1/dataset/1'
+      );
+      expect(screen.getByText('datasets.doi:')).toBeInTheDocument();
+      expect(
+        screen.getByRole('link', { name: 'landing-study-doi-link' })
+      ).toHaveAttribute('href', 'https://doi.org/dataset doi');
+
+      // actions for datasets should be visible
+      const actionContainer = screen.getByTestId(
+        'investigation-landing-dataset-0-action-container'
+      );
+      expect(actionContainer).toBeInTheDocument();
+      expect(
+        within(actionContainer).getByRole('button', {
+          name: 'buttons.add_to_cart',
+        })
+      ).toBeInTheDocument();
+    });
+
+    it('for facility cycle hierarchy and card view', () => {
+      history.replace('/?view=card');
+
+      renderComponent();
+
+      expect(
+        screen.getByRole('link', { name: 'datasets.dataset: dataset 1' })
+      ).toHaveAttribute(
+        'href',
+        '/browse/instrument/4/facilityCycle/5/investigation/1/dataset/1?view=card'
+      );
+      expect(screen.getByText('datasets.doi:')).toBeInTheDocument();
+      expect(
+        screen.getByRole('link', { name: 'landing-study-doi-link' })
+      ).toHaveAttribute('href', 'https://doi.org/dataset doi');
+
+      // actions for datasets should be visible
+      const actionContainer = screen.getByTestId(
+        'investigation-landing-dataset-0-action-container'
+      );
+      expect(actionContainer).toBeInTheDocument();
+      expect(
+        within(actionContainer).getByRole('button', {
+          name: 'buttons.add_to_cart',
+        })
+      ).toBeInTheDocument();
+    });
+
+    it('for study hierarchy and normal view', () => {
+      renderComponent(true);
+
+      expect(
+        screen.getByRole('link', { name: 'datasets.dataset: dataset 1' })
+      ).toHaveAttribute(
+        'href',
+        '/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset/1'
+      );
+      expect(screen.getByText('datasets.doi:')).toBeInTheDocument();
+      expect(
+        screen.getByRole('link', { name: 'landing-study-doi-link' })
+      ).toHaveAttribute('href', 'https://doi.org/dataset doi');
+
+      // actions for datasets should be visible
+      const actionContainer = screen.getByTestId(
+        'investigation-landing-dataset-0-action-container'
+      );
+      expect(actionContainer).toBeInTheDocument();
+      expect(
+        within(actionContainer).getByRole('button', {
+          name: 'buttons.add_to_cart',
+        })
+      ).toBeInTheDocument();
+    });
+
+    it('for study hierarchy and card view', () => {
+      history.push('/?view=card');
+
+      renderComponent(true);
+
+      expect(
+        screen.getByRole('link', { name: 'datasets.dataset: dataset 1' })
+      ).toHaveAttribute(
+        'href',
+        '/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset/1?view=card'
+      );
+      expect(screen.getByText('datasets.doi:')).toBeInTheDocument();
+      expect(
+        screen.getByRole('link', { name: 'landing-study-doi-link' })
+      ).toHaveAttribute('href', 'https://doi.org/dataset doi');
+
+      // actions for datasets should be visible
+      const actionContainer = screen.getByTestId(
+        'investigation-landing-dataset-0-action-container'
+      );
+      expect(actionContainer).toBeInTheDocument();
+      expect(
+        within(actionContainer).getByRole('button', {
+          name: 'buttons.add_to_cart',
+        })
+      ).toBeInTheDocument();
+    });
+  });
+
+  describe('links to the correct url in the datafiles tab', () => {
+    it('for facility cycle hierarchy and normal view', async () => {
+      renderComponent();
+
+      await user.click(
+        await screen.findByRole('tab', {
+          name: 'investigations.details.datasets',
+        })
+      );
+
+      expect(history.location.pathname).toBe(
+        '/browse/instrument/4/facilityCycle/5/investigation/1/dataset'
+      );
+    });
+
+    it('for facility cycle hierarchy and cards view', async () => {
+      history.replace('/?view=card');
+      renderComponent();
+
+      await user.click(
+        await screen.findByRole('tab', {
+          name: 'investigations.details.datasets',
+        })
+      );
+
+      expect(history.location.pathname).toBe(
+        '/browse/instrument/4/facilityCycle/5/investigation/1/dataset'
+      );
+      expect(history.location.search).toBe('?view=card');
+    });
+
+    it('for study hierarchy and normal view', async () => {
+      history.replace('/?view=card');
+      renderComponent(true);
+
+      await user.click(
+        await screen.findByRole('tab', {
+          name: 'investigations.details.datasets',
+        })
+      );
+
+      expect(history.location.pathname).toBe(
+        '/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset'
+      );
+    });
+
+    it('for study hierarchy and cards view', async () => {
+      history.replace('/?view=card');
+      renderComponent(true);
+
+      await user.click(
+        await screen.findByRole('tab', {
+          name: 'investigations.details.datasets',
+        })
+      );
+
+      expect(history.location.pathname).toBe(
+        '/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset'
+      );
+      expect(history.location.search).toBe('?view=card');
+    });
+  });
+
+  it('users displayed correctly', async () => {
     (useInvestigation as jest.Mock).mockReturnValue({
       data: [{ ...initialData[0], investigationUsers: investigationUser }],
     });
-    wrapper = createWrapper();
+    renderComponent();
 
     expect(
-      wrapper.find('[aria-label="landing-investigation-users-label"]')
-    ).toHaveLength(4);
+      await screen.findByLabelText('landing-investigation-user-0')
+    ).toHaveTextContent('Principal Investigator: John Smith');
     expect(
-      wrapper.find('[aria-label="landing-investigation-user-0"]').first().text()
-    ).toEqual('Principal Investigator: John Smith');
+      await screen.findByLabelText('landing-investigation-user-1')
+    ).toHaveTextContent('Local Contact: Jane Smith');
     expect(
-      wrapper.find('[aria-label="landing-investigation-user-1"]').first().text()
-    ).toEqual('Local Contact: Jane Smith');
-    expect(
-      wrapper.find('[aria-label="landing-investigation-user-2"]').first().text()
-    ).toEqual('Experimenter: Jesse Smith');
-    expect(
-      wrapper.find('[aria-label="landing-investigation-user-3"]')
-    ).toHaveLength(0);
+      await screen.findByLabelText('landing-investigation-user-2')
+    ).toHaveTextContent('Experimenter: Jesse Smith');
   });
 
-  it('renders text "No samples" when no data is present', () => {
-    let wrapper = createWrapper();
+  it('renders text "No samples" when no data is present', async () => {
     (useInvestigation as jest.Mock).mockReturnValue({
       data: [{ ...initialData[0], samples: noSamples }],
     });
-    wrapper = createWrapper();
+    renderComponent();
 
     expect(
-      wrapper
-        .find('[data-testid="investigation-details-panel-no-samples"]')
-        .exists()
-    ).toBeTruthy();
+      await screen.findByText('investigations.details.samples.no_samples')
+    ).toBeInTheDocument();
   });
 
-  it('renders text "No publications" when no data is present', () => {
-    let wrapper = createWrapper();
+  it('renders text "No publications" when no data is present', async () => {
     (useInvestigation as jest.Mock).mockReturnValue({
       data: [{ ...initialData[0], publications: noPublication }],
     });
-    wrapper = createWrapper();
+    renderComponent();
 
     expect(
-      wrapper
-        .find('[data-testid="investigation-details-panel-no-publications"]')
-        .exists()
-    ).toBeTruthy();
+      await screen.findByText(
+        'investigations.details.publications.no_publications'
+      )
+    ).toBeInTheDocument();
   });
 
-  it('publications displayed correctly', () => {
-    let wrapper = createWrapper();
-
-    expect(
-      wrapper.find('[aria-label="landing-investigation-publications-label"]')
-    ).toHaveLength(0);
-    expect(
-      wrapper.find('[aria-label="landing-investigation-publication-0"]')
-    ).toHaveLength(0);
-
+  it('publications displayed correctly', async () => {
     (useInvestigation as jest.Mock).mockReturnValue({
       data: [{ ...initialData[0], publications: publication }],
     });
-    wrapper = createWrapper();
+    renderComponent();
 
     expect(
-      wrapper.find('[aria-label="landing-investigation-publications-label"]')
-    ).toHaveLength(4);
-    expect(
-      wrapper
-        .find('[aria-label="landing-investigation-reference-0"]')
-        .first()
-        .text()
-    ).toEqual('Journal, Author, Date, DOI');
+      await screen.findByText('Journal, Author, Date, DOI')
+    ).toBeInTheDocument();
   });
 
-  it('samples displayed correctly', () => {
-    let wrapper = createWrapper();
-
-    expect(
-      wrapper.find('[aria-label="landing-investigation-samples-label"]')
-    ).toHaveLength(0);
-    expect(
-      wrapper.find('[aria-label="landing-investigation-sample-0"]')
-    ).toHaveLength(0);
-
+  it('samples displayed correctly', async () => {
     (useInvestigation as jest.Mock).mockReturnValue({
       data: [{ ...initialData[0], samples: sample }],
     });
-    wrapper = createWrapper();
+    renderComponent();
 
-    expect(
-      wrapper.find('[aria-label="landing-investigation-samples-label"]')
-    ).toHaveLength(4);
-    expect(
-      wrapper
-        .find('[aria-label="landing-investigation-sample-0"]')
-        .first()
-        .text()
-    ).toEqual('Sample');
+    expect(await screen.findByText('Sample')).toBeInTheDocument();
   });
 
   it('displays citation correctly when study missing', async () => {
     (useInvestigation as jest.Mock).mockReturnValue({
       data: [{ ...initialData[0], studyInvestigations: undefined }],
     });
-    const wrapper = createWrapper();
-    await act(async () => flushPromises());
-    wrapper.update();
+    renderComponent();
+
     expect(
-      wrapper.find('[data-testid="citation-formatter-citation"]').first().text()
-    ).toEqual(
-      '2019: Test 1, doi_constants.publisher.name, https://doi.org/doi 1'
-    );
+      await screen.findByText(
+        '2019: Test title 1, doi_constants.publisher.name, https://doi.org/doi 1'
+      )
+    ).toBeInTheDocument();
   });
 
   it('displays citation correctly with one user', async () => {
     (useInvestigation as jest.Mock).mockReturnValue({
       data: [{ ...initialData[0], investigationUsers: [investigationUser[0]] }],
     });
-    const wrapper = createWrapper();
-    await act(async () => flushPromises());
-    wrapper.update();
+    renderComponent();
+
     expect(
-      wrapper.find('[data-testid="citation-formatter-citation"]').first().text()
-    ).toEqual(
-      'John Smith; 2019: Test 1, doi_constants.publisher.name, https://doi.org/doi 1'
-    );
+      await screen.findByText(
+        'John Smith; 2019: Test title 1, doi_constants.publisher.name, https://doi.org/doi 1'
+      )
+    ).toBeInTheDocument();
   });
 
   it('displays citation correctly with multiple users', async () => {
     (useInvestigation as jest.Mock).mockReturnValue({
       data: [{ ...initialData[0], investigationUsers: investigationUser }],
     });
-    const wrapper = createWrapper();
-    await act(async () => flushPromises());
-    wrapper.update();
+    renderComponent();
+
     expect(
-      wrapper.find('[data-testid="citation-formatter-citation"]').first().text()
-    ).toEqual(
-      'John Smith et al; 2019: Test 1, doi_constants.publisher.name, https://doi.org/doi 1'
+      await screen.findByText(
+        'John Smith et al; 2019: Test title 1, doi_constants.publisher.name, https://doi.org/doi 1'
+      )
+    ).toBeInTheDocument();
+  });
+
+  it('displays DOI and renders the expected Link ', async () => {
+    renderComponent();
+    expect(await screen.findByRole('link', { name: 'doi 1' })).toHaveAttribute(
+      'href',
+      'https://doi.org/doi 1'
     );
   });
 
-  it('displays DOI and renders the expected Link ', () => {
-    const wrapper = createWrapper();
+  it('displays Experiment DOI (PID) and renders the expected Link ', async () => {
+    renderComponent();
     expect(
-      wrapper
-        .find('[data-testid="isis-investigation-landing-doi-link"]')
-        .first()
-        .text()
-    ).toEqual('doi 1');
-
-    expect(
-      wrapper
-        .find('[data-testid="isis-investigation-landing-doi-link"]')
-        .first()
-        .prop('href')
-    ).toEqual('https://doi.org/doi 1');
-  });
-
-  it('displays Experiment DOI (PID) and renders the expected Link ', () => {
-    const wrapper = createWrapper();
-    expect(
-      wrapper
-        .find('[data-testid="isis-investigations-landing-parent-doi-link"]')
-        .first()
-        .text()
-    ).toEqual('study pid');
-
-    expect(
-      wrapper
-        .find('[data-testid="isis-investigations-landing-parent-doi-link"]')
-        .first()
-        .prop('href')
-    ).toEqual('https://doi.org/study pid');
+      await screen.findByRole('link', { name: 'study pid' })
+    ).toHaveAttribute('href', 'https://doi.org/study pid');
   });
 });

@@ -104,6 +104,8 @@ export interface CardViewProps {
   image?: EntityImageDetails;
 
   paginationPosition?: CVPaginationPosition;
+
+  'data-testid'?: string;
 }
 
 interface CVFilterInfo {
@@ -172,6 +174,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     onFilter,
     onSort,
     onResultsChange,
+    'data-testid': testId,
   } = props;
 
   // Get card information.
@@ -453,7 +456,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
   const hasFilteredResults = loadedData && (filterUpdate || totalDataCount > 0);
 
   return (
-    <Grid container direction="column" alignItems="center">
+    <Grid container direction="column" alignItems="center" data-testid={testId}>
       <Grid
         container
         item
@@ -716,25 +719,26 @@ const CardView = (props: CardViewProps): React.ReactElement => {
         {/* Card data */}
         <Grid item xs={12} md={9}>
           {/* Selected filters array */}
-          {selectedFilters.length > 0 && (filterUpdate || totalDataCount > 0) && (
-            <SelectedChips>
-              {selectedFilters.map((filter, filterIndex) => (
-                <li key={filterIndex}>
-                  {filter.items.map((item, itemIndex) => (
-                    <Chip
-                      key={itemIndex}
-                      sx={{ margin: 0.5 }}
-                      label={`${filter.label} - ${item}`}
-                      onDelete={() => {
-                        changeFilter(filter.filterKey, item, true);
-                        setFilterUpdate(true);
-                      }}
-                    />
-                  ))}
-                </li>
-              ))}
-            </SelectedChips>
-          )}
+          {selectedFilters.length > 0 &&
+            (filterUpdate || totalDataCount > 0) && (
+              <SelectedChips>
+                {selectedFilters.map((filter, filterIndex) => (
+                  <li key={filterIndex}>
+                    {filter.items.map((item, itemIndex) => (
+                      <Chip
+                        key={itemIndex}
+                        sx={{ margin: 0.5 }}
+                        label={`${filter.label} - ${item}`}
+                        onDelete={() => {
+                          changeFilter(filter.filterKey, item, true);
+                          setFilterUpdate(true);
+                        }}
+                      />
+                    ))}
+                  </li>
+                ))}
+              </SelectedChips>
+            )}
 
           {/* List of cards */}
           {hasFilteredResults ? (

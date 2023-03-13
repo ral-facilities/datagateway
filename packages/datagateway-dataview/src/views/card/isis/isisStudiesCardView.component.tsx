@@ -191,6 +191,7 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
 
   return (
     <CardView
+      data-testid="isis-studies-card-view"
       data={aggregatedData ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}

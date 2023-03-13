@@ -1,22 +1,33 @@
-import React from 'react';
+import * as React from 'react';
 import ISISInstrumentsTable from './isisInstrumentsTable.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import { StateType } from '../../../state/app.types';
 import {
+  dGCommonInitialState,
   Instrument,
   useInstrumentCount,
   useInstrumentsInfinite,
-  dGCommonInitialState,
-  ISISInstrumentDetailsPanel,
 } from 'datagateway-common';
-import { mount, ReactWrapper } from 'enzyme';
 import configureStore from 'redux-mock-store';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { Router } from 'react-router-dom';
 import { createMemoryHistory, History } from 'history';
-import { render, RenderResult } from '@testing-library/react';
+import {
+  render,
+  type RenderResult,
+  screen,
+  within,
+} from '@testing-library/react';
+import { UserEvent } from '@testing-library/user-event/setup/setup';
+import userEvent from '@testing-library/user-event';
+import {
+  findAllRows,
+  findCellInRow,
+  findColumnHeaderByName,
+  findColumnIndexByName,
+} from '../../../setupTests';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -34,21 +45,9 @@ describe('ISIS Instruments table component', () => {
   let state: StateType;
   let rowData: Instrument[];
   let history: History;
+  let user: UserEvent;
 
-  const createWrapper = (studyHierarchy = false): ReactWrapper => {
-    const store = mockStore(state);
-    return mount(
-      <Provider store={store}>
-        <Router history={history}>
-          <QueryClientProvider client={new QueryClient()}>
-            <ISISInstrumentsTable studyHierarchy={studyHierarchy} />
-          </QueryClientProvider>
-        </Router>
-      </Provider>
-    );
-  };
-
-  const createRTLWrapper = (studyHierarchy = false): RenderResult => {
+  const renderComponent = (studyHierarchy = false): RenderResult => {
     const store = mockStore(state);
     return render(
       <Provider store={store}>
@@ -69,15 +68,18 @@ describe('ISIS Instruments table component', () => {
         fullName: 'Test instrument 1',
         description: 'foo bar',
         url: 'test url',
+        type: 'type1',
       },
       {
         id: 2,
         name: 'Test 2',
         description: 'foo bar',
         url: 'test url',
+        type: 'type2',
       },
     ];
     history = createMemoryHistory();
+    user = userEvent.setup();
 
     mockStore = configureStore([thunk]);
     state = JSON.parse(
@@ -101,73 +103,93 @@ describe('ISIS Instruments table component', () => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find('VirtualizedTable').props()).toMatchSnapshot();
+  it('renders correctly', async () => {
+    renderComponent();
+
+    const rows = await findAllRows();
+    // should have 2 rows in the table
+    expect(rows).toHaveLength(2);
+
+    // check that column headers are shown correctly.
+    expect(
+      await findColumnHeaderByName('instruments.name')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('instruments.type')
+    ).toBeInTheDocument();
+
+    // check that every cell contains the correct value
+    const firstRow = rows[0];
+    expect(
+      within(
+        findCellInRow(firstRow, {
+          columnIndex: await findColumnIndexByName('instruments.name'),
+        })
+      ).getByText('Test instrument 1')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(firstRow, {
+          columnIndex: await findColumnIndexByName('instruments.type'),
+        })
+      ).getByText('type1')
+    ).toBeInTheDocument();
+
+    const secondRow = rows[1];
+    expect(
+      within(
+        findCellInRow(secondRow, {
+          columnIndex: await findColumnIndexByName('instruments.name'),
+        })
+      ).getByText('Test 2')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(secondRow, {
+          columnIndex: await findColumnIndexByName('instruments.type'),
+        })
+      ).getByText('type2')
+    ).toBeInTheDocument();
   });
 
-  it('calls the correct data fetching hooks on load', () => {
-    createWrapper();
-    expect(useInstrumentCount).toHaveBeenCalled();
-    expect(useInstrumentsInfinite).toHaveBeenCalled();
-  });
+  it('updates filter query params on text filter', async () => {
+    renderComponent();
 
-  it('calls useInstrumentsInfinite when loadMoreRows is called', () => {
-    const fetchNextPage = jest.fn();
-    (useInstrumentsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage,
-    });
-    const wrapper = createWrapper();
-
-    wrapper.find('VirtualizedTable').prop('loadMoreRows')({
-      startIndex: 50,
-      stopIndex: 74,
+    const filterInput = await screen.findByRole('textbox', {
+      name: 'Filter by instruments.name',
+      hidden: true,
     });
 
-    expect(fetchNextPage).toHaveBeenCalledWith({
-      pageParam: { startIndex: 50, stopIndex: 74 },
-    });
-  });
+    await user.type(filterInput, 'test');
 
-  it('updates filter query params on text filter', () => {
-    const wrapper = createWrapper();
-
-    const filterInput = wrapper.find('input').first();
-    filterInput.instance().value = 'test';
-    filterInput.simulate('change');
-
-    expect(history.length).toBe(2);
+    // user.type inputs the given string character by character to simulate user typing
+    // each keystroke of user.type creates a new entry in the history stack
+    // so the initial entry + 4 characters in "test" = 5 entries
+    expect(history.length).toBe(5);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"fullName":{"value":"test","type":"include"}}'
       )}`
     );
 
-    filterInput.instance().value = '';
-    filterInput.simulate('change');
+    await user.clear(filterInput);
 
-    expect(history.length).toBe(3);
+    expect(history.length).toBe(6);
     expect(history.location.search).toBe('?');
   });
 
   it('uses default sort', () => {
-    const wrapper = createWrapper();
-    wrapper.update();
-
+    renderComponent();
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"fullName":"asc"}')}`
     );
   });
 
-  it('updates sort query params on sort', () => {
-    const wrapper = createWrapper();
+  it('updates sort query params on sort', async () => {
+    renderComponent();
 
-    wrapper
-      .find('[role="columnheader"] span[role="button"]')
-      .first()
-      .simulate('click');
+    await user.click(await screen.findByText('instruments.name'));
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
@@ -175,34 +197,44 @@ describe('ISIS Instruments table component', () => {
     );
   });
 
-  it('displays details panel when expanded', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find(ISISInstrumentDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').last().simulate('click');
+  it('displays details panel when expanded', async () => {
+    renderComponent();
 
-    expect(wrapper.find(ISISInstrumentDetailsPanel).exists()).toBeTruthy();
-  });
-
-  it('renders names as links when NOT in studyHierarchy', () => {
-    const wrapper = createRTLWrapper();
+    await user.click(
+      (
+        await screen.findAllByRole('button', { name: 'Show details' })
+      )[0]
+    );
 
     expect(
-      wrapper.getAllByTestId('isis-instrument-table-name')
-    ).toMatchSnapshot();
+      await screen.findByTestId('instrument-details-panel')
+    ).toBeInTheDocument();
   });
 
-  it('renders names as links in StudyHierarchy', () => {
-    const wrapper = createRTLWrapper(true);
-
+  it('renders names as links when NOT in studyHierarchy', async () => {
+    renderComponent();
     expect(
-      wrapper.getAllByTestId('isis-instrument-table-name')
-    ).toMatchSnapshot();
+      await screen.findByRole('link', { name: 'Test instrument 1' })
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByRole('link', { name: 'Test 2' })
+    ).toBeInTheDocument();
+  });
+
+  it('renders names as links in StudyHierarchy', async () => {
+    renderComponent(true);
+    expect(
+      await screen.findByRole('link', { name: 'Test instrument 1' })
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByRole('link', { name: 'Test 2' })
+    ).toBeInTheDocument();
   });
 
   it('renders fine with incomplete data', () => {
     (useInstrumentCount as jest.Mock).mockReturnValueOnce({});
     (useInstrumentsInfinite as jest.Mock).mockReturnValueOnce({});
 
-    expect(() => createWrapper()).not.toThrowError();
+    expect(() => renderComponent()).not.toThrowError();
   });
 });

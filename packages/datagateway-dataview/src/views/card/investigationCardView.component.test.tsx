@@ -1,51 +1,43 @@
-import { ListItemText } from '@mui/material';
 import {
-  AdvancedFilter,
   dGCommonInitialState,
-  useInvestigationsPaginated,
-  useInvestigationCount,
+  DownloadCartItem,
   Investigation,
-  useInvestigationsDatasetCount,
-  AddToCartButton,
 } from 'datagateway-common';
-import { mount, ReactWrapper } from 'enzyme';
-import React from 'react';
+import * as React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { StateType } from '../../state/app.types';
+import type { StateType } from '../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../state/reducers/dgdataview.reducer';
 import InvestigationCardView from './investigationCardView.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { createMemoryHistory, History } from 'history';
+import { createMemoryHistory, type History } from 'history';
 import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
 } from '../../setupTests';
-
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    useInvestigationCount: jest.fn(),
-    useInvestigationsPaginated: jest.fn(),
-    useInvestigationsDatasetCount: jest.fn(),
-  };
-});
+import {
+  render,
+  type RenderResult,
+  screen,
+  within,
+} from '@testing-library/react';
+import type { UserEvent } from '@testing-library/user-event/setup/setup';
+import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
 
 describe('Investigation - Card View', () => {
   let mockStore;
   let state: StateType;
   let cardData: Investigation[];
   let history: History;
+  let user: UserEvent;
+  let cartItems: DownloadCartItem[];
 
-  const createWrapper = (): ReactWrapper => {
-    const store = mockStore(state);
-    return mount(
-      <Provider store={store}>
+  const renderComponent = (): RenderResult =>
+    render(
+      <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
             <InvestigationCardView />
@@ -53,19 +45,23 @@ describe('Investigation - Card View', () => {
         </Router>
       </Provider>
     );
-  };
 
   beforeEach(() => {
+    cartItems = [];
     cardData = [
       {
         id: 1,
-        title: 'Test 1',
-        name: 'Test 1',
-        visitId: '1',
+        title: 'Test title 1',
+        summary: 'Test summary',
+        name: 'Test name 1',
+        visitId: 'visit id 1',
         doi: 'doi 1',
+        startDate: '2020-01-01',
+        endDate: '2020-01-02',
       },
     ];
     history = createMemoryHistory();
+    user = userEvent.setup();
 
     mockStore = configureStore([thunk]);
     state = JSON.parse(
@@ -75,15 +71,33 @@ describe('Investigation - Card View', () => {
       })
     );
 
-    (useInvestigationCount as jest.Mock).mockReturnValue({
-      data: 1,
-      isLoading: false,
-    });
-    (useInvestigationsPaginated as jest.Mock).mockReturnValue({
-      data: cardData,
-      isLoading: false,
-    });
-    (useInvestigationsDatasetCount as jest.Mock).mockReturnValue({ data: 1 });
+    axios.get = jest
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (url.includes('/investigations/count')) {
+          return Promise.resolve({
+            data: 1,
+          });
+        }
+
+        if (url.includes('/investigations')) {
+          return Promise.resolve({
+            data: cardData,
+          });
+        }
+
+        if (url.includes('/datasets/count')) {
+          return Promise.resolve({
+            data: 1,
+          });
+        }
+
+        if (url.includes('/user/cart')) {
+          return Promise.resolve({
+            data: { cartItems },
+          });
+        }
+      });
 
     // Prevent error logging
     window.scrollTo = jest.fn();
@@ -93,27 +107,134 @@ describe('Investigation - Card View', () => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find('CardView').props()).toMatchSnapshot();
+  it('renders investigations as cards', async () => {
+    renderComponent();
+
+    const cards = await screen.findAllByTestId('card');
+    expect(cards).toHaveLength(1);
+
+    const card = within(cards[0]);
+
+    // check that title & description is displayed correctly
+    expect(
+      within(card.getByLabelText('card-title')).getByRole('link', {
+        name: 'Test title 1',
+      })
+    ).toHaveAttribute('href', '/browse/investigation/1/dataset');
+    expect(
+      within(card.getByLabelText('card-description')).getByText('Test summary')
+    ).toBeInTheDocument();
+
+    // check that investigation doi is displayed correctly
+    expect(
+      within(card.getByTestId('card-info-investigations.doi')).getByTestId(
+        'PublicIcon'
+      )
+    ).toBeInTheDocument();
+    expect(card.getByTestId('card-info-investigations.doi')).toHaveTextContent(
+      'investigations.doi'
+    );
+    expect(
+      within(card.getByTestId('card-info-data-investigations.doi')).getByRole(
+        'link',
+        { name: 'doi 1' }
+      )
+    ).toHaveAttribute('href', 'https://doi.org/doi 1');
+
+    // check that visit id is displayed correctly
+    expect(
+      card.getByTestId('card-info-investigations.visit_id')
+    ).toHaveTextContent('investigations.visit_id');
+    expect(
+      within(card.getByTestId('card-info-investigations.visit_id')).getByTestId(
+        'FingerprintIcon'
+      )
+    ).toBeInTheDocument();
+    expect(
+      within(
+        card.getByTestId('card-info-data-investigations.visit_id')
+      ).getByText('visit id 1')
+    ).toBeInTheDocument();
+
+    // check that investigation name is displayed correctly
+    expect(
+      card.getByTestId('card-info-investigations.details.name')
+    ).toHaveTextContent('investigations.details.name');
+    expect(
+      within(
+        card.getByTestId('card-info-investigations.details.name')
+      ).getByTestId('FingerprintIcon')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        card.getByTestId('card-info-data-investigations.details.name')
+      ).getByText('Test name 1')
+    ).toBeInTheDocument();
+
+    // check that investigation dataset count is displayed correctly
+    expect(
+      card.getByTestId('card-info-investigations.dataset_count')
+    ).toHaveTextContent('investigations.dataset_count');
+    expect(
+      within(
+        card.getByTestId('card-info-investigations.dataset_count')
+      ).getByTestId('ConfirmationNumberIcon')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        card.getByTestId('card-info-data-investigations.dataset_count')
+      ).getByText('1')
+    ).toBeInTheDocument();
+
+    // check that investigation start date is displayed correctly
+    expect(
+      card.getByTestId('card-info-investigations.details.start_date')
+    ).toHaveTextContent('investigations.details.start_date');
+    expect(
+      within(
+        card.getByTestId('card-info-investigations.details.start_date')
+      ).getByTestId('CalendarTodayIcon')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        card.getByTestId('card-info-data-investigations.details.start_date')
+      ).getByText('2020-01-01')
+    ).toBeInTheDocument();
+
+    // check that investigation start date is displayed correctly
+    expect(
+      card.getByTestId('card-info-investigations.details.end_date')
+    ).toHaveTextContent('investigations.details.end_date');
+    expect(
+      within(
+        card.getByTestId('card-info-investigations.details.end_date')
+      ).getByTestId('CalendarTodayIcon')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        card.getByTestId('card-info-data-investigations.details.end_date')
+      ).getByText('2020-01-02')
+    ).toBeInTheDocument();
+
+    // check that card buttons are displayed correctly
+    expect(
+      card.getByRole('button', { name: 'buttons.add_to_cart' })
+    ).toBeInTheDocument();
   });
 
-  it('calls the correct data fetching hooks on load', () => {
-    createWrapper();
-    expect(useInvestigationCount).toHaveBeenCalled();
-    expect(useInvestigationsPaginated).toHaveBeenCalled();
-    expect(useInvestigationsDatasetCount).toHaveBeenCalledWith(cardData);
-  });
+  it('updates filter query params on text filter', async () => {
+    renderComponent();
 
-  it('updates filter query params on text filter', () => {
-    const wrapper = createWrapper();
+    await user.click(
+      await screen.findByRole('button', { name: 'advanced_filters.show' })
+    );
 
-    const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find('button').last().simulate('click');
-    advancedFilter
-      .find('input')
-      .first()
-      .simulate('change', { target: { value: 'test' } });
+    const filter = await screen.findByRole('textbox', {
+      name: 'Filter by investigations.title',
+      hidden: true,
+    });
+
+    await user.type(filter, 'test');
 
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
@@ -121,79 +242,48 @@ describe('Investigation - Card View', () => {
       )}`
     );
 
-    advancedFilter
-      .find('input')
-      .first()
-      .simulate('change', { target: { value: '' } });
+    await user.clear(filter);
 
     expect(history.location.search).toBe('?');
   });
 
-  it('updates filter query params on date filter', () => {
+  it('updates filter query params on date filter', async () => {
     applyDatePickerWorkaround();
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find('button').first().simulate('click');
-    advancedFilter
-      .find('input')
-      .last()
-      .simulate('change', { target: { value: '2019-08-06' } });
+    await user.click(
+      await screen.findByRole('button', { name: 'advanced_filters.show' })
+    );
+
+    const filter = await screen.findByRole('textbox', {
+      name: 'investigations.details.end_date filter to',
+    });
+
+    await user.type(filter, '2019-08-06');
 
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
     );
 
-    advancedFilter
-      .find('input')
-      .last()
-      .simulate('change', { target: { value: '' } });
+    await user.clear(filter);
 
     expect(history.location.search).toBe('?');
 
     cleanupDatePickerWorkaround();
   });
 
-  it('displays DOI and renders the expected Link ', () => {
-    const wrapper = createWrapper();
-    expect(
-      wrapper.find('[data-testid="investigation-card-doi-link"]').first().text()
-    ).toEqual('doi 1');
+  it('updates sort query params on sort', async () => {
+    renderComponent();
 
-    expect(
-      wrapper
-        .find('[data-testid="investigation-card-doi-link"]')
-        .first()
-        .prop('href')
-    ).toEqual('https://doi.org/doi 1');
-  });
-
-  it('updates sort query params on sort', () => {
-    const wrapper = createWrapper();
-
-    const button = wrapper.find(ListItemText).first();
-    expect(button.text()).toEqual('investigations.title');
-    button.find('div').simulate('click');
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Sort by INVESTIGATIONS.TITLE',
+      })
+    );
 
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"title":"asc"}')}`
     );
-  });
-
-  it('renders buttons correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find(AddToCartButton).exists()).toBeTruthy();
-    expect(wrapper.find(AddToCartButton).text()).toEqual('buttons.add_to_cart');
-  });
-
-  it('renders fine with incomplete data', () => {
-    (useInvestigationCount as jest.Mock).mockReturnValueOnce({});
-    (useInvestigationsPaginated as jest.Mock).mockReturnValueOnce({});
-    (useInvestigationsDatasetCount as jest.Mock).mockReturnValueOnce([
-      { data: 0 },
-    ]);
-
-    expect(() => createWrapper()).not.toThrowError();
   });
 });

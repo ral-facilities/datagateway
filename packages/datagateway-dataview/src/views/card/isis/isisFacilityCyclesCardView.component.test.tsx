@@ -1,12 +1,9 @@
-import { ListItemText } from '@mui/material';
 import {
-  AdvancedFilter,
   dGCommonInitialState,
+  FacilityCycle,
   useFacilityCycleCount,
   useFacilityCyclesPaginated,
-  FacilityCycle,
 } from 'datagateway-common';
-import { mount, ReactWrapper } from 'enzyme';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
@@ -21,6 +18,9 @@ import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
 } from '../../../setupTests';
+import { render, RenderResult, screen } from '@testing-library/react';
+import { UserEvent } from '@testing-library/user-event/setup/setup';
+import userEvent from '@testing-library/user-event';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -39,11 +39,11 @@ describe('ISIS Facility Cycles - Card View', () => {
   let cardData: FacilityCycle[];
   let history: History;
   let replaceSpy: jest.SpyInstance;
+  let user: UserEvent;
 
-  const createWrapper = (): ReactWrapper => {
-    const store = mockStore(state);
-    return mount(
-      <Provider store={store}>
+  const renderComponent = (): RenderResult =>
+    render(
+      <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
             <ISISFacilityCyclesCardView instrumentId="1" />
@@ -51,9 +51,9 @@ describe('ISIS Facility Cycles - Card View', () => {
         </Router>
       </Provider>
     );
-  };
 
   beforeEach(() => {
+    user = userEvent.setup();
     mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
@@ -88,29 +88,20 @@ describe('ISIS Facility Cycles - Card View', () => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find('CardView').props()).toMatchSnapshot();
-  });
+  it('updates filter query params on text filter', async () => {
+    renderComponent();
 
-  it('calls the correct data fetching hooks on load', () => {
-    const instrumentId = '1';
-    createWrapper();
-    expect(useFacilityCycleCount).toHaveBeenCalledWith(parseInt(instrumentId));
-    expect(useFacilityCyclesPaginated).toHaveBeenCalledWith(
-      parseInt(instrumentId)
+    // click on button to show advanced filters
+    await user.click(
+      await screen.findByRole('button', { name: 'advanced_filters.show' })
     );
-  });
 
-  it('updates filter query params on text filter', () => {
-    const wrapper = createWrapper();
+    const filter = await screen.findByRole('textbox', {
+      name: 'Filter by facilitycycles.name',
+      hidden: true,
+    });
 
-    const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find('button').last().simulate('click');
-    advancedFilter
-      .find('input')
-      .first()
-      .simulate('change', { target: { value: 'test' } });
+    await user.type(filter, 'test');
 
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
@@ -118,34 +109,32 @@ describe('ISIS Facility Cycles - Card View', () => {
       )}`
     );
 
-    advancedFilter
-      .find('input')
-      .first()
-      .simulate('change', { target: { value: '' } });
+    await user.clear(filter);
 
     expect(history.location.search).toBe('?');
   });
 
-  it('updates filter query params on date filter', () => {
+  it('updates filter query params on date filter', async () => {
     applyDatePickerWorkaround();
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find('button').first().simulate('click');
-    advancedFilter
-      .find('input')
-      .last()
-      .simulate('change', { target: { value: '2019-08-06' } });
+    // click on button to show advanced filters
+    await user.click(
+      await screen.findByRole('button', { name: 'advanced_filters.show' })
+    );
+
+    const filter = await screen.findByRole('textbox', {
+      name: 'facilitycycles.end_date filter to',
+    });
+
+    await user.type(filter, '2019-08-06');
 
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
     );
 
-    advancedFilter
-      .find('input')
-      .last()
-      .simulate('change', { target: { value: '' } });
+    await user.clear(filter);
 
     expect(history.location.search).toBe('?');
 
@@ -153,21 +142,19 @@ describe('ISIS Facility Cycles - Card View', () => {
   });
 
   it('uses default sort', () => {
-    const wrapper = createWrapper();
-    wrapper.update();
-
+    renderComponent();
     expect(history.length).toBe(1);
     expect(replaceSpy).toHaveBeenCalledWith({
       search: `?sort=${encodeURIComponent('{"startDate":"desc"}')}`,
     });
   });
 
-  it('updates sort query params on sort', () => {
-    const wrapper = createWrapper();
+  it('updates sort query params on sort', async () => {
+    renderComponent();
 
-    const button = wrapper.find(ListItemText).first();
-    expect(button.text()).toEqual('facilitycycles.name');
-    button.find('div').simulate('click');
+    await user.click(
+      await screen.findByRole('button', { name: 'Sort by FACILITYCYCLES.NAME' })
+    );
 
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"asc"}')}`
@@ -178,6 +165,6 @@ describe('ISIS Facility Cycles - Card View', () => {
     (useFacilityCycleCount as jest.Mock).mockReturnValueOnce({});
     (useFacilityCyclesPaginated as jest.Mock).mockReturnValueOnce({});
 
-    expect(() => createWrapper()).not.toThrowError();
+    expect(() => renderComponent()).not.toThrowError();
   });
 });

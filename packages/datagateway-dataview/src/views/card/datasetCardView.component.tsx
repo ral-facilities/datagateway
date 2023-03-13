@@ -120,6 +120,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
 
   return (
     <CardView
+      data-testid="dataset-card-view"
       data={data ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}

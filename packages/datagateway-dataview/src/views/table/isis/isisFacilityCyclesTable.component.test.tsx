@@ -1,25 +1,35 @@
-import React from 'react';
+import * as React from 'react';
 import ISISFacilityCyclesTable from './isisFacilityCyclesTable.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
-import { StateType } from '../../../state/app.types';
+import type { StateType } from '../../../state/app.types';
 import {
-  FacilityCycle,
+  dGCommonInitialState,
+  type FacilityCycle,
   useFacilityCycleCount,
   useFacilityCyclesInfinite,
-  dGCommonInitialState,
 } from 'datagateway-common';
-import { mount, ReactWrapper } from 'enzyme';
 import configureStore from 'redux-mock-store';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { Router } from 'react-router-dom';
-import { createMemoryHistory, History } from 'history';
+import { createMemoryHistory, type History } from 'history';
 import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
+  findAllRows,
+  findCellInRow,
+  findColumnHeaderByName,
+  findColumnIndexByName,
 } from '../../../setupTests';
-import { render, RenderResult } from '@testing-library/react';
+import {
+  render,
+  type RenderResult,
+  screen,
+  within,
+} from '@testing-library/react';
+import { UserEvent } from '@testing-library/user-event/setup/setup';
+import userEvent from '@testing-library/user-event';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -38,21 +48,9 @@ describe('ISIS FacilityCycles table component', () => {
   let rowData: FacilityCycle[];
   let history: History;
   let replaceSpy: jest.SpyInstance;
+  let user: UserEvent;
 
-  const createWrapper = (): ReactWrapper => {
-    const store = mockStore(state);
-    return mount(
-      <Provider store={store}>
-        <Router history={history}>
-          <QueryClientProvider client={new QueryClient()}>
-            <ISISFacilityCyclesTable instrumentId="1" />
-          </QueryClientProvider>
-        </Router>
-      </Provider>
-    );
-  };
-
-  const createRTLWrapper = (): RenderResult => {
+  const renderComponent = (): RenderResult => {
     const store = mockStore(state);
     return render(
       <Provider store={store}>
@@ -77,6 +75,7 @@ describe('ISIS FacilityCycles table component', () => {
     ];
     history = createMemoryHistory();
     replaceSpy = jest.spyOn(history, 'replace');
+    user = userEvent.setup();
 
     mockStore = configureStore([thunk]);
     state = JSON.parse(
@@ -100,79 +99,93 @@ describe('ISIS FacilityCycles table component', () => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find('VirtualizedTable').props()).toMatchSnapshot();
+  it('renders correctly', async () => {
+    renderComponent();
+
+    const rows = await findAllRows();
+    // should have 1 row in the table
+    expect(rows).toHaveLength(1);
+
+    // check that column headers are shown correctly.
+    expect(
+      await findColumnHeaderByName('facilitycycles.name')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('facilitycycles.start_date')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('facilitycycles.end_date')
+    ).toBeInTheDocument();
+
+    const row = rows[0];
+
+    // check that every cell contains the correct value
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('facilitycycles.name'),
+        })
+      ).getByText('Test 1')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('facilitycycles.start_date'),
+        })
+      ).getByText('2019-07-03')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('facilitycycles.end_date'),
+        })
+      ).getByText('2019-07-04')
+    ).toBeInTheDocument();
   });
 
-  it('calls the correct data fetching hooks on load', () => {
-    const instrumentId = '1';
-    createWrapper();
-    expect(useFacilityCycleCount).toHaveBeenCalledWith(parseInt(instrumentId));
-    expect(useFacilityCyclesInfinite).toHaveBeenCalledWith(
-      parseInt(instrumentId)
-    );
-  });
+  it('sends filterTable action on text filter', async () => {
+    renderComponent();
 
-  it('calls useFacilityCyclesInfinite when loadMoreRows is called', () => {
-    const fetchNextPage = jest.fn();
-    (useFacilityCyclesInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage,
-    });
-    const wrapper = createWrapper();
-
-    wrapper.find('VirtualizedTable').prop('loadMoreRows')({
-      startIndex: 50,
-      stopIndex: 74,
+    const filterInput = await screen.findByRole('textbox', {
+      name: 'Filter by facilitycycles.name',
+      hidden: true,
     });
 
-    expect(fetchNextPage).toHaveBeenCalledWith({
-      pageParam: { startIndex: 50, stopIndex: 74 },
-    });
-  });
+    await user.type(filterInput, 'test');
 
-  it('sends filterTable action on text filter', () => {
-    const wrapper = createWrapper();
-
-    const filterInput = wrapper
-      .find('[aria-label="Filter by facilitycycles.name"]')
-      .last();
-    filterInput.instance().value = 'test';
-    filterInput.simulate('change');
-
-    expect(history.length).toBe(2);
+    // user.type inputs the given string character by character to simulate user typing
+    // each keystroke of user.type creates a new entry in the history stack
+    // so the initial entry + 4 characters in "test" = 5 entries
+    expect(history.length).toBe(5);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
       )}`
     );
 
-    filterInput.instance().value = '';
-    filterInput.simulate('change');
+    await user.clear(filterInput);
 
-    expect(history.length).toBe(3);
+    expect(history.length).toBe(6);
     expect(history.location.search).toBe('?');
   });
 
-  it('updates filter query params on date filter', () => {
+  it('updates filter query params on date filter', async () => {
     applyDatePickerWorkaround();
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    const filterInput = wrapper.find(
-      'input[id="facilitycycles.end_date filter to"]'
-    );
-    filterInput.instance().value = '2019-08-06';
-    filterInput.simulate('change');
+    const filterInput = await screen.findByRole('textbox', {
+      name: 'facilitycycles.end_date filter to',
+    });
+
+    await user.type(filterInput, '2019-08-06');
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
     );
 
-    filterInput.instance().value = '';
-    filterInput.simulate('change');
+    await user.clear(filterInput);
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
@@ -181,22 +194,17 @@ describe('ISIS FacilityCycles table component', () => {
   });
 
   it('uses default sort', () => {
-    const wrapper = createWrapper();
-    wrapper.update();
-
+    renderComponent();
     expect(history.length).toBe(1);
     expect(replaceSpy).toHaveBeenCalledWith({
       search: `?sort=${encodeURIComponent('{"startDate":"desc"}')}`,
     });
   });
 
-  it('updates sort query params on sort', () => {
-    const wrapper = createWrapper();
+  it('updates sort query params on sort', async () => {
+    renderComponent();
 
-    wrapper
-      .find('[role="columnheader"] span[role="button"]')
-      .first()
-      .simulate('click');
+    await user.click(await screen.findByText('facilitycycles.name'));
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
@@ -205,16 +213,14 @@ describe('ISIS FacilityCycles table component', () => {
   });
 
   it('renders facilitycycle name as a link', async () => {
-    const wrapper = createRTLWrapper();
-
-    const result = await wrapper.findByText('Test 1');
-    expect(result).toMatchSnapshot();
+    renderComponent();
+    expect(await screen.findByText('Test 1')).toMatchSnapshot();
   });
 
   it('renders fine with incomplete data', () => {
     (useFacilityCycleCount as jest.Mock).mockReturnValueOnce({});
     (useFacilityCyclesInfinite as jest.Mock).mockReturnValueOnce({});
 
-    expect(() => createWrapper()).not.toThrowError();
+    expect(() => renderComponent()).not.toThrowError();
   });
 });

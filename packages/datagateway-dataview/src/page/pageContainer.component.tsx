@@ -383,7 +383,7 @@ const StyledRouting = (props: {
     tablePaperHeight
   );
   return (
-    <div>
+    <div data-testid="styled-routing">
       {viewStyle !== 'card' && displayFilterMessage && (
         <NoResultsPaper>
           <Typography

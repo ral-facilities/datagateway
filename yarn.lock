@@ -3019,7 +3019,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/jest-dom@npm:5.16.5":
+"@testing-library/jest-dom@npm:5.16.5, @testing-library/jest-dom@npm:^5.16.5":
   version: 5.16.5
   resolution: "@testing-library/jest-dom@npm:5.16.5"
   dependencies:
@@ -3090,7 +3090,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/user-event@npm:14.4.3":
+"@testing-library/user-event@npm:14.4.3, @testing-library/user-event@npm:^14.4.3":
   version: 14.4.3
   resolution: "@testing-library/user-event@npm:14.4.3"
   peerDependencies:
@@ -6391,7 +6391,6 @@ __metadata:
     "@testing-library/react": 12.1.3
     "@testing-library/react-hooks": 8.0.1
     "@testing-library/user-event": 14.4.1
-    "@types/enzyme": 3.10.10
     "@types/jest": 29.4.0
     "@types/lodash.debounce": 4.0.6
     "@types/node": 18.11.9
@@ -6400,15 +6399,12 @@ __metadata:
     "@types/react-virtualized": 9.21.10
     "@typescript-eslint/eslint-plugin": 5.49.0
     "@typescript-eslint/parser": 5.49.0
-    "@wojtekmaj/enzyme-adapter-react-17": 0.6.6
     axios: 0.27.2
     babel-eslint: 10.1.0
     connected-react-router: 6.9.1
     date-fns: 2.29.1
-    enzyme: 3.11.0
-    enzyme-to-json: 3.6.1
     eslint: 8.32.0
-    eslint-config-prettier: 8.6.0
+    eslint-config-prettier: 8.5.0
     eslint-config-react-app: 7.0.0
     eslint-plugin-cypress: 2.12.1
     eslint-plugin-prettier: 4.2.1
@@ -6456,8 +6452,8 @@ __metadata:
     "@mui/material": 5.11.0
     "@testing-library/jest-dom": 5.16.5
     "@testing-library/react": 12.1.3
+    "@testing-library/react-hooks": 8.0.1
     "@testing-library/user-event": 14.4.3
-    "@types/enzyme": 3.10.10
     "@types/history": 4.7.11
     "@types/jest": 29.4.0
     "@types/jsrsasign": 10.5.2
@@ -6474,7 +6470,6 @@ __metadata:
     "@typescript-eslint/eslint-plugin": 5.49.0
     "@typescript-eslint/parser": 5.49.0
     "@welldone-software/why-did-you-render": 7.0.1
-    "@wojtekmaj/enzyme-adapter-react-17": 0.6.6
     axios: 0.27.2
     babel-eslint: 10.1.0
     blob-polyfill: 7.0.20220408
@@ -6485,8 +6480,6 @@ __metadata:
     cypress-failed-log: 2.10.0
     datagateway-common: ^1.1.1
     date-fns: 2.29.1
-    enzyme: 3.11.0
-    enzyme-to-json: 3.6.1
     eslint: 8.32.0
     eslint-config-prettier: 8.6.0
     eslint-config-react-app: 7.0.0
@@ -6599,7 +6592,9 @@ __metadata:
     "@mui/icons-material": 5.11.0
     "@mui/material": 5.11.0
     "@mui/x-date-pickers": 5.0.9
+    "@testing-library/jest-dom": ^5.16.5
     "@testing-library/react": 12.1.3
+    "@testing-library/user-event": ^14.4.3
     "@types/enzyme": 3.10.10
     "@types/history": 4.7.11
     "@types/jest": 29.4.0
@@ -7546,6 +7541,17 @@ __metadata:
     escodegen: bin/escodegen.js
     esgenerate: bin/esgenerate.js
   checksum: 5aa6b2966fafe0545e4e77936300cc94ad57cfe4dc4ebff9950492eaba83eef634503f12d7e3cbd644ecc1bab388ad0e92b06fd32222c9281a75d1cf02ec6cef
+  languageName: node
+  linkType: hard
+
+"eslint-config-prettier@npm:8.5.0":
+  version: 8.5.0
+  resolution: "eslint-config-prettier@npm:8.5.0"
+  peerDependencies:
+    eslint: ">=7.0.0"
+  bin:
+    eslint-config-prettier: bin/cli.js
+  checksum: 0d0f5c32e7a0ad91249467ce71ca92394ccd343178277d318baf32063b79ea90216f4c81d1065d60f96366fdc60f151d4d68ae7811a58bd37228b84c2083f893
   languageName: node
   linkType: hard
 

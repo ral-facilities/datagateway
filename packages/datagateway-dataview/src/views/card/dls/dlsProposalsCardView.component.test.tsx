@@ -1,21 +1,22 @@
 import {
-  AdvancedFilter,
   dGCommonInitialState,
+  type Investigation,
   useInvestigationCount,
   useInvestigationsPaginated,
-  Investigation,
 } from 'datagateway-common';
-import { mount, ReactWrapper } from 'enzyme';
-import React from 'react';
+import * as React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { StateType } from '../../../state/app.types';
+import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import DLSProposalsCardView from './dlsProposalsCardView.component';
-import { createMemoryHistory, History } from 'history';
+import { createMemoryHistory, type History } from 'history';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import type { UserEvent } from '@testing-library/user-event/setup/setup';
+import { render, type RenderResult, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -33,11 +34,11 @@ describe('DLS Proposals - Card View', () => {
   let state: StateType;
   let cardData: Investigation[];
   let history: History;
+  let user: UserEvent;
 
-  const createWrapper = (): ReactWrapper => {
-    const store = mockStore(state);
-    return mount(
-      <Provider store={store}>
+  const renderComponent = (): RenderResult =>
+    render(
+      <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
             <DLSProposalsCardView />
@@ -45,7 +46,6 @@ describe('DLS Proposals - Card View', () => {
         </Router>
       </Provider>
     );
-  };
 
   beforeEach(() => {
     cardData = [
@@ -57,6 +57,7 @@ describe('DLS Proposals - Card View', () => {
       },
     ];
     history = createMemoryHistory();
+    user = userEvent.setup();
 
     mockStore = configureStore([thunk]);
     state = JSON.parse(
@@ -83,39 +84,20 @@ describe('DLS Proposals - Card View', () => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find('CardView').props()).toMatchSnapshot();
-  });
+  it('updates filter query params on text filter', async () => {
+    renderComponent();
 
-  it('calls the correct data fetching hooks on load', () => {
-    createWrapper();
-    expect(useInvestigationCount).toHaveBeenCalledWith([
-      {
-        filterType: 'distinct',
-        filterValue: JSON.stringify(['name', 'title']),
-      },
-    ]);
-    expect(useInvestigationsPaginated).toHaveBeenCalledWith(
-      [
-        {
-          filterType: 'distinct',
-          filterValue: JSON.stringify(['name', 'title']),
-        },
-      ],
-      true
+    // click on button to show advanced filters
+    await user.click(
+      await screen.findByRole('button', { name: 'advanced_filters.show' })
     );
-  });
 
-  it('updates filter query params on text filter', () => {
-    const wrapper = createWrapper();
+    const filter = await screen.findByRole('textbox', {
+      name: 'Filter by investigations.title',
+      hidden: true,
+    });
 
-    const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find('button').simulate('click');
-    advancedFilter
-      .find('input')
-      .first()
-      .simulate('change', { target: { value: 'test' } });
+    await user.type(filter, 'test');
 
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
@@ -123,18 +105,13 @@ describe('DLS Proposals - Card View', () => {
       )}`
     );
 
-    advancedFilter
-      .find('input')
-      .first()
-      .simulate('change', { target: { value: '' } });
+    await user.clear(filter);
 
     expect(history.location.search).toBe('?');
   });
 
   it('uses default sort', () => {
-    const wrapper = createWrapper();
-    wrapper.update();
-
+    renderComponent();
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"title":"asc"}')}`
@@ -145,6 +122,6 @@ describe('DLS Proposals - Card View', () => {
     (useInvestigationCount as jest.Mock).mockReturnValueOnce({});
     (useInvestigationsPaginated as jest.Mock).mockReturnValueOnce({});
 
-    expect(() => createWrapper()).not.toThrowError();
+    expect(() => renderComponent()).not.toThrowError();
   });
 });

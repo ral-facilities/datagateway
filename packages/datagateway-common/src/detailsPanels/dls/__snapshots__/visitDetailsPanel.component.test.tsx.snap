@@ -3,6 +3,7 @@
 exports[`Visit details panel component should check if multiple publications result in change of title to plural version 1`] = `
 <DocumentFragment>
   <div
+    data-testid="visit-details-panel"
     id="details-panel"
     style="min-width: 0;"
   >
@@ -223,6 +224,7 @@ exports[`Visit details panel component should check if multiple publications res
 exports[`Visit details panel component should check if multiple samples result in change of title to plural version 1`] = `
 <DocumentFragment>
   <div
+    data-testid="visit-details-panel"
     id="details-panel"
     style="min-width: 0;"
   >
@@ -443,6 +445,7 @@ exports[`Visit details panel component should check if multiple samples result i
 exports[`Visit details panel component should gracefully handles InvestigationUsers without Users 1`] = `
 <DocumentFragment>
   <div
+    data-testid="visit-details-panel"
     id="details-panel"
     style="min-width: 0;"
   >
@@ -641,6 +644,7 @@ exports[`Visit details panel component should gracefully handles InvestigationUs
 exports[`Visit details panel component should render correctly 1`] = `
 <DocumentFragment>
   <div
+    data-testid="visit-details-panel"
     id="details-panel"
     style="min-width: 0;"
   >
@@ -809,6 +813,7 @@ exports[`Visit details panel component should render correctly 1`] = `
 exports[`Visit details panel component should render user, sample and publication tabs when present in the data 1`] = `
 <DocumentFragment>
   <div
+    data-testid="visit-details-panel"
     id="details-panel"
     style="min-width: 0;"
   >

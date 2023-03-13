@@ -1,5 +1,5 @@
-import React from 'react';
-import { shallow } from 'enzyme';
+import { render } from '@testing-library/react';
+import * as React from 'react';
 import DataCell from './dataCell.component';
 
 describe('Data cell component', () => {
@@ -10,37 +10,37 @@ describe('Data cell component', () => {
     rowIndex: 1,
     rowData: {
       test: 'non nested property',
-      nested: { test: 'nested property' },
+      nested: {
+        test: 'nested property',
+      },
     },
   };
 
-  it('renders correctly', () => {
-    const wrapper = shallow(<DataCell {...dataCellProps} />);
-    expect(wrapper).toMatchSnapshot();
+  it('renders correctly', async () => {
+    const { asFragment } = render(<DataCell {...dataCellProps} />);
+    expect(asFragment()).toMatchSnapshot();
   });
 
-  it('renders provided cell data correctly', () => {
-    const wrapper = shallow(
+  it('renders provided cell data correctly', async () => {
+    const { asFragment } = render(
       <DataCell
         {...dataCellProps}
         cellContentRenderer={() => <b>{'provided test'}</b>}
       />
     );
-    expect(wrapper).toMatchSnapshot();
+    expect(asFragment()).toMatchSnapshot();
   });
 
-  it('renders nested cell data correctly', () => {
-    const wrapper = shallow(
+  it('renders nested cell data correctly', async () => {
+    const { asFragment } = render(
       <DataCell {...dataCellProps} dataKey="nested.test" />
     );
-    expect(wrapper).toMatchSnapshot();
+    expect(asFragment()).toMatchSnapshot();
   });
 
-  it('gracefully handles invalid dataKeys', () => {
-    shallow(<DataCell {...dataCellProps} dataKey="invalid.test" />);
-
-    shallow(<DataCell {...dataCellProps} dataKey="invalid" />);
-
-    shallow(<DataCell {...dataCellProps} dataKey="nested.invalid" />);
+  it('gracefully handles invalid dataKeys', async () => {
+    render(<DataCell {...dataCellProps} dataKey="invalid.test" />);
+    render(<DataCell {...dataCellProps} dataKey="invalid" />);
+    render(<DataCell {...dataCellProps} dataKey="nested.invalid" />);
   });
 });

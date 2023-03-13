@@ -3,6 +3,7 @@
 exports[`Dataset details panel component should render correctly 1`] = `
 <DocumentFragment>
   <div
+    data-testid="dataset-details-panel"
     id="details-panel"
     style="min-width: 0;"
   >
@@ -194,6 +195,7 @@ exports[`Dataset details panel component should render correctly 1`] = `
 exports[`Dataset details panel component should render type tab when present in the data 1`] = `
 <DocumentFragment>
   <div
+    data-testid="dataset-details-panel"
     id="details-panel"
     style="min-width: 0;"
   >

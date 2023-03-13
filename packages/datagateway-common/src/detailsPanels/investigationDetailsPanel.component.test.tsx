@@ -1,7 +1,7 @@
-import React from 'react';
-import { shallow } from 'enzyme';
+import * as React from 'react';
 import InvestigationDetailsPanel from './investigationDetailsPanel.component';
 import { Investigation } from '../app.types';
+import { render } from '@testing-library/react';
 
 describe('Investigation details panel component', () => {
   let rowData: Investigation;
@@ -47,12 +47,12 @@ describe('Investigation details panel component', () => {
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(
+    const { asFragment } = render(
       <InvestigationDetailsPanel
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}
       />
     );
-    expect(wrapper).toMatchSnapshot();
+    expect(asFragment()).toMatchSnapshot();
   });
 });

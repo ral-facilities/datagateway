@@ -20,6 +20,7 @@ const SearchBoxContainerSide = (
 
   return (
     <Grid
+      data-testid="search-box-container-side"
       container
       direction="column"
       justifyContent="flex-start"
