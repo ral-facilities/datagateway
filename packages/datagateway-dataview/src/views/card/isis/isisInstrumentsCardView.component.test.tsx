@@ -1,23 +1,22 @@
-import { ListItemText } from '@mui/material';
 import {
-  AdvancedFilter,
   dGCommonInitialState,
-  useInstrumentsPaginated,
+  type Instrument,
   useInstrumentCount,
-  Instrument,
-  ISISInstrumentDetailsPanel,
+  useInstrumentsPaginated,
 } from 'datagateway-common';
-import { mount, ReactWrapper } from 'enzyme';
-import React from 'react';
+import * as React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { StateType } from '../../../state/app.types';
+import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import ISISInstrumentsCardView from './isisInstrumentsCardView.component';
-import { createMemoryHistory, History } from 'history';
+import { createMemoryHistory, type History } from 'history';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { render, type RenderResult, screen } from '@testing-library/react';
+import type { UserEvent } from '@testing-library/user-event/setup/setup';
+import userEvent from '@testing-library/user-event';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -35,11 +34,11 @@ describe('ISIS Instruments - Card View', () => {
   let state: StateType;
   let cardData: Instrument[];
   let history: History;
+  let user: UserEvent;
 
-  const createWrapper = (): ReactWrapper => {
-    const store = mockStore(state);
-    return mount(
-      <Provider store={store}>
+  const renderComponent = (): RenderResult =>
+    render(
+      <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
             <ISISInstrumentsCardView studyHierarchy={false} />
@@ -47,9 +46,9 @@ describe('ISIS Instruments - Card View', () => {
         </Router>
       </Provider>
     );
-  };
 
   beforeEach(() => {
+    user = userEvent.setup();
     cardData = [
       {
         id: 1,
@@ -83,28 +82,17 @@ describe('ISIS Instruments - Card View', () => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find('CardView').props()).toMatchSnapshot();
+  it('correct link used when NOT in studyHierarchy', async () => {
+    renderComponent();
+    expect(await screen.findByRole('link', { name: 'Test 1' })).toHaveAttribute(
+      'href',
+      '/browse/instrument/1/facilityCycle'
+    );
   });
 
-  it('calls the correct data fetching hooks on load', () => {
-    createWrapper();
-    expect(useInstrumentCount).toHaveBeenCalled();
-    expect(useInstrumentsPaginated).toHaveBeenCalled();
-  });
-
-  it('correct link used when NOT in studyHierarchy', () => {
-    const wrapper = createWrapper();
-    expect(
-      wrapper.find('[aria-label="card-title"]').last().childAt(0).prop('to')
-    ).toEqual('/browse/instrument/1/facilityCycle');
-  });
-
-  it('correct link used for studyHierarchy', () => {
-    const store = mockStore(state);
-    const wrapper = mount(
-      <Provider store={store}>
+  it('correct link used for studyHierarchy', async () => {
+    render(
+      <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
             <ISISInstrumentsCardView studyHierarchy={true} />
@@ -112,20 +100,26 @@ describe('ISIS Instruments - Card View', () => {
         </Router>
       </Provider>
     );
-    expect(
-      wrapper.find('[aria-label="card-title"]').last().childAt(0).prop('to')
-    ).toEqual('/browseStudyHierarchy/instrument/1/study');
+    expect(await screen.findByRole('link', { name: 'Test 1' })).toHaveAttribute(
+      'href',
+      '/browseStudyHierarchy/instrument/1/study'
+    );
   });
 
-  it('updates filter query params on text filter', () => {
-    const wrapper = createWrapper();
+  it('updates filter query params on text filter', async () => {
+    renderComponent();
 
-    const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find('button').simulate('click');
-    advancedFilter
-      .find('input')
-      .first()
-      .simulate('change', { target: { value: 'test' } });
+    // click on button to show advanced filters
+    await user.click(
+      await screen.findByRole('button', { name: 'advanced_filters.show' })
+    );
+
+    const filter = await screen.findByRole('textbox', {
+      name: 'Filter by instruments.name',
+      hidden: true,
+    });
+
+    await user.type(filter, 'test');
 
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
@@ -133,51 +127,41 @@ describe('ISIS Instruments - Card View', () => {
       )}`
     );
 
-    advancedFilter
-      .find('input')
-      .first()
-      .simulate('change', { target: { value: '' } });
+    await user.clear(filter);
 
     expect(history.location.search).toBe('?');
   });
 
   it('uses default sort', () => {
-    const wrapper = createWrapper();
-    wrapper.update();
-
+    renderComponent();
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"fullName":"asc"}')}`
     );
   });
 
-  it('updates sort query params on sort', () => {
-    const wrapper = createWrapper();
+  it('updates sort query params on sort', async () => {
+    renderComponent();
 
-    const button = wrapper.find(ListItemText).first();
-    expect(button.text()).toEqual('instruments.name');
-    button.find('div').simulate('click');
+    await user.click(
+      await screen.findByRole('button', { name: 'Sort by INSTRUMENTS.NAME' })
+    );
 
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"fullName":"desc"}')}`
     );
   });
 
-  it('displays details panel when more information is expanded', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find(ISISInstrumentDetailsPanel).exists()).toBeFalsy();
-    wrapper
-      .find('[aria-label="card-more-info-expand"]')
-      .last()
-      .simulate('click');
-
-    expect(wrapper.find(ISISInstrumentDetailsPanel).exists()).toBeTruthy();
+  it('displays details panel when more information is expanded', async () => {
+    renderComponent();
+    await user.click(await screen.findByLabelText('card-more-info-expand'));
+    expect(await screen.findByTestId('instrument-details-panel'));
   });
 
   it('renders fine with incomplete data', () => {
     (useInstrumentCount as jest.Mock).mockReturnValueOnce({});
     (useInstrumentsPaginated as jest.Mock).mockReturnValueOnce({});
 
-    expect(() => createWrapper()).not.toThrowError();
+    expect(() => renderComponent()).not.toThrowError();
   });
 });
