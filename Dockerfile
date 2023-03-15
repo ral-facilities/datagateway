@@ -4,14 +4,12 @@ FROM node:16.14-alpine3.15 as build
 
 WORKDIR /datagateway
 
-ARG HOST_URL
-
 COPY . .
 
 # Set the React production variables which hold reference to the paths of the plugin builds
-RUN echo "REACT_APP_DATAVIEW_BUILD_DIRECTORY=$HOST_URL/datagateway-dataview/" > packages/datagateway-dataview/.env.production \
-  && echo "REACT_APP_DOWNLOAD_BUILD_DIRECTORY=$HOST_URL/datagateway-download/" > packages/datagateway-download/.env.production \
-  && echo "REACT_APP_SEARCH_BUILD_DIRECTORY=$HOST_URL/datagateway-search/" > packages/datagateway-search/.env.production \
+RUN echo "REACT_APP_DATAVIEW_BUILD_DIRECTORY=/datagateway-dataview/" > packages/datagateway-dataview/.env.production \
+  && echo "REACT_APP_DOWNLOAD_BUILD_DIRECTORY=/datagateway-download/" > packages/datagateway-download/.env.production \
+  && echo "REACT_APP_SEARCH_BUILD_DIRECTORY=/datagateway-search/" > packages/datagateway-search/.env.production \
   && yarn workspaces focus --all --production \
   && yarn build
 
