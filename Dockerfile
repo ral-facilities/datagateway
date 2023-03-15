@@ -4,10 +4,14 @@ FROM node:16.14-alpine3.15 as build
 
 WORKDIR /datagateway
 
+# Enable dependency caching and share the cache between projects
+ENV YARN_ENABLE_GLOBAL_CACHE=true
+ENV YARN_GLOBAL_FOLDER=/root/.cache/.yarn
+
 COPY . .
 
-# Set the React production variables which hold reference to the paths of the plugin builds
-RUN echo "REACT_APP_DATAVIEW_BUILD_DIRECTORY=/datagateway-dataview/" > packages/datagateway-dataview/.env.production \
+RUN --mount=type=cache,target=/root/.cache/.yarn/cache \
+  && echo "REACT_APP_DATAVIEW_BUILD_DIRECTORY=/datagateway-dataview/" > packages/datagateway-dataview/.env.production \
   && echo "REACT_APP_DOWNLOAD_BUILD_DIRECTORY=/datagateway-download/" > packages/datagateway-download/.env.production \
   && echo "REACT_APP_SEARCH_BUILD_DIRECTORY=/datagateway-search/" > packages/datagateway-search/.env.production \
   && yarn workspaces focus --all --production \
