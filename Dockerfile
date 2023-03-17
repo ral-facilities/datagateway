@@ -1,8 +1,9 @@
-# Multipart build dockerfile to build and serve datagateway
+# Dockerfile to build and serve datagateway
 
-FROM node:16.14-alpine3.15 as build
+# Build stage
+FROM node:16.14-alpine3.15 as builder
 
-WORKDIR /datagateway
+WORKDIR /datagateway-build
 
 # Enable dependency caching and share the cache between projects
 ENV YARN_ENABLE_GLOBAL_CACHE=true
@@ -24,13 +25,15 @@ RUN --mount=type=cache,target=/root/.cache/.yarn/cache \
     yarn workspaces focus --all --production; \
     yarn build;
 
-# Put the output of the build into an apache server
+# Run stage
 FROM httpd:2.4-alpine3.15
+
 WORKDIR /usr/local/apache2/htdocs
-COPY --from=build /datagateway/packages/datagateway-dataview/build/. ./datagateway-dataview/
-COPY --from=build /datagateway/packages/datagateway-download/build/. ./datagateway-download/
-COPY --from=build /datagateway/packages/datagateway-search/build/. ./datagateway-search/
-# example url: http://localhost:8080/datagateway-dataview/main.js
+
+# Put the output of the build into an apache server
+COPY --from=builder /datagateway-build/packages/datagateway-dataview/build/. ./datagateway-dataview/
+COPY --from=builder /datagateway-build/packages/datagateway-download/build/. ./datagateway-download/
+COPY --from=builder /datagateway-build/packages/datagateway-search/build/. ./datagateway-search/
 
 RUN set -eux; \
     # Privileged ports are permitted to root only by default. \
