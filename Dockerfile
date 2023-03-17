@@ -17,6 +17,10 @@ RUN --mount=type=cache,target=/root/.cache/.yarn/cache \
     echo "REACT_APP_DOWNLOAD_BUILD_DIRECTORY=/datagateway-download/" > packages/datagateway-download/.env.production; \
     echo "REACT_APP_SEARCH_BUILD_DIRECTORY=/datagateway-search/" > packages/datagateway-search/.env.production; \
     \
+    cp packages/datagateway-dataview/public/datagateway-dataview-settings.example.json packages/datagateway-dataview/public/datagateway-dataview-settings.json; \
+    cp packages/datagateway-download/public/datagateway-download-settings.example.json packages/datagateway-download/public/datagateway-download-settings.json; \
+    cp packages/datagateway-search/public/datagateway-search-settings.example.json packages/datagateway-search/public/datagateway-search-settings.json; \
+    \
     yarn workspaces focus --all --production; \
     yarn build;
 
