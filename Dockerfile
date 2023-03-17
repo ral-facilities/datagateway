@@ -39,7 +39,23 @@ RUN set -eux; \
     setcap 'cap_net_bind_service=+ep' /usr/local/apache2/bin/httpd; \
     \
     # Change ownership of logs directory \
-    chown www-data:www-data /usr/local/apache2/logs;
+    chown www-data:www-data /usr/local/apache2/logs; \
+    \
+    # Change ownership of setting files \
+    chown www-data:www-data /usr/local/apache2/htdocs/datagateway-dataview/datagateway-dataview-settings.json; \
+    chown www-data:www-data /usr/local/apache2/htdocs/datagateway-download/datagateway-download-settings.json; \
+    chown www-data:www-data /usr/local/apache2/htdocs/datagateway-search/datagateway-search-settings.json;
 
 # Switch to non-root user defined in httpd image
 USER www-data
+
+ENV API_URL="/datagateway-api"
+ENV DOWNLOAD_API_URL="http://localhost"
+ENV ICAT_URL="http://localhost"
+ENV IDS_URL="http://localhost"
+
+COPY docker/docker-entrypoint.sh /usr/local/bin/
+ENTRYPOINT ["docker-entrypoint.sh"]
+
+CMD ["httpd-foreground"]
+EXPOSE 80
