@@ -16,7 +16,6 @@ import {
   useInvestigationCount,
   useInvestigationDetails,
   useInvestigationsInfinite,
-  useInvestigationSizes,
   useRemoveFromCart,
 } from 'datagateway-common';
 import { createMemoryHistory, type History } from 'history';
@@ -98,6 +97,8 @@ describe('ISIS MyData table component', () => {
         title: 'Test 1 title',
         name: 'Test 1 name',
         summary: 'foo bar',
+        fileSize: 1,
+        fileCount: 1,
         visitId: '1',
         doi: 'doi 1',
         investigationInstruments: [
@@ -144,12 +145,6 @@ describe('ISIS MyData table component', () => {
       data: { pages: [rowData] },
       fetchNextPage: jest.fn(),
     });
-    (useInvestigationSizes as jest.Mock).mockReturnValue([
-      {
-        data: 1,
-        isSuccess: true,
-      },
-    ]);
     (useIds as jest.Mock).mockReturnValue({
       data: [1],
       isLoading: false,

@@ -67,6 +67,8 @@ describe('ISIS Investigations table component', () => {
         id: 1,
         title: 'Test 1',
         name: 'Test 1',
+        fileSize: 1,
+        fileCount: 1,
         summary: 'foo bar',
         visitId: '1',
         doi: 'doi 1',

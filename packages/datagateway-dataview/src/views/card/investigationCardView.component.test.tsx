@@ -51,6 +51,8 @@ describe('Investigation - Card View', () => {
     cardData = [
       {
         id: 1,
+        fileSize: 1,
+        fileCount: 1,
         title: 'Test title 1',
         summary: 'Test summary',
         name: 'Test name 1',

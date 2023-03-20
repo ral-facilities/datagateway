@@ -62,6 +62,8 @@ describe('Investigation table component', () => {
     rowData = [
       {
         id: 1,
+        fileSize: 1,
+        fileCount: 1,
         title: 'Test title 1',
         name: 'Test 1',
         visitId: 'visit id 1',

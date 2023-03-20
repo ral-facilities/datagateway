@@ -3,11 +3,7 @@ import ISISInvestigationLanding from './isisInvestigationLanding.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../../../state/app.types';
-import {
-  dGCommonInitialState,
-  useInvestigation,
-  useInvestigationSizes,
-} from 'datagateway-common';
+import { dGCommonInitialState, useInvestigation } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { createMemoryHistory, History } from 'history';
@@ -60,6 +56,8 @@ describe('ISIS Investigation Landing page', () => {
       id: 1,
       title: 'Test title 1',
       name: 'Test 1',
+      fileSize: 1,
+      fileCount: 1,
       summary: 'foo bar',
       visitId: 'visit id 1',
       doi: 'doi 1',
@@ -185,12 +183,6 @@ describe('ISIS Investigation Landing page', () => {
     (useInvestigation as jest.Mock).mockReturnValue({
       data: initialData,
     });
-    (useInvestigationSizes as jest.Mock).mockReturnValue([
-      {
-        isSuccess: true,
-        data: 1,
-      },
-    ]);
   });
 
   afterEach(() => {

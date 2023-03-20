@@ -80,6 +80,8 @@ describe('DLS Dataset table component', () => {
     rowData = [
       {
         id: 1,
+        fileSize: 1,
+        fileCount: 1,
         name: 'Test 1',
         size: 1,
         modTime: '2019-07-23',
