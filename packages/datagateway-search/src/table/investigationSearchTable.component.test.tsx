@@ -12,7 +12,6 @@ import {
   useInvestigationCount,
   useInvestigationsDatasetCount,
   useInvestigationsInfinite,
-  useInvestigationSizes,
   useLuceneSearch,
   useRemoveFromCart,
 } from 'datagateway-common';
@@ -96,6 +95,8 @@ describe('Investigation Search Table component', () => {
     rowData = [
       {
         id: 1,
+        fileSize: 1,
+        fileCount: 1,
         title: 'Test Title 1',
         name: 'Test Name 1',
         summary: 'foo bar',
@@ -179,18 +180,6 @@ describe('Investigation Search Table component', () => {
           isFetching: false,
           isSuccess: true,
         }))
-    );
-    (useInvestigationSizes as jest.Mock).mockImplementation((investigations) =>
-      (investigations
-        ? 'pages' in investigations
-          ? investigations.pages.flat()
-          : investigations
-        : []
-      ).map(() => ({
-        data: 1,
-        isFetching: false,
-        isSuccess: true,
-      }))
     );
   });
 

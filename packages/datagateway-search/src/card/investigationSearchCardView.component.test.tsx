@@ -6,7 +6,6 @@ import {
   useAllFacilityCycles,
   useInvestigationCount,
   useInvestigationsDatasetCount,
-  useInvestigationSizes,
   useInvestigationsPaginated,
   useLuceneSearch,
 } from 'datagateway-common';
@@ -71,6 +70,8 @@ describe('Investigation - Card View', () => {
     cardData = [
       {
         id: 1,
+        fileSize: 1,
+        fileCount: 1,
         name: 'Investigation test name',
         size: 1,
         modTime: '2019-07-23',
@@ -148,19 +149,6 @@ describe('Investigation - Card View', () => {
           isFetching: false,
           isSuccess: true,
         }))
-    );
-
-    (useInvestigationSizes as jest.Mock).mockImplementation((investigations) =>
-      (investigations
-        ? 'pages' in investigations
-          ? investigations.pages.flat()
-          : investigations
-        : []
-      ).map(() => ({
-        data: 1,
-        isFetching: false,
-        isSuccess: true,
-      }))
     );
 
     window.scrollTo = jest.fn();
@@ -300,7 +288,6 @@ describe('Investigation - Card View', () => {
 
     renderComponent('isis');
 
-    expect(useInvestigationSizes).toHaveBeenCalledWith(cardData);
     expect(useInvestigationsDatasetCount).toHaveBeenCalledWith(undefined);
 
     const card = (await screen.findAllByTestId('card'))[0];
