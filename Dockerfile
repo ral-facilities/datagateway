@@ -1,56 +1,64 @@
-# Multipart build dockerfile to build and serve datagateway
+# Dockerfile to build and serve datagateway
 
-FROM node:16.14-alpine3.15 as build
+# Build stage
+FROM node:16.14-alpine3.15 as builder
 
-WORKDIR /datagateway
+WORKDIR /datagateway-build
 
-ARG HOST_URL
+# Enable dependency caching and share the cache between projects
+ENV YARN_ENABLE_GLOBAL_CACHE=true
+ENV YARN_GLOBAL_FOLDER=/root/.cache/.yarn
 
 COPY . .
 
-# Set the React production variables which hold reference to the paths of the plugin builds
-RUN echo "REACT_APP_DATAVIEW_BUILD_DIRECTORY=$HOST_URL/datagateway-dataview/" > packages/datagateway-dataview/.env.production \
-  && echo "REACT_APP_DOWNLOAD_BUILD_DIRECTORY=$HOST_URL/datagateway-download/" > packages/datagateway-download/.env.production \
-  && echo "REACT_APP_SEARCH_BUILD_DIRECTORY=$HOST_URL/datagateway-search/" > packages/datagateway-search/.env.production \
-  && yarn workspaces focus --all --production \
-  && yarn build
+RUN --mount=type=cache,target=/root/.cache/.yarn/cache \
+    set -eux; \
+    # Set the React production variables which hold reference to the paths of the plugin builds \
+    echo "REACT_APP_DATAVIEW_BUILD_DIRECTORY=/datagateway-dataview/" > packages/datagateway-dataview/.env.production; \
+    echo "REACT_APP_DOWNLOAD_BUILD_DIRECTORY=/datagateway-download/" > packages/datagateway-download/.env.production; \
+    echo "REACT_APP_SEARCH_BUILD_DIRECTORY=/datagateway-search/" > packages/datagateway-search/.env.production; \
+    \
+    cp packages/datagateway-dataview/public/datagateway-dataview-settings.example.json packages/datagateway-dataview/public/datagateway-dataview-settings.json; \
+    cp packages/datagateway-download/public/datagateway-download-settings.example.json packages/datagateway-download/public/datagateway-download-settings.json; \
+    cp packages/datagateway-search/public/datagateway-search-settings.example.json packages/datagateway-search/public/datagateway-search-settings.json; \
+    \
+    yarn workspaces focus --all --production; \
+    yarn build;
+
+# Run stage
+FROM httpd:2.4-alpine3.15
+
+WORKDIR /usr/local/apache2/htdocs
 
 # Put the output of the build into an apache server
-FROM httpd:2.4-alpine3.15
-WORKDIR /usr/local/apache2/htdocs
-COPY --from=build /datagateway/packages/datagateway-dataview/build/. ./datagateway-dataview/
-COPY --from=build /datagateway/packages/datagateway-download/build/. ./datagateway-download/
-COPY --from=build /datagateway/packages/datagateway-search/build/. ./datagateway-search/
-# example url: http://localhost:8080/datagateway-dataview/main.js
+COPY --from=builder /datagateway-build/packages/datagateway-dataview/build/. ./datagateway-dataview/
+COPY --from=builder /datagateway-build/packages/datagateway-download/build/. ./datagateway-download/
+COPY --from=builder /datagateway-build/packages/datagateway-search/build/. ./datagateway-search/
 
-# Define virtual hosts so that the plugins can be deployed on different ports
-# TODO - Make virtual hosts production ready
-#        They need to be configured differently especially if using https:
-#        https://github.com/ral-facilities/scigateway/wiki/Deploying-Datagateway
-WORKDIR /usr/local/apache2/conf
-RUN sed -i '/Listen 80$/a\
-\Listen 5001\n\
-\Listen 5002\n\
-\Listen 5003\n\
-\n\
-\<VirtualHost *:5001>\n\
-\    DocumentRoot "/usr/local/apache2/htdocs/datagateway-dataview"\n\
-\</VirtualHost>\n\
-\n\
-\<VirtualHost *:5002>\n\
-\    DocumentRoot "/usr/local/apache2/htdocs/datagateway-download"\n\
-\</VirtualHost>\n\
-\n\
-\<VirtualHost *:5003>\n\
-\    DocumentRoot "/usr/local/apache2/htdocs/datagateway-search"\n\
-\</VirtualHost>' httpd.conf
-
-RUN apk --no-cache add libcap \
-  # Privileged ports are permitted to root only by default.
-  # setcap to bind to privileged ports (80) as non-root.
-  && setcap 'cap_net_bind_service=+ep' /usr/local/apache2/bin/httpd \
-  # Change access righs for logs from root to www-data
-  && chown www-data:www-data /usr/local/apache2/logs
+RUN set -eux; \
+    # Privileged ports are permitted to root only by default. \
+    # setcap to bind to privileged ports (80) as non-root. \
+    apk --no-cache add libcap; \
+    setcap 'cap_net_bind_service=+ep' /usr/local/apache2/bin/httpd; \
+    \
+    # Change ownership of logs directory \
+    chown www-data:www-data /usr/local/apache2/logs; \
+    \
+    # Change ownership of setting files \
+    chown www-data:www-data /usr/local/apache2/htdocs/datagateway-dataview/datagateway-dataview-settings.json; \
+    chown www-data:www-data /usr/local/apache2/htdocs/datagateway-download/datagateway-download-settings.json; \
+    chown www-data:www-data /usr/local/apache2/htdocs/datagateway-search/datagateway-search-settings.json;
 
 # Switch to non-root user defined in httpd image
 USER www-data
+
+ENV API_URL="/datagateway-api"
+ENV DOWNLOAD_API_URL="http://localhost"
+ENV ICAT_URL="http://localhost"
+ENV IDS_URL="http://localhost"
+
+COPY docker/docker-entrypoint.sh /usr/local/bin/
+ENTRYPOINT ["docker-entrypoint.sh"]
+
+CMD ["httpd-foreground"]
+EXPOSE 80

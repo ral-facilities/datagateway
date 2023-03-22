@@ -10,3 +10,4 @@ codecov.yml
 CODEOWNERS
 LICENSE.md
 README.md
+Dockerfile
