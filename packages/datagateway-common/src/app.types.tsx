@@ -53,7 +53,6 @@ export interface Datafile {
   modTime: string;
   createTime: string;
   fileSize?: number;
-  fileCount?: number;
   location?: string;
   description?: string;
   parameters?: DatafileParameter[];
