@@ -199,7 +199,7 @@ const VisitDetailsPanel = (
               {t('investigations.details.size')}
             </Typography>
             <Typography>
-              <b>{formatBytes(rowData.fileSize)}</b>
+              <b>{formatBytes(investigationData.fileSize)}</b>
             </Typography>
           </Grid>
         </StyledGrid>

@@ -161,7 +161,7 @@ const DatasetDetailsPanel = (
               {t('datasets.details.size')}
             </Typography>
             <Typography>
-              <b>{formatBytes(rowData.fileSize)}</b>
+              <b>{formatBytes(datasetData.fileSize)}</b>
             </Typography>
           </Grid>
         </StyledGrid>
