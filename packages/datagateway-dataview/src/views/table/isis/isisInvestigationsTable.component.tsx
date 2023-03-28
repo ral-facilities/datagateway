@@ -164,11 +164,15 @@ const ISISInvestigationsTable = (
         dataKey: 'studyInvestigations.study.pid',
         cellContentRenderer: (cellProps: TableCellProps) => {
           const investigationData = cellProps.rowData as Investigation;
-          if (investigationData?.studyInvestigations?.[0]?.study) {
+          if (
+            investigationData?.dataCollectionInvestigations?.[0]?.dataCollection
+              ?.dataPublications?.[0]
+          ) {
             return externalSiteLink(
-              `https://doi.org/${investigationData.studyInvestigations[0].study.pid}`,
-              investigationData.studyInvestigations[0].study.pid,
-              'isis-investigations-table-doi-link'
+              `https://doi.org/${investigationData.dataCollectionInvestigations?.[0]?.dataCollection?.dataPublications?.[0].pid}`,
+              investigationData.dataCollectionInvestigations?.[0]
+                ?.dataCollection?.dataPublications?.[0].pid,
+              'isis-mydata-table-doi-link'
             );
           } else {
             return '';

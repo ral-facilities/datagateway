@@ -15,6 +15,7 @@ export interface Investigation {
   releaseDate?: string;
   summary?: string;
   investigationInstruments?: InvestigationInstrument[];
+  dataCollectionInvestigations?: DataCollectionInvestigation[];
   size?: number;
   datasetCount?: number;
   investigationUsers?: InvestigationUser[];
@@ -127,6 +128,7 @@ export interface DataCollectionDataset {
 
 export interface DataCollectionInvestigation {
   id: number;
+  dataCollection: DataCollection;
   investigation: Investigation;
 }
 
