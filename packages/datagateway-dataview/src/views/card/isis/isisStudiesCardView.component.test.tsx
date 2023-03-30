@@ -1,42 +1,26 @@
-import { ListItemText } from '@mui/material';
-import {
-  AdvancedFilter,
-  dGCommonInitialState,
-  useStudyCount,
-  useStudiesPaginated,
-  Study,
-} from 'datagateway-common';
-import { mount, ReactWrapper } from 'enzyme';
-import React from 'react';
+import { dGCommonInitialState, type Study } from 'datagateway-common';
+import * as React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { StateType } from '../../../state/app.types';
+import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import ISISStudiesCardView from './isisStudiesCardView.component';
-import { createMemoryHistory, History } from 'history';
+import { createMemoryHistory, type History } from 'history';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { parse } from 'date-fns';
 import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
 } from '../../../setupTests';
-
-jest
-  .useFakeTimers('modern')
-  .setSystemTime(parse('2021-10-27', 'yyyy-MM-dd', 0));
-
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    useStudyCount: jest.fn(),
-    useStudiesPaginated: jest.fn(),
-  };
-});
+import {
+  render,
+  type RenderResult,
+  screen,
+  within,
+} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
 
 describe('ISIS Studies - Card View', () => {
   let mockStore;
@@ -44,10 +28,9 @@ describe('ISIS Studies - Card View', () => {
   let cardData: Study[];
   let history: History;
 
-  const createWrapper = (): ReactWrapper => {
-    const store = mockStore(state);
-    return mount(
-      <Provider store={store}>
+  const renderComponent = (): RenderResult =>
+    render(
+      <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
             <ISISStudiesCardView instrumentId="1" />
@@ -55,7 +38,6 @@ describe('ISIS Studies - Card View', () => {
         </Router>
       </Provider>
     );
-  };
 
   beforeEach(() => {
     cardData = [
@@ -73,6 +55,8 @@ describe('ISIS Studies - Card View', () => {
               title: 'investigation title',
               name: 'investigation name',
               visitId: 'IPim0',
+              startDate: '1999-01-01',
+              endDate: '1999-01-02',
             },
           },
         ],
@@ -88,14 +72,21 @@ describe('ISIS Studies - Card View', () => {
       })
     );
 
-    (useStudyCount as jest.Mock).mockReturnValue({
-      data: 1,
-      isLoading: false,
-    });
-    (useStudiesPaginated as jest.Mock).mockReturnValue({
-      data: cardData,
-      isLoading: false,
-    });
+    axios.get = jest
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        switch (url) {
+          case '/studies':
+            return Promise.resolve({
+              data: cardData,
+            });
+
+          case '/studies/count':
+            return Promise.resolve({
+              data: 1,
+            });
+        }
+      });
 
     // Prevent error logging
     window.scrollTo = jest.fn();
@@ -105,78 +96,31 @@ describe('ISIS Studies - Card View', () => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find('CardView').props()).toMatchSnapshot();
-  });
+  it('renders correctly', async () => {
+    renderComponent();
 
-  it('calls the correct data fetching hooks on load', () => {
-    const instrumentId = '1';
-    createWrapper();
-    expect(useStudyCount).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'studyInvestigations.investigation.investigationInstruments.instrument.id':
-            {
-              eq: instrumentId,
-            },
-        }),
-      },
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'studyInvestigations.investigation.releaseDate': {
-            lt: '2021-10-27 00:00:00',
-          },
-        }),
-      },
-    ]);
-    expect(useStudiesPaginated).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'studyInvestigations.investigation.investigationInstruments.instrument.id':
-            {
-              eq: instrumentId,
-            },
-        }),
-      },
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'studyInvestigations.investigation.releaseDate': {
-            lt: '2021-10-27 00:00:00',
-          },
-        }),
-      },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify({
-          studyInvestigations: 'investigation',
-        }),
-      },
-    ]);
-  });
+    const cards = await screen.findAllByTestId('card');
+    expect(cards).toHaveLength(1);
 
-  it('displays Experiment DOI (PID) and renders the expected Link ', () => {
-    const wrapper = createWrapper();
-    expect(
-      wrapper.find('[data-testid="landing-study-card-pid-link"]').first().text()
-    ).toEqual('doi');
-
-    expect(
-      wrapper
-        .find('[data-testid="landing-study-card-pid-link"]')
-        .first()
-        .prop('href')
-    ).toEqual('https://doi.org/doi');
+    const card = cards[0];
+    // card title should be rendered as link to study
+    expect(within(card).getByRole('link', { name: 'Test 1' })).toHaveAttribute(
+      'href',
+      '/browseStudyHierarchy/instrument/1/study/1'
+    );
+    expect(within(card).getByLabelText('card-description')).toHaveTextContent(
+      'investigation title'
+    );
+    expect(within(card).getByRole('link', { name: 'doi' })).toHaveAttribute(
+      'href',
+      'https://doi.org/doi'
+    );
+    expect(within(card).getByText('1999-01-01')).toBeInTheDocument();
+    expect(within(card).getByText('1999-01-02')).toBeInTheDocument();
   });
 
   it('uses default sort', () => {
-    const wrapper = createWrapper();
-    wrapper.update();
-
+    renderComponent();
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent(
@@ -185,71 +129,84 @@ describe('ISIS Studies - Card View', () => {
     );
   });
 
-  it('updates filter query params on text filter', () => {
-    const wrapper = createWrapper();
+  it('updates filter query params on text filter', async () => {
+    jest.useFakeTimers();
+    const user = userEvent.setup({
+      advanceTimers: jest.advanceTimersByTime,
+    });
 
-    const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find('button').last().simulate('click');
-    advancedFilter
-      .find('input')
-      .first()
-      .simulate('change', { target: { value: 'test' } });
+    renderComponent();
+
+    // click on button to show advanced filters
+    await user.click(
+      await screen.findByRole('button', { name: 'advanced_filters.show' })
+    );
+
+    const filter = await screen.findByRole('textbox', {
+      name: 'Filter by studies.name',
+      hidden: true,
+    });
+
+    await user.type(filter, 'tes');
+    jest.runAllTimers();
 
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
-        '{"name":{"value":"test","type":"include"}}'
+        '{"name":{"value":"tes","type":"include"}}'
       )}`
     );
 
-    advancedFilter
-      .find('input')
-      .first()
-      .simulate('change', { target: { value: '' } });
+    await user.clear(filter);
+    jest.runAllTimers();
 
     expect(history.location.search).toBe('?');
+
+    jest.useRealTimers();
   });
 
-  it('updates filter query params on date filter', () => {
+  it('updates filter query params on date filter', async () => {
+    const user = userEvent.setup();
     applyDatePickerWorkaround();
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find('button').first().simulate('click');
-    advancedFilter
-      .find('input')
-      .last()
-      .simulate('change', { target: { value: '2019-08-06' } });
+    // open advanced filter
+    await user.click(
+      await screen.findByRole('button', { name: 'advanced_filters.show' })
+    );
 
+    const filterInput = screen.getByRole('textbox', {
+      name: 'studies.end_date filter to',
+    });
+
+    await user.type(filterInput, '2019-08-06');
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"studyInvestigations.investigation.endDate":{"endDate":"2019-08-06"}}'
       )}`
     );
 
-    advancedFilter
-      .find('input')
-      .last()
-      .simulate('change', { target: { value: '' } });
-
+    await user.clear(filterInput);
     expect(history.location.search).toBe('?');
 
     cleanupDatePickerWorkaround();
   });
 
-  it('updates sort query params on sort', () => {
-    const wrapper = createWrapper();
+  it('updates sort query params on sort', async () => {
+    const user = userEvent.setup();
 
-    const button = wrapper.find(ListItemText).first();
-    expect(button.text()).toEqual('studies.name');
-    button.find('div').simulate('click');
+    renderComponent();
+
+    await user.click(
+      await screen.findByRole('button', { name: 'Sort by STUDIES.NAME' })
+    );
 
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"asc"}')}`
     );
   });
 
-  it('displays information from investigation when investigation present', () => {
+  it('displays information from investigation when investigation present', async () => {
     cardData = [
       {
         ...cardData[0],
@@ -271,40 +228,13 @@ describe('ISIS Studies - Card View', () => {
         ],
       },
     ];
-    (useStudiesPaginated as jest.Mock).mockReturnValue({
-      data: cardData,
-    });
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    expect(
-      wrapper.find('[aria-label="card-description"]').last().text()
-    ).toEqual('Test investigation');
-  });
+    const card = (await screen.findAllByTestId('card'))[0];
 
-  it('renders fine with incomplete data', () => {
-    (useStudyCount as jest.Mock).mockReturnValueOnce({});
-    (useStudiesPaginated as jest.Mock).mockReturnValueOnce({});
-
-    expect(() => createWrapper()).not.toThrowError();
-
-    cardData = [
-      {
-        ...cardData[0],
-        studyInvestigations: [
-          {
-            id: 2,
-            study: {
-              ...cardData[0],
-            },
-          },
-        ],
-      },
-    ];
-    (useStudiesPaginated as jest.Mock).mockReturnValue({
-      data: cardData,
-    });
-
-    expect(() => createWrapper()).not.toThrowError();
+    expect(within(card).getByLabelText('card-description')).toHaveTextContent(
+      'Test investigation'
+    );
   });
 });

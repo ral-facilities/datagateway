@@ -22,11 +22,11 @@ describe('DLS - Proposals Cards', () => {
   it('should be able to click an investigation to see its datasets', () => {
     cy.get('[data-testid="card"]')
       .first()
-      .contains('About quickly both stop.')
+      .contains('A air avoid beautiful.')
       .click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/proposal/INVESTIGATION%2030/investigation'
+      '/browse/proposal/INVESTIGATION%2039/investigation'
     );
   });
 
@@ -63,7 +63,7 @@ describe('DLS - Proposals Cards', () => {
         });
       cy.get('[data-testid="card"]')
         .first()
-        .contains('Energy place money bad authority.');
+        .contains('Majority about dog idea bag summer.');
 
       cy.get('[aria-label="Filter by Name"]')
         .first()
@@ -71,7 +71,7 @@ describe('DLS - Proposals Cards', () => {
         .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
           timeout: 10000,
         });
-      cy.get('[data-testid="card"]').first().contains('INVESTIGATION 217');
+      cy.get('[data-testid="card"]').first().contains('INVESTIGATION 52');
     });
   });
 });

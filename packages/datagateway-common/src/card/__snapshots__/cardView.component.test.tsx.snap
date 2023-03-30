@@ -1,248 +1,416 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Card View renders correctly 1`] = `
-<ForwardRef(Grid)
-  alignItems="center"
-  container={true}
-  direction="column"
->
-  <ForwardRef(Grid)
-    alignItems="center"
-    container={true}
-    direction="row"
-    item={true}
-    justifyContent="center"
-    xs={12}
+<DocumentFragment>
+  <div
+    class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column css-t0zib5-MuiGrid-root"
   >
-    <ForwardRef(Grid)
-      alignItems="center"
-      container={true}
-      direction="row"
-      item={true}
-      justifyContent="space-around"
-      padding={2}
-      xs={12}
+    <div
+      class="MuiGrid-root MuiGrid-container MuiGrid-item MuiGrid-grid-xs-12 css-ktrjjf-MuiGrid-root"
     >
-      <ForwardRef(Grid)
-        item={true}
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-item MuiGrid-grid-xs-12 css-1tni0hc-MuiGrid-root"
       >
-        <ForwardRef(Pagination)
-          aria-label="pagination"
-          className="tour-dataview-pagination"
-          color="secondary"
-          count={0}
-          hideNextButton={true}
-          hidePrevButton={true}
-          onChange={[Function]}
-          page={1}
-          showFirstButton={true}
-          showLastButton={true}
-          size="large"
-          sx={
-            Object {
-              "textAlign": "center",
-            }
-          }
-        />
-      </ForwardRef(Grid)>
-    </ForwardRef(Grid)>
-  </ForwardRef(Grid)>
-  <ForwardRef(Grid)
-    container={true}
-    direction="row"
-    item={true}
-    justifyContent="center"
-    padding={4}
-    spacing={2}
-  >
-    <ForwardRef(Grid)
-      item={true}
-      md={3}
-      xs={12}
-    >
-      <ForwardRef(Grid)
-        alignItems="stretch"
-        container={true}
-        direction="column"
-        item={true}
-        justifyContent="flex-start"
-        rowSpacing={4}
-        sx={
-          Object {
-            "marginBottom": 0,
-            "marginLeft": 0,
-            "marginRight": 0,
-          }
-        }
-        xs={12}
-      >
-        <ForwardRef(Grid)
-          item={true}
-          xs={true}
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
         >
-          <ForwardRef(Paper)>
-            <ForwardRef(Box)
-              p={2}
+          <nav
+            aria-label="pagination"
+            class="MuiPagination-root MuiPagination-text tour-dataview-pagination css-12oj7ks-MuiPagination-root"
+          >
+            <ul
+              class="MuiPagination-ul css-wjh20t-MuiPagination-ul"
             >
-              <ForwardRef(Typography)
-                variant="h5"
-              >
-                Sort By
-              </ForwardRef(Typography)>
-            </ForwardRef(Box)>
-            <ForwardRef(Box)>
-              <ForwardRef(List)
-                aria-label="sort-by-list"
-                className="tour-dataview-sort"
-                component="nav"
-              />
-            </ForwardRef(Box)>
-          </ForwardRef(Paper)>
-        </ForwardRef(Grid)>
-      </ForwardRef(Grid)>
-    </ForwardRef(Grid)>
-    <ForwardRef(Grid)
-      item={true}
-      md={9}
-      xs={12}
+              <li>
+                <button
+                  aria-label="Go to first page"
+                  class="MuiButtonBase-root Mui-disabled MuiPaginationItem-root MuiPaginationItem-sizeLarge MuiPaginationItem-text MuiPaginationItem-circular MuiPaginationItem-textSecondary Mui-disabled MuiPaginationItem-firstLast css-1mtig89-MuiButtonBase-root-MuiPaginationItem-root"
+                  disabled=""
+                  tabindex="-1"
+                  type="button"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiPaginationItem-icon css-n8417t-MuiSvgIcon-root-MuiPaginationItem-icon"
+                    data-testid="FirstPageIcon"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M18.41 16.59L13.82 12l4.59-4.59L17 6l-6 6 6 6zM6 6h2v12H6z"
+                    />
+                  </svg>
+                </button>
+              </li>
+              <li>
+                <button
+                  aria-current="true"
+                  aria-label="page 1"
+                  class="MuiButtonBase-root MuiPaginationItem-root MuiPaginationItem-sizeLarge MuiPaginationItem-text MuiPaginationItem-circular MuiPaginationItem-textSecondary Mui-selected MuiPaginationItem-page css-1mtig89-MuiButtonBase-root-MuiPaginationItem-root"
+                  tabindex="0"
+                  type="button"
+                >
+                  1
+                  <span
+                    class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                  />
+                </button>
+              </li>
+              <li>
+                <button
+                  aria-label="Go to last page"
+                  class="MuiButtonBase-root Mui-disabled MuiPaginationItem-root MuiPaginationItem-sizeLarge MuiPaginationItem-text MuiPaginationItem-circular MuiPaginationItem-textSecondary Mui-disabled MuiPaginationItem-firstLast css-1mtig89-MuiButtonBase-root-MuiPaginationItem-root"
+                  disabled=""
+                  tabindex="-1"
+                  type="button"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiPaginationItem-icon css-n8417t-MuiSvgIcon-root-MuiPaginationItem-icon"
+                    data-testid="LastPageIcon"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M5.59 7.41L10.18 12l-4.59 4.59L7 18l6-6-6-6zM16 6h2v12h-2z"
+                    />
+                  </svg>
+                </button>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+    <div
+      class="MuiGrid-root MuiGrid-container MuiGrid-item MuiGrid-spacing-xs-2 css-1izk63j-MuiGrid-root"
     >
-      <ForwardRef(List)
-        sx={
-          Object {
-            "margin": 0,
-            "padding": 0,
-          }
-        }
+      <div
+        class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-3 css-iv7vbz-MuiGrid-root"
       >
-        <ForwardRef(ListItem)
-          alignItems="flex-start"
-          key="0"
-          sx={
-            Object {
-              "paddingRight": 0,
-            }
-          }
+        <div
+          class="MuiGrid-root MuiGrid-container MuiGrid-item MuiGrid-direction-xs-column MuiGrid-grid-xs-12 css-1yjhyxt-MuiGrid-root"
         >
-          <EntityCard
-            entity={
-              Object {
-                "facility": Object {
-                  "id": 1,
-                  "name": "1",
-                },
-                "id": 1,
-                "name": "Test 1",
-                "title": "Test 1",
-                "type": Object {
-                  "id": 1,
-                  "name": "1",
-                },
-                "visitId": "1",
-              }
-            }
-            title={
-              Object {
-                "dataKey": "title",
-              }
-            }
-          />
-        </ForwardRef(ListItem)>
-        <ForwardRef(ListItem)
-          alignItems="flex-start"
-          key="1"
-          sx={
-            Object {
-              "paddingRight": 0,
-            }
-          }
+          <div
+            class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+          >
+            <div
+              class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 css-1ps6pg7-MuiPaper-root"
+            >
+              <div
+                class="MuiBox-root css-19midj6"
+              >
+                <h5
+                  class="MuiTypography-root MuiTypography-h5 css-ag7rrr-MuiTypography-root"
+                >
+                  Sort By
+                </h5>
+              </div>
+              <div
+                class="MuiBox-root css-0"
+              >
+                <nav
+                  aria-label="sort-by-list"
+                  class="MuiList-root MuiList-padding tour-dataview-sort css-h4y409-MuiList-root"
+                >
+                  <div
+                    aria-label="Sort by TITLE"
+                    class="MuiButtonBase-root MuiListItem-root MuiListItem-gutters MuiListItem-padding MuiListItem-button css-bshv44-MuiButtonBase-root-MuiListItem-root"
+                    role="button"
+                    tabindex="0"
+                  >
+                    <div
+                      class="MuiListItemText-root css-tlelie-MuiListItemText-root"
+                    >
+                      <span
+                        class="MuiTypography-root MuiTypography-body1 MuiListItemText-primary css-10hburv-MuiTypography-root"
+                      >
+                        title
+                      </span>
+                    </div>
+                    <div
+                      class="MuiListItemIcon-root css-cveggr-MuiListItemIcon-root"
+                    >
+                      <span
+                        class="MuiButtonBase-root MuiTableSortLabel-root css-1qgma8u-MuiButtonBase-root-MuiTableSortLabel-root"
+                        role="button"
+                        tabindex="-1"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionAsc css-1vweko9-MuiSvgIcon-root-MuiTableSortLabel-icon"
+                          data-testid="ArrowDownwardIcon"
+                          focusable="false"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z"
+                          />
+                        </svg>
+                      </span>
+                    </div>
+                    <span
+                      class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                    />
+                  </div>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-9 css-b1im03-MuiGrid-root"
+      >
+        <ul
+          class="MuiList-root MuiList-padding css-2rzv8n-MuiList-root"
         >
-          <EntityCard
-            entity={
-              Object {
-                "facility": Object {
-                  "id": 1,
-                  "name": "1",
-                },
-                "id": 2,
-                "name": "Test 2",
-                "title": "Test 2",
-                "type": Object {
-                  "id": 1,
-                  "name": "1",
-                },
-                "visitId": "2",
-              }
-            }
-            title={
-              Object {
-                "dataKey": "title",
-              }
-            }
-          />
-        </ForwardRef(ListItem)>
-        <ForwardRef(ListItem)
-          alignItems="flex-start"
-          key="2"
-          sx={
-            Object {
-              "paddingRight": 0,
-            }
-          }
+          <li
+            class="MuiListItem-root MuiListItem-gutters MuiListItem-padding MuiListItem-alignItemsFlexStart css-1dmiho4-MuiListItem-root"
+          >
+            <div
+              class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-1j5w3ub-MuiPaper-root-MuiCard-root"
+              data-testid="card"
+            >
+              <div
+                class="MuiCardContent-root css-lxf44u-MuiCardContent-root"
+              >
+                <div
+                  style="display: flex; flex-direction: row;"
+                >
+                  <div
+                    class="MuiBox-root css-77wikq"
+                  >
+                    <div
+                      aria-label="main-content"
+                    >
+                      <h5
+                        aria-label="card-title"
+                        class="MuiTypography-root MuiTypography-h5 MuiTypography-noWrap css-15uf1rh-MuiTypography-root"
+                        data-mui-internal-clone-element="true"
+                      >
+                        Test 1
+                      </h5>
+                      <div
+                        class="MuiBox-root css-8i7nub"
+                      >
+                        <div
+                          class="MuiCollapse-root MuiCollapse-vertical css-1fkrdiv-MuiCollapse-root"
+                          style="min-height: 100px;"
+                        >
+                          <div
+                            class="MuiCollapse-wrapper MuiCollapse-vertical css-smkl36-MuiCollapse-wrapper"
+                          >
+                            <div
+                              class="MuiCollapse-wrapperInner MuiCollapse-vertical css-9l5vo-MuiCollapse-wrapperInner"
+                            >
+                              <p
+                                aria-label="card-description"
+                                class="MuiTypography-root MuiTypography-body1 MuiTypography-paragraph css-z2eky3-MuiTypography-root"
+                              >
+                                entity_card.no_description
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    style="padding-left: 15px;"
+                  />
+                </div>
+              </div>
+            </div>
+          </li>
+          <li
+            class="MuiListItem-root MuiListItem-gutters MuiListItem-padding MuiListItem-alignItemsFlexStart css-1dmiho4-MuiListItem-root"
+          >
+            <div
+              class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-1j5w3ub-MuiPaper-root-MuiCard-root"
+              data-testid="card"
+            >
+              <div
+                class="MuiCardContent-root css-lxf44u-MuiCardContent-root"
+              >
+                <div
+                  style="display: flex; flex-direction: row;"
+                >
+                  <div
+                    class="MuiBox-root css-77wikq"
+                  >
+                    <div
+                      aria-label="main-content"
+                    >
+                      <h5
+                        aria-label="card-title"
+                        class="MuiTypography-root MuiTypography-h5 MuiTypography-noWrap css-15uf1rh-MuiTypography-root"
+                        data-mui-internal-clone-element="true"
+                      >
+                        Test 2
+                      </h5>
+                      <div
+                        class="MuiBox-root css-8i7nub"
+                      >
+                        <div
+                          class="MuiCollapse-root MuiCollapse-vertical css-1fkrdiv-MuiCollapse-root"
+                          style="min-height: 100px;"
+                        >
+                          <div
+                            class="MuiCollapse-wrapper MuiCollapse-vertical css-smkl36-MuiCollapse-wrapper"
+                          >
+                            <div
+                              class="MuiCollapse-wrapperInner MuiCollapse-vertical css-9l5vo-MuiCollapse-wrapperInner"
+                            >
+                              <p
+                                aria-label="card-description"
+                                class="MuiTypography-root MuiTypography-body1 MuiTypography-paragraph css-z2eky3-MuiTypography-root"
+                              >
+                                entity_card.no_description
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    style="padding-left: 15px;"
+                  />
+                </div>
+              </div>
+            </div>
+          </li>
+          <li
+            class="MuiListItem-root MuiListItem-gutters MuiListItem-padding MuiListItem-alignItemsFlexStart css-1dmiho4-MuiListItem-root"
+          >
+            <div
+              class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-1j5w3ub-MuiPaper-root-MuiCard-root"
+              data-testid="card"
+            >
+              <div
+                class="MuiCardContent-root css-lxf44u-MuiCardContent-root"
+              >
+                <div
+                  style="display: flex; flex-direction: row;"
+                >
+                  <div
+                    class="MuiBox-root css-77wikq"
+                  >
+                    <div
+                      aria-label="main-content"
+                    >
+                      <h5
+                        aria-label="card-title"
+                        class="MuiTypography-root MuiTypography-h5 MuiTypography-noWrap css-15uf1rh-MuiTypography-root"
+                        data-mui-internal-clone-element="true"
+                      >
+                        Test 3
+                      </h5>
+                      <div
+                        class="MuiBox-root css-8i7nub"
+                      >
+                        <div
+                          class="MuiCollapse-root MuiCollapse-vertical css-1fkrdiv-MuiCollapse-root"
+                          style="min-height: 100px;"
+                        >
+                          <div
+                            class="MuiCollapse-wrapper MuiCollapse-vertical css-smkl36-MuiCollapse-wrapper"
+                          >
+                            <div
+                              class="MuiCollapse-wrapperInner MuiCollapse-vertical css-9l5vo-MuiCollapse-wrapperInner"
+                            >
+                              <p
+                                aria-label="card-description"
+                                class="MuiTypography-root MuiTypography-body1 MuiTypography-paragraph css-z2eky3-MuiTypography-root"
+                              >
+                                entity_card.no_description
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    style="padding-left: 15px;"
+                  />
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div
+      class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1es5dv5-MuiGrid-root"
+    >
+      <nav
+        aria-label="pagination"
+        class="MuiPagination-root MuiPagination-text tour-dataview-pagination css-12oj7ks-MuiPagination-root"
+      >
+        <ul
+          class="MuiPagination-ul css-wjh20t-MuiPagination-ul"
         >
-          <EntityCard
-            entity={
-              Object {
-                "facility": Object {
-                  "id": 1,
-                  "name": "1",
-                },
-                "id": 3,
-                "name": "Test 3",
-                "title": "Test 3",
-                "type": Object {
-                  "id": 1,
-                  "name": "1",
-                },
-                "visitId": "3",
-              }
-            }
-            title={
-              Object {
-                "dataKey": "title",
-              }
-            }
-          />
-        </ForwardRef(ListItem)>
-      </ForwardRef(List)>
-    </ForwardRef(Grid)>
-  </ForwardRef(Grid)>
-  <ForwardRef(Grid)
-    item={true}
-    sx={
-      Object {
-        "padding": "50px",
-      }
-    }
-    xs={true}
-  >
-    <ForwardRef(Pagination)
-      aria-label="pagination"
-      className="tour-dataview-pagination"
-      color="secondary"
-      count={0}
-      hideNextButton={true}
-      hidePrevButton={true}
-      onChange={[Function]}
-      page={1}
-      showFirstButton={true}
-      showLastButton={true}
-      size="large"
-      sx={
-        Object {
-          "textAlign": "center",
-        }
-      }
-    />
-  </ForwardRef(Grid)>
-</ForwardRef(Grid)>
+          <li>
+            <button
+              aria-label="Go to first page"
+              class="MuiButtonBase-root Mui-disabled MuiPaginationItem-root MuiPaginationItem-sizeLarge MuiPaginationItem-text MuiPaginationItem-circular MuiPaginationItem-textSecondary Mui-disabled MuiPaginationItem-firstLast css-1mtig89-MuiButtonBase-root-MuiPaginationItem-root"
+              disabled=""
+              tabindex="-1"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiPaginationItem-icon css-n8417t-MuiSvgIcon-root-MuiPaginationItem-icon"
+                data-testid="FirstPageIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M18.41 16.59L13.82 12l4.59-4.59L17 6l-6 6 6 6zM6 6h2v12H6z"
+                />
+              </svg>
+            </button>
+          </li>
+          <li>
+            <button
+              aria-current="true"
+              aria-label="page 1"
+              class="MuiButtonBase-root MuiPaginationItem-root MuiPaginationItem-sizeLarge MuiPaginationItem-text MuiPaginationItem-circular MuiPaginationItem-textSecondary Mui-selected MuiPaginationItem-page css-1mtig89-MuiButtonBase-root-MuiPaginationItem-root"
+              tabindex="0"
+              type="button"
+            >
+              1
+              <span
+                class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+              />
+            </button>
+          </li>
+          <li>
+            <button
+              aria-label="Go to last page"
+              class="MuiButtonBase-root Mui-disabled MuiPaginationItem-root MuiPaginationItem-sizeLarge MuiPaginationItem-text MuiPaginationItem-circular MuiPaginationItem-textSecondary Mui-disabled MuiPaginationItem-firstLast css-1mtig89-MuiButtonBase-root-MuiPaginationItem-root"
+              disabled=""
+              tabindex="-1"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiPaginationItem-icon css-n8417t-MuiSvgIcon-root-MuiPaginationItem-icon"
+                data-testid="LastPageIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M5.59 7.41L10.18 12l-4.59 4.59L7 18l6-6-6-6zM16 6h2v12h-2z"
+                />
+              </svg>
+            </button>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</DocumentFragment>
 `;

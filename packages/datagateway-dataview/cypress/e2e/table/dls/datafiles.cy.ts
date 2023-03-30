@@ -1,11 +1,11 @@
 describe('DLS - Datafiles Table', () => {
   beforeEach(() => {
     cy.intercept('**/datafiles/count?*').as('datafilesCount');
-    cy.intercept('**/datasets/241').as('datasets');
+    cy.intercept('**/datasets/61').as('datasets');
     cy.intercept('**/datafiles?order=*').as('datafilesOrder');
     cy.login();
     cy.visit(
-      '/browse/proposal/INVESTIGATION%201/investigation/1/dataset/241/datafile'
+      '/browse/proposal/INVESTIGATION%201/investigation/1/dataset/61/datafile'
     ).wait(['@datafilesCount', '@datasets', '@datafilesOrder'], {
       timeout: 10000,
     });
@@ -29,7 +29,9 @@ describe('DLS - Datafiles Table', () => {
     cy.get('[role="grid"]').should('not.exist');
   });
 
-  it('should be able to scroll down and load more rows', () => {
+  // Lazy loading cannot be tested at the moment as there are only 15 files in this dataset
+  it.skip('should be able to scroll down and load more rows', () => {
+    // Will need to figure out a way to have this be mocked.
     cy.get('[aria-rowcount="50"]').should('exist');
     cy.get('[aria-label="grid"]').scrollTo('bottom');
     cy.get('[aria-rowcount="55"]').should('exist');
@@ -115,7 +117,7 @@ describe('DLS - Datafiles Table', () => {
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
-        '/across/name/television.jpg'
+        '/analysis/unit/bank.tiff'
       );
     });
 
@@ -134,7 +136,7 @@ describe('DLS - Datafiles Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
-        '/write/concern/all.jpeg'
+        '/to/total/according.tiff'
       );
     });
 
@@ -158,7 +160,7 @@ describe('DLS - Datafiles Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
-        '/reality/industry/open.gif'
+        '/time/run/drug.jpeg'
       );
     });
 
@@ -173,9 +175,7 @@ describe('DLS - Datafiles Table', () => {
         .click()
         .wait('@datafilesOrder', { timeout: 10000 });
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Datafile 5030'
-      );
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('Datafile 60');
     });
   });
 
@@ -188,38 +188,27 @@ describe('DLS - Datafiles Table', () => {
     });
 
     it('text', () => {
-      cy.get('[aria-label="Filter by Location"]').first().type('rise');
+      cy.get('[aria-label="Filter by Location"]').first().type('unit');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Datafile 1198'
+        'Datafile 1369'
       );
     });
 
     it('date between', () => {
       cy.get('input[id="Create Time filter from"]').type('2019-01-01');
 
-      cy.get('input[aria-label="Create Time filter to"]')
-        .parent()
-        .find('button')
-        .click();
-
-      cy.get('.MuiPickersDay-root[type="button"]').first().click();
-
       const date = new Date();
-      date.setDate(1);
 
-      cy.get('input[id="Create Time filter to"]').should(
-        'have.value',
+      cy.get('input[aria-label="Create Time filter to"]').type(
         date.toISOString().slice(0, 10)
       );
 
-      cy.get('[aria-rowcount="2"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Datafile 20837'
-      );
+      cy.get('[aria-rowcount="15"]').should('exist');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('Datafile 60');
       cy.get('[aria-rowindex="2"] [aria-colindex="3"]').contains(
-        'Datafile 25627'
+        'Datafile 179'
       );
     });
 
@@ -231,12 +220,12 @@ describe('DLS - Datafiles Table', () => {
 
       cy.get('[aria-label="Filter by Location"]')
         .first()
-        .type('.png')
+        .type('.gif')
         .wait('@datafilesCount', { timeout: 10000 });
 
       cy.get('[aria-rowcount="2"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Datafile 3593'
+        'Datafile 536'
       );
     });
   });
@@ -261,8 +250,8 @@ describe('DLS - Datafiles Table', () => {
 
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.get('#details-panel').contains('Datafile 24').should('be.visible');
-      cy.get('#details-panel').contains('Datafile 3377').should('not.exist');
+      cy.get('#details-panel').contains('Datafile 60').should('be.visible');
+      cy.get('#details-panel').contains('Datafile 179').should('not.exist');
       cy.get('[aria-label="Hide details"]').should('have.length', 1);
     });
 

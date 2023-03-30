@@ -26,7 +26,7 @@ describe('DLS - Visits Cards', () => {
   it('should be able to click an investigation to see its datasets', () => {
     cy.get('[data-testid="card"]')
       .first()
-      .contains('42')
+      .contains('70')
       .click({ force: true });
     cy.location('pathname').should(
       'eq',
@@ -47,12 +47,12 @@ describe('DLS - Visits Cards', () => {
     cy.get('[data-testid="card"]')
       .first()
       .get('[aria-label="card-more-information"]')
-      .contains('11.01 GB', { timeout: 10000 });
+      .contains('3.12 GB', { timeout: 10000 });
     cy.get('#visit-users-tab').click({ force: true });
     cy.get('[data-testid="card"]')
       .first()
       .get('[aria-label="card-more-information"]')
-      .contains('Andrea Clayton');
+      .contains('Colleen Heath');
     cy.get('#visit-samples-tab').click({ force: true });
     cy.get('[data-testid="card"]')
       .first()
@@ -62,7 +62,7 @@ describe('DLS - Visits Cards', () => {
     cy.get('[data-testid="card"]')
       .first()
       .get('[aria-label="card-more-information"]')
-      .contains('Eat interest seem black easy various.');
+      .contains('Simple notice since view check over through there.');
   });
 
   describe('should be able to sort by', () => {
@@ -79,19 +79,19 @@ describe('DLS - Visits Cards', () => {
         .wait('@getInvestigationsOrder', { timeout: 10000 });
       cy.contains('[role="button"]', 'asc').should('exist');
       cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('[data-testid="card"]').first().contains('42');
+      cy.get('[data-testid="card"]').first().contains('70');
 
       cy.contains('[role="button"]', 'Visit ID')
         .click()
         .wait('@getInvestigationsOrder', { timeout: 10000 });
       cy.contains('[role="button"]', 'asc').should('not.exist');
       cy.contains('[role="button"]', 'desc').should('exist');
-      cy.get('[data-testid="card"]').first().contains('42');
+      cy.get('[data-testid="card"]').first().contains('70');
 
       cy.contains('[role="button"]', 'Visit ID').click();
       cy.contains('[role="button"]', 'asc').should('not.exist');
       cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('[data-testid="card"]').first().contains('42');
+      cy.get('[data-testid="card"]').first().contains('70');
     });
 
     it('multiple fields', () => {
@@ -100,14 +100,14 @@ describe('DLS - Visits Cards', () => {
         .wait('@getInvestigationsOrder', { timeout: 10000 });
       cy.contains('[role="button"]', 'asc').should('exist');
       cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('[data-testid="card"]').first().contains('42');
+      cy.get('[data-testid="card"]').first().contains('70');
 
       cy.contains('[role="button"]', 'Visit ID')
         .click()
         .wait('@getInvestigationsOrder', { timeout: 10000 });
       cy.contains('[role="button"]', 'asc').should('exist');
       cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('[data-testid="card"]').contains('42');
+      cy.get('[data-testid="card"]').contains('70');
     });
   });
 
@@ -123,14 +123,15 @@ describe('DLS - Visits Cards', () => {
       cy.get('[data-testid="advanced-filters-link"]').click();
       cy.get('[aria-label="Filter by Visit ID"]')
         .first()
-        .type('4')
+        .type('7')
         .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
           timeout: 10000,
         });
-      cy.get('[data-testid="card"]').first().contains('42');
+      cy.get('[data-testid="card"]').first().contains('70');
 
       cy.get('input[id="Start Date filter from"]')
-        .type('2019-01-01')
+        .click()
+        .type('2000-05-01')
         .wait(['@getInvestigationsCount'], { timeout: 10000 });
       cy.get('input[aria-label="Start Date filter to"]')
         .parent()

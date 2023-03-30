@@ -1,43 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Details panel row component renders correctly 1`] = `
-<ForwardRef(Box)
-  className="test-class"
-  key="1"
-  sx={
-    Object {
-      "display": "flex",
-      "flexDirection": "column",
-      "height": 30,
-      "paddingRight": 15,
-    }
-  }
->
+<DocumentFragment>
   <div
-    aria-rowindex={2}
-    className="test-class"
-    role="row"
-    style={
-      Object {
-        "height": 30,
-        "paddingRight": 15,
-        "position": "static",
-        "width": 30,
-      }
-    }
-  />
-  <div
-    style={
-      Object {
-        "marginLeft": 10,
-        "marginRight": "auto",
-        "maxWidth": 20,
-      }
-    }
+    class="test-class MuiBox-root css-1yhrwyw"
   >
-    <detailsPanel
-      rowData="test"
+    <div
+      aria-rowindex="2"
+      class="test-class"
+      role="row"
+      style="height: 30px; width: 30px; padding-right: 15px; position: static;"
     />
+    <div
+      style="margin-right: auto; margin-left: 10px; max-width: 20px;"
+    >
+      <div>
+        Details panel using test
+      </div>
+    </div>
   </div>
-</ForwardRef(Box)>
+</DocumentFragment>
 `;

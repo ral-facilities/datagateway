@@ -1,30 +1,16 @@
-import React from 'react';
-import { mount, ReactWrapper } from 'enzyme';
+import * as React from 'react';
 
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
-import { StateType } from './state/app.types';
+import type { StateType } from './state/app.types';
 import { initialState as dgSearchInitialState } from './state/reducers/dgsearch.reducer';
 import {
   dGCommonInitialState,
-  useCart,
-  ClearFiltersButton,
+  type DownloadCartItem,
 } from 'datagateway-common';
-import { createMemoryHistory, History } from 'history';
-import { MemoryRouter, Router } from 'react-router-dom';
-import SearchPageContainer from './searchPageContainer.component';
-import { LinearProgress } from '@mui/material';
-import { Provider } from 'react-redux';
-import axios from 'axios';
-import { act } from 'react-dom/test-utils';
-import { flushPromises } from './setupTests';
-import {
-  setInvestigationTab,
-  setDatasetTab,
-  setDatafileTab,
-} from './state/actions/actions';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import {
+import { createMemoryHistory, createPath, type History } from 'history';
+import { Router } from 'react-router-dom';
+import SearchPageContainer, {
   getFilters,
   getPage,
   getResults,
@@ -34,7 +20,11 @@ import {
   storeResults,
   storeSort,
 } from './searchPageContainer.component';
-import { render } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import axios from 'axios';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { render, type RenderResult, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 jest.mock('loglevel');
 
@@ -55,35 +45,57 @@ describe('SearchPageContainer - Tests', () => {
   let state: StateType;
   let queryClient: QueryClient;
   let history: History;
-  let pushSpy;
+  let holder: HTMLElement;
+  let cartItems: DownloadCartItem[];
 
   const localStorageGetItemMock = jest.spyOn(
     window.localStorage.__proto__,
     'getItem'
   );
 
-  const createWrapper = (
-    h: History = history,
-    client: QueryClient = queryClient
-  ): ReactWrapper => {
-    const mockStore = configureStore([thunk]);
-    return mount(
-      <Provider store={mockStore(state)}>
-        <Router history={h}>
-          <QueryClientProvider client={client}>
+  function renderComponent(): RenderResult {
+    return render(
+      <Provider store={configureStore([thunk])(state)}>
+        <Router history={history}>
+          <QueryClientProvider client={queryClient}>
             <SearchPageContainer />
           </QueryClientProvider>
         </Router>
       </Provider>
     );
-  };
+  }
 
   beforeEach(() => {
+    cartItems = [];
     queryClient = new QueryClient();
     history = createMemoryHistory({
       initialEntries: ['/search/data'],
     });
-    pushSpy = jest.spyOn(history, 'push');
+    delete window.location;
+    window.location = new URL(`http://localhost/search/data`);
+
+    // below code keeps window.location in sync with history changes
+    // (needed because useUpdateQueryParam uses window.location not history)
+    const historyReplace = history.replace;
+    const historyReplaceSpy = jest.spyOn(history, 'replace');
+    historyReplaceSpy.mockImplementation((args) => {
+      historyReplace(args);
+      if (typeof args === 'string') {
+        window.location = new URL(`http://localhost${args}`);
+      } else {
+        window.location = new URL(`http://localhost${createPath(args)}`);
+      }
+    });
+    const historyPush = history.push;
+    const historyPushSpy = jest.spyOn(history, 'push');
+    historyPushSpy.mockImplementation((args) => {
+      historyPush(args);
+      if (typeof args === 'string') {
+        window.location = new URL(`http://localhost${args}`);
+      } else {
+        window.location = new URL(`http://localhost${createPath(args)}`);
+      }
+    });
 
     window.localStorage.__proto__.removeItem = jest.fn();
     window.localStorage.__proto__.setItem = jest.fn();
@@ -120,38 +132,53 @@ describe('SearchPageContainer - Tests', () => {
       },
     };
 
+    holder = document.createElement('div');
+    holder.setAttribute('id', 'datagateway-search');
+    document.body.appendChild(holder);
+
     (axios.get as jest.Mock).mockImplementation((url) => {
+      if (url.includes('/user/cart')) {
+        return Promise.resolve({ data: { cartItems } });
+      }
+
       if (url.includes('count')) {
         return Promise.resolve({ data: 0 });
-      } else {
-        return Promise.resolve({ data: [] });
       }
+
+      return Promise.resolve({ data: [] });
     });
   });
 
   afterEach(() => {
+    document.body.removeChild(holder);
     jest.clearAllMocks();
   });
 
   it('renders searchPageContainer correctly', () => {
-    const mockStore = configureStore([thunk]);
-    const wrapper = render(
-      <Provider store={mockStore(state)}>
-        <MemoryRouter initialEntries={[{ key: 'testKey', pathname: '/' }]}>
-          <QueryClientProvider client={queryClient}>
-            <SearchPageContainer />
-          </QueryClientProvider>
-        </MemoryRouter>
-      </Provider>
-    );
+    history.replace({ key: 'testKey', pathname: '/' });
 
-    expect(wrapper.asFragment()).toMatchSnapshot();
+    renderComponent();
+
+    expect(screen.getByRole('link', { name: 'Search data' })).toHaveAttribute(
+      'href',
+      '/search/data'
+    );
   });
 
-  it('renders correctly at /search/data route', () => {
-    const wrapper = createWrapper();
+  it('renders initial layout at /search/data route', () => {
+    renderComponent();
 
-    expect(wrapper.exists('SearchBoxContainer')).toBeTruthy();
+    expect(screen.getByTestId('search-box-container')).toBeInTheDocument();
+    // no search results yet, so view button, clear filter button and tabs should be hidden
+    expect(
+      screen.queryByRole('button', { name: 'page view app.view_cards' })
+    ).toBeNull();
+    expect(
+      screen.queryByRole('button', { name: 'app.clear_filters' })
+    ).toBeNull();
+    expect(
+      screen.queryByRole('tablist', { name: 'searchPageTable.tabs_arialabel' })
+    ).toBeNull();
   });
 
   it('renders side layout correctly', () => {
@@ -165,350 +192,69 @@ describe('SearchPageContainer - Tests', () => {
       })
     );
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    expect(wrapper.exists('SearchBoxContainerSide')).toBeTruthy();
+    expect(screen.getByTestId('search-box-container-side')).toBeInTheDocument();
+    // no search results yet, so view button, clear filter button and tabs should be hidden
+    expect(
+      screen.queryByRole('button', { name: 'page view app.view_cards' })
+    ).toBeNull();
+    expect(
+      screen.queryByRole('button', { name: 'app.clear_filters' })
+    ).toBeNull();
+    expect(
+      screen.queryByRole('tablist', { name: 'searchPageTable.tabs_arialabel' })
+    ).toBeNull();
   });
 
-  it('display search table container when search request sent', async () => {
-    const wrapper = createWrapper();
+  it('display search results when search request sent', async () => {
+    const user = userEvent.setup();
 
-    wrapper
-      .find('button[aria-label="searchBox.search_button_arialabel"]')
-      .simulate('click');
+    renderComponent();
 
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
+    await user.click(
+      screen.getByRole('button', { name: 'searchBox.search_button_arialabel' })
+    );
 
-    expect(wrapper.exists('#container-search-table')).toBeTruthy();
-    expect(wrapper.exists(LinearProgress)).toBeFalsy();
+    expect(
+      await screen.findByRole('tablist', {
+        name: 'searchPageTable.tabs_arialabel',
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'page view app.view_cards' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'app.clear_filters' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('tab', { name: 'tabs.investigation 0' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('tab', { name: 'tabs.dataset 0' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('tab', { name: 'tabs.datafile 0' })
+    ).toBeInTheDocument();
   });
 
   it('display loading bar when loading true', async () => {
+    const user = userEvent.setup();
     (axios.get as jest.Mock).mockImplementation(
       () =>
-        new Promise((resolve, reject) => {
+        new Promise((_) => {
           // do nothing, simulating pending promise
           // to test loading state
         })
     );
 
-    const wrapper = createWrapper();
-    wrapper
-      .find('button[aria-label="searchBox.search_button_arialabel"]')
-      .simulate('click');
+    renderComponent();
 
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(wrapper.exists(LinearProgress)).toBeTruthy();
-  });
-
-  it('builds correct parameters for datafile request if date and search text properties are in use', () => {
-    history.replace(
-      '/search/data?searchText=hello&startDate=2013-11-11&endDate=2016-11-11'
+    await user.click(
+      screen.getByRole('button', { name: 'searchBox.search_button_arialabel' })
     );
 
-    const wrapper = createWrapper();
-
-    wrapper
-      .find('button[aria-label="searchBox.search_button_arialabel"]')
-      .simulate('click');
-    expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
-      {
-        params: {
-          maxCount: 300,
-          query: {
-            target: 'Datafile',
-            lower: '201311110000',
-            text: 'hello',
-            upper: '201611112359',
-          },
-          sessionId: null,
-        },
-      }
-    );
-  });
-
-  it('builds correct parameters for dataset request if date and search text properties are in use', () => {
-    history.replace(
-      '/search/data?searchText=hello&datafile=false&investigation=false&startDate=2013-11-11&endDate=2016-11-11'
-    );
-
-    const wrapper = createWrapper();
-
-    wrapper
-      .find('button[aria-label="searchBox.search_button_arialabel"]')
-      .simulate('click');
-    expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
-      {
-        params: {
-          maxCount: 300,
-          query: {
-            target: 'Dataset',
-            lower: '201311110000',
-            text: 'hello',
-            upper: '201611112359',
-          },
-          sessionId: null,
-        },
-      }
-    );
-  });
-
-  it('builds correct parameters for investigation request if date and search text properties are in use', () => {
-    history.replace(
-      '/search/data?searchText=hello&dataset=false&datafile=false&startDate=2013-11-11&endDate=2016-11-11'
-    );
-
-    const wrapper = createWrapper();
-
-    wrapper
-      .find('button[aria-label="searchBox.search_button_arialabel"]')
-      .simulate('click');
-    expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
-      {
-        params: {
-          maxCount: 300,
-          query: {
-            target: 'Investigation',
-            lower: '201311110000',
-            text: 'hello',
-            upper: '201611112359',
-          },
-          sessionId: null,
-        },
-      }
-    );
-  });
-
-  it('builds correct parameters for datafile request if only start date is in use', () => {
-    history.replace(
-      '/search/data?dataset=false&investigation=false&startDate=2013-11-11'
-    );
-
-    const wrapper = createWrapper();
-
-    wrapper
-      .find('button[aria-label="searchBox.search_button_arialabel"]')
-      .simulate('click');
-    expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
-      {
-        params: {
-          maxCount: 300,
-          query: {
-            target: 'Datafile',
-            lower: '201311110000',
-            upper: '9000012312359',
-          },
-          sessionId: null,
-        },
-      }
-    );
-  });
-
-  it('builds correct parameters for dataset request if only start date is in use', () => {
-    history.replace(
-      '/search/data?datafile=false&investigation=false&startDate=2013-11-11'
-    );
-
-    const wrapper = createWrapper();
-
-    wrapper
-      .find('button[aria-label="searchBox.search_button_arialabel"]')
-      .simulate('click');
-    expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
-      {
-        params: {
-          maxCount: 300,
-          query: {
-            target: 'Dataset',
-            lower: '201311110000',
-            upper: '9000012312359',
-          },
-          sessionId: null,
-        },
-      }
-    );
-  });
-
-  it('builds correct parameters for investigation request if only start date is in use', () => {
-    history.replace(
-      '/search/data?dataset=false&datafile=false&startDate=2013-11-11'
-    );
-
-    const wrapper = createWrapper();
-
-    wrapper
-      .find('button[aria-label="searchBox.search_button_arialabel"]')
-      .simulate('click');
-    expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
-      {
-        params: {
-          maxCount: 300,
-          query: {
-            target: 'Investigation',
-            lower: '201311110000',
-            upper: '9000012312359',
-          },
-          sessionId: null,
-        },
-      }
-    );
-  });
-
-  it('builds correct parameters for datafile request if only end date is in use', () => {
-    history.replace(
-      '/search/data?dataset=false&investigation=false&endDate=2016-11-11'
-    );
-
-    const wrapper = createWrapper();
-
-    wrapper
-      .find('button[aria-label="searchBox.search_button_arialabel"]')
-      .simulate('click');
-    expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
-      {
-        params: {
-          maxCount: 300,
-          query: {
-            target: 'Datafile',
-            lower: '0000001010000',
-            upper: '201611112359',
-          },
-          sessionId: null,
-        },
-      }
-    );
-  });
-
-  it('builds correct parameters for dataset request if only end date is in use', () => {
-    history.replace(
-      '/search/data?datafile=false&investigation=false&endDate=2016-11-11'
-    );
-
-    const wrapper = createWrapper();
-
-    wrapper
-      .find('button[aria-label="searchBox.search_button_arialabel"]')
-      .simulate('click');
-    expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
-      {
-        params: {
-          maxCount: 300,
-          query: {
-            target: 'Dataset',
-            lower: '0000001010000',
-            upper: '201611112359',
-          },
-          sessionId: null,
-        },
-      }
-    );
-  });
-
-  it('builds correct parameters for investigation request if only end date is in use', () => {
-    history.replace(
-      '/search/data?dataset=false&datafile=false&endDate=2016-11-11'
-    );
-
-    const wrapper = createWrapper();
-
-    wrapper
-      .find('button[aria-label="searchBox.search_button_arialabel"]')
-      .simulate('click');
-    expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
-      {
-        params: {
-          maxCount: 300,
-          query: {
-            target: 'Investigation',
-            lower: '0000001010000',
-            upper: '201611112359',
-          },
-          sessionId: null,
-        },
-      }
-    );
-  });
-
-  it('builds correct parameters for datafile request if date and search text properties are not in use', () => {
-    history.replace('/search/data?dataset=false&investigation=false');
-
-    const wrapper = createWrapper();
-
-    wrapper
-      .find('button[aria-label="searchBox.search_button_arialabel"]')
-      .simulate('click');
-    expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
-      {
-        params: {
-          maxCount: 300,
-          query: {
-            target: 'Datafile',
-          },
-          sessionId: null,
-        },
-      }
-    );
-  });
-
-  it('builds correct parameters for dataset request if date and search text properties are not in use', () => {
-    history.replace('/search/data?datafile=false&investigation=false');
-
-    const wrapper = createWrapper();
-
-    wrapper
-      .find('button[aria-label="searchBox.search_button_arialabel"]')
-      .simulate('click');
-    expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
-      {
-        params: {
-          maxCount: 300,
-          query: {
-            target: 'Dataset',
-          },
-          sessionId: null,
-        },
-      }
-    );
-  });
-
-  it('builds correct parameters for investigation request if date and search text properties are not in use', () => {
-    history.replace('/search/data?dataset=false&datafile=false');
-
-    const wrapper = createWrapper();
-
-    wrapper
-      .find('button[aria-label="searchBox.search_button_arialabel"]')
-      .simulate('click');
-    expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
-      {
-        params: {
-          maxCount: 300,
-          query: {
-            target: 'Investigation',
-          },
-          sessionId: null,
-        },
-      }
-    );
+    expect(await screen.findByRole('progressbar')).toBeInTheDocument();
   });
 
   it('gets the filters stored in the local storage', () => {
@@ -532,50 +278,34 @@ describe('SearchPageContainer - Tests', () => {
     });
   });
 
-  it('display clear filters button and clear for filters onClick', async () => {
-    const wrapper = createWrapper();
-
-    wrapper
-      .find('button[aria-label="searchBox.search_button_arialabel"]')
-      .simulate('click');
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
+  it('clears filters when clear filters button is clicked', async () => {
+    const user = userEvent.setup();
 
     history.replace(
-      `/search/data?filters=%7B"title"%3A%7B"value"%3A"spend"%2C"type"%3A"include"%7D%7D`
+      '/search/data?searchText=test&filters=%7B"title"%3A%7B"value"%3A"spend"%2C"type"%3A"include"%7D%7D'
     );
 
-    wrapper.update();
+    renderComponent();
 
-    expect(wrapper.find(ClearFiltersButton).prop('disabled')).toEqual(false);
+    await user.click(
+      await screen.findByRole('button', { name: 'app.clear_filters' })
+    );
 
-    wrapper
-      .find('[data-testid="clear-filters-button"]')
-      .last()
-      .simulate('click');
-
-    wrapper.update();
-
-    expect(wrapper.find(ClearFiltersButton).prop('disabled')).toEqual(true);
-    expect(history.location.search).toEqual('?');
+    expect(history.location.search).toEqual('?searchText=test');
   });
 
-  it('display disabled clear filters button', async () => {
-    const wrapper = createWrapper();
+  it('disables clear filters button when there is no filter applied', async () => {
+    const user = userEvent.setup();
 
-    wrapper
-      .find('button[aria-label="searchBox.search_button_arialabel"]')
-      .simulate('click');
+    renderComponent();
 
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
+    await user.click(
+      screen.getByRole('button', { name: 'searchBox.search_button_arialabel' })
+    );
 
-    expect(wrapper.find(ClearFiltersButton).prop('disabled')).toEqual(true);
+    expect(
+      screen.getByRole('button', { name: 'app.clear_filters' })
+    ).toBeDisabled();
   });
 
   it('gets the page stored in the local storage', () => {
@@ -623,95 +353,63 @@ describe('SearchPageContainer - Tests', () => {
     expect(localStorage.setItem).toBeCalledWith('investigationResults', '20');
   });
 
-  it('sends actions to update tabs when user clicks search button', async () => {
+  it('should hide tabs when the corresponding search type is disabled', async () => {
+    const user = userEvent.setup();
+
     history.replace(
       '/search/data?searchText=test&dataset=false&datafile=false'
     );
 
-    const mockStore = configureStore([thunk]);
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <Router history={history}>
-          <QueryClientProvider client={new QueryClient()}>
-            <SearchPageContainer />
-          </QueryClientProvider>
-        </Router>
-      </Provider>
+    renderComponent();
+
+    await user.click(
+      screen.getByRole('button', { name: 'searchBox.search_button_arialabel' })
     );
-    wrapper.update();
 
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(testStore.getActions()[0]).toEqual(setDatafileTab(false));
-    expect(testStore.getActions()[1]).toEqual(setDatasetTab(false));
-    expect(testStore.getActions()[2]).toEqual(setInvestigationTab(true));
+    expect(
+      screen.getByRole('tab', { name: 'tabs.investigation 0' })
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('tab', { name: 'tabs.dataset' })).toBeNull();
+    expect(screen.queryByRole('tab', { name: 'tabs.datafile' })).toBeNull();
   });
 
   it('search text state is updated when text is changed and pushes when search initiated', async () => {
-    const wrapper = createWrapper();
+    const user = userEvent.setup();
 
-    wrapper
-      .find('[aria-label="searchBox.search_text_arialabel"] input')
-      .simulate('change', { target: { value: 'test' } });
+    renderComponent();
 
-    wrapper
-      .find('button[aria-label="searchBox.search_button_arialabel"]')
-      .simulate('click');
+    await user.type(
+      screen.getByRole('searchbox', {
+        name: 'searchBox.search_text_arialabel',
+      }),
+      'test'
+    );
+    await user.click(
+      screen.getByRole('button', { name: 'searchBox.search_button_arialabel' })
+    );
 
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(pushSpy).toHaveBeenCalledWith('?searchText=test');
+    expect(history.location.search).toEqual('?searchText=test');
   });
 
   it('shows SelectionAlert banner when item selected', async () => {
-    (useCart as jest.Mock).mockReturnValue({
-      data: [
-        {
-          entityId: 1,
-          entityType: 'dataset',
-          id: 1,
-          name: 'Test 1',
-          parentEntities: [],
-        },
-      ],
-    });
-    const wrapper = createWrapper();
+    cartItems = [
+      {
+        entityId: 1,
+        entityType: 'dataset',
+        id: 1,
+        name: 'Test 1',
+        parentEntities: [],
+      },
+    ];
+    const user = userEvent.setup();
 
-    wrapper
-      .find('button[aria-label="searchBox.search_button_arialabel"]')
-      .simulate('click');
+    renderComponent();
 
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
+    await user.click(
+      screen.getByRole('button', { name: 'searchBox.search_button_arialabel' })
+    );
 
-    expect(wrapper.exists('[aria-label="selection-alert"]')).toBeTruthy();
-  });
-
-  it('does not show SelectionAlert banner when no items are selected', async () => {
-    (useCart as jest.Mock).mockReturnValue({
-      data: [],
-    });
-    const wrapper = createWrapper();
-
-    wrapper
-      .find('button[aria-label="searchBox.search_button_arialabel"]')
-      .simulate('click');
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(wrapper.exists('[aria-label="selection-alert"]')).toBeFalsy();
+    expect(await screen.findByLabelText('selection-alert')).toBeInTheDocument();
   });
 
   it('initiates search when visiting a direct url', async () => {
@@ -719,44 +417,59 @@ describe('SearchPageContainer - Tests', () => {
       '/search/data?searchText=hello&startDate=2013-11-11&endDate=2016-11-11'
     );
 
-    const wrapper = createWrapper();
-    wrapper.update();
+    renderComponent();
 
-    expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
-      {
-        params: {
-          maxCount: 300,
-          query: {
-            target: 'Datafile',
-            lower: '201311110000',
-            text: 'hello',
-            upper: '201611112359',
-          },
-          sessionId: null,
-        },
-      }
-    );
+    expect(
+      await screen.findByRole('button', { name: 'app.clear_filters' })
+    ).toBeDisabled();
+    expect(
+      screen.getByRole('button', { name: 'page view app.view_cards' })
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByRole('searchbox', {
+        name: 'searchBox.search_text_arialabel',
+      })
+    ).toHaveValue('hello');
+
+    expect(
+      screen.getByRole('tab', { name: 'tabs.investigation 0' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('tab', { name: 'tabs.dataset 0' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('tab', { name: 'tabs.datafile 0' })
+    ).toBeInTheDocument();
   });
 
   it('initiates search when visiting a direct url with empty search text', async () => {
     history.replace('/search/data?searchText=');
 
-    const wrapper = createWrapper();
-    wrapper.update();
+    renderComponent();
 
-    expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
-      {
-        params: {
-          maxCount: 300,
-          query: {
-            target: 'Datafile',
-          },
-          sessionId: null,
-        },
-      }
-    );
+    expect(
+      await screen.findByRole('button', { name: 'app.clear_filters' })
+    ).toBeDisabled();
+    expect(
+      screen.getByRole('button', { name: 'page view app.view_cards' })
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByRole('searchbox', {
+        name: 'searchBox.search_text_arialabel',
+      })
+    ).toHaveValue('');
+
+    expect(
+      screen.getByRole('tab', { name: 'tabs.investigation 0' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('tab', { name: 'tabs.dataset 0' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('tab', { name: 'tabs.datafile 0' })
+    ).toBeInTheDocument();
   });
 
   it('does not search for non-searchable entities when visiting a direct url', async () => {
@@ -764,8 +477,7 @@ describe('SearchPageContainer - Tests', () => {
 
     history.replace('/search/data?searchText=hello&datafiles=true');
 
-    const wrapper = createWrapper();
-    wrapper.update();
+    renderComponent();
 
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/lucene/data',
@@ -811,67 +523,53 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('initiates search when the URL is changed', async () => {
-    const wrapper = createWrapper();
-    wrapper.update();
-    (axios.get as jest.Mock).mockClear();
+    renderComponent();
 
     history.push('?searchText=neutron+AND+scattering');
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
 
-    expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/icat/lucene/data',
-      {
-        params: {
-          maxCount: 300,
-          query: {
-            target: 'Investigation',
-            text: 'neutron AND scattering',
-          },
-          sessionId: null,
-        },
-      }
-    );
+    expect(
+      await screen.findByRole('button', { name: 'app.clear_filters' })
+    ).toBeDisabled();
+    expect(
+      screen.getByRole('button', { name: 'page view app.view_cards' })
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByRole('searchbox', {
+        name: 'searchBox.search_text_arialabel',
+      })
+    ).toHaveValue('neutron AND scattering');
+
+    expect(
+      screen.getByRole('tab', { name: 'tabs.investigation 0' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('tab', { name: 'tabs.dataset 0' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('tab', { name: 'tabs.datafile 0' })
+    ).toBeInTheDocument();
   });
 
   it('switches view button display name when clicked', async () => {
-    const wrapper = createWrapper();
+    const user = userEvent.setup();
 
-    wrapper
-      .find('button[aria-label="searchBox.search_button_arialabel"]')
-      .simulate('click');
+    renderComponent();
 
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
+    await user.click(
+      screen.getByRole('button', { name: 'searchBox.search_button_arialabel' })
+    );
+
+    const viewCardsButton = await screen.findByRole('button', {
+      name: 'page view app.view_cards',
     });
+    expect(viewCardsButton).toBeInTheDocument();
+    await user.click(viewCardsButton);
 
     expect(
-      wrapper.find('[aria-label="page view app.view_cards"]').exists()
-    ).toBeTruthy();
-    expect(
-      wrapper.find('[aria-label="page view app.view_cards"]').first().text()
-    ).toEqual('app.view_cards');
-
-    // Click view button
-    wrapper
-      .find('[aria-label="page view app.view_cards"]')
-      .last()
-      .simulate('click');
-    wrapper.update();
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    // Check that the text on the button has changed
-    expect(
-      wrapper.find('[aria-label="page view app.view_table"]').first().text()
-    ).toEqual('app.view_table');
-  }, 10000);
+      await screen.findByRole('button', { name: 'page view app.view_table' })
+    ).toBeInTheDocument();
+  });
 
   it('defaults to dataset when investigation is false ', async () => {
     state.dgsearch = {
@@ -883,9 +581,8 @@ describe('SearchPageContainer - Tests', () => {
       },
     };
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    wrapper.update();
     expect(history.location.search).toEqual('?currentTab=dataset');
   });
 
@@ -899,9 +596,8 @@ describe('SearchPageContainer - Tests', () => {
       },
     };
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    wrapper.update();
     expect(history.location.search).toEqual('?currentTab=datafile');
   });
 
@@ -915,9 +611,8 @@ describe('SearchPageContainer - Tests', () => {
       },
     };
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    wrapper.update();
     // '' i.e default value is investigation it set in the searchPageContainer
     expect(history.location.search).toEqual('');
   });

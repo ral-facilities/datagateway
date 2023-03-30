@@ -401,7 +401,7 @@ describe('Dataset - Card View', () => {
       fetchNextPage: jest.fn(),
     });
 
-    renderComponent('dls');
+    renderComponent(FACILITY_NAME.dls);
 
     const card = (await screen.findAllByTestId('card'))[0];
 

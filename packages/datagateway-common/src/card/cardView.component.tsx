@@ -104,6 +104,8 @@ export interface CardViewProps {
   image?: EntityImageDetails;
 
   paginationPosition?: CVPaginationPosition;
+
+  'data-testid'?: string;
 }
 
 interface CVFilterInfo {
@@ -172,6 +174,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     onFilter,
     onSort,
     onResultsChange,
+    'data-testid': testId,
   } = props;
 
   // Get card information.
@@ -453,7 +456,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
   const hasFilteredResults = loadedData && (filterUpdate || totalDataCount > 0);
 
   return (
-    <Grid container direction="column" alignItems="center">
+    <Grid container direction="column" alignItems="center" data-testid={testId}>
       <Grid
         container
         item

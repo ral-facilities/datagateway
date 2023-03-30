@@ -134,7 +134,7 @@ describe('Admin Download Status', () => {
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').should(
         ($preparedId) => {
           expect($preparedId[0].textContent).match(
-            /[0-9a-zA-Z]{8}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{12}/
+            /[0-9a-zA-Z]{8}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{12}/
           );
         }
       );

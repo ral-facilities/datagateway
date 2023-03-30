@@ -10,6 +10,7 @@
     "@mui/icons-material": "5.11.0",
     "@mui/material": "5.11.0",
     "@mui/x-date-pickers": "5.0.9",
+    "@testing-library/user-event": "^14.4.3",
     "@types/history": "4.7.11",
     "@types/jest": "29.4.0",
     "@types/jsrsasign": "10.5.2",

@@ -1,5 +1,5 @@
-import React from 'react';
-import { shallow } from 'enzyme';
+import { render } from '@testing-library/react';
+import * as React from 'react';
 import ActionCell from './actionCell.component';
 import { TableActionProps } from '../table.component';
 
@@ -13,13 +13,15 @@ describe('Action cell component', () => {
     className: 'test-class',
   };
 
-  it('renders no actions correctly', () => {
-    const wrapper = shallow(<ActionCell {...actionCellProps} actions={[]} />);
-    expect(wrapper).toMatchSnapshot();
+  it('renders no actions correctly', async () => {
+    const { asFragment } = render(
+      <ActionCell {...actionCellProps} actions={[]} />
+    );
+    expect(asFragment()).toMatchSnapshot();
   });
 
-  it('renders an action correctly', () => {
-    const wrapper = shallow(
+  it('renders an action correctly', async () => {
+    const { asFragment } = render(
       <ActionCell
         {...actionCellProps}
         actions={[
@@ -29,6 +31,6 @@ describe('Action cell component', () => {
         ]}
       />
     );
-    expect(wrapper).toMatchSnapshot();
+    expect(asFragment()).toMatchSnapshot();
   });
 });

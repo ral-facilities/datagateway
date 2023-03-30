@@ -1,15 +1,15 @@
-import { render, RenderResult, screen } from '@testing-library/react';
+import * as React from 'react';
 import {
   Investigation,
   NotificationType,
   useInvestigation,
 } from 'datagateway-common';
+import { Router } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { createLocation, createMemoryHistory } from 'history';
 import log from 'loglevel';
-import * as React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { Router } from 'react-router-dom';
 import { AnyAction } from 'redux';
+import { render, type RenderResult, screen } from '@testing-library/react';
 import DoiRedirect from './doiRedirect.component';
 
 jest.mock('datagateway-common', () => {
@@ -96,7 +96,6 @@ describe('DOI Redirect page', () => {
 
   it('redirects to correct link when everything loads correctly', async () => {
     renderComponent();
-
     expect(history.location.pathname).toBe(
       '/browse/instrument/2/facilityCycle/3/investigation/1/dataset'
     );
@@ -113,7 +112,7 @@ describe('DOI Redirect page', () => {
     expect(screen.getByRole('progressbar')).toBeInTheDocument();
   });
 
-  it('throws error and redirects to homepage if data invalid', async () => {
+  it('throws error and redirects to homepage if no investigation is returned', async () => {
     const events = [];
 
     document.dispatchEvent = (e: Event) => {
@@ -124,7 +123,6 @@ describe('DOI Redirect page', () => {
       data: [],
       isLoading: false,
     });
-
     renderComponent();
 
     expect(history.location.pathname).toBe('/datagateway');

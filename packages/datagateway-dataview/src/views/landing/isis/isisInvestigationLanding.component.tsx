@@ -284,7 +284,10 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   ];
 
   return (
-    <Paper sx={{ margin: 1, padding: 1 }}>
+    <Paper
+      data-testid="isis-investigation-landing"
+      sx={{ margin: 1, padding: 1 }}
+    >
       <Grid container sx={{ padding: 0.5 }}>
         <Grid item xs={12}>
           <Branding />
@@ -434,11 +437,12 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                         {field.content(data[0] as Investigation)}
                       </ShortInfoValue>
                     </ArrowTooltip>
+                    z
                   </ShortInfoRow>
                 )
             )}
             {/* Actions */}
-            <ActionButtonsContainer>
+            <ActionButtonsContainer data-testid="investigation-landing-action-container">
               <AddToCartButton
                 entityType="investigation"
                 allIds={[parseInt(investigationId)]}
@@ -480,7 +484,9 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                       </ShortInfoRow>
                     )
                 )}
-                <ActionButtonsContainer>
+                <ActionButtonsContainer
+                  data-testid={`investigation-landing-dataset-${i}-action-container`}
+                >
                   <AddToCartButton
                     entityType="dataset"
                     allIds={[dataset.id]}

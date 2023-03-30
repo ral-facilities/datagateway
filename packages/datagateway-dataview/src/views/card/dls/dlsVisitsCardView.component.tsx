@@ -146,6 +146,7 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
 
   return (
     <CardView
+      data-testid="dls-visits-card-view"
       data={data ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}
