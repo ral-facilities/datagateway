@@ -228,7 +228,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
           </MuiLink>
         );
       },
-      label: t('studies.details.format'),
+      label: t('datapublications.details.format'),
       icon: <Storage sx={shortInfoIconStyle} />,
     },
     {
@@ -337,7 +337,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               variant="h6"
               aria-label="landing-investigation-publisher-label"
             >
-              {t('studies.details.publisher')}
+              {t('datapublications.details.publisher')}
             </Subheading>
             <Typography aria-label="landing-investigation-publisher">
               {t('doi_constants.publisher.name')}
