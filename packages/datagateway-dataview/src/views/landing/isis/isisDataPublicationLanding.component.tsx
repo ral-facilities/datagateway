@@ -297,21 +297,9 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       icon: <Storage sx={shortInfoIconStyle} />,
     },
     {
-      content: (entity: DataPublication) =>
-        entity?.content?.dataCollectionInvestigations?.[0]?.investigation?.startDate?.slice(
-          0,
-          10
-        ),
-      label: t('datapublications.start_date'),
-      icon: <CalendarToday sx={shortInfoIconStyle} />,
-    },
-    {
-      content: (entity: DataPublication) =>
-        entity?.content?.dataCollectionInvestigations?.[0]?.investigation?.endDate?.slice(
-          0,
-          10
-        ),
-      label: t('datapublications.end_date'),
+      content: (dataPublication: DataPublication) =>
+        dataPublication?.publicationDate?.slice(0, 10) ?? '',
+      label: t('datapublications.publication_date'),
       icon: <CalendarToday sx={shortInfoIconStyle} />,
     },
   ];

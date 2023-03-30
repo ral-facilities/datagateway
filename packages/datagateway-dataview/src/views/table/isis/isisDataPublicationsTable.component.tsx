@@ -144,6 +144,7 @@ const ISISDataPublicationsTable = (
           cellProps.rowData?.content?.publicationDate?.slice(0, 10) ?? '',
         filterComponent: dateFilter,
         //TODO: sorting not working until publication date populated
+        disableSort: true,
         //defaultSort: 'desc',
       },
     ];
