@@ -198,26 +198,6 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       icon: <Public sx={shortInfoIconStyle} />,
     },
     {
-      content: function parentDoiFormat(entity: Investigation) {
-        return (
-          entity?.dataCollectionInvestigations?.[0]?.dataCollection
-            ?.dataPublications?.[0].pid && (
-            <MuiLink
-              href={`https://doi.org/${entity?.dataCollectionInvestigations?.[0]?.dataCollection?.dataPublications?.[0].pid}`}
-              data-testid="isis-investigations-landing-parent-doi-link"
-            >
-              {
-                entity?.dataCollectionInvestigations?.[0]?.dataCollection
-                  ?.dataPublications?.[0].pid
-              }
-            </MuiLink>
-          )
-        );
-      },
-      label: t('investigations.parent_doi'),
-      icon: <Public sx={shortInfoIconStyle} />,
-    },
-    {
       content: (entity: Investigation) => entity.name,
       label: t('investigations.name'),
       icon: <Fingerprint sx={shortInfoIconStyle} />,
