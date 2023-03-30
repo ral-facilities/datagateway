@@ -137,26 +137,14 @@ const ISISDataPublicationsTable = (
       },
       {
         icon: CalendarToday,
-        label: t('datapublications.start_date'),
-        dataKey: 'content.dataCollectionInvestigations.investigation.startDate',
+        label: t('datapublications.publication_date'),
+        dataKey:
+          'content.dataCollectionInvestigations.investigation.publicationDate',
         cellContentRenderer: (cellProps: TableCellProps) =>
-          cellProps.rowData?.content?.dataCollectionInvestigations?.[0]?.investigation?.startDate?.slice(
-            0,
-            10
-          ) ?? '',
+          cellProps.rowData?.content?.publicationDate?.slice(0, 10) ?? '',
         filterComponent: dateFilter,
-        // defaultSort: 'desc',
-      },
-      {
-        icon: CalendarToday,
-        label: t('datapublications.end_date'),
-        dataKey: 'content.dataCollectionInvestigations.investigation.endDate',
-        cellContentRenderer: (cellProps: TableCellProps) =>
-          cellProps.rowData?.content?.dataCollectionInvestigations?.[0]?.investigation?.startDate?.slice(
-            0,
-            10
-          ) ?? '',
-        filterComponent: dateFilter,
+        //TODO: sorting not working until publication date populated
+        //defaultSort: 'desc',
       },
     ];
   }, [t, textFilter, dateFilter, instrumentId, view]);

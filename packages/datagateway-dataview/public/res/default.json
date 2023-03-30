@@ -93,8 +93,7 @@
     "title": "Title",
     "pid": "DOI",
     "id": "Data Publication ID",
-    "end_date": "End Date",
-    "start_date": "Start Date",
+    "publication_date": "Publication Date",
     "details": {
       "label": "Experiment Details",
       "investigations": "View Investigations",

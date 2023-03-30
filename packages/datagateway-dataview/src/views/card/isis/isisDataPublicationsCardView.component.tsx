@@ -124,28 +124,14 @@ const ISISDataPublicationsCardView = (
       },
       {
         icon: CalendarToday,
-        label: t('datapublications.start_date'),
+        label: t('datapublications.publication_date'),
         dataKey:
-          'dataPublication.content.dataCollectionInvestigations.investigation.startDate',
+          'dataPublication.content.dataCollectionInvestigations.investigation.publicationDate',
         content: (dataPublication: DataPublication) =>
-          dataPublication?.content?.dataCollectionInvestigations?.[0]?.investigation?.startDate?.slice(
-            0,
-            10
-          ) ?? '',
+          dataPublication?.publicationDate?.slice(0, 10) ?? '',
         filterComponent: dateFilter,
-        defaultSort: 'desc',
-      },
-      {
-        icon: CalendarToday,
-        label: t('datapublications.end_date'),
-        dataKey:
-          'dataPublication.content.dataCollectionInvestigations.investigation.endDate',
-        content: (dataPublication: DataPublication) =>
-          dataPublication?.content?.dataCollectionInvestigations?.[0]?.investigation?.startDate?.slice(
-            0,
-            10
-          ) ?? '',
-        filterComponent: dateFilter,
+        //TODO: sorting not working until publication date populated
+        //defaultSort: 'desc',
       },
     ],
     [dateFilter, t, textFilter]
