@@ -1,15 +1,5 @@
-import React from 'react';
 import useAfterMountEffect from './utils';
-import { mount } from 'enzyme';
-
-const TestHook = (props: {
-  callback: () => void;
-  triggerProp: number;
-  nonTriggerProp?: number;
-}): React.ReactElement => {
-  props.callback();
-  return <div />;
-};
+import { renderHook } from '@testing-library/react-hooks';
 
 describe('Utils', () => {
   describe('useAfterMountEffect', () => {
@@ -20,38 +10,33 @@ describe('Utils', () => {
     });
 
     it('calls effect only upon prop changes, not on mount', () => {
-      const wrapper = mount(
-        <TestHook
-          triggerProp={1}
-          callback={() => useAfterMountEffect(mockFunction)}
-        />
-      );
+      const callback = jest.fn();
 
-      expect(mockFunction).not.toHaveBeenCalled();
+      const { rerender } = renderHook(() => useAfterMountEffect(callback));
 
-      wrapper.setProps({ triggerProp: 2 });
-      expect(mockFunction).toHaveBeenCalled();
+      expect(callback).not.toHaveBeenCalled();
+
+      rerender();
+      expect(callback).toHaveBeenCalled();
     });
 
     it('respects dependency array', () => {
-      let triggerProp = 1;
+      const callback = jest.fn();
 
-      const wrapper = mount(
-        <TestHook
-          triggerProp={triggerProp}
-          nonTriggerProp={1}
-          callback={() => useAfterMountEffect(mockFunction, [triggerProp])}
-        />
+      const { rerender } = renderHook(
+        (testProp) => useAfterMountEffect(callback, [testProp]),
+        {
+          initialProps: 1,
+        }
       );
 
-      expect(mockFunction).not.toHaveBeenCalled();
+      expect(callback).not.toHaveBeenCalled();
 
-      wrapper.setProps({ nonTriggerProp: 2 });
-      expect(mockFunction).not.toHaveBeenCalled();
+      rerender(1);
+      expect(callback).not.toHaveBeenCalled();
 
-      triggerProp = 2;
-      wrapper.setProps({});
-      expect(mockFunction).toHaveBeenCalled();
+      rerender(2);
+      expect(callback).toHaveBeenCalled();
     });
   });
 });

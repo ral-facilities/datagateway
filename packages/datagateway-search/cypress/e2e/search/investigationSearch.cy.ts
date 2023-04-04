@@ -43,7 +43,7 @@ describe('Investigation search tab', () => {
 
   it('should be able to search by title text', () => {
     cy.clearDownloadCart();
-    cy.get('#filled-search').type('dog');
+    cy.get('#filled-search').type('strategy');
 
     cy.get('[aria-label="Submit search"]')
       .click()
@@ -51,16 +51,16 @@ describe('Investigation search tab', () => {
         timeout: 10000,
       });
 
-    cy.get('[aria-rowcount="15"]').should('exist');
+    cy.get('[aria-rowcount="4"]').should('exist');
 
-    cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains('1-235-68516-0');
+    cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains('1-903289-21-1');
 
     // Small wait to ensure rows are selected correctly
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(1000);
     // Check that "select all" and individual selection are equivalent
     let i = 1;
-    while (i < 16) {
+    while (i < 5) {
       cy.get(`[aria-rowindex="${i}"] [aria-colindex="1"]`).click();
       cy.wait('@topcat', { timeout: 10000 });
       i++;
@@ -85,12 +85,12 @@ describe('Investigation search tab', () => {
 
     cy.get('[aria-label="Search table"]')
       .contains('Investigation')
-      .contains('19')
+      .contains('9')
       .click();
 
-    cy.get('[aria-rowcount="19"]').should('exist');
+    cy.get('[aria-rowcount="9"]').should('exist');
 
-    cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains('0-221-94355-2');
+    cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains('0-9896224-6-0');
   });
 
   it('should be able to search by date range', () => {
@@ -101,12 +101,12 @@ describe('Investigation search tab', () => {
 
     cy.get('[aria-label="Search table"]')
       .contains('Investigation')
-      .contains('12')
+      .contains('4')
       .click();
 
-    cy.get('[aria-rowcount="12"]').should('exist');
+    cy.get('[aria-rowcount="4"]').should('exist');
 
-    cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains('0-9634101-9-9');
+    cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains('0-525-94351-X');
   });
 
   it('should be hidden if investigation checkbox is unchecked', () => {
@@ -129,13 +129,13 @@ describe('Investigation search tab', () => {
   });
 
   it('should link to an investigation', () => {
-    cy.get('#filled-search').type('dog');
+    cy.get('#filled-search').type('strategy');
 
     cy.get('[aria-label="Submit search"]')
       .click()
       .wait(['@investigations', '@investigationsCount'], {
         timeout: 10000,
       });
-    cy.get('[href="/browse/investigation/6/dataset"]');
+    cy.get('[href="/browse/investigation/2/dataset"]');
   });
 });

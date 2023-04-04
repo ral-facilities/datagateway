@@ -1,13 +1,20 @@
-import React from 'react';
+import * as React from 'react';
 import AdvancedHelpDialogue from './advancedHelpDialogue.component';
-import { Provider, useSelector } from 'react-redux';
+import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { dGCommonInitialState } from 'datagateway-common';
 import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
 import configureStore from 'redux-mock-store';
-import { mount, ReactWrapper, shallow } from 'enzyme';
 import { StateType } from '../state/app.types';
 import { MemoryRouter } from 'react-router-dom';
+import {
+  render,
+  type RenderResult,
+  screen,
+  waitFor,
+} from '@testing-library/react';
+import { UserEvent } from '@testing-library/user-event/setup/setup';
+import userEvent from '@testing-library/user-event';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -17,9 +24,11 @@ jest.mock('react-redux', () => ({
 describe('Advanced help dialogue component tests', () => {
   let mockStore;
   let state: StateType;
+  let user: UserEvent;
 
   beforeEach(() => {
     mockStore = configureStore([thunk]);
+    user = userEvent.setup();
     state = JSON.parse(
       JSON.stringify({
         dgcommon: dGCommonInitialState,
@@ -28,46 +37,34 @@ describe('Advanced help dialogue component tests', () => {
     );
   });
 
-  const createWrapper = (): ReactWrapper => {
-    return mount(
+  const renderComponent = (): RenderResult =>
+    render(
       <Provider store={mockStore(state)}>
         <MemoryRouter>
           <AdvancedHelpDialogue />
         </MemoryRouter>
       </Provider>
     );
-  };
 
-  it('renders correctly', () => {
-    useSelector.mockImplementation(() => {
-      return dgSearchInitialState;
+  it('can open and close help dialogue', async () => {
+    renderComponent();
+
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'advanced_search_help.search_options_arialabel',
+      })
+    );
+
+    expect(await screen.findByText('Advanced Search Tips')).toBeInTheDocument();
+
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'advanced_search_help.close_button_arialabel',
+      })
+    );
+
+    await waitFor(() => {
+      expect(screen.queryByText('Advanced Search Tips')).toBeNull();
     });
-
-    const wrapper = shallow(<AdvancedHelpDialogue />);
-    expect(wrapper).toMatchSnapshot();
-  });
-
-  it('can open and close help dialogue', () => {
-    const wrapper = createWrapper();
-    wrapper
-      .find('[aria-label="advanced_search_help.search_options_arialabel"]')
-      .last()
-      .simulate('click');
-    expect(
-      wrapper
-        .find('[aria-labelledby="advanced-search-dialog-title"]')
-        .first()
-        .prop('open')
-    ).toBe(true);
-    wrapper
-      .find('[aria-label="advanced_search_help.close_button_arialabel"]')
-      .last()
-      .simulate('click');
-    expect(
-      wrapper
-        .find('[aria-labelledby="advanced-search-dialog-title"]')
-        .first()
-        .prop('open')
-    ).toBe(false);
   });
 });

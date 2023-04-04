@@ -1,39 +1,7 @@
 import React from 'react';
 
 import { keyframes, Paper, styled } from '@mui/material';
-import debounce from 'lodash.debounce';
-
-export function useSticky(targetElement: React.RefObject<HTMLDivElement>): {
-  isSticky: boolean;
-} {
-  const [isSticky, setIsSticky] = React.useState(false);
-
-  const handleScroll = React.useCallback((): void => {
-    if (
-      targetElement.current &&
-      targetElement.current.getBoundingClientRect().bottom
-    ) {
-      if (
-        window.scrollY > targetElement.current.getBoundingClientRect().bottom
-      ) {
-        setIsSticky(true);
-      } else {
-        setIsSticky(false);
-      }
-    }
-  }, [targetElement]);
-
-  React.useEffect(() => {
-    // Use lodash.debounce for handleScroll with a wait of 20ms.
-    window.addEventListener('scroll', debounce(handleScroll, 20));
-
-    return () => {
-      window.removeEventListener('scroll', () => handleScroll);
-    };
-  }, [handleScroll]);
-
-  return { isSticky };
-}
+import useSticky from './hooks/useSticky';
 
 const moveDown = keyframes`
   from {
@@ -77,6 +45,7 @@ const Sticky = (props: { children: React.ReactNode }): React.ReactElement => {
     // Wrap navbar components in Paper to allow for when
     // it is sticky to stand out on the page when scrolling.
     <StickyPaper
+      data-testid="sticky-paper"
       square
       // Change elevation depending if it is sticky or not.
       elevation={!isSticky ? 0 : 1}

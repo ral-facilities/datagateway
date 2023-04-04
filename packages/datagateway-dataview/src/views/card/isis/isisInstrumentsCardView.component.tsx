@@ -101,6 +101,7 @@ const ISISInstrumentsCardView = (
 
   return (
     <CardView
+      data-testid="isis-instruments-card-view"
       data={data ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}

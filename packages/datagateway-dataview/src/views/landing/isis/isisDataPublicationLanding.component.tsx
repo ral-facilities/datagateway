@@ -305,7 +305,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   ];
 
   return (
-    <Paper sx={{ margin: 1, padding: 1 }}>
+    <Paper sx={{ margin: 1, padding: 1 }} data-testid="isis-study-landing">
       <Grid container sx={{ padding: 0.5 }}>
         <Grid item xs={12}>
           <Branding />

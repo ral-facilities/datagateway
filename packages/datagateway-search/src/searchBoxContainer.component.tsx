@@ -37,7 +37,7 @@ const SearchBoxContainer = (
   );
 
   return (
-    <ContainerBox>
+    <ContainerBox data-testid="search-box-container">
       <Grid
         container
         direction="row"
