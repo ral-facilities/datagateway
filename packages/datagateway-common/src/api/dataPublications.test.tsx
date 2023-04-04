@@ -270,6 +270,19 @@ describe('data publications api functions', () => {
           id: { eq: 1 },
         })
       );
+      params.append('include', JSON.stringify('users'));
+      params.append(
+        'include',
+        JSON.stringify({
+          content: {
+            dataCollectionInvestigations: {
+              investigation: {
+                investigationInstruments: 'instrument',
+              },
+            },
+          },
+        })
+      );
 
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/api/datapublications',
@@ -298,6 +311,19 @@ describe('data publications api functions', () => {
         'where',
         JSON.stringify({
           id: { eq: 1 },
+        })
+      );
+      params.append('include', JSON.stringify('users'));
+      params.append(
+        'include',
+        JSON.stringify({
+          content: {
+            dataCollectionInvestigations: {
+              investigation: {
+                investigationInstruments: 'instrument',
+              },
+            },
+          },
         })
       );
 

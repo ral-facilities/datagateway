@@ -1248,7 +1248,6 @@ describe('investigation api functions', () => {
           'include',
           JSON.stringify([
             { investigationInstruments: 'instrument' },
-            { studyInvestigations: 'study' },
             { investigationUsers: 'user' },
           ])
         );
@@ -1265,7 +1264,7 @@ describe('investigation api functions', () => {
         expect(result.current.data).toEqual(mockData);
       });
 
-      it('sends axios request to fetch paginated ISIS investigations in study hierarchy and returns successful response', async () => {
+      it('sends axios request to fetch paginated ISIS investigations in data publication hierarchy and returns successful response', async () => {
         (axios.get as jest.Mock).mockResolvedValue({
           data: mockData,
         });
@@ -1298,14 +1297,15 @@ describe('investigation api functions', () => {
         params.append(
           'where',
           JSON.stringify({
-            'studyInvestigations.study.id': { eq: 2 },
+            'dataCollectionInvestigations.dataCollection.dataPublications.id': {
+              eq: 2,
+            },
           })
         );
         params.append(
           'include',
           JSON.stringify([
             { investigationInstruments: 'instrument' },
-            { studyInvestigations: 'study' },
             { investigationUsers: 'user' },
           ])
         );
@@ -1342,7 +1342,6 @@ describe('investigation api functions', () => {
           'include',
           JSON.stringify([
             { investigationInstruments: 'instrument' },
-            { studyInvestigations: 'study' },
             { investigationUsers: 'user' },
           ])
         );
@@ -1391,7 +1390,6 @@ describe('investigation api functions', () => {
           'include',
           JSON.stringify([
             { investigationInstruments: 'instrument' },
-            { studyInvestigations: 'study' },
             { investigationUsers: 'user' },
           ])
         );
@@ -1469,14 +1467,15 @@ describe('investigation api functions', () => {
         params.append(
           'where',
           JSON.stringify({
-            'studyInvestigations.study.id': { eq: 2 },
+            'dataCollectionInvestigations.dataCollection.dataPublications.id': {
+              eq: 2,
+            },
           })
         );
         params.append(
           'include',
           JSON.stringify([
             { investigationInstruments: 'instrument' },
-            { studyInvestigations: 'study' },
             { investigationUsers: 'user' },
           ])
         );
@@ -1539,7 +1538,6 @@ describe('investigation api functions', () => {
           'include',
           JSON.stringify([
             { investigationInstruments: 'instrument' },
-            { studyInvestigations: 'study' },
             { investigationUsers: 'user' },
           ])
         );
@@ -1591,7 +1589,7 @@ describe('investigation api functions', () => {
         expect(result.current.data).toEqual(mockData.length);
       });
 
-      it('sends axios request to fetch ISIS investigation count in study hierarchy and returns successful response', async () => {
+      it('sends axios request to fetch ISIS investigation count in data publication hierarchy and returns successful response', async () => {
         (axios.get as jest.Mock).mockResolvedValue({
           data: mockData.length,
         });
@@ -1620,7 +1618,9 @@ describe('investigation api functions', () => {
         params.append(
           'where',
           JSON.stringify({
-            'studyInvestigations.study.id': { eq: 2 },
+            'dataCollectionInvestigations.dataCollection.dataPublications.id': {
+              eq: 2,
+            },
           })
         );
 
@@ -1697,7 +1697,7 @@ describe('investigation api functions', () => {
         expect(result.current.data).toEqual([1, 2, 3]);
       });
 
-      it('sends axios request to fetch ISIS investigation ids in study hierarchy and returns successful response', async () => {
+      it('sends axios request to fetch ISIS investigation ids in data publication hierarchy and returns successful response', async () => {
         (axios.get as jest.Mock).mockResolvedValue({
           data: mockData,
         });
@@ -1727,7 +1727,9 @@ describe('investigation api functions', () => {
         params.append(
           'where',
           JSON.stringify({
-            'studyInvestigations.study.id': { eq: 2 },
+            'dataCollectionInvestigations.dataCollection.dataPublications.id': {
+              eq: 2,
+            },
           })
         );
         params.append('distinct', JSON.stringify('id'));
