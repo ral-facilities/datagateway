@@ -21,7 +21,7 @@ import userEvent from '@testing-library/user-event';
 import type { DeepPartial } from 'redux';
 import { applyMiddleware, compose, createStore } from 'redux';
 import AppReducer from './state/reducers/app.reducer';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 
 jest.mock('loglevel');
 

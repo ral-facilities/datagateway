@@ -4,7 +4,7 @@ import {
   SearchResultCountDispatch,
   useSearchResultCounter,
 } from './useSearchResultCounter';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { mockSearchResponses } from '../testData';
 
 describe('useSearchResultCounter', () => {

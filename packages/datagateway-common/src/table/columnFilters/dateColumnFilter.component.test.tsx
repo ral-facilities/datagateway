@@ -4,7 +4,7 @@ import DateColumnFilter, {
   updateFilter,
   useDateFilter,
 } from './dateColumnFilter.component';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { usePushFilter } from '../../api';
 import {
   applyDatePickerWorkaround,

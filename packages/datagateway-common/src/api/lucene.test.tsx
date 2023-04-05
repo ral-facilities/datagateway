@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react-hooks';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import axios, { type AxiosError } from 'axios';
 import {
   LUCENE_ERROR_CODE,
@@ -91,14 +91,14 @@ describe('Lucene actions', () => {
         maxCount: 300,
       };
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useLuceneSearchInfinite('Datafile', luceneSearchParams, {}),
         {
           wrapper: createReactQueryWrapper(),
         }
       );
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       const params = new URLSearchParams();
       params.append('sessionId', '');
@@ -495,12 +495,11 @@ describe('Lucene actions', () => {
     it('calls handleICAT error on error', async () => {
       (axios.get as jest.Mock).mockRejectedValue('error');
 
-      const { result, waitFor } = renderHook(
-        () => useLuceneFacet('Dataset', [], {}),
-        { wrapper: createReactQueryWrapper() }
-      );
+      const { result } = renderHook(() => useLuceneFacet('Dataset', [], {}), {
+        wrapper: createReactQueryWrapper(),
+      });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       expect(handleICATError).toHaveBeenCalledWith('error');
     });

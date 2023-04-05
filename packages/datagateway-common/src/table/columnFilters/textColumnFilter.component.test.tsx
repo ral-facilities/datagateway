@@ -5,8 +5,7 @@ import TextColumnFilter, {
   DEBOUNCE_DELAY,
 } from './textColumnFilter.component';
 import { usePushFilter, usePushFilters } from '../../api';
-import { render, screen, act } from '@testing-library/react';
-import { renderHook } from '@testing-library/react-hooks';
+import { render, renderHook, screen, act } from '@testing-library/react';
 import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 

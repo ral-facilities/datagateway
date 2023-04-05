@@ -48,7 +48,7 @@ const SelectedChips = styled('ul')(({ theme }) => ({
 export interface CardViewDetails {
   dataKey: string;
 
-  icon?: React.ComponentType<unknown>;
+  icon?: React.ElementType;
   label?: string;
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   content?: (data?: any) => React.ReactNode;

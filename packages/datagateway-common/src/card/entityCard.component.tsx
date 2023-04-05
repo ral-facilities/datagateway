@@ -140,7 +140,7 @@ export interface EntityImageDetails {
 export interface EntityCardDetails {
   label: string;
   content?: React.ReactNode;
-  icon?: React.ComponentType<unknown>;
+  icon?: React.ElementType;
 }
 
 interface EntityCardProps {
