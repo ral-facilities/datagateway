@@ -22,6 +22,7 @@ import {
   useDatasetSizes,
   DownloadButton,
   ISISDatasetDetailsPanel,
+  DetailsPanelProps,
 } from 'datagateway-common';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
@@ -182,16 +183,17 @@ const ISISDatasetsTable = (
     [cartItems, selectAllSetting, allIds]
   );
 
-  const detailsPanel = React.useCallback(
-    ({ rowData, detailsPanelResize }) => (
-      <ISISDatasetDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        viewDatafiles={(id: number) => push(`${urlPrefix}/${id}/datafile`)}
-      />
-    ),
-    [push, urlPrefix]
-  );
+  const detailsPanel: React.ComponentType<DetailsPanelProps> =
+    React.useCallback(
+      ({ rowData, detailsPanelResize }) => (
+        <ISISDatasetDetailsPanel
+          rowData={rowData}
+          detailsPanelResize={detailsPanelResize}
+          viewDatafiles={(id: number) => push(`${urlPrefix}/${id}/datafile`)}
+        />
+      ),
+      [push, urlPrefix]
+    );
 
   return (
     <Table

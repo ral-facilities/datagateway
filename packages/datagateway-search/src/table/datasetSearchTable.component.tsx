@@ -23,6 +23,7 @@ import {
   DatasetDetailsPanel,
   ISISDatasetDetailsPanel,
   DLSDatasetDetailsPanel,
+  DetailsPanelProps,
 } from 'datagateway-common';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
@@ -334,41 +335,42 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
     ]
   );
 
-  const detailsPanel = React.useCallback(
-    ({ rowData, detailsPanelResize }) => {
-      if (hierarchy === 'isis') {
-        const datafilesURL = hierarchyLinkURL(rowData as Dataset);
-        return (
-          <ISISDatasetDetailsPanel
-            rowData={rowData}
-            detailsPanelResize={detailsPanelResize}
-            viewDatafiles={
-              datafilesURL
-                ? (id: number) => {
-                    push(datafilesURL);
-                  }
-                : undefined
-            }
-          />
-        );
-      } else if (hierarchy === 'dls') {
-        return (
-          <DLSDatasetDetailsPanel
-            rowData={rowData}
-            detailsPanelResize={detailsPanelResize}
-          />
-        );
-      } else {
-        return (
-          <DatasetDetailsPanel
-            rowData={rowData}
-            detailsPanelResize={detailsPanelResize}
-          />
-        );
-      }
-    },
-    [hierarchy, hierarchyLinkURL, push]
-  );
+  const detailsPanel: React.ComponentType<DetailsPanelProps> =
+    React.useCallback(
+      ({ rowData, detailsPanelResize }) => {
+        if (hierarchy === 'isis') {
+          const datafilesURL = hierarchyLinkURL(rowData as Dataset);
+          return (
+            <ISISDatasetDetailsPanel
+              rowData={rowData}
+              detailsPanelResize={detailsPanelResize}
+              viewDatafiles={
+                datafilesURL
+                  ? (id: number) => {
+                      push(datafilesURL);
+                    }
+                  : undefined
+              }
+            />
+          );
+        } else if (hierarchy === 'dls') {
+          return (
+            <DLSDatasetDetailsPanel
+              rowData={rowData}
+              detailsPanelResize={detailsPanelResize}
+            />
+          );
+        } else {
+          return (
+            <DatasetDetailsPanel
+              rowData={rowData}
+              detailsPanelResize={detailsPanelResize}
+            />
+          );
+        }
+      },
+      [hierarchy, hierarchyLinkURL, push]
+    );
 
   return (
     <Table

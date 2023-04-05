@@ -19,6 +19,7 @@ import {
   useRemoveFromCart,
   useTextFilter,
   ISISInvestigationDetailsPanel,
+  DetailsPanelProps,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -155,21 +156,22 @@ const ISISMyDataTable = (): React.ReactElement => {
     [facilityCycles]
   );
 
-  const detailsPanel = React.useCallback(
-    ({ rowData, detailsPanelResize }) => (
-      <ISISInvestigationDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        viewDatasets={
-          urlPrefix(rowData as Investigation)
-            ? (id: number) =>
-                push(`${urlPrefix(rowData as Investigation)}/${id}/dataset`)
-            : undefined
-        }
-      />
-    ),
-    [push, urlPrefix]
-  );
+  const detailsPanel: React.ComponentType<DetailsPanelProps> =
+    React.useCallback(
+      ({ rowData, detailsPanelResize }) => (
+        <ISISInvestigationDetailsPanel
+          rowData={rowData}
+          detailsPanelResize={detailsPanelResize}
+          viewDatasets={
+            urlPrefix(rowData as Investigation)
+              ? (id: number) =>
+                  push(`${urlPrefix(rowData as Investigation)}/${id}/dataset`)
+              : undefined
+          }
+        />
+      ),
+      [push, urlPrefix]
+    );
 
   const columns: ColumnType[] = React.useMemo(
     () => [

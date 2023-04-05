@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import axios from 'axios';
 import { useLuceneSearch } from '.';
 import handleICATError from '../handleICATError';
@@ -22,7 +22,7 @@ describe('Lucene actions', () => {
       startDate: null,
       endDate: null,
     };
-    const { result, waitFor } = renderHook(
+    const { result } = renderHook(
       () => useLuceneSearch('Investigation', luceneSearchParams),
       {
         wrapper: createReactQueryWrapper(),
@@ -34,7 +34,7 @@ describe('Lucene actions', () => {
 
     result.current.refetch();
 
-    await waitFor(() => result.current.isSuccess);
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
     const params = {
       sessionId: null,
@@ -63,7 +63,7 @@ describe('Lucene actions', () => {
       endDate: new Date(2020, 11, 31),
       maxCount: 100,
     };
-    const { result, waitFor } = renderHook(
+    const { result } = renderHook(
       () => useLuceneSearch('Datafile', luceneSearchParams),
       {
         wrapper: createReactQueryWrapper(),
@@ -75,7 +75,7 @@ describe('Lucene actions', () => {
 
     result.current.refetch();
 
-    await waitFor(() => result.current.isSuccess);
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
     const params = {
       sessionId: null,
@@ -119,7 +119,9 @@ describe('Lucene actions', () => {
 
     startDateTest.result.current.refetch();
 
-    await startDateTest.waitFor(() => startDateTest.result.current.isSuccess);
+    await waitFor(() =>
+      expect(startDateTest.result.current.isSuccess).toBe(true)
+    );
 
     const params = {
       sessionId: null,
@@ -156,7 +158,9 @@ describe('Lucene actions', () => {
 
     endDateTest.result.current.refetch();
 
-    await endDateTest.waitFor(() => endDateTest.result.current.isSuccess);
+    await waitFor(() =>
+      expect(endDateTest.result.current.isSuccess).toBe(true)
+    );
 
     params.query.upper = '202012312359';
     params.query.lower = '0000001010000';
@@ -179,7 +183,7 @@ describe('Lucene actions', () => {
       startDate: null,
       endDate: null,
     };
-    const { result, waitFor } = renderHook(
+    const { result } = renderHook(
       () => useLuceneSearch('Datafile', luceneSearchParams),
       {
         wrapper: createReactQueryWrapper(),
@@ -191,7 +195,7 @@ describe('Lucene actions', () => {
 
     result.current.refetch();
 
-    await waitFor(() => result.current.isError);
+    await waitFor(() => expect(result.current.isError).toBe(true));
 
     expect(handleICATError).toHaveBeenCalledWith({
       message: 'Test error message',

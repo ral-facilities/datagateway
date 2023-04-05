@@ -24,6 +24,7 @@ import {
   InvestigationDetailsPanel,
   ISISInvestigationDetailsPanel,
   DLSVisitDetailsPanel,
+  DetailsPanelProps,
 } from 'datagateway-common';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
@@ -329,41 +330,42 @@ const InvestigationSearchTable = (
     ]
   );
 
-  const detailsPanel = React.useCallback(
-    ({ rowData, detailsPanelResize }) => {
-      if (hierarchy === 'isis') {
-        const datasetsURL = hierarchyLinkURL(rowData as Investigation);
-        return (
-          <ISISInvestigationDetailsPanel
-            rowData={rowData}
-            detailsPanelResize={detailsPanelResize}
-            viewDatasets={
-              datasetsURL
-                ? (id: number) => {
-                    push(datasetsURL);
-                  }
-                : undefined
-            }
-          />
-        );
-      } else if (hierarchy === 'dls') {
-        return (
-          <DLSVisitDetailsPanel
-            rowData={rowData}
-            detailsPanelResize={detailsPanelResize}
-          />
-        );
-      } else {
-        return (
-          <InvestigationDetailsPanel
-            rowData={rowData}
-            detailsPanelResize={detailsPanelResize}
-          />
-        );
-      }
-    },
-    [hierarchy, hierarchyLinkURL, push]
-  );
+  const detailsPanel: React.ComponentType<DetailsPanelProps> =
+    React.useCallback(
+      ({ rowData, detailsPanelResize }) => {
+        if (hierarchy === 'isis') {
+          const datasetsURL = hierarchyLinkURL(rowData as Investigation);
+          return (
+            <ISISInvestigationDetailsPanel
+              rowData={rowData}
+              detailsPanelResize={detailsPanelResize}
+              viewDatasets={
+                datasetsURL
+                  ? (id: number) => {
+                      push(datasetsURL);
+                    }
+                  : undefined
+              }
+            />
+          );
+        } else if (hierarchy === 'dls') {
+          return (
+            <DLSVisitDetailsPanel
+              rowData={rowData}
+              detailsPanelResize={detailsPanelResize}
+            />
+          );
+        } else {
+          return (
+            <InvestigationDetailsPanel
+              rowData={rowData}
+              detailsPanelResize={detailsPanelResize}
+            />
+          );
+        }
+      },
+      [hierarchy, hierarchyLinkURL, push]
+    );
 
   return (
     <Table

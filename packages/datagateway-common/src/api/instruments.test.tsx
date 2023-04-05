@@ -1,5 +1,5 @@
 import { Instrument } from '../app.types';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import { createMemoryHistory, History } from 'history';
 import axios from 'axios';
 import handleICATError from '../handleICATError';
@@ -47,11 +47,11 @@ describe('instrument api functions', () => {
         data: mockData,
       });
 
-      const { result, waitFor } = renderHook(() => useInstrumentsPaginated(), {
+      const { result } = renderHook(() => useInstrumentsPaginated(), {
         wrapper: createReactQueryWrapper(history),
       });
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       params.append('order', JSON.stringify('name asc'));
       params.append('order', JSON.stringify('id asc'));
@@ -80,7 +80,7 @@ describe('instrument api functions', () => {
       (axios.get as jest.Mock).mockRejectedValue({
         message: 'Test error',
       });
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           useInstrumentsPaginated([
             {
@@ -93,7 +93,7 @@ describe('instrument api functions', () => {
         }
       );
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       params.append('order', JSON.stringify('id asc'));
       params.append('skip', JSON.stringify(0));
@@ -121,11 +121,11 @@ describe('instrument api functions', () => {
           : Promise.resolve({ data: mockData[1] })
       );
 
-      const { result, waitFor } = renderHook(() => useInstrumentsInfinite(), {
+      const { result } = renderHook(() => useInstrumentsInfinite(), {
         wrapper: createReactQueryWrapper(history),
       });
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       params.append('order', JSON.stringify('name asc'));
       params.append('order', JSON.stringify('id asc'));
@@ -153,9 +153,7 @@ describe('instrument api functions', () => {
         pageParam: { startIndex: 50, stopIndex: 74 },
       });
 
-      await waitFor(() => result.current.isFetching);
-
-      await waitFor(() => !result.current.isFetching);
+      await waitFor(() => expect(result.current.isFetching).toBe(false));
 
       expect(axios.get).toHaveBeenNthCalledWith(
         2,
@@ -180,7 +178,7 @@ describe('instrument api functions', () => {
       (axios.get as jest.Mock).mockRejectedValue({
         message: 'Test error',
       });
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           useInstrumentsInfinite([
             {
@@ -193,7 +191,7 @@ describe('instrument api functions', () => {
         }
       );
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       params.append('order', JSON.stringify('id asc'));
       params.append('skip', JSON.stringify(0));
@@ -219,11 +217,11 @@ describe('instrument api functions', () => {
         data: mockData.length,
       });
 
-      const { result, waitFor } = renderHook(() => useInstrumentCount(), {
+      const { result } = renderHook(() => useInstrumentCount(), {
         wrapper: createReactQueryWrapper(history),
       });
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       params.append(
         'where',
@@ -248,11 +246,11 @@ describe('instrument api functions', () => {
       (axios.get as jest.Mock).mockRejectedValue({
         message: 'Test error',
       });
-      const { result, waitFor } = renderHook(() => useInstrumentCount(), {
+      const { result } = renderHook(() => useInstrumentCount(), {
         wrapper: createReactQueryWrapper(),
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/api/instruments/count',
@@ -273,11 +271,11 @@ describe('instrument api functions', () => {
         data: [mockData[0]],
       });
 
-      const { result, waitFor } = renderHook(() => useInstrumentDetails(1), {
+      const { result } = renderHook(() => useInstrumentDetails(1), {
         wrapper: createReactQueryWrapper(),
       });
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       params.append(
         'where',
@@ -306,11 +304,11 @@ describe('instrument api functions', () => {
       (axios.get as jest.Mock).mockRejectedValue({
         message: 'Test error',
       });
-      const { result, waitFor } = renderHook(() => useInstrumentDetails(1), {
+      const { result } = renderHook(() => useInstrumentDetails(1), {
         wrapper: createReactQueryWrapper(),
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
     });

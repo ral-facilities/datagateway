@@ -95,7 +95,7 @@ const headerTableCellStyleCombined = {
 export interface ColumnType {
   label: string;
   dataKey: string;
-  icon?: React.ComponentType<unknown>;
+  icon?: React.ElementType;
   cellContentRenderer?: TableCellRenderer;
   className?: string;
   disableSort?: boolean;
@@ -317,7 +317,7 @@ const VirtualizedTable = React.memo(
             >
               {({ onRowsRendered, registerChild }) => (
                 <StyledTable
-                  ref={(ref) => {
+                  ref={(ref: Table | null) => {
                     if (ref !== null) {
                       tableRef = ref;
                     }

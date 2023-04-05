@@ -20,6 +20,7 @@ import {
   TableActionProps,
   DownloadButton,
   ISISInvestigationDetailsPanel,
+  DetailsPanelProps,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -124,16 +125,17 @@ const ISISInvestigationsTable = (
   const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
   const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation`;
 
-  const detailsPanel = React.useCallback(
-    ({ rowData, detailsPanelResize }) => (
-      <ISISInvestigationDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        viewDatasets={(id: number) => push(`${urlPrefix}/${id}/dataset`)}
-      />
-    ),
-    [push, urlPrefix]
-  );
+  const detailsPanel: React.ComponentType<DetailsPanelProps> =
+    React.useCallback(
+      ({ rowData, detailsPanelResize }) => (
+        <ISISInvestigationDetailsPanel
+          rowData={rowData}
+          detailsPanelResize={detailsPanelResize}
+          viewDatasets={(id: number) => push(`${urlPrefix}/${id}/dataset`)}
+        />
+      ),
+      [push, urlPrefix]
+    );
 
   const columns: ColumnType[] = React.useMemo(
     () => [

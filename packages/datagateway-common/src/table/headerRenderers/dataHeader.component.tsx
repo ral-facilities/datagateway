@@ -23,7 +23,7 @@ const DataHeader = React.memo(
       ) => void;
       resizeColumn: (dataKey: string, deltaX: number) => void;
       labelString: string;
-      icon?: React.ComponentType<unknown>;
+      icon?: React.ElementType;
       filterComponent?: (label: string, dataKey: string) => React.ReactElement;
       defaultSort?: Order;
     }
