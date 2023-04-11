@@ -62,14 +62,6 @@ const ISISDataPublicationsTable = (
           },
       }),
     },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify({
-        content: {
-          dataCollectionInvestigations: 'investigation',
-        },
-      }),
-    },
   ]);
 
   /* istanbul ignore next */
@@ -138,14 +130,11 @@ const ISISDataPublicationsTable = (
       {
         icon: CalendarToday,
         label: t('datapublications.publication_date'),
-        dataKey:
-          'content.dataCollectionInvestigations.investigation.publicationDate',
+        dataKey: 'publicationDate',
         cellContentRenderer: (cellProps: TableCellProps) =>
           cellProps.rowData?.content?.publicationDate?.slice(0, 10) ?? '',
         filterComponent: dateFilter,
-        //TODO: sorting not working until publication date populated
-        disableSort: true,
-        //defaultSort: 'desc',
+        defaultSort: 'desc',
       },
     ];
   }, [t, textFilter, dateFilter, instrumentId, view]);

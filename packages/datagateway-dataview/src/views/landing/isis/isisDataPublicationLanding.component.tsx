@@ -163,12 +163,12 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
 
   const { data } = useDataPublication(parseInt(dataPublicationId));
 
-  const pid = data?.[0].pid;
-  const title = data?.[0].title;
+  const pid = data?.[0]?.pid;
+  const title = data?.[0]?.title;
   const description = React.useMemo(
     () =>
-      data?.[0].description && data?.[0].description !== 'null'
-        ? data[0].description
+      data?.[0]?.description && data?.[0]?.description !== 'null'
+        ? data[0]?.description
         : 'Description not provided',
     [data]
   );
@@ -178,8 +178,8 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     const contacts: FormattedUser[] = [];
     const experimenters: FormattedUser[] = [];
 
-    if (data?.[0].users) {
-      const dataPublicationUsers = data[0].users;
+    if (data?.[0]?.users) {
+      const dataPublicationUsers = data[0]?.users;
       dataPublicationUsers.forEach((user) => {
         // Only keep users where we have their fullName
         const fullname = user.fullName;
@@ -305,7 +305,10 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   ];
 
   return (
-    <Paper sx={{ margin: 1, padding: 1 }} data-testid="isis-study-landing">
+    <Paper
+      sx={{ margin: 1, padding: 1 }}
+      data-testid="isis-dataPublication-landing"
+    >
       <Grid container sx={{ padding: 0.5 }}>
         <Grid item xs={12}>
           <Branding />
@@ -381,7 +384,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               doi={pid}
               formattedUsers={formattedUsers}
               title={title}
-              startDate={data?.[0].createTime}
+              startDate={data?.[0]?.createTime}
             />
           </Grid>
 

@@ -179,13 +179,13 @@ const NavBar = React.memo(
     } & CartProps
   ): React.ReactElement => {
     const [t] = useTranslation();
-    const isStudyHierarchy =
+    const isDataPublication =
       useRouteMatch([
         ...Object.values(paths.dataPublications.toggle),
         ...Object.values(paths.dataPublications.standard),
       ]) !== null;
     const isISISRoute = useRouteMatch(isisPaths) !== null;
-    const landingPages = isStudyHierarchy
+    const landingPages = isDataPublication
       ? paths.dataPublications.landing
       : isISISRoute
       ? paths.landing
@@ -210,7 +210,7 @@ const NavBar = React.memo(
             </Route>
           </Grid>
 
-          {props.loggedInAnonymously || isStudyHierarchy ? (
+          {props.loggedInAnonymously || isDataPublication ? (
             <Grid item>
               <OpenDataPaper square>
                 <Grid
@@ -224,8 +224,10 @@ const NavBar = React.memo(
                     <ArrowTooltip
                       title={
                         <h4>
-                          {isStudyHierarchy
-                            ? t('app.open_data_warning.studies_tooltip')
+                          {isDataPublication
+                            ? t(
+                                'app.open_data_warning.datapublications_tooltip'
+                              )
                             : t('app.open_data_warning.tooltip')}
                           <br />
                           <br />

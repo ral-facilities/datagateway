@@ -161,7 +161,8 @@ const ISISInvestigationsTable = (
       {
         icon: Public,
         label: t('investigations.doi'),
-        dataKey: 'studyInvestigations.study.pid',
+        dataKey:
+          'dataCollectionInvestigations.[0].dataCollection.dataPublications.[0].pid',
         cellContentRenderer: (cellProps: TableCellProps) => {
           const investigationData = cellProps.rowData as Investigation;
           if (
@@ -172,7 +173,7 @@ const ISISInvestigationsTable = (
               `https://doi.org/${investigationData.dataCollectionInvestigations?.[0]?.dataCollection?.dataPublications?.[0].pid}`,
               investigationData.dataCollectionInvestigations?.[0]
                 ?.dataCollection?.dataPublications?.[0].pid,
-              'isis-mydata-table-doi-link'
+              'isis-table-doi-link'
             );
           } else {
             return '';

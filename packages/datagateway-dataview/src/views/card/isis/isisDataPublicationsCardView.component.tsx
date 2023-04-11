@@ -66,14 +66,6 @@ const ISISDataPublicationsCardView = (
           },
       }),
     },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify({
-        content: {
-          dataCollectionInvestigations: 'investigation',
-        },
-      }),
-    },
   ]);
 
   const title = React.useMemo(() => {
@@ -96,7 +88,7 @@ const ISISDataPublicationsCardView = (
   const description: CardViewDetails = React.useMemo(
     () => ({
       label: t('datapublications.title'),
-      dataKey: 'dataPublication.title',
+      dataKey: 'title',
       filterComponent: textFilter,
     }),
     [t, textFilter]
@@ -125,14 +117,11 @@ const ISISDataPublicationsCardView = (
       {
         icon: CalendarToday,
         label: t('datapublications.publication_date'),
-        dataKey:
-          'dataPublication.content.dataCollectionInvestigations.investigation.publicationDate',
+        dataKey: 'publicationDate',
         content: (dataPublication: DataPublication) =>
           dataPublication?.publicationDate?.slice(0, 10) ?? '',
         filterComponent: dateFilter,
-        //TODO: sorting not working until publication date populated
-        disableSort: true,
-        //defaultSort: 'desc',
+        defaultSort: 'desc',
       },
     ],
     [dateFilter, t, textFilter]

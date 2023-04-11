@@ -42,11 +42,12 @@ describe('ISIS Data Publication - Card View', () => {
   beforeEach(() => {
     cardData = [
       {
-        id: 1,
+        id: 14,
         pid: 'doi',
         title: 'Test 1',
         modTime: '2000-01-01',
         createTime: '2000-01-01',
+        publicationDate: '2001-01-01',
         content: {
           id: 1,
           dataCollectionInvestigations: [
@@ -79,12 +80,12 @@ describe('ISIS Data Publication - Card View', () => {
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         switch (url) {
-          case '/dataPublications':
+          case '/datapublications':
             return Promise.resolve({
               data: cardData,
             });
 
-          case '/dataPublications/count':
+          case '/datapublications/count':
             return Promise.resolve({
               data: 1,
             });
@@ -102,36 +103,34 @@ describe('ISIS Data Publication - Card View', () => {
   it('renders correctly', async () => {
     renderComponent();
 
-    const cards = await screen.findAllByTestId('card');
+    const cards = await screen.findAllByTestId(
+      'isis-dataPublications-card-view'
+    );
     expect(cards).toHaveLength(1);
 
     const card = cards[0];
-    // card title should be rendered as link to study
-    expect(within(card).getByRole('link', { name: 'Test 1' })).toHaveAttribute(
+    // card id should be rendered as link to data publication
+    expect(within(card).getByRole('link', { name: '14' })).toHaveAttribute(
       'href',
-      '/browseDataPublications/instrument/1/dataPublication/1'
+      '/browseDataPublications/instrument/1/dataPublication/14'
     );
     expect(within(card).getByLabelText('card-description')).toHaveTextContent(
-      'investigation title'
+      'Test 1'
     );
     expect(within(card).getByRole('link', { name: 'doi' })).toHaveAttribute(
       'href',
       'https://doi.org/doi'
     );
-    expect(within(card).getByText('1999-01-01')).toBeInTheDocument();
-    expect(within(card).getByText('1999-01-02')).toBeInTheDocument();
+    expect(within(card).getByText('2001-01-01')).toBeInTheDocument();
   });
 
-  // Todo: currently ordered search not working
-  // it('uses default sort', () => {
-  //   renderComponent();
-  //   expect(history.length).toBe(1);
-  //   expect(history.location.search).toBe(
-  //     `?sort=${encodeURIComponent(
-  //       '{"studyInvestigations.investigation.startDate":"desc"}'
-  //     )}`
-  //   );
-  // });
+  it('uses default sort', () => {
+    renderComponent();
+    expect(history.length).toBe(1);
+    expect(history.location.search).toBe(
+      `?sort=${encodeURIComponent('{"publicationDate":"desc"}')}`
+    );
+  });
 
   it('updates filter query params on text filter', async () => {
     jest.useFakeTimers();
@@ -176,13 +175,13 @@ describe('ISIS Data Publication - Card View', () => {
     );
 
     const filterInput = screen.getByRole('textbox', {
-      name: 'datapublications.end_date filter to',
+      name: 'datapublications.publication_date filter to',
     });
 
     await user.type(filterInput, '2019-08-06');
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
-        '{"content.dataCollectionInvestigations.investigation.endDate":{"endDate":"2019-08-06"}}'
+        '{"publicationDate":{"endDate":"2019-08-06"}}'
       )}`
     );
 
@@ -199,12 +198,12 @@ describe('ISIS Data Publication - Card View', () => {
 
     await user.click(
       await screen.findByRole('button', {
-        name: 'Sort by DATAPUBLICATIONS.NAME',
+        name: 'Sort by DATAPUBLICATIONS.TITLE',
       })
     );
 
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"name":"asc"}')}`
+      `?sort=${encodeURIComponent('{"title":"asc"}')}`
     );
   });
 });

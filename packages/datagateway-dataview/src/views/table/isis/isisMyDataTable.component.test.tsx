@@ -110,21 +110,27 @@ describe('ISIS MyData table component', () => {
             },
           },
         ],
-        studyInvestigations: [
+        dataCollectionInvestigations: [
           {
             id: 6,
-            study: {
-              id: 7,
-              pid: 'study pid',
-              name: 'study',
-              createTime: '2019-06-10',
-              modTime: '2019-06-10',
-            },
             investigation: {
               id: 1,
               title: 'Test 1 title',
               name: 'Test 1 name',
               visitId: '1',
+            },
+            dataCollection: {
+              id: 11,
+              dataPublications: [
+                {
+                  id: 12,
+                  pid: 'Data Publication Pid',
+                  description: 'Data Publication description',
+                  modTime: '2019-06-10',
+                  createTime: '2019-06-11',
+                  title: 'Data Publication',
+                },
+              ],
             },
           },
         ],
@@ -230,7 +236,7 @@ describe('ISIS MyData table component', () => {
         findCellInRow(row, {
           columnIndex: await findColumnIndexByName('investigations.doi'),
         })
-      ).getByText('study pid')
+      ).getByText('Data Publication Pid')
     ).toBeInTheDocument();
     expect(
       within(
@@ -476,8 +482,8 @@ describe('ISIS MyData table component', () => {
   it('displays DOI and renders the expected Link ', async () => {
     renderComponent();
     expect(
-      await screen.findByRole('link', { name: 'study pid' })
-    ).toHaveAttribute('href', 'https://doi.org/study pid');
+      await screen.findByRole('link', { name: 'Data Publication Pid' })
+    ).toHaveAttribute('href', 'https://doi.org/Data Publication Pid');
   });
 
   it('renders details panel without datasets link if no facility cycles', async () => {
@@ -502,7 +508,7 @@ describe('ISIS MyData table component', () => {
       await screen.findByRole('link', { name: 'Test 1 title' })
     ).toBeInTheDocument();
     expect(
-      await screen.findByRole('link', { name: 'study pid' })
+      await screen.findByRole('link', { name: 'Data Publication Pid' })
     ).toBeInTheDocument();
   });
 
@@ -511,7 +517,7 @@ describe('ISIS MyData table component', () => {
     rowData[0] = {
       ...rowData[0],
       investigationInstruments: [],
-      studyInvestigations: [],
+      dataCollectionInvestigations: [],
     };
     (useInvestigationsInfinite as jest.Mock).mockReturnValue({
       data: { pages: [rowData] },
@@ -535,7 +541,7 @@ describe('ISIS MyData table component', () => {
           id: 1,
         },
       ],
-      studyInvestigations: [
+      dataCollectionInvestigations: [
         {
           id: 6,
         },
