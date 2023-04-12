@@ -82,6 +82,7 @@ const DLSProposalsCardView = (): React.ReactElement => {
 
   return (
     <CardView
+      data-testid="dls-proposals-card-view"
       data={data ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}

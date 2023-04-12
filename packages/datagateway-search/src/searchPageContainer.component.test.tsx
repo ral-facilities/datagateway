@@ -1,13 +1,14 @@
 import * as React from 'react';
-import { mount, ReactWrapper } from 'enzyme';
-
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import { StateType } from './state/app.types';
 import { initialState as dgSearchInitialState } from './state/reducers/dgsearch.reducer';
-import { dGCommonInitialState, useCart } from 'datagateway-common';
-import { createMemoryHistory, History } from 'history';
-import { MemoryRouter, Router } from 'react-router-dom';
+import {
+  dGCommonInitialState,
+  type DownloadCartItem,
+} from 'datagateway-common';
+import { createMemoryHistory, createPath, type History } from 'history';
+import { Router } from 'react-router-dom';
 import SearchPageContainer, {
   getFilters,
   getPage,
@@ -20,19 +21,10 @@ import SearchPageContainer, {
 } from './searchPageContainer.component';
 import { Provider } from 'react-redux';
 import axios from 'axios';
-import { act } from 'react-dom/test-utils';
-import { flushPromises } from './setupTests';
-import {
-  setDatafileTab,
-  setDatasetTab,
-  setInvestigationTab,
-} from './state/actions/actions';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import type { RenderResult } from '@testing-library/react';
-import { render, screen } from '@testing-library/react';
-import type { UserEvent } from '@testing-library/user-event/dist/types/setup';
-import type { DeepPartial } from 'redux';
+import { render, type RenderResult, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import type { DeepPartial } from 'redux';
 
 jest.mock('loglevel');
 
@@ -53,32 +45,16 @@ describe('SearchPageContainer - Tests', () => {
   let state: DeepPartial<StateType>;
   let queryClient: QueryClient;
   let history: History;
-  let pushSpy;
-  let user: UserEvent;
+  let holder: HTMLElement;
+  let cartItems: DownloadCartItem[];
 
   const localStorageGetItemMock = jest.spyOn(
     window.localStorage.__proto__,
     'getItem'
   );
 
-  const createWrapper = (
-    h: History = history,
-    client: QueryClient = queryClient
-  ): ReactWrapper => {
-    const mockStore = configureStore([thunk]);
-    return mount(
-      <Provider store={mockStore(state)}>
-        <Router history={h}>
-          <QueryClientProvider client={client}>
-            <SearchPageContainer />
-          </QueryClientProvider>
-        </Router>
-      </Provider>
-    );
-  };
-
-  const renderComponent = (): RenderResult =>
-    render(
+  function renderComponent(): RenderResult {
+    return render(
       <Provider store={configureStore([thunk])(state)}>
         <Router history={history}>
           <QueryClientProvider client={queryClient}>
@@ -87,14 +63,39 @@ describe('SearchPageContainer - Tests', () => {
         </Router>
       </Provider>
     );
+  }
 
   beforeEach(() => {
+    cartItems = [];
     queryClient = new QueryClient();
     history = createMemoryHistory({
       initialEntries: ['/search/data'],
     });
-    pushSpy = jest.spyOn(history, 'push');
-    user = userEvent.setup();
+    delete window.location;
+    window.location = new URL(`http://localhost/search/data`);
+
+    // below code keeps window.location in sync with history changes
+    // (needed because useUpdateQueryParam uses window.location not history)
+    const historyReplace = history.replace;
+    const historyReplaceSpy = jest.spyOn(history, 'replace');
+    historyReplaceSpy.mockImplementation((args) => {
+      historyReplace(args);
+      if (typeof args === 'string') {
+        window.location = new URL(`http://localhost${args}`);
+      } else {
+        window.location = new URL(`http://localhost${createPath(args)}`);
+      }
+    });
+    const historyPush = history.push;
+    const historyPushSpy = jest.spyOn(history, 'push');
+    historyPushSpy.mockImplementation((args) => {
+      historyPush(args);
+      if (typeof args === 'string') {
+        window.location = new URL(`http://localhost${args}`);
+      } else {
+        window.location = new URL(`http://localhost${createPath(args)}`);
+      }
+    });
 
     window.localStorage.__proto__.removeItem = jest.fn();
     window.localStorage.__proto__.setItem = jest.fn();
@@ -131,30 +132,32 @@ describe('SearchPageContainer - Tests', () => {
       },
     };
 
+    holder = document.createElement('div');
+    holder.setAttribute('id', 'datagateway-search');
+    document.body.appendChild(holder);
+
     (axios.get as jest.Mock).mockImplementation((url) => {
+      if (url.includes('/user/cart')) {
+        return Promise.resolve({ data: { cartItems } });
+      }
+
       if (url.includes('count')) {
         return Promise.resolve({ data: 0 });
-      } else {
-        return Promise.resolve({ data: [] });
       }
+
+      return Promise.resolve({ data: [] });
     });
   });
 
   afterEach(() => {
+    document.body.removeChild(holder);
     jest.clearAllMocks();
   });
 
   it('renders searchPageContainer correctly', () => {
-    const mockStore = configureStore([thunk]);
-    render(
-      <Provider store={mockStore(state)}>
-        <MemoryRouter initialEntries={[{ key: 'testKey', pathname: '/' }]}>
-          <QueryClientProvider client={queryClient}>
-            <SearchPageContainer />
-          </QueryClientProvider>
-        </MemoryRouter>
-      </Provider>
-    );
+    history.replace({ key: 'testKey', pathname: '/' });
+
+    renderComponent();
 
     expect(screen.getByRole('link', { name: 'Search data' })).toHaveAttribute(
       'href',
@@ -162,10 +165,20 @@ describe('SearchPageContainer - Tests', () => {
     );
   });
 
-  it('renders correctly at /search/data route', () => {
+  it('renders initial layout at /search/data route', () => {
     renderComponent();
 
     expect(screen.getByTestId('search-box-container')).toBeInTheDocument();
+    // no search results yet, so view button, clear filter button and tabs should be hidden
+    expect(
+      screen.queryByRole('button', { name: 'page view app.view_cards' })
+    ).toBeNull();
+    expect(
+      screen.queryByRole('button', { name: 'app.clear_filters' })
+    ).toBeNull();
+    expect(
+      screen.queryByRole('tablist', { name: 'searchPageTable.tabs_arialabel' })
+    ).toBeNull();
   });
 
   it('renders side layout correctly', () => {
@@ -182,24 +195,54 @@ describe('SearchPageContainer - Tests', () => {
     renderComponent();
 
     expect(screen.getByTestId('search-box-container-side')).toBeInTheDocument();
+    // no search results yet, so view button, clear filter button and tabs should be hidden
+    expect(
+      screen.queryByRole('button', { name: 'page view app.view_cards' })
+    ).toBeNull();
+    expect(
+      screen.queryByRole('button', { name: 'app.clear_filters' })
+    ).toBeNull();
+    expect(
+      screen.queryByRole('tablist', { name: 'searchPageTable.tabs_arialabel' })
+    ).toBeNull();
   });
 
   it('display search table container when search request sent', async () => {
+    const user = userEvent.setup();
+
     renderComponent();
 
-    user.click(
+    await user.click(
       screen.getByRole('button', { name: 'searchBox.search_button_arialabel' })
     );
 
     expect(
-      await screen.findByTestId('container-search-table')
+      await screen.findByRole('tablist', {
+        name: 'searchPageTable.tabs_arialabel',
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'page view app.view_cards' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'app.clear_filters' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('tab', { name: 'tabs.investigation' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('tab', { name: 'tabs.dataset' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('tab', { name: 'tabs.datafile' })
     ).toBeInTheDocument();
   });
 
   it('display loading bar when loading true', async () => {
+    const user = userEvent.setup();
     (axios.get as jest.Mock).mockImplementation(
       () =>
-        new Promise((resolve, reject) => {
+        new Promise((_) => {
           // do nothing, simulating pending promise
           // to test loading state
         })
@@ -215,6 +258,8 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('builds correct parameters for datafile request if date and search text properties are in use', async () => {
+    const user = userEvent.setup();
+
     history.replace(
       '/search/data?searchText=hello&startDate=2013-11-11&endDate=2016-11-11'
     );
@@ -256,6 +301,8 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('builds correct parameters for dataset request if date and search text properties are in use', async () => {
+    const user = userEvent.setup();
+
     history.replace(
       '/search/data?searchText=hello&datafile=false&investigation=false&startDate=2013-11-11&endDate=2016-11-11'
     );
@@ -293,6 +340,8 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('builds correct parameters for investigation request if date and search text properties are in use', async () => {
+    const user = userEvent.setup();
+
     history.replace(
       '/search/data?searchText=hello&dataset=false&datafile=false&startDate=2013-11-11&endDate=2016-11-11'
     );
@@ -339,6 +388,8 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('builds correct parameters for datafile request if only start date is in use', async () => {
+    const user = userEvent.setup();
+
     history.replace(
       '/search/data?searchText=&dataset=false&investigation=false&startDate=2013-11-11'
     );
@@ -379,6 +430,8 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('builds correct parameters for dataset request if only start date is in use', async () => {
+    const user = userEvent.setup();
+
     history.replace(
       '/search/data?searchText=test&datafile=false&investigation=false&startDate=2013-11-11'
     );
@@ -416,6 +469,8 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('builds correct parameters for investigation request if only start date is in use', async () => {
+    const user = userEvent.setup();
+
     history.replace(
       '/search/data?searchText=test&dataset=false&datafile=false&startDate=2013-11-11'
     );
@@ -462,6 +517,8 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('builds correct parameters for datafile request if only end date is in use', async () => {
+    const user = userEvent.setup();
+
     history.replace(
       '/search/data?searchText=&dataset=false&investigation=false&endDate=2016-11-11'
     );
@@ -475,7 +532,7 @@ describe('SearchPageContainer - Tests', () => {
     );
 
     expect(axios.get).toHaveBeenNthCalledWith(
-      1,
+      2,
       'https://example.com/icat/search/documents',
       {
         params: {
@@ -503,6 +560,8 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('builds correct parameters for dataset request if only end date is in use', async () => {
+    const user = userEvent.setup();
+
     history.replace(
       '/search/data?searchText=test&datafile=false&investigation=false&endDate=2016-11-11'
     );
@@ -540,6 +599,8 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('builds correct parameters for investigation request if only end date is in use', async () => {
+    const user = userEvent.setup();
+
     history.replace(
       '/search/data?searchText=test&dataset=false&datafile=false&endDate=2016-11-11'
     );
@@ -585,6 +646,8 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('builds correct parameters for datafile request if date and search text properties are not in use', async () => {
+    const user = userEvent.setup();
+
     history.replace(
       '/search/data?searchText=test&dataset=false&investigation=false'
     );
@@ -626,6 +689,8 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('builds correct parameters for dataset request if date and search text properties are not in use', async () => {
+    const user = userEvent.setup();
+
     history.replace('/search/data?datafile=false&investigation=false');
 
     renderComponent();
@@ -658,6 +723,8 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('builds correct parameters for investigation request if date and search text properties are not in use', async () => {
+    const user = userEvent.setup();
+
     history.replace(
       '/search/data?searchText=test&dataset=false&datafile=false'
     );
@@ -722,15 +789,13 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('display clear filters button and clear for filters onClick', async () => {
+    const user = userEvent.setup();
+
     renderComponent();
 
     await user.click(
       screen.getByRole('button', { name: 'searchBox.search_button_arialabel' })
     );
-
-    await act(async () => {
-      await flushPromises();
-    });
 
     history.replace(
       `/search/data?filters=%7B"title"%3A%7B"value"%3A"spend"%2C"type"%3A"include"%7D%7D`
@@ -749,15 +814,13 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('display disabled clear filters button', async () => {
+    const user = userEvent.setup();
+
     renderComponent();
 
     await user.click(
       screen.getByRole('button', { name: 'searchBox.search_button_arialabel' })
     );
-
-    await act(async () => {
-      await flushPromises();
-    });
 
     expect(
       await screen.findByRole('button', { name: 'app.clear_filters' })
@@ -809,97 +872,63 @@ describe('SearchPageContainer - Tests', () => {
     expect(localStorage.setItem).toBeCalledWith('investigationResults', '20');
   });
 
-  it('sends actions to update tabs when user clicks search button', async () => {
+  it('should hide tabs when the corresponding search type is disabled', async () => {
+    const user = userEvent.setup();
+
     history.replace(
       '/search/data?searchText=test&dataset=false&datafile=false'
     );
 
-    const mockStore = configureStore([thunk]);
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <Router history={history}>
-          <QueryClientProvider client={new QueryClient()}>
-            <SearchPageContainer />
-          </QueryClientProvider>
-        </Router>
-      </Provider>
+    renderComponent();
+
+    await user.click(
+      screen.getByRole('button', { name: 'searchBox.search_button_arialabel' })
     );
-    wrapper.update();
 
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(testStore.getActions()[0]).toEqual(setDatafileTab(false));
-    expect(testStore.getActions()[1]).toEqual(setDatasetTab(false));
-    expect(testStore.getActions()[2]).toEqual(setInvestigationTab(true));
+    expect(
+      screen.getByRole('tab', { name: 'tabs.investigation' })
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('tab', { name: 'tabs.dataset' })).toBeNull();
+    expect(screen.queryByRole('tab', { name: 'tabs.datafile' })).toBeNull();
   });
 
   it('search text state is updated when text is changed and pushes when search initiated', async () => {
-    const wrapper = createWrapper();
+    const user = userEvent.setup();
 
-    wrapper
-      .find('[aria-label="searchBox.search_text_arialabel"] input')
-      .simulate('change', { target: { value: 'test' } });
+    renderComponent();
 
-    wrapper
-      .find('button[aria-label="searchBox.search_button_arialabel"]')
-      .simulate('click');
+    await user.type(
+      screen.getByRole('searchbox', {
+        name: 'searchBox.search_text_arialabel',
+      }),
+      'test'
+    );
+    await user.click(
+      screen.getByRole('button', { name: 'searchBox.search_button_arialabel' })
+    );
 
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(pushSpy).toHaveBeenCalledWith({
-      search: '?searchText=test',
-    });
+    expect(history.location.search).toEqual('?searchText=test');
   });
 
   it('shows SelectionAlert banner when item selected', async () => {
-    (useCart as jest.Mock).mockReturnValue({
-      data: [
-        {
-          entityId: 1,
-          entityType: 'dataset',
-          id: 1,
-          name: 'Test 1',
-          parentEntities: [],
-        },
-      ],
-    });
-    const wrapper = createWrapper();
+    cartItems = [
+      {
+        entityId: 1,
+        entityType: 'dataset',
+        id: 1,
+        name: 'Test 1',
+        parentEntities: [],
+      },
+    ];
+    const user = userEvent.setup();
 
-    wrapper
-      .find('button[aria-label="searchBox.search_button_arialabel"]')
-      .simulate('click');
+    renderComponent();
 
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
+    await user.click(
+      screen.getByRole('button', { name: 'searchBox.search_button_arialabel' })
+    );
 
-    expect(wrapper.exists('[aria-label="selection-alert"]')).toBeTruthy();
-  });
-
-  it('does not show SelectionAlert banner when no items are selected', async () => {
-    (useCart as jest.Mock).mockReturnValue({
-      data: [],
-    });
-    const wrapper = createWrapper();
-
-    wrapper
-      .find('button[aria-label="searchBox.search_button_arialabel"]')
-      .simulate('click');
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(wrapper.exists('[aria-label="selection-alert"]')).toBeFalsy();
+    expect(await screen.findByLabelText('selection-alert')).toBeInTheDocument();
   });
 
   it('initiates search when visiting a direct url', async () => {
@@ -1048,6 +1077,8 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('initiates search when the URL is changed', async () => {
+    const user = userEvent.setup();
+
     renderComponent();
 
     (axios.get as jest.Mock).mockClear();
@@ -1097,6 +1128,8 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('switches view button display name when clicked', async () => {
+    const user = userEvent.setup();
+
     renderComponent();
 
     await user.click(

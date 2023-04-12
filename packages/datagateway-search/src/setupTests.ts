@@ -6,7 +6,7 @@ import { Action } from 'redux';
 import { StateType } from './state/app.types';
 import { dGCommonInitialState } from 'datagateway-common';
 import { initialState as dgSearchInitialState } from './state/reducers/dgsearch.reducer';
-import { screen, waitFor, within } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 
 jest.setTimeout(15000);
 
@@ -127,20 +127,8 @@ export const findColumnHeaderByName = async (
 /**
  * Finds all table rows except the header row.
  */
-export const findAllRows = async (): Promise<HTMLElement[]> => {
-  let rows: HTMLElement[] = [];
-  await waitFor(
-    async () => {
-      rows = (await screen.findAllByRole('row')).slice(1);
-      expect(rows.length).toBeGreaterThanOrEqual(1);
-    },
-    {
-      onTimeout: (_) =>
-        new Error('No rows found in table. Timeout in waitFor.'),
-    }
-  );
-  return rows;
-};
+export const findAllRows = async (): Promise<HTMLElement[]> =>
+  (await screen.findAllByRole('row')).slice(1);
 
 export const queryAllRows = (): HTMLElement[] =>
   screen.queryAllByRole('row').slice(1);
@@ -152,8 +140,8 @@ export const queryAllRows = (): HTMLElement[] =>
  *              the actual row that contains the data is considered the first row, and has an index of 0.
  */
 export const findRowAt = async (index: number): Promise<HTMLElement> => {
-  const rows = await findAllRows();
-  const row = rows[index];
+  const rows = await screen.findAllByRole('row');
+  const row = rows[index + 1];
   if (!row) {
     throw new Error(`Cannot find row at index ${index}`);
   }

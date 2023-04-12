@@ -39,12 +39,12 @@ const SearchBoxContainerSide = (
 
   return (
     <Grid
+      data-testid="search-box-container-side"
       container
       direction="column"
       justifyContent="flex-start"
       alignItems="stretch"
       id="container-searchbox"
-      data-testid="search-box-container-side"
     >
       <Grid item>
         <Box px={2}>

@@ -23,9 +23,9 @@ export {
   default as DateColumnFilter,
   useDateFilter,
 } from './table/columnFilters/dateColumnFilter.component';
-export { default as ActionCellComponent } from './table/cellRenderers/actionCell.component';
-export { default as DataCellComponent } from './table/cellRenderers/dataCell.component';
-export { default as ExpandCellComponent } from './table/cellRenderers/expandCell.component';
+export { default as ActionCell } from './table/cellRenderers/actionCell.component';
+export { default as DataCell } from './table/cellRenderers/dataCell.component';
+export { default as ExpandCell } from './table/cellRenderers/expandCell.component';
 export * from './table/cellRenderers/cellContentRenderers';
 
 export { default as CardView } from './card/cardView.component';

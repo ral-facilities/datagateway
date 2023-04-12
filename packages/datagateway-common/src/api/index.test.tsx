@@ -752,7 +752,9 @@ describe('generic api functions', () => {
           result.current('test');
         });
 
-        expect(pushSpy).toHaveBeenCalledWith('?searchText=test');
+        expect(pushSpy).toHaveBeenCalledWith({
+          search: '?searchText=test',
+        });
       });
     });
 

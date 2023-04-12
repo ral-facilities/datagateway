@@ -109,6 +109,8 @@ export interface CardViewProps {
   paginationPosition?: CVPaginationPosition;
   allIds?: number[];
   entityName?: DatasearchType;
+
+  'data-testid'?: string;
 }
 
 export interface CVFilterInfo {
@@ -177,6 +179,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     onFilter,
     onSort,
     onResultsChange,
+    'data-testid': testId,
   } = props;
 
   // Get card information.
@@ -478,7 +481,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
   const hasFilteredResults = loadedData && (filterUpdate || totalDataCount > 0);
 
   return (
-    <Grid container direction="column" alignItems="center">
+    <Grid container direction="column" alignItems="center" data-testid={testId}>
       <Grid
         container
         item
@@ -522,8 +525,8 @@ const CardView = (props: CardViewProps): React.ReactElement => {
               <Grid item>{CVPagination(page, maxPage, onPageChange)}</Grid>
             )}
 
-            {/* Maximum results selection
-                Do not show if the number of data is smaller than the
+            {/* Maximum results selection 
+                Do not show if the number of data is smaller than the 
                 smallest amount of results to display (10) or the smallest amount available. */}
             {totalDataCount > resOptions[0] && (
               <Grid container item xs={12} md={1} justifyContent="flex-end">
@@ -602,7 +605,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                       <Typography variant="h5">Sort By</Typography>
                     </Box>
 
-                    {/* Show all the available sort options:
+                    {/* Show all the available sort options: 
                         title, description and the further information (if provided) */}
                     <Box>
                       <List

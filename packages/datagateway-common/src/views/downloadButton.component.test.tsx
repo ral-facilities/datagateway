@@ -1,19 +1,27 @@
-import React from 'react';
-import { mount } from 'enzyme';
+import * as React from 'react';
 import DownloadButton, {
   DownloadButtonProps,
 } from './downloadButton.component';
 import configureStore from 'redux-mock-store';
 import { initialState as dGCommonInitialState } from '../state/reducers/dgcommon.reducer';
-import { downloadDatafile } from '../api/datafiles';
-import { downloadDataset } from '../api/datasets';
-import { downloadInvestigation } from '../api/investigations';
+import {
+  downloadDatafile,
+  downloadDataset,
+  downloadInvestigation,
+} from '../api';
 import { StateType } from '../state/app.types';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router-dom';
-import { ReactWrapper } from 'enzyme';
-import { QueryClientProvider, QueryClient } from 'react-query';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import {
+  render,
+  type RenderResult,
+  screen,
+  waitFor,
+} from '@testing-library/react';
+import { UserEvent } from '@testing-library/user-event/setup/setup';
+import userEvent from '@testing-library/user-event';
 
 jest.mock('../api/datafiles');
 jest.mock('../api/datasets');
@@ -22,10 +30,11 @@ jest.mock('../api/investigations');
 describe('Generic download button', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
+  let user: UserEvent;
 
-  const createWrapper = (props: DownloadButtonProps): ReactWrapper => {
+  function renderComponent(props: DownloadButtonProps): RenderResult {
     const store = mockStore(state);
-    return mount(
+    return render(
       <Provider store={store}>
         <MemoryRouter>
           <QueryClientProvider client={new QueryClient()}>
@@ -34,9 +43,10 @@ describe('Generic download button', () => {
         </MemoryRouter>
       </Provider>
     );
-  };
+  }
 
   beforeEach(() => {
+    user = userEvent.setup();
     state = JSON.parse(
       JSON.stringify({
         dgdataview: {}, //Dont need to fill, since not part of the test
@@ -55,149 +65,197 @@ describe('Generic download button', () => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const props: DownloadButtonProps = {
-      entityType: 'datafile',
-      entityName: 'test',
-      entityId: 1,
-      entitySize: 1,
-    };
-    const textButtonWrapper = createWrapper(props);
-    expect(textButtonWrapper.find('button').text()).toBe('buttons.download');
+  describe('text variant', () => {
+    it('renders correctly', async () => {
+      renderComponent({
+        entityType: 'datafile',
+        entityName: 'test',
+        entityId: 1,
+        entitySize: 1,
+      });
 
-    const iconButtonWrapper = createWrapper({
-      ...props,
-      variant: 'icon',
-    });
-    expect(iconButtonWrapper.find('button').text()).toBe('');
-  });
-
-  it('calls download investigation on button press for both text and icon buttons', () => {
-    const props: DownloadButtonProps = {
-      entityType: 'investigation',
-      entityName: 'test',
-      entityId: 1,
-      entitySize: 1,
-    };
-    let wrapper = createWrapper(props);
-
-    wrapper.find('#download-btn-1').last().simulate('click');
-    expect(downloadInvestigation).toHaveBeenCalledWith(
-      'https://www.example.com/ids',
-      1,
-      'test'
-    );
-
-    jest.clearAllMocks();
-
-    wrapper = createWrapper({
-      ...props,
-      variant: 'icon',
+      expect(
+        await screen.findByRole('button', { name: 'buttons.download' })
+      ).toBeInTheDocument();
     });
 
-    wrapper.find('#download-btn-1').last().simulate('click');
-    expect(downloadInvestigation).toHaveBeenCalledWith(
-      'https://www.example.com/ids',
-      1,
-      'test'
-    );
-  });
+    it('calls download investigation on button press', async () => {
+      renderComponent({
+        entityType: 'investigation',
+        entityName: 'test',
+        entityId: 1,
+        entitySize: 1,
+      });
 
-  it('calls download dataset on button press for both text and icon buttons', () => {
-    const props: DownloadButtonProps = {
-      entityType: 'dataset',
-      entityName: 'test',
-      entityId: 1,
-      entitySize: 1,
-    };
-    let wrapper = createWrapper(props);
+      await user.click(
+        await screen.findByRole('button', { name: 'buttons.download' })
+      );
 
-    wrapper.find('#download-btn-1').last().simulate('click');
-    expect(downloadDataset).toHaveBeenCalledWith(
-      'https://www.example.com/ids',
-      1,
-      'test'
-    );
-
-    jest.clearAllMocks();
-
-    wrapper = createWrapper({
-      ...props,
-      variant: 'icon',
+      expect(downloadInvestigation).toHaveBeenCalledWith(
+        'https://www.example.com/ids',
+        1,
+        'test'
+      );
     });
 
-    wrapper.find('#download-btn-1').last().simulate('click');
-    expect(downloadDataset).toHaveBeenCalledWith(
-      'https://www.example.com/ids',
-      1,
-      'test'
-    );
-  });
+    it('calls download dataset on button press', async () => {
+      renderComponent({
+        entityType: 'dataset',
+        entityName: 'test',
+        entityId: 1,
+        entitySize: 1,
+      });
 
-  it('calls download datafile on button press for both text and icon buttons', () => {
-    const props: DownloadButtonProps = {
-      entityType: 'datafile',
-      entityName: 'test',
-      entityId: 1,
-      entitySize: 1,
-    };
-    let wrapper = createWrapper(props);
+      await user.click(
+        await screen.findByRole('button', { name: 'buttons.download' })
+      );
 
-    wrapper.find('#download-btn-1').last().simulate('click');
-    expect(downloadDatafile).toHaveBeenCalledWith(
-      'https://www.example.com/ids',
-      1,
-      'test'
-    );
-
-    jest.clearAllMocks();
-
-    wrapper = createWrapper({
-      ...props,
-      variant: 'icon',
+      expect(downloadDataset).toHaveBeenCalledWith(
+        'https://www.example.com/ids',
+        1,
+        'test'
+      );
     });
 
-    wrapper.find('#download-btn-1').last().simulate('click');
-    expect(downloadDatafile).toHaveBeenCalledWith(
-      'https://www.example.com/ids',
-      1,
-      'test'
-    );
+    it('calls download datafile on button press', async () => {
+      renderComponent({
+        entityType: 'datafile',
+        entityName: 'test',
+        entityId: 1,
+        entitySize: 1,
+      });
+
+      await user.click(
+        await screen.findByRole('button', { name: 'buttons.download' })
+      );
+
+      expect(downloadDatafile).toHaveBeenCalledWith(
+        'https://www.example.com/ids',
+        1,
+        'test'
+      );
+    });
+
+    it('renders a tooltip and disabled button if entity size is zero', async () => {
+      renderComponent({
+        entityType: 'datafile',
+        entityName: 'test',
+        entityId: 1,
+        entitySize: 0,
+      });
+
+      const button = await screen.findByRole('button', {
+        name: 'buttons.download',
+      });
+
+      expect(button).toBeDisabled();
+
+      await user.hover(button.parentElement);
+      expect(
+        await screen.findByText('buttons.unable_to_download_tooltip')
+      ).toBeInTheDocument();
+    });
   });
 
-  it('renders nothing when entityName is undefined', () => {
-    const wrapper = createWrapper({
+  describe('icon variant', () => {
+    it('renders icon variant correctly', async () => {
+      renderComponent({
+        entityType: 'datafile',
+        entityName: 'test',
+        entityId: 1,
+        entitySize: 1,
+        variant: 'icon',
+      });
+
+      expect(await screen.findByTestId('GetAppIcon')).toBeInTheDocument();
+    });
+
+    it('calls download investigation on button press', async () => {
+      renderComponent({
+        entityType: 'investigation',
+        entityName: 'test',
+        entityId: 1,
+        entitySize: 1,
+        variant: 'icon',
+      });
+
+      await user.click(await screen.findByTestId('GetAppIcon'));
+
+      expect(downloadInvestigation).toHaveBeenCalledWith(
+        'https://www.example.com/ids',
+        1,
+        'test'
+      );
+    });
+
+    it('calls download dataset on button press', async () => {
+      renderComponent({
+        entityType: 'dataset',
+        entityName: 'test',
+        entityId: 1,
+        entitySize: 1,
+        variant: 'icon',
+      });
+
+      await user.click(await screen.findByTestId('GetAppIcon'));
+
+      expect(downloadDataset).toHaveBeenCalledWith(
+        'https://www.example.com/ids',
+        1,
+        'test'
+      );
+    });
+
+    it('calls download datafile on button press', async () => {
+      renderComponent({
+        entityType: 'datafile',
+        entityName: 'test',
+        entityId: 1,
+        entitySize: 1,
+        variant: 'icon',
+      });
+
+      await user.click(await screen.findByTestId('GetAppIcon'));
+
+      expect(downloadDatafile).toHaveBeenCalledWith(
+        'https://www.example.com/ids',
+        1,
+        'test'
+      );
+    });
+
+    it('renders a tooltip and disabled button if entity size is zero', async () => {
+      renderComponent({
+        entityType: 'datafile',
+        entityName: 'test',
+        entityId: 1,
+        entitySize: 0,
+        variant: 'icon',
+      });
+
+      const button = await screen.findByRole('button', {
+        name: 'buttons.download',
+      });
+
+      expect(button).toBeDisabled();
+
+      await user.hover(button.parentElement);
+      expect(
+        await screen.findByText('buttons.unable_to_download_tooltip')
+      ).toBeInTheDocument();
+    });
+  });
+
+  it('renders nothing when entityName is undefined', async () => {
+    renderComponent({
       entityType: 'datafile',
       entityName: undefined,
       entityId: 1,
       entitySize: 1,
     });
 
-    expect(wrapper.find(DownloadButton).children().length).toBe(0);
-  });
-
-  it('renders a tooltip and disabled button if entity size is zero', () => {
-    const props: DownloadButtonProps = {
-      entityType: 'datafile',
-      entityName: 'test',
-      entityId: 1,
-      entitySize: 0,
-    };
-    let wrapper = createWrapper(props);
-
-    expect(wrapper.find('#tooltip-1').first().prop('title')).not.toEqual('');
-    wrapper.find('#download-btn-1').last().simulate('click');
-    expect(downloadDatafile).not.toHaveBeenCalled();
-
-    jest.clearAllMocks();
-
-    wrapper = createWrapper({
-      ...props,
-      variant: 'icon',
+    await waitFor(() => {
+      expect(screen.queryByRole('button')).toBeNull();
     });
-
-    expect(wrapper.find('#tooltip-1').first().prop('title')).not.toEqual('');
-    wrapper.find('#download-btn-1').last().simulate('click');
-    expect(downloadDatafile).not.toHaveBeenCalled();
   });
 });

@@ -150,7 +150,7 @@ const getToggle = (pathname: string, view: ViewsType): boolean => {
     : false;
 };
 
-const TopSearchBoxPaper = styled(Paper)(() => ({
+const TopSearchBoxPaper = styled(Paper)({
   height: '100%',
   // make width of box bigger on smaller screens to prevent overflow
   // decreasing the space for the search results
@@ -159,12 +159,12 @@ const TopSearchBoxPaper = styled(Paper)(() => ({
     width: '98%',
   },
   margin: '0 auto',
-}));
+});
 
-const SideSearchBoxPaper = styled(Paper)(() => ({
+const SideSearchBoxPaper = styled(Paper)({
   height: '100%',
   width: '100%',
-}));
+});
 
 const DataViewPaper = styled(Paper, {
   shouldForwardProp: (prop) => prop !== 'view' && prop !== 'containerHeight',
@@ -233,7 +233,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
       : searchableEntities[0];
 
   //Do not allow these to be searched if they are not searchable (prevents URL
-  //forcing them to be searched)]
+  //forcing them to be searched)
   const investigation = searchableEntities.includes('investigation')
     ? queryParams.investigation
     : false;

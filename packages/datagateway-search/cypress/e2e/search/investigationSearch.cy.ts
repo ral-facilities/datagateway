@@ -2,8 +2,8 @@ describe('Investigation search tab', () => {
   let facilityName: string;
 
   before(() => {
-    cy.request('/datagateway-search-settings.json').then((settings) => {
-      if (settings.body.facilityName) facilityName = settings.body.facilityName;
+    cy.readFile('server/e2e-settings.json').then((settings) => {
+      if (settings.facilityName) facilityName = settings.facilityName;
     });
   });
 

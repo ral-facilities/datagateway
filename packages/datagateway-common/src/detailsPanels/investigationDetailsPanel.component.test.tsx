@@ -1,6 +1,6 @@
 import * as React from 'react';
 import InvestigationDetailsPanel from './investigationDetailsPanel.component';
-import { Investigation, SearchResultSource } from '../app.types';
+import { Investigation, type SearchResultSource } from '../app.types';
 import { render, screen } from '@testing-library/react';
 
 describe('Investigation details panel component', () => {

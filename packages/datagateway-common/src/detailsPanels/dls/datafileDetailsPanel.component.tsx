@@ -33,7 +33,7 @@ const DatafileDetailsPanel = (
 
   return (
     <div
-      data-testid="datafile-details-panel"
+      data-testid="dls-datafile-details-panel"
       id="details-panel"
       style={{ minWidth: 0 }}
     >

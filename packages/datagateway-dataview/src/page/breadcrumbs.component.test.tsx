@@ -1,18 +1,21 @@
-import React from 'react';
+import * as React from 'react';
 import { Provider } from 'react-redux';
-
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { Router } from 'react-router-dom';
 import { dGCommonInitialState } from 'datagateway-common';
 import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
-import { StateType } from '../state/app.types';
-import { createLocation, createMemoryHistory, History } from 'history';
-import { flushPromises } from '../setupTests';
+import type { StateType } from '../state/app.types';
+import { createLocation, createMemoryHistory, type History } from 'history';
 import PageBreadcrumbs from './breadcrumbs.component';
 import axios from 'axios';
-import { mount, ReactWrapper } from 'enzyme';
-import { QueryClientProvider, QueryClient } from 'react-query';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import {
+  render,
+  type RenderResult,
+  screen,
+  within,
+} from '@testing-library/react';
 
 jest.mock('loglevel');
 
@@ -46,12 +49,12 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
   let state: StateType;
   let history: History;
 
-  const createWrapper = (
+  const renderComponent = (
     state: StateType,
     landingPageEntities: string[] = []
-  ): ReactWrapper => {
+  ): RenderResult => {
     const mockStore = configureStore([thunk]);
-    return mount(
+    return render(
       <Provider store={mockStore(state)}>
         <QueryClientProvider client={new QueryClient()}>
           <Router history={history}>
@@ -113,19 +116,13 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
     history.replace(createLocation(genericRoutes['investigations']));
 
     // Set up store with test state and mount the breadcrumb.
-    const wrapper = createWrapper(state);
-
-    // Flush promises and update the re-render the wrapper.
-    await flushPromises();
-    wrapper.update();
+    renderComponent(state);
 
     // Expect the axios.get to not have been made.
     expect(axios.get).not.toBeCalled();
 
-    expect(wrapper.find('[data-testid="Breadcrumb-home"] p').text()).toEqual(
-      'breadcrumbs.home'
-    );
-    expect(wrapper.find('[data-testid="Breadcrumb-base"] p').text()).toEqual(
+    expect(await screen.findByText('breadcrumbs.home')).toBeInTheDocument();
+    expect(screen.getByTestId('Breadcrumb-base')).toHaveTextContent(
       'breadcrumbs.investigation'
     );
   });
@@ -140,11 +137,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
     );
 
     // Set up store with test state and mount the breadcrumb.
-    const wrapper = createWrapper(state);
-
-    // Flush promises and update the re-render the wrapper.
-    await flushPromises();
-    wrapper.update();
+    renderComponent(state);
 
     // Expect the axios.get to have been called once to get the investigation.
     expect(axios.get).toBeCalledTimes(1);
@@ -154,21 +147,22 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
       },
     });
 
-    expect(wrapper.find('[data-testid="Breadcrumb-home"] p').text()).toEqual(
-      'breadcrumbs.home'
+    expect(await screen.findByText('breadcrumbs.home')).toBeInTheDocument();
+    const baseBreadcrumb = screen.getByTestId('Breadcrumb-base');
+    expect(baseBreadcrumb).toHaveAttribute(
+      'href',
+      '/browse/investigation?view=card'
     );
-    expect(wrapper.find('[data-testid="Breadcrumb-base"] a').text()).toEqual(
-      'breadcrumbs.investigation'
-    );
+    expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.investigation');
+
+    const breadcrumbs = screen.getAllByTestId(/^Breadcrumb-hierarchy-\d+$/);
+    expect(within(breadcrumbs[0]).getByText('Title 1')).toBeInTheDocument();
+
     expect(
-      wrapper.find('[data-testid="Breadcrumb-base"] a').prop('href')
-    ).toEqual('/browse/investigation?view=card');
-    expect(
-      wrapper.find('[data-testid="Breadcrumb-hierarchy-1"] p').text()
-    ).toEqual('Title 1');
-    expect(wrapper.find('[data-testid="Breadcrumb-last"] p').text()).toEqual(
-      'breadcrumbs.dataset'
-    );
+      within(screen.getByTestId('Breadcrumb-last')).getByText(
+        'breadcrumbs.dataset'
+      )
+    ).toBeInTheDocument();
   });
 
   it('generic route renders correctly at the datafile level and requests the investigation & dataset entities', async () => {
@@ -176,11 +170,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
     history.replace(createLocation(genericRoutes['datafiles']));
 
     // Set up store with test state and mount the breadcrumb.
-    const wrapper = createWrapper(state);
-
-    // Flush promises and update the re-render the wrapper.
-    await flushPromises();
-    wrapper.update();
+    renderComponent(state);
 
     // Expect the axios.get to have been called twice; first to get the investigation
     // and second to get the dataset.
@@ -196,27 +186,20 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
       },
     });
 
-    expect(wrapper.find('[data-testid="Breadcrumb-home"] p').text()).toEqual(
-      'breadcrumbs.home'
-    );
-    expect(wrapper.find('[data-testid="Breadcrumb-base"] a').text()).toEqual(
-      'breadcrumbs.investigation'
-    );
+    expect(await screen.findByText('breadcrumbs.home')).toBeInTheDocument();
+    const baseBreadcrumb = screen.getByTestId('Breadcrumb-base');
+    expect(baseBreadcrumb).toHaveAttribute('href', '/browse/investigation');
+    expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.investigation');
+
+    const breadcrumbs = screen.getAllByTestId(/^Breadcrumb-hierarchy-\d+$/);
+    expect(within(breadcrumbs[0]).getByText('Title 1')).toBeInTheDocument();
+    expect(within(breadcrumbs[1]).getByText('Name 1')).toBeInTheDocument();
+
     expect(
-      wrapper.find('[data-testid="Breadcrumb-base"] a').prop('href')
-    ).toEqual('/browse/investigation');
-    expect(
-      wrapper.find('[data-testid="Breadcrumb-hierarchy-1"] a').text()
-    ).toEqual('Title 1');
-    expect(
-      wrapper.find('[data-testid="Breadcrumb-hierarchy-1"] a').prop('href')
-    ).toEqual('/browse/investigation/1/dataset');
-    expect(
-      wrapper.find('[data-testid="Breadcrumb-hierarchy-2"] p').text()
-    ).toEqual('Name 1');
-    expect(wrapper.find('[data-testid="Breadcrumb-last"] p').text()).toEqual(
-      'breadcrumbs.datafile'
-    );
+      within(screen.getByTestId('Breadcrumb-last')).getByText(
+        'breadcrumbs.datafile'
+      )
+    ).toBeInTheDocument();
   });
 
   it('DLS route renders correctly at the base level and does not request', async () => {
@@ -224,21 +207,14 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
     history.replace(createLocation(DLSRoutes['proposals']));
 
     // Set up store with test state and mount the breadcrumb.
-    const wrapper = createWrapper(state);
-
-    // Flush promises and update the re-render the wrapper.
-    await flushPromises();
-    wrapper.update();
+    renderComponent(state);
 
     // Expect the axios.get to not have been called.
     expect(axios.get).not.toBeCalled();
 
-    expect(wrapper.find('[data-testid="Breadcrumb-home"] p').text()).toEqual(
-      'breadcrumbs.home'
-    );
-    expect(wrapper.find('[data-testid="Breadcrumb-base"] p').text()).toEqual(
-      'breadcrumbs.proposal'
-    );
+    expect(await screen.findByText('breadcrumbs.home')).toBeInTheDocument();
+    const baseBreadcrumb = screen.getByTestId('Breadcrumb-base');
+    expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.proposal');
   });
 
   it('DLS route renders correctly at the investigation level and requests the proposal entity', async () => {
@@ -246,11 +222,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
     history.replace(createLocation(DLSRoutes['investigations']));
 
     // Set up store with test state and mount the breadcrumb.
-    const wrapper = createWrapper(state);
-
-    // Flush promises and update the re-render the wrapper.
-    await flushPromises();
-    wrapper.update();
+    renderComponent(state);
 
     // Expect the axios.get to have been called twice.
     expect(axios.get).toHaveBeenCalledTimes(1);
@@ -264,18 +236,10 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
       }
     );
 
-    expect(wrapper.find('[data-testid="Breadcrumb-home"] p').text()).toEqual(
-      'breadcrumbs.home'
-    );
-    expect(wrapper.find('[data-testid="Breadcrumb-base"] a').text()).toEqual(
-      'breadcrumbs.proposal'
-    );
-    expect(
-      wrapper.find('[data-testid="Breadcrumb-base"] a').prop('href')
-    ).toEqual('/browse/proposal');
-    expect(
-      wrapper.find('[data-testid="Breadcrumb-hierarchy-1"] p').text()
-    ).toEqual('Title 1');
+    expect(await screen.findByText('breadcrumbs.home')).toBeInTheDocument();
+    const baseBreadcrumb = screen.getByTestId('Breadcrumb-base');
+    expect(baseBreadcrumb).toHaveAttribute('href', '/browse/proposal');
+    expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.proposal');
   });
 
   it('DLS route renders correctly at the dataset level and requests the proposal & investigation entities', async () => {
@@ -283,11 +247,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
     history.replace(createLocation(DLSRoutes['datasets']));
 
     // Set up store with test state and mount the breadcrumb.
-    const wrapper = createWrapper(state);
-
-    // Flush promises and update the re-render the wrapper.
-    await flushPromises();
-    wrapper.update();
+    renderComponent(state);
 
     // Expect the axios.get to have been called twice.
     expect(axios.get).toHaveBeenCalledTimes(2);
@@ -307,27 +267,24 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
       },
     });
 
-    expect(wrapper.find('[data-testid="Breadcrumb-home"] p').text()).toEqual(
-      'breadcrumbs.home'
+    expect(await screen.findByText('breadcrumbs.home')).toBeInTheDocument();
+    const baseBreadcrumb = screen.getByTestId('Breadcrumb-base');
+    expect(baseBreadcrumb).toHaveAttribute('href', '/browse/proposal');
+    expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.proposal');
+
+    const breadcrumbs = screen.getAllByTestId(/^Breadcrumb-hierarchy-\d+$/);
+    expect(breadcrumbs[0]).toHaveAttribute(
+      'href',
+      '/browse/proposal/INVESTIGATION 1/investigation'
     );
-    expect(wrapper.find('[data-testid="Breadcrumb-base"] a').text()).toEqual(
-      'breadcrumbs.proposal'
-    );
+    expect(within(breadcrumbs[0]).getByText('Title 1')).toBeInTheDocument();
+    expect(within(breadcrumbs[1]).getByText('1')).toBeInTheDocument();
+
     expect(
-      wrapper.find('[data-testid="Breadcrumb-base"] a').prop('href')
-    ).toEqual('/browse/proposal');
-    expect(
-      wrapper.find('[data-testid="Breadcrumb-hierarchy-1"] a').text()
-    ).toEqual('Title 1');
-    expect(
-      wrapper.find('[data-testid="Breadcrumb-hierarchy-1"] a').prop('href')
-    ).toEqual('/browse/proposal/INVESTIGATION 1/investigation');
-    expect(
-      wrapper.find('[data-testid="Breadcrumb-hierarchy-2"] p').text()
-    ).toEqual('1');
-    expect(wrapper.find('[data-testid="Breadcrumb-last"] p').text()).toEqual(
-      'breadcrumbs.dataset'
-    );
+      within(screen.getByTestId('Breadcrumb-last')).getByText(
+        'breadcrumbs.dataset'
+      )
+    ).toBeInTheDocument();
   });
 
   it('DLS route renders correctly at the datafile level and requests the proposal, investigation and dataset entities', async () => {
@@ -335,11 +292,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
     history.replace(createLocation(DLSRoutes['datafiles']));
 
     // Set up store with test state and mount the breadcrumb.
-    const wrapper = createWrapper(state);
-
-    // Flush promises and update the re-render the wrapper.
-    await flushPromises();
-    wrapper.update();
+    renderComponent(state);
 
     // Expect the axios.get to have been called three times.
     expect(axios.get).toHaveBeenCalledTimes(3);
@@ -364,33 +317,29 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
       },
     });
 
-    expect(wrapper.find('[data-testid="Breadcrumb-home"] p').text()).toEqual(
-      'breadcrumbs.home'
+    expect(await screen.findByText('breadcrumbs.home')).toBeInTheDocument();
+    const baseBreadcrumb = screen.getByTestId('Breadcrumb-base');
+    expect(baseBreadcrumb).toHaveAttribute('href', '/browse/proposal');
+    expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.proposal');
+
+    const breadcrumbs = screen.getAllByTestId(/^Breadcrumb-hierarchy-\d+$/);
+    expect(breadcrumbs[0]).toHaveAttribute(
+      'href',
+      '/browse/proposal/INVESTIGATION 1/investigation'
     );
-    expect(wrapper.find('[data-testid="Breadcrumb-base"] a').text()).toEqual(
-      'breadcrumbs.proposal'
+    expect(within(breadcrumbs[0]).getByText('Title 1')).toBeInTheDocument();
+    expect(breadcrumbs[1]).toHaveAttribute(
+      'href',
+      '/browse/proposal/INVESTIGATION 1/investigation/1/dataset'
     );
+    expect(within(breadcrumbs[1]).getByText('1')).toBeInTheDocument();
+    expect(within(breadcrumbs[2]).getByText('Name 1')).toBeInTheDocument();
+
     expect(
-      wrapper.find('[data-testid="Breadcrumb-base"] a').prop('href')
-    ).toEqual('/browse/proposal');
-    expect(
-      wrapper.find('[data-testid="Breadcrumb-hierarchy-1"] a').text()
-    ).toEqual('Title 1');
-    expect(
-      wrapper.find('[data-testid="Breadcrumb-hierarchy-1"] a').prop('href')
-    ).toEqual('/browse/proposal/INVESTIGATION 1/investigation');
-    expect(
-      wrapper.find('[data-testid="Breadcrumb-hierarchy-2"] a').text()
-    ).toEqual('1');
-    expect(
-      wrapper.find('[data-testid="Breadcrumb-hierarchy-2"] a').prop('href')
-    ).toEqual('/browse/proposal/INVESTIGATION 1/investigation/1/dataset');
-    expect(
-      wrapper.find('[data-testid="Breadcrumb-hierarchy-3"] p').text()
-    ).toEqual('Name 1');
-    expect(wrapper.find('[data-testid="Breadcrumb-last"] p').text()).toEqual(
-      'breadcrumbs.datafile'
-    );
+      within(screen.getByTestId('Breadcrumb-last')).getByText(
+        'breadcrumbs.datafile'
+      )
+    ).toBeInTheDocument();
   });
 
   it('ISIS route renders correctly at the base level and does not request', async () => {
@@ -398,19 +347,13 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
     history.replace(createLocation(ISISRoutes['instruments']));
 
     // Set up store with test state and mount the breadcrumb.
-    const wrapper = createWrapper(state, ['investigation', 'dataset']);
-
-    // Flush promises and update the re-render the wrapper.
-    await flushPromises();
-    wrapper.update();
+    renderComponent(state, ['investigation', 'dataset']);
 
     // Expect the axios.get not to have been called
     expect(axios.get).not.toHaveBeenCalled();
 
-    expect(wrapper.find('[data-testid="Breadcrumb-home"] p').text()).toEqual(
-      'breadcrumbs.home'
-    );
-    expect(wrapper.find('[data-testid="Breadcrumb-base"] p').text()).toEqual(
+    expect(await screen.findByText('breadcrumbs.home')).toBeInTheDocument();
+    expect(screen.getByTestId('Breadcrumb-base')).toHaveTextContent(
       'breadcrumbs.instrument'
     );
   });
@@ -420,11 +363,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
     history.replace(createLocation(ISISRoutes['facilityCycles']));
 
     // Set up store with test state and mount the breadcrumb.
-    const wrapper = createWrapper(state, ['investigation', 'dataset']);
-
-    // Flush promises and update the re-render the wrapper.
-    await flushPromises();
-    wrapper.update();
+    renderComponent(state, ['investigation', 'dataset']);
 
     // Expect the axios.get to have been called three times.
     expect(axios.get).toHaveBeenCalledTimes(1);
@@ -434,21 +373,19 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
       },
     });
 
-    expect(wrapper.find('[data-testid="Breadcrumb-home"] p').text()).toEqual(
-      'breadcrumbs.home'
-    );
-    expect(wrapper.find('[data-testid="Breadcrumb-base"] a').text()).toEqual(
-      'breadcrumbs.instrument'
-    );
+    expect(await screen.findByText('breadcrumbs.home')).toBeInTheDocument();
+    const baseBreadcrumb = screen.getByTestId('Breadcrumb-base');
+    expect(baseBreadcrumb).toHaveAttribute('href', '/browse/instrument');
+    expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.instrument');
+
+    const breadcrumbs = screen.getAllByTestId(/^Breadcrumb-hierarchy-\d+$/);
+    expect(within(breadcrumbs[0]).getByText('Name 1')).toBeInTheDocument();
+
     expect(
-      wrapper.find('[data-testid="Breadcrumb-base"] a').prop('href')
-    ).toEqual('/browse/instrument');
-    expect(
-      wrapper.find('[data-testid="Breadcrumb-hierarchy-1"] p').text()
-    ).toEqual('Name 1');
-    expect(wrapper.find('[data-testid="Breadcrumb-last"] p').text()).toEqual(
-      'breadcrumbs.facilityCycle'
-    );
+      within(screen.getByTestId('Breadcrumb-last')).getByText(
+        'breadcrumbs.facilityCycle'
+      )
+    ).toBeInTheDocument();
   });
 
   it('ISIS route renders correctly at the investigation level and requests the instrument and facility cycle entities', async () => {
@@ -456,11 +393,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
     history.replace(createLocation(ISISRoutes['investigations']));
 
     // Set up store with test state and mount the breadcrumb.
-    const wrapper = createWrapper(state, ['investigation', 'dataset']);
-
-    // Flush promises and update the re-render the wrapper.
-    await flushPromises();
-    wrapper.update();
+    renderComponent(state, ['investigation', 'dataset']);
 
     // Expect the axios.get to have been called three times.
     expect(axios.get).toHaveBeenCalledTimes(2);
@@ -475,27 +408,24 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
       },
     });
 
-    expect(wrapper.find('[data-testid="Breadcrumb-home"] p').text()).toEqual(
-      'breadcrumbs.home'
+    expect(await screen.findByText('breadcrumbs.home')).toBeInTheDocument();
+    const baseBreadcrumb = screen.getByTestId('Breadcrumb-base');
+    expect(baseBreadcrumb).toHaveAttribute('href', '/browse/instrument');
+    expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.instrument');
+
+    const breadcrumbs = screen.getAllByTestId(/^Breadcrumb-hierarchy-\d+$/);
+    expect(breadcrumbs[0]).toHaveAttribute(
+      'href',
+      '/browse/instrument/1/facilityCycle'
     );
-    expect(wrapper.find('[data-testid="Breadcrumb-base"] a').text()).toEqual(
-      'breadcrumbs.instrument'
-    );
+    expect(within(breadcrumbs[0]).getByText('Name 1')).toBeInTheDocument();
+    expect(within(breadcrumbs[1]).getByText('Name 1')).toBeInTheDocument();
+
     expect(
-      wrapper.find('[data-testid="Breadcrumb-base"] a').prop('href')
-    ).toEqual('/browse/instrument');
-    expect(
-      wrapper.find('[data-testid="Breadcrumb-hierarchy-1"] a').text()
-    ).toEqual('Name 1');
-    expect(
-      wrapper.find('[data-testid="Breadcrumb-hierarchy-1"] a').prop('href')
-    ).toEqual('/browse/instrument/1/facilityCycle');
-    expect(
-      wrapper.find('[data-testid="Breadcrumb-hierarchy-2"] p').text()
-    ).toEqual('Name 1');
-    expect(wrapper.find('[data-testid="Breadcrumb-last"] p').text()).toEqual(
-      'breadcrumbs.investigation'
-    );
+      within(screen.getByTestId('Breadcrumb-last')).getByText(
+        'breadcrumbs.investigation'
+      )
+    ).toBeInTheDocument();
   });
 
   it('ISIS route renders correctly at the dataset level and requests the instrument, facility cycle and investigation entities', async () => {
@@ -503,11 +433,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
     history.replace(createLocation(ISISRoutes['datasets']));
 
     // Set up store with test state and mount the breadcrumb.
-    const wrapper = createWrapper(state, ['investigation', 'dataset']);
-
-    // Flush promises and update the re-render the wrapper.
-    await flushPromises();
-    wrapper.update();
+    renderComponent(state, ['investigation', 'dataset']);
 
     // Expect the axios.get to have been called three times.
     expect(axios.get).toHaveBeenCalledTimes(3);
@@ -526,36 +452,34 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
         Authorization: 'Bearer null',
       },
     });
-    expect(wrapper.find('[data-testid="Breadcrumb-home"] p').text()).toEqual(
-      'breadcrumbs.home'
+
+    expect(await screen.findByText('breadcrumbs.home')).toBeInTheDocument();
+    const baseBreadcrumb = screen.getByTestId('Breadcrumb-base');
+    expect(baseBreadcrumb).toHaveAttribute('href', '/browse/instrument');
+    expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.instrument');
+
+    const breadcrumbs = screen.getAllByTestId(/^Breadcrumb-hierarchy-\d+$/);
+    expect(breadcrumbs[0]).toHaveAttribute(
+      'href',
+      '/browse/instrument/1/facilityCycle'
     );
-    expect(wrapper.find('[data-testid="Breadcrumb-base"] a').text()).toEqual(
-      'breadcrumbs.instrument'
+    expect(within(breadcrumbs[0]).getByText('Name 1')).toBeInTheDocument();
+    expect(breadcrumbs[1]).toHaveAttribute(
+      'href',
+      '/browse/instrument/1/facilityCycle/1/investigation'
     );
-    expect(
-      wrapper.find('[data-testid="Breadcrumb-base"] a').prop('href')
-    ).toEqual('/browse/instrument');
-    expect(
-      wrapper.find('[data-testid="Breadcrumb-hierarchy-1"] a').text()
-    ).toEqual('Name 1');
-    expect(
-      wrapper.find('[data-testid="Breadcrumb-hierarchy-1"] a').prop('href')
-    ).toEqual('/browse/instrument/1/facilityCycle');
-    expect(
-      wrapper.find('[data-testid="Breadcrumb-hierarchy-2"] a').text()
-    ).toEqual('Name 1');
-    expect(
-      wrapper.find('[data-testid="Breadcrumb-hierarchy-2"] a').prop('href')
-    ).toEqual('/browse/instrument/1/facilityCycle/1/investigation');
-    expect(
-      wrapper.find('[data-testid="Breadcrumb-hierarchy-3"] a').text()
-    ).toEqual('Title 1');
-    expect(
-      wrapper.find('[data-testid="Breadcrumb-hierarchy-3"] a').prop('href')
-    ).toEqual('/browse/instrument/1/facilityCycle/1/investigation/1');
-    expect(wrapper.find('[data-testid="Breadcrumb-last"] p').text()).toEqual(
-      'breadcrumbs.dataset'
+    expect(within(breadcrumbs[1]).getByText('Name 1')).toBeInTheDocument();
+    expect(breadcrumbs[2]).toHaveAttribute(
+      'href',
+      '/browse/instrument/1/facilityCycle/1/investigation/1'
     );
+    expect(within(breadcrumbs[2]).getByText('Title 1')).toBeInTheDocument();
+
+    expect(
+      within(screen.getByTestId('Breadcrumb-last')).getByText(
+        'breadcrumbs.dataset'
+      )
+    ).toBeInTheDocument();
   });
 
   it('ISIS route renders correctly at the datafile level and requests the instrument, facility cycle, investigation and dataset entities', async () => {
@@ -563,11 +487,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
     history.replace(createLocation(ISISRoutes['datafiles']));
 
     // Set up store with test state and mount the breadcrumb.
-    const wrapper = createWrapper(state, ['investigation', 'dataset']);
-
-    // Flush promises and update the re-render the wrapper.
-    await flushPromises();
-    wrapper.update();
+    renderComponent(state, ['investigation', 'dataset']);
 
     // Expect the axios.get to have been called three times.
     expect(axios.get).toHaveBeenCalledTimes(4);
@@ -592,41 +512,32 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
       },
     });
 
-    expect(wrapper.find('[data-testid="Breadcrumb-home"] p').text()).toEqual(
-      'breadcrumbs.home'
+    expect(await screen.findByText('breadcrumbs.home')).toBeInTheDocument();
+    const baseBreadcrumb = screen.getByTestId('Breadcrumb-base');
+    expect(baseBreadcrumb).toHaveAttribute('href', '/browse/instrument');
+    expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.instrument');
+
+    const breadcrumbs = screen.getAllByTestId(/^Breadcrumb-hierarchy-\d+$/);
+    expect(breadcrumbs[0]).toHaveAttribute(
+      'href',
+      '/browse/instrument/1/facilityCycle'
     );
-    expect(wrapper.find('[data-testid="Breadcrumb-base"] a').text()).toEqual(
-      'breadcrumbs.instrument'
+    expect(within(breadcrumbs[0]).getByText('Name 1')).toBeInTheDocument();
+    expect(breadcrumbs[1]).toHaveAttribute(
+      'href',
+      '/browse/instrument/1/facilityCycle/1/investigation'
     );
-    expect(
-      wrapper.find('[data-testid="Breadcrumb-base"] a').prop('href')
-    ).toEqual('/browse/instrument');
-    expect(
-      wrapper.find('[data-testid="Breadcrumb-hierarchy-1"] a').text()
-    ).toEqual('Name 1');
-    expect(
-      wrapper.find('[data-testid="Breadcrumb-hierarchy-1"] a').prop('href')
-    ).toEqual('/browse/instrument/1/facilityCycle');
-    expect(
-      wrapper.find('[data-testid="Breadcrumb-hierarchy-2"] a').text()
-    ).toEqual('Name 1');
-    expect(
-      wrapper.find('[data-testid="Breadcrumb-hierarchy-2"] a').prop('href')
-    ).toEqual('/browse/instrument/1/facilityCycle/1/investigation');
-    expect(
-      wrapper.find('[data-testid="Breadcrumb-hierarchy-3"] a').text()
-    ).toEqual('Title 1');
-    expect(
-      wrapper.find('[data-testid="Breadcrumb-hierarchy-3"] a').prop('href')
-    ).toEqual('/browse/instrument/1/facilityCycle/1/investigation/1');
-    expect(
-      wrapper.find('[data-testid="Breadcrumb-hierarchy-4"] a').text()
-    ).toEqual('Name 1');
-    expect(
-      wrapper.find('[data-testid="Breadcrumb-hierarchy-4"] a').prop('href')
-    ).toEqual('/browse/instrument/1/facilityCycle/1/investigation/1/dataset/1');
-    expect(wrapper.find('[data-testid="Breadcrumb-last"] p').text()).toEqual(
-      'breadcrumbs.datafile'
+    expect(within(breadcrumbs[1]).getByText('Name 1')).toBeInTheDocument();
+    expect(breadcrumbs[2]).toHaveAttribute(
+      'href',
+      '/browse/instrument/1/facilityCycle/1/investigation/1'
     );
+    expect(within(breadcrumbs[2]).getByText('Title 1')).toBeInTheDocument();
+
+    expect(
+      within(screen.getByTestId('Breadcrumb-last')).getByText(
+        'breadcrumbs.datafile'
+      )
+    ).toBeInTheDocument();
   });
 });

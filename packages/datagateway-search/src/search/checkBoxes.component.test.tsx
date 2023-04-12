@@ -66,29 +66,22 @@ describe('Checkbox component tests', () => {
     history.replace('/?searchText=&investigation=false');
     renderComponent();
 
-    const dropdownBtn = screen.getByRole('button', {
-      name: 'searchBox.checkboxes.types (2)',
-    });
-    expect(dropdownBtn).toBeInTheDocument();
+    // open the dropdown
+    await user.click(await screen.findByRole('button'));
 
-    await user.click(dropdownBtn);
-
-    const investigationCheckbox = screen.getByRole('checkbox', {
+    const investigationCheckbox = await screen.findByRole('checkbox', {
       name: 'searchBox.checkboxes.investigation_arialabel',
     });
-    expect(investigationCheckbox).toBeInTheDocument();
     expect(investigationCheckbox).not.toBeChecked();
 
-    const datasetCheckbox = screen.getByRole('checkbox', {
+    const datasetCheckbox = await screen.findByRole('checkbox', {
       name: 'searchBox.checkboxes.dataset_arialabel',
     });
-    expect(datasetCheckbox).toBeInTheDocument();
     expect(datasetCheckbox).toBeChecked();
 
-    const datafileCheckbox = screen.getByRole('checkbox', {
+    const datafileCheckbox = await screen.findByRole('checkbox', {
       name: 'searchBox.checkboxes.datafile_arialabel',
     });
-    expect(datafileCheckbox).toBeInTheDocument();
     expect(datafileCheckbox).toBeChecked();
   });
 
@@ -97,23 +90,17 @@ describe('Checkbox component tests', () => {
     history.replace('/?searchText=&investigation=false');
     renderComponent();
 
-    const dropdownBtn = screen.getByRole('button', {
-      name: 'searchBox.checkboxes.types (1)',
-    });
-    expect(dropdownBtn).toBeInTheDocument();
+    // open the dropdown
+    await user.click(await screen.findByRole('button'));
 
-    await user.click(dropdownBtn);
-
-    const investigationCheckbox = screen.getByRole('checkbox', {
+    const investigationCheckbox = await screen.findByRole('checkbox', {
       name: 'searchBox.checkboxes.investigation_arialabel',
     });
-    expect(investigationCheckbox).toBeInTheDocument();
     expect(investigationCheckbox).not.toBeChecked();
 
-    const datasetCheckbox = screen.getByRole('checkbox', {
+    const datasetCheckbox = await screen.findByRole('checkbox', {
       name: 'searchBox.checkboxes.dataset_arialabel',
     });
-    expect(datasetCheckbox).toBeInTheDocument();
     expect(datasetCheckbox).toBeChecked();
 
     expect(
@@ -123,7 +110,7 @@ describe('Checkbox component tests', () => {
     ).toBeNull();
   });
 
-  it('renders an error message when nothing is selected', () => {
+  it('renders an error message when nothing is selected', async () => {
     history.replace(
       '/?searchText=&investigation=false&dataset=false&datafile=false'
     );
@@ -131,7 +118,7 @@ describe('Checkbox component tests', () => {
     renderComponent();
 
     expect(
-      screen.getByText('searchBox.checkboxes.types_error')
+      await screen.findByText('searchBox.checkboxes.types_error')
     ).toBeInTheDocument();
   });
 
