@@ -1,41 +1,41 @@
 describe('ISIS - Data Publication Landing', () => {
   beforeEach(() => {
     cy.login();
-    cy.visit('/browseDataPublications/instrument/1/dataPublication/14');
+    cy.visit('/browseDataPublications/instrument/1/dataPublication/36');
   });
 
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');
-    cy.contains('Already medical seek take military rise.').should(
-      'be.visible'
-    );
+    cy.contains('Yourself good together red across.').should('be.visible');
   });
 
   it('should be able to click tab to see investigations', () => {
-    cy.get('#study-investigations-tab').first().click({ force: true });
+    cy.get('#datapublication-investigations-tab')
+      .first()
+      .click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browseDataPublications/instrument/1/dataPublication/14/investigation'
+      '/browseDataPublications/instrument/1/dataPublication/36/investigation'
     );
   });
 
   it('should be able to click a specific investigation', () => {
-    cy.get('[data-testid="landing-study-part-label"')
+    cy.get('[data-testid="landing-datapublication-part-label"')
       .children()
       .first()
       .click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browseDataPublications/instrument/1/dataPublication/14/investigation/41'
+      '/browseDataPublications/instrument/1/dataPublication/36/investigation/38'
     );
   });
 
   it('should be able to click a DOI render the correct webpage ', () => {
-    cy.contains('1-71395-013-8').should(
+    cy.contains('0-7602-7584-X').should(
       'have.attr',
       'href',
-      'https://doi.org/1-71395-013-8'
+      'https://doi.org/0-7602-7584-X'
     );
   });
 
@@ -62,7 +62,7 @@ describe('ISIS - Data Publication Landing', () => {
         pid: '10.5286/ISIS.E.RB1810842',
       },
     ]);
-    cy.visit('/browseDataPublications/instrument/1/dataPublication/14');
+    cy.visit('/browseDataPublications/instrument/1/dataPublication/36');
     cy.get('#datagateway-dataview').should('be.visible');
     cy.contains('10.5286/ISIS.E.RB1810842').should('be.visible');
   });
@@ -70,7 +70,7 @@ describe('ISIS - Data Publication Landing', () => {
   it('should disable the hover tool tip by pressing escape', () => {
     cy.intercept('**/datapublications?*', [
       {
-        id: 14,
+        id: 36,
         pid: '10.5286/ISIS.E.RB1810842',
       },
     ]);
@@ -104,7 +104,7 @@ describe('ISIS - Data Publication Landing', () => {
       '@misc{dr sabrina gaertner_mr vincent deguin_dr pierre ghesquiere_dr claire...}',
     ]);
 
-    cy.visit('/browseDataPublications/instrument/1/dataPublication/14');
+    cy.visit('/browseDataPublications/instrument/1/dataPublication/36');
     cy.get('#datagateway-dataview').should('be.visible');
     cy.contains('10.5286/ISIS.E.RB1810842').should('be.visible');
     cy.get('[data-testid="citation-formatter-citation"]').contains(
@@ -133,7 +133,7 @@ describe('ISIS - Data Publication Landing', () => {
     cy.intercept('**/text/x-bibliography/invaliddoi?*', {
       statusCode: 503,
     });
-    cy.visit('/browseDataPublications/instrument/1/dataPublication/14');
+    cy.visit('/browseDataPublications/instrument/1/dataPublication/36');
     cy.get('#datagateway-dataview').should('be.visible');
     cy.contains('invaliddoi').should('be.visible');
 
