@@ -115,7 +115,7 @@ const LinkedInvestigation = (
       <Subheading
         variant="h6"
         align="center"
-        data-testid="landing-study-part-label"
+        data-testid="landing-datapublication-part-label"
       >
         {tableLink(
           `${props.urlPrefix}/investigation/${investigation.id}`,
