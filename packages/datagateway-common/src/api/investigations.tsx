@@ -573,6 +573,7 @@ export const useISISInvestigationsPaginated = (
       {
         investigationInstruments: 'instrument',
       },
+      { dataCollectionInvestigations: { dataCollection: 'dataPublications' } },
       {
         investigationUsers: 'user',
       },
@@ -672,6 +673,7 @@ export const useISISInvestigationsInfinite = (
       {
         investigationInstruments: 'instrument',
       },
+      { dataCollectionInvestigations: { dataCollection: 'dataPublications' } },
       {
         investigationUsers: 'user',
       },
