@@ -1,7 +1,7 @@
 describe('ISIS - Data Publication Cards', () => {
   beforeEach(() => {
-    cy.intercept('**/datapublications/count*').as('getStudiesCount');
-    cy.intercept('**/datapublications?order*').as('getStudiesOrder');
+    cy.intercept('**/datapublications/count*').as('getDataPublicationsCount');
+    cy.intercept('**/datapublications?order*').as('getDataPublicationsOrder');
     cy.login();
     cy.visit('/browseDataPublications/instrument/8/dataPublication').wait(
       ['@getDataPublicationsCount', '@getDataPublicationsOrder'],

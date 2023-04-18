@@ -54,6 +54,7 @@
   "datapublications": {
     "name": "Name",
     "title": "Title",
+    "description": "Description",
     "pid": "DOI",
     "id": "Data Publication ID",
     "publication_date": "Publication Date",

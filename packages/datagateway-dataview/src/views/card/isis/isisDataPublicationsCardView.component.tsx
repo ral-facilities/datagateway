@@ -73,12 +73,12 @@ const ISISDataPublicationsCardView = (
     const instrumentChild = 'dataPublication';
 
     return {
-      label: t('datapublications.id'),
-      dataKey: 'id',
+      label: t('datapublications.title'),
+      dataKey: 'title',
       content: (dataPublication: DataPublication) =>
         tableLink(
           `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${dataPublication.id}`,
-          dataPublication.id.toString(),
+          dataPublication.title,
           view
         ),
       filterComponent: textFilter,
@@ -87,8 +87,8 @@ const ISISDataPublicationsCardView = (
 
   const description: CardViewDetails = React.useMemo(
     () => ({
-      label: t('datapublications.title'),
-      dataKey: 'title',
+      label: t('datapublications.description'),
+      dataKey: 'description',
       filterComponent: textFilter,
     }),
     [t, textFilter]

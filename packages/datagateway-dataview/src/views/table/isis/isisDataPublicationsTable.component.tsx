@@ -15,12 +15,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 
-import {
-  CalendarToday,
-  Fingerprint,
-  Public,
-  Subject,
-} from '@mui/icons-material';
+import { CalendarToday, Fingerprint, Public } from '@mui/icons-material';
 import { useLocation } from 'react-router-dom';
 
 interface ISISDataPublicationsTableProps {
@@ -92,23 +87,15 @@ const ISISDataPublicationsTable = (
     return [
       {
         icon: Fingerprint,
-        label: t('datapublications.id'),
-        dataKey: 'id',
-        cellContentRenderer: (cellProps: TableCellProps) =>
-          tableLink(
-            `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${cellProps.rowData.id}`,
-            cellProps.rowData.id,
-            view,
-            'isis-datapublication-table-id'
-          ),
-        filterComponent: textFilter,
-      },
-      {
-        icon: Subject,
         label: t('datapublications.title'),
         dataKey: 'title',
         cellContentRenderer: (cellProps: TableCellProps) =>
-          cellProps.rowData.title ?? '',
+          tableLink(
+            `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${cellProps.rowData.id}`,
+            cellProps.rowData.title,
+            view,
+            'isis-datapublication-table-id'
+          ),
         filterComponent: textFilter,
       },
       {

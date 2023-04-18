@@ -59,6 +59,7 @@ describe('ISIS Data Publication table component', () => {
         id: 1,
         pid: 'doi',
         title: 'Test 1',
+        description: 'Data Publication Description',
         modTime: '2000-01-01',
         createTime: '2000-01-01',
         publicationDate: '2001-01-01',
@@ -141,13 +142,6 @@ describe('ISIS Data Publication table component', () => {
     expect(
       within(
         findCellInRow(row, {
-          columnIndex: await findColumnIndexByName('datapublications.id'),
-        })
-      ).getByText('1')
-    ).toBeInTheDocument();
-    expect(
-      within(
-        findCellInRow(row, {
           columnIndex: await findColumnIndexByName('datapublications.title'),
         })
       ).getByText('Test 1')
@@ -165,7 +159,7 @@ describe('ISIS Data Publication table component', () => {
     renderComponent();
 
     const filterInput = await screen.findByRole('textbox', {
-      name: 'Filter by datapublications.id',
+      name: 'Filter by datapublications.title',
       hidden: true,
     });
 
@@ -177,7 +171,7 @@ describe('ISIS Data Publication table component', () => {
     expect(history.length).toBe(5);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
-        '{"id":{"value":"test","type":"include"}}'
+        '{"title":{"value":"test","type":"include"}}'
       )}`
     );
 
@@ -225,12 +219,12 @@ describe('ISIS Data Publication table component', () => {
     renderComponent();
 
     await user.click(
-      await screen.findByRole('button', { name: 'datapublications.id' })
+      await screen.findByRole('button', { name: 'datapublications.title' })
     );
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"id":"asc"}')}`
+      `?sort=${encodeURIComponent('{"title":"asc"}')}`
     );
   });
 
@@ -238,7 +232,7 @@ describe('ISIS Data Publication table component', () => {
     renderComponent();
 
     const dataPublicationIdColIndex = await findColumnIndexByName(
-      'datapublications.id'
+      'datapublications.title'
     );
     const row = await findRowAt(0);
     const dataPublicationIdCell = findCellInRow(row, {
@@ -246,7 +240,7 @@ describe('ISIS Data Publication table component', () => {
     });
 
     expect(
-      within(dataPublicationIdCell).getByRole('link', { name: '1' })
+      within(dataPublicationIdCell).getByRole('link', { name: 'Test 1' })
     ).toHaveAttribute(
       'href',
       '/browseDataPublications/instrument/1/dataPublication/1'

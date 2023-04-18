@@ -45,6 +45,7 @@ describe('ISIS Data Publication - Card View', () => {
         id: 14,
         pid: 'doi',
         title: 'Test 1',
+        description: 'Data Publication Description',
         modTime: '2000-01-01',
         createTime: '2000-01-01',
         publicationDate: '2001-01-01',
@@ -110,12 +111,12 @@ describe('ISIS Data Publication - Card View', () => {
 
     const card = cards[0];
     // card id should be rendered as link to data publication
-    expect(within(card).getByRole('link', { name: '14' })).toHaveAttribute(
+    expect(within(card).getByRole('link', { name: 'Test 1' })).toHaveAttribute(
       'href',
       '/browseDataPublications/instrument/1/dataPublication/14'
     );
     expect(within(card).getByLabelText('card-description')).toHaveTextContent(
-      'Test 1'
+      'Data Publication Description'
     );
     expect(within(card).getByRole('link', { name: 'doi' })).toHaveAttribute(
       'href',
@@ -146,14 +147,16 @@ describe('ISIS Data Publication - Card View', () => {
     );
 
     const filter = await screen.findByRole('textbox', {
-      name: 'Filter by datapublications.id',
+      name: 'Filter by datapublications.title',
       hidden: true,
     });
 
-    await user.type(filter, '1');
+    await user.type(filter, 'Test');
 
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent('{"id":{"value":"1","type":"include"}}')}`
+      `?filters=${encodeURIComponent(
+        '{"title":{"value":"Test","type":"include"}}'
+      )}`
     );
 
     await user.clear(filter);

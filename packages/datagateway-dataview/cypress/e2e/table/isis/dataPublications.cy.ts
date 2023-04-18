@@ -1,10 +1,10 @@
-describe('ISIS - Studies Table', () => {
+describe('ISIS - Data Publication Table', () => {
   beforeEach(() => {
-    cy.intercept('**/studies/count*').as('getStudiesCount');
-    cy.intercept('**/studies?order*').as('getStudiesOrder');
+    cy.intercept('**/datapublications/count*').as('getDataPublicationsCount');
+    cy.intercept('**/datapublications?order*').as('getDataPublicationsOrder');
     cy.login();
-    cy.visit('/browseStudyHierarchy/instrument/1/study').wait(
-      ['@getStudiesCount', '@getStudiesOrder'],
+    cy.visit('/browseDataPublications/instrument/8/dataPublication').wait(
+      ['@getDataPublicationsCount', '@getDataPublicationsOrder'],
       { timeout: 10000 }
     );
   });
@@ -18,29 +18,29 @@ describe('ISIS - Studies Table', () => {
     cy.get('.MuiTableSortLabel-iconDirectionDesc').should('be.visible');
   });
 
-  it('should be able to click a study to see its landing page', () => {
+  it('should be able to click a data publication to see its landing page', () => {
     cy.get('[role="gridcell"] a').first().click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browseStudyHierarchy/instrument/1/study/196'
+      '/browseStudyHierarchy/instrument/8/dataPublication/51'
     );
   });
 
   it('should have the correct url for the DOI link', () => {
-    cy.get('[data-testid="isis-study-table-doi-link"]')
+    cy.get('[data-testid="isis-datapublication-table-doi-link"]')
       .first()
       .then(($doi) => {
         const doi = $doi.text();
 
         const url = `https://doi.org/${doi}`;
 
-        cy.get('[data-testid="isis-study-table-doi-link"]')
+        cy.get('[data-testid="isis-datapublication-table-doi-link"]')
           .first()
           .should('have.attr', 'href', url);
       });
   });
 
-  // Not enough data in studies to load.
+  // Not enough data in datapublications to load.
   it.skip('should be able to scroll down and load more rows', () => {
     cy.get('[aria-rowcount="50"]').should('exist');
     cy.get('[aria-label="grid"]').scrollTo('bottom');
@@ -58,14 +58,14 @@ describe('ISIS - Studies Table', () => {
       .then(() => expect(columnWidth).to.not.equal(0));
 
     cy.get('[role="columnheader"]').eq(0).as('titleColumn');
-    cy.get('[role="columnheader"]').eq(1).as('descriptionColumn');
+    cy.get('[role="columnheader"]').eq(1).as('doiColumn');
 
     cy.get('@titleColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.equal(columnWidth);
     });
 
-    cy.get('@descriptionColumn').should(($column) => {
+    cy.get('@doiColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.equal(columnWidth);
     });
@@ -81,7 +81,7 @@ describe('ISIS - Studies Table', () => {
       expect(width).to.be.greaterThan(columnWidth);
     });
 
-    cy.get('@descriptionColumn').should(($column) => {
+    cy.get('@doiColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.be.lessThan(columnWidth);
     });
@@ -93,7 +93,7 @@ describe('ISIS - Studies Table', () => {
       .trigger('mousemove', { clientX: 800 })
       .trigger('mouseup');
 
-    cy.get('@descriptionColumn').should(($column) => {
+    cy.get('@doiColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.be.equal(84);
     });
@@ -109,11 +109,11 @@ describe('ISIS - Studies Table', () => {
   describe('should be able to sort by', () => {
     beforeEach(() => {
       //Revert the default sort
-      cy.contains('[role="button"]', 'Start Date').click();
+      cy.contains('[role="button"]', 'Publication Date').click();
     });
 
     it('ascending order', () => {
-      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Data Publication Title').click();
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
@@ -123,8 +123,8 @@ describe('ISIS - Studies Table', () => {
     });
 
     it('descending order', () => {
-      cy.contains('[role="button"]', 'Name').click();
-      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Title').click();
+      cy.contains('[role="button"]', 'Title').click();
 
       cy.get('[aria-sort="descending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
@@ -138,9 +138,9 @@ describe('ISIS - Studies Table', () => {
     });
 
     it('no order', () => {
-      cy.contains('[role="button"]', 'Name').click();
-      cy.contains('[role="button"]', 'Name').click();
-      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Title').click();
+      cy.contains('[role="button"]', 'Title').click();
+      cy.contains('[role="button"]', 'Title').click();
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
@@ -157,7 +157,7 @@ describe('ISIS - Studies Table', () => {
 
     it('multiple columns', () => {
       cy.contains('[role="button"]', 'Start Date').click();
-      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Title').click();
 
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
         'Fine strong education fill maintain.'
@@ -172,11 +172,11 @@ describe('ISIS - Studies Table', () => {
     });
 
     it('text', () => {
-      cy.get('[aria-label="Filter by Name"]').first().type('3');
+      cy.get('[aria-label="Filter by Title"]').first().type('Article');
 
       cy.get('[aria-rowcount="3"]').should('exist');
       cy.get('[aria-rowindex="3"] [aria-colindex="2"]').contains(
-        'Rather outside source away.'
+        'Article subject amount event brother.'
       );
     });
 
@@ -190,9 +190,9 @@ describe('ISIS - Studies Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Name"]').first().type('1');
+      cy.get('[aria-label="Filter by Doi"]').first().type('0');
 
-      cy.get('[aria-label="Filter by Title"]').first().type('maintain');
+      cy.get('[aria-label="Filter by Title"]').first().type('consider');
 
       cy.get('[aria-rowcount="1"]').should('exist');
     });
