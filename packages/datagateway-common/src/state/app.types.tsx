@@ -1,4 +1,3 @@
-import type { RouterState } from 'connected-react-router';
 import type { AnyAction } from 'redux';
 import type { ThunkAction } from 'redux-thunk';
 import type {
@@ -59,7 +58,6 @@ export interface DGCommonState {
 
 export interface StateType {
   dgcommon: DGCommonState;
-  router: RouterState;
 }
 
 export interface ActionType<T> {
