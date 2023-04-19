@@ -138,7 +138,6 @@ interface VirtualizedTableProps {
 const VirtualizedTable = React.memo(
   (props: VirtualizedTableProps): React.ReactElement => {
     const [expandedIndex, setExpandedIndex] = React.useState(-1);
-    const [detailPanelHeight, setDetailPanelHeight] = React.useState(rowHeight);
     const [lastChecked, setLastChecked] = React.useState(-1);
     const theme = useTheme();
 
@@ -204,13 +203,10 @@ const VirtualizedTable = React.memo(
     );
 
     const detailsPanelResize = React.useCallback((): void => {
-      if (detailPanelRef && detailPanelRef.current) {
-        setDetailPanelHeight(detailPanelRef.current.clientHeight);
-      }
       if (tableRef) {
         tableRef.recomputeRowHeights();
       }
-    }, [tableRef, setDetailPanelHeight]);
+    }, [tableRef]);
 
     React.useEffect(detailsPanelResize, [
       tableRef,
@@ -227,9 +223,12 @@ const VirtualizedTable = React.memo(
     );
 
     const getRowHeight = React.useCallback(
-      ({ index }: Index): number =>
-        index === expandedIndex ? rowHeight + detailPanelHeight : rowHeight,
-      [detailPanelHeight, expandedIndex]
+      ({ index }: Index): number => {
+        return index === expandedIndex && detailPanelRef.current?.clientHeight
+          ? rowHeight + detailPanelRef.current.clientHeight
+          : rowHeight;
+      },
+      [detailPanelRef, expandedIndex]
     );
 
     const getRowStyle = React.useCallback(
