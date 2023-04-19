@@ -120,17 +120,29 @@ const ISISInvestigationsCardView = (
       },
       {
         content: function doiFormat(entity: Investigation) {
+          if (dataPublication) {
+            return (
+              entity?.dataCollectionInvestigations?.[0]?.dataCollection
+                ?.dataPublications?.[0].pid && (
+                <MuiLink
+                  href={`https://doi.org/${entity.dataCollectionInvestigations?.[0]?.dataCollection?.dataPublications?.[0].pid}`}
+                  data-testid="isis-investigations-card-doi-link"
+                >
+                  {
+                    entity.dataCollectionInvestigations?.[0]?.dataCollection
+                      ?.dataPublications?.[0].pid
+                  }
+                </MuiLink>
+              )
+            );
+          }
           return (
-            entity?.dataCollectionInvestigations?.[0]?.dataCollection
-              ?.dataPublications?.[0].pid && (
+            entity?.doi && (
               <MuiLink
-                href={`https://doi.org/${entity.dataCollectionInvestigations?.[0]?.dataCollection?.dataPublications?.[0].pid}`}
+                href={`https://doi.org/${entity.doi}`}
                 data-testid="isis-investigations-card-doi-link"
               >
-                {
-                  entity.dataCollectionInvestigations?.[0]?.dataCollection
-                    ?.dataPublications?.[0].pid
-                }
+                {entity.doi}
               </MuiLink>
             )
           );
@@ -186,7 +198,15 @@ const ISISInvestigationsCardView = (
         filterComponent: dateFilter,
       },
     ],
-    [data, dateFilter, principalExperimenterFilter, sizeQueries, t, textFilter]
+    [
+      data,
+      dateFilter,
+      principalExperimenterFilter,
+      sizeQueries,
+      t,
+      textFilter,
+      dataPublication,
+    ]
   );
 
   const buttons = React.useMemo(

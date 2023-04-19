@@ -40,8 +40,6 @@ describe('ISIS - Data Publication Landing', () => {
   });
 
   it('should have the correct urls for the DOI link and Data Publication PID', () => {
-    // Study PID
-
     cy.get('[data-testid="landing-dataPublication-pid-link"]')
       .first()
       .then(($pid) => {
