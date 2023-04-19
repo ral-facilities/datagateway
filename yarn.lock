@@ -3019,7 +3019,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/jest-dom@npm:5.16.5, @testing-library/jest-dom@npm:^5.16.5":
+"@testing-library/jest-dom@npm:5.16.5":
   version: 5.16.5
   resolution: "@testing-library/jest-dom@npm:5.16.5"
   dependencies:
@@ -3068,7 +3068,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/user-event@npm:14.4.3, @testing-library/user-event@npm:^14.4.3":
+"@testing-library/user-event@npm:14.4.3":
   version: 14.4.3
   resolution: "@testing-library/user-event@npm:14.4.3"
   peerDependencies:
@@ -5712,29 +5712,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"connected-react-router@npm:6.9.3":
-  version: 6.9.3
-  resolution: "connected-react-router@npm:6.9.3"
-  dependencies:
-    immutable: ^3.8.1 || ^4.0.0
-    lodash.isequalwith: ^4.4.0
-    prop-types: ^15.7.2
-    seamless-immutable: ^7.1.3
-  peerDependencies:
-    history: ^4.7.2
-    react: ^16.4.0 || ^17.0.0
-    react-redux: ^6.0.0 || ^7.1.0
-    react-router: ^4.3.1 || ^5.0.0
-    redux: ^3.6.0 || ^4.0.0
-  dependenciesMeta:
-    immutable:
-      optional: true
-    seamless-immutable:
-      optional: true
-  checksum: 047a11c2f3c9993087f3cd467789445781320c61f3184e1016e7b05862a275006004867231cc7396c7f213afd2fbce7e8ac0df39ba2cda7502d72a140657f9e7
-  languageName: node
-  linkType: hard
-
 "console-control-strings@npm:^1.1.0":
   version: 1.1.0
   resolution: "console-control-strings@npm:1.1.0"
@@ -6330,7 +6307,6 @@ __metadata:
     "@typescript-eslint/parser": 5.49.0
     axios: 0.27.2
     babel-eslint: 10.1.0
-    connected-react-router: 6.9.3
     date-fns: 2.29.1
     eslint: 8.32.0
     eslint-config-prettier: 8.5.0
@@ -6353,7 +6329,7 @@ __metadata:
     react-router-dom: 5.3.4
     react-scripts: 5.0.0
     react-test-renderer: 17.0.2
-    react-virtualized: 9.22.3
+    react-virtualized: 9.22.5
     redux: 4.2.0
     redux-mock-store: 1.5.4
     redux-thunk: 2.4.1
@@ -6401,7 +6377,6 @@ __metadata:
     axios: 0.27.2
     babel-eslint: 10.1.0
     blob-polyfill: 7.0.20220408
-    connected-react-router: 6.9.3
     cross-env: 7.0.3
     custom-event-polyfill: 1.0.7
     cypress: 11.2.0
@@ -6432,13 +6407,13 @@ __metadata:
     react-redux: 8.0.4
     react-router-dom: 5.3.4
     react-scripts: 5.0.0
-    react-virtualized: 9.22.3
+    react-virtualized: 9.22.5
     redux: 4.2.0
     redux-logger: 3.0.6
     redux-mock-store: 1.5.4
     redux-thunk: 2.4.1
     serve: 14.2.0
-    single-spa-react: ^5.0.1
+    single-spa-react: 5.0.1
     start-server-and-test: 1.15.0
     tslib: 2.4.0
     typescript: 4.9.3
@@ -6499,9 +6474,9 @@ __metadata:
     react-query: 3.39.2
     react-router-dom: 5.3.4
     react-scripts: 5.0.0
-    react-virtualized: 9.22.3
+    react-virtualized: 9.22.5
     serve: 14.2.0
-    single-spa-react: ^5.0.1
+    single-spa-react: 5.0.1
     start-server-and-test: 1.15.0
     tslib: 2.4.0
     typescript: 4.9.3
@@ -6519,9 +6494,9 @@ __metadata:
     "@mui/icons-material": 5.11.0
     "@mui/material": 5.11.0
     "@mui/x-date-pickers": 5.0.9
-    "@testing-library/jest-dom": ^5.16.5
+    "@testing-library/jest-dom": 5.16.5
     "@testing-library/react": 14.0.0
-    "@testing-library/user-event": ^14.4.3
+    "@testing-library/user-event": 14.4.3
     "@types/enzyme": 3.10.10
     "@types/history": 4.7.11
     "@types/jest": 29.4.0
@@ -6538,7 +6513,6 @@ __metadata:
     "@typescript-eslint/parser": 5.49.0
     axios: 0.27.2
     babel-eslint: 10.1.0
-    connected-react-router: 6.9.3
     cross-env: 7.0.3
     custom-event-polyfill: 1.0.7
     cypress: 11.2.0
@@ -6569,14 +6543,14 @@ __metadata:
     react-redux: 8.0.4
     react-router-dom: 5.3.4
     react-scripts: 5.0.0
-    react-virtualized: 9.22.3
+    react-virtualized: 9.22.5
     redux: 4.2.0
     redux-logger: 3.0.6
     redux-mock-store: 1.5.4
     redux-thunk: 2.4.1
     resize-observer-polyfill: 1.5.1
     serve: 14.2.0
-    single-spa-react: ^5.0.1
+    single-spa-react: 5.0.1
     start-server-and-test: 1.15.0
     tslib: 2.4.0
     typescript: 4.9.3
@@ -9367,13 +9341,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"immutable@npm:^3.8.1 || ^4.0.0":
-  version: 4.3.0
-  resolution: "immutable@npm:4.3.0"
-  checksum: bbd7ea99e2752e053323543d6ff1cc71a4b4614fa6121f321ca766db2bd2092f3f1e0a90784c5431350b7344a4f792fa002eac227062d59b9377b6c09063b58b
-  languageName: node
-  linkType: hard
-
 "import-fresh@npm:^3.0.0, import-fresh@npm:^3.1.0, import-fresh@npm:^3.2.1":
   version: 3.3.0
   resolution: "import-fresh@npm:3.3.0"
@@ -11084,13 +11051,6 @@ __metadata:
   version: 4.5.0
   resolution: "lodash.isequal@npm:4.5.0"
   checksum: da27515dc5230eb1140ba65ff8de3613649620e8656b19a6270afe4866b7bd461d9ba2ac8a48dcc57f7adac4ee80e1de9f965d89d4d81a0ad52bb3eec2609644
-  languageName: node
-  linkType: hard
-
-"lodash.isequalwith@npm:^4.4.0":
-  version: 4.4.0
-  resolution: "lodash.isequalwith@npm:4.4.0"
-  checksum: 428ba7a57c47ec05e2dd18c03a4b4c45dac524a46af7ce3f412594bfc7be6a5acaa51acf9ea113d0002598e9aafc6e19ee8d20bc28363145fcb4d21808c9039f
   languageName: node
   linkType: hard
 
@@ -13853,9 +13813,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-virtualized@npm:9.22.3":
-  version: 9.22.3
-  resolution: "react-virtualized@npm:9.22.3"
+"react-virtualized@npm:9.22.5":
+  version: 9.22.5
+  resolution: "react-virtualized@npm:9.22.5"
   dependencies:
     "@babel/runtime": ^7.7.2
     clsx: ^1.0.4
@@ -13864,9 +13824,9 @@ __metadata:
     prop-types: ^15.7.2
     react-lifecycles-compat: ^3.0.4
   peerDependencies:
-    react: ^15.3.0 || ^16.0.0-alpha
-    react-dom: ^15.3.0 || ^16.0.0-alpha
-  checksum: 5e3b566592293bc0057bc6be4f6ee29c58c8931421d2882a3ef45ca9b24c6f3ea78bbc5a182c2916af6520845e5a90f569b3a63c9b5e89428720913e6d6239cc
+    react: ^15.3.0 || ^16.0.0-alpha || ^17.0.0 || ^18.0.0
+    react-dom: ^15.3.0 || ^16.0.0-alpha || ^17.0.0 || ^18.0.0
+  checksum: 01f5ed8d8db7c831d592172946c2b61fcb409bf6cbc84500468f12d6cf9b7e60453e332fac02dd608480d23cb14421f7f17716393e623e83bb10a7763fad9e2c
   languageName: node
   linkType: hard
 
@@ -14534,13 +14494,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"seamless-immutable@npm:^7.1.3":
-  version: 7.1.4
-  resolution: "seamless-immutable@npm:7.1.4"
-  checksum: f65c1dc12e460265ccc4b164085b807570f9fb8a619cd3c216fc7ed933fb09c57a24a7df1b638dc9bd6367d8d69c2f00b5370b0c0996b4046242539096d2d0c6
-  languageName: node
-  linkType: hard
-
 "select-hose@npm:^2.0.0":
   version: 2.0.0
   resolution: "select-hose@npm:2.0.0"
@@ -14751,7 +14704,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"single-spa-react@npm:^5.0.1":
+"single-spa-react@npm:5.0.1":
   version: 5.0.1
   resolution: "single-spa-react@npm:5.0.1"
   dependencies:
