@@ -6,6 +6,7 @@ import handleICATError from '../handleICATError';
 import { createReactQueryWrapper } from '../setupTests';
 import {
   downloadInvestigation,
+  InvestigationSuggestions,
   useInvestigation,
   useInvestigationCount,
   useInvestigationDetails,
@@ -18,6 +19,7 @@ import {
   useISISInvestigationIds,
   useISISInvestigationsInfinite,
   useISISInvestigationsPaginated,
+  useSimilarInvestigations,
 } from './investigations';
 
 jest.mock('../handleICATError');
@@ -1787,6 +1789,121 @@ describe('investigation api functions', () => {
       link.target = '_blank';
       link.style.display = 'none';
       expect(document.body.appendChild).toHaveBeenCalledWith(link);
+    });
+  });
+
+  describe('useSimilarInvestigations', function () {
+    const mockSuggestions: InvestigationSuggestions = {
+      docs: [
+        {
+          doc: {
+            id: 1,
+            visitId: 'visitId',
+            name: 'Suggested investigation 1 name',
+            title: 'Suggested investigation 1',
+            summary: 'Suggested investigation 1 summary',
+            doi: 'doi1',
+          },
+          score: 0.1,
+        },
+        {
+          doc: {
+            id: 2,
+            visitId: 'visitId',
+            name: 'Suggested investigation 2 name',
+            title: 'Suggested investigation 2',
+            summary: 'Suggested investigation 2 summary',
+            doi: 'doi2',
+          },
+          score: 0.9,
+        },
+        {
+          doc: {
+            id: 3,
+            visitId: 'visitId',
+            name: 'Suggested investigation 3 name',
+            title: 'Suggested investigation 3',
+            summary: 'Suggested investigation 3 summary',
+            doi: 'doi3',
+          },
+          score: 0.5,
+        },
+        {
+          doc: {
+            id: 4,
+            visitId: 'visitId',
+            name: 'Suggested investigation 4 name',
+            title: 'Suggested investigation 4',
+            summary: 'Suggested investigation 4 summary',
+            doi: 'doi4',
+          },
+          score: 0.4,
+        },
+      ],
+      topics: [],
+    };
+
+    it('queries for investigations similar to the given investigation and sorts the result by their relevance from the most relevant to the least', async () => {
+      (axios.get as jest.Mock).mockResolvedValue({
+        data: mockSuggestions,
+      });
+
+      const { result, waitFor } = renderHook(
+        () =>
+          useSimilarInvestigations({
+            investigation: mockData[0],
+          }),
+        { wrapper: createReactQueryWrapper() }
+      );
+
+      await waitFor(() => result.current.isSuccess);
+
+      expect(result.current.data).toEqual([
+        {
+          doc: {
+            id: 2,
+            visitId: 'visitId',
+            name: 'Suggested investigation 2 name',
+            title: 'Suggested investigation 2',
+            summary: 'Suggested investigation 2 summary',
+            doi: 'doi2',
+          },
+          score: 0.9,
+        },
+        {
+          doc: {
+            id: 3,
+            visitId: 'visitId',
+            name: 'Suggested investigation 3 name',
+            title: 'Suggested investigation 3',
+            summary: 'Suggested investigation 3 summary',
+            doi: 'doi3',
+          },
+          score: 0.5,
+        },
+        {
+          doc: {
+            id: 4,
+            visitId: 'visitId',
+            name: 'Suggested investigation 4 name',
+            title: 'Suggested investigation 4',
+            summary: 'Suggested investigation 4 summary',
+            doi: 'doi4',
+          },
+          score: 0.4,
+        },
+        {
+          doc: {
+            id: 1,
+            visitId: 'visitId',
+            name: 'Suggested investigation 1 name',
+            title: 'Suggested investigation 1',
+            summary: 'Suggested investigation 1 summary',
+            doi: 'doi1',
+          },
+          score: 0.1,
+        },
+      ]);
     });
   });
 });
