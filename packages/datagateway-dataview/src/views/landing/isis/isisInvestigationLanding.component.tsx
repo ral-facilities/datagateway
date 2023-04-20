@@ -1,9 +1,13 @@
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Box,
   Divider,
   Grid,
   Link as MuiLink,
   Paper,
+  Stack,
   styled,
   Tab,
   Tabs,
@@ -17,10 +21,15 @@ import {
   Public,
   Save,
   Storage,
+  ExpandMore,
 } from '@mui/icons-material';
 import {
+  AddToCartButton,
+  ArrowTooltip,
   Dataset,
+  DownloadButton,
   formatCountOrSize,
+  getTooltipText,
   Investigation,
   InvestigationUser,
   parseSearchToQuery,
@@ -29,16 +38,13 @@ import {
   tableLink,
   useInvestigation,
   useInvestigationSizes,
-  AddToCartButton,
-  DownloadButton,
-  ArrowTooltip,
-  getTooltipText,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
 import CitationFormatter from '../../citationFormatter.component';
 import Branding from './isisBranding.component';
+import SuggestedInvestigationsSection from './suggestedInvestigationsSection.component';
 
 const Subheading = styled(Typography)(({ theme }) => ({
   marginTop: theme.spacing(1),
@@ -419,28 +425,38 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
           <Divider orientation="vertical" />
           {/* Short format information */}
           <Grid item xs={6} sm={5} md={4} lg={3} xl={2}>
-            {shortInfo.map(
-              (field, i) =>
-                data?.[0] &&
-                field.content(data[0] as Investigation) && (
-                  <ShortInfoRow key={i}>
-                    <ShortInfoLabel>
-                      {field.icon}
-                      {field.label}:
-                    </ShortInfoLabel>
-                    <ArrowTooltip
-                      title={getTooltipText(
-                        field.content(data[0] as Investigation)
-                      )}
-                    >
-                      <ShortInfoValue>
-                        {field.content(data[0] as Investigation)}
-                      </ShortInfoValue>
-                    </ArrowTooltip>
-                    z
-                  </ShortInfoRow>
-                )
+            {data && data[0].summary && (
+              <SuggestedInvestigationsSection investigation={data[0]} />
             )}
+            <Accordion defaultExpanded disableGutters elevation={0}>
+              <AccordionSummary expandIcon={<ExpandMore />}>
+                {t('investigations.landingPage.extraInfo')}
+              </AccordionSummary>
+              <AccordionDetails sx={{ px: 0.5, py: 0 }}>
+                {shortInfo.map(
+                  (field, i) =>
+                    data?.[0] &&
+                    field.content(data[0] as Investigation) && (
+                      <ShortInfoRow key={i}>
+                        <ShortInfoLabel>
+                          {field.icon}
+                          {field.label}:
+                        </ShortInfoLabel>
+                        <ArrowTooltip
+                          title={getTooltipText(
+                            field.content(data[0] as Investigation)
+                          )}
+                        >
+                          <ShortInfoValue>
+                            {field.content(data[0] as Investigation)}
+                          </ShortInfoValue>
+                        </ArrowTooltip>
+                        z
+                      </ShortInfoRow>
+                    )
+                )}
+              </AccordionDetails>
+            </Accordion>
             {/* Actions */}
             <ActionButtonsContainer data-testid="investigation-landing-action-container">
               <AddToCartButton
@@ -502,6 +518,8 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               </Box>
             ))}
           </Grid>
+
+          <Stack></Stack>
         </Grid>
       </Grid>
     </Paper>

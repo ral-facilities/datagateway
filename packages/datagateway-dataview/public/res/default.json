@@ -143,6 +143,12 @@
     },
     "type": {
       "id": "Type ID"
+    },
+    "landingPage": {
+      "extraInfo": "Extra info",
+      "similarInvestigations": "Similar investigations",
+      "findingSimilarInvestigations": "Finding similar investigations…",
+      "noSuggestion": "No suggestion available"
     }
   },
   "datasets": {

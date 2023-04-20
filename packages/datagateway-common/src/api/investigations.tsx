@@ -11,6 +11,7 @@ import {
   FiltersType,
   Investigation,
   SortType,
+  SuggestedInvestigation,
 } from '../app.types';
 import { StateType } from '../state/app.types';
 import {
@@ -918,4 +919,40 @@ export const downloadInvestigation = (
   document.body.appendChild(link);
   link.click();
   link.remove();
+};
+
+export interface InvestigationSuggestions {
+  docs: SuggestedInvestigation[];
+  topics: [topic: string, score: number][];
+}
+
+export const useSimilarInvestigations = ({
+  investigation,
+}: {
+  investigation: Investigation;
+}): UseQueryResult<SuggestedInvestigation[], AxiosError> => {
+  const baseUrl = 'http://172.16.103.71:4001/api';
+
+  return useQuery<
+    { docs: SuggestedInvestigation[] },
+    AxiosError,
+    SuggestedInvestigation[],
+    ['similarInvestigations', Investigation['id']]
+  >(
+    ['similarInvestigations', investigation.id],
+    () =>
+      axios
+        .get<InvestigationSuggestions>(`/similar/${investigation.id}`, {
+          baseURL: baseUrl,
+        })
+        .then((response) => response.data),
+    {
+      select: (data) =>
+        data.docs.sort((resultA, resultB) => resultB.score - resultA.score),
+      onError: (error) => {
+        handleICATError(error);
+      },
+      retry: retryICATErrors,
+    }
+  );
 };

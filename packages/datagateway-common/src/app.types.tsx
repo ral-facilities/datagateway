@@ -61,6 +61,11 @@ export interface InvestigationInstrument {
   investigation?: Investigation;
 }
 
+export interface SuggestedInvestigation {
+  score: number;
+  doc: Investigation;
+}
+
 export interface Instrument {
   id: number;
   name: string;
