@@ -7,7 +7,6 @@ import {
   Grid,
   Link as MuiLink,
   Paper,
-  Stack,
   styled,
   Tab,
   Tabs,
@@ -17,11 +16,11 @@ import {
   Assessment,
   Business,
   CalendarToday,
+  ExpandMore,
   Fingerprint,
   Public,
   Save,
   Storage,
-  ExpandMore,
 } from '@mui/icons-material';
 import {
   AddToCartButton,
@@ -518,8 +517,6 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               </Box>
             ))}
           </Grid>
-
-          <Stack></Stack>
         </Grid>
       </Grid>
     </Paper>
