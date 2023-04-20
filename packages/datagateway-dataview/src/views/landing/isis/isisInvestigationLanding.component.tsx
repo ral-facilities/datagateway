@@ -424,7 +424,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
           <Divider orientation="vertical" />
           {/* Short format information */}
           <Grid item xs={6} sm={5} md={4} lg={3} xl={2}>
-            {data && data[0].summary && (
+            {data && data[0]?.summary && (
               <SuggestedInvestigationsSection investigation={data[0]} />
             )}
             <Accordion defaultExpanded disableGutters elevation={0}>
