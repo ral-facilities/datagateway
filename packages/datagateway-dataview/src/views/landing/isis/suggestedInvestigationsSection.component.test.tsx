@@ -100,17 +100,20 @@ describe('SuggestedInvestigationsSection', () => {
     );
 
     const suggestionLinks = await screen.findAllByRole('link');
-    expect(suggestionLinks).toHaveLength(MAX_SUGGESTION_COUNT);
+    expect(suggestionLinks).toHaveLength(4);
 
     expect(
-      await screen.findByRole('link', { name: 'Suggested investigation 1' })
+      screen.getByRole('link', { name: 'Suggested investigation 1' })
     ).toHaveAttribute('href', 'https://doi.org/doi1');
     expect(
-      await screen.findByRole('link', { name: 'Suggested investigation 2' })
+      screen.getByRole('link', { name: 'Suggested investigation 2' })
     ).toHaveAttribute('href', 'https://doi.org/doi2');
     expect(
-      await screen.findByRole('link', { name: 'Suggested investigation 3' })
+      screen.getByRole('link', { name: 'Suggested investigation 3' })
     ).toHaveAttribute('href', 'https://doi.org/doi3');
+    expect(
+      screen.getByRole('link', { name: 'Suggested investigation 4' })
+    ).toHaveAttribute('href', 'https://doi.org/doi4');
   });
 
   it('should show loading label and be un-expandable when fetching suggestions', () => {

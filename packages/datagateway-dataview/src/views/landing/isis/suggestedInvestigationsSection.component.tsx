@@ -22,7 +22,7 @@ interface SuggestedSectionProps {
   investigation: Investigation;
 }
 
-const MAX_SUGGESTION_COUNT = 3;
+const MAX_SUGGESTION_COUNT = 10;
 
 function SuggestedInvestigationsSection({
   investigation,
