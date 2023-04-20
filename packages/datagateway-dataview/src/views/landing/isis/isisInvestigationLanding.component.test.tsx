@@ -6,7 +6,6 @@ import { StateType } from '../../../state/app.types';
 import {
   dGCommonInitialState,
   InvestigationSuggestions,
-  useInvestigation,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -355,11 +354,11 @@ describe('ISIS Investigation Landing page', () => {
   });
 
   describe('renders datasets for the investigation correctly', () => {
-    it('for facility cycle hierarchy and normal view', () => {
+    it('for facility cycle hierarchy and normal view', async () => {
       renderComponent();
 
       expect(
-        screen.getByRole('link', { name: 'datasets.dataset: dataset 1' })
+        await screen.findByRole('link', { name: 'datasets.dataset: dataset 1' })
       ).toHaveAttribute(
         'href',
         '/browse/instrument/4/facilityCycle/5/investigation/1/dataset/1'
@@ -381,13 +380,13 @@ describe('ISIS Investigation Landing page', () => {
       ).toBeInTheDocument();
     });
 
-    it('for facility cycle hierarchy and card view', () => {
+    it('for facility cycle hierarchy and card view', async () => {
       history.replace('/?view=card');
 
       renderComponent();
 
       expect(
-        screen.getByRole('link', { name: 'datasets.dataset: dataset 1' })
+        await screen.findByRole('link', { name: 'datasets.dataset: dataset 1' })
       ).toHaveAttribute(
         'href',
         '/browse/instrument/4/facilityCycle/5/investigation/1/dataset/1?view=card'
@@ -409,11 +408,11 @@ describe('ISIS Investigation Landing page', () => {
       ).toBeInTheDocument();
     });
 
-    it('for study hierarchy and normal view', () => {
+    it('for study hierarchy and normal view', async () => {
       renderComponent(true);
 
       expect(
-        screen.getByRole('link', { name: 'datasets.dataset: dataset 1' })
+        await screen.findByRole('link', { name: 'datasets.dataset: dataset 1' })
       ).toHaveAttribute(
         'href',
         '/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset/1'
@@ -435,13 +434,13 @@ describe('ISIS Investigation Landing page', () => {
       ).toBeInTheDocument();
     });
 
-    it('for study hierarchy and card view', () => {
+    it('for study hierarchy and card view', async () => {
       history.push('/?view=card');
 
       renderComponent(true);
 
       expect(
-        screen.getByRole('link', { name: 'datasets.dataset: dataset 1' })
+        await screen.findByRole('link', { name: 'datasets.dataset: dataset 1' })
       ).toHaveAttribute(
         'href',
         '/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset/1?view=card'
@@ -528,9 +527,15 @@ describe('ISIS Investigation Landing page', () => {
   });
 
   it('users displayed correctly', async () => {
-    (useInvestigation as jest.Mock).mockReturnValue({
-      data: [{ ...initialData[0], investigationUsers: investigationUser }],
+    axios.get = jest.fn().mockImplementation((url: string) => {
+      if (url.includes('/investigations')) {
+        return Promise.resolve({
+          data: [{ ...initialData[0], investigationUsers: investigationUser }],
+        });
+      }
+      return mockAxiosGet(url);
     });
+
     renderComponent();
 
     expect(
@@ -545,9 +550,15 @@ describe('ISIS Investigation Landing page', () => {
   });
 
   it('renders text "No samples" when no data is present', async () => {
-    (useInvestigation as jest.Mock).mockReturnValue({
-      data: [{ ...initialData[0], samples: noSamples }],
+    axios.get = jest.fn().mockImplementation((url: string) => {
+      if (url.includes('/investigations')) {
+        return Promise.resolve({
+          data: [{ ...initialData[0], samples: noSamples }],
+        });
+      }
+      return mockAxiosGet(url);
     });
+
     renderComponent();
 
     expect(
@@ -556,9 +567,15 @@ describe('ISIS Investigation Landing page', () => {
   });
 
   it('renders text "No publications" when no data is present', async () => {
-    (useInvestigation as jest.Mock).mockReturnValue({
-      data: [{ ...initialData[0], publications: noPublication }],
+    axios.get = jest.fn().mockImplementation((url: string) => {
+      if (url.includes('/investigations')) {
+        return Promise.resolve({
+          data: [{ ...initialData[0], publications: noPublication }],
+        });
+      }
+      return mockAxiosGet(url);
     });
+
     renderComponent();
 
     expect(
@@ -569,9 +586,15 @@ describe('ISIS Investigation Landing page', () => {
   });
 
   it('publications displayed correctly', async () => {
-    (useInvestigation as jest.Mock).mockReturnValue({
-      data: [{ ...initialData[0], publications: publication }],
+    axios.get = jest.fn().mockImplementation((url: string) => {
+      if (url.includes('/investigations')) {
+        return Promise.resolve({
+          data: [{ ...initialData[0], publications: publication }],
+        });
+      }
+      return mockAxiosGet(url);
     });
+
     renderComponent();
 
     expect(
@@ -580,18 +603,30 @@ describe('ISIS Investigation Landing page', () => {
   });
 
   it('samples displayed correctly', async () => {
-    (useInvestigation as jest.Mock).mockReturnValue({
-      data: [{ ...initialData[0], samples: sample }],
+    axios.get = jest.fn().mockImplementation((url: string) => {
+      if (url.includes('/investigations')) {
+        return Promise.resolve({
+          data: [{ ...initialData[0], samples: sample }],
+        });
+      }
+      return mockAxiosGet(url);
     });
+
     renderComponent();
 
     expect(await screen.findByText('Sample')).toBeInTheDocument();
   });
 
   it('displays citation correctly when study missing', async () => {
-    (useInvestigation as jest.Mock).mockReturnValue({
-      data: [{ ...initialData[0], studyInvestigations: undefined }],
+    axios.get = jest.fn().mockImplementation((url: string) => {
+      if (url.includes('/investigations')) {
+        return Promise.resolve({
+          data: [{ ...initialData[0], studyInvestigations: undefined }],
+        });
+      }
+      return mockAxiosGet(url);
     });
+
     renderComponent();
 
     expect(
@@ -602,9 +637,17 @@ describe('ISIS Investigation Landing page', () => {
   });
 
   it('displays citation correctly with one user', async () => {
-    (useInvestigation as jest.Mock).mockReturnValue({
-      data: [{ ...initialData[0], investigationUsers: [investigationUser[0]] }],
+    axios.get = jest.fn().mockImplementation((url: string) => {
+      if (url.includes('/investigations')) {
+        return Promise.resolve({
+          data: [
+            { ...initialData[0], investigationUsers: [investigationUser[0]] },
+          ],
+        });
+      }
+      return mockAxiosGet(url);
     });
+
     renderComponent();
 
     expect(
@@ -615,9 +658,15 @@ describe('ISIS Investigation Landing page', () => {
   });
 
   it('displays citation correctly with multiple users', async () => {
-    (useInvestigation as jest.Mock).mockReturnValue({
-      data: [{ ...initialData[0], investigationUsers: investigationUser }],
+    axios.get = jest.fn().mockImplementation((url: string) => {
+      if (url.includes('/investigations')) {
+        return Promise.resolve({
+          data: [{ ...initialData[0], investigationUsers: investigationUser }],
+        });
+      }
+      return mockAxiosGet(url);
     });
+
     renderComponent();
 
     expect(
