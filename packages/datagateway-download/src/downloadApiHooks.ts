@@ -39,6 +39,7 @@ import {
   getDatafileCount,
   getDownload,
   getDownloadTypeStatus,
+  getEntity,
   getIsTwoLevel,
   getPercentageComplete,
   getSize,
@@ -238,6 +239,44 @@ export const useSubmitCart = (
       ...(options ?? {}),
     }
   );
+};
+
+const entitiesLimit = pLimit(20);
+
+export const useEntities = (
+  data: DownloadCartItem[] | undefined
+): UseQueryResult<number, AxiosError>[] => {
+  const settings = React.useContext(DownloadSettingsContext);
+  const { facilityName, apiUrl, downloadApiUrl } = settings;
+
+  const queryConfigs: UseQueryOptions<
+    object,
+    AxiosError,
+    number,
+    ['entity', number]
+  >[] = React.useMemo(() => {
+    return data
+      ? data.map((cartItem) => {
+          const { entityId, entityType } = cartItem;
+          return {
+            queryKey: ['entity', entityId],
+            queryFn: () =>
+              entitiesLimit(getEntity, entityId, entityType, {
+                facilityName,
+                apiUrl,
+                downloadApiUrl,
+              }),
+            onError: (error) => {
+              handleICATError(error, false);
+            },
+            retry: retryICATErrors,
+            staleTime: Infinity,
+          };
+        })
+      : [];
+  }, [data, facilityName, apiUrl, downloadApiUrl]);
+
+  return useQueries(queryConfigs);
 };
 
 const sizesLimit = pLimit(20);

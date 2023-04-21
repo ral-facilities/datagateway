@@ -1,6 +1,8 @@
 import axios from 'axios';
 import type {
   Datafile,
+  Dataset,
+  Investigation,
   Download,
   DownloadCart,
   DownloadCartItem,
@@ -342,6 +344,44 @@ export const getDatafileCount: (
             },
           },
         },
+        headers: {
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+        },
+      })
+      .then((response) => {
+        return response.data;
+      });
+  }
+};
+
+export const getEntity: (
+  entityId: number,
+  entityType: string,
+  settings: Pick<DownloadSettings, 'apiUrl'>
+) => Promise<object> = (entityId, entityType, settings) => {
+  if (entityType === 'datafile') {
+    return axios
+      .get<object>(`${settings.apiUrl}/datafiles/${entityId}`, {
+        headers: {
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+        },
+      })
+      .then((response) => {
+        return response.data;
+      });
+  } else if (entityType === 'dataset') {
+    return axios
+      .get<object>(`${settings.apiUrl}/datasets/${entityId}`, {
+        headers: {
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+        },
+      })
+      .then((response) => {
+        return response.data;
+      });
+  } else {
+    return axios
+      .get<object>(`${settings.apiUrl}/investigations/${entityId}`, {
         headers: {
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },

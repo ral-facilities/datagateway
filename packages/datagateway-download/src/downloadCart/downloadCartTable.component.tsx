@@ -28,11 +28,10 @@ import { Link as RouterLink } from 'react-router-dom';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import {
   useCart,
-  useDatafileCounts,
   useIsTwoLevel,
   useRemoveAllFromCart,
   useRemoveEntityFromCart,
-  useSizes,
+  useEntities,
 } from '../downloadApiHooks';
 
 import DownloadConfirmDialog from '../downloadConfirmation/downloadConfirmDialog.component';
@@ -62,35 +61,33 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     useRemoveAllFromCart();
   const { data, isFetching: dataLoading } = useCart();
 
-  const fileCountQueries = useDatafileCounts(data);
-  const sizeQueries = useSizes(data);
+  const entityQueries = useEntities(data);
 
   const fileCount = React.useMemo(() => {
     return (
-      fileCountQueries?.reduce((accumulator, nextItem) => {
-        if (nextItem.data && nextItem.data > -1) {
-          return accumulator + nextItem.data;
+      entityQueries?.reduce((accumulator, nextItem) => {
+        if (nextItem.data.fileCount && nextItem.data.fileCount > -1) {
+          return accumulator + nextItem.data.fileCount;
         } else {
           return accumulator;
         }
       }, 0) ?? -1
     );
-  }, [fileCountQueries]);
+  }, [entityQueries]);
 
   const totalSize = React.useMemo(() => {
     return (
-      sizeQueries?.reduce((accumulator, nextItem) => {
-        if (nextItem.data && nextItem.data > -1) {
-          return accumulator + nextItem.data;
+      entityQueries?.reduce((accumulator, nextItem) => {
+        if (nextItem.data.fileSize && nextItem.data.fileSize > -1) {
+          return accumulator + nextItem.data.fileSize;
         } else {
           return accumulator;
         }
       }, 0) ?? -1
     );
-  }, [sizeQueries]);
+  }, [entityQueries]);
 
-  const sizesLoading = sizeQueries.some((query) => query.isLoading);
-  const fileCountsLoading = fileCountQueries.some((query) => query.isLoading);
+  const entityLoading = entityQueries.some((query) => query?.isLoading);
 
   const [t] = useTranslation();
 
@@ -117,8 +114,8 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
       (item, index) =>
         ({
           ...item,
-          size: sizeQueries?.[index]?.data ?? -1,
-          fileCount: fileCountQueries?.[index]?.data ?? -1,
+          size: entityQueries?.[index]?.data.fileSize ?? -1,
+          fileCount: entityQueries?.[index]?.data.fileCount ?? -1,
         } as DownloadCartTableItem)
     );
     const filteredData = sizeAndCountAddedData?.filter((item) => {
@@ -161,7 +158,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     }
 
     return filteredData?.sort(sortCartItems);
-  }, [data, sort, filters, sizeQueries, fileCountQueries]);
+  }, [data, sort, filters, entityQueries]);
 
   const columns: ColumnType[] = React.useMemo(
     () => [
@@ -238,12 +235,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     [removeDownloadCartItem, t]
   );
 
-  const emptyItems = React.useMemo(
-    () =>
-      sizeQueries.some((query) => query.data === 0) ||
-      fileCountQueries.some((query) => query.data === 0),
-    [sizeQueries, fileCountQueries]
-  );
+  const emptyItems = entityQueries.some((query) => query.data === 0);
 
   return (
     <>
@@ -357,7 +349,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                 columnGap={1}
               >
                 <Grid item>
-                  {fileCountsLoading && (
+                  {entityLoading && (
                     <CircularProgress
                       size={15}
                       thickness={7}
@@ -408,7 +400,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                 columnGap={1}
               >
                 <Grid item>
-                  {sizesLoading && (
+                  {entityLoading && (
                     <CircularProgress
                       size={15}
                       thickness={7}
@@ -496,8 +488,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                     disabled={
                       fileCount <= 0 ||
                       totalSize <= 0 ||
-                      fileCountsLoading ||
-                      sizesLoading ||
+                      entityLoading ||
                       emptyItems ||
                       (fileCountMax ? fileCount > fileCountMax : false) ||
                       (totalSizeMax ? totalSize > totalSizeMax : false)
