@@ -1,9 +1,12 @@
 import { AxiosError } from 'axios';
 import type { Download, DownloadStatus } from 'datagateway-common';
 import {
+  Datafile,
+  Dataset,
   DownloadCartItem,
   fetchDownloadCart,
   handleICATError,
+  Investigation,
   MicroFrontendId,
   NotificationType,
   retryICATErrors,
@@ -245,16 +248,16 @@ const entitiesLimit = pLimit(20);
 
 export const useEntities = (
   data: DownloadCartItem[] | undefined
-): UseQueryResult<number, AxiosError>[] => {
+): UseQueryResult<Datafile | Dataset | Investigation, AxiosError>[] => {
   const settings = React.useContext(DownloadSettingsContext);
   const { facilityName, apiUrl, downloadApiUrl } = settings;
 
-  const queryConfigs: UseQueryOptions<
-    object,
-    AxiosError,
-    number,
-    ['entity', number]
-  >[] = React.useMemo(() => {
+  const queryConfigs: {
+    queryKey: [string, number];
+    staleTime: number;
+    queryFn: () => Promise<Datafile | Dataset | Investigation>;
+    retry: (failureCount: number, error: AxiosError) => boolean;
+  }[] = React.useMemo(() => {
     return data
       ? data.map((cartItem) => {
           const { entityId, entityType } = cartItem;
@@ -266,7 +269,7 @@ export const useEntities = (
                 apiUrl,
                 downloadApiUrl,
               }),
-            onError: (error) => {
+            onError: (error: AxiosError) => {
               handleICATError(error, false);
             },
             retry: retryICATErrors,

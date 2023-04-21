@@ -358,10 +358,14 @@ export const getEntity: (
   entityId: number,
   entityType: string,
   settings: Pick<DownloadSettings, 'apiUrl'>
-) => Promise<object> = (entityId, entityType, settings) => {
+) => Promise<Datafile | Dataset | Investigation> = (
+  entityId,
+  entityType,
+  settings
+) => {
   if (entityType === 'datafile') {
     return axios
-      .get<object>(`${settings.apiUrl}/datafiles/${entityId}`, {
+      .get<Datafile>(`${settings.apiUrl}/datafiles/${entityId}`, {
         headers: {
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
@@ -371,7 +375,7 @@ export const getEntity: (
       });
   } else if (entityType === 'dataset') {
     return axios
-      .get<object>(`${settings.apiUrl}/datasets/${entityId}`, {
+      .get<Dataset>(`${settings.apiUrl}/datasets/${entityId}`, {
         headers: {
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
@@ -381,7 +385,7 @@ export const getEntity: (
       });
   } else {
     return axios
-      .get<object>(`${settings.apiUrl}/investigations/${entityId}`, {
+      .get<Investigation>(`${settings.apiUrl}/investigations/${entityId}`, {
         headers: {
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },

@@ -78,7 +78,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   const totalSize = React.useMemo(() => {
     return (
       entityQueries?.reduce((accumulator, nextItem) => {
-        if (nextItem.data.fileSize && nextItem.data.fileSize > -1) {
+        if (nextItem.data?.fileSize && nextItem.data.fileSize > -1) {
           return accumulator + nextItem.data.fileSize;
         } else {
           return accumulator;
@@ -114,8 +114,8 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
       (item, index) =>
         ({
           ...item,
-          size: entityQueries?.[index]?.data.fileSize ?? -1,
-          fileCount: entityQueries?.[index]?.data.fileCount ?? -1,
+          size: entityQueries?.[index]?.data?.fileSize ?? -1,
+          fileCount: entityQueries?.[index]?.data?.fileCount ?? -1,
         } as DownloadCartTableItem)
     );
     const filteredData = sizeAndCountAddedData?.filter((item) => {
@@ -235,7 +235,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     [removeDownloadCartItem, t]
   );
 
-  const emptyItems = entityQueries.some((query) => query.data === 0);
+  const emptyItems = entityQueries.some((query) => query.data === null);
 
   return (
     <>
