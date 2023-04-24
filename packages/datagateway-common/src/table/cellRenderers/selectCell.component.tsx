@@ -62,7 +62,7 @@ const SelectCell = React.memo((props: SelectCellProps): React.ReactElement => {
             className="tour-dataview-add-to-cart"
             // have to inherit as the padding="checkbox" is on the span
             style={{ padding: 'inherit' }}
-            checked={selectedRows?.includes(rowData.id)}
+            checked={selectedRows?.includes(rowData.id) ?? false}
             inputProps={{
               'aria-label': `select row ${rowIndex}`,
             }}
