@@ -347,7 +347,9 @@ describe('PageContainer - Tests', () => {
 
     renderComponent();
 
-    expect(screen.queryByTestId('styled-routing')).toBeNull();
+    await waitFor(() => {
+      expect(screen.queryByTestId('styled-routing')).toBeNull();
+    });
   });
 
   it('set view to card if cardview stored in localstorage', () => {
