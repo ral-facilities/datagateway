@@ -9,8 +9,14 @@ import {
   UseQueryOptions,
 } from 'react-query';
 import { useSelector } from 'react-redux';
-import { MicroFrontendId, NotificationType, StateType } from '..';
-import { FiltersType, SearchResultSource, SortType } from '../app.types';
+import { StateType } from '../state/app.types';
+import { NotificationType } from '../state/actions/actions.types';
+import {
+  MicroFrontendId,
+  FiltersType,
+  SearchResultSource,
+  SortType,
+} from '../app.types';
 import handleICATError from '../handleICATError';
 import { readSciGatewayToken } from '../parseTokens';
 import retryICATErrors from './retryICATErrors';
