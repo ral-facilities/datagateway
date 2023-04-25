@@ -7,6 +7,7 @@ import {
 } from '@mui/material/styles';
 import { MicroFrontendId } from './app.types';
 import { SendThemeOptionsType } from './state/actions/actions.types';
+import { CssBaseline } from '@mui/material';
 
 // Store the parent theme options when received.
 // Otherwise, set to an empty theme.
@@ -33,6 +34,9 @@ class DGThemeProvider extends React.Component<{ children: React.ReactNode }> {
     return (
       <StyledEngineProvider injectFirst>
         <ThemeProvider theme={parentThemeOptions}>
+          {/* Technically CssBaseline isn't needed in plugins as it's in scigateway and it's global
+              but it's useful to ensure consistency when developing a plugin independently */}
+          <CssBaseline enableColorScheme />
           {this.props.children}
         </ThemeProvider>
       </StyledEngineProvider>
