@@ -609,7 +609,13 @@ describe('Datafile search table component', () => {
   it('displays generic details panel when expanded', async () => {
     renderComponent();
 
-    const row = await findRowAt(0);
+    let rows: HTMLElement[];
+    await waitFor(async () => {
+      rows = await findAllRows();
+      expect(rows).toHaveLength(1);
+    });
+
+    const row = rows[0];
     await user.click(within(row).getByRole('button', { name: 'Show details' }));
 
     const detailsPanel = await screen.findByTestId('datafile-details-panel');
@@ -625,10 +631,18 @@ describe('Datafile search table component', () => {
   it('displays correct details panel for ISIS when expanded', async () => {
     renderComponent('isis');
 
-    const row = await findRowAt(0);
+    let rows: HTMLElement[];
+    await waitFor(async () => {
+      rows = await findAllRows();
+      expect(rows).toHaveLength(1);
+    });
+
+    const row = rows[0];
     await user.click(within(row).getByRole('button', { name: 'Show details' }));
 
-    const detailsPanel = await screen.findByTestId('datafile-details-panel');
+    const detailsPanel = await screen.findByTestId(
+      'isis-datafile-details-panel'
+    );
 
     expect(detailsPanel).toBeInTheDocument();
     expect(
@@ -651,10 +665,18 @@ describe('Datafile search table component', () => {
   it('displays correct details panel for DLS when expanded', async () => {
     renderComponent('dls');
 
-    const row = await findRowAt(0);
+    let rows: HTMLElement[];
+    await waitFor(async () => {
+      rows = await findAllRows();
+      expect(rows).toHaveLength(1);
+    });
+
+    const row = rows[0];
     await user.click(within(row).getByRole('button', { name: 'Show details' }));
 
-    const detailsPanel = await screen.findByTestId('datafile-details-panel');
+    const detailsPanel = await screen.findByTestId(
+      'dls-datafile-details-panel'
+    );
 
     expect(detailsPanel).toBeInTheDocument();
     expect(

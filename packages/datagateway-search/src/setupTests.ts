@@ -141,6 +141,7 @@ export const queryAllRows = (): HTMLElement[] =>
  */
 export const findRowAt = async (index: number): Promise<HTMLElement> => {
   const rows = await screen.findAllByRole('row');
+  console.log('rows', rows);
   const row = rows[index + 1];
   if (!row) {
     throw new Error(`Cannot find row at index ${index}`);

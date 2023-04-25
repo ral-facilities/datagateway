@@ -22,7 +22,12 @@ import SearchPageContainer, {
 import { Provider } from 'react-redux';
 import axios from 'axios';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { render, type RenderResult, screen } from '@testing-library/react';
+import {
+  render,
+  type RenderResult,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { DeepPartial } from 'redux';
 
@@ -885,11 +890,13 @@ describe('SearchPageContainer - Tests', () => {
       screen.getByRole('button', { name: 'searchBox.search_button_arialabel' })
     );
 
-    expect(
-      screen.getByRole('tab', { name: 'tabs.investigation' })
-    ).toBeInTheDocument();
-    expect(screen.queryByRole('tab', { name: 'tabs.dataset' })).toBeNull();
-    expect(screen.queryByRole('tab', { name: 'tabs.datafile' })).toBeNull();
+    await waitFor(() => {
+      expect(
+        screen.getByRole('tab', { name: 'tabs.investigation' })
+      ).toBeInTheDocument();
+      expect(screen.queryByRole('tab', { name: 'tabs.dataset' })).toBeNull();
+      expect(screen.queryByRole('tab', { name: 'tabs.datafile' })).toBeNull();
+    });
   });
 
   it('search text state is updated when text is changed and pushes when search initiated', async () => {

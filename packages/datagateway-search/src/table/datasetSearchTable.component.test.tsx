@@ -326,8 +326,11 @@ describe('Dataset table component', () => {
   it('renders search results in isis correctly', async () => {
     renderComponent('isis');
 
-    const rows = await findAllRows();
-    expect(rows).toHaveLength(1);
+    let rows: HTMLElement[];
+    await waitFor(async () => {
+      rows = await findAllRows();
+      expect(rows).toHaveLength(1);
+    });
 
     // check that column headers are shown correctly.
     expect(await findColumnHeaderByName('datasets.name')).toBeInTheDocument();
