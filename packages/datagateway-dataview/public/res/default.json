@@ -148,7 +148,14 @@
       "extraInfo": "Extra info",
       "similarInvestigations": "Similar investigations",
       "findingSimilarInvestigations": "Finding similar investigations…",
-      "noSuggestion": "No suggestion available"
+      "noSuggestion": "No suggestion available",
+      "similarInvestigationListPaginationLabel": {
+        "pageButton": "Go to page {{page}} of similar investigations",
+        "firstPageButton": "Go to the first page of similar investigations",
+        "lastPageButton": "Go to the last page of similar investigations",
+        "nextButton": "Go to the next page of similar investigations",
+        "prevButton": "Go to the previous page of similar investigations"
+      }
     }
   },
   "datasets": {

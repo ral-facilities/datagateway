@@ -1840,7 +1840,10 @@ describe('investigation api functions', () => {
           score: 0.4,
         },
       ],
-      topics: [],
+      topics: [
+        ['topic1', 0.1],
+        ['topic2', 0.2],
+      ],
     };
 
     it('queries for investigations similar to the given investigation and sorts the result by their relevance from the most relevant to the least', async () => {
@@ -1858,52 +1861,58 @@ describe('investigation api functions', () => {
 
       await waitFor(() => result.current.isSuccess);
 
-      expect(result.current.data).toEqual([
-        {
-          doc: {
-            id: 2,
-            visitId: 'visitId',
-            name: 'Suggested investigation 2 name',
-            title: 'Suggested investigation 2',
-            summary: 'Suggested investigation 2 summary',
-            doi: 'doi2',
+      expect(result.current.data).toEqual({
+        docs: [
+          {
+            doc: {
+              id: 2,
+              visitId: 'visitId',
+              name: 'Suggested investigation 2 name',
+              title: 'Suggested investigation 2',
+              summary: 'Suggested investigation 2 summary',
+              doi: 'doi2',
+            },
+            score: 0.9,
           },
-          score: 0.9,
-        },
-        {
-          doc: {
-            id: 3,
-            visitId: 'visitId',
-            name: 'Suggested investigation 3 name',
-            title: 'Suggested investigation 3',
-            summary: 'Suggested investigation 3 summary',
-            doi: 'doi3',
+          {
+            doc: {
+              id: 3,
+              visitId: 'visitId',
+              name: 'Suggested investigation 3 name',
+              title: 'Suggested investigation 3',
+              summary: 'Suggested investigation 3 summary',
+              doi: 'doi3',
+            },
+            score: 0.5,
           },
-          score: 0.5,
-        },
-        {
-          doc: {
-            id: 4,
-            visitId: 'visitId',
-            name: 'Suggested investigation 4 name',
-            title: 'Suggested investigation 4',
-            summary: 'Suggested investigation 4 summary',
-            doi: 'doi4',
+          {
+            doc: {
+              id: 4,
+              visitId: 'visitId',
+              name: 'Suggested investigation 4 name',
+              title: 'Suggested investigation 4',
+              summary: 'Suggested investigation 4 summary',
+              doi: 'doi4',
+            },
+            score: 0.4,
           },
-          score: 0.4,
-        },
-        {
-          doc: {
-            id: 1,
-            visitId: 'visitId',
-            name: 'Suggested investigation 1 name',
-            title: 'Suggested investigation 1',
-            summary: 'Suggested investigation 1 summary',
-            doi: 'doi1',
+          {
+            doc: {
+              id: 1,
+              visitId: 'visitId',
+              name: 'Suggested investigation 1 name',
+              title: 'Suggested investigation 1',
+              summary: 'Suggested investigation 1 summary',
+              doi: 'doi1',
+            },
+            score: 0.1,
           },
-          score: 0.1,
-        },
-      ]);
+        ],
+        topics: [
+          ['topic2', 0.2],
+          ['topic1', 0.1],
+        ],
+      });
     });
   });
 });

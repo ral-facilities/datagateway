@@ -5,9 +5,7 @@ import type {
 } from 'datagateway-common';
 import axios, { AxiosResponse } from 'axios';
 import { render, screen } from '@testing-library/react';
-import SuggestedInvestigationsSection, {
-  MAX_SUGGESTION_COUNT,
-} from './suggestedInvestigationsSection.component';
+import SuggestedInvestigationsSection from './suggestedInvestigationsSection.component';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
@@ -57,8 +55,33 @@ const mockSuggestions: InvestigationSuggestions = {
       },
       score: 0.9,
     },
+    {
+      doc: {
+        id: 5,
+        visitId: 'visitId',
+        name: 'Suggested investigation 5 name',
+        title: 'Suggested investigation 5',
+        summary: 'Suggested investigation 5 summary',
+        doi: 'doi5',
+      },
+      score: 0.6,
+    },
+    {
+      doc: {
+        id: 6,
+        visitId: 'visitId',
+        name: 'Suggested investigation 6 name',
+        title: 'Suggested investigation 6',
+        summary: 'Suggested investigation 6 summary',
+        doi: 'doi6',
+      },
+      score: 0.5,
+    },
   ],
-  topics: [],
+  topics: [
+    ['topic1', 0.7],
+    ['topic2', 0.9],
+  ],
 };
 
 const MOCK_INVESTIGATION: Investigation = {
@@ -78,7 +101,7 @@ describe('SuggestedInvestigationsSection', () => {
     );
   }
 
-  it(`should render a list of max ${MAX_SUGGESTION_COUNT} suggested investigations for the given investigation`, async () => {
+  it('should render a paginated list of suggested investigations for the given investigation', async () => {
     axios.get = jest.fn().mockImplementation(
       (): Promise<Partial<AxiosResponse<InvestigationSuggestions>>> =>
         Promise.resolve({
@@ -99,8 +122,15 @@ describe('SuggestedInvestigationsSection', () => {
       })
     );
 
+    const topicChips = await screen.getAllByTestId(
+      /suggested-investigations-section-topic-/
+    );
+    expect(topicChips).toHaveLength(2);
+    expect(topicChips[0]).toHaveTextContent('topic2');
+    expect(topicChips[1]).toHaveTextContent('topic1');
+
     const suggestionLinks = await screen.findAllByRole('link');
-    expect(suggestionLinks).toHaveLength(4);
+    expect(suggestionLinks).toHaveLength(5);
 
     expect(
       screen.getByRole('link', { name: 'Suggested investigation 1' })
@@ -114,6 +144,24 @@ describe('SuggestedInvestigationsSection', () => {
     expect(
       screen.getByRole('link', { name: 'Suggested investigation 4' })
     ).toHaveAttribute('href', 'https://doi.org/doi4');
+    expect(
+      screen.getByRole('link', { name: 'Suggested investigation 5' })
+    ).toHaveAttribute('href', 'https://doi.org/doi5');
+    expect(
+      screen.queryByRole('link', { name: 'Suggested investigation 6' })
+    ).toBeNull();
+
+    // go to the next page
+    await user.click(
+      screen.getByRole('button', {
+        name: 'investigations.landingPage.similarInvestigationListPaginationLabel.nextButton',
+      })
+    );
+
+    expect(await screen.findAllByRole('link')).toHaveLength(1);
+    expect(
+      screen.getByRole('link', { name: 'Suggested investigation 6' })
+    ).toBeInTheDocument();
   });
 
   it('should show loading label and be un-expandable when fetching suggestions', () => {

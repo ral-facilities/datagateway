@@ -930,13 +930,13 @@ export const useSimilarInvestigations = ({
   investigation,
 }: {
   investigation: Investigation;
-}): UseQueryResult<SuggestedInvestigation[], AxiosError> => {
+}): UseQueryResult<InvestigationSuggestions, AxiosError> => {
   const baseUrl = 'http://172.16.103.71:4001/api';
 
   return useQuery<
-    { docs: SuggestedInvestigation[] },
+    InvestigationSuggestions,
     AxiosError,
-    SuggestedInvestigation[],
+    InvestigationSuggestions,
     ['similarInvestigations', Investigation['id']]
   >(
     ['similarInvestigations', investigation.id],
@@ -947,8 +947,13 @@ export const useSimilarInvestigations = ({
         })
         .then((response) => response.data),
     {
-      select: (data) =>
-        data.docs.sort((resultA, resultB) => resultB.score - resultA.score),
+      select: (data) => {
+        data.docs.sort((resultA, resultB) => resultB.score - resultA.score);
+        data.topics.sort(
+          ([, topicAScore], [, topicBScore]) => topicBScore - topicAScore
+        );
+        return data;
+      },
       onError: (error) => {
         handleICATError(error);
       },
