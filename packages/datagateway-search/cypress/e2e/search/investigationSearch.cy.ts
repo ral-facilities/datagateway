@@ -13,6 +13,7 @@ describe('Investigation search tab', () => {
     cy.intercept('**/search/documents*', {
       fixture: 'investigationSearchResults.json',
     });
+    cy.intercept('**/investigations?*').as('investigations');
     cy.intercept('**/datasets/count*', {
       body: 1,
     });
