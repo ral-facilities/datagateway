@@ -353,6 +353,29 @@ describe('DownloadConfirmDialog', () => {
 
     expect(closeFunction).toHaveBeenCalled();
   });
+
+  it('shows loading status when submitting cart', async () => {
+    (submitCart as jest.Mock).mockReturnValue(
+      new Promise((_) => {
+        // never resolve the promise to simulate loading state
+      })
+    );
+
+    renderWrapper(100, false, true);
+
+    // click on download button to begin download
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'downloadConfirmDialog.download',
+      })
+    );
+
+    const downloadButton = await screen.findByRole('button', {
+      name: 'downloadConfirmDialog.submitting_cart',
+    });
+    expect(downloadButton).toBeInTheDocument();
+    expect(downloadButton).toBeDisabled();
+  });
 });
 
 describe('DownloadConfirmDialog - renders the estimated download speed/time table with varying values', () => {
