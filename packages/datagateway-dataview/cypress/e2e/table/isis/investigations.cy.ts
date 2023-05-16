@@ -9,7 +9,7 @@ describe('ISIS - Investigations Table', () => {
     );
     // Check that we have received the size from the API as this will produce
     // a re-render which can prevent some interactions.
-    cy.contains('[aria-rowindex="1"] [aria-colindex="6"]', '11.36 GB').should(
+    cy.contains('[aria-rowindex="1"] [aria-colindex="6"]', '3.46 GB').should(
       'exist'
     );
   });
@@ -207,7 +207,7 @@ describe('ISIS - Investigations Table', () => {
         'INVESTIGATION 8'
       );
       // check that size is correct after filtering
-      cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains('11.36 GB');
+      cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains('3.46 GB');
     });
 
     it('date between', () => {

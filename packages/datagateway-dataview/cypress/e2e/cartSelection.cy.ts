@@ -869,7 +869,7 @@ describe('Add/remove from cart functionality', () => {
   describe('should be able to select investigations', () => {
     beforeEach(() => {
       cy.intercept('**/investigations?*').as('getInvestigations');
-      cy.intercept('**/investigations/count').as('getInvestigationCount');
+      cy.intercept('**/investigations/count?*').as('getInvestigationCount');
     });
 
     describe('in generic table', () => {
@@ -1099,7 +1099,7 @@ describe('Add/remove from cart functionality', () => {
 
     describe('in ISIS browse table', () => {
       beforeEach(() => {
-        cy.visit('/browse/instrument/1/facilityCycle/19/investigation').wait([
+        cy.visit('/browse/instrument/2/facilityCycle/8/investigation').wait([
           '@getInvestigations',
           '@getInvestigations',
           '@getInvestigationCount',

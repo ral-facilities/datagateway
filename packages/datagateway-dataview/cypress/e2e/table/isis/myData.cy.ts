@@ -21,7 +21,7 @@ describe('ISIS - MyData Table', () => {
       });
       // Check that we have received the size from the API as this will produce
       // a re-render which can prevent some interactions.
-      cy.contains('[aria-rowindex="1"] [aria-colindex="8"]', '11.36 GB').should(
+      cy.contains('[aria-rowindex="1"] [aria-colindex="8"]', '3.46 GB').should(
         'exist'
       );
     });
@@ -211,7 +211,7 @@ describe('ISIS - MyData Table', () => {
         cy.get('[aria-rowcount="1"]').should('exist');
 
         // check that size is correct after filtering
-        cy.get('[aria-rowindex="1"] [aria-colindex="8"]').contains('11.36 GB');
+        cy.get('[aria-rowindex="1"] [aria-colindex="8"]').contains('3.46 GB');
 
         cy.get('#role-selector').click();
         cy.get('[role="option"]').first().click();

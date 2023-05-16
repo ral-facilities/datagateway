@@ -106,7 +106,7 @@ describe('ISIS - FacilityCycles Table', () => {
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        '2001-04-02 00:00:00+01:00'
+        '2001-04-02 00:00:00'
       );
     });
 
@@ -121,7 +121,7 @@ describe('ISIS - FacilityCycles Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        '2004-06-03 00:00:00+01:00'
+        '2004-06-03 00:00:00'
       );
     });
 
@@ -139,7 +139,7 @@ describe('ISIS - FacilityCycles Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        '2001-04-02 00:00:00+01:00'
+        '2001-04-02 00:00:00'
       );
     });
   });
@@ -150,7 +150,7 @@ describe('ISIS - FacilityCycles Table', () => {
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        '2004-06-03 00:00:00+01:00'
+        '2004-06-03 00:00:00'
       );
     });
 
@@ -174,7 +174,7 @@ describe('ISIS - FacilityCycles Table', () => {
 
       cy.get('[aria-rowcount="2"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        '2004-06-03 00:00:00+01:00'
+        '2004-06-03 00:00:00'
       );
     });
 
