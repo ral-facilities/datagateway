@@ -2,10 +2,9 @@ describe('ISIS - FacilityCycles Cards', () => {
   beforeEach(() => {
     cy.intercept('**/facilitycycles/count*').as('getFacilityCyclesCount');
     cy.intercept('**/facilitycycles?order*').as('getFacilityCyclesOrder');
-    cy.intercept('instruments/1').as('instrument');
     cy.login();
-    cy.visit('/browse/instrument/1/facilityCycle?view=card').wait(
-      ['@instrument', '@getFacilityCyclesCount', '@getFacilityCyclesOrder'],
+    cy.visit('/browse/instrument/4/facilityCycle?view=card').wait(
+      ['@getFacilityCyclesCount', '@getFacilityCyclesOrder'],
       { timeout: 10000 }
     );
   });
@@ -22,11 +21,11 @@ describe('ISIS - FacilityCycles Cards', () => {
   it('should be able to click an investigation to see its datasets', () => {
     cy.get('[data-testid="card"]')
       .first()
-      .contains('2004 cycle 4')
+      .contains('2004 cycle 3')
       .click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/19/investigation'
+      '/browse/instrument/4/facilityCycle/18/investigation'
     );
   });
 
@@ -44,17 +43,17 @@ describe('ISIS - FacilityCycles Cards', () => {
         .wait('@getFacilityCyclesOrder', { timeout: 10000 });
       cy.contains('[role="button"]', 'asc').should('exist');
       cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('[data-testid="card"]').first().contains('2004 cycle 3');
+      cy.get('[data-testid="card"]').first().contains('2001 cycle 2');
 
       cy.contains('[role="button"]', 'Start Date').click();
       cy.contains('[role="button"]', 'asc').should('not.exist');
       cy.contains('[role="button"]', 'desc').should('exist');
-      cy.get('[data-testid="card"]').first().contains('2004 cycle 4');
+      cy.get('[data-testid="card"]').first().contains('2004 cycle 3');
 
       cy.contains('[role="button"]', 'Start Date').click();
       cy.contains('[role="button"]', 'asc').should('not.exist');
       cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('[data-testid="card"]').first().contains('2004 cycle 3');
+      cy.get('[data-testid="card"]').first().contains('2001 cycle 2');
     });
 
     it('multiple fields', () => {
@@ -63,14 +62,14 @@ describe('ISIS - FacilityCycles Cards', () => {
         .wait('@getFacilityCyclesOrder', { timeout: 10000 });
       cy.contains('[role="button"]', 'asc').should('exist');
       cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('[data-testid="card"]').first().contains('2004 cycle 3');
+      cy.get('[data-testid="card"]').first().contains('2001 cycle 2');
 
       cy.contains('[role="button"]', 'End Date')
         .click()
         .wait('@getFacilityCyclesOrder', { timeout: 10000 });
       cy.contains('[role="button"]', 'asc').should('exist');
       cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('[data-testid="card"]').first().contains('2004 cycle 3');
+      cy.get('[data-testid="card"]').first().contains('2001 cycle 2');
     });
   });
 
@@ -86,15 +85,15 @@ describe('ISIS - FacilityCycles Cards', () => {
       cy.get('[data-testid="advanced-filters-link"]').click();
       cy.get('[aria-label="Filter by Name"]')
         .first()
-        .type('4')
+        .type('3')
         .wait(['@getFacilityCyclesCount', '@getFacilityCyclesOrder'], {
           timeout: 10000,
         });
-      cy.get('[data-testid="card"]').first().contains('2004 cycle 3');
+      cy.get('[data-testid="card"]').first().contains('2002 cycle 3');
 
       cy.get('input[id="Start Date filter from"]')
         .click()
-        .type('2004-08-01')
+        .type('2004-06-01')
         .wait(['@getFacilityCyclesCount'], { timeout: 10000 });
       cy.get('input[aria-label="Start Date filter to"]')
         .parent()
@@ -110,7 +109,7 @@ describe('ISIS - FacilityCycles Cards', () => {
         'have.value',
         date.toISOString().slice(0, 10)
       );
-      cy.get('[data-testid="card"]').first().contains('2004 cycle 4');
+      cy.get('[data-testid="card"]').first().contains('2004 cycle 3');
     });
   });
 });

@@ -3,13 +3,13 @@ describe('ISIS - Investigations Table', () => {
     cy.intercept('**/investigations/count*').as('getInvestigationsCount');
     cy.intercept('**/investigations?order*').as('getInvestigationsOrder');
     cy.login();
-    cy.visit('/browse/instrument/1/facilityCycle/19/investigation').wait(
+    cy.visit('/browse/instrument/2/facilityCycle/8/investigation').wait(
       ['@getInvestigationsCount', '@getInvestigationsOrder'],
       { timeout: 10000 }
     );
     // Check that we have received the size from the API as this will produce
     // a re-render which can prevent some interactions.
-    cy.contains('[aria-rowindex="1"] [aria-colindex="6"]', '2.82 GB').should(
+    cy.contains('[aria-rowindex="1"] [aria-colindex="6"]', '11.36 GB').should(
       'exist'
     );
   });
@@ -27,7 +27,7 @@ describe('ISIS - Investigations Table', () => {
     cy.get('[role="gridcell"] a').first().click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/19/investigation/19'
+      '/browse/instrument/2/facilityCycle/8/investigation/8'
     );
   });
 
@@ -148,7 +148,7 @@ describe('ISIS - Investigations Table', () => {
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Fine strong education fill maintain. Family plant any. Issue party everything should rest management.'
+        'Customer home food important.'
       );
     });
 
@@ -163,7 +163,7 @@ describe('ISIS - Investigations Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Fine strong education fill maintain. Family plant any. Issue party everything should rest management.'
+        'Customer home food important.'
       );
     });
 
@@ -181,7 +181,7 @@ describe('ISIS - Investigations Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Fine strong education fill maintain. Family plant any. Issue party everything should rest management.'
+        'Customer home food important.'
       );
     });
 
@@ -190,21 +190,24 @@ describe('ISIS - Investigations Table', () => {
       cy.contains('[role="button"]', 'Title').click();
 
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Fine strong education fill maintain. Family plant any. Issue party everything should rest management.'
+        'Customer home food important.'
       );
     });
   });
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Title"]').first().type('again');
+      cy.get('[aria-label="Filter by Title"]').first().type('offer');
+
+      cy.get('[role="progressbar"]').should('be.visible');
+      cy.get('[role="progressbar"]').should('not.be.visible');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
-        'INVESTIGATION 19'
+        'INVESTIGATION 8'
       );
       // check that size is correct after filtering
-      cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains('2.82 GB');
+      cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains('11.36 GB');
     });
 
     it('date between', () => {
@@ -226,9 +229,7 @@ describe('ISIS - Investigations Table', () => {
       );
 
       cy.get('[aria-rowcount="1"]').should('not.exist');
-      cy.contains(
-        'Fine strong education fill maintain. Family plant any. Issue party everything should rest management.'
-      ).should('not.exist');
+      cy.contains('Customer home food important.').should('not.exist');
     });
 
     it('multiple columns', () => {
@@ -292,9 +293,7 @@ describe('ISIS - Investigations Table', () => {
       // Waits needed due to suspected race condition on fetching the panels
       // eslint-disable-next-line cypress/no-unnecessary-waiting
       cy.get('#details-panel')
-        .contains(
-          'Fine strong education fill maintain. Family plant any. Issue party everything should rest management.'
-        )
+        .contains('Customer home food important.')
         .should('be.visible')
         .wait(200);
 
@@ -307,7 +306,7 @@ describe('ISIS - Investigations Table', () => {
 
       // eslint-disable-next-line cypress/no-unnecessary-waiting
       cy.get('#details-panel')
-        .contains('Ashley Brown')
+        .contains('Randy Beasley')
         .should('be.visible')
         .wait(200);
 
@@ -316,7 +315,7 @@ describe('ISIS - Investigations Table', () => {
       );
       cy.get('[aria-controls="investigation-samples-panel"]').click();
 
-      cy.get('#details-panel').contains('SAMPLE 19').should('be.visible');
+      cy.get('#details-panel').contains('SAMPLE 8').should('be.visible');
 
       cy.get('[aria-controls="investigation-publications-panel"]').should(
         'be.visible'
@@ -324,9 +323,7 @@ describe('ISIS - Investigations Table', () => {
       cy.get('[aria-controls="investigation-publications-panel"]').click();
 
       cy.get('#details-panel')
-        .contains(
-          'Value impact paper apply likely. Position recently speech. Onto most shake necessary. Soon standard early space dream none. The bring American region institution road. Price yet sign argue itself.'
-        )
+        .contains('Win detail TV shake population.')
         .should('be.visible');
     });
 
@@ -336,7 +333,7 @@ describe('ISIS - Investigations Table', () => {
 
       cy.location('pathname').should(
         'eq',
-        '/browse/instrument/1/facilityCycle/19/investigation/19/dataset'
+        '/browse/instrument/2/facilityCycle/8/investigation/8/dataset'
       );
     });
 

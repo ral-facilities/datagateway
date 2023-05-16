@@ -7,18 +7,21 @@ describe('ISIS - MyData Table', () => {
   describe('Logged in tests', () => {
     beforeEach(() => {
       cy.intercept('**/investigations/count?*').as('getInvestigationCount');
-      cy.login({
-        username: 'root',
-        password: 'pw',
-        mechanism: 'simple',
-      });
+      cy.login(
+        {
+          username: 'root',
+          password: 'pw',
+          mechanism: 'simple',
+        },
+        'Michael222'
+      );
       // TODO - Does wait() need to be removed?
       cy.visit('/my-data/ISIS').wait(['@getInvestigationCount'], {
         timeout: 10000,
       });
       // Check that we have received the size from the API as this will produce
       // a re-render which can prevent some interactions.
-      cy.contains('[aria-rowindex="1"] [aria-colindex="8"]', '3.12 GB').should(
+      cy.contains('[aria-rowindex="1"] [aria-colindex="8"]', '11.36 GB').should(
         'exist'
       );
     });
@@ -56,7 +59,7 @@ describe('ISIS - MyData Table', () => {
       cy.get('[role="gridcell"] a').first().click({ force: true });
       cy.location('pathname').should(
         'eq',
-        '/browse/instrument/3/facilityCycle/1/investigation/1'
+        '/browse/instrument/2/facilityCycle/8/investigation/8'
       );
     });
 
@@ -153,7 +156,7 @@ describe('ISIS - MyData Table', () => {
         cy.get('[aria-sort="ascending"]').should('exist');
         cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
         cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-          'Analysis reflect work or hour color maybe.'
+          'Customer home food important.'
         );
       });
 
@@ -167,7 +170,7 @@ describe('ISIS - MyData Table', () => {
           '0'
         );
         cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-          'Analysis reflect work or hour color maybe.'
+          'Customer home food important.'
         );
       });
 
@@ -181,7 +184,7 @@ describe('ISIS - MyData Table', () => {
           '0'
         );
         cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-          'Analysis reflect work or hour color maybe.'
+          'Customer home food important.'
         );
       });
 
@@ -190,7 +193,7 @@ describe('ISIS - MyData Table', () => {
         cy.contains('[role="button"]', 'Instrument').click();
 
         cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-          'Analysis reflect work or hour color maybe.'
+          'Customer home food important.'
         );
       });
     });
@@ -203,12 +206,12 @@ describe('ISIS - MyData Table', () => {
         cy.get('[role="listbox"]')
           .find('[role="option"]')
           .should('have.length', 2);
-        cy.get('[role="option"][data-value="PI"]').click();
+        cy.get('[role="option"][data-value="CI"]').click();
 
         cy.get('[aria-rowcount="1"]').should('exist');
 
         // check that size is correct after filtering
-        cy.get('[aria-rowindex="1"] [aria-colindex="8"]').contains('3.12 GB');
+        cy.get('[aria-rowindex="1"] [aria-colindex="8"]').contains('11.36 GB');
 
         cy.get('#role-selector').click();
         cy.get('[role="option"]').first().click();
@@ -221,7 +224,7 @@ describe('ISIS - MyData Table', () => {
 
         cy.get('[aria-rowcount="1"]').should('exist');
         cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains(
-          'INVESTIGATION 1'
+          'INVESTIGATION 8'
         );
       });
 
@@ -239,7 +242,7 @@ describe('ISIS - MyData Table', () => {
       });
 
       it('multiple columns', () => {
-        cy.get('[aria-label="Filter by DOI"]').first().type('45');
+        cy.get('[aria-label="Filter by DOI"]').first().type('66');
 
         cy.get('[aria-rowcount="1"]').should('exist');
 
@@ -293,7 +296,7 @@ describe('ISIS - MyData Table', () => {
         );
 
         cy.get('#details-panel')
-          .contains('Analysis reflect work or hour color maybe.')
+          .contains('Customer home food important.')
           .should('be.visible');
 
         cy.get('[aria-controls="investigation-samples-panel"]').should(
@@ -301,14 +304,14 @@ describe('ISIS - MyData Table', () => {
         );
         cy.get('[aria-controls="investigation-samples-panel"]').click();
 
-        cy.get('#details-panel').contains('SAMPLE 1').should('be.visible');
+        cy.get('#details-panel').contains('SAMPLE 8').should('be.visible');
 
         cy.get('[aria-controls="investigation-users-panel"]').should(
           'be.visible'
         );
         cy.get('[aria-controls="investigation-users-panel"]').click();
 
-        cy.get('#details-panel').contains('Colleen Heath').should('be.visible');
+        cy.get('#details-panel').contains('Randy Beasley').should('be.visible');
 
         cy.get('[aria-controls="investigation-publications-panel"]').should(
           'be.visible'
@@ -316,7 +319,7 @@ describe('ISIS - MyData Table', () => {
         cy.get('[aria-controls="investigation-publications-panel"]').click();
 
         cy.get('#details-panel')
-          .contains('Simple notice since view check over through there.')
+          .contains('Win detail TV shake population.')
           .should('be.visible');
       });
 
@@ -326,23 +329,8 @@ describe('ISIS - MyData Table', () => {
 
         cy.location('pathname').should(
           'eq',
-          '/browse/instrument/3/facilityCycle/1/investigation/1/dataset'
+          '/browse/instrument/2/facilityCycle/8/investigation/8/dataset'
         );
-      });
-
-      it.skip('when another row is showing details', () => {
-        // Unable to test as each user only owns a single investigation.
-        cy.get('[aria-label="Show details"]').eq(1).click();
-
-        cy.get('[aria-label="Show details"]').first().click();
-
-        cy.get('#details-panel')
-          .contains('Resource himself season pattern which cold spring.')
-          .should('be.visible');
-        cy.get('#details-panel')
-          .contains('Experience ready course option.')
-          .should('not.exist');
-        cy.get('[aria-label="Hide details"]').should('have.length', 1);
       });
 
       it('and then not view details anymore', () => {

@@ -74,6 +74,7 @@ const ISISMyDataTable = (): React.ReactElement => {
         {
           investigationInstruments: 'instrument',
         },
+        { investigationFacilityCycles: 'facilityCycle' },
         { studyInvestigations: 'study' },
       ]),
     },

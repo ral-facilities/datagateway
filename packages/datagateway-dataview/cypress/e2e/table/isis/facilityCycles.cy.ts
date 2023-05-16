@@ -1,7 +1,7 @@
 describe('ISIS - FacilityCycles Table', () => {
   beforeEach(() => {
     cy.login();
-    cy.visit('/browse/instrument/1/facilityCycle');
+    cy.visit('/browse/instrument/4/facilityCycle');
   });
 
   it('should load correctly', () => {
@@ -17,7 +17,7 @@ describe('ISIS - FacilityCycles Table', () => {
     cy.get('[role="gridcell"] a').first().click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/19/investigation'
+      '/browse/instrument/4/facilityCycle/18/investigation'
     );
   });
 
@@ -36,7 +36,7 @@ describe('ISIS - FacilityCycles Table', () => {
       .then((window) => {
         const windowWidth = window.innerWidth;
         columnWidth = windowWidth / 3;
-        columnWidth = Math.round(columnWidth * 100) / 100;
+        columnWidth = Math.floor(columnWidth * 100) / 100;
       })
       .then(() => expect(columnWidth).to.not.equal(0));
 
@@ -48,13 +48,13 @@ describe('ISIS - FacilityCycles Table', () => {
 
     cy.get('@titleColumn').should(($column) => {
       let { width } = $column[0].getBoundingClientRect();
-      width = Math.round(width * 100) / 100;
+      width = Math.floor(width * 100) / 100;
       expect(width).to.equal(columnWidth);
     });
 
     cy.get('@startDateColumn').should(($column) => {
       let { width } = $column[0].getBoundingClientRect();
-      width = Math.round(width * 100) / 100;
+      width = Math.floor(width * 100) / 100;
       expect(width).to.equal(columnWidth);
     });
 
@@ -106,7 +106,7 @@ describe('ISIS - FacilityCycles Table', () => {
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        '2004-06-03 00:00:00+00:00'
+        '2001-04-02 00:00:00+01:00'
       );
     });
 
@@ -121,7 +121,7 @@ describe('ISIS - FacilityCycles Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        '2004-08-04 00:00:00+00:00'
+        '2004-06-03 00:00:00+01:00'
       );
     });
 
@@ -139,32 +139,23 @@ describe('ISIS - FacilityCycles Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        '2004-06-03 00:00:00+00:00'
-      );
-    });
-
-    it('multiple columns', () => {
-      cy.contains('[role="button"]', 'Start Date').click();
-      cy.contains('[role="button"]', 'Name').click();
-
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        '2004-06-03 00:00:00+00:00'
+        '2001-04-02 00:00:00+01:00'
       );
     });
   });
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Name"]').first().type('3');
+      cy.get('[aria-label="Filter by Name"]').first().type('4');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        '2004-06-03 00:00:00+00:00'
+        '2004-06-03 00:00:00+01:00'
       );
     });
 
     it('date between', () => {
-      cy.get('input[id="Start Date filter from"]').type('204-04-02');
+      cy.get('input[id="Start Date filter from"]').type('2002-06-01');
 
       cy.get('input[aria-label="Start Date filter to"]')
         .parent()
@@ -183,14 +174,14 @@ describe('ISIS - FacilityCycles Table', () => {
 
       cy.get('[aria-rowcount="2"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        '2004-08-04 00:00:00+00:00'
+        '2004-06-03 00:00:00+01:00'
       );
     });
 
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Name"]').first().type('3');
 
-      cy.get('input[id="Start Date filter from"]').type('204-08-03');
+      cy.get('input[id="Start Date filter from"]').type('2004-06-01');
 
       cy.get('[aria-rowcount="1"]').should('exist');
     });
