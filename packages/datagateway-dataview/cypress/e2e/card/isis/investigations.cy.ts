@@ -234,7 +234,7 @@ describe('ISIS - Investigations Cards', () => {
         .first()
         .contains('Customer home food important.');
       cy.get('input[id="Start Date filter to"]')
-        .type('2002-07-01')
+        .type('2002-02-01')
         .wait(['@getInvestigationsCount'], { timeout: 10000 });
       cy.get('[data-testid="card"]').should('not.exist');
     });

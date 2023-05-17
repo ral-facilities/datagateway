@@ -200,7 +200,7 @@ describe('ISIS - Investigations Table', () => {
       cy.get('[aria-label="Filter by Title"]').first().type('offer');
 
       cy.get('[role="progressbar"]').should('be.visible');
-      cy.get('[role="progressbar"]').should('not.be.visible');
+      cy.get('[role="progressbar"]').should('not.exist');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(

@@ -869,7 +869,7 @@ describe('Add/remove from cart functionality', () => {
   describe('should be able to select investigations', () => {
     beforeEach(() => {
       cy.intercept('**/investigations?*').as('getInvestigations');
-      cy.intercept('**/investigations/count?*').as('getInvestigationCount');
+      cy.intercept('**/investigations/count*').as('getInvestigationCount');
     });
 
     describe('in generic table', () => {

@@ -31,12 +31,12 @@ describe('ISIS - FacilityCycles Table', () => {
   it('should be able to resize a column', () => {
     let columnWidth = 0;
 
-    // Using Math.floor to solve rounding errors when calculating 1000 / 3
+    // Using Math.round to solve rounding errors when calculating 1000 / 3
     cy.window()
       .then((window) => {
         const windowWidth = window.innerWidth;
-        columnWidth = windowWidth / 3;
-        columnWidth = Math.floor(columnWidth * 100) / 100;
+        columnWidth = Math.round(windowWidth / 3);
+        columnWidth = Math.round((columnWidth * 100) / 100);
       })
       .then(() => expect(columnWidth).to.not.equal(0));
 
@@ -48,13 +48,13 @@ describe('ISIS - FacilityCycles Table', () => {
 
     cy.get('@titleColumn').should(($column) => {
       let { width } = $column[0].getBoundingClientRect();
-      width = Math.floor(width * 100) / 100;
+      width = Math.round((width * 100) / 100);
       expect(width).to.equal(columnWidth);
     });
 
     cy.get('@startDateColumn').should(($column) => {
       let { width } = $column[0].getBoundingClientRect();
-      width = Math.floor(width * 100) / 100;
+      width = Math.round((width * 100) / 100);
       expect(width).to.equal(columnWidth);
     });
 
