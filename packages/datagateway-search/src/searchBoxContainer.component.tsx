@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Typography, Link, Theme, Box, styled } from '@mui/material';
+import { Box, Grid, Link, styled, Theme, Typography } from '@mui/material';
 import SelectDates from './search/datePicker.component';
 import CheckboxesGroup from './search/checkBoxes.component';
 import SearchButton from './search/searchButton.component';
@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 import { StateType } from './state/app.types';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Link as RouterLink } from 'react-router-dom';
+import SemanticSearchToggle from './search/semanticSearchToggle.component';
 
 const ContainerBox = styled(Box)(({ theme }) => ({
   maxWidth: '1920px',
@@ -132,6 +133,8 @@ const SearchBoxContainer = (
           </div>
         </Box>
       </div>
+
+      <SemanticSearchToggle />
     </ContainerBox>
   );
 };

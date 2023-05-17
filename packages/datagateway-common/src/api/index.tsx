@@ -71,6 +71,7 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
   const startDateString = query.get('startDate');
   const endDateString = query.get('endDate');
   const currentTab = query.get('currentTab');
+  const semanticSearchEnabled = query.get('semanticSearch');
 
   // Parse filters in the query.
   const parsedFilters: FiltersType = {};
@@ -129,6 +130,7 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
     startDate: startDate,
     endDate: endDate,
     currentTab: currentTab ? currentTab : 'investigation',
+    semanticSearch: semanticSearchEnabled === 'true',
   };
 
   return params;
@@ -481,6 +483,23 @@ export const usePushSearchToggles = (): ((
         dataset,
         datafile,
         investigation,
+      };
+      push(`?${parseQueryToSearch(query).toString()}`);
+    },
+    [push]
+  );
+};
+
+export const usePushSemanticSearchEnabled = (): ((
+  enabled: boolean
+) => void) => {
+  const { push } = useHistory();
+
+  return React.useCallback(
+    (enabled: boolean) => {
+      const query: QueryParams = {
+        ...parseSearchToQuery(window.location.search),
+        semanticSearch: enabled,
       };
       push(`?${parseQueryToSearch(query).toString()}`);
     },
