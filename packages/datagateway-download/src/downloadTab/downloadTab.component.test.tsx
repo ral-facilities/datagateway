@@ -11,9 +11,8 @@ import { DownloadSettingsContext } from '../ConfigProvider';
 import {
   downloadDeleted,
   fetchDownloads,
-  getDatafileCount,
   getDataUrl,
-  getSize,
+  getFileSizeAndCount,
   removeAllDownloadCartItems,
   removeFromCart,
 } from '../downloadApi';
@@ -64,10 +63,9 @@ describe('DownloadTab', () => {
       );
     });
 
-    (getSize as jest.MockedFunction<typeof getSize>).mockResolvedValue(1);
     (
-      getDatafileCount as jest.MockedFunction<typeof getDatafileCount>
-    ).mockResolvedValue(7);
+      getFileSizeAndCount as jest.MockedFunction<typeof getFileSizeAndCount>
+    ).mockResolvedValue({ fileSize: 1, fileCount: 7 });
   });
 
   const renderComponent = (): RenderResult => {
