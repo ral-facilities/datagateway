@@ -6,7 +6,6 @@ import {
   waitFor,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { UserEvent } from '@testing-library/user-event/dist/types/setup';
 import { fetchDownloadCart } from 'datagateway-common';
 import { createMemoryHistory } from 'history';
 import * as React from 'react';
@@ -15,8 +14,7 @@ import { Router } from 'react-router-dom';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import { mockCartItems, mockedSettings } from '../testData';
 import {
-  getDatafileCount,
-  getSize,
+  getFileSizeAndCount,
   removeAllDownloadCartItems,
   removeFromCart,
 } from '../downloadApi';
@@ -38,8 +36,7 @@ jest.mock('../downloadApi', () => {
   return {
     ...originalModule,
     removeAllDownloadCartItems: jest.fn(),
-    getSize: jest.fn(),
-    getDatafileCount: jest.fn(),
+    getFileSizeAndCount: jest.fn(),
     getIsTwoLevel: jest.fn().mockResolvedValue(true),
     removeFromCart: jest.fn(),
   };
@@ -67,7 +64,7 @@ const renderComponent = (): RenderResult =>
 
 describe('Download cart table component', () => {
   let holder, queryClient;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   const resetDOM = (): void => {
     if (holder) document.body.removeChild(holder);
@@ -100,10 +97,9 @@ describe('Download cart table component', () => {
       );
     });
 
-    (getSize as jest.MockedFunction<typeof getSize>).mockResolvedValue(1);
     (
-      getDatafileCount as jest.MockedFunction<typeof getDatafileCount>
-    ).mockResolvedValue(7);
+      getFileSizeAndCount as jest.MockedFunction<typeof getFileSizeAndCount>
+    ).mockResolvedValue({ fileSize: 1, fileCount: 7 });
   });
 
   afterEach(() => {
@@ -131,8 +127,8 @@ describe('Download cart table component', () => {
     ).toBeTruthy();
   });
 
-  it('should show progress indicator when calculating file count of cart', async () => {
-    (getDatafileCount as jest.Mock).mockImplementation(
+  it('should show progress indicator when calculating file count & size of cart', async () => {
+    (getFileSizeAndCount as jest.Mock).mockImplementation(
       () =>
         new Promise((_) => {
           // never resolve promise so that progress indicator stays visible.
@@ -144,15 +140,15 @@ describe('Download cart table component', () => {
     renderComponent();
 
     expect(
-      await screen.findByLabelText('downloadCart.calculating')
-    ).toBeInTheDocument();
+      await screen.findAllByLabelText('downloadCart.calculating')
+    ).toHaveLength(2);
   });
 
   it('should show total file count of the cart', async () => {
     renderComponent();
 
     expect(
-      await screen.findByText('downloadCart.number_of_files: 22 / 5000')
+      await screen.findByText('downloadCart.number_of_files: 28 / 5000')
     ).toBeTruthy();
   });
 
@@ -209,10 +205,9 @@ describe('Download cart table component', () => {
   });
 
   it('should disable download button when there are empty items in the cart ', async () => {
-    (getSize as jest.MockedFunction<typeof getSize>).mockResolvedValueOnce(0);
     (
-      getDatafileCount as jest.MockedFunction<typeof getDatafileCount>
-    ).mockResolvedValueOnce(0);
+      getFileSizeAndCount as jest.MockedFunction<typeof getFileSizeAndCount>
+    ).mockResolvedValue({ fileSize: 0, fileCount: 0 });
 
     renderComponent();
 
@@ -425,7 +420,7 @@ describe('Download cart table component', () => {
       await screen.findByText('downloadCart.total_size: 4 B', { exact: true })
     ).toBeTruthy();
     expect(
-      await screen.findByText('downloadCart.number_of_files: 22', {
+      await screen.findByText('downloadCart.number_of_files: 28', {
         exact: true,
       })
     ).toBeTruthy();
