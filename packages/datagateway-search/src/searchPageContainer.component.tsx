@@ -41,6 +41,7 @@ import {
   setInvestigationTab,
 } from './state/actions/actions';
 import { useIsFetching } from 'react-query';
+import SemanticSearchTable from './table/semanticSearchTable.component';
 
 export const storeFilters = (
   filters: FiltersType,
@@ -220,7 +221,12 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     () => parseSearchToQuery(location.search),
     [location.search]
   );
-  const { view, startDate, endDate } = queryParams;
+  const {
+    view,
+    startDate,
+    endDate,
+    semanticSearch: isSemanticSearchEnabled,
+  } = queryParams;
 
   const searchTextURL = queryParams.searchText ? queryParams.searchText : '';
 
@@ -237,15 +243,18 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
 
   //Do not allow these to be searched if they are not searchable (prevents URL
   //forcing them to be searched)
-  const investigation = searchableEntities.includes('investigation')
-    ? queryParams.investigation
-    : false;
-  const dataset = searchableEntities.includes('dataset')
-    ? queryParams.dataset
-    : false;
-  const datafile = searchableEntities.includes('datafile')
-    ? queryParams.datafile
-    : false;
+  const investigation =
+    searchableEntities.includes('investigation') && !isSemanticSearchEnabled
+      ? queryParams.investigation
+      : false;
+  const dataset =
+    searchableEntities.includes('dataset') && !isSemanticSearchEnabled
+      ? queryParams.dataset
+      : false;
+  const datafile =
+    searchableEntities.includes('datafile') && !isSemanticSearchEnabled
+      ? queryParams.datafile
+      : false;
 
   const pushView = useUpdateView('push');
   const replaceView = useUpdateView('replace');
@@ -255,6 +264,9 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const replaceSorts = useUpdateQueryParam('sort', 'replace');
   const replacePage = useUpdateQueryParam('page', 'replace');
   const replaceResults = useUpdateQueryParam('results', 'replace');
+
+  const [shouldShowSemanticSearchResults, setShouldShowSemanticSearchResults] =
+    React.useState(false);
 
   React.useEffect(() => {
     if (currentTab !== queryParams.currentTab) pushCurrentTab(currentTab);
@@ -335,24 +347,30 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     isFetchingNum > 0;
 
   const initiateSearch = React.useCallback(() => {
-    pushSearchText(searchText);
-    setSearchOnNextRender(true);
+    if (isSemanticSearchEnabled) {
+      setShouldShowSemanticSearchResults(true);
+    } else {
+      pushSearchText(searchText);
+      setShouldShowSemanticSearchResults(false);
+      setSearchOnNextRender(true);
 
-    localStorage.removeItem('investigationFilters');
-    localStorage.removeItem('datasetFilters');
-    localStorage.removeItem('datafileFilters');
-    localStorage.removeItem('investigationSort');
-    localStorage.removeItem('datasetSort');
-    localStorage.removeItem('datafileSort');
-    localStorage.removeItem('investigationPage');
-    localStorage.removeItem('datasetPage');
-    localStorage.removeItem('investigationResults');
-    localStorage.removeItem('datasetResults');
-    if (Object.keys(queryParams.filters).length !== 0) replaceFilters({});
-    if (Object.keys(queryParams.sort).length !== 0) replaceSorts({});
-    if (queryParams.page !== null) replacePage(null);
-    if (queryParams.results !== null) replaceResults(null);
+      localStorage.removeItem('investigationFilters');
+      localStorage.removeItem('datasetFilters');
+      localStorage.removeItem('datafileFilters');
+      localStorage.removeItem('investigationSort');
+      localStorage.removeItem('datasetSort');
+      localStorage.removeItem('datafileSort');
+      localStorage.removeItem('investigationPage');
+      localStorage.removeItem('datasetPage');
+      localStorage.removeItem('investigationResults');
+      localStorage.removeItem('datasetResults');
+      if (Object.keys(queryParams.filters).length !== 0) replaceFilters({});
+      if (Object.keys(queryParams.sort).length !== 0) replaceSorts({});
+      if (queryParams.page !== null) replacePage(null);
+      if (queryParams.results !== null) replaceResults(null);
+    }
   }, [
+    isSemanticSearchEnabled,
     pushSearchText,
     searchText,
     queryParams.filters,
@@ -511,6 +529,16 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                 </TopSearchBoxPaper>
               )}
             </Grid>
+
+            {shouldShowSemanticSearchResults && (
+              <div style={{ width: '100%' }}>
+                <Grid container justifyContent="center">
+                  <DataViewPaper view={view} containerHeight={containerHeight}>
+                    <SemanticSearchTable />
+                  </DataViewPaper>
+                </Grid>
+              </div>
+            )}
 
             {requestReceived && (
               <div style={{ width: '100%' }}>

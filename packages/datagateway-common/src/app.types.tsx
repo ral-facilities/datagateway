@@ -321,4 +321,10 @@ export interface QueryParams {
   startDate: Date | null;
   endDate: Date | null;
   currentTab: string;
+  semanticSearch: boolean;
 }
+
+export type SemanticSearchResults = {
+  score: number;
+  doc: Investigation;
+}[];
