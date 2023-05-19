@@ -163,6 +163,9 @@ const ISISInvestigationsTable = (
         label: t('investigations.doi'),
         dataKey:
           'dataCollectionInvestigations.[0].dataCollection.dataPublications.[0].pid',
+        // TODO: this was previously the Study DOI - currently there are no datapublication
+        // representations of Studies, only of Investigations themselves
+        // should this be showing the study DOI or the investigation DOI anyway?
         cellContentRenderer: (cellProps: TableCellProps) => {
           const investigationData = cellProps.rowData as Investigation;
           if (

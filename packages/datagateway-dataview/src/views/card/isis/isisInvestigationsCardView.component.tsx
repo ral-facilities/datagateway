@@ -1,4 +1,4 @@
-import { Link as MuiLink, styled } from '@mui/material';
+import { styled } from '@mui/material';
 import {
   Fingerprint,
   Save,
@@ -26,6 +26,7 @@ import {
   AddToCartButton,
   DownloadButton,
   ISISInvestigationDetailsPanel,
+  externalSiteLink,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -119,33 +120,23 @@ const ISISInvestigationsCardView = (
         filterComponent: textFilter,
       },
       {
+        // TODO: this was previously the Study DOI - currently there are no datapublication
+        // representations of Studies, only of Investigations themselves
+        // should this be showing the study DOI or the investigation DOI anyway?
         content: function doiFormat(entity: Investigation) {
-          if (dataPublication) {
-            return (
-              entity?.dataCollectionInvestigations?.[0]?.dataCollection
-                ?.dataPublications?.[0].pid && (
-                <MuiLink
-                  href={`https://doi.org/${entity.dataCollectionInvestigations?.[0]?.dataCollection?.dataPublications?.[0].pid}`}
-                  data-testid="isis-investigations-card-doi-link"
-                >
-                  {
-                    entity.dataCollectionInvestigations?.[0]?.dataCollection
-                      ?.dataPublications?.[0].pid
-                  }
-                </MuiLink>
-              )
+          if (
+            entity?.dataCollectionInvestigations?.[0]?.dataCollection
+              ?.dataPublications?.[0]
+          ) {
+            return externalSiteLink(
+              `https://doi.org/${entity.dataCollectionInvestigations?.[0]?.dataCollection?.dataPublications?.[0].pid}`,
+              entity.dataCollectionInvestigations?.[0]?.dataCollection
+                ?.dataPublications?.[0].pid,
+              'isis-investigations-card-doi-link'
             );
+          } else {
+            return '';
           }
-          return (
-            entity?.doi && (
-              <MuiLink
-                href={`https://doi.org/${entity.doi}`}
-                data-testid="isis-investigations-card-doi-link"
-              >
-                {entity.doi}
-              </MuiLink>
-            )
-          );
         },
         icon: Public,
         label: t('investigations.doi'),
@@ -198,15 +189,7 @@ const ISISInvestigationsCardView = (
         filterComponent: dateFilter,
       },
     ],
-    [
-      data,
-      dateFilter,
-      principalExperimenterFilter,
-      sizeQueries,
-      t,
-      textFilter,
-      dataPublication,
-    ]
+    [data, dateFilter, principalExperimenterFilter, sizeQueries, t, textFilter]
   );
 
   const buttons = React.useMemo(

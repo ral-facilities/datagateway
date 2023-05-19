@@ -76,7 +76,7 @@ describe('ISIS Investigations - Card View', () => {
               dataPublications: [
                 {
                   id: 12,
-                  pid: 'Data Publication Pid',
+                  pid: 'Data.Publication.Pid',
                   description: 'Data Publication description',
                   modTime: '2019-06-10',
                   createTime: '2019-06-11',
@@ -174,8 +174,8 @@ describe('ISIS Investigations - Card View', () => {
     expect(firstCard.getByText('investigations.name:')).toBeInTheDocument();
     expect(firstCard.getByText('Test 1')).toBeInTheDocument();
     expect(
-      firstCard.getByRole('link', { name: 'Data Publication Pid' })
-    ).toHaveAttribute('href', 'https://doi.org/Data Publication Pid');
+      firstCard.getByRole('link', { name: 'Data.Publication.Pid' })
+    ).toHaveAttribute('href', 'https://doi.org/Data.Publication.Pid');
     expect(
       firstCard.getByText('investigations.details.size:')
     ).toBeInTheDocument();
@@ -313,13 +313,6 @@ describe('ISIS Investigations - Card View', () => {
     expect(history.location.search).toBe('?');
 
     cleanupDatePickerWorkaround();
-  });
-
-  it('displays DOI and renders the expected Link ', async () => {
-    renderComponent();
-    expect(
-      await screen.findByRole('link', { name: 'Data Publication Pid' })
-    ).toHaveAttribute('href', 'https://doi.org/Data Publication Pid');
   });
 
   it('displays the correct user as the PI ', async () => {

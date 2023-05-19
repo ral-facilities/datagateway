@@ -119,7 +119,10 @@ const ISISDataPublicationsTable = (
         label: t('datapublications.publication_date'),
         dataKey: 'publicationDate',
         cellContentRenderer: (cellProps: TableCellProps) =>
-          cellProps.rowData?.content?.publicationDate?.slice(0, 10) ?? '',
+          (cellProps.rowData as DataPublication).publicationDate?.slice(
+            0,
+            10
+          ) ?? '',
         filterComponent: dateFilter,
         defaultSort: 'desc',
       },

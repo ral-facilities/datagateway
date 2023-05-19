@@ -119,7 +119,7 @@ const ISISDataPublicationsCardView = (
         label: t('datapublications.publication_date'),
         dataKey: 'publicationDate',
         content: (dataPublication: DataPublication) =>
-          dataPublication?.publicationDate?.slice(0, 10) ?? '',
+          dataPublication.publicationDate?.slice(0, 10) ?? '',
         filterComponent: dateFilter,
         defaultSort: 'desc',
       },
