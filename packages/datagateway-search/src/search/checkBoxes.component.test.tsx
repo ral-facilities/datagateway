@@ -133,7 +133,9 @@ describe('Checkbox component tests', () => {
       })
     );
 
-    expect(pushSpy).toHaveBeenCalledWith('?dataset=false&investigation=false');
+    expect(pushSpy).toHaveBeenCalledWith(
+      '?dataset=false&investigation=false&semanticSearch=false'
+    );
   });
 
   it('pushes URL with new datafile value when user clicks checkbox', async () => {
@@ -149,7 +151,9 @@ describe('Checkbox component tests', () => {
       })
     );
 
-    expect(pushSpy).toHaveBeenCalledWith('?datafile=false&investigation=false');
+    expect(pushSpy).toHaveBeenCalledWith(
+      '?datafile=false&investigation=false&semanticSearch=false'
+    );
   });
 
   it('pushes URL with new investigation value when user clicks checkbox', async () => {
@@ -165,6 +169,6 @@ describe('Checkbox component tests', () => {
       })
     );
 
-    expect(pushSpy).toHaveBeenCalledWith('?');
+    expect(pushSpy).toHaveBeenCalledWith('?semanticSearch=false');
   });
 });

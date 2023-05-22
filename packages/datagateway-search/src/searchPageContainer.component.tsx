@@ -347,10 +347,11 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     isFetchingNum > 0;
 
   const initiateSearch = React.useCallback(() => {
+    pushSearchText(searchText);
+
     if (isSemanticSearchEnabled) {
       setShouldShowSemanticSearchResults(true);
     } else {
-      pushSearchText(searchText);
       setShouldShowSemanticSearchResults(false);
       setSearchOnNextRender(true);
 

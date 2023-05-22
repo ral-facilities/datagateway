@@ -291,7 +291,9 @@ describe('SearchPageContainer - Tests', () => {
       await screen.findByRole('button', { name: 'app.clear_filters' })
     );
 
-    expect(history.location.search).toEqual('?searchText=test');
+    expect(history.location.search).toEqual(
+      '?searchText=test&semanticSearch=false'
+    );
   });
 
   it('disables clear filters button when there is no filter applied', async () => {
@@ -388,7 +390,9 @@ describe('SearchPageContainer - Tests', () => {
       screen.getByRole('button', { name: 'searchBox.search_button_arialabel' })
     );
 
-    expect(history.location.search).toEqual('?searchText=test');
+    expect(history.location.search).toEqual(
+      '?searchText=test&semanticSearch=false'
+    );
   });
 
   it('shows SelectionAlert banner when item selected', async () => {
@@ -583,7 +587,9 @@ describe('SearchPageContainer - Tests', () => {
 
     renderComponent();
 
-    expect(history.location.search).toEqual('?currentTab=dataset');
+    expect(history.location.search).toEqual(
+      '?currentTab=dataset&semanticSearch=false'
+    );
   });
 
   it('defaults to datafile if when investigation and dataset are false ', async () => {
@@ -598,7 +604,9 @@ describe('SearchPageContainer - Tests', () => {
 
     renderComponent();
 
-    expect(history.location.search).toEqual('?currentTab=datafile');
+    expect(history.location.search).toEqual(
+      '?currentTab=datafile&semanticSearch=false'
+    );
   });
 
   it('defaults to investigation if when investigation ,dataset and datafile are false ', async () => {
