@@ -1,6 +1,7 @@
 import {
   Dataset,
   dGCommonInitialState,
+  FACILITY_NAME,
   useAllFacilityCycles,
   useDatasetCount,
   useDatasetsDatafileCount,
@@ -267,18 +268,19 @@ describe('Dataset - Card View', () => {
   });
 
   it('renders ISIS link & file sizes correctly', async () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
+    cardData[0].investigation.investigationFacilityCycles = [
+      {
+        id: 139,
+        facilityCycle: {
           id: 6,
           name: 'facility cycle name',
           startDate: '2000-06-10',
           endDate: '2020-06-11',
         },
-      ],
-    });
+      },
+    ];
 
-    renderComponent('isis');
+    renderComponent(FACILITY_NAME.isis);
 
     expect(useDatasetSizes).toHaveBeenCalledWith(cardData);
     expect(useDatasetsDatafileCount).toHaveBeenCalledWith(undefined);
@@ -316,7 +318,7 @@ describe('Dataset - Card View', () => {
       data: cardData,
       fetchNextPage: jest.fn(),
     });
-    renderComponent('isis');
+    renderComponent(FACILITY_NAME.isis);
 
     const card = (await screen.findAllByTestId('card'))[0];
 
@@ -331,7 +333,7 @@ describe('Dataset - Card View', () => {
   });
 
   it('does not render ISIS link when facilityCycleId cannot be found', async () => {
-    renderComponent('isis');
+    renderComponent(FACILITY_NAME.isis);
 
     const card = (await screen.findAllByTestId('card'))[0];
 
@@ -357,7 +359,7 @@ describe('Dataset - Card View', () => {
       ],
     });
 
-    renderComponent('isis');
+    renderComponent(FACILITY_NAME.isis);
 
     const card = (await screen.findAllByTestId('card'))[0];
 
@@ -399,7 +401,7 @@ describe('Dataset - Card View', () => {
       fetchNextPage: jest.fn(),
     });
 
-    renderComponent('dls');
+    renderComponent(FACILITY_NAME.dls);
 
     const card = (await screen.findAllByTestId('card'))[0];
 
@@ -430,7 +432,7 @@ describe('Dataset - Card View', () => {
       fetchNextPage: jest.fn(),
     });
 
-    renderComponent('isis');
+    renderComponent(FACILITY_NAME.isis);
 
     const card = (await screen.findAllByTestId('card'))[0];
 
@@ -453,7 +455,7 @@ describe('Dataset - Card View', () => {
   });
 
   it('displays correct details panel for ISIS when expanded', async () => {
-    renderComponent('isis');
+    renderComponent(FACILITY_NAME.isis);
     await user.click(
       await screen.findByRole('button', { name: 'card-more-info-expand' })
     );
@@ -463,18 +465,19 @@ describe('Dataset - Card View', () => {
   });
 
   it('can navigate using the details panel for ISIS when there are facility cycles', async () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
+    cardData[0].investigation.investigationFacilityCycles = [
+      {
+        id: 226,
+        facilityCycle: {
           id: 4,
           name: 'facility cycle name',
           startDate: '2000-06-10',
           endDate: '2020-06-11',
         },
-      ],
-    });
+      },
+    ];
 
-    renderComponent('isis');
+    renderComponent(FACILITY_NAME.isis);
     await user.click(
       await screen.findByRole('button', { name: 'card-more-info-expand' })
     );
@@ -487,7 +490,7 @@ describe('Dataset - Card View', () => {
     );
 
     expect(history.location.pathname).toBe(
-      '/browse/instrument/4/facilityCycle/4/investigation/2/dataset/1'
+      '/browse/instrument/4/facilityCycle/4/investigation/2/dataset/1/datafile'
     );
   });
 
@@ -496,6 +499,6 @@ describe('Dataset - Card View', () => {
     await user.click(
       await screen.findByRole('button', { name: 'card-more-info-expand' })
     );
-    expect(await screen.findByTestId('dataset-details-panel')).toBeTruthy();
+    expect(await screen.findByTestId('dls-dataset-details-panel')).toBeTruthy();
   });
 });

@@ -1,40 +1,43 @@
 import {
+  Assessment,
+  CalendarToday,
+  Fingerprint,
+  Public,
+  Save,
+  Subject,
+} from '@mui/icons-material';
+import {
   ColumnType,
+  externalSiteLink,
+  FACILITY_NAME,
   formatCountOrSize,
   Investigation,
+  ISISInvestigationDetailsPanel,
   parseSearchToQuery,
   readSciGatewayToken,
   Table,
   tableLink,
-  externalSiteLink,
   useAddToCart,
-  useAllFacilityCycles,
   useCart,
   useDateFilter,
   useIds,
   useInvestigationCount,
   useInvestigationsInfinite,
   useInvestigationSizes,
-  useSort,
   useRemoveFromCart,
+  useSort,
   useTextFilter,
-  ISISInvestigationDetailsPanel,
+} from 'datagateway-common';
+import {
+  buildDatasetTableUrlForInvestigation,
+  buildInvestigationLandingUrl,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import { useHistory, useLocation } from 'react-router-dom';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { StateType } from '../../../state/app.types';
-
-import {
-  Subject,
-  Fingerprint,
-  Public,
-  Save,
-  Assessment,
-  CalendarToday,
-} from '@mui/icons-material';
-import { useSelector } from 'react-redux';
-import { useLocation, useHistory } from 'react-router-dom';
 
 const ISISMyDataTable = (): React.ReactElement => {
   const selectAllSetting = useSelector(
@@ -71,6 +74,7 @@ const ISISMyDataTable = (): React.ReactElement => {
         {
           investigationInstruments: 'instrument',
         },
+        { investigationFacilityCycles: 'facilityCycle' },
         { studyInvestigations: 'study' },
       ]),
     },
@@ -92,7 +96,6 @@ const ISISMyDataTable = (): React.ReactElement => {
     useAddToCart('investigation');
   const { mutate: removeFromCart, isLoading: removeFromCartLoading } =
     useRemoveFromCart('investigation');
-  const { data: facilityCycles } = useAllFacilityCycles();
 
   const selectedRows = React.useMemo(
     () =>
@@ -132,43 +135,23 @@ const ISISMyDataTable = (): React.ReactElement => {
 
   const sizeQueries = useInvestigationSizes(data);
 
-  const urlPrefix = React.useCallback(
-    (investigationData: Investigation): string => {
-      if (
-        investigationData?.investigationInstruments?.[0]?.instrument &&
-        facilityCycles
-      ) {
-        const facilityCycle = facilityCycles.find(
-          (facilitycycle) =>
-            facilitycycle.startDate &&
-            facilitycycle.endDate &&
-            investigationData.startDate &&
-            facilitycycle.startDate <= investigationData.startDate &&
-            facilitycycle.endDate >= investigationData.startDate
-        );
-        if (facilityCycle) {
-          return `/browse/instrument/${investigationData.investigationInstruments[0].instrument.id}/facilityCycle/${facilityCycle.id}/investigation`;
-        }
-      }
-      return '';
-    },
-    [facilityCycles]
-  );
-
   const detailsPanel = React.useCallback(
-    ({ rowData, detailsPanelResize }) => (
-      <ISISInvestigationDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        viewDatasets={
-          urlPrefix(rowData as Investigation)
-            ? (id: number) =>
-                push(`${urlPrefix(rowData as Investigation)}/${id}/dataset`)
-            : undefined
-        }
-      />
-    ),
-    [push, urlPrefix]
+    ({ rowData, detailsPanelResize }) => {
+      const datasetTableUrl = buildDatasetTableUrlForInvestigation({
+        facilityName: FACILITY_NAME.isis,
+        investigation: rowData as Investigation,
+      });
+      return (
+        <ISISInvestigationDetailsPanel
+          rowData={rowData}
+          detailsPanelResize={detailsPanelResize}
+          viewDatasets={() => {
+            if (datasetTableUrl) push(datasetTableUrl);
+          }}
+        />
+      );
+    },
+    [push]
   );
 
   const columns: ColumnType[] = React.useMemo(
@@ -179,17 +162,15 @@ const ISISMyDataTable = (): React.ReactElement => {
         dataKey: 'title',
         cellContentRenderer: (cellProps: TableCellProps) => {
           const investigationData = cellProps.rowData as Investigation;
-          const url = urlPrefix(investigationData);
-          if (url) {
-            return tableLink(
-              `${url}/${investigationData.id}`,
-              investigationData.title,
-              view,
-              'isis-mydata-table-title'
-            );
-          } else {
-            return investigationData.title;
-          }
+          const url = buildInvestigationLandingUrl(investigationData);
+          return url
+            ? tableLink(
+                url,
+                investigationData.title,
+                view,
+                'isis-mydata-table-title'
+              )
+            : investigationData.title;
         },
         filterComponent: textFilter,
       },
@@ -223,16 +204,10 @@ const ISISMyDataTable = (): React.ReactElement => {
         dataKey: 'name',
         cellContentRenderer: (cellProps: TableCellProps) => {
           const investigationData = cellProps.rowData as Investigation;
-          const url = urlPrefix(investigationData);
-          if (url) {
-            return tableLink(
-              `${url}/${investigationData.id}`,
-              investigationData.name,
-              view
-            );
-          } else {
-            return investigationData.name;
-          }
+          const url = buildInvestigationLandingUrl(investigationData);
+          return url
+            ? tableLink(url, investigationData.name, view)
+            : investigationData.name;
         },
         filterComponent: textFilter,
       },
@@ -245,9 +220,8 @@ const ISISMyDataTable = (): React.ReactElement => {
           if (investigationData?.investigationInstruments?.[0]?.instrument) {
             return investigationData.investigationInstruments[0].instrument
               .fullName;
-          } else {
-            return '';
           }
+          return '';
         },
         filterComponent: textFilter,
       },
@@ -273,7 +247,7 @@ const ISISMyDataTable = (): React.ReactElement => {
         filterComponent: dateFilter,
       },
     ],
-    [t, textFilter, dateFilter, urlPrefix, view, sizeQueries]
+    [t, textFilter, dateFilter, view, sizeQueries]
   );
 
   return (

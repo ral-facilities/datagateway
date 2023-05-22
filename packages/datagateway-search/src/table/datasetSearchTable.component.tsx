@@ -1,14 +1,20 @@
-import React from 'react';
 import {
-  Table,
-  Dataset,
-  tableLink,
-  FacilityCycle,
+  buildDatafileTableUrlForDataset,
+  buildDatasetLandingUrl,
+  buildDatasetTableUrlForInvestigation,
+  buildInvestigationLandingUrl,
   ColumnType,
+  Dataset,
+  DatasetDetailsPanel,
+  DLSDatasetDetailsPanel,
+  FACILITY_NAME,
   formatCountOrSize,
+  ISISDatasetDetailsPanel,
+  isLandingPageSupportedForHierarchy,
   parseSearchToQuery,
+  Table,
+  tableLink,
   useAddToCart,
-  useAllFacilityCycles,
   useCart,
   useDatasetCount,
   useDatasetsDatafileCount,
@@ -17,17 +23,15 @@ import {
   useDateFilter,
   useIds,
   useLuceneSearch,
-  useSort,
   useRemoveFromCart,
+  useSort,
   useTextFilter,
-  DatasetDetailsPanel,
-  ISISDatasetDetailsPanel,
-  DLSDatasetDetailsPanel,
 } from 'datagateway-common';
-import { TableCellProps, IndexRange } from 'react-virtualized';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useHistory, useLocation } from 'react-router-dom';
+import { IndexRange, TableCellProps } from 'react-virtualized';
 import { StateType } from '../state/app.types';
 
 interface DatasetTableProps {
@@ -36,8 +40,6 @@ interface DatasetTableProps {
 
 const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
   const { hierarchy } = props;
-
-  const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
   const location = useLocation();
   const { push } = useHistory();
@@ -87,7 +89,10 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
     {
       filterType: 'include',
       filterValue: JSON.stringify({
-        investigation: { investigationInstruments: 'instrument' },
+        investigation: {
+          investigationInstruments: 'instrument',
+          investigationFacilityCycles: 'facilityCycle',
+        },
       }),
     },
   ]);
@@ -131,131 +136,6 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
     [fetchNextPage]
   );
 
-  const dlsLinkURL = (
-    datasetData: Dataset,
-    linkType = 'dataset'
-  ): string | null => {
-    if (datasetData.investigation) {
-      return linkType === 'investigation'
-        ? `/browse/proposal/${datasetData.investigation.name}/investigation/${datasetData.investigation.id}/dataset`
-        : `/browse/proposal/${datasetData.investigation.name}/investigation/${datasetData.investigation.id}/dataset/${datasetData.id}/datafile`;
-    }
-    return null;
-  };
-
-  const dlsLink = React.useCallback(
-    (
-      datasetData: Dataset,
-      linkType = 'dataset'
-    ): React.ReactElement | string => {
-      const linkURL = dlsLinkURL(datasetData, linkType);
-
-      if (datasetData.investigation && linkURL) {
-        return linkType === 'investigation'
-          ? tableLink(linkURL, datasetData.investigation.title)
-          : tableLink(linkURL, datasetData.name);
-      }
-      return linkType === 'investigation' ? '' : datasetData.name;
-    },
-    []
-  );
-
-  const isisLinkURL = React.useCallback(
-    (datasetData: Dataset, linkType = 'dataset') => {
-      let instrumentId;
-      let facilityCycleId;
-      if (datasetData.investigation?.investigationInstruments?.length) {
-        instrumentId =
-          datasetData.investigation?.investigationInstruments[0].instrument?.id;
-      } else {
-        return null;
-      }
-
-      if (facilityCycles?.length && datasetData.investigation?.startDate) {
-        const filteredFacilityCycles: FacilityCycle[] = facilityCycles?.filter(
-          (facilityCycle: FacilityCycle) =>
-            datasetData.investigation?.startDate &&
-            facilityCycle.startDate &&
-            facilityCycle.endDate &&
-            datasetData.investigation.startDate >= facilityCycle.startDate &&
-            datasetData.investigation.startDate <= facilityCycle.endDate
-        );
-        if (filteredFacilityCycles.length) {
-          facilityCycleId = filteredFacilityCycles[0].id;
-        }
-      }
-
-      if (facilityCycleId) {
-        return linkType === 'investigation'
-          ? `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${datasetData.investigation.id}`
-          : `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${datasetData.investigation.id}/dataset/${datasetData.id}`;
-      }
-      return null;
-    },
-    [facilityCycles]
-  );
-
-  const isisLink = React.useCallback(
-    (datasetData: Dataset, linkType = 'dataset') => {
-      const linkURL = isisLinkURL(datasetData, linkType);
-
-      if (datasetData.investigation && linkURL) {
-        return linkType === 'investigation'
-          ? tableLink(linkURL, datasetData.investigation.title)
-          : tableLink(linkURL, datasetData.name);
-      } else return linkType === 'investigation' ? '' : datasetData.name;
-    },
-    [isisLinkURL]
-  );
-
-  const genericLinkURL = React.useCallback(
-    (datasetData: Dataset, linkType = 'dataset'): string | null => {
-      if (datasetData.investigation) {
-        return linkType === 'investigation'
-          ? `/browse/investigation/${datasetData.investigation.id}/dataset`
-          : `/browse/investigation/${datasetData.investigation.id}/dataset/${datasetData.id}/datafile`;
-      }
-      return null;
-    },
-    []
-  );
-
-  const genericLink = React.useCallback(
-    (
-      datasetData: Dataset,
-      linkType = 'dataset'
-    ): React.ReactElement | string => {
-      const linkURL = genericLinkURL(datasetData, linkType);
-      if (datasetData.investigation && linkURL) {
-        return linkType === 'investigation'
-          ? tableLink(linkURL, datasetData.investigation.title)
-          : tableLink(linkURL, datasetData.name);
-      }
-      return linkType === 'investigation' ? '' : datasetData.name;
-    },
-    [genericLinkURL]
-  );
-
-  const hierarchyLinkURL = React.useMemo(() => {
-    if (hierarchy === 'dls') {
-      return dlsLinkURL;
-    } else if (hierarchy === 'isis') {
-      return isisLinkURL;
-    } else {
-      return genericLinkURL;
-    }
-  }, [genericLinkURL, hierarchy, isisLinkURL]);
-
-  const hierarchyLink = React.useMemo(() => {
-    if (hierarchy === 'dls') {
-      return dlsLink;
-    } else if (hierarchy === 'isis') {
-      return isisLink;
-    } else {
-      return genericLink;
-    }
-  }, [dlsLink, genericLink, hierarchy, isisLink]);
-
   const selectedRows = React.useMemo(
     () =>
       cartItems
@@ -273,7 +153,7 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
   // hierarchy === 'isis' ? data : undefined is a 'hack' to only perform
   // the correct calculation queries for each facility
   const datasetCountQueries = useDatasetsDatafileCount(
-    hierarchy !== 'isis' ? data : undefined
+    hierarchy !== FACILITY_NAME.isis ? data : undefined
   );
   const sizeQueries = useDatasetSizes(hierarchy === 'isis' ? data : undefined);
 
@@ -283,14 +163,20 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
         label: t('datasets.name'),
         dataKey: 'name',
         cellContentRenderer: (cellProps: TableCellProps) => {
-          const datasetData = cellProps.rowData as Dataset;
-          return hierarchyLink(datasetData);
+          const dataset = cellProps.rowData as Dataset;
+          const url = isLandingPageSupportedForHierarchy(hierarchy)
+            ? buildDatasetLandingUrl(dataset)
+            : buildDatafileTableUrlForDataset({
+                dataset,
+                facilityName: hierarchy,
+              });
+          return url ? tableLink(url, dataset.name) : dataset.name;
         },
         filterComponent: textFilter,
       },
       {
         label:
-          hierarchy === 'isis'
+          hierarchy === FACILITY_NAME.isis
             ? t('datasets.size')
             : t('datasets.datafile_count'),
         dataKey: hierarchy === 'isis' ? 'size' : 'datafileCount',
@@ -308,7 +194,18 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
         dataKey: 'investigation.title',
         cellContentRenderer: (cellProps: TableCellProps) => {
           const datasetData = cellProps.rowData as Dataset;
-          return hierarchyLink(datasetData, 'investigation');
+          const investigation = datasetData.investigation;
+          if (!investigation) return '';
+
+          const link = isLandingPageSupportedForHierarchy(hierarchy)
+            ? buildInvestigationLandingUrl(investigation)
+            : buildDatasetTableUrlForInvestigation({
+                investigation,
+                facilityName: hierarchy,
+              });
+          return link
+            ? tableLink(link, investigation.title)
+            : investigation.title;
         },
         filterComponent: textFilter,
       },
@@ -323,51 +220,46 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
         filterComponent: dateFilter,
       },
     ],
-    [
-      t,
-      textFilter,
-      hierarchy,
-      dateFilter,
-      hierarchyLink,
-      sizeQueries,
-      datasetCountQueries,
-    ]
+    [t, textFilter, hierarchy, dateFilter, sizeQueries, datasetCountQueries]
   );
 
   const detailsPanel = React.useCallback(
     ({ rowData, detailsPanelResize }) => {
-      if (hierarchy === 'isis') {
-        const datafilesURL = hierarchyLinkURL(rowData as Dataset);
-        return (
-          <ISISDatasetDetailsPanel
-            rowData={rowData}
-            detailsPanelResize={detailsPanelResize}
-            viewDatafiles={
-              datafilesURL
-                ? (id: number) => {
-                    push(datafilesURL);
-                  }
-                : undefined
-            }
-          />
-        );
-      } else if (hierarchy === 'dls') {
-        return (
-          <DLSDatasetDetailsPanel
-            rowData={rowData}
-            detailsPanelResize={detailsPanelResize}
-          />
-        );
-      } else {
-        return (
-          <DatasetDetailsPanel
-            rowData={rowData}
-            detailsPanelResize={detailsPanelResize}
-          />
-        );
+      switch (hierarchy) {
+        case FACILITY_NAME.isis:
+          const dataset = rowData as Dataset;
+          const url = buildDatafileTableUrlForDataset({
+            dataset,
+            facilityName: hierarchy,
+          });
+          return (
+            <ISISDatasetDetailsPanel
+              rowData={rowData}
+              detailsPanelResize={detailsPanelResize}
+              viewDatafiles={() => {
+                if (url) push(url);
+              }}
+            />
+          );
+
+        case FACILITY_NAME.dls:
+          return (
+            <DLSDatasetDetailsPanel
+              rowData={rowData}
+              detailsPanelResize={detailsPanelResize}
+            />
+          );
+
+        default:
+          return (
+            <DatasetDetailsPanel
+              rowData={rowData}
+              detailsPanelResize={detailsPanelResize}
+            />
+          );
       }
     },
-    [hierarchy, hierarchyLinkURL, push]
+    [hierarchy, push]
   );
 
   return (
