@@ -21,10 +21,10 @@ import {
   useAddToCart,
   useCart,
   useDateFilter,
+  useIds,
   useInvestigationCount,
   useInvestigationsInfinite,
   useInvestigationSizes,
-  useISISInvestigationIds,
   usePrincipalExperimenterFilter,
   useRemoveFromCart,
   useSort,
@@ -100,10 +100,9 @@ const ISISInvestigationsTable = (
       ]),
     },
   ]);
-  const { data: allIds, isLoading: allIdsLoading } = useISISInvestigationIds(
-    parseInt(instrumentId),
-    parseInt(instrumentChildId),
-    dataPublication,
+  const { data: allIds, isLoading: allIdsLoading } = useIds(
+    'investigation',
+    investigationQueryFilters,
     selectAllSetting
   );
   const { data: cartItems, isLoading: cartLoading } = useCart();

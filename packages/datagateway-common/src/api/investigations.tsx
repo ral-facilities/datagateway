@@ -3,7 +3,7 @@ import axios, { AxiosError } from 'axios';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { IndexRange } from 'react-virtualized';
-import { fetchIds, getApiParams, parseSearchToQuery } from '.';
+import { getApiParams, parseSearchToQuery } from '.';
 import handleICATError from '../handleICATError';
 import { readSciGatewayToken } from '../parseTokens';
 import {
@@ -511,104 +511,6 @@ export const useInvestigationDetails = (
         handleICATError(error);
       },
       retry: retryICATErrors,
-    }
-  );
-};
-
-const fetchAllISISInvestigationIds = (
-  apiUrl: string,
-  instrumentId: number,
-  facilityCycleId: number,
-  filters: FiltersType
-): Promise<number[]> => {
-  const params = getApiParams({ filters, sort: {} });
-
-  // TODO: currently datagateway-api can't apply distinct filter to ISIS queries,
-  // so for now just retrieve everything
-  // params.set('distinct', JSON.stringify('id'));
-
-  params.append(
-    'where',
-    JSON.stringify({
-      'investigationFacilityCycles.facilityCycle.id': {
-        eq: facilityCycleId,
-      },
-    })
-  );
-  params.append(
-    'where',
-    JSON.stringify({
-      'investigationInstruments.instrument.id': {
-        eq: instrumentId,
-      },
-    })
-  );
-
-  return axios
-    .get<Investigation[]>(`${apiUrl}/investigations`, {
-      params,
-      headers: {
-        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
-      },
-    })
-    .then((response) => {
-      return response.data.map((x) => x.id);
-    });
-};
-
-export const useISISInvestigationIds = (
-  instrumentId: number,
-  instrumentChildId: number,
-  dataPublication: boolean,
-  enabled = true
-): UseQueryResult<number[], AxiosError> => {
-  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
-  const location = useLocation();
-  const { filters } = parseSearchToQuery(location.search);
-  const queryKey = dataPublication
-    ? 'ISISStudyInvestigationIds'
-    : 'ISISFacilityCycleinvestigationIds';
-
-  return useQuery<
-    number[],
-    AxiosError,
-    number[],
-    [string, number, number, { filters: FiltersType }]
-  >(
-    [queryKey, instrumentId, instrumentChildId, { filters }],
-    (params) => {
-      const { filters } = params.queryKey[3];
-      if (dataPublication) {
-        return fetchIds(apiUrl, 'investigation', filters, [
-          {
-            filterType: 'where',
-            filterValue: JSON.stringify({
-              'investigationInstruments.instrument.id': { eq: instrumentId },
-            }),
-          },
-          {
-            filterType: 'where',
-            filterValue: JSON.stringify({
-              'dataCollectionInvestigations.dataCollection.dataPublications.id':
-                { eq: instrumentChildId },
-            }),
-          },
-        ]);
-      } else {
-        return fetchAllISISInvestigationIds(
-          apiUrl,
-          instrumentId,
-          instrumentChildId,
-          filters
-        );
-      }
-    },
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-      enabled,
     }
   );
 };
