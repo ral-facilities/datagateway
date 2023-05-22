@@ -110,6 +110,17 @@ describe('ISIS MyData table component', () => {
             },
           },
         ],
+        investigationFacilityCycles: [
+          {
+            id: 192,
+            facilityCycle: {
+              id: 8,
+              name: 'Cycle name',
+              startDate: '2019-06-01',
+              endDate: '2019-07-01',
+            },
+          },
+        ],
         dataCollectionInvestigations: [
           {
             id: 6,
@@ -167,16 +178,6 @@ describe('ISIS MyData table component', () => {
     (useRemoveFromCart as jest.Mock).mockReturnValue({
       mutate: jest.fn(),
       isLoading: false,
-    });
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
-          id: 8,
-          name: 'Cycle name',
-          startDate: '2019-06-01',
-          endDate: '2019-07-01',
-        },
-      ],
     });
     (readSciGatewayToken as jest.Mock).mockReturnValue({
       username: 'testUser',
@@ -450,9 +451,14 @@ describe('ISIS MyData table component', () => {
 
   it('displays details panel when expanded', async () => {
     renderComponent();
+
+    // find the first row
+    const row = await findRowAt(0);
+
     await user.click(
-      await screen.findByRole('button', { name: 'Show details' })
+      await within(row).findByRole('button', { name: 'Show details' })
     );
+
     expect(
       await screen.findByTestId('isis-investigation-details-panel')
     ).toBeInTheDocument();

@@ -1,32 +1,33 @@
+import {
+  CalendarToday,
+  Fingerprint,
+  Person,
+  Public,
+  Save,
+} from '@mui/icons-material';
 import { styled } from '@mui/material';
 import {
-  Fingerprint,
-  Save,
-  Person,
-  CalendarToday,
-  Public,
-} from '@mui/icons-material';
-import {
+  AdditionalFilters,
+  AddToCartButton,
   CardView,
   CardViewDetails,
+  DownloadButton,
+  externalSiteLink,
   formatCountOrSize,
   Investigation,
-  tableLink,
-  useInvestigationSizes,
+  ISISInvestigationDetailsPanel,
   parseSearchToQuery,
+  tableLink,
   useDateFilter,
-  useISISInvestigationCount,
-  useISISInvestigationsPaginated,
+  useInvestigationCount,
+  useInvestigationSizes,
+  useInvestigationsPaginated,
   usePrincipalExperimenterFilter,
   usePushFilter,
   usePushPage,
   usePushResults,
   useSort,
   useTextFilter,
-  AddToCartButton,
-  DownloadButton,
-  ISISInvestigationDetailsPanel,
-  externalSiteLink,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -69,17 +70,46 @@ const ISISInvestigationsCardView = (
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
+  const investigationQueryFilters: AdditionalFilters = [
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'investigationInstruments.instrument.id': {
+          eq: parseInt(instrumentId),
+        },
+      }),
+    },
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        [dataPublication
+          ? 'dataCollectionInvestigations.dataCollection.dataPublications.id'
+          : 'investigationFacilityCycles.facilityCycle.id']: {
+          eq: parseInt(instrumentChildId),
+        },
+      }),
+    },
+  ];
+
   const { data: totalDataCount, isLoading: countLoading } =
-    useISISInvestigationCount(
-      parseInt(instrumentId),
-      parseInt(instrumentChildId),
-      dataPublication
-    );
-  const { data, isLoading: dataLoading } = useISISInvestigationsPaginated(
-    parseInt(instrumentId),
-    parseInt(instrumentChildId),
-    dataPublication
-  );
+    useInvestigationCount(investigationQueryFilters);
+  const { data, isLoading: dataLoading } = useInvestigationsPaginated([
+    ...investigationQueryFilters,
+    {
+      filterType: 'include',
+      filterValue: JSON.stringify([
+        {
+          investigationInstruments: 'instrument',
+        },
+        {
+          dataCollectionInvestigations: { dataCollection: 'dataPublications' },
+        },
+        {
+          investigationUsers: 'user',
+        },
+      ]),
+    },
+  ]);
   const sizeQueries = useInvestigationSizes(data);
 
   const pathRoot = dataPublication ? 'browseDataPublications' : 'browse';

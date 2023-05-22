@@ -1,41 +1,41 @@
 import {
+  CalendarToday,
+  Fingerprint,
+  Person,
+  Public,
+  Save,
+  Subject,
+} from '@mui/icons-material';
+import {
+  AdditionalFilters,
+  ColumnType,
+  DownloadButton,
+  externalSiteLink,
   formatCountOrSize,
   Investigation,
-  Table,
-  tableLink,
-  externalSiteLink,
-  useISISInvestigationsInfinite,
-  useISISInvestigationCount,
-  useISISInvestigationIds,
-  ColumnType,
+  ISISInvestigationDetailsPanel,
   parseSearchToQuery,
+  Table,
+  TableActionProps,
+  tableLink,
   useAddToCart,
   useCart,
   useDateFilter,
+  useInvestigationCount,
+  useInvestigationsInfinite,
   useInvestigationSizes,
+  useISISInvestigationIds,
   usePrincipalExperimenterFilter,
-  useSort,
   useRemoveFromCart,
+  useSort,
   useTextFilter,
-  TableActionProps,
-  DownloadButton,
-  ISISInvestigationDetailsPanel,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { IndexRange, TableCellProps } from 'react-virtualized';
-import { StateType } from '../../../state/app.types';
-
-import {
-  Subject,
-  Fingerprint,
-  Public,
-  Save,
-  Person,
-  CalendarToday,
-} from '@mui/icons-material';
 import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
+import { IndexRange, TableCellProps } from 'react-virtualized';
+import { StateType } from '../../../state/app.types';
 
 interface ISISInvestigationsTableProps {
   instrumentId: string;
@@ -59,16 +59,47 @@ const ISISInvestigationsTable = (
     [location.search]
   );
 
-  const { data: totalDataCount } = useISISInvestigationCount(
-    parseInt(instrumentId),
-    parseInt(instrumentChildId),
-    dataPublication
+  const investigationQueryFilters: AdditionalFilters = [
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'investigationInstruments.instrument.id': {
+          eq: parseInt(instrumentId),
+        },
+      }),
+    },
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        [dataPublication
+          ? 'dataCollectionInvestigations.dataCollection.dataPublications.id'
+          : 'investigationFacilityCycles.facilityCycle.id']: {
+          eq: parseInt(instrumentChildId),
+        },
+      }),
+    },
+  ];
+
+  const { data: totalDataCount } = useInvestigationCount(
+    investigationQueryFilters
   );
-  const { fetchNextPage, data } = useISISInvestigationsInfinite(
-    parseInt(instrumentId),
-    parseInt(instrumentChildId),
-    dataPublication
-  );
+  const { fetchNextPage, data } = useInvestigationsInfinite([
+    ...investigationQueryFilters,
+    {
+      filterType: 'include',
+      filterValue: JSON.stringify([
+        {
+          investigationInstruments: 'instrument',
+        },
+        {
+          dataCollectionInvestigations: { dataCollection: 'dataPublications' },
+        },
+        {
+          investigationUsers: 'user',
+        },
+      ]),
+    },
+  ]);
   const { data: allIds, isLoading: allIdsLoading } = useISISInvestigationIds(
     parseInt(instrumentId),
     parseInt(instrumentChildId),

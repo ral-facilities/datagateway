@@ -144,24 +144,6 @@ describe('ISIS Investigations table component', () => {
           });
         }
 
-        if (
-          /\/instruments\/4\/facilitycycles\/5\/investigations\/count$/.test(
-            url
-          )
-        ) {
-          // fetch investigations count
-          return Promise.resolve({
-            data: rowData.length,
-          });
-        }
-
-        if (/\/instruments\/4\/facilitycycles\/5\/investigations$/.test(url)) {
-          // investigations infinite
-          return Promise.resolve({
-            data: rowData,
-          });
-        }
-
         if (/\/investigations$/.test(url)) {
           return Promise.resolve({
             data: rowData,

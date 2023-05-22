@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {
   dGCommonInitialState,
+  FACILITY_NAME,
   Investigation,
   StateType,
   useAllFacilityCycles,
@@ -252,7 +253,7 @@ describe('Investigation - Card View', () => {
   });
 
   it("renders DLS link correctly and doesn't allow for cart selection or download", async () => {
-    renderComponent('dls');
+    renderComponent(FACILITY_NAME.dls);
 
     const card = (await screen.findAllByTestId('card'))[0];
 
@@ -269,21 +270,19 @@ describe('Investigation - Card View', () => {
   });
 
   it('renders ISIS link & file sizes correctly', async () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
+    cardData[0].investigationFacilityCycles = [
+      {
+        id: 232,
+        facilityCycle: {
           id: 6,
           name: 'facility cycle name',
           startDate: '2000-06-10',
           endDate: '2020-06-11',
         },
-      ],
-    });
+      },
+    ];
 
-    renderComponent('isis');
-
-    expect(useInvestigationSizes).toHaveBeenCalledWith(cardData);
-    expect(useInvestigationsDatasetCount).toHaveBeenCalledWith(undefined);
+    renderComponent(FACILITY_NAME.isis);
 
     const card = (await screen.findAllByTestId('card'))[0];
 
@@ -307,23 +306,24 @@ describe('Investigation - Card View', () => {
   });
 
   it('does not render ISIS link when instrumentId cannot be found', async () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
-          id: 4,
+    cardData[0].investigationFacilityCycles = [
+      {
+        id: 232,
+        facilityCycle: {
+          id: 6,
           name: 'facility cycle name',
           startDate: '2000-06-10',
           endDate: '2020-06-11',
         },
-      ],
-    });
+      },
+    ];
     delete cardData[0].investigationInstruments;
 
     (useInvestigationsPaginated as jest.Mock).mockReturnValue({
       data: cardData,
       fetchNextPage: jest.fn(),
     });
-    renderComponent('isis');
+    renderComponent(FACILITY_NAME.isis);
 
     const card = (await screen.findAllByTestId('card'))[0];
 
@@ -352,48 +352,19 @@ describe('Investigation - Card View', () => {
     ).toBeInTheDocument();
   });
 
-  it('displays only the dataset name when there is no DLS investigation to link to', async () => {
-    delete cardData[0].investigation;
-    (useInvestigationsPaginated as jest.Mock).mockReturnValue({
-      data: cardData,
-      fetchNextPage: jest.fn(),
-    });
-
-    renderComponent('dls');
-
-    const card = (await screen.findAllByTestId('card'))[0];
-
-    expect(within(card).getAllByRole('link')).toHaveLength(2);
-    expect(
-      within(card).getByRole('link', { name: 'Test 1' })
-    ).toBeInTheDocument();
-  });
-
   it('displays only the dataset name when there is no ISIS investigation to link to', async () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
-          id: 4,
-          name: 'facility cycle name',
-          startDate: '2000-06-10',
-          endDate: '2020-06-11',
-        },
-      ],
-    });
-    delete cardData[0].investigation;
     (useInvestigationsPaginated as jest.Mock).mockReturnValue({
       data: cardData,
       fetchNextPage: jest.fn(),
     });
 
-    renderComponent('isis');
+    renderComponent(FACILITY_NAME.isis);
 
     const card = (await screen.findAllByTestId('card'))[0];
 
-    expect(within(card).getAllByRole('link')).toHaveLength(2);
-    expect(
-      within(card).getByRole('link', { name: 'Test 1' })
-    ).toBeInTheDocument();
+    expect(within(card).getAllByRole('link')).toHaveLength(1);
+    expect(within(card).queryByRole('link', { name: 'Test 1' })).toBeNull();
+    expect(within(card).getByText('Test 1')).toBeInTheDocument();
   });
 
   it('displays generic details panel when expanded', async () => {
@@ -407,7 +378,7 @@ describe('Investigation - Card View', () => {
   });
 
   it('displays correct details panel for ISIS when expanded', async () => {
-    renderComponent('isis');
+    renderComponent(FACILITY_NAME.isis);
     await user.click(
       await screen.findByRole('button', { name: 'card-more-info-expand' })
     );
@@ -417,18 +388,19 @@ describe('Investigation - Card View', () => {
   });
 
   it('can navigate using the details panel for ISIS when there are facility cycles', async () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
+    cardData[0].investigationFacilityCycles = [
+      {
+        id: 906,
+        facilityCycle: {
           id: 4,
           name: 'facility cycle name',
           startDate: '2000-06-10',
           endDate: '2020-06-11',
         },
-      ],
-    });
+      },
+    ];
 
-    renderComponent('isis');
+    renderComponent(FACILITY_NAME.isis);
     await user.click(
       await screen.findByRole('button', { name: 'card-more-info-expand' })
     );
@@ -448,7 +420,7 @@ describe('Investigation - Card View', () => {
   });
 
   it('displays correct details panel for DLS when expanded', async () => {
-    renderComponent('dls');
+    renderComponent(FACILITY_NAME.dls);
     await user.click(
       await screen.findByRole('button', { name: 'card-more-info-expand' })
     );

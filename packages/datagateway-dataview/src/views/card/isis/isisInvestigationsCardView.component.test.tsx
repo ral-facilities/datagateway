@@ -115,17 +115,6 @@ describe('ISIS Investigations - Card View', () => {
     axios.get = jest
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
-        if (
-          /\/instruments\/1\/facilitycycles\/1\/investigations\/count$/.test(
-            url
-          )
-        ) {
-          // isis investigation count query
-          return Promise.resolve({
-            data: 1,
-          });
-        }
-
         if (/\/investigations\/count$/.test(url)) {
           // investigation count query
           return Promise.resolve({
@@ -198,17 +187,6 @@ describe('ISIS Investigations - Card View', () => {
     axios.get = jest
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
-        if (
-          /\/instruments\/1\/facilitycycles\/1\/investigations\/count$/.test(
-            url
-          )
-        ) {
-          // isis investigation count query
-          return Promise.resolve({
-            data: 0,
-          });
-        }
-
         if (/\/investigations\/count$/.test(url)) {
           // investigation count query
           return Promise.resolve({

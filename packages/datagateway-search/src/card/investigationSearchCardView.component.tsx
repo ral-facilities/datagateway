@@ -1,42 +1,42 @@
 import {
+  Assessment,
   CalendarToday,
   ConfirmationNumber,
   Fingerprint,
   Public,
-  Assessment,
 } from '@mui/icons-material';
+import { Link as MuiLink, styled, Typography } from '@mui/material';
 import {
+  AddToCartButton,
+  ArrowTooltip,
   CardView,
+  DLSVisitDetailsPanel,
+  DownloadButton,
+  FACILITY_NAME,
   formatCountOrSize,
   Investigation,
+  InvestigationDetailsPanel,
+  ISISInvestigationDetailsPanel,
+  nestedValue,
   parseSearchToQuery,
+  tableLink,
   useDateFilter,
   useInvestigationCount,
   useInvestigationsDatasetCount,
+  useInvestigationSizes,
   useInvestigationsPaginated,
+  useLuceneSearch,
   usePushFilter,
   usePushPage,
   usePushResults,
   useSort,
   useTextFilter,
-  useAllFacilityCycles,
-  tableLink,
-  FacilityCycle,
-  useInvestigationSizes,
-  useLuceneSearch,
-  nestedValue,
-  ArrowTooltip,
-  AddToCartButton,
-  DownloadButton,
-  InvestigationDetailsPanel,
-  ISISInvestigationDetailsPanel,
-  DLSVisitDetailsPanel,
 } from 'datagateway-common';
+import { buildDatasetTableUrlForInvestigation } from 'datagateway-common/lib/urlBuilders';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory, useLocation } from 'react-router-dom';
-import { Typography, Link as MuiLink, styled } from '@mui/material';
 import { useSelector } from 'react-redux';
+import { useHistory, useLocation } from 'react-router-dom';
 import { StateType } from '../state/app.types';
 
 interface InvestigationCardProps {
@@ -67,84 +67,6 @@ const InvestigationCardView = (
   );
   const { filters, sort, page, results, startDate, endDate } = queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
-
-  const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
-
-  const dlsLinkURL = (investigationData: Investigation): string =>
-    `/browse/proposal/${investigationData.name}/investigation/${investigationData.id}/dataset`;
-
-  const isisLinkURL = React.useCallback(
-    (investigationData: Investigation) => {
-      let instrumentId;
-      let facilityCycleId;
-      if (investigationData.investigationInstruments?.length) {
-        instrumentId =
-          investigationData.investigationInstruments[0].instrument?.id;
-      } else {
-        return null;
-      }
-
-      if (investigationData.startDate && facilityCycles?.length) {
-        const filteredFacilityCycles: FacilityCycle[] = facilityCycles?.filter(
-          (facilityCycle: FacilityCycle) =>
-            investigationData.startDate &&
-            facilityCycle.startDate &&
-            facilityCycle.endDate &&
-            investigationData.startDate >= facilityCycle.startDate &&
-            investigationData.startDate <= facilityCycle.endDate
-        );
-        if (filteredFacilityCycles.length) {
-          facilityCycleId = filteredFacilityCycles[0].id;
-        }
-      }
-
-      if (facilityCycleId)
-        return `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${investigationData.id}/dataset`;
-      else return null;
-    },
-    [facilityCycles]
-  );
-
-  const isisLink = React.useCallback(
-    (investigationData: Investigation) => {
-      const linkURL = isisLinkURL(investigationData);
-
-      if (linkURL) return tableLink(linkURL, investigationData.title);
-      else return investigationData.title;
-    },
-    [isisLinkURL]
-  );
-
-  const genericLinkURL = (investigationData: Investigation): string =>
-    `/browse/investigation/${investigationData.id}/dataset`;
-
-  const hierarchyLinkURL = React.useMemo(() => {
-    if (hierarchy === 'dls') {
-      return dlsLinkURL;
-    } else if (hierarchy === 'isis') {
-      return isisLinkURL;
-    } else {
-      return genericLinkURL;
-    }
-  }, [hierarchy, isisLinkURL]);
-
-  const hierarchyLink = React.useMemo(() => {
-    if (hierarchy === 'dls') {
-      const dlsLink = (investigationData: Investigation): React.ReactElement =>
-        tableLink(dlsLinkURL(investigationData), investigationData.title);
-
-      return dlsLink;
-    } else if (hierarchy === 'isis') {
-      return isisLink;
-    } else {
-      const genericLink = (
-        investigationData: Investigation
-      ): React.ReactElement =>
-        tableLink(genericLinkURL(investigationData), investigationData.title);
-
-      return genericLink;
-    }
-  }, [hierarchy, isisLink]);
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
@@ -204,12 +126,16 @@ const InvestigationCardView = (
       // Provide both the dataKey (for tooltip) and content to render.
       dataKey: 'title',
       content: (investigation: Investigation) => {
-        return hierarchyLink(investigation);
+        const url = buildDatasetTableUrlForInvestigation({
+          investigation,
+          facilityName: hierarchy,
+        });
+        return url ? tableLink(url, investigation.title) : investigation.title;
       },
       filterComponent: textFilter,
     }),
     // [t, textFilter, view]
-    [hierarchyLink, t, textFilter]
+    [hierarchy, t, textFilter]
   );
 
   const description = React.useMemo(
@@ -316,25 +242,29 @@ const InvestigationCardView = (
 
   const moreInformation = React.useCallback(
     (investigation: Investigation) => {
-      if (hierarchy === 'isis') {
-        const datasetsURL = hierarchyLinkURL(investigation);
-        return (
-          <ISISInvestigationDetailsPanel
-            rowData={investigation}
-            viewDatasets={
-              datasetsURL
-                ? (id: number) => {
-                    push(datasetsURL);
-                  }
-                : undefined
-            }
-          />
-        );
-      } else if (hierarchy === 'dls')
-        return <DLSVisitDetailsPanel rowData={investigation} />;
-      else return <InvestigationDetailsPanel rowData={investigation} />;
+      switch (hierarchy) {
+        case FACILITY_NAME.isis:
+          const url = buildDatasetTableUrlForInvestigation({
+            investigation,
+            facilityName: FACILITY_NAME.isis,
+          });
+          return (
+            <ISISInvestigationDetailsPanel
+              rowData={investigation}
+              viewDatasets={() => {
+                if (url) push(url);
+              }}
+            />
+          );
+
+        case FACILITY_NAME.dls:
+          return <DLSVisitDetailsPanel rowData={investigation} />;
+
+        default:
+          return <InvestigationDetailsPanel rowData={investigation} />;
+      }
     },
-    [hierarchy, hierarchyLinkURL, push]
+    [hierarchy, push]
   );
 
   const buttons = React.useMemo(

@@ -2,6 +2,18 @@
 export const MicroFrontendId = 'scigateway';
 export const MicroFrontendToken = `${MicroFrontendId}:token`;
 
+export const FACILITY_NAME = {
+  isis: 'isis',
+  dls: 'dls',
+
+  /**
+   * Used for test ICATs.
+   */
+  lils: 'LILS',
+} as const;
+
+export type FacilityName = typeof FACILITY_NAME[keyof typeof FACILITY_NAME];
+
 // TODO: type entities properly; DownloadCartItem does not
 //       include string indexing due to DownloadCartTableItem
 export interface Investigation {
@@ -16,6 +28,7 @@ export interface Investigation {
   summary?: string;
   investigationInstruments?: InvestigationInstrument[];
   dataCollectionInvestigations?: DataCollectionInvestigation[];
+  investigationFacilityCycles?: InvestigationFacilityCycle[];
   size?: number;
   datasetCount?: number;
   investigationUsers?: InvestigationUser[];
@@ -93,6 +106,12 @@ export interface Sample {
 export interface Publication {
   id: number;
   fullReference: string;
+}
+
+export interface InvestigationFacilityCycle {
+  id: number;
+  investigation?: Investigation;
+  facilityCycle?: FacilityCycle;
 }
 
 export interface FacilityCycle {
