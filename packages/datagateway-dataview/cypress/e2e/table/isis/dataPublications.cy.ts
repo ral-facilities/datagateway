@@ -22,7 +22,7 @@ describe('ISIS - Data Publication Table', () => {
     cy.get('[role="gridcell"] a').first().click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browseStudyHierarchy/instrument/8/dataPublication/51'
+      '/browseDataPublications/instrument/8/dataPublication/51'
     );
   });
 
@@ -50,10 +50,12 @@ describe('ISIS - Data Publication Table', () => {
   it('should be able to resize a column', () => {
     let columnWidth = 0;
 
+    // Using Math.round to solve rounding errors when calculating 1000 / 3
     cy.window()
       .then((window) => {
         const windowWidth = window.innerWidth;
-        columnWidth = windowWidth / 5;
+        columnWidth = Math.round(windowWidth / 3);
+        columnWidth = Math.round((columnWidth * 100) / 100);
       })
       .then(() => expect(columnWidth).to.not.equal(0));
 
@@ -61,12 +63,14 @@ describe('ISIS - Data Publication Table', () => {
     cy.get('[role="columnheader"]').eq(1).as('doiColumn');
 
     cy.get('@titleColumn').should(($column) => {
-      const { width } = $column[0].getBoundingClientRect();
+      let { width } = $column[0].getBoundingClientRect();
+      width = Math.round((width * 100) / 100);
       expect(width).to.equal(columnWidth);
     });
 
     cy.get('@doiColumn').should(($column) => {
-      const { width } = $column[0].getBoundingClientRect();
+      let { width } = $column[0].getBoundingClientRect();
+      width = Math.round((width * 100) / 100);
       expect(width).to.equal(columnWidth);
     });
 
@@ -90,7 +94,7 @@ describe('ISIS - Data Publication Table', () => {
     cy.get('.react-draggable')
       .first()
       .trigger('mousedown')
-      .trigger('mousemove', { clientX: 800 })
+      .trigger('mousemove', { clientX: 900 })
       .trigger('mouseup');
 
     cy.get('@doiColumn').should(($column) => {
@@ -113,12 +117,12 @@ describe('ISIS - Data Publication Table', () => {
     });
 
     it('ascending order', () => {
-      cy.contains('[role="button"]', 'Data Publication Title').click();
+      cy.contains('[role="button"]', 'Title').click();
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Already medical seek take military rise.'
+      cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
+        'Article subject amount'
       );
     });
 
@@ -132,8 +136,8 @@ describe('ISIS - Data Publication Table', () => {
         'opacity',
         '0'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Now easy life approach manage why me.'
+      cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
+        'Daughter experience discussion'
       );
     });
 
@@ -150,17 +154,18 @@ describe('ISIS - Data Publication Table', () => {
         'opacity',
         '0'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Already medical seek take military rise.'
+      cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
+        'Article subject amount'
       );
     });
 
     it('multiple columns', () => {
-      cy.contains('[role="button"]', 'Start Date').click();
+      cy.contains('[role="button"]', 'Publication Date').click();
+      cy.contains('[role="button"]', 'Publication Date').click();
       cy.contains('[role="button"]', 'Title').click();
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Fine strong education fill maintain.'
+      cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
+        'Church child time Congress'
       );
     });
   });
@@ -168,31 +173,31 @@ describe('ISIS - Data Publication Table', () => {
   describe('should be able to filter by', () => {
     beforeEach(() => {
       //Revert the default sort
-      cy.contains('[role="button"]', 'Start Date').click();
+      cy.contains('[role="button"]', 'Publication Date').click();
     });
 
     it('text', () => {
-      cy.get('[aria-label="Filter by Title"]').first().type('Article');
+      cy.get('[aria-label="Filter by Title"]').first().type('wat');
 
-      cy.get('[aria-rowcount="3"]').should('exist');
-      cy.get('[aria-rowindex="3"] [aria-colindex="2"]').contains(
-        'Article subject amount event brother.'
+      cy.get('[aria-rowcount="2"]').should('exist');
+      cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
+        'Consider author watch'
       );
     });
 
     it('date between', () => {
-      cy.get('input[id="Start Date filter from"]').type('2010-04-02');
+      cy.get('input[id="Publication Date filter from"]').type('2014-04-02');
 
       cy.get('[aria-rowcount="2"]').should('exist');
-      cy.get('[aria-rowindex="2"] [aria-colindex="2"]').contains(
-        'Difference customer building will suffer nothing.'
+      cy.get('[aria-rowindex="2"] [aria-colindex="1"]').contains(
+        'Church child time Congress'
       );
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Doi"]').first().type('0');
+      cy.get('[aria-label="Filter by DOI"]').first().type('0');
 
-      cy.get('[aria-label="Filter by Title"]').first().type('consider');
+      cy.get('[aria-label="Filter by Title"]').first().type('wat');
 
       cy.get('[aria-rowcount="1"]').should('exist');
     });

@@ -204,7 +204,7 @@ describe('ISIS - Investigations Table', () => {
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
-        'INVESTIGATION 8'
+        'INVESTIGATION 31'
       );
       // check that size is correct after filtering
       cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains('3.31 GB');

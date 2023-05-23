@@ -32,7 +32,7 @@ describe('ISIS - Data Publication Landing', () => {
   });
 
   it('should be able to click a DOI render the correct webpage ', () => {
-    cy.contains('0-7602-7584-X').should(
+    cy.contains('a', '0-7602-7584-X').should(
       'have.attr',
       'href',
       'https://doi.org/0-7602-7584-X'

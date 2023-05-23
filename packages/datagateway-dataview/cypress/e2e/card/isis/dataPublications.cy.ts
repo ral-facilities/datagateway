@@ -22,11 +22,11 @@ describe('ISIS - Data Publication Cards', () => {
   it('should be able to click a datapublication to see its landing page', () => {
     cy.get('[data-testid="card"]')
       .first()
-      .contains('51')
+      .contains('Church')
       .click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browseStudyHierarchy/instrument/1/dataPublication/51'
+      '/browseDataPublications/instrument/8/dataPublication/51'
     );
   });
 
@@ -86,7 +86,7 @@ describe('ISIS - Data Publication Cards', () => {
         });
       cy.contains('[role="button"]', 'asc').should('exist');
       cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('[data-testid="card"]').first().contains('8');
+      cy.get('[data-testid="card"]').first().contains('Article');
 
       cy.contains('[role="button"]', 'Publication Date')
         .click()
@@ -95,7 +95,7 @@ describe('ISIS - Data Publication Cards', () => {
         });
       cy.contains('[role="button"]', 'asc').should('not.exist');
       cy.contains('[role="button"]', 'desc').should('exist');
-      cy.get('[data-testid="card"]').first().contains('51');
+      cy.get('[data-testid="card"]').first().contains('Church');
 
       cy.contains('[role="button"]', 'Publication Date')
         .click()
@@ -104,7 +104,7 @@ describe('ISIS - Data Publication Cards', () => {
         });
       cy.contains('[role="button"]', 'asc').should('not.exist');
       cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('[data-testid="card"]').first().contains('8');
+      cy.get('[data-testid="card"]').first().contains('Article');
     });
   });
 
@@ -119,21 +119,21 @@ describe('ISIS - Data Publication Cards', () => {
     it('multiple fields', () => {
       cy.get('[data-testid="advanced-filters-link"]').click();
 
-      cy.get('[aria-label="Filter by Data Publication ID"]')
+      cy.get('[aria-label="Filter by DOI"]')
         .first()
-        .type('5')
+        .type('0')
         .wait(['@getDataPublicationsCount', '@getDataPublicationsOrder'], {
           timeout: 10000,
         });
-      cy.get('[data-testid="card"]').first().contains('45');
+      cy.get('[data-testid="card"]').first().contains('Article');
 
       cy.get('[aria-label="Filter by Title"]')
         .first()
-        .type('design')
-        .wait(['@getStudiesCount', '@getStudiesOrder'], {
+        .type('wat')
+        .wait(['@getDataPublicationsCount', '@getDataPublicationsOrder'], {
           timeout: 10000,
         });
-      cy.get('[data-testid="card"]').first().contains('51');
+      cy.get('[data-testid="card"]').first().contains('Consider');
     });
   });
 });
