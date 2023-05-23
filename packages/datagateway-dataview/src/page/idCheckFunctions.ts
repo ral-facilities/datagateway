@@ -66,21 +66,22 @@ const unmemoizedCheckInstrumentAndFacilityCycleId = (
   investigationId: number
 ): Promise<boolean> => {
   return axios
-    .get(
-      `${apiUrl}/instruments/${instrumentId}/facilitycycles/${facilityCycleId}/investigations/`,
-      {
-        params: {
-          where: {
-            id: {
-              eq: investigationId,
-            },
+    .get(`${apiUrl}/investigations`, {
+      params: {
+        where: {
+          id: {
+            eq: investigationId,
+          },
+          investigationInstrument: { instrument: { id: { eq: instrumentId } } },
+          investigationFacilityCycle: {
+            facilityCycle: { id: { eq: facilityCycleId } },
           },
         },
-        headers: {
-          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
-        },
-      }
-    )
+      },
+      headers: {
+        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+      },
+    })
     .then((response: AxiosResponse<Investigation[]>) => {
       return response.data.length > 0;
     })

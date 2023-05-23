@@ -259,6 +259,10 @@ describe('ISIS Investigation Landing page', () => {
       'href',
       'https://doi.org/doi 1'
     );
+    expect(screen.getByText('investigations.parent_doi:')).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: 'Data Publication Pid' })
+    ).toHaveAttribute('href', 'https://doi.org/Data Publication Pid');
     expect(screen.getByText('investigations.name:')).toBeInTheDocument();
     expect(screen.getByText('Test 1')).toBeInTheDocument();
     expect(screen.getByText('investigations.size:')).toBeInTheDocument();
@@ -308,9 +312,10 @@ describe('ISIS Investigation Landing page', () => {
         '/browse/instrument/4/facilityCycle/5/investigation/1/dataset/1'
       );
       expect(screen.getByText('datasets.doi:')).toBeInTheDocument();
-      expect(
-        screen.getByRole('link', { name: 'landing-study-doi-link' })
-      ).toHaveAttribute('href', 'https://doi.org/dataset doi');
+      expect(screen.getByRole('link', { name: 'dataset doi' })).toHaveAttribute(
+        'href',
+        'https://doi.org/dataset doi'
+      );
 
       // actions for datasets should be visible
       const actionContainer = screen.getByTestId(
@@ -336,9 +341,10 @@ describe('ISIS Investigation Landing page', () => {
         '/browse/instrument/4/facilityCycle/5/investigation/1/dataset/1?view=card'
       );
       expect(screen.getByText('datasets.doi:')).toBeInTheDocument();
-      expect(
-        screen.getByRole('link', { name: 'landing-study-doi-link' })
-      ).toHaveAttribute('href', 'https://doi.org/dataset doi');
+      expect(screen.getByRole('link', { name: 'dataset doi' })).toHaveAttribute(
+        'href',
+        'https://doi.org/dataset doi'
+      );
 
       // actions for datasets should be visible
       const actionContainer = screen.getByTestId(
@@ -362,9 +368,10 @@ describe('ISIS Investigation Landing page', () => {
         '/browseDataPublications/instrument/4/dataPublication/5/investigation/1/dataset/1'
       );
       expect(screen.getByText('datasets.doi:')).toBeInTheDocument();
-      expect(
-        screen.getByRole('link', { name: 'landing-study-doi-link' })
-      ).toHaveAttribute('href', 'https://doi.org/dataset doi');
+      expect(screen.getByRole('link', { name: 'dataset doi' })).toHaveAttribute(
+        'href',
+        'https://doi.org/dataset doi'
+      );
 
       // actions for datasets should be visible
       const actionContainer = screen.getByTestId(
@@ -390,9 +397,10 @@ describe('ISIS Investigation Landing page', () => {
         '/browseDataPublications/instrument/4/dataPublication/5/investigation/1/dataset/1?view=card'
       );
       expect(screen.getByText('datasets.doi:')).toBeInTheDocument();
-      expect(
-        screen.getByRole('link', { name: 'landing-study-doi-link' })
-      ).toHaveAttribute('href', 'https://doi.org/dataset doi');
+      expect(screen.getByRole('link', { name: 'dataset doi' })).toHaveAttribute(
+        'href',
+        'https://doi.org/dataset doi'
+      );
 
       // actions for datasets should be visible
       const actionContainer = screen.getByTestId(
@@ -576,5 +584,12 @@ describe('ISIS Investigation Landing page', () => {
       'href',
       'https://doi.org/doi 1'
     );
+  });
+
+  it('displays Experiment DOI (PID) and renders the expected Link ', async () => {
+    renderComponent();
+    expect(
+      await screen.findByRole('link', { name: 'Data Publication Pid' })
+    ).toHaveAttribute('href', 'https://doi.org/Data Publication Pid');
   });
 });

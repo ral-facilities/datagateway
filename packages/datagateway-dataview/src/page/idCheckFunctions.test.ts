@@ -164,13 +164,18 @@ describe('ID check functions', () => {
 
       const result = await checkInstrumentAndFacilityCycleId(1, 2, 3);
       expect(result).toBe(true);
-      expect(axios.get).toHaveBeenCalledWith(
-        '/instruments/1/facilitycycles/2/investigations/',
-        {
-          params: { where: { id: { eq: 3 } } },
-          headers: { Authorization: 'Bearer null' },
-        }
-      );
+      expect(axios.get).toHaveBeenCalledWith('/investigations', {
+        params: {
+          where: {
+            id: { eq: 3 },
+            investigationInstrument: { instrument: { id: { eq: 1 } } },
+            investigationFacilityCycle: {
+              facilityCycle: { id: { eq: 2 } },
+            },
+          },
+        },
+        headers: { Authorization: 'Bearer null' },
+      });
     });
     it('returns false on invalid instrument, facility cycle + investigation triple', async () => {
       expect.assertions(1);

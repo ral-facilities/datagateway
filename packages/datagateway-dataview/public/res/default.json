@@ -99,6 +99,7 @@
     "instrument": "Instrument",
     "visit_id": "Visit ID",
     "doi": "DOI",
+    "parent_doi": "Parent DOI",
     "dataset_count": "Dataset Count",
     "release_date": "Public Release",
     "details": {
