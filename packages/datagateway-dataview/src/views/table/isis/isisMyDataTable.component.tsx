@@ -75,7 +75,9 @@ const ISISMyDataTable = (): React.ReactElement => {
           investigationInstruments: 'instrument',
         },
         { investigationFacilityCycles: 'facilityCycle' },
-        { studyInvestigations: 'study' },
+        {
+          dataCollectionInvestigations: { dataCollection: 'dataPublications' },
+        },
       ]),
     },
   ]);
@@ -177,7 +179,8 @@ const ISISMyDataTable = (): React.ReactElement => {
       {
         icon: Public,
         label: t('investigations.doi'),
-        dataKey: 'studyInvestigations.study.pid',
+        dataKey:
+          'dataCollectionInvestigations.dataCollection.dataPublications.pid',
         cellContentRenderer: (cellProps: TableCellProps) => {
           const investigationData = cellProps.rowData as Investigation;
           if (

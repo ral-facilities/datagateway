@@ -3,13 +3,13 @@ describe('ISIS - Investigations Table', () => {
     cy.intercept('**/investigations/count*').as('getInvestigationsCount');
     cy.intercept('**/investigations?order*').as('getInvestigationsOrder');
     cy.login();
-    cy.visit('/browse/instrument/2/facilityCycle/8/investigation').wait(
+    cy.visit('/browse/instrument/13/facilityCycle/12/investigation').wait(
       ['@getInvestigationsCount', '@getInvestigationsOrder'],
       { timeout: 10000 }
     );
     // Check that we have received the size from the API as this will produce
     // a re-render which can prevent some interactions.
-    cy.contains('[aria-rowindex="1"] [aria-colindex="6"]', '3.46 GB').should(
+    cy.contains('[aria-rowindex="1"] [aria-colindex="6"]', '3.31 GB').should(
       'exist'
     );
   });
@@ -27,7 +27,7 @@ describe('ISIS - Investigations Table', () => {
     cy.get('[role="gridcell"] a').first().click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/2/facilityCycle/8/investigation/8'
+      '/browse/instrument/13/facilityCycle/12/investigation/31'
     );
   });
 
@@ -148,7 +148,7 @@ describe('ISIS - Investigations Table', () => {
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Customer home food important.'
+        'Stop system investment'
       );
     });
 
@@ -163,7 +163,7 @@ describe('ISIS - Investigations Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Customer home food important.'
+        'Stop system investment'
       );
     });
 
@@ -181,7 +181,7 @@ describe('ISIS - Investigations Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Customer home food important.'
+        'Stop system investment'
       );
     });
 
@@ -190,14 +190,14 @@ describe('ISIS - Investigations Table', () => {
       cy.contains('[role="button"]', 'Title').click();
 
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Customer home food important.'
+        'Stop system investment'
       );
     });
   });
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Title"]').first().type('offer');
+      cy.get('[aria-label="Filter by Title"]').first().type('stop');
 
       cy.get('[role="progressbar"]').should('be.visible');
       cy.get('[role="progressbar"]').should('not.exist');
@@ -207,11 +207,11 @@ describe('ISIS - Investigations Table', () => {
         'INVESTIGATION 8'
       );
       // check that size is correct after filtering
-      cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains('3.46 GB');
+      cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains('3.31 GB');
     });
 
     it('date between', () => {
-      cy.get('input[id="Start Date filter from"]').type('2006-08-05');
+      cy.get('input[id="Start Date filter from"]').type('2007-09-01');
 
       cy.get('input[aria-label="Start Date filter to"]')
         .parent()
@@ -229,7 +229,7 @@ describe('ISIS - Investigations Table', () => {
       );
 
       cy.get('[aria-rowcount="1"]').should('not.exist');
-      cy.contains('Customer home food important.').should('not.exist');
+      cy.contains('Stop system investment').should('not.exist');
     });
 
     it('multiple columns', () => {
@@ -248,7 +248,7 @@ describe('ISIS - Investigations Table', () => {
     it('when not other row is showing details', () => {
       cy.get('[aria-label="Show details"]').first().click();
 
-      // Study PID
+      // DataPublication PID
 
       cy.get('[data-testid="investigation-details-panel-pid-link"]')
         .first()
@@ -293,7 +293,7 @@ describe('ISIS - Investigations Table', () => {
       // Waits needed due to suspected race condition on fetching the panels
       // eslint-disable-next-line cypress/no-unnecessary-waiting
       cy.get('#details-panel')
-        .contains('Customer home food important.')
+        .contains('Stop system investment')
         .should('be.visible')
         .wait(200);
 
@@ -306,7 +306,7 @@ describe('ISIS - Investigations Table', () => {
 
       // eslint-disable-next-line cypress/no-unnecessary-waiting
       cy.get('#details-panel')
-        .contains('Randy Beasley')
+        .contains('Dustin Hall')
         .should('be.visible')
         .wait(200);
 
@@ -315,7 +315,7 @@ describe('ISIS - Investigations Table', () => {
       );
       cy.get('[aria-controls="investigation-samples-panel"]').click();
 
-      cy.get('#details-panel').contains('SAMPLE 8').should('be.visible');
+      cy.get('#details-panel').contains('SAMPLE 31').should('be.visible');
 
       cy.get('[aria-controls="investigation-publications-panel"]').should(
         'be.visible'
@@ -323,7 +323,7 @@ describe('ISIS - Investigations Table', () => {
       cy.get('[aria-controls="investigation-publications-panel"]').click();
 
       cy.get('#details-panel')
-        .contains('Win detail TV shake population.')
+        .contains('Pressure meeting would year but energy.')
         .should('be.visible');
     });
 
@@ -333,7 +333,7 @@ describe('ISIS - Investigations Table', () => {
 
       cy.location('pathname').should(
         'eq',
-        '/browse/instrument/2/facilityCycle/8/investigation/8/dataset'
+        '/browse/instrument/13/facilityCycle/12/investigation/31/dataset'
       );
     });
 

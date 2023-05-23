@@ -171,7 +171,7 @@ const ISISInvestigationsCardView = (
         icon: Public,
         label: t('investigations.doi'),
         dataKey:
-          'dataCollectionInvestigations.[0].dataCollection.dataPublications.[0].pid',
+          'dataCollectionInvestigations.dataCollection.dataPublications.pid',
         filterComponent: textFilter,
       },
       {

@@ -135,6 +135,26 @@ exports[`Investigation details panel component should check if multiple publicat
           <span
             class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
           >
+            investigations.details.pid
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <a
+              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
+              data-testid="investigation-details-panel-pid-link"
+              href="https://doi.org/Data Publication Pid"
+            >
+              Data Publication Pid
+            </a>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
             investigations.details.doi
           </span>
           <p
@@ -352,6 +372,26 @@ exports[`Investigation details panel component should check if multiple samples 
             <b>
               foo bar
             </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            investigations.details.pid
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <a
+              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
+              data-testid="investigation-details-panel-pid-link"
+              href="https://doi.org/Data Publication Pid"
+            >
+              Data Publication Pid
+            </a>
           </p>
         </div>
         <div
@@ -774,6 +814,26 @@ exports[`Investigation details panel component should render correctly 1`] = `
           <span
             class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
           >
+            investigations.details.pid
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <a
+              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
+              data-testid="investigation-details-panel-pid-link"
+              href="https://doi.org/Data Publication Pid"
+            >
+              Data Publication Pid
+            </a>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
             investigations.details.doi
           </span>
           <p
@@ -981,6 +1041,26 @@ exports[`Investigation details panel component should render user, sample and pu
             <b>
               foo bar
             </b>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+        >
+          <span
+            class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
+          >
+            investigations.details.pid
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            <a
+              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
+              data-testid="investigation-details-panel-pid-link"
+              href="https://doi.org/Data Publication Pid"
+            >
+              Data Publication Pid
+            </a>
           </p>
         </div>
         <div

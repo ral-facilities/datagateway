@@ -192,7 +192,7 @@ const ISISInvestigationsTable = (
         icon: Public,
         label: t('investigations.doi'),
         dataKey:
-          'dataCollectionInvestigations.[0].dataCollection.dataPublications.[0].pid',
+          'dataCollectionInvestigations.dataCollection.dataPublications.pid',
         // TODO: this was previously the Study DOI - currently there are no datapublication
         // representations of Studies, only of Investigations themselves
         // should this be showing the study DOI or the investigation DOI anyway?
@@ -206,7 +206,7 @@ const ISISInvestigationsTable = (
               `https://doi.org/${investigationData.dataCollectionInvestigations?.[0]?.dataCollection?.dataPublications?.[0].pid}`,
               investigationData.dataCollectionInvestigations?.[0]
                 ?.dataCollection?.dataPublications?.[0].pid,
-              'isis-table-doi-link'
+              'isis-investigations-table-doi-link'
             );
           } else {
             return '';
