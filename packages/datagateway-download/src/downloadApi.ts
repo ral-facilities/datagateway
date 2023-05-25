@@ -389,3 +389,43 @@ export const getPercentageComplete = async ({
   const isStatus = Number.isNaN(maybeNumber);
   return isStatus ? data : maybeNumber;
 };
+
+/**
+ * Returns true if a user is able to mint a DOI for their cart, otherwise false
+ */
+export const isCartMintable = async (
+  cart: DownloadCartItem[],
+  doiMinterUrl: string
+): Promise<boolean> => {
+  const investigations: number[] = [];
+  const datasets: number[] = [];
+  const datafiles: number[] = [];
+  cart.forEach((cartItem) => {
+    if (cartItem.entityType === 'investigation')
+      investigations.push(cartItem.entityId);
+    if (cartItem.entityType === 'dataset') datasets.push(cartItem.entityId);
+    if (cartItem.entityType === 'datafile') datafiles.push(cartItem.entityId);
+  });
+  const { status } = await axios
+    .post(
+      `${doiMinterUrl}/ismintable`,
+      {
+        investigations: { ids: investigations },
+        datasets: { ids: datasets },
+        datafiles: { ids: datafiles },
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+        },
+      }
+    )
+    .catch((error) => {
+      // catch 403 error as it's not really an error!
+      if (axios.isAxiosError(error) && error.response?.status === 403)
+        return error.response;
+      throw error;
+    });
+
+  return status === 200;
+};

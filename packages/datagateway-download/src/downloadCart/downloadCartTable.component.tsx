@@ -9,6 +9,7 @@ import {
   Link,
   Paper,
   Theme,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import {
@@ -29,6 +30,7 @@ import { DownloadSettingsContext } from '../ConfigProvider';
 import {
   useCart,
   useDatafileCounts,
+  useIsCartMintable,
   useIsTwoLevel,
   useRemoveAllFromCart,
   useRemoveEntityFromCart,
@@ -61,6 +63,8 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   const { mutate: removeAllDownloadCartItems, isLoading: removingAll } =
     useRemoveAllFromCart();
   const { data, isFetching: dataLoading } = useCart();
+  const { data: mintable, isLoading: cartMintabilityLoading } =
+    useIsCartMintable(data);
 
   const fileCountQueries = useDatafileCounts(data);
   const sizeQueries = useSizes(data);
@@ -477,7 +481,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                   <Button
                     className="tour-download-remove-button"
                     id="removeAllButton"
-                    variant="contained"
+                    variant="outlined"
                     color="primary"
                     disabled={removingAll}
                     startIcon={removingAll && <CircularProgress size={20} />}
@@ -486,6 +490,35 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                     {t('downloadCart.remove_all')}
                   </Button>
                 </Grid>
+                {settings.doiMinterUrl && (
+                  <Grid item>
+                    <Tooltip
+                      title={
+                        cartMintabilityLoading
+                          ? t('downloadCart.mintability_loading')
+                          : !mintable
+                          ? t('downloadCart.not_mintable')
+                          : ''
+                      }
+                    >
+                      {/* need this span so the tooltip works when the button is disabled */}
+                      <span>
+                        <Button
+                          className="tour-download-mint-button"
+                          id="generateDOIButton"
+                          variant="contained"
+                          color="primary"
+                          disabled={cartMintabilityLoading || !mintable}
+                          onClick={() => {
+                            // TODO: mint doi
+                          }}
+                        >
+                          {t('downloadCart.generate_DOI')}
+                        </Button>
+                      </span>
+                    </Tooltip>
+                  </Grid>
+                )}
                 <Grid item>
                   <Button
                     className="tour-download-download-button"

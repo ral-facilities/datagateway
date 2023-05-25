@@ -1,5 +1,9 @@
 import { AxiosError } from 'axios';
-import type { Download, DownloadStatus } from 'datagateway-common';
+import {
+  Download,
+  DownloadStatus,
+  InvalidateTokenType,
+} from 'datagateway-common';
 import {
   DownloadCartItem,
   fetchDownloadCart,
@@ -8,6 +12,7 @@ import {
   NotificationType,
   retryICATErrors,
 } from 'datagateway-common';
+import log from 'loglevel';
 import pLimit from 'p-limit';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -25,9 +30,10 @@ import {
   UseQueryResult,
 } from 'react-query';
 import { DownloadSettingsContext } from './ConfigProvider';
-import type {
+import {
   DownloadProgress,
   DownloadTypeStatus,
+  isCartMintable,
   SubmitCartZipType,
 } from './downloadApi';
 import {
@@ -769,6 +775,49 @@ export const useDownloadPercentageComplete = <T = DownloadProgress>({
         handleICATError(error, false);
       },
       ...queryOptions,
+    }
+  );
+};
+
+/**
+ * Queries whether a cart is mintable.
+ * @param download The {@link Download} that this query should query the restore progress of.
+ */
+export const useIsCartMintable = (
+  cart?: DownloadCartItem[]
+): UseQueryResult<boolean, AxiosError> => {
+  const settings = React.useContext(DownloadSettingsContext);
+  const { doiMinterUrl } = settings;
+
+  return useQuery(
+    ['ismintable', cart],
+    () => {
+      if (doiMinterUrl && cart && cart.length > 1)
+        return isCartMintable(cart, doiMinterUrl);
+      else return Promise.resolve(false);
+    },
+    {
+      onError: (error) => {
+        log.error(error);
+        if (error.response?.status === 401) {
+          document.dispatchEvent(
+            new CustomEvent(MicroFrontendId, {
+              detail: {
+                type: InvalidateTokenType,
+                payload: {
+                  severity: 'error',
+                  message:
+                    localStorage.getItem('autoLogin') === 'true'
+                      ? 'Your session has expired, please reload the page'
+                      : 'Your session has expired, please login again',
+                },
+              },
+            })
+          );
+        }
+      },
+      staleTime: Infinity,
+      enabled: typeof doiMinterUrl !== 'undefined',
     }
   );
 };
