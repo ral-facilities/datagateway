@@ -509,9 +509,8 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                           variant="contained"
                           color="primary"
                           disabled={cartMintabilityLoading || !mintable}
-                          onClick={() => {
-                            // TODO: mint doi
-                          }}
+                          component={RouterLink}
+                          to="/download/mint"
                         >
                           {t('downloadCart.generate_DOI')}
                         </Button>
