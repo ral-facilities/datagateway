@@ -1,4 +1,17 @@
-import { Box, Grid, Paper, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Grid,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography,
+} from '@mui/material';
+import { readSciGatewayToken, User } from 'datagateway-common';
 import React from 'react';
 import { useCart, useCartUsers } from '../downloadApiHooks';
 import AcceptDataPolicy from './acceptDataPolicy.component';
@@ -9,9 +22,14 @@ type DOIGenerationFormProps = {
 
 const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
   const [acceptedDataPolicy, setAcceptedDataPolicy] = React.useState(true);
+  const [selectedUsers, setSelectedUsers] = React.useState<User[]>([]);
 
   const { data: cart } = useCart();
   const { data: users } = useCartUsers(cart);
+
+  React.useEffect(() => {
+    if (users) setSelectedUsers(users);
+  }, [users]);
 
   return (
     <Box m={1} sx={{ bgColor: 'background.default' }}>
@@ -55,11 +73,42 @@ const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
                     <Typography variant="h6" component="h4">
                       Creators
                     </Typography>
-                    {users?.map((user, index) => (
-                      <Typography variant="body2" key={user.id}>
-                        {JSON.stringify(user)}
-                      </Typography>
-                    ))}
+                    <Table size="small">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Name</TableCell>
+                          <TableCell>Affiliation</TableCell>
+                          <TableCell>Email</TableCell>
+                          <TableCell>Action</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {selectedUsers?.map((user) => (
+                          <TableRow key={user.id}>
+                            <TableCell>{user.fullName}</TableCell>
+                            <TableCell>{user?.affiliation}</TableCell>
+                            <TableCell>{user?.email}</TableCell>
+                            <TableCell>
+                              <Button
+                                disabled={
+                                  user.name === readSciGatewayToken().username
+                                }
+                                onClick={() =>
+                                  setSelectedUsers((selectedUsers) =>
+                                    selectedUsers.filter(
+                                      (selectedUser) =>
+                                        selectedUser.id !== user.id
+                                    )
+                                  )
+                                }
+                              >
+                                Delete
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
                   </Paper>
                 </Grid>
               </Grid>

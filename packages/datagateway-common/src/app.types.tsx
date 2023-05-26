@@ -96,6 +96,8 @@ export interface User {
   id: number;
   name: string;
   fullName?: string;
+  email?: string;
+  affiliation?: string;
 }
 
 export interface Sample {
