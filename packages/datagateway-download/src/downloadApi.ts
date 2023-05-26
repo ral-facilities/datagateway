@@ -1,10 +1,13 @@
 import axios from 'axios';
 import type {
   Datafile,
+  Dataset,
   Download,
   DownloadCart,
   DownloadCartItem,
+  Investigation,
   SubmitCart,
+  User,
 } from 'datagateway-common';
 import { readSciGatewayToken } from 'datagateway-common';
 import type { DownloadSettings } from './ConfigProvider';
@@ -428,4 +431,92 @@ export const isCartMintable = async (
     });
 
   return status === 200;
+};
+
+const fetchEntityUsers = (
+  apiUrl: string,
+  entityId: number,
+  entityType: 'investigation' | 'dataset' | 'datafile'
+): Promise<User[]> => {
+  const params = new URLSearchParams();
+  params.append('where', JSON.stringify({ id: { eq: entityId } }));
+
+  if (entityType === 'investigation')
+    params.append('include', JSON.stringify({ investigationUsers: 'user' }));
+  if (entityType === 'dataset')
+    params.append(
+      'include',
+      JSON.stringify({ investigation: { investigationUsers: 'user' } })
+    );
+  if (entityType === 'datafile')
+    params.append(
+      'include',
+      JSON.stringify({
+        dataset: { investigation: { investigationUsers: 'user' } },
+      })
+    );
+
+  return axios
+    .get(`${apiUrl}/${entityType}s`, {
+      params,
+      headers: {
+        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+      },
+    })
+    .then((response) => {
+      const entity = response.data[0];
+      if (entityType === 'investigation') {
+        return (entity as Investigation).investigationUsers?.map(
+          (iUser) => iUser.user
+        ) as User[];
+      }
+      if (entityType === 'dataset') {
+        return (entity as Dataset).investigation?.investigationUsers?.map(
+          (iUser) => iUser.user
+        ) as User[];
+      }
+      if (entityType === 'datafile')
+        return (
+          entity as Datafile
+        ).dataset?.investigation?.investigationUsers?.map(
+          (iUser) => iUser.user
+        ) as User[];
+      return [];
+    });
+};
+
+/**
+ * Deduplicates items in an array
+ * @param array Array to make unique
+ * @param key Function to apply to an array item that returns a primitive that keys that item
+ * @returns a deduplicated array
+ */
+function uniqBy<T>(array: T[], key: (item: T) => number | string): T[] {
+  const seen: Record<number | string, boolean> = {};
+  return array.filter(function (item) {
+    const k = key(item);
+    return seen.hasOwnProperty(k) ? false : (seen[k] = true);
+  });
+}
+
+/**
+ * Returns a list of users from ICAT which are InvestigationUsers for each item in the cart
+ */
+export const getCartUsers = async (
+  cart: DownloadCartItem[],
+  settings: Pick<DownloadSettings, 'apiUrl'>
+): Promise<User[]> => {
+  let users: User[] = [];
+  for (const cartItem of cart) {
+    const entityUsers = await fetchEntityUsers(
+      settings.apiUrl,
+      cartItem.entityId,
+      cartItem.entityType
+    );
+    users = users.concat(entityUsers);
+  }
+
+  users = uniqBy(users, (item) => item.id);
+
+  return users;
 };

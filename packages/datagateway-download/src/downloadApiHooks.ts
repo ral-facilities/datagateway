@@ -3,6 +3,7 @@ import {
   Download,
   DownloadStatus,
   InvalidateTokenType,
+  User,
 } from 'datagateway-common';
 import {
   DownloadCartItem,
@@ -33,6 +34,7 @@ import { DownloadSettingsContext } from './ConfigProvider';
 import {
   DownloadProgress,
   DownloadTypeStatus,
+  getCartUsers,
   isCartMintable,
   SubmitCartZipType,
 } from './downloadApi';
@@ -781,7 +783,7 @@ export const useDownloadPercentageComplete = <T = DownloadProgress>({
 
 /**
  * Queries whether a cart is mintable.
- * @param download The {@link Download} that this query should query the restore progress of.
+ * @param cart The {@link Cart} that is checked
  */
 export const useIsCartMintable = (
   cart?: DownloadCartItem[]
@@ -818,6 +820,25 @@ export const useIsCartMintable = (
       },
       staleTime: Infinity,
       enabled: typeof doiMinterUrl !== 'undefined',
+    }
+  );
+};
+
+/**
+ * Gets the total list of users associated with each item in the cart
+ * @param cart The {@link Cart} that we're getting the users for
+ */
+export const useCartUsers = (
+  cart?: DownloadCartItem[]
+): UseQueryResult<User[], AxiosError> => {
+  const settings = React.useContext(DownloadSettingsContext);
+
+  return useQuery(
+    ['cartUsers', cart],
+    () => getCartUsers(cart ?? [], settings),
+    {
+      onError: handleICATError,
+      staleTime: Infinity,
     }
   );
 };

@@ -1,5 +1,6 @@
 import { Box, Grid, Paper, TextField, Typography } from '@mui/material';
 import React from 'react';
+import { useCart, useCartUsers } from '../downloadApiHooks';
 import AcceptDataPolicy from './acceptDataPolicy.component';
 
 type DOIGenerationFormProps = {
@@ -8,6 +9,9 @@ type DOIGenerationFormProps = {
 
 const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
   const [acceptedDataPolicy, setAcceptedDataPolicy] = React.useState(true);
+
+  const { data: cart } = useCart();
+  const { data: users } = useCartUsers(cart);
 
   return (
     <Box m={1} sx={{ bgColor: 'background.default' }}>
@@ -51,6 +55,11 @@ const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
                     <Typography variant="h6" component="h4">
                       Creators
                     </Typography>
+                    {users?.map((user, index) => (
+                      <Typography variant="body2" key={user.id}>
+                        {JSON.stringify(user)}
+                      </Typography>
+                    ))}
                   </Paper>
                 </Grid>
               </Grid>
