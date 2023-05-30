@@ -123,7 +123,7 @@ describe('ISIS Studies - Card View', () => {
     renderComponent();
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent(
+      `?semanticSearch=false&sort=${encodeURIComponent(
         '{"studyInvestigations.investigation.startDate":"desc"}'
       )}`
     );
@@ -151,7 +151,7 @@ describe('ISIS Studies - Card View', () => {
     jest.runAllTimers();
 
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
+      `?semanticSearch=false&filters=${encodeURIComponent(
         '{"name":{"value":"tes","type":"include"}}'
       )}`
     );
@@ -159,7 +159,7 @@ describe('ISIS Studies - Card View', () => {
     await user.clear(filter);
     jest.runAllTimers();
 
-    expect(history.location.search).toBe('?');
+    expect(history.location.search).toBe('?semanticSearch=false');
 
     jest.useRealTimers();
   });
@@ -181,13 +181,13 @@ describe('ISIS Studies - Card View', () => {
 
     await user.type(filterInput, '2019-08-06');
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
+      `?semanticSearch=false&filters=${encodeURIComponent(
         '{"studyInvestigations.investigation.endDate":{"endDate":"2019-08-06"}}'
       )}`
     );
 
     await user.clear(filterInput);
-    expect(history.location.search).toBe('?');
+    expect(history.location.search).toBe('?semanticSearch=false');
 
     cleanupDatePickerWorkaround();
   });
@@ -202,7 +202,7 @@ describe('ISIS Studies - Card View', () => {
     );
 
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"name":"asc"}')}`
+      `?semanticSearch=false&sort=${encodeURIComponent('{"name":"asc"}')}`
     );
   });
 

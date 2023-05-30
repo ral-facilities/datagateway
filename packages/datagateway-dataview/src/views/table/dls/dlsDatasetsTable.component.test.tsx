@@ -190,7 +190,7 @@ describe('DLS Dataset table component', () => {
 
     expect(history.length).toBe(5);
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
+      `?semanticSearch=false&filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
       )}`
     );
@@ -198,7 +198,7 @@ describe('DLS Dataset table component', () => {
     await user.clear(filterInput);
 
     expect(history.length).toBe(6);
-    expect(history.location.search).toBe('?');
+    expect(history.location.search).toBe('?semanticSearch=false');
   });
 
   it('updates filter query params on date filter', async () => {
@@ -214,13 +214,15 @@ describe('DLS Dataset table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent('{"modTime":{"endDate":"2019-08-06"}}')}`
+      `?semanticSearch=false&filters=${encodeURIComponent(
+        '{"modTime":{"endDate":"2019-08-06"}}'
+      )}`
     );
 
     await user.clear(filterInput);
 
     expect(history.length).toBe(3);
-    expect(history.location.search).toBe('?');
+    expect(history.location.search).toBe('?semanticSearch=false');
 
     cleanupDatePickerWorkaround();
   });
@@ -229,7 +231,9 @@ describe('DLS Dataset table component', () => {
     renderComponent();
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"createTime":"desc"}')}`
+      `?semanticSearch=false&sort=${encodeURIComponent(
+        '{"createTime":"desc"}'
+      )}`
     );
   });
 
@@ -242,7 +246,7 @@ describe('DLS Dataset table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"name":"asc"}')}`
+      `?semanticSearch=false&sort=${encodeURIComponent('{"name":"asc"}')}`
     );
   });
 

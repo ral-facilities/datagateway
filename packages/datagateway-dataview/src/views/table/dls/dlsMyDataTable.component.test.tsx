@@ -199,10 +199,12 @@ describe('DLS MyData table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.entries[0].search).toBe(
-      `?sort=${encodeURIComponent(JSON.stringify({ startDate: 'desc' }))}`
+      `?semanticSearch=false&sort=${encodeURIComponent(
+        JSON.stringify({ startDate: 'desc' })
+      )}`
     );
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
+      `?semanticSearch=false&filters=${encodeURIComponent(
         JSON.stringify({ startDate: { endDate: '1970-01-01' } })
       )}`
     );
@@ -219,14 +221,14 @@ describe('DLS MyData table component', () => {
     await user.type(filterInput, 'test');
 
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
+      `?semanticSearch=false&filters=${encodeURIComponent(
         '{"visitId":{"value":"test","type":"include"}}'
       )}`
     );
 
     await user.clear(filterInput);
 
-    expect(history.location.search).toBe('?');
+    expect(history.location.search).toBe('?semanticSearch=false');
   });
 
   it('updates filter query params on date filter', async () => {
@@ -241,12 +243,14 @@ describe('DLS MyData table component', () => {
     await user.type(filterInput, '2019-08-06');
 
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
+      `?semanticSearch=false&filters=${encodeURIComponent(
+        '{"endDate":{"endDate":"2019-08-06"}}'
+      )}`
     );
 
     await user.clear(filterInput);
 
-    expect(history.location.search).toBe('?');
+    expect(history.location.search).toBe('?semanticSearch=false');
 
     cleanupDatePickerWorkaround();
   });
@@ -259,7 +263,7 @@ describe('DLS MyData table component', () => {
     );
 
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"title":"asc"}')}`
+      `?semanticSearch=false&sort=${encodeURIComponent('{"title":"asc"}')}`
     );
   });
 

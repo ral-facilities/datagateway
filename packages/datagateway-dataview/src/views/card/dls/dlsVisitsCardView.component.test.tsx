@@ -107,14 +107,14 @@ describe('DLS Visits - Card View', () => {
     await user.type(filter, 'test');
 
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
+      `?semanticSearch=false&filters=${encodeURIComponent(
         '{"visitId":{"value":"test","type":"include"}}'
       )}`
     );
 
     await user.clear(filter);
 
-    expect(history.location.search).toBe('?');
+    expect(history.location.search).toBe('?semanticSearch=false');
   });
 
   it('updates filter query params on date filter', async () => {
@@ -134,12 +134,14 @@ describe('DLS Visits - Card View', () => {
     await user.type(filter, '2019-08-06');
 
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
+      `?semanticSearch=false&filters=${encodeURIComponent(
+        '{"endDate":{"endDate":"2019-08-06"}}'
+      )}`
     );
 
     await user.clear(filter);
 
-    expect(history.location.search).toBe('?');
+    expect(history.location.search).toBe('?semanticSearch=false');
 
     cleanupDatePickerWorkaround();
   });
@@ -148,7 +150,7 @@ describe('DLS Visits - Card View', () => {
     renderComponent();
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"startDate":"desc"}')}`
+      `?semanticSearch=false&sort=${encodeURIComponent('{"startDate":"desc"}')}`
     );
   });
 
@@ -162,7 +164,7 @@ describe('DLS Visits - Card View', () => {
     );
 
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"visitId":"asc"}')}`
+      `?semanticSearch=false&sort=${encodeURIComponent('{"visitId":"asc"}')}`
     );
   });
 

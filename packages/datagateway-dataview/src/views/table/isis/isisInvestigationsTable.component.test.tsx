@@ -319,7 +319,7 @@ describe('ISIS Investigations table component', () => {
     // so the initial entry + 4 characters in "test" = 5 entries
     expect(history.length).toBe(5);
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
+      `?semanticSearch=false&filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
       )}`
     );
@@ -327,7 +327,7 @@ describe('ISIS Investigations table component', () => {
     await user.clear(filterInput);
 
     expect(history.length).toBe(6);
-    expect(history.location.search).toBe('?');
+    expect(history.location.search).toBe('?semanticSearch=false');
   });
 
   it('updates filter query params on date filter', async () => {
@@ -343,7 +343,7 @@ describe('ISIS Investigations table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
+      `?semanticSearch=false&filters=${encodeURIComponent(
         '{"startDate":{"startDate":"2019-08-06"}}'
       )}`
     );
@@ -351,7 +351,7 @@ describe('ISIS Investigations table component', () => {
     await user.clear(filterInput);
 
     expect(history.length).toBe(3);
-    expect(history.location.search).toBe('?');
+    expect(history.location.search).toBe('?semanticSearch=false');
 
     cleanupDatePickerWorkaround();
   });
@@ -360,7 +360,9 @@ describe('ISIS Investigations table component', () => {
     renderComponent();
     expect(history.length).toBe(1);
     expect(replaceSpy).toHaveBeenCalledWith({
-      search: `?sort=${encodeURIComponent('{"startDate":"desc"}')}`,
+      search: `?semanticSearch=false&sort=${encodeURIComponent(
+        '{"startDate":"desc"}'
+      )}`,
     });
   });
 
@@ -373,7 +375,7 @@ describe('ISIS Investigations table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"title":"asc"}')}`
+      `?semanticSearch=false&sort=${encodeURIComponent('{"title":"asc"}')}`
     );
   });
 

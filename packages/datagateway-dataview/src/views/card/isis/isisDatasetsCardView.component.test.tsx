@@ -139,14 +139,14 @@ describe('ISIS Datasets - Card View', () => {
     await user.type(filter, 'test');
 
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
+      `?semanticSearch=false&filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
       )}`
     );
 
     await user.clear(filter);
 
-    expect(history.location.search).toBe('?');
+    expect(history.location.search).toBe('?semanticSearch=false');
   });
 
   it('updates filter query params on date filter', async () => {
@@ -166,12 +166,14 @@ describe('ISIS Datasets - Card View', () => {
     await user.type(filter, '2019-08-06');
 
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent('{"modTime":{"endDate":"2019-08-06"}}')}`
+      `?semanticSearch=false&filters=${encodeURIComponent(
+        '{"modTime":{"endDate":"2019-08-06"}}'
+      )}`
     );
 
     await user.clear(filter);
 
-    expect(history.location.search).toBe('?');
+    expect(history.location.search).toBe('?semanticSearch=false');
 
     cleanupDatePickerWorkaround();
   });
@@ -180,7 +182,9 @@ describe('ISIS Datasets - Card View', () => {
     renderComponent();
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"createTime":"desc"}')}`
+      `?semanticSearch=false&sort=${encodeURIComponent(
+        '{"createTime":"desc"}'
+      )}`
     );
   });
 
@@ -192,7 +196,7 @@ describe('ISIS Datasets - Card View', () => {
     );
 
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"name":"asc"}')}`
+      `?semanticSearch=false&sort=${encodeURIComponent('{"name":"asc"}')}`
     );
   });
 

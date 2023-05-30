@@ -280,7 +280,7 @@ describe('Investigation table component', () => {
 
     expect(history.length).toBe(5);
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
+      `?semanticSearch=false&filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
       )}`
     );
@@ -288,7 +288,7 @@ describe('Investigation table component', () => {
     await user.clear(filterInput);
 
     expect(history.length).toBe(6);
-    expect(history.location.search).toBe('?');
+    expect(history.location.search).toBe('?semanticSearch=false');
   });
 
   it('updates filter query params on date filter', async () => {
@@ -304,7 +304,7 @@ describe('Investigation table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
+      `?semanticSearch=false&filters=${encodeURIComponent(
         '{"startDate":{"startDate":"2019-08-06"}}'
       )}`
     );
@@ -312,7 +312,7 @@ describe('Investigation table component', () => {
     await user.clear(filterInput);
 
     expect(history.length).toBe(3);
-    expect(history.location.search).toBe('?');
+    expect(history.location.search).toBe('?semanticSearch=false');
 
     cleanupDatePickerWorkaround();
   });
@@ -324,7 +324,7 @@ describe('Investigation table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"title":"asc"}')}`
+      `?semanticSearch=false&sort=${encodeURIComponent('{"title":"asc"}')}`
     );
   });
 

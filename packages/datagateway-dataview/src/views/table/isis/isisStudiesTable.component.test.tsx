@@ -176,7 +176,7 @@ describe('ISIS Studies table component', () => {
     // so the initial entry + 4 characters in "test" = 5 entries
     expect(history.length).toBe(5);
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
+      `?semanticSearch=false&filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
       )}`
     );
@@ -184,7 +184,7 @@ describe('ISIS Studies table component', () => {
     await user.clear(filterInput);
 
     expect(history.length).toBe(6);
-    expect(history.location.search).toBe('?');
+    expect(history.location.search).toBe('?semanticSearch=false');
   });
 
   it('updates filter query params on date filter', async () => {
@@ -200,7 +200,7 @@ describe('ISIS Studies table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
+      `?semanticSearch=false&filters=${encodeURIComponent(
         '{"studyInvestigations.investigation.endDate":{"endDate":"2019-08-06"}}'
       )}`
     );
@@ -208,7 +208,7 @@ describe('ISIS Studies table component', () => {
     await user.clear(filterInput);
 
     expect(history.length).toBe(3);
-    expect(history.location.search).toBe('?');
+    expect(history.location.search).toBe('?semanticSearch=false');
 
     cleanupDatePickerWorkaround();
   });
@@ -217,7 +217,7 @@ describe('ISIS Studies table component', () => {
     renderComponent();
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent(
+      `?semanticSearch=false&sort=${encodeURIComponent(
         '{"studyInvestigations.investigation.startDate":"desc"}'
       )}`
     );
@@ -232,7 +232,7 @@ describe('ISIS Studies table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"name":"asc"}')}`
+      `?semanticSearch=false&sort=${encodeURIComponent('{"name":"asc"}')}`
     );
   });
 

@@ -197,7 +197,7 @@ describe('DLS Visits table component', () => {
     // so the initial entry + 4 characters in "test" = 5 entries
     expect(history.length).toBe(5);
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
+      `?semanticSearch=false&filters=${encodeURIComponent(
         '{"visitId":{"value":"test","type":"include"}}'
       )}`
     );
@@ -205,7 +205,7 @@ describe('DLS Visits table component', () => {
     await user.clear(filterInput);
 
     expect(history.length).toBe(6);
-    expect(history.location.search).toBe('?');
+    expect(history.location.search).toBe('?semanticSearch=false');
   });
 
   it('updates filter query params on date filter', async () => {
@@ -221,13 +221,15 @@ describe('DLS Visits table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
+      `?semanticSearch=false&filters=${encodeURIComponent(
+        '{"endDate":{"endDate":"2019-08-06"}}'
+      )}`
     );
 
     await user.clear(filterInput);
 
     expect(history.length).toBe(3);
-    expect(history.location.search).toBe('?');
+    expect(history.location.search).toBe('?semanticSearch=false');
 
     cleanupDatePickerWorkaround();
   });
@@ -236,7 +238,7 @@ describe('DLS Visits table component', () => {
     renderComponent();
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"startDate":"desc"}')}`
+      `?semanticSearch=false&sort=${encodeURIComponent('{"startDate":"desc"}')}`
     );
   });
 
@@ -249,7 +251,7 @@ describe('DLS Visits table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"visitId":"asc"}')}`
+      `?semanticSearch=false&sort=${encodeURIComponent('{"visitId":"asc"}')}`
     );
   });
 

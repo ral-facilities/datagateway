@@ -191,14 +191,14 @@ describe('Dataset - Card View', () => {
     await user.type(filter, 'test');
 
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
+      `?semanticSearch=false&filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
       )}`
     );
 
     await user.clear(filter);
 
-    expect(history.location.search).toBe('?');
+    expect(history.location.search).toBe('?semanticSearch=false');
   });
 
   it('updates filter query params on date filter', async () => {
@@ -218,12 +218,14 @@ describe('Dataset - Card View', () => {
     await user.type(filter, '2019-08-06');
 
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent('{"modTime":{"endDate":"2019-08-06"}}')}`
+      `?semanticSearch=false&filters=${encodeURIComponent(
+        '{"modTime":{"endDate":"2019-08-06"}}'
+      )}`
     );
 
     await user.clear(filter);
 
-    expect(history.location.search).toBe('?');
+    expect(history.location.search).toBe('?semanticSearch=false');
 
     cleanupDatePickerWorkaround();
   });
@@ -236,7 +238,7 @@ describe('Dataset - Card View', () => {
     );
 
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"name":"asc"}')}`
+      `?semanticSearch=false&sort=${encodeURIComponent('{"name":"asc"}')}`
     );
   });
 

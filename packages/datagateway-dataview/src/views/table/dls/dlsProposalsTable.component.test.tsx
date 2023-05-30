@@ -155,7 +155,7 @@ describe('DLS Proposals table component', () => {
     // so the initial entry + 4 characters in "test" = 5 entries
     expect(history.length).toBe(5);
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
+      `?semanticSearch=false&filters=${encodeURIComponent(
         '{"title":{"value":"test","type":"include"}}'
       )}`
     );
@@ -163,14 +163,14 @@ describe('DLS Proposals table component', () => {
     await user.clear(filterInput);
 
     expect(history.length).toBe(6);
-    expect(history.location.search).toBe('?');
+    expect(history.location.search).toBe('?semanticSearch=false');
   });
 
   it('uses default sort', () => {
     renderComponent();
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"title":"asc"}')}`
+      `?semanticSearch=false&sort=${encodeURIComponent('{"title":"asc"}')}`
     );
   });
 
