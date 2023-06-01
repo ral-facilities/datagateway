@@ -32,6 +32,7 @@ import {
 } from 'react-query';
 import { DownloadSettingsContext } from './ConfigProvider';
 import {
+  checkUser,
   DownloadProgress,
   DownloadTypeStatus,
   getCartUsers,
@@ -841,4 +842,51 @@ export const useCartUsers = (
       staleTime: Infinity,
     }
   );
+};
+
+/**
+ * Checks whether an email belongs to an ICAT User
+ * @param email The email that we're checking
+ * @returns the {@link User} that matches the email, or 404
+ */
+export const useCheckUser = (
+  email: string
+): UseQueryResult<User, AxiosError> => {
+  const settings = React.useContext(DownloadSettingsContext);
+
+  return useQuery(['checkUser', email], () => checkUser(email, settings), {
+    onError: (error) => {
+      log.error(error);
+      if (error.response?.status === 401) {
+        document.dispatchEvent(
+          new CustomEvent(MicroFrontendId, {
+            detail: {
+              type: InvalidateTokenType,
+              payload: {
+                severity: 'error',
+                message:
+                  localStorage.getItem('autoLogin') === 'true'
+                    ? 'Your session has expired, please reload the page'
+                    : 'Your session has expired, please login again',
+              },
+            },
+          })
+        );
+      }
+    },
+    retry: (failureCount: number, error: AxiosError) => {
+      if (
+        // user not logged in, error code will log them out
+        error.response?.status === 401 ||
+        // email doesn't match user - don't retry as this is a correct response from the server
+        error.response?.status === 404 ||
+        failureCount >= 3
+      )
+        return false;
+      return true;
+    },
+    // set enabled false to only fetch on demand when the add creator button is pressed
+    enabled: false,
+    cacheTime: 0,
+  });
 };

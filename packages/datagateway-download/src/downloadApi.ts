@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import type {
   Datafile,
   Dataset,
@@ -519,4 +519,37 @@ export const getCartUsers = async (
   users = uniqBy(users, (item) => item.id);
 
   return users;
+};
+
+/**
+ * Sends an email to the API and it checks if it's a valid ICAT User, on success
+ * it returns the User, on failure it returns 404
+ */
+export const checkUser = (
+  email: string,
+  settings: Pick<DownloadSettings, 'doiMinterUrl'>
+): Promise<User | AxiosError> => {
+  return Promise.resolve({
+    email: 'test@example.com',
+    id: 1,
+    name: 'Test',
+  });
+  // return Promise.reject(
+  //   new AxiosError('test message', '404', undefined, undefined, {
+  //     status: 404,
+  //     statusText: 'Not found',
+  //     data: 'test 2',
+  //     headers: {},
+  //     config: {},
+  //   })
+  // );
+  return axios
+    .get(`${settings.doiMinterUrl}/user/${email}`, {
+      headers: {
+        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+      },
+    })
+    .then((response) => {
+      return response.data;
+    });
 };
