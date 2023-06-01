@@ -4,9 +4,9 @@ on:
   pull_request:
   # By default, the pull_request event type is not triggered when a PR is merged into main
   push:
-    # TODO - Change this to main before merging k8s-deployment into main
     branches:
-      - k8s-deployment
+      - main
+      - develop
 
 jobs:
   lint-and-unit-test:
@@ -495,7 +495,7 @@ jobs:
   docker:
     # This job triggers only if all the other jobs succeed and does different things depending on the context.
     # The job builds the Docker image in all cases and also pushes the image to Harbor only if something is
-    # pushed to the k8s-deployment branch.
+    # pushed to the develop branch.
     needs: [lint-and-unit-test, dataview-e2e-tests, download-e2e-tests, search-e2e-tests]
     name: Docker
     runs-on: ubuntu-20.04
@@ -516,12 +516,10 @@ jobs:
         with:
           images: harbor.stfc.ac.uk/datagateway/plugins
 
-      # TODO - Change github.ref to refs/heads/main before merging k8s-deployment into main
-      - name: ${{ github.event_name == 'push' && github.ref == 'refs/heads/k8s-deployment' && 'Build and push Docker image to Harbor' || 'Build Docker image' }}
+      - name: ${{ github.event_name == 'push' && github.ref == 'refs/heads/develop' && 'Build and push Docker image to Harbor' || 'Build Docker image' }}
         uses: docker/build-push-action@v2
         with:
           context: .
-          # TODO - Change github.ref to refs/heads/main before merging k8s-deployment into main
-          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/k8s-deployment' }}
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/develop' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
