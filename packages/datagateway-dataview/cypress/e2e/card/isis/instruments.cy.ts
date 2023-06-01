@@ -22,7 +22,7 @@ describe('ISIS - Instruments Cards', () => {
   it('should be able to click an investigation to see its datasets', () => {
     cy.get('[data-testid="card"]')
       .first()
-      .contains('Air it quickly everybody have image left.')
+      .contains('Eight imagine picture tough.')
       .click({ force: true });
     cy.location('pathname').should('eq', '/browse/instrument/11/facilityCycle');
   });
@@ -57,12 +57,12 @@ describe('ISIS - Instruments Cards', () => {
     cy.get('[data-testid="card"]')
       .first()
       .get('[aria-label="card-more-information"]')
-      .contains('Air it quickly everybody have image left.');
+      .contains('Eight imagine picture tough.');
     cy.get('#instrument-users-tab').click({ force: true });
     cy.get('[data-testid="card"]')
       .first()
       .get('[aria-label="card-more-information"]')
-      .contains('Brianna Martin');
+      .contains('Kim Ramirez');
   });
 
   describe('should be able to sort by', () => {
@@ -84,7 +84,7 @@ describe('ISIS - Instruments Cards', () => {
       cy.contains('[role="button"]', 'desc').should('not.exist');
       cy.get('[data-testid="card"]')
         .first()
-        .contains('Air it quickly everybody have image left.');
+        .contains('Eight imagine picture tough.');
 
       cy.contains('[role="button"]', 'Name')
         .click()
@@ -93,7 +93,7 @@ describe('ISIS - Instruments Cards', () => {
       cy.contains('[role="button"]', 'desc').should('exist');
       cy.get('[data-testid="card"]')
         .first()
-        .contains('With piece reason late model.');
+        .contains('Whether number computer economy design now serious appear.');
 
       cy.contains('[role="button"]', 'Name')
         .click()
@@ -102,7 +102,7 @@ describe('ISIS - Instruments Cards', () => {
       cy.contains('[role="button"]', 'desc').should('not.exist');
       cy.get('[data-testid="card"]')
         .first()
-        .contains('Season identify professor happen third.');
+        .contains('Stop prove field onto think suffer measure.');
     });
 
     it('multiple fields', () => {
@@ -113,14 +113,14 @@ describe('ISIS - Instruments Cards', () => {
       cy.contains('[role="button"]', 'desc').should('not.exist');
       cy.get('[data-testid="card"]')
         .first()
-        .contains('Near must surface law how full.');
+        .contains('Sound low certain challenge yet sport happy.');
 
       cy.contains('[role="button"]', 'Type')
         .click()
         .wait('@getInstrumentsOrder', { timeout: 10000 });
       cy.contains('[role="button"]', 'asc').should('exist');
       cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('[data-testid="card"]').first().contains('4');
+      cy.get('[data-testid="card"]').first().contains('10');
     });
   });
 
@@ -136,21 +136,21 @@ describe('ISIS - Instruments Cards', () => {
       cy.get('[data-testid="advanced-filters-link"]').click();
       cy.get('[aria-label="Filter by Name"]')
         .first()
-        .type('Near')
+        .type('oil')
         .wait(['@getInstrumentsCount', '@getInstrumentsOrder'], {
           timeout: 10000,
         });
       cy.get('[data-testid="card"]')
         .first()
-        .contains('Near must surface law how full.');
+        .contains('Eight imagine picture tough.');
 
       cy.get('[aria-label="Filter by Type"]')
         .first()
-        .type('4')
+        .type('11')
         .wait(['@getInstrumentsCount', '@getInstrumentsOrder'], {
           timeout: 10000,
         });
-      cy.get('[data-testid="card"]').first().contains('4');
+      cy.get('[data-testid="card"]').first().contains('11');
     });
   });
 });

@@ -4,11 +4,11 @@ describe('DOI Redirect', () => {
   });
 
   it('should redirect to correct page if valid id', () => {
-    cy.visit('/doi-redirect/LILS/investigation/1');
+    cy.visit('/doi-redirect/LILS/investigation/8');
 
     cy.url().should(
       'include',
-      '/browse/instrument/8/facilityCycle/1/investigation/1/dataset'
+      '/browse/instrument/2/facilityCycle/8/investigation/8/dataset'
     );
   });
 

@@ -29,7 +29,7 @@ describe('Download Confirmation', () => {
 
   it('should load correctly and display the confirmation dialog for the cart items', () => {
     // Show the correct download size of the cart items.
-    cy.contains('Download Size: 11.01 GB').should('exist');
+    cy.contains('Download Size: 3.12 GB').should('exist');
 
     // Shows HTTPS as the default access method.
     cy.contains('#confirm-access-method', 'HTTPS').should('exist');
@@ -38,12 +38,12 @@ describe('Download Confirmation', () => {
     cy.get('#download-table').should('exist');
     cy.contains(
       '#download-table-one',
-      '23 hours, 19 minutes, 46 seconds'
+      '6 hours, 36 minutes, 34 seconds'
     ).should('exist');
-    cy.contains('#download-table-thirty', '46 minutes, 39 seconds').should(
+    cy.contains('#download-table-thirty', '13 minutes, 13 seconds').should(
       'exist'
     );
-    cy.contains('#download-table-hundred', '13 minutes, 59 seconds').should(
+    cy.contains('#download-table-hundred', '3 minutes, 57 seconds').should(
       'exist'
     );
   });

@@ -54,7 +54,7 @@ export const readSciGatewayToken = () => {
   };
 };
 
-Cypress.Commands.add('login', (credentials) => {
+Cypress.Commands.add('login', (credentials, user) => {
   return cy.request('datagateway-dataview-settings.json').then((response) => {
     const settings = response.body;
     let body = {
@@ -69,7 +69,8 @@ Cypress.Commands.add('login', (credentials) => {
       const jwtHeader = { alg: 'HS256', typ: 'JWT' };
       const payload = {
         sessionId: response.body.sessionID,
-        username: body.mechanism === 'anon' ? 'anon/anon' : 'Thomas409',
+        username:
+          body.mechanism === 'anon' ? 'anon/anon' : user ? user : 'Michael222',
       };
       const jwt = jsrsasign.KJUR.jws.JWS.sign(
         'HS256',

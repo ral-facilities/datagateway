@@ -1,7 +1,7 @@
 import React from 'react';
-import { shallow } from 'enzyme';
 import { Datafile } from '../app.types';
 import DatafileDetailsPanel from './datafileDetailsPanel.component';
+import { render } from '@testing-library/react';
 
 describe('Datafile details panel component', () => {
   let rowData: Datafile;
@@ -23,12 +23,12 @@ describe('Datafile details panel component', () => {
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(
+    const { asFragment } = render(
       <DatafileDetailsPanel
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}
       />
     );
-    expect(wrapper).toMatchSnapshot();
+    expect(asFragment()).toMatchSnapshot();
   });
 });

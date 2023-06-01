@@ -1,32 +1,35 @@
-import React from 'react';
 import {
-  Table,
-  formatBytes,
-  Datafile,
-  tableLink,
-  FacilityCycle,
+  buildDatafileTableUrlForDataset,
+  buildDatasetLandingUrl,
+  buildUrlToDatafileTableContainingDatafile,
   ColumnType,
+  Datafile,
+  DatafileDetailsPanel,
   Dataset,
+  DLSDatafileDetailsPanel,
+  FACILITY_NAME,
+  formatBytes,
+  ISISDatafileDetailsPanel,
+  isLandingPageSupportedForHierarchy,
   parseSearchToQuery,
+  Table,
+  tableLink,
   useAddToCart,
-  useAllFacilityCycles,
   useCart,
   useDatafileCount,
   useDatafilesInfinite,
   useDateFilter,
   useIds,
   useLuceneSearch,
-  useSort,
   useRemoveFromCart,
+  useSort,
   useTextFilter,
-  DatafileDetailsPanel,
-  ISISDatafileDetailsPanel,
-  DLSDatafileDetailsPanel,
 } from 'datagateway-common';
-import { TableCellProps, IndexRange } from 'react-virtualized';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+import { IndexRange, TableCellProps } from 'react-virtualized';
 import { StateType } from '../state/app.types';
 
 interface DatafileSearchTableProps {
@@ -37,8 +40,6 @@ const DatafileSearchTable = (
   props: DatafileSearchTableProps
 ): React.ReactElement => {
   const { hierarchy } = props;
-
-  const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
   const location = useLocation();
   const queryParams = React.useMemo(
@@ -87,7 +88,12 @@ const DatafileSearchTable = (
     {
       filterType: 'include',
       filterValue: JSON.stringify({
-        dataset: { investigation: { investigationInstruments: 'instrument' } },
+        dataset: {
+          investigation: {
+            investigationInstruments: 'instrument',
+            investigationFacilityCycles: 'facilityCycle',
+          },
+        },
       }),
     },
   ]);
@@ -131,107 +137,6 @@ const DatafileSearchTable = (
     [fetchNextPage]
   );
 
-  const dlsLink = (
-    datafileData: Datafile,
-    linkType = 'datafile'
-  ): React.ReactElement | string => {
-    if (datafileData.dataset?.investigation) {
-      return linkType === 'dataset'
-        ? tableLink(
-            `/browse/proposal/${datafileData.dataset.investigation.name}/investigation/${datafileData.dataset.investigation?.id}/dataset/${datafileData.dataset.id}/datafile`,
-            datafileData.dataset.name
-          )
-        : tableLink(
-            `/browse/proposal/${datafileData.dataset.name}/investigation/${datafileData.dataset.investigation.id}/dataset/${datafileData.dataset.id}/datafile`,
-            datafileData.name
-          );
-    }
-    if (linkType === 'dataset')
-      return datafileData.dataset ? datafileData.dataset.name : '';
-    return datafileData.name;
-  };
-
-  const isisLink = React.useCallback(
-    (datafileData: Datafile, linkType = 'datafile') => {
-      let instrumentId;
-      let facilityCycleId;
-      if (
-        datafileData.dataset?.investigation?.investigationInstruments?.length
-      ) {
-        instrumentId =
-          datafileData.dataset?.investigation?.investigationInstruments[0]
-            .instrument?.id;
-      } else {
-        if (linkType === 'dataset')
-          return datafileData.dataset ? datafileData.dataset.name : '';
-        return datafileData.name;
-      }
-
-      if (
-        facilityCycles?.length &&
-        datafileData.dataset?.investigation?.startDate
-      ) {
-        const filteredFacilityCycles: FacilityCycle[] = facilityCycles?.filter(
-          (facilityCycle: FacilityCycle) =>
-            datafileData.dataset?.investigation?.startDate &&
-            facilityCycle.startDate &&
-            facilityCycle.endDate &&
-            datafileData.dataset.investigation.startDate >=
-              facilityCycle.startDate &&
-            datafileData.dataset.investigation.startDate <=
-              facilityCycle.endDate
-        );
-        if (filteredFacilityCycles.length) {
-          facilityCycleId = filteredFacilityCycles[0].id;
-        }
-      }
-
-      if (facilityCycleId) {
-        return linkType === 'dataset'
-          ? tableLink(
-              `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${datafileData.dataset.investigation.id}/dataset/${datafileData.dataset.id}`,
-              datafileData.dataset.name
-            )
-          : tableLink(
-              `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${datafileData.dataset.investigation.id}/dataset/${datafileData.dataset.id}/datafile`,
-              datafileData.name
-            );
-      }
-      return linkType === 'dataset' ? '' : datafileData.name;
-    },
-    [facilityCycles]
-  );
-
-  const genericLink = (
-    datafileData: Datafile,
-    linkType = 'datafile'
-  ): React.ReactElement | string => {
-    if (datafileData.dataset?.investigation) {
-      return linkType === 'dataset'
-        ? tableLink(
-            `/browse/investigation/${datafileData.dataset.investigation.id}/dataset/${datafileData.dataset.id}/datafile`,
-            datafileData.dataset.name
-          )
-        : tableLink(
-            `/browse/investigation/${datafileData.dataset.investigation.id}/dataset/${datafileData.dataset.id}/datafile`,
-            datafileData.name
-          );
-    }
-    if (linkType === 'dataset')
-      return datafileData.dataset ? datafileData.dataset.name : '';
-    return datafileData.name;
-  };
-
-  const hierarchyLink = React.useMemo(() => {
-    if (hierarchy === 'dls') {
-      return dlsLink;
-    } else if (hierarchy === 'isis') {
-      return isisLink;
-    } else {
-      return genericLink;
-    }
-  }, [hierarchy, isisLink]);
-
   const selectedRows = React.useMemo(
     () =>
       cartItems
@@ -252,8 +157,12 @@ const DatafileSearchTable = (
         label: t('datafiles.name'),
         dataKey: 'name',
         cellContentRenderer: (cellProps: TableCellProps) => {
-          const datafileData = cellProps.rowData as Datafile;
-          return hierarchyLink(datafileData);
+          const datafile = cellProps.rowData as Datafile;
+          const link = buildUrlToDatafileTableContainingDatafile({
+            datafile,
+            facilityName: hierarchy,
+          });
+          return link ? tableLink(link, datafile.name) : datafile.name;
         },
         filterComponent: textFilter,
       },
@@ -274,7 +183,16 @@ const DatafileSearchTable = (
         dataKey: 'dataset.name',
         cellContentRenderer: (cellProps: TableCellProps) => {
           const datafileData = cellProps.rowData as Datafile;
-          return hierarchyLink(datafileData, 'dataset');
+          const dataset = datafileData.dataset;
+          if (!dataset) return '';
+
+          const link = isLandingPageSupportedForHierarchy(hierarchy)
+            ? buildDatasetLandingUrl(dataset)
+            : buildDatafileTableUrlForDataset({
+                dataset,
+                facilityName: hierarchy,
+              });
+          return link ? tableLink(link, dataset.name) : dataset.name;
         },
         filterComponent: textFilter,
       },
@@ -284,12 +202,13 @@ const DatafileSearchTable = (
         filterComponent: dateFilter,
       },
     ],
-    [t, textFilter, dateFilter, hierarchyLink]
+    [t, textFilter, dateFilter, hierarchy]
   );
 
   let detailsPanel = DatafileDetailsPanel;
-  if (hierarchy === 'isis') detailsPanel = ISISDatafileDetailsPanel;
-  else if (hierarchy === 'dls') detailsPanel = DLSDatafileDetailsPanel;
+  if (hierarchy === FACILITY_NAME.isis) detailsPanel = ISISDatafileDetailsPanel;
+  else if (hierarchy === FACILITY_NAME.dls)
+    detailsPanel = DLSDatafileDetailsPanel;
 
   return (
     <Table

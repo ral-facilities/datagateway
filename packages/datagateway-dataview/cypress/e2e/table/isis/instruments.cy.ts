@@ -62,7 +62,7 @@ describe('ISIS - Instruments Table', () => {
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Air it quickly everybody have image left. Likely also region a. Onto most shake necessary.'
+        'Eight imagine picture tough. Mouth participant chance including. Receive environment Democrat happy like full paper. School oil later change.'
       );
     });
 
@@ -77,7 +77,7 @@ describe('ISIS - Instruments Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'With piece reason late model. House office fly. International scene call deep answer audience baby true.'
+        'Whether number computer economy design now serious appear. Response girl middle close role American.'
       );
     });
 
@@ -95,7 +95,7 @@ describe('ISIS - Instruments Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Season identify professor happen third. Beat professional blue clear style have. Light final summer.'
+        'Stop prove field onto think suffer measure. Table lose season identify professor happen third simply.'
       );
     });
   });
@@ -106,7 +106,7 @@ describe('ISIS - Instruments Table', () => {
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Exist board space brother section. Fast purpose right power away health south. Me ground more a kind last.'
+        'Space I environmental. Role again act seek. Light teacher big sing foreign meeting professor. Simply world start floor.'
       );
     });
 
@@ -115,10 +115,10 @@ describe('ISIS - Instruments Table', () => {
 
       cy.get('[aria-rowcount="2"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Near must surface law how full. Magazine soldier usually wish affect. Oil order catch work everybody nor. Become magazine concern fish throw turn us police. Draw manager long different include.'
+        'Space I environmental. Role again act seek. Light teacher big sing foreign meeting professor. Simply world start floor.'
       );
       cy.get('[aria-rowindex="2"] [aria-colindex="2"]').contains(
-        'Success position hour town like various need. Admit fight see somebody other new you. Ten skin simply indeed. Offer box off. Beyond forward usually. Alone have avoid to base much free.'
+        'Up election edge his not add. Where difficult audience often. Cup investment the officer network hospital cultural personal.'
       );
     });
   });
@@ -145,12 +145,12 @@ describe('ISIS - Instruments Table', () => {
 
       cy.get('#details-panel')
         .contains(
-          'Season identify professor happen third. Beat professional blue clear style have. Light final summer.'
+          'Suggest shake effort many last prepare small. Maintain throw hope parent.'
         )
         .should('be.visible');
       cy.get('#details-panel')
         .contains(
-          'North understand leader everyone skin. Actually prove begin boy those. Could size only. Late race city suddenly. Treat her wife training family effect.'
+          'Financial vote season indicate. Candidate night sure opportunity design. Commercial test wind region meeting her get.'
         )
         .should('not.exist');
       cy.get('[aria-label="Hide details"]').should('have.length', 1);
@@ -163,7 +163,7 @@ describe('ISIS - Instruments Table', () => {
 
       cy.get('#details-panel')
         .contains(
-          'Many last prepare small. Maintain throw hope parent. Entire soon option bill fish against power. Rather why rise month shake voice.'
+          'Stop prove field onto think suffer measure. Table lose season identify professor happen third simply. Beat professional blue clear style have. Analysis reflect work or hour color maybe.'
         )
         .should('be.visible');
 
@@ -171,7 +171,7 @@ describe('ISIS - Instruments Table', () => {
       cy.get('[aria-controls="instrument-users-panel"]').click({
         scrollBehavior: 'center',
       });
-      cy.get('#details-panel').contains('Marcus Dixon').should('be.visible');
+      cy.get('#details-panel').contains('Kathryn Fox').should('be.visible');
     });
 
     it('and then not view details anymore', () => {

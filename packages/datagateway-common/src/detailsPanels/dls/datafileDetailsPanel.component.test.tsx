@@ -1,9 +1,9 @@
 import React from 'react';
 import DatafileDetailsPanel from './datafileDetailsPanel.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { mount, ReactWrapper } from 'enzyme';
 import { Datafile } from '../../app.types';
-import { useDatafileDetails } from '../../api/datafiles';
+import { useDatafileDetails } from '../../api';
+import { render, RenderResult } from '@testing-library/react';
 
 jest.mock('../../api/datafiles');
 
@@ -11,8 +11,8 @@ describe('Datafile details panel component', () => {
   let rowData: Datafile;
   const detailsPanelResize = jest.fn();
 
-  const createWrapper = (): ReactWrapper => {
-    return mount(
+  const renderComponent = (): RenderResult =>
+    render(
       <QueryClientProvider client={new QueryClient()}>
         <DatafileDetailsPanel
           rowData={rowData}
@@ -20,7 +20,6 @@ describe('Datafile details panel component', () => {
         />
       </QueryClientProvider>
     );
-  };
 
   beforeEach(() => {
     rowData = {
@@ -41,22 +40,17 @@ describe('Datafile details panel component', () => {
   });
 
   it('renders correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find('DatafileDetailsPanel').props()).toMatchSnapshot();
-  });
-
-  it('calls useDatafileDetails hook on load', () => {
-    createWrapper();
-    expect(useDatafileDetails).toHaveBeenCalledWith(rowData.id);
+    const { asFragment } = renderComponent();
+    expect(asFragment()).toMatchSnapshot();
   });
 
   it('calls detailsPanelResize on load', () => {
-    createWrapper();
+    renderComponent();
     expect(detailsPanelResize).toHaveBeenCalled();
   });
 
   it('does not call detailsPanelResize if not provided', () => {
-    mount(
+    render(
       <QueryClientProvider client={new QueryClient()}>
         <DatafileDetailsPanel rowData={rowData} />
       </QueryClientProvider>

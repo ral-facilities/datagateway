@@ -369,6 +369,8 @@ export const useUpdateQueryParam = (
   const functionToUse = updateMethod === 'push' ? push : replace;
   return React.useCallback(
     (param: FiltersType | SortType | number | null) => {
+      // need to use window.location.search and not useLocation to ensure we have the most
+      // up to date version of search when useUpdateQueryParam is called
       const query = parseSearchToQuery(window.location.search);
 
       if (type === 'filters') {

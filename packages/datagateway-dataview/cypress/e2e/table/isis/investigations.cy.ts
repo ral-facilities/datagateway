@@ -3,13 +3,13 @@ describe('ISIS - Investigations Table', () => {
     cy.intercept('**/investigations/count*').as('getInvestigationsCount');
     cy.intercept('**/investigations?order*').as('getInvestigationsOrder');
     cy.login();
-    cy.visit('/browse/instrument/1/facilityCycle/16/investigation').wait(
+    cy.visit('/browse/instrument/2/facilityCycle/8/investigation').wait(
       ['@getInvestigationsCount', '@getInvestigationsOrder'],
       { timeout: 10000 }
     );
     // Check that we have received the size from the API as this will produce
     // a re-render which can prevent some interactions.
-    cy.contains('[aria-rowindex="2"] [aria-colindex="6"]', '10.96 GB').should(
+    cy.contains('[aria-rowindex="1"] [aria-colindex="6"]', '3.46 GB').should(
       'exist'
     );
   });
@@ -27,7 +27,7 @@ describe('ISIS - Investigations Table', () => {
     cy.get('[role="gridcell"] a').first().click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/16/investigation/97'
+      '/browse/instrument/2/facilityCycle/8/investigation/8'
     );
   });
 
@@ -148,7 +148,7 @@ describe('ISIS - Investigations Table', () => {
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Again bad simply low summer. Left hand around position wonder sometimes. Body always prove husband. So understand edge outside prevent.'
+        'Customer home food important.'
       );
     });
 
@@ -163,7 +163,7 @@ describe('ISIS - Investigations Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'He represent address cut environmental special size. Activity entire which reality not. Better focus people receive.'
+        'Customer home food important.'
       );
     });
 
@@ -181,7 +181,7 @@ describe('ISIS - Investigations Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'He represent address cut environmental special size. Activity entire which reality not. Better focus people receive.'
+        'Customer home food important.'
       );
     });
 
@@ -190,21 +190,24 @@ describe('ISIS - Investigations Table', () => {
       cy.contains('[role="button"]', 'Title').click();
 
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'He represent address cut environmental special size. Activity entire which reality not. Better focus people receive.'
+        'Customer home food important.'
       );
     });
   });
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Title"]').first().type('again');
+      cy.get('[aria-label="Filter by Title"]').first().type('offer');
+
+      cy.get('[role="progressbar"]').should('be.visible');
+      cy.get('[role="progressbar"]').should('not.exist');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
-        'INVESTIGATION 97'
+        'INVESTIGATION 8'
       );
       // check that size is correct after filtering
-      cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains('11.74 GB');
+      cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains('3.46 GB');
     });
 
     it('date between', () => {
@@ -226,13 +229,11 @@ describe('ISIS - Investigations Table', () => {
       );
 
       cy.get('[aria-rowcount="1"]').should('not.exist');
-      cy.contains(
-        'Series toward yes cost analysis. Name town other state action like. Culture fill either collection phone. Space few should lawyer various quite today well.'
-      ).should('not.exist');
+      cy.contains('Customer home food important.').should('not.exist');
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Title"]').first().type('again');
+      cy.get('[aria-label="Filter by Title"]').first().type('fill');
 
       cy.get('[aria-rowcount="1"]').should('exist');
     });
@@ -292,9 +293,7 @@ describe('ISIS - Investigations Table', () => {
       // Waits needed due to suspected race condition on fetching the panels
       // eslint-disable-next-line cypress/no-unnecessary-waiting
       cy.get('#details-panel')
-        .contains(
-          'He represent address cut environmental special size. Activity entire which reality not. Better focus people receive.'
-        )
+        .contains('Customer home food important.')
         .should('be.visible')
         .wait(200);
 
@@ -307,7 +306,7 @@ describe('ISIS - Investigations Table', () => {
 
       // eslint-disable-next-line cypress/no-unnecessary-waiting
       cy.get('#details-panel')
-        .contains('Corey Cook')
+        .contains('Randy Beasley')
         .should('be.visible')
         .wait(200);
 
@@ -316,7 +315,7 @@ describe('ISIS - Investigations Table', () => {
       );
       cy.get('[aria-controls="investigation-samples-panel"]').click();
 
-      cy.get('#details-panel').contains('SAMPLE 16').should('be.visible');
+      cy.get('#details-panel').contains('SAMPLE 8').should('be.visible');
 
       cy.get('[aria-controls="investigation-publications-panel"]').should(
         'be.visible'
@@ -324,9 +323,7 @@ describe('ISIS - Investigations Table', () => {
       cy.get('[aria-controls="investigation-publications-panel"]').click();
 
       cy.get('#details-panel')
-        .contains(
-          'Fish page on factor nature everybody action. Sell police boy determine paper. Join six approach others method. Factor answer this design. Institution respond again area.'
-        )
+        .contains('Win detail TV shake population.')
         .should('be.visible');
     });
 
@@ -336,7 +333,7 @@ describe('ISIS - Investigations Table', () => {
 
       cy.location('pathname').should(
         'eq',
-        '/browse/instrument/1/facilityCycle/16/investigation/16/dataset'
+        '/browse/instrument/2/facilityCycle/8/investigation/8/dataset'
       );
     });
 

@@ -29,7 +29,12 @@ const InvestigationDetailsPanel = (
   }, [detailsPanelResize]);
 
   return (
-    <StyledGrid id="details-panel" container direction="column">
+    <StyledGrid
+      data-testid="investigation-details-panel"
+      id="details-panel"
+      container
+      direction="column"
+    >
       <Grid item xs>
         <Typography variant="h6">
           <b>{investigationData.title}</b>

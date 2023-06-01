@@ -1,39 +1,42 @@
-import React from 'react';
 import {
-  ConfirmationNumber,
   CalendarToday,
+  ConfirmationNumber,
   Fingerprint,
 } from '@mui/icons-material';
+import { styled } from '@mui/material';
 import {
+  AddToCartButton,
+  buildDatafileTableUrlForDataset,
+  buildDatasetLandingUrl,
+  buildDatasetTableUrlForInvestigation,
+  buildInvestigationLandingUrl,
   CardView,
   Dataset,
+  DatasetDetailsPanel,
+  DLSDatasetDetailsPanel,
+  DownloadButton,
+  FACILITY_NAME,
+  formatCountOrSize,
+  ISISDatasetDetailsPanel,
   parseSearchToQuery,
-  useDateFilter,
+  tableLink,
   useDatasetCount,
+  useDatasetsDatafileCount,
+  useDatasetSizes,
   useDatasetsPaginated,
+  useDateFilter,
+  useLuceneSearch,
   usePushFilter,
   usePushPage,
   usePushResults,
   useSort,
   useTextFilter,
-  useAllFacilityCycles,
-  useLuceneSearch,
-  FacilityCycle,
-  tableLink,
-  useDatasetsDatafileCount,
-  useDatasetSizes,
-  formatCountOrSize,
-  AddToCartButton,
-  DownloadButton,
-  ISISDatasetDetailsPanel,
-  DLSDatasetDetailsPanel,
-  DatasetDetailsPanel,
 } from 'datagateway-common';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useHistory, useLocation } from 'react-router-dom';
 import { StateType } from '../state/app.types';
-import { styled } from '@mui/material';
 
 interface DatasetCardViewProps {
   hierarchy: string;
@@ -50,8 +53,6 @@ const ActionButtonDiv = styled('div')(({ theme }) => ({
 
 const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
   const { hierarchy } = props;
-
-  const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
   const location = useLocation();
   const { push } = useHistory();
@@ -110,131 +111,6 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
     },
   ]);
 
-  const dlsLinkURL = (
-    datasetData: Dataset,
-    linkType = 'dataset'
-  ): string | null => {
-    if (datasetData.investigation) {
-      return linkType === 'investigation'
-        ? `/browse/proposal/${datasetData.investigation.name}/investigation/${datasetData.investigation.id}/dataset`
-        : `/browse/proposal/${datasetData.investigation.name}/investigation/${datasetData.investigation.id}/dataset/${datasetData.id}/datafile`;
-    }
-    return null;
-  };
-
-  const dlsLink = React.useCallback(
-    (
-      datasetData: Dataset,
-      linkType = 'dataset'
-    ): React.ReactElement | string => {
-      const linkURL = dlsLinkURL(datasetData, linkType);
-
-      if (datasetData.investigation && linkURL) {
-        return linkType === 'investigation'
-          ? tableLink(linkURL, datasetData.investigation.title)
-          : tableLink(linkURL, datasetData.name);
-      }
-      return linkType === 'investigation' ? '' : datasetData.name;
-    },
-    []
-  );
-
-  const isisLinkURL = React.useCallback(
-    (datasetData: Dataset, linkType = 'dataset') => {
-      let instrumentId;
-      let facilityCycleId;
-      if (datasetData.investigation?.investigationInstruments?.length) {
-        instrumentId =
-          datasetData.investigation?.investigationInstruments[0].instrument?.id;
-      } else {
-        return null;
-      }
-
-      if (facilityCycles?.length && datasetData.investigation?.startDate) {
-        const filteredFacilityCycles: FacilityCycle[] = facilityCycles?.filter(
-          (facilityCycle: FacilityCycle) =>
-            datasetData.investigation?.startDate &&
-            facilityCycle.startDate &&
-            facilityCycle.endDate &&
-            datasetData.investigation.startDate >= facilityCycle.startDate &&
-            datasetData.investigation.startDate <= facilityCycle.endDate
-        );
-        if (filteredFacilityCycles.length) {
-          facilityCycleId = filteredFacilityCycles[0].id;
-        }
-      }
-
-      if (facilityCycleId) {
-        return linkType === 'investigation'
-          ? `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${datasetData.investigation.id}`
-          : `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${datasetData.investigation.id}/dataset/${datasetData.id}`;
-      }
-      return null;
-    },
-    [facilityCycles]
-  );
-
-  const isisLink = React.useCallback(
-    (datasetData: Dataset, linkType = 'dataset') => {
-      const linkURL = isisLinkURL(datasetData, linkType);
-
-      if (datasetData.investigation && linkURL) {
-        return linkType === 'investigation'
-          ? tableLink(linkURL, datasetData.investigation.title)
-          : tableLink(linkURL, datasetData.name);
-      } else return linkType === 'investigation' ? '' : datasetData.name;
-    },
-    [isisLinkURL]
-  );
-
-  const genericLinkURL = React.useCallback(
-    (datasetData: Dataset, linkType = 'dataset'): string | null => {
-      if (datasetData.investigation) {
-        return linkType === 'investigation'
-          ? `/browse/investigation/${datasetData.investigation.id}/dataset`
-          : `/browse/investigation/${datasetData.investigation.id}/dataset/${datasetData.id}/datafile`;
-      }
-      return null;
-    },
-    []
-  );
-
-  const genericLink = React.useCallback(
-    (
-      datasetData: Dataset,
-      linkType = 'dataset'
-    ): React.ReactElement | string => {
-      const linkURL = genericLinkURL(datasetData, linkType);
-      if (datasetData.investigation && linkURL) {
-        return linkType === 'investigation'
-          ? tableLink(linkURL, datasetData.investigation.title)
-          : tableLink(linkURL, datasetData.name);
-      }
-      return linkType === 'investigation' ? '' : datasetData.name;
-    },
-    [genericLinkURL]
-  );
-
-  const hierarchyLinkURL = React.useMemo(() => {
-    if (hierarchy === 'dls') {
-      return dlsLinkURL;
-    } else if (hierarchy === 'isis') {
-      return isisLinkURL;
-    } else {
-      return genericLinkURL;
-    }
-  }, [genericLinkURL, hierarchy, isisLinkURL]);
-
-  const hierarchyLink = React.useMemo(() => {
-    if (hierarchy === 'dls') {
-      return dlsLink;
-    } else if (hierarchy === 'isis') {
-      return isisLink;
-    } else {
-      return genericLink;
-    }
-  }, [dlsLink, genericLink, hierarchy, isisLink]);
-
   // hierarchy === 'isis' ? data : undefined is a 'hack' to only perform
   // the correct calculation queries for each facility
   const datasetCountQueries = useDatasetsDatafileCount(
@@ -249,11 +125,18 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
       // Provide both the dataKey (for tooltip) and content to render.
       dataKey: 'name',
       content: (dataset: Dataset) => {
-        return hierarchyLink(dataset);
+        const url =
+          hierarchy === FACILITY_NAME.isis
+            ? buildDatasetLandingUrl(dataset)
+            : buildDatafileTableUrlForDataset({
+                dataset,
+                facilityName: hierarchy,
+              });
+        return url ? tableLink(url, dataset.name) : dataset.name;
       },
       filterComponent: textFilter,
     }),
-    [hierarchyLink, t, textFilter]
+    [hierarchy, t, textFilter]
   );
 
   const description = React.useMemo(
@@ -270,7 +153,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
       {
         icon: ConfirmationNumber,
         label:
-          hierarchy === 'isis'
+          hierarchy === FACILITY_NAME.isis
             ? t('datasets.size')
             : t('datasets.datafile_count'),
         dataKey: hierarchy === 'isis' ? 'size' : 'datafileCount',
@@ -278,7 +161,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
           const index = data?.findIndex((item) => item.id === dataset.id);
           if (typeof index === 'undefined') return 'Unknown';
           const query =
-            hierarchy === 'isis'
+            hierarchy === FACILITY_NAME.isis
               ? sizeQueries[index]
               : datasetCountQueries[index];
           return formatCountOrSize(query, hierarchy === 'isis');
@@ -291,7 +174,19 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
         dataKey: 'investigation.title',
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         content: (dataset: Dataset): any => {
-          return hierarchyLink(dataset, 'investigation');
+          const investigation = dataset.investigation;
+          if (!investigation) return '';
+
+          const url =
+            hierarchy === FACILITY_NAME.isis
+              ? buildInvestigationLandingUrl(investigation)
+              : buildDatasetTableUrlForInvestigation({
+                  investigation,
+                  facilityName: hierarchy,
+                });
+          return url
+            ? tableLink(url, investigation.title)
+            : investigation.title;
         },
         filterComponent: textFilter,
       },
@@ -313,7 +208,6 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
       datasetCountQueries,
       dateFilter,
       hierarchy,
-      hierarchyLink,
       sizeQueries,
       t,
       textFilter,
@@ -322,26 +216,29 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
 
   const moreInformation = React.useCallback(
     (dataset: Dataset) => {
-      const datasetsURL = hierarchyLinkURL(dataset);
+      switch (hierarchy) {
+        case FACILITY_NAME.isis:
+          const datasetsUrl = buildDatafileTableUrlForDataset({
+            dataset,
+            facilityName: hierarchy,
+          });
+          return (
+            <ISISDatasetDetailsPanel
+              rowData={dataset}
+              viewDatafiles={() => {
+                if (datasetsUrl) push(datasetsUrl);
+              }}
+            />
+          );
 
-      if (hierarchy === 'isis') {
-        return (
-          <ISISDatasetDetailsPanel
-            rowData={dataset}
-            viewDatafiles={
-              datasetsURL
-                ? (id: number) => {
-                    push(datasetsURL);
-                  }
-                : undefined
-            }
-          />
-        );
-      } else if (hierarchy === 'dls')
-        return <DLSDatasetDetailsPanel rowData={dataset} />;
-      else return <DatasetDetailsPanel rowData={dataset} />;
+        case FACILITY_NAME.dls:
+          return <DLSDatasetDetailsPanel rowData={dataset} />;
+
+        default:
+          return <DatasetDetailsPanel rowData={dataset} />;
+      }
     },
-    [hierarchy, hierarchyLinkURL, push]
+    [hierarchy, push]
   );
 
   const buttons = React.useMemo(

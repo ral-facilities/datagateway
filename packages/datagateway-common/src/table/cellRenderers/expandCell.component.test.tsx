@@ -1,8 +1,11 @@
-import React from 'react';
-import { shallow } from 'enzyme';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import type { UserEvent } from '@testing-library/user-event/setup/setup';
+import * as React from 'react';
 import ExpandCell from './expandCell.component';
 
 describe('Expand cell component', () => {
+  let user: UserEvent;
   const setExpandedIndex = jest.fn();
   const expandCellProps = {
     columnIndex: 1,
@@ -14,35 +17,39 @@ describe('Expand cell component', () => {
     setExpandedIndex,
   };
 
+  beforeEach(() => {
+    user = userEvent.setup();
+  });
+
   afterEach(() => {
     setExpandedIndex.mockClear();
   });
 
-  it('renders correctly when expanded', () => {
-    const wrapper = shallow(<ExpandCell {...expandCellProps} />);
-    expect(wrapper).toMatchSnapshot();
+  it('renders correctly when expanded', async () => {
+    const { asFragment } = render(<ExpandCell {...expandCellProps} />);
+    expect(asFragment()).toMatchSnapshot();
   });
 
-  it('sets the expanded index to -1 when ExpandLess button is pressed', () => {
-    const wrapper = shallow(<ExpandCell {...expandCellProps} />);
-
-    wrapper.childAt(0).prop('onClick')();
+  it('sets the expanded index to -1 when ExpandLess button is pressed', async () => {
+    render(<ExpandCell {...expandCellProps} />);
+    await user.click(
+      await screen.findByRole('button', { name: 'Hide details' })
+    );
     expect(setExpandedIndex).toHaveBeenCalledWith(-1);
   });
 
-  it('renders correctly when not expanded', () => {
-    const wrapper = shallow(
+  it('renders correctly when not expanded', async () => {
+    const { asFragment } = render(
       <ExpandCell {...expandCellProps} expandedIndex={2} />
     );
-    expect(wrapper).toMatchSnapshot();
+    expect(asFragment()).toMatchSnapshot();
   });
 
-  it('sets the expanded index to rowIndex when ExpandMore button is pressed', () => {
-    const wrapper = shallow(
-      <ExpandCell {...expandCellProps} expandedIndex={2} />
+  it('sets the expanded index to rowIndex when ExpandMore button is pressed', async () => {
+    render(<ExpandCell {...expandCellProps} expandedIndex={2} />);
+    await user.click(
+      await screen.findByRole('button', { name: 'Show details' })
     );
-
-    wrapper.childAt(0).prop('onClick')();
     expect(setExpandedIndex).toHaveBeenCalledWith(expandCellProps.rowIndex);
   });
 });
