@@ -529,20 +529,6 @@ export const checkUser = (
   email: string,
   settings: Pick<DownloadSettings, 'doiMinterUrl'>
 ): Promise<User | AxiosError> => {
-  return Promise.resolve({
-    email: 'test@example.com',
-    id: 1,
-    name: 'Test',
-  });
-  // return Promise.reject(
-  //   new AxiosError('test message', '404', undefined, undefined, {
-  //     status: 404,
-  //     statusText: 'Not found',
-  //     data: 'test 2',
-  //     headers: {},
-  //     config: {},
-  //   })
-  // );
   return axios
     .get(`${settings.doiMinterUrl}/user/${email}`, {
       headers: {

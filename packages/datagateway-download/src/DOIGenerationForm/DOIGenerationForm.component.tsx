@@ -11,6 +11,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { AxiosError } from 'axios';
 import { readSciGatewayToken, User } from 'datagateway-common';
 import React from 'react';
 import { useCart, useCartUsers, useCheckUser } from '../downloadApiHooks';
@@ -25,6 +26,8 @@ const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
   const [selectedUsers, setSelectedUsers] = React.useState<User[]>([]);
   const [email, setEmail] = React.useState('');
   const [emailError, setEmailError] = React.useState('');
+  const [title, setTitle] = React.useState('');
+  const [description, setDescription] = React.useState('');
 
   const { data: cart } = useCart();
   const { data: users } = useCartUsers(cart);
@@ -50,7 +53,13 @@ const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
                   </Typography>
                 </Grid>
                 <Grid item>
-                  <TextField label="DOI Title" required fullWidth />
+                  <TextField
+                    label="DOI Title"
+                    required
+                    fullWidth
+                    value={title}
+                    onChange={(event) => setTitle(event.target.value)}
+                  />
                 </Grid>
                 <Grid item>
                   <TextField
@@ -59,6 +68,8 @@ const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
                     multiline
                     rows={4}
                     fullWidth
+                    value={description}
+                    onChange={(event) => setDescription(event.target.value)}
                   />
                 </Grid>
                 <Grid item>
@@ -94,6 +105,7 @@ const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
                             error={emailError.length > 0}
                             helperText={emailError.length > 0 ? emailError : ''}
                             sx={{
+                              backgroundColor: 'background.default',
                               // this CSS makes it so that the helperText doesn't mess with the button alignment
                               '& .MuiFormHelperText-root': {
                                 position: 'absolute',
@@ -101,7 +113,10 @@ const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
                               },
                             }}
                             value={email}
-                            onChange={(event) => setEmail(event.target.value)}
+                            onChange={(event) => {
+                              setEmail(event.target.value);
+                              setEmailError('');
+                            }}
                           />
                         </Grid>
                         <Grid item>
@@ -112,9 +127,9 @@ const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
                                 selectedUsers.every(
                                   (selectedUser) => selectedUser.email !== email
                                 )
-                              )
-                                checkUser({ throwOnError: true }).then(
-                                  (response) => {
+                              ) {
+                                checkUser({ throwOnError: true })
+                                  .then((response) => {
                                     // add user
                                     const user = response.data;
                                     if (user) {
@@ -123,14 +138,29 @@ const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
                                         user,
                                       ]);
                                       setEmail('');
-                                    } else {
+                                    }
+                                  })
+                                  .catch(
+                                    (
+                                      error: AxiosError<{
+                                        detail: { msg: string }[] | string;
+                                      }>
+                                    ) => {
                                       // TODO: check this is the right message from the API
                                       setEmailError(
-                                        response.error?.message ?? 'Error'
+                                        error.response?.data?.detail
+                                          ? typeof error.response.data
+                                              .detail === 'string'
+                                            ? error.response.data.detail
+                                            : error.response.data.detail[0].msg
+                                          : 'Error'
                                       );
                                     }
-                                  }
-                                );
+                                  );
+                              } else {
+                                setEmailError('Cannot add duplicate user');
+                                setEmail('');
+                              }
                             }}
                           >
                             Add Creator
@@ -138,7 +168,12 @@ const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
                         </Grid>
                       </Grid>
                       <Grid item>
-                        <Table size="small">
+                        <Table
+                          sx={{
+                            backgroundColor: 'background.default',
+                          }}
+                          size="small"
+                        >
                           <TableHead>
                             <TableRow>
                               <TableCell>Name</TableCell>
@@ -178,6 +213,9 @@ const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
                       </Grid>
                     </Grid>
                   </Paper>
+                </Grid>
+                <Grid item alignSelf="flex-end">
+                  <Button variant="contained">Generate DOI</Button>
                 </Grid>
               </Grid>
               <Grid container item direction="column" xs={6}>

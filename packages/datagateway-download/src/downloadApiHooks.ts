@@ -880,6 +880,8 @@ export const useCheckUser = (
         error.response?.status === 401 ||
         // email doesn't match user - don't retry as this is a correct response from the server
         error.response?.status === 404 ||
+        // email is invalid - don't retry as this is correct response from the server
+        error.response?.status === 422 ||
         failureCount >= 3
       )
         return false;
