@@ -1,13 +1,16 @@
 import {
   Box,
   Button,
+  CircularProgress,
   Grid,
   Paper,
+  Tab,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
+  Tabs,
   TextField,
   Typography,
 } from '@mui/material';
@@ -28,6 +31,16 @@ const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
   const [emailError, setEmailError] = React.useState('');
   const [title, setTitle] = React.useState('');
   const [description, setDescription] = React.useState('');
+  const [currentTab, setCurrentTab] = React.useState<
+    'investigation' | 'dataset' | 'datafile'
+  >('investigation');
+
+  const handleTabChange = (
+    event: React.SyntheticEvent,
+    newValue: 'investigation' | 'dataset' | 'datafile'
+  ): void => {
+    setCurrentTab(newValue);
+  };
 
   const { data: cart } = useCart();
   const { data: users } = useCartUsers(cart);
@@ -183,7 +196,17 @@ const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            {selectedUsers?.map((user) => (
+                            {typeof users === 'undefined' && (
+                              <TableRow>
+                                <TableCell
+                                  colSpan={4}
+                                  sx={{ textAlign: 'center' }}
+                                >
+                                  <CircularProgress />
+                                </TableCell>
+                              </TableRow>
+                            )}
+                            {selectedUsers.map((user) => (
                               <TableRow key={user.id}>
                                 <TableCell>{user.fullName}</TableCell>
                                 <TableCell>{user?.affiliation}</TableCell>
@@ -215,13 +238,61 @@ const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
                   </Paper>
                 </Grid>
                 <Grid item alignSelf="flex-end">
-                  <Button variant="contained">Generate DOI</Button>
+                  <Button
+                    variant="contained"
+                    disabled={
+                      title.length === 0 ||
+                      description.length === 0 ||
+                      selectedUsers.length === 0
+                    }
+                  >
+                    Generate DOI
+                  </Button>
                 </Grid>
               </Grid>
               <Grid container item direction="column" xs={6}>
                 <Typography variant="h6" component="h3">
                   Data
                 </Typography>
+                <Grid item>
+                  <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                    <Tabs
+                      value={currentTab}
+                      onChange={handleTabChange}
+                      aria-label="cart tabs"
+                    >
+                      <Tab label="Investigations" value="investigation" />
+                      <Tab label="Datasets" value="dataset" />
+                      <Tab label="Datafiles" value="datafile" />
+                    </Tabs>
+                  </Box>
+                  {/* TODO: do we need to display more info in this table?
+                  we could rejig the fetch for users to return more info we want
+                  as we're already querying every item in the cart there */}
+                  <Table
+                    sx={{
+                      backgroundColor: 'background.default',
+                    }}
+                    size="small"
+                  >
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Name</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {cart
+                        ?.filter(
+                          (cartItem) => cartItem.entityType === currentTab
+                        )
+                        .map((cartItem) => (
+                          <TableRow key={cartItem.id}>
+                            <TableCell>{cartItem.name}</TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </Grid>
               </Grid>
             </Grid>
           </Paper>
