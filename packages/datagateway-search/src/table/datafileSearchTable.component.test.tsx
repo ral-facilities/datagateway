@@ -7,7 +7,6 @@ import {
   Datafile,
   dGCommonInitialState,
   useAddToCart,
-  useAllFacilityCycles,
   useCart,
   useDatafileCount,
   useDatafilesInfinite,
@@ -23,6 +22,11 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
+  findAllRows,
+  findCellInRow,
+  findColumnHeaderByName,
+  findColumnIndexByName,
+  findRowAt,
 } from '../setupTests';
 import {
   render,
@@ -33,13 +37,6 @@ import {
 } from '@testing-library/react';
 import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
-import {
-  findAllRows,
-  findCellInRow,
-  findColumnHeaderByName,
-  findColumnIndexByName,
-  findRowAt,
-} from '../setupTests';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -55,7 +52,6 @@ jest.mock('datagateway-common', () => {
     useIds: jest.fn(),
     useAddToCart: jest.fn(),
     useRemoveFromCart: jest.fn(),
-    useAllFacilityCycles: jest.fn(),
   };
 });
 
@@ -122,6 +118,19 @@ describe('Datafile search table component', () => {
                 },
               },
             ],
+            investigationFacilityCycles: [
+              {
+                id: 23,
+                facilityCycle: {
+                  id: 402,
+                  name: 'within cell interlinked',
+                  description:
+                    'He waited for the stop sign to turn to a go sign.',
+                  startDate: '2017-03-17T14:03:11Z',
+                  endDate: '2020-11-29T05:41:54Z',
+                },
+              },
+            ],
             studyInvestigations: [
               {
                 id: 6,
@@ -176,9 +185,6 @@ describe('Datafile search table component', () => {
     (useRemoveFromCart as jest.Mock).mockReturnValue({
       mutate: jest.fn(),
       isLoading: false,
-    });
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [],
     });
   });
 
@@ -469,6 +475,12 @@ describe('Datafile search table component', () => {
   it('renders DLS link correctly', async () => {
     renderComponent('dls');
 
+    expect(
+      await screen.findByRole('link', { name: 'Datafile test name' })
+    ).toHaveAttribute(
+      'href',
+      '/browse/proposal/Investigation test name/investigation/3/dataset/2/datafile'
+    );
     const datasetColIndex = await findColumnIndexByName('datafiles.name');
 
     const row = await findRowAt(0);
@@ -480,22 +492,11 @@ describe('Datafile search table component', () => {
       within(datasetLinkCell).getByRole('link', { name: 'Datafile test name' })
     ).toHaveAttribute(
       'href',
-      '/browse/proposal/Dataset test name/investigation/3/dataset/2/datafile'
+      '/browse/proposal/Investigation test name/investigation/3/dataset/2/datafile'
     );
   });
 
   it('renders ISIS link correctly', async () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
-          id: 4,
-          name: 'facility cycle name',
-          startDate: '2000-06-10',
-          endDate: '2020-06-11',
-        },
-      ],
-    });
-
     renderComponent('isis');
 
     const datasetColIndex = await findColumnIndexByName('datafiles.name');
@@ -509,21 +510,11 @@ describe('Datafile search table component', () => {
       within(datasetLinkCell).getByRole('link', { name: 'Datafile test name' })
     ).toHaveAttribute(
       'href',
-      '/browse/instrument/5/facilityCycle/4/investigation/3/dataset/2/datafile'
+      '/browse/instrument/5/facilityCycle/402/investigation/3/dataset/2/datafile'
     );
   });
 
   it('does not render ISIS link when instrumentId cannot be found', async () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
-          id: 4,
-          name: 'facility cycle name',
-          startDate: '2000-06-10',
-          endDate: '2020-06-11',
-        },
-      ],
-    });
     delete rowData[0].dataset?.investigation?.investigationInstruments;
     (useDatafilesInfinite as jest.Mock).mockReturnValue({
       data: { pages: [rowData] },
@@ -551,45 +542,12 @@ describe('Datafile search table component', () => {
     ).toBeInTheDocument();
   });
 
-  it('does not render ISIS link when facilityCycleId cannot be found', async () => {
-    renderComponent('isis');
-
-    const datasetColIndex = await findColumnIndexByName('datafiles.name');
-
-    const row = await findRowAt(0);
-    const datasetLinkCell = await findCellInRow(row, {
-      columnIndex: datasetColIndex,
-    });
-
-    await waitFor(() => {
-      expect(
-        within(datasetLinkCell).queryByRole('link', {
-          name: 'Datafile test name',
-        })
-      ).toBeNull();
-    });
-
-    expect(
-      within(datasetLinkCell).getByText('Datafile test name')
-    ).toBeInTheDocument();
-  });
-
-  it('does not render ISIS link when facilityCycleId has incompatible dates', async () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
-          id: 2,
-          name: 'facility cycle name',
-          startDate: '2020-06-11',
-          endDate: '2000-06-10',
-        },
-      ],
-    });
+  it('does not render ISIS link when the investigation does not have any associated facility cycle', async () => {
+    rowData[0].dataset.investigation.investigationFacilityCycles = [];
 
     renderComponent('isis');
 
     const datasetColIndex = await findColumnIndexByName('datafiles.name');
-
     const row = await findRowAt(0);
     const datasetLinkCell = await findCellInRow(row, {
       columnIndex: datasetColIndex,
@@ -685,16 +643,6 @@ describe('Datafile search table component', () => {
   });
 
   it('displays only the datafile name when there is no ISIS investigation to link to', async () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
-          id: 4,
-          name: 'facility cycle name',
-          startDate: '2000-06-10',
-          endDate: '2020-06-11',
-        },
-      ],
-    });
     rowData = [
       {
         id: 1,

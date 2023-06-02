@@ -6,6 +6,7 @@ import { StateType } from '../state/app.types';
 import {
   Dataset,
   dGCommonInitialState,
+  FACILITY_NAME,
   useAddToCart,
   useAllFacilityCycles,
   useCart,
@@ -168,9 +169,6 @@ describe('Dataset table component', () => {
       mutate: jest.fn(),
       isLoading: false,
     });
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [],
-    });
     (useDatasetsDatafileCount as jest.Mock).mockImplementation((datasets) =>
       (datasets
         ? 'pages' in datasets
@@ -304,7 +302,7 @@ describe('Dataset table component', () => {
       findCellInRow(row, {
         columnIndex: await findColumnIndexByName('datasets.investigation'),
       })
-    ).toHaveTextContent(''); // expect empty text content because facility cycle is not provided
+    ).toHaveTextContent('Investigation test title');
     expect(
       within(
         findCellInRow(row, {
@@ -484,7 +482,7 @@ describe('Dataset table component', () => {
   });
 
   it('displays correct details panel for ISIS when expanded', async () => {
-    renderComponent('isis');
+    renderComponent(FACILITY_NAME.isis);
 
     const row = await findRowAt(0);
 
@@ -496,18 +494,19 @@ describe('Dataset table component', () => {
   });
 
   it('can navigate using the details panel for ISIS when there are facility cycles', async () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
+    rowData[0].investigation.investigationFacilityCycles = [
+      {
+        id: 102,
+        facilityCycle: {
           id: 4,
           name: 'facility cycle name',
           startDate: '2000-06-10',
           endDate: '2020-06-11',
         },
-      ],
-    });
+      },
+    ];
 
-    renderComponent('isis');
+    renderComponent(FACILITY_NAME.isis);
 
     const row = await findRowAt(0);
 
@@ -522,19 +521,19 @@ describe('Dataset table component', () => {
     );
 
     expect(history.location.pathname).toBe(
-      '/browse/instrument/4/facilityCycle/4/investigation/2/dataset/1'
+      '/browse/instrument/4/facilityCycle/4/investigation/2/dataset/1/datafile'
     );
   });
 
   it('displays correct details panel for DLS when expanded', async () => {
-    renderComponent('dls');
+    renderComponent(FACILITY_NAME.dls);
 
     const row = await findRowAt(0);
 
     await user.click(within(row).getByRole('button', { name: 'Show details' }));
 
     expect(
-      await screen.findByTestId('dataset-details-panel')
+      await screen.findByTestId('dls-dataset-details-panel')
     ).toBeInTheDocument();
   });
 
@@ -605,7 +604,7 @@ describe('Dataset table component', () => {
   });
 
   it('renders DLS link correctly', async () => {
-    renderComponent('dls');
+    renderComponent(FACILITY_NAME.dls);
 
     const datasetNameColIndex = await findColumnIndexByName('datasets.name');
     const row = await findRowAt(0);
@@ -622,18 +621,19 @@ describe('Dataset table component', () => {
   });
 
   it('renders ISIS link & file sizes correctly', async () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
+    rowData[0].investigation.investigationFacilityCycles = [
+      {
+        id: 314,
+        facilityCycle: {
           id: 6,
           name: 'facility cycle name',
           startDate: '2000-06-10',
           endDate: '2020-06-11',
         },
-      ],
-    });
+      },
+    ];
 
-    renderComponent('isis');
+    renderComponent(FACILITY_NAME.isis);
 
     const datasetNameColIndex = await findColumnIndexByName('datasets.name');
     const datasetSizeColIndex = await findColumnIndexByName('datasets.size');
@@ -671,7 +671,7 @@ describe('Dataset table component', () => {
       data: { pages: [rowData] },
       fetchNextPage: jest.fn(),
     });
-    renderComponent('isis');
+    renderComponent(FACILITY_NAME.isis);
 
     const datasetNameColIndex = await findColumnIndexByName('datasets.name');
     const row = await findRowAt(0);
@@ -688,35 +688,7 @@ describe('Dataset table component', () => {
   });
 
   it('does not render ISIS link when facilityCycleId cannot be found', async () => {
-    renderComponent('isis');
-
-    const datasetNameColIndex = await findColumnIndexByName('datasets.name');
-    const row = await findRowAt(0);
-    const titleCell = await findCellInRow(row, {
-      columnIndex: datasetNameColIndex,
-    });
-
-    expect(
-      within(titleCell).queryByRole('link', { name: 'Dataset test name' })
-    ).toBeNull();
-    expect(
-      within(titleCell).getByText('Dataset test name')
-    ).toBeInTheDocument();
-  });
-
-  it('does not render ISIS link when facilityCycleId has incompatible dates', async () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
-          id: 2,
-          name: 'facility cycle name',
-          startDate: '2020-06-11',
-          endDate: '2000-06-10',
-        },
-      ],
-    });
-
-    renderComponent('isis');
+    renderComponent(FACILITY_NAME.isis);
 
     const datasetNameColIndex = await findColumnIndexByName('datasets.name');
     const row = await findRowAt(0);
@@ -762,7 +734,7 @@ describe('Dataset table component', () => {
       fetchNextPage: jest.fn(),
     });
 
-    renderComponent('dls');
+    renderComponent(FACILITY_NAME.dls);
 
     const datasetNameColIndex = await findColumnIndexByName('datasets.name');
     const row = await findRowAt(0);
@@ -779,23 +751,9 @@ describe('Dataset table component', () => {
   });
 
   it('displays only the dataset name when there is no ISIS investigation to link to', async () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
-          id: 4,
-          name: 'facility cycle name',
-          startDate: '2000-06-10',
-          endDate: '2020-06-11',
-        },
-      ],
-    });
     delete rowData[0].investigation;
-    (useDatasetsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
-    });
 
-    renderComponent('isis');
+    renderComponent(FACILITY_NAME.isis);
 
     const datasetNameColIndex = await findColumnIndexByName('datasets.name');
     const row = await findRowAt(0);

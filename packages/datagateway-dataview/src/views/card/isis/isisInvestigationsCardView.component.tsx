@@ -1,31 +1,32 @@
-import { Link as MuiLink, styled } from '@mui/material';
 import {
+  CalendarToday,
   Fingerprint,
+  Person,
   Public,
   Save,
-  Person,
-  CalendarToday,
 } from '@mui/icons-material';
+import { Link as MuiLink, styled } from '@mui/material';
 import {
+  AdditionalFilters,
+  AddToCartButton,
   CardView,
   CardViewDetails,
+  DownloadButton,
   formatCountOrSize,
   Investigation,
-  tableLink,
-  useInvestigationSizes,
+  ISISInvestigationDetailsPanel,
   parseSearchToQuery,
+  tableLink,
   useDateFilter,
-  useISISInvestigationCount,
-  useISISInvestigationsPaginated,
+  useInvestigationCount,
+  useInvestigationSizes,
+  useInvestigationsPaginated,
   usePrincipalExperimenterFilter,
   usePushFilter,
   usePushPage,
   usePushResults,
   useSort,
   useTextFilter,
-  AddToCartButton,
-  DownloadButton,
-  ISISInvestigationDetailsPanel,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -68,17 +69,46 @@ const ISISInvestigationsCardView = (
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
+  const investigationQueryFilters: AdditionalFilters = [
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'investigationInstruments.instrument.id': {
+          eq: parseInt(instrumentId),
+        },
+      }),
+    },
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        [studyHierarchy
+          ? 'studyInvestigations.study.id'
+          : 'investigationFacilityCycles.facilityCycle.id']: {
+          eq: parseInt(instrumentChildId),
+        },
+      }),
+    },
+  ];
+
   const { data: totalDataCount, isLoading: countLoading } =
-    useISISInvestigationCount(
-      parseInt(instrumentId),
-      parseInt(instrumentChildId),
-      studyHierarchy
-    );
-  const { data, isLoading: dataLoading } = useISISInvestigationsPaginated(
-    parseInt(instrumentId),
-    parseInt(instrumentChildId),
-    studyHierarchy
-  );
+    useInvestigationCount(investigationQueryFilters);
+  const { data, isLoading: dataLoading } = useInvestigationsPaginated([
+    ...investigationQueryFilters,
+    {
+      filterType: 'include',
+      filterValue: JSON.stringify([
+        {
+          investigationInstruments: 'instrument',
+        },
+        {
+          studyInvestigations: 'study',
+        },
+        {
+          investigationUsers: 'user',
+        },
+      ]),
+    },
+  ]);
   const sizeQueries = useInvestigationSizes(data);
 
   const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';

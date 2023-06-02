@@ -352,6 +352,6 @@ describe('DLS Dataset table component', () => {
       await within(row).findByRole('button', { name: 'Show details' })
     );
 
-    expect(await screen.findByTestId('dataset-details-panel')).toBeTruthy();
+    expect(await screen.findByTestId('dls-dataset-details-panel')).toBeTruthy();
   });
 });

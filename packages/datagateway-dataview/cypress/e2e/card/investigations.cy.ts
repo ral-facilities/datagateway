@@ -1,5 +1,3 @@
-import { delay } from 'cypress/types/bluebird';
-
 describe('Investigations Cards', () => {
   beforeEach(() => {
     cy.intercept('**/investigations/count*').as('getInvestigationsCount');
