@@ -795,7 +795,7 @@ export const useIsCartMintable = (
   return useQuery(
     ['ismintable', cart],
     () => {
-      if (doiMinterUrl && cart && cart.length > 1)
+      if (doiMinterUrl && cart && cart.length > 0)
         return isCartMintable(cart, doiMinterUrl);
       else return Promise.resolve(false);
     },
