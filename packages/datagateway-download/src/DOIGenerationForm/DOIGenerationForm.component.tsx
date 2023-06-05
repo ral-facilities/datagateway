@@ -50,6 +50,17 @@ const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
     if (users) setSelectedUsers(users);
   }, [users]);
 
+  React.useEffect(() => {
+    if (cart) {
+      if (cart?.some((cartItem) => cartItem.entityType === 'investigation'))
+        setCurrentTab('investigation');
+      if (cart?.some((cartItem) => cartItem.entityType === 'dataset'))
+        setCurrentTab('dataset');
+      if (cart?.some((cartItem) => cartItem.entityType === 'datafile'))
+        setCurrentTab('datafile');
+    }
+  }, [cart]);
+
   return (
     <Box m={1} sx={{ bgColor: 'background.default' }}>
       {acceptedDataPolicy ? (
@@ -261,9 +272,15 @@ const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
                       onChange={handleTabChange}
                       aria-label="cart tabs"
                     >
-                      <Tab label="Investigations" value="investigation" />
-                      <Tab label="Datasets" value="dataset" />
-                      <Tab label="Datafiles" value="datafile" />
+                      {cart?.some(
+                        (cartItem) => cartItem.entityType === 'investigation'
+                      ) && <Tab label="Investigations" value="investigation" />}
+                      {cart?.some(
+                        (cartItem) => cartItem.entityType === 'dataset'
+                      ) && <Tab label="Datasets" value="dataset" />}
+                      {cart?.some(
+                        (cartItem) => cartItem.entityType === 'datafile'
+                      ) && <Tab label="Datafiles" value="datafile" />}
                     </Tabs>
                   </Box>
                   {/* TODO: do we need to display more info in this table?
