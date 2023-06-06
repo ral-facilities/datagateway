@@ -17,7 +17,12 @@ import {
 import { AxiosError } from 'axios';
 import { readSciGatewayToken, User } from 'datagateway-common';
 import React from 'react';
-import { useCart, useCartUsers, useCheckUser } from '../downloadApiHooks';
+import {
+  useCart,
+  useCartUsers,
+  useCheckUser,
+  useMintCart,
+} from '../downloadApiHooks';
 import AcceptDataPolicy from './acceptDataPolicy.component';
 
 type DOIGenerationFormProps = {
@@ -45,6 +50,7 @@ const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
   const { data: cart } = useCart();
   const { data: users } = useCartUsers(cart);
   const { refetch: checkUser } = useCheckUser(email);
+  const { mutate: mintCart } = useMintCart();
 
   React.useEffect(() => {
     if (users) setSelectedUsers(users);
@@ -69,8 +75,73 @@ const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
             Generate DOI
           </Typography>
           <Paper sx={{ padding: 1 }}>
-            <Grid container direction="row" spacing={2}>
-              <Grid container item direction="column" xs={6} spacing={1}>
+            {/* use row-reverse, justifyContent start and the "wrong" order of components to make overflow layout nice
+                i.e. data summary presented at top before DOI form, but in non-overflow
+                mode it's DOI form on left and data summary on right */}
+            <Grid
+              container
+              direction="row-reverse"
+              justifyContent="start"
+              spacing={2}
+            >
+              <Grid container item direction="column" xs="auto">
+                <Grid item>
+                  <Typography variant="h6" component="h3">
+                    Data
+                  </Typography>
+                </Grid>
+                <Grid item>
+                  <Box
+                    sx={{
+                      borderBottom: 1,
+                      borderColor: 'divider',
+                    }}
+                  >
+                    <Tabs
+                      value={currentTab}
+                      onChange={handleTabChange}
+                      aria-label="cart tabs"
+                    >
+                      {cart?.some(
+                        (cartItem) => cartItem.entityType === 'investigation'
+                      ) && <Tab label="Investigations" value="investigation" />}
+                      {cart?.some(
+                        (cartItem) => cartItem.entityType === 'dataset'
+                      ) && <Tab label="Datasets" value="dataset" />}
+                      {cart?.some(
+                        (cartItem) => cartItem.entityType === 'datafile'
+                      ) && <Tab label="Datafiles" value="datafile" />}
+                    </Tabs>
+                  </Box>
+                  {/* TODO: do we need to display more info in this table?
+                  we could rejig the fetch for users to return more info we want
+                  as we're already querying every item in the cart there */}
+                  <Table
+                    sx={{
+                      backgroundColor: 'background.default',
+                    }}
+                    size="small"
+                  >
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Name</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {cart
+                        ?.filter(
+                          (cartItem) => cartItem.entityType === currentTab
+                        )
+                        .map((cartItem) => (
+                          <TableRow key={cartItem.id}>
+                            <TableCell>{cartItem.name}</TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </Grid>
+              </Grid>
+              <Grid container item direction="column" xs spacing={1}>
                 <Grid item>
                   <Typography variant="h6" component="h3">
                     Details
@@ -224,6 +295,7 @@ const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
                                 <TableCell>{user?.email}</TableCell>
                                 <TableCell>
                                   <Button
+                                    size="small"
                                     disabled={
                                       user.name ===
                                       readSciGatewayToken().username
@@ -254,61 +326,26 @@ const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
                     disabled={
                       title.length === 0 ||
                       description.length === 0 ||
-                      selectedUsers.length === 0
+                      selectedUsers.length === 0 ||
+                      typeof cart === 'undefined' ||
+                      cart.length === 0
                     }
+                    onClick={() => {
+                      if (cart)
+                        mintCart({
+                          cart,
+                          doiMetadata: {
+                            title,
+                            description,
+                            creators: selectedUsers.map((user) => ({
+                              email: user.email ?? '',
+                            })),
+                          },
+                        });
+                    }}
                   >
                     Generate DOI
                   </Button>
-                </Grid>
-              </Grid>
-              <Grid container item direction="column" xs={6}>
-                <Typography variant="h6" component="h3">
-                  Data
-                </Typography>
-                <Grid item>
-                  <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                    <Tabs
-                      value={currentTab}
-                      onChange={handleTabChange}
-                      aria-label="cart tabs"
-                    >
-                      {cart?.some(
-                        (cartItem) => cartItem.entityType === 'investigation'
-                      ) && <Tab label="Investigations" value="investigation" />}
-                      {cart?.some(
-                        (cartItem) => cartItem.entityType === 'dataset'
-                      ) && <Tab label="Datasets" value="dataset" />}
-                      {cart?.some(
-                        (cartItem) => cartItem.entityType === 'datafile'
-                      ) && <Tab label="Datafiles" value="datafile" />}
-                    </Tabs>
-                  </Box>
-                  {/* TODO: do we need to display more info in this table?
-                  we could rejig the fetch for users to return more info we want
-                  as we're already querying every item in the cart there */}
-                  <Table
-                    sx={{
-                      backgroundColor: 'background.default',
-                    }}
-                    size="small"
-                  >
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Name</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {cart
-                        ?.filter(
-                          (cartItem) => cartItem.entityType === currentTab
-                        )
-                        .map((cartItem) => (
-                          <TableRow key={cartItem.id}>
-                            <TableCell>{cartItem.name}</TableCell>
-                          </TableRow>
-                        ))}
-                    </TableBody>
-                  </Table>
                 </Grid>
               </Grid>
             </Grid>

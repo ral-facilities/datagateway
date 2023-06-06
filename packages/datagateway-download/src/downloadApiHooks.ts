@@ -33,10 +33,13 @@ import {
 import { DownloadSettingsContext } from './ConfigProvider';
 import {
   checkUser,
+  DoiMetadata,
+  DoiResult,
   DownloadProgress,
   DownloadTypeStatus,
   getCartUsers,
   isCartMintable,
+  mintCart,
   SubmitCartZipType,
 } from './downloadApi';
 import {
@@ -787,7 +790,7 @@ export const useDownloadPercentageComplete = <T = DownloadProgress>({
  * @param cart The {@link Cart} that is checked
  */
 export const useIsCartMintable = (
-  cart?: DownloadCartItem[]
+  cart: DownloadCartItem[] | undefined
 ): UseQueryResult<boolean, AxiosError> => {
   const settings = React.useContext(DownloadSettingsContext);
   const { doiMinterUrl } = settings;
@@ -821,6 +824,46 @@ export const useIsCartMintable = (
       },
       staleTime: Infinity,
       enabled: typeof doiMinterUrl !== 'undefined',
+    }
+  );
+};
+
+/**
+ * Mints a cart
+ * @param cart The {@link Cart} to mint
+ * @param doiMetadata The required metadata for the DOI
+ */
+export const useMintCart = (): UseMutationResult<
+  DoiResult,
+  AxiosError,
+  { cart: DownloadCartItem[]; doiMetadata: DoiMetadata }
+> => {
+  const settings = React.useContext(DownloadSettingsContext);
+
+  return useMutation(
+    ({ cart, doiMetadata }) => {
+      return mintCart(cart, doiMetadata, settings);
+    },
+    {
+      onError: (error) => {
+        log.error(error);
+        if (error.response?.status === 401) {
+          document.dispatchEvent(
+            new CustomEvent(MicroFrontendId, {
+              detail: {
+                type: InvalidateTokenType,
+                payload: {
+                  severity: 'error',
+                  message:
+                    localStorage.getItem('autoLogin') === 'true'
+                      ? 'Your session has expired, please reload the page'
+                      : 'Your session has expired, please login again',
+                },
+              },
+            })
+          );
+        }
+      },
     }
   );
 };

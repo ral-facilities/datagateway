@@ -433,6 +433,55 @@ export const isCartMintable = async (
   return status === 200;
 };
 
+export interface DoiMetadata {
+  title: string;
+  description: string;
+  creators: { email: string }[];
+}
+
+export interface DoiResult {
+  data_publication: string;
+  doi: string;
+}
+
+/**
+ * Mint a DOI for a cart, returns a DataPublication ID & DOI
+ */
+export const mintCart = (
+  cart: DownloadCartItem[],
+  doiMetadata: DoiMetadata,
+  settings: Pick<DownloadSettings, 'doiMinterUrl'>
+): Promise<DoiResult> => {
+  const investigations: number[] = [];
+  const datasets: number[] = [];
+  const datafiles: number[] = [];
+  cart.forEach((cartItem) => {
+    if (cartItem.entityType === 'investigation')
+      investigations.push(cartItem.entityId);
+    if (cartItem.entityType === 'dataset') datasets.push(cartItem.entityId);
+    if (cartItem.entityType === 'datafile') datafiles.push(cartItem.entityId);
+  });
+  return axios
+    .post(
+      `${settings.doiMinterUrl}/mint`,
+      {
+        metadata: {
+          ...doiMetadata,
+          resource_type: investigations.length === 0 ? 'Dataset' : 'Collection',
+        },
+        investigations: { ids: investigations },
+        datasets: { ids: datasets },
+        datafiles: { ids: datafiles },
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+        },
+      }
+    )
+    .then((response) => response.data);
+};
+
 const fetchEntityUsers = (
   apiUrl: string,
   entityId: number,
