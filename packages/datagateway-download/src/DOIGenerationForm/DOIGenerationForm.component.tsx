@@ -17,6 +17,7 @@ import {
 import { AxiosError } from 'axios';
 import { readSciGatewayToken, User } from 'datagateway-common';
 import React from 'react';
+import { Redirect, useLocation } from 'react-router-dom';
 import {
   useCart,
   useCartUsers,
@@ -26,12 +27,8 @@ import {
 import AcceptDataPolicy from './acceptDataPolicy.component';
 import DOIConfirmDialog from './DOIConfirmDialog.component';
 
-type DOIGenerationFormProps = {
-  lol?: string;
-};
-
-const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
-  const [acceptedDataPolicy, setAcceptedDataPolicy] = React.useState(true);
+const DOIGenerationForm: React.FC = () => {
+  const [acceptedDataPolicy, setAcceptedDataPolicy] = React.useState(false);
   const [selectedUsers, setSelectedUsers] = React.useState<User[]>([]);
   const [username, setUsername] = React.useState('');
   const [usernameError, setUsernameError] = React.useState('');
@@ -73,6 +70,13 @@ const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
         setCurrentTab('datafile');
     }
   }, [cart]);
+
+  const location = useLocation<{ fromCart: boolean } | undefined>();
+
+  // redirect if the user tries to access the link directly instead of from the cart
+  if (!location.state?.fromCart) {
+    return <Redirect to="/download" />;
+  }
 
   return (
     <Box m={1} sx={{ bgColor: 'background.default' }}>

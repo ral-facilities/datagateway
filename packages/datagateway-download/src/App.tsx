@@ -96,7 +96,6 @@ class App extends Component<unknown, { hasError: boolean }> {
                     <Route exact path="/admin/download">
                       <AdminDownloadStatusTable />
                     </Route>
-                    {/* TODO: should users be able to access this link directly? or should we add a redirect back to download if accessed directly via URL */}
                     <Route exact path="/download/mint">
                       <DOIGenerationForm />
                     </Route>
