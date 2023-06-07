@@ -835,7 +835,9 @@ export const useIsCartMintable = (
  */
 export const useMintCart = (): UseMutationResult<
   DoiResult,
-  AxiosError,
+  AxiosError<{
+    detail: { msg: string }[] | string;
+  }>,
   { cart: DownloadCartItem[]; doiMetadata: DoiMetadata }
 > => {
   const settings = React.useContext(DownloadSettingsContext);
