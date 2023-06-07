@@ -890,50 +890,54 @@ export const useCartUsers = (
 };
 
 /**
- * Checks whether an email belongs to an ICAT User
- * @param email The email that we're checking
- * @returns the {@link User} that matches the email, or 404
+ * Checks whether a username belongs to an ICAT User
+ * @param username The username that we're checking
+ * @returns the {@link User} that matches the username, or 404
  */
 export const useCheckUser = (
-  email: string
+  username: string
 ): UseQueryResult<User, AxiosError> => {
   const settings = React.useContext(DownloadSettingsContext);
 
-  return useQuery(['checkUser', email], () => checkUser(email, settings), {
-    onError: (error) => {
-      log.error(error);
-      if (error.response?.status === 401) {
-        document.dispatchEvent(
-          new CustomEvent(MicroFrontendId, {
-            detail: {
-              type: InvalidateTokenType,
-              payload: {
-                severity: 'error',
-                message:
-                  localStorage.getItem('autoLogin') === 'true'
-                    ? 'Your session has expired, please reload the page'
-                    : 'Your session has expired, please login again',
+  return useQuery(
+    ['checkUser', username],
+    () => checkUser(username, settings),
+    {
+      onError: (error) => {
+        log.error(error);
+        if (error.response?.status === 401) {
+          document.dispatchEvent(
+            new CustomEvent(MicroFrontendId, {
+              detail: {
+                type: InvalidateTokenType,
+                payload: {
+                  severity: 'error',
+                  message:
+                    localStorage.getItem('autoLogin') === 'true'
+                      ? 'Your session has expired, please reload the page'
+                      : 'Your session has expired, please login again',
+                },
               },
-            },
-          })
-        );
-      }
-    },
-    retry: (failureCount: number, error: AxiosError) => {
-      if (
-        // user not logged in, error code will log them out
-        error.response?.status === 401 ||
-        // email doesn't match user - don't retry as this is a correct response from the server
-        error.response?.status === 404 ||
-        // email is invalid - don't retry as this is correct response from the server
-        error.response?.status === 422 ||
-        failureCount >= 3
-      )
-        return false;
-      return true;
-    },
-    // set enabled false to only fetch on demand when the add creator button is pressed
-    enabled: false,
-    cacheTime: 0,
-  });
+            })
+          );
+        }
+      },
+      retry: (failureCount: number, error: AxiosError) => {
+        if (
+          // user not logged in, error code will log them out
+          error.response?.status === 401 ||
+          // email doesn't match user - don't retry as this is a correct response from the server
+          error.response?.status === 404 ||
+          // email is invalid - don't retry as this is correct response from the server
+          error.response?.status === 422 ||
+          failureCount >= 3
+        )
+          return false;
+        return true;
+      },
+      // set enabled false to only fetch on demand when the add creator button is pressed
+      enabled: false,
+      cacheTime: 0,
+    }
+  );
 };

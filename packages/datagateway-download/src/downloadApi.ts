@@ -436,7 +436,7 @@ export const isCartMintable = async (
 export interface DoiMetadata {
   title: string;
   description: string;
-  creators: { email: string }[];
+  creators?: { username: string }[];
 }
 
 export interface DoiResult {
@@ -571,15 +571,15 @@ export const getCartUsers = async (
 };
 
 /**
- * Sends an email to the API and it checks if it's a valid ICAT User, on success
+ * Sends an username to the API and it checks if it's a valid ICAT User, on success
  * it returns the User, on failure it returns 404
  */
 export const checkUser = (
-  email: string,
+  username: string,
   settings: Pick<DownloadSettings, 'doiMinterUrl'>
 ): Promise<User | AxiosError> => {
   return axios
-    .get(`${settings.doiMinterUrl}/user/${email}`, {
+    .get(`${settings.doiMinterUrl}/user/${username}`, {
       headers: {
         Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
       },

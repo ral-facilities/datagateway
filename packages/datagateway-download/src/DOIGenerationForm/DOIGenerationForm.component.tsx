@@ -33,8 +33,8 @@ type DOIGenerationFormProps = {
 const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
   const [acceptedDataPolicy, setAcceptedDataPolicy] = React.useState(true);
   const [selectedUsers, setSelectedUsers] = React.useState<User[]>([]);
-  const [email, setEmail] = React.useState('');
-  const [emailError, setEmailError] = React.useState('');
+  const [username, setUsername] = React.useState('');
+  const [usernameError, setUsernameError] = React.useState('');
   const [title, setTitle] = React.useState('');
   const [description, setDescription] = React.useState('');
   const [currentTab, setCurrentTab] = React.useState<
@@ -51,7 +51,7 @@ const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
 
   const { data: cart } = useCart();
   const { data: users } = useCartUsers(cart);
-  const { refetch: checkUser } = useCheckUser(email);
+  const { refetch: checkUser } = useCheckUser(username);
   const {
     mutateAsync: mintCart,
     status: mintingStatus,
@@ -200,16 +200,18 @@ const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
                           item
                           spacing={1}
                           alignItems="center"
-                          sx={{ marginBottom: emailError.length > 0 ? 2 : 0 }}
+                          sx={{
+                            marginBottom: usernameError.length > 0 ? 2 : 0,
+                          }}
                         >
                           <Grid item xs>
                             <TextField
-                              label="Email"
+                              label="Username"
                               required
                               fullWidth
-                              error={emailError.length > 0}
+                              error={usernameError.length > 0}
                               helperText={
-                                emailError.length > 0 ? emailError : ''
+                                usernameError.length > 0 ? usernameError : ''
                               }
                               sx={{
                                 backgroundColor: 'background.default',
@@ -219,10 +221,10 @@ const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
                                   bottom: '-1.5rem',
                                 },
                               }}
-                              value={email}
+                              value={username}
                               onChange={(event) => {
-                                setEmail(event.target.value);
-                                setEmailError('');
+                                setUsername(event.target.value);
+                                setUsernameError('');
                               }}
                             />
                           </Grid>
@@ -233,7 +235,7 @@ const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
                                 if (
                                   selectedUsers.every(
                                     (selectedUser) =>
-                                      selectedUser.email !== email
+                                      selectedUser.name !== username
                                   )
                                 ) {
                                   checkUser({ throwOnError: true })
@@ -245,7 +247,7 @@ const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
                                           ...selectedUsers,
                                           user,
                                         ]);
-                                        setEmail('');
+                                        setUsername('');
                                       }
                                     })
                                     .catch(
@@ -255,7 +257,7 @@ const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
                                         }>
                                       ) => {
                                         // TODO: check this is the right message from the API
-                                        setEmailError(
+                                        setUsernameError(
                                           error.response?.data?.detail
                                             ? typeof error.response.data
                                                 .detail === 'string'
@@ -267,8 +269,8 @@ const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
                                       }
                                     );
                                 } else {
-                                  setEmailError('Cannot add duplicate user');
-                                  setEmail('');
+                                  setUsernameError('Cannot add duplicate user');
+                                  setUsername('');
                                 }
                               }}
                             >
@@ -347,14 +349,25 @@ const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
                       onClick={() => {
                         if (cart) {
                           setShowMintConfirmation(true);
+                          const creatorsList = selectedUsers
+                            .filter(
+                              (user) =>
+                                // the user requesting the mint is added automatically
+                                // by the backend, so don't pass them to the backend
+                                user.name !== readSciGatewayToken().username
+                            )
+                            .map((user) => ({
+                              username: user.name,
+                            }));
                           mintCart({
                             cart,
                             doiMetadata: {
                               title,
                               description,
-                              creators: selectedUsers.map((user) => ({
-                                email: user.email ?? '',
-                              })),
+                              creators:
+                                creatorsList.length > 0
+                                  ? creatorsList
+                                  : undefined,
                             },
                           });
                         }
