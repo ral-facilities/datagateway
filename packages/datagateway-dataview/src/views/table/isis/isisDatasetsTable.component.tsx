@@ -33,17 +33,17 @@ interface ISISDatasetsTableProps {
   instrumentId: string;
   instrumentChildId: string;
   investigationId: string;
-  studyHierarchy: boolean;
+  dataPublication: boolean;
 }
 
 const ISISDatasetsTable = (
   props: ISISDatasetsTableProps
 ): React.ReactElement => {
-  const { investigationId, instrumentChildId, instrumentId, studyHierarchy } =
+  const { investigationId, instrumentChildId, instrumentId, dataPublication } =
     props;
 
-  const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
-  const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
+  const pathRoot = dataPublication ? 'browseDataPublications' : 'browse';
+  const instrumentChild = dataPublication ? 'dataPublication' : 'facilityCycle';
   const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset`;
 
   const [t] = useTranslation();

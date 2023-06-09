@@ -1,20 +1,20 @@
-import { Study } from '../app.types';
+import { DataPublication } from '../app.types';
 import { renderHook } from '@testing-library/react-hooks';
 import { createMemoryHistory, History } from 'history';
 import axios from 'axios';
 import handleICATError from '../handleICATError';
 import { createReactQueryWrapper } from '../setupTests';
 import {
-  useStudyCount,
-  useStudiesInfinite,
-  useStudiesPaginated,
-  useStudy,
-} from './studies';
+  useDataPublicationCount,
+  useDataPublicationsInfinite,
+  useDataPublicationsPaginated,
+  useDataPublication,
+} from './dataPublications';
 
 jest.mock('../handleICATError');
 
-describe('study api functions', () => {
-  let mockData: Study[] = [];
+describe('data publications api functions', () => {
+  let mockData: DataPublication[] = [];
   let history: History;
   let params: URLSearchParams;
   beforeEach(() => {
@@ -22,14 +22,14 @@ describe('study api functions', () => {
       {
         id: 1,
         pid: 'doi 1',
-        name: 'Test 1',
+        title: 'Test 1',
         modTime: '2000-01-01',
         createTime: '2000-01-01',
       },
       {
         id: 2,
         pid: 'doi 2',
-        name: 'Test 2',
+        title: 'Test 2',
         modTime: '2000-01-02',
         createTime: '2000-01-02',
       },
@@ -47,19 +47,19 @@ describe('study api functions', () => {
     (axios.get as jest.Mock).mockClear();
   });
 
-  describe('useStudiesPaginated', () => {
-    it('sends axios request to fetch paginated studies and returns successful response', async () => {
+  describe('useDataPublicationsPaginated', () => {
+    it('sends axios request to fetch paginated data publications and returns successful response', async () => {
       (axios.get as jest.Mock).mockResolvedValue({
         data: mockData,
       });
 
       const { result, waitFor } = renderHook(
         () =>
-          useStudiesPaginated([
+          useDataPublicationsPaginated([
             {
               filterType: 'where',
               filterValue: JSON.stringify({
-                'studyInvestigations.investigation.investigationInstruments.instrument.id':
+                'content.dataCollectionInvestigations.investigation.investigationInstruments.instrument.id':
                   {
                     eq: 1,
                   },
@@ -86,7 +86,7 @@ describe('study api functions', () => {
       params.append(
         'where',
         JSON.stringify({
-          'studyInvestigations.investigation.investigationInstruments.instrument.id':
+          'content.dataCollectionInvestigations.investigation.investigationInstruments.instrument.id':
             {
               eq: 1,
             },
@@ -94,7 +94,7 @@ describe('study api functions', () => {
       );
 
       expect(axios.get).toHaveBeenCalledWith(
-        'https://example.com/api/studies',
+        'https://example.com/api/datapublications',
         expect.objectContaining({
           params,
         })
@@ -105,13 +105,16 @@ describe('study api functions', () => {
       expect(result.current.data).toEqual(mockData);
     });
 
-    it('sends axios request to fetch paginated studies and calls handleICATError on failure', async () => {
+    it('sends axios request to fetch paginated data publications and calls handleICATError on failure', async () => {
       (axios.get as jest.Mock).mockRejectedValue({
         message: 'Test error',
       });
-      const { result, waitFor } = renderHook(() => useStudiesPaginated(), {
-        wrapper: createReactQueryWrapper(),
-      });
+      const { result, waitFor } = renderHook(
+        () => useDataPublicationsPaginated(),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
 
       await waitFor(() => result.current.isError);
 
@@ -120,7 +123,7 @@ describe('study api functions', () => {
       params.append('limit', JSON.stringify(10));
 
       expect(axios.get).toHaveBeenCalledWith(
-        'https://example.com/api/studies',
+        'https://example.com/api/datapublications',
         expect.objectContaining({
           params,
         })
@@ -132,8 +135,8 @@ describe('study api functions', () => {
     });
   });
 
-  describe('useStudiesInfinite', () => {
-    it('sends axios request to fetch infinite studies and returns successful response', async () => {
+  describe('useDataPublicationsInfinite', () => {
+    it('sends axios request to fetch infinite data publications and returns successful response', async () => {
       (axios.get as jest.Mock).mockImplementation((url, options) =>
         options.params.get('skip') === '0'
           ? Promise.resolve({ data: mockData[0] })
@@ -142,11 +145,11 @@ describe('study api functions', () => {
 
       const { result, waitFor } = renderHook(
         () =>
-          useStudiesInfinite([
+          useDataPublicationsInfinite([
             {
               filterType: 'where',
               filterValue: JSON.stringify({
-                'studyInvestigations.investigation.investigationInstruments.instrument.id':
+                'content.dataCollectionInvestigations.investigation.investigationInstruments.instrument.id':
                   {
                     eq: 1,
                   },
@@ -173,7 +176,7 @@ describe('study api functions', () => {
       params.append(
         'where',
         JSON.stringify({
-          'studyInvestigations.investigation.investigationInstruments.instrument.id':
+          'content.dataCollectionInvestigations.investigation.investigationInstruments.instrument.id':
             {
               eq: 1,
             },
@@ -181,7 +184,7 @@ describe('study api functions', () => {
       );
 
       expect(axios.get).toHaveBeenCalledWith(
-        'https://example.com/api/studies',
+        'https://example.com/api/datapublications',
         expect.objectContaining({
           params,
         })
@@ -201,7 +204,7 @@ describe('study api functions', () => {
 
       expect(axios.get).toHaveBeenNthCalledWith(
         2,
-        'https://example.com/api/studies',
+        'https://example.com/api/datapublications',
         expect.objectContaining({
           params,
         })
@@ -218,13 +221,16 @@ describe('study api functions', () => {
       ]);
     });
 
-    it('sends axios request to fetch infinite studies and calls handleICATError on failure', async () => {
+    it('sends axios request to fetch infinite data publications and calls handleICATError on failure', async () => {
       (axios.get as jest.Mock).mockRejectedValue({
         message: 'Test error',
       });
-      const { result, waitFor } = renderHook(() => useStudiesInfinite(), {
-        wrapper: createReactQueryWrapper(),
-      });
+      const { result, waitFor } = renderHook(
+        () => useDataPublicationsInfinite(),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
 
       await waitFor(() => result.current.isError);
 
@@ -233,7 +239,7 @@ describe('study api functions', () => {
       params.append('limit', JSON.stringify(50));
 
       expect(axios.get).toHaveBeenCalledWith(
-        'https://example.com/api/studies',
+        'https://example.com/api/datapublications',
         expect.objectContaining({
           params,
         })
@@ -245,13 +251,13 @@ describe('study api functions', () => {
     });
   });
 
-  describe('useStudy', () => {
-    it('sends axios request to fetch a single study and returns successful response', async () => {
+  describe('useDataPublication', () => {
+    it('sends axios request to fetch a single data publication and returns successful response', async () => {
       (axios.get as jest.Mock).mockResolvedValue({
         data: mockData[0],
       });
 
-      const { result, waitFor } = renderHook(() => useStudy(1), {
+      const { result, waitFor } = renderHook(() => useDataPublication(1), {
         wrapper: createReactQueryWrapper(history),
       });
 
@@ -264,22 +270,22 @@ describe('study api functions', () => {
           id: { eq: 1 },
         })
       );
+      params.append('include', JSON.stringify('users'));
       params.append(
         'include',
-        JSON.stringify([
-          {
-            studyInvestigations: {
-              investigation: [
-                { investigationUsers: 'user' },
-                { investigationInstruments: 'instrument' },
-              ],
+        JSON.stringify({
+          content: {
+            dataCollectionInvestigations: {
+              investigation: {
+                investigationInstruments: 'instrument',
+              },
             },
           },
-        ])
+        })
       );
 
       expect(axios.get).toHaveBeenCalledWith(
-        'https://example.com/api/studies',
+        'https://example.com/api/datapublications',
         expect.objectContaining({
           params,
         })
@@ -290,11 +296,11 @@ describe('study api functions', () => {
       expect(result.current.data).toEqual(mockData[0]);
     });
 
-    it('sends axios request to fetch a single study and calls handleICATError on failure', async () => {
+    it('sends axios request to fetch a single data publication and calls handleICATError on failure', async () => {
       (axios.get as jest.Mock).mockRejectedValue({
         message: 'Test error',
       });
-      const { result, waitFor } = renderHook(() => useStudy(1), {
+      const { result, waitFor } = renderHook(() => useDataPublication(1), {
         wrapper: createReactQueryWrapper(),
       });
 
@@ -307,22 +313,22 @@ describe('study api functions', () => {
           id: { eq: 1 },
         })
       );
+      params.append('include', JSON.stringify('users'));
       params.append(
         'include',
-        JSON.stringify([
-          {
-            studyInvestigations: {
-              investigation: [
-                { investigationUsers: 'user' },
-                { investigationInstruments: 'instrument' },
-              ],
+        JSON.stringify({
+          content: {
+            dataCollectionInvestigations: {
+              investigation: {
+                investigationInstruments: 'instrument',
+              },
             },
           },
-        ])
+        })
       );
 
       expect(axios.get).toHaveBeenCalledWith(
-        'https://example.com/api/studies',
+        'https://example.com/api/datapublications',
         expect.objectContaining({
           params,
         })
@@ -334,19 +340,19 @@ describe('study api functions', () => {
     });
   });
 
-  describe('useStudyCount', () => {
-    it('sends axios request to fetch study count and returns successful response', async () => {
+  describe('useDataPublicationCount', () => {
+    it('sends axios request to fetch data publication count and returns successful response', async () => {
       (axios.get as jest.Mock).mockResolvedValue({
         data: mockData.length,
       });
 
       const { result, waitFor } = renderHook(
         () =>
-          useStudyCount([
+          useDataPublicationCount([
             {
               filterType: 'where',
               filterValue: JSON.stringify({
-                'studyInvestigations.investigation.investigationInstruments.instrument.id':
+                'content.dataCollectionInvestigations.investigation.investigationInstruments.instrument.id':
                   {
                     eq: 1,
                   },
@@ -369,7 +375,7 @@ describe('study api functions', () => {
       params.append(
         'where',
         JSON.stringify({
-          'studyInvestigations.investigation.investigationInstruments.instrument.id':
+          'content.dataCollectionInvestigations.investigation.investigationInstruments.instrument.id':
             {
               eq: 1,
             },
@@ -377,7 +383,7 @@ describe('study api functions', () => {
       );
 
       expect(axios.get).toHaveBeenCalledWith(
-        'https://example.com/api/studies/count',
+        'https://example.com/api/datapublications/count',
         expect.objectContaining({
           params,
         })
@@ -388,18 +394,18 @@ describe('study api functions', () => {
       expect(result.current.data).toEqual(mockData.length);
     });
 
-    it('sends axios request to fetch study count and calls handleICATError on failure', async () => {
+    it('sends axios request to fetch data publication count and calls handleICATError on failure', async () => {
       (axios.get as jest.Mock).mockRejectedValue({
         message: 'Test error',
       });
-      const { result, waitFor } = renderHook(() => useStudyCount(), {
+      const { result, waitFor } = renderHook(() => useDataPublicationCount(), {
         wrapper: createReactQueryWrapper(),
       });
 
       await waitFor(() => result.current.isError);
 
       expect(axios.get).toHaveBeenCalledWith(
-        'https://example.com/api/studies/count',
+        'https://example.com/api/datapublications/count',
         expect.objectContaining({
           params,
         })

@@ -39,7 +39,7 @@ describe('ISIS Investigation Landing page', () => {
   let history: History;
   let user: UserEvent;
 
-  const renderComponent = (studyHierarchy = false): RenderResult =>
+  const renderComponent = (dataPublication = false): RenderResult =>
     render(
       <Provider store={mockStore(state)}>
         <Router history={history}>
@@ -48,7 +48,7 @@ describe('ISIS Investigation Landing page', () => {
               instrumentId="4"
               instrumentChildId="5"
               investigationId="1"
-              studyHierarchy={studyHierarchy}
+              dataPublication={dataPublication}
             />
           </QueryClientProvider>
         </Router>
@@ -79,17 +79,27 @@ describe('ISIS Investigation Landing page', () => {
           },
         },
       ],
-      studyInvestigations: [
+      dataCollectionInvestigations: [
         {
-          id: 6,
+          id: 1,
           investigation: {
             id: 1,
+            title: 'Test title 1',
+            name: 'Test 1',
+            visitId: 'visit id 1',
           },
-          study: {
-            id: 7,
-            pid: 'study pid',
-            startDate: '2019-06-10',
-            endDate: '2019-06-11',
+          dataCollection: {
+            id: 11,
+            dataPublications: [
+              {
+                id: 7,
+                pid: 'Data Publication Pid',
+                description: 'Data Publication description',
+                modTime: '2019-06-10',
+                createTime: '2019-06-11',
+                title: 'Data Publication',
+              },
+            ],
           },
         },
       ],
@@ -212,7 +222,9 @@ describe('ISIS Investigation Landing page', () => {
     expect(screen.getByText('foo bar')).toBeInTheDocument();
 
     // publisher section should be visible
-    expect(screen.getByText('studies.details.publisher')).toBeInTheDocument();
+    expect(
+      screen.getByText('datapublications.details.publisher')
+    ).toBeInTheDocument();
     expect(
       screen.getByText('doi_constants.publisher.name')
     ).toBeInTheDocument();
@@ -248,10 +260,9 @@ describe('ISIS Investigation Landing page', () => {
       'https://doi.org/doi 1'
     );
     expect(screen.getByText('investigations.parent_doi:')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'study pid' })).toHaveAttribute(
-      'href',
-      'https://doi.org/study pid'
-    );
+    expect(
+      screen.getByRole('link', { name: 'Data Publication Pid' })
+    ).toHaveAttribute('href', 'https://doi.org/Data Publication Pid');
     expect(screen.getByText('investigations.name:')).toBeInTheDocument();
     expect(screen.getByText('Test 1')).toBeInTheDocument();
     expect(screen.getByText('investigations.size:')).toBeInTheDocument();
@@ -262,7 +273,9 @@ describe('ISIS Investigation Landing page', () => {
     expect(screen.getByText('LILS')).toBeInTheDocument();
     expect(screen.getByText('investigations.instrument:')).toBeInTheDocument();
     expect(screen.getByText('LARMOR')).toBeInTheDocument();
-    expect(screen.getByText('studies.details.format:')).toBeInTheDocument();
+    expect(
+      screen.getByText('datapublications.details.format:')
+    ).toBeInTheDocument();
     expect(
       screen.getByRole('link', { name: 'doi_constants.distribution.format' })
     ).toHaveAttribute(
@@ -299,9 +312,10 @@ describe('ISIS Investigation Landing page', () => {
         '/browse/instrument/4/facilityCycle/5/investigation/1/dataset/1'
       );
       expect(screen.getByText('datasets.doi:')).toBeInTheDocument();
-      expect(
-        screen.getByRole('link', { name: 'landing-study-doi-link' })
-      ).toHaveAttribute('href', 'https://doi.org/dataset doi');
+      expect(screen.getByRole('link', { name: 'dataset doi' })).toHaveAttribute(
+        'href',
+        'https://doi.org/dataset doi'
+      );
 
       // actions for datasets should be visible
       const actionContainer = screen.getByTestId(
@@ -327,9 +341,10 @@ describe('ISIS Investigation Landing page', () => {
         '/browse/instrument/4/facilityCycle/5/investigation/1/dataset/1?view=card'
       );
       expect(screen.getByText('datasets.doi:')).toBeInTheDocument();
-      expect(
-        screen.getByRole('link', { name: 'landing-study-doi-link' })
-      ).toHaveAttribute('href', 'https://doi.org/dataset doi');
+      expect(screen.getByRole('link', { name: 'dataset doi' })).toHaveAttribute(
+        'href',
+        'https://doi.org/dataset doi'
+      );
 
       // actions for datasets should be visible
       const actionContainer = screen.getByTestId(
@@ -343,19 +358,20 @@ describe('ISIS Investigation Landing page', () => {
       ).toBeInTheDocument();
     });
 
-    it('for study hierarchy and normal view', () => {
+    it('for data publication hierarchy and normal view', () => {
       renderComponent(true);
 
       expect(
         screen.getByRole('link', { name: 'datasets.dataset: dataset 1' })
       ).toHaveAttribute(
         'href',
-        '/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset/1'
+        '/browseDataPublications/instrument/4/dataPublication/5/investigation/1/dataset/1'
       );
       expect(screen.getByText('datasets.doi:')).toBeInTheDocument();
-      expect(
-        screen.getByRole('link', { name: 'landing-study-doi-link' })
-      ).toHaveAttribute('href', 'https://doi.org/dataset doi');
+      expect(screen.getByRole('link', { name: 'dataset doi' })).toHaveAttribute(
+        'href',
+        'https://doi.org/dataset doi'
+      );
 
       // actions for datasets should be visible
       const actionContainer = screen.getByTestId(
@@ -369,7 +385,7 @@ describe('ISIS Investigation Landing page', () => {
       ).toBeInTheDocument();
     });
 
-    it('for study hierarchy and card view', () => {
+    it('for data publication hierarchy and card view', () => {
       history.push('/?view=card');
 
       renderComponent(true);
@@ -378,12 +394,13 @@ describe('ISIS Investigation Landing page', () => {
         screen.getByRole('link', { name: 'datasets.dataset: dataset 1' })
       ).toHaveAttribute(
         'href',
-        '/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset/1?view=card'
+        '/browseDataPublications/instrument/4/dataPublication/5/investigation/1/dataset/1?view=card'
       );
       expect(screen.getByText('datasets.doi:')).toBeInTheDocument();
-      expect(
-        screen.getByRole('link', { name: 'landing-study-doi-link' })
-      ).toHaveAttribute('href', 'https://doi.org/dataset doi');
+      expect(screen.getByRole('link', { name: 'dataset doi' })).toHaveAttribute(
+        'href',
+        'https://doi.org/dataset doi'
+      );
 
       // actions for datasets should be visible
       const actionContainer = screen.getByTestId(
@@ -429,7 +446,7 @@ describe('ISIS Investigation Landing page', () => {
       expect(history.location.search).toBe('?view=card');
     });
 
-    it('for study hierarchy and normal view', async () => {
+    it('for data publication hierarchy and normal view', async () => {
       history.replace('/?view=card');
       renderComponent(true);
 
@@ -440,11 +457,11 @@ describe('ISIS Investigation Landing page', () => {
       );
 
       expect(history.location.pathname).toBe(
-        '/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset'
+        '/browseDataPublications/instrument/4/dataPublication/5/investigation/1/dataset'
       );
     });
 
-    it('for study hierarchy and cards view', async () => {
+    it('for data publication hierarchy and cards view', async () => {
       history.replace('/?view=card');
       renderComponent(true);
 
@@ -455,7 +472,7 @@ describe('ISIS Investigation Landing page', () => {
       );
 
       expect(history.location.pathname).toBe(
-        '/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset'
+        '/browseDataPublications/instrument/4/dataPublication/5/investigation/1/dataset'
       );
       expect(history.location.search).toBe('?view=card');
     });
@@ -572,7 +589,7 @@ describe('ISIS Investigation Landing page', () => {
   it('displays Experiment DOI (PID) and renders the expected Link ', async () => {
     renderComponent();
     expect(
-      await screen.findByRole('link', { name: 'study pid' })
-    ).toHaveAttribute('href', 'https://doi.org/study pid');
+      await screen.findByRole('link', { name: 'Data Publication Pid' })
+    ).toHaveAttribute('href', 'https://doi.org/Data Publication Pid');
   });
 });
