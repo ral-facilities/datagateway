@@ -97,6 +97,7 @@ export const paths = {
       '/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation/:investigationId',
     isisDatasetLanding:
       '/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation/:investigationId/dataset/:datasetId',
+    dlsDataPublicationLanding: '/browse/dataPublication/:dataPublicationId',
   },
   toggle: {
     investigation: '/browse/investigation',

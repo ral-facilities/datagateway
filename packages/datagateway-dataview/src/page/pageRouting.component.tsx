@@ -43,6 +43,7 @@ import ISISDatasetLanding from '../views/landing/isis/isisDatasetLanding.compone
 import DLSProposalsCardView from '../views/card/dls/dlsProposalsCardView.component';
 import DLSVisitsCardView from '../views/card/dls/dlsVisitsCardView.component';
 import DLSDatasetsCardView from '../views/card/dls/dlsDatasetsCardView.component';
+import DLSDataPublicationLanding from '../views/landing/dls/dlsDataPublicationLanding.component';
 
 import withIdCheck from './withIdCheck';
 import {
@@ -467,6 +468,15 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
               proposalName={match.params.proposalName as string}
               investigationId={match.params.investigationId as string}
               datasetId={match.params.datasetId as string}
+            />
+          )}
+        />
+        <Route
+          exact
+          path={paths.landing.dlsDataPublicationLanding}
+          render={({ match }) => (
+            <DLSDataPublicationLanding
+              dataPublicationId={match.params.dataPublicationId as string}
             />
           )}
         />
