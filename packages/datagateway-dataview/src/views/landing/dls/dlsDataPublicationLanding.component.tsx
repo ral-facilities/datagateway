@@ -1,4 +1,5 @@
 import {
+  Box,
   Divider,
   Grid,
   Link as MuiLink,
@@ -19,6 +20,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import Branding from './dlsBranding.component';
 import CitationFormatter from '../../citationFormatter.component';
+import DLSDataPublicationContentTable from './dlsDataPublicationContentTable.component';
 
 const Subheading = styled(Typography)(({ theme }) => ({
   marginTop: theme.spacing(1),
@@ -54,6 +56,32 @@ export interface FormattedUser {
 interface LandingPageProps {
   dataPublicationId: string;
 }
+
+type TabPanelProps = {
+  children?: React.ReactNode;
+  index: string;
+  value: string;
+  height?: string;
+};
+
+const TabPanel = React.forwardRef((props: TabPanelProps, ref) => {
+  const { children, value, index, height, ...other } = props;
+
+  return (
+    <Box
+      role="tabpanel"
+      hidden={value !== index}
+      id={`datapublication-${index}-panel`}
+      aria-labelledby={`datapublication-${index}-tab`}
+      sx={{ width: '100%', height }}
+      ref={ref}
+      {...other}
+    >
+      {value === index && children}
+    </Box>
+  );
+});
+TabPanel.displayName = 'TabPanel';
 
 const LandingPage = (props: LandingPageProps): React.ReactElement => {
   const [t] = useTranslation();
@@ -196,6 +224,29 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     },
   ];
 
+  // simple way to size the table (since we need to do so explicitly)
+  // make it the same height as the details panel which gets sized automatically
+  // doesn't account for user resizing the browser when on the content panel, but I think this is fine
+  const [panelHeight, setPanelHeight] = React.useState(0);
+  const detailsTabPanelObserver = React.useRef<ResizeObserver>(
+    new ResizeObserver((entries) => {
+      if (entries[0].contentRect.height)
+        setPanelHeight(entries[0].contentRect.height);
+    })
+  );
+  // need to use a useCallback instead of a useRef for this
+  // see https://reactjs.org/docs/hooks-faq.html#how-can-i-measure-a-dom-node
+  const detailsTabPanelRef = React.useCallback((container: HTMLDivElement) => {
+    if (container !== null) {
+      detailsTabPanelObserver.current.observe(container);
+    }
+    // When element is unmounted we know container is null so time to clean up
+    else {
+      if (detailsTabPanelObserver.current)
+        detailsTabPanelObserver.current.disconnect();
+    }
+  }, []);
+
   return (
     <Paper
       sx={{ margin: 1, padding: 1 }}
@@ -220,88 +271,98 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 value="details"
               />
               <Tab
-                id="datapublication-investigations-tab"
-                label={t('datapublications.details.investigations')}
-                onClick={() => {
-                  // TODO: implement content table
-                }}
+                id="datapublication-content-tab"
+                aria-controls="datapublication-content-panel"
+                label={'View Content'}
+                value="content"
               />
             </Tabs>
             <Divider />
           </Paper>
         </Grid>
-        <Grid item container xs={12} id="datapublication-details-panel">
-          {/* Long format information */}
-          <Grid item xs>
-            <Subheading variant="h5" data-testid="landing-investigation-title">
-              {title}
-            </Subheading>
-            <Typography data-testid="landing-datapublication-description">
-              {description}
-            </Typography>
 
-            {formattedUsers.length > 0 && (
-              <div>
-                <Subheading
-                  variant="h6"
-                  data-testid="landing-dataPublication-users-label"
-                >
-                  {t('datapublications.details.users')}
-                </Subheading>
-                {formattedUsers.map((user, i) => (
-                  <Typography
-                    data-testid={`landing-dataPublication-user-${i}`}
-                    key={i}
+        <TabPanel value={value} index="details" ref={detailsTabPanelRef}>
+          <Grid item container xs={12} id="datapublication-details-panel">
+            {/* Long format information */}
+            <Grid item xs>
+              <Subheading
+                variant="h5"
+                data-testid="landing-investigation-title"
+              >
+                {title}
+              </Subheading>
+              <Typography data-testid="landing-datapublication-description">
+                {description}
+              </Typography>
+
+              {formattedUsers.length > 0 && (
+                <div>
+                  <Subheading
+                    variant="h6"
+                    data-testid="landing-dataPublication-users-label"
                   >
-                    <b>{user.contributorType}:</b> {user.fullName}
-                  </Typography>
-                ))}
-              </div>
-            )}
-
-            <Subheading
-              variant="h6"
-              data-testid="landing-dataPublication-publisher-label"
-            >
-              {t('datapublications.details.publisher')}
-            </Subheading>
-            <Typography data-testid="landing-dataPublication-publisher">
-              {t('doi_constants.publisher.name')}
-            </Typography>
-            <CitationFormatter
-              doi={pid}
-              formattedUsers={formattedUsers}
-              title={title}
-              startDate={data?.[0]?.createTime}
-            />
-          </Grid>
-
-          <Divider orientation="vertical" />
-          {/* Short format information */}
-          <Grid item xs={6} sm={5} md={4} lg={3} xl={2}>
-            {shortInfo.map(
-              (field, i) =>
-                data?.[0] &&
-                field.content(data[0] as DataPublication) && (
-                  <ShortInfoRow key={i}>
-                    <ShortInfoLabel>
-                      {field.icon}
-                      {field.label}:
-                    </ShortInfoLabel>
-                    <ArrowTooltip
-                      title={getTooltipText(
-                        field.content(data[0] as DataPublication)
-                      )}
+                    {t('datapublications.details.users')}
+                  </Subheading>
+                  {formattedUsers.map((user, i) => (
+                    <Typography
+                      data-testid={`landing-dataPublication-user-${i}`}
+                      key={i}
                     >
-                      <ShortInfoValue>
-                        {field.content(data[0] as DataPublication)}
-                      </ShortInfoValue>
-                    </ArrowTooltip>
-                  </ShortInfoRow>
-                )
-            )}
+                      <b>{user.contributorType}:</b> {user.fullName}
+                    </Typography>
+                  ))}
+                </div>
+              )}
+
+              <Subheading
+                variant="h6"
+                data-testid="landing-dataPublication-publisher-label"
+              >
+                {t('datapublications.details.publisher')}
+              </Subheading>
+              <Typography data-testid="landing-dataPublication-publisher">
+                {t('doi_constants.publisher.name')}
+              </Typography>
+              <CitationFormatter
+                doi={pid}
+                formattedUsers={formattedUsers}
+                title={title}
+                startDate={data?.[0]?.createTime}
+              />
+            </Grid>
+
+            <Divider orientation="vertical" />
+            {/* Short format information */}
+            <Grid item xs={6} sm={5} md={4} lg={3} xl={2}>
+              {shortInfo.map(
+                (field, i) =>
+                  data?.[0] &&
+                  field.content(data[0] as DataPublication) && (
+                    <ShortInfoRow key={i}>
+                      <ShortInfoLabel>
+                        {field.icon}
+                        {field.label}:
+                      </ShortInfoLabel>
+                      <ArrowTooltip
+                        title={getTooltipText(
+                          field.content(data[0] as DataPublication)
+                        )}
+                      >
+                        <ShortInfoValue>
+                          {field.content(data[0] as DataPublication)}
+                        </ShortInfoValue>
+                      </ArrowTooltip>
+                    </ShortInfoRow>
+                  )
+              )}
+            </Grid>
           </Grid>
-        </Grid>
+        </TabPanel>
+        <TabPanel value={value} index="content" height={`${panelHeight}px`}>
+          <DLSDataPublicationContentTable
+            dataPublicationId={dataPublicationId}
+          />
+        </TabPanel>
       </Grid>
     </Paper>
   );

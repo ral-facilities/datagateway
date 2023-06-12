@@ -26,7 +26,7 @@ import { fetchDatasetCountQuery } from './datasets';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 import retryICATErrors from './retryICATErrors';
 
-const fetchInvestigations = (
+export const fetchInvestigations = (
   apiUrl: string,
   sortAndFilters: {
     sort: SortType;
@@ -421,7 +421,7 @@ export const useInvestigationsDatasetCount = (
   return datasetCounts;
 };
 
-const fetchInvestigationCount = (
+export const fetchInvestigationCount = (
   apiUrl: string,
   filters: FiltersType,
   additionalFilters?: AdditionalFilters
