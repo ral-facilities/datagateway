@@ -277,8 +277,6 @@ describe('Download Status Table', () => {
     await user.type(downloadStatusFilterBox, 'downloadStatus.complete');
 
     expect(await screen.findByText('test-file-1')).toBeInTheDocument();
-    // await waitForElementToBeRemoved(() => screen.queryByText('test-file-3'));
-    // expect(screen.queryByText('test-file-3')).toBeNull();
 
     await user.clear(downloadMethodFilterBox);
     await user.clear(downloadStatusFilterBox);
