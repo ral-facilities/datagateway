@@ -26,6 +26,7 @@ import ISISDatasetsTable from '../views/table/isis/isisDatasetsTable.component';
 import ISISDatafilesTable from '../views/table/isis/isisDatafilesTable.component';
 
 import DLSMyDataTable from '../views/table/dls/dlsMyDataTable.component';
+import DLSMyDOIsTable from '../views/table/dls/dlsMyDOIsTable.component';
 import ISISMyDataTable from '../views/table/isis/isisMyDataTable.component';
 
 import InvestigationCardView from '../views/card/investigationCardView.component';
@@ -411,6 +412,14 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
             <Redirect to={'/login'} />
           ) : (
             <ISISMyDataTable />
+          )}
+        </Route>
+
+        <Route exact path={paths.myDOIs.dls}>
+          {this.props.loggedInAnonymously === true ? (
+            <Redirect to={'/login'} />
+          ) : (
+            <DLSMyDOIsTable />
           )}
         </Route>
 

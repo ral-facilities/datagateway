@@ -151,6 +151,12 @@
       "link": "/my-data/ISIS?sort={\"startDate\":\"desc\"}",
       "displayName": "My Data ISIS",
       "order": 6
+    },
+    {
+      "section": "Browse",
+      "link": "/my-dois/DLS",
+      "displayName": "My DOIs DLS",
+      "order": 7
     }
   ],
   "pluginHost": "http://localhost:3000"

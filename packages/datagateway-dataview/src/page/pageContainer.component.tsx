@@ -92,6 +92,7 @@ export const paths = {
     dls: '/my-data/DLS',
     isis: '/my-data/ISIS',
   },
+  myDOIs: { dls: '/my-dois/DLS' },
   landing: {
     isisInvestigationLanding:
       '/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation/:investigationId',
@@ -164,7 +165,7 @@ const isisPaths = [
 ];
 
 // DLS base paths - required for linking to correct search view
-const dlsPaths = [paths.myData.dls, paths.toggle.dlsProposal];
+const dlsPaths = [paths.myData.dls, paths.myDOIs.dls, paths.toggle.dlsProposal];
 
 const BlackTextTypography = styled(Typography)({
   color: '#000000',
@@ -273,6 +274,7 @@ const NavBar = React.memo(
           <Route
             exact
             path={Object.values(paths.myData).concat(
+              Object.values(paths.myDOIs),
               Object.values(paths.toggle),
               Object.values(paths.standard),
               Object.values(paths.dataPublications.toggle),
@@ -687,6 +689,7 @@ const DataviewPageContainer: React.FC = () => {
               <Route
                 exact
                 path={Object.values(paths.myData).concat(
+                  Object.values(paths.myDOIs),
                   Object.values(paths.toggle),
                   Object.values(paths.standard),
                   Object.values(paths.dataPublications.toggle),
