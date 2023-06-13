@@ -96,7 +96,7 @@ const DOIGenerationForm: React.FC = () => {
                 justifyContent="start"
                 spacing={2}
               >
-                <Grid container item direction="column" xs="auto">
+                <Grid container item direction="column" xs="auto" lg={5}>
                   <Grid item>
                     <Typography variant="h6" component="h3">
                       Data
@@ -155,7 +155,7 @@ const DOIGenerationForm: React.FC = () => {
                     </Table>
                   </Grid>
                 </Grid>
-                <Grid container item direction="column" xs spacing={1}>
+                <Grid container item direction="column" xs spacing={1} lg={7}>
                   <Grid item>
                     <Typography variant="h6" component="h3">
                       Details
