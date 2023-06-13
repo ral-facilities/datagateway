@@ -9,10 +9,10 @@ exports[`ISIS Dataset table component renders dataset name as a link 1`] = `
 </a>
 `;
 
-exports[`ISIS Dataset table component renders dataset name as a link in StudyHierarchy 1`] = `
+exports[`ISIS Dataset table component renders dataset name as a link in data publication hierarchy 1`] = `
 <a
   class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
-  href="/browseStudyHierarchy/instrument/1/study/2/investigation/3/dataset/1"
+  href="/browseDataPublications/instrument/1/dataPublication/2/investigation/3/dataset/1"
 >
   Test 1
 </a>

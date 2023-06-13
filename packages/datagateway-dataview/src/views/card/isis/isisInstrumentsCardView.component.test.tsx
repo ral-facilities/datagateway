@@ -41,7 +41,7 @@ describe('ISIS Instruments - Card View', () => {
       <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
-            <ISISInstrumentsCardView studyHierarchy={false} />
+            <ISISInstrumentsCardView dataPublication={false} />
           </QueryClientProvider>
         </Router>
       </Provider>
@@ -95,14 +95,14 @@ describe('ISIS Instruments - Card View', () => {
       <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
-            <ISISInstrumentsCardView studyHierarchy={true} />
+            <ISISInstrumentsCardView dataPublication={true} />
           </QueryClientProvider>
         </Router>
       </Provider>
     );
     expect(await screen.findByRole('link', { name: 'Test 1' })).toHaveAttribute(
       'href',
-      '/browseStudyHierarchy/instrument/1/study'
+      '/browseDataPublications/instrument/1/dataPublication'
     );
   });
 

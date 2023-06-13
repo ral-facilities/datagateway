@@ -47,13 +47,13 @@ describe('ISIS Instruments table component', () => {
   let history: History;
   let user: UserEvent;
 
-  const renderComponent = (studyHierarchy = false): RenderResult => {
+  const renderComponent = (dataPublication = false): RenderResult => {
     const store = mockStore(state);
     return render(
       <Provider store={store}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
-            <ISISInstrumentsTable studyHierarchy={studyHierarchy} />
+            <ISISInstrumentsTable dataPublication={dataPublication} />
           </QueryClientProvider>
         </Router>
       </Provider>

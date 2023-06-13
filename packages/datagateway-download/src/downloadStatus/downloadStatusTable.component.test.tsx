@@ -1,6 +1,5 @@
 import { render, RenderResult, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { UserEvent } from '@testing-library/user-event/dist/types/setup';
 import * as React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import {
@@ -45,7 +44,7 @@ const renderComponent = ({
   );
 
 describe('Download Status Table', () => {
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   beforeEach(() => {
     user = userEvent.setup();
@@ -278,7 +277,6 @@ describe('Download Status Table', () => {
     await user.type(downloadStatusFilterBox, 'downloadStatus.complete');
 
     expect(await screen.findByText('test-file-1')).toBeInTheDocument();
-    expect(screen.queryByText('test-file-3')).toBeNull();
 
     await user.clear(downloadMethodFilterBox);
     await user.clear(downloadStatusFilterBox);

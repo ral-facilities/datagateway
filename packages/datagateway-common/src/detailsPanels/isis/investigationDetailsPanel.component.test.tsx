@@ -61,15 +61,27 @@ describe('Investigation details panel component', () => {
           },
         },
       ],
-      studyInvestigations: [
+      dataCollectionInvestigations: [
         {
-          id: 11,
-          study: {
-            id: 12,
-            pid: 'study pid',
-            name: 'study',
-            modTime: '2019-06-10',
-            createTime: '2019-06-11',
+          id: 1,
+          investigation: {
+            id: 1,
+            title: 'Test 1',
+            name: 'Test 1',
+            visitId: '1',
+          },
+          dataCollection: {
+            id: 11,
+            dataPublications: [
+              {
+                id: 12,
+                pid: 'Data Publication Pid',
+                description: 'Data Publication description',
+                modTime: '2019-06-10',
+                createTime: '2019-06-11',
+                title: 'Data Publication',
+              },
+            ],
           },
         },
       ],
@@ -312,10 +324,10 @@ describe('Investigation details panel component', () => {
     expect(link).toHaveAttribute('href', 'https://doi.org/doi 1');
   });
 
-  it('should gracefully handles StudyInvestigations without Studies and InvestigationUsers without Users', () => {
-    rowData.studyInvestigations = [
+  it('should gracefully handles dataCollectionInvestigations without dataPublications and InvestigationUsers without Users', () => {
+    rowData.dataCollectionInvestigations = [
       {
-        id: 11,
+        id: 1,
       },
     ];
 

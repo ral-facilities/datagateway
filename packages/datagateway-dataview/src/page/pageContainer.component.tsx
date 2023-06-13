@@ -120,27 +120,28 @@ export const paths = {
     dlsDatafile:
       '/browse/proposal/:proposalName/investigation/:investigationId/dataset/:datasetId/datafile',
   },
-  studyHierarchy: {
-    root: '/browseStudyHierarchy',
+  dataPublications: {
+    root: '/browseDataPublications',
     toggle: {
-      isisInstrument: '/browseStudyHierarchy/instrument',
-      isisStudy: '/browseStudyHierarchy/instrument/:instrumentId/study',
+      isisInstrument: '/browseDataPublications/instrument',
+      isisDataPublication:
+        '/browseDataPublications/instrument/:instrumentId/dataPublication',
       isisInvestigation:
-        '/browseStudyHierarchy/instrument/:instrumentId/study/:studyId/investigation',
+        '/browseDataPublications/instrument/:instrumentId/dataPublication/:dataPublicationId/investigation',
       isisDataset:
-        '/browseStudyHierarchy/instrument/:instrumentId/study/:studyId/investigation/:investigationId/dataset',
+        '/browseDataPublications/instrument/:instrumentId/dataPublication/:dataPublicationId/investigation/:investigationId/dataset',
     },
     standard: {
       isisDatafile:
-        '/browseStudyHierarchy/instrument/:instrumentId/study/:studyId/investigation/:investigationId/dataset/:datasetId/datafile',
+        '/browseDataPublications/instrument/:instrumentId/dataPublication/:dataPublicationId/investigation/:investigationId/dataset/:datasetId/datafile',
     },
     landing: {
-      isisStudyLanding:
-        '/browseStudyHierarchy/instrument/:instrumentId/study/:studyId',
+      isisDataPublicationLanding:
+        '/browseDataPublications/instrument/:instrumentId/dataPublication/:dataPublicationId',
       isisInvestigationLanding:
-        '/browseStudyHierarchy/instrument/:instrumentId/study/:studyId/investigation/:investigationId',
+        '/browseDataPublications/instrument/:instrumentId/dataPublication/:dataPublicationId/investigation/:investigationId',
       isisDatasetLanding:
-        '/browseStudyHierarchy/instrument/:instrumentId/study/:studyId/investigation/:investigationId/dataset/:datasetId',
+        '/browseDataPublications/instrument/:instrumentId/dataPublication/:dataPublicationId/investigation/:investigationId/dataset/:datasetId',
     },
   },
   // defines routes for datafile previews
@@ -151,14 +152,14 @@ export const paths = {
 };
 
 const togglePaths = Object.values(paths.toggle).concat(
-  Object.values(paths.studyHierarchy.toggle)
+  Object.values(paths.dataPublications.toggle)
 );
 
 // ISIS base paths - required for linking to correct search view
 const isisPaths = [
   paths.myData.isis,
   paths.toggle.isisInstrument,
-  paths.studyHierarchy.root,
+  paths.dataPublications.root,
 ];
 
 // DLS base paths - required for linking to correct search view
@@ -178,14 +179,14 @@ const NavBar = React.memo(
     } & CartProps
   ): React.ReactElement => {
     const [t] = useTranslation();
-    const isStudyHierarchy =
+    const isDataPublication =
       useRouteMatch([
-        ...Object.values(paths.studyHierarchy.toggle),
-        ...Object.values(paths.studyHierarchy.standard),
+        ...Object.values(paths.dataPublications.toggle),
+        ...Object.values(paths.dataPublications.standard),
       ]) !== null;
     const isISISRoute = useRouteMatch(isisPaths) !== null;
-    const landingPages = isStudyHierarchy
-      ? paths.studyHierarchy.landing
+    const landingPages = isDataPublication
+      ? paths.dataPublications.landing
       : isISISRoute
       ? paths.landing
       : [];
@@ -204,12 +205,12 @@ const NavBar = React.memo(
             aria-label="page-breadcrumbs"
           >
             {/* don't show breadcrumbs on /my-data - only on browse */}
-            <Route path={[paths.root, paths.studyHierarchy.root]}>
+            <Route path={[paths.root, paths.dataPublications.root]}>
               <PageBreadcrumbs landingPageEntities={landingPageEntities} />
             </Route>
           </Grid>
 
-          {props.loggedInAnonymously || isStudyHierarchy ? (
+          {props.loggedInAnonymously || isDataPublication ? (
             <Grid item>
               <OpenDataPaper square>
                 <Grid
@@ -223,8 +224,10 @@ const NavBar = React.memo(
                     <ArrowTooltip
                       title={
                         <h4>
-                          {isStudyHierarchy
-                            ? t('app.open_data_warning.studies_tooltip')
+                          {isDataPublication
+                            ? t(
+                                'app.open_data_warning.datapublications_tooltip'
+                              )
                             : t('app.open_data_warning.tooltip')}
                           <br />
                           <br />
@@ -271,8 +274,8 @@ const NavBar = React.memo(
             path={Object.values(paths.myData).concat(
               Object.values(paths.toggle),
               Object.values(paths.standard),
-              Object.values(paths.studyHierarchy.toggle),
-              Object.values(paths.studyHierarchy.standard)
+              Object.values(paths.dataPublications.toggle),
+              Object.values(paths.dataPublications.standard)
             )}
             render={() => {
               return (
@@ -443,7 +446,7 @@ const ViewRouting = React.memo(
           exact
           path={[
             ...Object.values(paths.landing),
-            ...Object.values(paths.studyHierarchy.landing),
+            ...Object.values(paths.dataPublications.landing),
             ...Object.values(paths.preview),
           ]}
           render={() => (
@@ -685,8 +688,8 @@ const DataviewPageContainer: React.FC = () => {
                 path={Object.values(paths.myData).concat(
                   Object.values(paths.toggle),
                   Object.values(paths.standard),
-                  Object.values(paths.studyHierarchy.toggle),
-                  Object.values(paths.studyHierarchy.standard)
+                  Object.values(paths.dataPublications.toggle),
+                  Object.values(paths.dataPublications.standard)
                 )}
                 render={() => (
                   <ClearFiltersButton

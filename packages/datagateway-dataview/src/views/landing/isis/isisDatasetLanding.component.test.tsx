@@ -35,7 +35,7 @@ describe('ISIS Dataset Landing page', () => {
   let history: History;
   let user: UserEvent;
 
-  const renderComponent = (studyHierarchy = false): RenderResult =>
+  const renderComponent = (dataPublication = false): RenderResult =>
     render(
       <Provider store={mockStore(state)}>
         <Router history={history}>
@@ -45,7 +45,7 @@ describe('ISIS Dataset Landing page', () => {
               instrumentChildId="5"
               investigationId="1"
               datasetId="87"
-              studyHierarchy={studyHierarchy}
+              dataPublication={dataPublication}
             />
           </QueryClientProvider>
         </Router>
@@ -118,7 +118,7 @@ describe('ISIS Dataset Landing page', () => {
       expect(history.location.search).toBe('?view=card');
     });
 
-    it('for study hierarchy and normal view', async () => {
+    it('for data publication hierarchy and normal view', async () => {
       renderComponent(true);
 
       await user.click(
@@ -126,11 +126,11 @@ describe('ISIS Dataset Landing page', () => {
       );
 
       expect(history.location.pathname).toBe(
-        '/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset/87/datafile'
+        '/browseDataPublications/instrument/4/dataPublication/5/investigation/1/dataset/87/datafile'
       );
     });
 
-    it('for study hierarchy and cards view', async () => {
+    it('for data publication hierarchy and cards view', async () => {
       history.replace('/?view=card');
       renderComponent(true);
 
@@ -139,7 +139,7 @@ describe('ISIS Dataset Landing page', () => {
       );
 
       expect(history.location.pathname).toBe(
-        '/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset/87/datafile'
+        '/browseDataPublications/instrument/4/dataPublication/5/investigation/1/dataset/87/datafile'
       );
       expect(history.location.search).toBe('?view=card');
     });
