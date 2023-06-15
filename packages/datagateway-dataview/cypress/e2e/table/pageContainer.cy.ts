@@ -30,7 +30,7 @@ describe('PageContainer Component', () => {
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('24');
 
       cy.get('[data-testid="clear-filters-button"]').click();
-      cy.url().should('eq', `${url}/?semanticSearch=false`);
+      cy.url().should('eq', `${url}?semanticSearch=false`);
     });
   });
 

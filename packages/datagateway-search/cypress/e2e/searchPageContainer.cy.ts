@@ -57,7 +57,7 @@ describe('SearchPageContainer Component', () => {
 
       cy.get('#container-search-filters').should('exist');
       cy.location().should((loc) => {
-        expect(loc.search).to.eq('?searchText=dog');
+        expect(loc.search).to.eq('?searchText=dog&semanticSearch=false');
       });
     });
 
@@ -174,7 +174,9 @@ describe('SearchPageContainer Component', () => {
       );
 
       cy.location().should((loc) => {
-        expect(loc.search).to.eq('?view=table&searchText=dog');
+        expect(loc.search).to.eq(
+          '?view=table&searchText=dog&semanticSearch=false'
+        );
       });
     });
 
@@ -324,7 +326,7 @@ describe('SearchPageContainer Component', () => {
 
       cy.location().should((loc) => {
         expect(loc.search).to.eq(
-          '?searchText=dog&datafile=false&investigation=false&currentTab=dataset'
+          '?searchText=dog&datafile=false&investigation=false&currentTab=dataset&semanticSearch=false'
         );
       });
 
