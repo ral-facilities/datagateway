@@ -162,7 +162,9 @@ describe('SearchPageContainer Component', () => {
       );
 
       cy.location().should((loc) => {
-        expect(loc.search).to.eq('?view=card&searchText=dog');
+        expect(loc.search).to.eq(
+          '?view=card&searchText=dog&semanticSearch=false'
+        );
       });
 
       cy.get('[aria-label="page view Display as table"]').click();
