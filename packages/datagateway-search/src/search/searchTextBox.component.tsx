@@ -25,6 +25,7 @@ const SearchTextBox = (props: SearchTextProps): React.ReactElement => {
     <TextField
       className="tour-search-textfield"
       id="filled-search"
+      name="dgSearchTextField"
       label={t('searchBox.search_text')}
       type="search"
       margin="normal"
