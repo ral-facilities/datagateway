@@ -33,6 +33,7 @@ import {
   useHistory,
   useRouteMatch,
   matchPath,
+  Switch,
 } from 'react-router-dom';
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageRouting from './pageRouting.component';
@@ -165,7 +166,12 @@ const isisPaths = [
 ];
 
 // DLS base paths - required for linking to correct search view
-const dlsPaths = [paths.myData.dls, paths.myDOIs.dls, paths.toggle.dlsProposal];
+const dlsPaths = [
+  paths.myData.dls,
+  paths.myDOIs.dls,
+  paths.toggle.dlsProposal,
+  paths.landing.dlsDataPublicationLanding,
+];
 
 const BlackTextTypography = styled(Typography)({
   color: '#000000',
@@ -206,10 +212,13 @@ const NavBar = React.memo(
             xs
             aria-label="page-breadcrumbs"
           >
-            {/* don't show breadcrumbs on /my-data - only on browse */}
-            <Route path={[paths.root, paths.dataPublications.root]}>
-              <PageBreadcrumbs landingPageEntities={landingPageEntities} />
-            </Route>
+            {/* don't show breadcrumbs on /my-data or dls landing pages - only on browse */}
+            <Switch>
+              <Route path={[paths.landing.dlsDataPublicationLanding]} />
+              <Route path={[paths.root, paths.dataPublications.root]}>
+                <PageBreadcrumbs landingPageEntities={landingPageEntities} />
+              </Route>
+            </Switch>
           </Grid>
 
           {props.loggedInAnonymously || isDataPublication ? (

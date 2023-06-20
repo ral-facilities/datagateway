@@ -22,6 +22,8 @@ import {
   useDataPublicationContentCount,
   Investigation,
   formatBytes,
+  DLSVisitDetailsPanel,
+  DLSDatafileDetailsPanel,
 } from 'datagateway-common';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
@@ -196,6 +198,16 @@ const DLSDataPublicationContentTable = (
     }
   }, [t, textFilter, dateFilter, currentTab]);
 
+  const detailsPanel = React.useMemo(() => {
+    if (currentTab === 'investigation') {
+      return DLSVisitDetailsPanel;
+    } else if (currentTab === 'dataset') {
+      return DLSDatasetDetailsPanel;
+    } else if (currentTab === 'datafile') {
+      return DLSDatafileDetailsPanel;
+    }
+  }, [currentTab]);
+
   const selectedRows = React.useMemo(
     () =>
       cartItems
@@ -235,8 +247,11 @@ const DLSDataPublicationContentTable = (
         onCheck={addToCart}
         onUncheck={removeFromCart}
         disableSelectAll={true}
-        detailsPanel={DLSDatasetDetailsPanel}
+        detailsPanel={detailsPanel}
         columns={columns}
+        // key prop forces the table to fully rerender on entity type change
+        // which means default column sizes get properly set
+        key={currentTab}
       />
     </>
   );
