@@ -32,6 +32,7 @@ exports[`SearchBoxContainerSide - Tests renders searchBoxContainerSide correctly
               aria-label="searchBox.search_text_arialabel"
               class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputTypeSearch css-1g24dm6-MuiInputBase-input-MuiOutlinedInput-input"
               id="filled-search"
+              name="dgSearchTextField"
               type="search"
               value=""
             />
@@ -245,7 +246,7 @@ exports[`SearchBoxContainerSide - Tests renders searchBoxContainerSide correctly
             aria-label="searchBox.search_button_arialabel"
             class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeLarge MuiButton-containedSizeLarge MuiButton-fullWidth MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeLarge MuiButton-containedSizeLarge MuiButton-fullWidth css-189e9pj-MuiButtonBase-root-MuiButton-root"
             tabindex="0"
-            type="button"
+            type="submit"
           >
             searchBox.search_button
             <span
