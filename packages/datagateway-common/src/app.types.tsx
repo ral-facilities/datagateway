@@ -165,6 +165,11 @@ export interface DataPublicationUser {
   fullName: string;
 }
 
+export interface DataPublicationType {
+  id: number;
+  name: string;
+}
+
 export interface DataPublication {
   id: number;
   pid: string;
@@ -175,6 +180,7 @@ export interface DataPublication {
   publicationDate?: string;
   users?: DataPublicationUser[];
   content?: DataCollection;
+  type?: DataPublicationType;
 }
 
 interface InstrumentScientist {

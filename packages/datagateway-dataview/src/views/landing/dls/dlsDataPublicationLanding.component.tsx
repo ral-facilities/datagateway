@@ -2,20 +2,13 @@ import {
   Box,
   Divider,
   Grid,
-  Link as MuiLink,
   Paper,
   styled,
   Tab,
   Tabs,
   Typography,
 } from '@mui/material';
-import { CalendarToday, Public, Storage } from '@mui/icons-material';
-import {
-  DataPublication,
-  useDataPublication,
-  ArrowTooltip,
-  getTooltipText,
-} from 'datagateway-common';
+import { DataPublication, useDataPublication } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import Branding from './dlsBranding.component';
@@ -26,27 +19,44 @@ const Subheading = styled(Typography)(({ theme }) => ({
   marginTop: theme.spacing(1),
 }));
 
-const ShortInfoRow = styled('div')(({ theme }) => ({
-  display: 'flex',
-  marginTop: theme.spacing(1),
-  marginBottom: theme.spacing(1),
-}));
-
-const shortInfoIconStyle = { mx: 1 };
-
 const ShortInfoLabel = styled(Typography)({
-  display: 'flex',
-  width: '50%',
+  fontWeight: 'bold',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
 });
 
 const ShortInfoValue = styled(Typography)({
-  width: '50%',
-  textAlign: 'right',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
 });
+
+const StyledDOILink = styled('a')({
+  display: 'inline-flex',
+  backgroundColor: '#000',
+  color: '#fff',
+  textDecoration: 'none',
+  paddingLeft: '5px',
+  borderRadius: '5px',
+  overflow: 'hidden',
+});
+
+const StyledDOISpan = styled('span')({
+  backgroundColor: '#09c',
+  padding: '0 5px',
+  marginLeft: '5px',
+  '&:hover': {
+    backgroundColor: '#006a8d',
+  },
+});
+
+const StyledDOI: React.FC<{ doi: string }> = ({ doi }) => (
+  <StyledDOILink
+    href={`https://doi.org/${doi}`}
+    data-testid="landing-dataPublication-pid-link"
+  >
+    DOI <StyledDOISpan>{doi}</StyledDOISpan>
+  </StyledDOILink>
+);
 
 export interface FormattedUser {
   contributorType?: string;
@@ -191,66 +201,33 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   const shortInfo = [
     {
       content: function dataPublicationPidFormat(entity: DataPublication) {
-        return (
-          entity?.pid && (
-            <MuiLink
-              href={`https://doi.org/${entity.pid}`}
-              data-testid="landing-dataPublication-pid-link"
-            >
-              {entity.pid}
-            </MuiLink>
-          )
-        );
+        return <StyledDOI doi={entity.pid} />;
       },
       label: t('datapublications.pid'),
-      icon: <Public sx={shortInfoIconStyle} />,
-    },
-    {
-      content: function distributionFormat(entity: DataPublication) {
-        return (
-          <MuiLink href="http://www.isis.stfc.ac.uk/groups/computing/isis-raw-file-format11200.html">
-            {t('doi_constants.distribution.format')}
-          </MuiLink>
-        );
-      },
-      label: t('datapublications.details.format'),
-      icon: <Storage sx={shortInfoIconStyle} />,
     },
     {
       content: (dataPublication: DataPublication) =>
-        dataPublication?.publicationDate?.slice(0, 10) ?? '',
+        dataPublication.publicationDate?.slice(0, 10) ?? '',
       label: t('datapublications.publication_date'),
-      icon: <CalendarToday sx={shortInfoIconStyle} />,
+    },
+    {
+      content: (dataPublication: DataPublication) =>
+        t('doi_constants.publisher.name'),
+      label: t('datapublications.details.publisher'),
+    },
+    {
+      content: (dataPublication: DataPublication) => dataPublication.type?.name,
+      label: t('datapublications.details.type'),
     },
   ];
 
-  // simple way to size the table (since we need to do so explicitly)
-  // make it the same height as the details panel which gets sized automatically
-  // doesn't account for user resizing the browser when on the content panel, but I think this is fine
-  const [panelHeight, setPanelHeight] = React.useState(0);
-  const detailsTabPanelObserver = React.useRef<ResizeObserver>(
-    new ResizeObserver((entries) => {
-      if (entries[0].contentRect.height)
-        setPanelHeight(entries[0].contentRect.height);
-    })
-  );
-  // need to use a useCallback instead of a useRef for this
-  // see https://reactjs.org/docs/hooks-faq.html#how-can-i-measure-a-dom-node
-  const detailsTabPanelRef = React.useCallback((container: HTMLDivElement) => {
-    if (container !== null) {
-      detailsTabPanelObserver.current.observe(container);
-    }
-    // When element is unmounted we know container is null so time to clean up
-    else {
-      if (detailsTabPanelObserver.current)
-        detailsTabPanelObserver.current.disconnect();
-    }
-  }, []);
-
   return (
     <Paper
-      sx={{ margin: 1, padding: 1 }}
-      data-testid="isis-dataPublication-landing"
+      sx={{
+        margin: 1,
+        padding: 1,
+      }}
+      data-testid="dls-dataPublication-landing"
     >
       <Grid container sx={{ padding: 0.5 }}>
         <Grid item xs={12}>
@@ -281,7 +258,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
           </Paper>
         </Grid>
 
-        <TabPanel value={value} index="details" ref={detailsTabPanelRef}>
+        <TabPanel value={value} index="details">
           <Grid item container xs={12} id="datapublication-details-panel">
             {/* Long format information */}
             <Grid item xs>
@@ -314,15 +291,6 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 </div>
               )}
 
-              <Subheading
-                variant="h6"
-                data-testid="landing-dataPublication-publisher-label"
-              >
-                {t('datapublications.details.publisher')}
-              </Subheading>
-              <Typography data-testid="landing-dataPublication-publisher">
-                {t('doi_constants.publisher.name')}
-              </Typography>
               <CitationFormatter
                 doi={pid}
                 formattedUsers={formattedUsers}
@@ -331,34 +299,42 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               />
             </Grid>
 
-            <Divider orientation="vertical" />
+            <Divider orientation="vertical" flexItem sx={{ ml: 1, mr: 1 }} />
             {/* Short format information */}
-            <Grid item xs={6} sm={5} md={4} lg={3} xl={2}>
+            <Grid
+              container
+              item
+              xs="auto"
+              direction="column"
+              spacing={1}
+              mt={0}
+            >
               {shortInfo.map(
                 (field, i) =>
                   data?.[0] &&
                   field.content(data[0] as DataPublication) && (
-                    <ShortInfoRow key={i}>
-                      <ShortInfoLabel>
-                        {field.icon}
-                        {field.label}:
-                      </ShortInfoLabel>
-                      <ArrowTooltip
-                        title={getTooltipText(
-                          field.content(data[0] as DataPublication)
-                        )}
-                      >
+                    <Grid
+                      container
+                      item
+                      key={i}
+                      spacing={1}
+                      direction={'column'}
+                    >
+                      <Grid item>
+                        <ShortInfoLabel>{field.label}</ShortInfoLabel>
+                      </Grid>
+                      <Grid item>
                         <ShortInfoValue>
                           {field.content(data[0] as DataPublication)}
                         </ShortInfoValue>
-                      </ArrowTooltip>
-                    </ShortInfoRow>
+                      </Grid>
+                    </Grid>
                   )
               )}
             </Grid>
           </Grid>
         </TabPanel>
-        <TabPanel value={value} index="content" height={`${panelHeight}px`}>
+        <TabPanel value={value} index="content">
           <DLSDataPublicationContentTable
             dataPublicationId={dataPublicationId}
           />

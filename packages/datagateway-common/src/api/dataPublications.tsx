@@ -177,15 +177,18 @@ export const useDataPublication = (
         },
         {
           filterType: 'include',
-          filterValue: JSON.stringify({
-            content: {
-              dataCollectionInvestigations: {
-                investigation: {
-                  investigationInstruments: 'instrument',
+          filterValue: JSON.stringify([
+            {
+              content: {
+                dataCollectionInvestigations: {
+                  investigation: {
+                    investigationInstruments: 'instrument',
+                  },
                 },
               },
             },
-          }),
+            'type',
+          ]),
         },
       ]);
     },

@@ -225,34 +225,50 @@ const DLSDataPublicationContentTable = (
   //   );
   // }, [cartItems]);
 
+  const [yPos, setYPos] = React.useState(0);
+  const measuredRef = (node: HTMLDivElement): void => {
+    if (node !== null) {
+      setYPos(node.getBoundingClientRect().y);
+    }
+  };
+
   return (
     <>
       <Tabs
         value={currentTab}
         onChange={handleTabChange}
         aria-label="content tabs"
+        indicatorColor="secondary"
+        textColor="secondary"
       >
         <Tab label="Investigations" value="investigation" />
         <Tab label="Datasets" value="dataset" />
         <Tab label="Datafiles" value="datafile" />
       </Tabs>
-      <Table
-        loading={addToCartLoading || removeFromCartLoading || cartLoading}
-        data={aggregatedData}
-        loadMoreRows={loadMoreRows}
-        totalRowCount={totalDataCount ?? 0}
-        sort={sort}
-        onSort={handleSort}
-        selectedRows={selectedRows}
-        onCheck={addToCart}
-        onUncheck={removeFromCart}
-        disableSelectAll={true}
-        detailsPanel={detailsPanel}
-        columns={columns}
-        // key prop forces the table to fully rerender on entity type change
-        // which means default column sizes get properly set
-        key={currentTab}
-      />
+      {/* add a div just so we can set the height of the table correctly */}
+      <div
+        ref={measuredRef}
+        // calculate height using 100vh - our current y position - SG footer - padding
+        style={{ height: `calc(100vh - ${yPos}px - 36px - 8px - 8px - 4px)` }}
+      >
+        <Table
+          loading={addToCartLoading || removeFromCartLoading || cartLoading}
+          data={aggregatedData}
+          loadMoreRows={loadMoreRows}
+          totalRowCount={totalDataCount ?? 0}
+          sort={sort}
+          onSort={handleSort}
+          selectedRows={selectedRows}
+          onCheck={addToCart}
+          onUncheck={removeFromCart}
+          disableSelectAll={true}
+          detailsPanel={detailsPanel}
+          columns={columns}
+          // key prop forces the table to fully rerender on entity type change
+          // which means default column sizes get properly set
+          key={currentTab}
+        />
+      </div>
     </>
   );
 };

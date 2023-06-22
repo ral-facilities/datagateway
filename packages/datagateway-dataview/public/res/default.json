@@ -64,6 +64,7 @@
       "users": "Experiment Users",
       "publisher": "Publisher",
       "format": "Data Format",
+      "type": "Type",
       "citation_formatter": {
         "label": "Data Citation",
         "details": "The recommended format for citing this data can be found below.",
