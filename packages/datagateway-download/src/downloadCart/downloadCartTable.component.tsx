@@ -482,7 +482,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                     className="tour-download-remove-button"
                     id="removeAllButton"
                     variant="outlined"
-                    color="primary"
+                    color="secondary"
                     disabled={removingAll}
                     startIcon={removingAll && <CircularProgress size={20} />}
                     onClick={() => removeAllDownloadCartItems()}

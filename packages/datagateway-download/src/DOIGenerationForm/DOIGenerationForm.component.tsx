@@ -113,6 +113,8 @@ const DOIGenerationForm: React.FC = () => {
                         value={currentTab}
                         onChange={handleTabChange}
                         aria-label="cart tabs"
+                        indicatorColor="secondary"
+                        textColor="secondary"
                       >
                         {cart?.some(
                           (cartItem) => cartItem.entityType === 'investigation'
@@ -234,6 +236,7 @@ const DOIGenerationForm: React.FC = () => {
                           </Grid>
                           <Grid item>
                             <Button
+                              variant="contained"
                               onClick={() => {
                                 // don't let the user add duplicates
                                 if (
@@ -328,6 +331,7 @@ const DOIGenerationForm: React.FC = () => {
                                           )
                                         )
                                       }
+                                      color="secondary"
                                     >
                                       Delete
                                     </Button>

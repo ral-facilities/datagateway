@@ -37,7 +37,9 @@ const AcceptDataPolicy: React.FC<AcceptDataPolicyProps> = (props) => {
             </Typography>
           </Grid>
           <Grid item alignSelf="end">
-            <Button onClick={props.acceptDataPolicy}>Accept</Button>
+            <Button variant="contained" onClick={props.acceptDataPolicy}>
+              Accept
+            </Button>
           </Grid>
         </Grid>
       </Paper>
