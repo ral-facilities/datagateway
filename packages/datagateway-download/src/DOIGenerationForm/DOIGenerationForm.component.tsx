@@ -79,11 +79,12 @@ const DOIGenerationForm: React.FC = () => {
   }
 
   return (
-    <Box m={1} sx={{ bgColor: 'background.default' }}>
+    <Box m={1}>
       {acceptedDataPolicy ? (
         <>
           <Box>
-            <Typography variant="h5" component="h2">
+            {/* need to specify colour is textPrimary since this Typography is not in a Paper */}
+            <Typography variant="h5" component="h2" color="textPrimary">
               Generate DOI
             </Typography>
             <Paper sx={{ padding: 1 }}>
@@ -168,6 +169,7 @@ const DOIGenerationForm: React.FC = () => {
                       label="DOI Title"
                       required
                       fullWidth
+                      color="secondary"
                       value={title}
                       onChange={(event) => setTitle(event.target.value)}
                     />
@@ -179,6 +181,7 @@ const DOIGenerationForm: React.FC = () => {
                       multiline
                       rows={4}
                       fullWidth
+                      color="secondary"
                       value={description}
                       onChange={(event) => setDescription(event.target.value)}
                     />
@@ -219,12 +222,17 @@ const DOIGenerationForm: React.FC = () => {
                               helperText={
                                 usernameError.length > 0 ? usernameError : ''
                               }
+                              color="secondary"
                               sx={{
-                                backgroundColor: 'background.default',
                                 // this CSS makes it so that the helperText doesn't mess with the button alignment
                                 '& .MuiFormHelperText-root': {
                                   position: 'absolute',
                                   bottom: '-1.5rem',
+                                },
+                              }}
+                              InputProps={{
+                                sx: {
+                                  backgroundColor: 'background.default',
                                 },
                               }}
                               value={username}

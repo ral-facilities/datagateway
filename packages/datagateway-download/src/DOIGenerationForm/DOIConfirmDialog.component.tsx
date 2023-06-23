@@ -67,7 +67,7 @@ const DOIConfirmDialog: React.FC<DOIConfirmDialogProps> = (
               ) : isMintError ? (
                 <Mark visible isCross size={100} colour="#a91b2e" />
               ) : isMintLoading ? (
-                <CircularProgress size={100} />
+                <CircularProgress size={100} color="secondary" />
               ) : null}
             </Grid>
 
