@@ -409,28 +409,21 @@ export const isCartMintable = async (
     if (cartItem.entityType === 'dataset') datasets.push(cartItem.entityId);
     if (cartItem.entityType === 'datafile') datafiles.push(cartItem.entityId);
   });
-  const { status } = await axios
-    .post(
-      `${doiMinterUrl}/ismintable`,
-      {
-        ...(investigations.length > 0
-          ? { investigations: { ids: investigations } }
-          : {}),
-        ...(datasets.length > 0 ? { datasets: { ids: datasets } } : {}),
-        ...(datafiles.length > 0 ? { datafiles: { ids: datafiles } } : {}),
+  const { status } = await axios.post(
+    `${doiMinterUrl}/ismintable`,
+    {
+      ...(investigations.length > 0
+        ? { investigations: { ids: investigations } }
+        : {}),
+      ...(datasets.length > 0 ? { datasets: { ids: datasets } } : {}),
+      ...(datafiles.length > 0 ? { datafiles: { ids: datafiles } } : {}),
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
       },
-      {
-        headers: {
-          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
-        },
-      }
-    )
-    .catch((error) => {
-      // catch 403 error as it's not really an error!
-      if (axios.isAxiosError(error) && error.response?.status === 403)
-        return error.response;
-      throw error;
-    });
+    }
+  );
 
   return status === 200;
 };

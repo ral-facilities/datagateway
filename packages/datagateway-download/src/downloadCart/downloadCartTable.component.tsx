@@ -63,8 +63,11 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   const { mutate: removeAllDownloadCartItems, isLoading: removingAll } =
     useRemoveAllFromCart();
   const { data, isFetching: dataLoading } = useCart();
-  const { data: mintable, isLoading: cartMintabilityLoading } =
-    useIsCartMintable(data);
+  const {
+    data: mintable,
+    isLoading: cartMintabilityLoading,
+    error: mintableError,
+  } = useIsCartMintable(data);
 
   const fileCountQueries = useDatafileCounts(data);
   const sizeQueries = useSizes(data);
@@ -166,6 +169,31 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
 
     return filteredData?.sort(sortCartItems);
   }, [data, sort, filters, sizeQueries, fileCountQueries]);
+
+  const unmintableEntityIDs: number[] | null | undefined = React.useMemo(
+    () =>
+      mintableError?.response?.data.detail &&
+      JSON.parse(
+        mintableError.response.data.detail.substring(
+          mintableError.response.data.detail.indexOf('['),
+          mintableError.response.data.detail.lastIndexOf(']') + 1
+        )
+      ),
+    [mintableError]
+  );
+
+  const unmintableRowIDs = React.useMemo(() => {
+    if (unmintableEntityIDs && sortedAndFilteredData) {
+      return unmintableEntityIDs.map((id) =>
+        sortedAndFilteredData.findIndex((entity) => entity.entityId === id)
+      );
+    } else {
+      return [];
+    }
+  }, [unmintableEntityIDs, sortedAndFilteredData]);
+
+  const [generateDOIButtonHover, setGenerateDOIButtonHover] =
+    React.useState(false);
 
   const columns: ColumnType[] = React.useMemo(
     () => [
@@ -329,6 +357,20 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                   }${dataLoading ? ' - 4px' : ''} - (1.75 * 0.875rem + 12px))`,
                   minHeight: 230,
                   overflowX: 'auto',
+                  // handle the highlight of unmintable entities
+                  ...(generateDOIButtonHover && {
+                    '& [role="rowgroup"] [role="row"]': Object.assign(
+                      {},
+                      ...unmintableRowIDs.map((id) => ({
+                        [`&:nth-of-type(${id + 1})`]: {
+                          bgcolor: 'error.main',
+                          '& [role="gridcell"] *': {
+                            color: 'error.contrastText',
+                          },
+                        },
+                      }))
+                    ),
+                  }),
                 }}
               >
                 <Table
@@ -502,7 +544,10 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                       }
                     >
                       {/* need this span so the tooltip works when the button is disabled */}
-                      <span>
+                      <span
+                        onMouseEnter={() => setGenerateDOIButtonHover(true)}
+                        onMouseLeave={() => setGenerateDOIButtonHover(false)}
+                      >
                         <Button
                           className="tour-download-mint-button"
                           id="generateDOIButton"

@@ -137,7 +137,7 @@ export const useRemoveAllFromCart = (): UseMutationResult<
       },
       retry: (failureCount, error) => {
         // if we get 431 we know this is an intermittent error so retry
-        if (error.code === '431' && failureCount < 3) {
+        if (error.response?.status === 431 && failureCount < 3) {
           return true;
         } else {
           return false;
@@ -171,7 +171,7 @@ export const useRemoveEntityFromCart = (): UseMutationResult<
       },
       retry: (failureCount, error) => {
         // if we get 431 we know this is an intermittent error so retry
-        if (error.code === '431' && failureCount < 3) {
+        if (error.response?.status === 431 && failureCount < 3) {
           return true;
         } else {
           return false;
@@ -485,7 +485,7 @@ export const useDownloadOrRestoreDownload = (): UseMutationResult<
 
       retry: (failureCount, error) => {
         // if we get 431 we know this is an intermittent error so retry
-        return error.code === '431' && failureCount < 3;
+        return error.response?.status === 431 && failureCount < 3;
       },
     }
   );
@@ -791,7 +791,7 @@ export const useDownloadPercentageComplete = <T = DownloadProgress>({
  */
 export const useIsCartMintable = (
   cart: DownloadCartItem[] | undefined
-): UseQueryResult<boolean, AxiosError> => {
+): UseQueryResult<boolean, AxiosError<{ detail: string }>> => {
   const settings = React.useContext(DownloadSettingsContext);
   const { doiMinterUrl } = settings;
 
@@ -804,7 +804,7 @@ export const useIsCartMintable = (
     },
     {
       onError: (error) => {
-        log.error(error);
+        if (error.response?.status !== 403) log.error(error);
         if (error.response?.status === 401) {
           document.dispatchEvent(
             new CustomEvent(MicroFrontendId, {
@@ -822,7 +822,16 @@ export const useIsCartMintable = (
           );
         }
       },
-      staleTime: Infinity,
+      retry: (failureCount, error) => {
+        // if we get 403 we know this is an legit response from the backend so don't bother retrying
+        // all other errors use default retry behaviour
+        if (error.response?.status === 403 || failureCount >= 3) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      refetchOnWindowFocus: false,
       enabled: typeof doiMinterUrl !== 'undefined',
     }
   );

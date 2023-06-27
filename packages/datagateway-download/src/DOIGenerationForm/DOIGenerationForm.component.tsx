@@ -50,7 +50,7 @@ const DOIGenerationForm: React.FC = () => {
   const { data: users } = useCartUsers(cart);
   const { refetch: checkUser } = useCheckUser(username);
   const {
-    mutateAsync: mintCart,
+    mutate: mintCart,
     status: mintingStatus,
     data: mintData,
     error: mintError,
