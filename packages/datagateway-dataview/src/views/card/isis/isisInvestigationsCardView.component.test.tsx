@@ -32,7 +32,7 @@ describe('ISIS Investigations - Card View', () => {
   let replaceSpy: jest.SpyInstance;
   let user: UserEvent;
 
-  const renderComponent = (studyHierarchy = false): RenderResult =>
+  const renderComponent = (dataPublication = false): RenderResult =>
     render(
       <Provider store={mockStore(state)}>
         <Router history={history}>
@@ -46,7 +46,7 @@ describe('ISIS Investigations - Card View', () => {
             <ISISInvestigationsCardView
               instrumentId="1"
               instrumentChildId="1"
-              studyHierarchy={studyHierarchy}
+              dataPublication={dataPublication}
             />
           </QueryClientProvider>
         </Router>
@@ -62,8 +62,29 @@ describe('ISIS Investigations - Card View', () => {
         visitId: '1',
         startDate: '2022-01-01',
         endDate: '2022-01-03',
-        studyInvestigations: [
-          { id: 1, study: { id: 1, pid: 'study pid' }, name: 'study 1' },
+        dataCollectionInvestigations: [
+          {
+            id: 1,
+            investigation: {
+              id: 1,
+              title: 'Test 1',
+              name: 'Test 1',
+              visitId: '1',
+            },
+            dataCollection: {
+              id: 11,
+              dataPublications: [
+                {
+                  id: 12,
+                  pid: 'Data.Publication.Pid',
+                  description: 'Data Publication description',
+                  modTime: '2019-06-10',
+                  createTime: '2019-06-11',
+                  title: 'Data Publication',
+                },
+              ],
+            },
+          },
         ],
         investigationUsers: [
           {
@@ -94,17 +115,6 @@ describe('ISIS Investigations - Card View', () => {
     axios.get = jest
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
-        if (
-          /\/instruments\/1\/facilitycycles\/1\/investigations\/count$/.test(
-            url
-          )
-        ) {
-          // isis investigation count query
-          return Promise.resolve({
-            data: 1,
-          });
-        }
-
         if (/\/investigations\/count$/.test(url)) {
           // investigation count query
           return Promise.resolve({
@@ -152,11 +162,9 @@ describe('ISIS Investigations - Card View', () => {
     ).toBeInTheDocument();
     expect(firstCard.getByText('investigations.name:')).toBeInTheDocument();
     expect(firstCard.getByText('Test 1')).toBeInTheDocument();
-    expect(firstCard.getByText('investigations.doi:')).toBeInTheDocument();
-    expect(firstCard.getByRole('link', { name: 'study pid' })).toHaveAttribute(
-      'href',
-      'https://doi.org/study pid'
-    );
+    expect(
+      firstCard.getByRole('link', { name: 'Data.Publication.Pid' })
+    ).toHaveAttribute('href', 'https://doi.org/Data.Publication.Pid');
     expect(
       firstCard.getByText('investigations.details.size:')
     ).toBeInTheDocument();
@@ -179,17 +187,6 @@ describe('ISIS Investigations - Card View', () => {
     axios.get = jest
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
-        if (
-          /\/instruments\/1\/facilitycycles\/1\/investigations\/count$/.test(
-            url
-          )
-        ) {
-          // isis investigation count query
-          return Promise.resolve({
-            data: 0,
-          });
-        }
-
         if (/\/investigations\/count$/.test(url)) {
           // investigation count query
           return Promise.resolve({
@@ -239,7 +236,7 @@ describe('ISIS Investigations - Card View', () => {
       await screen.findByRole('link', { name: 'Test title 1' })
     ).toHaveAttribute(
       'href',
-      '/browseStudyHierarchy/instrument/1/study/1/investigation/1'
+      '/browseDataPublications/instrument/1/dataPublication/1/investigation/1'
     );
   });
 
@@ -294,13 +291,6 @@ describe('ISIS Investigations - Card View', () => {
     expect(history.location.search).toBe('?');
 
     cleanupDatePickerWorkaround();
-  });
-
-  it('displays DOI and renders the expected Link ', async () => {
-    renderComponent();
-    expect(
-      await screen.findByRole('link', { name: 'study pid' })
-    ).toHaveAttribute('href', 'https://doi.org/study pid');
   });
 
   it('displays the correct user as the PI ', async () => {

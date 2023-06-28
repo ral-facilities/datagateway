@@ -190,28 +190,32 @@ const InvestigationDetailsPanel = (
               </b>
             </Typography>
           </Grid>
-          {investigationData.studyInvestigations &&
-            investigationData.studyInvestigations.map((studyInvestigation) => {
-              if (studyInvestigation.study) {
-                return (
-                  <Grid key={studyInvestigation.id} item xs>
-                    <Typography variant="overline">
-                      {t('investigations.details.pid')}
-                    </Typography>
-                    <Typography>
-                      <MuiLink
-                        href={`https://doi.org/${studyInvestigation.study.pid}`}
-                        data-testid="investigation-details-panel-pid-link"
-                      >
-                        {studyInvestigation.study.pid}
-                      </MuiLink>
-                    </Typography>
-                  </Grid>
-                );
-              } else {
-                return null;
+          {/* TODO: when datapublications are created for studies, need to pick the study datapublication */}
+          {investigationData.dataCollectionInvestigations?.[0]?.dataCollection
+            ?.dataPublications &&
+            investigationData.dataCollectionInvestigations[0].dataCollection.dataPublications.map(
+              (dataPublication) => {
+                if (dataPublication) {
+                  return (
+                    <Grid key={dataPublication.id} item xs>
+                      <Typography variant="overline">
+                        {t('investigations.details.pid')}
+                      </Typography>
+                      <Typography>
+                        <MuiLink
+                          href={`https://doi.org/${dataPublication.pid}`}
+                          data-testid="investigation-details-panel-pid-link"
+                        >
+                          {dataPublication.pid}
+                        </MuiLink>
+                      </Typography>
+                    </Grid>
+                  );
+                } else {
+                  return null;
+                }
               }
-            })}
+            )}
           <Grid item xs>
             <Typography variant="overline">
               {t('investigations.details.doi')}

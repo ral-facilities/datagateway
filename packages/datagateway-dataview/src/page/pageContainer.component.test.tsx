@@ -343,7 +343,9 @@ describe('PageContainer - Tests', () => {
     (useQueryClient as jest.Mock).mockReturnValue({
       getQueryData: jest.fn(),
     });
-    history.replace(`${paths.studyHierarchy.landing.isisStudyLanding}`);
+    history.replace(
+      `${paths.dataPublications.landing.isisDataPublicationLanding}`
+    );
 
     renderComponent();
 
@@ -375,7 +377,7 @@ describe('PageContainer - Tests', () => {
   });
 
   it('displays warning label when browsing study hierarchy', async () => {
-    history.replace(paths.studyHierarchy.toggle.isisStudy);
+    history.replace(paths.dataPublications.toggle.isisDataPublication);
     const response = { username: 'SomePerson' };
     (readSciGatewayToken as jest.Mock).mockReturnValueOnce(response);
 

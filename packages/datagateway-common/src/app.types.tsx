@@ -2,6 +2,18 @@
 export const MicroFrontendId = 'scigateway';
 export const MicroFrontendToken = `${MicroFrontendId}:token`;
 
+export const FACILITY_NAME = {
+  isis: 'isis',
+  dls: 'dls',
+
+  /**
+   * Used for test ICATs.
+   */
+  lils: 'LILS',
+} as const;
+
+export type FacilityName = typeof FACILITY_NAME[keyof typeof FACILITY_NAME];
+
 // TODO: type entities properly; DownloadCartItem does not
 //       include string indexing due to DownloadCartTableItem
 export interface Investigation {
@@ -15,13 +27,14 @@ export interface Investigation {
   releaseDate?: string;
   summary?: string;
   investigationInstruments?: InvestigationInstrument[];
+  dataCollectionInvestigations?: DataCollectionInvestigation[];
+  investigationFacilityCycles?: InvestigationFacilityCycle[];
   size?: number;
   datasetCount?: number;
   investigationUsers?: InvestigationUser[];
   samples?: Sample[];
   parameters?: DatafileParameter[];
   publications?: Publication[];
-  studyInvestigations?: StudyInvestigation[];
   facility?: Facility;
   datasets?: Dataset[];
   type?: InvestigationType;
@@ -101,6 +114,12 @@ export interface Publication {
   fullReference: string;
 }
 
+export interface InvestigationFacilityCycle {
+  id: number;
+  investigation?: Investigation;
+  facilityCycle?: FacilityCycle;
+}
+
 export interface FacilityCycle {
   id: number;
   name: string;
@@ -122,22 +141,46 @@ export interface InvestigationType {
   description?: string;
 }
 
-export interface StudyInvestigation {
+export interface DataCollectionDatafile {
   id: number;
-  study?: Study;
-  investigation?: Investigation;
+  datafile: Datafile;
 }
 
-export interface Study {
+export interface DataCollectionDataset {
+  id: number;
+  dataset: Dataset;
+}
+
+export interface DataCollectionInvestigation {
+  id: number;
+  dataCollection: DataCollection;
+  investigation: Investigation;
+}
+
+export interface DataCollection {
+  id: number;
+  dataCollectionInvestigations?: DataCollectionInvestigation[];
+  dataCollectionDatasets?: DataCollectionDataset[];
+  dataCollectionDatafiles?: DataCollectionDatafile[];
+  dataPublications?: DataPublication[];
+}
+
+export interface DataPublicationUser {
+  id: number;
+  contributorType: string;
+  fullName: string;
+}
+
+export interface DataPublication {
   id: number;
   pid: string;
-  name: string;
+  title: string;
   modTime: string;
   createTime: string;
   description?: string;
-  startDate?: string;
-  endDate?: string;
-  studyInvestigations?: StudyInvestigation[];
+  publicationDate?: string;
+  users?: DataPublicationUser[];
+  content?: DataCollection;
 }
 
 interface InstrumentScientist {
@@ -256,6 +299,10 @@ export interface SearchInstrumentSource {
   'instrument.fullName'?: string;
 }
 
+export interface SearchFacilityCycleSource {
+  'facilityCycle.id': number;
+}
+
 export interface SearchResultSource {
   id: number;
   name: string;
@@ -268,6 +315,7 @@ export interface SearchResultSource {
   summary?: string;
   location?: string;
   investigationinstrument?: SearchInstrumentSource[];
+  investigationfacilitycycle?: SearchFacilityCycleSource[];
   fileSize?: number;
   'dataset.id'?: number;
   'dataset.name'?: string;
@@ -285,8 +333,7 @@ export type ICATEntity =
   | Datafile
   | Instrument
   | FacilityCycle
-  | StudyInvestigation
-  | Study;
+  | DataPublication;
 
 export type Entity = (
   | ICATEntity
@@ -308,7 +355,7 @@ export const EntityTypes: string[] = [
   'facilityCycle',
   'instrument',
   'facility',
-  'study',
+  'dataPublication',
 ];
 
 // TODO: type these properly

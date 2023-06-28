@@ -96,20 +96,6 @@ describe('Datafile search table component', () => {
       });
     }
 
-    if (/\/facilitycycles$/.test(url)) {
-      // fetch all facility cycles
-      return Promise.resolve({
-        data: [
-          {
-            id: 4,
-            name: 'facility cycle name',
-            startDate: '2000-06-10',
-            endDate: '2020-06-11',
-          },
-        ],
-      });
-    }
-
     if (/\/datafiles$/.test(url)) {
       return Promise.resolve({
         data: [
@@ -164,6 +150,11 @@ describe('Datafile search table component', () => {
         {
           'instrument.id': 5,
           'instrument.name': 'LARMOR',
+        },
+      ],
+      investigationfacilitycycle: [
+        {
+          'facilityCycle.id': 6,
         },
       ],
     };
@@ -702,6 +693,12 @@ describe('Datafile search table component', () => {
   it('renders DLS link correctly', async () => {
     renderComponent('dls');
 
+    expect(
+      await screen.findByRole('link', { name: 'Datafile test name' })
+    ).toHaveAttribute(
+      'href',
+      '/browse/proposal/Investigation test name/investigation/3/dataset/2/datafile'
+    );
     const datasetColIndex = await findColumnIndexByName('datafiles.name');
 
     const row = await findRowAt(0);
@@ -713,7 +710,7 @@ describe('Datafile search table component', () => {
       within(datasetLinkCell).getByRole('link', { name: 'Datafile test name' })
     ).toHaveAttribute(
       'href',
-      '/browse/proposal/Dataset test name/investigation/3/dataset/2/datafile'
+      '/browse/proposal/Investigation test name/investigation/3/dataset/2/datafile'
     );
   });
 
@@ -731,7 +728,7 @@ describe('Datafile search table component', () => {
       within(datasetLinkCell).getByRole('link', { name: 'Datafile test name' })
     ).toHaveAttribute(
       'href',
-      '/browse/instrument/5/facilityCycle/4/investigation/3/dataset/2/datafile'
+      '/browse/instrument/5/facilityCycle/6/investigation/3/dataset/2/datafile'
     );
   });
 
@@ -761,66 +758,7 @@ describe('Datafile search table component', () => {
   });
 
   it('does not render ISIS link when facilityCycleId cannot be found', async () => {
-    axios.get = jest
-      .fn()
-      .mockImplementation((url: string, _): Promise<Partial<AxiosResponse>> => {
-        if (/\/facilitycycles/.test(url)) {
-          return Promise.resolve({
-            data: [
-              {
-                id: 4,
-                name: 'facility cycle name',
-                startDate: '2023-06-10',
-                endDate: '2024-06-11',
-              },
-            ],
-          });
-        }
-
-        return mockAxiosGet(url, _);
-      });
-
-    renderComponent('isis');
-
-    const datasetColIndex = await findColumnIndexByName('datafiles.name');
-
-    const row = await findRowAt(0);
-    const datasetLinkCell = await findCellInRow(row, {
-      columnIndex: datasetColIndex,
-    });
-
-    await waitFor(() => {
-      expect(
-        within(datasetLinkCell).queryByRole('link', {
-          name: 'Datafile test name',
-        })
-      ).toBeNull();
-    });
-
-    expect(
-      within(datasetLinkCell).getByText('Datafile test name')
-    ).toBeInTheDocument();
-  });
-
-  it('does not render ISIS link when facilityCycleId has incompatible dates', async () => {
-    axios.get = jest
-      .fn()
-      .mockImplementation((url: string, _): Promise<Partial<AxiosResponse>> => {
-        if (/\/facilitycycles/.test(url)) {
-          return Promise.resolve({
-            data: [
-              {
-                id: 2,
-                name: 'facility cycle name',
-                startDate: '2020-06-11',
-                endDate: '2000-06-10',
-              },
-            ],
-          });
-        }
-
-        return mockAxiosGet(url, _);
-      });
+    delete rowData.investigationfacilitycycle;
 
     renderComponent('isis');
 
@@ -858,6 +796,11 @@ describe('Datafile search table component', () => {
         {
           'instrument.id': 5,
           'instrument.name': 'LARMOR',
+        },
+      ],
+      investigationfacilitycycle: [
+        {
+          'facilityCycle.id': 6,
         },
       ],
     };
@@ -902,6 +845,11 @@ describe('Datafile search table component', () => {
         {
           'instrument.id': 5,
           'instrument.name': 'LARMOR',
+        },
+      ],
+      investigationfacilitycycle: [
+        {
+          'facilityCycle.id': 6,
         },
       ],
     };

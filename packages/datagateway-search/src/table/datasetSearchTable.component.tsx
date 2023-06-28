@@ -1,27 +1,29 @@
-import React from 'react';
 import {
   type ColumnType,
-  type Dataset,
   DatasetDetailsPanel,
   DLSDatasetDetailsPanel,
-  type FacilityCycle,
   ISISDatasetDetailsPanel,
   parseSearchToQuery,
   SearchFilter,
   type SearchResponse,
   type SearchResultSource,
+  buildDatafileTableUrlForDataset,
+  buildDatasetLandingUrl,
+  buildDatasetTableUrlForInvestigation,
+  buildInvestigationLandingUrl,
+  FACILITY_NAME,
+  isLandingPageSupportedForHierarchy,
   Table,
   tableLink,
   useAddToCart,
-  useAllFacilityCycles,
   useCart,
   useLuceneSearchInfinite,
   useRemoveFromCart,
   useSort,
+  formatBytes,
 } from 'datagateway-common';
-import type { IndexRange, TableCellProps } from 'react-virtualized';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import type { StateType } from '../state/app.types';
 import { Grid, Paper, Typography } from '@mui/material';
@@ -31,6 +33,8 @@ import { facetClassificationFromSearchResponses } from '../facet/facet';
 import useFacetFilters from '../facet/useFacetFilters';
 import SelectedFilterChips from '../facet/components/selectedFilterChips.component';
 import { useSearchResultCounter } from '../searchTabs/useSearchResultCounter';
+import { useHistory, useLocation } from 'react-router-dom';
+import type { IndexRange, TableCellProps } from 'react-virtualized';
 
 interface DatasetTableProps {
   hierarchy: string;
@@ -39,8 +43,6 @@ interface DatasetTableProps {
 const DatasetSearchTable = ({
   hierarchy,
 }: DatasetTableProps): React.ReactElement => {
-  const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
-
   const location = useLocation();
   const { push } = useHistory();
   const queryParams = React.useMemo(
@@ -142,134 +144,6 @@ const DatasetSearchTable = ({
     removeFacetFilter({ dimension, filterValue, applyImmediately: true });
   };
 
-  const dlsLinkURL = (
-    datasetData: SearchResultSource,
-    linkType = 'dataset'
-  ): string | null => {
-    if (datasetData['investigation.name'] && datasetData['investigation.id']) {
-      return linkType === 'investigation'
-        ? `/browse/proposal/${datasetData['investigation.name']}/investigation/${datasetData['investigation.id']}/dataset`
-        : `/browse/proposal/${datasetData['investigation.name']}/investigation/${datasetData['investigation.id']}/dataset/${datasetData.id}/datafile`;
-    }
-    return null;
-  };
-
-  const dlsLink = React.useCallback(
-    (
-      datasetData: SearchResultSource,
-      linkType = 'dataset'
-    ): React.ReactElement | string => {
-      const linkURL = dlsLinkURL(datasetData, linkType);
-
-      if (datasetData['investigation.title'] && linkURL) {
-        return linkType === 'investigation'
-          ? tableLink(linkURL, datasetData['investigation.title'])
-          : tableLink(linkURL, datasetData.name);
-      }
-      return linkType === 'investigation' ? '' : datasetData.name;
-    },
-    []
-  );
-
-  const isisLinkURL = React.useCallback(
-    (datasetData: SearchResultSource, linkType = 'dataset') => {
-      let instrumentId;
-      let investigationId;
-      let facilityCycleId;
-      if (datasetData.investigationinstrument?.length) {
-        instrumentId = datasetData.investigationinstrument[0]['instrument.id'];
-        investigationId = datasetData['investigation.id'];
-      } else {
-        return null;
-      }
-
-      if (facilityCycles?.length && datasetData['investigation.startDate']) {
-        const investigationDate = new Date(
-          datasetData['investigation.startDate']
-        ).toISOString();
-        const filteredFacilityCycles: FacilityCycle[] = facilityCycles?.filter(
-          (facilityCycle: FacilityCycle) =>
-            facilityCycle.startDate &&
-            facilityCycle.endDate &&
-            investigationDate >= facilityCycle.startDate &&
-            investigationDate <= facilityCycle.endDate
-        );
-        if (filteredFacilityCycles.length) {
-          facilityCycleId = filteredFacilityCycles[0].id;
-        }
-      }
-
-      if (facilityCycleId) {
-        return linkType === 'investigation'
-          ? `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${investigationId}`
-          : `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${investigationId}/dataset/${datasetData.id}`;
-      }
-      return null;
-    },
-    [facilityCycles]
-  );
-
-  const isisLink = React.useCallback(
-    (datasetData: SearchResultSource, linkType = 'dataset') => {
-      const linkURL = isisLinkURL(datasetData, linkType);
-
-      if (datasetData['investigation.title'] && linkURL) {
-        return linkType === 'investigation'
-          ? tableLink(linkURL, datasetData['investigation.title'])
-          : tableLink(linkURL, datasetData.name);
-      } else return linkType === 'investigation' ? '' : datasetData.name;
-    },
-    [isisLinkURL]
-  );
-
-  const genericLinkURL = React.useCallback(
-    (datasetData: SearchResultSource, linkType = 'dataset'): string | null => {
-      if (datasetData['investigation.id']) {
-        return linkType === 'investigation'
-          ? `/browse/investigation/${datasetData['investigation.id']}/dataset`
-          : `/browse/investigation/${datasetData['investigation.id']}/dataset/${datasetData.id}/datafile`;
-      }
-      return null;
-    },
-    []
-  );
-
-  const genericLink = React.useCallback(
-    (
-      datasetData: SearchResultSource,
-      linkType = 'dataset'
-    ): React.ReactElement | string => {
-      const linkURL = genericLinkURL(datasetData, linkType);
-      if (datasetData['investigation.title'] && linkURL) {
-        return linkType === 'investigation'
-          ? tableLink(linkURL, datasetData['investigation.title'])
-          : tableLink(linkURL, datasetData.name);
-      }
-      return linkType === 'investigation' ? '' : datasetData.name;
-    },
-    [genericLinkURL]
-  );
-
-  const hierarchyLinkURL = React.useMemo(() => {
-    if (hierarchy === 'dls') {
-      return dlsLinkURL;
-    } else if (hierarchy === 'isis') {
-      return isisLinkURL;
-    } else {
-      return genericLinkURL;
-    }
-  }, [genericLinkURL, hierarchy, isisLinkURL]);
-
-  const hierarchyLink = React.useMemo(() => {
-    if (hierarchy === 'dls') {
-      return dlsLink;
-    } else if (hierarchy === 'isis') {
-      return isisLink;
-    } else {
-      return genericLink;
-    }
-  }, [dlsLink, genericLink, hierarchy, isisLink]);
-
   const selectedRows = React.useMemo(
     () =>
       cartItems
@@ -291,25 +165,56 @@ const DatasetSearchTable = ({
         dataKey: 'name',
         cellContentRenderer: (cellProps: TableCellProps) => {
           const datasetData = cellProps.rowData as SearchResultSource;
-          return hierarchyLink(datasetData);
+          if (
+            !datasetData['investigation.id'] ||
+            !datasetData['investigation.name']
+          )
+            return datasetData.name;
+          const dataset = {
+            id: datasetData.id,
+            name: datasetData.name,
+            investigation: {
+              id: datasetData['investigation.id'],
+              name: datasetData['investigation.name'],
+              instrumentId:
+                datasetData.investigationinstrument?.[0]?.['instrument.id'],
+              facilityCycleId:
+                datasetData.investigationfacilitycycle?.[0]?.[
+                  'facilityCycle.id'
+                ],
+            },
+          };
+          const url = isLandingPageSupportedForHierarchy(hierarchy)
+            ? buildDatasetLandingUrl(dataset)
+            : buildDatafileTableUrlForDataset({
+                dataset,
+                facilityName: hierarchy,
+              });
+          return url ? tableLink(url, dataset.name) : dataset.name;
         },
         disableSort: true,
       },
       {
         label:
-          hierarchy === 'isis'
+          hierarchy === FACILITY_NAME.isis
             ? t('datasets.size')
             : t('datasets.datafile_count'),
         dataKey: hierarchy === 'isis' ? 'size' : 'datafileCount',
         cellContentRenderer: (cellProps: TableCellProps): JSX.Element => {
           if (hierarchy === 'isis' && cellProps.rowData.fileSize) {
-            return <>formatBytes(cellProps.rowData.fileSize)</>;
+            return <>{formatBytes(cellProps.rowData.fileSize)}</>;
           }
           if (hierarchy === 'isis') {
-            return <DatasetSizeCell dataset={cellProps.rowData as Dataset} />;
+            return (
+              <DatasetSizeCell
+                dataset={cellProps.rowData as SearchResultSource}
+              />
+            );
           }
           return (
-            <DatasetDatafileCountCell dataset={cellProps.rowData as Dataset} />
+            <DatasetDatafileCountCell
+              dataset={cellProps.rowData as SearchResultSource}
+            />
           );
         },
         disableSort: true,
@@ -319,7 +224,32 @@ const DatasetSearchTable = ({
         dataKey: 'investigation.title',
         cellContentRenderer: (cellProps: TableCellProps) => {
           const datasetData = cellProps.rowData as SearchResultSource;
-          return hierarchyLink(datasetData, 'investigation');
+          if (
+            !datasetData['investigation.id'] ||
+            !datasetData['investigation.name'] ||
+            !datasetData['investigation.title']
+          )
+            return '';
+
+          const investigation = {
+            id: datasetData['investigation.id'],
+            name: datasetData['investigation.name'],
+            title: datasetData['investigation.title'],
+            instrumentId:
+              datasetData.investigationinstrument?.[0]?.['instrument.id'],
+            facilityCycleId:
+              datasetData.investigationfacilitycycle?.[0]?.['facilityCycle.id'],
+          };
+
+          const link = isLandingPageSupportedForHierarchy(hierarchy)
+            ? buildInvestigationLandingUrl(investigation)
+            : buildDatasetTableUrlForInvestigation({
+                investigation,
+                facilityName: hierarchy,
+              });
+          return link
+            ? tableLink(link, investigation.title)
+            : investigation.title;
         },
         disableSort: true,
       },
@@ -344,43 +274,61 @@ const DatasetSearchTable = ({
         },
       },
     ],
-    [t, hierarchy, hierarchyLink]
+    [t, hierarchy]
   );
 
   const detailsPanel = React.useCallback(
     ({ rowData, detailsPanelResize }) => {
-      if (hierarchy === 'isis') {
-        const datafilesURL = hierarchyLinkURL(rowData as SearchResultSource);
-        return (
-          <ISISDatasetDetailsPanel
-            rowData={rowData}
-            detailsPanelResize={detailsPanelResize}
-            viewDatafiles={
-              datafilesURL
-                ? (id: number) => {
-                    push(datafilesURL);
-                  }
-                : undefined
-            }
-          />
-        );
-      } else if (hierarchy === 'dls') {
-        return (
-          <DLSDatasetDetailsPanel
-            rowData={rowData}
-            detailsPanelResize={detailsPanelResize}
-          />
-        );
-      } else {
-        return (
-          <DatasetDetailsPanel
-            rowData={rowData}
-            detailsPanelResize={detailsPanelResize}
-          />
-        );
+      switch (hierarchy) {
+        case FACILITY_NAME.isis:
+          const dataset = rowData as SearchResultSource;
+          let url: string | null = null;
+          if (dataset['investigation.id'] && dataset['investigation.name']) {
+            const formattedDataset = {
+              id: dataset.id,
+              name: dataset.name,
+              investigation: {
+                id: dataset['investigation.id'],
+                name: dataset['investigation.name'],
+                instrumentId:
+                  dataset.investigationinstrument?.[0]?.['instrument.id'],
+                facilityCycleId:
+                  dataset.investigationfacilitycycle?.[0]?.['facilityCycle.id'],
+              },
+            };
+            url = buildDatafileTableUrlForDataset({
+              dataset: formattedDataset,
+              facilityName: hierarchy,
+            });
+          }
+          return (
+            <ISISDatasetDetailsPanel
+              rowData={rowData}
+              detailsPanelResize={detailsPanelResize}
+              viewDatafiles={() => {
+                if (url) push(url);
+              }}
+            />
+          );
+
+        case FACILITY_NAME.dls:
+          return (
+            <DLSDatasetDetailsPanel
+              rowData={rowData}
+              detailsPanelResize={detailsPanelResize}
+            />
+          );
+
+        default:
+          return (
+            <DatasetDetailsPanel
+              rowData={rowData}
+              detailsPanelResize={detailsPanelResize}
+            />
+          );
       }
     },
-    [hierarchy, hierarchyLinkURL, push]
+    [hierarchy, push]
   );
 
   return (

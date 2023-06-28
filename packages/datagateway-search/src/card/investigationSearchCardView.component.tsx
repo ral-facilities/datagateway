@@ -11,8 +11,8 @@ import {
   CardView,
   DLSVisitDetailsPanel,
   DownloadButton,
-  FacilityCycle,
   formatBytes,
+  FACILITY_NAME,
   formatCountOrSize,
   Investigation,
   InvestigationDetailsPanel,
@@ -22,7 +22,6 @@ import {
   SearchResponse,
   SearchResultSource,
   tableLink,
-  useAllFacilityCycles,
   useInvestigationsDatasetCount,
   useInvestigationSizes,
   useLuceneSearchInfinite,
@@ -31,9 +30,9 @@ import {
   usePushResults,
   useSort,
 } from 'datagateway-common';
+import { buildDatasetTableUrlForInvestigation } from 'datagateway-common/lib/urlBuilders';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory, useLocation } from 'react-router-dom';
 import {
   Grid,
   Link as MuiLink,
@@ -42,6 +41,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useSelector } from 'react-redux';
+import { useHistory, useLocation } from 'react-router-dom';
 import { StateType } from '../state/app.types';
 import { CVCustomFilters } from 'datagateway-common/lib/card/cardView.component';
 import useFacetFilters from '../facet/useFacetFilters';
@@ -79,94 +79,6 @@ const InvestigationCardView = (
   const { filters, sort, page, results, startDate, endDate, restrict } =
     queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
-
-  const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
-
-  const dlsLinkURL = (investigationData: SearchResultSource): string =>
-    `/browse/proposal/${investigationData.name}/investigation/${investigationData.id}/dataset`;
-
-  const isisLinkURL = React.useCallback(
-    (investigationData: SearchResultSource) => {
-      let instrumentId;
-      let facilityCycleId;
-      if (investigationData.investigationinstrument?.length) {
-        instrumentId =
-          investigationData.investigationinstrument[0]['instrument.id'];
-      } else {
-        return null;
-      }
-
-      if (investigationData.startDate && facilityCycles?.length) {
-        const investigationDate = new Date(
-          investigationData.startDate
-        ).toISOString();
-        const filteredFacilityCycles: FacilityCycle[] = facilityCycles?.filter(
-          (facilityCycle: FacilityCycle) =>
-            facilityCycle.startDate &&
-            facilityCycle.endDate &&
-            investigationDate >= facilityCycle.startDate &&
-            investigationDate <= facilityCycle.endDate
-        );
-        if (filteredFacilityCycles.length) {
-          facilityCycleId = filteredFacilityCycles[0].id;
-        }
-      }
-
-      if (facilityCycleId)
-        return `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${investigationData.id}/dataset`;
-      else return null;
-    },
-    [facilityCycles]
-  );
-
-  const isisLink = React.useCallback(
-    (investigationData: SearchResultSource) => {
-      const linkURL = isisLinkURL(investigationData);
-
-      if (linkURL) return tableLink(linkURL, investigationData.title as string);
-      else return investigationData.title;
-    },
-    [isisLinkURL]
-  );
-
-  const genericLinkURL = (investigationData: SearchResultSource): string =>
-    `/browse/investigation/${investigationData.id}/dataset`;
-
-  const hierarchyLinkURL = React.useMemo(() => {
-    if (hierarchy === 'dls') {
-      return dlsLinkURL;
-    } else if (hierarchy === 'isis') {
-      return isisLinkURL;
-    } else {
-      return genericLinkURL;
-    }
-  }, [hierarchy, isisLinkURL]);
-
-  const hierarchyLink = React.useMemo(() => {
-    if (hierarchy === 'dls') {
-      const dlsLink = (
-        investigationData: SearchResultSource
-      ): React.ReactElement =>
-        tableLink(
-          dlsLinkURL(investigationData),
-          investigationData.title as string
-        );
-
-      return dlsLink;
-    } else if (hierarchy === 'isis') {
-      return isisLink;
-    } else {
-      const genericLink = (
-        investigationData: SearchResultSource
-      ): React.ReactElement =>
-        tableLink(
-          genericLinkURL(investigationData),
-          investigationData.title as string
-        );
-
-      return genericLink;
-    }
-  }, [hierarchy, isisLink]);
 
   const handleSort = useSort();
   const pushFilter = usePushInvestigationFilter();
@@ -324,11 +236,25 @@ const InvestigationCardView = (
       // Provide both the dataKey (for tooltip) and content to render.
       dataKey: 'title',
       content: (investigation: SearchResultSource) => {
-        return hierarchyLink(investigation);
+        const url = buildDatasetTableUrlForInvestigation({
+          investigation: {
+            id: investigation.id,
+            name: investigation.name,
+            instrumentId:
+              investigation.investigationinstrument?.[0]?.['instrument.id'],
+            facilityCycleId:
+              investigation.investigationfacilitycycle?.[0]?.[
+                'facilityCycle.id'
+              ],
+          },
+          facilityName: hierarchy,
+        });
+        if (!investigation.title) return '';
+        return url ? tableLink(url, investigation.title) : investigation.title;
       },
       disableSort: true,
     }),
-    [hierarchyLink, t]
+    [hierarchy, t]
   );
 
   const description = React.useMemo(
@@ -446,25 +372,38 @@ const InvestigationCardView = (
 
   const moreInformation = React.useCallback(
     (investigation: SearchResultSource) => {
-      if (hierarchy === 'isis') {
-        const datasetsURL = hierarchyLinkURL(investigation);
-        return (
-          <ISISInvestigationDetailsPanel
-            rowData={investigation}
-            viewDatasets={
-              datasetsURL
-                ? (id: number) => {
-                    push(datasetsURL);
-                  }
-                : undefined
-            }
-          />
-        );
-      } else if (hierarchy === 'dls')
-        return <DLSVisitDetailsPanel rowData={investigation} />;
-      else return <InvestigationDetailsPanel rowData={investigation} />;
+      switch (hierarchy) {
+        case FACILITY_NAME.isis:
+          const url = buildDatasetTableUrlForInvestigation({
+            investigation: {
+              id: investigation.id,
+              name: investigation.name,
+              instrumentId:
+                investigation.investigationinstrument?.[0]?.['instrument.id'],
+              facilityCycleId:
+                investigation.investigationfacilitycycle?.[0][
+                  'facilityCycle.id'
+                ],
+            },
+            facilityName: FACILITY_NAME.isis,
+          });
+          return (
+            <ISISInvestigationDetailsPanel
+              rowData={investigation}
+              viewDatasets={() => {
+                if (url) push(url);
+              }}
+            />
+          );
+
+        case FACILITY_NAME.dls:
+          return <DLSVisitDetailsPanel rowData={investigation} />;
+
+        default:
+          return <InvestigationDetailsPanel rowData={investigation} />;
+      }
     },
-    [hierarchy, hierarchyLinkURL, push]
+    [hierarchy, push]
   );
 
   const removeFilterChip = (

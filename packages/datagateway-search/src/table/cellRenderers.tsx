@@ -6,6 +6,7 @@ import {
   useDatasetSizes,
   useInvestigationDatasetCount,
   useInvestigationSize,
+  SearchResultSource,
 } from 'datagateway-common';
 import React from 'react';
 
@@ -16,7 +17,7 @@ import React from 'react';
 function InvestigationDatasetCountCell({
   investigation,
 }: {
-  investigation: Investigation;
+  investigation: Investigation | SearchResultSource;
 }): JSX.Element {
   const result = useInvestigationDatasetCount({
     investigationId: investigation.id,
@@ -31,7 +32,7 @@ function InvestigationDatasetCountCell({
 function InvestigationSizeCell({
   investigation,
 }: {
-  investigation: Investigation;
+  investigation: Investigation | SearchResultSource;
 }): JSX.Element {
   const result = useInvestigationSize(investigation.id, { enabled: true });
   return <>{formatCountOrSize(result, true)}</>;
@@ -44,7 +45,7 @@ function InvestigationSizeCell({
 function DatasetDatafileCountCell({
   dataset,
 }: {
-  dataset: Dataset;
+  dataset: Dataset | SearchResultSource;
 }): JSX.Element {
   const result = useDatasetsDatafileCount(dataset);
   return <>{formatCountOrSize(result[0])}</>;

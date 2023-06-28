@@ -9,11 +9,14 @@ describe('DLS - MyData Table', () => {
     beforeEach(() => {
       cy.intercept('**/investigations/count').as('getInvestigationCount');
       cy.intercept('**/investigations?*').as('getInvestigations');
-      cy.login({
-        username: 'root',
-        password: 'pw',
-        mechanism: 'simple',
-      });
+      cy.login(
+        {
+          username: 'root',
+          password: 'pw',
+          mechanism: 'simple',
+        },
+        'Chris481'
+      );
       cy.visit('/my-data/DLS').wait('@getInvestigations');
     });
 
@@ -30,13 +33,13 @@ describe('DLS - MyData Table', () => {
       cy.url().should('include', 'filters');
 
       cy.url().then((url) => {
-        cy.get('[aria-rowcount="1"]').should('exist');
-        cy.get('input[id="Title-filter"]').type('analysis');
+        cy.get('[aria-rowcount="2"]').should('exist');
+        cy.get('input[id="Title-filter"]').type('star');
 
         cy.wait('@getInvestigations');
 
         cy.get('[aria-rowcount="1"]').should('exist');
-        cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('70');
+        cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('72');
 
         cy.get('[data-testid="clear-filters-button"]').click();
         cy.url().should('eq', url);
@@ -48,7 +51,7 @@ describe('DLS - MyData Table', () => {
 
       cy.location('pathname').should(
         'eq',
-        '/browse/proposal/INVESTIGATION%201/investigation/1/dataset'
+        '/browse/proposal/INVESTIGATION%2021/investigation/21/dataset'
       );
     });
 
@@ -143,7 +146,7 @@ describe('DLS - MyData Table', () => {
         cy.get('[aria-sort="ascending"]').should('exist');
         cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
         cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-          'Analysis reflect work or hour color maybe.'
+          'Across prepare why go.'
         );
       });
 
@@ -157,7 +160,7 @@ describe('DLS - MyData Table', () => {
           '0'
         );
         cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-          'Analysis reflect work or hour color maybe.'
+          'Star enter wide nearly off.'
         );
       });
 
@@ -171,7 +174,7 @@ describe('DLS - MyData Table', () => {
           '0'
         );
         cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-          'Analysis reflect work or hour color maybe.'
+          'Star enter wide nearly off.'
         );
       });
 
@@ -180,38 +183,39 @@ describe('DLS - MyData Table', () => {
         cy.contains('[role="button"]', 'Instrument').click();
 
         cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-          'Analysis reflect work or hour color maybe.'
+          'Across prepare why go.'
         );
       });
     });
 
     describe('should be able to filter by', () => {
       it('role', () => {
-        cy.get('[aria-rowcount="1"]').should('exist');
+        cy.get('[aria-rowcount="2"]').should('exist');
 
         cy.get('#role-selector').click();
         cy.get('[role="listbox"]')
           .find('[role="option"]')
-          .should('have.length', 2);
+          .should('have.length', 3);
         cy.get('[role="option"][data-value="PI"]').click();
 
         cy.get('[aria-rowcount="1"]').should('exist');
+        cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('72');
 
         cy.get('#role-selector').click();
         cy.get('[role="option"]').first().click();
-        cy.get('[aria-rowcount="1"]').should('exist');
+        cy.get('[aria-rowcount="2"]').should('exist');
       });
 
       it('text', () => {
-        cy.get('[aria-rowcount="1"]').should('exist');
-        cy.get('input[id="Title-filter"]').type('work');
+        cy.get('[aria-rowcount="2"]').should('exist');
+        cy.get('input[id="Title-filter"]').type('star');
 
         cy.get('[aria-rowcount="1"]').should('exist');
-        cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('70');
+        cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('72');
       });
 
       it('date between', () => {
-        cy.get('[aria-rowcount="1"]').should('exist');
+        cy.get('[aria-rowcount="2"]').should('exist');
 
         const date = new Date();
 
@@ -219,15 +223,15 @@ describe('DLS - MyData Table', () => {
           date.toISOString().slice(0, 10)
         );
 
-        cy.get('[aria-rowcount="1"]').should('exist');
+        cy.get('[aria-rowcount="2"]').should('exist');
 
-        cy.get('input[id="Start Date filter from"]').type('2000-04-01');
+        cy.get('input[id="Start Date filter from"]').type('2004-01-01');
 
         cy.get('[aria-rowcount="1"]').should('exist');
       });
 
       it('multiple columns', () => {
-        cy.get('input[id="Start Date filter from"]').first().type('2000-04-01');
+        cy.get('input[id="Start Date filter from"]').first().type('2004-01-01');
 
         cy.get('[aria-rowcount="1"]').should('exist');
 
@@ -254,30 +258,34 @@ describe('DLS - MyData Table', () => {
 
         cy.get('[aria-controls="visit-samples-panel"]').click();
         cy.get('#visit-samples-panel').should('not.have.attr', 'hidden');
-        cy.get('#details-panel').contains('SAMPLE 1').should('be.visible');
+        cy.get('#details-panel').contains('SAMPLE 21').should('be.visible');
 
         cy.get('[aria-controls="visit-users-panel"]').click();
         cy.get('#visit-users-panel').should('not.have.attr', 'hidden');
-        cy.get('#details-panel').contains('Colleen Heath').should('be.visible');
+        cy.get('#details-panel')
+          .contains('Thomas Chambers')
+          .should('be.visible');
 
         cy.get('[aria-controls="visit-publications-panel"]').click();
         cy.get('#visit-publications-panel').should('not.have.attr', 'hidden');
         cy.get('#details-panel').contains(
-          'Throw hope parent. Receive entire soon.'
+          'From central effort glass evidence life.'
         );
       });
 
-      it.skip('when another row is showing details', () => {
-        //Unable to test as each user only owns one investigation
+      it('when another row is showing details', () => {
         cy.get('[aria-label="Show details"]').eq(1).click();
+        cy.get('#details-panel')
+          .contains('Star enter wide nearly off.')
+          .should('be.visible');
 
         cy.get('[aria-label="Show details"]').first().click();
 
         cy.get('#details-panel')
-          .contains('Resource himself season pattern which cold spring.')
+          .contains('Across prepare why go.')
           .should('be.visible');
         cy.get('#details-panel')
-          .contains('Experience ready course option.')
+          .contains('Star enter wide nearly off.')
           .should('not.exist');
         cy.get('[aria-label="Hide details"]').should('have.length', 1);
       });

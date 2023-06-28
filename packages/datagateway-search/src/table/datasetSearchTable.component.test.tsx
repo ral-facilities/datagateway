@@ -9,6 +9,7 @@ import {
   type LuceneSearchParams,
   type SearchResponse,
   type SearchResult,
+  FACILITY_NAME,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -24,7 +25,6 @@ import {
 } from '@testing-library/react';
 import axios, { AxiosRequestConfig, type AxiosResponse } from 'axios';
 import { mockDataset } from '../testData';
-import type { UserEvent } from '@testing-library/user-event/dist/types/setup';
 import userEvent from '@testing-library/user-event';
 import {
   findAllRows,
@@ -49,6 +49,11 @@ const mockSearchResults: SearchResult[] = [
         {
           'instrument.id': 4,
           'instrument.name': 'LARMOR',
+        },
+      ],
+      investigationfacilitycycle: [
+        {
+          'facilityCycle.id': 6,
         },
       ],
       'investigation.id': 2,
@@ -79,7 +84,7 @@ describe('Dataset table component', () => {
   let state: StateType;
   let history: History;
   let queryClient: QueryClient;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
   let cartItems: DownloadCartItem[];
 
   let searchResponse: SearchResponse;
@@ -129,19 +134,6 @@ describe('Dataset table component', () => {
 
       return Promise.resolve<Partial<AxiosResponse<SearchResponse>>>({
         data: searchResponse,
-      });
-    }
-    if (/.*\/facilitycycles$/.test(url)) {
-      // fetchAllFacilityCycles
-      return Promise.resolve({
-        data: [
-          {
-            id: 4,
-            name: 'facility cycle name',
-            startDate: '2000-06-10',
-            endDate: '2020-06-11',
-          },
-        ],
       });
     }
     if (/.*\/datafiles\/count$/.test(url)) {
@@ -363,12 +355,10 @@ describe('Dataset table component', () => {
       ).getByText('1 B')
     ).toBeInTheDocument();
     expect(
-      within(
-        findCellInRow(row, {
-          columnIndex: await findColumnIndexByName('datasets.investigation'),
-        })
-      ).getByText('Investigation test title')
-    ).toBeInTheDocument();
+      findCellInRow(row, {
+        columnIndex: await findColumnIndexByName('datasets.investigation'),
+      })
+    ).toHaveTextContent('Investigation test title');
     expect(
       within(
         findCellInRow(row, {
@@ -700,7 +690,7 @@ describe('Dataset table component', () => {
   });
 
   it('displays correct details panel for ISIS when expanded', async () => {
-    renderComponent('isis');
+    renderComponent(FACILITY_NAME.isis);
 
     await user.click(
       await screen.findByRole('button', { name: 'Show details' })
@@ -712,7 +702,7 @@ describe('Dataset table component', () => {
   });
 
   it('can navigate using the details panel for ISIS when there are facility cycles', async () => {
-    renderComponent('isis');
+    renderComponent(FACILITY_NAME.isis);
 
     await user.click(
       await screen.findByRole('button', { name: 'Show details' })
@@ -725,12 +715,12 @@ describe('Dataset table component', () => {
     );
 
     expect(history.location.pathname).toBe(
-      '/browse/instrument/4/facilityCycle/4/investigation/2/dataset/1'
+      '/browse/instrument/4/facilityCycle/6/investigation/2/dataset/1/datafile'
     );
   });
 
   it('displays correct details panel for DLS when expanded', async () => {
-    renderComponent('dls');
+    renderComponent(FACILITY_NAME.dls);
 
     await user.click(
       await screen.findByRole('button', { name: 'Show details' })
@@ -785,7 +775,7 @@ describe('Dataset table component', () => {
   });
 
   it('renders DLS link correctly', async () => {
-    renderComponent('dls');
+    renderComponent(FACILITY_NAME.dls);
 
     expect(
       await screen.findByRole('link', { name: 'Dataset test name' })
@@ -796,23 +786,7 @@ describe('Dataset table component', () => {
   });
 
   it('renders ISIS link & file sizes correctly', async () => {
-    (axios.get as jest.Mock).mockImplementation((url: string, config) => {
-      if (/.*\/facilitycycles$/.test(url)) {
-        return Promise.resolve({
-          data: [
-            {
-              id: 6,
-              name: 'facility cycle name',
-              startDate: '2000-06-10',
-              endDate: '2020-06-11',
-            },
-          ],
-        });
-      }
-      return mockAxiosGet(url, config);
-    });
-
-    renderComponent('isis');
+    renderComponent(FACILITY_NAME.isis);
 
     expect(
       await screen.findByRole('link', { name: 'Dataset test name' })
@@ -831,7 +805,7 @@ describe('Dataset table component', () => {
       ],
     };
 
-    renderComponent('isis');
+    renderComponent(FACILITY_NAME.isis);
 
     await waitFor(async () => {
       // the title should not be rendered as a link...
@@ -845,53 +819,17 @@ describe('Dataset table component', () => {
   });
 
   it('does not render ISIS link when facilityCycleId cannot be found', async () => {
-    axios.get = jest.fn().mockImplementation((url: string, config) => {
-      if (/.*\/facilitycycles$/.test(url)) {
-        // fetchAllFacilityCycles
-        return Promise.resolve({
-          data: [
-            {
-              id: 4,
-              name: 'facility cycle name',
-              startDate: '2024-06-10',
-              endDate: '2025-06-11',
-            },
-          ],
-        });
-      }
-      return mockAxiosGet(url, config);
-    });
+    const { investigationfacilitycycle, ...data } = mockSearchResults[0].source;
+    searchResponse = {
+      results: [
+        {
+          ...mockSearchResults[0],
+          source: data,
+        },
+      ],
+    };
 
-    renderComponent('isis');
-
-    await waitFor(async () => {
-      // the title should not be rendered as a link...
-      expect(
-        screen.queryByRole('link', { name: 'Dataset test name' })
-      ).toBeNull();
-      // ...but it should still be rendered as a normal text
-      expect(screen.getByText('Dataset test name')).toBeInTheDocument();
-    });
-  });
-
-  it('does not render ISIS link when facilityCycleId has incompatible dates', async () => {
-    (axios.get as jest.Mock).mockImplementation((url: string, config) => {
-      if (/.*\/facilitycycles$/.test(url)) {
-        return Promise.resolve({
-          data: [
-            {
-              id: 2,
-              name: 'facility cycle name',
-              startDate: '2020-06-11',
-              endDate: '2000-06-10',
-            },
-          ],
-        });
-      }
-      return mockAxiosGet(url, config);
-    });
-
-    renderComponent('isis');
+    renderComponent(FACILITY_NAME.isis);
 
     await waitFor(async () => {
       // the title should not be rendered as a link...
@@ -950,7 +888,7 @@ describe('Dataset table component', () => {
         pages: [searchResponse],
       })
     );
-    renderComponent('dls');
+    renderComponent(FACILITY_NAME.dls);
 
     await waitFor(async () => {
       // the title should not be rendered as a link...
@@ -982,7 +920,7 @@ describe('Dataset table component', () => {
         pages: [searchResponse],
       })
     );
-    renderComponent('isis');
+    renderComponent(FACILITY_NAME.isis);
 
     await waitFor(async () => {
       // the title should not be rendered as a link...

@@ -127,7 +127,7 @@ describe('DLS - Proposals Table', () => {
 
       cy.get('[aria-label="Filter by Name"]').first().type('INVESTIGATION 36');
 
-      cy.get('[aria-rowcount="1"]').should('exist');
+      cy.get('[aria-rowcount="0"]').should('exist');
     });
   });
 });

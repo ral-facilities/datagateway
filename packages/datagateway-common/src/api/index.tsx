@@ -31,7 +31,7 @@ export * from './facilityCycles';
 export * from './instruments';
 export * from './investigations';
 export * from './datafiles';
-export * from './studies';
+export * from './dataPublications';
 export * from './datasets';
 export * from './lucene';
 
@@ -884,7 +884,7 @@ export const fetchFilterCountQuery = (
     | 'facilityCycle'
     | 'instrument'
     | 'facility'
-    | 'study',
+    | 'dataPublication',
   additionalFilters?: AdditionalFilters
 ): Promise<number> => {
   const params = new URLSearchParams();
@@ -920,7 +920,7 @@ export const useCustomFilterCount = (
     | 'facilityCycle'
     | 'instrument'
     | 'facility'
-    | 'study',
+    | 'dataPublication',
   filterKey: string,
   filterIds: string[] | undefined,
   additionalFilters?: {
@@ -943,7 +943,7 @@ export const useCustomFilterCount = (
         | 'facilityCycle'
         | 'instrument'
         | 'facility'
-        | 'study'
+        | 'dataPublication'
       ),
       string,
       string,

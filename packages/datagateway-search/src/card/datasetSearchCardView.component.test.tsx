@@ -3,6 +3,7 @@ import {
   SearchResponse,
   SearchResult,
   SearchResultSource,
+  FACILITY_NAME,
 } from 'datagateway-common';
 import * as React from 'react';
 import { Provider } from 'react-redux';
@@ -49,16 +50,6 @@ describe('Dataset - Card View', () => {
         data: searchResponse,
       });
     }
-    if (/\/facilitycycles$/.test(url)) {
-      return Promise.resolve({
-        data: [],
-      });
-    }
-    if (/\/datafiles\/count$/.test(url)) {
-      return Promise.resolve({
-        data: 1,
-      });
-    }
     if (/\/datafiles\/count$/.test(url)) {
       return Promise.resolve({
         data: 1,
@@ -67,16 +58,6 @@ describe('Dataset - Card View', () => {
     if (/\/user\/getSize$/.test(url)) {
       return Promise.resolve({
         data: 1,
-      });
-    }
-    if (/\/datasets$/.test(url)) {
-      return Promise.resolve({
-        data: {
-          id: 1,
-          name: 'Dataset test name',
-          startDate: '1563922800000',
-          endDate: '1564009200000',
-        },
       });
     }
     return Promise.reject({
@@ -94,6 +75,11 @@ describe('Dataset - Card View', () => {
         {
           'instrument.id': 4,
           'instrument.name': 'LARMOR',
+        },
+      ],
+      investigationfacilitycycle: [
+        {
+          'facilityCycle.id': 6,
         },
       ],
       'investigation.id': 2,
@@ -178,7 +164,7 @@ describe('Dataset - Card View', () => {
   it("renders DLS link correctly and doesn't allow for download", async () => {
     renderComponent({
       initialState: state,
-      hierarchy: 'dls',
+      hierarchy: FACILITY_NAME.dls,
     });
 
     const cards = await screen.findAllByTestId('card');
@@ -200,26 +186,7 @@ describe('Dataset - Card View', () => {
   });
 
   it('renders ISIS link & file sizes correctly', async () => {
-    axios.get = jest.fn((url: string) => {
-      if (/\/facilitycycles$/.test(url)) {
-        return Promise.resolve({
-          data: [
-            {
-              id: 6,
-              name: 'facility cycle name',
-              startDate: '2000-06-10',
-              endDate: '2020-06-11',
-            },
-          ],
-        });
-      }
-      return mockAxiosGet(url);
-    });
-
-    renderComponent({
-      initialState: state,
-      hierarchy: 'isis',
-    });
+    renderComponent({ initialState: state, hierarchy: FACILITY_NAME.isis });
 
     const cards = await screen.findAllByTestId('card');
     const card = cards[0];
@@ -234,25 +201,9 @@ describe('Dataset - Card View', () => {
   });
 
   it('does not render ISIS link when instrumentId cannot be found', async () => {
-    axios.get = jest.fn((url: string) => {
-      if (/\/facilitycycles$/.test(url)) {
-        return Promise.resolve({
-          data: [
-            {
-              id: 4,
-              name: 'facility cycle name',
-              startDate: '2000-06-10',
-              endDate: '2020-06-11',
-            },
-          ],
-        });
-      }
-      return mockAxiosGet(url);
-    });
-
     delete cardData.investigationinstrument;
 
-    renderComponent({ initialState: state, hierarchy: 'isis' });
+    renderComponent({ initialState: state, hierarchy: FACILITY_NAME.isis });
 
     const cards = await screen.findAllByTestId('card');
     const card = cards[0];
@@ -264,40 +215,10 @@ describe('Dataset - Card View', () => {
   });
 
   it('does not render ISIS link when facilityCycleId cannot be found', async () => {
+    delete cardData.investigationfacilitycycle;
     renderComponent({
       initialState: state,
-      hierarchy: 'isis',
-    });
-
-    const cards = await screen.findAllByTestId('card');
-    const card = cards[0];
-
-    expect(within(card).getByText('Dataset test name')).toBeInTheDocument();
-    expect(
-      within(card).queryByRole('link', { name: 'Dataset test name' })
-    ).toBeNull();
-  });
-
-  it('does not render ISIS link when facilityCycleId has incompatible dates', async () => {
-    axios.get = jest.fn((url: string) => {
-      if (/\/facilitycycles$/.test(url)) {
-        return Promise.resolve({
-          data: [
-            {
-              id: 2,
-              name: 'facility cycle name',
-              startDate: '2020-06-11',
-              endDate: '2000-06-10',
-            },
-          ],
-        });
-      }
-      return mockAxiosGet(url);
-    });
-
-    renderComponent({
-      initialState: state,
-      hierarchy: 'isis',
+      hierarchy: FACILITY_NAME.isis,
     });
 
     const cards = await screen.findAllByTestId('card');
@@ -337,7 +258,7 @@ describe('Dataset - Card View', () => {
 
     renderComponent({
       initialState: state,
-      hierarchy: 'dls',
+      hierarchy: FACILITY_NAME.dls,
     });
 
     const cards = await screen.findAllByTestId('card');
@@ -350,28 +271,12 @@ describe('Dataset - Card View', () => {
   });
 
   it('displays only the dataset name when there is no ISIS investigation to link to', async () => {
-    axios.get = jest.fn((url: string) => {
-      if (/\/facilitycycles$/.test(url)) {
-        return Promise.resolve({
-          data: [
-            {
-              id: 4,
-              name: 'facility cycle name',
-              startDate: '2000-06-10',
-              endDate: '2020-06-11',
-            },
-          ],
-        });
-      }
-      return mockAxiosGet(url);
-    });
-
     delete cardData['investigation.id'];
     delete cardData['investigation.name'];
     delete cardData['investigation.title'];
     delete cardData['investigation.startDate'];
 
-    renderComponent({ initialState: state, hierarchy: 'isis' });
+    renderComponent({ initialState: state, hierarchy: FACILITY_NAME.isis });
 
     const cards = await screen.findAllByTestId('card');
     const card = cards[0];
@@ -405,7 +310,7 @@ describe('Dataset - Card View', () => {
 
     renderComponent({
       initialState: state,
-      hierarchy: 'isis',
+      hierarchy: FACILITY_NAME.isis,
     });
 
     expect(screen.queryByTestId('isis-dataset-details-panel')).toBeNull();
@@ -422,29 +327,11 @@ describe('Dataset - Card View', () => {
   it('can navigate using the details panel for ISIS when there are facility cycles', async () => {
     const user = userEvent.setup();
 
-    axios.get = jest.fn((url: string) => {
-      if (/\/facilitycycles$/.test(url)) {
-        return Promise.resolve({
-          data: [
-            {
-              id: 4,
-              name: 'facility cycle name',
-              startDate: '2000-06-10',
-              endDate: '2020-06-11',
-            },
-          ],
-        });
-      }
-      return mockAxiosGet(url);
-    });
-
     renderComponent({
       history,
       initialState: state,
-      hierarchy: 'isis',
+      hierarchy: FACILITY_NAME.isis,
     });
-
-    expect(screen.queryByTestId('isis-dataset-details-panel')).toBeNull();
 
     await user.click(
       await screen.findByRole('button', { name: 'card-more-info-expand' })
@@ -459,7 +346,7 @@ describe('Dataset - Card View', () => {
     );
 
     expect(history.location.pathname).toBe(
-      '/browse/instrument/4/facilityCycle/4/investigation/2/dataset/1'
+      '/browse/instrument/4/facilityCycle/6/investigation/2/dataset/1/datafile'
     );
   });
 

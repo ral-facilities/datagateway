@@ -7,6 +7,7 @@ import {
   type DownloadCartItem,
   type SearchResponse,
   type SearchResult,
+  FACILITY_NAME,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -23,7 +24,6 @@ import {
   within,
 } from '@testing-library/react';
 import axios, { AxiosRequestConfig, type AxiosResponse } from 'axios';
-import type { UserEvent } from '@testing-library/user-event/dist/types/setup';
 import { mockInvestigation } from '../testData';
 import {
   findAllRows,
@@ -32,35 +32,6 @@ import {
   findColumnIndexByName,
   queryAllRows,
 } from '../setupTests';
-
-// ====================== FIXTURES ======================
-
-const mockSearchResults: SearchResult[] = [
-  {
-    score: 1,
-    id: 1,
-    source: {
-      id: 1,
-      title: 'Test title 1',
-      name: 'Test name 1',
-      summary: 'foo bar',
-      visitId: '1',
-      doi: 'doi 1',
-      investigationinstrument: [
-        {
-          'instrument.id': 3,
-          'instrument.name': 'LARMOR',
-        },
-      ],
-      startDate: 1560121200000,
-      endDate: 1560207600000,
-      'facility.name': 'facility name',
-      'facility.id': 2,
-    },
-  },
-];
-
-// ====================== END FIXTURE ======================
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -77,11 +48,12 @@ describe('Investigation Search Table component', () => {
   let container: HTMLDivElement;
   let state: StateType;
   let history: History;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
   let queryClient: QueryClient;
 
   let cartItems: DownloadCartItem[];
   let searchResponse: SearchResponse;
+  let searchResult: SearchResult;
 
   const renderComponent = (hierarchy?: string): RenderResult => {
     return render(
@@ -134,20 +106,6 @@ describe('Investigation Search Table component', () => {
       });
     }
 
-    if (/.*\/facilitycycles$/.test(url)) {
-      // fetchAllFacilityCycles
-      return Promise.resolve({
-        data: [
-          {
-            id: 4,
-            name: 'facility cycle name',
-            startDate: '2000-06-10',
-            endDate: '2020-06-11',
-          },
-        ],
-      });
-    }
-
     if (/.*\/datasets\/count$/.test(url)) {
       // fetchDatasetCountQuery
       return Promise.resolve({
@@ -189,6 +147,34 @@ describe('Investigation Search Table component', () => {
       })
     );
     cartItems = [];
+    searchResult = {
+      score: 1,
+      id: 1,
+      source: {
+        id: 1,
+        title: 'Test title 1',
+        name: 'Test name 1',
+        summary: 'foo bar',
+        visitId: '1',
+        doi: 'doi 1',
+        investigationinstrument: [
+          {
+            'instrument.id': 3,
+            'instrument.name': 'LARMOR',
+          },
+        ],
+        investigationfacilitycycle: [
+          {
+            'facilityCycle.id': 5,
+          },
+        ],
+        startDate: 1560121200000,
+        endDate: 1560207600000,
+        'facility.name': 'facility name',
+        'facility.id': 2,
+      },
+    };
+
     searchResponse = {
       dimensions: {
         'Investigation.type.name': {
@@ -196,7 +182,7 @@ describe('Investigation Search Table component', () => {
           calibration: 20,
         },
       },
-      results: [mockSearchResults[0]],
+      results: [searchResult],
     };
 
     axios.get = jest.fn().mockImplementation(mockAxiosGet);
@@ -821,7 +807,7 @@ describe('Investigation Search Table component', () => {
   });
 
   it('displays correct details panel for ISIS when expanded', async () => {
-    renderComponent('isis');
+    renderComponent(FACILITY_NAME.isis);
 
     await user.click(
       await screen.findByRole('button', { name: 'Show details' })
@@ -833,7 +819,7 @@ describe('Investigation Search Table component', () => {
   });
 
   it('can navigate using the details panel for ISIS when there are facility cycles', async () => {
-    renderComponent('isis');
+    renderComponent(FACILITY_NAME.isis);
 
     await user.click(
       await screen.findByRole('button', { name: 'Show details' })
@@ -846,12 +832,12 @@ describe('Investigation Search Table component', () => {
     );
 
     expect(history.location.pathname).toBe(
-      '/browse/instrument/3/facilityCycle/4/investigation/1/dataset'
+      '/browse/instrument/3/facilityCycle/5/investigation/1/dataset'
     );
   });
 
   it('displays correct details panel for DLS when expanded', async () => {
-    renderComponent('dls');
+    renderComponent(FACILITY_NAME.dls);
 
     await user.click(
       await screen.findByRole('button', { name: 'Show details' })
@@ -868,7 +854,7 @@ describe('Investigation Search Table component', () => {
     searchResponse = {
       results: [
         {
-          ...mockSearchResults[0],
+          ...searchResult,
           source: {
             id: 1,
             name: 'test',
@@ -903,7 +889,7 @@ describe('Investigation Search Table component', () => {
   });
 
   it("renders DLS link correctly and doesn't allow for cart selection", async () => {
-    renderComponent('dls');
+    renderComponent(FACILITY_NAME.dls);
 
     expect(await screen.findByText('Test title 1')).toHaveAttribute(
       'href',
@@ -913,52 +899,19 @@ describe('Investigation Search Table component', () => {
   });
 
   it('renders ISIS link & file sizes correctly', async () => {
-    (axios.get as jest.Mock).mockImplementation((url: string, config) => {
-      if (/.*\/facilitycycles$/.test(url)) {
-        return Promise.resolve({
-          data: [
-            {
-              id: 2,
-              name: 'facility cycle name',
-              startDate: '2000-06-10',
-              endDate: '2020-06-11',
-            },
-          ],
-        });
-      }
-      return mockAxiosGet(url, config);
-    });
-
-    renderComponent('isis');
+    renderComponent(FACILITY_NAME.isis);
 
     expect(
       await screen.findByRole('link', { name: 'Test title 1' })
     ).toHaveAttribute(
       'href',
-      '/browse/instrument/3/facilityCycle/2/investigation/1/dataset'
+      '/browse/instrument/3/facilityCycle/5/investigation/1/dataset'
     );
     expect(await screen.findByText('1 B')).toBeInTheDocument();
   });
 
   it('does not render ISIS link when instrumentId cannot be found', async () => {
-    searchResponse.results = [
-      {
-        score: 1,
-        id: 1,
-        source: {
-          id: 1,
-          title: 'Test title 1',
-          name: 'Test name 1',
-          summary: 'foo bar',
-          visitId: '1',
-          startDate: 1560121200000,
-          doi: 'doi 1',
-          endDate: 1560207600000,
-          'facility.name': 'facility name',
-          'facility.id': 2,
-        },
-      },
-    ];
+    delete searchResult.source.investigationinstrument;
 
     renderComponent('isis');
 
@@ -972,42 +925,7 @@ describe('Investigation Search Table component', () => {
   });
 
   it('does not render ISIS link when facilityCycleId cannot be found', async () => {
-    (axios.get as jest.Mock).mockImplementation((url: string, config) => {
-      if (/.*\/facilitycycles$/.test(url)) {
-        return Promise.resolve({
-          data: [],
-        });
-      }
-      return mockAxiosGet(url, config);
-    });
-
-    renderComponent('isis');
-
-    await waitFor(async () => {
-      // the title should not be rendered as a link...
-      expect(screen.queryByRole('link', { name: 'Test title 1' })).toBeNull();
-      // ...but it should still be rendered as a normal text
-      expect(screen.getByText('Test title 1')).toBeInTheDocument();
-      expect(await screen.findByText('1 B')).toBeInTheDocument();
-    });
-  });
-
-  it('does not render ISIS link when facilityCycleId has incompatible dates', async () => {
-    (axios.get as jest.Mock).mockImplementation((url: string, config) => {
-      if (/.*\/facilitycycles$/.test(url)) {
-        return Promise.resolve({
-          data: [
-            {
-              id: 2,
-              name: 'facility cycle name',
-              startDate: '2020-06-11',
-              endDate: '2000-06-10',
-            },
-          ],
-        });
-      }
-      return mockAxiosGet(url, config);
-    });
+    delete searchResult.source.investigationfacilitycycle;
 
     renderComponent('isis');
 

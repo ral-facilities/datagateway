@@ -4,6 +4,7 @@ import {
   SearchResponse,
   SearchResult,
   SearchResultSource,
+  FACILITY_NAME,
   StateType,
 } from 'datagateway-common';
 import InvestigationSearchCardView from './investigationSearchCardView.component';
@@ -54,11 +55,6 @@ describe('Investigation - Card View', () => {
         data: searchResponse,
       });
     }
-    if (/\/facilitycycles$/.test(url)) {
-      return Promise.resolve({
-        data: [],
-      });
-    }
     if (/\/datafiles\/count$/.test(url)) {
       return Promise.resolve({
         data: 1,
@@ -72,16 +68,6 @@ describe('Investigation - Card View', () => {
     if (/\/user\/getSize$/.test(url)) {
       return Promise.resolve({
         data: 1,
-      });
-    }
-    if (/\/datasets$/.test(url)) {
-      return Promise.resolve({
-        data: {
-          id: 1,
-          name: 'Dataset test name',
-          startDate: '1563922800000',
-          endDate: '1564009200000',
-        },
       });
     }
     return Promise.reject({
@@ -102,6 +88,11 @@ describe('Investigation - Card View', () => {
         {
           'instrument.id': 4,
           'instrument.name': 'LARMOR',
+        },
+      ],
+      investigationfacilitycycle: [
+        {
+          'facilityCycle.id': 6,
         },
       ],
     };
@@ -183,7 +174,7 @@ describe('Investigation - Card View', () => {
   it("renders DLS link correctly and doesn't allow for cart selection or download", async () => {
     renderComponent({
       initialState: state,
-      hierarchy: 'dls',
+      hierarchy: FACILITY_NAME.dls,
     });
 
     const card = (await screen.findAllByTestId('card'))[0];
@@ -202,23 +193,7 @@ describe('Investigation - Card View', () => {
   });
 
   it('renders ISIS link & file sizes correctly', async () => {
-    axios.get = jest.fn((url: string) => {
-      if (/\/facilitycycles$/.test(url)) {
-        return Promise.resolve({
-          data: [
-            {
-              id: 6,
-              name: 'facility cycle name',
-              startDate: '2000-06-10',
-              endDate: '2020-06-11',
-            },
-          ],
-        });
-      }
-      return mockAxiosGet(url);
-    });
-
-    renderComponent({ initialState: state, hierarchy: 'isis' });
+    renderComponent({ initialState: state, hierarchy: FACILITY_NAME.isis });
 
     const card = (await screen.findAllByTestId('card'))[0];
 
@@ -246,25 +221,9 @@ describe('Investigation - Card View', () => {
   });
 
   it('does not render ISIS link when instrumentId cannot be found', async () => {
-    axios.get = jest.fn((url: string) => {
-      if (/\/facilitycycles$/.test(url)) {
-        return Promise.resolve({
-          data: [
-            {
-              id: 4,
-              name: 'facility cycle name',
-              startDate: '2000-06-10',
-              endDate: '2020-06-11',
-            },
-          ],
-        });
-      }
-      return mockAxiosGet(url);
-    });
-
     delete cardData.investigationinstrument;
 
-    renderComponent({ initialState: state, hierarchy: 'isis' });
+    renderComponent({ initialState: state, hierarchy: FACILITY_NAME.isis });
 
     const card = (await screen.findAllByTestId('card'))[0];
 
@@ -291,7 +250,7 @@ describe('Investigation - Card View', () => {
   it('displays correct details panel for ISIS when expanded', async () => {
     const user = userEvent.setup();
 
-    renderComponent({ initialState: state, hierarchy: 'isis' });
+    renderComponent({ initialState: state, hierarchy: FACILITY_NAME.isis });
 
     expect(screen.queryByTestId('isis-investigation-details-panel')).toBeNull();
 
@@ -307,26 +266,10 @@ describe('Investigation - Card View', () => {
   it('can navigate using the details panel for ISIS when there are facility cycles', async () => {
     const user = userEvent.setup();
 
-    axios.get = jest.fn((url: string) => {
-      if (/\/facilitycycles$/.test(url)) {
-        return Promise.resolve({
-          data: [
-            {
-              id: 4,
-              name: 'facility cycle name',
-              startDate: '2000-06-10',
-              endDate: '2020-06-11',
-            },
-          ],
-        });
-      }
-      return mockAxiosGet(url);
-    });
-
     renderComponent({
       history,
       initialState: state,
-      hierarchy: 'isis',
+      hierarchy: FACILITY_NAME.isis,
     });
 
     expect(screen.queryByTestId('isis-investigation-details-panel')).toBeNull();
@@ -346,7 +289,7 @@ describe('Investigation - Card View', () => {
 
     await waitFor(() => {
       expect(history.location.pathname).toBe(
-        '/browse/instrument/4/facilityCycle/4/investigation/1/dataset'
+        '/browse/instrument/4/facilityCycle/6/investigation/1/dataset'
       );
     });
   });
@@ -356,7 +299,7 @@ describe('Investigation - Card View', () => {
 
     renderComponent({
       initialState: state,
-      hierarchy: 'dls',
+      hierarchy: FACILITY_NAME.dls,
     });
 
     expect(screen.queryByTestId('dls-visit-details-panel')).toBeNull();

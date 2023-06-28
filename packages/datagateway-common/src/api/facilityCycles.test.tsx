@@ -9,7 +9,6 @@ import {
   useFacilityCycleCount,
   useFacilityCyclesInfinite,
   useFacilityCyclesPaginated,
-  useFacilityCyclesByInvestigation,
 } from './facilityCycles';
 
 jest.mock('../handleICATError');
@@ -108,9 +107,22 @@ describe('facility cycle api functions', () => {
       );
       params.append('skip', JSON.stringify(20));
       params.append('limit', JSON.stringify(20));
+      params.append(
+        'where',
+        JSON.stringify({
+          'investigationFacilityCycles.investigation.investigationInstruments.instrument.id':
+            {
+              eq: 1,
+            },
+        })
+      );
+      params.append(
+        'distinct',
+        JSON.stringify(['id', 'name', 'startDate', 'endDate'])
+      );
 
       expect(axios.get).toHaveBeenCalledWith(
-        'https://example.com/api/instruments/1/facilitycycles',
+        'https://example.com/api/facilitycycles',
         expect.objectContaining({
           params,
         })
@@ -137,9 +149,22 @@ describe('facility cycle api functions', () => {
       params.append('order', JSON.stringify('id asc'));
       params.append('skip', JSON.stringify(0));
       params.append('limit', JSON.stringify(10));
+      params.append(
+        'where',
+        JSON.stringify({
+          'investigationFacilityCycles.investigation.investigationInstruments.instrument.id':
+            {
+              eq: 1,
+            },
+        })
+      );
+      params.append(
+        'distinct',
+        JSON.stringify(['id', 'name', 'startDate', 'endDate'])
+      );
 
       expect(axios.get).toHaveBeenCalledWith(
-        'https://example.com/api/instruments/1/facilitycycles',
+        'https://example.com/api/facilitycycles',
         expect.objectContaining({
           params,
         })
@@ -178,9 +203,22 @@ describe('facility cycle api functions', () => {
       );
       params.append('skip', JSON.stringify(0));
       params.append('limit', JSON.stringify(50));
+      params.append(
+        'where',
+        JSON.stringify({
+          'investigationFacilityCycles.investigation.investigationInstruments.instrument.id':
+            {
+              eq: 1,
+            },
+        })
+      );
+      params.append(
+        'distinct',
+        JSON.stringify(['id', 'name', 'startDate', 'endDate'])
+      );
 
       expect(axios.get).toHaveBeenCalledWith(
-        'https://example.com/api/instruments/1/facilitycycles',
+        'https://example.com/api/facilitycycles',
         expect.objectContaining({
           params,
         })
@@ -200,7 +238,7 @@ describe('facility cycle api functions', () => {
 
       expect(axios.get).toHaveBeenNthCalledWith(
         2,
-        'https://example.com/api/instruments/1/facilitycycles',
+        'https://example.com/api/facilitycycles',
         expect.objectContaining({
           params,
         })
@@ -233,9 +271,22 @@ describe('facility cycle api functions', () => {
       params.append('order', JSON.stringify('id asc'));
       params.append('skip', JSON.stringify(0));
       params.append('limit', JSON.stringify(50));
+      params.append(
+        'where',
+        JSON.stringify({
+          'investigationFacilityCycles.investigation.investigationInstruments.instrument.id':
+            {
+              eq: 1,
+            },
+        })
+      );
+      params.append(
+        'distinct',
+        JSON.stringify(['id', 'name', 'startDate', 'endDate'])
+      );
 
       expect(axios.get).toHaveBeenCalledWith(
-        'https://example.com/api/instruments/1/facilitycycles',
+        'https://example.com/api/facilitycycles',
         expect.objectContaining({
           params,
         })
@@ -265,9 +316,23 @@ describe('facility cycle api functions', () => {
           name: { ilike: 'test' },
         })
       );
+      params.append(
+        'where',
+        JSON.stringify({
+          'investigationFacilityCycles.investigation.investigationInstruments.instrument.id':
+            {
+              eq: 1,
+            },
+        })
+      );
+      // Distinct is needed as otherwise it returns duplicate cycles for every cycle with a unique investigation with the matching instrument id
+      params.append(
+        'distinct',
+        JSON.stringify(['id', 'name', 'startDate', 'endDate'])
+      );
 
       expect(axios.get).toHaveBeenCalledWith(
-        'https://example.com/api/instruments/1/facilitycycles/count',
+        'https://example.com/api/facilitycycles/count',
         expect.objectContaining({
           params,
         })
@@ -288,87 +353,23 @@ describe('facility cycle api functions', () => {
 
       await waitFor(() => result.current.isError);
 
-      expect(axios.get).toHaveBeenCalledWith(
-        'https://example.com/api/instruments/1/facilitycycles/count',
-        expect.objectContaining({
-          params,
-        })
-      );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
-        params.toString()
-      );
-      expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
-    });
-  });
-
-  describe('useFacilityCyclesByInvestigation', () => {
-    it('sends axios request to fetch facility cycle given a investigation start date and returns successful response', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
-        data: mockData,
-      });
-
-      const { result, waitFor } = renderHook(
-        () => useFacilityCyclesByInvestigation('2022-04-01 00:00:00'),
-        {
-          wrapper: createReactQueryWrapper(history),
-        }
-      );
-
-      await waitFor(() => result.current.isSuccess);
-
       params.append(
         'where',
         JSON.stringify({
-          startDate: { lte: '2022-04-01 00:00:00' },
+          'investigationFacilityCycles.investigation.investigationInstruments.instrument.id':
+            {
+              eq: 1,
+            },
         })
       );
+      // Distinct is needed as otherwise it returns duplicate cycles for every cycle with a unique investigation with the matching instrument id
       params.append(
-        'where',
-        JSON.stringify({
-          endDate: { gte: '2022-04-01 00:00:00' },
-        })
+        'distinct',
+        JSON.stringify(['id', 'name', 'startDate', 'endDate'])
       );
 
       expect(axios.get).toHaveBeenCalledWith(
-        'https://example.com/api/facilitycycles',
-        expect.objectContaining({
-          params,
-        })
-      );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
-        params.toString()
-      );
-      expect(result.current.data).toEqual(mockData);
-    });
-
-    it('sends axios request to fetch paginated facility cycles and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
-        message: 'Test error',
-      });
-      const { result, waitFor } = renderHook(
-        () => useFacilityCyclesByInvestigation('2022-04-01 00:00:00'),
-        {
-          wrapper: createReactQueryWrapper(),
-        }
-      );
-
-      await waitFor(() => result.current.isError);
-
-      params.append(
-        'where',
-        JSON.stringify({
-          startDate: { lte: '2022-04-01 00:00:00' },
-        })
-      );
-      params.append(
-        'where',
-        JSON.stringify({
-          endDate: { gte: '2022-04-01 00:00:00' },
-        })
-      );
-
-      expect(axios.get).toHaveBeenCalledWith(
-        'https://example.com/api/facilitycycles',
+        'https://example.com/api/facilitycycles/count',
         expect.objectContaining({
           params,
         })
