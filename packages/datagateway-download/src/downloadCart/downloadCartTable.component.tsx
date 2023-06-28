@@ -542,12 +542,11 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                           ? t('downloadCart.not_mintable')
                           : ''
                       }
+                      onMouseEnter={() => setGenerateDOIButtonHover(true)}
+                      onMouseLeave={() => setGenerateDOIButtonHover(false)}
                     >
                       {/* need this span so the tooltip works when the button is disabled */}
-                      <span
-                        onMouseEnter={() => setGenerateDOIButtonHover(true)}
-                        onMouseLeave={() => setGenerateDOIButtonHover(false)}
-                      >
+                      <span>
                         <Button
                           className="tour-download-mint-button"
                           id="generateDOIButton"
