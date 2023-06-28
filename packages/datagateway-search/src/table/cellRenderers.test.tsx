@@ -1,6 +1,6 @@
 import * as React from 'react';
 import axios, { AxiosError, AxiosResponse } from 'axios';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 import { render, RenderResult, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
@@ -17,6 +17,12 @@ import {
   Investigation,
   StateType,
 } from 'datagateway-common';
+
+setLogger({
+  log: console.log,
+  warn: console.warn,
+  error: jest.fn(),
+});
 
 describe('cellRenderers', () => {
   function Wrapper({ children }: { children: React.ReactNode }): JSX.Element {

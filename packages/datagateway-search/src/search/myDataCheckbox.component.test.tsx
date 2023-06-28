@@ -18,7 +18,7 @@ describe('myDataCheckbox', () => {
     expect(checkbox).toBeChecked();
 
     // check if tooltip is working
-    user.hover(checkbox);
+    await user.hover(checkbox);
     expect(
       await screen.findByText('searchBox.my_data_tooltip')
     ).toBeInTheDocument();

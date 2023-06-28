@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react-hooks';
 import useFacetFilters from './useFacetFilters';
 import { createMemoryHistory, MemoryHistory } from 'history';
 import { Router } from 'react-router-dom';
@@ -43,10 +43,12 @@ describe('useFacetFilters', () => {
       wrapper: Wrapper,
     });
 
-    result.current.addFacetFilter({
-      dimension: 'investigation.type.name',
-      filterValue: 'experiment',
-      applyImmediately: false,
+    act(() => {
+      result.current.addFacetFilter({
+        dimension: 'investigation.type.name',
+        filterValue: 'experiment',
+        applyImmediately: false,
+      });
     });
 
     await waitFor(() => {
@@ -56,10 +58,12 @@ describe('useFacetFilters', () => {
       expect(history.location.search).toEqual('');
     });
 
-    result.current.addFacetFilter({
-      dimension: 'investigation.type.name',
-      filterValue: 'calibration',
-      applyImmediately: false,
+    act(() => {
+      result.current.addFacetFilter({
+        dimension: 'investigation.type.name',
+        filterValue: 'calibration',
+        applyImmediately: false,
+      });
     });
 
     await waitFor(() => {
@@ -69,10 +73,12 @@ describe('useFacetFilters', () => {
       expect(history.location.search).toEqual('');
     });
 
-    result.current.addFacetFilter({
-      dimension: 'investigationparameter.type.name',
-      filterValue: 'run_number_after',
-      applyImmediately: false,
+    act(() => {
+      result.current.addFacetFilter({
+        dimension: 'investigationparameter.type.name',
+        filterValue: 'run_number_after',
+        applyImmediately: false,
+      });
     });
 
     await waitFor(() => {
@@ -89,10 +95,12 @@ describe('useFacetFilters', () => {
       wrapper: Wrapper,
     });
 
-    result.current.addFacetFilter({
-      dimension: 'investigation.type.name',
-      filterValue: 'experiment',
-      applyImmediately: true,
+    act(() => {
+      result.current.addFacetFilter({
+        dimension: 'investigation.type.name',
+        filterValue: 'experiment',
+        applyImmediately: true,
+      });
     });
 
     await waitFor(() => {
@@ -107,10 +115,12 @@ describe('useFacetFilters', () => {
       expect(history.location.search).toEqual(`?${searchParams.toString()}`);
     });
 
-    result.current.addFacetFilter({
-      dimension: 'investigationparameter.type.name',
-      filterValue: 'bcat_inv_str',
-      applyImmediately: true,
+    act(() => {
+      result.current.addFacetFilter({
+        dimension: 'investigationparameter.type.name',
+        filterValue: 'bcat_inv_str',
+        applyImmediately: true,
+      });
     });
 
     await waitFor(() => {
@@ -148,10 +158,12 @@ describe('useFacetFilters', () => {
     });
 
     // try to remove something not in the filter
-    result.current.removeFacetFilter({
-      dimension: 'investigation.type.name',
-      filterValue: 'calibration',
-      applyImmediately: false,
+    act(() => {
+      result.current.removeFacetFilter({
+        dimension: 'investigation.type.name',
+        filterValue: 'calibration',
+        applyImmediately: false,
+      });
     });
     // nothing should be changed
     await waitFor(() => {
@@ -165,10 +177,12 @@ describe('useFacetFilters', () => {
       expect(history.location.search).toEqual(searchParamStr);
     });
 
-    result.current.removeFacetFilter({
-      dimension: 'investigation.type.name',
-      filterValue: 'experiment',
-      applyImmediately: false,
+    act(() => {
+      result.current.removeFacetFilter({
+        dimension: 'investigation.type.name',
+        filterValue: 'experiment',
+        applyImmediately: false,
+      });
     });
     await waitFor(() => {
       expect(result.current.selectedFacetFilters).toEqual({
@@ -180,10 +194,12 @@ describe('useFacetFilters', () => {
       expect(history.location.search).toEqual(searchParamStr);
     });
 
-    result.current.removeFacetFilter({
-      dimension: 'investigationparameter.type.name',
-      filterValue: 'bcat_inv_str',
-      applyImmediately: false,
+    act(() => {
+      result.current.removeFacetFilter({
+        dimension: 'investigationparameter.type.name',
+        filterValue: 'bcat_inv_str',
+        applyImmediately: false,
+      });
     });
     await waitFor(() => {
       expect(result.current.selectedFacetFilters).toEqual({
@@ -214,10 +230,12 @@ describe('useFacetFilters', () => {
     });
 
     // try to remove something not in the filter
-    result.current.removeFacetFilter({
-      dimension: 'investigation.type.name',
-      filterValue: 'calibration',
-      applyImmediately: true,
+    act(() => {
+      result.current.removeFacetFilter({
+        dimension: 'investigation.type.name',
+        filterValue: 'calibration',
+        applyImmediately: true,
+      });
     });
     // nothing should be changed
     await waitFor(() => {
@@ -231,10 +249,12 @@ describe('useFacetFilters', () => {
       expect(history.location.search).toEqual(searchParamStr);
     });
 
-    result.current.removeFacetFilter({
-      dimension: 'investigation.type.name',
-      filterValue: 'experiment',
-      applyImmediately: true,
+    act(() => {
+      result.current.removeFacetFilter({
+        dimension: 'investigation.type.name',
+        filterValue: 'experiment',
+        applyImmediately: true,
+      });
     });
 
     await waitFor(() => {
@@ -271,17 +291,23 @@ describe('useFacetFilters', () => {
       wrapper: Wrapper,
     });
 
-    result.current.addFacetFilter({
-      dimension: 'investigation.type.name',
-      filterValue: 'calibration',
-      applyImmediately: false,
+    act(() => {
+      result.current.addFacetFilter({
+        dimension: 'investigation.type.name',
+        filterValue: 'calibration',
+        applyImmediately: false,
+      });
     });
-    result.current.removeFacetFilter({
-      dimension: 'investigationparameter.type.name',
-      filterValue: 'bcat_inv_str',
-      applyImmediately: false,
+    act(() => {
+      result.current.removeFacetFilter({
+        dimension: 'investigationparameter.type.name',
+        filterValue: 'bcat_inv_str',
+        applyImmediately: false,
+      });
     });
-    result.current.applyFacetFilters();
+    act(() => {
+      result.current.applyFacetFilters();
+    });
 
     const newSearchParams = new URLSearchParams();
     newSearchParams.append(

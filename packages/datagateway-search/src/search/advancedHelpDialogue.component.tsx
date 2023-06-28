@@ -32,7 +32,11 @@ const SectionText = ({
   children,
 }: {
   children: React.ReactNode;
-}): JSX.Element => <Typography gutterBottom>{children}</Typography>;
+}): JSX.Element => (
+  <Typography gutterBottom component="div">
+    {children}
+  </Typography>
+);
 
 const AdvancedHelpDialogue = (): React.ReactElement => {
   const [open, setOpen] = React.useState(false);
