@@ -405,8 +405,6 @@ describe('Datafile search table component', () => {
       expect(queryAllRows()).toHaveLength(0);
     });
 
-    screen.debug(undefined, 10000000);
-
     // expand accordion
     await user.click(
       await screen.findByRole('button', {

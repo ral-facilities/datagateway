@@ -139,7 +139,6 @@ describe('Investigation - Card View', () => {
     expect(cards).toHaveLength(1);
 
     const card = cards[0];
-    screen.debug(card, 10000000);
     expect(within(card).getByText('Test 1')).toBeInTheDocument();
     expect(
       within(card).getByText('entity_card.no_description')

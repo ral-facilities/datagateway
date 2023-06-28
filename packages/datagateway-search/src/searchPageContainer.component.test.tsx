@@ -22,14 +22,11 @@ import SearchPageContainer, {
 import { Provider } from 'react-redux';
 import axios from 'axios';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import {
-  render,
-  type RenderResult,
-  screen,
-  waitFor,
-} from '@testing-library/react';
+import { render, type RenderResult, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { DeepPartial } from 'redux';
+import { applyMiddleware, compose, createStore } from 'redux';
+import AppReducer from './state/reducers/app.reducer';
 
 jest.mock('loglevel');
 
@@ -878,25 +875,80 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('should hide tabs when the corresponding search type is disabled', async () => {
+    // need real store so so that the tab values actually update in the store
+    // after we dispatch the relevant actions
+    function renderComponentWithRealStore(): RenderResult {
+      return render(
+        <Provider
+          store={createStore(
+            AppReducer(history),
+            compose(applyMiddleware(thunk))
+          )}
+        >
+          <Router history={history}>
+            <QueryClientProvider client={queryClient}>
+              <SearchPageContainer />
+            </QueryClientProvider>
+          </Router>
+        </Provider>
+      );
+    }
+
     const user = userEvent.setup();
 
+    // test it works with loading from URL params
     history.replace(
       '/search/data?searchText=test&dataset=false&datafile=false'
     );
 
-    renderComponent();
+    renderComponentWithRealStore();
+
+    expect(
+      screen.getByRole('tab', { name: 'tabs.investigation' })
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('tab', { name: 'tabs.dataset' })).toBeNull();
+    expect(screen.queryByRole('tab', { name: 'tabs.datafile' })).toBeNull();
+
+    // also test it works on initiateSearch
+    history.replace('/search/data?searchText=test&datafile=false');
 
     await user.click(
       screen.getByRole('button', { name: 'searchBox.search_button_arialabel' })
     );
 
-    await waitFor(() => {
-      expect(
-        screen.getByRole('tab', { name: 'tabs.investigation' })
-      ).toBeInTheDocument();
-      expect(screen.queryByRole('tab', { name: 'tabs.dataset' })).toBeNull();
-      expect(screen.queryByRole('tab', { name: 'tabs.datafile' })).toBeNull();
-    });
+    expect(
+      screen.getByRole('tab', { name: 'tabs.investigation' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('tab', { name: 'tabs.dataset' })
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('tab', { name: 'tabs.datafile' })).toBeNull();
+  });
+
+  it('search is not initiated when no search types are enabled', async () => {
+    const user = userEvent.setup();
+
+    history.replace(
+      '/search/data?searchText=test&investigation=false&dataset=false&datafile=false'
+    );
+
+    renderComponent();
+
+    expect(
+      screen.queryByRole('tablist', {
+        name: 'searchPageTable.tabs_arialabel',
+      })
+    ).toBeNull();
+
+    await user.click(
+      screen.getByRole('button', { name: 'searchBox.search_button_arialabel' })
+    );
+
+    expect(
+      screen.queryByRole('tablist', {
+        name: 'searchPageTable.tabs_arialabel',
+      })
+    ).toBeNull();
   });
 
   it('search text state is updated when text is changed and pushes when search initiated', async () => {

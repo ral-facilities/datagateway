@@ -18,8 +18,6 @@ describe('sortSelect', () => {
     // open the dropdown menu
     await user.click(screen.getByRole('button', { name: 'sort._score' }));
 
-    screen.debug(undefined, 100000);
-
     expect(
       await screen.findByRole('option', { name: 'sort.date_desc' })
     ).toBeInTheDocument();

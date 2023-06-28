@@ -258,7 +258,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
 
   const [searchText, setSearchText] = React.useState(searchTextURL);
   const [isSearchInitiated, setIsSearchInitiated] = React.useState(
-    queryParams.searchText !== null
+    queryParams.searchText !== null && (investigation || dataset || datafile)
   );
   const [shouldRestrictSearch, setShouldRestrictSearch] = React.useState(
     parseSearchToQuery(location.search).restrict
@@ -289,28 +289,40 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   }, [location.pathname, view, replaceView]);
 
   const initiateSearch = React.useCallback(() => {
-    pushQueryParams({
-      searchText,
-      restrict: shouldRestrictSearch,
-    });
+    if (investigation || dataset || datafile) {
+      pushQueryParams({
+        searchText,
+        restrict: shouldRestrictSearch,
+      });
 
-    localStorage.removeItem('investigationFilters');
-    localStorage.removeItem('datasetFilters');
-    localStorage.removeItem('datafileFilters');
-    localStorage.removeItem('investigationPage');
-    localStorage.removeItem('datasetPage');
-    localStorage.removeItem('investigationResults');
-    localStorage.removeItem('datasetResults');
+      setDatafileTab(datafile);
+      setDatasetTab(dataset);
+      setInvestigationTab(investigation);
 
-    if (Object.keys(queryParams.filters).length !== 0) replaceFilters({});
-    if (queryParams.page !== null) replacePage(null);
-    if (queryParams.results !== null) replaceResults(null);
+      localStorage.removeItem('investigationFilters');
+      localStorage.removeItem('datasetFilters');
+      localStorage.removeItem('datafileFilters');
+      localStorage.removeItem('investigationPage');
+      localStorage.removeItem('datasetPage');
+      localStorage.removeItem('investigationResults');
+      localStorage.removeItem('datasetResults');
 
-    setIsSearchInitiated(true);
+      if (Object.keys(queryParams.filters).length !== 0) replaceFilters({});
+      if (queryParams.page !== null) replacePage(null);
+      if (queryParams.results !== null) replaceResults(null);
+
+      setIsSearchInitiated(true);
+    }
   }, [
     pushQueryParams,
     searchText,
     shouldRestrictSearch,
+    setDatafileTab,
+    datafile,
+    setDatasetTab,
+    dataset,
+    setInvestigationTab,
+    investigation,
     queryParams.filters,
     queryParams.page,
     queryParams.results,
@@ -319,21 +331,15 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     replaceResults,
   ]);
 
+  // set initial tabs based off of page load query params
   React.useEffect(() => {
-    if (dataset || datafile || investigation) {
-      // Set the appropriate tabs.
-      setDatafileTab(datafile);
-      setDatasetTab(dataset);
-      setInvestigationTab(investigation);
-    }
-  }, [
-    dataset,
-    datafile,
-    investigation,
-    setDatafileTab,
-    setDatasetTab,
-    setInvestigationTab,
-  ]);
+    // Set the appropriate tabs.
+    setDatafileTab(datafile);
+    setDatasetTab(dataset);
+    setInvestigationTab(investigation);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   React.useEffect(() => {
     // Sync search text in URL with local search text state

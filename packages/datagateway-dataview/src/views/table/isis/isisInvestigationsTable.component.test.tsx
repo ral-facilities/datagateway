@@ -159,7 +159,6 @@ describe('ISIS Investigations table component', () => {
           });
         }
 
-        console.log('url', url);
         return Promise.reject(`Endpoint not mocked: ${url}`);
       });
 
