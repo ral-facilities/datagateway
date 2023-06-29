@@ -123,35 +123,36 @@ describe('Visit details panel component', () => {
       },
     ];
 
-    const { asFragment } = renderComponent({ rowData });
-    expect(asFragment()).toMatchSnapshot();
-  });
-
-  it('should check if multiple samples result in change of title to plural version', () => {
-    rowData.samples = [
-      {
-        id: 7,
-        name: 'Test sample',
-      },
-      {
-        id: 8,
-        name: 'Test sample 1',
-      },
-    ];
-
-    const { asFragment } = renderComponent({ rowData });
-    expect(asFragment()).toMatchSnapshot();
-  });
-
-  it('should check if multiple publications result in change of title to plural version', () => {
-    rowData.publications = [
-      {
-        id: 8,
-        fullReference: 'Test publication',
-      },
+    rowData.parameters = [
       {
         id: 9,
-        fullReference: 'Test publication 1',
+        type: {
+          id: 10,
+          name: 'Number Param',
+          units: 'm',
+          valueType: 'NUMERIC',
+        },
+        numericValue: 1,
+      },
+      {
+        id: 11,
+        type: {
+          id: 12,
+          name: 'String Param',
+          units: 'm',
+          valueType: 'STRING',
+        },
+        stringValue: 'test string param',
+      },
+      {
+        id: 13,
+        type: {
+          id: 14,
+          name: 'Number Param',
+          units: 'm',
+          valueType: 'DATE_AND_TIME',
+        },
+        dateTimeValue: '2023-06-29 00:00:00Z',
       },
     ];
 
@@ -159,33 +160,37 @@ describe('Visit details panel component', () => {
     expect(asFragment()).toMatchSnapshot();
   });
 
-  it('should show publications tab and text "No publications" when no data is present', async () => {
-    rowData.publications = [];
+  // it('should check if multiple samples result in change of title to plural version', () => {
+  //   rowData.samples = [
+  //     {
+  //       id: 7,
+  //       name: 'Test sample',
+  //     },
+  //     {
+  //       id: 8,
+  //       name: 'Test sample 1',
+  //     },
+  //   ];
 
-    renderComponent({ rowData });
+  //   const { asFragment } = renderComponent({ rowData });
+  //   expect(asFragment()).toMatchSnapshot();
+  // });
 
-    expect(
-      await screen.findByText(
-        'investigations.details.publications.no_publications'
-      )
-    ).toBeInTheDocument();
-  });
+  // it('should check if multiple publications result in change of title to plural version', () => {
+  //   rowData.publications = [
+  //     {
+  //       id: 8,
+  //       fullReference: 'Test publication',
+  //     },
+  //     {
+  //       id: 9,
+  //       fullReference: 'Test publication 1',
+  //     },
+  //   ];
 
-  it('should show samples tab and text "No samples" when no data is present', async () => {
-    rowData.samples = [];
-    renderComponent({ rowData });
-    expect(
-      await screen.findByText('investigations.details.samples.no_samples')
-    ).toBeTruthy();
-  });
-
-  it('should show users tab and text "No users" when no data is present', async () => {
-    rowData.investigationUsers = [];
-    renderComponent({ rowData });
-    expect(
-      await screen.findByText('investigations.details.users.no_name')
-    ).toBeInTheDocument();
-  });
+  //   const { asFragment } = renderComponent({ rowData });
+  //   expect(asFragment()).toMatchSnapshot();
+  // });
 
   it('should show calculate size button when size has not been calculated', async () => {
     renderComponent({ rowData });

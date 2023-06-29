@@ -310,7 +310,6 @@ export const useLuceneFacet = <TSelectData,>(
       onError: (error) => {
         handleICATError(error);
       },
-      getNextPageParam: (lastPage, _) => lastPage.search_after,
       ...options,
     }
   );

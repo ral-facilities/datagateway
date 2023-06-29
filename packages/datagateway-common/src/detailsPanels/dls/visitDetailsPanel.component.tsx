@@ -325,52 +325,47 @@ const VisitDetailsPanel = (
           <StyledGrid id="parameter-grid" container direction="column">
             {investigationData.parameters.length > 0 ? (
               investigationData.parameters.map((parameter) => {
-                if (parameter.type) {
-                  switch (parameter.type.valueType) {
-                    case 'STRING':
-                      return (
-                        <Grid key={parameter.id} item xs>
-                          <Typography variant="overline">
-                            {parameter.type.name}
-                          </Typography>
-                          <Typography>
-                            <b>{parameter.stringValue}</b>
-                          </Typography>
-                        </Grid>
-                      );
-                    case 'NUMERIC':
-                      return (
-                        <Grid key={parameter.id} item xs>
-                          <Typography variant="overline">
-                            {parameter.type.name}
-                          </Typography>
-                          <Typography>
-                            <b>{parameter.numericValue}</b>{' '}
-                            {parameter.type.units}
-                          </Typography>
-                        </Grid>
-                      );
-                    case 'DATE_AND_TIME':
-                      return (
-                        <Grid key={parameter.id} item xs>
-                          <Typography variant="overline">
-                            {parameter.type.name}
-                          </Typography>
-                          <Typography>
-                            <b>
-                              {parameter.dateTimeValue &&
-                                formatParameterDateTimeValue(
-                                  parameter.dateTimeValue
-                                )}
-                            </b>
-                          </Typography>
-                        </Grid>
-                      );
-                    default:
-                      return null;
-                  }
-                } else {
-                  return null;
+                switch (parameter.type.valueType) {
+                  case 'STRING':
+                    return (
+                      <Grid key={parameter.id} item xs>
+                        <Typography variant="overline">
+                          {parameter.type.name}
+                        </Typography>
+                        <Typography>
+                          <b>{parameter.stringValue}</b>
+                        </Typography>
+                      </Grid>
+                    );
+                  case 'NUMERIC':
+                    return (
+                      <Grid key={parameter.id} item xs>
+                        <Typography variant="overline">
+                          {parameter.type.name}
+                        </Typography>
+                        <Typography>
+                          <b>{parameter.numericValue}</b> {parameter.type.units}
+                        </Typography>
+                      </Grid>
+                    );
+                  case 'DATE_AND_TIME':
+                    return (
+                      <Grid key={parameter.id} item xs>
+                        <Typography variant="overline">
+                          {parameter.type.name}
+                        </Typography>
+                        <Typography>
+                          <b>
+                            {parameter.dateTimeValue &&
+                              formatParameterDateTimeValue(
+                                parameter.dateTimeValue
+                              )}
+                          </b>
+                        </Typography>
+                      </Grid>
+                    );
+                  default:
+                    return null;
                 }
               })
             ) : (

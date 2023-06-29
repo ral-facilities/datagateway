@@ -204,7 +204,7 @@ interface ParameterType {
   id: number;
   name: string;
   units: string;
-  valueType: string;
+  valueType: 'NUMERIC' | 'STRING' | 'DATE_AND_TIME';
 }
 
 interface Facility {

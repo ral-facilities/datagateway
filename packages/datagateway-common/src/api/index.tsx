@@ -350,10 +350,9 @@ export const useSingleSort = (): ((
   );
 };
 
-export const usePushInvestigationFilter = (): ((
-  filterKey: string,
-  filter: Filter | null
-) => void) => {
+export const usePushFilter = (
+  filterPrefix?: string
+): ((filterKey: string, filter: Filter | null) => void) => {
   const { push } = useHistory();
 
   return React.useCallback(
@@ -365,13 +364,15 @@ export const usePushInvestigationFilter = (): ((
           ...query,
           filters: {
             ...query.filters,
-            ['investigation.' + filterKey]: filter,
+            [filterPrefix ? filterPrefix + filterKey : filterKey]: filter,
           },
         };
       } else {
         // if filter is null, user no longer wants to filter by that column so remove column from filter state
-        const { ['investigation.' + filterKey]: filter, ...rest } =
-          query.filters;
+        const {
+          [filterPrefix ? filterPrefix + filterKey : filterKey]: filter,
+          ...rest
+        } = query.filters;
         query = {
           ...query,
           filters: {
@@ -381,111 +382,24 @@ export const usePushInvestigationFilter = (): ((
       }
       push({ search: `?${parseQueryToSearch(query).toString()}` });
     },
-    [push]
+    [filterPrefix, push]
   );
 };
+
+export const usePushInvestigationFilter = (): ((
+  filterKey: string,
+  filter: Filter | null
+) => void) => usePushFilter('investigation.');
 
 export const usePushDatasetFilter = (): ((
   filterKey: string,
   filter: Filter | null
-) => void) => {
-  const { push } = useHistory();
-
-  return React.useCallback(
-    (filterKey: string, filter: Filter | null) => {
-      let query = parseSearchToQuery(window.location.search);
-      if (filter !== null) {
-        // if given an defined filter, update the relevant column in the sort state
-        query = {
-          ...query,
-          filters: {
-            ...query.filters,
-            ['dataset.' + filterKey]: filter,
-          },
-        };
-      } else {
-        // if filter is null, user no longer wants to filter by that column so remove column from filter state
-        const { ['dataset.' + filterKey]: filter, ...rest } = query.filters;
-        query = {
-          ...query,
-          filters: {
-            ...rest,
-          },
-        };
-      }
-      push({ search: `?${parseQueryToSearch(query).toString()}` });
-    },
-    [push]
-  );
-};
+) => void) => usePushFilter('dataset.');
 
 export const usePushDatafileFilter = (): ((
   filterKey: string,
   filter: Filter | null
-) => void) => {
-  const { push } = useHistory();
-
-  return React.useCallback(
-    (filterKey: string, filter: Filter | null) => {
-      let query = parseSearchToQuery(window.location.search);
-      if (filter !== null) {
-        // if given an defined filter, update the relevant column in the sort state
-        query = {
-          ...query,
-          filters: {
-            ...query.filters,
-            ['datafile.' + filterKey]: filter,
-          },
-        };
-      } else {
-        // if filter is null, user no longer wants to filter by that column so remove column from filter state
-        const { ['datafile.' + filterKey]: filter, ...rest } = query.filters;
-        query = {
-          ...query,
-          filters: {
-            ...rest,
-          },
-        };
-      }
-      push({ search: `?${parseQueryToSearch(query).toString()}` });
-    },
-    [push]
-  );
-};
-
-export const usePushFilter = (): ((
-  filterKey: string,
-  filter: Filter | null
-) => void) => {
-  const { push } = useHistory();
-
-  return React.useCallback(
-    (filterKey: string, filter: Filter | null) => {
-      let query = parseSearchToQuery(window.location.search);
-      if (filter !== null) {
-        // if given an defined filter, update the relevant column in the sort state
-        query = {
-          ...query,
-          filters: {
-            ...query.filters,
-            [filterKey]: filter,
-          },
-        };
-      } else {
-        // if filter is null, user no longer wants to filter by that column so remove column from filter state
-        const { [filterKey]: filter, ...rest } = query.filters;
-        query = {
-          ...query,
-          filters: {
-            ...rest,
-          },
-        };
-      }
-      push({ search: `?${parseQueryToSearch(query).toString()}` });
-    },
-    [push]
-  );
-};
+) => void) => usePushFilter('datafile.');
 
 export const usePushFilters = (): ((
   filters: { filterKey: string; filter: Filter | null }[]
