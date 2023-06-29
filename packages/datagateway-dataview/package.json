@@ -66,7 +66,7 @@
     "e2e": "start-server-and-test e2e:serve http://localhost:3000 cy:run",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
-    "lint:js": "eslint --ext=tsx --ext=ts --ext=js --ext=jsx --fix ./src && yarn build",
+    "lint:js": "eslint --max-warnings=0 --ext=tsx --ext=ts --ext=js --ext=jsx --fix ./src && tsc --noEmit",
     "eject": "react-scripts eject",
     "pre-commit": "lint-staged"
   },

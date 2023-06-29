@@ -55,7 +55,11 @@ function DatasetDatafileCountCell({
  * A cell in {@link DatasetSearchTable} that displays the size of the given {@link Dataset}.
  * @param dataset
  */
-function DatasetSizeCell({ dataset }: { dataset: Dataset }): JSX.Element {
+function DatasetSizeCell({
+  dataset,
+}: {
+  dataset: Dataset | SearchResultSource;
+}): JSX.Element {
   const result = useDatasetSizes(dataset);
   return <>{formatCountOrSize(result[0], true)}</>;
 }

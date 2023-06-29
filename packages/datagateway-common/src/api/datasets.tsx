@@ -231,6 +231,7 @@ export const useDatasetSizes = (
     | Dataset[]
     | InfiniteData<Dataset[]>
     | Dataset
+    | SearchResultSource
     | SearchResultSource[]
     | undefined
 ): UseQueryResult<number, AxiosError>[] => {
