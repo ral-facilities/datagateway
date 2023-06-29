@@ -43,8 +43,8 @@ const mockSearchResults: SearchResult[] = [
     source: {
       id: 1,
       name: 'Dataset test name',
-      startDate: 1563922800000,
-      endDate: 1564009200000,
+      startDate: 1563940800000,
+      endDate: 1564027200000,
       investigationinstrument: [
         {
           'instrument.id': 4,
@@ -59,7 +59,7 @@ const mockSearchResults: SearchResult[] = [
       'investigation.id': 2,
       'investigation.title': 'Investigation test title',
       'investigation.name': 'Investigation test name',
-      'investigation.startDate': 1560121200000,
+      'investigation.startDate': 1560139200000,
     },
   },
 ];

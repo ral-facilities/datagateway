@@ -44,6 +44,11 @@ describe('Dataset - Card View', () => {
   let history: MemoryHistory;
 
   const mockAxiosGet = (url: string): Promise<Partial<AxiosResponse>> => {
+    if (/\/datasets$/.test(url)) {
+      return Promise.resolve({
+        data: [],
+      });
+    }
     if (/\/search\/documents$/.test(url)) {
       // lucene search query
       return Promise.resolve({

@@ -2,7 +2,6 @@ import React from 'react';
 import { Divider, Grid, styled, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import type { Entity, Investigation, SearchResultSource } from '../app.types';
-import { format } from 'date-fns';
 
 const StyledGrid = styled(Grid)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -36,7 +35,7 @@ const InvestigationDetailsPanel = (
         // assume the date is already formatted when it is a string
         return date;
       case 'number':
-        return format(date, 'yyyy-MM-dd HH:mm:ss');
+        return new Date(date).toLocaleDateString();
     }
   }
 

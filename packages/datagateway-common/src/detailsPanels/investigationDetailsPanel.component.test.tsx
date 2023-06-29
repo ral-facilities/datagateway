@@ -26,18 +26,6 @@ describe('Investigation details panel component', () => {
           },
         },
       ],
-      studyInvestigations: [
-        {
-          id: 11,
-          study: {
-            id: 12,
-            pid: 'study pid',
-            name: 'study',
-            modTime: '2019-06-10',
-            createTime: '2019-06-11',
-          },
-        },
-      ],
       startDate: '2019-06-10',
       endDate: '2019-06-11',
     };
@@ -58,16 +46,16 @@ describe('Investigation details panel component', () => {
       summary: 'foo bar',
       visitId: '1',
       doi: 'doi 1',
-      startDate: 1563922800000,
-      endDate: 1564009200000,
+      startDate: 1563940800000,
+      endDate: 1564027200000,
     };
 
     render(<InvestigationDetailsPanel rowData={rowData} />);
 
     expect(screen.getByText('Test title 1')).toBeInTheDocument();
     expect(screen.getByText('Test 1')).toBeInTheDocument();
-    expect(screen.getByText('2019-07-24 00:00:00')).toBeInTheDocument();
-    expect(screen.getByText('2019-07-25 00:00:00')).toBeInTheDocument();
+    expect(screen.getByText('24/07/2019')).toBeInTheDocument();
+    expect(screen.getByText('25/07/2019')).toBeInTheDocument();
   });
 
   it('shows start/end date as unknown if not provided', () => {
@@ -78,7 +66,7 @@ describe('Investigation details panel component', () => {
       summary: 'foo bar',
       visitId: '1',
       doi: 'doi 1',
-      startDate: 1563922800000,
+      startDate: 1563940800000,
     };
 
     const { rerender } = render(
@@ -87,16 +75,16 @@ describe('Investigation details panel component', () => {
 
     expect(screen.getByText('Test title 1')).toBeInTheDocument();
     expect(screen.getByText('Test 1')).toBeInTheDocument();
-    expect(screen.getByText('2019-07-24 00:00:00')).toBeInTheDocument();
+    expect(screen.getByText('24/07/2019')).toBeInTheDocument();
     expect(screen.getByText('app.unknown')).toBeInTheDocument();
 
-    rowData.endDate = 1564009200000;
+    rowData.endDate = 1564027200000;
     delete rowData.startDate;
     rerender(<InvestigationDetailsPanel rowData={rowData} />);
 
     expect(screen.getByText('Test title 1')).toBeInTheDocument();
     expect(screen.getByText('Test 1')).toBeInTheDocument();
-    expect(screen.getByText('2019-07-25 00:00:00')).toBeInTheDocument();
+    expect(screen.getByText('25/07/2019')).toBeInTheDocument();
     expect(screen.getByText('app.unknown')).toBeInTheDocument();
   });
 });

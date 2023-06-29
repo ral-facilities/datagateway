@@ -17,7 +17,7 @@ function noOp(): void {
   // required as work-around for enzyme/jest environment not implementing window.URL.createObjectURL method
 }
 
-// Mock Date.toLocaleDateString so that it always uses en-GB as locale
+// Mock Date.toLocaleDateString so that it always uses en-GB as locale and UTC timezone
 // instead of using the system default, which can be different depending on the environment.
 // save a reference to the original implementation of Date.toLocaleDateString
 
@@ -27,10 +27,10 @@ jest
   .spyOn(Date.prototype, 'toLocaleDateString')
   .mockImplementation(function (this: Date) {
     // when toLocaleDateString is called with no argument
-    // pass in 'en-GB' as the locale
+    // pass in 'en-GB' as the locale & UTC as timezone
     // so that Date.toLocaleDateString() is equivalent to
-    // Date.toLocaleDateString('en-GB')
-    return toLocaleDateString.call(this, 'en-GB');
+    // Date.toLocaleDateString('en-GB', { timeZone: 'UTC' })
+    return toLocaleDateString.call(this, 'en-GB', { timeZone: 'UTC' });
   });
 
 if (typeof window.URL.createObjectURL === 'undefined') {

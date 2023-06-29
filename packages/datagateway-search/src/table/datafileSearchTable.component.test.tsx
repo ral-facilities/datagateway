@@ -139,13 +139,13 @@ describe('Datafile search table component', () => {
       name: 'Datafile test name',
       location: '/datafiletest',
       fileSize: 1,
-      date: 1563836400000,
+      date: 1563854400000,
       'dataset.id': 2,
       'dataset.name': 'Dataset test name',
       'investigation.id': 3,
       'investigation.title': 'Investigation test title',
       'investigation.name': 'Investigation test name',
-      'investigation.startDate': 1560121200000,
+      'investigation.startDate': 1560139200000,
       investigationinstrument: [
         {
           'instrument.id': 5,
