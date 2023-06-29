@@ -114,7 +114,7 @@
     "@typescript-eslint/eslint-plugin": "5.60.0",
     "@typescript-eslint/parser": "5.60.0",
     "@wojtekmaj/enzyme-adapter-react-17": "0.6.6",
-    "@babel/eslint-parser": "7.11.0",
+    "@babel/eslint-parser": "7.22.5",
     "cross-env": "7.0.3",
     "cypress": "11.2.0",
     "cypress-failed-log": "2.10.0",
