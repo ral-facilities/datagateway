@@ -21,7 +21,7 @@
     "date-fns": "2.30.0",
     "date-fns-tz": "2.0.0",
     "eslint-config-prettier": "8.8.0",
-    "eslint-plugin-cypress": "2.12.1",
+    "eslint-plugin-cypress": "2.13.3",
     "eslint-plugin-prettier": "4.2.1",
     "history": "4.10.1",
     "i18next": "22.0.3",
