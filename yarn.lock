@@ -6561,7 +6561,7 @@ __metadata:
     express: 4.18.1
     history: 4.10.1
     i18next: 22.0.3
-    i18next-browser-languagedetector: 7.0.0
+    i18next-browser-languagedetector: 7.1.0
     i18next-http-backend: 2.1.0
     jsrsasign: 10.6.0
     lint-staged: 13.1.0
@@ -6631,7 +6631,7 @@ __metadata:
     eslint-plugin-prettier: 4.2.1
     history: 4.10.1
     i18next: 22.0.3
-    i18next-browser-languagedetector: 7.0.0
+    i18next-browser-languagedetector: 7.1.0
     i18next-http-backend: 2.1.0
     jsrsasign: 10.6.0
     lint-staged: 13.1.0
@@ -6702,7 +6702,7 @@ __metadata:
     express: 4.18.1
     history: 4.10.1
     i18next: 22.0.3
-    i18next-browser-languagedetector: 7.0.0
+    i18next-browser-languagedetector: 7.1.0
     i18next-http-backend: 2.1.0
     jsrsasign: 10.6.0
     lint-staged: 13.1.0
@@ -9365,12 +9365,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next-browser-languagedetector@npm:7.0.0":
-  version: 7.0.0
-  resolution: "i18next-browser-languagedetector@npm:7.0.0"
+"i18next-browser-languagedetector@npm:7.1.0":
+  version: 7.1.0
+  resolution: "i18next-browser-languagedetector@npm:7.1.0"
   dependencies:
     "@babel/runtime": ^7.19.4
-  checksum: 4430a0bab327ce4f7370c75b54cde67da1368c028b3b2972d796c42913b4f4ae20e9b493041fa2860a8572694fd3b302465a4dfec6e19873c5188b1a88155ea8
+  checksum: 36981b9a9995ed66387f3735cceffe107ed3cdb6ca278d45fa243fabc65669c0eca095ed4a55a93dac046ca1eb23fd986ec0079723be7ebb8505e6ba25f379bb
   languageName: node
   linkType: hard
 
