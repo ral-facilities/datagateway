@@ -1,11 +1,13 @@
 import { Button, Grid, Paper, Typography } from '@mui/material';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 type AcceptDataPolicyProps = {
   acceptDataPolicy: () => void;
 };
 
 const AcceptDataPolicy: React.FC<AcceptDataPolicyProps> = (props) => {
+  const [t] = useTranslation();
   return (
     <Grid
       container
@@ -26,19 +28,12 @@ const AcceptDataPolicy: React.FC<AcceptDataPolicyProps> = (props) => {
           <Grid item>
             {/* TODO: write data policy text */}
             <Typography variant="body2">
-              Accept data policy: Lorem ipsum dolor sit amet, consectetur
-              adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-              dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-              exercitation ullamco laboris nisi ut aliquip ex ea commodo
-              consequat. Duis aute irure dolor in reprehenderit in voluptate
-              velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-              occaecat cupidatat non proident, sunt in culpa qui officia
-              deserunt mollit anim id est laborum.
+              {t('acceptDataPolicy.data_policy')}
             </Typography>
           </Grid>
           <Grid item alignSelf="end">
             <Button variant="contained" onClick={props.acceptDataPolicy}>
-              Accept
+              {t('acceptDataPolicy.accept')}
             </Button>
           </Grid>
         </Grid>

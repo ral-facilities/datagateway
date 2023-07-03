@@ -96,5 +96,39 @@
     "empty_items_error": "You have selected some empty items - please remove them to proceed with downloading your selection",
     "file_limit_error": "Too many files - you have exceeded limit of {{fileCountMax}} files - please remove some files",
     "size_limit_error": "Too much data - you have exceeded limit of {{totalSizeMax}} - please remove some files"
+  },
+  "acceptDataPolicy": {
+    "accept": "Accept",
+    "data_policy": "Accept data policy: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum lore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+  },
+  "DOIGenerationForm": {
+    "page_header": "Generate DOI",
+    "data_header": "Data",
+    "form_header": "Details",
+    "title": "DOI Title",
+    "description": "DOI Description",
+    "creators": "Creators",
+    "username": "Username",
+    "add_creator": "Add Creator",
+    "creator_name": "Name",
+    "creator_affiliation": "Affiliation",
+    "creator_email": "Email",
+    "creator_action": "Action",
+    "delete_creator": "Delete",
+    "generate_DOI": "Generate DOI",
+    "cart_tabs_aria_label": "cart tabs",
+    "cart_tab_investigations": "Investigations",
+    "cart_tab_datasets": "Datasets",
+    "cart_tab_datafiles": "Datafiles",
+    "cart_table_name": "Name"
+  },
+  "DOIConfirmDialog": {
+    "dialog_title": "Mint Confirmation",
+    "mint_success": "Mint was successful",
+    "mint_error": "Mint was unsuccessful",
+    "mint_loading": "Loading...",
+    "doi_label": "DOI: ",
+    "error_label": "Error: ",
+    "view_data_publication": "View Data Publication"
   }
 }

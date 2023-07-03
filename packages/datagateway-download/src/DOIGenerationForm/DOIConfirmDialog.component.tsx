@@ -8,6 +8,7 @@ import {
 import { AxiosError } from 'axios';
 import { Mark } from 'datagateway-common';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { QueryStatus } from 'react-query';
 import { Link } from 'react-router-dom';
 
@@ -37,6 +38,8 @@ const DOIConfirmDialog: React.FC<DOIConfirmDialogProps> = (
 
   const isMintLoading = mintingStatus === 'loading';
 
+  const [t] = useTranslation();
+
   return (
     <Dialog
       onClose={(event) => {
@@ -50,7 +53,7 @@ const DOIConfirmDialog: React.FC<DOIConfirmDialogProps> = (
     >
       <div>
         <DialogTitle onClose={isMintError ? () => setClose() : undefined}>
-          Mint confirmation
+          {t('DOIConfirmDialog.dialog_title')}
         </DialogTitle>
         <DialogContent>
           <Grid
@@ -73,33 +76,35 @@ const DOIConfirmDialog: React.FC<DOIConfirmDialogProps> = (
 
             {isMintSuccess ? (
               <Grid item xs style={{ textAlign: 'center' }}>
-                <Typography>Mint was successful</Typography>
+                <Typography>{t('DOIConfirmDialog.mint_success')}</Typography>
               </Grid>
             ) : isMintError ? (
               <Grid item xs style={{ textAlign: 'center' }}>
-                <Typography>Mint was unsuccessful</Typography>
+                <Typography>{t('DOIConfirmDialog.mint_error')}</Typography>
               </Grid>
             ) : (
               <Grid item xs style={{ textAlign: 'center' }}>
-                <Typography>Loading...</Typography>
+                <Typography>{t('DOIConfirmDialog.mint_loading')}</Typography>
               </Grid>
             )}
 
             {isMintSuccess && data && (
               <Grid item xs>
-                <Typography>DOI: {data.doi}</Typography>
+                <Typography>
+                  {t('DOIConfirmDialog.doi_label') + data.doi}
+                </Typography>
               </Grid>
             )}
 
             {isMintError && error && (
               <Grid item xs>
                 <Typography>
-                  Error:{' '}
-                  {error.response?.data?.detail
-                    ? typeof error.response.data.detail === 'string'
-                      ? error.response.data.detail
-                      : error.response.data.detail[0].msg
-                    : error.message}
+                  {t('DOIConfirmDialog.error_label') +
+                    (error.response?.data?.detail
+                      ? typeof error.response.data.detail === 'string'
+                        ? error.response.data.detail
+                        : error.response.data.detail[0].msg
+                      : error.message)}
                 </Typography>
               </Grid>
             )}
@@ -112,7 +117,7 @@ const DOIConfirmDialog: React.FC<DOIConfirmDialogProps> = (
                   variant="contained"
                   color="primary"
                 >
-                  View Data Publication
+                  {t('DOIConfirmDialog.view_data_publication')}
                 </Button>
               </Grid>
             )}

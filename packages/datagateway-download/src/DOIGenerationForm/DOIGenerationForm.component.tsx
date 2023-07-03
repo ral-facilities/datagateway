@@ -17,6 +17,7 @@ import {
 import { AxiosError } from 'axios';
 import { readSciGatewayToken, User } from 'datagateway-common';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Redirect, useLocation } from 'react-router-dom';
 import {
   useCart,
@@ -73,6 +74,8 @@ const DOIGenerationForm: React.FC = () => {
 
   const location = useLocation<{ fromCart: boolean } | undefined>();
 
+  const [t] = useTranslation();
+
   // redirect if the user tries to access the link directly instead of from the cart
   if (!location.state?.fromCart) {
     return <Redirect to="/download" />;
@@ -85,7 +88,7 @@ const DOIGenerationForm: React.FC = () => {
           <Box>
             {/* need to specify colour is textPrimary since this Typography is not in a Paper */}
             <Typography variant="h5" component="h2" color="textPrimary">
-              Generate DOI
+              {t('DOIGenerationForm.page_header')}
             </Typography>
             <Paper sx={{ padding: 1 }}>
               {/* use row-reverse, justifyContent start and the "wrong" order of components to make overflow layout nice
@@ -100,7 +103,7 @@ const DOIGenerationForm: React.FC = () => {
                 <Grid container item direction="column" xs="auto" lg={5}>
                   <Grid item>
                     <Typography variant="h6" component="h3">
-                      Data
+                      {t('DOIGenerationForm.data_header')}
                     </Typography>
                   </Grid>
                   <Grid item>
@@ -113,21 +116,36 @@ const DOIGenerationForm: React.FC = () => {
                       <Tabs
                         value={currentTab}
                         onChange={handleTabChange}
-                        aria-label="cart tabs"
+                        aria-label={t('DOIGenerationForm.cart_tabs_aria_label')}
                         indicatorColor="secondary"
                         textColor="secondary"
                       >
                         {cart?.some(
                           (cartItem) => cartItem.entityType === 'investigation'
                         ) && (
-                          <Tab label="Investigations" value="investigation" />
+                          <Tab
+                            label={t(
+                              'DOIGenerationForm.cart_tab_investigations'
+                            )}
+                            value="investigation"
+                          />
                         )}
                         {cart?.some(
                           (cartItem) => cartItem.entityType === 'dataset'
-                        ) && <Tab label="Datasets" value="dataset" />}
+                        ) && (
+                          <Tab
+                            label={t('DOIGenerationForm.cart_tab_datasets')}
+                            value="dataset"
+                          />
+                        )}
                         {cart?.some(
                           (cartItem) => cartItem.entityType === 'datafile'
-                        ) && <Tab label="Datafiles" value="datafile" />}
+                        ) && (
+                          <Tab
+                            label={t('DOIGenerationForm.cart_tab_datafiles')}
+                            value="datafile"
+                          />
+                        )}
                       </Tabs>
                     </Box>
                     {/* TODO: do we need to display more info in this table?
@@ -141,7 +159,9 @@ const DOIGenerationForm: React.FC = () => {
                     >
                       <TableHead>
                         <TableRow>
-                          <TableCell>Name</TableCell>
+                          <TableCell>
+                            {t('DOIGenerationForm.cart_table_name')}
+                          </TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -161,12 +181,12 @@ const DOIGenerationForm: React.FC = () => {
                 <Grid container item direction="column" xs spacing={1} lg={7}>
                   <Grid item>
                     <Typography variant="h6" component="h3">
-                      Details
+                      {t('DOIGenerationForm.form_header')}
                     </Typography>
                   </Grid>
                   <Grid item>
                     <TextField
-                      label="DOI Title"
+                      label={t('DOIGenerationForm.title')}
                       required
                       fullWidth
                       color="secondary"
@@ -176,7 +196,7 @@ const DOIGenerationForm: React.FC = () => {
                   </Grid>
                   <Grid item>
                     <TextField
-                      label="DOI Description"
+                      label={t('DOIGenerationForm.description')}
                       required
                       multiline
                       rows={4}
@@ -201,7 +221,7 @@ const DOIGenerationForm: React.FC = () => {
                       <Grid container direction="row" spacing={1}>
                         <Grid item>
                           <Typography variant="h6" component="h4">
-                            Creators
+                            {t('DOIGenerationForm.creators')}
                           </Typography>
                         </Grid>
                         <Grid
@@ -215,7 +235,7 @@ const DOIGenerationForm: React.FC = () => {
                         >
                           <Grid item xs>
                             <TextField
-                              label="Username"
+                              label={t('DOIGenerationForm.username')}
                               required
                               fullWidth
                               error={usernameError.length > 0}
@@ -289,7 +309,7 @@ const DOIGenerationForm: React.FC = () => {
                                 }
                               }}
                             >
-                              Add Creator
+                              {t('DOIGenerationForm.add_creator')}
                             </Button>
                           </Grid>
                         </Grid>
@@ -302,10 +322,18 @@ const DOIGenerationForm: React.FC = () => {
                           >
                             <TableHead>
                               <TableRow>
-                                <TableCell>Name</TableCell>
-                                <TableCell>Affiliation</TableCell>
-                                <TableCell>Email</TableCell>
-                                <TableCell>Action</TableCell>
+                                <TableCell>
+                                  {t('DOIGenerationForm.creator_name')}
+                                </TableCell>
+                                <TableCell>
+                                  {t('DOIGenerationForm.creator_affiliation')}
+                                </TableCell>
+                                <TableCell>
+                                  {t('DOIGenerationForm.creator_email')}
+                                </TableCell>
+                                <TableCell>
+                                  {t('DOIGenerationForm.creator_action')}
+                                </TableCell>
                               </TableRow>
                             </TableHead>
                             <TableBody>
@@ -341,7 +369,7 @@ const DOIGenerationForm: React.FC = () => {
                                       }
                                       color="secondary"
                                     >
-                                      Delete
+                                      {t('DOIGenerationForm.delete_creator')}
                                     </Button>
                                   </TableCell>
                                 </TableRow>
@@ -389,7 +417,7 @@ const DOIGenerationForm: React.FC = () => {
                         }
                       }}
                     >
-                      Generate DOI
+                      {t('DOIGenerationForm.generate_DOI')}
                     </Button>
                   </Grid>
                 </Grid>
