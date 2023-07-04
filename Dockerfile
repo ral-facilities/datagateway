@@ -36,6 +36,11 @@ COPY --from=builder /datagateway-build/packages/datagateway-download/build/. ./d
 COPY --from=builder /datagateway-build/packages/datagateway-search/build/. ./datagateway-search/
 
 RUN set -eux; \
+    \
+    # Compress all files except images \
+    echo 'SetOutputFilter DEFLATE' >> /usr/local/apache2/conf/httpd.conf; \
+    echo 'SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip' >> /usr/local/apache2/conf/httpd.conf; \
+    \
     # Privileged ports are permitted to root only by default. \
     # setcap to bind to privileged ports (80) as non-root. \
     apk --no-cache add libcap; \
