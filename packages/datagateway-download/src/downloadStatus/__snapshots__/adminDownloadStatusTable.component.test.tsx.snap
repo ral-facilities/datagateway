@@ -72,7 +72,7 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                 <div
                   aria-colcount="10"
                   aria-rowcount="5"
-                  class="ReactVirtualized__Table css-dbfe3s"
+                  class="ReactVirtualized__Table css-1ldpmmw"
                   role="grid"
                 >
                   <div
@@ -1079,7 +1079,7 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                     >
                       <div
                         aria-rowindex="1"
-                        class="ReactVirtualized__Table__row"
+                        class="ReactVirtualized__Table__row hoverable-row"
                         role="row"
                         style="height: 30px; left: 0px; position: absolute; top: 0px; width: 856px; overflow: hidden; padding-right: 0px; display: flex; align-items: center; box-sizing: border-box;"
                       >
@@ -1343,7 +1343,7 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                       </div>
                       <div
                         aria-rowindex="2"
-                        class="ReactVirtualized__Table__row"
+                        class="ReactVirtualized__Table__row hoverable-row"
                         role="row"
                         style="height: 30px; left: 0px; position: absolute; top: 30px; width: 856px; overflow: hidden; padding-right: 0px; display: flex; align-items: center; box-sizing: border-box;"
                       >
@@ -1628,7 +1628,7 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                       </div>
                       <div
                         aria-rowindex="3"
-                        class="ReactVirtualized__Table__row"
+                        class="ReactVirtualized__Table__row hoverable-row"
                         role="row"
                         style="height: 30px; left: 0px; position: absolute; top: 60px; width: 856px; overflow: hidden; padding-right: 0px; display: flex; align-items: center; box-sizing: border-box;"
                       >
@@ -1913,7 +1913,7 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                       </div>
                       <div
                         aria-rowindex="4"
-                        class="ReactVirtualized__Table__row"
+                        class="ReactVirtualized__Table__row hoverable-row"
                         role="row"
                         style="height: 30px; left: 0px; position: absolute; top: 90px; width: 856px; overflow: hidden; padding-right: 0px; display: flex; align-items: center; box-sizing: border-box;"
                       >
@@ -2177,7 +2177,7 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                       </div>
                       <div
                         aria-rowindex="5"
-                        class="ReactVirtualized__Table__row"
+                        class="ReactVirtualized__Table__row hoverable-row"
                         role="row"
                         style="height: 30px; left: 0px; position: absolute; top: 120px; width: 856px; overflow: hidden; padding-right: 0px; display: flex; align-items: center; box-sizing: border-box;"
                       >

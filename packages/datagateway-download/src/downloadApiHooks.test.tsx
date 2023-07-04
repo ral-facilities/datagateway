@@ -1,5 +1,5 @@
 import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import type { Download } from 'datagateway-common';
 import {
   DownloadCartItem,
@@ -177,9 +177,11 @@ describe('Download Cart API react-query hooks test', () => {
         .fn()
         .mockImplementationOnce(() =>
           Promise.reject({
-            code: '431',
+            response: {
+              status: 431,
+            },
             message: 'Test 431 error message',
-          })
+          } as AxiosError)
         )
         .mockImplementation(() =>
           Promise.reject({
@@ -243,9 +245,11 @@ describe('Download Cart API react-query hooks test', () => {
         .fn()
         .mockImplementationOnce(() =>
           Promise.reject({
-            code: '431',
+            response: {
+              status: 431,
+            },
             message: 'Test 431 error message',
-          })
+          } as AxiosError)
         )
         .mockImplementation(() =>
           Promise.reject({

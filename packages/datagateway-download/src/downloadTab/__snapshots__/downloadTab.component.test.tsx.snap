@@ -93,7 +93,7 @@ exports[`DownloadTab should render correctly 1`] = `
                   <div
                     aria-colcount="5"
                     aria-rowcount="0"
-                    class="ReactVirtualized__Table css-dbfe3s"
+                    class="ReactVirtualized__Table css-1ldpmmw"
                     role="grid"
                   >
                     <div
@@ -540,7 +540,7 @@ exports[`DownloadTab should render correctly 1`] = `
                   class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
                 >
                   <button
-                    class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium tour-download-remove-button css-sghohy-MuiButtonBase-root-MuiButton-root"
+                    class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeMedium MuiButton-outlinedSizeMedium tour-download-remove-button css-wnpvqa-MuiButtonBase-root-MuiButton-root"
                     id="removeAllButton"
                     tabindex="0"
                     type="button"
