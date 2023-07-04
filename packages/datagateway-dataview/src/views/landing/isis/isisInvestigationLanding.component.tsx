@@ -278,45 +278,10 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       icon: <Public sx={shortInfoIconStyle} />,
     },
   ];
-
-  return (
-    <Paper
-      data-testid="isis-investigation-landing"
-      sx={{ margin: 1, padding: 1 }}
-    >
-      <Grid container sx={{ padding: 0.5 }}>
-        <Grid item xs={12}>
-          <Branding />
-        </Grid>
-        <Grid item xs={12}>
-          <Paper square elevation={0} sx={{ mx: -1.5, px: 1.5 }}>
-            <Tabs
-              value={value}
-              onChange={(event, newValue) => setValue(newValue)}
-              indicatorColor="secondary"
-              textColor="secondary"
-            >
-              <Tab
-                id="investigation-details-tab"
-                aria-controls="investigation-details-panel"
-                label={t('investigations.details.label')}
-                value="details"
-              />
-              <Tab
-                id="investigation-datasets-tab"
-                label={t('investigations.details.datasets')}
-                onClick={() =>
-                  push(
-                    view
-                      ? `${urlPrefix}/dataset?view=${view}`
-                      : `${urlPrefix}/dataset`
-                  )
-                }
-              />
-            </Tabs>
-            <Divider />
-          </Paper>
-        </Grid>
+  let content = null;
+  if (value === 'details') {
+    content = (
+      <div>
         <Grid item container xs={12} id="investigation-details-panel">
           {/* Long format information */}
           <Grid item xs>
@@ -497,6 +462,60 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               </Box>
             ))}
           </Grid>
+        </Grid>
+      </div>
+    );
+  } else if (value === 'etherpad') {
+    content = (
+      <div>
+        <iframe
+          title="Report Auth"
+          src={`http://http://172.16.101.235:9001/`}
+          width="100%"
+          height={window.innerHeight}
+        ></iframe>
+      </div>
+    );
+  }
+
+  return (
+    <Paper
+      data-testid="isis-investigation-landing"
+      sx={{ margin: 1, padding: 1 }}
+    >
+      <Grid container sx={{ padding: 0.5 }}>
+        <Grid item xs={12}>
+          <Branding />
+        </Grid>
+        <Grid item xs={12}>
+          <Paper square elevation={0} sx={{ mx: -1.5, px: 1.5 }}>
+            <Tabs
+              value={value}
+              onChange={(event, newValue) => setValue(newValue)}
+              indicatorColor="secondary"
+              textColor="secondary"
+            >
+              <Tab
+                id="investigation-details-tab"
+                aria-controls="investigation-details-panel"
+                label={t('investigations.details.label')}
+                value="details"
+              />
+              <Tab
+                id="investigation-datasets-tab"
+                label={t('investigations.details.datasets')}
+                onClick={() =>
+                  push(
+                    view
+                      ? `${urlPrefix}/dataset?view=${view}`
+                      : `${urlPrefix}/dataset`
+                  )
+                }
+              />
+              <Tab id="etherpad" label={t('Etherpad')} />
+            </Tabs>
+            <Divider />
+          </Paper>
         </Grid>
       </Grid>
     </Paper>
