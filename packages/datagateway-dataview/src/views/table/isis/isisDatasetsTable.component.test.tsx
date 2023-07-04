@@ -62,7 +62,7 @@ describe('ISIS Dataset table component', () => {
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
             <ISISDatasetsTable
-              studyHierarchy={false}
+              dataPublication={false}
               instrumentId="1"
               instrumentChildId="2"
               investigationId="3"
@@ -308,14 +308,14 @@ describe('ISIS Dataset table component', () => {
     expect(screen.getByText('Test 1')).toMatchSnapshot();
   });
 
-  it('renders dataset name as a link in StudyHierarchy', () => {
+  it('renders dataset name as a link in data publication hierarchy', () => {
     const store = mockStore(state);
     render(
       <Provider store={store}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
             <ISISDatasetsTable
-              studyHierarchy={true}
+              dataPublication={true}
               instrumentId="1"
               instrumentChildId="2"
               investigationId="3"

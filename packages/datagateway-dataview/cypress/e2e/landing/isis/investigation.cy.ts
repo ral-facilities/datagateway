@@ -1,20 +1,20 @@
 describe('ISIS - Investigation Landing', () => {
   beforeEach(() => {
     cy.login();
-    cy.visit('/browse/instrument/1/facilityCycle/19/investigation/19');
+    cy.visit('/browse/instrument/13/facilityCycle/12/investigation/31');
   });
 
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');
-    cy.contains('Fine strong education fill maintain.').should('be.visible');
+    cy.contains('Stop system investment').should('be.visible');
   });
 
   it('should be able to click an investigation to see its datasets', () => {
     cy.get('#investigation-datasets-tab').first().click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/19/investigation/19/dataset'
+      '/browse/instrument/13/facilityCycle/12/investigation/31/dataset'
     );
   });
 
@@ -55,7 +55,7 @@ describe('ISIS - Investigation Landing', () => {
       .click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/19/investigation/19/dataset/19'
+      '/browse/instrument/13/facilityCycle/12/investigation/31/dataset/31'
     );
   });
 
@@ -69,17 +69,27 @@ describe('ISIS - Investigation Landing', () => {
         visitId: '1',
         doi: '10.5286/ISIS.E.RB1810842',
         size: 1,
-        studyInvestigations: [
+        dataCollectionInvestigations: [
           {
-            id: 6,
+            id: 2,
             investigation: {
               id: 1,
+              title: 'Test 1',
+              name: 'Test 1',
+              visitId: '1',
             },
-            study: {
-              id: 7,
-              pid: '10.5286/ISIS.E.RB1810842',
-              startDate: '2019-06-10',
-              endDate: '2019-06-11',
+            dataCollection: {
+              id: 3,
+              dataPublications: [
+                {
+                  id: 4,
+                  pid: '10.5286/ISIS.E.RB1810842',
+                  description: 'Data Publication description',
+                  modTime: '2019-06-10',
+                  createTime: '2019-06-11',
+                  title: 'Data Publication',
+                },
+              ],
             },
           },
         ],

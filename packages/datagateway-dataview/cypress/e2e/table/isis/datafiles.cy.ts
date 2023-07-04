@@ -1,8 +1,10 @@
 describe('ISIS - Datafiles Table', () => {
   beforeEach(() => {
-    cy.intercept('**/instruments/**').as('instruments');
-    cy.intercept('**/facilitycycles/19').as('facilityCycles');
-    cy.intercept('**/datasets/79').as('datasets');
+    cy.intercept('**/instruments/1').as('instrument');
+    cy.intercept('**/facilitycycles/19').as('facilityCycle');
+    cy.intercept('**/investigations/19').as('investigation');
+    cy.intercept('**/datasets/79').as('dataset');
+    cy.intercept('**/investigations**').as('idCheck');
     cy.intercept('**/datafiles/count?*').as('datafilesCount');
     cy.intercept('**/datafiles?order=*').as('datafilesOrder');
     cy.login();
@@ -14,10 +16,11 @@ describe('ISIS - Datafiles Table', () => {
         '/browse/instrument/1/facilityCycle/19/investigation/19/dataset/79/datafile'
       ).wait(
         [
-          '@instruments',
-          '@instruments',
-          '@facilityCycles',
-          '@datasets',
+          '@idCheck',
+          '@instrument',
+          '@facilityCycle',
+          '@investigation',
+          '@dataset',
           '@datafilesCount',
           '@datafilesOrder',
         ],

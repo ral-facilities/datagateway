@@ -13,10 +13,10 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
         with:
           node-version: '16.x'
           cache: 'yarn'
@@ -65,7 +65,7 @@ jobs:
           tar -czf ../../datagateway-search-$TAG_NAME.tar.gz datagateway-search-$TAG_NAME
 
       - name: Update snapshot tag
-        uses: richardsimko/update-tag@v1
+        uses: richardsimko/update-tag@782c008c16efcff2a27f83238dc4b05ffd8f4b52 # v1
         with:
           tag_name: ${{ env.TAG_NAME }}
         env:
@@ -73,7 +73,7 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' }}
 
       - name: Create/update release
-        uses: johnwbyrd/update-release@v1.0.0
+        uses: johnwbyrd/update-release@1d5ec4791e40507e5eca3b4dbf90f0b27e7e4979 # v1.0.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           files: ./datagateway-dataview-${{ env.TAG_NAME }}.tar.gz ./datagateway-download-${{ env.TAG_NAME }}.tar.gz ./datagateway-search-${{ env.TAG_NAME }}.tar.gz

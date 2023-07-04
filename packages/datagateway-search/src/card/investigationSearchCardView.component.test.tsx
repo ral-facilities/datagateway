@@ -90,24 +90,6 @@ describe('Investigation - Card View', () => {
             },
           },
         ],
-        studyInvestigations: [
-          {
-            id: 5,
-            study: {
-              id: 6,
-              pid: 'study pid',
-              name: 'study name',
-              modTime: '2019-06-10',
-              createTime: '2019-06-10',
-            },
-            investigation: {
-              id: 2,
-              title: 'Investigation test title',
-              name: 'Investigation test name',
-              visitId: '1',
-            },
-          },
-        ],
       },
     ];
     history = createMemoryHistory();

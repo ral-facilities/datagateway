@@ -14,9 +14,9 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
         with:
           node-version: '16.x'
           cache: 'yarn'
@@ -37,28 +37,28 @@ jobs:
       # Test coverage upload
       - name: Upload unit test coverage for the Common package
         if: success()
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3
         with:
           directory: ./packages/datagateway-common/
           flags: common
           fail_ci_if_error: true
       - name: Upload unit test coverage for the DataView package
         if: success()
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3
         with:
           directory: ./packages/datagateway-dataview/
           flags: dataview
           fail_ci_if_error: true
       - name: Upload unit test coverage for the Search package
         if: success()
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3
         with:
           directory: ./packages/datagateway-search/
           flags: search
           fail_ci_if_error: true
       - name: Upload unit test coverage for the Download package
         if: success()
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3
         with:
           directory: ./packages/datagateway-download/
           flags: download
@@ -69,24 +69,24 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
       - name: Add apt repo
         run: sudo add-apt-repository universe
       - name: Setup Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@5ffc13f4174014e2d4d4572b3d74c3fa61aeb2c2 # v3
         with:
           distribution: 'zulu'
           java-version: 8
           java-package: jdk
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@bd6b4b6205c4dbad673328db7b31b7fab9e241c0 # v4
         with:
           python-version: 3.6
           architecture: x64
 
       # ICAT Ansible clone and install dependencies
       - name: Checkout icat-ansible
-        uses: actions/checkout@v3
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
         with:
           repository: icatproject-contrib/icat-ansible
           ref: master
@@ -136,7 +136,7 @@ jobs:
           cd /home/runner/install/icat.server/ && ./setup -vv install
 
       - name: Checkout datagateway-api
-        uses: actions/checkout@v3
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
@@ -165,7 +165,7 @@ jobs:
 
       # E2E tests
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
         with:
           node-version: '14.x'
       # Cache yarn dependencies/ restore the cached dependencies during future workflows
@@ -173,7 +173,7 @@ jobs:
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
       - name: Cache yarn dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3
         id: yarn-cache
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
@@ -191,7 +191,7 @@ jobs:
         run: yarn workspace datagateway-dataview run e2e
       - name: Upload Cypress screenshots
         if: failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
         with:
           name: DataView-Screenshots
           path: packages/datagateway-dataview/cypress/screenshots
@@ -201,24 +201,24 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
       - name: Add apt repo
         run: sudo add-apt-repository universe
       - name: Setup Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@5ffc13f4174014e2d4d4572b3d74c3fa61aeb2c2 # v3
         with:
           distribution: 'zulu'
           java-version: 8
           java-package: jdk
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@bd6b4b6205c4dbad673328db7b31b7fab9e241c0 # v4
         with:
           python-version: 3.6
           architecture: x64
 
       # ICAT Ansible clone and install dependencies
       - name: Checkout icat-ansible
-        uses: actions/checkout@v3
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
         with:
           repository: icatproject-contrib/icat-ansible
           ref: master
@@ -284,7 +284,7 @@ jobs:
         run: rm -f login_output
 
       - name: Checkout datagateway-api
-        uses: actions/checkout@v3
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
@@ -313,7 +313,7 @@ jobs:
 
       # E2E tests
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
         with:
           node-version: '14.x'
       # Cache yarn dependencies/ restore the cached dependencies during future workflows
@@ -321,7 +321,7 @@ jobs:
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
       - name: Cache yarn dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3
         id: yarn-cache
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
@@ -339,7 +339,7 @@ jobs:
         run: yarn workspace datagateway-download run e2e
       - name: Upload Cypress screenshots
         if: failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
         with:
           name: Download-Screenshots
           path: packages/datagateway-download/cypress/screenshots
@@ -349,24 +349,24 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
       - name: Add apt repo
         run: sudo add-apt-repository universe
       - name: Setup Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@5ffc13f4174014e2d4d4572b3d74c3fa61aeb2c2 # v3
         with:
           distribution: 'zulu'
           java-version: 8
           java-package: jdk
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@bd6b4b6205c4dbad673328db7b31b7fab9e241c0 # v4
         with:
           python-version: 3.6
           architecture: x64
 
       # ICAT Ansible clone and install dependencies
       - name: Checkout icat-ansible
-        uses: actions/checkout@v3
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
         with:
           repository: icatproject-contrib/icat-ansible
           ref: master
@@ -414,7 +414,7 @@ jobs:
           cd /home/runner/install/icat.server/ && ./setup -vv install
 
       - name: Checkout datagateway-api
-        uses: actions/checkout@v3
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
@@ -461,7 +461,7 @@ jobs:
 
       # E2E tests
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
         with:
           node-version: '14.x'
       # Cache yarn dependencies/ restore the cached dependencies during future workflows
@@ -469,7 +469,7 @@ jobs:
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
       - name: Cache yarn dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3
         id: yarn-cache
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
@@ -487,7 +487,7 @@ jobs:
         run: yarn workspace datagateway-search run e2e
       - name: Upload Cypress screenshots
         if: failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
         with:
           name: Search-Screenshots
           path: packages/datagateway-search/cypress/screenshots

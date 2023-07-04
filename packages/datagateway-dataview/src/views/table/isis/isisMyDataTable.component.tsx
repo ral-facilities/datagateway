@@ -75,7 +75,9 @@ const ISISMyDataTable = (): React.ReactElement => {
           investigationInstruments: 'instrument',
         },
         { investigationFacilityCycles: 'facilityCycle' },
-        { studyInvestigations: 'study' },
+        {
+          dataCollectionInvestigations: { dataCollection: 'dataPublications' },
+        },
       ]),
     },
   ]);
@@ -177,13 +179,18 @@ const ISISMyDataTable = (): React.ReactElement => {
       {
         icon: Public,
         label: t('investigations.doi'),
-        dataKey: 'studyInvestigations.study.pid',
+        dataKey:
+          'dataCollectionInvestigations.dataCollection.dataPublications.pid',
         cellContentRenderer: (cellProps: TableCellProps) => {
           const investigationData = cellProps.rowData as Investigation;
-          if (investigationData?.studyInvestigations?.[0]?.study) {
+          if (
+            investigationData?.dataCollectionInvestigations?.[0]?.dataCollection
+              ?.dataPublications?.[0]
+          ) {
             return externalSiteLink(
-              `https://doi.org/${investigationData.studyInvestigations[0].study.pid}`,
-              investigationData.studyInvestigations[0].study.pid,
+              `https://doi.org/${investigationData.dataCollectionInvestigations?.[0]?.dataCollection?.dataPublications?.[0].pid}`,
+              investigationData.dataCollectionInvestigations?.[0]
+                ?.dataCollection?.dataPublications?.[0].pid,
               'isis-mydata-table-doi-link'
             );
           } else {
