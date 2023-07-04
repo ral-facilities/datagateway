@@ -40,6 +40,10 @@ RUN set -eux; \
     # Compress all files except images \
     echo 'SetOutputFilter DEFLATE' >> /usr/local/apache2/conf/httpd.conf; \
     echo 'SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip' >> /usr/local/apache2/conf/httpd.conf; \
+    # Disable caching for .js, .json, and .html files \
+    echo '<FilesMatch ".(js|json|html)$">' >> /usr/local/apache2/conf/httpd.conf; \
+    echo '    Header set Cache-Control "no-cache"' >> /usr/local/apache2/conf/httpd.conf; \
+    echo '</FilesMatch>' >> /usr/local/apache2/conf/httpd.conf; \
     \
     # Privileged ports are permitted to root only by default. \
     # setcap to bind to privileged ports (80) as non-root. \
