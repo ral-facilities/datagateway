@@ -123,6 +123,6 @@
     "express": "4.18.1",
     "lint-staged": "13.2.3",
     "serve": "14.2.0",
-    "start-server-and-test": "1.15.0"
+    "start-server-and-test": "2.0.0"
   }
 }
