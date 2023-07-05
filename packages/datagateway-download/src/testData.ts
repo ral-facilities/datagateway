@@ -238,6 +238,7 @@ export const mockedSettings: Partial<DownloadSettings> = {
   apiUrl: 'https://example.com/api',
   downloadApiUrl: 'https://example.com/downloadApi',
   idsUrl: 'https://example.com/ids',
+  doiMinterUrl: 'https://example.com/doiMinter',
   fileCountMax: 5000,
   totalSizeMax: 1000000000000,
   accessMethods: {
