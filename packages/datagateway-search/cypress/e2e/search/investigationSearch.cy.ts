@@ -126,7 +126,8 @@ describe('Investigation search tab', () => {
     cy.findAllByRole('row')
       .eq(1)
       .within(() => {
-        cy.findByRole('checkbox').click().should('be.checked');
+        cy.findByRole('checkbox').click();
+        cy.findByRole('checkbox').should('be.checked');
       });
 
     cy.intercept(`**/topcat/user/cart/${facilityName}/cartItems`, {
@@ -138,7 +139,8 @@ describe('Investigation search tab', () => {
     cy.findAllByRole('row')
       .eq(1)
       .within(() => {
-        cy.findByRole('checkbox').click().should('not.be.checked');
+        cy.findByRole('checkbox').click();
+        cy.findByRole('checkbox').should('not.be.checked');
       });
   });
 
@@ -162,11 +164,13 @@ describe('Investigation search tab', () => {
       .within(() => {
         cy.findByRole('button', {
           name: 'Add experiment filter',
-        })
-          .click()
-          .within(() => {
-            cy.findByRole('checkbox').should('be.checked');
-          });
+        }).click();
+
+        cy.findByRole('button', {
+          name: 'Add experiment filter',
+        }).within(() => {
+          cy.findByRole('checkbox').should('be.checked');
+        });
       });
 
     // intercept search request to return predefined filtered search result
@@ -399,11 +403,10 @@ describe('Investigation search tab', () => {
   it('should link to an investigation', () => {
     cy.get('#filled-search').type('dog');
 
-    cy.get('[aria-label="Submit search"]')
-      .click()
-      .wait(['@investigations', '@investigationsCount'], {
-        timeout: 10000,
-      });
+    cy.get('[aria-label="Submit search"]').click();
+    cy.wait(['@investigations'], {
+      timeout: 10000,
+    });
     cy.get('[href="/browse/investigation/6/dataset"]');
   });
 });
