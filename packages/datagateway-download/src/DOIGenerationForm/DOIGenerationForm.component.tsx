@@ -65,9 +65,9 @@ const DOIGenerationForm: React.FC = () => {
     if (cart) {
       if (cart?.some((cartItem) => cartItem.entityType === 'investigation'))
         setCurrentTab('investigation');
-      if (cart?.some((cartItem) => cartItem.entityType === 'dataset'))
+      else if (cart?.some((cartItem) => cartItem.entityType === 'dataset'))
         setCurrentTab('dataset');
-      if (cart?.some((cartItem) => cartItem.entityType === 'datafile'))
+      else if (cart?.some((cartItem) => cartItem.entityType === 'datafile'))
         setCurrentTab('datafile');
     }
   }, [cart]);
@@ -156,6 +156,7 @@ const DOIGenerationForm: React.FC = () => {
                         backgroundColor: 'background.default',
                       }}
                       size="small"
+                      aria-label={`cart ${currentTab} table`}
                     >
                       <TableHead>
                         <TableRow>
@@ -220,7 +221,11 @@ const DOIGenerationForm: React.FC = () => {
                     >
                       <Grid container direction="row" spacing={1}>
                         <Grid item>
-                          <Typography variant="h6" component="h4">
+                          <Typography
+                            variant="h6"
+                            component="h4"
+                            id="creators-label"
+                          >
                             {t('DOIGenerationForm.creators')}
                           </Typography>
                         </Grid>
@@ -319,6 +324,7 @@ const DOIGenerationForm: React.FC = () => {
                               backgroundColor: 'background.default',
                             }}
                             size="small"
+                            aria-labelledby="creators-label"
                           >
                             <TableHead>
                               <TableRow>
@@ -426,7 +432,6 @@ const DOIGenerationForm: React.FC = () => {
           </Box>
           {/* Show the download confirmation dialog. */}
           <DOIConfirmDialog
-            aria-labelledby="downloadCartConfirmation"
             open={showMintConfirmation}
             mintingStatus={mintingStatus}
             data={mintData}
