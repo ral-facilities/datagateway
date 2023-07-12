@@ -4,6 +4,22 @@ describe('ISIS - Investigation Landing', () => {
     cy.visit('/browse/instrument/13/facilityCycle/12/investigation/31');
   });
 
+  it('renders the LandingPage component with etherpad tab selected', () => {
+    cy.get('tab[id="etherpad"]').click();
+
+    cy.get('tab[id="investigation-details-tab"]').should(
+      'not.have.attr',
+      'aria-selected',
+      'true'
+    );
+
+    cy.get('tab[id="etherpad"]').should('have.attr', 'aria-selected', 'true');
+
+    cy.get('iframe[title="Etherpad"]')
+      .should('be.visible')
+      .should('have.attr', 'src', 'http://172.16.101.235:9001/');
+  });
+
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');

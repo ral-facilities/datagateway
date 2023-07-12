@@ -95,13 +95,20 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     () => parseSearchToQuery(location.search),
     [location.search]
   );
-  const [value, setValue] = React.useState<'details'>('details');
+  const [value, setValue] = React.useState('details');
   const { instrumentId, instrumentChildId, investigationId, dataPublication } =
     props;
 
   const pathRoot = dataPublication ? 'browseDataPublications' : 'browse';
-  const instrumentChild = dataPublication ? 'dataPublication' : 'facilityCycle';
+  const instrumentChild = dataPublication
+    ? 'dataPublication'
+    : 'facilityCy`cl`e';
   const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}`;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-function-return-type
+  const handleChange = (_: any, newValue: string) => {
+    setValue(newValue);
+  };
 
   const { data } = useInvestigation(parseInt(investigationId), [
     {
@@ -278,205 +285,6 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       icon: <Public sx={shortInfoIconStyle} />,
     },
   ];
-  let content = null;
-  if (value === 'details') {
-    content = (
-      <div>
-        <Grid item container xs={12} id="investigation-details-panel">
-          {/* Long format information */}
-          <Grid item xs>
-            <Subheading variant="h5" aria-label="landing-investigation-title">
-              {data?.[0]?.title}
-            </Subheading>
-
-            <Typography aria-label="landing-investigation-summary">
-              {data?.[0]?.summary && data[0].summary !== 'null'
-                ? data[0].summary
-                : 'Description not provided'}
-            </Typography>
-            {formattedUsers.length > 0 && (
-              <div>
-                <Subheading
-                  variant="h6"
-                  aria-label="landing-investigation-users-label"
-                >
-                  {t('investigations.details.users.label')}
-                </Subheading>
-                {formattedUsers.map((user, i) => (
-                  <Typography
-                    aria-label={`landing-investigation-user-${i}`}
-                    key={i}
-                  >
-                    <b>{user.role}:</b> {user.fullName}
-                  </Typography>
-                ))}
-              </div>
-            )}
-
-            <Subheading
-              variant="h6"
-              aria-label="landing-investigation-publisher-label"
-            >
-              {t('datapublications.details.publisher')}
-            </Subheading>
-            <Typography aria-label="landing-investigation-publisher">
-              {t('doi_constants.publisher.name')}
-            </Typography>
-            <CitationFormatter
-              doi={doi}
-              formattedUsers={formattedUsers}
-              title={title}
-              startDate={data?.[0]?.startDate}
-            />
-
-            {formattedSamples && (
-              <div>
-                <Subheading
-                  variant="h6"
-                  aria-label="landing-investigation-samples-label"
-                >
-                  {t('investigations.details.samples.label')}
-                </Subheading>
-                {formattedSamples.length === 0 && (
-                  <Typography data-testid="investigation-details-panel-no-samples">
-                    {t('investigations.details.samples.no_samples')}
-                  </Typography>
-                )}
-                {formattedSamples.map((name, i) => (
-                  <Typography
-                    aria-label={`landing-investigation-sample-${i}`}
-                    key={i}
-                  >
-                    {name}
-                  </Typography>
-                ))}
-              </div>
-            )}
-
-            {formattedPublications && (
-              <div>
-                <Subheading
-                  variant="h6"
-                  aria-label="landing-investigation-publications-label"
-                >
-                  {t('investigations.details.publications.label')}
-                </Subheading>
-                {formattedPublications.length === 0 && (
-                  <Typography data-testid="investigation-details-panel-no-publications">
-                    {t('investigations.details.publications.no_publications')}
-                  </Typography>
-                )}
-                {formattedPublications.map((reference, i) => (
-                  <Typography
-                    aria-label={`landing-investigation-reference-${i}`}
-                    key={i}
-                  >
-                    {reference}
-                  </Typography>
-                ))}
-              </div>
-            )}
-          </Grid>
-          <Divider orientation="vertical" />
-          {/* Short format information */}
-          <Grid item xs={6} sm={5} md={4} lg={3} xl={2}>
-            {shortInfo.map(
-              (field, i) =>
-                data?.[0] &&
-                field.content(data[0] as Investigation) && (
-                  <ShortInfoRow key={i}>
-                    <ShortInfoLabel>
-                      {field.icon}
-                      {field.label}:
-                    </ShortInfoLabel>
-                    <ArrowTooltip
-                      title={getTooltipText(
-                        field.content(data[0] as Investigation)
-                      )}
-                    >
-                      <ShortInfoValue>
-                        {field.content(data[0] as Investigation)}
-                      </ShortInfoValue>
-                    </ArrowTooltip>
-                  </ShortInfoRow>
-                )
-            )}
-            {/* Actions */}
-            <ActionButtonsContainer data-testid="investigation-landing-action-container">
-              <AddToCartButton
-                entityType="investigation"
-                allIds={[parseInt(investigationId)]}
-                entityId={parseInt(investigationId)}
-              />
-            </ActionButtonsContainer>
-            {/* Parts */}
-            {(data?.[0] as Investigation)?.datasets?.map((dataset, i) => (
-              <Box key={i} sx={{ my: 1 }}>
-                <Divider />
-                <Subheading
-                  variant="h6"
-                  align="center"
-                  aria-label="landing-investigation-part-label"
-                >
-                  {tableLink(
-                    `${urlPrefix}/dataset/${dataset.id}`,
-                    `${t('datasets.dataset')}: ${dataset.name}`,
-                    view
-                  )}
-                </Subheading>
-                {shortDatasetInfo.map(
-                  (field, i) =>
-                    field.content(dataset as Dataset) && (
-                      <ShortInfoRow key={i}>
-                        <ShortInfoLabel>
-                          {field.icon}
-                          {field.label}:
-                        </ShortInfoLabel>
-                        <ArrowTooltip
-                          title={getTooltipText(
-                            field.content(dataset as Dataset)
-                          )}
-                        >
-                          <ShortInfoValue>
-                            {field.content(dataset as Dataset)}
-                          </ShortInfoValue>
-                        </ArrowTooltip>
-                      </ShortInfoRow>
-                    )
-                )}
-                <ActionButtonsContainer
-                  data-testid={`investigation-landing-dataset-${i}-action-container`}
-                >
-                  <AddToCartButton
-                    entityType="dataset"
-                    allIds={[dataset.id]}
-                    entityId={dataset.id}
-                  />
-                  <DownloadButton
-                    entityType="dataset"
-                    entityId={dataset.id}
-                    entityName={dataset.name}
-                    entitySize={sizeQueries[0]?.data ?? -1}
-                  />
-                </ActionButtonsContainer>
-              </Box>
-            ))}
-          </Grid>
-        </Grid>
-      </div>
-    );
-  } else if (value === 'etherpad') {
-    content = (
-      <div>
-        <iframe
-          title="Report Auth"
-          src={`http://http://172.16.101.235:9001/`}
-          width="100%"
-          height={window.innerHeight}
-        ></iframe>
-      </div>
-    );
-  }
 
   return (
     <Paper
@@ -491,7 +299,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
           <Paper square elevation={0} sx={{ mx: -1.5, px: 1.5 }}>
             <Tabs
               value={value}
-              onChange={(event, newValue) => setValue(newValue)}
+              onChange={handleChange}
               indicatorColor="secondary"
               textColor="secondary"
             >
@@ -512,9 +320,214 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                   )
                 }
               />
-              <Tab id="etherpad" label={t('Etherpad')} />
+              <Tab id="etherpad" label={t('Etherpad')} value="etherpad" />
             </Tabs>
             <Divider />
+            <Divider />
+            {value === 'details' && (
+              <div>
+                <Grid item container xs={12} id="investigation-details-panel">
+                  {/* Long format information */}
+                  <Grid item xs>
+                    <Subheading
+                      variant="h5"
+                      aria-label="landing-investigation-title"
+                    >
+                      {data?.[0]?.title}
+                    </Subheading>
+
+                    <Typography aria-label="landing-investigation-summary">
+                      {data?.[0]?.summary && data[0].summary !== 'null'
+                        ? data[0].summary
+                        : 'Description not provided'}
+                    </Typography>
+                    {formattedUsers.length > 0 && (
+                      <div>
+                        <Subheading
+                          variant="h6"
+                          aria-label="landing-investigation-users-label"
+                        >
+                          {t('investigations.details.users.label')}
+                        </Subheading>
+                        {formattedUsers.map((user, i) => (
+                          <Typography
+                            aria-label={`landing-investigation-user-${i}`}
+                            key={i}
+                          >
+                            <b>{user.role}:</b> {user.fullName}
+                          </Typography>
+                        ))}
+                      </div>
+                    )}
+
+                    <Subheading
+                      variant="h6"
+                      aria-label="landing-investigation-publisher-label"
+                    >
+                      {t('datapublications.details.publisher')}
+                    </Subheading>
+                    <Typography aria-label="landing-investigation-publisher">
+                      {t('doi_constants.publisher.name')}
+                    </Typography>
+                    <CitationFormatter
+                      doi={doi}
+                      formattedUsers={formattedUsers}
+                      title={title}
+                      startDate={data?.[0]?.startDate}
+                    />
+
+                    {formattedSamples && (
+                      <div>
+                        <Subheading
+                          variant="h6"
+                          aria-label="landing-investigation-samples-label"
+                        >
+                          {t('investigations.details.samples.label')}
+                        </Subheading>
+                        {formattedSamples.length === 0 && (
+                          <Typography data-testid="investigation-details-panel-no-samples">
+                            {t('investigations.details.samples.no_samples')}
+                          </Typography>
+                        )}
+                        {formattedSamples.map((name, i) => (
+                          <Typography
+                            aria-label={`landing-investigation-sample-${i}`}
+                            key={i}
+                          >
+                            {name}
+                          </Typography>
+                        ))}
+                      </div>
+                    )}
+
+                    {formattedPublications && (
+                      <div>
+                        <Subheading
+                          variant="h6"
+                          aria-label="landing-investigation-publications-label"
+                        >
+                          {t('investigations.details.publications.label')}
+                        </Subheading>
+                        {formattedPublications.length === 0 && (
+                          <Typography data-testid="investigation-details-panel-no-publications">
+                            {t(
+                              'investigations.details.publications.no_publications'
+                            )}
+                          </Typography>
+                        )}
+                        {formattedPublications.map((reference, i) => (
+                          <Typography
+                            aria-label={`landing-investigation-reference-${i}`}
+                            key={i}
+                          >
+                            {reference}
+                          </Typography>
+                        ))}
+                      </div>
+                    )}
+                  </Grid>
+                  <Divider orientation="vertical" />
+                  {/* Short format information */}
+                  <Grid item xs={6} sm={5} md={4} lg={3} xl={2}>
+                    {shortInfo.map(
+                      (field, i) =>
+                        data?.[0] &&
+                        field.content(data[0] as Investigation) && (
+                          <ShortInfoRow key={i}>
+                            <ShortInfoLabel>
+                              {field.icon}
+                              {field.label}:
+                            </ShortInfoLabel>
+                            <ArrowTooltip
+                              title={getTooltipText(
+                                field.content(data[0] as Investigation)
+                              )}
+                            >
+                              <ShortInfoValue>
+                                {field.content(data[0] as Investigation)}
+                              </ShortInfoValue>
+                            </ArrowTooltip>
+                          </ShortInfoRow>
+                        )
+                    )}
+                    {/* Actions */}
+                    <ActionButtonsContainer data-testid="investigation-landing-action-container">
+                      <AddToCartButton
+                        entityType="investigation"
+                        allIds={[parseInt(investigationId)]}
+                        entityId={parseInt(investigationId)}
+                      />
+                    </ActionButtonsContainer>
+                    {/* Parts */}
+                    {(data?.[0] as Investigation)?.datasets?.map(
+                      (dataset, i) => (
+                        <Box key={i} sx={{ my: 1 }}>
+                          <Divider />
+                          <Subheading
+                            variant="h6"
+                            align="center"
+                            aria-label="landing-investigation-part-label"
+                          >
+                            {tableLink(
+                              `${urlPrefix}/dataset/${dataset.id}`,
+                              `${t('datasets.dataset')}: ${dataset.name}`,
+                              view
+                            )}
+                          </Subheading>
+                          {shortDatasetInfo.map(
+                            (field, i) =>
+                              field.content(dataset as Dataset) && (
+                                <ShortInfoRow key={i}>
+                                  <ShortInfoLabel>
+                                    {field.icon}
+                                    {field.label}:
+                                  </ShortInfoLabel>
+                                  <ArrowTooltip
+                                    title={getTooltipText(
+                                      field.content(dataset as Dataset)
+                                    )}
+                                  >
+                                    <ShortInfoValue>
+                                      {field.content(dataset as Dataset)}
+                                    </ShortInfoValue>
+                                  </ArrowTooltip>
+                                </ShortInfoRow>
+                              )
+                          )}
+                          <ActionButtonsContainer
+                            data-testid={`investigation-landing-dataset-${i}-action-container`}
+                          >
+                            <AddToCartButton
+                              entityType="dataset"
+                              allIds={[dataset.id]}
+                              entityId={dataset.id}
+                            />
+                            <DownloadButton
+                              entityType="dataset"
+                              entityId={dataset.id}
+                              entityName={dataset.name}
+                              entitySize={sizeQueries[0]?.data ?? -1}
+                            />
+                          </ActionButtonsContainer>
+                        </Box>
+                      )
+                    )}
+                  </Grid>
+                </Grid>
+              </div>
+            )}
+
+            {value === 'etherpad' && (
+              <div>
+                <iframe
+                  title="Etherpad"
+                  src="http://172.16.101.235:9001/"
+                  width="100%"
+                  height="500px"
+                  frameBorder="0"
+                />
+              </div>
+            )}
           </Paper>
         </Grid>
       </Grid>

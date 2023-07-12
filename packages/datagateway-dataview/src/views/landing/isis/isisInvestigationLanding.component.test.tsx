@@ -21,6 +21,7 @@ import {
 } from '@testing-library/react';
 import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
+import LandingPage from './isisInvestigationLanding.component';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -299,6 +300,40 @@ describe('ISIS Investigation Landing page', () => {
         name: 'buttons.add_to_cart',
       })
     ).toBeInTheDocument();
+  });
+
+  describe('Testing the Etherpad components properties', () => {
+    const mockProps = {
+      instrumentId: 'instrumentId',
+      instrumentChildId: 'instrumentChildId',
+      investigationId: 'investigationId',
+      dataPublication: true,
+    };
+
+    it('renders the LandingPage component with etherpad tab selected', () => {
+      render(<LandingPage {...mockProps} />);
+
+      // Click on the Etherpad tab
+      const etherpadTab = screen.getByRole('tab', { name: /etherpad/i });
+      userEvent.click(etherpadTab);
+
+      // Verify that the details tab is not selected
+      const detailsTab = screen.getByRole('tab', {
+        name: /investigation-details-tab/i,
+      });
+      expect(detailsTab).toHaveAttribute('aria-selected', 'false');
+
+      // Verify that the Etherpad tab is selected
+      expect(etherpadTab).toHaveAttribute('aria-selected', 'true');
+
+      // Verify that the Etherpad iframe is rendered
+      const etherpadIframe = screen.getByTitle('Etherpad');
+      expect(etherpadIframe).toBeInTheDocument();
+      expect(etherpadIframe).toHaveAttribute(
+        'src',
+        'http://172.16.101.235:9001/'
+      );
+    });
   });
 
   describe('renders datasets for the investigation correctly', () => {
