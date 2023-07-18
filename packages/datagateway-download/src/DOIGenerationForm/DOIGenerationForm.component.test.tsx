@@ -35,7 +35,7 @@ jest.mock('datagateway-common', () => {
     ...originalModule,
     fetchDownloadCart: jest.fn(),
     readSciGatewayToken: jest.fn(() => ({
-      username: 'user1',
+      username: '1',
     })),
   };
 });
@@ -78,7 +78,7 @@ const renderComponent = (
   ),
 });
 
-describe('Download cart table component', () => {
+describe('DOI generation form component', () => {
   let user: ReturnType<typeof userEvent.setup>;
 
   beforeEach(() => {
@@ -102,14 +102,14 @@ describe('Download cart table component', () => {
     ).mockResolvedValue([
       {
         id: 1,
-        name: 'user1',
+        name: '1',
         fullName: 'User 1',
         email: 'user1@example.com',
         affiliation: 'Example Uni',
       },
       {
         id: 2,
-        name: 'user2',
+        name: '2',
         fullName: 'User 2',
         email: 'user2@example.com',
         affiliation: 'Example 2 Uni',
@@ -118,7 +118,7 @@ describe('Download cart table component', () => {
 
     (checkUser as jest.MockedFunction<typeof checkUser>).mockResolvedValue({
       id: 3,
-      name: 'user3',
+      name: '3',
       fullName: 'User 3',
       email: 'user3@example.com',
       affiliation: 'Example 3 Uni',
@@ -156,12 +156,12 @@ describe('Download cart table component', () => {
 
     await user.type(
       screen.getByRole('textbox', { name: 'DOIGenerationForm.title' }),
-      'title'
+      't'
     );
 
     await user.type(
       screen.getByRole('textbox', { name: 'DOIGenerationForm.description' }),
-      'desc'
+      'd'
     );
 
     await user.click(
@@ -237,7 +237,7 @@ describe('Download cart table component', () => {
 
     await user.type(
       screen.getByRole('textbox', { name: 'DOIGenerationForm.username' }),
-      'user3'
+      '3'
     );
 
     await user.click(
@@ -254,7 +254,7 @@ describe('Download cart table component', () => {
     // test errors on duplicate user
     await user.type(
       screen.getByRole('textbox', { name: 'DOIGenerationForm.username' }),
-      'user3'
+      '3'
     );
 
     await user.click(
@@ -278,7 +278,7 @@ describe('Download cart table component', () => {
 
     await user.type(
       screen.getByRole('textbox', { name: 'DOIGenerationForm.username' }),
-      'user4'
+      '4'
     );
 
     await user.click(
