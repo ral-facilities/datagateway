@@ -127,8 +127,8 @@
     "mint_success": "Mint was successful",
     "mint_error": "Mint was unsuccessful",
     "mint_loading": "Loading...",
-    "doi_label": "DOI: ",
-    "error_label": "Error: ",
+    "doi_label": "DOI",
+    "error_label": "Error",
     "view_data_publication": "View Data Publication"
   }
 }

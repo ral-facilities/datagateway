@@ -91,7 +91,7 @@ const DOIConfirmDialog: React.FC<DOIConfirmDialogProps> = (
             {isMintSuccess && data && (
               <Grid item xs>
                 <Typography>
-                  {t('DOIConfirmDialog.doi_label') + data.doi}
+                  {`${t('DOIConfirmDialog.doi_label')}: ${data.doi}`}
                 </Typography>
               </Grid>
             )}
@@ -99,12 +99,14 @@ const DOIConfirmDialog: React.FC<DOIConfirmDialogProps> = (
             {isMintError && error && (
               <Grid item xs>
                 <Typography>
-                  {t('DOIConfirmDialog.error_label') +
-                    (error.response?.data?.detail
-                      ? typeof error.response.data.detail === 'string'
-                        ? error.response.data.detail
-                        : error.response.data.detail[0].msg
-                      : error.message)}
+                  {`${t('DOIConfirmDialog.error_label')}: 
+                    ${
+                      error.response?.data?.detail
+                        ? typeof error.response.data.detail === 'string'
+                          ? error.response.data.detail
+                          : error.response.data.detail[0].msg
+                        : error.message
+                    }`}
                 </Typography>
               </Grid>
             )}
