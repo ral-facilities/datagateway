@@ -173,11 +173,9 @@ export const useDataPublication = (
         },
         {
           filterType: 'include',
-          filterValue: JSON.stringify('users'),
-        },
-        {
-          filterType: 'include',
           filterValue: JSON.stringify([
+            'users',
+            'type',
             {
               content: {
                 dataCollectionInvestigations: {
@@ -187,7 +185,6 @@ export const useDataPublication = (
                 },
               },
             },
-            'type',
           ]),
         },
       ]);
@@ -301,12 +298,14 @@ export const useDataPublicationContentCount = (
   entityType: 'investigation' | 'dataset' | 'datafile'
 ): UseQueryResult<number, AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+  const location = useLocation();
+  const { filters } = parseSearchToQuery(location.search);
 
   return useQuery(
-    ['dataPublicationContentCount', entityType, dataPublicationId],
+    ['dataPublicationContentCount', entityType, dataPublicationId, filters],
     () => {
       if (entityType === 'investigation') {
-        return fetchInvestigationCount(apiUrl, { sort: {}, filters: {} }, [
+        return fetchInvestigationCount(apiUrl, filters, [
           {
             filterType: 'where',
             filterValue: JSON.stringify({
@@ -317,7 +316,7 @@ export const useDataPublicationContentCount = (
         ]);
       }
       if (entityType === 'dataset') {
-        return fetchDatasetCountQuery(apiUrl, { sort: {}, filters: {} }, [
+        return fetchDatasetCountQuery(apiUrl, filters, [
           {
             filterType: 'where',
             filterValue: JSON.stringify({
@@ -329,7 +328,7 @@ export const useDataPublicationContentCount = (
         ]);
       }
       if (entityType === 'datafile') {
-        return fetchDatafileCountQuery(apiUrl, { sort: {}, filters: {} }, [
+        return fetchDatafileCountQuery(apiUrl, filters, [
           {
             filterType: 'where',
             filterValue: JSON.stringify({

@@ -9,6 +9,8 @@ import {
   useDataPublicationsInfinite,
   useDataPublicationsPaginated,
   useDataPublication,
+  useDataPublicationContent,
+  useDataPublicationContentCount,
 } from './dataPublications';
 
 jest.mock('../handleICATError');
@@ -270,18 +272,21 @@ describe('data publications api functions', () => {
           id: { eq: 1 },
         })
       );
-      params.append('include', JSON.stringify('users'));
       params.append(
         'include',
-        JSON.stringify({
-          content: {
-            dataCollectionInvestigations: {
-              investigation: {
-                investigationInstruments: 'instrument',
+        JSON.stringify([
+          'users',
+          'type',
+          {
+            content: {
+              dataCollectionInvestigations: {
+                investigation: {
+                  investigationInstruments: 'instrument',
+                },
               },
             },
           },
-        })
+        ])
       );
 
       expect(axios.get).toHaveBeenCalledWith(
@@ -313,18 +318,21 @@ describe('data publications api functions', () => {
           id: { eq: 1 },
         })
       );
-      params.append('include', JSON.stringify('users'));
       params.append(
         'include',
-        JSON.stringify({
-          content: {
-            dataCollectionInvestigations: {
-              investigation: {
-                investigationInstruments: 'instrument',
+        JSON.stringify([
+          'users',
+          'type',
+          {
+            content: {
+              dataCollectionInvestigations: {
+                investigation: {
+                  investigationInstruments: 'instrument',
+                },
               },
             },
           },
-        })
+        ])
       );
 
       expect(axios.get).toHaveBeenCalledWith(
@@ -406,6 +414,373 @@ describe('data publications api functions', () => {
 
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/api/datapublications/count',
+        expect.objectContaining({
+          params,
+        })
+      );
+      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+        params.toString()
+      );
+      expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
+    });
+  });
+
+  describe('useDataPublicationContent', () => {
+    it("sends axios request to fetch a single data publication's investigations and returns successful response", async () => {
+      (axios.get as jest.Mock).mockImplementation((url, options) =>
+        options.params.get('skip') === '0'
+          ? Promise.resolve({ data: mockData[0] })
+          : Promise.resolve({ data: mockData[1] })
+      );
+
+      const { result, waitFor } = renderHook(
+        () => useDataPublicationContent('1', 'investigation'),
+        {
+          wrapper: createReactQueryWrapper(history),
+        }
+      );
+
+      await waitFor(() => result.current.isSuccess);
+
+      params.append('order', JSON.stringify('name asc'));
+      params.append('order', JSON.stringify('id asc'));
+      params.append(
+        'where',
+        JSON.stringify({
+          name: { ilike: 'test' },
+        })
+      );
+      params.append('skip', JSON.stringify(0));
+      params.append('limit', JSON.stringify(50));
+      params.append(
+        'where',
+        JSON.stringify({
+          'dataCollectionInvestigations.dataCollection.dataPublications.id': {
+            eq: '1',
+          },
+        })
+      );
+      params.append(
+        'include',
+        JSON.stringify({
+          investigationInstruments: 'instrument',
+        })
+      );
+
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://example.com/api/investigations',
+        expect.objectContaining({
+          params,
+        })
+      );
+      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+        params.toString()
+      );
+      expect(result.current.data.pages).toStrictEqual([mockData[0]]);
+
+      result.current.fetchNextPage({
+        pageParam: { startIndex: 50, stopIndex: 74 },
+      });
+
+      await waitFor(() => result.current.isFetching);
+
+      await waitFor(() => !result.current.isFetching);
+
+      expect(axios.get).toHaveBeenNthCalledWith(
+        2,
+        'https://example.com/api/investigations',
+        expect.objectContaining({
+          params,
+        })
+      );
+      params.set('skip', JSON.stringify(50));
+      params.set('limit', JSON.stringify(25));
+      expect((axios.get as jest.Mock).mock.calls[1][1].params.toString()).toBe(
+        params.toString()
+      );
+
+      expect(result.current.data.pages).toStrictEqual([
+        mockData[0],
+        mockData[1],
+      ]);
+    });
+
+    it("sends axios request to fetch a single data publication's datasets and returns successful response", async () => {
+      (axios.get as jest.Mock).mockImplementation((url, options) =>
+        Promise.resolve({ data: mockData[0] })
+      );
+
+      const { result, waitFor } = renderHook(
+        () => useDataPublicationContent('1', 'dataset'),
+        {
+          wrapper: createReactQueryWrapper(history),
+        }
+      );
+
+      await waitFor(() => result.current.isSuccess);
+
+      params.append('order', JSON.stringify('name asc'));
+      params.append('order', JSON.stringify('id asc'));
+      params.append(
+        'where',
+        JSON.stringify({
+          name: { ilike: 'test' },
+        })
+      );
+      params.append('skip', JSON.stringify(0));
+      params.append('limit', JSON.stringify(50));
+      params.append(
+        'where',
+        JSON.stringify({
+          'dataCollectionDatasets.dataCollection.dataPublications.id': {
+            eq: '1',
+          },
+        })
+      );
+
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://example.com/api/datasets',
+        expect.objectContaining({
+          params,
+        })
+      );
+      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+        params.toString()
+      );
+      expect(result.current.data.pages).toStrictEqual([mockData[0]]);
+    });
+
+    it("sends axios request to fetch a single data publication's datafiles and returns successful response", async () => {
+      (axios.get as jest.Mock).mockImplementation((url, options) =>
+        Promise.resolve({ data: mockData[0] })
+      );
+
+      const { result, waitFor } = renderHook(
+        () => useDataPublicationContent('1', 'datafile'),
+        {
+          wrapper: createReactQueryWrapper(history),
+        }
+      );
+
+      await waitFor(() => result.current.isSuccess);
+
+      params.append('order', JSON.stringify('name asc'));
+      params.append('order', JSON.stringify('id asc'));
+      params.append(
+        'where',
+        JSON.stringify({
+          name: { ilike: 'test' },
+        })
+      );
+      params.append('skip', JSON.stringify(0));
+      params.append('limit', JSON.stringify(50));
+      params.append(
+        'where',
+        JSON.stringify({
+          'dataCollectionDatafiles.dataCollection.dataPublications.id': {
+            eq: '1',
+          },
+        })
+      );
+
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://example.com/api/datafiles',
+        expect.objectContaining({
+          params,
+        })
+      );
+      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+        params.toString()
+      );
+      expect(result.current.data.pages).toStrictEqual([mockData[0]]);
+    });
+
+    it("sends axios request to fetch a data publication's content and calls handleICATError on failure", async () => {
+      (axios.get as jest.Mock).mockRejectedValue({
+        message: 'Test error',
+      });
+      const { result, waitFor } = renderHook(
+        () => useDataPublicationContent('1', 'datafile'),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      await waitFor(() => result.current.isError);
+
+      params.append('order', JSON.stringify('id asc'));
+      params.append('skip', JSON.stringify(0));
+      params.append('limit', JSON.stringify(50));
+      params.append(
+        'where',
+        JSON.stringify({
+          'dataCollectionDatafiles.dataCollection.dataPublications.id': {
+            eq: '1',
+          },
+        })
+      );
+
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://example.com/api/datafiles',
+        expect.objectContaining({
+          params,
+        })
+      );
+      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+        params.toString()
+      );
+      expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
+    });
+  });
+
+  describe('useDataPublicationContentCount', () => {
+    it('sends axios request to fetch data publication investigation count and returns successful response', async () => {
+      (axios.get as jest.Mock).mockResolvedValue({
+        data: mockData.length,
+      });
+
+      const { result, waitFor } = renderHook(
+        () => useDataPublicationContentCount('1', 'investigation'),
+        {
+          wrapper: createReactQueryWrapper(history),
+        }
+      );
+
+      await waitFor(() => result.current.isSuccess);
+
+      params.append(
+        'where',
+        JSON.stringify({
+          name: { ilike: 'test' },
+        })
+      );
+      params.append(
+        'where',
+        JSON.stringify({
+          'dataCollectionInvestigations.dataCollection.dataPublications.id': {
+            eq: '1',
+          },
+        })
+      );
+
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://example.com/api/investigations/count',
+        expect.objectContaining({
+          params,
+        })
+      );
+      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+        params.toString()
+      );
+      expect(result.current.data).toEqual(mockData.length);
+    });
+
+    it('sends axios request to fetch data publication dataset count and returns successful response', async () => {
+      (axios.get as jest.Mock).mockResolvedValue({
+        data: mockData.length,
+      });
+
+      const { result, waitFor } = renderHook(
+        () => useDataPublicationContentCount('1', 'dataset'),
+        {
+          wrapper: createReactQueryWrapper(history),
+        }
+      );
+
+      await waitFor(() => result.current.isSuccess);
+
+      params.append(
+        'where',
+        JSON.stringify({
+          name: { ilike: 'test' },
+        })
+      );
+      params.append(
+        'where',
+        JSON.stringify({
+          'dataCollectionDatasets.dataCollection.dataPublications.id': {
+            eq: '1',
+          },
+        })
+      );
+
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://example.com/api/datasets/count',
+        expect.objectContaining({
+          params,
+        })
+      );
+      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+        params.toString()
+      );
+      expect(result.current.data).toEqual(mockData.length);
+    });
+
+    it('sends axios request to fetch data publication datafile count and returns successful response', async () => {
+      (axios.get as jest.Mock).mockResolvedValue({
+        data: mockData.length,
+      });
+
+      const { result, waitFor } = renderHook(
+        () => useDataPublicationContentCount('1', 'datafile'),
+        {
+          wrapper: createReactQueryWrapper(history),
+        }
+      );
+
+      await waitFor(() => result.current.isSuccess);
+
+      params.append(
+        'where',
+        JSON.stringify({
+          name: { ilike: 'test' },
+        })
+      );
+      params.append(
+        'where',
+        JSON.stringify({
+          'dataCollectionDatafiles.dataCollection.dataPublications.id': {
+            eq: '1',
+          },
+        })
+      );
+
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://example.com/api/datafiles/count',
+        expect.objectContaining({
+          params,
+        })
+      );
+      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+        params.toString()
+      );
+      expect(result.current.data).toEqual(mockData.length);
+    });
+
+    it('sends axios request to fetch data publication datafile count and calls handleICATError on failure', async () => {
+      (axios.get as jest.Mock).mockRejectedValue({
+        message: 'Test error',
+      });
+      const { result, waitFor } = renderHook(
+        () => useDataPublicationContentCount('1', 'datafile'),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      await waitFor(() => result.current.isError);
+
+      params.append(
+        'where',
+        JSON.stringify({
+          'dataCollectionDatafiles.dataCollection.dataPublications.id': {
+            eq: '1',
+          },
+        })
+      );
+
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://example.com/api/datafiles/count',
         expect.objectContaining({
           params,
         })
