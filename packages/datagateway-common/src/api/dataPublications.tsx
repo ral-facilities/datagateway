@@ -2,12 +2,13 @@ import {
   AdditionalFilters,
   Datafile,
   Dataset,
+  DataPublication,
   FiltersType,
   Investigation,
   SortType,
 } from '../app.types';
 import axios, { AxiosError } from 'axios';
-import { DataPublication } from '../app.types';
+import { StateType } from '../state/app.types';
 import { IndexRange } from 'react-virtualized';
 import { readSciGatewayToken } from '../parseTokens';
 import handleICATError from '../handleICATError';
@@ -20,15 +21,9 @@ import {
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { getApiParams, parseSearchToQuery } from '.';
-import {
-  fetchDatafileCountQuery,
-  fetchDatafiles,
-  fetchDatasetCountQuery,
-  fetchDatasets,
-  fetchInvestigationCount,
-  fetchInvestigations,
-  StateType,
-} from '..';
+import { fetchDatafileCountQuery, fetchDatafiles } from './datafiles';
+import { fetchDatasetCountQuery, fetchDatasets } from './datasets';
+import { fetchInvestigationCount, fetchInvestigations } from './investigations';
 import retryICATErrors from './retryICATErrors';
 
 const fetchDataPublications = (
