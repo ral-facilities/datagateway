@@ -237,13 +237,16 @@ const DLSDataPublicationContentTable = (
       <Tabs
         value={currentTab}
         onChange={handleTabChange}
-        aria-label="content tabs"
+        aria-label={t('datapublications.content_tab_entity_tabs_aria_label')}
         indicatorColor="secondary"
         textColor="secondary"
       >
-        <Tab label="Investigations" value="investigation" />
-        <Tab label="Datasets" value="dataset" />
-        <Tab label="Datafiles" value="datafile" />
+        <Tab
+          label={t('breadcrumbs.investigation_other')}
+          value="investigation"
+        />
+        <Tab label={t('breadcrumbs.dataset_other')} value="dataset" />
+        <Tab label={t('breadcrumbs.datafile_other')} value="datafile" />
       </Tabs>
       {/* add a div just so we can set the height of the table correctly */}
       <div

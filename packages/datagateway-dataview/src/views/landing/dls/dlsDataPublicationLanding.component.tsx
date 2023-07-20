@@ -242,7 +242,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               textColor="secondary"
             >
               <Tab
-                id="dataPublication-details-tab"
+                id="datapublication-details-tab"
                 aria-controls="datapublication-details-panel"
                 label={t('datapublications.details.label')}
                 value="details"
@@ -250,7 +250,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               <Tab
                 id="datapublication-content-tab"
                 aria-controls="datapublication-content-panel"
-                label={'View Content'}
+                label={t('datapublications.content_tab_label')}
                 value="content"
               />
             </Tabs>
