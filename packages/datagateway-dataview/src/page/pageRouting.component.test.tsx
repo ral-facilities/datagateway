@@ -74,7 +74,9 @@ const DLSRoutes = {
   datasets: '/browse/proposal/INVESTIGATION 1/investigation/1/dataset',
   datafiles:
     '/browse/proposal/INVESTIGATION 1/investigation/1/dataset/1/datafile',
+  dataPublicationLanding: '/browse/dataPublication/1',
   mydata: '/my-data/DLS',
+  mydois: '/my-dois/DLS',
 };
 
 describe('PageTable', () => {
@@ -1155,6 +1157,44 @@ describe('PageTable', () => {
       expect(history.location.pathname).toBe('/login');
     });
 
+    it('renders DLSMyDOIsTable for DLS my dois route', async () => {
+      history.push(DLSRoutes.mydois);
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(
+        await findColumnHeaderByName('datapublications.title')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datapublications.pid')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datapublications.publication_date')
+      ).toBeInTheDocument();
+    });
+
+    it('redirects to login page when not signed in (DLSMyDOIsTable) ', () => {
+      history.push(DLSRoutes.mydois);
+
+      render(
+        <PageRouting
+          loggedInAnonymously
+          view="table"
+          location={history.location}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(history.location.pathname).toBe('/login');
+    });
+
     it('renders DLSProposalTable for DLS proposal route', async () => {
       history.push(DLSRoutes.proposals);
 
@@ -1364,5 +1404,22 @@ describe('PageTable', () => {
 
       expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
+  });
+
+  it('renders DLSDataPublicationLanding for DLS dataPublications route', async () => {
+    history.push(DLSRoutes.dataPublicationLanding);
+
+    render(
+      <PageRouting
+        view={null}
+        location={history.location}
+        loggedInAnonymously={false}
+      />,
+      { wrapper: Wrapper }
+    );
+
+    expect(
+      await screen.findByTestId('dls-dataPublication-landing')
+    ).toBeInTheDocument();
   });
 });
