@@ -39,7 +39,10 @@ const DLSMyDOIsTable = (): React.ReactElement => {
     {
       filterType: 'where',
       filterValue: JSON.stringify({
-        'users.contributorType': { eq: 'minter' },
+        'users.contributorType': {
+          /* istanbul ignore next */
+          eq: process.env.REACT_APP_E2E_TESTING ? 'ProjectLeader' : 'minter',
+        },
       }),
     },
   ]);
@@ -54,7 +57,10 @@ const DLSMyDOIsTable = (): React.ReactElement => {
     {
       filterType: 'where',
       filterValue: JSON.stringify({
-        'users.contributorType': { eq: 'minter' },
+        'users.contributorType': {
+          /* istanbul ignore next */
+          eq: process.env.REACT_APP_E2E_TESTING ? 'ProjectLeader' : 'minter',
+        },
       }),
     },
   ]);

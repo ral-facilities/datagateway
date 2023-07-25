@@ -143,6 +143,26 @@ describe('DLS MyData table component', () => {
   it('renders correctly', async () => {
     renderComponent();
 
+    // test that we're calling with the "minter" string instead of the e2e testing string
+    const filterParams = [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'users.user.name': { eq: 'testUser' },
+        }),
+      },
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'users.contributorType': {
+            eq: 'minter',
+          },
+        }),
+      },
+    ];
+    expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
+    expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
+
     const rows = await findAllRows();
     expect(rows).toHaveLength(1);
 
