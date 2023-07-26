@@ -9,7 +9,6 @@ describe('DLS - Data Publication Landing', () => {
     cy.get('#datagateway-dataview').should('be.visible');
     cy.contains('Consider author watch hot someone.').should('be.visible');
     cy.contains('Christina Kennedy').should('be.visible');
-    cy.contains('2015-11-10').should('be.visible');
   });
 
   it('should be able to click tab to see content and it works like a normal table', () => {

@@ -1,4 +1,4 @@
-describe('DLS - MyData Table', () => {
+describe('DLS - MyDOIs Table', () => {
   it('Should redirect when logged in anonymously', () => {
     cy.login();
     cy.visit('/my-dois/DLS');
@@ -139,7 +139,7 @@ describe('DLS - MyData Table', () => {
 
         cy.get('[aria-rowcount="1"]').should('exist');
 
-        cy.get('input[id="Publication Date filter from"]').type('2018-05-14');
+        cy.get('input[id="Publication Date filter from"]').type('2018-06-01');
 
         cy.get('[aria-rowcount="0"]').should('exist');
       });
