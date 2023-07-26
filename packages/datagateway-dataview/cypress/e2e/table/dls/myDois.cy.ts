@@ -139,7 +139,7 @@ describe('DLS - MyDOIs Table', () => {
 
         cy.get('[aria-rowcount="1"]').should('exist');
 
-        cy.get('input[id="Publication Date filter from"]').type('2018-06-01');
+        cy.get('input[id="Publication Date filter from"]').type('2019-01-01');
 
         cy.get('[aria-rowcount="0"]').should('exist');
       });
