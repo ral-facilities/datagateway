@@ -325,7 +325,7 @@ jobs:
 
       # DOI minter setup
       - name: Adding 'User-defined' DataPublicationType (needed for DOI minting api)
-        run: cd datagateway-api/; poetry run python ./.github/add_doi_datapublicationtype.py
+        run: cd datagateway-api/; poetry run python ../.github/add_doi_datapublicationtype.py
 
       - name: 'Add password to env file'
         run: |
