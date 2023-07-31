@@ -1,7 +1,7 @@
 from icat.client import Client
 
 client = Client(
-    "https://localhost:8181/icat",
+    "https://localhost:8181",
     checkCert=False,
 )
 client.login("simple", {username: "root", password: "pw"})
