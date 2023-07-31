@@ -4,7 +4,7 @@ client = Client(
     "https://localhost:8181",
     checkCert=False,
 )
-client.login("simple", {username: "root", password: "pw"})
+client.login("simple", {"username": "root", "password": "pw"})
 
 data_publication_type = client.new("dataPublicationType")
 data_publication_type.name = "User-defined"
