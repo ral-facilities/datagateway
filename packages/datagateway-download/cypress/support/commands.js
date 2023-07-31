@@ -89,7 +89,7 @@ export const readSciGatewayToken = () => {
   };
 };
 
-Cypress.Commands.add('login', (credentials) => {
+Cypress.Commands.add('login', (credentials, user) => {
   return cy.request('datagateway-download-settings.json').then((response) => {
     const settings = response.body;
     let body = {
@@ -104,7 +104,11 @@ Cypress.Commands.add('login', (credentials) => {
       const jwtHeader = { alg: 'HS256', typ: 'JWT' };
       const payload = {
         sessionId: response.body.sessionID,
-        username: 'test',
+        username: user
+          ? user
+          : body.mechanism === 'anon'
+          ? 'anon/anon'
+          : 'Michael222',
       };
       const jwt = jsrsasign.KJUR.jws.JWS.sign(
         'HS256',
@@ -148,6 +152,55 @@ Cypress.Commands.add('seedDownloadCart', () => {
         items,
       },
       form: true,
+    });
+  });
+});
+
+Cypress.Commands.add('seedMintCart', () => {
+  const items = [
+    'dataset 75',
+    'datafile 371',
+    'datafile 14',
+    'datafile 133',
+    'datafile 252',
+  ].join(', ');
+
+  return cy.request('datagateway-download-settings.json').then((response) => {
+    const settings = response.body;
+    cy.request({
+      method: 'POST',
+      url: `${settings.downloadApiUrl}/user/cart/${settings.facilityName}/cartItems`,
+      body: {
+        sessionId: readSciGatewayToken().sessionId,
+        items,
+      },
+      form: true,
+    });
+  });
+});
+
+Cypress.Commands.add('clearDataPublications', () => {
+  return cy.request('datagateway-download-settings.json').then((response) => {
+    const settings = response.body;
+
+    cy.request({
+      method: 'GET',
+      url: `${settings.apiUrl}/datapublications`,
+      headers: { Authorization: `Bearer ${readSciGatewayToken().sessionId}` },
+      qs: {
+        where: JSON.stringify({ title: { eq: 'Test title' } }),
+      },
+    }).then((response) => {
+      const datapublications = response.body;
+      datapublications.forEach((datapublication) => {
+        cy.request({
+          method: 'DELETE',
+          url: `${settings.apiUrl}/datapublications/${datapublication.id}`,
+          headers: {
+            Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+          },
+        });
+      });
     });
   });
 });
