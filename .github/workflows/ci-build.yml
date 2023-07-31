@@ -328,9 +328,7 @@ jobs:
         run: cd datagateway-api/; poetry run python ../.github/add_doi_datapublicationtype.py
 
       - name: 'Add password to env file'
-        run: |
-          echo DATACITE_PASSWORD=${{ secrets.DATACITE_PASSWORD }} >> ./.github/config.env
-          cat .env
+        run: echo DATACITE_PASSWORD=${{ secrets.DATACITE_PASSWORD }} >> ./.github/config.env
 
       - name: Run minting api
         run: docker run -e ./.github/config.env -d -p 8000:8000 harbor.stfc.ac.uk/icat/doi-mint-api      
