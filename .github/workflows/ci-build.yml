@@ -257,7 +257,7 @@ jobs:
           ansible-playbook icat-ansible/icat_test_hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
 
       # Fixes on ICAT components needed for e2e tests
-       - name: Removing authenticator prefix for simple auth
+      - name: Removing authenticator prefix for simple auth
         run: |
           sed -i 's/mechanism = simple/!mechanism = simple/' /home/runner/install/authn.simple/run.properties
       - name: Adding Chris481 user
