@@ -284,8 +284,15 @@ jobs:
       - name: Reinstall IDS Server
         run: |
           cd /home/runner/install/ids.server/ && python2 ./setup -vv install
-      - name: Restart payara (ensure new ICAT rootUserNames is applied everywhere)
-        run: sudo /usr/local/bin/payara-init restart
+      - name: Add root (simple without prefix) to TopCAT adminUserNames
+        run: |
+          awk -F" =" '/adminUserNames/{$2="= root";print;next}1' /home/runner/install/topcat/topcat.properties > /home/runner/install/topcat/topcat.properties.tmp
+      - name: Apply rootUserNames change
+        run: |
+          mv -f /home/runner/install/topcat/topcat.properties.tmp /home/runner/install/topcat/topcat.properties
+      - name: Reinstall TopCAT
+        run: |
+          cd /home/runner/install/topcat/ && ./setup -vv install
 
       # Disable Globus for Download e2e tests
       - name: Login to ICAT
