@@ -292,6 +292,9 @@ jobs:
           cd /home/runner/install/ids.server/ && python2 ./setup -vv install
 
       # Disable Globus for Download e2e tests
+      - name: Debug login to ICAT
+        run: |
+          curl -k --request POST 'https://localhost:8181/icat/session' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'json={"plugin":"simple", "credentials": [{"username":"root"}, {"password":"pw"}]}'
       - name: Login to ICAT
         run: |
           curl -k --request POST 'https://localhost:8181/icat/session' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'json={"plugin":"simple", "credentials": [{"username":"root"}, {"password":"pw"}]}' > login_output
