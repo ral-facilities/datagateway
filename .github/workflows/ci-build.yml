@@ -285,7 +285,7 @@ jobs:
         run: |
           cd /home/runner/install/ids.server/ && python2 ./setup -vv install
       - name: Restart payara (ensure new ICAT rootUserNames is applied everywhere)
-        run: /usr/local/bin/payara-init restart
+        run: sudo /usr/local/bin/payara-init restart
 
       # Disable Globus for Download e2e tests
       - name: Login to ICAT
