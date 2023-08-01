@@ -331,7 +331,7 @@ jobs:
         run: echo DATACITE_PASSWORD=${{ secrets.DATACITE_PASSWORD }} >> ./.github/config.env
 
       - name: Run minting api
-        run: docker run -e ./.github/config.env -p 8000:8000 harbor.stfc.ac.uk/icat/doi-mint-api      
+        run: docker run --env-file ./.github/config.env -p 8000:8000 harbor.stfc.ac.uk/icat/doi-mint-api      
 
       # E2E tests
       - name: Setup Node.js
