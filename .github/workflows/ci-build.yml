@@ -271,13 +271,15 @@ jobs:
       - name: Reinstall authn.simple
         run: |
           cd /home/runner/install/authn.simple/ && ./setup -vv install
+      - name: Debug icat.server config
+        run: cat /home/runner/install/icat.server/run.properties
       - name: Add anon, root (simple without prefix) and Chris481 users to rootUserNames
         run: |
           awk -F" =" '/rootUserNames/{$2="= root Chris481 anon/anon";print;next}1' /home/runner/install/icat.server/run.properties > /home/runner/install/icat.server/run.properties.tmp
       - name: Apply rootUserNames change
         run: |
           mv -f /home/runner/install/icat.server/run.properties.tmp /home/runner/install/icat.server/run.properties
-      - name: Debug authn.simple config
+      - name: Debug icat.server config
         run: cat /home/runner/install/icat.server/run.properties
       - name: Reinstall ICAT Server
         run: |
