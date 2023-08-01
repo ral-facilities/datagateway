@@ -266,6 +266,8 @@ jobs:
       - name: Adding Chris481 user password
         run: |
           echo "user.Chris481.password = pw" >> /home/runner/install/authn.simple/run.properties
+      - name: Debug authn.simple config
+        run: cat /home/runner/install/authn.simple/run.properties
       - name: Reinstall authn.simple
         run: |
           cd /home/runner/install/authn.simple/ && ./setup -vv install
@@ -275,6 +277,8 @@ jobs:
       - name: Apply rootUserNames change
         run: |
           mv -f /home/runner/install/icat.server/run.properties.tmp /home/runner/install/icat.server/run.properties
+      - name: Debug authn.simple config
+        run: cat /home/runner/install/icat.server/run.properties
       - name: Reinstall ICAT Server
         run: |
           cd /home/runner/install/icat.server/ && ./setup -vv install
