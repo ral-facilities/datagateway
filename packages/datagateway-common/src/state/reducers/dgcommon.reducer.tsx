@@ -25,6 +25,7 @@ export const initialState: DGCommonState = {
     apiUrl: '',
     downloadApiUrl: '',
     icatUrl: '',
+    etherpadUrl: '',
   },
   facilityName: '',
   isisDatafileDetailsPanel: {},

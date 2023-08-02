@@ -106,11 +106,12 @@ export const fetchSettings = (): Promise<DataviewSettings | void> => {
         !(
           'idsUrl' in settings &&
           'apiUrl' in settings &&
-          'downloadApiUrl' in settings
+          'downloadApiUrl' in settings &&
+          'etherpadUrl' in settings
         )
       ) {
         throw new Error(
-          'One of the URL options (idsUrl, apiUrl, downloadApiUrl) is undefined in settings'
+          'One of the URL options (idsUrl, apiUrl, downloadApiUrl, etherpadUrl) is undefined in settings'
         );
       }
 

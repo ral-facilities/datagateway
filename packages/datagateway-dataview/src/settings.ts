@@ -7,6 +7,7 @@ export interface DataviewSettings {
   downloadApiUrl: string;
   idsUrl: string;
   icatUrl: string;
+  etherpadUrl: string;
   selectAllSetting?: boolean;
   facilityImageURL?: string;
   features?: never;

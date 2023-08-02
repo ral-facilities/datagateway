@@ -277,6 +277,7 @@ export interface URLs {
   apiUrl: string;
   downloadApiUrl: string;
   icatUrl: string;
+  etherpadUrl: string;
 }
 
 export interface PluginRoute {

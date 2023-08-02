@@ -33,12 +33,15 @@ import {
   ArrowTooltip,
   getTooltipText,
   externalSiteLink,
+  StateType,
+  readSciGatewayToken,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
 import CitationFormatter from '../../citationFormatter.component';
 import Branding from './isisBranding.component';
+import { useSelector } from 'react-redux';
 
 const Subheading = styled(Typography)(({ theme }) => ({
   marginTop: theme.spacing(1),
@@ -269,6 +272,12 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     },
   ];
 
+  const etherpadURL = useSelector(
+    (state: StateType) => state.dgcommon.urls.etherpadUrl
+  );
+
+  const session = readSciGatewayToken().sessionId;
+  const padId = investigationId;
   const shortDatasetInfo = [
     {
       content: function doiFormat(entity: Dataset) {
@@ -521,10 +530,9 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               <div>
                 <iframe
                   title="Etherpad"
-                  src="http://172.16.101.235:9001/"
+                  src={`${etherpadURL}/auth_session?sessionID=${session}&padName=${padId}`}
                   width="100%"
-                  height="500px"
-                  frameBorder="0"
+                  height={window.innerHeight}
                 />
               </div>
             )}

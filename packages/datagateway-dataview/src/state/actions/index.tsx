@@ -84,6 +84,7 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
           apiUrl: settingsResult['apiUrl'],
           downloadApiUrl: settingsResult['downloadApiUrl'],
           icatUrl: '', // we currently don't need icatUrl in dataview so just pass empty string for now
+          etherpadUrl: settingsResult['etherpadUrl'],
         })
       );
 
