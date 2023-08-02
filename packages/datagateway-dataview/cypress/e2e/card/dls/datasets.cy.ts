@@ -122,11 +122,11 @@ describe('DLS - Datasets Cards', () => {
         .wait(['@getDatasetsCount', '@getDatasetsOrder'], { timeout: 10000 });
       cy.get('[data-testid="card"]').first().contains('DATASET 61');
 
-      cy.get('input[id="Create Time filter from"]')
+      cy.get('input[id="Start Date filter from"]')
         .click()
         .type('2019-01-01')
         .wait(['@getDatasetsCount'], { timeout: 10000 });
-      cy.get('input[aria-label="Create Time filter to"]')
+      cy.get('input[aria-label="Start Date filter to"]')
         .parent()
         .find('button')
         .click();
@@ -136,7 +136,7 @@ describe('DLS - Datasets Cards', () => {
         .wait(['@getDatasetsCount'], { timeout: 10000 });
       const date = new Date();
       date.setDate(1);
-      cy.get('input[id="Create Time filter to"]').should(
+      cy.get('input[id="Start Date filter to"]').should(
         'have.value',
         date.toISOString().slice(0, 10)
       );

@@ -81,16 +81,20 @@ describe('Datasets Cards', () => {
       .click()
       .type('2019-01-01')
       .wait(['@getDatasetsCount'], { timeout: 10000 });
+    cy.get('[data-testid="card"]').first().contains('DATASET 61');
     cy.get('input[aria-label="Create Time filter to"]')
       .parent()
       .find('button')
       .click();
+    cy.get('.MuiPickersCalendarHeader-label').click();
+    cy.contains('2020').click();
     cy.get('.MuiPickersDay-root[type="button"]')
       .first()
       .click()
       .wait(['@getDatasetsCount'], { timeout: 10000 });
     const date = new Date();
     date.setDate(1);
+    date.setFullYear(2020);
     cy.get('input[id="Create Time filter to"]').should(
       'have.value',
       date.toISOString().slice(0, 10)
