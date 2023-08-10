@@ -231,10 +231,15 @@ export const getApiParams = (
               'where',
               JSON.stringify({ [column]: { ilike: filter.value } })
             );
-          } else {
+          } else if (filter.type === 'exclude') {
             searchParams.append(
               'where',
               JSON.stringify({ [column]: { nilike: filter.value } })
+            );
+          } else {
+            searchParams.append(
+              'where',
+              JSON.stringify({ [column]: { eq: filter.value } })
             );
           }
         }
