@@ -542,6 +542,7 @@ export const useDownloadTypeStatuses = <TData = DownloadTypeStatus>({
       if (error) handleQueryError(type);
     },
     ...queryOptions,
+    cacheTime: 0,
   }));
 
   // I have spent hours on this trying to make the type work,
