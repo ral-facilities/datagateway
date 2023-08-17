@@ -174,50 +174,6 @@ describe('Investigations Table', () => {
   });
 
   describe('should be able to filter by', () => {
-    it('text', () => {
-      cy.get('[aria-label="Filter by Title"]').first().type('wide');
-
-      cy.get('[aria-rowcount="4"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('85');
-
-      // check that size is correct after filtering
-      cy.get('[aria-rowindex="1"] [aria-colindex="7"]').contains('3.34 GB');
-    });
-
-    it('date between', () => {
-      cy.get('input[id="Start Date filter from"]').type('2012-01-01');
-
-      cy.get('input[aria-label="Start Date filter to"]')
-        .parent()
-        .find('button')
-        .click();
-
-      cy.get('.MuiPickersDay-root[type="button"]').first().click();
-
-      const date = new Date();
-      date.setDate(1);
-
-      cy.get('input[id="Start Date filter to"]').should(
-        'have.value',
-        date.toISOString().slice(0, 10)
-      );
-
-      cy.get('[aria-rowcount="12"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Why news west bar sing tax. Drive up more near member article.'
-      );
-    });
-
-    it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Title"]').first().type('wide');
-
-      cy.get('[aria-label="Filter by Visit ID"]').first().type('7');
-
-      cy.get('[aria-rowcount="3"]').should('exist');
-    });
-  });
-
-  describe('should be able to use text filters', () => {
     it('exclude', () => {
       cy.get('input[aria-label="Filter by Name"]')
         .parent()
@@ -251,6 +207,7 @@ describe('Investigations Table', () => {
       // check that size is correct after filtering
       cy.get('[aria-rowindex="1"] [aria-colindex="7"]').contains('3.12 GB');
     });
+
     it('exact', () => {
       cy.get('input[aria-label="Filter by Name"]')
         .parent()
@@ -266,6 +223,38 @@ describe('Investigations Table', () => {
 
       // check that size is correct after filtering
       cy.get('[aria-rowindex="1"] [aria-colindex="7"]').contains('3.12 GB');
+    });
+
+    it('date between', () => {
+      cy.get('input[id="Start Date filter from"]').type('2012-01-01');
+
+      cy.get('input[aria-label="Start Date filter to"]')
+        .parent()
+        .find('button')
+        .click();
+
+      cy.get('.MuiPickersDay-root[type="button"]').first().click();
+
+      const date = new Date();
+      date.setDate(1);
+
+      cy.get('input[id="Start Date filter to"]').should(
+        'have.value',
+        date.toISOString().slice(0, 10)
+      );
+
+      cy.get('[aria-rowcount="12"]').should('exist');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
+        'Why news west bar sing tax. Drive up more near member article.'
+      );
+    });
+
+    it('multiple columns', () => {
+      cy.get('[aria-label="Filter by Title"]').first().type('wide');
+
+      cy.get('[aria-label="Filter by Visit ID"]').first().type('7');
+
+      cy.get('[aria-rowcount="3"]').should('exist');
     });
   });
 
