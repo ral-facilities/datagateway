@@ -10,11 +10,11 @@ import { initialState as dgDataViewInitialState } from '../state/reducers/dgdata
 import { dGCommonInitialState } from 'datagateway-common';
 
 import {
+  checkDataPublicationId,
   checkInstrumentAndFacilityCycleId,
   checkInstrumentId,
   checkInvestigationId,
   checkProposalName,
-  checkStudyId,
 } from './idCheckFunctions';
 import { findColumnHeaderByName, flushPromises } from '../setupTests';
 import { act } from 'react-dom/test-utils';
@@ -48,20 +48,22 @@ const ISISRoutes = {
   },
 };
 
-// The ISIS StudHierarchy routes to test.
-const ISISStudyHierarchyRoutes = {
-  instruments: '/browseStudyHierarchy/instrument',
-  studies: '/browseStudyHierarchy/instrument/1/study',
-  investigations: '/browseStudyHierarchy/instrument/1/study/1/investigation',
+// The ISIS DataPublications routes to test.
+const ISISDataPublicationsRoutes = {
+  instruments: '/browseDataPublications/instrument',
+  dataPublications: '/browseDataPublications/instrument/1/dataPublication',
+  investigations:
+    '/browseDataPublications/instrument/1/dataPublication/1/investigation',
   datasets:
-    '/browseStudyHierarchy/instrument/1/study/1/investigation/1/dataset',
+    '/browseDataPublications/instrument/1/dataPublication/1/investigation/1/dataset',
   datafiles:
-    '/browseStudyHierarchy/instrument/1/study/1/investigation/1/dataset/1/datafile',
+    '/browseDataPublications/instrument/1/dataPublication/1/investigation/1/dataset/1/datafile',
   landing: {
-    study: '/browseStudyHierarchy/instrument/1/study/1',
-    investigation: '/browseStudyHierarchy/instrument/1/study/1/investigation/1',
+    dataPublication: '/browseDataPublications/instrument/1/dataPublication/1',
+    investigation:
+      '/browseDataPublications/instrument/1/dataPublication/1/investigation/1',
     dataset:
-      '/browseStudyHierarchy/instrument/1/study/1/investigation/1/dataset/1',
+      '/browseDataPublications/instrument/1/dataPublication/1/investigation/1/dataset/1',
   },
 };
 
@@ -118,7 +120,9 @@ describe('PageTable', () => {
     (checkInstrumentId as jest.Mock).mockImplementation(() =>
       Promise.resolve(true)
     );
-    (checkStudyId as jest.Mock).mockImplementation(() => Promise.resolve(true));
+    (checkDataPublicationId as jest.Mock).mockImplementation(() =>
+      Promise.resolve(true)
+    );
     (checkInvestigationId as jest.Mock).mockImplementation(() =>
       Promise.resolve(true)
     );
@@ -724,9 +728,9 @@ describe('PageTable', () => {
     });
   });
 
-  describe('ISIS Study Hierarchy', () => {
-    it('renders ISISInstrumentsTable for ISIS instruments route in Study Hierarchy', async () => {
-      history.push(ISISStudyHierarchyRoutes.instruments);
+  describe('ISIS Data Publication Hierarchy', () => {
+    it('renders ISISInstrumentsTable for ISIS instruments route in Data Publication Hierarchy', async () => {
+      history.push(ISISDataPublicationsRoutes.instruments);
 
       render(
         <PageRouting
@@ -745,8 +749,8 @@ describe('PageTable', () => {
       ).toBeInTheDocument();
     });
 
-    it('renders ISISInstrumentsCardView for ISIS instruments route in Study Hierarchy', async () => {
-      history.push(ISISStudyHierarchyRoutes.instruments);
+    it('renders ISISInstrumentsCardView for ISIS instruments route in Data Publication Hierarchy', async () => {
+      history.push(ISISDataPublicationsRoutes.instruments);
 
       render(
         <PageRouting
@@ -762,8 +766,8 @@ describe('PageTable', () => {
       ).toBeInTheDocument();
     });
 
-    it('renders ISISStudiesTable for ISIS studies route in Study Hierarchy', async () => {
-      history.push(ISISStudyHierarchyRoutes['studies']);
+    it('renders ISISDataPublicationsTable for ISIS dataPublications route in Data Publication Hierarchy', async () => {
+      history.push(ISISDataPublicationsRoutes['dataPublications']);
 
       render(
         <PageRouting
@@ -774,19 +778,19 @@ describe('PageTable', () => {
         { wrapper: Wrapper }
       );
 
-      expect(await findColumnHeaderByName('studies.name')).toBeInTheDocument();
-      expect(await findColumnHeaderByName('studies.title')).toBeInTheDocument();
-      expect(await findColumnHeaderByName('studies.pid')).toBeInTheDocument();
       expect(
-        await findColumnHeaderByName('studies.start_date')
+        await findColumnHeaderByName('datapublications.title')
       ).toBeInTheDocument();
       expect(
-        await findColumnHeaderByName('studies.end_date')
+        await findColumnHeaderByName('datapublications.pid')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datapublications.publication_date')
       ).toBeInTheDocument();
     });
 
-    it('renders ISISStudiesCardView for ISIS studies route in Study Hierarchy', async () => {
-      history.push(ISISStudyHierarchyRoutes.studies);
+    it('renders ISISDataPublicationsCardView for ISIS dataPublications route in Data Publication Hierarchy', async () => {
+      history.push(ISISDataPublicationsRoutes.dataPublications);
 
       render(
         <PageRouting
@@ -798,12 +802,12 @@ describe('PageTable', () => {
       );
 
       expect(
-        await screen.findByTestId('isis-studies-card-view')
+        await screen.findByTestId('isis-dataPublications-card-view')
       ).toBeInTheDocument();
     });
 
-    it('renders ISISStudyLanding for ISIS study route for studyHierarchy', async () => {
-      history.push(ISISStudyHierarchyRoutes.landing.study);
+    it('renders ISISDataPublicationLanding for ISIS dataPublications route for Data Publication Hierarchy', async () => {
+      history.push(ISISDataPublicationsRoutes.landing.dataPublication);
 
       render(
         <PageRouting
@@ -815,16 +819,16 @@ describe('PageTable', () => {
       );
 
       expect(
-        await screen.findByTestId('isis-study-landing')
+        await screen.findByTestId('isis-dataPublication-landing')
       ).toBeInTheDocument();
     });
 
-    it('does not render ISISStudyLanding for incorrect ISIS study route for studyHierarchy', async () => {
+    it('does not render ISISDataPublicationLanding for incorrect ISIS dataPublications route for Data Publication Hierarchy', async () => {
       (checkInstrumentId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
 
-      history.push(ISISStudyHierarchyRoutes.landing.study);
+      history.push(ISISDataPublicationsRoutes.landing.dataPublication);
 
       render(
         <PageRouting
@@ -838,8 +842,8 @@ describe('PageTable', () => {
       expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
 
-    it('renders ISISInvestigationsTable for ISIS investigations route in Study Hierarchy', async () => {
-      history.push(ISISStudyHierarchyRoutes.investigations);
+    it('renders ISISInvestigationsTable for ISIS investigations route in Data Publication Hierarchy', async () => {
+      history.push(ISISDataPublicationsRoutes.investigations);
 
       render(
         <PageRouting
@@ -873,8 +877,8 @@ describe('PageTable', () => {
       ).toBeInTheDocument();
     });
 
-    it('renders ISISInvestigationsCardView for ISIS investigations route in Study Hierarchy', async () => {
-      history.push(ISISStudyHierarchyRoutes.investigations);
+    it('renders ISISInvestigationsCardView for ISIS investigations route in Data Publication Hierarchy', async () => {
+      history.push(ISISDataPublicationsRoutes.investigations);
 
       render(
         <PageRouting
@@ -890,8 +894,8 @@ describe('PageTable', () => {
       ).toBeInTheDocument();
     });
 
-    it('renders ISISDatasetsTable for ISIS datasets route in Study Hierarchy', async () => {
-      history.push(ISISStudyHierarchyRoutes.datasets);
+    it('renders ISISDatasetsTable for ISIS datasets route in Data Publication Hierarchy', async () => {
+      history.push(ISISDataPublicationsRoutes.datasets);
 
       render(
         <PageRouting
@@ -912,15 +916,15 @@ describe('PageTable', () => {
       ).toBeInTheDocument();
     });
 
-    it('does not render ISISDatasetsTable for incorrect ISIS datasets route in Study Hierarchy', async () => {
+    it('does not render ISISDatasetsTable for incorrect ISIS datasets route in Data Publication Hierarchy', async () => {
       (checkInstrumentId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
-      (checkStudyId as jest.Mock).mockImplementation(() =>
+      (checkDataPublicationId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
 
-      history.push(ISISStudyHierarchyRoutes.datasets);
+      history.push(ISISDataPublicationsRoutes.datasets);
 
       render(
         <PageRouting
@@ -934,8 +938,8 @@ describe('PageTable', () => {
       expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
 
-    it('renders ISISInvestigationLanding for ISIS investigation route for studyHierarchy', async () => {
-      history.push(ISISStudyHierarchyRoutes.landing.investigation);
+    it('renders ISISInvestigationLanding for ISIS investigation route for Data Publication Hierarchy', async () => {
+      history.push(ISISDataPublicationsRoutes.landing.investigation);
 
       render(
         <PageRouting
@@ -951,15 +955,15 @@ describe('PageTable', () => {
       ).toBeInTheDocument();
     });
 
-    it('does not render ISISInvestigationLanding for incorrect ISIS investigation route for studyHierarchy', async () => {
+    it('does not render ISISInvestigationLanding for incorrect ISIS investigation route for Data Publication Hierarchy', async () => {
       (checkInstrumentId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
-      (checkStudyId as jest.Mock).mockImplementation(() =>
+      (checkDataPublicationId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
 
-      history.push(ISISStudyHierarchyRoutes.landing.investigation);
+      history.push(ISISDataPublicationsRoutes.landing.investigation);
 
       render(
         <PageRouting
@@ -973,8 +977,8 @@ describe('PageTable', () => {
       expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
 
-    it('renders ISISDatasetsCardView for ISIS datasets route in Study Hierarchy', async () => {
-      history.push(ISISStudyHierarchyRoutes.datasets);
+    it('renders ISISDatasetsCardView for ISIS datasets route in Data Publication Hierarchy', async () => {
+      history.push(ISISDataPublicationsRoutes.datasets);
 
       render(
         <PageRouting
@@ -990,15 +994,15 @@ describe('PageTable', () => {
       ).toBeInTheDocument();
     });
 
-    it('does not render ISISDatasetsCardView for incorrect ISIS datasets route in Study Hierarchy', async () => {
+    it('does not render ISISDatasetsCardView for incorrect ISIS datasets route in Data Publication Hierarchy', async () => {
       (checkInstrumentId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
-      (checkStudyId as jest.Mock).mockImplementation(() =>
+      (checkDataPublicationId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
 
-      history.push(ISISStudyHierarchyRoutes.datasets);
+      history.push(ISISDataPublicationsRoutes.datasets);
 
       render(
         <PageRouting
@@ -1012,8 +1016,8 @@ describe('PageTable', () => {
       expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
 
-    it('renders ISISDatasetLanding for ISIS dataset route for studyHierarchy', async () => {
-      history.push(ISISStudyHierarchyRoutes.landing.dataset);
+    it('renders ISISDatasetLanding for ISIS dataset route for Data Publication Hierarchy', async () => {
+      history.push(ISISDataPublicationsRoutes.landing.dataset);
 
       render(
         <PageRouting
@@ -1029,15 +1033,15 @@ describe('PageTable', () => {
       ).toBeInTheDocument();
     });
 
-    it('does not render ISISDatasetLanding for incorrect ISIS dataset route for studyHierarchy', async () => {
+    it('does not render ISISDatasetLanding for incorrect ISIS dataset route for Data Publication Hierarchy', async () => {
       (checkInstrumentId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
-      (checkStudyId as jest.Mock).mockImplementation(() =>
+      (checkDataPublicationId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
 
-      history.push(ISISStudyHierarchyRoutes.landing.dataset);
+      history.push(ISISDataPublicationsRoutes.landing.dataset);
 
       render(
         <PageRouting
@@ -1051,8 +1055,8 @@ describe('PageTable', () => {
       expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
 
-    it('renders ISISDatafilesTable for ISIS datafiles route in Study Hierarchy', async () => {
-      history.push(ISISStudyHierarchyRoutes.datafiles);
+    it('renders ISISDatafilesTable for ISIS datafiles route in Data Publication Hierarchy', async () => {
+      history.push(ISISDataPublicationsRoutes.datafiles);
 
       render(
         <PageRouting
@@ -1077,18 +1081,18 @@ describe('PageTable', () => {
       ).toBeInTheDocument();
     });
 
-    it('does not render ISISDatafilesTable for incorrect ISIS datafiles route in Study Hierarchy', async () => {
+    it('does not render ISISDatafilesTable for incorrect ISIS datafiles route in Data Publication Hierarchy', async () => {
       (checkInstrumentId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
-      (checkStudyId as jest.Mock).mockImplementation(() =>
+      (checkDataPublicationId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
       (checkInvestigationId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
 
-      history.push(ISISStudyHierarchyRoutes.datafiles);
+      history.push(ISISDataPublicationsRoutes.datafiles);
 
       render(
         <PageRouting

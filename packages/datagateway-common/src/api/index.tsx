@@ -31,7 +31,7 @@ export * from './facilityCycles';
 export * from './instruments';
 export * from './investigations';
 export * from './datafiles';
-export * from './studies';
+export * from './dataPublications';
 export * from './datasets';
 export * from './lucene';
 
@@ -231,10 +231,15 @@ export const getApiParams = (
               'where',
               JSON.stringify({ [column]: { ilike: filter.value } })
             );
-          } else {
+          } else if (filter.type === 'exclude') {
             searchParams.append(
               'where',
               JSON.stringify({ [column]: { nilike: filter.value } })
+            );
+          } else {
+            searchParams.append(
+              'where',
+              JSON.stringify({ [column]: { eq: filter.value } })
             );
           }
         }
@@ -703,7 +708,7 @@ export const fetchFilterCountQuery = (
     | 'facilityCycle'
     | 'instrument'
     | 'facility'
-    | 'study',
+    | 'dataPublication',
   additionalFilters?: AdditionalFilters
 ): Promise<number> => {
   const params = new URLSearchParams();
@@ -739,7 +744,7 @@ export const useCustomFilterCount = (
     | 'facilityCycle'
     | 'instrument'
     | 'facility'
-    | 'study',
+    | 'dataPublication',
   filterKey: string,
   filterIds: string[] | undefined,
   additionalFilters?: {
@@ -762,7 +767,7 @@ export const useCustomFilterCount = (
         | 'facilityCycle'
         | 'instrument'
         | 'facility'
-        | 'study'
+        | 'dataPublication'
       ),
       string,
       string,

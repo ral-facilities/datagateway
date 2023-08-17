@@ -49,7 +49,7 @@ describe('ISIS Datasets - Card View', () => {
               instrumentId="1"
               instrumentChildId="1"
               investigationId="1"
-              studyHierarchy={false}
+              dataPublication={false}
             />
           </QueryClientProvider>
         </Router>
@@ -94,7 +94,7 @@ describe('ISIS Datasets - Card View', () => {
     jest.clearAllMocks();
   });
 
-  it('correct link used when NOT in studyHierarchy', async () => {
+  it('correct link used when NOT in dataPublication hierarchy', async () => {
     renderComponent();
     expect(await screen.findByRole('link', { name: 'Test 1' })).toHaveAttribute(
       'href',
@@ -102,13 +102,13 @@ describe('ISIS Datasets - Card View', () => {
     );
   });
 
-  it('correct link used for studyHierarchy', async () => {
+  it('correct link used for dataPublication hierarchy', async () => {
     render(
       <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
             <ISISDatasetsCardView
-              studyHierarchy={true}
+              dataPublication={true}
               instrumentId="1"
               instrumentChildId="1"
               investigationId="1"
@@ -119,7 +119,7 @@ describe('ISIS Datasets - Card View', () => {
     );
     expect(await screen.findByRole('link', { name: 'Test 1' })).toHaveAttribute(
       'href',
-      '/browseStudyHierarchy/instrument/1/study/1/investigation/1/dataset/1'
+      '/browseDataPublications/instrument/1/dataPublication/1/investigation/1/dataset/1'
     );
   });
 

@@ -21,10 +21,10 @@ import {
   useAddToCart,
   useCart,
   useDateFilter,
+  useIds,
   useInvestigationCount,
   useInvestigationsInfinite,
   useInvestigationSizes,
-  useISISInvestigationIds,
   usePrincipalExperimenterFilter,
   useRemoveFromCart,
   useSort,
@@ -40,13 +40,13 @@ import { StateType } from '../../../state/app.types';
 interface ISISInvestigationsTableProps {
   instrumentId: string;
   instrumentChildId: string;
-  studyHierarchy: boolean;
+  dataPublication: boolean;
 }
 
 const ISISInvestigationsTable = (
   props: ISISInvestigationsTableProps
 ): React.ReactElement => {
-  const { instrumentId, instrumentChildId, studyHierarchy } = props;
+  const { instrumentId, instrumentChildId, dataPublication } = props;
   const selectAllSetting = useSelector(
     (state: StateType) => state.dgdataview.selectAllSetting
   );
@@ -71,8 +71,8 @@ const ISISInvestigationsTable = (
     {
       filterType: 'where',
       filterValue: JSON.stringify({
-        [studyHierarchy
-          ? 'studyInvestigations.study.id'
+        [dataPublication
+          ? 'dataCollectionInvestigations.dataCollection.dataPublications.id'
           : 'investigationFacilityCycles.facilityCycle.id']: {
           eq: parseInt(instrumentChildId),
         },
@@ -92,7 +92,7 @@ const ISISInvestigationsTable = (
           investigationInstruments: 'instrument',
         },
         {
-          studyInvestigations: 'study',
+          dataCollectionInvestigations: { dataCollection: 'dataPublications' },
         },
         {
           investigationUsers: 'user',
@@ -100,10 +100,9 @@ const ISISInvestigationsTable = (
       ]),
     },
   ]);
-  const { data: allIds, isLoading: allIdsLoading } = useISISInvestigationIds(
-    parseInt(instrumentId),
-    parseInt(instrumentChildId),
-    studyHierarchy,
+  const { data: allIds, isLoading: allIdsLoading } = useIds(
+    'investigation',
+    investigationQueryFilters,
     selectAllSetting
   );
   const { data: cartItems, isLoading: cartLoading } = useCart();
@@ -151,8 +150,8 @@ const ISISInvestigationsTable = (
 
   const sizeQueries = useInvestigationSizes(data);
 
-  const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
-  const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
+  const pathRoot = dataPublication ? 'browseDataPublications' : 'browse';
+  const instrumentChild = dataPublication ? 'dataPublication' : 'facilityCycle';
   const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation`;
 
   const detailsPanel = React.useCallback(
@@ -192,13 +191,21 @@ const ISISInvestigationsTable = (
       {
         icon: Public,
         label: t('investigations.doi'),
-        dataKey: 'studyInvestigations.study.pid',
+        dataKey:
+          'dataCollectionInvestigations.dataCollection.dataPublications.pid',
+        // TODO: this was previously the Study DOI - currently there are no datapublication
+        // representations of Studies, only of Investigations themselves
+        // should this be showing the study DOI or the investigation DOI anyway?
         cellContentRenderer: (cellProps: TableCellProps) => {
           const investigationData = cellProps.rowData as Investigation;
-          if (investigationData?.studyInvestigations?.[0]?.study) {
+          if (
+            investigationData?.dataCollectionInvestigations?.[0]?.dataCollection
+              ?.dataPublications?.[0]
+          ) {
             return externalSiteLink(
-              `https://doi.org/${investigationData.studyInvestigations[0].study.pid}`,
-              investigationData.studyInvestigations[0].study.pid,
+              `https://doi.org/${investigationData.dataCollectionInvestigations?.[0]?.dataCollection?.dataPublications?.[0].pid}`,
+              investigationData.dataCollectionInvestigations?.[0]
+                ?.dataCollection?.dataPublications?.[0].pid,
               'isis-investigations-table-doi-link'
             );
           } else {

@@ -66,21 +66,22 @@ const unmemoizedCheckInstrumentAndFacilityCycleId = (
   investigationId: number
 ): Promise<boolean> => {
   return axios
-    .get(
-      `${apiUrl}/instruments/${instrumentId}/facilitycycles/${facilityCycleId}/investigations/`,
-      {
-        params: {
-          where: {
-            id: {
-              eq: investigationId,
-            },
+    .get(`${apiUrl}/investigations`, {
+      params: {
+        where: {
+          id: {
+            eq: investigationId,
+          },
+          investigationInstrument: { instrument: { id: { eq: instrumentId } } },
+          investigationFacilityCycle: {
+            facilityCycle: { id: { eq: facilityCycleId } },
           },
         },
-        headers: {
-          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
-        },
-      }
-    )
+      },
+      headers: {
+        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+      },
+    })
     .then((response: AxiosResponse<Investigation[]>) => {
       return response.data.length > 0;
     })
@@ -95,8 +96,8 @@ export const checkInstrumentAndFacilityCycleId = memoize(
   (...args) => JSON.stringify(args)
 );
 
-const unmemoizedCheckStudyId = (
-  studyId: number,
+const unmemoizedCheckDataPublicationId = (
+  dataPublicationId: number,
   investigationId: number
 ): Promise<boolean> => {
   const params = new URLSearchParams();
@@ -109,8 +110,8 @@ const unmemoizedCheckStudyId = (
   params.append(
     'where',
     JSON.stringify({
-      'studyInvestigations.study.id': {
-        eq: studyId,
+      'dataCollectionInvestigations.dataCollection.dataPublications.id': {
+        eq: dataPublicationId,
       },
     })
   );
@@ -130,32 +131,33 @@ const unmemoizedCheckStudyId = (
     });
 };
 
-export const checkStudyId = memoize(unmemoizedCheckStudyId, (...args) =>
-  JSON.stringify(args)
+export const checkDataPublicationId = memoize(
+  unmemoizedCheckDataPublicationId,
+  (...args) => JSON.stringify(args)
 );
 
 const unmemoizedCheckInstrumentId = (
   instrumentId: number,
-  studyId: number
+  dataPublicationId: number
 ): Promise<boolean> => {
   const params = new URLSearchParams();
   params.append(
     'where',
     JSON.stringify({
-      id: { eq: studyId },
+      id: { eq: dataPublicationId },
     })
   );
   params.append(
     'where',
     JSON.stringify({
-      'studyInvestigations.investigation.investigationInstruments.instrument.id':
+      'content.dataCollectionInvestigations.investigation.investigationInstruments.instrument.id':
         {
           eq: instrumentId,
         },
     })
   );
   return axios
-    .get(`${apiUrl}/studies/`, {
+    .get(`${apiUrl}/datapublications/`, {
       params,
       headers: {
         Authorization: `Bearer ${readSciGatewayToken().sessionId}`,

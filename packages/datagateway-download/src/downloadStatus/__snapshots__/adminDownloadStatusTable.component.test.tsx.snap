@@ -157,7 +157,7 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                                     <div
                                       aria-expanded="false"
                                       aria-haspopup="listbox"
-                                      aria-label="include or exclude"
+                                      aria-label="include, exclude or exact"
                                       aria-labelledby="downloadStatus.id-select-filter-type"
                                       class="MuiSelect-select MuiSelect-standard MuiInputBase-input MuiInput-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
                                       id="downloadStatus.id-select-filter-type"
@@ -280,7 +280,7 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                                     <div
                                       aria-expanded="false"
                                       aria-haspopup="listbox"
-                                      aria-label="include or exclude"
+                                      aria-label="include, exclude or exact"
                                       aria-labelledby="downloadStatus.fullname-select-filter-type"
                                       class="MuiSelect-select MuiSelect-standard MuiInputBase-input MuiInput-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
                                       id="downloadStatus.fullname-select-filter-type"
@@ -403,7 +403,7 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                                     <div
                                       aria-expanded="false"
                                       aria-haspopup="listbox"
-                                      aria-label="include or exclude"
+                                      aria-label="include, exclude or exact"
                                       aria-labelledby="downloadStatus.username-select-filter-type"
                                       class="MuiSelect-select MuiSelect-standard MuiInputBase-input MuiInput-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
                                       id="downloadStatus.username-select-filter-type"
@@ -526,7 +526,7 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                                     <div
                                       aria-expanded="false"
                                       aria-haspopup="listbox"
-                                      aria-label="include or exclude"
+                                      aria-label="include, exclude or exact"
                                       aria-labelledby="downloadStatus.preparedId-select-filter-type"
                                       class="MuiSelect-select MuiSelect-standard MuiInputBase-input MuiInput-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
                                       id="downloadStatus.preparedId-select-filter-type"
@@ -649,7 +649,7 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                                     <div
                                       aria-expanded="false"
                                       aria-haspopup="listbox"
-                                      aria-label="include or exclude"
+                                      aria-label="include, exclude or exact"
                                       aria-labelledby="downloadStatus.transport-select-filter-type"
                                       class="MuiSelect-select MuiSelect-standard MuiInputBase-input MuiInput-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
                                       id="downloadStatus.transport-select-filter-type"
@@ -772,7 +772,7 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                                     <div
                                       aria-expanded="false"
                                       aria-haspopup="listbox"
-                                      aria-label="include or exclude"
+                                      aria-label="include, exclude or exact"
                                       aria-labelledby="downloadStatus.status-select-filter-type"
                                       class="MuiSelect-select MuiSelect-standard MuiInputBase-input MuiInput-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
                                       id="downloadStatus.status-select-filter-type"

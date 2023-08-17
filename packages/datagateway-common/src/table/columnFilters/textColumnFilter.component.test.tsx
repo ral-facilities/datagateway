@@ -90,6 +90,35 @@ describe('Text filter component', () => {
     });
   });
 
+  it('calls the onChange method once when input is typed while exact filter type is selected and calls again by debounced function after timeout', async () => {
+    const onChange = jest.fn();
+
+    render(
+      <TextColumnFilter
+        value={{ value: 'test', type: 'exact' }}
+        label="test"
+        onChange={onChange}
+      />
+    );
+
+    // We simulate a change in the input from 'test' to 'test-again'.
+    const textFilterInput = await screen.findByRole('textbox', {
+      name: 'Filter by test',
+      hidden: true,
+    });
+
+    await user.clear(textFilterInput);
+    await user.type(textFilterInput, 'test-again');
+
+    jest.advanceTimersByTime(DEBOUNCE_DELAY);
+
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onChange).toHaveBeenLastCalledWith({
+      value: 'test-again',
+      type: 'exact',
+    });
+  });
+
   it('calls the onChange method once when include filter type is selected while there is input', async () => {
     const onChange = jest.fn();
 
@@ -104,7 +133,7 @@ describe('Text filter component', () => {
     // We simulate a change in the select from 'exclude' to 'include'.
     await user.click(
       await screen.findByRole('button', {
-        name: 'include or exclude',
+        name: 'include, exclude or exact',
         hidden: true,
       })
     );
@@ -131,7 +160,7 @@ describe('Text filter component', () => {
     // We simulate a change in the select from 'include' to 'exclude'.
     await user.click(
       await screen.findByRole('button', {
-        name: 'include or exclude',
+        name: 'include, exclude or exact',
         hidden: true,
       })
     );
@@ -141,6 +170,33 @@ describe('Text filter component', () => {
     expect(onChange).toHaveBeenLastCalledWith({
       value: 'test',
       type: 'exclude',
+    });
+  });
+
+  it('calls the onChange method once when exact filter type is selected while there is input', async () => {
+    const onChange = jest.fn();
+
+    render(
+      <TextColumnFilter
+        value={{ value: 'test', type: 'include' }}
+        label="test"
+        onChange={onChange}
+      />
+    );
+
+    // We simulate a change in the select from 'include' to 'exact'.
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'include, exclude or exact',
+        hidden: true,
+      })
+    );
+    await user.click(await screen.findByText('Exact'));
+
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onChange).toHaveBeenLastCalledWith({
+      value: 'test',
+      type: 'exact',
     });
   });
 
@@ -182,7 +238,7 @@ describe('Text filter component', () => {
     // We simulate a change in the select from 'exclude' to 'include'.
     await user.click(
       await screen.findByRole('button', {
-        name: 'include or exclude',
+        name: 'include, exclude or exact',
         hidden: true,
       })
     );
