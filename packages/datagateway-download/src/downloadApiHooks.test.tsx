@@ -37,6 +37,7 @@ import {
 } from './downloadApiHooks';
 import { mockCartItems, mockDownloadItems, mockedSettings } from './testData';
 import log from 'loglevel';
+import { ContributorType } from './downloadApi';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -1490,7 +1491,7 @@ describe('Download API react-query hooks test', () => {
     const doiMetadata = {
       title: 'Test title',
       description: 'Test description',
-      creators: [{ username: '1' }],
+      creators: [{ username: '1', contributor_type: ContributorType.Creator }],
     };
     it('should send a request to mint a cart', async () => {
       axios.post = jest.fn().mockResolvedValue({

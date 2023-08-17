@@ -221,7 +221,7 @@ describe('DOI generation form component', () => {
     ).toBeInTheDocument();
   });
 
-  it('should let the user add users (but not duplicate users or if checkUser fails)', async () => {
+  it('should let the user add creators (but not duplicate users or if checkUser fails)', async () => {
     renderComponent();
 
     // accept data policy
@@ -250,6 +250,7 @@ describe('DOI generation form component', () => {
         .slice(1) // ignores the header row
     ).toHaveLength(3);
     expect(screen.getByRole('cell', { name: 'User 3' })).toBeInTheDocument();
+    expect(screen.getAllByRole('cell', { name: 'Creator' }).length).toBe(3);
 
     // test errors on duplicate user
     await user.type(
@@ -319,6 +320,84 @@ describe('DOI generation form component', () => {
         .getAllByRole('row')
         .slice(1) // ignores the header row
     ).toHaveLength(3);
+  });
+
+  it('should let the user add contributors & select their contributor type', async () => {
+    renderComponent();
+
+    // accept data policy
+    await user.click(
+      screen.getByRole('button', { name: 'acceptDataPolicy.accept' })
+    );
+
+    expect(
+      within(screen.getByRole('table', { name: 'DOIGenerationForm.creators' }))
+        .getAllByRole('row')
+        .slice(1) // ignores the header row
+    ).toHaveLength(2);
+
+    await user.type(
+      screen.getByRole('textbox', { name: 'DOIGenerationForm.username' }),
+      '3'
+    );
+
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.add_contributor' })
+    );
+
+    expect(
+      within(screen.getByRole('table', { name: 'DOIGenerationForm.creators' }))
+        .getAllByRole('row')
+        .slice(1) // ignores the header row
+    ).toHaveLength(3);
+    expect(screen.getByRole('cell', { name: 'User 3' })).toBeInTheDocument();
+
+    expect(
+      screen.getByRole('button', {
+        name: /DOIGenerationForm.creator_type/i,
+      })
+    ).toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole('button', {
+        name: /DOIGenerationForm.creator_type/i,
+      })
+    );
+    await user.click(
+      await screen.findByRole('option', { name: 'DataCollector' })
+    );
+
+    expect(screen.queryByRole('option')).not.toBeInTheDocument();
+    // check that the option is actually selected in the table even after the menu closes
+    expect(screen.getByText('DataCollector')).toBeInTheDocument();
+
+    // check users and their contributor types get passed correctly to API
+    await user.type(
+      screen.getByRole('textbox', { name: 'DOIGenerationForm.title' }),
+      't'
+    );
+
+    await user.type(
+      screen.getByRole('textbox', { name: 'DOIGenerationForm.description' }),
+      'd'
+    );
+
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+    );
+
+    expect(mintCart).toHaveBeenCalledWith(
+      mockCartItems,
+      {
+        title: 't',
+        description: 'd',
+        creators: [
+          { username: '2', contributor_type: 'Creator' },
+          { username: '3', contributor_type: 'DataCollector' },
+        ],
+      },
+      expect.any(Object)
+    );
   });
 
   it('should let the user change cart tabs', async () => {

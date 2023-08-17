@@ -107,6 +107,52 @@ const DOIGenerationForm: React.FC = () => {
 
   const [t] = useTranslation();
 
+  /**
+   * Returns a function, which you pass true or false to depending on whether
+   * it's the creator button or not, and returns the relevant click handler
+   */
+  const handleAddCreatorOrContributorClick = React.useCallback(
+    (creator: boolean) => () => {
+      // don't let the user add duplicates
+      if (
+        selectedUsers.every((selectedUser) => selectedUser.name !== username)
+      ) {
+        checkUser({ throwOnError: true })
+          .then((response) => {
+            // add user
+            if (response.data) {
+              const user: ContributorUser = {
+                ...response.data,
+                contributor_type: creator ? ContributorType.Creator : '',
+              };
+              setSelectedUsers((selectedUsers) => [...selectedUsers, user]);
+              setUsername('');
+            }
+          })
+          .catch(
+            (
+              error: AxiosError<{
+                detail: { msg: string }[] | string;
+              }>
+            ) => {
+              // TODO: check this is the right message from the API
+              setUsernameError(
+                error.response?.data?.detail
+                  ? typeof error.response.data.detail === 'string'
+                    ? error.response.data.detail
+                    : error.response.data.detail[0].msg
+                  : 'Error'
+              );
+            }
+          );
+      } else {
+        setUsernameError('Cannot add duplicate user');
+        setUsername('');
+      }
+    },
+    [checkUser, selectedUsers, username]
+  );
+
   // redirect if the user tries to access the link directly instead of from the cart
   if (!location.state?.fromCart) {
     return <Redirect to="/download" />;
@@ -302,55 +348,9 @@ const DOIGenerationForm: React.FC = () => {
                             <Grid item>
                               <Button
                                 variant="contained"
-                                onClick={() => {
-                                  // don't let the user add duplicates
-                                  if (
-                                    selectedUsers.every(
-                                      (selectedUser) =>
-                                        selectedUser.name !== username
-                                    )
-                                  ) {
-                                    checkUser({ throwOnError: true })
-                                      .then((response) => {
-                                        // add user
-                                        if (response.data) {
-                                          const user: ContributorUser = {
-                                            ...response.data,
-                                            contributor_type:
-                                              ContributorType.Creator,
-                                          };
-                                          setSelectedUsers((selectedUsers) => [
-                                            ...selectedUsers,
-                                            user,
-                                          ]);
-                                          setUsername('');
-                                        }
-                                      })
-                                      .catch(
-                                        (
-                                          error: AxiosError<{
-                                            detail: { msg: string }[] | string;
-                                          }>
-                                        ) => {
-                                          // TODO: check this is the right message from the API
-                                          setUsernameError(
-                                            error.response?.data?.detail
-                                              ? typeof error.response.data
-                                                  .detail === 'string'
-                                                ? error.response.data.detail
-                                                : error.response.data.detail[0]
-                                                    .msg
-                                              : 'Error'
-                                          );
-                                        }
-                                      );
-                                  } else {
-                                    setUsernameError(
-                                      'Cannot add duplicate user'
-                                    );
-                                    setUsername('');
-                                  }
-                                }}
+                                onClick={handleAddCreatorOrContributorClick(
+                                  true
+                                )}
                               >
                                 {t('DOIGenerationForm.add_creator')}
                               </Button>
@@ -358,54 +358,9 @@ const DOIGenerationForm: React.FC = () => {
                             <Grid item>
                               <Button
                                 variant="contained"
-                                onClick={() => {
-                                  // don't let the user add duplicates
-                                  if (
-                                    selectedUsers.every(
-                                      (selectedUser) =>
-                                        selectedUser.name !== username
-                                    )
-                                  ) {
-                                    checkUser({ throwOnError: true })
-                                      .then((response) => {
-                                        // add user
-                                        if (response.data) {
-                                          const user: ContributorUser = {
-                                            ...response.data,
-                                            contributor_type: '',
-                                          };
-                                          setSelectedUsers((selectedUsers) => [
-                                            ...selectedUsers,
-                                            user,
-                                          ]);
-                                          setUsername('');
-                                        }
-                                      })
-                                      .catch(
-                                        (
-                                          error: AxiosError<{
-                                            detail: { msg: string }[] | string;
-                                          }>
-                                        ) => {
-                                          // TODO: check this is the right message from the API
-                                          setUsernameError(
-                                            error.response?.data?.detail
-                                              ? typeof error.response.data
-                                                  .detail === 'string'
-                                                ? error.response.data.detail
-                                                : error.response.data.detail[0]
-                                                    .msg
-                                              : 'Error'
-                                          );
-                                        }
-                                      );
-                                  } else {
-                                    setUsernameError(
-                                      'Cannot add duplicate user'
-                                    );
-                                    setUsername('');
-                                  }
-                                }}
+                                onClick={handleAddCreatorOrContributorClick(
+                                  false
+                                )}
                               >
                                 {t('DOIGenerationForm.add_contributor')}
                               </Button>
