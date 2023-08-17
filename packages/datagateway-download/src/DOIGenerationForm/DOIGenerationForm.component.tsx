@@ -2,8 +2,12 @@ import {
   Box,
   Button,
   CircularProgress,
+  FormControl,
   Grid,
+  InputLabel,
+  MenuItem,
   Paper,
+  Select,
   Tab,
   Table,
   TableBody,
@@ -19,6 +23,7 @@ import { readSciGatewayToken, User } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Redirect, useLocation } from 'react-router-dom';
+import { ContributorType } from '../downloadApi';
 import {
   useCart,
   useCartUsers,
@@ -28,9 +33,29 @@ import {
 import AcceptDataPolicy from './acceptDataPolicy.component';
 import DOIConfirmDialog from './DOIConfirmDialog.component';
 
+type ContributorUser = User & {
+  contributor_type: ContributorType | '';
+};
+
+const compareUsers = (a: ContributorUser, b: ContributorUser): number => {
+  if (
+    a.contributor_type === ContributorType.Creator &&
+    b.contributor_type !== ContributorType.Creator
+  ) {
+    return -1;
+  } else if (
+    b.contributor_type === ContributorType.Creator &&
+    a.contributor_type !== ContributorType.Creator
+  ) {
+    return 1;
+  } else return 0;
+};
+
 const DOIGenerationForm: React.FC = () => {
   const [acceptedDataPolicy, setAcceptedDataPolicy] = React.useState(false);
-  const [selectedUsers, setSelectedUsers] = React.useState<User[]>([]);
+  const [selectedUsers, setSelectedUsers] = React.useState<ContributorUser[]>(
+    []
+  );
   const [username, setUsername] = React.useState('');
   const [usernameError, setUsernameError] = React.useState('');
   const [title, setTitle] = React.useState('');
@@ -58,7 +83,13 @@ const DOIGenerationForm: React.FC = () => {
   } = useMintCart();
 
   React.useEffect(() => {
-    if (users) setSelectedUsers(users);
+    if (users)
+      setSelectedUsers(
+        users.map((user) => ({
+          ...user,
+          contributor_type: ContributorType.Creator,
+        }))
+      );
   }, [users]);
 
   React.useEffect(() => {
@@ -267,55 +298,118 @@ const DOIGenerationForm: React.FC = () => {
                               }}
                             />
                           </Grid>
-                          <Grid item>
-                            <Button
-                              variant="contained"
-                              onClick={() => {
-                                // don't let the user add duplicates
-                                if (
-                                  selectedUsers.every(
-                                    (selectedUser) =>
-                                      selectedUser.name !== username
-                                  )
-                                ) {
-                                  checkUser({ throwOnError: true })
-                                    .then((response) => {
-                                      // add user
-                                      const user = response.data;
-                                      if (user) {
-                                        setSelectedUsers((selectedUsers) => [
-                                          ...selectedUsers,
-                                          user,
-                                        ]);
-                                        setUsername('');
-                                      }
-                                    })
-                                    .catch(
-                                      (
-                                        error: AxiosError<{
-                                          detail: { msg: string }[] | string;
-                                        }>
-                                      ) => {
-                                        // TODO: check this is the right message from the API
-                                        setUsernameError(
-                                          error.response?.data?.detail
-                                            ? typeof error.response.data
-                                                .detail === 'string'
-                                              ? error.response.data.detail
-                                              : error.response.data.detail[0]
-                                                  .msg
-                                            : 'Error'
-                                        );
-                                      }
+                          <Grid container item spacing={1} xs="auto">
+                            <Grid item>
+                              <Button
+                                variant="contained"
+                                onClick={() => {
+                                  // don't let the user add duplicates
+                                  if (
+                                    selectedUsers.every(
+                                      (selectedUser) =>
+                                        selectedUser.name !== username
+                                    )
+                                  ) {
+                                    checkUser({ throwOnError: true })
+                                      .then((response) => {
+                                        // add user
+                                        if (response.data) {
+                                          const user: ContributorUser = {
+                                            ...response.data,
+                                            contributor_type:
+                                              ContributorType.Creator,
+                                          };
+                                          setSelectedUsers((selectedUsers) => [
+                                            ...selectedUsers,
+                                            user,
+                                          ]);
+                                          setUsername('');
+                                        }
+                                      })
+                                      .catch(
+                                        (
+                                          error: AxiosError<{
+                                            detail: { msg: string }[] | string;
+                                          }>
+                                        ) => {
+                                          // TODO: check this is the right message from the API
+                                          setUsernameError(
+                                            error.response?.data?.detail
+                                              ? typeof error.response.data
+                                                  .detail === 'string'
+                                                ? error.response.data.detail
+                                                : error.response.data.detail[0]
+                                                    .msg
+                                              : 'Error'
+                                          );
+                                        }
+                                      );
+                                  } else {
+                                    setUsernameError(
+                                      'Cannot add duplicate user'
                                     );
-                                } else {
-                                  setUsernameError('Cannot add duplicate user');
-                                  setUsername('');
-                                }
-                              }}
-                            >
-                              {t('DOIGenerationForm.add_creator')}
-                            </Button>
+                                    setUsername('');
+                                  }
+                                }}
+                              >
+                                {t('DOIGenerationForm.add_creator')}
+                              </Button>
+                            </Grid>
+                            <Grid item>
+                              <Button
+                                variant="contained"
+                                onClick={() => {
+                                  // don't let the user add duplicates
+                                  if (
+                                    selectedUsers.every(
+                                      (selectedUser) =>
+                                        selectedUser.name !== username
+                                    )
+                                  ) {
+                                    checkUser({ throwOnError: true })
+                                      .then((response) => {
+                                        // add user
+                                        if (response.data) {
+                                          const user: ContributorUser = {
+                                            ...response.data,
+                                            contributor_type: '',
+                                          };
+                                          setSelectedUsers((selectedUsers) => [
+                                            ...selectedUsers,
+                                            user,
+                                          ]);
+                                          setUsername('');
+                                        }
+                                      })
+                                      .catch(
+                                        (
+                                          error: AxiosError<{
+                                            detail: { msg: string }[] | string;
+                                          }>
+                                        ) => {
+                                          // TODO: check this is the right message from the API
+                                          setUsernameError(
+                                            error.response?.data?.detail
+                                              ? typeof error.response.data
+                                                  .detail === 'string'
+                                                ? error.response.data.detail
+                                                : error.response.data.detail[0]
+                                                    .msg
+                                              : 'Error'
+                                          );
+                                        }
+                                      );
+                                  } else {
+                                    setUsernameError(
+                                      'Cannot add duplicate user'
+                                    );
+                                    setUsername('');
+                                  }
+                                }}
+                              >
+                                {t('DOIGenerationForm.add_contributor')}
+                              </Button>
+                            </Grid>
                           </Grid>
                         </Grid>
                         <Grid item>
@@ -338,6 +432,9 @@ const DOIGenerationForm: React.FC = () => {
                                   {t('DOIGenerationForm.creator_email')}
                                 </TableCell>
                                 <TableCell>
+                                  {t('DOIGenerationForm.creator_type')}
+                                </TableCell>
+                                <TableCell>
                                   {t('DOIGenerationForm.creator_action')}
                                 </TableCell>
                               </TableRow>
@@ -353,33 +450,100 @@ const DOIGenerationForm: React.FC = () => {
                                   </TableCell>
                                 </TableRow>
                               )}
-                              {selectedUsers.map((user) => (
-                                <TableRow key={user.id}>
-                                  <TableCell>{user.fullName}</TableCell>
-                                  <TableCell>{user?.affiliation}</TableCell>
-                                  <TableCell>{user?.email}</TableCell>
-                                  <TableCell>
-                                    <Button
-                                      size="small"
-                                      disabled={
-                                        user.name ===
-                                        readSciGatewayToken().username
-                                      }
-                                      onClick={() =>
-                                        setSelectedUsers((selectedUsers) =>
-                                          selectedUsers.filter(
-                                            (selectedUser) =>
-                                              selectedUser.id !== user.id
+                              {[...selectedUsers] // need to spread so we don't alter underlying array
+                                .sort(compareUsers)
+                                .map((user) => (
+                                  <TableRow key={user.id}>
+                                    <TableCell>{user.fullName}</TableCell>
+                                    <TableCell>{user?.affiliation}</TableCell>
+                                    <TableCell>{user?.email}</TableCell>
+                                    <TableCell>
+                                      {user.contributor_type ===
+                                      ContributorType.Creator ? (
+                                        ContributorType.Creator
+                                      ) : (
+                                        <FormControl
+                                          fullWidth
+                                          size="small"
+                                          required
+                                        >
+                                          <InputLabel id="contributor-type-select-label">
+                                            {t(
+                                              'DOIGenerationForm.creator_type'
+                                            )}
+                                          </InputLabel>
+                                          <Select
+                                            labelId="contributor-type-select-label"
+                                            id="contributor-type-select"
+                                            value={user.contributor_type}
+                                            label={t(
+                                              'DOIGenerationForm.creator_type'
+                                            )}
+                                            onChange={(event) => {
+                                              setSelectedUsers(
+                                                (selectedUsers) => {
+                                                  return selectedUsers.map(
+                                                    (u) => {
+                                                      if (u.id === user.id) {
+                                                        return {
+                                                          ...u,
+                                                          contributor_type:
+                                                            event.target
+                                                              .value as
+                                                              | ContributorType
+                                                              | '',
+                                                        };
+                                                      } else {
+                                                        return u;
+                                                      }
+                                                    }
+                                                  );
+                                                }
+                                              );
+                                            }}
+                                          >
+                                            {Object.values(ContributorType)
+                                              .filter(
+                                                (value) =>
+                                                  value !==
+                                                  ContributorType.Creator
+                                              )
+                                              .map((type) => {
+                                                return (
+                                                  <MenuItem
+                                                    key={type}
+                                                    value={type}
+                                                  >
+                                                    {type}
+                                                  </MenuItem>
+                                                );
+                                              })}
+                                          </Select>
+                                        </FormControl>
+                                      )}
+                                    </TableCell>
+                                    <TableCell>
+                                      <Button
+                                        size="small"
+                                        disabled={
+                                          user.name ===
+                                          readSciGatewayToken().username
+                                        }
+                                        onClick={() =>
+                                          setSelectedUsers((selectedUsers) =>
+                                            selectedUsers.filter(
+                                              (selectedUser) =>
+                                                selectedUser.id !== user.id
+                                            )
                                           )
-                                        )
-                                      }
-                                      color="secondary"
-                                    >
-                                      {t('DOIGenerationForm.delete_creator')}
-                                    </Button>
-                                  </TableCell>
-                                </TableRow>
-                              ))}
+                                        }
+                                        color="secondary"
+                                      >
+                                        {t('DOIGenerationForm.delete_creator')}
+                                      </Button>
+                                    </TableCell>
+                                  </TableRow>
+                                ))}
                             </TableBody>
                           </Table>
                         </Grid>
@@ -394,7 +558,10 @@ const DOIGenerationForm: React.FC = () => {
                         description.length === 0 ||
                         selectedUsers.length === 0 ||
                         typeof cart === 'undefined' ||
-                        cart.length === 0
+                        cart.length === 0 ||
+                        selectedUsers.some(
+                          (user) => user.contributor_type === ''
+                        )
                       }
                       onClick={() => {
                         if (cart) {
@@ -408,6 +575,8 @@ const DOIGenerationForm: React.FC = () => {
                             )
                             .map((user) => ({
                               username: user.name,
+                              contributor_type:
+                                user.contributor_type as ContributorType, // we check this is true in the disabled field above
                             }));
                           mintCart({
                             cart,

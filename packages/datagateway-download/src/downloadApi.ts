@@ -428,10 +428,34 @@ export const isCartMintable = async (
   return status === 200;
 };
 
+export enum ContributorType {
+  Creator = 'Creator',
+  ContactPerson = 'ContactPerson',
+  DataCollector = 'DataCollector',
+  DataCurator = 'DataCurator',
+  DataManager = 'DataManager',
+  Distributor = 'Distributor',
+  Editor = 'Editor',
+  HostingInstitution = 'HostingInstitution',
+  Producer = 'Producer',
+  ProjectLeader = 'ProjectLeader',
+  ProjectManager = 'ProjectManager',
+  ProjectMember = 'ProjectMember',
+  RegistrationAgency = 'RegistrationAgency',
+  RelatedPerson = 'RelatedPerson',
+  Researcher = 'Researcher',
+  ResearchGroup = 'ResearchGroup',
+  RightsHolder = 'RightsHolder',
+  Sponsor = 'Sponsor',
+  Supervisor = 'Supervisor',
+  WorkPackageLeader = 'WorkPackageLeader',
+  Other = 'Other',
+}
+
 export interface DoiMetadata {
   title: string;
   description: string;
-  creators?: { username: string }[];
+  creators?: { username: string; contributor_type: ContributorType }[];
 }
 
 export interface DoiResult {
