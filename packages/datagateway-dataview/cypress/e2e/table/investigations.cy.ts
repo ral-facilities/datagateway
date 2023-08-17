@@ -22,7 +22,7 @@ describe('Investigations Table', () => {
 
   it('should disable the hover tool tip by pressing escape', () => {
     // The hover tool tip has a enter delay of 500ms.
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    // eslint-disable-next-line cypress/no-unnecessary-waiting, cypress/unsafe-to-chain-command
     cy.get('[data-testid="investigation-table-title"]')
       .first()
       .trigger('mouseover', { force: true })
@@ -78,6 +78,7 @@ describe('Investigations Table', () => {
       expect(width).to.equal(columnWidth);
     });
 
+    // eslint-disable-next-line cypress/unsafe-to-chain-command
     cy.get('.react-draggable')
       .first()
       .trigger('mousedown')
@@ -95,6 +96,7 @@ describe('Investigations Table', () => {
     });
 
     // table width should grow if a column grows too large
+    // eslint-disable-next-line cypress/unsafe-to-chain-command
     cy.get('.react-draggable')
       .first()
       .trigger('mousedown')
@@ -172,14 +174,55 @@ describe('Investigations Table', () => {
   });
 
   describe('should be able to filter by', () => {
-    it('text', () => {
-      cy.get('[aria-label="Filter by Title"]').first().type('wide');
+    it('exclude', () => {
+      cy.get('input[aria-label="Filter by Name"]')
+        .parent()
+        .find('[aria-label="include, exclude or exact"]')
+        .click();
 
-      cy.get('[aria-rowcount="4"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('85');
+      cy.get('#select-filter-type-exclude').click();
+
+      cy.get('[aria-label="Filter by Name"]').first().type('INVESTIGATION 1');
+
+      cy.get('[aria-rowcount="48"]').should('exist');
+      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('87');
 
       // check that size is correct after filtering
-      cy.get('[aria-rowindex="1"] [aria-colindex="7"]').contains('3.34 GB');
+      cy.get('[aria-rowindex="1"] [aria-colindex="7"]').contains('3.38 GB');
+    });
+
+    it('include', () => {
+      cy.get('input[aria-label="Filter by Name"]')
+        .parent()
+        .find('[aria-label="include, exclude or exact"]')
+        .click();
+
+      cy.get('#select-filter-type-include').click();
+
+      cy.get('[aria-label="Filter by Name"]').first().type('INVESTIGATION 1');
+
+      cy.get('[aria-rowcount="11"]').should('exist');
+      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('70');
+
+      // check that size is correct after filtering
+      cy.get('[aria-rowindex="1"] [aria-colindex="7"]').contains('3.12 GB');
+    });
+
+    it('exact', () => {
+      cy.get('input[aria-label="Filter by Name"]')
+        .parent()
+        .find('[aria-label="include, exclude or exact"]')
+        .click();
+
+      cy.get('#select-filter-type-exact').click();
+
+      cy.get('[aria-label="Filter by Name"]').first().type('INVESTIGATION 1');
+
+      cy.get('[aria-rowcount="1"]').should('exist');
+      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('70');
+
+      // check that size is correct after filtering
+      cy.get('[aria-rowindex="1"] [aria-colindex="7"]').contains('3.12 GB');
     });
 
     it('date between', () => {
