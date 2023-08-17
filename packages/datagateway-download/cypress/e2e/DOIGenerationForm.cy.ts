@@ -70,7 +70,7 @@ describe('DOI Generation form', () => {
       cy.url().should('match', /\/browse\/dataPublication\/[0-9]+$/);
     });
 
-    it('should let user add and remove Data Publication users', () => {
+    it('should let user add and remove creators', () => {
       cy.contains('DOI Title').parent().find('input').type('Test title');
       cy.contains('DOI Description')
         .parent()
@@ -95,6 +95,33 @@ describe('DOI Generation form', () => {
       cy.contains('Randy').should('not.exist');
 
       cy.contains('button', 'Generate DOI').should('not.be.disabled');
+    });
+
+    it('should let user add contributors and select their contributor type', () => {
+      cy.contains('DOI Title').parent().find('input').type('Test title');
+      cy.contains('DOI Description')
+        .parent()
+        .find('textarea')
+        .first()
+        .type('Test description');
+
+      // wait for users to load
+      cy.contains('button', 'Generate DOI').should('not.be.disabled');
+
+      cy.contains('Username').parent().find('input').type('Michael222');
+      cy.contains('button', 'Add Contributor').click();
+
+      // shouldn't let users submit DOIs without selecting a contributor type
+      cy.contains('button', 'Generate DOI').should('be.disabled');
+
+      cy.contains('label', 'Contributor Type').parent().click();
+
+      cy.contains('DataCollector').click();
+
+      // check that contributor info doesn't break the API
+      cy.contains('button', 'Generate DOI').click();
+
+      cy.contains('Mint was successful').should('be.visible');
     });
 
     it('should not let user add invalid/duplicate Data Publication users', () => {

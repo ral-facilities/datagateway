@@ -422,14 +422,15 @@ const DOIGenerationForm: React.FC = () => {
                                           size="small"
                                           required
                                         >
-                                          <InputLabel id="contributor-type-select-label">
+                                          <InputLabel
+                                            id={`${user.name}-contributor-type-select-label`}
+                                          >
                                             {t(
                                               'DOIGenerationForm.creator_type'
                                             )}
                                           </InputLabel>
                                           <Select
-                                            labelId="contributor-type-select-label"
-                                            id="contributor-type-select"
+                                            labelId={`${user.name}-contributor-type-select-label`}
                                             value={user.contributor_type}
                                             label={t(
                                               'DOIGenerationForm.creator_type'
