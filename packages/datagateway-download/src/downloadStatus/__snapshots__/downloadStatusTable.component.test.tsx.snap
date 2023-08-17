@@ -117,7 +117,7 @@ exports[`Download Status Table should render correctly 1`] = `
                               <div
                                 aria-expanded="false"
                                 aria-haspopup="listbox"
-                                aria-label="include or exclude"
+                                aria-label="include, exclude or exact"
                                 aria-labelledby="downloadStatus.filename-select-filter-type"
                                 class="MuiSelect-select MuiSelect-standard MuiInputBase-input MuiInput-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
                                 id="downloadStatus.filename-select-filter-type"
@@ -240,7 +240,7 @@ exports[`Download Status Table should render correctly 1`] = `
                               <div
                                 aria-expanded="false"
                                 aria-haspopup="listbox"
-                                aria-label="include or exclude"
+                                aria-label="include, exclude or exact"
                                 aria-labelledby="downloadStatus.transport-select-filter-type"
                                 class="MuiSelect-select MuiSelect-standard MuiInputBase-input MuiInput-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
                                 id="downloadStatus.transport-select-filter-type"
@@ -363,7 +363,7 @@ exports[`Download Status Table should render correctly 1`] = `
                               <div
                                 aria-expanded="false"
                                 aria-haspopup="listbox"
-                                aria-label="include or exclude"
+                                aria-label="include, exclude or exact"
                                 aria-labelledby="downloadStatus.status-select-filter-type"
                                 class="MuiSelect-select MuiSelect-standard MuiInputBase-input MuiInput-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
                                 id="downloadStatus.status-select-filter-type"
