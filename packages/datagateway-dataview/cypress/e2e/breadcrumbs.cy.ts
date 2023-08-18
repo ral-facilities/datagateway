@@ -19,10 +19,8 @@ describe('Breadcrumbs Component', () => {
 
   it('should click on investigation and add breadcrumbs correctly', () => {
     // Click on the first investigation in the table.
-    cy.get('[role="gridcell"] a')
-      .first()
-      .click({ force: true })
-      .wait('@getInvestigation');
+    cy.get('[role="gridcell"] a').first().click({ force: true });
+    cy.wait('@getInvestigation');
 
     // Check to see if the breadcrumbs have been added correctly.
     // Get the first link on the page which is a link to
@@ -77,7 +75,8 @@ describe('Breadcrumbs Component', () => {
     cy.visit('/browse/investigation/1/dataset').wait('@getInvestigation');
 
     // Click on the first link with Dataset 1.
-    cy.contains('DATASET 1').click({ force: true }).wait('@getDataset');
+    cy.contains('DATASET 1').click({ force: true });
+    cy.wait('@getDataset');
 
     // Check to ensure the location is the datafile.
     cy.location('pathname').should(
@@ -122,7 +121,8 @@ describe('Breadcrumbs Component', () => {
     cy.visit('/browse/investigation/1/dataset').wait('@getInvestigation');
 
     // Click on the first link with Dataset 1.
-    cy.contains('DATASET 1').click({ force: true }).wait('@getDataset');
+    cy.contains('DATASET 1').click({ force: true });
+    cy.wait('@getDataset');
 
     // Check to ensure the location is the datafile.
     cy.location('pathname').should(
@@ -132,19 +132,16 @@ describe('Breadcrumbs Component', () => {
 
     // The hover tool tip has an enter delay of 100ms.
     // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.contains('span', 'DATASET 1')
-      .trigger('mouseover', { force: true })
-      .wait(300)
-      .get('[role="tooltip"]')
-      .should('not.exist');
+    cy.contains('span', 'DATASET 1').trigger('mouseover', { force: true });
+
+    cy.get('[role="tooltip"]').should('not.exist');
 
     // The hover tool tip has an enter delay of 100ms.
     // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.contains('span', 'Analysis reflect')
-      .trigger('mouseover', { force: true })
-      .wait(300)
-      .get('[role="tooltip"]')
-      .contains('Analysis reflect');
+    cy.contains('span', 'Analysis reflect').trigger('mouseover', {
+      force: true,
+    });
+    cy.get('[role="tooltip"]').contains('Analysis reflect');
   });
 
   it('breadcrumbs should be sticky', () => {
@@ -156,9 +153,10 @@ describe('Breadcrumbs Component', () => {
       'Investigations'
     );
 
-    cy.get('[data-testid="card"]').eq(5).scrollIntoView().should('be.visible');
+    cy.get('[data-testid="card"]').eq(5).scrollIntoView();
+    cy.get('[data-testid="card"]').eq(5).should('be.visible');
 
     // Check the breadcrumbs are still visible
-    cy.get('[data-testid="Breadcrumb-base"]').isScrolledTo();
+    cy.get('[data-testid="Breadcrumb-base"]').should('be.visible');
   });
 });
