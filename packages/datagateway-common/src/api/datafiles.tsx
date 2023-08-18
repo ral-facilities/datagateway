@@ -69,7 +69,7 @@ export const useDatafilesPaginated = (
     [
       string,
       {
-        sort: SortType;
+        sort: string;
         filters: FiltersType;
         page: number;
         results: number;
@@ -79,11 +79,16 @@ export const useDatafilesPaginated = (
   >(
     [
       'datafile',
-      { sort, filters, page: page ?? 1, results: results ?? 10 },
+      {
+        sort: JSON.stringify(sort), // need to stringify sort as property order is important!
+        filters,
+        page: page ?? 1,
+        results: results ?? 10,
+      },
       additionalFilters,
     ],
     (params) => {
-      const { sort, filters, page, results } = params.queryKey[1];
+      const { page, results } = params.queryKey[1];
       const startIndex = (page - 1) * results;
       const stopIndex = startIndex + results - 1;
       return fetchDatafiles(apiUrl, { sort, filters }, additionalFilters, {
@@ -107,15 +112,9 @@ export const useDatafilesInfinite = (
   const location = useLocation();
   const { filters, sort } = parseSearchToQuery(location.search);
 
-  return useInfiniteQuery<
-    Datafile[],
-    AxiosError,
-    Datafile[],
-    [string, { sort: SortType; filters: FiltersType }, AdditionalFilters?]
-  >(
-    ['datafile', { sort, filters }, additionalFilters],
+  return useInfiniteQuery(
+    ['datafile', { sort: JSON.stringify(sort), filters }, additionalFilters], // need to stringify sort as property order is important!
     (params) => {
-      const { sort, filters } = params.queryKey[1];
       const offsetParams = params.pageParam ?? { startIndex: 0, stopIndex: 49 };
       return fetchDatafiles(
         apiUrl,
