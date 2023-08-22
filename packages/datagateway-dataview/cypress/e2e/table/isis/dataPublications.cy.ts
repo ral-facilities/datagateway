@@ -102,15 +102,19 @@ describe('ISIS - Data Publication Table', () => {
 
   it('should be able to filter with both text & date filters on multiple columns', () => {
     // test text filter
+    cy.screenshot();
     cy.get('[aria-label="Filter by Title"]').first().type('ne');
 
     cy.get('[aria-rowcount="3"]').should('exist');
+    cy.screenshot();
     cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
       'Church child time Congress'
     );
 
     // test date filter
     cy.get('input[id="Publication Date filter to"]').type('2016-01-01');
+
+    cy.screenshot();
 
     cy.get('[aria-rowcount="2"]').should('exist');
     cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
