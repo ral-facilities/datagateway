@@ -131,13 +131,11 @@ describe('Breadcrumbs Component', () => {
     );
 
     // The hover tool tip has an enter delay of 100ms.
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.contains('span', 'DATASET 1').trigger('mouseover', { force: true });
 
     cy.get('[role="tooltip"]').should('not.exist');
 
     // The hover tool tip has an enter delay of 100ms.
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.contains('span', 'Analysis reflect').trigger('mouseover', {
       force: true,
     });

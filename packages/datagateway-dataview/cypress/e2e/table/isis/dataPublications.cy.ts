@@ -113,7 +113,7 @@ describe('ISIS - Data Publication Table', () => {
     let toDate = '2016-01-01';
     let fromDate = '2014-01-01';
     // TODO: make this less scuffed when https://github.com/ral-facilities/datagateway-api/issues/444 is fixed
-    if (process.env.CI) {
+    if (Cypress.env('CI')) {
       // can get the below date by looking at the createTime of any datafiles on SG preprod
       const sgPreprodGenerationDate = new Date('2023-03-28');
       // get rid of any timezone offset
