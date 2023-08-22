@@ -102,26 +102,49 @@ describe('ISIS - Data Publication Table', () => {
 
   it('should be able to filter with both text & date filters on multiple columns', () => {
     // test text filter
-    cy.screenshot();
     cy.get('[aria-label="Filter by Title"]').first().type('ne');
 
     cy.get('[aria-rowcount="3"]').should('exist');
-    cy.screenshot();
+
     cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
       'Church child time Congress'
     );
 
-    // test date filter
-    cy.get('input[id="Publication Date filter to"]').type('2016-01-01');
+    let toDate = '2016-01-01';
+    let fromDate = '2014-01-01';
+    // TODO: make this less scuffed when https://github.com/ral-facilities/datagateway-api/issues/444 is fixed
+    if (process.env.CI) {
+      // can get the below date by looking at the createTime of any datafiles on SG preprod
+      const sgPreprodGenerationDate = new Date('2023-03-28');
+      // get rid of any timezone offset
+      sgPreprodGenerationDate.setHours(0);
+      const today = new Date();
+      today.setHours(0);
+      today.setMinutes(0);
+      today.setSeconds(0);
+      today.setMilliseconds(0);
+      const diff = today.getTime() - sgPreprodGenerationDate.getTime();
 
-    cy.screenshot();
+      const toDateDate = new Date(toDate);
+      toDateDate.setHours(0);
+      toDateDate.setTime(toDateDate.getTime() + diff);
+      toDate = toDateDate.toLocaleDateString('sv').split(' ')[0];
+
+      const fromDateDate = new Date(fromDate);
+      fromDateDate.setHours(0);
+      fromDateDate.setTime(fromDateDate.getTime() + diff);
+      fromDate = fromDateDate.toLocaleDateString('sv').split(' ')[0];
+    }
+
+    // test date filter
+    cy.get('input[id="Publication Date filter to"]').type(toDate);
 
     cy.get('[aria-rowcount="2"]').should('exist');
     cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
       'Consider author watch'
     );
 
-    cy.get('input[id="Publication Date filter from"]').type('2014-01-01');
+    cy.get('input[id="Publication Date filter from"]').type(fromDate);
 
     cy.get('[aria-rowcount="1"]').should('exist');
   });
