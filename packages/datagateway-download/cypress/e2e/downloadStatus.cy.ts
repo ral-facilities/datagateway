@@ -166,10 +166,22 @@ describe('Download Status', () => {
 
     cy.get('[aria-rowcount="4"]').should('exist');
 
-    cy.get('[aria-rowindex="1"] [aria-colindex="5"]').should(
-      'contain',
-      format(currDate, 'yyyy-MM-dd')
-    );
+    // account for whether the download progress feature is enabled or not
+    cy.get('[role="columnheader"]')
+      .eq(3)
+      .then(($fourthColHeader) => {
+        if ($fourthColHeader.text().includes('Progress')) {
+          cy.get('[aria-rowindex="1"] [aria-colindex="5"]').should(
+            'contain',
+            format(currDate, 'yyyy-MM-dd')
+          );
+        } else {
+          cy.get('[aria-rowindex="1"] [aria-colindex="4"]').should(
+            'contain',
+            format(currDate, 'yyyy-MM-dd')
+          );
+        }
+      });
 
     cy.get('[aria-label="Filter by Access Method"]').first().type('globus');
 
