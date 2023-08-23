@@ -1,31 +1,24 @@
 describe('SearchPageContainer Component', () => {
-  let facilityName: string;
+  // let facilityName: string;
 
-  before(() => {
-    cy.readFile('server/e2e-settings.json').then((settings) => {
-      if (settings.facilityName) facilityName = settings.facilityName;
-    });
-  });
+  // before(() => {
+  //   cy.readFile('server/e2e-settings.json').then((settings) => {
+  //     if (settings.facilityName) facilityName = settings.facilityName;
+  //   });
+  // });
 
   it('Should default back to 10 when any result is manually entered into the url', () => {
     cy.login();
-    cy.visit('/search/data?view=card&results=100');
     cy.intercept('**/investigations/count?where=%7B%22id*').as(
       'investigationsCount'
     );
     cy.intercept('**/investigations?*').as('investigations');
-    cy.intercept('**/datasets/count?where=%7B%22id*').as('datasetsCount');
-    cy.intercept('**/datasets?*').as('datasets');
-    cy.intercept('**/datafiles/count?where=%7B%22id*').as('datafilesCount');
-    cy.intercept('**/datafiles?*').as('datafiles');
-    cy.intercept(`**/topcat/user/cart/${facilityName}/cartItems`).as('topcat');
+    cy.visit('/search/data?view=card&results=100');
 
-    cy.clearDownloadCart();
-    cy.get('[aria-label="Submit search"]')
-      .click()
-      .wait(['@investigations', '@investigations', '@investigationsCount'], {
-        timeout: 10000,
-      });
+    cy.get('[aria-label="Submit search"]').click();
+    cy.wait(['@investigations', '@investigations', '@investigationsCount'], {
+      timeout: 10000,
+    });
 
     cy.get('[aria-label="card-buttons"]', { timeout: 10000 }).should(
       'have.length',
@@ -33,40 +26,67 @@ describe('SearchPageContainer Component', () => {
     );
   });
 
+  it('should be able to load results from a URL', () => {
+    cy.login();
+    cy.intercept('**/investigations/count?where=%7B%22id*').as(
+      'investigationsCount'
+    );
+    cy.intercept('**/investigations?*').as('investigations');
+
+    cy.visit('/search/data/?view=card&searchText=test&startDate=2000-06-01');
+    cy.wait(['@investigations', '@investigations', '@investigationsCount'], {
+      timeout: 10000,
+    });
+
+    //Should be in card view
+    cy.get('[aria-label="page view Display as table"]').should('exist');
+    cy.get('[aria-label="page view Display as table"]').contains(
+      'Display as table'
+    );
+
+    cy.get('[aria-label="Search table"]')
+      .contains('Investigation')
+      .contains('1')
+      .should('exist');
+    cy.get('[aria-label="Search table"]')
+      .contains('Dataset')
+      .contains('5')
+      .should('exist');
+    cy.get('[aria-label="Search table"]')
+      .contains('Datafile')
+      .contains('36')
+      .should('exist');
+  });
+
   describe('SearchPageContainer Components', () => {
     beforeEach(() => {
       cy.login();
+      cy.clearDownloadCart();
       cy.visit('/search/data/');
       cy.intercept('**/investigations/count?where=%7B%22id*').as(
         'investigationsCount'
       );
       cy.intercept('**/investigations?*').as('investigations');
 
-      cy.clearDownloadCart();
       cy.get('#filled-search').type('dog');
 
-      cy.get('[aria-label="Submit search"]')
-        .click()
-        .wait(['@investigations', '@investigations', '@investigationsCount'], {
-          timeout: 10000,
-        });
+      cy.get('[aria-label="Submit search"]').click();
+      cy.wait(['@investigations', '@investigations', '@investigationsCount'], {
+        timeout: 10000,
+      });
     });
 
     it('should load correctly', () => {
       cy.title().should('equal', 'DataGateway Search');
 
       cy.get('#container-search-filters').should('exist');
+      cy.get('#container-search-table').should('exist');
+
       cy.location().should((loc) => {
         expect(loc.search).to.eq('?searchText=dog');
       });
-    });
 
-    it('should display results correctly', () => {
-      cy.get('#container-search-table').should('exist');
-    });
-
-    it('should have the correct url for the DOI link (Tableview) ', () => {
-      // DOI
+      // check table DOI link is correct
 
       cy.get('[data-testid="investigation-search-table-doi-link"]')
         .first()
@@ -79,21 +99,6 @@ describe('SearchPageContainer Component', () => {
             .first()
             .should('have.attr', 'href', url);
         });
-    });
-
-    it('should be able to navigate through tabs without losing the filters (Table)', () => {
-      cy.title().should('equal', 'DataGateway Search');
-
-      cy.get('#container-search-filters').should('exist');
-      cy.get('[aria-label="Filter by Title"]').type('ba');
-      cy.contains('Visit ID').first().click();
-
-      cy.get('[id="simple-tab-dataset"]').click();
-      cy.get('[id="simple-tab-investigation"]').click();
-
-      cy.get('[aria-rowcount="4"]').should('exist');
-
-      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('18');
     });
 
     it('should be able to click clear filters button to clear filters', () => {
@@ -118,25 +123,18 @@ describe('SearchPageContainer Component', () => {
       });
     });
 
-    it('should have the correct url for the DOI link (Cardview) ', () => {
-      // DOI
+    it('should be able to switch between tabs (and filters should not be lost)', () => {
+      cy.get('[aria-label="Search table"]')
+        .contains('Investigation')
+        .contains('5');
 
-      cy.get('[aria-label="page view Display as cards"]').click();
+      cy.get('[aria-label="Filter by Title"]').type('ba');
+      cy.contains('Visit ID').first().click();
 
-      cy.get('[data-testid="investigation-search-card-doi-link"]')
-        .first()
-        .then(($doi) => {
-          const doi = $doi.text();
+      cy.get('[aria-rowcount="4"]').should('exist');
 
-          const url = `https://doi.org/${doi}`;
+      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('18');
 
-          cy.get('[data-testid="investigation-search-card-doi-link"]')
-            .first()
-            .should('have.attr', 'href', url);
-        });
-    });
-
-    it('should be able to switch between tabs', () => {
       cy.get('[aria-label="Search table"]')
         .contains('Dataset')
         .contains('3')
@@ -149,8 +147,12 @@ describe('SearchPageContainer Component', () => {
 
       cy.get('[aria-label="Search table"]')
         .contains('Investigation')
-        .contains('5')
+        .contains('4')
         .click();
+
+      cy.get('[aria-rowcount="4"]').should('exist');
+
+      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('18');
     });
 
     it('should be able to switch to card view', () => {
@@ -164,6 +166,19 @@ describe('SearchPageContainer Component', () => {
       cy.location().should((loc) => {
         expect(loc.search).to.eq('?view=card&searchText=dog');
       });
+
+      // check card view DOI link is correct
+      cy.get('[data-testid="investigation-search-card-doi-link"]')
+        .first()
+        .then(($doi) => {
+          const doi = $doi.text();
+
+          const url = `https://doi.org/${doi}`;
+
+          cy.get('[data-testid="investigation-search-card-doi-link"]')
+            .first()
+            .should('have.attr', 'href', url);
+        });
 
       cy.get('[aria-label="page view Display as table"]').click();
 
@@ -194,101 +209,74 @@ describe('SearchPageContainer Component', () => {
     });
 
     it('should be able to choose number of results to display', () => {
-      cy.login();
-      cy.visit('/search/data/');
-      cy.intercept('**/investigations/count?where=%7B%22id*').as(
-        'investigationsCount'
-      );
-      cy.intercept('**/investigations?*').as('investigations');
+      cy.get('[aria-label="Search text input"]').clear();
 
-      cy.clearDownloadCart();
-      cy.get('[aria-label="Submit search"]')
-        .click()
-        .wait(['@investigations', '@investigations', '@investigationsCount'], {
-          timeout: 10000,
-        });
+      cy.get('[aria-label="Submit search"]').click();
       cy.get('[aria-label="page view Display as cards"]').click();
-      cy.get('[aria-label="card-buttons"]', { timeout: 10000 }).should(
-        'have.length',
-        10
-      );
 
-      cy.get('select[id="select-max-results"]', {
-        timeout: 10000,
-      })
-        .select('20')
-        .wait(['@investigations', '@investigations', '@investigationsCount'], {
-          timeout: 10000,
-        });
-      cy.get('[aria-label="card-buttons"]', { timeout: 10000 }).should(
-        'have.length',
-        20
-      );
+      cy.get('select[id="select-max-results"]')
+        .as('maxResultsSelect')
+        .find('option:selected', { timeout: 10000 })
+        .should('have.text', '10');
+      cy.get('[aria-label="card-buttons"]')
+        .as('cardButtons')
+        .should('have.length', 10);
 
-      cy.get('select[id="select-max-results"]', {
-        timeout: 10000,
-      })
-        .select('30')
-        .wait(['@investigations', '@investigations', '@investigationsCount'], {
-          timeout: 10000,
-        });
-      cy.get('[aria-label="card-buttons"]', { timeout: 10000 }).should(
-        'have.length',
-        30
-      );
+      cy.get('@maxResultsSelect').select('20');
+
+      cy.get('@maxResultsSelect')
+        .find('option:selected', { timeout: 10000 })
+        .should('have.text', '20');
+      cy.get('@cardButtons').should('have.length', 20);
+
+      cy.get('@maxResultsSelect').select('30');
+
+      cy.get('@maxResultsSelect')
+        .find('option:selected', { timeout: 10000 })
+        .should('have.text', '30');
+
+      cy.get('@cardButtons').should('have.length', 30);
     });
 
-    //This test appears to get a different number of results locally compared to the automated tests
-    //on github meaning the test fails
-    it.skip('should be able to change page in card view', () => {
-      cy.get('[aria-label="Search text input"]').find('#filled-search').clear();
+    it('should be able to change page in card view', () => {
+      cy.get('[aria-label="Search text input"]').clear();
 
-      cy.get('[aria-label="Submit search"]')
-        .click()
-        .wait(['@investigations', '@investigations', '@investigationsCount'], {
-          timeout: 10000,
-        });
-
+      cy.get('[aria-label="Submit search"]').click();
       cy.get('[aria-label="page view Display as cards"]').click();
 
       cy.get('[aria-label="Go to page 2"]', { timeout: 10000 }).first().click();
       cy.get('[data-testid="card"]')
         .first()
-        .contains('Guy maintain us process official people suffer.');
+        .contains('Quite world game over million');
 
       cy.get('[aria-label="Go to next page"]', { timeout: 10000 })
         .first()
         .click();
-      cy.get('[data-testid="card"]')
-        .first()
-        .contains('Yourself smile either I pass significant.');
+      cy.get('[data-testid="card"]').first().contains('Across prepare why go');
 
       cy.get('[aria-label="Go to last page"]', { timeout: 10000 })
         .first()
         .click();
-      cy.get('[data-testid="card"]')
-        .first()
-        .contains('Window former upon writer help step account.');
+      cy.get('[data-testid="card"]').first().contains('Father effort me');
 
       cy.get('[aria-label="Go to previous page"]', { timeout: 10000 })
         .first()
         .click();
       cy.get('[data-testid="card"]')
         .first()
-        .contains('Someone statement Republican plan watch.');
+        .contains('Already medical seek take');
 
       cy.get('[aria-label="Go to first page"]', { timeout: 10000 })
         .first()
         .click();
       cy.get('[data-testid="card"]')
         .first()
-        .contains('Including spend increase ability music skill former.');
+        .contains('Analysis reflect work or hour');
     });
 
     it('should display selection alert banner correctly', () => {
-      cy.get(`[aria-rowindex="1"] [aria-colindex="1"]`)
-        .click()
-        .wait('@investigations', { timeout: 10000 });
+      cy.get(`[aria-rowindex="1"] [aria-colindex="1"]`).click();
+      cy.wait('@investigations', { timeout: 10000 });
 
       cy.get('[aria-label="selection-alert"]').should('exist');
       cy.get('[aria-label="selection-alert-text"]')
@@ -316,11 +304,10 @@ describe('SearchPageContainer Component', () => {
       //Close drop down menu
       cy.get('body').type('{esc}');
 
-      cy.get('[aria-label="Submit search"]')
-        .click()
-        .wait(['@investigations', '@investigations', '@investigationsCount'], {
-          timeout: 10000,
-        });
+      cy.get('[aria-label="Submit search"]').click();
+      cy.wait(['@investigations', '@investigations', '@investigationsCount'], {
+        timeout: 10000,
+      });
 
       cy.location().should((loc) => {
         expect(loc.search).to.eq(
@@ -390,11 +377,10 @@ describe('SearchPageContainer Component', () => {
     it('should be able to select a start date', () => {
       cy.get('[aria-label="Start date input"]').type('2009-01-01');
 
-      cy.get('[aria-label="Submit search"]')
-        .click()
-        .wait(['@investigations', '@investigations', '@investigationsCount'], {
-          timeout: 10000,
-        });
+      cy.get('[aria-label="Submit search"]').click();
+      cy.wait(['@investigations', '@investigations', '@investigationsCount'], {
+        timeout: 10000,
+      });
 
       cy.location().should((loc) => {
         expect(loc.search).to.contains('?searchText=dog&startDate=2009-01-01');
@@ -403,33 +389,6 @@ describe('SearchPageContainer Component', () => {
       cy.get('[aria-label="Search table"]')
         .contains('Investigation')
         .contains('2')
-        .should('exist');
-    });
-
-    it('should be able to load results from a URL', () => {
-      cy.visit(
-        '/search/data/?view=card&searchText=test&startDate=2000-06-01'
-      ).wait(['@investigations', '@investigations', '@investigationsCount'], {
-        timeout: 10000,
-      });
-
-      //Should be in card view
-      cy.get('[aria-label="page view Display as table"]').should('exist');
-      cy.get('[aria-label="page view Display as table"]').contains(
-        'Display as table'
-      );
-
-      cy.get('[aria-label="Search table"]')
-        .contains('Investigation')
-        .contains('1')
-        .should('exist');
-      cy.get('[aria-label="Search table"]')
-        .contains('Dataset')
-        .contains('5')
-        .should('exist');
-      cy.get('[aria-label="Search table"]')
-        .contains('Datafile')
-        .contains('36')
         .should('exist');
     });
   });
