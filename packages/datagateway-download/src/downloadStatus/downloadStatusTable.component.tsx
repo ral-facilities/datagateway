@@ -191,12 +191,22 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
           const endDateFilter = filter.endDate ? toDate(filter.endDate) : null;
 
           if (startDateFilter && endDateFilter) {
-            satisfiedFilters.push(
-              isWithinInterval(tableDate, {
-                start: startDateFilter,
-                end: endDateFilter,
-              })
-            );
+            try {
+              satisfiedFilters.push(
+                isWithinInterval(tableDate, {
+                  start: startDateFilter,
+                  end: endDateFilter,
+                })
+              );
+            } catch (e) {
+              if (e instanceof RangeError) {
+                // isWithinInterval throws with RangeError if startDate > endDate
+                // in the date filter we tell the user this is invalid,
+                // so handle it there and do nothing here
+              } else {
+                throw e;
+              }
+            }
 
             continue;
           }
