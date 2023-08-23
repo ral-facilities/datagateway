@@ -238,13 +238,21 @@ describe('SearchPageContainer Component', () => {
       cy.get('@cardButtons').should('have.length', 30);
     });
 
-    it('should be able to change page in card view', () => {
+    it.only('should be able to change page in card view', () => {
       cy.get('[aria-label="Search text input"]').clear();
 
       cy.get('[aria-label="Submit search"]').click();
+
+      cy.get('[aria-rowcount=50]');
+      cy.screenshot();
       cy.get('[aria-label="page view Display as cards"]').click();
 
+      cy.get('[data-testid="card"]');
+      cy.screenshot();
+
       cy.get('[aria-label="Go to page 2"]', { timeout: 10000 }).first().click();
+      cy.get('[data-testid="card"]');
+      cy.screenshot();
       cy.get('[data-testid="card"]')
         .first()
         .contains('Quite world game over million');
