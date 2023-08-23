@@ -238,48 +238,39 @@ describe('SearchPageContainer Component', () => {
       cy.get('@cardButtons').should('have.length', 30);
     });
 
-    it.only('should be able to change page in card view', () => {
+    it('should be able to change page in card view', () => {
       cy.get('[aria-label="Search text input"]').clear();
 
       cy.get('[aria-label="Submit search"]').click();
 
-      cy.get('[aria-rowcount=50]');
-      cy.screenshot();
       cy.get('[aria-label="page view Display as cards"]').click();
 
-      cy.get('[data-testid="card"]');
-      cy.screenshot();
+      // we're testing cards in the middle of pages, as CI and SG-preprod can differ
+      // by around 1 result, so using first/last item per page is going to be
+      // wrong on one env or the other
 
       cy.get('[aria-label="Go to page 2"]', { timeout: 10000 }).first().click();
-      cy.get('[data-testid="card"]');
-      cy.screenshot();
-      cy.get('[data-testid="card"]')
-        .first()
-        .contains('Quite world game over million');
+      cy.contains('[data-testid="card"]', 'Star enter wide nearly off');
 
       cy.get('[aria-label="Go to next page"]', { timeout: 10000 })
         .first()
         .click();
-      cy.get('[data-testid="card"]').first().contains('Across prepare why go');
+      cy.contains('[data-testid="card"]', 'Crime town perhaps');
 
       cy.get('[aria-label="Go to last page"]', { timeout: 10000 })
         .first()
         .click();
-      cy.get('[data-testid="card"]').first().contains('Father effort me');
+      cy.contains('[data-testid="card"]', 'Imagine ball old window');
 
       cy.get('[aria-label="Go to previous page"]', { timeout: 10000 })
         .first()
         .click();
-      cy.get('[data-testid="card"]')
-        .first()
-        .contains('Already medical seek take');
+      cy.contains('[data-testid="card"]', 'Deep watch simple');
 
       cy.get('[aria-label="Go to first page"]', { timeout: 10000 })
         .first()
         .click();
-      cy.get('[data-testid="card"]')
-        .first()
-        .contains('Analysis reflect work or hour');
+      cy.contains('[data-testid="card"]', 'Now himself exist board space');
     });
 
     it('should display selection alert banner correctly', () => {
