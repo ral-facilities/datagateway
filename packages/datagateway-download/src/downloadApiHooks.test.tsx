@@ -1151,6 +1151,16 @@ describe('Download Cart API react-query hooks test', () => {
   describe('useDownloadTypeStatuses', () => {
     const downloadTypes = ['https', 'globus'];
 
+    let queryClient: QueryClient;
+
+    beforeAll(() => {
+      queryClient = new QueryClient();
+    });
+
+    afterEach(() => {
+      queryClient.clear();
+    });
+
     it('should query statuses of download types', async () => {
       axios.get = jest.fn().mockResolvedValue({
         data: {
@@ -1217,6 +1227,43 @@ describe('Download Cart API react-query hooks test', () => {
           },
         }
       );
+    });
+
+    it('should refetch data on every hook call', async () => {
+      axios.get = jest.fn().mockResolvedValue({
+        data: {
+          disabled: false,
+          message: '',
+        },
+      });
+
+      const wrapper = createReactQueryWrapper();
+
+      const { result, waitFor } = renderHook(
+        () =>
+          useDownloadTypeStatuses({
+            downloadTypes: ['https'],
+          }),
+        { wrapper }
+      );
+
+      await waitFor(() => result.current.every((query) => query.isSuccess));
+
+      expect(result.current[0].isStale).toBe(true);
+      expect(axios.get).toHaveBeenCalledTimes(1);
+
+      const { result: newResult } = renderHook(
+        () =>
+          useDownloadTypeStatuses({
+            downloadTypes: ['https'],
+          }),
+        { wrapper }
+      );
+
+      await waitFor(() => newResult.current.every((query) => query.isSuccess));
+
+      expect(newResult.current[0].isStale).toBe(true);
+      expect(axios.get).toHaveBeenCalledTimes(2);
     });
   });
 
