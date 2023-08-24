@@ -8,6 +8,22 @@ describe('ISIS - Data Publication Landing', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');
     cy.contains('Yourself good together red across.').should('be.visible');
+    cy.contains('a', '0-7602-7584-X').should(
+      'have.attr',
+      'href',
+      'https://doi.org/0-7602-7584-X'
+    );
+    cy.get('[data-testid="landing-dataPublication-pid-link"]')
+      .first()
+      .then(($pid) => {
+        const pid = $pid.text();
+
+        const url = `https://doi.org/${pid}`;
+
+        cy.get('[data-testid="landing-dataPublication-pid-link"]')
+          .first()
+          .should('have.attr', 'href', url);
+      });
   });
 
   it('should be able to click tab to see investigations', () => {
@@ -31,28 +47,6 @@ describe('ISIS - Data Publication Landing', () => {
     );
   });
 
-  it('should be able to click a DOI render the correct webpage ', () => {
-    cy.contains('a', '0-7602-7584-X').should(
-      'have.attr',
-      'href',
-      'https://doi.org/0-7602-7584-X'
-    );
-  });
-
-  it('should have the correct urls for the DOI link and Data Publication PID', () => {
-    cy.get('[data-testid="landing-dataPublication-pid-link"]')
-      .first()
-      .then(($pid) => {
-        const pid = $pid.text();
-
-        const url = `https://doi.org/${pid}`;
-
-        cy.get('[data-testid="landing-dataPublication-pid-link"]')
-          .first()
-          .should('have.attr', 'href', url);
-      });
-  });
-
   it('should load correctly when investigation missing', () => {
     cy.intercept('**/datapublications?*', [
       {
@@ -72,20 +66,14 @@ describe('ISIS - Data Publication Landing', () => {
         pid: '10.5286/ISIS.E.RB1810842',
       },
     ]);
-    // The hover tool tip has a enter delay of 500ms.
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.get('[data-testid="landing-dataPublication-pid-link"]')
       .first()
-      .trigger('mouseover')
-      .wait(700)
-      .get('[role="tooltip"]')
-      .should('exist');
+      .trigger('mouseover');
+    cy.get('[role="tooltip"]').should('exist');
 
     cy.get('body').type('{esc}');
 
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.get('[data-testid="landing-dataPublication-pid-link"]')
-      .wait(700)
       .first()
       .get('[role="tooltip"]')
       .should('not.exist');

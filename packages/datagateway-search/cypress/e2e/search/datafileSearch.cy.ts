@@ -30,11 +30,10 @@ describe('Datafile search tab', () => {
     //Close drop down menu
     cy.get('body').type('{esc}');
 
-    cy.get('[aria-label="Submit search"]')
-      .click()
-      .wait(['@datafiles', '@datafiles', '@datafilesCount'], {
-        timeout: 10000,
-      });
+    cy.get('[aria-label="Submit search"]').click();
+    cy.wait(['@datafiles', '@datafiles', '@datafilesCount'], {
+      timeout: 10000,
+    });
 
     cy.get('#container-search-filters').should('exist');
 
@@ -43,30 +42,31 @@ describe('Datafile search tab', () => {
 
   it('should be able to search by text', () => {
     cy.clearDownloadCart();
-    cy.get('#filled-search').type('1440');
+    cy.get('#filled-search').type('1532');
 
-    cy.get('[aria-label="Submit search"]')
-      .click()
-      .wait(['@investigations', '@investigationsCount'], {
-        timeout: 10000,
-      });
+    cy.get('[aria-label="Submit search"]').click();
+    cy.wait(['@investigations', '@investigationsCount'], {
+      timeout: 10000,
+    });
 
     cy.get('[aria-label="Search table"]')
       .contains('Datafile')
       .contains('1')
-      .click()
-      .wait(['@datafiles', '@datafiles', '@datafilesCount'], {
-        timeout: 10000,
-      });
+      .click();
+    cy.wait(['@datafiles', '@datafiles', '@datafilesCount'], {
+      timeout: 10000,
+    });
 
     cy.get('[aria-rowcount="1"]').should('exist');
 
-    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('Datafile 1440');
+    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('Datafile 1532');
+
+    // check that it's linking to its parent dataset correctly
+    cy.get('[href="/browse/investigation/45/dataset/105/datafile"]');
 
     // Check that "select all" and individual selection are equivalent
-    cy.get(`[aria-rowindex="1"] [aria-colindex="1"]`)
-      .click()
-      .wait('@topcat', { timeout: 10000 });
+    cy.get(`[aria-rowindex="1"] [aria-colindex="1"]`).click();
+    cy.wait('@topcat', { timeout: 10000 });
     cy.get('[aria-label="select all rows"]', { timeout: 10000 }).should(
       'be.checked'
     );
@@ -82,7 +82,8 @@ describe('Datafile search tab', () => {
       date.toISOString().slice(0, 10)
     );
 
-    cy.get('[aria-label="Submit search"]').click().wait('@datafilesCount', {
+    cy.get('[aria-label="Submit search"]').click();
+    cy.wait('@datafilesCount', {
       timeout: 10000,
     });
 
@@ -102,34 +103,15 @@ describe('Datafile search tab', () => {
     //Close drop down menu
     cy.get('body').type('{esc}');
 
-    cy.get('[aria-label="Submit search"]')
-      .click()
-      .wait(['@investigations', '@investigations', '@investigationsCount'], {
-        timeout: 10000,
-      });
+    cy.get('[aria-label="Submit search"]').click();
+    cy.wait(['@investigations', '@investigations', '@investigationsCount'], {
+      timeout: 10000,
+    });
 
     cy.get('[aria-rowcount="50"]').should('exist');
 
     cy.get('[aria-label="Search table"]')
       .contains('Datafile')
       .should('not.exist');
-  });
-
-  it('should link to a parent dataset', () => {
-    cy.get('#filled-search').type('1532');
-
-    cy.get('[aria-label="Submit search"]')
-      .click()
-      .wait(['@investigations', '@investigations', '@investigationsCount'], {
-        timeout: 10000,
-      });
-    cy.get('[aria-label="Search table"]')
-      .contains('Datafile')
-      .contains('1')
-      .click()
-      .wait(['@datafiles', '@datafiles', '@datafilesCount'], {
-        timeout: 10000,
-      });
-    cy.get('[href="/browse/investigation/45/dataset/105/datafile"]');
   });
 });

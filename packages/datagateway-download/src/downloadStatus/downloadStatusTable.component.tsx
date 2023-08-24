@@ -149,13 +149,16 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
     if (!downloads) return [];
 
     const filteredData = downloads.filter((item) => {
-      for (const [key, filter] of Object.entries(filters)) {
+      const filterEntries = Object.entries(filters);
+      const satisfiedFilters: boolean[] = [];
+      for (const [key, filter] of filterEntries) {
         const tableValue = item[key];
 
         const isTableValueAString =
           tableValue !== undefined && typeof tableValue === 'string';
         if (!isTableValueAString) {
-          return false;
+          satisfiedFilters.push(false);
+          continue;
         }
 
         const isTextFilter =
@@ -163,12 +166,17 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
           'value' in filter &&
           typeof filter.value === 'string';
         if (isTextFilter) {
-          const isInclusionFilter = filter.type === 'include';
           const filterKeyword = (filter.value as string).toLowerCase();
 
-          return isInclusionFilter
-            ? tableValue.toLowerCase().includes(filterKeyword)
-            : !tableValue.toLowerCase().includes(filterKeyword);
+          satisfiedFilters.push(
+            filter.type === 'exact'
+              ? tableValue.toLowerCase() === filterKeyword
+              : filter.type === 'exclude'
+              ? !tableValue.toLowerCase().includes(filterKeyword)
+              : tableValue.toLowerCase().includes(filterKeyword)
+          );
+
+          continue;
         }
 
         const isDateFilter =
@@ -183,27 +191,46 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
           const endDateFilter = filter.endDate ? toDate(filter.endDate) : null;
 
           if (startDateFilter && endDateFilter) {
-            return isWithinInterval(tableDate, {
-              start: startDateFilter,
-              end: endDateFilter,
-            });
+            try {
+              satisfiedFilters.push(
+                isWithinInterval(tableDate, {
+                  start: startDateFilter,
+                  end: endDateFilter,
+                })
+              );
+            } catch (e) {
+              if (e instanceof RangeError) {
+                // isWithinInterval throws with RangeError if startDate > endDate
+                // in the date filter we tell the user this is invalid,
+                // so handle it there and do nothing here
+              } else {
+                throw e;
+              }
+            }
+
+            continue;
           }
           if (startDateFilter) {
-            return (
+            satisfiedFilters.push(
               isEqual(tableDate, startDateFilter) ||
-              isAfter(tableDate, startDateFilter)
+                isAfter(tableDate, startDateFilter)
             );
+
+            continue;
           }
           if (endDateFilter) {
-            return (
+            satisfiedFilters.push(
               isEqual(tableDate, endDateFilter) ||
-              isBefore(tableDate, endDateFilter)
+                isBefore(tableDate, endDateFilter)
             );
+
+            continue;
           }
         }
+        satisfiedFilters.push(false);
       }
 
-      return true;
+      return satisfiedFilters.every((value) => value);
     });
 
     function sortDownloadItems(

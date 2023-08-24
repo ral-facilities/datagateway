@@ -29,23 +29,6 @@ describe('DLS - MyData Table', () => {
       cy.get('.MuiTableSortLabel-iconDirectionDesc').should('be.visible');
     });
 
-    it('should be able to click clear filters button to clear filters', () => {
-      cy.url().should('include', 'filters');
-
-      cy.url().then((url) => {
-        cy.get('[aria-rowcount="2"]').should('exist');
-        cy.get('input[id="Title-filter"]').type('star');
-
-        cy.wait('@getInvestigations');
-
-        cy.get('[aria-rowcount="1"]').should('exist');
-        cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('72');
-
-        cy.get('[data-testid="clear-filters-button"]').click();
-        cy.url().should('eq', url);
-      });
-    });
-
     it('should be able to click an investigation to see its datasets', () => {
       cy.get('[role="gridcell"] a').first().click({ force: true });
 
@@ -55,249 +38,122 @@ describe('DLS - MyData Table', () => {
       );
     });
 
-    it('should disable the hover tool tip by pressing escape', () => {
-      // The hover tool tip has a enter delay of 500ms.
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.get('[data-testid="dls-mydata-table-name"]')
-        .first()
-        .trigger('mouseover', { force: true })
-        .wait(700)
-        .get('[role="tooltip"]')
-        .should('exist');
+    it('should be able to sort by all sort directions on single and multiple columns', () => {
+      //Revert the default sort
+      cy.contains('[role="button"]', 'Start Date').click();
 
-      cy.get('body').type('{esc}');
+      // ascending order
+      cy.contains('[role="button"]', 'Title').as('titleSortButton').click();
 
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.get('[data-testid="dls-mydata-table-name"]')
-        .wait(700)
-        .first()
-        .get('[role="tooltip"]')
+      cy.get('[aria-sort="ascending"]').should('exist');
+      cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+        'Across prepare why go.'
+      );
+
+      // descending order
+      cy.get('@titleSortButton').click();
+
+      cy.get('[aria-sort="descending"]').should('exist');
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
+        'not.have.css',
+        'opacity',
+        '0'
+      );
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+        'Star enter wide nearly off.'
+      );
+
+      // no order
+      cy.get('@titleSortButton').click();
+      cy.get('[aria-sort="ascending"]').should('not.exist');
+      cy.get('[aria-sort="descending"]').should('not.exist');
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
+      cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
+        'have.css',
+        'opacity',
+        '0'
+      );
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+        'Star enter wide nearly off.'
+      );
+
+      // multiple columns
+      cy.get('@titleSortButton').click();
+      cy.contains('[role="button"]', 'Instrument').click();
+
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+        'Across prepare why go.'
+      );
+    });
+
+    it('should be able to filter with role, text & date filters on multiple columns', () => {
+      // role
+      cy.get('[aria-rowcount="2"]').should('exist');
+
+      cy.get('#role-selector').click();
+      cy.get('[role="listbox"]')
+        .find('[role="option"]')
+        .should('have.length', 3);
+      cy.get('[role="option"][data-value="PI"]').click();
+
+      cy.get('[aria-rowcount="1"]').should('exist');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('72');
+
+      cy.get('#role-selector').click();
+      cy.get('[role="option"]').first().click();
+      cy.get('[aria-rowcount="2"]').should('exist');
+
+      // test text filter
+      cy.get('[aria-rowcount="2"]').should('exist');
+      cy.get('input[id="Title-filter"]').type('star');
+
+      cy.get('[aria-rowcount="1"]').should('exist');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('72');
+
+      // test date filter
+      cy.get('input[id="Start Date filter from"]').type('2004-01-01');
+
+      cy.get('[aria-rowcount="0"]').should('exist');
+    });
+
+    it('should be able to view details', () => {
+      cy.get('[aria-label="Show details"]').eq(1).click();
+
+      cy.get('#details-panel').should('be.visible');
+      cy.get('[aria-label="Hide details"]').should('exist');
+      cy.get('#details-panel')
+        .contains('Star enter wide nearly off.')
+        .should('be.visible');
+
+      cy.get('[aria-label="Show details"]').first().click();
+
+      cy.get('#details-panel')
+        .contains('Across prepare why go.')
+        .should('be.visible');
+      cy.get('#details-panel')
+        .contains('Star enter wide nearly off.')
         .should('not.exist');
-    });
+      cy.get('[aria-label="Hide details"]').should('have.length', 1);
 
-    it('should be able to resize a column', () => {
-      let columnWidth = 0;
+      cy.get('[aria-controls="visit-samples-panel"]').click();
+      cy.get('#visit-samples-panel').should('not.have.attr', 'hidden');
+      cy.get('#details-panel').contains('SAMPLE 21').should('be.visible');
 
-      cy.window()
-        .then((window) => {
-          const windowWidth = window.innerWidth;
-          columnWidth = (windowWidth - 40) / 6;
-        })
-        .then(() => expect(columnWidth).to.not.equal(0));
+      cy.get('[aria-controls="visit-users-panel"]').click();
+      cy.get('#visit-users-panel').should('not.have.attr', 'hidden');
+      cy.get('#details-panel').contains('Thomas Chambers').should('be.visible');
 
-      cy.get('[role="columnheader"]').eq(1).as('titleColumn');
-      cy.get('[role="columnheader"]').eq(2).as('visitIdColumn');
+      cy.get('[aria-controls="visit-publications-panel"]').click();
+      cy.get('#visit-publications-panel').should('not.have.attr', 'hidden');
+      cy.get('#details-panel').contains(
+        'From central effort glass evidence life.'
+      );
 
-      cy.get('@titleColumn').should(($column) => {
-        const { width } = $column[0].getBoundingClientRect();
-        expect(width).to.equal(columnWidth);
-      });
+      cy.get('[aria-label="Hide details"]').first().click();
 
-      cy.get('@visitIdColumn').should(($column) => {
-        const { width } = $column[0].getBoundingClientRect();
-        expect(width).to.equal(columnWidth);
-      });
-
-      cy.get('.react-draggable')
-        .first()
-        .trigger('mousedown')
-        .trigger('mousemove', { clientX: 400 })
-        .trigger('mouseup');
-
-      cy.get('@titleColumn').should(($column) => {
-        const { width } = $column[0].getBoundingClientRect();
-        expect(width).to.be.greaterThan(columnWidth);
-      });
-
-      cy.get('@visitIdColumn').should(($column) => {
-        const { width } = $column[0].getBoundingClientRect();
-        expect(width).to.be.lessThan(columnWidth);
-      });
-
-      // table width should grow if a column grows too large
-      cy.get('.react-draggable')
-        .first()
-        .trigger('mousedown')
-        .trigger('mousemove', { clientX: 800 })
-        .trigger('mouseup');
-
-      cy.get('@visitIdColumn').should(($column) => {
-        const { width } = $column[0].getBoundingClientRect();
-        expect(width).to.be.equal(84);
-      });
-
-      cy.get('[aria-label="grid"]').then(($grid) => {
-        const { width } = $grid[0].getBoundingClientRect();
-        cy.window().should(($window) => {
-          expect(width).to.be.greaterThan($window.innerWidth);
-        });
-      });
-    });
-
-    describe('should be able to sort by', () => {
-      beforeEach(() => {
-        //Revert the default sort
-        cy.contains('[role="button"]', 'Start Date').click();
-      });
-
-      it('ascending order', () => {
-        cy.contains('[role="button"]', 'Title').click();
-
-        cy.get('[aria-sort="ascending"]').should('exist');
-        cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
-        cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-          'Across prepare why go.'
-        );
-      });
-
-      it('descending order', () => {
-        cy.contains('[role="button"]', 'Title').click();
-        cy.contains('[role="button"]', 'Title').click();
-        cy.get('[aria-sort="descending"]').should('exist');
-        cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
-          'not.have.css',
-          'opacity',
-          '0'
-        );
-        cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-          'Star enter wide nearly off.'
-        );
-      });
-
-      it('no order', () => {
-        cy.get('[aria-sort="ascending"]').should('not.exist');
-        cy.get('[aria-sort="descending"]').should('not.exist');
-        cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
-        cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
-          'have.css',
-          'opacity',
-          '0'
-        );
-        cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-          'Star enter wide nearly off.'
-        );
-      });
-
-      it('multiple columns', () => {
-        cy.contains('[role="button"]', 'Title').click();
-        cy.contains('[role="button"]', 'Instrument').click();
-
-        cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-          'Across prepare why go.'
-        );
-      });
-    });
-
-    describe('should be able to filter by', () => {
-      it('role', () => {
-        cy.get('[aria-rowcount="2"]').should('exist');
-
-        cy.get('#role-selector').click();
-        cy.get('[role="listbox"]')
-          .find('[role="option"]')
-          .should('have.length', 3);
-        cy.get('[role="option"][data-value="PI"]').click();
-
-        cy.get('[aria-rowcount="1"]').should('exist');
-        cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('72');
-
-        cy.get('#role-selector').click();
-        cy.get('[role="option"]').first().click();
-        cy.get('[aria-rowcount="2"]').should('exist');
-      });
-
-      it('text', () => {
-        cy.get('[aria-rowcount="2"]').should('exist');
-        cy.get('input[id="Title-filter"]').type('star');
-
-        cy.get('[aria-rowcount="1"]').should('exist');
-        cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('72');
-      });
-
-      it('date between', () => {
-        cy.get('[aria-rowcount="2"]').should('exist');
-
-        const date = new Date();
-
-        cy.get('input[aria-label="Start Date filter to"]').type(
-          date.toISOString().slice(0, 10)
-        );
-
-        cy.get('[aria-rowcount="2"]').should('exist');
-
-        cy.get('input[id="Start Date filter from"]').type('2004-01-01');
-
-        cy.get('[aria-rowcount="1"]').should('exist');
-      });
-
-      it('multiple columns', () => {
-        cy.get('input[id="Start Date filter from"]').first().type('2004-01-01');
-
-        cy.get('[aria-rowcount="1"]').should('exist');
-
-        cy.get('[aria-label="Filter by Title"]').first().type('or');
-
-        cy.get('[aria-rowcount="1"]').should('exist');
-      });
-    });
-
-    describe('should be able to view details', () => {
-      it('when no other row is showing details', () => {
-        cy.get('[aria-label="Show details"]').first().click();
-
-        cy.get('#details-panel').should('be.visible');
-        cy.get('[aria-label="Hide details"]').should('exist');
-      });
-
-      it('and view visit users, samples and publications', () => {
-        cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '2').should(
-          'exist'
-        );
-
-        cy.get('[aria-label="Show details"]').first().click();
-
-        cy.get('[aria-controls="visit-samples-panel"]').click();
-        cy.get('#visit-samples-panel').should('not.have.attr', 'hidden');
-        cy.get('#details-panel').contains('SAMPLE 21').should('be.visible');
-
-        cy.get('[aria-controls="visit-users-panel"]').click();
-        cy.get('#visit-users-panel').should('not.have.attr', 'hidden');
-        cy.get('#details-panel')
-          .contains('Thomas Chambers')
-          .should('be.visible');
-
-        cy.get('[aria-controls="visit-publications-panel"]').click();
-        cy.get('#visit-publications-panel').should('not.have.attr', 'hidden');
-        cy.get('#details-panel').contains(
-          'From central effort glass evidence life.'
-        );
-      });
-
-      it('when another row is showing details', () => {
-        cy.get('[aria-label="Show details"]').eq(1).click();
-        cy.get('#details-panel')
-          .contains('Star enter wide nearly off.')
-          .should('be.visible');
-
-        cy.get('[aria-label="Show details"]').first().click();
-
-        cy.get('#details-panel')
-          .contains('Across prepare why go.')
-          .should('be.visible');
-        cy.get('#details-panel')
-          .contains('Star enter wide nearly off.')
-          .should('not.exist');
-        cy.get('[aria-label="Hide details"]').should('have.length', 1);
-      });
-
-      it('and then not view details anymore', () => {
-        cy.get('[aria-label="Show details"]').first().click();
-
-        cy.get('[aria-label="Hide details"]').first().click();
-
-        cy.get('#details-panel').should('not.exist');
-        cy.get('[aria-label="Hide details"]').should('not.exist');
-      });
+      cy.get('#details-panel').should('not.exist');
+      cy.get('[aria-label="Hide details"]').should('not.exist');
     });
   });
 });

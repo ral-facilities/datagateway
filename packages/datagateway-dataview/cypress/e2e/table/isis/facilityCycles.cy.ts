@@ -28,162 +28,76 @@ describe('ISIS - FacilityCycles Table', () => {
     cy.get('[aria-rowcount="75"]').should('exist');
   });
 
-  it('should be able to resize a column', () => {
-    let columnWidth = 0;
+  it('should be able to sort by all sort directions on single and multiple columns', () => {
+    //Revert the default sort
+    cy.contains('[role="button"]', 'Start Date').click();
 
-    // Using Math.round to solve rounding errors when calculating 1000 / 3
-    cy.window()
-      .then((window) => {
-        const windowWidth = window.innerWidth;
-        columnWidth = Math.round(windowWidth / 3);
-        columnWidth = Math.round((columnWidth * 100) / 100);
-      })
-      .then(() => expect(columnWidth).to.not.equal(0));
+    // ascending order
+    cy.contains('[role="button"]', 'Name').as('nameSortButton').click();
 
-    cy.get('[role="columnheader"]').eq(0).as('titleColumn');
-    cy.get('[role="columnheader"]').eq(1).as('startDateColumn');
+    cy.get('[aria-sort="ascending"]').should('exist');
+    cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
+    cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+      '2001-04-02 00:00:00'
+    );
 
-    // Filtering results to remove vertical scroll bar affecting width calculations
-    cy.get('[aria-label="Filter by Name"]').first().type('2004');
+    // descending order
+    cy.get('@nameSortButton').click();
 
-    cy.get('@titleColumn').should(($column) => {
-      let { width } = $column[0].getBoundingClientRect();
-      width = Math.round((width * 100) / 100);
-      expect(width).to.equal(columnWidth);
-    });
+    cy.get('[aria-sort="descending"]').should('exist');
+    cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
+      'not.have.css',
+      'opacity',
+      '0'
+    );
+    cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+      '2004-06-03 00:00:00'
+    );
 
-    cy.get('@startDateColumn').should(($column) => {
-      let { width } = $column[0].getBoundingClientRect();
-      width = Math.round((width * 100) / 100);
-      expect(width).to.equal(columnWidth);
-    });
+    // no order
+    cy.get('@nameSortButton').click();
 
-    cy.get('.react-draggable')
-      .first()
-      .trigger('mousedown')
-      .trigger('mousemove', { clientX: 400 })
-      .trigger('mouseup');
-
-    cy.get('@titleColumn').should(($column) => {
-      const { width } = $column[0].getBoundingClientRect();
-      expect(width).to.be.greaterThan(columnWidth);
-    });
-
-    cy.get('@startDateColumn').should(($column) => {
-      const { width } = $column[0].getBoundingClientRect();
-      expect(width).to.be.lessThan(columnWidth);
-    });
-
-    // Table width should grow if a column grows too large
-    cy.get('.react-draggable')
-      .first()
-      .trigger('mousedown')
-      .trigger('mousemove', { clientX: 1000 })
-      .trigger('mouseup');
-
-    cy.get('@startDateColumn').should(($column) => {
-      const { width } = $column[0].getBoundingClientRect();
-      expect(width).to.be.equal(84);
-    });
-
-    cy.get('[aria-label="grid"]').then(($grid) => {
-      const { width } = $grid[0].getBoundingClientRect();
-      cy.window().should(($window) => {
-        expect(width).to.be.greaterThan($window.innerWidth);
-      });
-    });
+    cy.get('[aria-sort="ascending"]').should('not.exist');
+    cy.get('[aria-sort="descending"]').should('not.exist');
+    cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
+    cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
+      'have.css',
+      'opacity',
+      '0'
+    );
+    cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+      '2001-04-02 00:00:00'
+    );
   });
 
-  describe('should be able to sort by', () => {
-    beforeEach(() => {
-      //Revert the default sort
-      cy.contains('[role="button"]', 'Start Date').click();
-    });
+  it('should be able to filter with both text & date filters on multiple columns', () => {
+    cy.get('[aria-label="Filter by Name"]').first().type('3');
 
-    it('ascending order', () => {
-      cy.contains('[role="button"]', 'Name').click();
+    cy.get('[aria-rowcount="2"]').should('exist');
+    cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+      '2004-06-03 00:00:00'
+    );
 
-      cy.get('[aria-sort="ascending"]').should('exist');
-      cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        '2001-04-02 00:00:00'
-      );
-    });
+    cy.get('input[id="Start Date filter from"]').type('2004-06-01');
 
-    it('descending order', () => {
-      cy.contains('[role="button"]', 'Name').click();
-      cy.contains('[role="button"]', 'Name').click();
+    cy.get('input[aria-label="Start Date filter to"]')
+      .parent()
+      .find('button')
+      .click();
 
-      cy.get('[aria-sort="descending"]').should('exist');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
-        'not.have.css',
-        'opacity',
-        '0'
-      );
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        '2004-06-03 00:00:00'
-      );
-    });
+    cy.get('.MuiPickersDay-root[type="button"]').first().click();
 
-    it('no order', () => {
-      cy.contains('[role="button"]', 'Name').click();
-      cy.contains('[role="button"]', 'Name').click();
-      cy.contains('[role="button"]', 'Name').click();
+    const date = new Date();
+    date.setDate(1);
 
-      cy.get('[aria-sort="ascending"]').should('not.exist');
-      cy.get('[aria-sort="descending"]').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
-        'have.css',
-        'opacity',
-        '0'
-      );
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        '2001-04-02 00:00:00'
-      );
-    });
-  });
+    cy.get('input[id="Start Date filter to"]').should(
+      'have.value',
+      date.toISOString().slice(0, 10)
+    );
 
-  describe('should be able to filter by', () => {
-    it('text', () => {
-      cy.get('[aria-label="Filter by Name"]').first().type('4');
-
-      cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        '2004-06-03 00:00:00'
-      );
-    });
-
-    it('date between', () => {
-      cy.get('input[id="Start Date filter from"]').type('2002-06-01');
-
-      cy.get('input[aria-label="Start Date filter to"]')
-        .parent()
-        .find('button')
-        .click();
-
-      cy.get('.MuiPickersDay-root[type="button"]').first().click();
-
-      const date = new Date();
-      date.setDate(1);
-
-      cy.get('input[id="Start Date filter to"]').should(
-        'have.value',
-        date.toISOString().slice(0, 10)
-      );
-
-      cy.get('[aria-rowcount="2"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        '2004-06-03 00:00:00'
-      );
-    });
-
-    it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Name"]').first().type('3');
-
-      cy.get('input[id="Start Date filter from"]').type('2004-06-01');
-
-      cy.get('[aria-rowcount="1"]').should('exist');
-    });
+    cy.get('[aria-rowcount="1"]').should('exist');
+    cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+      '2004-06-03 00:00:00'
+    );
   });
 });

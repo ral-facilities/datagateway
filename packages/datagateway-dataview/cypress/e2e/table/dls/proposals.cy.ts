@@ -23,111 +23,24 @@ describe('DLS - Proposals Table', () => {
   it('should be able to scroll down and load more rows', () => {
     cy.get('[aria-rowcount="50"]').should('exist');
     cy.get('[aria-label="grid"]').scrollTo('bottom');
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(3000);
-    cy.get('[aria-label="grid"]').scrollTo('bottom');
     cy.get('[aria-rowcount="59"]').should('exist');
   });
 
-  it('should disable the hover tool tip by pressing escape', () => {
-    // The hover tool tip has a enter delay of 500ms.
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.get('[data-testid="dls-proposals-table-title"]')
-      .first()
-      .trigger('mouseover', { force: true })
-      .wait(700)
-      .get('[role="tooltip"]')
-      .should('exist');
+  it('should be able to filter', () => {
+    cy.wait(['@investigations', '@investigationsCount'], { timeout: 10000 });
 
-    cy.get('body').type('{esc}');
+    cy.get('[aria-label="Filter by Name"]').first().type('2');
 
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.get('[data-testid="dls-proposals-table-title"]')
-      .wait(700)
-      .first()
-      .get('[role="tooltip"]')
-      .should('not.exist');
-  });
+    cy.get('[aria-rowcount="15"]').should('exist');
+    cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+      'INVESTIGATION 21'
+    );
 
-  it('should be able to resize a column', () => {
-    let columnWidth = 0;
+    cy.get('[aria-label="Filter by Title"]').first().type('dog');
 
-    cy.window()
-      .then((window) => {
-        const windowWidth = window.innerWidth;
-        columnWidth = windowWidth / 2;
-      })
-      .then(() => expect(columnWidth).to.not.equal(0));
-
-    cy.get('[role="columnheader"]').eq(0).as('titleColumn');
-    cy.get('[role="columnheader"]').eq(1).as('nameColumn');
-
-    cy.get('@titleColumn').should(($column) => {
-      const { width } = $column[0].getBoundingClientRect();
-      expect(width).to.equal(columnWidth);
-    });
-
-    cy.get('@nameColumn').should(($column) => {
-      const { width } = $column[0].getBoundingClientRect();
-      expect(width).to.equal(columnWidth);
-    });
-
-    cy.get('.react-draggable')
-      .first()
-      .trigger('mousedown')
-      .trigger('mousemove', { clientX: 500 })
-      .trigger('mouseup');
-
-    cy.get('@titleColumn').should(($column) => {
-      const { width } = $column[0].getBoundingClientRect();
-      expect(width).to.be.greaterThan(columnWidth);
-    });
-
-    cy.get('@nameColumn').should(($column) => {
-      const { width } = $column[0].getBoundingClientRect();
-      expect(width).to.be.lessThan(columnWidth);
-    });
-
-    // table width should grow if a column grows too large
-    cy.get('.react-draggable')
-      .first()
-      .trigger('mousedown')
-      .trigger('mousemove', { clientX: 1000 })
-      .trigger('mouseup');
-
-    cy.get('@nameColumn').should(($column) => {
-      const { width } = $column[0].getBoundingClientRect();
-      expect(width).to.be.equal(84);
-    });
-
-    cy.get('[aria-label="grid"]').then(($grid) => {
-      const { width } = $grid[0].getBoundingClientRect();
-      cy.window().should(($window) => {
-        expect(width).to.be.greaterThan($window.innerWidth);
-      });
-    });
-  });
-
-  describe('should be able to filter by', () => {
-    beforeEach(() => {
-      cy.wait(['@investigations', '@investigationsCount'], { timeout: 10000 });
-    });
-
-    it('text', () => {
-      cy.get('[aria-label="Filter by Title"]').first().type('dog');
-
-      cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'INVESTIGATION 52'
-      );
-    });
-
-    it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Title"]').first().type('dog');
-
-      cy.get('[aria-label="Filter by Name"]').first().type('INVESTIGATION 36');
-
-      cy.get('[aria-rowcount="0"]').should('exist');
-    });
+    cy.get('[aria-rowcount="1"]').should('exist');
+    cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+      'INVESTIGATION 52'
+    );
   });
 });
