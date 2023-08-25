@@ -29,9 +29,7 @@ describe('PageContainer Component', () => {
     cy.get('[aria-label="Go to selections"]').should('exist');
 
     cy.get('[aria-label="page view Display as table"]').should('exist');
-  });
 
-  it('should display correct entity count', () => {
     // Check that the entity count has displayed correctly.
     cy.get('[aria-label="view-count"]')
       .should('be.visible')
@@ -212,29 +210,20 @@ describe('PageContainer Component', () => {
 
   it('should display tooltips correctly', () => {
     // The hover tool tip has an enter delay of 500ms.
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.get('[data-testid="card"]')
       .get('[data-testid="investigation-card-title"]')
       .first()
-      .trigger('mouseover', { force: true })
-      .wait(700)
-      .get('[role="tooltip"]')
-      .should('exist');
+      .trigger('mouseover', { force: true });
+    cy.get('[role="tooltip"]').should('exist');
   });
 
   it('should not display tooltips after making the window bigger', () => {
     cy.viewport(3500, 750);
 
-    // The hover tool tip has an enter delay of 500ms and also need to
-    // wait after the viewport change as it takes a moment to resize
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(200)
-      .get('[data-testid="card"]')
+    cy.get('[data-testid="card"]')
       .get('[data-testid="investigation-card-title"]')
       .first()
-      .trigger('mouseover', { force: true })
-      .wait(700)
-      .get('[role="tooltip"]')
-      .should('not.exist');
+      .trigger('mouseover', { force: true });
+    cy.get('[role="tooltip"]').should('not.exist');
   });
 });

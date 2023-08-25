@@ -27,7 +27,7 @@ describe('Download Confirmation', () => {
     cy.get('[aria-label="Download confirmation dialog"]').should('exist');
   });
 
-  it('should load correctly and display the confirmation dialog for the cart items', () => {
+  it('should load correctly and display the confirmation dialog for the cart items & let the dialog be closed', () => {
     // Show the correct download size of the cart items.
     cy.contains('Download Size: 3.12 GB').should('exist');
 
@@ -46,19 +46,12 @@ describe('Download Confirmation', () => {
     cy.contains('#download-table-hundred', '3 minutes, 57 seconds').should(
       'exist'
     );
-  });
 
-  it('should prevent download requests with an invalid email address', () => {
-    // Enter in an invalid email address.
-    cy.get('#confirm-download-email').type('email.address');
+    cy.get('[aria-label="Close download confirmation dialog"]').should('exist');
 
-    // Ensure that the download button is disabled.
-    cy.get('#download-confirmation-download').should('be.disabled');
+    cy.get('[aria-label="Close download confirmation dialog"]').click();
 
-    // Complete the remainder of the email and ensure the email is not invalid anymore
-    // as the download button is enabled.
-    cy.get('#confirm-download-email').type('@test.com');
-    cy.get('#download-confirmation-download').should('be.enabled');
+    cy.get('[aria-label="Download confirmation dialog"]').should('not.exist');
   });
 
   it('should be able to submit a download request and start immediate download with default values (HTTPS)', () => {
@@ -78,6 +71,13 @@ describe('Download Confirmation', () => {
       'exist'
     );
     cy.contains('#confirm-success-access-method', 'HTTPS').should('exist');
+
+    // Click on the download status link and expect the download
+    // status panel to have been displayed.
+    cy.contains('#download-confirmation-status-link', 'View My Downloads')
+      .should('exist')
+      .click();
+    cy.get('[aria-label="Download status panel"]').should('exist');
   });
 
   it('should not be able to submit a download request with a disabled access method (Globus)', () => {
@@ -114,7 +114,16 @@ describe('Download Confirmation', () => {
     cy.get('#confirm-download-name').type('test-file-name');
 
     // Set email address.
-    cy.get('#confirm-download-email').type('test@email.com');
+    // Enter in an invalid email address.
+    cy.get('#confirm-download-email').type('email.address');
+
+    // Ensure that the download button is disabled.
+    cy.get('#download-confirmation-download').should('be.disabled');
+
+    // Complete the remainder of the email and ensure the email is not invalid anymore
+    // as the download button is enabled.
+    cy.get('#confirm-download-email').type('@test.com');
+    cy.get('#download-confirmation-download').should('be.enabled');
 
     // Request download.
     cy.get('#download-confirmation-download').click();
@@ -129,30 +138,9 @@ describe('Download Confirmation', () => {
       'exist'
     );
     cy.contains('#confirm-success-access-method', 'HTTPS').should('exist');
-    cy.contains('#confirm-success-email-address', 'test@email.com').should(
-      'exist'
-    );
-  });
-
-  // This needs to be implemented once the tab has been included into the code.
-  it('should be able to link to the downloads status tab upon successful download confirmation', () => {
-    cy.get('#download-confirmation-download').click();
-
-    cy.get('#download-confirmation-success').should('exist');
-
-    // Click on the download status link and expect the download
-    // status panel to have been displayed.
-    cy.contains('#download-confirmation-status-link', 'View My Downloads')
-      .should('exist')
-      .click();
-    cy.get('[aria-label="Download status panel"]').should('exist');
-  });
-
-  it('should be able to close the download confirmation dialog', () => {
-    cy.get('[aria-label="Close download confirmation dialog"]').should('exist');
-
-    cy.get('[aria-label="Close download confirmation dialog"]').click();
-
-    cy.get('[aria-label="Download confirmation dialog"]').should('not.exist');
+    cy.contains(
+      '#confirm-success-email-address',
+      'email.address@test.com'
+    ).should('exist');
   });
 });
