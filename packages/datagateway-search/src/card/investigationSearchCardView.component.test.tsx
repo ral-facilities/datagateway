@@ -170,7 +170,7 @@ describe('Investigation - Card View', () => {
     await user.type(filterInput, 'test');
 
     expect(history.location.search).toBe(
-      `?semanticSearch=false&filters=${encodeURIComponent(
+      `?filters=${encodeURIComponent(
         '{"title":{"value":"test","type":"include"}}'
       )}`
     );

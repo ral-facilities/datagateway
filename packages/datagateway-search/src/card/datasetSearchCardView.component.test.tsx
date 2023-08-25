@@ -194,9 +194,7 @@ describe('Dataset - Card View', () => {
     );
 
     expect(history.location.search).toBe(
-      `?semanticSearch=false&filters=${encodeURIComponent(
-        '{"modTime":{"endDate":"2019-08-06"}}'
-      )}`
+      `?filters=${encodeURIComponent('{"modTime":{"endDate":"2019-08-06"}}')}`
     );
 
     await user.clear(

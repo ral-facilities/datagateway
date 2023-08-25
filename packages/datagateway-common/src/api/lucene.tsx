@@ -115,6 +115,41 @@ export const useLuceneSearch = (
   );
 };
 
+export const useLexicalSearch = ({
+  query,
+  enabled,
+}: {
+  query: string;
+  enabled: boolean;
+}): UseQueryResult<Investigation[], AxiosError> => {
+  const baseUrl = 'http://172.16.103.71:4001/api/v2';
+
+  return useQuery<SemanticSearchResults, AxiosError, Investigation[]>(
+    ['lexicalSearch', query],
+    () =>
+      axios
+        .post(
+          '/search',
+          {
+            query,
+            n_top_results: 50,
+            is_semantic: false,
+          },
+          {
+            baseURL: baseUrl,
+          }
+        )
+        .then((response) => response.data),
+    {
+      enabled,
+      select: (data) => {
+        data.sort((resultA, resultB) => resultB.score - resultA.score);
+        return data.map(({ doc }) => doc);
+      },
+    }
+  );
+};
+
 export const useSemanticSearch = ({
   query,
   enabled,
@@ -122,7 +157,7 @@ export const useSemanticSearch = ({
   query: string;
   enabled: boolean;
 }): UseQueryResult<Investigation[], AxiosError> => {
-  const baseUrl = 'http://172.16.103.71:4001/api';
+  const baseUrl = 'http://172.16.103.71:4001/api/v2';
 
   return useQuery<SemanticSearchResults, AxiosError, Investigation[]>(
     ['semanticSearch', query],

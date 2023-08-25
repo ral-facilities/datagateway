@@ -25,6 +25,7 @@ import { StateType } from '../state/app.types';
 import format from 'date-fns/format';
 import { isValid } from 'date-fns';
 import retryICATErrors from './retryICATErrors';
+import { isMLSearchType } from './ml';
 
 export * from './cart';
 export * from './facilityCycles';
@@ -34,6 +35,7 @@ export * from './datafiles';
 export * from './dataPublications';
 export * from './datasets';
 export * from './lucene';
+export * from './ml';
 
 /**
  * Get the nested value from an Entity object given a dataKey
@@ -71,7 +73,7 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
   const startDateString = query.get('startDate');
   const endDateString = query.get('endDate');
   const currentTab = query.get('currentTab');
-  const semanticSearchEnabled = query.get('semanticSearch');
+  const searchType = query.get('searchType');
 
   // Parse filters in the query.
   const parsedFilters: FiltersType = {};
@@ -130,7 +132,7 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
     startDate: startDate,
     endDate: endDate,
     currentTab: currentTab ? currentTab : 'investigation',
-    semanticSearch: semanticSearchEnabled === 'true',
+    searchType: isMLSearchType(searchType) ? searchType : null,
   };
 
   return params;
@@ -499,7 +501,6 @@ export const usePushSemanticSearchEnabled = (): ((
     (enabled: boolean) => {
       const query: QueryParams = {
         ...parseSearchToQuery(window.location.search),
-        semanticSearch: enabled,
       };
       push(`?${parseQueryToSearch(query).toString()}`);
     },

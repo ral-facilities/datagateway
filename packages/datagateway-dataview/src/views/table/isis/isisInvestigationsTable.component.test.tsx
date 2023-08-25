@@ -316,7 +316,7 @@ describe('ISIS Investigations table component', () => {
     // so the initial entry + 4 characters in "test" = 5 entries
     expect(history.length).toBe(5);
     expect(history.location.search).toBe(
-      `?semanticSearch=false&filters=${encodeURIComponent(
+      `?filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
       )}`
     );
@@ -340,7 +340,7 @@ describe('ISIS Investigations table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?semanticSearch=false&filters=${encodeURIComponent(
+      `?filters=${encodeURIComponent(
         '{"startDate":{"startDate":"2019-08-06"}}'
       )}`
     );
@@ -357,9 +357,7 @@ describe('ISIS Investigations table component', () => {
     renderComponent();
     expect(history.length).toBe(1);
     expect(replaceSpy).toHaveBeenCalledWith({
-      search: `?semanticSearch=false&sort=${encodeURIComponent(
-        '{"startDate":"desc"}'
-      )}`,
+      search: `?sort=${encodeURIComponent('{"startDate":"desc"}')}`,
     });
   });
 
@@ -372,7 +370,7 @@ describe('ISIS Investigations table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?semanticSearch=false&sort=${encodeURIComponent('{"title":"asc"}')}`
+      `?sort=${encodeURIComponent('{"title":"asc"}')}`
     );
   });
 

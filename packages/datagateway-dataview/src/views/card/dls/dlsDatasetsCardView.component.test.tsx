@@ -104,7 +104,7 @@ describe('DLS Datasets - Card View', () => {
     await user.type(filter, 'test');
 
     expect(history.location.search).toBe(
-      `?semanticSearch=false&filters=${encodeURIComponent(
+      `?filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
       )}`
     );
@@ -131,9 +131,7 @@ describe('DLS Datasets - Card View', () => {
     await user.type(filter, '2019-08-06');
 
     expect(history.location.search).toBe(
-      `?semanticSearch=false&filters=${encodeURIComponent(
-        '{"endDate":{"endDate":"2019-08-06"}}'
-      )}`
+      `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
     );
 
     await user.clear(filter);
@@ -147,9 +145,7 @@ describe('DLS Datasets - Card View', () => {
     renderComponent();
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
-      `?semanticSearch=false&sort=${encodeURIComponent(
-        '{"createTime":"desc"}'
-      )}`
+      `?sort=${encodeURIComponent('{"createTime":"desc"}')}`
     );
   });
 
@@ -161,7 +157,7 @@ describe('DLS Datasets - Card View', () => {
     );
 
     expect(history.location.search).toBe(
-      `?semanticSearch=false&sort=${encodeURIComponent('{"name":"asc"}')}`
+      `?sort=${encodeURIComponent('{"name":"asc"}')}`
     );
   }, 10000);
 

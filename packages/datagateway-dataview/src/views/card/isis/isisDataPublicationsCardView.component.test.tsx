@@ -129,9 +129,7 @@ describe('ISIS Data Publication - Card View', () => {
     renderComponent();
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
-      `?semanticSearch=false&sort=${encodeURIComponent(
-        '{"publicationDate":"desc"}'
-      )}`
+      `?sort=${encodeURIComponent('{"publicationDate":"desc"}')}`
     );
   });
 

@@ -286,9 +286,7 @@ describe('ISIS MyData table component', () => {
   it('sorts by startDate desc on load', () => {
     renderComponent();
     expect(history.location.search).toBe(
-      `?semanticSearch=false&sort=${encodeURIComponent(
-        JSON.stringify({ startDate: 'desc' })
-      )}`
+      `?sort=${encodeURIComponent(JSON.stringify({ startDate: 'desc' }))}`
     );
   });
 
@@ -307,7 +305,7 @@ describe('ISIS MyData table component', () => {
     // so the initial entry + 4 characters in "test" = 5 entries
     expect(history.length).toBe(5);
     expect(history.location.search).toBe(
-      `?semanticSearch=false&filters=${encodeURIComponent(
+      `?filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
       )}`
     );
@@ -331,7 +329,7 @@ describe('ISIS MyData table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?semanticSearch=false&filters=${encodeURIComponent(
+      `?filters=${encodeURIComponent(
         '{"startDate":{"startDate":"2019-08-06"}}'
       )}`
     );
@@ -348,7 +346,7 @@ describe('ISIS MyData table component', () => {
     renderComponent();
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
-      `?semanticSearch=false&sort=${encodeURIComponent('{"startDate":"desc"}')}`
+      `?sort=${encodeURIComponent('{"startDate":"desc"}')}`
     );
   });
 
@@ -361,7 +359,7 @@ describe('ISIS MyData table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?semanticSearch=false&sort=${encodeURIComponent('{"title":"asc"}')}`
+      `?sort=${encodeURIComponent('{"title":"asc"}')}`
     );
   });
 

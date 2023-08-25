@@ -265,7 +265,7 @@ describe('PageContainer - Tests', () => {
       await screen.findByRole('button', { name: 'app.clear_filters' })
     ).toBeDisabled();
     expect(history.location.search).toEqual(
-      '?semanticSearch=false&filters=%7B%22startDate%22%3A%7B%22endDate%22%3A%22' +
+      '?filters=%7B%22startDate%22%3A%7B%22endDate%22%3A%22' +
         dateNow +
         '%22%7D%7D&sort=%7B%22startDate%22%3A%22desc%22%7D'
     );
@@ -358,7 +358,7 @@ describe('PageContainer - Tests', () => {
 
     renderComponent();
 
-    expect(history.location.search).toBe('?view=card&semanticSearch=false');
+    expect(history.location.search).toBe('?view=card');
 
     localStorage.removeItem('dataView');
   });

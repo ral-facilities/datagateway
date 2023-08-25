@@ -128,9 +128,7 @@ describe('DatePicker component tests', () => {
 
       await user.type(startDateInput, '2012 01 01');
 
-      expect(pushSpy).toHaveBeenCalledWith(
-        '?startDate=2012-01-01&semanticSearch=false'
-      );
+      expect(pushSpy).toHaveBeenCalledWith('?startDate=2012-01-01');
     });
 
     it('initiates search with valid start and end dates', async () => {
@@ -266,9 +264,7 @@ describe('DatePicker component tests', () => {
 
       await user.type(endDateInput, '2000 01 01');
 
-      expect(pushSpy).toHaveBeenCalledWith(
-        '?endDate=2000-01-01&semanticSearch=false'
-      );
+      expect(pushSpy).toHaveBeenCalledWith('?endDate=2000-01-01');
     });
 
     it('initiates search with valid start and end dates', async () => {

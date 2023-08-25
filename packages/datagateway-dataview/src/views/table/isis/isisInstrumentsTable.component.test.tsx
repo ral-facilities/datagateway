@@ -167,7 +167,7 @@ describe('ISIS Instruments table component', () => {
     // so the initial entry + 4 characters in "test" = 5 entries
     expect(history.length).toBe(5);
     expect(history.location.search).toBe(
-      `?semanticSearch=false&filters=${encodeURIComponent(
+      `?filters=${encodeURIComponent(
         '{"fullName":{"value":"test","type":"include"}}'
       )}`
     );
@@ -182,7 +182,7 @@ describe('ISIS Instruments table component', () => {
     renderComponent();
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
-      `?semanticSearch=false&sort=${encodeURIComponent('{"fullName":"asc"}')}`
+      `?sort=${encodeURIComponent('{"fullName":"asc"}')}`
     );
   });
 
@@ -193,7 +193,7 @@ describe('ISIS Instruments table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?semanticSearch=false&sort=${encodeURIComponent('{"fullName":"desc"}')}`
+      `?sort=${encodeURIComponent('{"fullName":"desc"}')}`
     );
   });
 

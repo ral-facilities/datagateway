@@ -280,7 +280,7 @@ describe('Investigation table component', () => {
 
     expect(history.length).toBe(5);
     expect(history.location.search).toBe(
-      `?semanticSearch=false&filters=${encodeURIComponent(
+      `?filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
       )}`
     );
@@ -304,7 +304,7 @@ describe('Investigation table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?semanticSearch=false&filters=${encodeURIComponent(
+      `?filters=${encodeURIComponent(
         '{"startDate":{"startDate":"2019-08-06"}}'
       )}`
     );
@@ -324,7 +324,7 @@ describe('Investigation table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?semanticSearch=false&sort=${encodeURIComponent('{"title":"asc"}')}`
+      `?sort=${encodeURIComponent('{"title":"asc"}')}`
     );
   });
 

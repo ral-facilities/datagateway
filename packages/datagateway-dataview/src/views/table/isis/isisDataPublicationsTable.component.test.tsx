@@ -170,7 +170,7 @@ describe('ISIS Data Publication table component', () => {
     // so the initial entry + 4 characters in "test" = 5 entries
     expect(history.length).toBe(5);
     expect(history.location.search).toBe(
-      `?semanticSearch=false&filters=${encodeURIComponent(
+      `?filters=${encodeURIComponent(
         '{"title":{"value":"test","type":"include"}}'
       )}`
     );
@@ -194,7 +194,7 @@ describe('ISIS Data Publication table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?semanticSearch=false&filters=${encodeURIComponent(
+      `?filters=${encodeURIComponent(
         '{"publicationDate":{"endDate":"2019-08-06"}}'
       )}`
     );
@@ -211,9 +211,7 @@ describe('ISIS Data Publication table component', () => {
     renderComponent();
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
-      `?semanticSearch=false&sort=${encodeURIComponent(
-        '{"publicationDate":"desc"}'
-      )}`
+      `?sort=${encodeURIComponent('{"publicationDate":"desc"}')}`
     );
   });
 
@@ -226,7 +224,7 @@ describe('ISIS Data Publication table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?semanticSearch=false&sort=${encodeURIComponent('{"title":"asc"}')}`
+      `?sort=${encodeURIComponent('{"title":"asc"}')}`
     );
   });
 

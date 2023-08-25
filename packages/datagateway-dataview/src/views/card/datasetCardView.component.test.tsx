@@ -191,7 +191,7 @@ describe('Dataset - Card View', () => {
     await user.type(filter, 'test');
 
     expect(history.location.search).toBe(
-      `?semanticSearch=false&filters=${encodeURIComponent(
+      `?filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
       )}`
     );
@@ -218,9 +218,7 @@ describe('Dataset - Card View', () => {
     await user.type(filter, '2019-08-06');
 
     expect(history.location.search).toBe(
-      `?semanticSearch=false&filters=${encodeURIComponent(
-        '{"modTime":{"endDate":"2019-08-06"}}'
-      )}`
+      `?filters=${encodeURIComponent('{"modTime":{"endDate":"2019-08-06"}}')}`
     );
 
     await user.clear(filter);
@@ -238,7 +236,7 @@ describe('Dataset - Card View', () => {
     );
 
     expect(history.location.search).toBe(
-      `?semanticSearch=false&sort=${encodeURIComponent('{"name":"asc"}')}`
+      `?sort=${encodeURIComponent('{"name":"asc"}')}`
     );
   });
 

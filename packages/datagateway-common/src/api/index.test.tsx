@@ -113,7 +113,6 @@ describe('generic api functions', () => {
         filters: { name: { value: 'test', type: 'include' } },
         sort: { name: 'asc' },
         searchText: null,
-        semanticSearch: false,
         dataset: true,
         datafile: true,
         investigation: true,
@@ -135,7 +134,6 @@ describe('generic api functions', () => {
         filters: {},
         sort: {},
         searchText: 'testText',
-        semanticSearch: false,
         dataset: true,
         datafile: false,
         investigation: true,
@@ -165,7 +163,6 @@ describe('generic api functions', () => {
           startDate: new Date(NaN),
           endDate: new Date(NaN),
           currentTab: 'investigation',
-          semanticSearch: false,
         })
       );
     });
@@ -359,9 +356,7 @@ describe('generic api functions', () => {
         });
 
         expect(pushSpy).toHaveBeenCalledWith({
-          search: `?semanticSearch=false&sort=${encodeURIComponent(
-            '{"name":"asc"}'
-          )}`,
+          search: `?sort=${encodeURIComponent('{"name":"asc"}')}`,
         });
       });
 
@@ -375,9 +370,7 @@ describe('generic api functions', () => {
         });
 
         expect(replaceSpy).toHaveBeenCalledWith({
-          search: `?semanticSearch=false&sort=${encodeURIComponent(
-            '{"name":"asc"}'
-          )}`,
+          search: `?sort=${encodeURIComponent('{"name":"asc"}')}`,
         });
       });
 
@@ -414,7 +407,7 @@ describe('generic api functions', () => {
         });
 
         expect(pushSpy).toHaveBeenCalledWith({
-          search: `?semanticSearch=false&filters=${encodeURIComponent(
+          search: `?filters=${encodeURIComponent(
             '{"name":{"value":"test","type":"include"}}'
           )}`,
         });
@@ -457,7 +450,7 @@ describe('generic api functions', () => {
         });
 
         expect(pushSpy).toHaveBeenCalledWith({
-          search: `?semanticSearch=false&filters=${encodeURIComponent(
+          search: `?filters=${encodeURIComponent(
             '{"name":{"value":"test","type":"include"},"title":{"value":"test2","type":"include"}}'
           )}`,
         });
@@ -499,7 +492,7 @@ describe('generic api functions', () => {
           result.current(1);
         });
 
-        expect(pushSpy).toHaveBeenCalledWith('?page=1&semanticSearch=false');
+        expect(pushSpy).toHaveBeenCalledWith('?page=1');
       });
     });
 
@@ -513,9 +506,7 @@ describe('generic api functions', () => {
           result.current('dataset');
         });
 
-        expect(pushSpy).toHaveBeenCalledWith(
-          '?currentTab=dataset&semanticSearch=false'
-        );
+        expect(pushSpy).toHaveBeenCalledWith('?currentTab=dataset');
       });
     });
 
@@ -529,9 +520,7 @@ describe('generic api functions', () => {
           result.current(10);
         });
 
-        expect(pushSpy).toHaveBeenCalledWith(
-          '?results=10&semanticSearch=false'
-        );
+        expect(pushSpy).toHaveBeenCalledWith('?results=10');
       });
     });
 
@@ -558,7 +547,7 @@ describe('generic api functions', () => {
 
         expect(pushSpy).toHaveBeenCalledWith({
           search:
-            '?semanticSearch=false&filters=%7B%22name%22%3A%7B%22value%22%3A%22test%22%2C%22type%22%3A%22include%22%7D%2C%22title%22%3A%7B%22value%22%3A%22test2%22%2C%22type%22%3A%22include%22%7D%7D',
+            '?filters=%7B%22name%22%3A%7B%22value%22%3A%22test%22%2C%22type%22%3A%22include%22%7D%2C%22title%22%3A%7B%22value%22%3A%22test2%22%2C%22type%22%3A%22include%22%7D%7D',
         });
       });
 
@@ -580,7 +569,7 @@ describe('generic api functions', () => {
         });
 
         expect(pushSpy).toHaveBeenCalledWith({
-          search: '?semanticSearch=false&sort=%7B%22name%22%3A%22asc%22%7D',
+          search: '?sort=%7B%22name%22%3A%22asc%22%7D',
         });
       });
 
@@ -602,7 +591,7 @@ describe('generic api functions', () => {
         });
 
         expect(pushSpy).toHaveBeenCalledWith({
-          search: '?page=2&semanticSearch=false',
+          search: '?page=2',
         });
       });
 
@@ -624,7 +613,7 @@ describe('generic api functions', () => {
         });
 
         expect(pushSpy).toHaveBeenCalledWith({
-          search: '?results=10&semanticSearch=false',
+          search: '?results=10',
         });
       });
 
@@ -694,7 +683,7 @@ describe('generic api functions', () => {
         });
 
         expect(replaceSpy).toHaveBeenCalledWith({
-          search: '?page=2&semanticSearch=false',
+          search: '?page=2',
         });
       });
 
@@ -716,7 +705,7 @@ describe('generic api functions', () => {
         });
 
         expect(replaceSpy).toHaveBeenCalledWith({
-          search: '?results=10&semanticSearch=false',
+          search: '?results=10',
         });
       });
     });
@@ -731,9 +720,7 @@ describe('generic api functions', () => {
           result.current('table');
         });
 
-        expect(pushSpy).toHaveBeenCalledWith(
-          '?view=table&semanticSearch=false'
-        );
+        expect(pushSpy).toHaveBeenCalledWith('?view=table');
       });
 
       it('returns callback that when called replaces the current view with a new one in the url query', () => {
@@ -745,9 +732,7 @@ describe('generic api functions', () => {
           result.current('table');
         });
 
-        expect(replaceSpy).toHaveBeenCalledWith(
-          '?view=table&semanticSearch=false'
-        );
+        expect(replaceSpy).toHaveBeenCalledWith('?view=table');
       });
     });
 
@@ -761,9 +746,7 @@ describe('generic api functions', () => {
           result.current('test');
         });
 
-        expect(pushSpy).toHaveBeenCalledWith(
-          '?searchText=test&semanticSearch=false'
-        );
+        expect(pushSpy).toHaveBeenCalledWith('?searchText=test');
       });
     });
 
@@ -778,7 +761,7 @@ describe('generic api functions', () => {
         });
 
         expect(pushSpy).toHaveBeenCalledWith(
-          '?dataset=false&datafile=false&investigation=false&semanticSearch=false'
+          '?dataset=false&datafile=false&investigation=false'
         );
       });
     });

@@ -10,7 +10,9 @@ import { useSelector } from 'react-redux';
 import { StateType } from './state/app.types';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Link as RouterLink } from 'react-router-dom';
-import SemanticSearchToggle from './search/semanticSearchToggle.component';
+import SearchTypeDropdown, {
+  SearchType,
+} from './search/searchTypeDropdown.component';
 
 const ContainerBox = styled(Box)(({ theme }) => ({
   maxWidth: '1920px',
@@ -23,14 +25,22 @@ const ContainerBox = styled(Box)(({ theme }) => ({
 
 interface SearchBoxContainerProps {
   searchText: string;
+  searchType: SearchType;
   initiateSearch: () => void;
   onSearchTextChange: (searchText: string) => void;
+  onSearchTypeChange: (searchType: SearchType) => void;
 }
 
 const SearchBoxContainer = (
   props: SearchBoxContainerProps
 ): React.ReactElement => {
-  const { searchText, initiateSearch, onSearchTextChange } = props;
+  const {
+    searchText,
+    searchType,
+    initiateSearch,
+    onSearchTextChange,
+    onSearchTypeChange,
+  } = props;
   const [t] = useTranslation();
 
   const maxNumResults = useSelector(
@@ -55,6 +65,15 @@ const SearchBoxContainer = (
 
         <Grid item sx={{ marginTop: '8px' }}>
           <CheckboxesGroup />
+        </Grid>
+
+        <Grid item sx={{ marginTop: '8px' }}>
+          <div style={{ display: 'flex' }}>
+            <SearchTypeDropdown
+              searchType={searchType}
+              onChange={onSearchTypeChange}
+            />
+          </div>
         </Grid>
 
         <Grid item sx={{ marginTop: '8px' }}>
@@ -133,8 +152,6 @@ const SearchBoxContainer = (
           </div>
         </Box>
       </div>
-
-      <SemanticSearchToggle />
     </ContainerBox>
   );
 };

@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { SemanticSearchResults } from 'datagateway-common/src';
 import axios from 'axios';
 import { render, waitFor, within } from '@testing-library/react';
-import SemanticSearchTable from './semanticSearchTable.component';
+import { MLSearchResults } from 'datagateway-common';
+import MLSearchTable from './mlSearchTable.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { MemoryRouter } from 'react-router-dom';
 import {
@@ -11,36 +11,30 @@ import {
   findColumnIndexByName,
 } from '../setupTests';
 
-const mockSemanticSearchResults: SemanticSearchResults = [
+const mockSearchResults: MLSearchResults = [
   {
     score: 0.1,
-    doc: {
-      id: 1,
-      visitId: '1',
-      name: 'Mock investigation 1 name',
-      title: 'Mock investigation 1',
-      summary: 'Mock investigation 1 summary',
-    },
+    id: 1,
+    visitId: '1',
+    name: 'Mock investigation 1 name',
+    title: 'Mock investigation 1',
+    summary: 'Mock investigation 1 summary',
   },
   {
     score: 0.2,
-    doc: {
-      id: 2,
-      visitId: '2',
-      name: 'Mock investigation 2 name',
-      title: 'Mock investigation 2',
-      summary: 'Mock investigation 2 summary',
-    },
+    id: 2,
+    visitId: '2',
+    name: 'Mock investigation 2 name',
+    title: 'Mock investigation 2',
+    summary: 'Mock investigation 2 summary',
   },
   {
     score: 0.15,
-    doc: {
-      id: 3,
-      visitId: '3',
-      name: 'Mock investigation 3 name',
-      title: 'Mock investigation 3',
-      summary: 'Mock investigation 3 summary',
-    },
+    id: 3,
+    visitId: '3',
+    name: 'Mock investigation 3 name',
+    title: 'Mock investigation 3',
+    summary: 'Mock investigation 3 summary',
   },
 ];
 
@@ -57,10 +51,10 @@ describe('SemanticSearchTable', () => {
 
   it('queries and displays semantic search results in a table', async () => {
     (axios.post as jest.Mock).mockResolvedValue({
-      data: mockSemanticSearchResults,
+      data: mockSearchResults,
     });
 
-    render(<SemanticSearchTable />, { wrapper: Wrapper });
+    render(<MLSearchTable />, { wrapper: Wrapper });
 
     let rows: HTMLElement[];
     await waitFor(async () => {

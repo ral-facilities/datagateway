@@ -28,14 +28,16 @@ describe('SearchBoxContainer - Tests', () => {
           <SearchBoxContainer
             initiateSearch={jest.fn()}
             onSearchTextChange={jest.fn()}
+            onSearchTypeChange={jest.fn()}
             searchText="initial search text"
+            searchType="lucene"
           />
         </Provider>
       </MemoryRouter>
     );
 
   beforeEach(() => {
-    useSelector.mockImplementation(() => {
+    (useSelector as jest.Mock).mockImplementation(() => {
       return initialState;
     });
   });

@@ -32,6 +32,9 @@ import {
   useUpdateQueryParam,
   ViewButton,
   ClearFiltersButton,
+  useClearMLSearchType,
+  usePushMLSearchType,
+  isMLSearchType,
 } from 'datagateway-common';
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -41,7 +44,8 @@ import {
   setInvestigationTab,
 } from './state/actions/actions';
 import { useIsFetching } from 'react-query';
-import SemanticSearchTable from './table/semanticSearchTable.component';
+import MLSearchTable from './table/mlSearchTable.component';
+import { SearchType } from './search/searchTypeDropdown.component';
 
 export const storeFilters = (
   filters: FiltersType,
@@ -221,12 +225,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     () => parseSearchToQuery(location.search),
     [location.search]
   );
-  const {
-    view,
-    startDate,
-    endDate,
-    semanticSearch: isSemanticSearchEnabled,
-  } = queryParams;
+  const { view, startDate, endDate, searchType: searchTypeURL } = queryParams;
 
   const searchTextURL = queryParams.searchText ? queryParams.searchText : '';
 
@@ -241,38 +240,42 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
       ? checkedBoxes[0]
       : searchableEntities[0];
 
+  const isMLSearchEnabled = isMLSearchType(searchTypeURL);
+
   //Do not allow these to be searched if they are not searchable (prevents URL
   //forcing them to be searched)
   const investigation =
-    searchableEntities.includes('investigation') && !isSemanticSearchEnabled
+    searchableEntities.includes('investigation') && !isMLSearchEnabled
       ? queryParams.investigation
       : false;
   const dataset =
-    searchableEntities.includes('dataset') && !isSemanticSearchEnabled
+    searchableEntities.includes('dataset') && !isMLSearchEnabled
       ? queryParams.dataset
       : false;
   const datafile =
-    searchableEntities.includes('datafile') && !isSemanticSearchEnabled
+    searchableEntities.includes('datafile') && !isMLSearchEnabled
       ? queryParams.datafile
       : false;
 
   const pushView = useUpdateView('push');
   const replaceView = useUpdateView('replace');
   const pushSearchText = usePushSearchText();
+  const pushMLSearchType = usePushMLSearchType();
+  const clearMLSearchType = useClearMLSearchType();
   const pushCurrentTab = usePushCurrentTab();
   const replaceFilters = useUpdateQueryParam('filters', 'replace');
   const replaceSorts = useUpdateQueryParam('sort', 'replace');
   const replacePage = useUpdateQueryParam('page', 'replace');
   const replaceResults = useUpdateQueryParam('results', 'replace');
 
-  const [shouldShowSemanticSearchResults, setShouldShowSemanticSearchResults] =
-    React.useState(false);
-
   React.useEffect(() => {
     if (currentTab !== queryParams.currentTab) pushCurrentTab(currentTab);
   }, [checkedBoxes, currentTab, pushCurrentTab, queryParams.currentTab]);
 
   const [searchText, setSearchText] = React.useState(searchTextURL);
+  const [searchType, setSearchType] = React.useState<SearchType>(
+    searchTypeURL ?? 'lucene'
+  );
   const [searchOnNextRender, setSearchOnNextRender] = React.useState(false);
 
   const handleSearchTextChange = (searchText: string): void => {
@@ -349,10 +352,8 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const initiateSearch = React.useCallback(() => {
     pushSearchText(searchText);
 
-    if (isSemanticSearchEnabled) {
-      setShouldShowSemanticSearchResults(true);
-    } else {
-      setShouldShowSemanticSearchResults(false);
+    if (searchType === 'lucene') {
+      clearMLSearchType();
       setSearchOnNextRender(true);
 
       localStorage.removeItem('investigationFilters');
@@ -369,11 +370,14 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
       if (Object.keys(queryParams.sort).length !== 0) replaceSorts({});
       if (queryParams.page !== null) replacePage(null);
       if (queryParams.results !== null) replaceResults(null);
+    } else {
+      pushMLSearchType(searchType);
     }
   }, [
-    isSemanticSearchEnabled,
     pushSearchText,
     searchText,
+    searchType,
+    clearMLSearchType,
     queryParams.filters,
     queryParams.sort,
     queryParams.page,
@@ -382,30 +386,12 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     replaceSorts,
     replacePage,
     replaceResults,
+    pushMLSearchType,
   ]);
 
   React.useEffect(() => {
     if (searchOnNextRender) {
-      if (dataset) {
-        // Fetch lucene datasets
-        searchDatasets();
-      }
-
-      if (datafile) {
-        // Fetch lucene datafiles
-        searchDatafiles();
-      }
-      if (investigation) {
-        // Fetch lucene investigations
-        searchInvestigations();
-      }
-
-      if (dataset || datafile || investigation) {
-        // Set the appropriate tabs.
-        setDatafileTab(datafile);
-        setDatasetTab(dataset);
-        setInvestigationTab(investigation);
-      }
+      setInvestigationTab(true);
 
       setSearchOnNextRender(false);
     }
@@ -524,18 +510,20 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                 <TopSearchBoxPaper>
                   <SearchBoxContainer
                     searchText={searchText}
+                    searchType={searchType}
                     initiateSearch={initiateSearch}
                     onSearchTextChange={handleSearchTextChange}
+                    onSearchTypeChange={setSearchType}
                   />
                 </TopSearchBoxPaper>
               )}
             </Grid>
 
-            {shouldShowSemanticSearchResults && (
+            {isMLSearchType(searchTypeURL) && (
               <div style={{ width: '100%' }}>
                 <Grid container justifyContent="center">
                   <DataViewPaper view={view} containerHeight={containerHeight}>
-                    <SemanticSearchTable />
+                    <MLSearchTable />
                   </DataViewPaper>
                 </Grid>
               </div>

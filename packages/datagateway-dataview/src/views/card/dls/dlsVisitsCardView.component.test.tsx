@@ -107,7 +107,7 @@ describe('DLS Visits - Card View', () => {
     await user.type(filter, 'test');
 
     expect(history.location.search).toBe(
-      `?semanticSearch=false&filters=${encodeURIComponent(
+      `?filters=${encodeURIComponent(
         '{"visitId":{"value":"test","type":"include"}}'
       )}`
     );
@@ -134,9 +134,7 @@ describe('DLS Visits - Card View', () => {
     await user.type(filter, '2019-08-06');
 
     expect(history.location.search).toBe(
-      `?semanticSearch=false&filters=${encodeURIComponent(
-        '{"endDate":{"endDate":"2019-08-06"}}'
-      )}`
+      `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
     );
 
     await user.clear(filter);
@@ -150,7 +148,7 @@ describe('DLS Visits - Card View', () => {
     renderComponent();
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
-      `?semanticSearch=false&sort=${encodeURIComponent('{"startDate":"desc"}')}`
+      `?sort=${encodeURIComponent('{"startDate":"desc"}')}`
     );
   });
 
@@ -164,7 +162,7 @@ describe('DLS Visits - Card View', () => {
     );
 
     expect(history.location.search).toBe(
-      `?semanticSearch=false&sort=${encodeURIComponent('{"visitId":"asc"}')}`
+      `?sort=${encodeURIComponent('{"visitId":"asc"}')}`
     );
   });
 

@@ -2,19 +2,22 @@ import {
   ColumnType,
   externalSiteLink,
   Investigation,
+  ML_SEARCH_TYPE,
   parseSearchToQuery,
   Table,
   useDateFilter,
-  useSemanticSearch,
   useSort,
   useTextFilter,
+  useMLSearch,
 } from 'datagateway-common';
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { TableCellProps } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
 
-function SemanticSearchTable(): JSX.Element {
+const DEFAULT_ML_SEARCH_TYPE = ML_SEARCH_TYPE.semantic;
+
+function MLSearchTable(): JSX.Element {
   const location = useLocation();
   const queryParams = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -23,9 +26,10 @@ function SemanticSearchTable(): JSX.Element {
   const [t] = useTranslation();
 
   const searchText = queryParams.searchText ?? '';
-  const { data: searchResults } = useSemanticSearch({
+  const searchType = queryParams.searchType ?? DEFAULT_ML_SEARCH_TYPE;
+  const { data: searchResults } = useMLSearch({
     query: searchText,
-    enabled: true,
+    type: searchType,
   });
 
   const textFilter = useTextFilter(queryParams.filters);
@@ -96,4 +100,4 @@ function SemanticSearchTable(): JSX.Element {
   );
 }
 
-export default SemanticSearchTable;
+export default MLSearchTable;
