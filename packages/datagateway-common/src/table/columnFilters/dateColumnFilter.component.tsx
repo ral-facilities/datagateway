@@ -89,6 +89,42 @@ interface DateColumnFilterProps {
   filterByTime?: boolean;
 }
 
+const CustomTextField: React.FC<TextFieldProps> = (
+  renderProps: TextFieldProps & JSX.IntrinsicAttributes
+) => {
+  const invalidDateRange = renderProps.inputProps?.invalidDateRange;
+  const errorText = renderProps.inputProps?.errorText;
+  const filterByTime = renderProps.inputProps?.filterByTime;
+
+  // remove the custom props so they are not passed to DOM
+  delete renderProps.inputProps?.invalidDateRange;
+  delete renderProps.inputProps?.errorText;
+  delete renderProps.inputProps?.filterByTime;
+
+  const error =
+    // eslint-disable-next-line react/prop-types
+    (renderProps.error || invalidDateRange) ?? undefined;
+
+  // Display correct helper text depending on whether filtering by time
+  const [fieldType, fieldFormat] = filterByTime
+    ? ['Date-time', 'yyyy-MM-dd HH:mm:ss']
+    : ['Date', 'yyyy-MM-dd'];
+
+  // For now we only display 2 types of error messages
+  let helperText = `${fieldType} format: ${fieldFormat}.`;
+  if (invalidDateRange || errorText === 'maxDate' || errorText === 'minDate')
+    helperText = `Invalid ${fieldType.toLowerCase()} range`;
+
+  return (
+    <TextField
+      {...renderProps}
+      variant="standard"
+      error={error}
+      {...(error && { helperText: helperText })}
+    />
+  );
+};
+
 const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
   //Need state to change otherwise wont update error messages for an invalid date
   const [startDate, setStartDate] = useState(
@@ -104,40 +140,6 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
   const [errorText, setError] = React.useState<
     DateTimeValidationError | DateValidationError | null
   >(null);
-
-  const CustomTextField: React.FC<TextFieldProps> = React.useCallback(
-    (renderProps: JSX.IntrinsicAttributes & TextFieldProps) => {
-      const invalidDateRange = renderProps.inputProps?.invalidDateRange;
-      const errorText = renderProps.inputProps?.errorText;
-      const error =
-        // eslint-disable-next-line react/prop-types
-        (renderProps.error || invalidDateRange) ?? undefined;
-
-      // Display correct helper text depending on whether filtering by time
-      const [fieldType, fieldFormat] = props.filterByTime
-        ? ['Date-time', 'yyyy-MM-dd HH:mm:ss']
-        : ['Date', 'yyyy-MM-dd'];
-
-      // For now we only display 2 types of error messages
-      let helperText = `${fieldType} format: ${fieldFormat}.`;
-      if (
-        invalidDateRange ||
-        errorText === 'maxDate' ||
-        errorText === 'minDate'
-      )
-        helperText = `Invalid ${fieldType.toLowerCase()} range`;
-
-      return (
-        <TextField
-          {...renderProps}
-          variant="standard"
-          error={error}
-          {...(error && { helperText: helperText })}
-        />
-      );
-    },
-    [props.filterByTime]
-  );
 
   return (
     <form>
@@ -171,8 +173,9 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
               },
               textField: {
                 inputProps: {
-                  invalidDateRange,
-                  errorText,
+                  invalidDateRange: invalidDateRange,
+                  errorText: errorText,
+                  filterByTime: props.filterByTime,
                   id: props.label + ' filter from',
                   placeholder: 'From...',
                   'aria-label': `${props.label} filter from`,
@@ -213,6 +216,7 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
                 inputProps: {
                   invalidDateRange,
                   errorText,
+                  filterByTime: props.filterByTime,
                   id: props.label + ' filter to',
                   placeholder: 'To...',
                   'aria-label': `${props.label} filter to`,
@@ -254,6 +258,7 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
                 inputProps: {
                   invalidDateRange,
                   errorText,
+                  filterByTime: props.filterByTime,
                   id: props.label + ' filter from',
                   placeholder: 'From...',
                   'aria-label': `${props.label} filter from`,
@@ -292,6 +297,7 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
                 inputProps: {
                   invalidDateRange,
                   errorText,
+                  filterByTime: props.filterByTime,
                   id: props.label + ' filter to',
                   placeholder: 'To...',
                   'aria-label': `${props.label} filter to`,

@@ -41,6 +41,47 @@ interface DatePickerStoreProps {
 
 type DatePickerCombinedProps = DatePickerProps & DatePickerStoreProps;
 
+const CustomTextField: React.FC<TextFieldProps> = (
+  props: JSX.IntrinsicAttributes & TextFieldProps
+) => {
+  const invalidDateRange = props.inputProps?.invalidDateRange;
+  const [t] = props.inputProps?.t;
+  const sideLayout = props.inputProps?.sideLayout;
+
+  // remove the custom props so they are not passed to DOM
+  delete props.inputProps?.invalidDateRange;
+  delete props.inputProps?.t;
+  delete props.inputProps?.sideLayout;
+
+  const error =
+    // eslint-disable-next-line react/prop-types
+    (props.error || invalidDateRange) ?? undefined;
+  let helperText = t('searchBox.invalid_date_message');
+  if (invalidDateRange) helperText = t('searchBox.invalid_date_range_message');
+  return (
+    <TextField
+      {...props}
+      inputProps={{
+        // eslint-disable-next-line react/prop-types
+        ...props.inputProps,
+      }}
+      sx={
+        props.inputProps?.placeholder === t('searchBox.start_date')
+          ? sideLayout
+            ? {}
+            : { py: 1, width: '178px' }
+          : sideLayout
+          ? { py: 1, px: 0 }
+          : { pl: 1, py: 1, width: '178px' }
+      }
+      variant="outlined"
+      error={error}
+      // eslint-disable-next-line react/prop-types
+      {...(error && { helperText: helperText })}
+    />
+  );
+};
+
 export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
   const { sideLayout, initiateSearch } = props;
 
@@ -107,41 +148,6 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
 
   const invalidDateRange = startDate && endDate && isBefore(endDate, startDate);
 
-  const CustomTextField: React.FC<TextFieldProps> = React.useCallback(
-    (props: JSX.IntrinsicAttributes & TextFieldProps) => {
-      const invalidDateRange = props.inputProps?.invalidDateRange;
-      const error =
-        // eslint-disable-next-line react/prop-types
-        (props.error || invalidDateRange) ?? undefined;
-      let helperText = t('searchBox.invalid_date_message');
-      if (invalidDateRange)
-        helperText = t('searchBox.invalid_date_range_message');
-      return (
-        <TextField
-          {...props}
-          inputProps={{
-            // eslint-disable-next-line react/prop-types
-            ...props.inputProps,
-          }}
-          sx={
-            props.inputProps?.placeholder === t('searchBox.start_date')
-              ? sideLayout
-                ? {}
-                : { py: 1, width: '178px' }
-              : sideLayout
-              ? { py: 1, px: 0 }
-              : { pl: 1, py: 1, width: '178px' }
-          }
-          variant="outlined"
-          error={error}
-          // eslint-disable-next-line react/prop-types
-          {...(error && { helperText: helperText })}
-        />
-      );
-    },
-    [sideLayout, t]
-  );
-
   return (
     <div className="tour-search-dates">
       <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -164,6 +170,8 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
               textField: {
                 inputProps: {
                   invalidDateRange,
+                  sideLayout,
+                  t: [t],
                   placeholder: t('searchBox.start_date'),
                   'aria-label': t('searchBox.start_date_arialabel'),
                 },
@@ -190,6 +198,8 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
               textField: {
                 inputProps: {
                   invalidDateRange,
+                  sideLayout,
+                  t: [t],
                   placeholder: t('searchBox.end_date'),
                   'aria-label': t('searchBox.end_date_arialabel'),
                 },
