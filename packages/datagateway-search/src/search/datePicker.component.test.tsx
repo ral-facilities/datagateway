@@ -185,6 +185,7 @@ describe('DatePicker component tests', () => {
       expect(testInitiateSearch).toHaveBeenCalled();
     });
 
+    // In v6, date pickers don't allow invalid dates to be entered
     it('displays error message when an invalid date is entered', async () => {
       history.replace('/?searchText=&investigation=false');
 
@@ -193,7 +194,7 @@ describe('DatePicker component tests', () => {
         name: 'searchBox.start_date_arialabel',
       });
 
-      await user.type(startDateInput, '2012 01 35');
+      await user.type(startDateInput, '2012 01 00');
 
       expect(
         await screen.findByText('searchBox.invalid_date_message')
@@ -321,6 +322,7 @@ describe('DatePicker component tests', () => {
       expect(testInitiateSearch).toHaveBeenCalled();
     });
 
+    // In v6, date pickers don't allow invalid dates to be entered
     it('displays error message when an invalid date is entered', async () => {
       history.replace('/?searchText=&investigation=false');
 
@@ -329,7 +331,7 @@ describe('DatePicker component tests', () => {
         name: 'searchBox.end_date_arialabel',
       });
 
-      await user.type(endDateInput, '2012 01 35');
+      await user.type(endDateInput, '2012 01 00');
 
       expect(
         await screen.findByText('searchBox.invalid_date_message')

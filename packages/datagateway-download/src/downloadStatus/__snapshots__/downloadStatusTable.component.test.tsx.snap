@@ -464,10 +464,12 @@ exports[`Download Status Table should render correctly 1`] = `
                           <input
                             aria-invalid="false"
                             aria-label="downloadStatus.createdAt filter from"
+                            autocomplete="off"
                             class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
                             id="downloadStatus.createdAt filter from"
+                            inputmode="text"
                             placeholder="From..."
-                            type="tel"
+                            type="text"
                             value=""
                           />
                           <div
@@ -506,10 +508,12 @@ exports[`Download Status Table should render correctly 1`] = `
                           <input
                             aria-invalid="false"
                             aria-label="downloadStatus.createdAt filter to"
+                            autocomplete="off"
                             class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
                             id="downloadStatus.createdAt filter to"
+                            inputmode="text"
                             placeholder="To..."
-                            type="tel"
+                            type="text"
                             value=""
                           />
                           <div

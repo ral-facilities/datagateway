@@ -362,7 +362,11 @@ describe('Date filter component', () => {
         />
       );
 
-      await user.clear(startDateFilterInput);
+      // .clear doesn't work for some reason with datepickers in v6
+      await user.click(startDateFilterInput);
+      await user.keyboard('{Control>}a{/Control}');
+      await user.keyboard('{Delete}');
+      // await user.clear(startDateFilterInput);
       await user.type(startDateFilterInput, '2');
 
       expect(onChange).toHaveBeenLastCalledWith({
@@ -378,7 +382,11 @@ describe('Date filter component', () => {
         />
       );
 
-      await user.clear(endDateFilterInput);
+      // .clear doesn't work for some reason with datepickers in v6
+      await user.click(endDateFilterInput);
+      await user.keyboard('{Control>}a{/Control}');
+      await user.keyboard('{Delete}');
+      // await user.clear(endDateFilterInput);
       await user.type(endDateFilterInput, '201');
 
       expect(onChange).toHaveBeenLastCalledWith(null);
@@ -493,7 +501,9 @@ describe('Date filter component', () => {
         name: 'test filter to',
       });
 
-      await user.type(endDateFilterInput, '2019-08-06 23:59:00');
+      // in v6, spaces are considered to be '0' in the time field
+      // 20190806235900 results in 2019-08-06 23:59:00
+      await user.type(endDateFilterInput, '20190806235900');
 
       expect(onChange).toHaveBeenLastCalledWith({
         startDate: '2019-08-06 00:00:00',
@@ -594,7 +604,11 @@ describe('Date filter component', () => {
         />
       );
 
-      await user.clear(startDateFilterInput);
+      // .clear doesn't work for some reason with datepickers in v6
+      await user.click(startDateFilterInput);
+      await user.keyboard('{Control>}a{/Control}');
+      await user.keyboard('{Delete}');
+      // await user.clear(startDateFilterInput);
       await user.type(startDateFilterInput, '2');
 
       expect(onChange).toHaveBeenLastCalledWith({
@@ -611,7 +625,11 @@ describe('Date filter component', () => {
         />
       );
 
-      await user.clear(endDateFilterInput);
+      // .clear doesn't work for some reason with datepickers in v6
+      await user.click(endDateFilterInput);
+      await user.keyboard('{Control>}a{/Control}');
+      await user.keyboard('{Delete}');
+      // await user.clear(endDateFilterInput);
       await user.type(endDateFilterInput, '201');
 
       expect(onChange).toHaveBeenLastCalledWith(null);
