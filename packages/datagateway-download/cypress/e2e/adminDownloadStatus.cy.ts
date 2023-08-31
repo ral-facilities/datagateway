@@ -1,14 +1,10 @@
 describe('Admin Download Status', () => {
-  before(() => {
-    // Ensure the downloads are cleared before running tests.
-    cy.login({ username: 'root', password: 'pw', mechanism: 'simple' });
-
-    // Seed the initial downloads.
-    cy.clearDownloads();
-  });
-
   beforeEach(() => {
-    cy.intercept('GET', '**/getPercentageComplete**');
+    // set the viewport larger so all columns display nicely
+    // and sort indicators aren't covered
+    cy.viewport(1920, 1080);
+
+    cy.intercept('GET', '**/getPercentageComplete**', '100');
     cy.intercept('GET', '**/topcat/admin/downloads**').as(
       'fetchAdminDownloads'
     );
@@ -23,11 +19,6 @@ describe('Admin Download Status', () => {
 
       cy.wait('@fetchAdminDownloads');
     });
-  });
-
-  it('should load correctly and display admin download status table', () => {
-    cy.title().should('equal', 'DataGateway Download');
-    cy.get('#datagateway-download').should('be.visible');
   });
 
   it('should refresh the table when clicking the refresh downloads button', () => {
@@ -52,177 +43,103 @@ describe('Admin Download Status', () => {
       });
   });
 
-  describe('should be able to sort download items by', () => {
-    it('ascending order', () => {
-      // Table is sorted by Requested Date by default. To keep working test, we will remove all sorts on the table beforehand
-      cy.get('.react-draggable')
-        .eq(7)
-        .trigger('mousedown')
-        .trigger('mousemove', { clientX: 800 })
-        .trigger('mouseup');
-      cy.contains('[role="button"]', 'Requested Date').click();
+  it('should be able to sort by all sort directions on single and multiple columns', () => {
+    // remove default sort
+    cy.contains('[role="button"]', 'Requested Date').click();
 
-      cy.get('.react-draggable')
-        .eq(4)
-        .trigger('mousedown')
-        .trigger('mousemove', { clientX: 600 })
-        .trigger('mouseup');
-      cy.contains('[role="button"]', 'Access Method').click();
+    // ascending order
+    cy.contains('[role="button"]', 'Access Method')
+      .as('accessMethodSortButton')
+      .click();
 
-      cy.get('[aria-sort="ascending"]').should('exist');
-      cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
-      cy.get('[aria-rowindex="1"] [aria-colindex="5"]').should(
-        'have.text',
-        'globus'
-      );
-    });
+    cy.get('[aria-sort="ascending"]').should('exist');
+    cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
+    cy.get('[aria-rowindex="1"] [aria-colindex="5"]').should(
+      'have.text',
+      'globus'
+    );
 
-    it('descending order', () => {
-      // Table is sorted by Requested Date by default. To keep working test, we will remove all sorts on the table beforehand
-      cy.get('.react-draggable')
-        .eq(7)
-        .trigger('mousedown')
-        .trigger('mousemove', { clientX: 800 })
-        .trigger('mouseup');
-      cy.contains('[role="button"]', 'Requested Date').click();
+    // descending order
+    cy.get('@accessMethodSortButton').click();
 
-      cy.get('.react-draggable')
-        .eq(4)
-        .trigger('mousedown')
-        .trigger('mousemove', { clientX: 600 })
-        .trigger('mouseup');
-      cy.contains('[role="button"]', 'Access Method').click();
-      cy.contains('[role="button"]', 'Access Method').click();
+    cy.get('[aria-sort="descending"]').should('exist');
+    cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
+      'not.have.css',
+      'opacity',
+      '0'
+    );
+    cy.get('[aria-rowindex="1"] [aria-colindex="5"]').should(
+      'have.text',
+      'https'
+    );
 
-      cy.get('[aria-sort="descending"]').should('exist');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
-        'not.have.css',
-        'opacity',
-        '0'
-      );
-      cy.get('[aria-rowindex="1"] [aria-colindex="5"]').should(
-        'have.text',
-        'https'
-      );
-    });
+    // no order
+    cy.get('@accessMethodSortButton').click();
 
-    it('no order', () => {
-      // Table is sorted by Requested Date by default. To keep working test, we will remove all sorts on the table beforehand
-      cy.get('.react-draggable')
-        .eq(7)
-        .trigger('mousedown')
-        .trigger('mousemove', { clientX: 800 })
-        .trigger('mouseup');
-      cy.contains('[role="button"]', 'Requested Date').click();
+    cy.get('[aria-sort="ascending"]').should('not.exist');
+    cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
+    cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
+      'have.css',
+      'opacity',
+      '0'
+    );
+    cy.get('[aria-rowindex="1"] [aria-colindex="5"]').should(
+      'have.text',
+      'https'
+    );
 
-      cy.get('.react-draggable')
-        .eq(3)
-        .trigger('mousedown')
-        .trigger('mousemove', { clientX: 500 })
-        .trigger('mouseup');
-      cy.contains('[role="button"]', 'Prepared ID').click();
-      cy.contains('[role="button"]', 'Prepared ID').click();
-      cy.contains('[role="button"]', 'Prepared ID').click();
+    // multiple columns
+    cy.contains('[role="button"]', 'Deleted').click();
+    cy.contains('[role="button"]', 'Availability').click();
 
-      cy.get('[aria-sort="ascending"]').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
-        'have.css',
-        'opacity',
-        '0'
-      );
-      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').should(
-        ($preparedId) => {
-          expect($preparedId[0].textContent).match(
-            /[0-9a-zA-Z]{8}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{12}/
-          );
-        }
-      );
-    });
-
-    it('multiple columns', () => {
-      // Table is sorted by Requested Date by default. To keep working test, we will remove all sorts on the table beforehand
-      cy.get('.react-draggable')
-        .eq(7)
-        .trigger('mousedown')
-        .trigger('mousemove', { clientX: 800 })
-        .trigger('mouseup');
-      cy.contains('[role="button"]', 'Requested Date').click();
-
-      cy.get('.react-draggable')
-        .eq(4)
-        .trigger('mousedown')
-        .trigger('mousemove', { clientX: 550 })
-        .trigger('mouseup');
-      cy.contains('[role="button"]', 'Access Method').click();
-
-      cy.get('.react-draggable')
-        .eq(2)
-        .trigger('mousedown')
-        .trigger('mousemove', { clientX: 400 })
-        .trigger('mouseup');
-      cy.contains('[role="button"]', 'Username').click();
-
-      cy.get('[aria-rowindex="1"] [aria-colindex="5"]').should(
-        'have.text',
-        'globus'
-      );
-    });
+    cy.get('[aria-rowindex="2"] [aria-colindex="6"]').should(
+      'have.text',
+      'Available'
+    );
+    cy.get('[aria-rowindex="3"] [aria-colindex="6"]').should(
+      'have.text',
+      'Expired'
+    );
   });
 
-  describe('should be able to filter download items by', () => {
-    it('text', () => {
-      cy.get('[aria-label="Filter by Availability"]')
-        .first()
-        .type('Available', { force: true });
+  it('should be able to filter with both text & date filters on multiple columns', () => {
+    cy.get('[aria-rowcount]')
+      .invoke('attr', 'aria-rowcount')
+      .as('initialRowCount');
+    const now = Date.now();
+    // plus and minus 5 seconds from "now"
+    const fromDate = new Date(now - 5000);
+    const toDate = new Date(now + 5000);
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="6"]').should(
-        'have.text',
-        'Available'
-      );
+    cy.get('input[id="Requested Date filter from"]').type(
+      fromDate.toLocaleString('sv')
+    );
+
+    cy.get('input[id="Requested Date filter to"]').type(
+      toDate.toLocaleString('sv')
+    );
+
+    cy.get('@initialRowCount').then((initialRowCount) => {
+      cy.get(`[aria-rowcount="${initialRowCount}"]`).should('not.exist');
     });
+    cy.get('[aria-rowcount="0"]').should('not.exist');
 
-    it('date between', () => {
-      const currDate = new Date();
+    cy.get('[aria-rowcount]')
+      .invoke('attr', 'aria-rowcount')
+      .as('dateFilterRowCount');
 
-      cy.get('input[id="Requested Date filter from"]').type(
-        currDate.toISOString().slice(0, 10)
-      );
+    cy.get('[aria-label="Filter by Availability"]')
+      .first()
+      .type('Available', { force: true });
 
-      cy.get('input[id="Requested Date filter to"]').type(
-        currDate.toISOString().slice(0, 10)
-      );
+    cy.get('[aria-rowindex="1"] [aria-colindex="6"]').should(
+      'have.text',
+      'Available'
+    );
 
-      cy.get('[aria-rowcount="0"]').should('not.exist');
+    cy.get('@dateFilterRowCount').then((dateFilterRowCount) => {
+      cy.get(`[aria-rowcount="${dateFilterRowCount}"]`).should('not.exist');
     });
-
-    it('multiple columns', () => {
-      cy.get('[role="columnheader"]').eq(4).as('accessColumn');
-      cy.get('[role="columnheader"]').eq(5).as('availabilityColumn');
-
-      cy.get('.react-draggable')
-        .eq(4)
-        .trigger('mousedown')
-        .trigger('mousemove', { clientX: 500 })
-        .trigger('mouseup');
-
-      cy.get('.react-draggable')
-        .eq(5)
-        .trigger('mousedown')
-        .trigger('mousemove', { clientX: 700 })
-        .trigger('mouseup');
-
-      cy.get('[aria-label="Filter by Access Method')
-        .first()
-        .type('globus', { force: true });
-      cy.get('[aria-label="Filter by Availability"]')
-        .first()
-        .type('restoring', { force: true });
-
-      cy.get('[aria-rowindex="1"] [aria-colindex="5"]').should(
-        'have.text',
-        'globus'
-      );
-    });
+    cy.get('[aria-rowcount="0"]').should('not.exist');
   });
 });

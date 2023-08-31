@@ -18,10 +18,6 @@ describe('PageContainer Component', () => {
     cy.clearDownloadCart();
   });
 
-  it('should display the open data warning when not logged in', () => {
-    cy.get('[aria-label="open-data-warning"]').should('exist');
-  });
-
   it('should be able to click clear filters button to clear filters', () => {
     cy.url().then((url) => {
       cy.get('input[id="Title-filter"]').type('South');
@@ -37,6 +33,9 @@ describe('PageContainer Component', () => {
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
 
+    // we're not logged in, so show open data warning
+    cy.get('[aria-label="open-data-warning"]').should('exist');
+
     cy.get('[aria-label="page-breadcrumbs"]').should('exist');
 
     cy.get('[aria-label="view-count"]').should('exist');
@@ -46,9 +45,7 @@ describe('PageContainer Component', () => {
     cy.get('[aria-label="Go to selections"]').should('exist');
 
     cy.get('[aria-label="page view Display as cards"]').should('exist');
-  });
 
-  it('should display correct entity count', () => {
     // Check that the entity count has displayed correctly.
     cy.get('[aria-label="view-count"]')
       .should('be.visible')
@@ -103,18 +100,81 @@ describe('PageContainer Component', () => {
     );
   });
 
-  it('should display tooltips correctly', () => {
-    // The hover tool tip has an enter delay of 500ms.
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.get('[data-testid="investigation-table-title"]')
+  // test any table.component.tsx functionality here
+  // instead of any of the specs for instantiated tables
+  it('should be able to resize a column', () => {
+    let columnWidth = 0;
+
+    cy.window()
+      .then((window) => {
+        const windowWidth = window.innerWidth;
+        // Account for select and details column widths
+        columnWidth = (windowWidth - 40 - 40) / 8;
+      })
+      .then(() => expect(columnWidth).to.not.equal(0));
+
+    cy.get('[role="columnheader"]').eq(2).as('titleColumn');
+    cy.get('[role="columnheader"]').eq(3).as('visitColumn');
+
+    cy.get('@titleColumn').should(($column) => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.equal(columnWidth);
+    });
+
+    cy.get('@visitColumn').should(($column) => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.equal(columnWidth);
+    });
+
+    cy.get('.react-draggable')
       .first()
-      .trigger('mouseover', { force: true })
-      .wait(700)
-      .get('[role="tooltip"]')
-      .should('exist');
+      .as('firstColumnDragHandler')
+      .trigger('mousedown');
+    cy.get('@firstColumnDragHandler').trigger('mousemove', { clientX: 200 });
+    cy.get('@firstColumnDragHandler').trigger('mouseup');
+
+    cy.get('@titleColumn').should(($column) => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.be.greaterThan(columnWidth);
+    });
+
+    cy.get('@visitColumn').should(($column) => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.be.lessThan(columnWidth);
+    });
+
+    // table width should grow if a column grows too large
+
+    cy.get('@firstColumnDragHandler').trigger('mousedown');
+    cy.get('@firstColumnDragHandler').trigger('mousemove', { clientX: 800 });
+    cy.get('@firstColumnDragHandler').trigger('mouseup');
+
+    cy.get('@visitColumn').should(($column) => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.be.equal(84);
+    });
+
+    cy.get('[aria-label="grid"]').then(($grid) => {
+      const { width } = $grid[0].getBoundingClientRect();
+      cy.window().should(($window) => {
+        expect(width).to.be.greaterThan($window.innerWidth);
+      });
+    });
   });
 
-  it('should not display tooltips after column resizing', () => {
+  it('should display table tooltips correctly (and be dismissable by pressing esc)', () => {
+    cy.get('[data-testid="investigation-table-title"]')
+      .first()
+      .as('firstTitle')
+      .trigger('mouseover', { force: true });
+    cy.get('@firstTitle').get('[role="tooltip"]').should('exist');
+
+    cy.get('body').type('{esc}');
+
+    cy.get('@firstTitle').get('[role="tooltip"]').should('not.exist');
+  });
+
+  it('should not table display tooltips after column resizing', () => {
     let columnWidth = 0;
 
     cy.window()
@@ -134,34 +194,31 @@ describe('PageContainer Component', () => {
 
     cy.get('.react-draggable')
       .first()
-      .trigger('mousedown')
-      .trigger('mousemove', { clientX: 1500 })
-      .trigger('mouseup');
+      .as('firstColumnDragHandler')
+      .trigger('mousedown');
+    cy.get('@firstColumnDragHandler').trigger('mousemove', { clientX: 1500 });
+    cy.get('@firstColumnDragHandler').trigger('mouseup');
 
     cy.get('@titleColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.be.greaterThan(columnWidth);
     });
 
-    // The hover tool tip has an enter delay of 500ms.
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.get('[data-testid="investigation-table-title"]')
       .first()
-      .trigger('mouseover', { force: true })
-      .wait(700)
-      .get('[role="tooltip"]')
-      .should('not.exist');
+      .as('firstTitle')
+      .trigger('mouseover', { force: true });
+    cy.get('@firstTitle').get('[role="tooltip"]').should('not.exist');
   });
 
-  it('should not display tooltips after making the window bigger', () => {
+  it('should not display table tooltips after making the window bigger', () => {
     cy.viewport(10000, 750);
-    // The hover tool tip has an enter delay of 500ms.
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
+
     cy.get('[data-testid="investigation-table-title"]')
       .first()
-      .trigger('mouseover', { force: true })
-      .wait(700)
-      .get('[role="tooltip"]')
-      .should('not.exist');
+      .as('firstTitle')
+      .trigger('mouseover', { force: true });
+
+    cy.get('@firstTitle').get('[role="tooltip"]').should('not.exist');
   });
 });

@@ -175,7 +175,7 @@ const AdminDownloadStatusTable: React.FC = () => {
       label={label}
       onChange={(value: { value?: string | number; type: string } | null) => {
         if (value) {
-          if (dataKey === 'formattedStatus') {
+          if (dataKey === 'status') {
             const downloadStatus = (
               Object.keys(downloadStatuses) as DownloadStatus[]
             ).find(
@@ -320,8 +320,10 @@ const AdminDownloadStatusTable: React.FC = () => {
                     },
                     {
                       label: t('downloadStatus.status'),
-                      dataKey: 'formattedStatus',
+                      dataKey: 'status',
                       filterComponent: textFilter,
+                      cellContentRenderer: ({ rowData }) =>
+                        (rowData as FormattedDownload).formattedStatus,
                     },
                     ...(settings.uiFeatures.downloadProgress
                       ? [
@@ -362,7 +364,9 @@ const AdminDownloadStatusTable: React.FC = () => {
                     },
                     {
                       label: t('downloadStatus.deleted'),
-                      dataKey: 'formattedIsDeleted',
+                      dataKey: 'isDeleted',
+                      cellContentRenderer: ({ rowData }) =>
+                        (rowData as FormattedDownload).formattedIsDeleted,
                     },
                   ]}
                   sort={sort}

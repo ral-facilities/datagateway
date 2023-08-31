@@ -273,7 +273,9 @@ describe('Admin Download Status Table', () => {
 
       // We simulate a change in the select from 'include' to 'exclude'.
       // click on the select box
-      await user.click(screen.getAllByLabelText('include or exclude')[5]);
+      await user.click(
+        screen.getAllByLabelText('include, exclude or exact')[5]
+      );
       // click on exclude option
       await user.click(
         within(await screen.findByRole('listbox')).getByText('Exclude')
