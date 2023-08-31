@@ -95,8 +95,6 @@ describe('Datasets Table', () => {
     cy.get('.MuiPickersCalendarHeader-label').click();
     cy.contains('2020').click();
 
-    // same bug with moving calendar as in datafiles.cy.ts
-    cy.get('.MuiPickersDay-root[type="button"]').first().click();
     cy.get('.MuiPickersDay-root[type="button"]').first().click();
 
     cy.get('input[id="Create Time filter to"]').should(

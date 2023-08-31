@@ -13,21 +13,28 @@ import { TextField, Button, TextFieldProps } from '@mui/material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { PickersActionBarProps } from '@mui/x-date-pickers/PickersActionBar';
+import DialogActions from '@mui/material/DialogActions';
 
 export const CustomClearButton = (
   props: PickersActionBarProps
 ): JSX.Element => {
-  const { onClear } = props;
+  const { onClear, className } = props;
+  console.log(props);
   return (
-    <Button
-      role="button"
-      onClick={() => onClear()}
-      variant="contained"
-      color="primary"
-      sx={{ marginLeft: '30px', marginBottom: '10px' }}
-    >
-      Clear
-    </Button>
+    <DialogActions className={className}>
+      <Button
+        role="button"
+        onClick={() => onClear()}
+        variant="contained"
+        color="primary"
+        sx={{
+          marginLeft: '30px',
+          marginBottom: '10px',
+        }}
+      >
+        Clear
+      </Button>
+    </DialogActions>
   );
 };
 

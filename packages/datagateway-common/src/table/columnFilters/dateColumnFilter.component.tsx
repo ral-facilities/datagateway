@@ -14,6 +14,7 @@ import {
   DateTimeValidationError,
   DateValidationError,
 } from '@mui/x-date-pickers/models';
+import DialogActions from '@mui/material/DialogActions';
 
 export function datesEqual(date1: Date | null, date2: Date | null): boolean {
   if (date1 === date2) {
@@ -68,17 +69,20 @@ export function updateFilter({
 export const CustomClearButton = (
   props: PickersActionBarProps
 ): JSX.Element => {
-  const { onClear } = props;
+  const { onClear, className } = props;
+
   return (
-    <Button
-      role="button"
-      onClick={() => onClear()}
-      variant="contained"
-      color="primary"
-      sx={{ marginLeft: '30px', marginBottom: '10px' }}
-    >
-      Clear
-    </Button>
+    <DialogActions className={className}>
+      <Button
+        role="button"
+        onClick={() => onClear()}
+        variant="contained"
+        color="primary"
+        sx={{ marginLeft: '30px', marginBottom: '10px' }}
+      >
+        Clear
+      </Button>
+    </DialogActions>
   );
 };
 
