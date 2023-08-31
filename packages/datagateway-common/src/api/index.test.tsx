@@ -113,6 +113,7 @@ describe('generic api functions', () => {
         filters: { name: { value: 'test', type: 'include' } },
         sort: { name: 'asc' },
         searchText: null,
+        searchType: null,
         dataset: true,
         datafile: true,
         investigation: true,
@@ -134,6 +135,7 @@ describe('generic api functions', () => {
         filters: {},
         sort: {},
         searchText: 'testText',
+        searchType: null,
         dataset: true,
         datafile: false,
         investigation: true,
@@ -163,6 +165,7 @@ describe('generic api functions', () => {
           startDate: new Date(NaN),
           endDate: new Date(NaN),
           currentTab: 'investigation',
+          searchType: null,
         })
       );
     });
