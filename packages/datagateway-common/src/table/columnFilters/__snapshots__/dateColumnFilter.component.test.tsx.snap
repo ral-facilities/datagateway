@@ -2,17 +2,21 @@
 
 exports[`Date filter component CustomClearButton renders correctly 1`] = `
 <DocumentFragment>
-  <button
-    class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-lu2usf-MuiButtonBase-root-MuiButton-root"
-    role="button"
-    tabindex="0"
-    type="button"
+  <div
+    class="MuiDialogActions-root MuiDialogActions-spacing css-hlj6pa-MuiDialogActions-root"
   >
-    Clear
-    <span
-      class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-    />
-  </button>
+    <button
+      class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-lu2usf-MuiButtonBase-root-MuiButton-root"
+      role="button"
+      tabindex="0"
+      type="button"
+    >
+      Clear
+      <span
+        class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+      />
+    </button>
+  </div>
 </DocumentFragment>
 `;
 

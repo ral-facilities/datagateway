@@ -42,7 +42,7 @@ describe('SearchBoxContainer Component', () => {
   });
 
   // MUI v6 date pickers don't allow for invalid dates to be entered
-  it.only('should display an error when an invalid start date is entered', () => {
+  it('should display an error when an invalid start date is entered', () => {
     cy.get('[aria-label="Start date input"]').type('2009-12-00');
     cy.get('.MuiFormHelperText-root').contains('Date format: yyyy-MM-dd.');
 
