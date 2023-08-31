@@ -203,7 +203,7 @@ describe('Dataset - Card View', () => {
       })
     );
 
-    expect(history.location.search).toBe('?semanticSearch=false');
+    expect(history.location.search).toBe('?');
 
     cleanupDatePickerWorkaround();
   });
@@ -216,7 +216,7 @@ describe('Dataset - Card View', () => {
     );
 
     expect(history.location.search).toBe(
-      `?semanticSearch=false&sort=${encodeURIComponent('{"name":"asc"}')}`
+      `?sort=${encodeURIComponent('{"name":"asc"}')}`
     );
   });
 

@@ -154,14 +154,14 @@ describe('ISIS Data Publication - Card View', () => {
     await user.type(filter, 'Test');
 
     expect(history.location.search).toBe(
-      `?semanticSearch=false&filters=${encodeURIComponent(
+      `?filters=${encodeURIComponent(
         '{"title":{"value":"Test","type":"include"}}'
       )}`
     );
 
     await user.clear(filter);
 
-    expect(history.location.search).toBe('?semanticSearch=false');
+    expect(history.location.search).toBe('?');
 
     jest.useRealTimers();
   });
@@ -183,13 +183,13 @@ describe('ISIS Data Publication - Card View', () => {
 
     await user.type(filterInput, '2019-08-06');
     expect(history.location.search).toBe(
-      `?semanticSearch=false&filters=${encodeURIComponent(
+      `?filters=${encodeURIComponent(
         '{"publicationDate":{"endDate":"2019-08-06"}}'
       )}`
     );
 
     await user.clear(filterInput);
-    expect(history.location.search).toBe('?semanticSearch=false');
+    expect(history.location.search).toBe('?');
 
     cleanupDatePickerWorkaround();
   });
@@ -206,7 +206,7 @@ describe('ISIS Data Publication - Card View', () => {
     );
 
     expect(history.location.search).toBe(
-      `?semanticSearch=false&sort=${encodeURIComponent('{"title":"asc"}')}`
+      `?sort=${encodeURIComponent('{"title":"asc"}')}`
     );
   });
 });

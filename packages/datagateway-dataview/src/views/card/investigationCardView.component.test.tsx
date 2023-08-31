@@ -244,7 +244,7 @@ describe('Investigation - Card View', () => {
 
     await user.clear(filter);
 
-    expect(history.location.search).toBe('?semanticSearch=false');
+    expect(history.location.search).toBe('?');
   });
 
   it('updates filter query params on date filter', async () => {
@@ -268,7 +268,7 @@ describe('Investigation - Card View', () => {
 
     await user.clear(filter);
 
-    expect(history.location.search).toBe('?semanticSearch=false');
+    expect(history.location.search).toBe('?');
 
     cleanupDatePickerWorkaround();
   });

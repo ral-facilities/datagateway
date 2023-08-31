@@ -100,21 +100,21 @@ describe('DLS Proposals - Card View', () => {
     await user.type(filter, 'test');
 
     expect(history.location.search).toBe(
-      `?semanticSearch=false&filters=${encodeURIComponent(
+      `?filters=${encodeURIComponent(
         '{"title":{"value":"test","type":"include"}}'
       )}`
     );
 
     await user.clear(filter);
 
-    expect(history.location.search).toBe('?semanticSearch=false');
+    expect(history.location.search).toBe('?');
   });
 
   it('uses default sort', () => {
     renderComponent();
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
-      `?semanticSearch=false&sort=${encodeURIComponent('{"title":"asc"}')}`
+      `?sort=${encodeURIComponent('{"title":"asc"}')}`
     );
   });
 

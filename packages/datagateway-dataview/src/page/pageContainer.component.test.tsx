@@ -244,7 +244,7 @@ describe('PageContainer - Tests', () => {
     expect(
       await screen.findByRole('button', { name: 'app.clear_filters' })
     ).toBeDisabled();
-    expect(history.location.search).toEqual('?semanticSearch=false');
+    expect(history.location.search).toEqual('?');
   });
 
   it('display clear filters button and clear for filters onClick (/my-data/DLS)', async () => {

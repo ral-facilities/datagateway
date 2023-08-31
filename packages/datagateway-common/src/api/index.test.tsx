@@ -395,7 +395,7 @@ describe('generic api functions', () => {
         });
 
         expect(pushSpy).toHaveBeenCalledWith({
-          search: '?semanticSearch=false',
+          search: '?',
         });
       });
     });
@@ -435,7 +435,7 @@ describe('generic api functions', () => {
         });
 
         expect(pushSpy).toHaveBeenCalledWith({
-          search: '?semanticSearch=false',
+          search: '?',
         });
       });
     });
@@ -481,7 +481,7 @@ describe('generic api functions', () => {
         });
 
         expect(pushSpy).toHaveBeenCalledWith({
-          search: '?semanticSearch=false',
+          search: '?',
         });
       });
     });
@@ -643,7 +643,7 @@ describe('generic api functions', () => {
 
         expect(replaceSpy).toHaveBeenCalledWith({
           search:
-            '?semanticSearch=false&filters=%7B%22name%22%3A%7B%22value%22%3A%22test%22%2C%22type%22%3A%22include%22%7D%2C%22title%22%3A%7B%22value%22%3A%22test2%22%2C%22type%22%3A%22include%22%7D%7D',
+            '?filters=%7B%22name%22%3A%7B%22value%22%3A%22test%22%2C%22type%22%3A%22include%22%7D%2C%22title%22%3A%7B%22value%22%3A%22test2%22%2C%22type%22%3A%22include%22%7D%7D',
         });
       });
 
@@ -665,7 +665,7 @@ describe('generic api functions', () => {
         });
 
         expect(replaceSpy).toHaveBeenCalledWith({
-          search: '?semanticSearch=false&sort=%7B%22name%22%3A%22asc%22%7D',
+          search: '?sort=%7B%22name%22%3A%22asc%22%7D',
         });
       });
 
@@ -794,7 +794,7 @@ describe('generic api functions', () => {
           result.current(null);
         });
 
-        expect(pushSpy).toHaveBeenLastCalledWith('?semanticSearch=false');
+        expect(pushSpy).toHaveBeenLastCalledWith('?');
       });
     });
 
@@ -822,7 +822,7 @@ describe('generic api functions', () => {
           result.current(null);
         });
 
-        expect(pushSpy).toHaveBeenLastCalledWith('?semanticSearch=false');
+        expect(pushSpy).toHaveBeenLastCalledWith('?');
       });
     });
   });

@@ -144,7 +144,7 @@ describe('ISIS Dataset table component', () => {
     await user.clear(filterInput);
 
     expect(history.length).toBe(6);
-    expect(history.location.search).toBe('?semanticSearch=false');
+    expect(history.location.search).toBe('?');
   });
 
   it('updates filter query params on date filter', async () => {
@@ -159,15 +159,13 @@ describe('ISIS Dataset table component', () => {
     await user.type(filterInput, '2019-08-06');
 
     expect(history.location.search).toBe(
-      `?semanticSearch=false&filters=${encodeURIComponent(
-        '{"modTime":{"endDate":"2019-08-06"}}'
-      )}`
+      `?filters=${encodeURIComponent('{"modTime":{"endDate":"2019-08-06"}}')}`
     );
 
     await user.clear(filterInput);
 
     expect(history.length).toBe(3);
-    expect(history.location.search).toBe('?semanticSearch=false');
+    expect(history.location.search).toBe('?');
 
     cleanupDatePickerWorkaround();
   });
@@ -176,9 +174,7 @@ describe('ISIS Dataset table component', () => {
     renderComponent();
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
-      `?semanticSearch=false&sort=${encodeURIComponent(
-        '{"createTime":"desc"}'
-      )}`
+      `?sort=${encodeURIComponent('{"createTime":"desc"}')}`
     );
   });
 
@@ -189,7 +185,7 @@ describe('ISIS Dataset table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?semanticSearch=false&sort=${encodeURIComponent('{"name":"asc"}')}`
+      `?sort=${encodeURIComponent('{"name":"asc"}')}`
     );
   });
 

@@ -163,7 +163,7 @@ describe('DLS Proposals table component', () => {
     await user.clear(filterInput);
 
     expect(history.length).toBe(6);
-    expect(history.location.search).toBe('?semanticSearch=false');
+    expect(history.location.search).toBe('?');
   });
 
   it('uses default sort', () => {

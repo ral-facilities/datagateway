@@ -276,7 +276,8 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const [searchType, setSearchType] = React.useState<SearchType>(
     searchTypeURL ?? 'lucene'
   );
-  const [searchOnNextRender, setSearchOnNextRender] = React.useState(false);
+  const [luceneSearchOnNextRender, setLuceneSearchOnNextRender] =
+    React.useState(false);
 
   const handleSearchTextChange = (searchText: string): void => {
     setSearchText(searchText);
@@ -354,7 +355,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
 
     if (searchType === 'lucene') {
       clearMLSearchType();
-      setSearchOnNextRender(true);
+      setLuceneSearchOnNextRender(true);
 
       localStorage.removeItem('investigationFilters');
       localStorage.removeItem('datasetFilters');
@@ -371,6 +372,9 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
       if (queryParams.page !== null) replacePage(null);
       if (queryParams.results !== null) replaceResults(null);
     } else {
+      setInvestigationTab(false);
+      setDatafileTab(false);
+      setDatasetTab(false);
       pushMLSearchType(searchType);
     }
   }, [
@@ -386,17 +390,39 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     replaceSorts,
     replacePage,
     replaceResults,
+    setInvestigationTab,
+    setDatafileTab,
+    setDatasetTab,
     pushMLSearchType,
   ]);
 
   React.useEffect(() => {
-    if (searchOnNextRender) {
-      setInvestigationTab(true);
+    if (luceneSearchOnNextRender) {
+      if (dataset) {
+        // Fetch lucene datasets
+        searchDatasets();
+      }
 
-      setSearchOnNextRender(false);
+      if (datafile) {
+        // Fetch lucene datafiles
+        searchDatafiles();
+      }
+      if (investigation) {
+        // Fetch lucene investigations
+        searchInvestigations();
+      }
+
+      if (dataset || datafile || investigation) {
+        // Set the appropriate tabs.
+        setDatafileTab(datafile);
+        setDatasetTab(dataset);
+        setInvestigationTab(investigation);
+      }
+
+      setLuceneSearchOnNextRender(false);
     }
   }, [
-    searchOnNextRender,
+    luceneSearchOnNextRender,
     dataset,
     datafile,
     investigation,
@@ -415,7 +441,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
       queryParams.startDate ||
       queryParams.endDate
     )
-      setSearchOnNextRender(true);
+      setLuceneSearchOnNextRender(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -423,7 +449,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     if (searchTextURL !== searchText) {
       //Ensure search text is assigned from the URL
       setSearchText(searchTextURL);
-      setSearchOnNextRender(true);
+      setLuceneSearchOnNextRender(true);
     }
 
     //Want to search whenever the search text in the URL changes so that clicking a react-router link also initiates the search
@@ -529,7 +555,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
               </div>
             )}
 
-            {requestReceived && (
+            {requestReceived && !isMLSearchType(searchTypeURL) && (
               <div style={{ width: '100%' }}>
                 <Grid container justifyContent="center">
                   <Grid

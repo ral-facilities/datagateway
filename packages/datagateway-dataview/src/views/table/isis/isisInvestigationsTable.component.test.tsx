@@ -324,7 +324,7 @@ describe('ISIS Investigations table component', () => {
     await user.clear(filterInput);
 
     expect(history.length).toBe(6);
-    expect(history.location.search).toBe('?semanticSearch=false');
+    expect(history.location.search).toBe('?');
   });
 
   it('updates filter query params on date filter', async () => {
@@ -348,7 +348,7 @@ describe('ISIS Investigations table component', () => {
     await user.clear(filterInput);
 
     expect(history.length).toBe(3);
-    expect(history.location.search).toBe('?semanticSearch=false');
+    expect(history.location.search).toBe('?');
 
     cleanupDatePickerWorkaround();
   });

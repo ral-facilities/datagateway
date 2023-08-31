@@ -165,6 +165,6 @@ describe('Checkbox component tests', () => {
       })
     );
 
-    expect(pushSpy).toHaveBeenCalledWith('?semanticSearch=false');
+    expect(pushSpy).toHaveBeenCalledWith('?');
   });
 });

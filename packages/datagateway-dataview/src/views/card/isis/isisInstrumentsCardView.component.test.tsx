@@ -129,7 +129,7 @@ describe('ISIS Instruments - Card View', () => {
 
     await user.clear(filter);
 
-    expect(history.location.search).toBe('?semanticSearch=false');
+    expect(history.location.search).toBe('?');
   });
 
   it('uses default sort', () => {
