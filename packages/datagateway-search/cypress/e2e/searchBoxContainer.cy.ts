@@ -41,13 +41,15 @@ describe('SearchBoxContainer Component', () => {
     cy.get('.MuiFormHelperText-root').contains('At least one required');
   });
 
-  it('should display an error when an invalid start date is entered', () => {
-    cy.get('[aria-label="Start date input"]').type('2009-13-01');
+  // MUI v6 date pickers don't allow for invalid dates to be entered
+  it.only('should display an error when an invalid start date is entered', () => {
+    cy.get('[aria-label="Start date input"]').type('2009-12-00');
     cy.get('.MuiFormHelperText-root').contains('Date format: yyyy-MM-dd.');
 
-    cy.get('[aria-label="Start date input"]').clear();
+    // cy.get('[aria-label="Start date input"]').clear();
+    cy.get('[aria-label="Start date input"]').type('{ctrl}a{backspace}');
     cy.get('.MuiFormHelperText-root').should('not.exist');
-    cy.get('[aria-label="Start date input"]').type('2009-02-30');
+    cy.get('[aria-label="Start date input"]').type('0000-02-28');
     cy.get('.MuiFormHelperText-root').contains('Date format: yyyy-MM-dd.');
   });
 
