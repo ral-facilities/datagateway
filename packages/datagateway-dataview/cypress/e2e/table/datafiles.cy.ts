@@ -123,6 +123,9 @@ describe('Datafiles Table', () => {
 
     cy.get('.MuiPickersCalendarHeader-label').click();
     cy.contains('2020').click();
+    // A weird bug where the calendar jumps out from under the cursor on first click
+    // second click works fine
+    cy.get('.MuiPickersDay-root[type="button"]').first().click();
     cy.get('.MuiPickersDay-root[type="button"]').first().click();
 
     cy.get('input[id="Modified Time filter to"]').should(
