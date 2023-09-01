@@ -10,6 +10,9 @@ import {
   SxProps,
 } from '@mui/material';
 import Draggable from 'react-draggable';
+import SortIcon from '@mui/icons-material/Sort';
+import AddIcon from '@mui/icons-material/Add';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 
 const DataHeader = React.memo(
   (
@@ -19,13 +22,15 @@ const DataHeader = React.memo(
       onSort: (
         column: string,
         order: Order | null,
-        defaultSort: UpdateMethod
+        defaultSort: UpdateMethod,
+        shiftDown?: boolean
       ) => void;
       resizeColumn: (dataKey: string, deltaX: number) => void;
       labelString: string;
       icon?: React.ComponentType<unknown>;
       filterComponent?: (label: string, dataKey: string) => React.ReactElement;
       defaultSort?: Order;
+      shiftDown?: boolean;
     }
   ): React.ReactElement => {
     const {
@@ -40,15 +45,18 @@ const DataHeader = React.memo(
       resizeColumn,
       icon: Icon,
       filterComponent,
+      shiftDown,
     } = props;
 
     const currSortDirection = sort[dataKey];
+
+    const [hover, setHover] = React.useState(false);
 
     //Apply default sort on page load (but only if not already defined in URL params)
     //This will apply them in the order of the column definitions given to a table
     React.useEffect(() => {
       if (defaultSort !== undefined && currSortDirection === undefined)
-        onSort(dataKey, defaultSort, 'replace');
+        onSort(dataKey, defaultSort, 'replace', false);
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -65,16 +73,45 @@ const DataHeader = React.memo(
     }
 
     const inner = !disableSort ? (
-      <TableSortLabel
-        className={'tour-dataview-sort'}
-        active={dataKey in sort}
-        direction={currSortDirection}
-        onClick={() => onSort(dataKey, nextSortDirection, 'push')}
-      >
-        <Typography noWrap sx={{ fontSize: 'inherit', lineHeight: 'inherit' }}>
-          {label}
-        </Typography>
-      </TableSortLabel>
+      dataKey in sort ? (
+        <TableSortLabel
+          className={'tour-dataview-sort'}
+          active={true}
+          direction={currSortDirection}
+          onClick={() =>
+            onSort(dataKey, nextSortDirection, 'replace', shiftDown)
+          }
+        >
+          <Typography
+            noWrap
+            sx={{ fontSize: 'inherit', lineHeight: 'inherit' }}
+          >
+            {label}
+          </Typography>
+        </TableSortLabel>
+      ) : (
+        <TableSortLabel
+          className={'tour-dataview-sort'}
+          active={true}
+          direction={'desc'}
+          onClick={() => {
+            onSort(dataKey, nextSortDirection, 'replace', shiftDown);
+            setHover(false);
+          }}
+          onMouseEnter={() => setHover(true)}
+          onMouseLeave={() => setHover(false)}
+          IconComponent={
+            hover ? ArrowUpwardIcon : shiftDown ? AddIcon : SortIcon
+          }
+        >
+          <Typography
+            noWrap
+            sx={{ fontSize: 'inherit', lineHeight: 'inherit' }}
+          >
+            {label}
+          </Typography>
+        </TableSortLabel>
+      )
     ) : (
       <Typography noWrap sx={{ fontSize: 'inherit', lineHeight: 'inherit' }}>
         {label}
