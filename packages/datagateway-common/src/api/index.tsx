@@ -273,7 +273,6 @@ export const useSort = (): ((
       shiftDown?: boolean
     ): void => {
       let query = parseSearchToQuery(window.location.search);
-      console.log(query);
       if (order !== null) {
         query = shiftDown
           ? {
