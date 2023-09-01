@@ -76,7 +76,7 @@ describe('Table component', () => {
   it('calls onSort function when sort label clicked', async () => {
     render(<Table {...tableProps} />);
     await user.click(await screen.findByText('Test 1'));
-    expect(onSort).toHaveBeenCalledWith('TEST1', 'asc', 'push');
+    expect(onSort).toHaveBeenCalledWith('TEST1', 'asc', 'push', false);
   });
 
   it('calls onSort function when defaultSort has been specified', () => {
@@ -89,8 +89,8 @@ describe('Table component', () => {
     };
     render(<Table {...sortedTableProps} />);
 
-    expect(onSort).toHaveBeenCalledWith('TEST1', 'asc', 'replace');
-    expect(onSort).toHaveBeenCalledWith('TEST2', 'desc', 'replace');
+    expect(onSort).toHaveBeenCalledWith('TEST1', 'asc', 'replace', false);
+    expect(onSort).toHaveBeenCalledWith('TEST2', 'desc', 'replace', false);
   });
 
   it('renders select column correctly', async () => {

@@ -79,7 +79,7 @@ const DataHeader = React.memo(
           active={true}
           direction={currSortDirection}
           onClick={() =>
-            onSort(dataKey, nextSortDirection, 'replace', shiftDown)
+            onSort(dataKey, nextSortDirection, 'push', shiftDown ?? false)
           }
         >
           <Typography
@@ -95,7 +95,7 @@ const DataHeader = React.memo(
           active={true}
           direction={'desc'}
           onClick={() => {
-            onSort(dataKey, nextSortDirection, 'replace', shiftDown);
+            onSort(dataKey, nextSortDirection, 'push', shiftDown ?? false);
             setHover(false);
           }}
           onMouseEnter={() => setHover(true)}
