@@ -227,7 +227,7 @@ describe('Card View', () => {
     await user.click(
       await screen.findByRole('button', { name: 'Sort by TITLE' })
     );
-    expect(onSort).toHaveBeenNthCalledWith(1, 'title', 'asc', 'push');
+    expect(onSort).toHaveBeenNthCalledWith(1, 'title', 'asc', 'push', false);
 
     updatedProps = {
       ...updatedProps,
@@ -240,7 +240,7 @@ describe('Card View', () => {
         name: 'Sort by TITLE, current direction ascending',
       })
     );
-    expect(onSort).toHaveBeenNthCalledWith(2, 'title', 'desc', 'push');
+    expect(onSort).toHaveBeenNthCalledWith(2, 'title', 'desc', 'push', false);
 
     updatedProps = {
       ...updatedProps,
@@ -253,7 +253,7 @@ describe('Card View', () => {
         name: 'Sort by TITLE, current direction descending',
       })
     );
-    expect(onSort).toHaveBeenNthCalledWith(3, 'title', null, 'push');
+    expect(onSort).toHaveBeenNthCalledWith(3, 'title', null, 'push', false);
   });
 
   it('default sort applied correctly', () => {
@@ -272,9 +272,9 @@ describe('Card View', () => {
     };
     render(<CardView {...updatedProps} />);
 
-    expect(onSort).toHaveBeenCalledWith('title', 'asc', 'replace');
-    expect(onSort).toHaveBeenCalledWith('name', 'desc', 'replace');
-    expect(onSort).toHaveBeenCalledWith('test', 'asc', 'replace');
+    expect(onSort).toHaveBeenCalledWith('title', 'asc', 'replace', false);
+    expect(onSort).toHaveBeenCalledWith('name', 'desc', 'replace', false);
+    expect(onSort).toHaveBeenCalledWith('test', 'asc', 'replace', false);
   });
 
   it('can sort by description with label', async () => {
@@ -290,7 +290,7 @@ describe('Card View', () => {
     await user.click(
       await screen.findByRole('button', { name: 'Sort by NAME' })
     );
-    expect(onSort).toHaveBeenCalledWith('name', 'asc', 'push');
+    expect(onSort).toHaveBeenCalledWith('name', 'asc', 'push', false);
   });
 
   it('can sort by description without label', async () => {
@@ -306,7 +306,7 @@ describe('Card View', () => {
     await user.click(
       await screen.findByRole('button', { name: 'Sort by NAME' })
     );
-    expect(onSort).toHaveBeenCalledWith('name', 'asc', 'push');
+    expect(onSort).toHaveBeenCalledWith('name', 'asc', 'push', false);
   });
 
   it('page changed when sort applied', async () => {
@@ -318,7 +318,7 @@ describe('Card View', () => {
       await screen.findByRole('button', { name: 'Sort by TITLE' })
     );
 
-    expect(onSort).toHaveBeenCalledWith('title', 'asc', 'push');
+    expect(onSort).toHaveBeenCalledWith('title', 'asc', 'push', false);
     expect(onPageChange).toHaveBeenCalledWith(1);
   });
 
@@ -377,7 +377,7 @@ describe('Card View', () => {
     await user.click(
       await screen.findByRole('button', { name: 'Sort by VISITID' })
     );
-    expect(onSort).toHaveBeenCalledWith('visitId', 'asc', 'push');
+    expect(onSort).toHaveBeenCalledWith('visitId', 'asc', 'push', false);
   });
 
   it('information displays with content that has no tooltip', async () => {
