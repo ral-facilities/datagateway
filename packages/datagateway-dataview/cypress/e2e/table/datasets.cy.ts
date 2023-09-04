@@ -96,7 +96,6 @@ describe('Datasets Table', () => {
     cy.contains('2020').click();
 
     cy.get('.MuiPickersDay-root[type="button"]').first().click();
-    cy.get('.MuiPickersDay-root[type="button"]').first().click();
 
     cy.get('input[id="Create Time filter to"]').should(
       'have.value',
