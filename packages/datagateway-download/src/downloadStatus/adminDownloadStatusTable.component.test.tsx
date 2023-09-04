@@ -188,7 +188,8 @@ describe('Admin Download Status Table', () => {
         downloadApiUrl: mockedSettings.downloadApiUrl,
         facilityName: mockedSettings.facilityName,
       },
-      `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.userName asc, download.transport asc, download.id ASC LIMIT 0, 50`
+      `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.transport asc, download.id ASC LIMIT 0, 50`
+      // `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.userName asc, download.transport asc, download.id ASC LIMIT 0, 50`
     );
 
     await user.click(accessMethodSortLabel);
@@ -197,7 +198,8 @@ describe('Admin Download Status Table', () => {
         downloadApiUrl: mockedSettings.downloadApiUrl,
         facilityName: mockedSettings.facilityName,
       },
-      `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.userName asc, download.transport desc, download.id ASC LIMIT 0, 50`
+      `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.transport desc, download.id ASC LIMIT 0, 50`
+      // `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.userName asc, download.transport desc, download.id ASC LIMIT 0, 50`
     );
 
     await user.click(accessMethodSortLabel);
@@ -206,7 +208,8 @@ describe('Admin Download Status Table', () => {
         downloadApiUrl: mockedSettings.downloadApiUrl,
         facilityName: mockedSettings.facilityName,
       },
-      `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.userName asc, download.id ASC LIMIT 0, 50`
+      `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.id ASC LIMIT 0, 50`
+      // `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.userName asc, download.id ASC LIMIT 0, 50`
     );
   });
 

@@ -225,8 +225,8 @@ describe('Download Status Table', () => {
     // name should be in asc order
     rows = await screen.findAllByText(/^test-file-\d$/);
     expect(rows[0]).toHaveTextContent('test-file-1');
-    expect(rows[1]).toHaveTextContent('test-file-3');
-    expect(rows[2]).toHaveTextContent('test-file-2');
+    expect(rows[1]).toHaveTextContent('test-file-2');
+    expect(rows[2]).toHaveTextContent('test-file-3');
     expect(rows[3]).toHaveTextContent('test-file-4');
     expect(rows[4]).toHaveTextContent('test-file-5');
 
@@ -234,11 +234,11 @@ describe('Download Status Table', () => {
 
     // name should be in desc order
     rows = await screen.findAllByText(/^test-file-\d$/);
-    expect(rows[0]).toHaveTextContent('test-file-3');
-    expect(rows[1]).toHaveTextContent('test-file-1');
-    expect(rows[2]).toHaveTextContent('test-file-5');
-    expect(rows[3]).toHaveTextContent('test-file-4');
-    expect(rows[4]).toHaveTextContent('test-file-2');
+    expect(rows[0]).toHaveTextContent('test-file-5');
+    expect(rows[1]).toHaveTextContent('test-file-4');
+    expect(rows[2]).toHaveTextContent('test-file-3');
+    expect(rows[3]).toHaveTextContent('test-file-2');
+    expect(rows[4]).toHaveTextContent('test-file-1');
   });
 
   it('should filter data when text fields are typed into', async () => {

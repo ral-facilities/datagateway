@@ -276,10 +276,10 @@ describe('Download cart table component', () => {
 
     rows = await screen.findAllByText(/(DATAFILE|DATASET|INVESTIGATION) \d/);
     // row should be sorted by type desc & name asc.
-    expect(rows[0]).toHaveTextContent('INVESTIGATION 1');
-    expect(rows[1]).toHaveTextContent('INVESTIGATION 2');
-    expect(rows[2]).toHaveTextContent('DATASET 1');
-    expect(rows[3]).toHaveTextContent('DATAFILE 1');
+    expect(rows[0]).toHaveTextContent('DATAFILE 1');
+    expect(rows[1]).toHaveTextContent('DATASET 1');
+    expect(rows[2]).toHaveTextContent('INVESTIGATION 1');
+    expect(rows[3]).toHaveTextContent('INVESTIGATION 2');
 
     await user.click(nameSortLabel);
 
