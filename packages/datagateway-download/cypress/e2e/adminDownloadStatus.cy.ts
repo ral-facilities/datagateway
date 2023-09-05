@@ -96,7 +96,7 @@ describe('Admin Download Status', () => {
       'Expired'
     );
 
-    cy.contains('[role="button"]', 'Availability').click({ shiftKey: true });
+    cy.contains('[role="button"]', 'Availability').click();
 
     cy.get('[aria-rowindex="2"] [aria-colindex="6"]').should(
       'have.text',

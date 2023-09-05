@@ -259,25 +259,20 @@ const CardView = (props: CardViewProps): React.ReactElement => {
   //defaultSort has been provided
   React.useEffect(() => {
     if (title.defaultSort !== undefined && sort[title.dataKey] === undefined)
-      onSort(title.dataKey, title.defaultSort, 'replace', shiftDown);
+      onSort(title.dataKey, title.defaultSort, 'replace', false);
     if (
       description &&
       description.defaultSort !== undefined &&
       sort[description.dataKey] === undefined
     )
-      onSort(
-        description.dataKey,
-        description.defaultSort,
-        'replace',
-        shiftDown
-      );
+      onSort(description.dataKey, description.defaultSort, 'replace', false);
     if (information) {
       information.forEach((element: CardViewDetails) => {
         if (
           element.defaultSort !== undefined &&
           sort[element.dataKey] === undefined
         )
-          onSort(element.dataKey, element.defaultSort, 'replace', shiftDown);
+          onSort(element.dataKey, element.defaultSort, 'replace', false);
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -624,12 +619,12 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                             <ListItem
                               key={i}
                               button
-                              onClick={() => {
+                              onClick={(event) => {
                                 onSort(
                                   s.dataKey,
                                   nextSortDirection(s.dataKey),
                                   'push',
-                                  shiftDown
+                                  event.shiftKey
                                 );
                                 if (page !== 1) {
                                   onPageChange(1);

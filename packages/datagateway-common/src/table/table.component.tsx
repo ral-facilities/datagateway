@@ -123,8 +123,7 @@ interface VirtualizedTableProps {
   onSort: (
     column: string,
     order: Order | null,
-    updateMethod: UpdateMethod,
-    shiftDown?: boolean
+    updateMethod: UpdateMethod
   ) => void;
   detailsPanel?: React.ComponentType<DetailsPanelProps>;
   actions?: React.ComponentType<TableActionProps>[];
