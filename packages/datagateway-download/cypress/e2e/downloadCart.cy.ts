@@ -71,7 +71,7 @@ describe('Download Cart', () => {
     cy.contains('[role="button"]', 'Name').click();
     cy.get('[aria-rowindex=1] [aria-colindex=1]').should(
       'have.text',
-      'INVESTIGATION 10'
+      'DATASET 1'
     );
   });
 

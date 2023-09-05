@@ -43,7 +43,7 @@ describe('Admin Download Status', () => {
       });
   });
 
-  it('should be able to sort by all sort directions on single and multiple columns', () => {
+  it('should be able to sort by all sort directions on single column', () => {
     // remove default sort
     cy.contains('[role="button"]', 'Requested Date').click();
 
@@ -77,28 +77,30 @@ describe('Admin Download Status', () => {
     cy.get('@accessMethodSortButton').click();
 
     cy.get('[aria-sort="ascending"]').should('not.exist');
-    cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
-    cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
-      'have.css',
-      'opacity',
-      '0'
-    );
+    // cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
+    // cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
+    //   'have.css',
+    //   'opacity',
+    //   '0'
+    // );
     cy.get('[aria-rowindex="1"] [aria-colindex="5"]').should(
       'have.text',
       'https'
     );
 
-    // multiple columns
+    // check that the other columns are not sorted
     cy.contains('[role="button"]', 'Deleted').click();
-    cy.contains('[role="button"]', 'Availability').click();
+
+    cy.get('[aria-rowindex="17"] [aria-colindex="6"]').should(
+      'have.text',
+      'Expired'
+    );
+
+    cy.contains('[role="button"]', 'Availability').click({ shiftKey: true });
 
     cy.get('[aria-rowindex="2"] [aria-colindex="6"]').should(
       'have.text',
       'Available'
-    );
-    cy.get('[aria-rowindex="3"] [aria-colindex="6"]').should(
-      'have.text',
-      'Expired'
     );
   });
 

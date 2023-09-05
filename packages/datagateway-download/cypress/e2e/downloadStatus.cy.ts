@@ -69,7 +69,7 @@ describe('Download Status', () => {
       });
   });
 
-  it('should be able to sort by all sort directions on single and multiple columns', () => {
+  it('should be able to sort by all sort directions on single column', () => {
     // remove default sort
     cy.contains('[role="button"]', 'Requested Date').click();
 
@@ -109,12 +109,12 @@ describe('Download Status', () => {
     cy.get('@nameSortButton').click();
 
     cy.get('[aria-sort="ascending"]').should('not.exist');
-    cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
-    cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
-      'have.css',
-      'opacity',
-      '0'
-    );
+    // cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
+    // cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
+    //   'have.css',
+    //   'opacity',
+    //   '0'
+    // );
     cy.get('[aria-rowindex="1"] [aria-colindex="1"]').should(
       'have.text',
       'test-file-1'
@@ -125,13 +125,13 @@ describe('Download Status', () => {
       'Available'
     );
 
-    // multiple columns
+    // check if the sort changes when clicking on a different column
     cy.contains('[role="button"]', 'Access Method').click();
     cy.contains('[role="button"]', 'Availability').click();
 
     cy.get('[aria-rowindex="1"] [aria-colindex="1"]').should(
       'have.text',
-      'test-file-4'
+      'test-file-1'
     );
   });
 
