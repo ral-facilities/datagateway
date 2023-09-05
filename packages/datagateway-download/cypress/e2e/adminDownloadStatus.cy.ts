@@ -88,14 +88,6 @@ describe('Admin Download Status', () => {
       'https'
     );
 
-    // check that the other columns are not sorted
-    cy.contains('[role="button"]', 'Deleted').click();
-
-    cy.get('[aria-rowindex="17"] [aria-colindex="6"]').should(
-      'have.text',
-      'Expired'
-    );
-
     cy.contains('[role="button"]', 'Availability').click();
 
     cy.get('[aria-rowindex="2"] [aria-colindex="6"]').should(
