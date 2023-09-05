@@ -78,8 +78,8 @@ const DataHeader = React.memo(
           className={'tour-dataview-sort'}
           active={true}
           direction={currSortDirection}
-          onClick={() =>
-            onSort(dataKey, nextSortDirection, 'push', shiftDown ?? false)
+          onClick={(event) =>
+            onSort(dataKey, nextSortDirection, 'push', event.shiftKey)
           }
         >
           <Typography
@@ -94,8 +94,8 @@ const DataHeader = React.memo(
           className={'tour-dataview-sort'}
           active={true}
           direction={'desc'}
-          onClick={() => {
-            onSort(dataKey, nextSortDirection, 'push', shiftDown ?? false);
+          onClick={(event) => {
+            onSort(dataKey, nextSortDirection, 'push', event.shiftKey);
             setHover(false);
           }}
           onMouseEnter={() => setHover(true)}
