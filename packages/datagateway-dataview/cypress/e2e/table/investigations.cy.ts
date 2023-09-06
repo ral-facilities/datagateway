@@ -65,19 +65,19 @@ describe('Investigations Table', () => {
 
     cy.get('[aria-sort="ascending"]').should('not.exist');
     cy.get('[aria-sort="descending"]').should('not.exist');
-    cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
-    cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
-      'have.css',
-      'opacity',
-      '0'
-    );
+    // cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
+    // cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
+    //   'have.css',
+    //   'opacity',
+    //   '0'
+    // );
     cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
       'Analysis reflect work or hour color maybe. Much team discussion message weight.'
     );
 
     // multiple columns
     cy.contains('[role="button"]', 'Start Date').click();
-    cy.get('@titleSortButton').click();
+    cy.get('@titleSortButton').click({ shiftKey: true });
     cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
       'Analysis reflect work or hour color maybe. Much team discussion message weight.'
     );

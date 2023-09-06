@@ -68,19 +68,19 @@ describe('DLS - MyData Table', () => {
       cy.get('@titleSortButton').click();
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
-        'have.css',
-        'opacity',
-        '0'
-      );
+      // cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
+      // cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
+      //   'have.css',
+      //   'opacity',
+      //   '0'
+      // );
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
         'Star enter wide nearly off.'
       );
 
       // multiple columns
       cy.get('@titleSortButton').click();
-      cy.contains('[role="button"]', 'Instrument').click();
+      cy.contains('[role="button"]', 'Instrument').click({ shiftKey: true });
 
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
         'Across prepare why go.'

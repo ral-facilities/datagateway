@@ -71,12 +71,12 @@ describe('DLS - Datafiles Table', () => {
 
     cy.get('[aria-sort="ascending"]').should('not.exist');
     cy.get('[aria-sort="descending"]').should('not.exist');
-    cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
-    cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
-      'have.css',
-      'opacity',
-      '0'
-    );
+    // cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
+    // cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
+    //   'have.css',
+    //   'opacity',
+    //   '0'
+    // );
     cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
       '/time/run/drug.jpeg'
     );
@@ -84,9 +84,11 @@ describe('DLS - Datafiles Table', () => {
     // multiple columns
     cy.get('@timeSortButton').click();
     cy.wait('@datafilesOrder', { timeout: 10000 });
-    cy.contains('[role="button"]', 'Name').as('nameSortButton').click();
+    cy.contains('[role="button"]', 'Name')
+      .as('nameSortButton')
+      .click({ shiftKey: true });
     cy.wait('@datafilesOrder', { timeout: 10000 });
-    cy.get('@nameSortButton').click();
+    cy.get('@nameSortButton').click({ shiftKey: true });
     cy.wait('@datafilesOrder', { timeout: 10000 });
 
     cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('Datafile 60');

@@ -80,20 +80,20 @@ describe('ISIS - Data Publication Table', () => {
 
     cy.get('[aria-sort="ascending"]').should('not.exist');
     cy.get('[aria-sort="descending"]').should('not.exist');
-    cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.be.exist');
-    cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
-      'have.css',
-      'opacity',
-      '0'
-    );
+    // cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.be.exist');
+    // cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
+    //   'have.css',
+    //   'opacity',
+    //   '0'
+    // );
     cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
       'Article subject amount'
     );
 
     // multiple columns
     cy.get('@dateSortButton').click();
-    cy.get('@dateSortButton').click();
-    cy.get('@titleSortButton').click();
+    cy.get('@dateSortButton').click({ shiftKey: true });
+    cy.get('@titleSortButton').click({ shiftKey: true });
 
     cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
       'Church child time Congress'

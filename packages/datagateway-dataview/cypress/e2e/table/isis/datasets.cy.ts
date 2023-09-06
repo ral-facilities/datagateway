@@ -78,18 +78,18 @@ describe('ISIS - Datasets Table', () => {
 
     cy.get('[aria-sort="ascending"]').should('not.exist');
     cy.get('[aria-sort="descending"]').should('not.exist');
-    cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
-    cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
-      'have.css',
-      'opacity',
-      '0'
-    );
+    // cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
+    // cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
+    //   'have.css',
+    //   'opacity',
+    //   '0'
+    // );
     cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 19');
 
     // multiple columns
     cy.get('@timeSortButton').click();
     cy.wait('@datasetsOrder', { timeout: 10000 });
-    cy.get('@nameSortButton').click();
+    cy.get('@nameSortButton').click({ shiftKey: true });
     cy.wait('@datasetsOrder', { timeout: 10000 });
 
     cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 19');

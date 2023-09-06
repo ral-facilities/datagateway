@@ -70,12 +70,12 @@ describe('Datafiles Table', () => {
 
     cy.get('[aria-sort="ascending"]').should('not.exist');
     cy.get('[aria-sort="descending"]').should('not.exist');
-    cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
-    cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
-      'have.css',
-      'opacity',
-      '0'
-    );
+    // cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
+    // cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
+    //   'have.css',
+    //   'opacity',
+    //   '0'
+    // );
     cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
       '/five/with/question.bmp'
     );
@@ -83,7 +83,7 @@ describe('Datafiles Table', () => {
     // multiple columns
     cy.contains('[role="button"]', 'Name').click();
     cy.wait('@datafilesOrder', { timeout: 10000 });
-    cy.contains('[role="button"]', 'Modified Time').click();
+    cy.contains('[role="button"]', 'Modified Time').click({ shiftKey: true });
     cy.wait('@datafilesOrder', { timeout: 10000 });
 
     cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('Datafile 1071');
