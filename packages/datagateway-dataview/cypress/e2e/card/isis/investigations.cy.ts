@@ -148,7 +148,7 @@ describe('ISIS - Investigations Cards', () => {
 
     // multiple fields
     cy.get('@dateSortButton').click();
-    cy.get('@titleSortButton').click();
+    cy.get('@titleSortButton').click({ shiftKey: true });
     cy.wait('@getInvestigationsOrder', { timeout: 10000 });
 
     cy.contains('[aria-label="Sort by TITLE"]', 'asc').should('exist');

@@ -90,7 +90,7 @@ describe('ISIS - Datasets Cards', () => {
       timeout: 10000,
     });
 
-    cy.get('@nameSortButton').click();
+    cy.get('@nameSortButton').click({ shiftKey: true });
     cy.wait('@getDatasetsOrder', {
       timeout: 10000,
     });

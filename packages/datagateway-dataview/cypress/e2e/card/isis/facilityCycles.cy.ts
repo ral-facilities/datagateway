@@ -55,7 +55,7 @@ describe('ISIS - FacilityCycles Cards', () => {
 
     // multiple fields
     cy.get('@dateSortButton').click();
-    cy.contains('[role="button"]', 'End Date').click();
+    cy.contains('[role="button"]', 'End Date').click({ shiftKey: true });
     cy.wait('@getFacilityCyclesOrder', { timeout: 10000 });
 
     cy.contains('[aria-label="Sort by START DATE"]', 'asc').should('exist');

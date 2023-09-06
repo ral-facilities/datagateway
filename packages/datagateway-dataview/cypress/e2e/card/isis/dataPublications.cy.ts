@@ -74,7 +74,7 @@ describe('ISIS - Data Publication Cards', () => {
 
     // multiple fields
     cy.contains('[role="button"]', 'Title').click();
-    cy.get('@dateSortButton').click();
+    cy.get('@dateSortButton').click({ shiftKey: true });
     cy.wait('@getDataPublicationsOrder', { timeout: 10000 });
 
     cy.contains('[aria-label="Sort by TITLE"]', 'asc').should('exist');

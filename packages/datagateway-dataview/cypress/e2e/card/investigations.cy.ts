@@ -65,7 +65,7 @@ describe('Investigations Cards', () => {
 
     // multiple fields
     cy.contains('[role="button"]', 'Start Date').click();
-    cy.get('@titleSortButton').click();
+    cy.get('@titleSortButton').click({ shiftKey: true });
     cy.wait('@getInvestigationsOrder', { timeout: 10000 });
 
     cy.contains('[aria-label="Sort by TITLE"]', 'asc').should('exist');

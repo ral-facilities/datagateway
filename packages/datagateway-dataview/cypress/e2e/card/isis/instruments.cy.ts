@@ -77,13 +77,13 @@ describe('ISIS - Instruments Cards', () => {
       .first()
       .contains('Stop prove field onto think suffer measure.');
 
-    cy.contains('[role="button"]', 'Description').click();
+    cy.contains('[role="button"]', 'Description').click({ shiftKey: true });
     cy.wait('@getInstrumentsOrder', { timeout: 10000 });
     cy.get('[data-testid="card"]')
       .first()
       .contains('Sound low certain challenge yet sport happy.');
 
-    cy.contains('[role="button"]', 'Type').click();
+    cy.contains('[role="button"]', 'Type').click({ shiftKey: true });
     cy.wait('@getInstrumentsOrder', { timeout: 10000 });
     cy.contains('[aria-label="Sort by DESCRIPTION"]', 'asc').should('exist');
     cy.contains('[aria-label="Sort by TYPE"]', 'asc').should('exist');
