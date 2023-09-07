@@ -93,17 +93,9 @@ interface DateColumnFilterProps {
   filterByTime?: boolean;
 }
 
-const CustomTextField: React.FC<TextFieldProps> = (
-  renderProps: TextFieldProps & JSX.IntrinsicAttributes
-) => {
-  const invalidDateRange = renderProps.inputProps?.invalidDateRange;
-  const errorText = renderProps.inputProps?.errorText;
-  const filterByTime = renderProps.inputProps?.filterByTime;
-
-  // remove the custom props so they are not passed to DOM
-  delete renderProps.inputProps?.invalidDateRange;
-  delete renderProps.inputProps?.errorText;
-  delete renderProps.inputProps?.filterByTime;
+const CustomTextField: React.FC<TextFieldProps> = (renderProps) => {
+  const { invalidDateRange, errorText, filterByTime, ...inputProps } =
+    renderProps.inputProps ?? {};
 
   const error =
     // eslint-disable-next-line react/prop-types
@@ -122,6 +114,7 @@ const CustomTextField: React.FC<TextFieldProps> = (
   return (
     <TextField
       {...renderProps}
+      inputProps={{ ...inputProps }}
       variant="standard"
       error={error}
       {...(error && { helperText: helperText })}
@@ -237,6 +230,7 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DatePicker
             format="yyyy-MM-dd"
+            views={['year', 'month', 'day']}
             value={startDate}
             maxDate={endDate || new Date('2100-01-01 00:00:00')}
             onChange={(date) => {
@@ -276,6 +270,7 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
           />
           <DatePicker
             format="yyyy-MM-dd"
+            views={['year', 'month', 'day']}
             value={endDate}
             minDate={startDate || new Date('1984-01-01 00:00:00')}
             onChange={(date) => {

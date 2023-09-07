@@ -19,7 +19,6 @@ export const CustomClearButton = (
   props: PickersActionBarProps
 ): JSX.Element => {
   const { onClear, className } = props;
-  console.log(props);
   return (
     <DialogActions className={className}>
       <Button
@@ -48,18 +47,9 @@ interface DatePickerStoreProps {
 
 type DatePickerCombinedProps = DatePickerProps & DatePickerStoreProps;
 
-const CustomTextField: React.FC<TextFieldProps> = (
-  props: JSX.IntrinsicAttributes & TextFieldProps
-) => {
-  const invalidDateRange = props.inputProps?.invalidDateRange;
-  const [t] = props.inputProps?.t;
-  const sideLayout = props.inputProps?.sideLayout;
-
-  // remove the custom props so they are not passed to DOM
-  delete props.inputProps?.invalidDateRange;
-  delete props.inputProps?.t;
-  delete props.inputProps?.sideLayout;
-
+const CustomTextField: React.FC<TextFieldProps> = (props) => {
+  const { invalidDateRange, t, sideLayout, ...inputProps } =
+    props.inputProps ?? {};
   const error =
     // eslint-disable-next-line react/prop-types
     (props.error || invalidDateRange) ?? undefined;
@@ -70,7 +60,7 @@ const CustomTextField: React.FC<TextFieldProps> = (
       {...props}
       inputProps={{
         // eslint-disable-next-line react/prop-types
-        ...props.inputProps,
+        ...inputProps,
       }}
       sx={
         props.inputProps?.placeholder === t('searchBox.start_date')
@@ -161,6 +151,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
         <>
           <DatePicker
             format="yyyy-MM-dd"
+            views={['year', 'month', 'day']}
             value={startDate}
             maxDate={endDate || new Date()}
             onChange={(date) => {
@@ -178,7 +169,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
                 inputProps: {
                   invalidDateRange,
                   sideLayout,
-                  t: [t],
+                  t: t,
                   placeholder: t('searchBox.start_date'),
                   'aria-label': t('searchBox.start_date_arialabel'),
                 },
@@ -189,6 +180,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
           {sideLayout ? <br></br> : null}
           <DatePicker
             format="yyyy-MM-dd"
+            views={['year', 'month', 'day']}
             value={endDate}
             minDate={startDate || new Date('1984-01-01T00:00:00Z')}
             onChange={(date) => {
@@ -206,7 +198,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
                 inputProps: {
                   invalidDateRange,
                   sideLayout,
-                  t: [t],
+                  t: t,
                   placeholder: t('searchBox.end_date'),
                   'aria-label': t('searchBox.end_date_arialabel'),
                 },
