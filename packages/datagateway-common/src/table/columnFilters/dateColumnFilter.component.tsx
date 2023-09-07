@@ -2,19 +2,17 @@ import React, { useState } from 'react';
 import { format, isValid, isEqual, isBefore } from 'date-fns';
 import { FiltersType, DateFilter } from '../../app.types';
 import { usePushFilter } from '../../api';
-import { TextField, Button, TextFieldProps } from '@mui/material';
+import { TextField, TextFieldProps } from '@mui/material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import {
   DatePicker,
   DateTimePicker,
   LocalizationProvider,
 } from '@mui/x-date-pickers';
-import { PickersActionBarProps } from '@mui/x-date-pickers/PickersActionBar';
 import {
   DateTimeValidationError,
   DateValidationError,
 } from '@mui/x-date-pickers/models';
-import DialogActions from '@mui/material/DialogActions';
 
 export function datesEqual(date1: Date | null, date2: Date | null): boolean {
   if (date1 === date2) {
@@ -65,26 +63,6 @@ export function updateFilter({
     }
   }
 }
-
-export const CustomClearButton = (
-  props: PickersActionBarProps
-): JSX.Element => {
-  const { onClear, className } = props;
-
-  return (
-    <DialogActions className={className}>
-      <Button
-        role="button"
-        onClick={() => onClear()}
-        variant="contained"
-        color="primary"
-        sx={{ marginLeft: '30px', marginBottom: '10px' }}
-      >
-        Clear
-      </Button>
-    </DialogActions>
-  );
-};
 
 interface DateColumnFilterProps {
   label: string;
@@ -161,7 +139,6 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
             // Catch error messages for helper text
             onError={(newError) => setError(newError)}
             slots={{
-              actionBar: CustomClearButton,
               textField: CustomTextField,
             }}
             slotProps={{
@@ -202,7 +179,6 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
             }}
             onError={(newError) => setError(newError)}
             slots={{
-              actionBar: CustomClearButton,
               textField: CustomTextField,
             }}
             slotProps={{
@@ -245,7 +221,6 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
             }}
             onError={(newError) => setError(newError)}
             slots={{
-              actionBar: CustomClearButton,
               textField: CustomTextField,
             }}
             slotProps={{
@@ -285,7 +260,6 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
             }}
             onError={(newError) => setError(newError)}
             slots={{
-              actionBar: CustomClearButton,
               textField: CustomTextField,
             }}
             slotProps={{

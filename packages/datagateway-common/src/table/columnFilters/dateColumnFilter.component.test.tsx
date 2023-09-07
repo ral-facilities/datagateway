@@ -1,6 +1,5 @@
 import * as React from 'react';
 import DateColumnFilter, {
-  CustomClearButton,
   datesEqual,
   updateFilter,
   useDateFilter,
@@ -12,7 +11,6 @@ import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
 } from '../../setupTests';
-import { PickersActionBarProps } from '@mui/x-date-pickers/PickersActionBar';
 import { render, screen } from '@testing-library/react';
 import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
@@ -207,30 +205,6 @@ describe('Date filter component', () => {
         startDate: '2019-09-18',
         endDate: '2019-09-19',
       });
-    });
-  });
-
-  describe('CustomClearButton', () => {
-    const onClear = jest.fn();
-    let props: PickersActionBarProps;
-    let user: UserEvent;
-
-    beforeEach(() => {
-      user = userEvent.setup();
-      props = {
-        onClear: onClear,
-      };
-    });
-
-    it('renders correctly', () => {
-      const { asFragment } = render(<CustomClearButton {...props} />);
-      expect(asFragment()).toMatchSnapshot();
-    });
-
-    it('calls onClear when button clicked', async () => {
-      render(<CustomClearButton {...props} />);
-      await user.click(await screen.findByRole('button'));
-      expect(onClear).toHaveBeenCalled();
     });
   });
 

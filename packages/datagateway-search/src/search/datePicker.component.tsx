@@ -9,33 +9,9 @@ import {
 } from 'datagateway-common';
 import { useLocation } from 'react-router-dom';
 import { isBefore, isValid } from 'date-fns';
-import { TextField, Button, TextFieldProps } from '@mui/material';
+import { TextField, TextFieldProps } from '@mui/material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { PickersActionBarProps } from '@mui/x-date-pickers/PickersActionBar';
-import DialogActions from '@mui/material/DialogActions';
-
-export const CustomClearButton = (
-  props: PickersActionBarProps
-): JSX.Element => {
-  const { onClear, className } = props;
-  return (
-    <DialogActions className={className}>
-      <Button
-        role="button"
-        onClick={() => onClear()}
-        variant="contained"
-        color="primary"
-        sx={{
-          marginLeft: '30px',
-          marginBottom: '10px',
-        }}
-      >
-        Clear
-      </Button>
-    </DialogActions>
-  );
-};
 
 interface DatePickerProps {
   initiateSearch: () => void;
@@ -158,7 +134,6 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
               handleChange(date as Date, 'startDate');
             }}
             slots={{
-              actionBar: CustomClearButton,
               textField: CustomTextField,
             }}
             slotProps={{
@@ -187,7 +162,6 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
               handleChange(date as Date, 'endDate');
             }}
             slots={{
-              actionBar: CustomClearButton,
               textField: CustomTextField,
             }}
             slotProps={{
