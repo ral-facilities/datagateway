@@ -116,11 +116,12 @@ describe('ISIS - Datasets Table', () => {
 
     const date = new Date();
     date.setDate(1);
+    date.setMonth(5);
     date.setFullYear(2020);
 
     cy.get('.MuiPickersCalendarHeader-label').click();
     cy.contains('2020').click();
-
+    cy.contains('Jan').click();
     cy.get('.MuiPickersDay-root[type="button"]').first().click();
 
     cy.get('[aria-rowcount="0"]').should('exist');
