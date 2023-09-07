@@ -483,7 +483,7 @@ describe('Date filter component', () => {
         name: 'test filter from',
       });
 
-      await user.type(startDateFilterInput, '2019-08-06 00:00:00');
+      await user.type(startDateFilterInput, '2019-08-06_00:00:00');
 
       expect(onChange).toHaveBeenLastCalledWith({
         startDate: '2019-08-06 00:00:00',
@@ -502,8 +502,8 @@ describe('Date filter component', () => {
       });
 
       // in v6, spaces are considered to be '0' in the time field
-      // 20190806235900 results in 2019-08-06 23:59:00
-      await user.type(endDateFilterInput, '20190806235900');
+      // 2019-08-06_23:59:00 results in 2019-08-06 23:59:00
+      await user.type(endDateFilterInput, '2019-08-06_23:59:00');
 
       expect(onChange).toHaveBeenLastCalledWith({
         startDate: '2019-08-06 00:00:00',
@@ -571,7 +571,7 @@ describe('Date filter component', () => {
       expect(onChange).not.toHaveBeenCalled();
 
       await user.clear(startDateFilterInput);
-      await user.type(startDateFilterInput, '2019-08-06 00:00:00');
+      await user.type(startDateFilterInput, '2019-08-06_00:00:00');
 
       expect(onChange).toHaveBeenLastCalledWith({
         startDate: '2019-08-06 00:00:00',
@@ -586,7 +586,7 @@ describe('Date filter component', () => {
       );
 
       await user.clear(endDateFilterInput);
-      await user.type(endDateFilterInput, '2019-08-07 00:00:00');
+      await user.type(endDateFilterInput, '2019-08-07_00:00:00');
 
       expect(onChange).toHaveBeenLastCalledWith({
         startDate: '2019-08-06 00:00:00',

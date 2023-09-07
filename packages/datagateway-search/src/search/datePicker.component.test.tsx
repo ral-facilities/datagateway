@@ -126,7 +126,7 @@ describe('DatePicker component tests', () => {
         name: 'searchBox.start_date_arialabel',
       });
 
-      await user.type(startDateInput, '2012 01 01');
+      await user.type(startDateInput, '2012-01-01');
 
       expect(pushSpy).toHaveBeenCalledWith('?startDate=2012-01-01');
     });
@@ -194,7 +194,7 @@ describe('DatePicker component tests', () => {
         name: 'searchBox.start_date_arialabel',
       });
 
-      await user.type(startDateInput, '2012 01 00');
+      await user.type(startDateInput, '2012-01-00');
 
       expect(
         await screen.findByText('searchBox.invalid_date_message')
@@ -209,7 +209,7 @@ describe('DatePicker component tests', () => {
         name: 'searchBox.start_date_arialabel',
       });
 
-      await user.type(startDateInput, '3000 01 01');
+      await user.type(startDateInput, '3000-01-01');
 
       expect(
         await screen.findByText('searchBox.invalid_date_message')
@@ -224,7 +224,7 @@ describe('DatePicker component tests', () => {
         name: 'searchBox.start_date_arialabel',
       });
 
-      await user.type(startDateInput, '2012 01 01');
+      await user.type(startDateInput, '2012-01-01');
 
       const errorMessages = await screen.findAllByText(
         'searchBox.invalid_date_range_message'
@@ -331,7 +331,7 @@ describe('DatePicker component tests', () => {
         name: 'searchBox.end_date_arialabel',
       });
 
-      await user.type(endDateInput, '2012 01 00');
+      await user.type(endDateInput, '2012-01-00');
 
       expect(
         await screen.findByText('searchBox.invalid_date_message')
@@ -346,7 +346,7 @@ describe('DatePicker component tests', () => {
         name: 'searchBox.end_date_arialabel',
       });
 
-      await user.type(endDateInput, '1203 01 01');
+      await user.type(endDateInput, '1203-01-01');
 
       expect(
         await screen.findByText('searchBox.invalid_date_message')
@@ -361,7 +361,7 @@ describe('DatePicker component tests', () => {
         name: 'searchBox.end_date_arialabel',
       });
 
-      await user.type(endDateInput, '2010 01 01');
+      await user.type(endDateInput, '2010-01-01');
 
       const errorMessages = await screen.findAllByText(
         'searchBox.invalid_date_range_message'
