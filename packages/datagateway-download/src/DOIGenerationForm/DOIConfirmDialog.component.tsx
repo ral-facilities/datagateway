@@ -12,14 +12,14 @@ import { useTranslation } from 'react-i18next';
 import { QueryStatus } from 'react-query';
 import { Link } from 'react-router-dom';
 
-import type { DoiResult } from '../downloadApi';
+import type { DoiResponse } from '../downloadApi';
 import DialogContent from '../downloadConfirmation/dialogContent.component';
 import DialogTitle from '../downloadConfirmation/dialogTitle.component';
 
 interface DOIConfirmDialogProps {
   open: boolean;
   mintingStatus: QueryStatus;
-  data: DoiResult | undefined;
+  data: DoiResponse | undefined;
   error: AxiosError<{
     detail: { msg: string }[] | string;
   }> | null;
@@ -91,7 +91,14 @@ const DOIConfirmDialog: React.FC<DOIConfirmDialogProps> = (
             {isMintSuccess && data && (
               <Grid item xs>
                 <Typography>
-                  {`${t('DOIConfirmDialog.doi_label')}: ${data.doi}`}
+                  {`${t('DOIConfirmDialog.concept_doi_label')}: ${
+                    data.concept.doi
+                  }`}
+                </Typography>
+                <Typography>
+                  {`${t('DOIConfirmDialog.version_doi_label')}: ${
+                    data.version.doi
+                  }`}
                 </Typography>
               </Grid>
             )}
@@ -115,7 +122,7 @@ const DOIConfirmDialog: React.FC<DOIConfirmDialogProps> = (
               <Grid item xs>
                 <Button
                   component={Link}
-                  to={`/browse/dataPublication/${data.data_publication}`}
+                  to={`/browse/dataPublication/${data.version.data_publication}`}
                   variant="contained"
                   color="primary"
                 >

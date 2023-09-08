@@ -458,6 +458,11 @@ export interface DoiMetadata {
   creators?: { username: string; contributor_type: ContributorType }[];
 }
 
+export interface DoiResponse {
+  concept: DoiResult;
+  version: DoiResult;
+}
+
 export interface DoiResult {
   data_publication: string;
   doi: string;
@@ -470,7 +475,7 @@ export const mintCart = (
   cart: DownloadCartItem[],
   doiMetadata: DoiMetadata,
   settings: Pick<DownloadSettings, 'doiMinterUrl'>
-): Promise<DoiResult> => {
+): Promise<DoiResponse> => {
   const investigations: number[] = [];
   const datasets: number[] = [];
   const datafiles: number[] = [];
@@ -487,6 +492,7 @@ export const mintCart = (
         metadata: {
           ...doiMetadata,
           resource_type: investigations.length === 0 ? 'Dataset' : 'Collection',
+          related_items: [],
         },
         ...(investigations.length > 0
           ? { investigations: { ids: investigations } }

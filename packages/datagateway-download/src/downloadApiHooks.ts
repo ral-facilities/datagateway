@@ -34,7 +34,7 @@ import { DownloadSettingsContext } from './ConfigProvider';
 import {
   checkUser,
   DoiMetadata,
-  DoiResult,
+  DoiResponse,
   DownloadProgress,
   DownloadTypeStatus,
   getCartUsers,
@@ -843,7 +843,7 @@ export const useIsCartMintable = (
  * @param doiMetadata The required metadata for the DOI
  */
 export const useMintCart = (): UseMutationResult<
-  DoiResult,
+  DoiResponse,
   AxiosError<{
     detail: { msg: string }[] | string;
   }>,

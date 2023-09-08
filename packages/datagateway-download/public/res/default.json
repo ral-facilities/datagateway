@@ -129,7 +129,8 @@
     "mint_success": "Mint was successful",
     "mint_error": "Mint was unsuccessful",
     "mint_loading": "Loading...",
-    "doi_label": "DOI",
+    "concept_doi_label": "Concept DOI",
+    "version_doi_label": "Version DOI",
     "error_label": "Error",
     "view_data_publication": "View Data Publication"
   }
