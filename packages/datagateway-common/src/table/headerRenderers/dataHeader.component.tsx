@@ -103,6 +103,10 @@ const DataHeader = React.memo(
           IconComponent={
             hover ? ArrowUpwardIcon : shiftDown ? AddIcon : SortIcon
           }
+          sx={{
+            transition: 'opacity 0.5s',
+            opacity: hover ? 0.7 : 1,
+          }}
         >
           <Typography
             noWrap

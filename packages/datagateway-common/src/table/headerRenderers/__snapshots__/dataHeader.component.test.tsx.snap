@@ -131,7 +131,7 @@ exports[`Data column header component renders correctly with sort and filter 1`]
           class="MuiBox-root css-0"
         >
           <span
-            class="MuiButtonBase-root MuiTableSortLabel-root Mui-active tour-dataview-sort css-1qgma8u-MuiButtonBase-root-MuiTableSortLabel-root"
+            class="MuiButtonBase-root MuiTableSortLabel-root Mui-active tour-dataview-sort css-f4w4o6-MuiButtonBase-root-MuiTableSortLabel-root"
             role="button"
             tabindex="0"
           >
@@ -257,7 +257,7 @@ exports[`Data column header component renders correctly with sort but no filter 
           class="MuiBox-root css-0"
         >
           <span
-            class="MuiButtonBase-root MuiTableSortLabel-root Mui-active tour-dataview-sort css-1qgma8u-MuiButtonBase-root-MuiTableSortLabel-root"
+            class="MuiButtonBase-root MuiTableSortLabel-root Mui-active tour-dataview-sort css-f4w4o6-MuiButtonBase-root-MuiTableSortLabel-root"
             role="button"
             tabindex="0"
           >

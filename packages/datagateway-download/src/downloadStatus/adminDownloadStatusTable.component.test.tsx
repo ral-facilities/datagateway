@@ -182,6 +182,7 @@ describe('Admin Download Status Table', () => {
       'downloadStatus.transport'
     );
 
+    // should replace the sort by username with sort by access method
     await user.click(accessMethodSortLabel);
     expect(fetchAdminDownloads).toHaveBeenCalledWith(
       {
@@ -189,7 +190,31 @@ describe('Admin Download Status Table', () => {
         facilityName: mockedSettings.facilityName,
       },
       `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.transport asc, download.id ASC LIMIT 0, 50`
-      // `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.userName asc, download.transport asc, download.id ASC LIMIT 0, 50`
+    );
+
+    // should append sort if shift key is pressed
+    await user.keyboard('{Shift>}');
+    await user.click(usernameSortLabel);
+    await user.keyboard('{/Shift}');
+
+    expect(fetchAdminDownloads).toHaveBeenCalledWith(
+      {
+        downloadApiUrl: mockedSettings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
+      },
+      `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.transport asc, download.userName asc, download.id ASC LIMIT 0, 50`
+    );
+
+    await user.keyboard('{Shift>}');
+    await user.click(accessMethodSortLabel);
+    await user.keyboard('{/Shift}');
+
+    expect(fetchAdminDownloads).toHaveBeenCalledWith(
+      {
+        downloadApiUrl: mockedSettings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
+      },
+      `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.transport desc, download.userName asc, download.id ASC LIMIT 0, 50`
     );
 
     await user.click(accessMethodSortLabel);
@@ -198,18 +223,7 @@ describe('Admin Download Status Table', () => {
         downloadApiUrl: mockedSettings.downloadApiUrl,
         facilityName: mockedSettings.facilityName,
       },
-      `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.transport desc, download.id ASC LIMIT 0, 50`
-      // `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.userName asc, download.transport desc, download.id ASC LIMIT 0, 50`
-    );
-
-    await user.click(accessMethodSortLabel);
-    expect(fetchAdminDownloads).toHaveBeenCalledWith(
-      {
-        downloadApiUrl: mockedSettings.downloadApiUrl,
-        facilityName: mockedSettings.facilityName,
-      },
-      `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.id ASC LIMIT 0, 50`
-      // `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.userName asc, download.id ASC LIMIT 0, 50`
+      `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.userName asc, download.id ASC LIMIT 0, 50`
     );
   });
 

@@ -93,6 +93,21 @@ describe('Table component', () => {
     expect(onSort).toHaveBeenCalledWith('TEST2', 'desc', 'replace', false);
   });
 
+  it('calls onSort with correct parameters when shift key is pressed', async () => {
+    render(<Table {...tableProps} />);
+
+    // Click with shift to sort ascending
+    await user.keyboard('{Shift>}');
+    await user.click(await screen.findByRole('button', { name: 'Test 1' }));
+    await user.keyboard('{/Shift}');
+
+    expect(onSort).toHaveBeenCalledWith('TEST1', 'asc', 'push', true);
+
+    await user.click(await screen.findByRole('button', { name: 'Test 2' }));
+
+    expect(onSort).toHaveBeenCalledWith('TEST2', 'asc', 'push', false);
+  });
+
   it('renders select column correctly', async () => {
     render(
       <Table

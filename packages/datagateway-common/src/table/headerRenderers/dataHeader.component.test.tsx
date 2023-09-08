@@ -113,6 +113,23 @@ describe('Data column header component', () => {
     });
   });
 
+  describe('changes icons in the label', () => {
+    it('changes icon to Add when shift is pressed', async () => {
+      render(<DataHeader {...dataHeaderProps} shiftDown={true} />);
+      expect(screen.getByTestId('AddIcon')).toBeInTheDocument();
+    });
+
+    it('changes icon to ArrowUpward when hovered', async () => {
+      render(<DataHeader {...dataHeaderProps} />);
+      expect(screen.getByTestId('SortIcon')).toBeInTheDocument();
+      await user.hover(await screen.findByRole('button', { name: 'Test' }));
+      expect(screen.getByTestId('ArrowUpwardIcon')).toBeInTheDocument();
+
+      await user.unhover(await screen.findByRole('button', { name: 'Test' }));
+      expect(screen.getByTestId('SortIcon')).toBeInTheDocument();
+    });
+  });
+
   it.skip('calls the resizeColumn method when column resizer is dragged', async () => {
     // TODO: I think testing-library doesn't support dragging interaction at the moment
     //       the drag example code here only works with ar eal browser:
