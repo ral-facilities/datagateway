@@ -77,7 +77,8 @@ describe('ISIS - Instruments Cards', () => {
       .first()
       .contains('Stop prove field onto think suffer measure.');
 
-    cy.contains('[role="button"]', 'Description').click({ shiftKey: true });
+    // multiple fields (shift click)
+    cy.contains('[role="button"]', 'Description').click();
     cy.wait('@getInstrumentsOrder', { timeout: 10000 });
     cy.get('[data-testid="card"]')
       .first()
@@ -89,6 +90,19 @@ describe('ISIS - Instruments Cards', () => {
     cy.contains('[aria-label="Sort by TYPE"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('[data-testid="card"]').first().contains('10');
+
+    // should replace current sort if clicked without shift
+    cy.contains('[role="button"]', 'Name').click();
+    cy.wait('@getInstrumentsOrder', { timeout: 10000 });
+    cy.contains('[aria-label="Sort by NAME"]', 'asc').should('exist');
+    cy.contains('[aria-label="Sort by DESCRIPTION"]', 'asc').should(
+      'not.exist'
+    );
+    cy.contains('[aria-label="Sort by TYPE"]', 'asc').should('not.exist');
+    cy.contains('[role="button"]', 'desc').should('not.exist');
+    cy.get('[data-testid="card"]')
+      .first()
+      .contains('Eight imagine picture tough.');
   });
 
   it('should be able to filter by multiple fields', () => {

@@ -53,7 +53,7 @@ describe('ISIS - FacilityCycles Cards', () => {
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('[data-testid="card"]').first().contains('2001 cycle 2');
 
-    // multiple fields
+    // multiple fields (shift click)
     cy.get('@dateSortButton').click();
     cy.contains('[role="button"]', 'End Date').click({ shiftKey: true });
     cy.wait('@getFacilityCyclesOrder', { timeout: 10000 });
@@ -62,6 +62,14 @@ describe('ISIS - FacilityCycles Cards', () => {
     cy.contains('[aria-label="Sort by END DATE"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('[data-testid="card"]').first().contains('2001 cycle 2');
+
+    // should replace current sort if clicked without shift
+    cy.get('@dateSortButton').click();
+
+    cy.contains('[aria-label="Sort by START DATE"]', 'desc').should('exist');
+    cy.contains('[aria-label="Sort by END DATE"]', 'asc').should('not.exist');
+    cy.contains('[role="button"]', 'asc').should('not.exist');
+    cy.get('[data-testid="card"]').first().contains('2004 cycle 3');
   });
 
   it('should be able to filter by multiple fields', () => {

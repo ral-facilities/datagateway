@@ -1,7 +1,6 @@
 describe('DLS - Datasets Table', () => {
   beforeEach(() => {
     cy.intercept('**/investigations/1').as('investigations');
-    cy.intercept('**/investigations/findone?*').as('investigationsFindOne');
     cy.intercept('**/datasets/count?*').as('datasetsCount');
     cy.intercept('**/datasets?*').as('datasets');
     cy.login();
@@ -9,7 +8,6 @@ describe('DLS - Datasets Table', () => {
       [
         '@investigations',
         '@investigations',
-        '@investigationsFindOne',
         '@datasetsCount',
         '@datasets',
         '@datasets',
@@ -78,15 +76,14 @@ describe('DLS - Datasets Table', () => {
     cy.get('@nameSortButton').click();
     cy.get('[aria-sort="ascending"]').should('not.exist');
     cy.get('[aria-sort="descending"]').should('not.exist');
-    // cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
-    // cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
-    //   'have.css',
-    //   'opacity',
-    //   '0'
-    // );
+    cy.get('.MuiTableSortLabel-iconDirectionAsc').should('not.exist');
+
+    cy.get('[data-testid="SortIcon"]').should('have.length', 3);
+    cy.get('[data-testid="ArrowUpwardIcon"]').should('not.exist');
+
     cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
 
-    // multiple columns
+    // multiple columns (shift click)
     cy.get('@timeSortButton').click();
     cy.wait('@datasets', { timeout: 10000 });
     cy.get('@nameSortButton').click({ shiftKey: true });
@@ -96,6 +93,38 @@ describe('DLS - Datasets Table', () => {
 
     cy.get('[aria-rowcount="2"]').should('exist');
     cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
+
+    // should replace previous sort when clicked without shift
+    cy.contains('[role="button"]', 'Modified Time').click();
+    cy.contains('[role="button"]', 'Modified Time').click();
+    cy.get('[aria-sort="descending"]').should('have.length', 1);
+    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 61');
+  });
+
+  it('should change icons when sorting on a column', () => {
+    // clear the default sort
+    cy.contains('[role="button"]', 'Create Time').click();
+
+    cy.get('[data-testid="SortIcon"]').should('have.length', 3);
+
+    // check icon when clicking on a column
+    cy.contains('[role="button"]', 'Create Time').click();
+    cy.get('[data-testid="ArrowDownwardIcon"]').should('have.length', 1);
+    cy.get('.MuiTableSortLabel-iconDirectionAsc').should('exist');
+
+    // check icon when clicking on a column again
+    cy.contains('[role="button"]', 'Create Time').click();
+    cy.get('[data-testid="ArrowDownwardIcon"]').should('have.length', 1);
+    cy.get('.MuiTableSortLabel-iconDirectionAsc').should('not.exist');
+
+    // check icon when hovering over a column
+    cy.contains('[role="button"]', 'Modified Time').trigger('mouseover');
+    cy.get('[data-testid="ArrowUpwardIcon"]').should('have.length', 1);
+    cy.get('[data-testid="ArrowDownwardIcon"]').should('have.length', 1);
+
+    // check icons when shift is held
+    cy.get('.App').trigger('keydown', { key: 'Shift' });
+    cy.get('[data-testid="AddIcon"]').should('have.length', 1);
   });
 
   it('should be able to filter with both text & date filters on multiple columns', () => {

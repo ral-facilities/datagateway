@@ -50,7 +50,7 @@ describe('Datasets Cards', () => {
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('[data-testid="card"]').first().contains('DATASET 1');
 
-    // multiple fields
+    // multiple fields (shift click)
     cy.contains('[role="button"]', 'Create Time').click();
     cy.wait('@getDatasetsOrder', {
       timeout: 10000,
@@ -65,6 +65,17 @@ describe('Datasets Cards', () => {
     cy.contains('[role="button"]', 'desc').should('not.exist');
 
     cy.get('[data-testid="card"]').first().contains('DATASET 1');
+
+    // should replace current sort if clicked without shift
+    cy.get('@nameSortButton').click();
+
+    cy.contains('[aria-label="Sort by NAME"]', 'desc').should('exist');
+    cy.contains('[role="button"]', 'desc').should('exist');
+    cy.contains('[aria-label="Sort by CREATE TIME"]', 'asc').should(
+      'not.exist'
+    );
+
+    cy.get('[data-testid="card"]').first().contains('DATASET 61');
   });
 
   it('should be able to filter by multiple fields', () => {
