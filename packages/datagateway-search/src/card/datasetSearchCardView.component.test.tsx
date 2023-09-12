@@ -197,11 +197,18 @@ describe('Dataset - Card View', () => {
       `?filters=${encodeURIComponent('{"modTime":{"endDate":"2019-08-06"}}')}`
     );
 
-    await user.clear(
+    await user.click(
       await screen.findByRole('textbox', {
         name: 'datasets.modified_time filter to',
       })
     );
+    await user.keyboard('{Control}a{/Control}');
+    await user.keyboard('{Delete}');
+    // await user.clear(
+    //   await screen.findByRole('textbox', {
+    //     name: 'datasets.modified_time filter to',
+    //   })
+    // );
 
     expect(history.location.search).toBe('?');
 

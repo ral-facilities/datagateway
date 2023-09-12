@@ -2,7 +2,7 @@ import React from 'react';
 import { StateType } from '../state/app.types';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
-import SelectDates, { CustomClearButton } from './datePicker.component';
+import SelectDates from './datePicker.component';
 import thunk from 'redux-thunk';
 import { Router } from 'react-router-dom';
 import { initialState } from '../state/reducers/dgsearch.reducer';
@@ -11,7 +11,6 @@ import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
 } from '../setupTests';
-import { PickersActionBarProps } from '@mui/x-date-pickers/PickersActionBar';
 import { render, type RenderResult, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { UserEvent } from '@testing-library/user-event/setup/setup';
@@ -88,29 +87,6 @@ describe('DatePicker component tests', () => {
     expect(endDateInput).toHaveValue('2021-10-28');
   });
 
-  describe('CustomClearButton', () => {
-    const onClear = jest.fn();
-    let props: PickersActionBarProps;
-
-    beforeEach(() => {
-      props = {
-        onClear: onClear,
-      };
-    });
-
-    it('renders correctly', () => {
-      const { asFragment } = render(<CustomClearButton {...props} />);
-      expect(asFragment()).toMatchSnapshot();
-    });
-
-    it('calls onClear when button clicked', async () => {
-      const user = userEvent.setup();
-      render(<CustomClearButton {...props} />);
-      await user.click(await screen.findByRole('button'));
-      expect(onClear).toHaveBeenCalled();
-    });
-  });
-
   describe('Start date box', () => {
     let user: UserEvent;
 
@@ -126,7 +102,7 @@ describe('DatePicker component tests', () => {
         name: 'searchBox.start_date_arialabel',
       });
 
-      await user.type(startDateInput, '2012 01 01');
+      await user.type(startDateInput, '2012-01-01');
 
       expect(pushSpy).toHaveBeenCalledWith('?startDate=2012-01-01');
     });
@@ -185,6 +161,7 @@ describe('DatePicker component tests', () => {
       expect(testInitiateSearch).toHaveBeenCalled();
     });
 
+    // In v6, date pickers don't allow invalid dates to be entered
     it('displays error message when an invalid date is entered', async () => {
       history.replace('/?searchText=&investigation=false');
 
@@ -193,7 +170,7 @@ describe('DatePicker component tests', () => {
         name: 'searchBox.start_date_arialabel',
       });
 
-      await user.type(startDateInput, '2012 01 35');
+      await user.type(startDateInput, '2012-01-00');
 
       expect(
         await screen.findByText('searchBox.invalid_date_message')
@@ -208,7 +185,7 @@ describe('DatePicker component tests', () => {
         name: 'searchBox.start_date_arialabel',
       });
 
-      await user.type(startDateInput, '3000 01 01');
+      await user.type(startDateInput, '3000-01-01');
 
       expect(
         await screen.findByText('searchBox.invalid_date_message')
@@ -223,7 +200,7 @@ describe('DatePicker component tests', () => {
         name: 'searchBox.start_date_arialabel',
       });
 
-      await user.type(startDateInput, '2012 01 01');
+      await user.type(startDateInput, '2012-01-01');
 
       const errorMessages = await screen.findAllByText(
         'searchBox.invalid_date_range_message'
@@ -321,6 +298,7 @@ describe('DatePicker component tests', () => {
       expect(testInitiateSearch).toHaveBeenCalled();
     });
 
+    // In v6, date pickers don't allow invalid dates to be entered
     it('displays error message when an invalid date is entered', async () => {
       history.replace('/?searchText=&investigation=false');
 
@@ -329,7 +307,7 @@ describe('DatePicker component tests', () => {
         name: 'searchBox.end_date_arialabel',
       });
 
-      await user.type(endDateInput, '2012 01 35');
+      await user.type(endDateInput, '2012-01-00');
 
       expect(
         await screen.findByText('searchBox.invalid_date_message')
@@ -344,7 +322,7 @@ describe('DatePicker component tests', () => {
         name: 'searchBox.end_date_arialabel',
       });
 
-      await user.type(endDateInput, '1203 01 01');
+      await user.type(endDateInput, '1203-01-01');
 
       expect(
         await screen.findByText('searchBox.invalid_date_message')
@@ -359,7 +337,7 @@ describe('DatePicker component tests', () => {
         name: 'searchBox.end_date_arialabel',
       });
 
-      await user.type(endDateInput, '2010 01 01');
+      await user.type(endDateInput, '2010-01-01');
 
       const errorMessages = await screen.findAllByText(
         'searchBox.invalid_date_range_message'

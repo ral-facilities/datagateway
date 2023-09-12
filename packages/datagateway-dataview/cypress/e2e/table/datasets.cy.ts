@@ -119,11 +119,12 @@ describe('Datasets Table', () => {
 
     const date = new Date();
     date.setDate(1);
+    date.setMonth(0);
     date.setFullYear(2020);
 
     cy.get('.MuiPickersCalendarHeader-label').click();
     cy.contains('2020').click();
-
+    cy.contains('Jan').click();
     cy.get('.MuiPickersDay-root[type="button"]').first().click();
 
     cy.get('input[id="Create Time filter to"]').should(

@@ -143,11 +143,10 @@ describe('Admin Download Status', () => {
     const toDate = new Date(now + 5000);
 
     cy.get('input[id="Requested Date filter from"]').type(
-      fromDate.toLocaleString('sv')
+      fromDate.toLocaleString('sv').split(' ').join('')
     );
-
     cy.get('input[id="Requested Date filter to"]').type(
-      toDate.toLocaleString('sv')
+      toDate.toLocaleString('sv').split(' ').join('')
     );
 
     cy.get('@initialRowCount').then((initialRowCount) => {

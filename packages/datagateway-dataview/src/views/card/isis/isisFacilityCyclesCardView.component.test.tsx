@@ -134,7 +134,10 @@ describe('ISIS Facility Cycles - Card View', () => {
       `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
     );
 
-    await user.clear(filter);
+    // await user.clear(filter);
+    await user.click(filter);
+    await user.keyboard('{Control}a{/Control}');
+    await user.keyboard('{Delete}');
 
     expect(history.location.search).toBe('?');
 

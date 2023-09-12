@@ -199,11 +199,18 @@ describe('Investigation - Card View', () => {
       `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
     );
 
-    await user.clear(
+    await user.click(
       await screen.findByRole('textbox', {
         name: 'investigations.details.end_date filter to',
       })
     );
+    await user.keyboard('{Control}a{/Control}');
+    await user.keyboard('{Delete}');
+    // await user.clear(
+    // await screen.findByRole('textbox', {
+    //   name: 'investigations.details.end_date filter to',
+    // })
+    // );
 
     expect(history.location.search).toBe('?');
 
