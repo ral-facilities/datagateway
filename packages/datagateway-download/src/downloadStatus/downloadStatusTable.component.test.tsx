@@ -327,7 +327,7 @@ describe('Download Status Table', () => {
     await user.clear(dateToFilterInput);
     // Type into both date filters
     await user.type(dateFromFilterInput, '2020-02-26 00:00:00');
-    await user.type(dateToFilterInput, '2020-02-27 23:59:00');
+    await user.type(dateToFilterInput, '20200227235900');
 
     // Should show only test-file-2 and test-file-3
     expect(await screen.findByText('test-file-2')).toBeInTheDocument();
@@ -350,7 +350,10 @@ describe('Download Status Table', () => {
     expect(screen.queryByText('test-file-2')).toBeNull();
 
     // Clear date from filter textbox
-    await user.clear(dateFromFilterInput);
+    await user.click(dateFromFilterInput);
+    await user.keyboard('{Control}a{/Control}');
+    await user.keyboard('{Delete}');
+    // await user.clear(dateFromFilterInput);
     // Type into only date to filter
     await user.type(dateToFilterInput, '2020-02-27 00:00:00');
 

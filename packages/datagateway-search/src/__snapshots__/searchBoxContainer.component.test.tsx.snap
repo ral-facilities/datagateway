@@ -70,10 +70,12 @@ exports[`SearchBoxContainerSide - Tests renders searchBoxContainerSide correctly
               <input
                 aria-invalid="false"
                 aria-label="searchBox.start_date_arialabel"
+                autocomplete="off"
                 class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedEnd css-nxo287-MuiInputBase-input-MuiOutlinedInput-input"
-                id="mui-3"
+                id="mui-6"
+                inputmode="text"
                 placeholder="searchBox.start_date"
-                type="tel"
+                type="text"
                 value=""
               />
               <div
@@ -126,10 +128,12 @@ exports[`SearchBoxContainerSide - Tests renders searchBoxContainerSide correctly
               <input
                 aria-invalid="false"
                 aria-label="searchBox.end_date_arialabel"
+                autocomplete="off"
                 class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedEnd css-nxo287-MuiInputBase-input-MuiOutlinedInput-input"
-                id="mui-4"
+                id="mui-8"
+                inputmode="text"
                 placeholder="searchBox.end_date"
-                type="tel"
+                type="text"
                 value=""
               />
               <div
