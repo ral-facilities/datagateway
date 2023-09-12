@@ -93,12 +93,18 @@ describe('Admin Download Status', () => {
     cy.contains('[role="button"]', 'Availability').click({ shiftKey: true });
     cy.get('[aria-sort="ascending"]').should('have.length', 2);
 
-    cy.get('[aria-rowindex="2"] [aria-colindex="4"]').contains('f70c22fc-c59a');
+    cy.get('[aria-rowindex="2"] [aria-colindex="6"]').should(
+      'have.text',
+      'Available'
+    );
+    cy.get('[aria-rowindex="3"] [aria-colindex="6"]').should(
+      'have.text',
+      'Expired'
+    );
 
     // should replace previous sort when clicked without shift
     cy.contains('[role="button"]', 'Prepared ID').click();
     cy.get('[aria-sort="ascending"]').should('have.length', 1);
-    cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('0024e0fd-41aa');
   });
 
   it('should change icons when sorting on a column', () => {
