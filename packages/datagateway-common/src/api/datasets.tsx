@@ -109,7 +109,7 @@ export const useDatasetsPaginated = (
     [
       string,
       {
-        sort: SortType;
+        sort: string;
         filters: FiltersType;
         page: number;
         results: number;
@@ -119,11 +119,16 @@ export const useDatasetsPaginated = (
   >(
     [
       'dataset',
-      { sort, filters, page: page ?? 1, results: results ?? 10 },
+      {
+        sort: JSON.stringify(sort), // need to stringify sort as property order is important!
+        filters,
+        page: page ?? 1,
+        results: results ?? 10,
+      },
       additionalFilters,
     ],
     (params) => {
-      const { sort, filters, page, results } = params.queryKey[1];
+      const { page, results } = params.queryKey[1];
       const startIndex = (page - 1) * results;
       const stopIndex = startIndex + results - 1;
       return fetchDatasets(apiUrl, { sort, filters }, additionalFilters, {
@@ -147,15 +152,9 @@ export const useDatasetsInfinite = (
   const location = useLocation();
   const { filters, sort } = parseSearchToQuery(location.search);
 
-  return useInfiniteQuery<
-    Dataset[],
-    AxiosError,
-    Dataset[],
-    [string, { sort: SortType; filters: FiltersType }, AdditionalFilters?]
-  >(
-    ['dataset', { sort, filters }, additionalFilters],
+  return useInfiniteQuery(
+    ['dataset', { sort: JSON.stringify(sort), filters }, additionalFilters], // need to stringify sort as property order is important!
     (params) => {
-      const { sort, filters } = params.queryKey[1];
       const offsetParams = params.pageParam ?? { startIndex: 0, stopIndex: 49 };
       return fetchDatasets(
         apiUrl,

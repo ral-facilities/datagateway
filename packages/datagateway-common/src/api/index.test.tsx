@@ -268,6 +268,7 @@ describe('generic api functions', () => {
         filters: {
           name: { value: 'test', type: 'include' },
           title: { value: 'test', type: 'exclude' },
+          doi: { value: 'test', type: 'exact' },
           startDate: {
             startDate: '2021-08-05',
             endDate: '2021-08-06',
@@ -282,6 +283,7 @@ describe('generic api functions', () => {
       params.append('order', JSON.stringify('id asc'));
       params.append('where', JSON.stringify({ name: { ilike: 'test' } }));
       params.append('where', JSON.stringify({ title: { nilike: 'test' } }));
+      params.append('where', JSON.stringify({ doi: { eq: 'test' } }));
       params.append(
         'where',
         JSON.stringify({ startDate: { gte: '2021-08-05 00:00:00' } })
@@ -302,6 +304,7 @@ describe('generic api functions', () => {
         filters: {
           name: { value: 'test', type: 'include' },
           title: { value: 'test', type: 'exclude' },
+          doi: { value: 'test', type: 'exact' },
           startDate: {
             startDate: '2021-08-05',
             endDate: '2021-08-06',
@@ -315,6 +318,7 @@ describe('generic api functions', () => {
       params.append('order', JSON.stringify('name asc'));
       params.append('where', JSON.stringify({ name: { ilike: 'test' } }));
       params.append('where', JSON.stringify({ title: { nilike: 'test' } }));
+      params.append('where', JSON.stringify({ doi: { eq: 'test' } }));
       params.append(
         'where',
         JSON.stringify({ startDate: { gte: '2021-08-05 00:00:00' } })

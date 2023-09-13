@@ -52,7 +52,7 @@ describe('investigation api functions', () => {
     ];
     history = createMemoryHistory({
       initialEntries: [
-        '/?sort={"name":"asc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20',
+        '/?sort={"name":"asc","title":"desc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20',
       ],
     });
     params = new URLSearchParams();
@@ -133,7 +133,7 @@ describe('investigation api functions', () => {
         data: mockData,
       });
 
-      const { result, waitFor } = renderHook(
+      const { result, waitFor, rerender } = renderHook(
         () =>
           useInvestigationsPaginated([
             {
@@ -151,6 +151,7 @@ describe('investigation api functions', () => {
       await waitFor(() => result.current.isSuccess);
 
       params.append('order', JSON.stringify('name asc'));
+      params.append('order', JSON.stringify('title desc'));
       params.append('order', JSON.stringify('id asc'));
       params.append(
         'where',
@@ -177,6 +178,16 @@ describe('investigation api functions', () => {
         params.toString()
       );
       expect(result.current.data).toEqual(mockData);
+
+      // test that order of sort object triggers new query
+      history.push(
+        '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
+      );
+      rerender();
+
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+      expect(axios.get as jest.Mock).toHaveBeenCalledTimes(2);
     });
 
     it('sends axios request to fetch paginated investigations and returns successful response when ignoreIDSort is true', async () => {
@@ -205,6 +216,7 @@ describe('investigation api functions', () => {
       await waitFor(() => result.current.isSuccess);
 
       params.append('order', JSON.stringify('name asc'));
+      params.append('order', JSON.stringify('title desc'));
       params.append(
         'where',
         JSON.stringify({
@@ -270,7 +282,7 @@ describe('investigation api functions', () => {
           : Promise.resolve({ data: mockData[1] })
       );
 
-      const { result, waitFor } = renderHook(
+      const { result, waitFor, rerender } = renderHook(
         () =>
           useInvestigationsInfinite([
             {
@@ -288,6 +300,7 @@ describe('investigation api functions', () => {
       await waitFor(() => result.current.isSuccess);
 
       params.append('order', JSON.stringify('name asc'));
+      params.append('order', JSON.stringify('title desc'));
       params.append('order', JSON.stringify('id asc'));
       params.append(
         'where',
@@ -340,6 +353,16 @@ describe('investigation api functions', () => {
         mockData[0],
         mockData[1],
       ]);
+
+      // test that order of sort object triggers new query
+      history.push(
+        '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}'
+      );
+      rerender();
+
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+      expect(axios.get as jest.Mock).toHaveBeenCalledTimes(3);
     });
 
     it('sends axios request to fetch infinite investigations and returns successful response when ignoreIDSort is true', async () => {
@@ -370,6 +393,7 @@ describe('investigation api functions', () => {
       await waitFor(() => result.current.isSuccess);
 
       params.append('order', JSON.stringify('name asc'));
+      params.append('order', JSON.stringify('title desc'));
       params.append(
         'where',
         JSON.stringify({
