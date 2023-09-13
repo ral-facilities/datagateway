@@ -109,7 +109,8 @@ describe('Dataset search tab', () => {
     cy.findAllByRole('row')
       .eq(1)
       .within(() => {
-        cy.findByRole('checkbox').click().should('be.checked');
+        cy.findByRole('checkbox').click();
+        cy.findByRole('checkbox').should('be.checked');
       });
 
     cy.intercept(`**/topcat/user/cart/${facilityName}/cartItems`, {
@@ -121,7 +122,8 @@ describe('Dataset search tab', () => {
     cy.findAllByRole('row')
       .eq(1)
       .within(() => {
-        cy.findByRole('checkbox').click().should('not.be.checked');
+        cy.findByRole('checkbox').click();
+        cy.findByRole('checkbox').should('not.be.checked');
       });
   });
 
@@ -144,11 +146,12 @@ describe('Dataset search tab', () => {
       .within(() => {
         cy.findByRole('button', {
           name: 'Add experiment_raw filter',
-        })
-          .click()
-          .within(() => {
-            cy.findByRole('checkbox').should('be.checked');
-          });
+        }).click();
+        cy.findByRole('button', {
+          name: 'Add experiment_raw filter',
+        }).within(() => {
+          cy.findByRole('checkbox').should('be.checked');
+        });
       });
 
     // intercept search request to return predefined filtered search result

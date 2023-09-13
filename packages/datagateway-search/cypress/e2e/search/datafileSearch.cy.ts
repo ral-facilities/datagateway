@@ -116,7 +116,8 @@ describe('Datafile search tab', () => {
     cy.findAllByRole('row')
       .eq(1)
       .within(() => {
-        cy.findByRole('checkbox').click().should('be.checked');
+        cy.findByRole('checkbox').click();
+        cy.findByRole('checkbox').should('be.checked');
       });
 
     cy.intercept(`**/topcat/user/cart/${facilityName}/cartItems`, {
@@ -128,7 +129,8 @@ describe('Datafile search tab', () => {
     cy.findAllByRole('row')
       .eq(1)
       .within(() => {
-        cy.findByRole('checkbox').click().should('not.be.checked');
+        cy.findByRole('checkbox').click();
+        cy.findByRole('checkbox').should('not.be.checked');
       });
   });
 
@@ -176,11 +178,12 @@ describe('Datafile search tab', () => {
       .within(() => {
         cy.findByRole('button', {
           name: 'Add isis neutron raw filter',
-        })
-          .click()
-          .within(() => {
-            cy.findByRole('checkbox').should('be.checked');
-          });
+        }).click();
+        cy.findByRole('button', {
+          name: 'Add isis neutron raw filter',
+        }).within(() => {
+          cy.findByRole('checkbox').should('be.checked');
+        });
       });
 
     // intercept search request to return predefined filtered search result
