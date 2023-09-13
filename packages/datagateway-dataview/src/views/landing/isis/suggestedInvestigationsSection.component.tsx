@@ -3,7 +3,7 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Chip,
+  // Chip,
   CircularProgress,
   Divider,
   Link,
@@ -16,11 +16,12 @@ import {
 import React from 'react';
 import {
   Investigation,
-  InvestigationSuggestions,
+  SuggestedInvestigation,
+  // InvestigationSuggestions,
   useSimilarInvestigations,
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
-import { blue } from '@mui/material/colors';
+// import { blue } from '@mui/material/colors';
 
 interface SuggestedSectionProps {
   investigation: Investigation;
@@ -49,7 +50,7 @@ function SuggestedInvestigationsSection({
         </Typography>
       </AccordionSummary>
       <AccordionDetails sx={{ padding: 0 }}>
-        {suggestedResults && suggestedResults.docs.length > 0 ? (
+        {suggestedResults && suggestedResults.length > 0 ? (
           <SuggestionList suggestions={suggestedResults} />
         ) : (
           <Typography sx={{ padding: 2 }}>
@@ -64,14 +65,12 @@ function SuggestedInvestigationsSection({
 function SuggestionList({
   suggestions,
 }: {
-  suggestions: InvestigationSuggestions;
+  suggestions: SuggestedInvestigation[];
 }): JSX.Element {
   const [t] = useTranslation();
   const [currentPage, setCurrentPage] = React.useState(1);
 
-  const pageCount = Math.ceil(
-    suggestions.docs.length / SUGGESTION_COUNT_PER_PAGE
-  );
+  const pageCount = Math.ceil(suggestions.length / SUGGESTION_COUNT_PER_PAGE);
 
   function constructFullDoiUrl(doi: string): string {
     return `https://doi.org/${doi}`;
@@ -85,7 +84,7 @@ function SuggestionList({
   }
 
   const paginationOffset = (currentPage - 1) * SUGGESTION_COUNT_PER_PAGE;
-  const displayedSuggestions = suggestions.docs.slice(
+  const displayedSuggestions = suggestions.slice(
     paginationOffset,
     paginationOffset + SUGGESTION_COUNT_PER_PAGE
   );
@@ -129,21 +128,21 @@ function SuggestionList({
         size="small"
         sx={{ pb: 2 }}
       />
-      {suggestions.topics.length > 0 && (
+      {/* {suggestions.topics.length > 0 && (
         <TopicChips topics={suggestions.topics} />
-      )}
+      )} */}
       <List dense disablePadding>
         {displayedSuggestions.map((suggestion, i) => {
           const isLastItem = i === SUGGESTION_COUNT_PER_PAGE - 1;
           return (
-            <React.Fragment key={suggestion.doc.id}>
+            <React.Fragment key={suggestion.id}>
               <ListItem dense>
-                {suggestion.doc.doi ? (
-                  <Link href={constructFullDoiUrl(suggestion.doc.doi)}>
-                    {suggestion.doc.title}
+                {suggestion.doi ? (
+                  <Link href={constructFullDoiUrl(suggestion.doi)}>
+                    {suggestion.title}
                   </Link>
                 ) : (
-                  <Typography>{suggestion.doc.title}</Typography>
+                  <Typography>{suggestion.title}</Typography>
                 )}
               </ListItem>
               {!isLastItem && <Divider />}
@@ -155,46 +154,46 @@ function SuggestionList({
   );
 }
 
-function TopicChips({
-  topics,
-}: {
-  topics: InvestigationSuggestions['topics'];
-}): JSX.Element {
-  const [, highestScore] = topics[0];
-  const lowestScore = topics.at(-1)?.[1] ?? 0;
+// function TopicChips({
+//   topics,
+// }: {
+//   topics: InvestigationSuggestions['topics'];
+// }): JSX.Element {
+//   const [, highestScore] = topics[0];
+//   const lowestScore = topics.at(-1)?.[1] ?? 0;
 
-  return (
-    <Stack
-      direction="row"
-      flexWrap="wrap"
-      sx={{ px: 2, pb: 1, flexWrap: 'wrap', gap: 0.5 }}
-    >
-      {topics.map(([topicLabel, relevanceScore]) => {
-        const relevanceScoreInList =
-          Math.round(
-            ((relevanceScore - lowestScore) / (highestScore - lowestScore)) * 10
-          ) / 10;
-        const colorShade = Math.max(
-          relevanceScoreInList * 1000 - 100,
-          50
-        ) as keyof typeof blue;
-        const chipColor = blue[`${colorShade}`];
+//   return (
+//     <Stack
+//       direction="row"
+//       flexWrap="wrap"
+//       sx={{ px: 2, pb: 1, flexWrap: 'wrap', gap: 0.5 }}
+//     >
+//       {topics.map(([topicLabel, relevanceScore]) => {
+//         const relevanceScoreInList =
+//           Math.round(
+//             ((relevanceScore - lowestScore) / (highestScore - lowestScore)) * 10
+//           ) / 10;
+//         const colorShade = Math.max(
+//           relevanceScoreInList * 1000 - 100,
+//           50
+//         ) as keyof typeof blue;
+//         const chipColor = blue[`${colorShade}`];
 
-        return (
-          <Chip
-            data-testid={`suggested-investigations-section-topic-${topicLabel}`}
-            size="small"
-            key={topicLabel}
-            label={topicLabel}
-            sx={{
-              color: (theme) => theme.palette.getContrastText(chipColor),
-              backgroundColor: chipColor,
-            }}
-          />
-        );
-      })}
-    </Stack>
-  );
-}
+//         return (
+//           <Chip
+//             data-testid={`suggested-investigations-section-topic-${topicLabel}`}
+//             size="small"
+//             key={topicLabel}
+//             label={topicLabel}
+//             sx={{
+//               color: (theme) => theme.palette.getContrastText(chipColor),
+//               backgroundColor: chipColor,
+//             }}
+//           />
+//         );
+//       })}
+//     </Stack>
+//   );
+// }
 
 export default SuggestedInvestigationsSection;

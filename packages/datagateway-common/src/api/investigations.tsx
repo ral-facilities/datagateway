@@ -921,37 +921,40 @@ export const downloadInvestigation = (
   link.remove();
 };
 
-export interface InvestigationSuggestions {
-  docs: SuggestedInvestigation[];
-  topics: [topic: string, score: number][];
-}
+// export interface InvestigationSuggestions {
+//   docs: SuggestedInvestigation[];
+//   topics: [topic: string, score: number][];
+// }
 
 export const useSimilarInvestigations = ({
   investigation,
 }: {
   investigation: Investigation;
-}): UseQueryResult<InvestigationSuggestions, AxiosError> => {
+}): UseQueryResult<SuggestedInvestigation[], AxiosError> => {
   const baseUrl = 'http://172.16.103.71:4001/api';
 
   return useQuery<
-    InvestigationSuggestions,
+    SuggestedInvestigation[],
     AxiosError,
-    InvestigationSuggestions,
+    SuggestedInvestigation[],
     ['similarInvestigations', Investigation['id']]
   >(
     ['similarInvestigations', investigation.id],
     () =>
       axios
-        .get<InvestigationSuggestions>(`/similar/${investigation.id}`, {
-          baseURL: baseUrl,
-        })
+        .get<SuggestedInvestigation[]>(
+          `/v2/similar/${investigation.id}?id=${investigation.id}`,
+          {
+            baseURL: baseUrl,
+          }
+        )
         .then((response) => response.data),
     {
       select: (data) => {
-        data.docs.sort((resultA, resultB) => resultB.score - resultA.score);
-        data.topics.sort(
-          ([, topicAScore], [, topicBScore]) => topicBScore - topicAScore
-        );
+        data.sort((resultA, resultB) => resultB.score - resultA.score);
+        // data.topics.sort(
+        //   ([, topicAScore], [, topicBScore]) => topicBScore - topicAScore
+        // );
         return data;
       },
       onError: (error) => {
