@@ -68,8 +68,8 @@ export interface SuggestedInvestigation {
   id: number;
   summary: string;
   visitId: string;
-  startDate: string;
-  endDate: string;
+  startDate?: string;
+  endDate?: string;
   score: number;
   // score: number;
   // doc: Investigation;

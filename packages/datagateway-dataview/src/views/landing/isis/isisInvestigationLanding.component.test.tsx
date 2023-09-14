@@ -5,7 +5,8 @@ import configureStore from 'redux-mock-store';
 import { StateType } from '../../../state/app.types';
 import {
   dGCommonInitialState,
-  InvestigationSuggestions,
+  // InvestigationSuggestions,
+  SuggestedInvestigation,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -22,55 +23,44 @@ import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 
-const mockSuggestions: InvestigationSuggestions = {
-  docs: [
-    {
-      doc: {
-        id: 1,
-        visitId: 'visitId',
-        name: 'Suggested investigation 1 name',
-        title: 'Suggested investigation 1',
-        summary: 'Suggested investigation 1 summary',
-        doi: 'doi1',
-      },
-      score: 0.9,
-    },
-    {
-      doc: {
-        id: 2,
-        visitId: 'visitId',
-        name: 'Suggested investigation 2 name',
-        title: 'Suggested investigation 2',
-        summary: 'Suggested investigation 2 summary',
-        doi: 'doi2',
-      },
-      score: 0.9,
-    },
-    {
-      doc: {
-        id: 3,
-        visitId: 'visitId',
-        name: 'Suggested investigation 3 name',
-        title: 'Suggested investigation 3',
-        summary: 'Suggested investigation 3 summary',
-        doi: 'doi3',
-      },
-      score: 0.9,
-    },
-    {
-      doc: {
-        id: 4,
-        visitId: 'visitId',
-        name: 'Suggested investigation 4 name',
-        title: 'Suggested investigation 4',
-        summary: 'Suggested investigation 4 summary',
-        doi: 'doi4',
-      },
-      score: 0.9,
-    },
-  ],
-  topics: [],
-};
+const mockSuggestions: SuggestedInvestigation[] = [
+  {
+    id: 1,
+    visitId: 'visitId',
+    name: 'Suggested investigation 1 name',
+    title: 'Suggested investigation 1',
+    summary: 'Suggested investigation 1 summary',
+    doi: 'doi1',
+    score: 0.9,
+  },
+  {
+    id: 2,
+    visitId: 'visitId',
+    name: 'Suggested investigation 2 name',
+    title: 'Suggested investigation 2',
+    summary: 'Suggested investigation 2 summary',
+    doi: 'doi2',
+    score: 0.9,
+  },
+  {
+    id: 3,
+    visitId: 'visitId',
+    name: 'Suggested investigation 3 name',
+    title: 'Suggested investigation 3',
+    summary: 'Suggested investigation 3 summary',
+    doi: 'doi3',
+    score: 0.9,
+  },
+  {
+    id: 4,
+    visitId: 'visitId',
+    name: 'Suggested investigation 4 name',
+    title: 'Suggested investigation 4',
+    summary: 'Suggested investigation 4 summary',
+    doi: 'doi4',
+    score: 0.9,
+  },
+];
 
 describe('ISIS Investigation Landing page', () => {
   const mockStore = configureStore([thunk]);

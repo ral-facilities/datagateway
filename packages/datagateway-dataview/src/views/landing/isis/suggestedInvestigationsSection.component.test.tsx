@@ -1,7 +1,8 @@
 import * as React from 'react';
 import type {
   Investigation,
-  InvestigationSuggestions,
+  // InvestigationSuggestions,
+  SuggestedInvestigation,
 } from 'datagateway-common';
 import axios, { AxiosResponse } from 'axios';
 import { render, screen } from '@testing-library/react';
@@ -9,80 +10,62 @@ import SuggestedInvestigationsSection from './suggestedInvestigationsSection.com
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
-const mockSuggestions: InvestigationSuggestions = {
-  docs: [
-    {
-      doc: {
-        id: 1,
-        visitId: 'visitId',
-        name: 'Suggested investigation 1 name',
-        title: 'Suggested investigation 1',
-        summary: 'Suggested investigation 1 summary',
-        doi: 'doi1',
-      },
-      score: 0.9,
-    },
-    {
-      doc: {
-        id: 2,
-        visitId: 'visitId',
-        name: 'Suggested investigation 2 name',
-        title: 'Suggested investigation 2',
-        summary: 'Suggested investigation 2 summary',
-        doi: 'doi2',
-      },
-      score: 0.9,
-    },
-    {
-      doc: {
-        id: 3,
-        visitId: 'visitId',
-        name: 'Suggested investigation 3 name',
-        title: 'Suggested investigation 3',
-        summary: 'Suggested investigation 3 summary',
-        doi: 'doi3',
-      },
-      score: 0.9,
-    },
-    {
-      doc: {
-        id: 4,
-        visitId: 'visitId',
-        name: 'Suggested investigation 4 name',
-        title: 'Suggested investigation 4',
-        summary: 'Suggested investigation 4 summary',
-        doi: 'doi4',
-      },
-      score: 0.9,
-    },
-    {
-      doc: {
-        id: 5,
-        visitId: 'visitId',
-        name: 'Suggested investigation 5 name',
-        title: 'Suggested investigation 5',
-        summary: 'Suggested investigation 5 summary',
-        doi: 'doi5',
-      },
-      score: 0.6,
-    },
-    {
-      doc: {
-        id: 6,
-        visitId: 'visitId',
-        name: 'Suggested investigation 6 name',
-        title: 'Suggested investigation 6',
-        summary: 'Suggested investigation 6 summary',
-        doi: 'doi6',
-      },
-      score: 0.5,
-    },
-  ],
-  topics: [
-    ['topic1', 0.7],
-    ['topic2', 0.9],
-  ],
-};
+const mockSuggestions: SuggestedInvestigation[] = [
+  {
+    id: 1,
+    visitId: 'visitId',
+    name: 'Suggested investigation 1 name',
+    title: 'Suggested investigation 1',
+    summary: 'Suggested investigation 1 summary',
+    doi: 'doi1',
+    score: 0.9,
+  },
+  {
+    id: 2,
+    visitId: 'visitId',
+    name: 'Suggested investigation 2 name',
+    title: 'Suggested investigation 2',
+    summary: 'Suggested investigation 2 summary',
+    doi: 'doi2',
+    score: 0.9,
+  },
+  {
+    id: 3,
+    visitId: 'visitId',
+    name: 'Suggested investigation 3 name',
+    title: 'Suggested investigation 3',
+    summary: 'Suggested investigation 3 summary',
+    doi: 'doi3',
+    score: 0.9,
+  },
+  {
+    id: 4,
+    visitId: 'visitId',
+    name: 'Suggested investigation 4 name',
+    title: 'Suggested investigation 4',
+    summary: 'Suggested investigation 4 summary',
+    doi: 'doi4',
+    score: 0.9,
+  },
+  {
+    id: 5,
+    visitId: 'visitId',
+    name: 'Suggested investigation 5 name',
+    title: 'Suggested investigation 5',
+    summary: 'Suggested investigation 5 summary',
+    doi: 'doi5',
+    score: 0.6,
+  },
+  {
+    id: 6,
+    visitId: 'visitId',
+    name: 'Suggested investigation 6 name',
+    title: 'Suggested investigation 6',
+    summary: 'Suggested investigation 6 summary',
+    doi: 'doi6',
+    score: 0.5,
+  },
+];
 
 const MOCK_INVESTIGATION: Investigation = {
   id: 1,
@@ -103,7 +86,7 @@ describe('SuggestedInvestigationsSection', () => {
 
   it('should render a paginated list of suggested investigations for the given investigation', async () => {
     axios.get = jest.fn().mockImplementation(
-      (): Promise<Partial<AxiosResponse<InvestigationSuggestions>>> =>
+      (): Promise<Partial<AxiosResponse<SuggestedInvestigation[]>>> =>
         Promise.resolve({
           data: mockSuggestions,
         })
@@ -122,12 +105,12 @@ describe('SuggestedInvestigationsSection', () => {
       })
     );
 
-    const topicChips = await screen.getAllByTestId(
-      /suggested-investigations-section-topic-/
-    );
-    expect(topicChips).toHaveLength(2);
-    expect(topicChips[0]).toHaveTextContent('topic2');
-    expect(topicChips[1]).toHaveTextContent('topic1');
+    // const topicChips = await screen.getAllByTestId(
+    //   /suggested-investigations-section-topic-/
+    // );
+    // expect(topicChips).toHaveLength(2);
+    // expect(topicChips[0]).toHaveTextContent('topic2');
+    // expect(topicChips[1]).toHaveTextContent('topic1');
 
     const suggestionLinks = await screen.findAllByRole('link');
     expect(suggestionLinks).toHaveLength(5);
@@ -187,12 +170,9 @@ describe('SuggestedInvestigationsSection', () => {
 
   it('should show empty message when no suggestion is available for the investigation', async () => {
     axios.get = jest.fn().mockImplementation(
-      (): Promise<Partial<AxiosResponse<InvestigationSuggestions>>> =>
+      (): Promise<Partial<AxiosResponse<SuggestedInvestigation[]>>> =>
         Promise.resolve({
-          data: {
-            docs: [],
-            topics: [],
-          },
+          data: [],
         })
     );
 
