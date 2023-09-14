@@ -71,8 +71,6 @@ export interface SuggestedInvestigation {
   startDate?: string;
   endDate?: string;
   score: number;
-  // score: number;
-  // doc: Investigation;
 }
 
 export interface Instrument {

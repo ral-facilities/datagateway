@@ -1,9 +1,5 @@
 import * as React from 'react';
-import type {
-  Investigation,
-  // InvestigationSuggestions,
-  SuggestedInvestigation,
-} from 'datagateway-common';
+import type { Investigation, SuggestedInvestigation } from 'datagateway-common';
 import axios, { AxiosResponse } from 'axios';
 import { render, screen } from '@testing-library/react';
 import SuggestedInvestigationsSection from './suggestedInvestigationsSection.component';
@@ -104,13 +100,6 @@ describe('SuggestedInvestigationsSection', () => {
         name: 'investigations.landingPage.similarInvestigations',
       })
     );
-
-    // const topicChips = await screen.getAllByTestId(
-    //   /suggested-investigations-section-topic-/
-    // );
-    // expect(topicChips).toHaveLength(2);
-    // expect(topicChips[0]).toHaveTextContent('topic2');
-    // expect(topicChips[1]).toHaveTextContent('topic1');
 
     const suggestionLinks = await screen.findAllByRole('link');
     expect(suggestionLinks).toHaveLength(5);

@@ -921,11 +921,6 @@ export const downloadInvestigation = (
   link.remove();
 };
 
-// export interface InvestigationSuggestions {
-//   docs: SuggestedInvestigation[];
-//   topics: [topic: string, score: number][];
-// }
-
 export const useSimilarInvestigations = ({
   investigation,
 }: {
@@ -952,9 +947,6 @@ export const useSimilarInvestigations = ({
     {
       select: (data) => {
         data.sort((resultA, resultB) => resultB.score - resultA.score);
-        // data.topics.sort(
-        //   ([, topicAScore], [, topicBScore]) => topicBScore - topicAScore
-        // );
         return data;
       },
       onError: (error) => {

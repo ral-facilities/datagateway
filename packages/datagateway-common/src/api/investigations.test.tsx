@@ -6,7 +6,6 @@ import handleICATError from '../handleICATError';
 import { createReactQueryWrapper } from '../setupTests';
 import {
   downloadInvestigation,
-  InvestigationSuggestions,
   useInvestigation,
   useInvestigationCount,
   useInvestigationDetails,
@@ -21,6 +20,8 @@ import {
   useISISInvestigationsPaginated,
   useSimilarInvestigations,
 } from './investigations';
+
+import { SuggestedInvestigation } from '../app.types';
 
 jest.mock('../handleICATError');
 
@@ -1793,7 +1794,7 @@ describe('investigation api functions', () => {
   });
 
   describe('useSimilarInvestigations', function () {
-    const mockSuggestions: InvestigationSuggestions = [
+    const mockSuggestions: SuggestedInvestigation[] = [
       {
         id: 1,
         visitId: 'visitId',

@@ -5,7 +5,6 @@ import configureStore from 'redux-mock-store';
 import { StateType } from '../../../state/app.types';
 import {
   dGCommonInitialState,
-  // InvestigationSuggestions,
   SuggestedInvestigation,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';

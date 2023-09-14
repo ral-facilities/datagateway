@@ -3,7 +3,6 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  // Chip,
   CircularProgress,
   Divider,
   Link,
@@ -17,11 +16,9 @@ import React from 'react';
 import {
   Investigation,
   SuggestedInvestigation,
-  // InvestigationSuggestions,
   useSimilarInvestigations,
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
-// import { blue } from '@mui/material/colors';
 
 interface SuggestedSectionProps {
   investigation: Investigation;
@@ -128,9 +125,6 @@ function SuggestionList({
         size="small"
         sx={{ pb: 2 }}
       />
-      {/* {suggestions.topics.length > 0 && (
-        <TopicChips topics={suggestions.topics} />
-      )} */}
       <List dense disablePadding>
         {displayedSuggestions.map((suggestion, i) => {
           const isLastItem = i === SUGGESTION_COUNT_PER_PAGE - 1;
@@ -153,47 +147,5 @@ function SuggestionList({
     </Stack>
   );
 }
-
-// function TopicChips({
-//   topics,
-// }: {
-//   topics: InvestigationSuggestions['topics'];
-// }): JSX.Element {
-//   const [, highestScore] = topics[0];
-//   const lowestScore = topics.at(-1)?.[1] ?? 0;
-
-//   return (
-//     <Stack
-//       direction="row"
-//       flexWrap="wrap"
-//       sx={{ px: 2, pb: 1, flexWrap: 'wrap', gap: 0.5 }}
-//     >
-//       {topics.map(([topicLabel, relevanceScore]) => {
-//         const relevanceScoreInList =
-//           Math.round(
-//             ((relevanceScore - lowestScore) / (highestScore - lowestScore)) * 10
-//           ) / 10;
-//         const colorShade = Math.max(
-//           relevanceScoreInList * 1000 - 100,
-//           50
-//         ) as keyof typeof blue;
-//         const chipColor = blue[`${colorShade}`];
-
-//         return (
-//           <Chip
-//             data-testid={`suggested-investigations-section-topic-${topicLabel}`}
-//             size="small"
-//             key={topicLabel}
-//             label={topicLabel}
-//             sx={{
-//               color: (theme) => theme.palette.getContrastText(chipColor),
-//               backgroundColor: chipColor,
-//             }}
-//           />
-//         );
-//       })}
-//     </Stack>
-//   );
-// }
 
 export default SuggestedInvestigationsSection;
