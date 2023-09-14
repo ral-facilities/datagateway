@@ -72,41 +72,34 @@ const DataHeader = (
   }
 
   const inner = !disableSort ? (
-    dataKey in sort ? (
-      <TableSortLabel
-        className={'tour-dataview-sort'}
-        active={true}
-        direction={currSortDirection}
-        onClick={(event) =>
-          onSort(dataKey, nextSortDirection, 'push', event.shiftKey)
-        }
-      >
-        <Typography noWrap sx={{ fontSize: 'inherit', lineHeight: 'inherit' }}>
-          {label}
-        </Typography>
-      </TableSortLabel>
-    ) : (
-      <TableSortLabel
-        className={'tour-dataview-sort'}
-        active={true}
-        direction={'desc'}
-        onClick={(event) => {
-          onSort(dataKey, nextSortDirection, 'push', event.shiftKey);
-          setHover(false);
-        }}
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
-        IconComponent={hover ? ArrowUpwardIcon : shiftDown ? AddIcon : SortIcon}
-        sx={{
-          transition: 'opacity 0.5s',
-          opacity: hover ? 0.7 : 1,
-        }}
-      >
-        <Typography noWrap sx={{ fontSize: 'inherit', lineHeight: 'inherit' }}>
-          {label}
-        </Typography>
-      </TableSortLabel>
-    )
+    <TableSortLabel
+      className={'tour-dataview-sort'}
+      active={true}
+      direction={!(dataKey in sort) ? 'desc' : currSortDirection}
+      onClick={(event) => {
+        onSort(dataKey, nextSortDirection, 'push', event.shiftKey);
+        if (!(dataKey in sort)) setHover(false);
+      }}
+      {...(!(dataKey in sort)
+        ? {
+            onMouseEnter: () => setHover(true),
+            onMouseLeave: () => setHover(false),
+            IconComponent: hover
+              ? ArrowUpwardIcon
+              : shiftDown
+              ? AddIcon
+              : SortIcon,
+            sx: {
+              transition: 'opacity 0.5s',
+              opacity: hover ? 0.7 : 1,
+            },
+          }
+        : {})}
+    >
+      <Typography noWrap sx={{ fontSize: 'inherit', lineHeight: 'inherit' }}>
+        {label}
+      </Typography>
+    </TableSortLabel>
   ) : (
     <Typography noWrap sx={{ fontSize: 'inherit', lineHeight: 'inherit' }}>
       {label}

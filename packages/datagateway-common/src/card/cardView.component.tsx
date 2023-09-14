@@ -642,35 +642,21 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                             >
                               <ListItemText primary={s.label} />
                               <ListItemIcon>
-                                {s.dataKey in sort ? (
+                                {
                                   <TableSortLabel
-                                    active={true}
+                                    active={s.dataKey in sort || shiftDown}
                                     direction={sort[s.dataKey]}
                                     // Set tabindex to -1 to prevent button focus
                                     tabIndex={-1}
+                                    IconComponent={
+                                      !(s.dataKey in sort) && shiftDown
+                                        ? AddIcon
+                                        : undefined
+                                    }
                                   >
                                     {s.dataKey in sort && sort[s.dataKey]}
                                   </TableSortLabel>
-                                ) : shiftDown ? (
-                                  <TableSortLabel
-                                    active={true}
-                                    direction={sort[s.dataKey]}
-                                    // Set tabindex to -1 to prevent button focus
-                                    tabIndex={-1}
-                                    IconComponent={AddIcon}
-                                  >
-                                    {s.dataKey in sort && sort[s.dataKey]}
-                                  </TableSortLabel>
-                                ) : (
-                                  <TableSortLabel
-                                    active={false}
-                                    direction={sort[s.dataKey]}
-                                    // Set tabindex to -1 to prevent button focus
-                                    tabIndex={-1}
-                                  >
-                                    {s.dataKey in sort && sort[s.dataKey]}
-                                  </TableSortLabel>
-                                )}
+                                }
                               </ListItemIcon>
                             </ListItem>
                           ))}
