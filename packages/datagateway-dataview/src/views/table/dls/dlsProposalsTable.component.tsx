@@ -6,6 +6,8 @@ import {
   useInvestigationsInfinite,
   useInvestigationCount,
   parseSearchToQuery,
+  parseQueryToSearch,
+  SortType,
   useSort,
   useTextFilter,
 } from 'datagateway-common';
@@ -18,6 +20,27 @@ import SubjectIcon from '@mui/icons-material/Subject';
 const DLSProposalsTable = (): React.ReactElement => {
   const location = useLocation();
   const [t] = useTranslation();
+  const handleSort = useSort();
+
+  // set default sort
+  const defaultSort: SortType = {
+    title: 'asc',
+  };
+  // apply default sort
+  // had to use useMemo because useEffect doesn't run until the component is mounted
+  React.useMemo(() => {
+    if (location.search === '') {
+      location.search = parseQueryToSearch({
+        ...parseSearchToQuery(location.search),
+        sort: defaultSort,
+      }).toString();
+      // TODO: will have to add shiftDown=true to append sort after improved sort ux pr is merged
+      for (const [column, order] of Object.entries(defaultSort)) {
+        handleSort(column, order, 'replace');
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const { filters, view, sort } = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -56,7 +79,6 @@ const DLSProposalsTable = (): React.ReactElement => {
   }, [data]);
 
   const textFilter = useTextFilter(filters);
-  const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
@@ -81,7 +103,7 @@ const DLSProposalsTable = (): React.ReactElement => {
         filterComponent: textFilter,
         // Sort to ensure a deterministic order for pagination (ignoreIDSort: true is
         // used above in useInvestigationsInfinite)
-        defaultSort: 'asc',
+        // defaultSort: 'asc',
         disableSort: true,
       },
       {

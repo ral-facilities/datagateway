@@ -5,6 +5,8 @@ import {
   ColumnType,
   formatCountOrSize,
   parseSearchToQuery,
+  parseQueryToSearch,
+  SortType,
   useDateFilter,
   useInvestigationCount,
   useInvestigationsInfinite,
@@ -33,6 +35,27 @@ const DLSVisitsTable = (props: DLSVisitsTableProps): React.ReactElement => {
 
   const [t] = useTranslation();
   const location = useLocation();
+  const handleSort = useSort();
+
+  // set default sort
+  const defaultSort: SortType = {
+    startDate: 'desc',
+  };
+  // apply default sort
+  // had to use useMemo because useEffect doesn't run until the component is mounted
+  React.useMemo(() => {
+    if (location.search === '') {
+      location.search = parseQueryToSearch({
+        ...parseSearchToQuery(location.search),
+        sort: defaultSort,
+      }).toString();
+      // TODO: will have to add shiftDown=true to append sort after improved sort ux pr is merged
+      for (const [column, order] of Object.entries(defaultSort)) {
+        handleSort(column, order, 'replace');
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const { filters, view, sort } = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -75,7 +98,6 @@ const DLSVisitsTable = (props: DLSVisitsTableProps): React.ReactElement => {
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
@@ -127,7 +149,7 @@ const DLSVisitsTable = (props: DLSVisitsTableProps): React.ReactElement => {
         label: t('investigations.start_date'),
         dataKey: 'startDate',
         filterComponent: dateFilter,
-        defaultSort: 'desc',
+        // defaultSort: 'desc',
       },
       {
         icon: CalendarToday,

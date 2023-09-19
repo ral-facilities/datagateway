@@ -451,7 +451,7 @@ const VirtualizedTable = React.memo(
                               labelString={label}
                               filterComponent={filterComponent}
                               resizeColumn={resizeColumn}
-                              defaultSort={defaultSort}
+                              // defaultSort={defaultSort}
                             />
                           )}
                           className={className}
