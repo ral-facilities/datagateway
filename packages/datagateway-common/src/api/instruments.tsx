@@ -104,7 +104,8 @@ export const useInstrumentsPaginated = (
 };
 
 export const useInstrumentsInfinite = (
-  additionalFilters?: AdditionalFilters
+  additionalFilters?: AdditionalFilters,
+  isMounted?: boolean
 ): UseInfiniteQueryResult<Instrument[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
@@ -114,12 +115,14 @@ export const useInstrumentsInfinite = (
     ['instrument', { sort: JSON.stringify(sort), filters }], // need to stringify sort as property order is important!
     (params) => {
       const offsetParams = params.pageParam ?? { startIndex: 0, stopIndex: 49 };
-      return fetchInstruments(
-        apiUrl,
-        { sort, filters },
-        additionalFilters,
-        offsetParams
-      );
+      return isMounted ?? true
+        ? fetchInstruments(
+            apiUrl,
+            { sort, filters },
+            additionalFilters,
+            offsetParams
+          )
+        : [];
     },
     {
       onError: (error) => {
