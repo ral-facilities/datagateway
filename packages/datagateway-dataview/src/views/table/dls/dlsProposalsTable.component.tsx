@@ -30,6 +30,12 @@ const DLSProposalsTable = (): React.ReactElement => {
       filterValue: JSON.stringify(['name', 'title']),
     },
   ]);
+
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const { fetchNextPage, data } = useInvestigationsInfinite(
     [
       {
@@ -39,7 +45,8 @@ const DLSProposalsTable = (): React.ReactElement => {
     ],
     // Do not add order by id as id is not a distinct field above and will otherwise
     // cause missing results
-    true
+    true,
+    isMounted
   );
 
   /* istanbul ignore next */

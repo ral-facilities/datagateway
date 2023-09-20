@@ -53,6 +53,11 @@ const ISISMyDataTable = (): React.ReactElement => {
     [location.search]
   );
 
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const { data: totalDataCount } = useInvestigationCount([
     {
       filterType: 'where',
@@ -61,26 +66,32 @@ const ISISMyDataTable = (): React.ReactElement => {
       }),
     },
   ]);
-  const { fetchNextPage, data } = useInvestigationsInfinite([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'investigationUsers.user.name': { eq: username },
-      }),
-    },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify([
-        {
-          investigationInstruments: 'instrument',
-        },
-        { investigationFacilityCycles: 'facilityCycle' },
-        {
-          dataCollectionInvestigations: { dataCollection: 'dataPublications' },
-        },
-      ]),
-    },
-  ]);
+  const { fetchNextPage, data } = useInvestigationsInfinite(
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'investigationUsers.user.name': { eq: username },
+        }),
+      },
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify([
+          {
+            investigationInstruments: 'instrument',
+          },
+          { investigationFacilityCycles: 'facilityCycle' },
+          {
+            dataCollectionInvestigations: {
+              dataCollection: 'dataPublications',
+            },
+          },
+        ]),
+      },
+    ],
+    undefined,
+    isMounted
+  );
   const { data: allIds, isLoading: allIdsLoading } = useIds(
     'investigation',
     [

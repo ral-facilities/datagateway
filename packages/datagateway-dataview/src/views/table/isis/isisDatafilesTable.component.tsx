@@ -91,18 +91,26 @@ const ISISDatafilesTable = (
     },
   ]);
 
-  const { fetchNextPage, data } = useDatafilesInfinite([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
-    },
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'dataset.investigation.id': { eq: investigationId },
-      }),
-    },
-  ]);
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const { fetchNextPage, data } = useDatafilesInfinite(
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
+      },
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'dataset.investigation.id': { eq: investigationId },
+        }),
+      },
+    ],
+    isMounted
+  );
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),

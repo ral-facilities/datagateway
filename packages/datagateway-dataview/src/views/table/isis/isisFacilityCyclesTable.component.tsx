@@ -33,11 +33,17 @@ const ISISFacilityCyclesTable = (
     [location.search]
   );
 
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const { data: totalDataCount } = useFacilityCycleCount(
     parseInt(instrumentId)
   );
   const { fetchNextPage, data } = useFacilityCyclesInfinite(
-    parseInt(instrumentId)
+    parseInt(instrumentId),
+    isMounted
   );
 
   /* istanbul ignore next */

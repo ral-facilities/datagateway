@@ -109,7 +109,8 @@ export const useDataPublicationsPaginated = (
 };
 
 export const useDataPublicationsInfinite = (
-  additionalFilters?: AdditionalFilters
+  additionalFilters?: AdditionalFilters,
+  isMounted?: boolean
 ): UseInfiniteQueryResult<DataPublication[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
@@ -123,12 +124,14 @@ export const useDataPublicationsInfinite = (
     ],
     (params) => {
       const offsetParams = params.pageParam ?? { startIndex: 0, stopIndex: 49 };
-      return fetchDataPublications(
-        apiUrl,
-        { sort, filters },
-        additionalFilters,
-        offsetParams
-      );
+      return isMounted ?? true
+        ? fetchDataPublications(
+            apiUrl,
+            { sort, filters },
+            additionalFilters,
+            offsetParams
+          )
+        : [];
     },
     {
       onError: (error) => {
