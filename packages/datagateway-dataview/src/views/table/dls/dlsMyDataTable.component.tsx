@@ -46,22 +46,32 @@ const DLSMyDataTable = (): React.ReactElement => {
       }),
     },
   ]);
-  const { fetchNextPage, data } = useInvestigationsInfinite([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'investigationUsers.user.name': { eq: username },
-      }),
-    },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify([
-        {
-          investigationInstruments: 'instrument',
-        },
-      ]),
-    },
-  ]);
+
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const { fetchNextPage, data } = useInvestigationsInfinite(
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'investigationUsers.user.name': { eq: username },
+        }),
+      },
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify([
+          {
+            investigationInstruments: 'instrument',
+          },
+        ]),
+      },
+    ],
+    undefined,
+    isMounted
+  );
 
   const datasetCountQueries = useInvestigationsDatasetCount(data);
 

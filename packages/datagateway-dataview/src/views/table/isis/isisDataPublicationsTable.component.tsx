@@ -47,17 +47,25 @@ const ISISDataPublicationsTable = (
     },
   ]);
 
-  const { fetchNextPage, data } = useDataPublicationsInfinite([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'content.dataCollectionInvestigations.investigation.investigationInstruments.instrument.id':
-          {
-            eq: instrumentId,
-          },
-      }),
-    },
-  ]);
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const { fetchNextPage, data } = useDataPublicationsInfinite(
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'content.dataCollectionInvestigations.investigation.investigationInstruments.instrument.id':
+            {
+              eq: instrumentId,
+            },
+        }),
+      },
+    ],
+    isMounted
+  );
 
   /* istanbul ignore next */
   const aggregatedData: DataPublication[] = React.useMemo(() => {

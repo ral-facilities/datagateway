@@ -92,14 +92,22 @@ const ISISDatasetsTable = (
     },
   ]);
 
-  const { fetchNextPage, data } = useDatasetsInfinite([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'investigation.id': { eq: investigationId },
-      }),
-    },
-  ]);
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const { fetchNextPage, data } = useDatasetsInfinite(
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'investigation.id': { eq: investigationId },
+        }),
+      },
+    ],
+    isMounted
+  );
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),

@@ -62,6 +62,11 @@ const ISISDatasetsCardView = (
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const { data: totalDataCount, isLoading: countLoading } = useDatasetCount([
     {
       filterType: 'where',
@@ -70,14 +75,17 @@ const ISISDatasetsCardView = (
       }),
     },
   ]);
-  const { data, isLoading: dataLoading } = useDatasetsPaginated([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'investigation.id': { eq: investigationId },
-      }),
-    },
-  ]);
+  const { data, isLoading: dataLoading } = useDatasetsPaginated(
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'investigation.id': { eq: investigationId },
+        }),
+      },
+    ],
+    isMounted
+  );
   const sizeQueries = useDatasetSizes(data);
 
   const pathRoot = dataPublication ? 'browseDataPublications' : 'browse';

@@ -43,6 +43,11 @@ const ISISDataPublicationsCardView = (
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const { data: totalDataCount, isLoading: countLoading } =
     useDataPublicationCount([
       {
@@ -56,17 +61,20 @@ const ISISDataPublicationsCardView = (
       },
     ]);
 
-  const { isLoading: dataLoading, data } = useDataPublicationsPaginated([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'content.dataCollectionInvestigations.investigation.investigationInstruments.instrument.id':
-          {
-            eq: instrumentId,
-          },
-      }),
-    },
-  ]);
+  const { isLoading: dataLoading, data } = useDataPublicationsPaginated(
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'content.dataCollectionInvestigations.investigation.investigationInstruments.instrument.id':
+            {
+              eq: instrumentId,
+            },
+        }),
+      },
+    ],
+    isMounted
+  );
 
   const title = React.useMemo(() => {
     const pathRoot = 'browseDataPublications';

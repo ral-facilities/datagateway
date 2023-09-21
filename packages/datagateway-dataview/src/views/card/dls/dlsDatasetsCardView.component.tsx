@@ -46,6 +46,11 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const { data: totalDataCount, isLoading: countLoading } = useDatasetCount([
     {
       filterType: 'where',
@@ -54,14 +59,17 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
       }),
     },
   ]);
-  const { data, isLoading: dataLoading } = useDatasetsPaginated([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'investigation.id': { eq: investigationId },
-      }),
-    },
-  ]);
+  const { data, isLoading: dataLoading } = useDatasetsPaginated(
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'investigation.id': { eq: investigationId },
+        }),
+      },
+    ],
+    isMounted
+  );
 
   const datafileCountQueries = useDatasetsDatafileCount(data);
 

@@ -91,25 +91,36 @@ const ISISInvestigationsCardView = (
     },
   ];
 
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const { data: totalDataCount, isLoading: countLoading } =
     useInvestigationCount(investigationQueryFilters);
-  const { data, isLoading: dataLoading } = useInvestigationsPaginated([
-    ...investigationQueryFilters,
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify([
-        {
-          investigationInstruments: 'instrument',
-        },
-        {
-          dataCollectionInvestigations: { dataCollection: 'dataPublications' },
-        },
-        {
-          investigationUsers: 'user',
-        },
-      ]),
-    },
-  ]);
+  const { data, isLoading: dataLoading } = useInvestigationsPaginated(
+    [
+      ...investigationQueryFilters,
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify([
+          {
+            investigationInstruments: 'instrument',
+          },
+          {
+            dataCollectionInvestigations: {
+              dataCollection: 'dataPublications',
+            },
+          },
+          {
+            investigationUsers: 'user',
+          },
+        ]),
+      },
+    ],
+    undefined,
+    isMounted
+  );
   const sizeQueries = useInvestigationSizes(data);
 
   const pathRoot = dataPublication ? 'browseDataPublications' : 'browse';

@@ -45,18 +45,28 @@ const DLSVisitsTable = (props: DLSVisitsTableProps): React.ReactElement => {
       filterValue: JSON.stringify({ name: { eq: proposalName } }),
     },
   ]);
-  const { fetchNextPage, data } = useInvestigationsInfinite([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({ name: { eq: proposalName } }),
-    },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify({
-        investigationInstruments: 'instrument',
-      }),
-    },
-  ]);
+
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const { fetchNextPage, data } = useInvestigationsInfinite(
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({ name: { eq: proposalName } }),
+      },
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify({
+          investigationInstruments: 'instrument',
+        }),
+      },
+    ],
+    undefined,
+    isMounted
+  );
 
   const datasetCountQueries = useInvestigationsDatasetCount(data);
 

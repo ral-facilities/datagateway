@@ -33,8 +33,13 @@ const ISISInstrumentsTable = (
     [location.search]
   );
 
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const { data: totalDataCount } = useInstrumentCount();
-  const { fetchNextPage, data } = useInstrumentsInfinite();
+  const { fetchNextPage, data } = useInstrumentsInfinite(undefined, isMounted);
 
   /* istanbul ignore next */
   const aggregatedData: Instrument[] = React.useMemo(() => {
