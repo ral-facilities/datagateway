@@ -56,7 +56,8 @@ const fetchInstruments = (
 };
 
 export const useInstrumentsPaginated = (
-  additionalFilters?: AdditionalFilters
+  additionalFilters?: AdditionalFilters,
+  isMounted?: boolean
 ): UseQueryResult<Instrument[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
@@ -89,10 +90,12 @@ export const useInstrumentsPaginated = (
       const { page, results } = params.queryKey[1];
       const startIndex = (page - 1) * results;
       const stopIndex = startIndex + results - 1;
-      return fetchInstruments(apiUrl, { sort, filters }, additionalFilters, {
-        startIndex,
-        stopIndex,
-      });
+      return (isMounted ?? true) || Object.keys(sort).length
+        ? fetchInstruments(apiUrl, { sort, filters }, additionalFilters, {
+            startIndex,
+            stopIndex,
+          })
+        : [];
     },
     {
       onError: (error) => {
@@ -115,7 +118,7 @@ export const useInstrumentsInfinite = (
     ['instrument', { sort: JSON.stringify(sort), filters }], // need to stringify sort as property order is important!
     (params) => {
       const offsetParams = params.pageParam ?? { startIndex: 0, stopIndex: 49 };
-      return isMounted ?? true
+      return (isMounted ?? true) || Object.keys(sort).length
         ? fetchInstruments(
             apiUrl,
             { sort, filters },

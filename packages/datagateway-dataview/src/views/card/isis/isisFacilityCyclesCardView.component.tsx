@@ -41,10 +41,16 @@ const ISISFacilityCyclesCardView = (
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const { data: totalDataCount, isLoading: countLoading } =
     useFacilityCycleCount(parseInt(instrumentId));
   const { isLoading: dataLoading, data } = useFacilityCyclesPaginated(
-    parseInt(instrumentId)
+    parseInt(instrumentId),
+    isMounted
   );
 
   const title: CardViewDetails = React.useMemo(

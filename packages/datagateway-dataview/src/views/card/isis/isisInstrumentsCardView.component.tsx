@@ -41,9 +41,17 @@ const ISISInstrumentsCardView = (
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const { data: totalDataCount, isLoading: countLoading } =
     useInstrumentCount();
-  const { isLoading: dataLoading, data } = useInstrumentsPaginated();
+  const { isLoading: dataLoading, data } = useInstrumentsPaginated(
+    undefined,
+    isMounted
+  );
 
   const title: CardViewDetails = React.useMemo(() => {
     const pathRoot = dataPublication ? 'browseDataPublications' : 'browse';

@@ -95,7 +95,8 @@ export const useDataset = (
 };
 
 export const useDatasetsPaginated = (
-  additionalFilters?: AdditionalFilters
+  additionalFilters?: AdditionalFilters,
+  isMounted?: boolean
 ): UseQueryResult<Dataset[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
@@ -130,10 +131,12 @@ export const useDatasetsPaginated = (
       const { page, results } = params.queryKey[1];
       const startIndex = (page - 1) * results;
       const stopIndex = startIndex + results - 1;
-      return fetchDatasets(apiUrl, { sort, filters }, additionalFilters, {
-        startIndex,
-        stopIndex,
-      });
+      return (isMounted ?? true) || Object.keys(sort).length
+        ? fetchDatasets(apiUrl, { sort, filters }, additionalFilters, {
+            startIndex,
+            stopIndex,
+          })
+        : [];
     },
     {
       onError: (error) => {
@@ -156,7 +159,7 @@ export const useDatasetsInfinite = (
     ['dataset', { sort: JSON.stringify(sort), filters }, additionalFilters], // need to stringify sort as property order is important!
     (params) => {
       const offsetParams = params.pageParam ?? { startIndex: 0, stopIndex: 49 };
-      return isMounted ?? true
+      return (isMounted ?? true) || Object.keys(sort).length
         ? fetchDatasets(
             apiUrl,
             { sort, filters },

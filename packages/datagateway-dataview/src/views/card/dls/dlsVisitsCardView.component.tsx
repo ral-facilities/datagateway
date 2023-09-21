@@ -51,6 +51,11 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const { data: totalDataCount, isLoading: countLoading } =
     useInvestigationCount([
       {
@@ -58,18 +63,22 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
         filterValue: JSON.stringify({ name: { eq: proposalName } }),
       },
     ]);
-  const { isLoading: dataLoading, data } = useInvestigationsPaginated([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({ name: { eq: proposalName } }),
-    },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify({
-        investigationInstruments: 'instrument',
-      }),
-    },
-  ]);
+  const { isLoading: dataLoading, data } = useInvestigationsPaginated(
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({ name: { eq: proposalName } }),
+      },
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify({
+          investigationInstruments: 'instrument',
+        }),
+      },
+    ],
+    undefined,
+    isMounted
+  );
   const countQueries = useInvestigationsDatasetCount(data);
 
   const title = React.useMemo(

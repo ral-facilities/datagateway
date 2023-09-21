@@ -54,7 +54,8 @@ const fetchDataPublications = (
 };
 
 export const useDataPublicationsPaginated = (
-  additionalFilters?: AdditionalFilters
+  additionalFilters?: AdditionalFilters,
+  isMounted?: boolean
 ): UseQueryResult<DataPublication[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
@@ -89,15 +90,12 @@ export const useDataPublicationsPaginated = (
       const { page, results } = params.queryKey[1];
       const startIndex = (page - 1) * results;
       const stopIndex = startIndex + results - 1;
-      return fetchDataPublications(
-        apiUrl,
-        { sort, filters },
-        additionalFilters,
-        {
-          startIndex,
-          stopIndex,
-        }
-      );
+      return (isMounted ?? true) || Object.keys(sort).length
+        ? fetchDataPublications(apiUrl, { sort, filters }, additionalFilters, {
+            startIndex,
+            stopIndex,
+          })
+        : [];
     },
     {
       onError: (error) => {
@@ -124,7 +122,7 @@ export const useDataPublicationsInfinite = (
     ],
     (params) => {
       const offsetParams = params.pageParam ?? { startIndex: 0, stopIndex: 49 };
-      return isMounted ?? true
+      return (isMounted ?? true) || Object.keys(sort).length
         ? fetchDataPublications(
             apiUrl,
             { sort, filters },

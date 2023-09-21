@@ -97,7 +97,8 @@ export const useInvestigation = (
 
 export const useInvestigationsPaginated = (
   additionalFilters?: AdditionalFilters,
-  ignoreIDSort?: boolean
+  ignoreIDSort?: boolean,
+  isMounted?: boolean
 ): UseQueryResult<Investigation[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
@@ -134,16 +135,18 @@ export const useInvestigationsPaginated = (
       const { page, results } = params.queryKey[1];
       const startIndex = (page - 1) * results;
       const stopIndex = startIndex + results - 1;
-      return fetchInvestigations(
-        apiUrl,
-        { sort, filters },
-        additionalFilters,
-        {
-          startIndex,
-          stopIndex,
-        },
-        ignoreIDSort
-      );
+      return (isMounted ?? true) || Object.keys(sort).length
+        ? fetchInvestigations(
+            apiUrl,
+            { sort, filters },
+            additionalFilters,
+            {
+              startIndex,
+              stopIndex,
+            },
+            ignoreIDSort
+          )
+        : [];
     },
     {
       onError: (error) => {
@@ -172,7 +175,7 @@ export const useInvestigationsInfinite = (
     ],
     (params) => {
       const offsetParams = params.pageParam ?? { startIndex: 0, stopIndex: 49 };
-      return isMounted ?? true
+      return (isMounted ?? true) || Object.keys(sort).length
         ? fetchInvestigations(
             apiUrl,
             { sort, filters },

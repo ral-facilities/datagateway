@@ -31,6 +31,11 @@ const DLSProposalsCardView = (): React.ReactElement => {
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const { data: totalDataCount, isLoading: countLoading } =
     useInvestigationCount([
       {
@@ -47,7 +52,8 @@ const DLSProposalsCardView = (): React.ReactElement => {
     ],
     // Do not add order by id as id is not a distinct field above and will otherwise
     // cause missing results
-    true
+    true,
+    isMounted
   );
 
   const title: CardViewDetails = React.useMemo(
