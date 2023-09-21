@@ -11,8 +11,6 @@ import {
   useDatafileCount,
   useDatafilesInfinite,
   parseSearchToQuery,
-  parseQueryToSearch,
-  SortType,
   useTextFilter,
   useDateFilter,
   ColumnType,
@@ -42,28 +40,8 @@ const ISISDatafilesTable = (
   const { datasetId, investigationId } = props;
 
   const [t] = useTranslation();
-  const handleSort = useSort();
-  const location = useLocation();
 
-  // set default sort
-  const defaultSort: SortType = {
-    modTime: 'desc',
-  };
-  // apply default sort
-  // had to use useMemo because useEffect doesn't run until the component is mounted
-  React.useMemo(() => {
-    if (location.search === '') {
-      location.search = parseQueryToSearch({
-        ...parseSearchToQuery(location.search),
-        sort: defaultSort,
-      }).toString();
-      // TODO: will have to add shiftDown=true to append sort after improved sort ux pr is merged
-      for (const [column, order] of Object.entries(defaultSort)) {
-        handleSort(column, order, 'replace');
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const location = useLocation();
 
   const selectAllSetting = useSelector(
     (state: StateType) => state.dgdataview.selectAllSetting
@@ -76,6 +54,7 @@ const ISISDatafilesTable = (
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
+  const handleSort = useSort();
 
   const { data: allIds, isLoading: allIdsLoading } = useIds(
     'datafile',
@@ -180,7 +159,7 @@ const ISISDatafilesTable = (
         label: t('datafiles.modified_time'),
         dataKey: 'modTime',
         filterComponent: dateFilter,
-        // defaultSort: 'desc',
+        defaultSort: 'desc',
       },
     ],
     [t, dateFilter, textFilter]

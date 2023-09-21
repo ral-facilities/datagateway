@@ -2,7 +2,6 @@ import {
   ColumnType,
   Instrument,
   parseSearchToQuery,
-  parseQueryToSearch,
   Table,
   tableLink,
   useInstrumentCount,
@@ -10,7 +9,6 @@ import {
   useSort,
   useTextFilter,
   ISISInstrumentDetailsPanel,
-  SortType,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -29,28 +27,6 @@ const ISISInstrumentsTable = (
 
   const location = useLocation();
   const [t] = useTranslation();
-
-  const handleSort = useSort();
-
-  // set default sort
-  const defaultSort: SortType = {
-    fullName: 'asc',
-  };
-  // apply default sort
-  // had to use useMemo because useEffect doesn't run until the component is mounted
-  React.useMemo(() => {
-    if (location.search === '') {
-      location.search = parseQueryToSearch({
-        ...parseSearchToQuery(location.search),
-        sort: defaultSort,
-      }).toString();
-      // TODO: will have to add shiftDown=true to append sort after improved sort ux pr is merged
-      for (const [column, order] of Object.entries(defaultSort)) {
-        handleSort(column, order, 'replace');
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const { filters, view, sort } = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -74,6 +50,7 @@ const ISISInstrumentsTable = (
   }, [data]);
 
   const textFilter = useTextFilter(filters);
+  const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
@@ -100,7 +77,7 @@ const ISISInstrumentsTable = (
           );
         },
         filterComponent: textFilter,
-        // defaultSort: 'asc',
+        defaultSort: 'asc',
       },
       {
         icon: SubjectIcon,

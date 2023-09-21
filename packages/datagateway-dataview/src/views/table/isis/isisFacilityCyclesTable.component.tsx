@@ -2,8 +2,6 @@ import {
   ColumnType,
   FacilityCycle,
   parseSearchToQuery,
-  parseQueryToSearch,
-  SortType,
   useFacilityCycleCount,
   useFacilityCyclesInfinite,
   useSort,
@@ -29,27 +27,6 @@ const ISISFacilityCyclesTable = (
 
   const location = useLocation();
   const [t] = useTranslation();
-  const pushSort = useSort();
-
-  // set default sort
-  const defaultSort: SortType = {
-    startDate: 'desc',
-  };
-  // apply default sort
-  // had to use useMemo because useEffect doesn't run until the component is mounted
-  React.useMemo(() => {
-    if (location.search === '') {
-      location.search = parseQueryToSearch({
-        ...parseSearchToQuery(location.search),
-        sort: defaultSort,
-      }).toString();
-      // TODO: will have to add shiftDown=true to append sort after improved sort ux pr is merged
-      for (const [column, order] of Object.entries(defaultSort)) {
-        pushSort(column, order, 'replace');
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const { filters, view, sort } = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -78,6 +55,7 @@ const ISISFacilityCyclesTable = (
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
+  const pushSort = useSort();
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
@@ -103,7 +81,7 @@ const ISISFacilityCyclesTable = (
         label: t('facilitycycles.start_date'),
         dataKey: 'startDate',
         filterComponent: dateFilter,
-        // defaultSort: 'desc',
+        defaultSort: 'desc',
       },
       {
         icon: CalendarToday,

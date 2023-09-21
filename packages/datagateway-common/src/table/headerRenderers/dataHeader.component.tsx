@@ -24,7 +24,7 @@ const DataHeader = (
     labelString: string;
     icon?: React.ComponentType<unknown>;
     filterComponent?: (label: string, dataKey: string) => React.ReactElement;
-    // defaultSort?: Order;
+    defaultSort?: Order;
   }
 ): React.ReactElement => {
   const {
@@ -35,7 +35,7 @@ const DataHeader = (
     label,
     labelString,
     disableSort,
-    // defaultSort,
+    defaultSort,
     resizeColumn,
     icon: Icon,
     filterComponent,
@@ -45,11 +45,11 @@ const DataHeader = (
 
   //Apply default sort on page load (but only if not already defined in URL params)
   //This will apply them in the order of the column definitions given to a table
-  // React.useEffect(() => {
-  //   if (defaultSort !== undefined && currSortDirection === undefined)
-  //     onSort(dataKey, defaultSort, 'replace');
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
+  React.useEffect(() => {
+    if (defaultSort !== undefined && currSortDirection === undefined)
+      onSort(dataKey, defaultSort, 'replace');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   let nextSortDirection: Order | null = null;
   switch (currSortDirection) {
