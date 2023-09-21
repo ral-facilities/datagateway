@@ -102,6 +102,7 @@ export const useInstrumentsPaginated = (
         handleICATError(error);
       },
       retry: retryICATErrors,
+      cacheTime: isMounted ? 300000 : 0,
     }
   );
 };

@@ -145,6 +145,7 @@ export const useFacilityCyclesPaginated = (
         handleICATError(error);
       },
       retry: retryICATErrors,
+      cacheTime: isMounted ? 300000 : 0,
     }
   );
 };

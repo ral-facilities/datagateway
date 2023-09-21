@@ -143,6 +143,7 @@ export const useDatasetsPaginated = (
         handleICATError(error);
       },
       retry: retryICATErrors,
+      cacheTime: isMounted ? 300000 : 0,
     }
   );
 };
