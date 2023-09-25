@@ -35,7 +35,7 @@ exports[`Text filter component renders correctly 1`] = `
             <div
               aria-expanded="false"
               aria-haspopup="listbox"
-              aria-label="include or exclude"
+              aria-label="include, exclude or exact"
               aria-labelledby="test-select-filter-type"
               class="MuiSelect-select MuiSelect-standard MuiInputBase-input MuiInput-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
               id="test-select-filter-type"
@@ -108,7 +108,7 @@ exports[`Text filter component usePrincipalExperimenterFilter hook returns a fun
             <div
               aria-expanded="false"
               aria-haspopup="listbox"
-              aria-label="include or exclude"
+              aria-label="include, exclude or exact"
               aria-labelledby="Principal Investigator-select-filter-type"
               class="MuiSelect-select MuiSelect-standard MuiInputBase-input MuiInput-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
               id="Principal Investigator-select-filter-type"
@@ -181,7 +181,7 @@ exports[`Text filter component useTextFilter hook returns a function which can g
             <div
               aria-expanded="false"
               aria-haspopup="listbox"
-              aria-label="include or exclude"
+              aria-label="include, exclude or exact"
               aria-labelledby="Name-select-filter-type"
               class="MuiSelect-select MuiSelect-standard MuiInputBase-input MuiInput-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
               id="Name-select-filter-type"

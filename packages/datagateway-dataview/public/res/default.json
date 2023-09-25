@@ -10,7 +10,7 @@
     "open_data_warning": {
       "message": "Open data",
       "tooltip": "Only open data is displayed when browsing anonymously. Please login to see embargoed data.",
-      "studies_tooltip": "Only open data is currently supported by the experiment view. Please browse via facility cycle to view closed data",
+      "datapublications_tooltip": "Only open data is currently supported by the experiment view. Please browse via facility cycle to view closed data",
       "tooltip_link": "Click here to learn more about our data policy.",
       "aria_label": "More information about open data"
     }
@@ -19,7 +19,7 @@
     "home": "Home",
     "instrument_other": "Instruments",
     "facilityCycle_other": "Facility Cycles",
-    "study_other": "Experiments",
+    "dataPublication_other": "Experiments",
     "proposal_other": "Proposals",
     "investigation_other": "Investigations",
     "dataset_other": "Datasets",
@@ -51,12 +51,13 @@
     "end_date": "End Date",
     "start_date": "Start Date"
   },
-  "studies": {
+  "datapublications": {
     "name": "Name",
     "title": "Title",
+    "description": "Description",
     "pid": "DOI",
-    "end_date": "End Date",
-    "start_date": "Start Date",
+    "id": "Data Publication ID",
+    "publication_date": "Publication Date",
     "details": {
       "label": "Experiment Details",
       "investigations": "View Investigations",
@@ -109,9 +110,9 @@
       "end_date": "End Date",
       "start_date": "Start Date",
       "visit_id": "Experiment Part",
-      "pid": "Part DOI",
+      "pid": "DOI",
       "summary": "Summary",
-      "doi": "DOI",
+      "doi": "Part DOI",
       "size": "Size",
       "calculate": "Calculate",
       "datasets": "View Datasets",
@@ -267,48 +268,22 @@
     "show": "Show Advanced Filters",
     "hide": "Hide Advanced Filters",
     "icons": {
-      "title": [
-        "Title",
-        "Name",
-        "Type"
-      ],
-      "fingerprint": [
-        "Visit ID",
-        "Name"
-      ],
-      "public": [
-        "DOI"
-      ],
-      "confirmation_number": [
-        "Dataset Count",
-        " Datafile Count"
-      ],
-      "assessment": [
-        "Instrument",
-        "Beamline"
-      ],
+      "title": ["Title", "Name", "Type"],
+      "fingerprint": ["Visit ID", "Name"],
+      "public": ["DOI"],
+      "confirmation_number": ["Dataset Count", " Datafile Count"],
+      "assessment": ["Instrument", "Beamline"],
       "calendar_today": [
         "Start Date",
         "End Date",
         "Create Time",
         "Modified Time"
       ],
-      "explore": [
-        "Location"
-      ],
-      "save": [
-        "Size"
-      ],
-      "description": [
-        "Description",
-        "Summary"
-      ],
-      "link": [
-        "URL"
-      ],
-      "person": [
-        "Principal Investigator"
-      ]
+      "explore": ["Location"],
+      "save": ["Size"],
+      "description": ["Description", "Summary"],
+      "link": ["URL"],
+      "person": ["Principal Investigator"]
     }
   },
   "entity_card": {

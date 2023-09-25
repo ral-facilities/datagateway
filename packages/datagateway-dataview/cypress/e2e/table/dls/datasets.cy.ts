@@ -50,205 +50,68 @@ describe('DLS - Datasets Table', () => {
     cy.get('[aria-rowcount="75"]').should('exist');
   });
 
-  it('should be able to resize a column', () => {
-    let columnWidth = 0;
+  it('should be able to sort by all sort directions on single and multiple columns', () => {
+    //Revert the default sort
+    cy.contains('[role="button"]', 'Create Time').as('timeSortButton').click();
 
-    cy.window()
-      .then((window) => {
-        const windowWidth = window.innerWidth;
-        // Account for select and details column widths
-        columnWidth = (windowWidth - 40 - 40) / 4;
-      })
-      .then(() => expect(columnWidth).to.not.equal(0));
+    // ascending order
+    cy.contains('[role="button"]', 'Name').as('nameSortButton').click();
+    cy.wait('@datasets', { timeout: 10000 });
 
-    cy.get('[role="columnheader"]').eq(2).as('nameColumn');
-    cy.get('[role="columnheader"]').eq(3).as('datafileCountColumn');
+    cy.get('[aria-sort="ascending"]').should('exist');
+    cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
+    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
 
-    cy.get('@nameColumn').should(($column) => {
-      const { width } = $column[0].getBoundingClientRect();
-      expect(width).to.equal(columnWidth);
-    });
+    // descending order
+    cy.get('@nameSortButton').click();
+    cy.wait('@datasets', { timeout: 10000 });
 
-    cy.get('@datafileCountColumn').should(($column) => {
-      const { width } = $column[0].getBoundingClientRect();
-      expect(width).to.equal(columnWidth);
-    });
+    cy.get('[aria-sort="descending"]').should('exist');
+    cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
+      'not.have.css',
+      'opacity',
+      '0'
+    );
+    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 61');
 
-    cy.get('.react-draggable')
-      .first()
-      .trigger('mousedown')
-      .trigger('mousemove', { clientX: 400 })
-      .trigger('mouseup');
+    // no order
+    cy.get('@nameSortButton').click();
+    cy.get('[aria-sort="ascending"]').should('not.exist');
+    cy.get('[aria-sort="descending"]').should('not.exist');
+    cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
+    cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
+      'have.css',
+      'opacity',
+      '0'
+    );
+    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
 
-    cy.get('@nameColumn').should(($column) => {
-      const { width } = $column[0].getBoundingClientRect();
-      expect(width).to.be.greaterThan(columnWidth);
-    });
+    // multiple columns
+    cy.get('@timeSortButton').click();
+    cy.wait('@datasets', { timeout: 10000 });
+    cy.get('@nameSortButton').click();
+    cy.wait('@datasets', { timeout: 10000 });
+    cy.get('@nameSortButton').click();
+    cy.wait('@datasets', { timeout: 10000 });
 
-    cy.get('@datafileCountColumn').should(($column) => {
-      const { width } = $column[0].getBoundingClientRect();
-      expect(width).to.be.lessThan(columnWidth);
-    });
-
-    // table width should grow if a column grows too large
-    cy.get('.react-draggable')
-      .first()
-      .trigger('mousedown')
-      .trigger('mousemove', { clientX: 800 })
-      .trigger('mouseup');
-
-    cy.get('@datafileCountColumn').should(($column) => {
-      const { width } = $column[0].getBoundingClientRect();
-      expect(width).to.be.equal(84);
-    });
-
-    cy.get('[aria-label="grid"]').then(($grid) => {
-      const { width } = $grid[0].getBoundingClientRect();
-      cy.window().should(($window) => {
-        expect(width).to.be.greaterThan($window.innerWidth);
-      });
-    });
+    cy.get('[aria-rowcount="2"]').should('exist');
+    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
   });
 
-  describe('should be able to sort by', () => {
-    beforeEach(() => {
-      //Revert the default sort
-      cy.contains('[role="button"]', 'Create Time').click();
-    });
+  it('should be able to filter with both text & date filters on multiple columns', () => {
+    // test text filter
+    cy.get('[aria-label="Filter by Name"]').first().type('61');
 
-    it('ascending order', () => {
-      cy.contains('[role="button"]', 'Name')
-        .click()
-        .wait('@datasets', { timeout: 10000 });
+    cy.get('[aria-rowcount="1"]').should('exist');
+    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 61');
 
-      cy.get('[aria-sort="ascending"]').should('exist');
-      cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
-    });
-
-    it('descending order', () => {
-      cy.contains('[role="button"]', 'Name')
-        .click()
-        .wait('@datasets', { timeout: 10000 });
-      cy.contains('[role="button"]', 'Name')
-        .click()
-        .wait('@datasets', { timeout: 10000 });
-
-      cy.get('[aria-sort="descending"]').should('exist');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
-        'not.have.css',
-        'opacity',
-        '0'
-      );
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 61');
-    });
-
-    it('no order', () => {
-      cy.contains('[role="button"]', 'Name')
-        .click()
-        .wait('@datasets', { timeout: 10000 });
-      cy.contains('[role="button"]', 'Name')
-        .click()
-        .wait('@datasets', { timeout: 10000 });
-      cy.contains('[role="button"]', 'Name').click();
-
-      cy.get('[aria-sort="ascending"]').should('not.exist');
-      cy.get('[aria-sort="descending"]').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
-        'have.css',
-        'opacity',
-        '0'
-      );
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
-    });
-
-    it('multiple columns', () => {
-      cy.contains('[role="button"]', 'Create Time')
-        .click()
-        .wait('@datasets', { timeout: 10000 });
-      cy.contains('[role="button"]', 'Name')
-        .click()
-        .wait('@datasets', { timeout: 10000 });
-      cy.contains('[role="button"]', 'Name')
-        .click()
-        .wait('@datasets', { timeout: 10000 });
-
-      cy.get('[aria-rowcount="2"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
-    });
-  });
-
-  describe('should be able to filter by', () => {
-    it('text', () => {
-      cy.get('[aria-label="Filter by Name"]').first().type('DATASET 1');
-
-      cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
-    });
-
-    it('date between', () => {
-      const date = new Date();
-
-      cy.get('input[id="Create Time filter from"]').type('2002-01-01');
-      cy.get('input[id="Create Time filter to"]').type(
-        date.toISOString().slice(0, 10)
-      );
-
-      cy.get('[aria-rowcount="2"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 61');
-    });
-
-    it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Name"]')
-        .first()
-        .type('1')
-        .wait(['@datasetsCount', '@datasets'], { timeout: 10000 });
-
-      cy.get('input[id="Create Time filter from"]')
-        .type('2006-11-21')
-        .wait(['@datasetsCount', '@datasets'], { timeout: 10000 });
-
-      cy.get('[aria-rowcount="2"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 61');
-    });
+    // test date filter
+    cy.get('input[aria-label="Create Time filter to"]').type('2002-01-01');
+    cy.get('[aria-rowcount="0"]').should('exist');
   });
 
   describe('should be able to view details', () => {
-    beforeEach(() => {
-      //Revert the default sort
-      cy.contains('[role="button"]', 'Create Time').click();
-    });
-
-    it('when no other row is showing details', () => {
-      cy.get('[aria-label="Show details"]').first().click();
-
-      cy.get('#details-panel').should('be.visible');
-      cy.get('[aria-label="Hide details"]').should('exist');
-    });
-
-    it('when another row is showing details', () => {
-      cy.get('[aria-label="Show details"]').eq(1).click();
-
-      cy.get('[aria-label="Show details"]').first().click();
-
-      cy.get('#details-panel').contains('DATASET 1').should('be.visible');
-      cy.get('#details-panel').contains('DATASET 241').should('not.exist');
-      cy.get('[aria-label="Hide details"]').should('have.length', 1);
-    });
-
-    it('and view dataset details', () => {
-      cy.get('[aria-label="Show details"]').first().click();
-
-      cy.get('#details-panel')
-        .contains(
-          'Suggest shake effort many last prepare small. Maintain throw hope parent. ' +
-            'Entire soon option bill fish against power. Rather why rise month shake voice.'
-        )
-        .should('be.visible');
-    });
-
-    it('and then calculate file size', () => {
+    it('and can calculate size, all the details are correct & also able to hide the panel', () => {
       // need to wait for counts to finish, otherwise cypress might interact with the details panel
       // too quickly and it rerenders during the test
       cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '15').should(
@@ -258,14 +121,33 @@ describe('DLS - Datasets Table', () => {
         'exist'
       );
 
+      cy.get('[aria-label="Show details"]').eq(1).click();
+
+      cy.get('#details-panel').should('be.visible');
+      cy.get('[aria-label="Hide details"]').should('exist');
+      cy.get('#details-panel').contains('DATASET 1').should('be.visible');
+
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.contains('#calculate-size-btn', 'Calculate')
-        .should('exist')
-        .click({ force: true });
-      cy.contains('1.39 GB', { timeout: 10000 })
-        .scrollIntoView()
+      cy.get('#details-panel').contains('DATASET 61').should('be.visible');
+      cy.get('#details-panel').contains('DATASET 1').should('not.exist');
+      cy.get('[aria-label="Hide details"]').should('have.length', 1);
+
+      cy.get('#details-panel')
+        .contains('Home down your nice amount successful')
         .should('be.visible');
+
+      cy.contains('#calculate-size-btn', 'Calculate').should('exist').click();
+      cy.contains('1.73 GB', { timeout: 10000 }).should('be.visible');
+
+      cy.get('[aria-controls="dataset-type-panel"]').click();
+      cy.get('#dataset-type-panel').should('not.have.attr', 'hidden');
+      cy.get('#details-panel').contains('DATASETTYPE 3');
+
+      cy.get('[aria-label="Hide details"]').first().click();
+
+      cy.get('#details-panel').should('not.exist');
+      cy.get('[aria-label="Hide details"]').should('not.exist');
     });
 
     it('and then calculate file size when the value is 0 ', () => {
@@ -282,57 +164,9 @@ describe('DLS - Datasets Table', () => {
 
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.contains('#calculate-size-btn', 'Calculate')
-        .should('exist')
-        .click({ force: true });
-      cy.contains('0 B', { timeout: 10000 })
-        .scrollIntoView()
-        .should('be.visible');
+      cy.contains('#calculate-size-btn', 'Calculate').should('exist').click();
+
+      cy.contains('0 B', { timeout: 10000 }).should('be.visible');
     });
-
-    it('and view the dataset type panel', () => {
-      // need to wait for counts to finish, otherwise cypress might interact with the details panel
-      // too quickly and it rerenders during the test
-      cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '15').should(
-        'exist'
-      );
-      cy.contains('[aria-rowindex="2"] [aria-colindex="4"]', '15').should(
-        'exist'
-      );
-
-      cy.get('[aria-label="Show details"]').first().click();
-
-      cy.get('[aria-controls="dataset-type-panel"]').click();
-
-      cy.get('#dataset-type-panel').should('not.have.attr', 'hidden');
-      cy.get('#details-panel').contains('DATASETTYPE 2').should('be.visible');
-    });
-
-    it('and then not view details anymore', () => {
-      cy.get('[aria-label="Show details"]').first().click();
-
-      cy.get('[aria-label="Hide details"]').first().click();
-
-      cy.get('#details-panel').should('not.exist');
-      cy.get('[aria-label="Hide details"]').should('not.exist');
-    });
-  });
-
-  it('should display correct datafile count after filtering', () => {
-    cy.visit('/browse/proposal/INVESTIGATION%202/investigation/2/dataset').wait(
-      ['@investigationsFindOne', '@datasetsCount', '@datasets'],
-      {
-        timeout: 10000,
-      }
-    );
-
-    cy.get('[aria-label="Filter by Name"]')
-      .first()
-      .type('DATASET 62')
-      .wait(['@datasetsCount', '@datasets'], {
-        timeout: 10000,
-      });
-
-    cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('1');
   });
 });

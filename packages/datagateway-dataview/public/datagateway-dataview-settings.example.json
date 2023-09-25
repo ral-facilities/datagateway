@@ -136,7 +136,7 @@
     },
     {
       "section": "Browse",
-      "link": "/browseStudyHierarchy/instrument?sort={\"fullName\":\"asc\"}",
+      "link": "/browseDataPublications/instrument?sort={\"fullName\":\"asc\"}",
       "displayName": "Experiments",
       "order": 4
     },

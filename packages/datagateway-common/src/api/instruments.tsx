@@ -69,16 +69,24 @@ export const useInstrumentsPaginated = (
     [
       string,
       {
-        sort: SortType;
+        sort: string;
         filters: FiltersType;
         page: number;
         results: number;
       }
     ]
   >(
-    ['instrument', { sort, filters, page: page ?? 1, results: results ?? 10 }],
+    [
+      'instrument',
+      {
+        sort: JSON.stringify(sort), // need to stringify sort as property order is important!
+        filters,
+        page: page ?? 1,
+        results: results ?? 10,
+      },
+    ],
     (params) => {
-      const { sort, filters, page, results } = params.queryKey[1];
+      const { page, results } = params.queryKey[1];
       const startIndex = (page - 1) * results;
       const stopIndex = startIndex + results - 1;
       return fetchInstruments(apiUrl, { sort, filters }, additionalFilters, {
@@ -102,15 +110,9 @@ export const useInstrumentsInfinite = (
   const location = useLocation();
   const { filters, sort } = parseSearchToQuery(location.search);
 
-  return useInfiniteQuery<
-    Instrument[],
-    AxiosError,
-    Instrument[],
-    [string, { sort: SortType; filters: FiltersType }]
-  >(
-    ['instrument', { sort, filters }],
+  return useInfiniteQuery(
+    ['instrument', { sort: JSON.stringify(sort), filters }], // need to stringify sort as property order is important!
     (params) => {
-      const { sort, filters } = params.queryKey[1];
       const offsetParams = params.pageParam ?? { startIndex: 0, stopIndex: 49 };
       return fetchInstruments(
         apiUrl,

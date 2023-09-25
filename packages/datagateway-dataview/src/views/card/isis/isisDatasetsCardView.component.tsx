@@ -37,13 +37,13 @@ interface ISISDatasetCardViewProps {
   instrumentId: string;
   instrumentChildId: string;
   investigationId: string;
-  studyHierarchy: boolean;
+  dataPublication: boolean;
 }
 
 const ISISDatasetsCardView = (
   props: ISISDatasetCardViewProps
 ): React.ReactElement => {
-  const { instrumentId, instrumentChildId, investigationId, studyHierarchy } =
+  const { instrumentId, instrumentChildId, investigationId, dataPublication } =
     props;
 
   const [t] = useTranslation();
@@ -80,8 +80,8 @@ const ISISDatasetsCardView = (
   ]);
   const sizeQueries = useDatasetSizes(data);
 
-  const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
-  const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
+  const pathRoot = dataPublication ? 'browseDataPublications' : 'browse';
+  const instrumentChild = dataPublication ? 'dataPublication' : 'facilityCycle';
   const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset`;
 
   const title: CardViewDetails = React.useMemo(

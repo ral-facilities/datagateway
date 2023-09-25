@@ -273,7 +273,9 @@ describe('Admin Download Status Table', () => {
 
       // We simulate a change in the select from 'include' to 'exclude'.
       // click on the select box
-      await user.click(screen.getAllByLabelText('include or exclude')[5]);
+      await user.click(
+        screen.getAllByLabelText('include, exclude or exact')[5]
+      );
       // click on exclude option
       await user.click(
         within(await screen.findByRole('listbox')).getByText('Exclude')
@@ -314,7 +316,7 @@ describe('Admin Download Status Table', () => {
     const dateFromFilterInput = screen.getByRole('textbox', {
       name: 'downloadStatus.createdAt filter from',
     });
-    await user.type(dateFromFilterInput, '2020-01-01 00:00:00');
+    await user.type(dateFromFilterInput, '2020-01-01_00:00:00');
     await flushPromises();
 
     expect(fetchAdminDownloads).toHaveBeenCalledWith(
@@ -329,7 +331,10 @@ describe('Admin Download Status Table', () => {
     const dateToFilterInput = screen.getByRole('textbox', {
       name: 'downloadStatus.createdAt filter to',
     });
-    await user.type(dateToFilterInput, '2020-01-02 23:59:00');
+
+    // in v6 of date-picker spaces are considered to be a '0'
+    // 20200102235900 is equivalent to 2020-01-02 03:59:00
+    await user.type(dateToFilterInput, '2020-01-02_23:59:00');
     await flushPromises();
 
     // have to wrap the expect in a waitFor because for some reason

@@ -1,24 +1,14 @@
 describe('ISIS - Investigation Landing', () => {
   beforeEach(() => {
     cy.login();
-    cy.visit('/browse/instrument/1/facilityCycle/19/investigation/19');
+    cy.visit('/browse/instrument/13/facilityCycle/12/investigation/31');
   });
 
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');
-    cy.contains('Fine strong education fill maintain.').should('be.visible');
-  });
+    cy.contains('Stop system investment').should('be.visible');
 
-  it('should be able to click an investigation to see its datasets', () => {
-    cy.get('#investigation-datasets-tab').first().click({ force: true });
-    cy.location('pathname').should(
-      'eq',
-      '/browse/instrument/1/facilityCycle/19/investigation/19/dataset'
-    );
-  });
-
-  it('should have the correct urls for the DOI link and parent DOI link', () => {
     // DOI
 
     cy.get('[data-testid="isis-investigation-landing-doi-link"]')
@@ -48,6 +38,14 @@ describe('ISIS - Investigation Landing', () => {
       });
   });
 
+  it('should be able to click an investigation to see its datasets', () => {
+    cy.get('#investigation-datasets-tab').first().click({ force: true });
+    cy.location('pathname').should(
+      'eq',
+      '/browse/instrument/13/facilityCycle/12/investigation/31/dataset'
+    );
+  });
+
   it('should be able to click a specific dataset', () => {
     cy.get('[aria-label="landing-investigation-part-label"')
       .children()
@@ -55,7 +53,7 @@ describe('ISIS - Investigation Landing', () => {
       .click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/19/investigation/19/dataset/19'
+      '/browse/instrument/13/facilityCycle/12/investigation/31/dataset/31'
     );
   });
 
@@ -69,54 +67,53 @@ describe('ISIS - Investigation Landing', () => {
         visitId: '1',
         doi: '10.5286/ISIS.E.RB1810842',
         size: 1,
-        studyInvestigations: [
+        dataCollectionInvestigations: [
           {
-            id: 6,
+            id: 2,
             investigation: {
               id: 1,
+              title: 'Test 1',
+              name: 'Test 1',
+              visitId: '1',
             },
-            study: {
-              id: 7,
-              pid: '10.5286/ISIS.E.RB1810842',
-              startDate: '2019-06-10',
-              endDate: '2019-06-11',
+            dataCollection: {
+              id: 3,
+              dataPublications: [
+                {
+                  id: 4,
+                  pid: '10.5286/ISIS.E.RB1810842',
+                  description: 'Data Publication description',
+                  modTime: '2019-06-10',
+                  createTime: '2019-06-11',
+                  title: 'Data Publication',
+                },
+              ],
             },
           },
         ],
       },
     ]);
 
-    // The hover tool tip has a enter delay of 500ms.
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.get('[data-testid="isis-investigations-landing-parent-doi-link"]')
       .first()
-      .trigger('mouseover')
-      .wait(700)
-      .get('[role="tooltip"]')
-      .should('exist');
+      .trigger('mouseover');
+    cy.get('[role="tooltip"]').should('exist');
 
     cy.get('body').type('{esc}');
 
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.get('[data-testid="isis-investigations-landing-parent-doi-link"]')
-      .wait(700)
       .first()
       .get('[role="tooltip"]')
       .should('not.exist');
 
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.get('[data-testid="isis-investigation-landing-doi-link"]')
       .first()
-      .trigger('mouseover')
-      .wait(700)
-      .get('[role="tooltip"]')
-      .should('exist');
+      .trigger('mouseover');
+    cy.get('[role="tooltip"]').should('exist');
 
     cy.get('body').type('{esc}');
 
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.get('[data-testid="isis-investigation-landing-doi-link"]')
-      .wait(700)
       .first()
       .get('[role="tooltip"]')
       .should('not.exist');

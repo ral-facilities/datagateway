@@ -4,9 +4,9 @@ import configureStore from 'redux-mock-store';
 import { StateType } from '../state/app.types';
 import {
   dGCommonInitialState,
+  FACILITY_NAME,
   Investigation,
   useAddToCart,
-  useAllFacilityCycles,
   useCart,
   useIds,
   useInvestigationCount,
@@ -57,7 +57,6 @@ jest.mock('datagateway-common', () => {
     useIds: jest.fn(),
     useAddToCart: jest.fn(),
     useRemoveFromCart: jest.fn(),
-    useAllFacilityCycles: jest.fn(),
     useInvestigationsDatasetCount: jest.fn(),
     useInvestigationSizes: jest.fn(),
   };
@@ -163,9 +162,6 @@ describe('Investigation Search Table component', () => {
     (useRemoveFromCart as jest.Mock).mockReturnValue({
       mutate: jest.fn(),
       isLoading: false,
-    });
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [],
     });
     (useInvestigationsDatasetCount as jest.Mock).mockImplementation(
       (investigations) =>
@@ -439,7 +435,10 @@ describe('Investigation Search Table component', () => {
       `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
     );
 
-    await user.clear(filterInput);
+    await user.click(filterInput);
+    await user.keyboard('{Control}a{/Control}');
+    await user.keyboard('{Delete}');
+    // await user.clear(filterInput);
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
@@ -559,7 +558,7 @@ describe('Investigation Search Table component', () => {
   });
 
   it('displays correct details panel for ISIS when expanded', async () => {
-    renderComponent('isis');
+    renderComponent(FACILITY_NAME.isis);
 
     const row = await findRowAt(0);
     await user.click(within(row).getByRole('button', { name: 'Show details' }));
@@ -570,18 +569,19 @@ describe('Investigation Search Table component', () => {
   });
 
   it('can navigate using the details panel for ISIS when there are facility cycles', async () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
+    rowData[0].investigationFacilityCycles = [
+      {
+        id: 958,
+        facilityCycle: {
           id: 4,
           name: 'facility cycle name',
           startDate: '2000-06-10',
           endDate: '2020-06-11',
         },
-      ],
-    });
+      },
+    ];
 
-    renderComponent('isis');
+    renderComponent(FACILITY_NAME.isis);
 
     const row = await findRowAt(0);
     await user.click(within(row).getByRole('button', { name: 'Show details' }));
@@ -598,7 +598,7 @@ describe('Investigation Search Table component', () => {
   });
 
   it('displays correct details panel for DLS when expanded', async () => {
-    renderComponent('dls');
+    renderComponent(FACILITY_NAME.dls);
 
     const row = await findRowAt(0);
     await user.click(within(row).getByRole('button', { name: 'Show details' }));
@@ -608,7 +608,7 @@ describe('Investigation Search Table component', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders title and DOI as links', async () => {
+  it('renders title, visit ID, Name and DOI as links', async () => {
     renderComponent();
 
     const titleColIndex = await findColumnIndexByName('investigations.title');
@@ -690,7 +690,7 @@ describe('Investigation Search Table component', () => {
   });
 
   it("renders DLS link correctly and doesn't allow for cart selection", async () => {
-    renderComponent('dls');
+    renderComponent(FACILITY_NAME.dls);
 
     const titleColIndex = await findColumnIndexByName('investigations.title');
     const row = await findRowAt(0);
@@ -706,18 +706,19 @@ describe('Investigation Search Table component', () => {
   });
 
   it('renders ISIS link & file sizes correctly', async () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
+    rowData[0].investigationFacilityCycles = [
+      {
+        id: 850,
+        facilityCycle: {
           id: 2,
           name: 'facility cycle name',
           startDate: '2000-06-10',
           endDate: '2020-06-11',
         },
-      ],
-    });
+      },
+    ];
 
-    renderComponent('isis');
+    renderComponent(FACILITY_NAME.isis);
 
     const titleColIndex = await findColumnIndexByName('investigations.title');
     const sizeColIndex = await findColumnIndexByName('investigations.size');
@@ -734,68 +735,15 @@ describe('Investigation Search Table component', () => {
     expect(within(sizeCell).getByText('1 B')).toBeInTheDocument();
   });
 
-  it('does not render ISIS link when instrumentId cannot be found', async () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
-          id: 4,
-          name: 'facility cycle name',
-          startDate: '2000-06-10',
-          endDate: '2020-06-11',
-        },
-      ],
-    });
-    delete rowData[0].investigationInstruments;
-
-    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
-    });
-    renderComponent('isis');
+  it('does not render ISIS link when facility cycle cannot be found', async () => {
+    renderComponent(FACILITY_NAME.isis);
 
     const titleColIndex = await findColumnIndexByName('investigations.title');
     const row = await findRowAt(0);
     const titleCell = await findCellInRow(row, { columnIndex: titleColIndex });
 
     expect(
-      within(titleCell).queryByRole('link', { name: 'Test Title 1' })
-    ).toBeNull();
-    expect(within(titleCell).getByText('Test Title 1')).toBeInTheDocument();
-  });
-
-  it('does not render ISIS link when facilityCycleId cannot be found', async () => {
-    renderComponent('isis');
-
-    const titleColIndex = await findColumnIndexByName('investigations.title');
-    const row = await findRowAt(0);
-    const titleCell = await findCellInRow(row, { columnIndex: titleColIndex });
-
-    expect(
-      within(titleCell).queryByRole('link', { name: 'Test Title 1' })
-    ).toBeNull();
-    expect(within(titleCell).getByText('Test Title 1')).toBeInTheDocument();
-  });
-
-  it('does not render ISIS link when facilityCycleId has incompatible dates', async () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
-          id: 2,
-          name: 'facility cycle name',
-          startDate: '2020-06-11',
-          endDate: '2000-06-10',
-        },
-      ],
-    });
-
-    renderComponent('isis');
-
-    const titleColIndex = await findColumnIndexByName('investigations.title');
-    const row = await findRowAt(0);
-    const titleCell = await findCellInRow(row, { columnIndex: titleColIndex });
-
-    expect(
-      within(titleCell).queryByRole('link', { name: 'Test Title 1' })
+      within(titleCell).queryByRole('link', { name: 'Test 1' })
     ).toBeNull();
     expect(within(titleCell).getByText('Test Title 1')).toBeInTheDocument();
   });

@@ -116,6 +116,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   const {
     data: downloadId,
     mutate: submitCart,
+    isLoading: isSubmittingCart,
     isSuccess: isCartSubmittedSuccessfully,
     isError: hasSubmitCartFailed,
     reset: resetSubmitCartMutation,
@@ -558,13 +559,16 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                 !emailValid ||
                 (!downloadTypeInfoMap?.has(selectedMethod) ?? true) ||
                 downloadTypeInfoMap?.get(selectedMethod)?.disabled ||
-                methodsUnavailable
+                methodsUnavailable ||
+                isSubmittingCart
               }
               onClick={processDownload}
               color="primary"
               variant="contained"
             >
-              {t('downloadConfirmDialog.download')}
+              {isSubmittingCart
+                ? t('downloadConfirmDialog.submitting_cart')
+                : t('downloadConfirmDialog.download')}
             </Button>
           </DialogActions>
         </div>

@@ -73,7 +73,8 @@
     "confirmation_download_name": "Download Name",
     "confirmation_access_method": "Access Method",
     "confirmation_email": "Email Address",
-    "view_my_downloads": "View My Downloads"
+    "view_my_downloads": "View My Downloads",
+    "submitting_cart": "Preparing..."
   },
   "downloadCart": {
     "name": "Name",

@@ -1,6 +1,6 @@
 import { AdditionalFilters, FiltersType, SortType } from '../app.types';
 import axios, { AxiosError } from 'axios';
-import { Study } from '../app.types';
+import { DataPublication } from '../app.types';
 import { IndexRange } from 'react-virtualized';
 import { readSciGatewayToken } from '../parseTokens';
 import handleICATError from '../handleICATError';
@@ -16,7 +16,7 @@ import { getApiParams, parseSearchToQuery } from '.';
 import { StateType } from '..';
 import retryICATErrors from './retryICATErrors';
 
-const fetchStudies = (
+const fetchDataPublications = (
   apiUrl: string,
   sortAndFilters: {
     sort: SortType;
@@ -24,7 +24,7 @@ const fetchStudies = (
   },
   additionalFilters?: AdditionalFilters,
   offsetParams?: IndexRange
-): Promise<Study[]> => {
+): Promise<DataPublication[]> => {
   const params = getApiParams(sortAndFilters);
 
   if (offsetParams) {
@@ -42,7 +42,7 @@ const fetchStudies = (
   }
 
   return axios
-    .get(`${apiUrl}/studies`, {
+    .get(`${apiUrl}/datapublications`, {
       params,
       headers: {
         Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
@@ -53,21 +53,21 @@ const fetchStudies = (
     });
 };
 
-export const useStudiesPaginated = (
+export const useDataPublicationsPaginated = (
   additionalFilters?: AdditionalFilters
-): UseQueryResult<Study[], AxiosError> => {
+): UseQueryResult<DataPublication[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters, sort, page, results } = parseSearchToQuery(location.search);
 
   return useQuery<
-    Study[],
+    DataPublication[],
     AxiosError,
-    Study[],
+    DataPublication[],
     [
       string,
       {
-        sort: SortType;
+        sort: string;
         filters: FiltersType;
         page: number;
         results: number;
@@ -76,18 +76,28 @@ export const useStudiesPaginated = (
     ]
   >(
     [
-      'study',
-      { sort, filters, page: page ?? 1, results: results ?? 10 },
+      'dataPublication',
+      {
+        sort: JSON.stringify(sort), // need to stringify sort as property order is important!
+        filters,
+        page: page ?? 1,
+        results: results ?? 10,
+      },
       additionalFilters,
     ],
     (params) => {
-      const { sort, filters, page, results } = params.queryKey[1];
+      const { page, results } = params.queryKey[1];
       const startIndex = (page - 1) * results;
       const stopIndex = startIndex + results - 1;
-      return fetchStudies(apiUrl, { sort, filters }, additionalFilters, {
-        startIndex,
-        stopIndex,
-      });
+      return fetchDataPublications(
+        apiUrl,
+        { sort, filters },
+        additionalFilters,
+        {
+          startIndex,
+          stopIndex,
+        }
+      );
     },
     {
       onError: (error) => {
@@ -98,24 +108,22 @@ export const useStudiesPaginated = (
   );
 };
 
-export const useStudiesInfinite = (
+export const useDataPublicationsInfinite = (
   additionalFilters?: AdditionalFilters
-): UseInfiniteQueryResult<Study[], AxiosError> => {
+): UseInfiniteQueryResult<DataPublication[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters, sort } = parseSearchToQuery(location.search);
 
-  return useInfiniteQuery<
-    Study[],
-    AxiosError,
-    Study[],
-    [string, { sort: SortType; filters: FiltersType }, AdditionalFilters?]
-  >(
-    ['study', { sort, filters }, additionalFilters],
+  return useInfiniteQuery(
+    [
+      'dataPublication',
+      { sort: JSON.stringify(sort), filters }, // need to stringify sort as property order is important!
+      additionalFilters,
+    ],
     (params) => {
-      const { sort, filters } = params.queryKey[1];
       const offsetParams = params.pageParam ?? { startIndex: 0, stopIndex: 49 };
-      return fetchStudies(
+      return fetchDataPublications(
         apiUrl,
         { sort, filters },
         additionalFilters,
@@ -131,33 +139,41 @@ export const useStudiesInfinite = (
   );
 };
 
-export const useStudy = (
-  studyId: number
-): UseQueryResult<Study[], AxiosError> => {
+export const useDataPublication = (
+  dataPublicationId: number
+): UseQueryResult<DataPublication[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
 
-  return useQuery<Study[], AxiosError, Study[], [string, number]>(
-    ['study', studyId],
+  return useQuery<
+    DataPublication[],
+    AxiosError,
+    DataPublication[],
+    [string, number]
+  >(
+    ['dataPublication', dataPublicationId],
     () => {
-      return fetchStudies(apiUrl, { sort: {}, filters: {} }, [
+      return fetchDataPublications(apiUrl, { sort: {}, filters: {} }, [
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            id: { eq: studyId },
+            id: { eq: dataPublicationId },
           }),
         },
         {
           filterType: 'include',
-          filterValue: JSON.stringify([
-            {
-              studyInvestigations: {
-                investigation: [
-                  { investigationUsers: 'user' },
-                  { investigationInstruments: 'instrument' },
-                ],
+          filterValue: JSON.stringify('users'),
+        },
+        {
+          filterType: 'include',
+          filterValue: JSON.stringify({
+            content: {
+              dataCollectionInvestigations: {
+                investigation: {
+                  investigationInstruments: 'instrument',
+                },
               },
             },
-          ]),
+          }),
         },
       ]);
     },
@@ -170,7 +186,7 @@ export const useStudy = (
   );
 };
 
-const fetchStudyCount = (
+const fetchDataPublicationCount = (
   apiUrl: string,
   filters: FiltersType,
   additionalFilters?: AdditionalFilters
@@ -185,7 +201,7 @@ const fetchStudyCount = (
   }
 
   return axios
-    .get(`${apiUrl}/studies/count`, {
+    .get(`${apiUrl}/datapublications/count`, {
       params,
       headers: {
         Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
@@ -196,7 +212,7 @@ const fetchStudyCount = (
     });
 };
 
-export const useStudyCount = (
+export const useDataPublicationCount = (
   additionalFilters?: AdditionalFilters
 ): UseQueryResult<number, AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
@@ -209,10 +225,10 @@ export const useStudyCount = (
     number,
     [string, string, { filters: FiltersType }, AdditionalFilters?]
   >(
-    ['count', 'study', { filters }, additionalFilters],
+    ['count', 'dataPublication', { filters }, additionalFilters],
     (params) => {
       const { filters } = params.queryKey[2];
-      return fetchStudyCount(apiUrl, filters, additionalFilters);
+      return fetchDataPublicationCount(apiUrl, filters, additionalFilters);
     },
     {
       onError: (error) => {

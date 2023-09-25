@@ -195,19 +195,19 @@ export const FetchFacilityCycleCountFailureType =
 export const FetchFacilityCycleCountSuccessType =
   'datagateway_common:fetch_facility_cycle_count_success';
 
-export const FetchStudiesRequestType =
-  'datagateway_common:fetch_studies_request';
-export const FetchStudiesFailureType =
-  'datagateway_common:fetch_studies_failure';
-export const FetchStudiesSuccessType =
-  'datagateway_common:fetch_studies_success';
+export const FetchDataPublicationRequestType =
+  'datagateway_common:fetch_data_publication_request';
+export const FetchDataPublicationFailureType =
+  'datagateway_common:fetch_data_publication_failure';
+export const FetchDataPublicationSuccessType =
+  'datagateway_common:fetch_data_publication_success';
 
-export const FetchStudyCountRequestType =
-  'datagateway_common:fetch_study_count_request';
-export const FetchStudyCountFailureType =
-  'datagateway_common:fetch_study_count_failure';
-export const FetchStudyCountSuccessType =
-  'datagateway_common:fetch_study_count_success';
+export const FetchDataPublicationCountRequestType =
+  'datagateway_common:fetch_data_publication_count_request';
+export const FetchDataPublicationCountFailureType =
+  'datagateway_common:fetch_data_publication_count_failure';
+export const FetchDataPublicationCountSuccessType =
+  'datagateway_common:fetch_data_publication_count_success';
 
 export const FetchDownloadCartRequestType =
   'datagateway_common:fetch_download_cart_request';
