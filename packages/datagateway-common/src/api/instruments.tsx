@@ -90,19 +90,17 @@ export const useInstrumentsPaginated = (
       const { page, results } = params.queryKey[1];
       const startIndex = (page - 1) * results;
       const stopIndex = startIndex + results - 1;
-      return (isMounted ?? true) || Object.keys(sort).length
-        ? fetchInstruments(apiUrl, { sort, filters }, additionalFilters, {
-            startIndex,
-            stopIndex,
-          })
-        : [];
+      return fetchInstruments(apiUrl, { sort, filters }, additionalFilters, {
+        startIndex,
+        stopIndex,
+      });
     },
     {
       onError: (error) => {
         handleICATError(error);
       },
       retry: retryICATErrors,
-      cacheTime: isMounted ? 300000 : 0,
+      enabled: isMounted ?? true,
     }
   );
 };
@@ -119,20 +117,19 @@ export const useInstrumentsInfinite = (
     ['instrument', { sort: JSON.stringify(sort), filters }], // need to stringify sort as property order is important!
     (params) => {
       const offsetParams = params.pageParam ?? { startIndex: 0, stopIndex: 49 };
-      return (isMounted ?? true) || Object.keys(sort).length
-        ? fetchInstruments(
-            apiUrl,
-            { sort, filters },
-            additionalFilters,
-            offsetParams
-          )
-        : [];
+      return fetchInstruments(
+        apiUrl,
+        { sort, filters },
+        additionalFilters,
+        offsetParams
+      );
     },
     {
       onError: (error) => {
         handleICATError(error);
       },
       retry: retryICATErrors,
+      enabled: isMounted ?? true,
     }
   );
 };

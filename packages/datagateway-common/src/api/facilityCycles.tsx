@@ -128,24 +128,22 @@ export const useFacilityCyclesPaginated = (
       const { page, results } = params.queryKey[2];
       const startIndex = (page - 1) * results;
       const stopIndex = startIndex + results - 1;
-      return (isMounted ?? true) || Object.keys(sort).length
-        ? fetchFacilityCycles(
-            apiUrl,
-            instrumentId,
-            { sort, filters },
-            {
-              startIndex,
-              stopIndex,
-            }
-          )
-        : [];
+      return fetchFacilityCycles(
+        apiUrl,
+        instrumentId,
+        { sort, filters },
+        {
+          startIndex,
+          stopIndex,
+        }
+      );
     },
     {
       onError: (error) => {
         handleICATError(error);
       },
       retry: retryICATErrors,
-      cacheTime: isMounted ? 300000 : 0,
+      enabled: isMounted ?? true,
     }
   );
 };
@@ -162,20 +160,19 @@ export const useFacilityCyclesInfinite = (
     ['facilityCycle', instrumentId, { sort: JSON.stringify(sort), filters }],
     (params) => {
       const offsetParams = params.pageParam ?? { startIndex: 0, stopIndex: 49 };
-      return (isMounted ?? true) || Object.keys(sort).length
-        ? fetchFacilityCycles(
-            apiUrl,
-            instrumentId,
-            { sort, filters },
-            offsetParams
-          )
-        : [];
+      return fetchFacilityCycles(
+        apiUrl,
+        instrumentId,
+        { sort, filters },
+        offsetParams
+      );
     },
     {
       onError: (error) => {
         handleICATError(error);
       },
       retry: retryICATErrors,
+      enabled: isMounted ?? true,
     }
   );
 };

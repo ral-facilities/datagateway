@@ -135,25 +135,23 @@ export const useInvestigationsPaginated = (
       const { page, results } = params.queryKey[1];
       const startIndex = (page - 1) * results;
       const stopIndex = startIndex + results - 1;
-      return (isMounted ?? true) || Object.keys(sort).length
-        ? fetchInvestigations(
-            apiUrl,
-            { sort, filters },
-            additionalFilters,
-            {
-              startIndex,
-              stopIndex,
-            },
-            ignoreIDSort
-          )
-        : [];
+      return fetchInvestigations(
+        apiUrl,
+        { sort, filters },
+        additionalFilters,
+        {
+          startIndex,
+          stopIndex,
+        },
+        ignoreIDSort
+      );
     },
     {
       onError: (error) => {
         handleICATError(error);
       },
       retry: retryICATErrors,
-      cacheTime: isMounted ? 300000 : 0,
+      enabled: isMounted ?? true,
     }
   );
 };
@@ -176,21 +174,20 @@ export const useInvestigationsInfinite = (
     ],
     (params) => {
       const offsetParams = params.pageParam ?? { startIndex: 0, stopIndex: 49 };
-      return (isMounted ?? true) || Object.keys(sort).length
-        ? fetchInvestigations(
-            apiUrl,
-            { sort, filters },
-            additionalFilters,
-            offsetParams,
-            ignoreIDSort
-          )
-        : [];
+      return fetchInvestigations(
+        apiUrl,
+        { sort, filters },
+        additionalFilters,
+        offsetParams,
+        ignoreIDSort
+      );
     },
     {
       onError: (error) => {
         handleICATError(error);
       },
       retry: retryICATErrors,
+      enabled: isMounted ?? true,
     }
   );
 };
