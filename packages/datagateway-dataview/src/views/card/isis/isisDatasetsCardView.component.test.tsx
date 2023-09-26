@@ -185,6 +185,14 @@ describe('ISIS Datasets - Card View', () => {
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"createTime":"desc"}')}`
     );
+
+    // check that the data request is sent only once after mounting
+    expect(useDatasetsPaginated).toHaveBeenCalledTimes(2);
+    expect(useDatasetsPaginated).toHaveBeenCalledWith(expect.anything(), false);
+    expect(useDatasetsPaginated).toHaveBeenLastCalledWith(
+      expect.anything(),
+      true
+    );
   });
 
   it('updates sort query params on sort', async () => {

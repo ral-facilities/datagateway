@@ -265,6 +265,13 @@ describe('ISIS datafiles table component', () => {
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"modTime":"desc"}')}`
     );
+
+    // check that the data request is sent only once after mounting
+    const datafilesCalls = (axios.get as jest.Mock).mock.calls.filter(
+      (call) => call[0] === '/datafiles'
+    );
+    // 2 becasue there is also a call for ids
+    expect(datafilesCalls).toHaveLength(2);
   });
 
   it('updates sort query params on sort', async () => {
