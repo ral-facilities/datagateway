@@ -234,6 +234,14 @@ describe('DLS Dataset table component', () => {
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"createTime":"desc"}')}`
     );
+
+    // check that the data request is sent only once after mounting
+    expect(useDatasetsInfinite).toHaveBeenCalledTimes(2);
+    expect(useDatasetsInfinite).toHaveBeenCalledWith(expect.anything(), false);
+    expect(useDatasetsInfinite).toHaveBeenLastCalledWith(
+      expect.anything(),
+      true
+    );
   });
 
   it('updates sort query params on sort', async () => {

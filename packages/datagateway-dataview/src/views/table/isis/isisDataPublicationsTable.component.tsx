@@ -47,17 +47,28 @@ const ISISDataPublicationsTable = (
     },
   ]);
 
-  const { fetchNextPage, data } = useDataPublicationsInfinite([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'content.dataCollectionInvestigations.investigation.investigationInstruments.instrument.id':
-          {
-            eq: instrumentId,
-          },
-      }),
-    },
-  ]);
+  // isMounted is used to disable queries when the component isn't fully mounted.
+  // It prevents the request being sent twice if default sort is set.
+  // It is not needed for cards/tables that don't have default sort.
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const { fetchNextPage, data } = useDataPublicationsInfinite(
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'content.dataCollectionInvestigations.investigation.investigationInstruments.instrument.id':
+            {
+              eq: instrumentId,
+            },
+        }),
+      },
+    ],
+    isMounted
+  );
 
   /* istanbul ignore next */
   const aggregatedData: DataPublication[] = React.useMemo(() => {
