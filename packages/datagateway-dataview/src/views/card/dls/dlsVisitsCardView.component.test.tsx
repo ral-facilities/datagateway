@@ -153,6 +153,19 @@ describe('DLS Visits - Card View', () => {
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"startDate":"desc"}')}`
     );
+
+    // check that the data request is sent only once after mounting
+    expect(useInvestigationsPaginated).toHaveBeenCalledTimes(2);
+    expect(useInvestigationsPaginated).toHaveBeenCalledWith(
+      expect.anything(),
+      undefined,
+      false
+    );
+    expect(useInvestigationsPaginated).toHaveBeenLastCalledWith(
+      expect.anything(),
+      undefined,
+      true
+    );
   });
 
   it('updates sort query params on sort', async () => {

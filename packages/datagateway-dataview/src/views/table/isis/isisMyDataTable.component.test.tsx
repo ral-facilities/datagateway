@@ -351,6 +351,19 @@ describe('ISIS MyData table component', () => {
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"startDate":"desc"}')}`
     );
+
+    // check that the data request is sent only once after mounting
+    expect(useInvestigationsInfinite).toHaveBeenCalledTimes(2);
+    expect(useInvestigationsInfinite).toHaveBeenCalledWith(
+      expect.anything(),
+      undefined,
+      false
+    );
+    expect(useInvestigationsInfinite).toHaveBeenLastCalledWith(
+      expect.anything(),
+      undefined,
+      true
+    );
   });
 
   it('updates sort query params on sort', async () => {

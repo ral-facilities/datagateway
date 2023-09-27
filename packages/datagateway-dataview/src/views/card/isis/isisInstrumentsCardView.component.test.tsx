@@ -138,6 +138,11 @@ describe('ISIS Instruments - Card View', () => {
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"fullName":"asc"}')}`
     );
+
+    // check that the data request is sent only once after mounting
+    expect(useInstrumentsPaginated).toHaveBeenCalledTimes(2);
+    expect(useInstrumentsPaginated).toHaveBeenCalledWith(undefined, false);
+    expect(useInstrumentsPaginated).toHaveBeenLastCalledWith(undefined, true);
   });
 
   it('updates sort query params on sort', async () => {
