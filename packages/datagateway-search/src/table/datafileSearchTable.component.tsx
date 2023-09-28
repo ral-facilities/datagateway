@@ -80,6 +80,10 @@ const DatafileSearchTable = (
             target: 'DatafileParameter',
             dimensions: [{ dimension: 'type.name' }],
           },
+          {
+            target: 'InvestigationInstrument',
+            dimensions: [{ dimension: 'instrument.name' }],
+          },
         ],
       },
       filters,
@@ -190,7 +194,7 @@ const DatafileSearchTable = (
                 instrumentId:
                   datafileData.investigationinstrument?.[0]?.['instrument.id'],
                 facilityCycleId:
-                  datafileData.investigationfacilitycycle?.[0][
+                  datafileData.investigationfacilitycycle?.[0]?.[
                     'facilityCycle.id'
                   ],
               },
@@ -239,7 +243,7 @@ const DatafileSearchTable = (
               instrumentId:
                 datafileData.investigationinstrument?.[0]?.['instrument.id'],
               facilityCycleId:
-                datafileData.investigationfacilitycycle?.[0][
+                datafileData.investigationfacilitycycle?.[0]?.[
                   'facilityCycle.id'
                 ],
             },

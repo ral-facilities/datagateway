@@ -75,7 +75,17 @@ const DatasetSearchTable = ({
         minCount: minNumResults,
         maxCount: maxNumResults,
         restrict,
-        facets: [{ target: 'Dataset' }],
+        facets: [
+          { target: 'Dataset' },
+          {
+            target: 'DatasetParameter',
+            dimensions: [{ dimension: 'type.name' }],
+          },
+          {
+            target: 'InvestigationInstrument',
+            dimensions: [{ dimension: 'instrument.name' }],
+          },
+        ],
       },
       filters,
       { enabled: dataset }

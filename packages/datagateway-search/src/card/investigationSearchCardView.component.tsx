@@ -112,7 +112,11 @@ const InvestigationCardView = (
           },
           {
             target: 'Sample',
-            dimensions: [{ dimension: 'type.name' }],
+            dimensions: [{ dimension: 'sample.type.name' }],
+          },
+          {
+            target: 'InvestigationInstrument',
+            dimensions: [{ dimension: 'instrument.name' }],
           },
         ],
       },
