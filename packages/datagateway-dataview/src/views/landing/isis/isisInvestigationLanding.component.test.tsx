@@ -412,7 +412,7 @@ describe('ISIS Investigation Landing page', () => {
       ).toBeInTheDocument();
     });
 
-    it('for data publication hierarchy and normal view', () => {
+    it('for data publication hierarchy and normal view', async () => {
       renderComponent(true);
 
       expect(
@@ -439,7 +439,7 @@ describe('ISIS Investigation Landing page', () => {
       ).toBeInTheDocument();
     });
 
-    it('for data publication hierarchy and card view', () => {
+    it('for data publication hierarchy and card view', async () => {
       history.push('/?view=card');
 
       renderComponent(true);

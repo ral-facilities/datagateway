@@ -1,7 +1,4 @@
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
   Box,
   Divider,
   Grid,
@@ -10,24 +7,23 @@ import {
   Tab,
   Tabs,
   Typography,
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
 } from '@mui/material';
 import {
   Assessment,
   Business,
   CalendarToday,
-  ExpandMore,
   Fingerprint,
   Public,
   Save,
   Storage,
+  ExpandMore,
 } from '@mui/icons-material';
 import {
-  AddToCartButton,
-  ArrowTooltip,
   Dataset,
-  DownloadButton,
   formatCountOrSize,
-  getTooltipText,
   Investigation,
   InvestigationUser,
   parseSearchToQuery,
@@ -36,6 +32,10 @@ import {
   tableLink,
   useInvestigation,
   useInvestigationSizes,
+  AddToCartButton,
+  DownloadButton,
+  ArrowTooltip,
+  getTooltipText,
   externalSiteLink,
 } from 'datagateway-common';
 import React from 'react';
