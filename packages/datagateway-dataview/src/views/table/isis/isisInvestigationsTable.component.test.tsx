@@ -173,7 +173,8 @@ describe('ISIS Investigations table component', () => {
     expect(useISISInvestigationsInfinite).toHaveBeenCalledWith(
       parseInt(instrumentId),
       parseInt(instrumentChildId),
-      studyHierarchy
+      studyHierarchy,
+      expect.any(Boolean)
     );
     expect(useInvestigationSizes).toHaveBeenCalledWith({
       pages: [rowData],
@@ -278,6 +279,25 @@ describe('ISIS Investigations table component', () => {
     expect(replaceSpy).toHaveBeenCalledWith({
       search: `?sort=${encodeURIComponent('{"startDate":"desc"}')}`,
     });
+
+    const studyHierarchy = false;
+    const instrumentId = '4';
+    const instrumentChildId = '5';
+
+    // check that the data request is sent only once after mounting
+    expect(useISISInvestigationsInfinite).toHaveBeenCalledTimes(2);
+    expect(useISISInvestigationsInfinite).toHaveBeenCalledWith(
+      parseInt(instrumentId),
+      parseInt(instrumentChildId),
+      studyHierarchy,
+      false
+    );
+    expect(useISISInvestigationsInfinite).toHaveBeenCalledWith(
+      parseInt(instrumentId),
+      parseInt(instrumentChildId),
+      studyHierarchy,
+      true
+    );
   });
 
   it('updates sort query params on sort', () => {

@@ -127,22 +127,26 @@ describe('DLS MyData table component', () => {
         }),
       },
     ]);
-    expect(useInvestigationsInfinite).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'investigationUsers.user.name': { eq: 'testUser' },
-        }),
-      },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify([
-          {
-            investigationInstruments: 'instrument',
-          },
-        ]),
-      },
-    ]);
+    expect(useInvestigationsInfinite).toHaveBeenCalledWith(
+      [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'investigationUsers.user.name': { eq: 'testUser' },
+          }),
+        },
+        {
+          filterType: 'include',
+          filterValue: JSON.stringify([
+            {
+              investigationInstruments: 'instrument',
+            },
+          ]),
+        },
+      ],
+      undefined,
+      expect.any(Boolean)
+    );
     expect(useInvestigationsDatasetCount).toHaveBeenCalledWith({
       pages: [rowData],
     });

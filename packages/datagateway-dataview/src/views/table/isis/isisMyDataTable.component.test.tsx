@@ -190,23 +190,27 @@ describe('ISIS MyData table component', () => {
         }),
       },
     ]);
-    expect(useInvestigationsInfinite).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'investigationUsers.user.name': { eq: 'testUser' },
-        }),
-      },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify([
-          {
-            investigationInstruments: 'instrument',
-          },
-          { studyInvestigations: 'study' },
-        ]),
-      },
-    ]);
+    expect(useInvestigationsInfinite).toHaveBeenCalledWith(
+      [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'investigationUsers.user.name': { eq: 'testUser' },
+          }),
+        },
+        {
+          filterType: 'include',
+          filterValue: JSON.stringify([
+            {
+              investigationInstruments: 'instrument',
+            },
+            { studyInvestigations: 'study' },
+          ]),
+        },
+      ],
+      undefined,
+      expect.any(Boolean)
+    );
     expect(useInvestigationSizes).toHaveBeenCalledWith({
       pages: [rowData],
     });
@@ -307,6 +311,19 @@ describe('ISIS MyData table component', () => {
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"startDate":"desc"}')}`
+    );
+
+    // check that the data request is sent only once after mounting
+    expect(useInvestigationsInfinite).toHaveBeenCalledTimes(2);
+    expect(useInvestigationsInfinite).toHaveBeenCalledWith(
+      expect.anything(),
+      undefined,
+      false
+    );
+    expect(useInvestigationsInfinite).toHaveBeenLastCalledWith(
+      expect.anything(),
+      undefined,
+      true
     );
   });
 

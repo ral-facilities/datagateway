@@ -117,7 +117,8 @@ describe('DLS Proposals table component', () => {
           filterValue: JSON.stringify(['name', 'title']),
         },
       ],
-      true
+      true,
+      expect.any(Boolean)
     );
   });
 
@@ -167,6 +168,19 @@ describe('DLS Proposals table component', () => {
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"title":"asc"}')}`
+    );
+
+    // check that the data request is sent only once after mounting
+    expect(useInvestigationsInfinite).toHaveBeenCalledTimes(2);
+    expect(useInvestigationsInfinite).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.anything(),
+      false
+    );
+    expect(useInvestigationsInfinite).toHaveBeenLastCalledWith(
+      expect.anything(),
+      expect.anything(),
+      true
     );
   });
 

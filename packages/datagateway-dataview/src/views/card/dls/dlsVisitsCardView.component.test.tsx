@@ -106,18 +106,22 @@ describe('DLS Visits - Card View', () => {
         filterValue: JSON.stringify({ name: { eq: proposalName } }),
       },
     ]);
-    expect(useInvestigationsPaginated).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({ name: { eq: proposalName } }),
-      },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify({
-          investigationInstruments: 'instrument',
-        }),
-      },
-    ]);
+    expect(useInvestigationsPaginated).toHaveBeenCalledWith(
+      [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({ name: { eq: proposalName } }),
+        },
+        {
+          filterType: 'include',
+          filterValue: JSON.stringify({
+            investigationInstruments: 'instrument',
+          }),
+        },
+      ],
+      undefined,
+      expect.any(Boolean)
+    );
     expect(useInvestigationsDatasetCount).toHaveBeenCalledWith(cardData);
   });
 
@@ -174,6 +178,19 @@ describe('DLS Visits - Card View', () => {
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"startDate":"desc"}')}`
+    );
+
+    // check that the data request is sent only once after mounting
+    expect(useInvestigationsPaginated).toHaveBeenCalledTimes(2);
+    expect(useInvestigationsPaginated).toHaveBeenCalledWith(
+      expect.anything(),
+      undefined,
+      false
+    );
+    expect(useInvestigationsPaginated).toHaveBeenLastCalledWith(
+      expect.anything(),
+      undefined,
+      true
     );
   });
 

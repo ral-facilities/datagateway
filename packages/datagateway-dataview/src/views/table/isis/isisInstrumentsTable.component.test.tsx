@@ -149,6 +149,11 @@ describe('ISIS Instruments table component', () => {
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"fullName":"asc"}')}`
     );
+
+    // check that the data request is sent only once after mounting
+    expect(useInstrumentsInfinite).toHaveBeenCalledTimes(2);
+    expect(useInstrumentsInfinite).toHaveBeenCalledWith(undefined, false);
+    expect(useInstrumentsInfinite).toHaveBeenLastCalledWith(undefined, true);
   });
 
   it('updates sort query params on sort', () => {

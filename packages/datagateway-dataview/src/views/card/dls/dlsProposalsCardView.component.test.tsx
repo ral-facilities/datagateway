@@ -108,7 +108,8 @@ describe('DLS Proposals - Card View', () => {
           filterValue: JSON.stringify(['name', 'title']),
         },
       ],
-      true
+      true,
+      expect.any(Boolean)
     );
   });
 
@@ -143,6 +144,19 @@ describe('DLS Proposals - Card View', () => {
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"title":"asc"}')}`
+    );
+
+    // check that the data request is sent only once after mounting
+    expect(useInvestigationsPaginated).toHaveBeenCalledTimes(2);
+    expect(useInvestigationsPaginated).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.anything(),
+      false
+    );
+    expect(useInvestigationsPaginated).toHaveBeenLastCalledWith(
+      expect.anything(),
+      expect.anything(),
+      true
     );
   });
 

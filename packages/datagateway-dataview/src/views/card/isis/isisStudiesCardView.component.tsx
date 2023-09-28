@@ -44,6 +44,14 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
+  // isMounted is used to disable queries when the component isn't fully mounted.
+  // It prevents the request being sent twice if default sort is set.
+  // It is not needed for cards/tables that don't have default sort.
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const unembargoDate = format(
     // set s and ms to 0 to escape recursive loop of fetching data every time they change
     set(new Date(), { seconds: 0, milliseconds: 0 }),
@@ -69,31 +77,34 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
       }),
     },
   ]);
-  const { isLoading: dataLoading, data } = useStudiesPaginated([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'studyInvestigations.investigation.investigationInstruments.instrument.id': {
-          eq: instrumentId,
-        },
-      }),
-    },
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        // this matches the ISIS ICAT rule
-        'studyInvestigations.investigation.releaseDate': {
-          lt: unembargoDate,
-        },
-      }),
-    },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify({
-        studyInvestigations: 'investigation',
-      }),
-    },
-  ]);
+  const { isLoading: dataLoading, data } = useStudiesPaginated(
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'studyInvestigations.investigation.investigationInstruments.instrument.id': {
+            eq: instrumentId,
+          },
+        }),
+      },
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          // this matches the ISIS ICAT rule
+          'studyInvestigations.investigation.releaseDate': {
+            lt: unembargoDate,
+          },
+        }),
+      },
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify({
+          studyInvestigations: 'investigation',
+        }),
+      },
+    ],
+    isMounted
+  );
 
   const title = React.useMemo(() => {
     const pathRoot = 'browseStudyHierarchy';

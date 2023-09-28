@@ -136,14 +136,17 @@ describe('ISIS Dataset table component', () => {
         }),
       },
     ]);
-    expect(useDatasetsInfinite).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'investigation.id': { eq: investigationId },
-        }),
-      },
-    ]);
+    expect(useDatasetsInfinite).toHaveBeenCalledWith(
+      [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'investigation.id': { eq: investigationId },
+          }),
+        },
+      ],
+      expect.any(Boolean)
+    );
     expect(useDatasetSizes).toHaveBeenCalledWith({
       pages: [rowData],
     });
@@ -233,6 +236,14 @@ describe('ISIS Dataset table component', () => {
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"createTime":"desc"}')}`
+    );
+
+    // check that the data request is sent only once after mounting
+    expect(useDatasetsInfinite).toHaveBeenCalledTimes(2);
+    expect(useDatasetsInfinite).toHaveBeenCalledWith(expect.anything(), false);
+    expect(useDatasetsInfinite).toHaveBeenLastCalledWith(
+      expect.anything(),
+      true
     );
   });
 

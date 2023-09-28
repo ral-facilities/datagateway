@@ -97,7 +97,8 @@ export const useInvestigation = (
 
 export const useInvestigationsPaginated = (
   additionalFilters?: AdditionalFilters,
-  ignoreIDSort?: boolean
+  ignoreIDSort?: boolean,
+  isMounted?: boolean
 ): UseQueryResult<Investigation[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
@@ -145,13 +146,15 @@ export const useInvestigationsPaginated = (
         handleICATError(error);
       },
       retry: retryICATErrors,
+      enabled: isMounted ?? true,
     }
   );
 };
 
 export const useInvestigationsInfinite = (
   additionalFilters?: AdditionalFilters,
-  ignoreIDSort?: boolean
+  ignoreIDSort?: boolean,
+  isMounted?: boolean
 ): UseInfiniteQueryResult<Investigation[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
@@ -185,6 +188,7 @@ export const useInvestigationsInfinite = (
         handleICATError(error);
       },
       retry: retryICATErrors,
+      enabled: isMounted ?? true,
     }
   );
 };
@@ -558,7 +562,8 @@ const fetchISISInvestigations = (
 export const useISISInvestigationsPaginated = (
   instrumentId: number,
   instrumentChildId: number,
-  studyHierarchy: boolean
+  studyHierarchy: boolean,
+  isMounted?: boolean
 ): UseQueryResult<Investigation[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
@@ -652,6 +657,7 @@ export const useISISInvestigationsPaginated = (
         handleICATError(error);
       },
       retry: retryICATErrors,
+      enabled: isMounted ?? true,
     }
   );
 };
@@ -659,7 +665,8 @@ export const useISISInvestigationsPaginated = (
 export const useISISInvestigationsInfinite = (
   instrumentId: number,
   instrumentChildId: number,
-  studyHierarchy: boolean
+  studyHierarchy: boolean,
+  isMounted?: boolean
 ): UseInfiniteQueryResult<Investigation[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
@@ -730,6 +737,7 @@ export const useISISInvestigationsInfinite = (
         handleICATError(error);
       },
       retry: retryICATErrors,
+      enabled: isMounted ?? true,
     }
   );
 };

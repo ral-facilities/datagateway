@@ -128,18 +128,21 @@ describe('DLS datafiles table component', () => {
         }),
       },
     ]);
-    expect(useDatafilesInfinite).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
-      },
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'dataset.investigation.id': { eq: investigationId },
-        }),
-      },
-    ]);
+    expect(useDatafilesInfinite).toHaveBeenCalledWith(
+      [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'dataset.investigation.id': { eq: investigationId },
+          }),
+        },
+      ],
+      expect.any(Boolean)
+    );
     expect(useIds).toHaveBeenCalledWith(
       'datafile',
       [
@@ -232,6 +235,14 @@ describe('DLS datafiles table component', () => {
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"createTime":"desc"}')}`
+    );
+
+    // check that the data request is sent only once after mounting
+    expect(useDatafilesInfinite).toHaveBeenCalledTimes(2);
+    expect(useDatafilesInfinite).toHaveBeenCalledWith(expect.anything(), false);
+    expect(useDatafilesInfinite).toHaveBeenLastCalledWith(
+      expect.anything(),
+      true
     );
   });
 
