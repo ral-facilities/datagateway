@@ -5,7 +5,7 @@ describe('ISIS - Datasets Table', () => {
     cy.login();
     cy.visit(
       '/browse/instrument/1/facilityCycle/16/investigation/97/dataset'
-    ).wait(['@datasetsCount', '@datasetsOrder', '@datasetsOrder'], {
+    ).wait(['@datasetsCount', '@datasetsOrder'], {
       timeout: 10000,
     });
     // Check that we have received the size from the API as this will produce

@@ -98,11 +98,7 @@ describe('ISIS - Studies Cards', () => {
       cy.contains('[role="button"]', 'desc').should('exist');
       cy.get('[data-testid="card"]').first().contains('STUDY 314');
 
-      cy.contains('[role="button"]', 'Start Date')
-        .click()
-        .wait('@getStudiesOrder', {
-          timeout: 10000,
-        });
+      cy.contains('[role="button"]', 'Start Date').click();
       cy.contains('[role="button"]', 'asc').should('not.exist');
       cy.contains('[role="button"]', 'desc').should('not.exist');
       cy.get('[data-testid="card"]').first().contains('STUDY 4');
