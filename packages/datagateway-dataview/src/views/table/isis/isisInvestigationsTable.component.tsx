@@ -62,10 +62,20 @@ const ISISInvestigationsTable = (
     parseInt(instrumentChildId),
     studyHierarchy
   );
+
+  // isMounted is used to disable queries when the component isn't fully mounted.
+  // It prevents the request being sent twice if default sort is set.
+  // It is not needed for cards/tables that don't have default sort.
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const { fetchNextPage, data } = useISISInvestigationsInfinite(
     parseInt(instrumentId),
     parseInt(instrumentChildId),
-    studyHierarchy
+    studyHierarchy,
+    isMounted
   );
   const { data: allIds } = useISISInvestigationIds(
     parseInt(instrumentId),

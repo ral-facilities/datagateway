@@ -126,7 +126,8 @@ export const useFacilityCyclesByInvestigation = (
 };
 
 export const useFacilityCyclesPaginated = (
-  instrumentId: number
+  instrumentId: number,
+  isMounted?: boolean
 ): UseQueryResult<FacilityCycle[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
@@ -171,12 +172,14 @@ export const useFacilityCyclesPaginated = (
         handleICATError(error);
       },
       retry: retryICATErrors,
+      enabled: isMounted ?? true,
     }
   );
 };
 
 export const useFacilityCyclesInfinite = (
-  instrumentId: number
+  instrumentId: number,
+  isMounted?: boolean
 ): UseInfiniteQueryResult<FacilityCycle[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
@@ -204,6 +207,7 @@ export const useFacilityCyclesInfinite = (
         handleICATError(error);
       },
       retry: retryICATErrors,
+      enabled: isMounted ?? true,
     }
   );
 };

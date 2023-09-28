@@ -98,7 +98,8 @@ describe('ISIS Facility Cycles - Card View', () => {
     createWrapper();
     expect(useFacilityCycleCount).toHaveBeenCalledWith(parseInt(instrumentId));
     expect(useFacilityCyclesPaginated).toHaveBeenCalledWith(
-      parseInt(instrumentId)
+      parseInt(instrumentId),
+      expect.any(Boolean)
     );
   });
 
@@ -156,6 +157,17 @@ describe('ISIS Facility Cycles - Card View', () => {
     expect(replaceSpy).toHaveBeenCalledWith({
       search: `?sort=${encodeURIComponent('{"startDate":"desc"}')}`,
     });
+
+    // check that the data request is sent only once after mounting
+    expect(useFacilityCyclesPaginated).toHaveBeenCalledTimes(2);
+    expect(useFacilityCyclesPaginated).toHaveBeenCalledWith(
+      expect.anything(),
+      false
+    );
+    expect(useFacilityCyclesPaginated).toHaveBeenLastCalledWith(
+      expect.anything(),
+      true
+    );
   });
 
   it('updates sort query params on sort', () => {

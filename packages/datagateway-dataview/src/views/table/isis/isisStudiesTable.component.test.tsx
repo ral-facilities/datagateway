@@ -117,30 +117,33 @@ describe('ISIS Studies table component', () => {
         }),
       },
     ]);
-    expect(useStudiesInfinite).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'studyInvestigations.investigation.investigationInstruments.instrument.id': {
-            eq: instrumentId,
-          },
-        }),
-      },
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'studyInvestigations.investigation.releaseDate': {
-            lt: '2021-10-27 00:00:00',
-          },
-        }),
-      },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify({
-          studyInvestigations: 'investigation',
-        }),
-      },
-    ]);
+    expect(useStudiesInfinite).toHaveBeenCalledWith(
+      [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'studyInvestigations.investigation.investigationInstruments.instrument.id': {
+              eq: instrumentId,
+            },
+          }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'studyInvestigations.investigation.releaseDate': {
+              lt: '2021-10-27 00:00:00',
+            },
+          }),
+        },
+        {
+          filterType: 'include',
+          filterValue: JSON.stringify({
+            studyInvestigations: 'investigation',
+          }),
+        },
+      ],
+      expect.any(Boolean)
+    );
   });
 
   it('calls useStudiesInfinite when loadMoreRows is called', () => {
@@ -213,6 +216,14 @@ describe('ISIS Studies table component', () => {
       `?sort=${encodeURIComponent(
         '{"studyInvestigations.investigation.startDate":"desc"}'
       )}`
+    );
+
+    // check that the data request is sent only once after mounting
+    expect(useStudiesInfinite).toHaveBeenCalledTimes(2);
+    expect(useStudiesInfinite).toHaveBeenCalledWith(expect.anything(), false);
+    expect(useStudiesInfinite).toHaveBeenLastCalledWith(
+      expect.anything(),
+      true
     );
   });
 

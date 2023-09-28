@@ -54,7 +54,8 @@ const fetchStudies = (
 };
 
 export const useStudiesPaginated = (
-  additionalFilters?: AdditionalFilters
+  additionalFilters?: AdditionalFilters,
+  isMounted?: boolean
 ): UseQueryResult<Study[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
@@ -94,12 +95,14 @@ export const useStudiesPaginated = (
         handleICATError(error);
       },
       retry: retryICATErrors,
+      enabled: isMounted ?? true,
     }
   );
 };
 
 export const useStudiesInfinite = (
-  additionalFilters?: AdditionalFilters
+  additionalFilters?: AdditionalFilters,
+  isMounted?: boolean
 ): UseInfiniteQueryResult<Study[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
@@ -127,6 +130,7 @@ export const useStudiesInfinite = (
         handleICATError(error);
       },
       retry: retryICATErrors,
+      enabled: isMounted ?? true,
     }
   );
 };

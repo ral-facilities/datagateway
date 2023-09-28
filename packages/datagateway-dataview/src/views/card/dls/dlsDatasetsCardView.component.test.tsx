@@ -106,14 +106,17 @@ describe('DLS Datasets - Card View', () => {
         }),
       },
     ]);
-    expect(useDatasetsPaginated).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'investigation.id': { eq: investigationId },
-        }),
-      },
-    ]);
+    expect(useDatasetsPaginated).toHaveBeenCalledWith(
+      [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'investigation.id': { eq: investigationId },
+          }),
+        },
+      ],
+      expect.any(Boolean)
+    );
   });
 
   it('updates filter query params on text filter', () => {
@@ -169,6 +172,14 @@ describe('DLS Datasets - Card View', () => {
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"createTime":"desc"}')}`
+    );
+
+    // check that the data request is sent only once after mounting
+    expect(useDatasetsPaginated).toHaveBeenCalledTimes(2);
+    expect(useDatasetsPaginated).toHaveBeenCalledWith(expect.anything(), false);
+    expect(useDatasetsPaginated).toHaveBeenLastCalledWith(
+      expect.anything(),
+      true
     );
   });
 

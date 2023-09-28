@@ -73,6 +73,14 @@ const ISISInvestigationsCardView = (
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
+  // isMounted is used to disable queries when the component isn't fully mounted.
+  // It prevents the request being sent twice if default sort is set.
+  // It is not needed for cards/tables that don't have default sort.
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const {
     data: totalDataCount,
     isLoading: countLoading,
@@ -84,7 +92,8 @@ const ISISInvestigationsCardView = (
   const { data, isLoading: dataLoading } = useISISInvestigationsPaginated(
     parseInt(instrumentId),
     parseInt(instrumentChildId),
-    studyHierarchy
+    studyHierarchy,
+    isMounted
   );
   const sizeQueries = useInvestigationSizes(data);
 

@@ -120,30 +120,33 @@ describe('ISIS Studies - Card View', () => {
         }),
       },
     ]);
-    expect(useStudiesPaginated).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'studyInvestigations.investigation.investigationInstruments.instrument.id': {
-            eq: instrumentId,
-          },
-        }),
-      },
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'studyInvestigations.investigation.releaseDate': {
-            lt: '2021-10-27 00:00:00',
-          },
-        }),
-      },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify({
-          studyInvestigations: 'investigation',
-        }),
-      },
-    ]);
+    expect(useStudiesPaginated).toHaveBeenCalledWith(
+      [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'studyInvestigations.investigation.investigationInstruments.instrument.id': {
+              eq: instrumentId,
+            },
+          }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'studyInvestigations.investigation.releaseDate': {
+              lt: '2021-10-27 00:00:00',
+            },
+          }),
+        },
+        {
+          filterType: 'include',
+          filterValue: JSON.stringify({
+            studyInvestigations: 'investigation',
+          }),
+        },
+      ],
+      expect.any(Boolean)
+    );
   });
 
   it('displays Experiment DOI (PID) and renders the expected Link ', () => {
@@ -169,6 +172,14 @@ describe('ISIS Studies - Card View', () => {
       `?sort=${encodeURIComponent(
         '{"studyInvestigations.investigation.startDate":"desc"}'
       )}`
+    );
+
+    // check that the data request is sent only once after mounting
+    expect(useStudiesPaginated).toHaveBeenCalledTimes(2);
+    expect(useStudiesPaginated).toHaveBeenCalledWith(expect.anything(), false);
+    expect(useStudiesPaginated).toHaveBeenLastCalledWith(
+      expect.anything(),
+      true
     );
   });
 

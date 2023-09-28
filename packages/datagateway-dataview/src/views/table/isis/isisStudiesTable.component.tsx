@@ -63,31 +63,43 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
       }),
     },
   ]);
-  const { fetchNextPage, data } = useStudiesInfinite([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'studyInvestigations.investigation.investigationInstruments.instrument.id': {
-          eq: instrumentId,
-        },
-      }),
-    },
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        // this matches the ISIS ICAT rule
-        'studyInvestigations.investigation.releaseDate': {
-          lt: unembargoDate,
-        },
-      }),
-    },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify({
-        studyInvestigations: 'investigation',
-      }),
-    },
-  ]);
+
+  // isMounted is used to disable queries when the component isn't fully mounted.
+  // It prevents the request being sent twice if default sort is set.
+  // It is not needed for cards/tables that don't have default sort.
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const { fetchNextPage, data } = useStudiesInfinite(
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'studyInvestigations.investigation.investigationInstruments.instrument.id': {
+            eq: instrumentId,
+          },
+        }),
+      },
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          // this matches the ISIS ICAT rule
+          'studyInvestigations.investigation.releaseDate': {
+            lt: unembargoDate,
+          },
+        }),
+      },
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify({
+          studyInvestigations: 'investigation',
+        }),
+      },
+    ],
+    isMounted
+  );
 
   const aggregatedData: Study[] = React.useMemo(
     () => (data ? ('pages' in data ? data.pages.flat() : data) : []),

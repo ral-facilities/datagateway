@@ -96,7 +96,8 @@ describe('ISIS FacilityCycles table component', () => {
     createWrapper();
     expect(useFacilityCycleCount).toHaveBeenCalledWith(parseInt(instrumentId));
     expect(useFacilityCyclesInfinite).toHaveBeenCalledWith(
-      parseInt(instrumentId)
+      parseInt(instrumentId),
+      expect.any(Boolean)
     );
   });
 
@@ -170,6 +171,17 @@ describe('ISIS FacilityCycles table component', () => {
     expect(replaceSpy).toHaveBeenCalledWith({
       search: `?sort=${encodeURIComponent('{"startDate":"desc"}')}`,
     });
+
+    // check that the data request is sent only once after mounting
+    expect(useFacilityCyclesInfinite).toHaveBeenCalledTimes(2);
+    expect(useFacilityCyclesInfinite).toHaveBeenCalledWith(
+      expect.anything(),
+      false
+    );
+    expect(useFacilityCyclesInfinite).toHaveBeenLastCalledWith(
+      expect.anything(),
+      true
+    );
   });
 
   it('updates sort query params on sort', () => {

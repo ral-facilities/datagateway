@@ -96,9 +96,7 @@ describe('ISIS - Instruments Cards', () => {
         .first()
         .contains('With piece reason late model.');
 
-      cy.contains('[role="button"]', 'Name')
-        .click()
-        .wait('@getInstrumentsOrder', { timeout: 10000 });
+      cy.contains('[role="button"]', 'Name').click();
       cy.contains('[role="button"]', 'asc').should('not.exist');
       cy.contains('[role="button"]', 'desc').should('not.exist');
       cy.get('[data-testid="card"]')

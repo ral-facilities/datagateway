@@ -30,6 +30,15 @@ const DLSProposalsTable = (): React.ReactElement => {
       filterValue: JSON.stringify(['name', 'title']),
     },
   ]);
+
+  // isMounted is used to disable queries when the component isn't fully mounted.
+  // It prevents the request being sent twice if default sort is set.
+  // It is not needed for cards/tables that don't have default sort.
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const { fetchNextPage, data } = useInvestigationsInfinite(
     [
       {
@@ -39,7 +48,8 @@ const DLSProposalsTable = (): React.ReactElement => {
     ],
     // Do not add order by id as id is not a distinct field above and will otherwise
     // cause missing results
-    true
+    true,
+    isMounted
   );
 
   const aggregatedData: Investigation[] = React.useMemo(

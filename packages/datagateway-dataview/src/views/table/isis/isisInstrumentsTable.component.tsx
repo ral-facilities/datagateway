@@ -34,7 +34,16 @@ const ISISInstrumentsTable = (
   );
 
   const { data: totalDataCount } = useInstrumentCount();
-  const { fetchNextPage, data } = useInstrumentsInfinite();
+
+  // isMounted is used to disable queries when the component isn't fully mounted.
+  // It prevents the request being sent twice if default sort is set.
+  // It is not needed for cards/tables that don't have default sort.
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const { fetchNextPage, data } = useInstrumentsInfinite(undefined, isMounted);
 
   const aggregatedData: Instrument[] = React.useMemo(
     () => (data ? ('pages' in data ? data.pages.flat() : data) : []),

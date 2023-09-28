@@ -133,7 +133,8 @@ describe('ISIS Investigations - Card View', () => {
     expect(useISISInvestigationsPaginated).toHaveBeenCalledWith(
       parseInt(instrumentId),
       parseInt(instrumentChildId),
-      studyHierarchy
+      studyHierarchy,
+      expect.any(Boolean)
     );
     expect(useInvestigationSizes).toHaveBeenCalledWith(cardData);
   });
@@ -236,6 +237,25 @@ describe('ISIS Investigations - Card View', () => {
     expect(replaceSpy).toHaveBeenCalledWith({
       search: `?sort=${encodeURIComponent('{"startDate":"desc"}')}`,
     });
+
+    const instrumentId = '1';
+    const instrumentChildId = '1';
+    const studyHierarchy = false;
+
+    // check that the data request is sent only once after mounting
+    expect(useISISInvestigationsPaginated).toHaveBeenCalledTimes(2);
+    expect(useISISInvestigationsPaginated).toHaveBeenCalledWith(
+      parseInt(instrumentId),
+      parseInt(instrumentChildId),
+      studyHierarchy,
+      false
+    );
+    expect(useISISInvestigationsPaginated).toHaveBeenCalledWith(
+      parseInt(instrumentId),
+      parseInt(instrumentChildId),
+      studyHierarchy,
+      true
+    );
   });
 
   it('updates sort query params on sort', () => {

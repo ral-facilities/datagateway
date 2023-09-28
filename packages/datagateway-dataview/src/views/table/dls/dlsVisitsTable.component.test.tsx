@@ -115,18 +115,22 @@ describe('DLS Visits table component', () => {
         filterValue: JSON.stringify({ name: { eq: proposalName } }),
       },
     ]);
-    expect(useInvestigationsInfinite).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({ name: { eq: proposalName } }),
-      },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify({
-          investigationInstruments: 'instrument',
-        }),
-      },
-    ]);
+    expect(useInvestigationsInfinite).toHaveBeenCalledWith(
+      [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({ name: { eq: proposalName } }),
+        },
+        {
+          filterType: 'include',
+          filterValue: JSON.stringify({
+            investigationInstruments: 'instrument',
+          }),
+        },
+      ],
+      undefined,
+      expect.any(Boolean)
+    );
     expect(useInvestigationsDatasetCount).toHaveBeenCalledWith(rowData);
   });
 
@@ -200,6 +204,19 @@ describe('DLS Visits table component', () => {
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"startDate":"desc"}')}`
     );
+
+    // check that the data request is sent only once after mounting
+    expect(useInvestigationsInfinite).toHaveBeenCalledTimes(2);
+    expect(useInvestigationsInfinite).toHaveBeenCalledWith(
+      expect.anything(),
+      undefined,
+      false
+    );
+    expect(useInvestigationsInfinite).toHaveBeenLastCalledWith(
+      expect.anything(),
+      undefined,
+      true
+    );
   });
 
   it('updates sort query params on sort', () => {
@@ -233,17 +250,17 @@ describe('DLS Visits table component', () => {
   });
 
   it('renders fine with incomplete data', () => {
-    (useInvestigationCount as jest.Mock).mockReturnValueOnce({});
-    (useInvestigationsInfinite as jest.Mock).mockReturnValueOnce({});
-    (useInvestigationsDatasetCount as jest.Mock).mockReturnValueOnce([]);
+    (useInvestigationCount as jest.Mock).mockReturnValue({});
+    (useInvestigationsInfinite as jest.Mock).mockReturnValue({});
+    (useInvestigationsDatasetCount as jest.Mock).mockReturnValue([]);
 
     expect(() => createWrapper()).not.toThrowError();
 
-    (useInvestigationCount as jest.Mock).mockReturnValueOnce({
+    (useInvestigationCount as jest.Mock).mockReturnValue({
       data: 1,
       isLoading: false,
     });
-    (useInvestigationsInfinite as jest.Mock).mockReturnValueOnce({
+    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
       data: [
         {
           ...rowData[0],
@@ -252,11 +269,11 @@ describe('DLS Visits table component', () => {
       ],
       isLoading: false,
     });
-    (useInvestigationsDatasetCount as jest.Mock).mockReturnValueOnce([1]);
+    (useInvestigationsDatasetCount as jest.Mock).mockReturnValue([1]);
 
     expect(() => createWrapper()).not.toThrowError();
 
-    (useInvestigationsInfinite as jest.Mock).mockReturnValueOnce({
+    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
       data: [
         {
           ...rowData[0],

@@ -56,7 +56,8 @@ const fetchInstruments = (
 };
 
 export const useInstrumentsPaginated = (
-  additionalFilters?: AdditionalFilters
+  additionalFilters?: AdditionalFilters,
+  isMounted?: boolean
 ): UseQueryResult<Instrument[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
@@ -91,12 +92,14 @@ export const useInstrumentsPaginated = (
         handleICATError(error);
       },
       retry: retryICATErrors,
+      enabled: isMounted ?? true,
     }
   );
 };
 
 export const useInstrumentsInfinite = (
-  additionalFilters?: AdditionalFilters
+  additionalFilters?: AdditionalFilters,
+  isMounted?: boolean
 ): UseInfiniteQueryResult<Instrument[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
@@ -124,6 +127,7 @@ export const useInstrumentsInfinite = (
         handleICATError(error);
       },
       retry: retryICATErrors,
+      enabled: isMounted ?? true,
     }
   );
 };

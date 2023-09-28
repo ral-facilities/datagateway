@@ -70,6 +70,14 @@ const ISISDatasetsCardView = (
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
+  // isMounted is used to disable queries when the component isn't fully mounted.
+  // It prevents the request being sent twice if default sort is set.
+  // It is not needed for cards/tables that don't have default sort.
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const { data: totalDataCount, isLoading: countLoading } = useDatasetCount([
     {
       filterType: 'where',
@@ -78,14 +86,17 @@ const ISISDatasetsCardView = (
       }),
     },
   ]);
-  const { data, isLoading: dataLoading } = useDatasetsPaginated([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'investigation.id': { eq: investigationId },
-      }),
-    },
-  ]);
+  const { data, isLoading: dataLoading } = useDatasetsPaginated(
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'investigation.id': { eq: investigationId },
+        }),
+      },
+    ],
+    isMounted
+  );
   const sizeQueries = useDatasetSizes(data);
 
   const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
