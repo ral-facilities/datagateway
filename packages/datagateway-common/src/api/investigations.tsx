@@ -549,6 +549,7 @@ export const useSimilarInvestigations = ({
 }: {
   investigation: Investigation;
 }): UseQueryResult<SuggestedInvestigation[], AxiosError> => {
+  // TODO: Remove this hardcoded URL
   const baseUrl = 'http://172.16.103.71:4001/api';
 
   return useQuery<

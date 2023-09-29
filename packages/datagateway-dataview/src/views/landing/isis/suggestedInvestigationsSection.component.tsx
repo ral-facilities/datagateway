@@ -5,12 +5,15 @@ import {
   AccordionSummary,
   CircularProgress,
   Divider,
-  Link,
+  // Link,
   List,
-  ListItem,
+  // ListItem,
+  ListItemButton,
   Pagination,
   Stack,
   Typography,
+  Chip,
+  Box,
 } from '@mui/material';
 import React from 'react';
 import {
@@ -19,6 +22,7 @@ import {
   useSimilarInvestigations,
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
+import { blue } from '@mui/material/colors';
 
 interface SuggestedSectionProps {
   investigation: Investigation;
@@ -59,6 +63,43 @@ function SuggestedInvestigationsSection({
   );
 }
 
+function ScoreChip({
+  score,
+  lowestScore,
+  highestScore,
+  id,
+}: {
+  score: number;
+  lowestScore: number;
+  highestScore: number;
+  id: number;
+}): JSX.Element {
+  const relevanceScore =
+    Math.round(((score - lowestScore) / (highestScore - lowestScore)) * 10) /
+    10;
+  const colorShade = Math.max(
+    relevanceScore * 1000 - 100,
+    50
+  ) as keyof typeof blue;
+  const chipColour = blue[`${colorShade}`];
+  const suggestionScore = Math.round(score * 100);
+  return (
+    <Chip
+      data-testid={`suggested-investigations-score-${id}`}
+      size="small"
+      key={`${suggestionScore}%`}
+      label={`${suggestionScore}%`}
+      sx={{
+        color: (theme) => theme.palette.getContrastText(chipColour),
+        backgroundColor: chipColour,
+        '&:hover': {
+          cursor: 'pointer',
+        },
+      }}
+    />
+  );
+}
+
 function SuggestionList({
   suggestions,
 }: {
@@ -85,6 +126,9 @@ function SuggestionList({
     paginationOffset,
     paginationOffset + SUGGESTION_COUNT_PER_PAGE
   );
+
+  const lowestScore = Math.min(...suggestions.map((s) => s.score));
+  const highestScore = Math.max(...suggestions.map((s) => s.score));
 
   return (
     <Stack alignItems="center">
@@ -130,15 +174,39 @@ function SuggestionList({
           const isLastItem = i === SUGGESTION_COUNT_PER_PAGE - 1;
           return (
             <React.Fragment key={suggestion.id}>
-              <ListItem dense>
-                {suggestion.doi ? (
-                  <Link href={constructFullDoiUrl(suggestion.doi)}>
+              <ListItemButton
+                dense
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  '&.Mui-disabled': {
+                    opacity: 1,
+                  },
+                }}
+                href={
+                  suggestion.doi ? constructFullDoiUrl(suggestion.doi) : '#'
+                }
+                disabled={suggestion.doi ? false : true}
+              >
+                <Box sx={{ flexGrow: 1, marginRight: 2 }}>
+                  {/* {suggestion.doi ? (
+                    <Link href={constructFullDoiUrl(suggestion.doi)}>
+                      {suggestion.title}
+                    </Link>
+                  ) : (
+                    <Typography>{suggestion.title}</Typography>
+                  )} */}
+                  <Typography sx={{ opacity: suggestion.doi ? 1 : 0.5 }}>
                     {suggestion.title}
-                  </Link>
-                ) : (
-                  <Typography>{suggestion.title}</Typography>
-                )}
-              </ListItem>
+                  </Typography>
+                </Box>
+                <ScoreChip
+                  score={suggestion.score}
+                  id={suggestion.id}
+                  lowestScore={lowestScore}
+                  highestScore={highestScore}
+                />
+              </ListItemButton>
               {!isLastItem && <Divider />}
             </React.Fragment>
           );
