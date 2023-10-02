@@ -210,7 +210,9 @@ describe('ISIS Investigation Landing page', () => {
   const noSamples: never[] = [];
   const noPublication: never[] = [];
 
-  const mockAxiosGet = (url: string): Promise<Partial<AxiosResponse>> => {
+  const mockAxiosGet = (
+    url: string
+  ): Promise<Partial<AxiosResponse>> | undefined => {
     if (url.includes('/investigations')) {
       return Promise.resolve({
         data: initialData,
@@ -345,13 +347,19 @@ describe('ISIS Investigation Landing page', () => {
     );
 
     expect(
-      await screen.findByRole('link', { name: 'Suggested investigation 1' })
+      await screen.findByRole('link', {
+        name: 'Suggested investigation 1 90%',
+      })
     ).toHaveAttribute('href', 'https://doi.org/doi1');
     expect(
-      await screen.findByRole('link', { name: 'Suggested investigation 2' })
+      await screen.findByRole('link', {
+        name: 'Suggested investigation 2 90%',
+      })
     ).toHaveAttribute('href', 'https://doi.org/doi2');
     expect(
-      await screen.findByRole('link', { name: 'Suggested investigation 3' })
+      await screen.findByRole('link', {
+        name: 'Suggested investigation 3 90%',
+      })
     ).toHaveAttribute('href', 'https://doi.org/doi3');
   });
 

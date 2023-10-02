@@ -105,22 +105,22 @@ describe('SuggestedInvestigationsSection', () => {
     expect(suggestionLinks).toHaveLength(5);
 
     expect(
-      screen.getByRole('link', { name: 'Suggested investigation 1' })
+      screen.getByRole('link', { name: 'Suggested investigation 1 90%' })
     ).toHaveAttribute('href', 'https://doi.org/doi1');
     expect(
-      screen.getByRole('link', { name: 'Suggested investigation 2' })
+      screen.getByRole('link', { name: 'Suggested investigation 2 90%' })
     ).toHaveAttribute('href', 'https://doi.org/doi2');
     expect(
-      screen.getByRole('link', { name: 'Suggested investigation 3' })
+      screen.getByRole('link', { name: 'Suggested investigation 3 90%' })
     ).toHaveAttribute('href', 'https://doi.org/doi3');
     expect(
-      screen.getByRole('link', { name: 'Suggested investigation 4' })
+      screen.getByRole('link', { name: 'Suggested investigation 4 90%' })
     ).toHaveAttribute('href', 'https://doi.org/doi4');
     expect(
-      screen.getByRole('link', { name: 'Suggested investigation 5' })
+      screen.getByRole('link', { name: 'Suggested investigation 5 60%' })
     ).toHaveAttribute('href', 'https://doi.org/doi5');
     expect(
-      screen.queryByRole('link', { name: 'Suggested investigation 6' })
+      screen.queryByRole('link', { name: 'Suggested investigation 6 50%' })
     ).toBeNull();
 
     // go to the next page
@@ -132,7 +132,7 @@ describe('SuggestedInvestigationsSection', () => {
 
     expect(await screen.findAllByRole('link')).toHaveLength(1);
     expect(
-      screen.getByRole('link', { name: 'Suggested investigation 6' })
+      screen.getByRole('link', { name: 'Suggested investigation 6 50%' })
     ).toBeInTheDocument();
   });
 

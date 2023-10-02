@@ -5,9 +5,7 @@ import {
   AccordionSummary,
   CircularProgress,
   Divider,
-  // Link,
   List,
-  // ListItem,
   ListItemButton,
   Pagination,
   Stack,
@@ -75,8 +73,11 @@ function ScoreChip({
   id: number;
 }): JSX.Element {
   const relevanceScore =
-    Math.round(((score - lowestScore) / (highestScore - lowestScore)) * 10) /
-    10;
+    lowestScore === highestScore
+      ? 1
+      : Math.round(
+          ((score - lowestScore) / (highestScore - lowestScore)) * 10
+        ) / 10;
   const colorShade = Math.max(
     relevanceScore * 1000 - 100,
     50
@@ -189,13 +190,6 @@ function SuggestionList({
                 disabled={suggestion.doi ? false : true}
               >
                 <Box sx={{ flexGrow: 1, marginRight: 2 }}>
-                  {/* {suggestion.doi ? (
-                    <Link href={constructFullDoiUrl(suggestion.doi)}>
-                      {suggestion.title}
-                    </Link>
-                  ) : (
-                    <Typography>{suggestion.title}</Typography>
-                  )} */}
                   <Typography sx={{ opacity: suggestion.doi ? 1 : 0.5 }}>
                     {suggestion.title}
                   </Typography>
