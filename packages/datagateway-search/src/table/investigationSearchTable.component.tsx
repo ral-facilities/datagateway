@@ -121,12 +121,7 @@ const InvestigationSearchTable = (
   });
 
   function mapSource(response: SearchResponse): SearchResultSource[] {
-    return (
-      response.results?.map((result) => ({
-        ...result.source,
-        id: result.id,
-      })) ?? []
-    );
+    return response.results?.map((result) => result.source) ?? [];
   }
 
   function mapIds(response: SearchResponse): number[] {

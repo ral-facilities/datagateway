@@ -304,7 +304,7 @@ export interface SearchFacilityCycleSource {
 }
 
 export interface SearchResultSource {
-  id: number; // TODO: if patrick doesn't fix the string issue, set this to string and fix the typing issues
+  id: number;
   name: string;
   title?: string;
   visitId?: string;
