@@ -74,7 +74,7 @@ interface RangeRequest {
 export interface SearchResult {
   id: number;
   score: number;
-  source: SearchResultSource;
+  source: Omit<SearchResultSource, 'id'> & { id: string }; // TODO: if patrick fixes the string issue, revert this
 }
 
 interface RangeFacetResponse {

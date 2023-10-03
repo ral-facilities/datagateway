@@ -115,7 +115,12 @@ const DatasetSearchTable = ({
   });
 
   function mapSource(response: SearchResponse): SearchResultSource[] {
-    return response.results?.map((result) => result.source) ?? [];
+    return (
+      response.results?.map((result) => ({
+        ...result.source,
+        id: result.id,
+      })) ?? []
+    );
   }
 
   function mapIds(response: SearchResponse): number[] {
