@@ -12,7 +12,7 @@ import {
   type FiltersType,
   useLuceneFacet,
 } from 'datagateway-common';
-import type { ParameterValueFacet } from '../newParameterFilterCreator.component';
+import type { ParameterValueFacet } from '../parameterFilterTypes';
 import parameterFacetsFromSearchResponse from '../parameterFacetsFromSearchResponse';
 import ParameterValueSelectorProps from './parameterValueSelectorProps';
 import { useTranslation } from 'react-i18next';

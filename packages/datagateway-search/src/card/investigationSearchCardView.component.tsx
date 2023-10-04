@@ -43,7 +43,6 @@ import {
 import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import { StateType } from '../state/app.types';
-import { CVCustomFilters } from 'datagateway-common/lib/card/cardView.component';
 import useFacetFilters from '../facet/useFacetFilters';
 import FacetPanel from '../facet/components/facetPanel/facetPanel.component';
 import { facetClassificationFromSearchResponses } from '../facet/facet';
@@ -76,8 +75,16 @@ const InvestigationCardView = (
     () => parseSearchToQuery(location.search),
     [location.search]
   );
-  const { filters, sort, page, results, startDate, endDate, restrict } =
-    queryParams;
+  const {
+    filters,
+    sort,
+    page,
+    results,
+    startDate,
+    endDate,
+    restrict,
+    investigation,
+  } = queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
   const handleSort = useSort();
@@ -120,7 +127,8 @@ const InvestigationCardView = (
           },
         ],
       },
-      filters
+      filters,
+      { enabled: investigation }
     );
 
   function mapSource(response: SearchResponse): SearchResultSource[] {
@@ -130,55 +138,6 @@ const InvestigationCardView = (
   function mapIds(response: SearchResponse): number[] {
     return response.results?.map((result) => result.id) ?? [];
   }
-
-  const mapFacets = React.useCallback(
-    (responses: SearchResponse[]): CVCustomFilters[] => {
-      // Aggregate pages
-      const filters: { [dimension: string]: { [label: string]: number } } = {};
-      responses.forEach((response) => {
-        if (response.dimensions !== undefined) {
-          Object.entries(response.dimensions).forEach((dimension) => {
-            const dimensionKey = dimension[0];
-            const dimensionValue = dimension[1];
-            if (!Object.keys(filters).includes(dimensionKey)) {
-              filters[dimensionKey] = {};
-            }
-            Object.entries(dimensionValue).forEach((labelValue) => {
-              const label = labelValue[0];
-              const count =
-                typeof labelValue[1] === 'number'
-                  ? labelValue[1]
-                  : labelValue[1].count;
-              if (Object.keys(filters[dimensionKey]).includes(label)) {
-                filters[dimensionKey][label] += count;
-              } else {
-                filters[dimensionKey][label] = count;
-              }
-            });
-          });
-        }
-      });
-      // Convert to custom filters
-      return Object.entries(filters).map((dimension) => {
-        const dimensionKey = dimension[0].toLocaleLowerCase();
-        const dimensionValue = dimension[1];
-        return {
-          label: t(dimensionKey),
-          dataKey: dimensionKey,
-          dataKeySearch: dimensionKey
-            .replace('investigation.', '')
-            .replace('investigationparameter.', 'investigationparameter ')
-            .replace('sample.', 'sample '),
-          filterItems: Object.entries(dimensionValue).map((labelValue) => ({
-            name: labelValue[0],
-            count: labelValue[1].toString(),
-          })),
-          prefixLabel: true,
-        };
-      });
-    },
-    [t]
-  );
 
   const {
     selectedFacetFilters,
@@ -211,18 +170,16 @@ const InvestigationCardView = (
       return {
         paginatedSource: aggregatedSource.slice(minResult, maxResult),
         aggregatedIds: aggregatedIds,
-        customFilters: mapFacets(data.pages),
         aborted: data.pages[data.pages.length - 1].aborted,
       };
     } else {
       return {
         paginatedSource: [],
         aggregatedIds: [],
-        customFilters: [],
         aborted: false,
       };
     }
-  }, [data, fetchNextPage, hasNextPage, mapFacets, page, results]);
+  }, [data, fetchNextPage, hasNextPage, page, results]);
 
   // hierarchy === 'isis' ? data : undefined is a 'hack' to only perform
   // the correct calculation queries for each facility

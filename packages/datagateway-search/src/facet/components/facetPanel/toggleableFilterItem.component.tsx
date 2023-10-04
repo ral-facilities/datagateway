@@ -9,7 +9,7 @@ import React from 'react';
 
 interface ToggleableFilterItemProps {
   classificationLabel: string;
-  count: number;
+  count: number | undefined;
   selected: boolean;
   onSelect: (classificationLabel: string, selected: boolean) => void;
 }
@@ -50,7 +50,7 @@ function ToggleableFilterItem({
           <Box flex={1} overflow="hidden" textOverflow="ellipsis">
             {classificationLabel}
           </Box>
-          <span>{count}</span>
+          {count && <span>{count}</span>}
         </Box>
       </ListItemText>
     </ListItemButton>

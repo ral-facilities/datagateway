@@ -6,7 +6,6 @@ import {
 import {
   AddToCartButton,
   CardView,
-  type CVCustomFilters,
   DatasetDetailsPanel,
   DLSDatasetDetailsPanel,
   DownloadButton,
@@ -66,8 +65,16 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
     () => parseSearchToQuery(location.search),
     [location.search]
   );
-  const { startDate, endDate, page, results, sort, filters, restrict } =
-    queryParams;
+  const {
+    startDate,
+    endDate,
+    page,
+    results,
+    sort,
+    filters,
+    restrict,
+    dataset,
+  } = queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
   const minNumResults = useSelector(
@@ -101,7 +108,8 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
           },
         ],
       },
-      filters
+      filters,
+      { enabled: dataset }
     );
 
   const {
@@ -127,50 +135,6 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
     return response.results?.map((result) => result.id) ?? [];
   }
 
-  const mapFacets = React.useCallback(
-    (responses: SearchResponse[]): CVCustomFilters[] => {
-      const filters: { [dimension: string]: { [label: string]: number } } = {};
-      responses.forEach((response) => {
-        if (response.dimensions !== undefined) {
-          Object.entries(response.dimensions).forEach((dimension) => {
-            const dimensionKey = dimension[0];
-            const dimensionValue = dimension[1];
-            if (!Object.keys(filters).includes(dimensionKey)) {
-              filters[dimensionKey] = {};
-            }
-            Object.entries(dimensionValue).forEach((labelValue) => {
-              const label = labelValue[0];
-              const count =
-                typeof labelValue[1] === 'number'
-                  ? labelValue[1]
-                  : labelValue[1].count;
-              if (Object.keys(filters[dimensionKey]).includes(label)) {
-                filters[dimensionKey][label] += count;
-              } else {
-                filters[dimensionKey][label] = count;
-              }
-            });
-          });
-        }
-      });
-      return Object.entries(filters).map((dimension) => {
-        const dimensionKey = dimension[0].toLocaleLowerCase();
-        const dimensionValue = dimension[1];
-        return {
-          label: t(dimensionKey),
-          dataKey: dimensionKey,
-          dataKeySearch: dimensionKey.replace('dataset.', ''),
-          filterItems: Object.entries(dimensionValue).map((labelValue) => ({
-            name: labelValue[0],
-            count: labelValue[1].toString(),
-          })),
-          prefixLabel: true,
-        };
-      });
-    },
-    [t]
-  );
-
   const { paginatedSource, aggregatedIds, aborted } = React.useMemo(() => {
     if (data) {
       const aggregatedIds = data.pages
@@ -187,18 +151,16 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
       return {
         paginatedSource: aggregatedSource.slice(minResult, maxResult),
         aggregatedIds: aggregatedIds,
-        customFilters: mapFacets(data.pages),
         aborted: data.pages[data.pages.length - 1].aborted,
       };
     } else {
       return {
         paginatedSource: [],
         aggregatedIds: [],
-        customFilters: [],
         aborted: false,
       };
     }
-  }, [data, fetchNextPage, hasNextPage, mapFacets, page, results]);
+  }, [data, fetchNextPage, hasNextPage, page, results]);
 
   const handleSort = useSort();
   const pushFilter = usePushDatasetFilter();

@@ -8,14 +8,14 @@ function parameterFacetsFromSearchResponse(
 
   return Object.values(response.dimensions).flatMap((labelValues) =>
     Object.entries(labelValues).map(([label, value]) =>
-      typeof value === 'number'
-        ? { label, count: value }
-        : {
+      typeof value === 'object'
+        ? {
             label,
             count: value.count,
             from: value.from,
             to: value.to,
           }
+        : { label, count: value }
     )
   );
 }

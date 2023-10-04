@@ -28,13 +28,6 @@ interface NewParameterFilterCreatorProps {
   onClose: () => void;
 }
 
-interface ParameterValueFacet {
-  label: string;
-  count: number;
-  from?: number;
-  to?: number;
-}
-
 const PARAMETER_VALUE_SELECTOR: Record<
   ParameterValueType,
   (props: ParameterValueSelectorProps) => JSX.Element
@@ -196,4 +189,3 @@ function NewParameterFilterCreator({
 }
 
 export default NewParameterFilterCreator;
-export type { ParameterValueFacet };

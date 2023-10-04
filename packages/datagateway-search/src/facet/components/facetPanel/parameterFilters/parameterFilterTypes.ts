@@ -28,7 +28,7 @@ interface ParameterValueFilter {
 
 interface ParameterValueFacet {
   label: string;
-  count: number;
+  count?: number;
   from?: number;
   to?: number;
 }

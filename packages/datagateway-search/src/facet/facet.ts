@@ -44,7 +44,7 @@ type FacetClassification = Record<string, FacetClassificationValues>;
  * and 99 `Phone`s whose `color` field has the value `"white"`.
  * In English, it means that there are 100 black phones and 99 white phones.
  */
-type FacetClassificationValues = Record<string, number>;
+type FacetClassificationValues = Record<string, number | undefined>;
 
 /**
  * Combines facet objects in each {@link SearchResponse} in the given array into one
@@ -133,11 +133,17 @@ function facetClassificationFromSearchResponses(
       for (const [classification, value] of Object.entries(classifications)) {
         // the number of search items under this classification
         const classificationCount =
-          typeof value === 'number' ? value : value.count;
+          typeof value === 'object' ? value.count : value;
 
-        if (classification in otherClassifications) {
+        if (
+          classification in otherClassifications &&
+          typeof classificationCount !== 'undefined' &&
+          typeof otherClassifications[classification] !== 'undefined'
+        ) {
           // combine count with other existing classifications
-          otherClassifications[classification] += classificationCount;
+          // type-cast as number since we check for not undefined above but TS isn't happy
+          (otherClassifications[classification] as number) +=
+            classificationCount;
         } else {
           // classification under this dimension doesn't exist yet
           // add this to the final object

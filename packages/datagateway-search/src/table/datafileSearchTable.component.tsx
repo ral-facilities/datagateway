@@ -63,6 +63,8 @@ const DatafileSearchTable = (
     (state: StateType) => state.dgsearch.maxNumResults
   );
 
+  console.log('filters', filters);
+
   const { fetchNextPage, data, hasNextPage, isFetching } =
     useLuceneSearchInfinite(
       'Datafile',
@@ -87,7 +89,37 @@ const DatafileSearchTable = (
         ],
       },
       filters,
-      { enabled: datafile }
+      {
+        enabled: datafile, // this select removes the facet count for the InvestigationInstrument.instrument.name
+        // facet since the number is confusing
+        select: (data) => {
+          return {
+            ...data,
+            pages: data.pages.map((searchResponse) => {
+              return {
+                ...searchResponse,
+                dimensions: {
+                  ...searchResponse.dimensions,
+                  'InvestigationInstrument.instrument.name': Object.keys(
+                    searchResponse.dimensions?.[
+                      'InvestigationInstrument.instrument.name'
+                    ] ?? {}
+                  ).reduce(
+                    (
+                      accumulator: { [key: string]: undefined },
+                      current: string
+                    ) => {
+                      accumulator[current] = undefined;
+                      return accumulator;
+                    },
+                    {}
+                  ),
+                },
+              };
+            }),
+          };
+        },
+      }
     );
   const [t] = useTranslation();
 

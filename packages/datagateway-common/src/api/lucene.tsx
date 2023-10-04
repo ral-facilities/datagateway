@@ -84,7 +84,9 @@ interface RangeFacetResponse {
 }
 
 export interface SearchFacet {
-  [dimension: string]: { [label: string]: number | RangeFacetResponse };
+  [dimension: string]: {
+    [label: string]: number | RangeFacetResponse | undefined;
+  };
 }
 
 export interface SearchResponse {
@@ -337,22 +339,17 @@ export const useLuceneSearchInfinite = (
     // and we are searching investigation, only investigation.type.name will be added to the final filter object.
     luceneParams.filters = Object.entries(facetFilters).reduce<FiltersType>(
       (filters, [filterKey, filterValue]) => {
-        if (new RegExp(`^${datasearchType}.*`, 'i').test(filterKey)) {
-          const k = filterKey[0].toLocaleLowerCase() + filterKey.substring(1);
-          filters[k] = filterValue;
-        }
+        // if (new RegExp(`^${datasearchType}.*`, 'i').test(filterKey)) {
+        const k = filterKey[0].toLocaleLowerCase() + filterKey.substring(1);
+        filters[k] = filterValue;
+        // }
         return filters;
       },
       {}
     );
   }
 
-  return useInfiniteQuery<
-    SearchResponse,
-    AxiosError<LuceneError>,
-    SearchResponse,
-    [string, DatasearchType, LuceneSearchParams]
-  >(
+  return useInfiniteQuery(
     ['search', datasearchType, luceneParams],
     () => fetchLuceneData(datasearchType, luceneParams, { icatUrl }),
     {
