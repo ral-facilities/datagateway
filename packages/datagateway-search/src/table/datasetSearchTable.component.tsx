@@ -49,8 +49,16 @@ const DatasetSearchTable = ({
     () => parseSearchToQuery(location.search),
     [location.search]
   );
-  const { startDate, endDate, sort, filters, restrict, searchText, dataset } =
-    queryParams;
+  const {
+    startDate,
+    endDate,
+    sort,
+    filters,
+    restrict,
+    searchText,
+    dataset,
+    currentTab,
+  } = queryParams;
 
   const selectAllSetting = useSelector(
     (state: StateType) => state.dgsearch.selectAllSetting
@@ -87,8 +95,54 @@ const DatasetSearchTable = ({
           },
         ],
       },
-      filters,
-      { enabled: dataset }
+      currentTab === 'dataset' ? filters : {},
+      {
+        enabled: dataset,
+        // // this select removes the facet count for the InvestigationInstrument.instrument.name
+        // // facet since the number is confusing
+        // select: (data) => ({
+        //   ...data,
+        //   pages: data.pages.map((searchResponse) => {
+        //     console.log('test', {
+        //       ...searchResponse.dimensions,
+        //       'InvestigationInstrument.instrument.name': Object.keys(
+        //         searchResponse.dimensions?.[
+        //           'InvestigationInstrument.instrument.name'
+        //         ] ?? {}
+        //       ).reduce(
+        //         (
+        //           accumulator: { [key: string]: undefined },
+        //           current: string
+        //         ) => {
+        //           accumulator[current] = undefined;
+        //           return accumulator;
+        //         },
+        //         {}
+        //       ),
+        //     });
+        //     return {
+        //       ...searchResponse,
+        //       dimensions: {
+        //         ...searchResponse.dimensions,
+        //         'InvestigationInstrument.instrument.name': Object.keys(
+        //           searchResponse.dimensions?.[
+        //             'InvestigationInstrument.instrument.name'
+        //           ] ?? {}
+        //         ).reduce(
+        //           (
+        //             accumulator: { [key: string]: undefined },
+        //             current: string
+        //           ) => {
+        //             accumulator[current] = undefined;
+        //             return accumulator;
+        //           },
+        //           {}
+        //         ),
+        //       },
+        //     };
+        //   }),
+        // }),
+      }
     );
 
   const [t] = useTranslation();

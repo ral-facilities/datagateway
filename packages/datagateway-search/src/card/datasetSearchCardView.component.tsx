@@ -74,6 +74,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
     filters,
     restrict,
     dataset,
+    currentTab,
   } = queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
@@ -108,7 +109,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
           },
         ],
       },
-      filters,
+      currentTab === 'dataset' ? filters : {},
       { enabled: dataset }
     );
 

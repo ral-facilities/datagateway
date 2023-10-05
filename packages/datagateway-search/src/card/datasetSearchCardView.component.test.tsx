@@ -100,7 +100,14 @@ describe('Dataset - Card View', () => {
     searchResponse = {
       results: [searchResult],
     };
-    history = createMemoryHistory();
+    history = createMemoryHistory({
+      initialEntries: [
+        {
+          pathname: '/search/data',
+          search: '?currentTab=dataset',
+        },
+      ],
+    });
 
     state = JSON.parse(
       JSON.stringify({

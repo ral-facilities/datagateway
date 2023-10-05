@@ -48,7 +48,8 @@ const DatafileSearchTable = (
     () => parseSearchToQuery(location.search),
     [location.search]
   );
-  const { startDate, endDate, sort, filters, restrict, datafile } = queryParams;
+  const { startDate, endDate, sort, filters, restrict, datafile, currentTab } =
+    queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
   const selectAllSetting = useSelector(
@@ -62,8 +63,6 @@ const DatafileSearchTable = (
   const maxNumResults = useSelector(
     (state: StateType) => state.dgsearch.maxNumResults
   );
-
-  console.log('filters', filters);
 
   const { fetchNextPage, data, hasNextPage, isFetching } =
     useLuceneSearchInfinite(
@@ -88,7 +87,7 @@ const DatafileSearchTable = (
           },
         ],
       },
-      filters,
+      currentTab === 'datafile' ? filters : {},
       {
         enabled: datafile, // this select removes the facet count for the InvestigationInstrument.instrument.name
         // facet since the number is confusing

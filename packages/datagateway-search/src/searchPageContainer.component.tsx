@@ -225,8 +225,17 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const checkedBoxes = boolSearchableEntities.flatMap((b, i) =>
     b ? searchableEntities[i] : []
   );
+
+  // keep track of first render as checkedBoxes isn't initalised from the URL yet
+  // and that causes us to lose the currentTab state from the URL without the isFirstRender check
+  const [isFirstRender, setIsFirstRender] = React.useState(true);
+  React.useEffect(() => {
+    setIsFirstRender(false);
+  }, []);
+
   const currentTab =
-    queryParams.currentTab && checkedBoxes.includes(queryParams.currentTab)
+    queryParams.currentTab &&
+    (isFirstRender || checkedBoxes.includes(queryParams.currentTab))
       ? queryParams.currentTab
       : checkedBoxes.length !== 0
       ? checkedBoxes[0]

@@ -1,32 +1,7 @@
 describe('Datafile search tab', () => {
-  let facilityName: string;
-
-  before(() => {
-    cy.readFile('server/e2e-settings.json').then((settings) => {
-      if (settings.facilityName) facilityName = settings.facilityName;
-    });
-  });
-
   beforeEach(() => {
     cy.login();
     cy.visit('/search/data/');
-    cy.intercept('**/search/documents*', {
-      fixture: 'datafileSearchResults.json',
-    });
-    cy.intercept('**/datasets/count*', {
-      body: 1,
-    });
-    cy.intercept('**/datafiles/count*', {
-      body: 1,
-    });
-    cy.intercept(`**/topcat/user/cart/${facilityName}/cartItems`, {
-      statusCode: 200,
-    });
-    cy.intercept(`**/topcat/user/cart/${facilityName}*`, {
-      body: {
-        cartItems: [],
-      },
-    });
 
     // only the datafile tab is tested here, so we want to hide investigation & dataset tabs
     // open search type dropdown menu
@@ -42,29 +17,31 @@ describe('Datafile search tab', () => {
 
   it('should perform search query and show search results correctly', () => {
     // type in search query
-    cy.findByRole('searchbox', { name: 'Search text input' }).type('carbon');
+    cy.findByRole('searchbox', { name: 'Search text input' }).type(
+      'dog AND big'
+    );
     // uncheck my data
     cy.findByRole('checkbox', { name: 'My data' }).click();
     // click on search button
     cy.findByRole('button', { name: 'Submit search' }).click();
 
     cy.findByRole('tab', { name: 'Datafile' }).within(() => {
-      cy.findByText('4').should('exist');
+      cy.findByText('2').should('exist');
     });
 
-    // 5 rows, 4 for search results, 1 for the header row
-    cy.findAllByRole('row').should('have.length', 5);
+    // 3 rows, 2 for search results, 1 for the header row
+    cy.findAllByRole('row').should('have.length', 3);
 
     cy.findByRole('button', { name: 'Toggle Format filter panel' }).click();
 
     cy.findAllByLabelText('Format filter panel')
       .filter(':visible')
       .within(() => {
-        cy.findByRole('button', { name: 'Add isis neutron raw filter' })
+        cy.findByRole('button', { name: 'Add DATAFILEFORMAT 9 filter' })
           .should('exist')
           .within(() => {
             cy.findByRole('checkbox').should('not.be.checked');
-            cy.findByText('173').should('exist');
+            cy.findByText('1').should('exist');
           });
       });
 
@@ -75,43 +52,32 @@ describe('Datafile search tab', () => {
     cy.findAllByLabelText('Parameter name filter panel')
       .filter(':visible')
       .within(() => {
-        cy.findByRole('button', { name: 'Add finish_date filter' })
+        cy.findByRole('button', { name: 'Add PARAMETERTYPE 23 filter' })
           .should('exist')
           .within(() => {
             cy.findByRole('checkbox').should('not.be.checked');
-            cy.findByText('300').should('exist');
+            cy.findByText('1').should('exist');
           });
 
-        cy.findByRole('button', { name: 'Add good_frames filter' })
+        cy.findByRole('button', { name: 'Add PARAMETERTYPE 46 filter' })
           .should('exist')
           .within(() => {
             cy.findByRole('checkbox').should('not.be.checked');
-            cy.findByText('300').should('exist');
-          });
-
-        cy.findByRole('button', { name: 'Add good_proton_charge filter' })
-          .should('exist')
-          .within(() => {
-            cy.findByRole('checkbox').should('not.be.checked');
-            cy.findByText('300').should('exist');
+            cy.findByText('1').should('exist');
           });
       });
   });
 
   it('should be able to add/remove to/from download cart', () => {
     // type in search query
-    cy.findByRole('searchbox', { name: 'Search text input' }).type('carbon');
+    cy.findByRole('searchbox', { name: 'Search text input' }).type('+dog +big');
     // uncheck my data
     cy.findByRole('checkbox', { name: 'My data' }).click();
     // click on search button
     cy.findByRole('button', { name: 'Submit search' }).click();
 
-    // 5 rows, 4 for search results, 1 for the header row
-    cy.findAllByRole('row').should('have.length', 5);
-
-    cy.intercept(`**/topcat/user/cart/${facilityName}/cartItems`, {
-      fixture: 'downloadCartItems.json',
-    });
+    // 3 rows, 2 for search results, 1 for the header row
+    cy.findAllByRole('row').should('have.length', 3);
 
     cy.findAllByRole('row')
       .eq(1)
@@ -119,12 +85,6 @@ describe('Datafile search tab', () => {
         cy.findByRole('checkbox').click();
         cy.findByRole('checkbox').should('be.checked');
       });
-
-    cy.intercept(`**/topcat/user/cart/${facilityName}/cartItems`, {
-      body: {
-        cartItems: [],
-      },
-    });
 
     cy.findAllByRole('row')
       .eq(1)
@@ -136,13 +96,13 @@ describe('Datafile search tab', () => {
 
   it('should be able to open the details panel of a specific row', () => {
     // type in search query
-    cy.findByRole('searchbox', { name: 'Search text input' }).type('carbon');
+    cy.findByRole('searchbox', { name: 'Search text input' }).type('+dog +big');
     // uncheck my data
     cy.findByRole('checkbox', { name: 'My data' }).click();
     // click on search button
     cy.findByRole('button', { name: 'Submit search' }).click();
 
-    cy.findAllByRole('row').should('have.length', 5);
+    cy.findAllByRole('row').should('have.length', 3);
 
     cy.findAllByRole('row')
       .eq(1)
@@ -151,23 +111,21 @@ describe('Datafile search tab', () => {
       });
 
     cy.findByTestId('datafile-details-panel').within(() => {
-      cy.findByText('EVS07934.RAW').should('exist');
-      cy.findByText('940.03 KB').should('exist');
-      cy.findByText(
-        '\\\\isis\\inst$\\NDXEVS\\Instrument\\data\\cycle_99_5\\EVS07934.RAW'
-      ).should('exist');
+      cy.findByText('Datafile 1302').should('exist');
+      cy.findByText('32.89 MB').should('exist');
+      cy.findByText('/memory/dog/experience.jpg').should('exist');
     });
   });
 
   it('should be able to filter search results by facets', () => {
     // type in search query
-    cy.findByRole('searchbox', { name: 'Search text input' }).type('carbon');
+    cy.findByRole('searchbox', { name: 'Search text input' }).type('dog');
     // uncheck my data
     cy.findByRole('checkbox', { name: 'My data' }).click();
     // click on search button
     cy.findByRole('button', { name: 'Submit search' }).click();
 
-    cy.findAllByRole('row').should('have.length', 5);
+    cy.findAllByRole('row').should('have.length', 27);
 
     // open the filter panel, then select some filters
     cy.findByRole('button', { name: 'Toggle Format filter panel' }).click();
@@ -177,32 +135,27 @@ describe('Datafile search tab', () => {
       .filter(':visible')
       .within(() => {
         cy.findByRole('button', {
-          name: 'Add isis neutron raw filter',
-        }).click();
-        cy.findByRole('button', {
-          name: 'Add isis neutron raw filter',
-        }).within(() => {
+          name: 'Add DATAFILEFORMAT 1 filter',
+        })
+          .as('filter')
+          .click();
+        cy.get('@filter').within(() => {
           cy.findByRole('checkbox').should('be.checked');
         });
       });
 
-    // intercept search request to return predefined filtered search result
-    cy.intercept('**/search/documents*', {
-      fixture: 'filteredDatafileSearchResults.json',
-    });
-
     // apply the filter
-    cy.findAllByRole('button', { name: 'Apply' }).filter(':visible').click();
+    cy.findAllByRole('button', { name: 'Apply' }).click();
 
     // the search result should be filtered
-    cy.findAllByRole('row').should('have.length', 2);
+    cy.findAllByRole('row').should('have.length', 4);
 
     // check that filter chips are displayed
     cy.findByTestId('tabpanel-datafile').within(() => {
       cy.findByLabelText('Selected filters')
         .should('exist')
         .within(() => {
-          cy.findByText('Format: isis neutron raw').should('exist');
+          cy.findByText('Format: DATAFILEFORMAT 1').should('exist');
         });
     });
 
@@ -212,146 +165,51 @@ describe('Datafile search tab', () => {
       .filter(':visible')
       .within(() => {
         cy.findByRole('button', {
-          name: 'Remove isis neutron raw filter',
+          name: 'Remove DATAFILEFORMAT 1 filter',
         }).within(() => {
           cy.findByRole('checkbox').should('be.checked');
         });
       });
 
-    // open the other filter panel to see the panel shows the updated list of filters
+    // open another filter panel to see the panel shows the updated list of filters
     cy.findByRole('button', {
       name: 'Toggle Parameter name filter panel',
     }).click();
     cy.findAllByLabelText('Parameter name filter panel')
       .filter(':visible')
       .within(() => {
-        cy.findByRole('button', {
-          name: 'Add finish_date filter',
-        }).within(() => {
-          cy.findByRole('checkbox').should('not.be.checked');
-        });
-
         // the filtered search results don't include this facet
         cy.findByRole('button', {
-          name: 'Add good_frames filter',
+          name: 'Add PARAMETERTYPE 19 filter',
         }).should('not.exist');
 
         cy.findByRole('button', {
-          name: 'Add good_proton_charge filter',
+          name: 'Add PARAMETERTYPE 23 filter',
         }).within(() => {
           cy.findByRole('checkbox').should('not.be.checked');
+          cy.findByRole('checkbox').click();
         });
       });
 
-    cy.findAllByLabelText('Format filter panel')
-      .filter(':visible')
-      .within(() => {
-        cy.findByRole('button', {
-          name: 'Remove isis neutron raw filter',
-        }).click();
-      });
-
-    cy.intercept('**/search/documents*', {
-      fixture: 'datafileSearchResults.json',
-    });
-
     cy.findByRole('button', { name: 'Apply' }).click();
 
-    // 5 rows, 4 for search results, 1 for the header row
-    cy.findAllByRole('row').should('have.length', 5);
-
-    // filter chips should not exist anymore
-    cy.findByTestId('tabpanel-datafile').within(() => {
-      cy.findByLabelText('Selected filters')
-        .children()
-        .should('have.length', 0);
-    });
-
-    cy.findAllByLabelText('Format filter panel')
-      .filter(':visible')
-      .within(() => {
-        cy.findByRole('button', { name: 'Add isis neutron raw filter' })
-          .should('exist')
-          .within(() => {
-            cy.findByRole('checkbox').should('not.be.checked');
-            cy.findByText('173').should('exist');
-          });
-      });
-
-    cy.findByRole('button', {
-      name: 'Toggle Parameter name filter panel',
-    }).click();
-
-    cy.findAllByLabelText('Parameter name filter panel')
-      .filter(':visible')
-      .within(() => {
-        cy.findByRole('button', { name: 'Add finish_date filter' })
-          .should('exist')
-          .within(() => {
-            cy.findByRole('checkbox').should('not.be.checked');
-            cy.findByText('300').should('exist');
-          });
-
-        cy.findByRole('button', { name: 'Add good_frames filter' })
-          .should('exist')
-          .within(() => {
-            cy.findByRole('checkbox').should('not.be.checked');
-            cy.findByText('300').should('exist');
-          });
-
-        cy.findByRole('button', { name: 'Add good_proton_charge filter' })
-          .should('exist')
-          .within(() => {
-            cy.findByRole('checkbox').should('not.be.checked');
-            cy.findByText('300').should('exist');
-          });
-      });
-  });
-
-  it('should allow filters to be removed by removing filter chips', () => {
-    // type in search query
-    cy.findByRole('searchbox', { name: 'Search text input' }).type('carbon');
-    // uncheck my data
-    cy.findByRole('checkbox', { name: 'My data' }).click();
-    // click on search button
-    cy.findByRole('button', { name: 'Submit search' }).click();
-
-    // 5 rows, 4 for search results, 1 for the header row
-    cy.findAllByRole('row').should('have.length', 5);
-
-    // open the filter panel, then select some filters
-    cy.findByRole('button', { name: 'Toggle Format filter panel' }).click();
-
-    // select the filter we want
-    cy.findAllByLabelText('Format filter panel')
-      .filter(':visible')
-      .within(() => {
-        cy.findByRole('button', {
-          name: 'Add isis neutron raw filter',
-        }).click();
-      });
-
-    // intercept search request to return predefined filtered search result
-    cy.intercept('**/search/documents*', {
-      fixture: 'filteredDatafileSearchResults.json',
-    });
-
-    // apply the filter
-    cy.findAllByRole('button', { name: 'Apply' }).filter(':visible').click();
-
-    // the search result should be filtered
     cy.findAllByRole('row').should('have.length', 2);
 
-    cy.intercept('**/search/documents*', {
-      fixture: 'datafileSearchResults.json',
-    });
+    // remove both filters, one by deselecting the filter, one via removing the chip
 
     // check that filter chips are displayed
     cy.findByTestId('tabpanel-datafile').within(() => {
       cy.findByLabelText('Selected filters')
         .should('exist')
         .within(() => {
-          cy.findByRole('button', { name: 'Format: isis neutron raw' })
+          cy.findByRole('button', {
+            name: 'Parameter name: PARAMETERTYPE 23',
+            exact: false,
+          }).should('exist');
+          cy.findByRole('button', {
+            name: 'Format: DATAFILEFORMAT 1',
+            exact: false,
+          })
             .should('exist')
             .within(() => {
               // remove the filter chip
@@ -360,8 +218,22 @@ describe('Datafile search tab', () => {
         });
     });
 
-    // the search result should be filtered
     cy.findAllByRole('row').should('have.length', 5);
+
+    cy.findByRole('button', {
+      name: 'Toggle Parameter name filter panel',
+    }).click();
+    cy.findAllByLabelText('Parameter name filter panel')
+      .filter(':visible')
+      .within(() => {
+        cy.findByRole('button', {
+          name: 'Remove PARAMETERTYPE 23 filter',
+        }).click();
+      });
+
+    cy.findByRole('button', { name: 'Apply' }).click();
+
+    cy.findAllByRole('row').should('have.length', 27);
 
     // filter chips should not exist anymore
     cy.findByTestId('tabpanel-datafile').within(() => {
@@ -370,45 +242,217 @@ describe('Datafile search tab', () => {
         .should('have.length', 0);
     });
 
-    // open the filter panel to check that the filter is not selected anymore
-    cy.findByRole('button', { name: 'Toggle Format filter panel' }).click();
-    cy.findAllByLabelText('Format filter panel')
+    cy.findAllByLabelText('Parameter name filter panel')
       .filter(':visible')
       .within(() => {
-        cy.findByRole('button', {
-          name: 'Add isis neutron raw filter',
-        }).within(() => {
-          cy.findByRole('checkbox').should('not.be.checked');
-          cy.findByText('173').should('exist');
-        });
+        cy.findByRole('button', { name: 'Add PARAMETERTYPE 23 filter' })
+          .should('exist')
+          .within(() => {
+            cy.findByRole('checkbox').should('not.be.checked');
+            cy.findByText('4').should('exist');
+          });
+
+        cy.findByRole('button', { name: 'Add PARAMETERTYPE 19 filter' })
+          .should('exist')
+          .within(() => {
+            cy.findByRole('checkbox').should('not.be.checked');
+            cy.findByText('3').should('exist');
+          });
       });
 
     cy.findByRole('button', {
       name: 'Toggle Parameter name filter panel',
     }).click();
-    cy.findAllByLabelText('Parameter name filter panel')
+
+    cy.findByRole('button', {
+      name: 'Toggle Format filter panel',
+    }).click();
+
+    cy.findAllByLabelText('Format filter panel')
       .filter(':visible')
       .within(() => {
-        cy.findByRole('button', { name: 'Add finish_date filter' })
+        cy.findByRole('button', { name: 'Add DATAFILEFORMAT 1 filter' })
           .should('exist')
           .within(() => {
             cy.findByRole('checkbox').should('not.be.checked');
-            cy.findByText('300').should('exist');
-          });
-
-        cy.findByRole('button', { name: 'Add good_frames filter' })
-          .should('exist')
-          .within(() => {
-            cy.findByRole('checkbox').should('not.be.checked');
-            cy.findByText('300').should('exist');
-          });
-
-        cy.findByRole('button', { name: 'Add good_proton_charge filter' })
-          .should('exist')
-          .within(() => {
-            cy.findByRole('checkbox').should('not.be.checked');
-            cy.findByText('300').should('exist');
+            cy.findByText('3').should('exist');
           });
       });
+
+    cy.findByRole('button', {
+      name: 'Toggle Format filter panel',
+    }).click();
+
+    cy.findByRole('button', {
+      name: 'Toggle Sample filter panel',
+    }).click();
+
+    // select the filter we want
+    cy.findAllByLabelText('Sample filter panel')
+      .filter(':visible')
+      .within(() => {
+        cy.findByRole('button', {
+          name: 'Add SAMPLETYPE 30 filter',
+        })
+          .as('filter')
+          .click();
+        cy.get('@filter').within(() => {
+          cy.findByRole('checkbox').should('be.checked');
+        });
+      });
+
+    // apply the filter
+    cy.findAllByRole('button', { name: 'Apply' }).click();
+
+    // the search result should be filtered
+    cy.findAllByRole('row').should('have.length', 7);
+
+    // check that filter chips are displayed
+    cy.findByTestId('tabpanel-datafile').within(() => {
+      cy.findByLabelText('Selected filters')
+        .should('exist')
+        .within(() => {
+          cy.findByText('Sample: SAMPLETYPE 30').should('exist');
+        });
+    });
+  });
+
+  it('should be able to filter search results by parameter filters', () => {
+    // type in search query
+    cy.findByRole('searchbox', { name: 'Search text input' }).type('dog');
+    // uncheck my data
+    cy.findByRole('checkbox', { name: 'My data' }).click();
+    // click on search button
+    cy.findByRole('button', { name: 'Submit search' }).click();
+
+    cy.findAllByRole('row').should('have.length', 27);
+
+    cy.findByRole('button', {
+      name: 'Toggle Parameter name filter panel',
+    }).click();
+    cy.findByText('Parameter filters')
+      .parent()
+      .within(() => {
+        cy.findByRole('button', { name: 'Add' }).click();
+      });
+
+    cy.findByRole('button', { name: /Parameter name /i }).click();
+
+    // numeric parameter
+    cy.findByRole('option', { name: 'PARAMETERTYPE 33' }).click();
+
+    cy.findByRole('button', { name: /Parameter type /i }).click();
+
+    cy.findByRole('option', { name: 'Numeric' }).click();
+
+    cy.findByRole('spinbutton', { name: 'Minimum value' }).type('30');
+
+    cy.findByRole('spinbutton', { name: 'Maximum value' }).type('40');
+
+    cy.findByRole('button', { name: 'Add filter' }).click();
+
+    cy.findByRole('button', { name: 'Apply' }).click();
+
+    cy.findAllByRole('row').should('have.length', 3);
+
+    // check that filter chips are displayed & remove
+    cy.findByTestId('tabpanel-datafile').within(() => {
+      cy.findByLabelText('Selected filters')
+        .should('exist')
+        .within(() => {
+          cy.findByRole('button', {
+            name: 'PARAMETERTYPE 33: 30 to 40',
+            exact: false,
+          })
+            .should('exist')
+            .within(() => {
+              cy.findByTestId('CancelIcon').click();
+            });
+        });
+    });
+
+    cy.findByRole('button', {
+      name: 'Toggle Parameter name filter panel',
+    }).click();
+    cy.findByText('Parameter filters')
+      .parent()
+      .within(() => {
+        cy.findByRole('button', { name: 'Add' }).click();
+      });
+
+    cy.findByRole('button', { name: /Parameter name /i }).click();
+
+    // string parameter
+    cy.findByRole('option', { name: 'PARAMETERTYPE 23' }).click();
+
+    cy.findByRole('button', { name: /Parameter type /i }).click();
+
+    cy.findByRole('option', { name: 'String' }).click();
+
+    cy.findByRole('button', { name: /Parameter equals /i }).click();
+
+    cy.findByRole('option', { name: /value 23/i }).click();
+
+    cy.findByRole('button', { name: 'Add filter' }).click();
+
+    cy.findByRole('button', { name: 'Apply' }).click();
+
+    cy.findAllByRole('row').should('have.length', 5);
+
+    // check that filter chips are displayed & remove
+    cy.findByTestId('tabpanel-datafile').within(() => {
+      cy.findByLabelText('Selected filters')
+        .should('exist')
+        .within(() => {
+          cy.findByRole('button', {
+            name: 'PARAMETERTYPE 23: value 23',
+            exact: false,
+          })
+            .should('exist')
+            .within(() => {
+              cy.findByTestId('CancelIcon').click();
+            });
+        });
+    });
+
+    cy.findByRole('button', {
+      name: 'Toggle Parameter name filter panel',
+    }).click();
+    cy.findByText('Parameter filters')
+      .parent()
+      .within(() => {
+        cy.findByRole('button', { name: 'Add' }).click();
+      });
+
+    cy.findByRole('button', { name: /Parameter name /i }).click();
+
+    // datetime parameter
+    cy.findByRole('option', { name: 'PARAMETERTYPE 19' }).click();
+
+    cy.findByRole('button', { name: /Parameter type /i }).click();
+
+    cy.findByRole('option', { name: 'Date and time' }).click();
+
+    cy.findByRole('button', { name: /Parameter is in /i }).click();
+
+    cy.findByRole('option', { name: /Older/i }).click();
+
+    cy.findByRole('button', { name: 'Add filter' }).click();
+
+    cy.findByRole('button', { name: 'Apply' }).click();
+
+    cy.findAllByRole('row').should('have.length', 2);
+
+    // check that filter chips are displayed
+    cy.findByTestId('tabpanel-datafile').within(() => {
+      cy.findByLabelText('Selected filters')
+        .should('exist')
+        .within(() => {
+          cy.findByRole('button', {
+            name: 'PARAMETERTYPE 19: Older',
+            exact: false,
+          }).should('exist');
+        });
+    });
   });
 });

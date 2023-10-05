@@ -51,8 +51,15 @@ const InvestigationSearchTable = (
     () => parseSearchToQuery(location.search),
     [location.search]
   );
-  const { startDate, endDate, sort, filters, restrict, investigation } =
-    queryParams;
+  const {
+    startDate,
+    endDate,
+    sort,
+    filters,
+    restrict,
+    investigation,
+    currentTab,
+  } = queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
   const selectAllSetting = useSelector(
@@ -96,7 +103,8 @@ const InvestigationSearchTable = (
           },
         ],
       },
-      filters,
+      currentTab === 'investigation' ? filters : {},
+
       { enabled: investigation }
     );
   const { data: cartItems, isLoading: cartLoading } = useCart();

@@ -8,6 +8,7 @@ import {
 import {
   AddToCartButton,
   ArrowTooltip,
+  buildDatasetTableUrlForInvestigation,
   CardView,
   DLSVisitDetailsPanel,
   DownloadButton,
@@ -30,7 +31,6 @@ import {
   usePushResults,
   useSort,
 } from 'datagateway-common';
-import { buildDatasetTableUrlForInvestigation } from 'datagateway-common/lib/urlBuilders';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -84,6 +84,7 @@ const InvestigationCardView = (
     endDate,
     restrict,
     investigation,
+    currentTab,
   } = queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
@@ -127,7 +128,7 @@ const InvestigationCardView = (
           },
         ],
       },
-      filters,
+      currentTab === 'investigation' ? filters : {},
       { enabled: investigation }
     );
 

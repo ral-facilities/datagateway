@@ -191,7 +191,7 @@ describe('Dataset table component', () => {
     const searchParams = new URLSearchParams();
     searchParams.append('searchText', 'test search');
     history.replace({
-      search: `?${searchParams.toString()}`,
+      search: `?${searchParams.toString()}&currentTab=dataset`,
     });
   });
 

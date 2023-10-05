@@ -173,8 +173,6 @@ function FacetPanel({
                           classificationLabel={classificationLabel}
                           selected={isItemSelected}
                           onSelect={(classificationLabel, selected) => {
-                            console.log('classificationLabel');
-                            console.log('selected', selected);
                             if (selected) {
                               onAddFilter(dimension, classificationLabel);
                             } else {

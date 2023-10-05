@@ -35,11 +35,6 @@ function ParameterDateTimeSelector({
             dimension: 'dateTimeValue',
             ranges: [
               {
-                key: '2023',
-                from: 1672531200000,
-                to: Date.now(),
-              },
-              {
                 key: `${currentYear}`,
                 from: new Date(currentYear, 0).getTime(),
                 to: Date.now(),

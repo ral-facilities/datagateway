@@ -294,6 +294,10 @@ describe('SearchPageContainer - Tests', () => {
                 target: 'DatafileParameter',
                 dimensions: [{ dimension: 'type.name' }],
               },
+              {
+                target: 'InvestigationInstrument',
+                dimensions: [{ dimension: 'instrument.name' }],
+              },
             ],
           },
           sessionId: null,
@@ -332,6 +336,14 @@ describe('SearchPageContainer - Tests', () => {
             facets: [
               {
                 target: 'Dataset',
+              },
+              {
+                target: 'DatasetParameter',
+                dimensions: [{ dimension: 'type.name' }],
+              },
+              {
+                target: 'InvestigationInstrument',
+                dimensions: [{ dimension: 'instrument.name' }],
               },
             ],
           },
@@ -378,8 +390,12 @@ describe('SearchPageContainer - Tests', () => {
                 target: 'InvestigationParameter',
               },
               {
-                dimensions: [{ dimension: 'type.name' }],
+                dimensions: [{ dimension: 'sample.type.name' }],
                 target: 'Sample',
+              },
+              {
+                target: 'InvestigationInstrument',
+                dimensions: [{ dimension: 'instrument.name' }],
               },
             ],
           },
@@ -423,6 +439,10 @@ describe('SearchPageContainer - Tests', () => {
                 target: 'DatafileParameter',
                 dimensions: [{ dimension: 'type.name' }],
               },
+              {
+                target: 'InvestigationInstrument',
+                dimensions: [{ dimension: 'instrument.name' }],
+              },
             ],
           },
           sessionId: null,
@@ -461,6 +481,14 @@ describe('SearchPageContainer - Tests', () => {
             facets: [
               {
                 target: 'Dataset',
+              },
+              {
+                target: 'DatasetParameter',
+                dimensions: [{ dimension: 'type.name' }],
+              },
+              {
+                target: 'InvestigationInstrument',
+                dimensions: [{ dimension: 'instrument.name' }],
               },
             ],
           },
@@ -507,8 +535,12 @@ describe('SearchPageContainer - Tests', () => {
                 target: 'InvestigationParameter',
               },
               {
-                dimensions: [{ dimension: 'type.name' }],
+                dimensions: [{ dimension: 'sample.type.name' }],
                 target: 'Sample',
+              },
+              {
+                target: 'InvestigationInstrument',
+                dimensions: [{ dimension: 'instrument.name' }],
               },
             ],
           },
@@ -553,6 +585,10 @@ describe('SearchPageContainer - Tests', () => {
                 target: 'DatafileParameter',
                 dimensions: [{ dimension: 'type.name' }],
               },
+              {
+                target: 'InvestigationInstrument',
+                dimensions: [{ dimension: 'instrument.name' }],
+              },
             ],
           },
           sessionId: null,
@@ -591,6 +627,14 @@ describe('SearchPageContainer - Tests', () => {
             facets: [
               {
                 target: 'Dataset',
+              },
+              {
+                target: 'DatasetParameter',
+                dimensions: [{ dimension: 'type.name' }],
+              },
+              {
+                target: 'InvestigationInstrument',
+                dimensions: [{ dimension: 'instrument.name' }],
               },
             ],
           },
@@ -636,8 +680,12 @@ describe('SearchPageContainer - Tests', () => {
                 target: 'InvestigationParameter',
               },
               {
-                dimensions: [{ dimension: 'type.name' }],
+                dimensions: [{ dimension: 'sample.type.name' }],
                 target: 'Sample',
+              },
+              {
+                target: 'InvestigationInstrument',
+                dimensions: [{ dimension: 'instrument.name' }],
               },
             ],
           },
@@ -682,6 +730,10 @@ describe('SearchPageContainer - Tests', () => {
                 target: 'DatafileParameter',
                 dimensions: [{ dimension: 'type.name' }],
               },
+              {
+                target: 'InvestigationInstrument',
+                dimensions: [{ dimension: 'instrument.name' }],
+              },
             ],
           },
           sessionId: null,
@@ -715,6 +767,14 @@ describe('SearchPageContainer - Tests', () => {
             facets: [
               {
                 target: 'Dataset',
+              },
+              {
+                target: 'DatasetParameter',
+                dimensions: [{ dimension: 'type.name' }],
+              },
+              {
+                target: 'InvestigationInstrument',
+                dimensions: [{ dimension: 'instrument.name' }],
               },
             ],
           },
@@ -758,8 +818,12 @@ describe('SearchPageContainer - Tests', () => {
                 target: 'InvestigationParameter',
               },
               {
-                dimensions: [{ dimension: 'type.name' }],
+                dimensions: [{ dimension: 'sample.type.name' }],
                 target: 'Sample',
+              },
+              {
+                target: 'InvestigationInstrument',
+                dimensions: [{ dimension: 'instrument.name' }],
               },
             ],
           },
@@ -1017,6 +1081,10 @@ describe('SearchPageContainer - Tests', () => {
                 target: 'DatafileParameter',
                 dimensions: [{ dimension: 'type.name' }],
               },
+              {
+                target: 'InvestigationInstrument',
+                dimensions: [{ dimension: 'instrument.name' }],
+              },
             ],
           },
           sessionId: null,
@@ -1046,6 +1114,10 @@ describe('SearchPageContainer - Tests', () => {
               {
                 target: 'DatafileParameter',
                 dimensions: [{ dimension: 'type.name' }],
+              },
+              {
+                target: 'InvestigationInstrument',
+                dimensions: [{ dimension: 'instrument.name' }],
               },
             ],
           },
@@ -1083,8 +1155,12 @@ describe('SearchPageContainer - Tests', () => {
                 target: 'InvestigationParameter',
               },
               {
-                dimensions: [{ dimension: 'type.name' }],
+                dimensions: [{ dimension: 'sample.type.name' }],
                 target: 'Sample',
+              },
+              {
+                target: 'InvestigationInstrument',
+                dimensions: [{ dimension: 'instrument.name' }],
               },
             ],
           },
@@ -1108,6 +1184,14 @@ describe('SearchPageContainer - Tests', () => {
             facets: [
               {
                 target: 'Dataset',
+              },
+              {
+                target: 'DatasetParameter',
+                dimensions: [{ dimension: 'type.name' }],
+              },
+              {
+                target: 'InvestigationInstrument',
+                dimensions: [{ dimension: 'instrument.name' }],
               },
             ],
           },
@@ -1175,8 +1259,12 @@ describe('SearchPageContainer - Tests', () => {
                 target: 'InvestigationParameter',
               },
               {
-                dimensions: [{ dimension: 'type.name' }],
+                dimensions: [{ dimension: 'sample.type.name' }],
                 target: 'Sample',
+              },
+              {
+                target: 'InvestigationInstrument',
+                dimensions: [{ dimension: 'instrument.name' }],
               },
             ],
           },

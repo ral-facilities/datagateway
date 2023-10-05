@@ -84,6 +84,10 @@ function NewParameterFilterCreator({
       // https://github.com/microsoft/TypeScript/issues/10530
       // https://stackoverflow.com/questions/64616994/typescript-type-narrowing-not-working-for-in-when-key-is-stored-in-a-variable
       setValueType(selectedValue as ParameterValueType | '');
+      // changing the value type changes the size of the Popover
+      // so send resize event to force trigger the Popover to correctly position
+      // this is primarily a problem with the Numeric type as it has 3 fields
+      window.dispatchEvent(new Event('resize'));
     }
   }
 
