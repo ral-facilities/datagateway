@@ -448,7 +448,7 @@ jobs:
 
       # Recreate Lucene indexes
       - name: Use icatadmin to reindex all indexes
-        run: icatadmin https://localhost:8181 simple username root password pw -- populate --delete
+        run: ~/bin/icatadmin https://localhost:8181 simple username root password pw -- populate --delete
       - name: Let reindexes complete
         run: sleep 30
 
