@@ -34,7 +34,7 @@ public_steps = [
     ("Dataset", "sample"),
     ("Dataset", "datafiles"),
     ("Investigation", "datasets"),
-    ("Investigation", "Samples"),
+    ("Investigation", "samples"),
     ("Sample", "parameters"),
     ("Investigation", "parameters"),
     ("Dataset", "parameters"),
