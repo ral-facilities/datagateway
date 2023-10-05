@@ -28,18 +28,18 @@ describe('Lucene actions', () => {
       });
 
       const filters: FiltersType = {
-        'investigation.type.name': ['investigation name'],
         'dataset.type.name': ['dataset name'],
+        'investigationInstrument.instrument.name': ['instrument name'],
       };
       const luceneParams: LuceneSearchParams = {
         searchText: 'test',
         startDate: null,
         endDate: null,
-        facets: [{ target: 'Investigation' }],
+        facets: [{ target: 'Dataset' }],
       };
 
       const { result, waitFor } = renderHook(
-        () => useLuceneSearchInfinite('Investigation', luceneParams, filters),
+        () => useLuceneSearchInfinite('Dataset', luceneParams, filters),
         { wrapper: createReactQueryWrapper() }
       );
 
@@ -51,12 +51,13 @@ describe('Lucene actions', () => {
           params: {
             sessionId: null,
             query: {
-              target: 'Investigation',
+              target: 'Dataset',
               text: 'test',
               filter: {
-                'investigation.type.name': ['investigation name'],
+                'dataset.type.name': ['dataset name'],
+                'investigationInstrument.instrument.name': ['instrument name'],
               },
-              facets: [{ target: 'Investigation' }],
+              facets: [{ target: 'Dataset' }],
             },
             maxCount: 100,
             minCount: 10,
@@ -164,7 +165,7 @@ describe('Lucene actions', () => {
       };
 
       const { result, waitFor } = renderHook(
-        () => useLuceneSearchInfinite('Dataset', luceneSearchParams, {}),
+        () => useLuceneSearchInfinite('Investigation', luceneSearchParams, {}),
         {
           wrapper: createReactQueryWrapper(),
         }
@@ -178,7 +179,7 @@ describe('Lucene actions', () => {
           params: {
             sessionId: null,
             query: {
-              target: 'Dataset',
+              target: 'Investigation',
               lower: '0000001010000',
               upper: '202012312359',
             },
