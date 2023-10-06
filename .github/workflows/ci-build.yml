@@ -369,7 +369,7 @@ jobs:
         uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
         with:
           repository: icatproject-contrib/icat-ansible
-          ref: master
+          ref: new-search-properties
           path: icat-ansible
       - name: Install Ansible
         run: pip install -r icat-ansible/requirements.txt
@@ -454,10 +454,6 @@ jobs:
 
       - name: Start API
         run: cd datagateway-api/; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
-
-      # DEBUG
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
 
       # E2E tests
       - name: Setup Node.js
