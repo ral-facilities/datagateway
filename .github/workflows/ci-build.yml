@@ -455,6 +455,10 @@ jobs:
       - name: Start API
         run: cd datagateway-api/; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
 
+      # DEBUG
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+
       # E2E tests
       - name: Setup Node.js
         uses: actions/setup-node@e33196f7422957bea03ed53f6fbb155025ffc7b8 # v3
