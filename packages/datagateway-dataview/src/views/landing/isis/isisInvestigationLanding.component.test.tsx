@@ -348,17 +348,17 @@ describe('ISIS Investigation Landing page', () => {
 
     expect(
       await screen.findByRole('link', {
-        name: 'Suggested investigation 1 90%',
+        name: 'Suggested investigation 1',
       })
     ).toHaveAttribute('href', 'https://doi.org/doi1');
     expect(
       await screen.findByRole('link', {
-        name: 'Suggested investigation 2 90%',
+        name: 'Suggested investigation 2',
       })
     ).toHaveAttribute('href', 'https://doi.org/doi2');
     expect(
       await screen.findByRole('link', {
-        name: 'Suggested investigation 3 90%',
+        name: 'Suggested investigation 3',
       })
     ).toHaveAttribute('href', 'https://doi.org/doi3');
   });

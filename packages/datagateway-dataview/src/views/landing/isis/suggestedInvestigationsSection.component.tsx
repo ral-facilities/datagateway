@@ -6,12 +6,13 @@ import {
   CircularProgress,
   Divider,
   List,
-  ListItemButton,
+  ListItem,
   Pagination,
   Stack,
   Typography,
   Chip,
   Box,
+  Link,
 } from '@mui/material';
 import React from 'react';
 import {
@@ -93,9 +94,6 @@ function ScoreChip({
       sx={{
         color: (theme) => theme.palette.getContrastText(chipColour),
         backgroundColor: chipColour,
-        '&:hover': {
-          cursor: 'pointer',
-        },
       }}
     />
   );
@@ -175,24 +173,21 @@ function SuggestionList({
           const isLastItem = i === SUGGESTION_COUNT_PER_PAGE - 1;
           return (
             <React.Fragment key={suggestion.id}>
-              <ListItemButton
+              <ListItem
                 dense
                 sx={{
                   display: 'flex',
                   justifyContent: 'space-between',
-                  '&.Mui-disabled': {
-                    opacity: 1,
-                  },
                 }}
-                href={
-                  suggestion.doi ? constructFullDoiUrl(suggestion.doi) : '#'
-                }
-                disabled={suggestion.doi ? false : true}
               >
                 <Box sx={{ flexGrow: 1, marginRight: 2 }}>
-                  <Typography sx={{ opacity: suggestion.doi ? 1 : 0.5 }}>
-                    {suggestion.title}
-                  </Typography>
+                  {suggestion.doi ? (
+                    <Link href={constructFullDoiUrl(suggestion.doi)}>
+                      <Typography>{suggestion.title}</Typography>
+                    </Link>
+                  ) : (
+                    <Typography>{suggestion.title}</Typography>
+                  )}
                 </Box>
                 <ScoreChip
                   score={suggestion.score}
@@ -200,7 +195,7 @@ function SuggestionList({
                   lowestScore={lowestScore}
                   highestScore={highestScore}
                 />
-              </ListItemButton>
+              </ListItem>
               {!isLastItem && <Divider />}
             </React.Fragment>
           );

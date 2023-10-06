@@ -446,7 +446,6 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                             {field.content(data[0] as Investigation)}
                           </ShortInfoValue>
                         </ArrowTooltip>
-                        z
                       </ShortInfoRow>
                     )
                 )}
