@@ -541,7 +541,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                     native
                     value={results}
                     inputProps={{
-                      name: 'Max Results',
+                      name: t('app.max_results'),
                       id: 'select-max-results',
                     }}
                     className="tour-dataview-max-results"
@@ -565,7 +565,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                           (i > 0 && totalDataCount > resOptions[i - 1])
                       )
                       .map((n, i) => (
-                        <option key={i} value={n} aria-label={`${n}...`}>
+                        <option key={i} value={n}>
                           {n}
                         </option>
                       ))}

@@ -16,7 +16,7 @@ describe('sortSelect', () => {
     );
 
     // open the dropdown menu
-    await user.click(screen.getByRole('button', { name: 'sort._score' }));
+    await user.click(screen.getByRole('button', { name: /sort.label/ }));
 
     expect(
       await screen.findByRole('option', { name: 'sort.date_desc' })
@@ -46,7 +46,7 @@ describe('sortSelect', () => {
     );
 
     // open the dropdown menu
-    await user.click(screen.getByRole('button', { name: 'sort._score' }));
+    await user.click(screen.getByRole('button', { name: /sort.label/ }));
     await user.selectOptions(screen.getByRole('listbox'), [
       screen.getByRole('option', { name: 'sort.date_desc' }),
     ]);
@@ -58,7 +58,7 @@ describe('sortSelect', () => {
     );
 
     // open the dropdown menu
-    await user.click(screen.getByRole('button', { name: 'sort.date_desc' }));
+    await user.click(screen.getByRole('button', { name: /sort.label/ }));
     await user.selectOptions(screen.getByRole('listbox'), [
       screen.getByRole('option', { name: 'sort.name_asc' }),
     ]);
@@ -87,7 +87,7 @@ describe('sortSelect', () => {
     );
 
     expect(
-      screen.getByRole('button', { name: 'sort.size_asc' })
+      screen.getByRole('button', { name: 'sort.label sort.size_asc' })
     ).toBeInTheDocument();
   });
 });

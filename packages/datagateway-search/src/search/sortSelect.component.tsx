@@ -45,11 +45,13 @@ const SortSelectComponent = (): React.ReactElement => {
           maxWidth: 300,
         }}
       >
-        <InputLabel variant="outlined" shrink={true}>
+        <InputLabel variant="outlined" shrink={true} id="sort-select-label">
           {t('sort.label')}
         </InputLabel>
         <Select
           label={t('sort.label')}
+          labelId="sort-select-label"
+          id="sort-select"
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           sx={(theme) => ({ color: (theme as any).colours?.contrastGrey })}
           value={parsedSort}

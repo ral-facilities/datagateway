@@ -6,7 +6,7 @@ describe('Datafile search tab', () => {
     // only the datafile tab is tested here, so we want to hide investigation & dataset tabs
     // open search type dropdown menu
     cy.findByRole('button', { name: 'Types (3)' }).click();
-    // uncheck investigation
+
     cy.findByRole('listbox').within(() => {
       cy.findByRole('checkbox', { name: 'Investigation checkbox' }).click();
       cy.findByRole('checkbox', { name: 'Dataset checkbox' }).click();

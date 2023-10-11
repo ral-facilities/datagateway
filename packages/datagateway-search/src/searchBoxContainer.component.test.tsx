@@ -83,7 +83,7 @@ describe('SearchBoxContainer - Tests', () => {
     // sort select should be visible
     // default value is sort by score
     expect(
-      screen.getByRole('button', { name: 'sort._score' })
+      screen.getByRole('button', { name: 'sort.label sort._score' })
     ).toBeInTheDocument();
 
     // logged in anonymously so my data checkbox should be hidden

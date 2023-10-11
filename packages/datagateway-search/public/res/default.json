@@ -317,7 +317,7 @@
       "description": "<strong>OR</strong> is the default behaviour for multiple <strong>terms</strong>: <6>neutron OR scattering</6> is equivalent to <10>neutron scattering</10>. <br/> <br/> <strong>AND</strong> requires both <strong>terms</strong> on either side of the keyword must be present in the result: <22>neutron AND scattering</22>. <br/> <br/> <strong>+</strong> requires the next <strong>term</strong> be present in the result: <34>+neutron +scattering</34>. <br/> <br/> <strong>NOT</strong> or <strong>-</strong> requires the next <strong>term</strong> not be present in the result: <48>-neutron NOT scattering</48>.<br/> <br/> Finally, brackets can be used to build complicated logic: <55>(+neutron -photon) AND (scattering OR diffraction)</55>.",
       "link1": "?searchText=neutron+OR+scattering",
       "link2": "?searchText=neutron+scattering",
-      "link3": "?searchText=scattering+AND+elastic",
+      "link3": "?searchText=neutron+AND+scattering",
       "link4": "?searchText=%2Bneutron+%2Bscattering",
       "link5": "?searchText=-neutron+NOT+scattering",
       "link6": "?searchText=(%2Bneutron+-photon)+AND+(scattering+OR+diffraction)"
