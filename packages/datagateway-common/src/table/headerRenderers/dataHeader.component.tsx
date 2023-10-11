@@ -9,6 +9,7 @@ import {
   Divider,
   SxProps,
 } from '@mui/material';
+import { StyledTooltip } from '../../arrowtooltip.component';
 import Draggable from 'react-draggable';
 import SortIcon from '@mui/icons-material/Sort';
 import AddIcon from '@mui/icons-material/Add';
@@ -72,34 +73,36 @@ const DataHeader = (
   }
 
   const inner = !disableSort ? (
-    <TableSortLabel
-      className={'tour-dataview-sort'}
-      active={true}
-      direction={!(dataKey in sort) ? 'desc' : currSortDirection}
-      onClick={(event) => {
-        onSort(dataKey, nextSortDirection, 'push', event.shiftKey);
-        if (!(dataKey in sort)) setHover(false);
-      }}
-      {...(!(dataKey in sort)
-        ? {
-            onMouseEnter: () => setHover(true),
-            onMouseLeave: () => setHover(false),
-            IconComponent: hover
-              ? ArrowUpwardIcon
-              : shiftDown
-              ? AddIcon
-              : SortIcon,
-            sx: {
-              transition: 'opacity 0.5s',
-              opacity: hover ? 0.7 : 1,
-            },
-          }
-        : {})}
-    >
-      <Typography noWrap sx={{ fontSize: 'inherit', lineHeight: 'inherit' }}>
-        {label}
-      </Typography>
-    </TableSortLabel>
+    <StyledTooltip title={shiftDown ? 'Multisort' : 'Sort'}>
+      <TableSortLabel
+        className={'tour-dataview-sort'}
+        active={true}
+        direction={!(dataKey in sort) ? 'desc' : currSortDirection}
+        onClick={(event) => {
+          onSort(dataKey, nextSortDirection, 'push', event.shiftKey);
+          if (!(dataKey in sort)) setHover(false);
+        }}
+        {...(!(dataKey in sort)
+          ? {
+              onMouseEnter: () => setHover(true),
+              onMouseLeave: () => setHover(false),
+              IconComponent: hover
+                ? ArrowUpwardIcon
+                : shiftDown
+                ? AddIcon
+                : SortIcon,
+              sx: {
+                transition: 'opacity 0.5s',
+                opacity: hover ? 0.7 : 1,
+              },
+            }
+          : {})}
+      >
+        <Typography noWrap sx={{ fontSize: 'inherit', lineHeight: 'inherit' }}>
+          {label}
+        </Typography>
+      </TableSortLabel>
+    </StyledTooltip>
   ) : (
     <Typography noWrap sx={{ fontSize: 'inherit', lineHeight: 'inherit' }}>
       {label}
