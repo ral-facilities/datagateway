@@ -1,30 +1,7 @@
 describe('Dataset search tab', () => {
-  let facilityName: string;
-
-  before(() => {
-    cy.readFile('server/e2e-settings.json').then((settings) => {
-      if (settings.facilityName) facilityName = settings.facilityName;
-    });
-  });
-
   beforeEach(() => {
     cy.login();
     cy.visit('/search/data/');
-    cy.intercept('**/search/documents*', {
-      fixture: 'datasetSearchResults.json',
-    });
-    cy.intercept('**/datasets/count*', {
-      body: 1,
-    });
-    cy.intercept('**/datafiles/count*', {
-      body: 1,
-    });
-    cy.intercept(`**/topcat/user/cart/${facilityName}*`, {
-      statusCode: 200,
-      body: {
-        cartItems: [],
-      },
-    });
 
     // only the dataset tab is tested here, so we want to hide investigation & datafile tabs
     // open search type dropdown menu
@@ -40,42 +17,85 @@ describe('Dataset search tab', () => {
 
   it('should perform search query and show search results correctly', () => {
     // type in search query
-    cy.findByRole('searchbox', { name: 'Search text input' }).type('carbon');
+    cy.findByRole('searchbox', { name: 'Search text input' }).type('last');
     // uncheck my data
     cy.findByRole('checkbox', { name: 'My data' }).click();
     // click on search button
     cy.findByRole('button', { name: 'Submit search' }).click();
 
     cy.findByRole('tab', { name: 'Dataset' }).within(() => {
-      cy.findByText('4').should('exist');
+      cy.findByText('7').should('exist');
     });
 
-    // 5 rows, 4 for search results, 1 for the header row
-    cy.findAllByRole('row').should('have.length', 5);
+    // 8 rows, 7 for search results, 1 for the header row
+    cy.findAllByRole('row').should('have.length', 8);
 
     cy.findByRole('button', { name: 'Toggle Type filter panel' }).click();
 
-    cy.findAllByLabelText('Type filter panel')
-      .filter(':visible')
-      .within(() => {
-        cy.findByRole('button', { name: 'Add experiment_raw filter' })
-          .should('exist')
-          .within(() => {
-            cy.findByText('252').should('exist');
-          });
-      });
+    cy.findAllByLabelText('Type filter panel').within(() => {
+      cy.findByRole('button', { name: 'Add DATASETTYPE 1 filter' })
+        .should('exist')
+        .within(() => {
+          cy.findByText('4').should('exist');
+        });
+
+      cy.findByRole('button', { name: 'Add DATASETTYPE 2 filter' })
+        .should('exist')
+        .within(() => {
+          cy.findByText('2').should('exist');
+        });
+    });
+
+    cy.findByRole('button', { name: 'Toggle Sample filter panel' }).click();
+
+    cy.findAllByLabelText('Sample filter panel').within(() => {
+      cy.findByRole('button', { name: 'Add SAMPLETYPE 18 filter' })
+        .should('exist')
+        .within(() => {
+          cy.findByText('1').should('exist');
+        });
+    });
+
+    cy.findByRole('button', {
+      name: 'Toggle Parameter name filter panel',
+    }).click();
+
+    cy.findAllByLabelText('Parameter name filter panel').within(() => {
+      cy.findByRole('button', { name: 'Add PARAMETERTYPE 1 filter' })
+        .should('exist')
+        .within(() => {
+          cy.findByText('1').should('exist');
+        });
+    });
+
+    cy.findByRole('button', {
+      name: 'Toggle Instrument filter panel',
+    }).click();
+    cy.findAllByLabelText('Instrument filter panel').within(() => {
+      cy.findByRole('button', { name: 'Add INSTRUMENT 13 filter' })
+        .should('exist')
+        .within(() => {
+          cy.findByText('2').should('exist');
+        });
+
+      cy.findByRole('button', { name: 'Add INSTRUMENT 1 filter' })
+        .should('exist')
+        .within(() => {
+          cy.findByText('1').should('exist');
+        });
+    });
   });
 
   it('should be able to open the details panel of a specific row', () => {
     // type in search query
-    cy.findByRole('searchbox', { name: 'Search text input' }).type('carbon');
+    cy.findByRole('searchbox', { name: 'Search text input' }).type('last');
     // uncheck my data
     cy.findByRole('checkbox', { name: 'My data' }).click();
     // click on search button
     cy.findByRole('button', { name: 'Submit search' }).click();
 
-    // 5 rows, 4 for search results, 1 for the header row
-    cy.findAllByRole('row').should('have.length', 5);
+    // 8 rows, 7 for search results, 1 for the header row
+    cy.findAllByRole('row').should('have.length', 8);
 
     cy.findAllByRole('row')
       .eq(1)
@@ -84,27 +104,23 @@ describe('Dataset search tab', () => {
       });
 
     cy.findByTestId('dataset-details-panel').within(() => {
-      cy.findByText('raw').should('exist');
-      cy.findByText(
-        'LOQ54000 Team LOQ GLASSY CARBON 4-SEP-1997 10:03:33 20.3'
-      ).should('exist');
+      cy.findByText('DATASET 75').should('exist');
+      cy.findByText('Group story magazine hotel stand', {
+        exact: false,
+      }).should('exist');
     });
   });
 
   it('should be able to add/remove to/from download cart', () => {
     // type in search query
-    cy.findByRole('searchbox', { name: 'Search text input' }).type('carbon');
+    cy.findByRole('searchbox', { name: 'Search text input' }).type('last');
     // uncheck my data
     cy.findByRole('checkbox', { name: 'My data' }).click();
     // click on search button
     cy.findByRole('button', { name: 'Submit search' }).click();
 
-    // 5 rows, 4 for search results, 1 for the header row
-    cy.findAllByRole('row').should('have.length', 5);
-
-    cy.intercept(`**/topcat/user/cart/${facilityName}/cartItems`, {
-      fixture: 'downloadCartItems.json',
-    });
+    // 8 rows, 7 for search results, 1 for the header row
+    cy.findAllByRole('row').should('have.length', 8);
 
     cy.findAllByRole('row')
       .eq(1)
@@ -112,12 +128,6 @@ describe('Dataset search tab', () => {
         cy.findByRole('checkbox').click();
         cy.findByRole('checkbox').should('be.checked');
       });
-
-    cy.intercept(`**/topcat/user/cart/${facilityName}/cartItems`, {
-      body: {
-        cartItems: [],
-      },
-    });
 
     cy.findAllByRole('row')
       .eq(1)
@@ -129,138 +139,95 @@ describe('Dataset search tab', () => {
 
   it('should be able to filter search results by facets', () => {
     // type in search query
-    cy.findByRole('searchbox', { name: 'Search text input' }).type('carbon');
+    cy.findByRole('searchbox', { name: 'Search text input' }).type('last');
     // uncheck my data
     cy.findByRole('checkbox', { name: 'My data' }).click();
     // click on search button
     cy.findByRole('button', { name: 'Submit search' }).click();
 
-    cy.findAllByRole('row').should('have.length', 5);
+    cy.findAllByRole('row').should('have.length', 8);
 
     // open the filter panel, then select some filters
     cy.findByRole('button', { name: 'Toggle Type filter panel' }).click();
 
     // select the filter we want
-    cy.findAllByLabelText('Type filter panel')
-      .filter(':visible')
-      .within(() => {
-        cy.findByRole('button', {
-          name: 'Add experiment_raw filter',
-        }).click();
-        cy.findByRole('button', {
-          name: 'Add experiment_raw filter',
-        }).within(() => {
-          cy.findByRole('checkbox').should('be.checked');
-        });
+    cy.findAllByLabelText('Type filter panel').within(() => {
+      cy.findByRole('button', {
+        name: 'Add DATASETTYPE 1 filter',
+      })
+        .as('filter')
+        .click();
+      cy.get('@filter').within(() => {
+        cy.findByRole('checkbox').should('be.checked');
       });
-
-    // intercept search request to return predefined filtered search result
-    cy.intercept('**/search/documents*', {
-      fixture: 'filteredDatasetSearchResults.json',
     });
 
     // apply the filter
-    cy.findAllByRole('button', { name: 'Apply' }).filter(':visible').click();
+    cy.findAllByRole('button', { name: 'Apply' }).click();
 
     // the search result should be filtered
-    cy.findAllByRole('row').should('have.length', 2);
-
-    // open the filter panel to check that the filter is selected
-    cy.findByRole('button', { name: 'Toggle Type filter panel' }).click();
-    cy.findByTestId('tabpanel-dataset').within(() => {
-      cy.findByLabelText('Type filter panel').within(() => {
-        cy.findByRole('button', {
-          name: 'Remove experiment_raw filter',
-        }).within(() => {
-          cy.findByRole('checkbox').should('be.checked');
-          cy.findByText('100').should('exist');
-        });
-      });
-    });
-
-    // remove the selected filter
-    cy.findByTestId('tabpanel-dataset').within(() => {
-      cy.findByLabelText('Type filter panel').within(() => {
-        cy.findByRole('button', {
-          name: 'Remove experiment_raw filter',
-        }).click();
-      });
-    });
-
-    cy.intercept('**/search/documents*', {
-      fixture: 'datasetSearchResults.json',
-    });
-
-    cy.findByRole('button', { name: 'Apply' }).click();
-
-    // 5 rows, 4 for search results, 1 for the header row
     cy.findAllByRole('row').should('have.length', 5);
-
-    // filter chips should not exist anymore
-    cy.findByTestId('tabpanel-dataset').within(() => {
-      cy.findByLabelText('Selected filters')
-        .children()
-        .should('have.length', 0);
-    });
-
-    // open the filter panel to check that the filter is selected
-    cy.findByRole('button', { name: 'Toggle Type filter panel' }).click();
-    cy.findByTestId('tabpanel-dataset').within(() => {
-      cy.findByLabelText('Type filter panel').within(() => {
-        cy.findByRole('button', {
-          name: 'Add experiment_raw filter',
-        }).within(() => {
-          cy.findByRole('checkbox').should('not.be.checked');
-          cy.findByText('252').should('exist');
-        });
-      });
-    });
-  });
-
-  it('should allow filters to be removed by removing filter chips', () => {
-    // type in search query
-    cy.findByRole('searchbox', { name: 'Search text input' }).type('carbon');
-    // uncheck my data
-    cy.findByRole('checkbox', { name: 'My data' }).click();
-    // click on search button
-    cy.findByRole('button', { name: 'Submit search' }).click();
-
-    // 5 rows, 4 for search results, 1 for the header row
-    cy.findAllByRole('row').should('have.length', 5);
-
-    // open the filter panel, then select some filters
-    cy.findByRole('button', { name: 'Toggle Type filter panel' }).click();
-
-    // select the filter we want
-    cy.findByTestId('tabpanel-dataset').within(() => {
-      cy.findByLabelText('Type filter panel').within(() => {
-        cy.findByRole('button', {
-          name: 'Add experiment_raw filter',
-        }).click();
-      });
-    });
-
-    // intercept search request to return predefined filtered search result
-    cy.intercept('**/search/documents*', {
-      fixture: 'filteredDatasetSearchResults.json',
-    });
-
-    // apply the filter
-    cy.findAllByRole('button', { name: 'Apply' }).filter(':visible').click();
-
-    // the search result should be filtered
-    cy.findAllByRole('row').should('have.length', 2);
-
-    cy.intercept('**/search/documents*', {
-      fixture: 'datasetSearchResults.json',
-    });
 
     // check that filter chips are displayed
     cy.findByTestId('tabpanel-dataset').within(() => {
       cy.findByLabelText('Selected filters')
         .should('exist')
         .within(() => {
-          cy.findByRole('button', { name: 'Type: experiment_raw' })
+          cy.findByText('Type: DATASETTYPE 1').should('exist');
+        });
+    });
+
+    // open the filter panel to check that the filter is selected
+    cy.findByRole('button', { name: 'Toggle Type filter panel' }).click();
+    cy.findAllByLabelText('Type filter panel')
+      .filter(':visible')
+      .within(() => {
+        cy.findByRole('button', {
+          name: 'Remove DATASETTYPE 1 filter',
+        }).within(() => {
+          cy.findByRole('checkbox').should('be.checked');
+        });
+      });
+
+    // open another filter panel to see the panel shows the updated list of filters
+    cy.findByRole('button', {
+      name: 'Toggle Parameter name filter panel',
+    }).click();
+    cy.findAllByLabelText('Parameter name filter panel')
+      .filter(':visible')
+      .within(() => {
+        // the filtered search results don't include this facet
+        cy.findByRole('button', {
+          name: 'Add PARAMETERTYPE 1 filter',
+        }).should('not.exist');
+
+        cy.findByRole('button', {
+          name: 'Add PARAMETERTYPE 40 filter',
+        }).within(() => {
+          cy.findByRole('checkbox').should('not.be.checked');
+          cy.findByRole('checkbox').click();
+        });
+      });
+
+    cy.findByRole('button', { name: 'Apply' }).click();
+
+    cy.findAllByRole('row').should('have.length', 2);
+
+    // remove both filters, one by deselecting the filter, one via removing the chip
+
+    // check that filter chips are displayed
+    cy.findByTestId('tabpanel-dataset').within(() => {
+      cy.findByLabelText('Selected filters')
+        .should('exist')
+        .within(() => {
+          cy.findByRole('button', {
+            name: 'Parameter name: PARAMETERTYPE 40',
+            exact: false,
+          }).should('exist');
+          cy.findByRole('button', {
+            name: 'Type: DATASETTYPE 1',
+            exact: false,
+          })
             .should('exist')
             .within(() => {
               // remove the filter chip
@@ -269,8 +236,22 @@ describe('Dataset search tab', () => {
         });
     });
 
-    // the search result should be filtered
-    cy.findAllByRole('row').should('have.length', 5);
+    cy.findAllByRole('row').should('have.length', 2);
+
+    cy.findByRole('button', {
+      name: 'Toggle Parameter name filter panel',
+    }).click();
+    cy.findAllByLabelText('Parameter name filter panel')
+      .filter(':visible')
+      .within(() => {
+        cy.findByRole('button', {
+          name: 'Remove PARAMETERTYPE 40 filter',
+        }).click();
+      });
+
+    cy.findByRole('button', { name: 'Apply' }).click();
+
+    cy.findAllByRole('row').should('have.length', 8);
 
     // filter chips should not exist anymore
     cy.findByTestId('tabpanel-dataset').within(() => {
@@ -279,16 +260,260 @@ describe('Dataset search tab', () => {
         .should('have.length', 0);
     });
 
-    cy.findByRole('button', { name: 'Toggle Type filter panel' }).click();
-    cy.findByTestId('tabpanel-dataset').within(() => {
-      cy.findByLabelText('Type filter panel').within(() => {
+    cy.findAllByLabelText('Parameter name filter panel')
+      .filter(':visible')
+      .within(() => {
+        cy.findByRole('button', { name: 'Add PARAMETERTYPE 40 filter' })
+          .should('exist')
+          .within(() => {
+            cy.findByRole('checkbox').should('not.be.checked');
+            cy.findByText('1').should('exist');
+          });
+
+        cy.findByRole('button', { name: 'Add PARAMETERTYPE 1 filter' })
+          .should('exist')
+          .within(() => {
+            cy.findByRole('checkbox').should('not.be.checked');
+            cy.findByText('1').should('exist');
+          });
+      });
+
+    cy.findByRole('button', {
+      name: 'Toggle Parameter name filter panel',
+    }).click();
+
+    cy.findByRole('button', {
+      name: 'Toggle Type filter panel',
+    }).click();
+
+    cy.findAllByLabelText('Type filter panel')
+      .filter(':visible')
+      .within(() => {
+        cy.findByRole('button', { name: 'Add DATASETTYPE 1 filter' })
+          .should('exist')
+          .within(() => {
+            cy.findByRole('checkbox').should('not.be.checked');
+            cy.findByText('4').should('exist');
+          });
+      });
+
+    cy.findByRole('button', {
+      name: 'Toggle Type filter panel',
+    }).click();
+
+    cy.findByRole('button', {
+      name: 'Toggle Sample filter panel',
+    }).click();
+
+    // select the filter we want
+    cy.findAllByLabelText('Sample filter panel')
+      .filter(':visible')
+      .within(() => {
         cy.findByRole('button', {
-          name: 'Add experiment_raw filter',
-        }).within(() => {
-          cy.findByRole('checkbox').should('not.be.checked');
-          cy.findByText('252').should('exist');
+          name: 'Add SAMPLETYPE 18 filter',
+        })
+          .as('filter')
+          .click();
+        cy.get('@filter').within(() => {
+          cy.findByRole('checkbox').should('be.checked');
         });
       });
+
+    // apply the filter
+    cy.findAllByRole('button', { name: 'Apply' }).click();
+
+    // the search result should be filtered
+    cy.findAllByRole('row').should('have.length', 2);
+
+    // check that filter chips are displayed
+    cy.findByTestId('tabpanel-dataset').within(() => {
+      cy.findByLabelText('Selected filters')
+        .should('exist')
+        .within(() => {
+          cy.findByRole('button', {
+            name: 'Sample: SAMPLETYPE 18',
+            exact: false,
+          })
+            .should('exist')
+            .within(() => {
+              // remove the filter chip
+              cy.findByTestId('CancelIcon').click();
+            });
+        });
+    });
+
+    cy.findByRole('button', {
+      name: 'Toggle Instrument filter panel',
+    }).click();
+
+    // select the filter we want
+    cy.findAllByLabelText('Instrument filter panel')
+      .filter(':visible')
+      .within(() => {
+        cy.findByRole('button', {
+          name: 'Add INSTRUMENT 13 filter',
+        })
+          .as('filter')
+          .click();
+        cy.get('@filter').within(() => {
+          cy.findByRole('checkbox').should('be.checked');
+        });
+      });
+
+    // apply the filter
+    cy.findAllByRole('button', { name: 'Apply' }).click();
+
+    // the search result should be filtered
+    cy.findAllByRole('row').should('have.length', 3);
+
+    // check that filter chips are displayed
+    cy.findByTestId('tabpanel-dataset').within(() => {
+      cy.findByLabelText('Selected filters')
+        .should('exist')
+        .within(() => {
+          cy.findByText('Instrument: INSTRUMENT 13').should('exist');
+        });
+    });
+  });
+
+  it('should be able to filter search results by parameter filters', () => {
+    // type in search query
+    cy.findByRole('searchbox', { name: 'Search text input' }).type(
+      'last table'
+    );
+    // uncheck my data
+    cy.findByRole('checkbox', { name: 'My data' }).click();
+    // click on search button
+    cy.findByRole('button', { name: 'Submit search' }).click();
+
+    cy.findAllByRole('row').should('have.length', 11);
+
+    cy.findByRole('button', {
+      name: 'Toggle Parameter name filter panel',
+    }).click();
+    cy.findByText('Parameter filters')
+      .parent()
+      .within(() => {
+        cy.findByRole('button', { name: 'Add' }).click();
+      });
+
+    cy.findByRole('button', { name: /Parameter name /i }).click();
+
+    // numeric parameter
+    cy.findByRole('option', { name: 'PARAMETERTYPE 1' }).click();
+
+    cy.findByRole('button', { name: /Parameter type /i }).click();
+
+    cy.findByRole('option', { name: 'Numeric' }).click();
+
+    cy.findByRole('spinbutton', { name: 'Minimum value' }).type('15');
+
+    cy.findByRole('spinbutton', { name: 'Maximum value' }).type('25');
+
+    cy.findByRole('button', { name: 'Add filter' }).click();
+
+    cy.findByRole('button', { name: 'Apply' }).click();
+
+    cy.findAllByRole('row').should('have.length', 2);
+
+    // check that filter chips are displayed & remove
+    cy.findByTestId('tabpanel-dataset').within(() => {
+      cy.findByLabelText('Selected filters')
+        .should('exist')
+        .within(() => {
+          cy.findByRole('button', {
+            name: 'PARAMETERTYPE 1: 15 to 25',
+            exact: false,
+          })
+            .should('exist')
+            .within(() => {
+              cy.findByTestId('CancelIcon').click();
+            });
+        });
+    });
+
+    cy.findByRole('button', {
+      name: 'Toggle Parameter name filter panel',
+    }).click();
+    cy.findByText('Parameter filters')
+      .parent()
+      .within(() => {
+        cy.findByRole('button', { name: 'Add' }).click();
+      });
+
+    cy.findByRole('button', { name: /Parameter name /i }).click();
+
+    // string parameter
+    cy.findByRole('option', { name: 'PARAMETERTYPE 40' }).click();
+
+    cy.findByRole('button', { name: /Parameter type /i }).click();
+
+    cy.findByRole('option', { name: 'String' }).click();
+
+    cy.findByRole('button', { name: /Parameter equals /i }).click();
+
+    cy.findByRole('option', { name: /value 40/i }).click();
+
+    cy.findByRole('button', { name: 'Add filter' }).click();
+
+    cy.findByRole('button', { name: 'Apply' }).click();
+
+    cy.findAllByRole('row').should('have.length', 2);
+
+    // check that filter chips are displayed & remove
+    cy.findByTestId('tabpanel-dataset').within(() => {
+      cy.findByLabelText('Selected filters')
+        .should('exist')
+        .within(() => {
+          cy.findByRole('button', {
+            name: 'PARAMETERTYPE 40: value 40',
+            exact: false,
+          })
+            .should('exist')
+            .within(() => {
+              cy.findByTestId('CancelIcon').click();
+            });
+        });
+    });
+
+    cy.findByRole('button', {
+      name: 'Toggle Parameter name filter panel',
+    }).click();
+    cy.findByText('Parameter filters')
+      .parent()
+      .within(() => {
+        cy.findByRole('button', { name: 'Add' }).click();
+      });
+
+    cy.findByRole('button', { name: /Parameter name /i }).click();
+
+    // datetime parameter
+    cy.findByRole('option', { name: 'PARAMETERTYPE 4' }).click();
+
+    cy.findByRole('button', { name: /Parameter type /i }).click();
+
+    cy.findByRole('option', { name: 'Date and time' }).click();
+
+    cy.findByRole('button', { name: /Parameter is in /i }).click();
+
+    cy.findByRole('option', { name: /Older/i }).click();
+
+    cy.findByRole('button', { name: 'Add filter' }).click();
+
+    cy.findByRole('button', { name: 'Apply' }).click();
+
+    cy.findAllByRole('row').should('have.length', 2);
+
+    // check that filter chips are displayed
+    cy.findByTestId('tabpanel-dataset').within(() => {
+      cy.findByLabelText('Selected filters')
+        .should('exist')
+        .within(() => {
+          cy.findByRole('button', {
+            name: 'PARAMETERTYPE 4: Older',
+            exact: false,
+          }).should('exist');
+        });
     });
   });
 });

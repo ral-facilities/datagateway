@@ -31,75 +31,67 @@ describe('Investigation search tab', () => {
     cy.findAllByRole('row').should('have.length', 6);
 
     cy.findByRole('button', { name: 'Toggle Type filter panel' }).click();
-    cy.findAllByLabelText('Type filter panel')
-      .filter(':visible')
-      .within(() => {
-        cy.findByRole('button', { name: 'Add INVESTIGATIONTYPE 2 filter' })
-          .should('exist')
-          .within(() => {
-            cy.findByText('3').should('exist');
-          });
+    cy.findAllByLabelText('Type filter panel').within(() => {
+      cy.findByRole('button', { name: 'Add INVESTIGATIONTYPE 2 filter' })
+        .should('exist')
+        .within(() => {
+          cy.findByText('3').should('exist');
+        });
 
-        cy.findByRole('button', { name: 'Add INVESTIGATIONTYPE 1 filter' })
-          .should('exist')
-          .within(() => {
-            cy.findByText('2').should('exist');
-          });
-      });
+      cy.findByRole('button', { name: 'Add INVESTIGATIONTYPE 1 filter' })
+        .should('exist')
+        .within(() => {
+          cy.findByText('2').should('exist');
+        });
+    });
 
     cy.findByRole('button', {
       name: 'Toggle Parameter name filter panel',
     }).click();
-    cy.findAllByLabelText('Parameter name filter panel')
-      .filter(':visible')
-      .within(() => {
-        cy.findByRole('button', { name: 'Add PARAMETERTYPE 2 filter' })
-          .should('exist')
-          .within(() => {
-            cy.findByText('2').should('exist');
-          });
+    cy.findAllByLabelText('Parameter name filter panel').within(() => {
+      cy.findByRole('button', { name: 'Add PARAMETERTYPE 2 filter' })
+        .should('exist')
+        .within(() => {
+          cy.findByText('2').should('exist');
+        });
 
-        cy.findByRole('button', { name: 'Add PARAMETERTYPE 11 filter' })
-          .should('exist')
-          .within(() => {
-            cy.findByText('1').should('exist');
-          });
-      });
+      cy.findByRole('button', { name: 'Add PARAMETERTYPE 11 filter' })
+        .should('exist')
+        .within(() => {
+          cy.findByText('1').should('exist');
+        });
+    });
 
     cy.findByRole('button', {
       name: 'Toggle Sample filter panel',
     }).click();
-    cy.findAllByLabelText('Sample filter panel')
-      .filter(':visible')
-      .within(() => {
-        cy.findByRole('button', { name: 'Add SAMPLETYPE 38 filter' })
-          .should('exist')
-          .within(() => {
-            cy.findByText('1').should('exist');
-          });
-      });
+    cy.findAllByLabelText('Sample filter panel').within(() => {
+      cy.findByRole('button', { name: 'Add SAMPLETYPE 38 filter' })
+        .should('exist')
+        .within(() => {
+          cy.findByText('1').should('exist');
+        });
+    });
 
     cy.findByRole('button', {
       name: 'Toggle Instrument filter panel',
     }).click();
-    cy.findAllByLabelText('Instrument filter panel')
-      .filter(':visible')
-      .within(() => {
-        cy.findByRole('button', { name: 'Add INSTRUMENT 8 filter' })
-          .should('exist')
-          .within(() => {
-            cy.findByText('2').should('exist');
-          });
+    cy.findAllByLabelText('Instrument filter panel').within(() => {
+      cy.findByRole('button', { name: 'Add INSTRUMENT 8 filter' })
+        .should('exist')
+        .within(() => {
+          cy.findByText('2').should('exist');
+        });
 
-        cy.findByRole('button', { name: 'Add INSTRUMENT 14 filter' })
-          .should('exist')
-          .within(() => {
-            cy.findByText('1').should('exist');
-          });
-      });
+      cy.findByRole('button', { name: 'Add INSTRUMENT 14 filter' })
+        .should('exist')
+        .within(() => {
+          cy.findByText('1').should('exist');
+        });
+    });
   });
 
-  it.only('should be able to open the details panel of a specific row', () => {
+  it('should be able to open the details panel of a specific row', () => {
     // type in search query
     cy.findByRole('searchbox', { name: 'Search text input' }).type('dog');
     // uncheck my data
@@ -164,18 +156,16 @@ describe('Investigation search tab', () => {
     cy.findByRole('button', { name: 'Toggle Type filter panel' }).click();
 
     // select the filter we want
-    cy.findAllByLabelText('Type filter panel')
-      .filter(':visible')
-      .within(() => {
-        cy.findByRole('button', {
-          name: 'Add INVESTIGATIONTYPE 2 filter',
-        })
-          .as('filter')
-          .click();
-        cy.get('@filter').within(() => {
-          cy.findByRole('checkbox').should('be.checked');
-        });
+    cy.findAllByLabelText('Type filter panel').within(() => {
+      cy.findByRole('button', {
+        name: 'Add INVESTIGATIONTYPE 2 filter',
+      })
+        .as('filter')
+        .click();
+      cy.get('@filter').within(() => {
+        cy.findByRole('checkbox').should('be.checked');
       });
+    });
 
     // apply the filter
     cy.findAllByRole('button', { name: 'Apply' }).click();
@@ -184,7 +174,7 @@ describe('Investigation search tab', () => {
     cy.findAllByRole('row').should('have.length', 4);
 
     // check that filter chips are displayed
-    cy.findByTestId('tabpanel-datafile').within(() => {
+    cy.findByTestId('tabpanel-investigation').within(() => {
       cy.findByLabelText('Selected filters')
         .should('exist')
         .within(() => {
@@ -194,35 +184,31 @@ describe('Investigation search tab', () => {
 
     // open the filter panel to check that the filter is selected
     cy.findByRole('button', { name: 'Toggle Type filter panel' }).click();
-    cy.findAllByLabelText('Type filter panel')
-      .filter(':visible')
-      .within(() => {
-        cy.findByRole('button', {
-          name: 'Remove INVESTIGATIONTYPE 2 filter',
-        }).within(() => {
-          cy.findByRole('checkbox').should('be.checked');
-        });
+    cy.findAllByLabelText('Type filter panel').within(() => {
+      cy.findByRole('button', {
+        name: 'Remove INVESTIGATIONTYPE 2 filter',
+      }).within(() => {
+        cy.findByRole('checkbox').should('be.checked');
       });
+    });
 
     // open another filter panel to see the panel shows the updated list of filters
     cy.findByRole('button', {
       name: 'Toggle Parameter name filter panel',
     }).click();
-    cy.findAllByLabelText('Parameter name filter panel')
-      .filter(':visible')
-      .within(() => {
-        // the filtered search results don't include this facet
-        cy.findByRole('button', {
-          name: 'Add PARAMETERTYPE 11 filter',
-        }).should('not.exist');
+    cy.findAllByLabelText('Parameter name filter panel').within(() => {
+      // the filtered search results don't include this facet
+      cy.findByRole('button', {
+        name: 'Add PARAMETERTYPE 11 filter',
+      }).should('not.exist');
 
-        cy.findByRole('button', {
-          name: 'Add PARAMETERTYPE 2 filter',
-        }).within(() => {
-          cy.findByRole('checkbox').should('not.be.checked');
-          cy.findByRole('checkbox').click();
-        });
+      cy.findByRole('button', {
+        name: 'Add PARAMETERTYPE 2 filter',
+      }).within(() => {
+        cy.findByRole('checkbox').should('not.be.checked');
+        cy.findByRole('checkbox').click();
       });
+    });
 
     cy.findByRole('button', { name: 'Apply' }).click();
 
@@ -256,42 +242,38 @@ describe('Investigation search tab', () => {
     cy.findByRole('button', {
       name: 'Toggle Parameter name filter panel',
     }).click();
-    cy.findAllByLabelText('Parameter name filter panel')
-      .filter(':visible')
-      .within(() => {
-        cy.findByRole('button', {
-          name: 'Remove PARAMETERTYPE 2 filter',
-        }).click();
-      });
+    cy.findAllByLabelText('Parameter name filter panel').within(() => {
+      cy.findByRole('button', {
+        name: 'Remove PARAMETERTYPE 2 filter',
+      }).click();
+    });
 
     cy.findByRole('button', { name: 'Apply' }).click();
 
     cy.findAllByRole('row').should('have.length', 6);
 
     // filter chips should not exist anymore
-    cy.findByTestId('tabpanel-datafile').within(() => {
+    cy.findByTestId('tabpanel-investigation').within(() => {
       cy.findByLabelText('Selected filters')
         .children()
         .should('have.length', 0);
     });
 
-    cy.findAllByLabelText('Parameter name filter panel')
-      .filter(':visible')
-      .within(() => {
-        cy.findByRole('button', { name: 'Add PARAMETERTYPE 2 filter' })
-          .should('exist')
-          .within(() => {
-            cy.findByRole('checkbox').should('not.be.checked');
-            cy.findByText('2').should('exist');
-          });
+    cy.findAllByLabelText('Parameter name filter panel').within(() => {
+      cy.findByRole('button', { name: 'Add PARAMETERTYPE 2 filter' })
+        .should('exist')
+        .within(() => {
+          cy.findByRole('checkbox').should('not.be.checked');
+          cy.findByText('2').should('exist');
+        });
 
-        cy.findByRole('button', { name: 'Add PARAMETERTYPE 11 filter' })
-          .should('exist')
-          .within(() => {
-            cy.findByRole('checkbox').should('not.be.checked');
-            cy.findByText('1').should('exist');
-          });
-      });
+      cy.findByRole('button', { name: 'Add PARAMETERTYPE 11 filter' })
+        .should('exist')
+        .within(() => {
+          cy.findByRole('checkbox').should('not.be.checked');
+          cy.findByText('1').should('exist');
+        });
+    });
 
     cy.findByRole('button', {
       name: 'Toggle Parameter name filter panel',
@@ -301,16 +283,14 @@ describe('Investigation search tab', () => {
       name: 'Toggle Type filter panel',
     }).click();
 
-    cy.findAllByLabelText('Type filter panel')
-      .filter(':visible')
-      .within(() => {
-        cy.findByRole('button', { name: 'Add INVESTIGATIONTYPE 2 filter' })
-          .should('exist')
-          .within(() => {
-            cy.findByRole('checkbox').should('not.be.checked');
-            cy.findByText('3').should('exist');
-          });
-      });
+    cy.findAllByLabelText('Type filter panel').within(() => {
+      cy.findByRole('button', { name: 'Add INVESTIGATIONTYPE 2 filter' })
+        .should('exist')
+        .within(() => {
+          cy.findByRole('checkbox').should('not.be.checked');
+          cy.findByText('3').should('exist');
+        });
+    });
 
     cy.findByRole('button', {
       name: 'Toggle Type filter panel',
@@ -321,18 +301,16 @@ describe('Investigation search tab', () => {
     }).click();
 
     // select the filter we want
-    cy.findAllByLabelText('Sample filter panel')
-      .filter(':visible')
-      .within(() => {
-        cy.findByRole('button', {
-          name: 'Add SAMPLETYPE 38 filter',
-        })
-          .as('filter')
-          .click();
-        cy.get('@filter').within(() => {
-          cy.findByRole('checkbox').should('be.checked');
-        });
+    cy.findAllByLabelText('Sample filter panel').within(() => {
+      cy.findByRole('button', {
+        name: 'Add SAMPLETYPE 38 filter',
+      })
+        .as('filter')
+        .click();
+      cy.get('@filter').within(() => {
+        cy.findByRole('checkbox').should('be.checked');
       });
+    });
 
     // apply the filter
     cy.findAllByRole('button', { name: 'Apply' }).click();
@@ -362,18 +340,16 @@ describe('Investigation search tab', () => {
     }).click();
 
     // select the filter we want
-    cy.findAllByLabelText('Instrument filter panel')
-      .filter(':visible')
-      .within(() => {
-        cy.findByRole('button', {
-          name: 'Add INSTRUMENT 8 filter',
-        })
-          .as('filter')
-          .click();
-        cy.get('@filter').within(() => {
-          cy.findByRole('checkbox').should('be.checked');
-        });
+    cy.findAllByLabelText('Instrument filter panel').within(() => {
+      cy.findByRole('button', {
+        name: 'Add INSTRUMENT 8 filter',
+      })
+        .as('filter')
+        .click();
+      cy.get('@filter').within(() => {
+        cy.findByRole('checkbox').should('be.checked');
       });
+    });
 
     // apply the filter
     cy.findAllByRole('button', { name: 'Apply' }).click();

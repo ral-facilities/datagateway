@@ -66,6 +66,33 @@ describe('Datafile search tab', () => {
             cy.findByText('1').should('exist');
           });
       });
+
+    cy.findByRole('button', { name: 'Toggle Sample filter panel' }).click();
+
+    cy.findAllByLabelText('Sample filter panel').within(() => {
+      cy.findByRole('button', { name: 'Add SAMPLETYPE 55 filter' })
+        .should('exist')
+        .within(() => {
+          cy.findByText('1').should('exist');
+        });
+    });
+
+    cy.findByRole('button', {
+      name: 'Toggle Instrument filter panel',
+    }).click();
+    cy.findAllByLabelText('Instrument filter panel').within(() => {
+      cy.findByRole('button', { name: 'Add INSTRUMENT 8 filter' })
+        .should('exist')
+        .within(() => {
+          cy.findByText('1').should('not.exist');
+        });
+
+      cy.findByRole('button', { name: 'Add INSTRUMENT 9 filter' })
+        .should('exist')
+        .within(() => {
+          cy.findByText('1').should('not.exist');
+        });
+    });
   });
 
   it('should be able to add/remove to/from download cart', () => {
@@ -312,7 +339,48 @@ describe('Datafile search tab', () => {
       cy.findByLabelText('Selected filters')
         .should('exist')
         .within(() => {
-          cy.findByText('Sample: SAMPLETYPE 30').should('exist');
+          cy.findByRole('button', {
+            name: 'Sample: SAMPLETYPE 30',
+            exact: false,
+          })
+            .should('exist')
+            .within(() => {
+              // remove the filter chip
+              cy.findByTestId('CancelIcon').click();
+            });
+        });
+    });
+
+    cy.findByRole('button', {
+      name: 'Toggle Instrument filter panel',
+    }).click();
+
+    // select the filter we want
+    cy.findAllByLabelText('Instrument filter panel')
+      .filter(':visible')
+      .within(() => {
+        cy.findByRole('button', {
+          name: 'Add INSTRUMENT 13 filter',
+        })
+          .as('filter')
+          .click();
+        cy.get('@filter').within(() => {
+          cy.findByRole('checkbox').should('be.checked');
+        });
+      });
+
+    // apply the filter
+    cy.findAllByRole('button', { name: 'Apply' }).click();
+
+    // the search result should be filtered
+    cy.findAllByRole('row').should('have.length', 12);
+
+    // check that filter chips are displayed
+    cy.findByTestId('tabpanel-dataset').within(() => {
+      cy.findByLabelText('Selected filters')
+        .should('exist')
+        .within(() => {
+          cy.findByText('Instrument: INSTRUMENT 13').should('exist');
         });
     });
   });
