@@ -73,7 +73,10 @@ const DataHeader = (
   }
 
   const inner = !disableSort ? (
-    <StyledTooltip title={shiftDown ? 'Multisort' : 'Sort'}>
+    <StyledTooltip
+      title={shiftDown ? 'Multisort' : 'Sort'}
+      aria-label={labelString}
+    >
       <TableSortLabel
         className={'tour-dataview-sort'}
         active={true}
