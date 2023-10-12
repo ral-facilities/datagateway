@@ -101,7 +101,9 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                               class="MuiBox-root css-0"
                             >
                               <span
+                                aria-label="downloadStatus.id"
                                 class="MuiButtonBase-root MuiTableSortLabel-root Mui-active tour-dataview-sort css-f4w4o6-MuiButtonBase-root-MuiTableSortLabel-root"
+                                data-mui-internal-clone-element="true"
                                 role="button"
                                 tabindex="0"
                               >
@@ -224,7 +226,9 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                               class="MuiBox-root css-0"
                             >
                               <span
+                                aria-label="downloadStatus.fullname"
                                 class="MuiButtonBase-root MuiTableSortLabel-root Mui-active tour-dataview-sort css-f4w4o6-MuiButtonBase-root-MuiTableSortLabel-root"
+                                data-mui-internal-clone-element="true"
                                 role="button"
                                 tabindex="0"
                               >
@@ -347,7 +351,9 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                               class="MuiBox-root css-0"
                             >
                               <span
+                                aria-label="downloadStatus.username"
                                 class="MuiButtonBase-root MuiTableSortLabel-root Mui-active tour-dataview-sort css-f4w4o6-MuiButtonBase-root-MuiTableSortLabel-root"
+                                data-mui-internal-clone-element="true"
                                 role="button"
                                 tabindex="0"
                               >
@@ -470,7 +476,9 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                               class="MuiBox-root css-0"
                             >
                               <span
+                                aria-label="downloadStatus.preparedId"
                                 class="MuiButtonBase-root MuiTableSortLabel-root Mui-active tour-dataview-sort css-f4w4o6-MuiButtonBase-root-MuiTableSortLabel-root"
+                                data-mui-internal-clone-element="true"
                                 role="button"
                                 tabindex="0"
                               >
@@ -593,7 +601,9 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                               class="MuiBox-root css-0"
                             >
                               <span
+                                aria-label="downloadStatus.transport"
                                 class="MuiButtonBase-root MuiTableSortLabel-root Mui-active tour-dataview-sort css-f4w4o6-MuiButtonBase-root-MuiTableSortLabel-root"
+                                data-mui-internal-clone-element="true"
                                 role="button"
                                 tabindex="0"
                               >
@@ -716,7 +726,9 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                               class="MuiBox-root css-0"
                             >
                               <span
+                                aria-label="downloadStatus.status"
                                 class="MuiButtonBase-root MuiTableSortLabel-root Mui-active tour-dataview-sort css-f4w4o6-MuiButtonBase-root-MuiTableSortLabel-root"
+                                data-mui-internal-clone-element="true"
                                 role="button"
                                 tabindex="0"
                               >
@@ -878,7 +890,9 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                               class="MuiBox-root css-0"
                             >
                               <span
+                                aria-label="downloadStatus.createdAt"
                                 class="MuiButtonBase-root MuiTableSortLabel-root Mui-active tour-dataview-sort css-1qgma8u-MuiButtonBase-root-MuiTableSortLabel-root"
+                                data-mui-internal-clone-element="true"
                                 role="button"
                                 tabindex="0"
                               >
@@ -1023,7 +1037,9 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                               class="MuiBox-root css-0"
                             >
                               <span
+                                aria-label="downloadStatus.deleted"
                                 class="MuiButtonBase-root MuiTableSortLabel-root Mui-active tour-dataview-sort css-f4w4o6-MuiButtonBase-root-MuiTableSortLabel-root"
+                                data-mui-internal-clone-element="true"
                                 role="button"
                                 tabindex="0"
                               >

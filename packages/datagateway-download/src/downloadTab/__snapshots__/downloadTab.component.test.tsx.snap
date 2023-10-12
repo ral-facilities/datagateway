@@ -122,7 +122,9 @@ exports[`DownloadTab should render correctly 1`] = `
                                 class="MuiBox-root css-0"
                               >
                                 <span
+                                  aria-label="downloadCart.name"
                                   class="MuiButtonBase-root MuiTableSortLabel-root Mui-active tour-dataview-sort css-f4w4o6-MuiButtonBase-root-MuiTableSortLabel-root"
+                                  data-mui-internal-clone-element="true"
                                   role="button"
                                   tabindex="0"
                                 >
@@ -245,7 +247,9 @@ exports[`DownloadTab should render correctly 1`] = `
                                 class="MuiBox-root css-0"
                               >
                                 <span
+                                  aria-label="downloadCart.type"
                                   class="MuiButtonBase-root MuiTableSortLabel-root Mui-active tour-dataview-sort css-f4w4o6-MuiButtonBase-root-MuiTableSortLabel-root"
+                                  data-mui-internal-clone-element="true"
                                   role="button"
                                   tabindex="0"
                                 >
@@ -368,7 +372,9 @@ exports[`DownloadTab should render correctly 1`] = `
                                 class="MuiBox-root css-0"
                               >
                                 <span
+                                  aria-label="downloadCart.size"
                                   class="MuiButtonBase-root MuiTableSortLabel-root Mui-active tour-dataview-sort css-f4w4o6-MuiButtonBase-root-MuiTableSortLabel-root"
+                                  data-mui-internal-clone-element="true"
                                   role="button"
                                   tabindex="0"
                                 >
@@ -423,7 +429,9 @@ exports[`DownloadTab should render correctly 1`] = `
                                 class="MuiBox-root css-0"
                               >
                                 <span
+                                  aria-label="downloadCart.fileCount"
                                   class="MuiButtonBase-root MuiTableSortLabel-root Mui-active tour-dataview-sort css-f4w4o6-MuiButtonBase-root-MuiTableSortLabel-root"
+                                  data-mui-internal-clone-element="true"
                                   role="button"
                                   tabindex="0"
                                 >
