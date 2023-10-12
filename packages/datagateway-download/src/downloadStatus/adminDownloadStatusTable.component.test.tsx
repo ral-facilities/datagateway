@@ -156,6 +156,8 @@ describe('Admin Download Status Table', () => {
   });
 
   it('should send sort request on sort', async () => {
+    // use skipHover to avoid triggering sort tooltips which slow the test down
+    user = userEvent.setup({ delay: null, skipHover: true });
     renderComponent();
 
     // Table is sorted by createdAt desc by default
@@ -265,6 +267,9 @@ describe('Admin Download Status Table', () => {
     });
 
     it('should filter download availability properly', async () => {
+      // use skipHover to avoid triggering sort tooltips which slow the test down
+      user = userEvent.setup({ delay: null, skipHover: true });
+
       renderComponent();
       await flushPromises();
 
@@ -322,12 +327,16 @@ describe('Admin Download Status Table', () => {
 
   it('sends filter request on date filter', async () => {
     applyDatePickerWorkaround();
+    // use skipHover to avoid triggering sort tooltips which slow the test down
+    user = userEvent.setup({ delay: null, skipHover: true });
+
     renderComponent();
     await flushPromises();
 
     // Table is sorted by createdAt desc by default
     // To keep working test, we will remove all sorts on the table beforehand
     await user.click(await screen.findByText('downloadStatus.createdAt'));
+    await flushPromises();
 
     // Get the Requested Data From filter input
     const dateFromFilterInput = screen.getByRole('textbox', {
@@ -354,18 +363,15 @@ describe('Admin Download Status Table', () => {
     await user.type(dateToFilterInput, '2020-01-02_23:59:00');
     await flushPromises();
 
-    // have to wrap the expect in a waitFor because for some reason
-    // await user.type doesn't wait until the full thing is typed in before resolving
-    // causing fetchAdminDownloads to be called with partial values
-    await waitFor(() => {
-      expect(fetchAdminDownloads).toHaveBeenCalledWith(
-        {
-          downloadApiUrl: mockedSettings.downloadApiUrl,
-          facilityName: mockedSettings.facilityName,
-        },
-        `WHERE download.facilityName = '${mockedSettings.facilityName}' AND download.createdAt BETWEEN {ts '2020-01-01 00:00:00'} AND {ts '2020-01-02 23:59:00'} ORDER BY download.id ASC LIMIT 0, 50`
-      );
-    });
+    expect(fetchAdminDownloads).toHaveBeenCalledWith(
+      {
+        downloadApiUrl: mockedSettings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
+      },
+      `WHERE download.facilityName = '${mockedSettings.facilityName}' AND download.createdAt BETWEEN {ts '2020-01-01 00:00:00'} AND {ts '2020-01-02 23:59:00'} ORDER BY download.id ASC LIMIT 0, 50`
+    );
+
+    (fetchAdminDownloads as jest.Mock).mockClear();
 
     await user.clear(dateFromFilterInput);
     await user.clear(dateToFilterInput);

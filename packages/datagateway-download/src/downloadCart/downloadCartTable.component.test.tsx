@@ -242,6 +242,8 @@ describe('Download cart table component', () => {
   });
 
   it('should sort data when headers are clicked', async () => {
+    // use skipHover to avoid triggering sort tooltips which slow the test down
+    user = userEvent.setup({ skipHover: true });
     renderComponent();
 
     const typeSortLabel = await screen.findByRole('button', {
