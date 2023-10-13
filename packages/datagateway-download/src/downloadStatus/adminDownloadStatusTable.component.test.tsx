@@ -231,6 +231,9 @@ describe('Admin Download Status Table', () => {
 
   describe('text filters', () => {
     it('should filter username properly', async () => {
+      // use skipHover to avoid triggering sort tooltips which slow the test down
+      user = userEvent.setup({ delay: null, skipHover: true });
+
       renderComponent();
       await flushPromises();
 
