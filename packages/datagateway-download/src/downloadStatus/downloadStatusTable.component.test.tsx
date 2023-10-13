@@ -47,7 +47,7 @@ describe('Download Status Table', () => {
   let user: ReturnType<typeof userEvent.setup>;
 
   beforeEach(() => {
-    user = userEvent.setup();
+    user = userEvent.setup({ delay: null });
 
     (downloadDeleted as jest.Mock).mockImplementation(() => Promise.resolve());
     (fetchDownloads as jest.Mock).mockImplementation(() =>
@@ -189,7 +189,7 @@ describe('Download Status Table', () => {
 
   it('should sort data when headers are clicked', async () => {
     // use skipHover to avoid triggering sort tooltips which slow the test down
-    user = userEvent.setup({ skipHover: true });
+    user = userEvent.setup({ delay: null, skipHover: true });
     renderComponent();
 
     // Table is sorted by createdAt desc by default
