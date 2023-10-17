@@ -1,12 +1,4 @@
 describe('SearchPageContainer Component', () => {
-  // let facilityName: string;
-
-  // before(() => {
-  //   cy.readFile('server/e2e-settings.json').then((settings) => {
-  //     if (settings.facilityName) facilityName = settings.facilityName;
-  //   });
-  // });
-
   it('Should default back to 10 when any result is manually entered into the url', () => {
     cy.login();
 
@@ -102,37 +94,47 @@ describe('SearchPageContainer Component', () => {
       });
     });
 
-    // TODO: do we want this feature?
-    it.skip('should be able to switch between tabs (and filters should not be lost)', () => {
-      cy.get('[aria-label="Search table"]')
-        .contains('Investigation')
-        .contains('5');
+    it('should be able to switch between tabs (and filters & pagination state should not be lost)', () => {
+      // visit url with pre-applied filters & pagination params
+      cy.visit(
+        '/search/data?view=card&page=2&results=20&searchText=&restrict=false&filters=%7B"Investigation.type.name"%3A%5B"INVESTIGATIONTYPE+3"%5D%7D'
+      );
 
-      cy.get('[aria-label="Filter by Title"]').type('ba');
-      cy.contains('Visit ID').first().click();
+      cy.findByRole('tab', { name: 'Investigation' }).contains('23');
 
-      cy.get('[aria-rowcount="4"]').should('exist');
+      cy.findByTestId('tabpanel-investigation').within(() => {
+        cy.findByLabelText('Selected filters')
+          .should('exist')
+          .within(() => {
+            cy.findByText('Type: INVESTIGATIONTYPE 3').should('exist');
+          });
+      });
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('18');
+      cy.get('[data-testid="card"]:visible')
+        .as('cards')
+        .should('have.length', 3);
 
-      cy.get('[aria-label="Search table"]')
-        .contains('Dataset')
-        .contains('3')
-        .click();
+      cy.findAllByRole('button', { name: /page 2/i, current: true });
 
-      cy.get('[aria-label="Search table"]')
-        .contains('Datafile')
-        .contains('44')
-        .click();
+      cy.findByRole('tab', { name: 'Dataset' }).click();
 
-      cy.get('[aria-label="Search table"]')
-        .contains('Investigation')
-        .contains('4')
-        .click();
+      cy.findByRole('tab', { name: 'Investigation' }).click();
 
-      cy.get('[aria-rowcount="4"]').should('exist');
+      cy.findByRole('tab', { name: 'Investigation' }).contains('23');
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('18');
+      cy.findByTestId('tabpanel-investigation').within(() => {
+        cy.findByLabelText('Selected filters')
+          .should('exist')
+          .within(() => {
+            cy.findByText('Type: INVESTIGATIONTYPE 3').should('exist');
+          });
+      });
+
+      cy.get('[data-testid="card"]:visible')
+        .as('cards')
+        .should('have.length', 3);
+
+      cy.findAllByRole('button', { name: /page 2/i, current: true });
     });
 
     it('should be able to switch to card view', () => {
@@ -391,7 +393,7 @@ describe('SearchPageContainer Component', () => {
         .should('exist');
     });
 
-    it.only('should be able to sort by different criteria', () => {
+    it('should be able to sort by different criteria', () => {
       cy.get(
         `[data-testid="tabpanel-investigation"] [aria-rowindex="1"] [aria-colindex="3"]`
       ).contains('Majority about dog');

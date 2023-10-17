@@ -75,13 +75,14 @@ describe('Dataset search tab', () => {
       cy.findByRole('button', { name: 'Add INSTRUMENT 13 filter' })
         .should('exist')
         .within(() => {
-          cy.findByText('2').should('exist');
+          // shouldn't find a facet count
+          cy.findByText(/^[0-9]+$/).should('not.exist');
         });
 
       cy.findByRole('button', { name: 'Add INSTRUMENT 1 filter' })
         .should('exist')
         .within(() => {
-          cy.findByText('1').should('exist');
+          cy.findByText(/^[0-9]+$/).should('not.exist');
         });
     });
   });

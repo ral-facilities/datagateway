@@ -84,13 +84,14 @@ describe('Datafile search tab', () => {
       cy.findByRole('button', { name: 'Add INSTRUMENT 8 filter' })
         .should('exist')
         .within(() => {
-          cy.findByText('1').should('not.exist');
+          // shouldn't find a facet count
+          cy.findByText(/^[0-9]+$/).should('not.exist');
         });
 
       cy.findByRole('button', { name: 'Add INSTRUMENT 9 filter' })
         .should('exist')
         .within(() => {
-          cy.findByText('1').should('not.exist');
+          cy.findByText(/^[0-9]+$/).should('not.exist');
         });
     });
   });
