@@ -98,50 +98,37 @@ const DatasetSearchTable = ({
       currentTab === 'dataset' ? filters : {},
       {
         enabled: dataset,
-        // // this select removes the facet count for the InvestigationInstrument.instrument.name
-        // // facet since the number is confusing
-        // select: (data) => ({
-        //   ...data,
-        //   pages: data.pages.map((searchResponse) => {
-        //     console.log('test', {
-        //       ...searchResponse.dimensions,
-        //       'InvestigationInstrument.instrument.name': Object.keys(
-        //         searchResponse.dimensions?.[
-        //           'InvestigationInstrument.instrument.name'
-        //         ] ?? {}
-        //       ).reduce(
-        //         (
-        //           accumulator: { [key: string]: undefined },
-        //           current: string
-        //         ) => {
-        //           accumulator[current] = undefined;
-        //           return accumulator;
-        //         },
-        //         {}
-        //       ),
-        //     });
-        //     return {
-        //       ...searchResponse,
-        //       dimensions: {
-        //         ...searchResponse.dimensions,
-        //         'InvestigationInstrument.instrument.name': Object.keys(
-        //           searchResponse.dimensions?.[
-        //             'InvestigationInstrument.instrument.name'
-        //           ] ?? {}
-        //         ).reduce(
-        //           (
-        //             accumulator: { [key: string]: undefined },
-        //             current: string
-        //           ) => {
-        //             accumulator[current] = undefined;
-        //             return accumulator;
-        //           },
-        //           {}
-        //         ),
-        //       },
-        //     };
-        //   }),
-        // }),
+        // this select removes the facet count for the InvestigationInstrument.instrument.name
+        // facet since the number is confusing for datafiles
+        select: (data) => ({
+          ...data,
+          pages: data.pages.map((searchResponse) => ({
+            ...searchResponse,
+            dimensions: {
+              ...searchResponse.dimensions,
+              ...(searchResponse.dimensions?.[
+                'InvestigationInstrument.instrument.name'
+              ]
+                ? {
+                    'InvestigationInstrument.instrument.name': Object.keys(
+                      searchResponse.dimensions?.[
+                        'InvestigationInstrument.instrument.name'
+                      ]
+                    ).reduce(
+                      (
+                        accumulator: { [key: string]: undefined },
+                        current: string
+                      ) => {
+                        accumulator[current] = undefined;
+                        return accumulator;
+                      },
+                      {}
+                    ),
+                  }
+                : {}),
+            },
+          })),
+        }),
       }
     );
 

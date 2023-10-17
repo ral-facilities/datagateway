@@ -1,11 +1,24 @@
 import {
   Box,
   Checkbox,
+  Chip,
+  chipClasses,
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  styled,
 } from '@mui/material';
-import React from 'react';
+import React, { ComponentProps } from 'react';
+
+const StyledChip = styled(Chip)(() => ({
+  cursor: 'unset',
+  height: '20px',
+  [`& .${chipClasses.label}`]: { paddingLeft: '6px', paddingRight: '6px' },
+}));
+
+export const ExtraSmallChip: React.FC<
+  Omit<ComponentProps<typeof Chip>, 'size'>
+> = (props) => <StyledChip size="small" {...props} />;
 
 interface ToggleableFilterItemProps {
   classificationLabel: string;
@@ -50,7 +63,7 @@ function ToggleableFilterItem({
           <Box flex={1} overflow="hidden" textOverflow="ellipsis">
             {classificationLabel}
           </Box>
-          {count && <span>{count}</span>}
+          {count && <ExtraSmallChip label={count} />}
         </Box>
       </ListItemText>
     </ListItemButton>

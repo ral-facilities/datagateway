@@ -16,6 +16,7 @@ import type { ParameterValueFacet } from '../parameterFilterTypes';
 import parameterFacetsFromSearchResponse from '../parameterFacetsFromSearchResponse';
 import ParameterValueSelectorProps from './parameterValueSelectorProps';
 import { useTranslation } from 'react-i18next';
+import { ExtraSmallChip } from '../../toggleableFilterItem.component';
 
 function ParameterFacetList({
   entityName,
@@ -88,9 +89,7 @@ function ParameterFacetList({
             aria-label={`Filter by ${facet.label}`}
           >
             <ListItemText>{facet.label}</ListItemText>
-            <Typography variant="body2" color="text.secondary">
-              {facet.count}
-            </Typography>
+            <ExtraSmallChip label={facet.count} />
           </MenuItem>
         ))}
       </TextField>
