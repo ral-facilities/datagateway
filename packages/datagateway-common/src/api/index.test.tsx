@@ -10,7 +10,6 @@ import {
   usePushPage,
   usePushResults,
   useSort,
-  usePushCurrentTab,
   useUpdateView,
   useCustomFilterCount,
   usePushSearchText,
@@ -535,20 +534,6 @@ describe('generic api functions', () => {
         });
 
         expect(pushSpy).toHaveBeenCalledWith('?page=1');
-      });
-    });
-
-    describe('usePushCurrentTab', () => {
-      it('returns callback that when called pushes a new tab to the url query', () => {
-        const { result } = renderHook(() => usePushCurrentTab(), {
-          wrapper,
-        });
-
-        act(() => {
-          result.current('dataset');
-        });
-
-        expect(pushSpy).toHaveBeenCalledWith('?currentTab=dataset');
       });
     });
 

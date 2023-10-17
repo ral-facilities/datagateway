@@ -8,16 +8,10 @@ import {
   Tabs,
   tabsClasses,
 } from '@mui/material';
-import {
-  CartProps,
-  useUpdateQueryParam,
-  ViewCartButton,
-  ViewsType,
-} from 'datagateway-common';
+import { CartProps, ViewCartButton, ViewsType } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
 import { useIsFetching } from 'react-query';
 import { useSelector } from 'react-redux';
-import { getFilters, getSorts } from '../searchPageContainer.component';
 import type { StateType } from '../state/app.types';
 import InvestigationSearchTable from '../table/investigationSearchTable.component';
 import InvestigationCardView from '../card/investigationSearchCardView.component';
@@ -122,17 +116,11 @@ const SearchTabs = ({
   });
   const loading = isFetchingNum > 0;
 
-  const replaceFilters = useUpdateQueryParam('filters', 'replace');
-  const replaceSorts = useUpdateQueryParam('sort', 'replace');
-
   function handleChange(
     event: React.ChangeEvent<unknown>,
     newValue: string
   ): void {
     onTabChange(newValue);
-
-    replaceFilters({});
-    replaceSorts({});
   }
 
   /**
@@ -153,13 +141,6 @@ const SearchTabs = ({
     }
     return '?';
   }
-
-  React.useEffect(() => {
-    const filters = getFilters(currentTab);
-    const sorts = getSorts(currentTab);
-    if (filters) replaceFilters(filters);
-    if (sorts) replaceSorts(sorts);
-  }, [currentTab, replaceFilters, replaceSorts]);
 
   return (
     <div>

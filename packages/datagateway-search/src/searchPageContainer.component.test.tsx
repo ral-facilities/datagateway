@@ -10,23 +10,17 @@ import {
 import { createMemoryHistory, createPath, type History } from 'history';
 import { Router } from 'react-router-dom';
 import SearchPageContainer, {
-  getFilters,
-  getPage,
-  getResults,
-  getSorts,
-  storeFilters,
-  storePage,
-  storeResults,
-  storeSort,
+  usePushCurrentTab,
 } from './searchPageContainer.component';
 import { Provider } from 'react-redux';
 import axios from 'axios';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { render, type RenderResult, screen } from '@testing-library/react';
+import { render, type RenderResult, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { DeepPartial } from 'redux';
 import { applyMiddleware, compose, createStore } from 'redux';
 import AppReducer from './state/reducers/app.reducer';
+import { renderHook } from '@testing-library/react-hooks';
 
 jest.mock('loglevel');
 
@@ -43,17 +37,83 @@ jest.mock('datagateway-common', () => {
   };
 });
 
+describe('usePushCurrentTab', () => {
+  let localStorageSetItemMock: jest.SpyInstance;
+  let localStorageGetItemMock: jest.SpyInstance;
+  beforeEach(() => {
+    localStorageSetItemMock = jest.spyOn(
+      window.localStorage.__proto__,
+      'setItem'
+    );
+    localStorageGetItemMock = jest.spyOn(
+      window.localStorage.__proto__,
+      'getItem'
+    );
+  });
+
+  afterEach(() => {
+    localStorageSetItemMock.mockRestore();
+    localStorageGetItemMock.mockRestore();
+  });
+
+  it('returns callback that when called pushes a new tab to the url query', () => {
+    const history = createMemoryHistory();
+
+    const { result } = renderHook(() => usePushCurrentTab(), {
+      wrapper: ({ children }) => <Router history={history}>{children}</Router>,
+    });
+
+    act(() => {
+      result.current('dataset');
+    });
+
+    expect(history.location.search).toEqual('?currentTab=dataset');
+  });
+
+  it('returns callback that when called pushes a new tab to the url query, and stores and restores any stored search query params', () => {
+    const history = createMemoryHistory({
+      initialEntries: [
+        '/search/data?currentTab=investigation&filters={"title":{"value":"test","type":"include"}}&page=2&results=30',
+      ],
+    });
+
+    const { result } = renderHook(() => usePushCurrentTab(), {
+      wrapper: ({ children }) => <Router history={history}>{children}</Router>,
+    });
+
+    localStorageGetItemMock.mockImplementation((name) => {
+      if (name === 'datasetResults') return '20';
+      if (name === 'datasetPage') return '3';
+      if (name === 'datasetFilters')
+        return '{"name":{"value":"test2","type":"include"}}';
+    });
+
+    act(() => {
+      result.current('dataset');
+    });
+
+    expect(localStorageSetItemMock).toBeCalledWith(
+      'investigationFilters',
+      '{"title":{"value":"test","type":"include"}}'
+    );
+    expect(localStorageSetItemMock).toBeCalledWith('investigationPage', '2');
+    expect(localStorageSetItemMock).toBeCalledWith(
+      'investigationResults',
+      '30'
+    );
+
+    expect(history.location.search).toEqual(
+      '?page=3&results=20&currentTab=dataset&filters=%7B%22name%22%3A%7B%22value%22%3A%22test2%22%2C%22type%22%3A%22include%22%7D%7D'
+    );
+  });
+});
+
 describe('SearchPageContainer - Tests', () => {
   let state: DeepPartial<StateType>;
   let queryClient: QueryClient;
   let history: History;
   let holder: HTMLElement;
   let cartItems: DownloadCartItem[];
-
-  const localStorageGetItemMock = jest.spyOn(
-    window.localStorage.__proto__,
-    'getItem'
-  );
 
   function renderComponent(): RenderResult {
     return render(
@@ -99,8 +159,7 @@ describe('SearchPageContainer - Tests', () => {
       }
     });
 
-    window.localStorage.__proto__.removeItem = jest.fn();
-    window.localStorage.__proto__.setItem = jest.fn();
+    window.localStorage.clear();
 
     const dGSearchInitialState = {
       tabs: {
@@ -157,6 +216,10 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('renders searchPageContainer correctly', () => {
+    const localStorageRemoveItemMock = jest.spyOn(
+      window.localStorage.__proto__,
+      'removeItem'
+    );
     history.replace({ key: 'testKey', pathname: '/' });
 
     renderComponent();
@@ -165,6 +228,21 @@ describe('SearchPageContainer - Tests', () => {
       'href',
       '/search/data'
     );
+
+    // check it clears all the localstorage stuff
+    expect(localStorageRemoveItemMock).toHaveBeenCalledWith(
+      'investigationFilters'
+    );
+    expect(localStorageRemoveItemMock).toHaveBeenCalledWith('datasetFilters');
+    expect(localStorageRemoveItemMock).toHaveBeenCalledWith('datafileFilters');
+    expect(localStorageRemoveItemMock).toHaveBeenCalledWith(
+      'investigationPage'
+    );
+    expect(localStorageRemoveItemMock).toHaveBeenCalledWith('datasetPage');
+    expect(localStorageRemoveItemMock).toHaveBeenCalledWith(
+      'investigationResults'
+    );
+    expect(localStorageRemoveItemMock).toHaveBeenCalledWith('datasetResults');
   });
 
   it('renders initial layout at /search/data route', () => {
@@ -833,27 +911,6 @@ describe('SearchPageContainer - Tests', () => {
     );
   });
 
-  it('gets the filters stored in the local storage', () => {
-    localStorageGetItemMock.mockImplementationOnce(
-      () => '{"investigation.title":{"value":"test","type":"include"}}'
-    );
-    const result = getFilters('dataset');
-    expect(result).toEqual({
-      'investigation.title': {
-        type: 'include',
-        value: 'test',
-      },
-    });
-  });
-
-  it('gets the sorts stored in the local storage', () => {
-    localStorageGetItemMock.mockImplementationOnce(() => '{"name":"asc"}');
-    const result = getSorts('dataset');
-    expect(result).toEqual({
-      name: 'asc',
-    });
-  });
-
   it('display clear filters button and clear for filters onClick', async () => {
     const user = userEvent.setup();
 
@@ -891,51 +948,6 @@ describe('SearchPageContainer - Tests', () => {
     expect(
       await screen.findByRole('button', { name: 'app.clear_filters' })
     ).toBeDisabled();
-  });
-
-  it('gets the page stored in the local storage', () => {
-    localStorageGetItemMock.mockImplementationOnce(() => 2);
-    const result = getPage('dataset');
-    expect(result).toEqual(2);
-  });
-
-  it('gets the results stored in the local storage', () => {
-    localStorageGetItemMock.mockImplementationOnce(() => 10);
-    const result = getResults('dataset');
-    expect(result).toEqual(10);
-  });
-
-  it('stores the previous filters in the local storage', () => {
-    storeFilters(
-      { title: { value: 'test', type: 'include' } },
-      'investigation'
-    );
-
-    expect(localStorage.setItem).toBeCalledWith(
-      'investigationFilters',
-      '{"title":{"value":"test","type":"include"}}'
-    );
-  });
-
-  it('stores the previous sorts in the local storage', () => {
-    storeSort({ name: 'asc' }, 'investigation');
-
-    expect(localStorage.setItem).toBeCalledWith(
-      'investigationSort',
-      '{"name":"asc"}'
-    );
-  });
-
-  it('stores the previous page in the local storage', () => {
-    storePage(4, 'investigation');
-
-    expect(localStorage.setItem).toBeCalledWith('investigationPage', '4');
-  });
-
-  it('stores the previous results in the local storage', () => {
-    storeResults(20, 'investigation');
-
-    expect(localStorage.setItem).toBeCalledWith('investigationResults', '20');
   });
 
   it('should hide tabs when the corresponding search type is disabled', async () => {

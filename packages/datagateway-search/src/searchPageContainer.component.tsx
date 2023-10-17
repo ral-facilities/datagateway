@@ -20,11 +20,10 @@ import {
   ClearFiltersButton,
   FiltersType,
   parseSearchToQuery,
+  parseQueryToSearch,
   readSciGatewayToken,
   SelectionAlert,
-  SortType,
   useCart,
-  usePushCurrentTab,
   usePushQueryParams,
   useUpdateQueryParam,
   useUpdateView,
@@ -39,7 +38,7 @@ import {
   setInvestigationTab,
 } from './state/actions/actions';
 
-export const storeFilters = (
+const storeFilters = (
   filters: FiltersType,
   searchableEntities: string
 ): void => {
@@ -49,33 +48,20 @@ export const storeFilters = (
     localStorage.setItem(filter, JSON.stringify(filters));
 };
 
-export const storeSort = (
-  sorts: SortType,
-  searchableEntities: string
-): void => {
-  const sort = (searchableEntities as string) + 'Sort';
-
-  if (Object.keys(sorts).length !== 0)
-    localStorage.setItem(sort, JSON.stringify(sorts));
-};
-
-export const storePage = (page: number, searchableEntities: string): void => {
+const storePage = (page: number, searchableEntities: string): void => {
   const pageNumber = (searchableEntities as string) + 'Page';
 
   if (page !== 1) localStorage.setItem(pageNumber, JSON.stringify(page));
 };
 
-export const storeResults = (
-  results: number,
-  searchableEntities: string
-): void => {
+const storeResults = (results: number, searchableEntities: string): void => {
   const resultsNumber = (searchableEntities as string) + 'Results';
 
   if (results !== 10)
     localStorage.setItem(resultsNumber, JSON.stringify(results));
 };
 
-export const getFilters = (searchableEntities: string): FiltersType | null => {
+const getFilters = (searchableEntities: string): FiltersType | null => {
   const filter = (searchableEntities as string) + 'Filters';
   const savedFilters = localStorage.getItem(filter);
   if (savedFilters) {
@@ -85,17 +71,7 @@ export const getFilters = (searchableEntities: string): FiltersType | null => {
   }
 };
 
-export const getSorts = (searchableEntities: string): SortType | null => {
-  const sort = (searchableEntities as string) + 'Sort';
-  const savedSort = localStorage.getItem(sort);
-  if (savedSort) {
-    return JSON.parse(savedSort) as SortType;
-  } else {
-    return null;
-  }
-};
-
-export const getPage = (searchableEntities: string): number | null => {
+const getPage = (searchableEntities: string): number | null => {
   const pageNumber = (searchableEntities as string) + 'Page';
   const savedPage = localStorage.getItem(pageNumber);
   if (savedPage) {
@@ -105,7 +81,7 @@ export const getPage = (searchableEntities: string): number | null => {
   }
 };
 
-export const getResults = (searchableEntities: string): number | null => {
+const getResults = (searchableEntities: string): number | null => {
   const resultsNumber = (searchableEntities as string) + 'Results';
   const savedResults = localStorage.getItem(resultsNumber);
   if (savedResults) {
@@ -113,6 +89,41 @@ export const getResults = (searchableEntities: string): number | null => {
   } else {
     return null;
   }
+};
+
+export const usePushCurrentTab = (): ((newCurrentTab: string) => void) => {
+  const { push } = useHistory();
+  const location = useLocation();
+  const { filters, page, results, currentTab } = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
+
+  return React.useCallback(
+    (newCurrentTab: string) => {
+      storeFilters(filters, currentTab);
+      if (page) {
+        storePage(page, currentTab);
+      }
+      if (results) {
+        storeResults(results, currentTab);
+      }
+
+      const newFilters = getFilters(newCurrentTab) ?? {};
+      const newPage = getPage(newCurrentTab);
+      const newResults = getResults(newCurrentTab);
+
+      const query = {
+        ...parseSearchToQuery(window.location.search),
+        filters: newFilters,
+        page: newPage,
+        results: newResults,
+        currentTab: newCurrentTab,
+      };
+      push(`?${parseQueryToSearch(query).toString()}`);
+    },
+    [currentTab, filters, page, push, results]
+  );
 };
 
 const storeDataView = (view: NonNullable<ViewsType>): void => {
@@ -231,6 +242,15 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const [isFirstRender, setIsFirstRender] = React.useState(true);
   React.useEffect(() => {
     setIsFirstRender(false);
+
+    // when page loads, reset all localstorage saved tab items
+    localStorage.removeItem('investigationFilters');
+    localStorage.removeItem('datasetFilters');
+    localStorage.removeItem('datafileFilters');
+    localStorage.removeItem('investigationPage');
+    localStorage.removeItem('datasetPage');
+    localStorage.removeItem('investigationResults');
+    localStorage.removeItem('datasetResults');
   }, []);
 
   const currentTab =

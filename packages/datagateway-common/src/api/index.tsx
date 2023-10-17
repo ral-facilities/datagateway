@@ -469,21 +469,6 @@ export const useUpdateQueryParam = (
   );
 };
 
-export const usePushCurrentTab = (): ((currentTab: string) => void) => {
-  const { push } = useHistory();
-
-  return React.useCallback(
-    (currentTab: string) => {
-      const query = {
-        ...parseSearchToQuery(window.location.search),
-        currentTab,
-      };
-      push(`?${parseQueryToSearch(query).toString()}`);
-    },
-    [push]
-  );
-};
-
 export const usePushPage = (): ((page: number) => void) => {
   const { push } = useHistory();
 
