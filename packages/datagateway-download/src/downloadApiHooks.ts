@@ -582,7 +582,7 @@ export const useAdminDownloads = ({
   const downloadSettings = React.useContext(DownloadSettingsContext);
 
   return useInfiniteQuery(
-    QueryKey.ADMIN_DOWNLOADS,
+    [QueryKey.ADMIN_DOWNLOADS, initialQueryOffset],
     ({ pageParam = initialQueryOffset }) =>
       fetchAdminDownloads(
         {
