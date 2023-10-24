@@ -56,13 +56,17 @@ describe('DOI Confirm Dialogue component', () => {
 
   it('should show success indicators when mintingStatus is success and allow user to view their data publication', async () => {
     props.mintingStatus = 'success';
-    props.data = { data_publication: '123456', doi: 'test_doi' };
+    props.data = {
+      concept: { data_publication: '123456', doi: 'test_doi' },
+      version: { data_publication: '1234561', doi: 'test_doiv1' },
+    };
     const { history } = renderComponent();
 
     expect(
       screen.getByText('DOIConfirmDialog.mint_success')
     ).toBeInTheDocument();
-    expect(screen.getByText('test_doi', { exact: false })).toBeInTheDocument();
+    expect(screen.getByText(/test_doi$/)).toBeInTheDocument();
+    expect(screen.getByText(/test_doiv1$/)).toBeInTheDocument();
 
     await user.click(
       screen.getByRole('link', {
@@ -70,7 +74,7 @@ describe('DOI Confirm Dialogue component', () => {
       })
     );
     expect(history.location).toMatchObject({
-      pathname: `/browse/dataPublication/${props.data.data_publication}`,
+      pathname: `/browse/dataPublication/${props.data.version.data_publication}`,
     });
   });
 

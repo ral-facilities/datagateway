@@ -1277,7 +1277,7 @@ describe('Download API react-query hooks test', () => {
 
       const wrapper = createReactQueryWrapper();
 
-      const { result, waitFor } = renderHook(
+      const { result, waitFor, unmount } = renderHook(
         () =>
           useDownloadTypeStatuses({
             downloadTypes: ['https'],
@@ -1289,6 +1289,8 @@ describe('Download API react-query hooks test', () => {
 
       expect(result.current[0].isStale).toBe(true);
       expect(axios.get).toHaveBeenCalledTimes(1);
+
+      unmount();
 
       const { result: newResult } = renderHook(
         () =>
@@ -1539,10 +1541,14 @@ describe('Download API react-query hooks test', () => {
       title: 'Test title',
       description: 'Test description',
       creators: [{ username: '1', contributor_type: ContributorType.Creator }],
+      related_items: [],
     };
     it('should send a request to mint a cart', async () => {
       axios.post = jest.fn().mockResolvedValue({
-        data: { doi: 'test doi', data_publication: '1' },
+        data: {
+          concept: { doi: 'test doi', data_publication: '1' },
+          version: { doi: 'test doi v1', data_publication: '11' },
+        },
         status: 200,
       });
 
@@ -1555,8 +1561,8 @@ describe('Download API react-query hooks test', () => {
       });
 
       expect(result.current.data).toEqual({
-        data_publication: '1',
-        doi: 'test doi',
+        concept: { doi: 'test doi', data_publication: '1' },
+        version: { doi: 'test doi v1', data_publication: '11' },
       });
       expect(axios.post).toHaveBeenCalledWith(
         `${mockedSettings.doiMinterUrl}/mint`,
