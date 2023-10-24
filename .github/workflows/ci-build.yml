@@ -140,7 +140,7 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-          ref: v7.1.0
+          ref: v9.0.1
 
       # DataGateway API file setup
       - name: Create search_api_mapping.json
@@ -309,7 +309,7 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-          ref: v7.1.0
+          ref: v9.0.1
 
       # DataGateway API file setup
       - name: Create search_api_mapping.json
@@ -449,7 +449,7 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-          ref: v7.1.0
+          ref: v9.0.1
 
       # DataGateway API file setup
       - name: Create search_api_mapping.json

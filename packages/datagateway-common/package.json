@@ -1,6 +1,6 @@
 {
   "name": "datagateway-common",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "private": true,
   "files": [
     "lib"
@@ -10,7 +10,7 @@
     "@date-io/date-fns": "2.16.0",
     "@emotion/react": "11.11.1",
     "@emotion/styled": "11.11.0",
-    "@mui/x-date-pickers": "5.0.9",
+    "@mui/x-date-pickers": "6.11.2",
     "@types/lodash.debounce": "4.0.6",
     "axios": "0.27.2",
     "connected-react-router": "6.9.1",
@@ -43,6 +43,7 @@
     "react-router-dom": ">= 5.2.0 < 6"
   },
   "devDependencies": {
+    "@babel/eslint-parser": "7.22.5",
     "@mui/icons-material": "5.11.0",
     "@mui/material": "5.11.0",
     "@testing-library/jest-dom": "5.16.4",
@@ -56,7 +57,6 @@
     "@types/react-virtualized": "9.21.10",
     "@typescript-eslint/eslint-plugin": "5.61.0",
     "@typescript-eslint/parser": "5.61.0",
-    "@babel/eslint-parser": "7.22.5",
     "eslint": "8.44.0",
     "eslint-config-prettier": "8.8.0",
     "eslint-config-react-app": "7.0.0",

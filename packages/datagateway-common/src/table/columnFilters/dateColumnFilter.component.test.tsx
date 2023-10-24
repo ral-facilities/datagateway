@@ -1,6 +1,5 @@
 import * as React from 'react';
 import DateColumnFilter, {
-  CustomClearButton,
   datesEqual,
   updateFilter,
   useDateFilter,
@@ -12,7 +11,6 @@ import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
 } from '../../setupTests';
-import { PickersActionBarProps } from '@mui/x-date-pickers/PickersActionBar';
 import { render, screen } from '@testing-library/react';
 import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
@@ -210,30 +208,6 @@ describe('Date filter component', () => {
     });
   });
 
-  describe('CustomClearButton', () => {
-    const onClear = jest.fn();
-    let props: PickersActionBarProps;
-    let user: UserEvent;
-
-    beforeEach(() => {
-      user = userEvent.setup();
-      props = {
-        onClear: onClear,
-      };
-    });
-
-    it('renders correctly', () => {
-      const { asFragment } = render(<CustomClearButton {...props} />);
-      expect(asFragment()).toMatchSnapshot();
-    });
-
-    it('calls onClear when button clicked', async () => {
-      render(<CustomClearButton {...props} />);
-      await user.click(await screen.findByRole('button'));
-      expect(onClear).toHaveBeenCalled();
-    });
-  });
-
   describe('DatePicker functionality', () => {
     let user: UserEvent;
 
@@ -362,7 +336,11 @@ describe('Date filter component', () => {
         />
       );
 
-      await user.clear(startDateFilterInput);
+      // .clear doesn't work for some reason with datepickers in v6
+      await user.click(startDateFilterInput);
+      await user.keyboard('{Control>}a{/Control}');
+      await user.keyboard('{Delete}');
+      // await user.clear(startDateFilterInput);
       await user.type(startDateFilterInput, '2');
 
       expect(onChange).toHaveBeenLastCalledWith({
@@ -378,7 +356,11 @@ describe('Date filter component', () => {
         />
       );
 
-      await user.clear(endDateFilterInput);
+      // .clear doesn't work for some reason with datepickers in v6
+      await user.click(endDateFilterInput);
+      await user.keyboard('{Control>}a{/Control}');
+      await user.keyboard('{Delete}');
+      // await user.clear(endDateFilterInput);
       await user.type(endDateFilterInput, '201');
 
       expect(onChange).toHaveBeenLastCalledWith(null);
@@ -475,7 +457,7 @@ describe('Date filter component', () => {
         name: 'test filter from',
       });
 
-      await user.type(startDateFilterInput, '2019-08-06 00:00:00');
+      await user.type(startDateFilterInput, '2019-08-06_00:00:00');
 
       expect(onChange).toHaveBeenLastCalledWith({
         startDate: '2019-08-06 00:00:00',
@@ -493,7 +475,9 @@ describe('Date filter component', () => {
         name: 'test filter to',
       });
 
-      await user.type(endDateFilterInput, '2019-08-06 23:59:00');
+      // in v6, spaces are considered to be '0' in the time field
+      // 2019-08-06_23:59:00 results in 2019-08-06 23:59:00
+      await user.type(endDateFilterInput, '2019-08-06_23:59:00');
 
       expect(onChange).toHaveBeenLastCalledWith({
         startDate: '2019-08-06 00:00:00',
@@ -561,7 +545,7 @@ describe('Date filter component', () => {
       expect(onChange).not.toHaveBeenCalled();
 
       await user.clear(startDateFilterInput);
-      await user.type(startDateFilterInput, '2019-08-06 00:00:00');
+      await user.type(startDateFilterInput, '2019-08-06_00:00:00');
 
       expect(onChange).toHaveBeenLastCalledWith({
         startDate: '2019-08-06 00:00:00',
@@ -576,7 +560,7 @@ describe('Date filter component', () => {
       );
 
       await user.clear(endDateFilterInput);
-      await user.type(endDateFilterInput, '2019-08-07 00:00:00');
+      await user.type(endDateFilterInput, '2019-08-07_00:00:00');
 
       expect(onChange).toHaveBeenLastCalledWith({
         startDate: '2019-08-06 00:00:00',
@@ -594,7 +578,11 @@ describe('Date filter component', () => {
         />
       );
 
-      await user.clear(startDateFilterInput);
+      // .clear doesn't work for some reason with datepickers in v6
+      await user.click(startDateFilterInput);
+      await user.keyboard('{Control>}a{/Control}');
+      await user.keyboard('{Delete}');
+      // await user.clear(startDateFilterInput);
       await user.type(startDateFilterInput, '2');
 
       expect(onChange).toHaveBeenLastCalledWith({
@@ -611,7 +599,11 @@ describe('Date filter component', () => {
         />
       );
 
-      await user.clear(endDateFilterInput);
+      // .clear doesn't work for some reason with datepickers in v6
+      await user.click(endDateFilterInput);
+      await user.keyboard('{Control>}a{/Control}');
+      await user.keyboard('{Delete}');
+      // await user.clear(endDateFilterInput);
       await user.type(endDateFilterInput, '201');
 
       expect(onChange).toHaveBeenLastCalledWith(null);

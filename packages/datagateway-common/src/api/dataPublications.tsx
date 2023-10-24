@@ -54,7 +54,8 @@ const fetchDataPublications = (
 };
 
 export const useDataPublicationsPaginated = (
-  additionalFilters?: AdditionalFilters
+  additionalFilters?: AdditionalFilters,
+  isMounted?: boolean
 ): UseQueryResult<DataPublication[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
@@ -67,7 +68,7 @@ export const useDataPublicationsPaginated = (
     [
       string,
       {
-        sort: SortType;
+        sort: string;
         filters: FiltersType;
         page: number;
         results: number;
@@ -77,11 +78,16 @@ export const useDataPublicationsPaginated = (
   >(
     [
       'dataPublication',
-      { sort, filters, page: page ?? 1, results: results ?? 10 },
+      {
+        sort: JSON.stringify(sort), // need to stringify sort as property order is important!
+        filters,
+        page: page ?? 1,
+        results: results ?? 10,
+      },
       additionalFilters,
     ],
     (params) => {
-      const { sort, filters, page, results } = params.queryKey[1];
+      const { page, results } = params.queryKey[1];
       const startIndex = (page - 1) * results;
       const stopIndex = startIndex + results - 1;
       return fetchDataPublications(
@@ -99,26 +105,26 @@ export const useDataPublicationsPaginated = (
         handleICATError(error);
       },
       retry: retryICATErrors,
+      enabled: isMounted ?? true,
     }
   );
 };
 
 export const useDataPublicationsInfinite = (
-  additionalFilters?: AdditionalFilters
+  additionalFilters?: AdditionalFilters,
+  isMounted?: boolean
 ): UseInfiniteQueryResult<DataPublication[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters, sort } = parseSearchToQuery(location.search);
 
-  return useInfiniteQuery<
-    DataPublication[],
-    AxiosError,
-    DataPublication[],
-    [string, { sort: SortType; filters: FiltersType }, AdditionalFilters?]
-  >(
-    ['dataPublication', { sort, filters }, additionalFilters],
+  return useInfiniteQuery(
+    [
+      'dataPublication',
+      { sort: JSON.stringify(sort), filters }, // need to stringify sort as property order is important!
+      additionalFilters,
+    ],
     (params) => {
-      const { sort, filters } = params.queryKey[1];
       const offsetParams = params.pageParam ?? { startIndex: 0, stopIndex: 49 };
       return fetchDataPublications(
         apiUrl,
@@ -132,6 +138,7 @@ export const useDataPublicationsInfinite = (
         handleICATError(error);
       },
       retry: retryICATErrors,
+      enabled: isMounted ?? true,
     }
   );
 };

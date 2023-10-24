@@ -309,7 +309,10 @@ describe('Investigation table component', () => {
       )}`
     );
 
-    await user.clear(filterInput);
+    // await user.clear(filterInput);
+    await user.click(filterInput);
+    await user.keyboard('{Control}a{/Control}');
+    await user.keyboard('{Delete}');
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');

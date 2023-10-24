@@ -47,159 +47,79 @@ describe('ISIS - Data Publication Table', () => {
     cy.get('[aria-rowcount="75"]').should('exist');
   });
 
-  it('should be able to resize a column', () => {
-    let columnWidth = 0;
+  it('should be able to sort by all sort directions on single and multiple columns', () => {
+    //Revert the default sort
+    cy.contains('[role="button"]', 'Publication Date')
+      .as('dateSortButton')
+      .click();
 
-    // Using Math.round to solve rounding errors when calculating 1000 / 3
-    cy.window()
-      .then((window) => {
-        const windowWidth = window.innerWidth;
-        columnWidth = Math.round(windowWidth / 3);
-        columnWidth = Math.round((columnWidth * 100) / 100);
-      })
-      .then(() => expect(columnWidth).to.not.equal(0));
+    // ascending order
+    cy.contains('[role="button"]', 'Title').as('titleSortButton').click();
 
-    cy.get('[role="columnheader"]').eq(0).as('titleColumn');
-    cy.get('[role="columnheader"]').eq(1).as('doiColumn');
+    cy.get('[aria-sort="ascending"]').should('exist');
+    cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
+    cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
+      'Article subject amount'
+    );
 
-    cy.get('@titleColumn').should(($column) => {
-      let { width } = $column[0].getBoundingClientRect();
-      width = Math.round((width * 100) / 100);
-      expect(width).to.equal(columnWidth);
-    });
+    // descending order
+    cy.get('@titleSortButton').click();
 
-    cy.get('@doiColumn').should(($column) => {
-      let { width } = $column[0].getBoundingClientRect();
-      width = Math.round((width * 100) / 100);
-      expect(width).to.equal(columnWidth);
-    });
+    cy.get('[aria-sort="descending"]').should('exist');
+    cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
+      'not.have.css',
+      'opacity',
+      '0'
+    );
+    cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
+      'Daughter experience discussion'
+    );
 
-    cy.get('.react-draggable')
-      .first()
-      .trigger('mousedown')
-      .trigger('mousemove', { clientX: 400 })
-      .trigger('mouseup');
+    // no order
+    cy.get('@titleSortButton').click();
 
-    cy.get('@titleColumn').should(($column) => {
-      const { width } = $column[0].getBoundingClientRect();
-      expect(width).to.be.greaterThan(columnWidth);
-    });
+    cy.get('[aria-sort="ascending"]').should('not.exist');
+    cy.get('[aria-sort="descending"]').should('not.exist');
+    cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.be.exist');
+    cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
+      'have.css',
+      'opacity',
+      '0'
+    );
+    cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
+      'Article subject amount'
+    );
 
-    cy.get('@doiColumn').should(($column) => {
-      const { width } = $column[0].getBoundingClientRect();
-      expect(width).to.be.lessThan(columnWidth);
-    });
+    // multiple columns
+    cy.get('@dateSortButton').click();
+    cy.get('@dateSortButton').click();
+    cy.get('@titleSortButton').click();
 
-    // table width should grow if a column grows too large
-    cy.get('.react-draggable')
-      .first()
-      .trigger('mousedown')
-      .trigger('mousemove', { clientX: 900 })
-      .trigger('mouseup');
-
-    cy.get('@doiColumn').should(($column) => {
-      const { width } = $column[0].getBoundingClientRect();
-      expect(width).to.be.equal(84);
-    });
-
-    cy.get('[aria-label="grid"]').then(($grid) => {
-      const { width } = $grid[0].getBoundingClientRect();
-      cy.window().should(($window) => {
-        expect(width).to.be.greaterThan($window.innerWidth);
-      });
-    });
+    cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
+      'Church child time Congress'
+    );
   });
 
-  describe('should be able to sort by', () => {
-    beforeEach(() => {
-      //Revert the default sort
-      cy.contains('[role="button"]', 'Publication Date').click();
-    });
+  it('should be able to filter with both text & date filters on multiple columns', () => {
+    // test text filter
+    cy.get('[aria-label="Filter by Title"]').first().type('ne');
 
-    it('ascending order', () => {
-      cy.contains('[role="button"]', 'Title').click();
+    cy.get('[aria-rowcount="3"]').should('exist');
 
-      cy.get('[aria-sort="ascending"]').should('exist');
-      cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
-      cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
-        'Article subject amount'
-      );
-    });
+    cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
+      'Church child time Congress'
+    );
 
-    it('descending order', () => {
-      cy.contains('[role="button"]', 'Title').click();
-      cy.contains('[role="button"]', 'Title').click();
+    // test date filter
+    cy.get('input[id="Publication Date filter to"]').type('2016-01-01');
 
-      cy.get('[aria-sort="descending"]').should('exist');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
-        'not.have.css',
-        'opacity',
-        '0'
-      );
-      cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
-        'Daughter experience discussion'
-      );
-    });
+    cy.get('[aria-rowcount="2"]').should('exist');
+    cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
+      'Consider author watch'
+    );
 
-    it('no order', () => {
-      cy.contains('[role="button"]', 'Title').click();
-      cy.contains('[role="button"]', 'Title').click();
-      cy.contains('[role="button"]', 'Title').click();
+    cy.get('input[id="Publication Date filter from"]').type('2014-01-01');
 
-      cy.get('[aria-sort="ascending"]').should('not.exist');
-      cy.get('[aria-sort="descending"]').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.be.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
-        'have.css',
-        'opacity',
-        '0'
-      );
-      cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
-        'Article subject amount'
-      );
-    });
-
-    it('multiple columns', () => {
-      cy.contains('[role="button"]', 'Publication Date').click();
-      cy.contains('[role="button"]', 'Publication Date').click();
-      cy.contains('[role="button"]', 'Title').click();
-
-      cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
-        'Church child time Congress'
-      );
-    });
-  });
-
-  describe('should be able to filter by', () => {
-    beforeEach(() => {
-      //Revert the default sort
-      cy.contains('[role="button"]', 'Publication Date').click();
-    });
-
-    it('text', () => {
-      cy.get('[aria-label="Filter by Title"]').first().type('wat');
-
-      cy.get('[aria-rowcount="2"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
-        'Consider author watch'
-      );
-    });
-
-    it('date between', () => {
-      cy.get('input[id="Publication Date filter from"]').type('2014-04-02');
-
-      cy.get('[aria-rowcount="2"]').should('exist');
-      cy.get('[aria-rowindex="2"] [aria-colindex="1"]').contains(
-        'Church child time Congress'
-      );
-    });
-
-    it('multiple columns', () => {
-      cy.get('[aria-label="Filter by DOI"]').first().type('0');
-
-      cy.get('[aria-label="Filter by Title"]').first().type('wat');
-
-      cy.get('[aria-rowcount="1"]').should('exist');
-    });
+    cy.get('[aria-rowcount="1"]').should('exist');
   });
 });

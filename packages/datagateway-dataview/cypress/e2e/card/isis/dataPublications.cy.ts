@@ -3,16 +3,32 @@ describe('ISIS - Data Publication Cards', () => {
     cy.intercept('**/datapublications/count*').as('getDataPublicationsCount');
     cy.intercept('**/datapublications?order*').as('getDataPublicationsOrder');
     cy.login();
-    cy.visit('/browseDataPublications/instrument/8/dataPublication').wait(
-      ['@getDataPublicationsCount', '@getDataPublicationsOrder'],
-      { timeout: 10000 }
-    );
-    cy.get('[aria-label="page view Display as cards"]').click();
+    cy.visit(
+      '/browseDataPublications/instrument/8/dataPublication?view=card'
+    ).wait(['@getDataPublicationsCount', '@getDataPublicationsOrder'], {
+      timeout: 10000,
+    });
   });
 
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');
+
+    cy.get('[data-testid="card"]')
+      .first()
+      .get('[data-testid="landing-datapublication-card-pid-link"]')
+      .first()
+      .then(($pid) => {
+        const pid = $pid.text();
+
+        const url = `https://doi.org/${pid}`;
+
+        cy.get('[data-testid="card"]')
+          .first()
+          .get('[data-testid="landing-datapublication-card-pid-link"]')
+          .first()
+          .should('have.attr', 'href', url);
+      });
 
     //Default sort
     cy.contains('[role="button"]', 'desc').should('exist');
@@ -30,110 +46,58 @@ describe('ISIS - Data Publication Cards', () => {
     );
   });
 
-  it('should disable the hover tool tip by pressing escape', () => {
-    // The hover tool tip has a enter delay of 500ms.
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.get('[data-testid="card"]')
-      .get('[data-testid="landing-datapublication-card-pid-link"]')
-      .first()
-      .trigger('mouseover')
-      .wait(700)
-      .get('[role="tooltip"]')
-      .should('exist');
+  it('should be able to sort by one field or multiple', () => {
+    //Revert the default sort
+    cy.contains('[role="button"]', 'Publication Date')
+      .as('dateSortButton')
+      .click();
+    cy.wait('@getDataPublicationsOrder', { timeout: 10000 });
 
-    cy.get('body').type('{esc}');
+    // ascending
+    cy.get('@dateSortButton').click();
+    cy.wait('@getDataPublicationsOrder', { timeout: 10000 });
+    cy.contains('[role="button"]', 'asc').should('exist');
+    cy.contains('[role="button"]', 'desc').should('not.exist');
+    cy.get('[data-testid="card"]').first().contains('Article');
 
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.get('[data-testid="card"]')
-      .get('[data-testid="landing-datapublication-card-pid-link"]')
-      .wait(700)
-      .first()
-      .get('[role="tooltip"]')
-      .should('not.exist');
+    // descending
+    cy.get('@dateSortButton').click();
+    cy.contains('[role="button"]', 'asc').should('not.exist');
+    cy.contains('[role="button"]', 'desc').should('exist');
+    cy.get('[data-testid="card"]').first().contains('Church');
+
+    // no order
+    cy.get('@dateSortButton').click();
+    cy.contains('[role="button"]', 'asc').should('not.exist');
+    cy.contains('[role="button"]', 'desc').should('not.exist');
+    cy.get('[data-testid="card"]').first().contains('Article');
+
+    // multiple fields
+    cy.contains('[role="button"]', 'Title').click();
+    cy.get('@dateSortButton').click();
+    cy.wait('@getDataPublicationsOrder', { timeout: 10000 });
+
+    cy.contains('[aria-label="Sort by TITLE"]', 'asc').should('exist');
+    cy.contains('[aria-label="Sort by PUBLICATION DATE"]', 'asc').should(
+      'exist'
+    );
+    cy.contains('[role="button"]', 'desc').should('not.exist');
+    cy.get('[data-testid="card"]').first().contains('Article');
   });
 
-  it('should have the correct url for the PID link', () => {
-    cy.get('[data-testid="card"]')
-      .first()
-      .get('[data-testid="landing-datapublication-card-pid-link"]')
-      .first()
-      .then(($pid) => {
-        const pid = $pid.text();
+  it('should be able to filter by multiple fields', () => {
+    cy.get('[data-testid="advanced-filters-link"]').click();
 
-        const url = `https://doi.org/${pid}`;
-
-        cy.get('[data-testid="card"]')
-          .first()
-          .get('[data-testid="landing-datapublication-card-pid-link"]')
-          .first()
-          .should('have.attr', 'href', url);
-      });
-  });
-
-  describe('should be able to sort by', () => {
-    beforeEach(() => {
-      //Revert the default sort
-      cy.contains('[role="button"]', 'Publication Date')
-        .click()
-        .wait('@getDataPublicationsOrder', { timeout: 10000 });
+    cy.get('[aria-label="Filter by DOI"]').first().type('0');
+    cy.wait(['@getDataPublicationsCount', '@getDataPublicationsOrder'], {
+      timeout: 10000,
     });
+    cy.get('[data-testid="card"]').first().contains('Consider');
 
-    it('one field', () => {
-      cy.contains('[role="button"]', 'Publication Date')
-        .click()
-        .wait('@getDataPublicationsOrder', {
-          timeout: 10000,
-        });
-      cy.contains('[role="button"]', 'asc').should('exist');
-      cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('[data-testid="card"]').first().contains('Article');
-
-      cy.contains('[role="button"]', 'Publication Date')
-        .click()
-        .wait('@getDataPublicationsOrder', {
-          timeout: 10000,
-        });
-      cy.contains('[role="button"]', 'asc').should('not.exist');
-      cy.contains('[role="button"]', 'desc').should('exist');
-      cy.get('[data-testid="card"]').first().contains('Church');
-
-      cy.contains('[role="button"]', 'Publication Date')
-        .click()
-        .wait('@getDataPublicationsOrder', {
-          timeout: 10000,
-        });
-      cy.contains('[role="button"]', 'asc').should('not.exist');
-      cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('[data-testid="card"]').first().contains('Article');
+    cy.get('[aria-label="Filter by Title"]').first().type('sub');
+    cy.wait(['@getDataPublicationsCount', '@getDataPublicationsOrder'], {
+      timeout: 10000,
     });
-  });
-
-  describe('should be able to filter by', () => {
-    beforeEach(() => {
-      //Revert the default sort
-      cy.contains('[role="button"]', 'Publication Date')
-        .click()
-        .wait('@getDataPublicationsOrder', { timeout: 10000 });
-    });
-
-    it('multiple fields', () => {
-      cy.get('[data-testid="advanced-filters-link"]').click();
-
-      cy.get('[aria-label="Filter by DOI"]')
-        .first()
-        .type('0')
-        .wait(['@getDataPublicationsCount', '@getDataPublicationsOrder'], {
-          timeout: 10000,
-        });
-      cy.get('[data-testid="card"]').first().contains('Article');
-
-      cy.get('[aria-label="Filter by Title"]')
-        .first()
-        .type('wat')
-        .wait(['@getDataPublicationsCount', '@getDataPublicationsOrder'], {
-          timeout: 10000,
-        });
-      cy.get('[data-testid="card"]').first().contains('Consider');
-    });
+    cy.get('[data-testid="card"]').first().contains('Article');
   });
 });

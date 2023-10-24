@@ -345,7 +345,10 @@ describe('ISIS Investigations table component', () => {
       )}`
     );
 
-    await user.clear(filterInput);
+    // await user.clear(filterInput);
+    await user.click(filterInput);
+    await user.keyboard('{Control}a{/Control}');
+    await user.keyboard('{Delete}');
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
@@ -359,6 +362,13 @@ describe('ISIS Investigations table component', () => {
     expect(replaceSpy).toHaveBeenCalledWith({
       search: `?sort=${encodeURIComponent('{"startDate":"desc"}')}`,
     });
+
+    // check that the data request is sent only once after mounting
+    const datafilesCalls = (axios.get as jest.Mock).mock.calls.filter(
+      (call) => call[0] === '/investigations'
+    );
+    // 2 becasue there is also a call for ids
+    expect(datafilesCalls).toHaveLength(2);
   });
 
   it('updates sort query params on sort', async () => {

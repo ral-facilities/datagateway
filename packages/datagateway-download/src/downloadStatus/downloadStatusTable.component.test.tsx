@@ -277,6 +277,7 @@ describe('Download Status Table', () => {
     await user.type(downloadStatusFilterBox, 'downloadStatus.complete');
 
     expect(await screen.findByText('test-file-1')).toBeInTheDocument();
+    expect(screen.queryByText('test-file-3')).toBeNull();
 
     await user.clear(downloadMethodFilterBox);
     await user.clear(downloadStatusFilterBox);
@@ -326,7 +327,7 @@ describe('Download Status Table', () => {
     await user.clear(dateToFilterInput);
     // Type into both date filters
     await user.type(dateFromFilterInput, '2020-02-26 00:00:00');
-    await user.type(dateToFilterInput, '2020-02-27 23:59:00');
+    await user.type(dateToFilterInput, '20200227235900');
 
     // Should show only test-file-2 and test-file-3
     expect(await screen.findByText('test-file-2')).toBeInTheDocument();
@@ -349,7 +350,10 @@ describe('Download Status Table', () => {
     expect(screen.queryByText('test-file-2')).toBeNull();
 
     // Clear date from filter textbox
-    await user.clear(dateFromFilterInput);
+    await user.click(dateFromFilterInput);
+    await user.keyboard('{Control}a{/Control}');
+    await user.keyboard('{Delete}');
+    // await user.clear(dateFromFilterInput);
     // Type into only date to filter
     await user.type(dateToFilterInput, '2020-02-27 00:00:00');
 
@@ -359,6 +363,19 @@ describe('Download Status Table', () => {
     expect(screen.queryByText('test-file-3')).toBeNull();
     expect(screen.queryByText('test-file-4')).toBeNull();
     expect(screen.queryByText('test-file-5')).toBeNull();
+
+    // create an invalid range
+    await user.type(dateFromFilterInput, '2020-02-28 00:00:00');
+
+    // should display error
+    expect(await screen.findAllByText('Invalid date-time range'));
+
+    // Should show all files
+    expect(await screen.findByText('test-file-1')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-2')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-3')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-4')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-5')).toBeInTheDocument();
 
     cleanupDatePickerWorkaround();
   });

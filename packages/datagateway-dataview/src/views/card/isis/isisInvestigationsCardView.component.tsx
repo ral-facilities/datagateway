@@ -91,25 +91,39 @@ const ISISInvestigationsCardView = (
     },
   ];
 
+  // isMounted is used to disable queries when the component isn't fully mounted.
+  // It prevents the request being sent twice if default sort is set.
+  // It is not needed for cards/tables that don't have default sort.
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const { data: totalDataCount, isLoading: countLoading } =
     useInvestigationCount(investigationQueryFilters);
-  const { data, isLoading: dataLoading } = useInvestigationsPaginated([
-    ...investigationQueryFilters,
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify([
-        {
-          investigationInstruments: 'instrument',
-        },
-        {
-          dataCollectionInvestigations: { dataCollection: 'dataPublications' },
-        },
-        {
-          investigationUsers: 'user',
-        },
-      ]),
-    },
-  ]);
+  const { data, isLoading: dataLoading } = useInvestigationsPaginated(
+    [
+      ...investigationQueryFilters,
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify([
+          {
+            investigationInstruments: 'instrument',
+          },
+          {
+            dataCollectionInvestigations: {
+              dataCollection: 'dataPublications',
+            },
+          },
+          {
+            investigationUsers: 'user',
+          },
+        ]),
+      },
+    ],
+    undefined,
+    isMounted
+  );
   const sizeQueries = useInvestigationSizes(data);
 
   const pathRoot = dataPublication ? 'browseDataPublications' : 'browse';

@@ -1,6 +1,6 @@
 {
   "name": "datagateway-dataview",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "private": true,
   "dependencies": {
     "@craco/craco": "7.1.0",
@@ -22,7 +22,7 @@
     "axios": "0.27.2",
     "connected-react-router": "6.9.1",
     "custom-event-polyfill": "1.0.7",
-    "datagateway-common": "^1.1.1",
+    "datagateway-common": "^1.1.2",
     "date-fns": "2.30.0",
     "eslint-config-prettier": "8.8.0",
     "eslint-plugin-cypress": "2.13.3",
@@ -66,7 +66,7 @@
     "e2e": "start-server-and-test e2e:serve http://localhost:3000 cy:run",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
-    "lint:js": "eslint --ext=tsx --ext=ts --ext=js --ext=jsx --fix ./src && yarn build",
+    "lint:js": "eslint --ext=tsx --ext=ts --ext=js --ext=jsx --fix ./src ./cypress && yarn build",
     "eject": "react-scripts eject",
     "pre-commit": "lint-staged"
   },
@@ -104,6 +104,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/eslint-parser": "7.22.5",
     "@testing-library/jest-dom": "5.16.5",
     "@testing-library/react": "12.1.3",
     "@testing-library/react-hooks": "8.0.1",
@@ -113,7 +114,6 @@
     "@typescript-eslint/eslint-plugin": "5.61.0",
     "@typescript-eslint/parser": "5.61.0",
     "@welldone-software/why-did-you-render": "7.0.1",
-    "@babel/eslint-parser": "7.22.5",
     "blob-polyfill": "7.0.20220408",
     "cross-env": "7.0.3",
     "cypress": "11.2.0",

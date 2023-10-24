@@ -9,27 +9,9 @@ import {
 } from 'datagateway-common';
 import { useLocation } from 'react-router-dom';
 import { isBefore, isValid } from 'date-fns';
-import { TextField, Button } from '@mui/material';
+import { TextField, TextFieldProps } from '@mui/material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { PickersActionBarProps } from '@mui/x-date-pickers/PickersActionBar';
-
-export const CustomClearButton = (
-  props: PickersActionBarProps
-): JSX.Element => {
-  const { onClear } = props;
-  return (
-    <Button
-      role="button"
-      onClick={() => onClear()}
-      variant="contained"
-      color="primary"
-      sx={{ marginLeft: '30px', marginBottom: '10px' }}
-    >
-      Clear
-    </Button>
-  );
-};
 
 interface DatePickerProps {
   initiateSearch: () => void;
@@ -40,6 +22,38 @@ interface DatePickerStoreProps {
 }
 
 type DatePickerCombinedProps = DatePickerProps & DatePickerStoreProps;
+
+const CustomTextField: React.FC<TextFieldProps> = (props) => {
+  const { invalidDateRange, t, sideLayout, ...inputProps } =
+    props.inputProps ?? {};
+  const error =
+    // eslint-disable-next-line react/prop-types
+    (props.error || invalidDateRange) ?? undefined;
+  let helperText = t('searchBox.invalid_date_message');
+  if (invalidDateRange) helperText = t('searchBox.invalid_date_range_message');
+  return (
+    <TextField
+      {...props}
+      inputProps={{
+        // eslint-disable-next-line react/prop-types
+        ...inputProps,
+      }}
+      sx={
+        props.inputProps?.placeholder === t('searchBox.start_date')
+          ? sideLayout
+            ? {}
+            : { py: 1, width: '178px' }
+          : sideLayout
+          ? { py: 1, px: 0 }
+          : { pl: 1, py: 1, width: '178px' }
+      }
+      variant="outlined"
+      error={error}
+      // eslint-disable-next-line react/prop-types
+      {...(error && { helperText: helperText })}
+    />
+  );
+};
 
 export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
   const { sideLayout, initiateSearch } = props;
@@ -112,94 +126,58 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <>
           <DatePicker
-            maxDate={endDate || new Date()}
-            inputFormat="yyyy-MM-dd"
-            mask="____-__-__"
+            format="yyyy-MM-dd"
+            views={['year', 'month', 'day']}
             value={startDate}
+            maxDate={endDate || new Date()}
             onChange={(date) => {
               handleChange(date as Date, 'startDate');
             }}
-            componentsProps={{
+            slots={{
+              textField: CustomTextField,
+            }}
+            slotProps={{
               actionBar: {
                 actions: ['clear'],
               },
-            }}
-            components={{
-              ActionBar: CustomClearButton,
-            }}
-            renderInput={(props) => {
-              const error =
-                // eslint-disable-next-line react/prop-types
-                (props.error || invalidDateRange) ?? undefined;
-              let helperText = t('searchBox.invalid_date_message');
-              if (invalidDateRange)
-                helperText = t('searchBox.invalid_date_range_message');
-
-              return (
-                <TextField
-                  {...props}
-                  inputProps={{
-                    // eslint-disable-next-line react/prop-types
-                    ...props.inputProps,
-                    placeholder: t('searchBox.start_date'),
-                    'aria-label': t('searchBox.start_date_arialabel'),
-                  }}
-                  onKeyDown={handleKeyDown}
-                  sx={sideLayout ? {} : { py: 1, width: '178px' }}
-                  variant="outlined"
-                  error={error}
-                  // eslint-disable-next-line react/prop-types
-                  {...(error && { helperText: helperText })}
-                />
-              );
+              textField: {
+                inputProps: {
+                  invalidDateRange,
+                  sideLayout,
+                  t: t,
+                  placeholder: t('searchBox.start_date'),
+                  'aria-label': t('searchBox.start_date_arialabel'),
+                },
+                onKeyDown: handleKeyDown,
+              },
             }}
           />
           {sideLayout ? <br></br> : null}
           <DatePicker
-            minDate={startDate || new Date('1984-01-01T00:00:00Z')}
-            inputFormat="yyyy-MM-dd"
-            mask="____-__-__"
+            format="yyyy-MM-dd"
+            views={['year', 'month', 'day']}
             value={endDate}
+            minDate={startDate || new Date('1984-01-01T00:00:00Z')}
             onChange={(date) => {
               handleChange(date as Date, 'endDate');
             }}
-            componentsProps={{
+            slots={{
+              textField: CustomTextField,
+            }}
+            slotProps={{
               actionBar: {
                 actions: ['clear'],
               },
-            }}
-            components={{
-              ActionBar: CustomClearButton,
-            }}
-            renderInput={(props) => {
-              const error =
-                // eslint-disable-next-line react/prop-types
-                (props.error || invalidDateRange) ?? undefined;
-              let helperText = t('searchBox.invalid_date_message');
-              if (invalidDateRange)
-                helperText = t('searchBox.invalid_date_range_message');
-
-              return (
-                <TextField
-                  {...props}
-                  inputProps={{
-                    // eslint-disable-next-line react/prop-types
-                    ...props.inputProps,
-                    placeholder: t('searchBox.end_date'),
-                    'aria-label': t('searchBox.end_date_arialabel'),
-                  }}
-                  onKeyDown={handleKeyDown}
-                  variant="outlined"
-                  sx={
-                    sideLayout
-                      ? { py: 1, px: 0 }
-                      : { pl: 1, py: 1, width: '178px' }
-                  }
-                  error={error}
-                  // eslint-disable-next-line react/prop-types
-                  {...(error && { helperText: helperText })}
-                />
-              );
+              textField: {
+                inputProps: {
+                  invalidDateRange,
+                  sideLayout,
+                  t: t,
+                  placeholder: t('searchBox.end_date'),
+                  'aria-label': t('searchBox.end_date_arialabel'),
+                },
+                onKeyDown: handleKeyDown,
+              },
             }}
           />
         </>
