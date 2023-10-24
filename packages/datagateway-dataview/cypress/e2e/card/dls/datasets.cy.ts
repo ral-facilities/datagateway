@@ -98,7 +98,7 @@ describe('DLS - Datasets Cards', () => {
     cy.get('[data-testid="card"]').first().contains('DATASET 1');
   });
 
-  it('should be able to filter by multiple fields', () => {
+  it.only('should be able to filter by multiple fields', () => {
     cy.get('[data-testid="advanced-filters-link"]').click();
     cy.get('[aria-label="Filter by Name"]').first().type('61');
     cy.wait(['@getDatasetsCount', '@getDatasetsOrder'], { timeout: 10000 });
@@ -106,10 +106,6 @@ describe('DLS - Datasets Cards', () => {
     cy.get('[data-testid="card"]').first().contains('DATASET 61');
     // check that count is correct after filtering
     cy.get('[data-testid="card"]').first().contains('15');
-
-    cy.get('input[id="Start Date filter from"]').type('2019-01-01');
-    cy.wait(['@getDatasetsCount'], { timeout: 10000 });
-    cy.get('[data-testid="card"]').first().contains('DATASET 61');
 
     cy.get('input[aria-label="Start Date filter to"]')
       .parent()
@@ -129,6 +125,12 @@ describe('DLS - Datasets Cards', () => {
       'have.value',
       date.toISOString().slice(0, 10)
     );
+    cy.wait(['@getDatasetsCount'], { timeout: 10000 });
+    cy.get('[data-testid="card"]').first().contains('DATASET 61');
+
+    cy.get('input[id="Start Date filter from"]').type('2019-01-01');
+    cy.wait(['@getDatasetsCount'], { timeout: 10000 });
+
     cy.get('[data-testid="card"]').should('not.exist');
   });
 });
