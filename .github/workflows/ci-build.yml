@@ -284,15 +284,15 @@ jobs:
       - name: Reinstall IDS Server
         run: |
           cd /home/runner/install/ids.server/ && python2 ./setup -vv install
-      - name: Add root (simple without prefix) to TopCAT adminUserNames
+      - name: Add root (simple without prefix) to datagateway-download-api adminUserNames
         run: |
-          awk -F" =" '/adminUserNames/{$2="= root";print;next}1' /home/runner/install/topcat/topcat.properties > /home/runner/install/topcat/topcat.properties.tmp
+          awk -F" =" '/adminUserNames/{$2="= root";print;next}1' /home/runner/install/datagateway-download-api/run.properties > /home/runner/install/datagateway-download-api/run.properties.tmp
       - name: Apply adminUserNames change
         run: |
-          mv -f /home/runner/install/topcat/topcat.properties.tmp /home/runner/install/topcat/topcat.properties
-      - name: Reinstall TopCAT
+          mv -f /home/runner/install/topcat/topcat.properties.tmp /home/runner/install/datagateway-download-api/run.properties
+      - name: Reinstall datagateway-download-api
         run: |
-          cd /home/runner/install/topcat/ && python2 ./setup -vv install
+          cd /home/runner/install/datagateway-download-api/ && python2 ./setup -vv install
 
       # Disable Globus for Download e2e tests
       - name: Login to ICAT
