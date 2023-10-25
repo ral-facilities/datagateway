@@ -47,7 +47,7 @@ describe('Download Status Table', () => {
   let user: ReturnType<typeof userEvent.setup>;
 
   beforeEach(() => {
-    user = userEvent.setup();
+    user = userEvent.setup({ delay: null });
 
     (downloadDeleted as jest.Mock).mockImplementation(() => Promise.resolve());
     (fetchDownloads as jest.Mock).mockImplementation(() =>
@@ -188,6 +188,8 @@ describe('Download Status Table', () => {
   });
 
   it('should sort data when headers are clicked', async () => {
+    // use skipHover to avoid triggering sort tooltips which slow the test down
+    user = userEvent.setup({ delay: null, skipHover: true });
     renderComponent();
 
     // Table is sorted by createdAt desc by default
@@ -220,7 +222,9 @@ describe('Download Status Table', () => {
     // Get the download name sort header.
     const nameSortLabel = screen.getByText('downloadStatus.filename');
 
+    await user.keyboard('{Shift>}');
     await user.click(nameSortLabel);
+    await user.keyboard('{/Shift}');
 
     // name should be in asc order
     rows = await screen.findAllByText(/^test-file-\d$/);
@@ -230,7 +234,9 @@ describe('Download Status Table', () => {
     expect(rows[3]).toHaveTextContent('test-file-4');
     expect(rows[4]).toHaveTextContent('test-file-5');
 
+    await user.keyboard('{Shift>}');
     await user.click(nameSortLabel);
+    await user.keyboard('{/Shift}');
 
     // name should be in desc order
     rows = await screen.findAllByText(/^test-file-\d$/);
@@ -239,6 +245,26 @@ describe('Download Status Table', () => {
     expect(rows[2]).toHaveTextContent('test-file-5');
     expect(rows[3]).toHaveTextContent('test-file-4');
     expect(rows[4]).toHaveTextContent('test-file-2');
+
+    await user.click(accessMethodSortLabel);
+
+    // name should be in desc order
+    rows = await screen.findAllByText(/^test-file-\d$/);
+    expect(rows[0]).toHaveTextContent('test-file-5');
+    expect(rows[1]).toHaveTextContent('test-file-4');
+    expect(rows[2]).toHaveTextContent('test-file-3');
+    expect(rows[3]).toHaveTextContent('test-file-2');
+    expect(rows[4]).toHaveTextContent('test-file-1');
+
+    await user.click(accessMethodSortLabel);
+
+    // access methods should be in asc order, globus < https
+    rows = await screen.findAllByText(/^test-file-\d$/);
+    expect(rows[0]).toHaveTextContent('test-file-2');
+    expect(rows[1]).toHaveTextContent('test-file-4');
+    expect(rows[2]).toHaveTextContent('test-file-5');
+    expect(rows[3]).toHaveTextContent('test-file-1');
+    expect(rows[4]).toHaveTextContent('test-file-3');
   });
 
   it('should filter data when text fields are typed into', async () => {

@@ -131,7 +131,9 @@ exports[`Data column header component renders correctly with sort and filter 1`]
           class="MuiBox-root css-0"
         >
           <span
-            class="MuiButtonBase-root MuiTableSortLabel-root tour-dataview-sort css-1qgma8u-MuiButtonBase-root-MuiTableSortLabel-root"
+            aria-label="Test"
+            class="MuiButtonBase-root MuiTableSortLabel-root Mui-active tour-dataview-sort css-f4w4o6-MuiButtonBase-root-MuiTableSortLabel-root"
+            data-mui-internal-clone-element="true"
             role="button"
             tabindex="0"
           >
@@ -142,13 +144,13 @@ exports[`Data column header component renders correctly with sort and filter 1`]
             </p>
             <svg
               aria-hidden="true"
-              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionAsc css-1vweko9-MuiSvgIcon-root-MuiTableSortLabel-icon"
-              data-testid="ArrowDownwardIcon"
+              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionDesc css-3l415a-MuiSvgIcon-root-MuiTableSortLabel-icon"
+              data-testid="SortIcon"
               focusable="false"
               viewBox="0 0 24 24"
             >
               <path
-                d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z"
+                d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"
               />
             </svg>
           </span>
@@ -257,7 +259,9 @@ exports[`Data column header component renders correctly with sort but no filter 
           class="MuiBox-root css-0"
         >
           <span
-            class="MuiButtonBase-root MuiTableSortLabel-root tour-dataview-sort css-1qgma8u-MuiButtonBase-root-MuiTableSortLabel-root"
+            aria-label="Test"
+            class="MuiButtonBase-root MuiTableSortLabel-root Mui-active tour-dataview-sort css-f4w4o6-MuiButtonBase-root-MuiTableSortLabel-root"
+            data-mui-internal-clone-element="true"
             role="button"
             tabindex="0"
           >
@@ -268,13 +272,13 @@ exports[`Data column header component renders correctly with sort but no filter 
             </p>
             <svg
               aria-hidden="true"
-              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionAsc css-1vweko9-MuiSvgIcon-root-MuiTableSortLabel-icon"
-              data-testid="ArrowDownwardIcon"
+              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionDesc css-3l415a-MuiSvgIcon-root-MuiTableSortLabel-icon"
+              data-testid="SortIcon"
               focusable="false"
               viewBox="0 0 24 24"
             >
               <path
-                d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z"
+                d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"
               />
             </svg>
           </span>

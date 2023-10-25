@@ -72,9 +72,9 @@ describe('ISIS - Data Publication Cards', () => {
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('[data-testid="card"]').first().contains('Article');
 
-    // multiple fields
+    // multiple fields (shift click)
     cy.contains('[role="button"]', 'Title').click();
-    cy.get('@dateSortButton').click();
+    cy.get('@dateSortButton').click({ shiftKey: true });
     cy.wait('@getDataPublicationsOrder', { timeout: 10000 });
 
     cy.contains('[aria-label="Sort by TITLE"]', 'asc').should('exist');
@@ -83,6 +83,17 @@ describe('ISIS - Data Publication Cards', () => {
     );
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('[data-testid="card"]').first().contains('Article');
+
+    // should replace current sort if clicked without shift
+    cy.get('@dateSortButton').click();
+    cy.wait('@getDataPublicationsOrder', { timeout: 10000 });
+
+    cy.contains('[aria-label="Sort by PUBLICATION DATE"]', 'desc').should(
+      'exist'
+    );
+    cy.contains('[aria-label="Sort by TITLE"]', 'asc').should('not.exist');
+
+    cy.get('[data-testid="card"]').first().contains('Church');
   });
 
   it('should be able to filter by multiple fields', () => {

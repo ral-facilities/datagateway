@@ -63,9 +63,9 @@ describe('Investigations Cards', () => {
       .first()
       .contains('Analysis reflect work or hour color maybe.');
 
-    // multiple fields
+    // multiple fields (shift click)
     cy.contains('[role="button"]', 'Start Date').click();
-    cy.get('@titleSortButton').click();
+    cy.get('@titleSortButton').click({ shiftKey: true });
     cy.wait('@getInvestigationsOrder', { timeout: 10000 });
 
     cy.contains('[aria-label="Sort by TITLE"]', 'asc').should('exist');
@@ -74,6 +74,14 @@ describe('Investigations Cards', () => {
     cy.get('[data-testid="card"]')
       .first()
       .contains('Analysis reflect work or hour color maybe.');
+
+    // should replace current sort if clicked without shift
+    cy.contains('[role="button"]', 'Start Date').click();
+    cy.wait('@getInvestigationsOrder', { timeout: 10000 });
+
+    cy.contains('[aria-label="Sort by START DATE"]', 'desc').should('exist');
+    cy.contains('[aria-label="Sort by TITLE"]', 'asc').should('not.exist');
+    cy.get('[data-testid="card"]').first().contains('Put modern else answer.');
   });
 
   it('should be able to filter by multiple fields', () => {

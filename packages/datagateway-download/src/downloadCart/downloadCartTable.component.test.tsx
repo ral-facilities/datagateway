@@ -242,6 +242,8 @@ describe('Download cart table component', () => {
   });
 
   it('should sort data when headers are clicked', async () => {
+    // use skipHover to avoid triggering sort tooltips which slow the test down
+    user = userEvent.setup({ skipHover: true });
     renderComponent();
 
     const typeSortLabel = await screen.findByRole('button', {
@@ -272,7 +274,9 @@ describe('Download cart table component', () => {
       name: 'downloadCart.name',
     });
 
+    await user.keyboard('{Shift>}');
     await user.click(nameSortLabel);
+    await user.keyboard('{/Shift}');
 
     rows = await screen.findAllByText(/(DATAFILE|DATASET|INVESTIGATION) \d/);
     // row should be sorted by type desc & name asc.
@@ -281,7 +285,9 @@ describe('Download cart table component', () => {
     expect(rows[2]).toHaveTextContent('DATASET 1');
     expect(rows[3]).toHaveTextContent('DATAFILE 1');
 
+    await user.keyboard('{Shift>}');
     await user.click(nameSortLabel);
+    await user.keyboard('{/Shift}');
 
     rows = await screen.findAllByText(/(DATAFILE|DATASET|INVESTIGATION) \d/);
     // row should be sorted by type desc & name desc.
@@ -298,6 +304,15 @@ describe('Download cart table component', () => {
     expect(rows[1]).toHaveTextContent('INVESTIGATION 2');
     expect(rows[2]).toHaveTextContent('DATASET 1');
     expect(rows[3]).toHaveTextContent('DATAFILE 1');
+
+    await user.click(nameSortLabel);
+
+    rows = await screen.findAllByText(/(DATAFILE|DATASET|INVESTIGATION) \d/);
+    // row should be sorted by name asc.
+    expect(rows[0]).toHaveTextContent('DATAFILE 1');
+    expect(rows[1]).toHaveTextContent('DATASET 1');
+    expect(rows[2]).toHaveTextContent('INVESTIGATION 1');
+    expect(rows[3]).toHaveTextContent('INVESTIGATION 2');
   });
 
   it('should filter data when text fields are typed into', async () => {

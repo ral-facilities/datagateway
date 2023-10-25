@@ -47,11 +47,9 @@ describe('ISIS - Instruments Cards', () => {
     //Revert the default sort
     cy.contains('[role="button"]', 'Name').as('nameSortButton').click();
     cy.get('@nameSortButton').click();
-    cy.wait('@getInstrumentsOrder', { timeout: 10000 });
 
     // ascending
     cy.get('@nameSortButton').click();
-    cy.wait('@getInstrumentsOrder', { timeout: 10000 });
 
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
@@ -61,7 +59,6 @@ describe('ISIS - Instruments Cards', () => {
 
     // descending
     cy.get('@nameSortButton').click();
-    cy.wait('@getInstrumentsOrder', { timeout: 10000 });
 
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('exist');
@@ -77,25 +74,35 @@ describe('ISIS - Instruments Cards', () => {
       .first()
       .contains('Stop prove field onto think suffer measure.');
 
+    // multiple fields (shift click)
     cy.contains('[role="button"]', 'Description').click();
-    cy.wait('@getInstrumentsOrder', { timeout: 10000 });
     cy.get('[data-testid="card"]')
       .first()
       .contains('Sound low certain challenge yet sport happy.');
 
-    cy.contains('[role="button"]', 'Type').click();
-    cy.wait('@getInstrumentsOrder', { timeout: 10000 });
+    cy.contains('[role="button"]', 'Type').click({ shiftKey: true });
     cy.contains('[aria-label="Sort by DESCRIPTION"]', 'asc').should('exist');
     cy.contains('[aria-label="Sort by TYPE"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('[data-testid="card"]').first().contains('10');
+
+    // should replace current sort if clicked without shift
+    cy.contains('[role="button"]', 'Name').click();
+    cy.contains('[aria-label="Sort by NAME"]', 'asc').should('exist');
+    cy.contains('[aria-label="Sort by DESCRIPTION"]', 'asc').should(
+      'not.exist'
+    );
+    cy.contains('[aria-label="Sort by TYPE"]', 'asc').should('not.exist');
+    cy.contains('[role="button"]', 'desc').should('not.exist');
+    cy.get('[data-testid="card"]')
+      .first()
+      .contains('Eight imagine picture tough.');
   });
 
   it('should be able to filter by multiple fields', () => {
     //Revert the default sort
     cy.contains('[role="button"]', 'Name').as('nameSortButton').click();
     cy.get('@nameSortButton').click();
-    cy.wait('@getInstrumentsOrder', { timeout: 10000 });
 
     cy.get('[data-testid="advanced-filters-link"]').click();
     cy.get('[aria-label="Filter by Name"]').first().type('oil');
