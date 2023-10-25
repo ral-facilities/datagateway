@@ -146,14 +146,23 @@ describe('ISIS - Investigations Cards', () => {
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('[data-testid="card"]').first().contains('Stop system investment');
 
-    // multiple fields
+    // multiple fields (shift click)
     cy.get('@dateSortButton').click();
-    cy.get('@titleSortButton').click();
+    cy.get('@titleSortButton').click({ shiftKey: true });
     cy.wait('@getInvestigationsOrder', { timeout: 10000 });
 
     cy.contains('[aria-label="Sort by TITLE"]', 'asc').should('exist');
     cy.contains('[aria-label="Sort by START DATE"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
+    cy.get('[data-testid="card"]').first().contains('Stop system investment');
+
+    // should replace current sort if clicked without shift
+    cy.get('@titleSortButton').click();
+    cy.wait('@getInvestigationsOrder', { timeout: 10000 });
+
+    cy.contains('[aria-label="Sort by TITLE"]', 'desc').should('exist');
+    cy.contains('[aria-label="Sort by START DATE"]', 'asc').should('not.exist');
+    cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.get('[data-testid="card"]').first().contains('Stop system investment');
   });
 

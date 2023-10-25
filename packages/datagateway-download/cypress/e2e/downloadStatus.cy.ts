@@ -109,12 +109,12 @@ describe('Download Status', () => {
     cy.get('@nameSortButton').click();
 
     cy.get('[aria-sort="ascending"]').should('not.exist');
-    cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
-    cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
-      'have.css',
-      'opacity',
-      '0'
-    );
+    cy.get('[aria-sort="descending"]').should('not.exist');
+    cy.get('.MuiTableSortLabel-iconDirectionAsc').should('not.exist');
+
+    cy.get('[data-testid="SortIcon"]').should('have.length', 4);
+    cy.get('[data-testid="ArrowUpwardIcon"]').should('not.exist');
+
     cy.get('[aria-rowindex="1"] [aria-colindex="1"]').should(
       'have.text',
       'test-file-1'
@@ -125,14 +125,43 @@ describe('Download Status', () => {
       'Available'
     );
 
-    // multiple columns
-    cy.contains('[role="button"]', 'Access Method').click();
-    cy.contains('[role="button"]', 'Availability').click();
+    // multiple columns (shift + click)
+    cy.contains('[role="button"]', 'Download Name').click();
+    cy.contains('[role="button"]', 'Availability').click({ shiftKey: true });
+    cy.get('[aria-sort="ascending"]').should('have.length', 2);
 
-    cy.get('[aria-rowindex="1"] [aria-colindex="1"]').should(
-      'have.text',
-      'test-file-4'
-    );
+    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('Available');
+
+    // should replace previous sort when clicked without shift
+    cy.contains('[role="button"]', 'Access Method').click();
+    cy.get('[aria-sort="ascending"]').should('have.length', 1);
+    cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains('test-file-2');
+  });
+
+  it('should change icons when sorting on a column', () => {
+    // clear default sort
+    cy.contains('[role="button"]', 'Requested Date').click();
+
+    cy.get('[data-testid="SortIcon"]').should('have.length', 4);
+
+    // check icon when clicking on a column
+    cy.contains('[role="button"]', 'Download Name').click();
+    cy.get('[data-testid="ArrowDownwardIcon"]').should('have.length', 1);
+    cy.get('.MuiTableSortLabel-iconDirectionAsc').should('exist');
+
+    // check icon when clicking on a column again
+    cy.contains('[role="button"]', 'Download Name').click();
+    cy.get('[data-testid="ArrowDownwardIcon"]').should('have.length', 1);
+    cy.get('.MuiTableSortLabel-iconDirectionAsc').should('not.exist');
+
+    // check icon when hovering over a column
+    cy.contains('[role="button"]', 'Access Method').trigger('mouseover');
+    cy.get('[data-testid="ArrowUpwardIcon"]').should('have.length', 1);
+    cy.get('[data-testid="ArrowDownwardIcon"]').should('have.length', 1);
+
+    // check icons when shift is held
+    cy.get('.App').trigger('keydown', { key: 'Shift' });
+    cy.get('[data-testid="AddIcon"]').should('have.length', 2);
   });
 
   it('should be able to filter with both text & date filters on multiple columns', () => {

@@ -68,10 +68,18 @@ describe('Download Cart', () => {
       'investigation'
     );
 
-    cy.contains('[role="button"]', 'Name').click();
+    // multisort with shift key
+    cy.contains('[role="button"]', 'Name').click({ shiftKey: true });
     cy.get('[aria-rowindex=1] [aria-colindex=1]').should(
       'have.text',
       'INVESTIGATION 10'
+    );
+
+    // replace previous sory by clicking without shift key
+    cy.contains('[role="button"]', 'Name').click();
+    cy.get('[aria-rowindex=1] [aria-colindex=1]').should(
+      'have.text',
+      'INVESTIGATION 8'
     );
   });
 
