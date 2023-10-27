@@ -452,11 +452,89 @@ export enum ContributorType {
   Other = 'Other',
 }
 
+export enum DOIRelationType {
+  IsCitedBy = 'IsCitedBy',
+  Cites = 'Cites',
+  IsSupplementTo = 'IsSupplementTo',
+  IsSupplementedBy = 'IsSupplementedBy',
+  IsContinuedBy = 'IsContinuedBy',
+  Continues = 'Continues',
+  IsDescribedBy = 'IsDescribedBy',
+  Describes = 'Describes',
+  HasMetadata = 'HasMetadata',
+  IsMetadataFor = 'IsMetadataFor',
+  HasVersion = 'HasVersion',
+  IsVersionOf = 'IsVersionOf',
+  IsNewVersionOf = 'IsNewVersionOf',
+  IsPreviousVersionOf = 'IsPreviousVersionOf',
+  IsPartOf = 'IsPartOf',
+  HasPart = 'HasPart',
+  IsPublishedIn = 'IsPublishedIn',
+  IsReferencedBy = 'IsReferencedBy',
+  References = 'References',
+  IsDocumentedBy = 'IsDocumentedBy',
+  Documents = 'Documents',
+  IsCompiledBy = 'IsCompiledBy',
+  Compiles = 'Compiles',
+  IsVariantFormOf = 'IsVariantFormOf',
+  IsOriginalFormOf = 'IsOriginalFormOf',
+  IsIdenticalTo = 'IsIdenticalTo',
+  IsReviewedBy = 'IsReviewedBy',
+  Reviews = 'Reviews',
+  IsDerivedFrom = 'IsDerivedFrom',
+  IsSourceOf = 'IsSourceOf',
+  IsRequiredBy = 'IsRequiredBy',
+  Requires = 'Requires',
+  Obsoletes = 'Obsoletes',
+  IsObsoletedBy = 'IsObsoletedBy',
+}
+
+export enum DOIResourceType {
+  Audiovisual = 'Audiovisual',
+  Book = 'Book',
+  BookChapter = 'BookChapter',
+  Collection = 'Collection',
+  ComputationalNotebook = 'ComputationalNotebook',
+  ConferencePaper = 'ConferencePaper',
+  ConferenceProceeding = 'ConferenceProceeding',
+  DataPaper = 'DataPaper',
+  Dataset = 'Dataset',
+  Dissertation = 'Dissertation',
+  Event = 'Event',
+  Image = 'Image',
+  InteractiveResource = 'InteractiveResource',
+  Journal = 'Journal',
+  JournalArticle = 'JournalArticle',
+  Model = 'Model',
+  OutputManagementPlan = 'OutputManagementPlan',
+  PeerReview = 'PeerReview',
+  PhysicalObject = 'PhysicalObject',
+  Preprint = 'Preprint',
+  Report = 'Report',
+  Service = 'Service',
+  Software = 'Software',
+  Sound = 'Sound',
+  Standard = 'Standard',
+  Text = 'Text',
+  Workflow = 'Workflow',
+  Other = 'Other',
+}
+
 export interface DoiMetadata {
   title: string;
   description: string;
   creators?: { username: string; contributor_type: ContributorType }[];
+  related_items: RelatedDOI[];
 }
+
+export type RelatedDOI = {
+  title: string;
+  fullReference: string;
+  relatedIdentifier: string;
+  relatedIdentifierType: 'DOI';
+  relationType: DOIRelationType | '';
+  resourceType: DOIResourceType | '';
+};
 
 export interface DoiResponse {
   concept: DoiResult;
@@ -492,7 +570,6 @@ export const mintCart = (
         metadata: {
           ...doiMetadata,
           resource_type: investigations.length === 0 ? 'Dataset' : 'Collection',
-          related_items: [],
         },
         ...(investigations.length > 0
           ? { investigations: { ids: investigations } }
@@ -613,5 +690,33 @@ export const checkUser = (
     })
     .then((response) => {
       return response.data;
+    });
+};
+
+interface DataCiteResponse {
+  data: DataCiteDOI;
+}
+
+export interface DataCiteDOI {
+  id: string;
+  type: string;
+  attributes: {
+    doi: string;
+    titles: { title: string }[];
+    url: string;
+  };
+}
+/**
+ * Retrieve metadata for a DOI
+ * @param doi The DOI to fetch metadata for
+ */
+export const fetchDOI = (
+  doi: string,
+  settings: Pick<DownloadSettings, 'dataCiteUrl'>
+): Promise<DataCiteDOI> => {
+  return axios
+    .get<DataCiteResponse>(`${settings.dataCiteUrl}/dois/${doi}`)
+    .then((response) => {
+      return response.data.data;
     });
 };

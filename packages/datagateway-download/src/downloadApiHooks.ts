@@ -37,9 +37,11 @@ import {
   DoiResponse,
   DownloadProgress,
   DownloadTypeStatus,
+  fetchDOI,
   getCartUsers,
   isCartMintable,
   mintCart,
+  RelatedDOI,
   SubmitCartZipType,
 } from './downloadApi';
 import {
@@ -951,4 +953,38 @@ export const useCheckUser = (
       cacheTime: 0,
     }
   );
+};
+
+/**
+ * Checks whether a DOI is valid and returns the DOI metadata
+ * @param doi The DOI that we're checking
+ * @returns the {@link RelatedDOI} that matches the username, or 404
+ */
+export const useCheckDOI = (
+  doi: string
+): UseQueryResult<RelatedDOI, AxiosError> => {
+  const settings = React.useContext(DownloadSettingsContext);
+
+  return useQuery(['checkDOI', doi], () => fetchDOI(doi, settings), {
+    retry: (failureCount: number, error: AxiosError) => {
+      if (
+        // DOI is invalid - don't retry as this is a correct response from the server
+        error.response?.status === 404 ||
+        failureCount >= 3
+      )
+        return false;
+      return true;
+    },
+    select: (doi) => ({
+      title: doi.attributes.titles[0].title,
+      relatedIdentifier: doi.attributes.doi,
+      relatedIdentifierType: 'DOI',
+      fullReference: '', // TODO: what should we put here?
+      relationType: '',
+      resourceType: '',
+    }),
+    // set enabled false to only fetch on demand when the add creator button is pressed
+    enabled: false,
+    cacheTime: 0,
+  });
 };

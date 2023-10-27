@@ -534,7 +534,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                     {t('downloadCart.remove_all')}
                   </Button>
                 </Grid>
-                {settings.doiMinterUrl && (
+                {settings.doiMinterUrl && settings.dataCiteUrl && (
                   <Grid item>
                     <Tooltip
                       title={

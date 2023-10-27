@@ -23,10 +23,16 @@ import { readSciGatewayToken, User } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Redirect, useLocation } from 'react-router-dom';
-import { ContributorType } from '../downloadApi';
+import {
+  ContributorType,
+  DOIRelationType,
+  DOIResourceType,
+  type RelatedDOI,
+} from '../downloadApi';
 import {
   useCart,
   useCartUsers,
+  useCheckDOI,
   useCheckUser,
   useMintCart,
 } from '../downloadApiHooks';
@@ -56,8 +62,11 @@ const DOIGenerationForm: React.FC = () => {
   const [selectedUsers, setSelectedUsers] = React.useState<ContributorUser[]>(
     []
   );
+  const [relatedDOIs, setRelatedDOIs] = React.useState<RelatedDOI[]>([]);
   const [username, setUsername] = React.useState('');
   const [usernameError, setUsernameError] = React.useState('');
+  const [relatedDOI, setRelatedDOI] = React.useState('');
+  const [relatedDOIError, setRelatedDOIError] = React.useState('');
   const [title, setTitle] = React.useState('');
   const [description, setDescription] = React.useState('');
   const [currentTab, setCurrentTab] = React.useState<
@@ -75,6 +84,7 @@ const DOIGenerationForm: React.FC = () => {
   const { data: cart } = useCart();
   const { data: users } = useCartUsers(cart);
   const { refetch: checkUser } = useCheckUser(username);
+  const { refetch: checkDOI } = useCheckDOI(relatedDOI);
   const {
     mutate: mintCart,
     status: mintingStatus,
@@ -283,6 +293,278 @@ const DOIGenerationForm: React.FC = () => {
                       value={description}
                       onChange={(event) => setDescription(event.target.value)}
                     />
+                  </Grid>
+                  <Grid item>
+                    <Paper
+                      sx={{
+                        background: (theme) =>
+                          theme.palette.mode === 'dark'
+                            ? theme.palette.grey[800]
+                            : theme.palette.grey[100],
+                        padding: 1,
+                      }}
+                      elevation={0}
+                      variant="outlined"
+                    >
+                      <Grid container direction="row" spacing={1}>
+                        <Grid item>
+                          <Typography
+                            variant="h6"
+                            component="h4"
+                            id="related-dois-label"
+                          >
+                            {t('DOIGenerationForm.related_dois')}
+                          </Typography>
+                        </Grid>
+                        <Grid
+                          container
+                          item
+                          spacing={1}
+                          alignItems="center"
+                          sx={{
+                            marginBottom: relatedDOIError.length > 0 ? 2 : 0,
+                          }}
+                        >
+                          <Grid item xs>
+                            <TextField
+                              label={t('DOIGenerationForm.related_doi')}
+                              fullWidth
+                              error={relatedDOIError.length > 0}
+                              helperText={
+                                relatedDOIError.length > 0
+                                  ? relatedDOIError
+                                  : ''
+                              }
+                              color="secondary"
+                              sx={{
+                                // this CSS makes it so that the helperText doesn't mess with the button alignment
+                                '& .MuiFormHelperText-root': {
+                                  position: 'absolute',
+                                  bottom: '-1.5rem',
+                                },
+                              }}
+                              InputProps={{
+                                sx: {
+                                  backgroundColor: 'background.default',
+                                },
+                              }}
+                              value={relatedDOI}
+                              onChange={(event) => {
+                                setRelatedDOI(event.target.value);
+                                setRelatedDOIError('');
+                              }}
+                            />
+                          </Grid>
+                          <Grid item>
+                            <Button
+                              variant="contained"
+                              onClick={() => {
+                                return checkDOI({ throwOnError: true })
+                                  .then((response) => {
+                                    // add DOI
+                                    if (response.data) {
+                                      setRelatedDOIs((dois) => [
+                                        ...dois,
+                                        response.data,
+                                      ]);
+                                      setRelatedDOI('');
+                                    }
+                                  })
+                                  .catch(
+                                    (
+                                      error: AxiosError<{
+                                        errors: {
+                                          status: string;
+                                          title: string;
+                                        }[];
+                                      }>
+                                    ) => {
+                                      // TODO: check this is the right message from the API
+                                      setRelatedDOIError(
+                                        error.response?.data?.errors
+                                          ? error.response.data.errors[0].title
+                                          : 'Error'
+                                      );
+                                    }
+                                  );
+                              }}
+                            >
+                              {t('DOIGenerationForm.add_related_doi')}
+                            </Button>
+                          </Grid>
+                        </Grid>
+                        {relatedDOIs.length > 0 && (
+                          <Grid item>
+                            <Table
+                              sx={{
+                                backgroundColor: 'background.default',
+                              }}
+                              size="small"
+                              aria-labelledby="related-dois-label"
+                            >
+                              <TableHead>
+                                <TableRow>
+                                  <TableCell>
+                                    {t('DOIGenerationForm.related_doi_doi')}
+                                  </TableCell>
+                                  <TableCell>
+                                    {t(
+                                      'DOIGenerationForm.related_doi_relationship'
+                                    )}
+                                  </TableCell>
+                                  <TableCell>
+                                    {t(
+                                      'DOIGenerationForm.related_doi_resource_type'
+                                    )}
+                                  </TableCell>
+                                  <TableCell>
+                                    {t('DOIGenerationForm.related_doi_action')}
+                                  </TableCell>
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {relatedDOIs.map((relatedItem) => (
+                                  <TableRow key={relatedItem.relatedIdentifier}>
+                                    <TableCell>
+                                      {relatedItem.relatedIdentifier}
+                                    </TableCell>
+                                    <TableCell>
+                                      <FormControl
+                                        fullWidth
+                                        size="small"
+                                        required
+                                      >
+                                        <InputLabel
+                                          id={`${relatedItem.relatedIdentifier}-relationship-select-label`}
+                                        >
+                                          {t(
+                                            'DOIGenerationForm.related_doi_relationship'
+                                          )}
+                                        </InputLabel>
+                                        <Select
+                                          labelId={`${relatedItem.relatedIdentifier}-relationship-select-label`}
+                                          value={relatedItem.relationType}
+                                          label={t(
+                                            'DOIGenerationForm.related_doi_relationship'
+                                          )}
+                                          onChange={(event) => {
+                                            setRelatedDOIs((dois) => {
+                                              return dois.map((d) => {
+                                                if (
+                                                  d.relatedIdentifier ===
+                                                  relatedItem.relatedIdentifier
+                                                ) {
+                                                  return {
+                                                    ...d,
+                                                    relationType: event.target
+                                                      .value as
+                                                      | DOIRelationType
+                                                      | '',
+                                                  };
+                                                } else {
+                                                  return d;
+                                                }
+                                              });
+                                            });
+                                          }}
+                                        >
+                                          {Object.values(DOIRelationType).map(
+                                            (relation) => {
+                                              return (
+                                                <MenuItem
+                                                  key={relation}
+                                                  value={relation}
+                                                >
+                                                  {relation}
+                                                </MenuItem>
+                                              );
+                                            }
+                                          )}
+                                        </Select>
+                                      </FormControl>
+                                    </TableCell>
+                                    <TableCell>
+                                      <FormControl
+                                        fullWidth
+                                        size="small"
+                                        required
+                                      >
+                                        <InputLabel
+                                          id={`${relatedItem.relatedIdentifier}-resource-type-select-label`}
+                                        >
+                                          {t(
+                                            'DOIGenerationForm.related_doi_resource_type'
+                                          )}
+                                        </InputLabel>
+                                        <Select
+                                          labelId={`${relatedItem.relatedIdentifier}-resource-type-select-label`}
+                                          value={relatedItem.resourceType}
+                                          label={t(
+                                            'DOIGenerationForm.related_doi_resource_type'
+                                          )}
+                                          onChange={(event) => {
+                                            setRelatedDOIs((dois) => {
+                                              return dois.map((d) => {
+                                                if (
+                                                  d.relatedIdentifier ===
+                                                  relatedItem.relatedIdentifier
+                                                ) {
+                                                  return {
+                                                    ...d,
+                                                    resourceType: event.target
+                                                      .value as
+                                                      | DOIResourceType
+                                                      | '',
+                                                  };
+                                                } else {
+                                                  return d;
+                                                }
+                                              });
+                                            });
+                                          }}
+                                        >
+                                          {Object.values(DOIResourceType).map(
+                                            (type) => {
+                                              return (
+                                                <MenuItem
+                                                  key={type}
+                                                  value={type}
+                                                >
+                                                  {type}
+                                                </MenuItem>
+                                              );
+                                            }
+                                          )}
+                                        </Select>
+                                      </FormControl>
+                                    </TableCell>
+                                    <TableCell>
+                                      <Button
+                                        size="small"
+                                        onClick={() =>
+                                          setRelatedDOIs((dois) =>
+                                            dois.filter(
+                                              (d) =>
+                                                d.relatedIdentifier !==
+                                                relatedItem.relatedIdentifier
+                                            )
+                                          )
+                                        }
+                                        color="secondary"
+                                      >
+                                        {t(
+                                          'DOIGenerationForm.delete_related_doi'
+                                        )}
+                                      </Button>
+                                    </TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </Grid>
+                        )}
+                      </Grid>
+                    </Paper>
                   </Grid>
                   <Grid item>
                     <Paper
@@ -543,6 +825,7 @@ const DOIGenerationForm: React.FC = () => {
                                 creatorsList.length > 0
                                   ? creatorsList
                                   : undefined,
+                              related_items: relatedDOIs,
                             },
                           });
                         }
