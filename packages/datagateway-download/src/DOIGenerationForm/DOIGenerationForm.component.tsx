@@ -1,13 +1,8 @@
 import {
   Box,
   Button,
-  CircularProgress,
-  FormControl,
   Grid,
-  InputLabel,
-  MenuItem,
   Paper,
-  Select,
   Tab,
   Table,
   TableBody,
@@ -18,44 +13,18 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { AxiosError } from 'axios';
-import { readSciGatewayToken, User } from 'datagateway-common';
+import { readSciGatewayToken } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Redirect, useLocation } from 'react-router-dom';
-import {
-  ContributorType,
-  DOIRelationType,
-  DOIResourceType,
-  type RelatedDOI,
-} from '../downloadApi';
-import {
-  useCart,
-  useCartUsers,
-  useCheckDOI,
-  useCheckUser,
-  useMintCart,
-} from '../downloadApiHooks';
+import { ContributorType, type RelatedDOI } from '../downloadApi';
+import { useCart, useCartUsers, useMintCart } from '../downloadApiHooks';
 import AcceptDataPolicy from './acceptDataPolicy.component';
+import CreatorsAndContributors, {
+  ContributorUser,
+} from './creatorsAndContributors.component';
 import DOIConfirmDialog from './DOIConfirmDialog.component';
-
-type ContributorUser = User & {
-  contributor_type: ContributorType | '';
-};
-
-const compareUsers = (a: ContributorUser, b: ContributorUser): number => {
-  if (
-    a.contributor_type === ContributorType.Creator &&
-    b.contributor_type !== ContributorType.Creator
-  ) {
-    return -1;
-  } else if (
-    b.contributor_type === ContributorType.Creator &&
-    a.contributor_type !== ContributorType.Creator
-  ) {
-    return 1;
-  } else return 0;
-};
+import RelatedDOIs from './relatedDOIs.component';
 
 const DOIGenerationForm: React.FC = () => {
   const [acceptedDataPolicy, setAcceptedDataPolicy] = React.useState(false);
@@ -63,10 +32,6 @@ const DOIGenerationForm: React.FC = () => {
     []
   );
   const [relatedDOIs, setRelatedDOIs] = React.useState<RelatedDOI[]>([]);
-  const [username, setUsername] = React.useState('');
-  const [usernameError, setUsernameError] = React.useState('');
-  const [relatedDOI, setRelatedDOI] = React.useState('');
-  const [relatedDOIError, setRelatedDOIError] = React.useState('');
   const [title, setTitle] = React.useState('');
   const [description, setDescription] = React.useState('');
   const [currentTab, setCurrentTab] = React.useState<
@@ -83,8 +48,6 @@ const DOIGenerationForm: React.FC = () => {
 
   const { data: cart } = useCart();
   const { data: users } = useCartUsers(cart);
-  const { refetch: checkUser } = useCheckUser(username);
-  const { refetch: checkDOI } = useCheckDOI(relatedDOI);
   const {
     mutate: mintCart,
     status: mintingStatus,
@@ -116,52 +79,6 @@ const DOIGenerationForm: React.FC = () => {
   const location = useLocation<{ fromCart: boolean } | undefined>();
 
   const [t] = useTranslation();
-
-  /**
-   * Returns a function, which you pass true or false to depending on whether
-   * it's the creator button or not, and returns the relevant click handler
-   */
-  const handleAddCreatorOrContributorClick = React.useCallback(
-    (creator: boolean) => () => {
-      // don't let the user add duplicates
-      if (
-        selectedUsers.every((selectedUser) => selectedUser.name !== username)
-      ) {
-        checkUser({ throwOnError: true })
-          .then((response) => {
-            // add user
-            if (response.data) {
-              const user: ContributorUser = {
-                ...response.data,
-                contributor_type: creator ? ContributorType.Creator : '',
-              };
-              setSelectedUsers((selectedUsers) => [...selectedUsers, user]);
-              setUsername('');
-            }
-          })
-          .catch(
-            (
-              error: AxiosError<{
-                detail: { msg: string }[] | string;
-              }>
-            ) => {
-              // TODO: check this is the right message from the API
-              setUsernameError(
-                error.response?.data?.detail
-                  ? typeof error.response.data.detail === 'string'
-                    ? error.response.data.detail
-                    : error.response.data.detail[0].msg
-                  : 'Error'
-              );
-            }
-          );
-      } else {
-        setUsernameError('Cannot add duplicate user');
-        setUsername('');
-      }
-    },
-    [checkUser, selectedUsers, username]
-  );
 
   // redirect if the user tries to access the link directly instead of from the cart
   if (!location.state?.fromCart) {
@@ -295,498 +212,16 @@ const DOIGenerationForm: React.FC = () => {
                     />
                   </Grid>
                   <Grid item>
-                    <Paper
-                      sx={{
-                        background: (theme) =>
-                          theme.palette.mode === 'dark'
-                            ? theme.palette.grey[800]
-                            : theme.palette.grey[100],
-                        padding: 1,
-                      }}
-                      elevation={0}
-                      variant="outlined"
-                    >
-                      <Grid container direction="row" spacing={1}>
-                        <Grid item>
-                          <Typography
-                            variant="h6"
-                            component="h4"
-                            id="related-dois-label"
-                          >
-                            {t('DOIGenerationForm.related_dois')}
-                          </Typography>
-                        </Grid>
-                        <Grid
-                          container
-                          item
-                          spacing={1}
-                          alignItems="center"
-                          sx={{
-                            marginBottom: relatedDOIError.length > 0 ? 2 : 0,
-                          }}
-                        >
-                          <Grid item xs>
-                            <TextField
-                              label={t('DOIGenerationForm.related_doi')}
-                              fullWidth
-                              error={relatedDOIError.length > 0}
-                              helperText={
-                                relatedDOIError.length > 0
-                                  ? relatedDOIError
-                                  : ''
-                              }
-                              color="secondary"
-                              sx={{
-                                // this CSS makes it so that the helperText doesn't mess with the button alignment
-                                '& .MuiFormHelperText-root': {
-                                  position: 'absolute',
-                                  bottom: '-1.5rem',
-                                },
-                              }}
-                              InputProps={{
-                                sx: {
-                                  backgroundColor: 'background.default',
-                                },
-                              }}
-                              value={relatedDOI}
-                              onChange={(event) => {
-                                setRelatedDOI(event.target.value);
-                                setRelatedDOIError('');
-                              }}
-                            />
-                          </Grid>
-                          <Grid item>
-                            <Button
-                              variant="contained"
-                              onClick={() => {
-                                return checkDOI({ throwOnError: true })
-                                  .then((response) => {
-                                    // add DOI
-                                    if (response.data) {
-                                      setRelatedDOIs((dois) => [
-                                        ...dois,
-                                        response.data,
-                                      ]);
-                                      setRelatedDOI('');
-                                    }
-                                  })
-                                  .catch(
-                                    (
-                                      error: AxiosError<{
-                                        errors: {
-                                          status: string;
-                                          title: string;
-                                        }[];
-                                      }>
-                                    ) => {
-                                      // TODO: check this is the right message from the API
-                                      setRelatedDOIError(
-                                        error.response?.data?.errors
-                                          ? error.response.data.errors[0].title
-                                          : 'Error'
-                                      );
-                                    }
-                                  );
-                              }}
-                            >
-                              {t('DOIGenerationForm.add_related_doi')}
-                            </Button>
-                          </Grid>
-                        </Grid>
-                        {relatedDOIs.length > 0 && (
-                          <Grid item>
-                            <Table
-                              sx={{
-                                backgroundColor: 'background.default',
-                              }}
-                              size="small"
-                              aria-labelledby="related-dois-label"
-                            >
-                              <TableHead>
-                                <TableRow>
-                                  <TableCell>
-                                    {t('DOIGenerationForm.related_doi_doi')}
-                                  </TableCell>
-                                  <TableCell>
-                                    {t(
-                                      'DOIGenerationForm.related_doi_relationship'
-                                    )}
-                                  </TableCell>
-                                  <TableCell>
-                                    {t(
-                                      'DOIGenerationForm.related_doi_resource_type'
-                                    )}
-                                  </TableCell>
-                                  <TableCell>
-                                    {t('DOIGenerationForm.related_doi_action')}
-                                  </TableCell>
-                                </TableRow>
-                              </TableHead>
-                              <TableBody>
-                                {relatedDOIs.map((relatedItem) => (
-                                  <TableRow key={relatedItem.relatedIdentifier}>
-                                    <TableCell>
-                                      {relatedItem.relatedIdentifier}
-                                    </TableCell>
-                                    <TableCell>
-                                      <FormControl
-                                        fullWidth
-                                        size="small"
-                                        required
-                                      >
-                                        <InputLabel
-                                          id={`${relatedItem.relatedIdentifier}-relationship-select-label`}
-                                        >
-                                          {t(
-                                            'DOIGenerationForm.related_doi_relationship'
-                                          )}
-                                        </InputLabel>
-                                        <Select
-                                          labelId={`${relatedItem.relatedIdentifier}-relationship-select-label`}
-                                          value={relatedItem.relationType}
-                                          label={t(
-                                            'DOIGenerationForm.related_doi_relationship'
-                                          )}
-                                          onChange={(event) => {
-                                            setRelatedDOIs((dois) => {
-                                              return dois.map((d) => {
-                                                if (
-                                                  d.relatedIdentifier ===
-                                                  relatedItem.relatedIdentifier
-                                                ) {
-                                                  return {
-                                                    ...d,
-                                                    relationType: event.target
-                                                      .value as
-                                                      | DOIRelationType
-                                                      | '',
-                                                  };
-                                                } else {
-                                                  return d;
-                                                }
-                                              });
-                                            });
-                                          }}
-                                        >
-                                          {Object.values(DOIRelationType).map(
-                                            (relation) => {
-                                              return (
-                                                <MenuItem
-                                                  key={relation}
-                                                  value={relation}
-                                                >
-                                                  {relation}
-                                                </MenuItem>
-                                              );
-                                            }
-                                          )}
-                                        </Select>
-                                      </FormControl>
-                                    </TableCell>
-                                    <TableCell>
-                                      <FormControl
-                                        fullWidth
-                                        size="small"
-                                        required
-                                      >
-                                        <InputLabel
-                                          id={`${relatedItem.relatedIdentifier}-resource-type-select-label`}
-                                        >
-                                          {t(
-                                            'DOIGenerationForm.related_doi_resource_type'
-                                          )}
-                                        </InputLabel>
-                                        <Select
-                                          labelId={`${relatedItem.relatedIdentifier}-resource-type-select-label`}
-                                          value={relatedItem.resourceType}
-                                          label={t(
-                                            'DOIGenerationForm.related_doi_resource_type'
-                                          )}
-                                          onChange={(event) => {
-                                            setRelatedDOIs((dois) => {
-                                              return dois.map((d) => {
-                                                if (
-                                                  d.relatedIdentifier ===
-                                                  relatedItem.relatedIdentifier
-                                                ) {
-                                                  return {
-                                                    ...d,
-                                                    resourceType: event.target
-                                                      .value as
-                                                      | DOIResourceType
-                                                      | '',
-                                                  };
-                                                } else {
-                                                  return d;
-                                                }
-                                              });
-                                            });
-                                          }}
-                                        >
-                                          {Object.values(DOIResourceType).map(
-                                            (type) => {
-                                              return (
-                                                <MenuItem
-                                                  key={type}
-                                                  value={type}
-                                                >
-                                                  {type}
-                                                </MenuItem>
-                                              );
-                                            }
-                                          )}
-                                        </Select>
-                                      </FormControl>
-                                    </TableCell>
-                                    <TableCell>
-                                      <Button
-                                        size="small"
-                                        onClick={() =>
-                                          setRelatedDOIs((dois) =>
-                                            dois.filter(
-                                              (d) =>
-                                                d.relatedIdentifier !==
-                                                relatedItem.relatedIdentifier
-                                            )
-                                          )
-                                        }
-                                        color="secondary"
-                                      >
-                                        {t(
-                                          'DOIGenerationForm.delete_related_doi'
-                                        )}
-                                      </Button>
-                                    </TableCell>
-                                  </TableRow>
-                                ))}
-                              </TableBody>
-                            </Table>
-                          </Grid>
-                        )}
-                      </Grid>
-                    </Paper>
+                    <RelatedDOIs
+                      relatedDOIs={relatedDOIs}
+                      changeRelatedDOIs={setRelatedDOIs}
+                    />
                   </Grid>
                   <Grid item>
-                    <Paper
-                      sx={{
-                        background: (theme) =>
-                          theme.palette.mode === 'dark'
-                            ? theme.palette.grey[800]
-                            : theme.palette.grey[100],
-                        padding: 1,
-                      }}
-                      elevation={0}
-                      variant="outlined"
-                    >
-                      <Grid container direction="row" spacing={1}>
-                        <Grid item>
-                          <Typography
-                            variant="h6"
-                            component="h4"
-                            id="creators-label"
-                          >
-                            {t('DOIGenerationForm.creators')}
-                          </Typography>
-                        </Grid>
-                        <Grid
-                          container
-                          item
-                          spacing={1}
-                          alignItems="center"
-                          sx={{
-                            marginBottom: usernameError.length > 0 ? 2 : 0,
-                          }}
-                        >
-                          <Grid item xs>
-                            <TextField
-                              label={t('DOIGenerationForm.username')}
-                              required
-                              fullWidth
-                              error={usernameError.length > 0}
-                              helperText={
-                                usernameError.length > 0 ? usernameError : ''
-                              }
-                              color="secondary"
-                              sx={{
-                                // this CSS makes it so that the helperText doesn't mess with the button alignment
-                                '& .MuiFormHelperText-root': {
-                                  position: 'absolute',
-                                  bottom: '-1.5rem',
-                                },
-                              }}
-                              InputProps={{
-                                sx: {
-                                  backgroundColor: 'background.default',
-                                },
-                              }}
-                              value={username}
-                              onChange={(event) => {
-                                setUsername(event.target.value);
-                                setUsernameError('');
-                              }}
-                            />
-                          </Grid>
-                          <Grid container item spacing={1} xs="auto">
-                            <Grid item>
-                              <Button
-                                variant="contained"
-                                onClick={handleAddCreatorOrContributorClick(
-                                  true
-                                )}
-                              >
-                                {t('DOIGenerationForm.add_creator')}
-                              </Button>
-                            </Grid>
-                            <Grid item>
-                              <Button
-                                variant="contained"
-                                onClick={handleAddCreatorOrContributorClick(
-                                  false
-                                )}
-                              >
-                                {t('DOIGenerationForm.add_contributor')}
-                              </Button>
-                            </Grid>
-                          </Grid>
-                        </Grid>
-                        <Grid item>
-                          <Table
-                            sx={{
-                              backgroundColor: 'background.default',
-                            }}
-                            size="small"
-                            aria-labelledby="creators-label"
-                          >
-                            <TableHead>
-                              <TableRow>
-                                <TableCell>
-                                  {t('DOIGenerationForm.creator_name')}
-                                </TableCell>
-                                <TableCell>
-                                  {t('DOIGenerationForm.creator_affiliation')}
-                                </TableCell>
-                                <TableCell>
-                                  {t('DOIGenerationForm.creator_email')}
-                                </TableCell>
-                                <TableCell>
-                                  {t('DOIGenerationForm.creator_type')}
-                                </TableCell>
-                                <TableCell>
-                                  {t('DOIGenerationForm.creator_action')}
-                                </TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {typeof users === 'undefined' && (
-                                <TableRow>
-                                  <TableCell
-                                    colSpan={4}
-                                    sx={{ textAlign: 'center' }}
-                                  >
-                                    <CircularProgress />
-                                  </TableCell>
-                                </TableRow>
-                              )}
-                              {[...selectedUsers] // need to spread so we don't alter underlying array
-                                .sort(compareUsers)
-                                .map((user) => (
-                                  <TableRow key={user.id}>
-                                    <TableCell>{user.fullName}</TableCell>
-                                    <TableCell>{user?.affiliation}</TableCell>
-                                    <TableCell>{user?.email}</TableCell>
-                                    <TableCell>
-                                      {user.contributor_type ===
-                                      ContributorType.Creator ? (
-                                        ContributorType.Creator
-                                      ) : (
-                                        <FormControl
-                                          fullWidth
-                                          size="small"
-                                          required
-                                        >
-                                          <InputLabel
-                                            id={`${user.name}-contributor-type-select-label`}
-                                          >
-                                            {t(
-                                              'DOIGenerationForm.creator_type'
-                                            )}
-                                          </InputLabel>
-                                          <Select
-                                            labelId={`${user.name}-contributor-type-select-label`}
-                                            value={user.contributor_type}
-                                            label={t(
-                                              'DOIGenerationForm.creator_type'
-                                            )}
-                                            onChange={(event) => {
-                                              setSelectedUsers(
-                                                (selectedUsers) => {
-                                                  return selectedUsers.map(
-                                                    (u) => {
-                                                      if (u.id === user.id) {
-                                                        return {
-                                                          ...u,
-                                                          contributor_type:
-                                                            event.target
-                                                              .value as
-                                                              | ContributorType
-                                                              | '',
-                                                        };
-                                                      } else {
-                                                        return u;
-                                                      }
-                                                    }
-                                                  );
-                                                }
-                                              );
-                                            }}
-                                          >
-                                            {Object.values(ContributorType)
-                                              .filter(
-                                                (value) =>
-                                                  value !==
-                                                  ContributorType.Creator
-                                              )
-                                              .map((type) => {
-                                                return (
-                                                  <MenuItem
-                                                    key={type}
-                                                    value={type}
-                                                  >
-                                                    {type}
-                                                  </MenuItem>
-                                                );
-                                              })}
-                                          </Select>
-                                        </FormControl>
-                                      )}
-                                    </TableCell>
-                                    <TableCell>
-                                      <Button
-                                        size="small"
-                                        disabled={
-                                          user.name ===
-                                          readSciGatewayToken().username
-                                        }
-                                        onClick={() =>
-                                          setSelectedUsers((selectedUsers) =>
-                                            selectedUsers.filter(
-                                              (selectedUser) =>
-                                                selectedUser.id !== user.id
-                                            )
-                                          )
-                                        }
-                                        color="secondary"
-                                      >
-                                        {t('DOIGenerationForm.delete_creator')}
-                                      </Button>
-                                    </TableCell>
-                                  </TableRow>
-                                ))}
-                            </TableBody>
-                          </Table>
-                        </Grid>
-                      </Grid>
-                    </Paper>
+                    <CreatorsAndContributors
+                      selectedUsers={selectedUsers}
+                      changeSelectedUsers={setSelectedUsers}
+                    />
                   </Grid>
                   <Grid item alignSelf="flex-end">
                     <Button
@@ -799,6 +234,11 @@ const DOIGenerationForm: React.FC = () => {
                         cart.length === 0 ||
                         selectedUsers.some(
                           (user) => user.contributor_type === ''
+                        ) ||
+                        relatedDOIs.some(
+                          (relatedDOI) =>
+                            relatedDOI.relationType === '' ||
+                            relatedDOI.resourceType === ''
                         )
                       }
                       onClick={() => {
