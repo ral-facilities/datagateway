@@ -160,6 +160,41 @@ describe('DOI Generation form', () => {
       cy.contains('button', 'Generate DOI').should('not.be.disabled');
     });
 
+    it('should let user add related DOIs and select their relation & resource type', () => {
+      cy.contains('DOI Title').parent().find('input').type('Test title');
+      cy.contains('DOI Description')
+        .parent()
+        .find('textarea')
+        .first()
+        .type('Test description');
+
+      // wait for users to load
+      cy.contains('button', 'Generate DOI').should('not.be.disabled');
+
+      // DOI from https://support.datacite.org/docs/testing-guide
+      cy.contains(/^DOI$/).parent().find('input').type('10.17596/w76y-4s92');
+      cy.contains('button', 'Add DOI').click();
+
+      // shouldn't let users submit DOIs without selecting a relation or resource type
+      cy.contains('button', 'Generate DOI').should('be.disabled');
+
+      cy.contains('label', 'Resource Type').parent().click();
+
+      cy.contains('Journal').click();
+
+      // shouldn't let users submit DOIs without selecting a relation type
+      cy.contains('button', 'Generate DOI').should('be.disabled');
+
+      cy.contains('label', 'Relationship').parent().click();
+
+      cy.contains('IsCitedBy').click();
+
+      // check that related DOIs info doesn't break the API
+      cy.contains('button', 'Generate DOI').click();
+
+      cy.contains('Mint was successful').should('be.visible');
+    });
+
     it('should let user see their current cart items', () => {
       cy.contains('DATASET 75').should('be.visible');
       cy.get('table[aria-label="cart dataset table"] tbody tr').should(
