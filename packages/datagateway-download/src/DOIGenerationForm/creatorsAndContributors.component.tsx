@@ -159,6 +159,7 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
               <Button
                 variant="contained"
                 onClick={handleAddCreatorOrContributorClick(true)}
+                disabled={selectedUsers.length === 0}
               >
                 {t('DOIGenerationForm.add_creator')}
               </Button>
@@ -167,6 +168,7 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
               <Button
                 variant="contained"
                 onClick={handleAddCreatorOrContributorClick(false)}
+                disabled={selectedUsers.length === 0}
               >
                 {t('DOIGenerationForm.add_contributor')}
               </Button>
@@ -211,7 +213,12 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
                       {user.contributor_type === ContributorType.Creator ? (
                         ContributorType.Creator
                       ) : (
-                        <FormControl fullWidth size="small" required>
+                        <FormControl
+                          fullWidth
+                          size="small"
+                          required
+                          sx={{ minWidth: 180 }}
+                        >
                           <InputLabel
                             id={`${user.name}-contributor-type-select-label`}
                           >

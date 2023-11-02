@@ -384,6 +384,14 @@ describe('DOI generation form component', () => {
     expect(
       screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
     ).toBeDisabled();
+
+    // expect add user + add contributor buttons to also be disabled
+    expect(
+      screen.getByRole('button', { name: 'DOIGenerationForm.add_creator' })
+    ).toBeDisabled();
+    expect(
+      screen.getByRole('button', { name: 'DOIGenerationForm.add_contributor' })
+    ).toBeDisabled();
   });
 
   it('should let the user change cart tabs', async () => {

@@ -160,7 +160,12 @@ const RelatedDOIs: React.FC<RelatedDOIsProps> = (props) => {
                       </StyledTooltip>
                     </TableCell>
                     <TableCell>
-                      <FormControl fullWidth size="small" required>
+                      <FormControl
+                        fullWidth
+                        size="small"
+                        required
+                        sx={{ minWidth: 150 }}
+                      >
                         <InputLabel
                           id={`${relatedItem.relatedIdentifier}-relationship-select-label`}
                         >
@@ -203,7 +208,12 @@ const RelatedDOIs: React.FC<RelatedDOIsProps> = (props) => {
                       </FormControl>
                     </TableCell>
                     <TableCell>
-                      <FormControl fullWidth size="small" required>
+                      <FormControl
+                        fullWidth
+                        size="small"
+                        required
+                        sx={{ minWidth: 150 }}
+                      >
                         <InputLabel
                           id={`${relatedItem.relatedIdentifier}-resource-type-select-label`}
                         >
