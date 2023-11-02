@@ -3,6 +3,7 @@ import {
   FormControl,
   Grid,
   InputLabel,
+  Link,
   MenuItem,
   Paper,
   Select,
@@ -15,6 +16,7 @@ import {
   Typography,
 } from '@mui/material';
 import { AxiosError } from 'axios';
+import { StyledTooltip } from 'datagateway-common/lib/arrowtooltip.component';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { DOIRelationType, DOIResourceType, RelatedDOI } from '../downloadApi';
@@ -148,7 +150,15 @@ const RelatedDOIs: React.FC<RelatedDOIsProps> = (props) => {
               <TableBody>
                 {relatedDOIs.map((relatedItem) => (
                   <TableRow key={relatedItem.relatedIdentifier}>
-                    <TableCell>{relatedItem.relatedIdentifier}</TableCell>
+                    <TableCell>
+                      <StyledTooltip describeChild title={relatedItem.title}>
+                        <Link
+                          href={`https://doi.org/${relatedItem.relatedIdentifier}`}
+                        >
+                          {relatedItem.relatedIdentifier}
+                        </Link>
+                      </StyledTooltip>
+                    </TableCell>
                     <TableCell>
                       <FormControl fullWidth size="small" required>
                         <InputLabel

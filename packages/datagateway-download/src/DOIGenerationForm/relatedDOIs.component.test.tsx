@@ -189,4 +189,18 @@ describe('DOI generation form component', () => {
       screen.queryByRole('table', { name: 'DOIGenerationForm.related_dois' })
     ).not.toBeInTheDocument();
   });
+
+  it('should render dois as links and show title on hover', async () => {
+    renderComponent();
+
+    const doiLink = screen.getByRole('link', { name: 'related.doi.1' });
+
+    expect(doiLink).toHaveAttribute('href', 'https://doi.org/related.doi.1');
+
+    await user.hover(doiLink);
+
+    expect(
+      await screen.findByRole('tooltip', { name: 'Related DOI 1' })
+    ).toBeInTheDocument();
+  });
 });
