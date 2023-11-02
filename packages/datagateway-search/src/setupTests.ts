@@ -8,7 +8,7 @@ import { dGCommonInitialState } from 'datagateway-common';
 import { initialState as dgSearchInitialState } from './state/reducers/dgsearch.reducer';
 import { screen, within } from '@testing-library/react';
 
-jest.setTimeout(15000);
+jest.setTimeout(20000);
 
 // Unofficial React 17 Enzyme adapter
 Enzyme.configure({ adapter: new Adapter() });

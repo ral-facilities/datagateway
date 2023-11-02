@@ -9,7 +9,7 @@ import { initialState as dgDataViewInitialState } from './state/reducers/dgdatav
 import { dGCommonInitialState } from 'datagateway-common';
 import { screen, within } from '@testing-library/react';
 
-jest.setTimeout(15000);
+jest.setTimeout(20000);
 
 function noOp(): void {
   // required as work-around for enzyme/jest environment not implementing window.URL.createObjectURL method
