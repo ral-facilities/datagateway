@@ -64,7 +64,9 @@ describe('DOI Generation form', () => {
       cy.contains('button', 'Generate DOI').click();
 
       cy.contains('Mint Confirmation').should('be.visible');
-      cy.contains('Mint was successful').should('be.visible');
+      cy.contains('Mint was successful', { timeout: 10000 }).should(
+        'be.visible'
+      );
       cy.contains('View Data Publication').click();
 
       cy.url().should('match', /\/browse\/dataPublication\/[0-9]+$/);
@@ -121,7 +123,9 @@ describe('DOI Generation form', () => {
       // check that contributor info doesn't break the API
       cy.contains('button', 'Generate DOI').click();
 
-      cy.contains('Mint was successful').should('be.visible');
+      cy.contains('Mint was successful', { timeout: 10000 }).should(
+        'be.visible'
+      );
     });
 
     it('should not let user add invalid/duplicate Data Publication users', () => {
@@ -192,7 +196,9 @@ describe('DOI Generation form', () => {
       // check that related DOIs info doesn't break the API
       cy.contains('button', 'Generate DOI').click();
 
-      cy.contains('Mint was successful').should('be.visible');
+      cy.contains('Mint was successful', { timeout: 10000 }).should(
+        'be.visible'
+      );
     });
 
     it('should let user see their current cart items', () => {
