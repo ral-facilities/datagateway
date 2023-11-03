@@ -80,26 +80,40 @@ const ISISInvestigationsTable = (
     },
   ];
 
+  // isMounted is used to disable queries when the component isn't fully mounted.
+  // It prevents the request being sent twice if default sort is set.
+  // It is not needed for cards/tables that don't have default sort.
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const { data: totalDataCount } = useInvestigationCount(
     investigationQueryFilters
   );
-  const { fetchNextPage, data } = useInvestigationsInfinite([
-    ...investigationQueryFilters,
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify([
-        {
-          investigationInstruments: 'instrument',
-        },
-        {
-          dataCollectionInvestigations: { dataCollection: 'dataPublications' },
-        },
-        {
-          investigationUsers: 'user',
-        },
-      ]),
-    },
-  ]);
+  const { fetchNextPage, data } = useInvestigationsInfinite(
+    [
+      ...investigationQueryFilters,
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify([
+          {
+            investigationInstruments: 'instrument',
+          },
+          {
+            dataCollectionInvestigations: {
+              dataCollection: 'dataPublications',
+            },
+          },
+          {
+            investigationUsers: 'user',
+          },
+        ]),
+      },
+    ],
+    undefined,
+    isMounted
+  );
   const { data: allIds, isLoading: allIdsLoading } = useIds(
     'investigation',
     investigationQueryFilters,

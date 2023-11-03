@@ -231,6 +231,14 @@ describe('DLS datafiles table component', () => {
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"createTime":"desc"}')}`
     );
+
+    // check that the data request is sent only once after mounting
+    expect(useDatafilesInfinite).toHaveBeenCalledTimes(2);
+    expect(useDatafilesInfinite).toHaveBeenCalledWith(expect.anything(), false);
+    expect(useDatafilesInfinite).toHaveBeenLastCalledWith(
+      expect.anything(),
+      true
+    );
   });
 
   it('updates sort query params on sort', async () => {

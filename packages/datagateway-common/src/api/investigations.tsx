@@ -98,7 +98,8 @@ export const useInvestigation = (
 
 export const useInvestigationsPaginated = (
   additionalFilters?: AdditionalFilters,
-  ignoreIDSort?: boolean
+  ignoreIDSort?: boolean,
+  isMounted?: boolean
 ): UseQueryResult<Investigation[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
@@ -151,13 +152,15 @@ export const useInvestigationsPaginated = (
         handleICATError(error);
       },
       retry: retryICATErrors,
+      enabled: isMounted ?? true,
     }
   );
 };
 
 export const useInvestigationsInfinite = (
   additionalFilters?: AdditionalFilters,
-  ignoreIDSort?: boolean
+  ignoreIDSort?: boolean,
+  isMounted?: boolean
 ): UseInfiniteQueryResult<Investigation[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
@@ -185,6 +188,7 @@ export const useInvestigationsInfinite = (
         handleICATError(error);
       },
       retry: retryICATErrors,
+      enabled: isMounted ?? true,
     }
   );
 };

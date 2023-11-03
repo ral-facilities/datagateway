@@ -216,6 +216,12 @@ describe('ISIS Data Publication table component', () => {
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"publicationDate":"desc"}')}`
     );
+
+    // check that the data request is sent only once after mounting
+    const datafilesCalls = (axios.get as jest.Mock).mock.calls.filter(
+      (call) => call[0] === '/datapublications'
+    );
+    expect(datafilesCalls).toHaveLength(1);
   });
 
   it('updates sort query params on sort', async () => {

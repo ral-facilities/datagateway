@@ -71,7 +71,7 @@ describe('Data column header component', () => {
     it('sets asc order', async () => {
       render(<DataHeader {...dataHeaderProps} />);
       await user.click(await screen.findByRole('button', { name: 'Test' }));
-      expect(onSort).toHaveBeenCalledWith('test', 'asc', 'push');
+      expect(onSort).toHaveBeenCalledWith('test', 'asc', 'push', false);
     });
 
     it('sets desc order', async () => {
@@ -84,7 +84,7 @@ describe('Data column header component', () => {
         />
       );
       await user.click(await screen.findByRole('button', { name: 'Test' }));
-      expect(onSort).toHaveBeenCalledWith('test', 'desc', 'push');
+      expect(onSort).toHaveBeenCalledWith('test', 'desc', 'push', false);
     });
 
     it('sets null order', async () => {
@@ -97,7 +97,7 @@ describe('Data column header component', () => {
         />
       );
       await user.click(await screen.findByRole('button', { name: 'Test' }));
-      expect(onSort).toHaveBeenCalledWith('test', null, 'push');
+      expect(onSort).toHaveBeenCalledWith('test', null, 'push', false);
     });
   });
 
@@ -105,11 +105,28 @@ describe('Data column header component', () => {
     it('sets asc order', () => {
       render(<DataHeader {...dataHeaderProps} defaultSort="asc" />);
 
-      expect(onSort).toHaveBeenCalledWith('test', 'asc', 'replace');
+      expect(onSort).toHaveBeenCalledWith('test', 'asc', 'replace', false);
     });
     it('sets desc order', () => {
       render(<DataHeader {...dataHeaderProps} defaultSort="desc" />);
-      expect(onSort).toHaveBeenCalledWith('test', 'desc', 'replace');
+      expect(onSort).toHaveBeenCalledWith('test', 'desc', 'replace', false);
+    });
+  });
+
+  describe('changes icons in the label', () => {
+    it('changes icon to Add when shift is pressed', async () => {
+      render(<DataHeader {...dataHeaderProps} shiftDown={true} />);
+      expect(screen.getByTestId('AddIcon')).toBeInTheDocument();
+    });
+
+    it('changes icon to ArrowUpward when hovered', async () => {
+      render(<DataHeader {...dataHeaderProps} />);
+      expect(screen.getByTestId('SortIcon')).toBeInTheDocument();
+      await user.hover(await screen.findByRole('button', { name: 'Test' }));
+      expect(screen.getByTestId('ArrowUpwardIcon')).toBeInTheDocument();
+
+      await user.unhover(await screen.findByRole('button', { name: 'Test' }));
+      expect(screen.getByTestId('SortIcon')).toBeInTheDocument();
     });
   });
 

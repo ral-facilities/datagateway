@@ -176,6 +176,30 @@ const VirtualizedTable = React.memo(
       shortHeader,
     } = props;
 
+    const [shiftDown, setShiftDown] = React.useState(false);
+    // add event listener to listen for shift key being pressed
+    React.useEffect(() => {
+      const handleKeyDown = (event: KeyboardEvent): void => {
+        if (event.key === 'Shift') {
+          setShiftDown(true);
+        }
+      };
+
+      const handleKeyUp = (event: KeyboardEvent): void => {
+        if (event.key === 'Shift') {
+          setShiftDown(false);
+        }
+      };
+
+      document.addEventListener('keydown', handleKeyDown);
+      document.addEventListener('keyup', handleKeyUp);
+
+      return (): void => {
+        document.removeEventListener('keydown', handleKeyDown);
+        document.removeEventListener('keyup', handleKeyUp);
+      };
+    }, []);
+
     if (
       (props.loadMoreRows && typeof totalRowCount === 'undefined') ||
       (totalRowCount && typeof props.loadMoreRows === 'undefined')
@@ -474,6 +498,7 @@ const VirtualizedTable = React.memo(
                               filterComponent={filterComponent}
                               resizeColumn={resizeColumn}
                               defaultSort={defaultSort}
+                              shiftDown={shiftDown}
                             />
                           )}
                           className={className}

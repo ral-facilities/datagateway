@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.1.2](https://github.com/ral-facilities/datagateway/tree/v1.1.2) (2023-09-28)
+
+[Full Changelog](https://github.com/ral-facilities/datagateway/compare/v1.1.1...v1.1.2)
+
+**Fixed bugs:**
+
+- \#1582 - Fix double requests on default sort [\#1583](https://github.com/ral-facilities/datagateway/pull/1583) ([kaperoo](https://github.com/kaperoo))
+
 ## [v1.1.1](https://github.com/ral-facilities/datagateway/tree/v1.1.1) (2022-08-24)
 
 [Full Changelog](https://github.com/ral-facilities/datagateway/compare/v1.1.0...v1.1.1)

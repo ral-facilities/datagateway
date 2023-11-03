@@ -352,6 +352,7 @@ describe('generic api functions', () => {
     afterEach(() => {
       jest.restoreAllMocks();
       jest.resetModules();
+      window.history.pushState({}, 'Test', '/');
     });
 
     describe('useSort', () => {
@@ -401,6 +402,47 @@ describe('generic api functions', () => {
 
         expect(pushSpy).toHaveBeenCalledWith({
           search: '?',
+        });
+      });
+
+      it('returns callback that, when called without shift modifier, replaces sort with the new one', () => {
+        window.history.pushState(
+          {},
+          'Test',
+          '?sort=%7B%22name%22%3A%22asc%22%7D'
+        );
+        const { result } = renderHook(() => useSort(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current('title', 'asc', 'push', false);
+        });
+
+        expect(pushSpy).toHaveBeenCalledWith({
+          search: `?sort=${encodeURIComponent('{"title":"asc"}')}`,
+        });
+      });
+
+      it('returns callback that, when called with shift modifier, appends new sort to the existing one', () => {
+        window.history.pushState(
+          {},
+          'Test',
+          '?sort=%7B%22name%22%3A%22asc%22%7D'
+        );
+
+        const { result } = renderHook(() => useSort(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current('title', 'asc', 'push', true);
+        });
+
+        console.log(history.location.search);
+
+        expect(pushSpy).toHaveBeenCalledWith({
+          search: `?sort=${encodeURIComponent('{"name":"asc","title":"asc"}')}`,
         });
       });
     });

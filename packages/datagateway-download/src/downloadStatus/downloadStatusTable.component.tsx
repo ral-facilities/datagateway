@@ -326,9 +326,16 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
               },
             ]}
             sort={sort}
-            onSort={(column: string, order: 'desc' | 'asc' | null) => {
+            onSort={(
+              column: string,
+              order: 'desc' | 'asc' | null,
+              _,
+              shiftDown?: boolean
+            ) => {
               if (order) {
-                setSort({ ...sort, [column]: order });
+                shiftDown
+                  ? setSort({ ...sort, [column]: order })
+                  : setSort({ [column]: order });
               } else {
                 const { [column]: order, ...restOfSort } = sort;
                 setSort(restOfSort);
