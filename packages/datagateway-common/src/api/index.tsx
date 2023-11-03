@@ -31,7 +31,7 @@ export * from './facilityCycles';
 export * from './instruments';
 export * from './investigations';
 export * from './datafiles';
-export * from './studies';
+export * from './dataPublications';
 export * from './datasets';
 export * from './lucene';
 
@@ -231,10 +231,15 @@ export const getApiParams = (
               'where',
               JSON.stringify({ [column]: { ilike: filter.value } })
             );
-          } else {
+          } else if (filter.type === 'exclude') {
             searchParams.append(
               'where',
               JSON.stringify({ [column]: { nilike: filter.value } })
+            );
+          } else {
+            searchParams.append(
+              'where',
+              JSON.stringify({ [column]: { eq: filter.value } })
             );
           }
         }
@@ -255,7 +260,8 @@ export const getApiParams = (
 export const useSort = (): ((
   sortKey: string,
   order: Order | null,
-  updateMethod: UpdateMethod
+  updateMethod: UpdateMethod,
+  shiftDown?: boolean
 ) => void) => {
   const { push, replace } = useHistory();
 
@@ -263,17 +269,25 @@ export const useSort = (): ((
     (
       sortKey: string,
       order: Order | null,
-      updateMethod: UpdateMethod
+      updateMethod: UpdateMethod,
+      shiftDown?: boolean
     ): void => {
       let query = parseSearchToQuery(window.location.search);
       if (order !== null) {
-        query = {
-          ...query,
-          sort: {
-            ...query.sort,
-            [sortKey]: order,
-          },
-        };
+        query = shiftDown
+          ? {
+              ...query,
+              sort: {
+                ...query.sort,
+                [sortKey]: order,
+              },
+            }
+          : {
+              ...query,
+              sort: {
+                [sortKey]: order,
+              },
+            };
       } else {
         // if order is null, user no longer wants to sort by that column so remove column from sort state
         const { [sortKey]: order, ...rest } = query.sort;
@@ -369,6 +383,8 @@ export const useUpdateQueryParam = (
   const functionToUse = updateMethod === 'push' ? push : replace;
   return React.useCallback(
     (param: FiltersType | SortType | number | null) => {
+      // need to use window.location.search and not useLocation to ensure we have the most
+      // up to date version of search when useUpdateQueryParam is called
       const query = parseSearchToQuery(window.location.search);
 
       if (type === 'filters') {
@@ -701,7 +717,7 @@ export const fetchFilterCountQuery = (
     | 'facilityCycle'
     | 'instrument'
     | 'facility'
-    | 'study',
+    | 'dataPublication',
   additionalFilters?: AdditionalFilters
 ): Promise<number> => {
   const params = new URLSearchParams();
@@ -737,7 +753,7 @@ export const useCustomFilterCount = (
     | 'facilityCycle'
     | 'instrument'
     | 'facility'
-    | 'study',
+    | 'dataPublication',
   filterKey: string,
   filterIds: string[] | undefined,
   additionalFilters?: {
@@ -760,7 +776,7 @@ export const useCustomFilterCount = (
         | 'facilityCycle'
         | 'instrument'
         | 'facility'
-        | 'study'
+        | 'dataPublication'
       ),
       string,
       string,

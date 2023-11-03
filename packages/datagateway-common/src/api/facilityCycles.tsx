@@ -34,8 +34,23 @@ const fetchFacilityCycles = (
     );
   }
 
+  params.append(
+    'where',
+    JSON.stringify({
+      'investigationFacilityCycles.investigation.investigationInstruments.instrument.id':
+        {
+          eq: instrumentId,
+        },
+    })
+  );
+  // Distinct is needed as otherwise it returns duplicate cycles for every cycle with a unique investigation with the matching instrument id
+  params.append(
+    'distinct',
+    JSON.stringify(['id', 'name', 'startDate', 'endDate'])
+  );
+
   return axios
-    .get(`${apiUrl}/instruments/${instrumentId}/facilitycycles`, {
+    .get(`${apiUrl}/facilitycycles`, {
       params,
       headers: {
         Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
@@ -78,57 +93,9 @@ export const useAllFacilityCycles = (
   );
 };
 
-const fetchFacilityCyclesByInvestigation = (
-  apiUrl: string,
-  investigationStartDate: string | undefined
-): Promise<FacilityCycle[]> => {
-  const params = new URLSearchParams();
-  params.append(
-    'where',
-    JSON.stringify({ startDate: { lte: investigationStartDate } })
-  );
-  params.append(
-    'where',
-    JSON.stringify({ endDate: { gte: investigationStartDate } })
-  );
-  return axios
-    .get(`${apiUrl}/facilitycycles`, {
-      params,
-      headers: {
-        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
-      },
-    })
-    .then((response) => {
-      return response.data;
-    });
-};
-
-export const useFacilityCyclesByInvestigation = (
-  investigationStartDate?: string
-): UseQueryResult<FacilityCycle[], AxiosError> => {
-  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
-
-  return useQuery<
-    FacilityCycle[],
-    AxiosError,
-    FacilityCycle[],
-    [string, string?]
-  >(
-    ['facilityCycle', investigationStartDate],
-    () => fetchFacilityCyclesByInvestigation(apiUrl, investigationStartDate),
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-
-      enabled: !!investigationStartDate,
-    }
-  );
-};
-
 export const useFacilityCyclesPaginated = (
-  instrumentId: number
+  instrumentId: number,
+  isMounted?: boolean
 ): UseQueryResult<FacilityCycle[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
@@ -142,7 +109,7 @@ export const useFacilityCyclesPaginated = (
       string,
       number,
       {
-        sort: SortType;
+        sort: string;
         filters: FiltersType;
         page: number;
         results: number;
@@ -152,10 +119,15 @@ export const useFacilityCyclesPaginated = (
     [
       'facilityCycle',
       instrumentId,
-      { sort, filters, page: page ?? 1, results: results ?? 10 },
+      {
+        sort: JSON.stringify(sort), // need to stringify sort as property order is important!
+        filters,
+        page: page ?? 1,
+        results: results ?? 10,
+      },
     ],
     (params) => {
-      const { sort, filters, page, results } = params.queryKey[2];
+      const { page, results } = params.queryKey[2];
       const startIndex = (page - 1) * results;
       const stopIndex = startIndex + results - 1;
       return fetchFacilityCycles(
@@ -173,26 +145,22 @@ export const useFacilityCyclesPaginated = (
         handleICATError(error);
       },
       retry: retryICATErrors,
+      enabled: isMounted ?? true,
     }
   );
 };
 
 export const useFacilityCyclesInfinite = (
-  instrumentId: number
+  instrumentId: number,
+  isMounted?: boolean
 ): UseInfiniteQueryResult<FacilityCycle[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters, sort } = parseSearchToQuery(location.search);
 
-  return useInfiniteQuery<
-    FacilityCycle[],
-    AxiosError,
-    FacilityCycle[],
-    [string, number, { sort: SortType; filters: FiltersType }]
-  >(
-    ['facilityCycle', instrumentId, { sort, filters }],
+  return useInfiniteQuery(
+    ['facilityCycle', instrumentId, { sort: JSON.stringify(sort), filters }],
     (params) => {
-      const { sort, filters } = params.queryKey[2];
       const offsetParams = params.pageParam ?? { startIndex: 0, stopIndex: 49 };
       return fetchFacilityCycles(
         apiUrl,
@@ -206,6 +174,7 @@ export const useFacilityCyclesInfinite = (
         handleICATError(error);
       },
       retry: retryICATErrors,
+      enabled: isMounted ?? true,
     }
   );
 };
@@ -218,8 +187,23 @@ const fetchFacilityCycleCount = (
   const params = getApiParams({ filters, sort: {} });
   params.delete('order');
 
+  params.append(
+    'where',
+    JSON.stringify({
+      'investigationFacilityCycles.investigation.investigationInstruments.instrument.id':
+        {
+          eq: instrumentId,
+        },
+    })
+  );
+  // Distinct is needed as otherwise it returns duplicate cycles for every cycle with a unique investigation with the matching instrument id
+  params.append(
+    'distinct',
+    JSON.stringify(['id', 'name', 'startDate', 'endDate'])
+  );
+
   return axios
-    .get(`${apiUrl}/instruments/${instrumentId}/facilitycycles/count`, {
+    .get(`${apiUrl}/facilitycycles/count`, {
       params,
       headers: {
         Authorization: `Bearer ${readSciGatewayToken().sessionId}`,

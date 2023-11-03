@@ -1,15 +1,13 @@
 import React from 'react';
-import { shallow } from 'enzyme';
 import { MemoryRouter } from 'react-router-dom';
-import { Link } from '@mui/material';
 import {
-  formatBytes,
   datasetLink,
+  formatBytes,
+  formatCountOrSize,
   investigationLink,
   tableLink,
-  formatCountOrSize,
-  getStudyInfoInvestigation,
 } from './cellContentRenderers';
+import { render, screen } from '@testing-library/react';
 
 describe('Cell content renderers', () => {
   describe('formatBytes', () => {
@@ -71,87 +69,39 @@ describe('Cell content renderers', () => {
     });
   });
 
-  describe('getStudyInfoInvestigation', () => {
-    it('filters out missing investigations and returns first existing investigation', () => {
-      expect(
-        getStudyInfoInvestigation({
-          id: 1,
-          pid: 'doi 1',
-          name: 'study 1',
-          modTime: '',
-          createTime: '',
-          studyInvestigations: [
-            {
-              id: 2,
-            },
-            {
-              id: 3,
-              investigation: {
-                id: 4,
-                title: 'Investigating the properties of the number 4',
-                name: 'investigation 4',
-                visitId: '1',
-              },
-            },
-          ],
-        })?.name
-      ).toEqual('investigation 4');
-    });
-
-    it('handles undefined properties fine', () => {
-      expect(
-        getStudyInfoInvestigation({
-          id: 1,
-          pid: 'doi 1',
-          name: 'study 1',
-          modTime: '',
-          createTime: '',
-        })
-      ).toBeUndefined();
-      expect(
-        getStudyInfoInvestigation({
-          id: 1,
-          pid: 'doi 1',
-          name: 'study 1',
-          modTime: '',
-          createTime: '',
-          studyInvestigations: [
-            {
-              id: 2,
-            },
-            {
-              id: 3,
-            },
-          ],
-        })
-      ).toBeUndefined();
-    });
-  });
-
   describe('datasetLink', () => {
     it('renders correctly', () => {
-      const wrapper = shallow(
+      render(
         <MemoryRouter>{datasetLink('1', 2, 'test', 'card')}</MemoryRouter>
       );
-      expect(wrapper.find(Link)).toMatchSnapshot();
+      expect(screen.getByRole('link', { name: 'test' })).toHaveAttribute(
+        'href',
+        '/browse/investigation/1/dataset/2/datafile?view=card'
+      );
     });
   });
 
   describe('investigationLink', () => {
     it('renders correctly', () => {
-      const wrapper = shallow(
+      render(
         <MemoryRouter>{investigationLink(1, 'test', 'card')}</MemoryRouter>
       );
-      expect(wrapper.find(Link)).toMatchSnapshot();
+      expect(screen.getByRole('link', { name: 'test' })).toHaveAttribute(
+        'href',
+        '/browse/investigation/1/dataset?view=card'
+      );
     });
   });
 
   describe('tableLink', () => {
     it('renders correctly', () => {
-      const wrapper = shallow(
+      render(
         <MemoryRouter>{tableLink('/test/url', 'test text')}</MemoryRouter>
       );
-      expect(wrapper.find(Link)).toMatchSnapshot();
+      expect(screen.getByRole('link', { name: 'test text' })).toHaveAttribute(
+        'href',
+        '/test/url'
+      );
     });
   });
 });

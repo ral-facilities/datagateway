@@ -12,12 +12,12 @@ import {
   SortType,
 } from '../app.types';
 import { StateType } from '../state/app.types';
-import {
-  useQuery,
+import type {
   UseQueryResult,
-  useInfiniteQuery,
   UseInfiniteQueryResult,
+  UseQueryOptions,
 } from 'react-query';
+import { useQuery, useInfiniteQuery } from 'react-query';
 import retryICATErrors from './retryICATErrors';
 
 export const fetchDatafiles = (
@@ -56,7 +56,8 @@ export const fetchDatafiles = (
 };
 
 export const useDatafilesPaginated = (
-  additionalFilters?: AdditionalFilters
+  additionalFilters?: AdditionalFilters,
+  isMounted?: boolean
 ): UseQueryResult<Datafile[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
@@ -69,7 +70,7 @@ export const useDatafilesPaginated = (
     [
       string,
       {
-        sort: SortType;
+        sort: string;
         filters: FiltersType;
         page: number;
         results: number;
@@ -79,11 +80,16 @@ export const useDatafilesPaginated = (
   >(
     [
       'datafile',
-      { sort, filters, page: page ?? 1, results: results ?? 10 },
+      {
+        sort: JSON.stringify(sort), // need to stringify sort as property order is important!
+        filters,
+        page: page ?? 1,
+        results: results ?? 10,
+      },
       additionalFilters,
     ],
     (params) => {
-      const { sort, filters, page, results } = params.queryKey[1];
+      const { page, results } = params.queryKey[1];
       const startIndex = (page - 1) * results;
       const stopIndex = startIndex + results - 1;
       return fetchDatafiles(apiUrl, { sort, filters }, additionalFilters, {
@@ -96,26 +102,22 @@ export const useDatafilesPaginated = (
         handleICATError(error);
       },
       retry: retryICATErrors,
+      enabled: isMounted ?? true,
     }
   );
 };
 
 export const useDatafilesInfinite = (
-  additionalFilters?: AdditionalFilters
+  additionalFilters?: AdditionalFilters,
+  isMounted?: boolean
 ): UseInfiniteQueryResult<Datafile[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters, sort } = parseSearchToQuery(location.search);
 
-  return useInfiniteQuery<
-    Datafile[],
-    AxiosError,
-    Datafile[],
-    [string, { sort: SortType; filters: FiltersType }, AdditionalFilters?]
-  >(
-    ['datafile', { sort, filters }, additionalFilters],
+  return useInfiniteQuery(
+    ['datafile', { sort: JSON.stringify(sort), filters }, additionalFilters], // need to stringify sort as property order is important!
     (params) => {
-      const { sort, filters } = params.queryKey[1];
       const offsetParams = params.pageParam ?? { startIndex: 0, stopIndex: 49 };
       return fetchDatafiles(
         apiUrl,
@@ -129,6 +131,7 @@ export const useDatafilesInfinite = (
         handleICATError(error);
       },
       retry: retryICATErrors,
+      enabled: isMounted ?? true,
     }
   );
 };
@@ -216,7 +219,13 @@ const fetchDatafileDetails = (
 
 export const useDatafileDetails = (
   datafileId: number,
-  additionalFilters?: AdditionalFilters
+  additionalFilters?: AdditionalFilters,
+  options?: UseQueryOptions<
+    Datafile,
+    AxiosError,
+    Datafile,
+    [string, number, AdditionalFilters?]
+  >
 ): UseQueryResult<Datafile, AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
 
@@ -234,14 +243,95 @@ export const useDatafileDetails = (
         handleICATError(error);
       },
       retry: retryICATErrors,
+      ...options,
     }
   );
 };
 
+/**
+ * Downloads the datafile with the given ID to memory, instead of storage.
+ *
+ * @param idsUrl: URL of the IDS server
+ * @param datafileId The ID of the datafile to be downloaded
+ * @param onDownloadProgress An optional callback that is called whenever download progress is made.
+ */
+const downloadDatafileToMemory = ({
+  idsUrl,
+  datafileId,
+  onDownloadProgress,
+}: {
+  idsUrl: string;
+  datafileId: Datafile['id'];
+  onDownloadProgress?: (progressEvent: ProgressEvent) => void;
+}): Promise<Blob> =>
+  axios
+    .get(`${idsUrl}/getData`, {
+      onDownloadProgress,
+      params: {
+        datafileIds: `${datafileId}`,
+        sessionId: readSciGatewayToken().sessionId,
+        compress: false,
+      },
+    })
+    .then((response) => new Blob([response.data]));
+
+/**
+ * A React hook that fetches the content of the {@link Datafile} with the given ID
+ * as a {@link Blob}.
+ *
+ * @param datafileId The ID of the {@link Datafile} to be fetched.
+ * @param onDownloadProgress A callback that is called with the download progress of the {@link Datafile} content.
+ * @param queryOptions Additional {@link useQuery} options. Overrides default options.
+ */
+export const useDatafileContent = ({
+  datafileId,
+  onDownloadProgress,
+  ...queryOptions
+}: {
+  datafileId: Datafile['id'];
+  onDownloadProgress: (progressEvent: ProgressEvent) => void;
+} & UseQueryOptions<
+  Blob,
+  AxiosError,
+  Blob,
+  ['datafile', 'content', number]
+>): UseQueryResult<Blob, AxiosError> => {
+  const idsUrl = useSelector<StateType, string>(
+    (state) => state.dgcommon.urls.idsUrl
+  );
+
+  return useQuery(
+    ['datafile', 'content', datafileId],
+    () =>
+      downloadDatafileToMemory({
+        idsUrl,
+        datafileId,
+        onDownloadProgress,
+      }),
+    {
+      onError: (error) => {
+        handleICATError(error);
+      },
+      ...queryOptions,
+    }
+  );
+};
+
+/**
+ * Download the datafile with the given datafile ID. If the content of the datafile is provided, the download will be immediately available.
+ *
+ * @param idsUrl URL of the IDS server.
+ * @param datafileId ID of the datafile to be downloaded
+ * @param filename The name of the file that will contain the content of the downloaded datafile.
+ * @param content Content of the datafile as a {@link Blob}. Useful when the content is already previously downloaded.
+ *                downloadDatafile will use this content to create a download file instead of downloading it again
+ *                from IDS.
+ */
 export const downloadDatafile = (
   idsUrl: string,
   datafileId: number,
-  filename: string
+  filename: string,
+  content?: Blob
 ): void => {
   const params = {
     sessionId: readSciGatewayToken().sessionId,
@@ -251,13 +341,26 @@ export const downloadDatafile = (
   };
 
   const link = document.createElement('a');
-  link.href = `${idsUrl}/getData?${Object.entries(params)
-    .map(([key, value]) => `${key}=${value}`)
-    .join('&')}`;
+  const objectUrl = content && window.URL.createObjectURL(content);
+
+  link.href =
+    content && objectUrl
+      ? objectUrl
+      : `${idsUrl}/getData?${Object.entries(params)
+          .map(([key, value]) => `${key}=${value}`)
+          .join('&')}`;
+
+  if (objectUrl) {
+    link.download = filename;
+  }
 
   link.style.display = 'none';
   link.target = '_blank';
   document.body.appendChild(link);
   link.click();
   link.remove();
+
+  if (objectUrl) {
+    window.URL.revokeObjectURL(objectUrl);
+  }
 };

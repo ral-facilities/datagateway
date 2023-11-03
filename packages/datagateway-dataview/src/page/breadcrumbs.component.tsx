@@ -106,8 +106,14 @@ const useEntityInformation = (
         // the entity field we want is the name of the entity.
         let apiEntity = entity;
 
-        // If the entity is a investigation, we always want to fetch the title field.
-        let requestEntityField = entity === 'investigation' ? 'title' : 'name';
+        // If the entity is a investigation or a data publication, we can't use name field as the default
+        // TODO: what do we want to show for a datapublication breadcrumb?
+        let requestEntityField =
+          entity === 'investigation'
+            ? 'title'
+            : entity === 'dataPublication'
+            ? 'pid'
+            : 'name';
 
         // Use breadcrumb settings in state to customise API call for entities.
         if (
@@ -306,7 +312,7 @@ const PageBreadcrumbs: React.FC<PageBreadcrumbsProps> = (
 
             {/* // Return the base entity as a link. */}
             <Breadcrumb
-              displayName={t(`breadcrumbs.${currentPathnames[1]}`, {
+              displayName={t(`breadcrumbs.${currentPathnames[1]}` as const, {
                 count: 100,
               })}
               data-testid="Breadcrumb-base"

@@ -13,33 +13,19 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@e33196f7422957bea03ed53f6fbb155025ffc7b8 # v3
         with:
-          node-version: '14.x'
-
-      # Cache yarn dependencies/ restore the cached dependencies during future workflows
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - name: Cache yarn dependencies
-        uses: actions/cache@v3
-        id: yarn-cache
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
+          node-version: 20
+          cache: 'yarn'
 
       - name: Install dependencies
         # Ubuntu 16+ does not install libgconf-2-4 by default, so we need to install it ourselves (for Cypress)
         run: |
-          npm config set scripts-prepend-node-path true
           sudo apt-get install libgconf-2-4
-          yarn --frozen-lockfile
+          yarn --immutable
 
       - name: Determine tag name
         run: |
@@ -78,7 +64,7 @@ jobs:
           tar -czf ../../datagateway-search-$TAG_NAME.tar.gz datagateway-search-$TAG_NAME
 
       - name: Update snapshot tag
-        uses: richardsimko/update-tag@v1
+        uses: richardsimko/update-tag@782c008c16efcff2a27f83238dc4b05ffd8f4b52 # v1
         with:
           tag_name: ${{ env.TAG_NAME }}
         env:
@@ -86,7 +72,7 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' }}
 
       - name: Create/update release
-        uses: johnwbyrd/update-release@v1.0.0
+        uses: johnwbyrd/update-release@1d5ec4791e40507e5eca3b4dbf90f0b27e7e4979 # v1.0.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           files: ./datagateway-dataview-${{ env.TAG_NAME }}.tar.gz ./datagateway-download-${{ env.TAG_NAME }}.tar.gz ./datagateway-search-${{ env.TAG_NAME }}.tar.gz

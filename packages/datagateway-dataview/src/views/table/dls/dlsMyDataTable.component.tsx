@@ -46,22 +46,35 @@ const DLSMyDataTable = (): React.ReactElement => {
       }),
     },
   ]);
-  const { fetchNextPage, data } = useInvestigationsInfinite([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'investigationUsers.user.name': { eq: username },
-      }),
-    },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify([
-        {
-          investigationInstruments: 'instrument',
-        },
-      ]),
-    },
-  ]);
+
+  // isMounted is used to disable queries when the component isn't fully mounted.
+  // It prevents the request being sent twice if default sort is set.
+  // It is not needed for cards/tables that don't have default sort.
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const { fetchNextPage, data } = useInvestigationsInfinite(
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'investigationUsers.user.name': { eq: username },
+        }),
+      },
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify([
+          {
+            investigationInstruments: 'instrument',
+          },
+        ]),
+      },
+    ],
+    undefined,
+    isMounted
+  );
 
   const datasetCountQueries = useInvestigationsDatasetCount(data);
 
@@ -70,7 +83,7 @@ const DLSMyDataTable = (): React.ReactElement => {
     if (data) {
       if ('pages' in data) {
         return data.pages.flat();
-      } else if (data instanceof Array) {
+      } else if ((data as unknown) instanceof Array) {
         return data;
       }
     }

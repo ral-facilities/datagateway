@@ -10,7 +10,7 @@
     "open_data_warning": {
       "message": "Open data",
       "tooltip": "Only open data is displayed when browsing anonymously. Please login to see embargoed data.",
-      "studies_tooltip": "Only open data is currently supported by the experiment view. Please browse via facility cycle to view closed data",
+      "datapublications_tooltip": "Only open data is currently supported by the experiment view. Please browse via facility cycle to view closed data",
       "tooltip_link": "Click here to learn more about our data policy.",
       "aria_label": "More information about open data"
     }
@@ -19,7 +19,7 @@
     "home": "Home",
     "instrument_other": "Instruments",
     "facilityCycle_other": "Facility Cycles",
-    "study_other": "Experiments",
+    "dataPublication_other": "Experiments",
     "proposal_other": "Proposals",
     "investigation_other": "Investigations",
     "dataset_other": "Datasets",
@@ -51,12 +51,13 @@
     "end_date": "End Date",
     "start_date": "Start Date"
   },
-  "studies": {
+  "datapublications": {
     "name": "Name",
     "title": "Title",
+    "description": "Description",
     "pid": "DOI",
-    "end_date": "End Date",
-    "start_date": "Start Date",
+    "id": "Data Publication ID",
+    "publication_date": "Publication Date",
     "details": {
       "label": "Experiment Details",
       "investigations": "View Investigations",
@@ -109,9 +110,9 @@
       "end_date": "End Date",
       "start_date": "Start Date",
       "visit_id": "Experiment Part",
-      "pid": "Part DOI",
+      "pid": "DOI",
       "summary": "Summary",
-      "doi": "DOI",
+      "doi": "Part DOI",
       "size": "Size",
       "calculate": "Calculate",
       "datasets": "View Datasets",
@@ -192,9 +193,40 @@
       "description": "Description",
       "size": "Size",
       "location": "Location",
+      "mod_time": "Last modified on",
+      "create_time": "Created on",
+      "doi": "DOI",
       "parameters": {
         "label": "Datafile Parameters",
         "no_parameters": "No parameters"
+      },
+      "unknown": "Unknown"
+    },
+    "preview": {
+      "preview_datafile": "Preview this datafile",
+      "preview_unsupported": "Preview not supported for this datafile",
+      "cannot_preview": "Cannot preview datafile",
+      "cannot_load_content": "Cannot load datafile content.",
+      "cannot_load_metadata": "Unable to load metadata",
+      "unknown_type": "Datafile type not specified.",
+      "unsupported": "Unsupported datafile type: {{ext}}",
+      "unexpected_error": "An unexpected error has occurred",
+      "link_copied": "Link copied to clipboard",
+      "invalid_datafile": "Invalid datafile",
+      "loading_metadata": "Loading datafile metadata...",
+      "txt": {
+        "file_content_label": "Text content of {{fileName}}",
+        "reading_content": "Reading content"
+      },
+      "toolbar": {
+        "back_button_label": "Other datafiles",
+        "copy_link": "Copy link",
+        "zoom_control": "Zoom level control for datafile content",
+        "zoom_in": "Zoom in",
+        "zoom_out": "Zoom out",
+        "reset_zoom": "Reset zoom",
+        "scroll_to_zoom": "Scroll here to zoom in/out",
+        "show_details": "Show details"
       }
     }
   },
@@ -212,9 +244,12 @@
     "add_to_cart": "Add to selection",
     "cart_loading_tooltip": "Loading selection information...",
     "cart_loading_failed_tooltip": "Selection information failed to load, please reload the page or try again later",
+    "parent_selected_tooltip": "Selection disabled, parent entity has already been added to cart",
     "remove_from_cart": "Remove from selection",
     "download": "Download",
-    "unable_to_download_tooltip": "Unable to download - this item is empty"
+    "unable_to_download_tooltip": "Unable to download - this item is empty",
+    "preview": "Preview datafile",
+    "preview_tooltip": "Preview this datafile"
   },
   "advanced_filters": {
     "show": "Show Advanced Filters",

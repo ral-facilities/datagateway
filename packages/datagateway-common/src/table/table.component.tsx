@@ -114,6 +114,7 @@ export interface TableActionProps {
 
 interface VirtualizedTableProps {
   loading?: boolean;
+  parentSelected?: boolean;
   data: Entity[];
   columns: ColumnType[];
   loadMoreRows?: (offsetParams: IndexRange) => Promise<unknown>;
@@ -154,12 +155,37 @@ const VirtualizedTable = React.memo(
       onCheck,
       onUncheck,
       loading,
+      parentSelected,
       totalRowCount,
       detailsPanel,
       sort,
       onSort,
       disableSelectAll,
     } = props;
+
+    const [shiftDown, setShiftDown] = React.useState(false);
+    // add event listener to listen for shift key being pressed
+    React.useEffect(() => {
+      const handleKeyDown = (event: KeyboardEvent): void => {
+        if (event.key === 'Shift') {
+          setShiftDown(true);
+        }
+      };
+
+      const handleKeyUp = (event: KeyboardEvent): void => {
+        if (event.key === 'Shift') {
+          setShiftDown(false);
+        }
+      };
+
+      document.addEventListener('keydown', handleKeyDown);
+      document.addEventListener('keyup', handleKeyUp);
+
+      return (): void => {
+        document.removeEventListener('keydown', handleKeyDown);
+        document.removeEventListener('keyup', handleKeyUp);
+      };
+    }, []);
 
     if (
       (props.loadMoreRows && typeof totalRowCount === 'undefined') ||
@@ -355,6 +381,7 @@ const VirtualizedTable = React.memo(
                               })
                             }
                             loading={loading ?? false}
+                            parentSelected={parentSelected ?? false}
                             onCheck={onCheck}
                             onUncheck={onUncheck}
                           />
@@ -375,6 +402,7 @@ const VirtualizedTable = React.memo(
                           lastChecked={lastChecked}
                           setLastChecked={setLastChecked}
                           loading={loading ?? false}
+                          parentSelected={parentSelected ?? false}
                         />
                       )}
                     />
@@ -448,6 +476,7 @@ const VirtualizedTable = React.memo(
                               filterComponent={filterComponent}
                               resizeColumn={resizeColumn}
                               defaultSort={defaultSort}
+                              shiftDown={shiftDown}
                             />
                           )}
                           className={className}

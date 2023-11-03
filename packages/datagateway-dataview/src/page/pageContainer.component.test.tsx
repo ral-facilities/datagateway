@@ -1,26 +1,24 @@
-import React from 'react';
-import { ReactWrapper, mount } from 'enzyme';
-
+import * as React from 'react';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../state/app.types';
 import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
 import {
   dGCommonInitialState,
+  DownloadCartItem,
   readSciGatewayToken,
-  useCart,
-  ClearFiltersButton,
 } from 'datagateway-common';
-
-import { LinearProgress } from '@mui/material';
-import { createLocation, createMemoryHistory, History } from 'history';
+import {
+  createLocation,
+  createMemoryHistory,
+  createPath,
+  History,
+} from 'history';
 import { Router } from 'react-router-dom';
 
 import PageContainer, { paths } from './pageContainer.component';
 import { checkInstrumentId, checkInvestigationId } from './idCheckFunctions';
-import axios from 'axios';
-import { act } from 'react-dom/test-utils';
-import { flushPromises } from '../setupTests';
+import axios, { AxiosResponse } from 'axios';
 import {
   QueryClient,
   QueryClientProvider,
@@ -28,6 +26,15 @@ import {
   useQueryClient,
 } from 'react-query';
 import { Provider } from 'react-redux';
+import {
+  render,
+  type RenderResult,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
+import { UserEvent } from '@testing-library/user-event/setup/setup';
+import userEvent from '@testing-library/user-event';
 
 jest.mock('loglevel');
 jest.mock('./idCheckFunctions');
@@ -38,7 +45,6 @@ jest.mock('datagateway-common', () => {
   return {
     __esModule: true,
     ...originalModule,
-    useCart: jest.fn(() => ({ data: [] })),
     // mock table and cardview to opt out of rendering them in these tests as there's no need
     Table: jest.fn(() => 'MockedTable'),
     CardView: jest.fn(() => 'MockedCardView'),
@@ -58,11 +64,14 @@ jest.mock('react-query', () => ({
 describe('PageContainer - Tests', () => {
   let queryClient: QueryClient;
   let history: History;
+  let user: UserEvent;
+  let cartItems: DownloadCartItem[];
+  let holder: HTMLElement;
 
-  const createWrapper = (
+  const renderComponent = (
     h: History = history,
     client: QueryClient = queryClient
-  ): ReactWrapper => {
+  ): RenderResult => {
     const state: StateType = {
       dgcommon: dGCommonInitialState,
       dgdataview: dgDataViewInitialState,
@@ -73,7 +82,7 @@ describe('PageContainer - Tests', () => {
     };
     const mockStore = configureStore([thunk]);
     const testStore = mockStore(state);
-    return mount(
+    return render(
       <Provider store={testStore}>
         <Router history={h}>
           <QueryClientProvider client={client}>
@@ -85,218 +94,248 @@ describe('PageContainer - Tests', () => {
   };
 
   beforeEach(() => {
-    (axios.get as jest.Mock).mockImplementation((url: string) => {
-      if (url.includes('count')) {
-        return Promise.resolve({ data: 0 });
-      } else {
-        return Promise.resolve({ data: [] });
-      }
-    });
     queryClient = new QueryClient();
     history = createMemoryHistory({
       initialEntries: ['/'],
     });
+    user = userEvent.setup();
+
+    delete window.location;
+    window.location = new URL(`http://localhost/`);
+
+    // below code keeps window.location in sync with history changes
+    // (needed because useUpdateQueryParam uses window.location not history)
+    const historyReplace = history.replace;
+    const historyReplaceSpy = jest.spyOn(history, 'replace');
+    historyReplaceSpy.mockImplementation((args) => {
+      historyReplace(args);
+      if (typeof args === 'string') {
+        window.location = new URL(`http://localhost${args}`);
+      } else {
+        window.location = new URL(`http://localhost${createPath(args)}`);
+      }
+    });
+    const historyPush = history.push;
+    const historyPushSpy = jest.spyOn(history, 'push');
+    historyPushSpy.mockImplementation((args) => {
+      historyPush(args);
+      if (typeof args === 'string') {
+        window.location = new URL(`http://localhost${args}`);
+      } else {
+        window.location = new URL(`http://localhost${createPath(args)}`);
+      }
+    });
+
+    holder = document.createElement('div');
+    holder.setAttribute('id', 'datagateway-search');
+    document.body.appendChild(holder);
+
     (useQueryClient as jest.Mock).mockReturnValue({
       getQueryData: jest.fn(() => 0),
     });
+
+    (axios.get as jest.Mock).mockImplementation(
+      (url: string): Promise<Partial<AxiosResponse>> => {
+        if (url.includes('count')) {
+          return Promise.resolve({ data: 0 });
+        }
+
+        if (url.includes('/user/cart')) {
+          return Promise.resolve({
+            data: { cartItems },
+          });
+        }
+
+        if (/.*\/\w+\/\d+$/.test(url)) {
+          // fetch entity information
+          return Promise.resolve({
+            data: {
+              id: 1,
+              name: 'Name 1',
+              title: 'Title 1',
+              visitId: '1',
+            },
+          });
+        }
+
+        return Promise.resolve({ data: [] });
+      }
+    );
   });
 
   afterEach(() => {
-    (useCart as jest.Mock).mockClear();
+    document.body.removeChild(holder);
   });
 
-  it('displays the correct entity count', () => {
+  it('displays the correct entity count', async () => {
     history.replace(paths.toggle.investigation);
     (useQueryClient as jest.Mock).mockReturnValue({
       getQueryData: jest.fn(() => 101),
     });
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    expect(
-      wrapper.find('[aria-label="view-count"]').first().find('h3').text()
-    ).toBe('app.results: 101');
+    expect(await screen.findByLabelText('view-count')).toHaveTextContent(
+      'app.results: 101'
+    );
   });
 
-  it('fetches cart on mount', () => {
-    (useCart as jest.Mock).mockReturnValueOnce({
-      data: [
-        {
-          entityId: 1,
-          entityType: 'dataset',
-          id: 1,
-          name: 'Test 1',
-          parentEntities: [],
-        },
-      ],
-    });
+  it('opens search plugin when icon clicked', async () => {
+    renderComponent();
 
-    createWrapper();
-
-    expect(useCart).toHaveBeenCalled();
-  });
-
-  it('opens search plugin when icon clicked', () => {
-    const wrapper = createWrapper();
-
-    wrapper.find('[aria-label="view-search"]').last().simulate('click');
+    await user.click(
+      await screen.findByRole('button', { name: 'view-search' })
+    );
 
     expect(history.location.pathname).toBe('/search/data');
 
     history.push('/browse/instrument');
-    wrapper.find('[aria-label="view-search"]').last().simulate('click');
+
+    await user.click(
+      await screen.findByRole('button', { name: 'view-search' })
+    );
 
     expect(history.location.pathname).toBe('/search/isis');
 
     history.push('/browse/proposal');
-    wrapper.find('[aria-label="view-search"]').last().simulate('click');
+
+    await user.click(
+      await screen.findByRole('button', { name: 'view-search' })
+    );
 
     expect(history.location.pathname).toBe('/search/dls');
   });
 
-  it('opens download plugin when Download Cart clicked', () => {
-    const wrapper = createWrapper();
+  it('opens download plugin when Download Cart clicked', async () => {
+    renderComponent();
 
-    wrapper.find('[aria-label="app.cart_arialabel"]').last().simulate('click');
+    await user.click(
+      await screen.findByRole('button', { name: 'app.cart_arialabel' })
+    );
 
     expect(history.length).toBe(2);
     expect(history.location.pathname).toBe('/download');
   });
 
-  it('do not display loading bar loading false', () => {
-    const wrapper = createWrapper();
-
-    expect(wrapper.exists(LinearProgress)).toBeFalsy();
+  it('do not display loading bar loading false', async () => {
+    renderComponent();
+    await waitFor(() => {
+      expect(screen.queryByRole('progressbar')).toBeNull();
+    });
   });
 
-  it('display loading bar when loading true', () => {
-    (useIsFetching as jest.Mock).mockReturnValueOnce(1);
-    const wrapper = createWrapper();
-
-    expect(wrapper.exists(LinearProgress)).toBeTruthy();
+  it('display loading bar when loading true', async () => {
+    (useIsFetching as jest.Mock).mockReturnValue(1);
+    renderComponent();
+    expect(await screen.findByRole('progressbar')).toBeInTheDocument();
+    (useIsFetching as jest.Mock).mockReturnValue(0);
   });
 
-  it('display clear filters button and clear for filters onClick', () => {
+  it('display clear filters button and clear for filters onClick', async () => {
     history.replace(
       '/browse/investigation?filters=%7B"title"%3A%7B"value"%3A"spend"%2C"type"%3A"include"%7D%7D'
     );
-    const wrapper = createWrapper();
+    renderComponent();
 
-    expect(wrapper.find(ClearFiltersButton).prop('disabled')).toEqual(false);
+    await user.click(
+      await screen.findByRole('button', { name: 'app.clear_filters' })
+    );
 
-    wrapper
-      .find('[data-testid="clear-filters-button"]')
-      .last()
-      .simulate('click');
-
-    wrapper.update();
-
-    expect(wrapper.find(ClearFiltersButton).prop('disabled')).toEqual(true);
+    expect(
+      await screen.findByRole('button', { name: 'app.clear_filters' })
+    ).toBeDisabled();
     expect(history.location.search).toEqual('?');
   });
 
-  it('display clear filters button and clear for filters onClick (/my-data/DLS)', () => {
+  it('display clear filters button and clear for filters onClick (/my-data/DLS)', async () => {
     const dateNow = `${new Date(Date.now()).toISOString().split('T')[0]}`;
     history.replace(
       '/my-data/DLS?filters=%7B"startDate"%3A%7B"endDate"%3A" ' +
         dateNow +
-        '"%7D%2C"title"%3A%7B"value"%3A"test"%2C"type"%3A"include"%7D%7D&sort=%7B"startDate"%3A"desc"%7D'
+        '"%7D%2C"title"%3A%7B"value"%3A"test"%2C"type"%3A"include"%7D%7D&sort=%7B%22startDate%22%3A%22desc%22%7D'
     );
     const response = { username: 'SomePerson' };
     (readSciGatewayToken as jest.Mock).mockReturnValue(response);
-    const wrapper = createWrapper();
+    renderComponent();
 
-    expect(wrapper.find(ClearFiltersButton).prop('disabled')).toEqual(false);
-
-    wrapper
-      .find('[data-testid="clear-filters-button"]')
-      .last()
-      .simulate('click');
-
-    wrapper.update();
-
-    expect(wrapper.find(ClearFiltersButton).prop('disabled')).toEqual(true);
-
+    await user.click(
+      await screen.findByRole('button', { name: 'app.clear_filters' })
+    );
+    expect(
+      await screen.findByRole('button', { name: 'app.clear_filters' })
+    ).toBeDisabled();
     expect(history.location.search).toEqual(
       '?filters=%7B%22startDate%22%3A%7B%22endDate%22%3A%22' +
         dateNow +
-        '%22%7D%7D'
+        '%22%7D%7D&sort=%7B%22startDate%22%3A%22desc%22%7D'
     );
 
     (readSciGatewayToken as jest.Mock).mockClear();
   });
 
-  it('display disabled clear filters button', () => {
+  it('display disabled clear filters button', async () => {
     history.replace(paths.toggle.investigation);
-    const wrapper = createWrapper();
+    renderComponent();
 
-    expect(wrapper.find(ClearFiltersButton).prop('disabled')).toEqual(true);
+    expect(
+      await screen.findByRole('button', { name: 'app.clear_filters' })
+    ).toBeDisabled();
   });
 
   it('display filter warning on datafile table', async () => {
     history.replace('/browse/investigation/1/dataset/25/datafile');
     (checkInvestigationId as jest.Mock).mockResolvedValueOnce(true);
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
     expect(
-      wrapper.find('[aria-label="filter-message"]').first().text()
-    ).toEqual('loading.filter_message');
+      await screen.findByText('loading.filter_message')
+    ).toBeInTheDocument();
   });
 
-  it('switches view button display name when clicked', () => {
+  it('switches view button display name when clicked', async () => {
     history.replace(paths.toggle.investigation);
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    expect(
-      wrapper.find('[aria-label="page view app.view_cards"]').exists()
-    ).toBeTruthy();
-    expect(
-      wrapper.find('[aria-label="page view app.view_cards"]').first().text()
-    ).toEqual('app.view_cards');
-
-    // Click view button
-    wrapper
-      .find('[aria-label="page view app.view_cards"]')
-      .last()
-      .simulate('click');
-    wrapper.update();
+    await user.click(
+      await screen.findByRole('button', { name: 'page view app.view_cards' })
+    );
 
     // Check that the text on the button has changed
     expect(
-      wrapper.find('[aria-label="page view app.view_table"]').first().text()
-    ).toEqual('app.view_table');
+      await screen.findByRole('button', { name: 'page view app.view_table' })
+    ).toBeInTheDocument();
   });
 
-  it('displays role selector when on My Data route', () => {
+  it('displays role selector when on My Data route', async () => {
     history.replace(paths.myData.root);
 
-    const wrapper = createWrapper();
-
-    expect(wrapper.find('#role-selector').exists()).toBeTruthy();
-  });
-
-  it('display filter warning on toggle table', () => {
-    history.replace(`${paths.toggle.investigation}?view=table`);
-
-    const wrapper = createWrapper();
+    renderComponent();
 
     expect(
-      wrapper.find('[aria-label="filter-message"]').first().text()
-    ).toEqual('loading.filter_message');
+      await screen.findByRole('button', { name: 'my_data_table.role_selector' })
+    ).toBeInTheDocument();
   });
 
-  it('do not display filter warning on toggle card', () => {
+  it('display filter warning on toggle table', async () => {
+    history.replace(`${paths.toggle.investigation}?view=table`);
+
+    renderComponent();
+
+    expect(await screen.findByLabelText('filter-message')).toHaveTextContent(
+      'loading.filter_message'
+    );
+  });
+
+  it('do not display filter warning on toggle card', async () => {
     history.replace(`${paths.toggle.investigation}?view=card`);
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    expect(wrapper.exists('[aria-label="filter-message"]')).toBeFalsy();
+    await waitFor(() => {
+      expect(screen.queryByLabelText('filter-message')).toBeNull();
+    });
   });
 
   it('do not use StyledRouting component on landing pages', async () => {
@@ -304,131 +343,132 @@ describe('PageContainer - Tests', () => {
     (useQueryClient as jest.Mock).mockReturnValue({
       getQueryData: jest.fn(),
     });
-    history.replace(`${paths.studyHierarchy.landing.isisStudyLanding}`);
+    history.replace(
+      `${paths.dataPublications.landing.isisDataPublicationLanding}`
+    );
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(wrapper.exists('StyledRouting')).toBeFalsy();
+    expect(screen.queryByTestId('styled-routing')).toBeNull();
   });
 
   it('set view to card if cardview stored in localstorage', () => {
     localStorage.setItem('dataView', 'card');
     history.replace(paths.toggle.investigation);
 
-    createWrapper();
+    renderComponent();
 
     expect(history.location.search).toBe('?view=card');
+
+    localStorage.removeItem('dataView');
   });
 
-  it('displays warning label when browsing data anonymously', () => {
+  it('displays warning label when browsing data anonymously', async () => {
     const response = { username: 'anon/anon' };
-    (readSciGatewayToken as jest.Mock).mockReturnValueOnce(response);
+    (readSciGatewayToken as jest.Mock).mockReturnValue(response);
 
-    const wrapper = createWrapper();
+    renderComponent();
 
     expect(
-      wrapper.find('[aria-label="open-data-warning"]').exists()
-    ).toBeTruthy();
+      await screen.findByLabelText('open-data-warning')
+    ).toBeInTheDocument();
   });
 
-  it('displays warning label when browsing study hierarchy', () => {
-    history.replace(paths.studyHierarchy.toggle.isisStudy);
+  it('displays warning label when browsing study hierarchy', async () => {
+    history.replace(paths.dataPublications.toggle.isisDataPublication);
     const response = { username: 'SomePerson' };
     (readSciGatewayToken as jest.Mock).mockReturnValueOnce(response);
 
-    const wrapper = createWrapper();
+    renderComponent();
 
     expect(
-      wrapper.find('[aria-label="open-data-warning"]').exists()
-    ).toBeTruthy();
+      await screen.findByLabelText('open-data-warning')
+    ).toBeInTheDocument();
   });
 
-  it('does not display warning label when logged in', () => {
+  it('does not display warning label when logged in', async () => {
     const response = { username: 'SomePerson' };
     (readSciGatewayToken as jest.Mock).mockReturnValueOnce(response);
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    expect(
-      wrapper.find('[aria-label="open-data-warning"]').exists()
-    ).toBeFalsy();
+    await waitFor(() => {
+      expect(screen.queryByLabelText('open-data-warning')).toBeNull();
+    });
   });
 
-  it('shows SelectionAlert banner when item selected', () => {
+  it('shows SelectionAlert banner when item selected', async () => {
     // Supply data to make SelectionAlert display
-    (useCart as jest.Mock).mockReturnValueOnce({
-      data: [
-        {
-          entityId: 1,
-          entityType: 'dataset',
-          id: 1,
-          name: 'Test 1',
-          parentEntities: [],
-        },
-      ],
-    });
-    const wrapper = createWrapper();
+    cartItems = [
+      {
+        entityId: 1,
+        entityType: 'dataset',
+        id: 1,
+        name: 'Test 1',
+        parentEntities: [],
+      },
+    ];
+    renderComponent();
 
-    expect(wrapper.exists('[aria-label="selection-alert"]')).toBeTruthy();
+    expect(await screen.findByLabelText('selection-alert')).toBeInTheDocument();
   });
 
-  it('does not show SelectionAlert banner when no items are selected', () => {
-    (useCart as jest.Mock).mockReturnValueOnce({
-      data: [],
-    });
-    const wrapper = createWrapper();
+  it('does not show SelectionAlert banner when no items are selected', async () => {
+    renderComponent();
 
-    expect(wrapper.exists('[aria-label="selection-alert"]')).toBeFalsy();
+    await waitFor(() => {
+      expect(screen.queryByLabelText('selection-alert')).toBeNull();
+    });
   });
 
-  it('opens download plugin when link in SelectionAlert clicked', () => {
+  it('opens download plugin when link in SelectionAlert clicked', async () => {
     // Supply data to make SelectionAlert display
-    (useCart as jest.Mock).mockReturnValueOnce({
-      data: [
-        {
-          entityId: 1,
-          entityType: 'dataset',
-          id: 1,
-          name: 'Test 1',
-          parentEntities: [],
-        },
-      ],
-    });
-    const wrapper = createWrapper();
+    cartItems = [
+      {
+        entityId: 1,
+        entityType: 'dataset',
+        id: 1,
+        name: 'Test 1',
+        parentEntities: [],
+      },
+    ];
+    renderComponent();
 
-    wrapper
-      .find('[aria-label="selection-alert-link"]')
-      .first()
-      .simulate('click');
+    await user.click(
+      await screen.findByRole('button', { name: 'selection-alert-link' })
+    );
 
     expect(history.location.pathname).toBe('/download');
   });
 
-  it('passes correct landing page entities to breadcrumbs', () => {
-    history.replace(paths.toggle.isisInvestigation);
-    let wrapper = createWrapper();
+  it('shows breadcrumb according to the current path', async () => {
+    history.replace('/browse/instrument/1/facilityCycle/1/investigation');
+    renderComponent();
 
-    expect(wrapper.find('PageBreadcrumbs').prop('landingPageEntities')).toEqual(
-      ['investigation', 'dataset']
+    expect(await screen.findByText('breadcrumbs.home')).toBeInTheDocument();
+    const baseBreadcrumb = screen.getByTestId('Breadcrumb-base');
+    expect(baseBreadcrumb).toHaveAttribute('href', '/browse/instrument');
+    expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.instrument');
+
+    const breadcrumbs = screen.getAllByTestId(/^Breadcrumb-hierarchy-\d+$/);
+    expect(breadcrumbs[0]).toHaveAttribute(
+      'href',
+      '/browse/instrument/1/facilityCycle'
     );
+    expect(within(breadcrumbs[0]).getByText('Name 1')).toBeInTheDocument();
+    expect(within(breadcrumbs[1]).getByText('Name 1')).toBeInTheDocument();
 
-    history.replace(paths.studyHierarchy.toggle.isisInvestigation);
-    wrapper = createWrapper();
-
-    expect(wrapper.find('PageBreadcrumbs').prop('landingPageEntities')).toEqual(
-      ['study', 'investigation', 'dataset']
-    );
+    expect(
+      within(screen.getByTestId('Breadcrumb-last')).getByText(
+        'breadcrumbs.investigation'
+      )
+    ).toBeInTheDocument();
   });
 
   it('does not fetch cart when on homepage (cart request errors when user is viewing homepage unauthenticated)', () => {
     history.replace(paths.homepage);
-    createWrapper();
+    renderComponent();
 
-    expect(useCart).not.toHaveBeenCalled();
+    expect(axios.get).not.toHaveBeenCalledWith('/user/cart');
   });
 });

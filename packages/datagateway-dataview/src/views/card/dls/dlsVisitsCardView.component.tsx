@@ -51,6 +51,14 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
+  // isMounted is used to disable queries when the component isn't fully mounted.
+  // It prevents the request being sent twice if default sort is set.
+  // It is not needed for cards/tables that don't have default sort.
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const { data: totalDataCount, isLoading: countLoading } =
     useInvestigationCount([
       {
@@ -58,18 +66,22 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
         filterValue: JSON.stringify({ name: { eq: proposalName } }),
       },
     ]);
-  const { isLoading: dataLoading, data } = useInvestigationsPaginated([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({ name: { eq: proposalName } }),
-    },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify({
-        investigationInstruments: 'instrument',
-      }),
-    },
-  ]);
+  const { isLoading: dataLoading, data } = useInvestigationsPaginated(
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({ name: { eq: proposalName } }),
+      },
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify({
+          investigationInstruments: 'instrument',
+        }),
+      },
+    ],
+    undefined,
+    isMounted
+  );
   const countQueries = useInvestigationsDatasetCount(data);
 
   const title = React.useMemo(
@@ -146,6 +158,7 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
 
   return (
     <CardView
+      data-testid="dls-visits-card-view"
       data={data ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}

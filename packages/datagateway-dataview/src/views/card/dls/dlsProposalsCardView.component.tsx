@@ -31,6 +31,14 @@ const DLSProposalsCardView = (): React.ReactElement => {
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
+  // isMounted is used to disable queries when the component isn't fully mounted.
+  // It prevents the request being sent twice if default sort is set.
+  // It is not needed for cards/tables that don't have default sort.
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const { data: totalDataCount, isLoading: countLoading } =
     useInvestigationCount([
       {
@@ -47,7 +55,8 @@ const DLSProposalsCardView = (): React.ReactElement => {
     ],
     // Do not add order by id as id is not a distinct field above and will otherwise
     // cause missing results
-    true
+    true,
+    isMounted
   );
 
   const title: CardViewDetails = React.useMemo(
@@ -82,6 +91,7 @@ const DLSProposalsCardView = (): React.ReactElement => {
 
   return (
     <CardView
+      data-testid="dls-proposals-card-view"
       data={data ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}

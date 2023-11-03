@@ -27,6 +27,7 @@ import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../../state/app.types';
 import { IndexRange } from 'react-virtualized';
+import PreviewDatafileButton from '../../datafilePreview/previewDatafileButton.component';
 
 interface ISISDatafilesTableProps {
   datasetId: string;
@@ -90,18 +91,29 @@ const ISISDatafilesTable = (
     },
   ]);
 
-  const { fetchNextPage, data } = useDatafilesInfinite([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
-    },
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'dataset.investigation.id': { eq: investigationId },
-      }),
-    },
-  ]);
+  // isMounted is used to disable queries when the component isn't fully mounted.
+  // It prevents the request being sent twice if default sort is set.
+  // It is not needed for cards/tables that don't have default sort.
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const { fetchNextPage, data } = useDatafilesInfinite(
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
+      },
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'dataset.investigation.id': { eq: investigationId },
+        }),
+      },
+    ],
+    isMounted
+  );
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
@@ -113,13 +125,23 @@ const ISISDatafilesTable = (
     if (data) {
       if ('pages' in data) {
         return data.pages.flat();
-      } else if (data instanceof Array) {
+      } else if ((data as unknown) instanceof Array) {
         return data;
       }
     }
 
     return [];
   }, [data]);
+
+  const isParentSelected = React.useMemo(() => {
+    return cartItems?.some(
+      (cartItem) =>
+        (cartItem.entityType === 'dataset' &&
+          cartItem.entityId.toString() === datasetId) ||
+        (cartItem.entityType === 'investigation' &&
+          cartItem.entityId.toString() === investigationId)
+    );
+  }, [cartItems, datasetId, investigationId]);
 
   const columns: ColumnType[] = React.useMemo(
     () => [
@@ -176,6 +198,7 @@ const ISISDatafilesTable = (
         cartLoading ||
         allIdsLoading
       }
+      parentSelected={isParentSelected}
       data={aggregatedData}
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
@@ -187,6 +210,7 @@ const ISISDatafilesTable = (
       onUncheck={removeFromCart}
       disableSelectAll={!selectAllSetting}
       detailsPanel={ISISDatafileDetailsPanel}
+      actionsWidth={96}
       actions={[
         ({ rowData }: TableActionProps) => (
           <DownloadButton
@@ -196,6 +220,9 @@ const ISISDatafilesTable = (
             variant="icon"
             entitySize={(rowData as Datafile).fileSize ?? -1}
           />
+        ),
+        ({ rowData }: TableActionProps) => (
+          <PreviewDatafileButton datafile={rowData as Datafile} />
         ),
       ]}
       columns={columns}

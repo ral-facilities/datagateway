@@ -3,6 +3,7 @@
 exports[`Dataset details panel component should render correctly 1`] = `
 <DocumentFragment>
   <div
+    data-testid="dls-dataset-details-panel"
     id="details-panel"
     style="min-width: 0;"
   >
@@ -141,7 +142,7 @@ exports[`Dataset details panel component should render correctly 1`] = `
           >
             <b>
               <button
-                class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1kc3inn-MuiButtonBase-root-MuiButton-root"
+                class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1kc3inn-MuiButtonBase-root-MuiButton-root"
                 id="calculate-size-btn"
                 role="button"
                 tabindex="0"
@@ -205,6 +206,7 @@ exports[`Dataset details panel component should render correctly 1`] = `
 exports[`Dataset details panel component should render type tab when present in the data 1`] = `
 <DocumentFragment>
   <div
+    data-testid="dls-dataset-details-panel"
     id="details-panel"
     style="min-width: 0;"
   >
@@ -343,7 +345,7 @@ exports[`Dataset details panel component should render type tab when present in 
           >
             <b>
               <button
-                class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1kc3inn-MuiButtonBase-root-MuiButton-root"
+                class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1kc3inn-MuiButtonBase-root-MuiButton-root"
                 id="calculate-size-btn"
                 role="button"
                 tabindex="0"

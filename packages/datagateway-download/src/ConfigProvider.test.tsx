@@ -1,7 +1,7 @@
 import type { RenderResult } from '@testing-library/react';
 import { render, screen, waitFor } from '@testing-library/react';
 import axios from 'axios';
-import * as log from 'loglevel';
+import log from 'loglevel';
 import * as React from 'react';
 import ConfigProvider, { DownloadSettingsContext } from './ConfigProvider';
 import { flushPromises } from './setupTests';

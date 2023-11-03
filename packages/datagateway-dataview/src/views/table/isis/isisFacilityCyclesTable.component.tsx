@@ -33,11 +33,20 @@ const ISISFacilityCyclesTable = (
     [location.search]
   );
 
+  // isMounted is used to disable queries when the component isn't fully mounted.
+  // It prevents the request being sent twice if default sort is set.
+  // It is not needed for cards/tables that don't have default sort.
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const { data: totalDataCount } = useFacilityCycleCount(
     parseInt(instrumentId)
   );
   const { fetchNextPage, data } = useFacilityCyclesInfinite(
-    parseInt(instrumentId)
+    parseInt(instrumentId),
+    isMounted
   );
 
   /* istanbul ignore next */
@@ -45,7 +54,7 @@ const ISISFacilityCyclesTable = (
     if (data) {
       if ('pages' in data) {
         return data.pages.flat();
-      } else if (data instanceof Array) {
+      } else if ((data as unknown) instanceof Array) {
         return data;
       }
     }

@@ -65,7 +65,7 @@ interface LandingPageProps {
   instrumentChildId: string;
   investigationId: string;
   datasetId: string;
-  studyHierarchy: boolean;
+  dataPublication: boolean;
 }
 
 const LandingPage = (props: LandingPageProps): React.ReactElement => {
@@ -82,11 +82,11 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     instrumentChildId,
     investigationId,
     datasetId,
-    studyHierarchy,
+    dataPublication,
   } = props;
 
-  const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
-  const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
+  const pathRoot = dataPublication ? 'browseDataPublications' : 'browse';
+  const instrumentChild = dataPublication ? 'dataPublication' : 'facilityCycle';
   const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset/${datasetId}`;
 
   const { data } = useDatasetDetails(parseInt(datasetId));
@@ -135,7 +135,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   ];
 
   return (
-    <Paper sx={{ margin: 1, padding: 1 }}>
+    <Paper data-testid="isis-dataset-landing" sx={{ margin: 1, padding: 1 }}>
       <Grid container sx={{ padding: 0.5 }}>
         <Grid item xs={12}>
           <Branding />

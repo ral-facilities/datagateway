@@ -31,7 +31,8 @@ function domElementGetter(): HTMLElement {
 const reactLifecycles = singleSpaReact({
   React,
   ReactDOM,
-  rootComponent: App,
+  rootComponent: () =>
+    document.getElementById('datagateway-download') ? <App /> : null,
   domElementGetter,
   errorBoundary(error) {
     log.error(`datagateway-download failed with error: ${error}`);

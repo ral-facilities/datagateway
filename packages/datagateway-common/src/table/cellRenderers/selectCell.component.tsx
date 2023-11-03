@@ -18,6 +18,7 @@ type SelectCellProps = TableCellProps & {
   lastChecked: number;
   setLastChecked: (newLastChecked: number) => void;
   loading: boolean;
+  parentSelected: boolean;
 };
 
 const SelectCell = React.memo((props: SelectCellProps): React.ReactElement => {
@@ -32,6 +33,7 @@ const SelectCell = React.memo((props: SelectCellProps): React.ReactElement => {
     rowData,
     rowIndex,
     loading,
+    parentSelected,
   } = props;
   const { t } = useTranslation();
 
@@ -45,10 +47,12 @@ const SelectCell = React.memo((props: SelectCellProps): React.ReactElement => {
     >
       <StyledTooltip
         title={
-          !loading && typeof selectedRows === 'undefined'
+          !loading && !parentSelected && typeof selectedRows === 'undefined'
             ? t<string, string>('buttons.cart_loading_failed_tooltip')
             : loading
             ? t<string, string>('buttons.cart_loading_tooltip')
+            : parentSelected
+            ? t<string, string>('buttons.parent_selected_tooltip')
             : ''
         }
         placement="right"
@@ -62,7 +66,9 @@ const SelectCell = React.memo((props: SelectCellProps): React.ReactElement => {
             inputProps={{
               'aria-label': `select row ${rowIndex}`,
             }}
-            disabled={loading || typeof selectedRows === 'undefined'}
+            disabled={
+              loading || parentSelected || typeof selectedRows === 'undefined'
+            }
             icon={<CheckBoxOutlineBlank fontSize="small" />}
             checkedIcon={<CheckBoxIcon fontSize="small" />}
             size="small"

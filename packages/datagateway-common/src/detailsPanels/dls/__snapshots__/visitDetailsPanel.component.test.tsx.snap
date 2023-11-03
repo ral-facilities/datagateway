@@ -3,6 +3,7 @@
 exports[`Visit details panel component should check if multiple publications result in change of title to plural version 1`] = `
 <DocumentFragment>
   <div
+    data-testid="visit-details-panel"
     id="details-panel"
     style="min-width: 0;"
   >
@@ -24,11 +25,11 @@ exports[`Visit details panel component should check if multiple publications res
         >
           <button
             aria-controls="visit-details-panel"
-            aria-selected="false"
-            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
+            aria-selected="true"
+            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary Mui-selected css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
             id="visit-details-tab"
             role="tab"
-            tabindex="-1"
+            tabindex="0"
             type="button"
           >
             investigations.details.label
@@ -173,7 +174,7 @@ exports[`Visit details panel component should check if multiple publications res
           >
             <b>
               <button
-                class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1kc3inn-MuiButtonBase-root-MuiButton-root"
+                class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1kc3inn-MuiButtonBase-root-MuiButton-root"
                 id="calculate-size-btn"
                 tabindex="0"
                 type="button"
@@ -233,6 +234,7 @@ exports[`Visit details panel component should check if multiple publications res
 exports[`Visit details panel component should check if multiple samples result in change of title to plural version 1`] = `
 <DocumentFragment>
   <div
+    data-testid="visit-details-panel"
     id="details-panel"
     style="min-width: 0;"
   >
@@ -254,11 +256,11 @@ exports[`Visit details panel component should check if multiple samples result i
         >
           <button
             aria-controls="visit-details-panel"
-            aria-selected="false"
-            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
+            aria-selected="true"
+            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary Mui-selected css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
             id="visit-details-tab"
             role="tab"
-            tabindex="-1"
+            tabindex="0"
             type="button"
           >
             investigations.details.label
@@ -403,7 +405,7 @@ exports[`Visit details panel component should check if multiple samples result i
           >
             <b>
               <button
-                class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1kc3inn-MuiButtonBase-root-MuiButton-root"
+                class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1kc3inn-MuiButtonBase-root-MuiButton-root"
                 id="calculate-size-btn"
                 tabindex="0"
                 type="button"
@@ -463,6 +465,7 @@ exports[`Visit details panel component should check if multiple samples result i
 exports[`Visit details panel component should gracefully handles InvestigationUsers without Users 1`] = `
 <DocumentFragment>
   <div
+    data-testid="visit-details-panel"
     id="details-panel"
     style="min-width: 0;"
   >
@@ -484,11 +487,11 @@ exports[`Visit details panel component should gracefully handles InvestigationUs
         >
           <button
             aria-controls="visit-details-panel"
-            aria-selected="false"
-            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
+            aria-selected="true"
+            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary Mui-selected css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
             id="visit-details-tab"
             role="tab"
-            tabindex="-1"
+            tabindex="0"
             type="button"
           >
             investigations.details.label
@@ -633,7 +636,7 @@ exports[`Visit details panel component should gracefully handles InvestigationUs
           >
             <b>
               <button
-                class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1kc3inn-MuiButtonBase-root-MuiButton-root"
+                class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1kc3inn-MuiButtonBase-root-MuiButton-root"
                 id="calculate-size-btn"
                 tabindex="0"
                 type="button"
@@ -671,6 +674,7 @@ exports[`Visit details panel component should gracefully handles InvestigationUs
 exports[`Visit details panel component should render correctly 1`] = `
 <DocumentFragment>
   <div
+    data-testid="visit-details-panel"
     id="details-panel"
     style="min-width: 0;"
   >
@@ -692,11 +696,11 @@ exports[`Visit details panel component should render correctly 1`] = `
         >
           <button
             aria-controls="visit-details-panel"
-            aria-selected="false"
-            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
+            aria-selected="true"
+            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary Mui-selected css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
             id="visit-details-tab"
             role="tab"
-            tabindex="-1"
+            tabindex="0"
             type="button"
           >
             investigations.details.label
@@ -827,7 +831,7 @@ exports[`Visit details panel component should render correctly 1`] = `
           >
             <b>
               <button
-                class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1kc3inn-MuiButtonBase-root-MuiButton-root"
+                class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1kc3inn-MuiButtonBase-root-MuiButton-root"
                 id="calculate-size-btn"
                 tabindex="0"
                 type="button"
@@ -849,6 +853,7 @@ exports[`Visit details panel component should render correctly 1`] = `
 exports[`Visit details panel component should render user, sample and publication tabs when present in the data 1`] = `
 <DocumentFragment>
   <div
+    data-testid="visit-details-panel"
     id="details-panel"
     style="min-width: 0;"
   >
@@ -870,11 +875,11 @@ exports[`Visit details panel component should render user, sample and publicatio
         >
           <button
             aria-controls="visit-details-panel"
-            aria-selected="false"
-            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
+            aria-selected="true"
+            class="MuiButtonBase-root MuiTab-root MuiTab-textColorSecondary Mui-selected css-1a4cg4j-MuiButtonBase-root-MuiTab-root"
             id="visit-details-tab"
             role="tab"
-            tabindex="-1"
+            tabindex="0"
             type="button"
           >
             investigations.details.label
@@ -1047,7 +1052,7 @@ exports[`Visit details panel component should render user, sample and publicatio
           >
             <b>
               <button
-                class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1kc3inn-MuiButtonBase-root-MuiButton-root"
+                class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1kc3inn-MuiButtonBase-root-MuiButton-root"
                 id="calculate-size-btn"
                 tabindex="0"
                 type="button"

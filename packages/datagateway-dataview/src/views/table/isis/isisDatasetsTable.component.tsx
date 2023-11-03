@@ -33,17 +33,17 @@ interface ISISDatasetsTableProps {
   instrumentId: string;
   instrumentChildId: string;
   investigationId: string;
-  studyHierarchy: boolean;
+  dataPublication: boolean;
 }
 
 const ISISDatasetsTable = (
   props: ISISDatasetsTableProps
 ): React.ReactElement => {
-  const { investigationId, instrumentChildId, instrumentId, studyHierarchy } =
+  const { investigationId, instrumentChildId, instrumentId, dataPublication } =
     props;
 
-  const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
-  const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
+  const pathRoot = dataPublication ? 'browseDataPublications' : 'browse';
+  const instrumentChild = dataPublication ? 'dataPublication' : 'facilityCycle';
   const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset`;
 
   const [t] = useTranslation();
@@ -92,14 +92,25 @@ const ISISDatasetsTable = (
     },
   ]);
 
-  const { fetchNextPage, data } = useDatasetsInfinite([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'investigation.id': { eq: investigationId },
-      }),
-    },
-  ]);
+  // isMounted is used to disable queries when the component isn't fully mounted.
+  // It prevents the request being sent twice if default sort is set.
+  // It is not needed for cards/tables that don't have default sort.
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const { fetchNextPage, data } = useDatasetsInfinite(
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'investigation.id': { eq: investigationId },
+        }),
+      },
+    ],
+    isMounted
+  );
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
@@ -113,13 +124,21 @@ const ISISDatasetsTable = (
     if (data) {
       if ('pages' in data) {
         return data.pages.flat();
-      } else if (data instanceof Array) {
+      } else if ((data as unknown) instanceof Array) {
         return data;
       }
     }
 
     return [];
   }, [data]);
+
+  const isParentSelected = React.useMemo(() => {
+    return cartItems?.some(
+      (cartItem) =>
+        cartItem.entityType === 'investigation' &&
+        cartItem.entityId.toString() === investigationId
+    );
+  }, [cartItems, investigationId]);
 
   const columns: ColumnType[] = React.useMemo(
     () => [
@@ -193,6 +212,7 @@ const ISISDatasetsTable = (
         cartLoading ||
         allIdsLoading
       }
+      parentSelected={isParentSelected}
       data={aggregatedData}
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}

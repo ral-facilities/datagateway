@@ -11,6 +11,7 @@ import { StyledTooltip } from '../arrowtooltip.component';
 export interface AddToCartButtonProps {
   entityType: 'investigation' | 'dataset' | 'datafile';
   entityId: number;
+  parentId?: string;
   allIds: number[];
 }
 
@@ -19,12 +20,21 @@ type AddToCartButtonCombinedProps = AddToCartButtonProps;
 const AddToCartButton: React.FC<AddToCartButtonCombinedProps> = (
   props: AddToCartButtonCombinedProps
 ) => {
-  const { entityType, entityId, allIds } = props;
+  const { entityType, entityId, allIds, parentId } = props;
   const [t] = useTranslation();
 
   const { data: cartItems, isLoading: cartLoading } = useCart();
   const { mutate: addToCart } = useAddToCart(entityType);
   const { mutate: removeFromCart } = useRemoveFromCart(entityType);
+
+  const isParentSelected = React.useMemo(() => {
+    // Since there aren't datafile cards, only check is against investigation parents
+    return cartItems?.some(
+      (cartItem) =>
+        cartItem.entityType === 'investigation' &&
+        cartItem.entityId.toString() === parentId
+    );
+  }, [cartItems, parentId]);
 
   const selectedIds = React.useMemo(
     () =>
@@ -52,10 +62,12 @@ const AddToCartButton: React.FC<AddToCartButtonCombinedProps> = (
   ) : (
     <StyledTooltip
       title={
-        !cartLoading && typeof selectedIds === 'undefined'
+        !cartLoading && !isParentSelected && typeof selectedIds === 'undefined'
           ? t<string, string>('buttons.cart_loading_failed_tooltip')
           : cartLoading
           ? t<string, string>('buttons.cart_loading_tooltip')
+          : isParentSelected
+          ? t<string, string>('buttons.parent_selected_tooltip')
           : ''
       }
       placement="bottom"
@@ -65,7 +77,11 @@ const AddToCartButton: React.FC<AddToCartButtonCombinedProps> = (
           id={`add-to-cart-btn-${entityType}-${entityId}`}
           variant="contained"
           color="primary"
-          disabled={cartLoading || typeof selectedIds === 'undefined'}
+          disabled={
+            cartLoading ||
+            isParentSelected ||
+            typeof selectedIds === 'undefined'
+          }
           startIcon={<AddCircleOutlineOutlined />}
           disableElevation
           onClick={() => addToCart([entityId])}

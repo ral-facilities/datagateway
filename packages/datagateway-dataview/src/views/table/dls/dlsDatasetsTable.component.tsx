@@ -81,14 +81,25 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
     },
   ]);
 
-  const { fetchNextPage, data } = useDatasetsInfinite([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'investigation.id': { eq: investigationId },
-      }),
-    },
-  ]);
+  // isMounted is used to disable queries when the component isn't fully mounted.
+  // It prevents the request being sent twice if default sort is set.
+  // It is not needed for cards/tables that don't have default sort.
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const { fetchNextPage, data } = useDatasetsInfinite(
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'investigation.id': { eq: investigationId },
+        }),
+      },
+    ],
+    isMounted
+  );
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
@@ -102,7 +113,7 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
     if (data) {
       if ('pages' in data) {
         return data.pages.flat();
-      } else if (data instanceof Array) {
+      } else if ((data as unknown) instanceof Array) {
         return data;
       }
     }
@@ -173,6 +184,14 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
     [cartItems, selectAllSetting, allIds]
   );
 
+  const isParentSelected = React.useMemo(() => {
+    return cartItems?.some(
+      (cartItem) =>
+        cartItem.entityType === 'investigation' &&
+        cartItem.entityId.toString() === investigationId
+    );
+  }, [cartItems, investigationId]);
+
   return (
     <Table
       loading={
@@ -181,6 +200,7 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
         cartLoading ||
         allIdsLoading
       }
+      parentSelected={isParentSelected}
       data={aggregatedData}
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}

@@ -91,13 +91,17 @@ const VisitDetailsPanel = (
   }, [data, selectedTab, changeTab]);
 
   return (
-    <div id="details-panel" style={{ minWidth: 0 }}>
+    <div
+      data-testid="visit-details-panel"
+      id="details-panel"
+      style={{ minWidth: 0 }}
+    >
       <Tabs
         variant="scrollable"
         textColor="secondary"
         indicatorColor="secondary"
         scrollButtons="auto"
-        value={selectedTab}
+        value={selectedTab ?? DEFAULT_TAB}
         onChange={(event, newValue) => changeTab(newValue)}
         aria-label={t('investigations.details.tabs_label')}
       >

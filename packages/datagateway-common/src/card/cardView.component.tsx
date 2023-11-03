@@ -33,6 +33,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import AdvancedFilter from './advancedFilter.component';
 import EntityCard, { EntityImageDetails } from './entityCard.component';
+import AddIcon from '@mui/icons-material/Add';
 
 const SelectedChips = styled('ul')(({ theme }) => ({
   display: 'inline-flex',
@@ -85,7 +86,8 @@ export interface CardViewProps {
   onSort: (
     sort: string,
     order: Order | null,
-    updateMethod: UpdateMethod
+    updateMethod: UpdateMethod,
+    shiftDown?: boolean
   ) => void;
 
   // Props to get title, description of the card
@@ -104,6 +106,8 @@ export interface CardViewProps {
   image?: EntityImageDetails;
 
   paginationPosition?: CVPaginationPosition;
+
+  'data-testid'?: string;
 }
 
 interface CVFilterInfo {
@@ -172,6 +176,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     onFilter,
     onSort,
     onResultsChange,
+    'data-testid': testId,
   } = props;
 
   // Get card information.
@@ -185,6 +190,30 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     filters,
     sort,
   } = props;
+
+  const [shiftDown, setShiftDown] = React.useState(false);
+  // add event listener to listen for shift key being pressed
+  React.useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent): void => {
+      if (event.key === 'Shift') {
+        setShiftDown(true);
+      }
+    };
+
+    const handleKeyUp = (event: KeyboardEvent): void => {
+      if (event.key === 'Shift') {
+        setShiftDown(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keyup', handleKeyUp);
+
+    return (): void => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('keyup', handleKeyUp);
+    };
+  }, []);
 
   // Results options (by default it is 10, 20 and 30).
   const resOptions = React.useMemo(
@@ -230,20 +259,20 @@ const CardView = (props: CardViewProps): React.ReactElement => {
   //defaultSort has been provided
   React.useEffect(() => {
     if (title.defaultSort !== undefined && sort[title.dataKey] === undefined)
-      onSort(title.dataKey, title.defaultSort, 'replace');
+      onSort(title.dataKey, title.defaultSort, 'replace', false);
     if (
       description &&
       description.defaultSort !== undefined &&
       sort[description.dataKey] === undefined
     )
-      onSort(description.dataKey, description.defaultSort, 'replace');
+      onSort(description.dataKey, description.defaultSort, 'replace', false);
     if (information) {
       information.forEach((element: CardViewDetails) => {
         if (
           element.defaultSort !== undefined &&
           sort[element.dataKey] === undefined
         )
-          onSort(element.dataKey, element.defaultSort, 'replace');
+          onSort(element.dataKey, element.defaultSort, 'replace', false);
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -453,7 +482,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
   const hasFilteredResults = loadedData && (filterUpdate || totalDataCount > 0);
 
   return (
-    <Grid container direction="column" alignItems="center">
+    <Grid container direction="column" alignItems="center" data-testid={testId}>
       <Grid
         container
         item
@@ -590,11 +619,12 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                             <ListItem
                               key={i}
                               button
-                              onClick={() => {
+                              onClick={(event) => {
                                 onSort(
                                   s.dataKey,
                                   nextSortDirection(s.dataKey),
-                                  'push'
+                                  'push',
+                                  event.shiftKey
                                 );
                                 if (page !== 1) {
                                   onPageChange(1);
@@ -612,14 +642,21 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                             >
                               <ListItemText primary={s.label} />
                               <ListItemIcon>
-                                <TableSortLabel
-                                  active={s.dataKey in sort}
-                                  direction={sort[s.dataKey]}
-                                  // Set tabindex to -1 to prevent button focus
-                                  tabIndex={-1}
-                                >
-                                  {s.dataKey in sort && sort[s.dataKey]}
-                                </TableSortLabel>
+                                {
+                                  <TableSortLabel
+                                    active={s.dataKey in sort || shiftDown}
+                                    direction={sort[s.dataKey]}
+                                    // Set tabindex to -1 to prevent button focus
+                                    tabIndex={-1}
+                                    IconComponent={
+                                      !(s.dataKey in sort) && shiftDown
+                                        ? AddIcon
+                                        : undefined
+                                    }
+                                  >
+                                    {s.dataKey in sort && sort[s.dataKey]}
+                                  </TableSortLabel>
+                                }
                               </ListItemIcon>
                             </ListItem>
                           ))}
@@ -716,25 +753,26 @@ const CardView = (props: CardViewProps): React.ReactElement => {
         {/* Card data */}
         <Grid item xs={12} md={9}>
           {/* Selected filters array */}
-          {selectedFilters.length > 0 && (filterUpdate || totalDataCount > 0) && (
-            <SelectedChips>
-              {selectedFilters.map((filter, filterIndex) => (
-                <li key={filterIndex}>
-                  {filter.items.map((item, itemIndex) => (
-                    <Chip
-                      key={itemIndex}
-                      sx={{ margin: 0.5 }}
-                      label={`${filter.label} - ${item}`}
-                      onDelete={() => {
-                        changeFilter(filter.filterKey, item, true);
-                        setFilterUpdate(true);
-                      }}
-                    />
-                  ))}
-                </li>
-              ))}
-            </SelectedChips>
-          )}
+          {selectedFilters.length > 0 &&
+            (filterUpdate || totalDataCount > 0) && (
+              <SelectedChips>
+                {selectedFilters.map((filter, filterIndex) => (
+                  <li key={filterIndex}>
+                    {filter.items.map((item, itemIndex) => (
+                      <Chip
+                        key={itemIndex}
+                        sx={{ margin: 0.5 }}
+                        label={`${filter.label} - ${item}`}
+                        onDelete={() => {
+                          changeFilter(filter.filterKey, item, true);
+                          setFilterUpdate(true);
+                        }}
+                      />
+                    ))}
+                  </li>
+                ))}
+              </SelectedChips>
+            )}
 
           {/* List of cards */}
           {hasFilteredResults ? (

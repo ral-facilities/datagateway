@@ -1,24 +1,15 @@
-import {
-  Chip,
-  Accordion,
-  ListItemText,
-  Select,
-  Typography,
-} from '@mui/material';
-import { Pagination } from '@mui/material';
-import { mount, shallow, ReactWrapper } from 'enzyme';
-import React from 'react';
+import * as React from 'react';
 import axios from 'axios';
-import { default as CardView, CardViewProps } from './cardView.component';
-import { AdvancedFilter, TextColumnFilter } from '..';
-import { Entity, Investigation } from '../app.types';
+import CardView, { type CardViewProps } from './cardView.component';
+import { TextColumnFilter } from '..';
+import type { Entity, Investigation } from '../app.types';
+import { render, screen, waitFor, within } from '@testing-library/react';
+import type { UserEvent } from '@testing-library/user-event/setup/setup';
+import userEvent from '@testing-library/user-event';
 
 describe('Card View', () => {
   let props: CardViewProps;
-
-  const createWrapper = (props: CardViewProps): ReactWrapper => {
-    return mount(<CardView {...props} />);
-  };
+  let user: UserEvent;
 
   const onFilter = jest.fn();
   const onPageChange = jest.fn();
@@ -26,28 +17,29 @@ describe('Card View', () => {
   const onResultsChange = jest.fn();
 
   beforeEach(() => {
+    user = userEvent.setup();
     const data: Investigation[] = [
       {
         id: 1,
         title: 'Test 1',
-        name: 'Test 1',
-        visitId: '1',
+        name: 'Test name 1',
+        visitId: 'visit id 1',
         type: { id: 1, name: '1' },
         facility: { id: 1, name: '1' },
       },
       {
         id: 2,
         title: 'Test 2',
-        name: 'Test 2',
-        visitId: '2',
+        name: 'Test name 2',
+        visitId: 'visit id 2',
         type: { id: 1, name: '1' },
         facility: { id: 1, name: '1' },
       },
       {
         id: 3,
         title: 'Test 3',
-        name: 'Test 3',
-        visitId: '3',
+        name: 'Test name 3',
+        visitId: 'visit id 3',
         type: { id: 1, name: '1' },
         facility: { id: 1, name: '1' },
       },
@@ -82,130 +74,11 @@ describe('Card View', () => {
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(<CardView {...props} />);
-    expect(wrapper).toMatchSnapshot();
+    const { asFragment } = render(<CardView {...props} />);
+    expect(asFragment()).toMatchSnapshot();
   });
 
-  it('applying custom filter on panel and on card', () => {
-    let updatedProps = {
-      ...props,
-      customFilters: [
-        {
-          label: 'Type ID',
-          dataKey: 'type.id',
-          filterItems: [
-            {
-              name: '1',
-              count: '1',
-            },
-            {
-              name: '2',
-              count: '1',
-            },
-          ],
-        },
-      ],
-    };
-    const wrapper = createWrapper(updatedProps);
-    expect(
-      wrapper.find('[data-testid="card"]').at(0).find(Chip).text()
-    ).toEqual('1');
-
-    // Open custom filters
-    const typePanel = wrapper.find(Accordion).first();
-    typePanel.find('div').at(1).simulate('click');
-    expect(typePanel.find(Chip).first().text()).toEqual('1');
-    expect(typePanel.find(Chip).last().text()).toEqual('2');
-
-    // Apply custom filters
-    typePanel.find(Chip).first().find('div').simulate('click');
-    expect(onPageChange).toHaveBeenNthCalledWith(1, 1);
-    expect(onFilter).toHaveBeenNthCalledWith(1, 'type.id', ['1']);
-
-    // Mock result of actions
-    updatedProps = {
-      ...updatedProps,
-      page: 1,
-      filters: { 'type.id': ['1'] },
-    };
-
-    // Mock console.error() when updating the filter panels. We use Accordions
-    // with dynamic default values, which works, but would log an error.
-    jest.spyOn(console, 'error').mockImplementationOnce(jest.fn());
-    wrapper.setProps(updatedProps);
-
-    // Apply second filter
-    typePanel.find(Chip).last().find('div').simulate('click');
-    expect(onPageChange).toHaveBeenNthCalledWith(2, 1);
-
-    expect(onFilter).toHaveBeenNthCalledWith(2, 'type.id', ['1', '2']);
-
-    // Mock result of actions
-    updatedProps = {
-      ...updatedProps,
-      filters: { 'type.id': ['1', '2'] },
-    };
-    wrapper.setProps(updatedProps);
-
-    // Remove filter
-    expect(wrapper.find(Chip).at(2).text()).toEqual('Type ID - 1');
-    wrapper.find(Chip).at(2).find('svg').simulate('click');
-    expect(onPageChange).toHaveBeenNthCalledWith(3, 1);
-    expect(onFilter).toHaveBeenNthCalledWith(3, 'type.id', ['2']);
-
-    // Mock result of actions
-    updatedProps = {
-      ...updatedProps,
-      filters: { 'type.id': ['2'] },
-    };
-    wrapper.setProps(updatedProps);
-
-    // Remove second filter
-    expect(wrapper.find(Chip).at(2).text()).toEqual('Type ID - 2');
-    wrapper.find(Chip).at(2).find('svg').simulate('click');
-    expect(onPageChange).toHaveBeenNthCalledWith(4, 1);
-    expect(onFilter).toHaveBeenNthCalledWith(4, 'type.id', null);
-  });
-
-  it('custom filter applied when non-custom filter already in state', () => {
-    const updatedProps = {
-      ...props,
-      customFilters: [
-        {
-          label: 'Type ID',
-          dataKey: 'type.id',
-          filterItems: [
-            {
-              name: '1',
-              count: '1',
-            },
-            {
-              name: '2',
-              count: '1',
-            },
-          ],
-        },
-      ],
-      filters: { 'type.id': { value: 'abc', type: 'include' } },
-    };
-    const wrapper = createWrapper(updatedProps);
-    expect(
-      wrapper.find('[data-testid="card"]').at(0).find(Chip).text()
-    ).toEqual('1');
-
-    // Open custom filters
-    const typePanel = wrapper.find(Accordion).first();
-    typePanel.find('div').at(1).simulate('click');
-    expect(typePanel.find(Chip).first().text()).toEqual('1');
-    expect(typePanel.find(Chip).last().text()).toEqual('2');
-
-    // Apply custom filters
-    typePanel.find(Chip).first().find('div').simulate('click');
-    expect(onPageChange).toHaveBeenNthCalledWith(1, 1);
-    expect(onFilter).toHaveBeenNthCalledWith(1, 'type.id', ['1']);
-  });
-
-  it('advancedFilter displayed when filter component given', () => {
+  it('advancedFilter displayed when filter component given', async () => {
     const textFilter = (label: string, dataKey: string): React.ReactElement => (
       <TextColumnFilter
         label={label}
@@ -221,81 +94,166 @@ describe('Card View', () => {
         filterComponent: textFilter,
       },
     };
-    const wrapper = createWrapper(updatedProps);
-    expect(wrapper.exists(AdvancedFilter)).toBeTruthy();
+
+    render(<CardView {...updatedProps} />);
+
+    await user.click(
+      screen.getByRole('button', { name: 'advanced_filters.show' })
+    );
+
+    expect(
+      screen.getByRole('textbox', { name: 'Filter by Title', hidden: true })
+    ).toBeInTheDocument();
   });
 
-  it('filter message displayed when loadedData and totalDataCount is 0', () => {
+  it('filter message displayed when loadedData and totalDataCount is 0', async () => {
     const updatedProps = {
       ...props,
       loadedData: true,
       totalDataCount: 0,
     };
-    const wrapper = createWrapper(updatedProps);
-    expect(wrapper.find(Typography).last().text()).toEqual(
-      'loading.filter_message'
-    );
+    render(<CardView {...updatedProps} />);
+    expect(
+      await screen.findByText('loading.filter_message')
+    ).toBeInTheDocument();
   });
 
-  it('buttons display correctly', () => {
+  it('buttons display correctly', async () => {
     const updatedProps = {
       ...props,
-      buttons: [(entity: Entity) => <button id="test-button">TEST</button>],
+      buttons: [(entity: Entity) => <button>{entity.name}</button>],
     };
-    const wrapper = createWrapper(updatedProps);
-    expect(wrapper.find('#test-button').first().text()).toEqual('TEST');
+
+    render(<CardView {...updatedProps} />);
+
+    const cards = screen.getAllByTestId('card');
+
+    expect(
+      within(within(cards[0]).getByLabelText('card-buttons')).getByRole(
+        'button',
+        { name: 'Test name 1' }
+      )
+    ).toBeInTheDocument();
+    expect(
+      within(within(cards[1]).getByLabelText('card-buttons')).getByRole(
+        'button',
+        { name: 'Test name 2' }
+      )
+    ).toBeInTheDocument();
+    expect(
+      within(within(cards[2]).getByLabelText('card-buttons')).getByRole(
+        'button',
+        { name: 'Test name 3' }
+      )
+    ).toBeInTheDocument();
   });
 
-  it('moreInformation displays correctly', () => {
-    const moreInformation = (entity: Entity): React.ReactElement => <p>TEST</p>;
+  it('moreInformation displays correctly', async () => {
+    const moreInformation = (entity: Entity): React.ReactElement => (
+      <p>More information for {entity.name}</p>
+    );
     const updatedProps = {
       ...props,
       moreInformation: moreInformation,
     };
-    const wrapper = createWrapper(updatedProps);
-    expect(wrapper.exists('[aria-label="card-more-information"]')).toBeTruthy();
+
+    render(<CardView {...updatedProps} />);
+
+    const cards = screen.getAllByTestId('card');
+
+    await user.click(
+      within(cards[0]).getByRole('button', { name: 'card-more-info-expand' })
+    );
+    expect(
+      within(
+        within(cards[0]).getByLabelText('card-more-info-details')
+      ).getByText('More information for Test name 1')
+    ).toBeInTheDocument();
+
+    await user.click(
+      within(cards[1]).getByRole('button', { name: 'card-more-info-expand' })
+    );
+    expect(
+      within(
+        within(cards[1]).getByLabelText('card-more-info-details')
+      ).getByText('More information for Test name 2')
+    ).toBeInTheDocument();
+
+    await user.click(
+      within(cards[2]).getByRole('button', { name: 'card-more-info-expand' })
+    );
+    expect(
+      within(
+        within(cards[2]).getByLabelText('card-more-info-details')
+      ).getByText('More information for Test name 3')
+    ).toBeInTheDocument();
   });
 
-  it('title.content displays correctly', () => {
+  it('title.content displays correctly', async () => {
     const content = (entity: Entity): React.ReactElement => (
-      <p id="test-title-content">TEST</p>
+      <p>Custom {entity.title}</p>
     );
     const updatedProps = {
       ...props,
       title: { dataKey: 'title', content: content },
     };
-    const wrapper = createWrapper(updatedProps);
-    expect(wrapper.find('#test-title-content').at(0).text()).toEqual('TEST');
+
+    render(<CardView {...updatedProps} />);
+
+    const cards = screen.getAllByTestId('card');
+
+    expect(
+      within(within(cards[0]).getByLabelText('card-title')).getByText(
+        'Custom Test 1'
+      )
+    ).toBeInTheDocument();
+    expect(
+      within(within(cards[1]).getByLabelText('card-title')).getByText(
+        'Custom Test 2'
+      )
+    ).toBeInTheDocument();
+    expect(
+      within(within(cards[2]).getByLabelText('card-title')).getByText(
+        'Custom Test 3'
+      )
+    ).toBeInTheDocument();
   });
 
-  it('sort applied correctly', () => {
+  it('sort applied correctly', async () => {
     let updatedProps = { ...props, page: 1 };
-    const wrapper = createWrapper(props);
-    const button = wrapper.find(ListItemText).first();
-    const clickableButton = button.find('div');
-    expect(button.text()).toEqual('title');
+    const { rerender } = render(<CardView {...updatedProps} />);
 
     // Click to sort ascending
-    clickableButton.simulate('click');
-    expect(onSort).toHaveBeenNthCalledWith(1, 'title', 'asc', 'push');
+    await user.click(
+      await screen.findByRole('button', { name: 'Sort by TITLE' })
+    );
+    expect(onSort).toHaveBeenNthCalledWith(1, 'title', 'asc', 'push', false);
+
     updatedProps = {
       ...updatedProps,
       sort: { title: 'asc' },
     };
-    wrapper.setProps(updatedProps);
+    rerender(<CardView {...updatedProps} />);
 
-    // Click to sort descending
-    clickableButton.simulate('click');
-    expect(onSort).toHaveBeenNthCalledWith(2, 'title', 'desc', 'push');
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Sort by TITLE, current direction ascending',
+      })
+    );
+    expect(onSort).toHaveBeenNthCalledWith(2, 'title', 'desc', 'push', false);
+
     updatedProps = {
       ...updatedProps,
       sort: { title: 'desc' },
     };
-    wrapper.setProps(updatedProps);
+    rerender(<CardView {...updatedProps} />);
 
-    // Click to clear sorting
-    clickableButton.simulate('click');
-    expect(onSort).toHaveBeenNthCalledWith(3, 'title', null, 'push');
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Sort by TITLE, current direction descending',
+      })
+    );
+    expect(onSort).toHaveBeenNthCalledWith(3, 'title', null, 'push', false);
   });
 
   it('default sort applied correctly', () => {
@@ -312,59 +270,59 @@ describe('Card View', () => {
         },
       ],
     };
-    const wrapper = createWrapper(updatedProps);
-    wrapper.update();
+    render(<CardView {...updatedProps} />);
 
-    expect(onSort).toHaveBeenCalledWith('title', 'asc', 'replace');
-    expect(onSort).toHaveBeenCalledWith('name', 'desc', 'replace');
-    expect(onSort).toHaveBeenCalledWith('test', 'asc', 'replace');
+    expect(onSort).toHaveBeenCalledWith('title', 'asc', 'replace', false);
+    expect(onSort).toHaveBeenCalledWith('name', 'desc', 'replace', false);
+    expect(onSort).toHaveBeenCalledWith('test', 'asc', 'replace', false);
   });
 
-  it('can sort by description with label', () => {
+  it('can sort by description with label', async () => {
     const updatedProps = {
       ...props,
       page: 1,
       title: { dataKey: 'title', disableSort: true },
       description: { dataKey: 'name', label: 'Name' },
     };
-    const wrapper = createWrapper(updatedProps);
-    const button = wrapper.find(ListItemText).first();
-    expect(button.text()).toEqual('Name');
+    render(<CardView {...updatedProps} />);
 
     // Click to sort ascending
-    button.find('div').simulate('click');
-    expect(onSort).toHaveBeenCalledWith('name', 'asc', 'push');
+    await user.click(
+      await screen.findByRole('button', { name: 'Sort by NAME' })
+    );
+    expect(onSort).toHaveBeenCalledWith('name', 'asc', 'push', false);
   });
 
-  it('can sort by description without label', () => {
+  it('can sort by description without label', async () => {
     const updatedProps = {
       ...props,
       page: 1,
       title: { dataKey: 'title', disableSort: true },
       description: { dataKey: 'name' },
     };
-    const wrapper = createWrapper(updatedProps);
-    const button = wrapper.find(ListItemText).first();
-    expect(button.text()).toEqual('name');
+    render(<CardView {...updatedProps} />);
 
     // Click to sort ascending
-    button.find('div').simulate('click');
-    expect(onSort).toHaveBeenCalledWith('name', 'asc', 'push');
+    await user.click(
+      await screen.findByRole('button', { name: 'Sort by NAME' })
+    );
+    expect(onSort).toHaveBeenCalledWith('name', 'asc', 'push', false);
   });
 
-  it('page changed when sort applied', () => {
+  it('page changed when sort applied', async () => {
     const updatedProps = { ...props, page: 2 };
-    const wrapper = createWrapper(updatedProps);
-    const button = wrapper.find(ListItemText).first();
-    expect(button.text()).toEqual('title');
+    render(<CardView {...updatedProps} />);
 
     // Click to sort ascending
-    button.find('div').simulate('click');
-    expect(onSort).toHaveBeenCalledWith('title', 'asc', 'push');
+    await user.click(
+      await screen.findByRole('button', { name: 'Sort by TITLE' })
+    );
+
+    expect(onSort).toHaveBeenCalledWith('title', 'asc', 'push', false);
     expect(onPageChange).toHaveBeenCalledWith(1);
   });
 
-  it('information displays and sorts correctly', () => {
+  it('information displays and sorts correctly', async () => {
     const updatedProps = {
       ...props,
       title: { dataKey: 'title', disableSort: true },
@@ -374,33 +332,101 @@ describe('Card View', () => {
         {
           dataKey: 'name',
           label: 'Name',
-          content: (entity: Entity) => 'Content',
+          content: (entity: Entity) => entity.name,
         },
       ],
       page: 1,
     };
-    const wrapper = createWrapper(updatedProps);
+    render(<CardView {...updatedProps} />);
+
+    const cards = await screen.findAllByTestId('card');
+
+    expect(within(cards[0]).getByText('visitId:')).toBeInTheDocument();
+    expect(within(cards[0]).getByText('visit id 1')).toBeInTheDocument();
+    expect(within(cards[0]).getByText('Name:')).toBeInTheDocument();
     expect(
-      wrapper.find('[data-testid="card-info-visitId"]').first().text()
-    ).toEqual('visitId:');
+      within(cards[0]).getByLabelText('card-description')
+    ).toHaveTextContent('Test name 1');
+    // information content is wrapped with ArrowTooltip, which automatically gives its child
+    // an aria-label that is the same as the content of the tooltip
+    expect(within(cards[0]).getByLabelText('Test name 1')).toHaveTextContent(
+      'Test name 1'
+    );
+
+    expect(within(cards[1]).getByText('visitId:')).toBeInTheDocument();
+    expect(within(cards[1]).getByText('visit id 2')).toBeInTheDocument();
+    expect(within(cards[1]).getByText('Name:')).toBeInTheDocument();
     expect(
-      wrapper.find('[data-testid="card-info-data-visitId"]').first().text()
-    ).toEqual('1');
+      within(cards[1]).getByLabelText('card-description')
+    ).toHaveTextContent('Test name 2');
+    expect(within(cards[1]).getByLabelText('Test name 2')).toHaveTextContent(
+      'Test name 2'
+    );
+
+    expect(within(cards[2]).getByText('visitId:')).toBeInTheDocument();
+    expect(within(cards[2]).getByText('visit id 3')).toBeInTheDocument();
+    expect(within(cards[2]).getByText('Name:')).toBeInTheDocument();
     expect(
-      wrapper.find('[data-testid="card-info-Name"]').first().text()
-    ).toEqual('Name:');
-    expect(
-      wrapper.find('[data-testid="card-info-data-Name"]').first().text()
-    ).toEqual('Content');
+      within(cards[2]).getByLabelText('card-description')
+    ).toHaveTextContent('Test name 3');
+    expect(within(cards[2]).getByLabelText('Test name 3')).toHaveTextContent(
+      'Test name 3'
+    );
 
     // Click to sort ascending
-    const button = wrapper.find(ListItemText).first();
-    expect(button.text()).toEqual('visitId');
-    button.find('div').simulate('click');
-    expect(onSort).toHaveBeenCalledWith('visitId', 'asc', 'push');
+    await user.click(
+      await screen.findByRole('button', { name: 'Sort by VISITID' })
+    );
+    expect(onSort).toHaveBeenCalledWith('visitId', 'asc', 'push', false);
   });
 
-  it('information displays with content that has no tooltip', () => {
+  it('calls onSort with correct parameters when shift key is pressed', async () => {
+    const updatedProps = {
+      ...props,
+      title: { dataKey: 'title', disableSort: true },
+      description: { dataKey: 'name', disableSort: true },
+      information: [
+        { dataKey: 'visitId' },
+        {
+          dataKey: 'name',
+          label: 'Name',
+          content: (entity: Entity) => entity.name,
+        },
+      ],
+      page: 1,
+    };
+    render(<CardView {...updatedProps} />);
+
+    // Click with shift to sort ascending
+    await user.keyboard('{Shift>}');
+    await user.click(
+      await screen.findByRole('button', { name: 'Sort by VISITID' })
+    );
+    await user.keyboard('{/Shift}');
+
+    expect(onSort).toHaveBeenCalledWith('visitId', 'asc', 'push', true);
+
+    await user.click(
+      await screen.findByRole('button', { name: 'Sort by NAME' })
+    );
+
+    expect(onSort).toHaveBeenCalledWith('name', 'asc', 'push', false);
+  });
+
+  it('displays correct icon when no sort applied', async () => {
+    render(<CardView {...props} />);
+
+    const cards = await screen.findAllByRole('button', { name: /Sort by/ });
+    expect(
+      within(cards[0]).getByTestId(`ArrowDownwardIcon`)
+    ).toBeInTheDocument();
+
+    await user.keyboard('{Shift>}');
+    expect(within(cards[0]).getByTestId(`AddIcon`)).toBeInTheDocument();
+    await user.keyboard('{/Shift}');
+  });
+
+  it('information displays with content that has no tooltip', async () => {
     const updatedProps = {
       ...props,
       title: { dataKey: 'title', disableSort: true },
@@ -409,22 +435,34 @@ describe('Card View', () => {
         {
           dataKey: 'name',
           label: 'Name',
-          content: (entity: Entity) => 'Content',
+          content: (entity: Entity) => entity.name,
           noTooltip: true,
         },
       ],
     };
 
-    const wrapper = createWrapper(updatedProps);
+    render(<CardView {...updatedProps} />);
+
+    const cards = await screen.findAllByTestId('card');
+
+    expect(within(cards[0]).getByText('Name:')).toBeInTheDocument();
     expect(
-      wrapper.find('[data-testid="card-info-Name"]').first().text()
-    ).toEqual('Name:');
+      within(cards[0]).getByLabelText('card-description')
+    ).toHaveTextContent('Test name 1');
     expect(
-      wrapper.find('[data-testid="card-info-data-Name"]').first().text()
-    ).toEqual('Content');
+      within(cards[0]).getByTestId(`card-info-data-Name`)
+    ).toHaveTextContent('Test name 1');
+
+    expect(within(cards[1]).getByText('Name:')).toBeInTheDocument();
+    expect(
+      within(cards[1]).getByLabelText('card-description')
+    ).toHaveTextContent('Test name 2');
+    expect(
+      within(cards[1]).getByTestId(`card-info-data-Name`)
+    ).toHaveTextContent('Test name 2');
   });
 
-  it('cannot sort when fields are disabled', () => {
+  it('cannot sort when fields are disabled', async () => {
     const updatedProps = {
       ...props,
       page: 1,
@@ -432,21 +470,39 @@ describe('Card View', () => {
       description: { dataKey: 'name', disableSort: true },
       information: [{ dataKey: 'visitId', disableSort: true }],
     };
-    const wrapper = createWrapper(updatedProps);
-    expect(wrapper.exists(ListItemText)).toBeFalsy();
+    render(<CardView {...updatedProps} />);
+    await waitFor(() => {
+      expect(
+        screen.queryByRole('button', { name: 'Sort by TITLE' })
+      ).toBeNull();
+      expect(screen.queryByRole('button', { name: 'Sort by NAME' })).toBeNull();
+      expect(
+        screen.queryByRole('button', { name: 'Sort by VISITID' })
+      ).toBeNull();
+    });
   });
 
-  it('pagination dispatches onPageChange', () => {
+  it('pagination dispatches onPageChange', async () => {
     const updatedProps = {
       ...props,
       resultsOptions: [1],
       results: 1,
     };
-    const wrapper = createWrapper(updatedProps);
-    const pagination = wrapper.find(Pagination).first();
-    pagination.find('button').at(1).simulate('click');
+
+    render(<CardView {...updatedProps} />);
+
+    await user.click(
+      (
+        await screen.findAllByRole('button', { name: 'page 1' })
+      )[0]
+    );
     expect(onPageChange).toHaveBeenCalledTimes(0);
-    pagination.find('button').at(2).simulate('click');
+
+    await user.click(
+      (
+        await screen.findAllByRole('button', { name: 'Go to page 2' })
+      )[1]
+    );
     expect(onPageChange).toHaveBeenNthCalledWith(1, 2);
   });
 
@@ -457,7 +513,7 @@ describe('Card View', () => {
       results: 1,
       page: 4,
     };
-    createWrapper(updatedProps);
+    render(<CardView {...updatedProps} />);
     expect(onPageChange).toHaveBeenNthCalledWith(1, 1);
   });
 
@@ -469,7 +525,7 @@ describe('Card View', () => {
       results: 40,
       page: 1,
     };
-    createWrapper(updatedProps);
+    render(<CardView {...updatedProps} />);
     expect(onResultsChange).toHaveBeenNthCalledWith(1, 10);
   });
 
@@ -481,38 +537,44 @@ describe('Card View', () => {
       results: 30,
       page: 1,
     };
-    createWrapper(updatedProps);
+    render(<CardView {...updatedProps} />);
     expect(onResultsChange).toHaveBeenNthCalledWith(1, 10);
   });
 
-  it('selector sends pushQuery with results', () => {
+  it('selector sends pushQuery with results', async () => {
     const updatedProps = {
       ...props,
       resultsOptions: [1, 2, 3],
       results: 1,
       page: 2,
     };
-    const wrapper = createWrapper(updatedProps);
-    wrapper
-      .find(Select)
-      .props()
-      .onChange?.({ target: { value: 2 } });
-    expect(onResultsChange).toHaveBeenNthCalledWith(2, 2);
+
+    render(<CardView {...updatedProps} />);
+
+    await user.selectOptions(
+      await screen.findByLabelText('app.max_results'),
+      '2'
+    );
+
+    expect(onResultsChange).toHaveBeenNthCalledWith(2, '2');
   });
 
-  it('selector sends pushQuery with results and page', () => {
+  it('selector sends pushQuery with results and page', async () => {
     const updatedProps = {
       ...props,
       resultsOptions: [1, 2, 3],
       results: 1,
       page: 2,
     };
-    const wrapper = createWrapper(updatedProps);
-    wrapper
-      .find(Select)
-      .props()
-      .onChange?.({ target: { value: 3 } });
-    expect(onResultsChange).toHaveBeenNthCalledWith(2, 3);
+
+    render(<CardView {...updatedProps} />);
+
+    await user.selectOptions(
+      await screen.findByLabelText('app.max_results'),
+      '3'
+    );
+
+    expect(onResultsChange).toHaveBeenNthCalledWith(2, '3');
     expect(onPageChange).toHaveBeenNthCalledWith(1, 1);
   });
 });

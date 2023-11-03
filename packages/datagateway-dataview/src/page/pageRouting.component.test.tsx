@@ -1,5 +1,4 @@
-import React from 'react';
-import { mount, ReactWrapper } from 'enzyme';
+import * as React from 'react';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../state/app.types';
@@ -9,55 +8,20 @@ import PageRouting from './pageRouting.component';
 import { Provider } from 'react-redux';
 import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
 import { dGCommonInitialState } from 'datagateway-common';
-import { Link } from 'react-router-dom';
-
-import InvestigationTable from '../views/table/investigationTable.component';
-import DatasetTable from '../views/table/datasetTable.component';
-import DatafileTable from '../views/table/datafileTable.component';
-
-import DLSProposalsTable from '../views/table/dls/dlsProposalsTable.component';
-import DLSVisitsTable from '../views/table/dls/dlsVisitsTable.component';
-import DLSDatasetsTable from '../views/table/dls/dlsDatasetsTable.component';
-import DLSDatafilesTable from '../views/table/dls/dlsDatafilesTable.component';
-
-import ISISInstrumentsTable from '../views/table/isis/isisInstrumentsTable.component';
-import ISISFacilityCyclesTable from '../views/table/isis/isisFacilityCyclesTable.component';
-import ISISStudiesTable from '../views/table/isis/isisStudiesTable.component';
-import ISISInvestigationsTable from '../views/table/isis/isisInvestigationsTable.component';
-import ISISDatasetsTable from '../views/table/isis/isisDatasetsTable.component';
-import ISISDatafilesTable from '../views/table/isis/isisDatafilesTable.component';
-import ISISMyDataTable from '../views/table/isis/isisMyDataTable.component';
-import DLSMyDataTable from '../views/table/dls/dlsMyDataTable.component';
-
-import InvestigationCardView from '../views/card/investigationCardView.component';
-import DatasetCardView from '../views/card/datasetCardView.component';
-
-import DLSProposalsCardView from '../views/card/dls/dlsProposalsCardView.component';
-import DLSVisitsCardView from '../views/card/dls/dlsVisitsCardView.component';
-import DLSDatasetsCardView from '../views/card/dls/dlsDatasetsCardView.component';
-
-import ISISInstrumentsCardView from '../views/card/isis/isisInstrumentsCardView.component';
-import ISISFacilityCyclesCardView from '../views/card/isis/isisFacilityCyclesCardView.component';
-import ISISStudiesCardView from '../views/card/isis/isisStudiesCardView.component';
-import ISISInvestigationsCardView from '../views/card/isis/isisInvestigationsCardView.component';
-import ISISDatasetsCardView from '../views/card/isis/isisDatasetsCardView.component';
-
-import ISISStudyLanding from '../views/landing/isis/isisStudyLanding.component';
-import ISISInvestigationLanding from '../views/landing/isis/isisInvestigationLanding.component';
-import ISISDatasetLanding from '../views/landing/isis/isisDatasetLanding.component';
 
 import {
+  checkDataPublicationId,
   checkInstrumentAndFacilityCycleId,
   checkInstrumentId,
-  checkStudyId,
   checkInvestigationId,
   checkProposalName,
 } from './idCheckFunctions';
-import { flushPromises } from '../setupTests';
+import { findColumnHeaderByName, flushPromises } from '../setupTests';
 import { act } from 'react-dom/test-utils';
 import axios from 'axios';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { createMemoryHistory, History } from 'history';
+import { render, screen } from '@testing-library/react';
 
 jest.mock('loglevel');
 jest.mock('./idCheckFunctions');
@@ -84,20 +48,22 @@ const ISISRoutes = {
   },
 };
 
-// The ISIS StudHierarchy routes to test.
-const ISISStudyHierarchyRoutes = {
-  instruments: '/browseStudyHierarchy/instrument',
-  studies: '/browseStudyHierarchy/instrument/1/study',
-  investigations: '/browseStudyHierarchy/instrument/1/study/1/investigation',
+// The ISIS DataPublications routes to test.
+const ISISDataPublicationsRoutes = {
+  instruments: '/browseDataPublications/instrument',
+  dataPublications: '/browseDataPublications/instrument/1/dataPublication',
+  investigations:
+    '/browseDataPublications/instrument/1/dataPublication/1/investigation',
   datasets:
-    '/browseStudyHierarchy/instrument/1/study/1/investigation/1/dataset',
+    '/browseDataPublications/instrument/1/dataPublication/1/investigation/1/dataset',
   datafiles:
-    '/browseStudyHierarchy/instrument/1/study/1/investigation/1/dataset/1/datafile',
+    '/browseDataPublications/instrument/1/dataPublication/1/investigation/1/dataset/1/datafile',
   landing: {
-    study: '/browseStudyHierarchy/instrument/1/study/1',
-    investigation: '/browseStudyHierarchy/instrument/1/study/1/investigation/1',
+    dataPublication: '/browseDataPublications/instrument/1/dataPublication/1',
+    investigation:
+      '/browseDataPublications/instrument/1/dataPublication/1/investigation/1',
     dataset:
-      '/browseStudyHierarchy/instrument/1/study/1/investigation/1/dataset/1',
+      '/browseDataPublications/instrument/1/dataPublication/1/investigation/1/dataset/1',
   },
 };
 
@@ -115,58 +81,21 @@ describe('PageTable', () => {
   let state: StateType;
   let history: History;
 
-  const createTableWrapper = (
-    path: string,
-    loggedInAnonymously?: boolean
-  ): ReactWrapper => {
+  function Wrapper({ children }: { children: React.ReactNode }): JSX.Element {
     const mockStore = configureStore([thunk]);
-    const client = new QueryClient();
-    history.push(path);
-    return mount(
+    const client = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+      },
+    });
+    return (
       <Provider store={mockStore(state)}>
         <Router history={history}>
-          <QueryClientProvider client={client}>
-            <PageRouting
-              loggedInAnonymously={
-                loggedInAnonymously === undefined ? false : loggedInAnonymously
-              }
-              view="table"
-            />
-          </QueryClientProvider>
+          <QueryClientProvider client={client}>{children}</QueryClientProvider>
         </Router>
       </Provider>
     );
-  };
-
-  const createCardWrapper = (path: string): ReactWrapper => {
-    const mockStore = configureStore([thunk]);
-    const client = new QueryClient();
-    history.push(path);
-    return mount(
-      <Provider store={mockStore(state)}>
-        <Router history={history}>
-          <QueryClientProvider client={client}>
-            <PageRouting view="card" />
-          </QueryClientProvider>
-        </Router>
-      </Provider>
-    );
-  };
-
-  const createLandingWrapper = (path: string): ReactWrapper => {
-    const mockStore = configureStore([thunk]);
-    const client = new QueryClient();
-    history.push(path);
-    return mount(
-      <Provider store={mockStore(state)}>
-        <Router history={history}>
-          <QueryClientProvider client={client}>
-            <PageRouting view={null} />
-          </QueryClientProvider>
-        </Router>
-      </Provider>
-    );
-  };
+  }
 
   beforeEach(() => {
     history = createMemoryHistory();
@@ -191,7 +120,9 @@ describe('PageTable', () => {
     (checkInstrumentId as jest.Mock).mockImplementation(() =>
       Promise.resolve(true)
     );
-    (checkStudyId as jest.Mock).mockImplementation(() => Promise.resolve(true));
+    (checkDataPublicationId as jest.Mock).mockImplementation(() =>
+      Promise.resolve(true)
+    );
     (checkInvestigationId as jest.Mock).mockImplementation(() =>
       Promise.resolve(true)
     );
@@ -206,195 +137,572 @@ describe('PageTable', () => {
 
   describe('Generic', () => {
     it('renders PageTable correctly', () => {
-      const wrapper = createTableWrapper('/');
-      expect(wrapper.exists(Link)).toBe(true);
+      history.push('/');
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        {
+          wrapper: Wrapper,
+        }
+      );
+
+      expect(
+        screen.getByRole('link', { name: 'Browse investigations' })
+      ).toHaveAttribute('href', '/browse/investigation');
     });
 
     it('renders PageCard correctly', () => {
-      const wrapper = createCardWrapper('/');
-      expect(wrapper.exists(Link)).toBe(true);
+      history.push('/');
+
+      render(
+        <PageRouting
+          view="card"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(
+        screen.getByRole('link', { name: 'Browse investigations' })
+      ).toHaveAttribute('href', '/browse/investigation?view=card');
     });
 
-    it('renders InvestigationTable for generic investigations route', () => {
-      const wrapper = createTableWrapper(genericRoutes['investigations']);
-      expect(wrapper.exists(InvestigationTable)).toBe(true);
+    it('renders InvestigationTable for generic investigations route', async () => {
+      history.push(genericRoutes['investigations']);
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        {
+          wrapper: Wrapper,
+        }
+      );
+
+      expect(
+        await findColumnHeaderByName('investigations.title')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('investigations.visit_id')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('investigations.name')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('investigations.doi')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('investigations.size')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('investigations.instrument')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('investigations.start_date')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('investigations.end_date')
+      ).toBeInTheDocument();
     });
 
-    it('renders InvestigationCardView for generic investigations route', () => {
-      const wrapper = createCardWrapper(genericRoutes['investigations']);
-      expect(wrapper.exists(InvestigationCardView)).toBe(true);
+    it('renders InvestigationCardView for generic investigations route', async () => {
+      history.push(genericRoutes.investigations);
+
+      render(
+        <PageRouting
+          view="card"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(
+        await screen.findByTestId('investigation-card-view')
+      ).toBeInTheDocument();
     });
 
-    it('renders DatasetTable for generic datasets route', () => {
-      const wrapper = createTableWrapper(genericRoutes['datasets']);
-      expect(wrapper.exists(DatasetTable)).toBe(true);
+    it('renders DatasetTable for generic datasets route', async () => {
+      history.push(genericRoutes['datasets']);
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        {
+          wrapper: Wrapper,
+        }
+      );
+
+      expect(await findColumnHeaderByName('datasets.name')).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datasets.datafile_count')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datasets.create_time')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datasets.modified_time')
+      ).toBeInTheDocument();
     });
 
-    it('renders DatasetCardView for generic datasets route', () => {
-      const wrapper = createCardWrapper(genericRoutes['datasets']);
-      expect(wrapper.exists(DatasetCardView)).toBe(true);
+    it('renders DatasetCardView for generic datasets route', async () => {
+      history.push(genericRoutes.datasets);
+
+      render(
+        <PageRouting
+          view="card"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(
+        await screen.findByTestId('dataset-card-view')
+      ).toBeInTheDocument();
     });
 
     it('renders DatafileTable for generic datafiles route', async () => {
-      const wrapper = createTableWrapper(genericRoutes['datafiles']);
-      await act(async () => {
-        await flushPromises();
-        wrapper.update();
-      });
-      expect(wrapper.exists(DatafileTable)).toBe(true);
+      history.push(genericRoutes['datafiles']);
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        {
+          wrapper: Wrapper,
+        }
+      );
+
+      expect(
+        await findColumnHeaderByName('datafiles.name')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datafiles.location')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datafiles.size')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datafiles.modified_time')
+      ).toBeInTheDocument();
     });
 
     it('does not render DatafileTable for incorrect generic datafiles route', async () => {
       (checkInvestigationId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
-      const wrapper = createTableWrapper(genericRoutes['datafiles']);
-      await act(async () => {
-        await flushPromises();
-        wrapper.update();
-      });
-      expect(wrapper.exists(DatafileTable)).toBe(false);
+      history.push(genericRoutes['datafiles']);
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        {
+          wrapper: Wrapper,
+        }
+      );
+
+      expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
   });
 
   describe('ISIS', () => {
-    it('renders ISISMyDataTable for ISIS my data route', () => {
-      const wrapper = createTableWrapper(ISISRoutes['mydata'], false);
-      expect(wrapper.exists(ISISMyDataTable)).toBe(true);
+    it('renders ISISMyDataTable for ISIS my data route', async () => {
+      history.push(ISISRoutes['mydata']);
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        {
+          wrapper: Wrapper,
+        }
+      );
+
+      expect(
+        await findColumnHeaderByName('investigations.title')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('investigations.doi')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('investigations.visit_id')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('investigations.name')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('investigations.instrument')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('investigations.size')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('investigations.start_date')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('investigations.end_date')
+      ).toBeInTheDocument();
     });
 
     it('redirects to login page when not signed in (ISISMyDataTable) ', () => {
-      const wrapper = createTableWrapper(ISISRoutes['mydata'], true);
-      expect(wrapper.exists(ISISMyDataTable)).toBe(false);
-      expect(history.length).toBe(2);
+      history.push(ISISRoutes['mydata']);
+
+      render(
+        <PageRouting
+          loggedInAnonymously
+          view="table"
+          location={history.location}
+        />,
+        {
+          wrapper: Wrapper,
+        }
+      );
+
       expect(history.location.pathname).toBe('/login');
     });
 
-    it('renders ISISInstrumentsTable for ISIS instruments route', () => {
-      const wrapper = createTableWrapper(ISISRoutes['instruments']);
-      expect(wrapper.exists(ISISInstrumentsTable)).toBe(true);
+    it('renders ISISInstrumentsTable for ISIS instruments route', async () => {
+      history.push(ISISRoutes['instruments']);
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        {
+          wrapper: Wrapper,
+        }
+      );
+
+      expect(
+        await findColumnHeaderByName('instruments.name')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('instruments.type')
+      ).toBeInTheDocument();
     });
 
-    it('renders ISISInstrumentsCardView for ISIS instruments route', () => {
-      const wrapper = createCardWrapper(ISISRoutes['instruments']);
-      expect(wrapper.exists(ISISInstrumentsCardView)).toBe(true);
+    it('renders ISISInstrumentsCardView for ISIS instruments route', async () => {
+      history.push(ISISRoutes.instruments);
+
+      render(
+        <PageRouting
+          view="card"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(
+        await screen.findByTestId('isis-instruments-card-view')
+      ).toBeInTheDocument();
     });
 
-    it('renders ISISFacilityCyclesTable for ISIS facilityCycles route', () => {
-      const wrapper = createTableWrapper(ISISRoutes['facilityCycles']);
-      expect(wrapper.exists(ISISFacilityCyclesTable)).toBe(true);
+    it('renders ISISFacilityCyclesTable for ISIS facilityCycles route', async () => {
+      history.push(ISISRoutes['facilityCycles']);
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        {
+          wrapper: Wrapper,
+        }
+      );
+
+      expect(
+        await findColumnHeaderByName('facilitycycles.name')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('facilitycycles.start_date')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('facilitycycles.end_date')
+      ).toBeInTheDocument();
     });
 
-    it('renders ISISFacilityCyclesCardView for ISIS facilityCycles route', () => {
-      const wrapper = createCardWrapper(ISISRoutes['facilityCycles']);
-      expect(wrapper.exists(ISISFacilityCyclesCardView)).toBe(true);
+    it('renders ISISFacilityCyclesCardView for ISIS facilityCycles route', async () => {
+      history.push(ISISRoutes.facilityCycles);
+
+      render(
+        <PageRouting
+          view="card"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(
+        await screen.findByTestId('isis-facility-card-view')
+      ).toBeInTheDocument();
     });
 
-    it('renders ISISInvestigationsTable for ISIS investigations route', () => {
-      const wrapper = createTableWrapper(ISISRoutes['investigations']);
-      expect(wrapper.exists(ISISInvestigationsTable)).toBe(true);
+    it('renders ISISInvestigationsTable for ISIS investigations route', async () => {
+      history.push(ISISRoutes['investigations']);
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        {
+          wrapper: Wrapper,
+        }
+      );
+
+      expect(
+        await findColumnHeaderByName('investigations.title')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('investigations.name')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('investigations.doi')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('investigations.size')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('investigations.principal_investigators')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('investigations.start_date')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('investigations.end_date')
+      ).toBeInTheDocument();
     });
 
-    it('renders ISISInvestigationsCardView for ISIS investigations route', () => {
-      const wrapper = createCardWrapper(ISISRoutes['investigations']);
-      expect(wrapper.exists(ISISInvestigationsCardView)).toBe(true);
+    it('renders ISISInvestigationsCardView for ISIS investigations route', async () => {
+      history.push(ISISRoutes.investigations);
+
+      render(
+        <PageRouting
+          view="card"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(
+        await screen.findByTestId('isis-investigations-card-view')
+      ).toBeInTheDocument();
     });
 
     it('renders ISISInvestigationLanding for ISIS investigation route', async () => {
-      const wrapper = createLandingWrapper(
-        ISISRoutes['landing']['investigation']
+      history.push(ISISRoutes['landing']['investigation']);
+
+      render(
+        <PageRouting
+          view={null}
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        {
+          wrapper: Wrapper,
+        }
       );
-      await act(async () => {
-        await flushPromises();
-        wrapper.update();
-      });
-      expect(wrapper.exists(ISISInvestigationLanding)).toBe(true);
+
+      expect(
+        await screen.findByLabelText('branding-title')
+      ).toBeInTheDocument();
     });
 
     it('does not render ISISInvestigationLanding for incorrect ISIS investigation route', async () => {
       (checkInstrumentAndFacilityCycleId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
-      const wrapper = createLandingWrapper(
-        ISISRoutes['landing']['investigation']
+
+      history.push(ISISRoutes.landing.investigation);
+
+      render(
+        <PageRouting
+          view={null}
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
       );
+
       await act(async () => {
         await flushPromises();
-        wrapper.update();
       });
-      expect(wrapper.exists(ISISInvestigationLanding)).toBe(false);
+
+      expect(screen.getByText('loading.oops')).toBeInTheDocument();
     });
 
     it('renders ISISDatasetsTable for ISIS datasets route', async () => {
-      const wrapper = createTableWrapper(ISISRoutes['datasets']);
+      history.push(ISISRoutes.datasets);
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
       await act(async () => {
         await flushPromises();
-        wrapper.update();
       });
-      expect(wrapper.exists(ISISDatasetsTable)).toBe(true);
+
+      expect(await findColumnHeaderByName('datasets.name')).toBeInTheDocument();
+      expect(await findColumnHeaderByName('datasets.size')).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datasets.create_time')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datasets.modified_time')
+      ).toBeInTheDocument();
     });
 
     it('does not render ISISDatasetsTable for incorrect ISIS datasets route', async () => {
       (checkInstrumentAndFacilityCycleId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
-      const wrapper = createTableWrapper(ISISRoutes['datasets']);
+
+      history.push(ISISRoutes.datasets);
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
       await act(async () => {
         await flushPromises();
-        wrapper.update();
       });
-      expect(wrapper.exists(ISISDatasetsTable)).toBe(false);
+
+      expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
 
     it('renders ISISDatasetsCardview for ISIS datasets route', async () => {
-      const wrapper = createCardWrapper(ISISRoutes['datasets']);
+      history.push(ISISRoutes.datasets);
+
+      render(
+        <PageRouting
+          view="card"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
       await act(async () => {
         await flushPromises();
-        wrapper.update();
       });
-      expect(wrapper.exists(ISISDatasetsCardView)).toBe(true);
+
+      expect(screen.getByTestId('isis-datasets-card-view')).toBeInTheDocument();
     });
 
     it('does not render ISISDatasetsCardView for incorrect ISIS datasets route', async () => {
       (checkInstrumentAndFacilityCycleId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
-      const wrapper = createCardWrapper(ISISRoutes['datasets']);
-      await act(async () => {
-        await flushPromises();
-        wrapper.update();
-      });
-      expect(wrapper.exists(ISISDatasetsCardView)).toBe(false);
+
+      history.push(ISISRoutes.datasets);
+
+      render(
+        <PageRouting
+          view="card"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
 
     it('renders ISISDatasetLanding for ISIS dataset route', async () => {
-      const wrapper = createLandingWrapper(ISISRoutes['landing']['dataset']);
-      await act(async () => {
-        await flushPromises();
-        wrapper.update();
-      });
-      expect(wrapper.exists(ISISDatasetLanding)).toBe(true);
+      history.push(ISISRoutes.landing.dataset);
+
+      render(
+        <PageRouting
+          view={null}
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(
+        await screen.findByTestId('isis-dataset-landing')
+      ).toBeInTheDocument();
     });
 
     it('does not render ISISDatasetLanding for incorrect ISIS dataset route', async () => {
       (checkInstrumentAndFacilityCycleId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
-      const wrapper = createLandingWrapper(ISISRoutes['landing']['dataset']);
-      await act(async () => {
-        await flushPromises();
-        wrapper.update();
-      });
-      expect(wrapper.exists(ISISDatasetLanding)).toBe(false);
+
+      history.push(ISISRoutes.landing.dataset);
+
+      render(
+        <PageRouting
+          view={null}
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
 
     it('renders ISISDatafilesTable for ISIS datafiles route', async () => {
-      const wrapper = createTableWrapper(ISISRoutes['datafiles']);
-      await act(async () => {
-        await flushPromises();
-        wrapper.update();
-      });
-      expect(wrapper.exists(ISISDatafilesTable)).toBe(true);
+      history.push(ISISRoutes.datafiles);
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(
+        await findColumnHeaderByName('datafiles.name')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datafiles.location')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datafiles.size')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datafiles.modified_time')
+      ).toBeInTheDocument();
     });
 
     it('does not render ISISDatafilesTable for incorrect ISIS datafiles route', async () => {
@@ -404,293 +712,635 @@ describe('PageTable', () => {
       (checkInvestigationId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
-      const wrapper = createTableWrapper(ISISRoutes['datafiles']);
-      await act(async () => {
-        await flushPromises();
-        wrapper.update();
-      });
-      expect(wrapper.exists(ISISDatafilesTable)).toBe(false);
+
+      history.push(ISISRoutes.datafiles);
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
   });
 
-  describe('ISIS Study Hierarchy', () => {
-    it('renders ISISInstrumentsTable for ISIS instruments route in Study Hierarchy', () => {
-      const wrapper = createTableWrapper(
-        ISISStudyHierarchyRoutes['instruments']
+  describe('ISIS Data Publication Hierarchy', () => {
+    it('renders ISISInstrumentsTable for ISIS instruments route in Data Publication Hierarchy', async () => {
+      history.push(ISISDataPublicationsRoutes.instruments);
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
       );
-      expect(wrapper.exists(ISISInstrumentsTable)).toBe(true);
+
+      expect(
+        await findColumnHeaderByName('instruments.name')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('instruments.type')
+      ).toBeInTheDocument();
     });
 
-    it('renders ISISInstrumentsCardView for ISIS instruments route in Study Hierarchy', () => {
-      const wrapper = createCardWrapper(
-        ISISStudyHierarchyRoutes['instruments']
+    it('renders ISISInstrumentsCardView for ISIS instruments route in Data Publication Hierarchy', async () => {
+      history.push(ISISDataPublicationsRoutes.instruments);
+
+      render(
+        <PageRouting
+          view="card"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
       );
-      expect(wrapper.exists(ISISInstrumentsCardView)).toBe(true);
+
+      expect(
+        await screen.findByTestId('isis-instruments-card-view')
+      ).toBeInTheDocument();
     });
 
-    it('renders ISISStudiesTable for ISIS studies route in Study Hierarchy', () => {
-      const wrapper = createTableWrapper(ISISStudyHierarchyRoutes['studies']);
-      expect(wrapper.exists(ISISStudiesTable)).toBe(true);
-    });
+    it('renders ISISDataPublicationsTable for ISIS dataPublications route in Data Publication Hierarchy', async () => {
+      history.push(ISISDataPublicationsRoutes['dataPublications']);
 
-    it('renders ISISStudiesCardView for ISIS studies route in Study Hierarchy', () => {
-      const wrapper = createCardWrapper(ISISStudyHierarchyRoutes['studies']);
-      expect(wrapper.exists(ISISStudiesCardView)).toBe(true);
-    });
-
-    it('renders ISISStudyLanding for ISIS study route for studyHierarchy', async () => {
-      const wrapper = createLandingWrapper(
-        ISISStudyHierarchyRoutes['landing']['study']
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
       );
-      await act(async () => {
-        await flushPromises();
-        wrapper.update();
-      });
-      expect(wrapper.exists(ISISStudyLanding)).toBe(true);
+
+      expect(
+        await findColumnHeaderByName('datapublications.title')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datapublications.pid')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datapublications.publication_date')
+      ).toBeInTheDocument();
     });
 
-    it('does not render ISISStudyLanding for incorrect ISIS study route for studyHierarchy', async () => {
+    it('renders ISISDataPublicationsCardView for ISIS dataPublications route in Data Publication Hierarchy', async () => {
+      history.push(ISISDataPublicationsRoutes.dataPublications);
+
+      render(
+        <PageRouting
+          view="card"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(
+        await screen.findByTestId('isis-dataPublications-card-view')
+      ).toBeInTheDocument();
+    });
+
+    it('renders ISISDataPublicationLanding for ISIS dataPublications route for Data Publication Hierarchy', async () => {
+      history.push(ISISDataPublicationsRoutes.landing.dataPublication);
+
+      render(
+        <PageRouting
+          view={null}
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(
+        await screen.findByTestId('isis-dataPublication-landing')
+      ).toBeInTheDocument();
+    });
+
+    it('does not render ISISDataPublicationLanding for incorrect ISIS dataPublications route for Data Publication Hierarchy', async () => {
       (checkInstrumentId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
-      const wrapper = createLandingWrapper(
-        ISISStudyHierarchyRoutes['landing']['study']
+
+      history.push(ISISDataPublicationsRoutes.landing.dataPublication);
+
+      render(
+        <PageRouting
+          view={null}
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
       );
-      await act(async () => {
-        await flushPromises();
-        wrapper.update();
-      });
-      expect(wrapper.exists(ISISStudyLanding)).toBe(false);
+
+      expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
 
-    it('renders ISISInvestigationsTable for ISIS investigations route in Study Hierarchy', () => {
-      const wrapper = createTableWrapper(
-        ISISStudyHierarchyRoutes['investigations']
+    it('renders ISISInvestigationsTable for ISIS investigations route in Data Publication Hierarchy', async () => {
+      history.push(ISISDataPublicationsRoutes.investigations);
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
       );
-      expect(wrapper.exists(ISISInvestigationsTable)).toBe(true);
+
+      expect(
+        await findColumnHeaderByName('investigations.title')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('investigations.name')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('investigations.doi')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('investigations.size')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('investigations.principal_investigators')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('investigations.start_date')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('investigations.end_date')
+      ).toBeInTheDocument();
     });
 
-    it('renders ISISInvestigationsCardView for ISIS investigations route in Study Hierarchy', () => {
-      const wrapper = createCardWrapper(
-        ISISStudyHierarchyRoutes['investigations']
+    it('renders ISISInvestigationsCardView for ISIS investigations route in Data Publication Hierarchy', async () => {
+      history.push(ISISDataPublicationsRoutes.investigations);
+
+      render(
+        <PageRouting
+          view="card"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
       );
-      expect(wrapper.exists(ISISInvestigationsCardView)).toBe(true);
+
+      expect(
+        await screen.findByTestId('isis-investigations-card-view')
+      ).toBeInTheDocument();
     });
 
-    it('renders ISISDatasetsTable for ISIS datasets route in Study Hierarchy', async () => {
-      const wrapper = createTableWrapper(ISISStudyHierarchyRoutes['datasets']);
-      await act(async () => {
-        await flushPromises();
-        wrapper.update();
-      });
-      expect(wrapper.exists(ISISDatasetsTable)).toBe(true);
+    it('renders ISISDatasetsTable for ISIS datasets route in Data Publication Hierarchy', async () => {
+      history.push(ISISDataPublicationsRoutes.datasets);
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(await findColumnHeaderByName('datasets.name')).toBeInTheDocument();
+      expect(await findColumnHeaderByName('datasets.size')).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datasets.create_time')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datasets.modified_time')
+      ).toBeInTheDocument();
     });
 
-    it('does not render ISISDatasetsTable for incorrect ISIS datasets route in Study Hierarchy', async () => {
+    it('does not render ISISDatasetsTable for incorrect ISIS datasets route in Data Publication Hierarchy', async () => {
       (checkInstrumentId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
-      (checkStudyId as jest.Mock).mockImplementation(() =>
+      (checkDataPublicationId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
-      const wrapper = createTableWrapper(ISISStudyHierarchyRoutes['datasets']);
-      await act(async () => {
-        await flushPromises();
-        wrapper.update();
-      });
-      expect(wrapper.exists(ISISDatasetsTable)).toBe(false);
-    });
 
-    it('renders ISISInvestigationLanding for ISIS investigation route for studyHierarchy', async () => {
-      const wrapper = createLandingWrapper(
-        ISISStudyHierarchyRoutes['landing']['investigation']
+      history.push(ISISDataPublicationsRoutes.datasets);
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
       );
-      await act(async () => {
-        await flushPromises();
-        wrapper.update();
-      });
-      expect(wrapper.exists(ISISInvestigationLanding)).toBe(true);
+
+      expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
 
-    it('does not render ISISInvestigationLanding for incorrect ISIS investigation route for studyHierarchy', async () => {
+    it('renders ISISInvestigationLanding for ISIS investigation route for Data Publication Hierarchy', async () => {
+      history.push(ISISDataPublicationsRoutes.landing.investigation);
+
+      render(
+        <PageRouting
+          view={null}
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(
+        await screen.findByTestId('isis-investigation-landing')
+      ).toBeInTheDocument();
+    });
+
+    it('does not render ISISInvestigationLanding for incorrect ISIS investigation route for Data Publication Hierarchy', async () => {
       (checkInstrumentId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
-      (checkStudyId as jest.Mock).mockImplementation(() =>
+      (checkDataPublicationId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
-      const wrapper = createLandingWrapper(
-        ISISStudyHierarchyRoutes['landing']['investigation']
+
+      history.push(ISISDataPublicationsRoutes.landing.investigation);
+
+      render(
+        <PageRouting
+          view={null}
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
       );
-      await act(async () => {
-        await flushPromises();
-        wrapper.update();
-      });
-      expect(wrapper.exists(ISISInvestigationLanding)).toBe(false);
+
+      expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
 
-    it('renders ISISDatasetsCardView for ISIS datasets route in Study Hierarchy', async () => {
-      const wrapper = createCardWrapper(ISISStudyHierarchyRoutes['datasets']);
-      await act(async () => {
-        await flushPromises();
-        wrapper.update();
-      });
-      expect(wrapper.exists(ISISDatasetsCardView)).toBe(true);
+    it('renders ISISDatasetsCardView for ISIS datasets route in Data Publication Hierarchy', async () => {
+      history.push(ISISDataPublicationsRoutes.datasets);
+
+      render(
+        <PageRouting
+          view="card"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(
+        await screen.findByTestId('isis-datasets-card-view')
+      ).toBeInTheDocument();
     });
 
-    it('does not render ISISDatasetsCardView for incorrect ISIS datasets route in Study Hierarchy', async () => {
+    it('does not render ISISDatasetsCardView for incorrect ISIS datasets route in Data Publication Hierarchy', async () => {
       (checkInstrumentId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
-      (checkStudyId as jest.Mock).mockImplementation(() =>
+      (checkDataPublicationId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
-      const wrapper = createCardWrapper(ISISStudyHierarchyRoutes['datasets']);
-      await act(async () => {
-        await flushPromises();
-        wrapper.update();
-      });
-      expect(wrapper.exists(ISISDatasetsCardView)).toBe(false);
-    });
 
-    it('renders ISISDatasetLanding for ISIS dataset route for studyHierarchy', async () => {
-      const wrapper = createLandingWrapper(
-        ISISStudyHierarchyRoutes['landing']['dataset']
+      history.push(ISISDataPublicationsRoutes.datasets);
+
+      render(
+        <PageRouting
+          view="card"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
       );
-      await act(async () => {
-        await flushPromises();
-        wrapper.update();
-      });
-      expect(wrapper.exists(ISISDatasetLanding)).toBe(true);
+
+      expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
 
-    it('does not render ISISDatasetLanding for incorrect ISIS dataset route for studyHierarchy', async () => {
+    it('renders ISISDatasetLanding for ISIS dataset route for Data Publication Hierarchy', async () => {
+      history.push(ISISDataPublicationsRoutes.landing.dataset);
+
+      render(
+        <PageRouting
+          view={null}
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(
+        await screen.findByTestId('isis-dataset-landing')
+      ).toBeInTheDocument();
+    });
+
+    it('does not render ISISDatasetLanding for incorrect ISIS dataset route for Data Publication Hierarchy', async () => {
       (checkInstrumentId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
-      (checkStudyId as jest.Mock).mockImplementation(() =>
+      (checkDataPublicationId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
-      const wrapper = createLandingWrapper(
-        ISISStudyHierarchyRoutes['landing']['dataset']
+
+      history.push(ISISDataPublicationsRoutes.landing.dataset);
+
+      render(
+        <PageRouting
+          view={null}
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
       );
-      await act(async () => {
-        await flushPromises();
-        wrapper.update();
-      });
-      expect(wrapper.exists(ISISDatasetLanding)).toBe(false);
+
+      expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
 
-    it('renders ISISDatafilesTable for ISIS datafiles route in Study Hierarchy', async () => {
-      const wrapper = createTableWrapper(ISISStudyHierarchyRoutes['datafiles']);
-      await act(async () => {
-        await flushPromises();
-        wrapper.update();
-      });
-      expect(wrapper.exists(ISISDatafilesTable)).toBe(true);
+    it('renders ISISDatafilesTable for ISIS datafiles route in Data Publication Hierarchy', async () => {
+      history.push(ISISDataPublicationsRoutes.datafiles);
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(
+        await findColumnHeaderByName('datafiles.name')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datafiles.location')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datafiles.size')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datafiles.modified_time')
+      ).toBeInTheDocument();
     });
 
-    it('does not render ISISDatafilesTable for incorrect ISIS datafiles route in Study Hierarchy', async () => {
+    it('does not render ISISDatafilesTable for incorrect ISIS datafiles route in Data Publication Hierarchy', async () => {
       (checkInstrumentId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
-      (checkStudyId as jest.Mock).mockImplementation(() =>
+      (checkDataPublicationId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
       (checkInvestigationId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
-      const wrapper = createTableWrapper(ISISStudyHierarchyRoutes['datafiles']);
-      await act(async () => {
-        await flushPromises();
-        wrapper.update();
-      });
-      expect(wrapper.exists(ISISDatafilesTable)).toBe(false);
+
+      history.push(ISISDataPublicationsRoutes.datafiles);
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
   });
 
   describe('DLS', () => {
-    it('renders DLSMyDataTable for DLS my data route', () => {
-      const wrapper = createTableWrapper(DLSRoutes['mydata'], false);
-      expect(wrapper.exists(DLSMyDataTable)).toBe(true);
+    it('renders DLSMyDataTable for DLS my data route', async () => {
+      history.push(DLSRoutes.mydata);
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(
+        await findColumnHeaderByName('investigations.title')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('investigations.visit_id')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('investigations.dataset_count')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('investigations.instrument')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('investigations.start_date')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('investigations.end_date')
+      ).toBeInTheDocument();
     });
 
     it('redirects to login page when not signed in (DLSMyDataTable) ', () => {
-      const wrapper = createTableWrapper(DLSRoutes['mydata'], true);
-      expect(wrapper.exists(DLSMyDataTable)).toBe(false);
-      expect(history.length).toBe(2);
+      history.push(DLSRoutes.mydata);
+
+      render(
+        <PageRouting
+          loggedInAnonymously
+          view="table"
+          location={history.location}
+        />,
+        { wrapper: Wrapper }
+      );
+
       expect(history.location.pathname).toBe('/login');
     });
 
-    it('renders DLSProposalTable for DLS proposal route', () => {
-      const wrapper = createTableWrapper(DLSRoutes['proposals']);
-      expect(wrapper.exists(DLSProposalsTable)).toBe(true);
+    it('renders DLSProposalTable for DLS proposal route', async () => {
+      history.push(DLSRoutes.proposals);
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(
+        await findColumnHeaderByName('investigations.title')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('investigations.name')
+      ).toBeInTheDocument();
     });
 
-    it('renders DLSProposalCardView for DLS proposal route', () => {
-      const wrapper = createCardWrapper(DLSRoutes['proposals']);
-      expect(wrapper.exists(DLSProposalsCardView)).toBe(true);
+    it('renders DLSProposalCardView for DLS proposal route', async () => {
+      history.push(DLSRoutes.proposals);
+
+      render(
+        <PageRouting
+          view="card"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(
+        await screen.findByTestId('dls-proposals-card-view')
+      ).toBeInTheDocument();
     });
 
-    it('renders DLSVisitsTable for DLS investigations route', () => {
-      const wrapper = createTableWrapper(DLSRoutes['investigations']);
-      expect(wrapper.exists(DLSVisitsTable)).toBe(true);
+    it('renders DLSVisitsTable for DLS investigations route', async () => {
+      history.push(DLSRoutes.investigations);
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(
+        await findColumnHeaderByName('investigations.visit_id')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('investigations.dataset_count')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('investigations.instrument')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('investigations.start_date')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('investigations.end_date')
+      ).toBeInTheDocument();
     });
 
-    it('renders DLSVisitsCardView for DLS investigations route', () => {
-      const wrapper = createCardWrapper(DLSRoutes['investigations']);
-      expect(wrapper.exists(DLSVisitsCardView)).toBe(true);
+    it('renders DLSVisitsCardView for DLS investigations route', async () => {
+      history.push(DLSRoutes.investigations);
+
+      render(
+        <PageRouting
+          view="card"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(
+        await screen.findByTestId('dls-visits-card-view')
+      ).toBeInTheDocument();
     });
 
     it('renders DLSDatasetsTable for DLS datasets route', async () => {
-      const wrapper = createTableWrapper(DLSRoutes['datasets']);
-      await act(async () => {
-        await flushPromises();
-        wrapper.update();
-      });
-      expect(wrapper.exists(DLSDatasetsTable)).toBe(true);
+      history.push(DLSRoutes.datasets);
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(await findColumnHeaderByName('datasets.name')).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datasets.datafile_count')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datasets.create_time')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datasets.modified_time')
+      ).toBeInTheDocument();
     });
 
     it('does not render DLSDatasetsTable for incorrect DLS datasets route', async () => {
       (checkProposalName as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
-      const wrapper = createTableWrapper(DLSRoutes['datasets']);
-      await act(async () => {
-        await flushPromises();
-        wrapper.update();
-      });
-      expect(wrapper.exists(DLSDatasetsTable)).toBe(false);
+
+      history.push(DLSRoutes.datasets);
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
 
     it('renders DLSDatasetsCardView for DLS datasets route', async () => {
-      const wrapper = createCardWrapper(DLSRoutes['datasets']);
-      await act(async () => {
-        await flushPromises();
-        wrapper.update();
-      });
-      expect(wrapper.exists(DLSDatasetsCardView)).toBe(true);
+      history.push(DLSRoutes.datasets);
+
+      render(
+        <PageRouting
+          view="card"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(
+        await screen.findByTestId('dls-datasets-card-view')
+      ).toBeInTheDocument();
     });
 
     it('does not render DLSDatasetsCardView for incorrect DLS datasets route', async () => {
       (checkProposalName as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
-      const wrapper = createCardWrapper(DLSRoutes['datasets']);
-      await act(async () => {
-        await flushPromises();
-        wrapper.update();
-      });
-      expect(wrapper.exists(DLSDatasetsCardView)).toBe(false);
+
+      history.push(DLSRoutes.datasets);
+
+      render(
+        <PageRouting
+          view="card"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
 
     it('renders DLSDatafilesTable for DLS datafiles route', async () => {
-      const wrapper = createTableWrapper(DLSRoutes['datafiles']);
-      await act(async () => {
-        await flushPromises();
-        wrapper.update();
-      });
-      expect(wrapper.exists(DLSDatafilesTable)).toBe(true);
+      history.push(DLSRoutes.datafiles);
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(
+        await findColumnHeaderByName('datafiles.name')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datafiles.location')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datafiles.size')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datafiles.create_time')
+      ).toBeInTheDocument();
     });
 
     it('does not render DLSDatafilesTable for incorrect DLS datafiles route', async () => {
@@ -700,12 +1350,19 @@ describe('PageTable', () => {
       (checkInvestigationId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
-      const wrapper = createTableWrapper(DLSRoutes['datafiles']);
-      await act(async () => {
-        await flushPromises();
-        wrapper.update();
-      });
-      expect(wrapper.exists(DLSDatafilesTable)).toBe(false);
+
+      history.push(DLSRoutes.datafiles);
+
+      render(
+        <PageRouting
+          view="card"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
   });
 });

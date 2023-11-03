@@ -3,7 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { UserEvent } from '@testing-library/user-event/dist/types/setup';
 import * as React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import {
   downloadPreparedCart,
@@ -23,6 +23,13 @@ jest.mock('datagateway-common', () => {
     ...originalModule,
     handleICATError: jest.fn(),
   };
+});
+
+// silence react-query errors
+setLogger({
+  log: console.log,
+  warn: console.warn,
+  error: jest.fn(),
 });
 
 const createTestQueryClient = (): QueryClient =>
@@ -345,6 +352,29 @@ describe('DownloadConfirmDialog', () => {
     );
 
     expect(closeFunction).toHaveBeenCalled();
+  });
+
+  it('shows loading status when submitting cart', async () => {
+    (submitCart as jest.Mock).mockReturnValue(
+      new Promise((_) => {
+        // never resolve the promise to simulate loading state
+      })
+    );
+
+    renderWrapper(100, false, true);
+
+    // click on download button to begin download
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'downloadConfirmDialog.download',
+      })
+    );
+
+    const downloadButton = await screen.findByRole('button', {
+      name: 'downloadConfirmDialog.submitting_cart',
+    });
+    expect(downloadButton).toBeInTheDocument();
+    expect(downloadButton).toBeDisabled();
   });
 });
 

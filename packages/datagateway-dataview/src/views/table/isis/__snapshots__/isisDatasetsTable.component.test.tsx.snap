@@ -1,94 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ISIS Dataset table component renders correctly 1`] = `
-Object {
-  "actions": Array [
-    [Function],
-  ],
-  "allIds": Array [
-    1,
-  ],
-  "columns": Array [
-    Object {
-      "cellContentRenderer": [Function],
-      "dataKey": "name",
-      "filterComponent": [Function],
-      "icon": Object {
-        "$$typeof": Symbol(react.memo),
-        "compare": null,
-        "type": Object {
-          "$$typeof": Symbol(react.forward_ref),
-          "render": [Function],
-        },
-      },
-      "label": "datasets.name",
-    },
-    Object {
-      "cellContentRenderer": [Function],
-      "dataKey": "size",
-      "disableSort": true,
-      "icon": Object {
-        "$$typeof": Symbol(react.memo),
-        "compare": null,
-        "type": Object {
-          "$$typeof": Symbol(react.forward_ref),
-          "render": [Function],
-        },
-      },
-      "label": "datasets.size",
-    },
-    Object {
-      "dataKey": "createTime",
-      "defaultSort": "desc",
-      "filterComponent": [Function],
-      "icon": Object {
-        "$$typeof": Symbol(react.memo),
-        "compare": null,
-        "type": Object {
-          "$$typeof": Symbol(react.forward_ref),
-          "render": [Function],
-        },
-      },
-      "label": "datasets.create_time",
-    },
-    Object {
-      "dataKey": "modTime",
-      "filterComponent": [Function],
-      "icon": Object {
-        "$$typeof": Symbol(react.memo),
-        "compare": null,
-        "type": Object {
-          "$$typeof": Symbol(react.forward_ref),
-          "render": [Function],
-        },
-      },
-      "label": "datasets.modified_time",
-    },
-  ],
-  "data": Array [
-    Object {
-      "createTime": "2019-07-23",
-      "id": 1,
-      "modTime": "2019-07-23",
-      "name": "Test 1",
-      "size": 1,
-    },
-  ],
-  "detailsPanel": [Function],
-  "disableSelectAll": false,
-  "loadMoreRows": [Function],
-  "loading": false,
-  "onCheck": [MockFunction],
-  "onSort": [Function],
-  "onUncheck": [MockFunction],
-  "selectedRows": Array [],
-  "sort": Object {
-    "createTime": "desc",
-  },
-  "totalRowCount": 0,
-}
-`;
-
 exports[`ISIS Dataset table component renders dataset name as a link 1`] = `
 <a
   class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
@@ -98,10 +9,10 @@ exports[`ISIS Dataset table component renders dataset name as a link 1`] = `
 </a>
 `;
 
-exports[`ISIS Dataset table component renders dataset name as a link in StudyHierarchy 1`] = `
+exports[`ISIS Dataset table component renders dataset name as a link in data publication hierarchy 1`] = `
 <a
   class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
-  href="/browseStudyHierarchy/instrument/1/study/2/investigation/3/dataset/1"
+  href="/browseDataPublications/instrument/1/dataPublication/2/investigation/3/dataset/1"
 >
   Test 1
 </a>

@@ -1,7 +1,7 @@
-import { Investigation } from '../app.types';
 import { act, renderHook } from '@testing-library/react-hooks';
-import { createMemoryHistory, History } from 'history';
 import axios from 'axios';
+import { createMemoryHistory, History } from 'history';
+import { Investigation } from '../app.types';
 import handleICATError from '../handleICATError';
 import { createReactQueryWrapper } from '../setupTests';
 import {
@@ -14,10 +14,6 @@ import {
   useInvestigationSize,
   useInvestigationSizes,
   useInvestigationsPaginated,
-  useISISInvestigationCount,
-  useISISInvestigationIds,
-  useISISInvestigationsInfinite,
-  useISISInvestigationsPaginated,
 } from './investigations';
 
 jest.mock('../handleICATError');
@@ -55,7 +51,7 @@ describe('investigation api functions', () => {
     ];
     history = createMemoryHistory({
       initialEntries: [
-        '/?sort={"name":"asc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20',
+        '/?sort={"name":"asc","title":"desc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20',
       ],
     });
     params = new URLSearchParams();
@@ -136,7 +132,7 @@ describe('investigation api functions', () => {
         data: mockData,
       });
 
-      const { result, waitFor } = renderHook(
+      const { result, waitFor, rerender } = renderHook(
         () =>
           useInvestigationsPaginated([
             {
@@ -154,6 +150,7 @@ describe('investigation api functions', () => {
       await waitFor(() => result.current.isSuccess);
 
       params.append('order', JSON.stringify('name asc'));
+      params.append('order', JSON.stringify('title desc'));
       params.append('order', JSON.stringify('id asc'));
       params.append(
         'where',
@@ -180,6 +177,16 @@ describe('investigation api functions', () => {
         params.toString()
       );
       expect(result.current.data).toEqual(mockData);
+
+      // test that order of sort object triggers new query
+      history.push(
+        '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
+      );
+      rerender();
+
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+      expect(axios.get as jest.Mock).toHaveBeenCalledTimes(2);
     });
 
     it('sends axios request to fetch paginated investigations and returns successful response when ignoreIDSort is true', async () => {
@@ -208,6 +215,7 @@ describe('investigation api functions', () => {
       await waitFor(() => result.current.isSuccess);
 
       params.append('order', JSON.stringify('name asc'));
+      params.append('order', JSON.stringify('title desc'));
       params.append(
         'where',
         JSON.stringify({
@@ -273,7 +281,7 @@ describe('investigation api functions', () => {
           : Promise.resolve({ data: mockData[1] })
       );
 
-      const { result, waitFor } = renderHook(
+      const { result, waitFor, rerender } = renderHook(
         () =>
           useInvestigationsInfinite([
             {
@@ -291,6 +299,7 @@ describe('investigation api functions', () => {
       await waitFor(() => result.current.isSuccess);
 
       params.append('order', JSON.stringify('name asc'));
+      params.append('order', JSON.stringify('title desc'));
       params.append('order', JSON.stringify('id asc'));
       params.append(
         'where',
@@ -343,6 +352,16 @@ describe('investigation api functions', () => {
         mockData[0],
         mockData[1],
       ]);
+
+      // test that order of sort object triggers new query
+      history.push(
+        '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}'
+      );
+      rerender();
+
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+      expect(axios.get as jest.Mock).toHaveBeenCalledTimes(3);
     });
 
     it('sends axios request to fetch infinite investigations and returns successful response when ignoreIDSort is true', async () => {
@@ -373,6 +392,7 @@ describe('investigation api functions', () => {
       await waitFor(() => result.current.isSuccess);
 
       params.append('order', JSON.stringify('name asc'));
+      params.append('order', JSON.stringify('title desc'));
       params.append(
         'where',
         JSON.stringify({
@@ -1215,562 +1235,6 @@ describe('investigation api functions', () => {
       await waitFor(() => result.current.isError);
 
       expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
-    });
-  });
-
-  describe('ISIS Investigations', () => {
-    describe('useISISInvestigationsPaginated', () => {
-      it('sends axios request to fetch paginated ISIS investigations in facility cycle hierarchy and returns successful response', async () => {
-        (axios.get as jest.Mock).mockResolvedValue({
-          data: mockData,
-        });
-
-        const { result, waitFor } = renderHook(
-          () => useISISInvestigationsPaginated(1, 2, false),
-          {
-            wrapper: createReactQueryWrapper(history),
-          }
-        );
-
-        await waitFor(() => result.current.isSuccess);
-
-        params.append('order', JSON.stringify('name asc'));
-        params.append('order', JSON.stringify('id asc'));
-        params.append(
-          'where',
-          JSON.stringify({
-            name: { ilike: 'test' },
-          })
-        );
-        params.append('skip', JSON.stringify(20));
-        params.append('limit', JSON.stringify(20));
-        params.append(
-          'include',
-          JSON.stringify([
-            { investigationInstruments: 'instrument' },
-            { studyInvestigations: 'study' },
-            { investigationUsers: 'user' },
-          ])
-        );
-
-        expect(axios.get).toHaveBeenCalledWith(
-          'https://example.com/api/instruments/1/facilitycycles/2/investigations',
-          expect.objectContaining({
-            params,
-          })
-        );
-        expect(
-          (axios.get as jest.Mock).mock.calls[0][1].params.toString()
-        ).toBe(params.toString());
-        expect(result.current.data).toEqual(mockData);
-      });
-
-      it('sends axios request to fetch paginated ISIS investigations in study hierarchy and returns successful response', async () => {
-        (axios.get as jest.Mock).mockResolvedValue({
-          data: mockData,
-        });
-
-        const { result, waitFor } = renderHook(
-          () => useISISInvestigationsPaginated(1, 2, true),
-          {
-            wrapper: createReactQueryWrapper(history),
-          }
-        );
-
-        await waitFor(() => result.current.isSuccess);
-
-        params.append('order', JSON.stringify('name asc'));
-        params.append('order', JSON.stringify('id asc'));
-        params.append(
-          'where',
-          JSON.stringify({
-            name: { ilike: 'test' },
-          })
-        );
-        params.append('skip', JSON.stringify(20));
-        params.append('limit', JSON.stringify(20));
-        params.append(
-          'where',
-          JSON.stringify({
-            'investigationInstruments.instrument.id': { eq: 1 },
-          })
-        );
-        params.append(
-          'where',
-          JSON.stringify({
-            'studyInvestigations.study.id': { eq: 2 },
-          })
-        );
-        params.append(
-          'include',
-          JSON.stringify([
-            { investigationInstruments: 'instrument' },
-            { studyInvestigations: 'study' },
-            { investigationUsers: 'user' },
-          ])
-        );
-
-        expect(axios.get).toHaveBeenCalledWith(
-          'https://example.com/api/investigations',
-          expect.objectContaining({
-            params,
-          })
-        );
-        expect(
-          (axios.get as jest.Mock).mock.calls[0][1].params.toString()
-        ).toBe(params.toString());
-        expect(result.current.data).toEqual(mockData);
-      });
-
-      it('sends axios request to fetch paginated ISIS investigations and calls handleICATError on failure', async () => {
-        (axios.get as jest.Mock).mockRejectedValue({
-          message: 'Test error',
-        });
-        const { result, waitFor } = renderHook(
-          () => useISISInvestigationsPaginated(1, 2, false),
-          {
-            wrapper: createReactQueryWrapper(),
-          }
-        );
-
-        await waitFor(() => result.current.isError);
-
-        params.append('order', JSON.stringify('id asc'));
-        params.append('skip', JSON.stringify(0));
-        params.append('limit', JSON.stringify(10));
-        params.append(
-          'include',
-          JSON.stringify([
-            { investigationInstruments: 'instrument' },
-            { studyInvestigations: 'study' },
-            { investigationUsers: 'user' },
-          ])
-        );
-
-        expect(axios.get).toHaveBeenCalledWith(
-          'https://example.com/api/instruments/1/facilitycycles/2/investigations',
-          expect.objectContaining({
-            params,
-          })
-        );
-        expect(
-          (axios.get as jest.Mock).mock.calls[0][1].params.toString()
-        ).toBe(params.toString());
-        expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
-      });
-    });
-
-    describe('useISISInvestigationsInfinite', () => {
-      it('sends axios request to fetch infinite ISIS investigations in facility hierarchy and returns successful response', async () => {
-        (axios.get as jest.Mock).mockImplementation((url, options) =>
-          options.params.get('skip') === '0'
-            ? Promise.resolve({ data: mockData[0] })
-            : Promise.resolve({ data: mockData[1] })
-        );
-
-        const { result, waitFor } = renderHook(
-          () => useISISInvestigationsInfinite(1, 2, false),
-          {
-            wrapper: createReactQueryWrapper(history),
-          }
-        );
-
-        await waitFor(() => result.current.isSuccess);
-
-        params.append('order', JSON.stringify('name asc'));
-        params.append('order', JSON.stringify('id asc'));
-        params.append(
-          'where',
-          JSON.stringify({
-            name: { ilike: 'test' },
-          })
-        );
-        params.append('skip', JSON.stringify(0));
-        params.append('limit', JSON.stringify(50));
-        params.append(
-          'include',
-          JSON.stringify([
-            { investigationInstruments: 'instrument' },
-            { studyInvestigations: 'study' },
-            { investigationUsers: 'user' },
-          ])
-        );
-
-        expect(axios.get).toHaveBeenCalledWith(
-          'https://example.com/api/instruments/1/facilitycycles/2/investigations',
-          expect.objectContaining({
-            params,
-          })
-        );
-        expect(
-          (axios.get as jest.Mock).mock.calls[0][1].params.toString()
-        ).toBe(params.toString());
-        expect(result.current.data.pages).toStrictEqual([mockData[0]]);
-
-        result.current.fetchNextPage({
-          pageParam: { startIndex: 50, stopIndex: 74 },
-        });
-
-        await waitFor(() => result.current.isFetching);
-
-        await waitFor(() => !result.current.isFetching);
-
-        expect(axios.get).toHaveBeenNthCalledWith(
-          2,
-          'https://example.com/api/instruments/1/facilitycycles/2/investigations',
-          expect.objectContaining({
-            params,
-          })
-        );
-        params.set('skip', JSON.stringify(50));
-        params.set('limit', JSON.stringify(25));
-        expect(
-          (axios.get as jest.Mock).mock.calls[1][1].params.toString()
-        ).toBe(params.toString());
-
-        expect(result.current.data.pages).toStrictEqual([
-          mockData[0],
-          mockData[1],
-        ]);
-      });
-
-      it('sends axios request to fetch infinite ISIS investigations in study hierarchy and returns successful response', async () => {
-        (axios.get as jest.Mock).mockImplementation((url, options) =>
-          options.params.get('skip') === '0'
-            ? Promise.resolve({ data: mockData[0] })
-            : Promise.resolve({ data: mockData[1] })
-        );
-
-        const { result, waitFor } = renderHook(
-          () => useISISInvestigationsInfinite(1, 2, true),
-          {
-            wrapper: createReactQueryWrapper(history),
-          }
-        );
-
-        await waitFor(() => result.current.isSuccess);
-
-        params.append('order', JSON.stringify('name asc'));
-        params.append('order', JSON.stringify('id asc'));
-        params.append(
-          'where',
-          JSON.stringify({
-            name: { ilike: 'test' },
-          })
-        );
-        params.append('skip', JSON.stringify(0));
-        params.append('limit', JSON.stringify(50));
-        params.append(
-          'where',
-          JSON.stringify({
-            'investigationInstruments.instrument.id': { eq: 1 },
-          })
-        );
-        params.append(
-          'where',
-          JSON.stringify({
-            'studyInvestigations.study.id': { eq: 2 },
-          })
-        );
-        params.append(
-          'include',
-          JSON.stringify([
-            { investigationInstruments: 'instrument' },
-            { studyInvestigations: 'study' },
-            { investigationUsers: 'user' },
-          ])
-        );
-
-        expect(axios.get).toHaveBeenCalledWith(
-          'https://example.com/api/investigations',
-          expect.objectContaining({
-            params,
-          })
-        );
-        expect(
-          (axios.get as jest.Mock).mock.calls[0][1].params.toString()
-        ).toBe(params.toString());
-        expect(result.current.data.pages).toStrictEqual([mockData[0]]);
-
-        result.current.fetchNextPage({
-          pageParam: { startIndex: 50, stopIndex: 74 },
-        });
-
-        await waitFor(() => result.current.isFetching);
-
-        await waitFor(() => !result.current.isFetching);
-
-        expect(axios.get).toHaveBeenNthCalledWith(
-          2,
-          'https://example.com/api/investigations',
-          expect.objectContaining({
-            params,
-          })
-        );
-        params.set('skip', JSON.stringify(50));
-        params.set('limit', JSON.stringify(25));
-        expect(
-          (axios.get as jest.Mock).mock.calls[1][1].params.toString()
-        ).toBe(params.toString());
-
-        expect(result.current.data.pages).toStrictEqual([
-          mockData[0],
-          mockData[1],
-        ]);
-      });
-
-      it('sends axios request to fetch infinite ISIS investigations and calls handleICATError on failure', async () => {
-        (axios.get as jest.Mock).mockRejectedValue({
-          message: 'Test error',
-        });
-        const { result, waitFor } = renderHook(
-          () => useISISInvestigationsInfinite(1, 2, false),
-          {
-            wrapper: createReactQueryWrapper(),
-          }
-        );
-
-        await waitFor(() => result.current.isError);
-
-        params.append('order', JSON.stringify('id asc'));
-        params.append('skip', JSON.stringify(0));
-        params.append('limit', JSON.stringify(50));
-        params.append(
-          'include',
-          JSON.stringify([
-            { investigationInstruments: 'instrument' },
-            { studyInvestigations: 'study' },
-            { investigationUsers: 'user' },
-          ])
-        );
-
-        expect(axios.get).toHaveBeenCalledWith(
-          'https://example.com/api/instruments/1/facilitycycles/2/investigations',
-          expect.objectContaining({
-            params,
-          })
-        );
-        expect(
-          (axios.get as jest.Mock).mock.calls[0][1].params.toString()
-        ).toBe(params.toString());
-        expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
-      });
-    });
-
-    describe('useISISInvestigationCount', () => {
-      it('sends axios request to fetch ISIS investigation count in facility cycle hierarchy and returns successful response', async () => {
-        (axios.get as jest.Mock).mockResolvedValue({
-          data: mockData.length,
-        });
-
-        const { result, waitFor } = renderHook(
-          () => useISISInvestigationCount(1, 2, false),
-          {
-            wrapper: createReactQueryWrapper(history),
-          }
-        );
-
-        await waitFor(() => result.current.isSuccess);
-
-        params.append(
-          'where',
-          JSON.stringify({
-            name: { ilike: 'test' },
-          })
-        );
-
-        expect(axios.get).toHaveBeenCalledWith(
-          'https://example.com/api/instruments/1/facilitycycles/2/investigations/count',
-          expect.objectContaining({
-            params,
-          })
-        );
-        expect(
-          (axios.get as jest.Mock).mock.calls[0][1].params.toString()
-        ).toBe(params.toString());
-        expect(result.current.data).toEqual(mockData.length);
-      });
-
-      it('sends axios request to fetch ISIS investigation count in study hierarchy and returns successful response', async () => {
-        (axios.get as jest.Mock).mockResolvedValue({
-          data: mockData.length,
-        });
-
-        const { result, waitFor } = renderHook(
-          () => useISISInvestigationCount(1, 2, true),
-          {
-            wrapper: createReactQueryWrapper(history),
-          }
-        );
-
-        await waitFor(() => result.current.isSuccess);
-
-        params.append(
-          'where',
-          JSON.stringify({
-            name: { ilike: 'test' },
-          })
-        );
-        params.append(
-          'where',
-          JSON.stringify({
-            'investigationInstruments.instrument.id': { eq: 1 },
-          })
-        );
-        params.append(
-          'where',
-          JSON.stringify({
-            'studyInvestigations.study.id': { eq: 2 },
-          })
-        );
-
-        expect(axios.get).toHaveBeenCalledWith(
-          'https://example.com/api/investigations/count',
-          expect.objectContaining({
-            params,
-          })
-        );
-        expect(
-          (axios.get as jest.Mock).mock.calls[0][1].params.toString()
-        ).toBe(params.toString());
-        expect(result.current.data).toEqual(mockData.length);
-      });
-
-      it('sends axios request to fetch ISIS investigation count and calls handleICATError on failure', async () => {
-        (axios.get as jest.Mock).mockRejectedValue({
-          message: 'Test error',
-        });
-        const { result, waitFor } = renderHook(
-          () => useISISInvestigationCount(1, 2, false),
-          {
-            wrapper: createReactQueryWrapper(),
-          }
-        );
-
-        await waitFor(() => result.current.isError);
-
-        expect(axios.get).toHaveBeenCalledWith(
-          'https://example.com/api/instruments/1/facilitycycles/2/investigations/count',
-          expect.objectContaining({
-            params,
-          })
-        );
-        expect(
-          (axios.get as jest.Mock).mock.calls[0][1].params.toString()
-        ).toBe(params.toString());
-        expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
-      });
-    });
-
-    describe('useISISInvestigationIds', () => {
-      it('sends axios request to fetch ISIS investigation ids in facilityCycle hierarchy and returns successful response', async () => {
-        (axios.get as jest.Mock).mockResolvedValue({
-          data: mockData,
-        });
-
-        const { result, waitFor } = renderHook(
-          () => useISISInvestigationIds(1, 2, false),
-          {
-            wrapper: createReactQueryWrapper(history),
-          }
-        );
-
-        await waitFor(() => result.current.isSuccess);
-
-        params.append('order', JSON.stringify('id asc'));
-        params.append(
-          'where',
-          JSON.stringify({
-            name: { ilike: 'test' },
-          })
-        );
-
-        expect(axios.get).toHaveBeenCalledWith(
-          'https://example.com/api/instruments/1/facilitycycles/2/investigations',
-          expect.objectContaining({
-            params,
-          })
-        );
-        expect(
-          (axios.get as jest.Mock).mock.calls[0][1].params.toString()
-        ).toBe(params.toString());
-        expect(result.current.data).toEqual([1, 2, 3]);
-      });
-
-      it('sends axios request to fetch ISIS investigation ids in study hierarchy and returns successful response', async () => {
-        (axios.get as jest.Mock).mockResolvedValue({
-          data: mockData,
-        });
-
-        const { result, waitFor } = renderHook(
-          () => useISISInvestigationIds(1, 2, true),
-          {
-            wrapper: createReactQueryWrapper(history),
-          }
-        );
-
-        await waitFor(() => result.current.isSuccess);
-
-        params.append('order', JSON.stringify('id asc'));
-        params.append(
-          'where',
-          JSON.stringify({
-            name: { ilike: 'test' },
-          })
-        );
-        params.append(
-          'where',
-          JSON.stringify({
-            'investigationInstruments.instrument.id': { eq: 1 },
-          })
-        );
-        params.append(
-          'where',
-          JSON.stringify({
-            'studyInvestigations.study.id': { eq: 2 },
-          })
-        );
-        params.append('distinct', JSON.stringify('id'));
-
-        expect(axios.get).toHaveBeenCalledWith(
-          'https://example.com/api/investigations',
-          expect.objectContaining({
-            params,
-          })
-        );
-        expect(
-          (axios.get as jest.Mock).mock.calls[0][1].params.toString()
-        ).toBe(params.toString());
-        expect(result.current.data).toEqual([1, 2, 3]);
-      });
-
-      it('does not send axios request to fetch ids when set to disabled', async () => {
-        const { result } = renderHook(
-          () => useISISInvestigationIds(1, 2, false, false),
-          {
-            wrapper: createReactQueryWrapper(history),
-          }
-        );
-
-        expect(result.current.isIdle).toBe(true);
-        expect(axios.get).not.toHaveBeenCalled();
-      });
-
-      it('sends axios request to fetch ISIS investigation ids and calls handleICATError on failure', async () => {
-        (axios.get as jest.Mock).mockRejectedValue({
-          message: 'Test error',
-        });
-        const { result, waitFor } = renderHook(
-          () => useISISInvestigationIds(1, 2, false),
-          {
-            wrapper: createReactQueryWrapper(),
-          }
-        );
-
-        await waitFor(() => result.current.isError);
-
-        expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
-      });
     });
   });
 

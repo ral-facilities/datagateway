@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import '@testing-library/jest-dom';
 import React from 'react';
-import Enzyme from 'enzyme';
-import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { Action } from 'redux';
 import { StateType } from './state/app.types';
 import { initialState } from './state/reducers/dgcommon.reducer';
@@ -15,19 +13,29 @@ import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import { createMemoryHistory, History } from 'history';
 
-// Unofficial React 17 Enzyme adapter
-Enzyme.configure({ adapter: new Adapter() });
-
-function noOp(): void {
-  // required as work-around for enzyme/jest environment not implementing window.URL.createObjectURL method
-}
+jest.setTimeout(15000);
 
 if (typeof window.URL.createObjectURL === 'undefined') {
-  Object.defineProperty(window.URL, 'createObjectURL', { value: noOp });
+  // required as work-around for enzyme/jest environment not implementing window.URL.createObjectURL method
+  Object.defineProperty(window.URL, 'createObjectURL', {
+    value: () => 'testObjectUrl',
+  });
+}
+
+if (typeof window.URL.revokeObjectURL === 'undefined') {
+  // required as work-around for enzyme/jest environment not implementing window.URL.createObjectURL method
+  Object.defineProperty(window.URL, 'revokeObjectURL', {
+    value: () => {},
+  });
 }
 
 // Add in ResizeObserver as it's not in Jest's environment
 global.ResizeObserver = require('resize-observer-polyfill');
+
+if (!global.structuredClone) {
+  // structuredClone not available in jest/node <17, so this is a quick polyfill that should do the exact same thing
+  global.structuredClone = (obj: unknown) => JSON.parse(JSON.stringify(obj));
+}
 
 // these are used for testing async actions
 export let actions: Action[] = [];
