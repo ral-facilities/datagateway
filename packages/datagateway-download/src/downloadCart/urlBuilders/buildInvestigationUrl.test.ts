@@ -139,6 +139,7 @@ describe('buildInvestigationUrl', () => {
           ...mockInvestigations[0],
           startDate: '1999-03-09T08:19:55Z',
           endDate: '1999-03-19T08:19:55Z',
+          investigationFacilityCycles: null,
         },
       ],
     });

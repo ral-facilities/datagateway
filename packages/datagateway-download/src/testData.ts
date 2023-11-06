@@ -270,6 +270,12 @@ export const mockInvestigations: Investigation[] = [
         },
       },
     ],
+    investigationFacilityCycles: [
+      {
+        id: 446,
+        facilityCycle: mockFacilityCycles[1],
+      },
+    ],
   },
   {
     id: 993,
@@ -285,6 +291,12 @@ export const mockInvestigations: Investigation[] = [
           id: 927,
           name: 'instrument case',
         },
+      },
+    ],
+    investigationFacilityCycles: [
+      {
+        id: 262,
+        facilityCycle: mockFacilityCycles[1],
       },
     ],
   },

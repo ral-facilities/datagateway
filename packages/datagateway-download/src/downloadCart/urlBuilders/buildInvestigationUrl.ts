@@ -2,7 +2,6 @@ import {
   type AdditionalFilters,
   type FacilityCycle,
   fetchInvestigations,
-  findInvestigationFacilityCycle,
   type Investigation,
 } from 'datagateway-common';
 
@@ -95,10 +94,8 @@ async function buildInvestigationUrl({
         investigation?.investigationInstruments?.[0]?.instrument;
       if (!instrument) return null;
 
-      const facilityCycle = findInvestigationFacilityCycle(
-        investigation,
-        facilityCycles
-      );
+      const facilityCycle =
+        investigation?.investigationFacilityCycles?.[0]?.facilityCycle;
       if (!facilityCycle) return null;
 
       return `/browse/instrument/${instrument.id}/facilityCycle/${facilityCycle.id}/investigation/${investigation.id}/dataset`;
