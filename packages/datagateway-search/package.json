@@ -83,6 +83,9 @@
     ]
   },
   "jest": {
+    "moduleNameMapper": {
+      "axios": "axios/dist/node/axios.cjs"
+    },
     "snapshotSerializers": [
       "enzyme-to-json/serializer"
     ],
