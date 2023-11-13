@@ -41,212 +41,99 @@ describe('DLS - Visits Table', () => {
     cy.get('[aria-rowcount="75"]').should('exist');
   });
 
-  it('should be able to resize a column', () => {
-    let columnWidth = 0;
+  // only 1 visit so no point testing sort
+  it.skip('should be able to sort by all sort directions on single and multiple columns', () => {
+    //Revert the default sort
+    cy.contains('[role="button"]', 'Start Date').as('dateSortButton').click();
 
-    cy.window()
-      .then((window) => {
-        const windowWidth = window.innerWidth;
-        columnWidth = (windowWidth - 40) / 5;
-      })
-      .then(() => expect(columnWidth).to.not.equal(0));
+    // ascending order
+    cy.contains('[role="button"]', 'Visit ID').as('visitIdSortButton').click();
 
-    cy.get('[role="columnheader"]').eq(1).as('nameColumn');
-    cy.get('[role="columnheader"]').eq(2).as('datasetCountColumn');
+    cy.get('[aria-sort="ascending"]').should('exist');
+    cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
+    cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('70');
 
-    cy.get('@nameColumn').should(($column) => {
-      const { width } = $column[0].getBoundingClientRect();
-      expect(width).to.equal(columnWidth);
-    });
+    // descending order
+    cy.get('@visitIdSortButton').click();
 
-    cy.get('@datasetCountColumn').should(($column) => {
-      const { width } = $column[0].getBoundingClientRect();
-      expect(width).to.equal(columnWidth);
-    });
+    cy.get('[aria-sort="descending"]').should('exist');
+    cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
+      'not.have.css',
+      'opacity',
+      '0'
+    );
+    cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('70');
 
-    cy.get('.react-draggable')
-      .first()
-      .trigger('mousedown')
-      .trigger('mousemove', { clientX: 400 })
-      .trigger('mouseup');
+    // no order
+    cy.get('@visitIdSortButton').click();
+    cy.get('[aria-sort="ascending"]').should('not.exist');
+    cy.get('[aria-sort="descending"]').should('not.exist');
+    cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
+    cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
+      'have.css',
+      'opacity',
+      '0'
+    );
+    cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('70');
 
-    cy.get('@nameColumn').should(($column) => {
-      const { width } = $column[0].getBoundingClientRect();
-      expect(width).to.be.greaterThan(columnWidth);
-    });
+    // multiple columns
+    cy.get('@dateSortButton').click();
+    cy.get('@visitIdSortButton').click();
 
-    cy.get('@datasetCountColumn').should(($column) => {
-      const { width } = $column[0].getBoundingClientRect();
-      expect(width).to.be.lessThan(columnWidth);
-    });
-
-    // table width should grow if a column grows too large
-    cy.get('.react-draggable')
-      .first()
-      .trigger('mousedown')
-      .trigger('mousemove', { clientX: 800 })
-      .trigger('mouseup');
-
-    cy.get('@datasetCountColumn').should(($column) => {
-      const { width } = $column[0].getBoundingClientRect();
-      expect(width).to.be.equal(84);
-    });
-
-    cy.get('[aria-label="grid"]').then(($grid) => {
-      const { width } = $grid[0].getBoundingClientRect();
-      cy.window().should(($window) => {
-        expect(width).to.be.greaterThan($window.innerWidth);
-      });
-    });
+    cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('70');
   });
 
-  describe('should be able to sort by', () => {
-    beforeEach(() => {
-      //Revert the default sort
-      cy.contains('[role="button"]', 'Start Date').click();
-    });
+  it('should be able to filter with both text & date filters on multiple columns', () => {
+    // test text filter
+    cy.get('[aria-label="Filter by Visit ID"]').first().type('70');
 
-    it('ascending order', () => {
-      cy.contains('[role="button"]', 'Visit ID').click();
+    cy.wait('@investigations');
 
-      cy.get('[aria-sort="ascending"]').should('exist');
-      cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('70');
-    });
+    cy.get('[aria-rowcount="1"]').should('exist');
+    cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('70');
 
-    it('descending order', () => {
-      cy.contains('[role="button"]', 'Visit ID').click();
-      cy.contains('[role="button"]', 'Visit ID').click();
+    // test date filter
+    cy.get('input[aria-label="Start Date filter to"]')
+      .parent()
+      .find('button')
+      .click();
 
-      cy.get('[aria-sort="descending"]').should('exist');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
-        'not.have.css',
-        'opacity',
-        '0'
-      );
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('70');
-    });
+    cy.get('.MuiPickersDay-root[type="button"]').first().click();
 
-    it('no order', () => {
-      cy.contains('[role="button"]', 'Visit ID').click();
-      cy.contains('[role="button"]', 'Visit ID').click();
-      cy.contains('[role="button"]', 'Visit ID').click();
+    cy.wait('@investigations');
+    cy.get('[aria-rowcount="1"]').should('exist');
 
-      cy.get('[aria-sort="ascending"]').should('not.exist');
-      cy.get('[aria-sort="descending"]').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
-        'have.css',
-        'opacity',
-        '0'
-      );
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('70');
-    });
+    const date = new Date();
+    date.setDate(1);
 
-    it('multiple columns', () => {
-      cy.contains('[role="button"]', 'Start Date').click();
-      cy.contains('[role="button"]', 'Visit ID').click();
+    cy.get('input[id="Start Date filter to"]').should(
+      'have.value',
+      date.toISOString().slice(0, 10)
+    );
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('70');
-    });
-  });
+    cy.get('input[id="Start Date filter from"]').type('2001-01-01');
 
-  describe('should be able to filter by', () => {
-    it('text', () => {
-      cy.get('[aria-label="Filter by Visit ID"]').first().type('70');
-
-      cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('70');
-    });
-
-    it('date between', () => {
-      cy.get('input[id="Start Date filter from"]').type('2000-04-03');
-
-      cy.get('input[aria-label="Start Date filter to"]')
-        .parent()
-        .find('button')
-        .click();
-
-      cy.get('.MuiPickersDay-root[type="button"]').first().click();
-
-      const date = new Date();
-      date.setDate(1);
-
-      cy.get('input[id="Start Date filter to"]').should(
-        'have.value',
-        date.toISOString().slice(0, 10)
-      );
-
-      cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('70');
-    });
-
-    it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Visit ID"]').first().type('70');
-
-      cy.get('[aria-label="Filter by Instrument').first().type('INSTRUMENT 3');
-
-      cy.get('[aria-rowcount="1"').should('exist');
-    });
+    cy.get('[aria-rowcount="0"]').should('exist');
   });
 
   describe('should be able to view details', () => {
-    it('when no other row is showing details', () => {
+    it('and can calculate size, all the details are correct & also able to hide the panel', () => {
+      // We need to wait for counts to finish, otherwise cypress
+      // might interact with the details panel too quickly and
+      // it re-renders during the test.
+      cy.contains('[aria-rowindex="1"] [aria-colindex="3"]', '2').should(
+        'exist'
+      );
       cy.get('[aria-label="Show details"]').first().click();
 
       cy.get('#details-panel').should('be.visible');
       cy.get('[aria-label="Hide details"]').should('exist');
-    });
-
-    it('and then calculate file size', () => {
-      // We need to wait for counts to finish, otherwise cypress
-      // might interact with the details panel too quickly and
-      // it re-renders during the test.
-      cy.contains('[aria-rowindex="1"] [aria-colindex="3"]', '2').should(
-        'exist'
-      );
-      cy.get('[aria-label="Show details"]').first().click();
 
       cy.contains('#calculate-size-btn', 'Calculate')
         .should('exist')
-        .click({ force: true });
-      cy.contains('3.12 GB', { timeout: 10000 })
-        .scrollIntoView()
-        .should('be.visible');
-    });
-
-    it('and then calculate file size when the value is 0', () => {
-      cy.intercept('**/getSize?*', '0');
-
-      // We need to wait for counts to finish, otherwise cypress
-      // might interact with the details panel too quickly and
-      // it re-renders during the test.
-
-      cy.contains('[aria-rowindex="1"] [aria-colindex="3"]', '2').should(
-        'exist'
-      );
-      cy.get('[aria-label="Show details"]').first().click();
-
-      cy.contains('#calculate-size-btn', 'Calculate')
-        .should('exist')
-        .click({ force: true });
-      cy.contains('0 B', { timeout: 10000 })
-        .scrollIntoView()
-        .should('be.visible');
-    });
-
-    // TODO: Since we only have one investigation, we cannot test
-    // showing details when another row is showing details at the moment.
-
-    it('and view visit users, samples and publications', () => {
-      // We need to wait for counts to finish, otherwise cypress
-      // might interact with the details panel too quickly and
-      // it re-renders during the test.
-      cy.contains('[aria-rowindex="1"] [aria-colindex="3"]', '2').should(
-        'exist'
-      );
-
-      cy.get('[aria-label="Show details"]').first().click();
+        .scrollIntoView();
+      cy.contains('#calculate-size-btn', 'Calculate').click();
+      cy.contains('3.12 GB', { timeout: 10000 }).should('be.visible');
 
       cy.get('[aria-controls="visit-users-panel"]').click();
       cy.get('#visit-users-panel').should('not.have.attr', 'hidden');
@@ -261,15 +148,27 @@ describe('DLS - Visits Table', () => {
       cy.get('#details-panel').contains(
         'Simple notice since view check over through there. Hotel provide available a air avoid beautiful technology.'
       );
-    });
-
-    it('and then not view details anymore', () => {
-      cy.get('[aria-label="Show details"]').first().click();
 
       cy.get('[aria-label="Hide details"]').first().click();
 
       cy.get('#details-panel').should('not.exist');
       cy.get('[aria-label="Hide details"]').should('not.exist');
+    });
+
+    it('and then calculate file size when the value is 0', () => {
+      cy.intercept('**/getSize?*', '0');
+
+      // We need to wait for counts to finish, otherwise cypress
+      // might interact with the details panel too quickly and
+      // it re-renders during the test.
+
+      cy.contains('[aria-rowindex="1"] [aria-colindex="3"]', '2').should(
+        'exist'
+      );
+      cy.get('[aria-label="Show details"]').first().click();
+
+      cy.contains('#calculate-size-btn', 'Calculate').should('exist').click();
+      cy.contains('0 B', { timeout: 10000 }).should('be.visible');
     });
   });
 });

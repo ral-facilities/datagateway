@@ -286,7 +286,10 @@ describe('ISIS Investigations - Card View', () => {
       `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
     );
 
-    await user.clear(filter);
+    // await user.clear(filter);
+    await user.click(filter);
+    await user.keyboard('{Control}a{/Control}');
+    await user.keyboard('{Delete}');
 
     expect(history.location.search).toBe('?');
 
@@ -304,6 +307,12 @@ describe('ISIS Investigations - Card View', () => {
     expect(replaceSpy).toHaveBeenCalledWith({
       search: `?sort=${encodeURIComponent('{"startDate":"desc"}')}`,
     });
+
+    // check that the data request is sent only once after mounting
+    const datafilesCalls = (axios.get as jest.Mock).mock.calls.filter(
+      (call) => call[0] === '/investigations'
+    );
+    expect(datafilesCalls).toHaveLength(1);
   });
 
   it('updates sort query params on sort', async () => {

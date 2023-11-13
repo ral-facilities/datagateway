@@ -185,7 +185,10 @@ describe('ISIS FacilityCycles table component', () => {
       `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
     );
 
-    await user.clear(filterInput);
+    // await user.clear(filterInput);
+    await user.click(filterInput);
+    await user.keyboard('{Control}a{/Control}');
+    await user.keyboard('{Delete}');
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
@@ -199,6 +202,17 @@ describe('ISIS FacilityCycles table component', () => {
     expect(replaceSpy).toHaveBeenCalledWith({
       search: `?sort=${encodeURIComponent('{"startDate":"desc"}')}`,
     });
+
+    // check that the data request is sent only once after mounting
+    expect(useFacilityCyclesInfinite).toHaveBeenCalledTimes(2);
+    expect(useFacilityCyclesInfinite).toHaveBeenCalledWith(
+      expect.anything(),
+      false
+    );
+    expect(useFacilityCyclesInfinite).toHaveBeenLastCalledWith(
+      expect.anything(),
+      true
+    );
   });
 
   it('updates sort query params on sort', async () => {

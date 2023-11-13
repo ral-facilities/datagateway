@@ -262,6 +262,7 @@ describe('generic api functions', () => {
         filters: {
           name: { value: 'test', type: 'include' },
           title: { value: 'test', type: 'exclude' },
+          doi: { value: 'test', type: 'exact' },
           startDate: {
             startDate: '2021-08-05',
             endDate: '2021-08-06',
@@ -276,6 +277,7 @@ describe('generic api functions', () => {
       params.append('order', JSON.stringify('id asc'));
       params.append('where', JSON.stringify({ name: { ilike: 'test' } }));
       params.append('where', JSON.stringify({ title: { nilike: 'test' } }));
+      params.append('where', JSON.stringify({ doi: { eq: 'test' } }));
       params.append(
         'where',
         JSON.stringify({ startDate: { gte: '2021-08-05 00:00:00' } })
@@ -296,6 +298,7 @@ describe('generic api functions', () => {
         filters: {
           name: { value: 'test', type: 'include' },
           title: { value: 'test', type: 'exclude' },
+          doi: { value: 'test', type: 'exact' },
           startDate: {
             startDate: '2021-08-05',
             endDate: '2021-08-06',
@@ -309,6 +312,7 @@ describe('generic api functions', () => {
       params.append('order', JSON.stringify('name asc'));
       params.append('where', JSON.stringify({ name: { ilike: 'test' } }));
       params.append('where', JSON.stringify({ title: { nilike: 'test' } }));
+      params.append('where', JSON.stringify({ doi: { eq: 'test' } }));
       params.append(
         'where',
         JSON.stringify({ startDate: { gte: '2021-08-05 00:00:00' } })
@@ -343,6 +347,7 @@ describe('generic api functions', () => {
     afterEach(() => {
       jest.restoreAllMocks();
       jest.resetModules();
+      window.history.pushState({}, 'Test', '/');
     });
 
     describe('useSort', () => {
@@ -392,6 +397,47 @@ describe('generic api functions', () => {
 
         expect(pushSpy).toHaveBeenCalledWith({
           search: '?',
+        });
+      });
+
+      it('returns callback that, when called without shift modifier, replaces sort with the new one', () => {
+        window.history.pushState(
+          {},
+          'Test',
+          '?sort=%7B%22name%22%3A%22asc%22%7D'
+        );
+        const { result } = renderHook(() => useSort(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current('title', 'asc', 'push', false);
+        });
+
+        expect(pushSpy).toHaveBeenCalledWith({
+          search: `?sort=${encodeURIComponent('{"title":"asc"}')}`,
+        });
+      });
+
+      it('returns callback that, when called with shift modifier, appends new sort to the existing one', () => {
+        window.history.pushState(
+          {},
+          'Test',
+          '?sort=%7B%22name%22%3A%22asc%22%7D'
+        );
+
+        const { result } = renderHook(() => useSort(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current('title', 'asc', 'push', true);
+        });
+
+        console.log(history.location.search);
+
+        expect(pushSpy).toHaveBeenCalledWith({
+          search: `?sort=${encodeURIComponent('{"name":"asc","title":"asc"}')}`,
         });
       });
     });

@@ -47,7 +47,7 @@ describe('Download Status Table', () => {
   let user: ReturnType<typeof userEvent.setup>;
 
   beforeEach(() => {
-    user = userEvent.setup();
+    user = userEvent.setup({ delay: null });
 
     (downloadDeleted as jest.Mock).mockImplementation(() => Promise.resolve());
     (fetchDownloads as jest.Mock).mockImplementation(() =>
@@ -188,6 +188,8 @@ describe('Download Status Table', () => {
   });
 
   it('should sort data when headers are clicked', async () => {
+    // use skipHover to avoid triggering sort tooltips which slow the test down
+    user = userEvent.setup({ delay: null, skipHover: true });
     renderComponent();
 
     // Table is sorted by createdAt desc by default
@@ -220,7 +222,9 @@ describe('Download Status Table', () => {
     // Get the download name sort header.
     const nameSortLabel = screen.getByText('downloadStatus.filename');
 
+    await user.keyboard('{Shift>}');
     await user.click(nameSortLabel);
+    await user.keyboard('{/Shift}');
 
     // name should be in asc order
     rows = await screen.findAllByText(/^test-file-\d$/);
@@ -230,7 +234,9 @@ describe('Download Status Table', () => {
     expect(rows[3]).toHaveTextContent('test-file-4');
     expect(rows[4]).toHaveTextContent('test-file-5');
 
+    await user.keyboard('{Shift>}');
     await user.click(nameSortLabel);
+    await user.keyboard('{/Shift}');
 
     // name should be in desc order
     rows = await screen.findAllByText(/^test-file-\d$/);
@@ -239,6 +245,26 @@ describe('Download Status Table', () => {
     expect(rows[2]).toHaveTextContent('test-file-5');
     expect(rows[3]).toHaveTextContent('test-file-4');
     expect(rows[4]).toHaveTextContent('test-file-2');
+
+    await user.click(accessMethodSortLabel);
+
+    // name should be in desc order
+    rows = await screen.findAllByText(/^test-file-\d$/);
+    expect(rows[0]).toHaveTextContent('test-file-5');
+    expect(rows[1]).toHaveTextContent('test-file-4');
+    expect(rows[2]).toHaveTextContent('test-file-3');
+    expect(rows[3]).toHaveTextContent('test-file-2');
+    expect(rows[4]).toHaveTextContent('test-file-1');
+
+    await user.click(accessMethodSortLabel);
+
+    // access methods should be in asc order, globus < https
+    rows = await screen.findAllByText(/^test-file-\d$/);
+    expect(rows[0]).toHaveTextContent('test-file-2');
+    expect(rows[1]).toHaveTextContent('test-file-4');
+    expect(rows[2]).toHaveTextContent('test-file-5');
+    expect(rows[3]).toHaveTextContent('test-file-1');
+    expect(rows[4]).toHaveTextContent('test-file-3');
   });
 
   it('should filter data when text fields are typed into', async () => {
@@ -277,6 +303,7 @@ describe('Download Status Table', () => {
     await user.type(downloadStatusFilterBox, 'downloadStatus.complete');
 
     expect(await screen.findByText('test-file-1')).toBeInTheDocument();
+    expect(screen.queryByText('test-file-3')).toBeNull();
 
     await user.clear(downloadMethodFilterBox);
     await user.clear(downloadStatusFilterBox);
@@ -326,7 +353,7 @@ describe('Download Status Table', () => {
     await user.clear(dateToFilterInput);
     // Type into both date filters
     await user.type(dateFromFilterInput, '2020-02-26 00:00:00');
-    await user.type(dateToFilterInput, '2020-02-27 23:59:00');
+    await user.type(dateToFilterInput, '20200227235900');
 
     // Should show only test-file-2 and test-file-3
     expect(await screen.findByText('test-file-2')).toBeInTheDocument();
@@ -349,7 +376,10 @@ describe('Download Status Table', () => {
     expect(screen.queryByText('test-file-2')).toBeNull();
 
     // Clear date from filter textbox
-    await user.clear(dateFromFilterInput);
+    await user.click(dateFromFilterInput);
+    await user.keyboard('{Control}a{/Control}');
+    await user.keyboard('{Delete}');
+    // await user.clear(dateFromFilterInput);
     // Type into only date to filter
     await user.type(dateToFilterInput, '2020-02-27 00:00:00');
 
@@ -359,6 +389,19 @@ describe('Download Status Table', () => {
     expect(screen.queryByText('test-file-3')).toBeNull();
     expect(screen.queryByText('test-file-4')).toBeNull();
     expect(screen.queryByText('test-file-5')).toBeNull();
+
+    // create an invalid range
+    await user.type(dateFromFilterInput, '2020-02-28 00:00:00');
+
+    // should display error
+    expect(await screen.findAllByText('Invalid date-time range'));
+
+    // Should show all files
+    expect(await screen.findByText('test-file-1')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-2')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-3')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-4')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-5')).toBeInTheDocument();
 
     cleanupDatePickerWorkaround();
   });

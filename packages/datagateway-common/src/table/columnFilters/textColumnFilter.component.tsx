@@ -95,7 +95,7 @@ const TextColumnFilter = (props: {
                 renderValue={() => ''}
                 onChange={(e) => handleSelectChange(e.target.value as string)}
                 SelectDisplayProps={{
-                  'aria-label': `include or exclude`,
+                  'aria-label': `include, exclude or exact`,
                 }}
                 variant="standard"
               >
@@ -112,6 +112,13 @@ const TextColumnFilter = (props: {
                   value="exclude"
                 >
                   Exclude
+                </MenuItem>
+                <MenuItem
+                  key="exact"
+                  id="select-filter-type-exact"
+                  value="exact"
+                >
+                  Exact
                 </MenuItem>
               </Select>
             </InputAdornment>

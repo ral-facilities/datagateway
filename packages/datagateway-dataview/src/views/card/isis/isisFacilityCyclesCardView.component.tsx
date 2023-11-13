@@ -41,10 +41,19 @@ const ISISFacilityCyclesCardView = (
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
+  // isMounted is used to disable queries when the component isn't fully mounted.
+  // It prevents the request being sent twice if default sort is set.
+  // It is not needed for cards/tables that don't have default sort.
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const { data: totalDataCount, isLoading: countLoading } =
     useFacilityCycleCount(parseInt(instrumentId));
   const { isLoading: dataLoading, data } = useFacilityCyclesPaginated(
-    parseInt(instrumentId)
+    parseInt(instrumentId),
+    isMounted
   );
 
   const title: CardViewDetails = React.useMemo(

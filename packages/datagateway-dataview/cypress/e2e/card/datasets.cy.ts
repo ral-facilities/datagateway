@@ -3,15 +3,10 @@ describe('Datasets Cards', () => {
     cy.intercept('**/datasets/count*').as('getDatasetsCount');
     cy.intercept('**/datasets?order*').as('getDatasetsOrder');
     cy.login();
-    cy.visit('/browse/investigation/1/dataset').wait(
-      ['@getDatasetsCount', '@getDatasetsOrder', '@getDatasetsOrder'],
+    cy.visit('/browse/investigation/1/dataset?view=card').wait(
+      ['@getDatasetsCount', '@getDatasetsOrder'],
       { timeout: 10000 }
     );
-    cy.get('[aria-label="page view Display as cards"]')
-      .click()
-      .wait(['@getDatasetsOrder'], {
-        timeout: 10000,
-      });
   });
 
   it('should load correctly', () => {
@@ -30,67 +25,83 @@ describe('Datasets Cards', () => {
     );
   });
 
-  it('should be able to sort by one field', () => {
-    cy.contains('[role="button"]', 'Name').click().wait('@getDatasetsOrder', {
+  it('should be able to sort by one field or multiple', () => {
+    // ascending
+    cy.contains('[role="button"]', 'Name').as('nameSortButton').click();
+    cy.wait('@getDatasetsOrder', {
       timeout: 10000,
     });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('[data-testid="card"]').first().contains('DATASET 1');
 
-    cy.contains('[role="button"]', 'Name').click().wait('@getDatasetsOrder', {
+    // descending
+    cy.get('@nameSortButton').click();
+    cy.wait('@getDatasetsOrder', {
       timeout: 10000,
     });
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('exist');
     cy.get('[data-testid="card"]').first().contains('DATASET 61');
 
-    cy.contains('[role="button"]', 'Name').click();
+    // no order
+    cy.get('@nameSortButton').click();
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('[data-testid="card"]').first().contains('DATASET 1');
-  });
 
-  it('should be able to sort by multiple fields', () => {
-    cy.contains('[role="button"]', 'Create Time')
-      .click()
-      .wait('@getDatasetsOrder', {
-        timeout: 10000,
-      });
-    cy.contains('[role="button"]', 'asc').should('exist');
-    cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('[data-testid="card"]').first().contains('DATASET 1');
-
-    cy.contains('[role="button"]', 'Name').click().wait('@getDatasetsOrder', {
+    // multiple fields (shift click)
+    cy.contains('[role="button"]', 'Create Time').click();
+    cy.wait('@getDatasetsOrder', {
       timeout: 10000,
     });
-    cy.contains('[role="button"]', 'asc').should('exist');
+
+    cy.get('@nameSortButton').click({ shiftKey: true });
+    cy.wait('@getDatasetsOrder', {
+      timeout: 10000,
+    });
+    cy.contains('[aria-label="Sort by NAME"]', 'asc').should('exist');
+    cy.contains('[aria-label="Sort by CREATE TIME"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
+
     cy.get('[data-testid="card"]').first().contains('DATASET 1');
+
+    // should replace current sort if clicked without shift
+    cy.get('@nameSortButton').click();
+
+    cy.contains('[aria-label="Sort by NAME"]', 'desc').should('exist');
+    cy.contains('[role="button"]', 'desc').should('exist');
+    cy.contains('[aria-label="Sort by CREATE TIME"]', 'asc').should(
+      'not.exist'
+    );
+
+    cy.get('[data-testid="card"]').first().contains('DATASET 61');
   });
 
   it('should be able to filter by multiple fields', () => {
     cy.get('[data-testid="advanced-filters-link"]').click();
-    cy.get('[aria-label="Filter by Name"]')
-      .first()
-      .type('61')
-      .wait(['@getDatasetsCount', '@getDatasetsOrder'], { timeout: 10000 });
+    cy.get('[aria-label="Filter by Name"]').first().type('61');
+    cy.wait(['@getDatasetsCount', '@getDatasetsOrder'], { timeout: 10000 });
     cy.get('[data-testid="card"]').first().contains('DATASET 61');
 
-    cy.get('input[id="Create Time filter from"]')
-      .click()
-      .type('2019-01-01')
-      .wait(['@getDatasetsCount'], { timeout: 10000 });
+    cy.get('input[id="Create Time filter from"]').type('2019-01-01');
+    cy.wait(['@getDatasetsCount'], { timeout: 10000 });
+    cy.get('[data-testid="card"]').first().contains('DATASET 61');
+
     cy.get('input[aria-label="Create Time filter to"]')
       .parent()
       .find('button')
       .click();
-    cy.get('.MuiPickersDay-root[type="button"]')
-      .first()
-      .click()
-      .wait(['@getDatasetsCount'], { timeout: 10000 });
+    cy.get('.MuiPickersCalendarHeader-label').click();
+    cy.contains('2020').click();
+    cy.contains('Jan').click();
+    cy.get('.MuiPickersDay-root[type="button"]').first().click();
+    cy.wait(['@getDatasetsCount'], { timeout: 10000 });
+
     const date = new Date();
     date.setDate(1);
+    date.setMonth(0);
+    date.setFullYear(2020);
     cy.get('input[id="Create Time filter to"]').should(
       'have.value',
       date.toISOString().slice(0, 10)

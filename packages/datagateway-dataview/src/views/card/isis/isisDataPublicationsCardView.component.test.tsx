@@ -131,6 +131,12 @@ describe('ISIS Data Publication - Card View', () => {
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"publicationDate":"desc"}')}`
     );
+
+    // check that the data request is sent only once after mounting
+    const datafilesCalls = (axios.get as jest.Mock).mock.calls.filter(
+      (call) => call[0] === '/datapublications'
+    );
+    expect(datafilesCalls).toHaveLength(1);
   });
 
   it('updates filter query params on text filter', async () => {
@@ -188,7 +194,11 @@ describe('ISIS Data Publication - Card View', () => {
       )}`
     );
 
-    await user.clear(filterInput);
+    // await user.clear(filterInput);
+    await user.click(filterInput);
+    await user.keyboard('{Control}a{/Control}');
+    await user.keyboard('{Delete}');
+
     expect(history.location.search).toBe('?');
 
     cleanupDatePickerWorkaround();

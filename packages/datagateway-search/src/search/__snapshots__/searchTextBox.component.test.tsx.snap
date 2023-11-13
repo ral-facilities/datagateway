@@ -21,6 +21,7 @@ exports[`Search text box component tests renders correctly 1`] = `
         aria-label="searchBox.search_text_arialabel"
         class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputTypeSearch css-1g24dm6-MuiInputBase-input-MuiOutlinedInput-input"
         id="filled-search"
+        name="dgSearchTextField"
         type="search"
         value=""
       />
