@@ -459,9 +459,8 @@ jobs:
           path: packages/datagateway-search/cypress/screenshots
 
   docker:
-    # This job triggers only if all the other jobs succeed and does different things depending on the context.
-    # The job builds the Docker image in all cases and also pushes the image to Harbor only if something is
-    # pushed to the main or develop branch.
+    # This job triggers only if all the other jobs succeed. It builds the Docker image and if successful,
+    # it pushes it to Harbor.
     needs: [lint-and-unit-test, dataview-e2e-tests, download-e2e-tests, search-e2e-tests]
     name: Docker
     runs-on: ubuntu-20.04
@@ -482,10 +481,10 @@ jobs:
         with:
           images: harbor.stfc.ac.uk/datagateway/plugins
 
-      - name: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop') && 'Build and push Docker image to Harbor' || 'Build Docker image' }}
+      - name: Build and push Docker image to Harbor
         uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671 # v4.0.0
         with:
           context: .
-          push: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop') }}
+          push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
