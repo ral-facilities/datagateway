@@ -37,6 +37,8 @@ COPY --from=builder /datagateway-build/packages/datagateway-search/build/. ./dat
 
 RUN set -eux; \
     \
+    # Enable mod_deflate \
+    sed -i -e 's/^#LoadModule deflate_module/LoadModule deflate_module/' /usr/local/apache2/conf/httpd.conf; \
     # Compress all files except images \
     echo 'SetOutputFilter DEFLATE' >> /usr/local/apache2/conf/httpd.conf; \
     echo 'SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip' >> /usr/local/apache2/conf/httpd.conf; \
