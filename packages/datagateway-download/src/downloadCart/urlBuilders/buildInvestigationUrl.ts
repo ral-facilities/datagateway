@@ -1,6 +1,5 @@
 import {
   type AdditionalFilters,
-  type FacilityCycle,
   fetchInvestigations,
   type Investigation,
 } from 'datagateway-common';
@@ -24,7 +23,10 @@ async function fetchInvestigation({
   if (facilityName === 'ISIS') {
     filters.push({
       filterType: 'include',
-      filterValue: JSON.stringify(['investigationInstruments.instrument']),
+      filterValue: JSON.stringify([
+        'investigationInstruments.instrument',
+        'investigationFacilityCycles.facilityCycle',
+      ]),
     });
   }
 
@@ -33,7 +35,6 @@ async function fetchInvestigation({
     { sort: {}, filters: {} },
     filters
   );
-
   return investigations[0] ?? null;
 }
 
@@ -49,13 +50,11 @@ async function buildInvestigationUrl({
   facilityName,
   investigation: providedInvestigation,
   investigationId,
-  facilityCycles,
 }: {
   investigation?: Investigation;
   investigationId?: Investigation['id'];
   apiUrl: string;
   facilityName: string;
-  facilityCycles: FacilityCycle[];
 }): Promise<string | null> {
   if (!investigationId && !providedInvestigation) {
     // if neither an investigation object nor an investigation ID is provided, nothing can be built

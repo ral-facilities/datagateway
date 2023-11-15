@@ -1,8 +1,4 @@
-import {
-  mockDatasets,
-  mockedSettings,
-  mockFacilityCycles,
-} from '../../testData';
+import { mockDatasets, mockedSettings } from '../../testData';
 import axios from 'axios';
 import type { Dataset } from 'datagateway-common';
 import buildDatasetUrl from './buildDatasetUrl';
@@ -23,7 +19,6 @@ describe('buildDatasetUrl', () => {
         apiUrl: mockedSettings.apiUrl,
         facilityName: mockedSettings.facilityName,
         datasetId: 856,
-        facilityCycles: mockFacilityCycles,
       });
 
       expect(url).toBe('/browse/investigation/58/dataset/856/datafile');
@@ -34,7 +29,6 @@ describe('buildDatasetUrl', () => {
         apiUrl: mockedSettings.apiUrl,
         facilityName: 'ISIS',
         datasetId: 856,
-        facilityCycles: mockFacilityCycles,
       });
 
       expect(url).toBe(
@@ -47,7 +41,6 @@ describe('buildDatasetUrl', () => {
         apiUrl: mockedSettings.apiUrl,
         facilityName: 'DLS',
         datasetId: 856,
-        facilityCycles: mockFacilityCycles,
       });
 
       expect(url).toBe(
@@ -64,7 +57,6 @@ describe('buildDatasetUrl', () => {
         dataset,
         apiUrl: mockedSettings.apiUrl,
         facilityName: mockedSettings.facilityName,
-        facilityCycles: mockFacilityCycles,
       });
 
       expect(url).toBe('/browse/investigation/993/dataset/535/datafile');
@@ -75,7 +67,6 @@ describe('buildDatasetUrl', () => {
         dataset,
         apiUrl: mockedSettings.apiUrl,
         facilityName: 'ISIS',
-        facilityCycles: mockFacilityCycles,
       });
 
       expect(url).toBe(
@@ -88,7 +79,6 @@ describe('buildDatasetUrl', () => {
         dataset,
         apiUrl: mockedSettings.apiUrl,
         facilityName: 'DLS',
-        facilityCycles: mockFacilityCycles,
       });
 
       expect(url).toBe(
@@ -101,7 +91,6 @@ describe('buildDatasetUrl', () => {
     const url = await buildDatasetUrl({
       apiUrl: mockedSettings.apiUrl,
       facilityName: mockedSettings.facilityName,
-      facilityCycles: mockFacilityCycles,
     });
 
     expect(url).toBeNull();
@@ -116,7 +105,6 @@ describe('buildDatasetUrl', () => {
       apiUrl: mockedSettings.apiUrl,
       facilityName: mockedSettings.facilityName,
       datasetId: 856,
-      facilityCycles: mockFacilityCycles,
     });
 
     expect(url).toBeNull();
@@ -133,7 +121,6 @@ describe('buildDatasetUrl', () => {
       apiUrl: mockedSettings.apiUrl,
       facilityName: mockedSettings.facilityName,
       datasetId: 856,
-      facilityCycles: mockFacilityCycles,
     });
 
     expect(url).toBeNull();
@@ -147,7 +134,6 @@ describe('buildDatasetUrl', () => {
       dataset,
       apiUrl: mockedSettings.apiUrl,
       facilityName: 'ISIS',
-      facilityCycles: mockFacilityCycles,
     });
 
     expect(url).toBeNull();

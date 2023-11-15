@@ -11,17 +11,12 @@ import {
   Theme,
   Typography,
 } from '@mui/material';
-import type { AxiosError } from 'axios';
 import {
   type ColumnType,
   type DownloadCartItem,
   type DownloadCartTableItem,
-  type FacilityCycle,
-  fetchAllFacilityCycles,
   formatBytes,
-  handleICATError,
   type Order,
-  retryICATErrors,
   Table,
   type TableActionProps,
   TextColumnFilter,
@@ -29,7 +24,6 @@ import {
 } from 'datagateway-common';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useQuery } from 'react-query';
 import { Link as RouterLink } from 'react-router-dom';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import {
@@ -72,17 +66,6 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   const { mutate: removeAllDownloadCartItems, isLoading: removingAll } =
     useRemoveAllFromCart();
   const { data: cartItems, isFetching: isFetchingCart } = useCart();
-  const { data: facilityCycles, isFetching: isFetchingFacilityCycles } =
-    useQuery<FacilityCycle[], AxiosError>(
-      'facilityCycle',
-      () => fetchAllFacilityCycles(apiUrl),
-      {
-        onError: (error) => {
-          handleICATError(error);
-        },
-        retry: retryICATErrors,
-      }
-    );
 
   const fileCountQueries = useDatafileCounts(cartItems);
   const sizeQueries = useSizes(cartItems);
@@ -194,7 +177,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
         cellContentRenderer: (props) => {
           const item: DownloadCartItem = props.rowData;
 
-          if (!facilityCycles) return item.name;
+          // if (!facilityCycles) return item.name;
 
           switch (item.entityType) {
             case 'investigation':
@@ -205,7 +188,6 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                     buildInvestigationUrl({
                       apiUrl,
                       facilityName,
-                      facilityCycles,
                       investigationId: item.entityId,
                     })
                   }
@@ -220,7 +202,6 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                     buildDatasetUrl({
                       apiUrl,
                       facilityName,
-                      facilityCycles,
                       datasetId: item.entityId,
                     })
                   }
@@ -235,7 +216,6 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                     buildDatafileUrl({
                       apiUrl,
                       facilityName,
-                      facilityCycles,
                       datafileId: item.entityId,
                     })
                   }
@@ -268,7 +248,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
         },
       },
     ],
-    [apiUrl, facilityCycles, facilityName, t, textFilter]
+    [apiUrl, facilityName, t, textFilter]
   );
   const onSort = React.useCallback(
     (column: string, order: 'desc' | 'asc' | null, _, shiftDown?: boolean) => {
@@ -324,7 +304,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     [sizeQueries, fileCountQueries]
   );
 
-  const isLoading = isFetchingCart || isFetchingFacilityCycles;
+  const isLoading = isFetchingCart;
 
   return (
     <>

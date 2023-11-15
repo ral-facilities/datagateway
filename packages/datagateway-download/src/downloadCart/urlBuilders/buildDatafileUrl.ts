@@ -1,8 +1,4 @@
-import {
-  type Datafile,
-  type FacilityCycle,
-  fetchDatafiles,
-} from 'datagateway-common';
+import { type Datafile, fetchDatafiles } from 'datagateway-common';
 import { buildDatasetUrl } from '../urlBuilders';
 
 async function fetchDatafile({
@@ -14,14 +10,16 @@ async function fetchDatafile({
   facilityName: string;
   datafileId: Datafile['id'];
 }): Promise<Datafile | null> {
-  let includeField: string;
+  let includeField: string[];
   switch (facilityName) {
     case 'ISIS':
-      includeField =
-        'dataset.investigation.investigationInstruments.instrument';
+      includeField = [
+        'dataset.investigation.investigationInstruments.instrument',
+        'dataset.investigation.investigationFacilityCycles.facilityCycle',
+      ];
       break;
     default:
-      includeField = 'dataset.investigation';
+      includeField = ['dataset.investigation'];
       break;
   }
 
@@ -50,12 +48,10 @@ async function buildDatafileUrl({
   apiUrl,
   facilityName,
   datafileId,
-  facilityCycles,
 }: {
   datafileId: Datafile['id'];
   apiUrl: string;
   facilityName: string;
-  facilityCycles: FacilityCycle[];
 }): Promise<string | null> {
   const datafile = await fetchDatafile({ apiUrl, facilityName, datafileId });
   const dataset = datafile?.dataset;
@@ -64,7 +60,6 @@ async function buildDatafileUrl({
   return buildDatasetUrl({
     apiUrl,
     facilityName,
-    facilityCycles,
     dataset,
   });
 }

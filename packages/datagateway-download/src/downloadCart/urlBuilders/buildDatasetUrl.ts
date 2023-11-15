@@ -1,8 +1,4 @@
-import {
-  type Dataset,
-  type FacilityCycle,
-  fetchDatasets,
-} from 'datagateway-common';
+import { type Dataset, fetchDatasets } from 'datagateway-common';
 import { buildInvestigationUrl } from '../urlBuilders';
 
 async function fetchDataset({
@@ -14,13 +10,16 @@ async function fetchDataset({
   facilityName: string;
   datasetId: Dataset['id'];
 }): Promise<Dataset | null> {
-  let includeField: string;
+  let includeField: string[];
   switch (facilityName) {
     case 'ISIS':
-      includeField = 'investigation.investigationInstruments.instrument';
+      includeField = [
+        'investigation.investigationInstruments.instrument',
+        'investigation.investigationFacilityCycles.facilityCycle',
+      ];
       break;
     default:
-      includeField = 'investigation';
+      includeField = ['investigation'];
       break;
   }
 
@@ -51,13 +50,11 @@ async function buildDatasetUrl({
   facilityName,
   datasetId,
   dataset: providedDataset,
-  facilityCycles,
 }: {
   datasetId?: Dataset['id'];
   dataset?: Dataset;
   apiUrl: string;
   facilityName: string;
-  facilityCycles: FacilityCycle[];
 }): Promise<string | null> {
   if (!datasetId && !providedDataset) {
     // if neither a dataset object nor a dataset ID is provided, nothing can be built
@@ -81,7 +78,6 @@ async function buildDatasetUrl({
     apiUrl,
     facilityName,
     investigation,
-    facilityCycles,
   });
   if (!prefixUrl) return null;
 
