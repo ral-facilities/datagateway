@@ -37,7 +37,7 @@ describe('ID check functions', () => {
     await checkInvestigationId(1, 2);
     expect(axios.get).toHaveBeenCalledWith('/datasets/findone', {
       params: {
-        where: { id: { eq: 2 } },
+        where: JSON.stringify({ id: { eq: 2 } }),
         include: '"investigation"',
       },
       headers: { Authorization: 'Bearer null' },
@@ -52,7 +52,7 @@ describe('ID check functions', () => {
     await checkInvestigationId(1, 2);
     expect(axios.get).toHaveBeenCalledWith('/test/datasets/findone', {
       params: {
-        where: { id: { eq: 2 } },
+        where: JSON.stringify({ id: { eq: 2 } }),
         include: '"investigation"',
       },
       headers: { Authorization: 'Bearer null' },
@@ -78,7 +78,7 @@ describe('ID check functions', () => {
       expect(result).toBe(true);
       expect(axios.get).toHaveBeenCalledWith('/datasets/findone', {
         params: {
-          where: { id: { eq: 2 } },
+          where: JSON.stringify({ id: { eq: 2 } }),
           include: '"investigation"',
         },
         headers: { Authorization: 'Bearer null' },
@@ -166,13 +166,13 @@ describe('ID check functions', () => {
       expect(result).toBe(true);
       expect(axios.get).toHaveBeenCalledWith('/investigations', {
         params: {
-          where: {
+          where: JSON.stringify({
             id: { eq: 3 },
             investigationInstrument: { instrument: { id: { eq: 1 } } },
             investigationFacilityCycle: {
               facilityCycle: { id: { eq: 2 } },
             },
-          },
+          }),
         },
         headers: { Authorization: 'Bearer null' },
       });
