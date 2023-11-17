@@ -7,6 +7,9 @@ import { StateType } from './state/app.types';
 import { dGCommonInitialState } from 'datagateway-common';
 import { initialState as dgSearchInitialState } from './state/reducers/dgsearch.reducer';
 import { screen, within } from '@testing-library/react';
+import failOnConsole from 'jest-fail-on-console';
+
+failOnConsole();
 
 jest.setTimeout(15000);
 

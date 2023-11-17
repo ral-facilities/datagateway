@@ -349,6 +349,9 @@ describe('PageContainer - Tests', () => {
 
     renderComponent();
 
+    expect(
+      await screen.findByTestId('isis-dataPublication-landing')
+    ).toBeInTheDocument();
     expect(screen.queryByTestId('styled-routing')).toBeNull();
   });
 

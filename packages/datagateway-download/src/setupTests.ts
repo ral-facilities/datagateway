@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import '@testing-library/jest-dom';
+import failOnConsole from 'jest-fail-on-console';
+
+failOnConsole();
 
 jest.setTimeout(15000);
 

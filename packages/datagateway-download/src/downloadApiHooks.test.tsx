@@ -1,4 +1,8 @@
-import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
+import {
+  act,
+  renderHook,
+  WrapperComponent,
+} from '@testing-library/react-hooks';
 import axios from 'axios';
 import type { Download } from 'datagateway-common';
 import {
@@ -1252,18 +1256,22 @@ describe('Download Cart API react-query hooks test', () => {
       expect(result.current[0].isStale).toBe(true);
       expect(axios.get).toHaveBeenCalledTimes(1);
 
-      const { result: newResult } = renderHook(
-        () =>
-          useDownloadTypeStatuses({
-            downloadTypes: ['https'],
-          }),
-        { wrapper }
-      );
+      await act(async () => {
+        const { result: newResult } = renderHook(
+          () =>
+            useDownloadTypeStatuses({
+              downloadTypes: ['https'],
+            }),
+          { wrapper }
+        );
 
-      await waitFor(() => newResult.current.every((query) => query.isSuccess));
+        await waitFor(() =>
+          newResult.current.every((query) => query.isSuccess)
+        );
 
-      expect(newResult.current[0].isStale).toBe(true);
-      expect(axios.get).toHaveBeenCalledTimes(2);
+        expect(newResult.current[0].isStale).toBe(true);
+        expect(axios.get).toHaveBeenCalledTimes(2);
+      });
     });
   });
 

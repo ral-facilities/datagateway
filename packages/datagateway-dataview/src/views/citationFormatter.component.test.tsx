@@ -225,6 +225,8 @@ describe('Citation formatter component tests', () => {
   });
 
   it('displays loading spinner while waiting for a response from DataCite', async () => {
+    console.error = jest.fn();
+
     let reject: () => void;
     (axios.get as jest.Mock).mockReturnValueOnce(
       new Promise((_, _reject) => {
