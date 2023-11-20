@@ -16,7 +16,7 @@
     "@types/react-dom": "17.0.11",
     "@types/react-router-dom": "5.3.3",
     "@types/react-virtualized": "9.21.10",
-    "axios": "0.27.2",
+    "axios": "1.6.0",
     "datagateway-common": "^1.1.2",
     "date-fns": "2.30.0",
     "date-fns-tz": "2.0.0",
@@ -60,6 +60,7 @@
     "enzyme-to-json": "3.6.1",
     "eslint": "8.44.0",
     "eslint-config-react-app": "7.0.0",
+    "jest-fail-on-console": "3.1.1",
     "lint-staged": "13.2.3",
     "serve": "14.2.0",
     "start-server-and-test": "2.0.0"
@@ -103,6 +104,9 @@
     ]
   },
   "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!axios)"
+    ],
     "snapshotSerializers": [
       "enzyme-to-json/serializer"
     ],
