@@ -129,7 +129,7 @@ function DatafilePreviewer({
       onDownloadProgress: (event) => {
         setStatus({
           code: 'LOADING_CONTENT',
-          progress: (event.loaded / event.total) * 100,
+          progress: (event.loaded / (event.total ?? event.loaded)) * 100,
         });
       },
     });
