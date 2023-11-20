@@ -177,8 +177,6 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
         cellContentRenderer: (props) => {
           const item: DownloadCartItem = props.rowData;
 
-          // if (!facilityCycles) return item.name;
-
           switch (item.entityType) {
             case 'investigation':
               return (
