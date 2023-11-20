@@ -4,6 +4,10 @@
 /packages/datagateway-*/cypress.json
 /packages/datagateway-*/server
 /packages/datagateway-*/README.md
+**/build
+**/coverage
+**/lib
+**/node_modules
 .gitignore
 .prettierrc
 codecov.yml
