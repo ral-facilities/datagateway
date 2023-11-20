@@ -30,11 +30,11 @@ const unmemoizedCheckInvestigationId = (
   return axios
     .get(`${apiUrl}/datasets/findone`, {
       params: {
-        where: {
+        where: JSON.stringify({
           id: {
             eq: datasetId,
           },
-        },
+        }),
         include: '"investigation"',
       },
       headers: {
@@ -68,7 +68,7 @@ const unmemoizedCheckInstrumentAndFacilityCycleId = (
   return axios
     .get(`${apiUrl}/investigations`, {
       params: {
-        where: {
+        where: JSON.stringify({
           id: {
             eq: investigationId,
           },
@@ -76,7 +76,7 @@ const unmemoizedCheckInstrumentAndFacilityCycleId = (
           investigationFacilityCycle: {
             facilityCycle: { id: { eq: facilityCycleId } },
           },
-        },
+        }),
       },
       headers: {
         Authorization: `Bearer ${readSciGatewayToken().sessionId}`,

@@ -140,7 +140,7 @@ describe('Investigation table component', () => {
 
               return Promise.resolve({
                 data: {
-                  cardItems: [],
+                  cartItems: [],
                 },
               });
             }

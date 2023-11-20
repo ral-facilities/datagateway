@@ -38,9 +38,9 @@ describe('Lucene actions', () => {
 
     const params = {
       sessionId: null,
-      query: {
+      query: JSON.stringify({
         target: 'Investigation',
-      },
+      }),
       maxCount: 300,
     };
     expect(axios.get).toHaveBeenCalledWith(
@@ -79,12 +79,12 @@ describe('Lucene actions', () => {
 
     const params = {
       sessionId: null,
-      query: {
+      query: JSON.stringify({
         target: 'Datafile',
-        text: 'test',
         lower: '200001010000',
         upper: '202012312359',
-      },
+        text: 'test',
+      }),
       maxCount: 100,
     };
     expect(axios.get).toHaveBeenCalledWith(
@@ -123,12 +123,12 @@ describe('Lucene actions', () => {
 
     const params = {
       sessionId: null,
-      query: {
+      query: JSON.stringify({
         target: 'Datafile',
-        text: 'test',
         lower: '200001010000',
         upper: '9000012312359',
-      },
+        text: 'test',
+      }),
       maxCount: 100,
     };
     expect(axios.get).toHaveBeenCalledWith(
@@ -158,8 +158,13 @@ describe('Lucene actions', () => {
 
     await endDateTest.waitFor(() => endDateTest.result.current.isSuccess);
 
+    params.query = JSON.parse(params.query);
+
     params.query.upper = '202012312359';
     params.query.lower = '0000001010000';
+
+    params.query = JSON.stringify(params.query);
+
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/lucene/data',
       {

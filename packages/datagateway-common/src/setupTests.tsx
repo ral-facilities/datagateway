@@ -12,8 +12,11 @@ import { Router } from 'react-router-dom';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import { createMemoryHistory, History } from 'history';
+import failOnConsole from 'jest-fail-on-console';
 
-jest.setTimeout(15000);
+failOnConsole();
+
+jest.setTimeout(20000);
 
 if (typeof window.URL.createObjectURL === 'undefined') {
   // required as work-around for enzyme/jest environment not implementing window.URL.createObjectURL method
