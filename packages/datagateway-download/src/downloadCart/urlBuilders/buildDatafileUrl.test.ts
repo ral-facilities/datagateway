@@ -1,9 +1,5 @@
 import axios from 'axios';
-import {
-  mockDatafiles,
-  mockedSettings,
-  mockFacilityCycles,
-} from '../../testData';
+import { mockDatafiles, mockedSettings } from '../../testData';
 import buildDatafileUrl from './buildDatafileUrl';
 
 describe('buildDatafileUrl', () => {
@@ -18,7 +14,6 @@ describe('buildDatafileUrl', () => {
       apiUrl: mockedSettings.apiUrl,
       facilityName: mockedSettings.facilityName,
       datafileId: 70,
-      facilityCycles: mockFacilityCycles,
     });
 
     expect(url).toBe('/browse/investigation/58/dataset/856/datafile');
@@ -29,7 +24,6 @@ describe('buildDatafileUrl', () => {
       apiUrl: mockedSettings.apiUrl,
       facilityName: 'ISIS',
       datafileId: 70,
-      facilityCycles: mockFacilityCycles,
     });
 
     expect(url).toBe(
@@ -42,7 +36,6 @@ describe('buildDatafileUrl', () => {
       apiUrl: mockedSettings.apiUrl,
       facilityName: 'DLS',
       datafileId: 70,
-      facilityCycles: mockFacilityCycles,
     });
 
     expect(url).toBe(
@@ -59,7 +52,6 @@ describe('buildDatafileUrl', () => {
       apiUrl: mockedSettings.apiUrl,
       facilityName: 'DLS',
       datafileId: 70,
-      facilityCycles: mockFacilityCycles,
     });
 
     expect(url).toBeNull();

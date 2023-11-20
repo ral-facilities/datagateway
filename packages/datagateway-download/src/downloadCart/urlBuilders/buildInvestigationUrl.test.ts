@@ -1,9 +1,5 @@
 import buildInvestigationUrl from './buildInvestigationUrl';
-import {
-  mockedSettings,
-  mockFacilityCycles,
-  mockInvestigations,
-} from '../../testData';
+import { mockedSettings, mockInvestigations } from '../../testData';
 import axios from 'axios';
 import type { Investigation } from 'datagateway-common';
 
@@ -23,7 +19,6 @@ describe('buildInvestigationUrl', () => {
         investigation,
         apiUrl: mockedSettings.apiUrl,
         facilityName: 'SVELTE',
-        facilityCycles: mockFacilityCycles,
       });
 
       expect(url).toBe('/browse/investigation/58/dataset');
@@ -34,7 +29,6 @@ describe('buildInvestigationUrl', () => {
         investigation,
         apiUrl: mockedSettings.apiUrl,
         facilityName: 'ISIS',
-        facilityCycles: mockFacilityCycles,
       });
 
       expect(url).toBe(
@@ -47,7 +41,6 @@ describe('buildInvestigationUrl', () => {
         investigation,
         apiUrl: mockedSettings.apiUrl,
         facilityName: 'DLS',
-        facilityCycles: mockFacilityCycles,
       });
 
       expect(url).toBe(
@@ -71,7 +64,6 @@ describe('buildInvestigationUrl', () => {
         investigationId: 993,
         apiUrl: mockedSettings.apiUrl,
         facilityName: 'SVELTE',
-        facilityCycles: mockFacilityCycles,
       });
 
       expect(url).toBe('/browse/investigation/993/dataset');
@@ -82,7 +74,6 @@ describe('buildInvestigationUrl', () => {
         investigationId: 993,
         apiUrl: mockedSettings.apiUrl,
         facilityName: 'ISIS',
-        facilityCycles: mockFacilityCycles,
       });
 
       expect(url).toBe(
@@ -95,7 +86,6 @@ describe('buildInvestigationUrl', () => {
         investigationId: 993,
         apiUrl: mockedSettings.apiUrl,
         facilityName: 'DLS',
-        facilityCycles: mockFacilityCycles,
       });
 
       expect(url).toBe(
@@ -108,7 +98,6 @@ describe('buildInvestigationUrl', () => {
     const url = await buildInvestigationUrl({
       apiUrl: mockedSettings.apiUrl,
       facilityName: mockedSettings.facilityName,
-      facilityCycles: mockFacilityCycles,
     });
 
     expect(url).toBeNull();
@@ -126,7 +115,6 @@ describe('buildInvestigationUrl', () => {
       investigationId: 993,
       apiUrl: mockedSettings.apiUrl,
       facilityName: 'ISIS',
-      facilityCycles: mockFacilityCycles,
     });
 
     expect(url).toBeNull();
@@ -148,7 +136,6 @@ describe('buildInvestigationUrl', () => {
       investigationId: 993,
       apiUrl: mockedSettings.apiUrl,
       facilityName: 'ISIS',
-      facilityCycles: mockFacilityCycles,
     });
 
     expect(url).toBeNull();
@@ -163,7 +150,6 @@ describe('buildInvestigationUrl', () => {
       investigationId: 993,
       apiUrl: mockedSettings.apiUrl,
       facilityName: 'DLS',
-      facilityCycles: mockFacilityCycles,
     });
 
     expect(url).toBeNull();
