@@ -3,6 +3,7 @@ import React from 'react';
 import {
   CardView,
   CardViewDetails,
+  Dataset,
   formatCountOrSize,
   Investigation,
   tableLink,
@@ -19,6 +20,7 @@ import {
   nestedValue,
   ArrowTooltip,
   DLSVisitDetailsPanel,
+  UploadButton,
 } from 'datagateway-common';
 import {
   Assessment,
@@ -108,6 +110,19 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
     [t, textFilter]
   );
 
+  const buttons = React.useMemo(
+    () => [
+      (dataset: Dataset) => (
+        <UploadButton
+          entityType="investigation"
+          entityId={dataset.id}
+          entityName={dataset.name}
+        />
+      ),
+    ],
+    []
+  );
+
   const information: CardViewDetails[] = React.useMemo(
     () => [
       {
@@ -177,6 +192,7 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
       moreInformation={(investigation: Investigation) => (
         <DLSVisitDetailsPanel rowData={investigation} />
       )}
+      buttons={buttons}
     />
   );
 };

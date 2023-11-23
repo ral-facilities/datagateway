@@ -247,6 +247,8 @@
     "parent_selected_tooltip": "Selection disabled, parent entity has already been added to cart",
     "remove_from_cart": "Remove from selection",
     "download": "Download",
+    "upload_datafile": "Upload Datafiles to Dataset",
+    "upload_dataset": "Upload Dataset to Visit",
     "unable_to_download_tooltip": "Unable to download - this item is empty",
     "preview": "Preview datafile",
     "preview_tooltip": "Preview this datafile"

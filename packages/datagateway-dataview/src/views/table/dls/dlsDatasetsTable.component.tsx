@@ -22,6 +22,8 @@ import {
   useRemoveFromCart,
   useDatasetsDatafileCount,
   DLSDatasetDetailsPanel,
+  UploadButton,
+  TableActionProps,
 } from 'datagateway-common';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
@@ -213,6 +215,16 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
       disableSelectAll={!selectAllSetting}
       detailsPanel={DLSDatasetDetailsPanel}
       columns={columns}
+      actions={[
+        ({ rowData }: TableActionProps) => (
+          <UploadButton
+            entityType="dataset"
+            entityId={rowData.id}
+            entityName={rowData.name}
+            variant="icon"
+          />
+        ),
+      ]}
     />
   );
 };

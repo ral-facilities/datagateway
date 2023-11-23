@@ -66,6 +66,7 @@ export type { CartProps } from './views/viewCartButton.component';
 export { default as ViewButton } from './views/viewButton.component';
 export { default as ClearFiltersButton } from './views/clearFiltersButton.component';
 export { default as DownloadButton } from './views/downloadButton.component';
+export { default as UploadButton } from './views/uploadButton.component';
 export { default as SelectionAlert } from './views/selectionAlert.component';
 
 export { default as ISISDatafileDetailsPanel } from './detailsPanels/isis/datafileDetailsPanel.component';

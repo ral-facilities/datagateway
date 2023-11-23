@@ -23,6 +23,7 @@ import {
   useUpdateQueryParam,
   ViewButton,
   ClearFiltersButton,
+  UploadButton,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -697,6 +698,20 @@ const DataviewPageContainer: React.FC = () => {
                     disabled={disabled}
                   />
                 )}
+              />
+              <Route
+                exact
+                path={paths.standard.dlsDatafile}
+                render={() => {
+                  const datasetId = location.pathname.split('/')[7];
+                  return (
+                    <UploadButton
+                      entityType="datafile"
+                      entityId={parseInt(datasetId)}
+                      entityName={'DATASET ' + datasetId}
+                    />
+                  );
+                }}
               />
             </Grid>
             <Grid item xs={true}>

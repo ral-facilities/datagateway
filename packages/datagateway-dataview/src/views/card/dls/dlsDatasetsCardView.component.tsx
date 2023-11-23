@@ -17,11 +17,22 @@ import {
   useDatasetsDatafileCount,
   AddToCartButton,
   DLSDatasetDetailsPanel,
+  UploadButton,
 } from 'datagateway-common';
+import { styled } from '@mui/material/styles';
 import { CalendarToday } from '@mui/icons-material';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
+
+const ActionButtonsContainer = styled('div')(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  '& button': {
+    margin: 'auto',
+    marginTop: theme.spacing(1),
+  },
+}));
 
 interface DLSDatasetsCVProps {
   proposalName: string;
@@ -147,12 +158,19 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
   const buttons = React.useMemo(
     () => [
       (dataset: Dataset) => (
-        <AddToCartButton
-          entityType="dataset"
-          allIds={data?.map((dataset) => dataset.id) ?? []}
-          entityId={dataset.id}
-          parentId={investigationId}
-        />
+        <ActionButtonsContainer>
+          <AddToCartButton
+            entityType="dataset"
+            allIds={data?.map((dataset) => dataset.id) ?? []}
+            entityId={dataset.id}
+            parentId={investigationId}
+          />
+          <UploadButton
+            entityType="dataset"
+            entityId={dataset.id}
+            entityName={dataset.name}
+          />
+        </ActionButtonsContainer>
       ),
     ],
     [data, investigationId]

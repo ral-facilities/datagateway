@@ -98,6 +98,10 @@
       "content": "Click on this button to download this specific item"
     },
     {
+      "target": ".tour-dataview-upload",
+      "content": "Click on this button to upload to this specific item"
+    },
+    {
       "target": ".tour-dataview-citation-formatter",
       "content": "Here you can format the citation for this data. Use the dropdown to select the citation format and click the button to copy the citation"
     }

@@ -12,6 +12,8 @@ import {
   useSort,
   useTextFilter,
   DLSVisitDetailsPanel,
+  UploadButton,
+  TableActionProps,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -161,6 +163,16 @@ const DLSVisitsTable = (props: DLSVisitsTableProps): React.ReactElement => {
       onSort={handleSort}
       detailsPanel={DLSVisitDetailsPanel}
       columns={columns}
+      actions={[
+        ({ rowData }: TableActionProps) => (
+          <UploadButton
+            entityType="investigation"
+            entityId={rowData.id}
+            entityName={rowData.name}
+            variant="icon"
+          />
+        ),
+      ]}
     />
   );
 };
