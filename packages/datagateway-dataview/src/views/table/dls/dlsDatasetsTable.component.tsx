@@ -172,6 +172,19 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
     ]
   );
 
+  const actions = React.useMemo(
+    () => [
+      ({ rowData }: TableActionProps) => (
+        <UploadButton
+          entityType="dataset"
+          entityId={rowData.id}
+          variant="icon"
+        />
+      ),
+    ],
+    []
+  );
+
   const selectedRows = React.useMemo(
     () =>
       cartItems
@@ -215,16 +228,7 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
       disableSelectAll={!selectAllSetting}
       detailsPanel={DLSDatasetDetailsPanel}
       columns={columns}
-      actions={[
-        ({ rowData }: TableActionProps) => (
-          <UploadButton
-            entityType="dataset"
-            entityId={rowData.id}
-            entityName={rowData.name}
-            variant="icon"
-          />
-        ),
-      ]}
+      actions={actions}
     />
   );
 };

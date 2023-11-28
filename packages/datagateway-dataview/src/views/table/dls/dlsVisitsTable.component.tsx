@@ -154,6 +154,19 @@ const DLSVisitsTable = (props: DLSVisitsTableProps): React.ReactElement => {
     [t, dateFilter, textFilter, view, proposalName, datasetCountQueries]
   );
 
+  const actions = React.useMemo(
+    () => [
+      ({ rowData }: TableActionProps) => (
+        <UploadButton
+          entityId={rowData.id}
+          entityType="investigation"
+          variant="icon"
+        />
+      ),
+    ],
+    []
+  );
+
   return (
     <Table
       data={aggregatedData}
@@ -163,16 +176,7 @@ const DLSVisitsTable = (props: DLSVisitsTableProps): React.ReactElement => {
       onSort={handleSort}
       detailsPanel={DLSVisitDetailsPanel}
       columns={columns}
-      actions={[
-        ({ rowData }: TableActionProps) => (
-          <UploadButton
-            entityType="investigation"
-            entityId={rowData.id}
-            entityName={rowData.name}
-            variant="icon"
-          />
-        ),
-      ]}
+      actions={actions}
     />
   );
 };

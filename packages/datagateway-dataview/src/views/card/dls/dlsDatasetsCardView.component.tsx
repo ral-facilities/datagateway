@@ -165,11 +165,7 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
             entityId={dataset.id}
             parentId={investigationId}
           />
-          <UploadButton
-            entityType="dataset"
-            entityId={dataset.id}
-            entityName={dataset.name}
-          />
+          <UploadButton entityType="dataset" entityId={dataset.id} />
         </ActionButtonsContainer>
       ),
     ],

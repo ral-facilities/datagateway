@@ -113,11 +113,7 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
   const buttons = React.useMemo(
     () => [
       (dataset: Dataset) => (
-        <UploadButton
-          entityType="investigation"
-          entityId={dataset.id}
-          entityName={dataset.name}
-        />
+        <UploadButton entityType="investigation" entityId={dataset.id} />
       ),
     ],
     []

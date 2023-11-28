@@ -702,13 +702,12 @@ const DataviewPageContainer: React.FC = () => {
               <Route
                 exact
                 path={paths.standard.dlsDatafile}
-                render={() => {
-                  const datasetId = location.pathname.split('/')[7];
+                render={({ match }) => {
+                  const datasetId = match.params.datasetId as string;
                   return (
                     <UploadButton
                       entityType="datafile"
                       entityId={parseInt(datasetId)}
-                      entityName={'DATASET ' + datasetId}
                     />
                   );
                 }}
