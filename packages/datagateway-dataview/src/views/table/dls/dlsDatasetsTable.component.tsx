@@ -31,6 +31,12 @@ import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../../state/app.types';
 
+const actions = [
+  ({ rowData }: TableActionProps) => (
+    <UploadButton entityType="dataset" entityId={rowData.id} variant="icon" />
+  ),
+];
+
 interface DLSDatasetsTableProps {
   proposalName: string;
   investigationId: string;
@@ -170,19 +176,6 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
       view,
       datafileCountQueries,
     ]
-  );
-
-  const actions = React.useMemo(
-    () => [
-      ({ rowData }: TableActionProps) => (
-        <UploadButton
-          entityType="dataset"
-          entityId={rowData.id}
-          variant="icon"
-        />
-      ),
-    ],
-    []
   );
 
   const selectedRows = React.useMemo(

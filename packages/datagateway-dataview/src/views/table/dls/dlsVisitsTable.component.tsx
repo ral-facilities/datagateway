@@ -26,6 +26,16 @@ import {
 } from '@mui/icons-material';
 import { useLocation } from 'react-router-dom';
 
+const actions = [
+  ({ rowData }: TableActionProps) => (
+    <UploadButton
+      entityId={rowData.id}
+      entityType="investigation"
+      variant="icon"
+    />
+  ),
+];
+
 interface DLSVisitsTableProps {
   proposalName: string;
 }
@@ -152,19 +162,6 @@ const DLSVisitsTable = (props: DLSVisitsTableProps): React.ReactElement => {
       },
     ],
     [t, dateFilter, textFilter, view, proposalName, datasetCountQueries]
-  );
-
-  const actions = React.useMemo(
-    () => [
-      ({ rowData }: TableActionProps) => (
-        <UploadButton
-          entityId={rowData.id}
-          entityType="investigation"
-          variant="icon"
-        />
-      ),
-    ],
-    []
   );
 
   return (
