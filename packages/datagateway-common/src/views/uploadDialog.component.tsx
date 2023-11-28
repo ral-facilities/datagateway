@@ -26,6 +26,8 @@ import { createDataset } from '../api';
 import { ErrorOutline } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
+// Initialise Uppy - metadata is set in uploadData()
+// TODO: onBeforeUpload - check for duplicate file names/ metadata
 const uppy = new Uppy({
   debug: true,
   autoProceed: false,
@@ -45,11 +47,14 @@ const uppy = new Uppy({
   console.log(file);
 });
 
+// Add endpoint for file upload
 uppy.use(Tus, {
   endpoint: 'http://127.0.0.1:8181/upload/',
   uploadDataDuringCreation: true,
 });
 
+// Add plugin for persistent file upload
+// TODO: Investigate if this is needed
 uppy.use(GoldenRetriever);
 
 const DialogContent = styled(MuiDialogContent)(({ theme }) => ({
@@ -82,6 +87,8 @@ const UploadDialog: React.FC<UploadDialogProps> = (
 
   //TODO: clarify title and description
   const uploadData = (): void => {
+    // If uploading a dataset, create the dataset first
+    // Name the dataset and not uploaded filse (?) - investigate
     if (entityType === 'investigation') {
       const datasetId = createDataset(uploadName, uploadDescription, entityId);
       uppy.setMeta({
