@@ -253,6 +253,10 @@
     "preview": "Preview datafile",
     "preview_tooltip": "Preview this datafile"
   },
+  "upload": {
+    "name": "Name",
+    "description": "Description"
+  },
   "advanced_filters": {
     "show": "Show Advanced Filters",
     "hide": "Hide Advanced Filters",

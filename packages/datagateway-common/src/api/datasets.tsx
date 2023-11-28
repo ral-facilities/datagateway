@@ -507,3 +507,26 @@ export const downloadDataset = (
   link.click();
   link.remove();
 };
+
+export const createDataset = (
+  name: string,
+  description: string,
+  investigationId: number
+): Promise<string> => {
+  // const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+
+  const params = {
+    investigationId: investigationId,
+    datasetName: name,
+    datasetDescription: description,
+  };
+
+  //TODO: remove hardcoded url
+  return axios
+    .post('http://127.0.0.1:8181/dataset', params, {
+      headers: {
+        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+      },
+    })
+    .then((response) => response.data.datasetId);
+};
