@@ -5,40 +5,26 @@ import {
   IconButtonProps,
 } from '@mui/material';
 import { Publish } from '@mui/icons-material';
-// import { uploadDatafile } from '../api/datafiles';
-// import { uploadDataset } from '../api/datasets';
-// import { StateType } from '../state/app.types';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-// import { useSelector } from 'react-redux';
 import { StyledTooltip } from '../arrowtooltip.component';
+import UploadDialog from './uploadDialog.component';
 
 export interface UploadButtonProps {
   entityType: 'investigation' | 'dataset' | 'datafile';
   entityId: number;
-  entityName: string | undefined;
   variant?: 'text' | 'outlined' | 'contained' | 'icon';
 }
 
 const UploadButton: React.FC<UploadButtonProps> = (
   props: UploadButtonProps
 ) => {
-  const { entityType, entityId, entityName, variant } = props;
+  const { entityType, entityId, variant } = props;
 
   const [t] = useTranslation();
-  // const idsUrl = useSelector((state: StateType) => state.dgcommon.urls.idsUrl);
 
-  const uploadData = (
-    entityType: 'investigation' | 'dataset' | 'datafile',
-    entityId: number,
-    entityName: string
-  ): void => {
-    if (entityType === 'investigation') {
-      // uploadDataset(idsUrl, entityId, entityName);
-    } else {
-      // uploadDatafile(idsUrl, entityId, entityName);
-    }
-  };
+  const [showUploadDialog, setShowUploadDialog] = React.useState(false);
+  const [showTooltip, setShowTooltip] = React.useState(false);
 
   const BaseUploadButton = React.useCallback(
     (props: ButtonProps & IconButtonProps): React.ReactElement => {
@@ -80,25 +66,36 @@ const UploadButton: React.FC<UploadButtonProps> = (
     },
     [variant, t, entityId, entityType]
   );
-  if (!entityName) return null;
+
   return (
-    <StyledTooltip
-      title={
-        entityType === 'investigation' ? 'upload dataset' : 'upload datafile'
-      }
-      id={`tooltip-${entityId}`}
-      placement="left"
-      arrow
-    >
-      <span style={variant !== 'icon' ? { margin: 'auto' } : {}}>
-        <BaseUploadButton
-          onClick={() => {
-            uploadData(entityType, entityId, entityName);
-            alert(entityType + ': ' + entityId + ': ' + entityName);
-          }}
-        />
-      </span>
-    </StyledTooltip>
+    <>
+      <StyledTooltip
+        open={showTooltip}
+        onMouseEnter={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
+        title={
+          entityType === 'investigation' ? 'upload dataset' : 'upload datafile'
+        }
+        id={`tooltip-${entityId}`}
+        placement="left"
+        arrow
+      >
+        <span style={variant !== 'icon' ? { margin: 'auto' } : {}}>
+          <BaseUploadButton
+            onClick={() => {
+              setShowTooltip(false);
+              setShowUploadDialog(true);
+            }}
+          />
+        </span>
+      </StyledTooltip>
+      <UploadDialog
+        entityType={entityType}
+        entityId={entityId}
+        open={showUploadDialog}
+        setClose={() => setShowUploadDialog(false)}
+      />
+    </>
   );
 };
 
