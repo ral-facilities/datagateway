@@ -27,12 +27,15 @@ import { ErrorOutline } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
 // Initialise Uppy - metadata is set in uploadData()
-// TODO: onBeforeUpload - check for duplicate file names/ metadata
 const uppy = new Uppy({
   debug: true,
   autoProceed: false,
   restrictions: {
     maxTotalFileSize: 5000000000,
+  },
+  meta: {
+    datafileDescription: '',
+    userSession: readSciGatewayToken().sessionId,
   },
   onBeforeFileAdded: (currentFile) => {
     const isCorrectExtension = currentFile.name.endsWith('.xml');
@@ -48,13 +51,12 @@ const uppy = new Uppy({
 });
 
 // Add endpoint for file upload
+// TODO: remove hard coded endpoint
 uppy.use(Tus, {
   endpoint: 'http://127.0.0.1:8181/upload/',
   uploadDataDuringCreation: true,
 });
 
-// Add plugin for persistent file upload
-// TODO: Investigate if this is needed
 uppy.use(GoldenRetriever);
 
 const DialogContent = styled(MuiDialogContent)(({ theme }) => ({
@@ -80,33 +82,28 @@ const UploadDialog: React.FC<UploadDialogProps> = (
   const [uploadDescription, setUploadDescription] = React.useState<string>('');
 
   const dialogClose = (): void => {
-    //TODO: make sure this is the correct way to cancel uploads
     uppy.cancelAll({ reason: 'user' });
     setClose();
   };
 
-  //TODO: clarify title and description
-  const uploadData = (): void => {
+  const uploadData = async (): Promise<void> => {
     // If uploading a dataset, create the dataset first
-    // Name the dataset and not uploaded filse (?) - investigate
+    // Name the dataset and not uploaded files
     if (entityType === 'investigation') {
-      const datasetId = createDataset(uploadName, uploadDescription, entityId);
+      const datasetId = await createDataset(
+        uploadName,
+        uploadDescription,
+        entityId
+      );
       uppy.setMeta({
-        title: '',
-        description: '',
-        userSession: readSciGatewayToken().sessionId,
-        datasetId: datasetId,
+        datasetId: parseInt(datasetId),
       });
     } else {
       uppy.setMeta({
-        title: uploadName,
-        description: uploadDescription,
-        userSession: readSciGatewayToken().sessionId,
         datasetId: entityId,
       });
     }
     uppy.upload();
-    // dialogClose();
   };
 
   return (
@@ -123,38 +120,40 @@ const UploadDialog: React.FC<UploadDialogProps> = (
       </DialogTitle>
       <DialogContent>
         <Grid container spacing={2}>
-          <Grid item xs={4}>
-            <Grid container spacing={2} height="15em">
-              <Grid item xs={12} marginTop="0.5em">
-                <TextField
-                  id="upload-name"
-                  label={t('upload.name')}
-                  fullWidth={true}
-                  inputProps={{ maxLength: 255 }}
-                  variant="outlined"
-                  onChange={(e) => {
-                    setUploadName(e.target.value as string);
-                  }}
-                  required
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  id="upload-description"
-                  label={t('upload.description')}
-                  fullWidth={true}
-                  inputProps={{ maxLength: 2000 }}
-                  variant="outlined"
-                  onChange={(e) => {
-                    setUploadDescription(e.target.value as string);
-                  }}
-                  multiline
-                  rows={6}
-                />
+          {entityType === 'investigation' && (
+            <Grid item xs={4}>
+              <Grid container spacing={2} height="15em">
+                <Grid item xs={12} marginTop="0.5em">
+                  <TextField
+                    id="upload-name"
+                    label={t('upload.name')}
+                    fullWidth={true}
+                    inputProps={{ maxLength: 255 }}
+                    variant="outlined"
+                    onChange={(e) => {
+                      setUploadName(e.target.value as string);
+                    }}
+                    required
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    id="upload-description"
+                    label={t('upload.description')}
+                    fullWidth={true}
+                    inputProps={{ maxLength: 2000 }}
+                    variant="outlined"
+                    onChange={(e) => {
+                      setUploadDescription(e.target.value as string);
+                    }}
+                    multiline
+                    rows={6}
+                  />
+                </Grid>
               </Grid>
             </Grid>
-          </Grid>
-          <Grid item xs={8}>
+          )}
+          <Grid item xs={entityType !== 'investigation' ? 12 : 8}>
             <Dashboard
               uppy={uppy}
               proudlyDisplayPoweredByUppy={false}
