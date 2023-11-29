@@ -319,11 +319,11 @@ export const getDatafileCount: (
     return axios
       .get<number>(`${settings.apiUrl}/datafiles/count`, {
         params: {
-          where: {
+          where: JSON.stringify({
             'dataset.id': {
               eq: entityId,
             },
-          },
+          }),
         },
         headers: {
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
