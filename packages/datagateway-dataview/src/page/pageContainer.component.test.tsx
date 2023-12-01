@@ -282,6 +282,18 @@ describe('PageContainer - Tests', () => {
     ).toBeDisabled();
   });
 
+  it('display upload datafile button on dls datafile table', async () => {
+    history.replace('/browse/proposal/1/investigation/1/dataset/25/datafile');
+    renderComponent();
+
+    // wait for the page to load
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', { name: 'buttons.upload_datafile' })
+      ).toBeInTheDocument();
+    });
+  });
+
   it('display filter warning on datafile table', async () => {
     history.replace('/browse/investigation/1/dataset/25/datafile');
     (checkInvestigationId as jest.Mock).mockResolvedValueOnce(true);

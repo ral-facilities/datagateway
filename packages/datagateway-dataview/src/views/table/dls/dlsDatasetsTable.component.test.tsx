@@ -361,4 +361,11 @@ describe('DLS Dataset table component', () => {
 
     expect(await screen.findByTestId('dls-dataset-details-panel')).toBeTruthy();
   });
+
+  it('renders actions correctly', async () => {
+    renderComponent();
+    expect(
+      await screen.findByRole('button', { name: 'buttons.upload_datafile' })
+    ).toBeInTheDocument();
+  });
 });

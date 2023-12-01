@@ -190,6 +190,13 @@ describe('DLS Visits - Card View', () => {
     ).toBeInTheDocument();
   });
 
+  it('renders buttons correctly', async () => {
+    renderComponent();
+    expect(
+      await screen.findByRole('button', { name: 'buttons.upload_dataset' })
+    ).toBeInTheDocument();
+  });
+
   it('renders fine with incomplete data', () => {
     (useInvestigationCount as jest.Mock).mockReturnValueOnce({});
     (useInvestigationsPaginated as jest.Mock).mockReturnValueOnce({});

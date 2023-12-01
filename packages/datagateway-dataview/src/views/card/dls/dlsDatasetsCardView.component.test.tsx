@@ -185,6 +185,9 @@ describe('DLS Datasets - Card View', () => {
     expect(
       await screen.findByRole('button', { name: 'buttons.add_to_cart' })
     ).toBeInTheDocument();
+    expect(
+      await screen.findByRole('button', { name: 'buttons.upload_datafile' })
+    ).toBeInTheDocument();
   });
 
   it('renders fine with incomplete data', () => {
