@@ -37,9 +37,11 @@ const UploadButton: React.FC<UploadButtonProps> = (
           {...props}
         >
           {t(
-            entityType !== 'investigation'
+            entityType === 'datafile'
               ? 'buttons.upload_datafile'
-              : 'buttons.upload_dataset'
+              : entityType === 'dataset'
+              ? 'Upload Datafile'
+              : 'Upload Dataset'
           )}
         </Button>
       );
@@ -53,7 +55,7 @@ const UploadButton: React.FC<UploadButtonProps> = (
         <ButtonToUse
           id={`upload-btn-${entityId}`}
           aria-label={t(
-            entityType === 'datafile'
+            entityType !== 'investigation'
               ? 'buttons.upload_datafile'
               : 'buttons.upload_dataset'
           )}
@@ -73,11 +75,13 @@ const UploadButton: React.FC<UploadButtonProps> = (
         open={showTooltip}
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
-        title={
-          entityType === 'investigation' ? 'upload dataset' : 'upload datafile'
-        }
+        title={t(
+          entityType === 'investigation'
+            ? 'buttons.upload_dataset'
+            : 'buttons.upload_datafile'
+        )}
         id={`tooltip-${entityId}`}
-        placement="left"
+        placement={variant === 'icon' ? 'left' : 'bottom'}
         arrow
       >
         <span style={variant !== 'icon' ? { margin: 'auto' } : {}}>

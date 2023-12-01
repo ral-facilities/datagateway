@@ -11,8 +11,6 @@ import {
   Typography,
 } from '@mui/material';
 
-/* eslint-disable import/no-extraneous-dependencies */
-//TODO: Investigate why this causes linting errors
 import Uppy from '@uppy/core';
 import { Dashboard } from '@uppy/react';
 import Tus from '@uppy/tus';
@@ -26,9 +24,9 @@ import { createDataset } from '../api';
 import { ErrorOutline } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
-// Initialise Uppy - metadata is set in uploadData()
+// Initialise Uppy - datasetId is set in uploadData()
 const uppy = new Uppy({
-  debug: true,
+  // debug: true,
   autoProceed: false,
   restrictions: {
     maxTotalFileSize: 5000000000,
@@ -46,8 +44,8 @@ const uppy = new Uppy({
       return true;
     }
   },
-}).on('complete', (file) => {
-  console.log(file);
+}).on('error', (error) => {
+  uppy.info(error.message, 'error', 5000);
 });
 
 // Add endpoint for file upload
@@ -57,6 +55,7 @@ uppy.use(Tus, {
   uploadDataDuringCreation: true,
 });
 
+// TODO: investigate why this causes tests to fail
 uppy.use(GoldenRetriever);
 
 const DialogContent = styled(MuiDialogContent)(({ theme }) => ({
@@ -179,8 +178,14 @@ const UploadDialog: React.FC<UploadDialogProps> = (
         )}
         <Grid item xs>
           <DialogActions sx={{ margin: 0 }}>
-            <Button onClick={dialogClose}>Cancel</Button>
-            <Button color="primary" onClick={() => uploadData()}>
+            <Button onClick={dialogClose} aria-label="cancel">
+              Cancel
+            </Button>
+            <Button
+              color="primary"
+              onClick={() => uploadData()}
+              aria-label="upload"
+            >
               Upload
             </Button>
           </DialogActions>
