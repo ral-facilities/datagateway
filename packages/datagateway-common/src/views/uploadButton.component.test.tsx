@@ -56,6 +56,20 @@ describe('Generic upload button', () => {
   describe('text variant', () => {
     it('renders correctly', async () => {
       renderComponent({
+        entityType: 'datafile',
+        entityId: 1,
+        variant: 'text',
+      });
+      expect(
+        await screen.findByRole('button', { name: 'buttons.upload_datafile' })
+      ).toBeInTheDocument();
+      expect(
+        await screen.findByText('buttons.upload_datafile')
+      ).toBeInTheDocument();
+    });
+
+    it('renders correctly short variant', async () => {
+      renderComponent({
         entityType: 'dataset',
         entityId: 1,
         variant: 'text',

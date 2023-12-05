@@ -68,7 +68,7 @@ describe('Upload dialog component', () => {
       expect(screen.getByLabelText('Uppy Dashboard')).toBeInTheDocument();
     });
 
-    it('calls createDataset when upload button is clicked', async () => {
+    it('calls createDataset with correct parameters when upload button is clicked', async () => {
       const createDatasetSpy = jest.fn();
       (createDataset as jest.Mock).mockImplementation(createDatasetSpy);
 
@@ -76,9 +76,24 @@ describe('Upload dialog component', () => {
       const uploadButton = screen.getByRole('button', {
         name: 'upload',
       });
+
+      await userEvent.type(
+        screen.getByRole('textbox', { name: 'upload.name' }),
+        'name'
+      );
+      await userEvent.type(
+        screen.getByRole('textbox', { name: 'upload.description' }),
+        'description'
+      );
       await userEvent.click(uploadButton);
 
-      await waitFor(() => expect(createDatasetSpy).toHaveBeenCalled());
+      await waitFor(() =>
+        expect(createDatasetSpy).toHaveBeenCalledWith(
+          'name',
+          'description',
+          expect.anything()
+        )
+      );
     });
 
     it('Closes dialog when cancel button is clicked', async () => {

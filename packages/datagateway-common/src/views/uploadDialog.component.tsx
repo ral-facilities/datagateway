@@ -24,40 +24,6 @@ import { createDataset } from '../api';
 import { ErrorOutline } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
-// Initialise Uppy - datasetId is set in uploadData()
-const uppy = new Uppy({
-  // debug: true,
-  autoProceed: false,
-  restrictions: {
-    maxTotalFileSize: 5000000000,
-  },
-  meta: {
-    datafileDescription: '',
-    userSession: readSciGatewayToken().sessionId,
-  },
-  onBeforeFileAdded: (currentFile) => {
-    const isCorrectExtension = currentFile.name.endsWith('.xml');
-    if (isCorrectExtension) {
-      uppy.info('.xml files are not allowed');
-      return false;
-    } else {
-      return true;
-    }
-  },
-}).on('error', (error) => {
-  uppy.info(error.message, 'error', 5000);
-});
-
-// Add endpoint for file upload
-// TODO: remove hard coded endpoint
-uppy.use(Tus, {
-  endpoint: 'http://127.0.0.1:8181/upload/',
-  uploadDataDuringCreation: true,
-});
-
-// TODO: investigate why this causes tests to fail
-uppy.use(GoldenRetriever);
-
 const DialogContent = styled(MuiDialogContent)(({ theme }) => ({
   padding: theme.spacing(2),
 }));
@@ -73,6 +39,45 @@ interface UploadDialogProps {
 const UploadDialog: React.FC<UploadDialogProps> = (
   props: UploadDialogProps
 ) => {
+  const [uppy] = React.useState(() =>
+    new Uppy({
+      // debug: true,
+      autoProceed: false,
+      restrictions: {
+        maxTotalFileSize: 5000000000,
+      },
+      meta: {
+        datafileDescription: '',
+        userSession: readSciGatewayToken().sessionId,
+      },
+      onBeforeFileAdded: (currentFile) => {
+        const isCorrectExtension = currentFile.name.endsWith('.xml');
+        if (isCorrectExtension) {
+          uppy.info('.xml files are not allowed');
+          return false;
+        } else {
+          return true;
+        }
+      },
+    })
+      .on('error', (error) => {
+        uppy.info(error.message, 'error', 5000);
+      })
+      .use(Tus, {
+        // TODO: remove hard coded endpoint
+        endpoint: 'http://127.0.0.1:8181/upload/',
+        uploadDataDuringCreation: true,
+      })
+  );
+
+  // TODO: investigate why this causes tests to fail
+  // Temporary fix (?): only use GoldenRetriever if indexedDB is available
+  React.useEffect(() => {
+    if (window.indexedDB) {
+      uppy.use(GoldenRetriever);
+    }
+  }, [uppy]);
+
   const { entityType, entityId, open, setClose } = props;
 
   const [t] = useTranslation();
