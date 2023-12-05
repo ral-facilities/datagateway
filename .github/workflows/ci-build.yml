@@ -2,7 +2,7 @@ name: CI Build
 on:
   workflow_dispatch:
   pull_request:
-  # By default, the pull_request event type is not triggered when a PR is merged into main
+  # By default, the pull_request event type is not triggered when a PR is merged into main or develop
   push:
     branches:
       - main
@@ -457,3 +457,34 @@ jobs:
         with:
           name: Search-Screenshots
           path: packages/datagateway-search/cypress/screenshots
+
+  docker:
+    # This job triggers only if all the other jobs succeed. It builds the Docker image and if successful,
+    # it pushes it to Harbor.
+    needs: [lint-and-unit-test, dataview-e2e-tests, download-e2e-tests, search-e2e-tests]
+    name: Docker
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+
+      - name: Login to Harbor
+        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a # v2.1.0
+        with:
+          registry: harbor.stfc.ac.uk/datagateway
+          username: ${{ secrets.HARBOR_USERNAME }}
+          password: ${{ secrets.HARBOR_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@c4ee3adeed93b1fa6a762f209fb01608c1a22f1e # v4.4.0
+        with:
+          images: harbor.stfc.ac.uk/datagateway/plugins
+
+      - name: Build and push Docker image to Harbor
+        uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671 # v4.0.0
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
