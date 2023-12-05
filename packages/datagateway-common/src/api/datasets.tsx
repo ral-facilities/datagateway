@@ -512,7 +512,7 @@ export const createDataset = (
   name: string,
   description: string,
   investigationId: number
-): Promise<string> => {
+): Promise<number> => {
   // const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
 
   const params = {
@@ -528,5 +528,5 @@ export const createDataset = (
         Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
       },
     })
-    .then((response) => response.data.datasetId);
+    .then((response) => parseInt(response.data.datasetId));
 };

@@ -94,13 +94,13 @@ const UploadDialog: React.FC<UploadDialogProps> = (
     // If uploading a dataset, create the dataset first
     // Name the dataset and not uploaded files
     if (entityType === 'investigation') {
-      const datasetId = await createDataset(
+      const result = await createDataset(
         uploadName,
         uploadDescription,
         entityId
       );
       uppy.setMeta({
-        datasetId: parseInt(datasetId),
+        datasetId: result,
       });
     } else {
       uppy.setMeta({

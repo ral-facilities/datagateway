@@ -54,21 +54,7 @@ describe('Generic upload button', () => {
   });
 
   describe('text variant', () => {
-    it('renders correctly', async () => {
-      renderComponent({
-        entityType: 'datafile',
-        entityId: 1,
-        variant: 'text',
-      });
-      expect(
-        await screen.findByRole('button', { name: 'buttons.upload_datafile' })
-      ).toBeInTheDocument();
-      expect(
-        await screen.findByText('buttons.upload_datafile')
-      ).toBeInTheDocument();
-    });
-
-    it('renders correctly short variant', async () => {
+    it('renders correctly dataset', async () => {
       renderComponent({
         entityType: 'dataset',
         entityId: 1,
@@ -78,6 +64,18 @@ describe('Generic upload button', () => {
         await screen.findByRole('button', { name: 'buttons.upload_datafile' })
       ).toBeInTheDocument();
       expect(await screen.findByText('Upload Datafile')).toBeInTheDocument();
+    });
+
+    it('renders correctly investigation', async () => {
+      renderComponent({
+        entityType: 'investigation',
+        entityId: 1,
+        variant: 'text',
+      });
+      expect(
+        await screen.findByRole('button', { name: 'buttons.upload_dataset' })
+      ).toBeInTheDocument();
+      expect(await screen.findByText('Upload Dataset')).toBeInTheDocument();
     });
 
     it('opens upload dialog when clicked', async () => {
@@ -204,19 +202,19 @@ describe('Generic upload button', () => {
 
     it('renders a tooltip when hovered', async () => {
       renderComponent({
-        entityType: 'dataset',
+        entityType: 'investigation',
         entityId: 1,
         variant: 'icon',
       });
 
       await user.hover(
         await screen.findByRole('button', {
-          name: 'buttons.upload_datafile',
+          name: 'buttons.upload_dataset',
         })
       );
 
       expect(
-        await screen.findByRole('tooltip', { name: 'buttons.upload_datafile' })
+        await screen.findByRole('tooltip', { name: 'buttons.upload_dataset' })
       ).toBeInTheDocument();
     });
   });
