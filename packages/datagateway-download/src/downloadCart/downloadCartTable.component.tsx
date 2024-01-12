@@ -12,15 +12,15 @@ import {
   Typography,
 } from '@mui/material';
 import {
-  ColumnType,
-  DownloadCartItem,
-  DownloadCartTableItem,
+  type ColumnType,
+  type DownloadCartItem,
+  type DownloadCartTableItem,
   formatBytes,
-  Order,
+  type Order,
   Table,
-  TableActionProps,
+  type TableActionProps,
   TextColumnFilter,
-  TextFilter,
+  type TextFilter,
 } from 'datagateway-common';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -36,6 +36,12 @@ import {
 } from '../downloadApiHooks';
 
 import DownloadConfirmDialog from '../downloadConfirmation/downloadConfirmDialog.component';
+import DownloadCartItemLink from './downloadCartItemLink.component';
+import {
+  buildDatafileUrl,
+  buildDatasetUrl,
+  buildInvestigationUrl,
+} from './urlBuilders';
 
 interface DownloadCartTableProps {
   statusTabRedirect: () => void;
@@ -44,15 +50,14 @@ interface DownloadCartTableProps {
 const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   props: DownloadCartTableProps
 ) => {
-  const settings = React.useContext(DownloadSettingsContext);
+  const { fileCountMax, totalSizeMax, apiUrl, facilityName } = React.useContext(
+    DownloadSettingsContext
+  );
 
   const [sort, setSort] = React.useState<{ [column: string]: Order }>({});
   const [filters, setFilters] = React.useState<{
     [column: string]: { value?: string | number; type: string };
   }>({});
-
-  const fileCountMax = settings.fileCountMax;
-  const totalSizeMax = settings.totalSizeMax;
 
   const [showConfirmation, setShowConfirmation] = React.useState(false);
 
@@ -60,10 +65,10 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   const { mutate: removeDownloadCartItem } = useRemoveEntityFromCart();
   const { mutate: removeAllDownloadCartItems, isLoading: removingAll } =
     useRemoveAllFromCart();
-  const { data, isFetching: dataLoading } = useCart();
+  const { data: cartItems, isFetching: isFetchingCart } = useCart();
 
-  const fileCountQueries = useDatafileCounts(data);
-  const sizeQueries = useSizes(data);
+  const fileCountQueries = useDatafileCounts(cartItems);
+  const sizeQueries = useSizes(cartItems);
 
   const fileCount = React.useMemo(() => {
     return (
@@ -113,7 +118,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   );
 
   const sortedAndFilteredData = React.useMemo(() => {
-    const sizeAndCountAddedData = data?.map(
+    const sizeAndCountAddedData = cartItems?.map(
       (item, index) =>
         ({
           ...item,
@@ -161,7 +166,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     }
 
     return filteredData?.sort(sortCartItems);
-  }, [data, sort, filters, sizeQueries, fileCountQueries]);
+  }, [cartItems, sort, filters, sizeQueries, fileCountQueries]);
 
   const columns: ColumnType[] = React.useMemo(
     () => [
@@ -169,6 +174,56 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
         label: t('downloadCart.name'),
         dataKey: 'name',
         filterComponent: textFilter,
+        cellContentRenderer: (props) => {
+          const item: DownloadCartItem = props.rowData;
+
+          switch (item.entityType) {
+            case 'investigation':
+              return (
+                <DownloadCartItemLink
+                  cartItem={item}
+                  linkBuilder={() =>
+                    buildInvestigationUrl({
+                      apiUrl,
+                      facilityName,
+                      investigationId: item.entityId,
+                    })
+                  }
+                />
+              );
+
+            case 'dataset':
+              return (
+                <DownloadCartItemLink
+                  cartItem={item}
+                  linkBuilder={() =>
+                    buildDatasetUrl({
+                      apiUrl,
+                      facilityName,
+                      datasetId: item.entityId,
+                    })
+                  }
+                />
+              );
+
+            case 'datafile':
+              return (
+                <DownloadCartItemLink
+                  cartItem={item}
+                  linkBuilder={() =>
+                    buildDatafileUrl({
+                      apiUrl,
+                      facilityName,
+                      datafileId: item.entityId,
+                    })
+                  }
+                />
+              );
+
+            default:
+              return item.name;
+          }
+        },
       },
       {
         label: t('downloadCart.type'),
@@ -191,7 +246,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
         },
       },
     ],
-    [t, textFilter]
+    [apiUrl, facilityName, t, textFilter]
   );
   const onSort = React.useCallback(
     (column: string, order: 'desc' | 'asc' | null, _, shiftDown?: boolean) => {
@@ -247,9 +302,11 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     [sizeQueries, fileCountQueries]
   );
 
+  const isLoading = isFetchingCart;
+
   return (
     <>
-      {!dataLoading && data?.length === 0 ? (
+      {!isFetchingCart && cartItems?.length === 0 ? (
         <div
           className="tour-download-results"
           data-testid="no-selections-message"
@@ -306,7 +363,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
         <div>
           <Grid container direction="column">
             {/* Show loading progress if data is still being loaded */}
-            {dataLoading && (
+            {isLoading && (
               <Grid item xs={12}>
                 <LinearProgress color="secondary" />
               </Grid>
@@ -324,7 +381,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                     (totalSizeMax && totalSize > totalSizeMax)
                       ? ' - 2rem'
                       : ''
-                  }${dataLoading ? ' - 4px' : ''} - (1.75 * 0.875rem + 12px))`,
+                  }${isLoading ? ' - 4px' : ''} - (1.75 * 0.875rem + 12px))`,
                   minHeight: 230,
                   overflowX: 'auto',
                 }}
@@ -334,7 +391,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                   sort={sort}
                   onSort={onSort}
                   data={sortedAndFilteredData ?? []}
-                  loading={dataLoading}
+                  loading={isLoading}
                   actions={actions}
                 />
               </Paper>

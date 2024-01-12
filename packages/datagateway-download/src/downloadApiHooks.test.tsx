@@ -511,11 +511,11 @@ describe('Download Cart API react-query hooks test', () => {
         `${mockedSettings.apiUrl}/datafiles/count`,
         {
           params: {
-            where: {
+            where: JSON.stringify({
               'dataset.id': {
                 eq: 3,
               },
-            },
+            }),
           },
           headers: {
             Authorization: 'Bearer null',

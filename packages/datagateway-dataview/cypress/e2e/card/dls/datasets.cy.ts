@@ -128,7 +128,7 @@ describe('DLS - Datasets Cards', () => {
       .click();
     cy.get('.MuiPickersCalendarHeader-label').click();
     cy.contains('2020').click();
-    cy.contains('Jan').click();
+    cy.get('.MuiPickersMonth-monthButton[type="button"]').first().click();
     cy.get('.MuiPickersDay-root[type="button"]').first().click();
     cy.wait(['@getDatasetsCount'], { timeout: 10000 });
 
