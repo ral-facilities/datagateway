@@ -484,10 +484,10 @@ describe('SearchPageContainer - Tests', () => {
       {
         params: {
           maxCount: 300,
-          query: {
+          query: JSON.stringify({
             target: 'Investigation',
             text: 'hello',
-          },
+          }),
           sessionId: null,
         },
       }
@@ -498,10 +498,10 @@ describe('SearchPageContainer - Tests', () => {
       {
         params: {
           maxCount: 300,
-          query: {
+          query: JSON.stringify({
             target: 'Dataset',
             text: 'hello',
-          },
+          }),
           sessionId: null,
         },
       }
@@ -512,10 +512,10 @@ describe('SearchPageContainer - Tests', () => {
       {
         params: {
           maxCount: 300,
-          query: {
+          query: JSON.stringify({
             target: 'Datafile',
             text: 'hello',
-          },
+          }),
           sessionId: null,
         },
       }

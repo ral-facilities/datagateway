@@ -70,7 +70,7 @@ export const fetchLuceneData = async (
   // Query params.
   const queryParams = {
     sessionId: readSciGatewayToken().sessionId,
-    query: urlParamsBuilder(datasearchType, params),
+    query: JSON.stringify(urlParamsBuilder(datasearchType, params)),
     // Default maximum count is 300.
     maxCount: params.maxCount ? params.maxCount : 300,
   };

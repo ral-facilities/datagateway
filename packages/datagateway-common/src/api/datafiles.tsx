@@ -1,4 +1,4 @@
-import axios, { AxiosError } from 'axios';
+import axios, { AxiosError, AxiosProgressEvent } from 'axios';
 import { getApiParams, parseSearchToQuery } from '.';
 import { readSciGatewayToken } from '../parseTokens';
 import { useSelector } from 'react-redux';
@@ -20,7 +20,7 @@ import type {
 import { useQuery, useInfiniteQuery } from 'react-query';
 import retryICATErrors from './retryICATErrors';
 
-const fetchDatafiles = (
+export const fetchDatafiles = (
   apiUrl: string,
   sortAndFilters: {
     sort: SortType;
@@ -262,7 +262,7 @@ const downloadDatafileToMemory = ({
 }: {
   idsUrl: string;
   datafileId: Datafile['id'];
-  onDownloadProgress?: (progressEvent: ProgressEvent) => void;
+  onDownloadProgress?: (progressEvent: AxiosProgressEvent) => void;
 }): Promise<Blob> =>
   axios
     .get(`${idsUrl}/getData`, {
@@ -289,7 +289,7 @@ export const useDatafileContent = ({
   ...queryOptions
 }: {
   datafileId: Datafile['id'];
-  onDownloadProgress: (progressEvent: ProgressEvent) => void;
+  onDownloadProgress: (progressEvent: AxiosProgressEvent) => void;
 } & UseQueryOptions<
   Blob,
   AxiosError,

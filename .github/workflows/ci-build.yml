@@ -2,7 +2,7 @@ name: CI Build
 on:
   workflow_dispatch:
   pull_request:
-  # By default, the pull_request event type is not triggered when a PR is merged into main
+  # By default, the pull_request event type is not triggered when a PR is merged into main or develop
   push:
     branches:
       - main
@@ -14,17 +14,16 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout repo
-        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
       - name: Setup Node.js
         uses: actions/setup-node@e33196f7422957bea03ed53f6fbb155025ffc7b8 # v3
         with:
-          node-version: '16.x'
+          node-version: 20
           cache: 'yarn'
 
       - name: Install dependencies
         # Ubuntu 16+ does not install libgconf-2-4 by default, so we need to install it ourselves (for Cypress)
         run: |
-          npm config set scripts-prepend-node-path true
           sudo apt-get install libgconf-2-4
           yarn --immutable
 
@@ -69,11 +68,11 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout repo
-        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
       - name: Add apt repo
         run: sudo add-apt-repository universe
       - name: Setup Java
-        uses: actions/setup-java@5ffc13f4174014e2d4d4572b3d74c3fa61aeb2c2 # v3
+        uses: actions/setup-java@0ab4596768b603586c0de567f2430c30f5b0d2b0 # v3
         with:
           distribution: 'zulu'
           java-version: 8
@@ -86,7 +85,7 @@ jobs:
 
       # ICAT Ansible clone and install dependencies
       - name: Checkout icat-ansible
-        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
         with:
           repository: icatproject-contrib/icat-ansible
           ref: master
@@ -136,7 +135,7 @@ jobs:
           cd /home/runner/install/icat.server/ && ./setup -vv install
 
       - name: Checkout datagateway-api
-        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
@@ -167,25 +166,14 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@e33196f7422957bea03ed53f6fbb155025ffc7b8 # v3
         with:
-          node-version: '14.x'
-      # Cache yarn dependencies/ restore the cached dependencies during future workflows
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-      - name: Cache yarn dependencies
-        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3
-        id: yarn-cache
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
+          node-version: 20
+          cache: 'yarn'
+     
       - name: Install dependencies
         # Ubuntu 16+ does not install libgconf-2-4 by default, so we need to install it ourselves (for Cypress)
         run: |
-          npm config set scripts-prepend-node-path true
           sudo apt-get install libgconf-2-4
-          yarn --frozen-lockfile
+          yarn --immutable
 
       - name: Run datagateway-dataview e2e tests
         run: yarn workspace datagateway-dataview run e2e
@@ -201,11 +189,11 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout repo
-        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
       - name: Add apt repo
         run: sudo add-apt-repository universe
       - name: Setup Java
-        uses: actions/setup-java@5ffc13f4174014e2d4d4572b3d74c3fa61aeb2c2 # v3
+        uses: actions/setup-java@0ab4596768b603586c0de567f2430c30f5b0d2b0 # v3
         with:
           distribution: 'zulu'
           java-version: 8
@@ -218,7 +206,7 @@ jobs:
 
       # ICAT Ansible clone and install dependencies
       - name: Checkout icat-ansible
-        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
         with:
           repository: icatproject-contrib/icat-ansible
           ref: master
@@ -305,7 +293,7 @@ jobs:
         run: rm -f login_output
 
       - name: Checkout datagateway-api
-        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
@@ -346,25 +334,14 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@e33196f7422957bea03ed53f6fbb155025ffc7b8 # v3
         with:
-          node-version: '14.x'
-      # Cache yarn dependencies/ restore the cached dependencies during future workflows
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-      - name: Cache yarn dependencies
-        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3
-        id: yarn-cache
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
+          node-version: 20
+          cache: 'yarn'
+      
       - name: Install dependencies
         # Ubuntu 16+ does not install libgconf-2-4 by default, so we need to install it ourselves (for Cypress)
         run: |
-          npm config set scripts-prepend-node-path true
           sudo apt-get install libgconf-2-4
-          yarn --frozen-lockfile
+          yarn --immutable
 
       - name: Run datagateway-download e2e tests
         run: yarn workspace datagateway-download run e2e
@@ -380,11 +357,11 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout repo
-        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
       - name: Add apt repo
         run: sudo add-apt-repository universe
       - name: Setup Java
-        uses: actions/setup-java@5ffc13f4174014e2d4d4572b3d74c3fa61aeb2c2 # v3
+        uses: actions/setup-java@0ab4596768b603586c0de567f2430c30f5b0d2b0 # v3
         with:
           distribution: 'zulu'
           java-version: 8
@@ -397,7 +374,7 @@ jobs:
 
       # ICAT Ansible clone and install dependencies
       - name: Checkout icat-ansible
-        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
         with:
           repository: icatproject-contrib/icat-ansible
           ref: master
@@ -445,7 +422,7 @@ jobs:
           cd /home/runner/install/icat.server/ && ./setup -vv install
 
       - name: Checkout datagateway-api
-        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
@@ -494,25 +471,14 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@e33196f7422957bea03ed53f6fbb155025ffc7b8 # v3
         with:
-          node-version: '14.x'
-      # Cache yarn dependencies/ restore the cached dependencies during future workflows
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-      - name: Cache yarn dependencies
-        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3
-        id: yarn-cache
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
+          node-version: 20
+          cache: 'yarn'
+     
       - name: Install dependencies
         # Ubuntu 16+ does not install libgconf-2-4 by default, so we need to install it ourselves (for Cypress)
         run: |
-          npm config set scripts-prepend-node-path true
           sudo apt-get install libgconf-2-4
-          yarn --frozen-lockfile
+          yarn --immutable
 
       - name: Run datagateway-search e2e tests
         run: yarn workspace datagateway-search run e2e
@@ -522,3 +488,34 @@ jobs:
         with:
           name: Search-Screenshots
           path: packages/datagateway-search/cypress/screenshots
+
+  docker:
+    # This job triggers only if all the other jobs succeed. It builds the Docker image and if successful,
+    # it pushes it to Harbor.
+    needs: [lint-and-unit-test, dataview-e2e-tests, download-e2e-tests, search-e2e-tests]
+    name: Docker
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+
+      - name: Login to Harbor
+        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a # v2.1.0
+        with:
+          registry: harbor.stfc.ac.uk/datagateway
+          username: ${{ secrets.HARBOR_USERNAME }}
+          password: ${{ secrets.HARBOR_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@c4ee3adeed93b1fa6a762f209fb01608c1a22f1e # v4.4.0
+        with:
+          images: harbor.stfc.ac.uk/datagateway/plugins
+
+      - name: Build and push Docker image to Harbor
+        uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671 # v4.0.0
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}

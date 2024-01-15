@@ -530,11 +530,11 @@ describe('Download API react-query hooks test', () => {
         `${mockedSettings.apiUrl}/datafiles/count`,
         {
           params: {
-            where: {
+            where: JSON.stringify({
               'dataset.investigation.id': {
                 eq: 2,
               },
-            },
+            }),
           },
           headers: {
             Authorization: 'Bearer null',
@@ -545,11 +545,11 @@ describe('Download API react-query hooks test', () => {
         `${mockedSettings.apiUrl}/datafiles/count`,
         {
           params: {
-            where: {
+            where: JSON.stringify({
               'dataset.id': {
                 eq: 3,
               },
-            },
+            }),
           },
           headers: {
             Authorization: 'Bearer null',
@@ -1277,7 +1277,7 @@ describe('Download API react-query hooks test', () => {
 
       const wrapper = createReactQueryWrapper();
 
-      const { result, waitFor, unmount } = renderHook(
+      const { result, waitFor } = renderHook(
         () =>
           useDownloadTypeStatuses({
             downloadTypes: ['https'],
@@ -1290,20 +1290,22 @@ describe('Download API react-query hooks test', () => {
       expect(result.current[0].isStale).toBe(true);
       expect(axios.get).toHaveBeenCalledTimes(1);
 
-      unmount();
+      await act(async () => {
+        const { result: newResult } = renderHook(
+          () =>
+            useDownloadTypeStatuses({
+              downloadTypes: ['https'],
+            }),
+          { wrapper }
+        );
 
-      const { result: newResult } = renderHook(
-        () =>
-          useDownloadTypeStatuses({
-            downloadTypes: ['https'],
-          }),
-        { wrapper }
-      );
+        await waitFor(() =>
+          newResult.current.every((query) => query.isSuccess)
+        );
 
-      await waitFor(() => newResult.current.every((query) => query.isSuccess));
-
-      expect(newResult.current[0].isStale).toBe(true);
-      expect(axios.get).toHaveBeenCalledTimes(2);
+        expect(newResult.current[0].isStale).toBe(true);
+        expect(axios.get).toHaveBeenCalledTimes(2);
+      });
     });
   });
 

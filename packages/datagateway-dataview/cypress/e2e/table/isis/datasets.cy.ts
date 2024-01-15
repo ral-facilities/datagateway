@@ -152,7 +152,7 @@ describe('ISIS - Datasets Table', () => {
 
     cy.get('.MuiPickersCalendarHeader-label').click();
     cy.contains('2020').click();
-    cy.contains('Jan').click();
+    cy.get('.MuiPickersMonth-monthButton[type="button"]').first().click();
     cy.get('.MuiPickersDay-root[type="button"]').first().click();
 
     cy.get('[aria-rowcount="0"]').should('exist');
