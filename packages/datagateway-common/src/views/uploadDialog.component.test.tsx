@@ -5,6 +5,9 @@ import * as React from 'react';
 import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 import { createDataset } from '../api';
 import UploadDialog from './uploadDialog.component';
+// TODO: see if we can remove this
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { fireEvent } from '@testing-library/dom';
 
 jest.mock('../api');
 
@@ -205,6 +208,49 @@ describe('Upload dialog component', () => {
       await userEvent.click(screen.getByRole('button', { name: 'cancel' }));
 
       expect(closeFunction).toHaveBeenCalled();
+    });
+    it('Uppy dashboard does not allow upload of .xml files', async () => {
+      const { getByLabelText, queryByText } = createWrapper();
+
+      const fileInput = getByLabelText('Uppy Dashboard').querySelector(
+        'input.uppy-Dashboard-input'
+      ) as HTMLInputElement;
+
+      // Create a fake .xml file
+      const xmlFile = new File(['<xml>Some content</xml>'], 'test.xml', {
+        type: 'application/xml',
+      });
+
+      // Trigger the file upload
+      // await userEvent.upload(fileInput, xmlFile);
+      fireEvent.change(fileInput, { target: { files: [xmlFile] } });
+
+      await waitFor(() => {
+        expect(queryByText('.xml files are not allowed')).toBeInTheDocument();
+      });
+    });
+
+    it('Uppy dashboard allows upload of non .xml files', async () => {
+      const { getByLabelText, queryByText } = createWrapper();
+
+      const fileInput = getByLabelText('Uppy Dashboard').querySelector(
+        'input.uppy-Dashboard-input'
+      ) as HTMLInputElement;
+
+      // Create a fake .txt file
+      const xmlFile = new File(['Some content'], 'test.txt', {
+        type: 'text/plain',
+      });
+
+      // Trigger the file upload
+      // await userEvent.upload(fileInput, xmlFile);
+      fireEvent.change(fileInput, { target: { files: [xmlFile] } });
+
+      await waitFor(() => {
+        expect(
+          queryByText('.xml files are not allowed')
+        ).not.toBeInTheDocument();
+      });
     });
   });
 });
