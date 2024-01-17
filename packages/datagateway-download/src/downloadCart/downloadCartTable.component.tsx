@@ -52,9 +52,14 @@ interface DownloadCartTableProps {
 const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   props: DownloadCartTableProps
 ) => {
-  const { fileCountMax, totalSizeMax, apiUrl, facilityName } = React.useContext(
-    DownloadSettingsContext
-  );
+  const {
+    fileCountMax,
+    totalSizeMax,
+    apiUrl,
+    facilityName,
+    doiMinterUrl,
+    dataCiteUrl,
+  } = React.useContext(DownloadSettingsContext);
 
   const [sort, setSort] = React.useState<{ [column: string]: Order }>({});
   const [filters, setFilters] = React.useState<{
@@ -591,7 +596,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                     {t('downloadCart.remove_all')}
                   </Button>
                 </Grid>
-                {settings.doiMinterUrl && settings.dataCiteUrl && (
+                {doiMinterUrl && dataCiteUrl && (
                   <Grid item>
                     <Tooltip
                       title={
