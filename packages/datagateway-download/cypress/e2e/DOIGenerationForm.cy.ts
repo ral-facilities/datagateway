@@ -159,7 +159,9 @@ describe('DOI Generation form', () => {
         'have.length',
         1
       );
-      cy.contains('No record found: invalid in User').should('be.visible');
+      cy.contains("No record found: name='Invalid' in User").should(
+        'be.visible'
+      );
 
       cy.contains('button', 'Generate DOI').should('not.be.disabled');
     });
