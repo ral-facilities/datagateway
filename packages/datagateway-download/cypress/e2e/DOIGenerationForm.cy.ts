@@ -159,7 +159,7 @@ describe('DOI Generation form', () => {
         'have.length',
         1
       );
-      cy.contains("No record found: name='Invalid' in User").should(
+      cy.contains("No record found: name='invalid' in User").should(
         'be.visible'
       );
 
