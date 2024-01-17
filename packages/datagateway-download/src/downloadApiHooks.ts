@@ -795,7 +795,10 @@ export const useDownloadPercentageComplete = <T = DownloadProgress>({
  */
 export const useIsCartMintable = (
   cart: DownloadCartItem[] | undefined
-): UseQueryResult<boolean, AxiosError<{ detail: string }>> => {
+): UseQueryResult<
+  boolean,
+  AxiosError<{ detail: { msg: string }[] } | { detail: string }>
+> => {
   const settings = React.useContext(DownloadSettingsContext);
   const { doiMinterUrl } = settings;
 

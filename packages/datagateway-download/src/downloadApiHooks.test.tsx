@@ -1391,9 +1391,9 @@ describe('Download API react-query hooks test', () => {
       expect(axios.post).toHaveBeenCalledWith(
         `${mockedSettings.doiMinterUrl}/ismintable`,
         {
-          investigations: { ids: [1, 2] },
-          datasets: { ids: [3] },
-          datafiles: { ids: [4] },
+          investigation_ids: [1, 2],
+          dataset_ids: [3],
+          datafile_ids: [4],
         },
         { headers: { Authorization: 'Bearer null' } }
       );
@@ -1462,7 +1462,7 @@ describe('Download API react-query hooks test', () => {
       expect(axios.post).toHaveBeenCalledWith(
         `${mockedSettings.doiMinterUrl}/ismintable`,
         {
-          investigations: { ids: [1] },
+          investigation_ids: [1],
         },
         { headers: { Authorization: 'Bearer null' } }
       );
@@ -1502,7 +1502,7 @@ describe('Download API react-query hooks test', () => {
       expect(axios.post).toHaveBeenCalledWith(
         `${mockedSettings.doiMinterUrl}/ismintable`,
         {
-          datafiles: { ids: [4] },
+          datafile_ids: [4],
         },
         { headers: { Authorization: 'Bearer null' } }
       );
@@ -1573,9 +1573,9 @@ describe('Download API react-query hooks test', () => {
             ...doiMetadata,
             resource_type: 'Collection',
           },
-          investigations: { ids: [1, 2] },
-          datasets: { ids: [3] },
-          datafiles: { ids: [4] },
+          investigation_ids: [1, 2],
+          dataset_ids: [3],
+          datafile_ids: [4],
         },
         { headers: { Authorization: 'Bearer null' } }
       );
@@ -1611,7 +1611,7 @@ describe('Download API react-query hooks test', () => {
             ...doiMetadata,
             resource_type: 'Collection',
           },
-          investigations: { ids: [1] },
+          investigation_ids: [1],
         },
         { headers: { Authorization: 'Bearer null' } }
       );
@@ -1655,7 +1655,7 @@ describe('Download API react-query hooks test', () => {
             ...doiMetadata,
             resource_type: 'Dataset',
           },
-          datafiles: { ids: [4] },
+          datafile_ids: [4],
         },
         { headers: { Authorization: 'Bearer null' } }
       );

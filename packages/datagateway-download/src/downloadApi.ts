@@ -413,10 +413,10 @@ export const isCartMintable = async (
     `${doiMinterUrl}/ismintable`,
     {
       ...(investigations.length > 0
-        ? { investigations: { ids: investigations } }
+        ? { investigation_ids: investigations }
         : {}),
-      ...(datasets.length > 0 ? { datasets: { ids: datasets } } : {}),
-      ...(datafiles.length > 0 ? { datafiles: { ids: datafiles } } : {}),
+      ...(datasets.length > 0 ? { dataset_ids: datasets } : {}),
+      ...(datafiles.length > 0 ? { datafile_ids: datafiles } : {}),
     },
     {
       headers: {
@@ -572,10 +572,10 @@ export const mintCart = (
           resource_type: investigations.length === 0 ? 'Dataset' : 'Collection',
         },
         ...(investigations.length > 0
-          ? { investigations: { ids: investigations } }
+          ? { investigation_ids: investigations }
           : {}),
-        ...(datasets.length > 0 ? { datasets: { ids: datasets } } : {}),
-        ...(datafiles.length > 0 ? { datafiles: { ids: datafiles } } : {}),
+        ...(datasets.length > 0 ? { dataset_ids: datasets } : {}),
+        ...(datafiles.length > 0 ? { datafile_ids: datafiles } : {}),
       },
       {
         headers: {

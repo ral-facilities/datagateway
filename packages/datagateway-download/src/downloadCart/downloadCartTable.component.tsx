@@ -182,7 +182,8 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
 
   const unmintableEntityIDs: number[] | null | undefined = React.useMemo(
     () =>
-      mintableError?.response?.data.detail &&
+      mintableError?.response?.status === 403 &&
+      typeof mintableError?.response?.data?.detail === 'string' &&
       JSON.parse(
         mintableError.response.data.detail.substring(
           mintableError.response.data.detail.indexOf('['),
