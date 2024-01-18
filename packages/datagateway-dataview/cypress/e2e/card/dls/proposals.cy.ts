@@ -3,15 +3,10 @@ describe('DLS - Proposals Cards', () => {
     cy.intercept('**/investigations/count*').as('getInvestigationsCount');
     cy.intercept('**/investigations?order*').as('getInvestigationsOrder');
     cy.login();
-    cy.visit('/browse/proposal/').wait(
+    cy.visit('/browse/proposal?view=card').wait(
       ['@getInvestigationsCount', '@getInvestigationsOrder'],
       { timeout: 10000 }
     );
-    cy.get('[aria-label="page view Display as cards"]')
-      .click()
-      .wait(['@getInvestigationsOrder'], {
-        timeout: 10000,
-      });
   });
 
   it('should load correctly', () => {
@@ -19,7 +14,7 @@ describe('DLS - Proposals Cards', () => {
     cy.get('#datagateway-dataview').should('be.visible');
   });
 
-  it('should be able to click an investigation to see its datasets', () => {
+  it('should be able to click a proposal to see its visits', () => {
     cy.get('[data-testid="card"]')
       .first()
       .contains('A air avoid beautiful.')
@@ -30,48 +25,23 @@ describe('DLS - Proposals Cards', () => {
     );
   });
 
-  it('should disable the hover tool tip by pressing escape', () => {
-    // The hover tool tip has a enter delay of 500ms.
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.get('[data-testid="card"]')
-      .get('[data-testid="dls-proposal-card-title"]')
-      .first()
-      .trigger('mouseover', { force: true })
-      .wait(700)
-      .get('[role="tooltip"]')
-      .should('exist');
+  it('should be able to filter by multiple fields', () => {
+    cy.get('[data-testid="advanced-filters-link"]').click();
 
-    cy.get('body').type('{esc}');
-
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.get('[data-testid="card"]')
-      .get('[data-testid="dls-proposal-card-title"]')
-      .wait(700)
-      .first()
-      .get('[role="tooltip"]')
-      .should('not.exist');
-  });
-
-  describe('should be able to filter by', () => {
-    it('multiple fields', () => {
-      cy.get('[data-testid="advanced-filters-link"]').click();
-      cy.get('[aria-label="Filter by Title"]')
-        .first()
-        .type('Dog')
-        .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
-          timeout: 10000,
-        });
-      cy.get('[data-testid="card"]')
-        .first()
-        .contains('Majority about dog idea bag summer.');
-
-      cy.get('[aria-label="Filter by Name"]')
-        .first()
-        .type('2')
-        .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
-          timeout: 10000,
-        });
-      cy.get('[data-testid="card"]').first().contains('INVESTIGATION 52');
+    cy.get('[aria-label="Filter by Name"]').first().type('2');
+    cy.wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
+      timeout: 10000,
     });
+    cy.get('[data-testid="card"]').first().contains('INVESTIGATION 21');
+    cy.contains('[aria-label="view-count"]', '15').should('be.visible');
+
+    cy.get('[aria-label="Filter by Title"]').first().type('Dog');
+    cy.wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
+      timeout: 10000,
+    });
+    cy.get('[data-testid="card"]')
+      .first()
+      .contains('Majority about dog idea bag summer.');
+    cy.get('[data-testid="card"]').should('have.length', 1);
   });
 });

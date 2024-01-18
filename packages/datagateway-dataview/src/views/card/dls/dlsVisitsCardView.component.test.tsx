@@ -137,7 +137,10 @@ describe('DLS Visits - Card View', () => {
       `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
     );
 
-    await user.clear(filter);
+    // await user.clear(filter);
+    await user.click(filter);
+    await user.keyboard('{Control}a{/Control}');
+    await user.keyboard('{Delete}');
 
     expect(history.location.search).toBe('?');
 
@@ -149,6 +152,19 @@ describe('DLS Visits - Card View', () => {
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"startDate":"desc"}')}`
+    );
+
+    // check that the data request is sent only once after mounting
+    expect(useInvestigationsPaginated).toHaveBeenCalledTimes(2);
+    expect(useInvestigationsPaginated).toHaveBeenCalledWith(
+      expect.anything(),
+      undefined,
+      false
+    );
+    expect(useInvestigationsPaginated).toHaveBeenLastCalledWith(
+      expect.anything(),
+      undefined,
+      true
     );
   });
 

@@ -4,53 +4,69 @@ exports[`TextPreview should render given text file 1`] = `
 <DocumentFragment>
   <pre
     aria-label="datafiles.preview.txt.file_content_label"
-    class="css-h4y87t"
+    class="css-1pxm7zh"
     font-size="12"
   >
     <span
-      class="css-ppgvqg"
+      style="display: flex;"
     >
-      1
-    </span>
-    <code
-      class="css-a948ge"
-    >
-      First line
+      <span
+        class="css-xzflaj"
+      >
+        1
+      </span>
+      <code
+        class="css-jfzx4e"
+      >
+        First line
 
-    </code>
+      </code>
+    </span>
     <span
-      class="css-ppgvqg"
+      style="display: flex;"
     >
-      2
-    </span>
-    <code
-      class="css-a948ge"
-    >
-      Second line
+      <span
+        class="css-xzflaj"
+      >
+        2
+      </span>
+      <code
+        class="css-jfzx4e"
+      >
+        Second line
 
-    </code>
+      </code>
+    </span>
     <span
-      class="css-ppgvqg"
+      style="display: flex;"
     >
-      3
-    </span>
-    <code
-      class="css-a948ge"
-    >
-      Third line
+      <span
+        class="css-xzflaj"
+      >
+        3
+      </span>
+      <code
+        class="css-jfzx4e"
+      >
+        Third line
 
-    </code>
+      </code>
+    </span>
     <span
-      class="css-ppgvqg"
+      style="display: flex;"
     >
-      4
-    </span>
-    <code
-      class="css-a948ge"
-    >
-      
+      <span
+        class="css-xzflaj"
+      >
+        4
+      </span>
+      <code
+        class="css-jfzx4e"
+      >
+        
 
-    </code>
+      </code>
+    </span>
   </pre>
 </DocumentFragment>
 `;

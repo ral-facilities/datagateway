@@ -61,7 +61,9 @@ const fetchFacilityCycles = (
     });
 };
 
-const fetchAllFacilityCycles = (apiUrl: string): Promise<FacilityCycle[]> => {
+export const fetchAllFacilityCycles = (
+  apiUrl: string
+): Promise<FacilityCycle[]> => {
   return axios
     .get(`${apiUrl}/facilitycycles`, {
       headers: {
@@ -92,7 +94,8 @@ export const useAllFacilityCycles = (
 };
 
 export const useFacilityCyclesPaginated = (
-  instrumentId: number
+  instrumentId: number,
+  isMounted?: boolean
 ): UseQueryResult<FacilityCycle[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
@@ -106,7 +109,7 @@ export const useFacilityCyclesPaginated = (
       string,
       number,
       {
-        sort: SortType;
+        sort: string;
         filters: FiltersType;
         page: number;
         results: number;
@@ -116,10 +119,15 @@ export const useFacilityCyclesPaginated = (
     [
       'facilityCycle',
       instrumentId,
-      { sort, filters, page: page ?? 1, results: results ?? 10 },
+      {
+        sort: JSON.stringify(sort), // need to stringify sort as property order is important!
+        filters,
+        page: page ?? 1,
+        results: results ?? 10,
+      },
     ],
     (params) => {
-      const { sort, filters, page, results } = params.queryKey[2];
+      const { page, results } = params.queryKey[2];
       const startIndex = (page - 1) * results;
       const stopIndex = startIndex + results - 1;
       return fetchFacilityCycles(
@@ -137,26 +145,22 @@ export const useFacilityCyclesPaginated = (
         handleICATError(error);
       },
       retry: retryICATErrors,
+      enabled: isMounted ?? true,
     }
   );
 };
 
 export const useFacilityCyclesInfinite = (
-  instrumentId: number
+  instrumentId: number,
+  isMounted?: boolean
 ): UseInfiniteQueryResult<FacilityCycle[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters, sort } = parseSearchToQuery(location.search);
 
-  return useInfiniteQuery<
-    FacilityCycle[],
-    AxiosError,
-    FacilityCycle[],
-    [string, number, { sort: SortType; filters: FiltersType }]
-  >(
-    ['facilityCycle', instrumentId, { sort, filters }],
+  return useInfiniteQuery(
+    ['facilityCycle', instrumentId, { sort: JSON.stringify(sort), filters }],
     (params) => {
-      const { sort, filters } = params.queryKey[2];
       const offsetParams = params.pageParam ?? { startIndex: 0, stopIndex: 49 };
       return fetchFacilityCycles(
         apiUrl,
@@ -170,6 +174,7 @@ export const useFacilityCyclesInfinite = (
         handleICATError(error);
       },
       retry: retryICATErrors,
+      enabled: isMounted ?? true,
     }
   );
 };

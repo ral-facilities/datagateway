@@ -231,10 +231,15 @@ export const getApiParams = (
               'where',
               JSON.stringify({ [column]: { ilike: filter.value } })
             );
-          } else {
+          } else if (filter.type === 'exclude') {
             searchParams.append(
               'where',
               JSON.stringify({ [column]: { nilike: filter.value } })
+            );
+          } else {
+            searchParams.append(
+              'where',
+              JSON.stringify({ [column]: { eq: filter.value } })
             );
           }
         }
@@ -255,7 +260,8 @@ export const getApiParams = (
 export const useSort = (): ((
   sortKey: string,
   order: Order | null,
-  updateMethod: UpdateMethod
+  updateMethod: UpdateMethod,
+  shiftDown?: boolean
 ) => void) => {
   const { push, replace } = useHistory();
 
@@ -263,17 +269,25 @@ export const useSort = (): ((
     (
       sortKey: string,
       order: Order | null,
-      updateMethod: UpdateMethod
+      updateMethod: UpdateMethod,
+      shiftDown?: boolean
     ): void => {
       let query = parseSearchToQuery(window.location.search);
       if (order !== null) {
-        query = {
-          ...query,
-          sort: {
-            ...query.sort,
-            [sortKey]: order,
-          },
-        };
+        query = shiftDown
+          ? {
+              ...query,
+              sort: {
+                ...query.sort,
+                [sortKey]: order,
+              },
+            }
+          : {
+              ...query,
+              sort: {
+                [sortKey]: order,
+              },
+            };
       } else {
         // if order is null, user no longer wants to sort by that column so remove column from sort state
         const { [sortKey]: order, ...rest } = query.sort;

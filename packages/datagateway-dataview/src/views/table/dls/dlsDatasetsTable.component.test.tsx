@@ -217,7 +217,10 @@ describe('DLS Dataset table component', () => {
       `?filters=${encodeURIComponent('{"modTime":{"endDate":"2019-08-06"}}')}`
     );
 
-    await user.clear(filterInput);
+    // await user.clear(filterInput);
+    await user.click(filterInput);
+    await user.keyboard('{Control}a{/Control}');
+    await user.keyboard('{Delete}');
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
@@ -230,6 +233,14 @@ describe('DLS Dataset table component', () => {
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"createTime":"desc"}')}`
+    );
+
+    // check that the data request is sent only once after mounting
+    expect(useDatasetsInfinite).toHaveBeenCalledTimes(2);
+    expect(useDatasetsInfinite).toHaveBeenCalledWith(expect.anything(), false);
+    expect(useDatasetsInfinite).toHaveBeenLastCalledWith(
+      expect.anything(),
+      true
     );
   });
 

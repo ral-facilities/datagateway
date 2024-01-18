@@ -38,35 +38,41 @@ const SearchBoxContainer = (
 
   return (
     <ContainerBox data-testid="search-box-container">
-      <Grid
-        container
-        direction="row"
-        justifyContent="center"
-        id="container-searchbox"
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+        }}
       >
-        <Grid item xs="auto" style={{ flexGrow: 1 }}>
-          <SearchTextBox
-            searchText={searchText}
-            initiateSearch={initiateSearch}
-            onChange={onSearchTextChange}
-          />
-        </Grid>
-
-        <Grid item sx={{ marginTop: '8px' }}>
-          <CheckboxesGroup />
-        </Grid>
-
-        <Grid item sx={{ marginTop: '8px' }}>
-          <SelectDates initiateSearch={initiateSearch} />
-        </Grid>
-
         <Grid
-          item
-          sx={{ display: 'flex', marginTop: '24px', marginLeft: '6px' }}
+          container
+          direction="row"
+          justifyContent="center"
+          id="container-searchbox"
         >
-          <SearchButton initiateSearch={initiateSearch} />
+          <Grid item xs="auto" style={{ flexGrow: 1 }}>
+            <SearchTextBox
+              searchText={searchText}
+              initiateSearch={initiateSearch}
+              onChange={onSearchTextChange}
+            />
+          </Grid>
+
+          <Grid item sx={{ marginTop: '8px' }}>
+            <CheckboxesGroup />
+          </Grid>
+
+          <Grid item sx={{ marginTop: '8px' }}>
+            <SelectDates initiateSearch={initiateSearch} />
+          </Grid>
+
+          <Grid
+            item
+            sx={{ display: 'flex', marginTop: '24px', marginLeft: '6px' }}
+          >
+            <SearchButton initiateSearch={initiateSearch} />
+          </Grid>
         </Grid>
-      </Grid>
+      </form>
       <div style={{ display: 'flex' }}>
         <Typography
           sx={{

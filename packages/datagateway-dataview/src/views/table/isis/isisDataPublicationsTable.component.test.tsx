@@ -199,7 +199,10 @@ describe('ISIS Data Publication table component', () => {
       )}`
     );
 
-    await user.clear(filterInput);
+    // await user.clear(filterInput);
+    await user.click(filterInput);
+    await user.keyboard('{Control}a{/Control}');
+    await user.keyboard('{Delete}');
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
@@ -213,6 +216,12 @@ describe('ISIS Data Publication table component', () => {
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"publicationDate":"desc"}')}`
     );
+
+    // check that the data request is sent only once after mounting
+    const datafilesCalls = (axios.get as jest.Mock).mock.calls.filter(
+      (call) => call[0] === '/datapublications'
+    );
+    expect(datafilesCalls).toHaveLength(1);
   });
 
   it('updates sort query params on sort', async () => {

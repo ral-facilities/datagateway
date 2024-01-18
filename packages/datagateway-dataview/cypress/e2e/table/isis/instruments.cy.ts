@@ -30,157 +30,140 @@ describe('ISIS - Instruments Table', () => {
     cy.get('[aria-rowcount="75"]').should('exist');
   });
 
-  it('should disable the hover tool tip by pressing escape', () => {
-    // The hover tool tip has a enter delay of 500ms.
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.get('[data-testid="isis-instrument-table-name"]')
-      .eq(2)
-      .trigger('mouseover', { force: true })
-      .wait(700)
-      .get('[role="tooltip"]')
-      .should('exist');
+  it('should be able to sort by all sort directions on single and multiple columns', () => {
+    //Revert the default sort
+    cy.contains('[role="button"]', 'Name').as('nameSortButton').click();
+    cy.get('@nameSortButton').click();
 
-    cy.get('body').type('{esc}');
+    // ascending order
+    cy.get('@nameSortButton').click();
 
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.get('[data-testid="isis-instrument-table-name"]')
-      .wait(700)
-      .first()
-      .get('[role="tooltip"]')
+    cy.get('[aria-sort="ascending"]').should('exist');
+    cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
+    cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+      'Eight imagine picture tough.'
+    );
+
+    // descending order
+    cy.get('@nameSortButton').click();
+
+    cy.get('[aria-sort="descending"]').should('exist');
+    cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
+      'not.have.css',
+      'opacity',
+      '0'
+    );
+    cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+      'Whether number computer economy design now serious appear.'
+    );
+
+    // no order
+    cy.get('@nameSortButton').click();
+
+    cy.get('[aria-sort="ascending"]').should('not.exist');
+    cy.get('[aria-sort="descending"]').should('not.exist');
+    cy.get('.MuiTableSortLabel-iconDirectionAsc').should('not.exist');
+
+    cy.get('[data-testid="SortIcon"]').should('have.length', 2);
+    cy.get('[data-testid="ArrowUpwardIcon"]').should('not.exist');
+
+    cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+      'Stop prove field onto think suffer measure.'
+    );
+
+    // multiple columns (shift click)
+    cy.contains('[role="button"]', 'Type').click();
+    cy.get('@nameSortButton').click({ shiftKey: true });
+    cy.get('[aria-sort="ascending"]').should('have.length', 2);
+
+    // should replace the previous sort when clicked without shift
+    cy.get('@nameSortButton').click();
+    cy.get('[aria-sort="descending"]').should('have.length', 1);
+    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('5');
+  });
+
+  it('should change icons when sorting on a column', () => {
+    // clear default sort
+    cy.contains('[role="button"]', 'Name').click();
+    cy.contains('[role="button"]', 'Name').click();
+
+    cy.get('[data-testid="SortIcon"]').should('have.length', 2);
+
+    // check icon when clicking on a column
+    cy.contains('[role="button"]', 'Name').click();
+    cy.get('[data-testid="ArrowDownwardIcon"]').should('have.length', 1);
+    cy.get('.MuiTableSortLabel-iconDirectionAsc').should('exist');
+
+    // check icon when clicking on a column again
+    cy.contains('[role="button"]', 'Name').click();
+    cy.get('[data-testid="ArrowDownwardIcon"]').should('have.length', 1);
+    cy.get('.MuiTableSortLabel-iconDirectionAsc').should('not.exist');
+
+    // check icon when hovering over a column
+    cy.contains('[role="button"]', 'Type').trigger('mouseover');
+    cy.get('[data-testid="ArrowUpwardIcon"]').should('have.length', 1);
+    cy.get('[data-testid="ArrowDownwardIcon"]').should('have.length', 1);
+    cy.contains('[role="button"]', 'Type').trigger('mouseout');
+
+    // check icons when shift is held
+    cy.get('.App').trigger('keydown', { key: 'Shift' });
+    cy.get('[data-testid="AddIcon"]').should('have.length', 1);
+  });
+
+  it('should be able to filter with text filter on multiple columns', () => {
+    cy.get('[aria-label="Filter by Type"]').first().type('4');
+
+    cy.get('[aria-rowcount="2"]').should('exist');
+    cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+      'Space I environmental.'
+    );
+    cy.get('[aria-rowindex="2"] [aria-colindex="2"]').contains(
+      'Up election edge his not add.'
+    );
+
+    cy.get('[aria-label="Filter by Name"]').first().type('space');
+
+    cy.get('[aria-rowcount="1"]').should('exist');
+    cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+      'Space I environmental.'
+    );
+  });
+
+  it('should be able to view details', () => {
+    cy.get('[aria-label="Show details"]').eq(1).click();
+
+    cy.get('#details-panel').should('be.visible');
+    const firstDetailsPanelText = 'General attorney city month.';
+    cy.get('#details-panel')
+      .contains(firstDetailsPanelText)
+      .should('be.visible');
+    cy.get('[aria-label="Hide details"]').should('exist');
+
+    cy.get('[aria-label="Show details"]').first().click();
+
+    cy.get('#details-panel')
+      .contains('Eight imagine picture tough')
+      .should('be.visible');
+    cy.get('#details-panel')
+      .contains(firstDetailsPanelText)
       .should('not.exist');
-  });
+    cy.get('[aria-label="Hide details"]').should('have.length', 1);
 
-  describe('should be able to sort by', () => {
-    beforeEach(() => {
-      //Revert the default sort
-      cy.contains('[role="button"]', 'Name').click().click();
+    cy.get('[aria-controls="instrument-details-panel').should('be.visible');
+
+    cy.get('#details-panel')
+      .contains('Skill quality beautiful.')
+      .should('be.visible');
+
+    cy.get('[aria-controls="instrument-users-panel"]').should('be.visible');
+    cy.get('[aria-controls="instrument-users-panel"]').click({
+      scrollBehavior: 'center',
     });
+    cy.get('#details-panel').contains('Kim Ramirez').should('be.visible');
 
-    it('ascending order', () => {
-      cy.contains('[role="button"]', 'Name').click();
+    cy.get('[aria-label="Hide details"]').first().click();
 
-      cy.get('[aria-sort="ascending"]').should('exist');
-      cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Eight imagine picture tough. Mouth participant chance including. Receive environment Democrat happy like full paper. School oil later change.'
-      );
-    });
-
-    it('descending order', () => {
-      cy.contains('[role="button"]', 'Name').click();
-      cy.contains('[role="button"]', 'Name').click();
-
-      cy.get('[aria-sort="descending"]').should('exist');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
-        'not.have.css',
-        'opacity',
-        '0'
-      );
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Whether number computer economy design now serious appear. Response girl middle close role American.'
-      );
-    });
-
-    it('no order', () => {
-      cy.contains('[role="button"]', 'Name').click();
-      cy.contains('[role="button"]', 'Name').click();
-      cy.contains('[role="button"]', 'Name').click();
-
-      cy.get('[aria-sort="ascending"]').should('not.exist');
-      cy.get('[aria-sort="descending"]').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
-        'have.css',
-        'opacity',
-        '0'
-      );
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Stop prove field onto think suffer measure. Table lose season identify professor happen third simply.'
-      );
-    });
-  });
-
-  describe('should be able to filter by', () => {
-    it('text', () => {
-      cy.get('[aria-label="Filter by Name"]').first().type('space');
-
-      cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Space I environmental. Role again act seek. Light teacher big sing foreign meeting professor. Simply world start floor.'
-      );
-    });
-
-    it('type', () => {
-      cy.get('[aria-label="Filter by Type"]').first().type('4');
-
-      cy.get('[aria-rowcount="2"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Space I environmental. Role again act seek. Light teacher big sing foreign meeting professor. Simply world start floor.'
-      );
-      cy.get('[aria-rowindex="2"] [aria-colindex="2"]').contains(
-        'Up election edge his not add. Where difficult audience often. Cup investment the officer network hospital cultural personal.'
-      );
-    });
-  });
-
-  describe('should be able to view details', () => {
-    beforeEach(() => {
-      //Revert the default sort
-      cy.contains('[role="button"]', 'Name').click().click();
-    });
-
-    it('when no other row is showing details', () => {
-      cy.get('[aria-label="Show details"]').first().click();
-
-      cy.get('#details-panel').should('be.visible');
-      cy.get('[aria-label="Hide details"]').should('exist');
-    });
-
-    it('when another row is showing details', () => {
-      cy.get('[aria-label="Show details"]')
-        .eq(2)
-        .click({ scrollBehavior: 'center' });
-
-      cy.get('[aria-label="Show details"]').first().click();
-
-      cy.get('#details-panel')
-        .contains(
-          'Suggest shake effort many last prepare small. Maintain throw hope parent.'
-        )
-        .should('be.visible');
-      cy.get('#details-panel')
-        .contains(
-          'Financial vote season indicate. Candidate night sure opportunity design. Commercial test wind region meeting her get.'
-        )
-        .should('not.exist');
-      cy.get('[aria-label="Hide details"]').should('have.length', 1);
-    });
-
-    it('and view instrument details and scientists', () => {
-      cy.get('[aria-label="Show details"]').first().click();
-
-      cy.get('[aria-controls="instrument-details-panel').should('be.visible');
-
-      cy.get('#details-panel')
-        .contains(
-          'Stop prove field onto think suffer measure. Table lose season identify professor happen third simply. Beat professional blue clear style have. Analysis reflect work or hour color maybe.'
-        )
-        .should('be.visible');
-
-      cy.get('[aria-controls="instrument-users-panel"]').should('be.visible');
-      cy.get('[aria-controls="instrument-users-panel"]').click({
-        scrollBehavior: 'center',
-      });
-      cy.get('#details-panel').contains('Kathryn Fox').should('be.visible');
-    });
-
-    it('and then not view details anymore', () => {
-      cy.get('[aria-label="Show details"]').first().click();
-
-      cy.get('[aria-label="Hide details"]').first().click();
-
-      cy.get('#details-panel').should('not.exist');
-      cy.get('[aria-label="Hide details"]').should('not.exist');
-    });
+    cy.get('#details-panel').should('not.exist');
+    cy.get('[aria-label="Hide details"]').should('not.exist');
   });
 });

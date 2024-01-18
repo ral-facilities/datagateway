@@ -21,13 +21,12 @@ describe('Download Cart', () => {
     // Ensure we can move away from the table and come back to it.
     cy.get('[aria-label="Download selection panel"]').should('exist');
     // Wait for the downloads to be fetched before moving back to the cart.
-    cy.get('[aria-label="Downloads"]')
-      .should('exist')
-      .click()
-      .wait('@fetchDownloads');
+    cy.get('[aria-label="Downloads"]').should('exist').click();
+    cy.wait('@fetchDownloads');
     cy.get('[aria-label="Download status panel"]').should('exist');
 
-    cy.get('[aria-label="Selection').click().wait('@fetchCart');
+    cy.get('[aria-label="Selection').click();
+    cy.wait('@fetchCart');
     cy.get('[aria-label="Download selection panel"]').should('exist');
 
     cy.get('[aria-rowcount=59]', { timeout: 10000 }).should('exist');
@@ -69,10 +68,18 @@ describe('Download Cart', () => {
       'investigation'
     );
 
-    cy.contains('[role="button"]', 'Name').click();
+    // multisort with shift key
+    cy.contains('[role="button"]', 'Name').click({ shiftKey: true });
     cy.get('[aria-rowindex=1] [aria-colindex=1]').should(
       'have.text',
       'INVESTIGATION 10'
+    );
+
+    // replace previous sory by clicking without shift key
+    cy.contains('[role="button"]', 'Name').click();
+    cy.get('[aria-rowindex=1] [aria-colindex=1]').should(
+      'have.text',
+      'INVESTIGATION 8'
     );
   });
 
@@ -137,5 +144,14 @@ describe('Download Cart', () => {
     cy.get('[aria-label="Close download confirmation dialog"]')
       .should('exist')
       .click();
+  });
+
+  it('should not be able to mint an unmintable cart', () => {
+    cy.get('[aria-label="Calculating"]', { timeout: 20000 }).should(
+      'not.exist'
+    );
+
+    // this "button" is a link so can't actually be disabled, check pointer-events
+    cy.contains('Generate DOI').should('have.css', 'pointer-events', 'none');
   });
 });

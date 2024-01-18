@@ -156,6 +156,8 @@ describe('Admin Download Status Table', () => {
   });
 
   it('should send sort request on sort', async () => {
+    // use skipHover to avoid triggering sort tooltips which slow the test down
+    user = userEvent.setup({ delay: null, skipHover: true });
     renderComponent();
 
     // Table is sorted by createdAt desc by default
@@ -182,22 +184,39 @@ describe('Admin Download Status Table', () => {
       'downloadStatus.transport'
     );
 
+    // should replace the sort by username with sort by access method
     await user.click(accessMethodSortLabel);
     expect(fetchAdminDownloads).toHaveBeenCalledWith(
       {
         downloadApiUrl: mockedSettings.downloadApiUrl,
         facilityName: mockedSettings.facilityName,
       },
-      `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.userName asc, download.transport asc, download.id ASC LIMIT 0, 50`
+      `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.transport asc, download.id ASC LIMIT 0, 50`
     );
 
-    await user.click(accessMethodSortLabel);
+    // should append sort if shift key is pressed
+    await user.keyboard('{Shift>}');
+    await user.click(usernameSortLabel);
+    await user.keyboard('{/Shift}');
+
     expect(fetchAdminDownloads).toHaveBeenCalledWith(
       {
         downloadApiUrl: mockedSettings.downloadApiUrl,
         facilityName: mockedSettings.facilityName,
       },
-      `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.userName asc, download.transport desc, download.id ASC LIMIT 0, 50`
+      `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.transport asc, download.userName asc, download.id ASC LIMIT 0, 50`
+    );
+
+    await user.keyboard('{Shift>}');
+    await user.click(accessMethodSortLabel);
+    await user.keyboard('{/Shift}');
+
+    expect(fetchAdminDownloads).toHaveBeenCalledWith(
+      {
+        downloadApiUrl: mockedSettings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
+      },
+      `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.transport desc, download.userName asc, download.id ASC LIMIT 0, 50`
     );
 
     await user.click(accessMethodSortLabel);
@@ -212,6 +231,9 @@ describe('Admin Download Status Table', () => {
 
   describe('text filters', () => {
     it('should filter username properly', async () => {
+      // use skipHover to avoid triggering sort tooltips which slow the test down
+      user = userEvent.setup({ delay: null, skipHover: true });
+
       renderComponent();
       await flushPromises();
 
@@ -248,6 +270,9 @@ describe('Admin Download Status Table', () => {
     });
 
     it('should filter download availability properly', async () => {
+      // use skipHover to avoid triggering sort tooltips which slow the test down
+      user = userEvent.setup({ delay: null, skipHover: true });
+
       renderComponent();
       await flushPromises();
 
@@ -273,7 +298,9 @@ describe('Admin Download Status Table', () => {
 
       // We simulate a change in the select from 'include' to 'exclude'.
       // click on the select box
-      await user.click(screen.getAllByLabelText('include or exclude')[5]);
+      await user.click(
+        screen.getAllByLabelText('include, exclude or exact')[5]
+      );
       // click on exclude option
       await user.click(
         within(await screen.findByRole('listbox')).getByText('Exclude')
@@ -303,18 +330,22 @@ describe('Admin Download Status Table', () => {
 
   it('sends filter request on date filter', async () => {
     applyDatePickerWorkaround();
+    // use skipHover to avoid triggering sort tooltips which slow the test down
+    user = userEvent.setup({ delay: null, skipHover: true });
+
     renderComponent();
     await flushPromises();
 
     // Table is sorted by createdAt desc by default
     // To keep working test, we will remove all sorts on the table beforehand
     await user.click(await screen.findByText('downloadStatus.createdAt'));
+    await flushPromises();
 
     // Get the Requested Data From filter input
     const dateFromFilterInput = screen.getByRole('textbox', {
       name: 'downloadStatus.createdAt filter from',
     });
-    await user.type(dateFromFilterInput, '2020-01-01 00:00:00');
+    await user.type(dateFromFilterInput, '2020-01-01_00:00:00');
     await flushPromises();
 
     expect(fetchAdminDownloads).toHaveBeenCalledWith(
@@ -329,21 +360,21 @@ describe('Admin Download Status Table', () => {
     const dateToFilterInput = screen.getByRole('textbox', {
       name: 'downloadStatus.createdAt filter to',
     });
-    await user.type(dateToFilterInput, '2020-01-02 23:59:00');
+
+    // in v6 of date-picker spaces are considered to be a '0'
+    // 20200102235900 is equivalent to 2020-01-02 03:59:00
+    await user.type(dateToFilterInput, '2020-01-02_23:59:00');
     await flushPromises();
 
-    // have to wrap the expect in a waitFor because for some reason
-    // await user.type doesn't wait until the full thing is typed in before resolving
-    // causing fetchAdminDownloads to be called with partial values
-    await waitFor(() => {
-      expect(fetchAdminDownloads).toHaveBeenCalledWith(
-        {
-          downloadApiUrl: mockedSettings.downloadApiUrl,
-          facilityName: mockedSettings.facilityName,
-        },
-        `WHERE download.facilityName = '${mockedSettings.facilityName}' AND download.createdAt BETWEEN {ts '2020-01-01 00:00:00'} AND {ts '2020-01-02 23:59:00'} ORDER BY download.id ASC LIMIT 0, 50`
-      );
-    });
+    expect(fetchAdminDownloads).toHaveBeenCalledWith(
+      {
+        downloadApiUrl: mockedSettings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
+      },
+      `WHERE download.facilityName = '${mockedSettings.facilityName}' AND download.createdAt BETWEEN {ts '2020-01-01 00:00:00'} AND {ts '2020-01-02 23:59:00'} ORDER BY download.id ASC LIMIT 0, 50`
+    );
+
+    (fetchAdminDownloads as jest.Mock).mockClear();
 
     await user.clear(dateFromFilterInput);
     await user.clear(dateToFilterInput);

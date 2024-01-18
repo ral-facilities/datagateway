@@ -18,7 +18,7 @@ describe('ISIS - FacilityCycles Cards', () => {
     cy.get('.MuiTableSortLabel-iconDirectionDesc').should('be.visible');
   });
 
-  it('should be able to click an investigation to see its datasets', () => {
+  it('should be able to click a facility cycle to see its investigations', () => {
     cy.get('[data-testid="card"]')
       .first()
       .contains('2004 cycle 3')
@@ -29,87 +29,75 @@ describe('ISIS - FacilityCycles Cards', () => {
     );
   });
 
-  describe('should be able to sort by', () => {
-    beforeEach(() => {
-      //Revert the default sort
-      cy.contains('[role="button"]', 'Start Date')
-        .click()
-        .wait('@getFacilityCyclesOrder', { timeout: 10000 });
-    });
-    // Note that Name and Description currently fail to sort
-    it('one field', () => {
-      cy.contains('[role="button"]', 'Start Date')
-        .click()
-        .wait('@getFacilityCyclesOrder', { timeout: 10000 });
-      cy.contains('[role="button"]', 'asc').should('exist');
-      cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('[data-testid="card"]').first().contains('2001 cycle 2');
+  it('should be able to sort by one field or multiple', () => {
+    //Revert the default sort
+    cy.contains('[role="button"]', 'Start Date').as('dateSortButton').click();
+    cy.wait('@getFacilityCyclesOrder', { timeout: 10000 });
 
-      cy.contains('[role="button"]', 'Start Date').click();
-      cy.contains('[role="button"]', 'asc').should('not.exist');
-      cy.contains('[role="button"]', 'desc').should('exist');
-      cy.get('[data-testid="card"]').first().contains('2004 cycle 3');
+    // ascending
+    cy.get('@dateSortButton').click();
+    cy.wait('@getFacilityCyclesOrder', { timeout: 10000 });
+    cy.contains('[role="button"]', 'asc').should('exist');
+    cy.contains('[role="button"]', 'desc').should('not.exist');
+    cy.get('[data-testid="card"]').first().contains('2001 cycle 2');
 
-      cy.contains('[role="button"]', 'Start Date').click();
-      cy.contains('[role="button"]', 'asc').should('not.exist');
-      cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('[data-testid="card"]').first().contains('2001 cycle 2');
-    });
+    // descending
+    cy.get('@dateSortButton').click();
+    cy.contains('[role="button"]', 'asc').should('not.exist');
+    cy.contains('[role="button"]', 'desc').should('exist');
+    cy.get('[data-testid="card"]').first().contains('2004 cycle 3');
 
-    it('multiple fields', () => {
-      cy.contains('[role="button"]', 'Start Date')
-        .click()
-        .wait('@getFacilityCyclesOrder', { timeout: 10000 });
-      cy.contains('[role="button"]', 'asc').should('exist');
-      cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('[data-testid="card"]').first().contains('2001 cycle 2');
+    // no order
+    cy.get('@dateSortButton').click();
+    cy.contains('[role="button"]', 'asc').should('not.exist');
+    cy.contains('[role="button"]', 'desc').should('not.exist');
+    cy.get('[data-testid="card"]').first().contains('2001 cycle 2');
 
-      cy.contains('[role="button"]', 'End Date')
-        .click()
-        .wait('@getFacilityCyclesOrder', { timeout: 10000 });
-      cy.contains('[role="button"]', 'asc').should('exist');
-      cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('[data-testid="card"]').first().contains('2001 cycle 2');
-    });
+    // multiple fields (shift click)
+    cy.get('@dateSortButton').click();
+    cy.contains('[role="button"]', 'End Date').click({ shiftKey: true });
+    cy.wait('@getFacilityCyclesOrder', { timeout: 10000 });
+
+    cy.contains('[aria-label="Sort by START DATE"]', 'asc').should('exist');
+    cy.contains('[aria-label="Sort by END DATE"]', 'asc').should('exist');
+    cy.contains('[role="button"]', 'desc').should('not.exist');
+    cy.get('[data-testid="card"]').first().contains('2001 cycle 2');
+
+    // should replace current sort if clicked without shift
+    cy.get('@dateSortButton').click();
+
+    cy.contains('[aria-label="Sort by START DATE"]', 'desc').should('exist');
+    cy.contains('[aria-label="Sort by END DATE"]', 'asc').should('not.exist');
+    cy.contains('[role="button"]', 'asc').should('not.exist');
+    cy.get('[data-testid="card"]').first().contains('2004 cycle 3');
   });
 
-  describe('should be able to filter by', () => {
-    beforeEach(() => {
-      //Revert the default sort
-      cy.contains('[role="button"]', 'Start Date')
-        .click()
-        .wait('@getFacilityCyclesOrder', { timeout: 10000 });
-    });
+  it('should be able to filter by multiple fields', () => {
+    //Revert the default sort
+    cy.contains('[role="button"]', 'Start Date').as('dateSortButton').click();
+    cy.wait('@getFacilityCyclesOrder', { timeout: 10000 });
 
-    it('multiple fields', () => {
-      cy.get('[data-testid="advanced-filters-link"]').click();
-      cy.get('[aria-label="Filter by Name"]')
-        .first()
-        .type('3')
-        .wait(['@getFacilityCyclesCount', '@getFacilityCyclesOrder'], {
-          timeout: 10000,
-        });
-      cy.get('[data-testid="card"]').first().contains('2002 cycle 3');
-
-      cy.get('input[id="Start Date filter from"]')
-        .click()
-        .type('2004-06-01')
-        .wait(['@getFacilityCyclesCount'], { timeout: 10000 });
-      cy.get('input[aria-label="Start Date filter to"]')
-        .parent()
-        .find('button')
-        .click();
-      cy.get('.MuiPickersDay-root[type="button"]')
-        .first()
-        .click()
-        .wait(['@getFacilityCyclesCount'], { timeout: 10000 });
-      const date = new Date();
-      date.setDate(1);
-      cy.get('input[id="Start Date filter to"]').should(
-        'have.value',
-        date.toISOString().slice(0, 10)
-      );
-      cy.get('[data-testid="card"]').first().contains('2004 cycle 3');
+    cy.get('[data-testid="advanced-filters-link"]').click();
+    cy.get('[aria-label="Filter by Name"]').first().type('3');
+    cy.wait(['@getFacilityCyclesCount', '@getFacilityCyclesOrder'], {
+      timeout: 10000,
     });
+    cy.get('[data-testid="card"]').first().contains('2002 cycle 3');
+
+    cy.get('input[id="Start Date filter from"]').type('2004-06-01');
+    cy.wait(['@getFacilityCyclesCount'], { timeout: 10000 });
+    cy.get('input[aria-label="Start Date filter to"]')
+      .parent()
+      .find('button')
+      .click();
+    cy.get('.MuiPickersDay-root[type="button"]').first().click();
+    cy.wait(['@getFacilityCyclesCount'], { timeout: 10000 });
+    const date = new Date();
+    date.setDate(1);
+    cy.get('input[id="Start Date filter to"]').should(
+      'have.value',
+      date.toISOString().slice(0, 10)
+    );
+    cy.get('[data-testid="card"]').first().contains('2004 cycle 3');
   });
 });

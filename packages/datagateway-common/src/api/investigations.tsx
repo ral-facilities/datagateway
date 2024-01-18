@@ -97,7 +97,8 @@ export const useInvestigation = (
 
 export const useInvestigationsPaginated = (
   additionalFilters?: AdditionalFilters,
-  ignoreIDSort?: boolean
+  ignoreIDSort?: boolean,
+  isMounted?: boolean
 ): UseQueryResult<Investigation[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
@@ -110,7 +111,7 @@ export const useInvestigationsPaginated = (
     [
       string,
       {
-        sort: SortType;
+        sort: string;
         filters: FiltersType;
         page: number;
         results: number;
@@ -121,12 +122,17 @@ export const useInvestigationsPaginated = (
   >(
     [
       'investigation',
-      { sort, filters, page: page ?? 1, results: results ?? 10 },
+      {
+        sort: JSON.stringify(sort), // need to stringify sort as property order is important!
+        filters,
+        page: page ?? 1,
+        results: results ?? 10,
+      },
       additionalFilters,
       ignoreIDSort,
     ],
     (params) => {
-      const { sort, filters, page, results } = params.queryKey[1];
+      const { page, results } = params.queryKey[1];
       const startIndex = (page - 1) * results;
       const stopIndex = startIndex + results - 1;
       return fetchInvestigations(
@@ -145,32 +151,28 @@ export const useInvestigationsPaginated = (
         handleICATError(error);
       },
       retry: retryICATErrors,
+      enabled: isMounted ?? true,
     }
   );
 };
 
 export const useInvestigationsInfinite = (
   additionalFilters?: AdditionalFilters,
-  ignoreIDSort?: boolean
+  ignoreIDSort?: boolean,
+  isMounted?: boolean
 ): UseInfiniteQueryResult<Investigation[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters, sort } = parseSearchToQuery(location.search);
 
-  return useInfiniteQuery<
-    Investigation[],
-    AxiosError,
-    Investigation[],
+  return useInfiniteQuery(
     [
-      string,
-      { sort: SortType; filters: FiltersType },
-      AdditionalFilters?,
-      boolean?
-    ]
-  >(
-    ['investigation', { sort, filters }, additionalFilters, ignoreIDSort],
+      'investigation',
+      { sort: JSON.stringify(sort), filters }, // need to stringify sort as property order is important!
+      additionalFilters,
+      ignoreIDSort,
+    ],
     (params) => {
-      const { sort, filters } = params.queryKey[1];
       const offsetParams = params.pageParam ?? { startIndex: 0, stopIndex: 49 };
       return fetchInvestigations(
         apiUrl,
@@ -185,6 +187,7 @@ export const useInvestigationsInfinite = (
         handleICATError(error);
       },
       retry: retryICATErrors,
+      enabled: isMounted ?? true,
     }
   );
 };
