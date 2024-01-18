@@ -3,8 +3,8 @@ import {
   renderHook,
   WrapperComponent,
 } from '@testing-library/react-hooks';
-import axios from 'axios';
-import type { Download } from 'datagateway-common';
+import axios, { AxiosError } from 'axios';
+import { Download, InvalidateTokenType } from 'datagateway-common';
 import {
   DownloadCartItem,
   handleICATError,
@@ -20,18 +20,24 @@ import {
   useAdminDownloads,
   useAdminUpdateDownloadStatus,
   useCart,
+  useCartUsers,
+  useCheckUser,
   useDatafileCounts,
   useDownloadOrRestoreDownload,
   useDownloadPercentageComplete,
   useDownloads,
   useDownloadTypeStatuses,
+  useIsCartMintable,
   useIsTwoLevel,
+  useMintCart,
   useRemoveAllFromCart,
   useRemoveEntityFromCart,
   useSizes,
   useSubmitCart,
 } from './downloadApiHooks';
 import { mockCartItems, mockDownloadItems, mockedSettings } from './testData';
+import log from 'loglevel';
+import { ContributorType } from './downloadApi';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -56,16 +62,20 @@ const createTestQueryClient = (): QueryClient =>
     defaultOptions: {
       queries: {
         retry: false,
+        // set retryDelay = 0 to make retries quick for custom retry functions
+        retryDelay: 0,
       },
     },
   });
 
-const createReactQueryWrapper = (): WrapperComponent<unknown> => {
+const createReactQueryWrapper = (
+  settings = mockedSettings
+): WrapperComponent<unknown> => {
   const testQueryClient = createTestQueryClient();
   const history = createMemoryHistory();
 
   const wrapper: WrapperComponent<unknown> = ({ children }) => (
-    <DownloadSettingsContext.Provider value={mockedSettings}>
+    <DownloadSettingsContext.Provider value={settings}>
       <Router history={history}>
         <QueryClientProvider client={testQueryClient}>
           {children}
@@ -76,9 +86,29 @@ const createReactQueryWrapper = (): WrapperComponent<unknown> => {
   return wrapper;
 };
 
-describe('Download Cart API react-query hooks test', () => {
+describe('Download API react-query hooks test', () => {
+  const localStorageGetItemMock = jest.spyOn(
+    window.localStorage.__proto__,
+    'getItem'
+  );
+  let events: CustomEvent<{
+    detail: { type: string; payload?: unknown };
+  }>[] = [];
+
+  beforeEach(() => {
+    events = [];
+
+    document.dispatchEvent = (e: Event) => {
+      events.push(
+        e as CustomEvent<{ detail: { type: string; payload?: unknown } }>
+      );
+      return true;
+    };
+  });
+
   afterEach(() => {
-    (handleICATError as jest.Mock).mockClear();
+    jest.clearAllMocks();
+    localStorageGetItemMock.mockReset();
   });
 
   describe('useCart', () => {
@@ -181,9 +211,11 @@ describe('Download Cart API react-query hooks test', () => {
         .fn()
         .mockImplementationOnce(() =>
           Promise.reject({
-            code: '431',
+            response: {
+              status: 431,
+            },
             message: 'Test 431 error message',
-          })
+          } as AxiosError)
         )
         .mockImplementation(() =>
           Promise.reject({
@@ -247,9 +279,11 @@ describe('Download Cart API react-query hooks test', () => {
         .fn()
         .mockImplementationOnce(() =>
           Promise.reject({
-            code: '431',
+            response: {
+              status: 431,
+            },
             message: 'Test 431 error message',
-          })
+          } as AxiosError)
         )
         .mockImplementation(() =>
           Promise.reject({
@@ -1336,6 +1370,624 @@ describe('Download Cart API react-query hooks test', () => {
         },
         false
       );
+    });
+  });
+
+  describe('useIsCartMintable', () => {
+    it('should check whether a cart is mintable', async () => {
+      axios.post = jest
+        .fn()
+        .mockResolvedValue({ data: undefined, status: 200 });
+
+      const { result, waitFor } = renderHook(
+        () => useIsCartMintable(mockCartItems),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+      expect(result.current.data).toEqual(true);
+      expect(axios.post).toHaveBeenCalledWith(
+        `${mockedSettings.doiMinterUrl}/ismintable`,
+        {
+          investigation_ids: [1, 2],
+          dataset_ids: [3],
+          datafile_ids: [4],
+        },
+        { headers: { Authorization: 'Bearer null' } }
+      );
+    });
+
+    it('should be disabled if doiMinterUrl is not defined', async () => {
+      const { result } = renderHook(() => useIsCartMintable(mockCartItems), {
+        wrapper: createReactQueryWrapper({
+          ...mockedSettings,
+          doiMinterUrl: undefined,
+        }),
+      });
+
+      expect(result.current.isIdle).toEqual(true);
+      expect(axios.post).not.toHaveBeenCalled();
+    });
+
+    it('should return false if cart is undefined', async () => {
+      const { result, waitFor } = renderHook(
+        () => useIsCartMintable(undefined),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+      expect(result.current.data).toEqual(false);
+      expect(axios.post).not.toHaveBeenCalled();
+    });
+
+    it('should return false if cart is empty', async () => {
+      const { result, waitFor } = renderHook(() => useIsCartMintable([]), {
+        wrapper: createReactQueryWrapper(),
+      });
+
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+      expect(result.current.data).toEqual(false);
+      expect(axios.post).not.toHaveBeenCalled();
+    });
+
+    it('should handle 401 by broadcasting an invalidate token message with autologin being true', async () => {
+      localStorageGetItemMock.mockImplementation((name) => {
+        return name === 'autoLogin' ? 'true' : null;
+      });
+
+      const error = {
+        message: 'Test error message',
+        response: {
+          status: 401,
+        },
+      };
+      axios.post = jest.fn().mockRejectedValue(error);
+
+      const { result, waitFor } = renderHook(
+        () => useIsCartMintable([mockCartItems[0]]),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+      await waitFor(() => expect(result.current.isError).toBe(true));
+
+      expect(log.error).toHaveBeenCalledWith(error);
+      expect(axios.post).toHaveBeenCalledTimes(4);
+      expect(axios.post).toHaveBeenCalledWith(
+        `${mockedSettings.doiMinterUrl}/ismintable`,
+        {
+          investigation_ids: [1],
+        },
+        { headers: { Authorization: 'Bearer null' } }
+      );
+      expect(events.length).toBe(1);
+      expect(events[0].detail).toEqual({
+        type: InvalidateTokenType,
+        payload: {
+          severity: 'error',
+          message: 'Your session has expired, please reload the page',
+        },
+      });
+    });
+
+    it('should handle 401 by broadcasting an invalidate token message with autologin being false', async () => {
+      localStorageGetItemMock.mockImplementation((name) => {
+        return name === 'autoLogin' ? 'false' : null;
+      });
+
+      const error = {
+        message: 'Test error message',
+        response: {
+          status: 401,
+        },
+      };
+      axios.post = jest.fn().mockRejectedValue(error);
+
+      const { result, waitFor } = renderHook(
+        () => useIsCartMintable([mockCartItems[3]]),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+      await waitFor(() => expect(result.current.isError).toBe(true));
+
+      expect(log.error).toHaveBeenCalledWith(error);
+      expect(axios.post).toHaveBeenCalledTimes(4);
+      expect(axios.post).toHaveBeenCalledWith(
+        `${mockedSettings.doiMinterUrl}/ismintable`,
+        {
+          datafile_ids: [4],
+        },
+        { headers: { Authorization: 'Bearer null' } }
+      );
+      expect(events.length).toBe(1);
+      expect(events[0].detail).toEqual({
+        type: InvalidateTokenType,
+        payload: {
+          severity: 'error',
+          message: 'Your session has expired, please login again',
+        },
+      });
+    });
+
+    it('should not log 403 errors or retry them', async () => {
+      const error = {
+        message: 'Test error message',
+        response: {
+          status: 403,
+        },
+      };
+      axios.post = jest.fn().mockRejectedValue(error);
+
+      const { result, waitFor } = renderHook(
+        () => useIsCartMintable(mockCartItems),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+      await waitFor(() => expect(result.current.isError).toBe(true));
+
+      expect(log.error).not.toHaveBeenCalled();
+      expect(axios.post).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('useMintCart', () => {
+    const doiMetadata = {
+      title: 'Test title',
+      description: 'Test description',
+      creators: [{ username: '1', contributor_type: ContributorType.Creator }],
+      related_items: [],
+    };
+    it('should send a request to mint a cart', async () => {
+      axios.post = jest.fn().mockResolvedValue({
+        data: {
+          concept: { doi: 'test doi', data_publication: '1' },
+          version: { doi: 'test doi v1', data_publication: '11' },
+        },
+        status: 200,
+      });
+
+      const { result } = renderHook(() => useMintCart(), {
+        wrapper: createReactQueryWrapper(),
+      });
+
+      await act(async () => {
+        await result.current.mutateAsync({ cart: mockCartItems, doiMetadata });
+      });
+
+      expect(result.current.data).toEqual({
+        concept: { doi: 'test doi', data_publication: '1' },
+        version: { doi: 'test doi v1', data_publication: '11' },
+      });
+      expect(axios.post).toHaveBeenCalledWith(
+        `${mockedSettings.doiMinterUrl}/mint`,
+        {
+          metadata: {
+            ...doiMetadata,
+            resource_type: 'Collection',
+          },
+          investigation_ids: [1, 2],
+          dataset_ids: [3],
+          datafile_ids: [4],
+        },
+        { headers: { Authorization: 'Bearer null' } }
+      );
+    });
+
+    it('should handle 401 by broadcasting an invalidate token message with autologin being true', async () => {
+      localStorageGetItemMock.mockImplementation((name) => {
+        return name === 'autoLogin' ? 'true' : null;
+      });
+
+      const error = {
+        message: 'Test error message',
+        response: {
+          status: 401,
+        },
+      };
+      axios.post = jest.fn().mockRejectedValue(error);
+
+      const { result, waitFor } = renderHook(() => useMintCart(), {
+        wrapper: createReactQueryWrapper(),
+      });
+
+      act(() => {
+        result.current.mutate({ cart: [mockCartItems[0]], doiMetadata });
+      });
+      await waitFor(() => expect(result.current.isError).toBe(true));
+
+      expect(log.error).toHaveBeenCalledWith(error);
+      expect(axios.post).toHaveBeenCalledWith(
+        `${mockedSettings.doiMinterUrl}/mint`,
+        {
+          metadata: {
+            ...doiMetadata,
+            resource_type: 'Collection',
+          },
+          investigation_ids: [1],
+        },
+        { headers: { Authorization: 'Bearer null' } }
+      );
+      expect(events.length).toBe(1);
+      expect(events[0].detail).toEqual({
+        type: InvalidateTokenType,
+        payload: {
+          severity: 'error',
+          message: 'Your session has expired, please reload the page',
+        },
+      });
+    });
+
+    it('should handle 401 by broadcasting an invalidate token message with autologin being false', async () => {
+      localStorageGetItemMock.mockImplementation((name) => {
+        return name === 'autoLogin' ? 'false' : null;
+      });
+
+      const error = {
+        message: 'Test error message',
+        response: {
+          status: 401,
+        },
+      };
+      axios.post = jest.fn().mockRejectedValue(error);
+
+      const { result, waitFor } = renderHook(() => useMintCart(), {
+        wrapper: createReactQueryWrapper(),
+      });
+
+      act(() => {
+        result.current.mutate({ cart: [mockCartItems[3]], doiMetadata });
+      });
+      await waitFor(() => expect(result.current.isError).toBe(true));
+
+      expect(log.error).toHaveBeenCalledWith(error);
+      expect(axios.post).toHaveBeenCalledWith(
+        `${mockedSettings.doiMinterUrl}/mint`,
+        {
+          metadata: {
+            ...doiMetadata,
+            resource_type: 'Dataset',
+          },
+          datafile_ids: [4],
+        },
+        { headers: { Authorization: 'Bearer null' } }
+      );
+      expect(events.length).toBe(1);
+      expect(events[0].detail).toEqual({
+        type: InvalidateTokenType,
+        payload: {
+          severity: 'error',
+          message: 'Your session has expired, please login again',
+        },
+      });
+    });
+  });
+
+  describe('useCartUsers', () => {
+    it('should get a list of users associated with each cart item', async () => {
+      axios.get = jest.fn().mockImplementation((url) => {
+        if (url.includes('investigations')) {
+          return Promise.resolve({
+            data: [
+              {
+                investigationUsers: [
+                  { user: { id: 1, name: 'user 1' } },
+                  { user: { id: 2, name: 'user 2' } },
+                ],
+              },
+            ],
+          });
+        }
+        if (url.includes('datasets')) {
+          return Promise.resolve({
+            data: [
+              {
+                investigation: {
+                  investigationUsers: [
+                    { user: { id: 2, name: 'user 2' } },
+                    { user: { id: 3, name: 'user 3' } },
+                  ],
+                },
+              },
+            ],
+          });
+        }
+        if (url.includes('datafiles')) {
+          return Promise.resolve({
+            data: [
+              {
+                dataset: {
+                  investigation: {
+                    investigationUsers: [
+                      { user: { id: 3, name: 'user 3' } },
+                      { user: { id: 4, name: 'user 4' } },
+                    ],
+                  },
+                },
+              },
+            ],
+          });
+        } else {
+          return Promise.resolve({ data: [] });
+        }
+      });
+
+      const { result, waitFor } = renderHook(
+        () => useCartUsers(mockCartItems),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+      // data should be deduped
+      expect(result.current.data).toEqual([
+        { id: 1, name: 'user 1' },
+        { id: 2, name: 'user 2' },
+        { id: 3, name: 'user 3' },
+        { id: 4, name: 'user 4' },
+      ]);
+      // needs to get called once for each item in the cart
+      expect(axios.get).toHaveBeenCalledTimes(mockCartItems.length);
+
+      const inv1Params = new URLSearchParams();
+      inv1Params.append(
+        'where',
+        JSON.stringify({
+          id: { eq: 1 },
+        })
+      );
+      inv1Params.append(
+        'include',
+        JSON.stringify({
+          investigationUsers: 'user',
+        })
+      );
+
+      expect(axios.get).toHaveBeenCalledWith(
+        `${mockedSettings.apiUrl}/investigations`,
+        expect.objectContaining({
+          params: inv1Params,
+        })
+      );
+
+      const inv2Params = new URLSearchParams();
+      inv2Params.append(
+        'where',
+        JSON.stringify({
+          id: { eq: 2 },
+        })
+      );
+      inv2Params.append(
+        'include',
+        JSON.stringify({
+          investigationUsers: 'user',
+        })
+      );
+
+      expect(axios.get).toHaveBeenCalledWith(
+        `${mockedSettings.apiUrl}/investigations`,
+        expect.objectContaining({
+          params: inv2Params,
+        })
+      );
+
+      const dsParams = new URLSearchParams();
+      dsParams.append(
+        'where',
+        JSON.stringify({
+          id: { eq: 3 },
+        })
+      );
+      dsParams.append(
+        'include',
+        JSON.stringify({
+          investigation: { investigationUsers: 'user' },
+        })
+      );
+
+      expect(axios.get).toHaveBeenCalledWith(
+        `${mockedSettings.apiUrl}/datasets`,
+        expect.objectContaining({
+          params: dsParams,
+        })
+      );
+
+      const dfParams = new URLSearchParams();
+      dfParams.append(
+        'where',
+        JSON.stringify({
+          id: { eq: 4 },
+        })
+      );
+      dfParams.append(
+        'include',
+        JSON.stringify({
+          datasets: { investigation: { investigationUsers: 'user' } },
+        })
+      );
+
+      expect(axios.get).toHaveBeenCalledWith(
+        `${mockedSettings.apiUrl}/datafiles`,
+        expect.objectContaining({
+          params: dfParams,
+        })
+      );
+    });
+
+    it('should not query for users if cart is undefined', async () => {
+      const { result, waitFor } = renderHook(() => useCartUsers(undefined), {
+        wrapper: createReactQueryWrapper(),
+      });
+
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+      expect(result.current.data).toEqual([]);
+      expect(axios.get).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('useCheckUser', () => {
+    it('should check whether a user exists in ICAT', async () => {
+      axios.get = jest
+        .fn()
+        .mockResolvedValue({ data: { id: 1, name: 'user 1' } });
+
+      const { result, waitFor } = renderHook(() => useCheckUser('user 1'), {
+        wrapper: createReactQueryWrapper(),
+      });
+      expect(result.current.isIdle).toBe(true);
+      act(() => {
+        result.current.refetch();
+      });
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+      expect(result.current.data).toEqual({ id: 1, name: 'user 1' });
+      expect(axios.get).toHaveBeenCalledWith(
+        `${mockedSettings.doiMinterUrl}/user/${'user 1'}`,
+        { headers: { Authorization: 'Bearer null' } }
+      );
+    });
+
+    it('should handle 401 by broadcasting an invalidate token message with autologin being true', async () => {
+      localStorageGetItemMock.mockImplementation((name) => {
+        return name === 'autoLogin' ? 'true' : null;
+      });
+
+      const error = {
+        message: 'Test error message',
+        response: {
+          status: 401,
+        },
+      };
+      axios.get = jest.fn().mockRejectedValue(error);
+
+      const { result, waitFor } = renderHook(() => useCheckUser('user 1'), {
+        wrapper: createReactQueryWrapper(),
+      });
+      expect(result.current.isIdle).toBe(true);
+      act(() => {
+        result.current.refetch();
+      });
+      await waitFor(() => expect(result.current.isError).toBe(true));
+
+      expect(log.error).toHaveBeenCalledWith(error);
+      expect(axios.get).toHaveBeenCalledTimes(1);
+      expect(events.length).toBe(1);
+      expect(events[0].detail).toEqual({
+        type: InvalidateTokenType,
+        payload: {
+          severity: 'error',
+          message: 'Your session has expired, please reload the page',
+        },
+      });
+    });
+
+    it('should handle 401 by broadcasting an invalidate token message with autologin being false', async () => {
+      localStorageGetItemMock.mockImplementation((name) => {
+        return name === 'autoLogin' ? 'false' : null;
+      });
+
+      const error = {
+        message: 'Test error message',
+        response: {
+          status: 401,
+        },
+      };
+      axios.get = jest.fn().mockRejectedValue(error);
+
+      const { result, waitFor } = renderHook(() => useCheckUser('user 1'), {
+        wrapper: createReactQueryWrapper(),
+      });
+      expect(result.current.isIdle).toBe(true);
+      act(() => {
+        result.current.refetch();
+      });
+      await waitFor(() => expect(result.current.isError).toBe(true));
+
+      expect(log.error).toHaveBeenCalledWith(error);
+      expect(axios.get).toHaveBeenCalledTimes(1);
+      expect(events.length).toBe(1);
+      expect(events[0].detail).toEqual({
+        type: InvalidateTokenType,
+        payload: {
+          severity: 'error',
+          message: 'Your session has expired, please login again',
+        },
+      });
+    });
+
+    it('should not retry 404 errors', async () => {
+      const error = {
+        message: 'Test error message',
+        response: {
+          status: 404,
+        },
+      };
+      axios.get = jest.fn().mockRejectedValue(error);
+
+      const { result, waitFor } = renderHook(() => useCheckUser('user 1'), {
+        wrapper: createReactQueryWrapper(),
+      });
+      expect(result.current.isIdle).toBe(true);
+      act(() => {
+        result.current.refetch();
+      });
+      await waitFor(() => expect(result.current.isError).toBe(true));
+
+      expect(log.error).toHaveBeenCalledWith(error);
+      expect(axios.get).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not retry 422 errors', async () => {
+      const error = {
+        message: 'Test error message',
+        response: {
+          status: 422,
+        },
+      };
+      axios.get = jest.fn().mockRejectedValue(error);
+
+      const { result, waitFor } = renderHook(() => useCheckUser('user 1'), {
+        wrapper: createReactQueryWrapper(),
+      });
+      expect(result.current.isIdle).toBe(true);
+      act(() => {
+        result.current.refetch();
+      });
+      await waitFor(() => expect(result.current.isError).toBe(true));
+
+      expect(log.error).toHaveBeenCalledWith(error);
+      expect(axios.get).toHaveBeenCalledTimes(1);
+    });
+
+    it('should retry other errors', async () => {
+      const error = {
+        message: 'Test error message',
+        response: {
+          status: 400,
+        },
+      };
+      axios.get = jest.fn().mockRejectedValue(error);
+
+      const { result, waitFor } = renderHook(() => useCheckUser('user 1'), {
+        wrapper: createReactQueryWrapper(),
+      });
+      expect(result.current.isIdle).toBe(true);
+      act(() => {
+        result.current.refetch();
+      });
+      await waitFor(() => expect(result.current.isError).toBe(true));
+
+      expect(log.error).toHaveBeenCalledWith(error);
+      expect(axios.get).toHaveBeenCalledTimes(4);
     });
   });
 });

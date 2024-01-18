@@ -7,9 +7,10 @@ import {
 import React, { Component } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom';
 
 import ConfigProvider from './ConfigProvider';
+import DOIGenerationForm from './DOIGenerationForm/DOIGenerationForm.component';
 import AdminDownloadStatusTable from './downloadStatus/adminDownloadStatusTable.component';
 
 import DownloadTabs from './downloadTab/downloadTab.component';
@@ -86,10 +87,19 @@ class App extends Component<unknown, { hasError: boolean }> {
               >
                 <Router>
                   <Switch>
-                    <Route path="/admin/download">
+                    {/* development redirect route so people don't get confused by blank screen */}
+                    <Route
+                      exact
+                      path="/"
+                      render={() => <Link to="/download">Downloads</Link>}
+                    />
+                    <Route exact path="/admin/download">
                       <AdminDownloadStatusTable />
                     </Route>
-                    <Route path="/download">
+                    <Route exact path="/download/mint">
+                      <DOIGenerationForm />
+                    </Route>
+                    <Route exact path="/download">
                       <DownloadTabs />
                     </Route>
                   </Switch>

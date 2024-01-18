@@ -9,6 +9,7 @@ import {
   Link,
   Paper,
   Theme,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import {
@@ -29,6 +30,7 @@ import { DownloadSettingsContext } from '../ConfigProvider';
 import {
   useCart,
   useDatafileCounts,
+  useIsCartMintable,
   useIsTwoLevel,
   useRemoveAllFromCart,
   useRemoveEntityFromCart,
@@ -50,9 +52,14 @@ interface DownloadCartTableProps {
 const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   props: DownloadCartTableProps
 ) => {
-  const { fileCountMax, totalSizeMax, apiUrl, facilityName } = React.useContext(
-    DownloadSettingsContext
-  );
+  const {
+    fileCountMax,
+    totalSizeMax,
+    apiUrl,
+    facilityName,
+    doiMinterUrl,
+    dataCiteUrl,
+  } = React.useContext(DownloadSettingsContext);
 
   const [sort, setSort] = React.useState<{ [column: string]: Order }>({});
   const [filters, setFilters] = React.useState<{
@@ -66,6 +73,11 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   const { mutate: removeAllDownloadCartItems, isLoading: removingAll } =
     useRemoveAllFromCart();
   const { data: cartItems, isFetching: isFetchingCart } = useCart();
+  const {
+    data: mintable,
+    isLoading: cartMintabilityLoading,
+    error: mintableError,
+  } = useIsCartMintable(cartItems);
 
   const fileCountQueries = useDatafileCounts(cartItems);
   const sizeQueries = useSizes(cartItems);
@@ -167,6 +179,32 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
 
     return filteredData?.sort(sortCartItems);
   }, [cartItems, sort, filters, sizeQueries, fileCountQueries]);
+
+  const unmintableEntityIDs: number[] | null | undefined = React.useMemo(
+    () =>
+      mintableError?.response?.status === 403 &&
+      typeof mintableError?.response?.data?.detail === 'string' &&
+      JSON.parse(
+        mintableError.response.data.detail.substring(
+          mintableError.response.data.detail.indexOf('['),
+          mintableError.response.data.detail.lastIndexOf(']') + 1
+        )
+      ),
+    [mintableError]
+  );
+
+  const unmintableRowIDs = React.useMemo(() => {
+    if (unmintableEntityIDs && sortedAndFilteredData) {
+      return unmintableEntityIDs.map((id) =>
+        sortedAndFilteredData.findIndex((entity) => entity.entityId === id)
+      );
+    } else {
+      return [];
+    }
+  }, [unmintableEntityIDs, sortedAndFilteredData]);
+
+  const [generateDOIButtonHover, setGenerateDOIButtonHover] =
+    React.useState(false);
 
   const columns: ColumnType[] = React.useMemo(
     () => [
@@ -384,6 +422,20 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                   }${isLoading ? ' - 4px' : ''} - (1.75 * 0.875rem + 12px))`,
                   minHeight: 230,
                   overflowX: 'auto',
+                  // handle the highlight of unmintable entities
+                  ...(generateDOIButtonHover && {
+                    '& [role="rowgroup"] [role="row"]': Object.assign(
+                      {},
+                      ...unmintableRowIDs.map((id) => ({
+                        [`&:nth-of-type(${id + 1})`]: {
+                          bgcolor: 'error.main',
+                          '& [role="gridcell"] *': {
+                            color: 'error.contrastText',
+                          },
+                        },
+                      }))
+                    ),
+                  }),
                 }}
               >
                 <Table
@@ -536,8 +588,8 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                   <Button
                     className="tour-download-remove-button"
                     id="removeAllButton"
-                    variant="contained"
-                    color="primary"
+                    variant="outlined"
+                    color="secondary"
                     disabled={removingAll}
                     startIcon={removingAll && <CircularProgress size={20} />}
                     onClick={() => removeAllDownloadCartItems()}
@@ -545,6 +597,39 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                     {t('downloadCart.remove_all')}
                   </Button>
                 </Grid>
+                {doiMinterUrl && dataCiteUrl && (
+                  <Grid item>
+                    <Tooltip
+                      title={
+                        cartMintabilityLoading
+                          ? t('downloadCart.mintability_loading')
+                          : !mintable
+                          ? t('downloadCart.not_mintable')
+                          : ''
+                      }
+                      onMouseEnter={() => setGenerateDOIButtonHover(true)}
+                      onMouseLeave={() => setGenerateDOIButtonHover(false)}
+                    >
+                      {/* need this span so the tooltip works when the button is disabled */}
+                      <span>
+                        <Button
+                          className="tour-download-mint-button"
+                          id="generateDOIButton"
+                          variant="contained"
+                          color="primary"
+                          disabled={cartMintabilityLoading || !mintable}
+                          component={RouterLink}
+                          to={{
+                            pathname: '/download/mint',
+                            state: { fromCart: true },
+                          }}
+                        >
+                          {t('downloadCart.generate_DOI')}
+                        </Button>
+                      </span>
+                    </Tooltip>
+                  </Grid>
+                )}
                 <Grid item>
                   <Button
                     className="tour-download-download-button"

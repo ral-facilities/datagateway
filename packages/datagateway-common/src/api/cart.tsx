@@ -100,7 +100,7 @@ export const useAddToCart = (
       },
       retry: (failureCount, error) => {
         // if we get 431 we know this is an intermittent error so retry
-        if (error.code === '431' && failureCount < 3) {
+        if (error.response?.status === 431 && failureCount < 3) {
           return true;
         } else {
           return false;
@@ -141,7 +141,7 @@ export const useRemoveFromCart = (
       },
       retry: (failureCount, error) => {
         // if we get 431 we know this is an intermittent error so retry
-        if (error.code === '431' && failureCount < 3) {
+        if (error.response?.status === 431 && failureCount < 3) {
           return true;
         } else {
           return false;
