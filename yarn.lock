@@ -82,17 +82,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/eslint-parser@npm:7.22.5, @babel/eslint-parser@npm:^7.16.3":
-  version: 7.22.5
-  resolution: "@babel/eslint-parser@npm:7.22.5"
+"@babel/eslint-parser@npm:7.23.3, @babel/eslint-parser@npm:^7.16.3":
+  version: 7.23.3
+  resolution: "@babel/eslint-parser@npm:7.23.3"
   dependencies:
     "@nicolo-ribaudo/eslint-scope-5-internals": 5.1.1-v1
     eslint-visitor-keys: ^2.1.0
-    semver: ^6.3.0
+    semver: ^6.3.1
   peerDependencies:
-    "@babel/core": ">=7.11.0"
+    "@babel/core": ^7.11.0
     eslint: ^7.5.0 || ^8.0.0
-  checksum: d259a5c6bb11d2b99316a1aafb85be56fd290e2b7076b386a026cd0f8db4b27c0bf0c733bfa2006bb88d38abef323fc2c1352a3521e6e9865f8b205fef6ac845
+  checksum: 9573daebe21af5123c302c307be80cacf1c2bf236a9497068a14726d3944ef55e1282519d0ccf51882dfc369359a3442299c98cb22a419e209924db39d4030fd
   languageName: node
   linkType: hard
 
@@ -6392,7 +6392,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "datagateway-common@workspace:packages/datagateway-common"
   dependencies:
-    "@babel/eslint-parser": 7.22.5
+    "@babel/eslint-parser": 7.23.3
     "@date-io/date-fns": 2.17.0
     "@emotion/react": 11.11.1
     "@emotion/styled": 11.11.0
@@ -6457,7 +6457,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "datagateway-dataview@workspace:packages/datagateway-dataview"
   dependencies:
-    "@babel/eslint-parser": 7.22.5
+    "@babel/eslint-parser": 7.23.3
     "@craco/craco": 7.1.0
     "@emotion/react": 11.11.1
     "@emotion/styled": 11.11.0
@@ -6535,7 +6535,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "datagateway-download@workspace:packages/datagateway-download"
   dependencies:
-    "@babel/eslint-parser": 7.22.5
+    "@babel/eslint-parser": 7.23.3
     "@craco/craco": 7.1.0
     "@emotion/react": 11.11.1
     "@emotion/styled": 11.11.0
@@ -6599,7 +6599,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "datagateway-search@workspace:packages/datagateway-search"
   dependencies:
-    "@babel/eslint-parser": 7.22.5
+    "@babel/eslint-parser": 7.23.3
     "@craco/craco": 7.1.0
     "@date-io/date-fns": 2.17.0
     "@emotion/react": 11.11.1
@@ -14577,7 +14577,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^6.0.0, semver@npm:^6.1.1, semver@npm:^6.1.2, semver@npm:^6.3.0":
+"semver@npm:^6.0.0, semver@npm:^6.1.1, semver@npm:^6.1.2, semver@npm:^6.3.0, semver@npm:^6.3.1":
   version: 6.3.1
   resolution: "semver@npm:6.3.1"
   bin:
