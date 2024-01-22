@@ -24,6 +24,7 @@ import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { IndexRange } from 'react-virtualized';
 import type { StateType } from '../../state/app.types';
+// import { formatISO9075, toDate, parse } from 'date-fns';
 
 interface DatafileTableProps {
   datasetId: string;
@@ -114,6 +115,55 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
 
     return [];
   }, [data]);
+
+  // Convert the dates to 'YYYY-MM-DD hh:mm:ss' iso format
+  React.useEffect(() => {
+    aggregatedData.forEach((datafile) => {
+      if (datafile.createTime) {
+        datafile.createTime = new Date(datafile.createTime)
+          .toISOString()
+          .replace('T', ' ')
+          .split(/[.+]/)[0];
+      }
+      if (datafile.modTime) {
+        datafile.modTime = new Date(datafile.modTime)
+          .toISOString()
+          .replace('T', ' ')
+          .split(/[.+]/)[0];
+      }
+    });
+  }, [aggregatedData]);
+
+  // React.useEffect(() => {
+  //   // console.log(formatISO9075(new Date('2021-04-11 00:30:00.879000+01:00')));
+  //   // console.log(new Date('2021-04-11 00:30:00.879000+01:00'));
+  //   // console.log(new Date('2019-12-06 08:30:00+00:00'));
+  //   // console.log(toDate(new Date('2021-04-11 00:30:00.879000+01:00')));
+
+  //   // console.log(
+  //   //   new Date('2021-04-11 00:30:00.879000+01:00') ===
+  //   //     toDate(new Date('2021-04-11 00:30:00.879000+01:00'))
+  //   // );
+
+  //   console.log(
+  //     parse(
+  //       '2021-04-11 00:30:00.879000+01:00',
+  //       'yyyy-MM-dd HH:mm:ss.SSSSSSXXX',
+  //       new Date()
+  //     )
+  //   );
+  //   console.log(new Date('2021-04-11 00:30:00.879000+01:00'));
+
+  //   // const d = new Date('2021-04-11 00:30:00.879000+01:00');
+  //   const d = parse(
+  //     '2021-04-11 00:30:00.879000+01:00',
+  //     'yyyy-MM-dd HH:mm:ss.SSSSSSXXX',
+  //     new Date()
+  //   );
+  //   const utcDate = d.toISOString().replace('T', ' ').split(/[.+]/)[0];
+  //   console.log(utcDate);
+  //   // convert d to UTC
+  // }, []);
 
   const columns: ColumnType[] = React.useMemo(
     () => [
