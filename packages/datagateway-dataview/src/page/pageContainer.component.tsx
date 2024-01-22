@@ -449,6 +449,10 @@ const ViewRouting = React.memo(
       !matchPath(location.pathname, {
         path: Object.values(paths.preview),
         exact: true,
+      }) &&
+      !matchPath(location.pathname, {
+        path: paths.landing.dlsDataPublicationLanding + '/edit',
+        exact: true,
       });
 
     return (

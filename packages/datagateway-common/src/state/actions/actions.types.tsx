@@ -277,6 +277,8 @@ export interface URLs {
   apiUrl: string;
   downloadApiUrl: string;
   icatUrl: string;
+  doiMinterUrl?: string;
+  dataCiteUrl?: string;
 }
 
 export interface PluginRoute {

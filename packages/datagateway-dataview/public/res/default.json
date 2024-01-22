@@ -340,5 +340,46 @@
       "title": "ISIS Neutron and Muon Source",
       "body": "This is a page describing data taken during an experiment at the ISIS Neutron and Muon Source. Information about the ISIS Neutron and Muon Source can be found at <a href='https://www.isis.stfc.ac.uk'>https://www.isis.stfc.ac.uk</a>."
     }
+  },
+  "DOIGenerationForm": {
+    "page_header": "Generate DOI",
+    "data_header": "Data",
+    "form_header": "Details",
+    "title": "DOI Title",
+    "description": "DOI Description",
+    "creators": "Creators & Contributors",
+    "username": "Username",
+    "add_creator": "Add Creator",
+    "add_contributor": "Add Contributor",
+    "creator_name": "Name",
+    "creator_affiliation": "Affiliation",
+    "creator_email": "Email",
+    "creator_type": "Contributor Type",
+    "creator_action": "Action",
+    "delete_creator": "Delete",
+    "related_dois": "Related DOIs",
+    "related_doi": "DOI",
+    "add_related_doi": "Add DOI",
+    "related_doi_doi": "DOI",
+    "related_doi_relationship": "Relationship",
+    "related_doi_resource_type": "Resource Type",
+    "related_doi_action": "Action",
+    "delete_related_doi": "Delete",
+    "generate_DOI": "Generate DOI",
+    "cart_tabs_aria_label": "cart tabs",
+    "cart_tab_investigations": "Investigations",
+    "cart_tab_datasets": "Datasets",
+    "cart_tab_datafiles": "Datafiles",
+    "cart_table_name": "Name"
+  },
+  "DOIConfirmDialog": {
+    "dialog_title": "Mint Confirmation",
+    "mint_success": "Mint was successful",
+    "mint_error": "Mint was unsuccessful",
+    "mint_loading": "Loading...",
+    "concept_doi_label": "Concept DOI",
+    "version_doi_label": "Version DOI",
+    "error_label": "Error",
+    "view_data_publication": "View Data Publication"
   }
 }

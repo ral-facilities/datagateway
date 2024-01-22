@@ -2,6 +2,7 @@ import {
   Box,
   Divider,
   Grid,
+  IconButton,
   Paper,
   styled,
   Tab,
@@ -14,6 +15,9 @@ import { useTranslation } from 'react-i18next';
 import Branding from './dlsBranding.component';
 import CitationFormatter from '../../citationFormatter.component';
 import DLSDataPublicationContentTable from './dlsDataPublicationContentTable.component';
+import DLSDataPublicationVersionPanel from './dlsDataPublicationVersionPanel.component';
+import { Edit } from '@mui/icons-material';
+import { useHistory } from 'react-router-dom';
 
 const Subheading = styled(Typography)(({ theme }) => ({
   marginTop: theme.spacing(1),
@@ -49,7 +53,7 @@ const StyledDOISpan = styled('span')({
   },
 });
 
-const StyledDOI: React.FC<{ doi: string }> = ({ doi }) => (
+export const StyledDOI: React.FC<{ doi: string }> = ({ doi }) => (
   <StyledDOILink
     href={`https://doi.org/${doi}`}
     data-testid="landing-dataPublication-pid-link"
@@ -95,6 +99,8 @@ TabPanel.displayName = 'TabPanel';
 
 const LandingPage = (props: LandingPageProps): React.ReactElement => {
   const [t] = useTranslation();
+
+  const history = useHistory();
 
   const [value, setValue] = React.useState<'details'>('details');
   const { dataPublicationId } = props;
@@ -253,6 +259,17 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 label={t('datapublications.content_tab_label')}
                 value="content"
               />
+              <IconButton
+                sx={{ ml: 'auto' }}
+                onClick={() =>
+                  history.push({
+                    pathname: `${dataPublicationId}/edit`,
+                    state: { fromEdit: true },
+                  })
+                }
+              >
+                <Edit />
+              </IconButton>
             </Tabs>
             <Divider />
           </Paper>
@@ -331,6 +348,11 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                     </Grid>
                   )
               )}
+              <Grid container item spacing={1} direction={'column'}>
+                <DLSDataPublicationVersionPanel
+                  dataPublicationId={dataPublicationId}
+                />
+              </Grid>
             </Grid>
           </Grid>
         </TabPanel>

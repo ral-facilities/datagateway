@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Grid,
   Paper,
   Tab,
@@ -10,23 +9,29 @@ import {
   TableHead,
   TableRow,
   Tabs,
-  TextField,
   Typography,
 } from '@mui/material';
-import { readSciGatewayToken } from 'datagateway-common';
+import {
+  ContributorType,
+  ContributorUser,
+  DOIMetadataForm,
+  DOIConfirmDialog,
+  readSciGatewayToken,
+  RelatedDOI,
+} from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Redirect, useLocation } from 'react-router-dom';
-import { ContributorType, type RelatedDOI } from '../downloadApi';
+import { DownloadSettingsContext } from '../ConfigProvider';
 import { useCart, useCartUsers, useMintCart } from '../downloadApiHooks';
 import AcceptDataPolicy from './acceptDataPolicy.component';
-import CreatorsAndContributors, {
-  ContributorUser,
-} from './creatorsAndContributors.component';
-import DOIConfirmDialog from './DOIConfirmDialog.component';
-import RelatedDOIs from './relatedDOIs.component';
 
-const DOIGenerationForm: React.FC = () => {
+interface DOIGenerationFormProps {
+  // if we provide an existing data publication, it means we're editing instead of creating
+  dataPublicationId?: string;
+}
+
+const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
   const [acceptedDataPolicy, setAcceptedDataPolicy] = React.useState(false);
   const [selectedUsers, setSelectedUsers] = React.useState<ContributorUser[]>(
     []
@@ -38,6 +43,25 @@ const DOIGenerationForm: React.FC = () => {
     'investigation' | 'dataset' | 'datafile'
   >('investigation');
   const [showMintConfirmation, setShowMintConfirmation] = React.useState(false);
+
+  const { doiMinterUrl, dataCiteUrl } = React.useContext(
+    DownloadSettingsContext
+  );
+
+  // const { data: dataPublications } = useDataPublication(
+  //   parseInt(props.dataPublicationId ?? '0'),
+  //   typeof props.dataPublicationId === 'undefined'
+  // );
+  // const dataPublication = dataPublications?.[0];
+
+  // React.useEffect(() => {
+  //   if (dataPublication) {
+  //     setTitle(dataPublication.title);
+  //     setDescription(dataPublication.description ?? '');
+  //     setRelatedDOIs();
+  //     setSelectedUsers();
+  //   }
+  // }, [dataPublication]);
 
   const handleTabChange = (
     event: React.SyntheticEvent,
@@ -80,8 +104,11 @@ const DOIGenerationForm: React.FC = () => {
 
   const [t] = useTranslation();
 
-  // redirect if the user tries to access the link directly instead of from the cart
-  if (!location.state?.fromCart) {
+  // redirect if the user tries to access the link directly instead of from the cart/edit button
+  if (
+    typeof props.dataPublicationId === 'undefined' &&
+    !location.state?.fromCart
+  ) {
     return <Redirect to="/download" />;
   }
 
@@ -183,98 +210,50 @@ const DOIGenerationForm: React.FC = () => {
                     </Table>
                   </Grid>
                 </Grid>
-                <Grid container item direction="column" xs spacing={1} lg={7}>
-                  <Grid item>
-                    <Typography variant="h6" component="h3">
-                      {t('DOIGenerationForm.form_header')}
-                    </Typography>
-                  </Grid>
-                  <Grid item>
-                    <TextField
-                      label={t('DOIGenerationForm.title')}
-                      required
-                      fullWidth
-                      color="secondary"
-                      value={title}
-                      onChange={(event) => setTitle(event.target.value)}
-                    />
-                  </Grid>
-                  <Grid item>
-                    <TextField
-                      label={t('DOIGenerationForm.description')}
-                      required
-                      multiline
-                      rows={4}
-                      fullWidth
-                      color="secondary"
-                      value={description}
-                      onChange={(event) => setDescription(event.target.value)}
-                    />
-                  </Grid>
-                  <Grid item>
-                    <RelatedDOIs
-                      relatedDOIs={relatedDOIs}
-                      changeRelatedDOIs={setRelatedDOIs}
-                    />
-                  </Grid>
-                  <Grid item>
-                    <CreatorsAndContributors
-                      selectedUsers={selectedUsers}
-                      changeSelectedUsers={setSelectedUsers}
-                    />
-                  </Grid>
-                  <Grid item alignSelf="flex-end">
-                    <Button
-                      variant="contained"
-                      disabled={
-                        title.length === 0 ||
-                        description.length === 0 ||
-                        selectedUsers.length === 0 ||
-                        typeof cart === 'undefined' ||
-                        cart.length === 0 ||
-                        selectedUsers.some(
-                          (user) => user.contributor_type === ''
-                        ) ||
-                        relatedDOIs.some(
-                          (relatedDOI) =>
-                            relatedDOI.relationType === '' ||
-                            relatedDOI.resourceType === ''
+                <DOIMetadataForm
+                  xs
+                  lg={7}
+                  dataCiteUrl={dataCiteUrl}
+                  doiMinterUrl={doiMinterUrl}
+                  title={title}
+                  setTitle={setTitle}
+                  description={description}
+                  setDescription={setDescription}
+                  selectedUsers={selectedUsers}
+                  setSelectedUsers={setSelectedUsers}
+                  relatedDOIs={relatedDOIs}
+                  setRelatedDOIs={setRelatedDOIs}
+                  disableMintButton={
+                    typeof cart === 'undefined' || cart.length === 0
+                  }
+                  onMintClick={() => {
+                    if (cart) {
+                      setShowMintConfirmation(true);
+                      const creatorsList = selectedUsers
+                        .filter(
+                          (user) =>
+                            // the user requesting the mint is added automatically
+                            // by the backend, so don't pass them to the backend
+                            user.name !== readSciGatewayToken().username
                         )
-                      }
-                      onClick={() => {
-                        if (cart) {
-                          setShowMintConfirmation(true);
-                          const creatorsList = selectedUsers
-                            .filter(
-                              (user) =>
-                                // the user requesting the mint is added automatically
-                                // by the backend, so don't pass them to the backend
-                                user.name !== readSciGatewayToken().username
-                            )
-                            .map((user) => ({
-                              username: user.name,
-                              contributor_type:
-                                user.contributor_type as ContributorType, // we check this is true in the disabled field above
-                            }));
-                          mintCart({
-                            cart,
-                            doiMetadata: {
-                              title,
-                              description,
-                              creators:
-                                creatorsList.length > 0
-                                  ? creatorsList
-                                  : undefined,
-                              related_items: relatedDOIs,
-                            },
-                          });
-                        }
-                      }}
-                    >
-                      {t('DOIGenerationForm.generate_DOI')}
-                    </Button>
-                  </Grid>
-                </Grid>
+                        .map((user) => ({
+                          username: user.name,
+                          contributor_type:
+                            user.contributor_type as ContributorType, // we check this is true in the disabled field above
+                        }));
+                      mintCart({
+                        cart,
+                        doiMetadata: {
+                          title,
+                          description,
+                          creators:
+                            creatorsList.length > 0 ? creatorsList : undefined,
+                          related_items: relatedDOIs,
+                        },
+                      });
+                    }
+                  }}
+                />
               </Grid>
             </Paper>
           </Box>

@@ -1,5 +1,7 @@
 import { AxiosError } from 'axios';
 import {
+  DoiMetadata,
+  DoiResponse,
   Download,
   DownloadStatus,
   InvalidateTokenType,
@@ -32,16 +34,11 @@ import {
 } from 'react-query';
 import { DownloadSettingsContext } from './ConfigProvider';
 import {
-  checkUser,
-  DoiMetadata,
-  DoiResponse,
   DownloadProgress,
   DownloadTypeStatus,
-  fetchDOI,
   getCartUsers,
   isCartMintable,
   mintCart,
-  RelatedDOI,
   SubmitCartZipType,
 } from './downloadApi';
 import {
@@ -903,91 +900,4 @@ export const useCartUsers = (
       staleTime: Infinity,
     }
   );
-};
-
-/**
- * Checks whether a username belongs to an ICAT User
- * @param username The username that we're checking
- * @returns the {@link User} that matches the username, or 404
- */
-export const useCheckUser = (
-  username: string
-): UseQueryResult<User, AxiosError> => {
-  const settings = React.useContext(DownloadSettingsContext);
-
-  return useQuery(
-    ['checkUser', username],
-    () => checkUser(username, settings),
-    {
-      onError: (error) => {
-        log.error(error);
-        if (error.response?.status === 401) {
-          document.dispatchEvent(
-            new CustomEvent(MicroFrontendId, {
-              detail: {
-                type: InvalidateTokenType,
-                payload: {
-                  severity: 'error',
-                  message:
-                    localStorage.getItem('autoLogin') === 'true'
-                      ? 'Your session has expired, please reload the page'
-                      : 'Your session has expired, please login again',
-                },
-              },
-            })
-          );
-        }
-      },
-      retry: (failureCount: number, error: AxiosError) => {
-        if (
-          // user not logged in, error code will log them out
-          error.response?.status === 401 ||
-          // email doesn't match user - don't retry as this is a correct response from the server
-          error.response?.status === 404 ||
-          // email is invalid - don't retry as this is correct response from the server
-          error.response?.status === 422 ||
-          failureCount >= 3
-        )
-          return false;
-        return true;
-      },
-      // set enabled false to only fetch on demand when the add creator button is pressed
-      enabled: false,
-      cacheTime: 0,
-    }
-  );
-};
-
-/**
- * Checks whether a DOI is valid and returns the DOI metadata
- * @param doi The DOI that we're checking
- * @returns the {@link RelatedDOI} that matches the username, or 404
- */
-export const useCheckDOI = (
-  doi: string
-): UseQueryResult<RelatedDOI, AxiosError> => {
-  const settings = React.useContext(DownloadSettingsContext);
-
-  return useQuery(['checkDOI', doi], () => fetchDOI(doi, settings), {
-    retry: (failureCount: number, error: AxiosError) => {
-      if (
-        // DOI is invalid - don't retry as this is a correct response from the server
-        error.response?.status === 404 ||
-        failureCount >= 3
-      )
-        return false;
-      return true;
-    },
-    select: (doi) => ({
-      title: doi.attributes.titles[0].title,
-      relatedIdentifier: doi.attributes.doi,
-      relatedIdentifierType: 'DOI',
-      fullReference: '', // TODO: what should we put here?
-      relationType: '',
-      resourceType: '',
-    }),
-    // set enabled false to only fetch on demand when the add creator button is pressed
-    enabled: false,
-    cacheTime: 0,
-  });
 };

@@ -176,7 +176,6 @@ export const useDataPublication = (
         {
           filterType: 'include',
           filterValue: JSON.stringify([
-            'users',
             'type',
             {
               content: {
@@ -185,7 +184,11 @@ export const useDataPublication = (
                     investigationInstruments: 'instrument',
                   },
                 },
+                dataCollectionDatasets: 'dataset',
+                dataCollectionDatafiles: 'datafile',
               },
+              relatedItems: 'publication',
+              users: 'user',
             },
           ]),
         },

@@ -165,6 +165,7 @@ export interface DataPublicationUser {
   id: number;
   contributorType: string;
   fullName: string;
+  user?: User;
 }
 
 export interface DataPublicationType {
@@ -183,6 +184,17 @@ export interface DataPublication {
   users?: DataPublicationUser[];
   content?: DataCollection;
   type?: DataPublicationType;
+  relatedItems?: RelatedItem[];
+}
+
+export interface RelatedItem {
+  id: number;
+  identifier: string;
+  relationType: DOIRelationType;
+  fullReference?: string;
+  relatedItemType?: DOIResourceType;
+  title?: string;
+  publication?: DataPublication;
 }
 
 interface InstrumentScientist {
@@ -371,4 +383,123 @@ export interface QueryParams {
   startDate: Date | null;
   endDate: Date | null;
   currentTab: string;
+}
+
+export enum ContributorType {
+  Minter = 'Minter',
+  Creator = 'Creator',
+  ContactPerson = 'ContactPerson',
+  DataCollector = 'DataCollector',
+  DataCurator = 'DataCurator',
+  DataManager = 'DataManager',
+  Distributor = 'Distributor',
+  Editor = 'Editor',
+  HostingInstitution = 'HostingInstitution',
+  Producer = 'Producer',
+  ProjectLeader = 'ProjectLeader',
+  ProjectManager = 'ProjectManager',
+  ProjectMember = 'ProjectMember',
+  RegistrationAgency = 'RegistrationAgency',
+  RelatedPerson = 'RelatedPerson',
+  Researcher = 'Researcher',
+  ResearchGroup = 'ResearchGroup',
+  RightsHolder = 'RightsHolder',
+  Sponsor = 'Sponsor',
+  Supervisor = 'Supervisor',
+  WorkPackageLeader = 'WorkPackageLeader',
+  Other = 'Other',
+}
+
+export enum DOIRelationType {
+  IsCitedBy = 'IsCitedBy',
+  Cites = 'Cites',
+  IsSupplementTo = 'IsSupplementTo',
+  IsSupplementedBy = 'IsSupplementedBy',
+  IsContinuedBy = 'IsContinuedBy',
+  Continues = 'Continues',
+  IsDescribedBy = 'IsDescribedBy',
+  Describes = 'Describes',
+  HasMetadata = 'HasMetadata',
+  IsMetadataFor = 'IsMetadataFor',
+  HasVersion = 'HasVersion',
+  IsVersionOf = 'IsVersionOf',
+  IsNewVersionOf = 'IsNewVersionOf',
+  IsPreviousVersionOf = 'IsPreviousVersionOf',
+  IsPartOf = 'IsPartOf',
+  HasPart = 'HasPart',
+  IsPublishedIn = 'IsPublishedIn',
+  IsReferencedBy = 'IsReferencedBy',
+  References = 'References',
+  IsDocumentedBy = 'IsDocumentedBy',
+  Documents = 'Documents',
+  IsCompiledBy = 'IsCompiledBy',
+  Compiles = 'Compiles',
+  IsVariantFormOf = 'IsVariantFormOf',
+  IsOriginalFormOf = 'IsOriginalFormOf',
+  IsIdenticalTo = 'IsIdenticalTo',
+  IsReviewedBy = 'IsReviewedBy',
+  Reviews = 'Reviews',
+  IsDerivedFrom = 'IsDerivedFrom',
+  IsSourceOf = 'IsSourceOf',
+  IsRequiredBy = 'IsRequiredBy',
+  Requires = 'Requires',
+  Obsoletes = 'Obsoletes',
+  IsObsoletedBy = 'IsObsoletedBy',
+}
+
+export enum DOIResourceType {
+  Audiovisual = 'Audiovisual',
+  Book = 'Book',
+  BookChapter = 'BookChapter',
+  Collection = 'Collection',
+  ComputationalNotebook = 'ComputationalNotebook',
+  ConferencePaper = 'ConferencePaper',
+  ConferenceProceeding = 'ConferenceProceeding',
+  DataPaper = 'DataPaper',
+  Dataset = 'Dataset',
+  Dissertation = 'Dissertation',
+  Event = 'Event',
+  Image = 'Image',
+  InteractiveResource = 'InteractiveResource',
+  Journal = 'Journal',
+  JournalArticle = 'JournalArticle',
+  Model = 'Model',
+  OutputManagementPlan = 'OutputManagementPlan',
+  PeerReview = 'PeerReview',
+  PhysicalObject = 'PhysicalObject',
+  Preprint = 'Preprint',
+  Report = 'Report',
+  Service = 'Service',
+  Software = 'Software',
+  Sound = 'Sound',
+  Standard = 'Standard',
+  Text = 'Text',
+  Workflow = 'Workflow',
+  Other = 'Other',
+}
+
+export type RelatedDOI = {
+  title: string;
+  fullReference: string;
+  relatedIdentifier: string;
+  relatedIdentifierType: 'DOI';
+  relationType: DOIRelationType | '';
+  resourceType: DOIResourceType | '';
+};
+
+export interface DoiMetadata {
+  title: string;
+  description: string;
+  creators?: { username: string; contributor_type: ContributorType }[];
+  related_items: RelatedDOI[];
+}
+
+export interface DoiResponse {
+  concept: DoiResult;
+  version: DoiResult;
+}
+
+export interface DoiResult {
+  data_publication: string;
+  doi: string;
 }

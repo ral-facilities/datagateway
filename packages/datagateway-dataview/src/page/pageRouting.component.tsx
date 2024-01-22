@@ -58,6 +58,7 @@ import {
 
 import { paths } from './pageContainer.component';
 import type { ViewsType } from 'datagateway-common';
+import DLSDataPublicationEditForm from '../views/landing/dls/dlsDataPublicationEditForm.component';
 
 const SafeDatafileTable = React.memo(
   (props: {
@@ -485,6 +486,16 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           path={paths.landing.dlsDataPublicationLanding}
           render={({ match }) => (
             <DLSDataPublicationLanding
+              dataPublicationId={match.params.dataPublicationId as string}
+            />
+          )}
+        />
+
+        <Route
+          exact
+          path={paths.landing.dlsDataPublicationLanding + '/edit'}
+          render={({ match }) => (
+            <DLSDataPublicationEditForm
               dataPublicationId={match.params.dataPublicationId as string}
             />
           )}
