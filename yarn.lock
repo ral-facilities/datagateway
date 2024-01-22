@@ -3419,10 +3419,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:18.16.18":
-  version: 18.16.18
-  resolution: "@types/node@npm:18.16.18"
-  checksum: d32d8a0a04cd3f5ecb361bcb42f3a07623881ac90d680e06bf626defb3c663a94860d11690babe607cfe67265eceeb8a59ba5fe40c0e49f5a1b01e0088640469
+"@types/node@npm:*, @types/node@npm:18.19.8":
+  version: 18.19.8
+  resolution: "@types/node@npm:18.19.8"
+  dependencies:
+    undici-types: ~5.26.4
+  checksum: fa291495d6157a9d9393b4c3bdbf1ce12a8f661dc9da6a4fa19bcdb19af1c62bb8dbf7fb66ae135f29cd788b618e9845b83e9c47edcf39f0953a8561fdacd9a3
   languageName: node
   linkType: hard
 
@@ -6387,7 +6389,7 @@ __metadata:
     "@testing-library/user-event": 14.5.2
     "@types/jest": 29.5.2
     "@types/lodash.debounce": 4.0.6
-    "@types/node": 18.16.18
+    "@types/node": 18.19.8
     "@types/react": 17.0.39
     "@types/react-router-dom": 5.3.3
     "@types/react-virtualized": 9.21.10
@@ -6454,7 +6456,7 @@ __metadata:
     "@types/jsrsasign": 10.5.2
     "@types/lodash.debounce": 4.0.6
     "@types/lodash.memoize": 4.1.6
-    "@types/node": 18.16.18
+    "@types/node": 18.19.8
     "@types/react": 17.0.39
     "@types/react-dom": 17.0.11
     "@types/react-redux": 7.1.22
@@ -6530,7 +6532,7 @@ __metadata:
     "@types/jest": 29.5.2
     "@types/jsrsasign": 10.5.2
     "@types/lodash.chunk": 4.2.6
-    "@types/node": 18.16.18
+    "@types/node": 18.19.8
     "@types/react": 17.0.39
     "@types/react-dom": 17.0.11
     "@types/react-router-dom": 5.3.3
@@ -6596,7 +6598,7 @@ __metadata:
     "@types/history": 4.7.11
     "@types/jest": 29.5.2
     "@types/jsrsasign": 10.5.2
-    "@types/node": 18.16.18
+    "@types/node": 18.19.8
     "@types/react": 17.0.39
     "@types/react-dom": 17.0.11
     "@types/react-redux": 7.1.22
@@ -15901,6 +15903,13 @@ __metadata:
     has-symbols: ^1.0.3
     which-boxed-primitive: ^1.0.2
   checksum: b7a1cf5862b5e4b5deb091672ffa579aa274f648410009c81cca63fed3b62b610c4f3b773f912ce545bb4e31edc3138975b5bc777fc6e4817dca51affb6380e9
+  languageName: node
+  linkType: hard
+
+"undici-types@npm:~5.26.4":
+  version: 5.26.5
+  resolution: "undici-types@npm:5.26.5"
+  checksum: 3192ef6f3fd5df652f2dc1cd782b49d6ff14dc98e5dced492aa8a8c65425227da5da6aafe22523c67f035a272c599bb89cfe803c1db6311e44bed3042fc25487
   languageName: node
   linkType: hard
 
