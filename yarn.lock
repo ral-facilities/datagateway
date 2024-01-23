@@ -5983,12 +5983,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-fetch@npm:3.1.6":
-  version: 3.1.6
-  resolution: "cross-fetch@npm:3.1.6"
+"cross-fetch@npm:4.0.0":
+  version: 4.0.0
+  resolution: "cross-fetch@npm:4.0.0"
   dependencies:
-    node-fetch: ^2.6.11
-  checksum: 704b3519ab7de488328cc49a52cf1aa14132ec748382be5b9557b22398c33ffa7f8c2530e8a97ed8cb55da52b0a9740a9791d361271c4591910501682d981d9c
+    node-fetch: ^2.6.12
+  checksum: ecca4f37ffa0e8283e7a8a590926b66713a7ef7892757aa36c2d20ffa27b0ac5c60dcf453119c809abe5923fc0bae3702a4d896bfb406ef1077b0d0018213e24
   languageName: node
   linkType: hard
 
@@ -6510,7 +6510,7 @@ __metadata:
     history: 4.10.1
     i18next: 22.0.3
     i18next-browser-languagedetector: 7.2.0
-    i18next-http-backend: 2.2.1
+    i18next-http-backend: 2.4.2
     jest-fail-on-console: 3.1.1
     jsrsasign: 11.0.0
     lint-staged: 13.3.0
@@ -6581,7 +6581,7 @@ __metadata:
     history: 4.10.1
     i18next: 22.0.3
     i18next-browser-languagedetector: 7.2.0
-    i18next-http-backend: 2.2.1
+    i18next-http-backend: 2.4.2
     jest-fail-on-console: 3.1.1
     jsrsasign: 11.0.0
     lint-staged: 13.3.0
@@ -6653,7 +6653,7 @@ __metadata:
     history: 4.10.1
     i18next: 22.0.3
     i18next-browser-languagedetector: 7.2.0
-    i18next-http-backend: 2.2.1
+    i18next-http-backend: 2.4.2
     jest-fail-on-console: 3.1.1
     jsrsasign: 11.0.0
     lint-staged: 13.3.0
@@ -9305,12 +9305,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next-http-backend@npm:2.2.1":
-  version: 2.2.1
-  resolution: "i18next-http-backend@npm:2.2.1"
+"i18next-http-backend@npm:2.4.2":
+  version: 2.4.2
+  resolution: "i18next-http-backend@npm:2.4.2"
   dependencies:
-    cross-fetch: 3.1.6
-  checksum: a3f33b455555587ac1a5db94119bd944dca1ce7b685161d487dd0bd50342f4ed060dd263bf1adacd14cb0c0a58f695befb9a22ea1eb87f19be98ef7bbac91349
+    cross-fetch: 4.0.0
+  checksum: 90b71a024691988ae98781cfa9a6e1c25ee63b0206027939df85c55f46b91c41faaacea6f8a9f868a484bea9ee85377e1aae21a889b2dd970af9ac825120579c
   languageName: node
   linkType: hard
 
@@ -11745,9 +11745,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:^2.6.11":
-  version: 2.6.12
-  resolution: "node-fetch@npm:2.6.12"
+"node-fetch@npm:^2.6.12":
+  version: 2.7.0
+  resolution: "node-fetch@npm:2.7.0"
   dependencies:
     whatwg-url: ^5.0.0
   peerDependencies:
@@ -11755,7 +11755,7 @@ __metadata:
   peerDependenciesMeta:
     encoding:
       optional: true
-  checksum: 3bc1655203d47ee8e313c0d96664b9673a3d4dd8002740318e9d27d14ef306693a4b2ef8d6525775056fd912a19e23f3ac0d7111ad8925877b7567b29a625592
+  checksum: d76d2f5edb451a3f05b15115ec89fc6be39de37c6089f1b6368df03b91e1633fd379a7e01b7ab05089a25034b2023d959b47e59759cb38d88341b2459e89d6e5
   languageName: node
   linkType: hard
 
