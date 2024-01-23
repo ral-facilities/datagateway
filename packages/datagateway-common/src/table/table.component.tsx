@@ -163,6 +163,19 @@ const VirtualizedTable = React.memo(
       disableSelectAll,
     } = props;
 
+    React.useEffect(() => {
+      data.forEach((entity) => {
+        ['createTime', 'modTime', 'startDate', 'endDate'].forEach((key) => {
+          if (entity[key]) {
+            entity[key] = new Date(entity[key])
+              .toISOString()
+              .replace('T', ' ')
+              .split(/[.+]/)[0];
+          }
+        });
+      });
+    }, [data]);
+
     const [shiftDown, setShiftDown] = React.useState(false);
     // add event listener to listen for shift key being pressed
     React.useEffect(() => {

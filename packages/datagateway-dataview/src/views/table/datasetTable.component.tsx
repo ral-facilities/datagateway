@@ -109,24 +109,6 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
     return [];
   }, [data]);
 
-  // Convert the dates to 'YYYY-MM-DD hh:mm:ss' iso format
-  React.useEffect(() => {
-    aggregatedData.forEach((datafile) => {
-      if (datafile.createTime) {
-        datafile.createTime = new Date(datafile.createTime)
-          .toISOString()
-          .replace('T', ' ')
-          .split(/[.+]/)[0];
-      }
-      if (datafile.modTime) {
-        datafile.modTime = new Date(datafile.modTime)
-          .toISOString()
-          .replace('T', ' ')
-          .split(/[.+]/)[0];
-      }
-    });
-  }, [aggregatedData]);
-
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
