@@ -163,10 +163,12 @@ const VirtualizedTable = React.memo(
       disableSelectAll,
     } = props;
 
+    // Format dates to be more readable
+    // Format only if the date has a time component
     React.useEffect(() => {
       data.forEach((entity) => {
         ['createTime', 'modTime', 'startDate', 'endDate'].forEach((key) => {
-          if (entity[key]) {
+          if (entity[key] && entity[key].length > 10) {
             entity[key] = new Date(entity[key])
               .toISOString()
               .replace('T', ' ')
