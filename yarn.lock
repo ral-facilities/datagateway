@@ -3419,12 +3419,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:18.19.8":
-  version: 18.19.8
-  resolution: "@types/node@npm:18.19.8"
+"@types/node@npm:*, @types/node@npm:20.11.5":
+  version: 20.11.5
+  resolution: "@types/node@npm:20.11.5"
   dependencies:
     undici-types: ~5.26.4
-  checksum: fa291495d6157a9d9393b4c3bdbf1ce12a8f661dc9da6a4fa19bcdb19af1c62bb8dbf7fb66ae135f29cd788b618e9845b83e9c47edcf39f0953a8561fdacd9a3
+  checksum: a542727de1334ae20a3ca034b0ecf4b464a57ca01efc4f9cf43bd9ab93896125ab3c2de060ecd8f6ae23b86c6bf3463f681b643e69c032c6a662d376c98a6092
   languageName: node
   linkType: hard
 
@@ -6414,7 +6414,7 @@ __metadata:
     "@testing-library/user-event": 14.5.2
     "@types/jest": 29.5.2
     "@types/lodash.debounce": 4.0.6
-    "@types/node": 18.19.8
+    "@types/node": 20.11.5
     "@types/react": 17.0.39
     "@types/react-router-dom": 5.3.3
     "@types/react-virtualized": 9.21.10
@@ -6481,7 +6481,7 @@ __metadata:
     "@types/jsrsasign": 10.5.2
     "@types/lodash.debounce": 4.0.6
     "@types/lodash.memoize": 4.1.6
-    "@types/node": 18.19.8
+    "@types/node": 20.11.5
     "@types/react": 17.0.39
     "@types/react-dom": 17.0.11
     "@types/react-redux": 7.1.22
@@ -6557,7 +6557,7 @@ __metadata:
     "@types/jest": 29.5.2
     "@types/jsrsasign": 10.5.2
     "@types/lodash.chunk": 4.2.6
-    "@types/node": 18.19.8
+    "@types/node": 20.11.5
     "@types/react": 17.0.39
     "@types/react-dom": 17.0.11
     "@types/react-router-dom": 5.3.3
@@ -6623,7 +6623,7 @@ __metadata:
     "@types/history": 4.7.11
     "@types/jest": 29.5.2
     "@types/jsrsasign": 10.5.2
-    "@types/node": 18.19.8
+    "@types/node": 20.11.5
     "@types/react": 17.0.39
     "@types/react-dom": 17.0.11
     "@types/react-redux": 7.1.22
