@@ -165,10 +165,11 @@ const VirtualizedTable = React.memo(
 
     // Format dates to be more readable
     // Format only if the date has a time component
+    // (to avoid formatting dates like 2020-01-01)
     React.useEffect(() => {
       data.forEach((entity) => {
         ['createTime', 'modTime', 'startDate', 'endDate'].forEach((key) => {
-          if (entity[key] && entity[key].length > 10) {
+          if (entity[key] && /\d{2}:\d{2}:\d{2}/.test(entity[key])) {
             entity[key] = new Date(entity[key])
               .toISOString()
               .replace('T', ' ')
