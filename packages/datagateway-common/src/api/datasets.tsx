@@ -26,7 +26,7 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 import { fetchDatafileCountQuery } from './datafiles';
 import retryICATErrors from './retryICATErrors';
 
-const fetchDatasets = (
+export const fetchDatasets = (
   apiUrl: string,
   sortAndFilters: {
     sort: SortType;

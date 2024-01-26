@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useCart, useAddToCart, useRemoveFromCart } from '.';
 import { DownloadCart } from '../app.types';
 import handleICATError from '../handleICATError';
@@ -122,9 +122,11 @@ describe('Cart api functions', () => {
     it('sends axios request to add item to cart once mutate function is called and calls handleICATError on failure, with a retry on code 431', async () => {
       (axios.post as jest.MockedFunction<typeof axios.post>)
         .mockRejectedValueOnce({
-          code: '431',
+          response: {
+            status: 431,
+          },
           message: 'Test 431 error message',
-        })
+        } as AxiosError)
         .mockRejectedValue({
           message: 'Test error message',
         });
@@ -184,9 +186,11 @@ describe('Cart api functions', () => {
     it('sends axios request to remove item from cart once mutate function is called and calls handleICATError on failure, with a retry on code 431', async () => {
       (axios.post as jest.MockedFunction<typeof axios.post>)
         .mockRejectedValueOnce({
-          code: '431',
+          response: {
+            status: 431,
+          },
           message: 'Test 431 error message',
-        })
+        } as AxiosError)
         .mockRejectedValue({
           message: 'Test error message',
         });

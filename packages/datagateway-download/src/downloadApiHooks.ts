@@ -1,5 +1,10 @@
 import { AxiosError } from 'axios';
-import type { Download, DownloadStatus } from 'datagateway-common';
+import {
+  Download,
+  DownloadStatus,
+  InvalidateTokenType,
+  User,
+} from 'datagateway-common';
 import {
   DownloadCartItem,
   fetchDownloadCart,
@@ -8,6 +13,7 @@ import {
   NotificationType,
   retryICATErrors,
 } from 'datagateway-common';
+import log from 'loglevel';
 import pLimit from 'p-limit';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -25,9 +31,17 @@ import {
   UseQueryResult,
 } from 'react-query';
 import { DownloadSettingsContext } from './ConfigProvider';
-import type {
+import {
+  checkUser,
+  DoiMetadata,
+  DoiResponse,
   DownloadProgress,
   DownloadTypeStatus,
+  fetchDOI,
+  getCartUsers,
+  isCartMintable,
+  mintCart,
+  RelatedDOI,
   SubmitCartZipType,
 } from './downloadApi';
 import {
@@ -125,7 +139,7 @@ export const useRemoveAllFromCart = (): UseMutationResult<
       },
       retry: (failureCount, error) => {
         // if we get 431 we know this is an intermittent error so retry
-        if (error.code === '431' && failureCount < 3) {
+        if (error.response?.status === 431 && failureCount < 3) {
           return true;
         } else {
           return false;
@@ -159,7 +173,7 @@ export const useRemoveEntityFromCart = (): UseMutationResult<
       },
       retry: (failureCount, error) => {
         // if we get 431 we know this is an intermittent error so retry
-        if (error.code === '431' && failureCount < 3) {
+        if (error.response?.status === 431 && failureCount < 3) {
           return true;
         } else {
           return false;
@@ -473,7 +487,7 @@ export const useDownloadOrRestoreDownload = (): UseMutationResult<
 
       retry: (failureCount, error) => {
         // if we get 431 we know this is an intermittent error so retry
-        return error.code === '431' && failureCount < 3;
+        return error.response?.status === 431 && failureCount < 3;
       },
     }
   );
@@ -570,7 +584,7 @@ export const useAdminDownloads = ({
   const downloadSettings = React.useContext(DownloadSettingsContext);
 
   return useInfiniteQuery(
-    QueryKey.ADMIN_DOWNLOADS,
+    [QueryKey.ADMIN_DOWNLOADS, initialQueryOffset],
     ({ pageParam = initialQueryOffset }) =>
       fetchAdminDownloads(
         {
@@ -773,4 +787,207 @@ export const useDownloadPercentageComplete = <T = DownloadProgress>({
       ...queryOptions,
     }
   );
+};
+
+/**
+ * Queries whether a cart is mintable.
+ * @param cart The {@link Cart} that is checked
+ */
+export const useIsCartMintable = (
+  cart: DownloadCartItem[] | undefined
+): UseQueryResult<
+  boolean,
+  AxiosError<{ detail: { msg: string }[] } | { detail: string }>
+> => {
+  const settings = React.useContext(DownloadSettingsContext);
+  const { doiMinterUrl } = settings;
+
+  return useQuery(
+    ['ismintable', cart],
+    () => {
+      if (doiMinterUrl && cart && cart.length > 0)
+        return isCartMintable(cart, doiMinterUrl);
+      else return Promise.resolve(false);
+    },
+    {
+      onError: (error) => {
+        if (error.response?.status !== 403) log.error(error);
+        if (error.response?.status === 401) {
+          document.dispatchEvent(
+            new CustomEvent(MicroFrontendId, {
+              detail: {
+                type: InvalidateTokenType,
+                payload: {
+                  severity: 'error',
+                  message:
+                    localStorage.getItem('autoLogin') === 'true'
+                      ? 'Your session has expired, please reload the page'
+                      : 'Your session has expired, please login again',
+                },
+              },
+            })
+          );
+        }
+      },
+      retry: (failureCount, error) => {
+        // if we get 403 we know this is an legit response from the backend so don't bother retrying
+        // all other errors use default retry behaviour
+        if (error.response?.status === 403 || failureCount >= 3) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      refetchOnWindowFocus: false,
+      enabled: typeof doiMinterUrl !== 'undefined',
+    }
+  );
+};
+
+/**
+ * Mints a cart
+ * @param cart The {@link Cart} to mint
+ * @param doiMetadata The required metadata for the DOI
+ */
+export const useMintCart = (): UseMutationResult<
+  DoiResponse,
+  AxiosError<{
+    detail: { msg: string }[] | string;
+  }>,
+  { cart: DownloadCartItem[]; doiMetadata: DoiMetadata }
+> => {
+  const settings = React.useContext(DownloadSettingsContext);
+
+  return useMutation(
+    ({ cart, doiMetadata }) => {
+      return mintCart(cart, doiMetadata, settings);
+    },
+    {
+      onError: (error) => {
+        log.error(error);
+        if (error.response?.status === 401) {
+          document.dispatchEvent(
+            new CustomEvent(MicroFrontendId, {
+              detail: {
+                type: InvalidateTokenType,
+                payload: {
+                  severity: 'error',
+                  message:
+                    localStorage.getItem('autoLogin') === 'true'
+                      ? 'Your session has expired, please reload the page'
+                      : 'Your session has expired, please login again',
+                },
+              },
+            })
+          );
+        }
+      },
+    }
+  );
+};
+
+/**
+ * Gets the total list of users associated with each item in the cart
+ * @param cart The {@link Cart} that we're getting the users for
+ */
+export const useCartUsers = (
+  cart?: DownloadCartItem[]
+): UseQueryResult<User[], AxiosError> => {
+  const settings = React.useContext(DownloadSettingsContext);
+
+  return useQuery(
+    ['cartUsers', cart],
+    () => getCartUsers(cart ?? [], settings),
+    {
+      onError: handleICATError,
+      staleTime: Infinity,
+    }
+  );
+};
+
+/**
+ * Checks whether a username belongs to an ICAT User
+ * @param username The username that we're checking
+ * @returns the {@link User} that matches the username, or 404
+ */
+export const useCheckUser = (
+  username: string
+): UseQueryResult<User, AxiosError> => {
+  const settings = React.useContext(DownloadSettingsContext);
+
+  return useQuery(
+    ['checkUser', username],
+    () => checkUser(username, settings),
+    {
+      onError: (error) => {
+        log.error(error);
+        if (error.response?.status === 401) {
+          document.dispatchEvent(
+            new CustomEvent(MicroFrontendId, {
+              detail: {
+                type: InvalidateTokenType,
+                payload: {
+                  severity: 'error',
+                  message:
+                    localStorage.getItem('autoLogin') === 'true'
+                      ? 'Your session has expired, please reload the page'
+                      : 'Your session has expired, please login again',
+                },
+              },
+            })
+          );
+        }
+      },
+      retry: (failureCount: number, error: AxiosError) => {
+        if (
+          // user not logged in, error code will log them out
+          error.response?.status === 401 ||
+          // email doesn't match user - don't retry as this is a correct response from the server
+          error.response?.status === 404 ||
+          // email is invalid - don't retry as this is correct response from the server
+          error.response?.status === 422 ||
+          failureCount >= 3
+        )
+          return false;
+        return true;
+      },
+      // set enabled false to only fetch on demand when the add creator button is pressed
+      enabled: false,
+      cacheTime: 0,
+    }
+  );
+};
+
+/**
+ * Checks whether a DOI is valid and returns the DOI metadata
+ * @param doi The DOI that we're checking
+ * @returns the {@link RelatedDOI} that matches the username, or 404
+ */
+export const useCheckDOI = (
+  doi: string
+): UseQueryResult<RelatedDOI, AxiosError> => {
+  const settings = React.useContext(DownloadSettingsContext);
+
+  return useQuery(['checkDOI', doi], () => fetchDOI(doi, settings), {
+    retry: (failureCount: number, error: AxiosError) => {
+      if (
+        // DOI is invalid - don't retry as this is a correct response from the server
+        error.response?.status === 404 ||
+        failureCount >= 3
+      )
+        return false;
+      return true;
+    },
+    select: (doi) => ({
+      title: doi.attributes.titles[0].title,
+      relatedIdentifier: doi.attributes.doi,
+      relatedIdentifierType: 'DOI',
+      fullReference: '', // TODO: what should we put here?
+      relationType: '',
+      resourceType: '',
+    }),
+    // set enabled false to only fetch on demand when the add creator button is pressed
+    enabled: false,
+    cacheTime: 0,
+  });
 };

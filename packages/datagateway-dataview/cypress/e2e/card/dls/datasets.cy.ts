@@ -118,17 +118,13 @@ describe('DLS - Datasets Cards', () => {
     // check that count is correct after filtering
     cy.get('[data-testid="card"]').first().contains('15');
 
-    cy.get('input[id="Create Time filter from"]').type('2019-01-01');
-    cy.wait(['@getDatasetsCount'], { timeout: 10000 });
-    cy.get('[data-testid="card"]').first().contains('DATASET 61');
-
-    cy.get('input[aria-label="Create Time filter to"]')
+    cy.get('input[aria-label="Start Date filter to"]')
       .parent()
       .find('button')
       .click();
     cy.get('.MuiPickersCalendarHeader-label').click();
     cy.contains('2020').click();
-    cy.contains('Jan').click();
+    cy.get('.MuiPickersMonth-monthButton[type="button"]').first().click();
     cy.get('.MuiPickersDay-root[type="button"]').first().click();
     cy.wait(['@getDatasetsCount'], { timeout: 10000 });
 
@@ -136,10 +132,16 @@ describe('DLS - Datasets Cards', () => {
     date.setDate(1);
     date.setMonth(0);
     date.setFullYear(2020);
-    cy.get('input[id="Create Time filter to"]').should(
+    cy.get('input[id="Start Date filter to"]').should(
       'have.value',
       date.toISOString().slice(0, 10)
     );
+    cy.wait(['@getDatasetsCount'], { timeout: 10000 });
+    cy.get('[data-testid="card"]').first().contains('DATASET 61');
+
+    cy.get('input[id="Start Date filter from"]').type('2019-01-01');
+    cy.wait(['@getDatasetsCount'], { timeout: 10000 });
+
     cy.get('[data-testid="card"]').should('not.exist');
   });
 });

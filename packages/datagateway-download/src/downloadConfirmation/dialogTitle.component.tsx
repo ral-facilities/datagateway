@@ -8,8 +8,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface DialogTitleProps {
-  id: string;
-  onClose: () => void;
+  id?: string;
+  onClose?: () => void;
   children?: React.ReactNode;
 }
 
