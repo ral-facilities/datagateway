@@ -21,7 +21,7 @@ import '@uppy/dashboard/dist/style.min.css';
 
 import { readSciGatewayToken } from '../parseTokens';
 import { createDataset } from '../api';
-import { ErrorOutline } from '@mui/icons-material';
+// import { ErrorOutline } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
 const DialogContent = styled(MuiDialogContent)(({ theme }) => ({
@@ -42,6 +42,7 @@ const UploadDialog: React.FC<UploadDialogProps> = (
   const [uppy] = React.useState(() =>
     new Uppy({
       // debug: true,
+      id: props.entityId?.toString() ?? 'null',
       autoProceed: false,
       restrictions: {
         maxTotalFileSize: 5000000000,
@@ -126,7 +127,7 @@ const UploadDialog: React.FC<UploadDialogProps> = (
         <Grid container spacing={2}>
           {entityType === 'investigation' && (
             <Grid item xs={4}>
-              <Grid container spacing={2} height="15em">
+              <Grid container spacing={2} height="30em">
                 <Grid item xs={12} marginTop="0.5em">
                   <TextField
                     id="upload-name"
@@ -151,7 +152,7 @@ const UploadDialog: React.FC<UploadDialogProps> = (
                       setUploadDescription(e.target.value as string);
                     }}
                     multiline
-                    rows={6}
+                    rows={15}
                   />
                 </Grid>
               </Grid>
@@ -166,21 +167,21 @@ const UploadDialog: React.FC<UploadDialogProps> = (
               hideUploadButton={true}
               fileManagerSelectionType="both"
               hideProgressAfterFinish={false}
-              height="16em"
+              height="30em"
               width="100%"
             />
           </Grid>
         </Grid>
       </DialogContent>
       <Grid container spacing={2} paddingLeft={1}>
-        {entityType !== 'investigation' && (
+        {/* {entityType !== 'investigation' && (
           <Grid item xs={6} display="flex" alignItems="center">
             <ErrorOutline sx={{ fontSize: '2rem' }} />
             <Typography sx={{ fontSize: '1rem' }} marginLeft={1}>
               {'Only files can be added to Datasets (no folders)'}
             </Typography>
           </Grid>
-        )}
+        )} */}
         <Grid item xs>
           <DialogActions sx={{ margin: 0 }}>
             <Button onClick={dialogClose} aria-label="cancel">
