@@ -4083,14 +4083,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@welldone-software/why-did-you-render@npm:7.0.1":
-  version: 7.0.1
-  resolution: "@welldone-software/why-did-you-render@npm:7.0.1"
+"@welldone-software/why-did-you-render@npm:8.0.1":
+  version: 8.0.1
+  resolution: "@welldone-software/why-did-you-render@npm:8.0.1"
   dependencies:
     lodash: ^4
   peerDependencies:
-    react: ^16 || ^17 || ^18
-  checksum: 0bfc59f1f8613e7dc5fbf189305e88b01c50ee278df2c9b69082ed6abcf8d71758eb468d027235916c6126934a755d6547e9704883007236544763fffad6f48c
+    react: ^18
+  checksum: cabb08e49a241b44208fc2acc60c34af2885b98feaa3e80c21b34d45c77cac72c83fc914645cc1cfa253b4a6272ac6d21327ec76d4c54b5b9387d8be576240c9
   languageName: node
   linkType: hard
 
@@ -6491,7 +6491,7 @@ __metadata:
     "@types/redux-mock-store": 1.0.3
     "@typescript-eslint/eslint-plugin": 5.62.0
     "@typescript-eslint/parser": 5.62.0
-    "@welldone-software/why-did-you-render": 7.0.1
+    "@welldone-software/why-did-you-render": 8.0.1
     axios: 1.6.1
     blob-polyfill: 7.0.20220408
     connected-react-router: 6.9.1
