@@ -34,7 +34,7 @@
     "jsrsasign": "11.0.0",
     "lodash.debounce": "4.0.8",
     "lodash.memoize": "4.1.2",
-    "loglevel": "1.8.0",
+    "loglevel": "1.9.1",
     "prettier": "2.8.0",
     "react": "17.0.2",
     "react-app-polyfill": "3.0.0",
