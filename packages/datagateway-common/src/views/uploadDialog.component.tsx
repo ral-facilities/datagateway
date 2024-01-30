@@ -9,6 +9,7 @@ import {
   styled,
   TextField,
   Typography,
+  Box,
 } from '@mui/material';
 
 import Uppy from '@uppy/core';
@@ -124,38 +125,40 @@ const UploadDialog: React.FC<UploadDialogProps> = (
         </Typography>
       </DialogTitle>
       <DialogContent>
-        <Grid container spacing={2}>
+        <Grid container spacing={2} paddingTop={1}>
           {entityType === 'investigation' && (
             <Grid item xs={4}>
-              <Grid container spacing={2} height="30em">
-                <Grid item xs={12} marginTop="0.5em">
-                  <TextField
-                    id="upload-name"
-                    label={t('upload.name')}
-                    fullWidth={true}
-                    inputProps={{ maxLength: 255 }}
-                    variant="outlined"
-                    onChange={(e) => {
-                      setUploadName(e.target.value as string);
-                    }}
-                    required
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    id="upload-description"
-                    label={t('upload.description')}
-                    fullWidth={true}
-                    inputProps={{ maxLength: 2000 }}
-                    variant="outlined"
-                    onChange={(e) => {
-                      setUploadDescription(e.target.value as string);
-                    }}
-                    multiline
-                    rows={15}
-                  />
-                </Grid>
-              </Grid>
+              <Box
+                display="flex"
+                flexDirection="column"
+                height="100%"
+                justifyContent="space-between"
+              >
+                <TextField
+                  id="upload-name"
+                  label={t('upload.name')}
+                  fullWidth={true}
+                  inputProps={{ maxLength: 255 }}
+                  variant="outlined"
+                  onChange={(e) => {
+                    setUploadName(e.target.value as string);
+                  }}
+                  required
+                />
+
+                <TextField
+                  id="upload-description"
+                  label={t('upload.description')}
+                  fullWidth={true}
+                  inputProps={{ maxLength: 2000 }}
+                  variant="outlined"
+                  onChange={(e) => {
+                    setUploadDescription(e.target.value as string);
+                  }}
+                  multiline
+                  rows={16}
+                />
+              </Box>
             </Grid>
           )}
           <Grid item xs={entityType !== 'investigation' ? 12 : 8}>
@@ -183,7 +186,7 @@ const UploadDialog: React.FC<UploadDialogProps> = (
           </Grid>
         )} */}
         <Grid item xs>
-          <DialogActions sx={{ margin: 0 }}>
+          <DialogActions sx={{ margin: 0, paddingTop: 0 }}>
             <Button onClick={dialogClose} aria-label="cancel">
               Cancel
             </Button>
