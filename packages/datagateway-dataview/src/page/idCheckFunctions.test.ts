@@ -34,11 +34,18 @@ describe('ID check functions', () => {
     const store = configureStore()({});
 
     await checkInvestigationId(1, 2);
+    const params = new URLSearchParams();
+    params.append(
+      'where',
+      JSON.stringify({
+        id: {
+          eq: 2,
+        },
+      })
+    );
+    params.append('where', JSON.stringify({ 'investigation.id': { eq: 1 } }));
     expect(axios.get).toHaveBeenCalledWith('/datasets/findone', {
-      params: {
-        where: { id: { eq: 2 } },
-        include: '"investigation"',
-      },
+      params,
       headers: { Authorization: 'Bearer null' },
     });
     (axios.get as jest.Mock).mockClear();
@@ -50,10 +57,7 @@ describe('ID check functions', () => {
 
     await checkInvestigationId(1, 2);
     expect(axios.get).toHaveBeenCalledWith('/test/datasets/findone', {
-      params: {
-        where: { id: { eq: 2 } },
-        include: '"investigation"',
-      },
+      params,
       headers: { Authorization: 'Bearer null' },
     });
 
@@ -75,24 +79,32 @@ describe('ID check functions', () => {
 
       const result = await checkInvestigationId(1, 2);
       expect(result).toBe(true);
+      const params = new URLSearchParams();
+      params.append(
+        'where',
+        JSON.stringify({
+          id: {
+            eq: 2,
+          },
+        })
+      );
+      params.append('where', JSON.stringify({ 'investigation.id': { eq: 1 } }));
       expect(axios.get).toHaveBeenCalledWith('/datasets/findone', {
-        params: {
-          where: { id: { eq: 2 } },
-          include: '"investigation"',
-        },
+        params,
         headers: { Authorization: 'Bearer null' },
       });
     });
     it('returns false on invalid investigation + dataset pair', async () => {
-      expect.assertions(1);
+      expect.assertions(2);
       (axios.get as jest.Mock).mockImplementation(() =>
-        Promise.resolve({
-          data: { id: 2, name: 'Test dataset', investigation: { id: 3 } },
+        Promise.reject({
+          response: { status: 404 },
         })
       );
 
       const result = await checkInvestigationId(1, 2);
       expect(result).toBe(false);
+      expect(handleICATError).not.toHaveBeenCalled();
     });
     it('returns false on HTTP error', async () => {
       expect.assertions(2);

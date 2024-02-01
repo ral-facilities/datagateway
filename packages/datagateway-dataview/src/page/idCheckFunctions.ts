@@ -1,7 +1,6 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import {
   handleICATError,
-  Dataset,
   Investigation,
   ConfigureURLsType,
   readSciGatewayToken,
@@ -26,24 +25,33 @@ const unmemoizedCheckInvestigationId = (
   investigationId: number,
   datasetId: number
 ): Promise<boolean> => {
+  const params = new URLSearchParams();
+  params.append(
+    'where',
+    JSON.stringify({
+      id: {
+        eq: datasetId,
+      },
+    })
+  );
+  params.append(
+    'where',
+    JSON.stringify({ 'investigation.id': { eq: investigationId } })
+  );
   return axios
     .get(`${apiUrl}/datasets/findone`, {
-      params: {
-        where: {
-          id: {
-            eq: datasetId,
-          },
-        },
-        include: '"investigation"',
-      },
+      params,
       headers: {
         Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
       },
     })
-    .then((response: AxiosResponse<Dataset>) => {
-      return response.data.investigation?.id === investigationId;
+    .then(() => {
+      return true;
     })
     .catch((error) => {
+      // 404 is valid response from API saying the investigation id is invalid
+      if ((error as AxiosError).response?.status === 404) return false;
+      // handle other API errors
       handleICATError(error);
       return false;
     });

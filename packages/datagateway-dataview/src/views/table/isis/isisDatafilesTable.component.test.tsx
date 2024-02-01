@@ -50,7 +50,7 @@ describe('ISIS datafiles table component', () => {
       <Provider store={store}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
-            <ISISDatafilesTable datasetId="1" investigationId="2" />
+            <ISISDatafilesTable datasetId="1" />
           </QueryClientProvider>
         </Router>
       </Provider>
@@ -114,18 +114,11 @@ describe('ISIS datafiles table component', () => {
 
   it('calls the correct data fetching hooks on load', () => {
     const datasetId = '1';
-    const investigationId = '2';
     createWrapper();
     expect(useDatafileCount).toHaveBeenCalledWith([
       {
         filterType: 'where',
         filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
-      },
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'dataset.investigation.id': { eq: investigationId },
-        }),
       },
     ]);
     expect(useDatafilesInfinite).toHaveBeenCalledWith(
@@ -133,12 +126,6 @@ describe('ISIS datafiles table component', () => {
         {
           filterType: 'where',
           filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
-        },
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'dataset.investigation.id': { eq: investigationId },
-          }),
         },
       ],
       expect.any(Boolean)
@@ -149,12 +136,6 @@ describe('ISIS datafiles table component', () => {
         {
           filterType: 'where',
           filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
-        },
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'dataset.investigation.id': { eq: investigationId },
-          }),
         },
       ],
       true
