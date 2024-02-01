@@ -5,8 +5,7 @@ import configureStore from 'redux-mock-store';
 import { StateType } from '../../../state/app.types';
 import {
   dGCommonInitialState,
-  useInvestigation,
-  useInvestigationSizes,
+  SuggestedInvestigation,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -21,17 +20,46 @@ import {
 } from '@testing-library/react';
 import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    useInvestigation: jest.fn(),
-    useInvestigationSizes: jest.fn(),
-  };
-});
+const mockSuggestions: SuggestedInvestigation[] = [
+  {
+    id: 1,
+    visitId: 'visitId',
+    name: 'Suggested investigation 1 name',
+    title: 'Suggested investigation 1',
+    summary: 'Suggested investigation 1 summary',
+    doi: 'doi1',
+    score: 0.9,
+  },
+  {
+    id: 2,
+    visitId: 'visitId',
+    name: 'Suggested investigation 2 name',
+    title: 'Suggested investigation 2',
+    summary: 'Suggested investigation 2 summary',
+    doi: 'doi2',
+    score: 0.9,
+  },
+  {
+    id: 3,
+    visitId: 'visitId',
+    name: 'Suggested investigation 3 name',
+    title: 'Suggested investigation 3',
+    summary: 'Suggested investigation 3 summary',
+    doi: 'doi3',
+    score: 0.9,
+  },
+  {
+    id: 4,
+    visitId: 'visitId',
+    name: 'Suggested investigation 4 name',
+    title: 'Suggested investigation 4',
+    summary: 'Suggested investigation 4 summary',
+    doi: 'doi4',
+    score: 0.9,
+  },
+];
 
 describe('ISIS Investigation Landing page', () => {
   const mockStore = configureStore([thunk]);
@@ -182,6 +210,26 @@ describe('ISIS Investigation Landing page', () => {
   const noSamples: never[] = [];
   const noPublication: never[] = [];
 
+  const mockAxiosGet = (
+    url: string
+  ): Promise<Partial<AxiosResponse>> | undefined => {
+    if (url.includes('/investigations')) {
+      return Promise.resolve({
+        data: initialData,
+      });
+    }
+
+    if (url.includes('/user/getSize')) {
+      return Promise.resolve({ data: 1 });
+    }
+
+    if (url.includes('/similar')) {
+      return Promise.resolve({
+        data: mockSuggestions,
+      });
+    }
+  };
+
   beforeEach(() => {
     state = JSON.parse(
       JSON.stringify({
@@ -192,22 +240,14 @@ describe('ISIS Investigation Landing page', () => {
     history = createMemoryHistory();
     user = userEvent.setup();
 
-    (useInvestigation as jest.Mock).mockReturnValue({
-      data: initialData,
-    });
-    (useInvestigationSizes as jest.Mock).mockReturnValue([
-      {
-        isSuccess: true,
-        data: 1,
-      },
-    ]);
+    axios.get = jest.fn().mockImplementation(mockAxiosGet);
   });
 
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('renders landing for investigation correctly', () => {
+  it('renders landing for investigation correctly', async () => {
     renderComponent();
 
     // branding should be visible
@@ -218,7 +258,7 @@ describe('ISIS Investigation Landing page', () => {
     expect(screen.getByText('doi_constants.branding.body')).toBeInTheDocument();
 
     // investigation details should be visible
-    expect(screen.getByText('Test title 1')).toBeInTheDocument();
+    expect(await screen.findByText('Test title 1')).toBeInTheDocument();
     expect(screen.getByText('foo bar')).toBeInTheDocument();
 
     // publisher section should be visible
@@ -299,14 +339,36 @@ describe('ISIS Investigation Landing page', () => {
         name: 'buttons.add_to_cart',
       })
     ).toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'investigations.landingPage.similarInvestigations',
+      })
+    );
+
+    expect(
+      await screen.findByRole('link', {
+        name: 'Suggested investigation 1',
+      })
+    ).toHaveAttribute('href', 'https://doi.org/doi1');
+    expect(
+      await screen.findByRole('link', {
+        name: 'Suggested investigation 2',
+      })
+    ).toHaveAttribute('href', 'https://doi.org/doi2');
+    expect(
+      await screen.findByRole('link', {
+        name: 'Suggested investigation 3',
+      })
+    ).toHaveAttribute('href', 'https://doi.org/doi3');
   });
 
   describe('renders datasets for the investigation correctly', () => {
-    it('for facility cycle hierarchy and normal view', () => {
+    it('for facility cycle hierarchy and normal view', async () => {
       renderComponent();
 
       expect(
-        screen.getByRole('link', { name: 'datasets.dataset: dataset 1' })
+        await screen.findByRole('link', { name: 'datasets.dataset: dataset 1' })
       ).toHaveAttribute(
         'href',
         '/browse/instrument/4/facilityCycle/5/investigation/1/dataset/1'
@@ -329,13 +391,13 @@ describe('ISIS Investigation Landing page', () => {
       ).toBeInTheDocument();
     });
 
-    it('for facility cycle hierarchy and card view', () => {
+    it('for facility cycle hierarchy and card view', async () => {
       history.replace('/?view=card');
 
       renderComponent();
 
       expect(
-        screen.getByRole('link', { name: 'datasets.dataset: dataset 1' })
+        await screen.findByRole('link', { name: 'datasets.dataset: dataset 1' })
       ).toHaveAttribute(
         'href',
         '/browse/instrument/4/facilityCycle/5/investigation/1/dataset/1?view=card'
@@ -358,11 +420,11 @@ describe('ISIS Investigation Landing page', () => {
       ).toBeInTheDocument();
     });
 
-    it('for data publication hierarchy and normal view', () => {
+    it('for data publication hierarchy and normal view', async () => {
       renderComponent(true);
 
       expect(
-        screen.getByRole('link', { name: 'datasets.dataset: dataset 1' })
+        await screen.findByRole('link', { name: 'datasets.dataset: dataset 1' })
       ).toHaveAttribute(
         'href',
         '/browseDataPublications/instrument/4/dataPublication/5/investigation/1/dataset/1'
@@ -385,13 +447,13 @@ describe('ISIS Investigation Landing page', () => {
       ).toBeInTheDocument();
     });
 
-    it('for data publication hierarchy and card view', () => {
+    it('for data publication hierarchy and card view', async () => {
       history.push('/?view=card');
 
       renderComponent(true);
 
       expect(
-        screen.getByRole('link', { name: 'datasets.dataset: dataset 1' })
+        await screen.findByRole('link', { name: 'datasets.dataset: dataset 1' })
       ).toHaveAttribute(
         'href',
         '/browseDataPublications/instrument/4/dataPublication/5/investigation/1/dataset/1?view=card'
@@ -479,9 +541,15 @@ describe('ISIS Investigation Landing page', () => {
   });
 
   it('users displayed correctly', async () => {
-    (useInvestigation as jest.Mock).mockReturnValue({
-      data: [{ ...initialData[0], investigationUsers: investigationUser }],
+    axios.get = jest.fn().mockImplementation((url: string) => {
+      if (url.includes('/investigations')) {
+        return Promise.resolve({
+          data: [{ ...initialData[0], investigationUsers: investigationUser }],
+        });
+      }
+      return mockAxiosGet(url);
     });
+
     renderComponent();
 
     expect(
@@ -496,9 +564,15 @@ describe('ISIS Investigation Landing page', () => {
   });
 
   it('renders text "No samples" when no data is present', async () => {
-    (useInvestigation as jest.Mock).mockReturnValue({
-      data: [{ ...initialData[0], samples: noSamples }],
+    axios.get = jest.fn().mockImplementation((url: string) => {
+      if (url.includes('/investigations')) {
+        return Promise.resolve({
+          data: [{ ...initialData[0], samples: noSamples }],
+        });
+      }
+      return mockAxiosGet(url);
     });
+
     renderComponent();
 
     expect(
@@ -507,9 +581,15 @@ describe('ISIS Investigation Landing page', () => {
   });
 
   it('renders text "No publications" when no data is present', async () => {
-    (useInvestigation as jest.Mock).mockReturnValue({
-      data: [{ ...initialData[0], publications: noPublication }],
+    axios.get = jest.fn().mockImplementation((url: string) => {
+      if (url.includes('/investigations')) {
+        return Promise.resolve({
+          data: [{ ...initialData[0], publications: noPublication }],
+        });
+      }
+      return mockAxiosGet(url);
     });
+
     renderComponent();
 
     expect(
@@ -520,9 +600,15 @@ describe('ISIS Investigation Landing page', () => {
   });
 
   it('publications displayed correctly', async () => {
-    (useInvestigation as jest.Mock).mockReturnValue({
-      data: [{ ...initialData[0], publications: publication }],
+    axios.get = jest.fn().mockImplementation((url: string) => {
+      if (url.includes('/investigations')) {
+        return Promise.resolve({
+          data: [{ ...initialData[0], publications: publication }],
+        });
+      }
+      return mockAxiosGet(url);
     });
+
     renderComponent();
 
     expect(
@@ -531,18 +617,30 @@ describe('ISIS Investigation Landing page', () => {
   });
 
   it('samples displayed correctly', async () => {
-    (useInvestigation as jest.Mock).mockReturnValue({
-      data: [{ ...initialData[0], samples: sample }],
+    axios.get = jest.fn().mockImplementation((url: string) => {
+      if (url.includes('/investigations')) {
+        return Promise.resolve({
+          data: [{ ...initialData[0], samples: sample }],
+        });
+      }
+      return mockAxiosGet(url);
     });
+
     renderComponent();
 
     expect(await screen.findByText('Sample')).toBeInTheDocument();
   });
 
   it('displays citation correctly when study missing', async () => {
-    (useInvestigation as jest.Mock).mockReturnValue({
-      data: [{ ...initialData[0], studyInvestigations: undefined }],
+    axios.get = jest.fn().mockImplementation((url: string) => {
+      if (url.includes('/investigations')) {
+        return Promise.resolve({
+          data: [{ ...initialData[0], studyInvestigations: undefined }],
+        });
+      }
+      return mockAxiosGet(url);
     });
+
     renderComponent();
 
     expect(
@@ -553,9 +651,17 @@ describe('ISIS Investigation Landing page', () => {
   });
 
   it('displays citation correctly with one user', async () => {
-    (useInvestigation as jest.Mock).mockReturnValue({
-      data: [{ ...initialData[0], investigationUsers: [investigationUser[0]] }],
+    axios.get = jest.fn().mockImplementation((url: string) => {
+      if (url.includes('/investigations')) {
+        return Promise.resolve({
+          data: [
+            { ...initialData[0], investigationUsers: [investigationUser[0]] },
+          ],
+        });
+      }
+      return mockAxiosGet(url);
     });
+
     renderComponent();
 
     expect(
@@ -566,9 +672,15 @@ describe('ISIS Investigation Landing page', () => {
   });
 
   it('displays citation correctly with multiple users', async () => {
-    (useInvestigation as jest.Mock).mockReturnValue({
-      data: [{ ...initialData[0], investigationUsers: investigationUser }],
+    axios.get = jest.fn().mockImplementation((url: string) => {
+      if (url.includes('/investigations')) {
+        return Promise.resolve({
+          data: [{ ...initialData[0], investigationUsers: investigationUser }],
+        });
+      }
+      return mockAxiosGet(url);
     });
+
     renderComponent();
 
     expect(
@@ -591,5 +703,30 @@ describe('ISIS Investigation Landing page', () => {
     expect(
       await screen.findByRole('link', { name: 'Data Publication Pid' })
     ).toHaveAttribute('href', 'https://doi.org/Data Publication Pid');
+  });
+
+  it('hides suggested section when the investigation does not have a summary', async () => {
+    axios.get = jest.fn().mockImplementation((url: string) => {
+      if (url.includes('/investigations')) {
+        return Promise.resolve({
+          data: [
+            {
+              ...initialData[0],
+              summary: undefined,
+            },
+          ],
+        });
+      }
+      return mockAxiosGet(url);
+    });
+
+    renderComponent();
+
+    expect(await screen.findByText('Test title 1')).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', {
+        name: 'investigations.landingPage.similarInvestigations',
+      })
+    ).toBeNull();
   });
 });

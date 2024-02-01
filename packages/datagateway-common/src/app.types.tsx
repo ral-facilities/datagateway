@@ -74,6 +74,18 @@ export interface InvestigationInstrument {
   investigation?: Investigation;
 }
 
+export interface SuggestedInvestigation {
+  doi: string;
+  name: string;
+  title: string;
+  id: number;
+  summary: string;
+  visitId: string;
+  startDate?: string;
+  endDate?: string;
+  score: number;
+}
+
 export interface Instrument {
   id: number;
   name: string;

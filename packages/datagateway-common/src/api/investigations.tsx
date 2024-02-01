@@ -11,6 +11,7 @@ import {
   FiltersType,
   Investigation,
   SortType,
+  SuggestedInvestigation,
 } from '../app.types';
 import { StateType } from '../state/app.types';
 import {
@@ -541,4 +542,41 @@ export const downloadInvestigation = (
   document.body.appendChild(link);
   link.click();
   link.remove();
+};
+
+export const useSimilarInvestigations = ({
+  investigation,
+}: {
+  investigation: Investigation;
+}): UseQueryResult<SuggestedInvestigation[], AxiosError> => {
+  // TODO: Remove this hardcoded URL
+  const baseUrl = 'http://172.16.103.71:4001/api';
+
+  return useQuery<
+    SuggestedInvestigation[],
+    AxiosError,
+    SuggestedInvestigation[],
+    ['similarInvestigations', Investigation['id']]
+  >(
+    ['similarInvestigations', investigation.id],
+    () =>
+      axios
+        .get<SuggestedInvestigation[]>(
+          `/v2/similar/doc/?id=${investigation.id}`,
+          {
+            baseURL: baseUrl,
+          }
+        )
+        .then((response) => response.data),
+    {
+      select: (data) => {
+        data.sort((resultA, resultB) => resultB.score - resultA.score);
+        return data;
+      },
+      onError: (error) => {
+        handleICATError(error);
+      },
+      retry: retryICATErrors,
+    }
+  );
 };
