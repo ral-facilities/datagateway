@@ -30,11 +30,10 @@ import { IndexRange } from 'react-virtualized';
 
 interface DatafileTableProps {
   datasetId: string;
-  investigationId: string;
 }
 
 const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
-  const { datasetId, investigationId } = props;
+  const { datasetId } = props;
 
   const [t] = useTranslation();
 
@@ -59,12 +58,6 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
         filterType: 'where',
         filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
       },
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'dataset.investigation.id': { eq: investigationId },
-        }),
-      },
     ],
     selectAllSetting
   );
@@ -82,24 +75,12 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
       filterType: 'where',
       filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
     },
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'dataset.investigation.id': { eq: investigationId },
-      }),
-    },
   ]);
 
   const { fetchNextPage, data } = useDatafilesInfinite([
     {
       filterType: 'where',
       filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
-    },
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'dataset.investigation.id': { eq: investigationId },
-      }),
     },
   ]);
 

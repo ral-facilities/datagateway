@@ -28,13 +28,12 @@ import { IndexRange } from 'react-virtualized';
 
 interface DLSDatafilesTableProps {
   datasetId: string;
-  investigationId: string;
 }
 
 const DLSDatafilesTable = (
   props: DLSDatafilesTableProps
 ): React.ReactElement => {
-  const { datasetId, investigationId } = props;
+  const { datasetId } = props;
 
   const [t] = useTranslation();
 
@@ -60,12 +59,6 @@ const DLSDatafilesTable = (
         filterType: 'where',
         filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
       },
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'dataset.investigation.id': { eq: investigationId },
-        }),
-      },
     ],
     selectAllSetting
   );
@@ -83,12 +76,6 @@ const DLSDatafilesTable = (
       filterType: 'where',
       filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
     },
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'dataset.investigation.id': { eq: investigationId },
-      }),
-    },
   ]);
 
   // isMounted is used to disable queries when the component isn't fully mounted.
@@ -104,12 +91,6 @@ const DLSDatafilesTable = (
       {
         filterType: 'where',
         filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
-      },
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'dataset.investigation.id': { eq: investigationId },
-        }),
       },
     ],
     isMounted
