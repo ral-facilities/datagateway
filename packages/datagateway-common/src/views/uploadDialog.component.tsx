@@ -46,7 +46,7 @@ const UploadDialog: React.FC<UploadDialogProps> = (
       id: props.entityId?.toString() ?? 'null',
       autoProceed: false,
       restrictions: {
-        maxTotalFileSize: 5000000000,
+        maxTotalFileSize: 5368709120,
       },
       meta: {
         datafileDescription: '',
@@ -87,9 +87,11 @@ const UploadDialog: React.FC<UploadDialogProps> = (
   const [uploadName, setUploadName] = React.useState<string>('');
   const [uploadDescription, setUploadDescription] = React.useState<string>('');
 
-  const dialogClose = (): void => {
+  const dialogClose = (_event?: unknown, reason?: string): void => {
     uppy.cancelAll({ reason: 'user' });
-    setClose();
+    if (reason !== 'backdropClick') {
+      setClose();
+    }
   };
 
   const uploadData = async (): Promise<void> => {
@@ -189,6 +191,9 @@ const UploadDialog: React.FC<UploadDialogProps> = (
           <DialogActions sx={{ margin: 0, paddingTop: 0 }}>
             <Button onClick={dialogClose} aria-label="cancel">
               Cancel
+            </Button>
+            <Button onClick={setClose} aria-label="close">
+              Close
             </Button>
             <Button
               color="primary"
