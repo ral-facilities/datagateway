@@ -41,6 +41,7 @@ jobs:
           directory: ./packages/datagateway-common/
           flags: common
           fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
       - name: Upload unit test coverage for the DataView package
         if: success()
         uses: codecov/codecov-action@e0b68c6749509c5f83f984dd99a76a1c1a231044 # v4
@@ -48,6 +49,7 @@ jobs:
           directory: ./packages/datagateway-dataview/
           flags: dataview
           fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
       - name: Upload unit test coverage for the Search package
         if: success()
         uses: codecov/codecov-action@e0b68c6749509c5f83f984dd99a76a1c1a231044 # v4
@@ -55,6 +57,7 @@ jobs:
           directory: ./packages/datagateway-search/
           flags: search
           fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
       - name: Upload unit test coverage for the Download package
         if: success()
         uses: codecov/codecov-action@e0b68c6749509c5f83f984dd99a76a1c1a231044 # v4
@@ -62,6 +65,7 @@ jobs:
           directory: ./packages/datagateway-download/
           flags: download
           fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   dataview-e2e-tests:
     name: DataGateway DataView End to End Tests
