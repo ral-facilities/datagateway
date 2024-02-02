@@ -154,7 +154,7 @@ export const useDataPublicationsInfinite = (
 };
 
 export const useDataPublication = (
-  dataPublicationId: number
+  dataPublicationId?: number
 ): UseQueryResult<DataPublication[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
 
@@ -164,7 +164,7 @@ export const useDataPublication = (
     DataPublication[],
     [string, number]
   >(
-    ['dataPublication', dataPublicationId],
+    ['dataPublication', dataPublicationId ?? -1],
     () => {
       return fetchDataPublications(apiUrl, { sort: {}, filters: {} }, [
         {
@@ -193,6 +193,30 @@ export const useDataPublication = (
           ]),
         },
       ]);
+    },
+    {
+      onError: (error) => {
+        handleICATError(error);
+      },
+      retry: retryICATErrors,
+      enabled: typeof dataPublicationId !== 'undefined',
+    }
+  );
+};
+
+export const useDataPublicationByFilters = (
+  additionalFilters: AdditionalFilters
+): UseQueryResult<DataPublication[], AxiosError> => {
+  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+
+  return useQuery(
+    ['dataPublication', additionalFilters],
+    () => {
+      return fetchDataPublications(
+        apiUrl,
+        { sort: {}, filters: {} },
+        additionalFilters
+      );
     },
     {
       onError: (error) => {

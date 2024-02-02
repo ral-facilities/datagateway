@@ -7,6 +7,7 @@ import {
   readSciGatewayToken,
   RelatedDOI,
   useDataPublication,
+  useDataPublicationByFilters,
   useUpdateDOI,
 } from 'datagateway-common';
 import React from 'react';
@@ -44,6 +45,38 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
     parseInt(dataPublicationId)
   );
   const dataPublication = dataPublications?.[0];
+
+  const { data: versionDataPublications } = useDataPublicationByFilters([
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'relatedItems.relationType': { eq: 'IsVersionOf' },
+      }),
+    },
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'relatedItems.identifier': { eq: dataPublication?.pid },
+      }),
+    },
+    {
+      filterType: 'include',
+      filterValue: JSON.stringify([
+        {
+          content: {
+            dataCollectionInvestigations: {
+              investigation: {
+                investigationInstruments: 'instrument',
+              },
+            },
+            dataCollectionDatasets: 'dataset',
+            dataCollectionDatafiles: 'datafile',
+          },
+        },
+      ]),
+    },
+  ]);
+  const versionDataPublication = versionDataPublications?.[0];
 
   React.useEffect(() => {
     if (dataPublication) {
@@ -129,7 +162,7 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
                   setRelatedDOIs={setRelatedDOIs}
                   disableMintButton={false}
                   onMintClick={() => {
-                    if (dataPublication) {
+                    if (dataPublication && versionDataPublication) {
                       setShowMintConfirmation(true);
                       const creatorsList = selectedUsers
                         .filter(
@@ -148,15 +181,15 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
                         // TODO: add ability for user to edit the content
                         content: {
                           investigation_ids:
-                            dataPublication.content?.dataCollectionInvestigations?.map(
+                            versionDataPublication.content?.dataCollectionInvestigations?.map(
                               (dci) => dci.investigation.id
                             ) ?? [],
                           dataset_ids:
-                            dataPublication.content?.dataCollectionDatasets?.map(
+                            versionDataPublication.content?.dataCollectionDatasets?.map(
                               (dcd) => dcd.dataset.id
                             ) ?? [],
                           datafile_ids:
-                            dataPublication.content?.dataCollectionDatafiles?.map(
+                            versionDataPublication.content?.dataCollectionDatafiles?.map(
                               (dcd) => dcd.datafile.id
                             ) ?? [],
                         },

@@ -29,6 +29,9 @@ const DLSMyDOIsTable = (): React.ReactElement => {
     [location.search]
   );
 
+  /** TODO do we want to display concept dois instead of latest version DOIs (like Zenodo does iirc?)
+   * Is there a nicer way of checking for version vs concept? idk
+   */
   const { data: totalDataCount } = useDataPublicationCount([
     {
       filterType: 'where',
@@ -43,6 +46,12 @@ const DLSMyDOIsTable = (): React.ReactElement => {
           /* istanbul ignore next */
           eq: process.env.REACT_APP_E2E_TESTING ? 'ProjectLeader' : 'minter',
         },
+      }),
+    },
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'relatedItems.relationType': { eq: 'HasVersion' },
       }),
     },
   ]);
@@ -61,6 +70,12 @@ const DLSMyDOIsTable = (): React.ReactElement => {
           /* istanbul ignore next */
           eq: process.env.REACT_APP_E2E_TESTING ? 'ProjectLeader' : 'minter',
         },
+      }),
+    },
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'relatedItems.relationType': { eq: 'HasVersion' },
       }),
     },
   ]);
