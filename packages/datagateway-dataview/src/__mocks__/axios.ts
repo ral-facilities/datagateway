@@ -23,6 +23,7 @@ const requests = {
   post: jest.fn(() => Promise.resolve({ data: {} })),
   delete: jest.fn(() => Promise.resolve({ data: {} })),
   CancelToken: axios.CancelToken,
+  isAxiosError: axios.isAxiosError,
 };
 
 export default requests;

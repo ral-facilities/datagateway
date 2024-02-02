@@ -110,6 +110,10 @@ const SafeISISDatafilesTable = React.memo(
               parseInt(props.instrumentChildId),
               parseInt(props.investigationId)
             ),
+            checkInvestigationId(
+              parseInt(props.investigationId),
+              parseInt(props.datasetId)
+            ),
           ]).then((values) => !values.includes(false))
         )(ISISDatafilesTable);
 
@@ -292,6 +296,10 @@ const SafeDLSDatafilesTable = React.memo(
     const SafeDLSDatafilesTable = withIdCheck(
       Promise.all([
         checkProposalName(props.proposalName, parseInt(props.investigationId)),
+        checkInvestigationId(
+          parseInt(props.investigationId),
+          parseInt(props.datasetId)
+        ),
       ]).then((values) => !values.includes(false))
     )(DLSDatafilesTable);
 
