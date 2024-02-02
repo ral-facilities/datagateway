@@ -2,10 +2,11 @@ import axios, { AxiosResponse } from 'axios';
 import {
   handleICATError,
   Investigation,
+  Dataset,
+  Datafile,
   ConfigureURLsType,
   readSciGatewayToken,
 } from 'datagateway-common';
-import { Datafile } from 'datagateway-common/lib/app.types';
 import { Middleware, Dispatch, AnyAction } from 'redux';
 import memoize from 'lodash.memoize';
 
