@@ -4,7 +4,6 @@ import {
   DLSVisitDetailsPanel,
   externalSiteLink,
   FACILITY_NAME,
-  formatCountOrSize,
   formatBytes,
   Investigation,
   InvestigationDetailsPanel,
@@ -17,7 +16,6 @@ import {
   useDateFilter,
   useIds,
   useInvestigationCount,
-  useInvestigationsDatasetCount,
   useInvestigationsInfinite,
   useLuceneSearch,
   useRemoveFromCart,
@@ -148,12 +146,6 @@ const InvestigationSearchTable = (
     [cartItems, selectAllSetting, allIds]
   );
 
-  // hierarchy === 'isis' ? data : undefined is a 'hack' to only perform
-  // the correct calculation queries for each facility
-  const datasetCountQueries = useInvestigationsDatasetCount(
-    hierarchy !== 'isis' ? data : undefined
-  );
-
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
@@ -195,21 +187,10 @@ const InvestigationSearchTable = (
         filterComponent: textFilter,
       },
       {
-        label:
-          hierarchy === FACILITY_NAME.isis
-            ? t('investigations.size')
-            : t('investigations.dataset_count'),
-        dataKey: hierarchy === 'isis' ? 'size' : 'datasetCount',
-        cellContentRenderer: (cellProps: TableCellProps): number | string => {
-          return hierarchy === FACILITY_NAME.isis
-            ? formatBytes(cellProps.rowData.fileSize)
-            : formatCountOrSize(
-                //fileCount property returns Datafile count not Dataset count so
-                //datasetCountQueries is still required here
-                datasetCountQueries[cellProps.rowIndex],
-                hierarchy === 'isis'
-              );
-        },
+        label: t('investigations.size'),
+        dataKey: 'size',
+        cellContentRenderer: (cellProps: TableCellProps): number | string =>
+          formatBytes(cellProps.rowData.fileSize),
         disableSort: true,
       },
       {
@@ -247,7 +228,7 @@ const InvestigationSearchTable = (
         },
       },
     ],
-    [t, textFilter, hierarchy, dateFilter, datasetCountQueries]
+    [t, textFilter, hierarchy, dateFilter]
   );
 
   const detailsPanel = React.useCallback(

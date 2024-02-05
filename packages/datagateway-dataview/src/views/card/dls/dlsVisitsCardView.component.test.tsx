@@ -2,7 +2,6 @@ import {
   dGCommonInitialState,
   type Investigation,
   useInvestigationCount,
-  useInvestigationsDatasetCount,
   useInvestigationsPaginated,
 } from 'datagateway-common';
 import * as React from 'react';
@@ -31,7 +30,6 @@ jest.mock('datagateway-common', () => {
     ...originalModule,
     useInvestigationCount: jest.fn(),
     useInvestigationsPaginated: jest.fn(),
-    useInvestigationsDatasetCount: jest.fn(),
   };
 });
 
@@ -83,7 +81,6 @@ describe('DLS Visits - Card View', () => {
       data: cardData,
       isLoading: false,
     });
-    (useInvestigationsDatasetCount as jest.Mock).mockReturnValue({ data: 1 });
 
     // Prevent error logging
     window.scrollTo = jest.fn();
@@ -195,7 +192,6 @@ describe('DLS Visits - Card View', () => {
   it('renders fine with incomplete data', () => {
     (useInvestigationCount as jest.Mock).mockReturnValueOnce({});
     (useInvestigationsPaginated as jest.Mock).mockReturnValueOnce({});
-    (useInvestigationsDatasetCount as jest.Mock).mockReturnValueOnce([]);
 
     expect(() => renderComponent()).not.toThrowError();
   });

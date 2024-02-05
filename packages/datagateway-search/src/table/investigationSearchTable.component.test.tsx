@@ -10,7 +10,6 @@ import {
   useCart,
   useIds,
   useInvestigationCount,
-  useInvestigationsDatasetCount,
   useInvestigationsInfinite,
   useLuceneSearch,
   useRemoveFromCart,
@@ -56,7 +55,6 @@ jest.mock('datagateway-common', () => {
     useIds: jest.fn(),
     useAddToCart: jest.fn(),
     useRemoveFromCart: jest.fn(),
-    useInvestigationsDatasetCount: jest.fn(),
     useInvestigationSizes: jest.fn(),
   };
 });
@@ -164,19 +162,6 @@ describe('Investigation Search Table component', () => {
       mutate: jest.fn(),
       isLoading: false,
     });
-    (useInvestigationsDatasetCount as jest.Mock).mockImplementation(
-      (investigations) =>
-        (investigations
-          ? 'pages' in investigations
-            ? investigations.pages.flat()
-            : investigations
-          : []
-        ).map(() => ({
-          data: 1,
-          isFetching: false,
-          isSuccess: true,
-        }))
-    );
   });
 
   afterEach(() => {
@@ -652,30 +637,16 @@ describe('Investigation Search Table component', () => {
     expect(await findAllRows()).toHaveLength(1);
   });
 
-  it('renders generic link correctly & pending count correctly', async () => {
-    (useInvestigationsDatasetCount as jest.Mock).mockImplementation(() => [
-      {
-        isFetching: true,
-      },
-    ]);
+  it('renders generic link correctly', async () => {
     renderComponent('data');
 
     const titleColIndex = await findColumnIndexByName('investigations.title');
-    const datafileCountColIndex = await findColumnIndexByName(
-      'investigations.dataset_count'
-    );
     const row = await findRowAt(0);
     const titleCell = await findCellInRow(row, { columnIndex: titleColIndex });
-    const datafileCountCell = await findCellInRow(row, {
-      columnIndex: datafileCountColIndex,
-    });
 
     expect(
       within(titleCell).getByRole('link', { name: 'Test Title 1' })
     ).toHaveAttribute('href', '/browse/investigation/1/dataset');
-    expect(
-      within(datafileCountCell).getByText('Calculating...')
-    ).toBeInTheDocument();
   });
 
   it("renders DLS link correctly and doesn't allow for cart selection", async () => {

@@ -3,24 +3,23 @@ import {
   Table,
   tableLink,
   ColumnType,
-  formatCountOrSize,
   parseSearchToQuery,
   useDateFilter,
   useInvestigationCount,
   useInvestigationsInfinite,
-  useInvestigationsDatasetCount,
   useSort,
   useTextFilter,
   DLSVisitDetailsPanel,
+  formatBytes,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import {
   Fingerprint,
-  ConfirmationNumber,
   Assessment,
   CalendarToday,
+  Save,
 } from '@mui/icons-material';
 import { useLocation } from 'react-router-dom';
 
@@ -71,8 +70,6 @@ const DLSVisitsTable = (props: DLSVisitsTableProps): React.ReactElement => {
     isMounted
   );
 
-  const datasetCountQueries = useInvestigationsDatasetCount(data);
-
   /* istanbul ignore next */
   const aggregatedData: Investigation[] = React.useMemo(() => {
     if (data) {
@@ -113,11 +110,11 @@ const DLSVisitsTable = (props: DLSVisitsTableProps): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: ConfirmationNumber,
-        label: t('investigations.dataset_count'),
-        dataKey: 'datasetCount',
+        icon: Save,
+        label: t('investigations.size'),
+        dataKey: 'size',
         cellContentRenderer: (cellProps: TableCellProps): number | string =>
-          formatCountOrSize(datasetCountQueries[cellProps.rowIndex]),
+          formatBytes(cellProps.rowData.fileSize),
         disableSort: true,
       },
       {
@@ -149,7 +146,7 @@ const DLSVisitsTable = (props: DLSVisitsTableProps): React.ReactElement => {
         filterComponent: dateFilter,
       },
     ],
-    [t, dateFilter, textFilter, view, proposalName, datasetCountQueries]
+    [t, dateFilter, textFilter, view, proposalName]
   );
 
   return (

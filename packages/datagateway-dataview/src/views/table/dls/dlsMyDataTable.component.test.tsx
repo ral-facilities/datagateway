@@ -9,7 +9,6 @@ import {
   type Investigation,
   readSciGatewayToken,
   useInvestigationCount,
-  useInvestigationsDatasetCount,
   useInvestigationsInfinite,
 } from 'datagateway-common';
 import { createMemoryHistory, type MemoryHistory } from 'history';
@@ -42,7 +41,6 @@ jest.mock('datagateway-common', () => {
     ...originalModule,
     useInvestigationCount: jest.fn(),
     useInvestigationsInfinite: jest.fn(),
-    useInvestigationsDatasetCount: jest.fn(),
     readSciGatewayToken: jest.fn(),
   };
 });
@@ -110,9 +108,6 @@ describe('DLS MyData table component', () => {
       data: { pages: [rowData] },
       fetchNextPage: jest.fn(),
     });
-    (useInvestigationsDatasetCount as jest.Mock).mockReturnValue([
-      { data: 1, isSuccess: true },
-    ]);
     (readSciGatewayToken as jest.Mock).mockReturnValue({
       username: 'testUser',
     });

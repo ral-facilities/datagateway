@@ -6,7 +6,6 @@ import {
   dGCommonInitialState,
   Investigation,
   useInvestigationCount,
-  useInvestigationsDatasetCount,
   useInvestigationsInfinite,
 } from 'datagateway-common';
 import configureStore from 'redux-mock-store';
@@ -41,7 +40,6 @@ jest.mock('datagateway-common', () => {
     ...originalModule,
     useInvestigationCount: jest.fn(),
     useInvestigationsInfinite: jest.fn(),
-    useInvestigationsDatasetCount: jest.fn(),
   };
 });
 
@@ -109,12 +107,6 @@ describe('DLS Visits table component', () => {
       data: rowData,
       isLoading: false,
     });
-    (useInvestigationsDatasetCount as jest.Mock).mockReturnValue([
-      {
-        data: 1,
-        isSuccess: true,
-      },
-    ]);
   });
 
   afterEach(() => {
@@ -304,7 +296,6 @@ describe('DLS Visits table component', () => {
   it('renders fine with incomplete data', async () => {
     (useInvestigationCount as jest.Mock).mockReturnValueOnce({});
     (useInvestigationsInfinite as jest.Mock).mockReturnValueOnce({});
-    (useInvestigationsDatasetCount as jest.Mock).mockReturnValueOnce([]);
 
     (useInvestigationsInfinite as jest.Mock).mockReturnValueOnce({
       data: [
@@ -339,7 +330,6 @@ describe('DLS Visits table component', () => {
       ],
       isLoading: false,
     });
-    (useInvestigationsDatasetCount as jest.Mock).mockReturnValue([1]);
 
     renderComponent();
 
