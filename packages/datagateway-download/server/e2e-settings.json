@@ -3,6 +3,8 @@
   "apiUrl": "http://localhost:5000",
   "downloadApiUrl": "https://localhost:8181/topcat",
   "idsUrl": "https://localhost:8181/ids",
+  "doiMinterUrl": "http://localhost:8000",
+  "dataCiteUrl": "https://api.test.datacite.org",
   "fileCountMax": 5000,
   "totalSizeMax": 1000000000000,
   "accessMethods": {

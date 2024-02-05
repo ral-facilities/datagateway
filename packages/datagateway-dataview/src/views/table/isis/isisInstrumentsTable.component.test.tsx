@@ -47,13 +47,13 @@ describe('ISIS Instruments table component', () => {
   let history: History;
   let user: UserEvent;
 
-  const renderComponent = (studyHierarchy = false): RenderResult => {
+  const renderComponent = (dataPublication = false): RenderResult => {
     const store = mockStore(state);
     return render(
       <Provider store={store}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
-            <ISISInstrumentsTable studyHierarchy={studyHierarchy} />
+            <ISISInstrumentsTable dataPublication={dataPublication} />
           </QueryClientProvider>
         </Router>
       </Provider>
@@ -184,6 +184,11 @@ describe('ISIS Instruments table component', () => {
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"fullName":"asc"}')}`
     );
+
+    // check that the data request is sent only once after mounting
+    expect(useInstrumentsInfinite).toHaveBeenCalledTimes(2);
+    expect(useInstrumentsInfinite).toHaveBeenCalledWith(undefined, false);
+    expect(useInstrumentsInfinite).toHaveBeenLastCalledWith(undefined, true);
   });
 
   it('updates sort query params on sort', async () => {

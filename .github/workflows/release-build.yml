@@ -13,18 +13,17 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4
         with:
-          node-version: '16.x'
+          node-version: 20
           cache: 'yarn'
 
       - name: Install dependencies
         # Ubuntu 16+ does not install libgconf-2-4 by default, so we need to install it ourselves (for Cypress)
         run: |
-          npm config set scripts-prepend-node-path true
           sudo apt-get install libgconf-2-4
           yarn --immutable
 
@@ -65,7 +64,7 @@ jobs:
           tar -czf ../../datagateway-search-$TAG_NAME.tar.gz datagateway-search-$TAG_NAME
 
       - name: Update snapshot tag
-        uses: richardsimko/update-tag@v1
+        uses: richardsimko/update-tag@e173a8ef8f54ab526a91dad6139a25efed62424c # v1
         with:
           tag_name: ${{ env.TAG_NAME }}
         env:
@@ -73,7 +72,7 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' }}
 
       - name: Create/update release
-        uses: johnwbyrd/update-release@v1.0.0
+        uses: johnwbyrd/update-release@1d5ec4791e40507e5eca3b4dbf90f0b27e7e4979 # v1.0.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           files: ./datagateway-dataview-${{ env.TAG_NAME }}.tar.gz ./datagateway-download-${{ env.TAG_NAME }}.tar.gz ./datagateway-search-${{ env.TAG_NAME }}.tar.gz

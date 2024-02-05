@@ -1,51 +1,51 @@
 import {
+  CalendarToday,
+  Fingerprint,
+  Person,
+  Public,
+  Save,
+  Subject,
+} from '@mui/icons-material';
+import {
+  AdditionalFilters,
+  ColumnType,
+  DownloadButton,
+  externalSiteLink,
   formatBytes,
   Investigation,
-  Table,
-  tableLink,
-  externalSiteLink,
-  useISISInvestigationsInfinite,
-  useISISInvestigationCount,
-  useISISInvestigationIds,
-  ColumnType,
+  ISISInvestigationDetailsPanel,
   parseSearchToQuery,
+  Table,
+  TableActionProps,
+  tableLink,
   useAddToCart,
   useCart,
   useDateFilter,
+  useIds,
+  useInvestigationCount,
+  useInvestigationsInfinite,
   usePrincipalExperimenterFilter,
-  useSort,
   useRemoveFromCart,
+  useSort,
   useTextFilter,
-  TableActionProps,
-  DownloadButton,
-  ISISInvestigationDetailsPanel,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { IndexRange, TableCellProps } from 'react-virtualized';
-import { StateType } from '../../../state/app.types';
-
-import {
-  Subject,
-  Fingerprint,
-  Public,
-  Save,
-  Person,
-  CalendarToday,
-} from '@mui/icons-material';
 import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
+import { IndexRange, TableCellProps } from 'react-virtualized';
+import { StateType } from '../../../state/app.types';
 
 interface ISISInvestigationsTableProps {
   instrumentId: string;
   instrumentChildId: string;
-  studyHierarchy: boolean;
+  dataPublication: boolean;
 }
 
 const ISISInvestigationsTable = (
   props: ISISInvestigationsTableProps
 ): React.ReactElement => {
-  const { instrumentId, instrumentChildId, studyHierarchy } = props;
+  const { instrumentId, instrumentChildId, dataPublication } = props;
   const selectAllSetting = useSelector(
     (state: StateType) => state.dgdataview.selectAllSetting
   );
@@ -58,20 +58,64 @@ const ISISInvestigationsTable = (
     [location.search]
   );
 
-  const { data: totalDataCount } = useISISInvestigationCount(
-    parseInt(instrumentId),
-    parseInt(instrumentChildId),
-    studyHierarchy
+  const investigationQueryFilters: AdditionalFilters = [
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'investigationInstruments.instrument.id': {
+          eq: parseInt(instrumentId),
+        },
+      }),
+    },
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        [dataPublication
+          ? 'dataCollectionInvestigations.dataCollection.dataPublications.id'
+          : 'investigationFacilityCycles.facilityCycle.id']: {
+          eq: parseInt(instrumentChildId),
+        },
+      }),
+    },
+  ];
+
+  // isMounted is used to disable queries when the component isn't fully mounted.
+  // It prevents the request being sent twice if default sort is set.
+  // It is not needed for cards/tables that don't have default sort.
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const { data: totalDataCount } = useInvestigationCount(
+    investigationQueryFilters
   );
-  const { fetchNextPage, data } = useISISInvestigationsInfinite(
-    parseInt(instrumentId),
-    parseInt(instrumentChildId),
-    studyHierarchy
+  const { fetchNextPage, data } = useInvestigationsInfinite(
+    [
+      ...investigationQueryFilters,
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify([
+          {
+            investigationInstruments: 'instrument',
+          },
+          {
+            dataCollectionInvestigations: {
+              dataCollection: 'dataPublications',
+            },
+          },
+          {
+            investigationUsers: 'user',
+          },
+        ]),
+      },
+    ],
+    undefined,
+    isMounted
   );
-  const { data: allIds, isLoading: allIdsLoading } = useISISInvestigationIds(
-    parseInt(instrumentId),
-    parseInt(instrumentChildId),
-    studyHierarchy,
+  const { data: allIds, isLoading: allIdsLoading } = useIds(
+    'investigation',
+    investigationQueryFilters,
     selectAllSetting
   );
   const { data: cartItems, isLoading: cartLoading } = useCart();
@@ -117,8 +161,8 @@ const ISISInvestigationsTable = (
     [fetchNextPage]
   );
 
-  const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
-  const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
+  const pathRoot = dataPublication ? 'browseDataPublications' : 'browse';
+  const instrumentChild = dataPublication ? 'dataPublication' : 'facilityCycle';
   const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation`;
 
   const detailsPanel = React.useCallback(
@@ -158,13 +202,21 @@ const ISISInvestigationsTable = (
       {
         icon: Public,
         label: t('investigations.doi'),
-        dataKey: 'studyInvestigations.study.pid',
+        dataKey:
+          'dataCollectionInvestigations.dataCollection.dataPublications.pid',
+        // TODO: this was previously the Study DOI - currently there are no datapublication
+        // representations of Studies, only of Investigations themselves
+        // should this be showing the study DOI or the investigation DOI anyway?
         cellContentRenderer: (cellProps: TableCellProps) => {
           const investigationData = cellProps.rowData as Investigation;
-          if (investigationData?.studyInvestigations?.[0]?.study) {
+          if (
+            investigationData?.dataCollectionInvestigations?.[0]?.dataCollection
+              ?.dataPublications?.[0]
+          ) {
             return externalSiteLink(
-              `https://doi.org/${investigationData.studyInvestigations[0].study.pid}`,
-              investigationData.studyInvestigations[0].study.pid,
+              `https://doi.org/${investigationData.dataCollectionInvestigations?.[0]?.dataCollection?.dataPublications?.[0].pid}`,
+              investigationData.dataCollectionInvestigations?.[0]
+                ?.dataCollection?.dataPublications?.[0].pid,
               'isis-investigations-table-doi-link'
             );
           } else {

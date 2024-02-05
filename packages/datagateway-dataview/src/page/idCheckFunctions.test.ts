@@ -4,7 +4,7 @@ import {
   checkInstrumentAndFacilityCycleId,
   saveApiUrlMiddleware,
   checkInstrumentId,
-  checkStudyId,
+  checkDataPublicationId,
   checkDatafileId,
 } from './idCheckFunctions';
 import axios from 'axios';
@@ -35,11 +35,18 @@ describe('ID check functions', () => {
     const store = configureStore()({});
 
     await checkInvestigationId(1, 2);
+    const params = new URLSearchParams();
+    params.append(
+      'where',
+      JSON.stringify({
+        id: {
+          eq: 2,
+        },
+      })
+    );
+    params.append('where', JSON.stringify({ 'investigation.id': { eq: 1 } }));
     expect(axios.get).toHaveBeenCalledWith('/datasets/findone', {
-      params: {
-        where: { id: { eq: 2 } },
-        include: '"investigation"',
-      },
+      params,
       headers: { Authorization: 'Bearer null' },
     });
     (axios.get as jest.Mock).mockClear();
@@ -51,10 +58,7 @@ describe('ID check functions', () => {
 
     await checkInvestigationId(1, 2);
     expect(axios.get).toHaveBeenCalledWith('/test/datasets/findone', {
-      params: {
-        where: { id: { eq: 2 } },
-        include: '"investigation"',
-      },
+      params,
       headers: { Authorization: 'Bearer null' },
     });
 
@@ -76,24 +80,33 @@ describe('ID check functions', () => {
 
       const result = await checkInvestigationId(1, 2);
       expect(result).toBe(true);
+      const params = new URLSearchParams();
+      params.append(
+        'where',
+        JSON.stringify({
+          id: {
+            eq: 2,
+          },
+        })
+      );
+      params.append('where', JSON.stringify({ 'investigation.id': { eq: 1 } }));
       expect(axios.get).toHaveBeenCalledWith('/datasets/findone', {
-        params: {
-          where: { id: { eq: 2 } },
-          include: '"investigation"',
-        },
+        params,
         headers: { Authorization: 'Bearer null' },
       });
     });
     it('returns false on invalid investigation + dataset pair', async () => {
-      expect.assertions(1);
+      expect.assertions(2);
       (axios.get as jest.Mock).mockImplementation(() =>
-        Promise.resolve({
-          data: { id: 2, name: 'Test dataset', investigation: { id: 3 } },
+        Promise.reject({
+          response: { status: 404 },
+          isAxiosError: true,
         })
       );
 
       const result = await checkInvestigationId(1, 2);
       expect(result).toBe(false);
+      expect(handleICATError).not.toHaveBeenCalled();
     });
     it('returns false on HTTP error', async () => {
       expect.assertions(2);
@@ -164,13 +177,18 @@ describe('ID check functions', () => {
 
       const result = await checkInstrumentAndFacilityCycleId(1, 2, 3);
       expect(result).toBe(true);
-      expect(axios.get).toHaveBeenCalledWith(
-        '/instruments/1/facilitycycles/2/investigations/',
-        {
-          params: { where: { id: { eq: 3 } } },
-          headers: { Authorization: 'Bearer null' },
-        }
-      );
+      expect(axios.get).toHaveBeenCalledWith('/investigations', {
+        params: {
+          where: JSON.stringify({
+            id: { eq: 3 },
+            investigationInstrument: { instrument: { id: { eq: 1 } } },
+            investigationFacilityCycle: {
+              facilityCycle: { id: { eq: 2 } },
+            },
+          }),
+        },
+        headers: { Authorization: 'Bearer null' },
+      });
     });
     it('returns false on invalid instrument, facility cycle + investigation triple', async () => {
       expect.assertions(1);
@@ -200,11 +218,11 @@ describe('ID check functions', () => {
   });
 
   describe('checkInstrumentId', () => {
-    it('returns true on valid instrument + study pair', async () => {
+    it('returns true on valid instrument + data publication pair', async () => {
       expect.assertions(3);
       (axios.get as jest.Mock).mockImplementation(() =>
         Promise.resolve({
-          data: [{ id: 2, name: 'Test study' }],
+          data: [{ id: 2, name: 'Test Data Publication' }],
         })
       );
 
@@ -220,14 +238,14 @@ describe('ID check functions', () => {
       params.append(
         'where',
         JSON.stringify({
-          'studyInvestigations.investigation.investigationInstruments.instrument.id':
+          'content.dataCollectionInvestigations.investigation.investigationInstruments.instrument.id':
             {
               eq: 1,
             },
         })
       );
       expect(axios.get).toHaveBeenCalledWith(
-        '/studies/',
+        '/datapublications/',
         expect.objectContaining({
           params,
         })
@@ -263,8 +281,8 @@ describe('ID check functions', () => {
     });
   });
 
-  describe('checkStudyId', () => {
-    it('returns true on valid study + investigation pair', async () => {
+  describe('checkDataPublicationId', () => {
+    it('returns true on valid datapublication + investigation pair', async () => {
       expect.assertions(3);
       (axios.get as jest.Mock).mockImplementation(() =>
         Promise.resolve({
@@ -272,7 +290,7 @@ describe('ID check functions', () => {
         })
       );
 
-      const result = await checkStudyId(2, 3);
+      const result = await checkDataPublicationId(2, 3);
       expect(result).toBe(true);
       const params = new URLSearchParams();
       params.append(
@@ -284,7 +302,7 @@ describe('ID check functions', () => {
       params.append(
         'where',
         JSON.stringify({
-          'studyInvestigations.study.id': {
+          'dataCollectionInvestigations.dataCollection.dataPublications.id': {
             eq: 2,
           },
         })
@@ -299,7 +317,7 @@ describe('ID check functions', () => {
         params.toString()
       );
     });
-    it('returns false on invalid study + investigation pair', async () => {
+    it('returns false on invalid data publication + investigation pair', async () => {
       expect.assertions(1);
       (axios.get as jest.Mock).mockImplementation(() =>
         Promise.resolve({
@@ -307,7 +325,7 @@ describe('ID check functions', () => {
         })
       );
 
-      const result = await checkStudyId(2, 3);
+      const result = await checkDataPublicationId(2, 3);
       expect(result).toBe(false);
     });
     it('returns false on HTTP error', async () => {
@@ -318,7 +336,7 @@ describe('ID check functions', () => {
         })
       );
 
-      const result = await checkStudyId(2, 3);
+      const result = await checkDataPublicationId(2, 3);
       expect(result).toBe(false);
       expect(handleICATError).toHaveBeenCalledWith({
         message: 'Test error message',

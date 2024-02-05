@@ -2,7 +2,6 @@ import {
   Box,
   Divider,
   Grid,
-  Link as MuiLink,
   Paper,
   styled,
   Tab,
@@ -32,6 +31,7 @@ import {
   ArrowTooltip,
   getTooltipText,
   formatBytes,
+  externalSiteLink,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -75,7 +75,7 @@ const ActionButtonsContainer = styled('div')(({ theme }) => ({
 }));
 
 interface FormattedUser {
-  role: string;
+  role?: string;
   fullName: string;
 }
 
@@ -83,7 +83,7 @@ interface LandingPageProps {
   instrumentId: string;
   instrumentChildId: string;
   investigationId: string;
-  studyHierarchy: boolean;
+  dataPublication: boolean;
 }
 
 const LandingPage = (props: LandingPageProps): React.ReactElement => {
@@ -95,11 +95,11 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     [location.search]
   );
   const [value, setValue] = React.useState<'details'>('details');
-  const { instrumentId, instrumentChildId, investigationId, studyHierarchy } =
+  const { instrumentId, instrumentChildId, investigationId, dataPublication } =
     props;
 
-  const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
-  const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
+  const pathRoot = dataPublication ? 'browseDataPublications' : 'browse';
+  const instrumentChild = dataPublication ? 'dataPublication' : 'facilityCycle';
   const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}`;
 
   const { data } = useInvestigation(parseInt(investigationId), [
@@ -113,7 +113,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         'publications',
         'datasets',
         {
-          studyInvestigations: 'study',
+          dataCollectionInvestigations: { dataCollection: 'dataPublications' },
         },
         {
           investigationInstruments: 'instrument',
@@ -182,29 +182,28 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     {
       content: function doiFormat(entity: Investigation) {
         return (
-          entity?.doi && (
-            <MuiLink
-              href={`https://doi.org/${entity.doi}`}
-              data-testid="isis-investigation-landing-doi-link"
-            >
-              {entity.doi}
-            </MuiLink>
+          entity?.doi &&
+          externalSiteLink(
+            `https://doi.org/${entity.doi}`,
+            entity.doi,
+            'isis-investigation-landing-doi-link'
           )
         );
       },
       label: t('investigations.doi'),
       icon: <Public sx={shortInfoIconStyle} />,
     },
+    // TODO: when datapublications are created for studies, need to pick the study datapublication
     {
       content: function parentDoiFormat(entity: Investigation) {
         return (
-          entity?.studyInvestigations?.[0]?.study?.pid && (
-            <MuiLink
-              href={`https://doi.org/${entity.studyInvestigations[0].study.pid}`}
-              data-testid="isis-investigations-landing-parent-doi-link"
-            >
-              {entity.studyInvestigations[0].study.pid}
-            </MuiLink>
+          entity.dataCollectionInvestigations?.[0]?.dataCollection
+            ?.dataPublications?.[0] &&
+          externalSiteLink(
+            `https://doi.org/${entity.dataCollectionInvestigations?.[0]?.dataCollection?.dataPublications?.[0].pid}`,
+            entity.dataCollectionInvestigations?.[0]?.dataCollection
+              ?.dataPublications?.[0].pid,
+            'isis-investigations-landing-parent-doi-link'
           )
         );
       },
@@ -236,13 +235,12 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     },
     {
       content: function distributionFormat(entity: Investigation) {
-        return (
-          <MuiLink href="https://www.isis.stfc.ac.uk/Pages/ISIS-Raw-File-Format.aspx">
-            {t('doi_constants.distribution.format')}
-          </MuiLink>
+        return externalSiteLink(
+          'https://www.isis.stfc.ac.uk/Pages/ISIS-Raw-File-Format.aspx',
+          t('doi_constants.distribution.format')
         );
       },
-      label: t('studies.details.format'),
+      label: t('datapublications.details.format'),
       icon: <Storage sx={shortInfoIconStyle} />,
     },
     {
@@ -266,13 +264,11 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     {
       content: function doiFormat(entity: Dataset) {
         return (
-          entity?.doi && (
-            <MuiLink
-              href={`https://doi.org/${entity.doi}`}
-              aria-label="landing-study-doi-link"
-            >
-              {entity.doi}
-            </MuiLink>
+          entity?.doi &&
+          externalSiteLink(
+            `https://doi.org/${entity.doi}`,
+            entity.doi,
+            'landing-study-doi-link'
           )
         );
       },
@@ -354,7 +350,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               variant="h6"
               aria-label="landing-investigation-publisher-label"
             >
-              {t('studies.details.publisher')}
+              {t('datapublications.details.publisher')}
             </Subheading>
             <Typography aria-label="landing-investigation-publisher">
               {t('doi_constants.publisher.name')}
@@ -435,7 +431,6 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                         {field.content(data[0] as Investigation)}
                       </ShortInfoValue>
                     </ArrowTooltip>
-                    z
                   </ShortInfoRow>
                 )
             )}

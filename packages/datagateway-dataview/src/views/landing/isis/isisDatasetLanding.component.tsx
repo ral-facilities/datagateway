@@ -64,7 +64,7 @@ interface LandingPageProps {
   instrumentChildId: string;
   investigationId: string;
   datasetId: string;
-  studyHierarchy: boolean;
+  dataPublication: boolean;
 }
 
 const LandingPage = (props: LandingPageProps): React.ReactElement => {
@@ -81,11 +81,11 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     instrumentChildId,
     investigationId,
     datasetId,
-    studyHierarchy,
+    dataPublication,
   } = props;
 
-  const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
-  const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
+  const pathRoot = dataPublication ? 'browseDataPublications' : 'browse';
+  const instrumentChild = dataPublication ? 'dataPublication' : 'facilityCycle';
   const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset/${datasetId}`;
 
   const { data } = useDatasetDetails(parseInt(datasetId));

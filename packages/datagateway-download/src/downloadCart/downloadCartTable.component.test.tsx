@@ -4,21 +4,30 @@ import {
   RenderResult,
   screen,
   waitFor,
+  within,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { fetchDownloadCart } from 'datagateway-common';
-import { createMemoryHistory } from 'history';
+import { createMemoryHistory, MemoryHistory } from 'history';
 import * as React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 import { Router } from 'react-router-dom';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import { mockCartItems, mockedSettings } from '../testData';
 import {
   getFileSizeAndCount,
+  isCartMintable,
   removeAllDownloadCartItems,
   removeFromCart,
 } from '../downloadApi';
 import DownloadCartTable from './downloadCartTable.component';
+import { createTheme } from '@mui/material';
+
+setLogger({
+  log: console.log,
+  warn: console.warn,
+  error: jest.fn(),
+});
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -39,6 +48,7 @@ jest.mock('../downloadApi', () => {
     getFileSizeAndCount: jest.fn(),
     getIsTwoLevel: jest.fn().mockResolvedValue(true),
     removeFromCart: jest.fn(),
+    isCartMintable: jest.fn(),
   };
 });
 
@@ -51,16 +61,21 @@ const createTestQueryClient = (): QueryClient =>
     },
   });
 
-const renderComponent = (): RenderResult =>
-  render(
-    <QueryClientProvider client={createTestQueryClient()}>
-      <DownloadSettingsContext.Provider value={mockedSettings}>
-        <Router history={createMemoryHistory()}>
-          <DownloadCartTable statusTabRedirect={jest.fn()} />
-        </Router>
-      </DownloadSettingsContext.Provider>
-    </QueryClientProvider>
-  );
+const renderComponent = (): RenderResult & { history: MemoryHistory } => {
+  const history = createMemoryHistory();
+  return {
+    history: history,
+    ...render(
+      <QueryClientProvider client={createTestQueryClient()}>
+        <DownloadSettingsContext.Provider value={mockedSettings}>
+          <Router history={history}>
+            <DownloadCartTable statusTabRedirect={jest.fn()} />
+          </Router>
+        </DownloadSettingsContext.Provider>
+      </QueryClientProvider>
+    ),
+  };
+};
 
 describe('Download cart table component', () => {
   let holder, queryClient;
@@ -100,6 +115,9 @@ describe('Download cart table component', () => {
     (
       getFileSizeAndCount as jest.MockedFunction<typeof getFileSizeAndCount>
     ).mockResolvedValue({ fileSize: 1, fileCount: 7 });
+    (
+      isCartMintable as jest.MockedFunction<typeof isCartMintable>
+    ).mockResolvedValue(true);
   });
 
   afterEach(() => {
@@ -237,6 +255,8 @@ describe('Download cart table component', () => {
   });
 
   it('should sort data when headers are clicked', async () => {
+    // use skipHover to avoid triggering sort tooltips which slow the test down
+    user = userEvent.setup({ skipHover: true });
     renderComponent();
 
     const typeSortLabel = await screen.findByRole('button', {
@@ -267,7 +287,9 @@ describe('Download cart table component', () => {
       name: 'downloadCart.name',
     });
 
+    await user.keyboard('{Shift>}');
     await user.click(nameSortLabel);
+    await user.keyboard('{/Shift}');
 
     rows = await screen.findAllByText(/(DATAFILE|DATASET|INVESTIGATION) \d/);
     // row should be sorted by type desc & name asc.
@@ -276,7 +298,9 @@ describe('Download cart table component', () => {
     expect(rows[2]).toHaveTextContent('DATASET 1');
     expect(rows[3]).toHaveTextContent('DATAFILE 1');
 
+    await user.keyboard('{Shift>}');
     await user.click(nameSortLabel);
+    await user.keyboard('{/Shift}');
 
     rows = await screen.findAllByText(/(DATAFILE|DATASET|INVESTIGATION) \d/);
     // row should be sorted by type desc & name desc.
@@ -293,6 +317,15 @@ describe('Download cart table component', () => {
     expect(rows[1]).toHaveTextContent('INVESTIGATION 2');
     expect(rows[2]).toHaveTextContent('DATASET 1');
     expect(rows[3]).toHaveTextContent('DATAFILE 1');
+
+    await user.click(nameSortLabel);
+
+    rows = await screen.findAllByText(/(DATAFILE|DATASET|INVESTIGATION) \d/);
+    // row should be sorted by name asc.
+    expect(rows[0]).toHaveTextContent('DATAFILE 1');
+    expect(rows[1]).toHaveTextContent('DATASET 1');
+    expect(rows[2]).toHaveTextContent('INVESTIGATION 1');
+    expect(rows[3]).toHaveTextContent('INVESTIGATION 2');
   });
 
   it('should filter data when text fields are typed into', async () => {
@@ -424,5 +457,92 @@ describe('Download cart table component', () => {
         exact: true,
       })
     ).toBeTruthy();
+  });
+
+  it('should go to DOI generation form when Generate DOI button is clicked', async () => {
+    const { history } = renderComponent();
+
+    await user.click(
+      screen.getByRole('link', { name: 'downloadCart.generate_DOI' })
+    );
+
+    expect(history.location).toMatchObject({
+      pathname: '/download/mint',
+      state: { fromCart: true },
+    });
+  });
+
+  it('should disable Generate DOI button when mintability is loading', async () => {
+    (
+      isCartMintable as jest.MockedFunction<typeof isCartMintable>
+    ).mockImplementation(
+      () =>
+        new Promise((_) => {
+          // do nothing, simulating pending promise to test loading state
+        })
+    );
+    const { history } = renderComponent();
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const generateDOIButton = screen
+      .getByRole('link', { name: 'downloadCart.generate_DOI' })
+      .closest('span')!;
+
+    await user.hover(generateDOIButton);
+
+    expect(
+      await screen.findByText('downloadCart.mintability_loading')
+    ).toBeInTheDocument();
+
+    await user.click(generateDOIButton);
+
+    expect(history.location).not.toMatchObject({
+      pathname: '/download/mint',
+      state: { fromCart: true },
+    });
+  });
+
+  it('should disable Generate DOI button when cart is not mintable', async () => {
+    (
+      isCartMintable as jest.MockedFunction<typeof isCartMintable>
+    ).mockRejectedValue({
+      response: {
+        data: { detail: 'Not allowed to mint the following items: [2,4]' },
+        status: 403,
+      },
+    });
+    const { history } = renderComponent();
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const generateDOIButton = screen
+      .getByRole('link', { name: 'downloadCart.generate_DOI' })
+      .closest('span')!;
+
+    await user.hover(generateDOIButton);
+
+    expect(
+      await screen.findByText('downloadCart.not_mintable')
+    ).toBeInTheDocument();
+
+    const tableRows = within(
+      screen.getByRole('rowgroup', { name: 'grid' })
+    ).getAllByRole('row');
+    const muiErrorColor = createTheme().palette.error.main;
+    expect(tableRows[1]).toHaveStyle(`background-color: ${muiErrorColor}`);
+    expect(tableRows[1]).toHaveStyle(`background-color: ${muiErrorColor}`);
+    expect(tableRows[0]).not.toHaveStyle(`background-color: ${muiErrorColor}`);
+    expect(tableRows[2]).not.toHaveStyle(`background-color: ${muiErrorColor}`);
+
+    await user.click(generateDOIButton);
+
+    expect(history.location).not.toMatchObject({
+      pathname: '/download/mint',
+      state: { fromCart: true },
+    });
+
+    await user.unhover(generateDOIButton);
+    for (const row of tableRows) {
+      expect(row).not.toHaveStyle(`background-color: ${muiErrorColor}`);
+    }
   });
 });

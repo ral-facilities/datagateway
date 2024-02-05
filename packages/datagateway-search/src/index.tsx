@@ -36,7 +36,7 @@ function domElementGetter(): HTMLElement {
 const reactLifecycles = singleSpaReact({
   React,
   ReactDOM,
-  rootComponent: App,
+  rootComponent: () => (document.getElementById(pluginName) ? <App /> : null),
   domElementGetter,
 });
 

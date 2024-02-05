@@ -51,16 +51,18 @@ describe('Citation formatter component tests', () => {
     renderComponent(props);
 
     expect(
-      await screen.findByText('studies.details.citation_formatter.label')
-    ).toBeInTheDocument();
-    expect(
       await screen.findByText(
-        'studies.details.citation_formatter.details studies.details.citation_formatter.details_select_format'
+        'datapublications.details.citation_formatter.label'
       )
     ).toBeInTheDocument();
     expect(
       await screen.findByText(
-        'studies.details.citation_formatter.default_format'
+        'datapublications.details.citation_formatter.details datapublications.details.citation_formatter.details_select_format'
+      )
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByText(
+        'datapublications.details.citation_formatter.default_format'
       )
     ).toBeInTheDocument();
     expect(
@@ -70,7 +72,7 @@ describe('Citation formatter component tests', () => {
     ).toBeInTheDocument();
     expect(
       await screen.findByRole('button', {
-        name: 'studies.details.citation_formatter.copy_citation_arialabel',
+        name: 'datapublications.details.citation_formatter.copy_citation_arialabel',
       })
     ).toBeEnabled();
   });
@@ -80,14 +82,18 @@ describe('Citation formatter component tests', () => {
     renderComponent(newProps);
 
     expect(
-      await screen.findByText('studies.details.citation_formatter.label')
+      await screen.findByText(
+        'datapublications.details.citation_formatter.label'
+      )
     ).toBeInTheDocument();
     expect(
-      await screen.findByText('studies.details.citation_formatter.details')
+      await screen.findByText(
+        'datapublications.details.citation_formatter.details'
+      )
     ).toBeInTheDocument();
     expect(
       screen.queryByLabelText(
-        'studies.details.citation_formatter.select_arialabel'
+        'datapublications.details.citation_formatter.select_arialabel'
       )
     ).toBeNull();
     expect(
@@ -97,7 +103,7 @@ describe('Citation formatter component tests', () => {
     ).toBeInTheDocument();
     expect(
       await screen.findByRole('button', {
-        name: 'studies.details.citation_formatter.copy_citation_arialabel',
+        name: 'datapublications.details.citation_formatter.copy_citation_arialabel',
       })
     ).toBeEnabled();
   });
@@ -113,7 +119,7 @@ describe('Citation formatter component tests', () => {
     await user.click(
       within(
         await screen.findByLabelText(
-          'studies.details.citation_formatter.select_arialabel'
+          'datapublications.details.citation_formatter.select_arialabel'
         )
       ).getByRole('button')
     );
@@ -122,7 +128,7 @@ describe('Citation formatter component tests', () => {
 
     const params = new URLSearchParams({
       style: 'format2',
-      locale: 'studies.details.citation_formatter.locale',
+      locale: 'datapublications.details.citation_formatter.locale',
     });
 
     expect(axios.get).toHaveBeenCalledWith(
@@ -138,7 +144,7 @@ describe('Citation formatter component tests', () => {
     expect(await screen.findByText('This is a test')).toBeInTheDocument();
     expect(
       await screen.findByRole('button', {
-        name: 'studies.details.citation_formatter.copy_citation_arialabel',
+        name: 'datapublications.details.citation_formatter.copy_citation_arialabel',
       })
     ).toBeEnabled();
   });
@@ -157,7 +163,7 @@ describe('Citation formatter component tests', () => {
 
     await user.click(
       await screen.findByRole('button', {
-        name: 'studies.details.citation_formatter.copy_citation_arialabel',
+        name: 'datapublications.details.citation_formatter.copy_citation_arialabel',
       })
     );
 
@@ -166,7 +172,7 @@ describe('Citation formatter component tests', () => {
     );
     expect(
       await screen.findByRole('button', {
-        name: 'studies.details.citation_formatter.copied_citation',
+        name: 'datapublications.details.citation_formatter.copied_citation',
       })
     ).toBeInTheDocument();
   });
@@ -184,7 +190,7 @@ describe('Citation formatter component tests', () => {
     await user.click(
       within(
         await screen.findByLabelText(
-          'studies.details.citation_formatter.select_arialabel'
+          'datapublications.details.citation_formatter.select_arialabel'
         )
       ).getByRole('button')
     );
@@ -193,7 +199,7 @@ describe('Citation formatter component tests', () => {
 
     const params = new URLSearchParams({
       style: 'format2',
-      locale: 'studies.details.citation_formatter.locale',
+      locale: 'datapublications.details.citation_formatter.locale',
     });
 
     expect(axios.get).toHaveBeenCalledWith(
@@ -207,16 +213,20 @@ describe('Citation formatter component tests', () => {
     );
 
     expect(
-      await screen.findByText('studies.details.citation_formatter.error')
+      await screen.findByText(
+        'datapublications.details.citation_formatter.error'
+      )
     ).toBeInTheDocument();
     expect(
       await screen.findByRole('button', {
-        name: 'studies.details.citation_formatter.copy_citation_arialabel',
+        name: 'datapublications.details.citation_formatter.copy_citation_arialabel',
       })
     ).toBeDisabled();
   });
 
   it('displays loading spinner while waiting for a response from DataCite', async () => {
+    console.error = jest.fn();
+
     let reject: () => void;
     (axios.get as jest.Mock).mockReturnValueOnce(
       new Promise((_, _reject) => {
@@ -230,7 +240,7 @@ describe('Citation formatter component tests', () => {
     await user.click(
       within(
         await screen.findByLabelText(
-          'studies.details.citation_formatter.select_arialabel'
+          'datapublications.details.citation_formatter.select_arialabel'
         )
       ).getByRole('button')
     );

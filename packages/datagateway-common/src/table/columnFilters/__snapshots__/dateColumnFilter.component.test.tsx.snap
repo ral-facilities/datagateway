@@ -1,21 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Date filter component CustomClearButton renders correctly 1`] = `
-<DocumentFragment>
-  <button
-    class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-lu2usf-MuiButtonBase-root-MuiButton-root"
-    role="button"
-    tabindex="0"
-    type="button"
-  >
-    Clear
-    <span
-      class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-    />
-  </button>
-</DocumentFragment>
-`;
-
 exports[`Date filter component DatePicker functionality useDateFilter hook returns a function which can generate a working date filter 1`] = `
 <DocumentFragment>
   <form>
@@ -28,10 +12,12 @@ exports[`Date filter component DatePicker functionality useDateFilter hook retur
         <input
           aria-invalid="false"
           aria-label="Start Date filter from"
+          autocomplete="off"
           class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
           id="Start Date filter from"
+          inputmode="text"
           placeholder="From..."
-          type="tel"
+          type="text"
           value=""
         />
         <div
@@ -70,10 +56,12 @@ exports[`Date filter component DatePicker functionality useDateFilter hook retur
         <input
           aria-invalid="false"
           aria-label="Start Date filter to"
+          autocomplete="off"
           class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
           id="Start Date filter to"
+          inputmode="text"
           placeholder="To..."
-          type="tel"
+          type="text"
           value=""
         />
         <div
@@ -119,10 +107,12 @@ exports[`Date filter component renders correctly 1`] = `
         <input
           aria-invalid="false"
           aria-label="test filter from"
+          autocomplete="off"
           class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
           id="test filter from"
+          inputmode="text"
           placeholder="From..."
-          type="tel"
+          type="text"
           value="1999-01-01"
         />
         <div
@@ -161,10 +151,12 @@ exports[`Date filter component renders correctly 1`] = `
         <input
           aria-invalid="false"
           aria-label="test filter to"
+          autocomplete="off"
           class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
           id="test filter to"
+          inputmode="text"
           placeholder="To..."
-          type="tel"
+          type="text"
           value="2000-01-01"
         />
         <div

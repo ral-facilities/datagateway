@@ -7,18 +7,21 @@ describe('ISIS - MyData Table', () => {
   describe('Logged in tests', () => {
     beforeEach(() => {
       cy.intercept('**/investigations/count?*').as('getInvestigationCount');
-      cy.login({
-        username: 'root',
-        password: 'pw',
-        mechanism: 'simple',
-      });
+      cy.login(
+        {
+          username: 'root',
+          password: 'pw',
+          mechanism: 'simple',
+        },
+        'Richard459'
+      );
       // TODO - Does wait() need to be removed?
       cy.visit('/my-data/ISIS').wait(['@getInvestigationCount'], {
         timeout: 10000,
       });
       // Check that we have received the size from the API as this will produce
       // a re-render which can prevent some interactions.
-      cy.contains('[aria-rowindex="1"] [aria-colindex="8"]', '3.12 GB').should(
+      cy.contains('[aria-rowindex="1"] [aria-colindex="8"]', '3.31 GB').should(
         'exist'
       );
     });
@@ -32,31 +35,11 @@ describe('ISIS - MyData Table', () => {
       cy.get('.MuiTableSortLabel-iconDirectionDesc').should('exist');
     });
 
-    it('should disable the hover tool tip by pressing escape', () => {
-      // The hover tool tip has a enter delay of 500ms.
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.get('[data-testid="isis-mydata-table-title"]')
-        .first()
-        .trigger('mouseover', { force: true })
-        .wait(700)
-        .get('[role="tooltip"]')
-        .should('exist');
-
-      cy.get('body').type('{esc}');
-
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.get('[data-testid="isis-mydata-table-title"]')
-        .wait(700)
-        .first()
-        .get('[role="tooltip"]')
-        .should('not.exist');
-    });
-
     it('should be able to click an investigation to see its landing page', () => {
       cy.get('[role="gridcell"] a').first().click({ force: true });
       cy.location('pathname').should(
         'eq',
-        '/browse/instrument/3/facilityCycle/1/investigation/1'
+        '/browse/instrument/13/facilityCycle/12/investigation/31'
       );
     });
 
@@ -81,179 +64,115 @@ describe('ISIS - MyData Table', () => {
       cy.get('[aria-rowcount="75"]').should('exist');
     });
 
-    it('should be able to resize a column', () => {
-      let columnWidth = 0;
+    // only 1 investigation, so sort test kind of pointless
+    it.skip('should be able to sort by all sort directions on single and multiple columns', () => {
+      // Revert the default sort
+      cy.contains('[role="button"]', 'Start Date').click();
 
-      cy.window()
-        .then((window) => {
-          const windowWidth = window.innerWidth;
-          // Account for select and details column widths
-          columnWidth = (windowWidth - 40 - 40) / 8;
-        })
-        .then(() => expect(columnWidth).to.not.equal(0));
-
-      cy.get('[role="columnheader"]').eq(2).as('titleColumn');
-      cy.get('[role="columnheader"]').eq(3).as('doiColumn');
-
-      cy.get('@titleColumn').should(($column) => {
-        const { width } = $column[0].getBoundingClientRect();
-        expect(width).to.equal(columnWidth);
-      });
-
-      cy.get('@doiColumn').should(($column) => {
-        const { width } = $column[0].getBoundingClientRect();
-        expect(width).to.equal(columnWidth);
-      });
-
-      cy.get('.react-draggable')
+      // ascending order
+      cy.contains('[role="button"]', 'Title')
+        .as('titleSortButton')
         .first()
-        .trigger('mousedown')
-        .trigger('mousemove', { clientX: 200 })
-        .trigger('mouseup');
+        .click();
 
-      cy.get('@titleColumn').should(($column) => {
-        const { width } = $column[0].getBoundingClientRect();
-        expect(width).to.be.greaterThan(columnWidth);
-      });
+      cy.get('[aria-sort="ascending"]').should('exist');
+      cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
+        'Stop system investment'
+      );
 
-      cy.get('@doiColumn').should(($column) => {
-        const { width } = $column[0].getBoundingClientRect();
-        expect(width).to.be.lessThan(columnWidth);
-      });
+      // descending order
+      cy.get('@titleSortButton').click();
+      cy.get('[aria-sort="descending"]').should('exist');
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
+        'not.have.css',
+        'opacity',
+        '0'
+      );
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
+        'Stop system investment'
+      );
 
-      // table width should grow if a column grows too large
-      cy.get('.react-draggable')
-        .first()
-        .trigger('mousedown')
-        .trigger('mousemove', { clientX: 800 })
-        .trigger('mouseup');
+      // no order
+      cy.get('@titleSortButton').click();
 
-      cy.get('@doiColumn').should(($column) => {
-        const { width } = $column[0].getBoundingClientRect();
-        expect(width).to.be.equal(84);
-      });
+      cy.get('[aria-sort="ascending"]').should('not.exist');
+      cy.get('[aria-sort="descending"]').should('not.exist');
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
+      cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
+        'have.css',
+        'opacity',
+        '0'
+      );
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
+        'Stop system investment'
+      );
 
-      cy.get('[aria-label="grid"]').then(($grid) => {
-        const { width } = $grid[0].getBoundingClientRect();
-        cy.window().should(($window) => {
-          expect(width).to.be.greaterThan($window.innerWidth);
-        });
-      });
+      // multiple columns
+      cy.get('@titleSortButton').click();
+      cy.contains('[role="button"]', 'Instrument').click();
+
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
+        'Stop system investment'
+      );
     });
 
-    describe('should be able to sort by', () => {
-      beforeEach(() => {
-        //Revert the default sort
-        cy.contains('[role="button"]', 'Start Date').click();
-      });
+    it('should be able to filter with role, text & date filters on multiple columns', () => {
+      // role selector
+      cy.get('[aria-rowcount="1"]').should('exist');
 
-      it('ascending order', () => {
-        cy.contains('[role="button"]', 'Title').first().click();
+      cy.get('#role-selector').click();
+      cy.get('[role="listbox"]')
+        .find('[role="option"]')
+        .should('have.length', 2);
+      cy.get('[role="option"][data-value="CI"]').click();
 
-        cy.get('[aria-sort="ascending"]').should('exist');
-        cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
-        cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-          'Analysis reflect work or hour color maybe.'
-        );
-      });
+      cy.get('[role="progressbar"]').should('be.visible');
+      cy.get('[role="progressbar"]').should('not.exist');
 
-      it('descending order', () => {
-        cy.contains('[role="button"]', 'Title').click();
-        cy.contains('[role="button"]', 'Title').click();
-        cy.get('[aria-sort="descending"]').should('exist');
-        cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
-          'not.have.css',
-          'opacity',
-          '0'
-        );
-        cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-          'Analysis reflect work or hour color maybe.'
-        );
-      });
+      cy.get('[aria-rowcount="1"]').should('exist');
 
-      it('no order', () => {
-        cy.get('[aria-sort="ascending"]').should('not.exist');
-        cy.get('[aria-sort="descending"]').should('not.exist');
-        cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
-        cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
-          'have.css',
-          'opacity',
-          '0'
-        );
-        cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-          'Analysis reflect work or hour color maybe.'
-        );
-      });
+      // check that size is correct after filtering
+      cy.get('[aria-rowindex="1"] [aria-colindex="8"]').contains('3.31 GB');
 
-      it('multiple columns', () => {
-        cy.contains('[role="button"]', 'Title').click();
-        cy.contains('[role="button"]', 'Instrument').click();
+      cy.get('#role-selector').click();
+      cy.get('[role="option"]').first().click();
 
-        cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-          'Analysis reflect work or hour color maybe.'
-        );
-      });
-    });
+      cy.get('[aria-rowcount="1"]').should('exist');
 
-    describe('should be able to filter by', () => {
-      it('role', () => {
-        cy.get('[aria-rowcount="1"]').should('exist');
+      // text filter
+      cy.get('[aria-label="Filter by Title"]').type('stop');
 
-        cy.get('#role-selector').click();
-        cy.get('[role="listbox"]')
-          .find('[role="option"]')
-          .should('have.length', 2);
-        cy.get('[role="option"][data-value="PI"]').click();
+      cy.get('[role="progressbar"]').should('be.visible');
+      cy.get('[role="progressbar"]').should('not.exist');
 
-        cy.get('[aria-rowcount="1"]').should('exist');
+      cy.get('[aria-rowcount="1"]').should('exist');
+      cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains(
+        'INVESTIGATION 31'
+      );
 
-        // check that size is correct after filtering
-        cy.get('[aria-rowindex="1"] [aria-colindex="8"]').contains('3.12 GB');
+      cy.get('input[aria-label="Start Date filter to"]')
+        .parent()
+        .find('button')
+        .click();
 
-        cy.get('#role-selector').click();
-        cy.get('[role="option"]').first().click();
-        cy.get('[aria-rowcount="1"]').should('exist');
-      });
+      cy.get('.MuiPickersDay-root[type="button"]').first().click();
 
-      it('text', () => {
-        cy.get('[aria-rowcount="1"]').should('exist');
-        cy.get('input[id="Title-filter"]').type('color');
+      cy.get('[role="progressbar"]').should('be.visible');
+      cy.get('[role="progressbar"]').should('not.exist');
 
-        cy.get('[aria-rowcount="1"]').should('exist');
-        cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains(
-          'INVESTIGATION 1'
-        );
-      });
+      cy.get('[aria-rowcount="1"]').should('exist');
 
-      it('date between', () => {
-        cy.get('[aria-rowcount="1"]').should('exist');
+      cy.get('input[aria-label="Start Date filter from"]').type('2008-01-01');
 
-        const date = new Date();
-
-        cy.get('input[aria-label="Start Date filter to"]').type(
-          date.toISOString().slice(0, 10)
-        );
-
-        cy.get('input[id="Start Date filter from"]').type('2000-04-01');
-        cy.get('[aria-rowcount="1"]').should('exist');
-      });
-
-      it('multiple columns', () => {
-        cy.get('[aria-label="Filter by DOI"]').first().type('45');
-
-        cy.get('[aria-rowcount="1"]').should('exist');
-
-        cy.get('[aria-label="Filter by Title"]').first().type('or');
-
-        cy.get('[aria-rowcount="1"]').should('exist');
-      });
+      cy.get('[aria-rowcount="0"]').should('exist');
     });
 
     describe('should be able to view details', () => {
-      it('when no other row is showing details', () => {
+      it('and all the details are correct & also able to hide the panel', () => {
         cy.get('[aria-label="Show details"]').first().click();
 
-        // Study PID
+        // DataPublication PID
 
         cy.get('[data-testid="investigation-details-panel-pid-link"]')
           .first()
@@ -283,17 +202,13 @@ describe('ISIS - MyData Table', () => {
 
         cy.get('#details-panel').should('be.visible');
         cy.get('[aria-label="Hide details"]').should('exist');
-      });
-
-      it('and view investigation details, users, samples and publications', () => {
-        cy.get('[aria-label="Show details"]').first().click();
 
         cy.get('[aria-controls="investigation-details-panel"]').should(
           'be.visible'
         );
 
         cy.get('#details-panel')
-          .contains('Analysis reflect work or hour color maybe.')
+          .contains('Stop system investment')
           .should('be.visible');
 
         cy.get('[aria-controls="investigation-samples-panel"]').should(
@@ -301,14 +216,14 @@ describe('ISIS - MyData Table', () => {
         );
         cy.get('[aria-controls="investigation-samples-panel"]').click();
 
-        cy.get('#details-panel').contains('SAMPLE 1').should('be.visible');
+        cy.get('#details-panel').contains('SAMPLE 31').should('be.visible');
 
         cy.get('[aria-controls="investigation-users-panel"]').should(
           'be.visible'
         );
         cy.get('[aria-controls="investigation-users-panel"]').click();
 
-        cy.get('#details-panel').contains('Colleen Heath').should('be.visible');
+        cy.get('#details-panel').contains('Dustin Hall').should('be.visible');
 
         cy.get('[aria-controls="investigation-publications-panel"]').should(
           'be.visible'
@@ -316,8 +231,13 @@ describe('ISIS - MyData Table', () => {
         cy.get('[aria-controls="investigation-publications-panel"]').click();
 
         cy.get('#details-panel')
-          .contains('Simple notice since view check over through there.')
+          .contains('Pressure meeting would year but energy.')
           .should('be.visible');
+
+        cy.get('[aria-label="Hide details"]').first().click();
+
+        cy.get('#details-panel').should('not.exist');
+        cy.get('[aria-label="Hide details"]').should('not.exist');
       });
 
       it('and view datasets', () => {
@@ -326,32 +246,8 @@ describe('ISIS - MyData Table', () => {
 
         cy.location('pathname').should(
           'eq',
-          '/browse/instrument/3/facilityCycle/1/investigation/1/dataset'
+          '/browse/instrument/13/facilityCycle/12/investigation/31/dataset'
         );
-      });
-
-      it.skip('when another row is showing details', () => {
-        // Unable to test as each user only owns a single investigation.
-        cy.get('[aria-label="Show details"]').eq(1).click();
-
-        cy.get('[aria-label="Show details"]').first().click();
-
-        cy.get('#details-panel')
-          .contains('Resource himself season pattern which cold spring.')
-          .should('be.visible');
-        cy.get('#details-panel')
-          .contains('Experience ready course option.')
-          .should('not.exist');
-        cy.get('[aria-label="Hide details"]').should('have.length', 1);
-      });
-
-      it('and then not view details anymore', () => {
-        cy.get('[aria-label="Show details"]').first().click();
-
-        cy.get('[aria-label="Hide details"]').first().click();
-
-        cy.get('#details-panel').should('not.exist');
-        cy.get('[aria-label="Hide details"]').should('not.exist');
       });
     });
   });

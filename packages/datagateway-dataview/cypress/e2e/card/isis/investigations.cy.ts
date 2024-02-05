@@ -3,56 +3,17 @@ describe('ISIS - Investigations Cards', () => {
     cy.intercept('**/investigations/count*').as('getInvestigationsCount');
     cy.intercept('**/investigations?order*').as('getInvestigationsOrder');
     cy.login();
-    cy.visit('/browse/instrument/1/facilityCycle/19/investigation').wait(
-      ['@getInvestigationsCount', '@getInvestigationsOrder'],
-      { timeout: 10000 }
-    );
-    cy.get('[aria-label="page view Display as cards"]').click();
+    cy.visit(
+      '/browse/instrument/13/facilityCycle/12/investigation?view=card'
+    ).wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
+      timeout: 10000,
+    });
   });
 
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');
 
-    //Default sort
-    cy.contains('[role="button"]', 'desc').should('exist');
-    cy.get('.MuiTableSortLabel-iconDirectionDesc').should('be.visible');
-  });
-
-  it('should be able to click an investigation to see its datasets', () => {
-    cy.get('[data-testid="card"]')
-      .first()
-      .contains('Fine strong education fill maintain.')
-      .click({ force: true });
-    cy.location('pathname').should(
-      'eq',
-      '/browse/instrument/1/facilityCycle/19/investigation/19'
-    );
-  });
-
-  it('should disable the hover tool tip by pressing escape', () => {
-    // The hover tool tip has a enter delay of 500ms.
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.get('[data-testid="card"]')
-      .get('[data-testid="isis-investigations-card-title"]')
-      .first()
-      .trigger('mouseover', { force: true })
-      .wait(700)
-      .get('[role="tooltip"]')
-      .should('exist');
-
-    cy.get('body').type('{esc}');
-
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.get('[data-testid="card"]')
-      .get('[data-testid="isis-investigations-card-title"]')
-      .wait(700)
-      .first()
-      .get('[role="tooltip"]')
-      .should('not.exist');
-  });
-
-  it('should have the correct url for the DOI link', () => {
     cy.get('[data-testid="card"]')
       .first()
       .get('[data-testid="isis-investigations-card-doi-link"]')
@@ -68,6 +29,21 @@ describe('ISIS - Investigations Cards', () => {
           .first()
           .should('have.attr', 'href', url);
       });
+
+    //Default sort
+    cy.contains('[role="button"]', 'desc').should('exist');
+    cy.get('.MuiTableSortLabel-iconDirectionDesc').should('be.visible');
+  });
+
+  it('should be able to click an investigation to see its datasets', () => {
+    cy.get('[data-testid="card"]')
+      .first()
+      .contains('Stop system investment')
+      .click({ force: true });
+    cy.location('pathname').should(
+      'eq',
+      '/browse/instrument/13/facilityCycle/12/investigation/31'
+    );
   });
 
   it('should be able to expand "More Information"', () => {
@@ -79,9 +55,9 @@ describe('ISIS - Investigations Cards', () => {
     cy.get('[data-testid="card"]')
       .first()
       .get('[aria-label="card-more-information"]')
-      .contains('INVESTIGATION 19');
+      .contains('INVESTIGATION 31');
 
-    // Study PID
+    // DataPublication PID
 
     cy.get('[data-testid="card"]')
       .first()
@@ -122,121 +98,90 @@ describe('ISIS - Investigations Cards', () => {
     cy.get('[data-testid="card"]')
       .first()
       .get('[aria-label="card-more-information"]')
-      .contains('Ashley Brown');
+      .contains('Dustin Hall');
     cy.get('#investigation-samples-tab').click({ force: true });
 
     cy.get('[data-testid="card"]')
       .first()
       .get('[aria-label="card-more-information"]')
-      .contains('SAMPLE 19');
+      .contains('SAMPLE 31');
 
     cy.get('#investigation-publications-tab').click({ force: true });
 
     cy.get('[data-testid="card"]')
       .first()
       .get('[aria-label="card-more-information"]')
-      .contains('Value impact paper apply likely. ');
+      .contains('Pressure meeting would year but energy');
 
     cy.get('#investigation-datasets-tab').click({ force: true });
 
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/19/investigation/19/dataset'
+      '/browse/instrument/13/facilityCycle/12/investigation/31/dataset'
     );
   });
 
-  describe('should be able to sort by', () => {
-    beforeEach(() => {
-      //Revert the default sort
-      cy.contains('[role="button"]', 'Start Date')
-        .click()
-        .wait('@getInvestigationsOrder', { timeout: 10000 });
-    });
+  it('should be able to sort by one field or multiple', () => {
+    //Revert the default sort
+    cy.contains('[role="button"]', 'Start Date').as('dateSortButton').click();
+    cy.wait('@getInvestigationsOrder', { timeout: 10000 });
 
-    it('one field', () => {
-      cy.contains('[role="button"]', 'Title')
-        .click()
-        .wait('@getInvestigationsOrder', { timeout: 10000 });
-      cy.contains('[role="button"]', 'asc').should('exist');
-      cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('[data-testid="card"]')
-        .first()
-        .contains('Fine strong education fill maintain.');
+    // ascending
+    cy.contains('[role="button"]', 'Title').as('titleSortButton').click();
+    cy.wait('@getInvestigationsOrder', { timeout: 10000 });
+    cy.contains('[role="button"]', 'asc').should('exist');
+    cy.contains('[role="button"]', 'desc').should('not.exist');
+    cy.get('[data-testid="card"]').first().contains('Stop system investment');
 
-      cy.contains('[role="button"]', 'Title')
-        .click()
-        .wait('@getInvestigationsOrder', { timeout: 10000 });
-      cy.contains('[role="button"]', 'asc').should('not.exist');
-      cy.contains('[role="button"]', 'desc').should('exist');
-      cy.get('[data-testid="card"]')
-        .first()
-        .contains('Fine strong education fill maintain.');
+    // descending
+    cy.get('@titleSortButton').click();
+    cy.wait('@getInvestigationsOrder', { timeout: 10000 });
+    cy.contains('[role="button"]', 'asc').should('not.exist');
+    cy.contains('[role="button"]', 'desc').should('exist');
+    cy.get('[data-testid="card"]').first().contains('Stop system investment');
 
-      cy.contains('[role="button"]', 'Title')
-        .click()
-        .wait('@getInvestigationsOrder', { timeout: 10000 });
-      cy.contains('[role="button"]', 'asc').should('not.exist');
-      cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('[data-testid="card"]')
-        .first()
-        .contains('Fine strong education fill maintain.');
-    });
+    // no order
+    cy.get('@titleSortButton').click();
+    cy.contains('[role="button"]', 'asc').should('not.exist');
+    cy.contains('[role="button"]', 'desc').should('not.exist');
+    cy.get('[data-testid="card"]').first().contains('Stop system investment');
 
-    it('multiple fields', () => {
-      cy.contains('[role="button"]', 'Start Date')
-        .click()
-        .wait('@getInvestigationsOrder', { timeout: 10000 });
-      cy.contains('[role="button"]', 'asc').should('exist');
-      cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('[data-testid="card"]')
-        .first()
-        .contains('Fine strong education fill maintain.');
+    // multiple fields (shift click)
+    cy.get('@dateSortButton').click();
+    cy.get('@titleSortButton').click({ shiftKey: true });
+    cy.wait('@getInvestigationsOrder', { timeout: 10000 });
 
-      cy.contains('[role="button"]', 'Title')
-        .click()
-        .wait('@getInvestigationsOrder', { timeout: 10000 });
-      cy.contains('[role="button"]', 'asc').should('exist');
-      cy.contains('[role="button"]', 'desc').should('not.exist');
-      cy.get('[data-testid="card"]')
-        .first()
-        .contains('Fine strong education fill maintain.');
-    });
+    cy.contains('[aria-label="Sort by TITLE"]', 'asc').should('exist');
+    cy.contains('[aria-label="Sort by START DATE"]', 'asc').should('exist');
+    cy.contains('[role="button"]', 'desc').should('not.exist');
+    cy.get('[data-testid="card"]').first().contains('Stop system investment');
+
+    // should replace current sort if clicked without shift
+    cy.get('@titleSortButton').click();
+    cy.wait('@getInvestigationsOrder', { timeout: 10000 });
+
+    cy.contains('[aria-label="Sort by TITLE"]', 'desc').should('exist');
+    cy.contains('[aria-label="Sort by START DATE"]', 'asc').should('not.exist');
+    cy.contains('[role="button"]', 'asc').should('not.exist');
+    cy.get('[data-testid="card"]').first().contains('Stop system investment');
   });
 
-  describe('should be able to filter by', () => {
-    beforeEach(() => {
-      //Revert the default sort
-      cy.contains('[role="button"]', 'Start Date')
-        .click()
-        .wait('@getInvestigationsOrder', { timeout: 10000 });
+  it('should be able to filter by multiple fields', () => {
+    cy.get('[data-testid="advanced-filters-link"]').click();
+    cy.get('[aria-label="Filter by Title"]').first().type('stop');
+    cy.wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
+      timeout: 10000,
     });
 
-    it('multiple fields', () => {
-      cy.get('[data-testid="advanced-filters-link"]').click();
-      cy.get('[aria-label="Filter by Title"]')
-        .first()
-        .type('education')
-        .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
-          timeout: 10000,
-        });
+    cy.get('[data-testid="card"]').first().contains('Stop system investment');
+    // check that size is correct after filtering
+    cy.get('[data-testid="card"]').first().contains('3.31 GB');
 
-      cy.get('[data-testid="card"]')
-        .first()
-        .contains('Fine strong education fill maintain.');
-      // check that size is correct after filtering
-      cy.get('[data-testid="card"]').first().contains('2.82 GB');
-
-      cy.get('input[id="Start Date filter from"]')
-        .click()
-        .type('2004-01-01')
-        .wait(['@getInvestigationsCount'], { timeout: 10000 });
-      cy.get('[data-testid="card"]')
-        .first()
-        .contains('Fine strong education fill maintain.');
-      cy.get('input[id="Start Date filter to"]')
-        .type('2004-07-01')
-        .wait(['@getInvestigationsCount'], { timeout: 10000 });
-      cy.get('[data-testid="card"]').should('not.exist');
-    });
+    cy.get('input[id="Start Date filter from"]').type('2007-08-01');
+    cy.wait(['@getInvestigationsCount'], { timeout: 10000 });
+    cy.get('[data-testid="card"]').first().contains('Stop system investment');
+    cy.get('input[id="Start Date filter to"]').type('2007-08-02');
+    cy.wait(['@getInvestigationsCount'], { timeout: 10000 });
+    cy.get('[data-testid="card"]').should('not.exist');
   });
 });

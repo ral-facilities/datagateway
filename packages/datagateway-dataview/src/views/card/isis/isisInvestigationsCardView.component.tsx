@@ -1,29 +1,31 @@
-import { Link as MuiLink, styled } from '@mui/material';
 import {
+  CalendarToday,
   Fingerprint,
+  Person,
   Public,
   Save,
-  Person,
-  CalendarToday,
 } from '@mui/icons-material';
+import { styled } from '@mui/material';
 import {
+  AdditionalFilters,
+  AddToCartButton,
   CardView,
   CardViewDetails,
   Investigation,
   tableLink,
+  DownloadButton,
+  externalSiteLink,
+  ISISInvestigationDetailsPanel,
   parseSearchToQuery,
   useDateFilter,
-  useISISInvestigationCount,
-  useISISInvestigationsPaginated,
+  useInvestigationCount,
+  useInvestigationsPaginated,
   usePrincipalExperimenterFilter,
   usePushFilter,
   usePushPage,
   usePushResults,
   useSort,
   useTextFilter,
-  AddToCartButton,
-  DownloadButton,
-  ISISInvestigationDetailsPanel,
   formatBytes,
 } from 'datagateway-common';
 import React from 'react';
@@ -42,13 +44,13 @@ const ActionButtonsContainer = styled('div')(({ theme }) => ({
 interface ISISInvestigationsCardViewProps {
   instrumentId: string;
   instrumentChildId: string;
-  studyHierarchy: boolean;
+  dataPublication: boolean;
 }
 
 const ISISInvestigationsCardView = (
   props: ISISInvestigationsCardViewProps
 ): React.ReactElement => {
-  const { instrumentId, instrumentChildId, studyHierarchy } = props;
+  const { instrumentId, instrumentChildId, dataPublication } = props;
 
   const [t] = useTranslation();
   const location = useLocation();
@@ -67,20 +69,63 @@ const ISISInvestigationsCardView = (
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
+  const investigationQueryFilters: AdditionalFilters = [
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'investigationInstruments.instrument.id': {
+          eq: parseInt(instrumentId),
+        },
+      }),
+    },
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        [dataPublication
+          ? 'dataCollectionInvestigations.dataCollection.dataPublications.id'
+          : 'investigationFacilityCycles.facilityCycle.id']: {
+          eq: parseInt(instrumentChildId),
+        },
+      }),
+    },
+  ];
+
+  // isMounted is used to disable queries when the component isn't fully mounted.
+  // It prevents the request being sent twice if default sort is set.
+  // It is not needed for cards/tables that don't have default sort.
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const { data: totalDataCount, isLoading: countLoading } =
-    useISISInvestigationCount(
-      parseInt(instrumentId),
-      parseInt(instrumentChildId),
-      studyHierarchy
-    );
-  const { data, isLoading: dataLoading } = useISISInvestigationsPaginated(
-    parseInt(instrumentId),
-    parseInt(instrumentChildId),
-    studyHierarchy
+    useInvestigationCount(investigationQueryFilters);
+  const { data, isLoading: dataLoading } = useInvestigationsPaginated(
+    [
+      ...investigationQueryFilters,
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify([
+          {
+            investigationInstruments: 'instrument',
+          },
+          {
+            dataCollectionInvestigations: {
+              dataCollection: 'dataPublications',
+            },
+          },
+          {
+            investigationUsers: 'user',
+          },
+        ]),
+      },
+    ],
+    undefined,
+    isMounted
   );
 
-  const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
-  const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
+  const pathRoot = dataPublication ? 'browseDataPublications' : 'browse';
+  const instrumentChild = dataPublication ? 'dataPublication' : 'facilityCycle';
   const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation`;
 
   const title: CardViewDetails = React.useMemo(
@@ -117,21 +162,28 @@ const ISISInvestigationsCardView = (
         filterComponent: textFilter,
       },
       {
+        // TODO: this was previously the Study DOI - currently there are no datapublication
+        // representations of Studies, only of Investigations themselves
+        // should this be showing the study DOI or the investigation DOI anyway?
         content: function doiFormat(entity: Investigation) {
-          return (
-            entity?.studyInvestigations?.[0]?.study?.pid && (
-              <MuiLink
-                href={`https://doi.org/${entity.studyInvestigations[0].study.pid}`}
-                data-testid="isis-investigations-card-doi-link"
-              >
-                {entity.studyInvestigations[0].study?.pid}
-              </MuiLink>
-            )
-          );
+          if (
+            entity?.dataCollectionInvestigations?.[0]?.dataCollection
+              ?.dataPublications?.[0]
+          ) {
+            return externalSiteLink(
+              `https://doi.org/${entity.dataCollectionInvestigations?.[0]?.dataCollection?.dataPublications?.[0].pid}`,
+              entity.dataCollectionInvestigations?.[0]?.dataCollection
+                ?.dataPublications?.[0].pid,
+              'isis-investigations-card-doi-link'
+            );
+          } else {
+            return '';
+          }
         },
         icon: Public,
         label: t('investigations.doi'),
-        dataKey: 'studyInvestigations[0].study.pid',
+        dataKey:
+          'dataCollectionInvestigations.dataCollection.dataPublications.pid',
         filterComponent: textFilter,
       },
       {

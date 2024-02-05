@@ -9,19 +9,17 @@ import type { PreviewComponentProps } from './previewComponents';
 const TextContainer = styled('pre')<{ fontSize: number }>(({ fontSize }) => ({
   margin: 0,
   fontSize,
-  counterReset: 'line',
-  display: 'grid',
-  gridTemplateColumns: 'min-content 1fr',
-  gridAutoRows: 'min-content',
   flex: 1,
+  display: 'flex',
+  flexDirection: 'column',
 }));
 
 const LineNumber = styled('span')(({ theme }) => ({
   textAlign: 'right',
-  paddingLeft: theme.spacing(2),
-  paddingRight: theme.spacing(3),
-  paddingTop: theme.spacing(0.5),
-  paddingBottom: theme.spacing(0.5),
+  paddingLeft: theme.spacing(1),
+  paddingRight: theme.spacing(1),
+  paddingTop: theme.spacing(1),
+  paddingBottom: theme.spacing(1),
   opacity: 0.8,
   borderRight: `1px solid ${theme.palette.text.disabled}`,
   // disable text select for line numbers, it makes text selection a lot easier
@@ -31,9 +29,9 @@ const LineNumber = styled('span')(({ theme }) => ({
 
 const TextLine = styled('code')(({ theme }) => ({
   paddingLeft: theme.spacing(2),
-  paddingTop: theme.spacing(0.5),
-  paddingBottom: theme.spacing(0.5),
-  counterIncrement: 'line',
+  paddingTop: theme.spacing(1),
+  paddingBottom: theme.spacing(1),
+  flexGrow: 1,
   // highlight the current line when hovered over.
   '&:hover': {
     backgroundColor: theme.palette.action.hover,
@@ -90,6 +88,8 @@ function TextPreview({
     );
   }
 
+  const lines = textContent.split('\n');
+
   return (
     <TextContainer
       fontSize={fontSize}
@@ -97,11 +97,13 @@ function TextPreview({
         fileName: datafile.name,
       })}
     >
-      {textContent.split('\n').map((line, i) => (
-        <React.Fragment key={i}>
-          <LineNumber>{i + 1}</LineNumber>
+      {lines.map((line, i) => (
+        <span style={{ display: 'flex' }} key={i}>
+          <LineNumber>
+            {`${i + 1}`.padStart(`${lines.length}`.length)}
+          </LineNumber>
           <TextLine>{`${line}\n`}</TextLine>
-        </React.Fragment>
+        </span>
       ))}
     </TextContainer>
   );

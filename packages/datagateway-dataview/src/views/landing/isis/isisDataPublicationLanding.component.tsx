@@ -17,22 +17,21 @@ import {
   Storage,
 } from '@mui/icons-material';
 import {
-  Investigation,
-  InvestigationUser,
-  parseSearchToQuery,
-  Study,
-  tableLink,
-  useStudy,
-  ViewsType,
-  AddToCartButton,
+  DataPublication,
+  useDataPublication,
   ArrowTooltip,
   getTooltipText,
+  Investigation,
+  tableLink,
+  AddToCartButton,
+  ViewsType,
+  parseSearchToQuery,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory, useLocation } from 'react-router-dom';
 import Branding from './isisBranding.component';
 import CitationFormatter from '../../citationFormatter.component';
+import { useHistory, useLocation } from 'react-router-dom';
 
 const Subheading = styled(Typography)(({ theme }) => ({
   marginTop: theme.spacing(1),
@@ -70,13 +69,13 @@ const ActionButtonsContainer = styled('div')(({ theme }) => ({
 }));
 
 export interface FormattedUser {
-  role: string;
+  contributorType?: string;
   fullName: string;
 }
 
 interface LandingPageProps {
+  dataPublicationId: string;
   instrumentId: string;
-  studyId: string;
 }
 
 interface LinkedInvestigationProps {
@@ -94,20 +93,9 @@ const LinkedInvestigation = (
 
   const shortInvestigationInfo = [
     {
-      content: function doiFormat(entity: Investigation) {
-        return (
-          entity?.doi && (
-            <MuiLink
-              href={`https://doi.org/${entity.doi}`}
-              data-testid="landing-study-doi-link"
-            >
-              {entity.doi}
-            </MuiLink>
-          )
-        );
-      },
-      label: t('investigations.doi'),
-      icon: <Public sx={shortInfoIconStyle} />,
+      content: (entity: Investigation) => entity.name,
+      label: t('investigations.name'),
+      icon: <Fingerprint sx={shortInfoIconStyle} />,
     },
     {
       content: (entity: Investigation) =>
@@ -127,7 +115,7 @@ const LinkedInvestigation = (
       <Subheading
         variant="h6"
         align="center"
-        data-testid="landing-study-part-label"
+        data-testid="landing-datapublication-part-label"
       >
         {tableLink(
           `${props.urlPrefix}/investigation/${investigation.id}`,
@@ -167,24 +155,20 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   );
 
   const [value, setValue] = React.useState<'details'>('details');
-  const { instrumentId, studyId } = props;
+  const { instrumentId, dataPublicationId } = props;
 
-  const pathRoot = 'browseStudyHierarchy';
-  const instrumentChild = 'study';
-  const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${studyId}`;
+  const pathRoot = 'browseDataPublications';
+  const instrumentChild = 'dataPublication';
+  const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${dataPublicationId}`;
 
-  const { data } = useStudy(parseInt(studyId));
+  const { data } = useDataPublication(parseInt(dataPublicationId));
 
-  const pid = React.useMemo(() => data?.[0]?.pid, [data]);
-  const title = React.useMemo(
-    () => data?.[0]?.studyInvestigations?.[0]?.investigation?.title,
-    [data]
-  );
-  const summary = React.useMemo(
+  const pid = data?.[0]?.pid;
+  const title = data?.[0]?.title;
+  const description = React.useMemo(
     () =>
-      data?.[0]?.studyInvestigations?.[0]?.investigation?.summary &&
-      data[0].studyInvestigations[0].investigation.summary !== 'null'
-        ? data[0].studyInvestigations[0].investigation.summary
+      data?.[0]?.description && data?.[0]?.description !== 'null'
+        ? data[0]?.description
         : 'Description not provided',
     [data]
   );
@@ -194,27 +178,30 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     const contacts: FormattedUser[] = [];
     const experimenters: FormattedUser[] = [];
 
-    if (
-      data?.[0]?.studyInvestigations?.[0]?.investigation?.investigationUsers
-    ) {
-      const investigationUsers = data[0].studyInvestigations[0].investigation
-        .investigationUsers as InvestigationUser[];
-      investigationUsers.forEach((user) => {
+    if (data?.[0]?.users) {
+      const dataPublicationUsers = data[0]?.users;
+      dataPublicationUsers.forEach((user) => {
         // Only keep users where we have their fullName
-        const fullname = user.user?.fullName;
+        const fullname = user.fullName;
         if (fullname) {
-          switch (user.role) {
+          switch (user.contributorType) {
             case 'principal_experimenter':
               principals.push({
                 fullName: fullname,
-                role: 'Principal Investigator',
+                contributorType: 'Principal Investigator',
               });
               break;
             case 'local_contact':
-              contacts.push({ fullName: fullname, role: 'Local Contact' });
+              contacts.push({
+                fullName: fullname,
+                contributorType: 'Local Contact',
+              });
               break;
             default:
-              experimenters.push({ fullName: fullname, role: 'Experimenter' });
+              experimenters.push({
+                fullName: fullname,
+                contributorType: 'Experimenter',
+              });
           }
         }
       });
@@ -227,7 +214,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   }, [data]);
 
   React.useEffect(() => {
-    const scriptId = `study-${studyId}`;
+    const scriptId = `dataPublication-${dataPublicationId}`;
     let structuredDataScript = document.getElementById(scriptId);
 
     if (!structuredDataScript) {
@@ -245,7 +232,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       url: pid ? `https://doi.org/${pid}` : '',
       identifier: pid,
       name: title,
-      description: summary,
+      description: description,
       keywords: t('doi_constants.keywords', { returnObjects: true }),
       publisher: {
         '@type': 'Organization',
@@ -259,9 +246,6 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
           url: t('doi_constants.publisher.url'),
         },
       },
-      creator: formattedUsers.map((user) => {
-        return { '@type': 'Person', name: user.fullName };
-      }),
       includedInDataCatalog: {
         '@type': 'DataCatalog',
         url: t('doi_constants.distribution.content_url'),
@@ -282,60 +266,49 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         currentScript.remove();
       }
     };
-  }, [t, studyId, formattedUsers, title, summary, pid]);
+  }, [t, title, pid, dataPublicationId, description]);
 
   const shortInfo = [
     {
-      content: function studyPidFormat(entity: Study) {
+      content: function dataPublicationPidFormat(entity: DataPublication) {
         return (
           entity?.pid && (
             <MuiLink
               href={`https://doi.org/${entity.pid}`}
-              data-testid="landing-study-pid-link"
+              data-testid="landing-dataPublication-pid-link"
             >
               {entity.pid}
             </MuiLink>
           )
         );
       },
-      label: t('studies.pid'),
+      label: t('datapublications.pid'),
       icon: <Public sx={shortInfoIconStyle} />,
     },
     {
-      content: (entity: Study) => entity.name,
-      label: t('studies.name'),
-      icon: <Fingerprint sx={shortInfoIconStyle} />,
-    },
-    {
-      content: function distributionFormat(entity: Study) {
+      content: function distributionFormat(entity: DataPublication) {
         return (
           <MuiLink href="http://www.isis.stfc.ac.uk/groups/computing/isis-raw-file-format11200.html">
             {t('doi_constants.distribution.format')}
           </MuiLink>
         );
       },
-      label: t('studies.details.format'),
+      label: t('datapublications.details.format'),
       icon: <Storage sx={shortInfoIconStyle} />,
     },
     {
-      content: (entity: Study) =>
-        entity?.studyInvestigations?.[0]?.investigation?.startDate?.slice(
-          0,
-          10
-        ),
-      label: t('studies.start_date'),
-      icon: <CalendarToday sx={shortInfoIconStyle} />,
-    },
-    {
-      content: (entity: Study) =>
-        entity?.studyInvestigations?.[0]?.investigation?.endDate?.slice(0, 10),
-      label: t('studies.end_date'),
+      content: (dataPublication: DataPublication) =>
+        dataPublication?.publicationDate?.slice(0, 10) ?? '',
+      label: t('datapublications.publication_date'),
       icon: <CalendarToday sx={shortInfoIconStyle} />,
     },
   ];
 
   return (
-    <Paper sx={{ margin: 1, padding: 1 }} data-testid="isis-study-landing">
+    <Paper
+      sx={{ margin: 1, padding: 1 }}
+      data-testid="isis-dataPublication-landing"
+    >
       <Grid container sx={{ padding: 0.5 }}>
         <Grid item xs={12}>
           <Branding />
@@ -349,14 +322,14 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               textColor="secondary"
             >
               <Tab
-                id="study-details-tab"
-                aria-controls="study-details-panel"
-                label={t('studies.details.label')}
+                id="dataPublication-details-tab"
+                aria-controls="datapublication-details-panel"
+                label={t('datapublications.details.label')}
                 value="details"
               />
               <Tab
-                id="study-investigations-tab"
-                label={t('studies.details.investigations')}
+                id="datapublication-investigations-tab"
+                label={t('datapublications.details.investigations')}
                 onClick={() =>
                   push(
                     view
@@ -369,27 +342,30 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
             <Divider />
           </Paper>
         </Grid>
-        <Grid item container xs={12} id="study-details-panel">
+        <Grid item container xs={12} id="datapublication-details-panel">
           {/* Long format information */}
           <Grid item xs>
             <Subheading variant="h5" data-testid="landing-investigation-title">
               {title}
             </Subheading>
-            <Typography data-testid="landing-study-description">
-              {summary}
+            <Typography data-testid="landing-datapublication-description">
+              {description}
             </Typography>
 
             {formattedUsers.length > 0 && (
               <div>
                 <Subheading
                   variant="h6"
-                  data-testid="landing-study-users-label"
+                  data-testid="landing-dataPublication-users-label"
                 >
-                  {t('studies.details.users')}
+                  {t('datapublications.details.users')}
                 </Subheading>
                 {formattedUsers.map((user, i) => (
-                  <Typography data-testid={`landing-study-user-${i}`} key={i}>
-                    <b>{user.role}:</b> {user.fullName}
+                  <Typography
+                    data-testid={`landing-dataPublication-user-${i}`}
+                    key={i}
+                  >
+                    <b>{user.contributorType}:</b> {user.fullName}
                   </Typography>
                 ))}
               </div>
@@ -397,20 +373,18 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
 
             <Subheading
               variant="h6"
-              data-testid="landing-study-publisher-label"
+              data-testid="landing-dataPublication-publisher-label"
             >
-              {t('studies.details.publisher')}
+              {t('datapublications.details.publisher')}
             </Subheading>
-            <Typography data-testid="landing-study-publisher">
+            <Typography data-testid="landing-dataPublication-publisher">
               {t('doi_constants.publisher.name')}
             </Typography>
             <CitationFormatter
               doi={pid}
               formattedUsers={formattedUsers}
               title={title}
-              startDate={
-                data?.[0]?.studyInvestigations?.[0]?.investigation?.startDate
-              }
+              startDate={data?.[0]?.createTime}
             />
           </Grid>
 
@@ -420,29 +394,35 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
             {shortInfo.map(
               (field, i) =>
                 data?.[0] &&
-                field.content(data[0] as Study) && (
+                field.content(data[0] as DataPublication) && (
                   <ShortInfoRow key={i}>
                     <ShortInfoLabel>
                       {field.icon}
                       {field.label}:
                     </ShortInfoLabel>
                     <ArrowTooltip
-                      title={getTooltipText(field.content(data[0] as Study))}
+                      title={getTooltipText(
+                        field.content(data[0] as DataPublication)
+                      )}
                     >
                       <ShortInfoValue>
-                        {field.content(data[0] as Study)}
+                        {field.content(data[0] as DataPublication)}
                       </ShortInfoValue>
                     </ArrowTooltip>
                   </ShortInfoRow>
                 )
             )}
             {/* Parts */}
-            {data?.map((study, i) => (
+            {data?.map((dataPublication, i) => (
               <Box key={i} sx={{ my: 1 }}>
                 <Divider />
-                {study?.studyInvestigations?.[0]?.investigation && (
+                {dataPublication?.content?.dataCollectionInvestigations?.[0]
+                  ?.investigation && (
                   <LinkedInvestigation
-                    investigation={study.studyInvestigations[0].investigation}
+                    investigation={
+                      dataPublication?.content
+                        ?.dataCollectionInvestigations?.[0]?.investigation
+                    }
                     urlPrefix={urlPrefix}
                     view={view}
                   />

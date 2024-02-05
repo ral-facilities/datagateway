@@ -49,7 +49,7 @@ describe('ISIS Datasets - Card View', () => {
               instrumentId="1"
               instrumentChildId="1"
               investigationId="1"
-              studyHierarchy={false}
+              dataPublication={false}
             />
           </QueryClientProvider>
         </Router>
@@ -94,7 +94,7 @@ describe('ISIS Datasets - Card View', () => {
     jest.clearAllMocks();
   });
 
-  it('correct link used when NOT in studyHierarchy', async () => {
+  it('correct link used when NOT in dataPublication hierarchy', async () => {
     renderComponent();
     expect(await screen.findByRole('link', { name: 'Test 1' })).toHaveAttribute(
       'href',
@@ -102,13 +102,13 @@ describe('ISIS Datasets - Card View', () => {
     );
   });
 
-  it('correct link used for studyHierarchy', async () => {
+  it('correct link used for dataPublication hierarchy', async () => {
     render(
       <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
             <ISISDatasetsCardView
-              studyHierarchy={true}
+              dataPublication={true}
               instrumentId="1"
               instrumentChildId="1"
               investigationId="1"
@@ -119,7 +119,7 @@ describe('ISIS Datasets - Card View', () => {
     );
     expect(await screen.findByRole('link', { name: 'Test 1' })).toHaveAttribute(
       'href',
-      '/browseStudyHierarchy/instrument/1/study/1/investigation/1/dataset/1'
+      '/browseDataPublications/instrument/1/dataPublication/1/investigation/1/dataset/1'
     );
   });
 
@@ -169,7 +169,10 @@ describe('ISIS Datasets - Card View', () => {
       `?filters=${encodeURIComponent('{"modTime":{"endDate":"2019-08-06"}}')}`
     );
 
-    await user.clear(filter);
+    // await user.clear(filter);
+    await user.click(filter);
+    await user.keyboard('{Control}a{/Control}');
+    await user.keyboard('{Delete}');
 
     expect(history.location.search).toBe('?');
 
@@ -181,6 +184,14 @@ describe('ISIS Datasets - Card View', () => {
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"createTime":"desc"}')}`
+    );
+
+    // check that the data request is sent only once after mounting
+    expect(useDatasetsPaginated).toHaveBeenCalledTimes(2);
+    expect(useDatasetsPaginated).toHaveBeenCalledWith(expect.anything(), false);
+    expect(useDatasetsPaginated).toHaveBeenLastCalledWith(
+      expect.anything(),
+      true
     );
   });
 

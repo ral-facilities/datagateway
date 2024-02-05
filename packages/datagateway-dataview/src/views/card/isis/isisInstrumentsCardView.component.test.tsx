@@ -41,7 +41,7 @@ describe('ISIS Instruments - Card View', () => {
       <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
-            <ISISInstrumentsCardView studyHierarchy={false} />
+            <ISISInstrumentsCardView dataPublication={false} />
           </QueryClientProvider>
         </Router>
       </Provider>
@@ -95,14 +95,14 @@ describe('ISIS Instruments - Card View', () => {
       <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
-            <ISISInstrumentsCardView studyHierarchy={true} />
+            <ISISInstrumentsCardView dataPublication={true} />
           </QueryClientProvider>
         </Router>
       </Provider>
     );
     expect(await screen.findByRole('link', { name: 'Test 1' })).toHaveAttribute(
       'href',
-      '/browseStudyHierarchy/instrument/1/study'
+      '/browseDataPublications/instrument/1/dataPublication'
     );
   });
 
@@ -138,6 +138,11 @@ describe('ISIS Instruments - Card View', () => {
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"fullName":"asc"}')}`
     );
+
+    // check that the data request is sent only once after mounting
+    expect(useInstrumentsPaginated).toHaveBeenCalledTimes(2);
+    expect(useInstrumentsPaginated).toHaveBeenCalledWith(undefined, false);
+    expect(useInstrumentsPaginated).toHaveBeenLastCalledWith(undefined, true);
   });
 
   it('updates sort query params on sort', async () => {

@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import '@testing-library/jest-dom';
+import failOnConsole from 'jest-fail-on-console';
 
-jest.setTimeout(15000);
+failOnConsole();
+
+jest.setTimeout(20000);
 
 function noOp(): void {
   // required as work-around for enzyme/jest environment not implementing window.URL.createObjectURL method

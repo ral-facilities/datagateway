@@ -143,9 +143,9 @@ exports[`Investigation details panel component should check if multiple publicat
             <a
               class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
               data-testid="investigation-details-panel-pid-link"
-              href="https://doi.org/study pid"
+              href="https://doi.org/Data Publication Pid"
             >
-              study pid
+              Data Publication Pid
             </a>
           </p>
         </div>
@@ -388,9 +388,9 @@ exports[`Investigation details panel component should check if multiple samples 
             <a
               class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
               data-testid="investigation-details-panel-pid-link"
-              href="https://doi.org/study pid"
+              href="https://doi.org/Data Publication Pid"
             >
-              study pid
+              Data Publication Pid
             </a>
           </p>
         </div>
@@ -490,7 +490,7 @@ exports[`Investigation details panel component should check if multiple samples 
 </DocumentFragment>
 `;
 
-exports[`Investigation details panel component should gracefully handles StudyInvestigations without Studies and InvestigationUsers without Users 1`] = `
+exports[`Investigation details panel component should gracefully handles dataCollectionInvestigations without dataPublications and InvestigationUsers without Users 1`] = `
 <DocumentFragment>
   <div
     data-testid="isis-investigation-details-panel"
@@ -822,9 +822,9 @@ exports[`Investigation details panel component should render correctly 1`] = `
             <a
               class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
               data-testid="investigation-details-panel-pid-link"
-              href="https://doi.org/study pid"
+              href="https://doi.org/Data Publication Pid"
             >
-              study pid
+              Data Publication Pid
             </a>
           </p>
         </div>
@@ -1057,9 +1057,9 @@ exports[`Investigation details panel component should render user, sample and pu
             <a
               class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
               data-testid="investigation-details-panel-pid-link"
-              href="https://doi.org/study pid"
+              href="https://doi.org/Data Publication Pid"
             >
-              study pid
+              Data Publication Pid
             </a>
           </p>
         </div>

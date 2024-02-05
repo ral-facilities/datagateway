@@ -12,8 +12,11 @@ import { Router } from 'react-router-dom';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import { createMemoryHistory, History } from 'history';
+import failOnConsole from 'jest-fail-on-console';
 
-jest.setTimeout(15000);
+failOnConsole();
+
+jest.setTimeout(20000);
 
 if (typeof window.URL.createObjectURL === 'undefined') {
   // required as work-around for enzyme/jest environment not implementing window.URL.createObjectURL method
@@ -31,6 +34,11 @@ if (typeof window.URL.revokeObjectURL === 'undefined') {
 
 // Add in ResizeObserver as it's not in Jest's environment
 global.ResizeObserver = require('resize-observer-polyfill');
+
+if (!global.structuredClone) {
+  // structuredClone not available in jest/node <17, so this is a quick polyfill that should do the exact same thing
+  global.structuredClone = (obj: unknown) => JSON.parse(JSON.stringify(obj));
+}
 
 // these are used for testing async actions
 export let actions: Action[] = [];

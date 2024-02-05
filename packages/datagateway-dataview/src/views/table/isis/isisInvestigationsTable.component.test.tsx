@@ -43,14 +43,14 @@ describe('ISIS Investigations table component', () => {
   let cartItems: DownloadCartItem[];
   let holder: HTMLElement;
 
-  const renderComponent = (studyHierarchy = false): RenderResult => {
+  const renderComponent = (dataPublication = false): RenderResult => {
     const store = mockStore(state);
     return render(
       <Provider store={store}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
             <ISISInvestigationsTable
-              studyHierarchy={studyHierarchy}
+              dataPublication={dataPublication}
               instrumentId="4"
               instrumentChildId="5"
             />
@@ -85,12 +85,27 @@ describe('ISIS Investigations table component', () => {
             user: { id: 3, name: 'testpi', fullName: 'Test PI' },
           },
         ],
-        studyInvestigations: [
+        dataCollectionInvestigations: [
           {
-            id: 6,
-            study: {
-              id: 7,
-              pid: 'study pid',
+            id: 1,
+            investigation: {
+              id: 1,
+              title: 'Test 1',
+              name: 'Test 1',
+              visitId: '1',
+            },
+            dataCollection: {
+              id: 11,
+              dataPublications: [
+                {
+                  id: 12,
+                  pid: 'Data Publication Pid',
+                  description: 'Data Publication description',
+                  modTime: '2019-06-10',
+                  createTime: '2019-06-11',
+                  title: 'Data Publication',
+                },
+              ],
             },
           },
         ],
@@ -128,24 +143,6 @@ describe('ISIS Investigations table component', () => {
           // fetch investigation size
           return Promise.resolve({
             data: 1,
-          });
-        }
-
-        if (
-          /\/instruments\/4\/facilitycycles\/5\/investigations\/count$/.test(
-            url
-          )
-        ) {
-          // fetch investigations count
-          return Promise.resolve({
-            data: rowData.length,
-          });
-        }
-
-        if (/\/instruments\/4\/facilitycycles\/5\/investigations$/.test(url)) {
-          // investigations infinite
-          return Promise.resolve({
-            data: rowData,
           });
         }
 
@@ -265,7 +262,7 @@ describe('ISIS Investigations table component', () => {
         findCellInRow(row, {
           columnIndex: await findColumnIndexByName('investigations.doi'),
         })
-      ).getByText('study pid')
+      ).getByText('Data Publication Pid')
     ).toBeInTheDocument();
     expect(
       within(
@@ -302,8 +299,8 @@ describe('ISIS Investigations table component', () => {
   it('displays DOI and renders the expected Link ', async () => {
     renderComponent();
     expect(
-      await screen.findByRole('link', { name: 'study pid' })
-    ).toHaveAttribute('href', 'https://doi.org/study pid');
+      await screen.findByRole('link', { name: 'Data Publication Pid' })
+    ).toHaveAttribute('href', 'https://doi.org/Data Publication Pid');
   });
 
   it('updates filter query params on text filter', async () => {
@@ -350,7 +347,10 @@ describe('ISIS Investigations table component', () => {
       )}`
     );
 
-    await user.clear(filterInput);
+    // await user.clear(filterInput);
+    await user.click(filterInput);
+    await user.keyboard('{Control}a{/Control}');
+    await user.keyboard('{Delete}');
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
@@ -364,6 +364,13 @@ describe('ISIS Investigations table component', () => {
     expect(replaceSpy).toHaveBeenCalledWith({
       search: `?sort=${encodeURIComponent('{"startDate":"desc"}')}`,
     });
+
+    // check that the data request is sent only once after mounting
+    const datafilesCalls = (axios.get as jest.Mock).mock.calls.filter(
+      (call) => call[0] === '/investigations'
+    );
+    // 2 becasue there is also a call for ids
+    expect(datafilesCalls).toHaveLength(2);
   });
 
   it('updates sort query params on sort', async () => {
@@ -466,19 +473,19 @@ describe('ISIS Investigations table component', () => {
       '/browse/instrument/4/facilityCycle/5/investigation/1'
     );
     expect(
-      await screen.findByRole('link', { name: 'study pid' })
-    ).toHaveAttribute('href', 'https://doi.org/study pid');
+      await screen.findByRole('link', { name: 'Data Publication Pid' })
+    ).toHaveAttribute('href', 'https://doi.org/Data Publication Pid');
   });
 
-  it('renders title and DOI as links in StudyHierarchy', async () => {
+  it('renders title and DOI as links in Data Publication Hierarchy', async () => {
     renderComponent(true);
     expect(await screen.findByRole('link', { name: 'Test 1' })).toHaveAttribute(
       'href',
-      '/browseStudyHierarchy/instrument/4/study/5/investigation/1'
+      '/browseDataPublications/instrument/4/dataPublication/5/investigation/1'
     );
     expect(
-      await screen.findByRole('link', { name: 'study pid' })
-    ).toHaveAttribute('href', 'https://doi.org/study pid');
+      await screen.findByRole('link', { name: 'Data Publication Pid' })
+    ).toHaveAttribute('href', 'https://doi.org/Data Publication Pid');
   });
 
   it('displays the correct user as the PI ', async () => {
@@ -500,7 +507,7 @@ describe('ISIS Investigations table component', () => {
       {
         ...rowData[0],
         investigationUsers: [],
-        studyInvestigations: [],
+        dataCollectionInvestigations: [],
       },
     ];
 
@@ -520,7 +527,7 @@ describe('ISIS Investigations table component', () => {
             id: 1,
           },
         ],
-        studyInvestigations: [
+        dataCollectionInvestigations: [
           {
             id: 6,
           },

@@ -17,13 +17,13 @@ import SubjectIcon from '@mui/icons-material/Subject';
 import { useLocation } from 'react-router-dom';
 
 interface ISISInstrumentsTableProps {
-  studyHierarchy: boolean;
+  dataPublication: boolean;
 }
 
 const ISISInstrumentsTable = (
   props: ISISInstrumentsTableProps
 ): React.ReactElement => {
-  const { studyHierarchy } = props;
+  const { dataPublication } = props;
 
   const location = useLocation();
   const [t] = useTranslation();
@@ -33,8 +33,16 @@ const ISISInstrumentsTable = (
     [location.search]
   );
 
+  // isMounted is used to disable queries when the component isn't fully mounted.
+  // It prevents the request being sent twice if default sort is set.
+  // It is not needed for cards/tables that don't have default sort.
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const { data: totalDataCount } = useInstrumentCount();
-  const { fetchNextPage, data } = useInstrumentsInfinite();
+  const { fetchNextPage, data } = useInstrumentsInfinite(undefined, isMounted);
 
   /* istanbul ignore next */
   const aggregatedData: Instrument[] = React.useMemo(() => {
@@ -58,8 +66,10 @@ const ISISInstrumentsTable = (
   );
 
   const columns: ColumnType[] = React.useMemo(() => {
-    const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
-    const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
+    const pathRoot = dataPublication ? 'browseDataPublications' : 'browse';
+    const instrumentChild = dataPublication
+      ? 'dataPublication'
+      : 'facilityCycle';
     return [
       {
         icon: SubjectIcon,
@@ -84,7 +94,7 @@ const ISISInstrumentsTable = (
         filterComponent: textFilter,
       },
     ];
-  }, [t, textFilter, view, studyHierarchy]);
+  }, [t, textFilter, view, dataPublication]);
 
   return (
     <Table

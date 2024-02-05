@@ -79,7 +79,7 @@ const DatasetDetailsPanel = (
 
   return (
     <div
-      data-testid="dataset-details-panel"
+      data-testid="dls-dataset-details-panel"
       id="details-panel"
       style={{ minWidth: 0 }}
     >

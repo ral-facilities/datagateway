@@ -72,7 +72,7 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                 <div
                   aria-colcount="10"
                   aria-rowcount="5"
-                  class="ReactVirtualized__Table css-dbfe3s"
+                  class="ReactVirtualized__Table css-1ldpmmw"
                   role="grid"
                 >
                   <div
@@ -101,7 +101,9 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                               class="MuiBox-root css-0"
                             >
                               <span
-                                class="MuiButtonBase-root MuiTableSortLabel-root tour-dataview-sort css-1qgma8u-MuiButtonBase-root-MuiTableSortLabel-root"
+                                aria-label="downloadStatus.id"
+                                class="MuiButtonBase-root MuiTableSortLabel-root Mui-active tour-dataview-sort css-f4w4o6-MuiButtonBase-root-MuiTableSortLabel-root"
+                                data-mui-internal-clone-element="true"
                                 role="button"
                                 tabindex="0"
                               >
@@ -112,13 +114,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                                 </p>
                                 <svg
                                   aria-hidden="true"
-                                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionAsc css-1vweko9-MuiSvgIcon-root-MuiTableSortLabel-icon"
-                                  data-testid="ArrowDownwardIcon"
+                                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionDesc css-3l415a-MuiSvgIcon-root-MuiTableSortLabel-icon"
+                                  data-testid="SortIcon"
                                   focusable="false"
                                   viewBox="0 0 24 24"
                                 >
                                   <path
-                                    d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z"
+                                    d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"
                                   />
                                 </svg>
                               </span>
@@ -157,7 +159,7 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                                     <div
                                       aria-expanded="false"
                                       aria-haspopup="listbox"
-                                      aria-label="include or exclude"
+                                      aria-label="include, exclude or exact"
                                       aria-labelledby="downloadStatus.id-select-filter-type"
                                       class="MuiSelect-select MuiSelect-standard MuiInputBase-input MuiInput-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
                                       id="downloadStatus.id-select-filter-type"
@@ -224,7 +226,9 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                               class="MuiBox-root css-0"
                             >
                               <span
-                                class="MuiButtonBase-root MuiTableSortLabel-root tour-dataview-sort css-1qgma8u-MuiButtonBase-root-MuiTableSortLabel-root"
+                                aria-label="downloadStatus.fullname"
+                                class="MuiButtonBase-root MuiTableSortLabel-root Mui-active tour-dataview-sort css-f4w4o6-MuiButtonBase-root-MuiTableSortLabel-root"
+                                data-mui-internal-clone-element="true"
                                 role="button"
                                 tabindex="0"
                               >
@@ -235,13 +239,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                                 </p>
                                 <svg
                                   aria-hidden="true"
-                                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionAsc css-1vweko9-MuiSvgIcon-root-MuiTableSortLabel-icon"
-                                  data-testid="ArrowDownwardIcon"
+                                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionDesc css-3l415a-MuiSvgIcon-root-MuiTableSortLabel-icon"
+                                  data-testid="SortIcon"
                                   focusable="false"
                                   viewBox="0 0 24 24"
                                 >
                                   <path
-                                    d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z"
+                                    d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"
                                   />
                                 </svg>
                               </span>
@@ -280,7 +284,7 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                                     <div
                                       aria-expanded="false"
                                       aria-haspopup="listbox"
-                                      aria-label="include or exclude"
+                                      aria-label="include, exclude or exact"
                                       aria-labelledby="downloadStatus.fullname-select-filter-type"
                                       class="MuiSelect-select MuiSelect-standard MuiInputBase-input MuiInput-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
                                       id="downloadStatus.fullname-select-filter-type"
@@ -347,7 +351,9 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                               class="MuiBox-root css-0"
                             >
                               <span
-                                class="MuiButtonBase-root MuiTableSortLabel-root tour-dataview-sort css-1qgma8u-MuiButtonBase-root-MuiTableSortLabel-root"
+                                aria-label="downloadStatus.username"
+                                class="MuiButtonBase-root MuiTableSortLabel-root Mui-active tour-dataview-sort css-f4w4o6-MuiButtonBase-root-MuiTableSortLabel-root"
+                                data-mui-internal-clone-element="true"
                                 role="button"
                                 tabindex="0"
                               >
@@ -358,13 +364,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                                 </p>
                                 <svg
                                   aria-hidden="true"
-                                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionAsc css-1vweko9-MuiSvgIcon-root-MuiTableSortLabel-icon"
-                                  data-testid="ArrowDownwardIcon"
+                                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionDesc css-3l415a-MuiSvgIcon-root-MuiTableSortLabel-icon"
+                                  data-testid="SortIcon"
                                   focusable="false"
                                   viewBox="0 0 24 24"
                                 >
                                   <path
-                                    d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z"
+                                    d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"
                                   />
                                 </svg>
                               </span>
@@ -403,7 +409,7 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                                     <div
                                       aria-expanded="false"
                                       aria-haspopup="listbox"
-                                      aria-label="include or exclude"
+                                      aria-label="include, exclude or exact"
                                       aria-labelledby="downloadStatus.username-select-filter-type"
                                       class="MuiSelect-select MuiSelect-standard MuiInputBase-input MuiInput-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
                                       id="downloadStatus.username-select-filter-type"
@@ -470,7 +476,9 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                               class="MuiBox-root css-0"
                             >
                               <span
-                                class="MuiButtonBase-root MuiTableSortLabel-root tour-dataview-sort css-1qgma8u-MuiButtonBase-root-MuiTableSortLabel-root"
+                                aria-label="downloadStatus.preparedId"
+                                class="MuiButtonBase-root MuiTableSortLabel-root Mui-active tour-dataview-sort css-f4w4o6-MuiButtonBase-root-MuiTableSortLabel-root"
+                                data-mui-internal-clone-element="true"
                                 role="button"
                                 tabindex="0"
                               >
@@ -481,13 +489,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                                 </p>
                                 <svg
                                   aria-hidden="true"
-                                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionAsc css-1vweko9-MuiSvgIcon-root-MuiTableSortLabel-icon"
-                                  data-testid="ArrowDownwardIcon"
+                                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionDesc css-3l415a-MuiSvgIcon-root-MuiTableSortLabel-icon"
+                                  data-testid="SortIcon"
                                   focusable="false"
                                   viewBox="0 0 24 24"
                                 >
                                   <path
-                                    d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z"
+                                    d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"
                                   />
                                 </svg>
                               </span>
@@ -526,7 +534,7 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                                     <div
                                       aria-expanded="false"
                                       aria-haspopup="listbox"
-                                      aria-label="include or exclude"
+                                      aria-label="include, exclude or exact"
                                       aria-labelledby="downloadStatus.preparedId-select-filter-type"
                                       class="MuiSelect-select MuiSelect-standard MuiInputBase-input MuiInput-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
                                       id="downloadStatus.preparedId-select-filter-type"
@@ -593,7 +601,9 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                               class="MuiBox-root css-0"
                             >
                               <span
-                                class="MuiButtonBase-root MuiTableSortLabel-root tour-dataview-sort css-1qgma8u-MuiButtonBase-root-MuiTableSortLabel-root"
+                                aria-label="downloadStatus.transport"
+                                class="MuiButtonBase-root MuiTableSortLabel-root Mui-active tour-dataview-sort css-f4w4o6-MuiButtonBase-root-MuiTableSortLabel-root"
+                                data-mui-internal-clone-element="true"
                                 role="button"
                                 tabindex="0"
                               >
@@ -604,13 +614,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                                 </p>
                                 <svg
                                   aria-hidden="true"
-                                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionAsc css-1vweko9-MuiSvgIcon-root-MuiTableSortLabel-icon"
-                                  data-testid="ArrowDownwardIcon"
+                                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionDesc css-3l415a-MuiSvgIcon-root-MuiTableSortLabel-icon"
+                                  data-testid="SortIcon"
                                   focusable="false"
                                   viewBox="0 0 24 24"
                                 >
                                   <path
-                                    d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z"
+                                    d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"
                                   />
                                 </svg>
                               </span>
@@ -649,7 +659,7 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                                     <div
                                       aria-expanded="false"
                                       aria-haspopup="listbox"
-                                      aria-label="include or exclude"
+                                      aria-label="include, exclude or exact"
                                       aria-labelledby="downloadStatus.transport-select-filter-type"
                                       class="MuiSelect-select MuiSelect-standard MuiInputBase-input MuiInput-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
                                       id="downloadStatus.transport-select-filter-type"
@@ -716,7 +726,9 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                               class="MuiBox-root css-0"
                             >
                               <span
-                                class="MuiButtonBase-root MuiTableSortLabel-root tour-dataview-sort css-1qgma8u-MuiButtonBase-root-MuiTableSortLabel-root"
+                                aria-label="downloadStatus.status"
+                                class="MuiButtonBase-root MuiTableSortLabel-root Mui-active tour-dataview-sort css-f4w4o6-MuiButtonBase-root-MuiTableSortLabel-root"
+                                data-mui-internal-clone-element="true"
                                 role="button"
                                 tabindex="0"
                               >
@@ -727,13 +739,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                                 </p>
                                 <svg
                                   aria-hidden="true"
-                                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionAsc css-1vweko9-MuiSvgIcon-root-MuiTableSortLabel-icon"
-                                  data-testid="ArrowDownwardIcon"
+                                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionDesc css-3l415a-MuiSvgIcon-root-MuiTableSortLabel-icon"
+                                  data-testid="SortIcon"
                                   focusable="false"
                                   viewBox="0 0 24 24"
                                 >
                                   <path
-                                    d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z"
+                                    d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"
                                   />
                                 </svg>
                               </span>
@@ -772,7 +784,7 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                                     <div
                                       aria-expanded="false"
                                       aria-haspopup="listbox"
-                                      aria-label="include or exclude"
+                                      aria-label="include, exclude or exact"
                                       aria-labelledby="downloadStatus.status-select-filter-type"
                                       class="MuiSelect-select MuiSelect-standard MuiInputBase-input MuiInput-input css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input"
                                       id="downloadStatus.status-select-filter-type"
@@ -878,7 +890,9 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                               class="MuiBox-root css-0"
                             >
                               <span
+                                aria-label="downloadStatus.createdAt"
                                 class="MuiButtonBase-root MuiTableSortLabel-root Mui-active tour-dataview-sort css-1qgma8u-MuiButtonBase-root-MuiTableSortLabel-root"
+                                data-mui-internal-clone-element="true"
                                 role="button"
                                 tabindex="0"
                               >
@@ -911,10 +925,12 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                                 <input
                                   aria-invalid="false"
                                   aria-label="downloadStatus.createdAt filter from"
+                                  autocomplete="off"
                                   class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
                                   id="downloadStatus.createdAt filter from"
+                                  inputmode="text"
                                   placeholder="From..."
-                                  type="tel"
+                                  type="text"
                                   value=""
                                 />
                                 <div
@@ -953,10 +969,12 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                                 <input
                                   aria-invalid="false"
                                   aria-label="downloadStatus.createdAt filter to"
+                                  autocomplete="off"
                                   class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
                                   id="downloadStatus.createdAt filter to"
+                                  inputmode="text"
                                   placeholder="To..."
-                                  type="tel"
+                                  type="text"
                                   value=""
                                 />
                                 <div
@@ -1019,7 +1037,9 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                               class="MuiBox-root css-0"
                             >
                               <span
-                                class="MuiButtonBase-root MuiTableSortLabel-root tour-dataview-sort css-1qgma8u-MuiButtonBase-root-MuiTableSortLabel-root"
+                                aria-label="downloadStatus.deleted"
+                                class="MuiButtonBase-root MuiTableSortLabel-root Mui-active tour-dataview-sort css-f4w4o6-MuiButtonBase-root-MuiTableSortLabel-root"
+                                data-mui-internal-clone-element="true"
                                 role="button"
                                 tabindex="0"
                               >
@@ -1030,13 +1050,13 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                                 </p>
                                 <svg
                                   aria-hidden="true"
-                                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionAsc css-1vweko9-MuiSvgIcon-root-MuiTableSortLabel-icon"
-                                  data-testid="ArrowDownwardIcon"
+                                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionDesc css-3l415a-MuiSvgIcon-root-MuiTableSortLabel-icon"
+                                  data-testid="SortIcon"
                                   focusable="false"
                                   viewBox="0 0 24 24"
                                 >
                                   <path
-                                    d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z"
+                                    d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"
                                   />
                                 </svg>
                               </span>
@@ -1079,7 +1099,7 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                     >
                       <div
                         aria-rowindex="1"
-                        class="ReactVirtualized__Table__row"
+                        class="ReactVirtualized__Table__row hoverable-row"
                         role="row"
                         style="height: 30px; left: 0px; position: absolute; top: 0px; width: 856px; overflow: hidden; padding-right: 0px; display: flex; align-items: center; box-sizing: border-box;"
                       >
@@ -1343,7 +1363,7 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                       </div>
                       <div
                         aria-rowindex="2"
-                        class="ReactVirtualized__Table__row"
+                        class="ReactVirtualized__Table__row hoverable-row"
                         role="row"
                         style="height: 30px; left: 0px; position: absolute; top: 30px; width: 856px; overflow: hidden; padding-right: 0px; display: flex; align-items: center; box-sizing: border-box;"
                       >
@@ -1628,7 +1648,7 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                       </div>
                       <div
                         aria-rowindex="3"
-                        class="ReactVirtualized__Table__row"
+                        class="ReactVirtualized__Table__row hoverable-row"
                         role="row"
                         style="height: 30px; left: 0px; position: absolute; top: 60px; width: 856px; overflow: hidden; padding-right: 0px; display: flex; align-items: center; box-sizing: border-box;"
                       >
@@ -1913,7 +1933,7 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                       </div>
                       <div
                         aria-rowindex="4"
-                        class="ReactVirtualized__Table__row"
+                        class="ReactVirtualized__Table__row hoverable-row"
                         role="row"
                         style="height: 30px; left: 0px; position: absolute; top: 90px; width: 856px; overflow: hidden; padding-right: 0px; display: flex; align-items: center; box-sizing: border-box;"
                       >
@@ -2177,7 +2197,7 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                       </div>
                       <div
                         aria-rowindex="5"
-                        class="ReactVirtualized__Table__row"
+                        class="ReactVirtualized__Table__row hoverable-row"
                         role="row"
                         style="height: 30px; left: 0px; position: absolute; top: 120px; width: 856px; overflow: hidden; padding-right: 0px; display: flex; align-items: center; box-sizing: border-box;"
                       >

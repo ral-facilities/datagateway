@@ -56,12 +56,6 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
         filterType: 'where',
         filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
       },
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'dataset.investigation.id': { eq: investigationId },
-        }),
-      },
     ],
     selectAllSetting
   );
@@ -76,24 +70,12 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
       filterType: 'where',
       filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
     },
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'dataset.investigation.id': { eq: investigationId },
-      }),
-    },
   ]);
 
   const { fetchNextPage, data } = useDatafilesInfinite([
     {
       filterType: 'where',
       filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
-    },
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'dataset.investigation.id': { eq: investigationId },
-      }),
     },
   ]);
 

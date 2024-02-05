@@ -41,7 +41,7 @@ function domElementGetter(): HTMLElement {
 const reactLifecycles = singleSpaReact({
   React,
   ReactDOM,
-  rootComponent: App,
+  rootComponent: () => (document.getElementById(pluginName) ? <App /> : null),
   domElementGetter,
 });
 
@@ -185,7 +185,7 @@ if (
             const jwtHeader = { alg: 'HS256', typ: 'JWT' };
             const payload = {
               sessionId: response.data.sessionID,
-              username: 'Thomas409',
+              username: 'Richard459',
             };
             const jwt = jsrsasign.KJUR.jws.JWS.sign(
               'HS256',

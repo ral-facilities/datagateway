@@ -129,7 +129,7 @@ function DatafilePreviewer({
       onDownloadProgress: (event) => {
         setStatus({
           code: 'LOADING_CONTENT',
-          progress: (event.loaded / event.total) * 100,
+          progress: (event.loaded / (event.total ?? event.loaded)) * 100,
         });
       },
     });
@@ -143,6 +143,8 @@ function DatafilePreviewer({
     React.useState(isDetailsPaneShown);
   const [isDetailsPaneIn, setIsDetailsPaneIn] =
     React.useState(isDetailsPaneShown);
+
+  const animationTimeoutRef = React.useRef<NodeJS.Timeout | undefined>();
 
   React.useEffect(() => {
     // This effect controls the appearance of details panel
@@ -166,12 +168,12 @@ function DatafilePreviewer({
 
     if (isDetailsPaneShown && !isDetailsPaneGridVisible) {
       setIsDetailsPaneGridVisible(true);
-      setTimeout(() => {
+      animationTimeoutRef.current = setTimeout(() => {
         setIsDetailsPaneIn(true);
       }, theme.transitions.duration.standard);
     } else if (!isDetailsPaneShown && isDetailsPaneGridVisible) {
       setIsDetailsPaneIn(false);
-      setTimeout(() => {
+      animationTimeoutRef.current = setTimeout(() => {
         setIsDetailsPaneGridVisible(false);
       }, theme.transitions.duration.standard);
     }
@@ -180,6 +182,13 @@ function DatafilePreviewer({
     isDetailsPaneGridVisible,
     theme.transitions.duration.standard,
   ]);
+
+  // ensure we clean up the timeout on component unmount
+  React.useEffect(() => {
+    return () => {
+      clearTimeout(animationTimeoutRef.current);
+    };
+  }, []);
 
   React.useEffect(() => {
     if (loadDatafileMetaError) {
