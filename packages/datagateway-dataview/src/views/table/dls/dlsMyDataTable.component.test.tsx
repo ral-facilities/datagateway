@@ -131,7 +131,7 @@ describe('DLS MyData table component', () => {
       await findColumnHeaderByName('investigations.visit_id')
     ).toBeInTheDocument();
     expect(
-      await findColumnHeaderByName('investigations.dataset_count')
+      await findColumnHeaderByName('investigations.size')
     ).toBeInTheDocument();
     expect(
       await findColumnHeaderByName('investigations.instrument')
@@ -162,11 +162,9 @@ describe('DLS MyData table component', () => {
     expect(
       within(
         findCellInRow(row, {
-          columnIndex: await findColumnIndexByName(
-            'investigations.dataset_count'
-          ),
+          columnIndex: await findColumnIndexByName('investigations.size'),
         })
-      ).getByText('1')
+      ).getByText('1 B')
     ).toBeInTheDocument();
     expect(
       within(

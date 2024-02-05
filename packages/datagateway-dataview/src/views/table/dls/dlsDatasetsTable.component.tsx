@@ -3,6 +3,7 @@ import {
   Subject,
   ConfirmationNumber,
   CalendarToday,
+  Save,
 } from '@mui/icons-material';
 import {
   Table,
@@ -20,6 +21,7 @@ import {
   useAddToCart,
   useRemoveFromCart,
   DLSDatasetDetailsPanel,
+  formatBytes,
 } from 'datagateway-common';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
@@ -136,7 +138,13 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
         icon: ConfirmationNumber,
         label: t('datasets.datafile_count'),
         dataKey: 'fileCount',
-        disableSort: true,
+      },
+      {
+        icon: Save,
+        label: t('datasets.size'),
+        dataKey: 'fileSize',
+        cellContentRenderer: (cellProps: TableCellProps): number | string =>
+          formatBytes(cellProps.rowData.fileSize),
       },
       {
         icon: CalendarToday,

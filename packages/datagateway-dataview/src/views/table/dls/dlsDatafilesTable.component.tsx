@@ -130,7 +130,6 @@ const DLSDatafilesTable = (
         cellContentRenderer: (cellProps) => {
           return formatBytes(cellProps.cellData);
         },
-        filterComponent: textFilter,
       },
       {
         icon: CalendarToday,
