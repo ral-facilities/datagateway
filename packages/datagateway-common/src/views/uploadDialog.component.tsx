@@ -88,8 +88,8 @@ const UploadDialog: React.FC<UploadDialogProps> = (
   const [uploadDescription, setUploadDescription] = React.useState<string>('');
 
   const dialogClose = (_event?: unknown, reason?: string): void => {
-    uppy.cancelAll({ reason: 'user' });
     if (reason !== 'backdropClick') {
+      uppy.cancelAll({ reason: 'user' });
       setClose();
     }
   };
