@@ -7,7 +7,6 @@ import {
   Dataset,
   dGCommonInitialState,
   useDatasetDetails,
-  useDatasetSizes,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -82,9 +81,6 @@ describe('ISIS Dataset Landing page', () => {
     (useDatasetDetails as jest.Mock).mockReturnValue({
       data: initialData,
     });
-    (useDatasetSizes as jest.Mock).mockReturnValue({
-      data: 1,
-    });
   });
 
   afterEach(() => {
@@ -151,14 +147,6 @@ describe('ISIS Dataset Landing page', () => {
       'href',
       'https://doi.org/doi 1'
     );
-  });
-
-  it('useDatasetSizes queries not sent if no data returned from useDatasetDetails', () => {
-    (useDatasetDetails as jest.Mock).mockReturnValue({
-      data: undefined,
-    });
-    renderComponent();
-    expect(useDatasetSizes).toHaveBeenCalledWith(undefined);
   });
 
   it('incomplete datasets render correctly', async () => {

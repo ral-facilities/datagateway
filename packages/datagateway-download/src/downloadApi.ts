@@ -269,90 +269,34 @@ export const adminDownloadStatus: (
   );
 };
 
-export const getSize: (
-  entityId: number,
-  entityType: string,
-  settings: Pick<DownloadSettings, 'facilityName' | 'downloadApiUrl' | 'apiUrl'>
-) => Promise<number> = (
-  entityId: number,
-  entityType: string,
-  settings: {
-    facilityName: string;
-    apiUrl: string;
-    downloadApiUrl: string;
-  }
-) => {
-  if (entityType === 'datafile') {
-    return axios
-      .get<Datafile>(`${settings.apiUrl}/datafiles/${entityId}`, {
-        headers: {
-          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
-        },
-      })
-      .then((response) => response.data['fileSize'] as number);
-  } else {
-    return axios
-      .get<number>(`${settings.downloadApiUrl}/user/getSize`, {
-        params: {
-          sessionId: readSciGatewayToken().sessionId,
-          facilityName: settings.facilityName,
-          entityType: entityType,
-          entityId: entityId,
-        },
-      })
-      .then((response) => {
-        return response.data;
-      });
-  }
-};
+export interface FileSizeAndCount {
+  fileCount?: number;
+  fileSize?: number;
+}
 
-export const getDatafileCount: (
+export const getFileSizeAndCount: (
   entityId: number,
-  entityType: string,
+  entityType: 'investigation' | 'dataset' | 'datafile',
   settings: Pick<DownloadSettings, 'apiUrl'>
-) => Promise<number> = (entityId, entityType, settings) => {
-  if (entityType === 'datafile') {
-    // need to do this in a setTimeout to ensure it doesn't block the main thread
-    return new Promise((resolve) =>
-      window.setTimeout(() => {
-        resolve(1);
-      }, 0)
-    );
-  } else if (entityType === 'dataset') {
-    return axios
-      .get<number>(`${settings.apiUrl}/datafiles/count`, {
-        params: {
-          where: JSON.stringify({
-            'dataset.id': {
-              eq: entityId,
-            },
-          }),
-        },
+) => Promise<FileSizeAndCount> = (entityId, entityType, settings) => {
+  return axios
+    .get<Investigation | Dataset | Datafile>(
+      `${settings.apiUrl}/${entityType}s/${entityId}`,
+      {
         headers: {
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
-      })
-      .then((response) => {
-        return response.data;
-      });
-  } else {
-    return axios
-      .get<number>(`${settings.apiUrl}/datafiles/count`, {
-        params: {
-          where: JSON.stringify({
-            'dataset.investigation.id': {
-              eq: entityId,
-            },
-          }),
-        },
-        headers: {
-          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
-        },
-      })
-      .then((response) => {
-        return response.data;
-      });
-  }
+      }
+    )
+    .then((response) => {
+      return {
+        fileCount:
+          entityType === 'datafile'
+            ? 1
+            : (response.data as Dataset | Investigation).fileCount,
+        fileSize: response.data.fileSize,
+      };
+    });
 };
 
 export const getDataUrl = (

@@ -1,13 +1,7 @@
-import {
-  CalendarToday,
-  ConfirmationNumber,
-  Fingerprint,
-  Public,
-} from '@mui/icons-material';
+import { CalendarToday, Save, Fingerprint, Public } from '@mui/icons-material';
 import { Link as MuiLink } from '@mui/material';
 import {
   CardView,
-  formatCountOrSize,
   formatFilterCount,
   Investigation,
   investigationLink,
@@ -16,7 +10,6 @@ import {
   useCustomFilter,
   useCustomFilterCount,
   useInvestigationCount,
-  useInvestigationsDatasetCount,
   useInvestigationsPaginated,
   usePushFilter,
   usePushPage,
@@ -24,6 +17,7 @@ import {
   useSort,
   useTextFilter,
   AddToCartButton,
+  formatBytes,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -58,7 +52,6 @@ const InvestigationCardView = (): React.ReactElement => {
       filterValue: JSON.stringify('facility'),
     },
   ]);
-  const countQueries = useInvestigationsDatasetCount(data);
   const { data: typeIds } = useCustomFilter('investigation', 'type.id');
   const { data: facilityIds } = useCustomFilter('investigation', 'facility.id');
 
@@ -135,14 +128,11 @@ const InvestigationCardView = (): React.ReactElement => {
         disableSort: true,
       },
       {
-        icon: ConfirmationNumber,
-        label: t('investigations.dataset_count'),
-        dataKey: 'datasetCount',
-        content: (investigation: Investigation): string => {
-          const index = data?.findIndex((item) => item.id === investigation.id);
-          if (typeof index === 'undefined') return 'Unknown';
-          return formatCountOrSize(countQueries[index]);
-        },
+        icon: Save,
+        label: t('investigations.details.size'),
+        dataKey: 'size',
+        content: (investigation: Investigation): number | string =>
+          formatBytes(investigation.fileSize),
         disableSort: true,
       },
       {
@@ -158,7 +148,7 @@ const InvestigationCardView = (): React.ReactElement => {
         filterComponent: dateFilter,
       },
     ],
-    [countQueries, data, dateFilter, t, textFilter]
+    [dateFilter, t, textFilter]
   );
 
   const buttons = React.useMemo(

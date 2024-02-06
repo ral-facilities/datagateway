@@ -78,7 +78,7 @@ describe('DLS - Datasets Table', () => {
     cy.get('[aria-sort="descending"]').should('not.exist');
     cy.get('.MuiTableSortLabel-iconDirectionAsc').should('not.exist');
 
-    cy.get('[data-testid="SortIcon"]').should('have.length', 3);
+    cy.get('[data-testid="SortIcon"]').should('have.length', 5);
     cy.get('[data-testid="ArrowUpwardIcon"]').should('not.exist');
 
     cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
@@ -105,7 +105,7 @@ describe('DLS - Datasets Table', () => {
     // clear the default sort
     cy.contains('[role="button"]', 'Create Time').click();
 
-    cy.get('[data-testid="SortIcon"]').should('have.length', 3);
+    cy.get('[data-testid="SortIcon"]').should('have.length', 5);
 
     // check icon when clicking on a column
     cy.contains('[role="button"]', 'Create Time').click();
@@ -124,7 +124,7 @@ describe('DLS - Datasets Table', () => {
 
     // check icons when shift is held
     cy.get('.App').trigger('keydown', { key: 'Shift' });
-    cy.get('[data-testid="AddIcon"]').should('have.length', 1);
+    cy.get('[data-testid="AddIcon"]').should('have.length', 3);
   });
 
   it('should be able to filter with both text & date filters on multiple columns', () => {
@@ -140,16 +140,7 @@ describe('DLS - Datasets Table', () => {
   });
 
   describe('should be able to view details', () => {
-    it('and can calculate size, all the details are correct & also able to hide the panel', () => {
-      // need to wait for counts to finish, otherwise cypress might interact with the details panel
-      // too quickly and it rerenders during the test
-      cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '15').should(
-        'exist'
-      );
-      cy.contains('[aria-rowindex="2"] [aria-colindex="4"]', '15').should(
-        'exist'
-      );
-
+    it('and all the details are correct & also able to hide the panel', () => {
       cy.get('[aria-label="Show details"]').eq(1).click();
 
       cy.get('#details-panel').should('be.visible');
@@ -166,9 +157,6 @@ describe('DLS - Datasets Table', () => {
         .contains('Home down your nice amount successful')
         .should('be.visible');
 
-      cy.contains('#calculate-size-btn', 'Calculate').should('exist').click();
-      cy.contains('1.73 GB', { timeout: 10000 }).should('be.visible');
-
       cy.get('[aria-controls="dataset-type-panel"]').click();
       cy.get('#dataset-type-panel').should('not.have.attr', 'hidden');
       cy.get('#details-panel').contains('DATASETTYPE 3');
@@ -177,25 +165,6 @@ describe('DLS - Datasets Table', () => {
 
       cy.get('#details-panel').should('not.exist');
       cy.get('[aria-label="Hide details"]').should('not.exist');
-    });
-
-    it('and then calculate file size when the value is 0 ', () => {
-      cy.intercept('**/getSize?*', '0');
-
-      // need to wait for counts to finish, otherwise cypress might interact with the details panel
-      // too quickly and it rerenders during the test
-      cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '15').should(
-        'exist'
-      );
-      cy.contains('[aria-rowindex="2"] [aria-colindex="4"]', '15').should(
-        'exist'
-      );
-
-      cy.get('[aria-label="Show details"]').first().click();
-
-      cy.contains('#calculate-size-btn', 'Calculate').should('exist').click();
-
-      cy.contains('0 B', { timeout: 10000 }).should('be.visible');
     });
   });
 });

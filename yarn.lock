@@ -4090,17 +4090,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@welldone-software/why-did-you-render@npm:7.0.1":
-  version: 7.0.1
-  resolution: "@welldone-software/why-did-you-render@npm:7.0.1"
-  dependencies:
-    lodash: ^4
-  peerDependencies:
-    react: ^16 || ^17 || ^18
-  checksum: 0bfc59f1f8613e7dc5fbf189305e88b01c50ee278df2c9b69082ed6abcf8d71758eb468d027235916c6126934a755d6547e9704883007236544763fffad6f48c
-  languageName: node
-  linkType: hard
-
 "@wojtekmaj/enzyme-adapter-react-17@npm:0.6.6":
   version: 0.6.6
   resolution: "@wojtekmaj/enzyme-adapter-react-17@npm:0.6.6"
@@ -6459,7 +6448,6 @@ __metadata:
     resize-observer-polyfill: 1.5.1
     tslib: 2.6.0
     typescript: 4.9.3
-    use-deep-compare-effect: 1.8.1
   peerDependencies:
     "@mui/icons-material": ">= 5.5.0 < 6"
     "@mui/material": ">= 5.5.0 < 6"
@@ -6498,7 +6486,6 @@ __metadata:
     "@types/redux-mock-store": 1.0.3
     "@typescript-eslint/eslint-plugin": 5.62.0
     "@typescript-eslint/parser": 5.62.0
-    "@welldone-software/why-did-you-render": 7.0.1
     axios: 1.6.1
     blob-polyfill: 7.0.20220408
     connected-react-router: 6.9.1
@@ -6877,13 +6864,6 @@ __metadata:
   version: 1.1.2
   resolution: "depd@npm:1.1.2"
   checksum: 6b406620d269619852885ce15965272b829df6f409724415e0002c8632ab6a8c0a08ec1f0bd2add05dc7bd7507606f7e2cc034fa24224ab829580040b835ecd9
-  languageName: node
-  linkType: hard
-
-"dequal@npm:^2.0.2":
-  version: 2.0.3
-  resolution: "dequal@npm:2.0.3"
-  checksum: 8679b850e1a3d0ebbc46ee780d5df7b478c23f335887464023a631d1b9af051ad4a6595a44220f9ff8ff95a8ddccf019b5ad778a976fd7bbf77383d36f412f90
   languageName: node
   linkType: hard
 
@@ -11167,7 +11147,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:^4, lodash@npm:^4.17.15, lodash@npm:^4.17.20, lodash@npm:^4.17.21, lodash@npm:^4.7.0":
+"lodash@npm:^4.17.15, lodash@npm:^4.17.20, lodash@npm:^4.17.21, lodash@npm:^4.7.0":
   version: 4.17.21
   resolution: "lodash@npm:4.17.21"
   checksum: eb835a2e51d381e561e508ce932ea50a8e5a68f4ebdd771ea240d3048244a8d13658acbd502cd4829768c56f2e16bdd4340b9ea141297d472517b83868e677f7
@@ -16140,18 +16120,6 @@ __metadata:
   version: 8.2.4
   resolution: "url-search-params-polyfill@npm:8.2.4"
   checksum: 7009db6fcf4d091076a71592e685a0c63e275a9a7e9ac5bcec1defd16f5e976381656b2e0fe6e44c48a0a19954c0cd0654d40ae3c9b10803f8c65caf6b47d743
-  languageName: node
-  linkType: hard
-
-"use-deep-compare-effect@npm:1.8.1":
-  version: 1.8.1
-  resolution: "use-deep-compare-effect@npm:1.8.1"
-  dependencies:
-    "@babel/runtime": ^7.12.5
-    dequal: ^2.0.2
-  peerDependencies:
-    react: ">=16.13"
-  checksum: 2b9b6291df3f772f44d259b352e5d998963ccee0db2efeb76bb05525d928064aeeb69bb0dee5a5e428fea7cf3db67c097a770ebd30caa080662b565f6ef02b2e
   languageName: node
   linkType: hard
 
