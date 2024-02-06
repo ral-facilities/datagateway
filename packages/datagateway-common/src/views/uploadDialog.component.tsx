@@ -24,6 +24,7 @@ import { readSciGatewayToken } from '../parseTokens';
 import { createDataset } from '../api';
 // import { ErrorOutline } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
+import { useQueryClient } from 'react-query';
 
 const DialogContent = styled(MuiDialogContent)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -40,6 +41,8 @@ interface UploadDialogProps {
 const UploadDialog: React.FC<UploadDialogProps> = (
   props: UploadDialogProps
 ) => {
+  const { entityType, entityId, open, setClose } = props;
+  const queryClient = useQueryClient();
   const [uppy] = React.useState(() =>
     new Uppy({
       // debug: true,
@@ -65,6 +68,18 @@ const UploadDialog: React.FC<UploadDialogProps> = (
       .on('error', (error) => {
         uppy.info(error.message, 'error', 5000);
       })
+      .on('upload-success', (file, response) => {
+        if (entityType === 'datafile') {
+          queryClient.invalidateQueries(['datafile']);
+        } else {
+          queryClient.invalidateQueries([
+            `${entityType}${
+              entityType === 'dataset' ? 'Datafile' : 'Dataset'
+            }Count`,
+            entityId,
+          ]);
+        }
+      })
       .use(Tus, {
         // TODO: remove hard coded endpoint
         endpoint: 'http://127.0.0.1:8181/upload/',
@@ -79,8 +94,6 @@ const UploadDialog: React.FC<UploadDialogProps> = (
       uppy.use(GoldenRetriever);
     }
   }, [uppy]);
-
-  const { entityType, entityId, open, setClose } = props;
 
   const [t] = useTranslation();
 
