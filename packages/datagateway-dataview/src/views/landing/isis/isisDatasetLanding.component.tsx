@@ -60,11 +60,7 @@ const ActionButtonsContainer = styled('div')(({ theme }) => ({
 }));
 
 interface LandingPageProps {
-  instrumentId: string;
-  instrumentChildId: string;
-  investigationId: string;
   datasetId: string;
-  dataPublication: boolean;
 }
 
 const LandingPage = (props: LandingPageProps): React.ReactElement => {
@@ -76,17 +72,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     [location.search]
   );
   const [value, setValue] = React.useState<'details'>('details');
-  const {
-    instrumentId,
-    instrumentChildId,
-    investigationId,
-    datasetId,
-    dataPublication,
-  } = props;
-
-  const pathRoot = dataPublication ? 'browseDataPublications' : 'browse';
-  const instrumentChild = dataPublication ? 'dataPublication' : 'facilityCycle';
-  const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset/${datasetId}`;
+  const { datasetId } = props;
 
   const { data } = useDatasetDetails(parseInt(datasetId));
 
@@ -158,8 +144,8 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 onClick={() =>
                   push(
                     view
-                      ? `${urlPrefix}/datafile?view=${view}`
-                      : `${urlPrefix}/datafile`
+                      ? `${location.pathname}/datafile?view=${view}`
+                      : `${location.pathname}/datafile`
                   )
                 }
               />

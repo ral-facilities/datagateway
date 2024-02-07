@@ -171,16 +171,23 @@ export interface DataPublicationUser {
   fullName: string;
 }
 
+export interface DataPublicationType {
+  id: number;
+  name: string;
+}
+
 export interface DataPublication {
   id: number;
   pid: string;
   title: string;
   modTime: string;
   createTime: string;
+  facility?: Facility;
   description?: string;
   publicationDate?: string;
   users?: DataPublicationUser[];
   content?: DataCollection;
+  type?: DataPublicationType;
 }
 
 interface InstrumentScientist {

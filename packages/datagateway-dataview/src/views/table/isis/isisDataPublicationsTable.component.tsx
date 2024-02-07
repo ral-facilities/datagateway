@@ -20,12 +20,13 @@ import { useLocation } from 'react-router-dom';
 
 interface ISISDataPublicationsTableProps {
   instrumentId: string;
+  studyDataPublicationId?: string;
 }
 
 const ISISDataPublicationsTable = (
   props: ISISDataPublicationsTableProps
 ): React.ReactElement => {
-  const { instrumentId } = props;
+  const { instrumentId, studyDataPublicationId } = props;
 
   const location = useLocation();
   const [t] = useTranslation();
@@ -45,6 +46,36 @@ const ISISDataPublicationsTable = (
           },
       }),
     },
+    ...(studyDataPublicationId
+      ? [
+          {
+            filterType: 'where',
+            filterValue: JSON.stringify({
+              'content.dataCollectionInvestigations.investigation.dataCollectionInvestigations.dataCollection.dataPublications.id':
+                {
+                  eq: studyDataPublicationId,
+                },
+            }),
+          },
+          {
+            filterType: 'where',
+            filterValue: JSON.stringify({
+              'type.name': { eq: 'investigation' },
+            }),
+          },
+        ]
+      : [
+          {
+            filterType: 'where',
+            filterValue: JSON.stringify({
+              'type.name': { eq: 'study' },
+            }),
+          },
+          {
+            filterType: 'distinct',
+            filterValue: JSON.stringify(['id', 'title', 'pid']),
+          },
+        ]),
   ]);
 
   // isMounted is used to disable queries when the component isn't fully mounted.
@@ -66,6 +97,36 @@ const ISISDataPublicationsTable = (
             },
         }),
       },
+      ...(studyDataPublicationId
+        ? [
+            {
+              filterType: 'where',
+              filterValue: JSON.stringify({
+                'content.dataCollectionInvestigations.investigation.dataCollectionInvestigations.dataCollection.dataPublications.id':
+                  {
+                    eq: studyDataPublicationId,
+                  },
+              }),
+            },
+            {
+              filterType: 'where',
+              filterValue: JSON.stringify({
+                'type.name': { eq: 'investigation' },
+              }),
+            },
+          ]
+        : [
+            {
+              filterType: 'where',
+              filterValue: JSON.stringify({
+                'type.name': { eq: 'study' },
+              }),
+            },
+            {
+              filterType: 'distinct',
+              filterValue: JSON.stringify(['id', 'title', 'pid']),
+            },
+          ]),
     ],
     isMounted
   );
@@ -93,8 +154,6 @@ const ISISDataPublicationsTable = (
   );
 
   const columns: ColumnType[] = React.useMemo(() => {
-    const pathRoot = 'browseDataPublications';
-    const instrumentChild = 'dataPublication';
     return [
       {
         icon: Fingerprint,
@@ -102,12 +161,14 @@ const ISISDataPublicationsTable = (
         dataKey: 'title',
         cellContentRenderer: (cellProps: TableCellProps) =>
           tableLink(
-            `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${cellProps.rowData.id}`,
+            `${location.pathname}/${cellProps.rowData.id}`,
             cellProps.rowData.title,
             view,
             'isis-datapublication-table-id'
           ),
+
         filterComponent: textFilter,
+        defaultSort: studyDataPublicationId ? undefined : 'desc',
       },
       {
         icon: Public,
@@ -125,20 +186,31 @@ const ISISDataPublicationsTable = (
         },
         filterComponent: textFilter,
       },
-      {
-        icon: CalendarToday,
-        label: t('datapublications.publication_date'),
-        dataKey: 'publicationDate',
-        cellContentRenderer: (cellProps: TableCellProps) =>
-          (cellProps.rowData as DataPublication).publicationDate?.slice(
-            0,
-            10
-          ) ?? '',
-        filterComponent: dateFilter,
-        defaultSort: 'desc',
-      },
+      ...(studyDataPublicationId
+        ? ([
+            {
+              icon: CalendarToday,
+              label: t('datapublications.publication_date'),
+              dataKey: 'publicationDate',
+              cellContentRenderer: (cellProps: TableCellProps) =>
+                (cellProps.rowData as DataPublication).publicationDate?.slice(
+                  0,
+                  10
+                ) ?? '',
+              filterComponent: dateFilter,
+              defaultSort: 'desc',
+            },
+          ] as ColumnType[])
+        : []),
     ];
-  }, [t, textFilter, dateFilter, instrumentId, view]);
+  }, [
+    t,
+    textFilter,
+    studyDataPublicationId,
+    dateFilter,
+    location.pathname,
+    view,
+  ]);
 
   return (
     <Table

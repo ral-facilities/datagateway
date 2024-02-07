@@ -111,7 +111,7 @@ const ISISInvestigationsCardView = (
           },
           {
             dataCollectionInvestigations: {
-              dataCollection: 'dataPublications',
+              dataCollection: { dataPublications: 'type' },
             },
           },
           {
@@ -124,24 +124,20 @@ const ISISInvestigationsCardView = (
     isMounted
   );
 
-  const pathRoot = dataPublication ? 'browseDataPublications' : 'browse';
-  const instrumentChild = dataPublication ? 'dataPublication' : 'facilityCycle';
-  const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation`;
-
   const title: CardViewDetails = React.useMemo(
     () => ({
       label: t('investigations.title'),
       dataKey: 'title',
       content: (investigation: Investigation) =>
         tableLink(
-          `${urlPrefix}/${investigation.id}`,
+          `${location.pathname}/${investigation.id}`,
           investigation.title,
           view,
           'isis-investigations-card-title'
         ),
       filterComponent: textFilter,
     }),
-    [t, textFilter, urlPrefix, view]
+    [location.pathname, t, textFilter, view]
   );
 
   const description: CardViewDetails = React.useMemo(
@@ -162,18 +158,16 @@ const ISISInvestigationsCardView = (
         filterComponent: textFilter,
       },
       {
-        // TODO: this was previously the Study DOI - currently there are no datapublication
-        // representations of Studies, only of Investigations themselves
-        // should this be showing the study DOI or the investigation DOI anyway?
         content: function doiFormat(entity: Investigation) {
-          if (
-            entity?.dataCollectionInvestigations?.[0]?.dataCollection
-              ?.dataPublications?.[0]
-          ) {
+          const studyDataPublication =
+            entity.dataCollectionInvestigations?.filter(
+              (dci) =>
+                dci.dataCollection.dataPublications?.[0]?.type?.name === 'study'
+            )?.[0]?.dataCollection?.dataPublications?.[0];
+          if (studyDataPublication) {
             return externalSiteLink(
-              `https://doi.org/${entity.dataCollectionInvestigations?.[0]?.dataCollection?.dataPublications?.[0].pid}`,
-              entity.dataCollectionInvestigations?.[0]?.dataCollection
-                ?.dataPublications?.[0].pid,
+              `https://doi.org/${studyDataPublication.pid}`,
+              studyDataPublication.pid,
               'isis-investigations-card-doi-link'
             );
           } else {
@@ -258,13 +252,13 @@ const ISISInvestigationsCardView = (
         rowData={investigation}
         viewDatasets={(id: number) => {
           const url = view
-            ? `${urlPrefix}/${id}/dataset?view=${view}`
-            : `${urlPrefix}/${id}/dataset`;
+            ? `${location.pathname}/${id}/dataset?view=${view}`
+            : `${location.pathname}/${id}/dataset`;
           push(url);
         }}
       />
     ),
-    [push, urlPrefix, view]
+    [location.pathname, push, view]
   );
 
   return (

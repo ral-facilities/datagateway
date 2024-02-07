@@ -37,6 +37,7 @@ export interface ConfigureFacilityImageSettingPayload {
 export interface BreadcrumbSettings {
   [matchEntity: string]: {
     replaceEntityField: string;
+    replaceEntityQueryField?: string;
     replaceEntity?: string;
     parentEntity?: string;
   };

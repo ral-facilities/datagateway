@@ -153,5 +153,20 @@
       "order": 6
     }
   ],
+  "breadcrumbs": {
+    "proposal": {
+      "replaceEntity": "investigation",
+      "replaceEntityQueryField": "name",
+      "replaceEntityField": "title"
+    },
+    "experiment": {
+      "replaceEntity": "dataPublication",
+      "replaceEntityField": "title"
+    },
+    "investigation": {
+      "replaceEntityField": "visitId",
+      "parentEntity": "proposal"
+    }
+  },
   "pluginHost": "http://localhost:3000"
 }

@@ -94,6 +94,11 @@ const InvestigationDetailsPanel = (
     }
   }, [data, selectedTab, changeTab]);
 
+  const studyDataPublication =
+    investigationData.dataCollectionInvestigations?.filter(
+      (dci) => dci.dataCollection.dataPublications?.[0]?.type?.name === 'study'
+    )?.[0]?.dataCollection?.dataPublications?.[0];
+
   return (
     <div
       data-testid="isis-investigation-details-panel"
@@ -190,32 +195,21 @@ const InvestigationDetailsPanel = (
               </b>
             </Typography>
           </Grid>
-          {/* TODO: when datapublications are created for studies, need to pick the study datapublication */}
-          {investigationData.dataCollectionInvestigations?.[0]?.dataCollection
-            ?.dataPublications &&
-            investigationData.dataCollectionInvestigations[0].dataCollection.dataPublications.map(
-              (dataPublication) => {
-                if (dataPublication) {
-                  return (
-                    <Grid key={dataPublication.id} item xs>
-                      <Typography variant="overline">
-                        {t('investigations.details.pid')}
-                      </Typography>
-                      <Typography>
-                        <MuiLink
-                          href={`https://doi.org/${dataPublication.pid}`}
-                          data-testid="investigation-details-panel-pid-link"
-                        >
-                          {dataPublication.pid}
-                        </MuiLink>
-                      </Typography>
-                    </Grid>
-                  );
-                } else {
-                  return null;
-                }
-              }
-            )}
+          {studyDataPublication && (
+            <Grid key={studyDataPublication.id} item xs>
+              <Typography variant="overline">
+                {t('investigations.details.pid')}
+              </Typography>
+              <Typography>
+                <MuiLink
+                  href={`https://doi.org/${studyDataPublication.pid}`}
+                  data-testid="investigation-details-panel-pid-link"
+                >
+                  {studyDataPublication.pid}
+                </MuiLink>
+              </Typography>
+            </Grid>
+          )}
           <Grid item xs>
             <Typography variant="overline">
               {t('investigations.details.doi')}

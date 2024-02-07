@@ -107,13 +107,16 @@ const useEntityInformation = (
         let apiEntity = entity;
 
         // If the entity is a investigation or a data publication, we can't use name field as the default
-        // TODO: what do we want to show for a datapublication breadcrumb?
         let requestEntityField =
           entity === 'investigation'
             ? 'title'
             : entity === 'dataPublication'
-            ? 'pid'
+            ? 'title'
             : 'name';
+
+        // this is the field we use to lookup the relevant entity in ICAT - it's usually ID
+        // but for DLS proposals this will be name
+        let requestQueryField = 'id';
 
         // Use breadcrumb settings in state to customise API call for entities.
         if (
@@ -134,6 +137,10 @@ const useEntityInformation = (
             // Get the replace entity, if one has been defined.
             if (entitySettings.replaceEntity) {
               apiEntity = entitySettings.replaceEntity;
+            }
+
+            if (entitySettings.replaceEntityQueryField) {
+              requestQueryField = entitySettings.replaceEntityQueryField;
             }
           }
         }
@@ -156,7 +163,7 @@ const useEntityInformation = (
           requestEntityUrl =
             pluralisedApiEntity.toLowerCase() +
             '/findone?where=' +
-            JSON.stringify({ name: { eq: entityId } });
+            JSON.stringify({ [requestQueryField]: { eq: entityId } });
         }
 
         queryConfigs.push({

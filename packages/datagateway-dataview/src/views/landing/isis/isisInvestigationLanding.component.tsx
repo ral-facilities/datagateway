@@ -32,6 +32,9 @@ import {
   getTooltipText,
   formatBytes,
   externalSiteLink,
+  useDataPublication,
+  DataPublication,
+  useDataPublications,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -76,17 +79,18 @@ const ActionButtonsContainer = styled('div')(({ theme }) => ({
 
 interface FormattedUser {
   role?: string;
+  contributorType?: string;
   fullName: string;
 }
 
 interface LandingPageProps {
-  instrumentId: string;
-  instrumentChildId: string;
   investigationId: string;
   dataPublication: boolean;
 }
 
-const LandingPage = (props: LandingPageProps): React.ReactElement => {
+const InvestigationDataPublicationLandingPage = (
+  props: LandingPageProps
+): React.ReactElement => {
   const [t] = useTranslation();
   const { push } = useHistory();
   const location = useLocation();
@@ -95,12 +99,362 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     [location.search]
   );
   const [value, setValue] = React.useState<'details'>('details');
-  const { instrumentId, instrumentChildId, investigationId, dataPublication } =
-    props;
+  const { investigationId } = props;
 
-  const pathRoot = dataPublication ? 'browseDataPublications' : 'browse';
-  const instrumentChild = dataPublication ? 'dataPublication' : 'facilityCycle';
-  const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}`;
+  const { data } = useDataPublication(parseInt(investigationId));
+
+  const { data: studyDataPublications } = useDataPublications([
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'content.dataCollectionInvestigations.investigation.dataCollectionInvestigations.dataCollection.dataPublications.id':
+          {
+            eq: investigationId,
+          },
+      }),
+    },
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'type.name': {
+          eq: 'study',
+        },
+      }),
+    },
+  ]);
+
+  const studyDataPublication = studyDataPublications?.[0];
+
+  const title = React.useMemo(() => data?.title, [data]);
+  const doi = React.useMemo(() => data?.pid, [data]);
+
+  const formattedUsers = React.useMemo(() => {
+    const principals: FormattedUser[] = [];
+    const contacts: FormattedUser[] = [];
+    const experimenters: FormattedUser[] = [];
+    if (data?.users) {
+      const dataPublicationUsers = data?.users;
+      dataPublicationUsers.forEach((user) => {
+        // Only keep users where we have their fullName
+        const fullname = user.fullName;
+        if (fullname) {
+          switch (user.contributorType) {
+            case 'principal_experimenter':
+              principals.push({
+                fullName: fullname,
+                contributorType: 'Principal Investigator',
+              });
+              break;
+            case 'local_contact':
+              contacts.push({
+                fullName: fullname,
+                contributorType: 'Local Contact',
+              });
+              break;
+            default:
+              experimenters.push({
+                fullName: fullname,
+                contributorType: 'Experimenter',
+              });
+          }
+        }
+      });
+    }
+    // Ensure PIs are listed first, and sort within roles for consistency
+    principals.sort((a, b) => a.fullName.localeCompare(b.fullName));
+    contacts.sort((a, b) => a.fullName.localeCompare(b.fullName));
+    experimenters.sort((a, b) => a.fullName.localeCompare(b.fullName));
+    return principals.concat(contacts, experimenters);
+  }, [data]);
+
+  const shortInfo = [
+    {
+      content: function doiFormat(entity: DataPublication) {
+        return (
+          entity?.pid &&
+          externalSiteLink(
+            `https://doi.org/${entity.pid}`,
+            entity.pid,
+            'isis-investigation-landing-doi-link'
+          )
+        );
+      },
+      label: t('investigations.doi'),
+      icon: <Public sx={shortInfoIconStyle} />,
+    },
+    {
+      content: function doiFormat() {
+        return (
+          studyDataPublication &&
+          studyDataPublication?.pid &&
+          externalSiteLink(
+            `https://doi.org/${studyDataPublication.pid}`,
+            studyDataPublication.pid,
+            'isis-investigation-landing-doi-link'
+          )
+        );
+      },
+      label: t('investigations.parent_doi'),
+      icon: <Public sx={shortInfoIconStyle} />,
+    },
+    {
+      content: () => studyDataPublication && studyDataPublication.title,
+      label: t('investigations.name'),
+      icon: <Fingerprint sx={shortInfoIconStyle} />,
+    },
+    {
+      content: (entity: DataPublication) =>
+        entity.pid.includes('-') && entity.pid.split('-')[1],
+      label: t('investigations.visit_id'),
+      icon: <Fingerprint sx={shortInfoIconStyle} />,
+    },
+    {
+      content: (entity: DataPublication) => entity.facility?.name,
+      label: t('investigations.details.facility'),
+      icon: <Business sx={shortInfoIconStyle} />,
+    },
+    {
+      content: (entity: DataPublication) =>
+        entity.content?.dataCollectionInvestigations?.[0]?.investigation
+          ?.investigationInstruments?.[0]?.instrument?.name,
+      label: t('investigations.instrument'),
+      icon: <Assessment sx={shortInfoIconStyle} />,
+    },
+    {
+      content: function distributionFormat() {
+        return externalSiteLink(
+          'https://www.isis.stfc.ac.uk/Pages/ISIS-Raw-File-Format.aspx',
+          t('doi_constants.distribution.format')
+        );
+      },
+      label: t('datapublications.details.format'),
+      icon: <Storage sx={shortInfoIconStyle} />,
+    },
+    {
+      content: (entity: DataPublication) =>
+        entity.publicationDate?.slice(0, 10),
+      label: t('investigations.release_date'),
+      icon: <CalendarToday sx={shortInfoIconStyle} />,
+    },
+  ];
+
+  // const shortDatasetInfo = [
+  //   {
+  //     content: function doiFormat(entity: Dataset) {
+  //       return (
+  //         entity?.doi &&
+  //         externalSiteLink(
+  //           `https://doi.org/${entity.doi}`,
+  //           entity.doi,
+  //           'landing-study-doi-link'
+  //         )
+  //       );
+  //     },
+  //     label: t('datasets.doi'),
+  //     icon: <Public sx={shortInfoIconStyle} />,
+  //   },
+  // ];
+
+  return (
+    <Paper
+      data-testid="isis-investigation-landing"
+      sx={{ margin: 1, padding: 1 }}
+    >
+      <Grid container sx={{ padding: 0.5 }}>
+        <Grid item xs={12}>
+          <Branding />
+        </Grid>
+        <Grid item xs={12}>
+          <Paper square elevation={0} sx={{ mx: -1.5, px: 1.5 }}>
+            <Tabs
+              value={value}
+              onChange={(event, newValue) => setValue(newValue)}
+              indicatorColor="secondary"
+              textColor="secondary"
+            >
+              <Tab
+                id="investigation-details-tab"
+                aria-controls="investigation-details-panel"
+                label={t('investigations.details.label')}
+                value="details"
+              />
+              {data?.content?.dataCollectionInvestigations?.[0]
+                ?.investigation && (
+                <Tab
+                  id="investigation-datasets-tab"
+                  label={t('investigations.details.datasets')}
+                  onClick={() =>
+                    push(
+                      view
+                        ? `${location.pathname}/dataset?view=${view}`
+                        : `${location.pathname}/dataset`
+                    )
+                  }
+                />
+              )}
+            </Tabs>
+            <Divider />
+          </Paper>
+        </Grid>
+        <Grid item container xs={12} id="investigation-details-panel">
+          {/* Long format information */}
+          <Grid item xs>
+            <Subheading variant="h5" aria-label="landing-investigation-title">
+              {data?.title}
+            </Subheading>
+
+            <Typography aria-label="landing-investigation-summary">
+              {data?.description && data.description !== 'null'
+                ? data.description
+                : 'Description not provided'}
+            </Typography>
+            {formattedUsers.length > 0 && (
+              <div>
+                <Subheading
+                  variant="h6"
+                  aria-label="landing-investigation-users-label"
+                >
+                  {t('investigations.details.users.label')}
+                </Subheading>
+                {formattedUsers.map((user, i) => (
+                  <Typography
+                    aria-label={`landing-investigation-user-${i}`}
+                    key={i}
+                  >
+                    <b>{user.contributorType}:</b> {user.fullName}
+                  </Typography>
+                ))}
+              </div>
+            )}
+
+            <Subheading
+              variant="h6"
+              aria-label="landing-investigation-publisher-label"
+            >
+              {t('datapublications.details.publisher')}
+            </Subheading>
+            <Typography aria-label="landing-investigation-publisher">
+              {t('doi_constants.publisher.name')}
+            </Typography>
+            <CitationFormatter
+              doi={doi}
+              formattedUsers={formattedUsers}
+              title={title}
+              startDate={data?.publicationDate}
+            />
+          </Grid>
+          <Divider orientation="vertical" />
+          {/* Short format information */}
+          <Grid item xs={6} sm={5} md={4} lg={3} xl={2}>
+            {shortInfo.map(
+              (field, i) =>
+                data &&
+                field.content(data as DataPublication) && (
+                  <ShortInfoRow key={i}>
+                    <ShortInfoLabel>
+                      {field.icon}
+                      {field.label}:
+                    </ShortInfoLabel>
+                    <ArrowTooltip
+                      title={getTooltipText(
+                        field.content(data as DataPublication)
+                      )}
+                    >
+                      <ShortInfoValue>
+                        {field.content(data as DataPublication)}
+                      </ShortInfoValue>
+                    </ArrowTooltip>
+                  </ShortInfoRow>
+                )
+            )}
+            {/* Actions */}
+            {data?.content?.dataCollectionInvestigations?.[0]?.investigation
+              ?.id && (
+              <ActionButtonsContainer data-testid="investigation-landing-action-container">
+                <AddToCartButton
+                  entityType="investigation"
+                  allIds={[
+                    data?.content?.dataCollectionInvestigations?.[0]
+                      ?.investigation?.id,
+                  ]}
+                  entityId={
+                    data?.content?.dataCollectionInvestigations?.[0]
+                      ?.investigation?.id
+                  }
+                />
+              </ActionButtonsContainer>
+            )}
+            {/* Parts */}
+            {/* {(data as DataPublication)?.datasets?.map((dataset, i) => (
+              <Box key={i} sx={{ my: 1 }}>
+                <Divider />
+                <Subheading
+                  variant="h6"
+                  align="center"
+                  aria-label="landing-investigation-part-label"
+                >
+                  {tableLink(
+                    `${urlPrefix}/dataset/${dataset.id}`,
+                    `${t('datasets.dataset')}: ${dataset.name}`,
+                    view
+                  )}
+                </Subheading>
+                {shortDatasetInfo.map(
+                  (field, i) =>
+                    field.content(dataset as Dataset) && (
+                      <ShortInfoRow key={i}>
+                        <ShortInfoLabel>
+                          {field.icon}
+                          {field.label}:
+                        </ShortInfoLabel>
+                        <ArrowTooltip
+                          title={getTooltipText(
+                            field.content(dataset as Dataset)
+                          )}
+                        >
+                          <ShortInfoValue>
+                            {field.content(dataset as Dataset)}
+                          </ShortInfoValue>
+                        </ArrowTooltip>
+                      </ShortInfoRow>
+                    )
+                )}
+                <ActionButtonsContainer
+                  data-testid={`investigation-landing-dataset-${i}-action-container`}
+                >
+                  <AddToCartButton
+                    entityType="dataset"
+                    allIds={[dataset.id]}
+                    entityId={dataset.id}
+                  />
+                  <DownloadButton
+                    entityType="dataset"
+                    entityId={dataset.id}
+                    entityName={dataset.name}
+                    entitySize={dataset.fileSize ?? -1}
+                  />
+                </ActionButtonsContainer>
+              </Box>
+            ))} */}
+          </Grid>
+        </Grid>
+      </Grid>
+    </Paper>
+  );
+};
+
+const InvestigationLandingPage = (
+  props: LandingPageProps
+): React.ReactElement => {
+  const [t] = useTranslation();
+  const { push } = useHistory();
+  const location = useLocation();
+  const { view } = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
+  const [value, setValue] = React.useState<'details'>('details');
+  const { investigationId } = props;
 
   const { data } = useInvestigation(parseInt(investigationId), [
     {
@@ -113,7 +467,9 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         'publications',
         'datasets',
         {
-          dataCollectionInvestigations: { dataCollection: 'dataPublications' },
+          dataCollectionInvestigations: {
+            dataCollection: { dataPublications: 'type' },
+          },
         },
         {
           investigationInstruments: 'instrument',
@@ -193,16 +549,18 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       label: t('investigations.doi'),
       icon: <Public sx={shortInfoIconStyle} />,
     },
-    // TODO: when datapublications are created for studies, need to pick the study datapublication
     {
       content: function parentDoiFormat(entity: Investigation) {
+        const studyDataPublication =
+          entity.dataCollectionInvestigations?.filter(
+            (dci) =>
+              dci.dataCollection.dataPublications?.[0]?.type?.name === 'study'
+          )?.[0]?.dataCollection?.dataPublications?.[0];
         return (
-          entity.dataCollectionInvestigations?.[0]?.dataCollection
-            ?.dataPublications?.[0] &&
+          studyDataPublication &&
           externalSiteLink(
-            `https://doi.org/${entity.dataCollectionInvestigations?.[0]?.dataCollection?.dataPublications?.[0].pid}`,
-            entity.dataCollectionInvestigations?.[0]?.dataCollection
-              ?.dataPublications?.[0].pid,
+            `https://doi.org/${studyDataPublication.pid}`,
+            studyDataPublication.pid,
             'isis-investigations-landing-parent-doi-link'
           )
         );
@@ -234,7 +592,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       icon: <Assessment sx={shortInfoIconStyle} />,
     },
     {
-      content: function distributionFormat(entity: Investigation) {
+      content: function distributionFormat() {
         return externalSiteLink(
           'https://www.isis.stfc.ac.uk/Pages/ISIS-Raw-File-Format.aspx',
           t('doi_constants.distribution.format')
@@ -306,8 +664,8 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 onClick={() =>
                   push(
                     view
-                      ? `${urlPrefix}/dataset?view=${view}`
-                      : `${urlPrefix}/dataset`
+                      ? `${location.pathname}/dataset?view=${view}`
+                      : `${location.pathname}/dataset`
                   )
                 }
               />
@@ -452,7 +810,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                   aria-label="landing-investigation-part-label"
                 >
                   {tableLink(
-                    `${urlPrefix}/dataset/${dataset.id}`,
+                    `${location.pathname}/dataset/${dataset.id}`,
                     `${t('datasets.dataset')}: ${dataset.name}`,
                     view
                   )}
@@ -499,6 +857,14 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       </Grid>
     </Paper>
   );
+};
+
+const LandingPage = (props: LandingPageProps): React.ReactElement => {
+  if (props.dataPublication) {
+    return <InvestigationDataPublicationLandingPage {...props} />;
+  } else {
+    return <InvestigationLandingPage {...props} />;
+  }
 };
 
 export default LandingPage;

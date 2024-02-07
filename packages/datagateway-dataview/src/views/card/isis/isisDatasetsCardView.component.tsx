@@ -33,17 +33,13 @@ const ActionButtonsContainer = styled('div')(({ theme }) => ({
 }));
 
 interface ISISDatasetCardViewProps {
-  instrumentId: string;
-  instrumentChildId: string;
   investigationId: string;
-  dataPublication: boolean;
 }
 
 const ISISDatasetsCardView = (
   props: ISISDatasetCardViewProps
 ): React.ReactElement => {
-  const { instrumentId, instrumentChildId, investigationId, dataPublication } =
-    props;
+  const { investigationId } = props;
 
   const [t] = useTranslation();
   const location = useLocation();
@@ -89,10 +85,6 @@ const ISISDatasetsCardView = (
     isMounted
   );
 
-  const pathRoot = dataPublication ? 'browseDataPublications' : 'browse';
-  const instrumentChild = dataPublication ? 'dataPublication' : 'facilityCycle';
-  const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset`;
-
   const title: CardViewDetails = React.useMemo(
     () => ({
       // Provide label for filter component.
@@ -100,10 +92,10 @@ const ISISDatasetsCardView = (
       // Provide both the dataKey (for tooltip) and content to render.
       dataKey: 'name',
       content: (dataset: Dataset) =>
-        tableLink(`${urlPrefix}/${dataset.id}`, dataset.name, view),
+        tableLink(`${location.pathname}/${dataset.id}`, dataset.name, view),
       filterComponent: textFilter,
     }),
-    [t, textFilter, urlPrefix, view]
+    [t, textFilter, location.pathname, view]
   );
 
   const description: CardViewDetails = React.useMemo(
@@ -172,13 +164,13 @@ const ISISDatasetsCardView = (
         rowData={dataset}
         viewDatafiles={(id: number) => {
           const url = view
-            ? `${urlPrefix}/${id}/datafile?view=${view}`
-            : `${urlPrefix}/${id}/datafile`;
+            ? `${location.pathname}/${id}/datafile?view=${view}`
+            : `${location.pathname}/${id}/datafile`;
           push(url);
         }}
       />
     ),
-    [push, urlPrefix, view]
+    [push, location.pathname, view]
   );
 
   return (

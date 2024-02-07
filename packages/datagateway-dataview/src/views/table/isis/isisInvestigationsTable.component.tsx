@@ -101,7 +101,7 @@ const ISISInvestigationsTable = (
           },
           {
             dataCollectionInvestigations: {
-              dataCollection: 'dataPublications',
+              dataCollection: { dataPublications: 'type' },
             },
           },
           {
@@ -161,19 +161,17 @@ const ISISInvestigationsTable = (
     [fetchNextPage]
   );
 
-  const pathRoot = dataPublication ? 'browseDataPublications' : 'browse';
-  const instrumentChild = dataPublication ? 'dataPublication' : 'facilityCycle';
-  const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation`;
-
   const detailsPanel = React.useCallback(
     ({ rowData, detailsPanelResize }) => (
       <ISISInvestigationDetailsPanel
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}
-        viewDatasets={(id: number) => push(`${urlPrefix}/${id}/dataset`)}
+        viewDatasets={(id: number) =>
+          push(`${location.pathname}/${id}/dataset`)
+        }
       />
     ),
-    [push, urlPrefix]
+    [push, location.pathname]
   );
 
   const columns: ColumnType[] = React.useMemo(
@@ -185,7 +183,7 @@ const ISISInvestigationsTable = (
         cellContentRenderer: (cellProps: TableCellProps) => {
           const investigationData = cellProps.rowData as Investigation;
           return tableLink(
-            `${urlPrefix}/${investigationData.id}`,
+            `${location.pathname}/${investigationData.id}`,
             investigationData.title,
             view,
             'isis-investigations-table-title'
@@ -204,19 +202,17 @@ const ISISInvestigationsTable = (
         label: t('investigations.doi'),
         dataKey:
           'dataCollectionInvestigations.dataCollection.dataPublications.pid',
-        // TODO: this was previously the Study DOI - currently there are no datapublication
-        // representations of Studies, only of Investigations themselves
-        // should this be showing the study DOI or the investigation DOI anyway?
         cellContentRenderer: (cellProps: TableCellProps) => {
           const investigationData = cellProps.rowData as Investigation;
-          if (
-            investigationData?.dataCollectionInvestigations?.[0]?.dataCollection
-              ?.dataPublications?.[0]
-          ) {
+          const studyDataPublication =
+            investigationData.dataCollectionInvestigations?.filter(
+              (dci) =>
+                dci.dataCollection.dataPublications?.[0]?.type?.name === 'study'
+            )?.[0]?.dataCollection?.dataPublications?.[0];
+          if (studyDataPublication) {
             return externalSiteLink(
-              `https://doi.org/${investigationData.dataCollectionInvestigations?.[0]?.dataCollection?.dataPublications?.[0].pid}`,
-              investigationData.dataCollectionInvestigations?.[0]
-                ?.dataCollection?.dataPublications?.[0].pid,
+              `https://doi.org/${studyDataPublication.pid}`,
+              studyDataPublication.pid,
               'isis-investigations-table-doi-link'
             );
           } else {
@@ -267,7 +263,14 @@ const ISISInvestigationsTable = (
         filterComponent: dateFilter,
       },
     ],
-    [t, textFilter, principalExperimenterFilter, dateFilter, urlPrefix, view]
+    [
+      t,
+      textFilter,
+      principalExperimenterFilter,
+      dateFilter,
+      location.pathname,
+      view,
+    ]
   );
 
   return (
