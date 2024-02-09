@@ -10,13 +10,12 @@ import {
   useCart,
   useDatasetCount,
   useDatasetsInfinite,
-  useDatasetSizes,
   useIds,
   useRemoveFromCart,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { Router } from 'react-router-dom';
+import { generatePath, Router } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import {
   render,
@@ -31,6 +30,7 @@ import {
 } from '../../../setupTests';
 import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
+import { paths } from '../../../page/pageContainer.component';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -44,7 +44,6 @@ jest.mock('datagateway-common', () => {
     useCart: jest.fn(),
     useAddToCart: jest.fn(),
     useRemoveFromCart: jest.fn(),
-    useDatasetSizes: jest.fn(),
   };
 });
 
@@ -61,12 +60,7 @@ describe('ISIS Dataset table component', () => {
       <Provider store={store}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
-            <ISISDatasetsTable
-              dataPublication={false}
-              instrumentId="1"
-              instrumentChildId="2"
-              investigationId="3"
-            />
+            <ISISDatasetsTable investigationId="3" />
           </QueryClientProvider>
         </Router>
       </Provider>
@@ -83,7 +77,15 @@ describe('ISIS Dataset table component', () => {
         createTime: '2019-07-23',
       },
     ];
-    history = createMemoryHistory();
+    history = createMemoryHistory({
+      initialEntries: [
+        generatePath(paths.toggle.isisDataset, {
+          instrumentId: '1',
+          investigationId: '3',
+          facilityCycleId: '2',
+        }),
+      ],
+    });
     user = userEvent.setup();
 
     mockStore = configureStore([thunk]);
@@ -117,7 +119,6 @@ describe('ISIS Dataset table component', () => {
       mutate: jest.fn(),
       isLoading: false,
     });
-    (useDatasetSizes as jest.Mock).mockReturnValue({ data: 1 });
   });
 
   afterEach(() => {
@@ -320,21 +321,14 @@ describe('ISIS Dataset table component', () => {
   });
 
   it('renders dataset name as a link in data publication hierarchy', () => {
-    const store = mockStore(state);
-    render(
-      <Provider store={store}>
-        <Router history={history}>
-          <QueryClientProvider client={new QueryClient()}>
-            <ISISDatasetsTable
-              dataPublication={true}
-              instrumentId="1"
-              instrumentChildId="2"
-              investigationId="3"
-            />
-          </QueryClientProvider>
-        </Router>
-      </Provider>
+    history.replace(
+      generatePath(paths.dataPublications.toggle.isisDataset, {
+        instrumentId: '1',
+        investigationId: '3',
+        dataPublicationId: '2',
+      })
     );
+    renderComponent();
 
     expect(screen.getByText('Test 1')).toMatchSnapshot();
   });

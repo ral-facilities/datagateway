@@ -96,7 +96,7 @@ const InvestigationDetailsPanel = (
 
   const studyDataPublication =
     investigationData.dataCollectionInvestigations?.filter(
-      (dci) => dci.dataCollection.dataPublications?.[0]?.type?.name === 'study'
+      (dci) => dci.dataCollection?.dataPublications?.[0]?.type?.name === 'study'
     )?.[0]?.dataCollection?.dataPublications?.[0];
 
   return (

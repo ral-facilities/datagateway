@@ -162,7 +162,8 @@ const ISISInvestigationsCardView = (
           const studyDataPublication =
             entity.dataCollectionInvestigations?.filter(
               (dci) =>
-                dci.dataCollection.dataPublications?.[0]?.type?.name === 'study'
+                dci.dataCollection?.dataPublications?.[0]?.type?.name ===
+                'study'
             )?.[0]?.dataCollection?.dataPublications?.[0];
           if (studyDataPublication) {
             return externalSiteLink(

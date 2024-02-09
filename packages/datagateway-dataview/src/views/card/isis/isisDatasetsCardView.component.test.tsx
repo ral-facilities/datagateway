@@ -6,7 +6,7 @@ import {
 } from 'datagateway-common';
 import * as React from 'react';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
+import { generatePath, Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import type { StateType } from '../../../state/app.types';
@@ -21,6 +21,7 @@ import {
 import { render, type RenderResult, screen } from '@testing-library/react';
 import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
+import { paths } from '../../../page/pageContainer.component';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -45,12 +46,7 @@ describe('ISIS Datasets - Card View', () => {
       <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
-            <ISISDatasetsCardView
-              instrumentId="1"
-              instrumentChildId="1"
-              investigationId="1"
-              dataPublication={false}
-            />
+            <ISISDatasetsCardView investigationId="1" />
           </QueryClientProvider>
         </Router>
       </Provider>
@@ -66,7 +62,15 @@ describe('ISIS Datasets - Card View', () => {
         createTime: '2019-07-23',
       },
     ];
-    history = createMemoryHistory();
+    history = createMemoryHistory({
+      initialEntries: [
+        generatePath(paths.toggle.isisDataset, {
+          instrumentId: '1',
+          investigationId: '1',
+          facilityCycleId: '1',
+        }),
+      ],
+    });
     user = userEvent.setup();
 
     mockStore = configureStore([thunk]);
@@ -103,20 +107,16 @@ describe('ISIS Datasets - Card View', () => {
   });
 
   it('correct link used for dataPublication hierarchy', async () => {
-    render(
-      <Provider store={mockStore(state)}>
-        <Router history={history}>
-          <QueryClientProvider client={new QueryClient()}>
-            <ISISDatasetsCardView
-              dataPublication={true}
-              instrumentId="1"
-              instrumentChildId="1"
-              investigationId="1"
-            />
-          </QueryClientProvider>
-        </Router>
-      </Provider>
+    history.replace(
+      generatePath(paths.dataPublications.toggle.isisDataset, {
+        instrumentId: '1',
+        investigationId: '1',
+        dataPublicationId: '1',
+      })
     );
+
+    renderComponent();
+
     expect(await screen.findByRole('link', { name: 'Test 1' })).toHaveAttribute(
       'href',
       '/browseDataPublications/instrument/1/dataPublication/1/investigation/1/dataset/1'

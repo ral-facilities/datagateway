@@ -2,16 +2,21 @@ import * as React from 'react';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../../../state/app.types';
-import { dGCommonInitialState, useDataPublication } from 'datagateway-common';
+import {
+  dGCommonInitialState,
+  useDataPublication,
+  useDataPublications,
+} from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { createMemoryHistory, History } from 'history';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { Router } from 'react-router-dom';
+import { generatePath, Router } from 'react-router-dom';
 import { render, type RenderResult, screen } from '@testing-library/react';
 import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 import ISISDataPublicationLanding from './isisDataPublicationLanding.component';
+import { paths } from '../../../page/pageContainer.component';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -20,6 +25,7 @@ jest.mock('datagateway-common', () => {
     __esModule: true,
     ...originalModule,
     useDataPublication: jest.fn(),
+    useDataPublications: jest.fn(),
   };
 });
 
@@ -34,10 +40,7 @@ describe('ISIS Data Publication Landing page', () => {
       <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
-            <ISISDataPublicationLanding
-              instrumentId="4"
-              dataPublicationId="5"
-            />
+            <ISISDataPublicationLanding dataPublicationId="5" />
           </QueryClientProvider>
         </Router>
       </Provider>
@@ -60,7 +63,7 @@ describe('ISIS Data Publication Landing page', () => {
       fullName: 'Jesse Smith',
     },
     {
-      id: 4,
+      id: 6,
       contributorType: 'experimenter',
       fullName: '',
     },
@@ -70,7 +73,7 @@ describe('ISIS Data Publication Landing page', () => {
     {
       id: 1,
       instrument: {
-        id: 3,
+        id: 4,
         name: 'LARMOR',
       },
     },
@@ -82,23 +85,57 @@ describe('ISIS Data Publication Landing page', () => {
     name: 'Name 1',
     summary: 'foo bar',
     visitId: '1',
-    doi: 'doi 1',
+    doi: 'investigation doi 1.1',
     size: 1,
+    investigationInstruments: investigationInstrument,
+    startDate: '2019-06-10',
+    endDate: '2019-06-11',
+    releaseDate: '2019-06-12',
+  };
+
+  const investigation2 = {
+    id: 2,
+    title: 'Title 2',
+    name: 'Name 2',
+    summary: 'foo bar',
+    visitId: '2',
+    doi: 'investigation doi 1.2',
+    size: 2,
     investigationInstruments: investigationInstrument,
     startDate: '2019-06-10',
     endDate: '2019-06-11',
   };
 
-  const initialData = [
+  const initialStudyDataPublicationData = {
+    id: 5,
+    pid: 'doi 1',
+    users: users,
+    publicationDate: '2019-06-10',
+  };
+  const initialInvestigationDataPublicationsData = [
     {
-      id: 7,
-      pid: 'doi 1',
+      id: 8,
+      pid: 'investigation doi 1.1',
+      title: 'Title 1',
       description: 'foo bar',
-      users: users,
       content: {
         dataCollectionInvestigations: [
           {
             investigation: investigation,
+          },
+        ],
+      },
+      startDate: '2019-06-10',
+      endDate: '2019-06-11',
+    },
+    {
+      id: 9,
+      pid: 'investigation doi 1.2',
+      description: 'foo bar 2',
+      content: {
+        dataCollectionInvestigations: [
+          {
+            investigation: investigation2,
           },
         ],
       },
@@ -115,11 +152,25 @@ describe('ISIS Data Publication Landing page', () => {
       })
     );
 
-    history = createMemoryHistory();
+    history = createMemoryHistory({
+      initialEntries: [
+        generatePath(
+          paths.dataPublications.landing.isisDataPublicationLanding,
+          {
+            instrumentId: '4',
+            dataPublicationId: '5',
+          }
+        ),
+      ],
+    });
     user = userEvent.setup();
 
     (useDataPublication as jest.Mock).mockReturnValue({
-      data: initialData,
+      data: initialStudyDataPublicationData,
+    });
+
+    (useDataPublications as jest.Mock).mockReturnValue({
+      data: initialInvestigationDataPublicationsData,
     });
   });
 
@@ -143,7 +194,7 @@ describe('ISIS Data Publication Landing page', () => {
     });
 
     it('in cards view', async () => {
-      history.replace('/?view=card');
+      history.replace({ search: '?view=card' });
       renderComponent();
 
       await user.click(
@@ -159,26 +210,19 @@ describe('ISIS Data Publication Landing page', () => {
     });
   });
 
-  it('users displayed correctly', async () => {
+  it('renders correctly', async () => {
+    const { asFragment } = renderComponent();
+
+    expect(asFragment()).toMatchSnapshot();
+  });
+
+  it('renders structured data correctly', async () => {
     renderComponent();
 
     expect(
       await screen.findByTestId('landing-dataPublication-user-0')
-    ).toHaveTextContent('Principal Investigator: John Smith');
-    expect(
-      await screen.findByTestId('landing-dataPublication-user-1')
-    ).toHaveTextContent('Local Contact: Jane Smith');
-    expect(
-      await screen.findByTestId('landing-dataPublication-user-2')
-    ).toHaveTextContent('Experimenter: Jesse Smith');
-  });
+    ).toBeInTheDocument();
 
-  it('displays DOI and renders the expected link', async () => {
-    renderComponent();
-
-    expect(await screen.findByRole('link', { name: 'doi 1' })).toHaveAttribute(
-      'href',
-      'https://doi.org/doi 1'
-    );
+    expect(document.getElementById('dataPublication-5')).toMatchSnapshot();
   });
 });

@@ -127,27 +127,25 @@ export const paths = {
       isisStudyDataPublication:
         '/browseDataPublications/instrument/:instrumentId/dataPublication',
       isisInvestigationDataPublication:
-        '/browseDataPublications/instrument/:instrumentId/dataPublication/:studyDataPublicationId/experiment',
+        '/browseDataPublications/instrument/:instrumentId/dataPublication/:studyDataPublicationId/investigation',
       isisDataPublication:
         '/browseDataPublications/instrument/:instrumentId/dataPublication',
       isisInvestigation:
-        '/browseDataPublications/instrument/:instrumentId/dataPublication/:dataPublicationId/experiment',
+        '/browseDataPublications/instrument/:instrumentId/dataPublication/:dataPublicationId/investigation',
       isisDataset:
-        '/browseDataPublications/instrument/:instrumentId/dataPublication/:dataPublicationId/experiment/:investigationId/dataset',
+        '/browseDataPublications/instrument/:instrumentId/dataPublication/:dataPublicationId/investigation/:investigationId/dataset',
     },
     standard: {
       isisDatafile:
-        '/browseDataPublications/instrument/:instrumentId/dataPublication/:dataPublicationId/experiment/:investigationId/dataset/:datasetId/datafile',
+        '/browseDataPublications/instrument/:instrumentId/dataPublication/:dataPublicationId/investigation/:investigationId/dataset/:datasetId/datafile',
     },
     landing: {
       isisDataPublicationLanding:
         '/browseDataPublications/instrument/:instrumentId/dataPublication/:dataPublicationId',
-      isisInvestigationDataPublicationLanding:
-        '/browseDataPublications/instrument/:instrumentId/dataPublication/:studyDataPublicationId/experiment/:dataPublicationId',
       isisInvestigationLanding:
-        '/browseDataPublications/instrument/:instrumentId/dataPublication/:dataPublicationId/experiment/:investigationId',
+        '/browseDataPublications/instrument/:instrumentId/dataPublication/:dataPublicationId/investigation/:investigationId',
       isisDatasetLanding:
-        '/browseDataPublications/instrument/:instrumentId/dataPublication/:dataPublicationId/experiment/:investigationId/dataset/:datasetId',
+        '/browseDataPublications/instrument/:instrumentId/dataPublication/:dataPublicationId/investigation/:investigationId/dataset/:datasetId',
     },
   },
   // defines routes for datafile previews
@@ -155,7 +153,7 @@ export const paths = {
     isisDatafilePreview:
       '/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation/:investigationId/dataset/:datasetId/datafile/:datafileId',
     isisDataPublicationDatafilePreview:
-      '/browseDataPublications/instrument/:instrumentId/dataPublication/:dataPublicationId/experiment/:investigationId/dataset/:datasetId/datafile/:datafileId',
+      '/browseDataPublications/instrument/:instrumentId/dataPublication/:dataPublicationId/investigation/:investigationId/dataset/:datasetId/datafile/:datafileId',
   },
 };
 

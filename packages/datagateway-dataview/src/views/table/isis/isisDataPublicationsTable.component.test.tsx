@@ -7,7 +7,7 @@ import configureStore from 'redux-mock-store';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { Router } from 'react-router-dom';
+import { generatePath, Router } from 'react-router-dom';
 import { createMemoryHistory, type History } from 'history';
 import { parse } from 'date-fns';
 import {
@@ -28,6 +28,7 @@ import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 import ISISDataPublicationsTable from './isisDataPublicationsTable.component';
 import axios, { AxiosResponse } from 'axios';
+import { paths } from '../../../page/pageContainer.component';
 
 jest
   .useFakeTimers('modern')
@@ -40,13 +41,26 @@ describe('ISIS Data Publication table component', () => {
   let history: History;
   let user: UserEvent;
 
-  const renderComponent = (): RenderResult => {
+  const renderComponent = (studyDataPublicationId?: string): RenderResult => {
+    if (studyDataPublicationId)
+      history.replace(
+        generatePath(
+          paths.dataPublications.toggle.isisInvestigationDataPublication,
+          {
+            instrumentId: 1,
+            studyDataPublicationId,
+          }
+        )
+      );
     const store = mockStore(state);
     return render(
       <Provider store={store}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
-            <ISISDataPublicationsTable instrumentId="1" />
+            <ISISDataPublicationsTable
+              instrumentId="1"
+              studyDataPublicationId={studyDataPublicationId}
+            />
           </QueryClientProvider>
         </Router>
       </Provider>
@@ -81,7 +95,13 @@ describe('ISIS Data Publication table component', () => {
         },
       },
     ];
-    history = createMemoryHistory();
+    history = createMemoryHistory({
+      initialEntries: [
+        generatePath(paths.dataPublications.toggle.isisStudyDataPublication, {
+          instrumentId: 1,
+        }),
+      ],
+    });
     user = userEvent.setup({
       delay: null,
     });
@@ -119,153 +139,222 @@ describe('ISIS Data Publication table component', () => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly', async () => {
-    renderComponent();
+  describe('Study Data Publication', () => {
+    it('renders correctly', async () => {
+      renderComponent();
 
-    const rows = await screen.findAllByRole('row');
-    //should have 1 row in the table
-    expect(rows).toHaveLength(1);
+      const rows = await screen.findAllByRole('row');
+      //should have 1 row in the table
+      expect(rows).toHaveLength(1);
 
-    expect(
-      await findColumnHeaderByName('datapublications.title')
-    ).toBeInTheDocument();
-    expect(
-      await findColumnHeaderByName('datapublications.pid')
-    ).toBeInTheDocument();
-    expect(
-      await findColumnHeaderByName('datapublications.publication_date')
-    ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datapublications.title')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datapublications.pid')
+      ).toBeInTheDocument();
 
-    const row = await findRowAt(0);
+      const row = await findRowAt(0);
 
-    // check that every cell contains the correct values
-    expect(
-      within(
-        findCellInRow(row, {
-          columnIndex: await findColumnIndexByName('datapublications.title'),
-        })
-      ).getByText('Test 1')
-    ).toBeInTheDocument();
-    expect(
-      within(
-        findCellInRow(row, {
-          columnIndex: await findColumnIndexByName('datapublications.pid'),
-        })
-      ).getByText('doi')
-    ).toBeInTheDocument();
-  });
-
-  it('updates filter query params on text filter', async () => {
-    renderComponent();
-
-    const filterInput = await screen.findByRole('textbox', {
-      name: 'Filter by datapublications.title',
-      hidden: true,
+      // check that every cell contains the correct values
+      expect(
+        within(
+          findCellInRow(row, {
+            columnIndex: await findColumnIndexByName('datapublications.title'),
+          })
+        ).getByText('Test 1')
+      ).toBeInTheDocument();
+      expect(
+        within(
+          findCellInRow(row, {
+            columnIndex: await findColumnIndexByName('datapublications.pid'),
+          })
+        ).getByText('doi')
+      ).toBeInTheDocument();
     });
 
-    await user.type(filterInput, 'test');
+    it('updates filter query params on text filter', async () => {
+      renderComponent();
 
-    // user.type inputs the given string character by character to simulate user typing
-    // each keystroke of user.type creates a new entry in the history stack
-    // so the initial entry + 4 characters in "test" = 5 entries
-    expect(history.length).toBe(5);
-    expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
-        '{"title":{"value":"test","type":"include"}}'
-      )}`
-    );
+      const filterInput = await screen.findByRole('textbox', {
+        name: 'Filter by datapublications.title',
+        hidden: true,
+      });
 
-    await user.clear(filterInput);
+      await user.type(filterInput, 'test');
 
-    expect(history.length).toBe(6);
-    expect(history.location.search).toBe('?');
-  });
+      // user.type inputs the given string character by character to simulate user typing
+      // each keystroke of user.type creates a new entry in the history stack
+      // so the initial entry + 4 characters in "test" = 5 entries
+      expect(history.length).toBe(5);
+      expect(history.location.search).toBe(
+        `?filters=${encodeURIComponent(
+          '{"title":{"value":"test","type":"include"}}'
+        )}`
+      );
 
-  it('updates filter query params on date filter', async () => {
-    applyDatePickerWorkaround();
+      await user.clear(filterInput);
 
-    renderComponent();
-
-    const filterInput = await screen.findByRole('textbox', {
-      name: 'datapublications.publication_date filter to',
+      expect(history.length).toBe(6);
+      expect(history.location.search).toBe('?');
     });
 
-    await user.type(filterInput, '2019-08-06');
+    it('uses default sort', () => {
+      renderComponent();
+      expect(history.length).toBe(1);
+      expect(history.location.search).toBe(
+        `?sort=${encodeURIComponent('{"title":"desc"}')}`
+      );
 
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
-        '{"publicationDate":{"endDate":"2019-08-06"}}'
-      )}`
-    );
-
-    // await user.clear(filterInput);
-    await user.click(filterInput);
-    await user.keyboard('{Control}a{/Control}');
-    await user.keyboard('{Delete}');
-
-    expect(history.length).toBe(3);
-    expect(history.location.search).toBe('?');
-
-    cleanupDatePickerWorkaround();
-  });
-
-  it('uses default sort', () => {
-    renderComponent();
-    expect(history.length).toBe(1);
-    expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"publicationDate":"desc"}')}`
-    );
-
-    // check that the data request is sent only once after mounting
-    const datafilesCalls = (axios.get as jest.Mock).mock.calls.filter(
-      (call) => call[0] === '/datapublications'
-    );
-    expect(datafilesCalls).toHaveLength(1);
-  });
-
-  it('updates sort query params on sort', async () => {
-    renderComponent();
-
-    await user.click(
-      await screen.findByRole('button', { name: 'datapublications.title' })
-    );
-
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"title":"asc"}')}`
-    );
-  });
-
-  it('renders data publication name as a link', async () => {
-    renderComponent();
-
-    const dataPublicationIdColIndex = await findColumnIndexByName(
-      'datapublications.title'
-    );
-    const row = await findRowAt(0);
-    const dataPublicationIdCell = findCellInRow(row, {
-      columnIndex: dataPublicationIdColIndex,
+      // check that the data request is sent only once after mounting
+      const datafilesCalls = (axios.get as jest.Mock).mock.calls.filter(
+        (call) => call[0] === '/datapublications'
+      );
+      expect(datafilesCalls).toHaveLength(1);
     });
 
-    expect(
-      within(dataPublicationIdCell).getByRole('link', { name: 'Test 1' })
-    ).toHaveAttribute(
-      'href',
-      '/browseDataPublications/instrument/1/dataPublication/1'
-    );
+    it('updates sort query params on sort', async () => {
+      renderComponent();
+
+      await user.click(
+        await screen.findByRole('button', { name: 'datapublications.pid' })
+      );
+
+      expect(history.length).toBe(2);
+      expect(history.location.search).toBe(
+        `?sort=${encodeURIComponent('{"pid":"asc"}')}`
+      );
+    });
+
+    it('renders data publication name as a link', async () => {
+      renderComponent();
+
+      const dataPublicationIdColIndex = await findColumnIndexByName(
+        'datapublications.title'
+      );
+      const row = await findRowAt(0);
+      const dataPublicationIdCell = findCellInRow(row, {
+        columnIndex: dataPublicationIdColIndex,
+      });
+
+      expect(
+        within(dataPublicationIdCell).getByRole('link', { name: 'Test 1' })
+      ).toHaveAttribute(
+        'href',
+        '/browseDataPublications/instrument/1/dataPublication/1'
+      );
+    });
+
+    it('displays Experiment DOI (PID) and renders the expected Link ', async () => {
+      renderComponent();
+
+      const pidColIndex = await findColumnIndexByName('datapublications.pid');
+      const row = await findRowAt(0);
+      const pidCell = findCellInRow(row, { columnIndex: pidColIndex });
+
+      expect(
+        within(pidCell).getByRole('link', { name: 'doi' })
+      ).toHaveAttribute('href', 'https://doi.org/doi');
+    });
   });
 
-  it('displays Experiment DOI (PID) and renders the expected Link ', async () => {
-    renderComponent();
+  describe('Investigation Data Publication', () => {
+    it('renders correctly', async () => {
+      renderComponent('2');
 
-    const pidColIndex = await findColumnIndexByName('datapublications.pid');
-    const row = await findRowAt(0);
-    const pidCell = findCellInRow(row, { columnIndex: pidColIndex });
+      const rows = await screen.findAllByRole('row');
+      //should have 1 row in the table
+      expect(rows).toHaveLength(1);
 
-    expect(within(pidCell).getByRole('link', { name: 'doi' })).toHaveAttribute(
-      'href',
-      'https://doi.org/doi'
-    );
+      expect(
+        await findColumnHeaderByName('datapublications.title')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datapublications.pid')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datapublications.publication_date')
+      ).toBeInTheDocument();
+
+      const row = await findRowAt(0);
+
+      // check that every cell contains the correct values
+      expect(
+        within(
+          findCellInRow(row, {
+            columnIndex: await findColumnIndexByName('datapublications.title'),
+          })
+        ).getByText('Test 1')
+      ).toBeInTheDocument();
+      expect(
+        within(
+          findCellInRow(row, {
+            columnIndex: await findColumnIndexByName('datapublications.pid'),
+          })
+        ).getByText('doi')
+      ).toBeInTheDocument();
+    });
+
+    it('updates filter query params on date filter', async () => {
+      applyDatePickerWorkaround();
+
+      renderComponent('2');
+
+      const filterInput = await screen.findByRole('textbox', {
+        name: 'datapublications.publication_date filter to',
+      });
+
+      await user.type(filterInput, '2019-08-06');
+
+      expect(history.length).toBe(2);
+      expect(history.location.search).toBe(
+        `?filters=${encodeURIComponent(
+          '{"publicationDate":{"endDate":"2019-08-06"}}'
+        )}`
+      );
+
+      // await user.clear(filterInput);
+      await user.click(filterInput);
+      await user.keyboard('{Control}a{/Control}');
+      await user.keyboard('{Delete}');
+
+      expect(history.length).toBe(3);
+      expect(history.location.search).toBe('?');
+
+      cleanupDatePickerWorkaround();
+    });
+
+    it('uses default sort', () => {
+      renderComponent('2');
+      expect(history.length).toBe(1);
+      expect(history.location.search).toBe(
+        `?sort=${encodeURIComponent('{"publicationDate":"desc"}')}`
+      );
+
+      // check that the data request is sent only once after mounting
+      const datafilesCalls = (axios.get as jest.Mock).mock.calls.filter(
+        (call) => call[0] === '/datapublications'
+      );
+      expect(datafilesCalls).toHaveLength(1);
+    });
+
+    it('renders data publication name as a link', async () => {
+      renderComponent('2');
+
+      const dataPublicationIdColIndex = await findColumnIndexByName(
+        'datapublications.title'
+      );
+      const row = await findRowAt(0);
+      const dataPublicationIdCell = findCellInRow(row, {
+        columnIndex: dataPublicationIdColIndex,
+      });
+
+      expect(
+        within(dataPublicationIdCell).getByRole('link', { name: 'Test 1' })
+      ).toHaveAttribute(
+        'href',
+        '/browseDataPublications/instrument/1/dataPublication/2/investigation/1'
+      );
+    });
   });
 });

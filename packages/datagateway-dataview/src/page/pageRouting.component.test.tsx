@@ -10,11 +10,11 @@ import { initialState as dgDataViewInitialState } from '../state/reducers/dgdata
 import { dGCommonInitialState } from 'datagateway-common';
 
 import {
-  checkDataPublicationId,
   checkInstrumentAndFacilityCycleId,
   checkInstrumentId,
   checkInvestigationId,
   checkProposalName,
+  checkStudyDataPublicationId,
 } from './idCheckFunctions';
 import { findColumnHeaderByName, flushPromises } from '../setupTests';
 import { act } from 'react-dom/test-utils';
@@ -111,6 +111,17 @@ describe('PageTable', () => {
       if (url.includes('count')) {
         return Promise.resolve({ data: 0 });
       } else {
+        // } if (url.includes('datapublications')) {
+        //   return Promise.resolve({
+        //     data: [
+        //       {
+        //         content: {
+        //           dataCollectionInvestigations: [{ investigation: { id: 1 } }],
+        //         },
+        //       },
+        //     ],
+        //   });
+        // } else {
         return Promise.resolve({ data: [] });
       }
     });
@@ -120,7 +131,7 @@ describe('PageTable', () => {
     (checkInstrumentId as jest.Mock).mockImplementation(() =>
       Promise.resolve(true)
     );
-    (checkDataPublicationId as jest.Mock).mockImplementation(() =>
+    (checkStudyDataPublicationId as jest.Mock).mockImplementation(() =>
       Promise.resolve(true)
     );
     (checkInvestigationId as jest.Mock).mockImplementation(() =>
@@ -784,9 +795,6 @@ describe('PageTable', () => {
       expect(
         await findColumnHeaderByName('datapublications.pid')
       ).toBeInTheDocument();
-      expect(
-        await findColumnHeaderByName('datapublications.publication_date')
-      ).toBeInTheDocument();
     });
 
     it('renders ISISDataPublicationsCardView for ISIS dataPublications route in Data Publication Hierarchy', async () => {
@@ -855,25 +863,13 @@ describe('PageTable', () => {
       );
 
       expect(
-        await findColumnHeaderByName('investigations.title')
+        await findColumnHeaderByName('datapublications.title')
       ).toBeInTheDocument();
       expect(
-        await findColumnHeaderByName('investigations.name')
+        await findColumnHeaderByName('datapublications.pid')
       ).toBeInTheDocument();
       expect(
-        await findColumnHeaderByName('investigations.doi')
-      ).toBeInTheDocument();
-      expect(
-        await findColumnHeaderByName('investigations.size')
-      ).toBeInTheDocument();
-      expect(
-        await findColumnHeaderByName('investigations.principal_investigators')
-      ).toBeInTheDocument();
-      expect(
-        await findColumnHeaderByName('investigations.start_date')
-      ).toBeInTheDocument();
-      expect(
-        await findColumnHeaderByName('investigations.end_date')
+        await findColumnHeaderByName('datapublications.publication_date')
       ).toBeInTheDocument();
     });
 
@@ -890,7 +886,7 @@ describe('PageTable', () => {
       );
 
       expect(
-        await screen.findByTestId('isis-investigations-card-view')
+        await screen.findByTestId('isis-dataPublications-card-view')
       ).toBeInTheDocument();
     });
 
@@ -920,7 +916,7 @@ describe('PageTable', () => {
       (checkInstrumentId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
-      (checkDataPublicationId as jest.Mock).mockImplementation(() =>
+      (checkStudyDataPublicationId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
 
@@ -959,7 +955,7 @@ describe('PageTable', () => {
       (checkInstrumentId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
-      (checkDataPublicationId as jest.Mock).mockImplementation(() =>
+      (checkStudyDataPublicationId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
 
@@ -998,7 +994,7 @@ describe('PageTable', () => {
       (checkInstrumentId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
-      (checkDataPublicationId as jest.Mock).mockImplementation(() =>
+      (checkStudyDataPublicationId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
 
@@ -1037,7 +1033,7 @@ describe('PageTable', () => {
       (checkInstrumentId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
-      (checkDataPublicationId as jest.Mock).mockImplementation(() =>
+      (checkStudyDataPublicationId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
 
@@ -1085,7 +1081,7 @@ describe('PageTable', () => {
       (checkInstrumentId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
-      (checkDataPublicationId as jest.Mock).mockImplementation(() =>
+      (checkStudyDataPublicationId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
       (checkInvestigationId as jest.Mock).mockImplementation(() =>

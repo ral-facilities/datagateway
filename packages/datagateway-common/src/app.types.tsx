@@ -153,8 +153,8 @@ export interface DataCollectionDataset {
 
 export interface DataCollectionInvestigation {
   id: number;
-  dataCollection: DataCollection;
-  investigation: Investigation;
+  dataCollection?: DataCollection;
+  investigation?: Investigation;
 }
 
 export interface DataCollection {

@@ -113,7 +113,7 @@ const LinkedInvestigation = (
         data-testid="landing-datapublication-part-label"
       >
         {tableLink(
-          `${props.urlPrefix}/experiment/${investigation.id}`,
+          `${props.urlPrefix}/investigation/${investigation.id}`,
           `${'Part DOI'}: ${investigation.pid}`,
           props.view
         )}
@@ -281,18 +281,14 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
           url: t('doi_constants.publisher.url'),
         },
       },
+      creator: formattedUsers.map((user) => {
+        return { '@type': 'Person', name: user.fullName };
+      }),
       includedInDataCatalog: {
         '@type': 'DataCatalog',
         url: t('doi_constants.distribution.content_url'),
       },
-      distribution: [
-        {
-          '@type': 'DataDownload',
-          encodingFormat: t('doi_constants.distribution.format'),
-          // TODO format contentUrl with and actual download link if possible
-          contentUrl: t('doi_constants.distribution.content_url'),
-        },
-      ],
+      license: t('doi_constants.distribution.license'),
     });
 
     return () => {
@@ -301,7 +297,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         currentScript.remove();
       }
     };
-  }, [t, title, pid, dataPublicationId, description]);
+  }, [t, title, pid, dataPublicationId, description, formattedUsers]);
 
   const shortInfo = [
     {
@@ -368,8 +364,8 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 onClick={() =>
                   push(
                     view
-                      ? `${location.pathname}/experiment?view=${view}`
-                      : `${location.pathname}/experiment`
+                      ? `${location.pathname}/investigation?view=${view}`
+                      : `${location.pathname}/investigation`
                   )
                 }
               />
@@ -419,7 +415,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               doi={pid}
               formattedUsers={formattedUsers}
               title={title}
-              startDate={studyDataPublication?.createTime}
+              startDate={studyDataPublication?.publicationDate}
             />
           </Grid>
 
