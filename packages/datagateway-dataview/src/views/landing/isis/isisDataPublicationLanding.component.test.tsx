@@ -3,6 +3,7 @@ import { initialState as dgDataViewInitialState } from '../../../state/reducers/
 import configureStore from 'redux-mock-store';
 import { StateType } from '../../../state/app.types';
 import {
+  DataPublication,
   dGCommonInitialState,
   useDataPublication,
   useDataPublications,
@@ -77,6 +78,13 @@ describe('ISIS Data Publication Landing page', () => {
         name: 'LARMOR',
       },
     },
+    {
+      id: 2,
+      instrument: {
+        id: 5,
+        name: 'ALF',
+      },
+    },
   ];
 
   const investigation = {
@@ -87,7 +95,7 @@ describe('ISIS Data Publication Landing page', () => {
     visitId: '1',
     doi: 'investigation doi 1.1',
     size: 1,
-    investigationInstruments: investigationInstrument,
+    investigationInstruments: [investigationInstrument[0]],
     startDate: '2019-06-10',
     endDate: '2019-06-11',
     releaseDate: '2019-06-12',
@@ -101,48 +109,20 @@ describe('ISIS Data Publication Landing page', () => {
     visitId: '2',
     doi: 'investigation doi 1.2',
     size: 2,
-    investigationInstruments: investigationInstrument,
+    investigationInstruments: [investigationInstrument[1]],
     startDate: '2019-06-10',
     endDate: '2019-06-11',
   };
 
-  const initialStudyDataPublicationData = {
-    id: 5,
-    pid: 'doi 1',
-    users: users,
-    publicationDate: '2019-06-10',
+  // dummy data to stop TS from complaining, gets overwritten in beforeEach
+  let initialStudyDataPublicationData: DataPublication = {
+    id: 1,
+    pid: '1',
+    title: '1',
+    modTime: '1',
+    createTime: '1',
   };
-  const initialInvestigationDataPublicationsData = [
-    {
-      id: 8,
-      pid: 'investigation doi 1.1',
-      title: 'Title 1',
-      description: 'foo bar',
-      content: {
-        dataCollectionInvestigations: [
-          {
-            investigation: investigation,
-          },
-        ],
-      },
-      startDate: '2019-06-10',
-      endDate: '2019-06-11',
-    },
-    {
-      id: 9,
-      pid: 'investigation doi 1.2',
-      description: 'foo bar 2',
-      content: {
-        dataCollectionInvestigations: [
-          {
-            investigation: investigation2,
-          },
-        ],
-      },
-      startDate: '2019-06-10',
-      endDate: '2019-06-11',
-    },
-  ];
+  let initialInvestigationDataPublicationsData: DataPublication[] = [];
 
   beforeEach(() => {
     state = JSON.parse(
@@ -164,6 +144,52 @@ describe('ISIS Data Publication Landing page', () => {
       ],
     });
     user = userEvent.setup();
+
+    initialStudyDataPublicationData = {
+      id: 5,
+      pid: 'doi 1',
+      users: users,
+      publicationDate: '2019-06-10',
+      title: 'Study title',
+      modTime: '2019-06-10',
+      createTime: '2019-06-11',
+    };
+    initialInvestigationDataPublicationsData = [
+      {
+        id: 8,
+        pid: 'investigation doi 1.1',
+        title: 'Title 1',
+        description: 'foo bar',
+        content: {
+          id: 21,
+          dataCollectionInvestigations: [
+            {
+              id: 19,
+              investigation: investigation,
+            },
+          ],
+        },
+        modTime: '2019-06-10',
+        createTime: '2019-06-11',
+        publicationDate: '2019-06-11',
+      },
+      {
+        id: 9,
+        pid: 'investigation doi 1.2',
+        title: 'Title 2',
+        content: {
+          id: 22,
+          dataCollectionInvestigations: [
+            {
+              id: 20,
+              investigation: investigation2,
+            },
+          ],
+        },
+        modTime: '2019-06-10',
+        createTime: '2019-06-11',
+      },
+    ];
 
     (useDataPublication as jest.Mock).mockReturnValue({
       data: initialStudyDataPublicationData,
@@ -211,9 +237,118 @@ describe('ISIS Data Publication Landing page', () => {
   });
 
   it('renders correctly', async () => {
-    const { asFragment } = renderComponent();
+    renderComponent();
 
-    expect(asFragment()).toMatchSnapshot();
+    // displays doi + link correctly
+    expect(await screen.findByRole('link', { name: 'doi 1' })).toHaveAttribute(
+      'href',
+      'https://doi.org/doi 1'
+    );
+    expect(
+      screen.getByText('datapublications.publication_date:')
+    ).toBeInTheDocument();
+    expect(screen.getByText('2019-06-10')).toBeInTheDocument();
+    expect(screen.getByText('Title 1')).toBeInTheDocument();
+    expect(screen.getByText('foo bar')).toBeInTheDocument();
+
+    // renders users correctly
+    expect(
+      await screen.findByTestId('landing-dataPublication-user-0')
+    ).toHaveTextContent('Principal Investigator: John Smith');
+    expect(
+      await screen.findByTestId('landing-dataPublication-user-1')
+    ).toHaveTextContent('Local Contact: Jane Smith');
+    expect(
+      await screen.findByTestId('landing-dataPublication-user-2')
+    ).toHaveTextContent('Experimenter: Jesse Smith');
+
+    // renders parts (investigations) correctly
+    expect(
+      screen.getByRole('link', { name: 'Part DOI: investigation doi 1.1' })
+    ).toHaveAttribute(
+      'href',
+      '/browseDataPublications/instrument/4/dataPublication/5/investigation/8'
+    );
+    expect(
+      screen.getByText(
+        (_, element) =>
+          element.textContent === 'investigations.instrument:LARMOR'
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        (_, element) =>
+          element.textContent === 'investigations.release_date:2019-06-11'
+      )
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByRole('link', { name: 'Part DOI: investigation doi 1.2' })
+    ).toHaveAttribute(
+      'href',
+      '/browseDataPublications/instrument/4/dataPublication/5/investigation/9'
+    );
+    expect(
+      screen.getByText(
+        (_, element) => element.textContent === 'investigations.instrument:ALF'
+      )
+    ).toBeInTheDocument();
+
+    // actions for investigations should be visible
+    expect(
+      document.getElementById('add-to-cart-btn-investigation-1')
+    ).toBeInTheDocument();
+    expect(
+      document.getElementById('add-to-cart-btn-investigation-2')
+    ).toBeInTheDocument();
+  });
+
+  it('renders correctly when info is missing', async () => {
+    // missing description
+    initialInvestigationDataPublicationsData[0].description = undefined;
+    initialStudyDataPublicationData.users = [];
+    // missing investigations - i.e. investigations not public yet
+    if (
+      initialInvestigationDataPublicationsData[0].content
+        ?.dataCollectionInvestigations?.[0]
+    )
+      initialInvestigationDataPublicationsData[0].content.dataCollectionInvestigations[0].investigation =
+        undefined;
+    if (
+      initialInvestigationDataPublicationsData[1].content
+        ?.dataCollectionInvestigations?.[0]
+    )
+      initialInvestigationDataPublicationsData[1].content.dataCollectionInvestigations[0].investigation =
+        undefined;
+
+    renderComponent();
+
+    expect(screen.getByText('Description not provided')).toBeInTheDocument();
+
+    expect(screen.queryByText('investigations.details.users.label')).toBeNull();
+
+    // renders parts (investigations) correctly
+    expect(
+      screen.getByRole('link', { name: 'Part DOI: investigation doi 1.1' })
+    ).toHaveAttribute(
+      'href',
+      '/browseDataPublications/instrument/4/dataPublication/5/investigation/8'
+    );
+
+    expect(
+      screen.getByRole('link', { name: 'Part DOI: investigation doi 1.2' })
+    ).toHaveAttribute(
+      'href',
+      '/browseDataPublications/instrument/4/dataPublication/5/investigation/9'
+    );
+
+    // actions for investigations should not be visible
+    expect(
+      document.getElementById('add-to-cart-btn-investigation-1')
+    ).not.toBeInTheDocument();
+    expect(
+      document.getElementById('add-to-cart-btn-investigation-2')
+    ).not.toBeInTheDocument();
   });
 
   it('renders structured data correctly', async () => {
@@ -223,6 +358,13 @@ describe('ISIS Data Publication Landing page', () => {
       await screen.findByTestId('landing-dataPublication-user-0')
     ).toBeInTheDocument();
 
-    expect(document.getElementById('dataPublication-5')).toMatchSnapshot();
+    expect(document.getElementById('dataPublication-5')).toMatchInlineSnapshot(`
+      <script
+        id="dataPublication-5"
+        type="application/ld+json"
+      >
+        {"@context":"http://schema.org","@type":"Dataset","@id":"https://doi.org/doi 1","url":"https://doi.org/doi 1","identifier":"doi 1","name":"Title 1","description":"foo bar","keywords":"doi_constants.keywords","publisher":{"@type":"Organization","url":"doi_constants.publisher.url","name":"doi_constants.publisher.name","logo":"doi_constants.publisher.logo","contactPoint":{"@type":"ContactPoint","contactType":"customer service","email":"doi_constants.publisher.email","url":"doi_constants.publisher.url"}},"creator":[{"@type":"Person","name":"John Smith"},{"@type":"Person","name":"Jane Smith"},{"@type":"Person","name":"Jesse Smith"}],"includedInDataCatalog":{"@type":"DataCatalog","url":"doi_constants.distribution.content_url"},"license":"doi_constants.distribution.license"}
+      </script>
+    `);
   });
 });

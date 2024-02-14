@@ -111,17 +111,6 @@ describe('PageTable', () => {
       if (url.includes('count')) {
         return Promise.resolve({ data: 0 });
       } else {
-        // } if (url.includes('datapublications')) {
-        //   return Promise.resolve({
-        //     data: [
-        //       {
-        //         content: {
-        //           dataCollectionInvestigations: [{ investigation: { id: 1 } }],
-        //         },
-        //       },
-        //     ],
-        //   });
-        // } else {
         return Promise.resolve({ data: [] });
       }
     });

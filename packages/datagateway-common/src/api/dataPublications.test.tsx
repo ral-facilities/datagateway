@@ -299,12 +299,13 @@ describe('data publications api functions', () => {
           {
             content: {
               dataCollectionInvestigations: {
-                investigation: {
-                  investigationInstruments: 'instrument',
-                  dataCollectionInvestigations: {
-                    dataCollection: { dataPublications: 'type' },
+                investigation: [
+                  'datasets',
+                  {
+                    datasets: 'type',
+                    investigationInstruments: 'instrument',
                   },
-                },
+                ],
               },
             },
           },
@@ -349,12 +350,13 @@ describe('data publications api functions', () => {
           {
             content: {
               dataCollectionInvestigations: {
-                investigation: {
-                  investigationInstruments: 'instrument',
-                  dataCollectionInvestigations: {
-                    dataCollection: { dataPublications: 'type' },
+                investigation: [
+                  'datasets',
+                  {
+                    datasets: 'type',
+                    investigationInstruments: 'instrument',
                   },
-                },
+                ],
               },
             },
           },

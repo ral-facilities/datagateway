@@ -213,34 +213,32 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     const contacts: FormattedUser[] = [];
     const experimenters: FormattedUser[] = [];
 
-    if (studyDataPublication?.users) {
-      const dataPublicationUsers = studyDataPublication?.users;
-      dataPublicationUsers.forEach((user) => {
-        // Only keep users where we have their fullName
-        const fullname = user.fullName;
-        if (fullname) {
-          switch (user.contributorType) {
-            case 'principal_experimenter':
-              principals.push({
-                fullName: fullname,
-                contributorType: 'Principal Investigator',
-              });
-              break;
-            case 'local_contact':
-              contacts.push({
-                fullName: fullname,
-                contributorType: 'Local Contact',
-              });
-              break;
-            default:
-              experimenters.push({
-                fullName: fullname,
-                contributorType: 'Experimenter',
-              });
-          }
+    studyDataPublication?.users?.forEach((user) => {
+      // Only keep users where we have their fullName
+      const fullname = user.fullName;
+      if (fullname) {
+        switch (user.contributorType) {
+          case 'principal_experimenter':
+            principals.push({
+              fullName: fullname,
+              contributorType: 'Principal Investigator',
+            });
+            break;
+          case 'local_contact':
+            contacts.push({
+              fullName: fullname,
+              contributorType: 'Local Contact',
+            });
+            break;
+          default:
+            experimenters.push({
+              fullName: fullname,
+              contributorType: 'Experimenter',
+            });
         }
-      });
-    }
+      }
+    });
+
     // Ensure PIs are listed first, and sort within roles for consistency
     principals.sort((a, b) => a.fullName.localeCompare(b.fullName));
     contacts.sort((a, b) => a.fullName.localeCompare(b.fullName));

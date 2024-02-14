@@ -171,12 +171,13 @@ export const useDataPublication = (
             {
               content: {
                 dataCollectionInvestigations: {
-                  investigation: {
-                    investigationInstruments: 'instrument',
-                    dataCollectionInvestigations: {
-                      dataCollection: { dataPublications: 'type' },
+                  investigation: [
+                    'datasets',
+                    {
+                      datasets: 'type',
+                      investigationInstruments: 'instrument',
                     },
-                  },
+                  ],
                 },
               },
             },
