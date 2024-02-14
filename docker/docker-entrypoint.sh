@@ -7,6 +7,7 @@ TEMPFILE="$(mktemp)"
 sed -e "s|\"idsUrl\": \".*\"|\"idsUrl\": \"$IDS_URL\"|" \
     -e "s|\"apiUrl\": \".*\"|\"apiUrl\": \"$API_URL\"|" \
     -e "s|\"downloadApiUrl\": \".*\"|\"downloadApiUrl\": \"$DOWNLOAD_API_URL\"|" \
+    -e "s|\"pluginHost\": \".*\"|\"pluginHost\": \"/datagateway-dataview\"|" \
     /usr/local/apache2/htdocs/datagateway-dataview/datagateway-dataview-settings.json > "$TEMPFILE"
 
 cat "$TEMPFILE" > /usr/local/apache2/htdocs/datagateway-dataview/datagateway-dataview-settings.json
@@ -15,6 +16,7 @@ cat "$TEMPFILE" > /usr/local/apache2/htdocs/datagateway-dataview/datagateway-dat
 sed -e "s|\"idsUrl\": \".*\"|\"idsUrl\": \"$IDS_URL\"|" \
     -e "s|\"apiUrl\": \".*\"|\"apiUrl\": \"$API_URL\"|" \
     -e "s|\"downloadApiUrl\": \".*\"|\"downloadApiUrl\": \"$DOWNLOAD_API_URL\"|" \
+    -e "s|\"pluginHost\": \".*\"|\"pluginHost\": \"/datagateway-download\"|" \
     /usr/local/apache2/htdocs/datagateway-download/datagateway-download-settings.json > "$TEMPFILE"
 
 cat "$TEMPFILE" > /usr/local/apache2/htdocs/datagateway-download/datagateway-download-settings.json
@@ -24,6 +26,7 @@ sed -e "s|\"idsUrl\": \".*\"|\"idsUrl\": \"$IDS_URL\"|" \
     -e "s|\"apiUrl\": \".*\"|\"apiUrl\": \"$API_URL\"|" \
     -e "s|\"downloadApiUrl\": \".*\"|\"downloadApiUrl\": \"$DOWNLOAD_API_URL\"|" \
     -e "s|\"icatUrl\": \".*\"|\"icatUrl\": \"$ICAT_URL\"|" \
+    -e "s|\"pluginHost\": \".*\"|\"pluginHost\": \"/datagateway-search\"|" \
     /usr/local/apache2/htdocs/datagateway-search/datagateway-search-settings.json > "$TEMPFILE"
 
 cat "$TEMPFILE" > /usr/local/apache2/htdocs/datagateway-search/datagateway-search-settings.json
