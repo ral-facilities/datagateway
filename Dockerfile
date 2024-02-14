@@ -64,9 +64,9 @@ RUN set -eux; \
 USER www-data
 
 ENV API_URL="/datagateway-api"
-ENV DOWNLOAD_API_URL="http://localhost"
-ENV ICAT_URL="http://localhost"
-ENV IDS_URL="http://localhost"
+ENV DOWNLOAD_API_URL="http://localhost/topcat"
+ENV ICAT_URL="http://localhost/icat"
+ENV IDS_URL="http://localhost/ids"
 
 COPY docker/docker-entrypoint.sh /usr/local/bin/
 ENTRYPOINT ["docker-entrypoint.sh"]
