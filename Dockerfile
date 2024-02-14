@@ -63,6 +63,7 @@ RUN set -eux; \
 # Switch to non-root user defined in httpd image
 USER www-data
 
+ENV FACILITY_NAME="LILS"
 ENV API_URL="/datagateway-api"
 ENV DOWNLOAD_API_URL="http://localhost/topcat"
 ENV ICAT_URL="http://localhost/icat"
