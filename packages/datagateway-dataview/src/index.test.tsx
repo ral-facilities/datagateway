@@ -25,11 +25,12 @@ describe('index - fetchSettings', () => {
       features: {},
       idsUrl: 'ids',
       apiUrl: 'api',
-      breadcrumbs: {
-        test: {
+      breadcrumbs: [
+        {
+          matchEntity: 'test',
           replaceEntityField: 'title',
         },
-      },
+      ],
       downloadApiUrl: 'download-api',
       selectAllSetting: false,
       routes: [
@@ -78,11 +79,12 @@ describe('index - fetchSettings', () => {
       features: {},
       idsUrl: 'ids',
       apiUrl: 'api',
-      breadcrumbs: {
-        test: {
+      breadcrumbs: [
+        {
+          matchEntity: 'test',
           replaceEntityField: 'title',
         },
-      },
+      ],
       downloadApiUrl: 'download-api',
       selectAllSetting: false,
       routes: [

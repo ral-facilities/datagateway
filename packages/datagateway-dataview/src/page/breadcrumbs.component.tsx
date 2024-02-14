@@ -119,31 +119,30 @@ const useEntityInformation = (
         let requestQueryField = 'id';
 
         // Use breadcrumb settings in state to customise API call for entities.
-        if (
-          Object.entries(breadcrumbSettings).length !== 0 &&
-          entity in breadcrumbSettings
-        ) {
-          const entitySettings = breadcrumbSettings[entity];
+        breadcrumbSettings
+          .filter(
+            (breadcrumbSetting) => breadcrumbSetting.matchEntity === entity
+          )
+          .forEach((entitySettings) => {
+            // Check for a parent entity.
+            if (
+              !entitySettings.parentEntity ||
+              (entitySettings.parentEntity &&
+                currentPathnames.includes(entitySettings.parentEntity))
+            ) {
+              // Get the defined replace entity field.
+              requestEntityField = entitySettings.replaceEntityField;
 
-          // Check for a parent entity.
-          if (
-            !entitySettings.parentEntity ||
-            (entitySettings.parentEntity &&
-              currentPathnames.includes(entitySettings.parentEntity))
-          ) {
-            // Get the defined replace entity field.
-            requestEntityField = entitySettings.replaceEntityField;
+              // Get the replace entity, if one has been defined.
+              if (entitySettings.replaceEntity) {
+                apiEntity = entitySettings.replaceEntity;
+              }
 
-            // Get the replace entity, if one has been defined.
-            if (entitySettings.replaceEntity) {
-              apiEntity = entitySettings.replaceEntity;
+              if (entitySettings.replaceEntityQueryField) {
+                requestQueryField = entitySettings.replaceEntityQueryField;
+              }
             }
-
-            if (entitySettings.replaceEntityQueryField) {
-              requestQueryField = entitySettings.replaceEntityQueryField;
-            }
-          }
-        }
+          });
 
         // Create the entity url to request the name, this is pluralised to get the API endpoint.
         let requestEntityUrl: string;

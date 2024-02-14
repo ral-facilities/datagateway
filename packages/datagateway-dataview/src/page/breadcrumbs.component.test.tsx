@@ -77,31 +77,37 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
     );
   };
 
-  const ISISBreadcrumbSettings = {
-    investigation: {
-      replaceEntity: 'dataPublication',
-      replaceEntityField: 'title',
-      parentEntity: 'dataPublication',
-    },
-  };
-  const DLSBreadcrumbSettings = {
-    proposal: {
-      replaceEntity: 'investigation',
-      replaceEntityQueryField: 'name',
-      replaceEntityField: 'title',
-    },
-    investigation: {
-      replaceEntityField: 'visitId',
-      parentEntity: 'proposal',
-    },
-  };
-
   beforeEach(() => {
     history = createMemoryHistory();
 
     state = JSON.parse(
       JSON.stringify({
-        dgdataview: dgDataViewInitialState,
+        dgdataview: {
+          ...dgDataViewInitialState,
+
+          // Set up the breadcrumb settings.
+          breadcrumbSettings: [
+            // DLS settings
+            {
+              matchEntity: 'proposal',
+              replaceEntity: 'investigation',
+              replaceEntityField: 'title',
+              replaceEntityQueryField: 'name',
+            },
+            {
+              matchEntity: 'investigation',
+              replaceEntityField: 'visitId',
+              parentEntity: 'proposal',
+            },
+            // ISIS settings
+            {
+              matchEntity: 'investigation',
+              replaceEntity: 'dataPublication',
+              replaceEntityField: 'title',
+              parentEntity: 'dataPublication',
+            },
+          ],
+        },
         dgcommon: dGCommonInitialState,
 
         // Initialise our router object to hold location information.
@@ -227,10 +233,6 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
   });
 
   describe('DLS', () => {
-    beforeEach(() => {
-      state.dgdataview.breadcrumbSettings = DLSBreadcrumbSettings;
-    });
-
     it('DLS route renders correctly at the base level and does not request', async () => {
       // Set up test state pathname.
       history.replace(createLocation(DLSRoutes['proposals']));
@@ -373,10 +375,6 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
   });
 
   describe('ISIS', () => {
-    beforeEach(() => {
-      state.dgdataview.breadcrumbSettings = ISISBreadcrumbSettings;
-    });
-
     it('ISIS route renders correctly at the base level and does not request', async () => {
       // Set up test state pathname.
       history.replace(createLocation(ISISRoutes['instruments']));
