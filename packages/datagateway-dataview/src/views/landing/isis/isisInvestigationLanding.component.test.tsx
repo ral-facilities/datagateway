@@ -367,6 +367,11 @@ describe('ISIS Investigation Landing page', () => {
         name: 'buttons.add_to_cart',
       })
     ).toBeInTheDocument();
+    expect(
+      within(actionButtonContainer).getByRole('button', {
+        name: 'buttons.download',
+      })
+    ).toBeInTheDocument();
 
     // datasets should be visible
 
@@ -512,6 +517,11 @@ describe('ISIS Investigation Landing page', () => {
     expect(
       within(actionButtonContainer).getByRole('button', {
         name: 'buttons.add_to_cart',
+      })
+    ).toBeInTheDocument();
+    expect(
+      within(actionButtonContainer).getByRole('button', {
+        name: 'buttons.download',
       })
     ).toBeInTheDocument();
 

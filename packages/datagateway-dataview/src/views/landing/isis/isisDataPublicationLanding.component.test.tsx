@@ -94,7 +94,7 @@ describe('ISIS Data Publication Landing page', () => {
     summary: 'foo bar',
     visitId: '1',
     doi: 'investigation doi 1.1',
-    size: 1,
+    fileSize: 1,
     investigationInstruments: [investigationInstrument[0]],
     startDate: '2019-06-10',
     endDate: '2019-06-11',
@@ -108,7 +108,7 @@ describe('ISIS Data Publication Landing page', () => {
     summary: 'foo bar',
     visitId: '2',
     doi: 'investigation doi 1.2',
-    size: 2,
+    fileSize: 2,
     investigationInstruments: [investigationInstrument[1]],
     startDate: '2019-06-10',
     endDate: '2019-06-11',
@@ -298,9 +298,11 @@ describe('ISIS Data Publication Landing page', () => {
     expect(
       document.getElementById('add-to-cart-btn-investigation-1')
     ).toBeInTheDocument();
+    expect(document.getElementById('download-btn-1')).toBeInTheDocument();
     expect(
       document.getElementById('add-to-cart-btn-investigation-2')
     ).toBeInTheDocument();
+    expect(document.getElementById('download-btn-2')).toBeInTheDocument();
   });
 
   it('renders correctly when info is missing', async () => {
@@ -346,9 +348,11 @@ describe('ISIS Data Publication Landing page', () => {
     expect(
       document.getElementById('add-to-cart-btn-investigation-1')
     ).not.toBeInTheDocument();
+    expect(document.getElementById('download-btn-1')).not.toBeInTheDocument();
     expect(
       document.getElementById('add-to-cart-btn-investigation-2')
     ).not.toBeInTheDocument();
+    expect(document.getElementById('download-btn-2')).not.toBeInTheDocument();
   });
 
   it('renders structured data correctly', async () => {

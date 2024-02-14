@@ -25,6 +25,7 @@ import {
   ViewsType,
   parseSearchToQuery,
   useDataPublications,
+  DownloadButton,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -135,12 +136,27 @@ const LinkedInvestigation = (
           <AddToCartButton
             entityType="investigation"
             allIds={[
-              investigation.content?.dataCollectionInvestigations?.[0]
-                ?.investigation?.id,
+              investigation.content.dataCollectionInvestigations[0]
+                .investigation.id,
             ]}
             entityId={
-              investigation.content?.dataCollectionInvestigations?.[0]
-                ?.investigation?.id
+              investigation.content.dataCollectionInvestigations[0]
+                .investigation.id
+            }
+          />
+          <DownloadButton
+            entityType="investigation"
+            entityId={
+              investigation.content.dataCollectionInvestigations[0]
+                .investigation.id
+            }
+            entityName={
+              investigation.content.dataCollectionInvestigations[0]
+                .investigation.name
+            }
+            entitySize={
+              investigation.content.dataCollectionInvestigations[0]
+                .investigation.fileSize ?? -1
             }
           />
         </ActionButtonsContainer>

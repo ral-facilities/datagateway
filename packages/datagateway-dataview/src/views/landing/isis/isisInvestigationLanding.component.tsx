@@ -599,6 +599,27 @@ const CommonLandingPage = (
                           ?.investigation?.id as number)
                   }
                 />
+                <DownloadButton
+                  entityType="investigation"
+                  entityId={
+                    Array.isArray(data)
+                      ? data?.[0]?.id
+                      : (data.content?.dataCollectionInvestigations?.[0]
+                          ?.investigation?.id as number)
+                  }
+                  entityName={
+                    Array.isArray(data)
+                      ? data?.[0]?.name
+                      : (data.content?.dataCollectionInvestigations?.[0]
+                          ?.investigation?.name as string)
+                  }
+                  entitySize={
+                    (Array.isArray(data)
+                      ? data?.[0]?.fileSize
+                      : (data.content?.dataCollectionInvestigations?.[0]
+                          ?.investigation?.fileSize as number)) ?? -1
+                  }
+                />
               </ActionButtonsContainer>
             )}
             {/* Parts */}
