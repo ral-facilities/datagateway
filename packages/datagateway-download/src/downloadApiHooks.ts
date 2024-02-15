@@ -942,11 +942,10 @@ export const useCheckDOI = (
     },
     select: (doi) => ({
       title: doi.attributes.titles[0].title,
-      relatedIdentifier: doi.attributes.doi,
-      relatedIdentifierType: 'DOI',
+      identifier: doi.attributes.doi,
       fullReference: '', // TODO: what should we put here?
       relationType: '',
-      resourceType: '',
+      relatedItemType: '',
     }),
     // set enabled false to only fetch on demand when the add creator button is pressed
     enabled: false,
