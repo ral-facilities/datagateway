@@ -238,7 +238,7 @@ const DOIGenerationForm: React.FC = () => {
                         relatedDOIs.some(
                           (relatedDOI) =>
                             relatedDOI.relationType === '' ||
-                            relatedDOI.resourceType === ''
+                            relatedDOI.relatedItemType === ''
                         )
                       }
                       onClick={() => {
