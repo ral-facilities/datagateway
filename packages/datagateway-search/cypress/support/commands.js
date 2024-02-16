@@ -55,25 +55,27 @@ export const readSciGatewayToken = () => {
 };
 
 Cypress.Commands.add('login', () => {
-  return cy.request('datagateway-search-settings.json').then((response) => {
-    const settings = response.body;
-    cy.request('POST', `${settings.apiUrl}/sessions`, {
-      username: '',
-      password: '',
-      mechanism: 'anon',
-    }).then((response) => {
-      const jwtHeader = { alg: 'HS256', typ: 'JWT' };
-      const payload = {
-        sessionId: response.body.sessionID,
-        username: 'test',
-      };
-      const jwt = jsrsasign.KJUR.jws.JWS.sign(
-        'HS256',
-        jwtHeader,
-        payload,
-        'shh'
-      );
-      window.localStorage.setItem('scigateway:token', jwt);
+  cy.session('login', () => {
+    cy.request('datagateway-search-settings.json').then((response) => {
+      const settings = response.body;
+      cy.request('POST', `${settings.apiUrl}/sessions`, {
+        username: '',
+        password: '',
+        mechanism: 'anon',
+      }).then((response) => {
+        const jwtHeader = { alg: 'HS256', typ: 'JWT' };
+        const payload = {
+          sessionId: response.body.sessionID,
+          username: 'test',
+        };
+        const jwt = jsrsasign.KJUR.jws.JWS.sign(
+          'HS256',
+          jwtHeader,
+          payload,
+          'shh'
+        );
+        window.localStorage.setItem('scigateway:token', jwt);
+      });
     });
   });
 });
