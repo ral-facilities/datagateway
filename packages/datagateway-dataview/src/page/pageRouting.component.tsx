@@ -685,25 +685,6 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
         />
         <Route
           exact
-          path={paths.dataPublications.toggle.isisInvestigation}
-          render={({ match }) =>
-            this.props.view === 'card' ? (
-              <ISISInvestigationsCardView
-                dataPublication={true}
-                instrumentId={match.params.instrumentId as string}
-                instrumentChildId={match.params.dataPublicationId as string}
-              />
-            ) : (
-              <ISISInvestigationsTable
-                dataPublication={true}
-                instrumentId={match.params.instrumentId as string}
-                instrumentChildId={match.params.dataPublicationId as string}
-              />
-            )
-          }
-        />
-        <Route
-          exact
           path={paths.dataPublications.landing.isisInvestigationLanding}
           render={({ match }) => (
             <SafeISISInvestigationLanding

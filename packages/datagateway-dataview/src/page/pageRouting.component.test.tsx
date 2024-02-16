@@ -7,9 +7,10 @@ import { Router } from 'react-router-dom';
 import PageRouting from './pageRouting.component';
 import { Provider } from 'react-redux';
 import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
-import { dGCommonInitialState } from 'datagateway-common';
+import { DataPublication, dGCommonInitialState } from 'datagateway-common';
 
 import {
+  checkDatasetId,
   checkInstrumentAndFacilityCycleId,
   checkInstrumentId,
   checkInvestigationId,
@@ -46,6 +47,8 @@ const ISISRoutes = {
     investigation: '/browse/instrument/1/facilityCycle/1/investigation/1',
     dataset: '/browse/instrument/1/facilityCycle/1/investigation/1/dataset/1',
   },
+  datafilePreview:
+    '/browse/instrument/1/facilityCycle/1/investigation/1/dataset/1/datafile/1',
 };
 
 // The ISIS DataPublications routes to test.
@@ -65,6 +68,8 @@ const ISISDataPublicationsRoutes = {
     dataset:
       '/browseDataPublications/instrument/1/dataPublication/1/investigation/1/dataset/1',
   },
+  datafilePreview:
+    '/browseDataPublications/instrument/1/dataPublication/1/investigation/1/dataset/1/datafile/1',
 };
 
 // The DLS routes to test.
@@ -110,6 +115,31 @@ describe('PageTable', () => {
     (axios.get as jest.Mock).mockImplementation((url: string) => {
       if (url.includes('count')) {
         return Promise.resolve({ data: 0 });
+      } else if (url.includes('datapublications')) {
+        // this is so that routes can convert from data pub id -> investigation id
+        return Promise.resolve({
+          data: [
+            {
+              id: 1,
+              pid: 'pid.1',
+              title: 'test',
+              content: {
+                id: 2,
+                dataCollectionInvestigations: [
+                  {
+                    id: 3,
+                    investigation: {
+                      id: 4,
+                      title: 'Test',
+                      name: 'test',
+                      visitId: '1',
+                    },
+                  },
+                ],
+              },
+            } satisfies DataPublication,
+          ],
+        });
       } else {
         return Promise.resolve({ data: [] });
       }
@@ -127,6 +157,9 @@ describe('PageTable', () => {
       Promise.resolve(true)
     );
     (checkProposalName as jest.Mock).mockImplementation(() =>
+      Promise.resolve(true)
+    );
+    (checkDatasetId as jest.Mock).mockImplementation(() =>
       Promise.resolve(true)
     );
   });
@@ -726,6 +759,48 @@ describe('PageTable', () => {
 
       expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
+
+    it('renders DatafilePreviewer for ISIS datafiles previewer route', async () => {
+      history.push(ISISRoutes.datafilePreview);
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(
+        await screen.findByText('datafiles.preview.invalid_datafile')
+      ).toBeInTheDocument();
+    });
+
+    it('does not render DatafilePreviewer for incorrect ISIS datafiles previewer route', async () => {
+      (checkInstrumentAndFacilityCycleId as jest.Mock).mockImplementation(() =>
+        Promise.resolve(false)
+      );
+      (checkInvestigationId as jest.Mock).mockImplementation(() =>
+        Promise.resolve(false)
+      );
+      (checkDatasetId as jest.Mock).mockImplementation(() =>
+        Promise.resolve(false)
+      );
+
+      history.push(ISISRoutes.datafilePreview);
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(await screen.findByText('loading.oops')).toBeInTheDocument();
+    });
   });
 
   describe('ISIS Data Publication Hierarchy', () => {
@@ -1078,6 +1153,51 @@ describe('PageTable', () => {
       );
 
       history.push(ISISDataPublicationsRoutes.datafiles);
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(await screen.findByText('loading.oops')).toBeInTheDocument();
+    });
+
+    it('renders DatafilePreviewer for ISIS datafile preview route in Data Publication Hierarchy', async () => {
+      history.push(ISISDataPublicationsRoutes.datafilePreview);
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(
+        await screen.findByText('datafiles.preview.invalid_datafile')
+      ).toBeInTheDocument();
+    });
+
+    it('does not render DatafilePreviewer for incorrect ISIS datafile preview route in Data Publication Hierarchy', async () => {
+      (checkInstrumentId as jest.Mock).mockImplementation(() =>
+        Promise.resolve(false)
+      );
+      (checkStudyDataPublicationId as jest.Mock).mockImplementation(() =>
+        Promise.resolve(false)
+      );
+      (checkInvestigationId as jest.Mock).mockImplementation(() =>
+        Promise.resolve(false)
+      );
+      (checkDatasetId as jest.Mock).mockImplementation(() =>
+        Promise.resolve(false)
+      );
+
+      history.push(ISISDataPublicationsRoutes.datafilePreview);
 
       render(
         <PageRouting

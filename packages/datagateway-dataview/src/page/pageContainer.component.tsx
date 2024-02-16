@@ -130,8 +130,6 @@ export const paths = {
         '/browseDataPublications/instrument/:instrumentId/dataPublication/:studyDataPublicationId/investigation',
       isisDataPublication:
         '/browseDataPublications/instrument/:instrumentId/dataPublication',
-      isisInvestigation:
-        '/browseDataPublications/instrument/:instrumentId/dataPublication/:dataPublicationId/investigation',
       isisDataset:
         '/browseDataPublications/instrument/:instrumentId/dataPublication/:dataPublicationId/investigation/:investigationId/dataset',
     },

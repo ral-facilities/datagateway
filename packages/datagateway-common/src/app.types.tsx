@@ -180,8 +180,6 @@ export interface DataPublication {
   id: number;
   pid: string;
   title: string;
-  modTime: string;
-  createTime: string;
   facility?: Facility;
   description?: string;
   publicationDate?: string;
