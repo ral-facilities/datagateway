@@ -90,33 +90,37 @@ export const readSciGatewayToken = () => {
 };
 
 Cypress.Commands.add('login', (credentials, user) => {
-  return cy.request('datagateway-download-settings.json').then((response) => {
-    const settings = response.body;
-    let body = {
-      username: '',
-      password: '',
-      mechanism: 'anon',
-    };
-    if (credentials) {
-      body = credentials;
-    }
-    cy.request('POST', `${settings.apiUrl}/sessions`, body).then((response) => {
-      const jwtHeader = { alg: 'HS256', typ: 'JWT' };
-      const payload = {
-        sessionId: response.body.sessionID,
-        username: user
-          ? user
-          : body.mechanism === 'anon'
-          ? 'anon/anon'
-          : 'Michael222',
+  cy.session([credentials, user], () => {
+    cy.request('datagateway-download-settings.json').then((response) => {
+      const settings = response.body;
+      let body = {
+        username: '',
+        password: '',
+        mechanism: 'anon',
       };
-      const jwt = jsrsasign.KJUR.jws.JWS.sign(
-        'HS256',
-        jwtHeader,
-        payload,
-        'shh'
+      if (credentials) {
+        body = credentials;
+      }
+      cy.request('POST', `${settings.apiUrl}/sessions`, body).then(
+        (response) => {
+          const jwtHeader = { alg: 'HS256', typ: 'JWT' };
+          const payload = {
+            sessionId: response.body.sessionID,
+            username: user
+              ? user
+              : body.mechanism === 'anon'
+              ? 'anon/anon'
+              : 'Michael222',
+          };
+          const jwt = jsrsasign.KJUR.jws.JWS.sign(
+            'HS256',
+            jwtHeader,
+            payload,
+            'shh'
+          );
+          window.localStorage.setItem('scigateway:token', jwt);
+        }
       );
-      window.localStorage.setItem('scigateway:token', jwt);
     });
   });
 });

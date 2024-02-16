@@ -175,7 +175,7 @@ describe('Investigations Table', () => {
   });
 
   it('should be able to view details', () => {
-    cy.get('[aria-label="Show details"]').eq(2).click();
+    cy.get('[aria-label="Show details"]').first().click();
 
     cy.get('#details-panel').should('be.visible');
     cy.get('[aria-label="Hide details"]').should('exist');
@@ -184,6 +184,7 @@ describe('Investigations Table', () => {
 
     cy.get('[aria-label="Show details"]').first().click();
 
+    cy.get('#details-panel').scrollIntoView();
     cy.get('#details-panel')
       .contains('Strategy with piece reason late model air.')
       .should('be.visible');
