@@ -1,5 +1,16 @@
 describe('ISIS - Investigation Landing', () => {
   beforeEach(() => {
+    cy.intercept('**/investigations?order*', (req) => {
+      req.continue((res) => {
+        // add type study to related data publication to emulate ISIS like data
+        if (
+          res.body?.[0]?.dataCollectionInvestigations?.[0]?.dataCollection
+            ?.dataPublications?.[0]
+        )
+          res.body[0].dataCollectionInvestigations[0].dataCollection.dataPublications[0].type =
+            { id: 1, name: 'study' };
+      });
+    });
     cy.login();
     cy.visit('/browse/instrument/13/facilityCycle/12/investigation/31');
   });
@@ -86,6 +97,10 @@ describe('ISIS - Investigation Landing', () => {
                   modTime: '2019-06-10',
                   createTime: '2019-06-11',
                   title: 'Data Publication',
+                  type: {
+                    id: 1,
+                    name: 'study',
+                  },
                 },
               ],
             },

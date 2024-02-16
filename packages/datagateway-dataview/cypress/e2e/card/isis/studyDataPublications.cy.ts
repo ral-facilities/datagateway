@@ -1,11 +1,33 @@
-describe('ISIS - Data Publication Cards', () => {
+describe('ISIS - Study Data Publication Cards', () => {
   beforeEach(() => {
-    cy.intercept('**/datapublications/count*').as('getDataPublicationsCount');
-    cy.intercept('**/datapublications?order*').as('getDataPublicationsOrder');
+    cy.intercept(
+      /\/datapublications\/count\?.*where=%7B%22type\.name%22%3A%7B%22eq%22%3A%22study%22%7D%7D.*/,
+      (req) => {
+        // delete type = study requirement
+        const [url, search] = req.url.split('?');
+        const params = new URLSearchParams(search);
+        params.delete('where', '{"type.name":{"eq":"study"}}');
+        req.url = `${url}?${params.toString()}`;
+
+        req.continue();
+      }
+    ).as('getDataPublicationsCount');
+    cy.intercept(
+      /\/datapublications\?.*where=%7B%22type\.name%22%3A%7B%22eq%22%3A%22study%22%7D%7D.*/,
+      (req) => {
+        // delete type = study requirement
+        const [url, search] = req.url.split('?');
+        const params = new URLSearchParams(search);
+        params.delete('where', '{"type.name":{"eq":"study"}}');
+        req.url = `${url}?${params.toString()}`;
+
+        req.continue();
+      }
+    ).as('getDataPublications');
     cy.login();
     cy.visit(
       '/browseDataPublications/instrument/8/dataPublication?view=card'
-    ).wait(['@getDataPublicationsCount', '@getDataPublicationsOrder'], {
+    ).wait(['@getDataPublicationsCount', '@getDataPublications'], {
       timeout: 10000,
     });
   });
@@ -38,77 +60,67 @@ describe('ISIS - Data Publication Cards', () => {
   it('should be able to click a datapublication to see its landing page', () => {
     cy.get('[data-testid="card"]')
       .first()
-      .contains('Church')
+      .contains('Daughter')
       .click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browseDataPublications/instrument/8/dataPublication/51'
+      '/browseDataPublications/instrument/8/dataPublication/50'
     );
   });
 
   it('should be able to sort by one field or multiple', () => {
     //Revert the default sort
-    cy.contains('[role="button"]', 'Publication Date')
-      .as('dateSortButton')
-      .click();
-    cy.wait('@getDataPublicationsOrder', { timeout: 10000 });
+    cy.contains('[role="button"]', 'Title').as('titleSortButton').click();
 
     // ascending
-    cy.get('@dateSortButton').click();
-    cy.wait('@getDataPublicationsOrder', { timeout: 10000 });
+    cy.contains('[role="button"]', 'DOI').as('doiSortButton').click();
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('[data-testid="card"]').first().contains('Article');
 
     // descending
-    cy.get('@dateSortButton').click();
+    cy.get('@doiSortButton').click();
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('exist');
-    cy.get('[data-testid="card"]').first().contains('Church');
+    cy.get('[data-testid="card"]').first().contains('Daughter');
 
     // no order
-    cy.get('@dateSortButton').click();
+    cy.get('@doiSortButton').click();
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('[data-testid="card"]').first().contains('Article');
 
     // multiple fields (shift click)
-    cy.contains('[role="button"]', 'Title').click();
-    cy.get('@dateSortButton').click({ shiftKey: true });
-    cy.wait('@getDataPublicationsOrder', { timeout: 10000 });
+    cy.get('@titleSortButton').click();
+    cy.get('@doiSortButton').click({ shiftKey: true });
 
     cy.contains('[aria-label="Sort by TITLE"]', 'asc').should('exist');
-    cy.contains('[aria-label="Sort by PUBLICATION DATE"]', 'asc').should(
-      'exist'
-    );
+    cy.contains('[aria-label="Sort by DOI"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('[data-testid="card"]').first().contains('Article');
 
     // should replace current sort if clicked without shift
-    cy.get('@dateSortButton').click();
-    cy.wait('@getDataPublicationsOrder', { timeout: 10000 });
+    cy.get('@doiSortButton').click();
 
-    cy.contains('[aria-label="Sort by PUBLICATION DATE"]', 'desc').should(
-      'exist'
-    );
+    cy.contains('[aria-label="Sort by DOI"]', 'desc').should('exist');
     cy.contains('[aria-label="Sort by TITLE"]', 'asc').should('not.exist');
 
-    cy.get('[data-testid="card"]').first().contains('Church');
+    cy.get('[data-testid="card"]').first().contains('Daughter');
   });
 
   it('should be able to filter by multiple fields', () => {
     cy.get('[data-testid="advanced-filters-link"]').click();
 
-    cy.get('[aria-label="Filter by DOI"]').first().type('0');
-    cy.wait(['@getDataPublicationsCount', '@getDataPublicationsOrder'], {
-      timeout: 10000,
-    });
+    cy.get('[aria-label="Filter by DOI"]').first().type('5');
+
+    cy.contains('Results: 2').should('exist');
+
     cy.get('[data-testid="card"]').first().contains('Consider');
 
     cy.get('[aria-label="Filter by Title"]').first().type('sub');
-    cy.wait(['@getDataPublicationsCount', '@getDataPublicationsOrder'], {
-      timeout: 10000,
-    });
+
+    cy.contains('Results: 1').should('exist');
+
     cy.get('[data-testid="card"]').first().contains('Article');
   });
 });

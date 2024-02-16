@@ -1,29 +1,42 @@
-describe('ISIS - Data Publication Landing', () => {
+describe('ISIS - Study Data Publication Landing', () => {
   beforeEach(() => {
+    cy.intercept(
+      /\/datapublications\?.*where=%7B%22type\.name%22%3A%7B%22eq%22%3A%22investigation%22%7D%7D.*/,
+      (req) => {
+        // delete type = investigation requirement
+        const [url, search] = req.url.split('?');
+        const params = new URLSearchParams(search);
+        params.delete('where', '{"type.name":{"eq":"investigation"}}');
+        req.url = `${url}?${params.toString()}`;
+
+        req.continue((res) => {
+          // remove the "study" datapublication i.e. the one whose ID is in the URL
+          const i = res.body.findIndex((dp) => dp.id === 57);
+          if (i !== -1) res.body.splice(i, 1);
+        });
+      }
+    ).as('getDataPublications');
+
     cy.login();
-    cy.visit('/browseDataPublications/instrument/1/dataPublication/36');
+    cy.visit('/browseDataPublications/instrument/13/dataPublication/57');
   });
 
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');
-    cy.contains('Yourself good together red across.').should('be.visible');
-    cy.contains('a', '0-7602-7584-X').should(
-      'have.attr',
-      'href',
-      'https://doi.org/0-7602-7584-X'
+    cy.contains('Dream he television').should('be.visible');
+    cy.get('[data-testid="isis-dataPublication-landing"]')
+      .contains('Because fine have business')
+      .should('be.visible');
+
+    cy.get('[data-testid="isis-dataPublication-landing"]')
+      .contains('a', '1-64379-596-1')
+      .should('have.attr', 'href', 'https://doi.org/1-64379-596-1');
+
+    cy.get('[data-testid="landing-datapublication-part-label"').should(
+      'have.length',
+      2
     );
-    cy.get('[data-testid="landing-dataPublication-pid-link"]')
-      .first()
-      .then(($pid) => {
-        const pid = $pid.text();
-
-        const url = `https://doi.org/${pid}`;
-
-        cy.get('[data-testid="landing-dataPublication-pid-link"]')
-          .first()
-          .should('have.attr', 'href', url);
-      });
   });
 
   it('should be able to click tab to see investigations', () => {
@@ -32,7 +45,7 @@ describe('ISIS - Data Publication Landing', () => {
       .click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browseDataPublications/instrument/1/dataPublication/36/investigation'
+      '/browseDataPublications/instrument/13/dataPublication/57/investigation'
     );
   });
 
@@ -43,20 +56,20 @@ describe('ISIS - Data Publication Landing', () => {
       .click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browseDataPublications/instrument/1/dataPublication/36/investigation/38'
+      '/browseDataPublications/instrument/13/dataPublication/57/investigation/46'
     );
   });
 
   it('should load correctly when investigation missing', () => {
-    cy.intercept('**/datapublications?*', [
-      {
-        id: 101224979,
-        pid: '10.5286/ISIS.E.RB1810842',
-      },
-    ]);
-    cy.visit('/browseDataPublications/instrument/1/dataPublication/36');
-    cy.get('#datagateway-dataview').should('be.visible');
-    cy.contains('10.5286/ISIS.E.RB1810842').should('be.visible');
+    cy.intercept(
+      /\/datapublications\?.*where=%7B%22type\.name%22%3A%7B%22eq%22%3A%22investigation%22%7D%7D.*/,
+      []
+    );
+
+    cy.contains('1-64379-596-1').should('be.visible');
+    cy.get('[data-testid="landing-datapublication-part-label"').should(
+      'not.exist'
+    );
   });
 
   it('should disable the hover tool tip by pressing escape', () => {

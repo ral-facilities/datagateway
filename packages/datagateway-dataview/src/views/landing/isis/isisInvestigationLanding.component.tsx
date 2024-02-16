@@ -346,7 +346,7 @@ const CommonLandingPage = (
               externalSiteLink(
                 `https://doi.org/${studyDataPublication.pid}`,
                 studyDataPublication.pid,
-                'isis-investigation-landing-doi-link'
+                'isis-investigations-landing-parent-doi-link'
               )
             );
           },
