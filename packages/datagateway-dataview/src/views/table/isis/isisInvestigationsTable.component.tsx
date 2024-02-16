@@ -38,14 +38,13 @@ import { StateType } from '../../../state/app.types';
 
 interface ISISInvestigationsTableProps {
   instrumentId: string;
-  instrumentChildId: string;
-  dataPublication: boolean;
+  facilityCycleId: string;
 }
 
 const ISISInvestigationsTable = (
   props: ISISInvestigationsTableProps
 ): React.ReactElement => {
-  const { instrumentId, instrumentChildId, dataPublication } = props;
+  const { instrumentId, facilityCycleId } = props;
   const selectAllSetting = useSelector(
     (state: StateType) => state.dgdataview.selectAllSetting
   );
@@ -70,10 +69,8 @@ const ISISInvestigationsTable = (
     {
       filterType: 'where',
       filterValue: JSON.stringify({
-        [dataPublication
-          ? 'dataCollectionInvestigations.dataCollection.dataPublications.id'
-          : 'investigationFacilityCycles.facilityCycle.id']: {
-          eq: parseInt(instrumentChildId),
+        'investigationFacilityCycles.facilityCycle.id': {
+          eq: parseInt(facilityCycleId),
         },
       }),
     },

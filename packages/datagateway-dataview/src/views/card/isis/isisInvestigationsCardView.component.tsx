@@ -43,14 +43,13 @@ const ActionButtonsContainer = styled('div')(({ theme }) => ({
 
 interface ISISInvestigationsCardViewProps {
   instrumentId: string;
-  instrumentChildId: string;
-  dataPublication: boolean;
+  facilityCycleId: string;
 }
 
 const ISISInvestigationsCardView = (
   props: ISISInvestigationsCardViewProps
 ): React.ReactElement => {
-  const { instrumentId, instrumentChildId, dataPublication } = props;
+  const { instrumentId, facilityCycleId } = props;
 
   const [t] = useTranslation();
   const location = useLocation();
@@ -81,10 +80,8 @@ const ISISInvestigationsCardView = (
     {
       filterType: 'where',
       filterValue: JSON.stringify({
-        [dataPublication
-          ? 'dataCollectionInvestigations.dataCollection.dataPublications.id'
-          : 'investigationFacilityCycles.facilityCycle.id']: {
-          eq: parseInt(instrumentChildId),
+        'investigationFacilityCycles.facilityCycle.id': {
+          eq: parseInt(facilityCycleId),
         },
       }),
     },

@@ -44,17 +44,13 @@ describe('ISIS Investigations table component', () => {
   let cartItems: DownloadCartItem[];
   let holder: HTMLElement;
 
-  const renderComponent = (dataPublication = false): RenderResult => {
+  const renderComponent = (): RenderResult => {
     const store = mockStore(state);
     return render(
       <Provider store={store}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
-            <ISISInvestigationsTable
-              dataPublication={dataPublication}
-              instrumentId="4"
-              instrumentChildId="5"
-            />
+            <ISISInvestigationsTable instrumentId="4" facilityCycleId="5" />
           </QueryClientProvider>
         </Router>
       </Provider>
@@ -96,8 +92,6 @@ describe('ISIS Investigations table component', () => {
                   id: 15,
                   pid: 'Investigation Data Publication Pid',
                   description: 'Investigation Data Publication description',
-                  modTime: '2019-06-10',
-                  createTime: '2019-06-11',
                   title: 'Investigation Data Publication',
                   type: {
                     id: 16,
@@ -116,8 +110,6 @@ describe('ISIS Investigations table component', () => {
                   id: 12,
                   pid: 'Data Publication Pid',
                   description: 'Data Publication description',
-                  modTime: '2019-06-10',
-                  createTime: '2019-06-11',
                   title: 'Data Publication',
                   type: {
                     id: 13,
@@ -497,23 +489,6 @@ describe('ISIS Investigations table component', () => {
     expect(await screen.findByRole('link', { name: 'Test 1' })).toHaveAttribute(
       'href',
       '/browse/instrument/4/facilityCycle/5/investigation/1'
-    );
-    expect(
-      await screen.findByRole('link', { name: 'Data Publication Pid' })
-    ).toHaveAttribute('href', 'https://doi.org/Data Publication Pid');
-  });
-
-  it('renders title and DOI as links in Data Publication Hierarchy', async () => {
-    history.replace(
-      generatePath(paths.dataPublications.toggle.isisInvestigation, {
-        instrumentId: '4',
-        dataPublicationId: '5',
-      })
-    );
-    renderComponent(true);
-    expect(await screen.findByRole('link', { name: 'Test 1' })).toHaveAttribute(
-      'href',
-      '/browseDataPublications/instrument/4/dataPublication/5/investigation/1'
     );
     expect(
       await screen.findByRole('link', { name: 'Data Publication Pid' })

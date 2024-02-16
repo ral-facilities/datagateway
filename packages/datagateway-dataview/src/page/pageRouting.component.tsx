@@ -790,15 +790,13 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           render={({ match }) =>
             this.props.view === 'card' ? (
               <ISISInvestigationsCardView
-                dataPublication={false}
                 instrumentId={match.params.instrumentId as string}
-                instrumentChildId={match.params.facilityCycleId as string}
+                facilityCycleId={match.params.facilityCycleId as string}
               />
             ) : (
               <ISISInvestigationsTable
-                dataPublication={false}
                 instrumentId={match.params.instrumentId as string}
-                instrumentChildId={match.params.facilityCycleId as string}
+                facilityCycleId={match.params.facilityCycleId as string}
               />
             )
           }

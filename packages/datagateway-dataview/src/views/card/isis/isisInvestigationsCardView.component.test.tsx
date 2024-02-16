@@ -33,7 +33,7 @@ describe('ISIS Investigations - Card View', () => {
   let replaceSpy: jest.SpyInstance;
   let user: UserEvent;
 
-  const renderComponent = (dataPublication = false): RenderResult =>
+  const renderComponent = (): RenderResult =>
     render(
       <Provider store={mockStore(state)}>
         <Router history={history}>
@@ -44,11 +44,7 @@ describe('ISIS Investigations - Card View', () => {
               })
             }
           >
-            <ISISInvestigationsCardView
-              instrumentId="1"
-              instrumentChildId="1"
-              dataPublication={dataPublication}
-            />
+            <ISISInvestigationsCardView instrumentId="1" facilityCycleId="1" />
           </QueryClientProvider>
         </Router>
       </Provider>
@@ -75,8 +71,6 @@ describe('ISIS Investigations - Card View', () => {
                   id: 15,
                   pid: 'Investigation.Data.Publication.Pid',
                   description: 'Investigation Data Publication description',
-                  modTime: '2019-06-10',
-                  createTime: '2019-06-11',
                   title: 'Investigation Data Publication',
                   type: {
                     id: 16,
@@ -95,8 +89,6 @@ describe('ISIS Investigations - Card View', () => {
                   id: 12,
                   pid: 'Data.Publication.Pid',
                   description: 'Data Publication description',
-                  modTime: '2019-06-10',
-                  createTime: '2019-06-11',
                   title: 'Data Publication',
                   type: {
                     id: 13,
@@ -255,22 +247,6 @@ describe('ISIS Investigations - Card View', () => {
     ).toHaveAttribute(
       'href',
       '/browse/instrument/1/facilityCycle/1/investigation/1'
-    );
-  });
-
-  it('correct link used for data publication hierarchy', async () => {
-    history.replace(
-      generatePath(paths.dataPublications.toggle.isisInvestigation, {
-        instrumentId: '1',
-        dataPublicationId: '1',
-      })
-    );
-    renderComponent(true);
-    expect(
-      await screen.findByRole('link', { name: 'Test title 1' })
-    ).toHaveAttribute(
-      'href',
-      '/browseDataPublications/instrument/1/dataPublication/1/investigation/1'
     );
   });
 
