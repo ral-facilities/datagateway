@@ -6,7 +6,25 @@ describe('ISIS - Study Data Publication Cards', () => {
         // delete type = investigation requirement
         const [url, search] = req.url.split('?');
         const params = new URLSearchParams(search);
-        params.delete('where', '{"type.name":{"eq":"investigation"}}');
+        // params.delete with value is still a new standard, so use workaround for now until browser compat catches up
+        // params.delete('where', '{"type.name":{"eq":"investigation"}}');
+        const removeValue = (
+          params: URLSearchParams,
+          key: string,
+          valueToRemove: string
+        ): URLSearchParams => {
+          const values = params.getAll(key);
+          if (values.length) {
+            params.delete(key);
+            for (const value of values) {
+              if (value !== valueToRemove) {
+                params.append(key, value);
+              }
+            }
+          }
+          return params;
+        };
+        removeValue(params, 'where', '{"type.name":{"eq":"investigation"}}');
         req.url = `${url}?${params.toString()}`;
 
         // our count may have 1 extra at times, but it shouldn't matter too much...
@@ -19,7 +37,25 @@ describe('ISIS - Study Data Publication Cards', () => {
         // delete type = investigation requirement
         const [url, search] = req.url.split('?');
         const params = new URLSearchParams(search);
-        params.delete('where', '{"type.name":{"eq":"investigation"}}');
+        // params.delete with value is still a new standard, so use workaround for now until browser compat catches up
+        // params.delete('where', '{"type.name":{"eq":"investigation"}}');
+        const removeValue = (
+          params: URLSearchParams,
+          key: string,
+          valueToRemove: string
+        ): URLSearchParams => {
+          const values = params.getAll(key);
+          if (values.length) {
+            params.delete(key);
+            for (const value of values) {
+              if (value !== valueToRemove) {
+                params.append(key, value);
+              }
+            }
+          }
+          return params;
+        };
+        removeValue(params, 'where', '{"type.name":{"eq":"investigation"}}');
         req.url = `${url}?${params.toString()}`;
 
         req.continue((res) => {

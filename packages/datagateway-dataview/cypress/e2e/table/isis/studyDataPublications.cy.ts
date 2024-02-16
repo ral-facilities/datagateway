@@ -4,15 +4,36 @@ describe('ISIS - Study Data Publication Table', () => {
     cy.intercept(
       /\/datapublications\?.*where=%7B%22type\.name%22%3A%7B%22eq%22%3A%22study%22%7D%7D.*/,
       (req) => {
+        console.log('INTERCEPTING!!!!!');
         // delete type = study requirement
         const [url, search] = req.url.split('?');
         const params = new URLSearchParams(search);
-        params.delete('where', '{"type.name":{"eq":"study"}}');
+        // params.delete with value is still a new standard, so use workaround for now until browser compat catches up
+        // params.delete('where', '{"type.name":{"eq":"study"}}');
+        const removeValue = (
+          params: URLSearchParams,
+          key: string,
+          valueToRemove: string
+        ): URLSearchParams => {
+          const values = params.getAll(key);
+          if (values.length) {
+            params.delete(key);
+            for (const value of values) {
+              if (value !== valueToRemove) {
+                params.append(key, value);
+              }
+            }
+          }
+          return params;
+        };
+        removeValue(params, 'where', '{"type.name":{"eq":"study"}}');
         req.url = `${url}?${params.toString()}`;
+        console.log('req.url', req.url);
 
         req.continue();
       }
     ).as('getDataPublications');
+
     cy.login();
     cy.visit('/browseDataPublications/instrument/8/dataPublication').wait(
       ['@getDataPublicationsCount', '@getDataPublications'],
