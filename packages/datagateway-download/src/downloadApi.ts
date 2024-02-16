@@ -474,10 +474,9 @@ export interface DoiMetadata {
 export type RelatedDOI = {
   title: string;
   fullReference: string;
-  relatedIdentifier: string;
-  relatedIdentifierType: 'DOI';
+  identifier: string;
   relationType: DOIRelationType | '';
-  resourceType: DOIResourceType | '';
+  relatedItemType: DOIResourceType | '';
 };
 
 export interface DoiResponse {
