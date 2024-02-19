@@ -1,12 +1,12 @@
 import axios, { AxiosResponse } from 'axios';
 import {
   handleICATError,
-  Dataset,
   Investigation,
+  Dataset,
+  Datafile,
   ConfigureURLsType,
   readSciGatewayToken,
 } from 'datagateway-common';
-import { Datafile } from 'datagateway-common/lib/app.types';
 import { Middleware, Dispatch, AnyAction } from 'redux';
 import memoize from 'lodash.memoize';
 
@@ -27,24 +27,34 @@ const unmemoizedCheckInvestigationId = (
   investigationId: number,
   datasetId: number
 ): Promise<boolean> => {
+  const params = new URLSearchParams();
+  params.append(
+    'where',
+    JSON.stringify({
+      id: {
+        eq: datasetId,
+      },
+    })
+  );
+  params.append(
+    'where',
+    JSON.stringify({ 'investigation.id': { eq: investigationId } })
+  );
   return axios
     .get(`${apiUrl}/datasets/findone`, {
-      params: {
-        where: JSON.stringify({
-          id: {
-            eq: datasetId,
-          },
-        }),
-        include: '"investigation"',
-      },
+      params,
       headers: {
         Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
       },
     })
-    .then((response: AxiosResponse<Dataset>) => {
-      return response.data.investigation?.id === investigationId;
+    .then(() => {
+      return true;
     })
     .catch((error) => {
+      // 404 is valid response from API saying the investigation id is invalid
+      if (axios.isAxiosError(error) && error.response?.status === 404)
+        return false;
+      // handle other API errors
       handleICATError(error);
       return false;
     });

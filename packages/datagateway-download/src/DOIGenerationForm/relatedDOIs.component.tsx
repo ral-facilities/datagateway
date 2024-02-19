@@ -149,13 +149,13 @@ const RelatedDOIs: React.FC<RelatedDOIsProps> = (props) => {
               </TableHead>
               <TableBody>
                 {relatedDOIs.map((relatedItem) => (
-                  <TableRow key={relatedItem.relatedIdentifier}>
+                  <TableRow key={relatedItem.identifier}>
                     <TableCell>
                       <StyledTooltip describeChild title={relatedItem.title}>
                         <Link
-                          href={`https://doi.org/${relatedItem.relatedIdentifier}`}
+                          href={`https://doi.org/${relatedItem.identifier}`}
                         >
-                          {relatedItem.relatedIdentifier}
+                          {relatedItem.identifier}
                         </Link>
                       </StyledTooltip>
                     </TableCell>
@@ -167,12 +167,12 @@ const RelatedDOIs: React.FC<RelatedDOIsProps> = (props) => {
                         sx={{ minWidth: 150 }}
                       >
                         <InputLabel
-                          id={`${relatedItem.relatedIdentifier}-relationship-select-label`}
+                          id={`${relatedItem.identifier}-relationship-select-label`}
                         >
                           {t('DOIGenerationForm.related_doi_relationship')}
                         </InputLabel>
                         <Select
-                          labelId={`${relatedItem.relatedIdentifier}-relationship-select-label`}
+                          labelId={`${relatedItem.identifier}-relationship-select-label`}
                           value={relatedItem.relationType}
                           label={t(
                             'DOIGenerationForm.related_doi_relationship'
@@ -180,16 +180,13 @@ const RelatedDOIs: React.FC<RelatedDOIsProps> = (props) => {
                           onChange={(event) => {
                             changeRelatedDOIs((dois) => {
                               return dois.map((d) => {
-                                if (
-                                  d.relatedIdentifier ===
-                                  relatedItem.relatedIdentifier
-                                ) {
+                                if (d.identifier === relatedItem.identifier) {
                                   return {
                                     ...d,
                                     relationType: event.target.value as
                                       | DOIRelationType
                                       | '',
-                                  };
+                                  } satisfies RelatedDOI;
                                 } else {
                                   return d;
                                 }
@@ -215,29 +212,26 @@ const RelatedDOIs: React.FC<RelatedDOIsProps> = (props) => {
                         sx={{ minWidth: 150 }}
                       >
                         <InputLabel
-                          id={`${relatedItem.relatedIdentifier}-resource-type-select-label`}
+                          id={`${relatedItem.identifier}-resource-type-select-label`}
                         >
                           {t('DOIGenerationForm.related_doi_resource_type')}
                         </InputLabel>
                         <Select
-                          labelId={`${relatedItem.relatedIdentifier}-resource-type-select-label`}
-                          value={relatedItem.resourceType}
+                          labelId={`${relatedItem.identifier}-resource-type-select-label`}
+                          value={relatedItem.relatedItemType}
                           label={t(
                             'DOIGenerationForm.related_doi_resource_type'
                           )}
                           onChange={(event) => {
                             changeRelatedDOIs((dois) => {
                               return dois.map((d) => {
-                                if (
-                                  d.relatedIdentifier ===
-                                  relatedItem.relatedIdentifier
-                                ) {
+                                if (d.identifier === relatedItem.identifier) {
                                   return {
                                     ...d,
-                                    resourceType: event.target.value as
+                                    relatedItemType: event.target.value as
                                       | DOIResourceType
                                       | '',
-                                  };
+                                  } satisfies RelatedDOI;
                                 } else {
                                   return d;
                                 }
@@ -261,9 +255,7 @@ const RelatedDOIs: React.FC<RelatedDOIsProps> = (props) => {
                         onClick={() =>
                           changeRelatedDOIs((dois) =>
                             dois.filter(
-                              (d) =>
-                                d.relatedIdentifier !==
-                                relatedItem.relatedIdentifier
+                              (d) => d.identifier !== relatedItem.identifier
                             )
                           )
                         }

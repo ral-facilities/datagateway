@@ -7,7 +7,7 @@ import {
   tableLink,
   TableActionProps,
   Dataset,
-  formatCountOrSize,
+  formatBytes,
   useDatasetCount,
   useDatasetsInfinite,
   parseSearchToQuery,
@@ -19,7 +19,6 @@ import {
   useCart,
   useAddToCart,
   useRemoveFromCart,
-  useDatasetSizes,
   DownloadButton,
   ISISDatasetDetailsPanel,
 } from 'datagateway-common';
@@ -117,8 +116,6 @@ const ISISDatasetsTable = (
     [fetchNextPage]
   );
 
-  const sizeQueries = useDatasetSizes(data);
-
   /* istanbul ignore next */
   const aggregatedData: Dataset[] = React.useMemo(() => {
     if (data) {
@@ -159,7 +156,7 @@ const ISISDatasetsTable = (
         label: t('datasets.size'),
         dataKey: 'size',
         cellContentRenderer: (cellProps: TableCellProps): number | string =>
-          formatCountOrSize(sizeQueries[cellProps.rowIndex], true),
+          formatBytes(cellProps.rowData.fileSize),
         disableSort: true,
       },
       {
@@ -176,7 +173,7 @@ const ISISDatasetsTable = (
         filterComponent: dateFilter,
       },
     ],
-    [t, textFilter, dateFilter, urlPrefix, view, sizeQueries]
+    [t, textFilter, dateFilter, urlPrefix, view]
   );
 
   const selectedRows = React.useMemo(
@@ -231,10 +228,7 @@ const ISISDatasetsTable = (
             entityId={rowData.id}
             entityName={rowData.name}
             variant="icon"
-            entitySize={
-              sizeQueries[aggregatedData.indexOf(rowData as Dataset)]?.data ??
-              -1
-            }
+            entitySize={rowData.fileSize ?? -1}
           />
         ),
       ]}

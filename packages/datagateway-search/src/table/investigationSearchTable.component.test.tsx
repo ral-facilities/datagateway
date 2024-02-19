@@ -10,9 +10,7 @@ import {
   useCart,
   useIds,
   useInvestigationCount,
-  useInvestigationsDatasetCount,
   useInvestigationsInfinite,
-  useInvestigationSizes,
   useLuceneSearch,
   useRemoveFromCart,
 } from 'datagateway-common';
@@ -57,7 +55,6 @@ jest.mock('datagateway-common', () => {
     useIds: jest.fn(),
     useAddToCart: jest.fn(),
     useRemoveFromCart: jest.fn(),
-    useInvestigationsDatasetCount: jest.fn(),
     useInvestigationSizes: jest.fn(),
   };
 });
@@ -95,6 +92,8 @@ describe('Investigation Search Table component', () => {
     rowData = [
       {
         id: 1,
+        fileSize: 1,
+        fileCount: 1,
         title: 'Test Title 1',
         name: 'Test Name 1',
         summary: 'foo bar',
@@ -163,31 +162,6 @@ describe('Investigation Search Table component', () => {
       mutate: jest.fn(),
       isLoading: false,
     });
-    (useInvestigationsDatasetCount as jest.Mock).mockImplementation(
-      (investigations) =>
-        (investigations
-          ? 'pages' in investigations
-            ? investigations.pages.flat()
-            : investigations
-          : []
-        ).map(() => ({
-          data: 1,
-          isFetching: false,
-          isSuccess: true,
-        }))
-    );
-    (useInvestigationSizes as jest.Mock).mockImplementation((investigations) =>
-      (investigations
-        ? 'pages' in investigations
-          ? investigations.pages.flat()
-          : investigations
-        : []
-      ).map(() => ({
-        data: 1,
-        isFetching: false,
-        isSuccess: true,
-      }))
-    );
   });
 
   afterEach(() => {
@@ -196,102 +170,6 @@ describe('Investigation Search Table component', () => {
 
   it('renders correctly', async () => {
     renderComponent();
-
-    const rows = await findAllRows();
-    // should have 1 row in the table
-    expect(rows).toHaveLength(1);
-
-    const row = rows[0];
-
-    // check that column headers are shown correctly
-    expect(
-      await findColumnHeaderByName('investigations.title')
-    ).toBeInTheDocument();
-    expect(
-      await findColumnHeaderByName('investigations.visit_id')
-    ).toBeInTheDocument();
-    expect(
-      await findColumnHeaderByName('investigations.name')
-    ).toBeInTheDocument();
-    expect(
-      await findColumnHeaderByName('investigations.doi')
-    ).toBeInTheDocument();
-    expect(
-      await findColumnHeaderByName('investigations.dataset_count')
-    ).toBeInTheDocument();
-    expect(
-      await findColumnHeaderByName('investigations.instrument')
-    ).toBeInTheDocument();
-    expect(
-      await findColumnHeaderByName('investigations.start_date')
-    ).toBeInTheDocument();
-    expect(
-      await findColumnHeaderByName('investigations.end_date')
-    ).toBeInTheDocument();
-
-    // each cell in the row should contain the correct value
-    expect(
-      within(
-        findCellInRow(row, {
-          columnIndex: await findColumnIndexByName('investigations.title'),
-        })
-      ).getByText('Test Title 1')
-    ).toBeInTheDocument();
-    expect(
-      within(
-        findCellInRow(row, {
-          columnIndex: await findColumnIndexByName('investigations.visit_id'),
-        })
-      ).getByText('1')
-    ).toBeInTheDocument();
-    expect(
-      within(
-        findCellInRow(row, {
-          columnIndex: await findColumnIndexByName('investigations.name'),
-        })
-      ).getByText('Test Name 1')
-    ).toBeInTheDocument();
-    expect(
-      within(
-        findCellInRow(row, {
-          columnIndex: await findColumnIndexByName('investigations.doi'),
-        })
-      ).getByText('doi 1')
-    ).toBeInTheDocument();
-    expect(
-      within(
-        findCellInRow(row, {
-          columnIndex: await findColumnIndexByName(
-            'investigations.dataset_count'
-          ),
-        })
-      ).getByText('1')
-    ).toBeInTheDocument();
-    expect(
-      within(
-        findCellInRow(row, {
-          columnIndex: await findColumnIndexByName('investigations.instrument'),
-        })
-      ).getByText('LARMORLARMOR')
-    ).toBeInTheDocument();
-    expect(
-      within(
-        findCellInRow(row, {
-          columnIndex: await findColumnIndexByName('investigations.start_date'),
-        })
-      ).getByText('2019-06-10')
-    ).toBeInTheDocument();
-    expect(
-      within(
-        findCellInRow(row, {
-          columnIndex: await findColumnIndexByName('investigations.end_date'),
-        })
-      ).getByText('2019-06-11')
-    ).toBeInTheDocument();
-  });
-
-  it('renders correctly for isis', async () => {
-    renderComponent('isis');
 
     const rows = await findAllRows();
     // should have 1 row in the table
@@ -663,30 +541,16 @@ describe('Investigation Search Table component', () => {
     expect(await findAllRows()).toHaveLength(1);
   });
 
-  it('renders generic link correctly & pending count correctly', async () => {
-    (useInvestigationsDatasetCount as jest.Mock).mockImplementation(() => [
-      {
-        isFetching: true,
-      },
-    ]);
+  it('renders generic link correctly', async () => {
     renderComponent('data');
 
     const titleColIndex = await findColumnIndexByName('investigations.title');
-    const datafileCountColIndex = await findColumnIndexByName(
-      'investigations.dataset_count'
-    );
     const row = await findRowAt(0);
     const titleCell = await findCellInRow(row, { columnIndex: titleColIndex });
-    const datafileCountCell = await findCellInRow(row, {
-      columnIndex: datafileCountColIndex,
-    });
 
     expect(
       within(titleCell).getByRole('link', { name: 'Test Title 1' })
     ).toHaveAttribute('href', '/browse/investigation/1/dataset');
-    expect(
-      within(datafileCountCell).getByText('Calculating...')
-    ).toBeInTheDocument();
   });
 
   it("renders DLS link correctly and doesn't allow for cart selection", async () => {

@@ -38,7 +38,9 @@ import {
   DownloadProgress,
   DownloadTypeStatus,
   fetchDOI,
+  FileSizeAndCount,
   getCartUsers,
+  getFileSizeAndCount,
   isCartMintable,
   mintCart,
   RelatedDOI,
@@ -50,12 +52,10 @@ import {
   downloadDeleted,
   fetchAdminDownloads,
   fetchDownloads,
-  getDatafileCount,
   getDownload,
   getDownloadTypeStatus,
   getIsTwoLevel,
   getPercentageComplete,
-  getSize,
   removeAllDownloadCartItems,
   removeFromCart,
   submitCart,
@@ -254,32 +254,32 @@ export const useSubmitCart = (
   );
 };
 
-const sizesLimit = pLimit(20);
+const fileSizeAndCountLimit = pLimit(20);
 
-export const useSizes = (
+export const useFileSizesAndCounts = (
   data: DownloadCartItem[] | undefined
-): UseQueryResult<number, AxiosError>[] => {
+): UseQueryResult<FileSizeAndCount, AxiosError>[] => {
   const settings = React.useContext(DownloadSettingsContext);
   const { facilityName, apiUrl, downloadApiUrl } = settings;
 
-  const queryConfigs: UseQueryOptions<
-    number,
-    AxiosError,
-    number,
-    ['size', number]
-  >[] = React.useMemo(() => {
+  const queryConfigs: {
+    queryKey: [string, number];
+    staleTime: number;
+    queryFn: () => Promise<FileSizeAndCount>;
+    retry: (failureCount: number, error: AxiosError) => boolean;
+  }[] = React.useMemo(() => {
     return data
       ? data.map((cartItem) => {
           const { entityId, entityType } = cartItem;
           return {
-            queryKey: ['size', entityId],
+            queryKey: ['fileSizeAndCount', entityId],
             queryFn: () =>
-              sizesLimit(getSize, entityId, entityType, {
+              fileSizeAndCountLimit(getFileSizeAndCount, entityId, entityType, {
                 facilityName,
                 apiUrl,
                 downloadApiUrl,
               }),
-            onError: (error) => {
+            onError: (error: AxiosError) => {
               handleICATError(error, false);
             },
             retry: retryICATErrors,
@@ -288,44 +288,6 @@ export const useSizes = (
         })
       : [];
   }, [data, facilityName, apiUrl, downloadApiUrl]);
-
-  return useQueries(queryConfigs);
-};
-
-const datafileCountslimit = pLimit(20);
-
-export const useDatafileCounts = (
-  data: DownloadCartItem[] | undefined
-): UseQueryResult<number, AxiosError>[] => {
-  const settings = React.useContext(DownloadSettingsContext);
-  const { apiUrl } = settings;
-
-  const queryConfigs: UseQueryOptions<
-    number,
-    AxiosError,
-    number,
-    ['datafileCount', number]
-  >[] = React.useMemo(() => {
-    return data
-      ? data.map((cartItem) => {
-          const { entityId, entityType } = cartItem;
-          return {
-            queryKey: ['datafileCount', entityId],
-            queryFn: () =>
-              datafileCountslimit(getDatafileCount, entityId, entityType, {
-                apiUrl,
-              }),
-            onError: (error) => {
-              handleICATError(error, false);
-            },
-            retry: retryICATErrors,
-            staleTime: Infinity,
-            enabled: entityType !== 'datafile',
-            initialData: entityType === 'datafile' ? 1 : undefined,
-          };
-        })
-      : [];
-  }, [data, apiUrl]);
 
   return useQueries(queryConfigs);
 };
@@ -980,11 +942,10 @@ export const useCheckDOI = (
     },
     select: (doi) => ({
       title: doi.attributes.titles[0].title,
-      relatedIdentifier: doi.attributes.doi,
-      relatedIdentifierType: 'DOI',
+      identifier: doi.attributes.doi,
       fullReference: '', // TODO: what should we put here?
       relationType: '',
-      resourceType: '',
+      relatedItemType: '',
     }),
     // set enabled false to only fetch on demand when the add creator button is pressed
     enabled: false,

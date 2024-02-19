@@ -38,3 +38,4 @@ yarn-error.log*
 **/public/*settings*.json
 !**/public/*settings.example.json
 
+.vscode/

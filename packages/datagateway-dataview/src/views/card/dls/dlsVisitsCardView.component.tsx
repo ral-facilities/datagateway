@@ -4,7 +4,6 @@ import {
   CardView,
   CardViewDetails,
   Dataset,
-  formatCountOrSize,
   Investigation,
   tableLink,
   parseSearchToQuery,
@@ -16,17 +15,13 @@ import {
   usePushResults,
   useSort,
   useTextFilter,
-  useInvestigationsDatasetCount,
   nestedValue,
   ArrowTooltip,
   DLSVisitDetailsPanel,
+  formatBytes,
   UploadButton,
 } from 'datagateway-common';
-import {
-  Assessment,
-  CalendarToday,
-  ConfirmationNumber,
-} from '@mui/icons-material';
+import { Assessment, CalendarToday, Save } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { Typography } from '@mui/material';
@@ -84,7 +79,6 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
     undefined,
     isMounted
   );
-  const countQueries = useInvestigationsDatasetCount(data);
 
   const title = React.useMemo(
     () => ({
@@ -140,15 +134,11 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: ConfirmationNumber,
-        label: t('investigations.dataset_count'),
-        dataKey: 'datasetCount',
-        content: (investigation: Investigation): string => {
-          const index = data?.findIndex((item) => item.id === investigation.id);
-          if (typeof index === 'undefined') return 'Unknown';
-          return formatCountOrSize(countQueries[index]);
-        },
-        disableSort: true,
+        icon: Save,
+        label: t('investigations.details.size'),
+        dataKey: 'fileSize',
+        content: (investigation: Investigation): number | string =>
+          formatBytes(investigation.fileSize),
       },
       {
         icon: CalendarToday,
@@ -164,7 +154,7 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
         filterComponent: dateFilter,
       },
     ],
-    [countQueries, data, dateFilter, t, textFilter]
+    [dateFilter, t, textFilter]
   );
 
   return (

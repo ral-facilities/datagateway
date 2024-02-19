@@ -1127,7 +1127,7 @@ describe('PageTable', () => {
         await findColumnHeaderByName('investigations.visit_id')
       ).toBeInTheDocument();
       expect(
-        await findColumnHeaderByName('investigations.dataset_count')
+        await findColumnHeaderByName('investigations.size')
       ).toBeInTheDocument();
       expect(
         await findColumnHeaderByName('investigations.instrument')
@@ -1208,7 +1208,7 @@ describe('PageTable', () => {
         await findColumnHeaderByName('investigations.visit_id')
       ).toBeInTheDocument();
       expect(
-        await findColumnHeaderByName('investigations.dataset_count')
+        await findColumnHeaderByName('investigations.size')
       ).toBeInTheDocument();
       expect(
         await findColumnHeaderByName('investigations.instrument')
@@ -1254,6 +1254,7 @@ describe('PageTable', () => {
       expect(
         await findColumnHeaderByName('datasets.datafile_count')
       ).toBeInTheDocument();
+      expect(await findColumnHeaderByName('datasets.size')).toBeInTheDocument();
       expect(
         await findColumnHeaderByName('datasets.create_time')
       ).toBeInTheDocument();

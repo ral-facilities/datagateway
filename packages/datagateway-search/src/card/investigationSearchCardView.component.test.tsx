@@ -6,8 +6,6 @@ import {
   StateType,
   useAllFacilityCycles,
   useInvestigationCount,
-  useInvestigationsDatasetCount,
-  useInvestigationSizes,
   useInvestigationsPaginated,
   useLuceneSearch,
 } from 'datagateway-common';
@@ -45,7 +43,6 @@ jest.mock('datagateway-common', () => {
     useLuceneSearch: jest.fn(),
     useInvestigationCount: jest.fn(),
     useInvestigationsPaginated: jest.fn(),
-    useInvestigationsDatasetCount: jest.fn(),
     useInvestigationSizes: jest.fn(),
   };
 });
@@ -72,6 +69,8 @@ describe('Investigation - Card View', () => {
     cardData = [
       {
         id: 1,
+        fileSize: 1,
+        fileCount: 1,
         name: 'Investigation test name',
         size: 1,
         modTime: '2019-07-23',
@@ -118,33 +117,6 @@ describe('Investigation - Card View', () => {
     (useAllFacilityCycles as jest.Mock).mockReturnValue({
       data: [],
     });
-
-    (useInvestigationsDatasetCount as jest.Mock).mockImplementation(
-      (investigations) =>
-        (investigations
-          ? 'pages' in investigations
-            ? investigations.pages.flat()
-            : investigations
-          : []
-        ).map(() => ({
-          data: 1,
-          isFetching: false,
-          isSuccess: true,
-        }))
-    );
-
-    (useInvestigationSizes as jest.Mock).mockImplementation((investigations) =>
-      (investigations
-        ? 'pages' in investigations
-          ? investigations.pages.flat()
-          : investigations
-        : []
-      ).map(() => ({
-        data: 1,
-        isFetching: false,
-        isSuccess: true,
-      }))
-    );
 
     window.scrollTo = jest.fn();
   });
@@ -240,12 +212,7 @@ describe('Investigation - Card View', () => {
     expect(screen.queryAllByTestId('card')).toHaveLength(0);
   });
 
-  it('renders generic link & pending count correctly', async () => {
-    (useInvestigationsDatasetCount as jest.Mock).mockImplementation(() => [
-      {
-        isFetching: true,
-      },
-    ]);
+  it('renders generic link correctly', async () => {
     renderComponent();
 
     const card = (await screen.findAllByTestId('card'))[0];
@@ -254,9 +221,6 @@ describe('Investigation - Card View', () => {
       'href',
       '/browse/investigation/1/dataset'
     );
-    expect(
-      within(card).getByTestId('card-info-data-investigations.dataset_count')
-    ).toHaveTextContent('Calculating...');
   });
 
   it("renders DLS link correctly and doesn't allow for cart selection or download", async () => {

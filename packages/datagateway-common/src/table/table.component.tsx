@@ -163,6 +163,22 @@ const VirtualizedTable = React.memo(
       disableSelectAll,
     } = props;
 
+    // Format dates to be more readable
+    // Format only if the date has a time component
+    // (to avoid formatting dates like 2020-01-01)
+    React.useEffect(() => {
+      data.forEach((entity) => {
+        ['createTime', 'modTime', 'startDate', 'endDate'].forEach((key) => {
+          if (entity[key] && /\d{2}:\d{2}:\d{2}/.test(entity[key])) {
+            entity[key] = new Date(entity[key])
+              .toISOString()
+              .replace('T', ' ')
+              .split(/[.+]/)[0];
+          }
+        });
+      });
+    }, [data]);
+
     const [shiftDown, setShiftDown] = React.useState(false);
     // add event listener to listen for shift key being pressed
     React.useEffect(() => {

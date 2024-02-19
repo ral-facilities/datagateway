@@ -59,6 +59,8 @@ describe('ISIS Investigations - Card View', () => {
         id: 1,
         title: 'Test title 1',
         name: 'Test 1',
+        fileSize: 123,
+        fileCount: 1,
         visitId: '1',
         startDate: '2022-01-01',
         endDate: '2022-01-03',

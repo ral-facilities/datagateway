@@ -3,7 +3,6 @@ import {
   CardView,
   CardViewDetails,
   Dataset,
-  formatCountOrSize,
   tableLink,
   parseSearchToQuery,
   useDateFilter,
@@ -14,13 +13,13 @@ import {
   usePushResults,
   useSort,
   useTextFilter,
-  useDatasetsDatafileCount,
   AddToCartButton,
   DLSDatasetDetailsPanel,
   UploadButton,
+  formatBytes,
 } from 'datagateway-common';
 import { styled } from '@mui/material/styles';
-import { CalendarToday } from '@mui/icons-material';
+import { CalendarToday, Save } from '@mui/icons-material';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
@@ -85,8 +84,6 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
     isMounted
   );
 
-  const datafileCountQueries = useDatasetsDatafileCount(data);
-
   const title: CardViewDetails = React.useMemo(
     () => ({
       // Provide label for filter component.
@@ -118,13 +115,14 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
       {
         icon: ConfirmationNumberIcon,
         label: t('datasets.datafile_count'),
-        dataKey: 'datafileCount',
-        content: (dataset: Dataset): string => {
-          const index = data?.findIndex((item) => item.id === dataset.id);
-          if (typeof index === 'undefined') return 'Unknown';
-          return formatCountOrSize(datafileCountQueries[index]);
-        },
-        disableSort: true,
+        dataKey: 'fileCount',
+      },
+      {
+        icon: Save,
+        label: t('datasets.size'),
+        dataKey: 'fileSize',
+        cellContentRenderer: (dataset: Dataset): string =>
+          formatBytes(dataset.fileSize),
       },
       {
         icon: CalendarToday,
@@ -152,7 +150,7 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
         filterComponent: dateFilter,
       },
     ],
-    [data, datafileCountQueries, dateFilter, t]
+    [dateFilter, t]
   );
 
   const buttons = React.useMemo(

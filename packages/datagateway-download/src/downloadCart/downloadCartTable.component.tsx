@@ -29,12 +29,11 @@ import { Link as RouterLink } from 'react-router-dom';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import {
   useCart,
-  useDatafileCounts,
   useIsCartMintable,
   useIsTwoLevel,
   useRemoveAllFromCart,
   useRemoveEntityFromCart,
-  useSizes,
+  useFileSizesAndCounts,
 } from '../downloadApiHooks';
 
 import DownloadConfirmDialog from '../downloadConfirmation/downloadConfirmDialog.component';
@@ -79,35 +78,29 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     error: mintableError,
   } = useIsCartMintable(cartItems);
 
-  const fileCountQueries = useDatafileCounts(cartItems);
-  const sizeQueries = useSizes(cartItems);
+  const fileSizesAndCounts = useFileSizesAndCounts(cartItems);
 
-  const fileCount = React.useMemo(() => {
+  const { fileCount, totalSize } = React.useMemo(() => {
     return (
-      fileCountQueries?.reduce((accumulator, nextItem) => {
-        if (nextItem.data && nextItem.data > -1) {
-          return accumulator + nextItem.data;
-        } else {
-          return accumulator;
-        }
-      }, 0) ?? -1
+      fileSizesAndCounts?.reduce(
+        (accumulator, nextItem) => {
+          return {
+            fileCount: nextItem.data?.fileCount
+              ? accumulator.fileCount + nextItem.data.fileCount
+              : accumulator.fileCount,
+            totalSize: nextItem.data?.fileSize
+              ? accumulator.totalSize + nextItem.data.fileSize
+              : accumulator.totalSize,
+          };
+        },
+        { fileCount: 0, totalSize: 0 }
+      ) ?? { fileCount: -1, totalSize: -1 }
     );
-  }, [fileCountQueries]);
+  }, [fileSizesAndCounts]);
 
-  const totalSize = React.useMemo(() => {
-    return (
-      sizeQueries?.reduce((accumulator, nextItem) => {
-        if (nextItem.data && nextItem.data > -1) {
-          return accumulator + nextItem.data;
-        } else {
-          return accumulator;
-        }
-      }, 0) ?? -1
-    );
-  }, [sizeQueries]);
-
-  const sizesLoading = sizeQueries.some((query) => query.isLoading);
-  const fileCountsLoading = fileCountQueries.some((query) => query.isLoading);
+  const fileSizesAndCountsLoading = fileSizesAndCounts.some(
+    (query) => query?.isLoading
+  );
 
   const [t] = useTranslation();
 
@@ -134,8 +127,8 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
       (item, index) =>
         ({
           ...item,
-          size: sizeQueries?.[index]?.data ?? -1,
-          fileCount: fileCountQueries?.[index]?.data ?? -1,
+          size: fileSizesAndCounts?.[index]?.data?.fileSize ?? -1,
+          fileCount: fileSizesAndCounts?.[index]?.data?.fileCount ?? -1,
         } as DownloadCartTableItem)
     );
     const filteredData = sizeAndCountAddedData?.filter((item) => {
@@ -178,7 +171,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     }
 
     return filteredData?.sort(sortCartItems);
-  }, [cartItems, sort, filters, sizeQueries, fileCountQueries]);
+  }, [cartItems, fileSizesAndCounts, filters, sort]);
 
   const unmintableEntityIDs: number[] | null | undefined = React.useMemo(
     () =>
@@ -333,11 +326,8 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     [removeDownloadCartItem, t]
   );
 
-  const emptyItems = React.useMemo(
-    () =>
-      sizeQueries.some((query) => query.data === 0) ||
-      fileCountQueries.some((query) => query.data === 0),
-    [sizeQueries, fileCountQueries]
+  const emptyItems = fileSizesAndCounts.some(
+    (query) => query.data?.fileSize === 0 || query.data?.fileCount === 0
   );
 
   const isLoading = isFetchingCart;
@@ -468,7 +458,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                 columnGap={1}
               >
                 <Grid item>
-                  {fileCountsLoading && (
+                  {fileSizesAndCountsLoading && (
                     <CircularProgress
                       size={15}
                       thickness={7}
@@ -519,7 +509,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                 columnGap={1}
               >
                 <Grid item>
-                  {sizesLoading && (
+                  {fileSizesAndCountsLoading && (
                     <CircularProgress
                       size={15}
                       thickness={7}
@@ -640,8 +630,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                     disabled={
                       fileCount <= 0 ||
                       totalSize <= 0 ||
-                      fileCountsLoading ||
-                      sizesLoading ||
+                      fileSizesAndCountsLoading ||
                       emptyItems ||
                       (fileCountMax ? fileCount > fileCountMax : false) ||
                       (totalSizeMax ? totalSize > totalSizeMax : false)

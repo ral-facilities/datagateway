@@ -3,15 +3,9 @@ describe('DLS - Visits Table', () => {
     cy.login();
     cy.intercept('**/investigations?*').as('investigations');
     cy.intercept('**/investigations/count?*').as('investigationsCount');
-    cy.intercept('**/investigations/findone?*').as('investigationsFindOne');
-    cy.intercept('**/datasets/count?*').as('datasetsCount');
+
     cy.visit('/browse/proposal/INVESTIGATION%201/investigation/').wait(
-      [
-        '@investigations',
-        '@investigationsCount',
-        '@investigationsFindOne',
-        '@datasetsCount',
-      ],
+      ['@investigations', '@investigationsCount'],
       { timeout: 10000 }
     );
   });
@@ -116,59 +110,29 @@ describe('DLS - Visits Table', () => {
     cy.get('[aria-rowcount="0"]').should('exist');
   });
 
-  describe('should be able to view details', () => {
-    it('and can calculate size, all the details are correct & also able to hide the panel', () => {
-      // We need to wait for counts to finish, otherwise cypress
-      // might interact with the details panel too quickly and
-      // it re-renders during the test.
-      cy.contains('[aria-rowindex="1"] [aria-colindex="3"]', '2').should(
-        'exist'
-      );
-      cy.get('[aria-label="Show details"]').first().click();
+  it('should be able to view details & also able to hide the panel', () => {
+    cy.get('[aria-label="Show details"]').first().click();
 
-      cy.get('#details-panel').should('be.visible');
-      cy.get('[aria-label="Hide details"]').should('exist');
+    cy.get('#details-panel').should('be.visible');
+    cy.get('[aria-label="Hide details"]').should('exist');
 
-      cy.contains('#calculate-size-btn', 'Calculate')
-        .should('exist')
-        .scrollIntoView();
-      cy.contains('#calculate-size-btn', 'Calculate').click();
-      cy.contains('3.12 GB', { timeout: 10000 }).should('be.visible');
+    cy.get('[aria-controls="visit-users-panel"]').click();
+    cy.get('#visit-users-panel').should('not.have.attr', 'hidden');
+    cy.get('#details-panel').contains('Colleen Heath').should('be.visible');
 
-      cy.get('[aria-controls="visit-users-panel"]').click();
-      cy.get('#visit-users-panel').should('not.have.attr', 'hidden');
-      cy.get('#details-panel').contains('Colleen Heath').should('be.visible');
+    cy.get('[aria-controls="visit-samples-panel"]').click();
+    cy.get('#visit-samples-panel').should('not.have.attr', 'hidden');
+    cy.get('#details-panel').contains('SAMPLE 1').should('be.visible');
 
-      cy.get('[aria-controls="visit-samples-panel"]').click();
-      cy.get('#visit-samples-panel').should('not.have.attr', 'hidden');
-      cy.get('#details-panel').contains('SAMPLE 1').should('be.visible');
+    cy.get('[aria-controls="visit-publications-panel"]').click();
+    cy.get('#visit-publications-panel').should('not.have.attr', 'hidden');
+    cy.get('#details-panel').contains(
+      'Simple notice since view check over through there. Hotel provide available a air avoid beautiful technology.'
+    );
 
-      cy.get('[aria-controls="visit-publications-panel"]').click();
-      cy.get('#visit-publications-panel').should('not.have.attr', 'hidden');
-      cy.get('#details-panel').contains(
-        'Simple notice since view check over through there. Hotel provide available a air avoid beautiful technology.'
-      );
+    cy.get('[aria-label="Hide details"]').first().click();
 
-      cy.get('[aria-label="Hide details"]').first().click();
-
-      cy.get('#details-panel').should('not.exist');
-      cy.get('[aria-label="Hide details"]').should('not.exist');
-    });
-
-    it('and then calculate file size when the value is 0', () => {
-      cy.intercept('**/getSize?*', '0');
-
-      // We need to wait for counts to finish, otherwise cypress
-      // might interact with the details panel too quickly and
-      // it re-renders during the test.
-
-      cy.contains('[aria-rowindex="1"] [aria-colindex="3"]', '2').should(
-        'exist'
-      );
-      cy.get('[aria-label="Show details"]').first().click();
-
-      cy.contains('#calculate-size-btn', 'Calculate').should('exist').click();
-      cy.contains('0 B', { timeout: 10000 }).should('be.visible');
-    });
+    cy.get('#details-panel').should('not.exist');
+    cy.get('[aria-label="Hide details"]').should('not.exist');
   });
 });

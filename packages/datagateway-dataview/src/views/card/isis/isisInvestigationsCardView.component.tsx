@@ -11,16 +11,14 @@ import {
   AddToCartButton,
   CardView,
   CardViewDetails,
+  Investigation,
+  tableLink,
   DownloadButton,
   externalSiteLink,
-  formatCountOrSize,
-  Investigation,
   ISISInvestigationDetailsPanel,
   parseSearchToQuery,
-  tableLink,
   useDateFilter,
   useInvestigationCount,
-  useInvestigationSizes,
   useInvestigationsPaginated,
   usePrincipalExperimenterFilter,
   usePushFilter,
@@ -28,6 +26,7 @@ import {
   usePushResults,
   useSort,
   useTextFilter,
+  formatBytes,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -124,7 +123,6 @@ const ISISInvestigationsCardView = (
     undefined,
     isMounted
   );
-  const sizeQueries = useInvestigationSizes(data);
 
   const pathRoot = dataPublication ? 'browseDataPublications' : 'browse';
   const instrumentChild = dataPublication ? 'dataPublication' : 'facilityCycle';
@@ -192,11 +190,8 @@ const ISISInvestigationsCardView = (
         icon: Save,
         label: t('investigations.details.size'),
         dataKey: 'size',
-        content: (investigation: Investigation): number | string => {
-          const index = data?.findIndex((item) => item.id === investigation.id);
-          if (typeof index === 'undefined') return 'Unknown';
-          return formatCountOrSize(sizeQueries[index], true);
-        },
+        content: (investigation: Investigation): number | string =>
+          formatBytes(investigation.fileSize),
         disableSort: true,
       },
       {
@@ -233,7 +228,7 @@ const ISISInvestigationsCardView = (
         filterComponent: dateFilter,
       },
     ],
-    [data, dateFilter, principalExperimenterFilter, sizeQueries, t, textFilter]
+    [dateFilter, principalExperimenterFilter, t, textFilter]
   );
 
   const buttons = React.useMemo(
@@ -249,14 +244,12 @@ const ISISInvestigationsCardView = (
             entityType="investigation"
             entityId={investigation.id}
             entityName={investigation.name}
-            entitySize={
-              data ? sizeQueries[data.indexOf(investigation)]?.data ?? -1 : -1
-            }
+            entitySize={investigation.fileSize ?? -1}
           />
         </ActionButtonsContainer>
       ),
     ],
-    [data, sizeQueries]
+    [data]
   );
 
   const moreInformation = React.useCallback(

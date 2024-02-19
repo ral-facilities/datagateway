@@ -5,11 +5,7 @@ import {
 } from '@testing-library/react-hooks';
 import axios, { AxiosError } from 'axios';
 import { Download, InvalidateTokenType } from 'datagateway-common';
-import {
-  DownloadCartItem,
-  handleICATError,
-  NotificationType,
-} from 'datagateway-common';
+import { handleICATError, NotificationType } from 'datagateway-common';
 import { createMemoryHistory } from 'history';
 import * as React from 'react';
 import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
@@ -22,17 +18,16 @@ import {
   useCart,
   useCartUsers,
   useCheckUser,
-  useDatafileCounts,
   useDownloadOrRestoreDownload,
   useDownloadPercentageComplete,
   useDownloads,
   useDownloadTypeStatuses,
+  useFileSizesAndCounts,
   useIsCartMintable,
   useIsTwoLevel,
   useMintCart,
   useRemoveAllFromCart,
   useRemoveEntityFromCart,
-  useSizes,
   useSubmitCart,
 } from './downloadApiHooks';
 import { mockCartItems, mockDownloadItems, mockedSettings } from './testData';
@@ -353,122 +348,13 @@ describe('Download API react-query hooks test', () => {
     });
   });
 
-  describe('useSizes', () => {
-    it('returns the sizes of all the items in a cart', async () => {
-      axios.get = jest
-        .fn()
-        .mockImplementation((path) => {
-          if (path.includes('datafiles/')) {
-            return Promise.resolve({
-              data: {
-                id: 1,
-                name: 'test datafile',
-                fileSize: 1,
-              },
-            });
-          } else {
-            return Promise.resolve({
-              data: 1,
-            });
-          }
-        })
-        .mockImplementationOnce(() =>
-          Promise.reject({
-            message: 'simulating a failed response',
-          })
-        );
-
-      const cartItems: DownloadCartItem[] = [
-        {
-          entityId: 1,
-          entityType: 'investigation',
-          id: 1,
-          name: 'INVESTIGATION 1',
-          parentEntities: [],
-        },
-        {
-          entityId: 2,
-          entityType: 'dataset',
-          id: 2,
-          name: 'DATASET 2',
-          parentEntities: [],
-        },
-        {
-          entityId: 3,
-          entityType: 'datafile',
-          id: 3,
-          name: 'DATAFILE 1',
-          parentEntities: [],
-        },
-        {
-          entityId: 4,
-          entityType: 'investigation',
-          id: 4,
-          name: 'INVESTIGATION 1',
-          parentEntities: [],
-        },
-      ];
-
-      const { result, waitFor } = renderHook(() => useSizes(cartItems), {
-        wrapper: createReactQueryWrapper(),
-      });
-
-      await waitFor(() =>
-        result.current.every((query) => query.isSuccess || query.isError)
-      );
-
-      expect(result.current.map((query) => query.data)).toEqual([
-        undefined,
-        1,
-        1,
-        1,
-      ]);
-      expect(axios.get).toHaveBeenCalledWith(
-        `${mockedSettings.downloadApiUrl}/user/getSize`,
-        {
-          params: {
-            sessionId: null,
-            facilityName: mockedSettings.facilityName,
-            entityType: 'investigation',
-            entityId: 1,
-          },
-        }
-      );
-      expect(axios.get).toHaveBeenCalledWith(
-        `${mockedSettings.downloadApiUrl}/user/getSize`,
-        {
-          params: {
-            sessionId: null,
-            facilityName: mockedSettings.facilityName,
-            entityType: 'dataset',
-            entityId: 2,
-          },
-        }
-      );
-      expect(axios.get).toHaveBeenCalledWith(
-        `${mockedSettings.apiUrl}/datafiles/${3}`,
-        {
-          headers: {
-            Authorization: 'Bearer null',
-          },
-        }
-      );
-      expect(handleICATError).toHaveBeenCalledWith(
-        {
-          message: 'simulating a failed response',
-        },
-        false
-      );
-    });
-  });
-
-  describe('useDatafileCounts', () => {
-    it('returns the counts of all the items in a cart', async () => {
+  describe('useFileCountsAndSizes', () => {
+    it('returns the sizes and counts of all the items in a cart', async () => {
       axios.get = jest
         .fn()
         .mockImplementation(() =>
           Promise.resolve({
-            data: 1,
+            data: { fileCount: 7, fileSize: 21 },
           })
         )
         .mockImplementationOnce(() =>
@@ -477,39 +363,8 @@ describe('Download API react-query hooks test', () => {
           })
         );
 
-      const cartItems: DownloadCartItem[] = [
-        {
-          entityId: 1,
-          entityType: 'investigation',
-          id: 1,
-          name: 'INVESTIGATION 1',
-          parentEntities: [],
-        },
-        {
-          entityId: 2,
-          entityType: 'investigation',
-          id: 2,
-          name: 'INVESTIGATION 2',
-          parentEntities: [],
-        },
-        {
-          entityId: 3,
-          entityType: 'dataset',
-          id: 3,
-          name: 'DATASET 1',
-          parentEntities: [],
-        },
-        {
-          entityId: 4,
-          entityType: 'datafile',
-          id: 4,
-          name: 'DATAFILE 1',
-          parentEntities: [],
-        },
-      ];
-
       const { result, waitFor } = renderHook(
-        () => useDatafileCounts(cartItems),
+        () => useFileSizesAndCounts(mockCartItems),
         {
           wrapper: createReactQueryWrapper(),
         }
@@ -521,36 +376,38 @@ describe('Download API react-query hooks test', () => {
 
       expect(result.current.map((query) => query.data)).toEqual([
         undefined,
-        1,
-        1,
-        1,
+        { fileSize: 21, fileCount: 7 },
+        { fileSize: 21, fileCount: 7 },
+        { fileSize: 21, fileCount: 1 },
       ]);
-      expect(axios.get).toHaveBeenCalledTimes(3);
+      expect(axios.get).toHaveBeenCalledTimes(4);
       expect(axios.get).toHaveBeenCalledWith(
-        `${mockedSettings.apiUrl}/datafiles/count`,
+        `${mockedSettings.apiUrl}/investigations/1`,
         {
-          params: {
-            where: JSON.stringify({
-              'dataset.investigation.id': {
-                eq: 2,
-              },
-            }),
-          },
           headers: {
             Authorization: 'Bearer null',
           },
         }
       );
       expect(axios.get).toHaveBeenCalledWith(
-        `${mockedSettings.apiUrl}/datafiles/count`,
+        `${mockedSettings.apiUrl}/investigations/2`,
         {
-          params: {
-            where: JSON.stringify({
-              'dataset.id': {
-                eq: 3,
-              },
-            }),
+          headers: {
+            Authorization: 'Bearer null',
           },
+        }
+      );
+      expect(axios.get).toHaveBeenCalledWith(
+        `${mockedSettings.apiUrl}/datasets/3`,
+        {
+          headers: {
+            Authorization: 'Bearer null',
+          },
+        }
+      );
+      expect(axios.get).toHaveBeenCalledWith(
+        `${mockedSettings.apiUrl}/datafiles/4`,
+        {
           headers: {
             Authorization: 'Bearer null',
           },

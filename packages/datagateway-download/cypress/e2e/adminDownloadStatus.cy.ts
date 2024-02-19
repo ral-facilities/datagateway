@@ -136,7 +136,7 @@ describe('Admin Download Status', () => {
   it('should be able to filter with both text & date filters on multiple columns', () => {
     cy.get('[aria-rowcount]')
       .invoke('attr', 'aria-rowcount')
-      .as('initialRowCount');
+      .as('initialRowCount', { type: 'static' });
     const now = Date.now();
     // plus and minus 5 seconds from "now"
     const fromDate = new Date(now - 5000);
@@ -156,7 +156,7 @@ describe('Admin Download Status', () => {
 
     cy.get('[aria-rowcount]')
       .invoke('attr', 'aria-rowcount')
-      .as('dateFilterRowCount');
+      .as('dateFilterRowCount', { type: 'static' });
 
     cy.get('[aria-label="Filter by Availability"]')
       .first()
