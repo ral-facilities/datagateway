@@ -10,7 +10,7 @@ import type {
 export interface DGDataViewState {
   facilityImageURL: string;
   features: FeatureSwitches;
-  breadcrumbSettings: BreadcrumbSettings;
+  breadcrumbSettings: BreadcrumbSettings[];
   settingsLoaded: boolean;
   selectAllSetting: boolean;
   pluginHost: string;

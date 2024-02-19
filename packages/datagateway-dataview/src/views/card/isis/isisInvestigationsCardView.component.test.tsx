@@ -1,7 +1,7 @@
 import { dGCommonInitialState, type Investigation } from 'datagateway-common';
 import * as React from 'react';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
+import { generatePath, Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import type { StateType } from '../../../state/app.types';
@@ -23,6 +23,7 @@ import {
 import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 import axios, { type AxiosResponse } from 'axios';
+import { paths } from '../../../page/pageContainer.component';
 
 describe('ISIS Investigations - Card View', () => {
   let mockStore;
@@ -32,7 +33,7 @@ describe('ISIS Investigations - Card View', () => {
   let replaceSpy: jest.SpyInstance;
   let user: UserEvent;
 
-  const renderComponent = (dataPublication = false): RenderResult =>
+  const renderComponent = (): RenderResult =>
     render(
       <Provider store={mockStore(state)}>
         <Router history={history}>
@@ -43,11 +44,7 @@ describe('ISIS Investigations - Card View', () => {
               })
             }
           >
-            <ISISInvestigationsCardView
-              instrumentId="1"
-              instrumentChildId="1"
-              dataPublication={dataPublication}
-            />
+            <ISISInvestigationsCardView instrumentId="1" facilityCycleId="1" />
           </QueryClientProvider>
         </Router>
       </Provider>
@@ -67,12 +64,24 @@ describe('ISIS Investigations - Card View', () => {
         dataCollectionInvestigations: [
           {
             id: 1,
-            investigation: {
-              id: 1,
-              title: 'Test 1',
-              name: 'Test 1',
-              visitId: '1',
+            dataCollection: {
+              id: 14,
+              dataPublications: [
+                {
+                  id: 15,
+                  pid: 'Investigation.Data.Publication.Pid',
+                  description: 'Investigation Data Publication description',
+                  title: 'Investigation Data Publication',
+                  type: {
+                    id: 16,
+                    name: 'investigation',
+                  },
+                },
+              ],
             },
+          },
+          {
+            id: 1,
             dataCollection: {
               id: 11,
               dataPublications: [
@@ -80,9 +89,11 @@ describe('ISIS Investigations - Card View', () => {
                   id: 12,
                   pid: 'Data.Publication.Pid',
                   description: 'Data Publication description',
-                  modTime: '2019-06-10',
-                  createTime: '2019-06-11',
                   title: 'Data Publication',
+                  type: {
+                    id: 13,
+                    name: 'study',
+                  },
                 },
               ],
             },
@@ -102,7 +113,14 @@ describe('ISIS Investigations - Card View', () => {
         ],
       },
     ];
-    history = createMemoryHistory();
+    history = createMemoryHistory({
+      initialEntries: [
+        generatePath(paths.toggle.isisInvestigation, {
+          instrumentId: '1',
+          facilityCycleId: '1',
+        }),
+      ],
+    });
     replaceSpy = jest.spyOn(history, 'replace');
     user = userEvent.setup();
 
@@ -229,16 +247,6 @@ describe('ISIS Investigations - Card View', () => {
     ).toHaveAttribute(
       'href',
       '/browse/instrument/1/facilityCycle/1/investigation/1'
-    );
-  });
-
-  it('correct link used for studyHierarchy', async () => {
-    renderComponent(true);
-    expect(
-      await screen.findByRole('link', { name: 'Test title 1' })
-    ).toHaveAttribute(
-      'href',
-      '/browseDataPublications/instrument/1/dataPublication/1/investigation/1'
     );
   });
 

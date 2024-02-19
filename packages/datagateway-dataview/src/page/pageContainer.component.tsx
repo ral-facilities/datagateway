@@ -124,10 +124,12 @@ export const paths = {
     root: '/browseDataPublications',
     toggle: {
       isisInstrument: '/browseDataPublications/instrument',
+      isisStudyDataPublication:
+        '/browseDataPublications/instrument/:instrumentId/dataPublication',
+      isisInvestigationDataPublication:
+        '/browseDataPublications/instrument/:instrumentId/dataPublication/:studyDataPublicationId/investigation',
       isisDataPublication:
         '/browseDataPublications/instrument/:instrumentId/dataPublication',
-      isisInvestigation:
-        '/browseDataPublications/instrument/:instrumentId/dataPublication/:dataPublicationId/investigation',
       isisDataset:
         '/browseDataPublications/instrument/:instrumentId/dataPublication/:dataPublicationId/investigation/:investigationId/dataset',
     },
@@ -148,6 +150,8 @@ export const paths = {
   preview: {
     isisDatafilePreview:
       '/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation/:investigationId/dataset/:datasetId/datafile/:datafileId',
+    isisDataPublicationDatafilePreview:
+      '/browseDataPublications/instrument/:instrumentId/dataPublication/:dataPublicationId/investigation/:investigationId/dataset/:datasetId/datafile/:datafileId',
   },
 };
 

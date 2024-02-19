@@ -20,6 +20,7 @@
     "instrument_other": "Instruments",
     "facilityCycle_other": "Facility Cycles",
     "dataPublication_other": "Experiments",
+    "experiment_other": "Investigations",
     "proposal_other": "Proposals",
     "investigation_other": "Investigations",
     "dataset_other": "Datasets",
@@ -329,13 +330,10 @@
       "email": "isisdata@stfc.ac.uk",
       "logo": "https://data.isis.stfc.ac.uk/doi/ISIS/images/dsLogo.png"
     },
-    "distribution": {
-      "format": "RAW/Nexus",
-      "content_url": "https://data.isis.stfc.ac.uk"
-    },
     "branding": {
       "title": "ISIS Neutron and Muon Source",
       "body": "This is a page describing data taken during an experiment at the ISIS Neutron and Muon Source. Information about the ISIS Neutron and Muon Source can be found at <a href='https://www.isis.stfc.ac.uk'>https://www.isis.stfc.ac.uk</a>."
-    }
+    },
+    "license": "https://www.isis.stfc.ac.uk/Pages/Data-Policy.aspx"
   }
 }

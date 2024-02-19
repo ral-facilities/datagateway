@@ -9,6 +9,7 @@ import {
   useDataPublicationsInfinite,
   useDataPublicationsPaginated,
   useDataPublication,
+  useDataPublications,
 } from './dataPublications';
 
 jest.mock('../handleICATError');
@@ -276,7 +277,7 @@ describe('data publications api functions', () => {
   describe('useDataPublication', () => {
     it('sends axios request to fetch a single data publication and returns successful response', async () => {
       (axios.get as jest.Mock).mockResolvedValue({
-        data: mockData[0],
+        data: mockData,
       });
 
       const { result, waitFor } = renderHook(() => useDataPublication(1), {
@@ -292,18 +293,26 @@ describe('data publications api functions', () => {
           id: { eq: 1 },
         })
       );
-      params.append('include', JSON.stringify('users'));
       params.append(
         'include',
-        JSON.stringify({
-          content: {
-            dataCollectionInvestigations: {
-              investigation: {
-                investigationInstruments: 'instrument',
+        JSON.stringify([
+          {
+            content: {
+              dataCollectionInvestigations: {
+                investigation: [
+                  'datasets',
+                  {
+                    datasets: 'type',
+                    investigationInstruments: 'instrument',
+                  },
+                ],
               },
             },
           },
-        })
+          'users',
+          'facility',
+          'dates',
+        ])
       );
 
       expect(axios.get).toHaveBeenCalledWith(
@@ -335,19 +344,104 @@ describe('data publications api functions', () => {
           id: { eq: 1 },
         })
       );
-      params.append('include', JSON.stringify('users'));
       params.append(
         'include',
-        JSON.stringify({
-          content: {
-            dataCollectionInvestigations: {
-              investigation: {
-                investigationInstruments: 'instrument',
+        JSON.stringify([
+          {
+            content: {
+              dataCollectionInvestigations: {
+                investigation: [
+                  'datasets',
+                  {
+                    datasets: 'type',
+                    investigationInstruments: 'instrument',
+                  },
+                ],
               },
             },
           },
+          'users',
+          'facility',
+          'dates',
+        ])
+      );
+
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://example.com/api/datapublications',
+        expect.objectContaining({
+          params,
         })
       );
+      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+        params.toString()
+      );
+      expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
+    });
+  });
+
+  describe('useDataPublications', () => {
+    it('sends axios request to fetch a data publications with specified filters and returns successful response', async () => {
+      (axios.get as jest.Mock).mockResolvedValue({
+        data: mockData,
+      });
+
+      params.append('order', JSON.stringify('id asc'));
+      params.append(
+        'where',
+        JSON.stringify({
+          name: { eq: 'test' },
+        })
+      );
+
+      const { result, waitFor } = renderHook(
+        () =>
+          useDataPublications([
+            {
+              filterType: 'where',
+              filterValue: JSON.stringify({ name: { eq: 'test' } }),
+            },
+          ]),
+        {
+          wrapper: createReactQueryWrapper(history),
+        }
+      );
+
+      await waitFor(() => result.current.isSuccess);
+
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://example.com/api/datapublications',
+        expect.objectContaining({
+          params,
+        })
+      );
+      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+        params.toString()
+      );
+      expect(result.current.data).toEqual(mockData);
+    });
+
+    it('sends axios request to fetch a single data publication and calls handleICATError on failure', async () => {
+      (axios.get as jest.Mock).mockRejectedValue({
+        message: 'Test error',
+      });
+
+      params.append('order', JSON.stringify('id asc'));
+      params.append('include', '"type"');
+
+      const { result, waitFor } = renderHook(
+        () =>
+          useDataPublications([
+            {
+              filterType: 'include',
+              filterValue: '"type"',
+            },
+          ]),
+        {
+          wrapper: createReactQueryWrapper(history),
+        }
+      );
+
+      await waitFor(() => result.current.isError);
 
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/api/datapublications',

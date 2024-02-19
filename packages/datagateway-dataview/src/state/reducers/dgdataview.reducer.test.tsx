@@ -46,22 +46,24 @@ describe('dgdataview reducer', () => {
   });
 
   it('should set breadcrumb settings property when configure breadcrumb settings action is sent', () => {
-    expect(state.dgdataview.breadcrumbSettings).toEqual({});
+    expect(state.dgdataview.breadcrumbSettings).toEqual([]);
 
     const updatedState = DGDataViewReducer(
       state,
-      loadBreadcrumbSettings({
-        test: {
+      loadBreadcrumbSettings([
+        {
+          matchEntity: 'test',
           replaceEntityField: 'title',
         },
-      })
+      ])
     );
 
-    expect(updatedState.breadcrumbSettings).toEqual({
-      test: {
+    expect(updatedState.breadcrumbSettings).toEqual([
+      {
+        matchEntity: 'test',
         replaceEntityField: 'title',
       },
-    });
+    ]);
   });
 
   it('should set selectAllSetting when configuring action is sent', () => {

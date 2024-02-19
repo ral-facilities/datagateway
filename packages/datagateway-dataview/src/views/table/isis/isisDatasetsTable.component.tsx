@@ -29,21 +29,13 @@ import { useSelector } from 'react-redux';
 import { StateType } from '../../../state/app.types';
 
 interface ISISDatasetsTableProps {
-  instrumentId: string;
-  instrumentChildId: string;
   investigationId: string;
-  dataPublication: boolean;
 }
 
 const ISISDatasetsTable = (
   props: ISISDatasetsTableProps
 ): React.ReactElement => {
-  const { investigationId, instrumentChildId, instrumentId, dataPublication } =
-    props;
-
-  const pathRoot = dataPublication ? 'browseDataPublications' : 'browse';
-  const instrumentChild = dataPublication ? 'dataPublication' : 'facilityCycle';
-  const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset`;
+  const { investigationId } = props;
 
   const [t] = useTranslation();
 
@@ -145,7 +137,7 @@ const ISISDatasetsTable = (
         dataKey: 'name',
         cellContentRenderer: (cellProps: TableCellProps) =>
           tableLink(
-            `${urlPrefix}/${cellProps.rowData.id}`,
+            `${location.pathname}/${cellProps.rowData.id}`,
             cellProps.rowData.name,
             view
           ),
@@ -173,7 +165,7 @@ const ISISDatasetsTable = (
         filterComponent: dateFilter,
       },
     ],
-    [t, textFilter, dateFilter, urlPrefix, view]
+    [t, textFilter, dateFilter, view, location.pathname]
   );
 
   const selectedRows = React.useMemo(
@@ -195,10 +187,12 @@ const ISISDatasetsTable = (
       <ISISDatasetDetailsPanel
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}
-        viewDatafiles={(id: number) => push(`${urlPrefix}/${id}/datafile`)}
+        viewDatafiles={(id: number) =>
+          push(`${location.pathname}/${id}/datafile`)
+        }
       />
     ),
-    [push, urlPrefix]
+    [location.pathname, push]
   );
 
   return (

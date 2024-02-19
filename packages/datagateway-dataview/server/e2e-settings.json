@@ -9,16 +9,25 @@
   "idsUrl": "https://localhost:8181/ids",
   "apiUrl": "http://localhost:5000",
   "downloadApiUrl": "https://localhost:8181/topcat",
-  "breadcrumbs": {
-    "proposal": {
+  "breadcrumbs": [
+    {
+      "matchEntity": "proposal",
       "replaceEntity": "investigation",
-      "replaceEntityField": "title"
+      "replaceEntityField": "title",
+      "replaceEntityQueryField": "name"
     },
-    "investigation": {
+    {
+      "matchEntity": "investigation",
       "replaceEntityField": "visitId",
       "parentEntity": "proposal"
+    },
+    {
+      "matchEntity": "investigation",
+      "replaceEntity": "dataPublication",
+      "replaceEntityField": "title",
+      "parentEntity": "dataPublication"
     }
-  },
+  ],
   "helpSteps": [
     {
       "target": "#plugin-link--browse-investigation",

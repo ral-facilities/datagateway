@@ -153,8 +153,8 @@ export interface DataCollectionDataset {
 
 export interface DataCollectionInvestigation {
   id: number;
-  dataCollection: DataCollection;
-  investigation: Investigation;
+  dataCollection?: DataCollection;
+  investigation?: Investigation;
 }
 
 export interface DataCollection {
@@ -171,16 +171,21 @@ export interface DataPublicationUser {
   fullName: string;
 }
 
+export interface DataPublicationType {
+  id: number;
+  name: string;
+}
+
 export interface DataPublication {
   id: number;
   pid: string;
   title: string;
-  modTime: string;
-  createTime: string;
+  facility?: Facility;
   description?: string;
   publicationDate?: string;
   users?: DataPublicationUser[];
   content?: DataCollection;
+  type?: DataPublicationType;
 }
 
 interface InstrumentScientist {
