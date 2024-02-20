@@ -65,6 +65,11 @@ describe('DLS Visits - Card View', () => {
     history = createMemoryHistory();
     user = userEvent.setup();
 
+    dGCommonInitialState.urls = {
+      ...dGCommonInitialState.urls,
+      uploadUrl: 'https://example.com/upload',
+    };
+
     mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({

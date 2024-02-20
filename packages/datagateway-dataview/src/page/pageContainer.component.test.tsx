@@ -100,6 +100,11 @@ describe('PageContainer - Tests', () => {
     });
     user = userEvent.setup();
 
+    dGCommonInitialState.urls = {
+      ...dGCommonInitialState.urls,
+      uploadUrl: 'https://example.com/upload',
+    };
+
     delete window.location;
     window.location = new URL(`http://localhost/`);
 

@@ -5,6 +5,11 @@ import * as React from 'react';
 import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 import { createDataset } from '../api';
 import UploadDialog from './uploadDialog.component';
+import { Provider } from 'react-redux';
+import { combineReducers, createStore } from 'redux';
+import dGCommonReducer from '../state/reducers/dgcommon.reducer';
+import { StateType } from '../state/app.types';
+
 // TODO: see if we can remove this
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fireEvent } from '@testing-library/dom';
@@ -17,14 +22,20 @@ describe('Upload dialog component', () => {
 
     const createWrapper = (): RenderResult =>
       render(
-        <QueryClientProvider client={queryClient}>
-          <UploadDialog
-            entityType="investigation"
-            entityId={1}
-            open={true}
-            setClose={jest.fn()}
-          />
-        </QueryClientProvider>
+        <Provider
+          store={createStore(
+            combineReducers<Partial<StateType>>({ dgcommon: dGCommonReducer })
+          )}
+        >
+          <QueryClientProvider client={queryClient}>
+            <UploadDialog
+              entityType="investigation"
+              entityId={1}
+              open={true}
+              setClose={jest.fn()}
+            />
+          </QueryClientProvider>
+        </Provider>
       );
 
     beforeEach(() => {
@@ -103,14 +114,20 @@ describe('Upload dialog component', () => {
       const closeFunction = jest.fn();
 
       render(
-        <QueryClientProvider client={queryClient}>
-          <UploadDialog
-            entityType="investigation"
-            entityId={1}
-            open={true}
-            setClose={closeFunction}
-          />
-        </QueryClientProvider>
+        <Provider
+          store={createStore(
+            combineReducers<Partial<StateType>>({ dgcommon: dGCommonReducer })
+          )}
+        >
+          <QueryClientProvider client={queryClient}>
+            <UploadDialog
+              entityType="investigation"
+              entityId={1}
+              open={true}
+              setClose={closeFunction}
+            />
+          </QueryClientProvider>
+        </Provider>
       );
 
       await userEvent.click(screen.getByRole('button', { name: 'cancel' }));
@@ -124,14 +141,20 @@ describe('Upload dialog component', () => {
 
     const createWrapper = (): RenderResult =>
       render(
-        <QueryClientProvider client={queryClient}>
-          <UploadDialog
-            entityType="datafile"
-            entityId={1}
-            open={true}
-            setClose={jest.fn()}
-          />
-        </QueryClientProvider>
+        <Provider
+          store={createStore(
+            combineReducers<Partial<StateType>>({ dgcommon: dGCommonReducer })
+          )}
+        >
+          <QueryClientProvider client={queryClient}>
+            <UploadDialog
+              entityType="datafile"
+              entityId={1}
+              open={true}
+              setClose={jest.fn()}
+            />
+          </QueryClientProvider>
+        </Provider>
       );
 
     beforeEach(() => {
@@ -195,14 +218,20 @@ describe('Upload dialog component', () => {
       const closeFunction = jest.fn();
 
       render(
-        <QueryClientProvider client={queryClient}>
-          <UploadDialog
-            entityType="datafile"
-            entityId={1}
-            open={true}
-            setClose={closeFunction}
-          />
-        </QueryClientProvider>
+        <Provider
+          store={createStore(
+            combineReducers<Partial<StateType>>({ dgcommon: dGCommonReducer })
+          )}
+        >
+          <QueryClientProvider client={queryClient}>
+            <UploadDialog
+              entityType="datafile"
+              entityId={1}
+              open={true}
+              setClose={closeFunction}
+            />
+          </QueryClientProvider>
+        </Provider>
       );
 
       await userEvent.click(screen.getByRole('button', { name: 'cancel' }));
