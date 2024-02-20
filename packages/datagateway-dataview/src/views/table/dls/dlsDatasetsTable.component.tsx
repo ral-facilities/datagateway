@@ -194,6 +194,10 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
     );
   }, [cartItems, investigationId]);
 
+  const uploadUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.uploadUrl
+  );
+
   return (
     <Table
       loading={
@@ -215,7 +219,7 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
       disableSelectAll={!selectAllSetting}
       detailsPanel={DLSDatasetDetailsPanel}
       columns={columns}
-      actions={actions}
+      actions={uploadUrl ? actions : undefined}
     />
   );
 };

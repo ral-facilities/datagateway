@@ -25,6 +25,8 @@ import { Assessment, CalendarToday, Save } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { Typography } from '@mui/material';
+import { useSelector } from 'react-redux';
+import { StateType } from 'datagateway-common';
 
 interface DLSVisitsCVProps {
   proposalName: string;
@@ -104,13 +106,18 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
     [t, textFilter]
   );
 
+  const uploadUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.uploadUrl
+  );
+
   const buttons = React.useMemo(
     () => [
-      (dataset: Dataset) => (
-        <UploadButton entityType="investigation" entityId={dataset.id} />
-      ),
+      (dataset: Dataset) =>
+        uploadUrl && (
+          <UploadButton entityType="investigation" entityId={dataset.id} />
+        ),
     ],
-    []
+    [uploadUrl]
   );
 
   const information: CardViewDetails[] = React.useMemo(

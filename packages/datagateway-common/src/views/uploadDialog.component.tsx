@@ -25,6 +25,8 @@ import { createDataset } from '../api';
 // import { ErrorOutline } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
+import { useSelector } from 'react-redux';
+import { StateType } from '../state/app.types';
 
 const DialogContent = styled(MuiDialogContent)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -43,6 +45,9 @@ const UploadDialog: React.FC<UploadDialogProps> = (
 ) => {
   const { entityType, entityId, open, setClose } = props;
   const queryClient = useQueryClient();
+  const uploadUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.uploadUrl
+  );
   const [uppy] = React.useState(() =>
     new Uppy({
       // debug: true,
@@ -81,8 +86,7 @@ const UploadDialog: React.FC<UploadDialogProps> = (
         }
       })
       .use(Tus, {
-        // TODO: remove hard coded endpoint
-        endpoint: 'http://127.0.0.1:8181/upload/',
+        endpoint: uploadUrl,
         uploadDataDuringCreation: true,
       })
   );

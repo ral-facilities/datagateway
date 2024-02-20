@@ -42,6 +42,8 @@ import TranslatedHomePage from './translatedHomePage.component';
 import DoiRedirect from './doiRedirect.component';
 import RoleSelector from '../views/roleSelector.component';
 import { useIsFetching, useQueryClient } from 'react-query';
+import { StateType } from 'datagateway-common';
+import { useSelector } from 'react-redux';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const getTablePaperStyle = (
@@ -654,6 +656,10 @@ const DataviewPageContainer: React.FC = () => {
     }
   };
 
+  const uploadUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.uploadUrl
+  );
+
   return (
     <Paper square elevation={0} style={{ backgroundColor: 'inherit' }}>
       <NavBar
@@ -705,10 +711,12 @@ const DataviewPageContainer: React.FC = () => {
                 render={({ match }) => {
                   const datasetId = match.params.datasetId as string;
                   return (
-                    <UploadButton
-                      entityType="datafile"
-                      entityId={parseInt(datasetId)}
-                    />
+                    uploadUrl && (
+                      <UploadButton
+                        entityType="datafile"
+                        entityId={parseInt(datasetId)}
+                      />
+                    )
                   );
                 }}
               />

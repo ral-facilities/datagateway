@@ -23,6 +23,8 @@ import { CalendarToday, Save } from '@mui/icons-material';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { StateType } from 'datagateway-common';
 
 const ActionButtonsContainer = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -153,6 +155,10 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
     [dateFilter, t]
   );
 
+  const uploadUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.uploadUrl
+  );
+
   const buttons = React.useMemo(
     () => [
       (dataset: Dataset) => (
@@ -163,11 +169,13 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
             entityId={dataset.id}
             parentId={investigationId}
           />
-          <UploadButton entityType="dataset" entityId={dataset.id} />
+          {uploadUrl && (
+            <UploadButton entityType="dataset" entityId={dataset.id} />
+          )}
         </ActionButtonsContainer>
       ),
     ],
-    [data, investigationId]
+    [data, investigationId, uploadUrl]
   );
 
   return (

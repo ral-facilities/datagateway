@@ -24,6 +24,8 @@ import {
   Save,
 } from '@mui/icons-material';
 import { useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { StateType } from 'datagateway-common';
 
 const actions = [
   ({ rowData }: TableActionProps) => (
@@ -160,6 +162,10 @@ const DLSVisitsTable = (props: DLSVisitsTableProps): React.ReactElement => {
     [t, dateFilter, textFilter, view, proposalName]
   );
 
+  const uploadUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.uploadUrl
+  );
+
   return (
     <Table
       data={aggregatedData}
@@ -169,7 +175,7 @@ const DLSVisitsTable = (props: DLSVisitsTableProps): React.ReactElement => {
       onSort={handleSort}
       detailsPanel={DLSVisitDetailsPanel}
       columns={columns}
-      actions={actions}
+      actions={uploadUrl ? actions : undefined}
     />
   );
 };

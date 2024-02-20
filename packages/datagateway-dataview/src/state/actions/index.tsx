@@ -83,6 +83,7 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
           idsUrl: settingsResult['idsUrl'],
           apiUrl: settingsResult['apiUrl'],
           downloadApiUrl: settingsResult['downloadApiUrl'],
+          uploadUrl: settingsResult['uploadUrl'],
           icatUrl: '', // we currently don't need icatUrl in dataview so just pass empty string for now
         })
       );
