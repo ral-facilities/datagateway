@@ -1,4 +1,6 @@
 // Parent app name and token in localstorage.
+import { MLSearchType } from './api';
+
 export const MicroFrontendId = 'scigateway';
 export const MicroFrontendToken = `${MicroFrontendId}:token`;
 
@@ -374,4 +376,10 @@ export interface QueryParams {
   startDate: Date | null;
   endDate: Date | null;
   currentTab: string;
+  searchType: MLSearchType | null;
 }
+
+export type SemanticSearchResults = {
+  score: number;
+  doc: Investigation;
+}[];

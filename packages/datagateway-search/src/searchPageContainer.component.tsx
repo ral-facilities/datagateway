@@ -32,6 +32,9 @@ import {
   useUpdateQueryParam,
   ViewButton,
   ClearFiltersButton,
+  useClearMLSearchType,
+  usePushMLSearchType,
+  isMLSearchType,
 } from 'datagateway-common';
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -41,6 +44,8 @@ import {
   setInvestigationTab,
 } from './state/actions/actions';
 import { useIsFetching } from 'react-query';
+import MLSearchTable from './table/mlSearchTable.component';
+import { SearchType } from './search/searchTypeDropdown.component';
 
 export const storeFilters = (
   filters: FiltersType,
@@ -220,7 +225,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     () => parseSearchToQuery(location.search),
     [location.search]
   );
-  const { view, startDate, endDate } = queryParams;
+  const { view, startDate, endDate, searchType: searchTypeURL } = queryParams;
 
   const searchTextURL = queryParams.searchText ? queryParams.searchText : '';
 
@@ -235,21 +240,28 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
       ? checkedBoxes[0]
       : searchableEntities[0];
 
+  const isMLSearchEnabled = isMLSearchType(searchTypeURL);
+
   //Do not allow these to be searched if they are not searchable (prevents URL
   //forcing them to be searched)
-  const investigation = searchableEntities.includes('investigation')
-    ? queryParams.investigation
-    : false;
-  const dataset = searchableEntities.includes('dataset')
-    ? queryParams.dataset
-    : false;
-  const datafile = searchableEntities.includes('datafile')
-    ? queryParams.datafile
-    : false;
+  const investigation =
+    searchableEntities.includes('investigation') && !isMLSearchEnabled
+      ? queryParams.investigation
+      : false;
+  const dataset =
+    searchableEntities.includes('dataset') && !isMLSearchEnabled
+      ? queryParams.dataset
+      : false;
+  const datafile =
+    searchableEntities.includes('datafile') && !isMLSearchEnabled
+      ? queryParams.datafile
+      : false;
 
   const pushView = useUpdateView('push');
   const replaceView = useUpdateView('replace');
   const pushSearchText = usePushSearchText();
+  const pushMLSearchType = usePushMLSearchType();
+  const clearMLSearchType = useClearMLSearchType();
   const pushCurrentTab = usePushCurrentTab();
   const replaceFilters = useUpdateQueryParam('filters', 'replace');
   const replaceSorts = useUpdateQueryParam('sort', 'replace');
@@ -261,7 +273,11 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   }, [checkedBoxes, currentTab, pushCurrentTab, queryParams.currentTab]);
 
   const [searchText, setSearchText] = React.useState(searchTextURL);
-  const [searchOnNextRender, setSearchOnNextRender] = React.useState(false);
+  const [searchType, setSearchType] = React.useState<SearchType>(
+    searchTypeURL ?? 'lucene'
+  );
+  const [luceneSearchOnNextRender, setLuceneSearchOnNextRender] =
+    React.useState(false);
 
   const handleSearchTextChange = (searchText: string): void => {
     setSearchText(searchText);
@@ -336,25 +352,36 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
 
   const initiateSearch = React.useCallback(() => {
     pushSearchText(searchText);
-    setSearchOnNextRender(true);
 
-    localStorage.removeItem('investigationFilters');
-    localStorage.removeItem('datasetFilters');
-    localStorage.removeItem('datafileFilters');
-    localStorage.removeItem('investigationSort');
-    localStorage.removeItem('datasetSort');
-    localStorage.removeItem('datafileSort');
-    localStorage.removeItem('investigationPage');
-    localStorage.removeItem('datasetPage');
-    localStorage.removeItem('investigationResults');
-    localStorage.removeItem('datasetResults');
-    if (Object.keys(queryParams.filters).length !== 0) replaceFilters({});
-    if (Object.keys(queryParams.sort).length !== 0) replaceSorts({});
-    if (queryParams.page !== null) replacePage(null);
-    if (queryParams.results !== null) replaceResults(null);
+    if (searchType === 'lucene') {
+      clearMLSearchType();
+      setLuceneSearchOnNextRender(true);
+
+      localStorage.removeItem('investigationFilters');
+      localStorage.removeItem('datasetFilters');
+      localStorage.removeItem('datafileFilters');
+      localStorage.removeItem('investigationSort');
+      localStorage.removeItem('datasetSort');
+      localStorage.removeItem('datafileSort');
+      localStorage.removeItem('investigationPage');
+      localStorage.removeItem('datasetPage');
+      localStorage.removeItem('investigationResults');
+      localStorage.removeItem('datasetResults');
+      if (Object.keys(queryParams.filters).length !== 0) replaceFilters({});
+      if (Object.keys(queryParams.sort).length !== 0) replaceSorts({});
+      if (queryParams.page !== null) replacePage(null);
+      if (queryParams.results !== null) replaceResults(null);
+    } else {
+      setInvestigationTab(false);
+      setDatafileTab(false);
+      setDatasetTab(false);
+      pushMLSearchType(searchType);
+    }
   }, [
     pushSearchText,
     searchText,
+    searchType,
+    clearMLSearchType,
     queryParams.filters,
     queryParams.sort,
     queryParams.page,
@@ -363,10 +390,14 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     replaceSorts,
     replacePage,
     replaceResults,
+    setInvestigationTab,
+    setDatafileTab,
+    setDatasetTab,
+    pushMLSearchType,
   ]);
 
   React.useEffect(() => {
-    if (searchOnNextRender) {
+    if (luceneSearchOnNextRender) {
       if (dataset) {
         // Fetch lucene datasets
         searchDatasets();
@@ -388,10 +419,10 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
         setInvestigationTab(investigation);
       }
 
-      setSearchOnNextRender(false);
+      setLuceneSearchOnNextRender(false);
     }
   }, [
-    searchOnNextRender,
+    luceneSearchOnNextRender,
     dataset,
     datafile,
     investigation,
@@ -410,7 +441,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
       queryParams.startDate ||
       queryParams.endDate
     )
-      setSearchOnNextRender(true);
+      setLuceneSearchOnNextRender(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -418,7 +449,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     if (searchTextURL !== searchText) {
       //Ensure search text is assigned from the URL
       setSearchText(searchTextURL);
-      setSearchOnNextRender(true);
+      setLuceneSearchOnNextRender(true);
     }
 
     //Want to search whenever the search text in the URL changes so that clicking a react-router link also initiates the search
@@ -505,14 +536,26 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                 <TopSearchBoxPaper>
                   <SearchBoxContainer
                     searchText={searchText}
+                    searchType={searchType}
                     initiateSearch={initiateSearch}
                     onSearchTextChange={handleSearchTextChange}
+                    onSearchTypeChange={setSearchType}
                   />
                 </TopSearchBoxPaper>
               )}
             </Grid>
 
-            {requestReceived && (
+            {isMLSearchType(searchTypeURL) && (
+              <div style={{ width: '100%' }}>
+                <Grid container justifyContent="center">
+                  <DataViewPaper view={view} containerHeight={containerHeight}>
+                    <MLSearchTable />
+                  </DataViewPaper>
+                </Grid>
+              </div>
+            )}
+
+            {requestReceived && !isMLSearchType(searchTypeURL) && (
               <div style={{ width: '100%' }}>
                 <Grid container justifyContent="center">
                   <Grid

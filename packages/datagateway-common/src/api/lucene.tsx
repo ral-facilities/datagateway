@@ -2,7 +2,7 @@ import axios, { AxiosError } from 'axios';
 import { format, set } from 'date-fns';
 import { useQuery, UseQueryResult } from 'react-query';
 import { useSelector } from 'react-redux';
-import { StateType } from '..';
+import { Investigation, SemanticSearchResults, StateType } from '..';
 import handleICATError from '../handleICATError';
 import { readSciGatewayToken } from '../parseTokens';
 import retryICATErrors from './retryICATErrors';
@@ -111,6 +111,75 @@ export const useLuceneSearch = (
       // we want to trigger search manually via refetch
       // so disable the query to disable automatic fetching
       enabled: false,
+    }
+  );
+};
+
+export const useLexicalSearch = ({
+  query,
+  enabled,
+}: {
+  query: string;
+  enabled: boolean;
+}): UseQueryResult<Investigation[], AxiosError> => {
+  const baseUrl = 'http://172.16.103.71:4001/api/v2';
+
+  return useQuery<SemanticSearchResults, AxiosError, Investigation[]>(
+    ['lexicalSearch', query],
+    () =>
+      axios
+        .post(
+          '/search',
+          {
+            query,
+            n_top_results: 50,
+            is_semantic: false,
+          },
+          {
+            baseURL: baseUrl,
+          }
+        )
+        .then((response) => response.data),
+    {
+      enabled,
+      select: (data) => {
+        data.sort((resultA, resultB) => resultB.score - resultA.score);
+        return data.map(({ doc }) => doc);
+      },
+    }
+  );
+};
+
+export const useSemanticSearch = ({
+  query,
+  enabled,
+}: {
+  query: string;
+  enabled: boolean;
+}): UseQueryResult<Investigation[], AxiosError> => {
+  const baseUrl = 'http://172.16.103.71:4001/api/v2';
+
+  return useQuery<SemanticSearchResults, AxiosError, Investigation[]>(
+    ['semanticSearch', query],
+    () =>
+      axios
+        .post(
+          '/search',
+          {
+            query,
+            n_top_results: 50,
+          },
+          {
+            baseURL: baseUrl,
+          }
+        )
+        .then((response) => response.data),
+    {
+      enabled,
+      select: (data) => {
+        data.sort((resultA, resultB) => resultB.score - resultA.score);
+        return data.map(({ doc }) => doc);
+      },
     }
   );
 };

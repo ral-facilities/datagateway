@@ -229,7 +229,6 @@ describe('Datafile table component', () => {
     expect(history.length).toBe(6);
     expect(history.location.search).toBe('?');
   });
-
   it('updates filter query params on date filter', async () => {
     applyDatePickerWorkaround();
 
