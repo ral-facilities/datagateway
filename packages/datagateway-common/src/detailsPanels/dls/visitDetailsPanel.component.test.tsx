@@ -49,6 +49,8 @@ describe('Visit details panel component', () => {
       visitId: '1',
       doi: 'doi 1',
       size: 1,
+      fileSize: 64,
+      fileCount: 1,
       investigationInstruments: [
         {
           id: 1,
@@ -191,25 +193,6 @@ describe('Visit details panel component', () => {
   //   const { asFragment } = renderComponent({ rowData });
   //   expect(asFragment()).toMatchSnapshot();
   // });
-
-  it('should show calculate size button when size has not been calculated', async () => {
-    renderComponent({ rowData });
-    expect(
-      await screen.findByRole('button', {
-        name: 'investigations.details.calculate',
-      })
-    ).toBeInTheDocument();
-  });
-
-  it('should calculate size when button is clicked and show the calculated size', async () => {
-    renderComponent({ rowData });
-    await user.click(
-      await screen.findByRole('button', {
-        name: 'investigations.details.calculate',
-      })
-    );
-    expect(await screen.findByText('64 B')).toBeInTheDocument();
-  });
 
   it('should call detailsPanelResize on load and when tabs are switched between', async () => {
     rowData.investigationUsers = [

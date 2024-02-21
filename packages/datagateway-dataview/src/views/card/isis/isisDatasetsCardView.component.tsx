@@ -4,8 +4,7 @@ import {
   CardViewDetails,
   Dataset,
   tableLink,
-  formatCountOrSize,
-  useDatasetSizes,
+  formatBytes,
   parseSearchToQuery,
   useDateFilter,
   useDatasetCount,
@@ -34,17 +33,13 @@ const ActionButtonsContainer = styled('div')(({ theme }) => ({
 }));
 
 interface ISISDatasetCardViewProps {
-  instrumentId: string;
-  instrumentChildId: string;
   investigationId: string;
-  dataPublication: boolean;
 }
 
 const ISISDatasetsCardView = (
   props: ISISDatasetCardViewProps
 ): React.ReactElement => {
-  const { instrumentId, instrumentChildId, investigationId, dataPublication } =
-    props;
+  const { investigationId } = props;
 
   const [t] = useTranslation();
   const location = useLocation();
@@ -89,11 +84,6 @@ const ISISDatasetsCardView = (
     ],
     isMounted
   );
-  const sizeQueries = useDatasetSizes(data);
-
-  const pathRoot = dataPublication ? 'browseDataPublications' : 'browse';
-  const instrumentChild = dataPublication ? 'dataPublication' : 'facilityCycle';
-  const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset`;
 
   const title: CardViewDetails = React.useMemo(
     () => ({
@@ -102,10 +92,10 @@ const ISISDatasetsCardView = (
       // Provide both the dataKey (for tooltip) and content to render.
       dataKey: 'name',
       content: (dataset: Dataset) =>
-        tableLink(`${urlPrefix}/${dataset.id}`, dataset.name, view),
+        tableLink(`${location.pathname}/${dataset.id}`, dataset.name, view),
       filterComponent: textFilter,
     }),
-    [t, textFilter, urlPrefix, view]
+    [t, textFilter, location.pathname, view]
   );
 
   const description: CardViewDetails = React.useMemo(
@@ -126,7 +116,7 @@ const ISISDatasetsCardView = (
         content: (dataset: Dataset): string => {
           const index = data?.findIndex((item) => item.id === dataset.id);
           if (typeof index === 'undefined') return 'Unknown';
-          return formatCountOrSize(sizeQueries[index], true);
+          return formatBytes(dataset.fileSize);
         },
         disableSort: true,
       },
@@ -144,7 +134,7 @@ const ISISDatasetsCardView = (
         filterComponent: dateFilter,
       },
     ],
-    [data, dateFilter, sizeQueries, t]
+    [data, dateFilter, t]
   );
 
   const buttons = React.useMemo(
@@ -155,20 +145,17 @@ const ISISDatasetsCardView = (
             entityType="dataset"
             allIds={data?.map((dataset) => dataset.id) ?? []}
             entityId={dataset.id}
-            parentId={investigationId}
           />
           <DownloadButton
             entityType="dataset"
             entityId={dataset.id}
             entityName={dataset.name}
-            entitySize={
-              data ? sizeQueries[data.indexOf(dataset)]?.data ?? -1 : -1
-            }
+            entitySize={dataset.fileSize ?? -1}
           />
         </ActionButtonsContainer>
       ),
     ],
-    [data, sizeQueries, investigationId]
+    [data]
   );
 
   const moreInformation = React.useCallback(
@@ -177,13 +164,13 @@ const ISISDatasetsCardView = (
         rowData={dataset}
         viewDatafiles={(id: number) => {
           const url = view
-            ? `${urlPrefix}/${id}/datafile?view=${view}`
-            : `${urlPrefix}/${id}/datafile`;
+            ? `${location.pathname}/${id}/datafile?view=${view}`
+            : `${location.pathname}/${id}/datafile`;
           push(url);
         }}
       />
     ),
-    [push, urlPrefix, view]
+    [push, location.pathname, view]
   );
 
   return (

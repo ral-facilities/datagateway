@@ -7,7 +7,7 @@ import {
   tableLink,
   TableActionProps,
   Dataset,
-  formatCountOrSize,
+  formatBytes,
   useDatasetCount,
   useDatasetsInfinite,
   parseSearchToQuery,
@@ -19,7 +19,6 @@ import {
   useCart,
   useAddToCart,
   useRemoveFromCart,
-  useDatasetSizes,
   DownloadButton,
   ISISDatasetDetailsPanel,
 } from 'datagateway-common';
@@ -30,21 +29,13 @@ import { useSelector } from 'react-redux';
 import { StateType } from '../../../state/app.types';
 
 interface ISISDatasetsTableProps {
-  instrumentId: string;
-  instrumentChildId: string;
   investigationId: string;
-  dataPublication: boolean;
 }
 
 const ISISDatasetsTable = (
   props: ISISDatasetsTableProps
 ): React.ReactElement => {
-  const { investigationId, instrumentChildId, instrumentId, dataPublication } =
-    props;
-
-  const pathRoot = dataPublication ? 'browseDataPublications' : 'browse';
-  const instrumentChild = dataPublication ? 'dataPublication' : 'facilityCycle';
-  const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset`;
+  const { investigationId } = props;
 
   const [t] = useTranslation();
 
@@ -117,8 +108,6 @@ const ISISDatasetsTable = (
     [fetchNextPage]
   );
 
-  const sizeQueries = useDatasetSizes(data);
-
   /* istanbul ignore next */
   const aggregatedData: Dataset[] = React.useMemo(() => {
     if (data) {
@@ -148,7 +137,7 @@ const ISISDatasetsTable = (
         dataKey: 'name',
         cellContentRenderer: (cellProps: TableCellProps) =>
           tableLink(
-            `${urlPrefix}/${cellProps.rowData.id}`,
+            `${location.pathname}/${cellProps.rowData.id}`,
             cellProps.rowData.name,
             view
           ),
@@ -159,7 +148,7 @@ const ISISDatasetsTable = (
         label: t('datasets.size'),
         dataKey: 'size',
         cellContentRenderer: (cellProps: TableCellProps): number | string =>
-          formatCountOrSize(sizeQueries[cellProps.rowIndex], true),
+          formatBytes(cellProps.rowData.fileSize),
         disableSort: true,
       },
       {
@@ -176,7 +165,7 @@ const ISISDatasetsTable = (
         filterComponent: dateFilter,
       },
     ],
-    [t, textFilter, dateFilter, urlPrefix, view, sizeQueries]
+    [t, textFilter, dateFilter, view, location.pathname]
   );
 
   const selectedRows = React.useMemo(
@@ -198,10 +187,12 @@ const ISISDatasetsTable = (
       <ISISDatasetDetailsPanel
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}
-        viewDatafiles={(id: number) => push(`${urlPrefix}/${id}/datafile`)}
+        viewDatafiles={(id: number) =>
+          push(`${location.pathname}/${id}/datafile`)
+        }
       />
     ),
-    [push, urlPrefix]
+    [location.pathname, push]
   );
 
   return (
@@ -231,10 +222,7 @@ const ISISDatasetsTable = (
             entityId={rowData.id}
             entityName={rowData.name}
             variant="icon"
-            entitySize={
-              sizeQueries[aggregatedData.indexOf(rowData as Dataset)]?.data ??
-              -1
-            }
+            entitySize={rowData.fileSize ?? -1}
           />
         ),
       ]}

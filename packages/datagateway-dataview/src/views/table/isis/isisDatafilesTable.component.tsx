@@ -63,12 +63,6 @@ const ISISDatafilesTable = (
         filterType: 'where',
         filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
       },
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'dataset.investigation.id': { eq: investigationId },
-        }),
-      },
     ],
     selectAllSetting
   );
@@ -82,12 +76,6 @@ const ISISDatafilesTable = (
     {
       filterType: 'where',
       filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
-    },
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'dataset.investigation.id': { eq: investigationId },
-      }),
     },
   ]);
 
@@ -104,12 +92,6 @@ const ISISDatafilesTable = (
       {
         filterType: 'where',
         filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
-      },
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'dataset.investigation.id': { eq: investigationId },
-        }),
       },
     ],
     isMounted

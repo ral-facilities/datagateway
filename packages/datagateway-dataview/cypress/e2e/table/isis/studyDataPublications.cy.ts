@@ -1,10 +1,42 @@
-describe('ISIS - Data Publication Table', () => {
+describe('ISIS - Study Data Publication Table', () => {
   beforeEach(() => {
     cy.intercept('**/datapublications/count*').as('getDataPublicationsCount');
-    cy.intercept('**/datapublications?order*').as('getDataPublicationsOrder');
+    cy.intercept(
+      /\/datapublications\?.*where=%7B%22type\.name%22%3A%7B%22eq%22%3A%22study%22%7D%7D.*/,
+      (req) => {
+        console.log('INTERCEPTING!!!!!');
+        // delete type = study requirement
+        const [url, search] = req.url.split('?');
+        const params = new URLSearchParams(search);
+        // params.delete with value is still a new standard, so use workaround for now until browser compat catches up
+        // params.delete('where', '{"type.name":{"eq":"study"}}');
+        const removeValue = (
+          params: URLSearchParams,
+          key: string,
+          valueToRemove: string
+        ): URLSearchParams => {
+          const values = params.getAll(key);
+          if (values.length) {
+            params.delete(key);
+            for (const value of values) {
+              if (value !== valueToRemove) {
+                params.append(key, value);
+              }
+            }
+          }
+          return params;
+        };
+        removeValue(params, 'where', '{"type.name":{"eq":"study"}}');
+        req.url = `${url}?${params.toString()}`;
+        console.log('req.url', req.url);
+
+        req.continue();
+      }
+    ).as('getDataPublications');
+
     cy.login();
     cy.visit('/browseDataPublications/instrument/8/dataPublication').wait(
-      ['@getDataPublicationsCount', '@getDataPublicationsOrder'],
+      ['@getDataPublicationsCount', '@getDataPublications'],
       { timeout: 10000 }
     );
   });
@@ -22,7 +54,7 @@ describe('ISIS - Data Publication Table', () => {
     cy.get('[role="gridcell"] a').first().click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browseDataPublications/instrument/8/dataPublication/51'
+      '/browseDataPublications/instrument/8/dataPublication/50'
     );
   });
 
@@ -49,12 +81,10 @@ describe('ISIS - Data Publication Table', () => {
 
   it('should be able to sort by all sort directions on single and multiple columns', () => {
     //Revert the default sort
-    cy.contains('[role="button"]', 'Publication Date')
-      .as('dateSortButton')
-      .click();
+    cy.contains('[role="button"]', 'Title').as('titleSortButton').click();
 
     // ascending order
-    cy.contains('[role="button"]', 'Title').as('titleSortButton').click();
+    cy.contains('[role="button"]', 'DOI').as('doiSortButton').click();
 
     cy.get('[aria-sort="ascending"]').should('exist');
     cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
@@ -63,7 +93,7 @@ describe('ISIS - Data Publication Table', () => {
     );
 
     // descending order
-    cy.get('@titleSortButton').click();
+    cy.get('@doiSortButton').click();
 
     cy.get('[aria-sort="descending"]').should('exist');
     cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
@@ -76,13 +106,13 @@ describe('ISIS - Data Publication Table', () => {
     );
 
     // no order
-    cy.get('@titleSortButton').click();
+    cy.get('@doiSortButton').click();
 
     cy.get('[aria-sort="ascending"]').should('not.exist');
     cy.get('[aria-sort="descending"]').should('not.exist');
     cy.get('.MuiTableSortLabel-iconDirectionAsc').should('not.exist');
 
-    cy.get('[data-testid="SortIcon"]').should('have.length', 3);
+    cy.get('[data-testid="SortIcon"]').should('have.length', 2);
     cy.get('[data-testid="ArrowUpwardIcon"]').should('not.exist');
 
     cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
@@ -90,25 +120,25 @@ describe('ISIS - Data Publication Table', () => {
     );
 
     // multiple columns (shift click)
-    cy.get('@dateSortButton').click();
-    cy.get('@dateSortButton').click({ shiftKey: true });
+    cy.get('@titleSortButton').click();
     cy.get('@titleSortButton').click({ shiftKey: true });
+    cy.get('@doiSortButton').click({ shiftKey: true });
 
     cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
-      'Church child time Congress'
+      'Daughter experience discussion'
     );
 
     // should replace previous sort when clicked without shift
-    cy.contains('[role="button"]', 'Publication Date').click();
+    cy.get('@titleSortButton').click();
     cy.get('[aria-sort="ascending"]').should('have.length', 1);
-    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('2010-02-24');
+    cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('0-356-85165-6');
   });
 
   it('should change icons when sorting on a column', () => {
     // clear default sort
-    cy.contains('[role="button"]', 'Publication Date').click();
+    cy.contains('[role="button"]', 'Title').click();
 
-    cy.get('[data-testid="SortIcon"]').should('have.length', 3);
+    cy.get('[data-testid="SortIcon"]').should('have.length', 2);
 
     // check icon when clicking on a column
     cy.contains('[role="button"]', 'DOI').click();
@@ -120,14 +150,14 @@ describe('ISIS - Data Publication Table', () => {
     cy.get('[data-testid="ArrowDownwardIcon"]').should('have.length', 1);
     cy.get('.MuiTableSortLabel-iconDirectionAsc').should('not.exist');
 
+    // check icons when shift is held
+    cy.get('.App').trigger('keydown', { key: 'Shift' });
+    cy.get('[data-testid="AddIcon"]').should('have.length', 1);
+
     // check icon when hovering over a column
     cy.contains('[role="button"]', 'Title').trigger('mouseover');
     cy.get('[data-testid="ArrowUpwardIcon"]').should('have.length', 1);
     cy.get('[data-testid="ArrowDownwardIcon"]').should('have.length', 1);
-
-    // check icons when shift is held
-    cy.get('.App').trigger('keydown', { key: 'Shift' });
-    cy.get('[data-testid="AddIcon"]').should('have.length', 1);
   });
 
   it('should be able to filter with both text & date filters on multiple columns', () => {
@@ -137,19 +167,7 @@ describe('ISIS - Data Publication Table', () => {
     cy.get('[aria-rowcount="3"]').should('exist');
 
     cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
-      'Church child time Congress'
+      'Daughter experience discussion'
     );
-
-    // test date filter
-    cy.get('input[id="Publication Date filter to"]').type('2016-01-01');
-
-    cy.get('[aria-rowcount="2"]').should('exist');
-    cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
-      'Consider author watch'
-    );
-
-    cy.get('input[id="Publication Date filter from"]').type('2014-01-01');
-
-    cy.get('[aria-rowcount="1"]').should('exist');
   });
 });

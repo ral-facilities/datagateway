@@ -85,7 +85,7 @@ describe('Investigation Search Table component', () => {
     if (/.*\/search\/documents$/.test(url)) {
       // fetchLuceneData
 
-      if (config.params.query.filter) {
+      if ((config.params as URLSearchParams).get('query')?.includes('filter')) {
         // filter is applied
         return Promise.resolve<Partial<AxiosResponse<Partial<SearchResponse>>>>(
           {
@@ -106,23 +106,9 @@ describe('Investigation Search Table component', () => {
       });
     }
 
-    if (/.*\/datasets\/count$/.test(url)) {
-      // fetchDatasetCountQuery
-      return Promise.resolve({
-        data: 1,
-      });
-    }
-
     if (/.*\/investigations$/.test(url)) {
       return Promise.resolve({
         data: [mockInvestigation],
-      });
-    }
-
-    if (/.*\/user\/getSize$/.test(url)) {
-      // fetchInvestigationSize
-      return Promise.resolve({
-        data: 1,
       });
     }
 
@@ -154,6 +140,8 @@ describe('Investigation Search Table component', () => {
         id: 1,
         title: 'Test title 1',
         name: 'Test name 1',
+        fileSize: 1,
+        fileCount: 1,
         summary: 'foo bar',
         visitId: '1',
         doi: 'doi 1',
@@ -224,7 +212,7 @@ describe('Investigation Search Table component', () => {
       await findColumnHeaderByName('investigations.doi')
     ).toBeInTheDocument();
     expect(
-      await findColumnHeaderByName('investigations.dataset_count')
+      await findColumnHeaderByName('investigations.size')
     ).toBeInTheDocument();
     expect(
       await findColumnHeaderByName('investigations.instrument')
@@ -259,7 +247,7 @@ describe('Investigation Search Table component', () => {
       await findColumnHeaderByName('investigations.doi')
     ).toBeInTheDocument();
     expect(
-      await findColumnHeaderByName('investigations.dataset_count')
+      await findColumnHeaderByName('investigations.size')
     ).toBeInTheDocument();
     expect(
       await findColumnHeaderByName('investigations.instrument')
@@ -349,11 +337,9 @@ describe('Investigation Search Table component', () => {
     expect(
       within(
         findCellInRow(row, {
-          columnIndex: await findColumnIndexByName(
-            'investigations.dataset_count'
-          ),
+          columnIndex: await findColumnIndexByName('investigations.size'),
         })
-      ).getByText('1')
+      ).getByText('1 B')
     ).toBeInTheDocument();
     expect(
       within(
@@ -870,22 +856,13 @@ describe('Investigation Search Table component', () => {
     expect(() => renderComponent()).not.toThrowError();
   });
 
-  it('renders generic link correctly & pending count correctly', async () => {
-    (axios.get as jest.Mock).mockImplementation((url: string, config) => {
-      if (/.*\/datasets\/count$/.test(url)) {
-        return new Promise((_) => {
-          // never resolve the promise to pretend it is loading
-        });
-      }
-      return mockAxiosGet(url, config);
-    });
+  it('renders generic link correctly correctly', async () => {
     renderComponent('data');
 
     expect(await screen.findByText('Test title 1')).toHaveAttribute(
       'href',
       '/browse/investigation/1/dataset'
     );
-    expect(await screen.findByText('Calculating...')).toBeInTheDocument();
   });
 
   it("renders DLS link correctly and doesn't allow for cart selection", async () => {

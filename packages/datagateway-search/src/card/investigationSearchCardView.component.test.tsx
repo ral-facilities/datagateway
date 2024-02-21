@@ -20,28 +20,24 @@ import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 
-function renderComponent({
-  initialState,
-  history = createMemoryHistory(),
-  hierarchy = '',
-}): RenderResult {
-  return render(
-    <Provider store={configureStore([thunk])(initialState)}>
-      <Router history={history}>
-        <QueryClientProvider client={new QueryClient()}>
-          <InvestigationSearchCardView hierarchy={hierarchy} />
-        </QueryClientProvider>
-      </Router>
-    </Provider>
-  );
-}
-
 describe('Investigation - Card View', () => {
   let state: StateType;
   let cardData: SearchResultSource;
   let searchResult: SearchResult;
   let searchResponse: SearchResponse;
   let history: MemoryHistory;
+
+  function renderComponent({ hierarchy = '' } = {}): RenderResult {
+    return render(
+      <Provider store={configureStore([thunk])(state)}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <InvestigationSearchCardView hierarchy={hierarchy} />
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+  }
 
   const mockAxiosGet = (url: string): Promise<Partial<AxiosResponse>> => {
     if (/\/investigations$/.test(url)) {
@@ -55,21 +51,6 @@ describe('Investigation - Card View', () => {
         data: searchResponse,
       });
     }
-    if (/\/datafiles\/count$/.test(url)) {
-      return Promise.resolve({
-        data: 1,
-      });
-    }
-    if (/\/datasets\/count$/.test(url)) {
-      return Promise.resolve({
-        data: 1,
-      });
-    }
-    if (/\/user\/getSize$/.test(url)) {
-      return Promise.resolve({
-        data: 1,
-      });
-    }
     return Promise.reject({
       message: `Endpoint not mocked ${url}`,
     });
@@ -81,6 +62,8 @@ describe('Investigation - Card View', () => {
       name: 'Investigation test name',
       startDate: 1563922800000,
       endDate: 1564009200000,
+      fileSize: 10,
+      fileCount: 9,
       title: 'Test 1',
       visitId: '1',
       doi: 'doi 1',
@@ -124,7 +107,7 @@ describe('Investigation - Card View', () => {
   //The below tests are modified from datasetSearchCardView
 
   it('renders correctly', async () => {
-    renderComponent({ initialState: state });
+    renderComponent();
 
     const cards = await screen.findAllByTestId('card');
     expect(cards).toHaveLength(1);
@@ -137,9 +120,7 @@ describe('Investigation - Card View', () => {
     expect(
       within(card).getByRole('button', { name: 'card-more-info-expand' })
     ).toBeInTheDocument();
-    expect(
-      within(card).getByText('investigations.dataset_count:')
-    ).toBeInTheDocument();
+    expect(within(card).getByText('investigations.size:')).toBeInTheDocument();
     expect(
       within(card).getByRole('button', { name: 'buttons.add_to_cart' })
     ).toBeInTheDocument();
@@ -148,19 +129,8 @@ describe('Investigation - Card View', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders generic link & pending count correctly', async () => {
-    axios.get = jest.fn((url: string) => {
-      if (/\/datasets\/count$/.test(url)) {
-        return new Promise((_) => {
-          // never resolve the promise to pretend the query is loading
-        });
-      }
-      return mockAxiosGet(url);
-    });
-
-    renderComponent({
-      initialState: state,
-    });
+  it('renders generic link correctly', async () => {
+    renderComponent();
 
     const card = (await screen.findAllByTestId('card'))[0];
 
@@ -168,12 +138,10 @@ describe('Investigation - Card View', () => {
       'href',
       '/browse/investigation/1/dataset'
     );
-    expect(within(card).getByText('Calculating...')).toBeInTheDocument();
   });
 
   it("renders DLS link correctly and doesn't allow for cart selection or download", async () => {
     renderComponent({
-      initialState: state,
       hierarchy: FACILITY_NAME.dls,
     });
 
@@ -193,7 +161,7 @@ describe('Investigation - Card View', () => {
   });
 
   it('renders ISIS link & file sizes correctly', async () => {
-    renderComponent({ initialState: state, hierarchy: FACILITY_NAME.isis });
+    renderComponent({ hierarchy: FACILITY_NAME.isis });
 
     const card = (await screen.findAllByTestId('card'))[0];
 
@@ -206,11 +174,11 @@ describe('Investigation - Card View', () => {
       '/browse/instrument/4/facilityCycle/6/investigation/1/dataset'
     );
 
-    expect(within(card).getByText('1 B')).toBeInTheDocument();
+    expect(within(card).getByText('10 B')).toBeInTheDocument();
   });
 
   it('displays DOI and renders the expected Link ', async () => {
-    renderComponent({ initialState: state });
+    renderComponent();
 
     const card = (await screen.findAllByTestId('card'))[0];
 
@@ -223,7 +191,7 @@ describe('Investigation - Card View', () => {
   it('does not render ISIS link when instrumentId cannot be found', async () => {
     delete cardData.investigationinstrument;
 
-    renderComponent({ initialState: state, hierarchy: FACILITY_NAME.isis });
+    renderComponent({ hierarchy: FACILITY_NAME.isis });
 
     const card = (await screen.findAllByTestId('card'))[0];
 
@@ -234,7 +202,7 @@ describe('Investigation - Card View', () => {
   it('displays generic details panel when expanded', async () => {
     const user = userEvent.setup();
 
-    renderComponent({ initialState: state });
+    renderComponent();
 
     expect(screen.queryByTestId('investigation-details-panel')).toBeNull();
 
@@ -250,7 +218,7 @@ describe('Investigation - Card View', () => {
   it('displays correct details panel for ISIS when expanded', async () => {
     const user = userEvent.setup();
 
-    renderComponent({ initialState: state, hierarchy: FACILITY_NAME.isis });
+    renderComponent({ hierarchy: FACILITY_NAME.isis });
 
     expect(screen.queryByTestId('isis-investigation-details-panel')).toBeNull();
 
@@ -267,8 +235,6 @@ describe('Investigation - Card View', () => {
     const user = userEvent.setup();
 
     renderComponent({
-      history,
-      initialState: state,
       hierarchy: FACILITY_NAME.isis,
     });
 
@@ -298,7 +264,6 @@ describe('Investigation - Card View', () => {
     const user = userEvent.setup();
 
     renderComponent({
-      initialState: state,
       hierarchy: FACILITY_NAME.dls,
     });
 

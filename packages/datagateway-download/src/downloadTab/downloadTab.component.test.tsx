@@ -1,7 +1,6 @@
-import type { RenderResult } from '@testing-library/react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { RenderResult } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { UserEvent } from '@testing-library/user-event/dist/types/setup';
 import { fetchDownloadCart } from 'datagateway-common';
 import { createMemoryHistory } from 'history';
 import * as React from 'react';
@@ -11,11 +10,11 @@ import { DownloadSettingsContext } from '../ConfigProvider';
 import {
   downloadDeleted,
   fetchDownloads,
-  getDatafileCount,
   getDataUrl,
-  getSize,
+  getFileSizeAndCount,
   removeAllDownloadCartItems,
   removeFromCart,
+  isCartMintable,
 } from '../downloadApi';
 import { mockCartItems, mockDownloadItems, mockedSettings } from '../testData';
 import DownloadTabs from './downloadTab.component';
@@ -33,7 +32,7 @@ jest.mock('../downloadApi');
 describe('DownloadTab', () => {
   let history;
   let holder;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   beforeEach(() => {
     history = createMemoryHistory();
@@ -55,7 +54,7 @@ describe('DownloadTab', () => {
       removeAllDownloadCartItems as jest.MockedFunction<
         typeof removeAllDownloadCartItems
       >
-    ).mockResolvedValue(null);
+    ).mockResolvedValue();
     (
       removeFromCart as jest.MockedFunction<typeof removeFromCart>
     ).mockImplementation((entityType, entityIds) => {
@@ -64,10 +63,12 @@ describe('DownloadTab', () => {
       );
     });
 
-    (getSize as jest.MockedFunction<typeof getSize>).mockResolvedValue(1);
     (
-      getDatafileCount as jest.MockedFunction<typeof getDatafileCount>
-    ).mockResolvedValue(7);
+      getFileSizeAndCount as jest.MockedFunction<typeof getFileSizeAndCount>
+    ).mockResolvedValue({ fileSize: 1, fileCount: 7 });
+    (
+      isCartMintable as jest.MockedFunction<typeof isCartMintable>
+    ).mockResolvedValue(true);
   });
 
   const renderComponent = (): RenderResult => {
@@ -83,11 +84,6 @@ describe('DownloadTab', () => {
     );
   };
 
-  it('should render correctly', () => {
-    const { asFragment } = renderComponent();
-    expect(asFragment()).toMatchSnapshot();
-  });
-
   it('shows the appropriate table when clicking between tabs', async () => {
     renderComponent();
 
@@ -95,34 +91,54 @@ describe('DownloadTab', () => {
 
     await user.click(await screen.findByText('downloadTab.downloads_tab'));
 
-    await waitFor(async () => {
-      expect(
-        await screen.findByLabelText(
-          'downloadTab.download_cart_panel_arialabel'
-        )
-      ).not.toBeVisible();
-      expect(
-        await screen.findByLabelText(
-          'downloadTab.download_status_panel_arialabel'
-        )
-      ).toBeVisible();
-    });
+    expect(
+      await screen.findByLabelText('downloadTab.download_cart_panel_arialabel')
+    ).not.toBeVisible();
+    expect(
+      await screen.findByLabelText(
+        'downloadTab.download_status_panel_arialabel'
+      )
+    ).toBeVisible();
 
     // Return back to the cart tab.
 
     await user.click(await screen.findByText('downloadTab.cart_tab'));
 
-    await waitFor(async () => {
-      expect(
-        await screen.findByLabelText(
-          'downloadTab.download_cart_panel_arialabel'
-        )
-      ).toBeVisible();
-      expect(
-        await screen.findByLabelText(
-          'downloadTab.download_status_panel_arialabel'
-        )
-      ).not.toBeVisible();
-    });
+    expect(
+      await screen.findByLabelText('downloadTab.download_cart_panel_arialabel')
+    ).toBeVisible();
+    expect(
+      await screen.findByLabelText(
+        'downloadTab.download_status_panel_arialabel'
+      )
+    ).not.toBeVisible();
+  });
+
+  it('refreshes downloads when the refresh button is clicked', async () => {
+    renderComponent();
+
+    (
+      fetchDownloads as jest.MockedFunction<typeof fetchDownloads>
+    ).mockImplementation(
+      () =>
+        new Promise((_) => {
+          // do nothing, simulating pending promise
+          // to test refreshing state
+        })
+    );
+
+    // go to downloads tab
+
+    await user.click(await screen.findByText('downloadTab.downloads_tab'));
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'downloadTab.refresh_download_status_arialabel',
+      })
+    );
+
+    expect(
+      await screen.findByText('downloadTab.refreshing_downloads')
+    ).toBeInTheDocument();
   });
 });

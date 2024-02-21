@@ -9,6 +9,7 @@ import {
   useQuery,
   UseInfiniteQueryResult,
   useInfiniteQuery,
+  UseQueryOptions,
 } from 'react-query';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
@@ -144,16 +145,17 @@ export const useDataPublicationsInfinite = (
 };
 
 export const useDataPublication = (
-  dataPublicationId: number
-): UseQueryResult<DataPublication[], AxiosError> => {
-  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
-
-  return useQuery<
+  dataPublicationId: number,
+  queryOptions?: UseQueryOptions<
     DataPublication[],
     AxiosError,
-    DataPublication[],
+    DataPublication,
     [string, number]
-  >(
+  >
+): UseQueryResult<DataPublication, AxiosError> => {
+  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+
+  return useQuery(
     ['dataPublication', dataPublicationId],
     () => {
       return fetchDataPublications(apiUrl, { sort: {}, filters: {} }, [
@@ -165,21 +167,56 @@ export const useDataPublication = (
         },
         {
           filterType: 'include',
-          filterValue: JSON.stringify('users'),
-        },
-        {
-          filterType: 'include',
-          filterValue: JSON.stringify({
-            content: {
-              dataCollectionInvestigations: {
-                investigation: {
-                  investigationInstruments: 'instrument',
+          filterValue: JSON.stringify([
+            {
+              content: {
+                dataCollectionInvestigations: {
+                  investigation: [
+                    'datasets',
+                    {
+                      datasets: 'type',
+                      investigationInstruments: 'instrument',
+                    },
+                  ],
                 },
               },
             },
-          }),
+            'users',
+            'facility',
+            'dates',
+          ]),
         },
       ]);
+    },
+    {
+      onError: (error) => {
+        handleICATError(error);
+      },
+      retry: retryICATErrors,
+      select: (data) => data[0],
+      ...queryOptions,
+    }
+  );
+};
+
+export const useDataPublications = (
+  additionalFilters: AdditionalFilters
+): UseQueryResult<DataPublication[], AxiosError> => {
+  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+
+  return useQuery<
+    DataPublication[],
+    AxiosError,
+    DataPublication[],
+    [string, AdditionalFilters?]
+  >(
+    ['dataPublication', additionalFilters],
+    (params) => {
+      return fetchDataPublications(
+        apiUrl,
+        { sort: {}, filters: {} },
+        additionalFilters
+      );
     },
     {
       onError: (error) => {

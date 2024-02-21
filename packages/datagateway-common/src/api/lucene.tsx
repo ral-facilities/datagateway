@@ -236,16 +236,19 @@ export const fetchLuceneData = async (
   }
 ): Promise<SearchResponse> => {
   // Query params.
-  const queryParams = {
-    sessionId: readSciGatewayToken().sessionId,
-    query: urlParamsBuilder(datasearchType, params),
-    // Default maximum count is 300.
-    sort: params.sort ? params.sort : '',
-    search_after: params.search_after ? params.search_after : '',
-    minCount: params.minCount ? params.minCount : 10,
-    maxCount: params.maxCount ? params.maxCount : 100,
-    restrict: !!params.restrict,
-  };
+  const queryParams = new URLSearchParams();
+  queryParams.append('sessionId', readSciGatewayToken().sessionId ?? '');
+  queryParams.append(
+    'query',
+    JSON.stringify(urlParamsBuilder(datasearchType, params))
+  );
+  if (params.sort && Object.keys(params.sort).length > 0)
+    queryParams.append('sort', JSON.stringify(params.sort));
+  if (params.search_after)
+    queryParams.append('search_after', JSON.stringify(params.search_after));
+  queryParams.append('minCount', `${params.minCount ? params.minCount : 10}`);
+  queryParams.append('maxCount', `${params.maxCount ? params.maxCount : 100}`);
+  queryParams.append('restrict', `${!!params.restrict}`);
 
   return axios
     .get(`${settings.icatUrl}/search/documents`, {
@@ -264,10 +267,16 @@ export const fetchLuceneFacets = async (
     icatUrl: string;
   }
 ): Promise<SearchResponse> => {
-  const queryParams = {
-    sessionId: readSciGatewayToken().sessionId,
-    query: { target: datasearchType, facets: facets, filter: filters },
-  };
+  const queryParams = new URLSearchParams();
+  queryParams.append('sessionId', readSciGatewayToken().sessionId ?? '');
+  queryParams.append(
+    'query',
+    JSON.stringify({
+      target: datasearchType,
+      facets: facets,
+      filter: filters,
+    })
+  );
 
   return axios
     .get(`${settings.icatUrl}/facet/documents`, {
@@ -346,7 +355,12 @@ export const useLuceneSearchInfinite = (
 
   return useInfiniteQuery(
     ['search', datasearchType, luceneParams],
-    () => fetchLuceneData(datasearchType, luceneParams, { icatUrl }),
+    ({ pageParam }) =>
+      fetchLuceneData(
+        datasearchType,
+        { ...luceneParams, search_after: pageParam },
+        { icatUrl }
+      ),
     {
       onError: (error: AxiosError<LuceneError>) => {
         handleLuceneError(error);

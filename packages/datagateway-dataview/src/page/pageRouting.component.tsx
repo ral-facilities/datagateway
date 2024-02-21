@@ -50,12 +50,12 @@ import {
   checkInvestigationId,
   checkInstrumentAndFacilityCycleId,
   checkInstrumentId,
-  checkDataPublicationId,
-  checkDatafileId,
+  checkStudyDataPublicationId,
+  checkDatasetId,
 } from './idCheckFunctions';
 
 import { paths } from './pageContainer.component';
-import type { ViewsType } from 'datagateway-common';
+import { useDataPublication, ViewsType } from 'datagateway-common';
 
 const SafeDatafileTable = React.memo(
   (props: {
@@ -78,160 +78,258 @@ const SafeDatafileTable = React.memo(
 );
 SafeDatafileTable.displayName = 'SafeDatafileTable';
 
-const SafeISISDatafilesTable = React.memo(
-  (props: {
-    instrumentId: string;
-    instrumentChildId: string;
-    investigationId: string;
-    datasetId: string;
-    dataPublication: boolean;
-  }): React.ReactElement => {
-    const SafeISISDatafilesTable = props.dataPublication
-      ? withIdCheck(
-          Promise.all([
-            checkInstrumentId(
-              parseInt(props.instrumentId),
-              parseInt(props.instrumentChildId)
-            ),
-            checkDataPublicationId(
-              parseInt(props.instrumentChildId),
-              parseInt(props.investigationId)
-            ),
-            checkInvestigationId(
-              parseInt(props.investigationId),
-              parseInt(props.datasetId)
-            ),
-          ]).then((values) => !values.includes(false))
-        )(ISISDatafilesTable)
-      : withIdCheck(
-          Promise.all([
+const SafeISISDatafilesTable = (props: {
+  instrumentId: string;
+  instrumentChildId: string;
+  investigationId: string;
+  datasetId: string;
+  dataPublication: boolean;
+}): React.ReactElement => {
+  const { data, isLoading } = useDataPublication(
+    parseInt(props.investigationId),
+    {
+      enabled: props.dataPublication,
+    }
+  );
+  const dataPublicationInvestigationId =
+    data?.content?.dataCollectionInvestigations?.[0]?.investigation?.id;
+
+  const SafeISISDatafilesTable = React.useMemo(
+    () =>
+      props.dataPublication
+        ? withIdCheck(
+            Promise.all([
+              checkInstrumentId(
+                parseInt(props.instrumentId),
+                parseInt(props.instrumentChildId)
+              ),
+              checkStudyDataPublicationId(
+                parseInt(props.instrumentChildId),
+                parseInt(props.investigationId)
+              ),
+              checkInvestigationId(
+                dataPublicationInvestigationId ?? -1,
+                parseInt(props.datasetId)
+              ),
+              ...(isLoading ? [new Promise(() => undefined)] : []),
+            ]).then((values) => !values.includes(false))
+          )(ISISDatafilesTable)
+        : withIdCheck(
+            Promise.all([
+              checkInstrumentAndFacilityCycleId(
+                parseInt(props.instrumentId),
+                parseInt(props.instrumentChildId),
+                parseInt(props.investigationId)
+              ),
+              checkInvestigationId(
+                parseInt(props.investigationId),
+                parseInt(props.datasetId)
+              ),
+            ]).then((values) => !values.includes(false))
+          )(ISISDatafilesTable),
+    [
+      dataPublicationInvestigationId,
+      isLoading,
+      props.dataPublication,
+      props.datasetId,
+      props.instrumentChildId,
+      props.instrumentId,
+      props.investigationId,
+    ]
+  );
+
+  return (
+    <SafeISISDatafilesTable
+      datasetId={props.datasetId}
+      investigationId={
+        dataPublicationInvestigationId
+          ? dataPublicationInvestigationId.toString()
+          : props.investigationId
+      }
+    />
+  );
+};
+
+const SafeISISDatasetLanding = (props: {
+  instrumentId: string;
+  instrumentChildId: string;
+  investigationId: string;
+  datasetId: string;
+  dataPublication: boolean;
+}): React.ReactElement => {
+  const { data, isLoading } = useDataPublication(
+    parseInt(props.investigationId),
+    {
+      enabled: props.dataPublication,
+    }
+  );
+  const dataPublicationInvestigationId =
+    data?.content?.dataCollectionInvestigations?.[0]?.investigation?.id;
+
+  const SafeISISDatasetLanding = React.useMemo(
+    () =>
+      props.dataPublication
+        ? withIdCheck(
+            Promise.all([
+              checkInstrumentId(
+                parseInt(props.instrumentId),
+                parseInt(props.instrumentChildId)
+              ),
+              checkStudyDataPublicationId(
+                parseInt(props.instrumentChildId),
+                parseInt(props.investigationId)
+              ),
+              checkInvestigationId(
+                dataPublicationInvestigationId ?? -1,
+                parseInt(props.datasetId)
+              ),
+              ...(isLoading ? [new Promise(() => undefined)] : []),
+            ]).then((values) => !values.includes(false))
+          )(ISISDatasetLanding)
+        : withIdCheck(
+            Promise.all([
+              checkInstrumentAndFacilityCycleId(
+                parseInt(props.instrumentId),
+                parseInt(props.instrumentChildId),
+                parseInt(props.investigationId)
+              ),
+              checkInvestigationId(
+                parseInt(props.investigationId),
+                parseInt(props.datasetId)
+              ),
+            ]).then((values) => !values.includes(false))
+          )(ISISDatasetLanding),
+    [
+      dataPublicationInvestigationId,
+      isLoading,
+      props.dataPublication,
+      props.datasetId,
+      props.instrumentChildId,
+      props.instrumentId,
+      props.investigationId,
+    ]
+  );
+
+  return <SafeISISDatasetLanding datasetId={props.datasetId} />;
+};
+
+const SafeISISDatasetsTable = (props: {
+  instrumentId: string;
+  instrumentChildId: string;
+  investigationId: string;
+  dataPublication: boolean;
+}): React.ReactElement => {
+  const { data, isLoading } = useDataPublication(
+    parseInt(props.investigationId),
+    {
+      enabled: props.dataPublication,
+    }
+  );
+
+  const dataPublicationInvestigationId =
+    data?.content?.dataCollectionInvestigations?.[0]?.investigation?.id;
+
+  const SafeISISDatasetsTable = React.useMemo(
+    () =>
+      props.dataPublication
+        ? withIdCheck(
+            Promise.all([
+              checkInstrumentId(
+                parseInt(props.instrumentId),
+                parseInt(props.instrumentChildId)
+              ),
+              checkStudyDataPublicationId(
+                parseInt(props.instrumentChildId),
+                parseInt(props.investigationId)
+              ),
+              ...(isLoading ? [new Promise(() => undefined)] : []),
+            ]).then((values) => !values.includes(false))
+          )(ISISDatasetsTable)
+        : withIdCheck(
             checkInstrumentAndFacilityCycleId(
               parseInt(props.instrumentId),
               parseInt(props.instrumentChildId),
               parseInt(props.investigationId)
-            ),
-          ]).then((values) => !values.includes(false))
-        )(ISISDatafilesTable);
+            )
+          )(ISISDatasetsTable),
+    [
+      isLoading,
+      props.dataPublication,
+      props.instrumentChildId,
+      props.instrumentId,
+      props.investigationId,
+    ]
+  );
 
-    return (
-      <SafeISISDatafilesTable
-        datasetId={props.datasetId}
-        investigationId={props.investigationId}
-      />
-    );
-  }
-);
-SafeISISDatafilesTable.displayName = 'SafeISISDatafilesTable';
+  return (
+    <SafeISISDatasetsTable
+      investigationId={
+        dataPublicationInvestigationId
+          ? dataPublicationInvestigationId.toString()
+          : props.investigationId
+      }
+    />
+  );
+};
 
-const SafeISISDatasetLanding = React.memo(
-  (props: {
-    instrumentId: string;
-    instrumentChildId: string;
-    investigationId: string;
-    datasetId: string;
-    dataPublication: boolean;
-  }): React.ReactElement => {
-    const SafeISISDatasetLanding = props.dataPublication
-      ? withIdCheck(
-          Promise.all([
-            checkInstrumentId(
-              parseInt(props.instrumentId),
-              parseInt(props.instrumentChildId)
-            ),
-            checkDataPublicationId(
-              parseInt(props.instrumentChildId),
-              parseInt(props.investigationId)
-            ),
-            checkInvestigationId(
-              parseInt(props.investigationId),
-              parseInt(props.datasetId)
-            ),
-          ]).then((values) => !values.includes(false))
-        )(ISISDatasetLanding)
-      : withIdCheck(
-          Promise.all([
+const SafeISISDatasetsCardView = (props: {
+  instrumentId: string;
+  instrumentChildId: string;
+  investigationId: string;
+  dataPublication: boolean;
+}): React.ReactElement => {
+  const { data, isLoading } = useDataPublication(
+    parseInt(props.investigationId),
+    {
+      enabled: props.dataPublication,
+    }
+  );
+
+  const dataPublicationInvestigationId =
+    data?.content?.dataCollectionInvestigations?.[0]?.investigation?.id;
+
+  const SafeISISDatasetsCardView = React.useMemo(
+    () =>
+      props.dataPublication
+        ? withIdCheck(
+            Promise.all([
+              checkInstrumentId(
+                parseInt(props.instrumentId),
+                parseInt(props.instrumentChildId)
+              ),
+              checkStudyDataPublicationId(
+                parseInt(props.instrumentChildId),
+                parseInt(props.investigationId)
+              ),
+              ...(isLoading ? [new Promise(() => undefined)] : []),
+            ]).then((values) => !values.includes(false))
+          )(ISISDatasetsCardView)
+        : withIdCheck(
             checkInstrumentAndFacilityCycleId(
               parseInt(props.instrumentId),
               parseInt(props.instrumentChildId),
               parseInt(props.investigationId)
-            ),
-            checkInvestigationId(
-              parseInt(props.investigationId),
-              parseInt(props.datasetId)
-            ),
-          ]).then((values) => !values.includes(false))
-        )(ISISDatasetLanding);
+            )
+          )(ISISDatasetsCardView),
+    [
+      isLoading,
+      props.dataPublication,
+      props.instrumentChildId,
+      props.instrumentId,
+      props.investigationId,
+    ]
+  );
 
-    return <SafeISISDatasetLanding {...props} />;
-  }
-);
-SafeISISDatasetLanding.displayName = 'SafeISISDatasetLanding';
-
-const SafeISISDatasetsTable = React.memo(
-  (props: {
-    instrumentId: string;
-    instrumentChildId: string;
-    investigationId: string;
-    dataPublication: boolean;
-  }): React.ReactElement => {
-    const SafeISISDatasetsTable = props.dataPublication
-      ? withIdCheck(
-          Promise.all([
-            checkInstrumentId(
-              parseInt(props.instrumentId),
-              parseInt(props.instrumentChildId)
-            ),
-            checkDataPublicationId(
-              parseInt(props.instrumentChildId),
-              parseInt(props.investigationId)
-            ),
-          ]).then((values) => !values.includes(false))
-        )(ISISDatasetsTable)
-      : withIdCheck(
-          checkInstrumentAndFacilityCycleId(
-            parseInt(props.instrumentId),
-            parseInt(props.instrumentChildId),
-            parseInt(props.investigationId)
-          )
-        )(ISISDatasetsTable);
-
-    return <SafeISISDatasetsTable {...props} />;
-  }
-);
-SafeISISDatasetsTable.displayName = 'SafeISISDatasetsTable';
-
-const SafeISISDatasetsCardView = React.memo(
-  (props: {
-    instrumentId: string;
-    instrumentChildId: string;
-    investigationId: string;
-    dataPublication: boolean;
-  }): React.ReactElement => {
-    const SafeISISDatasetsCardView = props.dataPublication
-      ? withIdCheck(
-          Promise.all([
-            checkInstrumentId(
-              parseInt(props.instrumentId),
-              parseInt(props.instrumentChildId)
-            ),
-            checkDataPublicationId(
-              parseInt(props.instrumentChildId),
-              parseInt(props.investigationId)
-            ),
-          ]).then((values) => !values.includes(false))
-        )(ISISDatasetsCardView)
-      : withIdCheck(
-          checkInstrumentAndFacilityCycleId(
-            parseInt(props.instrumentId),
-            parseInt(props.instrumentChildId),
-            parseInt(props.investigationId)
-          )
-        )(ISISDatasetsCardView);
-
-    return <SafeISISDatasetsCardView {...props} />;
-  }
-);
-SafeISISDatasetsCardView.displayName = 'SafeISISDatasetsCardView';
+  return (
+    <SafeISISDatasetsCardView
+      investigationId={
+        dataPublicationInvestigationId
+          ? dataPublicationInvestigationId.toString()
+          : props.investigationId
+      }
+    />
+  );
+};
 
 const SafeISISInvestigationLanding = React.memo(
   (props: {
@@ -247,7 +345,7 @@ const SafeISISInvestigationLanding = React.memo(
               parseInt(props.instrumentId),
               parseInt(props.instrumentChildId)
             ),
-            checkDataPublicationId(
+            checkStudyDataPublicationId(
               parseInt(props.instrumentChildId),
               parseInt(props.investigationId)
             ),
@@ -261,7 +359,13 @@ const SafeISISInvestigationLanding = React.memo(
           )
         )(ISISInvestigationLanding);
 
-    return <SafeISISInvestigationLanding {...props} />;
+    return (
+      <SafeISISInvestigationLanding
+        dataPublication={props.dataPublication}
+        // for dataPublication views, investigationId = investigationDataPublicationId
+        investigationId={props.investigationId}
+      />
+    );
   }
 );
 SafeISISInvestigationLanding.displayName = 'SafeISISInvestigationLanding';
@@ -292,6 +396,10 @@ const SafeDLSDatafilesTable = React.memo(
     const SafeDLSDatafilesTable = withIdCheck(
       Promise.all([
         checkProposalName(props.proposalName, parseInt(props.investigationId)),
+        checkInvestigationId(
+          parseInt(props.investigationId),
+          parseInt(props.datasetId)
+        ),
       ]).then((values) => !values.includes(false))
     )(DLSDatafilesTable);
 
@@ -343,33 +451,79 @@ const SafeDLSDatasetsCardView = React.memo(
 );
 SafeDLSDatasetsCardView.displayName = 'SafeDLSDatasetsCardView';
 
-const SafeDatafilePreviewer = React.memo(
-  (props: {
-    instrumentId: string;
-    instrumentChildId: string;
-    investigationId: string;
-    datasetId: string;
-    datafileId: string;
-  }): React.ReactElement => {
-    const SafeDatafilePreviewer = withIdCheck(
-      Promise.all([
-        checkInstrumentAndFacilityCycleId(
-          parseInt(props.instrumentId),
-          parseInt(props.instrumentChildId),
-          parseInt(props.investigationId)
-        ),
-        checkDatafileId(
-          parseInt(props.investigationId),
-          parseInt(props.datasetId),
-          parseInt(props.datafileId)
-        ),
-      ]).then((checks) => checks.every((passes) => passes))
-    )(DatafilePreviewer);
+const SafeDatafilePreviewer = (props: {
+  dataPublication: boolean;
+  instrumentId: string;
+  instrumentChildId: string;
+  investigationId: string;
+  datasetId: string;
+  datafileId: string;
+}): React.ReactElement => {
+  const { data, isLoading } = useDataPublication(
+    parseInt(props.investigationId),
+    {
+      enabled: props.dataPublication,
+    }
+  );
 
-    return <SafeDatafilePreviewer datafileId={parseInt(props.datafileId)} />;
-  }
-);
-SafeDatafilePreviewer.displayName = 'SafeDatafilePreviewer';
+  const dataPublicationInvestigationId =
+    data?.content?.dataCollectionInvestigations?.[0]?.investigation?.id;
+
+  const SafeDatafilePreviewer = React.useMemo(
+    () =>
+      props.dataPublication
+        ? withIdCheck(
+            Promise.all([
+              checkInstrumentId(
+                parseInt(props.instrumentId),
+                parseInt(props.instrumentChildId)
+              ),
+              checkStudyDataPublicationId(
+                parseInt(props.instrumentChildId),
+                parseInt(props.investigationId)
+              ),
+              checkInvestigationId(
+                dataPublicationInvestigationId ?? -1,
+                parseInt(props.datasetId)
+              ),
+              checkDatasetId(
+                parseInt(props.datasetId),
+                parseInt(props.datafileId)
+              ),
+              ...(isLoading ? [new Promise(() => undefined)] : []),
+            ]).then((values) => !values.includes(false))
+          )(DatafilePreviewer)
+        : withIdCheck(
+            Promise.all([
+              checkInstrumentAndFacilityCycleId(
+                parseInt(props.instrumentId),
+                parseInt(props.instrumentChildId),
+                parseInt(props.investigationId)
+              ),
+              checkInvestigationId(
+                parseInt(props.investigationId),
+                parseInt(props.datasetId)
+              ),
+              checkDatasetId(
+                parseInt(props.datasetId),
+                parseInt(props.datafileId)
+              ),
+            ]).then((checks) => checks.every((passes) => passes))
+          )(DatafilePreviewer),
+    [
+      dataPublicationInvestigationId,
+      isLoading,
+      props.dataPublication,
+      props.datafileId,
+      props.datasetId,
+      props.instrumentChildId,
+      props.instrumentId,
+      props.investigationId,
+    ]
+  );
+
+  return <SafeDatafilePreviewer datafileId={parseInt(props.datafileId)} />;
+};
 
 interface PageRoutingProps {
   view: ViewsType;
@@ -485,7 +639,7 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
         />
         <Route
           exact
-          path={paths.dataPublications.toggle.isisDataPublication}
+          path={paths.dataPublications.toggle.isisStudyDataPublication}
           render={({ match }) =>
             this.props.view === 'card' ? (
               <ISISDataPublicationsCardView
@@ -510,19 +664,21 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
         />
         <Route
           exact
-          path={paths.dataPublications.toggle.isisInvestigation}
+          path={paths.dataPublications.toggle.isisInvestigationDataPublication}
           render={({ match }) =>
             this.props.view === 'card' ? (
-              <ISISInvestigationsCardView
-                dataPublication={true}
+              <ISISDataPublicationsCardView
                 instrumentId={match.params.instrumentId as string}
-                instrumentChildId={match.params.dataPublicationId as string}
+                studyDataPublicationId={
+                  match.params.studyDataPublicationId as string
+                }
               />
             ) : (
-              <ISISInvestigationsTable
-                dataPublication={true}
+              <ISISDataPublicationsTable
                 instrumentId={match.params.instrumentId as string}
-                instrumentChildId={match.params.dataPublicationId as string}
+                studyDataPublicationId={
+                  match.params.studyDataPublicationId as string
+                }
               />
             )
           }
@@ -586,6 +742,20 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
             />
           )}
         />
+        <Route
+          exact
+          path={paths.preview.isisDataPublicationDatafilePreview}
+          render={({ match }) => (
+            <SafeDatafilePreviewer
+              dataPublication={true}
+              instrumentId={match.params.instrumentId as string}
+              instrumentChildId={match.params.dataPublicationId as string}
+              investigationId={match.params.investigationId as string}
+              datasetId={match.params.datasetId as string}
+              datafileId={match.params.datafileId as string}
+            />
+          )}
+        />
 
         {/* ISIS routes */}
         <Route
@@ -620,15 +790,13 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           render={({ match }) =>
             this.props.view === 'card' ? (
               <ISISInvestigationsCardView
-                dataPublication={false}
                 instrumentId={match.params.instrumentId as string}
-                instrumentChildId={match.params.facilityCycleId as string}
+                facilityCycleId={match.params.facilityCycleId as string}
               />
             ) : (
               <ISISInvestigationsTable
-                dataPublication={false}
                 instrumentId={match.params.instrumentId as string}
-                instrumentChildId={match.params.facilityCycleId as string}
+                facilityCycleId={match.params.facilityCycleId as string}
               />
             )
           }
@@ -697,6 +865,7 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           path={paths.preview.isisDatafilePreview}
           render={({ match }) => (
             <SafeDatafilePreviewer
+              dataPublication={false}
               instrumentId={match.params.instrumentId as string}
               instrumentChildId={match.params.facilityCycleId as string}
               investigationId={match.params.investigationId as string}

@@ -67,7 +67,7 @@ describe('Datafile search table component', () => {
     }
 
     if (/\/search\/documents$/.test(url)) {
-      if (config.params.query.filter) {
+      if ((config.params as URLSearchParams).get('query')?.includes('filter')) {
         // filter is applied
         return Promise.resolve<Partial<AxiosResponse<Partial<SearchResponse>>>>(
           {

@@ -1,6 +1,5 @@
 import { render, RenderResult, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { UserEvent } from '@testing-library/user-event/dist/types/setup';
 import axios from 'axios';
 import * as React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -40,7 +39,7 @@ function renderComponent({
 
 describe('Investigation details panel component', () => {
   let rowData: Investigation;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   beforeEach(() => {
     user = userEvent.setup();
@@ -80,6 +79,36 @@ describe('Investigation details panel component', () => {
                 modTime: '2019-06-10',
                 createTime: '2019-06-11',
                 title: 'Data Publication',
+                type: {
+                  id: 15,
+                  name: 'investigation',
+                },
+              },
+            ],
+          },
+        },
+        {
+          id: 2,
+          investigation: {
+            id: 1,
+            title: 'Test 1',
+            name: 'Test 1',
+            visitId: '1',
+          },
+          dataCollection: {
+            id: 13,
+            dataPublications: [
+              {
+                id: 14,
+                pid: 'Data Publication Study Pid',
+                description: 'Data Publication description',
+                modTime: '2019-06-10',
+                createTime: '2019-06-11',
+                title: 'Data Publication Study',
+                type: {
+                  id: 16,
+                  name: 'study',
+                },
               },
             ],
           },
@@ -322,6 +351,16 @@ describe('Investigation details panel component', () => {
 
     expect(link).toHaveTextContent('doi 1');
     expect(link).toHaveAttribute('href', 'https://doi.org/doi 1');
+
+    const link2 = await screen.findByRole('link', {
+      name: /Data Publication Study Pid/,
+    });
+
+    expect(link2).toHaveTextContent('Data Publication Study Pid');
+    expect(link2).toHaveAttribute(
+      'href',
+      'https://doi.org/Data Publication Study Pid'
+    );
   });
 
   it('should gracefully handles dataCollectionInvestigations without dataPublications and InvestigationUsers without Users', () => {

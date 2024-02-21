@@ -25,10 +25,6 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Grid, Paper, Typography } from '@mui/material';
 import { StateType } from '../state/app.types';
-import {
-  InvestigationDatasetCountCell,
-  InvestigationSizeCell,
-} from './cellRenderers';
 import FacetPanel from '../facet/components/facetPanel/facetPanel.component';
 import { facetClassificationFromSearchResponses } from '../facet/facet';
 import SelectedFilterChips from '../facet/components/selectedFilterChips.component';
@@ -240,28 +236,10 @@ const InvestigationSearchTable = (
         disableSort: true,
       },
       {
-        label:
-          hierarchy === FACILITY_NAME.isis
-            ? t('investigations.size')
-            : t('investigations.dataset_count'),
-        dataKey: hierarchy === 'isis' ? 'size' : 'datasetCount',
-        cellContentRenderer: (cellProps: TableCellProps): React.ReactNode => {
-          if (hierarchy === 'isis' && cellProps.rowData.fileSize) {
-            return formatBytes(cellProps.rowData.fileSize);
-          }
-          if (hierarchy === 'isis') {
-            return (
-              <InvestigationSizeCell
-                investigation={cellProps.rowData as SearchResultSource}
-              />
-            );
-          }
-          return (
-            <InvestigationDatasetCountCell
-              investigation={cellProps.rowData as SearchResultSource}
-            />
-          );
-        },
+        label: t('investigations.size'),
+        dataKey: 'size',
+        cellContentRenderer: (cellProps: TableCellProps): number | string =>
+          formatBytes(cellProps.rowData.fileSize),
         disableSort: true,
       },
       {

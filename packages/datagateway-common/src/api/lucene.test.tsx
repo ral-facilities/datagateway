@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react-hooks';
 import axios, { type AxiosError } from 'axios';
 import {
   LUCENE_ERROR_CODE,
@@ -24,7 +24,7 @@ describe('Lucene actions', () => {
   describe('useLuceneSearchInfinite', () => {
     it('sends lucene search request with appropriate filters applied', async () => {
       (axios.get as jest.Mock).mockResolvedValue({
-        data: [{ id: 1 }],
+        data: { results: [{ id: 1 }] },
       });
 
       const filters: FiltersType = {
@@ -36,6 +36,7 @@ describe('Lucene actions', () => {
         startDate: null,
         endDate: null,
         facets: [{ target: 'Dataset' }],
+        sort: { size: 'desc' },
       };
 
       const { result, waitFor } = renderHook(
@@ -45,34 +46,42 @@ describe('Lucene actions', () => {
 
       await waitFor(() => result.current.isSuccess);
 
+      const params = new URLSearchParams();
+      params.append('sessionId', '');
+      params.append(
+        'query',
+        JSON.stringify({
+          target: 'Dataset',
+          filter: {
+            'dataset.type.name': ['dataset name'],
+            'investigationInstrument.instrument.name': ['instrument name'],
+          },
+          text: 'test',
+          facets: [{ target: 'Dataset' }],
+        })
+      );
+      params.append(
+        'sort',
+        JSON.stringify({
+          size: 'desc',
+        })
+      );
+      params.append('minCount', '10');
+      params.append('maxCount', '100');
+      params.append('restrict', 'false');
+
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/icat/search/documents',
         {
-          params: {
-            sessionId: null,
-            query: {
-              target: 'Dataset',
-              text: 'test',
-              filter: {
-                'dataset.type.name': ['dataset name'],
-                'investigationInstrument.instrument.name': ['instrument name'],
-              },
-              facets: [{ target: 'Dataset' }],
-            },
-            maxCount: 100,
-            minCount: 10,
-            restrict: false,
-            search_after: '',
-            sort: '',
-          },
+          params,
         }
       );
-      expect(result.current.data?.pages[0]).toEqual([{ id: 1 }]);
+      expect(result.current.data?.pages[0]).toEqual({ results: [{ id: 1 }] });
     });
 
     it('sends lucene search request with start date bound applied', async () => {
       (axios.get as jest.Mock).mockResolvedValue({
-        data: [{ id: 1 }],
+        data: { results: [{ id: 1 }] },
       });
 
       const luceneSearchParams: LuceneSearchParams = {
@@ -91,31 +100,33 @@ describe('Lucene actions', () => {
 
       await waitFor(() => result.current.isSuccess);
 
+      const params = new URLSearchParams();
+      params.append('sessionId', '');
+      params.append(
+        'query',
+        JSON.stringify({
+          target: 'Datafile',
+          lower: '200001010000',
+          upper: '9000012312359',
+          text: 'test',
+        })
+      );
+      params.append('minCount', '10');
+      params.append('maxCount', '300');
+      params.append('restrict', 'false');
+
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/icat/search/documents',
         {
-          params: {
-            sessionId: null,
-            query: {
-              target: 'Datafile',
-              text: 'test',
-              lower: '200001010000',
-              upper: '9000012312359',
-            },
-            maxCount: 300,
-            minCount: 10,
-            restrict: false,
-            search_after: '',
-            sort: '',
-          },
+          params,
         }
       );
-      expect(result.current.data?.pages[0]).toEqual([{ id: 1 }]);
+      expect(result.current.data?.pages[0]).toEqual({ results: [{ id: 1 }] });
     });
 
     it('sends lucene search request with end date bound applied', async () => {
       (axios.get as jest.Mock).mockResolvedValue({
-        data: [{ id: 1 }],
+        data: { results: [{ id: 1 }] },
       });
 
       const luceneSearchParams: LuceneSearchParams = {
@@ -134,26 +145,28 @@ describe('Lucene actions', () => {
 
       await waitFor(() => result.current.isSuccess);
 
+      const params = new URLSearchParams();
+      params.append('sessionId', '');
+      params.append(
+        'query',
+        JSON.stringify({
+          target: 'Datafile',
+          lower: '0000001010000',
+          upper: '202012312359',
+          text: 'test',
+        })
+      );
+      params.append('minCount', '10');
+      params.append('maxCount', '300');
+      params.append('restrict', 'false');
+
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/icat/search/documents',
         {
-          params: {
-            sessionId: null,
-            query: {
-              target: 'Datafile',
-              text: 'test',
-              lower: '0000001010000',
-              upper: '202012312359',
-            },
-            maxCount: 300,
-            minCount: 10,
-            restrict: false,
-            search_after: '',
-            sort: '',
-          },
+          params,
         }
       );
-      expect(result.current.data?.pages[0]).toEqual([{ id: 1 }]);
+      expect(result.current.data?.pages[0]).toEqual({ results: [{ id: 1 }] });
     });
 
     it('ignores empty search text when building lucene search request', async () => {
@@ -173,22 +186,74 @@ describe('Lucene actions', () => {
 
       await waitFor(() => result.current.isSuccess);
 
+      const params = new URLSearchParams();
+      params.append('sessionId', '');
+      params.append(
+        'query',
+        JSON.stringify({
+          target: 'Investigation',
+          lower: '0000001010000',
+          upper: '202012312359',
+        })
+      );
+      params.append('minCount', '10');
+      params.append('maxCount', '300');
+      params.append('restrict', 'false');
+
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/icat/search/documents',
         {
-          params: {
-            sessionId: null,
-            query: {
-              target: 'Investigation',
-              lower: '0000001010000',
-              upper: '202012312359',
-            },
-            maxCount: 300,
-            minCount: 10,
-            restrict: false,
-            search_after: '',
-            sort: '',
-          },
+          params,
+        }
+      );
+    });
+
+    it('fetches next page when one is available when getNextPage is called', async () => {
+      const luceneSearchParams: LuceneSearchParams = {
+        searchText: '',
+        startDate: null,
+        endDate: null,
+      };
+
+      (axios.get as jest.Mock).mockResolvedValue({
+        data: {
+          results: [],
+          search_after: { doc: 5 },
+        },
+      });
+
+      const { result, waitFor } = renderHook(
+        () => useLuceneSearchInfinite('Investigation', luceneSearchParams, {}),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      await waitFor(() => result.current.isSuccess);
+
+      await act(async () => {
+        await result.current.fetchNextPage();
+      });
+
+      const params = new URLSearchParams();
+      params.append('sessionId', '');
+      params.append(
+        'query',
+        JSON.stringify({
+          target: 'Investigation',
+        })
+      );
+      params.append('search_after', JSON.stringify({ doc: 5 }));
+      params.append('minCount', '10');
+      params.append('maxCount', '100');
+      params.append('restrict', 'false');
+
+      // second call is the fetch next page call
+      expect(axios.get).toHaveBeenNthCalledWith(
+        2,
+        'https://example.com/icat/search/documents',
+        {
+          params,
         }
       );
     });
@@ -407,17 +472,21 @@ describe('Lucene actions', () => {
 
       await waitFor(() => result.current.isSuccess);
 
+      const params = new URLSearchParams();
+      params.append('sessionId', '');
+      params.append(
+        'query',
+        JSON.stringify({
+          target: 'Investigation',
+          facets,
+          filter: filters,
+        })
+      );
+
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/icat/facet/documents',
         {
-          params: {
-            sessionId: null,
-            query: {
-              target: 'Investigation',
-              facets,
-              filter: filters,
-            },
-          },
+          params,
         }
       );
       expect(result.current.data).toEqual([{ id: 1 }]);

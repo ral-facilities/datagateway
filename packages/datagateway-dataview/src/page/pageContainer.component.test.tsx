@@ -349,9 +349,10 @@ describe('PageContainer - Tests', () => {
 
     renderComponent();
 
-    await waitFor(() => {
-      expect(screen.queryByTestId('styled-routing')).toBeNull();
-    });
+    expect(
+      await screen.findByTestId('isis-dataPublication-landing')
+    ).toBeInTheDocument();
+    expect(screen.queryByTestId('styled-routing')).toBeNull();
   });
 
   it('set view to card if cardview stored in localstorage', () => {

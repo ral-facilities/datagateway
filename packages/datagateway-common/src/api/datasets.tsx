@@ -1,4 +1,3 @@
-import React from 'react';
 import axios, { AxiosError } from 'axios';
 import { getApiParams, parseSearchToQuery } from '.';
 import { readSciGatewayToken } from '../parseTokens';
@@ -11,7 +10,6 @@ import {
   FiltersType,
   Dataset,
   SortType,
-  SearchResultSource,
 } from '../app.types';
 import { StateType } from '../state/app.types';
 import {
@@ -19,15 +17,10 @@ import {
   UseQueryResult,
   useInfiniteQuery,
   UseInfiniteQueryResult,
-  InfiniteData,
-  useQueries,
-  UseQueryOptions,
 } from 'react-query';
-import useDeepCompareEffect from 'use-deep-compare-effect';
-import { fetchDatafileCountQuery } from './datafiles';
 import retryICATErrors from './retryICATErrors';
 
-const fetchDatasets = (
+export const fetchDatasets = (
   apiUrl: string,
   sortAndFilters: {
     sort: SortType;
@@ -176,234 +169,6 @@ export const useDatasetsInfinite = (
   );
 };
 
-const fetchDatasetSize = (
-  config: {
-    facilityName: string;
-    downloadApiUrl: string;
-  },
-  datasetId: number
-): Promise<number> => {
-  // Make use of the facility name and download API url for the request.
-  const { facilityName, downloadApiUrl } = config;
-  return axios
-    .get(`${downloadApiUrl}/user/getSize`, {
-      params: {
-        sessionId: readSciGatewayToken().sessionId,
-        facilityName: facilityName,
-        entityType: 'dataset',
-        entityId: datasetId,
-      },
-    })
-    .then((response) => {
-      return response.data;
-    });
-};
-
-/**
- * For use with DLS button fetch size functionality
- * via using the refetch function returned by useQuery
- * Hence why the query is disabled by default
- */
-export const useDatasetSize = (
-  datasetId: number
-): UseQueryResult<number, AxiosError> => {
-  const downloadApiUrl = useSelector(
-    (state: StateType) => state.dgcommon.urls.downloadApiUrl
-  );
-  const facilityName = useSelector(
-    (state: StateType) => state.dgcommon.facilityName
-  );
-
-  return useQuery<number, AxiosError, number, [string, number]>(
-    ['datasetSize', datasetId],
-    (params) =>
-      fetchDatasetSize({ facilityName, downloadApiUrl }, params.queryKey[1]),
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-
-      enabled: false,
-    }
-  );
-};
-
-export const useDatasetSizes = (
-  data:
-    | Dataset[]
-    | InfiniteData<Dataset[]>
-    | Dataset
-    | SearchResultSource
-    | SearchResultSource[]
-    | undefined
-): UseQueryResult<number, AxiosError>[] => {
-  const downloadApiUrl = useSelector(
-    (state: StateType) => state.dgcommon.urls.downloadApiUrl
-  );
-  const facilityName = useSelector(
-    (state: StateType) => state.dgcommon.facilityName
-  );
-
-  const queryConfigs: UseQueryOptions<
-    number,
-    AxiosError,
-    number,
-    ['datasetSize', number]
-  >[] = React.useMemo(() => {
-    // check the type of the data parameter to determine the way the data needs to be iterated
-    const aggregatedData = data
-      ? 'pages' in data
-        ? data.pages.flat()
-        : data instanceof Array
-        ? data
-        : [data]
-      : [];
-
-    return aggregatedData.map((dataset) => {
-      return {
-        queryKey: ['datasetSize', dataset.id],
-        queryFn: () =>
-          fetchDatasetSize({ facilityName, downloadApiUrl }, dataset.id),
-        onError: (error) => {
-          handleICATError(error, false);
-        },
-        retry: retryICATErrors,
-        staleTime: Infinity,
-      };
-    });
-  }, [data, facilityName, downloadApiUrl]);
-
-  // useQueries doesn't allow us to specify type info, so ignore this line
-  // since we strongly type the queries object anyway
-  // we also need to prettier-ignore to make sure we don't wrap onto next line
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  // prettier-ignore
-  const queries: UseQueryResult<number, AxiosError>[] = useQueries(queryConfigs);
-
-  const [sizes, setSizes] = React.useState<
-    UseQueryResult<number, AxiosError>[]
-  >([]);
-
-  const countAppliedRef = React.useRef(0);
-
-  // when data changes (i.e. due to sorting or filtering) set the countAppliedRef
-  // back to 0 so we can restart the process, as well as clear sizes
-  React.useEffect(() => {
-    countAppliedRef.current = 0;
-    setSizes([]);
-  }, [data]);
-
-  // need to use useDeepCompareEffect here because the array returned by useQueries
-  // is different every time this hook runs
-  useDeepCompareEffect(() => {
-    const currCountReturned = queries.reduce(
-      (acc, curr) => acc + (curr.isFetched ? 1 : 0),
-      0
-    );
-    const batchMax =
-      sizes.length - currCountReturned < 5
-        ? sizes.length - currCountReturned
-        : 5;
-    // this in effect batches our updates to only happen in batches >= 5
-    if (currCountReturned - countAppliedRef.current >= batchMax) {
-      setSizes(queries);
-      countAppliedRef.current = currCountReturned;
-    }
-  }, [sizes, queries]);
-
-  return sizes;
-};
-
-export const useDatasetsDatafileCount = (
-  data:
-    | Dataset[]
-    | InfiniteData<Dataset[]>
-    | Dataset
-    | SearchResultSource
-    | SearchResultSource[]
-    | undefined
-): UseQueryResult<number, AxiosError>[] => {
-  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
-
-  const queryConfigs: UseQueryOptions<
-    number,
-    AxiosError,
-    number,
-    ['datasetDatafileCount', number]
-  >[] = React.useMemo(() => {
-    // check the type of the data parameter to determine the way the data needs to be iterated
-    const aggregatedData = data
-      ? 'pages' in data
-        ? data.pages.flat()
-        : data instanceof Array
-        ? data
-        : [data]
-      : [];
-
-    return aggregatedData.map((dataset) => {
-      return {
-        queryKey: ['datasetDatafileCount', dataset.id],
-        queryFn: () =>
-          fetchDatafileCountQuery(apiUrl, {}, [
-            {
-              filterType: 'where',
-              filterValue: JSON.stringify({
-                'dataset.id': { eq: dataset.id },
-              }),
-            },
-          ]),
-        onError: (error) => {
-          handleICATError(error, false);
-        },
-        retry: retryICATErrors,
-        staleTime: Infinity,
-      };
-    });
-  }, [data, apiUrl]);
-
-  // useQueries doesn't allow us to specify type info, so ignore this line
-  // since we strongly type the queries object anyway
-  // we also need to prettier-ignore to make sure we don't wrap onto next line
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  // prettier-ignore
-  const queries: UseQueryResult<number, AxiosError>[] = useQueries(queryConfigs);
-
-  const [datafileCounts, setDatafileCounts] = React.useState<
-    UseQueryResult<number, AxiosError>[]
-  >([]);
-
-  const countAppliedRef = React.useRef(0);
-
-  // when data changes (i.e. due to sorting or filtering) set the countAppliedRef
-  // back to 0 so we can restart the process, as well as clear datafileCounts
-  React.useEffect(() => {
-    countAppliedRef.current = 0;
-    setDatafileCounts([]);
-  }, [data]);
-
-  // need to use useDeepCompareEffect here because the array returned by useQueries
-  // is different every time this hook runs
-  useDeepCompareEffect(() => {
-    const currCountReturned = queries.reduce(
-      (acc, curr) => acc + (curr.isFetched ? 1 : 0),
-      0
-    );
-    const batchMax =
-      datafileCounts.length - currCountReturned < 5
-        ? datafileCounts.length - currCountReturned
-        : 5;
-    // this in effect batches our updates to only happen in batches >= 5
-    if (currCountReturned - countAppliedRef.current >= batchMax) {
-      setDatafileCounts(queries);
-      countAppliedRef.current = currCountReturned;
-    }
-  }, [datafileCounts, queries]);
-
-  return datafileCounts;
-};
 export const fetchDatasetCountQuery = (
   apiUrl: string,
   filters: FiltersType,

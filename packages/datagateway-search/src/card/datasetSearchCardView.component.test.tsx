@@ -20,28 +20,24 @@ import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 
-function renderComponent({
-  initialState,
-  history = createMemoryHistory(),
-  hierarchy = '',
-}): RenderResult {
-  return render(
-    <Provider store={configureStore([thunk])(initialState)}>
-      <Router history={history}>
-        <QueryClientProvider client={new QueryClient()}>
-          <DatasetSearchCardView hierarchy={hierarchy} />
-        </QueryClientProvider>
-      </Router>
-    </Provider>
-  );
-}
-
 describe('Dataset - Card View', () => {
   let state: StateType;
   let cardData: SearchResultSource;
   let searchResult: SearchResult;
   let searchResponse: SearchResponse;
   let history: MemoryHistory;
+
+  function renderComponent({ hierarchy = '' } = {}): RenderResult {
+    return render(
+      <Provider store={configureStore([thunk])(state)}>
+        <Router history={history}>
+          <QueryClientProvider client={new QueryClient()}>
+            <DatasetSearchCardView hierarchy={hierarchy} />
+          </QueryClientProvider>
+        </Router>
+      </Provider>
+    );
+  }
 
   const mockAxiosGet = (url: string): Promise<Partial<AxiosResponse>> => {
     if (/\/datasets$/.test(url)) {
@@ -50,19 +46,14 @@ describe('Dataset - Card View', () => {
       });
     }
     if (/\/search\/documents$/.test(url)) {
+      if (/\/datasets$/.test(url)) {
+        return Promise.resolve({
+          data: [],
+        });
+      }
       // lucene search query
       return Promise.resolve({
         data: searchResponse,
-      });
-    }
-    if (/\/datafiles\/count$/.test(url)) {
-      return Promise.resolve({
-        data: 1,
-      });
-    }
-    if (/\/user\/getSize$/.test(url)) {
-      return Promise.resolve({
-        data: 1,
       });
     }
     return Promise.reject({
@@ -76,6 +67,8 @@ describe('Dataset - Card View', () => {
       name: 'Dataset test name',
       startDate: 1563922800000,
       endDate: 1564009200000,
+      fileSize: 10,
+      fileCount: 9,
       investigationinstrument: [
         {
           'instrument.id': 4,
@@ -126,9 +119,7 @@ describe('Dataset - Card View', () => {
   });
 
   it('renders correctly', async () => {
-    renderComponent({
-      initialState: state,
-    });
+    renderComponent();
 
     const cards = await screen.findAllByTestId('card');
     expect(cards).toHaveLength(1);
@@ -142,10 +133,12 @@ describe('Dataset - Card View', () => {
     expect(
       within(card).getByRole('button', { name: 'card-more-info-expand' })
     ).toBeInTheDocument();
+    expect(within(card).getByText('datasets.size:')).toBeInTheDocument();
+    expect(within(card).getByText('10 B')).toBeInTheDocument();
     expect(
       within(card).getByText('datasets.datafile_count:')
     ).toBeInTheDocument();
-    expect(within(card).getByText('1')).toBeInTheDocument();
+    expect(within(card).getByText('9')).toBeInTheDocument();
     expect(
       within(card).getByRole('button', { name: 'buttons.add_to_cart' })
     ).toBeInTheDocument();
@@ -154,28 +147,16 @@ describe('Dataset - Card View', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders generic link & pending count correctly', async () => {
-    axios.get = jest.fn((url: string) => {
-      if (/\/datafiles\/count$/.test(url)) {
-        return new Promise((_) => {
-          // never resolve the
-        });
-      }
-      return mockAxiosGet(url);
-    });
-
-    renderComponent({ initialState: state });
+  it('renders generic link correctly', async () => {
+    renderComponent();
 
     expect(
       await screen.findByRole('link', { name: 'Dataset test name' })
     ).toHaveAttribute('href', '/browse/investigation/2/dataset/1/datafile');
-
-    expect(await screen.findByText('Calculating...')).toBeInTheDocument();
   });
 
   it("renders DLS link correctly and doesn't allow for download", async () => {
     renderComponent({
-      initialState: state,
       hierarchy: FACILITY_NAME.dls,
     });
 
@@ -189,6 +170,9 @@ describe('Dataset - Card View', () => {
       '/browse/proposal/Investigation test name/investigation/2/dataset/1/datafile'
     );
 
+    expect(within(card).getByText('10 B')).toBeInTheDocument();
+    expect(within(card).getByText('9')).toBeInTheDocument();
+
     expect(
       within(card).getByRole('button', { name: 'buttons.add_to_cart' })
     ).toBeInTheDocument();
@@ -198,7 +182,7 @@ describe('Dataset - Card View', () => {
   });
 
   it('renders ISIS link & file sizes correctly', async () => {
-    renderComponent({ initialState: state, hierarchy: FACILITY_NAME.isis });
+    renderComponent({ hierarchy: FACILITY_NAME.isis });
 
     const cards = await screen.findAllByTestId('card');
     const card = cards[0];
@@ -209,13 +193,13 @@ describe('Dataset - Card View', () => {
       'href',
       '/browse/instrument/4/facilityCycle/6/investigation/2/dataset/1'
     );
-    expect(within(card).getByText('1 B')).toBeInTheDocument();
+    expect(within(card).getByText('10 B')).toBeInTheDocument();
   });
 
   it('does not render ISIS link when instrumentId cannot be found', async () => {
     delete cardData.investigationinstrument;
 
-    renderComponent({ initialState: state, hierarchy: FACILITY_NAME.isis });
+    renderComponent({ hierarchy: FACILITY_NAME.isis });
 
     const cards = await screen.findAllByTestId('card');
     const card = cards[0];
@@ -229,7 +213,6 @@ describe('Dataset - Card View', () => {
   it('does not render ISIS link when facilityCycleId cannot be found', async () => {
     delete cardData.investigationfacilitycycle;
     renderComponent({
-      initialState: state,
       hierarchy: FACILITY_NAME.isis,
     });
 
@@ -249,7 +232,6 @@ describe('Dataset - Card View', () => {
     delete cardData['investigation.startDate'];
 
     renderComponent({
-      initialState: state,
       hierarchy: 'data',
     });
 
@@ -269,7 +251,6 @@ describe('Dataset - Card View', () => {
     delete cardData['investigation.startDate'];
 
     renderComponent({
-      initialState: state,
       hierarchy: FACILITY_NAME.dls,
     });
 
@@ -288,7 +269,7 @@ describe('Dataset - Card View', () => {
     delete cardData['investigation.title'];
     delete cardData['investigation.startDate'];
 
-    renderComponent({ initialState: state, hierarchy: FACILITY_NAME.isis });
+    renderComponent({ hierarchy: FACILITY_NAME.isis });
 
     const cards = await screen.findAllByTestId('card');
     const card = cards[0];
@@ -302,9 +283,7 @@ describe('Dataset - Card View', () => {
   it('displays generic details panel when expanded', async () => {
     const user = userEvent.setup();
 
-    renderComponent({
-      initialState: state,
-    });
+    renderComponent();
 
     expect(screen.queryByTestId('dataset-details-panel')).toBeNull();
 
@@ -321,7 +300,6 @@ describe('Dataset - Card View', () => {
     const user = userEvent.setup();
 
     renderComponent({
-      initialState: state,
       hierarchy: FACILITY_NAME.isis,
     });
 
@@ -340,8 +318,6 @@ describe('Dataset - Card View', () => {
     const user = userEvent.setup();
 
     renderComponent({
-      history,
-      initialState: state,
       hierarchy: FACILITY_NAME.isis,
     });
 
@@ -366,7 +342,6 @@ describe('Dataset - Card View', () => {
     const user = userEvent.setup();
 
     renderComponent({
-      initialState: state,
       hierarchy: 'dls',
     });
 

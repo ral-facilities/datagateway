@@ -11,7 +11,7 @@ import {
   ColumnType,
   DownloadButton,
   externalSiteLink,
-  formatCountOrSize,
+  formatBytes,
   Investigation,
   ISISInvestigationDetailsPanel,
   parseSearchToQuery,
@@ -24,7 +24,6 @@ import {
   useIds,
   useInvestigationCount,
   useInvestigationsInfinite,
-  useInvestigationSizes,
   usePrincipalExperimenterFilter,
   useRemoveFromCart,
   useSort,
@@ -39,14 +38,13 @@ import { StateType } from '../../../state/app.types';
 
 interface ISISInvestigationsTableProps {
   instrumentId: string;
-  instrumentChildId: string;
-  dataPublication: boolean;
+  facilityCycleId: string;
 }
 
 const ISISInvestigationsTable = (
   props: ISISInvestigationsTableProps
 ): React.ReactElement => {
-  const { instrumentId, instrumentChildId, dataPublication } = props;
+  const { instrumentId, facilityCycleId } = props;
   const selectAllSetting = useSelector(
     (state: StateType) => state.dgdataview.selectAllSetting
   );
@@ -71,10 +69,8 @@ const ISISInvestigationsTable = (
     {
       filterType: 'where',
       filterValue: JSON.stringify({
-        [dataPublication
-          ? 'dataCollectionInvestigations.dataCollection.dataPublications.id'
-          : 'investigationFacilityCycles.facilityCycle.id']: {
-          eq: parseInt(instrumentChildId),
+        'investigationFacilityCycles.facilityCycle.id': {
+          eq: parseInt(facilityCycleId),
         },
       }),
     },
@@ -102,7 +98,7 @@ const ISISInvestigationsTable = (
           },
           {
             dataCollectionInvestigations: {
-              dataCollection: 'dataPublications',
+              dataCollection: { dataPublications: 'type' },
             },
           },
           {
@@ -162,21 +158,17 @@ const ISISInvestigationsTable = (
     [fetchNextPage]
   );
 
-  const sizeQueries = useInvestigationSizes(data);
-
-  const pathRoot = dataPublication ? 'browseDataPublications' : 'browse';
-  const instrumentChild = dataPublication ? 'dataPublication' : 'facilityCycle';
-  const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation`;
-
   const detailsPanel = React.useCallback(
     ({ rowData, detailsPanelResize }) => (
       <ISISInvestigationDetailsPanel
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}
-        viewDatasets={(id: number) => push(`${urlPrefix}/${id}/dataset`)}
+        viewDatasets={(id: number) =>
+          push(`${location.pathname}/${id}/dataset`)
+        }
       />
     ),
-    [push, urlPrefix]
+    [push, location.pathname]
   );
 
   const columns: ColumnType[] = React.useMemo(
@@ -188,7 +180,7 @@ const ISISInvestigationsTable = (
         cellContentRenderer: (cellProps: TableCellProps) => {
           const investigationData = cellProps.rowData as Investigation;
           return tableLink(
-            `${urlPrefix}/${investigationData.id}`,
+            `${location.pathname}/${investigationData.id}`,
             investigationData.title,
             view,
             'isis-investigations-table-title'
@@ -207,19 +199,18 @@ const ISISInvestigationsTable = (
         label: t('investigations.doi'),
         dataKey:
           'dataCollectionInvestigations.dataCollection.dataPublications.pid',
-        // TODO: this was previously the Study DOI - currently there are no datapublication
-        // representations of Studies, only of Investigations themselves
-        // should this be showing the study DOI or the investigation DOI anyway?
         cellContentRenderer: (cellProps: TableCellProps) => {
           const investigationData = cellProps.rowData as Investigation;
-          if (
-            investigationData?.dataCollectionInvestigations?.[0]?.dataCollection
-              ?.dataPublications?.[0]
-          ) {
+          const studyDataPublication =
+            investigationData.dataCollectionInvestigations?.filter(
+              (dci) =>
+                dci.dataCollection?.dataPublications?.[0]?.type?.name ===
+                'study'
+            )?.[0]?.dataCollection?.dataPublications?.[0];
+          if (studyDataPublication) {
             return externalSiteLink(
-              `https://doi.org/${investigationData.dataCollectionInvestigations?.[0]?.dataCollection?.dataPublications?.[0].pid}`,
-              investigationData.dataCollectionInvestigations?.[0]
-                ?.dataCollection?.dataPublications?.[0].pid,
+              `https://doi.org/${studyDataPublication.pid}`,
+              studyDataPublication.pid,
               'isis-investigations-table-doi-link'
             );
           } else {
@@ -233,7 +224,7 @@ const ISISInvestigationsTable = (
         label: t('investigations.size'),
         dataKey: 'size',
         cellContentRenderer: (cellProps: TableCellProps): number | string =>
-          formatCountOrSize(sizeQueries[cellProps.rowIndex], true),
+          formatBytes(cellProps.rowData.fileSize),
         disableSort: true,
       },
       {
@@ -275,9 +266,8 @@ const ISISInvestigationsTable = (
       textFilter,
       principalExperimenterFilter,
       dateFilter,
-      urlPrefix,
+      location.pathname,
       view,
-      sizeQueries,
     ]
   );
 
@@ -307,10 +297,7 @@ const ISISInvestigationsTable = (
             entityId={rowData.id}
             entityName={rowData.name}
             variant="icon"
-            entitySize={
-              sizeQueries[aggregatedData.indexOf(rowData as Investigation)]
-                ?.data ?? -1
-            }
+            entitySize={rowData.fileSize ?? -1}
           />
         ),
       ]}

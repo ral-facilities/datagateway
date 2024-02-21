@@ -439,8 +439,6 @@ describe('generic api functions', () => {
           result.current('title', 'asc', 'push', true);
         });
 
-        console.log(history.location.search);
-
         expect(pushSpy).toHaveBeenCalledWith({
           search: `?sort=${encodeURIComponent('{"name":"asc","title":"asc"}')}`,
         });

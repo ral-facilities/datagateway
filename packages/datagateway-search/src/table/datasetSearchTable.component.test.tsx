@@ -45,6 +45,8 @@ const mockSearchResults: SearchResult[] = [
       name: 'Dataset test name',
       startDate: 1563940800000,
       endDate: 1564027200000,
+      fileCount: 9,
+      fileSize: 10,
       investigationinstrument: [
         {
           'instrument.id': 4,
@@ -116,7 +118,7 @@ describe('Dataset table component', () => {
     if (/.*\/search\/documents$/.test(url)) {
       // fetchLuceneData
 
-      if (config.params.query.filter) {
+      if ((config.params as URLSearchParams).get('query')?.includes('filter')) {
         // filter is applied
         return Promise.resolve<Partial<AxiosResponse<Partial<SearchResponse>>>>(
           {
@@ -136,21 +138,9 @@ describe('Dataset table component', () => {
         data: searchResponse,
       });
     }
-    if (/.*\/datafiles\/count$/.test(url)) {
-      // fetchDatafileCountQuery
-      return Promise.resolve({
-        data: 1,
-      });
-    }
     if (/.*\/datasets$/.test(url)) {
       return Promise.resolve({
         data: [mockDataset],
-      });
-    }
-    if (/.*\/user\/getSize$/.test(url)) {
-      // fetchDatasetSizes
-      return Promise.resolve({
-        data: 1,
       });
     }
     return Promise.reject();
@@ -209,6 +199,7 @@ describe('Dataset table component', () => {
     expect(
       await findColumnHeaderByName('datasets.datafile_count')
     ).toBeInTheDocument();
+    expect(await findColumnHeaderByName('datasets.size')).toBeInTheDocument();
     expect(
       await findColumnHeaderByName('datasets.investigation')
     ).toBeInTheDocument();
@@ -290,7 +281,14 @@ describe('Dataset table component', () => {
         findCellInRow(row, {
           columnIndex: await findColumnIndexByName('datasets.datafile_count'),
         })
-      ).getByText('1')
+      ).getByText('9')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('datasets.size'),
+        })
+      ).getByText('10 B')
     ).toBeInTheDocument();
     expect(
       within(
@@ -352,7 +350,7 @@ describe('Dataset table component', () => {
         findCellInRow(row, {
           columnIndex: await findColumnIndexByName('datasets.size'),
         })
-      ).getByText('1 B')
+      ).getByText('10 B')
     ).toBeInTheDocument();
     expect(
       findCellInRow(row, {
@@ -756,22 +754,12 @@ describe('Dataset table component', () => {
     expect(() => renderComponent()).not.toThrowError();
   });
 
-  it('renders generic link & pending count correctly', async () => {
-    (axios.get as jest.Mock).mockImplementation((url: string, config) => {
-      if (/.*\/datafiles\/count$/.test(url)) {
-        return new Promise((_) => {
-          // never resolve the promise to pretend it is loading
-        });
-      }
-      return mockAxiosGet(url, config);
-    });
-
+  it('renders generic link correctly', async () => {
     renderComponent('data');
 
     expect(
       await screen.findByRole('link', { name: 'Dataset test name' })
     ).toHaveAttribute('href', '/browse/investigation/2/dataset/1/datafile');
-    expect(await screen.findByText('Calculating...')).toBeInTheDocument();
   });
 
   it('renders DLS link correctly', async () => {
@@ -783,6 +771,8 @@ describe('Dataset table component', () => {
       'href',
       '/browse/proposal/Investigation test name/investigation/2/dataset/1/datafile'
     );
+    expect(await screen.findByText('10 B')).toBeInTheDocument();
+    expect(await screen.findByText('9')).toBeInTheDocument();
   });
 
   it('renders ISIS link & file sizes correctly', async () => {
@@ -791,7 +781,7 @@ describe('Dataset table component', () => {
     expect(
       await screen.findByRole('link', { name: 'Dataset test name' })
     ).toBeInTheDocument();
-    expect(await screen.findByText('1 B')).toBeInTheDocument();
+    expect(await screen.findByText('10 B')).toBeInTheDocument();
   });
 
   it('does not render ISIS link when instrumentId cannot be found', async () => {
@@ -815,7 +805,7 @@ describe('Dataset table component', () => {
       // ...but it should still be rendered as a normal text
       expect(screen.getByText('Dataset test name')).toBeInTheDocument();
     });
-    expect(await screen.findByText('1 B')).toBeInTheDocument();
+    expect(await screen.findByText('10 B')).toBeInTheDocument();
   });
 
   it('does not render ISIS link when facilityCycleId cannot be found', async () => {

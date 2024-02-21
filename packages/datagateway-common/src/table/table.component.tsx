@@ -1,6 +1,6 @@
 import React from 'react';
 import TableCell from '@mui/material/TableCell';
-import { styled, SxProps, Theme, useTheme } from '@mui/material/styles';
+import { styled, SxProps } from '@mui/material/styles';
 import {
   AutoSizer,
   Column,
@@ -31,6 +31,9 @@ const dataColumnMinWidth = 84;
 
 const StyledTable = styled(Table)(({ theme }) => ({
   fontFamily: theme.typography.fontFamily,
+  '.hoverable-row:hover': {
+    backgroundColor: theme.palette.action.hover,
+  },
 }));
 
 const flexContainerStyle = {
@@ -48,12 +51,10 @@ const headerFlexContainerStyle = {
 
 const tableRowStyle = {};
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const getTableRowHoverStyle = (theme: Theme) => ({
-  '&:hover': {
-    backgroundColor: theme.palette.action.hover,
-  },
-});
+const tableRowStyleCombined = {
+  ...tableRowStyle,
+  ...flexContainerStyle,
+};
 
 const tableCellStyle = {
   flex: 1,
@@ -152,7 +153,6 @@ const VirtualizedTable = React.memo(
     const [expandedIndex, setExpandedIndex] = React.useState(-1);
     const [detailPanelHeight, setDetailPanelHeight] = React.useState(rowHeight);
     const [lastChecked, setLastChecked] = React.useState(-1);
-    const theme = useTheme();
 
     let tableRef: Table | null = null;
     const detailPanelRef = React.useRef<HTMLDivElement>(null);
@@ -175,6 +175,22 @@ const VirtualizedTable = React.memo(
       disableSelectAll,
       shortHeader,
     } = props;
+
+    // Format dates to be more readable
+    // Format only if the date has a time component
+    // (to avoid formatting dates like 2020-01-01)
+    React.useEffect(() => {
+      data.forEach((entity) => {
+        ['createTime', 'modTime', 'startDate', 'endDate'].forEach((key) => {
+          if (entity[key] && /\d{2}:\d{2}:\d{2}/.test(entity[key])) {
+            entity[key] = new Date(entity[key])
+              .toISOString()
+              .replace('T', ' ')
+              .split(/[.+]/)[0];
+          }
+        });
+      });
+    }, [data]);
 
     const [shiftDown, setShiftDown] = React.useState(false);
     // add event listener to listen for shift key being pressed
@@ -269,18 +285,10 @@ const VirtualizedTable = React.memo(
       [detailPanelHeight, expandedIndex]
     );
 
-    const getRowStyle = React.useCallback(
-      ({ index }: Index): React.CSSProperties => {
-        const tableRowHoverStyle =
-          index > -1 ? getTableRowHoverStyle(theme) : {};
-        return {
-          ...tableRowStyle,
-          ...flexContainerStyle,
-          ...tableRowHoverStyle,
-        };
-      },
-      [theme]
-    );
+    const getRowClassName = React.useCallback(({ index }: Index) => {
+      return index > -1 ? 'hoverable-row' : '';
+    }, []);
+
     const getRow = React.useCallback(
       ({ index }: Index): Entity => data[index],
       [data]
@@ -380,7 +388,8 @@ const VirtualizedTable = React.memo(
                   onRowsRendered={onRowsRendered}
                   headerHeight={shortHeader ? rowHeight : headerHeight}
                   rowHeight={getRowHeight}
-                  rowStyle={getRowStyle}
+                  rowStyle={tableRowStyleCombined}
+                  rowClassName={getRowClassName}
                   rowGetter={getRow}
                   rowRenderer={renderRow}
                   // Disable tab focus on whole table for accessibility;

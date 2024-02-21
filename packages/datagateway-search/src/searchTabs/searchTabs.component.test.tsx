@@ -16,15 +16,13 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 
 import SearchTabs from './searchTabs.component';
 import { initialState } from '../state/reducers/dgsearch.reducer';
-import { mockDataset, mockInvestigation } from '../testData';
-import type { UserEvent } from '@testing-library/user-event/dist/types/setup';
 import userEvent from '@testing-library/user-event';
 import { queryAllRows } from '../setupTests';
 
 describe('SearchTabs', () => {
   let state: StateType;
   let history: History;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
   const mockStore = configureStore([thunk]);
 
   const mockAxiosGet = (
@@ -32,7 +30,10 @@ describe('SearchTabs', () => {
     config: AxiosRequestConfig
   ): Promise<Partial<AxiosResponse>> => {
     if (/\/search\/documents$/.test(url)) {
-      const searchType: DatasearchType = config.params.query.target;
+      const query = JSON.parse(
+        (config.params as URLSearchParams).get('query') ?? '{}'
+      );
+      const searchType: DatasearchType = query?.target;
       let searchResponse: SearchResponse;
       switch (searchType) {
         case 'Investigation':
@@ -53,6 +54,8 @@ describe('SearchTabs', () => {
                   summary: 'foo bar',
                   visitId: '1',
                   doi: 'doi 1',
+                  fileSize: 10,
+                  fileCount: 9,
                   investigationinstrument: [
                     {
                       'instrument.id': 3,
@@ -80,6 +83,8 @@ describe('SearchTabs', () => {
                   name: 'Dataset test name',
                   startDate: 1563922800000,
                   endDate: 1564009200000,
+                  fileSize: 10,
+                  fileCount: 9,
                   investigationinstrument: [
                     {
                       'instrument.id': 4,
@@ -107,6 +112,7 @@ describe('SearchTabs', () => {
                   name: 'Datafile test name',
                   location: '/datafiletest',
                   fileSize: 1,
+                  fileCount: 1,
                   date: 1563836400000,
                   'dataset.id': 2,
                   'dataset.name': 'Dataset test name',
@@ -129,67 +135,6 @@ describe('SearchTabs', () => {
 
       return Promise.resolve({
         data: searchResponse,
-      });
-    }
-
-    if (/.*\/facilitycycles$/.test(url)) {
-      // fetchAllFacilityCycles
-      return Promise.resolve({
-        data: [
-          {
-            id: 4,
-            name: 'facility cycle name',
-            startDate: '2000-06-10',
-            endDate: '2020-06-11',
-          },
-        ],
-      });
-    }
-
-    if (/.*\/datasets\/count$/.test(url)) {
-      // fetchDatasetCountQuery
-      return Promise.resolve({
-        data: 1,
-      });
-    }
-
-    if (/.*\/datafiles\/count$/.test(url)) {
-      // fetchDatafileCountQuery
-      return Promise.resolve({
-        data: 1,
-      });
-    }
-
-    if (/.*\/investigations$/.test(url)) {
-      return Promise.resolve({
-        data: [mockInvestigation],
-      });
-    }
-
-    if (/.*\/datasets$/.test(url)) {
-      return Promise.resolve({
-        data: [mockDataset],
-      });
-    }
-
-    if (/\/datafiles$/.test(url)) {
-      return Promise.resolve({
-        data: [
-          {
-            id: 1,
-            name: 'Datafile test name',
-            description: 'Test datafile description',
-            location: '/datafiletest',
-            fileSize: 1,
-          },
-        ],
-      });
-    }
-
-    if (/.*\/user\/getSize$/.test(url)) {
-      // fetchInvestigationSize
-      return Promise.resolve({
-        data: 1,
       });
     }
 

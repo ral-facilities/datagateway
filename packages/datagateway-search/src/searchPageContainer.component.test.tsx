@@ -37,6 +37,22 @@ jest.mock('datagateway-common', () => {
   };
 });
 
+function generateURLSearchParams({
+  sessionId = '',
+  query = {},
+  minCount = '10',
+  maxCount = '100',
+  restrict = 'true',
+}): URLSearchParams {
+  const params = new URLSearchParams();
+  params.append('sessionId', sessionId);
+  params.append('query', JSON.stringify(query));
+  params.append('minCount', minCount);
+  params.append('maxCount', maxCount);
+  params.append('restrict', restrict);
+  return params;
+}
+
 describe('usePushCurrentTab', () => {
   let localStorageSetItemMock: jest.SpyInstance;
   let localStorageGetItemMock: jest.SpyInstance;
@@ -341,7 +357,7 @@ describe('SearchPageContainer - Tests', () => {
     const user = userEvent.setup();
 
     history.replace(
-      '/search/data?searchText=hello&startDate=2013-11-11&endDate=2016-11-11'
+      '/search/data?searchText=hello&dataset=false&investigation=false&startDate=2013-11-11&endDate=2016-11-11'
     );
 
     renderComponent();
@@ -355,17 +371,12 @@ describe('SearchPageContainer - Tests', () => {
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
       {
-        params: {
-          maxCount: 100,
-          minCount: 10,
-          restrict: true,
-          search_after: '',
-          sort: {},
+        params: generateURLSearchParams({
           query: {
             target: 'Datafile',
             lower: '201311110000',
-            text: 'hello',
             upper: '201611112359',
+            text: 'hello',
             facets: [
               { target: 'Datafile' },
               {
@@ -378,8 +389,7 @@ describe('SearchPageContainer - Tests', () => {
               },
             ],
           },
-          sessionId: null,
-        },
+        }),
       }
     );
   });
@@ -400,17 +410,12 @@ describe('SearchPageContainer - Tests', () => {
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
       {
-        params: {
-          maxCount: 100,
-          minCount: 10,
-          restrict: true,
-          search_after: '',
-          sort: {},
+        params: generateURLSearchParams({
           query: {
             target: 'Dataset',
             lower: '201311110000',
-            text: 'hello',
             upper: '201611112359',
+            text: 'hello',
             facets: [
               {
                 target: 'Dataset',
@@ -425,8 +430,7 @@ describe('SearchPageContainer - Tests', () => {
               },
             ],
           },
-          sessionId: null,
-        },
+        }),
       }
     );
   });
@@ -448,28 +452,21 @@ describe('SearchPageContainer - Tests', () => {
       1,
       'https://example.com/icat/search/documents',
       {
-        params: {
-          maxCount: 100,
-          minCount: 10,
-          restrict: true,
-          search_after: '',
-          sort: {},
+        params: generateURLSearchParams({
           query: {
             target: 'Investigation',
             lower: '201311110000',
-            text: 'hello',
             upper: '201611112359',
+            text: 'hello',
             facets: [
+              { target: 'Investigation' },
               {
-                target: 'Investigation',
-              },
-              {
-                dimensions: [{ dimension: 'type.name' }],
                 target: 'InvestigationParameter',
+                dimensions: [{ dimension: 'type.name' }],
               },
               {
-                dimensions: [{ dimension: 'sample.type.name' }],
                 target: 'Sample',
+                dimensions: [{ dimension: 'sample.type.name' }],
               },
               {
                 target: 'InvestigationInstrument',
@@ -477,8 +474,7 @@ describe('SearchPageContainer - Tests', () => {
               },
             ],
           },
-          sessionId: null,
-        },
+        }),
       }
     );
   });
@@ -501,12 +497,7 @@ describe('SearchPageContainer - Tests', () => {
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
       {
-        params: {
-          maxCount: 100,
-          minCount: 10,
-          restrict: true,
-          search_after: '',
-          sort: {},
+        params: generateURLSearchParams({
           query: {
             target: 'Datafile',
             lower: '201311110000',
@@ -523,8 +514,7 @@ describe('SearchPageContainer - Tests', () => {
               },
             ],
           },
-          sessionId: null,
-        },
+        }),
       }
     );
   });
@@ -545,12 +535,7 @@ describe('SearchPageContainer - Tests', () => {
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
       {
-        params: {
-          maxCount: 100,
-          minCount: 10,
-          restrict: true,
-          search_after: '',
-          sort: {},
+        params: generateURLSearchParams({
           query: {
             target: 'Dataset',
             lower: '201311110000',
@@ -570,8 +555,7 @@ describe('SearchPageContainer - Tests', () => {
               },
             ],
           },
-          sessionId: null,
-        },
+        }),
       }
     );
   });
@@ -593,28 +577,21 @@ describe('SearchPageContainer - Tests', () => {
       1,
       'https://example.com/icat/search/documents',
       {
-        params: {
-          maxCount: 100,
-          minCount: 10,
-          restrict: true,
-          search_after: '',
-          sort: {},
+        params: generateURLSearchParams({
           query: {
             target: 'Investigation',
             lower: '201311110000',
             upper: '9000012312359',
             text: 'test',
             facets: [
+              { target: 'Investigation' },
               {
-                target: 'Investigation',
-              },
-              {
-                dimensions: [{ dimension: 'type.name' }],
                 target: 'InvestigationParameter',
+                dimensions: [{ dimension: 'type.name' }],
               },
               {
-                dimensions: [{ dimension: 'sample.type.name' }],
                 target: 'Sample',
+                dimensions: [{ dimension: 'sample.type.name' }],
               },
               {
                 target: 'InvestigationInstrument',
@@ -622,8 +599,7 @@ describe('SearchPageContainer - Tests', () => {
               },
             ],
           },
-          sessionId: null,
-        },
+        }),
       }
     );
   });
@@ -647,12 +623,7 @@ describe('SearchPageContainer - Tests', () => {
       2,
       'https://example.com/icat/search/documents',
       {
-        params: {
-          maxCount: 100,
-          minCount: 10,
-          restrict: true,
-          search_after: '',
-          sort: {},
+        params: generateURLSearchParams({
           query: {
             target: 'Datafile',
             lower: '0000001010000',
@@ -669,8 +640,7 @@ describe('SearchPageContainer - Tests', () => {
               },
             ],
           },
-          sessionId: null,
-        },
+        }),
       }
     );
   });
@@ -691,12 +661,7 @@ describe('SearchPageContainer - Tests', () => {
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
       {
-        params: {
-          maxCount: 100,
-          minCount: 10,
-          restrict: true,
-          search_after: '',
-          sort: {},
+        params: generateURLSearchParams({
           query: {
             target: 'Dataset',
             lower: '0000001010000',
@@ -716,8 +681,7 @@ describe('SearchPageContainer - Tests', () => {
               },
             ],
           },
-          sessionId: null,
-        },
+        }),
       }
     );
   });
@@ -738,28 +702,21 @@ describe('SearchPageContainer - Tests', () => {
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
       {
-        params: {
-          maxCount: 100,
-          minCount: 10,
-          restrict: true,
-          search_after: '',
-          sort: {},
+        params: generateURLSearchParams({
           query: {
             target: 'Investigation',
             lower: '0000001010000',
             upper: '201611112359',
             text: 'test',
             facets: [
+              { target: 'Investigation' },
               {
-                target: 'Investigation',
-              },
-              {
-                dimensions: [{ dimension: 'type.name' }],
                 target: 'InvestigationParameter',
+                dimensions: [{ dimension: 'type.name' }],
               },
               {
-                dimensions: [{ dimension: 'sample.type.name' }],
                 target: 'Sample',
+                dimensions: [{ dimension: 'sample.type.name' }],
               },
               {
                 target: 'InvestigationInstrument',
@@ -767,8 +724,7 @@ describe('SearchPageContainer - Tests', () => {
               },
             ],
           },
-          sessionId: null,
-        },
+        }),
       }
     );
   });
@@ -791,12 +747,7 @@ describe('SearchPageContainer - Tests', () => {
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
       {
-        params: {
-          maxCount: 100,
-          minCount: 10,
-          restrict: true,
-          search_after: '',
-          sort: {},
+        params: generateURLSearchParams({
           query: {
             target: 'Datafile',
             text: 'test',
@@ -814,8 +765,7 @@ describe('SearchPageContainer - Tests', () => {
               },
             ],
           },
-          sessionId: null,
-        },
+        }),
       }
     );
   });
@@ -834,12 +784,7 @@ describe('SearchPageContainer - Tests', () => {
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
       {
-        params: {
-          maxCount: 100,
-          minCount: 10,
-          restrict: true,
-          search_after: '',
-          sort: {},
+        params: generateURLSearchParams({
           query: {
             target: 'Dataset',
             facets: [
@@ -856,8 +801,7 @@ describe('SearchPageContainer - Tests', () => {
               },
             ],
           },
-          sessionId: null,
-        },
+        }),
       }
     );
   });
@@ -878,26 +822,19 @@ describe('SearchPageContainer - Tests', () => {
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
       {
-        params: {
-          maxCount: 100,
-          minCount: 10,
-          restrict: true,
-          search_after: '',
-          sort: {},
+        params: generateURLSearchParams({
           query: {
             target: 'Investigation',
             text: 'test',
             facets: [
+              { target: 'Investigation' },
               {
-                target: 'Investigation',
-              },
-              {
-                dimensions: [{ dimension: 'type.name' }],
                 target: 'InvestigationParameter',
+                dimensions: [{ dimension: 'type.name' }],
               },
               {
-                dimensions: [{ dimension: 'sample.type.name' }],
                 target: 'Sample',
+                dimensions: [{ dimension: 'sample.type.name' }],
               },
               {
                 target: 'InvestigationInstrument',
@@ -905,8 +842,7 @@ describe('SearchPageContainer - Tests', () => {
               },
             ],
           },
-          sessionId: null,
-        },
+        }),
       }
     );
   });
@@ -1076,17 +1012,12 @@ describe('SearchPageContainer - Tests', () => {
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
       {
-        params: {
-          maxCount: 100,
-          minCount: 10,
-          restrict: true,
-          search_after: '',
-          sort: {},
+        params: generateURLSearchParams({
           query: {
             target: 'Datafile',
             lower: '201311110000',
-            text: 'hello',
             upper: '201611112359',
+            text: 'hello',
             facets: [
               { target: 'Datafile' },
               {
@@ -1099,8 +1030,7 @@ describe('SearchPageContainer - Tests', () => {
               },
             ],
           },
-          sessionId: null,
-        },
+        }),
       }
     );
   });
@@ -1113,12 +1043,7 @@ describe('SearchPageContainer - Tests', () => {
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
       {
-        params: {
-          maxCount: 100,
-          minCount: 10,
-          restrict: true,
-          search_after: '',
-          sort: {},
+        params: generateURLSearchParams({
           query: {
             target: 'Datafile',
             facets: [
@@ -1133,8 +1058,7 @@ describe('SearchPageContainer - Tests', () => {
               },
             ],
           },
-          sessionId: null,
-        },
+        }),
       }
     );
   });
@@ -1149,26 +1073,19 @@ describe('SearchPageContainer - Tests', () => {
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
       {
-        params: {
-          maxCount: 100,
-          minCount: 10,
-          restrict: true,
-          search_after: '',
-          sort: {},
+        params: generateURLSearchParams({
           query: {
             target: 'Investigation',
             text: 'hello',
             facets: [
+              { target: 'Investigation' },
               {
-                target: 'Investigation',
-              },
-              {
-                dimensions: [{ dimension: 'type.name' }],
                 target: 'InvestigationParameter',
+                dimensions: [{ dimension: 'type.name' }],
               },
               {
-                dimensions: [{ dimension: 'sample.type.name' }],
                 target: 'Sample',
+                dimensions: [{ dimension: 'sample.type.name' }],
               },
               {
                 target: 'InvestigationInstrument',
@@ -1176,20 +1093,14 @@ describe('SearchPageContainer - Tests', () => {
               },
             ],
           },
-          sessionId: null,
-        },
+        }),
       }
     );
 
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
       {
-        params: {
-          maxCount: 100,
-          minCount: 10,
-          restrict: true,
-          search_after: '',
-          sort: {},
+        params: generateURLSearchParams({
           query: {
             target: 'Dataset',
             text: 'hello',
@@ -1207,26 +1118,19 @@ describe('SearchPageContainer - Tests', () => {
               },
             ],
           },
-          sessionId: null,
-        },
+        }),
       }
     );
 
     expect(axios.get).not.toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
       {
-        params: {
-          maxCount: 100,
-          minCount: 10,
-          restrict: true,
-          search_after: '',
-          sort: {},
+        params: generateURLSearchParams({
           query: {
             target: 'Datafile',
             text: 'hello',
           },
-          sessionId: null,
-        },
+        }),
       }
     );
   });
@@ -1253,26 +1157,19 @@ describe('SearchPageContainer - Tests', () => {
       1,
       'https://example.com/icat/search/documents',
       {
-        params: {
-          maxCount: 100,
-          minCount: 10,
-          restrict: true,
-          search_after: '',
-          sort: {},
+        params: generateURLSearchParams({
           query: {
             target: 'Investigation',
             text: 'neutron AND scattering',
             facets: [
+              { target: 'Investigation' },
               {
-                target: 'Investigation',
-              },
-              {
-                dimensions: [{ dimension: 'type.name' }],
                 target: 'InvestigationParameter',
+                dimensions: [{ dimension: 'type.name' }],
               },
               {
-                dimensions: [{ dimension: 'sample.type.name' }],
                 target: 'Sample',
+                dimensions: [{ dimension: 'sample.type.name' }],
               },
               {
                 target: 'InvestigationInstrument',
@@ -1280,8 +1177,7 @@ describe('SearchPageContainer - Tests', () => {
               },
             ],
           },
-          sessionId: null,
-        },
+        }),
       }
     );
   });

@@ -2,6 +2,7 @@ import {
   CalendarToday,
   ConfirmationNumber,
   Fingerprint,
+  Save,
 } from '@mui/icons-material';
 import {
   AddToCartButton,
@@ -10,15 +11,12 @@ import {
   DLSDatasetDetailsPanel,
   DownloadButton,
   formatBytes,
-  formatCountOrSize,
   ISISDatasetDetailsPanel,
   parseSearchToQuery,
   SearchFilter,
   SearchResponse,
   SearchResultSource,
   tableLink,
-  useDatasetsDatafileCount,
-  useDatasetSizes,
   useLuceneSearchInfinite,
   usePushDatasetFilter,
   usePushPage,
@@ -201,15 +199,6 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
-  // hierarchy === 'isis' ? data : undefined is a 'hack' to only perform
-  // the correct calculation queries for each facility
-  const datasetCountQueries = useDatasetsDatafileCount(
-    hierarchy !== 'isis' ? paginatedSource : undefined
-  );
-  const sizeQueries = useDatasetSizes(
-    hierarchy === 'isis' ? paginatedSource : undefined
-  );
-
   const title = React.useMemo(
     () => ({
       // Provide label for filter component.
@@ -257,31 +246,23 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
   const information = React.useMemo(
     () => [
       {
-        icon: ConfirmationNumber,
-        label:
-          hierarchy === FACILITY_NAME.isis
-            ? t('datasets.size')
-            : t('datasets.datafile_count'),
-        dataKey: hierarchy === 'isis' ? 'size' : 'datafileCount',
-        content: (dataset: SearchResultSource): string => {
-          if (
-            hierarchy === 'isis' &&
-            (dataset as SearchResultSource).fileSize
-          ) {
-            return formatBytes((dataset as SearchResultSource).fileSize);
-          }
-          const index = paginatedSource?.findIndex(
-            (item) => item.id === dataset.id
-          );
-          if (typeof index === 'undefined') return 'Unknown';
-          const query =
-            hierarchy === FACILITY_NAME.isis
-              ? sizeQueries[index]
-              : datasetCountQueries[index];
-          return formatCountOrSize(query, hierarchy === 'isis');
-        },
+        icon: Save,
+        label: t('datasets.size'),
+        dataKey: 'size',
+        content: (dataset: SearchResultSource): string =>
+          formatBytes(dataset.fileSize),
         disableSort: true,
       },
+      ...(hierarchy !== FACILITY_NAME.isis
+        ? [
+            {
+              icon: ConfirmationNumber,
+              label: t('datasets.datafile_count'),
+              dataKey: 'fileCount',
+              disableSort: true,
+            },
+          ]
+        : []),
       {
         icon: Fingerprint,
         label: t('datasets.investigation'),
@@ -330,7 +311,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
         disableSort: true,
       },
     ],
-    [paginatedSource, datasetCountQueries, hierarchy, sizeQueries, t]
+    [hierarchy, t]
   );
 
   const moreInformation = React.useCallback(
@@ -390,9 +371,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
                   entityType="dataset"
                   entityId={dataset.id}
                   entityName={dataset.name}
-                  entitySize={
-                    sizeQueries[paginatedSource.indexOf(dataset)]?.data ?? -1
-                  }
+                  entitySize={dataset.fileSize ?? -1}
                 />
               </ActionButtonDiv>
             ),
@@ -406,8 +385,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
               />
             ),
           ],
-
-    [hierarchy, aggregatedIds, sizeQueries, paginatedSource]
+    [hierarchy, aggregatedIds]
   );
 
   const removeFilterChip = (

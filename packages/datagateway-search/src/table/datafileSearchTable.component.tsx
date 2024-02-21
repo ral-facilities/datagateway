@@ -253,6 +253,7 @@ const DatafileSearchTable = (
         cellContentRenderer: (cellProps) => {
           return formatBytes(cellProps.cellData);
         },
+        disableSort: true,
       },
       {
         label: t('datafiles.dataset'),

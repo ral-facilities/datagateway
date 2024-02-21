@@ -51,6 +51,8 @@ describe('Investigation - Card View', () => {
     cardData = [
       {
         id: 1,
+        fileSize: 1,
+        fileCount: 1,
         title: 'Test title 1',
         summary: 'Test summary',
         name: 'Test name 1',
@@ -83,12 +85,6 @@ describe('Investigation - Card View', () => {
         if (url.includes('/investigations')) {
           return Promise.resolve({
             data: cardData,
-          });
-        }
-
-        if (url.includes('/datasets/count')) {
-          return Promise.resolve({
-            data: 1,
           });
         }
 
@@ -171,19 +167,19 @@ describe('Investigation - Card View', () => {
       ).getByText('Test name 1')
     ).toBeInTheDocument();
 
-    // check that investigation dataset count is displayed correctly
+    // check that investigation size is displayed correctly
     expect(
-      card.getByTestId('card-info-investigations.dataset_count')
-    ).toHaveTextContent('investigations.dataset_count');
+      card.getByTestId('card-info-investigations.details.size')
+    ).toHaveTextContent('investigations.details.size');
     expect(
       within(
-        card.getByTestId('card-info-investigations.dataset_count')
-      ).getByTestId('ConfirmationNumberIcon')
+        card.getByTestId('card-info-investigations.details.size')
+      ).getByTestId('SaveIcon')
     ).toBeInTheDocument();
     expect(
       within(
-        card.getByTestId('card-info-data-investigations.dataset_count')
-      ).getByText('1')
+        card.getByTestId('card-info-data-investigations.details.size')
+      ).getByText('1 B')
     ).toBeInTheDocument();
 
     // check that investigation start date is displayed correctly

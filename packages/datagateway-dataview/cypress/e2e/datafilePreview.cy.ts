@@ -2,6 +2,10 @@ import { join } from 'path';
 
 describe('Datafile preview', () => {
   beforeEach(() => {
+    cy.intercept('GET', '**/datafiles/findone*', {
+      statusCode: 200,
+      fixture: 'datafile.json',
+    });
     cy.intercept('GET', '**/datafiles*', {
       statusCode: 200,
       fixture: 'datafile.json',
@@ -18,7 +22,7 @@ describe('Datafile preview', () => {
     });
     cy.login();
     cy.visit(
-      '/browse/instrument/1/facilityCycle/19/investigation/19/dataset/139/datafile/3484',
+      '/browse/instrument/1/facilityCycle/19/investigation/19/dataset/79/datafile/3484',
       {
         onBeforeLoad(win: Cypress.AUTWindow) {
           cy.spy(win.navigator.clipboard, 'writeText').as('copy');
@@ -84,7 +88,7 @@ describe('Datafile preview', () => {
     cy.contains('Copy link').click();
     cy.get('@copy').should(
       'be.calledOnceWithExactly',
-      'http://127.0.0.1:3000/browse/instrument/1/facilityCycle/19/investigation/19/dataset/139/datafile/3484'
+      'http://127.0.0.1:3000/browse/instrument/1/facilityCycle/19/investigation/19/dataset/79/datafile/3484'
     );
     // should show a successful after copy is successful
     cy.contains('Link copied to clipboard').should('exist');

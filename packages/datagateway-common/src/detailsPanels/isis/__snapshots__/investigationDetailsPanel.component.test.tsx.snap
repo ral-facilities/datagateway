@@ -143,9 +143,9 @@ exports[`Investigation details panel component should check if multiple publicat
             <a
               class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
               data-testid="investigation-details-panel-pid-link"
-              href="https://doi.org/Data Publication Pid"
+              href="https://doi.org/Data Publication Study Pid"
             >
-              Data Publication Pid
+              Data Publication Study Pid
             </a>
           </p>
         </div>
@@ -388,9 +388,9 @@ exports[`Investigation details panel component should check if multiple samples 
             <a
               class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
               data-testid="investigation-details-panel-pid-link"
-              href="https://doi.org/Data Publication Pid"
+              href="https://doi.org/Data Publication Study Pid"
             >
-              Data Publication Pid
+              Data Publication Study Pid
             </a>
           </p>
         </div>
@@ -822,9 +822,9 @@ exports[`Investigation details panel component should render correctly 1`] = `
             <a
               class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
               data-testid="investigation-details-panel-pid-link"
-              href="https://doi.org/Data Publication Pid"
+              href="https://doi.org/Data Publication Study Pid"
             >
-              Data Publication Pid
+              Data Publication Study Pid
             </a>
           </p>
         </div>
@@ -1057,9 +1057,9 @@ exports[`Investigation details panel component should render user, sample and pu
             <a
               class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
               data-testid="investigation-details-panel-pid-link"
-              href="https://doi.org/Data Publication Pid"
+              href="https://doi.org/Data Publication Study Pid"
             >
-              Data Publication Pid
+              Data Publication Study Pid
             </a>
           </p>
         </div>

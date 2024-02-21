@@ -9,7 +9,6 @@ import {
   type Investigation,
   readSciGatewayToken,
   useInvestigationCount,
-  useInvestigationsDatasetCount,
   useInvestigationsInfinite,
 } from 'datagateway-common';
 import { createMemoryHistory, type MemoryHistory } from 'history';
@@ -42,7 +41,6 @@ jest.mock('datagateway-common', () => {
     ...originalModule,
     useInvestigationCount: jest.fn(),
     useInvestigationsInfinite: jest.fn(),
-    useInvestigationsDatasetCount: jest.fn(),
     readSciGatewayToken: jest.fn(),
   };
 });
@@ -86,6 +84,8 @@ describe('DLS MyData table component', () => {
         visitId: '1',
         doi: 'doi 1',
         size: 1,
+        fileSize: 1,
+        fileCount: 1,
         investigationInstruments: [
           {
             id: 1,
@@ -108,9 +108,6 @@ describe('DLS MyData table component', () => {
       data: { pages: [rowData] },
       fetchNextPage: jest.fn(),
     });
-    (useInvestigationsDatasetCount as jest.Mock).mockReturnValue([
-      { data: 1, isSuccess: true },
-    ]);
     (readSciGatewayToken as jest.Mock).mockReturnValue({
       username: 'testUser',
     });
@@ -134,7 +131,7 @@ describe('DLS MyData table component', () => {
       await findColumnHeaderByName('investigations.visit_id')
     ).toBeInTheDocument();
     expect(
-      await findColumnHeaderByName('investigations.dataset_count')
+      await findColumnHeaderByName('investigations.size')
     ).toBeInTheDocument();
     expect(
       await findColumnHeaderByName('investigations.instrument')
@@ -165,11 +162,9 @@ describe('DLS MyData table component', () => {
     expect(
       within(
         findCellInRow(row, {
-          columnIndex: await findColumnIndexByName(
-            'investigations.dataset_count'
-          ),
+          columnIndex: await findColumnIndexByName('investigations.size'),
         })
-      ).getByText('1')
+      ).getByText('1 B')
     ).toBeInTheDocument();
     expect(
       within(

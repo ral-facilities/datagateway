@@ -27,7 +27,6 @@ import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import type { StateType } from '../state/app.types';
 import { Grid, Paper, Typography } from '@mui/material';
-import { DatasetDatafileCountCell, DatasetSizeCell } from './cellRenderers';
 import FacetPanel from '../facet/components/facetPanel/facetPanel.component';
 import { facetClassificationFromSearchResponses } from '../facet/facet';
 import useFacetFilters from '../facet/useFacetFilters';
@@ -246,30 +245,22 @@ const DatasetSearchTable = ({
         disableSort: true,
       },
       {
-        label:
-          hierarchy === FACILITY_NAME.isis
-            ? t('datasets.size')
-            : t('datasets.datafile_count'),
-        dataKey: hierarchy === 'isis' ? 'size' : 'datafileCount',
-        cellContentRenderer: (cellProps: TableCellProps): JSX.Element => {
-          if (hierarchy === 'isis' && cellProps.rowData.fileSize) {
-            return <>{formatBytes(cellProps.rowData.fileSize)}</>;
-          }
-          if (hierarchy === 'isis') {
-            return (
-              <DatasetSizeCell
-                dataset={cellProps.rowData as SearchResultSource}
-              />
-            );
-          }
-          return (
-            <DatasetDatafileCountCell
-              dataset={cellProps.rowData as SearchResultSource}
-            />
-          );
+        label: t('datasets.size'),
+        dataKey: 'size',
+        cellContentRenderer: (cellProps: TableCellProps) => {
+          return formatBytes(cellProps.rowData.fileSize);
         },
         disableSort: true,
       },
+      ...(hierarchy !== FACILITY_NAME.isis
+        ? [
+            {
+              label: t('datasets.datafile_count'),
+              dataKey: 'fileCount',
+              disableSort: true,
+            },
+          ]
+        : []),
       {
         label: t('datasets.investigation'),
         dataKey: 'investigation.title',

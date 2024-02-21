@@ -1,7 +1,7 @@
 import { type DataPublication, dGCommonInitialState } from 'datagateway-common';
 import * as React from 'react';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
+import { generatePath, Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import type { StateType } from '../../../state/app.types';
@@ -21,6 +21,7 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
+import { paths } from '../../../page/pageContainer.component';
 
 describe('ISIS Data Publication - Card View', () => {
   let mockStore;
@@ -28,16 +29,30 @@ describe('ISIS Data Publication - Card View', () => {
   let cardData: DataPublication[];
   let history: History;
 
-  const renderComponent = (): RenderResult =>
-    render(
+  const renderComponent = (studyDataPublicationId?: string): RenderResult => {
+    if (studyDataPublicationId)
+      history.replace(
+        generatePath(
+          paths.dataPublications.toggle.isisInvestigationDataPublication,
+          {
+            instrumentId: 1,
+            studyDataPublicationId,
+          }
+        )
+      );
+    return render(
       <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
-            <ISISDataPublicationsCardView instrumentId="1" />
+            <ISISDataPublicationsCardView
+              instrumentId="1"
+              studyDataPublicationId={studyDataPublicationId}
+            />
           </QueryClientProvider>
         </Router>
       </Provider>
     );
+  };
 
   beforeEach(() => {
     cardData = [
@@ -67,7 +82,13 @@ describe('ISIS Data Publication - Card View', () => {
         },
       },
     ];
-    history = createMemoryHistory();
+    history = createMemoryHistory({
+      initialEntries: [
+        generatePath(paths.dataPublications.toggle.isisStudyDataPublication, {
+          instrumentId: 1,
+        }),
+      ],
+    });
 
     mockStore = configureStore([thunk]);
     state = JSON.parse(
@@ -101,122 +122,167 @@ describe('ISIS Data Publication - Card View', () => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly', async () => {
-    renderComponent();
+  describe('Study Data Publication', () => {
+    it('renders correctly', async () => {
+      renderComponent();
 
-    const cards = await screen.findAllByTestId(
-      'isis-dataPublications-card-view'
-    );
-    expect(cards).toHaveLength(1);
+      const cards = await screen.findAllByTestId(
+        'isis-dataPublications-card-view'
+      );
+      expect(cards).toHaveLength(1);
 
-    const card = cards[0];
-    // card id should be rendered as link to data publication
-    expect(within(card).getByRole('link', { name: 'Test 1' })).toHaveAttribute(
-      'href',
-      '/browseDataPublications/instrument/1/dataPublication/14'
-    );
-    expect(within(card).getByLabelText('card-description')).toHaveTextContent(
-      'Data Publication Description'
-    );
-    expect(within(card).getByRole('link', { name: 'doi' })).toHaveAttribute(
-      'href',
-      'https://doi.org/doi'
-    );
-    expect(within(card).getByText('2001-01-01')).toBeInTheDocument();
-  });
-
-  it('uses default sort', () => {
-    renderComponent();
-    expect(history.length).toBe(1);
-    expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"publicationDate":"desc"}')}`
-    );
-
-    // check that the data request is sent only once after mounting
-    const datafilesCalls = (axios.get as jest.Mock).mock.calls.filter(
-      (call) => call[0] === '/datapublications'
-    );
-    expect(datafilesCalls).toHaveLength(1);
-  });
-
-  it('updates filter query params on text filter', async () => {
-    jest.useFakeTimers();
-    const user = userEvent.setup({
-      advanceTimers: jest.advanceTimersByTime,
+      const card = cards[0];
+      // card id should be rendered as link to data publication
+      expect(
+        within(card).getByRole('link', { name: 'Test 1' })
+      ).toHaveAttribute(
+        'href',
+        '/browseDataPublications/instrument/1/dataPublication/14'
+      );
+      expect(within(card).getByLabelText('card-description')).toHaveTextContent(
+        'Data Publication Description'
+      );
+      expect(within(card).getByRole('link', { name: 'doi' })).toHaveAttribute(
+        'href',
+        'https://doi.org/doi'
+      );
     });
 
-    renderComponent();
+    it('uses default sort', () => {
+      renderComponent();
+      expect(history.length).toBe(1);
+      expect(history.location.search).toBe(
+        `?sort=${encodeURIComponent('{"title":"desc"}')}`
+      );
 
-    // click on button to show advanced filters
-    await user.click(
-      await screen.findByRole('button', { name: 'advanced_filters.show' })
-    );
-
-    const filter = await screen.findByRole('textbox', {
-      name: 'Filter by datapublications.title',
-      hidden: true,
+      // check that the data request is sent only once after mounting
+      const datafilesCalls = (axios.get as jest.Mock).mock.calls.filter(
+        (call) => call[0] === '/datapublications'
+      );
+      expect(datafilesCalls).toHaveLength(1);
     });
 
-    await user.type(filter, 'Test');
+    it('updates filter query params on text filter', async () => {
+      jest.useFakeTimers();
+      const user = userEvent.setup({
+        advanceTimers: jest.advanceTimersByTime,
+      });
 
-    expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
-        '{"title":{"value":"Test","type":"include"}}'
-      )}`
-    );
+      renderComponent();
 
-    await user.clear(filter);
+      // click on button to show advanced filters
+      await user.click(
+        await screen.findByRole('button', { name: 'advanced_filters.show' })
+      );
 
-    expect(history.location.search).toBe('?');
+      const filter = await screen.findByRole('textbox', {
+        name: 'Filter by datapublications.title',
+        hidden: true,
+      });
 
-    jest.useRealTimers();
-  });
+      await user.type(filter, 'Test');
 
-  it('updates filter query params on date filter', async () => {
-    const user = userEvent.setup();
-    applyDatePickerWorkaround();
+      expect(history.location.search).toBe(
+        `?filters=${encodeURIComponent(
+          '{"title":{"value":"Test","type":"include"}}'
+        )}`
+      );
 
-    renderComponent();
+      await user.clear(filter);
 
-    // open advanced filter
-    await user.click(
-      await screen.findByRole('button', { name: 'advanced_filters.show' })
-    );
+      expect(history.location.search).toBe('?');
 
-    const filterInput = screen.getByRole('textbox', {
-      name: 'datapublications.publication_date filter to',
+      jest.useRealTimers();
     });
 
-    await user.type(filterInput, '2019-08-06');
-    expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
-        '{"publicationDate":{"endDate":"2019-08-06"}}'
-      )}`
-    );
+    it('updates sort query params on sort', async () => {
+      const user = userEvent.setup();
 
-    // await user.clear(filterInput);
-    await user.click(filterInput);
-    await user.keyboard('{Control}a{/Control}');
-    await user.keyboard('{Delete}');
+      renderComponent();
 
-    expect(history.location.search).toBe('?');
+      await user.click(
+        await screen.findByRole('button', {
+          name: 'Sort by DATAPUBLICATIONS.PID',
+        })
+      );
 
-    cleanupDatePickerWorkaround();
+      expect(history.location.search).toBe(
+        `?sort=${encodeURIComponent('{"pid":"asc"}')}`
+      );
+    });
   });
 
-  it('updates sort query params on sort', async () => {
-    const user = userEvent.setup();
+  describe('Investigation Data Publication', () => {
+    it('renders correctly', async () => {
+      renderComponent('2');
 
-    renderComponent();
+      const cards = await screen.findAllByTestId(
+        'isis-dataPublications-card-view'
+      );
+      expect(cards).toHaveLength(1);
 
-    await user.click(
-      await screen.findByRole('button', {
-        name: 'Sort by DATAPUBLICATIONS.TITLE',
-      })
-    );
+      const card = cards[0];
+      // card id should be rendered as link to data publication
+      expect(
+        within(card).getByRole('link', { name: 'Test 1' })
+      ).toHaveAttribute(
+        'href',
+        '/browseDataPublications/instrument/1/dataPublication/2/investigation/14'
+      );
+      expect(within(card).getByLabelText('card-description')).toHaveTextContent(
+        'Data Publication Description'
+      );
+      expect(within(card).getByRole('link', { name: 'doi' })).toHaveAttribute(
+        'href',
+        'https://doi.org/doi'
+      );
+      expect(within(card).getByText('2001-01-01')).toBeInTheDocument();
+    });
 
-    expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"title":"asc"}')}`
-    );
+    it('uses default sort', () => {
+      renderComponent('2');
+      expect(history.length).toBe(1);
+      expect(history.location.search).toBe(
+        `?sort=${encodeURIComponent('{"publicationDate":"desc"}')}`
+      );
+
+      // check that the data request is sent only once after mounting
+      const datafilesCalls = (axios.get as jest.Mock).mock.calls.filter(
+        (call) => call[0] === '/datapublications'
+      );
+      expect(datafilesCalls).toHaveLength(1);
+    });
+
+    it('updates filter query params on date filter', async () => {
+      const user = userEvent.setup();
+      applyDatePickerWorkaround();
+
+      renderComponent('2');
+
+      // open advanced filter
+      await user.click(
+        await screen.findByRole('button', { name: 'advanced_filters.show' })
+      );
+
+      const filterInput = screen.getByRole('textbox', {
+        name: 'datapublications.publication_date filter to',
+      });
+
+      await user.type(filterInput, '2019-08-06');
+      expect(history.location.search).toBe(
+        `?filters=${encodeURIComponent(
+          '{"publicationDate":{"endDate":"2019-08-06"}}'
+        )}`
+      );
+
+      // await user.clear(filterInput);
+      await user.click(filterInput);
+      await user.keyboard('{Control}a{/Control}');
+      await user.keyboard('{Delete}');
+
+      expect(history.location.search).toBe('?');
+
+      cleanupDatePickerWorkaround();
+    });
   });
 });

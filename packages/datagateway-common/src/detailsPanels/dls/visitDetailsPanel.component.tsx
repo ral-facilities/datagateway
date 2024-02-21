@@ -1,17 +1,9 @@
-import {
-  Button,
-  Divider,
-  Grid,
-  styled,
-  Tab,
-  Tabs,
-  Typography,
-} from '@mui/material';
+import { Divider, Grid, styled, Tab, Tabs, Typography } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { formatBytes } from '../../table/cellRenderers/cellContentRenderers';
-import { useInvestigationDetails, useInvestigationSize } from '../../api';
+import { useInvestigationDetails } from '../../api';
 import { Entity, Investigation } from '../../app.types';
 import {
   DlsVisitDetailsPanelChangeTabPayload,
@@ -49,11 +41,9 @@ const VisitDetailsPanel = (
   const { rowData, detailsPanelResize } = props;
   const [t] = useTranslation();
   const { data } = useInvestigationDetails(rowData.id);
-  const { data: size, refetch: fetchSize } = useInvestigationSize(rowData.id);
   const investigationData: Investigation = {
     ...data,
     ...(rowData as Investigation),
-    size,
   };
   const selectedTab = useSelector<
     StateType,
@@ -224,23 +214,7 @@ const VisitDetailsPanel = (
               {t('investigations.details.size')}
             </Typography>
             <Typography>
-              <b>
-                {investigationData.size !== undefined ? (
-                  formatBytes(investigationData.size)
-                ) : (
-                  <Button
-                    onClick={() => {
-                      fetchSize();
-                    }}
-                    variant="outlined"
-                    color="secondary"
-                    size="small"
-                    id="calculate-size-btn"
-                  >
-                    {t('investigations.details.calculate')}
-                  </Button>
-                )}
-              </b>
+              <b>{formatBytes(investigationData.fileSize)}</b>
             </Typography>
           </Grid>
         </StyledGrid>

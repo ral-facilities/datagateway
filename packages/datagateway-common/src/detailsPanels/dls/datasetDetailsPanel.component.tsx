@@ -1,16 +1,8 @@
-import {
-  Button,
-  Divider,
-  Grid,
-  styled,
-  Tab,
-  Tabs,
-  Typography,
-} from '@mui/material';
+import { Divider, Grid, styled, Tab, Tabs, Typography } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { useDatasetDetails, useDatasetSize } from '../../api';
+import { useDatasetDetails } from '../../api';
 import { Dataset, Entity } from '../../app.types';
 import {
   DlsDatasetDetailsPanelChangeTabPayload,
@@ -43,11 +35,9 @@ const DatasetDetailsPanel = (
   const { rowData, detailsPanelResize } = props;
   const [t] = useTranslation();
   const { data } = useDatasetDetails(rowData.id);
-  const { data: size, refetch: fetchSize } = useDatasetSize(rowData.id);
   const datasetData: Dataset = {
     ...data,
     ...(rowData as Dataset),
-    size,
   };
   const selectedTab = useSelector<
     StateType,
@@ -171,24 +161,7 @@ const DatasetDetailsPanel = (
               {t('datasets.details.size')}
             </Typography>
             <Typography>
-              <b>
-                {datasetData.size !== undefined ? (
-                  formatBytes(datasetData.size)
-                ) : (
-                  <Button
-                    onClick={() => {
-                      fetchSize();
-                    }}
-                    variant="outlined"
-                    color="secondary"
-                    size="small"
-                    id="calculate-size-btn"
-                    role="button"
-                  >
-                    {t('datasets.details.calculate')}
-                  </Button>
-                )}
-              </b>
+              <b>{formatBytes(datasetData.fileSize)}</b>
             </Typography>
           </Grid>
         </StyledGrid>

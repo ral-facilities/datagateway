@@ -15,6 +15,8 @@ export interface DownloadSettings {
   apiUrl: string;
   downloadApiUrl: string;
   idsUrl: string;
+  doiMinterUrl?: string;
+  dataCiteUrl?: string;
 
   fileCountMax?: number;
   totalSizeMax?: number;
@@ -40,6 +42,7 @@ const initialConfiguration: DownloadSettings = {
   apiUrl: '',
   downloadApiUrl: '',
   idsUrl: '',
+  doiMinterUrl: '',
   fileCountMax: undefined,
   totalSizeMax: undefined,
   accessMethods: {},

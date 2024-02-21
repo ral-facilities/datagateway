@@ -1,9 +1,9 @@
 import {
   Assessment,
   CalendarToday,
-  ConfirmationNumber,
   Fingerprint,
   Public,
+  Save,
 } from '@mui/icons-material';
 import {
   AddToCartButton,
@@ -14,7 +14,6 @@ import {
   DownloadButton,
   formatBytes,
   FACILITY_NAME,
-  formatCountOrSize,
   Investigation,
   InvestigationDetailsPanel,
   ISISInvestigationDetailsPanel,
@@ -23,8 +22,6 @@ import {
   SearchResponse,
   SearchResultSource,
   tableLink,
-  useInvestigationsDatasetCount,
-  useInvestigationSizes,
   useLuceneSearchInfinite,
   usePushInvestigationFilter,
   usePushPage,
@@ -182,15 +179,6 @@ const InvestigationCardView = (
     }
   }, [data, fetchNextPage, hasNextPage, page, results]);
 
-  // hierarchy === 'isis' ? data : undefined is a 'hack' to only perform
-  // the correct calculation queries for each facility
-  const datasetCountQueries = useInvestigationsDatasetCount(
-    hierarchy !== 'isis' ? paginatedSource : undefined
-  );
-  const sizeQueries = useInvestigationSizes(
-    hierarchy === 'isis' ? paginatedSource : undefined
-  );
-
   const title = React.useMemo(
     () => ({
       // Provide label for filter component.
@@ -261,29 +249,11 @@ const InvestigationCardView = (
         disableSort: true,
       },
       {
-        icon: ConfirmationNumber,
-        label:
-          hierarchy === 'isis'
-            ? t('investigations.size')
-            : t('investigations.dataset_count'),
-        dataKey: hierarchy === 'isis' ? 'size' : 'datasetCount',
-        content: (investigation: Investigation): string => {
-          if (
-            hierarchy === 'isis' &&
-            (investigation as SearchResultSource).fileSize
-          ) {
-            return formatBytes((investigation as SearchResultSource).fileSize);
-          }
-          const index = paginatedSource?.findIndex(
-            (item) => item.id === investigation.id
-          );
-          if (typeof index === 'undefined') return 'Unknown';
-          const query =
-            hierarchy === 'isis'
-              ? sizeQueries[index]
-              : datasetCountQueries[index];
-          return formatCountOrSize(query, hierarchy === 'isis');
-        },
+        icon: Save,
+        label: t('investigations.size'),
+        dataKey: 'size',
+        content: (investigation: Investigation): string =>
+          formatBytes(investigation.fileSize),
         disableSort: true,
       },
       {
@@ -329,7 +299,7 @@ const InvestigationCardView = (
         disableSort: true,
       },
     ],
-    [paginatedSource, datasetCountQueries, hierarchy, sizeQueries, t]
+    [t]
   );
 
   const moreInformation = React.useCallback(
@@ -390,16 +360,13 @@ const InvestigationCardView = (
                   entityType="investigation"
                   entityId={investigation.id}
                   entityName={investigation.name}
-                  entitySize={
-                    sizeQueries[paginatedSource.indexOf(investigation)]?.data ??
-                    -1
-                  }
+                  entitySize={investigation.fileSize ?? -1}
                 />
               </ActionButtonDiv>
             ),
           ]
         : [],
-    [hierarchy, aggregatedIds, sizeQueries, paginatedSource]
+    [aggregatedIds, hierarchy]
   );
 
   return (

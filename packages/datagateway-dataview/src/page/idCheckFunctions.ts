@@ -1,12 +1,10 @@
 import axios, { AxiosResponse } from 'axios';
 import {
   handleICATError,
-  Dataset,
   Investigation,
   ConfigureURLsType,
   readSciGatewayToken,
 } from 'datagateway-common';
-import { Datafile } from 'datagateway-common/lib/app.types';
 import { Middleware, Dispatch, AnyAction } from 'redux';
 import memoize from 'lodash.memoize';
 
@@ -27,24 +25,34 @@ const unmemoizedCheckInvestigationId = (
   investigationId: number,
   datasetId: number
 ): Promise<boolean> => {
+  const params = new URLSearchParams();
+  params.append(
+    'where',
+    JSON.stringify({
+      id: {
+        eq: datasetId,
+      },
+    })
+  );
+  params.append(
+    'where',
+    JSON.stringify({ 'investigation.id': { eq: investigationId } })
+  );
   return axios
     .get(`${apiUrl}/datasets/findone`, {
-      params: {
-        where: {
-          id: {
-            eq: datasetId,
-          },
-        },
-        include: '"investigation"',
-      },
+      params,
       headers: {
         Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
       },
     })
-    .then((response: AxiosResponse<Dataset>) => {
-      return response.data.investigation?.id === investigationId;
+    .then(() => {
+      return true;
     })
     .catch((error) => {
+      // 404 is valid response from API saying the investigation id is invalid
+      if (axios.isAxiosError(error) && error.response?.status === 404)
+        return false;
+      // handle other API errors
       handleICATError(error);
       return false;
     });
@@ -68,7 +76,7 @@ const unmemoizedCheckInstrumentAndFacilityCycleId = (
   return axios
     .get(`${apiUrl}/investigations`, {
       params: {
-        where: {
+        where: JSON.stringify({
           id: {
             eq: investigationId,
           },
@@ -76,7 +84,7 @@ const unmemoizedCheckInstrumentAndFacilityCycleId = (
           investigationFacilityCycle: {
             facilityCycle: { id: { eq: facilityCycleId } },
           },
-        },
+        }),
       },
       headers: {
         Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
@@ -96,27 +104,28 @@ export const checkInstrumentAndFacilityCycleId = memoize(
   (...args) => JSON.stringify(args)
 );
 
-const unmemoizedCheckDataPublicationId = (
-  dataPublicationId: number,
-  investigationId: number
+const unmemoizedCheckStudyDataPublicationId = (
+  studyDataPublicationId: number,
+  investigationDataPublicationId: number
 ): Promise<boolean> => {
   const params = new URLSearchParams();
   params.append(
     'where',
     JSON.stringify({
-      id: { eq: investigationId },
+      id: { eq: investigationDataPublicationId },
     })
   );
   params.append(
     'where',
     JSON.stringify({
-      'dataCollectionInvestigations.dataCollection.dataPublications.id': {
-        eq: dataPublicationId,
-      },
+      'content.dataCollectionInvestigations.investigation.dataCollectionInvestigations.dataCollection.dataPublications.id':
+        {
+          eq: studyDataPublicationId,
+        },
     })
   );
   return axios
-    .get(`${apiUrl}/investigations/`, {
+    .get(`${apiUrl}/datapublications`, {
       params,
       headers: {
         Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
@@ -131,8 +140,8 @@ const unmemoizedCheckDataPublicationId = (
     });
 };
 
-export const checkDataPublicationId = memoize(
-  unmemoizedCheckDataPublicationId,
+export const checkStudyDataPublicationId = memoize(
+  unmemoizedCheckStudyDataPublicationId,
   (...args) => JSON.stringify(args)
 );
 
@@ -201,35 +210,40 @@ export const checkProposalName = memoize(
   (...args) => JSON.stringify(args)
 );
 
-export const unmemoizedCheckDatafileId = (
-  investigationId: Investigation['id'],
-  datasetId: Dataset['id'],
-  datafileId: Datafile['id']
-): Promise<boolean> =>
-  axios
-    .get(`${apiUrl}/datafiles`, {
-      params: {
-        include: JSON.stringify(['dataset', 'dataset.investigation']),
-        where: JSON.stringify({ id: { eq: datafileId } }),
+const unmemoizedCheckDatasetId = (
+  datasetId: number,
+  datafileId: number
+): Promise<boolean> => {
+  const params = new URLSearchParams();
+  params.append(
+    'where',
+    JSON.stringify({
+      id: {
+        eq: datafileId,
       },
+    })
+  );
+  params.append('where', JSON.stringify({ 'dataset.id': { eq: datasetId } }));
+  return axios
+    .get(`${apiUrl}/datafiles/findone`, {
+      params,
       headers: {
         Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
       },
     })
-    .then((response: AxiosResponse<Datafile[]>) => {
-      if (response.data.length <= 0) return false;
-      const datafile = response.data[0];
-      return (
-        datafile.id === datafileId &&
-        datafile.dataset?.id === datasetId &&
-        datafile.dataset?.investigation?.id === investigationId
-      );
+    .then(() => {
+      return true;
     })
     .catch((error) => {
+      // 404 is valid response from API saying the investigation id is invalid
+      if (axios.isAxiosError(error) && error.response?.status === 404)
+        return false;
+      // handle other API errors
       handleICATError(error);
       return false;
     });
+};
 
-export const checkDatafileId = memoize(unmemoizedCheckDatafileId, (...args) =>
+export const checkDatasetId = memoize(unmemoizedCheckDatasetId, (...args) =>
   JSON.stringify(args)
 );

@@ -21,6 +21,8 @@ export interface Investigation {
   title: string;
   name: string;
   visitId: string;
+  fileSize?: number;
+  fileCount?: number;
   doi?: string;
   startDate?: string;
   endDate?: string;
@@ -45,6 +47,8 @@ export interface Dataset {
   name: string;
   modTime: string;
   createTime: string;
+  fileSize?: number;
+  fileCount?: number;
   description?: string;
   startDate?: string;
   endDate?: string;
@@ -97,6 +101,8 @@ export interface User {
   id: number;
   name: string;
   fullName?: string;
+  email?: string;
+  affiliation?: string;
 }
 
 export interface Sample {
@@ -153,8 +159,8 @@ export interface DataCollectionDataset {
 
 export interface DataCollectionInvestigation {
   id: number;
-  dataCollection: DataCollection;
-  investigation: Investigation;
+  dataCollection?: DataCollection;
+  investigation?: Investigation;
 }
 
 export interface DataCollection {
@@ -171,16 +177,21 @@ export interface DataPublicationUser {
   fullName: string;
 }
 
+export interface DataPublicationType {
+  id: number;
+  name: string;
+}
+
 export interface DataPublication {
   id: number;
   pid: string;
   title: string;
-  modTime: string;
-  createTime: string;
+  facility?: Facility;
   description?: string;
   publicationDate?: string;
   users?: DataPublicationUser[];
   content?: DataCollection;
+  type?: DataPublicationType;
 }
 
 interface InstrumentScientist {
@@ -317,6 +328,7 @@ export interface SearchResultSource {
   investigationinstrument?: SearchInstrumentSource[];
   investigationfacilitycycle?: SearchFacilityCycleSource[];
   fileSize?: number;
+  fileCount?: number;
   'dataset.id'?: number;
   'dataset.name'?: string;
   'investigation.id'?: number;

@@ -56,31 +56,33 @@ export const readSciGatewayToken = () => {
 };
 
 Cypress.Commands.add('login', () => {
-  return cy.request('datagateway-search-settings.json').then((response) => {
-    const settings = response.body;
-    cy.request({
-      method: 'POST',
-      url: `${settings.icatUrl}/session`,
-      body: `json=${JSON.stringify({
-        plugin: 'simple',
-        credentials: [{ username: 'root' }, { password: 'pw' }],
-      })}`,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    }).then((response) => {
-      const jwtHeader = { alg: 'HS256', typ: 'JWT' };
-      const payload = {
-        sessionId: response.body.sessionId,
-        username: 'dev',
-      };
-      const jwt = jsrsasign.KJUR.jws.JWS.sign(
-        'HS256',
-        jwtHeader,
-        payload,
-        'shh'
-      );
-      window.localStorage.setItem('scigateway:token', jwt);
+  cy.session('login', () => {
+    cy.request('datagateway-search-settings.json').then((response) => {
+      const settings = response.body;
+      cy.request({
+        method: 'POST',
+        url: `${settings.icatUrl}/session`,
+        body: `json=${JSON.stringify({
+          plugin: 'simple',
+          credentials: [{ username: 'root' }, { password: 'pw' }],
+        })}`,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      }).then((response) => {
+        const jwtHeader = { alg: 'HS256', typ: 'JWT' };
+        const payload = {
+          sessionId: response.body.sessionId,
+          username: 'dev',
+        };
+        const jwt = jsrsasign.KJUR.jws.JWS.sign(
+          'HS256',
+          jwtHeader,
+          payload,
+          'shh'
+        );
+        window.localStorage.setItem('scigateway:token', jwt);
+      });
     });
   });
 });

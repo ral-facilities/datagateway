@@ -4,23 +4,30 @@ import {
   RenderResult,
   screen,
   waitFor,
+  within,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { UserEvent } from '@testing-library/user-event/dist/types/setup';
 import { fetchDownloadCart } from 'datagateway-common';
-import { createMemoryHistory } from 'history';
+import { createMemoryHistory, MemoryHistory } from 'history';
 import * as React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 import { Router } from 'react-router-dom';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import { mockCartItems, mockedSettings } from '../testData';
 import {
-  getDatafileCount,
-  getSize,
+  getFileSizeAndCount,
+  isCartMintable,
   removeAllDownloadCartItems,
   removeFromCart,
 } from '../downloadApi';
 import DownloadCartTable from './downloadCartTable.component';
+import { createTheme } from '@mui/material';
+
+setLogger({
+  log: console.log,
+  warn: console.warn,
+  error: jest.fn(),
+});
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -38,10 +45,10 @@ jest.mock('../downloadApi', () => {
   return {
     ...originalModule,
     removeAllDownloadCartItems: jest.fn(),
-    getSize: jest.fn(),
-    getDatafileCount: jest.fn(),
+    getFileSizeAndCount: jest.fn(),
     getIsTwoLevel: jest.fn().mockResolvedValue(true),
     removeFromCart: jest.fn(),
+    isCartMintable: jest.fn(),
   };
 });
 
@@ -54,20 +61,25 @@ const createTestQueryClient = (): QueryClient =>
     },
   });
 
-const renderComponent = (): RenderResult =>
-  render(
-    <QueryClientProvider client={createTestQueryClient()}>
-      <DownloadSettingsContext.Provider value={mockedSettings}>
-        <Router history={createMemoryHistory()}>
-          <DownloadCartTable statusTabRedirect={jest.fn()} />
-        </Router>
-      </DownloadSettingsContext.Provider>
-    </QueryClientProvider>
-  );
+const renderComponent = (): RenderResult & { history: MemoryHistory } => {
+  const history = createMemoryHistory();
+  return {
+    history: history,
+    ...render(
+      <QueryClientProvider client={createTestQueryClient()}>
+        <DownloadSettingsContext.Provider value={mockedSettings}>
+          <Router history={history}>
+            <DownloadCartTable statusTabRedirect={jest.fn()} />
+          </Router>
+        </DownloadSettingsContext.Provider>
+      </QueryClientProvider>
+    ),
+  };
+};
 
 describe('Download cart table component', () => {
   let holder, queryClient;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   const resetDOM = (): void => {
     if (holder) document.body.removeChild(holder);
@@ -100,10 +112,12 @@ describe('Download cart table component', () => {
       );
     });
 
-    (getSize as jest.MockedFunction<typeof getSize>).mockResolvedValue(1);
     (
-      getDatafileCount as jest.MockedFunction<typeof getDatafileCount>
-    ).mockResolvedValue(7);
+      getFileSizeAndCount as jest.MockedFunction<typeof getFileSizeAndCount>
+    ).mockResolvedValue({ fileSize: 1, fileCount: 7 });
+    (
+      isCartMintable as jest.MockedFunction<typeof isCartMintable>
+    ).mockResolvedValue(true);
   });
 
   afterEach(() => {
@@ -131,8 +145,8 @@ describe('Download cart table component', () => {
     ).toBeTruthy();
   });
 
-  it('should show progress indicator when calculating file count of cart', async () => {
-    (getDatafileCount as jest.Mock).mockImplementation(
+  it('should show progress indicator when calculating file count & size of cart', async () => {
+    (getFileSizeAndCount as jest.Mock).mockImplementation(
       () =>
         new Promise((_) => {
           // never resolve promise so that progress indicator stays visible.
@@ -144,15 +158,15 @@ describe('Download cart table component', () => {
     renderComponent();
 
     expect(
-      await screen.findByLabelText('downloadCart.calculating')
-    ).toBeInTheDocument();
+      await screen.findAllByLabelText('downloadCart.calculating')
+    ).toHaveLength(2);
   });
 
   it('should show total file count of the cart', async () => {
     renderComponent();
 
     expect(
-      await screen.findByText('downloadCart.number_of_files: 22 / 5000')
+      await screen.findByText('downloadCart.number_of_files: 28 / 5000')
     ).toBeTruthy();
   });
 
@@ -209,10 +223,9 @@ describe('Download cart table component', () => {
   });
 
   it('should disable download button when there are empty items in the cart ', async () => {
-    (getSize as jest.MockedFunction<typeof getSize>).mockResolvedValueOnce(0);
     (
-      getDatafileCount as jest.MockedFunction<typeof getDatafileCount>
-    ).mockResolvedValueOnce(0);
+      getFileSizeAndCount as jest.MockedFunction<typeof getFileSizeAndCount>
+    ).mockResolvedValue({ fileSize: 0, fileCount: 0 });
 
     renderComponent();
 
@@ -440,9 +453,96 @@ describe('Download cart table component', () => {
       await screen.findByText('downloadCart.total_size: 4 B', { exact: true })
     ).toBeTruthy();
     expect(
-      await screen.findByText('downloadCart.number_of_files: 22', {
+      await screen.findByText('downloadCart.number_of_files: 28', {
         exact: true,
       })
     ).toBeTruthy();
+  });
+
+  it('should go to DOI generation form when Generate DOI button is clicked', async () => {
+    const { history } = renderComponent();
+
+    await user.click(
+      screen.getByRole('link', { name: 'downloadCart.generate_DOI' })
+    );
+
+    expect(history.location).toMatchObject({
+      pathname: '/download/mint',
+      state: { fromCart: true },
+    });
+  });
+
+  it('should disable Generate DOI button when mintability is loading', async () => {
+    (
+      isCartMintable as jest.MockedFunction<typeof isCartMintable>
+    ).mockImplementation(
+      () =>
+        new Promise((_) => {
+          // do nothing, simulating pending promise to test loading state
+        })
+    );
+    const { history } = renderComponent();
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const generateDOIButton = screen
+      .getByRole('link', { name: 'downloadCart.generate_DOI' })
+      .closest('span')!;
+
+    await user.hover(generateDOIButton);
+
+    expect(
+      await screen.findByText('downloadCart.mintability_loading')
+    ).toBeInTheDocument();
+
+    await user.click(generateDOIButton);
+
+    expect(history.location).not.toMatchObject({
+      pathname: '/download/mint',
+      state: { fromCart: true },
+    });
+  });
+
+  it('should disable Generate DOI button when cart is not mintable', async () => {
+    (
+      isCartMintable as jest.MockedFunction<typeof isCartMintable>
+    ).mockRejectedValue({
+      response: {
+        data: { detail: 'Not allowed to mint the following items: [2,4]' },
+        status: 403,
+      },
+    });
+    const { history } = renderComponent();
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const generateDOIButton = screen
+      .getByRole('link', { name: 'downloadCart.generate_DOI' })
+      .closest('span')!;
+
+    await user.hover(generateDOIButton);
+
+    expect(
+      await screen.findByText('downloadCart.not_mintable')
+    ).toBeInTheDocument();
+
+    const tableRows = within(
+      screen.getByRole('rowgroup', { name: 'grid' })
+    ).getAllByRole('row');
+    const muiErrorColor = createTheme().palette.error.main;
+    expect(tableRows[1]).toHaveStyle(`background-color: ${muiErrorColor}`);
+    expect(tableRows[1]).toHaveStyle(`background-color: ${muiErrorColor}`);
+    expect(tableRows[0]).not.toHaveStyle(`background-color: ${muiErrorColor}`);
+    expect(tableRows[2]).not.toHaveStyle(`background-color: ${muiErrorColor}`);
+
+    await user.click(generateDOIButton);
+
+    expect(history.location).not.toMatchObject({
+      pathname: '/download/mint',
+      state: { fromCart: true },
+    });
+
+    await user.unhover(generateDOIButton);
+    for (const row of tableRows) {
+      expect(row).not.toHaveStyle(`background-color: ${muiErrorColor}`);
+    }
   });
 });

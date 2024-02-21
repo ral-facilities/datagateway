@@ -6,7 +6,6 @@ import {
   dGCommonInitialState,
   Investigation,
   useInvestigationCount,
-  useInvestigationsDatasetCount,
   useInvestigationsInfinite,
 } from 'datagateway-common';
 import configureStore from 'redux-mock-store';
@@ -41,7 +40,6 @@ jest.mock('datagateway-common', () => {
     ...originalModule,
     useInvestigationCount: jest.fn(),
     useInvestigationsInfinite: jest.fn(),
-    useInvestigationsDatasetCount: jest.fn(),
   };
 });
 
@@ -75,6 +73,8 @@ describe('DLS Visits table component', () => {
         visitId: '1',
         doi: 'doi 1',
         size: 1,
+        fileSize: 1,
+        fileCount: 1,
         investigationInstruments: [
           {
             id: 1,
@@ -107,12 +107,6 @@ describe('DLS Visits table component', () => {
       data: rowData,
       isLoading: false,
     });
-    (useInvestigationsDatasetCount as jest.Mock).mockReturnValue([
-      {
-        data: 1,
-        isSuccess: true,
-      },
-    ]);
   });
 
   afterEach(() => {
@@ -129,7 +123,7 @@ describe('DLS Visits table component', () => {
       await findColumnHeaderByName('investigations.visit_id')
     ).toBeInTheDocument();
     expect(
-      await findColumnHeaderByName('investigations.dataset_count')
+      await findColumnHeaderByName('investigations.size')
     ).toBeInTheDocument();
     expect(
       await findColumnHeaderByName('investigations.instrument')
@@ -153,11 +147,9 @@ describe('DLS Visits table component', () => {
     expect(
       within(
         findCellInRow(row, {
-          columnIndex: await findColumnIndexByName(
-            'investigations.dataset_count'
-          ),
+          columnIndex: await findColumnIndexByName('investigations.size'),
         })
-      ).getByText('1')
+      ).getByText('1 B')
     ).toBeInTheDocument();
     expect(
       within(
@@ -302,7 +294,6 @@ describe('DLS Visits table component', () => {
   it('renders fine with incomplete data', async () => {
     (useInvestigationCount as jest.Mock).mockReturnValueOnce({});
     (useInvestigationsInfinite as jest.Mock).mockReturnValueOnce({});
-    (useInvestigationsDatasetCount as jest.Mock).mockReturnValueOnce([]);
 
     (useInvestigationsInfinite as jest.Mock).mockReturnValueOnce({
       data: [
@@ -337,7 +328,6 @@ describe('DLS Visits table component', () => {
       ],
       isLoading: false,
     });
-    (useInvestigationsDatasetCount as jest.Mock).mockReturnValue([1]);
 
     renderComponent();
 

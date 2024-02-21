@@ -173,17 +173,7 @@ exports[`Visit details panel component should gracefully handles InvestigationUs
             class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
           >
             <b>
-              <button
-                class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1kc3inn-MuiButtonBase-root-MuiButton-root"
-                id="calculate-size-btn"
-                tabindex="0"
-                type="button"
-              >
-                investigations.details.calculate
-                <span
-                  class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                />
-              </button>
+              64 B
             </b>
           </p>
         </div>
@@ -368,17 +358,7 @@ exports[`Visit details panel component should render correctly 1`] = `
             class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
           >
             <b>
-              <button
-                class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1kc3inn-MuiButtonBase-root-MuiButton-root"
-                id="calculate-size-btn"
-                tabindex="0"
-                type="button"
-              >
-                investigations.details.calculate
-                <span
-                  class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                />
-              </button>
+              64 B
             </b>
           </p>
         </div>
@@ -603,17 +583,7 @@ exports[`Visit details panel component should render user, sample and publicatio
             class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
           >
             <b>
-              <button
-                class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1kc3inn-MuiButtonBase-root-MuiButton-root"
-                id="calculate-size-btn"
-                tabindex="0"
-                type="button"
-              >
-                investigations.details.calculate
-                <span
-                  class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                />
-              </button>
+              64 B
             </b>
           </p>
         </div>

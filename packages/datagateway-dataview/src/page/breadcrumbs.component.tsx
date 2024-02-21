@@ -107,36 +107,42 @@ const useEntityInformation = (
         let apiEntity = entity;
 
         // If the entity is a investigation or a data publication, we can't use name field as the default
-        // TODO: what do we want to show for a datapublication breadcrumb?
         let requestEntityField =
           entity === 'investigation'
             ? 'title'
             : entity === 'dataPublication'
-            ? 'pid'
+            ? 'title'
             : 'name';
 
+        // this is the field we use to lookup the relevant entity in ICAT - it's usually ID
+        // but for DLS proposals this will be name
+        let requestQueryField = 'id';
+
         // Use breadcrumb settings in state to customise API call for entities.
-        if (
-          Object.entries(breadcrumbSettings).length !== 0 &&
-          entity in breadcrumbSettings
-        ) {
-          const entitySettings = breadcrumbSettings[entity];
+        breadcrumbSettings
+          .filter(
+            (breadcrumbSetting) => breadcrumbSetting.matchEntity === entity
+          )
+          .forEach((entitySettings) => {
+            // Check for a parent entity.
+            if (
+              !entitySettings.parentEntity ||
+              (entitySettings.parentEntity &&
+                currentPathnames.includes(entitySettings.parentEntity))
+            ) {
+              // Get the defined replace entity field.
+              requestEntityField = entitySettings.replaceEntityField;
 
-          // Check for a parent entity.
-          if (
-            !entitySettings.parentEntity ||
-            (entitySettings.parentEntity &&
-              currentPathnames.includes(entitySettings.parentEntity))
-          ) {
-            // Get the defined replace entity field.
-            requestEntityField = entitySettings.replaceEntityField;
+              // Get the replace entity, if one has been defined.
+              if (entitySettings.replaceEntity) {
+                apiEntity = entitySettings.replaceEntity;
+              }
 
-            // Get the replace entity, if one has been defined.
-            if (entitySettings.replaceEntity) {
-              apiEntity = entitySettings.replaceEntity;
+              if (entitySettings.replaceEntityQueryField) {
+                requestQueryField = entitySettings.replaceEntityQueryField;
+              }
             }
-          }
-        }
+          });
 
         // Create the entity url to request the name, this is pluralised to get the API endpoint.
         let requestEntityUrl: string;
@@ -156,7 +162,7 @@ const useEntityInformation = (
           requestEntityUrl =
             pluralisedApiEntity.toLowerCase() +
             '/findone?where=' +
-            JSON.stringify({ name: { eq: entityId } });
+            JSON.stringify({ [requestQueryField]: { eq: entityId } });
         }
 
         queryConfigs.push({
