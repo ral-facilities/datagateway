@@ -175,7 +175,7 @@ describe('SearchPageContainer Component', () => {
       });
     });
 
-    it('should be able to scroll down and load more rows', () => {
+    it.only('should be able to scroll down and load more rows', () => {
       cy.get('[aria-label="Search text input"').clear();
       cy.get('[aria-label="Submit search"]').click();
 
@@ -186,14 +186,21 @@ describe('SearchPageContainer Component', () => {
       cy.get('[data-testid="tabpanel-datafile"] [aria-label="grid"]').should(
         'be.visible'
       );
+
       cy.get('[aria-rowcount="300"]').should('exist');
       cy.get('[data-testid="tabpanel-datafile"] [aria-label="grid"]').scrollTo(
         'bottom'
       );
+      cy.get('[aria-rowindex="300"] > [aria-colindex="3"]')
+        .contains('Datafile 300')
+        .should('exist');
       cy.findByRole('tab', { name: 'Datafile' }).within(() => {
         cy.findByText('600+').should('exist');
       });
       cy.get('[aria-rowcount="600"]').should('exist');
+      cy.get('[aria-rowindex="301"] > [aria-colindex="3"]')
+        .contains('Datafile 301')
+        .should('exist');
     });
 
     it('should be able to choose number of results to display', () => {
