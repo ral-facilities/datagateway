@@ -36,9 +36,7 @@ interface InvestigationTableProps {
   hierarchy: string;
 }
 
-const InvestigationSearchTable = (
-  props: InvestigationTableProps
-): React.ReactElement => {
+const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
   const { hierarchy } = props;
 
   const location = useLocation();
@@ -328,6 +326,8 @@ const InvestigationSearchTable = (
     },
     [hierarchy, push]
   );
+
+  if (currentTab !== 'investigation') return null;
 
   return (
     <Grid

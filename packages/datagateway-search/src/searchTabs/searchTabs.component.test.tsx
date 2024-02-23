@@ -24,6 +24,7 @@ describe('SearchTabs', () => {
   let history: History;
   let user: ReturnType<typeof userEvent.setup>;
   const mockStore = configureStore([thunk]);
+  let searchParams: URLSearchParams;
 
   const mockAxiosGet = (
     url: string,
@@ -156,11 +157,13 @@ describe('SearchTabs', () => {
   );
 
   beforeEach(() => {
+    searchParams = new URLSearchParams();
+    searchParams.append('searchText', 'test');
     history = createMemoryHistory({
       initialEntries: [
         {
           pathname: '/search/data',
-          search: '?searchText=test',
+          search: searchParams.toString(),
         },
       ],
     });
@@ -171,12 +174,6 @@ describe('SearchTabs', () => {
     );
 
     axios.get = jest.fn().mockImplementation(mockAxiosGet);
-
-    const searchParams = new URLSearchParams();
-    searchParams.append('searchText', 'test search');
-    history.replace({
-      search: `?${searchParams.toString()}`,
-    });
   });
 
   afterEach(() => {
@@ -233,8 +230,12 @@ describe('SearchTabs', () => {
     expect(within(datafileTab).getByText('?')).toBeInTheDocument();
 
     expect(screen.getByTestId('investigation-search-table')).toBeVisible();
-    expect(screen.getByTestId('dataset-search-table')).not.toBeVisible();
-    expect(screen.getByTestId('datafile-search-table')).not.toBeVisible();
+    expect(
+      screen.queryByTestId('dataset-search-table')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('datafile-search-table')
+    ).not.toBeInTheDocument();
 
     expect(queryAllRows()).toHaveLength(0);
   });
@@ -281,8 +282,12 @@ describe('SearchTabs', () => {
     expect(await within(datafileTab).findByText('1')).toBeInTheDocument();
 
     expect(screen.getByTestId('investigation-search-table')).toBeVisible();
-    expect(screen.getByTestId('dataset-search-table')).not.toBeVisible();
-    expect(screen.getByTestId('datafile-search-table')).not.toBeVisible();
+    expect(
+      screen.queryByTestId('dataset-search-table')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('datafile-search-table')
+    ).not.toBeInTheDocument();
 
     rerender(
       <SearchTabs
@@ -295,11 +300,16 @@ describe('SearchTabs', () => {
         navigateToDownload={jest.fn()}
       />
     );
-    history.replace({ search: '?searchText=test' });
+    searchParams.set('currentTab', 'dataset');
+    history.replace({ search: searchParams.toString() });
 
-    expect(screen.getByTestId('investigation-search-table')).not.toBeVisible();
+    expect(
+      screen.queryByTestId('investigation-search-table')
+    ).not.toBeInTheDocument();
     expect(screen.getByTestId('dataset-search-table')).toBeVisible();
-    expect(screen.getByTestId('datafile-search-table')).not.toBeVisible();
+    expect(
+      screen.queryByTestId('datafile-search-table')
+    ).not.toBeInTheDocument();
 
     rerender(
       <SearchTabs
@@ -312,10 +322,15 @@ describe('SearchTabs', () => {
         navigateToDownload={jest.fn()}
       />
     );
-    history.replace({ search: '?searchText=test' });
+    searchParams.set('currentTab', 'datafile');
+    history.replace({ search: searchParams.toString() });
 
-    expect(screen.getByTestId('investigation-search-table')).not.toBeVisible();
-    expect(screen.getByTestId('dataset-search-table')).not.toBeVisible();
+    expect(
+      screen.queryByTestId('investigation-search-table')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('dataset-search-table')
+    ).not.toBeInTheDocument();
     expect(screen.getByTestId('datafile-search-table')).toBeVisible();
   });
 
@@ -364,8 +379,12 @@ describe('SearchTabs', () => {
     expect(await within(datafileTab).findByText('1')).toBeInTheDocument();
 
     expect(screen.getByTestId('investigation-search-card-view')).toBeVisible();
-    expect(screen.getByTestId('dataset-search-card-view')).not.toBeVisible();
-    expect(screen.getByTestId('datafile-search-table')).not.toBeVisible();
+    expect(
+      screen.queryByTestId('dataset-search-card-view')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('datafile-search-table')
+    ).not.toBeInTheDocument();
 
     rerender(
       <SearchTabs
@@ -378,13 +397,16 @@ describe('SearchTabs', () => {
         navigateToDownload={jest.fn()}
       />
     );
-    history.replace({ search: '?searchText=test' });
+    searchParams.set('currentTab', 'dataset');
+    history.replace({ search: searchParams.toString() });
 
     expect(
-      screen.getByTestId('investigation-search-card-view')
-    ).not.toBeVisible();
+      screen.queryByTestId('investigation-search-card-view')
+    ).not.toBeInTheDocument();
     expect(screen.getByTestId('dataset-search-card-view')).toBeVisible();
-    expect(screen.getByTestId('datafile-search-table')).not.toBeVisible();
+    expect(
+      screen.queryByTestId('datafile-search-table')
+    ).not.toBeInTheDocument();
 
     rerender(
       <SearchTabs
@@ -397,12 +419,15 @@ describe('SearchTabs', () => {
         navigateToDownload={jest.fn()}
       />
     );
-    history.replace({ search: '?searchText=test' });
+    searchParams.set('currentTab', 'datafile');
+    history.replace({ search: searchParams.toString() });
 
     expect(
-      screen.getByTestId('investigation-search-card-view')
-    ).not.toBeVisible();
-    expect(screen.getByTestId('dataset-search-card-view')).not.toBeVisible();
+      screen.queryByTestId('investigation-search-card-view')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('dataset-search-card-view')
+    ).not.toBeInTheDocument();
     expect(screen.getByTestId('datafile-search-table')).toBeVisible();
   });
 
@@ -416,7 +441,10 @@ describe('SearchTabs', () => {
       },
     };
 
-    const onTabChange = jest.fn();
+    const onTabChange = jest.fn((newTab) => {
+      searchParams.set('currentTab', newTab);
+      history.replace({ search: searchParams.toString() });
+    });
 
     const { rerender } = render(
       <SearchTabs
@@ -463,11 +491,14 @@ describe('SearchTabs', () => {
         navigateToDownload={jest.fn()}
       />
     );
-    history.push({ search: '?searchText=test' });
 
-    expect(screen.getByTestId('investigation-search-table')).not.toBeVisible();
+    expect(
+      screen.queryByTestId('investigation-search-table')
+    ).not.toBeInTheDocument();
     expect(screen.getByTestId('dataset-search-table')).toBeVisible();
-    expect(screen.getByTestId('datafile-search-table')).not.toBeVisible();
+    expect(
+      screen.queryByTestId('datafile-search-table')
+    ).not.toBeInTheDocument();
   });
 
   it('resets search result count when filters are applied', async () => {

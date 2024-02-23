@@ -148,7 +148,10 @@ describe('Dataset table component', () => {
 
   beforeEach(() => {
     user = userEvent.setup();
-    history = createMemoryHistory();
+
+    history = createMemoryHistory({
+      initialEntries: [{ search: 'searchText=test search&currentTab=dataset' }],
+    });
     queryClient = new QueryClient({
       defaultOptions: {
         queries: { retry: false },
@@ -177,20 +180,16 @@ describe('Dataset table component', () => {
       }
       return Promise.reject();
     });
-
-    const searchParams = new URLSearchParams();
-    searchParams.append('searchText', 'test search');
-    history.replace({
-      search: `?${searchParams.toString()}&currentTab=dataset`,
-    });
   });
 
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('renders nothing if dataset search is disabled', async () => {
-    history.replace({ search: 'dataset=false' });
+  it('disables the search query if dataset search is disabled', async () => {
+    const searchParams = new URLSearchParams(history.location.search);
+    searchParams.append('dataset', 'false');
+    history.replace({ search: `?${searchParams.toString()}` });
 
     renderComponent();
 
@@ -212,6 +211,10 @@ describe('Dataset table component', () => {
 
     // wait for queries to finish fetching
     await waitFor(() => !queryClient.isFetching());
+
+    expect(
+      queryClient.getQueryState(['search', 'Dataset'], { exact: false })?.status
+    ).toBe('idle');
 
     expect(queryAllRows()).toHaveLength(0);
   });

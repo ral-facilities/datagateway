@@ -53,7 +53,7 @@ const ActionButtonDiv = styled('div')(({ theme }) => ({
   },
 }));
 
-const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
+const DatasetCardView: React.FC<DatasetCardViewProps> = (props) => {
   const [t] = useTranslation();
   const { hierarchy } = props;
 
@@ -174,6 +174,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
         .flat();
       const minResult = (page ? page - 1 : 0) * (results ?? 10);
       const maxResult = (page ?? 1) * (results ?? 10);
+
       if (hasNextPage && aggregatedIds.length < maxResult) {
         fetchNextPage();
       }
@@ -394,6 +395,8 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
   ): void => {
     removeFacetFilter({ dimension, filterValue, applyImmediately: true });
   };
+
+  if (currentTab !== 'dataset') return null;
 
   return (
     <Grid

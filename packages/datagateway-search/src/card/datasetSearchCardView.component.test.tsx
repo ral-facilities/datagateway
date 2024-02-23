@@ -16,7 +16,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { createMemoryHistory, MemoryHistory } from 'history';
 import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
 import type { RenderResult } from '@testing-library/react';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 
@@ -26,12 +26,13 @@ describe('Dataset - Card View', () => {
   let searchResult: SearchResult;
   let searchResponse: SearchResponse;
   let history: MemoryHistory;
+  let queryClient: QueryClient;
 
   function renderComponent({ hierarchy = '' } = {}): RenderResult {
     return render(
       <Provider store={configureStore([thunk])(state)}>
         <Router history={history}>
-          <QueryClientProvider client={new QueryClient()}>
+          <QueryClientProvider client={queryClient}>
             <DatasetSearchCardView hierarchy={hierarchy} />
           </QueryClientProvider>
         </Router>
@@ -101,6 +102,11 @@ describe('Dataset - Card View', () => {
         },
       ],
     });
+    queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+      },
+    });
 
     state = JSON.parse(
       JSON.stringify({
@@ -116,6 +122,27 @@ describe('Dataset - Card View', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  it('disables the search query if dataset search is disabled', async () => {
+    const searchParams = new URLSearchParams(history.location.search);
+    searchParams.append('dataset', 'false');
+    history.replace({ search: `?${searchParams.toString()}` });
+
+    renderComponent();
+
+    expect(
+      screen.queryByTestId('dataset-search-card-view')
+    ).toBeInTheDocument();
+
+    // wait for queries to finish fetching
+    await waitFor(() => !queryClient.isFetching());
+
+    expect(
+      queryClient.getQueryState(['search', 'Dataset'], { exact: false })?.status
+    ).toBe('idle');
+
+    expect(screen.queryAllByTestId('card')).toHaveLength(0);
   });
 
   it('renders correctly', async () => {

@@ -175,7 +175,7 @@ describe('SearchPageContainer Component', () => {
       });
     });
 
-    it.only('should be able to scroll down and load more rows', () => {
+    it('should be able to scroll down and load more rows', () => {
       cy.get('[aria-label="Search text input"').clear();
       cy.get('[aria-label="Submit search"]').click();
 
@@ -236,9 +236,13 @@ describe('SearchPageContainer Component', () => {
     });
 
     it('should be able to change page in card view', () => {
+      cy.viewport('macbook-11');
+
       cy.get('[aria-label="Search text input"]').clear();
 
       cy.get('[aria-label="Submit search"]').click();
+
+      cy.findByRole('tab', { name: 'Dataset' }).click();
 
       cy.get('[aria-label="page view Display as cards"]').click();
 
@@ -247,27 +251,27 @@ describe('SearchPageContainer Component', () => {
       // wrong on one env or the other
 
       cy.get('[aria-label="Go to page 2"]', { timeout: 10000 }).first().click();
-      cy.contains('[data-testid="card"]', 'Star enter wide nearly off');
+      cy.contains('[data-testid="card"]', 'DATASET 15');
 
       cy.get('[aria-label="Go to next page"]', { timeout: 10000 })
         .first()
         .click();
-      cy.contains('[data-testid="card"]', 'Crime town perhaps');
+      cy.contains('[data-testid="card"]', 'DATASET 25');
 
       cy.get('[aria-label="Go to last page"]', { timeout: 10000 })
         .first()
         .click();
-      cy.contains('[data-testid="card"]', 'Imagine ball old window');
+      cy.contains('[data-testid="card"]', 'DATASET 115');
 
       cy.get('[aria-label="Go to previous page"]', { timeout: 10000 })
         .first()
         .click();
-      cy.contains('[data-testid="card"]', 'Deep watch simple');
+      cy.contains('[data-testid="card"]', 'DATASET 105');
 
       cy.get('[aria-label="Go to first page"]', { timeout: 10000 })
         .first()
         .click();
-      cy.contains('[data-testid="card"]', 'Now himself exist board space');
+      cy.contains('[data-testid="card"]', 'DATASET 5');
     });
 
     it('should display selection alert banner correctly', () => {

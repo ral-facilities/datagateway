@@ -114,7 +114,11 @@ describe('Datafile search table component', () => {
   }
 
   beforeEach(() => {
-    history = createMemoryHistory();
+    history = createMemoryHistory({
+      initialEntries: [
+        { search: '?searchText=test search&currentTab=datafile' },
+      ],
+    });
     user = userEvent.setup();
     queryClient = new QueryClient({
       defaultOptions: {
@@ -204,12 +208,6 @@ describe('Datafile search table component', () => {
           return Promise.reject(`Endpoint not mocked: ${url}`);
         }
       );
-
-    const searchParams = new URLSearchParams();
-    searchParams.append('searchText', 'test search');
-    history.replace({
-      search: `?${searchParams.toString()}&currentTab=datafile`,
-    });
   });
 
   afterEach(() => {
@@ -217,8 +215,10 @@ describe('Datafile search table component', () => {
     jest.clearAllMocks();
   });
 
-  it('renders nothing if datafile search is disabled', async () => {
-    history.replace({ search: 'datafile=false' });
+  it('disables the search query if datafile search is disabled', async () => {
+    const searchParams = new URLSearchParams(history.location.search);
+    searchParams.append('datafile', 'false');
+    history.replace({ search: `?${searchParams.toString()}` });
 
     renderComponent();
 
@@ -237,6 +237,11 @@ describe('Datafile search table component', () => {
 
     // wait for queries to finish fetching
     await waitFor(() => !queryClient.isFetching());
+
+    expect(
+      queryClient.getQueryState(['search', 'Datafile'], { exact: false })
+        ?.status
+    ).toBe('idle');
 
     expect(queryAllRows()).toHaveLength(0);
   });
@@ -527,13 +532,6 @@ describe('Datafile search table component', () => {
   });
 
   it('adds/removes rows to/from download cart', async () => {
-    const searchParams = new URLSearchParams();
-    searchParams.append('searchText', 'test search');
-
-    history.push({
-      search: `?${searchParams.toString()}`,
-    });
-
     renderComponent();
 
     const checkbox = await screen.findByRole('checkbox', {

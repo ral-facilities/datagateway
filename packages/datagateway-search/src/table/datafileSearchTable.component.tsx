@@ -38,9 +38,7 @@ interface DatafileSearchTableProps {
   hierarchy: string;
 }
 
-const DatafileSearchTable = (
-  props: DatafileSearchTableProps
-): React.ReactElement => {
+const DatafileSearchTable: React.FC<DatafileSearchTableProps> = (props) => {
   const { hierarchy } = props;
 
   const location = useLocation();
@@ -312,6 +310,8 @@ const DatafileSearchTable = (
   if (hierarchy === FACILITY_NAME.isis) detailsPanel = ISISDatafileDetailsPanel;
   else if (hierarchy === FACILITY_NAME.dls)
     detailsPanel = DLSDatafileDetailsPanel;
+
+  if (currentTab !== 'datafile') return null;
 
   return (
     <Grid

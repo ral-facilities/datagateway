@@ -117,7 +117,12 @@ describe('Investigation Search Table component', () => {
 
   beforeEach(() => {
     user = userEvent.setup();
-    history = createMemoryHistory();
+
+    history = createMemoryHistory({
+      initialEntries: [
+        { search: 'searchText=test search&currentTab=investigation' },
+      ],
+    });
     queryClient = new QueryClient({
       defaultOptions: {
         queries: { retry: false },
@@ -181,20 +186,16 @@ describe('Investigation Search Table component', () => {
       }
       return Promise.reject();
     });
-
-    const searchParams = new URLSearchParams();
-    searchParams.append('searchText', 'test search');
-    history.replace({
-      search: `?${searchParams.toString()}`,
-    });
   });
 
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('renders nothing if investigation search is disabled', async () => {
-    history.replace({ search: 'investigation=false' });
+  it('disables the search query if investigation search is disabled', async () => {
+    const searchParams = new URLSearchParams(history.location.search);
+    searchParams.append('investigation', 'false');
+    history.replace({ search: `?${searchParams.toString()}` });
 
     renderComponent();
 
@@ -226,6 +227,11 @@ describe('Investigation Search Table component', () => {
 
     // wait for queries to finish fetching
     await waitFor(() => !queryClient.isFetching());
+
+    expect(
+      queryClient.getQueryState(['search', 'Investigation'], { exact: false })
+        ?.status
+    ).toBe('idle');
 
     expect(queryAllRows()).toHaveLength(0);
   });

@@ -39,9 +39,7 @@ interface DatasetTableProps {
   hierarchy: string;
 }
 
-const DatasetSearchTable = ({
-  hierarchy,
-}: DatasetTableProps): React.ReactElement => {
+const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
   const location = useLocation();
   const { push } = useHistory();
   const queryParams = React.useMemo(
@@ -372,6 +370,8 @@ const DatasetSearchTable = ({
     },
     [hierarchy, push]
   );
+
+  if (currentTab !== 'dataset') return null;
 
   return (
     <Grid

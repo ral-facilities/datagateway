@@ -59,9 +59,7 @@ const ActionButtonDiv = styled('div')(({ theme }) => ({
   },
 }));
 
-const InvestigationCardView = (
-  props: InvestigationCardProps
-): React.ReactElement => {
+const InvestigationCardView: React.FC<InvestigationCardProps> = (props) => {
   const { hierarchy } = props;
 
   const [t] = useTranslation();
@@ -368,6 +366,8 @@ const InvestigationCardView = (
         : [],
     [aggregatedIds, hierarchy]
   );
+
+  if (currentTab !== 'investigation') return null;
 
   return (
     <Grid

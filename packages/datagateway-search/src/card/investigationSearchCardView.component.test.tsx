@@ -26,12 +26,13 @@ describe('Investigation - Card View', () => {
   let searchResult: SearchResult;
   let searchResponse: SearchResponse;
   let history: MemoryHistory;
+  let queryClient: QueryClient;
 
   function renderComponent({ hierarchy = '' } = {}): RenderResult {
     return render(
       <Provider store={configureStore([thunk])(state)}>
         <Router history={history}>
-          <QueryClientProvider client={new QueryClient()}>
+          <QueryClientProvider client={queryClient}>
             <InvestigationSearchCardView hierarchy={hierarchy} />
           </QueryClientProvider>
         </Router>
@@ -87,7 +88,16 @@ describe('Investigation - Card View', () => {
     searchResponse = {
       results: [searchResult],
     };
-    history = createMemoryHistory();
+    history = createMemoryHistory({
+      initialEntries: [
+        { search: 'searchText=test search&currentTab=investigation' },
+      ],
+    });
+    queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+      },
+    });
 
     state = JSON.parse(
       JSON.stringify({
@@ -104,7 +114,27 @@ describe('Investigation - Card View', () => {
     jest.clearAllMocks();
   });
 
-  //The below tests are modified from datasetSearchCardView
+  it('disables the search query if investigation search is disabled', async () => {
+    const searchParams = new URLSearchParams(history.location.search);
+    searchParams.append('investigation', 'false');
+    history.replace({ search: `?${searchParams.toString()}` });
+
+    renderComponent();
+
+    expect(
+      screen.queryByTestId('investigation-search-card-view')
+    ).toBeInTheDocument();
+
+    // wait for queries to finish fetching
+    await waitFor(() => !queryClient.isFetching());
+
+    expect(
+      queryClient.getQueryState(['search', 'Investigation'], { exact: false })
+        ?.status
+    ).toBe('idle');
+
+    expect(screen.queryAllByTestId('card')).toHaveLength(0);
+  });
 
   it('renders correctly', async () => {
     renderComponent();
