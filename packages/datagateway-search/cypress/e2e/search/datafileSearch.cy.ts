@@ -377,7 +377,7 @@ describe('Datafile search tab', () => {
     cy.findAllByRole('row').should('have.length', 12);
 
     // check that filter chips are displayed
-    cy.findByTestId('tabpanel-dataset').within(() => {
+    cy.findByTestId('tabpanel-datafile').within(() => {
       cy.findByLabelText('Selected filters')
         .should('exist')
         .within(() => {
