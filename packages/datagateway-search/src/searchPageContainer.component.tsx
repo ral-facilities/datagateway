@@ -289,8 +289,15 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const [isSearchInitiated, setIsSearchInitiated] = React.useState(
     queryParams.searchText !== null && (investigation || dataset || datafile)
   );
+
+  const username = readSciGatewayToken().username;
+  const loggedInAnonymously = username === null || username === 'anon/anon';
+
   const [shouldRestrictSearch, setShouldRestrictSearch] = React.useState(
-    parseSearchToQuery(location.search).restrict
+    // restrict should be false if logged in as anon
+    // otherwise, default (i.e. !isSearchInitiated) should be checkbox set to true
+    // otherwise, if search already initiated - respect the restrict param
+    !loggedInAnonymously && (!isSearchInitiated || queryParams.restrict)
   );
 
   const handleSearchTextChange = (searchText: string): void => {
@@ -406,9 +413,6 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
 
   const navigateToDownload = React.useCallback(() => push('/download'), [push]);
 
-  const username = readSciGatewayToken().username;
-  const loggedInAnonymously = username === null || username === 'anon/anon';
-
   const disabled = Object.keys(queryParams.filters).length === 0;
 
   const pushFilters = useUpdateQueryParam('filters', 'push');
@@ -446,6 +450,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                   <SearchBoxContainerSide
                     searchText={searchText}
                     restrict={shouldRestrictSearch}
+                    loggedInAnonymously={loggedInAnonymously}
                     initiateSearch={initiateSearch}
                     onSearchTextChange={handleSearchTextChange}
                     onMyDataCheckboxChange={(restrict) =>
@@ -458,6 +463,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                   <SearchBoxContainer
                     searchText={searchText}
                     restrict={shouldRestrictSearch}
+                    loggedInAnonymously={loggedInAnonymously}
                     initiateSearch={initiateSearch}
                     onSearchTextChange={handleSearchTextChange}
                     onMyDataCheckboxChange={(restrict) =>

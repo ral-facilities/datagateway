@@ -9,7 +9,6 @@ import { Trans, useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
 import SortSelectComponent from './search/sortSelect.component';
 import MyDataCheckBox from './search/myDataCheckBox.component';
-import { readSciGatewayToken } from 'datagateway-common';
 import { Location } from 'history';
 
 const ContainerBox = styled(Box)(({ theme }) => ({
@@ -24,6 +23,7 @@ const ContainerBox = styled(Box)(({ theme }) => ({
 interface SearchBoxContainerProps {
   searchText: string;
   restrict: boolean;
+  loggedInAnonymously: boolean;
   initiateSearch: () => void;
   onSearchTextChange: (searchText: string) => void;
   onMyDataCheckboxChange: (checked: boolean) => void;
@@ -35,14 +35,12 @@ const SearchBoxContainer = (
   const {
     searchText,
     restrict,
+    loggedInAnonymously,
     initiateSearch,
     onSearchTextChange,
     onMyDataCheckboxChange,
   } = props;
   const [t] = useTranslation();
-
-  const username = readSciGatewayToken().username;
-  const loggedInAnonymously = username === null || username === 'anon/anon';
 
   function searchTextExampleLink(exampleSearchText: string) {
     return (location: Location): Location => {

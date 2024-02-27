@@ -130,7 +130,7 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
     startDate: startDate,
     endDate: endDate,
     currentTab: currentTab ? currentTab : 'investigation',
-    restrict: restrict !== null ? restrict === 'true' : true,
+    restrict: restrict === 'true',
   };
 
   return params;
@@ -157,7 +157,7 @@ export const parseQueryToSearch = (query: QueryParams): URLSearchParams => {
           v === true
         ) &&
         !(q === 'currentTab' && v === 'investigation') &&
-        !(q === 'restrict' && v === true)
+        !(q === 'restrict' && v === false)
       )
         queryParams.append(q, v);
     }

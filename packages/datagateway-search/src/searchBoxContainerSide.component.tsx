@@ -6,12 +6,13 @@ import SelectDates from './search/datePicker.component';
 import CheckboxesGroup from './search/checkBoxes.component';
 import SearchButton from './search/searchButton.component';
 import SearchTextBox from './search/searchTextBox.component';
-import { ArrowTooltip, readSciGatewayToken } from 'datagateway-common';
+import { ArrowTooltip } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
 
 interface SearchBoxContainerProps {
   searchText: string;
   restrict: boolean;
+  loggedInAnonymously: boolean;
   initiateSearch: () => void;
   onSearchTextChange: (searchText: string) => void;
   onMyDataCheckboxChange: (checked: boolean) => void;
@@ -23,13 +24,11 @@ const SearchBoxContainerSide = (
   const {
     searchText,
     restrict,
+    loggedInAnonymously,
     initiateSearch,
     onSearchTextChange,
     onMyDataCheckboxChange,
   } = props;
-
-  const username = readSciGatewayToken().username;
-  const loggedInAnonymously = username === null || username === 'anon/anon';
 
   const [t] = useTranslation();
 

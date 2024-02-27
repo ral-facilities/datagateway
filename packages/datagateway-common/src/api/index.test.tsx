@@ -108,7 +108,7 @@ describe('generic api functions', () => {
         view: 'table',
         search: 'test',
         page: 1,
-        restrict: true,
+        restrict: false,
         results: 10,
         filters: { name: { value: 'test', type: 'include' } },
         sort: { name: 'asc' },
@@ -124,7 +124,7 @@ describe('generic api functions', () => {
 
     it('parses query string with search parameters successfully', () => {
       const query =
-        'view=table&searchText=testText&datafile=false&startDate=2021-10-17&endDate=2021-10-25';
+        'view=table&searchText=testText&datafile=false&startDate=2021-10-17&endDate=2021-10-25&restrict=true';
 
       expect(parseSearchToQuery(query)).toEqual({
         view: 'table',
@@ -164,7 +164,7 @@ describe('generic api functions', () => {
           startDate: new Date(NaN),
           endDate: new Date(NaN),
           currentTab: 'investigation',
-          restrict: true,
+          restrict: false,
         })
       );
     });
@@ -191,7 +191,7 @@ describe('generic api functions', () => {
         search: 'test',
         page: 1,
         results: 10,
-        restrict: true,
+        restrict: false,
         filters: { name: { value: 'test', type: 'include' } },
         sort: { name: 'asc' },
         searchText: null,
@@ -229,7 +229,7 @@ describe('generic api functions', () => {
       };
 
       const params = new URLSearchParams(
-        '?view=table&searchText=testText&datafile=false&startDate=2021-10-17&endDate=2021-10-25'
+        '?view=table&restrict=true&searchText=testText&datafile=false&startDate=2021-10-17&endDate=2021-10-25'
       );
 
       expect(parseQueryToSearch(query).toString()).toEqual(params.toString());
@@ -240,7 +240,7 @@ describe('generic api functions', () => {
         view: 'table',
         search: null,
         page: null,
-        restrict: true,
+        restrict: false,
         results: null,
         filters: {},
         sort: {},
@@ -906,7 +906,7 @@ describe('generic api functions', () => {
         act(() => {
           result.current({
             view: 'card',
-            restrict: false,
+            restrict: true,
             searchText: 'newText',
             dataset: false,
             datafile: true,
@@ -918,7 +918,7 @@ describe('generic api functions', () => {
 
         expect(pushSpy).toHaveBeenCalledWith({
           search:
-            '?view=card&searchText=newText&dataset=false&investigation=false&endDate=2021-10-25&currentTab=dataset&restrict=false',
+            '?view=card&searchText=newText&dataset=false&investigation=false&endDate=2021-10-25&currentTab=dataset&restrict=true',
         });
       });
     });
@@ -981,10 +981,10 @@ describe('generic api functions', () => {
         });
 
         act(() => {
-          result.current(false);
+          result.current(true);
         });
 
-        expect(pushSpy).toHaveBeenCalledWith('?restrict=false');
+        expect(pushSpy).toHaveBeenCalledWith('?restrict=true');
       });
     });
   });

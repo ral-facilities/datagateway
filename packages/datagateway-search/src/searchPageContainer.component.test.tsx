@@ -5,6 +5,7 @@ import { StateType } from './state/app.types';
 import { initialState as dgSearchInitialState } from './state/reducers/dgsearch.reducer';
 import {
   dGCommonInitialState,
+  readSciGatewayToken,
   type DownloadCartItem,
 } from 'datagateway-common';
 import { createMemoryHistory, createPath, type History } from 'history';
@@ -34,6 +35,7 @@ jest.mock('datagateway-common', () => {
       originalModule.parseSearchToQuery(queryParams)
     ),
     useCart: jest.fn(() => originalModule.useCart()),
+    readSciGatewayToken: jest.fn(),
   };
 });
 
@@ -42,7 +44,7 @@ function generateURLSearchParams({
   query = {},
   minCount = '10',
   maxCount = '100',
-  restrict = 'true',
+  restrict = 'false',
 }): URLSearchParams {
   const params = new URLSearchParams();
   params.append('sessionId', sessionId);
@@ -149,8 +151,9 @@ describe('SearchPageContainer - Tests', () => {
     history = createMemoryHistory({
       initialEntries: ['/search/data'],
     });
-    delete window.location;
-    window.location = new URL(`http://localhost/search/data`);
+    (window as Window).location = new URL(
+      `http://localhost/search/data`
+    ).toString();
 
     // below code keeps window.location in sync with history changes
     // (needed because useUpdateQueryParam uses window.location not history)
@@ -159,9 +162,13 @@ describe('SearchPageContainer - Tests', () => {
     historyReplaceSpy.mockImplementation((args) => {
       historyReplace(args);
       if (typeof args === 'string') {
-        window.location = new URL(`http://localhost${args}`);
+        (window as Window).location = new URL(
+          `http://localhost${args}`
+        ).toString();
       } else {
-        window.location = new URL(`http://localhost${createPath(args)}`);
+        (window as Window).location = new URL(
+          `http://localhost${createPath(args)}`
+        ).toString();
       }
     });
     const historyPush = history.push;
@@ -169,9 +176,13 @@ describe('SearchPageContainer - Tests', () => {
     historyPushSpy.mockImplementation((args) => {
       historyPush(args);
       if (typeof args === 'string') {
-        window.location = new URL(`http://localhost${args}`);
+        (window as Window).location = new URL(
+          `http://localhost${args}`
+        ).toString();
       } else {
-        window.location = new URL(`http://localhost${createPath(args)}`);
+        (window as Window).location = new URL(
+          `http://localhost${createPath(args)}`
+        ).toString();
       }
     });
 
@@ -224,6 +235,13 @@ describe('SearchPageContainer - Tests', () => {
 
       return Promise.resolve({ data: [] });
     });
+
+    (
+      readSciGatewayToken as jest.MockedFn<typeof readSciGatewayToken>
+    ).mockReturnValue({
+      sessionId: null,
+      username: 'test',
+    });
   });
 
   afterEach(() => {
@@ -265,6 +283,12 @@ describe('SearchPageContainer - Tests', () => {
     renderComponent();
 
     expect(screen.getByTestId('search-box-container')).toBeInTheDocument();
+
+    // logged in, so my_data checkbox should be visible & checked by default
+    expect(
+      screen.getByRole('checkbox', { name: 'check_boxes.my_data' })
+    ).toBeChecked();
+
     // no search results yet, so view button, clear filter button and tabs should be hidden
     expect(
       screen.queryByRole('button', { name: 'page view app.view_cards' })
@@ -353,20 +377,12 @@ describe('SearchPageContainer - Tests', () => {
     expect(await screen.findByRole('progressbar')).toBeInTheDocument();
   });
 
-  it('builds correct parameters for datafile request if date and search text properties are in use', async () => {
-    const user = userEvent.setup();
-
+  it('builds correct parameters for datafile request if date and search text properties are in use', () => {
     history.replace(
       '/search/data?searchText=hello&dataset=false&investigation=false&startDate=2013-11-11&endDate=2016-11-11'
     );
 
     renderComponent();
-
-    await user.click(
-      await screen.findByRole('button', {
-        name: 'searchBox.search_button_arialabel',
-      })
-    );
 
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
@@ -394,18 +410,12 @@ describe('SearchPageContainer - Tests', () => {
     );
   });
 
-  it('builds correct parameters for dataset request if date and search text properties are in use', async () => {
-    const user = userEvent.setup();
-
+  it('builds correct parameters for dataset request if date and search text properties are in use', () => {
     history.replace(
       '/search/data?searchText=hello&datafile=false&investigation=false&startDate=2013-11-11&endDate=2016-11-11'
     );
 
     renderComponent();
-
-    await user.click(
-      screen.getByRole('button', { name: 'searchBox.search_button_arialabel' })
-    );
 
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
@@ -435,18 +445,12 @@ describe('SearchPageContainer - Tests', () => {
     );
   });
 
-  it('builds correct parameters for investigation request if date and search text properties are in use', async () => {
-    const user = userEvent.setup();
-
+  it('builds correct parameters for investigation request if date and search text properties are in use', () => {
     history.replace(
       '/search/data?searchText=hello&dataset=false&datafile=false&startDate=2013-11-11&endDate=2016-11-11'
     );
 
     renderComponent();
-
-    await user.click(
-      screen.getByRole('button', { name: 'searchBox.search_button_arialabel' })
-    );
 
     expect(axios.get).toHaveBeenNthCalledWith(
       1,
@@ -479,20 +483,12 @@ describe('SearchPageContainer - Tests', () => {
     );
   });
 
-  it('builds correct parameters for datafile request if only start date is in use', async () => {
-    const user = userEvent.setup();
-
+  it('builds correct parameters for datafile request if only start date is in use', () => {
     history.replace(
       '/search/data?searchText=&dataset=false&investigation=false&startDate=2013-11-11'
     );
 
     renderComponent();
-
-    await user.click(
-      await screen.findByRole('button', {
-        name: 'searchBox.search_button_arialabel',
-      })
-    );
 
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
@@ -519,18 +515,12 @@ describe('SearchPageContainer - Tests', () => {
     );
   });
 
-  it('builds correct parameters for dataset request if only start date is in use', async () => {
-    const user = userEvent.setup();
-
+  it('builds correct parameters for dataset request if only start date is in use', () => {
     history.replace(
       '/search/data?searchText=test&datafile=false&investigation=false&startDate=2013-11-11'
     );
 
     renderComponent();
-
-    await user.click(
-      screen.getByRole('button', { name: 'searchBox.search_button_arialabel' })
-    );
 
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
@@ -560,18 +550,12 @@ describe('SearchPageContainer - Tests', () => {
     );
   });
 
-  it('builds correct parameters for investigation request if only start date is in use', async () => {
-    const user = userEvent.setup();
-
+  it('builds correct parameters for investigation request if only start date is in use', () => {
     history.replace(
       '/search/data?searchText=test&dataset=false&datafile=false&startDate=2013-11-11'
     );
 
     renderComponent();
-
-    await user.click(
-      screen.getByRole('button', { name: 'searchBox.search_button_arialabel' })
-    );
 
     expect(axios.get).toHaveBeenNthCalledWith(
       1,
@@ -645,18 +629,12 @@ describe('SearchPageContainer - Tests', () => {
     );
   });
 
-  it('builds correct parameters for dataset request if only end date is in use', async () => {
-    const user = userEvent.setup();
-
+  it('builds correct parameters for dataset request if only end date is in use', () => {
     history.replace(
       '/search/data?searchText=test&datafile=false&investigation=false&endDate=2016-11-11'
     );
 
     renderComponent();
-
-    await user.click(
-      screen.getByRole('button', { name: 'searchBox.search_button_arialabel' })
-    );
 
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
@@ -686,18 +664,12 @@ describe('SearchPageContainer - Tests', () => {
     );
   });
 
-  it('builds correct parameters for investigation request if only end date is in use', async () => {
-    const user = userEvent.setup();
-
+  it('builds correct parameters for investigation request if only end date is in use', () => {
     history.replace(
       '/search/data?searchText=test&dataset=false&datafile=false&endDate=2016-11-11'
     );
 
     renderComponent();
-
-    await user.click(
-      screen.getByRole('button', { name: 'searchBox.search_button_arialabel' })
-    );
 
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
@@ -732,9 +704,7 @@ describe('SearchPageContainer - Tests', () => {
   it('builds correct parameters for datafile request if date and search text properties are not in use', async () => {
     const user = userEvent.setup();
 
-    history.replace(
-      '/search/data?searchText=test&dataset=false&investigation=false'
-    );
+    history.replace('/search/data?dataset=false&investigation=false');
 
     renderComponent();
 
@@ -750,7 +720,6 @@ describe('SearchPageContainer - Tests', () => {
         params: generateURLSearchParams({
           query: {
             target: 'Datafile',
-            text: 'test',
             facets: [
               {
                 target: 'Datafile',
@@ -765,6 +734,7 @@ describe('SearchPageContainer - Tests', () => {
               },
             ],
           },
+          restrict: 'true',
         }),
       }
     );
@@ -801,6 +771,7 @@ describe('SearchPageContainer - Tests', () => {
               },
             ],
           },
+          restrict: 'true',
         }),
       }
     );
@@ -809,9 +780,7 @@ describe('SearchPageContainer - Tests', () => {
   it('builds correct parameters for investigation request if date and search text properties are not in use', async () => {
     const user = userEvent.setup();
 
-    history.replace(
-      '/search/data?searchText=test&dataset=false&datafile=false'
-    );
+    history.replace('/search/data?dataset=false&datafile=false');
 
     renderComponent();
 
@@ -825,7 +794,6 @@ describe('SearchPageContainer - Tests', () => {
         params: generateURLSearchParams({
           query: {
             target: 'Investigation',
-            text: 'test',
             facets: [
               { target: 'Investigation' },
               {
@@ -842,6 +810,7 @@ describe('SearchPageContainer - Tests', () => {
               },
             ],
           },
+          restrict: 'true',
         }),
       }
     );
@@ -978,7 +947,7 @@ describe('SearchPageContainer - Tests', () => {
       screen.getByRole('button', { name: 'searchBox.search_button_arialabel' })
     );
 
-    expect(history.location.search).toEqual('?searchText=test');
+    expect(history.location.search).toEqual('?searchText=test&restrict=true');
   });
 
   it('shows SelectionAlert banner when item selected', async () => {
@@ -1004,7 +973,7 @@ describe('SearchPageContainer - Tests', () => {
 
   it('initiates search when visiting a direct url', async () => {
     history.replace(
-      '/search/data?searchText=hello&startDate=2013-11-11&endDate=2016-11-11'
+      '/search/data?searchText=hello&restrict=true&startDate=2013-11-11&endDate=2016-11-11'
     );
 
     renderComponent();
@@ -1030,6 +999,7 @@ describe('SearchPageContainer - Tests', () => {
               },
             ],
           },
+          restrict: 'true',
         }),
       }
     );
@@ -1064,7 +1034,8 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('does not search for non-searchable entities when visiting a direct url', async () => {
-    state.dgsearch.searchableEntities = ['investigation', 'dataset'];
+    if (state.dgsearch)
+      state.dgsearch.searchableEntities = ['investigation', 'dataset'];
 
     history.replace('/search/data?searchText=hello&datafiles=true');
 
@@ -1177,6 +1148,7 @@ describe('SearchPageContainer - Tests', () => {
               },
             ],
           },
+          restrict: 'true',
         }),
       }
     );
@@ -1252,5 +1224,53 @@ describe('SearchPageContainer - Tests', () => {
 
     // i.e default value is investigation it set in the searchPageContainer
     expect(history.location.search).toEqual('');
+  });
+
+  it('handles anonymous users correctly', async () => {
+    (
+      readSciGatewayToken as jest.MockedFn<typeof readSciGatewayToken>
+    ).mockReturnValue({
+      sessionId: null,
+      username: 'anon/anon',
+    });
+
+    const user = userEvent.setup();
+
+    renderComponent();
+
+    await user.click(
+      screen.getByRole('button', { name: 'searchBox.search_button_arialabel' })
+    );
+
+    expect(
+      screen.queryByRole('checkbox', { name: 'check_boxes.my_data' })
+    ).not.toBeInTheDocument();
+
+    expect(axios.get).toHaveBeenCalledWith(
+      'https://example.com/icat/search/documents',
+      {
+        params: generateURLSearchParams({
+          query: {
+            target: 'Investigation',
+            facets: [
+              { target: 'Investigation' },
+              {
+                target: 'InvestigationParameter',
+                dimensions: [{ dimension: 'type.name' }],
+              },
+              {
+                target: 'Sample',
+                dimensions: [{ dimension: 'sample.type.name' }],
+              },
+              {
+                target: 'InvestigationInstrument',
+                dimensions: [{ dimension: 'instrument.name' }],
+              },
+            ],
+          },
+          restrict: 'false',
+        }),
+      }
+    );
   });
 });

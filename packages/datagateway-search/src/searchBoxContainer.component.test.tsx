@@ -10,7 +10,6 @@ import type { StateType } from './state/app.types';
 
 import SearchBoxContainer from './searchBoxContainer.component';
 import SearchBoxContainerSide from './searchBoxContainerSide.component';
-import { readSciGatewayToken } from 'datagateway-common';
 
 jest.mock('loglevel');
 
@@ -19,22 +18,21 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }));
 
-jest.mock('datagateway-common', () => ({
-  ...jest.requireActual('datagateway-common'),
-  readSciGatewayToken: jest.fn(),
-}));
-
 describe('SearchBoxContainer - Tests', () => {
-  function renderComponent(): RenderResult {
+  function renderComponent(
+    props?: Partial<React.ComponentProps<typeof SearchBoxContainer>>
+  ): RenderResult {
     return render(
       <Provider store={configureStore([thunk])(state)}>
         <MemoryRouter>
           <SearchBoxContainer
             restrict={false}
             initiateSearch={jest.fn()}
+            loggedInAnonymously={true}
             onSearchTextChange={jest.fn()}
             searchText="initial search text"
             onMyDataCheckboxChange={jest.fn()}
+            {...props}
           />
         </MemoryRouter>
       </Provider>
@@ -50,13 +48,6 @@ describe('SearchBoxContainer - Tests', () => {
         searchableEntities: ['investigation', 'dataset'],
       },
     };
-
-    (
-      readSciGatewayToken as jest.MockedFn<typeof readSciGatewayToken>
-    ).mockReturnValue({
-      sessionId: '',
-      username: 'anon/anon',
-    });
   });
 
   it('renders searchBoxContainer correctly', async () => {
@@ -108,14 +99,7 @@ describe('SearchBoxContainer - Tests', () => {
   });
 
   it('shows my data checkbox if user is logged in', () => {
-    (
-      readSciGatewayToken as jest.MockedFn<typeof readSciGatewayToken>
-    ).mockReturnValueOnce({
-      sessionId: '',
-      username: 'user',
-    });
-
-    renderComponent({ initialState: state });
+    renderComponent({ loggedInAnonymously: false });
 
     expect(
       screen.getByRole('checkbox', { name: 'check_boxes.my_data' })
@@ -124,23 +108,27 @@ describe('SearchBoxContainer - Tests', () => {
 });
 
 describe('SearchBoxContainerSide - Tests', () => {
-  function renderComponent({ initialState }): RenderResult {
+  let state: DeepPartial<StateType>;
+
+  function renderComponent(
+    props?: Partial<React.ComponentProps<typeof SearchBoxContainer>>
+  ): RenderResult {
     return render(
-      <Provider store={configureStore([thunk])(initialState)}>
+      <Provider store={configureStore([thunk])(state)}>
         <MemoryRouter>
           <SearchBoxContainerSide
             restrict={false}
             initiateSearch={jest.fn()}
+            loggedInAnonymously={true}
             onSearchTextChange={jest.fn()}
             searchText=""
             onMyDataCheckboxChange={jest.fn()}
+            {...props}
           />
         </MemoryRouter>
       </Provider>
     );
   }
-
-  let state: DeepPartial<StateType>;
 
   beforeEach(() => {
     state = {
@@ -149,17 +137,10 @@ describe('SearchBoxContainerSide - Tests', () => {
         searchableEntities: ['investigation', 'dataset'],
       },
     };
-
-    (
-      readSciGatewayToken as jest.MockedFn<typeof readSciGatewayToken>
-    ).mockReturnValue({
-      sessionId: '',
-      username: 'anon/anon',
-    });
   });
 
   it('renders searchBoxContainerSide correctly', () => {
-    renderComponent({ initialState: state });
+    renderComponent();
 
     // search box should be visible
     expect(
@@ -191,14 +172,7 @@ describe('SearchBoxContainerSide - Tests', () => {
   });
 
   it('shows my data checkbox if user is logged in', () => {
-    (
-      readSciGatewayToken as jest.MockedFn<typeof readSciGatewayToken>
-    ).mockReturnValue({
-      sessionId: '',
-      username: 'user',
-    });
-
-    renderComponent({ initialState: state });
+    renderComponent({ loggedInAnonymously: false });
 
     expect(
       screen.getByRole('checkbox', { name: 'searchBox.my_data_tooltip' })
