@@ -2,7 +2,7 @@ describe('SearchPageContainer Component', () => {
   it('Should default back to 10 when any result is manually entered into the url', () => {
     cy.login();
 
-    cy.visit('/search/data?view=card&results=100&restrict=false');
+    cy.visit('/search/data?view=card&searchText=&results=100&restrict=false');
 
     cy.get('[aria-label="Submit search"]').click();
 
@@ -59,7 +59,7 @@ describe('SearchPageContainer Component', () => {
       cy.get('#container-search-table').should('exist');
 
       cy.location().should((loc) => {
-        expect(loc.search).to.eq('?searchText=dog&restrict=false');
+        expect(loc.search).to.eq('?searchText=dog');
       });
 
       // check table DOI link is correct
@@ -146,7 +146,7 @@ describe('SearchPageContainer Component', () => {
       );
 
       cy.location().should((loc) => {
-        expect(loc.search).to.eq('?view=card&searchText=dog&restrict=false');
+        expect(loc.search).to.eq('?view=card&searchText=dog');
       });
 
       // check card view DOI link is correct
@@ -171,7 +171,7 @@ describe('SearchPageContainer Component', () => {
       );
 
       cy.location().should((loc) => {
-        expect(loc.search).to.eq('?view=table&searchText=dog&restrict=false');
+        expect(loc.search).to.eq('?view=table&searchText=dog');
       });
     });
 
@@ -309,7 +309,7 @@ describe('SearchPageContainer Component', () => {
 
       cy.location().should((loc) => {
         expect(loc.search).to.eq(
-          '?searchText=dog&datafile=false&investigation=false&currentTab=dataset&restrict=false'
+          '?searchText=dog&datafile=false&investigation=false&currentTab=dataset'
         );
       });
 
@@ -378,9 +378,7 @@ describe('SearchPageContainer Component', () => {
       cy.get('[aria-label="Submit search"]').click();
 
       cy.location().should((loc) => {
-        expect(loc.search).to.contains(
-          '?searchText=dog&startDate=2009-01-01&restrict=false'
-        );
+        expect(loc.search).to.contains('?searchText=dog&startDate=2009-01-01');
       });
 
       cy.get('[aria-label="Search table"]')
@@ -394,7 +392,7 @@ describe('SearchPageContainer Component', () => {
 
       cy.location().should((loc) => {
         expect(loc.search).to.contains(
-          '?searchText=dog&startDate=2009-01-01&endDate=2013-01-01&restrict=false'
+          '?searchText=dog&startDate=2009-01-01&endDate=2013-01-01'
         );
       });
 
@@ -415,7 +413,7 @@ describe('SearchPageContainer Component', () => {
 
       cy.location().should((loc) => {
         expect(loc.search).to.contains(
-          '?searchText=dog&restrict=false&sort=%7B%22name%22%3A%22asc%22%7D'
+          '?searchText=dog&sort=%7B%22name%22%3A%22asc%22%7D'
         );
       });
 
