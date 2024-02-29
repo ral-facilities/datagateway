@@ -840,9 +840,9 @@ describe('Investigation Search Table component', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders fine with incomplete data', () => {
+  it('renders fine with incomplete data', async () => {
     // this can happen when navigating between tables and the previous table's state still exists
-    // also tests that empty arrays are fine for investigationInstruments
+    // also tests that empty arrays are fine for investigationInstruments & investigationFacilityCycles
     searchResponse = {
       results: [
         {
@@ -854,12 +854,21 @@ describe('Investigation Search Table component', () => {
             visitId: '1',
             doi: 'Test 1',
             investigationinstrument: [],
+            investigationfacilitycycle: [],
           },
         },
       ],
     };
 
-    expect(() => renderComponent()).not.toThrowError();
+    renderComponent(FACILITY_NAME.isis);
+
+    await user.click(
+      await screen.findByRole('button', { name: 'Show details' })
+    );
+
+    expect(
+      await screen.findByTestId('isis-investigation-details-panel')
+    ).toBeInTheDocument();
   });
 
   it('renders generic link correctly correctly', async () => {

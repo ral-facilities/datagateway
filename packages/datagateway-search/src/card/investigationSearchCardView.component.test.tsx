@@ -246,6 +246,9 @@ describe('Investigation - Card View', () => {
   });
 
   it('displays correct details panel for ISIS when expanded', async () => {
+    cardData.investigationinstrument = [];
+    cardData.investigationfacilitycycle = [];
+
     const user = userEvent.setup();
 
     renderComponent({ hierarchy: FACILITY_NAME.isis });
