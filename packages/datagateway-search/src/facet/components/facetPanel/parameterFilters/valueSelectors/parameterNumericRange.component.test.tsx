@@ -1,5 +1,4 @@
 import { DatasearchType } from 'datagateway-common';
-import { UserEvent } from '@testing-library/user-event/dist/types/setup';
 import * as React from 'react';
 import userEvent from '@testing-library/user-event';
 import { render, screen } from '@testing-library/react';
@@ -10,7 +9,7 @@ describe('ParameterNumericRange', () => {
   const TEST_PARAMETER_NAME = 'bcat_inv_str';
   const TEST_IDS = [123, 456, 789];
 
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   beforeEach(() => {
     user = userEvent.setup();

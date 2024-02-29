@@ -13,7 +13,7 @@ jest.mock('@mui/material', () => ({
   useMediaQuery: jest.fn(),
   useTheme: jest.fn<DeepPartial<Theme>, []>().mockReturnValue({
     breakpoints: {
-      down: (_) => '',
+      down: (_: unknown) => '',
     },
   }),
 }));

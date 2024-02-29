@@ -330,7 +330,7 @@ export const mockDatafiles: Datafile[] = [
 ];
 
 // Create our mocked datagateway-download settings file.
-export const mockedSettings: Partial<DownloadSettings> = {
+export const mockedSettings: DownloadSettings = {
   facilityName: 'LILS',
   apiUrl: 'https://example.com/api',
   downloadApiUrl: 'https://example.com/downloadApi',
@@ -354,4 +354,6 @@ export const mockedSettings: Partial<DownloadSettings> = {
   uiFeatures: {
     downloadProgress: false,
   },
+  routes: [],
+  helpSteps: [],
 };

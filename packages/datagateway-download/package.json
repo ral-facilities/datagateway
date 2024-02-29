@@ -56,8 +56,6 @@
     "cross-env": "7.0.3",
     "cypress": "13.6.4",
     "cypress-failed-log": "2.10.0",
-    "enzyme": "3.11.0",
-    "enzyme-to-json": "3.6.1",
     "eslint": "8.56.0",
     "eslint-config-react-app": "7.0.0",
     "jest-fail-on-console": "3.1.1",
@@ -106,9 +104,6 @@
   "jest": {
     "transformIgnorePatterns": [
       "node_modules/(?!axios)"
-    ],
-    "snapshotSerializers": [
-      "enzyme-to-json/serializer"
     ],
     "collectCoverageFrom": [
       "src/**/*.{tsx,ts,js,jsx}",

@@ -1,5 +1,4 @@
 import { DatasearchType, dGCommonInitialState } from 'datagateway-common';
-import { UserEvent } from '@testing-library/user-event/dist/types/setup';
 import * as React from 'react';
 import { Provider } from 'react-redux';
 import createMockStore from 'redux-mock-store';
@@ -15,11 +14,11 @@ describe('ParameterFacetList', () => {
   const TEST_PARAMETER_NAME = 'bcat_inv_str';
   const TEST_IDS = [123, 456, 789];
 
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   function Wrapper({
     children,
-  }: React.PropsWithChildren<Record<string, never>>): JSX.Element {
+  }: React.PropsWithChildren<unknown>): React.ReactElement {
     return (
       <Provider
         store={createMockStore([thunk])({
@@ -52,6 +51,7 @@ describe('ParameterFacetList', () => {
             },
           });
         }
+        return Promise.reject(`Endpoint not mocked: ${url}`);
       });
   });
 

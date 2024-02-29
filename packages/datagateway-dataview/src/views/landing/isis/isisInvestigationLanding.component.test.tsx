@@ -141,8 +141,6 @@ describe('ISIS Investigation Landing page', () => {
     id: 1,
     pid: '1',
     title: '1',
-    modTime: '1',
-    createTime: '1',
   };
   let initialStudyDataPublicationData: DataPublication[] = [];
 
@@ -198,8 +196,7 @@ describe('ISIS Investigation Landing page', () => {
                   id: 7,
                   pid: 'Data Publication Pid',
                   description: 'Data Publication description',
-                  modTime: '2019-06-10',
-                  createTime: '2019-06-11',
+
                   title: 'Data Publication',
                   type: { id: 12, name: 'study' },
                 },
@@ -230,8 +227,6 @@ describe('ISIS Investigation Landing page', () => {
         pid: '10.1234/ISIS.E.RB123456',
         title: 'Title 1',
         publicationDate: '2019-06-10',
-        modTime: '2019-06-10',
-        createTime: '2019-06-10',
       },
     ];
     initialDataPublicationData = {
@@ -254,8 +249,6 @@ describe('ISIS Investigation Landing page', () => {
         id: 17,
         name: 'LILS',
       },
-      modTime: '2019-06-10',
-      createTime: '2019-06-10',
     };
 
     (useInvestigation as jest.Mock).mockReturnValue({
@@ -564,7 +557,7 @@ describe('ISIS Investigation Landing page', () => {
 
     expect(
       screen.getByText(
-        (_, element) => element.textContent === 'investigations.visit_id:1'
+        (_, element) => element?.textContent === 'investigations.visit_id:1'
       )
     ).toBeInTheDocument();
 

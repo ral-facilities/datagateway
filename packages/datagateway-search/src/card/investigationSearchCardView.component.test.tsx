@@ -106,7 +106,7 @@ describe('Investigation - Card View', () => {
       })
     );
 
-    axios.get = jest.fn(mockAxiosGet);
+    (axios.get as jest.Mock).mockImplementation(mockAxiosGet);
     window.scrollTo = jest.fn();
   });
 

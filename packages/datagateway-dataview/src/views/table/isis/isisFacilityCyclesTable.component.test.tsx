@@ -43,7 +43,7 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('ISIS FacilityCycles table component', () => {
-  let mockStore;
+  const mockStore = configureStore([thunk]);
   let state: StateType;
   let rowData: FacilityCycle[];
   let history: History;
@@ -77,7 +77,6 @@ describe('ISIS FacilityCycles table component', () => {
     replaceSpy = jest.spyOn(history, 'replace');
     user = userEvent.setup();
 
-    mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
         dgdataview: dgDataViewInitialState,

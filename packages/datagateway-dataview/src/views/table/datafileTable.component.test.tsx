@@ -113,7 +113,7 @@ describe('Datafile table component', () => {
         (url: string, data: unknown): Promise<Partial<AxiosResponse>> => {
           if (/\/user\/cart\/\/cartItems$/.test(url)) {
             const isRemove: boolean = JSON.parse(
-              (data as URLSearchParams).get('remove')
+              (data as URLSearchParams).get('remove') ?? 'false'
             );
 
             if (isRemove) {

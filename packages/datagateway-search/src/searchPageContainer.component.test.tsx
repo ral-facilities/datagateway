@@ -151,9 +151,10 @@ describe('SearchPageContainer - Tests', () => {
     history = createMemoryHistory({
       initialEntries: ['/search/data'],
     });
-    (window as Window).location = new URL(
-      `http://localhost/search/data`
-    ).toString();
+    // @ts-expect-error we need it this way
+    delete window.location;
+    // @ts-expect-error we need it this way
+    window.location = new URL(`http://localhost/search/data`);
 
     // below code keeps window.location in sync with history changes
     // (needed because useUpdateQueryParam uses window.location not history)
@@ -162,13 +163,11 @@ describe('SearchPageContainer - Tests', () => {
     historyReplaceSpy.mockImplementation((args) => {
       historyReplace(args);
       if (typeof args === 'string') {
-        (window as Window).location = new URL(
-          `http://localhost${args}`
-        ).toString();
+        // @ts-expect-error we need it this way
+        window.location = new URL(`http://localhost${args}`);
       } else {
-        (window as Window).location = new URL(
-          `http://localhost${createPath(args)}`
-        ).toString();
+        // @ts-expect-error we need it this way
+        window.location = new URL(`http://localhost${createPath(args)}`);
       }
     });
     const historyPush = history.push;
@@ -176,13 +175,11 @@ describe('SearchPageContainer - Tests', () => {
     historyPushSpy.mockImplementation((args) => {
       historyPush(args);
       if (typeof args === 'string') {
-        (window as Window).location = new URL(
-          `http://localhost${args}`
-        ).toString();
+        // @ts-expect-error we need it this way
+        window.location = new URL(`http://localhost${args}`);
       } else {
-        (window as Window).location = new URL(
-          `http://localhost${createPath(args)}`
-        ).toString();
+        // @ts-expect-error we need it this way
+        window.location = new URL(`http://localhost${createPath(args)}`);
       }
     });
 

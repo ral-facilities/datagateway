@@ -14,8 +14,8 @@ describe('useSearchResultCounter', () => {
   function Wrapper({
     children,
   }: {
-    children: React.ReactChildren;
-  }): JSX.Element {
+    children: React.ReactNode;
+  }): React.ReactElement {
     return (
       <SearchResultCountDispatch.Provider value={mockDispatch}>
         {children}
@@ -83,6 +83,8 @@ describe('useSearchResultCounter', () => {
           ...props,
         }),
       {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         wrapper: Wrapper,
       }
     );
@@ -158,11 +160,8 @@ describe('useSearchResultCounter', () => {
   });
 
   it('dispatches the same search result count after fetching and the same search responses are given', async () => {
-    const { waitFor, rerender } = renderHook<
-      Partial<Parameters<typeof useSearchResultCounter>[0]>,
-      void
-    >(
-      (props) =>
+    const { waitFor, rerender } = renderHook(
+      (props: Partial<Parameters<typeof useSearchResultCounter>[0]>) =>
         useSearchResultCounter({
           dataSearchType: 'Investigation',
           searchResponses: mockSearchResponses,
@@ -170,6 +169,8 @@ describe('useSearchResultCounter', () => {
           hasMore: false,
           ...props,
         }),
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       { wrapper: Wrapper }
     );
 

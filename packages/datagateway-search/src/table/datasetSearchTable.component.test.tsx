@@ -319,7 +319,7 @@ describe('Dataset table component', () => {
   it('renders search results in isis correctly', async () => {
     renderComponent('isis');
 
-    let rows: HTMLElement[];
+    let rows: HTMLElement[] = [];
     await waitFor(async () => {
       rows = await findAllRows();
       expect(rows).toHaveLength(1);

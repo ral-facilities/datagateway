@@ -1,20 +1,17 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import '@testing-library/jest-dom';
-import Enzyme from 'enzyme';
-import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { Action } from 'redux';
+import { Action, AnyAction } from 'redux';
 import { StateType } from './state/app.types';
 import { dGCommonInitialState } from 'datagateway-common';
 import { initialState as dgSearchInitialState } from './state/reducers/dgsearch.reducer';
 import { screen, within } from '@testing-library/react';
 import failOnConsole from 'jest-fail-on-console';
+import { ThunkAction, ThunkDispatch } from 'redux-thunk';
+import { createLocation } from 'history';
 
 failOnConsole();
 
 jest.setTimeout(20000);
-
-// Unofficial React 17 Enzyme adapter
-Enzyme.configure({ adapter: new Adapter() });
 
 function noOp(): void {
   // required as work-around for enzyme/jest environment not implementing window.URL.createObjectURL method
@@ -45,13 +42,16 @@ export let actions: Action[] = [];
 export const resetActions = (): void => {
   actions = [];
 };
-export const getState = (): Partial<StateType> => ({
+export const getState = (): StateType => ({
   dgsearch: dgSearchInitialState,
   dgcommon: dGCommonInitialState,
+  router: { location: { ...createLocation('/'), query: {} }, action: 'POP' },
 });
-export const dispatch = (action: Action): void | Promise<void> => {
+export const dispatch: ThunkDispatch<StateType, null, AnyAction> = (
+  action: Action | ThunkAction<void, StateType, null, AnyAction>
+) => {
   if (typeof action === 'function') {
-    action(dispatch, getState);
+    action(dispatch, getState, null);
     return Promise.resolve();
   } else {
     actions.push(action);
@@ -95,6 +95,7 @@ export const applyDatePickerWorkaround = (): void => {
 };
 
 export const cleanupDatePickerWorkaround = (): void => {
+  // @ts-expect-error this is a workaround
   delete window.matchMedia;
 };
 

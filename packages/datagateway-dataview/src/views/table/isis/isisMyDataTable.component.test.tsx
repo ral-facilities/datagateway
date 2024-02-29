@@ -138,8 +138,6 @@ describe('ISIS MyData table component', () => {
                   id: 12,
                   pid: 'Data Publication Pid',
                   description: 'Data Publication description',
-                  modTime: '2019-06-10',
-                  createTime: '2019-06-11',
                   title: 'Data Publication',
                 },
               ],

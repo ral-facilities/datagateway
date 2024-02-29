@@ -4,7 +4,6 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { render, screen, within } from '@testing-library/react';
 import ParameterDateTimeSelector from './parameterDateTimeSelector.component';
 import { DatasearchType, dGCommonInitialState } from 'datagateway-common';
-import { UserEvent } from '@testing-library/user-event/dist/types/setup';
 import userEvent from '@testing-library/user-event';
 import { Provider } from 'react-redux';
 import createMockStore from 'redux-mock-store';
@@ -15,11 +14,11 @@ describe('ParameterDateTimeSelector', () => {
   const TEST_PARAMETER_NAME = 'bcat_inv_str';
   const TEST_IDS = [123, 456, 789];
 
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   function Wrapper({
     children,
-  }: React.PropsWithChildren<Record<string, never>>): JSX.Element {
+  }: React.PropsWithChildren<unknown>): React.ReactElement {
     return (
       <Provider
         store={createMockStore([thunk])({
@@ -60,6 +59,7 @@ describe('ParameterDateTimeSelector', () => {
             },
           });
         }
+        return Promise.reject(`Endpoint not mocked: ${url}`);
       });
   });
 

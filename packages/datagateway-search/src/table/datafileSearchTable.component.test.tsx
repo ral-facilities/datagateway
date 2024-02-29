@@ -176,7 +176,7 @@ describe('Datafile search table component', () => {
         (url: string, data: unknown): Promise<Partial<AxiosResponse>> => {
           if (/\/user\/cart\/\/cartItems$/.test(url)) {
             const isRemove: boolean = JSON.parse(
-              (data as URLSearchParams).get('remove')
+              (data as URLSearchParams).get('remove') ?? 'false'
             );
 
             if (isRemove) {
@@ -596,7 +596,7 @@ describe('Datafile search table component', () => {
   it('displays generic details panel when expanded', async () => {
     renderComponent();
 
-    let rows: HTMLElement[];
+    let rows: HTMLElement[] = [];
     await waitFor(async () => {
       rows = await findAllRows();
       expect(rows).toHaveLength(1);
@@ -618,7 +618,7 @@ describe('Datafile search table component', () => {
   it('displays correct details panel for ISIS when expanded', async () => {
     renderComponent('isis');
 
-    let rows: HTMLElement[];
+    let rows: HTMLElement[] = [];
     await waitFor(async () => {
       rows = await findAllRows();
       expect(rows).toHaveLength(1);
@@ -652,7 +652,7 @@ describe('Datafile search table component', () => {
   it('displays correct details panel for DLS when expanded', async () => {
     renderComponent('dls');
 
-    let rows: HTMLElement[];
+    let rows: HTMLElement[] = [];
     await waitFor(async () => {
       rows = await findAllRows();
       expect(rows).toHaveLength(1);

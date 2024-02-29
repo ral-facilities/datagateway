@@ -8,18 +8,17 @@ import { initialState } from '../state/reducers/dgsearch.reducer';
 import { createMemoryHistory, type History } from 'history';
 import { Router } from 'react-router-dom';
 import { render, type RenderResult, screen } from '@testing-library/react';
-import type { UserEvent } from '@testing-library/user-event/dist/types/setup';
 import userEvent from '@testing-library/user-event';
 
 jest.mock('loglevel');
 
 describe('Checkbox component tests', () => {
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
   let state: StateType;
-  let mockStore;
-  let testStore;
+  const mockStore = configureStore([thunk]);
+  let testStore: ReturnType<typeof mockStore>;
   let history: History;
-  let pushSpy;
+  let pushSpy: jest.SpyInstance;
 
   function renderComponent(): RenderResult {
     return render(
@@ -39,22 +38,16 @@ describe('Checkbox component tests', () => {
     state = JSON.parse(JSON.stringify({ dgsearch: initialState }));
 
     state.dgsearch = {
+      ...state.dgsearch,
       tabs: {
         datasetTab: true,
         datafileTab: true,
         investigationTab: true,
       },
-      requestReceived: false,
-      searchData: {
-        dataset: [],
-        datafile: [],
-        investigation: [],
-      },
       searchableEntities: ['investigation', 'dataset', 'datafile'],
       settingsLoaded: true,
     };
 
-    mockStore = configureStore([thunk]);
     testStore = mockStore(state);
   });
 

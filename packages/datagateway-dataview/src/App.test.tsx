@@ -15,7 +15,7 @@ jest
   .mock('react', () => ({
     ...jest.requireActual('react'),
     // skip React suspense mechanism and show children directly.
-    Suspense: ({ children }) => children,
+    Suspense: ({ children }: { children: React.ReactNode }) => children,
   }));
 
 describe('App', () => {

@@ -16,7 +16,7 @@ describe('NewParameterFilterCreator', () => {
 
   function Wrapper({
     children,
-  }: React.PropsWithChildren<Record<string, never>>): JSX.Element {
+  }: React.PropsWithChildren<unknown>): React.ReactElement {
     return (
       <Provider
         store={createMockStore([thunk])({
@@ -47,6 +47,7 @@ describe('NewParameterFilterCreator', () => {
             },
           });
         }
+        return Promise.reject(`Endpoint not mocked: ${url}`);
       });
   });
 

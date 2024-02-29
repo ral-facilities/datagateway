@@ -1,7 +1,7 @@
 import React from 'react';
 import ResizeObserver from 'resize-observer-polyfill';
 import { StateType } from './state/app.types';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Link,
   Route,
@@ -30,8 +30,6 @@ import {
   ViewButton,
   ViewsType,
 } from 'datagateway-common';
-import { Action, AnyAction } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
 import {
   setDatafileTab,
   setDatasetTab,
@@ -190,38 +188,24 @@ const DataViewPaper = styled(Paper, {
   })
 );
 
-interface SearchPageContainerStoreProps {
-  sideLayout: boolean;
-  searchableEntities: string[];
-  minNumResults: number;
-  maxNumResults: number;
-  datafileTab: boolean;
-  datasetTab: boolean;
-  investigationTab: boolean;
-}
+const SearchPageContainer: React.FC = () => {
+  const investigationTab = useSelector(
+    (state: StateType) => state.dgsearch.tabs.investigationTab
+  );
+  const datasetTab = useSelector(
+    (state: StateType) => state.dgsearch.tabs.datasetTab
+  );
+  const datafileTab = useSelector(
+    (state: StateType) => state.dgsearch.tabs.datafileTab
+  );
+  const sideLayout = useSelector(
+    (state: StateType) => state.dgsearch.sideLayout
+  );
+  const searchableEntities = useSelector(
+    (state: StateType) => state.dgsearch.searchableEntities
+  );
 
-interface SearchPageContainerDispatchProps {
-  setDatasetTab: (toggleOption: boolean) => Action;
-  setDatafileTab: (toggleOption: boolean) => Action;
-  setInvestigationTab: (toggleOption: boolean) => Action;
-}
-
-type SearchPageContainerCombinedProps = SearchPageContainerStoreProps &
-  SearchPageContainerDispatchProps;
-
-const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
-  props: SearchPageContainerCombinedProps
-) => {
-  const {
-    setDatafileTab,
-    setDatasetTab,
-    setInvestigationTab,
-    investigationTab,
-    datasetTab,
-    datafileTab,
-    sideLayout,
-    searchableEntities,
-  } = props;
+  const dispatch = useDispatch();
 
   const location = useLocation();
   const queryParams = React.useMemo(
@@ -331,9 +315,9 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
         restrict: shouldRestrictSearch,
       });
 
-      setDatafileTab(datafile);
-      setDatasetTab(dataset);
-      setInvestigationTab(investigation);
+      dispatch(setDatafileTab(datafile));
+      dispatch(setDatasetTab(dataset));
+      dispatch(setInvestigationTab(investigation));
 
       localStorage.removeItem('investigationFilters');
       localStorage.removeItem('datasetFilters');
@@ -350,15 +334,13 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
       setIsSearchInitiated(true);
     }
   }, [
+    investigation,
+    dataset,
+    datafile,
     pushQueryParams,
     searchText,
     shouldRestrictSearch,
-    setDatafileTab,
-    datafile,
-    setDatasetTab,
-    dataset,
-    setInvestigationTab,
-    investigation,
+    dispatch,
     queryParams.filters,
     queryParams.page,
     queryParams.results,
@@ -370,9 +352,9 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   // set initial tabs based off of page load query params
   React.useEffect(() => {
     // Set the appropriate tabs.
-    setDatafileTab(datafile);
-    setDatasetTab(dataset);
-    setInvestigationTab(investigation);
+    dispatch(setDatafileTab(datafile));
+    dispatch(setDatasetTab(dataset));
+    dispatch(setInvestigationTab(investigation));
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -528,28 +510,4 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   );
 };
 
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
-): SearchPageContainerDispatchProps => ({
-  setDatasetTab: (toggleOption: boolean) =>
-    dispatch(setDatasetTab(toggleOption)),
-  setDatafileTab: (toggleOption: boolean) =>
-    dispatch(setDatafileTab(toggleOption)),
-  setInvestigationTab: (toggleOption: boolean) =>
-    dispatch(setInvestigationTab(toggleOption)),
-});
-
-const mapStateToProps = (state: StateType): SearchPageContainerStoreProps => ({
-  sideLayout: state.dgsearch.sideLayout,
-  searchableEntities: state.dgsearch.searchableEntities,
-  minNumResults: state.dgsearch.minNumResults,
-  maxNumResults: state.dgsearch.maxNumResults,
-  datafileTab: state.dgsearch.tabs.datafileTab,
-  datasetTab: state.dgsearch.tabs.datasetTab,
-  investigationTab: state.dgsearch.tabs.investigationTab,
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SearchPageContainer);
+export default SearchPageContainer;

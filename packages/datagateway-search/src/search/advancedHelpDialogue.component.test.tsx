@@ -21,7 +21,11 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }));
 
-function renderComponent({ initialState }): RenderResult {
+function renderComponent({
+  initialState,
+}: {
+  initialState: StateType;
+}): RenderResult {
   return render(
     <Provider store={configureStore([thunk])(initialState)}>
       <MemoryRouter>
