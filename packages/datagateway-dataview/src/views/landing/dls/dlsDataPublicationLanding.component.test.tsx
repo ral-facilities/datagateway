@@ -90,24 +90,23 @@ describe('DLS Data Publication Landing page', () => {
     endDate: '2023-07-21',
   };
 
-  const initialData = [
-    {
-      id: 7,
-      pid: 'doi 1',
-      description: 'foo bar',
-      users: users,
-      content: {
-        dataCollectionInvestigations: [
-          {
-            id: 8,
-            investigation: investigation,
-          },
-        ],
-      },
-      startDate: '2023-07-20',
-      endDate: '2023-07-21',
+  const initialData = {
+    id: 7,
+    pid: 'doi 1',
+    description: 'foo bar',
+    title: 'Title',
+    users: users,
+    content: {
+      id: 9,
+      dataCollectionInvestigations: [
+        {
+          id: 8,
+          investigation: investigation,
+        },
+      ],
     },
-  ];
+    publicationDate: '2023-07-20',
+  };
 
   beforeEach(() => {
     state = JSON.parse(

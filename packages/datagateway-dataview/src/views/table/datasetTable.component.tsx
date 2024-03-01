@@ -8,7 +8,6 @@ import {
   Table,
   datasetLink,
   Dataset,
-  formatCountOrSize,
   useDatasetCount,
   useDatasetsInfinite,
   parseSearchToQuery,
@@ -21,13 +20,12 @@ import {
   useAddToCart,
   useRemoveFromCart,
   DatasetDetailsPanel,
-  useDatasetsDatafileCount,
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../state/app.types';
-import { TableCellProps, IndexRange } from 'react-virtualized';
+import { IndexRange } from 'react-virtualized';
 
 interface DatasetTableProps {
   investigationId: string;
@@ -94,8 +92,6 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
     [fetchNextPage]
   );
 
-  const datafileCountQueries = useDatasetsDatafileCount(data);
-
   /* istanbul ignore next */
   const aggregatedData: Dataset[] = React.useMemo(() => {
     if (data) {
@@ -129,9 +125,7 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
       {
         icon: ConfirmationNumber,
         label: t('datasets.datafile_count'),
-        dataKey: 'datafileCount',
-        cellContentRenderer: (cellProps: TableCellProps): number | string =>
-          formatCountOrSize(datafileCountQueries[cellProps.rowIndex]),
+        dataKey: 'fileCount',
         disableSort: true,
       },
       {
@@ -147,7 +141,7 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
         filterComponent: dateFilter,
       },
     ],
-    [t, textFilter, dateFilter, investigationId, view, datafileCountQueries]
+    [t, textFilter, dateFilter, investigationId, view]
   );
 
   const selectedRows = React.useMemo(

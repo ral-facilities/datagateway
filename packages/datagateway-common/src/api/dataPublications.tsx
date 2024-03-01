@@ -17,6 +17,7 @@ import {
   useQuery,
   UseInfiniteQueryResult,
   useInfiniteQuery,
+  UseQueryOptions,
 } from 'react-query';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
@@ -154,16 +155,17 @@ export const useDataPublicationsInfinite = (
 };
 
 export const useDataPublication = (
-  dataPublicationId?: number
-): UseQueryResult<DataPublication[], AxiosError> => {
-  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
-
-  return useQuery<
+  dataPublicationId?: number,
+  queryOptions?: UseQueryOptions<
     DataPublication[],
     AxiosError,
-    DataPublication[],
+    DataPublication,
     [string, number]
-  >(
+  >
+): UseQueryResult<DataPublication, AxiosError> => {
+  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+
+  return useQuery(
     ['dataPublication', dataPublicationId ?? -1],
     () => {
       return fetchDataPublications(apiUrl, { sort: {}, filters: {} }, [
@@ -176,13 +178,16 @@ export const useDataPublication = (
         {
           filterType: 'include',
           filterValue: JSON.stringify([
-            'type',
             {
               content: {
                 dataCollectionInvestigations: {
-                  investigation: {
-                    investigationInstruments: 'instrument',
-                  },
+                  investigation: [
+                    'datasets',
+                    {
+                      datasets: 'type',
+                      investigationInstruments: 'instrument',
+                    },
+                  ],
                 },
                 dataCollectionDatasets: 'dataset',
                 dataCollectionDatafiles: 'datafile',
@@ -190,6 +195,10 @@ export const useDataPublication = (
               relatedItems: 'publication',
               users: 'user',
             },
+            'users',
+            'facility',
+            'dates',
+            'type',
           ]),
         },
       ]);
@@ -200,11 +209,13 @@ export const useDataPublication = (
       },
       retry: retryICATErrors,
       enabled: typeof dataPublicationId !== 'undefined',
+      select: (data) => data[0],
+      ...queryOptions,
     }
   );
 };
 
-export const useDataPublicationByFilters = (
+export const useDataPublicationsByFilters = (
   additionalFilters: AdditionalFilters
 ): UseQueryResult<DataPublication[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);

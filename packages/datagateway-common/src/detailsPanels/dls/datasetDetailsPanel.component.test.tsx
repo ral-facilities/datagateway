@@ -49,6 +49,8 @@ describe('Dataset details panel component', () => {
       description: 'Test description',
       startDate: '2019-06-11',
       endDate: '2019-06-12',
+      fileSize: 64,
+      fileCount: 1,
       type: {
         id: 2,
         name: 'Test 2',
@@ -125,27 +127,6 @@ describe('Dataset details panel component', () => {
     expect(
       screen.queryByRole('tabpanel', { name: 'datasets.details.label' })
     ).toBeNull();
-  });
-
-  it('should show calculate size button when size has not been calculated', async () => {
-    renderComponent({ rowData });
-    expect(
-      await screen.findByRole('button', {
-        name: 'datasets.details.calculate',
-      })
-    ).toBeInTheDocument();
-  });
-
-  it('should calculate size when button is clicked and show the calculated size', async () => {
-    renderComponent({ rowData });
-    await user.click(
-      await screen.findByRole('button', {
-        name: 'datasets.details.calculate',
-        exact: false,
-      })
-    );
-
-    expect(await screen.findByText('89 B')).toBeInTheDocument();
   });
 
   it('calls detailsPanelResize on load and when tabs are switched between', async () => {

@@ -57,12 +57,6 @@ const DLSDatafilesTable = (
         filterType: 'where',
         filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
       },
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'dataset.investigation.id': { eq: investigationId },
-        }),
-      },
     ],
     selectAllSetting
   );
@@ -76,12 +70,6 @@ const DLSDatafilesTable = (
     {
       filterType: 'where',
       filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
-    },
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'dataset.investigation.id': { eq: investigationId },
-      }),
     },
   ]);
 
@@ -98,12 +86,6 @@ const DLSDatafilesTable = (
       {
         filterType: 'where',
         filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
-      },
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'dataset.investigation.id': { eq: investigationId },
-        }),
       },
     ],
     isMounted
@@ -148,7 +130,6 @@ const DLSDatafilesTable = (
         cellContentRenderer: (cellProps) => {
           return formatBytes(cellProps.cellData);
         },
-        filterComponent: textFilter,
       },
       {
         icon: CalendarToday,

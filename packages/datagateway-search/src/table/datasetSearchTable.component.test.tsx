@@ -11,9 +11,7 @@ import {
   useAllFacilityCycles,
   useCart,
   useDatasetCount,
-  useDatasetsDatafileCount,
   useDatasetsInfinite,
-  useDatasetSizes,
   useIds,
   useLuceneSearch,
   useRemoveFromCart,
@@ -95,6 +93,8 @@ describe('Dataset table component', () => {
         id: 1,
         name: 'Dataset test name',
         size: 1,
+        fileSize: 1,
+        fileCount: 1,
         modTime: '2019-07-23',
         createTime: '2019-07-23',
         startDate: '2019-07-24',
@@ -169,30 +169,6 @@ describe('Dataset table component', () => {
       mutate: jest.fn(),
       isLoading: false,
     });
-    (useDatasetsDatafileCount as jest.Mock).mockImplementation((datasets) =>
-      (datasets
-        ? 'pages' in datasets
-          ? datasets.pages.flat()
-          : datasets
-        : []
-      ).map(() => ({
-        data: 1,
-        isFetching: false,
-        isSuccess: true,
-      }))
-    );
-    (useDatasetSizes as jest.Mock).mockImplementation((datasets) =>
-      (datasets
-        ? 'pages' in datasets
-          ? datasets.pages.flat()
-          : datasets
-        : []
-      ).map(() => ({
-        data: 1,
-        isFetching: false,
-        isSuccess: true,
-      }))
-    );
   });
 
   afterEach(() => {
@@ -576,32 +552,18 @@ describe('Dataset table component', () => {
     expect(await findAllRows()).toHaveLength(1);
   });
 
-  it('renders generic link & pending count correctly', async () => {
-    (useDatasetsDatafileCount as jest.Mock).mockImplementation(() => [
-      {
-        isFetching: true,
-      },
-    ]);
+  it('renders generic link correctly', async () => {
     renderComponent('data');
 
     const datasetNameColIndex = await findColumnIndexByName('datasets.name');
-    const datasetSizeColIndex = await findColumnIndexByName(
-      'datasets.datafile_count'
-    );
     const row = await findRowAt(0);
     const titleCell = await findCellInRow(row, {
       columnIndex: datasetNameColIndex,
-    });
-    const fileCountCell = await findCellInRow(row, {
-      columnIndex: datasetSizeColIndex,
     });
 
     expect(
       within(titleCell).getByRole('link', { name: 'Dataset test name' })
     ).toHaveAttribute('href', '/browse/investigation/2/dataset/1/datafile');
-    expect(
-      within(fileCountCell).getByText('Calculating...')
-    ).toBeInTheDocument();
   });
 
   it('renders DLS link correctly', async () => {

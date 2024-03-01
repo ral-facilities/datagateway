@@ -21,6 +21,8 @@ export interface Investigation {
   title: string;
   name: string;
   visitId: string;
+  fileSize?: number;
+  fileCount?: number;
   doi?: string;
   startDate?: string;
   endDate?: string;
@@ -44,6 +46,8 @@ export interface Dataset {
   name: string;
   modTime: string;
   createTime: string;
+  fileSize?: number;
+  fileCount?: number;
   description?: string;
   startDate?: string;
   endDate?: string;
@@ -139,18 +143,18 @@ export interface InvestigationType {
 
 export interface DataCollectionDatafile {
   id: number;
-  datafile: Datafile;
+  datafile?: Datafile;
 }
 
 export interface DataCollectionDataset {
   id: number;
-  dataset: Dataset;
+  dataset?: Dataset;
 }
 
 export interface DataCollectionInvestigation {
   id: number;
-  dataCollection: DataCollection;
-  investigation: Investigation;
+  dataCollection?: DataCollection;
+  investigation?: Investigation;
 }
 
 export interface DataCollection {
@@ -173,12 +177,16 @@ export interface DataPublicationType {
   name: string;
 }
 
+export interface DataPublicationType {
+  id: number;
+  name: string;
+}
+
 export interface DataPublication {
   id: number;
   pid: string;
   title: string;
-  modTime: string;
-  createTime: string;
+  facility?: Facility;
   description?: string;
   publicationDate?: string;
   users?: DataPublicationUser[];
@@ -187,15 +195,24 @@ export interface DataPublication {
   relatedItems?: RelatedItem[];
 }
 
-export interface RelatedItem {
-  id: number;
+export type RelatedDOI = {
+  title: string;
+  fullReference: string;
   identifier: string;
-  relationType: DOIRelationType;
-  fullReference?: string;
-  relatedItemType?: DOIResourceType;
-  title?: string;
+  relationType: DOIRelationType | '';
+  relatedItemType: DOIResourceType | '';
+};
+
+/** Utility type to make subset of properties optional */
+type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
+
+export type RelatedItem = Optional<
+  RelatedDOI,
+  'fullReference' | 'title' | 'relatedItemType'
+> & {
+  id: number;
   publication?: DataPublication;
-}
+};
 
 interface InstrumentScientist {
   id: number;
@@ -477,15 +494,6 @@ export enum DOIResourceType {
   Workflow = 'Workflow',
   Other = 'Other',
 }
-
-export type RelatedDOI = {
-  title: string;
-  fullReference: string;
-  relatedIdentifier: string;
-  relatedIdentifierType: 'DOI';
-  relationType: DOIRelationType | '';
-  resourceType: DOIResourceType | '';
-};
 
 export interface DoiMetadata {
   title: string;

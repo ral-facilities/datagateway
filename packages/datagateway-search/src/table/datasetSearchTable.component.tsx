@@ -8,7 +8,7 @@ import {
   DatasetDetailsPanel,
   DLSDatasetDetailsPanel,
   FACILITY_NAME,
-  formatCountOrSize,
+  formatBytes,
   ISISDatasetDetailsPanel,
   isLandingPageSupportedForHierarchy,
   parseSearchToQuery,
@@ -17,9 +17,7 @@ import {
   useAddToCart,
   useCart,
   useDatasetCount,
-  useDatasetsDatafileCount,
   useDatasetsInfinite,
-  useDatasetSizes,
   useDateFilter,
   useIds,
   useLuceneSearch,
@@ -150,13 +148,6 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
     [cartItems, selectAllSetting, allIds]
   );
 
-  // hierarchy === 'isis' ? data : undefined is a 'hack' to only perform
-  // the correct calculation queries for each facility
-  const datasetCountQueries = useDatasetsDatafileCount(
-    hierarchy !== FACILITY_NAME.isis ? data : undefined
-  );
-  const sizeQueries = useDatasetSizes(hierarchy === 'isis' ? data : undefined);
-
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
@@ -181,11 +172,9 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
             : t('datasets.datafile_count'),
         dataKey: hierarchy === 'isis' ? 'size' : 'datafileCount',
         cellContentRenderer: (cellProps: TableCellProps): number | string => {
-          const query =
-            hierarchy === 'isis'
-              ? sizeQueries[cellProps.rowIndex]
-              : datasetCountQueries[cellProps.rowIndex];
-          return formatCountOrSize(query, hierarchy === 'isis');
+          return hierarchy === 'isis'
+            ? formatBytes(cellProps.rowData.fileSize)
+            : cellProps.rowData.fileCount?.toString() ?? 'Unknown';
         },
         disableSort: true,
       },
@@ -220,7 +209,7 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
         filterComponent: dateFilter,
       },
     ],
-    [t, textFilter, hierarchy, dateFilter, sizeQueries, datasetCountQueries]
+    [t, textFilter, hierarchy, dateFilter]
   );
 
   const detailsPanel = React.useCallback(

@@ -7,7 +7,7 @@ import {
   readSciGatewayToken,
   RelatedDOI,
   useDataPublication,
-  useDataPublicationByFilters,
+  useDataPublicationsByFilters,
   useUpdateDOI,
 } from 'datagateway-common';
 import React from 'react';
@@ -41,12 +41,11 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
     (state: StateType) => state.dgcommon.urls.dataCiteUrl
   );
 
-  const { data: dataPublications } = useDataPublication(
+  const { data: dataPublication } = useDataPublication(
     parseInt(dataPublicationId)
   );
-  const dataPublication = dataPublications?.[0];
 
-  const { data: versionDataPublications } = useDataPublicationByFilters([
+  const { data: versionDataPublications } = useDataPublicationsByFilters([
     {
       filterType: 'where',
       filterValue: JSON.stringify({
@@ -91,10 +90,9 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
           .map((relatedItem) => ({
             title: relatedItem.title ?? '',
             fullReference: relatedItem.fullReference ?? '',
-            relatedIdentifier: relatedItem.identifier,
-            relatedIdentifierType: 'DOI',
+            identifier: relatedItem.identifier,
             relationType: relatedItem.relationType,
-            resourceType: relatedItem.relatedItemType ?? '',
+            relatedItemType: relatedItem.relatedItemType ?? '',
           })) ?? []
       );
       setSelectedUsers(
@@ -181,17 +179,26 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
                         // TODO: add ability for user to edit the content
                         content: {
                           investigation_ids:
-                            versionDataPublication.content?.dataCollectionInvestigations?.map(
-                              (dci) => dci.investigation.id
-                            ) ?? [],
+                            versionDataPublication.content?.dataCollectionInvestigations
+                              ?.filter(
+                                (dci): dci is Required<typeof dci> =>
+                                  typeof dci.investigation !== 'undefined'
+                              )
+                              .map((dci) => dci.investigation.id) ?? [],
                           dataset_ids:
-                            versionDataPublication.content?.dataCollectionDatasets?.map(
-                              (dcd) => dcd.dataset.id
-                            ) ?? [],
+                            versionDataPublication.content?.dataCollectionDatasets
+                              ?.filter(
+                                (dcd): dcd is Required<typeof dcd> =>
+                                  typeof dcd.dataset !== 'undefined'
+                              )
+                              ?.map((dcd) => dcd.dataset.id) ?? [],
                           datafile_ids:
-                            versionDataPublication.content?.dataCollectionDatafiles?.map(
-                              (dcd) => dcd.datafile.id
-                            ) ?? [],
+                            versionDataPublication.content?.dataCollectionDatafiles
+                              ?.filter(
+                                (dcd): dcd is Required<typeof dcd> =>
+                                  typeof dcd.datafile !== 'undefined'
+                              )
+                              ?.map((dcd) => dcd.datafile.id) ?? [],
                         },
                         doiMetadata: {
                           title,

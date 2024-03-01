@@ -12,7 +12,7 @@ export interface DataviewSettings {
   selectAllSetting?: boolean;
   facilityImageURL?: string;
   features?: never;
-  breadcrumbs?: BreadcrumbSettings;
+  breadcrumbs?: BreadcrumbSettings[];
   routes: PluginRoute[];
   helpSteps?: { target: string; content: string }[];
   pluginHost?: string;

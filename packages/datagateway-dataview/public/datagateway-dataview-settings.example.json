@@ -159,5 +159,24 @@
       "order": 7
     }
   ],
+  "breadcrumbs": [
+    {
+      "matchEntity": "proposal",
+      "replaceEntity": "investigation",
+      "replaceEntityField": "title",
+      "replaceEntityQueryField": "name"
+    },
+    {
+      "matchEntity": "investigation",
+      "replaceEntityField": "visitId",
+      "parentEntity": "proposal"
+    },
+    {
+      "matchEntity": "investigation",
+      "replaceEntity": "dataPublication",
+      "replaceEntityField": "title",
+      "parentEntity": "dataPublication"
+    }
+  ],
   "pluginHost": "http://localhost:3000"
 }

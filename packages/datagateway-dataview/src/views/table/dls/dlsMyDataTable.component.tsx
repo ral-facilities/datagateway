@@ -1,6 +1,5 @@
 import {
   ColumnType,
-  formatCountOrSize,
   Investigation,
   parseSearchToQuery,
   readSciGatewayToken,
@@ -8,12 +7,12 @@ import {
   tableLink,
   useDateFilter,
   useInvestigationCount,
-  useInvestigationsDatasetCount,
   useInvestigationsInfinite,
   usePushFilter,
   useSort,
   useTextFilter,
   DLSVisitDetailsPanel,
+  formatBytes,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -22,9 +21,9 @@ import { IndexRange, TableCellProps } from 'react-virtualized';
 import {
   Subject,
   Fingerprint,
-  ConfirmationNumber,
   Assessment,
   CalendarToday,
+  Save,
 } from '@mui/icons-material';
 import { useLocation } from 'react-router-dom';
 
@@ -75,8 +74,6 @@ const DLSMyDataTable = (): React.ReactElement => {
     undefined,
     isMounted
   );
-
-  const datasetCountQueries = useInvestigationsDatasetCount(data);
 
   /* istanbul ignore next */
   const aggregatedData: Investigation[] = React.useMemo(() => {
@@ -134,12 +131,11 @@ const DLSMyDataTable = (): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: ConfirmationNumber,
-        label: t('investigations.dataset_count'),
-        dataKey: 'datasetCount',
+        icon: Save,
+        label: t('investigations.size'),
+        dataKey: 'fileSize',
         cellContentRenderer: (cellProps: TableCellProps): number | string =>
-          formatCountOrSize(datasetCountQueries[cellProps.rowIndex]),
-        disableSort: true,
+          formatBytes(cellProps.rowData.fileSize),
       },
       {
         icon: Assessment,
@@ -171,7 +167,7 @@ const DLSMyDataTable = (): React.ReactElement => {
         filterComponent: dateFilter,
       },
     ],
-    [t, dateFilter, textFilter, view, datasetCountQueries]
+    [t, dateFilter, textFilter, view]
   );
 
   React.useEffect(() => {

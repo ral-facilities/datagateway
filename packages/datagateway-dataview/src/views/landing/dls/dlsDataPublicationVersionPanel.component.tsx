@@ -24,7 +24,7 @@ const DLSDataPublicationVersionPanel: React.FC<
         <Typography>Versions</Typography>
       </AccordionSummary>
       <AccordionDetails>
-        {data?.[0]?.relatedItems
+        {data?.relatedItems
           ?.filter(
             // TODO: trying to filter out versions - maybe just do it on relationType? user defined related DOIs could show up then...
             (relatedItem) => relatedItem.relatedItemType === 'Dataset'

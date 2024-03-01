@@ -39,7 +39,6 @@ describe('DLS - Datasets Cards', () => {
       .first()
       .get('[aria-label="card-more-information"]')
       .contains('DATASET 61');
-    cy.get('#calculate-size-btn').click({ force: true });
     cy.get('[data-testid="card"]')
       .first()
       .get('[aria-label="card-more-information"]')

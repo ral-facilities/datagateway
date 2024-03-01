@@ -107,12 +107,12 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
 
   const { data } = useDataPublication(parseInt(dataPublicationId));
 
-  const pid = data?.[0]?.pid;
-  const title = data?.[0]?.title;
+  const pid = data?.pid;
+  const title = data?.title;
   const description = React.useMemo(
     () =>
-      data?.[0]?.description && data?.[0]?.description !== 'null'
-        ? data[0]?.description
+      data?.description && data?.description !== 'null'
+        ? data?.description
         : 'Description not provided',
     [data]
   );
@@ -121,8 +121,8 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     const principals: FormattedUser[] = [];
     const experimenters: FormattedUser[] = [];
 
-    if (data?.[0]?.users) {
-      const dataPublicationUsers = data[0]?.users;
+    if (data?.users) {
+      const dataPublicationUsers = data.users;
       dataPublicationUsers.forEach((user) => {
         // Only keep users where we have their fullName
         const fullname = user.fullName;
@@ -312,7 +312,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 doi={pid}
                 formattedUsers={formattedUsers}
                 title={title}
-                startDate={data?.[0]?.createTime}
+                startDate={data?.publicationDate}
               />
             </Grid>
 
@@ -328,8 +328,8 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
             >
               {shortInfo.map(
                 (field, i) =>
-                  data?.[0] &&
-                  field.content(data[0] as DataPublication) && (
+                  data &&
+                  field.content(data) && (
                     <Grid
                       container
                       item
@@ -341,9 +341,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                         <ShortInfoLabel>{field.label}</ShortInfoLabel>
                       </Grid>
                       <Grid item>
-                        <ShortInfoValue>
-                          {field.content(data[0] as DataPublication)}
-                        </ShortInfoValue>
+                        <ShortInfoValue>{field.content(data)}</ShortInfoValue>
                       </Grid>
                     </Grid>
                   )

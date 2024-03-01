@@ -87,9 +87,9 @@ describe('SearchBoxContainer Component', () => {
 
     //Should be able to close again
     cy.get('[aria-label="Close"]').click();
-    cy.get('[aria-labelledby="advanced-search-dialog-title"')
-      .contains('Advanced Search Tips')
-      .should('not.exist');
+    cy.get('[aria-labelledby="advanced-search-dialog-title"').should(
+      'not.exist'
+    );
 
     //Should be able to click on one of the links
     cy.get('[aria-label="Search options"]').click();

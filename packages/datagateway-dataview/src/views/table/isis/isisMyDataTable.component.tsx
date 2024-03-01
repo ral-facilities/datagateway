@@ -10,7 +10,7 @@ import {
   ColumnType,
   externalSiteLink,
   FACILITY_NAME,
-  formatCountOrSize,
+  formatBytes,
   Investigation,
   ISISInvestigationDetailsPanel,
   parseSearchToQuery,
@@ -23,7 +23,6 @@ import {
   useIds,
   useInvestigationCount,
   useInvestigationsInfinite,
-  useInvestigationSizes,
   useRemoveFromCart,
   useSort,
   useTextFilter,
@@ -149,8 +148,6 @@ const ISISMyDataTable = (): React.ReactElement => {
     [fetchNextPage]
   );
 
-  const sizeQueries = useInvestigationSizes(data);
-
   const detailsPanel = React.useCallback(
     ({ rowData, detailsPanelResize }) => {
       const datasetTableUrl = buildDatasetTableUrlForInvestigation({
@@ -251,7 +248,7 @@ const ISISMyDataTable = (): React.ReactElement => {
         label: t('investigations.size'),
         dataKey: 'size',
         cellContentRenderer: (cellProps: TableCellProps): number | string =>
-          formatCountOrSize(sizeQueries[cellProps.rowIndex], true),
+          formatBytes(cellProps.rowData.fileSize),
         disableSort: true,
       },
       {
@@ -268,7 +265,7 @@ const ISISMyDataTable = (): React.ReactElement => {
         filterComponent: dateFilter,
       },
     ],
-    [t, textFilter, dateFilter, view, sizeQueries]
+    [t, textFilter, dateFilter, view]
   );
 
   return (

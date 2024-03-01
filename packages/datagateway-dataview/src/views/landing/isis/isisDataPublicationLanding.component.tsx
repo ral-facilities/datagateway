@@ -12,7 +12,6 @@ import {
 import {
   Assessment,
   CalendarToday,
-  Fingerprint,
   Public,
   Storage,
 } from '@mui/icons-material';
@@ -21,11 +20,12 @@ import {
   useDataPublication,
   ArrowTooltip,
   getTooltipText,
-  Investigation,
   tableLink,
   AddToCartButton,
   ViewsType,
   parseSearchToQuery,
+  useDataPublicationsByFilters,
+  DownloadButton,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -75,11 +75,10 @@ export interface FormattedUser {
 
 interface LandingPageProps {
   dataPublicationId: string;
-  instrumentId: string;
 }
 
 interface LinkedInvestigationProps {
-  investigation: Investigation;
+  investigation: DataPublication;
   urlPrefix: string;
   view: ViewsType;
 }
@@ -93,18 +92,15 @@ const LinkedInvestigation = (
 
   const shortInvestigationInfo = [
     {
-      content: (entity: Investigation) => entity.name,
-      label: t('investigations.name'),
-      icon: <Fingerprint sx={shortInfoIconStyle} />,
-    },
-    {
-      content: (entity: Investigation) =>
-        entity.investigationInstruments?.[0]?.instrument?.name,
+      content: (entity: DataPublication) =>
+        entity.content?.dataCollectionInvestigations?.[0]?.investigation
+          ?.investigationInstruments?.[0]?.instrument?.name,
       label: t('investigations.instrument'),
       icon: <Assessment sx={shortInfoIconStyle} />,
     },
     {
-      content: (entity: Investigation) => entity.releaseDate?.slice(0, 10),
+      content: (entity: DataPublication) =>
+        entity.publicationDate?.slice(0, 10),
       label: t('investigations.release_date'),
       icon: <CalendarToday sx={shortInfoIconStyle} />,
     },
@@ -119,7 +115,7 @@ const LinkedInvestigation = (
       >
         {tableLink(
           `${props.urlPrefix}/investigation/${investigation.id}`,
-          `${t('investigations.visit_id')}: ${investigation.visitId}`,
+          `${'Part DOI'}: ${investigation.pid}`,
           props.view
         )}
       </Subheading>
@@ -134,13 +130,37 @@ const LinkedInvestigation = (
           </ArrowTooltip>
         </ShortInfoRow>
       ))}
-      <ActionButtonsContainer>
-        <AddToCartButton
-          entityType="investigation"
-          allIds={[investigation.id]}
-          entityId={investigation.id}
-        />
-      </ActionButtonsContainer>
+      {investigation.content?.dataCollectionInvestigations?.[0]?.investigation
+        ?.id && (
+        <ActionButtonsContainer>
+          <AddToCartButton
+            entityType="investigation"
+            allIds={[
+              investigation.content.dataCollectionInvestigations[0]
+                .investigation.id,
+            ]}
+            entityId={
+              investigation.content.dataCollectionInvestigations[0]
+                .investigation.id
+            }
+          />
+          <DownloadButton
+            entityType="investigation"
+            entityId={
+              investigation.content.dataCollectionInvestigations[0]
+                .investigation.id
+            }
+            entityName={
+              investigation.content.dataCollectionInvestigations[0]
+                .investigation.name
+            }
+            entitySize={
+              investigation.content.dataCollectionInvestigations[0]
+                .investigation.fileSize ?? -1
+            }
+          />
+        </ActionButtonsContainer>
+      )}
     </div>
   );
 };
@@ -155,22 +175,53 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   );
 
   const [value, setValue] = React.useState<'details'>('details');
-  const { instrumentId, dataPublicationId } = props;
+  const { dataPublicationId } = props;
 
-  const pathRoot = 'browseDataPublications';
-  const instrumentChild = 'dataPublication';
-  const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${dataPublicationId}`;
+  const { data: studyDataPublication } = useDataPublication(
+    parseInt(dataPublicationId)
+  );
 
-  const { data } = useDataPublication(parseInt(dataPublicationId));
+  const { data: investigationDataPublications } = useDataPublicationsByFilters([
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'content.dataCollectionInvestigations.investigation.dataCollectionInvestigations.dataCollection.dataPublications.id':
+          {
+            eq: dataPublicationId,
+          },
+      }),
+    },
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'type.name': {
+          eq: 'investigation',
+        },
+      }),
+    },
+    {
+      filterType: 'include',
+      filterValue: JSON.stringify({
+        content: {
+          dataCollectionInvestigations: {
+            investigation: {
+              investigationInstruments: 'instrument',
+            },
+          },
+        },
+      }),
+    },
+  ]);
 
-  const pid = data?.[0]?.pid;
-  const title = data?.[0]?.title;
+  const pid = studyDataPublication?.pid;
+  const title = investigationDataPublications?.[0]?.title;
   const description = React.useMemo(
     () =>
-      data?.[0]?.description && data?.[0]?.description !== 'null'
-        ? data[0]?.description
+      investigationDataPublications?.[0]?.description &&
+      investigationDataPublications?.[0]?.description !== 'null'
+        ? investigationDataPublications?.[0]?.description
         : 'Description not provided',
-    [data]
+    [investigationDataPublications]
   );
 
   const formattedUsers = React.useMemo(() => {
@@ -178,40 +229,38 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     const contacts: FormattedUser[] = [];
     const experimenters: FormattedUser[] = [];
 
-    if (data?.[0]?.users) {
-      const dataPublicationUsers = data[0]?.users;
-      dataPublicationUsers.forEach((user) => {
-        // Only keep users where we have their fullName
-        const fullname = user.fullName;
-        if (fullname) {
-          switch (user.contributorType) {
-            case 'principal_experimenter':
-              principals.push({
-                fullName: fullname,
-                contributorType: 'Principal Investigator',
-              });
-              break;
-            case 'local_contact':
-              contacts.push({
-                fullName: fullname,
-                contributorType: 'Local Contact',
-              });
-              break;
-            default:
-              experimenters.push({
-                fullName: fullname,
-                contributorType: 'Experimenter',
-              });
-          }
+    studyDataPublication?.users?.forEach((user) => {
+      // Only keep users where we have their fullName
+      const fullname = user.fullName;
+      if (fullname) {
+        switch (user.contributorType) {
+          case 'principal_experimenter':
+            principals.push({
+              fullName: fullname,
+              contributorType: 'Principal Investigator',
+            });
+            break;
+          case 'local_contact':
+            contacts.push({
+              fullName: fullname,
+              contributorType: 'Local Contact',
+            });
+            break;
+          default:
+            experimenters.push({
+              fullName: fullname,
+              contributorType: 'Experimenter',
+            });
         }
-      });
-    }
+      }
+    });
+
     // Ensure PIs are listed first, and sort within roles for consistency
     principals.sort((a, b) => a.fullName.localeCompare(b.fullName));
     contacts.sort((a, b) => a.fullName.localeCompare(b.fullName));
     experimenters.sort((a, b) => a.fullName.localeCompare(b.fullName));
     return principals.concat(contacts, experimenters);
-  }, [data]);
+  }, [studyDataPublication]);
 
   React.useEffect(() => {
     const scriptId = `dataPublication-${dataPublicationId}`;
@@ -246,18 +295,14 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
           url: t('doi_constants.publisher.url'),
         },
       },
+      creator: formattedUsers.map((user) => {
+        return { '@type': 'Person', name: user.fullName };
+      }),
       includedInDataCatalog: {
         '@type': 'DataCatalog',
         url: t('doi_constants.distribution.content_url'),
       },
-      distribution: [
-        {
-          '@type': 'DataDownload',
-          encodingFormat: t('doi_constants.distribution.format'),
-          // TODO format contentUrl with and actual download link if possible
-          contentUrl: t('doi_constants.distribution.content_url'),
-        },
-      ],
+      license: t('doi_constants.distribution.license'),
     });
 
     return () => {
@@ -266,7 +311,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         currentScript.remove();
       }
     };
-  }, [t, title, pid, dataPublicationId, description]);
+  }, [t, title, pid, dataPublicationId, description, formattedUsers]);
 
   const shortInfo = [
     {
@@ -333,8 +378,8 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 onClick={() =>
                   push(
                     view
-                      ? `${urlPrefix}/investigation?view=${view}`
-                      : `${urlPrefix}/investigation`
+                      ? `${location.pathname}/investigation?view=${view}`
+                      : `${location.pathname}/investigation`
                   )
                 }
               />
@@ -384,7 +429,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               doi={pid}
               formattedUsers={formattedUsers}
               title={title}
-              startDate={data?.[0]?.createTime}
+              startDate={studyDataPublication?.publicationDate}
             />
           </Grid>
 
@@ -393,8 +438,8 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
           <Grid item xs={6} sm={5} md={4} lg={3} xl={2}>
             {shortInfo.map(
               (field, i) =>
-                data?.[0] &&
-                field.content(data[0] as DataPublication) && (
+                studyDataPublication &&
+                field.content(studyDataPublication as DataPublication) && (
                   <ShortInfoRow key={i}>
                     <ShortInfoLabel>
                       {field.icon}
@@ -402,31 +447,25 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                     </ShortInfoLabel>
                     <ArrowTooltip
                       title={getTooltipText(
-                        field.content(data[0] as DataPublication)
+                        field.content(studyDataPublication as DataPublication)
                       )}
                     >
                       <ShortInfoValue>
-                        {field.content(data[0] as DataPublication)}
+                        {field.content(studyDataPublication as DataPublication)}
                       </ShortInfoValue>
                     </ArrowTooltip>
                   </ShortInfoRow>
                 )
             )}
             {/* Parts */}
-            {data?.map((dataPublication, i) => (
+            {investigationDataPublications?.map((dataPublication, i) => (
               <Box key={i} sx={{ my: 1 }}>
                 <Divider />
-                {dataPublication?.content?.dataCollectionInvestigations?.[0]
-                  ?.investigation && (
-                  <LinkedInvestigation
-                    investigation={
-                      dataPublication?.content
-                        ?.dataCollectionInvestigations?.[0]?.investigation
-                    }
-                    urlPrefix={urlPrefix}
-                    view={view}
-                  />
-                )}
+                <LinkedInvestigation
+                  investigation={dataPublication}
+                  urlPrefix={location.pathname}
+                  view={view}
+                />
               </Box>
             ))}
           </Grid>

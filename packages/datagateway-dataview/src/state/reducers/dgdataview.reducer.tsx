@@ -20,7 +20,7 @@ import {
 
 export const initialState: DGDataViewState = {
   features: {},
-  breadcrumbSettings: {},
+  breadcrumbSettings: [],
   settingsLoaded: false,
   selectAllSetting: true,
   pluginHost: '',

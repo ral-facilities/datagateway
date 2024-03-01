@@ -7,16 +7,16 @@ import {
   Dataset,
   dGCommonInitialState,
   useDatasetDetails,
-  useDatasetSizes,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { createMemoryHistory, History } from 'history';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { Router } from 'react-router-dom';
+import { generatePath, Router } from 'react-router-dom';
 import { render, type RenderResult, screen } from '@testing-library/react';
 import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
+import { paths } from '../../../page/pageContainer.component';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -35,18 +35,12 @@ describe('ISIS Dataset Landing page', () => {
   let history: History;
   let user: UserEvent;
 
-  const renderComponent = (dataPublication = false): RenderResult =>
+  const renderComponent = (): RenderResult =>
     render(
       <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
-            <ISISDatasetLanding
-              instrumentId="4"
-              instrumentChildId="5"
-              investigationId="1"
-              datasetId="87"
-              dataPublication={dataPublication}
-            />
+            <ISISDatasetLanding datasetId="87" />
           </QueryClientProvider>
         </Router>
       </Provider>
@@ -76,14 +70,20 @@ describe('ISIS Dataset Landing page', () => {
         dgcommon: dGCommonInitialState,
       })
     );
-    history = createMemoryHistory();
+    history = createMemoryHistory({
+      initialEntries: [
+        generatePath(paths.landing.isisDatasetLanding, {
+          instrumentId: '4',
+          investigationId: '1',
+          facilityCycleId: '5',
+          datasetId: '87',
+        }),
+      ],
+    });
     user = userEvent.setup();
 
     (useDatasetDetails as jest.Mock).mockReturnValue({
       data: initialData,
-    });
-    (useDatasetSizes as jest.Mock).mockReturnValue({
-      data: 1,
     });
   });
 
@@ -105,7 +105,7 @@ describe('ISIS Dataset Landing page', () => {
     });
 
     it('for facility cycle hierarchy and cards view', async () => {
-      history.replace('/?view=card');
+      history.replace({ search: '?view=card' });
       renderComponent();
 
       await user.click(
@@ -119,7 +119,15 @@ describe('ISIS Dataset Landing page', () => {
     });
 
     it('for data publication hierarchy and normal view', async () => {
-      renderComponent(true);
+      history.replace(
+        generatePath(paths.dataPublications.landing.isisDatasetLanding, {
+          instrumentId: '4',
+          investigationId: '1',
+          dataPublicationId: '5',
+          datasetId: '87',
+        })
+      );
+      renderComponent();
 
       await user.click(
         await screen.findByRole('tab', { name: 'datasets.details.datafiles' })
@@ -131,8 +139,19 @@ describe('ISIS Dataset Landing page', () => {
     });
 
     it('for data publication hierarchy and cards view', async () => {
-      history.replace('/?view=card');
-      renderComponent(true);
+      history.replace({
+        pathname: generatePath(
+          paths.dataPublications.landing.isisDatasetLanding,
+          {
+            instrumentId: '4',
+            investigationId: '1',
+            dataPublicationId: '5',
+            datasetId: '87',
+          }
+        ),
+        search: '?view=card',
+      });
+      renderComponent();
 
       await user.click(
         await screen.findByRole('tab', { name: 'datasets.details.datafiles' })
@@ -151,14 +170,6 @@ describe('ISIS Dataset Landing page', () => {
       'href',
       'https://doi.org/doi 1'
     );
-  });
-
-  it('useDatasetSizes queries not sent if no data returned from useDatasetDetails', () => {
-    (useDatasetDetails as jest.Mock).mockReturnValue({
-      data: undefined,
-    });
-    renderComponent();
-    expect(useDatasetSizes).toHaveBeenCalledWith(undefined);
   });
 
   it('incomplete datasets render correctly', async () => {

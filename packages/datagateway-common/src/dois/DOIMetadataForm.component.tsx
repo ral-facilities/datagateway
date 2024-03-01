@@ -94,7 +94,8 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
             selectedUsers.some((user) => user.contributor_type === '') ||
             relatedDOIs.some(
               (relatedDOI) =>
-                relatedDOI.relationType === '' || relatedDOI.resourceType === ''
+                relatedDOI.relationType === '' ||
+                relatedDOI.relatedItemType === ''
             )
           }
           onClick={onMintClick}

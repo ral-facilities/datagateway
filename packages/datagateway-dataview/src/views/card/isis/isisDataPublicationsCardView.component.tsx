@@ -21,12 +21,13 @@ import { Link as MuiLink } from '@mui/material';
 
 interface ISISDataPublicationsCVProps {
   instrumentId: string;
+  studyDataPublicationId?: string;
 }
 
 const ISISDataPublicationsCardView = (
   props: ISISDataPublicationsCVProps
 ): React.ReactElement => {
-  const { instrumentId } = props;
+  const { instrumentId, studyDataPublicationId } = props;
 
   const [t] = useTranslation();
   const location = useLocation();
@@ -62,6 +63,36 @@ const ISISDataPublicationsCardView = (
             },
         }),
       },
+      ...(studyDataPublicationId
+        ? [
+            {
+              filterType: 'where',
+              filterValue: JSON.stringify({
+                'content.dataCollectionInvestigations.investigation.dataCollectionInvestigations.dataCollection.dataPublications.id':
+                  {
+                    eq: studyDataPublicationId,
+                  },
+              }),
+            },
+            {
+              filterType: 'where',
+              filterValue: JSON.stringify({
+                'type.name': { eq: 'investigation' },
+              }),
+            },
+          ]
+        : [
+            {
+              filterType: 'where',
+              filterValue: JSON.stringify({
+                'type.name': { eq: 'study' },
+              }),
+            },
+            {
+              filterType: 'distinct',
+              filterValue: JSON.stringify(['id', 'title', 'pid']),
+            },
+          ]),
     ]);
 
   const { isLoading: dataLoading, data } = useDataPublicationsPaginated(
@@ -75,26 +106,54 @@ const ISISDataPublicationsCardView = (
             },
         }),
       },
+      ...(studyDataPublicationId
+        ? [
+            {
+              filterType: 'where',
+              filterValue: JSON.stringify({
+                'content.dataCollectionInvestigations.investigation.dataCollectionInvestigations.dataCollection.dataPublications.id':
+                  {
+                    eq: studyDataPublicationId,
+                  },
+              }),
+            },
+            {
+              filterType: 'where',
+              filterValue: JSON.stringify({
+                'type.name': { eq: 'investigation' },
+              }),
+            },
+          ]
+        : [
+            {
+              filterType: 'where',
+              filterValue: JSON.stringify({
+                'type.name': { eq: 'study' },
+              }),
+            },
+            {
+              filterType: 'distinct',
+              filterValue: JSON.stringify(['id', 'title', 'pid']),
+            },
+          ]),
     ],
     isMounted
   );
 
-  const title = React.useMemo(() => {
-    const pathRoot = 'browseDataPublications';
-    const instrumentChild = 'dataPublication';
-
+  const title: CardViewDetails = React.useMemo(() => {
     return {
       label: t('datapublications.title'),
       dataKey: 'title',
       content: (dataPublication: DataPublication) =>
         tableLink(
-          `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${dataPublication.id}`,
+          `${location.pathname}/${dataPublication.id}`,
           dataPublication.title,
           view
         ),
       filterComponent: textFilter,
+      defaultSort: studyDataPublicationId ? undefined : 'desc',
     };
-  }, [t, textFilter, instrumentId, view]);
+  }, [t, textFilter, studyDataPublicationId, location.pathname, view]);
 
   const description: CardViewDetails = React.useMemo(
     () => ({
@@ -125,17 +184,21 @@ const ISISDataPublicationsCardView = (
         dataKey: 'pid',
         filterComponent: textFilter,
       },
-      {
-        icon: CalendarToday,
-        label: t('datapublications.publication_date'),
-        dataKey: 'publicationDate',
-        content: (dataPublication: DataPublication) =>
-          dataPublication.publicationDate?.slice(0, 10) ?? '',
-        filterComponent: dateFilter,
-        defaultSort: 'desc',
-      },
+      ...(studyDataPublicationId
+        ? ([
+            {
+              icon: CalendarToday,
+              label: t('datapublications.publication_date'),
+              dataKey: 'publicationDate',
+              content: (dataPublication: DataPublication) =>
+                dataPublication.publicationDate?.slice(0, 10) ?? '',
+              filterComponent: dateFilter,
+              defaultSort: 'desc',
+            },
+          ] as CardViewDetails[])
+        : []),
     ],
-    [dateFilter, t, textFilter]
+    [dateFilter, studyDataPublicationId, t, textFilter]
   );
 
   return (

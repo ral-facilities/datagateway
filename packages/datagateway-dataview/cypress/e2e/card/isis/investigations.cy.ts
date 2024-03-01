@@ -1,7 +1,17 @@
 describe('ISIS - Investigations Cards', () => {
   beforeEach(() => {
     cy.intercept('**/investigations/count*').as('getInvestigationsCount');
-    cy.intercept('**/investigations?order*').as('getInvestigationsOrder');
+    cy.intercept('**/investigations?order*', (req) => {
+      req.continue((res) => {
+        // add type study to related data publication to emulate ISIS like data
+        if (
+          res.body?.[0]?.dataCollectionInvestigations?.[0]?.dataCollection
+            ?.dataPublications?.[0]
+        )
+          res.body[0].dataCollectionInvestigations[0].dataCollection.dataPublications[0].type =
+            { id: 1, name: 'study' };
+      });
+    }).as('getInvestigationsOrder');
     cy.login();
     cy.visit(
       '/browse/instrument/13/facilityCycle/12/investigation?view=card'

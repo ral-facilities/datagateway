@@ -1,9 +1,9 @@
 import {
   Assessment,
   CalendarToday,
-  ConfirmationNumber,
   Fingerprint,
   Public,
+  Save,
 } from '@mui/icons-material';
 import { Link as MuiLink, styled, Typography } from '@mui/material';
 import {
@@ -13,7 +13,6 @@ import {
   DLSVisitDetailsPanel,
   DownloadButton,
   FACILITY_NAME,
-  formatCountOrSize,
   Investigation,
   InvestigationDetailsPanel,
   ISISInvestigationDetailsPanel,
@@ -22,8 +21,7 @@ import {
   tableLink,
   useDateFilter,
   useInvestigationCount,
-  useInvestigationsDatasetCount,
-  useInvestigationSizes,
+  formatBytes,
   useInvestigationsPaginated,
   useLuceneSearch,
   usePushFilter,
@@ -110,15 +108,6 @@ const InvestigationCardView = (
     },
   ]);
 
-  // hierarchy === 'isis' ? data : undefined is a 'hack' to only perform
-  // the correct calculation queries for each facility
-  const datasetCountQueries = useInvestigationsDatasetCount(
-    hierarchy !== 'isis' ? data : undefined
-  );
-  const sizeQueries = useInvestigationSizes(
-    hierarchy === 'isis' ? data : undefined
-  );
-
   const title = React.useMemo(
     () => ({
       // Provide label for filter component.
@@ -181,21 +170,11 @@ const InvestigationCardView = (
         disableSort: true,
       },
       {
-        icon: ConfirmationNumber,
-        label:
-          hierarchy === 'isis'
-            ? t('investigations.size')
-            : t('investigations.dataset_count'),
-        dataKey: hierarchy === 'isis' ? 'size' : 'datasetCount',
-        content: (investigation: Investigation): string => {
-          const index = data?.findIndex((item) => item.id === investigation.id);
-          if (typeof index === 'undefined') return 'Unknown';
-          const query =
-            hierarchy === 'isis'
-              ? sizeQueries[index]
-              : datasetCountQueries[index];
-          return formatCountOrSize(query, hierarchy === 'isis');
-        },
+        icon: Save,
+        label: t('investigations.size'),
+        dataKey: 'size',
+        content: (investigation: Investigation): string =>
+          formatBytes(investigation.fileSize),
         disableSort: true,
       },
       {
@@ -229,15 +208,7 @@ const InvestigationCardView = (
         filterComponent: dateFilter,
       },
     ],
-    [
-      data,
-      datasetCountQueries,
-      dateFilter,
-      hierarchy,
-      sizeQueries,
-      t,
-      textFilter,
-    ]
+    [dateFilter, t, textFilter]
   );
 
   const moreInformation = React.useCallback(
@@ -282,17 +253,13 @@ const InvestigationCardView = (
                   entityType="investigation"
                   entityId={investigation.id}
                   entityName={investigation.name}
-                  entitySize={
-                    data
-                      ? sizeQueries[data.indexOf(investigation)]?.data ?? -1
-                      : -1
-                  }
+                  entitySize={investigation.fileSize ?? -1}
                 />
               </ActionButtonDiv>
             ),
           ]
         : [],
-    [data, hierarchy, sizeQueries]
+    [data, hierarchy]
   );
 
   return (

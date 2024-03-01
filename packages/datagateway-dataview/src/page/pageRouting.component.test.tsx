@@ -7,14 +7,15 @@ import { Router } from 'react-router-dom';
 import PageRouting from './pageRouting.component';
 import { Provider } from 'react-redux';
 import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
-import { dGCommonInitialState } from 'datagateway-common';
+import { DataPublication, dGCommonInitialState } from 'datagateway-common';
 
 import {
-  checkDataPublicationId,
+  checkDatasetId,
   checkInstrumentAndFacilityCycleId,
   checkInstrumentId,
   checkInvestigationId,
   checkProposalName,
+  checkStudyDataPublicationId,
 } from './idCheckFunctions';
 import { findColumnHeaderByName, flushPromises } from '../setupTests';
 import { act } from 'react-dom/test-utils';
@@ -46,6 +47,8 @@ const ISISRoutes = {
     investigation: '/browse/instrument/1/facilityCycle/1/investigation/1',
     dataset: '/browse/instrument/1/facilityCycle/1/investigation/1/dataset/1',
   },
+  datafilePreview:
+    '/browse/instrument/1/facilityCycle/1/investigation/1/dataset/1/datafile/1',
 };
 
 // The ISIS DataPublications routes to test.
@@ -65,6 +68,8 @@ const ISISDataPublicationsRoutes = {
     dataset:
       '/browseDataPublications/instrument/1/dataPublication/1/investigation/1/dataset/1',
   },
+  datafilePreview:
+    '/browseDataPublications/instrument/1/dataPublication/1/investigation/1/dataset/1/datafile/1',
 };
 
 // The DLS routes to test.
@@ -112,6 +117,31 @@ describe('PageTable', () => {
     (axios.get as jest.Mock).mockImplementation((url: string) => {
       if (url.includes('count')) {
         return Promise.resolve({ data: 0 });
+      } else if (url.includes('datapublications')) {
+        // this is so that routes can convert from data pub id -> investigation id
+        return Promise.resolve({
+          data: [
+            {
+              id: 1,
+              pid: 'pid.1',
+              title: 'test',
+              content: {
+                id: 2,
+                dataCollectionInvestigations: [
+                  {
+                    id: 3,
+                    investigation: {
+                      id: 4,
+                      title: 'Test',
+                      name: 'test',
+                      visitId: '1',
+                    },
+                  },
+                ],
+              },
+            } satisfies DataPublication,
+          ],
+        });
       } else {
         return Promise.resolve({ data: [] });
       }
@@ -122,13 +152,16 @@ describe('PageTable', () => {
     (checkInstrumentId as jest.Mock).mockImplementation(() =>
       Promise.resolve(true)
     );
-    (checkDataPublicationId as jest.Mock).mockImplementation(() =>
+    (checkStudyDataPublicationId as jest.Mock).mockImplementation(() =>
       Promise.resolve(true)
     );
     (checkInvestigationId as jest.Mock).mockImplementation(() =>
       Promise.resolve(true)
     );
     (checkProposalName as jest.Mock).mockImplementation(() =>
+      Promise.resolve(true)
+    );
+    (checkDatasetId as jest.Mock).mockImplementation(() =>
       Promise.resolve(true)
     );
   });
@@ -728,6 +761,48 @@ describe('PageTable', () => {
 
       expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
+
+    it('renders DatafilePreviewer for ISIS datafiles previewer route', async () => {
+      history.push(ISISRoutes.datafilePreview);
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(
+        await screen.findByText('datafiles.preview.invalid_datafile')
+      ).toBeInTheDocument();
+    });
+
+    it('does not render DatafilePreviewer for incorrect ISIS datafiles previewer route', async () => {
+      (checkInstrumentAndFacilityCycleId as jest.Mock).mockImplementation(() =>
+        Promise.resolve(false)
+      );
+      (checkInvestigationId as jest.Mock).mockImplementation(() =>
+        Promise.resolve(false)
+      );
+      (checkDatasetId as jest.Mock).mockImplementation(() =>
+        Promise.resolve(false)
+      );
+
+      history.push(ISISRoutes.datafilePreview);
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(await screen.findByText('loading.oops')).toBeInTheDocument();
+    });
   });
 
   describe('ISIS Data Publication Hierarchy', () => {
@@ -785,9 +860,6 @@ describe('PageTable', () => {
       ).toBeInTheDocument();
       expect(
         await findColumnHeaderByName('datapublications.pid')
-      ).toBeInTheDocument();
-      expect(
-        await findColumnHeaderByName('datapublications.publication_date')
       ).toBeInTheDocument();
     });
 
@@ -857,25 +929,13 @@ describe('PageTable', () => {
       );
 
       expect(
-        await findColumnHeaderByName('investigations.title')
+        await findColumnHeaderByName('datapublications.title')
       ).toBeInTheDocument();
       expect(
-        await findColumnHeaderByName('investigations.name')
+        await findColumnHeaderByName('datapublications.pid')
       ).toBeInTheDocument();
       expect(
-        await findColumnHeaderByName('investigations.doi')
-      ).toBeInTheDocument();
-      expect(
-        await findColumnHeaderByName('investigations.size')
-      ).toBeInTheDocument();
-      expect(
-        await findColumnHeaderByName('investigations.principal_investigators')
-      ).toBeInTheDocument();
-      expect(
-        await findColumnHeaderByName('investigations.start_date')
-      ).toBeInTheDocument();
-      expect(
-        await findColumnHeaderByName('investigations.end_date')
+        await findColumnHeaderByName('datapublications.publication_date')
       ).toBeInTheDocument();
     });
 
@@ -892,7 +952,7 @@ describe('PageTable', () => {
       );
 
       expect(
-        await screen.findByTestId('isis-investigations-card-view')
+        await screen.findByTestId('isis-dataPublications-card-view')
       ).toBeInTheDocument();
     });
 
@@ -922,7 +982,7 @@ describe('PageTable', () => {
       (checkInstrumentId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
-      (checkDataPublicationId as jest.Mock).mockImplementation(() =>
+      (checkStudyDataPublicationId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
 
@@ -961,7 +1021,7 @@ describe('PageTable', () => {
       (checkInstrumentId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
-      (checkDataPublicationId as jest.Mock).mockImplementation(() =>
+      (checkStudyDataPublicationId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
 
@@ -1000,7 +1060,7 @@ describe('PageTable', () => {
       (checkInstrumentId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
-      (checkDataPublicationId as jest.Mock).mockImplementation(() =>
+      (checkStudyDataPublicationId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
 
@@ -1039,7 +1099,7 @@ describe('PageTable', () => {
       (checkInstrumentId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
-      (checkDataPublicationId as jest.Mock).mockImplementation(() =>
+      (checkStudyDataPublicationId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
 
@@ -1087,7 +1147,7 @@ describe('PageTable', () => {
       (checkInstrumentId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
-      (checkDataPublicationId as jest.Mock).mockImplementation(() =>
+      (checkStudyDataPublicationId as jest.Mock).mockImplementation(() =>
         Promise.resolve(false)
       );
       (checkInvestigationId as jest.Mock).mockImplementation(() =>
@@ -1095,6 +1155,51 @@ describe('PageTable', () => {
       );
 
       history.push(ISISDataPublicationsRoutes.datafiles);
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(await screen.findByText('loading.oops')).toBeInTheDocument();
+    });
+
+    it('renders DatafilePreviewer for ISIS datafile preview route in Data Publication Hierarchy', async () => {
+      history.push(ISISDataPublicationsRoutes.datafilePreview);
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(
+        await screen.findByText('datafiles.preview.invalid_datafile')
+      ).toBeInTheDocument();
+    });
+
+    it('does not render DatafilePreviewer for incorrect ISIS datafile preview route in Data Publication Hierarchy', async () => {
+      (checkInstrumentId as jest.Mock).mockImplementation(() =>
+        Promise.resolve(false)
+      );
+      (checkStudyDataPublicationId as jest.Mock).mockImplementation(() =>
+        Promise.resolve(false)
+      );
+      (checkInvestigationId as jest.Mock).mockImplementation(() =>
+        Promise.resolve(false)
+      );
+      (checkDatasetId as jest.Mock).mockImplementation(() =>
+        Promise.resolve(false)
+      );
+
+      history.push(ISISDataPublicationsRoutes.datafilePreview);
 
       render(
         <PageRouting
@@ -1129,7 +1234,7 @@ describe('PageTable', () => {
         await findColumnHeaderByName('investigations.visit_id')
       ).toBeInTheDocument();
       expect(
-        await findColumnHeaderByName('investigations.dataset_count')
+        await findColumnHeaderByName('investigations.size')
       ).toBeInTheDocument();
       expect(
         await findColumnHeaderByName('investigations.instrument')
@@ -1248,7 +1353,7 @@ describe('PageTable', () => {
         await findColumnHeaderByName('investigations.visit_id')
       ).toBeInTheDocument();
       expect(
-        await findColumnHeaderByName('investigations.dataset_count')
+        await findColumnHeaderByName('investigations.size')
       ).toBeInTheDocument();
       expect(
         await findColumnHeaderByName('investigations.instrument')
@@ -1294,6 +1399,7 @@ describe('PageTable', () => {
       expect(
         await findColumnHeaderByName('datasets.datafile_count')
       ).toBeInTheDocument();
+      expect(await findColumnHeaderByName('datasets.size')).toBeInTheDocument();
       expect(
         await findColumnHeaderByName('datasets.create_time')
       ).toBeInTheDocument();
