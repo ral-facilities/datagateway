@@ -51,7 +51,10 @@ const UploadDialog: React.FC<UploadDialogProps> = (
   const [uppy] = React.useState(() =>
     new Uppy({
       // debug: true,
-      id: props.entityId?.toString() ?? 'null',
+      id:
+        `${
+          entityType === 'investigation' ? 'investigation' : 'dataset'
+        }-${props.entityId?.toString()}` ?? 'null',
       autoProceed: false,
       restrictions: {
         maxTotalFileSize: 5368709120,
