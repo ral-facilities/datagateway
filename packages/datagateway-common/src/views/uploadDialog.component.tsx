@@ -10,13 +10,14 @@ import {
   TextField,
   Typography,
   Box,
+  useTheme,
 } from '@mui/material';
 
 import Uppy from '@uppy/core';
 import { Dashboard } from '@uppy/react';
 import Tus from '@uppy/tus';
 import GoldenRetriever from '@uppy/golden-retriever';
-import '@uppy/core/dist/style.css';
+import '@uppy/core/dist/style.min.css';
 import '@uppy/drag-drop/dist/style.min.css';
 import '@uppy/dashboard/dist/style.min.css';
 
@@ -100,6 +101,7 @@ const UploadDialog: React.FC<UploadDialogProps> = (
   }, [uppy]);
 
   const [t] = useTranslation();
+  const theme = useTheme();
 
   const [uploadName, setUploadName] = React.useState<string>('');
   const [uploadDescription, setUploadDescription] = React.useState<string>('');
@@ -191,6 +193,7 @@ const UploadDialog: React.FC<UploadDialogProps> = (
               hideProgressAfterFinish={false}
               height="30em"
               width="100%"
+              theme={theme.palette.mode}
             />
           </Grid>
         </Grid>

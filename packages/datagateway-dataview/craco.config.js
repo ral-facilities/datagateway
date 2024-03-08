@@ -17,6 +17,12 @@ module.exports = {
         webpackConfig.optimization.runtimeChunk = false;
       }
 
+      // TODO: should we do this, or should we import uppy styles from CDN instead?
+      const cssRule = webpackConfig.module.rules
+        .find((r) => r.oneOf)
+        .oneOf.find((r) => r.test.toString() === '/\\.css$/');
+      cssRule.use = ['style-loader', 'css-loader'];
+
       return webpackConfig;
     },
   },

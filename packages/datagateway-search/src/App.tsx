@@ -20,7 +20,6 @@ import { batch, connect, Provider } from 'react-redux';
 import { AnyAction, applyMiddleware, compose, createStore, Store } from 'redux';
 import { createLogger } from 'redux-logger';
 import thunk, { ThunkDispatch } from 'redux-thunk';
-import './App.css';
 import SearchPageContainer from './searchPageContainer.component';
 import { configureApp } from './state/actions';
 import { StateType } from './state/app.types';
