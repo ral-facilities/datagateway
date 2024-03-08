@@ -500,6 +500,7 @@ describe('dataset api functions', () => {
 
   describe('createDataset', () => {
     it('sends axios request to create a dataset and returns the dataset ID', async () => {
+      const uploadUrl = 'https://example.com/api';
       const name = 'Test Dataset';
       const description = 'Test Description';
       const investigationId = 1;
@@ -512,10 +513,15 @@ describe('dataset api functions', () => {
         },
       });
 
-      const result = await createDataset(name, description, investigationId);
+      const result = await createDataset(
+        uploadUrl,
+        name,
+        description,
+        investigationId
+      );
 
       expect(axiosPostMock).toHaveBeenCalledWith(
-        'http://127.0.0.1:8181/dataset',
+        'https://example.com/api/dataset',
         {
           investigationId: investigationId,
           datasetName: name,

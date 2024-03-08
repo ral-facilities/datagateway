@@ -103,6 +103,7 @@ describe('Upload dialog component', () => {
 
       await waitFor(() =>
         expect(createDatasetSpy).toHaveBeenCalledWith(
+          undefined,
           'name',
           'description',
           expect.anything()

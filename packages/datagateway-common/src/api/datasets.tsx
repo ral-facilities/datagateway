@@ -285,22 +285,25 @@ export const downloadDataset = (
   link.remove();
 };
 
+//TODO: see if there is a way to get the upload URL from state
 export const createDataset = (
+  uploadUrl: string | undefined,
   name: string,
   description: string,
   investigationId: number
 ): Promise<number> => {
-  // const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
-
   const params = {
     investigationId: investigationId,
     datasetName: name,
     datasetDescription: description,
   };
 
-  //TODO: remove hardcoded url
+  if (!uploadUrl) {
+    return Promise.reject('Upload URL is not defined');
+  }
+
   return axios
-    .post('http://127.0.0.1:8181/dataset', params, {
+    .post(`${uploadUrl}/dataset`, params, {
       headers: {
         Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
       },

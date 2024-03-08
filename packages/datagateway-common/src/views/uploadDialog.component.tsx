@@ -82,15 +82,13 @@ const UploadDialog: React.FC<UploadDialogProps> = (
           queryClient.invalidateQueries(['datafile']);
         } else {
           queryClient.invalidateQueries([
-            `${entityType}${
-              entityType === 'dataset' ? 'Datafile' : 'Dataset'
-            }Count`,
+            `${entityType === 'dataset' ? 'Datafile' : 'Dataset'}Count`,
             entityId,
           ]);
         }
       })
       .use(Tus, {
-        endpoint: uploadUrl,
+        endpoint: `${uploadUrl}/upload/`,
         uploadDataDuringCreation: true,
       })
   );
@@ -121,6 +119,7 @@ const UploadDialog: React.FC<UploadDialogProps> = (
     // Name the dataset and not uploaded files
     if (entityType === 'investigation') {
       const result = await createDataset(
+        uploadUrl,
         uploadName,
         uploadDescription,
         entityId
