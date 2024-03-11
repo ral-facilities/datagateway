@@ -1460,7 +1460,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.16.3, @babel/runtime@npm:^7.17.2, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.20.6, @babel/runtime@npm:^7.20.7, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.22.6, @babel/runtime@npm:^7.23.2, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.2, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.16.3, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.20.6, @babel/runtime@npm:^7.20.7, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.22.6, @babel/runtime@npm:^7.23.2, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.2, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
   version: 7.23.8
   resolution: "@babel/runtime@npm:7.23.8"
   dependencies:
@@ -6419,7 +6419,7 @@ __metadata:
     eslint-plugin-prettier: 4.2.1
     hex-to-rgba: 2.0.1
     history: 4.10.1
-    i18next: 22.0.3
+    i18next: 23.10.1
     jest-fail-on-console: 3.1.1
     lint-staged: 13.3.0
     lodash.debounce: 4.0.8
@@ -6495,7 +6495,7 @@ __metadata:
     eslint-plugin-prettier: 4.2.1
     express: 4.18.1
     history: 4.10.1
-    i18next: 22.0.3
+    i18next: 23.10.1
     i18next-browser-languagedetector: 7.2.0
     i18next-http-backend: 2.4.2
     jest-fail-on-console: 3.1.1
@@ -6566,7 +6566,7 @@ __metadata:
     eslint-plugin-cypress: 2.15.1
     eslint-plugin-prettier: 4.2.1
     history: 4.10.1
-    i18next: 22.0.3
+    i18next: 23.10.1
     i18next-browser-languagedetector: 7.2.0
     i18next-http-backend: 2.4.2
     jest-fail-on-console: 3.1.1
@@ -6638,7 +6638,7 @@ __metadata:
     eslint-plugin-prettier: 4.2.1
     express: 4.18.1
     history: 4.10.1
-    i18next: 22.0.3
+    i18next: 23.10.1
     i18next-browser-languagedetector: 7.2.0
     i18next-http-backend: 2.4.2
     jest-fail-on-console: 3.1.1
@@ -9301,12 +9301,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next@npm:22.0.3":
-  version: 22.0.3
-  resolution: "i18next@npm:22.0.3"
+"i18next@npm:23.10.1":
+  version: 23.10.1
+  resolution: "i18next@npm:23.10.1"
   dependencies:
-    "@babel/runtime": ^7.17.2
-  checksum: 0ae40923e81f366c6e30126fad070b9188ee567374eb8046dc43ca9dd8bf3c4a3751c2e4c3f60f8d5cfcdb1925b884580cbb6cabfffba684f37c22a019d7f2b2
+    "@babel/runtime": ^7.23.2
+  checksum: 4aec10ddb0bb841f15b9b023daa59977052bc706ca4e94643b12b17640731862bde596c9797491638f6d9e7f125722ea9b1e87394c7aebbb72f45c20396f79d9
   languageName: node
   linkType: hard
 
