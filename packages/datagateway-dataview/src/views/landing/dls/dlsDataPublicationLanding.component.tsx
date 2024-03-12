@@ -9,7 +9,11 @@ import {
   Tabs,
   Typography,
 } from '@mui/material';
-import { DataPublication, useDataPublication } from 'datagateway-common';
+import {
+  DataPublication,
+  readSciGatewayToken,
+  useDataPublication,
+} from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import Branding from './dlsBranding.component';
@@ -107,6 +111,10 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
 
   const { data } = useDataPublication(parseInt(dataPublicationId));
 
+  const isVersionDOI = data?.relatedItems?.some(
+    (relatedItem) => relatedItem.relationType === 'IsVersionOf'
+  );
+
   const pid = data?.pid;
   const title = data?.title;
   const description = React.useMemo(
@@ -128,7 +136,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         const fullname = user.fullName;
         if (fullname) {
           switch (user.contributorType) {
-            case 'minter':
+            case 'Minter':
               principals.push({
                 fullName: fullname,
                 contributorType: 'Principal Investigator',
@@ -137,7 +145,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
             default:
               experimenters.push({
                 fullName: fullname,
-                contributorType: 'Experimenter',
+                contributorType: user.contributorType,
               });
           }
         }
@@ -182,18 +190,14 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
           url: t('doi_constants.publisher.url'),
         },
       },
+      creator: formattedUsers.map((user) => {
+        return { '@type': 'Person', name: user.fullName };
+      }),
       includedInDataCatalog: {
         '@type': 'DataCatalog',
         url: t('doi_constants.distribution.content_url'),
       },
-      distribution: [
-        {
-          '@type': 'DataDownload',
-          encodingFormat: t('doi_constants.distribution.format'),
-          // TODO format contentUrl with and actual download link if possible
-          contentUrl: t('doi_constants.distribution.content_url'),
-        },
-      ],
+      license: t('doi_constants.distribution.license'),
     });
 
     return () => {
@@ -202,7 +206,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         currentScript.remove();
       }
     };
-  }, [t, title, pid, dataPublicationId, description]);
+  }, [t, title, pid, dataPublicationId, description, formattedUsers]);
 
   const shortInfo = [
     {
@@ -239,40 +243,56 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         <Grid item xs={12}>
           <Branding />
         </Grid>
-        <Grid item xs={12}>
-          <Paper square elevation={0} sx={{ mx: -1.5, px: 1.5 }}>
-            <Tabs
-              value={value}
-              onChange={(event, newValue) => setValue(newValue)}
-              indicatorColor="secondary"
-              textColor="secondary"
-            >
-              <Tab
-                id="datapublication-details-tab"
-                aria-controls="datapublication-details-panel"
-                label={t('datapublications.details.label')}
-                value="details"
-              />
-              <Tab
-                id="datapublication-content-tab"
-                aria-controls="datapublication-content-panel"
-                label={t('datapublications.content_tab_label')}
-                value="content"
-              />
-              <IconButton
-                sx={{ ml: 'auto' }}
-                onClick={() =>
-                  history.push({
-                    pathname: `${dataPublicationId}/edit`,
-                    state: { fromEdit: true },
-                  })
-                }
-              >
-                <Edit />
-              </IconButton>
-            </Tabs>
-            <Divider />
+        <Grid container item xs={12}>
+          <Paper square elevation={0} sx={{ mx: -1.5, px: 1.5, width: '100%' }}>
+            <Grid container>
+              <Grid item xs>
+                <Tabs
+                  value={value}
+                  onChange={(event, newValue) => setValue(newValue)}
+                  indicatorColor="secondary"
+                  textColor="secondary"
+                >
+                  <Tab
+                    id="datapublication-details-tab"
+                    aria-controls="datapublication-details-panel"
+                    label={t('datapublications.details.label')}
+                    value="details"
+                  />
+                  <Tab
+                    id="datapublication-content-tab"
+                    aria-controls="datapublication-content-panel"
+                    label={t('datapublications.content_tab_label')}
+                    value="content"
+                  />
+                </Tabs>
+              </Grid>
+              {/* Only let the minter edit the DOI & only if it's a concept DOI */}
+              {isVersionDOI === false &&
+                data?.users?.some(
+                  (user) =>
+                    user.user?.name === readSciGatewayToken().username &&
+                    user.contributorType === 'Minter'
+                ) && (
+                  <Grid item xs="auto" alignSelf="center">
+                    <IconButton
+                      sx={{ ml: 'auto' }}
+                      onClick={() =>
+                        history.push({
+                          pathname: `${dataPublicationId}/edit`,
+                          state: { fromEdit: true },
+                        })
+                      }
+                    >
+                      <Edit />
+                    </IconButton>
+                  </Grid>
+                )}
+            </Grid>
           </Paper>
+        </Grid>
+        <Grid item xs={12}>
+          <Divider />
         </Grid>
 
         <TabPanel value={value} index="details">
@@ -346,11 +366,13 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                     </Grid>
                   )
               )}
-              <Grid container item spacing={1} direction={'column'}>
-                <DLSDataPublicationVersionPanel
-                  dataPublicationId={dataPublicationId}
-                />
-              </Grid>
+              {data && (
+                <Grid item sx={{ pt: '0px !important' }}>
+                  <DLSDataPublicationVersionPanel
+                    dataPublicationId={dataPublicationId}
+                  />
+                </Grid>
+              )}
             </Grid>
           </Grid>
         </TabPanel>

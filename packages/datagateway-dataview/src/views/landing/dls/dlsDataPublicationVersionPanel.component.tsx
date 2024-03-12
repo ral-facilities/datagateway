@@ -3,6 +3,7 @@ import {
   AccordionSummary,
   AccordionDetails,
   Typography,
+  Grid,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import React from 'react';
@@ -18,20 +19,31 @@ const DLSDataPublicationVersionPanel: React.FC<
 
   const { data } = useDataPublication(parseInt(dataPublicationId));
 
+  const isVersionDOI = data?.relatedItems?.some(
+    (relatedItem) => relatedItem.relationType === 'IsVersionOf'
+  );
+
   return (
     <Accordion defaultExpanded disableGutters elevation={0}>
-      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-        <Typography>Versions</Typography>
+      <AccordionSummary sx={{ p: 0 }} expandIcon={<ExpandMoreIcon />}>
+        <Typography fontWeight="bold">
+          {isVersionDOI ? 'Concept' : 'Versions'}
+        </Typography>
       </AccordionSummary>
-      <AccordionDetails>
-        {data?.relatedItems
-          ?.filter(
-            // TODO: trying to filter out versions - maybe just do it on relationType? user defined related DOIs could show up then...
-            (relatedItem) => relatedItem.relatedItemType === 'Dataset'
-          )
-          .map((relatedItem) => (
-            <StyledDOI key={relatedItem.id} doi={relatedItem.identifier} />
-          ))}
+      <AccordionDetails sx={{ p: 0 }}>
+        <Grid container direction="column" spacing={1}>
+          {data?.relatedItems
+            ?.filter((relatedItem) =>
+              isVersionDOI
+                ? relatedItem.relationType === 'IsVersionOf'
+                : relatedItem.relationType === 'HasVersion'
+            )
+            .map((relatedItem) => (
+              <Grid item key={relatedItem.id}>
+                <StyledDOI doi={relatedItem.identifier} />
+              </Grid>
+            ))}
+        </Grid>
       </AccordionDetails>
     </Accordion>
   );

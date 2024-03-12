@@ -44,7 +44,7 @@ const DLSMyDOIsTable = (): React.ReactElement => {
       filterValue: JSON.stringify({
         'users.contributorType': {
           /* istanbul ignore next */
-          eq: process.env.REACT_APP_E2E_TESTING ? 'ProjectLeader' : 'minter',
+          eq: process.env.REACT_APP_E2E_TESTING ? 'ProjectLeader' : 'Minter',
         },
       }),
     },
@@ -68,7 +68,7 @@ const DLSMyDOIsTable = (): React.ReactElement => {
       filterValue: JSON.stringify({
         'users.contributorType': {
           /* istanbul ignore next */
-          eq: process.env.REACT_APP_E2E_TESTING ? 'ProjectLeader' : 'minter',
+          eq: process.env.REACT_APP_E2E_TESTING ? 'ProjectLeader' : 'Minter',
         },
       }),
     },
@@ -77,6 +77,10 @@ const DLSMyDOIsTable = (): React.ReactElement => {
       filterValue: JSON.stringify({
         'relatedItems.relationType': { eq: 'HasVersion' },
       }),
+    },
+    {
+      filterType: 'distinct',
+      filterValue: JSON.stringify(['id', 'title', 'pid', 'publicationDate']),
     },
   ]);
 
