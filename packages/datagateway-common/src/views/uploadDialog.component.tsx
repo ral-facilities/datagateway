@@ -81,10 +81,7 @@ const UploadDialog: React.FC<UploadDialogProps> = (
         if (entityType === 'datafile') {
           queryClient.invalidateQueries(['datafile']);
         } else {
-          queryClient.invalidateQueries([
-            `${entityType === 'dataset' ? 'Datafile' : 'Dataset'}Count`,
-            entityId,
-          ]);
+          queryClient.invalidateQueries(['dataset']);
         }
       })
       .use(Tus, {
@@ -211,15 +208,19 @@ const UploadDialog: React.FC<UploadDialogProps> = (
         )} */}
         <Grid item xs>
           <DialogActions sx={{ margin: 0, paddingTop: 0 }}>
-            <Button onClick={dialogClose} aria-label="cancel">
+            <Button
+              onClick={dialogClose}
+              variant="contained"
+              aria-label="cancel"
+            >
               Cancel
             </Button>
-            <Button onClick={setClose} aria-label="close">
+            <Button onClick={setClose} variant="contained" aria-label="close">
               Close
             </Button>
             <Button
-              color="primary"
               onClick={() => uploadData()}
+              variant="contained"
               aria-label="upload"
             >
               Upload
