@@ -11,6 +11,8 @@ import {
   externalSiteLink,
   useDataPublicationCount,
   useDataPublicationsInfinite,
+  DOIRelationType,
+  ContributorType,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -44,15 +46,21 @@ const DLSMyDOIsTable = (): React.ReactElement => {
       filterValue: JSON.stringify({
         'users.contributorType': {
           /* istanbul ignore next */
-          eq: process.env.REACT_APP_E2E_TESTING ? 'ProjectLeader' : 'Minter',
+          eq: process.env.REACT_APP_E2E_TESTING
+            ? ContributorType.ProjectLeader
+            : ContributorType.Minter,
         },
       }),
     },
     {
       filterType: 'where',
       filterValue: JSON.stringify({
-        'relatedItems.relationType': { eq: 'HasVersion' },
+        'relatedItems.relationType': { eq: DOIRelationType.HasVersion },
       }),
+    },
+    {
+      filterType: 'distinct',
+      filterValue: JSON.stringify(['id', 'title', 'pid', 'publicationDate']),
     },
   ]);
 
@@ -68,14 +76,16 @@ const DLSMyDOIsTable = (): React.ReactElement => {
       filterValue: JSON.stringify({
         'users.contributorType': {
           /* istanbul ignore next */
-          eq: process.env.REACT_APP_E2E_TESTING ? 'ProjectLeader' : 'Minter',
+          eq: process.env.REACT_APP_E2E_TESTING
+            ? ContributorType.ProjectLeader
+            : ContributorType.Minter,
         },
       }),
     },
     {
       filterType: 'where',
       filterValue: JSON.stringify({
-        'relatedItems.relationType': { eq: 'HasVersion' },
+        'relatedItems.relationType': { eq: DOIRelationType.HasVersion },
       }),
     },
     {

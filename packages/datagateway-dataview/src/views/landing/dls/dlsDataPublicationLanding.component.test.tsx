@@ -2,16 +2,24 @@ import * as React from 'react';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../../../state/app.types';
-import { dGCommonInitialState, useDataPublication } from 'datagateway-common';
+import {
+  ContributorType,
+  DOIRelationType,
+  DataPublication,
+  dGCommonInitialState,
+  readSciGatewayToken,
+  useDataPublication,
+} from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { createMemoryHistory, History } from 'history';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { Router } from 'react-router-dom';
+import { Router, generatePath } from 'react-router-dom';
 import { render, type RenderResult, screen } from '@testing-library/react';
 import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 import DLSDataPublicationLanding from './dlsDataPublicationLanding.component';
+import { paths } from '../../../page/pageContainer.component';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -19,6 +27,9 @@ jest.mock('datagateway-common', () => {
   return {
     __esModule: true,
     ...originalModule,
+    readSciGatewayToken: jest
+      .fn()
+      .mockReturnValue({ sessionId: 'abcdef', username: 'John1' }),
     useDataPublication: jest.fn(),
     useDataPublicationContentCount: jest.fn(() =>
       // mock to prevent errors when we check we can switch to the content tab
@@ -47,22 +58,26 @@ describe('DLS Data Publication Landing page', () => {
   const users = [
     {
       id: 1,
-      contributorType: 'minter',
+      contributorType: ContributorType.Minter,
       fullName: 'John Smith',
+      user: {
+        id: 1,
+        name: 'John1',
+      },
     },
     {
       id: 2,
-      contributorType: 'experimenter',
+      contributorType: 'Experimenter',
       fullName: 'Jane Smith',
     },
     {
       id: 3,
-      contributorType: 'experimenter',
+      contributorType: 'Experimenter',
       fullName: 'Jesse Smith',
     },
     {
       id: 4,
-      contributorType: 'experimenter',
+      contributorType: 'Experimenter',
       fullName: '',
     },
   ];
@@ -90,25 +105,45 @@ describe('DLS Data Publication Landing page', () => {
     endDate: '2023-07-21',
   };
 
-  const initialData = {
-    id: 7,
-    pid: 'doi 1',
-    description: 'foo bar',
-    title: 'Title',
-    users: users,
-    content: {
-      id: 9,
-      dataCollectionInvestigations: [
-        {
-          id: 8,
-          investigation: investigation,
-        },
-      ],
-    },
-    publicationDate: '2023-07-20',
-  };
+  let initialData: DataPublication;
 
   beforeEach(() => {
+    initialData = {
+      id: 1,
+      pid: 'doi 1',
+      description: 'foo bar',
+      title: 'Title',
+      users: users,
+      content: {
+        id: 9,
+        dataCollectionInvestigations: [
+          {
+            id: 8,
+            investigation: investigation,
+          },
+        ],
+      },
+      type: { id: 13, name: 'Dataset' },
+      relatedItems: [
+        {
+          id: 10,
+          identifier: 'doi 2',
+          relationType: DOIRelationType.HasVersion,
+        },
+        {
+          id: 11,
+          identifier: 'doi 3',
+          relationType: DOIRelationType.IsSupplementedBy,
+        },
+        {
+          id: 12,
+          identifier: 'doi 4',
+          relationType: DOIRelationType.HasVersion,
+        },
+      ],
+      publicationDate: '2023-07-20',
+    };
+
     state = JSON.parse(
       JSON.stringify({
         dgdataview: dgDataViewInitialState,
@@ -116,7 +151,13 @@ describe('DLS Data Publication Landing page', () => {
       })
     );
 
-    history = createMemoryHistory();
+    history = createMemoryHistory({
+      initialEntries: [
+        generatePath(paths.landing.dlsDataPublicationLanding, {
+          dataPublicationId: '1',
+        }),
+      ],
+    });
     user = userEvent.setup();
 
     (useDataPublication as jest.Mock).mockReturnValue({
@@ -128,8 +169,21 @@ describe('DLS Data Publication Landing page', () => {
     jest.clearAllMocks();
   });
 
-  it('users displayed correctly', async () => {
+  it('renders correctly', async () => {
     renderComponent();
+
+    // displays doi + link correctly
+    expect(
+      await screen.findByRole('link', { name: 'DOI doi 1' })
+    ).toHaveAttribute('href', 'https://doi.org/doi 1');
+
+    expect(screen.getByText('2023-07-20')).toBeInTheDocument();
+    expect(screen.getByText('Title')).toBeInTheDocument();
+    expect(screen.getByText('foo bar')).toBeInTheDocument();
+    expect(
+      screen.getByText('doi_constants.publisher.name')
+    ).toBeInTheDocument();
+    expect(screen.getByText('Dataset')).toBeInTheDocument();
 
     expect(
       await screen.findByTestId('landing-dataPublication-user-0')
@@ -142,12 +196,100 @@ describe('DLS Data Publication Landing page', () => {
     ).toHaveTextContent('Experimenter: Jesse Smith');
   });
 
-  it('displays DOI and renders the expected link', async () => {
+  it('renders correctly if info is missing', async () => {
+    initialData.description = undefined;
+    initialData.users = undefined;
+    initialData.publicationDate = undefined;
+    initialData.type = undefined;
     renderComponent();
 
+    // displays doi + link correctly
     expect(
       await screen.findByRole('link', { name: 'DOI doi 1' })
     ).toHaveAttribute('href', 'https://doi.org/doi 1');
+
+    expect(screen.getByText('Description not provided')).toBeInTheDocument();
+
+    expect(screen.queryByText('datapublications.details.users')).toBeNull();
+  });
+
+  it('renders edit button if the user is minter & clicking it takes you to the edit page', async () => {
+    renderComponent();
+
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'datapublications.edit_label',
+      })
+    );
+
+    expect(history.location).toMatchObject({
+      pathname: `${generatePath(paths.landing.dlsDataPublicationLanding, {
+        dataPublicationId: '1',
+      })}/edit`,
+      state: { fromEdit: true },
+    });
+  });
+
+  it('renders version panel when showing a concept DOI & does not show edit button if user is not the minter', async () => {
+    (readSciGatewayToken as jest.Mock).mockReturnValue({
+      sessionId: 'abcdef',
+      username: 'Jane2',
+    });
+    renderComponent();
+
+    expect(
+      screen.queryByRole('button', { name: 'datapublications.edit_label' })
+    ).not.toBeInTheDocument();
+
+    expect(
+      await screen.findByRole('button', {
+        name: 'datapublications.details.version_panel_label',
+      })
+    ).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'DOI doi 2' })).toHaveAttribute(
+      'href',
+      'https://doi.org/doi 2'
+    );
+    expect(
+      screen.queryByRole('link', { name: 'DOI doi 3' })
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'DOI doi 4' })).toHaveAttribute(
+      'href',
+      'https://doi.org/doi 4'
+    );
+  });
+
+  it('renders concept panel when showing a version DOI & does not show the edit button', async () => {
+    initialData.relatedItems = [
+      {
+        id: 10,
+        identifier: 'doi 2',
+        relationType: DOIRelationType.IsVersionOf,
+      },
+      {
+        id: 11,
+        identifier: 'doi 3',
+        relationType: DOIRelationType.IsSupplementedBy,
+      },
+    ];
+    renderComponent();
+
+    expect(
+      screen.queryByRole('button', { name: 'datapublications.edit_label' })
+    ).not.toBeInTheDocument();
+
+    expect(
+      await screen.findByRole('button', {
+        name: 'datapublications.details.concept_panel_label',
+      })
+    ).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'DOI doi 2' })).toHaveAttribute(
+      'href',
+      'https://doi.org/doi 2'
+    );
+    expect(
+      screen.queryByRole('link', { name: 'DOI doi 3' })
+    ).not.toBeInTheDocument();
   });
 
   it('displays content table when tab is clicked', async () => {
@@ -167,5 +309,22 @@ describe('DLS Data Publication Landing page', () => {
         name: 'datapublications.content_tab_entity_tabs_aria_label',
       })
     ).toBeInTheDocument();
+  });
+
+  it('renders structured data correctly', async () => {
+    renderComponent();
+
+    expect(
+      await screen.findByTestId('landing-dataPublication-user-0')
+    ).toBeInTheDocument();
+
+    expect(document.getElementById('dataPublication-1')).toMatchInlineSnapshot(`
+      <script
+        id="dataPublication-1"
+        type="application/ld+json"
+      >
+        {"@context":"http://schema.org","@type":"Dataset","@id":"https://doi.org/doi 1","url":"https://doi.org/doi 1","identifier":"doi 1","name":"Title","description":"foo bar","keywords":"doi_constants.keywords","publisher":{"@type":"Organization","url":"doi_constants.publisher.url","name":"doi_constants.publisher.name","logo":"doi_constants.publisher.logo","contactPoint":{"@type":"ContactPoint","contactType":"customer service","email":"doi_constants.publisher.email","url":"doi_constants.publisher.url"}},"creator":[{"@type":"Person","name":"John Smith"},{"@type":"Person","name":"Jane Smith"},{"@type":"Person","name":"Jesse Smith"}],"includedInDataCatalog":{"@type":"DataCatalog","url":"doi_constants.distribution.content_url"},"license":"doi_constants.distribution.license"}
+      </script>
+    `);
   });
 });

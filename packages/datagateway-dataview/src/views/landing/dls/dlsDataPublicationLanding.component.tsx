@@ -10,7 +10,9 @@ import {
   Typography,
 } from '@mui/material';
 import {
+  ContributorType,
   DataPublication,
+  DOIRelationType,
   readSciGatewayToken,
   useDataPublication,
 } from 'datagateway-common';
@@ -106,13 +108,15 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
 
   const history = useHistory();
 
-  const [value, setValue] = React.useState<'details'>('details');
+  const [currentTab, setCurrentTab] = React.useState<'details' | 'content'>(
+    'details'
+  );
   const { dataPublicationId } = props;
 
   const { data } = useDataPublication(parseInt(dataPublicationId));
 
   const isVersionDOI = data?.relatedItems?.some(
-    (relatedItem) => relatedItem.relationType === 'IsVersionOf'
+    (relatedItem) => relatedItem.relationType === DOIRelationType.IsVersionOf
   );
 
   const pid = data?.pid;
@@ -136,7 +140,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         const fullname = user.fullName;
         if (fullname) {
           switch (user.contributorType) {
-            case 'Minter':
+            case ContributorType.Minter:
               principals.push({
                 fullName: fullname,
                 contributorType: 'Principal Investigator',
@@ -248,8 +252,8 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
             <Grid container>
               <Grid item xs>
                 <Tabs
-                  value={value}
-                  onChange={(event, newValue) => setValue(newValue)}
+                  value={currentTab}
+                  onChange={(event, newValue) => setCurrentTab(newValue)}
                   indicatorColor="secondary"
                   textColor="secondary"
                 >
@@ -272,7 +276,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 data?.users?.some(
                   (user) =>
                     user.user?.name === readSciGatewayToken().username &&
-                    user.contributorType === 'Minter'
+                    user.contributorType === ContributorType.Minter
                 ) && (
                   <Grid item xs="auto" alignSelf="center">
                     <IconButton
@@ -283,6 +287,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                           state: { fromEdit: true },
                         })
                       }
+                      aria-label={t('datapublications.edit_label')}
                     >
                       <Edit />
                     </IconButton>
@@ -295,7 +300,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
           <Divider />
         </Grid>
 
-        <TabPanel value={value} index="details">
+        <TabPanel value={currentTab} index="details">
           <Grid item container xs={12} id="datapublication-details-panel">
             {/* Long format information */}
             <Grid item xs>
@@ -376,7 +381,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
             </Grid>
           </Grid>
         </TabPanel>
-        <TabPanel value={value} index="content">
+        <TabPanel value={currentTab} index="content">
           <DLSDataPublicationContentTable
             dataPublicationId={dataPublicationId}
           />

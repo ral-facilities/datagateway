@@ -61,6 +61,7 @@
     "publication_date": "Publication Date",
     "content_tab_label": "View Content",
     "content_tab_entity_tabs_aria_label": "content tabs",
+    "edit_label": "Edit Data Publication",
     "details": {
       "label": "Experiment Details",
       "investigations": "View Investigations",
@@ -68,6 +69,8 @@
       "publisher": "Publisher",
       "format": "Data Format",
       "type": "Type",
+      "concept_panel_label": "Concept",
+      "version_panel_label": "Versions",
       "citation_formatter": {
         "label": "Data Citation",
         "details": "The recommended format for citing this data can be found below.",

@@ -10,6 +10,8 @@ import {
   readSciGatewayToken,
   useDataPublicationCount,
   useDataPublicationsInfinite,
+  ContributorType,
+  DOIRelationType,
 } from 'datagateway-common';
 import { createMemoryHistory, type MemoryHistory } from 'history';
 import * as React from 'react';
@@ -45,7 +47,7 @@ jest.mock('datagateway-common', () => {
   };
 });
 
-describe('DLS MyData table component', () => {
+describe('DLS MyDOIs table component', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let rowData: DataPublication[];
@@ -81,13 +83,11 @@ describe('DLS MyData table component', () => {
         pid: 'doi 1',
         description: 'foo bar',
         title: 'Data Publication Title',
-        modTime: '2023-07-21',
-        createTime: '2023-07-21',
         publicationDate: '2023-07-21',
         users: [
           {
             id: 1,
-            contributorType: 'minter',
+            contributorType: ContributorType.Minter,
             fullName: 'John Smith',
           },
         ],
@@ -155,9 +155,21 @@ describe('DLS MyData table component', () => {
         filterType: 'where',
         filterValue: JSON.stringify({
           'users.contributorType': {
-            eq: 'minter',
+            eq: ContributorType.Minter,
           },
         }),
+      },
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'relatedItems.relationType': {
+            eq: DOIRelationType.HasVersion,
+          },
+        }),
+      },
+      {
+        filterType: 'distinct',
+        filterValue: JSON.stringify(['id', 'title', 'pid', 'publicationDate']),
       },
     ];
     expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
@@ -241,7 +253,10 @@ describe('DLS MyData table component', () => {
       )}`
     );
 
-    await user.clear(filterInput);
+    // await user.clear(filterInput);
+    await user.click(filterInput);
+    await user.keyboard('{Control}a{/Control}');
+    await user.keyboard('{Delete}');
 
     expect(history.location.search).toBe('?');
 

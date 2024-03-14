@@ -7,7 +7,8 @@ import {
   UseMutationResult,
 } from 'react-query';
 import { useSelector } from 'react-redux';
-import { InvalidateTokenType, StateType } from '..';
+import { StateType } from '../state/app.types';
+import { InvalidateTokenType } from '../state/actions/actions.types';
 import {
   User,
   MicroFrontendId,

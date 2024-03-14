@@ -33,7 +33,6 @@ import {
   useHistory,
   useRouteMatch,
   matchPath,
-  Switch,
 } from 'react-router-dom';
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageRouting from './pageRouting.component';
@@ -217,12 +216,12 @@ const NavBar = React.memo(
             aria-label="page-breadcrumbs"
           >
             {/* don't show breadcrumbs on /my-data or dls landing pages - only on browse */}
-            <Switch>
+            <SwitchRouting>
               <Route path={[paths.landing.dlsDataPublicationLanding]} />
               <Route path={[paths.root, paths.dataPublications.root]}>
                 <PageBreadcrumbs landingPageEntities={landingPageEntities} />
               </Route>
-            </Switch>
+            </SwitchRouting>
           </Grid>
 
           {props.loggedInAnonymously || isDataPublication ? (
