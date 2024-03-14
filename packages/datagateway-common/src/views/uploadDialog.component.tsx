@@ -210,12 +210,18 @@ const UploadDialog: React.FC<UploadDialogProps> = (
           <DialogActions sx={{ margin: 0, paddingTop: 0 }}>
             <Button
               onClick={dialogClose}
-              variant="contained"
+              variant="text"
               aria-label="cancel"
+              sx={{ color: theme.palette.text.primary }}
             >
               Cancel
             </Button>
-            <Button onClick={setClose} variant="contained" aria-label="close">
+            <Button
+              onClick={setClose}
+              variant="text"
+              aria-label="close"
+              sx={{ color: theme.palette.text.primary }}
+            >
               Close
             </Button>
             <Button
