@@ -12,7 +12,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { formatBytes } from 'datagateway-common';
+import { DialogContent, DialogTitle, formatBytes } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -24,8 +24,6 @@ import {
   useDownloadTypeStatuses,
   useSubmitCart,
 } from '../downloadApiHooks';
-import DialogContent from './dialogContent.component';
-import DialogTitle from './dialogTitle.component';
 import DownloadRequestResult from './downloadRequestResult.component';
 
 const TableContentDiv = styled('div')(() => ({
