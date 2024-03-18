@@ -36,6 +36,7 @@ import { DownloadSettingsContext } from './ConfigProvider';
 import {
   DownloadProgress,
   DownloadTypeStatus,
+  FileSizeAndCount,
   getCartUsers,
   getFileSizeAndCount,
   isCartMintable,
