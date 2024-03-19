@@ -70,6 +70,14 @@ const UploadDialog: React.FC<UploadDialogProps> = (
           uppy.info('.xml files are not allowed');
           return false;
         } else {
+          // TODO: is there another way to do this?
+          // Workaround for Uppy bug where it doubles the size of restored files
+          uppy.getFiles().forEach((file) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            if (file.id === currentFile.id && (file as any).isGhost) {
+              file.size = 0;
+            }
+          });
           return true;
         }
       },
