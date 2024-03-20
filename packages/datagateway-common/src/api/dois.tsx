@@ -18,6 +18,35 @@ import {
 } from '../app.types';
 import { readSciGatewayToken } from '../parseTokens';
 
+export const handleDOIAPIError = (
+  // one hook complains if we use unknown, another complains if we use never
+  // so just use any - we never access the custom error payload anyway
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  error: AxiosError<any>,
+  variables?: unknown,
+  context?: unknown,
+  logCondition?: boolean
+): void => {
+  if (typeof logCondition === 'undefined' || logCondition === true)
+    log.error(error);
+  if (error.response?.status === 401) {
+    document.dispatchEvent(
+      new CustomEvent(MicroFrontendId, {
+        detail: {
+          type: InvalidateTokenType,
+          payload: {
+            severity: 'error',
+            message:
+              localStorage.getItem('autoLogin') === 'true'
+                ? 'Your session has expired, please reload the page'
+                : 'Your session has expired, please login again',
+          },
+        },
+      })
+    );
+  }
+};
+
 /**
  * Sends an username to the API and it checks if it's a valid ICAT User, on success
  * it returns the User, on failure it returns 404
@@ -50,25 +79,7 @@ export const useCheckUser = (
     ['checkUser', username],
     () => checkUser(username, doiMinterUrl),
     {
-      onError: (error) => {
-        log.error(error);
-        if (error.response?.status === 401) {
-          document.dispatchEvent(
-            new CustomEvent(MicroFrontendId, {
-              detail: {
-                type: InvalidateTokenType,
-                payload: {
-                  severity: 'error',
-                  message:
-                    localStorage.getItem('autoLogin') === 'true'
-                      ? 'Your session has expired, please reload the page'
-                      : 'Your session has expired, please login again',
-                },
-              },
-            })
-          );
-        }
-      },
+      onError: handleDOIAPIError,
       retry: (failureCount: number, error: AxiosError) => {
         if (
           // user not logged in, error code will log them out
@@ -215,25 +226,7 @@ export const useUpdateDOI = (): UseMutationResult<
       return updateDOI(dataPublicationId, content, doiMetadata, doiMinterUrl);
     },
     {
-      onError: (error) => {
-        log.error(error);
-        if (error.response?.status === 401) {
-          document.dispatchEvent(
-            new CustomEvent(MicroFrontendId, {
-              detail: {
-                type: InvalidateTokenType,
-                payload: {
-                  severity: 'error',
-                  message:
-                    localStorage.getItem('autoLogin') === 'true'
-                      ? 'Your session has expired, please reload the page'
-                      : 'Your session has expired, please login again',
-                },
-              },
-            })
-          );
-        }
-      },
+      onError: handleDOIAPIError,
     }
   );
 };

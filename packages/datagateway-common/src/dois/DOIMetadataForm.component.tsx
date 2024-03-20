@@ -36,12 +36,21 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
     onMintClick,
     doiMinterUrl,
     dataCiteUrl,
+    ...gridProps
   } = props;
 
   const [t] = useTranslation();
 
   return (
-    <Grid container item direction="column" xs spacing={1} lg={7} {...props}>
+    <Grid
+      container
+      item
+      direction="column"
+      xs
+      spacing={1}
+      lg={7}
+      {...gridProps}
+    >
       <Grid item>
         <Typography variant="h6" component="h3">
           {t('DOIGenerationForm.form_header')}

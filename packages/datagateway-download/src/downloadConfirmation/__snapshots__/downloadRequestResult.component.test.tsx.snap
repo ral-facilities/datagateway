@@ -11,7 +11,7 @@ exports[`DownloadRequestResult should render correctly 1`] = `
         class="MuiTypography-root MuiTypography-body1 css-1654shd-MuiTypography-root"
       />
       <button
-        aria-label="downloadConfirmDialog.close_arialabel"
+        aria-label="downloadConfirmDialog.close_aria_label"
         class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeLarge css-1f5482o-MuiButtonBase-root-MuiIconButton-root"
         tabindex="0"
         type="button"

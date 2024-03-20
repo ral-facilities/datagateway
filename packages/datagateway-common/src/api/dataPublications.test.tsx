@@ -26,15 +26,11 @@ describe('data publications api functions', () => {
         id: 1,
         pid: 'doi 1',
         title: 'Test 1',
-        modTime: '2000-01-01',
-        createTime: '2000-01-01',
       },
       {
         id: 2,
         pid: 'doi 2',
         title: 'Test 2',
-        modTime: '2000-01-02',
-        createTime: '2000-01-02',
       },
     ];
     history = createMemoryHistory({
@@ -309,7 +305,11 @@ describe('data publications api functions', () => {
                   },
                 ],
               },
+              dataCollectionDatasets: 'dataset',
+              dataCollectionDatafiles: 'datafile',
             },
+            relatedItems: 'publication',
+            users: 'user',
           },
           'users',
           'facility',
@@ -361,7 +361,11 @@ describe('data publications api functions', () => {
                   },
                 ],
               },
+              dataCollectionDatasets: 'dataset',
+              dataCollectionDatafiles: 'datafile',
             },
+            relatedItems: 'publication',
+            users: 'user',
           },
           'users',
           'facility',
@@ -555,6 +559,7 @@ describe('data publications api functions', () => {
       await waitFor(() => result.current.isSuccess);
 
       params.append('order', JSON.stringify('name asc'));
+      params.append('order', JSON.stringify('title desc'));
       params.append('order', JSON.stringify('id asc'));
       params.append(
         'where',
@@ -632,6 +637,7 @@ describe('data publications api functions', () => {
       await waitFor(() => result.current.isSuccess);
 
       params.append('order', JSON.stringify('name asc'));
+      params.append('order', JSON.stringify('title desc'));
       params.append('order', JSON.stringify('id asc'));
       params.append(
         'where',
@@ -677,6 +683,7 @@ describe('data publications api functions', () => {
       await waitFor(() => result.current.isSuccess);
 
       params.append('order', JSON.stringify('name asc'));
+      params.append('order', JSON.stringify('title desc'));
       params.append('order', JSON.stringify('id asc'));
       params.append(
         'where',

@@ -4,8 +4,8 @@ import {
   DoiResponse,
   Download,
   DownloadStatus,
-  InvalidateTokenType,
   User,
+  handleDOIAPIError,
 } from 'datagateway-common';
 import {
   DownloadCartItem,
@@ -15,7 +15,6 @@ import {
   NotificationType,
   retryICATErrors,
 } from 'datagateway-common';
-import log from 'loglevel';
 import pLimit from 'p-limit';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -770,23 +769,12 @@ export const useIsCartMintable = (
     },
     {
       onError: (error) => {
-        if (error.response?.status !== 403) log.error(error);
-        if (error.response?.status === 401) {
-          document.dispatchEvent(
-            new CustomEvent(MicroFrontendId, {
-              detail: {
-                type: InvalidateTokenType,
-                payload: {
-                  severity: 'error',
-                  message:
-                    localStorage.getItem('autoLogin') === 'true'
-                      ? 'Your session has expired, please reload the page'
-                      : 'Your session has expired, please login again',
-                },
-              },
-            })
-          );
-        }
+        handleDOIAPIError(
+          error,
+          undefined,
+          undefined,
+          error.response?.status !== 403
+        );
       },
       retry: (failureCount, error) => {
         // if we get 403 we know this is an legit response from the backend so don't bother retrying
@@ -822,25 +810,7 @@ export const useMintCart = (): UseMutationResult<
       return mintCart(cart, doiMetadata, settings);
     },
     {
-      onError: (error) => {
-        log.error(error);
-        if (error.response?.status === 401) {
-          document.dispatchEvent(
-            new CustomEvent(MicroFrontendId, {
-              detail: {
-                type: InvalidateTokenType,
-                payload: {
-                  severity: 'error',
-                  message:
-                    localStorage.getItem('autoLogin') === 'true'
-                      ? 'Your session has expired, please reload the page'
-                      : 'Your session has expired, please login again',
-                },
-              },
-            })
-          );
-        }
-      },
+      onError: handleDOIAPIError,
     }
   );
 };
