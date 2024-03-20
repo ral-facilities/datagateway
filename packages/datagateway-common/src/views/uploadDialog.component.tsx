@@ -28,6 +28,7 @@ import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
 import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
+import axios from 'axios';
 
 const DialogContent = styled(MuiDialogContent)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -49,6 +50,8 @@ const UploadDialog: React.FC<UploadDialogProps> = (
   const uploadUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.uploadUrl
   );
+  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+
   const [uppy] = React.useState(() =>
     new Uppy({
       // debug: true,
@@ -80,6 +83,20 @@ const UploadDialog: React.FC<UploadDialogProps> = (
           });
           return true;
         }
+      },
+      onBeforeUpload: (files) => {
+        // Refresh the session before uploading so that the session doesn't expire
+        // while the user is idly uploading large files
+        axios.put(
+          `${apiUrl}/sessions`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+            },
+          }
+        );
+        return true;
       },
     })
       .on('error', (error) => {
