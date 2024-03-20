@@ -27,10 +27,46 @@ import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
 import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
+import axios from 'axios';
 
 const DialogContent = styled(MuiDialogContent)(({ theme }) => ({
   padding: theme.spacing(2),
 }));
+
+const checkDatafileName = async (
+  apiUrl: string,
+  name: string,
+  datasetId: number
+): Promise<boolean> => {
+  const params = new URLSearchParams();
+  params.append(
+    'where',
+    JSON.stringify({
+      name: { eq: name },
+    })
+  );
+  params.append(
+    'where',
+    JSON.stringify({
+      'dataset.id': { eq: datasetId },
+    })
+  );
+
+  try {
+    await axios.get(`${apiUrl}/datafiles/findone`, {
+      params,
+      headers: {
+        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+      },
+    });
+    return true;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 404) {
+      return false;
+    }
+    throw error;
+  }
+};
 
 interface UploadDialogProps {
   entityType: 'investigation' | 'dataset' | 'datafile';
@@ -49,6 +85,7 @@ const UploadDialog: React.FC<UploadDialogProps> = (
     (state: StateType) => state.dgcommon.urls.uploadUrl
   );
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+  const [uploadDisabled, setUploadDisabled] = React.useState<boolean>(false);
 
   const [uppy] = React.useState(() =>
     new Uppy({
@@ -89,6 +126,27 @@ const UploadDialog: React.FC<UploadDialogProps> = (
         return true;
       },
     })
+      .on('file-added', async (file) => {
+        setUploadDisabled(true);
+        const fileExists = await checkDatafileName(
+          apiUrl,
+          file.name,
+          entityId
+        ).catch((error) => {
+          uppy.info(error.message, 'error', 5000);
+          return true;
+        });
+
+        if (fileExists) {
+          uppy.info(
+            `File ${file.name} already exists in this dataset`,
+            'error',
+            5000
+          );
+          uppy.removeFile(file.id);
+        }
+        setUploadDisabled(false);
+      })
       .on('error', (error) => {
         uppy.info(error.message, 'error', 5000);
       })
@@ -235,6 +293,7 @@ const UploadDialog: React.FC<UploadDialogProps> = (
               onClick={() => uploadData()}
               variant="contained"
               aria-label="upload"
+              disabled={uploadDisabled}
             >
               Upload
             </Button>
