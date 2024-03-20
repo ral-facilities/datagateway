@@ -42,6 +42,7 @@ const fetchCitation = (
 };
 
 interface CitationFormatterProps {
+  label?: string;
   doi: string | undefined;
   formattedUsers: FormattedUser[];
   title: string | undefined;
@@ -86,7 +87,7 @@ const useCitation = (
 const CitationFormatter = (
   props: CitationFormatterProps
 ): React.ReactElement => {
-  const { doi } = props;
+  const { doi, label } = props;
 
   const [t] = useTranslation();
   const [copiedCitation, setCopiedCitation] = React.useState(false);
@@ -119,7 +120,7 @@ const CitationFormatter = (
   return (
     <Box className="tour-dataview-citation-formatter">
       <Subheading variant="h6" data-testid="citation-formatter-title">
-        {t('datapublications.details.citation_formatter.label')}
+        {label ?? t('datapublications.details.citation_formatter.label')}
       </Subheading>
       <Typography data-testid="citation-formatter-details">
         {t('datapublications.details.citation_formatter.details') +

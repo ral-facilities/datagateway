@@ -21,7 +21,9 @@ import { useTranslation } from 'react-i18next';
 import Branding from './dlsBranding.component';
 import CitationFormatter from '../../citationFormatter.component';
 import DLSDataPublicationContentTable from './dlsDataPublicationContentTable.component';
-import DLSDataPublicationVersionPanel from './dlsDataPublicationVersionPanel.component';
+import DLSDataPublicationVersionPanel, {
+  sortVersions,
+} from './dlsDataPublicationVersionPanel.component';
 import { Edit } from '@mui/icons-material';
 import { useHistory } from 'react-router-dom';
 
@@ -129,6 +131,12 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     [data]
   );
 
+  const latestVersionPid = data?.relatedItems
+    ?.filter(
+      (relatedItem) => relatedItem.relationType === DOIRelationType.HasVersion
+    )
+    .sort(sortVersions)?.[0]?.identifier;
+
   const formattedUsers = React.useMemo(() => {
     const principals: FormattedUser[] = [];
     const experimenters: FormattedUser[] = [];
@@ -162,63 +170,118 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   }, [data]);
 
   React.useEffect(() => {
-    const scriptId = `dataPublication-${dataPublicationId}`;
-    let structuredDataScript = document.getElementById(scriptId);
+    // only add structured data for concept DOI landing pages
+    // TODO: we might want all versions to be searchable though - check with DLS
+    // in that case we'll likely need to exclude the concept to ensure we're not duplicating the latest version...
+    if (isVersionDOI === false) {
+      const scriptId = `dataPublication-${dataPublicationId}`;
+      let structuredDataScript = document.getElementById(scriptId);
 
-    if (!structuredDataScript) {
-      structuredDataScript = document.createElement('script');
-      structuredDataScript.id = scriptId;
-      (structuredDataScript as HTMLScriptElement).type = 'application/ld+json';
-      const head = document.getElementsByTagName('head')[0];
-      head.appendChild(structuredDataScript);
-    }
-
-    structuredDataScript.innerHTML = JSON.stringify({
-      '@context': 'http://schema.org',
-      '@type': 'Dataset',
-      '@id': pid ? `https://doi.org/${pid}` : '',
-      url: pid ? `https://doi.org/${pid}` : '',
-      identifier: pid,
-      name: title,
-      description: description,
-      keywords: t('doi_constants.keywords', { returnObjects: true }),
-      publisher: {
-        '@type': 'Organization',
-        url: t('doi_constants.publisher.url'),
-        name: t('doi_constants.publisher.name'),
-        logo: t('doi_constants.publisher.logo'),
-        contactPoint: {
-          '@type': 'ContactPoint',
-          contactType: 'customer service',
-          email: t('doi_constants.publisher.email'),
-          url: t('doi_constants.publisher.url'),
-        },
-      },
-      creator: formattedUsers.map((user) => {
-        return { '@type': 'Person', name: user.fullName };
-      }),
-      includedInDataCatalog: {
-        '@type': 'DataCatalog',
-        url: t('doi_constants.distribution.content_url'),
-      },
-      license: t('doi_constants.distribution.license'),
-    });
-
-    return () => {
-      const currentScript = document.getElementById(scriptId);
-      if (currentScript) {
-        currentScript.remove();
+      if (!structuredDataScript) {
+        structuredDataScript = document.createElement('script');
+        structuredDataScript.id = scriptId;
+        (structuredDataScript as HTMLScriptElement).type =
+          'application/ld+json';
+        const head = document.getElementsByTagName('head')[0];
+        head.appendChild(structuredDataScript);
       }
-    };
-  }, [t, title, pid, dataPublicationId, description, formattedUsers]);
+
+      structuredDataScript.innerHTML = JSON.stringify({
+        '@context': 'http://schema.org',
+        '@type': 'Dataset',
+        '@id': pid ? `https://doi.org/${pid}` : '',
+        url: pid ? `https://doi.org/${pid}` : '',
+        identifier: pid,
+        name: title,
+        description: description,
+        keywords: t('doi_constants.keywords', { returnObjects: true }),
+        publisher: {
+          '@type': 'Organization',
+          url: t('doi_constants.publisher.url'),
+          name: t('doi_constants.publisher.name'),
+          logo: t('doi_constants.publisher.logo'),
+          contactPoint: {
+            '@type': 'ContactPoint',
+            contactType: 'customer service',
+            email: t('doi_constants.publisher.email'),
+            url: t('doi_constants.publisher.url'),
+          },
+        },
+        creator: formattedUsers.map((user) => {
+          return { '@type': 'Person', name: user.fullName };
+        }),
+        includedInDataCatalog: {
+          '@type': 'DataCatalog',
+          url: t('doi_constants.distribution.content_url'),
+        },
+        license: t('doi_constants.distribution.license'),
+      });
+
+      return () => {
+        const currentScript = document.getElementById(scriptId);
+        if (currentScript) {
+          currentScript.remove();
+        }
+      };
+    }
+  }, [
+    t,
+    title,
+    pid,
+    dataPublicationId,
+    description,
+    formattedUsers,
+    isVersionDOI,
+  ]);
 
   const shortInfo = [
-    {
-      content: function dataPublicationPidFormat(entity: DataPublication) {
-        return <StyledDOI doi={entity.pid} />;
-      },
-      label: t('datapublications.pid'),
-    },
+    ...(isVersionDOI
+      ? [
+          {
+            content: function dataPublicationPidFormat(
+              entity: DataPublication
+            ) {
+              return <StyledDOI doi={entity.pid} />;
+            },
+            label: t('datapublications.pid'),
+          },
+          {
+            content: function dataPublicationPidFormat(
+              entity: DataPublication
+            ) {
+              const conceptPid = data?.relatedItems?.filter(
+                (relatedItem) =>
+                  relatedItem.relationType === DOIRelationType.IsVersionOf
+              )?.[0]?.identifier;
+              if (conceptPid) return <StyledDOI doi={conceptPid} />;
+            },
+            label: `${t('datapublications.concept')} ${t(
+              'datapublications.pid'
+            )}`,
+          },
+        ]
+      : [
+          {
+            content: function dataPublicationPidFormat(
+              entity: DataPublication
+            ) {
+              if (latestVersionPid) return <StyledDOI doi={latestVersionPid} />;
+            },
+            label: `${t('datapublications.latest_version')} ${t(
+              'datapublications.pid'
+            )}`,
+          },
+          {
+            content: function dataPublicationPidFormat(
+              entity: DataPublication
+            ) {
+              return <StyledDOI doi={entity.pid} />;
+            },
+            label: `${t('datapublications.concept')} ${t(
+              'datapublications.pid'
+            )}`,
+          },
+        ]),
     {
       content: (dataPublication: DataPublication) =>
         dataPublication.publicationDate?.slice(0, 10) ?? '',
@@ -333,7 +396,25 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 </div>
               )}
 
+              {isVersionDOI === false && (
+                <CitationFormatter
+                  label={`${t('datapublications.latest_version')} ${t(
+                    'datapublications.details.citation_formatter.label'
+                  )}`}
+                  doi={latestVersionPid}
+                  formattedUsers={formattedUsers}
+                  title={title}
+                  startDate={data?.publicationDate}
+                />
+              )}
               <CitationFormatter
+                label={
+                  isVersionDOI === false
+                    ? `${t('datapublications.concept')} ${t(
+                        'datapublications.details.citation_formatter.label'
+                      )}`
+                    : undefined
+                }
                 doi={pid}
                 formattedUsers={formattedUsers}
                 title={title}
@@ -371,7 +452,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                     </Grid>
                   )
               )}
-              {data && (
+              {isVersionDOI === false && (
                 <Grid item sx={{ pt: '0px !important' }}>
                   <DLSDataPublicationVersionPanel
                     dataPublicationId={dataPublicationId}

@@ -57,6 +57,8 @@
     "title": "Title",
     "description": "Description",
     "pid": "DOI",
+    "concept": "Concept",
+    "latest_version": "Latest Version",
     "id": "Data Publication ID",
     "publication_date": "Publication Date",
     "content_tab_label": "View Content",
@@ -69,7 +71,6 @@
       "publisher": "Publisher",
       "format": "Data Format",
       "type": "Type",
-      "concept_panel_label": "Concept",
       "version_panel_label": "Versions",
       "citation_formatter": {
         "label": "Data Citation",

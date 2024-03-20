@@ -212,6 +212,7 @@ export type RelatedItem = Optional<
 > & {
   id: number;
   publication?: DataPublication;
+  createTime: string;
 };
 
 interface InstrumentScientist {

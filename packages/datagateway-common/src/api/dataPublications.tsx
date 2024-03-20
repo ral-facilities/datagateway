@@ -48,7 +48,12 @@ const fetchDataPublications = (
 
   if (additionalFilters) {
     additionalFilters.forEach((filter) => {
-      params.append(filter.filterType, filter.filterValue);
+      if (filter.filterType === 'order') {
+        const existingSorts = params.getAll('order');
+        params.delete('order');
+        params.append('order', filter.filterValue);
+        existingSorts.forEach((v) => params.append('order', v));
+      } else params.append(filter.filterType, filter.filterValue);
     });
   }
 
@@ -216,7 +221,13 @@ export const useDataPublication = (
 };
 
 export const useDataPublicationsByFilters = (
-  additionalFilters: AdditionalFilters
+  additionalFilters: AdditionalFilters,
+  queryOptions?: UseQueryOptions<
+    DataPublication[],
+    AxiosError,
+    DataPublication[],
+    [string, AdditionalFilters]
+  >
 ): UseQueryResult<DataPublication[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
 
@@ -234,6 +245,7 @@ export const useDataPublicationsByFilters = (
         handleICATError(error);
       },
       retry: retryICATErrors,
+      ...queryOptions,
     }
   );
 };

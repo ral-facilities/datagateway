@@ -45,36 +45,40 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
     parseInt(dataPublicationId)
   );
 
-  const { data: versionDataPublications } = useDataPublicationsByFilters([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'relatedItems.relationType': { eq: 'IsVersionOf' },
-      }),
-    },
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'relatedItems.identifier': { eq: dataPublication?.pid },
-      }),
-    },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify([
-        {
-          content: {
-            dataCollectionInvestigations: {
-              investigation: {
-                investigationInstruments: 'instrument',
+  const { data: versionDataPublications } = useDataPublicationsByFilters(
+    [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'relatedItems.relationType': { eq: 'IsVersionOf' },
+        }),
+      },
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'relatedItems.identifier': { eq: dataPublication?.pid },
+        }),
+      },
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify([
+          {
+            content: {
+              dataCollectionInvestigations: {
+                investigation: {
+                  investigationInstruments: 'instrument',
+                },
               },
+              dataCollectionDatasets: 'dataset',
+              dataCollectionDatafiles: 'datafile',
             },
-            dataCollectionDatasets: 'dataset',
-            dataCollectionDatafiles: 'datafile',
           },
-        },
-      ]),
-    },
-  ]);
+        ]),
+      },
+      { filterType: 'order', filterValue: JSON.stringify('createTime desc') },
+    ],
+    { enabled: !!dataPublication?.pid }
+  );
   const versionDataPublication = versionDataPublications?.[0];
 
   React.useEffect(() => {
