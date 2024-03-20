@@ -22,13 +22,11 @@ import '@uppy/drag-drop/dist/style.min.css';
 import '@uppy/dashboard/dist/style.min.css';
 
 import { readSciGatewayToken } from '../parseTokens';
-import { createDataset } from '../api';
-// import { ErrorOutline } from '@mui/icons-material';
+import { createDataset, refreshSession } from '../api';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
 import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
-import axios from 'axios';
 
 const DialogContent = styled(MuiDialogContent)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -87,15 +85,7 @@ const UploadDialog: React.FC<UploadDialogProps> = (
       onBeforeUpload: (files) => {
         // Refresh the session before uploading so that the session doesn't expire
         // while the user is idly uploading large files
-        axios.put(
-          `${apiUrl}/sessions`,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
-            },
-          }
-        );
+        refreshSession(apiUrl);
         return true;
       },
     })
@@ -223,14 +213,6 @@ const UploadDialog: React.FC<UploadDialogProps> = (
         </Grid>
       </DialogContent>
       <Grid container spacing={2} paddingLeft={1}>
-        {/* {entityType !== 'investigation' && (
-          <Grid item xs={6} display="flex" alignItems="center">
-            <ErrorOutline sx={{ fontSize: '2rem' }} />
-            <Typography sx={{ fontSize: '1rem' }} marginLeft={1}>
-              {'Only files can be added to Datasets (no folders)'}
-            </Typography>
-          </Grid>
-        )} */}
         <Grid item xs>
           <DialogActions sx={{ margin: 0, paddingTop: 0 }}>
             <Button
