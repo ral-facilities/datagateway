@@ -348,7 +348,7 @@ describe('DownloadConfirmDialog', () => {
     );
 
     await user.click(
-      await screen.findByLabelText('downloadConfirmDialog.close_aria_label')
+      await screen.findByLabelText('downloadConfirmDialog.close_arialabel')
     );
 
     expect(closeFunction).toHaveBeenCalled();

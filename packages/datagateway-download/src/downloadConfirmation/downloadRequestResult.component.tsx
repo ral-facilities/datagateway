@@ -98,7 +98,7 @@ function DownloadRequestResult({
       <DialogTitle
         id="download-confirm-dialog-title"
         onClose={closeDialog}
-        closeAriaLabel={t('downloadConfirmDialog.close_aria_label')}
+        closeAriaLabel={t('downloadConfirmDialog.close_arialabel')}
       />
 
       <DialogContent>

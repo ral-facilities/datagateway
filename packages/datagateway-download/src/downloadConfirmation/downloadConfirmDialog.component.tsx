@@ -344,7 +344,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
           <DialogTitle
             id="download-confirm-dialog-title"
             onClose={dialogClose}
-            closeAriaLabel={t('downloadConfirmDialog.close_aria_label')}
+            closeAriaLabel={t('downloadConfirmDialog.close_arialabel')}
           >
             {t('downloadConfirmDialog.dialog_title')}
           </DialogTitle>

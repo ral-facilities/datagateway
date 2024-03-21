@@ -37,7 +37,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
             downloadConfirmDialog.dialog_title
           </p>
           <button
-            aria-label="downloadConfirmDialog.close_aria_label"
+            aria-label="downloadConfirmDialog.close_arialabel"
             class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeLarge css-1f5482o-MuiButtonBase-root-MuiIconButton-root"
             tabindex="0"
             type="button"
@@ -346,7 +346,7 @@ exports[`DownloadConfirmDialog should not load the download speed/time table whe
             downloadConfirmDialog.dialog_title
           </p>
           <button
-            aria-label="downloadConfirmDialog.close_aria_label"
+            aria-label="downloadConfirmDialog.close_arialabel"
             class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeLarge css-1f5482o-MuiButtonBase-root-MuiIconButton-root"
             tabindex="0"
             type="button"
