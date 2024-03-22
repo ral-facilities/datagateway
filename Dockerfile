@@ -26,7 +26,7 @@ RUN --mount=type=cache,target=/root/.cache/.yarn/cache \
     yarn build;
 
 # Run stage
-FROM httpd:2.4.53-alpine3.15@sha256:4eb4177b9245c686696dd8120c79cd64b7632b27d890db4cad3b0e844ed737af
+FROM httpd:2.4.58-alpine3.19@sha256:92535cf7f151901ba91b04186292c3bd5bf82aa6ffa6eb7bc405fefbffedd480
 
 WORKDIR /usr/local/apache2/htdocs
 
