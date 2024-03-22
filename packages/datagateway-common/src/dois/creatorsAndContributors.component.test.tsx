@@ -2,10 +2,10 @@ import { render, RenderResult, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as React from 'react';
 import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
-import { DownloadSettingsContext } from '../ConfigProvider';
-import { mockedSettings } from '../testData';
-import { checkUser, ContributorType } from '../downloadApi';
 import CreatorsAndContributors from './creatorsAndContributors.component';
+import * as parseTokens from '../parseTokens';
+import { ContributorType } from '../app.types';
+import axios, { AxiosResponse } from 'axios';
 
 setLogger({
   log: console.log,
@@ -13,27 +13,7 @@ setLogger({
   error: jest.fn(),
 });
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    readSciGatewayToken: jest.fn(() => ({
-      username: '1',
-    })),
-  };
-});
-
-jest.mock('../downloadApi', () => {
-  const originalModule = jest.requireActual('../downloadApi');
-
-  return {
-    ...originalModule,
-
-    checkUser: jest.fn(),
-  };
-});
+jest.mock('loglevel');
 
 const createTestQueryClient = (): QueryClient =>
   new QueryClient({
@@ -49,6 +29,8 @@ describe('DOI generation form component', () => {
 
   let props: React.ComponentProps<typeof CreatorsAndContributors>;
 
+  let mockUser;
+
   const TestComponent: React.FC = () => {
     const [selectedUsers, changeSelectedUsers] = React.useState(
       // eslint-disable-next-line react/prop-types
@@ -57,12 +39,11 @@ describe('DOI generation form component', () => {
 
     return (
       <QueryClientProvider client={createTestQueryClient()}>
-        <DownloadSettingsContext.Provider value={mockedSettings}>
-          <CreatorsAndContributors
-            selectedUsers={selectedUsers}
-            changeSelectedUsers={changeSelectedUsers}
-          />
-        </DownloadSettingsContext.Provider>
+        <CreatorsAndContributors
+          selectedUsers={selectedUsers}
+          changeSelectedUsers={changeSelectedUsers}
+          doiMinterUrl="example.com"
+        />
       </QueryClientProvider>
     );
   };
@@ -71,6 +52,10 @@ describe('DOI generation form component', () => {
 
   beforeEach(() => {
     user = userEvent.setup();
+
+    jest
+      .spyOn(parseTokens, 'readSciGatewayToken')
+      .mockReturnValue({ username: '1', sessionId: 'abcdef' });
 
     props = {
       selectedUsers: [
@@ -92,14 +77,28 @@ describe('DOI generation form component', () => {
         },
       ],
       changeSelectedUsers: jest.fn(),
+      doiMinterUrl: 'example.com',
     };
-    (checkUser as jest.MockedFunction<typeof checkUser>).mockResolvedValue({
+
+    mockUser = {
       id: 3,
       name: '3',
       fullName: 'User 3',
       email: 'user3@example.com',
       affiliation: 'Example 3 Uni',
-    });
+    };
+
+    axios.get = jest
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/\/user\/\d/.test(url)) {
+          return Promise.resolve({
+            data: mockUser,
+          });
+        } else {
+          return Promise.reject(`Endpoint not mocked: ${url}`);
+        }
+      });
   });
 
   afterEach(() => {
@@ -182,8 +181,11 @@ describe('DOI generation form component', () => {
     ).toHaveValue('');
 
     // test errors with various API error responses
-    (checkUser as jest.MockedFunction<typeof checkUser>).mockRejectedValueOnce({
-      response: { data: { detail: 'error msg' }, status: 404 },
+    (axios.get as jest.Mock).mockRejectedValueOnce({
+      response: {
+        data: { detail: 'error msg' },
+        status: 404,
+      },
     });
 
     await user.type(
@@ -202,7 +204,7 @@ describe('DOI generation form component', () => {
         .slice(1) // ignores the header row
     ).toHaveLength(3);
 
-    (checkUser as jest.MockedFunction<typeof checkUser>).mockRejectedValue({
+    (axios.get as jest.Mock).mockRejectedValue({
       response: { data: { detail: [{ msg: 'error msg 2' }] }, status: 404 },
     });
     await user.click(
@@ -216,7 +218,7 @@ describe('DOI generation form component', () => {
         .slice(1) // ignores the header row
     ).toHaveLength(3);
 
-    (checkUser as jest.MockedFunction<typeof checkUser>).mockRejectedValueOnce({
+    (axios.get as jest.Mock).mockRejectedValueOnce({
       response: { status: 422 },
     });
     await user.click(
