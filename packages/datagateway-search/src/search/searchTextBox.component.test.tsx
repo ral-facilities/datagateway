@@ -13,8 +13,8 @@ jest.mock('loglevel');
 
 describe('Search text box component tests', () => {
   let state: StateType;
-  let mockStore;
-  let testStore;
+  const mockStore = configureStore([thunk]);
+  let testStore: ReturnType<typeof mockStore>;
   let history: History;
 
   const testInitiateSearch = jest.fn();
@@ -25,7 +25,6 @@ describe('Search text box component tests', () => {
       <Provider store={testStore}>
         <Router history={h}>
           <SearchTextBox
-            store={testStore}
             searchText=""
             initiateSearch={testInitiateSearch}
             onChange={handleChange}
@@ -41,21 +40,15 @@ describe('Search text box component tests', () => {
     state = JSON.parse(JSON.stringify({ dgsearch: initialState }));
 
     state.dgsearch = {
+      ...state.dgsearch,
       tabs: {
         datasetTab: true,
         datafileTab: true,
         investigationTab: true,
       },
-      requestReceived: false,
-      searchData: {
-        dataset: [],
-        datafile: [],
-        investigation: [],
-      },
       settingsLoaded: true,
     };
 
-    mockStore = configureStore([thunk]);
     testStore = mockStore(state);
   });
 

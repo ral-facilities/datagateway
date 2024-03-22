@@ -14,7 +14,7 @@ import useScrollToZoom from './useScrollToZoom';
  * A simple test component that consumes useScrollToZoom.
  */
 function TestComponent(): JSX.Element {
-  const ref = React.useRef<HTMLDivElement>();
+  const ref = React.useRef<HTMLDivElement | null>(null);
   useScrollToZoom({ targetElement: ref });
   return <div ref={ref}>Scroll me</div>;
 }
@@ -23,7 +23,7 @@ const mockStore = configureStore([]);
 
 describe('useScrollToZoom', () => {
   let state: DeepPartial<DGDataViewState>;
-  let store: MockStoreEnhanced;
+  let store: MockStoreEnhanced<unknown, unknown>;
 
   beforeEach(() => {
     state = {

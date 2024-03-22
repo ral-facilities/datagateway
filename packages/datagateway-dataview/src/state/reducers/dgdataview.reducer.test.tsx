@@ -1,5 +1,5 @@
 import DGDataViewReducer, { initialState } from './dgdataview.reducer';
-import { StateType } from '../app.types';
+import { DGDataViewState } from '../app.types';
 import {
   loadFeatureSwitches,
   loadBreadcrumbSettings,
@@ -10,15 +10,10 @@ import {
 } from '../actions';
 
 describe('dgdataview reducer', () => {
-  let state: StateType;
+  let state: DGDataViewState;
 
   beforeEach(() => {
-    // state = { ...dgdataviewInitialState };
-    state = JSON.parse(
-      JSON.stringify({
-        dgdataview: initialState,
-      })
-    );
+    state = JSON.parse(JSON.stringify(initialState));
   });
 
   it('should return state for actions it does not care about', () => {
@@ -30,7 +25,7 @@ describe('dgdataview reducer', () => {
   });
 
   it('should set settingsLoaded to true when SettingsLoaded action is sent', () => {
-    expect(state.dgdataview.settingsLoaded).toBe(false);
+    expect(state.settingsLoaded).toBe(false);
 
     const updatedState = DGDataViewReducer(state, settingsLoaded());
 
@@ -38,7 +33,7 @@ describe('dgdataview reducer', () => {
   });
 
   it('should set feature switches property when configure feature switches action is sent', () => {
-    expect(state.dgdataview.features).toEqual({});
+    expect(state.features).toEqual({});
 
     const updatedState = DGDataViewReducer(state, loadFeatureSwitches({}));
 
@@ -46,7 +41,7 @@ describe('dgdataview reducer', () => {
   });
 
   it('should set breadcrumb settings property when configure breadcrumb settings action is sent', () => {
-    expect(state.dgdataview.breadcrumbSettings).toEqual([]);
+    expect(state.breadcrumbSettings).toEqual([]);
 
     const updatedState = DGDataViewReducer(
       state,
@@ -67,7 +62,7 @@ describe('dgdataview reducer', () => {
   });
 
   it('should set selectAllSetting when configuring action is sent', () => {
-    expect(state.dgdataview.selectAllSetting).toEqual(true);
+    expect(state.selectAllSetting).toEqual(true);
 
     const updatedState = DGDataViewReducer(state, loadSelectAllSetting(false));
 
@@ -75,7 +70,7 @@ describe('dgdataview reducer', () => {
   });
 
   it('should set pluginHostSetting when configuring action is sent', () => {
-    expect(state.dgdataview.pluginHost).toEqual('');
+    expect(state.pluginHost).toEqual('');
 
     const updatedState = DGDataViewReducer(
       state,
@@ -86,7 +81,7 @@ describe('dgdataview reducer', () => {
   });
 
   it('should set facilityImageSetting when configuring action is sent', () => {
-    expect(state.dgdataview.facilityImageURL).toEqual('');
+    expect(state.facilityImageURL).toEqual('');
 
     const updatedState = DGDataViewReducer(
       state,

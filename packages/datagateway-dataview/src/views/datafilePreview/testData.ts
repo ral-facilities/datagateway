@@ -2,7 +2,7 @@
 
 import type { Datafile } from 'datagateway-common';
 
-const mockDatafile: Datafile = {
+const mockDatafile = {
   createTime: '2020-01-01',
   dataset: undefined,
   description: 'test description',
@@ -12,7 +12,7 @@ const mockDatafile: Datafile = {
   modTime: '2020-01-02',
   name: 'Datafile.txt',
   parameters: [],
-};
+} satisfies Datafile;
 
 const mockTxtFileContent = `First line
 Second line

@@ -35,6 +35,7 @@ export interface Investigation {
   datasetCount?: number;
   investigationUsers?: InvestigationUser[];
   samples?: Sample[];
+  parameters?: DatafileParameter[];
   publications?: Publication[];
   facility?: Facility;
   datasets?: Dataset[];
@@ -106,6 +107,11 @@ export interface User {
 
 export interface Sample {
   id: number;
+  name: string;
+  type?: SampleType;
+}
+
+interface SampleType {
   name: string;
 }
 
@@ -209,7 +215,7 @@ interface ParameterType {
   id: number;
   name: string;
   units: string;
-  valueType: string;
+  valueType: 'NUMERIC' | 'STRING' | 'DATE_AND_TIME';
 }
 
 interface Facility {
@@ -298,6 +304,41 @@ export type DownloadCartTableItem = DownloadCartItem & {
   [key: string]: string | number | DownloadCartItem[];
 };
 
+export interface SearchInstrumentSource {
+  'instrument.id': number;
+  'instrument.name': string;
+  'instrument.fullName'?: string;
+}
+
+export interface SearchFacilityCycleSource {
+  'facilityCycle.id': number;
+}
+
+export interface SearchResultSource {
+  id: number;
+  name: string;
+  title?: string;
+  visitId?: string;
+  doi?: string;
+  startDate?: number;
+  endDate?: number;
+  date?: number;
+  summary?: string;
+  location?: string;
+  investigationinstrument?: SearchInstrumentSource[];
+  investigationfacilitycycle?: SearchFacilityCycleSource[];
+  fileSize?: number;
+  fileCount?: number;
+  'dataset.id'?: number;
+  'dataset.name'?: string;
+  'investigation.id'?: number;
+  'investigation.name'?: string;
+  'investigation.title'?: string;
+  'investigation.startDate'?: number;
+  'facility.name'?: string;
+  'facility.id'?: number;
+}
+
 export type ICATEntity =
   | Investigation
   | Dataset
@@ -311,6 +352,7 @@ export type Entity = (
   | DownloadCartTableItem
   | Download
   | FormattedDownload
+  | SearchResultSource
 ) & {
   // We will have to ignore the any typing here to access
   // Entity attributes with string indexing.
@@ -339,7 +381,28 @@ export interface TextFilter {
   type: string;
 }
 
-export type Filter = string[] | TextFilter | DateFilter;
+export interface RangeFilter {
+  field: string;
+  from?: number;
+  to?: number;
+  key?: string;
+  units?: string;
+}
+
+export interface TermFilter {
+  field: string;
+  value: string;
+}
+
+export interface NestedFilter {
+  key: string;
+  label: string;
+  filter: SearchFilter[];
+}
+
+export type SearchFilter = NestedFilter | RangeFilter | TermFilter | string;
+
+export type Filter = SearchFilter[] | TextFilter | DateFilter;
 
 export type Order = 'asc' | 'desc';
 
@@ -374,4 +437,5 @@ export interface QueryParams {
   startDate: Date | null;
   endDate: Date | null;
   currentTab: string;
+  restrict: boolean;
 }

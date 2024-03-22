@@ -35,7 +35,7 @@ import {
 import axios, { type AxiosResponse } from 'axios';
 
 describe('Investigation table component', () => {
-  let mockStore;
+  const mockStore = configureStore([thunk]);
   let state: StateType;
   let rowData: Investigation[];
   let cartItems: DownloadCartItem[];
@@ -87,7 +87,6 @@ describe('Investigation table component', () => {
     holder.setAttribute('id', 'datagateway-dataview');
     document.body.appendChild(holder);
 
-    mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
         dgcommon: dGCommonInitialState,
@@ -134,7 +133,7 @@ describe('Investigation table component', () => {
         (url: string, data: unknown): Promise<Partial<AxiosResponse>> => {
           if (/\/user\/cart\/\/cartItems$/.test(url)) {
             const isRemove: boolean = JSON.parse(
-              (data as URLSearchParams).get('remove')
+              (data as URLSearchParams).get('remove') ?? 'false'
             );
 
             if (isRemove) {
@@ -420,6 +419,7 @@ describe('Investigation table component', () => {
         name: 'test',
         title: 'test',
         doi: 'Test 1',
+        visitId: '1',
       },
     ];
 

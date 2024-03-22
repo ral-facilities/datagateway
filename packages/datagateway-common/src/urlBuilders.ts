@@ -9,22 +9,34 @@ function isLandingPageSupportedForHierarchy(hierarchy: string): boolean {
   return hierarchy === FACILITY_NAME.isis;
 }
 
-function buildInvestigationLandingUrl(
-  investigation: Investigation
-): string | null {
-  const instrument = investigation?.investigationInstruments?.[0]?.instrument;
-  const facilityCycle =
-    investigation?.investigationFacilityCycles?.[0]?.facilityCycle;
-  if (!instrument || !facilityCycle) return null;
+type SearchResultSourceConstructedInvestigation = {
+  id: number;
+  name: string;
+  instrumentId: number | undefined;
+  facilityCycleId: number | undefined;
+};
 
-  return `/browse/instrument/${instrument.id}/facilityCycle/${facilityCycle.id}/investigation/${investigation.id}`;
+function buildInvestigationLandingUrl(
+  investigation: Investigation | SearchResultSourceConstructedInvestigation
+): string | null {
+  const instrumentId =
+    'instrumentId' in investigation
+      ? investigation.instrumentId
+      : investigation?.investigationInstruments?.[0]?.instrument?.id;
+  const facilityCycleId =
+    'facilityCycleId' in investigation
+      ? investigation.facilityCycleId
+      : investigation?.investigationFacilityCycles?.[0]?.facilityCycle?.id;
+  if (!instrumentId || !facilityCycleId) return null;
+
+  return `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${investigation.id}`;
 }
 
 function buildDatasetTableUrlForInvestigation({
   facilityName,
   investigation,
 }: {
-  investigation: Investigation;
+  investigation: Investigation | SearchResultSourceConstructedInvestigation;
   facilityName: string;
 }): string | null {
   const isISIS = facilityName === FACILITY_NAME.isis;
@@ -36,12 +48,17 @@ function buildDatasetTableUrlForInvestigation({
   }
 
   if (isISIS) {
-    const instrument = investigation?.investigationInstruments?.[0]?.instrument;
-    const facilityCycle =
-      investigation?.investigationFacilityCycles?.[0]?.facilityCycle;
-    if (!instrument || !facilityCycle) return null;
+    const instrumentId =
+      'instrumentId' in investigation
+        ? investigation.instrumentId
+        : investigation?.investigationInstruments?.[0]?.instrument?.id;
+    const facilityCycleId =
+      'facilityCycleId' in investigation
+        ? investigation.facilityCycleId
+        : investigation?.investigationFacilityCycles?.[0]?.facilityCycle?.id;
+    if (!instrumentId || !facilityCycleId) return null;
 
-    return `/browse/instrument/${instrument.id}/facilityCycle/${facilityCycle.id}/investigation/${investigation.id}/dataset`;
+    return `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${investigation.id}/dataset`;
   }
 
   if (isDLS) {
@@ -51,7 +68,15 @@ function buildDatasetTableUrlForInvestigation({
   return null;
 }
 
-function buildDatasetLandingUrl(dataset: Dataset): string | null {
+type SearchResultSourceConstructedDataset = {
+  id: number;
+  name: string;
+  investigation: SearchResultSourceConstructedInvestigation;
+};
+
+function buildDatasetLandingUrl(
+  dataset: Dataset | SearchResultSourceConstructedDataset
+): string | null {
   const investigation = dataset.investigation;
   if (!investigation) return null;
 
@@ -68,7 +93,7 @@ function buildDatafileTableUrlForDataset({
   dataset,
   facilityName,
 }: {
-  dataset: Dataset;
+  dataset: Dataset | SearchResultSourceConstructedDataset;
   facilityName: string;
 }): string | null {
   const investigation = dataset.investigation;
@@ -83,11 +108,17 @@ function buildDatafileTableUrlForDataset({
   return `${datasetTableUrl}/${dataset.id}/datafile`;
 }
 
+type SearchResultSourceConstructedDatafile = {
+  id: number;
+  name: string;
+  dataset: SearchResultSourceConstructedDataset;
+};
+
 function buildUrlToDatafileTableContainingDatafile({
   datafile,
   facilityName,
 }: {
-  datafile: Datafile;
+  datafile: Datafile | SearchResultSourceConstructedDatafile;
   facilityName: string;
 }): string | null {
   const dataset = datafile.dataset;

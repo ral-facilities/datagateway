@@ -39,5 +39,4 @@ export const ClearFiltersButton = (
     </ButtonDiv>
   );
 };
-
 export default ClearFiltersButton;

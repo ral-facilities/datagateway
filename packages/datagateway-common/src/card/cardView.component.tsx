@@ -1,9 +1,10 @@
 import {
-  Box,
-  Chip,
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Box,
+  Chip,
+  Divider,
   FormControl,
   Grid,
   InputLabel,
@@ -11,12 +12,11 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  Pagination,
   Paper,
+  Select,
   TableSortLabel,
   Typography,
-  Select,
-  Divider,
-  Pagination,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -24,15 +24,17 @@ import ArrowTooltip from '../arrowtooltip.component';
 import {
   Entity,
   Filter,
-  Order,
-  SortType,
   FiltersType,
+  Order,
+  SearchFilter,
+  SortType,
   UpdateMethod,
 } from '../app.types';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import AdvancedFilter from './advancedFilter.component';
 import EntityCard, { EntityImageDetails } from './entityCard.component';
+import { DatasearchType } from '../api';
 import AddIcon from '@mui/icons-material/Add';
 
 const SelectedChips = styled('ul')(({ theme }) => ({
@@ -66,6 +68,7 @@ export interface CVCustomFilters {
     count: string;
   }[];
   prefixLabel?: boolean;
+  dataKeySearch?: string;
 }
 
 type CVPaginationPosition = 'top' | 'bottom' | 'both';
@@ -106,11 +109,13 @@ export interface CardViewProps {
   image?: EntityImageDetails;
 
   paginationPosition?: CVPaginationPosition;
+  allIds?: number[];
+  entityName?: DatasearchType;
 
   'data-testid'?: string;
 }
 
-interface CVFilterInfo {
+export interface CVFilterInfo {
   [filterKey: string]: {
     label: string;
     items: {
@@ -123,7 +128,7 @@ interface CVFilterInfo {
   };
 }
 
-interface CVSelectedFilter {
+export interface CVSelectedFilter {
   filterKey: string;
   label: string;
   items: string[];
@@ -258,9 +263,9 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     ? information.some((i) => i.filterComponent)
     : false;
   const [filtersInfo, setFiltersInfo] = React.useState<CVFilterInfo>({});
-  const [selectedFilters, setSelectedFilters] = React.useState<
-    CVSelectedFilter[]
-  >([]);
+  const [selectedChips, setSelectedChips] = React.useState<CVSelectedFilter[]>(
+    []
+  );
   const [filterUpdate, setFilterUpdate] = React.useState(false);
 
   // Sort.
@@ -342,7 +347,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     };
 
     // Get the updated info.
-    const info = customFilters
+    const info: CVFilterInfo = customFilters
       ? Object.values(customFilters).reduce((o, filter) => {
           const data: CVFilterInfo = {
             ...o,
@@ -374,26 +379,36 @@ const CardView = (props: CardViewProps): React.ReactElement => {
       : {};
 
     setFiltersInfo(info);
-  }, [customFilters, filters]);
 
-  React.useEffect(() => {
-    if (Object.keys(filtersInfo).length > 0) {
-      // Get selected items only and remove any arrays without items.
-      const selected = Object.entries(filtersInfo)
-        .map(
-          ([filterKey, info]) => ({
-            filterKey: filterKey,
-            label: info.label,
-            items: Object.entries(info.items)
-              .filter(([, v]) => v.selected)
-              .map(([i]) => i),
-          }),
-          []
-        )
-        .filter((v) => v.items.length > 0);
-      setSelectedFilters(selected);
-    }
-  }, [filtersInfo]);
+    const selectedChips: CVSelectedFilter[] = [];
+    Object.entries(filters).forEach(([key, filter]) => {
+      if (filter instanceof Array) {
+        filter.forEach((filterEntry) => {
+          if (typeof filterEntry === 'string') {
+            if (info[key]) {
+              selectedChips.push({
+                filterKey: key,
+                label: info[key].label,
+                items: Object.entries(info[key].items)
+                  .filter(([, v]) => v.selected)
+                  .map(([i]) => i),
+              });
+            }
+          } else if ('filter' in filterEntry) {
+            selectedChips.push({
+              filterKey: key,
+              label: filterEntry.key.substring(
+                filterEntry.key.lastIndexOf('.') + 1
+              ),
+              items: [filterEntry.label],
+            });
+          }
+        });
+      }
+    });
+
+    setSelectedChips(selectedChips);
+  }, [customFilters, filters]);
 
   React.useEffect(() => {
     if (filterUpdate && loadedData) setFilterUpdate(false);
@@ -401,20 +416,31 @@ const CardView = (props: CardViewProps): React.ReactElement => {
 
   const changeFilter = (
     filterKey: string,
-    filterValue: string,
+    filterValue: SearchFilter,
     remove?: boolean
   ): void => {
+    const getNestedIndex = (updateItems: SearchFilter[]): number => {
+      let i = 0;
+      for (const updateItem of updateItems) {
+        if (
+          typeof updateItem !== 'string' &&
+          'label' in updateItem &&
+          updateItem.label === filterValue
+        ) {
+          return i;
+        }
+        i++;
+      }
+      return -1;
+    };
+
     // Add or remove the filter value in the state.
-    let updateItems: string[];
+    let updateItems: SearchFilter[] = [];
     if (filterKey in filters) {
       const filterItems = filters[filterKey];
       if (Array.isArray(filterItems)) {
         updateItems = filterItems;
-      } else {
-        updateItems = [];
       }
-    } else {
-      updateItems = [];
     }
 
     // Add or remove the filter value.
@@ -423,20 +449,19 @@ const CardView = (props: CardViewProps): React.ReactElement => {
       updateItems.push(filterValue);
       onPageChange(1);
       onFilter(filterKey, updateItems);
-    } else {
-      if (updateItems.length > 0 && updateItems.includes(filterValue)) {
-        // Set to null if this is the last item in the array.
-        // Remove the item from the updated items array.
-        const i = updateItems.indexOf(filterValue);
-        if (i > -1) {
-          // Remove the filter value from the update items.
-          updateItems.splice(i, 1);
-          onPageChange(1);
-          if (updateItems.length > 0) {
-            onFilter(filterKey, updateItems);
-          } else {
-            onFilter(filterKey, null);
-          }
+    } else if (updateItems.length > 0) {
+      // Set to null if this is the last item in the array.
+      // Remove the item from the updated items array.
+      let i = updateItems.indexOf(filterValue);
+      i = i === -1 ? getNestedIndex(updateItems) : i;
+      if (i > -1) {
+        // Remove the filter value from the update items.
+        updateItems.splice(i, 1);
+        onPageChange(1);
+        if (updateItems.length > 0) {
+          onFilter(filterKey, updateItems);
+        } else {
+          onFilter(filterKey, null);
         }
       }
     }
@@ -558,7 +583,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                     native
                     value={results}
                     inputProps={{
-                      name: 'Max Results',
+                      name: t('app.max_results'),
                       id: 'select-max-results',
                     }}
                     className="tour-dataview-max-results"
@@ -582,7 +607,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                           (i > 0 && totalDataCount > resOptions[i - 1])
                       )
                       .map((n, i) => (
-                        <option key={i} value={n} aria-label={`${n}...`}>
+                        <option key={i} value={n}>
                           {n}
                         </option>
                       ))}
@@ -769,26 +794,25 @@ const CardView = (props: CardViewProps): React.ReactElement => {
         {/* Card data */}
         <Grid item xs={12} md={9}>
           {/* Selected filters array */}
-          {selectedFilters.length > 0 &&
-            (filterUpdate || totalDataCount > 0) && (
-              <SelectedChips>
-                {selectedFilters.map((filter, filterIndex) => (
-                  <li key={filterIndex}>
-                    {filter.items.map((item, itemIndex) => (
-                      <Chip
-                        key={itemIndex}
-                        sx={{ margin: 0.5 }}
-                        label={`${filter.label} - ${item}`}
-                        onDelete={() => {
-                          changeFilter(filter.filterKey, item, true);
-                          setFilterUpdate(true);
-                        }}
-                      />
-                    ))}
-                  </li>
-                ))}
-              </SelectedChips>
-            )}
+          {selectedChips.length > 0 && (filterUpdate || totalDataCount > 0) && (
+            <SelectedChips>
+              {selectedChips.map((filter, filterIndex) => (
+                <li key={filterIndex}>
+                  {filter.items.map((item, itemIndex) => (
+                    <Chip
+                      key={itemIndex}
+                      sx={{ margin: 0.5 }}
+                      label={`${filter.label} - ${item}`}
+                      onDelete={() => {
+                        changeFilter(filter.filterKey, item, true);
+                        setFilterUpdate(true);
+                      }}
+                    />
+                  ))}
+                </li>
+              ))}
+            </SelectedChips>
+          )}
 
           {/* List of cards */}
           {hasFilteredResults ? (

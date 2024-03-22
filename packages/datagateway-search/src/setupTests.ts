@@ -1,24 +1,37 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import '@testing-library/jest-dom';
-import Enzyme from 'enzyme';
-import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { Action } from 'redux';
+import { Action, AnyAction } from 'redux';
 import { StateType } from './state/app.types';
 import { dGCommonInitialState } from 'datagateway-common';
 import { initialState as dgSearchInitialState } from './state/reducers/dgsearch.reducer';
 import { screen, within } from '@testing-library/react';
 import failOnConsole from 'jest-fail-on-console';
+import { ThunkAction, ThunkDispatch } from 'redux-thunk';
+import { createLocation } from 'history';
 
 failOnConsole();
 
 jest.setTimeout(20000);
 
-// Unofficial React 17 Enzyme adapter
-Enzyme.configure({ adapter: new Adapter() });
-
 function noOp(): void {
   // required as work-around for enzyme/jest environment not implementing window.URL.createObjectURL method
 }
+
+// Mock Date.toLocaleDateString so that it always uses en-GB as locale and UTC timezone
+// instead of using the system default, which can be different depending on the environment.
+// save a reference to the original implementation of Date.toLocaleDateString
+
+const toLocaleDateString = Date.prototype.toLocaleDateString;
+
+jest
+  .spyOn(Date.prototype, 'toLocaleDateString')
+  .mockImplementation(function (this: Date) {
+    // when toLocaleDateString is called with no argument
+    // pass in 'en-GB' as the locale & UTC as timezone
+    // so that Date.toLocaleDateString() is equivalent to
+    // Date.toLocaleDateString('en-GB', { timeZone: 'UTC' })
+    return toLocaleDateString.call(this, 'en-GB', { timeZone: 'UTC' });
+  });
 
 if (typeof window.URL.createObjectURL === 'undefined') {
   Object.defineProperty(window.URL, 'createObjectURL', { value: noOp });
@@ -29,13 +42,16 @@ export let actions: Action[] = [];
 export const resetActions = (): void => {
   actions = [];
 };
-export const getState = (): Partial<StateType> => ({
+export const getState = (): StateType => ({
   dgsearch: dgSearchInitialState,
   dgcommon: dGCommonInitialState,
+  router: { location: { ...createLocation('/'), query: {} }, action: 'POP' },
 });
-export const dispatch = (action: Action): void | Promise<void> => {
+export const dispatch: ThunkDispatch<StateType, null, AnyAction> = (
+  action: Action | ThunkAction<void, StateType, null, AnyAction>
+) => {
   if (typeof action === 'function') {
-    action(dispatch, getState);
+    action(dispatch, getState, null);
     return Promise.resolve();
   } else {
     actions.push(action);
@@ -47,6 +63,9 @@ export const flushPromises = (): Promise<void> =>
 
 // Mock lodash.debounce to return the function we want to call.
 jest.mock('lodash.debounce', () => (fn: (args: unknown) => unknown) => fn);
+jest.mock('@mui/utils/useId', () =>
+  jest.fn().mockImplementation((id?: string) => id ?? 'mui-test-id')
+);
 
 // Add in ResizeObserver as it's not in Jest's environment
 global.ResizeObserver = require('resize-observer-polyfill');
@@ -76,6 +95,7 @@ export const applyDatePickerWorkaround = (): void => {
 };
 
 export const cleanupDatePickerWorkaround = (): void => {
+  // @ts-expect-error this is a workaround
   delete window.matchMedia;
 };
 
@@ -113,6 +133,9 @@ export const findColumnHeaderByName = async (
  */
 export const findAllRows = async (): Promise<HTMLElement[]> =>
   (await screen.findAllByRole('row')).slice(1);
+
+export const queryAllRows = (): HTMLElement[] =>
+  screen.queryAllByRole('row').slice(1);
 
 /**
  * Find the table row at the given index. This assumes the first table row is always the header row.

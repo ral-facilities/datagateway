@@ -2,24 +2,19 @@ import * as React from 'react';
 import DatasetSearchTable from './datasetSearchTable.component';
 import { initialState } from '../state/reducers/dgsearch.reducer';
 import configureStore from 'redux-mock-store';
-import { StateType } from '../state/app.types';
+import type { StateType } from '../state/app.types';
 import {
-  Dataset,
   dGCommonInitialState,
+  type DownloadCartItem,
+  type LuceneSearchParams,
+  type SearchResponse,
+  type SearchResult,
   FACILITY_NAME,
-  useAddToCart,
-  useAllFacilityCycles,
-  useCart,
-  useDatasetCount,
-  useDatasetsInfinite,
-  useIds,
-  useLuceneSearch,
-  useRemoveFromCart,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { createMemoryHistory, History } from 'history';
+import { createMemoryHistory, type History } from 'history';
 import { Router } from 'react-router-dom';
 import {
   render,
@@ -28,146 +23,162 @@ import {
   waitFor,
   within,
 } from '@testing-library/react';
-import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
-} from '../setupTests';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
+import axios, { AxiosRequestConfig, type AxiosResponse } from 'axios';
+import { mockDataset } from '../testData';
 import userEvent from '@testing-library/user-event';
 import {
   findAllRows,
   findCellInRow,
   findColumnHeaderByName,
   findColumnIndexByName,
-  findRowAt,
+  queryAllRows,
 } from '../setupTests';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+// ====================== FIXTURES ======================
 
-  return {
-    __esModule: true,
-    ...originalModule,
-    useCart: jest.fn(),
-    useLuceneSearch: jest.fn(),
-    useDatasetCount: jest.fn(),
-    useDatasetsInfinite: jest.fn(),
-    useIds: jest.fn(),
-    useAddToCart: jest.fn(),
-    useRemoveFromCart: jest.fn(),
-    useAllFacilityCycles: jest.fn(),
-    useDatasetsDatafileCount: jest.fn(),
-    useDatasetSizes: jest.fn(),
-  };
-});
+const mockSearchResults: SearchResult[] = [
+  {
+    score: 1,
+    id: 1,
+    source: {
+      id: 1,
+      name: 'Dataset test name',
+      startDate: 1563940800000,
+      endDate: 1564027200000,
+      fileCount: 9,
+      fileSize: 10,
+      investigationinstrument: [
+        {
+          'instrument.id': 4,
+          'instrument.name': 'LARMOR',
+        },
+      ],
+      investigationfacilitycycle: [
+        {
+          'facilityCycle.id': 6,
+        },
+      ],
+      'investigation.id': 2,
+      'investigation.title': 'Investigation test title',
+      'investigation.name': 'Investigation test name',
+      'investigation.startDate': 1560139200000,
+    },
+  },
+];
+
+const mockLuceneSearchParams: LuceneSearchParams = {
+  searchText: '',
+  startDate: null,
+  endDate: null,
+  sort: {},
+  minCount: 10,
+  maxCount: 100,
+  restrict: true,
+  facets: [{ target: 'Dataset' }],
+  filters: {},
+};
+
+// ====================== END FIXTURE ======================
 
 describe('Dataset table component', () => {
   const mockStore = configureStore([thunk]);
+  let container: HTMLDivElement;
   let state: StateType;
   let history: History;
-  let user: UserEvent;
+  let queryClient: QueryClient;
+  let user: ReturnType<typeof userEvent.setup>;
+  let cartItems: DownloadCartItem[];
 
-  let rowData: Dataset[] = [];
+  let searchResponse: SearchResponse;
 
   const renderComponent = (hierarchy?: string): RenderResult => {
     return render(
       <Provider store={mockStore(state)}>
         <Router history={history}>
-          <QueryClientProvider client={new QueryClient()}>
+          <QueryClientProvider client={queryClient}>
             <DatasetSearchTable hierarchy={hierarchy ?? ''} />
           </QueryClientProvider>
         </Router>
-      </Provider>
+      </Provider>,
+      { container: document.body.appendChild(container) }
     );
   };
 
+  /**
+   * Mock implementation of axios.get
+   */
+  const mockAxiosGet = (
+    url: string,
+    config: AxiosRequestConfig
+  ): Promise<Partial<AxiosResponse>> => {
+    if (/.*\/user\/cart\/.*$/.test(url)) {
+      // fetchDownloadCart
+      return Promise.resolve({ data: { cartItems } });
+    }
+    if (/.*\/search\/documents$/.test(url)) {
+      // fetchLuceneData
+
+      if ((config.params as URLSearchParams).get('query')?.includes('filter')) {
+        // filter is applied
+        return Promise.resolve<Partial<AxiosResponse<Partial<SearchResponse>>>>(
+          {
+            data: {
+              dimensions: {
+                'Dataset.name': {
+                  asd: 1,
+                },
+              },
+              results: [],
+            },
+          }
+        );
+      }
+
+      return Promise.resolve<Partial<AxiosResponse<SearchResponse>>>({
+        data: searchResponse,
+      });
+    }
+    if (/.*\/datasets$/.test(url)) {
+      return Promise.resolve({
+        data: [mockDataset],
+      });
+    }
+    return Promise.reject();
+  };
+
   beforeEach(() => {
-    history = createMemoryHistory();
     user = userEvent.setup();
+
+    history = createMemoryHistory({
+      initialEntries: [{ search: 'searchText=test search&currentTab=dataset' }],
+    });
+    queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+      },
+    });
+    container = document.createElement('div');
+    container.id = 'datagateway-search';
 
     state = JSON.parse(
       JSON.stringify({ dgcommon: dGCommonInitialState, dgsearch: initialState })
     );
-    rowData = [
-      {
-        id: 1,
-        name: 'Dataset test name',
-        size: 1,
-        fileSize: 1,
-        fileCount: 1,
-        modTime: '2019-07-23',
-        createTime: '2019-07-23',
-        startDate: '2019-07-24',
-        endDate: '2019-07-25',
-        investigation: {
-          id: 2,
-          title: 'Investigation test title',
-          name: 'Investigation test name',
-          summary: 'foo bar',
-          visitId: '1',
-          doi: 'doi 1',
-          size: 1,
-          investigationInstruments: [
-            {
-              id: 3,
-              instrument: {
-                id: 4,
-                name: 'LARMOR',
-              },
-            },
-          ],
-          studyInvestigations: [
-            {
-              id: 5,
-              study: {
-                id: 6,
-                pid: 'study pid',
-                name: 'study name',
-                modTime: '2019-06-10',
-                createTime: '2019-06-10',
-              },
-              investigation: {
-                id: 2,
-                title: 'Investigation test title',
-                name: 'Investigation test name',
-                visitId: '1',
-              },
-            },
-          ],
-          startDate: '2019-06-10',
-          endDate: '2019-06-11',
-          facility: {
-            id: 7,
-            name: 'facility name',
-          },
+    cartItems = [];
+    searchResponse = {
+      dimensions: {
+        'Dataset.name': {
+          asd: 1,
         },
       },
-    ];
-    (useCart as jest.Mock).mockReturnValue({
-      data: [],
-      isLoading: false,
-    });
-    (useLuceneSearch as jest.Mock).mockReturnValue({
-      data: [],
-    });
-    (useDatasetCount as jest.Mock).mockReturnValue({
-      data: 0,
-    });
-    (useDatasetsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
-    });
-    (useIds as jest.Mock).mockReturnValue({
-      data: [1],
-      isLoading: false,
-    });
-    (useAddToCart as jest.Mock).mockReturnValue({
-      mutate: jest.fn(),
-      isLoading: false,
-    });
-    (useRemoveFromCart as jest.Mock).mockReturnValue({
-      mutate: jest.fn(),
-      isLoading: false,
+      results: mockSearchResults,
+    };
+
+    axios.get = jest.fn().mockImplementation(mockAxiosGet);
+    axios.post = jest.fn().mockImplementation((url: string) => {
+      if (/.*\/user\/cart\/.*\/cartItems$/.test(url)) {
+        return Promise.resolve({ data: { cartItems } });
+      }
+      return Promise.reject();
     });
   });
 
@@ -175,16 +186,43 @@ describe('Dataset table component', () => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly', async () => {
+  it('disables the search query if dataset search is disabled', async () => {
+    const searchParams = new URLSearchParams(history.location.search);
+    searchParams.append('dataset', 'false');
+    history.replace({ search: `?${searchParams.toString()}` });
+
     renderComponent();
 
-    const rows = await findAllRows();
-    // should have 1 row in the table
-    expect(rows).toHaveLength(1);
+    // check that column headers are shown correctly.
+    expect(await findColumnHeaderByName('datasets.name')).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datasets.datafile_count')
+    ).toBeInTheDocument();
+    expect(await findColumnHeaderByName('datasets.size')).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datasets.investigation')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datasets.create_time')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datasets.modified_time')
+    ).toBeInTheDocument();
 
-    const row = rows[0];
+    // wait for queries to finish fetching
+    await waitFor(() => !queryClient.isFetching());
 
-    // check that column headers are shown correctly
+    expect(
+      queryClient.getQueryState(['search', 'Dataset'], { exact: false })?.status
+    ).toBe('idle');
+
+    expect(queryAllRows()).toHaveLength(0);
+  });
+
+  it('renders search results correctly', async () => {
+    renderComponent();
+
+    // check that column headers are shown correctly.
     expect(await findColumnHeaderByName('datasets.name')).toBeInTheDocument();
     expect(
       await findColumnHeaderByName('datasets.datafile_count')
@@ -199,6 +237,40 @@ describe('Dataset table component', () => {
       await findColumnHeaderByName('datasets.modified_time')
     ).toBeInTheDocument();
 
+    const rows = await findAllRows();
+    expect(rows).toHaveLength(1);
+
+    // check that facet filter panel is present
+    expect(screen.getByText('facetPanel.title')).toBeInTheDocument();
+    // apply filter button should be invisible initially
+    expect(
+      screen.queryByRole('button', { name: 'facetPanel.apply' })
+    ).toBeNull();
+
+    const accordion = screen.getByRole('button', {
+      name: 'Toggle facetDimensionLabel.Dataset.name filter panel',
+    });
+
+    expect(accordion).toBeInTheDocument();
+
+    await user.click(accordion);
+
+    const filterPanel = await screen.getByLabelText(
+      'facetDimensionLabel.Dataset.name filter panel'
+    );
+
+    expect(filterPanel).toBeInTheDocument();
+
+    const asdFilter = within(filterPanel).getByRole('button', {
+      name: 'Add asd filter',
+    });
+
+    expect(asdFilter).toBeInTheDocument();
+    expect(within(asdFilter).getByText('asd')).toBeInTheDocument();
+    expect(within(asdFilter).getByText('1')).toBeInTheDocument();
+
+    const row = rows[0];
+
     // each cell in the row should contain the correct value
     expect(
       within(
@@ -212,7 +284,14 @@ describe('Dataset table component', () => {
         findCellInRow(row, {
           columnIndex: await findColumnIndexByName('datasets.datafile_count'),
         })
-      ).getByText('1')
+      ).getByText('9')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('datasets.size'),
+        })
+      ).getByText('10 B')
     ).toBeInTheDocument();
     expect(
       within(
@@ -226,27 +305,27 @@ describe('Dataset table component', () => {
         findCellInRow(row, {
           columnIndex: await findColumnIndexByName('datasets.create_time'),
         })
-      ).getByText('2019-07-23')
+      ).getByText('24/07/2019')
     ).toBeInTheDocument();
     expect(
       within(
         findCellInRow(row, {
           columnIndex: await findColumnIndexByName('datasets.modified_time'),
         })
-      ).getByText('2019-07-23')
+      ).getByText('25/07/2019')
     ).toBeInTheDocument();
   });
 
-  it('renders correctly for isis', async () => {
+  it('renders search results in isis correctly', async () => {
     renderComponent('isis');
 
-    const rows = await findAllRows();
-    // should have 1 row in the table
-    expect(rows).toHaveLength(1);
+    let rows: HTMLElement[] = [];
+    await waitFor(async () => {
+      rows = await findAllRows();
+      expect(rows).toHaveLength(1);
+    });
 
-    const row = rows[0];
-
-    // check that column headers are shown correctly
+    // check that column headers are shown correctly.
     expect(await findColumnHeaderByName('datasets.name')).toBeInTheDocument();
     expect(await findColumnHeaderByName('datasets.size')).toBeInTheDocument();
     expect(
@@ -258,6 +337,8 @@ describe('Dataset table component', () => {
     expect(
       await findColumnHeaderByName('datasets.modified_time')
     ).toBeInTheDocument();
+
+    const row = rows[0];
 
     // each cell in the row should contain the correct value
     expect(
@@ -272,7 +353,7 @@ describe('Dataset table component', () => {
         findCellInRow(row, {
           columnIndex: await findColumnIndexByName('datasets.size'),
         })
-      ).getByText('1 B')
+      ).getByText('10 B')
     ).toBeInTheDocument();
     expect(
       findCellInRow(row, {
@@ -284,147 +365,296 @@ describe('Dataset table component', () => {
         findCellInRow(row, {
           columnIndex: await findColumnIndexByName('datasets.create_time'),
         })
-      ).getByText('2019-07-23')
+      ).getByText('24/07/2019')
     ).toBeInTheDocument();
     expect(
       within(
         findCellInRow(row, {
           columnIndex: await findColumnIndexByName('datasets.modified_time'),
         })
-      ).getByText('2019-07-23')
+      ).getByText('25/07/2019')
     ).toBeInTheDocument();
   });
 
-  it('updates filter query params on text filter', async () => {
+  it('applies selected filters correctly', async () => {
     renderComponent();
 
-    const filterInput = await screen.findByRole('textbox', {
-      name: 'Filter by datasets.name',
-      hidden: true,
+    // check that no filter chip is visible initially
+    const selectedFilters = await screen.findByLabelText('selectedFilters');
+    expect(
+      within(selectedFilters).queryAllByText(/^facetDimensionLabel.*/)
+    ).toHaveLength(0);
+
+    // expand accordion
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Toggle facetDimensionLabel.Dataset.name filter panel',
+      })
+    );
+    // select the filter
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Add asd filter',
+      })
+    );
+    // apply the filter
+    await user.click(screen.getByRole('button', { name: 'facetPanel.apply' }));
+
+    // when filter is applied, the fake axios get will return nothing
+    // so we should expect no rows in the table
+    await waitFor(() => {
+      expect(queryAllRows()).toHaveLength(0);
     });
 
-    await user.type(filterInput, 'test');
-
-    // user.type inputs the given string character by character to simulate user typing
-    // each keystroke of user.type creates a new entry in the history stack
-    // so the initial entry + 4 characters in "test" = 5 entries
-    expect(history.length).toBe(5);
-    expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
-        '{"name":{"value":"test","type":"include"}}'
-      )}`
+    // expand accordion
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Toggle facetDimensionLabel.Dataset.name filter panel',
+      })
     );
 
-    await user.clear(filterInput);
-
-    expect(history.length).toBe(6);
-    expect(history.location.search).toBe('?');
-  });
-
-  it('updates filter query params on date filter', async () => {
-    applyDatePickerWorkaround();
-
-    renderComponent();
-
-    const filterInput = await screen.findByRole('textbox', {
-      name: 'datasets.modified_time filter to',
+    const selectedFilterItem = await screen.findByRole('button', {
+      name: 'Remove asd filter',
     });
 
-    await user.type(filterInput, '2019-08-06');
+    expect(selectedFilterItem).toBeInTheDocument();
+    expect(selectedFilterItem).toHaveAttribute('aria-selected', 'true');
+    expect(within(selectedFilterItem).getByRole('checkbox')).toBeChecked();
 
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent('{"modTime":{"endDate":"2019-08-06"}}')}`
-    );
-
-    // await user.clear(filterInput);
-    await user.click(filterInput);
-    await user.keyboard('{Control}a{/Control}');
-    await user.keyboard('{Delete}');
-
-    expect(history.length).toBe(3);
-    expect(history.location.search).toBe('?');
-
-    cleanupDatePickerWorkaround();
+    // the selected filters should be displayed
+    expect(selectedFilters).toBeInTheDocument();
+    expect(
+      within(selectedFilters).getByText('facetDimensionLabel.Dataset.name: asd')
+    ).toBeInTheDocument();
   });
 
-  it('updates sort query params on sort', async () => {
+  it('applies filters already present in the URL on first render', async () => {
+    const searchParams = new URLSearchParams(history.location.search);
+    searchParams.append(
+      'filters',
+      JSON.stringify({
+        'Dataset.name': ['asd'],
+      })
+    );
+    history.replace({ search: `?${searchParams.toString()}` });
+
     renderComponent();
+
+    // when filters are applied
+    // the fake axios.get returns no search results
+    // so we should expect no rows in the table
+    await waitFor(() => {
+      expect(queryAllRows()).toHaveLength(0);
+    });
+
+    // expand accordion
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Toggle facetDimensionLabel.Dataset.name filter panel',
+      })
+    );
+
+    // filter should be selected
+    const filterItem = await screen.findByRole('button', {
+      name: 'Remove asd filter',
+    });
+    expect(filterItem).toBeInTheDocument();
+    expect(filterItem).toHaveAttribute('aria-selected', 'true');
+    expect(within(filterItem).getByRole('checkbox')).toBeChecked();
+  });
+
+  it('allows filters to be removed through the facet filter panel', async () => {
+    const searchParams = new URLSearchParams(history.location.search);
+    searchParams.append(
+      'filters',
+      JSON.stringify({
+        'Dataset.name': ['asd'],
+      })
+    );
+    history.replace({ search: `?${searchParams.toString()}` });
+
+    renderComponent();
+
+    const selectedFilterChips = await screen.findByLabelText('selectedFilters');
+
+    expect(
+      within(selectedFilterChips).getByRole('button', {
+        name: 'facetDimensionLabel.Dataset.name: asd',
+      })
+    ).toBeInTheDocument();
+
+    // when filters are applied
+    // the fake axios.get returns no search results
+    // so we should expect no rows in the table
+    await waitFor(() => {
+      expect(queryAllRows()).toHaveLength(0);
+    });
+
+    // expand accordion
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Toggle facetDimensionLabel.Dataset.name filter panel',
+      })
+    );
 
     await user.click(
-      await screen.findByRole('button', { name: 'datasets.name' })
+      await screen.findByRole('button', {
+        name: 'Remove asd filter',
+      })
     );
 
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"name":"asc"}')}`
+    // apply the changes
+    await user.click(screen.getByRole('button', { name: 'facetPanel.apply' }));
+
+    expect(await findAllRows()).toHaveLength(1);
+
+    // check that the filter chip is removed
+    expect(
+      within(selectedFilterChips).queryByRole('button', {
+        name: 'facetDimensionLabel.Dataset.name: paper',
+      })
+    ).toBeNull();
+
+    // expand accordion
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Toggle facetDimensionLabel.Dataset.name filter panel',
+      })
     );
+
+    // filter item should not be selected anymore
+    const filterItem = await screen.findByRole('button', {
+      name: 'Add asd filter',
+    });
+    expect(filterItem).toBeInTheDocument();
+    expect(filterItem).toHaveAttribute('aria-selected', 'false');
+    expect(within(filterItem).getByRole('checkbox')).not.toBeChecked();
   });
 
-  it('calls addToCart mutate function on unchecked checkbox click', async () => {
-    const addToCart = jest.fn();
-    (useAddToCart as jest.Mock).mockReturnValue({
-      mutate: addToCart,
-      loading: false,
-    });
+  it('allows filters to be removed by removing filter chips', async () => {
+    const searchParams = new URLSearchParams(history.location.search);
+    searchParams.append(
+      'filters',
+      JSON.stringify({
+        'Dataset.name': ['asd'],
+      })
+    );
+    history.replace({ search: `?${searchParams.toString()}` });
+
     renderComponent();
 
+    // when filters are applied
+    // the fake axios.get returns no search results
+    // so we should expect no rows in the table
+    await waitFor(() => {
+      expect(queryAllRows()).toHaveLength(0);
+    });
+
+    const selectedFilterChips = screen.getByLabelText('selectedFilters');
+    const chip = within(selectedFilterChips).getByRole('button', {
+      name: 'facetDimensionLabel.Dataset.name: asd',
+    });
+
+    await user.click(within(chip).getByTestId('CancelIcon'));
+
+    expect(await findAllRows()).toHaveLength(1);
+
+    // check that the filter chip is removed
+    expect(
+      within(selectedFilterChips).queryByRole('button', {
+        name: 'facetDimensionLabel.Dataset.name: asd',
+      })
+    ).toBeNull();
+
+    // expand accordion
     await user.click(
+      await screen.findByRole('button', {
+        name: 'Toggle facetDimensionLabel.Dataset.name filter panel',
+      })
+    );
+
+    // filter item should not be selected anymore
+    const filterItem = await screen.findByRole('button', {
+      name: 'Add asd filter',
+    });
+    expect(filterItem).toBeInTheDocument();
+    expect(filterItem).toHaveAttribute('aria-selected', 'false');
+    expect(within(filterItem).getByRole('checkbox')).not.toBeChecked();
+  });
+
+  it('should add the selected row to cart', async () => {
+    const addedCartItem: DownloadCartItem = {
+      entityId: 1,
+      entityType: 'dataset',
+      id: 1,
+      name: 'Test 1',
+      parentEntities: [],
+    };
+
+    renderComponent();
+
+    // wait for data to finish loading
+    expect(await screen.findByText('Dataset test name')).toBeInTheDocument();
+
+    // pretend the server has added the row to the cart
+    // create a new array to trigger useMemo update
+    cartItems = [...cartItems, addedCartItem];
+
+    // clicks on the row checkbox
+    await user.click(screen.getByRole('checkbox', { name: 'select row 0' }));
+
+    // the checkbox should be checked
+    expect(
       await screen.findByRole('checkbox', { name: 'select row 0' })
-    );
-
-    expect(addToCart).toHaveBeenCalledWith([1]);
+    ).toBeChecked();
   });
 
-  it('calls removeFromCart mutate function on checked checkbox click', async () => {
-    (useCart as jest.Mock).mockReturnValue({
-      data: [
-        {
-          entityId: 1,
-          entityType: 'dataset',
-          id: 1,
-          name: 'test',
-          parentEntities: [],
-        },
-      ],
-      isLoading: false,
-    });
+  it('should remove the selected row from cart if it is in the cart', async () => {
+    const addedCartItem: DownloadCartItem = {
+      entityId: 1,
+      entityType: 'dataset',
+      id: 1,
+      name: 'Test 1',
+      parentEntities: [],
+    };
 
-    const removeFromCart = jest.fn();
-    (useRemoveFromCart as jest.Mock).mockReturnValue({
-      mutate: removeFromCart,
-      loading: false,
-    });
+    cartItems.push(addedCartItem);
 
     renderComponent();
 
-    await user.click(
-      await screen.findByRole('checkbox', { name: 'select row 0' })
-    );
+    // wait for data to finish loading
+    expect(await screen.findByText('Dataset test name')).toBeInTheDocument();
 
-    expect(removeFromCart).toHaveBeenCalledWith([1]);
+    // pretend the server has removed the item from the cart
+    // create a new array to trigger useMemo update
+    cartItems = [];
+
+    // clicks on the row checkbox
+    await user.click(screen.getByRole('checkbox', { name: 'select row 0' }));
+
+    // the checkbox should not be checked
+    expect(
+      await screen.findByRole('checkbox', { name: 'select row 0' })
+    ).not.toBeChecked();
   });
 
   it('selected rows only considers relevant cart items', async () => {
-    (useCart as jest.Mock).mockReturnValue({
-      data: [
-        {
-          entityId: 1,
-          entityType: 'investigation',
-          id: 1,
-          name: 'test',
-          parentEntities: [],
-        },
-        {
-          entityId: 2,
-          entityType: 'dataset',
-          id: 2,
-          name: 'test',
-          parentEntities: [],
-        },
-      ],
-      isLoading: false,
-    });
+    cartItems = [
+      {
+        entityId: 1,
+        entityType: 'investigation',
+        id: 1,
+        name: 'test',
+        parentEntities: [],
+      },
+      {
+        entityId: 2,
+        entityType: 'dataset',
+        id: 2,
+        name: 'test',
+        parentEntities: [],
+      },
+    ];
 
     renderComponent();
 
@@ -438,7 +668,9 @@ describe('Dataset table component', () => {
 
   it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', async () => {
     state.dgsearch.selectAllSetting = false;
+
     renderComponent();
+
     await waitFor(() => {
       expect(
         screen.queryByRole('checkbox', { name: 'select all rows' })
@@ -449,9 +681,9 @@ describe('Dataset table component', () => {
   it('displays generic details panel when expanded', async () => {
     renderComponent();
 
-    const row = await findRowAt(0);
-
-    await user.click(within(row).getByRole('button', { name: 'Show details' }));
+    await user.click(
+      await screen.findByRole('button', { name: 'Show details' })
+    );
 
     expect(
       await screen.findByTestId('dataset-details-panel')
@@ -461,9 +693,9 @@ describe('Dataset table component', () => {
   it('displays correct details panel for ISIS when expanded', async () => {
     renderComponent(FACILITY_NAME.isis);
 
-    const row = await findRowAt(0);
-
-    await user.click(within(row).getByRole('button', { name: 'Show details' }));
+    await user.click(
+      await screen.findByRole('button', { name: 'Show details' })
+    );
 
     expect(
       await screen.findByTestId('isis-dataset-details-panel')
@@ -471,43 +703,29 @@ describe('Dataset table component', () => {
   });
 
   it('can navigate using the details panel for ISIS when there are facility cycles', async () => {
-    rowData[0].investigation.investigationFacilityCycles = [
-      {
-        id: 102,
-        facilityCycle: {
-          id: 4,
-          name: 'facility cycle name',
-          startDate: '2000-06-10',
-          endDate: '2020-06-11',
-        },
-      },
-    ];
-
     renderComponent(FACILITY_NAME.isis);
 
-    const row = await findRowAt(0);
-
-    await user.click(within(row).getByRole('button', { name: 'Show details' }));
-
-    expect(
-      await screen.findByTestId('isis-dataset-details-panel')
-    ).toBeInTheDocument();
+    await user.click(
+      await screen.findByRole('button', { name: 'Show details' })
+    );
 
     await user.click(
-      await screen.findByRole('tab', { name: 'datasets.details.datafiles' })
+      await screen.findByRole('tab', {
+        name: 'datasets.details.datafiles',
+      })
     );
 
     expect(history.location.pathname).toBe(
-      '/browse/instrument/4/facilityCycle/4/investigation/2/dataset/1/datafile'
+      '/browse/instrument/4/facilityCycle/6/investigation/2/dataset/1/datafile'
     );
   });
 
   it('displays correct details panel for DLS when expanded', async () => {
     renderComponent(FACILITY_NAME.dls);
 
-    const row = await findRowAt(0);
-
-    await user.click(within(row).getByRole('button', { name: 'Show details' }));
+    await user.click(
+      await screen.findByRole('button', { name: 'Show details' })
+    );
 
     expect(
       await screen.findByTestId('dls-dataset-details-panel')
@@ -517,218 +735,193 @@ describe('Dataset table component', () => {
   it('renders Dataset title as a link', async () => {
     renderComponent();
 
-    // find the title cell
-
-    const datasetNameColIndex = await findColumnIndexByName('datasets.name');
-    const row = await findRowAt(0);
-    const titleCell = await findCellInRow(row, {
-      columnIndex: datasetNameColIndex,
-    });
-
     expect(
-      within(titleCell).getByRole('link', { name: 'Dataset test name' })
-    ).toHaveAttribute('href', '/browse/investigation/2/dataset/1/datafile');
+      await screen.findByRole('link', { name: 'Dataset test name' })
+    ).toBeInTheDocument();
   });
 
-  it('renders fine with incomplete data', async () => {
+  it('renders fine with incomplete data', () => {
     // this can happen when navigating between tables and the previous table's state still exists
-    rowData = [
-      {
-        id: 1,
-        name: 'test',
-        size: 1,
-        modTime: '2019-07-23',
-        createTime: '2019-07-23',
-        investigation: {},
-      },
-    ];
-    (useDatasetsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
-    });
+    searchResponse = {
+      results: [
+        {
+          ...mockSearchResults[0],
+          source: {
+            id: 1,
+            name: 'test',
+          },
+        },
+      ],
+    };
 
-    renderComponent();
-
-    expect(await findAllRows()).toHaveLength(1);
+    expect(() => renderComponent()).not.toThrowError();
   });
 
   it('renders generic link correctly', async () => {
     renderComponent('data');
 
-    const datasetNameColIndex = await findColumnIndexByName('datasets.name');
-    const row = await findRowAt(0);
-    const titleCell = await findCellInRow(row, {
-      columnIndex: datasetNameColIndex,
-    });
-
     expect(
-      within(titleCell).getByRole('link', { name: 'Dataset test name' })
+      await screen.findByRole('link', { name: 'Dataset test name' })
     ).toHaveAttribute('href', '/browse/investigation/2/dataset/1/datafile');
   });
 
   it('renders DLS link correctly', async () => {
     renderComponent(FACILITY_NAME.dls);
 
-    const datasetNameColIndex = await findColumnIndexByName('datasets.name');
-    const row = await findRowAt(0);
-    const titleCell = await findCellInRow(row, {
-      columnIndex: datasetNameColIndex,
-    });
-
     expect(
-      within(titleCell).getByRole('link', { name: 'Dataset test name' })
+      await screen.findByRole('link', { name: 'Dataset test name' })
     ).toHaveAttribute(
       'href',
       '/browse/proposal/Investigation test name/investigation/2/dataset/1/datafile'
     );
+    expect(await screen.findByText('10 B')).toBeInTheDocument();
+    expect(await screen.findByText('9')).toBeInTheDocument();
   });
 
   it('renders ISIS link & file sizes correctly', async () => {
-    rowData[0].investigation.investigationFacilityCycles = [
-      {
-        id: 314,
-        facilityCycle: {
-          id: 6,
-          name: 'facility cycle name',
-          startDate: '2000-06-10',
-          endDate: '2020-06-11',
-        },
-      },
-    ];
-
     renderComponent(FACILITY_NAME.isis);
 
-    const datasetNameColIndex = await findColumnIndexByName('datasets.name');
-    const datasetSizeColIndex = await findColumnIndexByName('datasets.size');
-    const row = await findRowAt(0);
-    const titleCell = await findCellInRow(row, {
-      columnIndex: datasetNameColIndex,
-    });
-    const sizeCell = await findCellInRow(row, {
-      columnIndex: datasetSizeColIndex,
-    });
-
     expect(
-      within(titleCell).getByRole('link', { name: 'Dataset test name' })
-    ).toHaveAttribute(
-      'href',
-      '/browse/instrument/4/facilityCycle/6/investigation/2/dataset/1'
-    );
-    expect(within(sizeCell).getByText('1 B')).toBeInTheDocument();
+      await screen.findByRole('link', { name: 'Dataset test name' })
+    ).toBeInTheDocument();
+    expect(await screen.findByText('10 B')).toBeInTheDocument();
   });
 
   it('does not render ISIS link when instrumentId cannot be found', async () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
+    const { investigationinstrument, ...data } = mockSearchResults[0].source;
+    searchResponse = {
+      results: [
         {
-          id: 4,
-          name: 'facility cycle name',
-          startDate: '2000-06-10',
-          endDate: '2020-06-11',
+          ...mockSearchResults[0],
+          source: data,
         },
       ],
-    });
-    delete rowData[0].investigation?.investigationInstruments;
+    };
 
-    (useDatasetsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
-    });
     renderComponent(FACILITY_NAME.isis);
 
-    const datasetNameColIndex = await findColumnIndexByName('datasets.name');
-    const row = await findRowAt(0);
-    const titleCell = await findCellInRow(row, {
-      columnIndex: datasetNameColIndex,
+    await waitFor(async () => {
+      // the title should not be rendered as a link...
+      expect(
+        screen.queryByRole('link', { name: 'Dataset test name' })
+      ).toBeNull();
+      // ...but it should still be rendered as a normal text
+      expect(screen.getByText('Dataset test name')).toBeInTheDocument();
     });
-
-    expect(
-      within(titleCell).queryByRole('link', { name: 'Dataset test name' })
-    ).toBeNull();
-    expect(
-      within(titleCell).getByText('Dataset test name')
-    ).toBeInTheDocument();
+    expect(await screen.findByText('10 B')).toBeInTheDocument();
   });
 
   it('does not render ISIS link when facilityCycleId cannot be found', async () => {
+    const { investigationfacilitycycle, ...data } = mockSearchResults[0].source;
+    searchResponse = {
+      results: [
+        {
+          ...mockSearchResults[0],
+          source: data,
+        },
+      ],
+    };
+
     renderComponent(FACILITY_NAME.isis);
 
-    const datasetNameColIndex = await findColumnIndexByName('datasets.name');
-    const row = await findRowAt(0);
-    const titleCell = await findCellInRow(row, {
-      columnIndex: datasetNameColIndex,
+    await waitFor(async () => {
+      // the title should not be rendered as a link...
+      expect(
+        screen.queryByRole('link', { name: 'Dataset test name' })
+      ).toBeNull();
+      // ...but it should still be rendered as a normal text
+      expect(screen.getByText('Dataset test name')).toBeInTheDocument();
     });
-
-    expect(
-      within(titleCell).queryByRole('link', { name: 'Dataset test name' })
-    ).toBeNull();
-    expect(
-      within(titleCell).getByText('Dataset test name')
-    ).toBeInTheDocument();
   });
 
   it('displays only the dataset name when there is no generic investigation to link to', async () => {
-    delete rowData[0].investigation;
-    (useDatasetsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
-    });
+    const data = { ...mockSearchResults[0].source };
+    delete data['investigation.id'];
+    delete data['investigation.name'];
+    delete data['investigation.title'];
+    delete data['investigation.startDate'];
+    searchResponse = {
+      results: [
+        {
+          ...mockSearchResults[0],
+          source: data,
+        },
+      ],
+    };
 
     renderComponent('data');
 
-    const datasetNameColIndex = await findColumnIndexByName('datasets.name');
-    const row = await findRowAt(0);
-    const titleCell = await findCellInRow(row, {
-      columnIndex: datasetNameColIndex,
+    await waitFor(async () => {
+      // the title should not be rendered as a link...
+      expect(
+        screen.queryByRole('link', { name: 'Dataset test name' })
+      ).toBeNull();
+      // ...but it should still be rendered as a normal text
+      expect(screen.getByText('Dataset test name')).toBeInTheDocument();
     });
-
-    expect(
-      within(titleCell).queryByRole('link', { name: 'Dataset test name' })
-    ).toBeNull();
-    expect(
-      within(titleCell).getByText('Dataset test name')
-    ).toBeInTheDocument();
   });
 
   it('displays only the dataset name when there is no DLS investigation to link to', async () => {
-    delete rowData[0].investigation;
-    (useDatasetsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
-    });
-
+    const data = { ...mockSearchResults[0].source };
+    delete data['investigation.id'];
+    delete data['investigation.name'];
+    delete data['investigation.title'];
+    delete data['investigation.startDate'];
+    searchResponse = {
+      results: [
+        {
+          ...mockSearchResults[0],
+          source: data,
+        },
+      ],
+    };
+    queryClient.setQueryData(
+      ['search', 'Dataset', mockLuceneSearchParams],
+      () => ({
+        pages: [searchResponse],
+      })
+    );
     renderComponent(FACILITY_NAME.dls);
 
-    const datasetNameColIndex = await findColumnIndexByName('datasets.name');
-    const row = await findRowAt(0);
-    const titleCell = await findCellInRow(row, {
-      columnIndex: datasetNameColIndex,
+    await waitFor(async () => {
+      // the title should not be rendered as a link...
+      expect(
+        screen.queryByRole('link', { name: 'Dataset test name' })
+      ).toBeNull();
+      // ...but it should still be rendered as a normal text
+      expect(screen.getByText('Dataset test name')).toBeInTheDocument();
     });
-
-    expect(
-      within(titleCell).queryByRole('link', { name: 'Dataset test name' })
-    ).toBeNull();
-    expect(
-      within(titleCell).getByText('Dataset test name')
-    ).toBeInTheDocument();
   });
 
   it('displays only the dataset name when there is no ISIS investigation to link to', async () => {
-    delete rowData[0].investigation;
-
+    const data = { ...mockSearchResults[0].source };
+    delete data['investigation.id'];
+    delete data['investigation.name'];
+    delete data['investigation.title'];
+    delete data['investigation.startDate'];
+    searchResponse = {
+      results: [
+        {
+          ...mockSearchResults[0],
+          source: data,
+        },
+      ],
+    };
+    queryClient.setQueryData(
+      ['search', 'Dataset', mockLuceneSearchParams],
+      () => ({
+        pages: [searchResponse],
+      })
+    );
     renderComponent(FACILITY_NAME.isis);
 
-    const datasetNameColIndex = await findColumnIndexByName('datasets.name');
-    const row = await findRowAt(0);
-    const titleCell = await findCellInRow(row, {
-      columnIndex: datasetNameColIndex,
+    await waitFor(async () => {
+      // the title should not be rendered as a link...
+      expect(
+        screen.queryByRole('link', { name: 'Dataset test name' })
+      ).toBeNull();
+      // ...but it should still be rendered as a normal text
+      expect(screen.getByText('Dataset test name')).toBeInTheDocument();
     });
-
-    expect(
-      within(titleCell).queryByRole('link', { name: 'Dataset test name' })
-    ).toBeNull();
-    expect(
-      within(titleCell).getByText('Dataset test name')
-    ).toBeInTheDocument();
   });
 });

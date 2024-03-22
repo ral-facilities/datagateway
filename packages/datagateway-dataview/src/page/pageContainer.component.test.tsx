@@ -17,7 +17,10 @@ import {
 import { Router } from 'react-router-dom';
 
 import PageContainer, { paths } from './pageContainer.component';
-import { checkInstrumentId, checkInvestigationId } from './idCheckFunctions';
+import {
+  checkInstrumentId as unmockedCheckInstrumentId,
+  checkInvestigationId as unmockedCheckInvestigationId,
+} from './idCheckFunctions';
 import axios, { AxiosResponse } from 'axios';
 import {
   QueryClient,
@@ -38,6 +41,8 @@ import userEvent from '@testing-library/user-event';
 
 jest.mock('loglevel');
 jest.mock('./idCheckFunctions');
+const checkInstrumentId = jest.mocked(unmockedCheckInstrumentId);
+const checkInvestigationId = jest.mocked(unmockedCheckInvestigationId);
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -77,7 +82,7 @@ describe('PageContainer - Tests', () => {
       dgdataview: dgDataViewInitialState,
       router: {
         action: 'POP',
-        location: createLocation('/'),
+        location: { ...createLocation('/'), query: {} },
       },
     };
     const mockStore = configureStore([thunk]);
@@ -100,7 +105,9 @@ describe('PageContainer - Tests', () => {
     });
     user = userEvent.setup();
 
+    // @ts-expect-error we need it this way
     delete window.location;
+    // @ts-expect-error we need it this way
     window.location = new URL(`http://localhost/`);
 
     // below code keeps window.location in sync with history changes
@@ -110,8 +117,10 @@ describe('PageContainer - Tests', () => {
     historyReplaceSpy.mockImplementation((args) => {
       historyReplace(args);
       if (typeof args === 'string') {
+        // @ts-expect-error we need it this way
         window.location = new URL(`http://localhost${args}`);
       } else {
+        // @ts-expect-error we need it this way
         window.location = new URL(`http://localhost${createPath(args)}`);
       }
     });
@@ -120,8 +129,10 @@ describe('PageContainer - Tests', () => {
     historyPushSpy.mockImplementation((args) => {
       historyPush(args);
       if (typeof args === 'string') {
+        // @ts-expect-error we need it this way
         window.location = new URL(`http://localhost${args}`);
       } else {
+        // @ts-expect-error we need it this way
         window.location = new URL(`http://localhost${createPath(args)}`);
       }
     });

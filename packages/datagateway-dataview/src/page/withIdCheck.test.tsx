@@ -2,8 +2,6 @@ import React from 'react';
 import withIdCheck from './withIdCheck';
 import { act } from 'react-dom/test-utils';
 import { flushPromises } from '../setupTests';
-/* eslint-disable-next-line import/no-extraneous-dependencies */
-import { createLocation } from 'history';
 import { MemoryRouter } from 'react-router-dom';
 import { render, RenderResult } from '@testing-library/react';
 
@@ -22,13 +20,13 @@ describe('withIdCheck', () => {
     useEffect.mockImplementationOnce((f) => f());
   };
 
-  const createWrapper = (component, locationPath): RenderResult => {
+  const createWrapper = (
+    Component: React.ComponentType<{ message: string }>,
+    locationPath: string
+  ): RenderResult => {
     return render(
       <MemoryRouter initialEntries={[locationPath]}>
-        <component.WrappedComponent
-          message="test"
-          location={createLocation(locationPath)}
-        />
+        <Component message="test" />
       </MemoryRouter>
     );
   };

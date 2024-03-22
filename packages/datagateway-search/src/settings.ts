@@ -8,6 +8,7 @@ export interface SearchSettings {
   icatUrl: string;
   selectAllSetting?: boolean;
   searchableEntities?: string[];
+  minNumResults?: number;
   maxNumResults?: number;
   routes: PluginRoute[];
   helpSteps?: { target: string; content: string }[];

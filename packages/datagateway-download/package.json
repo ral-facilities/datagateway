@@ -56,8 +56,6 @@
     "cross-env": "7.0.3",
     "cypress": "13.6.4",
     "cypress-failed-log": "2.10.0",
-    "enzyme": "3.11.0",
-    "enzyme-to-json": "3.6.1",
     "eslint": "8.56.0",
     "eslint-config-react-app": "7.0.0",
     "jest-fail-on-console": "3.1.1",
@@ -77,7 +75,7 @@
     "e2e": "start-server-and-test e2e:serve http://localhost:3000 cy:run",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
-    "lint:js": "eslint --ext=tsx --ext=ts --ext=js --ext=jsx --fix ./src ./cypress && yarn build",
+    "lint:js": "eslint --max-warnings=0 --ext=tsx --ext=ts --ext=js --ext=jsx --fix ./src ./cypress && tsc --noEmit",
     "eject": "react-scripts eject",
     "pre-commit": "lint-staged"
   },
@@ -106,9 +104,6 @@
   "jest": {
     "transformIgnorePatterns": [
       "node_modules/(?!axios)"
-    ],
-    "snapshotSerializers": [
-      "enzyme-to-json/serializer"
     ],
     "collectCoverageFrom": [
       "src/**/*.{tsx,ts,js,jsx}",

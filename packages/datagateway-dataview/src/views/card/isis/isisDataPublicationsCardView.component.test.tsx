@@ -24,7 +24,7 @@ import axios, { AxiosResponse } from 'axios';
 import { paths } from '../../../page/pageContainer.component';
 
 describe('ISIS Data Publication - Card View', () => {
-  let mockStore;
+  const mockStore = configureStore([thunk]);
   let state: StateType;
   let cardData: DataPublication[];
   let history: History;
@@ -61,8 +61,6 @@ describe('ISIS Data Publication - Card View', () => {
         pid: 'doi',
         title: 'Test 1',
         description: 'Data Publication Description',
-        modTime: '2000-01-01',
-        createTime: '2000-01-01',
         publicationDate: '2001-01-01',
         content: {
           id: 1,
@@ -90,7 +88,6 @@ describe('ISIS Data Publication - Card View', () => {
       ],
     });
 
-    mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
         dgcommon: dGCommonInitialState,
@@ -111,6 +108,8 @@ describe('ISIS Data Publication - Card View', () => {
             return Promise.resolve({
               data: 1,
             });
+          default:
+            return Promise.reject(`Endpoint not mocked: ${url}`);
         }
       });
 

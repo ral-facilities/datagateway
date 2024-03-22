@@ -6,7 +6,7 @@ import {
 } from 'datagateway-common';
 import { Router } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { createLocation, createMemoryHistory } from 'history';
+import { createLocation, createMemoryHistory, History } from 'history';
 import log from 'loglevel';
 import { AnyAction } from 'redux';
 import { render, type RenderResult, screen } from '@testing-library/react';
@@ -36,7 +36,7 @@ jest.mock('react-router-dom', () => {
 });
 
 describe('DOI Redirect page', () => {
-  let history;
+  let history: History;
   let mockInvestigationData: Investigation[] = [];
 
   function renderComponent(): RenderResult {
@@ -113,7 +113,7 @@ describe('DOI Redirect page', () => {
   });
 
   it('throws error and redirects to homepage if no investigation is returned', async () => {
-    const events = [];
+    const events: CustomEvent[] = [];
 
     document.dispatchEvent = (e: Event) => {
       events.push(e as CustomEvent<AnyAction>);

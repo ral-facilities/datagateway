@@ -26,7 +26,7 @@ import axios, { type AxiosResponse } from 'axios';
 import { paths } from '../../../page/pageContainer.component';
 
 describe('ISIS Investigations - Card View', () => {
-  let mockStore;
+  const mockStore = configureStore([thunk]);
   let state: StateType;
   let cardData: Investigation[];
   let history: History;
@@ -124,7 +124,6 @@ describe('ISIS Investigations - Card View', () => {
     replaceSpy = jest.spyOn(history, 'replace');
     user = userEvent.setup();
 
-    mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
         dgcommon: dGCommonInitialState,

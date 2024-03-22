@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { UserEvent } from '@testing-library/user-event/dist/types/setup';
 import {
   adminDownloadDeleted,
   adminDownloadStatus,
@@ -46,7 +45,7 @@ const renderComponent = ({ settings = mockedSettings } = {}): RenderResult =>
   );
 
 describe('Admin Download Status Table', () => {
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   beforeEach(() => {
     user = userEvent.setup({ delay: null });
@@ -54,7 +53,8 @@ describe('Admin Download Status Table', () => {
     (getDownload as jest.MockedFunction<typeof getDownload>).mockImplementation(
       (id, _) =>
         Promise.resolve(
-          mockDownloadItems.find((download) => download.id === id)
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          mockDownloadItems.find((download) => download.id === id)!
         )
     );
     (fetchAdminDownloads as jest.Mock).mockImplementation(

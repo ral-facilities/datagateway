@@ -1,59 +1,53 @@
 import * as React from 'react';
-import { StateType } from '../state/app.types';
+import type { StateType } from '../state/app.types';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import CheckBoxesGroup from './checkBoxes.component';
 import thunk from 'redux-thunk';
 import { initialState } from '../state/reducers/dgsearch.reducer';
-import { createMemoryHistory, History } from 'history';
+import { createMemoryHistory, type History } from 'history';
 import { Router } from 'react-router-dom';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
-import userEvent from '@testing-library/user-event';
 import { render, type RenderResult, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 jest.mock('loglevel');
 
 describe('Checkbox component tests', () => {
+  let user: ReturnType<typeof userEvent.setup>;
   let state: StateType;
-  let mockStore;
-  let testStore;
+  const mockStore = configureStore([thunk]);
+  let testStore: ReturnType<typeof mockStore>;
   let history: History;
-  let pushSpy;
-  let user: UserEvent;
+  let pushSpy: jest.SpyInstance;
 
-  const renderComponent = (h: History = history): RenderResult =>
-    render(
+  function renderComponent(): RenderResult {
+    return render(
       <Provider store={testStore}>
-        <Router history={h}>
+        <Router history={history}>
           <CheckBoxesGroup />
         </Router>
       </Provider>
     );
+  }
 
   beforeEach(() => {
-    history = createMemoryHistory();
     user = userEvent.setup();
+    history = createMemoryHistory();
     pushSpy = jest.spyOn(history, 'push');
 
     state = JSON.parse(JSON.stringify({ dgsearch: initialState }));
 
     state.dgsearch = {
+      ...state.dgsearch,
       tabs: {
         datasetTab: true,
         datafileTab: true,
         investigationTab: true,
       },
-      requestReceived: false,
-      searchData: {
-        dataset: [],
-        datafile: [],
-        investigation: [],
-      },
       searchableEntities: ['investigation', 'dataset', 'datafile'],
       settingsLoaded: true,
     };
 
-    mockStore = configureStore([thunk]);
     testStore = mockStore(state);
   });
 
@@ -61,7 +55,7 @@ describe('Checkbox component tests', () => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly', async () => {
+  it('renders a dropdown button that expands to show search type checkboxes', async () => {
     history.replace('/?searchText=&investigation=false');
     renderComponent();
 
@@ -113,6 +107,7 @@ describe('Checkbox component tests', () => {
     history.replace(
       '/?searchText=&investigation=false&dataset=false&datafile=false'
     );
+
     renderComponent();
 
     expect(
@@ -124,47 +119,57 @@ describe('Checkbox component tests', () => {
     history.replace('/?searchText=&investigation=false');
     renderComponent();
 
-    // open the dropdown
-    await user.click(await screen.findByRole('button'));
-
     await user.click(
-      await screen.findByRole('checkbox', {
+      screen.getByRole('button', {
+        name: 'searchBox.checkboxes.types (2)',
+      })
+    );
+    await user.click(
+      screen.getByRole('checkbox', {
         name: 'searchBox.checkboxes.dataset_arialabel',
       })
     );
 
-    expect(pushSpy).toHaveBeenCalledWith('?dataset=false&investigation=false');
+    expect(pushSpy).toHaveBeenCalledWith(
+      '?searchText=&dataset=false&investigation=false'
+    );
   });
 
   it('pushes URL with new datafile value when user clicks checkbox', async () => {
     history.replace('/?searchText=&investigation=false');
     renderComponent();
 
-    // open the dropdown
-    await user.click(await screen.findByRole('button'));
-
     await user.click(
-      await screen.findByRole('checkbox', {
+      screen.getByRole('button', {
+        name: 'searchBox.checkboxes.types (2)',
+      })
+    );
+    await user.click(
+      screen.getByRole('checkbox', {
         name: 'searchBox.checkboxes.datafile_arialabel',
       })
     );
 
-    expect(pushSpy).toHaveBeenCalledWith('?datafile=false&investigation=false');
+    expect(pushSpy).toHaveBeenCalledWith(
+      '?searchText=&datafile=false&investigation=false'
+    );
   });
 
   it('pushes URL with new investigation value when user clicks checkbox', async () => {
     history.replace('/?searchText=&investigation=false');
     renderComponent();
 
-    // open the dropdown
-    await user.click(await screen.findByRole('button'));
-
     await user.click(
-      await screen.findByRole('checkbox', {
+      screen.getByRole('button', {
+        name: 'searchBox.checkboxes.types (2)',
+      })
+    );
+    await user.click(
+      screen.getByRole('checkbox', {
         name: 'searchBox.checkboxes.investigation_arialabel',
       })
     );
 
-    expect(pushSpy).toHaveBeenCalledWith('?');
+    expect(pushSpy).toHaveBeenCalledWith('?searchText=');
   });
 });

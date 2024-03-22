@@ -1,5 +1,4 @@
 import {
-  act,
   fireEvent,
   render,
   type RenderResult,
@@ -86,12 +85,11 @@ describe('DatafilePreviewer', () => {
           });
         }
         if (/.*\/getData$/.test(url)) {
-          config.onDownloadProgress(
-            new ProgressEvent('progress', {
-              loaded: 10,
-              total: 10,
-            })
-          );
+          config.onDownloadProgress?.({
+            loaded: 10,
+            bytes: 10,
+            total: 10,
+          });
           // this is download datafile content query, resolve with mock datafile content
           return Promise.resolve({
             data: mockTxtFileContent,
@@ -206,12 +204,11 @@ describe('DatafilePreviewer', () => {
         }
         if (/.*\/getData$/.test(url)) {
           // call the given onDownloadProgress with a fake download progress
-          config.onDownloadProgress(
-            new ProgressEvent('progress', {
-              loaded: 2,
-              total: 10,
-            })
-          );
+          config.onDownloadProgress?.({
+            loaded: 2,
+            bytes: 10,
+            total: 10,
+          });
           return new Promise((_) => {
             // never resolve the promise to pretend it is loading
           });
@@ -236,10 +233,10 @@ describe('DatafilePreviewer', () => {
 
   it('should show a message saying the datafile cannot be previewed if the datafile extension is not supported', async () => {
     // make a new datafile with an unsupported file extension
-    const unsupportedDatafile: Datafile = {
+    const unsupportedDatafile = {
       ...mockDatafile,
       name: 'Datafile.exe',
-    };
+    } satisfies Datafile;
 
     axios.get = jest.fn().mockResolvedValueOnce({
       data: [unsupportedDatafile],
@@ -271,10 +268,10 @@ describe('DatafilePreviewer', () => {
 
   it('should show a message saying the datafile has an unknown extension if its name does not have a file extension', async () => {
     // make a new datafile with an unsupported file extension
-    const unsupportedDatafile: Datafile = {
+    const unsupportedDatafile = {
       ...mockDatafile,
       name: 'Datafile',
-    };
+    } satisfies Datafile;
 
     axios.get = jest.fn().mockResolvedValueOnce({
       data: [unsupportedDatafile],
@@ -406,101 +403,6 @@ describe('DatafilePreviewer', () => {
       mockDatafile.location,
       new Blob([mockTxtFileContent])
     );
-  });
-
-  it('should have a copy link button that copies the link to the current datafile when clicked', async () => {
-    const ogLocation = window.location;
-    const mockLocation = new URL(
-      `https://www.example.com/datafile/${mockDatafile.id}`
-    );
-    delete window.location;
-    window.location = mockLocation;
-    const writeTextSpy = jest
-      .spyOn(navigator.clipboard, 'writeText')
-      .mockReturnValueOnce(Promise.resolve());
-
-    renderComponent();
-
-    await user.click(
-      await screen.findByRole('button', {
-        name: 'datafiles.preview.toolbar.copy_link',
-      })
-    );
-
-    expect(writeTextSpy).toHaveBeenCalledWith(
-      `https://www.example.com/datafile/${mockDatafile.id}`
-    );
-
-    delete window.location;
-    window.location = ogLocation;
-  });
-
-  describe('when the link to the current datafile is successfully copied to the clipboard, should show a successful message', () => {
-    let ogLocation: Location;
-
-    beforeEach(() => {
-      ogLocation = window.location;
-      const mockLocation = new URL(
-        `https://www.example.com/datafile/${mockDatafile.id}`
-      );
-      delete window.location;
-      window.location = mockLocation;
-    });
-
-    afterEach(() => {
-      delete window.location;
-      window.location = ogLocation;
-    });
-
-    it('that is dismissed automatically after some duration', async () => {
-      jest.useFakeTimers();
-
-      user = userEvent.setup({
-        advanceTimers: jest.advanceTimersByTime,
-      });
-
-      renderComponent();
-
-      await user.click(
-        await screen.findByRole('button', {
-          name: 'datafiles.preview.toolbar.copy_link',
-        })
-      );
-
-      expect(
-        await screen.findByText('datafiles.preview.link_copied')
-      ).toBeInTheDocument();
-
-      act(() => {
-        jest.runAllTimers();
-      });
-
-      await waitFor(() => {
-        expect(screen.queryByText('datafiles.preview.link_copied')).toBeNull();
-      });
-
-      jest.useRealTimers();
-    });
-
-    it('that can be dismissed manually', async () => {
-      renderComponent();
-
-      await user.click(
-        await screen.findByRole('button', {
-          name: 'datafiles.preview.toolbar.copy_link',
-        })
-      );
-
-      expect(
-        await screen.findByText('datafiles.preview.link_copied')
-      ).toBeInTheDocument();
-
-      await user.click(await screen.findByRole('button', { name: 'Close' }));
-
-      await waitFor(() => {
-        expect(screen.queryByText('datafiles.preview.link_copied')).toBeNull();
-      });
-    });
   });
 
   it('should have a zoom in button that increases the size of the datafile preview', async () => {

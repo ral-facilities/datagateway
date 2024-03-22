@@ -119,8 +119,6 @@ describe('ISIS Data Publication Landing page', () => {
     id: 1,
     pid: '1',
     title: '1',
-    modTime: '1',
-    createTime: '1',
   };
   let initialInvestigationDataPublicationsData: DataPublication[] = [];
 
@@ -151,8 +149,6 @@ describe('ISIS Data Publication Landing page', () => {
       users: users,
       publicationDate: '2019-06-10',
       title: 'Study title',
-      modTime: '2019-06-10',
-      createTime: '2019-06-11',
     };
     initialInvestigationDataPublicationsData = [
       {
@@ -169,8 +165,6 @@ describe('ISIS Data Publication Landing page', () => {
             },
           ],
         },
-        modTime: '2019-06-10',
-        createTime: '2019-06-11',
         publicationDate: '2019-06-11',
       },
       {
@@ -186,8 +180,6 @@ describe('ISIS Data Publication Landing page', () => {
             },
           ],
         },
-        modTime: '2019-06-10',
-        createTime: '2019-06-11',
       },
     ];
 
@@ -272,13 +264,13 @@ describe('ISIS Data Publication Landing page', () => {
     expect(
       screen.getByText(
         (_, element) =>
-          element.textContent === 'investigations.instrument:LARMOR'
+          element?.textContent === 'investigations.instrument:LARMOR'
       )
     ).toBeInTheDocument();
     expect(
       screen.getByText(
         (_, element) =>
-          element.textContent === 'investigations.release_date:2019-06-11'
+          element?.textContent === 'investigations.release_date:2019-06-11'
       )
     ).toBeInTheDocument();
 
@@ -290,7 +282,7 @@ describe('ISIS Data Publication Landing page', () => {
     );
     expect(
       screen.getByText(
-        (_, element) => element.textContent === 'investigations.instrument:ALF'
+        (_, element) => element?.textContent === 'investigations.instrument:ALF'
       )
     ).toBeInTheDocument();
 

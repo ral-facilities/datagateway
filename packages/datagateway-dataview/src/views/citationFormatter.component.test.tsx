@@ -13,7 +13,7 @@ import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 
 describe('Citation formatter component tests', () => {
-  let queryClient;
+  let queryClient: QueryClient;
   let user: UserEvent;
 
   const props = {
@@ -25,7 +25,9 @@ describe('Citation formatter component tests', () => {
     startDate: '2019-04-03',
   };
 
-  const renderComponent = (componentProps): RenderResult =>
+  const renderComponent = (
+    componentProps: React.ComponentProps<typeof CitationFormatter>
+  ): RenderResult =>
     render(
       <QueryClientProvider client={queryClient}>
         <CitationFormatter {...componentProps} />
@@ -227,7 +229,9 @@ describe('Citation formatter component tests', () => {
   it('displays loading spinner while waiting for a response from DataCite', async () => {
     console.error = jest.fn();
 
-    let reject: () => void;
+    let reject = (): void => {
+      // no-op
+    };
     (axios.get as jest.Mock).mockReturnValueOnce(
       new Promise((_, _reject) => {
         reject = _reject;

@@ -4,7 +4,6 @@ import {
   useAddToCart,
   useCart,
   useDatasetCount,
-  useDatasetsDatafileCount,
   useDatasetsInfinite,
   useIds,
   useRemoveFromCart,
@@ -57,7 +56,7 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('DLS Dataset table component', () => {
-  let mockStore;
+  const mockStore = configureStore([thunk]);
   let state: StateType;
   let rowData: Dataset[];
   let history: History;
@@ -91,7 +90,6 @@ describe('DLS Dataset table component', () => {
     history = createMemoryHistory();
     user = userEvent.setup();
 
-    mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
         dgdataview: dgDataViewInitialState,
@@ -123,9 +121,6 @@ describe('DLS Dataset table component', () => {
       mutate: jest.fn(),
       isLoading: false,
     });
-    (useDatasetsDatafileCount as jest.Mock).mockReturnValue([
-      { data: 1, isSuccess: true },
-    ]);
   });
 
   afterEach(() => {

@@ -4,15 +4,11 @@ import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch
 import configureStore from 'redux-mock-store';
 import { StateType } from '../state/app.types';
 import {
-  Datafile,
   dGCommonInitialState,
-  useAddToCart,
-  useCart,
-  useDatafileCount,
-  useDatafilesInfinite,
-  useIds,
-  useLuceneSearch,
-  useRemoveFromCart,
+  DownloadCartItem,
+  SearchResponse,
+  SearchResult,
+  SearchResultSource,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -20,13 +16,12 @@ import { Router } from 'react-router-dom';
 import { createMemoryHistory, History } from 'history';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
   findAllRows,
   findCellInRow,
   findColumnHeaderByName,
   findColumnIndexByName,
   findRowAt,
+  queryAllRows,
 } from '../setupTests';
 import {
   render,
@@ -35,48 +30,105 @@ import {
   waitFor,
   within,
 } from '@testing-library/react';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
-
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    handleICATError: jest.fn(),
-    useCart: jest.fn(),
-    useLuceneSearch: jest.fn(),
-    useDatafileCount: jest.fn(),
-    useDatafilesInfinite: jest.fn(),
-    useIds: jest.fn(),
-    useAddToCart: jest.fn(),
-    useRemoveFromCart: jest.fn(),
-  };
-});
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 describe('Datafile search table component', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let history: History;
-  let user: UserEvent;
-
-  let rowData: Datafile[] = [];
+  let queryClient: QueryClient;
+  let user: ReturnType<typeof userEvent.setup>;
+  let cartItems: DownloadCartItem[];
+  let rowData: SearchResultSource;
+  let searchResult: SearchResult;
+  let holder: HTMLElement;
 
   const renderComponent = (hierarchy?: string): RenderResult =>
     render(
       <Provider store={mockStore(state)}>
         <Router history={history}>
-          <QueryClientProvider client={new QueryClient()}>
+          <QueryClientProvider client={queryClient}>
             <DatafileSearchTable hierarchy={hierarchy ?? ''} />
           </QueryClientProvider>
         </Router>
       </Provider>
     );
 
+  function mockAxiosGet(
+    url: string,
+    config: AxiosRequestConfig
+  ): Promise<Partial<AxiosResponse>> {
+    if (/\/user\/cart\/$/.test(url)) {
+      // fetch download cart
+      return Promise.resolve({
+        data: { cartItems: [] },
+      });
+    }
+
+    if (/\/search\/documents$/.test(url)) {
+      if ((config.params as URLSearchParams).get('query')?.includes('filter')) {
+        // filter is applied
+        return Promise.resolve<Partial<AxiosResponse<Partial<SearchResponse>>>>(
+          {
+            data: {
+              dimensions: {
+                'Datafile.datafileFormat.name': {
+                  txt: 1,
+                },
+              },
+              results: [],
+            },
+          }
+        );
+      }
+
+      // query lucene data
+      return Promise.resolve<Partial<AxiosResponse<Partial<SearchResponse>>>>({
+        data: {
+          dimensions: {
+            'Datafile.datafileFormat.name': {
+              txt: 1,
+            },
+          },
+          results: [searchResult],
+        },
+      });
+    }
+
+    if (/\/datafiles$/.test(url)) {
+      return Promise.resolve({
+        data: [
+          {
+            id: 1,
+            name: 'Datafile test name',
+            description: 'Test datafile description',
+            location: '/datafiletest',
+            fileSize: 1,
+          },
+        ],
+      });
+    }
+
+    return Promise.reject(`endpoint not mocked: ${url}`);
+  }
+
   beforeEach(() => {
-    history = createMemoryHistory();
+    history = createMemoryHistory({
+      initialEntries: [
+        { search: '?searchText=test search&currentTab=datafile' },
+      ],
+    });
     user = userEvent.setup();
+    queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+      },
+    });
+
+    holder = document.createElement('div');
+    holder.setAttribute('id', 'datagateway-dataview');
+    document.body.appendChild(holder);
 
     state = JSON.parse(
       JSON.stringify({
@@ -85,114 +137,116 @@ describe('Datafile search table component', () => {
       })
     );
 
-    rowData = [
-      {
-        id: 1,
-        name: 'Datafile test name',
-        location: '/datafiletest',
-        fileSize: 1,
-        modTime: '2019-07-23',
-        createTime: '2019-07-23',
-        dataset: {
-          id: 2,
-          name: 'Dataset test name',
-          size: 1,
-          modTime: '2019-07-23',
-          createTime: '2019-07-23',
-          startDate: '2019-07-24',
-          endDate: '2019-07-25',
-          investigation: {
-            id: 3,
-            title: 'Investigation test title',
-            name: 'Investigation test name',
-            summary: 'foo bar',
-            visitId: '1',
-            doi: 'doi 1',
-            size: 1,
-            investigationInstruments: [
-              {
-                id: 4,
-                instrument: {
-                  id: 5,
-                  name: 'LARMOR',
-                },
-              },
-            ],
-            investigationFacilityCycles: [
-              {
-                id: 23,
-                facilityCycle: {
-                  id: 402,
-                  name: 'within cell interlinked',
-                  description:
-                    'He waited for the stop sign to turn to a go sign.',
-                  startDate: '2017-03-17T14:03:11Z',
-                  endDate: '2020-11-29T05:41:54Z',
-                },
-              },
-            ],
-            studyInvestigations: [
-              {
-                id: 6,
-                study: {
-                  id: 7,
-                  pid: 'study pid',
-                  name: 'study name',
-                  modTime: '2019-06-10',
-                  createTime: '2019-06-10',
-                },
-                investigation: {
-                  id: 3,
-                  title: 'Investigation test title',
-                  name: 'Investigation test name',
-                  visitId: '1',
-                },
-              },
-            ],
-            startDate: '2019-06-10',
-            endDate: '2019-06-11',
-            facility: {
-              id: 8,
-              name: 'facility name',
-            },
-          },
+    cartItems = [];
+    rowData = {
+      id: 1,
+      name: 'Datafile test name',
+      location: '/datafiletest',
+      fileSize: 1,
+      date: 1563854400000,
+      'dataset.id': 2,
+      'dataset.name': 'Dataset test name',
+      'investigation.id': 3,
+      'investigation.title': 'Investigation test title',
+      'investigation.name': 'Investigation test name',
+      'investigation.startDate': 1560139200000,
+      investigationinstrument: [
+        {
+          'instrument.id': 5,
+          'instrument.name': 'LARMOR',
         },
-      },
-    ];
+      ],
+      investigationfacilitycycle: [
+        {
+          'facilityCycle.id': 6,
+        },
+      ],
+    };
+    searchResult = {
+      score: 1,
+      id: 1,
+      source: rowData,
+    };
 
-    (useCart as jest.Mock).mockReturnValue({
-      data: [],
-      isLoading: false,
-    });
-    (useLuceneSearch as jest.Mock).mockReturnValue({
-      data: [],
-    });
-    (useDatafileCount as jest.Mock).mockReturnValue({
-      data: 0,
-    });
-    (useDatafilesInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
-    });
-    (useIds as jest.Mock).mockReturnValue({
-      data: [1],
-      isLoading: false,
-    });
-    (useAddToCart as jest.Mock).mockReturnValue({
-      mutate: jest.fn(),
-      isLoading: false,
-    });
-    (useRemoveFromCart as jest.Mock).mockReturnValue({
-      mutate: jest.fn(),
-      isLoading: false,
-    });
+    axios.get = jest.fn().mockImplementation(mockAxiosGet);
+
+    axios.post = jest
+      .fn()
+      .mockImplementation(
+        (url: string, data: unknown): Promise<Partial<AxiosResponse>> => {
+          if (/\/user\/cart\/\/cartItems$/.test(url)) {
+            const isRemove: boolean = JSON.parse(
+              (data as URLSearchParams).get('remove') ?? 'false'
+            );
+
+            if (isRemove) {
+              cartItems = [];
+
+              return Promise.resolve({
+                data: {
+                  cardItems: [],
+                },
+              });
+            }
+
+            cartItems = [
+              ...cartItems,
+              {
+                id: 1,
+                entityId: 1,
+                entityType: 'datafile',
+                name: 'download cart item name',
+                parentEntities: [],
+              },
+            ];
+
+            return Promise.resolve({
+              data: { cartItems },
+            });
+          }
+
+          return Promise.reject(`Endpoint not mocked: ${url}`);
+        }
+      );
   });
 
   afterEach(() => {
+    document.body.removeChild(holder);
     jest.clearAllMocks();
   });
 
-  it('renders correctly', async () => {
+  it('disables the search query if datafile search is disabled', async () => {
+    const searchParams = new URLSearchParams(history.location.search);
+    searchParams.append('datafile', 'false');
+    history.replace({ search: `?${searchParams.toString()}` });
+
+    renderComponent();
+
+    // check that column headers are shown correctly.
+    expect(await findColumnHeaderByName('datafiles.name')).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datafiles.location')
+    ).toBeInTheDocument();
+    expect(await findColumnHeaderByName('datafiles.size')).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datafiles.dataset')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datafiles.modified_time')
+    ).toBeInTheDocument();
+
+    // wait for queries to finish fetching
+    await waitFor(() => !queryClient.isFetching());
+
+    expect(
+      queryClient.getQueryState(['search', 'Datafile'], { exact: false })
+        ?.status
+    ).toBe('idle');
+
+    expect(queryAllRows()).toHaveLength(0);
+  });
+
+  it('renders search results correctly', async () => {
     renderComponent();
 
     // check that column headers are shown correctly.
@@ -209,8 +263,31 @@ describe('Datafile search table component', () => {
     ).toBeInTheDocument();
 
     const rows = await findAllRows();
-    // should have 1 row in the table
     expect(rows).toHaveLength(1);
+
+    // check that facet filter panel is present
+    expect(screen.getByText('facetPanel.title')).toBeInTheDocument();
+    // apply filter button should be invisible initially
+    expect(
+      screen.queryByRole('button', { name: 'facetPanel.apply' })
+    ).toBeNull();
+
+    const accordion = screen.getByRole('button', {
+      name: 'Toggle facetDimensionLabel.Datafile.datafileFormat.name filter panel',
+    });
+
+    expect(accordion).toBeInTheDocument();
+
+    await user.click(accordion);
+
+    const filterPanel = await screen.findByLabelText(
+      'facetDimensionLabel.Datafile.datafileFormat.name filter panel'
+    );
+
+    expect(filterPanel).toBeInTheDocument();
+    expect(
+      within(filterPanel).getByRole('button', { name: 'Add txt filter' })
+    ).toBeInTheDocument();
 
     const row = rows[0];
 
@@ -248,140 +325,254 @@ describe('Datafile search table component', () => {
         findCellInRow(row, {
           columnIndex: await findColumnIndexByName('datafiles.modified_time'),
         })
-      ).getByText('2019-07-23')
+      ).getByText('23/07/2019')
     ).toBeInTheDocument();
   });
 
-  it('updates filter query params on text filter', async () => {
+  it('applies selected facet filters correctly', async () => {
     renderComponent();
 
-    const filterInput = await screen.findByRole('textbox', {
-      name: 'Filter by datafiles.name',
-      hidden: true,
+    // check that no filter chip is visible initially
+    const selectedFilters = await screen.findByLabelText('selectedFilters');
+    expect(
+      within(selectedFilters).queryAllByText(/^facetDimensionLabel.*/)
+    ).toHaveLength(0);
+
+    // expand accordion
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Toggle facetDimensionLabel.Datafile.datafileFormat.name filter panel',
+      })
+    );
+    // select the filter
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Add txt filter',
+      })
+    );
+    // apply the filter
+    await user.click(screen.getByRole('button', { name: 'facetPanel.apply' }));
+
+    // when filter is applied, the fake axios get will return nothing
+    // so we should expect no rows in the table
+    await waitFor(() => {
+      expect(queryAllRows()).toHaveLength(0);
     });
 
-    await user.type(filterInput, 'test');
-
-    // user.type inputs the given string character by character to simulate user typing
-    // each keystroke of user.type creates a new entry in the history stack
-    // so the initial entry + 4 characters in "test" = 5 entries
-    expect(history.length).toBe(5);
-    expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
-        '{"name":{"value":"test","type":"include"}}'
-      )}`
+    // expand accordion
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Toggle facetDimensionLabel.Datafile.datafileFormat.name filter panel',
+      })
     );
 
-    await user.clear(filterInput);
-
-    expect(history.length).toBe(6);
-    expect(history.location.search).toBe('?');
-  });
-
-  it('updates filter query params on date filter', async () => {
-    applyDatePickerWorkaround();
-
-    renderComponent();
-
-    const filterInput = await screen.findByRole('textbox', {
-      name: 'datafiles.modified_time filter to',
+    const selectedFilterItem = await screen.findByRole('button', {
+      name: 'Remove txt filter',
     });
 
-    await user.type(filterInput, '2019-08-06');
+    expect(selectedFilterItem).toBeInTheDocument();
+    expect(within(selectedFilterItem).getByRole('checkbox')).toBeChecked();
 
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent('{"modTime":{"endDate":"2019-08-06"}}')}`
-    );
-
-    // await user.clear(filterInput);
-    await user.click(filterInput);
-    await user.keyboard('{Control}a{/Control}');
-    await user.keyboard('{Delete}');
-
-    expect(history.length).toBe(3);
-    expect(history.location.search).toBe('?');
-
-    cleanupDatePickerWorkaround();
+    // the selected filters should be displayed
+    expect(selectedFilters).toBeInTheDocument();
+    expect(
+      within(selectedFilters).getByText(
+        'facetDimensionLabel.Datafile.datafileFormat.name: txt'
+      )
+    ).toBeInTheDocument();
   });
 
-  it('updates sort query params on sort', async () => {
+  it('applies filters already present in the URL on first render', async () => {
+    const searchParams = new URLSearchParams(history.location.search);
+    searchParams.append(
+      'filters',
+      JSON.stringify({
+        'Datafile.datafileFormat.name': ['txt'],
+      })
+    );
+    history.replace({ search: `?${searchParams.toString()}` });
+
     renderComponent();
+
+    // when filters are applied
+    // the fake axios.get returns no search results
+    // so we should expect no rows in the table
+    await waitFor(() => {
+      expect(queryAllRows()).toHaveLength(0);
+    });
+
+    // expand accordion
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Toggle facetDimensionLabel.Datafile.datafileFormat.name filter panel',
+      })
+    );
+
+    // filter should be selected
+    const filterItem = await screen.findByRole('button', {
+      name: 'Remove txt filter',
+    });
+    expect(filterItem).toBeInTheDocument();
+    expect(filterItem).toHaveAttribute('aria-selected', 'true');
+    expect(within(filterItem).getByRole('checkbox')).toBeChecked();
+  });
+
+  it('allows filters to be removed through the facet filter panel', async () => {
+    const searchParams = new URLSearchParams(history.location.search);
+    searchParams.append(
+      'filters',
+      JSON.stringify({
+        'Datafile.datafileFormat.name': ['txt'],
+      })
+    );
+    history.replace({ search: `?${searchParams.toString()}` });
+
+    renderComponent();
+
+    // when filters are applied
+    // the fake axios.get returns no search results
+    // so we should expect no rows in the table
+    await waitFor(() => {
+      expect(queryAllRows()).toHaveLength(0);
+    });
+
+    // expand accordion
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Toggle facetDimensionLabel.Datafile.datafileFormat.name filter panel',
+      })
+    );
 
     await user.click(
-      await screen.findByRole('button', { name: 'datafiles.name' })
+      await screen.findByRole('button', {
+        name: 'Remove txt filter',
+      })
     );
 
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"name":"asc"}')}`
+    // apply the changes
+    await user.click(screen.getByRole('button', { name: 'facetPanel.apply' }));
+
+    expect(await findAllRows()).toHaveLength(1);
+
+    const selectedFilterChips = screen.getByLabelText('selectedFilters');
+    // check that the filter chip is removed
+    expect(
+      within(selectedFilterChips).queryByRole('button', {
+        name: 'facetDimensionLabel.Datafile.datafileFormat.name: txt',
+      })
+    ).toBeNull();
+
+    // expand accordion
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Toggle facetDimensionLabel.Datafile.datafileFormat.name filter panel',
+      })
     );
+
+    // filter item should not be selected anymore
+    const filterItem = await screen.findByRole('button', {
+      name: 'Add txt filter',
+    });
+
+    expect(filterItem).toBeInTheDocument();
+    expect(filterItem).toHaveAttribute('aria-selected', 'false');
+    expect(within(filterItem).getByRole('checkbox')).not.toBeChecked();
   });
 
-  it('calls addToCart mutate function on unchecked checkbox click', async () => {
-    const addToCart = jest.fn();
-    (useAddToCart as jest.Mock).mockReturnValue({
-      mutate: addToCart,
-      loading: false,
-    });
+  it('allows filters to be removed by removing filter chips', async () => {
+    const searchParams = new URLSearchParams(history.location.search);
+    searchParams.append(
+      'filters',
+      JSON.stringify({
+        'Datafile.datafileFormat.name': ['txt'],
+      })
+    );
+    history.replace({ search: `?${searchParams.toString()}` });
+
     renderComponent();
 
+    // when filters are applied
+    // the fake axios.get returns no search results
+    // so we should expect no rows in the table
+    await waitFor(() => {
+      expect(queryAllRows()).toHaveLength(0);
+    });
+
+    const selectedFilterChips = screen.getByLabelText('selectedFilters');
+    const chip = within(selectedFilterChips).getByRole('button', {
+      name: 'facetDimensionLabel.Datafile.datafileFormat.name: txt',
+    });
+
+    await user.click(within(chip).getByTestId('CancelIcon'));
+
+    expect(await findAllRows()).toHaveLength(1);
+
+    // check that the filter chip is removed
+    expect(
+      within(selectedFilterChips).queryByRole('button', {
+        name: 'facetDimensionLabel.Datafile.datafileFormat.name: txt',
+      })
+    ).toBeNull();
+
+    // expand accordion
     await user.click(
-      await screen.findByRole('checkbox', { name: 'select row 0' })
+      await screen.findByRole('button', {
+        name: 'Toggle facetDimensionLabel.Datafile.datafileFormat.name filter panel',
+      })
     );
 
-    expect(addToCart).toHaveBeenCalledWith([1]);
+    // filter item should not be selected anymore
+    const filterItem = await screen.findByRole('button', {
+      name: 'Add txt filter',
+    });
+
+    expect(filterItem).toBeInTheDocument();
+    expect(filterItem).toHaveAttribute('aria-selected', 'false');
+    expect(within(filterItem).getByRole('checkbox')).not.toBeChecked();
   });
 
-  it('calls removeFromCart mutate function on checked checkbox click', async () => {
-    (useCart as jest.Mock).mockReturnValue({
-      data: [
-        {
-          entityId: 1,
-          entityType: 'datafile',
-          id: 1,
-          name: 'test',
-          parentEntities: [],
-        },
-      ],
-      isLoading: false,
-    });
-
-    const removeFromCart = jest.fn();
-    (useRemoveFromCart as jest.Mock).mockReturnValue({
-      mutate: removeFromCart,
-      loading: false,
-    });
-
+  it('adds/removes rows to/from download cart', async () => {
     renderComponent();
 
-    await user.click(
-      await screen.findByRole('checkbox', { name: 'select row 0' })
-    );
+    const checkbox = await screen.findByRole('checkbox', {
+      name: 'select row 0',
+    });
 
-    expect(removeFromCart).toHaveBeenCalledWith([1]);
+    expect(checkbox).not.toBeChecked();
+    expect(cartItems).toHaveLength(0);
+
+    await user.click(checkbox);
+
+    await waitFor(() => {
+      expect(checkbox).toBeChecked();
+      expect(cartItems).toHaveLength(1);
+    });
+
+    await user.click(checkbox);
+
+    await waitFor(() => {
+      expect(checkbox).not.toBeChecked();
+      expect(cartItems).toHaveLength(0);
+    });
   });
 
   it('selected rows only considers relevant cart items', async () => {
-    (useCart as jest.Mock).mockReturnValue({
-      data: [
-        {
-          entityId: 1,
-          entityType: 'dataset',
-          id: 1,
-          name: 'test',
-          parentEntities: [],
-        },
-        {
-          entityId: 2,
-          entityType: 'datafile',
-          id: 2,
-          name: 'test',
-          parentEntities: [],
-        },
-      ],
-      isLoading: false,
-    });
+    cartItems = [
+      {
+        entityId: 1,
+        entityType: 'dataset',
+        id: 1,
+        name: 'test',
+        parentEntities: [],
+      },
+      {
+        entityId: 2,
+        entityType: 'datafile',
+        id: 2,
+        name: 'test',
+        parentEntities: [],
+      },
+    ];
 
     renderComponent();
 
@@ -390,7 +581,6 @@ describe('Datafile search table component', () => {
     });
 
     expect(selectAllCheckbox).not.toBeChecked();
-    expect(selectAllCheckbox).toHaveAttribute('data-indeterminate', 'false');
   });
 
   it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', async () => {
@@ -406,56 +596,81 @@ describe('Datafile search table component', () => {
   it('displays generic details panel when expanded', async () => {
     renderComponent();
 
-    const row = await findRowAt(0);
+    let rows: HTMLElement[] = [];
+    await waitFor(async () => {
+      rows = await findAllRows();
+      expect(rows).toHaveLength(1);
+    });
+
+    const row = rows[0];
     await user.click(within(row).getByRole('button', { name: 'Show details' }));
 
+    const detailsPanel = await screen.findByTestId('datafile-details-panel');
+
+    expect(detailsPanel).toBeInTheDocument();
     expect(
-      await screen.findByTestId('datafile-details-panel')
+      within(detailsPanel).getByText('Datafile test name')
     ).toBeInTheDocument();
+    expect(within(detailsPanel).getByText('1 B')).toBeInTheDocument();
+    expect(within(detailsPanel).getByText('/datafiletest')).toBeInTheDocument();
   });
 
   it('displays correct details panel for ISIS when expanded', async () => {
     renderComponent('isis');
 
-    const row = await findRowAt(0);
+    let rows: HTMLElement[] = [];
+    await waitFor(async () => {
+      rows = await findAllRows();
+      expect(rows).toHaveLength(1);
+    });
+
+    const row = rows[0];
     await user.click(within(row).getByRole('button', { name: 'Show details' }));
 
+    const detailsPanel = await screen.findByTestId(
+      'isis-datafile-details-panel'
+    );
+
+    expect(detailsPanel).toBeInTheDocument();
     expect(
-      await screen.findByTestId('isis-datafile-details-panel')
+      within(detailsPanel).getByText('Datafile test name')
     ).toBeInTheDocument();
+    expect(
+      within(detailsPanel).getByText('Test datafile description')
+    ).toBeInTheDocument();
+    expect(within(detailsPanel).getByText('/datafiletest')).toBeInTheDocument();
+    expect(
+      within(detailsPanel).getByRole('tab', { name: 'datafiles.details.label' })
+    ).toBeInTheDocument();
+    expect(
+      within(detailsPanel).queryByRole('tab', {
+        name: 'datafiles.details.parameters.label',
+      })
+    ).toBeNull();
   });
 
   it('displays correct details panel for DLS when expanded', async () => {
     renderComponent('dls');
 
-    const row = await findRowAt(0);
-    await user.click(within(row).getByRole('button', { name: 'Show details' }));
-
-    expect(
-      await screen.findByTestId('dls-datafile-details-panel')
-    ).toBeInTheDocument();
-  });
-
-  it('renders fine with incomplete data', async () => {
-    // this can happen when navigating between tables and the previous table's state still exists
-    rowData = [
-      {
-        id: 1,
-        name: 'Datafile test name',
-        location: '/datafiletest',
-        fileSize: 1,
-        modTime: '2019-07-23',
-        dataset: {},
-      },
-    ];
-    (useDatafilesInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
+    let rows: HTMLElement[] = [];
+    await waitFor(async () => {
+      rows = await findAllRows();
+      expect(rows).toHaveLength(1);
     });
 
-    renderComponent();
+    const row = rows[0];
+    await user.click(within(row).getByRole('button', { name: 'Show details' }));
 
-    expect(await findAllRows()).toHaveLength(1);
+    const detailsPanel = await screen.findByTestId(
+      'dls-datafile-details-panel'
+    );
+
+    expect(detailsPanel).toBeInTheDocument();
+    expect(
+      within(detailsPanel).getByText('Datafile test name')
+    ).toBeInTheDocument();
+    expect(within(detailsPanel).getByText('1 B')).toBeInTheDocument();
+    expect(within(detailsPanel).getByText('/datafiletest')).toBeInTheDocument();
   });
 
   it('renders generic link correctly', async () => {
@@ -511,16 +726,13 @@ describe('Datafile search table component', () => {
       within(datasetLinkCell).getByRole('link', { name: 'Datafile test name' })
     ).toHaveAttribute(
       'href',
-      '/browse/instrument/5/facilityCycle/402/investigation/3/dataset/2/datafile'
+      '/browse/instrument/5/facilityCycle/6/investigation/3/dataset/2/datafile'
     );
   });
 
   it('does not render ISIS link when instrumentId cannot be found', async () => {
-    delete rowData[0].dataset?.investigation?.investigationInstruments;
-    (useDatafilesInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
-    });
+    delete rowData.investigationinstrument;
+
     renderComponent('isis');
 
     const datasetColIndex = await findColumnIndexByName('datafiles.name');
@@ -543,12 +755,13 @@ describe('Datafile search table component', () => {
     ).toBeInTheDocument();
   });
 
-  it('does not render ISIS link when the investigation does not have any associated facility cycle', async () => {
-    rowData[0].dataset.investigation.investigationFacilityCycles = [];
+  it('does not render ISIS link when facilityCycleId cannot be found', async () => {
+    delete rowData.investigationfacilitycycle;
 
     renderComponent('isis');
 
     const datasetColIndex = await findColumnIndexByName('datafiles.name');
+
     const row = await findRowAt(0);
     const datasetLinkCell = await findCellInRow(row, {
       columnIndex: datasetColIndex,
@@ -568,20 +781,32 @@ describe('Datafile search table component', () => {
   });
 
   it('displays only the datafile name when there is no generic dataset to link to', async () => {
-    rowData = [
-      {
-        id: 1,
-        name: 'Datafile test name',
-        location: '/datafiletest',
-        fileSize: 1,
-        modTime: '2019-07-23',
-        dataset: {},
-      },
-    ];
-    (useDatafilesInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
-    });
+    rowData = {
+      id: 1,
+      name: 'Datafile test name',
+      location: '/datafiletest',
+      fileSize: 1,
+      date: 1563836400000,
+      'investigation.title': 'Investigation test title',
+      'investigation.name': 'Investigation test name',
+      'investigation.startDate': 1560121200000,
+      investigationinstrument: [
+        {
+          'instrument.id': 5,
+          'instrument.name': 'LARMOR',
+        },
+      ],
+      investigationfacilitycycle: [
+        {
+          'facilityCycle.id': 6,
+        },
+      ],
+    };
+    searchResult = {
+      score: 1,
+      id: 1,
+      source: rowData,
+    };
 
     renderComponent('data');
 
@@ -606,20 +831,31 @@ describe('Datafile search table component', () => {
   });
 
   it('displays only the datafile name when there is no DLS dataset to link to', async () => {
-    rowData = [
-      {
-        id: 1,
-        name: 'Datafile test name',
-        location: '/datafiletest',
-        fileSize: 1,
-        modTime: '2019-07-23',
-        dataset: {},
-      },
-    ];
-    (useDatafilesInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
-    });
+    rowData = {
+      id: 1,
+      name: 'Datafile test name',
+      location: '/datafiletest',
+      fileSize: 1,
+      date: 1563836400000,
+      'investigation.title': 'Investigation test title',
+      'investigation.startDate': 1560121200000,
+      investigationinstrument: [
+        {
+          'instrument.id': 5,
+          'instrument.name': 'LARMOR',
+        },
+      ],
+      investigationfacilitycycle: [
+        {
+          'facilityCycle.id': 6,
+        },
+      ],
+    };
+    searchResult = {
+      score: 1,
+      id: 1,
+      source: rowData,
+    };
 
     renderComponent('dls');
 
@@ -644,20 +880,24 @@ describe('Datafile search table component', () => {
   });
 
   it('displays only the datafile name when there is no ISIS investigation to link to', async () => {
-    rowData = [
-      {
-        id: 1,
-        name: 'Datafile test name',
-        location: '/datafiletest',
-        fileSize: 1,
-        modTime: '2019-07-23',
-        dataset: {},
-      },
-    ];
-    (useDatafilesInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
-    });
+    rowData = {
+      id: 1,
+      name: 'Datafile test name',
+      location: '/datafiletest',
+      fileSize: 1,
+      date: 1563836400000,
+      'dataset.id': 2,
+      'dataset.name': 'Dataset test name',
+      'investigation.id': 3,
+      'investigation.title': 'Investigation test title',
+      'investigation.name': 'Investigation test name',
+      'investigation.startDate': 1560121200000,
+    };
+    searchResult = {
+      score: 1,
+      id: 1,
+      source: rowData,
+    };
 
     renderComponent('isis');
 

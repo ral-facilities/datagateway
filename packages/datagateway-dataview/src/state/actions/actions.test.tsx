@@ -115,7 +115,7 @@ describe('Actions', () => {
       pluginHost: 'http://localhost:3000/',
     });
     const asyncAction = configureApp();
-    await asyncAction(dispatch, getState);
+    await asyncAction(dispatch, getState, null);
 
     expect(actions.length).toEqual(8);
     expect(actions).toContainEqual(loadFacilityName('Generic'));
@@ -153,7 +153,7 @@ describe('Actions', () => {
     });
 
     const asyncAction = configureApp();
-    await asyncAction(dispatch, getState);
+    await asyncAction(dispatch, getState, null);
 
     expect(actions.length).toEqual(3);
     expect(
@@ -178,7 +178,7 @@ describe('Actions', () => {
   it("doesn't send any actions when settings are undefined", async () => {
     mockSettingsGetter.mockReturnValue(undefined);
     const asyncAction = configureApp();
-    await asyncAction(dispatch, getState);
+    await asyncAction(dispatch, getState, null);
 
     expect(actions.length).toEqual(0);
   });

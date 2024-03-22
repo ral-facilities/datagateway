@@ -1,7 +1,7 @@
 import React from 'react';
-import { Typography, Grid, Divider, styled } from '@mui/material';
+import { Divider, Grid, styled, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { Entity, Investigation } from '../app.types';
+import type { Entity, Investigation, SearchResultSource } from '../app.types';
 
 const StyledGrid = styled(Grid)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -19,14 +19,25 @@ interface InvestigationDetailsPanelProps {
 const InvestigationDetailsPanel = (
   props: InvestigationDetailsPanelProps
 ): React.ReactElement => {
-  const { detailsPanelResize } = props;
+  const { detailsPanelResize, rowData } = props;
+  const investigationData = rowData as Investigation | SearchResultSource;
 
   const [t] = useTranslation();
-  const investigationData = props.rowData as Investigation;
 
   React.useLayoutEffect(() => {
     if (detailsPanelResize) detailsPanelResize();
   }, [detailsPanelResize]);
+
+  function formatInvestigationDate(date?: number | string): string {
+    if (!date) return t('app.unknown');
+    switch (typeof date) {
+      case 'string':
+        // assume the date is already formatted when it is a string
+        return date;
+      case 'number':
+        return new Date(date).toLocaleDateString();
+    }
+  }
 
   return (
     <StyledGrid
@@ -54,7 +65,7 @@ const InvestigationDetailsPanel = (
           {t('investigations.details.start_date')}
         </Typography>
         <Typography>
-          <b>{investigationData.startDate}</b>
+          <b>{formatInvestigationDate(investigationData.startDate)}</b>
         </Typography>
       </Grid>
       <Grid item xs>
@@ -62,7 +73,7 @@ const InvestigationDetailsPanel = (
           {t('investigations.details.end_date')}
         </Typography>
         <Typography>
-          <b>{investigationData.endDate}</b>
+          <b>{formatInvestigationDate(investigationData.endDate)}</b>
         </Typography>
       </Grid>
     </StyledGrid>

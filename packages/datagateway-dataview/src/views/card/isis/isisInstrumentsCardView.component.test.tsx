@@ -30,7 +30,7 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('ISIS Instruments - Card View', () => {
-  let mockStore;
+  const mockStore = configureStore([thunk]);
   let state: StateType;
   let cardData: Instrument[];
   let history: History;
@@ -57,7 +57,6 @@ describe('ISIS Instruments - Card View', () => {
     ];
     history = createMemoryHistory();
 
-    mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
         dgcommon: dGCommonInitialState,

@@ -1,12 +1,14 @@
 import {
   configureApp,
   loadMaxNumResults,
+  loadMinNumResults,
   loadSearchableEntitites,
   loadSelectAllSetting,
   settingsLoaded,
 } from '.';
 import {
   ConfigureMaxNumResultsType,
+  ConfigureMinNumResultsType,
   ConfigureSearchableEntitiesType,
   ConfigureSelectAllSettingType,
   SettingsLoadedType,
@@ -60,7 +62,7 @@ describe('Actions', () => {
       maxNumResults: 150,
     });
     const asyncAction = configureApp();
-    await asyncAction(dispatch, getState);
+    await asyncAction(dispatch, getState, null);
 
     expect(actions.length).toEqual(6);
     expect(actions).toContainEqual(loadFacilityName('Generic'));
@@ -90,7 +92,7 @@ describe('Actions', () => {
       icatUrl: 'icat',
     });
     const asyncAction = configureApp();
-    await asyncAction(dispatch, getState);
+    await asyncAction(dispatch, getState, null);
 
     expect(actions.length).toEqual(3);
     expect(
@@ -109,8 +111,18 @@ describe('Actions', () => {
   it("doesn't send any actions when settings are undefined", async () => {
     mockSettingsGetter.mockReturnValue(undefined);
     const asyncAction = configureApp();
-    await asyncAction(dispatch, getState);
+    await asyncAction(dispatch, getState, null);
 
     expect(actions.length).toEqual(0);
+  });
+
+  describe('loadMinNumResults', () => {
+    it('returns an action with type ConfigureMinResultsType and a payload with the given min num results', () => {
+      const action = loadMinNumResults(20);
+      expect(action.type).toEqual(ConfigureMinNumResultsType);
+      expect(action.payload).toEqual({
+        minNumResults: 20,
+      });
+    });
   });
 });

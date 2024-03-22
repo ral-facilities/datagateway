@@ -45,5 +45,6 @@ export const applyDatePickerWorkaround = (): void => {
 };
 
 export const cleanupDatePickerWorkaround = (): void => {
+  // @ts-expect-error this is a workaround
   delete window.matchMedia;
 };

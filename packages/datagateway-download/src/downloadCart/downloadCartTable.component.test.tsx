@@ -78,7 +78,8 @@ const renderComponent = (): RenderResult & { history: MemoryHistory } => {
 };
 
 describe('Download cart table component', () => {
-  let holder, queryClient;
+  let holder: HTMLElement | null;
+  let queryClient: QueryClient;
   let user: ReturnType<typeof userEvent.setup>;
 
   const resetDOM = (): void => {
@@ -192,7 +193,9 @@ describe('Download cart table component', () => {
 
   it('disables remove all button while request is processing', async () => {
     // use this to manually resolve promise
-    let promiseResolve;
+    let promiseResolve = (): void => {
+      // no-op
+    };
 
     (
       removeAllDownloadCartItems as jest.MockedFunction<

@@ -98,7 +98,7 @@ describe('SearchBoxContainer Component', () => {
       'Advanced Search Tips'
     );
 
-    cy.get('[data-testid="advanced-help-link"]').click();
+    cy.findByRole('link', { name: 'neutron AND scattering' }).click();
     cy.url().should('contain', '?searchText=neutron+AND+scattering');
   });
 });

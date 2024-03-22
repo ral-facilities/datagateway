@@ -11,9 +11,9 @@ describe('Datafile previewer reducers', () => {
 
   beforeEach(() => {
     state = {
-      breadcrumbSettings: undefined,
+      breadcrumbSettings: [],
       facilityImageURL: '',
-      features: undefined,
+      features: {},
       pluginHost: '',
       selectAllSetting: false,
       settingsLoaded: false,
@@ -32,9 +32,9 @@ describe('Datafile previewer reducers', () => {
         });
 
         expect(newState).toEqual<DGDataViewState>({
-          breadcrumbSettings: undefined,
+          breadcrumbSettings: [],
           facilityImageURL: '',
-          features: undefined,
+          features: {},
           pluginHost: '',
           selectAllSetting: false,
           settingsLoaded: false,
@@ -51,9 +51,9 @@ describe('Datafile previewer reducers', () => {
     it('should produce a new state with the zoom level of the datafile previewer equal to previous zoom level + predefined increment step', () => {
       const newState = incDatafilePreviewerZoomLevel(state);
       expect(newState).toEqual<DGDataViewState>({
-        breadcrumbSettings: undefined,
+        breadcrumbSettings: [],
         facilityImageURL: '',
-        features: undefined,
+        features: {},
         pluginHost: '',
         selectAllSetting: false,
         settingsLoaded: false,
@@ -69,9 +69,9 @@ describe('Datafile previewer reducers', () => {
     it('should produce a new state with the zoom level of the datafile previewer equal to previous zoom level - predefined increment step', () => {
       const newState = decDatafilePreviewerZoomLevel(state);
       expect(newState).toEqual<DGDataViewState>({
-        breadcrumbSettings: undefined,
+        breadcrumbSettings: [],
         facilityImageURL: '',
-        features: undefined,
+        features: {},
         pluginHost: '',
         selectAllSetting: false,
         settingsLoaded: false,
@@ -86,9 +86,9 @@ describe('Datafile previewer reducers', () => {
   describe('resetDatafilePreviewerZoomLevel', () => {
     it('should produce a new state with the zoom level of the datafile previewer set to the default value', () => {
       state = {
-        breadcrumbSettings: undefined,
+        breadcrumbSettings: [],
         facilityImageURL: '',
-        features: undefined,
+        features: {},
         pluginHost: '',
         selectAllSetting: false,
         settingsLoaded: false,
@@ -99,9 +99,9 @@ describe('Datafile previewer reducers', () => {
       };
       const newState = resetDatafilePreviewerZoomLevel(state);
       expect(newState).toEqual<DGDataViewState>({
-        breadcrumbSettings: undefined,
+        breadcrumbSettings: [],
         facilityImageURL: '',
-        features: undefined,
+        features: {},
         pluginHost: '',
         selectAllSetting: false,
         settingsLoaded: false,

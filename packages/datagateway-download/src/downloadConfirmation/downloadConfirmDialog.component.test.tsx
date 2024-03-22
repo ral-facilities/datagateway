@@ -1,7 +1,6 @@
 import type { RenderResult } from '@testing-library/react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { UserEvent } from '@testing-library/user-event/dist/types/setup';
 import * as React from 'react';
 import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 import { DownloadSettingsContext } from '../ConfigProvider';
@@ -55,14 +54,13 @@ const renderWrapper = (
           open={open}
           redirectToStatusTab={jest.fn()}
           setClose={jest.fn()}
-          clearCart={jest.fn()}
         />
       </DownloadSettingsContext.Provider>
     </QueryClientProvider>
   );
 
 describe('DownloadConfirmDialog', () => {
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   beforeEach(() => {
     user = userEvent.setup();
@@ -341,7 +339,6 @@ describe('DownloadConfirmDialog', () => {
             open={true}
             redirectToStatusTab={jest.fn()}
             setClose={closeFunction}
-            clearCart={jest.fn()}
           />
         </DownloadSettingsContext.Provider>
       </QueryClientProvider>
@@ -389,7 +386,6 @@ describe('DownloadConfirmDialog - renders the estimated download speed/time tabl
             open={true}
             setClose={jest.fn()}
             redirectToStatusTab={jest.fn()}
-            clearCart={jest.fn()}
           />
         </DownloadSettingsContext.Provider>
       </QueryClientProvider>

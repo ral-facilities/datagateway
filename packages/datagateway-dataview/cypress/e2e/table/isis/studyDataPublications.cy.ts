@@ -4,7 +4,6 @@ describe('ISIS - Study Data Publication Table', () => {
     cy.intercept(
       /\/datapublications\?.*where=%7B%22type\.name%22%3A%7B%22eq%22%3A%22study%22%7D%7D.*/,
       (req) => {
-        console.log('INTERCEPTING!!!!!');
         // delete type = study requirement
         const [url, search] = req.url.split('?');
         const params = new URLSearchParams(search);
@@ -28,7 +27,6 @@ describe('ISIS - Study Data Publication Table', () => {
         };
         removeValue(params, 'where', '{"type.name":{"eq":"study"}}');
         req.url = `${url}?${params.toString()}`;
-        console.log('req.url', req.url);
 
         req.continue();
       }

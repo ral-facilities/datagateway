@@ -72,11 +72,14 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' }}
 
       - name: Create/update release
-        uses: johnwbyrd/update-release@1d5ec4791e40507e5eca3b4dbf90f0b27e7e4979 # v1.0.0
+        uses: softprops/action-gh-release@4634c16e79c963813287e889244c50009e7f0981 
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          files: ./datagateway-dataview-${{ env.TAG_NAME }}.tar.gz ./datagateway-download-${{ env.TAG_NAME }}.tar.gz ./datagateway-search-${{ env.TAG_NAME }}.tar.gz
-          release: Release ${{ env.TAG_NAME }}
-          tag: ${{ env.TAG_NAME }}
+          files: |
+            ./datagateway-dataview-${{ env.TAG_NAME }}.tar.gz
+            ./datagateway-download-${{ env.TAG_NAME }}.tar.gz
+            ./datagateway-search-${{ env.TAG_NAME }}.tar.gz
+          name: ${{ env.TAG_NAME }}
+          tag_name: ${{ env.TAG_NAME }}
           prerelease: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' }}
           draft: false
