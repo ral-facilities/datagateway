@@ -161,7 +161,7 @@ const UploadDialog: React.FC<UploadDialogProps> = (
         endpoint: `${uploadUrl}/upload/`,
         uploadDataDuringCreation: true,
         headers: {
-          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+          authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
   );
