@@ -36,7 +36,12 @@ const DLSDataPublicationVersionPanel: React.FC<
 
   return (
     <Accordion defaultExpanded disableGutters elevation={0}>
-      <AccordionSummary sx={{ p: 0 }} expandIcon={<ExpandMoreIcon />}>
+      <AccordionSummary
+        sx={{ p: 0 }}
+        expandIcon={<ExpandMoreIcon />}
+        id="version-panel-header"
+        aria-controls="version-panel-content"
+      >
         <Typography fontWeight="bold">
           {t('datapublications.details.version_panel_label')}
         </Typography>

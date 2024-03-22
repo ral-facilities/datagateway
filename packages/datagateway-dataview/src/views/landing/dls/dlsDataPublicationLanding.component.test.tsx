@@ -15,7 +15,12 @@ import thunk from 'redux-thunk';
 import { createMemoryHistory, History } from 'history';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Router, generatePath } from 'react-router-dom';
-import { render, type RenderResult, screen } from '@testing-library/react';
+import {
+  render,
+  type RenderResult,
+  screen,
+  within,
+} from '@testing-library/react';
 import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 import DLSDataPublicationLanding from './dlsDataPublicationLanding.component';
@@ -129,16 +134,25 @@ describe('DLS Data Publication Landing page', () => {
           id: 10,
           identifier: 'doi 2',
           relationType: DOIRelationType.HasVersion,
+          createTime: '2024-01-03 12:00:00',
         },
         {
           id: 11,
           identifier: 'doi 3',
           relationType: DOIRelationType.IsSupplementedBy,
+          createTime: '2024-01-02 12:00:00',
+        },
+        {
+          id: 13,
+          identifier: 'doi 5',
+          relationType: DOIRelationType.HasVersion,
+          createTime: '2024-01-04 12:00:00',
         },
         {
           id: 12,
           identifier: 'doi 4',
           relationType: DOIRelationType.HasVersion,
+          createTime: '2024-01-03 12:00:00',
         },
       ],
       publicationDate: '2023-07-20',
@@ -174,8 +188,18 @@ describe('DLS Data Publication Landing page', () => {
 
     // displays doi + link correctly
     expect(
+      screen.getByText('datapublications.concept datapublications.pid')
+    ).toBeInTheDocument();
+    expect(
       await screen.findByRole('link', { name: 'DOI doi 1' })
     ).toHaveAttribute('href', 'https://doi.org/doi 1');
+
+    expect(
+      screen.getByText('datapublications.latest_version datapublications.pid')
+    ).toBeInTheDocument();
+    // should be 2 versions of the latest version DOI - one in the latest version label
+    // and one in the version panel
+    expect(screen.getAllByRole('link', { name: 'DOI doi 5' })).toHaveLength(2);
 
     expect(screen.getByText('2023-07-20')).toBeInTheDocument();
     expect(screen.getByText('Title')).toBeInTheDocument();
@@ -194,6 +218,19 @@ describe('DLS Data Publication Landing page', () => {
     expect(
       await screen.findByTestId('landing-dataPublication-user-2')
     ).toHaveTextContent('Experimenter: Jesse Smith');
+
+    // two citation formatters
+    expect(
+      screen.getByText(
+        'datapublications.latest_version datapublications.details.citation_formatter.label'
+      )
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByText(
+        'datapublications.concept datapublications.details.citation_formatter.label'
+      )
+    ).toBeInTheDocument();
   });
 
   it('renders correctly if info is missing', async () => {
@@ -241,35 +278,38 @@ describe('DLS Data Publication Landing page', () => {
       screen.queryByRole('button', { name: 'datapublications.edit_label' })
     ).not.toBeInTheDocument();
 
+    const versionPanel = await screen.findByRole('region', {
+      name: 'datapublications.details.version_panel_label',
+    });
+    expect(versionPanel).toBeInTheDocument();
+
     expect(
-      await screen.findByRole('button', {
-        name: 'datapublications.details.version_panel_label',
-      })
-    ).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'DOI doi 2' })).toHaveAttribute(
-      'href',
-      'https://doi.org/doi 2'
-    );
+      within(versionPanel).getByRole('link', { name: 'DOI doi 2' })
+    ).toHaveAttribute('href', 'https://doi.org/doi 2');
     expect(
-      screen.queryByRole('link', { name: 'DOI doi 3' })
+      within(versionPanel).queryByRole('link', { name: 'DOI doi 3' })
     ).not.toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'DOI doi 4' })).toHaveAttribute(
-      'href',
-      'https://doi.org/doi 4'
-    );
+    expect(
+      within(versionPanel).getByRole('link', { name: 'DOI doi 4' })
+    ).toHaveAttribute('href', 'https://doi.org/doi 4');
+    expect(
+      within(versionPanel).getByRole('link', { name: 'DOI doi 5' })
+    ).toHaveAttribute('href', 'https://doi.org/doi 5');
   });
 
-  it('renders concept panel when showing a version DOI & does not show the edit button', async () => {
+  it('renders a version DOI correctly & does not show the edit button', async () => {
     initialData.relatedItems = [
       {
         id: 10,
         identifier: 'doi 2',
         relationType: DOIRelationType.IsVersionOf,
+        createTime: '2024-01-01 12:00:00',
       },
       {
         id: 11,
         identifier: 'doi 3',
         relationType: DOIRelationType.IsSupplementedBy,
+        createTime: '2024-01-02 12:00:00',
       },
     ];
     renderComponent();
@@ -279,9 +319,22 @@ describe('DLS Data Publication Landing page', () => {
     ).not.toBeInTheDocument();
 
     expect(
-      await screen.findByRole('button', {
-        name: 'datapublications.details.concept_panel_label',
+      screen.queryByRole('button', {
+        name: 'datapublications.details.version_panel_label',
       })
+    ).not.toBeInTheDocument();
+
+    expect(
+      screen.getByText('datapublications.details.citation_formatter.label')
+    ).toBeInTheDocument();
+
+    expect(screen.getByRole('link', { name: 'DOI doi 1' })).toHaveAttribute(
+      'href',
+      'https://doi.org/doi 1'
+    );
+
+    expect(
+      screen.getByText('datapublications.concept datapublications.pid')
     ).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'DOI doi 2' })).toHaveAttribute(
       'href',
@@ -311,7 +364,7 @@ describe('DLS Data Publication Landing page', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders structured data correctly', async () => {
+  it('renders structured data correctly for concept DOI', async () => {
     renderComponent();
 
     expect(
@@ -326,5 +379,24 @@ describe('DLS Data Publication Landing page', () => {
         {"@context":"http://schema.org","@type":"Dataset","@id":"https://doi.org/doi 1","url":"https://doi.org/doi 1","identifier":"doi 1","name":"Title","description":"foo bar","keywords":"doi_constants.keywords","publisher":{"@type":"Organization","url":"doi_constants.publisher.url","name":"doi_constants.publisher.name","logo":"doi_constants.publisher.logo","contactPoint":{"@type":"ContactPoint","contactType":"customer service","email":"doi_constants.publisher.email","url":"doi_constants.publisher.url"}},"creator":[{"@type":"Person","name":"John Smith"},{"@type":"Person","name":"Jane Smith"},{"@type":"Person","name":"Jesse Smith"}],"includedInDataCatalog":{"@type":"DataCatalog","url":"doi_constants.distribution.content_url"},"license":"doi_constants.distribution.license"}
       </script>
     `);
+  });
+
+  it('does not render structured data for version dois', async () => {
+    initialData.relatedItems = [
+      {
+        id: 10,
+        identifier: 'doi 2',
+        relationType: DOIRelationType.IsVersionOf,
+        createTime: '2024-01-01 12:00:00',
+      },
+    ];
+
+    renderComponent();
+
+    expect(
+      await screen.findByTestId('landing-dataPublication-user-0')
+    ).toBeInTheDocument();
+
+    expect(document.getElementById('dataPublication-1')).toBeNull();
   });
 });

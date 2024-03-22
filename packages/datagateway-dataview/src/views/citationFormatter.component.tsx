@@ -131,7 +131,11 @@ const CitationFormatter = (
             : '')}
       </Typography>
       {doi && (
-        <FormControl id="citation-formatter" error={error} variant="standard">
+        <FormControl
+          id={`${label ? `${label}-` : ''}citation-formatter"`}
+          error={error}
+          variant="standard"
+        >
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <Select
               sx={{ my: 1 }}
@@ -163,7 +167,11 @@ const CitationFormatter = (
             )}
           </div>
           {error && (
-            <FormHelperText id="citation-formatter-error-message">
+            <FormHelperText
+              id={`${
+                label ? `${label}-` : ''
+              }citation-formatter-error-message"`}
+            >
               {t('datapublications.details.citation_formatter.error')}
             </FormHelperText>
           )}
@@ -176,7 +184,7 @@ const CitationFormatter = (
       </Typography>
       {!copiedCitation ? (
         <Button
-          id="citation-formatter-copy-citation"
+          id={`${label ? `${label}-` : ''}citation-formatter-copy-citation"`}
           aria-label={t(
             'datapublications.details.citation_formatter.copy_citation_arialabel'
           )}
@@ -196,7 +204,7 @@ const CitationFormatter = (
         </Button>
       ) : (
         <Button
-          id="citation-formatter-copied-citation"
+          id={`${label ? `${label}-` : ''}citation-formatter-copied-citation"`}
           variant="contained"
           color="primary"
           size="small"
