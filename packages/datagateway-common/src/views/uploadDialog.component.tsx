@@ -100,7 +100,7 @@ const UploadDialog: React.FC<UploadDialogProps> = (
       },
       meta: {
         datafileDescription: '',
-        userSession: readSciGatewayToken().sessionId,
+        // userSession: readSciGatewayToken().sessionId,
       },
       onBeforeFileAdded: (currentFile) => {
         const isCorrectExtension = currentFile.name.endsWith('.xml');
@@ -160,6 +160,9 @@ const UploadDialog: React.FC<UploadDialogProps> = (
       .use(Tus, {
         endpoint: `${uploadUrl}/upload/`,
         uploadDataDuringCreation: true,
+        headers: {
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+        },
       })
   );
 
