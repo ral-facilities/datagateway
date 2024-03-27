@@ -8,6 +8,7 @@ const requests = {
   delete: jest.fn(() => Promise.resolve({ data: {} })),
   put: jest.fn(() => Promise.resolve({ data: {} })),
   CancelToken: axios.CancelToken,
+  isAxiosError: axios.isAxiosError,
 };
 
 export default requests;

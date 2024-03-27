@@ -33,7 +33,7 @@ const DialogContent = styled(MuiDialogContent)(({ theme }) => ({
   padding: theme.spacing(2),
 }));
 
-const checkDatafileName = async (
+export const checkDatafileName = async (
   apiUrl: string,
   name: string,
   datasetId: number

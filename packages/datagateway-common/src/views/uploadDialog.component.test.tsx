@@ -9,6 +9,9 @@ import { Provider } from 'react-redux';
 import { combineReducers, createStore } from 'redux';
 import dGCommonReducer from '../state/reducers/dgcommon.reducer';
 import { StateType } from '../state/app.types';
+import axios from 'axios';
+import { checkDatafileName } from './uploadDialog.component';
+import { readSciGatewayToken } from '../parseTokens';
 
 // TODO: see if we can remove this
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -282,5 +285,108 @@ describe('Upload dialog component', () => {
         ).not.toBeInTheDocument();
       });
     });
+  });
+});
+it('checks if datafile name exists in the dataset', async () => {
+  const apiUrl = 'https://example.com/api';
+  const name = 'test.txt';
+  const datasetId = 1;
+
+  const params = new URLSearchParams();
+  params.append(
+    'where',
+    JSON.stringify({
+      name: { eq: name },
+    })
+  );
+  params.append(
+    'where',
+    JSON.stringify({
+      'dataset.id': { eq: datasetId },
+    })
+  );
+
+  const axiosGetSpy = jest.spyOn(axios, 'get');
+  axiosGetSpy.mockResolvedValueOnce({});
+
+  const result = await checkDatafileName(apiUrl, name, datasetId);
+
+  expect(axios.get).toHaveBeenCalledWith(`${apiUrl}/datafiles/findone`, {
+    params,
+    headers: {
+      Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+    },
+  });
+  expect(result).toBe(true);
+});
+
+it('returns false if datafile name does not exist in the dataset', async () => {
+  const apiUrl = 'https://example.com/api';
+  const name = 'test.txt';
+  const datasetId = 1;
+
+  const params = new URLSearchParams();
+  params.append(
+    'where',
+    JSON.stringify({
+      name: { eq: name },
+    })
+  );
+  params.append(
+    'where',
+    JSON.stringify({
+      'dataset.id': { eq: datasetId },
+    })
+  );
+
+  const axiosGetSpy = jest.spyOn(axios, 'get');
+  const mockError = {
+    isAxiosError: true,
+    response: { status: 404 },
+  };
+  axiosGetSpy.mockRejectedValueOnce(mockError);
+
+  const result = await checkDatafileName(apiUrl, name, datasetId);
+
+  expect(axios.get).toHaveBeenCalledWith(`${apiUrl}/datafiles/findone`, {
+    params,
+    headers: {
+      Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+    },
+  });
+  expect(result).toBe(false);
+});
+
+it('throws an error if an unexpected error occurs', async () => {
+  const apiUrl = 'https://example.com/api';
+  const name = 'test.txt';
+  const datasetId = 1;
+
+  const params = new URLSearchParams();
+  params.append(
+    'where',
+    JSON.stringify({
+      name: { eq: name },
+    })
+  );
+  params.append(
+    'where',
+    JSON.stringify({
+      'dataset.id': { eq: datasetId },
+    })
+  );
+
+  const axiosGetSpy = jest.spyOn(axios, 'get');
+  axiosGetSpy.mockRejectedValueOnce(new Error('Unexpected error'));
+
+  await expect(checkDatafileName(apiUrl, name, datasetId)).rejects.toThrowError(
+    'Unexpected error'
+  );
+
+  expect(axios.get).toHaveBeenCalledWith(`${apiUrl}/datafiles/findone`, {
+    params,
+    headers: {
+      Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+    },
   });
 });
