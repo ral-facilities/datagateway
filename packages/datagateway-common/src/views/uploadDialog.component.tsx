@@ -103,9 +103,30 @@ const UploadDialog: React.FC<UploadDialogProps> = (
         // userSession: readSciGatewayToken().sessionId,
       },
       onBeforeFileAdded: (currentFile) => {
-        const isCorrectExtension = currentFile.name.endsWith('.xml');
+        const isCorrectExtension = [
+          '.xml',
+          '.exe',
+          '.dll',
+          '.bat',
+          '.sh',
+          '.sqlite',
+          '.js',
+          '.vbs',
+          '.PHP',
+          '.wmv',
+          '.mp3',
+          '.flv',
+        ].some((ext) => currentFile.name.endsWith(ext));
+
         if (isCorrectExtension) {
-          uppy.info('.xml files are not allowed');
+          uppy.info(
+            `.${currentFile.name
+              .split('.')
+              .pop()
+              ?.toLowerCase()} files are not allowed`,
+            'error',
+            5000
+          );
           return false;
         } else {
           // TODO: is there another way to do this?
@@ -261,7 +282,7 @@ const UploadDialog: React.FC<UploadDialogProps> = (
             <Dashboard
               uppy={uppy}
               proudlyDisplayPoweredByUppy={false}
-              note="No .XML files, Total file size 5GB or less"
+              note="Total file size 5GB or less"
               showProgressDetails={true}
               hideUploadButton={true}
               fileManagerSelectionType="both"
