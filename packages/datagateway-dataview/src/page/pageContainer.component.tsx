@@ -23,6 +23,7 @@ import {
   useUpdateQueryParam,
   ViewButton,
   ClearFiltersButton,
+  UploadButton,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -41,6 +42,8 @@ import TranslatedHomePage from './translatedHomePage.component';
 import DoiRedirect from './doiRedirect.component';
 import RoleSelector from '../views/roleSelector.component';
 import { useIsFetching, useQueryClient } from 'react-query';
+import { StateType } from 'datagateway-common';
+import { useSelector } from 'react-redux';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const getTablePaperStyle = (
@@ -657,6 +660,10 @@ const DataviewPageContainer: React.FC = () => {
     }
   };
 
+  const uploadUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.uploadUrl
+  );
+
   return (
     <Paper square elevation={0} style={{ backgroundColor: 'inherit' }}>
       <NavBar
@@ -701,6 +708,21 @@ const DataviewPageContainer: React.FC = () => {
                     disabled={disabled}
                   />
                 )}
+              />
+              <Route
+                exact
+                path={paths.standard.dlsDatafile}
+                render={({ match }) => {
+                  const datasetId = match.params.datasetId as string;
+                  return (
+                    uploadUrl && (
+                      <UploadButton
+                        entityType="datafile"
+                        entityId={parseInt(datasetId)}
+                      />
+                    )
+                  );
+                }}
               />
             </Grid>
             <Grid item xs={true}>

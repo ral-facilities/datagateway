@@ -100,6 +100,11 @@ describe('PageContainer - Tests', () => {
     });
     user = userEvent.setup();
 
+    dGCommonInitialState.urls = {
+      ...dGCommonInitialState.urls,
+      uploadUrl: 'https://example.com/upload',
+    };
+
     delete window.location;
     window.location = new URL(`http://localhost/`);
 
@@ -280,6 +285,18 @@ describe('PageContainer - Tests', () => {
     expect(
       await screen.findByRole('button', { name: 'app.clear_filters' })
     ).toBeDisabled();
+  });
+
+  it('display upload datafile button on dls datafile table', async () => {
+    history.replace('/browse/proposal/1/investigation/1/dataset/25/datafile');
+    renderComponent();
+
+    // wait for the page to load
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', { name: 'buttons.upload_datafile' })
+      ).toBeInTheDocument();
+    });
   });
 
   it('display filter warning on datafile table', async () => {

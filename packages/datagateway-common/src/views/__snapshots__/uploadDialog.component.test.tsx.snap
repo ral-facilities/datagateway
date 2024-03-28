@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Upload dialog component Datafile renders correctly 1`] = `<DocumentFragment />`;
+
+exports[`Upload dialog component Dataset renders correctly 1`] = `<DocumentFragment />`;

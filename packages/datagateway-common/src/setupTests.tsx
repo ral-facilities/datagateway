@@ -90,6 +90,7 @@ export const createReactQueryWrapper = (
         icatUrl: 'https://example.com/icat',
         idsUrl: 'https://example.com/ids',
         downloadApiUrl: 'https://example.com/topcat',
+        uploadUrl: 'https://example.com/upload',
       },
     },
   };

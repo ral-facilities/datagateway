@@ -91,6 +91,11 @@ describe('DLS Dataset table component', () => {
     history = createMemoryHistory();
     user = userEvent.setup();
 
+    dGCommonInitialState.urls = {
+      ...dGCommonInitialState.urls,
+      uploadUrl: 'https://example.com/upload',
+    };
+
     mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
@@ -362,5 +367,12 @@ describe('DLS Dataset table component', () => {
     );
 
     expect(await screen.findByTestId('dls-dataset-details-panel')).toBeTruthy();
+  });
+
+  it('renders actions correctly', async () => {
+    renderComponent();
+    expect(
+      await screen.findByRole('button', { name: 'buttons.upload_datafile' })
+    ).toBeInTheDocument();
   });
 });

@@ -21,7 +21,6 @@ import { batch, connect, Provider } from 'react-redux';
 import { AnyAction, applyMiddleware, compose, createStore, Store } from 'redux';
 import { createLogger } from 'redux-logger';
 import thunk, { ThunkDispatch } from 'redux-thunk';
-import './App.css';
 import { saveApiUrlMiddleware } from './page/idCheckFunctions';
 import PageContainer from './page/pageContainer.component';
 import { configureApp } from './state/actions';

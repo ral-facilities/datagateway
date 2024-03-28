@@ -84,7 +84,7 @@
   },
   "jest": {
     "transformIgnorePatterns": [
-      "node_modules/(?!axios)"
+      "node_modules/(?!(axios|@uppy|nanoid|exifr|p-queue|p-timeout)/)"
     ],
     "collectCoverageFrom": [
       "src/**/*.{tsx,ts,js,jsx}",

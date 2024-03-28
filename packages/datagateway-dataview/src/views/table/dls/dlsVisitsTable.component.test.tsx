@@ -91,6 +91,11 @@ describe('DLS Visits table component', () => {
     history = createMemoryHistory();
     user = userEvent.setup();
 
+    dGCommonInitialState.urls = {
+      ...dGCommonInitialState.urls,
+      uploadUrl: 'https://example.com/upload',
+    };
+
     mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
@@ -343,5 +348,12 @@ describe('DLS Visits table component', () => {
     });
 
     expect(instrumentNameCell).toHaveTextContent('');
+  });
+
+  it('renders actions correctly', async () => {
+    renderComponent();
+    expect(
+      await screen.findByRole('button', { name: 'buttons.upload_dataset' })
+    ).toBeInTheDocument();
   });
 });
