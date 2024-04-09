@@ -68,6 +68,43 @@ export const checkDatafileName = async (
   }
 };
 
+// TODO: this function is similar to the one above, consider refactoring
+export const checkDatasetName = async (
+  apiUrl: string,
+  name: string,
+  investigationId: number
+): Promise<boolean> => {
+  const params = new URLSearchParams();
+  params.append(
+    'where',
+    JSON.stringify({
+      name: { eq: name },
+    })
+  );
+
+  params.append(
+    'where',
+    JSON.stringify({
+      'investigation.id': { eq: investigationId },
+    })
+  );
+
+  try {
+    await axios.get(`${apiUrl}/datasets/findone`, {
+      params,
+      headers: {
+        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+      },
+    });
+    return true;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 404) {
+      return false;
+    }
+    throw error;
+  }
+};
+
 const parseUploadUrl = (url: string): string => {
   const uuid = url.split('/').pop();
   return (
@@ -210,6 +247,8 @@ const UploadDialog: React.FC<UploadDialogProps> = (
   const dialogClose = (_event?: unknown, reason?: string): void => {
     if (reason !== 'backdropClick') {
       uppy.cancelAll({ reason: 'user' });
+      setUploadName('');
+      setUploadDescription('');
       setClose();
     }
   };
@@ -242,6 +281,7 @@ const UploadDialog: React.FC<UploadDialogProps> = (
                   fullWidth={true}
                   inputProps={{ maxLength: 255 }}
                   variant="outlined"
+                  value={uploadName}
                   onChange={(e) => {
                     setUploadName(e.target.value as string);
                   }}
@@ -254,6 +294,7 @@ const UploadDialog: React.FC<UploadDialogProps> = (
                   fullWidth={true}
                   inputProps={{ maxLength: 2000 }}
                   variant="outlined"
+                  value={uploadDescription}
                   onChange={(e) => {
                     setUploadDescription(e.target.value as string);
                   }}
@@ -299,9 +340,33 @@ const UploadDialog: React.FC<UploadDialogProps> = (
               Close
             </Button>
             <Button
-              onClick={() =>
+              onClick={async () => {
+                // Check if the dataset name already exists in the investigation
+                if (entityType === 'investigation') {
+                  const datasetNameExists = await checkDatasetName(
+                    apiUrl,
+                    uploadName,
+                    entityId
+                  ).catch((error) => {
+                    uppy.info(error.message, 'error', 5000);
+                    return true;
+                  });
+                  if (datasetNameExists) {
+                    uppy.info(
+                      `Dataset ${uploadName} already exists in this investigation`,
+                      'error',
+                      5000
+                    );
+                    return;
+                  } else if (uploadName === '') {
+                    uppy.info('Dataset name cannot be empty', 'error', 5000);
+                    return;
+                  }
+                }
+
+                // Upload the files
                 uppy.upload().then((result) => {
-                  console.log(result);
+                  // Commit the upload
                   let params = {};
                   if (entityType === 'investigation') {
                     params = {
@@ -349,8 +414,8 @@ const UploadDialog: React.FC<UploadDialogProps> = (
                   } else {
                     queryClient.invalidateQueries(['dataset']);
                   }
-                })
-              }
+                });
+              }}
               variant="contained"
               aria-label="upload"
               disabled={uploadDisabled}
