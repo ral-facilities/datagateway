@@ -284,29 +284,3 @@ export const downloadDataset = (
   link.click();
   link.remove();
 };
-
-//TODO: see if there is a way to get the upload URL from state
-export const createDataset = (
-  uploadUrl: string | undefined,
-  name: string,
-  description: string,
-  investigationId: number
-): Promise<number> => {
-  const params = {
-    investigationId: investigationId,
-    datasetName: name,
-    datasetDescription: description,
-  };
-
-  if (!uploadUrl) {
-    return Promise.reject('Upload URL is not defined');
-  }
-
-  return axios
-    .post(`${uploadUrl}/dataset`, params, {
-      headers: {
-        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
-      },
-    })
-    .then((response) => parseInt(response.data.datasetId));
-};

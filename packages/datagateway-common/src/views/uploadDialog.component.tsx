@@ -22,7 +22,7 @@ import '@uppy/drag-drop/dist/style.min.css';
 import '@uppy/dashboard/dist/style.min.css';
 
 import { readSciGatewayToken } from '../parseTokens';
-import { createDataset, refreshSession } from '../api';
+import { refreshSession } from '../api';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
 import { useSelector } from 'react-redux';
@@ -68,6 +68,21 @@ export const checkDatafileName = async (
   }
 };
 
+const parseUploadUrl = (url: string): string => {
+  const uuid = url.split('/').pop();
+  return (
+    uuid?.slice(0, 8) +
+    '-' +
+    uuid?.slice(8, 12) +
+    '-' +
+    uuid?.slice(12, 16) +
+    '-' +
+    uuid?.slice(16, 20) +
+    '-' +
+    uuid?.slice(20)
+  );
+};
+
 interface UploadDialogProps {
   entityType: 'investigation' | 'dataset' | 'datafile';
   entityId: number;
@@ -97,10 +112,6 @@ const UploadDialog: React.FC<UploadDialogProps> = (
       autoProceed: false,
       restrictions: {
         maxTotalFileSize: 5368709120,
-      },
-      meta: {
-        datafileDescription: '',
-        // userSession: readSciGatewayToken().sessionId,
       },
       onBeforeFileAdded: (currentFile) => {
         const isCorrectExtension = [
@@ -149,34 +160,29 @@ const UploadDialog: React.FC<UploadDialogProps> = (
     })
       .on('file-added', async (file) => {
         setUploadDisabled(true);
-        const fileExists = await checkDatafileName(
-          apiUrl,
-          file.name,
-          entityId
-        ).catch((error) => {
-          uppy.info(error.message, 'error', 5000);
-          return true;
-        });
+        if (entityType !== 'investigation') {
+          const fileExists = await checkDatafileName(
+            apiUrl,
+            file.name,
+            entityId
+          ).catch((error) => {
+            uppy.info(error.message, 'error', 5000);
+            return true;
+          });
 
-        if (fileExists) {
-          uppy.info(
-            `File ${file.name} already exists in this dataset`,
-            'error',
-            5000
-          );
-          uppy.removeFile(file.id);
+          if (fileExists) {
+            uppy.info(
+              `File ${file.name} already exists in this dataset`,
+              'error',
+              5000
+            );
+            uppy.removeFile(file.id);
+          }
         }
         setUploadDisabled(false);
       })
       .on('error', (error) => {
         uppy.info(error.message, 'error', 5000);
-      })
-      .on('upload-success', (file, response) => {
-        if (entityType === 'datafile') {
-          queryClient.invalidateQueries(['datafile']);
-        } else {
-          queryClient.invalidateQueries(['dataset']);
-        }
       })
       .use(Tus, {
         endpoint: `${uploadUrl}/upload/`,
@@ -206,27 +212,6 @@ const UploadDialog: React.FC<UploadDialogProps> = (
       uppy.cancelAll({ reason: 'user' });
       setClose();
     }
-  };
-
-  const uploadData = async (): Promise<void> => {
-    // If uploading a dataset, create the dataset first
-    // Name the dataset and not uploaded files
-    if (entityType === 'investigation') {
-      const result = await createDataset(
-        uploadUrl,
-        uploadName,
-        uploadDescription,
-        entityId
-      );
-      uppy.setMeta({
-        datasetId: result,
-      });
-    } else {
-      uppy.setMeta({
-        datasetId: entityId,
-      });
-    }
-    uppy.upload();
   };
 
   return (
@@ -314,7 +299,58 @@ const UploadDialog: React.FC<UploadDialogProps> = (
               Close
             </Button>
             <Button
-              onClick={() => uploadData()}
+              onClick={() =>
+                uppy.upload().then((result) => {
+                  console.log(result);
+                  let params = {};
+                  if (entityType === 'investigation') {
+                    params = {
+                      dataset: {
+                        datasetName: uploadName,
+                        datasetDescription: uploadDescription,
+                        investigationId: entityId,
+                      },
+                      datafiles: result.successful.map((file) => {
+                        const uuid = parseUploadUrl(file.uploadURL);
+                        return {
+                          name: file.name,
+                          id: uuid,
+                          size: file.size,
+                        };
+                      }),
+                    };
+                  } else {
+                    params = {
+                      datafiles: result.successful.map((file) => {
+                        const uuid = parseUploadUrl(file.uploadURL);
+                        return {
+                          name: file.name,
+                          id: uuid,
+                          size: file.size,
+                          datasetId: entityId,
+                        };
+                      }),
+                    };
+                  }
+                  axios
+                    .post(`${uploadUrl}/commit`, params, {
+                      headers: {
+                        authorization: `Bearer ${
+                          readSciGatewayToken().sessionId
+                        }`,
+                      },
+                    })
+                    .catch((error) => {
+                      uppy.info(error.message, 'error', 5000);
+                    });
+
+                  if (entityType === 'datafile') {
+                    queryClient.invalidateQueries(['datafile']);
+                  } else {
+                    queryClient.invalidateQueries(['dataset']);
+                  }
+                })
+              }
               variant="contained"
               aria-label="upload"
               disabled={uploadDisabled}
