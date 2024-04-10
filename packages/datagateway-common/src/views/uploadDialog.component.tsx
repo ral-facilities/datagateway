@@ -166,6 +166,19 @@ const UploadDialog: React.FC<UploadDialogProps> = (
           '.flv',
         ].some((ext) => currentFile.name.endsWith(ext));
 
+        const isDuplicate = uppy.getFiles().some((file) => {
+          return file.name === currentFile.name;
+        });
+
+        if (isDuplicate) {
+          uppy.info(
+            `File named "${currentFile.name}" is already in the upload queue`,
+            'error',
+            5000
+          );
+          return false;
+        }
+
         if (isCorrectExtension) {
           uppy.info(
             `.${currentFile.name
