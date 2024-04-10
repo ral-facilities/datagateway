@@ -1,10 +1,11 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import axios, { AxiosError, AxiosHeaders } from 'axios';
-import { handleDOIAPIError, useCheckUser } from '.';
+import { handleDOIAPIError, useCheckUser, useUpdateDOI } from '.';
 import { createReactQueryWrapper } from '../setupTests';
 import { InvalidateTokenType } from '../state/actions/actions.types';
 import { setLogger } from 'react-query';
 import log from 'loglevel';
+import { ContributorType } from '../app.types';
 
 // silence react-query errors
 setLogger({
@@ -237,6 +238,102 @@ describe('doi api functions', () => {
 
       expect(log.error).toHaveBeenCalledWith(error);
       expect(axios.get).toHaveBeenCalledTimes(4);
+    });
+  });
+
+  describe('useUpdateDOI', () => {
+    const doiMetadata = {
+      title: 'Test title',
+      description: 'Test description',
+      creators: [{ username: '1', contributor_type: ContributorType.Minter }],
+      related_items: [],
+    };
+    const content = {
+      datafile_ids: [1],
+      dataset_ids: [2],
+      investigation_ids: [3],
+    };
+    it('should send a put request with payload indicating the updated data', async () => {
+      axios.put = jest.fn().mockResolvedValue({
+        data: {
+          concept: { data_publication: 'new', doi: 'pid' },
+          version: {
+            data_publication: 'new_version',
+            doi: 'new.version.pid',
+          },
+        },
+      });
+
+      const { result } = renderHook(() => useUpdateDOI(), {
+        wrapper: createReactQueryWrapper(),
+      });
+
+      await act(async () => {
+        await result.current.mutateAsync({
+          dataPublicationId: 'pid',
+          content,
+          doiMetadata,
+        });
+      });
+
+      expect(result.current.data).toEqual({
+        concept: { data_publication: 'new', doi: 'pid' },
+        version: {
+          data_publication: 'new_version',
+          doi: 'new.version.pid',
+        },
+      });
+      expect(axios.put).toHaveBeenCalledWith(
+        expect.stringContaining('/mint/version/update/pid'),
+        {
+          metadata: {
+            ...doiMetadata,
+            resource_type: 'Collection',
+          },
+          investigation_ids: [3],
+          dataset_ids: [2],
+          datafile_ids: [1],
+        },
+        { headers: { Authorization: 'Bearer null' } }
+      );
+    });
+
+    it('handles errors correctly', async () => {
+      const error = {
+        message: 'Test error message',
+        response: {
+          status: 500,
+        },
+      };
+      axios.put = jest.fn().mockRejectedValue(error);
+
+      const { result, waitFor } = renderHook(() => useUpdateDOI(), {
+        wrapper: createReactQueryWrapper(),
+      });
+
+      act(() => {
+        result.current.mutate({
+          dataPublicationId: 'pid',
+          content: { ...content, investigation_ids: [] },
+          doiMetadata,
+        });
+      });
+      await waitFor(() => expect(result.current.isError).toBe(true));
+
+      expect(log.error).toHaveBeenCalledWith(error);
+      expect(axios.put).toHaveBeenCalledWith(
+        expect.stringContaining('/mint/version/update/pid'),
+        {
+          metadata: {
+            ...doiMetadata,
+            resource_type: 'Dataset',
+          },
+          investigation_ids: [],
+          dataset_ids: [2],
+          datafile_ids: [1],
+        },
+        { headers: { Authorization: 'Bearer null' } }
+      );
     });
   });
 });

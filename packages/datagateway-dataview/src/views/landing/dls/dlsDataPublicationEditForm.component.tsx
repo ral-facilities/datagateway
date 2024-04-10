@@ -105,6 +105,8 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
           fullName: user.fullName,
           name: user.user?.name ?? user.fullName, // we're in trouble if user.user.name is undefined...
           contributor_type: user.contributorType as ContributorType,
+          email: user.email,
+          affiliation: user.affiliations?.[0]?.name,
         })) ?? []
       );
     }

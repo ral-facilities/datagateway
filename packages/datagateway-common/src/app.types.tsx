@@ -165,11 +165,19 @@ export interface DataCollection {
   dataPublications?: DataPublication[];
 }
 
+export interface Affiliation {
+  id: number;
+  name: string;
+  user?: DataPublicationUser;
+}
+
 export interface DataPublicationUser {
   id: number;
   contributorType: string;
   fullName: string;
   user?: User;
+  email?: string;
+  affiliations?: Affiliation[];
 }
 
 export interface DataPublicationType {
