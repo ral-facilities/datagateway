@@ -105,21 +105,6 @@ export const checkDatasetName = async (
   }
 };
 
-const parseUploadUrl = (url: string): string => {
-  const uuid = url.split('/').pop();
-  return (
-    uuid?.slice(0, 8) +
-    '-' +
-    uuid?.slice(8, 12) +
-    '-' +
-    uuid?.slice(12, 16) +
-    '-' +
-    uuid?.slice(16, 20) +
-    '-' +
-    uuid?.slice(20)
-  );
-};
-
 interface UploadDialogProps {
   entityType: 'investigation' | 'dataset' | 'datafile';
   entityId: number;
@@ -379,6 +364,12 @@ const UploadDialog: React.FC<UploadDialogProps> = (
 
                 // Upload the files
                 uppy.upload().then((result) => {
+                  // TODO: Do we want this?
+                  // Check if all files were uploaded successfully
+                  // if (result.failed.length > 0) {
+                  //   uppy.info('Some files failed to upload', 'error', 5000);
+                  //   return;
+                  // }
                   // Commit the upload
                   let params = {};
                   if (entityType === 'investigation') {
@@ -389,10 +380,9 @@ const UploadDialog: React.FC<UploadDialogProps> = (
                         investigationId: entityId,
                       },
                       datafiles: result.successful.map((file) => {
-                        const uuid = parseUploadUrl(file.uploadURL);
                         return {
                           name: file.name,
-                          id: uuid,
+                          url: file.uploadURL,
                           size: file.size,
                         };
                       }),
@@ -400,10 +390,9 @@ const UploadDialog: React.FC<UploadDialogProps> = (
                   } else {
                     params = {
                       datafiles: result.successful.map((file) => {
-                        const uuid = parseUploadUrl(file.uploadURL);
                         return {
                           name: file.name,
-                          id: uuid,
+                          url: file.uploadURL,
                           size: file.size,
                           datasetId: entityId,
                         };
