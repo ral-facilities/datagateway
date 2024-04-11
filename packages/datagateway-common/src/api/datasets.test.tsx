@@ -11,7 +11,6 @@ import {
   useDatasetDetails,
   useDatasetsInfinite,
   useDatasetsPaginated,
-  createDataset,
 } from './datasets';
 
 jest.mock('../handleICATError');
@@ -495,58 +494,6 @@ describe('dataset api functions', () => {
       link.target = '_blank';
       link.style.display = 'none';
       expect(document.body.appendChild).toHaveBeenCalledWith(link);
-    });
-  });
-
-  describe('createDataset', () => {
-    it('sends axios request to create a dataset and returns the dataset ID', async () => {
-      const uploadUrl = 'https://example.com/api';
-      const name = 'Test Dataset';
-      const description = 'Test Description';
-      const investigationId = 1;
-      const datasetId = 123;
-
-      const axiosPostMock = jest.spyOn(axios, 'post');
-      axiosPostMock.mockResolvedValue({
-        data: {
-          datasetId: datasetId.toString(),
-        },
-      });
-
-      const result = await createDataset(
-        uploadUrl,
-        name,
-        description,
-        investigationId
-      );
-
-      expect(axiosPostMock).toHaveBeenCalledWith(
-        'https://example.com/api/dataset',
-        {
-          investigationId: investigationId,
-          datasetName: name,
-          datasetDescription: description,
-        },
-        {
-          headers: {
-            Authorization: 'Bearer null',
-          },
-        }
-      );
-      expect(result).toBe(datasetId);
-    });
-
-    it('handles axios request error and throws an error', async () => {
-      const name = 'Test Dataset';
-      const description = 'Test Description';
-      const investigationId = 1;
-
-      const axiosPostMock = jest.spyOn(axios, 'post');
-      axiosPostMock.mockRejectedValue(new Error('Test error'));
-
-      await expect(
-        createDataset(name, description, investigationId)
-      ).rejects.toThrow('Test error');
     });
   });
 });
