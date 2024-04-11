@@ -33,10 +33,11 @@ const DialogContent = styled(MuiDialogContent)(({ theme }) => ({
   padding: theme.spacing(2),
 }));
 
-export const checkDatafileName = async (
+export const checkNameExists = async (
   apiUrl: string,
   name: string,
-  datasetId: number
+  entityType: 'datafile' | 'dataset',
+  entityId: number
 ): Promise<boolean> => {
   const params = new URLSearchParams();
   params.append(
@@ -48,49 +49,14 @@ export const checkDatafileName = async (
   params.append(
     'where',
     JSON.stringify({
-      'dataset.id': { eq: datasetId },
-    })
-  );
-
-  try {
-    await axios.get(`${apiUrl}/datafiles/findone`, {
-      params,
-      headers: {
-        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+      [`${entityType === 'datafile' ? 'dataset' : 'investigation'}.id`]: {
+        eq: entityId,
       },
-    });
-    return true;
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 404) {
-      return false;
-    }
-    throw error;
-  }
-};
-
-// TODO: this function is similar to the one above, consider refactoring
-export const checkDatasetName = async (
-  apiUrl: string,
-  name: string,
-  investigationId: number
-): Promise<boolean> => {
-  const params = new URLSearchParams();
-  params.append(
-    'where',
-    JSON.stringify({
-      name: { eq: name },
-    })
-  );
-
-  params.append(
-    'where',
-    JSON.stringify({
-      'investigation.id': { eq: investigationId },
     })
   );
 
   try {
-    await axios.get(`${apiUrl}/datasets/findone`, {
+    await axios.get(`${apiUrl}/${entityType}s/findone`, {
       params,
       headers: {
         Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
@@ -196,9 +162,10 @@ const UploadDialog: React.FC<UploadDialogProps> = (
       .on('file-added', async (file) => {
         setUploadDisabled(true);
         if (entityType !== 'investigation') {
-          const fileExists = await checkDatafileName(
+          const fileExists = await checkNameExists(
             apiUrl,
             file.name,
+            'datafile',
             entityId
           ).catch((error) => {
             uppy.info(error.message, 'error', 5000);
@@ -207,7 +174,7 @@ const UploadDialog: React.FC<UploadDialogProps> = (
 
           if (fileExists) {
             uppy.info(
-              `File ${file.name} already exists in this dataset`,
+              `File "${file.name}" already exists in this dataset`,
               'error',
               5000
             );
@@ -341,9 +308,10 @@ const UploadDialog: React.FC<UploadDialogProps> = (
               onClick={async () => {
                 // Check if the dataset name already exists in the investigation
                 if (entityType === 'investigation') {
-                  const datasetNameExists = await checkDatasetName(
+                  const datasetNameExists = await checkNameExists(
                     apiUrl,
                     uploadName,
+                    'dataset',
                     entityId
                   ).catch((error) => {
                     uppy.info(error.message, 'error', 5000);
@@ -351,7 +319,7 @@ const UploadDialog: React.FC<UploadDialogProps> = (
                   });
                   if (datasetNameExists) {
                     uppy.info(
-                      `Dataset ${uploadName} already exists in this investigation`,
+                      `Dataset "${uploadName}" already exists in this investigation`,
                       'error',
                       5000
                     );
