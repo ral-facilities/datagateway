@@ -180,11 +180,11 @@ const UploadDialog: React.FC<UploadDialogProps> = (
             );
             uppy.removeFile(file.id);
           }
-
-          // add last modified date to file meta
-          const lastModified = (file.data as File).lastModified;
-          file.meta['lastModified'] = lastModified;
         }
+
+        // add last modified date to file meta
+        const lastModified = (file.data as File).lastModified;
+        file.meta['lastModified'] = lastModified;
         setUploadDisabled(false);
       })
       .on('error', (error) => {
