@@ -12,6 +12,7 @@ import {
   useSort,
   usePushCurrentTab,
   useUpdateView,
+  refreshSession,
 } from './index';
 import {
   FiltersType,
@@ -1073,5 +1074,21 @@ describe('generic api functions', () => {
         Array(3).fill({ message: 'Test error' })
       );
     });
+  });
+
+  it('sends a PUT request to refresh the session', () => {
+    const apiUrl = 'https://example.com/api';
+
+    refreshSession(apiUrl);
+
+    expect(axios.put).toHaveBeenCalledWith(
+      `${apiUrl}/sessions`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer null`,
+        },
+      }
+    );
   });
 });

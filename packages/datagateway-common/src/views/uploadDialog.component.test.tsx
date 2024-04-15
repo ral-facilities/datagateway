@@ -84,35 +84,6 @@ describe('Upload dialog component', () => {
       expect(screen.getByLabelText('Uppy Dashboard')).toBeInTheDocument();
     });
 
-    // it('calls createDataset with correct parameters when upload button is clicked', async () => {
-    //   const createDatasetSpy = jest.fn();
-    //   (createDataset as jest.Mock).mockImplementation(createDatasetSpy);
-
-    //   createWrapper();
-    //   const uploadButton = screen.getByRole('button', {
-    //     name: 'upload',
-    //   });
-
-    //   await userEvent.type(
-    //     screen.getByRole('textbox', { name: 'upload.name' }),
-    //     'name'
-    //   );
-    //   await userEvent.type(
-    //     screen.getByRole('textbox', { name: 'upload.description' }),
-    //     'description'
-    //   );
-    //   await userEvent.click(uploadButton);
-
-    //   await waitFor(() =>
-    //     expect(createDatasetSpy).toHaveBeenCalledWith(
-    //       undefined,
-    //       'name',
-    //       'description',
-    //       expect.anything()
-    //     )
-    //   );
-    // });
-
     it('Closes dialog when cancel button is clicked', async () => {
       const closeFunction = jest.fn();
 
@@ -136,6 +107,44 @@ describe('Upload dialog component', () => {
       await userEvent.click(screen.getByRole('button', { name: 'cancel' }));
 
       expect(closeFunction).toHaveBeenCalled();
+    });
+
+    it('checks if dataset name exists in the investigation', async () => {
+      const apiUrl = 'https://example.com/api';
+      const name = 'test';
+      const investigationId = 1;
+
+      const params = new URLSearchParams();
+      params.append(
+        'where',
+        JSON.stringify({
+          name: { eq: name },
+        })
+      );
+      params.append(
+        'where',
+        JSON.stringify({
+          'investigation.id': { eq: investigationId },
+        })
+      );
+
+      const axiosGetSpy = jest.spyOn(axios, 'get');
+      axiosGetSpy.mockResolvedValueOnce({});
+
+      const result = await checkNameExists(
+        apiUrl,
+        name,
+        'dataset',
+        investigationId
+      );
+
+      expect(axios.get).toHaveBeenCalledWith(`${apiUrl}/datasets/findone`, {
+        params,
+        headers: {
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+        },
+      });
+      expect(result).toBe(true);
     });
   });
 
@@ -204,19 +213,6 @@ describe('Upload dialog component', () => {
       expect(screen.getByLabelText('Uppy Dashboard')).toBeInTheDocument();
     });
 
-    // it("doesn't call createDataset when upload button is clicked", async () => {
-    //   const createDatasetSpy = jest.fn();
-    //   (createDataset as jest.Mock).mockImplementation(createDatasetSpy);
-
-    //   createWrapper();
-    //   const uploadButton = screen.getByRole('button', {
-    //     name: 'upload',
-    //   });
-    //   await userEvent.click(uploadButton);
-
-    //   await waitFor(() => expect(createDatasetSpy).not.toHaveBeenCalled());
-    // });
-
     it('Closes dialog when cancel button is clicked', async () => {
       const closeFunction = jest.fn();
 
@@ -241,6 +237,7 @@ describe('Upload dialog component', () => {
 
       expect(closeFunction).toHaveBeenCalled();
     });
+
     it('Uppy dashboard does not allow upload of .xml files', async () => {
       const { getByLabelText, queryByText } = createWrapper();
 
@@ -284,108 +281,134 @@ describe('Upload dialog component', () => {
         ).not.toBeInTheDocument();
       });
     });
+
+    it('checks if datafile name exists in the queue', async () => {
+      const { getByLabelText, queryByText } = createWrapper();
+
+      const fileInput = getByLabelText('Uppy Dashboard').querySelector(
+        'input.uppy-Dashboard-input'
+      ) as HTMLInputElement;
+
+      // Create a fake .xml file
+      const file = new File(['Some content'], 'test.txt', {
+        type: 'text/plain',
+      });
+
+      // Trigger the file upload
+      fireEvent.change(fileInput, { target: { files: [file] } });
+
+      // try to upload the same file again
+      fireEvent.change(fileInput, { target: { files: [file] } });
+
+      await waitFor(() => {
+        expect(
+          queryByText('File named "test.txt" is already in the upload queue')
+        ).toBeInTheDocument();
+      });
+    });
+
+    it('checks if datafile name exists in the dataset', async () => {
+      const apiUrl = 'https://example.com/api';
+      const name = 'test.txt';
+      const datasetId = 1;
+
+      const params = new URLSearchParams();
+      params.append(
+        'where',
+        JSON.stringify({
+          name: { eq: name },
+        })
+      );
+      params.append(
+        'where',
+        JSON.stringify({
+          'dataset.id': { eq: datasetId },
+        })
+      );
+
+      const axiosGetSpy = jest.spyOn(axios, 'get');
+      axiosGetSpy.mockResolvedValueOnce({});
+
+      const result = await checkNameExists(apiUrl, name, 'datafile', datasetId);
+
+      expect(axios.get).toHaveBeenCalledWith(`${apiUrl}/datafiles/findone`, {
+        params,
+        headers: {
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+        },
+      });
+      expect(result).toBe(true);
+    });
+
+    it('returns false if datafile name does not exist in the dataset', async () => {
+      const apiUrl = 'https://example.com/api';
+      const name = 'test.txt';
+      const datasetId = 1;
+
+      const params = new URLSearchParams();
+      params.append(
+        'where',
+        JSON.stringify({
+          name: { eq: name },
+        })
+      );
+      params.append(
+        'where',
+        JSON.stringify({
+          'dataset.id': { eq: datasetId },
+        })
+      );
+
+      const axiosGetSpy = jest.spyOn(axios, 'get');
+      const mockError = {
+        isAxiosError: true,
+        response: { status: 404 },
+      };
+      axiosGetSpy.mockRejectedValueOnce(mockError);
+
+      const result = await checkNameExists(apiUrl, name, 'datafile', datasetId);
+
+      expect(axios.get).toHaveBeenCalledWith(`${apiUrl}/datafiles/findone`, {
+        params,
+        headers: {
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+        },
+      });
+      expect(result).toBe(false);
+    });
   });
-});
-it('checks if datafile name exists in the dataset', async () => {
-  const apiUrl = 'https://example.com/api';
-  const name = 'test.txt';
-  const datasetId = 1;
 
-  const params = new URLSearchParams();
-  params.append(
-    'where',
-    JSON.stringify({
-      name: { eq: name },
-    })
-  );
-  params.append(
-    'where',
-    JSON.stringify({
-      'dataset.id': { eq: datasetId },
-    })
-  );
+  it('throws an error if an unexpected error occurs', async () => {
+    const apiUrl = 'https://example.com/api';
+    const name = 'test.txt';
+    const datasetId = 1;
 
-  const axiosGetSpy = jest.spyOn(axios, 'get');
-  axiosGetSpy.mockResolvedValueOnce({});
+    const params = new URLSearchParams();
+    params.append(
+      'where',
+      JSON.stringify({
+        name: { eq: name },
+      })
+    );
+    params.append(
+      'where',
+      JSON.stringify({
+        'dataset.id': { eq: datasetId },
+      })
+    );
 
-  const result = await checkNameExists(apiUrl, name, 'datafile', datasetId);
+    const axiosGetSpy = jest.spyOn(axios, 'get');
+    axiosGetSpy.mockRejectedValueOnce(new Error('Unexpected error'));
 
-  expect(axios.get).toHaveBeenCalledWith(`${apiUrl}/datafiles/findone`, {
-    params,
-    headers: {
-      Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
-    },
-  });
-  expect(result).toBe(true);
-});
+    await expect(
+      checkNameExists(apiUrl, name, 'datafile', datasetId)
+    ).rejects.toThrowError('Unexpected error');
 
-it('returns false if datafile name does not exist in the dataset', async () => {
-  const apiUrl = 'https://example.com/api';
-  const name = 'test.txt';
-  const datasetId = 1;
-
-  const params = new URLSearchParams();
-  params.append(
-    'where',
-    JSON.stringify({
-      name: { eq: name },
-    })
-  );
-  params.append(
-    'where',
-    JSON.stringify({
-      'dataset.id': { eq: datasetId },
-    })
-  );
-
-  const axiosGetSpy = jest.spyOn(axios, 'get');
-  const mockError = {
-    isAxiosError: true,
-    response: { status: 404 },
-  };
-  axiosGetSpy.mockRejectedValueOnce(mockError);
-
-  const result = await checkNameExists(apiUrl, name, 'datafile', datasetId);
-
-  expect(axios.get).toHaveBeenCalledWith(`${apiUrl}/datafiles/findone`, {
-    params,
-    headers: {
-      Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
-    },
-  });
-  expect(result).toBe(false);
-});
-
-it('throws an error if an unexpected error occurs', async () => {
-  const apiUrl = 'https://example.com/api';
-  const name = 'test.txt';
-  const datasetId = 1;
-
-  const params = new URLSearchParams();
-  params.append(
-    'where',
-    JSON.stringify({
-      name: { eq: name },
-    })
-  );
-  params.append(
-    'where',
-    JSON.stringify({
-      'dataset.id': { eq: datasetId },
-    })
-  );
-
-  const axiosGetSpy = jest.spyOn(axios, 'get');
-  axiosGetSpy.mockRejectedValueOnce(new Error('Unexpected error'));
-
-  await expect(
-    checkNameExists(apiUrl, name, 'datafile', datasetId)
-  ).rejects.toThrowError('Unexpected error');
-
-  expect(axios.get).toHaveBeenCalledWith(`${apiUrl}/datafiles/findone`, {
-    params,
-    headers: {
-      Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
-    },
+    expect(axios.get).toHaveBeenCalledWith(`${apiUrl}/datafiles/findone`, {
+      params,
+      headers: {
+        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+      },
+    });
   });
 });
