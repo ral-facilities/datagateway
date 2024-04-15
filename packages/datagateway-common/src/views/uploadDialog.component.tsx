@@ -180,6 +180,10 @@ const UploadDialog: React.FC<UploadDialogProps> = (
             );
             uppy.removeFile(file.id);
           }
+
+          // add last modified date to file meta
+          const lastModified = (file.data as File).lastModified;
+          file.meta['lastModified'] = lastModified;
         }
         setUploadDisabled(false);
       })
@@ -352,6 +356,7 @@ const UploadDialog: React.FC<UploadDialogProps> = (
                           name: file.name,
                           url: file.uploadURL,
                           size: file.size,
+                          lastModified: file.meta['lastModified'],
                         };
                       }),
                     };
@@ -363,6 +368,7 @@ const UploadDialog: React.FC<UploadDialogProps> = (
                           url: file.uploadURL,
                           size: file.size,
                           datasetId: entityId,
+                          lastModified: file.meta['lastModified'],
                         };
                       }),
                     };
