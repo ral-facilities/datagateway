@@ -118,7 +118,9 @@ const UploadDialog: React.FC<UploadDialogProps> = (
         ].some((ext) => currentFile.name.endsWith(ext));
 
         const isDuplicate = uppy.getFiles().some((file) => {
-          return file.name === currentFile.name;
+          // have to use any here as isGhost is not in the Uppy file type (?)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          return file.name === currentFile.name && !(file as any).isGhost;
         });
 
         if (isDuplicate) {
