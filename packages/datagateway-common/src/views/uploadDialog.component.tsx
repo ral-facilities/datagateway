@@ -70,7 +70,6 @@ export const checkNameExists = async (
     throw error;
   }
 };
-
 interface UploadDialogProps {
   entityType: 'investigation' | 'dataset' | 'datafile';
   entityId: number;
@@ -89,6 +88,13 @@ const UploadDialog: React.FC<UploadDialogProps> = (
   );
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const [uploadDisabled, setUploadDisabled] = React.useState<boolean>(false);
+  const [textInputDisabled, setTextInputDisabled] =
+    React.useState<boolean>(false);
+
+  const datasetId = React.useRef<number | null>(null);
+
+  const [uploadName, setUploadName] = React.useState<string>('');
+  const [uploadDescription, setUploadDescription] = React.useState<string>('');
 
   const [uppy] = React.useState(() =>
     new Uppy({
@@ -192,6 +198,12 @@ const UploadDialog: React.FC<UploadDialogProps> = (
       .on('error', (error) => {
         uppy.info(error.message, 'error', 5000);
       })
+      // TODO: is this needed here?
+      .on('complete', (result) => {
+        if (result.failed.length === 0) {
+          datasetId.current = null;
+        }
+      })
       .use(Tus, {
         endpoint: `${uploadUrl}/upload/`,
         uploadDataDuringCreation: true,
@@ -201,9 +213,94 @@ const UploadDialog: React.FC<UploadDialogProps> = (
       })
   );
 
+  React.useEffect(() => {
+    // TODO: do we need the argument here?
+    const postProcessor = async (ids: string[]): Promise<void> => {
+      // check if the files have been uploaded
+      const files = uppy.getFiles();
+      const uploadedFiles = files.filter(
+        (file) => file?.response !== undefined
+      );
+      let params = {};
+      if (entityType === 'investigation' && datasetId.current === null) {
+        params = {
+          dataset: {
+            datasetName: uploadName,
+            datasetDescription: uploadDescription,
+            investigationId: entityId,
+          },
+          datafiles: uploadedFiles.map((file) => {
+            return {
+              name: file.name,
+              url: file.response?.uploadURL,
+              size: file.size,
+              lastModified: file.meta['lastModified'],
+            };
+          }),
+        };
+      } else {
+        params = {
+          datafiles: uploadedFiles.map((file) => {
+            return {
+              name: file.name,
+              url: file.response?.uploadURL,
+              size: file.size,
+              datasetId: datasetId.current ? datasetId.current : entityId,
+              lastModified: file.meta['lastModified'],
+            };
+          }),
+        };
+      }
+      axios
+        .post(`${uploadUrl}/commit`, params, {
+          headers: {
+            authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+          },
+        })
+        .then((response) => {
+          // TODO: need a better way to get the dataset id
+          datasetId.current = response.data[0].split(' ').pop();
+          if (entityType === 'datafile') {
+            queryClient.invalidateQueries(['datafile']);
+          } else {
+            queryClient.invalidateQueries(['dataset']);
+          }
+        });
+
+      return Promise.resolve();
+    };
+
+    uppy.addPostProcessor(postProcessor);
+
+    return () => {
+      uppy.removePostProcessor(postProcessor);
+    };
+  }, [
+    entityId,
+    entityType,
+    queryClient,
+    uploadDescription,
+    uploadName,
+    uploadUrl,
+    uppy,
+  ]);
+
   // TODO: investigate why this causes tests to fail
   // Temporary fix (?): only use GoldenRetriever if indexedDB is available
   React.useEffect(() => {
+    const preProcessor = async (ids: string[]): Promise<void> => {
+      const files = uppy.getFiles();
+
+      files
+        .filter((file) => file?.response !== undefined)
+        .forEach((file) => {
+          uppy.removeFile(file.id);
+        });
+
+      return Promise.resolve();
+    };
+
+    uppy.addPreProcessor(preProcessor);
     if (window.indexedDB) {
       uppy.use(GoldenRetriever);
     }
@@ -212,15 +309,14 @@ const UploadDialog: React.FC<UploadDialogProps> = (
   const [t] = useTranslation();
   const theme = useTheme();
 
-  const [uploadName, setUploadName] = React.useState<string>('');
-  const [uploadDescription, setUploadDescription] = React.useState<string>('');
-
   const dialogClose = (_event?: unknown, reason?: string): void => {
     if (reason !== 'backdropClick') {
       uppy.cancelAll({ reason: 'user' });
       setUploadName('');
       setUploadDescription('');
       setClose();
+      datasetId.current = null;
+      setTextInputDisabled(false);
     }
   };
 
@@ -256,6 +352,7 @@ const UploadDialog: React.FC<UploadDialogProps> = (
                   onChange={(e) => {
                     setUploadName(e.target.value as string);
                   }}
+                  disabled={textInputDisabled}
                   required
                 />
 
@@ -271,6 +368,7 @@ const UploadDialog: React.FC<UploadDialogProps> = (
                   }}
                   multiline
                   rows={16}
+                  disabled={textInputDisabled}
                 />
               </Box>
             </Grid>
@@ -287,6 +385,9 @@ const UploadDialog: React.FC<UploadDialogProps> = (
               height="30em"
               width="100%"
               theme={theme.palette.mode}
+              doneButtonHandler={() => {
+                dialogClose();
+              }}
             />
           </Grid>
         </Grid>
@@ -336,62 +437,17 @@ const UploadDialog: React.FC<UploadDialogProps> = (
                   }
                 }
 
-                // Upload the files
-                uppy.upload().then((result) => {
-                  // TODO: Do we want this?
-                  // Check if all files were uploaded successfully
-                  // if (result.failed.length > 0) {
-                  //   uppy.info('Some files failed to upload', 'error', 5000);
-                  //   return;
-                  // }
-                  // Commit the upload
-                  let params = {};
-                  if (entityType === 'investigation') {
-                    params = {
-                      dataset: {
-                        datasetName: uploadName,
-                        datasetDescription: uploadDescription,
-                        investigationId: entityId,
-                      },
-                      datafiles: result.successful.map((file) => {
-                        return {
-                          name: file.name,
-                          url: file.uploadURL,
-                          size: file.size,
-                          lastModified: file.meta['lastModified'],
-                        };
-                      }),
-                    };
-                  } else {
-                    params = {
-                      datafiles: result.successful.map((file) => {
-                        return {
-                          name: file.name,
-                          url: file.uploadURL,
-                          size: file.size,
-                          datasetId: entityId,
-                          lastModified: file.meta['lastModified'],
-                        };
-                      }),
-                    };
-                  }
-                  axios
-                    .post(`${uploadUrl}/commit`, params, {
-                      headers: {
-                        authorization: `Bearer ${
-                          readSciGatewayToken().sessionId
-                        }`,
-                      },
-                    })
-                    .catch((error) => {
-                      uppy.info(error.message, 'error', 5000);
-                    });
+                setTextInputDisabled(true);
 
-                  if (entityType === 'datafile') {
-                    queryClient.invalidateQueries(['datafile']);
-                  } else {
-                    queryClient.invalidateQueries(['dataset']);
-                  }
+                // Upload queued files
+                uppy.upload().then((result) => {
+                  // TODO: for debugging / remove later
+                  // The file named "fail" will fail to upload but will be uploaded successfully on retry
+                  result.failed.forEach((file) => {
+                    if (file.meta.name.startsWith('fail')) {
+                      file.meta.name = `not${file.meta.name}`;
+                    }
+                  });
                 });
               }}
               variant="contained"
