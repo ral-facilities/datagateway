@@ -221,51 +221,53 @@ const UploadDialog: React.FC<UploadDialogProps> = (
       const uploadedFiles = files.filter(
         (file) => file?.response !== undefined
       );
-      let params = {};
-      if (entityType === 'investigation' && datasetId.current === null) {
-        params = {
-          dataset: {
-            datasetName: uploadName,
-            datasetDescription: uploadDescription,
-            investigationId: entityId,
-          },
-          datafiles: uploadedFiles.map((file) => {
-            return {
-              name: file.name,
-              url: file.response?.uploadURL,
-              size: file.size,
-              lastModified: file.meta['lastModified'],
-            };
-          }),
-        };
-      } else {
-        params = {
-          datafiles: uploadedFiles.map((file) => {
-            return {
-              name: file.name,
-              url: file.response?.uploadURL,
-              size: file.size,
-              datasetId: datasetId.current ? datasetId.current : entityId,
-              lastModified: file.meta['lastModified'],
-            };
-          }),
-        };
+      if (uploadedFiles.length > 0) {
+        let params = {};
+        if (entityType === 'investigation' && datasetId.current === null) {
+          params = {
+            dataset: {
+              datasetName: uploadName,
+              datasetDescription: uploadDescription,
+              investigationId: entityId,
+            },
+            datafiles: uploadedFiles.map((file) => {
+              return {
+                name: file.name,
+                url: file.response?.uploadURL,
+                size: file.size,
+                lastModified: file.meta['lastModified'],
+              };
+            }),
+          };
+        } else {
+          params = {
+            datafiles: uploadedFiles.map((file) => {
+              return {
+                name: file.name,
+                url: file.response?.uploadURL,
+                size: file.size,
+                datasetId: datasetId.current ? datasetId.current : entityId,
+                lastModified: file.meta['lastModified'],
+              };
+            }),
+          };
+        }
+        return axios
+          .post(`${uploadUrl}/commit`, params, {
+            headers: {
+              authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+            },
+          })
+          .then((response) => {
+            // TODO: need a better way to get the dataset id
+            datasetId.current = response.data[0].split(' ').pop();
+            if (entityType === 'datafile') {
+              queryClient.invalidateQueries(['datafile']);
+            } else {
+              queryClient.invalidateQueries(['dataset']);
+            }
+          });
       }
-      axios
-        .post(`${uploadUrl}/commit`, params, {
-          headers: {
-            authorization: `Bearer ${readSciGatewayToken().sessionId}`,
-          },
-        })
-        .then((response) => {
-          // TODO: need a better way to get the dataset id
-          datasetId.current = response.data[0].split(' ').pop();
-          if (entityType === 'datafile') {
-            queryClient.invalidateQueries(['datafile']);
-          } else {
-            queryClient.invalidateQueries(['dataset']);
-          }
-        });
 
       return Promise.resolve();
     };
