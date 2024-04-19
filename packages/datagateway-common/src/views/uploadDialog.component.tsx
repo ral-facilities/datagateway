@@ -198,12 +198,12 @@ const UploadDialog: React.FC<UploadDialogProps> = (
       .on('error', (error) => {
         uppy.info(error.message, 'error', 5000);
       })
-      // TODO: is this needed here?
-      .on('complete', (result) => {
-        if (result.failed.length === 0) {
-          datasetId.current = null;
-        }
-      })
+      // // TODO: is this needed here?
+      // .on('complete', (result) => {
+      //   if (result.failed.length === 0) {
+      //     datasetId.current = null;
+      //   }
+      // })
       .use(Tus, {
         endpoint: `${uploadUrl}/upload/`,
         uploadDataDuringCreation: true,
@@ -317,6 +317,7 @@ const UploadDialog: React.FC<UploadDialogProps> = (
       setClose();
       datasetId.current = null;
       setTextInputDisabled(false);
+      setUploadDisabled(false);
     }
   };
 
@@ -388,6 +389,8 @@ const UploadDialog: React.FC<UploadDialogProps> = (
               doneButtonHandler={() => {
                 dialogClose();
               }}
+              // TODO: investigate
+              disableLocalFiles={uploadDisabled}
             />
           </Grid>
         </Grid>
@@ -414,7 +417,10 @@ const UploadDialog: React.FC<UploadDialogProps> = (
             <Button
               onClick={async () => {
                 // Check if the dataset name already exists in the investigation
-                if (entityType === 'investigation') {
+                if (
+                  entityType === 'investigation' &&
+                  datasetId.current === null
+                ) {
                   const datasetNameExists = await checkNameExists(
                     apiUrl,
                     uploadName,
@@ -438,6 +444,7 @@ const UploadDialog: React.FC<UploadDialogProps> = (
                 }
 
                 setTextInputDisabled(true);
+                setUploadDisabled(true);
 
                 // Upload queued files
                 uppy.upload().then((result) => {
