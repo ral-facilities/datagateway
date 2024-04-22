@@ -107,6 +107,7 @@ const UploadDialog: React.FC<UploadDialogProps> = (
       restrictions: {
         maxTotalFileSize: 5368709120,
       },
+      allowMultipleUploadBatches: false,
       onBeforeFileAdded: (currentFile) => {
         const isCorrectExtension = [
           '.xml',
@@ -391,8 +392,6 @@ const UploadDialog: React.FC<UploadDialogProps> = (
               doneButtonHandler={() => {
                 dialogClose();
               }}
-              // TODO: investigate
-              disableLocalFiles={uploadDisabled}
             />
           </Grid>
         </Grid>
