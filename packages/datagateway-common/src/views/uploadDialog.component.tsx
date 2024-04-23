@@ -260,8 +260,7 @@ const UploadDialog: React.FC<UploadDialogProps> = (
             },
           })
           .then((response) => {
-            // TODO: need a better way to get the dataset id
-            datasetId.current = response.data[0].split(' ').pop();
+            datasetId.current = response.data.datasetId ?? null;
             if (entityType === 'datafile') {
               queryClient.invalidateQueries(['datafile']);
             } else {
