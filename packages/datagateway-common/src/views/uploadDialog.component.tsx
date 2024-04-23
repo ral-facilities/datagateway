@@ -13,7 +13,7 @@ import {
   useTheme,
 } from '@mui/material';
 
-import Uppy from '@uppy/core';
+import Uppy, { UppyFile } from '@uppy/core';
 import { Dashboard } from '@uppy/react';
 import Tus from '@uppy/tus';
 import GoldenRetriever from '@uppy/golden-retriever';
@@ -70,6 +70,61 @@ export const checkNameExists = async (
     throw error;
   }
 };
+
+export const beforeFileAdded = (uppy: Uppy, currentFile: UppyFile): boolean => {
+  const isCorrectExtension = [
+    '.xml',
+    '.exe',
+    '.dll',
+    '.bat',
+    '.sh',
+    '.sqlite',
+    '.js',
+    '.vbs',
+    '.PHP',
+    '.wmv',
+    '.mp3',
+    '.flv',
+  ].some((ext) => currentFile.name.endsWith(ext));
+
+  const isDuplicate = uppy.getFiles().some((file) => {
+    // have to use any here as isGhost is not in the Uppy file type (?)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return file.name === currentFile.name && !(file as any).isGhost;
+  });
+
+  if (isDuplicate) {
+    uppy.info(
+      `File named "${currentFile.name}" is already in the upload queue`,
+      'error',
+      5000
+    );
+    return false;
+  }
+
+  if (isCorrectExtension) {
+    uppy.info(
+      `.${currentFile.name
+        .split('.')
+        .pop()
+        ?.toLowerCase()} files are not allowed`,
+      'error',
+      5000
+    );
+    return false;
+  } else {
+    // TODO: is there another way to do this?
+    // Workaround for Uppy bug where it doubles the size of restored files
+    uppy.getFiles().forEach((file) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if (file.id === currentFile.id && (file as any).isGhost) {
+        file.size = 0;
+      }
+    });
+    return true;
+  }
+};
+
 interface UploadDialogProps {
   entityType: 'investigation' | 'dataset' | 'datafile';
   entityId: number;
@@ -107,59 +162,11 @@ const UploadDialog: React.FC<UploadDialogProps> = (
       restrictions: {
         maxTotalFileSize: 5368709120,
       },
+      // TODO: ask Alex/users about ux of this
       allowMultipleUploadBatches: false,
       onBeforeFileAdded: (currentFile) => {
-        const isCorrectExtension = [
-          '.xml',
-          '.exe',
-          '.dll',
-          '.bat',
-          '.sh',
-          '.sqlite',
-          '.js',
-          '.vbs',
-          '.PHP',
-          '.wmv',
-          '.mp3',
-          '.flv',
-        ].some((ext) => currentFile.name.endsWith(ext));
-
-        const isDuplicate = uppy.getFiles().some((file) => {
-          // have to use any here as isGhost is not in the Uppy file type (?)
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          return file.name === currentFile.name && !(file as any).isGhost;
-        });
-
-        if (isDuplicate) {
-          uppy.info(
-            `File named "${currentFile.name}" is already in the upload queue`,
-            'error',
-            5000
-          );
-          return false;
-        }
-
-        if (isCorrectExtension) {
-          uppy.info(
-            `.${currentFile.name
-              .split('.')
-              .pop()
-              ?.toLowerCase()} files are not allowed`,
-            'error',
-            5000
-          );
-          return false;
-        } else {
-          // TODO: is there another way to do this?
-          // Workaround for Uppy bug where it doubles the size of restored files
-          uppy.getFiles().forEach((file) => {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            if (file.id === currentFile.id && (file as any).isGhost) {
-              file.size = 0;
-            }
-          });
-          return true;
-        }
+        const addFile = beforeFileAdded(uppy, currentFile);
+        return addFile;
       },
       onBeforeUpload: (files) => {
         // Refresh the session before uploading so that the session doesn't expire
@@ -215,8 +222,7 @@ const UploadDialog: React.FC<UploadDialogProps> = (
   );
 
   React.useEffect(() => {
-    // TODO: do we need the argument here?
-    const postProcessor = async (ids: string[]): Promise<void> => {
+    const postProcessor = async (): Promise<void> => {
       // check if the files have been uploaded
       const files = uppy.getFiles();
       const uploadedFiles = files.filter(
