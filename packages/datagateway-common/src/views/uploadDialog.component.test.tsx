@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 import UploadDialog, {
   checkNameExists,
   beforeFileAdded,
+  postProcessor,
 } from './uploadDialog.component';
 import { Provider } from 'react-redux';
 import { combineReducers, createStore } from 'redux';
@@ -488,5 +489,156 @@ describe('Upload dialog component', () => {
     expect(result).toBe(true);
     expect(uppy.info).not.toHaveBeenCalled();
     expect(file2.size).toBe(0);
+  });
+
+  it('should post processes dataset upload', async () => {
+    const file = createUppyFile('test.txt');
+    file.meta = { lastModified: 123456, name: 'test.txt' };
+    file.response = {
+      body: { id: 1 },
+      status: 200,
+      uploadURL: 'example.com/upload/123',
+    };
+
+    // simulate the failed file
+    const file2 = createUppyFile('test2.txt');
+    file2.meta = { lastModified: 123456, name: 'test2.txt' };
+    file2.response = undefined;
+
+    const uppy = createUppyInstance();
+    uppy.getFiles = jest.fn().mockReturnValue([file, file2]);
+
+    const refObject = { current: null };
+
+    axios.post = jest
+      .fn()
+      .mockResolvedValueOnce({ status: 200, data: { datasetId: 123 } });
+
+    const queryClient = new QueryClient();
+    queryClient.invalidateQueries = jest.fn();
+
+    await postProcessor(
+      uppy,
+      refObject,
+      'investigation',
+      'testName',
+      'testDescription',
+      1,
+      'example.com',
+      queryClient
+    );
+
+    // should only commit the successful file
+    expect(axios.post).toHaveBeenCalledWith(
+      'example.com/commit',
+      {
+        datafiles: [
+          {
+            name: 'test.txt',
+            size: 100,
+            lastModified: 123456,
+            url: 'example.com/upload/123',
+          },
+        ],
+        dataset: {
+          datasetDescription: 'testDescription',
+          datasetName: 'testName',
+          investigationId: 1,
+        },
+      },
+      { headers: { authorization: 'Bearer null' } }
+    );
+    expect(queryClient.invalidateQueries).toHaveBeenCalledWith(['dataset']);
+    expect(refObject.current).toBe(123);
+  });
+
+  it('should post processes datafile upload', async () => {
+    const file = createUppyFile('test.txt');
+    file.meta = { lastModified: 123456, name: 'test.txt' };
+    file.response = {
+      body: { id: 1 },
+      status: 200,
+      uploadURL: 'example.com/upload/123',
+    };
+
+    // simulate the failed file
+    const file2 = createUppyFile('test2.txt');
+    file2.meta = { lastModified: 123456, name: 'test2.txt' };
+    file2.response = undefined;
+
+    const uppy = createUppyInstance();
+    uppy.getFiles = jest.fn().mockReturnValue([file, file2]);
+
+    const refObject = { current: 123 };
+
+    axios.post = jest
+      .fn()
+      .mockResolvedValueOnce({ status: 200, data: { datasetId: 123 } });
+
+    const queryClient = new QueryClient();
+    queryClient.invalidateQueries = jest.fn();
+
+    await postProcessor(
+      uppy,
+      refObject,
+      'datafile',
+      'testName',
+      'testDescription',
+      123,
+      'example.com',
+      queryClient
+    );
+
+    // should only commit the successful file
+    expect(axios.post).toHaveBeenCalledWith(
+      'example.com/commit',
+      {
+        datafiles: [
+          {
+            datasetId: 123,
+            name: 'test.txt',
+            size: 100,
+            lastModified: 123456,
+            url: 'example.com/upload/123',
+          },
+        ],
+      },
+      { headers: { authorization: 'Bearer null' } }
+    );
+    expect(queryClient.invalidateQueries).toHaveBeenCalledWith(['datafile']);
+    expect(refObject.current).toBe(123);
+  });
+
+  it('should not commit if no files are successful', async () => {
+    const file = createUppyFile('test.txt');
+    file.meta = { lastModified: 123456, name: 'test.txt' };
+    file.response = undefined;
+
+    const uppy = createUppyInstance();
+    uppy.getFiles = jest.fn().mockReturnValue([file]);
+
+    const refObject = { current: null };
+
+    axios.post = jest
+      .fn()
+      .mockResolvedValueOnce({ status: 200, data: { datasetId: 123 } });
+
+    const queryClient = new QueryClient();
+    queryClient.invalidateQueries = jest.fn();
+
+    await postProcessor(
+      uppy,
+      refObject,
+      'investigation',
+      'testName',
+      'testDescription',
+      1,
+      'example.com',
+      queryClient
+    );
+
+    expect(axios.post).not.toHaveBeenCalled();
+    expect(queryClient.invalidateQueries).not.toHaveBeenCalled();
+    expect(refObject.current).toBe(null);
   });
 });

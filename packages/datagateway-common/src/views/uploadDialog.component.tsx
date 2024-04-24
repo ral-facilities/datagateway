@@ -125,6 +125,69 @@ export const beforeFileAdded = (uppy: Uppy, currentFile: UppyFile): boolean => {
   }
 };
 
+export const postProcessor = async (
+  uppy: Uppy,
+  datasetId: React.MutableRefObject<number | null>,
+  entityType: 'investigation' | 'dataset' | 'datafile',
+  uploadName: string,
+  uploadDescription: string,
+  entityId: number,
+  uploadUrl: string | undefined,
+  queryClient: ReturnType<typeof useQueryClient>
+): Promise<void> => {
+  // check if the files have been uploaded
+  const files = uppy.getFiles();
+  const uploadedFiles = files.filter((file) => file?.response !== undefined);
+  if (uploadedFiles.length > 0) {
+    let params = {};
+    if (entityType === 'investigation' && datasetId.current === null) {
+      params = {
+        dataset: {
+          datasetName: uploadName,
+          datasetDescription: uploadDescription,
+          investigationId: entityId,
+        },
+        datafiles: uploadedFiles.map((file) => {
+          return {
+            name: file.name,
+            url: file.response?.uploadURL,
+            size: file.size,
+            lastModified: file.meta['lastModified'],
+          };
+        }),
+      };
+    } else {
+      params = {
+        datafiles: uploadedFiles.map((file) => {
+          return {
+            name: file.name,
+            url: file.response?.uploadURL,
+            size: file.size,
+            datasetId: datasetId.current ? datasetId.current : entityId,
+            lastModified: file.meta['lastModified'],
+          };
+        }),
+      };
+    }
+    return axios
+      .post(`${uploadUrl}/commit`, params, {
+        headers: {
+          authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+        },
+      })
+      .then((response) => {
+        datasetId.current = response.data.datasetId ?? null;
+        if (entityType === 'datafile') {
+          queryClient.invalidateQueries(['datafile']);
+        } else {
+          queryClient.invalidateQueries(['dataset']);
+        }
+      });
+  }
+
+  return Promise.resolve();
+};
+
 interface UploadDialogProps {
   entityType: 'investigation' | 'dataset' | 'datafile';
   entityId: number;
@@ -222,66 +285,21 @@ const UploadDialog: React.FC<UploadDialogProps> = (
   );
 
   React.useEffect(() => {
-    const postProcessor = async (): Promise<void> => {
-      // check if the files have been uploaded
-      const files = uppy.getFiles();
-      const uploadedFiles = files.filter(
-        (file) => file?.response !== undefined
+    const postProcessorWrapper = (): Promise<void> =>
+      postProcessor(
+        uppy,
+        datasetId,
+        entityType,
+        uploadName,
+        uploadDescription,
+        entityId,
+        uploadUrl,
+        queryClient
       );
-      if (uploadedFiles.length > 0) {
-        let params = {};
-        if (entityType === 'investigation' && datasetId.current === null) {
-          params = {
-            dataset: {
-              datasetName: uploadName,
-              datasetDescription: uploadDescription,
-              investigationId: entityId,
-            },
-            datafiles: uploadedFiles.map((file) => {
-              return {
-                name: file.name,
-                url: file.response?.uploadURL,
-                size: file.size,
-                lastModified: file.meta['lastModified'],
-              };
-            }),
-          };
-        } else {
-          params = {
-            datafiles: uploadedFiles.map((file) => {
-              return {
-                name: file.name,
-                url: file.response?.uploadURL,
-                size: file.size,
-                datasetId: datasetId.current ? datasetId.current : entityId,
-                lastModified: file.meta['lastModified'],
-              };
-            }),
-          };
-        }
-        return axios
-          .post(`${uploadUrl}/commit`, params, {
-            headers: {
-              authorization: `Bearer ${readSciGatewayToken().sessionId}`,
-            },
-          })
-          .then((response) => {
-            datasetId.current = response.data.datasetId ?? null;
-            if (entityType === 'datafile') {
-              queryClient.invalidateQueries(['datafile']);
-            } else {
-              queryClient.invalidateQueries(['dataset']);
-            }
-          });
-      }
-
-      return Promise.resolve();
-    };
-
-    uppy.addPostProcessor(postProcessor);
+    uppy.addPostProcessor(postProcessorWrapper);
 
     return () => {
-      uppy.removePostProcessor(postProcessor);
+      uppy.removePostProcessor(postProcessorWrapper);
     };
   }, [
     entityId,
@@ -296,7 +314,7 @@ const UploadDialog: React.FC<UploadDialogProps> = (
   // TODO: investigate why this causes tests to fail
   // Temporary fix (?): only use GoldenRetriever if indexedDB is available
   React.useEffect(() => {
-    const preProcessor = async (ids: string[]): Promise<void> => {
+    const preProcessor = async (): Promise<void> => {
       const files = uppy.getFiles();
 
       files
@@ -456,11 +474,15 @@ const UploadDialog: React.FC<UploadDialogProps> = (
                 uppy.upload().then((result) => {
                   // TODO: for debugging / remove later
                   // The file named "fail" will fail to upload but will be uploaded successfully on retry
-                  result.failed.forEach((file) => {
-                    if (file.meta.name.startsWith('fail')) {
-                      file.meta.name = `not${file.meta.name}`;
-                    }
-                  });
+                  if (
+                    process.env.NODE_ENV === `development` ||
+                    process.env.REACT_APP_E2E_TESTING
+                  )
+                    result.failed.forEach((file) => {
+                      if (file.meta.name.startsWith('fail')) {
+                        file.meta.name = `not${file.meta.name}`;
+                      }
+                    });
                 });
               }}
               variant="contained"
