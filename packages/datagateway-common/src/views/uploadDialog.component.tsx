@@ -205,7 +205,7 @@ const UploadDialog: React.FC<UploadDialogProps> = (
     (state: StateType) => state.dgcommon.urls.uploadUrl
   );
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
-  const [uploadDisabled, setUploadDisabled] = React.useState<boolean>(false);
+  const [uploadDisabled, setUploadDisabled] = React.useState<boolean>(true);
   const [textInputDisabled, setTextInputDisabled] =
     React.useState<boolean>(false);
 
@@ -228,6 +228,7 @@ const UploadDialog: React.FC<UploadDialogProps> = (
       // TODO: ask Alex/users about ux of this
       allowMultipleUploadBatches: false,
       onBeforeFileAdded: (currentFile) => {
+        // TODO: why can't we return the result of beforeFileAdded directly?
         const addFile = beforeFileAdded(uppy, currentFile);
         return addFile;
       },
@@ -265,6 +266,11 @@ const UploadDialog: React.FC<UploadDialogProps> = (
         const lastModified = (file.data as File).lastModified;
         file.meta['lastModified'] = lastModified;
         setUploadDisabled(false);
+      })
+      .on('file-removed', () => {
+        if (uppy.getFiles().length === 0) {
+          setUploadDisabled(true);
+        }
       })
       .on('error', (error) => {
         uppy.info(error.message, 'error', 5000);
