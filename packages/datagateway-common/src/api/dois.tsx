@@ -15,6 +15,7 @@ import {
   RelatedDOI,
   DoiMetadata,
   DoiResponse,
+  DownloadCartItem,
 } from '../app.types';
 import { readSciGatewayToken } from '../parseTokens';
 
@@ -227,6 +228,83 @@ export const useUpdateDOI = (): UseMutationResult<
     },
     {
       onError: handleDOIAPIError,
+    }
+  );
+};
+
+/**
+ * Returns true if a user is able to mint a DOI for their cart, otherwise false
+ */
+export const isCartMintable = async (
+  cart: DownloadCartItem[],
+  doiMinterUrl: string
+): Promise<boolean> => {
+  const investigations: number[] = [];
+  const datasets: number[] = [];
+  const datafiles: number[] = [];
+  cart.forEach((cartItem) => {
+    if (cartItem.entityType === 'investigation')
+      investigations.push(cartItem.entityId);
+    if (cartItem.entityType === 'dataset') datasets.push(cartItem.entityId);
+    if (cartItem.entityType === 'datafile') datafiles.push(cartItem.entityId);
+  });
+  const { status } = await axios.post(
+    `${doiMinterUrl}/ismintable`,
+    {
+      ...(investigations.length > 0
+        ? { investigation_ids: investigations }
+        : {}),
+      ...(datasets.length > 0 ? { dataset_ids: datasets } : {}),
+      ...(datafiles.length > 0 ? { datafile_ids: datafiles } : {}),
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+      },
+    }
+  );
+
+  return status === 200;
+};
+
+/**
+ * Queries whether a cart is mintable.
+ * @param cart The {@link Cart} that is checked
+ */
+export const useIsCartMintable = (
+  cart: DownloadCartItem[] | undefined,
+  doiMinterUrl: string | undefined
+): UseQueryResult<
+  boolean,
+  AxiosError<{ detail: { msg: string }[] } | { detail: string }>
+> => {
+  return useQuery(
+    ['ismintable', cart],
+    () => {
+      if (doiMinterUrl && cart && cart.length > 0)
+        return isCartMintable(cart, doiMinterUrl);
+      else return Promise.resolve(false);
+    },
+    {
+      onError: (error) => {
+        handleDOIAPIError(
+          error,
+          undefined,
+          undefined,
+          error.response?.status !== 403
+        );
+      },
+      retry: (failureCount, error) => {
+        // if we get 403 we know this is an legit response from the backend so don't bother retrying
+        // all other errors use default retry behaviour
+        if (error.response?.status === 403 || failureCount >= 3) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      refetchOnWindowFocus: false,
+      enabled: typeof doiMinterUrl !== 'undefined',
     }
   );
 };

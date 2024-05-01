@@ -340,41 +340,6 @@ export const getPercentageComplete = async ({
 };
 
 /**
- * Returns true if a user is able to mint a DOI for their cart, otherwise false
- */
-export const isCartMintable = async (
-  cart: DownloadCartItem[],
-  doiMinterUrl: string
-): Promise<boolean> => {
-  const investigations: number[] = [];
-  const datasets: number[] = [];
-  const datafiles: number[] = [];
-  cart.forEach((cartItem) => {
-    if (cartItem.entityType === 'investigation')
-      investigations.push(cartItem.entityId);
-    if (cartItem.entityType === 'dataset') datasets.push(cartItem.entityId);
-    if (cartItem.entityType === 'datafile') datafiles.push(cartItem.entityId);
-  });
-  const { status } = await axios.post(
-    `${doiMinterUrl}/ismintable`,
-    {
-      ...(investigations.length > 0
-        ? { investigation_ids: investigations }
-        : {}),
-      ...(datasets.length > 0 ? { dataset_ids: datasets } : {}),
-      ...(datafiles.length > 0 ? { datafile_ids: datafiles } : {}),
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
-      },
-    }
-  );
-
-  return status === 200;
-};
-
-/**
  * Mint a DOI for a cart, returns a DataPublication ID & DOI
  */
 export const mintCart = (

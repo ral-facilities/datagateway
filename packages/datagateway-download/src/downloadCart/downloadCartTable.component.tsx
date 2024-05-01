@@ -22,6 +22,7 @@ import {
   type TableActionProps,
   TextColumnFilter,
   type TextFilter,
+  useIsCartMintable,
 } from 'datagateway-common';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -29,7 +30,6 @@ import { Link as RouterLink } from 'react-router-dom';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import {
   useCart,
-  useIsCartMintable,
   useIsTwoLevel,
   useRemoveAllFromCart,
   useRemoveEntityFromCart,
@@ -76,7 +76,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     data: mintable,
     isLoading: cartMintabilityLoading,
     error: mintableError,
-  } = useIsCartMintable(cartItems);
+  } = useIsCartMintable(cartItems, doiMinterUrl);
 
   const fileSizesAndCounts = useFileSizesAndCounts(cartItems);
 

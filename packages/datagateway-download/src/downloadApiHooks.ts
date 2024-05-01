@@ -748,50 +748,6 @@ export const useDownloadPercentageComplete = <T = DownloadProgress>({
 };
 
 /**
- * Queries whether a cart is mintable.
- * @param cart The {@link Cart} that is checked
- */
-export const useIsCartMintable = (
-  cart: DownloadCartItem[] | undefined
-): UseQueryResult<
-  boolean,
-  AxiosError<{ detail: { msg: string }[] } | { detail: string }>
-> => {
-  const settings = React.useContext(DownloadSettingsContext);
-  const { doiMinterUrl } = settings;
-
-  return useQuery(
-    ['ismintable', cart],
-    () => {
-      if (doiMinterUrl && cart && cart.length > 0)
-        return isCartMintable(cart, doiMinterUrl);
-      else return Promise.resolve(false);
-    },
-    {
-      onError: (error) => {
-        handleDOIAPIError(
-          error,
-          undefined,
-          undefined,
-          error.response?.status !== 403
-        );
-      },
-      retry: (failureCount, error) => {
-        // if we get 403 we know this is an legit response from the backend so don't bother retrying
-        // all other errors use default retry behaviour
-        if (error.response?.status === 403 || failureCount >= 3) {
-          return false;
-        } else {
-          return true;
-        }
-      },
-      refetchOnWindowFocus: false,
-      enabled: typeof doiMinterUrl !== 'undefined',
-    }
-  );
-};
-
-/**
  * Mints a cart
  * @param cart The {@link Cart} to mint
  * @param doiMetadata The required metadata for the DOI

@@ -1,4 +1,4 @@
-import { Box, Grid, Paper, Typography } from '@mui/material';
+import { Box, CircularProgress, Grid, Paper, Typography } from '@mui/material';
 import {
   ContributorType,
   ContributorUser,
@@ -6,8 +6,10 @@ import {
   DOIMetadataForm,
   readSciGatewayToken,
   RelatedDOI,
+  useCart,
   useDataPublication,
   useDataPublicationsByFilters,
+  useIsCartMintable,
   useUpdateDOI,
 } from 'datagateway-common';
 import React from 'react';
@@ -16,6 +18,9 @@ import { useSelector } from 'react-redux';
 import { paths } from '../../../page/pageContainer.component';
 import { Redirect, useLocation } from 'react-router-dom';
 import { StateType } from '../../../state/app.types';
+import DLSDataPublicationDataEditor, {
+  TransferListItem,
+} from './dlsDataPublicationDataEditor.component';
 
 interface DLSDataPublicationEditFormProps {
   dataPublicationId: string;
@@ -45,7 +50,10 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
     parseInt(dataPublicationId)
   );
 
-  const { data: versionDataPublications } = useDataPublicationsByFilters(
+  const {
+    data: versionDataPublications,
+    isFetched: versionDataPublicationLoaded,
+  } = useDataPublicationsByFilters(
     [
       {
         filterType: 'where',
@@ -112,12 +120,98 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
     }
   }, [dataPublication]);
 
+  const [content, setContent] = React.useState<TransferListItem[]>([]);
+  const [unselectedContent, setUnselectedContent] = React.useState<
+    TransferListItem[]
+  >([]);
+
+  React.useEffect(() => {
+    if (versionDataPublication) {
+      setContent([
+        ...(versionDataPublication?.content?.dataCollectionInvestigations
+          ?.filter(
+            (dci): dci is Required<typeof dci> =>
+              typeof dci.investigation !== 'undefined'
+          )
+          .map((dci) => ({
+            id: dci.investigation.id,
+            label: dci.investigation.title,
+            entityType: 'investigation' as const,
+          })) ?? []),
+        ...(versionDataPublication?.content?.dataCollectionDatasets
+          ?.filter(
+            (dcd): dcd is Required<typeof dcd> =>
+              typeof dcd.dataset !== 'undefined'
+          )
+          .map((dcd) => ({
+            id: dcd.dataset.id,
+            label: dcd.dataset.name,
+            entityType: 'dataset' as const,
+          })) ?? []),
+        ...(versionDataPublication?.content?.dataCollectionDatafiles
+          ?.filter(
+            (dcd): dcd is Required<typeof dcd> =>
+              typeof dcd.datafile !== 'undefined'
+          )
+          ?.map((dcd) => ({
+            id: dcd.datafile.id,
+            label: dcd.datafile.name,
+            entityType: 'datafile' as const,
+          })) ?? []),
+      ]);
+    }
+  }, [versionDataPublication]);
+
   const {
     mutate: updateDOI,
     status: mintingStatus,
     data: mintData,
     error: mintError,
   } = useUpdateDOI();
+
+  const { data: cart } = useCart();
+  const { isLoading: cartMintabilityLoading, error: mintableError } =
+    useIsCartMintable(cart, doiMinterUrl);
+
+  const unmintableEntityIDs: number[] | null | undefined = React.useMemo(
+    () =>
+      mintableError?.response?.status === 403 &&
+      typeof mintableError?.response?.data?.detail === 'string' &&
+      JSON.parse(
+        mintableError.response.data.detail.substring(
+          mintableError.response.data.detail.indexOf('['),
+          mintableError.response.data.detail.lastIndexOf(']') + 1
+        )
+      ),
+    [mintableError]
+  );
+
+  // const prevCart = React.useRef<typeof cart>(undefined);
+  const loadedUnselectedContent = React.useRef(false);
+
+  React.useEffect(() => {
+    // only run this code once
+    if (
+      cart &&
+      content.length > 0 &&
+      !cartMintabilityLoading &&
+      !loadedUnselectedContent.current
+    ) {
+      setUnselectedContent(
+        cart
+          .filter((cartItem) =>
+            content.every((item) => item.id !== cartItem.entityId)
+          )
+          .map((cartItem) => ({
+            id: cartItem.entityId,
+            label: cartItem.name,
+            entityType: cartItem.entityType,
+            disabled: unmintableEntityIDs?.includes(cartItem.entityId),
+          }))
+      );
+      loadedUnselectedContent.current = true;
+    }
+  }, [cart, cartMintabilityLoading, content, unmintableEntityIDs]);
 
   const location = useLocation<{ fromEdit: boolean } | undefined>();
 
@@ -151,9 +245,21 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
                 justifyContent="start"
                 spacing={2}
               >
+                <Grid container item direction="column" xs lg={6}>
+                  {!versionDataPublicationLoaded ? (
+                    <CircularProgress sx={{ alignSelf: 'center' }} />
+                  ) : (
+                    <DLSDataPublicationDataEditor
+                      unselectedContent={unselectedContent}
+                      content={content}
+                      changeContent={setContent}
+                      changeUnselectedContent={setUnselectedContent}
+                    />
+                  )}
+                </Grid>
                 <DOIMetadataForm
                   xs
-                  lg={7}
+                  lg={6}
                   dataCiteUrl={dataCiteUrl}
                   doiMinterUrl={doiMinterUrl}
                   title={title}
@@ -182,29 +288,16 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
                         }));
                       updateDOI({
                         dataPublicationId,
-                        // TODO: add ability for user to edit the content
                         content: {
-                          investigation_ids:
-                            versionDataPublication.content?.dataCollectionInvestigations
-                              ?.filter(
-                                (dci): dci is Required<typeof dci> =>
-                                  typeof dci.investigation !== 'undefined'
-                              )
-                              .map((dci) => dci.investigation.id) ?? [],
-                          dataset_ids:
-                            versionDataPublication.content?.dataCollectionDatasets
-                              ?.filter(
-                                (dcd): dcd is Required<typeof dcd> =>
-                                  typeof dcd.dataset !== 'undefined'
-                              )
-                              ?.map((dcd) => dcd.dataset.id) ?? [],
-                          datafile_ids:
-                            versionDataPublication.content?.dataCollectionDatafiles
-                              ?.filter(
-                                (dcd): dcd is Required<typeof dcd> =>
-                                  typeof dcd.datafile !== 'undefined'
-                              )
-                              ?.map((dcd) => dcd.datafile.id) ?? [],
+                          investigation_ids: content
+                            .filter((v) => v.entityType === 'investigation')
+                            .map((i) => i.id),
+                          dataset_ids: content
+                            .filter((v) => v.entityType === 'dataset')
+                            .map((d) => d.id),
+                          datafile_ids: content
+                            .filter((v) => v.entityType === 'datafile')
+                            .map((d) => d.id),
                         },
                         doiMetadata: {
                           title,
