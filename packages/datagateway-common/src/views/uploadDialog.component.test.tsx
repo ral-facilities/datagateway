@@ -27,6 +27,7 @@ const createUppyInstance = (): Uppy => {
   const uppy = new Uppy();
   uppy.info = jest.fn();
   uppy.getFiles = jest.fn().mockReturnValue([]);
+  uppy.setFileState = jest.fn();
   return uppy;
 };
 
@@ -38,6 +39,7 @@ const createUppyFile = (name: string): UppyFile => {
     type: 'text/plain',
     size: 100,
     meta: { name: name },
+    data: { lastModified: 123456 },
   } as UppyFile;
 
   return file;
@@ -424,7 +426,7 @@ describe('Upload dialog component', () => {
 
   it('should post processes dataset upload', async () => {
     const file = createUppyFile('test.txt');
-    file.meta = { lastModified: 123456, name: 'test.txt' };
+    file.meta = { name: 'test.txt' };
     file.response = {
       body: { id: 1 },
       status: 200,
@@ -433,7 +435,7 @@ describe('Upload dialog component', () => {
 
     // simulate the failed file
     const file2 = createUppyFile('test2.txt');
-    file2.meta = { lastModified: 123456, name: 'test2.txt' };
+    file2.meta = { name: 'test2.txt' };
     file2.response = undefined;
 
     const uppy = createUppyInstance();
@@ -485,7 +487,7 @@ describe('Upload dialog component', () => {
 
   it('should post processes datafile upload', async () => {
     const file = createUppyFile('test.txt');
-    file.meta = { lastModified: 123456, name: 'test.txt' };
+    file.meta = { name: 'test.txt' };
     file.response = {
       body: { id: 1 },
       status: 200,
@@ -494,7 +496,7 @@ describe('Upload dialog component', () => {
 
     // simulate the failed file
     const file2 = createUppyFile('test2.txt');
-    file2.meta = { lastModified: 123456, name: 'test2.txt' };
+    file2.meta = { name: 'test2.txt' };
     file2.response = undefined;
 
     const uppy = createUppyInstance();
@@ -542,7 +544,7 @@ describe('Upload dialog component', () => {
 
   it('should not commit if no files are successful', async () => {
     const file = createUppyFile('test.txt');
-    file.meta = { lastModified: 123456, name: 'test.txt' };
+    file.meta = { name: 'test.txt' };
     file.response = undefined;
 
     const uppy = createUppyInstance();

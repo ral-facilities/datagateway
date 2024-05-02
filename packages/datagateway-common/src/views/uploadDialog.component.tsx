@@ -137,7 +137,10 @@ export const postProcessor = async (
 ): Promise<void> => {
   // check if the files have been uploaded
   const files = uppy.getFiles();
-  const uploadedFiles = files.filter((file) => file?.response !== undefined);
+  const uploadedFiles = files.filter(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (file) => file?.response !== undefined && !(file as any).isCommited
+  );
   if (uploadedFiles.length > 0) {
     let params = {};
     if (entityType === 'investigation' && datasetId.current === null) {
@@ -152,7 +155,7 @@ export const postProcessor = async (
             name: file.name,
             url: file.response?.uploadURL,
             size: file.size,
-            lastModified: file.meta['lastModified'],
+            lastModified: (file.data as File).lastModified,
           };
         }),
       };
@@ -164,7 +167,7 @@ export const postProcessor = async (
             url: file.response?.uploadURL,
             size: file.size,
             datasetId: datasetId.current ? datasetId.current : entityId,
-            lastModified: file.meta['lastModified'],
+            lastModified: (file.data as File).lastModified,
           };
         }),
       };
@@ -176,6 +179,10 @@ export const postProcessor = async (
         },
       })
       .then((response) => {
+        uploadedFiles.forEach((file) => {
+          uppy.setFileState(file.id, { isCommited: true });
+        });
+
         datasetId.current = response.data.datasetId ?? null;
         if (entityType === 'datafile') {
           queryClient.invalidateQueries(['datafile']);
@@ -240,7 +247,11 @@ const UploadDialog: React.FC<UploadDialogProps> = (
       },
     })
       .on('file-added', async (file) => {
-        setUploadDisabled(true);
+        let prevUploadDisabled = false;
+        setUploadDisabled((oldUploadDisabled) => {
+          prevUploadDisabled = oldUploadDisabled;
+          return true;
+        });
         if (entityType !== 'investigation') {
           const fileExists = await checkNameExists(
             apiUrl,
@@ -259,17 +270,23 @@ const UploadDialog: React.FC<UploadDialogProps> = (
               5000
             );
             uppy.removeFile(file.id);
+            setUploadDisabled(prevUploadDisabled);
+            return;
           }
         }
-
-        // add last modified date to file meta
-        const lastModified = (file.data as File).lastModified;
-        file.meta['lastModified'] = lastModified;
-        setUploadDisabled(false);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        if (!uppy.getFiles().some((file) => (file as any).isGhost)) {
+          setUploadDisabled(false);
+        } else {
+          setUploadDisabled(true);
+        }
       })
       .on('file-removed', () => {
         if (uppy.getFiles().length === 0) {
           setUploadDisabled(true);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } else if (!uppy.getFiles().some((file) => (file as any).isGhost)) {
+          setUploadDisabled(false);
         }
       })
       .on('error', (error) => {
@@ -317,22 +334,22 @@ const UploadDialog: React.FC<UploadDialogProps> = (
     uppy,
   ]);
 
+  // TODO: check it doesn't break anything
+  React.useEffect(() => {
+    if (
+      open &&
+      uppy.getFiles().length > 0 &&
+      uppy.getState().recoveredState &&
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      !uppy.getFiles().some((file) => (file as any).isGhost)
+    ) {
+      setUploadDisabled(false);
+    }
+  }, [open, uppy]);
+
   // TODO: investigate why this causes tests to fail
   // Temporary fix (?): only use GoldenRetriever if indexedDB is available
   React.useEffect(() => {
-    const preProcessor = async (): Promise<void> => {
-      const files = uppy.getFiles();
-
-      files
-        .filter((file) => file?.response !== undefined)
-        .forEach((file) => {
-          uppy.removeFile(file.id);
-        });
-
-      return Promise.resolve();
-    };
-
-    uppy.addPreProcessor(preProcessor);
     if (window.indexedDB) {
       uppy.use(GoldenRetriever);
     }
@@ -349,7 +366,7 @@ const UploadDialog: React.FC<UploadDialogProps> = (
       setClose();
       datasetId.current = null;
       setTextInputDisabled(false);
-      setUploadDisabled(false);
+      setUploadDisabled(true);
     }
   };
 

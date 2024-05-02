@@ -1,3 +1,8 @@
 body {
   margin: 0;  /* can remove this when we're using CssBaseline (React 18 branch) */
 }
+
+/* TODO: Temporary/remove */
+.uppy-StatusBar-actionBtn--upload {
+  display: none !important;
+}
