@@ -16,12 +16,12 @@ import { DownloadSettingsContext } from '../ConfigProvider';
 import { mockCartItems, mockedSettings } from '../testData';
 import {
   getFileSizeAndCount,
-  isCartMintable,
   removeAllDownloadCartItems,
   removeFromCart,
 } from '../downloadApi';
 import DownloadCartTable from './downloadCartTable.component';
 import { createTheme } from '@mui/material';
+import axios, { AxiosResponse } from 'axios';
 
 setLogger({
   log: console.log,
@@ -48,7 +48,6 @@ jest.mock('../downloadApi', () => {
     getFileSizeAndCount: jest.fn(),
     getIsTwoLevel: jest.fn().mockResolvedValue(true),
     removeFromCart: jest.fn(),
-    isCartMintable: jest.fn(),
   };
 });
 
@@ -80,6 +79,7 @@ const renderComponent = (): RenderResult & { history: MemoryHistory } => {
 describe('Download cart table component', () => {
   let holder, queryClient;
   let user: ReturnType<typeof userEvent.setup>;
+  let mintabilityResponse: Promise<Partial<AxiosResponse>>;
 
   const resetDOM = (): void => {
     if (holder) document.body.removeChild(holder);
@@ -115,9 +115,18 @@ describe('Download cart table component', () => {
     (
       getFileSizeAndCount as jest.MockedFunction<typeof getFileSizeAndCount>
     ).mockResolvedValue({ fileSize: 1, fileCount: 7 });
-    (
-      isCartMintable as jest.MockedFunction<typeof isCartMintable>
-    ).mockResolvedValue(true);
+
+    mintabilityResponse = Promise.resolve({ status: 200 });
+
+    axios.post = jest
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/\/ismintable$/.test(url)) {
+          return mintabilityResponse;
+        } else {
+          return Promise.reject(`Endpoint not mocked: ${url}`);
+        }
+      });
   });
 
   afterEach(() => {
@@ -473,14 +482,9 @@ describe('Download cart table component', () => {
   });
 
   it('should disable Generate DOI button when mintability is loading', async () => {
-    (
-      isCartMintable as jest.MockedFunction<typeof isCartMintable>
-    ).mockImplementation(
-      () =>
-        new Promise((_) => {
-          // do nothing, simulating pending promise to test loading state
-        })
-    );
+    mintabilityResponse = new Promise((_) => {
+      // do nothing, simulating pending promise to test loading state
+    });
     const { history } = renderComponent();
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -503,14 +507,13 @@ describe('Download cart table component', () => {
   });
 
   it('should disable Generate DOI button when cart is not mintable', async () => {
-    (
-      isCartMintable as jest.MockedFunction<typeof isCartMintable>
-    ).mockRejectedValue({
+    mintabilityResponse = Promise.reject({
       response: {
         data: { detail: 'Not allowed to mint the following items: [2,4]' },
         status: 403,
       },
     });
+
     const { history } = renderComponent();
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

@@ -1,7 +1,7 @@
 import { RenderResult } from '@testing-library/react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { fetchDownloadCart, isCartMintable } from 'datagateway-common';
+import { fetchDownloadCart } from 'datagateway-common';
 import { createMemoryHistory } from 'history';
 import * as React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -17,6 +17,7 @@ import {
 } from '../downloadApi';
 import { mockCartItems, mockDownloadItems, mockedSettings } from '../testData';
 import DownloadTabs from './downloadTab.component';
+import axios, { AxiosResponse } from 'axios';
 
 jest.mock('datagateway-common', () => {
   const og = jest.requireActual('datagateway-common');
@@ -24,7 +25,6 @@ jest.mock('datagateway-common', () => {
     __esModule: true,
     ...og,
     fetchDownloadCart: jest.fn(),
-    isCartMintable: jest.fn(),
   };
 });
 jest.mock('../downloadApi');
@@ -66,9 +66,16 @@ describe('DownloadTab', () => {
     (
       getFileSizeAndCount as jest.MockedFunction<typeof getFileSizeAndCount>
     ).mockResolvedValue({ fileSize: 1, fileCount: 7 });
-    (
-      isCartMintable as jest.MockedFunction<typeof isCartMintable>
-    ).mockResolvedValue(true);
+
+    axios.post = jest
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/\/ismintable$/.test(url)) {
+          return Promise.resolve({ status: 200 });
+        } else {
+          return Promise.reject(`Endpoint not mocked: ${url}`);
+        }
+      });
   });
 
   const renderComponent = (): RenderResult => {

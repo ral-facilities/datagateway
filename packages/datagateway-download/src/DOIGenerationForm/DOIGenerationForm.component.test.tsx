@@ -17,7 +17,7 @@ import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 import { Router } from 'react-router-dom';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import { mockCartItems, mockedSettings } from '../testData';
-import { getCartUsers, isCartMintable, mintCart } from '../downloadApi';
+import { getCartUsers, mintCart } from '../downloadApi';
 import DOIGenerationForm from './DOIGenerationForm.component';
 import axios, { AxiosResponse } from 'axios';
 
@@ -42,7 +42,6 @@ jest.mock('../downloadApi', () => {
 
   return {
     ...originalModule,
-    isCartMintable: jest.fn(),
     getCartUsers: jest.fn(),
     mintCart: jest.fn(),
   };
@@ -105,10 +104,6 @@ describe('DOI generation form component', () => {
       fetchDownloadCart as jest.MockedFunction<typeof fetchDownloadCart>
     ).mockResolvedValue(mockCartItems);
 
-    (
-      isCartMintable as jest.MockedFunction<typeof isCartMintable>
-    ).mockResolvedValue(true);
-
     // mock mint cart error to test dialog can be closed after it errors
     (mintCart as jest.MockedFunction<typeof mintCart>).mockRejectedValue(
       'error'
@@ -137,6 +132,16 @@ describe('DOI generation form component', () => {
           return Promise.resolve({
             data: mockDOIResponse,
           });
+        } else {
+          return Promise.reject(`Endpoint not mocked: ${url}`);
+        }
+      });
+
+    axios.post = jest
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/\/ismintable$/.test(url)) {
+          return Promise.resolve({ status: 200 });
         } else {
           return Promise.reject(`Endpoint not mocked: ${url}`);
         }
