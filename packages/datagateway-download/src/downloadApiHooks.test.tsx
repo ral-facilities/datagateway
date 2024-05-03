@@ -22,7 +22,6 @@ import {
   useDownloads,
   useDownloadTypeStatuses,
   useFileSizesAndCounts,
-  useIsCartMintable,
   useIsTwoLevel,
   useMintCart,
   useRemoveAllFromCart,
@@ -1206,96 +1205,6 @@ describe('Download API react-query hooks test', () => {
         },
         false
       );
-    });
-  });
-
-  describe('useIsCartMintable', () => {
-    it('should check whether a cart is mintable', async () => {
-      axios.post = jest
-        .fn()
-        .mockResolvedValue({ data: undefined, status: 200 });
-
-      const { result, waitFor } = renderHook(
-        () => useIsCartMintable(mockCartItems),
-        {
-          wrapper: createReactQueryWrapper(),
-        }
-      );
-      await waitFor(() => expect(result.current.isSuccess).toBe(true));
-
-      expect(result.current.data).toEqual(true);
-      expect(axios.post).toHaveBeenCalledWith(
-        `${mockedSettings.doiMinterUrl}/ismintable`,
-        {
-          investigation_ids: [1, 2],
-          dataset_ids: [3],
-          datafile_ids: [4],
-        },
-        { headers: { Authorization: 'Bearer null' } }
-      );
-    });
-
-    it('should be disabled if doiMinterUrl is not defined', async () => {
-      const { result } = renderHook(() => useIsCartMintable(mockCartItems), {
-        wrapper: createReactQueryWrapper({
-          ...mockedSettings,
-          doiMinterUrl: undefined,
-        }),
-      });
-
-      expect(result.current.isIdle).toEqual(true);
-      expect(axios.post).not.toHaveBeenCalled();
-    });
-
-    it('should return false if cart is undefined', async () => {
-      const { result, waitFor } = renderHook(
-        () => useIsCartMintable(undefined),
-        {
-          wrapper: createReactQueryWrapper(),
-        }
-      );
-
-      await waitFor(() => expect(result.current.isSuccess).toBe(true));
-
-      expect(result.current.data).toEqual(false);
-      expect(axios.post).not.toHaveBeenCalled();
-    });
-
-    it('should return false if cart is empty', async () => {
-      const { result, waitFor } = renderHook(() => useIsCartMintable([]), {
-        wrapper: createReactQueryWrapper(),
-      });
-
-      await waitFor(() => expect(result.current.isSuccess).toBe(true));
-
-      expect(result.current.data).toEqual(false);
-      expect(axios.post).not.toHaveBeenCalled();
-    });
-
-    it('should not log 403 errors or retry them', async () => {
-      const error = {
-        message: 'Test error message',
-        response: {
-          status: 403,
-        },
-      };
-      axios.post = jest.fn().mockRejectedValue(error);
-
-      const { result, waitFor } = renderHook(
-        () => useIsCartMintable(mockCartItems),
-        {
-          wrapper: createReactQueryWrapper(),
-        }
-      );
-      await waitFor(() => expect(result.current.isError).toBe(true));
-
-      expect(handleDOIAPIError).toHaveBeenCalledWith(
-        error,
-        undefined,
-        undefined,
-        false
-      );
-      expect(axios.post).toHaveBeenCalledTimes(1);
     });
   });
 

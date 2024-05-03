@@ -1,11 +1,16 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import axios, { AxiosError, AxiosHeaders } from 'axios';
-import { handleDOIAPIError, useCheckUser, useUpdateDOI } from '.';
+import {
+  handleDOIAPIError,
+  useCheckUser,
+  useIsCartMintable,
+  useUpdateDOI,
+} from '.';
 import { createReactQueryWrapper } from '../setupTests';
 import { InvalidateTokenType } from '../state/actions/actions.types';
 import { setLogger } from 'react-query';
 import log from 'loglevel';
-import { ContributorType } from '../app.types';
+import { ContributorType, DownloadCartItem } from '../app.types';
 
 // silence react-query errors
 setLogger({
@@ -334,6 +339,125 @@ describe('doi api functions', () => {
         },
         { headers: { Authorization: 'Bearer null' } }
       );
+    });
+  });
+
+  describe('useIsCartMintable', () => {
+    const mockCartItems: DownloadCartItem[] = [
+      {
+        entityId: 1,
+        entityType: 'investigation',
+        id: 1,
+        name: 'INVESTIGATION 1',
+        parentEntities: [],
+      },
+      {
+        entityId: 2,
+        entityType: 'investigation',
+        id: 2,
+        name: 'INVESTIGATION 2',
+        parentEntities: [],
+      },
+      {
+        entityId: 3,
+        entityType: 'dataset',
+        id: 3,
+        name: 'DATASET 1',
+        parentEntities: [],
+      },
+      {
+        entityId: 4,
+        entityType: 'datafile',
+        id: 4,
+        name: 'DATAFILE 1',
+        parentEntities: [],
+      },
+    ];
+
+    it('should check whether a cart is mintable', async () => {
+      axios.post = jest
+        .fn()
+        .mockResolvedValue({ data: undefined, status: 200 });
+
+      const { result, waitFor } = renderHook(
+        () =>
+          useIsCartMintable(mockCartItems, 'https://example.com/doi-minter'),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+      expect(result.current.data).toEqual(true);
+      expect(axios.post).toHaveBeenCalledWith(
+        `https://example.com/doi-minter/ismintable`,
+        {
+          investigation_ids: [1, 2],
+          dataset_ids: [3],
+          datafile_ids: [4],
+        },
+        { headers: { Authorization: 'Bearer null' } }
+      );
+    });
+
+    it('should be disabled if doiMinterUrl is not defined', async () => {
+      const { result } = renderHook(
+        () => useIsCartMintable(mockCartItems, undefined),
+        { wrapper: createReactQueryWrapper() }
+      );
+
+      expect(result.current.isIdle).toEqual(true);
+      expect(axios.post).not.toHaveBeenCalled();
+    });
+
+    it('should return false if cart is undefined', async () => {
+      const { result, waitFor } = renderHook(
+        () => useIsCartMintable(undefined, 'https://example.com/doi-minter'),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+      expect(result.current.data).toEqual(false);
+      expect(axios.post).not.toHaveBeenCalled();
+    });
+
+    it('should return false if cart is empty', async () => {
+      const { result, waitFor } = renderHook(
+        () => useIsCartMintable([], 'https://example.com/doi-minter'),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+      expect(result.current.data).toEqual(false);
+      expect(axios.post).not.toHaveBeenCalled();
+    });
+
+    it('should not log 403 errors or retry them', async () => {
+      const error = {
+        message: 'Test error message',
+        response: {
+          status: 403,
+        },
+      };
+      axios.post = jest.fn().mockRejectedValue(error);
+
+      const { result, waitFor } = renderHook(
+        () =>
+          useIsCartMintable(mockCartItems, 'https://example.com/doi-minter'),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+      await waitFor(() => expect(result.current.isError).toBe(true));
+
+      expect(log.error).not.toHaveBeenCalled();
+      expect(axios.post).toHaveBeenCalledTimes(1);
     });
   });
 });

@@ -38,7 +38,6 @@ import {
   FileSizeAndCount,
   getCartUsers,
   getFileSizeAndCount,
-  isCartMintable,
   mintCart,
   SubmitCartZipType,
 } from './downloadApi';

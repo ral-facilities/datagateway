@@ -1,7 +1,7 @@
 import { RenderResult } from '@testing-library/react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { fetchDownloadCart } from 'datagateway-common';
+import { fetchDownloadCart, isCartMintable } from 'datagateway-common';
 import { createMemoryHistory } from 'history';
 import * as React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -14,7 +14,6 @@ import {
   getFileSizeAndCount,
   removeAllDownloadCartItems,
   removeFromCart,
-  isCartMintable,
 } from '../downloadApi';
 import { mockCartItems, mockDownloadItems, mockedSettings } from '../testData';
 import DownloadTabs from './downloadTab.component';
@@ -25,6 +24,7 @@ jest.mock('datagateway-common', () => {
     __esModule: true,
     ...og,
     fetchDownloadCart: jest.fn(),
+    isCartMintable: jest.fn(),
   };
 });
 jest.mock('../downloadApi');
