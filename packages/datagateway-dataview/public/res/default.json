@@ -63,7 +63,19 @@
     "publication_date": "Publication Date",
     "content_tab_label": "View Content",
     "content_tab_entity_tabs_aria_label": "content tabs",
-    "edit_label": "Edit Data Publication",
+    "edit": {
+      "edit_label": "Edit Data Publication",
+      "select_all": "Select All",
+      "choices": "Choices",
+      "chosen": "Chosen",
+      "selected": "selected",
+      "disabled_tooltip": "You don't have permission to mint this item",
+      "move_right": "Move selected right",
+      "move_left": "Move selected left",
+      "done": "Done",
+      "content_table_aria_label": "content table",
+      "content_table_name": "Name"
+    },
     "details": {
       "label": "Experiment Details",
       "investigations": "View Investigations",

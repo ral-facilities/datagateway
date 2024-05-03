@@ -173,16 +173,17 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     return filteredData?.sort(sortCartItems);
   }, [cartItems, fileSizesAndCounts, filters, sort]);
 
-  const unmintableEntityIDs: number[] | null | undefined = React.useMemo(
+  const unmintableEntityIDs: number[] | undefined = React.useMemo(
     () =>
       mintableError?.response?.status === 403 &&
-      typeof mintableError?.response?.data?.detail === 'string' &&
-      JSON.parse(
-        mintableError.response.data.detail.substring(
-          mintableError.response.data.detail.indexOf('['),
-          mintableError.response.data.detail.lastIndexOf(']') + 1
-        )
-      ),
+      typeof mintableError?.response?.data?.detail === 'string'
+        ? JSON.parse(
+            mintableError.response.data.detail.substring(
+              mintableError.response.data.detail.indexOf('['),
+              mintableError.response.data.detail.lastIndexOf(']') + 1
+            )
+          )
+        : undefined,
     [mintableError]
   );
 

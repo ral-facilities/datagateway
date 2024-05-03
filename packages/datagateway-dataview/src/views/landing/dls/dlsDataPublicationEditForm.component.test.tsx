@@ -13,6 +13,7 @@ import {
   dGCommonInitialState,
   DOIRelationType,
   DOIResourceType,
+  DownloadCartItem,
 } from 'datagateway-common';
 import { createMemoryHistory, History } from 'history';
 import * as React from 'react';
@@ -42,10 +43,11 @@ const createTestQueryClient = (): QueryClient =>
     },
   });
 
-describe('DOI generation form component', () => {
+describe('DOI edit form component', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let history: History;
+  let holder: HTMLElement;
 
   const renderComponent = (): RenderResult =>
     render(
@@ -108,6 +110,8 @@ describe('DOI generation form component', () => {
     startDate: '2023-07-20',
     endDate: '2023-07-21',
   };
+  let cartItems: DownloadCartItem[];
+  let mintabilityResponse: Promise<Partial<AxiosResponse>>;
 
   beforeEach(() => {
     initialData = {
@@ -174,10 +178,36 @@ describe('DOI generation form component', () => {
       publicationDate: '2023-07-20',
     };
 
+    cartItems = [
+      {
+        entityId: 4,
+        entityType: 'investigation',
+        id: 1,
+        name: 'cart investigation',
+        parentEntities: [],
+      },
+      {
+        entityId: investigation.id,
+        entityType: 'investigation',
+        id: 2,
+        name: investigation.name,
+        parentEntities: [],
+      },
+    ];
+    holder = document.createElement('div');
+    holder.setAttribute('id', 'datagateway-dataview');
+    document.body.appendChild(holder);
+
     state = JSON.parse(
       JSON.stringify({
         dgdataview: dgDataViewInitialState,
-        dgcommon: dGCommonInitialState,
+        dgcommon: {
+          ...dGCommonInitialState,
+          urls: {
+            ...dGCommonInitialState.urls,
+            doiMinterUrl: 'https://example.com/doi-minter',
+          },
+        },
       })
     );
 
@@ -197,6 +227,8 @@ describe('DOI generation form component', () => {
 
     user = userEvent.setup();
 
+    mintabilityResponse = Promise.resolve({ status: 200 });
+
     axios.get = jest
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
@@ -204,6 +236,20 @@ describe('DOI generation form component', () => {
           return Promise.resolve({
             data: [initialData],
           });
+        } else if (/.*\/user\/cart\/.*$/.test(url)) {
+          return Promise.resolve({
+            data: { cartItems },
+          });
+        } else {
+          return Promise.reject(`Endpoint not mocked: ${url}`);
+        }
+      });
+
+    axios.post = jest
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/\/ismintable$/.test(url)) {
+          return mintabilityResponse;
         } else {
           return Promise.reject(`Endpoint not mocked: ${url}`);
         }
@@ -229,6 +275,7 @@ describe('DOI generation form component', () => {
   });
 
   afterEach(() => {
+    document.body.removeChild(holder);
     jest.clearAllMocks();
   });
 
@@ -360,6 +407,173 @@ describe('DOI generation form component', () => {
             relatedItemType: ri.relatedItemType,
             relationType: ri.relationType,
           })),
+          resource_type: 'Collection',
+        },
+      },
+      expect.any(Object)
+    );
+
+    expect(
+      await screen.findByRole('dialog', {
+        name: 'DOIConfirmDialog.dialog_title',
+      })
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByRole('link', {
+        name: 'DOIConfirmDialog.view_data_publication',
+      })
+    ).toHaveAttribute(
+      'href',
+      generatePath(paths.landing.dlsDataPublicationLanding, {
+        dataPublicationId: 'new_version',
+      })
+    );
+  });
+
+  it('should display the content table with existing content and let the user change these using cart items and submit a mint request', async () => {
+    cartItems = [
+      ...cartItems,
+      {
+        entityId: 5,
+        entityType: 'investigation',
+        id: 3,
+        name: 'unmintable cart investigation',
+        parentEntities: [],
+      },
+    ];
+    mintabilityResponse = Promise.reject({
+      response: {
+        status: 403,
+        data: {
+          detail: '[5]',
+        },
+      },
+    });
+    renderComponent();
+
+    // wait for data publication content to load
+
+    expect(
+      await screen.findByRole('table', {
+        name: 'investigation datapublications.edit.content_table_aria_label',
+      })
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByRole('cell', { name: 'Title 1' })
+    ).toBeInTheDocument();
+
+    // editing data
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'datapublications.edit.edit_data_label',
+      })
+    );
+
+    const chosen = await screen.findByRole('list', {
+      name: 'datapublications.edit.chosen',
+    });
+    const choices = await screen.findByRole('list', {
+      name: 'datapublications.edit.choices',
+    });
+
+    // expect any items in the cart already in the data pub aren't shown in chosen
+
+    expect(
+      await within(choices).queryByRole('listitem', {
+        name: investigation.name,
+      })
+    ).not.toBeInTheDocument();
+
+    // expect unmintable items to be disabled
+
+    await expect(
+      async () =>
+        await user.click(
+          await within(choices).findByRole('checkbox', {
+            name: 'unmintable cart investigation',
+          })
+        )
+    ).rejects.toThrow();
+
+    // remove existing item
+    await user.click(
+      await within(chosen).findByRole('listitem', {
+        name: investigation.title,
+      })
+    );
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'datapublications.edit.move_left',
+      })
+    );
+
+    // add item from cart
+    await user.click(
+      within(choices).getByRole('listitem', {
+        name: 'cart investigation',
+      })
+    );
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'datapublications.edit.move_right',
+      })
+    );
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'datapublications.edit.done',
+      })
+    );
+
+    // check unchecked item is still available as an option
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'datapublications.edit.edit_data_label',
+      })
+    );
+
+    expect(
+      await within(
+        await screen.findByRole('list', {
+          name: 'datapublications.edit.choices',
+        })
+      ).findByRole('listitem', {
+        name: investigation.title,
+      })
+    ).toBeInTheDocument();
+
+    // submit edited data publication
+
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+    );
+
+    expect(axios.put).toHaveBeenCalledWith(
+      expect.any(String),
+      {
+        datafile_ids: [3],
+        dataset_ids: [2],
+        investigation_ids: [4],
+        metadata: {
+          title: 'Title',
+          description: 'foo bar',
+          creators: users.map((user) => ({
+            username: user.user?.name ?? user.fullName,
+            contributor_type: user.contributorType,
+          })),
+          related_items: initialData.relatedItems
+            ?.filter((i) => i.relationType !== DOIRelationType.IsVersionOf)
+            ?.map((ri) => ({
+              fullReference: ri.fullReference ?? '',
+              title: ri.title ?? '',
+              identifier: ri.identifier,
+              relatedItemType: ri.relatedItemType,
+              relationType: ri.relationType,
+            })),
           resource_type: 'Collection',
         },
       },

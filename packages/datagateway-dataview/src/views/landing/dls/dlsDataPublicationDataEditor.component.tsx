@@ -57,6 +57,8 @@ interface TransferListProps {
 }
 
 function SelectAllTransferList(props: TransferListProps): React.ReactElement {
+  const [t] = useTranslation();
+
   const [checked, setChecked] = React.useState<TransferListItem[]>([]);
   const [left, setLeft] = React.useState<TransferListItem[]>(props.left);
   const [right, setRight] = React.useState<TransferListItem[]>(props.right);
@@ -106,7 +108,7 @@ function SelectAllTransferList(props: TransferListProps): React.ReactElement {
   ): React.ReactElement => {
     const itemsExcludingDisabled = items.filter((v) => !v.disabled);
     return (
-      <Card sx={{ height: '100%' }}>
+      <Card sx={{ height: '100%' }} aria-labelledby={`${title}-card-title`}>
         <CardHeader
           sx={{ p: 1 }}
           avatar={
@@ -124,15 +126,18 @@ function SelectAllTransferList(props: TransferListProps): React.ReactElement {
               }
               disabled={itemsExcludingDisabled.length === 0}
               inputProps={{
-                'aria-label': 'all items selected',
+                'aria-label': `${t(
+                  'datapublications.edit.select_all'
+                )} ${title}`,
               }}
               sx={{ p: 1, pr: 0 }}
             />
           }
           title={title}
+          titleTypographyProps={{ id: `${title}-card-title` }}
           subheader={`${numberOfChecked(itemsExcludingDisabled)}/${
             items.length
-          } selected`}
+          } ${t('datapublications.edit.selected')}`}
         />
         <Divider />
         <List
@@ -147,16 +152,17 @@ function SelectAllTransferList(props: TransferListProps): React.ReactElement {
           role="list"
           dense
           disablePadding
+          aria-labelledby={`${title}-card-title`}
         >
           {items.map((value) => {
-            const labelId = `transfer-list-all-item-${value.label}-label`;
+            const labelId = `${title}-list-item-${value.id}-label`;
 
             return (
               <Tooltip
                 describeChild
                 title={
                   value.disabled
-                    ? "You don't have permission to mint this item"
+                    ? t('datapublications.edit.disabled_tooltip')
                     : ''
                 }
                 key={value.id}
@@ -178,6 +184,7 @@ function SelectAllTransferList(props: TransferListProps): React.ReactElement {
                     role="listitem"
                     onClick={handleToggle(value)}
                     disabled={value.disabled}
+                    aria-labelledby={labelId}
                   >
                     <ListItemIcon sx={{ minWidth: '40px' }}>
                       <Checkbox
@@ -211,7 +218,7 @@ function SelectAllTransferList(props: TransferListProps): React.ReactElement {
       flexGrow={1}
     >
       <Grid item xs>
-        {customList('Choices', left)}
+        {customList(t('datapublications.edit.choices'), left)}
       </Grid>
       <Grid item xs="auto" alignSelf="center">
         <Grid container direction="column" alignItems="center">
@@ -221,7 +228,7 @@ function SelectAllTransferList(props: TransferListProps): React.ReactElement {
             size="small"
             onClick={handleCheckedRight}
             disabled={leftChecked.length === 0}
-            aria-label="move selected right"
+            aria-label={t('datapublications.edit.move_right')}
           >
             &gt;
           </Button>
@@ -231,7 +238,7 @@ function SelectAllTransferList(props: TransferListProps): React.ReactElement {
             size="small"
             onClick={handleCheckedLeft}
             disabled={rightChecked.length === 0}
-            aria-label="move selected left"
+            aria-label={t('datapublications.edit.move_left')}
           >
             &lt;
           </Button>
@@ -243,12 +250,12 @@ function SelectAllTransferList(props: TransferListProps): React.ReactElement {
               props.confirmSelection(right);
             }}
           >
-            Done
+            {t('datapublications.edit.done')}
           </Button>
         </Grid>
       </Grid>
       <Grid item xs>
-        {customList('Chosen', right)}
+        {customList(t('datapublications.edit.chosen'), right)}
       </Grid>
     </Grid>
   );
@@ -308,7 +315,7 @@ export default function DLSDataPublicationDataEditor(
         <Tabs
           value={currentTab}
           onChange={handleTabChange}
-          aria-label={t('DOIGenerationForm.cart_tabs_aria_label')}
+          aria-label={t('datapublications.content_tab_entity_tabs_aria_label')}
           indicatorColor="secondary"
           textColor="secondary"
         >
@@ -317,23 +324,17 @@ export default function DLSDataPublicationDataEditor(
               (i) => i.entityType === 'investigation'
             )) && (
             <Tab
-              label={t('DOIGenerationForm.cart_tab_investigations')}
+              label={t('breadcrumbs.investigation_other')}
               value="investigation"
             />
           )}
           {(datasets.length > 0 ||
             unselectedContent.some((i) => i.entityType === 'dataset')) && (
-            <Tab
-              label={t('DOIGenerationForm.cart_tab_datasets')}
-              value="dataset"
-            />
+            <Tab label={t('breadcrumbs.dataset_other')} value="dataset" />
           )}
           {(datafiles.length > 0 ||
             unselectedContent.some((i) => i.entityType === 'datafile')) && (
-            <Tab
-              label={t('DOIGenerationForm.cart_tab_datafiles')}
-              value="datafile"
-            />
+            <Tab label={t('breadcrumbs.datafile_other')} value="datafile" />
           )}
         </Tabs>
         <IconButton
@@ -341,7 +342,7 @@ export default function DLSDataPublicationDataEditor(
           onClick={() => {
             setCurrentlyEditing(currentTab);
           }}
-          aria-label={t('datapublications.edit_label')}
+          aria-label={t('datapublications.edit.edit_data_label')}
         >
           <Edit />
         </IconButton>
@@ -351,11 +352,15 @@ export default function DLSDataPublicationDataEditor(
           backgroundColor: 'background.default',
         }}
         size="small"
-        aria-label={`cart ${currentTab} table`}
+        aria-label={`${currentTab} ${t(
+          'datapublications.edit.content_table_aria_label'
+        )}`}
       >
         <TableHead>
           <TableRow>
-            <TableCell>{t('DOIGenerationForm.cart_table_name')}</TableCell>
+            <TableCell>
+              {t('datapublications.edit.content_table_name')}
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

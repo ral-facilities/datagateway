@@ -50,10 +50,7 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
     parseInt(dataPublicationId)
   );
 
-  const {
-    data: versionDataPublications,
-    isFetched: versionDataPublicationLoaded,
-  } = useDataPublicationsByFilters(
+  const { data: versionDataPublications } = useDataPublicationsByFilters(
     [
       {
         filterType: 'where',
@@ -173,24 +170,23 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
   const { isLoading: cartMintabilityLoading, error: mintableError } =
     useIsCartMintable(cart, doiMinterUrl);
 
-  const unmintableEntityIDs: number[] | null | undefined = React.useMemo(
+  const unmintableEntityIDs: number[] | undefined = React.useMemo(
     () =>
       mintableError?.response?.status === 403 &&
-      typeof mintableError?.response?.data?.detail === 'string' &&
-      JSON.parse(
-        mintableError.response.data.detail.substring(
-          mintableError.response.data.detail.indexOf('['),
-          mintableError.response.data.detail.lastIndexOf(']') + 1
-        )
-      ),
+      typeof mintableError?.response?.data?.detail === 'string'
+        ? JSON.parse(
+            mintableError.response.data.detail.substring(
+              mintableError.response.data.detail.indexOf('['),
+              mintableError.response.data.detail.lastIndexOf(']') + 1
+            )
+          )
+        : undefined,
     [mintableError]
   );
 
-  // const prevCart = React.useRef<typeof cart>(undefined);
   const loadedUnselectedContent = React.useRef(false);
 
   React.useEffect(() => {
-    // only run this code once
     if (
       cart &&
       content.length > 0 &&
@@ -246,7 +242,7 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
                 spacing={2}
               >
                 <Grid container item direction="column" xs lg={6}>
-                  {!versionDataPublicationLoaded ? (
+                  {!loadedUnselectedContent.current ? (
                     <CircularProgress sx={{ alignSelf: 'center' }} />
                   ) : (
                     <DLSDataPublicationDataEditor

@@ -36,7 +36,7 @@ import {
 } from 'datagateway-search/src/setupTests';
 import axios, { type AxiosResponse } from 'axios';
 
-describe('Datafile table component', () => {
+describe('DataPublication content table component', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let cartItems: DownloadCartItem[];
