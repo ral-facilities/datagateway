@@ -128,15 +128,36 @@ jobs:
           ansible-playbook icat-ansible/icat_test_hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
 
       # Fixes on ICAT components needed for e2e tests
-      - name: Add anon user to rootUserNames
+      - name: Removing authenticator prefix for simple auth
         run: |
-          awk -F" =" '/rootUserNames/{$2="= simple/root anon/anon";print;next}1' /home/runner/install/icat.server/run.properties > /home/runner/install/icat.server/run.properties.tmp
+          sed -i 's/mechanism = simple/!mechanism = simple/' /home/runner/install/authn.simple/run.properties
+      - name: Adding Chris481 user
+        run: |
+          sed -i '/user\.list/ s/$/ Chris481/' /home/runner/install/authn.simple/run.properties
+      - name: Adding Chris481 user password
+        run: |
+          echo "user.Chris481.password = pw" >> /home/runner/install/authn.simple/run.properties
+      - name: Reinstall authn.simple
+        run: |
+          cd /home/runner/install/authn.simple/ && ./setup -vv install
+      - name: Add anon, root (simple without prefix) and Chris481 users to rootUserNames
+        run: |
+          awk -F" =" '/rootUserNames/{$2="= root Chris481 anon/anon";print;next}1' /home/runner/install/icat.server/run.properties > /home/runner/install/icat.server/run.properties.tmp
       - name: Apply rootUserNames change
         run: |
           mv -f /home/runner/install/icat.server/run.properties.tmp /home/runner/install/icat.server/run.properties
       - name: Reinstall ICAT Server
         run: |
           cd /home/runner/install/icat.server/ && ./setup -vv install
+      - name: Add root (simple without prefix) to datagateway-download-api adminUserNames
+        run: |
+          awk -F" =" '/adminUserNames/{$2="= root";print;next}1' /home/runner/install/datagateway-download-api/run.properties > /home/runner/install/datagateway-download-api/run.properties.tmp
+      - name: Apply adminUserNames change
+        run: |
+          mv -f /home/runner/install/datagateway-download-api/run.properties.tmp /home/runner/install/datagateway-download-api/run.properties
+      - name: Reinstall datagateway-download-api
+        run: |
+          cd /home/runner/install/datagateway-download-api/ && python2 ./setup -vv install
 
       - name: Checkout datagateway-api
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
@@ -165,6 +186,16 @@ jobs:
 
       - name: Start API
         run: cd datagateway-api/; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
+
+      # DOI minter setup
+      - name: Adding 'User-defined' DataPublicationType (needed for DOI minting api)
+        run: cd datagateway-api/; poetry run python ../.github/add_doi_datapublicationtype.py
+
+      - name: 'Add password to env file'
+        run: echo DATACITE_PASSWORD=${{ secrets.DATACITE_PASSWORD }} >> ./.github/config.env
+
+      - name: Run minting api
+        run: docker run --env-file ./.github/config.env -p 8000:8000 --add-host host.docker.internal:host-gateway -d harbor.stfc.ac.uk/icat/doi-mint-api
 
       # E2E tests
       - name: Setup Node.js

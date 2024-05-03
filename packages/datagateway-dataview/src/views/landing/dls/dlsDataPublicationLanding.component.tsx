@@ -350,7 +350,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                           state: { fromEdit: true },
                         })
                       }
-                      aria-label={t('datapublications.edit_label')}
+                      aria-label={t('datapublications.edit.edit_label')}
                     >
                       <Edit />
                     </IconButton>

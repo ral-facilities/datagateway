@@ -65,6 +65,7 @@
     "content_tab_entity_tabs_aria_label": "content tabs",
     "edit": {
       "edit_label": "Edit Data Publication",
+      "edit_data_label": "Edit data",
       "select_all": "Select All",
       "choices": "Choices",
       "chosen": "Chosen",

@@ -132,7 +132,9 @@ const CitationFormatter = (
       </Typography>
       {doi && (
         <FormControl
-          id={`${label ? `${label}-` : ''}citation-formatter`}
+          id={`${
+            label ? `${label.replace(/\s/g, '-')}-` : ''
+          }citation-formatter`}
           error={error}
           variant="standard"
         >
@@ -144,7 +146,9 @@ const CitationFormatter = (
               aria-label={t(
                 'datapublications.details.citation_formatter.select_arialabel'
               )}
-              aria-describedby="citation-formatter-error-message"
+              aria-describedby={`${
+                label ? `${label.replace(/\s/g, '-')}-` : ''
+              }citation-formatter-error-message`}
               variant="standard"
             >
               <MenuItem value="default">
@@ -168,7 +172,9 @@ const CitationFormatter = (
           </div>
           {error && (
             <FormHelperText
-              id={`${label ? `${label}-` : ''}citation-formatter-error-message`}
+              id={`${
+                label ? `${label.replace(/\s/g, '-')}-` : ''
+              }citation-formatter-error-message`}
             >
               {t('datapublications.details.citation_formatter.error')}
             </FormHelperText>
@@ -176,13 +182,19 @@ const CitationFormatter = (
         </FormControl>
       )}
       <Typography>
-        <i data-testid="citation-formatter-citation">
+        <i
+          data-testid={`${
+            label ? `${label.replace(/\s/g, '-')}-` : ''
+          }citation-formatter-citation`}
+        >
           {citation && <Trans>{citation}</Trans>}
         </i>
       </Typography>
       {!copiedCitation ? (
         <Button
-          id={`${label ? `${label}-` : ''}citation-formatter-copy-citation`}
+          id={`${
+            label ? `${label.replace(/\s/g, '-')}-` : ''
+          }citation-formatter-copy-citation`}
           aria-label={t(
             'datapublications.details.citation_formatter.copy_citation_arialabel'
           )}
@@ -202,7 +214,9 @@ const CitationFormatter = (
         </Button>
       ) : (
         <Button
-          id={`${label ? `${label}-` : ''}citation-formatter-copied-citation`}
+          id={`${
+            label ? `${label.replace(/\s/g, '-')}-` : ''
+          }citation-formatter-copied-citation`}
           variant="contained"
           color="primary"
           size="small"
