@@ -350,6 +350,30 @@ const UploadDialog: React.FC<UploadDialogProps> = (
   // TODO: investigate why this causes tests to fail
   // Temporary fix (?): only use GoldenRetriever if indexedDB is available
   React.useEffect(() => {
+    /* istanbul ignore if */
+    if (
+      process.env.NODE_ENV === 'development' ||
+      process.env.REACT_APP_E2E_TESTING
+    ) {
+      const preProcessor = async (): Promise<void> => {
+        const files = uppy.getFiles();
+        files.forEach((file) => {
+          if (file.name === 'fail') {
+            uppy.setFileState(file.id, {
+              data: null,
+              name: 'notfail',
+            });
+            file.meta.name = `not${file.meta.name}`;
+          } else if (file.name === 'notfail') {
+            uppy.setFileState(file.id, {
+              data: new File(['test'], 'notfail'),
+            });
+          }
+        });
+      };
+      uppy.addPreProcessor(preProcessor);
+    }
+
     if (window.indexedDB) {
       uppy.use(GoldenRetriever);
     }
@@ -494,19 +518,7 @@ const UploadDialog: React.FC<UploadDialogProps> = (
                 setUploadDisabled(true);
 
                 // Upload queued files
-                uppy.upload().then((result) => {
-                  // TODO: for debugging / remove later
-                  // The file named "fail" will fail to upload but will be uploaded successfully on retry
-                  if (
-                    process.env.NODE_ENV === `development` ||
-                    process.env.REACT_APP_E2E_TESTING
-                  )
-                    result.failed.forEach((file) => {
-                      if (file.meta.name.startsWith('fail')) {
-                        file.meta.name = `not${file.meta.name}`;
-                      }
-                    });
-                });
+                uppy.upload();
               }}
               variant="contained"
               aria-label="upload"
