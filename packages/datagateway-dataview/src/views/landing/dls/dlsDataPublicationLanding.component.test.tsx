@@ -255,7 +255,7 @@ describe('DLS Data Publication Landing page', () => {
 
     await user.click(
       await screen.findByRole('button', {
-        name: 'datapublications.edit_label',
+        name: 'datapublications.edit.edit_label',
       })
     );
 
@@ -275,7 +275,7 @@ describe('DLS Data Publication Landing page', () => {
     renderComponent();
 
     expect(
-      screen.queryByRole('button', { name: 'datapublications.edit_label' })
+      screen.queryByRole('button', { name: 'datapublications.edit.edit_label' })
     ).not.toBeInTheDocument();
 
     const versionPanel = await screen.findByRole('region', {
@@ -315,7 +315,7 @@ describe('DLS Data Publication Landing page', () => {
     renderComponent();
 
     expect(
-      screen.queryByRole('button', { name: 'datapublications.edit_label' })
+      screen.queryByRole('button', { name: 'datapublications.edit.edit_label' })
     ).not.toBeInTheDocument();
 
     expect(
