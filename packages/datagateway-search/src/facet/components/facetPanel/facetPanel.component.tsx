@@ -38,7 +38,10 @@ const Accordion = styled(MuiAccordion)(({ theme }) => ({
 }));
 
 const AccordionSummary = styled(MuiAccordionSummary)(({ theme }) => ({
-  backgroundColor: theme.palette.grey[50],
+  backgroundColor:
+    theme.palette.mode === 'dark'
+      ? theme.palette.grey[900]
+      : theme.palette.grey[50],
   minHeight: 0,
   paddingTop: theme.spacing(1),
   paddingBottom: theme.spacing(1),
