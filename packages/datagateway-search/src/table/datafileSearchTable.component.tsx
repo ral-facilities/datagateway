@@ -318,7 +318,7 @@ const DatafileSearchTable: React.FC<DatafileSearchTableProps> = (props) => {
       data-testid="datafile-search-table"
       container
       spacing={1}
-      sx={{ height: '100%' }}
+      sx={{ height: 'calc(100% - 24px)' }}
     >
       <Grid item xs={2} sx={{ height: '100%' }}>
         {data?.pages && (
@@ -348,43 +348,52 @@ const DatafileSearchTable: React.FC<DatafileSearchTableProps> = (props) => {
           />
         )}
       </Grid>
-      <Grid item xs={10}>
+      <Grid container item xs={10} direction="column">
         <SelectedFilterChips
           filters={filters}
           onRemoveFilter={removeFilterChip}
         />
-        <Paper variant="outlined" sx={{ height: '100%', marginTop: 1 }}>
-          <div>
-            {aborted ? (
-              <Paper>
-                <Typography align="center" variant="h6" component="h6">
-                  {t('loading.abort_message')}
-                </Typography>
-              </Paper>
-            ) : (
-              <Table
-                loading={
-                  addToCartLoading || removeFromCartLoading || cartLoading
-                }
-                data={aggregatedSource}
-                loadMoreRows={loadMoreRows}
-                totalRowCount={
-                  aggregatedSource?.length + (hasNextPage ? 1 : 0) ?? 0
-                }
-                sort={{}}
-                onSort={handleSort}
-                selectedRows={selectedRows}
-                disableSelectAll={!selectAllSetting}
-                allIds={aggregatedIds}
-                onCheck={addToCart}
-                onUncheck={removeFromCart}
-                detailsPanel={detailsPanel}
-                columns={columns}
-                shortHeader={true}
-              />
-            )}
-          </div>
-        </Paper>
+        <Grid item xs>
+          <Paper
+            variant="outlined"
+            sx={{
+              height: '100%',
+              minHeight: '300px',
+              marginTop: 1,
+            }}
+          >
+            <div style={{ height: '100%' }}>
+              {aborted ? (
+                <Paper>
+                  <Typography align="center" variant="h6" component="h6">
+                    {t('loading.abort_message')}
+                  </Typography>
+                </Paper>
+              ) : (
+                <Table
+                  loading={
+                    addToCartLoading || removeFromCartLoading || cartLoading
+                  }
+                  data={aggregatedSource}
+                  loadMoreRows={loadMoreRows}
+                  totalRowCount={
+                    aggregatedSource?.length + (hasNextPage ? 1 : 0) ?? 0
+                  }
+                  sort={{}}
+                  onSort={handleSort}
+                  selectedRows={selectedRows}
+                  disableSelectAll={!selectAllSetting}
+                  allIds={aggregatedIds}
+                  onCheck={addToCart}
+                  onUncheck={removeFromCart}
+                  detailsPanel={detailsPanel}
+                  columns={columns}
+                  shortHeader={true}
+                />
+              )}
+            </div>
+          </Paper>
+        </Grid>
       </Grid>
     </Grid>
   );

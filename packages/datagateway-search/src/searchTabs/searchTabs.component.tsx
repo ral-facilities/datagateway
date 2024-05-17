@@ -220,55 +220,53 @@ const SearchTabs = ({
         </StyledBox>
       </StyledBox>
       <SearchResultCountDispatch.Provider value={dispatch}>
-        <Box>
-          <TabPanel value={currentTab} index="investigation">
-            {view === 'card' ? (
-              <InvestigationCardView hierarchy={hierarchy} />
-            ) : (
-              <Paper
-                sx={{
-                  height: `calc(${containerHeight} - 56px)`,
-                  minHeight: `calc(500px - 56px)`,
-                  overflowX: 'auto',
-                  overflowY: 'hidden',
-                }}
-                elevation={0}
-              >
-                <InvestigationSearchTable hierarchy={hierarchy} />
-              </Paper>
-            )}
-          </TabPanel>
-          <TabPanel value={currentTab} index="dataset">
-            {view === 'card' ? (
-              <DatasetCardView hierarchy={hierarchy} />
-            ) : (
-              <Paper
-                sx={{
-                  height: `calc(${containerHeight} - 56px)`,
-                  minHeight: `calc(500px - 56px)`,
-                  overflowX: 'auto',
-                  overflowY: 'hidden',
-                }}
-                elevation={0}
-              >
-                <DatasetSearchTable hierarchy={hierarchy} />
-              </Paper>
-            )}
-          </TabPanel>
-          <TabPanel value={currentTab} index="datafile">
+        <TabPanel value={currentTab} index="investigation">
+          {view === 'card' ? (
+            <InvestigationCardView hierarchy={hierarchy} />
+          ) : (
             <Paper
               sx={{
                 height: `calc(${containerHeight} - 56px)`,
                 minHeight: `calc(500px - 56px)`,
-                overflowX: 'auto',
-                overflowY: 'hidden',
+                overflow: 'auto',
+                bgcolor: 'background.default',
               }}
               elevation={0}
             >
-              <DatafileSearchTable hierarchy={hierarchy} />
+              <InvestigationSearchTable hierarchy={hierarchy} />
             </Paper>
-          </TabPanel>
-        </Box>
+          )}
+        </TabPanel>
+        <TabPanel value={currentTab} index="dataset">
+          {view === 'card' ? (
+            <DatasetCardView hierarchy={hierarchy} />
+          ) : (
+            <Paper
+              sx={{
+                height: `calc(${containerHeight} - 56px)`,
+                minHeight: `calc(500px - 56px)`,
+                overflow: 'auto',
+                bgcolor: 'background.default',
+              }}
+              elevation={0}
+            >
+              <DatasetSearchTable hierarchy={hierarchy} />
+            </Paper>
+          )}
+        </TabPanel>
+        <TabPanel value={currentTab} index="datafile">
+          <Paper
+            sx={{
+              height: `calc(${containerHeight} - 56px)`,
+              minHeight: `calc(500px - 56px)`,
+              overflow: 'auto',
+              bgcolor: 'background.default',
+            }}
+            elevation={0}
+          >
+            <DatafileSearchTable hierarchy={hierarchy} />
+          </Paper>
+        </TabPanel>
       </SearchResultCountDispatch.Provider>
     </div>
   );

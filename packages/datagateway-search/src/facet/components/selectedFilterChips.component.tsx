@@ -29,12 +29,12 @@ function SelectedFilterChips({
       aria-label={t('selectedFilters')}
       direction="row"
       spacing={1}
-      sx={{ flexWrap: 'wrap', gap: 1 }}
+      sx={{ flexWrap: 'wrap', rowGap: 1, ml: -1 }}
     >
-      {Object.entries(filters).flatMap(([filterKey, filterValue]) => {
+      {Object.entries(filters).flatMap(([filterKey, filterValue], i) => {
         if (!Array.isArray(filterValue)) return [];
 
-        return filterValue.flatMap((value) => {
+        return filterValue.flatMap((value, j) => {
           if (typeof value === 'string') {
             return [
               <Chip
@@ -43,6 +43,7 @@ function SelectedFilterChips({
                 onDelete={() => {
                   onRemoveFilter(filterKey, value);
                 }}
+                sx={i === 0 && j === 0 ? { ml: 1 } : {}}
               />,
             ];
           }
@@ -55,6 +56,7 @@ function SelectedFilterChips({
                 onDelete={() => {
                   onRemoveFilter(filterKey, value);
                 }}
+                sx={i === 0 && j === 0 ? { ml: 1 } : {}}
               />,
             ];
           }

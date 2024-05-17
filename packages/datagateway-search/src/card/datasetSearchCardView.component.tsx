@@ -436,45 +436,47 @@ const DatasetCardView: React.FC<DatasetCardViewProps> = (props) => {
           />
         )}
       </Grid>
-      <Grid item xs={10}>
+      <Grid container item xs={10} direction="column" wrap="nowrap">
         <SelectedFilterChips
           filters={filters}
           onRemoveFilter={removeFilterChip}
         />
-        <Paper variant="outlined" sx={{ height: '100%', marginTop: 1 }}>
-          <div>
-            {aborted ? (
-              <Paper>
-                <Typography align="center" variant="h6" component="h6">
-                  {t('loading.abort_message')}
-                </Typography>
-              </Paper>
-            ) : (
-              <CardView
-                entityName="Dataset"
-                data={paginatedSource ?? []}
-                totalDataCount={
-                  aggregatedIds?.length + (hasNextPage ? 1 : 0) ?? 0
-                }
-                onPageChange={pushPage}
-                onFilter={pushFilter}
-                onSort={handleSort}
-                onResultsChange={pushResults}
-                loadedData={!isLoading}
-                loadedCount={!isLoading}
-                filters={{}}
-                sort={{}}
-                page={page}
-                results={results}
-                title={title}
-                description={description}
-                information={information}
-                moreInformation={moreInformation}
-                buttons={buttons}
-              />
-            )}
-          </div>
-        </Paper>
+        <Grid item xs>
+          <Paper variant="outlined" sx={{ height: '100%', marginTop: 1 }}>
+            <div>
+              {aborted ? (
+                <Paper>
+                  <Typography align="center" variant="h6" component="h6">
+                    {t('loading.abort_message')}
+                  </Typography>
+                </Paper>
+              ) : (
+                <CardView
+                  entityName="Dataset"
+                  data={paginatedSource ?? []}
+                  totalDataCount={
+                    aggregatedIds?.length + (hasNextPage ? 1 : 0) ?? 0
+                  }
+                  onPageChange={pushPage}
+                  onFilter={pushFilter}
+                  onSort={handleSort}
+                  onResultsChange={pushResults}
+                  loadedData={!isLoading}
+                  loadedCount={!isLoading}
+                  filters={{}}
+                  sort={{}}
+                  page={page}
+                  results={results}
+                  title={title}
+                  description={description}
+                  information={information}
+                  moreInformation={moreInformation}
+                  buttons={buttons}
+                />
+              )}
+            </div>
+          </Paper>
+        </Grid>
       </Grid>
     </Grid>
   );

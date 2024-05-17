@@ -135,7 +135,9 @@ function FacetPanel({
       >
         <Typography variant="h6">{t('facetPanel.title')}</Typography>
         {showApplyButton && (
-          <Button onClick={onApplyFacetFilters}>{t('facetPanel.apply')}</Button>
+          <Button variant="contained" onClick={onApplyFacetFilters}>
+            {t('facetPanel.apply')}
+          </Button>
         )}
       </Box>
 

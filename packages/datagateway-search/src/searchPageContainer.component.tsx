@@ -387,8 +387,8 @@ const SearchPageContainer: React.FC = () => {
   }, []);
 
   // Table should take up page but leave room for: SG appbar, SG footer,
-  // search box, search box padding, display as cards button, loading bar
-  const containerHeight = `calc(100vh - 64px - 36px - ${searchBoxHeight}px - 8px - 49px)`;
+  // search box, search box padding, display as cards button, loading bar, paper outline
+  const containerHeight = `calc(100vh - 64px - 36px - ${searchBoxHeight}px - 8px - 49px - 2px)`;
 
   const { data: cartItems } = useCart();
   const { push } = useHistory();
@@ -489,7 +489,11 @@ const SearchPageContainer: React.FC = () => {
                   data-testid="container-search-table"
                   id="container-search-table"
                 >
-                  <DataViewPaper view={view} containerHeight={containerHeight}>
+                  <DataViewPaper
+                    view={view}
+                    containerHeight={containerHeight}
+                    variant="outlined"
+                  >
                     <SearchTabs
                       view={view}
                       containerHeight={containerHeight}
