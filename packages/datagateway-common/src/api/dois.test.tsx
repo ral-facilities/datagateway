@@ -6,7 +6,7 @@ import {
   useIsCartMintable,
   useUpdateDOI,
 } from '.';
-import { createReactQueryWrapper } from '../setupTests';
+import { createReactQueryWrapper, createTestQueryClient } from '../setupTests';
 import { InvalidateTokenType } from '../state/actions/actions.types';
 import { setLogger } from 'react-query';
 import log from 'loglevel';
@@ -269,8 +269,11 @@ describe('doi api functions', () => {
         },
       });
 
+      const queryClient = createTestQueryClient();
+      const resetQueriesSpy = jest.spyOn(queryClient, 'resetQueries');
+
       const { result } = renderHook(() => useUpdateDOI(), {
-        wrapper: createReactQueryWrapper(),
+        wrapper: createReactQueryWrapper(undefined, queryClient),
       });
 
       await act(async () => {
@@ -301,6 +304,7 @@ describe('doi api functions', () => {
         },
         { headers: { Authorization: 'Bearer null' } }
       );
+      expect(resetQueriesSpy).toHaveBeenCalled();
     });
 
     it('handles errors correctly', async () => {

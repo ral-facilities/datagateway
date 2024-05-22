@@ -5,6 +5,7 @@ import {
   useQuery,
   useMutation,
   UseMutationResult,
+  useQueryClient,
 } from 'react-query';
 import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
@@ -218,9 +219,11 @@ export const useUpdateDOI = (): UseMutationResult<
     doiMetadata: DoiMetadata;
   }
 > => {
+  const queryClient = useQueryClient();
   const doiMinterUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.doiMinterUrl
   );
+  const username = readSciGatewayToken().username;
 
   return useMutation(
     ({ dataPublicationId, content, doiMetadata }) => {
@@ -228,6 +231,29 @@ export const useUpdateDOI = (): UseMutationResult<
     },
     {
       onError: handleDOIAPIError,
+      onSuccess: (_data, { dataPublicationId, content, doiMetadata }) => {
+        // resetQueries instead of invalidateQueries as otherwise invalidateQueries shows out-of-date data
+        queryClient.resetQueries({
+          predicate: (query) =>
+            // invalidate the my DOIs page query
+            (query.queryKey[0] === 'dataPublication' &&
+              username !== null &&
+              typeof query.queryKey[2] !== 'undefined' &&
+              JSON.stringify(query.queryKey[2]).includes(username)) ||
+            // invalidate the data publication info query
+            (query.queryKey[0] === 'dataPublication' &&
+              typeof query.queryKey[1] !== 'undefined' &&
+              JSON.stringify(query.queryKey[1]).includes(dataPublicationId)) ||
+            // invalidate the data publication content table queries
+            (query.queryKey[0] === 'dataPublicationContent' &&
+              // use double equals to ignore difference between 1 and "1"
+              // eslint-disable-next-line eqeqeq
+              query.queryKey[2] == dataPublicationId) ||
+            (query.queryKey[0] === 'dataPublicationContentCount' &&
+              // eslint-disable-next-line eqeqeq
+              query.queryKey[2] == dataPublicationId),
+        });
+      },
     }
   );
 };
