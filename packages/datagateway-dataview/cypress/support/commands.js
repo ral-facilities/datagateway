@@ -121,3 +121,28 @@ Cypress.Commands.add('isScrolledTo', { prevSubject: true }, (element) => {
     );
   });
 });
+
+// Clean up the uploaded files and datasets
+Cypress.Commands.add('removeDownloads', (datasets, datafiles) => {
+  cy.request('datagateway-dataview-settings.json').then((response) => {
+    const settings = response.body;
+    datasets.forEach((datasetId) => {
+      cy.request({
+        method: 'DELETE',
+        url: `${settings.apiUrl}/datasets/${datasetId}`,
+        headers: {
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+        },
+      });
+    });
+    datafiles.forEach((datafileId) => {
+      cy.request({
+        method: 'DELETE',
+        url: `${settings.apiUrl}/datafiles/${datafileId}`,
+        headers: {
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+        },
+      });
+    });
+  });
+});
