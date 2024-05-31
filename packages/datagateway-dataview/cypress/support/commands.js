@@ -123,7 +123,7 @@ Cypress.Commands.add('isScrolledTo', { prevSubject: true }, (element) => {
 });
 
 // Clean up the uploaded files and datasets
-Cypress.Commands.add('removeDownloads', (datasets, datafiles) => {
+Cypress.Commands.add('removeUploads', (datasets, datafiles) => {
   cy.request('datagateway-dataview-settings.json').then((response) => {
     const settings = response.body;
     datasets.forEach((datasetId) => {

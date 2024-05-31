@@ -44,7 +44,7 @@ describe.skip('DLS Upload functionality', () => {
     });
 
     afterEach(() => {
-      cy.removeDownloads(datasets, datafiles).then(() => {
+      cy.removeUploads(datasets, datafiles).then(() => {
         datasets.length = 0;
         datafiles.length = 0;
       });
@@ -453,7 +453,7 @@ describe.skip('DLS Upload functionality', () => {
     });
 
     afterEach(() => {
-      cy.removeDownloads(datasets, datafiles).then(() => {
+      cy.removeUploads(datasets, datafiles).then(() => {
         datasets.length = 0;
         datafiles.length = 0;
       });
