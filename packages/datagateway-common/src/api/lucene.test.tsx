@@ -1,14 +1,16 @@
 import { renderHook } from '@testing-library/react-hooks';
 import axios from 'axios';
-import { useLuceneSearch } from '.';
+import { useLuceneSearch, useSemanticSearch } from '.';
 import handleICATError from '../handleICATError';
 import { createReactQueryWrapper } from '../setupTests';
+import { SemanticSearchResults } from '../app.types';
 
 jest.mock('../handleICATError');
 
 describe('Lucene actions', () => {
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();
+    (axios.post as jest.Mock).mockClear();
     (handleICATError as jest.Mock).mockClear();
   });
 
@@ -200,6 +202,82 @@ describe('Lucene actions', () => {
 
     expect(handleICATError).toHaveBeenCalledWith({
       message: 'Test error message',
+    });
+  });
+
+  describe('useSemanticSearch', () => {
+    const mockSemanticSearchResults: SemanticSearchResults = [
+      {
+        score: 0.1,
+        doc: {
+          id: 1,
+          visitId: '1',
+          name: 'Mock investigation 1 name',
+          title: 'Mock investigation 1',
+          summary: 'Mock investigation 1 summary',
+        },
+      },
+      {
+        score: 0.2,
+        doc: {
+          id: 2,
+          visitId: '2',
+          name: 'Mock investigation 2 name',
+          title: 'Mock investigation 2',
+          summary: 'Mock investigation 2 summary',
+        },
+      },
+      {
+        score: 0.15,
+        doc: {
+          id: 3,
+          visitId: '3',
+          name: 'Mock investigation 3 name',
+          title: 'Mock investigation 3',
+          summary: 'Mock investigation 3 summary',
+        },
+      },
+    ];
+
+    it('performs semantic search based on the given query and returns the results sorted based on relevance from most to least relevant', async () => {
+      (axios.post as jest.Mock).mockResolvedValue({
+        data: mockSemanticSearchResults,
+      });
+
+      const { result, waitFor } = renderHook(
+        () =>
+          useSemanticSearch({
+            query: 'Test query',
+            enabled: true,
+          }),
+        { wrapper: createReactQueryWrapper() }
+      );
+
+      await waitFor(() => result.current.isSuccess);
+
+      expect(result.current.data).toEqual([
+        {
+          id: 2,
+          visitId: '2',
+          name: 'Mock investigation 2 name',
+          title: 'Mock investigation 2',
+          summary: 'Mock investigation 2 summary',
+        },
+        {
+          id: 3,
+          visitId: '3',
+          name: 'Mock investigation 3 name',
+          title: 'Mock investigation 3',
+          summary: 'Mock investigation 3 summary',
+        },
+        {
+          id: 1,
+          visitId: '1',
+          name: 'Mock investigation 1 name',
+          title: 'Mock investigation 1',
+          summary: 'Mock investigation 1 summary',
+        },
+      ]);
     });
   });
 });

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Typography, Link, Theme, Box, styled } from '@mui/material';
+import { Box, Grid, Link, styled, Theme, Typography } from '@mui/material';
 import SelectDates from './search/datePicker.component';
 import CheckboxesGroup from './search/checkBoxes.component';
 import SearchButton from './search/searchButton.component';
@@ -10,6 +10,9 @@ import { useSelector } from 'react-redux';
 import { StateType } from './state/app.types';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Link as RouterLink } from 'react-router-dom';
+import SearchTypeDropdown, {
+  SearchType,
+} from './search/searchTypeDropdown.component';
 
 const ContainerBox = styled(Box)(({ theme }) => ({
   maxWidth: '1920px',
@@ -22,14 +25,22 @@ const ContainerBox = styled(Box)(({ theme }) => ({
 
 interface SearchBoxContainerProps {
   searchText: string;
+  searchType: SearchType;
   initiateSearch: () => void;
   onSearchTextChange: (searchText: string) => void;
+  onSearchTypeChange: (searchType: SearchType) => void;
 }
 
 const SearchBoxContainer = (
   props: SearchBoxContainerProps
 ): React.ReactElement => {
-  const { searchText, initiateSearch, onSearchTextChange } = props;
+  const {
+    searchText,
+    searchType,
+    initiateSearch,
+    onSearchTextChange,
+    onSearchTypeChange,
+  } = props;
   const [t] = useTranslation();
 
   const maxNumResults = useSelector(
@@ -38,41 +49,44 @@ const SearchBoxContainer = (
 
   return (
     <ContainerBox data-testid="search-box-container">
-      <form
-        onSubmit={(event) => {
-          event.preventDefault();
-        }}
+      <Grid
+        container
+        direction="row"
+        justifyContent="center"
+        id="container-searchbox"
       >
-        <Grid
-          container
-          direction="row"
-          justifyContent="center"
-          id="container-searchbox"
-        >
-          <Grid item xs="auto" style={{ flexGrow: 1 }}>
-            <SearchTextBox
-              searchText={searchText}
-              initiateSearch={initiateSearch}
-              onChange={onSearchTextChange}
-            />
-          </Grid>
-
-          <Grid item sx={{ marginTop: '8px' }}>
-            <CheckboxesGroup />
-          </Grid>
-
-          <Grid item sx={{ marginTop: '8px' }}>
-            <SelectDates initiateSearch={initiateSearch} />
-          </Grid>
-
-          <Grid
-            item
-            sx={{ display: 'flex', marginTop: '24px', marginLeft: '6px' }}
-          >
-            <SearchButton initiateSearch={initiateSearch} />
-          </Grid>
+        <Grid item xs="auto" style={{ flexGrow: 1 }}>
+          <SearchTextBox
+            searchText={searchText}
+            initiateSearch={initiateSearch}
+            onChange={onSearchTextChange}
+          />
         </Grid>
-      </form>
+
+        <Grid item sx={{ marginTop: '8px' }}>
+          <CheckboxesGroup />
+        </Grid>
+
+        <Grid item sx={{ marginTop: '8px' }}>
+          <div style={{ display: 'flex' }}>
+            <SearchTypeDropdown
+              searchType={searchType}
+              onChange={onSearchTypeChange}
+            />
+          </div>
+        </Grid>
+
+        <Grid item sx={{ marginTop: '8px' }}>
+          <SelectDates initiateSearch={initiateSearch} />
+        </Grid>
+
+        <Grid
+          item
+          sx={{ display: 'flex', marginTop: '24px', marginLeft: '6px' }}
+        >
+          <SearchButton initiateSearch={initiateSearch} />
+        </Grid>
+      </Grid>
       <div style={{ display: 'flex' }}>
         <Typography
           sx={{
