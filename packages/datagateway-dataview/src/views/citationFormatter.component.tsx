@@ -122,7 +122,7 @@ const CitationFormatter = (
         {t('datapublications.details.citation_formatter.label')}
       </Subheading>
       <Typography data-testid="citation-formatter-details">
-        {t('datapublications.details.citation_formatter.details') +
+        {'The recommended format for citing this instrument can be found below.' +
           (doi
             ? ` ${t(
                 'datapublications.details.citation_formatter.details_select_format'

@@ -44,6 +44,8 @@ import DLSProposalsCardView from '../views/card/dls/dlsProposalsCardView.compone
 import DLSVisitsCardView from '../views/card/dls/dlsVisitsCardView.component';
 import DLSDatasetsCardView from '../views/card/dls/dlsDatasetsCardView.component';
 
+import ISISInstrumentLandingMock from '../views/landing/isis/isisInstrumentLandingMock.component';
+
 import withIdCheck from './withIdCheck';
 import {
   checkProposalName,
@@ -547,6 +549,12 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
               <Link to={paths.toggle.investigation}>Browse investigations</Link>
             )
           }
+        />
+
+        <Route
+          exact
+          path="/instrument"
+          render={() => <ISISInstrumentLandingMock />}
         />
 
         {/* My Data routes */}

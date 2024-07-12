@@ -441,6 +441,10 @@ const ViewRouting = React.memo(
       !matchPath(location.pathname, {
         path: Object.values(paths.preview),
         exact: true,
+      }) &&
+      !matchPath(location.pathname, {
+        path: '/instrument',
+        exact: true,
       });
 
     return (
