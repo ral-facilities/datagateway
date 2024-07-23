@@ -22,12 +22,20 @@ import {
   useRemoveFromCart,
   DLSDatasetDetailsPanel,
   formatBytes,
+  UploadButton,
+  TableActionProps,
 } from 'datagateway-common';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../../state/app.types';
+
+const actions = [
+  ({ rowData }: TableActionProps) => (
+    <UploadButton entityType="dataset" entityId={rowData.id} variant="icon" />
+  ),
+];
 
 interface DLSDatasetsTableProps {
   proposalName: string;
@@ -186,6 +194,10 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
     );
   }, [cartItems, investigationId]);
 
+  const uploadUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.uploadUrl
+  );
+
   return (
     <Table
       loading={
@@ -207,6 +219,7 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
       disableSelectAll={!selectAllSetting}
       detailsPanel={DLSDatasetDetailsPanel}
       columns={columns}
+      actions={uploadUrl ? actions : undefined}
     />
   );
 };

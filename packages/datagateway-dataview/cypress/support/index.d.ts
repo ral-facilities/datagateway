@@ -9,5 +9,9 @@ declare namespace Cypress {
       user?: string
     ): Cypress.Chainable<Cypress.Response>;
     clearDownloadCart(): Cypress.Chainable<Cypress.Response>;
+    removeUploads(
+      datasets: number[],
+      datafiles: number[]
+    ): Cypress.Chainable<Cypress.Response>;
   }
 }

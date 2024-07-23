@@ -1,19 +1,8 @@
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  margin: 0;  /* can remove this when we're using CssBaseline (React 18 branch) */
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
-
-@keyframes rotate {
-  to {
-    transform: rotateZ(360deg);
-  }
+/* TODO: Temporary/remove */
+.uppy-StatusBar-actionBtn--upload {
+  display: none !important;
 }

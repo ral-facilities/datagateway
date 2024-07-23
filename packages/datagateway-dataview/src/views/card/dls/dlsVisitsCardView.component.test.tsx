@@ -65,6 +65,11 @@ describe('DLS Visits - Card View', () => {
     history = createMemoryHistory();
     user = userEvent.setup();
 
+    dGCommonInitialState.urls = {
+      ...dGCommonInitialState.urls,
+      uploadUrl: 'https://example.com/upload',
+    };
+
     mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
@@ -186,6 +191,13 @@ describe('DLS Visits - Card View', () => {
     await user.click(await screen.findByLabelText('card-more-info-expand'));
     expect(
       await screen.findByTestId('visit-details-panel')
+    ).toBeInTheDocument();
+  });
+
+  it('renders buttons correctly', async () => {
+    renderComponent();
+    expect(
+      await screen.findByRole('button', { name: 'buttons.upload_dataset' })
     ).toBeInTheDocument();
   });
 

@@ -277,6 +277,7 @@ export interface URLs {
   apiUrl: string;
   downloadApiUrl: string;
   icatUrl: string;
+  uploadUrl?: string;
 }
 
 export interface PluginRoute {

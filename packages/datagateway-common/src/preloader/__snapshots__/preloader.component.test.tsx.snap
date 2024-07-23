@@ -18,22 +18,22 @@ exports[`Preloader component renders when the site is loading 1`] = `
         style="box-sizing: border-box; padding: 10px 0px;"
       >
         <div
-          style="display: block; margin: auto; width: 230px; height: 230px; animation: rotate 10s infinite linear;"
+          class="MuiBox-root css-i7r3q1"
         >
           <i
-            style="position: absolute; display: inline-block; top: 50%; left: 50%; border: 8px solid transparent; border-top-left-radius: 140px; border-top-right-radius: 140px; border-color: #8c4799; height: 70px; width: 140px; margin-top: -70px; margin-left: -70px; animation-name: rotate; animation-iteration-count: infinite; animation-duration: 3s; animation-timing-function: cubic-bezier(.09, 0, 0, .03); transform-origin: 50% 100% 0; box-sizing: border-box;"
+            class="css-1xpn6vn"
           />
           <i
-            style="position: absolute; display: inline-block; top: 50%; left: 50%; border: 8px solid transparent; border-top-left-radius: 148px; border-top-right-radius: 148px; border-color: #1d4f91; height: 79px; width: 158px; margin-top: -79px; margin-left: -79px; animation-name: rotate; animation-iteration-count: infinite; animation-duration: 3s; animation-timing-function: cubic-bezier(.09, 0.3, 0.12, .03); transform-origin: 50% 100% 0; box-sizing: border-box;"
+            class="css-5srjsq"
           />
           <i
-            style="position: absolute; display: inline-block; top: 50%; left: 50%; border: 8px solid transparent; border-top-left-radius: 156px; border-top-right-radius: 156px; border-color: #c34613; height: 88px; width: 176px; margin-top: -88px; margin-left: -88px; animation-name: rotate; animation-iteration-count: infinite; animation-duration: 3s; animation-timing-function: cubic-bezier(.09, 0.6, 0.24, .03); transform-origin: 50% 100% 0; box-sizing: border-box;"
+            class="css-gke7bx"
           />
           <i
-            style="position: absolute; display: inline-block; top: 50%; left: 50%; border: 8px solid transparent; border-top-left-radius: 164px; border-top-right-radius: 164px; border-color: #008275; height: 97px; width: 194px; margin-top: -97px; margin-left: -97px; animation-name: rotate; animation-iteration-count: infinite; animation-duration: 3s; animation-timing-function: cubic-bezier(.09, 0.8999999999999999, 0.36, .03); transform-origin: 50% 100% 0; box-sizing: border-box;"
+            class="css-19f05lv"
           />
           <i
-            style="position: absolute; display: inline-block; top: 50%; left: 50%; border: 8px solid transparent; border-top-left-radius: 172px; border-top-right-radius: 172px; border-color: #63666a; height: 106px; width: 212px; margin-top: -106px; margin-left: -106px; animation-name: rotate; animation-iteration-count: infinite; animation-duration: 3s; animation-timing-function: cubic-bezier(.09, 1.2, 0.48, .03); transform-origin: 50% 100% 0; box-sizing: border-box;"
+            class="css-1m17ujy"
           />
         </div>
       </div>

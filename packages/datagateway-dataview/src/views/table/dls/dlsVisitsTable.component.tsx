@@ -11,6 +11,8 @@ import {
   useTextFilter,
   DLSVisitDetailsPanel,
   formatBytes,
+  UploadButton,
+  TableActionProps,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -22,6 +24,18 @@ import {
   Save,
 } from '@mui/icons-material';
 import { useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { StateType } from 'datagateway-common';
+
+const actions = [
+  ({ rowData }: TableActionProps) => (
+    <UploadButton
+      entityId={rowData.id}
+      entityType="investigation"
+      variant="icon"
+    />
+  ),
+];
 
 interface DLSVisitsTableProps {
   proposalName: string;
@@ -148,6 +162,10 @@ const DLSVisitsTable = (props: DLSVisitsTableProps): React.ReactElement => {
     [t, dateFilter, textFilter, view, proposalName]
   );
 
+  const uploadUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.uploadUrl
+  );
+
   return (
     <Table
       data={aggregatedData}
@@ -157,6 +175,7 @@ const DLSVisitsTable = (props: DLSVisitsTableProps): React.ReactElement => {
       onSort={handleSort}
       detailsPanel={DLSVisitDetailsPanel}
       columns={columns}
+      actions={uploadUrl ? actions : undefined}
     />
   );
 };

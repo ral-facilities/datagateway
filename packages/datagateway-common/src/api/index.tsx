@@ -819,3 +819,15 @@ export const useCustomFilterCount = (
   // @ts-ignore
   return useQueries(queryConfigs);
 };
+
+export const refreshSession = (apiUrl: string): void => {
+  axios.put(
+    `${apiUrl}/sessions`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+      },
+    }
+  );
+};

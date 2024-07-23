@@ -65,6 +65,11 @@ describe('DLS Datasets - Card View', () => {
     history = createMemoryHistory();
     user = userEvent.setup();
 
+    dGCommonInitialState.urls = {
+      ...dGCommonInitialState.urls,
+      uploadUrl: 'https://example.com/upload',
+    };
+
     mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
@@ -186,6 +191,9 @@ describe('DLS Datasets - Card View', () => {
     renderComponent();
     expect(
       await screen.findByRole('button', { name: 'buttons.add_to_cart' })
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByRole('button', { name: 'buttons.upload_datafile' })
     ).toBeInTheDocument();
   });
 
