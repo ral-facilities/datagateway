@@ -9,6 +9,8 @@
   "idsUrl": "https://localhost:8181/ids",
   "apiUrl": "http://localhost:5000",
   "downloadApiUrl": "https://localhost:8181/topcat",
+  "doiMinterUrl": "http://localhost:8000",
+  "dataCiteUrl": "https://api.test.datacite.org",
   "breadcrumbs": [
     {
       "matchEntity": "proposal",

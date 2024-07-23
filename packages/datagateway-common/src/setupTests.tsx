@@ -73,14 +73,16 @@ export const createTestQueryClient = (): QueryClient =>
     defaultOptions: {
       queries: {
         retry: false,
+        // set retryDelay = 0 to make retries quick for custom retry functions
+        retryDelay: 0,
       },
     },
   });
 
 export const createReactQueryWrapper = (
-  history: History = createMemoryHistory()
+  history: History = createMemoryHistory(),
+  queryClient: QueryClient = createTestQueryClient()
 ): WrapperComponent<unknown> => {
-  const testQueryClient = createTestQueryClient();
   const state = {
     dgcommon: {
       ...initialState,
@@ -99,7 +101,7 @@ export const createReactQueryWrapper = (
   const wrapper: WrapperComponent<unknown> = ({ children }) => (
     <Provider store={mockStore(state)}>
       <Router history={history}>
-        <QueryClientProvider client={testQueryClient}>
+        <QueryClientProvider client={queryClient}>
           {children}
         </QueryClientProvider>
       </Router>

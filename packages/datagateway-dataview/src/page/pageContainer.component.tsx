@@ -92,11 +92,13 @@ export const paths = {
     dls: '/my-data/DLS',
     isis: '/my-data/ISIS',
   },
+  myDOIs: { dls: '/my-dois/DLS' },
   landing: {
     isisInvestigationLanding:
       '/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation/:investigationId',
     isisDatasetLanding:
       '/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation/:investigationId/dataset/:datasetId',
+    dlsDataPublicationLanding: '/browse/dataPublication/:dataPublicationId',
   },
   toggle: {
     investigation: '/browse/investigation',
@@ -167,7 +169,12 @@ const isisPaths = [
 ];
 
 // DLS base paths - required for linking to correct search view
-const dlsPaths = [paths.myData.dls, paths.toggle.dlsProposal];
+const dlsPaths = [
+  paths.myData.dls,
+  paths.myDOIs.dls,
+  paths.toggle.dlsProposal,
+  paths.landing.dlsDataPublicationLanding,
+];
 
 const BlackTextTypography = styled(Typography)({
   color: '#000000',
@@ -208,10 +215,13 @@ const NavBar = React.memo(
             xs
             aria-label="page-breadcrumbs"
           >
-            {/* don't show breadcrumbs on /my-data - only on browse */}
-            <Route path={[paths.root, paths.dataPublications.root]}>
-              <PageBreadcrumbs landingPageEntities={landingPageEntities} />
-            </Route>
+            {/* don't show breadcrumbs on /my-data or dls landing pages - only on browse */}
+            <SwitchRouting>
+              <Route path={[paths.landing.dlsDataPublicationLanding]} />
+              <Route path={[paths.root, paths.dataPublications.root]}>
+                <PageBreadcrumbs landingPageEntities={landingPageEntities} />
+              </Route>
+            </SwitchRouting>
           </Grid>
 
           {props.loggedInAnonymously || isDataPublication ? (
@@ -276,6 +286,7 @@ const NavBar = React.memo(
           <Route
             exact
             path={Object.values(paths.myData).concat(
+              Object.values(paths.myDOIs),
               Object.values(paths.toggle),
               Object.values(paths.standard),
               Object.values(paths.dataPublications.toggle),
@@ -440,6 +451,10 @@ const ViewRouting = React.memo(
       totalDataCount === 0 &&
       !matchPath(location.pathname, {
         path: Object.values(paths.preview),
+        exact: true,
+      }) &&
+      !matchPath(location.pathname, {
+        path: paths.landing.dlsDataPublicationLanding + '/edit',
         exact: true,
       });
 
@@ -690,6 +705,7 @@ const DataviewPageContainer: React.FC = () => {
               <Route
                 exact
                 path={Object.values(paths.myData).concat(
+                  Object.values(paths.myDOIs),
                   Object.values(paths.toggle),
                   Object.values(paths.standard),
                   Object.values(paths.dataPublications.toggle),

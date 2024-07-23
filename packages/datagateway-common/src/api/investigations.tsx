@@ -186,7 +186,7 @@ export const useInvestigationsInfinite = (
   );
 };
 
-const fetchInvestigationCount = (
+export const fetchInvestigationCount = (
   apiUrl: string,
   filters: FiltersType,
   additionalFilters?: AdditionalFilters

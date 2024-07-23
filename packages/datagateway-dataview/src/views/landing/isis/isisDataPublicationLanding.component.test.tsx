@@ -6,7 +6,7 @@ import {
   DataPublication,
   dGCommonInitialState,
   useDataPublication,
-  useDataPublications,
+  useDataPublicationsByFilters,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -26,7 +26,7 @@ jest.mock('datagateway-common', () => {
     __esModule: true,
     ...originalModule,
     useDataPublication: jest.fn(),
-    useDataPublications: jest.fn(),
+    useDataPublicationsByFilters: jest.fn(),
   };
 });
 
@@ -195,7 +195,7 @@ describe('ISIS Data Publication Landing page', () => {
       data: initialStudyDataPublicationData,
     });
 
-    (useDataPublications as jest.Mock).mockReturnValue({
+    (useDataPublicationsByFilters as jest.Mock).mockReturnValue({
       data: initialInvestigationDataPublicationsData,
     });
   });

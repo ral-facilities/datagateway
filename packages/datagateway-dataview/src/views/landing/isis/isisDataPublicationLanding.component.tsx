@@ -24,7 +24,7 @@ import {
   AddToCartButton,
   ViewsType,
   parseSearchToQuery,
-  useDataPublications,
+  useDataPublicationsByFilters,
   DownloadButton,
 } from 'datagateway-common';
 import React from 'react';
@@ -181,7 +181,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     parseInt(dataPublicationId)
   );
 
-  const { data: investigationDataPublications } = useDataPublications([
+  const { data: investigationDataPublications } = useDataPublicationsByFilters([
     {
       filterType: 'where',
       filterValue: JSON.stringify({

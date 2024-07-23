@@ -14,10 +14,10 @@ import {
   getFileSizeAndCount,
   removeAllDownloadCartItems,
   removeFromCart,
-  isCartMintable,
 } from '../downloadApi';
 import { mockCartItems, mockDownloadItems, mockedSettings } from '../testData';
 import DownloadTabs from './downloadTab.component';
+import axios, { AxiosResponse } from 'axios';
 
 jest.mock('datagateway-common', () => {
   const og = jest.requireActual('datagateway-common');
@@ -66,9 +66,16 @@ describe('DownloadTab', () => {
     (
       getFileSizeAndCount as jest.MockedFunction<typeof getFileSizeAndCount>
     ).mockResolvedValue({ fileSize: 1, fileCount: 7 });
-    (
-      isCartMintable as jest.MockedFunction<typeof isCartMintable>
-    ).mockResolvedValue(true);
+
+    axios.post = jest
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/\/ismintable$/.test(url)) {
+          return Promise.resolve({ status: 200 });
+        } else {
+          return Promise.reject(`Endpoint not mocked: ${url}`);
+        }
+      });
   });
 
   const renderComponent = (): RenderResult => {

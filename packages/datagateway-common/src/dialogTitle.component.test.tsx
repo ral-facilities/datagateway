@@ -6,7 +6,11 @@ import DialogTitle from './dialogTitle.component';
 describe('DialogTitle', () => {
   it('should render correctly', () => {
     const { asFragment } = render(
-      <DialogTitle id="dialog-title" onClose={jest.fn()}>
+      <DialogTitle
+        id="dialog-title"
+        onClose={jest.fn()}
+        closeAriaLabel="close_aria_label"
+      >
         Title
       </DialogTitle>
     );
@@ -18,14 +22,18 @@ describe('DialogTitle', () => {
     const mockCloseDialog = jest.fn();
 
     render(
-      <DialogTitle id="dialog-title" onClose={mockCloseDialog}>
+      <DialogTitle
+        id="dialog-title"
+        onClose={mockCloseDialog}
+        closeAriaLabel="close_aria_label"
+      >
         Title
       </DialogTitle>
     );
 
     await user.click(
       await screen.findByRole('button', {
-        name: 'downloadConfirmDialog.close_arialabel',
+        name: 'close_aria_label',
       })
     );
 

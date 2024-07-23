@@ -2,10 +2,8 @@ import { render, RenderResult, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as React from 'react';
 import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
-import { DownloadSettingsContext } from '../ConfigProvider';
-import { mockedSettings } from '../testData';
-import { fetchDOI } from '../downloadApi';
 import RelatedDOIs from './relatedDOIs.component';
+import axios, { AxiosResponse } from 'axios';
 
 setLogger({
   log: console.log,
@@ -13,15 +11,7 @@ setLogger({
   error: jest.fn(),
 });
 
-jest.mock('../downloadApi', () => {
-  const originalModule = jest.requireActual('../downloadApi');
-
-  return {
-    ...originalModule,
-
-    fetchDOI: jest.fn(),
-  };
-});
+jest.mock('loglevel');
 
 const createTestQueryClient = (): QueryClient =>
   new QueryClient({
@@ -37,6 +27,8 @@ describe('DOI generation form component', () => {
 
   let props: React.ComponentProps<typeof RelatedDOIs>;
 
+  let mockDOIResponse;
+
   const TestComponent: React.FC = () => {
     const [relatedDOIs, changeRelatedDOIs] = React.useState(
       // eslint-disable-next-line react/prop-types
@@ -45,12 +37,11 @@ describe('DOI generation form component', () => {
 
     return (
       <QueryClientProvider client={createTestQueryClient()}>
-        <DownloadSettingsContext.Provider value={mockedSettings}>
-          <RelatedDOIs
-            relatedDOIs={relatedDOIs}
-            changeRelatedDOIs={changeRelatedDOIs}
-          />
-        </DownloadSettingsContext.Provider>
+        <RelatedDOIs
+          relatedDOIs={relatedDOIs}
+          changeRelatedDOIs={changeRelatedDOIs}
+          dataCiteUrl="example.com"
+        />
       </QueryClientProvider>
     );
   };
@@ -71,16 +62,32 @@ describe('DOI generation form component', () => {
         },
       ],
       changeRelatedDOIs: jest.fn(),
+      dataCiteUrl: 'example.com',
     };
-    (fetchDOI as jest.MockedFunction<typeof fetchDOI>).mockResolvedValue({
-      id: '2',
-      type: 'DOI',
-      attributes: {
-        doi: 'related.doi.2',
-        titles: [{ title: 'Related DOI 2' }],
-        url: 'www.example.com',
+
+    mockDOIResponse = {
+      data: {
+        id: '2',
+        type: 'DOI',
+        attributes: {
+          doi: 'related.doi.2',
+          titles: [{ title: 'Related DOI 2' }],
+          url: 'www.example.com',
+        },
       },
-    });
+    };
+
+    axios.get = jest
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/\/dois\/.*/.test(url)) {
+          return Promise.resolve({
+            data: mockDOIResponse,
+          });
+        } else {
+          return Promise.reject(`Endpoint not mocked: ${url}`);
+        }
+      });
   });
 
   afterEach(() => {
@@ -141,7 +148,7 @@ describe('DOI generation form component', () => {
     expect(screen.getByText('Journal')).toBeInTheDocument();
 
     // test errors with various API error responses
-    (fetchDOI as jest.MockedFunction<typeof fetchDOI>).mockRejectedValueOnce({
+    (axios.get as jest.Mock).mockRejectedValueOnce({
       response: { data: { errors: [{ title: 'error msg' }] }, status: 404 },
     });
 
