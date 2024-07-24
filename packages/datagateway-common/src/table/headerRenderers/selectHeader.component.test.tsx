@@ -1,24 +1,27 @@
-import React from 'react';
-import { createShallow } from '@material-ui/core/test-utils';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import type { UserEvent } from '@testing-library/user-event/setup/setup';
+import * as React from 'react';
 import SelectHeader from './selectHeader.component';
+import SelectCell from '../cellRenderers/selectCell.component';
 
 describe('Select column header component', () => {
-  let shallow;
+  let user: UserEvent;
   const setLastChecked = jest.fn();
   const onCheck = jest.fn();
   const onUncheck = jest.fn();
   const selectHeaderProps = {
     dataKey: 'test',
-    className: 'test-class',
     selectedRows: [],
     totalRowCount: 3,
     onCheck,
     onUncheck,
     allIds: [1, 2, 3],
+    loading: false,
   };
 
   beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'div' });
+    user = userEvent.setup();
   });
 
   afterEach(() => {
@@ -27,40 +30,63 @@ describe('Select column header component', () => {
     onUncheck.mockClear();
   });
 
-  it('renders correctly when unchecked', () => {
-    const wrapper = shallow(<SelectHeader {...selectHeaderProps} />);
-    expect(wrapper).toMatchSnapshot();
+  it('renders correctly when unchecked', async () => {
+    const { asFragment } = render(<SelectHeader {...selectHeaderProps} />);
+    expect(asFragment()).toMatchSnapshot();
   });
 
-  it('renders correctly when indeterminate', () => {
-    const wrapper = shallow(
+  it('renders correctly when indeterminate', async () => {
+    const { asFragment } = render(
       <SelectHeader {...selectHeaderProps} selectedRows={[1]} />
     );
-    expect(wrapper).toMatchSnapshot();
+    expect(asFragment()).toMatchSnapshot();
   });
 
-  it('renders correctly when checked', () => {
-    const wrapper = shallow(
+  it('renders correctly when checked', async () => {
+    const { asFragment } = render(
       <SelectHeader {...selectHeaderProps} selectedRows={[1, 2, 3]} />
     );
-    expect(wrapper).toMatchSnapshot();
+    expect(asFragment()).toMatchSnapshot();
   });
 
-  it('calls onCheck when not all rows are selected and the checkbox is clicked', () => {
-    const wrapper = shallow(
-      <SelectHeader {...selectHeaderProps} selectedRows={[1]} />
+  it('renders correctly when selectedRows is undefined', async () => {
+    const { asFragment } = render(
+      <SelectHeader {...selectHeaderProps} selectedRows={undefined} />
     );
+    expect(asFragment()).toMatchSnapshot();
+  });
 
-    wrapper.childAt(0).prop('onClick')();
+  it('renders correctly when loading is true', async () => {
+    const { asFragment } = render(
+      <SelectHeader
+        {...selectHeaderProps}
+        loading={true}
+        selectedRows={undefined}
+      />
+    );
+    expect(asFragment()).toMatchSnapshot();
+  });
+
+  it('renders correctly when selectedRows parentSelected is true', () => {
+    const { asFragment } = render(
+      <SelectCell
+        {...selectHeaderProps}
+        parentSelected={true}
+        selectedRows={undefined}
+      />
+    );
+    expect(asFragment()).toMatchSnapshot();
+  });
+
+  it('calls onCheck when not all rows are selected and the checkbox is clicked', async () => {
+    render(<SelectHeader {...selectHeaderProps} selectedRows={[1]} />);
+    await user.click(await screen.findByRole('checkbox'));
     expect(onCheck).toHaveBeenCalledWith([1, 2, 3]);
   });
 
-  it('calls onUncheck when all rows are selected and the checkbox is clicked', () => {
-    const wrapper = shallow(
-      <SelectHeader {...selectHeaderProps} selectedRows={[1, 2, 3]} />
-    );
-
-    wrapper.childAt(0).prop('onClick')();
+  it('calls onUncheck when all rows are selected and the checkbox is clicked', async () => {
+    render(<SelectHeader {...selectHeaderProps} selectedRows={[1, 2, 3]} />);
+    await user.click(await screen.findByRole('checkbox'));
     expect(onUncheck).toHaveBeenCalledWith([1, 2, 3]);
   });
 });

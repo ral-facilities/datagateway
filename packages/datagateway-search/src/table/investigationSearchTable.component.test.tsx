@@ -1,35 +1,37 @@
-import React from 'react';
-import { createMount } from '@material-ui/core/test-utils';
+import * as React from 'react';
 import { initialState } from '../state/reducers/dgsearch.reducer';
 import configureStore from 'redux-mock-store';
-import { StateType } from '../state/app.types';
+import type { StateType } from '../state/app.types';
 import {
   dGCommonInitialState,
-  handleICATError,
-  Investigation,
-  useAddToCart,
-  useAllFacilityCycles,
-  useCart,
-  useIds,
-  useInvestigationCount,
-  useInvestigationsDatasetCount,
-  useInvestigationsInfinite,
-  useInvestigationSizes,
-  useLuceneSearch,
-  useRemoveFromCart,
-  ISISInvestigationDetailsPanel,
-  InvestigationDetailsPanel,
-  DLSVisitDetailsPanel,
+  type DownloadCartItem,
+  type SearchResponse,
+  type SearchResult,
+  FACILITY_NAME,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { ReactWrapper } from 'enzyme';
-import { QueryClientProvider, QueryClient } from 'react-query';
-// this is a dependency of react-router so we already have it
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { createMemoryHistory, History } from 'history';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { createMemoryHistory, type History } from 'history';
 import { Router } from 'react-router-dom';
 import InvestigationSearchTable from './investigationSearchTable.component';
+import userEvent from '@testing-library/user-event';
+import {
+  render,
+  type RenderResult,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
+import axios, { AxiosRequestConfig, type AxiosResponse } from 'axios';
+import { mockInvestigation } from '../testData';
+import {
+  findAllRows,
+  findCellInRow,
+  findColumnHeaderByName,
+  findColumnIndexByName,
+  queryAllRows,
+} from '../setupTests';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -38,42 +40,96 @@ jest.mock('datagateway-common', () => {
     __esModule: true,
     ...originalModule,
     handleICATError: jest.fn(),
-    useCart: jest.fn(),
-    useLuceneSearch: jest.fn(),
-    useInvestigationCount: jest.fn(),
-    useInvestigationsInfinite: jest.fn(),
-    useIds: jest.fn(),
-    useAddToCart: jest.fn(),
-    useRemoveFromCart: jest.fn(),
-    useAllFacilityCycles: jest.fn(),
-    useInvestigationsDatasetCount: jest.fn(),
-    useInvestigationSizes: jest.fn(),
   };
 });
 
 describe('Investigation Search Table component', () => {
-  let mount;
   const mockStore = configureStore([thunk]);
+  let container: HTMLDivElement;
   let state: StateType;
   let history: History;
+  let user: ReturnType<typeof userEvent.setup>;
+  let queryClient: QueryClient;
 
-  let rowData: Investigation[] = [];
+  let cartItems: DownloadCartItem[];
+  let searchResponse: SearchResponse;
+  let searchResult: SearchResult;
 
-  const createWrapper = (hierarchy?: string): ReactWrapper => {
-    return mount(
+  const renderComponent = (hierarchy?: string): RenderResult => {
+    return render(
       <Provider store={mockStore(state)}>
         <Router history={history}>
-          <QueryClientProvider client={new QueryClient()}>
+          <QueryClientProvider client={queryClient}>
             <InvestigationSearchTable hierarchy={hierarchy ?? ''} />
           </QueryClientProvider>
         </Router>
-      </Provider>
+      </Provider>,
+      {
+        container: document.body.appendChild(container),
+      }
     );
   };
 
+  /**
+   * Mock implementation of axios.get
+   */
+  const mockAxiosGet = (
+    url: string,
+    config: AxiosRequestConfig
+  ): Promise<Partial<AxiosResponse>> => {
+    if (/.*\/user\/cart\/.*$/.test(url)) {
+      // fetchDownloadCart
+      return Promise.resolve({ data: { cartItems } });
+    }
+
+    if (/.*\/search\/documents$/.test(url)) {
+      // fetchLuceneData
+
+      if ((config.params as URLSearchParams).get('query')?.includes('filter')) {
+        // filter is applied
+        return Promise.resolve<Partial<AxiosResponse<Partial<SearchResponse>>>>(
+          {
+            data: {
+              dimensions: {
+                'Investigation.type.name': {
+                  experiment: 10,
+                  calibration: 20,
+                },
+              },
+              results: [],
+            },
+          }
+        );
+      }
+      return Promise.resolve<Partial<AxiosResponse<SearchResponse>>>({
+        data: searchResponse,
+      });
+    }
+
+    if (/.*\/investigations$/.test(url)) {
+      return Promise.resolve({
+        data: [mockInvestigation],
+      });
+    }
+
+    return Promise.reject();
+  };
+
   beforeEach(() => {
-    mount = createMount();
-    history = createMemoryHistory();
+    user = userEvent.setup();
+
+    history = createMemoryHistory({
+      initialEntries: [
+        { search: 'searchText=test search&currentTab=investigation' },
+      ],
+    });
+    queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+      },
+    });
+    container = document.createElement('div');
+    container.id = 'datagateway-search';
 
     state = JSON.parse(
       JSON.stringify({
@@ -81,543 +137,796 @@ describe('Investigation Search Table component', () => {
         dgcommon: dGCommonInitialState,
       })
     );
-    rowData = [
-      {
+    cartItems = [];
+    searchResult = {
+      score: 1,
+      id: 1,
+      source: {
         id: 1,
-        title: 'Test 1',
-        name: 'Test 1',
+        title: 'Test title 1',
+        name: 'Test name 1',
+        fileSize: 1,
+        fileCount: 1,
         summary: 'foo bar',
         visitId: '1',
         doi: 'doi 1',
-        size: 1,
-        investigationInstruments: [
+        investigationinstrument: [
           {
-            id: 1,
-            instrument: {
-              id: 3,
-              name: 'LARMOR',
-            },
+            'instrument.id': 3,
+            'instrument.name': 'LARMOR',
           },
         ],
-        studyInvestigations: [
+        investigationfacilitycycle: [
           {
-            id: 6,
-            study: {
-              id: 7,
-              pid: 'study pid',
-              name: 'study name',
-              modTime: '2019-06-10',
-              createTime: '2019-06-10',
-            },
-            investigation: {
-              id: 1,
-              title: 'Test 1',
-              name: 'Test 1',
-              visitId: '1',
-            },
+            'facilityCycle.id': 5,
           },
         ],
-        startDate: '2019-06-10',
-        endDate: '2019-06-11',
-        facility: {
-          id: 2,
-          name: 'facility name',
+        startDate: 1560139200000,
+        endDate: 1560225600000,
+        'facility.name': 'facility name',
+        'facility.id': 2,
+      },
+    };
+
+    searchResponse = {
+      dimensions: {
+        'Investigation.type.name': {
+          experiment: 10,
+          calibration: 20,
         },
       },
-    ];
-    (useCart as jest.Mock).mockReturnValue({
-      data: [],
+      results: [searchResult],
+    };
+
+    axios.get = jest.fn().mockImplementation(mockAxiosGet);
+
+    axios.post = jest.fn().mockImplementation((url: string) => {
+      if (/.*\/user\/cart\/.*\/cartItems$/.test(url)) {
+        return Promise.resolve({ data: { cartItems } });
+      }
+      return Promise.reject();
     });
-    (useLuceneSearch as jest.Mock).mockReturnValue({
-      data: [],
-    });
-    (useInvestigationCount as jest.Mock).mockReturnValue({
-      data: 0,
-    });
-    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
-    });
-    (useIds as jest.Mock).mockReturnValue({
-      data: [1],
-    });
-    (useAddToCart as jest.Mock).mockReturnValue({
-      mutate: jest.fn(),
-      isLoading: false,
-    });
-    (useRemoveFromCart as jest.Mock).mockReturnValue({
-      mutate: jest.fn(),
-      isLoading: false,
-    });
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [],
-    });
-    (useInvestigationsDatasetCount as jest.Mock).mockImplementation(
-      (investigations) =>
-        (investigations
-          ? 'pages' in investigations
-            ? investigations.pages.flat()
-            : investigations
-          : []
-        ).map(() => ({
-          data: 1,
-          isFetching: false,
-          isSuccess: true,
-        }))
-    );
-    (useInvestigationSizes as jest.Mock).mockImplementation((investigations) =>
-      (investigations
-        ? 'pages' in investigations
-          ? investigations.pages.flat()
-          : investigations
-        : []
-      ).map(() => ({
-        data: 1,
-        isFetching: false,
-        isSuccess: true,
-      }))
-    );
   });
 
   afterEach(() => {
-    mount.cleanUp();
-    (handleICATError as jest.Mock).mockClear();
-    (useCart as jest.Mock).mockClear();
-    (useLuceneSearch as jest.Mock).mockClear();
-    (useInvestigationCount as jest.Mock).mockClear();
-    (useInvestigationsInfinite as jest.Mock).mockClear();
-    (useIds as jest.Mock).mockClear();
-    (useAddToCart as jest.Mock).mockClear();
-    (useRemoveFromCart as jest.Mock).mockClear();
-    (useAllFacilityCycles as jest.Mock).mockClear();
-    (useInvestigationsDatasetCount as jest.Mock).mockClear();
-    (useInvestigationSizes as jest.Mock).mockClear();
+    jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find('VirtualizedTable').props()).toMatchSnapshot();
+  it('disables the search query if investigation search is disabled', async () => {
+    const searchParams = new URLSearchParams(history.location.search);
+    searchParams.append('investigation', 'false');
+    history.replace({ search: `?${searchParams.toString()}` });
+
+    renderComponent();
+
+    // check that column headers are shown correctly.
+    expect(
+      await findColumnHeaderByName('investigations.title')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.visit_id')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.name')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.doi')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.size')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.instrument')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.start_date')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.end_date')
+    ).toBeInTheDocument();
+
+    // wait for queries to finish fetching
+    await waitFor(() => !queryClient.isFetching());
+
+    expect(
+      queryClient.getQueryState(['search', 'Investigation'], { exact: false })
+        ?.status
+    ).toBe('idle');
+
+    expect(queryAllRows()).toHaveLength(0);
   });
 
-  it('calls the correct data fetching hooks on load', () => {
-    (useLuceneSearch as jest.Mock).mockReturnValue({
-      data: [1],
+  it('renders search results correctly', async () => {
+    renderComponent();
+
+    // check that column headers are shown correctly.
+    expect(
+      await findColumnHeaderByName('investigations.title')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.visit_id')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.name')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.doi')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.size')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.instrument')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.start_date')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.end_date')
+    ).toBeInTheDocument();
+
+    const rows = await findAllRows();
+    expect(rows).toHaveLength(1);
+
+    // check that facet filter panel is present
+    expect(screen.getByText('facetPanel.title')).toBeInTheDocument();
+    // apply filter button should be invisible initially
+    expect(
+      screen.queryByRole('button', { name: 'facetPanel.apply' })
+    ).toBeNull();
+
+    const accordion = screen.getByRole('button', {
+      name: 'Toggle facetDimensionLabel.Investigation.type.name filter panel',
     });
 
-    createWrapper();
+    expect(accordion).toBeInTheDocument();
 
-    expect(useCart).toHaveBeenCalled();
-    expect(useLuceneSearch).toHaveBeenCalledWith('Investigation', {
-      searchText: '',
-      startDate: null,
-      endDate: null,
-      maxCount: 300,
+    await user.click(accordion);
+
+    const filterPanel = await screen.getByLabelText(
+      'facetDimensionLabel.Investigation.type.name filter panel'
+    );
+
+    expect(filterPanel).toBeInTheDocument();
+
+    const experimentFilter = within(filterPanel).getByRole('button', {
+      name: 'Add experiment filter',
+    });
+    const calibrationFilter = within(filterPanel).getByRole('button', {
+      name: 'Add calibration filter',
     });
 
-    expect(useInvestigationCount).toHaveBeenCalledWith([
+    // check that filter items are present and that they show the correct value and count
+    expect(experimentFilter).toBeInTheDocument();
+    expect(calibrationFilter).toBeInTheDocument();
+    expect(
+      within(experimentFilter).getByText('experiment')
+    ).toBeInTheDocument();
+    expect(within(experimentFilter).getByText('10')).toBeInTheDocument();
+    expect(
+      within(calibrationFilter).getByText('calibration')
+    ).toBeInTheDocument();
+    expect(within(calibrationFilter).getByText('20')).toBeInTheDocument();
+
+    const row = rows[0];
+
+    // each cell in the row should contain the correct value
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.title'),
+        })
+      ).getByText('Test title 1')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.visit_id'),
+        })
+      ).getByText('1')
+    ).toBeInTheDocument();
+
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.name'),
+        })
+      ).getByText('Test name 1')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.doi'),
+        })
+      ).getByRole('link', { name: 'doi 1' })
+    ).toHaveAttribute('href', 'https://doi.org/doi 1');
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.size'),
+        })
+      ).getByText('1 B')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.instrument'),
+        })
+      ).getByText('LARMOR')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.start_date'),
+        })
+      ).getByText('10/06/2019')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.end_date'),
+        })
+      ).getByText('11/06/2019')
+    ).toBeInTheDocument();
+  });
+
+  it('displays investigation size for isis', async () => {
+    renderComponent('isis');
+
+    // check that column headers are shown correctly.
+    expect(
+      await findColumnHeaderByName('investigations.title')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.visit_id')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.name')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.doi')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.size')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.instrument')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.start_date')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.end_date')
+    ).toBeInTheDocument();
+
+    const rows = await findAllRows();
+    expect(rows).toHaveLength(1);
+
+    const row = rows[0];
+
+    // each cell in the row should contain the correct value
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.title'),
+        })
+      ).getByText('Test title 1')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.visit_id'),
+        })
+      ).getByText('1')
+    ).toBeInTheDocument();
+
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.name'),
+        })
+      ).getByText('Test name 1')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.doi'),
+        })
+      ).getByRole('link', { name: 'doi 1' })
+    ).toHaveAttribute('href', 'https://doi.org/doi 1');
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.size'),
+        })
+      ).getByText('1 B')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.instrument'),
+        })
+      ).getByText('LARMOR')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.start_date'),
+        })
+      ).getByText('10/06/2019')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.end_date'),
+        })
+      ).getByText('11/06/2019')
+    ).toBeInTheDocument();
+  });
+
+  it('applies selected filters correctly', async () => {
+    renderComponent();
+
+    // check that no filter chip is visible initially
+    const selectedFilters = await screen.findByLabelText('selectedFilters');
+    expect(
+      within(selectedFilters).queryAllByText(/^facetDimensionLabel.*/)
+    ).toHaveLength(0);
+
+    // expand accordion
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Toggle facetDimensionLabel.Investigation.type.name filter panel',
+      })
+    );
+    // select the filter
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Add calibration filter',
+      })
+    );
+    // apply the filter
+    await user.click(screen.getByRole('button', { name: 'facetPanel.apply' }));
+
+    // when filter is applied, the fake axios get will return nothing
+    // so we should expect no rows in the table
+    await waitFor(() => {
+      expect(queryAllRows()).toHaveLength(0);
+    });
+
+    // expand accordion
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Toggle facetDimensionLabel.Investigation.type.name filter panel',
+      })
+    );
+
+    const selectedFilterItem = await screen.findByRole('button', {
+      name: 'Remove calibration filter',
+    });
+
+    expect(selectedFilterItem).toBeInTheDocument();
+    expect(selectedFilterItem).toHaveAttribute('aria-selected', 'true');
+    expect(within(selectedFilterItem).getByRole('checkbox')).toBeChecked();
+
+    // the selected filters should be displayed
+    expect(selectedFilters).toBeInTheDocument();
+    expect(
+      within(selectedFilters).getByText(
+        'facetDimensionLabel.Investigation.type.name: calibration'
+      )
+    ).toBeInTheDocument();
+
+    // the rest of the filters should also be displayed but they should not be selected
+    const experimentFilter = screen.getByRole('button', {
+      name: 'Add experiment filter',
+    });
+    expect(experimentFilter).toBeInTheDocument();
+    expect(experimentFilter).toHaveAttribute('aria-selected', 'false');
+    expect(within(experimentFilter).getByRole('checkbox')).not.toBeChecked();
+  });
+
+  it('applies filters already present in the URL on first render', async () => {
+    const searchParams = new URLSearchParams(history.location.search);
+    searchParams.append(
+      'filters',
+      JSON.stringify({
+        'Investigation.type.name': ['experiment'],
+      })
+    );
+    history.replace({ search: `?${searchParams.toString()}` });
+
+    renderComponent();
+
+    // when filters are applied
+    // the fake axios.get returns no search results
+    // so we should expect no rows in the table
+    await waitFor(() => {
+      expect(queryAllRows()).toHaveLength(0);
+    });
+
+    // expand accordion
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Toggle facetDimensionLabel.Investigation.type.name filter panel',
+      })
+    );
+
+    // filter should be selected
+    const filterItem = await screen.findByRole('button', {
+      name: 'Remove experiment filter',
+    });
+    expect(filterItem).toBeInTheDocument();
+    expect(filterItem).toHaveAttribute('aria-selected', 'true');
+    expect(within(filterItem).getByRole('checkbox')).toBeChecked();
+
+    // the rest of the filters should also be displayed but they should not be selected
+    const calibrationFilter = screen.getByRole('button', {
+      name: 'Add calibration filter',
+    });
+    expect(calibrationFilter).toBeInTheDocument();
+    expect(calibrationFilter).toHaveAttribute('aria-selected', 'false');
+    expect(within(calibrationFilter).getByRole('checkbox')).not.toBeChecked();
+  });
+
+  it('allows filters to be removed through the facet filter panel', async () => {
+    const searchParams = new URLSearchParams(history.location.search);
+    searchParams.append(
+      'filters',
+      JSON.stringify({
+        'Investigation.type.name': ['experiment'],
+      })
+    );
+    history.replace({ search: `?${searchParams.toString()}` });
+
+    renderComponent();
+
+    const selectedFilterChips = await screen.findByLabelText('selectedFilters');
+
+    expect(
+      within(selectedFilterChips).getByRole('button', {
+        name: 'facetDimensionLabel.Investigation.type.name: experiment',
+      })
+    ).toBeInTheDocument();
+
+    // when filters are applied
+    // the fake axios.get returns no search results
+    // so we should expect no rows in the table
+    await waitFor(() => {
+      expect(queryAllRows()).toHaveLength(0);
+    });
+
+    // expand accordion
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Toggle facetDimensionLabel.Investigation.type.name filter panel',
+      })
+    );
+
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Remove experiment filter',
+      })
+    );
+
+    // apply the changes
+    await user.click(screen.getByRole('button', { name: 'facetPanel.apply' }));
+
+    expect(await findAllRows()).toHaveLength(1);
+
+    // check that the filter chip is removed
+    expect(
+      within(selectedFilterChips).queryByRole('button', {
+        name: 'facetDimensionLabel.Investigation.type.name: experiment',
+      })
+    ).toBeNull();
+
+    // expand accordion
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Toggle facetDimensionLabel.Investigation.type.name filter panel',
+      })
+    );
+
+    // filter item should not be selected anymore
+    const filterItem = await screen.findByRole('button', {
+      name: 'Add experiment filter',
+    });
+    expect(filterItem).toBeInTheDocument();
+    expect(filterItem).toHaveAttribute('aria-selected', 'false');
+    expect(within(filterItem).getByRole('checkbox')).not.toBeChecked();
+  });
+
+  it('allows filters to be removed by removing filter chips', async () => {
+    const searchParams = new URLSearchParams(history.location.search);
+    searchParams.append(
+      'filters',
+      JSON.stringify({
+        'Investigation.type.name': ['calibration'],
+      })
+    );
+    history.replace({ search: `?${searchParams.toString()}` });
+
+    renderComponent();
+
+    // when filters are applied
+    // the fake axios.get returns no search results
+    // so we should expect no rows in the table
+    await waitFor(() => {
+      expect(queryAllRows()).toHaveLength(0);
+    });
+
+    const selectedFilterChips = screen.getByLabelText('selectedFilters');
+    const chip = within(selectedFilterChips).getByRole('button', {
+      name: 'facetDimensionLabel.Investigation.type.name: calibration',
+    });
+
+    await user.click(within(chip).getByTestId('CancelIcon'));
+
+    expect(await findAllRows()).toHaveLength(1);
+
+    // check that the filter chip is removed
+    expect(
+      within(selectedFilterChips).queryByRole('button', {
+        name: 'facetDimensionLabel.Investigation.type.name: calibration',
+      })
+    ).toBeNull();
+
+    // expand accordion
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Toggle facetDimensionLabel.Investigation.type.name filter panel',
+      })
+    );
+
+    // filter item should not be selected anymore
+    const filterItem = await screen.findByRole('button', {
+      name: 'Add calibration filter',
+    });
+    expect(filterItem).toBeInTheDocument();
+    expect(filterItem).toHaveAttribute('aria-selected', 'false');
+    expect(within(filterItem).getByRole('checkbox')).not.toBeChecked();
+  });
+
+  it('should add the selected row to cart', async () => {
+    const addedCartItem: DownloadCartItem = {
+      entityId: 1,
+      entityType: 'investigation',
+      id: 1,
+      name: 'Test 1',
+      parentEntities: [],
+    };
+
+    renderComponent();
+
+    // wait for data to finish loading
+    expect(await screen.findByText('Test title 1')).toBeInTheDocument();
+    expect(screen.getByText('Test name 1')).toBeInTheDocument();
+
+    // pretend the server has added the row to the cart
+    // create a new array to trigger useMemo update
+    cartItems = [...cartItems, addedCartItem];
+
+    // clicks on the row checkbox
+    await user.click(screen.getByRole('checkbox', { name: 'select row 0' }));
+
+    // the checkbox should be checked
+    expect(
+      await screen.findByRole('checkbox', { name: 'select row 0' })
+    ).toBeChecked();
+  });
+
+  it('should remove the selected row from cart if it is in the cart', async () => {
+    const addedCartItem: DownloadCartItem = {
+      entityId: 1,
+      entityType: 'investigation',
+      id: 1,
+      name: 'Test 1',
+      parentEntities: [],
+    };
+
+    cartItems.push(addedCartItem);
+
+    renderComponent();
+
+    // wait for data to finish loading
+    expect(await screen.findByText('Test title 1')).toBeInTheDocument();
+    expect(screen.getByText('Test name 1')).toBeInTheDocument();
+
+    // pretend the server has removed the item from the cart
+    // create a new array to trigger useMemo update
+    cartItems = [];
+
+    // clicks on the row checkbox
+    await user.click(screen.getByRole('checkbox', { name: 'select row 0' }));
+
+    // the checkbox should not be checked
+    expect(
+      await screen.findByRole('checkbox', { name: 'select row 0' })
+    ).not.toBeChecked();
+  });
+
+  it('selected rows only considers relevant cart items', async () => {
+    cartItems = [
       {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: [1] },
-        }),
-      },
-    ]);
-    expect(useInvestigationsInfinite).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: [1] },
-        }),
-      },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify({
-          investigationInstruments: 'instrument',
-        }),
-      },
-    ]);
-    expect(useIds).toHaveBeenCalledWith(
-      'investigation',
-      [
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            id: { in: [1] },
-          }),
-        },
-      ],
-      true
-    );
-
-    expect(useAddToCart).toHaveBeenCalledWith('investigation');
-    expect(useRemoveFromCart).toHaveBeenCalledWith('investigation');
-    expect(useInvestigationsDatasetCount).toHaveBeenCalledWith({
-      pages: [rowData],
-    });
-    expect(useInvestigationSizes).toHaveBeenCalledWith(undefined);
-  });
-
-  it('calls fetchNextPage function of useDatafilesInfinite when loadMoreRows is called', () => {
-    const fetchNextPage = jest.fn();
-    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage,
-    });
-    const wrapper = createWrapper();
-
-    wrapper.find('VirtualizedTable').prop('loadMoreRows')({
-      startIndex: 50,
-      stopIndex: 74,
-    });
-
-    expect(fetchNextPage).toHaveBeenCalledWith({
-      pageParam: { startIndex: 50, stopIndex: 74 },
-    });
-  });
-
-  it('displays DOI and renders the expected Link ', () => {
-    const wrapper = createWrapper();
-    expect(
-      wrapper
-        .find('[data-testid="investigation-search-table-doi-link"]')
-        .first()
-        .text()
-    ).toEqual('doi 1');
-
-    expect(
-      wrapper
-        .find('[data-testid="investigation-search-table-doi-link"]')
-        .first()
-        .prop('href')
-    ).toEqual('https://doi.org/doi 1');
-  });
-
-  it('updates filter query params on text filter', () => {
-    const wrapper = createWrapper();
-
-    const filterInput = wrapper
-      .find('[aria-label="Filter by investigations.title"]')
-      .first();
-    filterInput.instance().value = 'test';
-    filterInput.simulate('change');
-
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
-        '{"title":{"value":"test","type":"include"}}'
-      )}`
-    );
-
-    filterInput.instance().value = '';
-    filterInput.simulate('change');
-
-    expect(history.length).toBe(3);
-    expect(history.location.search).toBe('?');
-  });
-
-  it('updates filter query params on date filter', () => {
-    const wrapper = createWrapper();
-
-    const filterInput = wrapper.find(
-      'input[id="investigations.end_date filter to"]'
-    );
-    filterInput.instance().value = '2019-08-06';
-    filterInput.simulate('change');
-
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
-    );
-
-    filterInput.instance().value = '';
-    filterInput.simulate('change');
-
-    expect(history.length).toBe(3);
-    expect(history.location.search).toBe('?');
-  });
-
-  it('updates sort query params on sort', () => {
-    const wrapper = createWrapper();
-
-    wrapper
-      .find('[role="columnheader"] span[role="button"]')
-      .first()
-      .simulate('click');
-
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"title":"asc"}')}`
-    );
-  });
-
-  it('calls addToCart mutate function on unchecked checkbox click', () => {
-    const addToCart = jest.fn();
-    (useAddToCart as jest.Mock).mockReturnValue({
-      mutate: addToCart,
-      loading: false,
-    });
-    const wrapper = createWrapper();
-
-    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
-
-    expect(addToCart).toHaveBeenCalledWith([1]);
-  });
-
-  it('calls removeFromCart mutate function on checked checkbox click', () => {
-    (useCart as jest.Mock).mockReturnValue({
-      data: [
-        {
-          entityId: 1,
-          entityType: 'investigation',
-          id: 1,
-          name: 'test',
-          parentEntities: [],
-        },
-      ],
-    });
-
-    const removeFromCart = jest.fn();
-    (useRemoveFromCart as jest.Mock).mockReturnValue({
-      mutate: removeFromCart,
-      loading: false,
-    });
-
-    const wrapper = createWrapper();
-
-    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
-
-    expect(removeFromCart).toHaveBeenCalledWith([1]);
-  });
-
-  it('selected rows only considers relevant cart items', () => {
-    (useCart as jest.Mock).mockReturnValue({
-      data: [
-        {
-          entityId: 2,
-          entityType: 'investigation',
-          id: 1,
-          name: 'test',
-          parentEntities: [],
-        },
-        {
-          entityId: 1,
-          entityType: 'dataset',
-          id: 2,
-          name: 'test',
-          parentEntities: [],
-        },
-      ],
-    });
-
-    const wrapper = createWrapper();
-
-    const selectAllCheckbox = wrapper
-      .find('[aria-label="select all rows"]')
-      .first();
-
-    expect(selectAllCheckbox.prop('checked')).toEqual(false);
-    expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
-  });
-
-  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', () => {
-    state.dgsearch.selectAllSetting = false;
-
-    const wrapper = createWrapper();
-
-    expect(useIds).toHaveBeenCalledWith(
-      'investigation',
-      expect.anything(),
-      false
-    );
-    expect(useIds).not.toHaveBeenCalledWith(
-      'investigation',
-      expect.anything(),
-      true
-    );
-    expect(wrapper.find('[aria-label="select all rows"]')).toHaveLength(0);
-  });
-
-  it('displays generic details panel when expanded', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find(InvestigationDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').first().simulate('click');
-
-    expect(wrapper.find(InvestigationDetailsPanel).exists()).toBeTruthy();
-  });
-
-  it('displays correct details panel for ISIS when expanded', () => {
-    const wrapper = createWrapper('isis');
-    expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').first().simulate('click');
-    expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeTruthy();
-  });
-
-  it('can navigate using the details panel for ISIS when there are facility cycles', () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
-          id: 4,
-          name: 'facility cycle name',
-          startDate: '2000-06-10',
-          endDate: '2020-06-11',
-        },
-      ],
-    });
-
-    const wrapper = createWrapper('isis');
-    expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').first().simulate('click');
-    expect(wrapper.find(ISISInvestigationDetailsPanel).exists()).toBeTruthy();
-
-    wrapper.find('#investigation-datasets-tab').first().simulate('click');
-    expect(history.location.pathname).toBe(
-      '/browse/instrument/3/facilityCycle/4/investigation/1/dataset'
-    );
-  });
-
-  it('displays correct details panel for DLS when expanded', () => {
-    const wrapper = createWrapper('dls');
-    expect(wrapper.find(DLSVisitDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').first().simulate('click');
-    expect(wrapper.find(DLSVisitDetailsPanel).exists()).toBeTruthy();
-  });
-
-  it('renders title, visit ID, Name and DOI as links', () => {
-    const wrapper = createWrapper();
-
-    expect(
-      wrapper.find('[aria-colindex=3]').find('p').children()
-    ).toMatchSnapshot();
-
-    expect(
-      wrapper.find('[aria-colindex=4]').find('p').children()
-    ).toMatchSnapshot();
-
-    expect(
-      wrapper.find('[aria-colindex=5]').find('p').children()
-    ).toMatchSnapshot();
-
-    expect(
-      wrapper.find('[aria-colindex=6]').find('p').children()
-    ).toMatchSnapshot();
-  });
-
-  it('renders fine with incomplete data', () => {
-    // this can happen when navigating between tables and the previous table's state still exists
-    // also tests that empty arrays are fine for investigationInstruments
-    rowData = [
-      {
+        entityId: 2,
+        entityType: 'investigation',
         id: 1,
         name: 'test',
-        title: 'test',
-        visitId: '1',
-        doi: 'Test 1',
-        investigationInstruments: [],
+        parentEntities: [],
+      },
+      {
+        entityId: 1,
+        entityType: 'dataset',
+        id: 2,
+        name: 'test',
+        parentEntities: [],
       },
     ];
 
-    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
+    renderComponent();
+
+    const selectAllCheckbox = await screen.findByRole('checkbox', {
+      name: 'select all rows',
     });
 
-    expect(() => createWrapper()).not.toThrowError();
+    expect(selectAllCheckbox).not.toBeChecked();
+    expect(selectAllCheckbox).toHaveAttribute('data-indeterminate', 'false');
   });
 
-  it('renders generic link correctly & pending count correctly', () => {
-    (useInvestigationsDatasetCount as jest.Mock).mockImplementation(() => [
-      {
-        isFetching: true,
-      },
-    ]);
-    const wrapper = createWrapper('data');
+  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', async () => {
+    state.dgsearch.selectAllSetting = false;
 
-    expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
+    renderComponent();
+
+    await waitFor(() => {
+      expect(
+        screen.queryByRole('checkbox', { name: 'select all rows' })
+      ).toBeNull();
+    });
+  });
+
+  it('displays generic details panel when expanded', async () => {
+    renderComponent();
+
+    await user.click(
+      await screen.findByRole('button', { name: 'Show details' })
+    );
+
+    expect(
+      await screen.findByTestId('investigation-details-panel')
+    ).toBeInTheDocument();
+  });
+
+  it('displays correct details panel for ISIS when expanded', async () => {
+    renderComponent(FACILITY_NAME.isis);
+
+    await user.click(
+      await screen.findByRole('button', { name: 'Show details' })
+    );
+
+    expect(
+      await screen.findByTestId('isis-investigation-details-panel')
+    ).toBeInTheDocument();
+  });
+
+  it('can navigate using the details panel for ISIS when there are facility cycles', async () => {
+    renderComponent(FACILITY_NAME.isis);
+
+    await user.click(
+      await screen.findByRole('button', { name: 'Show details' })
+    );
+
+    await user.click(
+      await screen.findByRole('tab', {
+        name: 'investigations.details.datasets',
+      })
+    );
+
+    expect(history.location.pathname).toBe(
+      '/browse/instrument/3/facilityCycle/5/investigation/1/dataset'
+    );
+  });
+
+  it('displays correct details panel for DLS when expanded', async () => {
+    renderComponent(FACILITY_NAME.dls);
+
+    await user.click(
+      await screen.findByRole('button', { name: 'Show details' })
+    );
+
+    expect(
+      await screen.findByTestId('dls-visit-details-panel')
+    ).toBeInTheDocument();
+  });
+
+  it('renders fine with incomplete data', async () => {
+    // this can happen when navigating between tables and the previous table's state still exists
+    // also tests that empty arrays are fine for investigationInstruments & investigationFacilityCycles
+    searchResponse = {
+      results: [
+        {
+          ...searchResult,
+          source: {
+            id: 1,
+            name: 'test',
+            title: 'test',
+            visitId: '1',
+            doi: 'Test 1',
+            investigationinstrument: [],
+            investigationfacilitycycle: [],
+          },
+        },
+      ],
+    };
+
+    renderComponent(FACILITY_NAME.isis);
+
+    await user.click(
+      await screen.findByRole('button', { name: 'Show details' })
+    );
+
+    expect(
+      await screen.findByTestId('isis-investigation-details-panel')
+    ).toBeInTheDocument();
+  });
+
+  it('renders generic link correctly correctly', async () => {
+    renderComponent('data');
+
+    expect(await screen.findByText('Test title 1')).toHaveAttribute(
+      'href',
       '/browse/investigation/1/dataset'
     );
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test 1');
-    expect(wrapper.find('[aria-colindex=7]').text()).toEqual('Calculating...');
   });
 
-  it("renders DLS link correctly and doesn't allow for cart selection", () => {
-    const wrapper = createWrapper('dls');
+  it("renders DLS link correctly and doesn't allow for cart selection", async () => {
+    renderComponent(FACILITY_NAME.dls);
 
-    expect(wrapper.find('[aria-colindex=2]').find('a').prop('href')).toEqual(
-      '/browse/proposal/Test 1/investigation/1/dataset'
+    expect(await screen.findByText('Test title 1')).toHaveAttribute(
+      'href',
+      '/browse/proposal/Test name 1/investigation/1/dataset'
     );
-    expect(wrapper.find('[aria-colindex=2]').text()).toEqual('Test 1');
-    expect(wrapper.find('[aria-label="select row 0"]')).toHaveLength(0);
+    expect(screen.queryByRole('checkbox', { name: 'select row 0' })).toBeNull();
   });
 
-  it('renders ISIS link & file sizes correctly', () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
-          id: 2,
-          name: 'facility cycle name',
-          startDate: '2000-06-10',
-          endDate: '2020-06-11',
-        },
-      ],
-    });
+  it('renders ISIS link & file sizes correctly', async () => {
+    renderComponent(FACILITY_NAME.isis);
 
-    const wrapper = createWrapper('isis');
-
-    expect(useInvestigationSizes).toHaveBeenCalledWith({ pages: [rowData] });
-    expect(useInvestigationsDatasetCount).toHaveBeenCalledWith(undefined);
-
-    expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
-      '/browse/instrument/3/facilityCycle/2/investigation/1/dataset'
+    expect(
+      await screen.findByRole('link', { name: 'Test title 1' })
+    ).toHaveAttribute(
+      'href',
+      '/browse/instrument/3/facilityCycle/5/investigation/1/dataset'
     );
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test 1');
-    expect(wrapper.find('[aria-colindex=7]').text()).toEqual('1 B');
+    expect(await screen.findByText('1 B')).toBeInTheDocument();
   });
 
-  it('does not render ISIS link when instrumentId cannot be found', () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
-          id: 4,
-          name: 'facility cycle name',
-          startDate: '2000-06-10',
-          endDate: '2020-06-11',
-        },
-      ],
-    });
-    delete rowData[0].investigationInstruments;
+  it('does not render ISIS link when instrumentId cannot be found', async () => {
+    delete searchResult.source.investigationinstrument;
 
-    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
-    });
-    const wrapper = createWrapper('isis');
+    renderComponent('isis');
 
-    expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test 1');
+    await waitFor(async () => {
+      // the title should not be rendered as a link...
+      expect(screen.queryByRole('link', { name: 'Test title 1' })).toBeNull();
+      // ...but it should still be rendered as a normal text
+      expect(screen.getByText('Test title 1')).toBeInTheDocument();
+      expect(await screen.findByText('1 B')).toBeInTheDocument();
+    });
   });
 
-  it('does not render ISIS link when facilityCycleId cannot be found', () => {
-    const wrapper = createWrapper('isis');
+  it('does not render ISIS link when facilityCycleId cannot be found', async () => {
+    delete searchResult.source.investigationfacilitycycle;
 
-    expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test 1');
-  });
+    renderComponent('isis');
 
-  it('does not render ISIS link when facilityCycleId has incompatible dates', () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
-          id: 2,
-          name: 'facility cycle name',
-          startDate: '2020-06-11',
-          endDate: '2000-06-10',
-        },
-      ],
+    await waitFor(async () => {
+      // the title should not be rendered as a link...
+      expect(screen.queryByRole('link', { name: 'Test title 1' })).toBeNull();
+      // ...but it should still be rendered as a normal text
+      expect(screen.getByText('Test title 1')).toBeInTheDocument();
+      expect(await screen.findByText('1 B')).toBeInTheDocument();
     });
-
-    const wrapper = createWrapper('isis');
-
-    expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test 1');
   });
 });

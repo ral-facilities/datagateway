@@ -1,32 +1,48 @@
-import React from 'react';
-import { createMount } from '@material-ui/core/test-utils';
-import InvestigationDetailsPanel from './investigationDetailsPanel.component';
+import { render, RenderResult, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import axios from 'axios';
+import * as React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactWrapper } from 'enzyme';
-import { Investigation } from '../../app.types';
-import { useInvestigationDetails } from '../../api/investigations';
+import { Provider } from 'react-redux';
+import { combineReducers, createStore } from 'redux';
+import { StateType } from '../../../lib';
 
-jest.mock('../../api/investigations');
+import type { Investigation } from '../../app.types';
+import dGCommonReducer from '../../state/reducers/dgcommon.reducer';
+import InvestigationDetailsPanel from './investigationDetailsPanel.component';
 
-describe('Investigation details panel component', () => {
-  let mount;
-  let rowData: Investigation;
-  const detailsPanelResize = jest.fn();
-  const viewDatasets = jest.fn();
-
-  const createWrapper = (): ReactWrapper => {
-    return mount(
+function renderComponent({
+  rowData,
+  detailsPanelResize,
+  viewDatasets,
+}: {
+  rowData: Investigation;
+  detailsPanelResize?: () => void;
+  viewDatasets?: () => void;
+}): RenderResult {
+  return render(
+    <Provider
+      store={createStore(
+        combineReducers<Partial<StateType>>({ dgcommon: dGCommonReducer })
+      )}
+    >
       <QueryClientProvider client={new QueryClient()}>
         <InvestigationDetailsPanel
           rowData={rowData}
           detailsPanelResize={detailsPanelResize}
+          viewDatasets={viewDatasets}
         />
       </QueryClientProvider>
-    );
-  };
+    </Provider>
+  );
+}
+
+describe('Investigation details panel component', () => {
+  let rowData: Investigation;
+  let user: ReturnType<typeof userEvent.setup>;
 
   beforeEach(() => {
-    mount = createMount();
+    user = userEvent.setup();
     rowData = {
       id: 1,
       title: 'Test 1',
@@ -44,12 +60,57 @@ describe('Investigation details panel component', () => {
           },
         },
       ],
-      studyInvestigations: [
+      dataCollectionInvestigations: [
         {
-          id: 11,
-          study: {
-            id: 12,
-            pid: 'study pid',
+          id: 1,
+          investigation: {
+            id: 1,
+            title: 'Test 1',
+            name: 'Test 1',
+            visitId: '1',
+          },
+          dataCollection: {
+            id: 11,
+            dataPublications: [
+              {
+                id: 12,
+                pid: 'Data Publication Pid',
+                description: 'Data Publication description',
+                modTime: '2019-06-10',
+                createTime: '2019-06-11',
+                title: 'Data Publication',
+                type: {
+                  id: 15,
+                  name: 'investigation',
+                },
+              },
+            ],
+          },
+        },
+        {
+          id: 2,
+          investigation: {
+            id: 1,
+            title: 'Test 1',
+            name: 'Test 1',
+            visitId: '1',
+          },
+          dataCollection: {
+            id: 13,
+            dataPublications: [
+              {
+                id: 14,
+                pid: 'Data Publication Study Pid',
+                description: 'Data Publication description',
+                modTime: '2019-06-10',
+                createTime: '2019-06-11',
+                title: 'Data Publication Study',
+                type: {
+                  id: 16,
+                  name: 'study',
+                },
+              },
+            ],
           },
         },
       ],
@@ -57,22 +118,28 @@ describe('Investigation details panel component', () => {
       endDate: '2019-06-11',
     };
 
-    (useInvestigationDetails as jest.Mock).mockReturnValue({
-      data: rowData,
+    (axios.get as jest.Mock).mockResolvedValue({
+      data: [rowData],
     });
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find('InvestigationDetailsPanel').props()).toMatchSnapshot();
+  it('should render correctly', () => {
+    const { asFragment } = renderComponent({ rowData });
+    expect(asFragment()).toMatchSnapshot();
   });
 
-  it('renders user, sample and publication tabs when present in the data', () => {
+  it('should show default tab on first render', async () => {
+    renderComponent({ rowData });
+    expect(
+      await screen.findByRole('tab', { name: 'investigations.details.label' })
+    ).toHaveAttribute('aria-selected', 'true');
+  });
+
+  it('should render user, sample and publication tabs when present in the data', () => {
     rowData.investigationUsers = [
       {
         id: 4,
@@ -107,11 +174,11 @@ describe('Investigation details panel component', () => {
       },
     ];
 
-    const wrapper = createWrapper();
-    expect(wrapper.find('InvestigationDetailsPanel').props()).toMatchSnapshot();
+    const { asFragment } = renderComponent({ rowData });
+    expect(asFragment()).toMatchSnapshot();
   });
 
-  it('checks if multiple samples result in change of title to plural version', () => {
+  it('should check if multiple samples result in change of title to plural version', () => {
     rowData.samples = [
       {
         id: 7,
@@ -123,11 +190,11 @@ describe('Investigation details panel component', () => {
       },
     ];
 
-    const wrapper = createWrapper();
-    expect(wrapper.find('InvestigationDetailsPanel').props()).toMatchSnapshot();
+    const { asFragment } = renderComponent({ rowData });
+    expect(asFragment()).toMatchSnapshot();
   });
 
-  it('checks if multiple publications result in change of title to plural version', () => {
+  it('should check if multiple publications result in change of title to plural version', () => {
     rowData.publications = [
       {
         id: 8,
@@ -139,46 +206,64 @@ describe('Investigation details panel component', () => {
       },
     ];
 
-    const wrapper = createWrapper();
-    expect(wrapper.find('InvestigationDetailsPanel').props()).toMatchSnapshot();
+    const { asFragment } = renderComponent({ rowData });
+    expect(asFragment()).toMatchSnapshot();
   });
 
-  it('renders publications tab and text "No publications" when no data is present', () => {
+  it('should render publications tab and text "No publications" when no data is present', async () => {
     rowData.publications = [];
-    const wrapper = createWrapper();
+    renderComponent({ rowData });
     expect(
-      wrapper
-        .find('[data-testid="investigation-details-panel-no-publications"]')
-        .exists()
-    ).toBeTruthy();
+      await screen.findByText(
+        'investigations.details.publications.no_publications'
+      )
+    ).toBeInTheDocument();
   });
 
-  it('renders samples tab and text "No samples" when no data is present', () => {
+  it('should render samples tab and text "No samples" when no data is present', async () => {
     rowData.samples = [];
-    const wrapper = createWrapper();
+    renderComponent({ rowData });
     expect(
-      wrapper
-        .find('[data-testid="investigation-details-panel-no-samples"]')
-        .exists()
-    ).toBeTruthy();
+      await screen.findByText('investigations.details.samples.no_samples')
+    ).toBeInTheDocument();
   });
 
-  it('renders users tab and text "No users" when no data is present', () => {
+  it('should render users tab and text "No users" when no data is present', async () => {
     rowData.investigationUsers = [];
-    const wrapper = createWrapper();
+    renderComponent({ rowData });
     expect(
-      wrapper
-        .find('[data-testid="investigation-details-panel-no-name"]')
-        .exists()
-    ).toBeTruthy();
+      await screen.findByText('investigations.details.users.no_name')
+    ).toBeInTheDocument();
   });
 
-  it('calls useInvestigationDetails hook on load', () => {
-    createWrapper();
-    expect(useInvestigationDetails).toHaveBeenCalledWith(rowData.id);
-  });
+  it('should let user switch between tabs', async () => {
+    rowData.investigationUsers = [
+      {
+        id: 4,
+        role: 'Investigator',
+        user: {
+          id: 5,
+          name: 'Louise',
+          fullName: 'Louise Davies',
+        },
+      },
+      {
+        id: 9,
+        role: 'Investigator',
+        user: {
+          id: 10,
+          name: 'Louise',
+        },
+      },
+    ];
 
-  it('calls detailsPanelResize on load and when tabs are switched between', () => {
+    rowData.samples = [
+      {
+        id: 7,
+        name: 'Test sample',
+      },
+    ];
+
     rowData.publications = [
       {
         id: 8,
@@ -186,62 +271,102 @@ describe('Investigation details panel component', () => {
       },
     ];
 
-    const wrapper = createWrapper();
+    renderComponent({ rowData });
 
-    expect(detailsPanelResize).toHaveBeenCalledTimes(1);
+    expect(
+      await screen.findByRole('tabpanel', {
+        name: 'investigations.details.label',
+      })
+    ).toBeVisible();
 
-    wrapper
-      .find('#investigation-publications-tab')
-      .hostNodes()
-      .simulate('click');
-
-    expect(detailsPanelResize).toHaveBeenCalledTimes(2);
-  });
-
-  it('detailsPanelResize not called when not provided', () => {
-    rowData.publications = [
-      {
-        id: 8,
-        fullReference: 'Test publication',
-      },
-    ];
-
-    const wrapper = mount(
-      <QueryClientProvider client={new QueryClient()}>
-        <InvestigationDetailsPanel rowData={rowData} />
-      </QueryClientProvider>
+    await user.click(
+      await screen.findByRole('tab', {
+        name: 'investigations.details.users.label',
+      })
     );
 
-    expect(detailsPanelResize).toHaveBeenCalledTimes(0);
+    expect(
+      await screen.findByRole('tabpanel', {
+        name: 'investigations.details.users.label',
+      })
+    ).toBeVisible();
 
-    wrapper
-      .find('#investigation-publications-tab')
-      .hostNodes()
-      .simulate('click');
+    await user.click(
+      await screen.findByRole('tab', {
+        name: 'investigations.details.samples.label',
+      })
+    );
 
-    expect(detailsPanelResize).toHaveBeenCalledTimes(0);
+    expect(
+      await screen.findByRole('tabpanel', {
+        name: 'investigations.details.samples.label',
+      })
+    ).toBeVisible();
+
+    await user.click(
+      await screen.findByRole('tab', {
+        name: 'investigations.details.publications.label',
+      })
+    );
+
+    expect(
+      await screen.findByRole('tabpanel', {
+        name: 'investigations.details.publications.label',
+      })
+    );
   });
 
-  it('displays DOI and renders the expected Link ', () => {
-    const wrapper = createWrapper();
-    expect(
-      wrapper
-        .find('[data-testid="investigation-details-panel-doi-link"]')
-        .first()
-        .text()
-    ).toEqual('doi 1');
-    expect(
-      wrapper
-        .find('[data-testid="investigation-details-panel-doi-link"]')
-        .first()
-        .prop('href')
-    ).toEqual('https://doi.org/doi 1');
-  });
-
-  it('gracefully handles StudyInvestigations without Studies and InvestigationUsers without Users', () => {
-    rowData.studyInvestigations = [
+  it('should call detailsPanelResize on load and when tabs are switched between', async () => {
+    rowData.publications = [
       {
-        id: 11,
+        id: 8,
+        fullReference: 'Test publication',
+      },
+    ];
+
+    const mockDetailsPanelResize = jest.fn();
+
+    renderComponent({
+      rowData,
+      detailsPanelResize: mockDetailsPanelResize,
+    });
+
+    await waitFor(() => {
+      expect(mockDetailsPanelResize).toHaveBeenCalledTimes(1);
+    });
+
+    await user.click(
+      await screen.findByRole('tab', {
+        name: 'investigations.details.publications.label',
+      })
+    );
+
+    expect(mockDetailsPanelResize).toHaveBeenCalledTimes(2);
+  });
+
+  it('should display DOI and render the expected Link ', async () => {
+    renderComponent({ rowData });
+
+    const link = await screen.findByRole('link', { name: /doi 1/ });
+
+    expect(link).toHaveTextContent('doi 1');
+    expect(link).toHaveAttribute('href', 'https://doi.org/doi 1');
+
+    const link2 = await screen.findByRole('link', {
+      name: /Data Publication Study Pid/,
+    });
+
+    expect(link2).toHaveTextContent('Data Publication Study Pid');
+    expect(link2).toHaveAttribute(
+      'href',
+      'https://doi.org/Data Publication Study Pid'
+    );
+  });
+
+  it('should gracefully handles dataCollectionInvestigations without dataPublications and InvestigationUsers without Users', () => {
+    rowData.dataCollectionInvestigations = [
+      {
+        id: 1,
       },
     ];
 
@@ -252,57 +377,46 @@ describe('Investigation details panel component', () => {
       },
     ];
 
-    (useInvestigationDetails as jest.Mock).mockReturnValueOnce({
-      data: rowData,
+    const { asFragment } = renderComponent({ rowData });
+    expect(asFragment()).toMatchSnapshot();
+  });
+
+  it('calls dataset view if view datasets tab clicked', async () => {
+    const mockViewDatasets = jest.fn();
+
+    renderComponent({
+      rowData,
+      viewDatasets: mockViewDatasets,
     });
 
-    const wrapper = createWrapper();
-    expect(wrapper.find('InvestigationDetailsPanel').props()).toMatchSnapshot();
-  });
-
-  it('calls dataset view if view datasets tab clicked', () => {
-    const wrapper = mount(
-      <QueryClientProvider client={new QueryClient()}>
-        <InvestigationDetailsPanel
-          rowData={rowData}
-          detailsPanelResize={detailsPanelResize}
-          viewDatasets={viewDatasets}
-        />
-      </QueryClientProvider>
+    await user.click(
+      await screen.findByRole('tab', {
+        name: 'investigations.details.datasets',
+      })
     );
-
-    expect(viewDatasets).not.toHaveBeenCalled();
-    wrapper.find('#investigation-datasets-tab').hostNodes().simulate('click');
-    expect(viewDatasets).toHaveBeenCalled();
+    expect(mockViewDatasets).toHaveBeenCalledTimes(1);
   });
 
-  it('Shows "No <field> provided" incase of a null field', () => {
+  it('Shows "No <field> provided" incase of a null field', async () => {
     const { summary, doi, startDate, endDate, ...amendedRowData } = rowData;
 
-    (useInvestigationDetails as jest.Mock).mockReturnValueOnce({
+    (axios.get as jest.Mock).mockResolvedValueOnce({
       data: amendedRowData,
     });
 
-    const wrapper = mount(
-      <QueryClientProvider client={new QueryClient()}>
-        <InvestigationDetailsPanel
-          rowData={amendedRowData}
-          detailsPanelResize={detailsPanelResize}
-        />
-      </QueryClientProvider>
-    );
+    renderComponent({ rowData: amendedRowData });
 
-    expect(wrapper.html()).toContain(
-      '<b>investigations.details.summary not provided</b>'
-    );
-    expect(wrapper.html()).toContain(
-      '<b>investigations.details.doi not provided</b>'
-    );
-    expect(wrapper.html()).toContain(
-      '<b>investigations.details.start_date not provided</b>'
-    );
-    expect(wrapper.html()).toContain(
-      '<b>investigations.details.end_date not provided</b>'
-    );
+    expect(
+      await screen.findByText('investigations.details.summary not provided')
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('investigations.details.doi not provided')
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('investigations.details.start_date not provided')
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('investigations.details.end_date not provided')
+    ).toBeInTheDocument();
   });
 });

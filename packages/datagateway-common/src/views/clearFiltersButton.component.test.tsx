@@ -1,28 +1,29 @@
-import React from 'react';
-import { createMount } from '@material-ui/core/test-utils';
+import * as React from 'react';
 import configureStore from 'redux-mock-store';
 import { initialState as dGCommonInitialState } from '../state/reducers/dgcommon.reducer';
 import { StateType } from '../state/app.types';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { MemoryRouter } from 'react-router';
-import { ReactWrapper } from 'enzyme';
-import { QueryClientProvider, QueryClient } from 'react-query';
+import { MemoryRouter } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import ClearFiltersButton, {
   ClearFilterProps,
 } from './clearFiltersButton.component';
+import { render, screen, type RenderResult } from '@testing-library/react';
+import { UserEvent } from '@testing-library/user-event/setup/setup';
+import userEvent from '@testing-library/user-event';
 
 describe('Generic clear filters button', () => {
-  let mount;
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let props: ClearFilterProps;
+  let user: UserEvent;
 
   const handleButtonClearFilters = jest.fn();
 
-  const createWrapper = (props: ClearFilterProps): ReactWrapper => {
+  const renderComponent = (props: ClearFilterProps): RenderResult => {
     const store = mockStore(state);
-    return mount(
+    return render(
       <Provider store={store}>
         <MemoryRouter initialEntries={[{ key: 'testKey', pathname: '/' }]}>
           <QueryClientProvider client={new QueryClient()}>
@@ -34,13 +35,12 @@ describe('Generic clear filters button', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
-
     props = {
-      handleButtonClearFilters: handleButtonClearFilters,
+      handleButtonClearFilters,
       disabled: false,
     };
 
+    user = userEvent.setup();
     state = JSON.parse(
       JSON.stringify({
         dgdataview: {}, //Dont need to fill, since not part of the test
@@ -56,34 +56,33 @@ describe('Generic clear filters button', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
     handleButtonClearFilters.mockClear();
   });
 
   it('renders correctly', () => {
-    const wrapper = createWrapper(props);
-    expect(wrapper).toMatchSnapshot();
+    const { asFragment } = renderComponent(props);
+    expect(asFragment()).toMatchSnapshot();
   });
 
-  it('calls the handle clear filter button when the button is clicked', () => {
-    const wrapper = createWrapper(props);
+  it('calls the handle clear filter button when the button is clicked', async () => {
+    renderComponent(props);
 
-    wrapper
-      .find('[data-testid="clear-filters-button"]')
-      .first()
-      .simulate('click');
+    await user.click(
+      await screen.findByRole('button', { name: 'app.clear_filters' })
+    );
 
     expect(handleButtonClearFilters).toHaveBeenCalledTimes(1);
   });
 
-  it(' is disabled when prop disabled is equal to true', () => {
-    props = {
-      handleButtonClearFilters: handleButtonClearFilters,
+  it('is disabled when prop disabled is equal to true', async () => {
+    renderComponent({
+      handleButtonClearFilters,
       disabled: true,
-    };
-    const wrapper = createWrapper(props);
+    });
 
-    expect(wrapper.find(ClearFiltersButton).props().disabled).toEqual(true);
+    expect(
+      await screen.findByRole('button', { name: 'app.clear_filters' })
+    ).toBeDisabled();
   });
 });

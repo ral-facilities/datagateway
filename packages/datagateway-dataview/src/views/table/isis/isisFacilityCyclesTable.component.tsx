@@ -14,8 +14,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { useLocation } from 'react-router-dom';
-import SubjectIcon from '@material-ui/icons/Subject';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import { Subject, CalendarToday } from '@mui/icons-material';
 
 interface ISISFacilityCyclesTableProps {
   instrumentId: string;
@@ -34,10 +33,6 @@ const ISISFacilityCyclesTable = (
     [location.search]
   );
 
-  const { data: totalDataCount } = useFacilityCycleCount(
-    parseInt(instrumentId)
-  );
-
   // isMounted is used to disable queries when the component isn't fully mounted.
   // It prevents the request being sent twice if default sort is set.
   // It is not needed for cards/tables that don't have default sort.
@@ -46,15 +41,26 @@ const ISISFacilityCyclesTable = (
     setIsMounted(true);
   }, []);
 
+  const { data: totalDataCount } = useFacilityCycleCount(
+    parseInt(instrumentId)
+  );
   const { fetchNextPage, data } = useFacilityCyclesInfinite(
     parseInt(instrumentId),
     isMounted
   );
 
-  const aggregatedData: FacilityCycle[] = React.useMemo(
-    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
-    [data]
-  );
+  /* istanbul ignore next */
+  const aggregatedData: FacilityCycle[] = React.useMemo(() => {
+    if (data) {
+      if ('pages' in data) {
+        return data.pages.flat();
+      } else if ((data as unknown) instanceof Array) {
+        return data;
+      }
+    }
+
+    return [];
+  }, [data]);
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
@@ -68,7 +74,7 @@ const ISISFacilityCyclesTable = (
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: SubjectIcon,
+        icon: Subject,
         label: t('facilitycycles.name'),
         dataKey: 'name',
         cellContentRenderer: (cellProps: TableCellProps) =>
@@ -80,14 +86,14 @@ const ISISFacilityCyclesTable = (
         filterComponent: textFilter,
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('facilitycycles.start_date'),
         dataKey: 'startDate',
         filterComponent: dateFilter,
         defaultSort: 'desc',
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('facilitycycles.end_date'),
         dataKey: 'endDate',
         filterComponent: dateFilter,

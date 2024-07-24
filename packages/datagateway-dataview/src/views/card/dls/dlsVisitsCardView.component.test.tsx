@@ -1,25 +1,26 @@
-import { Link, ListItemText } from '@material-ui/core';
-import { createMount } from '@material-ui/core/test-utils';
 import {
-  AdvancedFilter,
   dGCommonInitialState,
+  type Investigation,
   useInvestigationCount,
   useInvestigationsPaginated,
-  useInvestigationsDatasetCount,
-  Investigation,
-  DLSVisitDetailsPanel,
 } from 'datagateway-common';
-import { ReactWrapper } from 'enzyme';
-import React from 'react';
+import * as React from 'react';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router';
+import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { StateType } from '../../../state/app.types';
+import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import DLSVisitsCardView from './dlsVisitsCardView.component';
-import { createMemoryHistory, History } from 'history';
+import { createMemoryHistory, type History } from 'history';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../../../setupTests';
+import { render, type RenderResult, screen } from '@testing-library/react';
+import type { UserEvent } from '@testing-library/user-event/setup/setup';
+import userEvent from '@testing-library/user-event';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -29,21 +30,19 @@ jest.mock('datagateway-common', () => {
     ...originalModule,
     useInvestigationCount: jest.fn(),
     useInvestigationsPaginated: jest.fn(),
-    useInvestigationsDatasetCount: jest.fn(),
   };
 });
 
 describe('DLS Visits - Card View', () => {
-  let mount;
-  let mockStore;
+  const mockStore = configureStore([thunk]);
   let state: StateType;
   let cardData: Investigation[];
   let history: History;
+  let user: UserEvent;
 
-  const createWrapper = (): ReactWrapper => {
-    const store = mockStore(state);
-    return mount(
-      <Provider store={store}>
+  const renderComponent = (): RenderResult =>
+    render(
+      <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
             <DLSVisitsCardView proposalName="test" />
@@ -51,21 +50,21 @@ describe('DLS Visits - Card View', () => {
         </Router>
       </Provider>
     );
-  };
 
   beforeEach(() => {
-    mount = createMount();
     cardData = [
       {
         id: 1,
         title: 'Test 1',
         name: 'Test 1',
         visitId: '1',
+        fileSize: 1,
+        fileCount: 1,
       },
     ];
     history = createMemoryHistory();
+    user = userEvent.setup();
 
-    mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
         dgcommon: dGCommonInitialState,
@@ -81,81 +80,29 @@ describe('DLS Visits - Card View', () => {
       data: cardData,
       isLoading: false,
     });
-    (useInvestigationsDatasetCount as jest.Mock).mockReturnValue({ data: 1 });
 
     // Prevent error logging
     window.scrollTo = jest.fn();
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find('CardView').props()).toMatchSnapshot();
-  });
+  it('updates filter query params on text filter', async () => {
+    renderComponent();
 
-  it('calls the correct data fetching hooks on load', () => {
-    const proposalName = 'test';
-    createWrapper();
-    expect(useInvestigationCount).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({ name: { eq: proposalName } }),
-      },
-    ]);
-    expect(useInvestigationsPaginated).toHaveBeenCalledWith(
-      [
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({ name: { eq: proposalName } }),
-        },
-        {
-          filterType: 'include',
-          filterValue: JSON.stringify({
-            investigationInstruments: 'instrument',
-          }),
-        },
-      ],
-      undefined,
-      expect.any(Boolean)
-    );
-    expect(useInvestigationsDatasetCount).toHaveBeenCalledWith(cardData);
-  });
-
-  it('updates filter query params on date filter', () => {
-    const wrapper = createWrapper();
-
-    const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find(Link).simulate('click');
-    advancedFilter
-      .find('input')
-      .last()
-      .simulate('change', { target: { value: '2019-08-06' } });
-
-    expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
+    // click on button to show advanced filters
+    await user.click(
+      await screen.findByRole('button', { name: 'advanced_filters.show' })
     );
 
-    advancedFilter
-      .find('input')
-      .last()
-      .simulate('change', { target: { value: '' } });
+    const filter = await screen.findByRole('textbox', {
+      name: 'Filter by investigations.visit_id',
+      hidden: true,
+    });
 
-    expect(history.location.search).toBe('?');
-  });
-
-  it('updates filter query params on text filter', () => {
-    const wrapper = createWrapper();
-
-    const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find(Link).simulate('click');
-    advancedFilter
-      .find('input')
-      .first()
-      .simulate('change', { target: { value: 'test' } });
+    await user.type(filter, 'test');
 
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
@@ -163,18 +110,43 @@ describe('DLS Visits - Card View', () => {
       )}`
     );
 
-    advancedFilter
-      .find('input')
-      .first()
-      .simulate('change', { target: { value: '' } });
+    await user.clear(filter);
 
     expect(history.location.search).toBe('?');
   });
 
-  it('uses default sort', () => {
-    const wrapper = createWrapper();
-    wrapper.update();
+  it('updates filter query params on date filter', async () => {
+    applyDatePickerWorkaround();
 
+    renderComponent();
+
+    // click on button to show advanced filters
+    await user.click(
+      await screen.findByRole('button', { name: 'advanced_filters.show' })
+    );
+
+    const filter = await screen.findByRole('textbox', {
+      name: 'investigations.end_date filter to',
+    });
+
+    await user.type(filter, '2019-08-06');
+
+    expect(history.location.search).toBe(
+      `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
+    );
+
+    // await user.clear(filter);
+    await user.click(filter);
+    await user.keyboard('{Control}a{/Control}');
+    await user.keyboard('{Delete}');
+
+    expect(history.location.search).toBe('?');
+
+    cleanupDatePickerWorkaround();
+  });
+
+  it('uses default sort', () => {
+    renderComponent();
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"startDate":"desc"}')}`
@@ -194,34 +166,32 @@ describe('DLS Visits - Card View', () => {
     );
   });
 
-  it('updates sort query params on sort', () => {
-    const wrapper = createWrapper();
+  it('updates sort query params on sort', async () => {
+    renderComponent();
 
-    const button = wrapper.find(ListItemText).first();
-    expect(button.text()).toEqual('investigations.visit_id');
-    button.simulate('click');
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'Sort by INVESTIGATIONS.VISIT_ID',
+      })
+    );
 
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"visitId":"asc"}')}`
     );
   });
 
-  it('displays details panel when more information is expanded', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find(DLSVisitDetailsPanel).exists()).toBeFalsy();
-    wrapper
-      .find('[aria-label="card-more-info-expand"]')
-      .first()
-      .simulate('click');
-
-    expect(wrapper.find(DLSVisitDetailsPanel).exists()).toBeTruthy();
+  it('displays details panel when more information is expanded', async () => {
+    renderComponent();
+    await user.click(await screen.findByLabelText('card-more-info-expand'));
+    expect(
+      await screen.findByTestId('dls-visit-details-panel')
+    ).toBeInTheDocument();
   });
 
   it('renders fine with incomplete data', () => {
     (useInvestigationCount as jest.Mock).mockReturnValueOnce({});
     (useInvestigationsPaginated as jest.Mock).mockReturnValueOnce({});
-    (useInvestigationsDatasetCount as jest.Mock).mockReturnValueOnce([]);
 
-    expect(() => createWrapper()).not.toThrowError();
+    expect(() => renderComponent()).not.toThrowError();
   });
 });

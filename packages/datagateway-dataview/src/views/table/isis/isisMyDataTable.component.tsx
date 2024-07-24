@@ -1,38 +1,42 @@
 import {
+  Assessment,
+  CalendarToday,
+  Fingerprint,
+  Public,
+  Save,
+  Subject,
+} from '@mui/icons-material';
+import {
   ColumnType,
-  formatCountOrSize,
+  externalSiteLink,
+  FACILITY_NAME,
+  formatBytes,
   Investigation,
+  ISISInvestigationDetailsPanel,
   parseSearchToQuery,
   readSciGatewayToken,
   Table,
   tableLink,
-  externalSiteLink,
   useAddToCart,
-  useAllFacilityCycles,
   useCart,
   useDateFilter,
   useIds,
   useInvestigationCount,
   useInvestigationsInfinite,
-  useInvestigationSizes,
-  useSort,
   useRemoveFromCart,
+  useSort,
   useTextFilter,
-  ISISInvestigationDetailsPanel,
+} from 'datagateway-common';
+import {
+  buildDatasetTableUrlForInvestigation,
+  buildInvestigationLandingUrl,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import { useHistory, useLocation } from 'react-router-dom';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { StateType } from '../../../state/app.types';
-
-import SubjectIcon from '@material-ui/icons/Subject';
-import FingerprintIcon from '@material-ui/icons/Fingerprint';
-import PublicIcon from '@material-ui/icons/Public';
-import SaveIcon from '@material-ui/icons/Save';
-import AssessmentIcon from '@material-ui/icons/Assessment';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import { useSelector } from 'react-redux';
-import { useLocation, useHistory } from 'react-router';
 
 const ISISMyDataTable = (): React.ReactElement => {
   const selectAllSetting = useSelector(
@@ -48,15 +52,6 @@ const ISISMyDataTable = (): React.ReactElement => {
     [location.search]
   );
 
-  const { data: totalDataCount } = useInvestigationCount([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'investigationUsers.user.name': { eq: username },
-      }),
-    },
-  ]);
-
   // isMounted is used to disable queries when the component isn't fully mounted.
   // It prevents the request being sent twice if default sort is set.
   // It is not needed for cards/tables that don't have default sort.
@@ -65,6 +60,14 @@ const ISISMyDataTable = (): React.ReactElement => {
     setIsMounted(true);
   }, []);
 
+  const { data: totalDataCount } = useInvestigationCount([
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'investigationUsers.user.name': { eq: username },
+      }),
+    },
+  ]);
   const { fetchNextPage, data } = useInvestigationsInfinite(
     [
       {
@@ -79,14 +82,19 @@ const ISISMyDataTable = (): React.ReactElement => {
           {
             investigationInstruments: 'instrument',
           },
-          { studyInvestigations: 'study' },
+          { investigationFacilityCycles: 'facilityCycle' },
+          {
+            dataCollectionInvestigations: {
+              dataCollection: 'dataPublications',
+            },
+          },
         ]),
       },
     ],
     undefined,
     isMounted
   );
-  const { data: allIds } = useIds(
+  const { data: allIds, isLoading: allIdsLoading } = useIds(
     'investigation',
     [
       {
@@ -98,15 +106,11 @@ const ISISMyDataTable = (): React.ReactElement => {
     ],
     selectAllSetting
   );
-  const { data: cartItems } = useCart();
-  const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
-    'investigation'
-  );
-  const {
-    mutate: removeFromCart,
-    isLoading: removeFromCartLoading,
-  } = useRemoveFromCart('investigation');
-  const { data: facilityCycles } = useAllFacilityCycles();
+  const { data: cartItems, isLoading: cartLoading } = useCart();
+  const { mutate: addToCart, isLoading: addToCartLoading } =
+    useAddToCart('investigation');
+  const { mutate: removeFromCart, isLoading: removeFromCartLoading } =
+    useRemoveFromCart('investigation');
 
   const selectedRows = React.useMemo(
     () =>
@@ -122,10 +126,18 @@ const ISISMyDataTable = (): React.ReactElement => {
     [cartItems, selectAllSetting, allIds]
   );
 
-  const aggregatedData: Investigation[] = React.useMemo(
-    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
-    [data]
-  );
+  /* istanbul ignore next */
+  const aggregatedData: Investigation[] = React.useMemo(() => {
+    if (data) {
+      if ('pages' in data) {
+        return data.pages.flat();
+      } else if ((data as unknown) instanceof Array) {
+        return data;
+      }
+    }
+
+    return [];
+  }, [data]);
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
@@ -136,79 +148,60 @@ const ISISMyDataTable = (): React.ReactElement => {
     [fetchNextPage]
   );
 
-  const sizeQueries = useInvestigationSizes(data);
-
-  const urlPrefix = React.useCallback(
-    (investigationData: Investigation): string => {
-      if (
-        investigationData?.investigationInstruments?.[0]?.instrument &&
-        facilityCycles
-      ) {
-        const facilityCycle = facilityCycles.find(
-          (facilitycycle) =>
-            facilitycycle.startDate &&
-            facilitycycle.endDate &&
-            investigationData.startDate &&
-            facilitycycle.startDate <= investigationData.startDate &&
-            facilitycycle.endDate >= investigationData.startDate
-        );
-        if (facilityCycle) {
-          return `/browse/instrument/${investigationData.investigationInstruments[0].instrument.id}/facilityCycle/${facilityCycle.id}/investigation`;
-        }
-      }
-      return '';
-    },
-    [facilityCycles]
-  );
-
   const detailsPanel = React.useCallback(
-    ({ rowData, detailsPanelResize }) => (
-      <ISISInvestigationDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        viewDatasets={
-          urlPrefix(rowData as Investigation)
-            ? (id: number) =>
-                push(`${urlPrefix(rowData as Investigation)}/${id}/dataset`)
-            : undefined
-        }
-      />
-    ),
-    [push, urlPrefix]
+    ({ rowData, detailsPanelResize }) => {
+      const datasetTableUrl = buildDatasetTableUrlForInvestigation({
+        facilityName: FACILITY_NAME.isis,
+        investigation: rowData as Investigation,
+      });
+      return (
+        <ISISInvestigationDetailsPanel
+          rowData={rowData}
+          detailsPanelResize={detailsPanelResize}
+          viewDatasets={() => {
+            if (datasetTableUrl) push(datasetTableUrl);
+          }}
+        />
+      );
+    },
+    [push]
   );
 
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: SubjectIcon,
+        icon: Subject,
         label: t('investigations.title'),
         dataKey: 'title',
         cellContentRenderer: (cellProps: TableCellProps) => {
           const investigationData = cellProps.rowData as Investigation;
-          const url = urlPrefix(investigationData);
-          if (url) {
-            return tableLink(
-              `${url}/${investigationData.id}`,
-              investigationData.title,
-              view,
-              'isis-mydata-table-title'
-            );
-          } else {
-            return investigationData.title;
-          }
+          const url = buildInvestigationLandingUrl(investigationData);
+          return url
+            ? tableLink(
+                url,
+                investigationData.title,
+                view,
+                'isis-mydata-table-title'
+              )
+            : investigationData.title;
         },
         filterComponent: textFilter,
       },
       {
-        icon: PublicIcon,
+        icon: Public,
         label: t('investigations.doi'),
-        dataKey: 'studyInvestigations.study.pid',
+        dataKey:
+          'dataCollectionInvestigations.dataCollection.dataPublications.pid',
         cellContentRenderer: (cellProps: TableCellProps) => {
           const investigationData = cellProps.rowData as Investigation;
-          if (investigationData?.studyInvestigations?.[0]?.study) {
+          if (
+            investigationData?.dataCollectionInvestigations?.[0]?.dataCollection
+              ?.dataPublications?.[0]
+          ) {
             return externalSiteLink(
-              `https://doi.org/${investigationData.studyInvestigations[0].study.pid}`,
-              investigationData.studyInvestigations[0].study.pid,
+              `https://doi.org/${investigationData.dataCollectionInvestigations?.[0]?.dataCollection?.dataPublications?.[0].pid}`,
+              investigationData.dataCollectionInvestigations?.[0]
+                ?.dataCollection?.dataPublications?.[0].pid,
               'isis-mydata-table-doi-link'
             );
           } else {
@@ -218,32 +211,26 @@ const ISISMyDataTable = (): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: FingerprintIcon,
+        icon: Fingerprint,
         label: t('investigations.visit_id'),
         dataKey: 'visitId',
         filterComponent: textFilter,
       },
       {
-        icon: SubjectIcon,
+        icon: Subject,
         label: t('investigations.name'),
         dataKey: 'name',
         cellContentRenderer: (cellProps: TableCellProps) => {
           const investigationData = cellProps.rowData as Investigation;
-          const url = urlPrefix(investigationData);
-          if (url) {
-            return tableLink(
-              `${url}/${investigationData.id}`,
-              investigationData.name,
-              view
-            );
-          } else {
-            return investigationData.name;
-          }
+          const url = buildInvestigationLandingUrl(investigationData);
+          return url
+            ? tableLink(url, investigationData.name, view)
+            : investigationData.name;
         },
         filterComponent: textFilter,
       },
       {
-        icon: AssessmentIcon,
+        icon: Assessment,
         label: t('investigations.instrument'),
         dataKey: 'investigationInstruments.instrument.fullName',
         cellContentRenderer: (cellProps: TableCellProps) => {
@@ -251,40 +238,44 @@ const ISISMyDataTable = (): React.ReactElement => {
           if (investigationData?.investigationInstruments?.[0]?.instrument) {
             return investigationData.investigationInstruments[0].instrument
               .fullName;
-          } else {
-            return '';
           }
+          return '';
         },
         filterComponent: textFilter,
       },
       {
-        icon: SaveIcon,
+        icon: Save,
         label: t('investigations.size'),
         dataKey: 'size',
         cellContentRenderer: (cellProps: TableCellProps): number | string =>
-          formatCountOrSize(sizeQueries[cellProps.rowIndex], true),
+          formatBytes(cellProps.rowData.fileSize),
         disableSort: true,
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('investigations.start_date'),
         dataKey: 'startDate',
         filterComponent: dateFilter,
         defaultSort: 'desc',
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('investigations.end_date'),
         dataKey: 'endDate',
         filterComponent: dateFilter,
       },
     ],
-    [t, textFilter, dateFilter, urlPrefix, view, sizeQueries]
+    [t, textFilter, dateFilter, view]
   );
 
   return (
     <Table
-      loading={addToCartLoading || removeFromCartLoading}
+      loading={
+        addToCartLoading ||
+        removeFromCartLoading ||
+        cartLoading ||
+        allIdsLoading
+      }
       data={aggregatedData}
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}

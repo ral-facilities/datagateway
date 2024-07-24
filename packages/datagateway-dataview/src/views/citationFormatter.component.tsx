@@ -1,37 +1,25 @@
 import {
   Box,
   CircularProgress,
-  createStyles,
   FormControl,
   FormHelperText,
-  makeStyles,
   MenuItem,
   Select,
-  Theme,
+  SelectChangeEvent,
+  styled,
   Typography,
-} from '@material-ui/core';
+  Button,
+} from '@mui/material';
 import { Mark } from 'datagateway-common';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import Button from '@material-ui/core/Button';
 import axios, { AxiosError } from 'axios';
-import { FormattedUser } from './landing/isis/isisStudyLanding.component';
+import { FormattedUser } from './landing/isis/isisDataPublicationLanding.component';
 import { useQuery, UseQueryResult } from 'react-query';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    subHeading: {
-      marginTop: theme.spacing(1),
-    },
-    formatSelect: {
-      marginTop: theme.spacing(1),
-      marginBottom: theme.spacing(1),
-    },
-    spinner: {
-      marginLeft: theme.spacing(1),
-    },
-  })
-);
+const Subheading = styled(Typography)(({ theme }) => ({
+  marginTop: theme.spacing(1),
+}));
 
 const fetchCitation = (
   doi: string,
@@ -101,23 +89,26 @@ const CitationFormatter = (
   const { doi } = props;
 
   const [t] = useTranslation();
-  const classes = useStyles();
   const [copiedCitation, setCopiedCitation] = React.useState(false);
   const [format, setFormat] = React.useState('default');
-  const { data: citation, isFetching: fetching, isError: error } = useCitation(
+  const {
+    data: citation,
+    isFetching: fetching,
+    isError: error,
+  } = useCitation(
     props,
     t('doi_constants.publisher.name'),
     format,
-    t('studies.details.citation_formatter.locale')
+    t('datapublications.details.citation_formatter.locale')
   );
 
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>): void => {
+  const handleChange = (event: SelectChangeEvent<string>): void => {
     setFormat(event.target.value as string);
   };
 
   //Information on available formats can be found here: https://citationstyles.org/developers/
   let citationFormats: string[] = t(
-    'studies.details.citation_formatter.formats',
+    'datapublications.details.citation_formatter.formats',
     { returnObjects: true }
   );
   //When testing can't easily mock i18next data, but citationFormats.map will fail if
@@ -127,36 +118,34 @@ const CitationFormatter = (
 
   return (
     <Box className="tour-dataview-citation-formatter">
-      <Typography
-        className={classes.subHeading}
-        component="h6"
-        variant="h6"
-        data-testid="citation-formatter-title"
-      >
-        {t('studies.details.citation_formatter.label')}
-      </Typography>
+      <Subheading variant="h6" data-testid="citation-formatter-title">
+        {t('datapublications.details.citation_formatter.label')}
+      </Subheading>
       <Typography data-testid="citation-formatter-details">
-        {t('studies.details.citation_formatter.details') +
+        {t('datapublications.details.citation_formatter.details') +
           (doi
             ? ` ${t(
-                'studies.details.citation_formatter.details_select_format'
+                'datapublications.details.citation_formatter.details_select_format'
               )}`
             : '')}
       </Typography>
       {doi && (
-        <FormControl id="citation-formatter" error={error}>
+        <FormControl id="citation-formatter" error={error} variant="standard">
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <Select
-              className={classes.formatSelect}
+              sx={{ my: 1 }}
               defaultValue="default"
               onChange={handleChange}
               aria-label={t(
-                'studies.details.citation_formatter.select_arialabel'
+                'datapublications.details.citation_formatter.select_arialabel'
               )}
               aria-describedby="citation-formatter-error-message"
+              variant="standard"
             >
               <MenuItem value="default">
-                {t('studies.details.citation_formatter.default_format')}
+                {t(
+                  'datapublications.details.citation_formatter.default_format'
+                )}
               </MenuItem>
               {citationFormats.map((format) => (
                 <MenuItem key={format} value={format}>
@@ -168,13 +157,13 @@ const CitationFormatter = (
               <CircularProgress
                 data-testid="loading-spinner"
                 size={24}
-                className={classes.spinner}
+                sx={{ marginLeft: 1 }}
               />
             )}
           </div>
           {error && (
             <FormHelperText id="citation-formatter-error-message">
-              {t('studies.details.citation_formatter.error')}
+              {t('datapublications.details.citation_formatter.error')}
             </FormHelperText>
           )}
         </FormControl>
@@ -188,7 +177,7 @@ const CitationFormatter = (
         <Button
           id="citation-formatter-copy-citation"
           aria-label={t(
-            'studies.details.citation_formatter.copy_citation_arialabel'
+            'datapublications.details.citation_formatter.copy_citation_arialabel'
           )}
           variant="contained"
           color="primary"
@@ -202,7 +191,7 @@ const CitationFormatter = (
             }
           }}
         >
-          {t('studies.details.citation_formatter.copy_citation')}
+          {t('datapublications.details.citation_formatter.copy_citation')}
         </Button>
       ) : (
         <Button
@@ -212,7 +201,7 @@ const CitationFormatter = (
           size="small"
           startIcon={<Mark size={20} visible={true} />}
         >
-          {t('studies.details.citation_formatter.copied_citation')}
+          {t('datapublications.details.citation_formatter.copied_citation')}
         </Button>
       )}
     </Box>

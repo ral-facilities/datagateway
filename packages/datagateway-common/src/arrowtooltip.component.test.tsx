@@ -1,37 +1,49 @@
 import React from 'react';
-import { createMount } from '@material-ui/core/test-utils';
-import { ReactWrapper } from 'enzyme';
 import { ArrowTooltip } from '.';
-import { Tooltip } from '@material-ui/core';
 import { getTooltipText } from './arrowtooltip.component';
-import { act } from 'react-dom/test-utils';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+
+jest.mock('resize-observer-polyfill', () => ({
+  __esModule: true,
+  default: (() => {
+    // a simple ResizeObserver mock implemented with constructor function
+    // because jest.mock doesn't allow access to ResizeObserver at this point
+    // so extending it is impossible.
+    //
+    // this is needed because the ResizeObserver polyfill WON'T WORK in jest env.
+
+    function MockResizeObserver(callback): void {
+      this.callback = callback;
+
+      this.observe = (target: HTMLElement) => {
+        this.callback(
+          [
+            {
+              target: {
+                scrollWidth: 100,
+              },
+              borderBoxSize: [
+                {
+                  inlineSize: Number(target.style.width.replace('px', '')),
+                },
+              ],
+            },
+          ],
+          this
+        );
+      };
+
+      this.disconnect = () => {
+        // disconnected
+      };
+    }
+
+    return MockResizeObserver;
+  })(),
+}));
 
 describe('ArrowTooltip component', () => {
-  let mount;
-
-  const createWrapper = (
-    disableHoverListener?: boolean,
-    open?: boolean
-  ): ReactWrapper => {
-    return mount(
-      <ArrowTooltip
-        title={'test'}
-        disableHoverListener={disableHoverListener}
-        open={open}
-      >
-        <div />
-      </ArrowTooltip>
-    );
-  };
-
-  beforeEach(() => {
-    mount = createMount({});
-  });
-
-  afterEach(() => {
-    mount.cleanUp();
-  });
-
   describe('getTooltipText', () => {
     it('returns empty string for anything null-ish', () => {
       expect(getTooltipText(undefined)).toBe('');
@@ -70,63 +82,85 @@ describe('ArrowTooltip component', () => {
     });
   });
 
-  // Note that disableHoverListener has the opposite value to isTooltipVisible
+  it('is enabled when the target of the tooltip is overflowing', async () => {
+    const user = userEvent.setup();
 
-  it('tooltip disabled when tooltipElement null', () => {
-    // Mock return of createRef to be null
-    const spyCreateRef = jest
-      .spyOn(React, 'createRef')
-      .mockReturnValueOnce(null);
+    render(
+      <ArrowTooltip title="tooltip content">
+        <p style={{ width: 10, height: 10 }}>
+          Some really long text that will for sure overflow
+        </p>
+      </ArrowTooltip>
+    );
 
-    const wrapper = createWrapper();
-    expect(wrapper.find(Tooltip).props().disableHoverListener).toEqual(true);
+    await user.hover(
+      screen.getByText('Some really long text that will for sure overflow')
+    );
 
-    spyCreateRef.mockRestore();
+    expect(await screen.findByText('tooltip content')).toBeInTheDocument();
   });
 
-  it('can override disableHoverListener', () => {
-    let wrapper = createWrapper(true);
-    expect(wrapper.find(Tooltip).props().disableHoverListener).toEqual(true);
+  describe('is disabled', () => {
+    it('when the target of the tooltip is not overflowing', async () => {
+      const user = userEvent.setup();
 
-    wrapper = createWrapper(false);
-    expect(wrapper.find(Tooltip).props().disableHoverListener).toEqual(false);
-  });
+      render(
+        <ArrowTooltip title="tooltip content">
+          <p style={{ width: 1000, height: 10 }}>
+            Some really long text that will for sure overflow
+          </p>
+        </ArrowTooltip>
+      );
 
-  it('check if the tooltip is false when onClose is invoked', () => {
-    const wrapper = createWrapper(undefined, true);
-    act(() => {
-      wrapper.find(Tooltip)?.invoke('onClose')();
-    });
-    wrapper.update();
+      await user.hover(
+        screen.getByText('Some really long text that will for sure overflow')
+      );
 
-    expect(wrapper.find(Tooltip).props().open).toEqual(false);
-  });
+      // tooltip doesn't immediately appear in the DOM after it is triggered
+      // since queryByText immediately queries the dom after the hover event happens,
+      // we need to make sure that `queryByText` returns null because
+      // the tooltip **won't ever** appear, not because the tooltip hasn't appeared yet when queryByText queries the dom
+      //
+      // waiting for 2 seconds should be enough
 
-  it('check if the tooltip is true when onOpen is invoked and check when escape is press the tooltip is false', () => {
-    let handleKeydown;
-    const spyUseCallback = jest
-      .spyOn(React, 'useCallback')
-      .mockImplementation((f) => {
-        handleKeydown = f;
-        return f;
+      await new Promise<void>((resolve) => {
+        setTimeout(() => {
+          resolve();
+        }, 2000);
       });
-    const wrapper = createWrapper(undefined, false);
 
-    act(() => {
-      wrapper.find(Tooltip)?.invoke('onOpen')();
-    });
-    wrapper.update();
-    expect(wrapper.find(Tooltip).props().open).toEqual(true);
-
-    act(() => {
-      const e = new KeyboardEvent('keydown', { key: 'Escape' });
-      handleKeydown(e);
+      expect(screen.queryByText('tooltip content')).toBeNull();
     });
 
-    wrapper.update();
+    it('when it is disabled explicitly', async () => {
+      const user = userEvent.setup();
 
-    expect(wrapper.find(Tooltip).props().open).toEqual(false);
+      render(
+        <ArrowTooltip title="tooltip content" disableHoverListener>
+          <p style={{ width: 10, height: 10 }}>
+            Some really long text that will for sure overflow
+          </p>
+        </ArrowTooltip>
+      );
 
-    spyUseCallback.mockRestore();
+      await user.hover(
+        screen.getByText('Some really long text that will for sure overflow')
+      );
+
+      // tooltip doesn't immediately appear in the DOM after it is triggered
+      // since queryByText immediately queries the dom after the hover event happens,
+      // we need to make sure that `queryByText` returns null because
+      // the tooltip **won't ever** appear, not because the tooltip hasn't appeared yet when queryByText queries the dom
+      //
+      // waiting for 2 seconds should be enough
+
+      await new Promise<void>((resolve) => {
+        setTimeout(() => {
+          resolve();
+        }, 2000);
+      });
+
+      expect(screen.queryByText('tooltip content')).toBeNull();
+    });
   });
 });

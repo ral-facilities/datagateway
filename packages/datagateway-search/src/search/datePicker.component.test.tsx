@@ -1,315 +1,357 @@
 import React from 'react';
 import { StateType } from '../state/app.types';
 import { Provider } from 'react-redux';
-import { createMount } from '@material-ui/core/test-utils';
 import configureStore from 'redux-mock-store';
 import SelectDates from './datePicker.component';
 import thunk from 'redux-thunk';
 import { Router } from 'react-router-dom';
 import { initialState } from '../state/reducers/dgsearch.reducer';
 import { createMemoryHistory, History } from 'history';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../setupTests';
+import { render, type RenderResult, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { UserEvent } from '@testing-library/user-event/setup/setup';
 
 jest.mock('loglevel');
 
 describe('DatePicker component tests', () => {
-  let mount;
   let state: StateType;
-  let mockStore;
-  let testStore;
+  const mockStore = configureStore([thunk]);
+  let testStore: ReturnType<typeof mockStore>;
   let history: History;
-  let pushSpy;
+  let pushSpy: jest.SpyInstance;
 
   const testInitiateSearch = jest.fn();
 
-  const createWrapper = (h: History = history): ReactWrapper => {
-    return mount(
+  const renderComponent = (h: History = history): RenderResult =>
+    render(
       <Provider store={testStore}>
         <Router history={h}>
           <SelectDates initiateSearch={testInitiateSearch} />
         </Router>
       </Provider>
     );
-  };
 
   beforeEach(() => {
-    mount = createMount();
+    applyDatePickerWorkaround();
+
     history = createMemoryHistory();
     pushSpy = jest.spyOn(history, 'push');
 
     state = JSON.parse(JSON.stringify({ dgsearch: initialState }));
 
     state.dgsearch = {
+      ...state.dgsearch,
       tabs: {
         datasetTab: true,
         datafileTab: true,
         investigationTab: true,
       },
-      requestReceived: false,
-      searchData: {
-        dataset: [],
-        datafile: [],
-        investigation: [],
-      },
       settingsLoaded: true,
       sideLayout: false,
     };
 
-    mockStore = configureStore([thunk]);
     testStore = mockStore(state);
   });
 
   afterEach(() => {
-    testInitiateSearch.mockClear();
+    jest.clearAllMocks();
+    cleanupDatePickerWorkaround();
   });
 
-  it('renders correctly', () => {
+  it('renders correctly', async () => {
     history.replace(
       '/?searchText=&investigation=false&startDate=2021-10-26&endDate=2021-10-28'
     );
 
-    const wrapper = createWrapper();
-    const startDateInput = wrapper.find(
-      '[aria-label="searchBox.start_date_arialabel"]'
-    );
-    expect(startDateInput.exists());
-    expect(startDateInput.instance().value).toEqual('2021-10-26');
+    renderComponent();
+    const startDateInput = await screen.findByRole('textbox', {
+      name: 'searchBox.start_date_arialabel',
+    });
+    expect(startDateInput).toBeInTheDocument();
+    expect(startDateInput).toHaveValue('2021-10-26');
 
-    const endDateInput = wrapper.find(
-      '[aria-label="searchBox.end_date_arialabel"]'
-    );
-    expect(endDateInput.exists());
-    expect(endDateInput.instance().value).toEqual('2021-10-28');
+    const endDateInput = await screen.findByRole('textbox', {
+      name: 'searchBox.end_date_arialabel',
+    });
+    expect(endDateInput).toBeInTheDocument();
+    expect(endDateInput).toHaveValue('2021-10-28');
   });
 
   describe('Start date box', () => {
-    it('pushes URL with new start date value when user types number into Start Date input', () => {
+    let user: UserEvent;
+
+    beforeEach(() => {
+      user = userEvent.setup();
+    });
+
+    it('pushes URL with new start date value when user types number into Start Date input', async () => {
       history.replace('/?searchText=&investigation=false');
 
-      const wrapper = createWrapper();
-      const startDateInput = wrapper.find(
-        '[aria-label="searchBox.start_date_arialabel"]'
-      );
-      startDateInput.instance().value = '2012 01 01';
-      startDateInput.simulate('change');
+      renderComponent();
+      const startDateInput = await screen.findByRole('textbox', {
+        name: 'searchBox.start_date_arialabel',
+      });
+
+      await user.type(startDateInput, '2012-01-01');
 
       expect(pushSpy).toHaveBeenCalledWith('?startDate=2012-01-01');
     });
 
-    it('initiates search with valid start and end dates', () => {
+    it('initiates search with valid start and end dates', async () => {
       history.replace(
         '/?searchText=&investigation=false&startDate=2012-01-01&endDate=2013-01-01'
       );
 
-      const wrapper = createWrapper();
-      const startDateInput = wrapper.find(
-        '[aria-label="searchBox.start_date_arialabel"]'
-      );
-      startDateInput.simulate('keydown', { key: 'Enter' });
+      renderComponent();
+      const startDateInput = await screen.findByRole('textbox', {
+        name: 'searchBox.start_date_arialabel',
+      });
+
+      await user.type(startDateInput, '{enter}');
+
       expect(testInitiateSearch).toHaveBeenCalled();
     });
 
-    it('initiates search with valid start date and empty end date', () => {
+    it('initiates search with valid start date and empty end date', async () => {
       history.replace('/?searchText=&investigation=false&startDate=2012-01-01');
 
-      const wrapper = createWrapper();
-      const startDateInput = wrapper.find(
-        '[aria-label="searchBox.start_date_arialabel"]'
-      );
-      startDateInput.simulate('keydown', { key: 'Enter' });
+      renderComponent();
+      const startDateInput = await screen.findByRole('textbox', {
+        name: 'searchBox.start_date_arialabel',
+      });
+
+      await user.type(startDateInput, '{enter}');
+
       expect(testInitiateSearch).toHaveBeenCalled();
     });
 
-    it('initiates search with valid end date and empty start date', () => {
+    it('initiates search with valid end date and empty start date', async () => {
       history.replace('/?searchText=&investigation=false&endDate=2012-01-01');
 
-      const wrapper = createWrapper();
-      const startDateInput = wrapper.find(
-        '[aria-label="searchBox.start_date_arialabel"]'
-      );
-      startDateInput.simulate('keydown', { key: 'Enter' });
+      renderComponent();
+      const startDateInput = await screen.findByRole('textbox', {
+        name: 'searchBox.start_date_arialabel',
+      });
+
+      await user.type(startDateInput, '{enter}');
+
       expect(testInitiateSearch).toHaveBeenCalled();
     });
 
-    it('initiates search with empty start and end dates', () => {
+    it('initiates search with empty start and end dates', async () => {
       history.replace('/?searchText=&investigation=false');
 
-      const wrapper = createWrapper();
+      renderComponent();
+      const startDateInput = await screen.findByRole('textbox', {
+        name: 'searchBox.start_date_arialabel',
+      });
 
-      const startDateInput = wrapper.find(
-        '[aria-label="searchBox.start_date_arialabel"]'
-      );
-      startDateInput.simulate('keydown', { key: 'Enter' });
+      await user.type(startDateInput, '{enter}');
+
       expect(testInitiateSearch).toHaveBeenCalled();
     });
 
-    it('displays error message when an invalid date is entered', () => {
+    // In v6, date pickers don't allow invalid dates to be entered
+    it('displays error message when an invalid date is entered', async () => {
       history.replace('/?searchText=&investigation=false');
 
-      const wrapper = createWrapper();
-      const startDateInput = wrapper.find(
-        '[aria-label="searchBox.start_date_arialabel"]'
-      );
-      startDateInput.instance().value = '2012 01 35';
-      startDateInput.simulate('change');
+      renderComponent();
+      const startDateInput = await screen.findByRole('textbox', {
+        name: 'searchBox.start_date_arialabel',
+      });
 
-      expect(wrapper.find('.MuiFormHelperText-filled').first().text()).toEqual(
-        'searchBox.invalid_date_message'
-      );
+      await user.type(startDateInput, '2012-01-00');
+
+      expect(
+        await screen.findByText('searchBox.invalid_date_message')
+      ).toBeInTheDocument();
     });
 
-    it('displays error message when a date after the maximum date is entered', () => {
+    it('displays error message when a date after the maximum date is entered', async () => {
       history.replace('/?searchText=&investigation=false');
 
-      const wrapper = createWrapper();
-      const startDateInput = wrapper.find(
-        '[aria-label="searchBox.start_date_arialabel"]'
-      );
-      startDateInput.instance().value = '3000 01 01';
-      startDateInput.simulate('change');
+      renderComponent();
+      const startDateInput = await screen.findByRole('textbox', {
+        name: 'searchBox.start_date_arialabel',
+      });
 
-      expect(wrapper.find('.MuiFormHelperText-filled').first().text()).toEqual(
-        'searchBox.invalid_date_range_message'
-      );
+      await user.type(startDateInput, '3000-01-01');
+
+      expect(
+        await screen.findByText('searchBox.invalid_date_message')
+      ).toBeInTheDocument();
     });
 
-    it('displays error message when a date after the end date is entered', () => {
+    it('displays error message when a date after the end date is entered', async () => {
       history.replace('/?searchText=&investigation=false&endDate=2011-11-21');
 
-      const wrapper = createWrapper();
-      const startDateInput = wrapper.find(
-        '[aria-label="searchBox.start_date_arialabel"]'
-      );
-      startDateInput.instance().value = '2012 01 01';
-      startDateInput.simulate('change');
+      renderComponent();
+      const startDateInput = await screen.findByRole('textbox', {
+        name: 'searchBox.start_date_arialabel',
+      });
 
-      expect(wrapper.find('.MuiFormHelperText-filled').first().text()).toEqual(
+      await user.type(startDateInput, '2012-01-01');
+
+      const errorMessages = await screen.findAllByText(
         'searchBox.invalid_date_range_message'
       );
+      expect(errorMessages).toHaveLength(2);
+
+      for (const msg of errorMessages) {
+        expect(msg).toBeInTheDocument();
+      }
     });
 
-    it('invalid date in URL is ignored', () => {
+    it('invalid date in URL is ignored', async () => {
       history.replace('/?searchText=&investigation=false&startDate=2011-14-21');
 
-      const wrapper = createWrapper();
-      const startDateInput = wrapper.find(
-        '[aria-label="searchBox.start_date_arialabel"]'
-      );
-      expect(startDateInput.instance().value).toEqual('');
+      renderComponent();
+      const startDateInput = await screen.findByRole('textbox', {
+        name: 'searchBox.start_date_arialabel',
+      });
+
+      expect(startDateInput).toHaveValue('');
     });
   });
 
   describe('End date box', () => {
-    it('pushes URL with new end date value when user types number into Start Date input', () => {
+    let user: UserEvent;
+
+    beforeEach(() => {
+      user = userEvent.setup();
+    });
+
+    it('pushes URL with new end date value when user types number into Start Date input', async () => {
       history.replace('/?searchText=&investigation=false');
 
-      const wrapper = createWrapper();
-      const endDateInput = wrapper.find(
-        '[aria-label="searchBox.end_date_arialabel"]'
-      );
-      endDateInput.instance().value = '2000 01 01';
-      endDateInput.simulate('change');
+      renderComponent();
+      const endDateInput = await screen.findByRole('textbox', {
+        name: 'searchBox.end_date_arialabel',
+      });
+
+      await user.type(endDateInput, '2000 01 01');
+
       expect(pushSpy).toHaveBeenCalledWith('?endDate=2000-01-01');
     });
 
-    it('initiates search with valid start and end dates', () => {
+    it('initiates search with valid start and end dates', async () => {
       history.replace(
         '/?searchText=&investigation=false&startDate=2012-01-01&endDate=2013-01-01'
       );
 
-      const wrapper = createWrapper();
-      const endDateInput = wrapper.find(
-        '[aria-label="searchBox.end_date_arialabel"]'
-      );
-      endDateInput.simulate('keydown', { key: 'Enter' });
+      renderComponent();
+      const endDateInput = await screen.findByRole('textbox', {
+        name: 'searchBox.end_date_arialabel',
+      });
+
+      await user.type(endDateInput, '{enter}');
+
       expect(testInitiateSearch).toHaveBeenCalled();
     });
 
-    it('initiates search with valid start date and empty end date', () => {
+    it('initiates search with valid start date and empty end date', async () => {
       history.replace('/?searchText=&investigation=false&startDate=2012-01-01');
 
-      const wrapper = createWrapper();
-      const endDateInput = wrapper.find(
-        '[aria-label="searchBox.end_date_arialabel"]'
-      );
-      endDateInput.simulate('keydown', { key: 'Enter' });
+      renderComponent();
+      const endDateInput = await screen.findByRole('textbox', {
+        name: 'searchBox.end_date_arialabel',
+      });
+
+      await user.type(endDateInput, '{enter}');
+
       expect(testInitiateSearch).toHaveBeenCalled();
     });
 
-    it('initiates search with valid end date and empty start date', () => {
+    it('initiates search with valid end date and empty start date', async () => {
       history.replace('/?searchText=&investigation=false&endDate=2012-01-01');
 
-      const wrapper = createWrapper();
-      const endDateInput = wrapper.find(
-        '[aria-label="searchBox.end_date_arialabel"]'
-      );
-      endDateInput.simulate('keydown', { key: 'Enter' });
+      renderComponent();
+      const endDateInput = await screen.findByRole('textbox', {
+        name: 'searchBox.end_date_arialabel',
+      });
+
+      await user.type(endDateInput, '{enter}');
+
       expect(testInitiateSearch).toHaveBeenCalled();
     });
 
-    it('initiates search with empty start and end dates', () => {
+    it('initiates search with empty start and end dates', async () => {
       history.replace('/?searchText=&investigation=false');
 
-      const wrapper = createWrapper();
-      const endDateInput = wrapper.find(
-        '[aria-label="searchBox.end_date_arialabel"]'
-      );
-      endDateInput.simulate('keydown', { key: 'Enter' });
+      renderComponent();
+      const endDateInput = await screen.findByRole('textbox', {
+        name: 'searchBox.end_date_arialabel',
+      });
+
+      await user.type(endDateInput, '{enter}');
+
       expect(testInitiateSearch).toHaveBeenCalled();
     });
 
-    it('displays error message when an invalid date is entered', () => {
+    // In v6, date pickers don't allow invalid dates to be entered
+    it('displays error message when an invalid date is entered', async () => {
       history.replace('/?searchText=&investigation=false');
 
-      const wrapper = createWrapper();
-      const endDateInput = wrapper.find(
-        '[aria-label="searchBox.end_date_arialabel"]'
-      );
-      endDateInput.instance().value = '2012 01 35';
-      endDateInput.simulate('change');
+      renderComponent();
+      const endDateInput = await screen.findByRole('textbox', {
+        name: 'searchBox.end_date_arialabel',
+      });
 
-      expect(wrapper.find('.MuiFormHelperText-filled').text()).toEqual(
-        'searchBox.invalid_date_message'
-      );
+      await user.type(endDateInput, '2012-01-00');
+
+      expect(
+        await screen.findByText('searchBox.invalid_date_message')
+      ).toBeInTheDocument();
     });
 
-    it('displays error message when a date before the minimum date is entered', () => {
+    it('displays error message when a date before the minimum date is entered', async () => {
       history.replace('/?searchText=&investigation=false');
 
-      const wrapper = createWrapper();
-      const endDateInput = wrapper.find(
-        '[aria-label="searchBox.end_date_arialabel"]'
-      );
-      endDateInput.instance().value = '1203 01 01';
-      endDateInput.simulate('change');
+      renderComponent();
+      const endDateInput = await screen.findByRole('textbox', {
+        name: 'searchBox.end_date_arialabel',
+      });
 
-      expect(wrapper.find('.MuiFormHelperText-filled').last().text()).toEqual(
-        'searchBox.invalid_date_range_message'
-      );
+      await user.type(endDateInput, '1203-01-01');
+
+      expect(
+        await screen.findByText('searchBox.invalid_date_message')
+      ).toBeInTheDocument();
     });
 
-    it('displays error message when a date before the start date is entered', () => {
+    it('displays error message when a date before the start date is entered', async () => {
       history.replace('/?searchText=&investigation=false&startDate=2011-11-21');
 
-      const wrapper = createWrapper();
-      const endDateInput = wrapper.find(
-        '[aria-label="searchBox.end_date_arialabel"]'
-      );
-      endDateInput.instance().value = '2010 01 01';
-      endDateInput.simulate('change');
+      renderComponent();
+      const endDateInput = await screen.findByRole('textbox', {
+        name: 'searchBox.end_date_arialabel',
+      });
 
-      expect(wrapper.find('.MuiFormHelperText-filled').last().text()).toEqual(
+      await user.type(endDateInput, '2010-01-01');
+
+      const errorMessages = await screen.findAllByText(
         'searchBox.invalid_date_range_message'
       );
+      expect(errorMessages).toHaveLength(2);
+
+      for (const msg of errorMessages) {
+        expect(msg).toBeInTheDocument();
+      }
     });
 
-    it('invalid date in URL is ignored', () => {
+    it('invalid date in URL is ignored', async () => {
       history.replace('/?searchText=&investigation=false&endDate=2011-14-21');
 
-      const wrapper = createWrapper();
-      const endDateInput = wrapper.find(
-        '[aria-label="searchBox.end_date_arialabel"]'
-      );
-      expect(endDateInput.instance().value).toEqual('');
+      renderComponent();
+      const endDateInput = await screen.findByRole('textbox', {
+        name: 'searchBox.end_date_arialabel',
+      });
+
+      expect(endDateInput).toHaveValue('');
     });
   });
 });

@@ -25,6 +25,7 @@
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
 import jsrsasign from 'jsrsasign';
+import '@testing-library/cypress/add-commands';
 
 const parseJwt = (token) => {
   const base64Url = token.split('.')[1];
@@ -55,30 +56,40 @@ export const readSciGatewayToken = () => {
 };
 
 Cypress.Commands.add('login', () => {
-  return cy.readFile('server/e2e-settings.json').then((settings) => {
-    cy.request('POST', `${settings.apiUrl}/sessions`, {
-      username: '',
-      password: '',
-      mechanism: 'anon',
-    }).then((response) => {
-      const jwtHeader = { alg: 'HS256', typ: 'JWT' };
-      const payload = {
-        sessionId: response.body.sessionID,
-        username: 'test',
-      };
-      const jwt = jsrsasign.KJUR.jws.JWS.sign(
-        'HS256',
-        jwtHeader,
-        payload,
-        'shh'
-      );
-      window.localStorage.setItem('scigateway:token', jwt);
+  cy.session('login', () => {
+    cy.request('datagateway-search-settings.json').then((response) => {
+      const settings = response.body;
+      cy.request({
+        method: 'POST',
+        url: `${settings.icatUrl}/session`,
+        body: `json=${JSON.stringify({
+          plugin: 'simple',
+          credentials: [{ username: 'root' }, { password: 'pw' }],
+        })}`,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      }).then((response) => {
+        const jwtHeader = { alg: 'HS256', typ: 'JWT' };
+        const payload = {
+          sessionId: response.body.sessionId,
+          username: 'dev',
+        };
+        const jwt = jsrsasign.KJUR.jws.JWS.sign(
+          'HS256',
+          jwtHeader,
+          payload,
+          'shh'
+        );
+        window.localStorage.setItem('scigateway:token', jwt);
+      });
     });
   });
 });
 
 Cypress.Commands.add('clearDownloadCart', () => {
-  return cy.readFile('server/e2e-settings.json').then((settings) => {
+  return cy.request('datagateway-search-settings.json').then((response) => {
+    const settings = response.body;
     cy.request({
       method: 'DELETE',
       url: `${settings.downloadApiUrl}/user/cart/${settings.facilityName}/cartItems`,

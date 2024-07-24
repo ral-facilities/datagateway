@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
+import Button from '@mui/material/Button';
 import {
   withTranslation,
   WithTranslation,
@@ -26,6 +26,7 @@ const SearchButton = (props: SearchButtonCombinedProps): React.ReactElement => {
         aria-label={t('searchBox.search_button_arialabel')}
         size="large"
         fullWidth={true}
+        type="submit"
       >
         {t('searchBox.search_button')}
       </Button>

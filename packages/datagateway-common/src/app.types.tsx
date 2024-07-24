@@ -2,6 +2,18 @@
 export const MicroFrontendId = 'scigateway';
 export const MicroFrontendToken = `${MicroFrontendId}:token`;
 
+export const FACILITY_NAME = {
+  isis: 'isis',
+  dls: 'dls',
+
+  /**
+   * Used for test ICATs.
+   */
+  lils: 'LILS',
+} as const;
+
+export type FacilityName = typeof FACILITY_NAME[keyof typeof FACILITY_NAME];
+
 // TODO: type entities properly; DownloadCartItem does not
 //       include string indexing due to DownloadCartTableItem
 export interface Investigation {
@@ -9,18 +21,22 @@ export interface Investigation {
   title: string;
   name: string;
   visitId: string;
+  fileSize?: number;
+  fileCount?: number;
   doi?: string;
   startDate?: string;
   endDate?: string;
   releaseDate?: string;
   summary?: string;
   investigationInstruments?: InvestigationInstrument[];
+  dataCollectionInvestigations?: DataCollectionInvestigation[];
+  investigationFacilityCycles?: InvestigationFacilityCycle[];
   size?: number;
   datasetCount?: number;
   investigationUsers?: InvestigationUser[];
   samples?: Sample[];
+  parameters?: DatafileParameter[];
   publications?: Publication[];
-  studyInvestigations?: StudyInvestigation[];
   facility?: Facility;
   datasets?: Dataset[];
   type?: InvestigationType;
@@ -31,6 +47,8 @@ export interface Dataset {
   name: string;
   modTime: string;
   createTime: string;
+  fileSize?: number;
+  fileCount?: number;
   description?: string;
   startDate?: string;
   endDate?: string;
@@ -83,16 +101,29 @@ export interface User {
   id: number;
   name: string;
   fullName?: string;
+  email?: string;
+  affiliation?: string;
 }
 
 export interface Sample {
   id: number;
+  name: string;
+  type?: SampleType;
+}
+
+interface SampleType {
   name: string;
 }
 
 export interface Publication {
   id: number;
   fullReference: string;
+}
+
+export interface InvestigationFacilityCycle {
+  id: number;
+  investigation?: Investigation;
+  facilityCycle?: FacilityCycle;
 }
 
 export interface FacilityCycle {
@@ -116,22 +147,51 @@ export interface InvestigationType {
   description?: string;
 }
 
-export interface StudyInvestigation {
+export interface DataCollectionDatafile {
   id: number;
-  study?: Study;
+  datafile: Datafile;
+}
+
+export interface DataCollectionDataset {
+  id: number;
+  dataset: Dataset;
+}
+
+export interface DataCollectionInvestigation {
+  id: number;
+  dataCollection?: DataCollection;
   investigation?: Investigation;
 }
 
-export interface Study {
+export interface DataCollection {
+  id: number;
+  dataCollectionInvestigations?: DataCollectionInvestigation[];
+  dataCollectionDatasets?: DataCollectionDataset[];
+  dataCollectionDatafiles?: DataCollectionDatafile[];
+  dataPublications?: DataPublication[];
+}
+
+export interface DataPublicationUser {
+  id: number;
+  contributorType: string;
+  fullName: string;
+}
+
+export interface DataPublicationType {
+  id: number;
+  name: string;
+}
+
+export interface DataPublication {
   id: number;
   pid: string;
-  name: string;
-  modTime: string;
-  createTime: string;
+  title: string;
+  facility?: Facility;
   description?: string;
-  startDate?: string;
-  endDate?: string;
-  studyInvestigations?: StudyInvestigation[];
+  publicationDate?: string;
+  users?: DataPublicationUser[];
+  content?: DataCollection;
+  type?: DataPublicationType;
 }
 
 interface InstrumentScientist {
@@ -155,7 +215,7 @@ interface ParameterType {
   id: number;
   name: string;
   units: string;
-  valueType: string;
+  valueType: 'NUMERIC' | 'STRING' | 'DATE_AND_TIME';
 }
 
 interface Facility {
@@ -191,6 +251,13 @@ export interface DownloadCart {
   userName: string;
 }
 
+export type DownloadStatus =
+  | 'PREPARING'
+  | 'RESTORING'
+  | 'PAUSED'
+  | 'COMPLETE'
+  | 'EXPIRED';
+
 export interface Download {
   createdAt: string;
   downloadItems: DownloadItem[];
@@ -204,16 +271,23 @@ export interface Download {
   preparedId: string;
   sessionId: string;
   size: number;
-  status: 'PREPARING' | 'RESTORING' | 'PAUSED' | 'COMPLETE' | 'EXPIRED';
+  status: DownloadStatus;
   transport: string;
   userName: string;
   email?: string;
 }
 
-export interface FormattedDownload
-  extends Omit<Download, 'status' | 'isDeleted'> {
-  isDeleted: string;
-  status: string;
+export interface FormattedDownload extends Download {
+  /**
+   * User-facing label of {@link Download.isDeleted}
+   */
+  formattedIsDeleted: string;
+
+  /**
+   * User-facing label of {@link Download.status}
+   */
+  formattedStatus: string;
+
   [key: string]: string | number | boolean | DownloadItem[] | undefined;
 }
 
@@ -230,20 +304,55 @@ export type DownloadCartTableItem = DownloadCartItem & {
   [key: string]: string | number | DownloadCartItem[];
 };
 
+export interface SearchInstrumentSource {
+  'instrument.id': number;
+  'instrument.name': string;
+  'instrument.fullName'?: string;
+}
+
+export interface SearchFacilityCycleSource {
+  'facilityCycle.id': number;
+}
+
+export interface SearchResultSource {
+  id: number;
+  name: string;
+  title?: string;
+  visitId?: string;
+  doi?: string;
+  startDate?: number;
+  endDate?: number;
+  date?: number;
+  summary?: string;
+  location?: string;
+  investigationinstrument?: SearchInstrumentSource[];
+  investigationfacilitycycle?: SearchFacilityCycleSource[];
+  fileSize?: number;
+  fileCount?: number;
+  'dataset.id'?: number;
+  'dataset.name'?: string;
+  'investigation.id'?: number;
+  'investigation.name'?: string;
+  'investigation.title'?: string;
+  'investigation.startDate'?: number;
+  'facility.name'?: string;
+  'facility.id'?: number;
+}
+
 export type ICATEntity =
   | Investigation
   | Dataset
   | Datafile
   | Instrument
   | FacilityCycle
-  | StudyInvestigation
-  | Study;
+  | DataPublication;
 
 export type Entity = (
   | ICATEntity
   | DownloadCartTableItem
   | Download
   | FormattedDownload
+  | SearchResultSource
 ) & {
   // We will have to ignore the any typing here to access
   // Entity attributes with string indexing.
@@ -258,7 +367,7 @@ export const EntityTypes: string[] = [
   'facilityCycle',
   'instrument',
   'facility',
-  'study',
+  'dataPublication',
 ];
 
 // TODO: type these properly
@@ -272,7 +381,28 @@ export interface TextFilter {
   type: string;
 }
 
-export type Filter = string[] | TextFilter | DateFilter;
+export interface RangeFilter {
+  field: string;
+  from?: number;
+  to?: number;
+  key?: string;
+  units?: string;
+}
+
+export interface TermFilter {
+  field: string;
+  value: string;
+}
+
+export interface NestedFilter {
+  key: string;
+  label: string;
+  filter: SearchFilter[];
+}
+
+export type SearchFilter = NestedFilter | RangeFilter | TermFilter | string;
+
+export type Filter = SearchFilter[] | TextFilter | DateFilter;
 
 export type Order = 'asc' | 'desc';
 
@@ -307,4 +437,5 @@ export interface QueryParams {
   startDate: Date | null;
   endDate: Date | null;
   currentTab: string;
+  restrict: boolean;
 }

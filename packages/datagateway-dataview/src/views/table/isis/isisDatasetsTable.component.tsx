@@ -1,13 +1,13 @@
 import React from 'react';
-import SubjectIcon from '@material-ui/icons/Subject';
-import SaveIcon from '@material-ui/icons/Save';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import SubjectIcon from '@mui/icons-material/Subject';
+import SaveIcon from '@mui/icons-material/Save';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import {
   Table,
   tableLink,
   TableActionProps,
   Dataset,
-  formatCountOrSize,
+  formatBytes,
   useDatasetCount,
   useDatasetsInfinite,
   parseSearchToQuery,
@@ -19,36 +19,23 @@ import {
   useCart,
   useAddToCart,
   useRemoveFromCart,
-  useDatasetSizes,
   DownloadButton,
   ISISDatasetDetailsPanel,
 } from 'datagateway-common';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useHistory } from 'react-router';
+import { useLocation, useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../../state/app.types';
 
 interface ISISDatasetsTableProps {
-  instrumentId: string;
-  instrumentChildId: string;
   investigationId: string;
-  studyHierarchy: boolean;
 }
 
 const ISISDatasetsTable = (
   props: ISISDatasetsTableProps
 ): React.ReactElement => {
-  const {
-    investigationId,
-    instrumentChildId,
-    instrumentId,
-    studyHierarchy,
-  } = props;
-
-  const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
-  const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
-  const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset`;
+  const { investigationId } = props;
 
   const [t] = useTranslation();
 
@@ -69,7 +56,7 @@ const ISISDatasetsTable = (
   const dateFilter = useDateFilter(filters);
   const handleSort = useSort();
 
-  const { data: allIds } = useIds(
+  const { data: allIds, isLoading: allIdsLoading } = useIds(
     'dataset',
     [
       {
@@ -81,14 +68,11 @@ const ISISDatasetsTable = (
     ],
     selectAllSetting
   );
-  const { data: cartItems } = useCart();
-  const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
-    'dataset'
-  );
-  const {
-    mutate: removeFromCart,
-    isLoading: removeFromCartLoading,
-  } = useRemoveFromCart('dataset');
+  const { data: cartItems, isLoading: cartLoading } = useCart();
+  const { mutate: addToCart, isLoading: addToCartLoading } =
+    useAddToCart('dataset');
+  const { mutate: removeFromCart, isLoading: removeFromCartLoading } =
+    useRemoveFromCart('dataset');
 
   const { data: totalDataCount } = useDatasetCount([
     {
@@ -124,12 +108,26 @@ const ISISDatasetsTable = (
     [fetchNextPage]
   );
 
-  const sizeQueries = useDatasetSizes(data);
+  /* istanbul ignore next */
+  const aggregatedData: Dataset[] = React.useMemo(() => {
+    if (data) {
+      if ('pages' in data) {
+        return data.pages.flat();
+      } else if ((data as unknown) instanceof Array) {
+        return data;
+      }
+    }
 
-  const aggregatedData: Dataset[] = React.useMemo(
-    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
-    [data]
-  );
+    return [];
+  }, [data]);
+
+  const isParentSelected = React.useMemo(() => {
+    return cartItems?.some(
+      (cartItem) =>
+        cartItem.entityType === 'investigation' &&
+        cartItem.entityId.toString() === investigationId
+    );
+  }, [cartItems, investigationId]);
 
   const columns: ColumnType[] = React.useMemo(
     () => [
@@ -139,7 +137,7 @@ const ISISDatasetsTable = (
         dataKey: 'name',
         cellContentRenderer: (cellProps: TableCellProps) =>
           tableLink(
-            `${urlPrefix}/${cellProps.rowData.id}`,
+            `${location.pathname}/${cellProps.rowData.id}`,
             cellProps.rowData.name,
             view
           ),
@@ -150,7 +148,7 @@ const ISISDatasetsTable = (
         label: t('datasets.size'),
         dataKey: 'size',
         cellContentRenderer: (cellProps: TableCellProps): number | string =>
-          formatCountOrSize(sizeQueries[cellProps.rowIndex], true),
+          formatBytes(cellProps.rowData.fileSize),
         disableSort: true,
       },
       {
@@ -167,7 +165,7 @@ const ISISDatasetsTable = (
         filterComponent: dateFilter,
       },
     ],
-    [t, textFilter, dateFilter, urlPrefix, view, sizeQueries]
+    [t, textFilter, dateFilter, view, location.pathname]
   );
 
   const selectedRows = React.useMemo(
@@ -189,15 +187,23 @@ const ISISDatasetsTable = (
       <ISISDatasetDetailsPanel
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}
-        viewDatafiles={(id: number) => push(`${urlPrefix}/${id}/datafile`)}
+        viewDatafiles={(id: number) =>
+          push(`${location.pathname}/${id}/datafile`)
+        }
       />
     ),
-    [push, urlPrefix]
+    [location.pathname, push]
   );
 
   return (
     <Table
-      loading={addToCartLoading || removeFromCartLoading}
+      loading={
+        addToCartLoading ||
+        removeFromCartLoading ||
+        cartLoading ||
+        allIdsLoading
+      }
+      parentSelected={isParentSelected}
       data={aggregatedData}
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
@@ -216,10 +222,7 @@ const ISISDatasetsTable = (
             entityId={rowData.id}
             entityName={rowData.name}
             variant="icon"
-            entitySize={
-              sizeQueries[aggregatedData.indexOf(rowData as Dataset)]?.data ??
-              -1
-            }
+            entitySize={rowData.fileSize ?? -1}
           />
         ),
       ]}

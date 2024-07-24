@@ -1,24 +1,20 @@
-import React from 'react';
-import { createShallow } from '@material-ui/core/test-utils';
+import * as React from 'react';
 import { Dataset } from '../app.types';
 import DatasetDetailsPanel from './datasetDetailsPanel.component';
+import { render } from '@testing-library/react';
 
 describe('Dataset details panel component', () => {
-  let shallow;
   let rowData: Dataset;
   const detailsPanelResize = jest.fn();
 
   beforeEach(() => {
-    shallow = createShallow();
-    rowData = [
-      {
-        id: 1,
-        name: 'Test 1',
-        size: 1,
-        modTime: '2019-07-23',
-        createTime: '2019-07-23',
-      },
-    ];
+    rowData = {
+      id: 1,
+      name: 'Test 1',
+      size: 1,
+      modTime: '2019-07-23',
+      createTime: '2019-07-23',
+    };
   });
 
   afterEach(() => {
@@ -26,12 +22,12 @@ describe('Dataset details panel component', () => {
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(
+    const { asFragment } = render(
       <DatasetDetailsPanel
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}
       />
     );
-    expect(wrapper).toMatchSnapshot();
+    expect(asFragment()).toMatchSnapshot();
   });
 });

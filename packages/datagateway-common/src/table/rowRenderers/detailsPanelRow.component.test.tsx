@@ -1,10 +1,9 @@
-import React from 'react';
-import { createShallow } from '@material-ui/core/test-utils';
+import * as React from 'react';
 import DetailsPanelRow from './detailsPanelRow.component';
 import { DetailsPanelProps } from '../table.component';
+import { render } from '@testing-library/react';
 
 describe('Details panel row component', () => {
-  let shallow;
   const detailsPanelRowProps = {
     index: 1,
     columns: [],
@@ -22,12 +21,10 @@ describe('Details panel row component', () => {
     detailPanelRef: React.createRef<HTMLDivElement>(),
   };
 
-  beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'div' });
-  });
-
   it('renders correctly', () => {
-    const wrapper = shallow(<DetailsPanelRow {...detailsPanelRowProps} />);
-    expect(wrapper).toMatchSnapshot();
+    const { asFragment } = render(
+      <DetailsPanelRow {...detailsPanelRowProps} />
+    );
+    expect(asFragment()).toMatchSnapshot();
   });
 });

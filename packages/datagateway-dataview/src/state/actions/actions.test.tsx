@@ -47,20 +47,22 @@ describe('Actions', () => {
   });
 
   it('given JSON loadBreadcrumbSettings returns a ConfigureBreadcrumbSettingsType with ConfigureBreadcrumbSettingsPayload', () => {
-    const action = loadBreadcrumbSettings({
-      test: {
+    const action = loadBreadcrumbSettings([
+      {
+        matchEntity: 'test',
         replaceEntity: 'testEntity',
         replaceEntityField: 'testField',
       },
-    });
+    ]);
     expect(action.type).toEqual(ConfigureBreadcrumbSettingsType);
     expect(action.payload).toEqual({
-      settings: {
-        test: {
+      settings: [
+        {
+          matchEntity: 'test',
           replaceEntity: 'testEntity',
           replaceEntityField: 'testField',
         },
-      },
+      ],
     });
   });
 
@@ -95,11 +97,12 @@ describe('Actions', () => {
       features: {},
       idsUrl: 'ids',
       apiUrl: 'api',
-      breadcrumbs: {
-        test: {
+      breadcrumbs: [
+        {
+          matchEntity: 'test',
           replaceEntityField: 'title',
         },
-      },
+      ],
       downloadApiUrl: 'download-api',
       selectAllSetting: false,
       routes: [
@@ -112,7 +115,7 @@ describe('Actions', () => {
       pluginHost: 'http://localhost:3000/',
     });
     const asyncAction = configureApp();
-    await asyncAction(dispatch, getState);
+    await asyncAction(dispatch, getState, null);
 
     expect(actions.length).toEqual(8);
     expect(actions).toContainEqual(loadFacilityName('Generic'));
@@ -127,11 +130,12 @@ describe('Actions', () => {
       })
     );
     expect(actions).toContainEqual(
-      loadBreadcrumbSettings({
-        test: {
+      loadBreadcrumbSettings([
+        {
+          matchEntity: 'test',
           replaceEntityField: 'title',
         },
-      })
+      ])
     );
     expect(actions).toContainEqual(settingsLoaded());
     expect(actions).toContainEqual(loadSelectAllSetting(false));
@@ -149,7 +153,7 @@ describe('Actions', () => {
     });
 
     const asyncAction = configureApp();
-    await asyncAction(dispatch, getState);
+    await asyncAction(dispatch, getState, null);
 
     expect(actions.length).toEqual(3);
     expect(
@@ -174,7 +178,7 @@ describe('Actions', () => {
   it("doesn't send any actions when settings are undefined", async () => {
     mockSettingsGetter.mockReturnValue(undefined);
     const asyncAction = configureApp();
-    await asyncAction(dispatch, getState);
+    await asyncAction(dispatch, getState, null);
 
     expect(actions.length).toEqual(0);
   });

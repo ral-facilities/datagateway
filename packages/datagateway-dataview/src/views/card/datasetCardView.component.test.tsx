@@ -1,24 +1,31 @@
-import { Link, ListItemText } from '@material-ui/core';
-import { createMount } from '@material-ui/core/test-utils';
 import {
-  AdvancedFilter,
+  type Dataset,
   dGCommonInitialState,
-  useDatasetsPaginated,
   useDatasetCount,
-  Dataset,
-  AddToCartButton,
+  useDatasetsPaginated,
 } from 'datagateway-common';
-import { ReactWrapper } from 'enzyme';
-import React from 'react';
+import * as React from 'react';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router';
+import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { StateType } from '../../state/app.types';
+import type { StateType } from '../../state/app.types';
 import DatasetCardView from './datasetCardView.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { createMemoryHistory, History } from 'history';
+import { createMemoryHistory, type History } from 'history';
 import { initialState as dgDataViewInitialState } from '../../state/reducers/dgdataview.reducer';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../../setupTests';
+import {
+  render,
+  type RenderResult,
+  screen,
+  within,
+} from '@testing-library/react';
+import { UserEvent } from '@testing-library/user-event/setup/setup';
+import userEvent from '@testing-library/user-event';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -32,16 +39,15 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('Dataset - Card View', () => {
-  let mount;
-  let mockStore;
+  const mockStore = configureStore([thunk]);
   let state: StateType;
   let cardData: Dataset[];
   let history: History;
+  let user: UserEvent;
 
-  const createWrapper = (): ReactWrapper => {
-    const store = mockStore(state);
-    return mount(
-      <Provider store={store}>
+  const renderComponent = (): RenderResult =>
+    render(
+      <Provider store={mockStore(state)}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
             <DatasetCardView investigationId="1" />
@@ -49,22 +55,22 @@ describe('Dataset - Card View', () => {
         </Router>
       </Provider>
     );
-  };
 
   beforeEach(() => {
-    mount = createMount();
     cardData = [
       {
         id: 1,
         name: 'Test 1',
+        description: 'Test description',
         size: 1,
         modTime: '2019-07-23',
         createTime: '2019-07-23',
+        datafileCount: 1,
       },
     ];
     history = createMemoryHistory();
+    user = userEvent.setup();
 
-    mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
         dgcommon: dGCommonInitialState,
@@ -85,45 +91,103 @@ describe('Dataset - Card View', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find('CardView').props()).toMatchSnapshot();
+  it('renders datasets as cards', async () => {
+    renderComponent();
+
+    const cards = await screen.findAllByTestId('card');
+    expect(cards).toHaveLength(1);
+
+    const card = within(cards[0]);
+
+    // check that title & description is displayed correctly
+    expect(
+      within(card.getByLabelText('card-title')).getByRole('link', {
+        name: 'Test 1',
+      })
+    ).toHaveAttribute('href', '/browse/investigation/1/dataset/1/datafile');
+    expect(
+      within(card.getByLabelText('card-description')).getByText(
+        'Test description'
+      )
+    ).toBeInTheDocument();
+
+    // check that datafile count is displayed correctly
+    expect(
+      card.getByTestId('card-info-datasets.datafile_count')
+    ).toBeInTheDocument();
+    expect(
+      within(card.getByTestId('card-info-datasets.datafile_count')).getByTestId(
+        'ConfirmationNumberIcon'
+      )
+    ).toBeInTheDocument();
+    expect(
+      card.getByTestId('card-info-datasets.datafile_count')
+    ).toHaveTextContent('datasets.datafile_count');
+    expect(
+      within(
+        card.getByTestId('card-info-data-datasets.datafile_count')
+      ).getByText('1')
+    ).toBeInTheDocument();
+
+    // check that datafile create time is displayed correctly
+    expect(
+      card.getByTestId('card-info-datasets.create_time')
+    ).toBeInTheDocument();
+    expect(
+      card.getByTestId('card-info-datasets.create_time')
+    ).toHaveTextContent('datasets.create_time');
+    expect(
+      within(card.getByTestId('card-info-datasets.create_time')).getByTestId(
+        'CalendarTodayIcon'
+      )
+    ).toBeInTheDocument();
+    expect(
+      within(card.getByTestId('card-info-data-datasets.create_time')).getByText(
+        '2019-07-23'
+      )
+    ).toBeInTheDocument();
+
+    // check that datafile modified time is displayed correctly
+    expect(
+      card.getByTestId('card-info-datasets.modified_time')
+    ).toBeInTheDocument();
+    expect(
+      card.getByTestId('card-info-datasets.modified_time')
+    ).toHaveTextContent('datasets.modified_time');
+    expect(
+      within(card.getByTestId('card-info-datasets.modified_time')).getByTestId(
+        'CalendarTodayIcon'
+      )
+    ).toBeInTheDocument();
+    expect(
+      within(
+        card.getByTestId('card-info-data-datasets.modified_time')
+      ).getByText('2019-07-23')
+    ).toBeInTheDocument();
+
+    // check that buttons are displayed correctly
+    expect(
+      card.getByRole('button', { name: 'buttons.add_to_cart' })
+    ).toBeInTheDocument();
   });
 
-  it('calls the correct data fetching hooks on load', () => {
-    const investigationId = '1';
-    createWrapper();
-    expect(useDatasetCount).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'investigation.id': { eq: investigationId },
-        }),
-      },
-    ]);
-    expect(useDatasetsPaginated).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'investigation.id': { eq: investigationId },
-        }),
-      },
-    ]);
-  });
+  it('updates filter query params on text filter', async () => {
+    renderComponent();
 
-  it('updates filter query params on text filter', () => {
-    const wrapper = createWrapper();
+    // click on button to show advanced filters
+    await user.click(
+      await screen.findByRole('button', { name: 'advanced_filters.show' })
+    );
 
-    const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find(Link).simulate('click');
-    advancedFilter
-      .find('input')
-      .first()
-      .simulate('change', { target: { value: 'test' } });
+    const filter = await screen.findByRole('textbox', {
+      name: 'Filter by datasets.name',
+      hidden: true,
+    });
+
+    await user.type(filter, 'test');
 
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
@@ -131,58 +195,57 @@ describe('Dataset - Card View', () => {
       )}`
     );
 
-    advancedFilter
-      .find('input')
-      .first()
-      .simulate('change', { target: { value: '' } });
+    await user.clear(filter);
 
     expect(history.location.search).toBe('?');
   });
 
-  it('updates filter query params on date filter', () => {
-    const wrapper = createWrapper();
+  it('updates filter query params on date filter', async () => {
+    applyDatePickerWorkaround();
 
-    const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find(Link).simulate('click');
-    advancedFilter
-      .find('input')
-      .last()
-      .simulate('change', { target: { value: '2019-08-06' } });
+    renderComponent();
+
+    // click on button to show advanced filters
+    await user.click(
+      await screen.findByRole('button', { name: 'advanced_filters.show' })
+    );
+
+    const filter = await screen.findByRole('textbox', {
+      name: 'datasets.modified_time filter to',
+    });
+
+    await user.type(filter, '2019-08-06');
 
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent('{"modTime":{"endDate":"2019-08-06"}}')}`
     );
 
-    advancedFilter
-      .find('input')
-      .last()
-      .simulate('change', { target: { value: '' } });
+    // await user.clear(filter);
+    await user.click(filter);
+    await user.keyboard('{Control}a{/Control}');
+    await user.keyboard('{Delete}');
 
     expect(history.location.search).toBe('?');
+
+    cleanupDatePickerWorkaround();
   });
 
-  it('updates sort query params on sort', () => {
-    const wrapper = createWrapper();
+  it('updates sort query params on sort', async () => {
+    renderComponent();
 
-    const button = wrapper.find(ListItemText).first();
-    expect(button.text()).toEqual('datasets.name');
-    button.simulate('click');
+    await user.click(
+      await screen.findByRole('button', { name: 'Sort by DATASETS.NAME' })
+    );
 
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"asc"}')}`
     );
   });
 
-  it('renders buttons correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find(AddToCartButton).exists()).toBeTruthy();
-    expect(wrapper.find(AddToCartButton).text()).toEqual('buttons.add_to_cart');
-  });
-
   it('renders fine with incomplete data', () => {
     (useDatasetCount as jest.Mock).mockReturnValue({});
     (useDatasetsPaginated as jest.Mock).mockReturnValue({});
 
-    expect(() => createWrapper()).not.toThrowError();
+    expect(() => renderComponent()).not.toThrowError();
   });
 });

@@ -1,8 +1,5 @@
 import React from 'react';
-import SubjectIcon from '@material-ui/icons/Subject';
-import ExploreIcon from '@material-ui/icons/Explore';
-import SaveIcon from '@material-ui/icons/Save';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import { Subject, Explore, Save, CalendarToday } from '@mui/icons-material';
 import {
   Table,
   formatBytes,
@@ -21,19 +18,20 @@ import {
   DLSDatafileDetailsPanel,
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../../state/app.types';
 import { IndexRange } from 'react-virtualized';
 
 interface DLSDatafilesTableProps {
   datasetId: string;
+  investigationId: string;
 }
 
 const DLSDatafilesTable = (
   props: DLSDatafilesTableProps
 ): React.ReactElement => {
-  const { datasetId } = props;
+  const { datasetId, investigationId } = props;
 
   const [t] = useTranslation();
 
@@ -52,7 +50,7 @@ const DLSDatafilesTable = (
   const dateFilter = useDateFilter(filters);
   const handleSort = useSort();
 
-  const { data: allIds } = useIds(
+  const { data: allIds, isLoading: allIdsLoading } = useIds(
     'datafile',
     [
       {
@@ -62,14 +60,11 @@ const DLSDatafilesTable = (
     ],
     selectAllSetting
   );
-  const { data: cartItems } = useCart();
-  const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
-    'datafile'
-  );
-  const {
-    mutate: removeFromCart,
-    isLoading: removeFromCartLoading,
-  } = useRemoveFromCart('datafile');
+  const { data: cartItems, isLoading: cartLoading } = useCart();
+  const { mutate: addToCart, isLoading: addToCartLoading } =
+    useAddToCart('datafile');
+  const { mutate: removeFromCart, isLoading: removeFromCartLoading } =
+    useRemoveFromCart('datafile');
 
   const { data: totalDataCount } = useDatafileCount([
     {
@@ -101,36 +96,43 @@ const DLSDatafilesTable = (
     [fetchNextPage]
   );
 
-  const aggregatedData: Datafile[] = React.useMemo(
-    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
-    [data]
-  );
+  /* istanbul ignore next */
+  const aggregatedData: Datafile[] = React.useMemo(() => {
+    if (data) {
+      if ('pages' in data) {
+        return data.pages.flat();
+      } else if ((data as unknown) instanceof Array) {
+        return data;
+      }
+    }
+
+    return [];
+  }, [data]);
 
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: SubjectIcon,
+        icon: Subject,
         label: t('datafiles.name'),
         dataKey: 'name',
         filterComponent: textFilter,
       },
       {
-        icon: ExploreIcon,
+        icon: Explore,
         label: t('datafiles.location'),
         dataKey: 'location',
         filterComponent: textFilter,
       },
       {
-        icon: SaveIcon,
+        icon: Save,
         label: t('datafiles.size'),
         dataKey: 'fileSize',
         cellContentRenderer: (cellProps) => {
           return formatBytes(cellProps.cellData);
         },
-        filterComponent: textFilter,
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('datafiles.create_time'),
         dataKey: 'createTime',
         filterComponent: dateFilter,
@@ -154,9 +156,25 @@ const DLSDatafilesTable = (
     [cartItems, selectAllSetting, allIds]
   );
 
+  const isParentSelected = React.useMemo(() => {
+    return cartItems?.some(
+      (cartItem) =>
+        (cartItem.entityType === 'dataset' &&
+          cartItem.entityId.toString() === datasetId) ||
+        (cartItem.entityType === 'investigation' &&
+          cartItem.entityId.toString() === investigationId)
+    );
+  }, [cartItems, datasetId, investigationId]);
+
   return (
     <Table
-      loading={addToCartLoading || removeFromCartLoading}
+      loading={
+        addToCartLoading ||
+        removeFromCartLoading ||
+        cartLoading ||
+        allIdsLoading
+      }
+      parentSelected={isParentSelected}
       data={aggregatedData}
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}

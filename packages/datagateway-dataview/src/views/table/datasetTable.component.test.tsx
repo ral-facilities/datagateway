@@ -1,54 +1,51 @@
-import { createMount } from '@material-ui/core/test-utils';
 import {
-  Dataset,
+  type Dataset,
   dGCommonInitialState,
-  useDatasetCount,
-  useIds,
-  useCart,
-  useAddToCart,
-  useRemoveFromCart,
-  useDatasetsInfinite,
-  useDatasetsDatafileCount,
-  DatasetDetailsPanel,
+  type DownloadCartItem,
 } from 'datagateway-common';
-import React from 'react';
+import * as React from 'react';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router';
+import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { StateType } from '../../state/app.types';
+import type { StateType } from '../../state/app.types';
 import { initialState } from '../../state/reducers/dgdataview.reducer';
 import DatasetTable from './datasetTable.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactWrapper } from 'enzyme';
-import { createMemoryHistory, History } from 'history';
-
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    useDatasetCount: jest.fn(),
-    useDatasetsInfinite: jest.fn(),
-    useDatasetsDatafileCount: jest.fn(),
-    useIds: jest.fn(),
-    useCart: jest.fn(),
-    useAddToCart: jest.fn(),
-    useRemoveFromCart: jest.fn(),
-  };
-});
+import { createMemoryHistory, type History } from 'history';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+  findAllRows,
+  findColumnHeaderByName,
+} from '../../setupTests';
+import {
+  render,
+  type RenderResult,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
+import type { UserEvent } from '@testing-library/user-event/setup/setup';
+import userEvent from '@testing-library/user-event';
+import {
+  findCellInRow,
+  findColumnIndexByName,
+} from 'datagateway-search/src/setupTests';
+import axios, { type AxiosResponse } from 'axios';
 
 describe('Dataset table component', () => {
-  let mount;
-  let mockStore;
+  const mockStore = configureStore([thunk]);
   let state: StateType;
   let rowData: Dataset[];
+  let cartItems: DownloadCartItem[];
   let history: History;
+  let user: UserEvent;
+  let holder: HTMLElement;
 
-  const createWrapper = (): ReactWrapper => {
+  const renderComponent = (): RenderResult => {
     const store = mockStore(state);
-    return mount(
+    return render(
       <Provider store={store}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
@@ -60,11 +57,14 @@ describe('Dataset table component', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
+    user = userEvent.setup();
+    cartItems = [];
     rowData = [
       {
         id: 1,
         name: 'Test 1',
+        fileSize: 1,
+        fileCount: 1,
         size: 1,
         modTime: '2019-07-23',
         createTime: '2019-07-23',
@@ -72,7 +72,10 @@ describe('Dataset table component', () => {
     ];
     history = createMemoryHistory();
 
-    mockStore = configureStore([thunk]);
+    holder = document.createElement('div');
+    holder.setAttribute('id', 'datagateway-dataview');
+    document.body.appendChild(holder);
+
     state = JSON.parse(
       JSON.stringify({
         dgcommon: dGCommonInitialState,
@@ -80,148 +83,195 @@ describe('Dataset table component', () => {
       })
     );
 
-    (useCart as jest.Mock).mockReturnValue({
-      data: [],
-    });
-    (useDatasetCount as jest.Mock).mockReturnValue({
-      data: 0,
-    });
-    (useDatasetsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
-    });
-    (useDatasetsDatafileCount as jest.Mock).mockReturnValue([{ data: 1 }]);
-    (useIds as jest.Mock).mockReturnValue({
-      data: [1],
-    });
-    (useAddToCart as jest.Mock).mockReturnValue({
-      mutate: jest.fn(),
-      isLoading: false,
-    });
-    (useRemoveFromCart as jest.Mock).mockReturnValue({
-      mutate: jest.fn(),
-      isLoading: false,
-    });
+    axios.get = jest
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/\/user\/cart\/$/.test(url)) {
+          // fetch download cart
+          return Promise.resolve({
+            data: { cartItems },
+          });
+        }
+
+        if (/\/datafiles\/count$/.test(url)) {
+          // fetch datafile count
+          return Promise.resolve({
+            data: 1,
+          });
+        }
+
+        if (/\/datasets\/count$/.test(url)) {
+          // fetch dataset count
+          return Promise.resolve({
+            data: rowData.length,
+          });
+        }
+
+        if (/\/datasets$/.test(url)) {
+          // datafiles infinite
+          return Promise.resolve({
+            data: rowData,
+          });
+        }
+
+        return Promise.reject(`Endpoint not mocked: ${url}`);
+      });
+
+    axios.post = jest
+      .fn()
+      .mockImplementation(
+        (url: string, data: unknown): Promise<Partial<AxiosResponse>> => {
+          if (/\/user\/cart\/\/cartItems$/.test(url)) {
+            const isRemove: boolean = JSON.parse(
+              (data as URLSearchParams).get('remove') ?? 'false'
+            );
+
+            if (isRemove) {
+              cartItems = [];
+
+              return Promise.resolve({
+                data: {
+                  cartItems: [],
+                },
+              });
+            }
+
+            cartItems = [
+              ...cartItems,
+              {
+                id: 123,
+                entityId: 1,
+                entityType: 'dataset',
+                name: 'download cart item name',
+                parentEntities: [],
+              },
+            ];
+
+            return Promise.resolve({
+              data: { cartItems },
+            });
+          }
+
+          return Promise.reject(`Endpoint not mocked: ${url}`);
+        }
+      );
   });
 
   afterEach(() => {
-    mount.cleanUp();
+    document.body.removeChild(holder);
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find('VirtualizedTable').props()).toMatchSnapshot();
+  it('renders correctly', async () => {
+    renderComponent();
+
+    let rows: HTMLElement[] = [];
+    await waitFor(async () => {
+      rows = await findAllRows();
+      // should have 1 row in the table
+      expect(rows).toHaveLength(1);
+    });
+
+    const row = rows[0];
+
+    // check that column headers are shown correctly.
+    expect(await findColumnHeaderByName('datasets.name')).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datasets.datafile_count')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datasets.create_time')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datasets.modified_time')
+    ).toBeInTheDocument();
+
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('datasets.name'),
+        })
+      ).getByRole('link', { name: 'Test 1' })
+    ).toHaveAttribute('href', '/browse/investigation/1/dataset/1/datafile');
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('datasets.datafile_count'),
+        })
+      ).getByText('1')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('datasets.create_time'),
+        })
+      ).getByText('2019-07-23')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('datasets.modified_time'),
+        })
+      ).getByText('2019-07-23')
+    ).toBeInTheDocument();
   });
 
-  it('calls the correct data fetching hooks on load', () => {
-    const investigationId = '1';
-    createWrapper();
-    expect(useDatasetCount).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'investigation.id': { eq: investigationId },
-        }),
-      },
-    ]);
-    expect(useDatasetsInfinite).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'investigation.id': { eq: investigationId },
-        }),
-      },
-    ]);
-    expect(useDatasetsDatafileCount).toHaveBeenCalledWith({
-      pages: [rowData],
-    });
-    expect(useIds).toHaveBeenCalledWith(
-      'dataset',
-      [
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'investigation.id': { eq: parseInt(investigationId) },
-          }),
-        },
-      ],
-      true
-    );
-    expect(useCart).toHaveBeenCalled();
-    expect(useAddToCart).toHaveBeenCalledWith('dataset');
-    expect(useRemoveFromCart).toHaveBeenCalledWith('dataset');
-  });
+  it('updates filter query params on text filter', async () => {
+    renderComponent();
 
-  it('sends fetchDatasets action when loadMoreRows is called', () => {
-    const fetchNextPage = jest.fn();
-    (useDatasetsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage,
-    });
-    const wrapper = createWrapper();
-
-    wrapper.find('VirtualizedTable').prop('loadMoreRows')({
-      startIndex: 50,
-      stopIndex: 74,
+    const filterInput = await screen.findByRole('textbox', {
+      name: 'Filter by datasets.name',
+      hidden: true,
     });
 
-    expect(fetchNextPage).toHaveBeenCalledWith({
-      pageParam: { startIndex: 50, stopIndex: 74 },
-    });
-  });
+    await user.type(filterInput, 'test');
 
-  it('updates filter query params on text filter', () => {
-    const wrapper = createWrapper();
-
-    const filterInput = wrapper
-      .find('[aria-label="Filter by datasets.name"]')
-      .first();
-    filterInput.instance().value = 'test';
-    filterInput.simulate('change');
-
-    expect(history.length).toBe(2);
+    expect(history.length).toBe(5);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
       )}`
     );
 
-    filterInput.instance().value = '';
-    filterInput.simulate('change');
+    await user.clear(filterInput);
 
-    expect(history.length).toBe(3);
+    expect(history.length).toBe(6);
     expect(history.location.search).toBe('?');
   });
 
-  it('updates filter query params on date filter', () => {
-    const wrapper = createWrapper();
+  it('updates filter query params on date filter', async () => {
+    applyDatePickerWorkaround();
 
-    const filterInput = wrapper.find(
-      'input[id="datasets.modified_time filter to"]'
-    );
-    filterInput.instance().value = '2019-08-06';
-    filterInput.simulate('change');
+    renderComponent();
+
+    const filterInput = await screen.findByRole('textbox', {
+      name: 'datasets.modified_time filter to',
+    });
+
+    await user.type(filterInput, '2019-08-06');
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent('{"modTime":{"endDate":"2019-08-06"}}')}`
     );
 
-    filterInput.instance().value = '';
-    filterInput.simulate('change');
+    // await user.clear(filterInput);
+    await user.click(filterInput);
+    await user.keyboard('{Control}a{/Control}');
+    await user.keyboard('{Delete}');
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
+
+    cleanupDatePickerWorkaround();
   });
 
-  it('updates sort query params on sort', () => {
-    const wrapper = createWrapper();
+  it('updates sort query params on sort', async () => {
+    renderComponent();
 
-    wrapper
-      .find('[role="columnheader"] span[role="button"]')
-      .first()
-      .simulate('click');
+    await user.click(
+      await screen.findByRole('button', { name: 'datasets.name' })
+    );
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
@@ -229,98 +279,104 @@ describe('Dataset table component', () => {
     );
   });
 
-  it('calls addToCart mutate function on unchecked checkbox click', () => {
-    const addToCart = jest.fn();
-    (useAddToCart as jest.Mock).mockReturnValue({
-      mutate: addToCart,
-      loading: false,
+  it('adds selected row to cart if unselected; removes it from cart otherwise', async () => {
+    renderComponent();
+
+    // wait for rows to show up
+    await waitFor(async () => {
+      expect(await findAllRows()).toHaveLength(1);
     });
-    const wrapper = createWrapper();
 
-    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
+    // row should not be selected initially as the cart is empty
+    expect(
+      await screen.findByRole('checkbox', { name: 'select row 0' })
+    ).not.toBeChecked();
 
-    expect(addToCart).toHaveBeenCalledWith([1]);
+    // select the row
+    await user.click(
+      await screen.findByRole('checkbox', { name: 'select row 0' })
+    );
+
+    // datafile should be added to the cart
+    expect(
+      await screen.findByRole('checkbox', { name: 'select row 0' })
+    ).toBeChecked();
+
+    // unselect the row
+    await user.click(screen.getByRole('checkbox', { name: 'select row 0' }));
+
+    // datafile should be removed from the cart
+    expect(
+      await screen.findByRole('checkbox', { name: 'select row 0' })
+    ).not.toBeChecked();
   });
 
-  it('calls removeFromCart mutate function on checked checkbox click', () => {
-    (useCart as jest.Mock).mockReturnValue({
-      data: [
-        {
-          entityId: 1,
-          entityType: 'dataset',
-          id: 1,
-          name: 'test',
-          parentEntities: [],
-        },
-      ],
+  it('selected rows only considers relevant cart items', async () => {
+    cartItems = [
+      {
+        entityId: 1,
+        entityType: 'investigation',
+        id: 1,
+        name: 'test',
+        parentEntities: [],
+      },
+      {
+        entityId: 2,
+        entityType: 'dataset',
+        id: 2,
+        name: 'test',
+        parentEntities: [],
+      },
+    ];
+
+    renderComponent();
+    // wait for rows to show up
+    await waitFor(async () => {
+      expect(await findAllRows()).toHaveLength(1);
     });
 
-    const removeFromCart = jest.fn();
-    (useRemoveFromCart as jest.Mock).mockReturnValue({
-      mutate: removeFromCart,
-      loading: false,
+    const selectAllCheckbox = await screen.findByRole('checkbox', {
+      name: 'select all rows',
     });
 
-    const wrapper = createWrapper();
-
-    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
-
-    expect(removeFromCart).toHaveBeenCalledWith([1]);
+    expect(selectAllCheckbox).not.toBeChecked();
+    expect(selectAllCheckbox).toHaveAttribute('data-indeterminate', 'false');
   });
 
-  it('selected rows only considers relevant cart items', () => {
-    (useCart as jest.Mock).mockReturnValueOnce({
-      data: [
-        {
-          entityId: 1,
-          entityType: 'investigation',
-          id: 1,
-          name: 'test',
-          parentEntities: [],
-        },
-        {
-          entityId: 2,
-          entityType: 'dataset',
-          id: 2,
-          name: 'test',
-          parentEntities: [],
-        },
-      ],
-    });
-
-    const wrapper = createWrapper();
-
-    const selectAllCheckbox = wrapper
-      .find('[aria-label="select all rows"]')
-      .first();
-
-    expect(selectAllCheckbox.prop('checked')).toEqual(false);
-    expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
-  });
-
-  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', () => {
+  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', async () => {
     state.dgdataview.selectAllSetting = false;
 
-    const wrapper = createWrapper();
+    renderComponent();
+    // wait for rows to show up
+    await waitFor(async () => {
+      expect(await findAllRows()).toHaveLength(1);
+    });
 
-    expect(useIds).toHaveBeenCalledWith('dataset', expect.anything(), false);
-    expect(useIds).not.toHaveBeenCalledWith('dataset', expect.anything(), true);
-    expect(wrapper.exists('[aria-label="select all rows"]')).toBe(false);
+    await waitFor(() => {
+      expect(
+        screen.queryByRole('checkbox', { name: 'select all rows' })
+      ).toBeNull();
+    });
   });
 
-  it('displays details panel when expanded', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find(DatasetDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+  it('displays details panel when expanded', async () => {
+    renderComponent();
 
-    expect(wrapper.find(DatasetDetailsPanel).exists()).toBeTruthy();
-  });
+    // wait for rows to show up
+    let rows: HTMLElement[] = [];
+    await waitFor(async () => {
+      rows = await findAllRows();
+      expect(rows).toHaveLength(1);
+    });
 
-  it('renders Dataset title as a link', () => {
-    const wrapper = createWrapper();
+    expect(screen.queryByTestId('dataset-details-panel')).toBeNull();
+
+    await user.click(
+      within(rows[0]).getByRole('button', { name: 'Show details' })
+    );
 
     expect(
-      wrapper.find('[aria-colindex=3]').find('p').children()
-    ).toMatchSnapshot();
+      await screen.findByTestId('dataset-details-panel')
+    ).toBeInTheDocument();
   });
 });

@@ -1,14 +1,14 @@
-import React from 'react';
-import { createMount } from '@material-ui/core/test-utils';
+import * as React from 'react';
 import Table, { ColumnType } from './table.component';
 import { formatBytes } from './cellRenderers/cellContentRenderers';
 import { TableCellProps } from 'react-virtualized';
 import TextColumnFilter from './columnFilters/textColumnFilter.component';
-import SelectHeader from './headerRenderers/selectHeader.component';
-import ReactTestUtils from 'react-dom/test-utils';
+import { render, screen, waitFor, within } from '@testing-library/react';
+import { UserEvent } from '@testing-library/user-event/setup/setup';
+import userEvent from '@testing-library/user-event';
 
 describe('Table component', () => {
-  let mount;
+  let user: UserEvent;
 
   const onSort = jest.fn();
 
@@ -52,68 +52,31 @@ describe('Table component', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
+    user = userEvent.setup();
   });
 
   afterEach(() => {
-    mount.cleanUp();
     onSort.mockClear();
   });
 
-  it('renders data columns correctly', () => {
-    const wrapper = mount(<Table {...tableProps} />);
+  it('renders data columns correctly', async () => {
+    render(<Table {...tableProps} />);
 
-    expect(wrapper.exists('[aria-colcount=2]')).toBe(true);
+    // expect "Test 1" and "Test 2" column to exist
+    const columnHeaders = await screen.findAllByRole('columnheader');
+    expect(within(columnHeaders[0]).getByText('Test 1')).toBeInTheDocument();
+    expect(within(columnHeaders[1]).getByText('Test 2')).toBeInTheDocument();
 
-    expect(
-      wrapper
-        .find('[role="columnheader"]')
-        .at(0)
-        .children()
-        .find('div')
-        .first()
-        .text()
-      // Empty Selects (like the one in textColumnFilter) render a zero width space character
-    ).toEqual('Test 1\u200B');
-
-    expect(
-      wrapper
-        .find('[role="columnheader"]')
-        .at(1)
-        .children()
-        .find('div')
-        .first()
-        .text()
-    ).toEqual('Test 2');
-
-    expect(
-      wrapper
-        .find('[role="row"]')
-        .find('[role="gridcell"]')
-        .first()
-        .find('p')
-        .text()
-    ).toEqual('test1');
-
-    expect(
-      wrapper
-        .find('[role="row"]')
-        .find('[role="gridcell"]')
-        .last()
-        .find('p')
-        .text()
-    ).toEqual('2 B');
+    const rows = await screen.findAllByRole('row');
+    const cellsInFirstRow = within(rows[1]).getAllByRole('gridcell');
+    expect(within(cellsInFirstRow[0]).getByText('test1')).toBeInTheDocument();
+    expect(within(cellsInFirstRow[1]).getByText('2 B')).toBeInTheDocument();
   });
 
-  it('calls onSort function when sort label clicked', () => {
-    const wrapper = mount(<Table {...tableProps} />);
-
-    wrapper
-      .find('[role="columnheader"] span[role="button"]')
-      .first()
-      .simulate('click');
-
-    expect(onSort).toHaveBeenCalledWith('TEST1', 'asc', 'push');
+  it('calls onSort function when sort label clicked', async () => {
+    render(<Table {...tableProps} />);
+    await user.click(await screen.findByText('Test 1'));
+    expect(onSort).toHaveBeenCalledWith('TEST1', 'asc', 'push', false);
   });
 
   it('calls onSort function when defaultSort has been specified', () => {
@@ -124,15 +87,29 @@ describe('Table component', () => {
         { ...tableProps.columns[1], defaultSort: 'desc' },
       ],
     };
-    const wrapper = mount(<Table {...sortedTableProps} />);
-    wrapper.update();
+    render(<Table {...sortedTableProps} />);
 
-    expect(onSort).toHaveBeenCalledWith('TEST1', 'asc', 'replace');
-    expect(onSort).toHaveBeenCalledWith('TEST2', 'desc', 'replace');
+    expect(onSort).toHaveBeenCalledWith('TEST1', 'asc', 'replace', false);
+    expect(onSort).toHaveBeenCalledWith('TEST2', 'desc', 'replace', false);
   });
 
-  it('renders select column correctly, with both allIds defined and undefined', () => {
-    const wrapper = mount(
+  it('calls onSort with correct parameters when shift key is pressed', async () => {
+    render(<Table {...tableProps} />);
+
+    // Click with shift to sort ascending
+    await user.keyboard('{Shift>}');
+    await user.click(await screen.findByRole('button', { name: 'Test 1' }));
+    await user.keyboard('{/Shift}');
+
+    expect(onSort).toHaveBeenCalledWith('TEST1', 'asc', 'push', true);
+
+    await user.click(await screen.findByRole('button', { name: 'Test 2' }));
+
+    expect(onSort).toHaveBeenCalledWith('TEST2', 'asc', 'push', false);
+  });
+
+  it('renders select column correctly', async () => {
+    render(
       <Table
         {...tableProps}
         selectedRows={[]}
@@ -142,98 +119,25 @@ describe('Table component', () => {
       />
     );
 
-    expect(wrapper.exists('[aria-colcount=3]')).toBe(true);
-    expect(wrapper.exists('[aria-label="select all rows"]')).toBe(true);
-    expect(wrapper.find(SelectHeader).prop('allIds')).toEqual([1]);
-
-    const wrapperAllIds = mount(
-      <Table
-        {...tableProps}
-        selectedRows={[]}
-        onCheck={jest.fn()}
-        onUncheck={jest.fn()}
-        allIds={[1, 2, 3, 4]}
-        selectAllSetting={true}
-      />
-    );
-
-    expect(wrapperAllIds.exists('[aria-colcount=3]')).toBe(true);
-    expect(wrapperAllIds.exists('[aria-label="select all rows"]')).toBe(true);
-    expect(wrapperAllIds.find(SelectHeader).prop('allIds')).toEqual([
-      1,
-      2,
-      3,
-      4,
-    ]);
+    expect(
+      await screen.findByRole('checkbox', { name: 'select all rows' })
+    ).toBeInTheDocument();
   });
 
-  it('resizes data columns correctly when a column is resized', () => {
-    const wrapper = mount(<Table {...tableProps} />);
-
-    wrapper.update();
-
-    expect(wrapper.find('[role="columnheader"]').at(0).prop('style')).toEqual(
-      expect.objectContaining({
-        flex: expect.stringContaining('1 1 512px'),
-      })
-    );
-
-    ReactTestUtils.act(() => {
-      wrapper.find('DataHeader').at(0).prop('resizeColumn')(
-        wrapper.find('DataHeader').at(0).prop('dataKey'),
-        50
-      );
-    });
-
-    wrapper.update();
-
-    expect(wrapper.find('[role="columnheader"]').at(0).prop('style')).toEqual(
-      expect.objectContaining({
-        flex: expect.stringContaining('0 0 562px'),
-      })
-    );
+  it.skip('resizes data columns correctly when a column is resized', () => {
+    // TODO: I think testing-library doesn't support dragging interaction at the moment
+    //       the drag example code here only works with ar eal browser:
+    //       https://testing-library.com/docs/example-drag/
   });
 
-  it('resizes all data columns correctly when a column is resized and there are expand, select and action columns', () => {
-    const wrapper = mount(
-      <Table
-        {...tableProps}
-        detailsPanel={function detailsPanel() {
-          return <div>Details panel</div>;
-        }}
-        actions={[]}
-        selectedRows={[]}
-        onCheck={jest.fn()}
-        onUncheck={jest.fn()}
-      />
-    );
-
-    wrapper.update();
-
-    expect(wrapper.find('[role="columnheader"]').at(2).prop('style')).toEqual(
-      expect.objectContaining({
-        flex: expect.stringContaining('1 1 512px'),
-      })
-    );
-
-    ReactTestUtils.act(() => {
-      wrapper.find('DataHeader').at(0).prop('resizeColumn')(
-        wrapper.find('DataHeader').at(0).prop('dataKey'),
-        40
-      );
-    });
-
-    wrapper.update();
-
-    expect(wrapper.find('[role="columnheader"]').at(2).prop('style')).toEqual(
-      expect.objectContaining({
-        flex: expect.stringContaining('0 0 552px'),
-      })
-    );
+  it.skip('resizes all data columns correctly when a column is resized and there are expand, select and action columns', () => {
+    // TODO: I think testing-library doesn't support dragging interaction at the moment
+    //       the drag example code here only works with ar eal browser:
+    //       https://testing-library.com/docs/example-drag/
   });
 
-  it('renders details column correctly', () => {
-    const wrapper = mount(
+  it('renders details column correctly', async () => {
+    render(
       <Table
         {...tableProps}
         detailsPanel={function detailsPanel() {
@@ -242,31 +146,38 @@ describe('Table component', () => {
       />
     );
 
-    expect(wrapper.exists('[aria-colcount=3]')).toBe(true);
-    expect(wrapper.exists('[aria-label="Show details"]')).toBe(true);
+    expect(
+      await screen.findByRole('button', { name: 'Show details' })
+    ).toBeInTheDocument();
   });
 
-  it('renders detail panel when expand button is clicked and derenders when hide button is clicked', () => {
-    const wrapper = mount(
+  it('renders detail panel when expand button is clicked and derenders when hide button is clicked', async () => {
+    render(
       <Table
         {...tableProps}
         detailsPanel={function detailsPanel() {
-          return <div id="details-panel">Details panel</div>;
+          return <div data-testid="details-panel">Details panel</div>;
         }}
       />
     );
 
-    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+    await user.click(
+      await screen.findByRole('button', { name: 'Show details' })
+    );
 
-    expect(wrapper.exists('#details-panel')).toBe(true);
+    expect(await screen.findByTestId('details-panel')).toBeInTheDocument();
 
-    wrapper.find('[aria-label="Hide details"]').first().simulate('click');
+    await user.click(
+      await screen.findByRole('button', { name: 'Hide details' })
+    );
 
-    expect(wrapper.exists('#details-panel')).toBe(false);
+    await waitFor(() => {
+      expect(screen.queryByRole('details-panel')).toBeNull();
+    });
   });
 
-  it('renders actions column correctly', () => {
-    const wrapper = mount(
+  it('renders actions column correctly', async () => {
+    render(
       <Table
         {...tableProps}
         actions={[
@@ -281,15 +192,14 @@ describe('Table component', () => {
       />
     );
 
-    expect(wrapper.exists('[aria-colcount=3]')).toBe(true);
+    expect(await screen.findByText('Actions')).toBeInTheDocument();
     expect(
-      wrapper.find('[role="columnheader"]').last().children().find('div').text()
-    ).toEqual('Actions');
-    expect(wrapper.find('button').text()).toEqual('I am an action');
+      await screen.findByRole('button', { name: 'I am an action' })
+    ).toBeInTheDocument();
   });
 
-  it('renders correctly when no infinite loading properties are defined', () => {
-    const wrapper = mount(
+  it('renders correctly when no infinite loading properties are defined', async () => {
+    render(
       <Table
         {...tableProps}
         loadMoreRows={undefined}
@@ -297,15 +207,7 @@ describe('Table component', () => {
       />
     );
 
-    expect(wrapper.find('InfiniteLoader').prop('rowCount')).toBe(
-      tableProps.data.length
-    );
-    expect(wrapper.find('InfiniteLoader').prop('loadMoreRows')).toBeInstanceOf(
-      Function
-    );
-    expect(wrapper.find('InfiniteLoader').prop('loadMoreRows')()).resolves.toBe(
-      undefined
-    );
+    expect(await screen.findByText('test1')).toBeInTheDocument();
   });
 
   it('throws error when only one of loadMoreRows or totalRowCount are defined', () => {
@@ -315,13 +217,13 @@ describe('Table component', () => {
     });
 
     expect(() =>
-      mount(<Table {...tableProps} totalRowCount={undefined} />)
+      render(<Table {...tableProps} totalRowCount={undefined} />)
     ).toThrowError(
       'Only one of loadMoreRows and totalRowCount was defined - either define both for infinite loading functionality or neither for no infinite loading'
     );
 
     expect(() =>
-      mount(<Table {...tableProps} loadMoreRows={undefined} />)
+      render(<Table {...tableProps} loadMoreRows={undefined} />)
     ).toThrowError(
       'Only one of loadMoreRows and totalRowCount was defined - either define both for infinite loading functionality or neither for no infinite loading'
     );

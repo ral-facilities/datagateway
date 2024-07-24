@@ -1,6 +1,5 @@
 import {
   ColumnType,
-  formatCountOrSize,
   Investigation,
   parseSearchToQuery,
   readSciGatewayToken,
@@ -8,23 +7,25 @@ import {
   tableLink,
   useDateFilter,
   useInvestigationCount,
-  useInvestigationsDatasetCount,
   useInvestigationsInfinite,
   usePushFilter,
   useSort,
   useTextFilter,
   DLSVisitDetailsPanel,
+  formatBytes,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 
-import SubjectIcon from '@material-ui/icons/Subject';
-import FingerprintIcon from '@material-ui/icons/Fingerprint';
-import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
-import AssessmentIcon from '@material-ui/icons/Assessment';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import { useLocation } from 'react-router';
+import {
+  Subject,
+  Fingerprint,
+  Assessment,
+  CalendarToday,
+  Save,
+} from '@mui/icons-material';
+import { useLocation } from 'react-router-dom';
 
 const DLSMyDataTable = (): React.ReactElement => {
   const [t] = useTranslation();
@@ -74,12 +75,18 @@ const DLSMyDataTable = (): React.ReactElement => {
     isMounted
   );
 
-  const datasetCountQueries = useInvestigationsDatasetCount(data);
+  /* istanbul ignore next */
+  const aggregatedData: Investigation[] = React.useMemo(() => {
+    if (data) {
+      if ('pages' in data) {
+        return data.pages.flat();
+      } else if ((data as unknown) instanceof Array) {
+        return data;
+      }
+    }
 
-  const aggregatedData: Investigation[] = React.useMemo(
-    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
-    [data]
-  );
+    return [];
+  }, [data]);
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
@@ -94,7 +101,7 @@ const DLSMyDataTable = (): React.ReactElement => {
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: SubjectIcon,
+        icon: Subject,
         label: t('investigations.title'),
         dataKey: 'title',
         cellContentRenderer: (cellProps: TableCellProps) => {
@@ -109,7 +116,7 @@ const DLSMyDataTable = (): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: FingerprintIcon,
+        icon: Fingerprint,
         label: t('investigations.visit_id'),
         dataKey: 'visitId',
         cellContentRenderer: (cellProps: TableCellProps) => {
@@ -117,21 +124,21 @@ const DLSMyDataTable = (): React.ReactElement => {
           return tableLink(
             `/browse/proposal/${investigationData.name}/investigation/${investigationData.id}/dataset`,
             investigationData.visitId,
-            view
+            view,
+            'dls-mydata-table-visitId'
           );
         },
         filterComponent: textFilter,
       },
       {
-        icon: ConfirmationNumberIcon,
-        label: t('investigations.dataset_count'),
-        dataKey: 'datasetCount',
+        icon: Save,
+        label: t('investigations.size'),
+        dataKey: 'fileSize',
         cellContentRenderer: (cellProps: TableCellProps): number | string =>
-          formatCountOrSize(datasetCountQueries[cellProps.rowIndex]),
-        disableSort: true,
+          formatBytes(cellProps.rowData.fileSize),
       },
       {
-        icon: AssessmentIcon,
+        icon: Assessment,
         label: t('investigations.instrument'),
         dataKey: 'investigationInstruments.instrument.fullName',
         cellContentRenderer: (cellProps: TableCellProps) => {
@@ -146,21 +153,21 @@ const DLSMyDataTable = (): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('investigations.start_date'),
         dataKey: 'startDate',
         filterComponent: dateFilter,
         defaultSort: 'desc',
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
 
         label: t('investigations.end_date'),
         dataKey: 'endDate',
         filterComponent: dateFilter,
       },
     ],
-    [t, dateFilter, textFilter, view, datasetCountQueries]
+    [t, dateFilter, textFilter, view]
   );
 
   React.useEffect(() => {

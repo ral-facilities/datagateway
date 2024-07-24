@@ -1,20 +1,33 @@
-import React from 'react';
-import { createMount } from '@material-ui/core/test-utils';
-import DownloadCartTable from './downloadCartTable.component';
-import { DownloadCartItem, fetchDownloadCart } from 'datagateway-common';
-import { flushPromises } from '../setupTests';
-import { act } from 'react-dom/test-utils';
-import { DownloadSettings, DownloadSettingsContext } from '../ConfigProvider';
-import { Router } from 'react-router-dom';
-import { ReactWrapper } from 'enzyme';
-import { createMemoryHistory } from 'history';
-import { QueryClientProvider, QueryClient } from 'react-query';
 import {
-  getDatafileCount,
-  getSize,
+  fireEvent,
+  render,
+  RenderResult,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { fetchDownloadCart } from 'datagateway-common';
+import { createMemoryHistory, MemoryHistory } from 'history';
+import * as React from 'react';
+import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import { Router } from 'react-router-dom';
+import { DownloadSettingsContext } from '../ConfigProvider';
+import { mockCartItems, mockedSettings } from '../testData';
+import {
+  getFileSizeAndCount,
+  isCartMintable,
   removeAllDownloadCartItems,
   removeFromCart,
 } from '../downloadApi';
+import DownloadCartTable from './downloadCartTable.component';
+import { createTheme } from '@mui/material';
+
+setLogger({
+  log: console.log,
+  warn: console.warn,
+  error: jest.fn(),
+});
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -32,558 +45,507 @@ jest.mock('../downloadApi', () => {
   return {
     ...originalModule,
     removeAllDownloadCartItems: jest.fn(),
-    getSize: jest.fn(),
-    getDatafileCount: jest.fn(),
+    getFileSizeAndCount: jest.fn(),
     getIsTwoLevel: jest.fn().mockResolvedValue(true),
     removeFromCart: jest.fn(),
+    isCartMintable: jest.fn(),
   };
 });
 
-describe('Download cart table component', () => {
-  let mount;
-  let history;
-  let queryClient;
-
-  let cartItems: DownloadCartItem[] = [];
-
-  // Create our mocked datagateway-download settings file.
-  let mockedSettings: DownloadSettings = {
-    facilityName: 'LILS',
-    apiUrl: 'https://example.com/api',
-    downloadApiUrl: 'https://example.com/downloadApi',
-    idsUrl: 'https://example.com/ids',
-    fileCountMax: 5000,
-    totalSizeMax: 1000000000000,
-    accessMethods: {
-      https: {
-        idsUrl: 'https://example.com/ids',
-        displayName: 'HTTPS',
-        description: 'Example description for HTTPS access method.',
-      },
-      globus: {
-        idsUrl: 'https://example.com/ids',
-        displayName: 'Globus',
-        description: 'Example description for Globus access method.',
+const createTestQueryClient = (): QueryClient =>
+  new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
       },
     },
-    routes: [],
-    helpSteps: [],
-  };
+  });
 
-  const createWrapper = (): ReactWrapper => {
-    queryClient = new QueryClient();
-    return mount(
-      <div id="datagateway-download">
-        <Router history={history}>
-          <DownloadSettingsContext.Provider value={mockedSettings}>
-            <QueryClientProvider client={queryClient}>
-              <DownloadCartTable statusTabRedirect={jest.fn()} />
-            </QueryClientProvider>
-          </DownloadSettingsContext.Provider>
-        </Router>
-      </div>
-    );
+const renderComponent = (): RenderResult & { history: MemoryHistory } => {
+  const history = createMemoryHistory();
+  return {
+    history: history,
+    ...render(
+      <QueryClientProvider client={createTestQueryClient()}>
+        <DownloadSettingsContext.Provider value={mockedSettings}>
+          <Router history={history}>
+            <DownloadCartTable statusTabRedirect={jest.fn()} />
+          </Router>
+        </DownloadSettingsContext.Provider>
+      </QueryClientProvider>
+    ),
+  };
+};
+
+describe('Download cart table component', () => {
+  let holder: HTMLElement | null;
+  let queryClient: QueryClient;
+  let user: ReturnType<typeof userEvent.setup>;
+
+  const resetDOM = (): void => {
+    if (holder) document.body.removeChild(holder);
+    holder = document.getElementById('datagateway-download');
+    if (holder) document.body.removeChild(holder);
   };
 
   beforeEach(() => {
-    mount = createMount();
-    history = createMemoryHistory();
-    cartItems = [
-      {
-        entityId: 1,
-        entityType: 'investigation',
-        id: 1,
-        name: 'INVESTIGATION 1',
-        parentEntities: [],
-      },
-      {
-        entityId: 2,
-        entityType: 'investigation',
-        id: 2,
-        name: 'INVESTIGATION 2',
-        parentEntities: [],
-      },
-      {
-        entityId: 3,
-        entityType: 'dataset',
-        id: 3,
-        name: 'DATASET 1',
-        parentEntities: [],
-      },
-      {
-        entityId: 4,
-        entityType: 'datafile',
-        id: 4,
-        name: 'DATAFILE 1',
-        parentEntities: [],
-      },
-    ];
+    user = userEvent.setup();
+    queryClient = new QueryClient();
 
-    (fetchDownloadCart as jest.MockedFunction<
-      typeof fetchDownloadCart
-    >).mockResolvedValue(cartItems);
-    (removeAllDownloadCartItems as jest.MockedFunction<
-      typeof removeAllDownloadCartItems
-    >).mockResolvedValue(undefined);
-    (removeFromCart as jest.MockedFunction<
-      typeof removeFromCart
-    >).mockImplementation((entityType, entityIds) => {
-      cartItems = cartItems.filter(
-        (item) => !entityIds.includes(item.entityId)
+    //https://stackoverflow.com/questions/43694975/jest-enzyme-using-mount-document-getelementbyid-returns-null-on-componen
+    holder = document.createElement('div');
+    holder.setAttribute('id', 'datagateway-download');
+    document.body.appendChild(holder);
+
+    (
+      fetchDownloadCart as jest.MockedFunction<typeof fetchDownloadCart>
+    ).mockResolvedValue(mockCartItems);
+    (
+      removeAllDownloadCartItems as jest.MockedFunction<
+        typeof removeAllDownloadCartItems
+      >
+    ).mockResolvedValue(undefined);
+    (
+      removeFromCart as jest.MockedFunction<typeof removeFromCart>
+    ).mockImplementation((entityType, entityIds) => {
+      return Promise.resolve(
+        mockCartItems.filter((item) => !entityIds.includes(item.entityId))
       );
-      return Promise.resolve(cartItems);
     });
 
-    (getSize as jest.MockedFunction<typeof getSize>).mockResolvedValue(1);
-    (getDatafileCount as jest.MockedFunction<
-      typeof getDatafileCount
-    >).mockResolvedValue(7);
+    (
+      getFileSizeAndCount as jest.MockedFunction<typeof getFileSizeAndCount>
+    ).mockResolvedValue({ fileSize: 1, fileCount: 7 });
+    (
+      isCartMintable as jest.MockedFunction<typeof isCartMintable>
+    ).mockResolvedValue(true);
   });
 
   afterEach(() => {
-    mount.cleanUp();
+    resetDOM();
     jest.clearAllMocks();
     jest.clearAllTimers();
     jest.useRealTimers();
   });
 
-  it('renders no cart message correctly', async () => {
-    (fetchDownloadCart as jest.MockedFunction<
-      typeof fetchDownloadCart
-    >).mockResolvedValue([]);
+  it('should render no cart message correctly', async () => {
+    (fetchDownloadCart as jest.Mock).mockResolvedValue([]);
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(wrapper.exists('[data-testid="no-selections-message"]')).toBe(true);
+    expect(
+      await screen.findByText('No data selected', { exact: false })
+    ).toBeTruthy();
   });
 
-  it('fetches the download cart on load', async () => {
-    const wrapper = createWrapper();
+  it('should show download sizes for cart items', async () => {
+    renderComponent();
 
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(fetchDownloadCart).toHaveBeenCalled();
-    expect(wrapper.find('[aria-colindex=1]').find('p').first().text()).toEqual(
-      'INVESTIGATION 1'
-    );
+    expect(
+      await screen.findByText('downloadCart.total_size: 4 B / 1 TB')
+    ).toBeTruthy();
   });
 
-  it('calculates sizes once cart items have been fetched', async () => {
-    const wrapper = createWrapper();
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(getSize).toHaveBeenCalledTimes(4);
-    expect(wrapper.find('[aria-colindex=3]').find('p').first().text()).toEqual(
-      '1 B'
+  it('should show progress indicator when calculating file count & size of cart', async () => {
+    (getFileSizeAndCount as jest.Mock).mockImplementation(
+      () =>
+        new Promise((_) => {
+          // never resolve promise so that progress indicator stays visible.
+        })
     );
-    expect(wrapper.find('p#totalSizeDisplay').text()).toEqual(
-      'downloadCart.total_size: 4 B / 1 TB'
-    );
+
+    jest.useFakeTimers();
+
+    renderComponent();
+
+    expect(
+      await screen.findAllByLabelText('downloadCart.calculating')
+    ).toHaveLength(2);
   });
 
-  it('calculates total file count once cart items have been fetched', async () => {
-    const wrapper = createWrapper();
+  it('should show total file count of the cart', async () => {
+    renderComponent();
 
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(getDatafileCount).toHaveBeenCalledTimes(3);
-    expect(wrapper.find('[aria-colindex=4]').find('p').first().text()).toEqual(
-      '7'
-    );
-    // datafiles should always be 1 and shouldn't call getDatafileCount
-    expect(wrapper.find('[aria-colindex=4]').find('p').last().text()).toEqual(
-      '1'
-    );
-
-    expect(wrapper.find('p#fileCountDisplay').text()).toEqual(
-      'downloadCart.number_of_files: 22 / 5000'
-    );
+    expect(
+      await screen.findByText('downloadCart.number_of_files: 28 / 5000')
+    ).toBeTruthy();
   });
 
-  it('loads cart confirmation dialog when Download Cart button is clicked', async () => {
-    const wrapper = createWrapper();
+  it('should load cart confirmation dialog when Download Cart button is clicked', async () => {
+    renderComponent();
 
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
+    await user.click(await screen.findByText('downloadCart.download'));
 
-    expect(wrapper.find('button#downloadCartButton').prop('disabled')).toBe(
-      false
-    );
-
-    wrapper.find('button#downloadCartButton').simulate('click');
-
-    // Update the wrapper with the loading dialog.
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    // Update the wrapper with the download confirmation dialog.
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(wrapper.exists('[aria-labelledby="downloadCartConfirmation"]')).toBe(
-      true
-    );
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    // Close the confirmation dialog.
-    wrapper
-      .find('button[aria-label="downloadConfirmDialog.close_arialabel"]')
-      .simulate('click');
+    expect(
+      await screen.findByLabelText('downloadConfirmDialog.dialog_arialabel')
+    ).toBeTruthy();
   });
 
-  it('removes all items from cart when Remove All button is clicked', async () => {
-    const wrapper = createWrapper();
+  it('should remove all items from cart when Remove All button is clicked', async () => {
+    renderComponent();
 
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-      await flushPromises();
-      wrapper.update();
-    });
+    await user.click(await screen.findByText('downloadCart.remove_all'));
 
-    await act(async () => {
-      wrapper.find('button#removeAllButton').simulate('click');
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(wrapper.exists('[data-testid="no-selections-message"]')).toBe(true);
+    expect(
+      await screen.findByText('No data selected', { exact: false })
+    ).toBeTruthy();
   });
 
   it('disables remove all button while request is processing', async () => {
     // use this to manually resolve promise
-    let promiseResolve;
+    let promiseResolve = (): void => {
+      // no-op
+    };
 
-    (removeAllDownloadCartItems as jest.MockedFunction<
-      typeof removeAllDownloadCartItems
-    >).mockImplementation(
+    (
+      removeAllDownloadCartItems as jest.MockedFunction<
+        typeof removeAllDownloadCartItems
+      >
+    ).mockImplementation(
       () =>
         new Promise((resolve) => {
           promiseResolve = resolve;
         })
     );
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-      await flushPromises();
-      wrapper.update();
-    });
+    await user.click(
+      await screen.findByRole('button', { name: 'downloadCart.remove_all' })
+    );
 
-    await act(async () => {
-      wrapper.find('button#removeAllButton').simulate('click');
-      await flushPromises();
-      wrapper.update();
-    });
     expect(
-      wrapper.find('button#removeAllButton').prop('disabled')
+      await screen.findByRole('button', { name: 'downloadCart.remove_all' })
+    ).toBeDisabled();
+
+    promiseResolve();
+
+    expect(
+      await screen.findByTestId('no-selections-message')
+    ).toBeInTheDocument();
+  });
+
+  it('should disable download button when there are empty items in the cart ', async () => {
+    (
+      getFileSizeAndCount as jest.MockedFunction<typeof getFileSizeAndCount>
+    ).mockResolvedValue({ fileSize: 0, fileCount: 0 });
+
+    renderComponent();
+
+    expect(
+      await screen.findByText('downloadCart.empty_items_error')
     ).toBeTruthy();
 
-    await act(async () => {
-      promiseResolve();
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(wrapper.exists('[data-testid="no-selections-message"]')).toBe(true);
+    const downloadButton = await screen.findByText('downloadCart.download');
+    // cannot use user.click here because clicking disabled button will throw
+    fireEvent.click(downloadButton);
+    // should not show confirm dialog
+    expect(
+      screen.queryByText('downloadConfirmDialog.dialog_arialabel')
+    ).toBeNull();
   });
 
-  it('disables download button when there are empty items in the cart ', async () => {
-    (getSize as jest.MockedFunction<typeof getSize>)
-      .mockResolvedValueOnce(1)
-      .mockResolvedValueOnce(0);
-    (getDatafileCount as jest.MockedFunction<
-      typeof getDatafileCount
-    >).mockResolvedValueOnce(0);
+  it("should remove an item when said item's remove button is clicked", async () => {
+    renderComponent();
 
-    const wrapper = createWrapper();
+    await user.click(
+      await screen.findByLabelText('downloadCart.remove {name:INVESTIGATION 2}')
+    );
 
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
+    await waitFor(async () => {
+      expect(screen.queryByText('INVESTIGATION 2')).toBeNull();
+    });
+  });
+
+  it('should sort data when headers are clicked', async () => {
+    // use skipHover to avoid triggering sort tooltips which slow the test down
+    user = userEvent.setup({ skipHover: true });
+    renderComponent();
+
+    const typeSortLabel = await screen.findByRole('button', {
+      name: 'downloadCart.type',
     });
 
-    expect(wrapper.exists('div#emptyFilesAlert')).toBeTruthy();
+    await user.click(typeSortLabel);
+
+    let rows = await screen.findAllByText(
+      /(DATAFILE|DATASET|INVESTIGATION) \d/
+    );
+    // row should be sorted by type asc.
+    expect(rows[0]).toHaveTextContent('DATAFILE 1');
+    expect(rows[1]).toHaveTextContent('DATASET 1');
+    expect(rows[2]).toHaveTextContent('INVESTIGATION 1');
+    expect(rows[3]).toHaveTextContent('INVESTIGATION 2');
+
+    await user.click(typeSortLabel);
+
+    rows = await screen.findAllByText(/(DATAFILE|DATASET|INVESTIGATION) \d/);
+    // row should be sorted by type desc.
+    expect(rows[0]).toHaveTextContent('INVESTIGATION 1');
+    expect(rows[1]).toHaveTextContent('INVESTIGATION 2');
+    expect(rows[2]).toHaveTextContent('DATASET 1');
+    expect(rows[3]).toHaveTextContent('DATAFILE 1');
+
+    const nameSortLabel = await screen.findByRole('button', {
+      name: 'downloadCart.name',
+    });
+
+    await user.keyboard('{Shift>}');
+    await user.click(nameSortLabel);
+    await user.keyboard('{/Shift}');
+
+    rows = await screen.findAllByText(/(DATAFILE|DATASET|INVESTIGATION) \d/);
+    // row should be sorted by type desc & name asc.
+    expect(rows[0]).toHaveTextContent('INVESTIGATION 1');
+    expect(rows[1]).toHaveTextContent('INVESTIGATION 2');
+    expect(rows[2]).toHaveTextContent('DATASET 1');
+    expect(rows[3]).toHaveTextContent('DATAFILE 1');
+
+    await user.keyboard('{Shift>}');
+    await user.click(nameSortLabel);
+    await user.keyboard('{/Shift}');
+
+    rows = await screen.findAllByText(/(DATAFILE|DATASET|INVESTIGATION) \d/);
+    // row should be sorted by type desc & name desc.
+    expect(rows[0]).toHaveTextContent('INVESTIGATION 2');
+    expect(rows[1]).toHaveTextContent('INVESTIGATION 1');
+    expect(rows[2]).toHaveTextContent('DATASET 1');
+    expect(rows[3]).toHaveTextContent('DATAFILE 1');
+
+    await user.click(nameSortLabel);
+
+    rows = await screen.findAllByText(/(DATAFILE|DATASET|INVESTIGATION) \d/);
+    // row should be sorted by type desc.
+    expect(rows[0]).toHaveTextContent('INVESTIGATION 1');
+    expect(rows[1]).toHaveTextContent('INVESTIGATION 2');
+    expect(rows[2]).toHaveTextContent('DATASET 1');
+    expect(rows[3]).toHaveTextContent('DATAFILE 1');
+
+    await user.click(nameSortLabel);
+
+    rows = await screen.findAllByText(/(DATAFILE|DATASET|INVESTIGATION) \d/);
+    // row should be sorted by name asc.
+    expect(rows[0]).toHaveTextContent('DATAFILE 1');
+    expect(rows[1]).toHaveTextContent('DATASET 1');
+    expect(rows[2]).toHaveTextContent('INVESTIGATION 1');
+    expect(rows[3]).toHaveTextContent('INVESTIGATION 2');
+  });
+
+  it('should filter data when text fields are typed into', async () => {
+    renderComponent();
+
+    // TEST NAME FILTER INPUT
+
+    expect(await screen.findByText('INVESTIGATION 2')).toBeTruthy();
+
+    const nameFilterInput = await screen.findByLabelText(
+      'Filter by downloadCart.name'
+    );
+    await user.type(nameFilterInput, '1');
+
+    await waitFor(async () => {
+      expect(screen.queryByText('INVESTIGATION 2')).toBeNull();
+    });
+
+    await user.clear(nameFilterInput);
+
+    expect(await screen.findByText('INVESTIGATION 2')).toBeInTheDocument();
+
+    // TEST TYPE FILTER INPUT
+
+    expect(await screen.findByText('dataset')).toBeTruthy();
+    expect(await screen.findByText('datafile')).toBeTruthy();
+
+    const typeFilterInput = await screen.findByLabelText(
+      'Filter by downloadCart.type'
+    );
+    await user.type(typeFilterInput, 'investigation');
+
+    await waitFor(async () => {
+      expect(screen.queryByText('dataset')).toBeNull();
+      expect(screen.queryByText('datafile')).toBeNull();
+    });
+  });
+
+  it('should display error alert if file/size limit exceeded', async () => {
+    renderComponent();
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText('downloadCart.file_limit_error', { exact: false })
+      ).toBeNull();
+      expect(
+        screen.queryByText('downloadCart.size_limit_error', { exact: false })
+      ).toBeNull();
+    });
+
+    resetDOM();
+    render(
+      <QueryClientProvider client={queryClient}>
+        <DownloadSettingsContext.Provider
+          value={{
+            ...mockedSettings,
+            totalSizeMax: 1,
+          }}
+        >
+          <Router history={createMemoryHistory()}>
+            <DownloadCartTable statusTabRedirect={jest.fn()} />
+          </Router>
+        </DownloadSettingsContext.Provider>
+      </QueryClientProvider>
+    );
+
     expect(
-      wrapper.find('button#downloadCartButton').prop('disabled')
+      await screen.findByText(
+        'downloadCart.size_limit_error {totalSizeMax:1 B}',
+        { exact: false }
+      )
     ).toBeTruthy();
 
-    wrapper
-      .find(`button[aria-label="downloadCart.remove {name:INVESTIGATION 2}"]`)
-      .simulate('click');
+    resetDOM();
+    render(
+      <QueryClientProvider client={queryClient}>
+        <DownloadSettingsContext.Provider
+          value={{
+            ...mockedSettings,
+            fileCountMax: 1,
+          }}
+        >
+          <Router history={createMemoryHistory()}>
+            <DownloadCartTable statusTabRedirect={jest.fn()} />
+          </Router>
+        </DownloadSettingsContext.Provider>
+      </QueryClientProvider>
+    );
 
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(wrapper.exists('div#emptyFilesAlert')).toBeTruthy();
     expect(
-      wrapper.find('button#downloadCartButton').prop('disabled')
+      await screen.findByText(
+        'downloadCart.file_limit_error {fileCountMax:1}',
+        { exact: false }
+      )
     ).toBeTruthy();
-
-    wrapper
-      .find(`button[aria-label="downloadCart.remove {name:INVESTIGATION 1}"]`)
-      .simulate('click');
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(wrapper.exists('div#emptyFilesAlert')).toBeFalsy();
-    expect(
-      wrapper.find('button#downloadCartButton').prop('disabled')
-    ).toBeFalsy();
-  });
-
-  it("removes an item when said item's remove button is clicked", async () => {
-    const wrapper = createWrapper();
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    await act(async () => {
-      wrapper.update();
-      await flushPromises();
-    });
-
-    wrapper
-      .find(`button[aria-label="downloadCart.remove {name:INVESTIGATION 2}"]`)
-      .simulate('click');
-
-    expect(
-      wrapper
-        .find(
-          `button[aria-label="downloadCart.remove {name:INVESTIGATION 2}"] svg`
-        )
-        .parent()
-        .prop('color')
-    ).toEqual('error');
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(removeFromCart).toHaveBeenCalled();
-    expect(removeFromCart).toHaveBeenCalledWith('investigation', [2], {
-      facilityName: mockedSettings.facilityName,
-      downloadApiUrl: mockedSettings.downloadApiUrl,
-    });
-    expect(
-      wrapper.exists(
-        `[aria-label="downloadCart.remove {name:INVESTIGATION 2}"]`
-      )
-    ).toBe(false);
-    expect(wrapper.exists('[aria-rowcount=3]')).toBe(true);
-  });
-
-  it('sorts data when headers are clicked', async () => {
-    const wrapper = createWrapper();
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    await act(async () => {
-      wrapper.update();
-      await flushPromises();
-    });
-
-    const firstNameCell = wrapper.find('[aria-colindex=1]').find('p').first();
-
-    const typeSortLabel = wrapper
-      .find('[role="columnheader"] span[role="button"]')
-      .at(1);
-
-    typeSortLabel.simulate('click');
-
-    expect(firstNameCell.text()).toEqual('DATAFILE 1');
-
-    typeSortLabel.simulate('click');
-
-    expect(firstNameCell.text()).toEqual('INVESTIGATION 1');
-
-    const nameSortLabel = wrapper
-      .find('[role="columnheader"] span[role="button"]')
-      .at(0);
-
-    nameSortLabel.simulate('click');
-
-    expect(firstNameCell.text()).toEqual('INVESTIGATION 1');
-
-    nameSortLabel.simulate('click');
-
-    expect(firstNameCell.text()).toEqual('INVESTIGATION 2');
-
-    nameSortLabel.simulate('click');
-
-    expect(firstNameCell.text()).toEqual('INVESTIGATION 1');
-  });
-
-  it('filters data when text fields are typed into', async () => {
-    const wrapper = createWrapper();
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    await act(async () => {
-      wrapper.update();
-      await flushPromises();
-    });
-
-    const nameFilterInput = wrapper
-      .find('[aria-label="Filter by downloadCart.name"]')
-      .first();
-    nameFilterInput.instance().value = '1';
-    nameFilterInput.simulate('change');
-
-    expect(wrapper.exists('[aria-rowcount=3]')).toBe(true);
-    expect(
-      wrapper.exists(
-        '[aria-label="downloadCart.remove {name:INVESTIGATION 2}"]'
-      )
-    ).toBe(false);
-
-    const typeFilterInput = wrapper
-      .find('[aria-label="Filter by downloadCart.type"]')
-      .first();
-    typeFilterInput.instance().value = 'data';
-    typeFilterInput.simulate('change');
-
-    expect(wrapper.exists('[aria-rowcount=2]')).toBe(true);
-    expect(
-      wrapper.exists(
-        '[aria-label="downloadCart.remove {name:INVESTIGATION 1}"]'
-      )
-    ).toBe(false);
-
-    typeFilterInput.instance().value = '';
-    typeFilterInput.simulate('change');
-
-    expect(wrapper.exists('[aria-rowcount=3]')).toBe(true);
-    expect(
-      wrapper.exists(
-        '[aria-label="downloadCart.remove {name:INVESTIGATION 1}"]'
-      )
-    ).toBe(true);
-
-    nameFilterInput.instance().value = '';
-    nameFilterInput.simulate('change');
-
-    expect(wrapper.exists('[aria-rowcount=4]')).toBe(true);
-    expect(
-      wrapper.exists(
-        '[aria-label="downloadCart.remove {name:INVESTIGATION 2}"]'
-      )
-    ).toBe(true);
-  });
-
-  it('displays error alert if file/size limit exceeded', async () => {
-    let wrapper = createWrapper();
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    // Make sure alerts are not displayed if under the limits
-    expect(wrapper.exists('div#fileLimitAlert')).toBeFalsy();
-    expect(wrapper.exists('div#sizeLimitAlert')).toBeFalsy();
-
-    const oldSettings = mockedSettings;
-    mockedSettings = {
-      ...oldSettings,
-      totalSizeMax: 1,
-    };
-
-    wrapper = createWrapper();
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    // Make sure size limit alert is displayed if over the limit
-    expect(wrapper.exists('div#sizeLimitAlert')).toBeTruthy();
-
-    mockedSettings = {
-      ...oldSettings,
-      fileCountMax: 1,
-    };
-
-    wrapper = createWrapper();
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    // Make sure file limit alert is displayed if over the limit
-    expect(wrapper.exists('div#fileLimitAlert')).toBeTruthy();
-
-    mockedSettings = oldSettings;
   });
 
   it('does not display error alerts if file/size limits are not set', async () => {
-    const oldSettings = mockedSettings;
-    mockedSettings = {
-      ...oldSettings,
-      totalSizeMax: undefined,
-      fileCountMax: undefined,
-    };
+    render(
+      <QueryClientProvider client={queryClient}>
+        <DownloadSettingsContext.Provider
+          value={{
+            ...mockedSettings,
+            fileCountMax: undefined,
+            totalSizeMax: undefined,
+          }}
+        >
+          <Router history={createMemoryHistory()}>
+            <DownloadCartTable statusTabRedirect={jest.fn()} />
+          </Router>
+        </DownloadSettingsContext.Provider>
+      </QueryClientProvider>
+    );
 
-    const wrapper = createWrapper();
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
+    await waitFor(() => {
+      expect(
+        screen.queryByText('downloadCart.file_limit_error', { exact: false })
+      ).toBeNull();
+      expect(
+        screen.queryByText('downloadCart.size_limit_error', { exact: false })
+      ).toBeNull();
     });
 
-    // Make sure alerts are not displayed if limits are undefined
-    expect(wrapper.exists('div#fileLimitAlert')).toBeFalsy();
-    expect(wrapper.exists('div#sizeLimitAlert')).toBeFalsy();
+    expect(
+      await screen.findByText('downloadCart.total_size: 4 B', { exact: true })
+    ).toBeTruthy();
+    expect(
+      await screen.findByText('downloadCart.number_of_files: 28', {
+        exact: true,
+      })
+    ).toBeTruthy();
+  });
 
-    expect(wrapper.find('p#fileCountDisplay').text()).toEqual(
-      'downloadCart.number_of_files: 22'
-    );
-    expect(wrapper.find('p#totalSizeDisplay').text()).toEqual(
-      'downloadCart.total_size: 4 B'
+  it('should go to DOI generation form when Generate DOI button is clicked', async () => {
+    const { history } = renderComponent();
+
+    await user.click(
+      screen.getByRole('link', { name: 'downloadCart.generate_DOI' })
     );
 
-    mockedSettings = oldSettings;
+    expect(history.location).toMatchObject({
+      pathname: '/download/mint',
+      state: { fromCart: true },
+    });
+  });
+
+  it('should disable Generate DOI button when mintability is loading', async () => {
+    (
+      isCartMintable as jest.MockedFunction<typeof isCartMintable>
+    ).mockImplementation(
+      () =>
+        new Promise((_) => {
+          // do nothing, simulating pending promise to test loading state
+        })
+    );
+    const { history } = renderComponent();
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const generateDOIButton = screen
+      .getByRole('link', { name: 'downloadCart.generate_DOI' })
+      .closest('span')!;
+
+    await user.hover(generateDOIButton);
+
+    expect(
+      await screen.findByText('downloadCart.mintability_loading')
+    ).toBeInTheDocument();
+
+    await user.click(generateDOIButton);
+
+    expect(history.location).not.toMatchObject({
+      pathname: '/download/mint',
+      state: { fromCart: true },
+    });
+  });
+
+  it('should disable Generate DOI button when cart is not mintable', async () => {
+    (
+      isCartMintable as jest.MockedFunction<typeof isCartMintable>
+    ).mockRejectedValue({
+      response: {
+        data: { detail: 'Not allowed to mint the following items: [2,4]' },
+        status: 403,
+      },
+    });
+    const { history } = renderComponent();
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const generateDOIButton = screen
+      .getByRole('link', { name: 'downloadCart.generate_DOI' })
+      .closest('span')!;
+
+    await user.hover(generateDOIButton);
+
+    expect(
+      await screen.findByText('downloadCart.not_mintable')
+    ).toBeInTheDocument();
+
+    const tableRows = within(
+      screen.getByRole('rowgroup', { name: 'grid' })
+    ).getAllByRole('row');
+    const muiErrorColor = createTheme().palette.error.main;
+    expect(tableRows[1]).toHaveStyle(`background-color: ${muiErrorColor}`);
+    expect(tableRows[1]).toHaveStyle(`background-color: ${muiErrorColor}`);
+    expect(tableRows[0]).not.toHaveStyle(`background-color: ${muiErrorColor}`);
+    expect(tableRows[2]).not.toHaveStyle(`background-color: ${muiErrorColor}`);
+
+    await user.click(generateDOIButton);
+
+    expect(history.location).not.toMatchObject({
+      pathname: '/download/mint',
+      state: { fromCart: true },
+    });
+
+    await user.unhover(generateDOIButton);
+    for (const row of tableRows) {
+      expect(row).not.toHaveStyle(`background-color: ${muiErrorColor}`);
+    }
   });
 });

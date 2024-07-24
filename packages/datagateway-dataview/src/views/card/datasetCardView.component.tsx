@@ -1,5 +1,5 @@
 import React from 'react';
-import { ConfirmationNumber, CalendarToday } from '@material-ui/icons';
+import { ConfirmationNumber, CalendarToday } from '@mui/icons-material';
 import {
   CardView,
   Dataset,
@@ -111,14 +111,16 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
           entityType="dataset"
           allIds={data?.map((dataset) => dataset.id) ?? []}
           entityId={dataset.id}
+          parentId={investigationId}
         />
       ),
     ],
-    [data]
+    [data, investigationId]
   );
 
   return (
     <CardView
+      data-testid="dataset-card-view"
       data={data ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}

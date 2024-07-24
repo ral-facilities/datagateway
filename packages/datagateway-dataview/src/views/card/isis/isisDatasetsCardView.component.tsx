@@ -4,8 +4,7 @@ import {
   CardViewDetails,
   Dataset,
   tableLink,
-  formatCountOrSize,
-  useDatasetSizes,
+  formatBytes,
   parseSearchToQuery,
   useDateFilter,
   useDatasetCount,
@@ -19,40 +18,28 @@ import {
   DownloadButton,
   ISISDatasetDetailsPanel,
 } from 'datagateway-common';
-import { Save, CalendarToday } from '@material-ui/icons';
+import { Save, CalendarToday } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
-import { useHistory, useLocation } from 'react-router';
-import { Theme, createStyles, makeStyles } from '@material-ui/core';
+import { useHistory, useLocation } from 'react-router-dom';
+import { styled } from '@mui/material';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    actionButtons: {
-      display: 'flex',
-      flexDirection: 'column',
-      '& button': {
-        marginTop: theme.spacing(1),
-        margin: 'auto',
-      },
-    },
-  })
-);
+const ActionButtonsContainer = styled('div')(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  '& button': {
+    margin: 'auto',
+    marginTop: theme.spacing(1),
+  },
+}));
 
 interface ISISDatasetCardViewProps {
-  instrumentId: string;
-  instrumentChildId: string;
   investigationId: string;
-  studyHierarchy: boolean;
 }
 
 const ISISDatasetsCardView = (
   props: ISISDatasetCardViewProps
 ): React.ReactElement => {
-  const {
-    instrumentId,
-    instrumentChildId,
-    investigationId,
-    studyHierarchy,
-  } = props;
+  const { investigationId } = props;
 
   const [t] = useTranslation();
   const location = useLocation();
@@ -97,11 +84,6 @@ const ISISDatasetsCardView = (
     ],
     isMounted
   );
-  const sizeQueries = useDatasetSizes(data);
-
-  const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
-  const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
-  const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset`;
 
   const title: CardViewDetails = React.useMemo(
     () => ({
@@ -110,10 +92,10 @@ const ISISDatasetsCardView = (
       // Provide both the dataKey (for tooltip) and content to render.
       dataKey: 'name',
       content: (dataset: Dataset) =>
-        tableLink(`${urlPrefix}/${dataset.id}`, dataset.name, view),
+        tableLink(`${location.pathname}/${dataset.id}`, dataset.name, view),
       filterComponent: textFilter,
     }),
-    [t, textFilter, urlPrefix, view]
+    [t, textFilter, location.pathname, view]
   );
 
   const description: CardViewDetails = React.useMemo(
@@ -134,7 +116,7 @@ const ISISDatasetsCardView = (
         content: (dataset: Dataset): string => {
           const index = data?.findIndex((item) => item.id === dataset.id);
           if (typeof index === 'undefined') return 'Unknown';
-          return formatCountOrSize(sizeQueries[index], true);
+          return formatBytes(dataset.fileSize);
         },
         disableSort: true,
       },
@@ -152,15 +134,13 @@ const ISISDatasetsCardView = (
         filterComponent: dateFilter,
       },
     ],
-    [data, dateFilter, sizeQueries, t]
+    [data, dateFilter, t]
   );
-
-  const classes = useStyles();
 
   const buttons = React.useMemo(
     () => [
       (dataset: Dataset) => (
-        <div className={classes.actionButtons}>
+        <ActionButtonsContainer>
           <AddToCartButton
             entityType="dataset"
             allIds={data?.map((dataset) => dataset.id) ?? []}
@@ -170,14 +150,12 @@ const ISISDatasetsCardView = (
             entityType="dataset"
             entityId={dataset.id}
             entityName={dataset.name}
-            entitySize={
-              data ? sizeQueries[data.indexOf(dataset)]?.data ?? -1 : -1
-            }
+            entitySize={dataset.fileSize ?? -1}
           />
-        </div>
+        </ActionButtonsContainer>
       ),
     ],
-    [classes.actionButtons, data, sizeQueries]
+    [data]
   );
 
   const moreInformation = React.useCallback(
@@ -186,17 +164,18 @@ const ISISDatasetsCardView = (
         rowData={dataset}
         viewDatafiles={(id: number) => {
           const url = view
-            ? `${urlPrefix}/${id}/datafile?view=${view}`
-            : `${urlPrefix}/${id}/datafile`;
+            ? `${location.pathname}/${id}/datafile?view=${view}`
+            : `${location.pathname}/${id}/datafile`;
           push(url);
         }}
       />
     ),
-    [push, urlPrefix, view]
+    [push, location.pathname, view]
   );
 
   return (
     <CardView
+      data-testid="isis-datasets-card-view"
       data={data ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}

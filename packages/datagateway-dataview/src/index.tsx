@@ -8,7 +8,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import singleSpaReact from 'single-spa-react';
-import * as log from 'loglevel';
+import log from 'loglevel';
 import {
   MicroFrontendId,
   MicroFrontendToken,
@@ -41,7 +41,7 @@ function domElementGetter(): HTMLElement {
 const reactLifecycles = singleSpaReact({
   React,
   ReactDOM,
-  rootComponent: App,
+  rootComponent: () => (document.getElementById(pluginName) ? <App /> : null),
   domElementGetter,
 });
 
@@ -174,52 +174,27 @@ if (
   if (process.env.NODE_ENV === `development`) {
     settings.then((settingsResult) => {
       if (settingsResult) {
-        const splitUrl = settingsResult.downloadApiUrl.split('/');
-        const icatUrl = `${splitUrl
-          .slice(0, splitUrl.length - 1)
-          .join('/')}/icat`;
+        const apiUrl = settingsResult.apiUrl;
         axios
-          .post(
-            `${icatUrl}/session`,
-            `json=${JSON.stringify({
-              plugin: 'simple',
-              credentials: [{ username: 'root' }, { password: 'pw' }],
-            })}`,
-            {
-              headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-              },
-            }
-          )
+          .post(`${apiUrl}/sessions`, {
+            username: 'root',
+            password: 'pw',
+            mechanism: 'simple',
+          })
           .then((response) => {
-            axios
-              .get(`${settingsResult['apiUrl']}/sessions`, {
-                headers: {
-                  Authorization: `Bearer ${response.data.sessionId}`,
-                },
-              })
-              .then(() => {
-                const jwtHeader = { alg: 'HS256', typ: 'JWT' };
-                const payload = {
-                  sessionId: response.data.sessionId,
-                  username: 'Thomas409',
-                };
-                const jwt = jsrsasign.KJUR.jws.JWS.sign(
-                  'HS256',
-                  jwtHeader,
-                  payload,
-                  'shh'
-                );
+            const jwtHeader = { alg: 'HS256', typ: 'JWT' };
+            const payload = {
+              sessionId: response.data.sessionID,
+              username: 'Richard459',
+            };
+            const jwt = jsrsasign.KJUR.jws.JWS.sign(
+              'HS256',
+              jwtHeader,
+              payload,
+              'shh'
+            );
 
-                window.localStorage.setItem(MicroFrontendToken, jwt);
-              })
-              .catch((error) => {
-                log.error(
-                  `datagateway-api cannot verify ICAT session id: ${error.message}.
-                     This is likely caused if datagateway-api is pointing to a
-                     different ICAT than the one used by the IDS/TopCAT`
-                );
-              });
+            window.localStorage.setItem(MicroFrontendToken, jwt);
           })
           .catch((error) =>
             log.error(`Can't log in to ICAT: ${error.message}`)

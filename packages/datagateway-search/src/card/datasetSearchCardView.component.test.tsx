@@ -1,126 +1,113 @@
-import { Link, ListItemText } from '@material-ui/core';
-import { createMount } from '@material-ui/core/test-utils';
 import {
-  AdvancedFilter,
   dGCommonInitialState,
-  useDatasetsPaginated,
-  useDatasetCount,
-  Dataset,
-  useLuceneSearch,
-  useAllFacilityCycles,
-  useDatasetSizes,
-  useDatasetsDatafileCount,
-  CardView,
-  DLSDatasetDetailsPanel,
-  ISISDatasetDetailsPanel,
-  DatasetDetailsPanel,
+  SearchResponse,
+  SearchResult,
+  SearchResultSource,
+  FACILITY_NAME,
 } from 'datagateway-common';
-import { ReactWrapper } from 'enzyme';
-import React from 'react';
+import * as React from 'react';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router';
+import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../state/app.types';
 import DatasetSearchCardView from './datasetSearchCardView.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
-// this is a dependency of react-router so we already have it
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { createMemoryHistory, History } from 'history';
+import { createMemoryHistory, MemoryHistory } from 'history';
 import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
-
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    useDatasetCount: jest.fn(),
-    useDatasetsPaginated: jest.fn(),
-    useLuceneSearch: jest.fn(),
-    useDatasetsDatafileCount: jest.fn(),
-    useDatasetSizes: jest.fn(),
-    useAllFacilityCycles: jest.fn(),
-  };
-});
+import type { RenderResult } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
 
 describe('Dataset - Card View', () => {
-  let mount;
-  let mockStore;
   let state: StateType;
-  let cardData: Dataset[];
-  let history: History;
+  let cardData: SearchResultSource;
+  let searchResult: SearchResult;
+  let searchResponse: SearchResponse;
+  let history: MemoryHistory;
+  let queryClient: QueryClient;
 
-  const createWrapper = (hierarchy?: string): ReactWrapper => {
-    return mount(
-      <Provider store={mockStore(state)}>
+  function renderComponent({ hierarchy = '' } = {}): RenderResult {
+    return render(
+      <Provider store={configureStore([thunk])(state)}>
         <Router history={history}>
-          <QueryClientProvider client={new QueryClient()}>
-            <DatasetSearchCardView hierarchy={hierarchy ?? ''} />
+          <QueryClientProvider client={queryClient}>
+            <DatasetSearchCardView hierarchy={hierarchy} />
           </QueryClientProvider>
         </Router>
       </Provider>
     );
+  }
+
+  const mockAxiosGet = (url: string): Promise<Partial<AxiosResponse>> => {
+    if (/\/datasets$/.test(url)) {
+      return Promise.resolve({
+        data: [],
+      });
+    }
+    if (/\/search\/documents$/.test(url)) {
+      if (/\/datasets$/.test(url)) {
+        return Promise.resolve({
+          data: [],
+        });
+      }
+      // lucene search query
+      return Promise.resolve({
+        data: searchResponse,
+      });
+    }
+    return Promise.reject({
+      message: `Endpoint not mocked ${url}`,
+    });
   };
 
   beforeEach(() => {
-    mount = createMount();
-    cardData = [
-      {
-        id: 1,
-        name: 'Dataset test name',
-        size: 1,
-        modTime: '2019-07-23',
-        createTime: '2019-07-23',
-        startDate: '2019-07-24',
-        endDate: '2019-07-25',
-        investigation: {
-          id: 2,
-          title: 'Investigation test title',
-          name: 'Investigation test name',
-          summary: 'foo bar',
-          visitId: '1',
-          doi: 'doi 1',
-          size: 1,
-          investigationInstruments: [
-            {
-              id: 3,
-              instrument: {
-                id: 4,
-                name: 'LARMOR',
-              },
-            },
-          ],
-          studyInvestigations: [
-            {
-              id: 5,
-              study: {
-                id: 6,
-                pid: 'study pid',
-                name: 'study name',
-                modTime: '2019-06-10',
-                createTime: '2019-06-10',
-              },
-              investigation: {
-                id: 2,
-                title: 'Investigation test title',
-                name: 'Investigation test name',
-                visitId: '1',
-              },
-            },
-          ],
-          startDate: '2019-06-10',
-          endDate: '2019-06-11',
-          facility: {
-            id: 7,
-            name: 'facility name',
-          },
+    cardData = {
+      id: 1,
+      name: 'Dataset test name',
+      startDate: 1563922800000,
+      endDate: 1564009200000,
+      fileSize: 10,
+      fileCount: 9,
+      investigationinstrument: [
+        {
+          'instrument.id': 4,
+          'instrument.name': 'LARMOR',
         },
+      ],
+      investigationfacilitycycle: [
+        {
+          'facilityCycle.id': 6,
+        },
+      ],
+      'investigation.id': 2,
+      'investigation.title': 'Investigation test title',
+      'investigation.name': 'Investigation test name',
+      'investigation.startDate': 1560121200000,
+    };
+    searchResult = {
+      score: 1,
+      id: 1,
+      source: cardData,
+    };
+    searchResponse = {
+      results: [searchResult],
+    };
+    history = createMemoryHistory({
+      initialEntries: [
+        {
+          pathname: '/search/data',
+          search: '?currentTab=dataset',
+        },
+      ],
+    });
+    queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
       },
-    ];
-    history = createMemoryHistory();
+    });
 
-    mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
         dgcommon: dGCommonInitialState,
@@ -128,397 +115,271 @@ describe('Dataset - Card View', () => {
       })
     );
 
-    (useDatasetCount as jest.Mock).mockReturnValue({
-      data: 1,
-      isLoading: false,
-    });
-    (useDatasetsPaginated as jest.Mock).mockReturnValue({
-      data: cardData,
-      isLoading: false,
-    });
-    (useLuceneSearch as jest.Mock).mockReturnValue({
-      data: [],
-    });
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [],
-    });
-    (useDatasetsDatafileCount as jest.Mock).mockImplementation((datasets) =>
-      (datasets
-        ? 'pages' in datasets
-          ? datasets.pages.flat()
-          : datasets
-        : []
-      ).map(() => ({
-        data: 1,
-        isFetching: false,
-        isSuccess: true,
-      }))
-    );
-    (useDatasetSizes as jest.Mock).mockImplementation((datasets) =>
-      (datasets
-        ? 'pages' in datasets
-          ? datasets.pages.flat()
-          : datasets
-        : []
-      ).map(() => ({
-        data: 1,
-        isFetching: false,
-        isSuccess: true,
-      }))
-    );
+    (axios.get as jest.Mock).mockImplementation(mockAxiosGet);
 
     window.scrollTo = jest.fn();
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find('CardView').props()).toMatchSnapshot();
-  });
+  it('disables the search query if dataset search is disabled', async () => {
+    const searchParams = new URLSearchParams(history.location.search);
+    searchParams.append('dataset', 'false');
+    history.replace({ search: `?${searchParams.toString()}` });
 
-  it('calls the correct data fetching hooks on load', () => {
-    (useLuceneSearch as jest.Mock).mockReturnValue({
-      data: [1],
-    });
+    renderComponent();
 
-    createWrapper();
-
-    expect(useLuceneSearch).toHaveBeenCalledWith('Dataset', {
-      searchText: '',
-      startDate: null,
-      endDate: null,
-      maxCount: 300,
-    });
-
-    expect(useDatasetCount).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: [1] },
-        }),
-      },
-    ]);
-    expect(useDatasetsPaginated).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: [1] },
-        }),
-      },
-      {
-        filterType: 'include',
-        filterValue: JSON.stringify({
-          investigation: { investigationInstruments: 'instrument' },
-        }),
-      },
-    ]);
-    expect(useDatasetsDatafileCount).toHaveBeenCalledWith(cardData);
-    expect(useDatasetSizes).toHaveBeenCalledWith(undefined);
-  });
-
-  it('updates filter query params on text filter', () => {
-    const wrapper = createWrapper();
-
-    const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find(Link).simulate('click');
-    advancedFilter
-      .find('input')
-      .first()
-      .simulate('change', { target: { value: 'test' } });
-
-    expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
-        '{"name":{"value":"test","type":"include"}}'
-      )}`
-    );
-
-    advancedFilter
-      .find('input')
-      .first()
-      .simulate('change', { target: { value: '' } });
-
-    expect(history.location.search).toBe('?');
-  });
-
-  it('updates filter query params on date filter', () => {
-    const wrapper = createWrapper();
-
-    const advancedFilter = wrapper.find(AdvancedFilter);
-    advancedFilter.find(Link).simulate('click');
-    advancedFilter
-      .find('input')
-      .last()
-      .simulate('change', { target: { value: '2019-08-06' } });
-
-    expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent('{"modTime":{"endDate":"2019-08-06"}}')}`
-    );
-
-    advancedFilter
-      .find('input')
-      .last()
-      .simulate('change', { target: { value: '' } });
-
-    expect(history.location.search).toBe('?');
-  });
-
-  it('updates sort query params on sort', () => {
-    const wrapper = createWrapper();
-
-    const button = wrapper.find(ListItemText).first();
-    expect(button.text()).toEqual('datasets.name');
-    button.simulate('click');
-
-    expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"name":"asc"}')}`
-    );
-  });
-
-  it('renders fine with incomplete data', () => {
-    (useDatasetCount as jest.Mock).mockReturnValue({});
-    (useDatasetsPaginated as jest.Mock).mockReturnValue({});
-
-    expect(() => createWrapper()).not.toThrowError();
-  });
-
-  it('renders generic link & pending count correctly', () => {
-    (useDatasetsDatafileCount as jest.Mock).mockImplementation(() => [
-      {
-        isFetching: true,
-      },
-    ]);
-    const wrapper = createWrapper();
-
-    expect(wrapper.find(CardView).find('a').first().prop('href')).toEqual(
-      `/browse/investigation/2/dataset/1/datafile`
-    );
-    expect(wrapper.find(CardView).find('a').first().text()).toEqual(
-      'Dataset test name'
-    );
     expect(
-      wrapper
-        .find(CardView)
-        .first()
-        .find('[data-testid="card-info-data-datasets.datafile_count"]')
-        .text()
-    ).toEqual('Calculating...');
+      screen.queryByTestId('dataset-search-card-view')
+    ).toBeInTheDocument();
+
+    // wait for queries to finish fetching
+    await waitFor(() => !queryClient.isFetching());
+
+    expect(
+      queryClient.getQueryState(['search', 'Dataset'], { exact: false })?.status
+    ).toBe('idle');
+
+    expect(screen.queryAllByTestId('card')).toHaveLength(0);
   });
 
-  it("renders DLS link correctly and doesn't allow for download", () => {
-    const wrapper = createWrapper('dls');
+  it('renders correctly', async () => {
+    renderComponent();
 
-    expect(wrapper.find(CardView).find('a').first().prop('href')).toEqual(
+    const cards = await screen.findAllByTestId('card');
+    expect(cards).toHaveLength(1);
+
+    const card = cards[0];
+
+    expect(within(card).getByText('Dataset test name')).toBeInTheDocument();
+    expect(
+      within(card).getByText('entity_card.no_description')
+    ).toBeInTheDocument();
+    expect(
+      within(card).getByRole('button', { name: 'card-more-info-expand' })
+    ).toBeInTheDocument();
+    expect(within(card).getByText('datasets.size:')).toBeInTheDocument();
+    expect(within(card).getByText('10 B')).toBeInTheDocument();
+    expect(
+      within(card).getByText('datasets.datafile_count:')
+    ).toBeInTheDocument();
+    expect(within(card).getByText('9')).toBeInTheDocument();
+    expect(
+      within(card).getByRole('button', { name: 'buttons.add_to_cart' })
+    ).toBeInTheDocument();
+    expect(
+      within(card).getByRole('button', { name: 'buttons.download' })
+    ).toBeInTheDocument();
+  });
+
+  it('renders generic link correctly', async () => {
+    renderComponent();
+
+    expect(
+      await screen.findByRole('link', { name: 'Dataset test name' })
+    ).toHaveAttribute('href', '/browse/investigation/2/dataset/1/datafile');
+  });
+
+  it("renders DLS link correctly and doesn't allow for download", async () => {
+    renderComponent({
+      hierarchy: FACILITY_NAME.dls,
+    });
+
+    const cards = await screen.findAllByTestId('card');
+    const card = cards[0];
+
+    expect(
+      within(card).getByRole('link', { name: 'Dataset test name' })
+    ).toHaveAttribute(
+      'href',
       '/browse/proposal/Investigation test name/investigation/2/dataset/1/datafile'
     );
-    expect(wrapper.find(CardView).find('a').first().text()).toEqual(
-      'Dataset test name'
+
+    expect(within(card).getByText('10 B')).toBeInTheDocument();
+    expect(within(card).getByText('9')).toBeInTheDocument();
+
+    expect(
+      within(card).getByRole('button', { name: 'buttons.add_to_cart' })
+    ).toBeInTheDocument();
+    expect(
+      within(card).queryByRole('button', { name: 'buttons.download' })
+    ).toBeNull();
+  });
+
+  it('renders ISIS link & file sizes correctly', async () => {
+    renderComponent({ hierarchy: FACILITY_NAME.isis });
+
+    const cards = await screen.findAllByTestId('card');
+    const card = cards[0];
+
+    expect(
+      within(card).getByRole('link', { name: 'Dataset test name' })
+    ).toHaveAttribute(
+      'href',
+      '/browse/instrument/4/facilityCycle/6/investigation/2/dataset/1'
     );
-    expect(wrapper.exists('#add-to-cart-btn-dataset-1')).toBe(true);
-    expect(wrapper.exists('#download-btn-dataset-1')).toBe(false);
+    expect(within(card).getByText('10 B')).toBeInTheDocument();
   });
 
-  it('renders ISIS link & file sizes correctly', () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
-          id: 6,
-          name: 'facility cycle name',
-          startDate: '2000-06-10',
-          endDate: '2020-06-11',
-        },
-      ],
+  it('does not render ISIS link when instrumentId cannot be found', async () => {
+    delete cardData.investigationinstrument;
+
+    renderComponent({ hierarchy: FACILITY_NAME.isis });
+
+    const cards = await screen.findAllByTestId('card');
+    const card = cards[0];
+
+    expect(within(card).getByText('Dataset test name')).toBeInTheDocument();
+    expect(
+      within(card).queryByRole('link', { name: 'Dataset test name' })
+    ).toBeNull();
+  });
+
+  it('does not render ISIS link when facilityCycleId cannot be found', async () => {
+    delete cardData.investigationfacilitycycle;
+    renderComponent({
+      hierarchy: FACILITY_NAME.isis,
     });
 
-    const wrapper = createWrapper('isis');
+    const cards = await screen.findAllByTestId('card');
+    const card = cards[0];
 
-    expect(useDatasetSizes).toHaveBeenCalledWith(cardData);
-    expect(useDatasetsDatafileCount).toHaveBeenCalledWith(undefined);
+    expect(within(card).getByText('Dataset test name')).toBeInTheDocument();
+    expect(
+      within(card).queryByRole('link', { name: 'Dataset test name' })
+    ).toBeNull();
+  });
 
-    expect(wrapper.find(CardView).find('a').first().prop('href')).toEqual(
-      `/browse/instrument/4/facilityCycle/6/investigation/2/dataset/1`
+  it('displays only the dataset name when there is no generic investigation to link to', async () => {
+    delete cardData['investigation.id'];
+    delete cardData['investigation.name'];
+    delete cardData['investigation.title'];
+    delete cardData['investigation.startDate'];
+
+    renderComponent({
+      hierarchy: 'data',
+    });
+
+    const cards = await screen.findAllByTestId('card');
+    const card = cards[0];
+
+    expect(within(card).getByText('Dataset test name')).toBeInTheDocument();
+    expect(
+      within(card).queryByRole('link', { name: 'Dataset test name' })
+    ).toBeNull();
+  });
+
+  it('displays only the dataset name when there is no DLS investigation to link to', async () => {
+    delete cardData['investigation.id'];
+    delete cardData['investigation.name'];
+    delete cardData['investigation.title'];
+    delete cardData['investigation.startDate'];
+
+    renderComponent({
+      hierarchy: FACILITY_NAME.dls,
+    });
+
+    const cards = await screen.findAllByTestId('card');
+    const card = cards[0];
+
+    expect(within(card).getByText('Dataset test name')).toBeInTheDocument();
+    expect(
+      within(card).queryByRole('link', { name: 'Dataset test name' })
+    ).toBeNull();
+  });
+
+  it('displays only the dataset name when there is no ISIS investigation to link to', async () => {
+    delete cardData['investigation.id'];
+    delete cardData['investigation.name'];
+    delete cardData['investigation.title'];
+    delete cardData['investigation.startDate'];
+
+    renderComponent({ hierarchy: FACILITY_NAME.isis });
+
+    const cards = await screen.findAllByTestId('card');
+    const card = cards[0];
+
+    expect(within(card).getByText('Dataset test name')).toBeInTheDocument();
+    expect(
+      within(card).queryByRole('link', { name: 'Dataset test name' })
+    ).toBeNull();
+  });
+
+  it('displays generic details panel when expanded', async () => {
+    const user = userEvent.setup();
+
+    renderComponent();
+
+    expect(screen.queryByTestId('dataset-details-panel')).toBeNull();
+
+    await user.click(
+      await screen.findByRole('button', { name: 'card-more-info-expand' })
     );
-    expect(wrapper.find(CardView).find('a').first().text()).toEqual(
-      'Dataset test name'
+
+    expect(
+      await screen.findByTestId('dataset-details-panel')
+    ).toBeInTheDocument();
+  });
+
+  it('displays correct details panel for ISIS when expanded', async () => {
+    const user = userEvent.setup();
+
+    renderComponent({
+      hierarchy: FACILITY_NAME.isis,
+    });
+
+    expect(screen.queryByTestId('isis-dataset-details-panel')).toBeNull();
+
+    await user.click(
+      await screen.findByRole('button', { name: 'card-more-info-expand' })
     );
+
     expect(
-      wrapper
-        .find(CardView)
-        .first()
-        .find('[data-testid="card-info-data-datasets.size"]')
-        .text()
-    ).toEqual('1 B');
+      await screen.findByTestId('isis-dataset-details-panel')
+    ).toBeInTheDocument();
   });
 
-  it('does not render ISIS link when instrumentId cannot be found', () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
-          id: 4,
-          name: 'facility cycle name',
-          startDate: '2000-06-10',
-          endDate: '2020-06-11',
-        },
-      ],
-    });
-    delete cardData[0].investigation?.investigationInstruments;
+  it('can navigate using the details panel for ISIS when there are facility cycles', async () => {
+    const user = userEvent.setup();
 
-    (useDatasetsPaginated as jest.Mock).mockReturnValue({
-      data: cardData,
-      fetchNextPage: jest.fn(),
-    });
-    const wrapper = createWrapper('isis');
-
-    expect(wrapper.find(CardView).first().find('a')).toHaveLength(0);
-    expect(
-      wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
-    ).toEqual('Dataset test name');
-  });
-
-  it('does not render ISIS link when facilityCycleId cannot be found', () => {
-    const wrapper = createWrapper('isis');
-
-    expect(wrapper.find(CardView).first().find('a')).toHaveLength(0);
-    expect(
-      wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
-    ).toEqual('Dataset test name');
-  });
-
-  it('does not render ISIS link when facilityCycleId has incompatible dates', () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
-          id: 2,
-          name: 'facility cycle name',
-          startDate: '2020-06-11',
-          endDate: '2000-06-10',
-        },
-      ],
+    renderComponent({
+      hierarchy: FACILITY_NAME.isis,
     });
 
-    const wrapper = createWrapper('isis');
+    await user.click(
+      await screen.findByRole('button', { name: 'card-more-info-expand' })
+    );
 
-    expect(wrapper.find(CardView).first().find('a')).toHaveLength(0);
-    expect(
-      wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
-    ).toEqual('Dataset test name');
-  });
+    const panel = await screen.findByTestId('isis-dataset-details-panel');
 
-  it('displays only the dataset name when there is no generic investigation to link to', () => {
-    delete cardData[0].investigation;
-    (useDatasetsPaginated as jest.Mock).mockReturnValue({
-      data: cardData,
-      fetchNextPage: jest.fn(),
-    });
+    expect(panel).toBeInTheDocument();
 
-    const wrapper = createWrapper('data');
+    await user.click(
+      within(panel).getByRole('tab', { name: 'datasets.details.datafiles' })
+    );
 
-    expect(wrapper.find(CardView).first().find('a')).toHaveLength(0);
-    expect(
-      wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
-    ).toEqual('Dataset test name');
-  });
-
-  it('displays only the dataset name when there is no DLS investigation to link to', () => {
-    delete cardData[0].investigation;
-    (useDatasetsPaginated as jest.Mock).mockReturnValue({
-      data: cardData,
-      fetchNextPage: jest.fn(),
-    });
-
-    const wrapper = createWrapper('dls');
-
-    expect(wrapper.find(CardView).first().find('a')).toHaveLength(0);
-    expect(
-      wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
-    ).toEqual('Dataset test name');
-  });
-
-  it('displays only the dataset name when there is no ISIS investigation to link to', () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
-          id: 4,
-          name: 'facility cycle name',
-          startDate: '2000-06-10',
-          endDate: '2020-06-11',
-        },
-      ],
-    });
-    delete cardData[0].investigation;
-    (useDatasetsPaginated as jest.Mock).mockReturnValue({
-      data: cardData,
-      fetchNextPage: jest.fn(),
-    });
-
-    const wrapper = createWrapper('isis');
-
-    expect(wrapper.find(CardView).first().find('a')).toHaveLength(0);
-    expect(
-      wrapper.find(CardView).first().find('[aria-label="card-title"]').text()
-    ).toEqual('Dataset test name');
-  });
-
-  it('displays generic details panel when expanded', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find(DatasetDetailsPanel).exists()).toBeFalsy();
-    wrapper
-      .find('[aria-label="card-more-info-expand"]')
-      .first()
-      .simulate('click');
-
-    expect(wrapper.find(DatasetDetailsPanel).exists()).toBeTruthy();
-  });
-
-  it('displays correct details panel for ISIS when expanded', () => {
-    const wrapper = createWrapper('isis');
-    expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeFalsy();
-    wrapper
-      .find('[aria-label="card-more-info-expand"]')
-      .first()
-      .simulate('click');
-
-    expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeTruthy();
-  });
-
-  it('can navigate using the details panel for ISIS when there are facility cycles', () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [
-        {
-          id: 4,
-          name: 'facility cycle name',
-          startDate: '2000-06-10',
-          endDate: '2020-06-11',
-        },
-      ],
-    });
-
-    const wrapper = createWrapper('isis');
-    expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeFalsy();
-    wrapper
-      .find('[aria-label="card-more-info-expand"]')
-      .first()
-      .simulate('click');
-
-    expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeTruthy();
-
-    wrapper.find('#dataset-datafiles-tab').first().simulate('click');
     expect(history.location.pathname).toBe(
-      '/browse/instrument/4/facilityCycle/4/investigation/2/dataset/1'
+      '/browse/instrument/4/facilityCycle/6/investigation/2/dataset/1/datafile'
     );
   });
 
-  it('displays correct details panel for DLS when expanded', () => {
-    const wrapper = createWrapper('dls');
-    expect(wrapper.find(DLSDatasetDetailsPanel).exists()).toBeFalsy();
-    wrapper
-      .find('[aria-label="card-more-info-expand"]')
-      .first()
-      .simulate('click');
+  it('displays correct details panel for DLS when expanded', async () => {
+    const user = userEvent.setup();
 
-    expect(wrapper.find(DLSDatasetDetailsPanel).exists()).toBeTruthy();
+    renderComponent({
+      hierarchy: 'dls',
+    });
+
+    expect(screen.queryByTestId('dls-dataset-details-panel')).toBeNull();
+
+    await user.click(
+      await screen.findByRole('button', { name: 'card-more-info-expand' })
+    );
+
+    expect(
+      await screen.findByTestId('dls-dataset-details-panel')
+    ).toBeInTheDocument();
   });
 });

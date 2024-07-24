@@ -4,7 +4,8 @@ on:
     branches:
       - main
       - develop
-    tags: '*'
+    tags: 
+      - '*'
 
 jobs:
   build:
@@ -13,33 +14,19 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4
         with:
-          node-version: '14.x'
-
-      # Cache yarn dependencies/ restore the cached dependencies during future workflows
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - name: Cache yarn dependencies
-        uses: actions/cache@v2
-        id: yarn-cache
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
+          node-version: 20
+          cache: 'yarn'
 
       - name: Install dependencies
         # Ubuntu 16+ does not install libgconf-2-4 by default, so we need to install it ourselves (for Cypress)
         run: |
-          npm config set scripts-prepend-node-path true
           sudo apt-get install libgconf-2-4
-          yarn --frozen-lockfile
+          yarn --immutable
 
       - name: Determine tag name
         run: |
@@ -78,7 +65,7 @@ jobs:
           tar -czf ../../datagateway-search-$TAG_NAME.tar.gz datagateway-search-$TAG_NAME
 
       - name: Update snapshot tag
-        uses: richardsimko/update-tag@v1
+        uses: richardsimko/update-tag@e173a8ef8f54ab526a91dad6139a25efed62424c # v1
         with:
           tag_name: ${{ env.TAG_NAME }}
         env:
@@ -86,11 +73,15 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' }}
 
       - name: Create/update release
-        uses: johnwbyrd/update-release@v1.0.0
+        uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.0.8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          files: ./datagateway-dataview-${{ env.TAG_NAME }}.tar.gz ./datagateway-download-${{ env.TAG_NAME }}.tar.gz ./datagateway-search-${{ env.TAG_NAME }}.tar.gz
-          release: Release ${{ env.TAG_NAME }}
-          tag: ${{ env.TAG_NAME }}
+          files: |
+            ./datagateway-dataview-${{ env.TAG_NAME }}.tar.gz
+            ./datagateway-download-${{ env.TAG_NAME }}.tar.gz
+            ./datagateway-search-${{ env.TAG_NAME }}.tar.gz
+          name: ${{ env.TAG_NAME }}
+          tag_name: ${{ env.TAG_NAME }}
           prerelease: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' }}
           draft: false
+          generate_release_notes: true

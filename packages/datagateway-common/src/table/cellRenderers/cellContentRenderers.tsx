@@ -1,8 +1,7 @@
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { Link } from '@material-ui/core';
-import { Investigation, Study, ViewsType } from '../../app.types';
-import { UseQueryResult } from 'react-query';
+import { Link } from '@mui/material';
+import type { ViewsType } from '../../app.types';
 
 export function formatBytes(bytes: number | undefined): string {
   if (bytes === -1) return 'Loading...';
@@ -15,32 +14,6 @@ export function formatBytes(bytes: number | undefined): string {
 
   return parseFloat((bytes / Math.pow(1000, i)).toFixed(2)) + ' ' + sizes[i];
 }
-
-/**
- * A helper function to format the result of count and size queries
- *
- * @param query The count or size query to extract data from
- * @param formatAsBytes Whether to format the data as bytes, default is false
- * @returns a string with either Calculating, Unknown or the formatted data
- */
-export function formatCountOrSize(
-  query: UseQueryResult<number, Error>,
-  formatAsBytes = false
-): string {
-  if (query?.isFetching) return 'Calculating...';
-  if (query?.isSuccess) {
-    if (formatAsBytes) return formatBytes(query.data);
-    return query.data.toString();
-  }
-  return 'Unknown';
-}
-
-export const getStudyInfoInvestigation = (
-  study: Study
-): Investigation | undefined => {
-  return study.studyInvestigations?.filter((si) => si?.investigation)?.[0]
-    ?.investigation;
-};
 
 // NOTE: Allow the link to specify the view to keep the same view when navigating.
 const appendView = (link: string, view?: ViewsType): string =>

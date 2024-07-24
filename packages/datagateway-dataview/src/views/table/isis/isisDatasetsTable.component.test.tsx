@@ -1,29 +1,36 @@
-import React from 'react';
-import { createMount } from '@material-ui/core/test-utils';
+import * as React from 'react';
 import ISISDatasetsTable from './isisDatasetsTable.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import configureStore from 'redux-mock-store';
-import { StateType } from '../../../state/app.types';
+import type { StateType } from '../../../state/app.types';
 import {
+  type Dataset,
   dGCommonInitialState,
-  useDatasetCount,
-  useIds,
-  useCart,
   useAddToCart,
-  useRemoveFromCart,
+  useCart,
+  useDatasetCount,
   useDatasetsInfinite,
-  Dataset,
-  useDatasetSizes,
-  DownloadButton,
-  ISISDatasetDetailsPanel,
-  Table,
+  useIds,
+  useRemoveFromCart,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { Router } from 'react-router';
+import { generatePath, Router } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactWrapper } from 'enzyme';
-import { createMemoryHistory, History } from 'history';
+import {
+  render,
+  type RenderResult,
+  screen,
+  waitFor,
+} from '@testing-library/react';
+import { createMemoryHistory, type History } from 'history';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../../../setupTests';
+import type { UserEvent } from '@testing-library/user-event/setup/setup';
+import userEvent from '@testing-library/user-event';
+import { paths } from '../../../page/pageContainer.component';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -37,33 +44,23 @@ jest.mock('datagateway-common', () => {
     useCart: jest.fn(),
     useAddToCart: jest.fn(),
     useRemoveFromCart: jest.fn(),
-    useDatasetSizes: jest.fn(),
   };
 });
 
 describe('ISIS Dataset table component', () => {
-  let mount;
-  let mockStore;
+  const mockStore = configureStore([thunk]);
   let state: StateType;
   let rowData: Dataset[];
   let history: History;
+  let user: UserEvent;
 
-  const createWrapper = (
-    element: React.ReactElement = (
-      <ISISDatasetsTable
-        studyHierarchy={false}
-        instrumentId="1"
-        instrumentChildId="2"
-        investigationId="3"
-      />
-    )
-  ): ReactWrapper => {
+  const renderComponent = (): RenderResult => {
     const store = mockStore(state);
-    return mount(
+    return render(
       <Provider store={store}>
         <Router history={history}>
           <QueryClientProvider client={new QueryClient()}>
-            {element}
+            <ISISDatasetsTable investigationId="3" />
           </QueryClientProvider>
         </Router>
       </Provider>
@@ -71,7 +68,6 @@ describe('ISIS Dataset table component', () => {
   };
 
   beforeEach(() => {
-    mount = createMount();
     rowData = [
       {
         id: 1,
@@ -81,9 +77,17 @@ describe('ISIS Dataset table component', () => {
         createTime: '2019-07-23',
       },
     ];
-    history = createMemoryHistory();
+    history = createMemoryHistory({
+      initialEntries: [
+        generatePath(paths.toggle.isisDataset, {
+          instrumentId: '1',
+          investigationId: '3',
+          facilityCycleId: '2',
+        }),
+      ],
+    });
+    user = userEvent.setup();
 
-    mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
         dgdataview: dgDataViewInitialState,
@@ -93,6 +97,7 @@ describe('ISIS Dataset table component', () => {
 
     (useCart as jest.Mock).mockReturnValue({
       data: [],
+      isLoading: false,
     });
     (useDatasetCount as jest.Mock).mockReturnValue({
       data: 0,
@@ -103,6 +108,7 @@ describe('ISIS Dataset table component', () => {
     });
     (useIds as jest.Mock).mockReturnValue({
       data: [1],
+      isLoading: false,
     });
     (useAddToCart as jest.Mock).mockReturnValue({
       mutate: jest.fn(),
@@ -112,127 +118,63 @@ describe('ISIS Dataset table component', () => {
       mutate: jest.fn(),
       isLoading: false,
     });
-    (useDatasetSizes as jest.Mock).mockReturnValue({ data: 1 });
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find('VirtualizedTable').props()).toMatchSnapshot();
-  });
+  it('updates filter query params on text filter', async () => {
+    renderComponent();
 
-  it('calls the correct data fetching hooks on load', () => {
-    const investigationId = '3';
-    createWrapper();
-    expect(useDatasetCount).toHaveBeenCalledWith([
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'investigation.id': { eq: investigationId },
-        }),
-      },
-    ]);
-    expect(useDatasetsInfinite).toHaveBeenCalledWith(
-      [
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'investigation.id': { eq: investigationId },
-          }),
-        },
-      ],
-      expect.any(Boolean)
-    );
-    expect(useDatasetSizes).toHaveBeenCalledWith({
-      pages: [rowData],
-    });
-    expect(useIds).toHaveBeenCalledWith(
-      'dataset',
-      [
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'investigation.id': { eq: parseInt(investigationId) },
-          }),
-        },
-      ],
-      true
-    );
-    expect(useCart).toHaveBeenCalled();
-    expect(useAddToCart).toHaveBeenCalledWith('dataset');
-    expect(useRemoveFromCart).toHaveBeenCalledWith('dataset');
-  });
-
-  it('calls useDatasetsInfinite when loadMoreRows is called', () => {
-    const fetchNextPage = jest.fn();
-    (useDatasetsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage,
-    });
-    const wrapper = createWrapper();
-
-    wrapper.find('VirtualizedTable').prop('loadMoreRows')({
-      startIndex: 50,
-      stopIndex: 74,
+    const filterInput = await screen.findByRole('textbox', {
+      name: 'Filter by datasets.name',
+      hidden: true,
     });
 
-    expect(fetchNextPage).toHaveBeenCalledWith({
-      pageParam: { startIndex: 50, stopIndex: 74 },
-    });
-  });
+    await user.type(filterInput, 'test');
 
-  it('updates filter query params on text filter', () => {
-    const wrapper = createWrapper();
-
-    const filterInput = wrapper
-      .find('[aria-label="Filter by datasets.name"]')
-      .first();
-    filterInput.instance().value = 'test';
-    filterInput.simulate('change');
-
-    expect(history.length).toBe(2);
+    expect(history.length).toBe(5);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
       )}`
     );
 
-    filterInput.instance().value = '';
-    filterInput.simulate('change');
+    await user.clear(filterInput);
 
-    expect(history.length).toBe(3);
+    expect(history.length).toBe(6);
     expect(history.location.search).toBe('?');
   });
 
-  it('updates filter query params on date filter', () => {
-    const wrapper = createWrapper();
+  it('updates filter query params on date filter', async () => {
+    applyDatePickerWorkaround();
 
-    const filterInput = wrapper.find(
-      'input[id="datasets.modified_time filter to"]'
-    );
-    filterInput.instance().value = '2019-08-06';
-    filterInput.simulate('change');
+    renderComponent();
 
-    expect(history.length).toBe(2);
+    const filterInput = await screen.findByRole('textbox', {
+      name: 'datasets.modified_time filter to',
+    });
+
+    await user.type(filterInput, '2019-08-06');
+
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent('{"modTime":{"endDate":"2019-08-06"}}')}`
     );
 
-    filterInput.instance().value = '';
-    filterInput.simulate('change');
+    // await user.clear(filterInput);
+    await user.click(filterInput);
+    await user.keyboard('{Control}a{/Control}');
+    await user.keyboard('{Delete}');
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
+
+    cleanupDatePickerWorkaround();
   });
 
   it('uses default sort', () => {
-    const wrapper = createWrapper();
-    wrapper.update();
-
+    renderComponent();
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"createTime":"desc"}')}`
@@ -247,13 +189,10 @@ describe('ISIS Dataset table component', () => {
     );
   });
 
-  it('updates sort query params on sort', () => {
-    const wrapper = createWrapper();
+  it('updates sort query params on sort', async () => {
+    renderComponent();
 
-    wrapper
-      .find('[role="columnheader"] span[role="button"]')
-      .first()
-      .simulate('click');
+    await user.click(await screen.findByText('datasets.name'));
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
@@ -261,20 +200,22 @@ describe('ISIS Dataset table component', () => {
     );
   });
 
-  it('calls addToCart mutate function on unchecked checkbox click', () => {
+  it('calls addToCart mutate function on unchecked checkbox click', async () => {
     const addToCart = jest.fn();
     (useAddToCart as jest.Mock).mockReturnValue({
       mutate: addToCart,
       loading: false,
     });
-    const wrapper = createWrapper();
+    renderComponent();
 
-    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
+    await user.click(
+      await screen.findByRole('checkbox', { name: 'select row 0' })
+    );
 
     expect(addToCart).toHaveBeenCalledWith([1]);
   });
 
-  it('calls removeFromCart mutate function on checked checkbox click', () => {
+  it('calls removeFromCart mutate function on checked checkbox click', async () => {
     (useCart as jest.Mock).mockReturnValue({
       data: [
         {
@@ -285,6 +226,7 @@ describe('ISIS Dataset table component', () => {
           parentEntities: [],
         },
       ],
+      isLoading: false,
     });
 
     const removeFromCart = jest.fn();
@@ -293,14 +235,16 @@ describe('ISIS Dataset table component', () => {
       loading: false,
     });
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
+    await user.click(
+      await screen.findByRole('checkbox', { name: 'select row 0' })
+    );
 
     expect(removeFromCart).toHaveBeenCalledWith([1]);
   });
 
-  it('selected rows only considers relevant cart items', () => {
+  it('selected rows only considers relevant cart items', async () => {
     (useCart as jest.Mock).mockReturnValueOnce({
       data: [
         {
@@ -318,88 +262,80 @@ describe('ISIS Dataset table component', () => {
           parentEntities: [],
         },
       ],
+      isLoading: false,
     });
 
-    const wrapper = createWrapper();
+    renderComponent();
 
-    const selectAllCheckbox = wrapper
-      .find('[aria-label="select all rows"]')
-      .first();
+    const selectAllCheckbox = await screen.findByRole('checkbox', {
+      name: 'select all rows',
+    });
 
-    expect(selectAllCheckbox.prop('checked')).toEqual(false);
-    expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
+    expect(selectAllCheckbox).not.toBeChecked();
+    expect(selectAllCheckbox).toHaveAttribute('data-indeterminate', 'false');
   });
 
-  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', () => {
+  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', async () => {
     state.dgdataview.selectAllSetting = false;
+    renderComponent();
 
-    const wrapper = createWrapper();
-
-    expect(useIds).toHaveBeenCalledWith('dataset', expect.anything(), false);
-    expect(useIds).not.toHaveBeenCalledWith('dataset', expect.anything(), true);
-    expect(wrapper.exists('[aria-label="select all rows"]')).toBe(false);
+    await waitFor(() => {
+      expect(
+        screen.queryByRole('checkbox', { name: 'select all rows' })
+      ).toBeNull();
+    });
   });
 
-  it('displays details panel when expanded', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeFalsy();
-    wrapper.find('[aria-label="Show details"]').first().simulate('click');
+  it('displays details panel when expanded', async () => {
+    renderComponent();
 
-    expect(wrapper.find(ISISDatasetDetailsPanel).exists()).toBeTruthy();
-  });
-
-  it('renders details panel with datasets link and can navigate', () => {
-    const wrapper = createWrapper();
-
-    const detailsPanelWrapper = createWrapper(
-      wrapper.find(Table).prop('detailsPanel')({
-        rowData: rowData[0],
-        detailsPanelResize: jest.fn(),
-      })
+    await user.click(
+      await screen.findByRole('button', { name: 'Show details' })
     );
 
-    detailsPanelWrapper
-      .find('#dataset-datafiles-tab')
-      .first()
-      .simulate('click');
+    expect(
+      await screen.findByTestId('isis-dataset-details-panel')
+    ).toBeInTheDocument();
+  });
+
+  it('renders details panel with datasets link and can navigate', async () => {
+    renderComponent();
+
+    await user.click(
+      await screen.findByRole('button', { name: 'Show details' })
+    );
+
+    await user.click(
+      await screen.findByRole('tab', { name: 'datasets.details.datafiles' })
+    );
+
     expect(history.location.pathname).toBe(
       '/browse/instrument/1/facilityCycle/2/investigation/3/dataset/1/datafile'
     );
   });
 
   it('renders dataset name as a link', () => {
-    const wrapper = createWrapper();
-
-    expect(
-      wrapper.find('[aria-colindex=3]').find('p').children()
-    ).toMatchSnapshot();
+    renderComponent();
+    expect(screen.getByText('Test 1')).toMatchSnapshot();
   });
 
-  it('renders dataset name as a link in StudyHierarchy', () => {
-    const store = mockStore(state);
-    const wrapper = mount(
-      <Provider store={store}>
-        <Router history={history}>
-          <QueryClientProvider client={new QueryClient()}>
-            <ISISDatasetsTable
-              studyHierarchy={true}
-              instrumentId="1"
-              instrumentChildId="2"
-              investigationId="3"
-            />
-          </QueryClientProvider>
-        </Router>
-      </Provider>
+  it('renders dataset name as a link in data publication hierarchy', () => {
+    history.replace(
+      generatePath(paths.dataPublications.toggle.isisDataset, {
+        instrumentId: '1',
+        investigationId: '3',
+        dataPublicationId: '2',
+      })
     );
+    renderComponent();
 
-    expect(
-      wrapper.find('[aria-colindex=3]').find('p').children()
-    ).toMatchSnapshot();
+    expect(screen.getByText('Test 1')).toMatchSnapshot();
   });
 
-  it('renders actions correctly', () => {
-    const wrapper = createWrapper();
-
-    expect(wrapper.find(DownloadButton).exists()).toBeTruthy();
+  it('renders actions correctly', async () => {
+    renderComponent();
+    expect(
+      await screen.findByRole('button', { name: 'buttons.download' })
+    ).toBeInTheDocument();
   });
 });

@@ -1,32 +1,19 @@
-import React, { Component } from 'react';
-import * as log from 'loglevel';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-
-import DownloadTabs from './downloadTab/downloadTab.component';
-
 import {
-  createGenerateClassName,
-  StylesProvider,
-} from '@material-ui/core/styles';
-import ConfigProvider from './ConfigProvider';
-import {
+  DGThemeProvider,
   MicroFrontendId,
   Preloader,
   RequestPluginRerenderType,
 } from 'datagateway-common';
-import { DGThemeProvider } from 'datagateway-common';
-import AdminDownloadStatusTable from './downloadStatus/adminDownloadStatusTable.component';
-import { QueryClientProvider, QueryClient } from 'react-query';
+import React, { Component } from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
+import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom';
 
-const generateClassName = createGenerateClassName({
-  productionPrefix: 'dgwd',
+import ConfigProvider from './ConfigProvider';
+import DOIGenerationForm from './DOIGenerationForm/DOIGenerationForm.component';
+import AdminDownloadStatusTable from './downloadStatus/adminDownloadStatusTable.component';
 
-  // Only set disable when we are in production and not running e2e tests;
-  // ensures class selectors are working on tests.
-  disableGlobal:
-    process.env.NODE_ENV === 'production' && !process.env.REACT_APP_E2E_TESTING,
-});
+import DownloadTabs from './downloadTab/downloadTab.component';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -36,6 +23,26 @@ const queryClient = new QueryClient({
     },
   },
 });
+
+/**
+ * A fallback component when the app fails to render.
+ */
+function ErrorFallback(): JSX.Element {
+  return (
+    <div className="error">
+      <div
+        style={{
+          padding: 20,
+          background: 'red',
+          color: 'white',
+          margin: 5,
+        }}
+      >
+        Something went wrong...
+      </div>
+    </div>
+  );
+}
 
 class App extends Component<unknown, { hasError: boolean }> {
   public constructor(props: unknown) {
@@ -67,59 +74,45 @@ class App extends Component<unknown, { hasError: boolean }> {
     document.removeEventListener(MicroFrontendId, this.handler);
   }
 
-  public componentDidCatch(error: Error | null): void {
-    this.setState({ hasError: true });
-    log.error(`datagateway-download failed with error: ${error}`);
-  }
-
   public render(): React.ReactNode {
-    if (this.state.hasError) {
-      return (
-        <div className="error">
-          <div
-            style={{
-              padding: 20,
-              background: 'red',
-              color: 'white',
-              margin: 5,
-            }}
-          >
-            Something went wrong...
-          </div>
-        </div>
-      );
-    }
-
     return (
       <div className="App">
-        <StylesProvider generateClassName={generateClassName}>
-          <DGThemeProvider>
-            <ConfigProvider>
-              <QueryClientProvider client={queryClient}>
-                <React.Suspense
-                  fallback={
-                    <Preloader loading={true}>Finished loading</Preloader>
-                  }
-                >
-                  <Router>
-                    <Switch>
-                      <Route path="/admin/download">
-                        <AdminDownloadStatusTable />
-                      </Route>
-                      <Route path="/download">
-                        <DownloadTabs />
-                      </Route>
-                    </Switch>
-                  </Router>
-                </React.Suspense>
-                <ReactQueryDevtools initialIsOpen={false} />
-              </QueryClientProvider>
-            </ConfigProvider>
-          </DGThemeProvider>
-        </StylesProvider>
+        <DGThemeProvider>
+          <ConfigProvider>
+            <QueryClientProvider client={queryClient}>
+              <React.Suspense
+                fallback={
+                  <Preloader loading={true}>Finished loading</Preloader>
+                }
+              >
+                <Router>
+                  <Switch>
+                    {/* development redirect route so people don't get confused by blank screen */}
+                    <Route
+                      exact
+                      path="/"
+                      render={() => <Link to="/download">Downloads</Link>}
+                    />
+                    <Route exact path="/admin/download">
+                      <AdminDownloadStatusTable />
+                    </Route>
+                    <Route exact path="/download/mint">
+                      <DOIGenerationForm />
+                    </Route>
+                    <Route exact path="/download">
+                      <DownloadTabs />
+                    </Route>
+                  </Switch>
+                </Router>
+              </React.Suspense>
+              <ReactQueryDevtools initialIsOpen={false} />
+            </QueryClientProvider>
+          </ConfigProvider>
+        </DGThemeProvider>
       </div>
     );
   }
 }
 
 export default App;
+export { ErrorFallback };

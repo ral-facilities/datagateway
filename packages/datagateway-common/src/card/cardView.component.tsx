@@ -1,9 +1,10 @@
 import {
-  Box,
-  Chip,
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Box,
+  Chip,
+  Divider,
   FormControl,
   Grid,
   InputLabel,
@@ -11,57 +12,38 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  Pagination,
   Paper,
+  Select,
   TableSortLabel,
   Typography,
-  Select,
-  Divider,
-} from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { Pagination } from '@material-ui/lab';
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ArrowTooltip from '../arrowtooltip.component';
 import {
   Entity,
   Filter,
-  Order,
-  SortType,
   FiltersType,
+  Order,
+  SearchFilter,
+  SortType,
   UpdateMethod,
 } from '../app.types';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import AdvancedFilter from './advancedFilter.component';
 import EntityCard, { EntityImageDetails } from './entityCard.component';
+import { DatasearchType } from '../api';
+import AddIcon from '@mui/icons-material/Add';
 
-const useCardViewStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120,
-    },
-    expandDetails: {
-      width: '100%',
-    },
-    selectedChips: {
-      display: 'inline-flex',
-      justifyContent: 'center',
-      flexWrap: 'wrap',
-      listStyle: 'none',
-      padding: theme.spacing(1),
-    },
-    chip: {
-      margin: theme.spacing(0.5),
-    },
-    paginationGrid: {
-      padding: theme.spacing(2),
-    },
-    noResultsPaper: {
-      padding: theme.spacing(2),
-      margin: theme.spacing(2),
-    },
-  })
-);
+const SelectedChips = styled('ul')(({ theme }) => ({
+  display: 'inline-flex',
+  justifyContent: 'center',
+  flexWrap: 'wrap',
+  listStyle: 'none',
+  padding: theme.spacing(1),
+}));
 
 export interface CardViewDetails {
   dataKey: string;
@@ -86,6 +68,7 @@ export interface CVCustomFilters {
     count: string;
   }[];
   prefixLabel?: boolean;
+  dataKeySearch?: string;
 }
 
 type CVPaginationPosition = 'top' | 'bottom' | 'both';
@@ -106,7 +89,8 @@ export interface CardViewProps {
   onSort: (
     sort: string,
     order: Order | null,
-    updateMethod: UpdateMethod
+    updateMethod: UpdateMethod,
+    shiftDown?: boolean
   ) => void;
 
   // Props to get title, description of the card
@@ -125,9 +109,13 @@ export interface CardViewProps {
   image?: EntityImageDetails;
 
   paginationPosition?: CVPaginationPosition;
+  allIds?: number[];
+  entityName?: DatasearchType;
+
+  'data-testid'?: string;
 }
 
-interface CVFilterInfo {
+export interface CVFilterInfo {
   [filterKey: string]: {
     label: string;
     items: {
@@ -140,7 +128,7 @@ interface CVFilterInfo {
   };
 }
 
-interface CVSelectedFilter {
+export interface CVSelectedFilter {
   filterKey: string;
   label: string;
   items: string[];
@@ -160,7 +148,7 @@ function CVPagination(
     <Pagination
       size="large"
       color="secondary"
-      style={{ textAlign: 'center' }}
+      sx={{ textAlign: 'center' }}
       count={numPages}
       page={page}
       onChange={(e, p) => {
@@ -180,8 +168,6 @@ function CVPagination(
 }
 
 const CardView = (props: CardViewProps): React.ReactElement => {
-  const classes = useCardViewStyles();
-
   // Props.
   const {
     data,
@@ -195,6 +181,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     onFilter,
     onSort,
     onResultsChange,
+    'data-testid': testId,
   } = props;
 
   // Get card information.
@@ -208,6 +195,46 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     filters,
     sort,
   } = props;
+
+  // Format dates to be more readable
+  // Format only if the date has a time component
+  // (to avoid formatting dates like 2020-01-01)
+  React.useEffect(() => {
+    data.forEach((entity) => {
+      ['createTime', 'modTime', 'startDate', 'endDate'].forEach((key) => {
+        if (entity[key] && /\d{2}:\d{2}:\d{2}/.test(entity[key])) {
+          entity[key] = new Date(entity[key])
+            .toISOString()
+            .replace('T', ' ')
+            .split(/[.+]/)[0];
+        }
+      });
+    });
+  }, [data]);
+
+  const [shiftDown, setShiftDown] = React.useState(false);
+  // add event listener to listen for shift key being pressed
+  React.useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent): void => {
+      if (event.key === 'Shift') {
+        setShiftDown(true);
+      }
+    };
+
+    const handleKeyUp = (event: KeyboardEvent): void => {
+      if (event.key === 'Shift') {
+        setShiftDown(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keyup', handleKeyUp);
+
+    return (): void => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('keyup', handleKeyUp);
+    };
+  }, []);
 
   // Results options (by default it is 10, 20 and 30).
   const resOptions = React.useMemo(
@@ -236,9 +263,9 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     ? information.some((i) => i.filterComponent)
     : false;
   const [filtersInfo, setFiltersInfo] = React.useState<CVFilterInfo>({});
-  const [selectedFilters, setSelectedFilters] = React.useState<
-    CVSelectedFilter[]
-  >([]);
+  const [selectedChips, setSelectedChips] = React.useState<CVSelectedFilter[]>(
+    []
+  );
   const [filterUpdate, setFilterUpdate] = React.useState(false);
 
   // Sort.
@@ -253,20 +280,20 @@ const CardView = (props: CardViewProps): React.ReactElement => {
   //defaultSort has been provided
   React.useEffect(() => {
     if (title.defaultSort !== undefined && sort[title.dataKey] === undefined)
-      onSort(title.dataKey, title.defaultSort, 'replace');
+      onSort(title.dataKey, title.defaultSort, 'replace', false);
     if (
       description &&
       description.defaultSort !== undefined &&
       sort[description.dataKey] === undefined
     )
-      onSort(description.dataKey, description.defaultSort, 'replace');
+      onSort(description.dataKey, description.defaultSort, 'replace', false);
     if (information) {
       information.forEach((element: CardViewDetails) => {
         if (
           element.defaultSort !== undefined &&
           sort[element.dataKey] === undefined
         )
-          onSort(element.dataKey, element.defaultSort, 'replace');
+          onSort(element.dataKey, element.defaultSort, 'replace', false);
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -320,7 +347,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     };
 
     // Get the updated info.
-    const info = customFilters
+    const info: CVFilterInfo = customFilters
       ? Object.values(customFilters).reduce((o, filter) => {
           const data: CVFilterInfo = {
             ...o,
@@ -352,26 +379,36 @@ const CardView = (props: CardViewProps): React.ReactElement => {
       : {};
 
     setFiltersInfo(info);
-  }, [customFilters, filters]);
 
-  React.useEffect(() => {
-    if (Object.keys(filtersInfo).length > 0) {
-      // Get selected items only and remove any arrays without items.
-      const selected = Object.entries(filtersInfo)
-        .map(
-          ([filterKey, info]) => ({
-            filterKey: filterKey,
-            label: info.label,
-            items: Object.entries(info.items)
-              .filter(([, v]) => v.selected)
-              .map(([i]) => i),
-          }),
-          []
-        )
-        .filter((v) => v.items.length > 0);
-      setSelectedFilters(selected);
-    }
-  }, [filtersInfo]);
+    const selectedChips: CVSelectedFilter[] = [];
+    Object.entries(filters).forEach(([key, filter]) => {
+      if (filter instanceof Array) {
+        filter.forEach((filterEntry) => {
+          if (typeof filterEntry === 'string') {
+            if (info[key]) {
+              selectedChips.push({
+                filterKey: key,
+                label: info[key].label,
+                items: Object.entries(info[key].items)
+                  .filter(([, v]) => v.selected)
+                  .map(([i]) => i),
+              });
+            }
+          } else if ('filter' in filterEntry) {
+            selectedChips.push({
+              filterKey: key,
+              label: filterEntry.key.substring(
+                filterEntry.key.lastIndexOf('.') + 1
+              ),
+              items: [filterEntry.label],
+            });
+          }
+        });
+      }
+    });
+
+    setSelectedChips(selectedChips);
+  }, [customFilters, filters]);
 
   React.useEffect(() => {
     if (filterUpdate && loadedData) setFilterUpdate(false);
@@ -379,20 +416,31 @@ const CardView = (props: CardViewProps): React.ReactElement => {
 
   const changeFilter = (
     filterKey: string,
-    filterValue: string,
+    filterValue: SearchFilter,
     remove?: boolean
   ): void => {
+    const getNestedIndex = (updateItems: SearchFilter[]): number => {
+      let i = 0;
+      for (const updateItem of updateItems) {
+        if (
+          typeof updateItem !== 'string' &&
+          'label' in updateItem &&
+          updateItem.label === filterValue
+        ) {
+          return i;
+        }
+        i++;
+      }
+      return -1;
+    };
+
     // Add or remove the filter value in the state.
-    let updateItems: string[];
+    let updateItems: SearchFilter[] = [];
     if (filterKey in filters) {
       const filterItems = filters[filterKey];
       if (Array.isArray(filterItems)) {
         updateItems = filterItems;
-      } else {
-        updateItems = [];
       }
-    } else {
-      updateItems = [];
     }
 
     // Add or remove the filter value.
@@ -401,20 +449,19 @@ const CardView = (props: CardViewProps): React.ReactElement => {
       updateItems.push(filterValue);
       onPageChange(1);
       onFilter(filterKey, updateItems);
-    } else {
-      if (updateItems.length > 0 && updateItems.includes(filterValue)) {
-        // Set to null if this is the last item in the array.
-        // Remove the item from the updated items array.
-        const i = updateItems.indexOf(filterValue);
-        if (i > -1) {
-          // Remove the filter value from the update items.
-          updateItems.splice(i, 1);
-          onPageChange(1);
-          if (updateItems.length > 0) {
-            onFilter(filterKey, updateItems);
-          } else {
-            onFilter(filterKey, null);
-          }
+    } else if (updateItems.length > 0) {
+      // Set to null if this is the last item in the array.
+      // Remove the item from the updated items array.
+      let i = updateItems.indexOf(filterValue);
+      i = i === -1 ? getNestedIndex(updateItems) : i;
+      if (i > -1) {
+        // Remove the filter value from the update items.
+        updateItems.splice(i, 1);
+        onPageChange(1);
+        if (updateItems.length > 0) {
+          onFilter(filterKey, updateItems);
+        } else {
+          onFilter(filterKey, null);
         }
       }
     }
@@ -476,12 +523,12 @@ const CardView = (props: CardViewProps): React.ReactElement => {
   const hasFilteredResults = loadedData && (filterUpdate || totalDataCount > 0);
 
   return (
-    <Grid container direction="column" alignItems="center">
+    <Grid container direction="column" alignItems="center" data-testid={testId}>
       <Grid
         container
         item
         direction="row"
-        justify="center"
+        justifyContent="center"
         alignItems="center"
         xs={12}
       >
@@ -504,9 +551,9 @@ const CardView = (props: CardViewProps): React.ReactElement => {
             item
             direction="row"
             alignItems="center"
-            justify="space-around"
+            justifyContent="space-around"
             xs={12}
-            className={classes.paginationGrid}
+            padding={2}
           >
             {/* Fake box to mirror Max Results selector */}
             {totalDataCount > resOptions[0] && (
@@ -524,8 +571,11 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                 Do not show if the number of data is smaller than the 
                 smallest amount of results to display (10) or the smallest amount available. */}
             {totalDataCount > resOptions[0] && (
-              <Grid container item xs={12} md={1} justify="flex-end">
-                <FormControl className={classes.formControl}>
+              <Grid container item xs={12} md={1} justifyContent="flex-end">
+                <FormControl
+                  variant="standard"
+                  sx={{ margin: 1, minWidth: '120px' }}
+                >
                   <InputLabel htmlFor="select-max-results">
                     {t('app.max_results')}
                   </InputLabel>
@@ -533,7 +583,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                     native
                     value={results}
                     inputProps={{
-                      name: 'Max Results',
+                      name: t('app.max_results'),
                       id: 'select-max-results',
                     }}
                     className="tour-dataview-max-results"
@@ -548,6 +598,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                         onPageChange(1);
                       }
                     }}
+                    variant="standard"
                   >
                     {resOptions
                       .filter(
@@ -556,7 +607,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                           (i > 0 && totalDataCount > resOptions[i - 1])
                       )
                       .map((n, i) => (
-                        <option key={i} value={n} aria-label={`${n}...`}>
+                        <option key={i} value={n}>
                           {n}
                         </option>
                       ))}
@@ -568,18 +619,25 @@ const CardView = (props: CardViewProps): React.ReactElement => {
         )}
       </Grid>
 
-      <Grid container direction="row" justify="center">
+      <Grid
+        container
+        item
+        direction="row"
+        justifyContent="center"
+        spacing={2}
+        padding={4}
+      >
         {(hasSort || customFilters || !hasFilteredResults) && (
           <Grid item xs={12} md={3}>
             <Grid
               item
               container
               direction="column"
-              justify="flex-start"
+              justifyContent="flex-start"
               alignItems="stretch"
-              spacing={5}
               xs={12}
-              style={{ marginLeft: 0, marginRight: 0, marginBottom: 0 }}
+              rowSpacing={4}
+              sx={{ marginLeft: 0, marginRight: 0, marginBottom: 0 }}
             >
               {/* Sorting options */}
               {hasSort && (filterUpdate || totalDataCount > 0) && (
@@ -602,11 +660,12 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                             <ListItem
                               key={i}
                               button
-                              onClick={() => {
+                              onClick={(event) => {
                                 onSort(
                                   s.dataKey,
                                   nextSortDirection(s.dataKey),
-                                  'push'
+                                  'push',
+                                  event.shiftKey
                                 );
                                 if (page !== 1) {
                                   onPageChange(1);
@@ -624,14 +683,21 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                             >
                               <ListItemText primary={s.label} />
                               <ListItemIcon>
-                                <TableSortLabel
-                                  active={s.dataKey in sort}
-                                  direction={sort[s.dataKey]}
-                                  // Set tabindex to -1 to prevent button focus
-                                  tabIndex={-1}
-                                >
-                                  {s.dataKey in sort && sort[s.dataKey]}
-                                </TableSortLabel>
+                                {
+                                  <TableSortLabel
+                                    active={s.dataKey in sort || shiftDown}
+                                    direction={sort[s.dataKey]}
+                                    // Set tabindex to -1 to prevent button focus
+                                    tabIndex={-1}
+                                    IconComponent={
+                                      !(s.dataKey in sort) && shiftDown
+                                        ? AddIcon
+                                        : undefined
+                                    }
+                                  >
+                                    {s.dataKey in sort && sort[s.dataKey]}
+                                  </TableSortLabel>
+                                }
                               </ListItemIcon>
                             </ListItem>
                           ))}
@@ -665,7 +731,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                                   <Typography>{filter.label}</Typography>
                                 </AccordionSummary>
                                 <AccordionDetails>
-                                  <div className={classes.expandDetails}>
+                                  <div style={{ width: '100%' }}>
                                     <List
                                       component="nav"
                                       aria-label="filter-by-list"
@@ -673,7 +739,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                                       {Object.entries(filter.items).map(
                                         ([name, data], valueIndex) => (
                                           <ListItem
-                                            style={{ display: 'flex' }}
+                                            sx={{ display: 'flex' }}
                                             key={valueIndex}
                                             button
                                             disabled={data.selected}
@@ -702,7 +768,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                                             )}
                                             {data.count && (
                                               <Typography
-                                                style={{ paddingLeft: '5%' }}
+                                                sx={{ paddingLeft: '5%' }}
                                               >
                                                 {data.count}
                                               </Typography>
@@ -728,14 +794,14 @@ const CardView = (props: CardViewProps): React.ReactElement => {
         {/* Card data */}
         <Grid item xs={12} md={9}>
           {/* Selected filters array */}
-          {selectedFilters.length > 0 && (filterUpdate || totalDataCount > 0) && (
-            <ul className={classes.selectedChips}>
-              {selectedFilters.map((filter, filterIndex) => (
+          {selectedChips.length > 0 && (filterUpdate || totalDataCount > 0) && (
+            <SelectedChips>
+              {selectedChips.map((filter, filterIndex) => (
                 <li key={filterIndex}>
                   {filter.items.map((item, itemIndex) => (
                     <Chip
                       key={itemIndex}
-                      className={classes.chip}
+                      sx={{ margin: 0.5 }}
                       label={`${filter.label} - ${item}`}
                       onDelete={() => {
                         changeFilter(filter.filterKey, item, true);
@@ -745,15 +811,19 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                   ))}
                 </li>
               ))}
-            </ul>
+            </SelectedChips>
           )}
 
           {/* List of cards */}
           {hasFilteredResults ? (
-            <List style={{ padding: 0, marginRight: 20 }}>
+            <List sx={{ padding: 0, margin: 0 }}>
               {data.map((entity, index) => {
                 return (
-                  <ListItem key={index} alignItems="flex-start">
+                  <ListItem
+                    key={index}
+                    alignItems="flex-start"
+                    sx={{ paddingRight: 0 }}
+                  >
                     {/* Create an individual card */}
                     <EntityCard
                       entity={entity}
@@ -773,7 +843,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
             </List>
           ) : (
             <Grid item xs={12} md={8}>
-              <Paper className={classes.noResultsPaper}>
+              <Paper sx={{ padding: 2, margin: 2 }}>
                 <Typography align="center" variant="h6" component="h6">
                   {t('loading.filter_message')}
                 </Typography>
@@ -786,7 +856,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
       {/*  Pagination  */}
       {(filterUpdate || totalDataCount > 0) &&
         (paginationPos === 'bottom' || paginationPos === 'both') && (
-          <Grid item xs style={{ padding: '50px' }}>
+          <Grid item xs sx={{ padding: '50px' }}>
             {CVPagination(page, maxPage, onPageChange)}
           </Grid>
         )}

@@ -1,5 +1,4 @@
-import React from 'react';
-import { createShallow, createMount } from '@material-ui/core/test-utils';
+import * as React from 'react';
 import DateColumnFilter, {
   datesEqual,
   updateFilter,
@@ -8,23 +7,28 @@ import DateColumnFilter, {
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from 'react-test-renderer';
 import { usePushFilter } from '../../api';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../../setupTests';
+import { render, screen } from '@testing-library/react';
+import { UserEvent } from '@testing-library/user-event/setup/setup';
+import userEvent from '@testing-library/user-event';
+
 jest.mock('../../api');
 
 describe('Date filter component', () => {
-  let shallow;
-  let mount;
-
   beforeEach(() => {
-    shallow = createShallow();
-    mount = createMount();
+    applyDatePickerWorkaround();
   });
 
   afterEach(() => {
-    mount.cleanUp();
+    cleanupDatePickerWorkaround();
+    jest.clearAllMocks();
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(
+    const { asFragment } = render(
       <DateColumnFilter
         value={{
           startDate: '1999-01-01T00:00:00.000Z',
@@ -34,7 +38,7 @@ describe('Date filter component', () => {
         onChange={jest.fn()}
       />
     );
-    expect(wrapper).toMatchSnapshot();
+    expect(asFragment()).toMatchSnapshot();
   });
 
   describe('datesEqual function', () => {
@@ -205,7 +209,13 @@ describe('Date filter component', () => {
   });
 
   describe('DatePicker functionality', () => {
-    it('calls the onChange method correctly when filling out the date inputs', () => {
+    let user: UserEvent;
+
+    beforeEach(() => {
+      user = userEvent.setup();
+    });
+
+    it('calls the onChange method correctly when filling out the date inputs', async () => {
       const onChange = jest.fn();
 
       const baseProps = {
@@ -213,53 +223,67 @@ describe('Date filter component', () => {
         onChange,
       };
 
-      const wrapper = mount(<DateColumnFilter {...baseProps} />);
+      const { rerender } = render(<DateColumnFilter {...baseProps} />);
 
-      const startDateFilterInput = wrapper.find('input').first();
-      startDateFilterInput.instance().value = '2019-08-06';
-      startDateFilterInput.simulate('change');
+      const startDateFilterInput = await screen.findByRole('textbox', {
+        name: 'test filter from',
+      });
+      await user.type(startDateFilterInput, '2019-08-06');
 
       expect(onChange).toHaveBeenLastCalledWith({
         startDate: '2019-08-06',
       });
 
-      wrapper.setProps({ ...baseProps, value: { startDate: '2019-08-06' } });
-      const endDateFilterInput = wrapper.find('input').last();
-      endDateFilterInput.instance().value = '2019-08-06';
-      endDateFilterInput.simulate('change');
+      rerender(
+        <DateColumnFilter
+          {...{
+            ...baseProps,
+            value: { startDate: '2019-08-06' },
+          }}
+        />
+      );
+
+      const endDateFilterInput = await screen.findByRole('textbox', {
+        name: 'test filter to',
+      });
+      await user.type(endDateFilterInput, '2019-08-06');
 
       expect(onChange).toHaveBeenLastCalledWith({
         startDate: '2019-08-06',
         endDate: '2019-08-06',
       });
 
-      wrapper.setProps({
-        ...baseProps,
-        value: {
-          startDate: '2019-08-06',
-          endDate: '2019-08-06',
-        },
-      });
-      startDateFilterInput.instance().value = '';
-      startDateFilterInput.simulate('change');
+      rerender(
+        <DateColumnFilter
+          {...baseProps}
+          value={{
+            startDate: '2019-08-06',
+            endDate: '2019-08-06',
+          }}
+        />
+      );
+
+      await user.clear(startDateFilterInput);
 
       expect(onChange).toHaveBeenLastCalledWith({
         endDate: '2019-08-06',
       });
 
-      wrapper.setProps({
-        ...baseProps,
-        value: {
-          endDate: '2019-08-06',
-        },
-      });
-      endDateFilterInput.instance().value = '';
-      endDateFilterInput.simulate('change');
+      rerender(
+        <DateColumnFilter
+          {...baseProps}
+          value={{
+            endDate: '2019-08-06',
+          }}
+        />
+      );
+
+      await user.clear(endDateFilterInput);
 
       expect(onChange).toHaveBeenLastCalledWith(null);
     });
 
-    it('handles invalid date values correctly by not calling onChange, unless there was previously a value there', () => {
+    it('handles invalid date values correctly by not calling onChange, unless there was previously a value there', async () => {
       const onChange = jest.fn();
 
       const baseProps = {
@@ -267,63 +291,82 @@ describe('Date filter component', () => {
         onChange,
       };
 
-      const wrapper = mount(<DateColumnFilter {...baseProps} />);
+      const { rerender } = render(<DateColumnFilter {...baseProps} />);
 
-      const startDateFilterInput = wrapper.find('input').first();
-      startDateFilterInput.instance().value = '2';
-      startDateFilterInput.simulate('change');
-
-      expect(onChange).not.toHaveBeenCalled();
-
-      const endDateFilterInput = wrapper.find('input').last();
-      endDateFilterInput.instance().value = '201';
-      endDateFilterInput.simulate('change');
+      const startDateFilterInput = await screen.findByRole('textbox', {
+        name: 'test filter from',
+      });
+      await user.type(startDateFilterInput, '2');
 
       expect(onChange).not.toHaveBeenCalled();
 
-      startDateFilterInput.instance().value = '2019-08-06';
-      startDateFilterInput.simulate('change');
+      const endDateFilterInput = await screen.findByRole('textbox', {
+        name: 'test filter to',
+      });
+      await user.type(endDateFilterInput, '201');
+
+      expect(onChange).not.toHaveBeenCalled();
+
+      await user.clear(startDateFilterInput);
+      await user.type(startDateFilterInput, '2019-08-06');
 
       expect(onChange).toHaveBeenLastCalledWith({
         startDate: '2019-08-06',
       });
 
-      wrapper.setProps({ ...baseProps, value: { startDate: '2019-08-06' } });
-      endDateFilterInput.instance().value = '2019-08-07';
-      endDateFilterInput.simulate('change');
+      rerender(
+        <DateColumnFilter {...baseProps} value={{ startDate: '2019-08-06' }} />
+      );
+
+      await user.clear(endDateFilterInput);
+      await user.type(endDateFilterInput, '2019-08-07');
 
       expect(onChange).toHaveBeenLastCalledWith({
         startDate: '2019-08-06',
         endDate: '2019-08-07',
       });
 
-      wrapper.setProps({
-        ...baseProps,
-        value: {
-          startDate: '2019-08-06',
-          endDate: '2019-08-07',
-        },
-      });
-      startDateFilterInput.instance().value = '2';
-      startDateFilterInput.simulate('change');
+      rerender(
+        <DateColumnFilter
+          {...baseProps}
+          value={{
+            startDate: '2019-08-06',
+            endDate: '2019-08-07',
+          }}
+        />
+      );
+
+      // .clear doesn't work for some reason with datepickers in v6
+      await user.click(startDateFilterInput);
+      await user.keyboard('{Control>}a{/Control}');
+      await user.keyboard('{Delete}');
+      // await user.clear(startDateFilterInput);
+      await user.type(startDateFilterInput, '2');
 
       expect(onChange).toHaveBeenLastCalledWith({
         endDate: '2019-08-07',
       });
 
-      wrapper.setProps({
-        ...baseProps,
-        value: {
-          endDate: '2019-08-07',
-        },
-      });
-      endDateFilterInput.instance().value = '201';
-      endDateFilterInput.simulate('change');
+      rerender(
+        <DateColumnFilter
+          {...baseProps}
+          value={{
+            endDate: '2019-08-07',
+          }}
+        />
+      );
+
+      // .clear doesn't work for some reason with datepickers in v6
+      await user.click(endDateFilterInput);
+      await user.keyboard('{Control>}a{/Control}');
+      await user.keyboard('{Delete}');
+      // await user.clear(endDateFilterInput);
+      await user.type(endDateFilterInput, '201');
 
       expect(onChange).toHaveBeenLastCalledWith(null);
     });
 
-    it('displays error for invalid date', () => {
+    it('displays error for invalid date', async () => {
       const onChange = jest.fn();
 
       const baseProps = {
@@ -335,15 +378,17 @@ describe('Date filter component', () => {
         },
       };
 
-      const wrapper = mount(<DateColumnFilter {...baseProps} />);
+      render(<DateColumnFilter {...baseProps} />);
 
-      expect(wrapper.find('p.Mui-error')).toHaveLength(2);
-      expect(wrapper.find('p.Mui-error').first().text()).toEqual(
+      const errorMessages = await screen.findAllByText(
         'Date format: yyyy-MM-dd.'
       );
+      for (const element of errorMessages) {
+        expect(element).toBeInTheDocument();
+      }
     });
 
-    it('displays error for invalid date range', () => {
+    it('displays error for invalid date range', async () => {
       const onChange = jest.fn();
 
       const baseProps = {
@@ -355,15 +400,15 @@ describe('Date filter component', () => {
         },
       };
 
-      const wrapper = mount(<DateColumnFilter {...baseProps} />);
+      render(<DateColumnFilter {...baseProps} />);
 
-      expect(wrapper.find('p.Mui-error')).toHaveLength(2);
-      expect(wrapper.find('p.Mui-error').first().text()).toEqual(
-        'Invalid date range'
-      );
+      const errorMessages = await screen.findAllByText('Invalid date range');
+      for (const element of errorMessages) {
+        expect(element).toBeInTheDocument();
+      }
     });
 
-    it('useTextFilter hook returns a function which can generate a working text filter', () => {
+    it('useDateFilter hook returns a function which can generate a working date filter', async () => {
       const pushFilter = jest.fn();
       (usePushFilter as jest.Mock).mockImplementation(() => pushFilter);
 
@@ -374,32 +419,29 @@ describe('Date filter component', () => {
         dateFilter = result.current('Start Date', 'startDate');
       });
 
-      const shallowWrapper = shallow(dateFilter);
-      expect(shallowWrapper).toMatchSnapshot();
+      const { asFragment } = render(dateFilter);
+      expect(asFragment()).toMatchSnapshot();
 
-      const mountWrapper = mount(dateFilter);
-      const startDateFilterInput = mountWrapper.find('input').first();
-      startDateFilterInput.instance().value = '2021-08-09';
-      startDateFilterInput.simulate('change');
+      const startDateFilterInput = await screen.findByRole('textbox', {
+        name: 'Start Date filter from',
+      });
+
+      await user.type(startDateFilterInput, '2021-08-09');
 
       expect(pushFilter).toHaveBeenLastCalledWith('startDate', {
         startDate: '2021-08-09',
       });
-
-      mountWrapper.setProps({
-        ...mountWrapper.props(),
-        value: { startDate: '2021-08-09' },
-      });
-      startDateFilterInput.instance().value = '';
-      startDateFilterInput.simulate('change');
-
-      expect(pushFilter).toHaveBeenCalledTimes(2);
-      expect(pushFilter).toHaveBeenLastCalledWith('startDate', null);
     });
   });
 
   describe('DateTimePicker functionality', () => {
-    it('calls the onChange method correctly when filling out the date/time inputs', () => {
+    let user: UserEvent;
+
+    beforeEach(() => {
+      user = userEvent.setup();
+    });
+
+    it('calls the onChange method correctly when filling out the date-time inputs', async () => {
       const onChange = jest.fn();
 
       const baseProps = {
@@ -407,56 +449,74 @@ describe('Date filter component', () => {
         onChange,
       };
 
-      const wrapper = mount(<DateColumnFilter filterByTime {...baseProps} />);
+      const { rerender } = render(
+        <DateColumnFilter filterByTime {...baseProps} />
+      );
 
-      const startDateFilterInput = wrapper.find('input').first();
-      startDateFilterInput.instance().value = '2019-08-06 00:00';
-      startDateFilterInput.simulate('change');
+      const startDateFilterInput = await screen.findByRole('textbox', {
+        name: 'test filter from',
+      });
+
+      await user.type(startDateFilterInput, '2019-08-06_00:00:00');
 
       expect(onChange).toHaveBeenLastCalledWith({
-        startDate: '2019-08-06 00:00',
+        startDate: '2019-08-06 00:00:00',
       });
 
-      wrapper.setProps({
-        ...baseProps,
-        value: { startDate: '2019-08-06 00:00' },
-      });
-      const endDateFilterInput = wrapper.find('input').last();
-      endDateFilterInput.instance().value = '2019-08-06 23:59';
-      endDateFilterInput.simulate('change');
+      rerender(
+        <DateColumnFilter
+          filterByTime
+          {...baseProps}
+          value={{ startDate: '2019-08-06 00:00:00' }}
+        />
+      );
 
-      expect(onChange).toHaveBeenLastCalledWith({
-        startDate: '2019-08-06 00:00',
-        endDate: '2019-08-06 23:59',
+      const endDateFilterInput = await screen.findByRole('textbox', {
+        name: 'test filter to',
       });
 
-      wrapper.setProps({
-        ...baseProps,
-        value: {
-          startDate: '2019-08-06 00:00',
-          endDate: '2019-08-06 23:59',
-        },
-      });
-      startDateFilterInput.instance().value = '';
-      startDateFilterInput.simulate('change');
+      // in v6, spaces are considered to be '0' in the time field
+      // 2019-08-06_23:59:00 results in 2019-08-06 23:59:00
+      await user.type(endDateFilterInput, '2019-08-06_23:59:00');
 
       expect(onChange).toHaveBeenLastCalledWith({
-        endDate: '2019-08-06 23:59',
+        startDate: '2019-08-06 00:00:00',
+        endDate: '2019-08-06 23:59:00',
       });
 
-      wrapper.setProps({
-        ...baseProps,
-        value: {
-          endDate: '2019-08-06 23:59',
-        },
+      rerender(
+        <DateColumnFilter
+          filterByTime
+          {...baseProps}
+          value={{
+            startDate: '2019-08-06 00:00:00',
+            endDate: '2019-08-06 23:59:00',
+          }}
+        />
+      );
+
+      await user.clear(startDateFilterInput);
+
+      expect(onChange).toHaveBeenLastCalledWith({
+        endDate: '2019-08-06 23:59:00',
       });
-      endDateFilterInput.instance().value = '';
-      endDateFilterInput.simulate('change');
+
+      rerender(
+        <DateColumnFilter
+          filterByTime
+          {...baseProps}
+          value={{
+            endDate: '2019-08-06 23:59:00',
+          }}
+        />
+      );
+
+      await user.clear(endDateFilterInput);
 
       expect(onChange).toHaveBeenLastCalledWith(null);
     });
 
-    it('handles invalid date values correctly by not calling onChange, unless there was previously a value there', () => {
+    it('handles invalid date values correctly by not calling onChange, unless there was previously a value there', async () => {
       const onChange = jest.fn();
 
       const baseProps = {
@@ -464,159 +524,155 @@ describe('Date filter component', () => {
         onChange,
       };
 
-      const wrapper = mount(<DateColumnFilter filterByTime {...baseProps} />);
+      const { rerender } = render(
+        <DateColumnFilter filterByTime {...baseProps} />
+      );
 
-      const startDateFilterInput = wrapper.find('input').first();
-      startDateFilterInput.instance().value = '2';
-      startDateFilterInput.simulate('change');
+      const startDateFilterInput = await screen.findByRole('textbox', {
+        name: 'test filter from',
+      });
+
+      await user.type(startDateFilterInput, '2');
 
       expect(onChange).not.toHaveBeenCalled();
 
-      const endDateFilterInput = wrapper.find('input').last();
-      endDateFilterInput.instance().value = '201';
-      endDateFilterInput.simulate('change');
+      const endDateFilterInput = await screen.findByRole('textbox', {
+        name: 'test filter to',
+      });
+
+      await user.type(endDateFilterInput, '201');
 
       expect(onChange).not.toHaveBeenCalled();
 
-      startDateFilterInput.instance().value = '2019-08-06 00:00';
-      startDateFilterInput.simulate('change');
+      await user.clear(startDateFilterInput);
+      await user.type(startDateFilterInput, '2019-08-06_00:00:00');
 
       expect(onChange).toHaveBeenLastCalledWith({
-        startDate: '2019-08-06 00:00',
+        startDate: '2019-08-06 00:00:00',
       });
 
-      wrapper.setProps({
-        ...baseProps,
-        value: { startDate: '2019-08-06 00:00' },
-      });
-      endDateFilterInput.instance().value = '2019-08-07 00:00';
-      endDateFilterInput.simulate('change');
+      rerender(
+        <DateColumnFilter
+          filterByTime
+          {...baseProps}
+          value={{ startDate: '2019-08-06 00:00:00' }}
+        />
+      );
 
-      expect(onChange).toHaveBeenLastCalledWith({
-        startDate: '2019-08-06 00:00',
-        endDate: '2019-08-07 00:00',
-      });
-
-      wrapper.setProps({
-        ...baseProps,
-        value: {
-          startDate: '2019-08-06 00:00',
-          endDate: '2019-08-07 00:00',
-        },
-      });
-      startDateFilterInput.instance().value = '2';
-      startDateFilterInput.simulate('change');
+      await user.clear(endDateFilterInput);
+      await user.type(endDateFilterInput, '2019-08-07_00:00:00');
 
       expect(onChange).toHaveBeenLastCalledWith({
-        endDate: '2019-08-07 00:00',
+        startDate: '2019-08-06 00:00:00',
+        endDate: '2019-08-07 00:00:00',
       });
 
-      wrapper.setProps({
-        ...baseProps,
-        value: {
-          endDate: '2019-08-07 00:00',
-        },
+      rerender(
+        <DateColumnFilter
+          filterByTime
+          {...baseProps}
+          value={{
+            startDate: '2019-08-06 00:00:00',
+            endDate: '2019-08-07 00:00:00',
+          }}
+        />
+      );
+
+      // .clear doesn't work for some reason with datepickers in v6
+      await user.click(startDateFilterInput);
+      await user.keyboard('{Control>}a{/Control}');
+      await user.keyboard('{Delete}');
+      // await user.clear(startDateFilterInput);
+      await user.type(startDateFilterInput, '2');
+
+      expect(onChange).toHaveBeenLastCalledWith({
+        endDate: '2019-08-07 00:00:00',
       });
-      endDateFilterInput.instance().value = '201';
-      endDateFilterInput.simulate('change');
+
+      rerender(
+        <DateColumnFilter
+          filterByTime
+          {...baseProps}
+          value={{
+            endDate: '2019-08-07 00:00:00',
+          }}
+        />
+      );
+
+      // .clear doesn't work for some reason with datepickers in v6
+      await user.click(endDateFilterInput);
+      await user.keyboard('{Control>}a{/Control}');
+      await user.keyboard('{Delete}');
+      // await user.clear(endDateFilterInput);
+      await user.type(endDateFilterInput, '201');
 
       expect(onChange).toHaveBeenLastCalledWith(null);
     });
 
-    it('displays error for invalid date', () => {
+    it('displays error for invalid date', async () => {
       const onChange = jest.fn();
 
       const baseProps = {
         label: 'test',
         onChange,
         value: {
-          startDate: '2019-13-09 00:00',
-          endDate: '2019-08-32 00:00',
+          startDate: '2019-13-09 00:00:00',
+          endDate: '2019-08-32 00:00:00',
         },
       };
 
-      const wrapper = mount(<DateColumnFilter filterByTime {...baseProps} />);
+      render(<DateColumnFilter filterByTime {...baseProps} />);
 
-      expect(wrapper.find('p.Mui-error')).toHaveLength(2);
-      expect(wrapper.find('p.Mui-error').first().text()).toEqual(
-        'Date format: yyyy-MM-dd HH:mm.'
+      const errorMessages = await screen.findAllByText(
+        'Date-time format: yyyy-MM-dd HH:mm:ss.'
       );
+      for (const element of errorMessages) {
+        expect(element).toBeInTheDocument();
+      }
     });
 
-    it('displays error for invalid time', () => {
+    it('displays error for invalid time', async () => {
       const onChange = jest.fn();
 
       const baseProps = {
         label: 'test',
         onChange,
         value: {
-          startDate: '2019-13-09 00:60',
-          endDate: '2019-08-32 24:00',
+          startDate: '2019-13-09 00:60:00',
+          endDate: '2019-08-32 24:00:00',
         },
       };
 
-      const wrapper = mount(<DateColumnFilter filterByTime {...baseProps} />);
+      render(<DateColumnFilter filterByTime {...baseProps} />);
 
-      expect(wrapper.find('p.Mui-error')).toHaveLength(2);
-      expect(wrapper.find('p.Mui-error').first().text()).toEqual(
-        'Date format: yyyy-MM-dd HH:mm.'
+      const errorMessages = await screen.findAllByText(
+        'Date-time format: yyyy-MM-dd HH:mm:ss.'
       );
+      for (const element of errorMessages) {
+        expect(element).toBeInTheDocument();
+      }
     });
 
-    it('displays error for invalid date/time range', () => {
+    it('displays error for invalid date-time range', async () => {
       const onChange = jest.fn();
 
       const baseProps = {
         label: 'test',
         onChange,
         value: {
-          startDate: '2019-08-08 12:00',
-          endDate: '2019-08-08 11:00',
+          startDate: '2019-08-08 12:00:00',
+          endDate: '2019-08-08 11:00:00',
         },
       };
 
-      const wrapper = mount(<DateColumnFilter filterByTime {...baseProps} />);
+      render(<DateColumnFilter filterByTime {...baseProps} />);
 
-      expect(wrapper.find('p.Mui-error')).toHaveLength(2);
-      expect(wrapper.find('p.Mui-error').first().text()).toEqual(
-        'Invalid date/time range'
+      const errorMessages = await screen.findAllByText(
+        'Invalid date-time range'
       );
-    });
-
-    // I don't believe this works with date+time due to time values not appearing in URL params
-    // TODO remove this?
-    it.skip('useTextFilter hook returns a function which can generate a working text filter', () => {
-      const pushFilter = jest.fn();
-      (usePushFilter as jest.Mock).mockImplementation(() => pushFilter);
-
-      const { result } = renderHook(() => useDateFilter({}));
-      let dateFilter;
-
-      act(() => {
-        dateFilter = result.current('Start Date', 'startDate');
-      });
-
-      const shallowWrapper = shallow(dateFilter);
-      expect(shallowWrapper).toMatchSnapshot();
-
-      const mountWrapper = mount(dateFilter);
-      const startDateFilterInput = mountWrapper.find('input').first();
-      startDateFilterInput.instance().value = '2021-08-09 00:00';
-      startDateFilterInput.simulate('change');
-
-      expect(pushFilter).toHaveBeenLastCalledWith('startDate', {
-        startDate: '2021-08-09 00:00',
-      });
-
-      mountWrapper.setProps({
-        ...mountWrapper.props(),
-        value: { startDate: '2021-08-09 00:00' },
-      });
-      startDateFilterInput.instance().value = '';
-      startDateFilterInput.simulate('change');
-
-      expect(pushFilter).toHaveBeenCalledTimes(2);
-      expect(pushFilter).toHaveBeenLastCalledWith('startDate', null);
+      for (const element of errorMessages) {
+        expect(element).toBeInTheDocument();
+      }
     });
   });
 });

@@ -13,7 +13,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { useLocation } from 'react-router-dom';
-import SubjectIcon from '@material-ui/icons/Subject';
+import SubjectIcon from '@mui/icons-material/Subject';
 
 const DLSProposalsTable = (): React.ReactElement => {
   const location = useLocation();
@@ -52,10 +52,18 @@ const DLSProposalsTable = (): React.ReactElement => {
     isMounted
   );
 
-  const aggregatedData: Investigation[] = React.useMemo(
-    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
-    [data]
-  );
+  /* istanbul ignore next */
+  const aggregatedData: Investigation[] = React.useMemo(() => {
+    if (data) {
+      if ('pages' in data) {
+        return data.pages.flat();
+      } else if ((data as unknown) instanceof Array) {
+        return data;
+      }
+    }
+
+    return [];
+  }, [data]);
 
   const textFilter = useTextFilter(filters);
   const handleSort = useSort();
@@ -94,7 +102,8 @@ const DLSProposalsTable = (): React.ReactElement => {
           return tableLink(
             `/browse/proposal/${cellProps.rowData.name}/investigation`,
             cellProps.rowData.name,
-            view
+            view,
+            'dls-proposals-table-name'
           );
         },
         filterComponent: textFilter,

@@ -1,60 +1,55 @@
-import { Link as MuiLink } from '@material-ui/core';
 import {
+  CalendarToday,
   Fingerprint,
+  Person,
   Public,
   Save,
-  Person,
-  CalendarToday,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
+import { styled } from '@mui/material';
 import {
+  AdditionalFilters,
+  AddToCartButton,
   CardView,
   CardViewDetails,
-  formatCountOrSize,
   Investigation,
   tableLink,
-  useInvestigationSizes,
+  DownloadButton,
+  externalSiteLink,
+  ISISInvestigationDetailsPanel,
   parseSearchToQuery,
   useDateFilter,
-  useISISInvestigationCount,
-  useISISInvestigationsPaginated,
+  useInvestigationCount,
+  useInvestigationsPaginated,
   usePrincipalExperimenterFilter,
   usePushFilter,
   usePushPage,
   usePushResults,
   useSort,
   useTextFilter,
-  AddToCartButton,
-  DownloadButton,
-  ISISInvestigationDetailsPanel,
+  formatBytes,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory, useLocation } from 'react-router';
-import { Theme, createStyles, makeStyles } from '@material-ui/core';
+import { useHistory, useLocation } from 'react-router-dom';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    actionButtons: {
-      display: 'flex',
-      flexDirection: 'column',
-      '& button': {
-        marginTop: theme.spacing(1),
-        margin: 'auto',
-      },
-    },
-  })
-);
+const ActionButtonsContainer = styled('div')(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  '& button': {
+    margin: 'auto',
+    marginTop: theme.spacing(1),
+  },
+}));
 
 interface ISISInvestigationsCardViewProps {
   instrumentId: string;
-  instrumentChildId: string;
-  studyHierarchy: boolean;
+  facilityCycleId: string;
 }
 
 const ISISInvestigationsCardView = (
   props: ISISInvestigationsCardViewProps
 ): React.ReactElement => {
-  const { instrumentId, instrumentChildId, studyHierarchy } = props;
+  const { instrumentId, facilityCycleId } = props;
 
   const [t] = useTranslation();
   const location = useLocation();
@@ -73,6 +68,25 @@ const ISISInvestigationsCardView = (
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
+  const investigationQueryFilters: AdditionalFilters = [
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'investigationInstruments.instrument.id': {
+          eq: parseInt(instrumentId),
+        },
+      }),
+    },
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'investigationFacilityCycles.facilityCycle.id': {
+          eq: parseInt(facilityCycleId),
+        },
+      }),
+    },
+  ];
+
   // isMounted is used to disable queries when the component isn't fully mounted.
   // It prevents the request being sent twice if default sort is set.
   // It is not needed for cards/tables that don't have default sort.
@@ -81,25 +95,31 @@ const ISISInvestigationsCardView = (
     setIsMounted(true);
   }, []);
 
-  const {
-    data: totalDataCount,
-    isLoading: countLoading,
-  } = useISISInvestigationCount(
-    parseInt(instrumentId),
-    parseInt(instrumentChildId),
-    studyHierarchy
-  );
-  const { data, isLoading: dataLoading } = useISISInvestigationsPaginated(
-    parseInt(instrumentId),
-    parseInt(instrumentChildId),
-    studyHierarchy,
+  const { data: totalDataCount, isLoading: countLoading } =
+    useInvestigationCount(investigationQueryFilters);
+  const { data, isLoading: dataLoading } = useInvestigationsPaginated(
+    [
+      ...investigationQueryFilters,
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify([
+          {
+            investigationInstruments: 'instrument',
+          },
+          {
+            dataCollectionInvestigations: {
+              dataCollection: { dataPublications: 'type' },
+            },
+          },
+          {
+            investigationUsers: 'user',
+          },
+        ]),
+      },
+    ],
+    undefined,
     isMounted
   );
-  const sizeQueries = useInvestigationSizes(data);
-
-  const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
-  const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
-  const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation`;
 
   const title: CardViewDetails = React.useMemo(
     () => ({
@@ -107,14 +127,14 @@ const ISISInvestigationsCardView = (
       dataKey: 'title',
       content: (investigation: Investigation) =>
         tableLink(
-          `${urlPrefix}/${investigation.id}`,
+          `${location.pathname}/${investigation.id}`,
           investigation.title,
           view,
           'isis-investigations-card-title'
         ),
       filterComponent: textFilter,
     }),
-    [t, textFilter, urlPrefix, view]
+    [location.pathname, t, textFilter, view]
   );
 
   const description: CardViewDetails = React.useMemo(
@@ -136,31 +156,34 @@ const ISISInvestigationsCardView = (
       },
       {
         content: function doiFormat(entity: Investigation) {
-          return (
-            entity?.studyInvestigations?.[0]?.study?.pid && (
-              <MuiLink
-                href={`https://doi.org/${entity.studyInvestigations[0].study.pid}`}
-                data-testid="isis-investigations-card-doi-link"
-              >
-                {entity.studyInvestigations[0].study?.pid}
-              </MuiLink>
-            )
-          );
+          const studyDataPublication =
+            entity.dataCollectionInvestigations?.filter(
+              (dci) =>
+                dci.dataCollection?.dataPublications?.[0]?.type?.name ===
+                'study'
+            )?.[0]?.dataCollection?.dataPublications?.[0];
+          if (studyDataPublication) {
+            return externalSiteLink(
+              `https://doi.org/${studyDataPublication.pid}`,
+              studyDataPublication.pid,
+              'isis-investigations-card-doi-link'
+            );
+          } else {
+            return '';
+          }
         },
         icon: Public,
         label: t('investigations.doi'),
-        dataKey: 'studyInvestigations[0].study.pid',
+        dataKey:
+          'dataCollectionInvestigations.dataCollection.dataPublications.pid',
         filterComponent: textFilter,
       },
       {
         icon: Save,
         label: t('investigations.details.size'),
         dataKey: 'size',
-        content: (investigation: Investigation): number | string => {
-          const index = data?.findIndex((item) => item.id === investigation.id);
-          if (typeof index === 'undefined') return 'Unknown';
-          return formatCountOrSize(sizeQueries[index], true);
-        },
+        content: (investigation: Investigation): number | string =>
+          formatBytes(investigation.fileSize),
         disableSort: true,
       },
       {
@@ -169,9 +192,10 @@ const ISISInvestigationsCardView = (
         dataKey: 'investigationUsers.user.fullName',
         disableSort: true,
         content: function Content(investigation: Investigation) {
-          const principal_investigators = investigation?.investigationUsers?.filter(
-            (iu) => iu.role === 'principal_experimenter'
-          );
+          const principal_investigators =
+            investigation?.investigationUsers?.filter(
+              (iu) => iu.role === 'principal_experimenter'
+            );
           let principal_investigator = '';
           if (principal_investigators && principal_investigators.length !== 0) {
             principal_investigator =
@@ -196,15 +220,13 @@ const ISISInvestigationsCardView = (
         filterComponent: dateFilter,
       },
     ],
-    [data, dateFilter, principalExperimenterFilter, sizeQueries, t, textFilter]
+    [dateFilter, principalExperimenterFilter, t, textFilter]
   );
-
-  const classes = useStyles();
 
   const buttons = React.useMemo(
     () => [
       (investigation: Investigation) => (
-        <div className={classes.actionButtons}>
+        <ActionButtonsContainer>
           <AddToCartButton
             entityType="investigation"
             allIds={data?.map((investigation) => investigation.id) ?? []}
@@ -214,14 +236,12 @@ const ISISInvestigationsCardView = (
             entityType="investigation"
             entityId={investigation.id}
             entityName={investigation.name}
-            entitySize={
-              data ? sizeQueries[data.indexOf(investigation)]?.data ?? -1 : -1
-            }
+            entitySize={investigation.fileSize ?? -1}
           />
-        </div>
+        </ActionButtonsContainer>
       ),
     ],
-    [classes.actionButtons, data, sizeQueries]
+    [data]
   );
 
   const moreInformation = React.useCallback(
@@ -230,17 +250,18 @@ const ISISInvestigationsCardView = (
         rowData={investigation}
         viewDatasets={(id: number) => {
           const url = view
-            ? `${urlPrefix}/${id}/dataset?view=${view}`
-            : `${urlPrefix}/${id}/dataset`;
+            ? `${location.pathname}/${id}/dataset?view=${view}`
+            : `${location.pathname}/${id}/dataset`;
           push(url);
         }}
       />
     ),
-    [push, urlPrefix, view]
+    [location.pathname, push, view]
   );
 
   return (
     <CardView
+      data-testid="isis-investigations-card-view"
       data={data ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}

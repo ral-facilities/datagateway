@@ -1,6 +1,6 @@
 import React from 'react';
 import axios, { AxiosError } from 'axios';
-import { useHistory, useLocation } from 'react-router';
+import { useHistory, useLocation } from 'react-router-dom';
 import {
   AdditionalFilters,
   FiltersType,
@@ -31,7 +31,7 @@ export * from './facilityCycles';
 export * from './instruments';
 export * from './investigations';
 export * from './datafiles';
-export * from './studies';
+export * from './dataPublications';
 export * from './datasets';
 export * from './lucene';
 
@@ -71,6 +71,7 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
   const startDateString = query.get('startDate');
   const endDateString = query.get('endDate');
   const currentTab = query.get('currentTab');
+  const restrict = query.get('restrict');
 
   // Parse filters in the query.
   const parsedFilters: FiltersType = {};
@@ -129,6 +130,7 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
     startDate: startDate,
     endDate: endDate,
     currentTab: currentTab ? currentTab : 'investigation',
+    restrict: restrict === 'true',
   };
 
   return params;
@@ -154,7 +156,8 @@ export const parseQueryToSearch = (query: QueryParams): URLSearchParams => {
           (q === 'dataset' || q === 'datafile' || q === 'investigation') &&
           v === true
         ) &&
-        !(q === 'currentTab' && v === 'investigation')
+        !(q === 'currentTab' && v === 'investigation') &&
+        !(q === 'restrict' && v === false)
       )
         queryParams.append(q, v);
     }
@@ -185,6 +188,26 @@ export const parseQueryToSearch = (query: QueryParams): URLSearchParams => {
   }
 
   return queryParams;
+};
+
+export const usePushQueryParams = (): ((
+  newQueryParams: Partial<QueryParams>
+) => void) => {
+  const location = useLocation();
+  const { push } = useHistory();
+
+  return React.useCallback(
+    (newQueryParams: Partial<QueryParams>) => {
+      const currentQueryParams = parseSearchToQuery(location.search);
+      push({
+        search: `?${parseQueryToSearch({
+          ...currentQueryParams,
+          ...newQueryParams,
+        }).toString()}`,
+      });
+    },
+    [location.search, push]
+  );
 };
 
 /**
@@ -231,10 +254,15 @@ export const getApiParams = (
               'where',
               JSON.stringify({ [column]: { ilike: filter.value } })
             );
-          } else {
+          } else if (filter.type === 'exclude') {
             searchParams.append(
               'where',
               JSON.stringify({ [column]: { nilike: filter.value } })
+            );
+          } else {
+            searchParams.append(
+              'where',
+              JSON.stringify({ [column]: { eq: filter.value } })
             );
           }
         }
@@ -255,7 +283,8 @@ export const getApiParams = (
 export const useSort = (): ((
   sortKey: string,
   order: Order | null,
-  updateMethod: UpdateMethod
+  updateMethod: UpdateMethod,
+  shiftDown?: boolean
 ) => void) => {
   const { push, replace } = useHistory();
 
@@ -263,17 +292,25 @@ export const useSort = (): ((
     (
       sortKey: string,
       order: Order | null,
-      updateMethod: UpdateMethod
+      updateMethod: UpdateMethod,
+      shiftDown?: boolean
     ): void => {
       let query = parseSearchToQuery(window.location.search);
       if (order !== null) {
-        query = {
-          ...query,
-          sort: {
-            ...query.sort,
-            [sortKey]: order,
-          },
-        };
+        query = shiftDown
+          ? {
+              ...query,
+              sort: {
+                ...query.sort,
+                [sortKey]: order,
+              },
+            }
+          : {
+              ...query,
+              sort: {
+                [sortKey]: order,
+              },
+            };
       } else {
         // if order is null, user no longer wants to sort by that column so remove column from sort state
         const { [sortKey]: order, ...rest } = query.sort;
@@ -292,10 +329,44 @@ export const useSort = (): ((
   );
 };
 
-export const usePushFilter = (): ((
-  filterKey: string,
-  filter: Filter | null
+export const useSingleSort = (): ((
+  sortKey: string,
+  order: Order | null,
+  updateMethod: UpdateMethod
 ) => void) => {
+  const { push, replace } = useHistory();
+
+  return React.useCallback(
+    (
+      sortKey: string,
+      order: Order | null,
+      updateMethod: UpdateMethod
+    ): void => {
+      let query = parseSearchToQuery(window.location.search);
+      if (order === null) {
+        query = {
+          ...query,
+          sort: {},
+        };
+      } else {
+        query = {
+          ...query,
+          sort: {
+            [sortKey]: order,
+          },
+        };
+      }
+      (updateMethod === 'push' ? push : replace)({
+        search: `?${parseQueryToSearch(query).toString()}`,
+      });
+    },
+    [push, replace]
+  );
+};
+
+export const usePushFilter = (
+  filterPrefix?: string
+): ((filterKey: string, filter: Filter | null) => void) => {
   const { push } = useHistory();
 
   return React.useCallback(
@@ -307,12 +378,15 @@ export const usePushFilter = (): ((
           ...query,
           filters: {
             ...query.filters,
-            [filterKey]: filter,
+            [filterPrefix ? filterPrefix + filterKey : filterKey]: filter,
           },
         };
       } else {
         // if filter is null, user no longer wants to filter by that column so remove column from filter state
-        const { [filterKey]: filter, ...rest } = query.filters;
+        const {
+          [filterPrefix ? filterPrefix + filterKey : filterKey]: filter,
+          ...rest
+        } = query.filters;
         query = {
           ...query,
           filters: {
@@ -322,9 +396,24 @@ export const usePushFilter = (): ((
       }
       push({ search: `?${parseQueryToSearch(query).toString()}` });
     },
-    [push]
+    [filterPrefix, push]
   );
 };
+
+export const usePushInvestigationFilter = (): ((
+  filterKey: string,
+  filter: Filter | null
+) => void) => usePushFilter('investigation.');
+
+export const usePushDatasetFilter = (): ((
+  filterKey: string,
+  filter: Filter | null
+) => void) => usePushFilter('dataset.');
+
+export const usePushDatafileFilter = (): ((
+  filterKey: string,
+  filter: Filter | null
+) => void) => usePushFilter('datafile.');
 
 export const usePushFilters = (): ((
   filters: { filterKey: string; filter: Filter | null }[]
@@ -369,6 +458,8 @@ export const useUpdateQueryParam = (
   const functionToUse = updateMethod === 'push' ? push : replace;
   return React.useCallback(
     (param: FiltersType | SortType | number | null) => {
+      // need to use window.location.search and not useLocation to ensure we have the most
+      // up to date version of search when useUpdateQueryParam is called
       const query = parseSearchToQuery(window.location.search);
 
       if (type === 'filters') {
@@ -384,21 +475,6 @@ export const useUpdateQueryParam = (
       functionToUse({ search: `?${parseQueryToSearch(query).toString()}` });
     },
     [type, functionToUse]
-  );
-};
-
-export const usePushCurrentTab = (): ((currentTab: string) => void) => {
-  const { push } = useHistory();
-
-  return React.useCallback(
-    (currentTab: string) => {
-      const query = {
-        ...parseSearchToQuery(window.location.search),
-        currentTab,
-      };
-      push(`?${parseQueryToSearch(query).toString()}`);
-    },
-    [push]
   );
 };
 
@@ -451,17 +527,20 @@ export const useUpdateView = (
 };
 
 export const usePushSearchText = (): ((searchText: string) => void) => {
+  const location = useLocation();
   const { push } = useHistory();
 
   return React.useCallback(
     (searchText: string) => {
       const query = {
-        ...parseSearchToQuery(window.location.search),
+        ...parseSearchToQuery(location.search),
         searchText,
       };
-      push(`?${parseQueryToSearch(query).toString()}`);
+      push({
+        search: `?${parseQueryToSearch(query).toString()}`,
+      });
     },
-    [push]
+    [location.search, push]
   );
 };
 
@@ -470,19 +549,20 @@ export const usePushSearchToggles = (): ((
   datafile: boolean,
   investigation: boolean
 ) => void) => {
+  const location = useLocation();
   const { push } = useHistory();
 
   return React.useCallback(
     (dataset: boolean, datafile: boolean, investigation: boolean) => {
       const query = {
-        ...parseSearchToQuery(window.location.search),
+        ...parseSearchToQuery(location.search),
         dataset,
         datafile,
         investigation,
       };
       push(`?${parseQueryToSearch(query).toString()}`);
     },
-    [push]
+    [location.search, push]
   );
 };
 
@@ -533,6 +613,22 @@ export const usePushSearchEndDate = (): ((endDate: Date | null) => void) => {
       }
     },
     [push]
+  );
+};
+
+export const usePushSearchRestrict = (): ((restrict: boolean) => void) => {
+  const location = useLocation();
+  const { push } = useHistory();
+
+  return React.useCallback(
+    (restrict: boolean) => {
+      const query = {
+        ...parseSearchToQuery(location.search),
+        restrict,
+      };
+      push(`?${parseQueryToSearch(query).toString()}`);
+    },
+    [location.search, push]
   );
 };
 
@@ -701,7 +797,7 @@ export const fetchFilterCountQuery = (
     | 'facilityCycle'
     | 'instrument'
     | 'facility'
-    | 'study',
+    | 'dataPublication',
   additionalFilters?: AdditionalFilters
 ): Promise<number> => {
   const params = new URLSearchParams();
@@ -737,7 +833,7 @@ export const useCustomFilterCount = (
     | 'facilityCycle'
     | 'instrument'
     | 'facility'
-    | 'study',
+    | 'dataPublication',
   filterKey: string,
   filterIds: string[] | undefined,
   additionalFilters?: {
@@ -760,7 +856,7 @@ export const useCustomFilterCount = (
         | 'facilityCycle'
         | 'instrument'
         | 'facility'
-        | 'study'
+        | 'dataPublication'
       ),
       string,
       string,

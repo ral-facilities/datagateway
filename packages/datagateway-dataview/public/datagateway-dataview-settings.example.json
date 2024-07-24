@@ -136,7 +136,7 @@
     },
     {
       "section": "Browse",
-      "link": "/browseStudyHierarchy/instrument?sort={\"fullName\":\"asc\"}",
+      "link": "/browseDataPublications/instrument?sort={\"fullName\":\"asc\"}",
       "displayName": "Experiments",
       "order": 4
     },
@@ -151,6 +151,25 @@
       "link": "/my-data/ISIS?sort={\"startDate\":\"desc\"}",
       "displayName": "My Data ISIS",
       "order": 6
+    }
+  ],
+  "breadcrumbs": [
+    {
+      "matchEntity": "proposal",
+      "replaceEntity": "investigation",
+      "replaceEntityField": "title",
+      "replaceEntityQueryField": "name"
+    },
+    {
+      "matchEntity": "investigation",
+      "replaceEntityField": "visitId",
+      "parentEntity": "proposal"
+    },
+    {
+      "matchEntity": "investigation",
+      "replaceEntity": "dataPublication",
+      "replaceEntityField": "title",
+      "parentEntity": "dataPublication"
     }
   ],
   "pluginHost": "http://localhost:3000"

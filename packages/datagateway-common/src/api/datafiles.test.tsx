@@ -6,6 +6,7 @@ import handleICATError from '../handleICATError';
 import { createReactQueryWrapper } from '../setupTests';
 import {
   downloadDatafile,
+  useDatafileContent,
   useDatafileCount,
   useDatafileDetails,
   useDatafilesInfinite,
@@ -39,7 +40,7 @@ describe('datafile api functions', () => {
     ];
     history = createMemoryHistory({
       initialEntries: [
-        '/?sort={"name":"asc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20',
+        '/?sort={"name":"asc","title":"desc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20',
       ],
     });
     params = new URLSearchParams();
@@ -48,6 +49,7 @@ describe('datafile api functions', () => {
   afterEach(() => {
     (handleICATError as jest.Mock).mockClear();
     (axios.get as jest.Mock).mockClear();
+    jest.restoreAllMocks();
   });
 
   describe('useDatafilesPaginated', () => {
@@ -56,7 +58,7 @@ describe('datafile api functions', () => {
         data: mockData,
       });
 
-      const { result, waitFor } = renderHook(
+      const { result, waitFor, rerender } = renderHook(
         () =>
           useDatafilesPaginated([
             {
@@ -74,6 +76,7 @@ describe('datafile api functions', () => {
       await waitFor(() => result.current.isSuccess);
 
       params.append('order', JSON.stringify('name asc'));
+      params.append('order', JSON.stringify('title desc'));
       params.append('order', JSON.stringify('id asc'));
       params.append(
         'where',
@@ -100,6 +103,16 @@ describe('datafile api functions', () => {
         params.toString()
       );
       expect(result.current.data).toEqual(mockData);
+
+      // test that order of sort object triggers new query
+      history.push(
+        '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
+      );
+      rerender();
+
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+      expect(axios.get as jest.Mock).toHaveBeenCalledTimes(2);
     });
 
     it('sends axios request to fetch paginated datafiles and calls handleICATError on failure', async () => {
@@ -137,7 +150,7 @@ describe('datafile api functions', () => {
           : Promise.resolve({ data: mockData[1] })
       );
 
-      const { result, waitFor } = renderHook(
+      const { result, waitFor, rerender } = renderHook(
         () =>
           useDatafilesInfinite([
             {
@@ -155,6 +168,7 @@ describe('datafile api functions', () => {
       await waitFor(() => result.current.isSuccess);
 
       params.append('order', JSON.stringify('name asc'));
+      params.append('order', JSON.stringify('title desc'));
       params.append('order', JSON.stringify('id asc'));
       params.append(
         'where',
@@ -207,6 +221,16 @@ describe('datafile api functions', () => {
         mockData[0],
         mockData[1],
       ]);
+
+      // test that order of sort object triggers new query
+      history.push(
+        '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}'
+      );
+      rerender();
+
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+      expect(axios.get as jest.Mock).toHaveBeenCalledTimes(3);
     });
 
     it('sends axios request to fetch infinite datafiles and calls handleICATError on failure', async () => {
@@ -261,52 +285,6 @@ describe('datafile api functions', () => {
         'where',
         JSON.stringify({
           name: { ilike: 'test' },
-        })
-      );
-      params.append('distinct', JSON.stringify(['name', 'title']));
-
-      expect(axios.get).toHaveBeenCalledWith(
-        'https://example.com/api/datafiles/count',
-        expect.objectContaining({
-          params,
-        })
-      );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
-        params.toString()
-      );
-      expect(result.current.data).toEqual(mockData.length);
-    });
-
-    it('sends axios request to fetch datafile count and returns successful response using the stored filters', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
-        data: mockData.length,
-      });
-
-      const { result, waitFor } = renderHook(
-        () =>
-          useDatafileCount(
-            [
-              {
-                filterType: 'distinct',
-                filterValue: JSON.stringify(['name', 'title']),
-              },
-            ],
-            {
-              name: { value: 'test2', type: 'include' },
-            },
-            'investigation'
-          ),
-        {
-          wrapper: createReactQueryWrapper(history),
-        }
-      );
-
-      await waitFor(() => result.current.isSuccess);
-
-      params.append(
-        'where',
-        JSON.stringify({
-          name: { ilike: 'test2' },
         })
       );
       params.append('distinct', JSON.stringify(['name', 'title']));
@@ -391,8 +369,98 @@ describe('datafile api functions', () => {
     });
   });
 
+  describe('useDatafileContent', () => {
+    it('should send a request to download datafile to a blob', async () => {
+      (
+        axios.get as jest.MockedFunction<typeof axios.get>
+      ).mockResolvedValueOnce({
+        data: 'datafile content',
+      });
+      const downloadProgressCb = jest.fn();
+      jest.spyOn(global, 'Blob').mockImplementationOnce(
+        (data) =>
+          ({
+            text: () => Promise.resolve(data[0] as string),
+          } as unknown as Blob)
+      );
+
+      const { result, waitFor } = renderHook(
+        () =>
+          useDatafileContent({
+            datafileId: 1,
+            onDownloadProgress: downloadProgressCb,
+          }),
+        { wrapper: createReactQueryWrapper() }
+      );
+
+      await waitFor(() => result.current.isSuccess);
+
+      expect(axios.get).toHaveBeenCalledWith(
+        `https://example.com/ids/getData`,
+        {
+          onDownloadProgress: downloadProgressCb,
+          params: {
+            datafileIds: '1',
+            sessionId: null,
+            compress: false,
+          },
+        }
+      );
+      expect(await result.current.data.text()).toEqual('datafile content');
+    });
+
+    it('should call the download progress callback when progress is made for the download', async () => {
+      const mockProgressEvent = new ProgressEvent('progress', {
+        loaded: 2,
+        total: 10,
+      });
+      (axios.get as jest.MockedFunction<typeof axios.get>).mockImplementation(
+        (_, config) => {
+          config.onDownloadProgress(mockProgressEvent);
+          return new Promise((_) => {
+            // never resolve the promise
+            // pretend the download is still going
+          });
+        }
+      );
+      const downloadProgressCb = jest.fn();
+
+      const { waitFor } = renderHook(
+        () =>
+          useDatafileContent({
+            datafileId: 1,
+            onDownloadProgress: downloadProgressCb,
+          }),
+        { wrapper: createReactQueryWrapper() }
+      );
+
+      await waitFor(() => {
+        expect(downloadProgressCb).toHaveBeenCalledWith(mockProgressEvent);
+      });
+    });
+
+    it('should call handleICATError when the query for datafile content fails', async () => {
+      (axios.get as jest.MockedFunction<typeof axios.get>).mockRejectedValue({
+        message: 'Test error',
+      });
+
+      const { result, waitFor } = renderHook(
+        () =>
+          useDatafileContent({
+            datafileId: 1,
+            onDownloadProgress: jest.fn(),
+          }),
+        { wrapper: createReactQueryWrapper() }
+      );
+
+      await waitFor(() => result.current.isError);
+
+      expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
+    });
+  });
+
   describe('downloadDatafile', () => {
-    it('clicks on IDS link upon downloadDatafile action', async () => {
+    it('should create a download for the datafile with a server URL', async () => {
       jest.spyOn(document, 'createElement');
       jest.spyOn(document.body, 'appendChild');
 
@@ -401,6 +469,26 @@ describe('datafile api functions', () => {
       expect(document.createElement).toHaveBeenCalledWith('a');
       const link = document.createElement('a');
       link.href = `https://www.example.com/ids/getData?sessionId=${null}&datafileIds=${1}&compress=${false}&outname=${'test'}`;
+      link.target = '_blank';
+      link.style.display = 'none';
+      expect(document.body.appendChild).toHaveBeenCalledWith(link);
+    });
+
+    it('should create a download for the datafile with the given Blob content', async () => {
+      jest.spyOn(document, 'createElement');
+      jest.spyOn(document.body, 'appendChild');
+
+      downloadDatafile(
+        'https://www.example.com/ids',
+        1,
+        'test',
+        new Blob(['text'])
+      );
+
+      expect(document.createElement).toHaveBeenCalledWith('a');
+      const link = document.createElement('a');
+      link.href = 'testObjectUrl';
+      link.download = 'test';
       link.target = '_blank';
       link.style.display = 'none';
       expect(document.body.appendChild).toHaveBeenCalledWith(link);

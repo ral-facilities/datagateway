@@ -1,63 +1,95 @@
+import { Divider, Grid, styled, Tab, Tabs, Typography } from '@mui/material';
 import React from 'react';
-import {
-  Typography,
-  Grid,
-  createStyles,
-  makeStyles,
-  Theme,
-  Divider,
-  Tabs,
-  Tab,
-  Button,
-} from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { useDatasetDetails, useDatasetSize } from '../../api/datasets';
+import { useDispatch, useSelector } from 'react-redux';
+import { useDatasetDetails } from '../../api';
 import { Dataset, Entity } from '../../app.types';
+import {
+  DlsDatasetDetailsPanelChangeTabPayload,
+  DlsDatasetDetailsPanelChangeTabType,
+} from '../../state/actions/actions.types';
+import { StateType } from '../../state/app.types';
+import { Action } from '../../state/reducers/createReducer';
 import { formatBytes } from '../../table/cellRenderers/cellContentRenderers';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(2),
-    },
-    divider: {
-      marginBottom: theme.spacing(2),
-    },
-  })
-);
+const StyledGrid = styled(Grid)(({ theme }) => ({
+  padding: theme.spacing(2),
+}));
+
+const StyledDivider = styled(Divider)(({ theme }) => ({
+  marginBottom: theme.spacing(2),
+}));
 
 interface DatasetDetailsPanelProps {
   rowData: Entity;
   detailsPanelResize?: () => void;
 }
 
+const DEFAULT_TAB: DlsDatasetDetailsPanelTab = 'details';
+
+export type DlsDatasetDetailsPanelTab = 'details' | 'type';
+
 const DatasetDetailsPanel = (
   props: DatasetDetailsPanelProps
 ): React.ReactElement => {
   const { rowData, detailsPanelResize } = props;
-  const [value, setValue] = React.useState<'details' | 'type'>('details');
   const [t] = useTranslation();
-  const classes = useStyles();
-
   const { data } = useDatasetDetails(rowData.id);
-  const { data: size, refetch: fetchSize } = useDatasetSize(rowData.id);
   const datasetData: Dataset = {
     ...data,
     ...(rowData as Dataset),
-    size,
   };
+  const selectedTab = useSelector<
+    StateType,
+    DlsDatasetDetailsPanelTab | undefined
+  >(
+    (state) =>
+      data && state.dgcommon.dlsDatasetDetailsPanel[data.id]?.selectedTab
+  );
+  const dispatch = useDispatch();
+
+  const changeTab = React.useCallback(
+    (newTab: DlsDatasetDetailsPanelTab) => {
+      const id = data?.id;
+      if (id) {
+        dispatch<Action>({
+          type: DlsDatasetDetailsPanelChangeTabType,
+          payload: {
+            newTab,
+            datasetId: id,
+          } as DlsDatasetDetailsPanelChangeTabPayload,
+        });
+      }
+    },
+    [data?.id, dispatch]
+  );
 
   React.useLayoutEffect(() => {
-    if (detailsPanelResize) detailsPanelResize();
-  }, [value, detailsPanelResize]);
+    if (detailsPanelResize && selectedTab) detailsPanelResize();
+  }, [selectedTab, detailsPanelResize]);
+
+  React.useEffect(() => {
+    if (data && !selectedTab) {
+      // register the selected tab for this dataset's details panel
+      // for the first time.
+      // go to the default tab on first render
+      changeTab(DEFAULT_TAB);
+    }
+  }, [data, selectedTab, changeTab]);
 
   return (
-    <div id="details-panel" style={{ minWidth: 0 }}>
+    <div
+      data-testid="dls-dataset-details-panel"
+      id="details-panel"
+      style={{ minWidth: 0 }}
+    >
       <Tabs
         variant="scrollable"
+        textColor="secondary"
+        indicatorColor="secondary"
         scrollButtons="auto"
-        value={value}
-        onChange={(event, newValue) => setValue(newValue)}
+        value={selectedTab ?? DEFAULT_TAB}
+        onChange={(event, newValue) => changeTab(newValue)}
         aria-label={t('datasets.details.tabs_label')}
       >
         <Tab
@@ -79,14 +111,14 @@ const DatasetDetailsPanel = (
         id="dataset-details-panel"
         aria-labelledby="dataset-details-tab"
         role="tabpanel"
-        hidden={value !== 'details'}
+        hidden={selectedTab !== 'details'}
       >
-        <Grid container className={classes.root} direction="column">
+        <StyledGrid container direction="column">
           <Grid item xs>
             <Typography variant="h6">
               <b>{datasetData.name}</b>
             </Typography>
-            <Divider className={classes.divider} />
+            <StyledDivider />
           </Grid>
           <Grid item xs>
             <Typography variant="overline">
@@ -107,7 +139,7 @@ const DatasetDetailsPanel = (
             <Typography>
               <b>
                 {datasetData.startDate && datasetData.startDate !== 'null'
-                  ? datasetData.startDate
+                  ? new Date(datasetData.startDate).toLocaleDateString()
                   : `${t('datasets.details.start_date')} not provided`}
               </b>
             </Typography>
@@ -119,7 +151,7 @@ const DatasetDetailsPanel = (
             <Typography>
               <b>
                 {datasetData.endDate && datasetData.endDate !== 'null'
-                  ? datasetData.endDate
+                  ? new Date(datasetData.endDate).toLocaleDateString()
                   : `${t('datasets.details.end_date')} not provided`}
               </b>
             </Typography>
@@ -129,40 +161,24 @@ const DatasetDetailsPanel = (
               {t('datasets.details.size')}
             </Typography>
             <Typography>
-              <b>
-                {datasetData.size !== undefined ? (
-                  formatBytes(datasetData.size)
-                ) : (
-                  <Button
-                    onClick={() => {
-                      fetchSize();
-                    }}
-                    variant="outlined"
-                    color="secondary"
-                    size="small"
-                    id="calculate-size-btn"
-                  >
-                    {t('datasets.details.calculate')}
-                  </Button>
-                )}
-              </b>
+              <b>{formatBytes(datasetData.fileSize)}</b>
             </Typography>
           </Grid>
-        </Grid>
+        </StyledGrid>
       </div>
       {datasetData.type && (
         <div
           id="dataset-type-panel"
           aria-labelledby="dataset-type-tab"
           role="tabpanel"
-          hidden={value !== 'type'}
+          hidden={selectedTab !== 'type'}
         >
-          <Grid container className={classes.root} direction="column">
+          <StyledGrid container direction="column">
             <Grid item xs>
               <Typography variant="h6">
                 <b>{datasetData.type.name}</b>
               </Typography>
-              <Divider className={classes.divider} />
+              <StyledDivider />
             </Grid>
             <Grid item xs>
               <Typography variant="overline">
@@ -177,7 +193,7 @@ const DatasetDetailsPanel = (
                 </b>
               </Typography>
             </Grid>
-          </Grid>
+          </StyledGrid>
         </div>
       )}
     </div>

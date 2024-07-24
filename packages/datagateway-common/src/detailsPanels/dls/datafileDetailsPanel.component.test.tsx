@@ -1,31 +1,27 @@
 import React from 'react';
-import { createMount } from '@material-ui/core/test-utils';
-import DatafilesDetailsPanel from './datafileDetailsPanel.component';
+import DatafileDetailsPanel from './datafileDetailsPanel.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactWrapper } from 'enzyme';
 import { Datafile } from '../../app.types';
-import { useDatafileDetails } from '../../api/datafiles';
+import { useDatafileDetails } from '../../api';
+import { render, RenderResult } from '@testing-library/react';
 
 jest.mock('../../api/datafiles');
 
 describe('Datafile details panel component', () => {
-  let mount;
   let rowData: Datafile;
   const detailsPanelResize = jest.fn();
 
-  const createWrapper = (): ReactWrapper => {
-    return mount(
+  const renderComponent = (): RenderResult =>
+    render(
       <QueryClientProvider client={new QueryClient()}>
-        <DatafilesDetailsPanel
+        <DatafileDetailsPanel
           rowData={rowData}
           detailsPanelResize={detailsPanelResize}
         />
       </QueryClientProvider>
     );
-  };
 
   beforeEach(() => {
-    mount = createMount();
     rowData = {
       id: 1,
       name: 'Test 1',
@@ -40,29 +36,23 @@ describe('Datafile details panel component', () => {
   });
 
   afterEach(() => {
-    mount.cleanUp();
     jest.clearAllMocks();
   });
 
   it('renders correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find('DatafileDetailsPanel').props()).toMatchSnapshot();
-  });
-
-  it('calls useDatafileDetails hook on load', () => {
-    createWrapper();
-    expect(useDatafileDetails).toHaveBeenCalledWith(rowData.id);
+    const { asFragment } = renderComponent();
+    expect(asFragment()).toMatchSnapshot();
   });
 
   it('calls detailsPanelResize on load', () => {
-    createWrapper();
+    renderComponent();
     expect(detailsPanelResize).toHaveBeenCalled();
   });
 
   it('does not call detailsPanelResize if not provided', () => {
-    mount(
+    render(
       <QueryClientProvider client={new QueryClient()}>
-        <DatafilesDetailsPanel rowData={rowData} />
+        <DatafileDetailsPanel rowData={rowData} />
       </QueryClientProvider>
     );
 

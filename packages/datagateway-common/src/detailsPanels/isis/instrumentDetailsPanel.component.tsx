@@ -2,56 +2,100 @@ import React from 'react';
 import {
   Typography,
   Grid,
-  createStyles,
-  makeStyles,
-  Theme,
   Divider,
   Tabs,
   Tab,
   Link,
-} from '@material-ui/core';
+  styled,
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from 'react-redux';
 import { Entity, Instrument } from '../../app.types';
-import { useInstrumentDetails } from '../../api/instruments';
+import { useInstrumentDetails } from '../../api';
+import type { IsisInstrumentDetailsPanelChangeTabPayload } from '../../state/actions/actions.types';
+import { IsisInstrumentDetailsPanelChangeTabType } from '../../state/actions/actions.types';
+import type { StateType } from '../../state/app.types';
+import type { Action } from '../../state/reducers/createReducer';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(2),
-    },
-    divider: {
-      marginBottom: theme.spacing(2),
-    },
-  })
-);
+const DEFAULT_TAB: IsisInstrumentDetailsPanelTab = 'details';
+
+const StyledGrid = styled(Grid)(({ theme }) => ({
+  padding: theme.spacing(2),
+}));
+
+const StyledDivider = styled(Divider)(({ theme }) => ({
+  marginBottom: theme.spacing(2),
+}));
 
 interface InstrumentDetailsPanelProps {
   rowData: Entity;
   detailsPanelResize?: () => void;
 }
 
+/**
+ * Available tabs for the ISIS instrument details panel.
+ */
+export type IsisInstrumentDetailsPanelTab = 'details' | 'users';
+
 const InstrumentDetailsPanel = (
   props: InstrumentDetailsPanelProps
 ): React.ReactElement => {
   const { rowData, detailsPanelResize } = props;
-  const [value, setValue] = React.useState<'details' | 'users'>('details');
-  const [t] = useTranslation();
-  const classes = useStyles();
 
+  const [t] = useTranslation();
   const { data } = useInstrumentDetails(rowData.id);
   const instrumentData: Instrument = { ...data, ...(rowData as Instrument) };
+  const selectedTab = useSelector<
+    StateType,
+    IsisInstrumentDetailsPanelTab | undefined
+  >(
+    (state) =>
+      data && state.dgcommon.isisInstrumentDetailsPanel[data.id]?.selectedTab
+  );
+  const dispatch = useDispatch();
+
+  const changeTab = React.useCallback(
+    (newTab: IsisInstrumentDetailsPanelTab) => {
+      const id = data?.id;
+      if (id) {
+        dispatch<Action>({
+          type: IsisInstrumentDetailsPanelChangeTabType,
+          payload: {
+            newTab,
+            instrumentId: id,
+          } as IsisInstrumentDetailsPanelChangeTabPayload,
+        });
+      }
+    },
+    [data?.id, dispatch]
+  );
 
   React.useLayoutEffect(() => {
-    if (detailsPanelResize) detailsPanelResize();
-  }, [value, detailsPanelResize]);
+    if (detailsPanelResize && selectedTab) detailsPanelResize();
+  }, [selectedTab, detailsPanelResize]);
+
+  React.useEffect(() => {
+    if (data && !selectedTab) {
+      // register the selected tab for this instrument's details panel
+      // for the first time.
+      // go to the default tab on first render
+      changeTab(DEFAULT_TAB);
+    }
+  }, [data, selectedTab, changeTab]);
 
   return (
-    <div id="details-panel" style={{ minWidth: 0 }}>
+    <div
+      data-testid="instrument-details-panel"
+      id="details-panel"
+      style={{ minWidth: 0 }}
+    >
       <Tabs
         variant="scrollable"
+        textColor="secondary"
+        indicatorColor="secondary"
         scrollButtons="auto"
-        value={value}
-        onChange={(event, newValue) => setValue(newValue)}
+        value={selectedTab ?? DEFAULT_TAB}
+        onChange={(_, newValue) => changeTab(newValue)}
         aria-label={t('instruments.details.tabs_label')}
       >
         <Tab
@@ -73,14 +117,14 @@ const InstrumentDetailsPanel = (
         id="instrument-details-panel"
         aria-labelledby="instrument-details-tab"
         role="tabpanel"
-        hidden={value !== 'details'}
+        hidden={selectedTab !== 'details'}
       >
-        <Grid container className={classes.root} direction="column">
+        <StyledGrid container direction="column">
           <Grid item xs>
             <Typography variant="h6">
               <b>{instrumentData.fullName || instrumentData.name}</b>
             </Typography>
-            <Divider className={classes.divider} />
+            <StyledDivider />
           </Grid>
           <Grid item xs>
             <Typography variant="overline">
@@ -121,16 +165,16 @@ const InstrumentDetailsPanel = (
               </b>
             </Typography>
           </Grid>
-        </Grid>
+        </StyledGrid>
       </div>
       {instrumentData.instrumentScientists && (
         <div
           id="instrument-users-panel"
           aria-labelledby="instrument-users-tab"
           role="tabpanel"
-          hidden={value !== 'users'}
+          hidden={selectedTab !== 'users'}
         >
-          <Grid container className={classes.root} direction="column">
+          <StyledGrid container direction="column">
             <Typography variant="overline">
               {t('instruments.details.instrument_scientists.name', {
                 count: instrumentData.instrumentScientists.length,
@@ -158,7 +202,7 @@ const InstrumentDetailsPanel = (
                 <b>{t('instruments.details.instrument_scientists.no_name')}</b>
               </Typography>
             )}
-          </Grid>
+          </StyledGrid>
         </div>
       )}
     </div>

@@ -1,516 +1,436 @@
-import React from 'react';
+import { render, RenderResult, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import * as React from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import {
+  downloadDeleted,
+  fetchDownloads,
+  getDataUrl,
+  getPercentageComplete,
+} from '../downloadApi';
+import {
+  applyDatePickerWorkaround,
+  cleanupDatePickerWorkaround,
+} from '../setupTests';
 import DownloadStatusTable from './downloadStatusTable.component';
-import { createShallow, createMount } from '@material-ui/core/test-utils';
-import { flushPromises } from '../setupTests';
-import { act } from 'react-dom/test-utils';
-import { fetchDownloads, downloadDeleted, getDataUrl } from '../downloadApi';
-import { Download } from 'datagateway-common';
+import { mockDownloadItems, mockedSettings } from '../testData';
+import { DownloadSettingsContext } from '../ConfigProvider';
 
 jest.mock('../downloadApi');
 
-const RefreshHOC: React.FC<{ refresh: boolean }> = (props: {
-  refresh: boolean;
-}): React.ReactElement => {
-  const [refreshTable, setRefreshTable] = React.useState(false);
+const createTestQueryClient = (): QueryClient =>
+  new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
 
-  React.useEffect(() => {
-    setRefreshTable(props.refresh);
-  }, [props.refresh]);
-
-  return (
-    <div id="datagateway-download">
-      <DownloadStatusTable
-        refreshTable={refreshTable}
-        setRefreshTable={setRefreshTable}
-        setLastChecked={jest.fn()}
-      />
-    </div>
+const renderComponent = ({
+  settings = mockedSettings,
+  queryClient = createTestQueryClient(),
+} = {}): RenderResult =>
+  render(
+    <DownloadSettingsContext.Provider value={settings}>
+      <QueryClientProvider client={queryClient}>
+        <DownloadStatusTable
+          refreshTable={false}
+          setRefreshTable={jest.fn()}
+          setLastCheckedTimestamp={jest.fn()}
+        />
+      </QueryClientProvider>
+    </DownloadSettingsContext.Provider>
   );
-};
 
 describe('Download Status Table', () => {
-  let shallow;
-  let mount;
-
-  const downloadItems: Download[] = [
-    {
-      createdAt: '2020-02-25T15:05:29Z',
-      downloadItems: [{ entityId: 1, entityType: 'investigation', id: 1 }],
-      email: 'test1@email.com',
-      facilityName: 'LILS',
-      fileName: 'test-file-1',
-      fullName: 'Person 1',
-      id: 1,
-      isDeleted: false,
-      isEmailSent: true,
-      isTwoLevel: false,
-      preparedId: 'test-prepared-id',
-      sessionId: 'test-session-id',
-      size: 1000,
-      status: 'COMPLETE',
-      transport: 'https',
-      userName: 'test user',
-    },
-    {
-      createdAt: '2020-02-26T15:05:35Z',
-      downloadItems: [{ entityId: 2, entityType: 'investigation', id: 2 }],
-      email: 'test2@email.com',
-      facilityName: 'LILS',
-      fileName: 'test-file-2',
-      fullName: 'Person 2',
-      id: 2,
-      isDeleted: false,
-      isEmailSent: true,
-      isTwoLevel: false,
-      preparedId: 'test-prepared-id',
-      sessionId: 'test-session-id',
-      size: 2000,
-      status: 'PREPARING',
-      transport: 'globus',
-      userName: 'test user',
-    },
-    {
-      createdAt: '2020-02-27T15:57:20Z',
-      downloadItems: [{ entityId: 3, entityType: 'investigation', id: 3 }],
-      email: 'test3@email.com',
-      facilityName: 'LILS',
-      fileName: 'test-file-3',
-      fullName: 'Person 3',
-      id: 3,
-      isDeleted: false,
-      isEmailSent: true,
-      isTwoLevel: false,
-      preparedId: 'test-prepared-id',
-      sessionId: 'test-session-id',
-      size: 3000,
-      status: 'RESTORING',
-      transport: 'https',
-      userName: 'test user',
-    },
-    {
-      createdAt: '2020-02-28T15:57:28Z',
-      downloadItems: [{ entityId: 4, entityType: 'investigation', id: 4 }],
-      email: 'test4@email.com',
-      facilityName: 'LILS',
-      fileName: 'test-file-4',
-      fullName: 'Person 4',
-      id: 4,
-      isDeleted: false,
-      isEmailSent: true,
-      isTwoLevel: false,
-      preparedId: 'test-prepared-id',
-      sessionId: 'test-session-id',
-      size: 4000,
-      status: 'EXPIRED',
-      transport: 'globus',
-      userName: 'test user',
-    },
-    {
-      createdAt: '2020-03-01T15:57:28Z[UTC]',
-      downloadItems: [{ entityId: 5, entityType: 'investigation', id: 5 }],
-      email: 'test5@email.com',
-      facilityName: 'LILS',
-      fileName: 'test-file-5',
-      fullName: 'Person 5',
-      id: 5,
-      isDeleted: false,
-      isEmailSent: true,
-      isTwoLevel: false,
-      preparedId: 'test-prepared-id',
-      sessionId: 'test-session-id',
-      size: 5000,
-      status: 'PAUSED',
-      transport: 'globus',
-      userName: 'test user',
-    },
-  ];
+  let user: ReturnType<typeof userEvent.setup>;
 
   beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'div' });
-    mount = createMount();
+    user = userEvent.setup({ delay: null });
+
     (downloadDeleted as jest.Mock).mockImplementation(() => Promise.resolve());
     (fetchDownloads as jest.Mock).mockImplementation(() =>
-      Promise.resolve(downloadItems)
+      Promise.resolve(mockDownloadItems)
     );
     (getDataUrl as jest.Mock).mockImplementation(() => '/getData');
   });
 
   afterEach(() => {
-    mount.cleanUp();
-    (fetchDownloads as jest.Mock).mockClear();
-    (downloadDeleted as jest.Mock).mockClear();
-    (getDataUrl as jest.Mock).mockClear();
+    jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const wrapper = shallow(
-      <DownloadStatusTable
-        refreshTable={false}
-        setRefreshTable={jest.fn()}
-        setLastChecked={jest.fn()}
-      />
+  it('should render correctly', () => {
+    const { asFragment } = renderComponent();
+    expect(asFragment()).toMatchSnapshot();
+  });
+
+  it('should translate the status strings correctly', async () => {
+    renderComponent();
+
+    expect(
+      await screen.findByText('downloadStatus.paused')
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByText('downloadStatus.expired')
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByText('downloadStatus.restoring')
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByText('downloadStatus.preparing')
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByText('downloadStatus.complete')
+    ).toBeInTheDocument();
+  });
+
+  it('should refresh data & download progress when required', async () => {
+    (
+      getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>
+    ).mockResolvedValue(30);
+    const settings = {
+      ...mockedSettings,
+      uiFeatures: {
+        downloadProgress: true,
+      },
+    };
+
+    const queryClient = createTestQueryClient();
+    const { rerender } = renderComponent({ settings, queryClient });
+
+    expect(await screen.findByText('test-file-1')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-2')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-3')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-4')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-5')).toBeInTheDocument();
+
+    await waitFor(() => {
+      for (const progressBar of screen.getAllByRole('progressbar')) {
+        expect(progressBar).toBeInTheDocument();
+      }
+      for (const progressText of screen.getAllByText('30%')) {
+        expect(progressText).toBeInTheDocument();
+      }
+    });
+
+    // pretend server returned a different list (with only the restoring download)
+    (fetchDownloads as jest.Mock).mockReturnValueOnce([mockDownloadItems[2]]);
+    // pretend the server returns an updated value
+    (
+      getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>
+    ).mockResolvedValue(50);
+    rerender(
+      <DownloadSettingsContext.Provider value={settings}>
+        <QueryClientProvider client={queryClient}>
+          <DownloadStatusTable
+            refreshTable
+            setRefreshTable={jest.fn()}
+            setLastCheckedTimestamp={jest.fn()}
+          />
+        </QueryClientProvider>
+      </DownloadSettingsContext.Provider>
     );
-    expect(wrapper).toMatchSnapshot();
-  });
 
-  it('translates the status strings correctly', async () => {
-    const wrapper = mount(
-      <div id="datagateway-download">
-        <DownloadStatusTable
-          refreshTable={false}
-          setRefreshTable={jest.fn()}
-          setLastChecked={jest.fn()}
-        />
-      </div>
-    );
+    await waitFor(() => {
+      expect(screen.getByText('test-file-3')).toBeInTheDocument();
+      expect(screen.queryByText('test-file-1')).toBeNull();
+      expect(screen.queryByText('test-file-2')).toBeNull();
+      expect(screen.queryByText('test-file-4')).toBeNull();
+      expect(screen.queryByText('test-file-5')).toBeNull();
 
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
+      expect(screen.getByRole('progressbar')).toBeInTheDocument();
+      expect(screen.getByText('50%')).toBeInTheDocument();
     });
-
-    expect(
-      wrapper.find('[aria-rowindex=1]').find('[aria-colindex=3]').text()
-    ).toEqual('downloadStatus.paused');
-    expect(
-      wrapper.find('[aria-rowindex=2]').find('[aria-colindex=3]').text()
-    ).toEqual('downloadStatus.expired');
-    expect(
-      wrapper.find('[aria-rowindex=3]').find('[aria-colindex=3]').text()
-    ).toEqual('downloadStatus.restoring');
-    expect(
-      wrapper.find('[aria-rowindex=4]').find('[aria-colindex=3]').text()
-    ).toEqual('downloadStatus.preparing');
-    expect(
-      wrapper.find('[aria-rowindex=5]').find('[aria-colindex=3]').text()
-    ).toEqual('downloadStatus.complete');
-  });
-
-  it('fetches the download items on load', async () => {
-    const wrapper = mount(
-      <div id="datagateway-download">
-        <DownloadStatusTable
-          refreshTable={false}
-          setRefreshTable={jest.fn()}
-          setLastChecked={jest.fn()}
-        />
-      </div>
-    );
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(fetchDownloads).toHaveBeenCalled();
-  });
-
-  it('refreshes the tables when the refresh button has been clicked', async () => {
-    // Use our RefreshHOC and only modify the refresh prop
-    // we pass on to the DownloadStatusTable.
-    const wrapper = mount(<RefreshHOC refresh={false} />);
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    // Set the refresh prop to false.
-    expect(wrapper.prop('refresh')).toBe(false);
-
-    await act(async () => {
-      // Set the refresh prop to true.
-      wrapper.setProps({ refresh: true });
-
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(wrapper.prop('refresh')).toBe(true);
-
-    // Expect the downloads to have been fetched twice (on load and on refresh).
-    expect(fetchDownloads).toHaveBeenCalledTimes(2);
   });
 
   it('should have a link for a download item', async () => {
-    const wrapper = mount(
-      <div id="datagateway-download">
-        <DownloadStatusTable
-          refreshTable={false}
-          setRefreshTable={jest.fn()}
-          setLastChecked={jest.fn()}
-        />
-      </div>
-    );
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
+    renderComponent();
 
     // Expect globus download items to have been disabled.
     expect(
-      wrapper
-        .find(
-          'button[aria-label="downloadStatus.download {filename:test-file-2}"]'
-        )
-        .prop('disabled')
-    ).toBe(true);
+      await screen.findByRole('button', {
+        name: 'downloadStatus.download {filename:test-file-2}',
+      })
+    ).toBeDisabled();
 
     // Expect HTTPS download items with non-COMPLETE status to have been disabled.
     expect(
-      wrapper
-        .find(
-          'button[aria-label="downloadStatus.download {filename:test-file-3}"]'
-        )
-        .prop('disabled')
-    ).toBe(true);
+      await screen.findByRole('button', {
+        name: 'downloadStatus.download {filename:test-file-3}',
+      })
+    ).toBeDisabled();
 
     // Expect complete HTTPS download items to be downloadable
     // Check to see if the href contains the correct call.
     expect(
-      wrapper
-        .find('a[aria-label="downloadStatus.download {filename:test-file-1}"]')
-        .at(0)
-        .props().href
-    ).toContain('/getData');
+      await screen.findByRole('link', {
+        name: 'downloadStatus.download {filename:test-file-1}',
+      })
+    ).toHaveAttribute('href', '/getData');
   });
 
-  it("removes an item when said item's remove button is clicked", async () => {
-    const wrapper = mount(
-      <div id="datagateway-download">
-        <DownloadStatusTable
-          refreshTable={false}
-          setRefreshTable={jest.fn()}
-          setLastChecked={jest.fn()}
-        />
-      </div>
+  it("should remove an item when said item's remove button is clicked", async () => {
+    // downloadStatus.remove {filename:test-file-1}
+    renderComponent();
+
+    expect(await screen.findByText('test-file-1')).toBeInTheDocument();
+
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'downloadStatus.remove {filename:test-file-1}',
+      })
     );
 
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
+    await waitFor(() => {
+      expect(screen.queryByText('test-file-1')).toBeNull();
     });
-
-    wrapper
-      .find('button[aria-label="downloadStatus.remove {filename:test-file-1}"]')
-      .simulate('click');
-
-    expect(
-      wrapper
-        .find(
-          'button[aria-label="downloadStatus.remove {filename:test-file-1}"] svg'
-        )
-        .parent()
-        .prop('color')
-    ).toEqual('error');
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(downloadDeleted).toHaveBeenCalled();
-    expect(downloadDeleted).toHaveBeenCalledWith(1, true, {
-      downloadApiUrl: '',
-      facilityName: '',
-    });
-    expect(
-      wrapper.exists(
-        '[aria-label="downloadStatus.remove {filename:test-file-1}"]'
-      )
-    ).toBe(false);
-    expect(wrapper.exists('[aria-rowcount=4]')).toBe(true);
   });
 
-  it('sorts data when headers are clicked', async () => {
-    const wrapper = mount(
-      <div id="datagateway-download">
-        <DownloadStatusTable
-          refreshTable={false}
-          setRefreshTable={jest.fn()}
-          setLastChecked={jest.fn()}
-        />
-      </div>
-    );
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
+  it('should sort data when headers are clicked', async () => {
+    // use skipHover to avoid triggering sort tooltips which slow the test down
+    user = userEvent.setup({ delay: null, skipHover: true });
+    renderComponent();
 
     // Table is sorted by createdAt desc by default
     // To keep working test, we will remove all sorts on the table beforehand
-    const createdAtSortLabel = wrapper
-      .find('[role="columnheader"] span[role="button"]')
-      .at(3);
-    createdAtSortLabel.simulate('click');
-
-    const firstNameCell = wrapper.find('[aria-colindex=1]').find('p').first();
+    await user.click(await screen.findByText('downloadStatus.createdAt'));
 
     // Get the access method sort header.
-    const accessMethodSortLabel = wrapper
-      .find('[role="columnheader"] span[role="button"]')
-      .at(1);
+    const accessMethodSortLabel = screen.getByText('downloadStatus.transport');
 
-    accessMethodSortLabel.simulate('click');
+    await user.click(accessMethodSortLabel);
 
-    expect(firstNameCell.text()).toEqual('test-file-5');
+    // access methods should be in asc order, globus < https
+    let rows = await screen.findAllByText(/^test-file-\d$/);
+    expect(rows[0]).toHaveTextContent('test-file-2');
+    expect(rows[1]).toHaveTextContent('test-file-4');
+    expect(rows[2]).toHaveTextContent('test-file-5');
+    expect(rows[3]).toHaveTextContent('test-file-1');
+    expect(rows[4]).toHaveTextContent('test-file-3');
 
-    accessMethodSortLabel.simulate('click');
+    await user.click(accessMethodSortLabel);
 
-    expect(firstNameCell.text()).toEqual('test-file-3');
+    // access methods should be in desc order, globus < https
+    rows = await screen.findAllByText(/^test-file-\d$/);
+    expect(rows[0]).toHaveTextContent('test-file-1');
+    expect(rows[1]).toHaveTextContent('test-file-3');
+    expect(rows[2]).toHaveTextContent('test-file-2');
+    expect(rows[3]).toHaveTextContent('test-file-4');
+    expect(rows[4]).toHaveTextContent('test-file-5');
 
     // Get the download name sort header.
-    const nameSortLabel = wrapper
-      .find('[role="columnheader"] span[role="button"]')
-      .at(0);
+    const nameSortLabel = screen.getByText('downloadStatus.filename');
 
-    nameSortLabel.simulate('click');
+    await user.keyboard('{Shift>}');
+    await user.click(nameSortLabel);
+    await user.keyboard('{/Shift}');
 
-    expect(firstNameCell.text()).toEqual('test-file-1');
+    // name should be in asc order
+    rows = await screen.findAllByText(/^test-file-\d$/);
+    expect(rows[0]).toHaveTextContent('test-file-1');
+    expect(rows[1]).toHaveTextContent('test-file-3');
+    expect(rows[2]).toHaveTextContent('test-file-2');
+    expect(rows[3]).toHaveTextContent('test-file-4');
+    expect(rows[4]).toHaveTextContent('test-file-5');
 
-    nameSortLabel.simulate('click');
+    await user.keyboard('{Shift>}');
+    await user.click(nameSortLabel);
+    await user.keyboard('{/Shift}');
 
-    expect(firstNameCell.text()).toEqual('test-file-3');
+    // name should be in desc order
+    rows = await screen.findAllByText(/^test-file-\d$/);
+    expect(rows[0]).toHaveTextContent('test-file-3');
+    expect(rows[1]).toHaveTextContent('test-file-1');
+    expect(rows[2]).toHaveTextContent('test-file-5');
+    expect(rows[3]).toHaveTextContent('test-file-4');
+    expect(rows[4]).toHaveTextContent('test-file-2');
 
-    nameSortLabel.simulate('click');
+    await user.click(accessMethodSortLabel);
 
-    expect(firstNameCell.text()).toEqual('test-file-3');
+    // name should be in desc order
+    rows = await screen.findAllByText(/^test-file-\d$/);
+    expect(rows[0]).toHaveTextContent('test-file-5');
+    expect(rows[1]).toHaveTextContent('test-file-4');
+    expect(rows[2]).toHaveTextContent('test-file-3');
+    expect(rows[3]).toHaveTextContent('test-file-2');
+    expect(rows[4]).toHaveTextContent('test-file-1');
+
+    await user.click(accessMethodSortLabel);
+
+    // access methods should be in asc order, globus < https
+    rows = await screen.findAllByText(/^test-file-\d$/);
+    expect(rows[0]).toHaveTextContent('test-file-2');
+    expect(rows[1]).toHaveTextContent('test-file-4');
+    expect(rows[2]).toHaveTextContent('test-file-5');
+    expect(rows[3]).toHaveTextContent('test-file-1');
+    expect(rows[4]).toHaveTextContent('test-file-3');
   });
 
-  it('filters data when text fields are typed into', async () => {
-    const wrapper = mount(
-      <div id="datagateway-download">
-        <DownloadStatusTable
-          refreshTable={false}
-          setRefreshTable={jest.fn()}
-          setLastChecked={jest.fn()}
-        />
-      </div>
+  it('should filter data when text fields are typed into', async () => {
+    renderComponent();
+
+    const fileNameFilterBox = await screen.findByLabelText(
+      'Filter by downloadStatus.filename'
+    );
+    const downloadMethodFilterBox = await screen.findByLabelText(
+      'Filter by downloadStatus.transport'
+    );
+    const downloadStatusFilterBox = await screen.findByLabelText(
+      'Filter by downloadStatus.status'
     );
 
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
+    // type into file name filter textbox
+    await user.type(fileNameFilterBox, '1');
 
-    const downloadNameFilterInput = wrapper
-      .find('[aria-label="Filter by downloadStatus.filename"]')
-      .first();
-    downloadNameFilterInput.instance().value = '1';
-    downloadNameFilterInput.simulate('change');
+    // should only show file-name-1
+    expect(await screen.findByText('test-file-1')).toBeInTheDocument();
+    expect(screen.queryByText('test-file-2')).toBeNull();
+    expect(screen.queryByText('test-file-2')).toBeNull();
+    expect(screen.queryByText('test-file-2')).toBeNull();
 
-    expect(wrapper.exists('[aria-rowcount=1]')).toBe(true);
-    expect(
-      wrapper.exists(
-        '[aria-label="downloadStatus.remove {filename:test-file-1}"]'
-      )
-    ).toBe(true);
+    // clear file name filter textbox
+    await user.clear(fileNameFilterBox);
+    // type into download method filter textbox
+    await user.type(downloadMethodFilterBox, 'https');
 
-    const accessMethodFilterInput = wrapper
-      .find('[aria-label="Filter by downloadStatus.transport"]')
-      .first();
-
-    downloadNameFilterInput.instance().value = '';
-    downloadNameFilterInput.simulate('change');
-    accessMethodFilterInput.instance().value = 'https';
-    accessMethodFilterInput.simulate('change');
-
-    expect(wrapper.exists('[aria-rowcount=2]')).toBe(true);
-    expect(
-      wrapper.exists(
-        '[aria-label="downloadStatus.remove {filename:test-file-2}"]'
-      )
-    ).toBe(false);
-    expect(
-      wrapper.exists(
-        '[aria-label="downloadStatus.remove {filename:test-file-4}"]'
-      )
-    ).toBe(false);
-
-    accessMethodFilterInput.instance().value = '';
-    accessMethodFilterInput.simulate('change');
+    expect(await screen.findByText('test-file-1')).toBeInTheDocument();
+    expect(screen.getByText('test-file-3')).toBeInTheDocument();
+    expect(screen.queryByText('test-file-2')).toBeNull();
+    expect(screen.queryByText('test-file-4')).toBeNull();
 
     // Test varying download availabilities.
-    const availabilityFilterInput = wrapper
-      .find('[aria-label="Filter by downloadStatus.status"]')
-      .first();
+    await user.type(downloadStatusFilterBox, 'downloadStatus.complete');
 
-    availabilityFilterInput.instance().value = 'downloadStatus.complete';
-    availabilityFilterInput.simulate('change');
+    expect(await screen.findByText('test-file-1')).toBeInTheDocument();
+    expect(screen.queryByText('test-file-3')).toBeNull();
 
-    expect(wrapper.exists('[aria-rowcount=1]')).toBe(true);
-    expect(
-      wrapper.exists(
-        '[aria-label="downloadStatus.remove {filename:test-file-1}"]'
-      )
-    ).toBe(true);
+    await user.clear(downloadMethodFilterBox);
+    await user.clear(downloadStatusFilterBox);
 
-    availabilityFilterInput.instance().value = '';
-    availabilityFilterInput.simulate('change');
-
-    expect(wrapper.exists('[aria-rowcount=5]')).toBe(true);
+    expect(await screen.findByText('test-file-1')).toBeInTheDocument();
+    expect(screen.getByText('test-file-2')).toBeInTheDocument();
+    expect(screen.getByText('test-file-3')).toBeInTheDocument();
+    expect(screen.getByText('test-file-4')).toBeInTheDocument();
+    expect(screen.getByText('test-file-5')).toBeInTheDocument();
   });
 
-  it('filters data when date filter is altered', async () => {
-    const wrapper = mount(
-      <div id="datagateway-download">
-        <DownloadStatusTable
-          refreshTable={false}
-          setRefreshTable={jest.fn()}
-          setLastChecked={jest.fn()}
-        />
-      </div>
-    );
+  it('should filter data when date filter is altered', async () => {
+    applyDatePickerWorkaround();
+    renderComponent();
 
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
+    const dateFromFilterInput = await screen.findByRole('textbox', {
+      name: 'downloadStatus.createdAt filter from',
+    });
+    const dateToFilterInput = await screen.findByRole('textbox', {
+      name: 'downloadStatus.createdAt filter to',
     });
 
-    const dateFromFilterInput = wrapper.find(
-      'input[id="downloadStatus.createdAt filter from"]'
-    );
+    // Type into date from filter textbox
+    await user.type(dateFromFilterInput, '2020-01-01 00:00:00');
 
-    dateFromFilterInput.instance().value = '2020-01-01 00:00';
-    dateFromFilterInput.simulate('change');
+    // Should show all files
+    expect(await screen.findByText('test-file-1')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-2')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-3')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-4')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-5')).toBeInTheDocument();
 
-    expect(wrapper.exists('[aria-rowcount=5]')).toBe(true);
+    // Type into date to filter textbox
+    await user.type(dateToFilterInput, '2020-01-02 23:59:00');
 
-    const dateToFilterInput = wrapper.find(
-      'input[id="downloadStatus.createdAt filter to"]'
-    );
+    // Should show no files
+    await waitFor(() => {
+      expect(screen.queryByText('test-file-1')).toBeNull();
+      expect(screen.queryByText('test-file-2')).toBeNull();
+      expect(screen.queryByText('test-file-3')).toBeNull();
+      expect(screen.queryByText('test-file-4')).toBeNull();
+      expect(screen.queryByText('test-file-5')).toBeNull();
+    });
 
-    dateToFilterInput.instance().value = '2020-01-02 23:59';
-    dateToFilterInput.simulate('change');
+    // Clear both date filter textboxes
+    await user.clear(dateFromFilterInput);
+    await user.clear(dateToFilterInput);
+    // Type into both date filters
+    await user.type(dateFromFilterInput, '2020-02-26 00:00:00');
+    await user.type(dateToFilterInput, '20200227235900');
 
-    expect(wrapper.exists('[aria-rowcount=0]')).toBe(true);
+    // Should show only test-file-2 and test-file-3
+    expect(await screen.findByText('test-file-2')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-3')).toBeInTheDocument();
+    expect(screen.queryByText('test-file-1')).toBeNull();
+    expect(screen.queryByText('test-file-4')).toBeNull();
+    expect(screen.queryByText('test-file-5')).toBeNull();
 
-    dateFromFilterInput.instance().value = '2020-02-26 00:00';
-    dateFromFilterInput.simulate('change');
-    dateToFilterInput.instance().value = '2020-02-27 23:59';
-    dateToFilterInput.simulate('change');
+    // Clear both date filter textboxes
+    await user.clear(dateFromFilterInput);
+    await user.clear(dateToFilterInput);
+    // Type into only date from filter
+    await user.type(dateFromFilterInput, '2020-02-27 00:00:00');
 
-    expect(wrapper.exists('[aria-rowcount=2]')).toBe(true);
+    // Should show test-file-3, test-file-4 and test-file-5
+    expect(await screen.findByText('test-file-3')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-4')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-5')).toBeInTheDocument();
+    expect(screen.queryByText('test-file-1')).toBeNull();
+    expect(screen.queryByText('test-file-2')).toBeNull();
+
+    // Clear date from filter textbox
+    await user.click(dateFromFilterInput);
+    await user.keyboard('{Control}a{/Control}');
+    await user.keyboard('{Delete}');
+    // await user.clear(dateFromFilterInput);
+    // Type into only date to filter
+    await user.type(dateToFilterInput, '2020-02-27 00:00:00');
+
+    // Should show only test-file-1 and test-file-2
+    expect(await screen.findByText('test-file-1')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-2')).toBeInTheDocument();
+    expect(screen.queryByText('test-file-3')).toBeNull();
+    expect(screen.queryByText('test-file-4')).toBeNull();
+    expect(screen.queryByText('test-file-5')).toBeNull();
+
+    // create an invalid range
+    await user.type(dateFromFilterInput, '2020-02-28 00:00:00');
+
+    // should display error
+    expect(await screen.findAllByText('Invalid date-time range'));
+
+    // Should show all files
+    expect(await screen.findByText('test-file-1')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-2')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-3')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-4')).toBeInTheDocument();
+    expect(await screen.findByText('test-file-5')).toBeInTheDocument();
+
+    cleanupDatePickerWorkaround();
+  });
+
+  it('should display download progress ui if enabled', async () => {
+    (
+      getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>
+    ).mockResolvedValue(20);
+
+    renderComponent({
+      settings: {
+        ...mockedSettings,
+        uiFeatures: {
+          downloadProgress: true,
+        },
+      },
+    });
+
     expect(
-      wrapper.exists(
-        '[aria-label="downloadStatus.remove {filename:test-file-1}"]'
-      )
-    ).toBe(false);
-    expect(
-      wrapper.exists(
-        '[aria-label="downloadStatus.remove {filename:test-file-4}"]'
-      )
-    ).toBe(false);
+      await screen.findByText('downloadStatus.progress')
+    ).toBeInTheDocument();
 
-    // Test when both date inputs are empty.
-    dateFromFilterInput.instance().value = '';
-    dateFromFilterInput.simulate('change');
-
-    dateToFilterInput.instance().value = '';
-    dateToFilterInput.simulate('change');
-
-    expect(wrapper.exists('[aria-rowcount=5]')).toBe(true);
+    await waitFor(() => {
+      for (const progressBar of screen.getAllByRole('progressbar')) {
+        expect(progressBar).toBeInTheDocument();
+      }
+      for (const progressText of screen.getAllByText('20%')) {
+        expect(progressText).toBeInTheDocument();
+      }
+    });
   });
 });

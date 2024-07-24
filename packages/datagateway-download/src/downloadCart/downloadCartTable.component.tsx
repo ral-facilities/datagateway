@@ -1,55 +1,48 @@
-import React from 'react';
+import { RemoveCircle } from '@mui/icons-material';
 import {
-  Table,
-  formatBytes,
-  TextColumnFilter,
-  Order,
-  TableActionProps,
-  DownloadCartItem,
-  DownloadCartTableItem,
-  TextFilter,
-  ColumnType,
-} from 'datagateway-common';
-import {
-  IconButton,
-  Grid,
-  Paper,
-  Typography,
+  Alert,
   Button,
-  LinearProgress,
-  createStyles,
-  makeStyles,
-  Theme,
-  Link,
   CircularProgress,
-} from '@material-ui/core';
-import { RemoveCircle } from '@material-ui/icons';
-import { Alert } from '@material-ui/lab';
+  Grid,
+  IconButton,
+  LinearProgress,
+  Link,
+  Paper,
+  Theme,
+  Tooltip,
+  Typography,
+} from '@mui/material';
+import {
+  type ColumnType,
+  type DownloadCartItem,
+  type DownloadCartTableItem,
+  formatBytes,
+  type Order,
+  Table,
+  type TableActionProps,
+  TextColumnFilter,
+  type TextFilter,
+} from 'datagateway-common';
+import React from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import { Link as RouterLink } from 'react-router-dom';
+import { DownloadSettingsContext } from '../ConfigProvider';
 import {
   useCart,
-  useRemoveEntityFromCart,
+  useIsCartMintable,
   useIsTwoLevel,
   useRemoveAllFromCart,
-  useSizes,
-  useDatafileCounts,
+  useRemoveEntityFromCart,
+  useFileSizesAndCounts,
 } from '../downloadApiHooks';
 
 import DownloadConfirmDialog from '../downloadConfirmation/downloadConfirmDialog.component';
-import { DownloadSettingsContext } from '../ConfigProvider';
-import { Trans, useTranslation } from 'react-i18next';
-import { Link as RouterLink } from 'react-router-dom';
-import { useQueryClient } from 'react-query';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    noSelectionsMessage: {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      color: (theme as any).colours?.contrastGrey,
-      paddingTop: theme.spacing(2),
-      paddingBottom: theme.spacing(2),
-    },
-  })
-);
+import DownloadCartItemLink from './downloadCartItemLink.component';
+import {
+  buildDatafileUrl,
+  buildDatasetUrl,
+  buildInvestigationUrl,
+} from './urlBuilders';
 
 interface DownloadCartTableProps {
   statusTabRedirect: () => void;
@@ -58,64 +51,56 @@ interface DownloadCartTableProps {
 const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   props: DownloadCartTableProps
 ) => {
-  const classes = useStyles();
-  const settings = React.useContext(DownloadSettingsContext);
+  const {
+    fileCountMax,
+    totalSizeMax,
+    apiUrl,
+    facilityName,
+    doiMinterUrl,
+    dataCiteUrl,
+  } = React.useContext(DownloadSettingsContext);
 
   const [sort, setSort] = React.useState<{ [column: string]: Order }>({});
   const [filters, setFilters] = React.useState<{
     [column: string]: { value?: string | number; type: string };
   }>({});
 
-  const fileCountMax = settings.fileCountMax;
-  const totalSizeMax = settings.totalSizeMax;
-
   const [showConfirmation, setShowConfirmation] = React.useState(false);
 
   const { data: isTwoLevel } = useIsTwoLevel();
   const { mutate: removeDownloadCartItem } = useRemoveEntityFromCart();
+  const { mutate: removeAllDownloadCartItems, isLoading: removingAll } =
+    useRemoveAllFromCart();
+  const { data: cartItems, isFetching: isFetchingCart } = useCart();
   const {
-    mutate: removeAllDownloadCartItems,
-    isLoading: removingAll,
-  } = useRemoveAllFromCart();
-  const { data, isFetching: dataLoading } = useCart();
+    data: mintable,
+    isLoading: cartMintabilityLoading,
+    error: mintableError,
+  } = useIsCartMintable(cartItems);
 
-  const queryClient = useQueryClient();
-  const setData = React.useCallback(
-    (newData: DownloadCartTableItem[]) => {
-      queryClient.setQueryData('cart', newData);
-    },
-    [queryClient]
+  const fileSizesAndCounts = useFileSizesAndCounts(cartItems);
+
+  const { fileCount, totalSize } = React.useMemo(() => {
+    return (
+      fileSizesAndCounts?.reduce(
+        (accumulator, nextItem) => {
+          return {
+            fileCount: nextItem.data?.fileCount
+              ? accumulator.fileCount + nextItem.data.fileCount
+              : accumulator.fileCount,
+            totalSize: nextItem.data?.fileSize
+              ? accumulator.totalSize + nextItem.data.fileSize
+              : accumulator.totalSize,
+          };
+        },
+        { fileCount: 0, totalSize: 0 }
+      ) ?? { fileCount: -1, totalSize: -1 }
+    );
+  }, [fileSizesAndCounts]);
+
+  const fileSizesAndCountsLoading = fileSizesAndCounts.some(
+    (query) => query?.isLoading
   );
-
-  const fileCountQueries = useDatafileCounts(data);
-  const sizeQueries = useSizes(data);
-
-  const fileCount = React.useMemo(() => {
-    return (
-      fileCountQueries?.reduce((accumulator, nextItem) => {
-        if (nextItem.data && nextItem.data > -1) {
-          return accumulator + nextItem.data;
-        } else {
-          return accumulator;
-        }
-      }, 0) ?? -1
-    );
-  }, [fileCountQueries]);
-
-  const totalSize = React.useMemo(() => {
-    return (
-      sizeQueries?.reduce((accumulator, nextItem) => {
-        if (nextItem.data && nextItem.data > -1) {
-          return accumulator + nextItem.data;
-        } else {
-          return accumulator;
-        }
-      }, 0) ?? -1
-    );
-  }, [sizeQueries]);
-
-  const sizesLoading = sizeQueries.some((query) => query.isLoading);
-  const fileCountsLoading = fileCountQueries.some((query) => query.isLoading);
 
   const [t] = useTranslation();
 
@@ -138,12 +123,12 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   );
 
   const sortedAndFilteredData = React.useMemo(() => {
-    const sizeAndCountAddedData = data?.map(
+    const sizeAndCountAddedData = cartItems?.map(
       (item, index) =>
         ({
           ...item,
-          size: sizeQueries?.[index]?.data ?? -1,
-          fileCount: fileCountQueries?.[index]?.data ?? -1,
+          size: fileSizesAndCounts?.[index]?.data?.fileSize ?? -1,
+          fileCount: fileSizesAndCounts?.[index]?.data?.fileCount ?? -1,
         } as DownloadCartTableItem)
     );
     const filteredData = sizeAndCountAddedData?.filter((item) => {
@@ -186,7 +171,33 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     }
 
     return filteredData?.sort(sortCartItems);
-  }, [data, sort, filters, sizeQueries, fileCountQueries]);
+  }, [cartItems, fileSizesAndCounts, filters, sort]);
+
+  const unmintableEntityIDs: number[] | null | undefined = React.useMemo(
+    () =>
+      mintableError?.response?.status === 403 &&
+      typeof mintableError?.response?.data?.detail === 'string' &&
+      JSON.parse(
+        mintableError.response.data.detail.substring(
+          mintableError.response.data.detail.indexOf('['),
+          mintableError.response.data.detail.lastIndexOf(']') + 1
+        )
+      ),
+    [mintableError]
+  );
+
+  const unmintableRowIDs = React.useMemo(() => {
+    if (unmintableEntityIDs && sortedAndFilteredData) {
+      return unmintableEntityIDs.map((id) =>
+        sortedAndFilteredData.findIndex((entity) => entity.entityId === id)
+      );
+    } else {
+      return [];
+    }
+  }, [unmintableEntityIDs, sortedAndFilteredData]);
+
+  const [generateDOIButtonHover, setGenerateDOIButtonHover] =
+    React.useState(false);
 
   const columns: ColumnType[] = React.useMemo(
     () => [
@@ -194,6 +205,56 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
         label: t('downloadCart.name'),
         dataKey: 'name',
         filterComponent: textFilter,
+        cellContentRenderer: (props) => {
+          const item: DownloadCartItem = props.rowData;
+
+          switch (item.entityType) {
+            case 'investigation':
+              return (
+                <DownloadCartItemLink
+                  cartItem={item}
+                  linkBuilder={() =>
+                    buildInvestigationUrl({
+                      apiUrl,
+                      facilityName,
+                      investigationId: item.entityId,
+                    })
+                  }
+                />
+              );
+
+            case 'dataset':
+              return (
+                <DownloadCartItemLink
+                  cartItem={item}
+                  linkBuilder={() =>
+                    buildDatasetUrl({
+                      apiUrl,
+                      facilityName,
+                      datasetId: item.entityId,
+                    })
+                  }
+                />
+              );
+
+            case 'datafile':
+              return (
+                <DownloadCartItemLink
+                  cartItem={item}
+                  linkBuilder={() =>
+                    buildDatafileUrl({
+                      apiUrl,
+                      facilityName,
+                      datafileId: item.entityId,
+                    })
+                  }
+                />
+              );
+
+            default:
+              return item.name;
+          }
+        },
       },
       {
         label: t('downloadCart.type'),
@@ -216,12 +277,14 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
         },
       },
     ],
-    [t, textFilter]
+    [apiUrl, facilityName, t, textFilter]
   );
   const onSort = React.useCallback(
-    (column: string, order: 'desc' | 'asc' | null) => {
+    (column: string, order: 'desc' | 'asc' | null, _, shiftDown?: boolean) => {
       if (order) {
-        setSort({ ...sort, [column]: order });
+        shiftDown
+          ? setSort({ ...sort, [column]: order })
+          : setSort({ [column]: order });
       } else {
         const { [column]: order, ...restOfSort } = sort;
         setSort(restOfSort);
@@ -263,256 +326,324 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     [removeDownloadCartItem, t]
   );
 
-  const emptyItems = React.useMemo(
-    () =>
-      sizeQueries.some((query) => query.data === 0) ||
-      fileCountQueries.some((query) => query.data === 0),
-    [sizeQueries, fileCountQueries]
+  const emptyItems = fileSizesAndCounts.some(
+    (query) => query.data?.fileSize === 0 || query.data?.fileCount === 0
   );
 
-  return !dataLoading && data?.length === 0 ? (
-    <div
-      className="tour-download-results"
-      data-testid="no-selections-message"
-      style={{
-        //Table should take up page but leave room for: SG appbar, SG footer,
-        //tabs, table padding.
-        height: 'calc(100vh - 64px - 36px - 48px - 48px)',
-        minHeight: 230,
-        overflowX: 'auto',
-      }}
-    >
-      <Paper>
-        <Grid container direction="column" alignItems="center" justify="center">
-          <Grid item>
-            <Typography className={classes.noSelectionsMessage}>
-              <Trans i18nKey="downloadCart.no_selections">
-                No data selected.{' '}
-                <Link
-                  component={RouterLink}
-                  to={t('downloadCart.browse_link')}
-                  style={{ fontWeight: 'bold' }}
-                >
-                  Browse
-                </Link>{' '}
-                or{' '}
-                <Link
-                  component={RouterLink}
-                  to={t('downloadCart.search_link')}
-                  style={{ fontWeight: 'bold' }}
-                >
-                  search
-                </Link>{' '}
-                for data?.
-              </Trans>
-            </Typography>
-          </Grid>
-        </Grid>
-      </Paper>
-    </div>
-  ) : (
-    <div>
-      <Grid container direction="column">
-        {/* Show loading progress if data is still being loaded */}
-        {dataLoading && (
-          <Grid item xs={12}>
-            <LinearProgress color="secondary" />
-          </Grid>
-        )}
-        <Grid item>
-          {/* Table should take up page but leave room for: SG appbar, 
-              SG footer, tabs, table padding, text below table, and buttons
-              (respectively). */}
-          <Paper
-            className="tour-download-results"
-            style={{
-              height: `calc(100vh - 64px - 48px - 48px - 48px - 3rem${
-                emptyItems ||
-                (fileCountMax && fileCount > fileCountMax) ||
-                (totalSizeMax && totalSize > totalSizeMax)
-                  ? ' - 2rem'
-                  : ''
-              } - (1.75 * 0.875rem + 12px)`,
-              minHeight: 230,
-              overflowX: 'auto',
-            }}
-          >
-            <Table
-              columns={columns}
-              sort={sort}
-              onSort={onSort}
-              data={sortedAndFilteredData ?? []}
-              loading={dataLoading}
-              actions={actions}
-            />
-          </Paper>
-        </Grid>
-        <Grid
-          container
-          item
-          direction="column"
-          alignItems="flex-end"
-          justify="space-between"
+  const isLoading = isFetchingCart;
+
+  return (
+    <>
+      {!isFetchingCart && cartItems?.length === 0 ? (
+        <div
+          className="tour-download-results"
+          data-testid="no-selections-message"
+          style={{
+            //Table should take up page but leave room for: SG appbar, SG footer,
+            //tabs, table padding.
+            height: 'calc(100vh - 64px - 36px - 48px - 48px)',
+            minHeight: 230,
+            overflowX: 'auto',
+          }}
         >
-          <Grid
-            container
-            item
-            spacing={1}
-            justify="flex-end"
-            alignItems="center"
-            direction="row"
-            style={{ marginRight: '1.2em' }}
-          >
-            <Grid item>
-              {fileCountsLoading && (
-                <CircularProgress
-                  size={15}
-                  thickness={7}
-                  disableShrink={true}
-                  aria-label={t('downloadCart.calculating')}
-                />
-              )}
-              <Typography id="fileCountDisplay" style={{ marginLeft: '4px' }}>
-                {t('downloadCart.number_of_files')}:{' '}
-                {fileCount !== -1
-                  ? fileCount
-                  : `${t('downloadCart.calculating')}...`}
-                {fileCountMax && ` / ${fileCountMax}`}
-              </Typography>
-            </Grid>
-            <Grid item>
-              {fileCountMax && fileCount > fileCountMax && (
-                <Alert
-                  id="fileLimitAlert"
-                  variant="filled"
-                  severity="error"
-                  icon={false}
-                  style={{
-                    padding: '0px 8px',
-                    lineHeight: 0.6,
+          <Paper>
+            <Grid
+              container
+              direction="column"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Grid item>
+                <Typography
+                  sx={{
+                    color: (theme: Theme) =>
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      (theme as any).colours?.contrastGrey,
+                    paddingTop: 2,
+                    paddingBottom: 2,
                   }}
                 >
-                  {t('downloadCart.file_limit_error', {
-                    fileCountMax: fileCountMax,
-                  })}
-                </Alert>
-              )}
+                  <Trans i18nKey="downloadCart.no_selections">
+                    No data selected.{' '}
+                    <Link
+                      component={RouterLink}
+                      to={t('downloadCart.browse_link')}
+                      sx={{ fontWeight: 'bold' }}
+                    >
+                      Browse
+                    </Link>{' '}
+                    or{' '}
+                    <Link
+                      component={RouterLink}
+                      to={t('downloadCart.search_link')}
+                      sx={{ fontWeight: 'bold' }}
+                    >
+                      search
+                    </Link>{' '}
+                    for data?.
+                  </Trans>
+                </Typography>
+              </Grid>
             </Grid>
-          </Grid>
-          <Grid
-            container
-            item
-            spacing={1}
-            justify="flex-end"
-            alignItems="center"
-            direction="row"
-            style={{ marginRight: '1.2em' }}
-          >
+          </Paper>
+        </div>
+      ) : (
+        <div>
+          <Grid container direction="column">
+            {/* Show loading progress if data is still being loaded */}
+            {isLoading && (
+              <Grid item xs={12}>
+                <LinearProgress color="secondary" />
+              </Grid>
+            )}
             <Grid item>
-              {sizesLoading && (
-                <CircularProgress
-                  size={15}
-                  thickness={7}
-                  disableShrink={true}
-                  aria-label={t('downloadCart.calculating')}
-                />
-              )}
-              <Typography id="totalSizeDisplay" style={{ marginLeft: '4px' }}>
-                {t('downloadCart.total_size')}:{' '}
-                {totalSize !== -1
-                  ? formatBytes(totalSize)
-                  : `${t('downloadCart.calculating')}...`}
-                {totalSizeMax && ` / ${formatBytes(totalSizeMax)}`}
-              </Typography>
-            </Grid>
-            <Grid item>
-              {totalSizeMax && totalSize > totalSizeMax && (
-                <Alert
-                  id="sizeLimitAlert"
-                  variant="filled"
-                  severity="error"
-                  icon={false}
-                  style={{
-                    padding: '0px 8px',
-                    lineHeight: 0.6,
-                  }}
-                >
-                  {t('downloadCart.size_limit_error', {
-                    totalSizeMax: formatBytes(totalSizeMax),
-                  })}
-                </Alert>
-              )}
-            </Grid>
-          </Grid>
-          <Grid
-            container
-            item
-            justify="flex-end"
-            alignItems="center"
-            direction="row"
-            style={{ marginRight: '1.2em' }}
-          >
-            {emptyItems && (
-              <Alert
-                id="emptyFilesAlert"
-                variant="filled"
-                severity="error"
-                icon={false}
-                style={{
-                  padding: '0px 8px',
-                  lineHeight: 0.6,
+              {/* Table should take up page but leave room for: SG appbar, 
+              SG footer, tabs, table padding, text below table, loading bar and
+              buttons (respectively). */}
+              <Paper
+                className="tour-download-results"
+                sx={{
+                  height: `calc(100vh - 64px - 48px - 48px - 48px - 3rem${
+                    emptyItems ||
+                    (fileCountMax && fileCount > fileCountMax) ||
+                    (totalSizeMax && totalSize > totalSizeMax)
+                      ? ' - 2rem'
+                      : ''
+                  }${isLoading ? ' - 4px' : ''} - (1.75 * 0.875rem + 12px))`,
+                  minHeight: 230,
+                  overflowX: 'auto',
+                  // handle the highlight of unmintable entities
+                  ...(generateDOIButtonHover && {
+                    '& [role="rowgroup"] [role="row"]': Object.assign(
+                      {},
+                      ...unmintableRowIDs.map((id) => ({
+                        [`&:nth-of-type(${id + 1})`]: {
+                          bgcolor: 'error.main',
+                          '& [role="gridcell"] *': {
+                            color: 'error.contrastText',
+                          },
+                        },
+                      }))
+                    ),
+                  }),
                 }}
               >
-                {t('downloadCart.empty_items_error')}
-              </Alert>
-            )}
-          </Grid>
-          <Grid
-            container
-            item
-            justify="flex-end"
-            spacing={1}
-            xs
-            style={{ marginRight: '1em' }}
-          >
-            <Grid item>
-              {/* Request to remove all selections is in progress. To prevent excessive requests, disable button during request */}
-              <Button
-                className="tour-download-remove-button"
-                id="removeAllButton"
-                variant="contained"
-                color="primary"
-                disabled={removingAll}
-                startIcon={removingAll && <CircularProgress size={20} />}
-                onClick={() => removeAllDownloadCartItems()}
-              >
-                {t('downloadCart.remove_all')}
-              </Button>
+                <Table
+                  columns={columns}
+                  sort={sort}
+                  onSort={onSort}
+                  data={sortedAndFilteredData ?? []}
+                  loading={isLoading}
+                  actions={actions}
+                />
+              </Paper>
             </Grid>
-            <Grid item>
-              <Button
-                className="tour-download-download-button"
-                onClick={() => setShowConfirmation(true)}
-                id="downloadCartButton"
-                variant="contained"
-                color="primary"
-                disabled={
-                  fileCount <= 0 ||
-                  totalSize <= 0 ||
-                  fileCountsLoading ||
-                  sizesLoading ||
-                  emptyItems ||
-                  (fileCountMax ? fileCount > fileCountMax : false) ||
-                  (totalSizeMax ? totalSize > totalSizeMax : false)
-                }
+            <Grid
+              container
+              item
+              direction="column"
+              alignItems="flex-end"
+              justifyContent="space-between"
+              spacing={0.5}
+              sx={{ marginTop: 0 }}
+            >
+              <Grid
+                container
+                item
+                direction="row"
+                xs
+                justifyContent="flex-end"
+                alignContent="flex-end"
+                alignItems="flex-end"
+                columnGap={1}
               >
-                {t('downloadCart.download')}
-              </Button>
+                <Grid item>
+                  {fileSizesAndCountsLoading && (
+                    <CircularProgress
+                      size={15}
+                      thickness={7}
+                      disableShrink={true}
+                      aria-label={t('downloadCart.calculating')}
+                      sx={{ verticalAlign: -1 }}
+                    />
+                  )}
+                  <Typography
+                    id="fileCountDisplay"
+                    style={{ marginLeft: '4px' }}
+                    component="span"
+                  >
+                    {t('downloadCart.number_of_files')}:{' '}
+                    {fileCount !== -1
+                      ? fileCount
+                      : `${t('downloadCart.calculating')}...`}
+                    {fileCountMax && ` / ${fileCountMax}`}
+                  </Typography>
+                </Grid>
+                <Grid item>
+                  {fileCountMax && fileCount > fileCountMax && (
+                    <Alert
+                      id="fileLimitAlert"
+                      variant="filled"
+                      severity="error"
+                      icon={false}
+                      style={{
+                        padding: '0px 8px',
+                        lineHeight: 0.6,
+                      }}
+                    >
+                      {t('downloadCart.file_limit_error', {
+                        fileCountMax: fileCountMax,
+                      })}
+                    </Alert>
+                  )}
+                </Grid>
+              </Grid>
+              <Grid
+                container
+                item
+                direction="row"
+                xs
+                justifyContent="flex-end"
+                alignContent="flex-end"
+                alignItems="flex-end"
+                columnGap={1}
+              >
+                <Grid item>
+                  {fileSizesAndCountsLoading && (
+                    <CircularProgress
+                      size={15}
+                      thickness={7}
+                      disableShrink={true}
+                      aria-label={t('downloadCart.calculating')}
+                      sx={{ verticalAlign: -1 }}
+                    />
+                  )}
+                  <Typography
+                    id="totalSizeDisplay"
+                    style={{ marginLeft: '4px' }}
+                    component="span"
+                  >
+                    {t('downloadCart.total_size')}:{' '}
+                    {totalSize !== -1
+                      ? formatBytes(totalSize)
+                      : `${t('downloadCart.calculating')}...`}
+                    {totalSizeMax && ` / ${formatBytes(totalSizeMax)}`}
+                  </Typography>
+                </Grid>
+                <Grid item>
+                  {totalSizeMax && totalSize > totalSizeMax && (
+                    <Alert
+                      id="sizeLimitAlert"
+                      variant="filled"
+                      severity="error"
+                      icon={false}
+                      style={{
+                        padding: '0px 8px',
+                        lineHeight: 0.6,
+                      }}
+                    >
+                      {t('downloadCart.size_limit_error', {
+                        totalSizeMax: formatBytes(totalSizeMax),
+                      })}
+                    </Alert>
+                  )}
+                </Grid>
+              </Grid>
+              {emptyItems && (
+                <Grid
+                  container
+                  item
+                  direction="column"
+                  xs
+                  alignContent="flex-end"
+                  alignItems="flex-end"
+                >
+                  <Alert
+                    id="emptyFilesAlert"
+                    variant="filled"
+                    severity="error"
+                    icon={false}
+                    style={{
+                      padding: '0px 8px',
+                      lineHeight: 0.6,
+                    }}
+                  >
+                    {t('downloadCart.empty_items_error')}
+                  </Alert>
+                </Grid>
+              )}
+              <Grid container item justifyContent="flex-end" columnGap={1} xs>
+                <Grid item>
+                  {/* Request to remove all selections is in progress. To prevent excessive requests, disable button during request */}
+                  <Button
+                    className="tour-download-remove-button"
+                    id="removeAllButton"
+                    variant="outlined"
+                    color="secondary"
+                    disabled={removingAll}
+                    startIcon={removingAll && <CircularProgress size={20} />}
+                    onClick={() => removeAllDownloadCartItems()}
+                  >
+                    {t('downloadCart.remove_all')}
+                  </Button>
+                </Grid>
+                {doiMinterUrl && dataCiteUrl && (
+                  <Grid item>
+                    <Tooltip
+                      title={
+                        cartMintabilityLoading
+                          ? t('downloadCart.mintability_loading')
+                          : !mintable
+                          ? t('downloadCart.not_mintable')
+                          : ''
+                      }
+                      onMouseEnter={() => setGenerateDOIButtonHover(true)}
+                      onMouseLeave={() => setGenerateDOIButtonHover(false)}
+                    >
+                      {/* need this span so the tooltip works when the button is disabled */}
+                      <span>
+                        <Button
+                          className="tour-download-mint-button"
+                          id="generateDOIButton"
+                          variant="contained"
+                          color="primary"
+                          disabled={cartMintabilityLoading || !mintable}
+                          component={RouterLink}
+                          to={{
+                            pathname: '/download/mint',
+                            state: { fromCart: true },
+                          }}
+                        >
+                          {t('downloadCart.generate_DOI')}
+                        </Button>
+                      </span>
+                    </Tooltip>
+                  </Grid>
+                )}
+                <Grid item>
+                  <Button
+                    className="tour-download-download-button"
+                    onClick={() => setShowConfirmation(true)}
+                    id="downloadCartButton"
+                    variant="contained"
+                    color="primary"
+                    disabled={
+                      fileCount <= 0 ||
+                      totalSize <= 0 ||
+                      fileSizesAndCountsLoading ||
+                      emptyItems ||
+                      (fileCountMax ? fileCount > fileCountMax : false) ||
+                      (totalSizeMax ? totalSize > totalSizeMax : false)
+                    }
+                  >
+                    {t('downloadCart.download')}
+                  </Button>
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
-        </Grid>
-      </Grid>
-
+        </div>
+      )}
       {/* Show the download confirmation dialog. */}
       <DownloadConfirmDialog
         aria-labelledby="downloadCartConfirmation"
@@ -521,9 +652,8 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
         open={showConfirmation}
         redirectToStatusTab={props.statusTabRedirect}
         setClose={() => setShowConfirmation(false)}
-        clearCart={() => setData([])}
       />
-    </div>
+    </>
   );
 };
 

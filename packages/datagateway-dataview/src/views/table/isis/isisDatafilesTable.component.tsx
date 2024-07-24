@@ -1,8 +1,8 @@
 import React from 'react';
-import SubjectIcon from '@material-ui/icons/Subject';
-import ExploreIcon from '@material-ui/icons/Explore';
-import SaveIcon from '@material-ui/icons/Save';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import SubjectIcon from '@mui/icons-material/Subject';
+import ExploreIcon from '@mui/icons-material/Explore';
+import SaveIcon from '@mui/icons-material/Save';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import {
   Table,
   TableActionProps,
@@ -23,19 +23,21 @@ import {
   ISISDatafileDetailsPanel,
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../../state/app.types';
 import { IndexRange } from 'react-virtualized';
+import PreviewDatafileButton from '../../datafilePreview/previewDatafileButton.component';
 
 interface ISISDatafilesTableProps {
   datasetId: string;
+  investigationId: string;
 }
 
 const ISISDatafilesTable = (
   props: ISISDatafilesTableProps
 ): React.ReactElement => {
-  const { datasetId } = props;
+  const { datasetId, investigationId } = props;
 
   const [t] = useTranslation();
 
@@ -54,7 +56,7 @@ const ISISDatafilesTable = (
   const dateFilter = useDateFilter(filters);
   const handleSort = useSort();
 
-  const { data: allIds } = useIds(
+  const { data: allIds, isLoading: allIdsLoading } = useIds(
     'datafile',
     [
       {
@@ -64,14 +66,11 @@ const ISISDatafilesTable = (
     ],
     selectAllSetting
   );
-  const { data: cartItems } = useCart();
-  const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
-    'datafile'
-  );
-  const {
-    mutate: removeFromCart,
-    isLoading: removeFromCartLoading,
-  } = useRemoveFromCart('datafile');
+  const { data: cartItems, isLoading: cartLoading } = useCart();
+  const { mutate: addToCart, isLoading: addToCartLoading } =
+    useAddToCart('datafile');
+  const { mutate: removeFromCart, isLoading: removeFromCartLoading } =
+    useRemoveFromCart('datafile');
 
   const { data: totalDataCount } = useDatafileCount([
     {
@@ -103,10 +102,28 @@ const ISISDatafilesTable = (
     [fetchNextPage]
   );
 
-  const aggregatedData: Datafile[] = React.useMemo(
-    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
-    [data]
-  );
+  /* istanbul ignore next */
+  const aggregatedData: Datafile[] = React.useMemo(() => {
+    if (data) {
+      if ('pages' in data) {
+        return data.pages.flat();
+      } else if ((data as unknown) instanceof Array) {
+        return data;
+      }
+    }
+
+    return [];
+  }, [data]);
+
+  const isParentSelected = React.useMemo(() => {
+    return cartItems?.some(
+      (cartItem) =>
+        (cartItem.entityType === 'dataset' &&
+          cartItem.entityId.toString() === datasetId) ||
+        (cartItem.entityType === 'investigation' &&
+          cartItem.entityId.toString() === investigationId)
+    );
+  }, [cartItems, datasetId, investigationId]);
 
   const columns: ColumnType[] = React.useMemo(
     () => [
@@ -157,7 +174,13 @@ const ISISDatafilesTable = (
 
   return (
     <Table
-      loading={addToCartLoading || removeFromCartLoading}
+      loading={
+        addToCartLoading ||
+        removeFromCartLoading ||
+        cartLoading ||
+        allIdsLoading
+      }
+      parentSelected={isParentSelected}
       data={aggregatedData}
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
@@ -169,6 +192,7 @@ const ISISDatafilesTable = (
       onUncheck={removeFromCart}
       disableSelectAll={!selectAllSetting}
       detailsPanel={ISISDatafileDetailsPanel}
+      actionsWidth={96}
       actions={[
         ({ rowData }: TableActionProps) => (
           <DownloadButton
@@ -178,6 +202,9 @@ const ISISDatafilesTable = (
             variant="icon"
             entitySize={(rowData as Datafile).fileSize ?? -1}
           />
+        ),
+        ({ rowData }: TableActionProps) => (
+          <PreviewDatafileButton datafile={rowData as Datafile} />
         ),
       ]}
       columns={columns}

@@ -1,12 +1,14 @@
 import React from 'react';
-import SubjectIcon from '@material-ui/icons/Subject';
-import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import {
+  Subject,
+  ConfirmationNumber,
+  CalendarToday,
+  Save,
+} from '@mui/icons-material';
 import {
   Table,
   tableLink,
   Dataset,
-  formatCountOrSize,
   useDatasetCount,
   useDatasetsInfinite,
   parseSearchToQuery,
@@ -18,12 +20,12 @@ import {
   useCart,
   useAddToCart,
   useRemoveFromCart,
-  useDatasetsDatafileCount,
   DLSDatasetDetailsPanel,
+  formatBytes,
 } from 'datagateway-common';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../../state/app.types';
 
@@ -52,7 +54,7 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
   const dateFilter = useDateFilter(filters);
   const handleSort = useSort();
 
-  const { data: allIds } = useIds(
+  const { data: allIds, isLoading: allIdsLoading } = useIds(
     'dataset',
     [
       {
@@ -64,14 +66,11 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
     ],
     selectAllSetting
   );
-  const { data: cartItems } = useCart();
-  const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
-    'dataset'
-  );
-  const {
-    mutate: removeFromCart,
-    isLoading: removeFromCartLoading,
-  } = useRemoveFromCart('dataset');
+  const { data: cartItems, isLoading: cartLoading } = useCart();
+  const { mutate: addToCart, isLoading: addToCartLoading } =
+    useAddToCart('dataset');
+  const { mutate: removeFromCart, isLoading: removeFromCartLoading } =
+    useRemoveFromCart('dataset');
 
   const { data: totalDataCount } = useDatasetCount([
     {
@@ -107,59 +106,62 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
     [fetchNextPage]
   );
 
-  const datafileCountQueries = useDatasetsDatafileCount(data);
+  /* istanbul ignore next */
+  const aggregatedData: Dataset[] = React.useMemo(() => {
+    if (data) {
+      if ('pages' in data) {
+        return data.pages.flat();
+      } else if ((data as unknown) instanceof Array) {
+        return data;
+      }
+    }
 
-  const aggregatedData: Dataset[] = React.useMemo(
-    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
-    [data]
-  );
+    return [];
+  }, [data]);
 
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: SubjectIcon,
+        icon: Subject,
         label: t('datasets.name'),
         dataKey: 'name',
         cellContentRenderer: (cellProps: TableCellProps) =>
           tableLink(
             `/browse/proposal/${proposalName}/investigation/${investigationId}/dataset/${cellProps.rowData.id}/datafile`,
             cellProps.rowData.name,
-            view
+            view,
+            'dls-datasets-table-title'
           ),
         filterComponent: textFilter,
       },
       {
-        icon: ConfirmationNumberIcon,
+        icon: ConfirmationNumber,
         label: t('datasets.datafile_count'),
-        dataKey: 'datafileCount',
-        cellContentRenderer: (cellProps: TableCellProps): number | string =>
-          formatCountOrSize(datafileCountQueries[cellProps.rowIndex]),
-        disableSort: true,
+        dataKey: 'fileCount',
       },
       {
-        icon: CalendarTodayIcon,
+        icon: Save,
+        label: t('datasets.size'),
+        dataKey: 'fileSize',
+        cellContentRenderer: (cellProps: TableCellProps): number | string =>
+          formatBytes(cellProps.rowData.fileSize),
+      },
+      {
+        icon: CalendarToday,
         label: t('datasets.create_time'),
         dataKey: 'createTime',
         filterComponent: dateFilter,
         defaultSort: 'desc',
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
 
         label: t('datasets.modified_time'),
         dataKey: 'modTime',
         filterComponent: dateFilter,
       },
     ],
-    [
-      t,
-      textFilter,
-      dateFilter,
-      proposalName,
-      investigationId,
-      view,
-      datafileCountQueries,
-    ]
+    [t, textFilter, dateFilter, proposalName, investigationId, view]
   );
 
   const selectedRows = React.useMemo(
@@ -176,9 +178,23 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
     [cartItems, selectAllSetting, allIds]
   );
 
+  const isParentSelected = React.useMemo(() => {
+    return cartItems?.some(
+      (cartItem) =>
+        cartItem.entityType === 'investigation' &&
+        cartItem.entityId.toString() === investigationId
+    );
+  }, [cartItems, investigationId]);
+
   return (
     <Table
-      loading={addToCartLoading || removeFromCartLoading}
+      loading={
+        addToCartLoading ||
+        removeFromCartLoading ||
+        cartLoading ||
+        allIdsLoading
+      }
+      parentSelected={isParentSelected}
       data={aggregatedData}
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}

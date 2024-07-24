@@ -1,69 +1,105 @@
+import { Divider, Grid, styled, Tab, Tabs, Typography } from '@mui/material';
 import React from 'react';
-import {
-  Typography,
-  Grid,
-  createStyles,
-  makeStyles,
-  Theme,
-  Divider,
-  Tabs,
-  Tab,
-  Button,
-} from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from 'react-redux';
 import { formatBytes } from '../../table/cellRenderers/cellContentRenderers';
-import {
-  useInvestigationDetails,
-  useInvestigationSize,
-} from '../../api/investigations';
+import { useInvestigationDetails } from '../../api';
 import { Entity, Investigation } from '../../app.types';
+import {
+  DlsVisitDetailsPanelChangeTabPayload,
+  DlsVisitDetailsPanelChangeTabType,
+} from '../../state/actions/actions.types';
+import type { StateType } from '../../state/app.types';
+import type { Action } from '../../state/reducers/createReducer';
+import { format, parse } from 'date-fns';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(2),
-    },
-    divider: {
-      marginBottom: theme.spacing(2),
-    },
-  })
-);
+const StyledGrid = styled(Grid)(({ theme }) => ({
+  padding: theme.spacing(2),
+}));
+
+const StyledDivider = styled(Divider)(({ theme }) => ({
+  marginBottom: theme.spacing(2),
+}));
 
 interface VisitDetailsPanelProps {
   rowData: Entity;
   detailsPanelResize?: () => void;
 }
 
+const DEFAULT_TAB: DlsVisitDetailsPanelTab = 'details';
+
+export type DlsVisitDetailsPanelTab =
+  | 'details'
+  | 'users'
+  | 'samples'
+  | 'publications'
+  | 'parameters';
+
 const VisitDetailsPanel = (
   props: VisitDetailsPanelProps
 ): React.ReactElement => {
   const { rowData, detailsPanelResize } = props;
-  const [value, setValue] = React.useState<
-    'details' | 'users' | 'samples' | 'publications'
-  >('details');
   const [t] = useTranslation();
-
-  const classes = useStyles();
-
   const { data } = useInvestigationDetails(rowData.id);
-  const { data: size, refetch: fetchSize } = useInvestigationSize(rowData.id);
   const investigationData: Investigation = {
     ...data,
     ...(rowData as Investigation),
-    size,
   };
+  const selectedTab = useSelector<
+    StateType,
+    DlsVisitDetailsPanelTab | undefined
+  >(
+    (state) => data && state.dgcommon.dlsVisitDetailsPanel[data.id]?.selectedTab
+  );
+  const dispatch = useDispatch();
+
+  const changeTab = React.useCallback(
+    (newTab: DlsVisitDetailsPanelTab) => {
+      const id = data?.id;
+      if (id) {
+        dispatch<Action>({
+          type: DlsVisitDetailsPanelChangeTabType,
+          payload: {
+            newTab,
+            investigationId: id,
+          } as DlsVisitDetailsPanelChangeTabPayload,
+        });
+      }
+    },
+    [data?.id, dispatch]
+  );
 
   React.useLayoutEffect(() => {
-    if (detailsPanelResize) detailsPanelResize();
-  }, [value, detailsPanelResize]);
+    if (detailsPanelResize && selectedTab) detailsPanelResize();
+  }, [selectedTab, detailsPanelResize]);
+
+  React.useEffect(() => {
+    if (data && !selectedTab) {
+      // register the selected tab for this visit's details panel
+      // for the first time.
+      // go to the default tab on first render
+      changeTab(DEFAULT_TAB);
+    }
+  }, [data, selectedTab, changeTab]);
+
+  function formatParameterDateTimeValue(dateTime: string): string {
+    const date = parse(dateTime, 'yyyy-MM-dd HH:mm:ssXXX', new Date());
+    return format(date, 'yyyy-MM-dd');
+  }
 
   return (
-    <div id="details-panel" style={{ minWidth: 0 }}>
+    <div
+      data-testid="dls-visit-details-panel"
+      id="details-panel"
+      style={{ minWidth: 0 }}
+    >
       <Tabs
         variant="scrollable"
+        textColor="secondary"
+        indicatorColor="secondary"
         scrollButtons="auto"
-        value={value}
-        onChange={(event, newValue) => setValue(newValue)}
+        value={selectedTab ?? DEFAULT_TAB}
+        onChange={(event, newValue) => changeTab(newValue)}
         aria-label={t('investigations.details.tabs_label')}
       >
         <Tab
@@ -88,6 +124,14 @@ const VisitDetailsPanel = (
             value="samples"
           />
         )}
+        {investigationData.parameters && (
+          <Tab
+            id="visit-parameters-tab"
+            aria-controls="visit-parameters-panel"
+            label={t('investigations.details.parameters.label')}
+            value="parameters"
+          />
+        )}
         {investigationData.publications && (
           <Tab
             id="visit-publications-tab"
@@ -101,14 +145,14 @@ const VisitDetailsPanel = (
         id="visit-details-panel"
         aria-labelledby="visit-details-tab"
         role="tabpanel"
-        hidden={value !== 'details'}
+        hidden={selectedTab !== 'details'}
       >
-        <Grid container className={classes.root} direction="column">
+        <StyledGrid container direction="column">
           <Grid item xs>
             <Typography variant="h6">
               <b>{investigationData.name}</b>
             </Typography>
-            <Divider className={classes.divider} />
+            <StyledDivider />
           </Grid>
           <Grid item xs>
             <Typography variant="overline">
@@ -147,7 +191,7 @@ const VisitDetailsPanel = (
               <b>
                 {investigationData.startDate &&
                 investigationData.startDate !== 'null'
-                  ? investigationData.startDate
+                  ? new Date(investigationData.startDate).toLocaleDateString()
                   : `${t('investigations.details.start_date')} not provided`}
               </b>
             </Typography>
@@ -160,7 +204,7 @@ const VisitDetailsPanel = (
               <b>
                 {investigationData.endDate &&
                 investigationData.endDate !== 'null'
-                  ? investigationData.endDate
+                  ? new Date(investigationData.endDate).toLocaleDateString()
                   : `${t('investigations.details.end_date')} not provided`}
               </b>
             </Typography>
@@ -170,35 +214,19 @@ const VisitDetailsPanel = (
               {t('investigations.details.size')}
             </Typography>
             <Typography>
-              <b>
-                {investigationData.size !== undefined ? (
-                  formatBytes(investigationData.size)
-                ) : (
-                  <Button
-                    onClick={() => {
-                      fetchSize();
-                    }}
-                    variant="outlined"
-                    color="secondary"
-                    size="small"
-                    id="calculate-size-btn"
-                  >
-                    {t('investigations.details.calculate')}
-                  </Button>
-                )}
-              </b>
+              <b>{formatBytes(investigationData.fileSize)}</b>
             </Typography>
           </Grid>
-        </Grid>
+        </StyledGrid>
       </div>
       {investigationData.investigationUsers && (
         <div
           id="visit-users-panel"
           aria-labelledby="visit-users-tab"
           role="tabpanel"
-          hidden={value !== 'users'}
+          hidden={selectedTab !== 'users'}
         >
-          <Grid container className={classes.root} direction="column">
+          <StyledGrid container direction="column">
             <Typography variant="overline">
               {t('investigations.details.users.name', {
                 count: investigationData.investigationUsers.length,
@@ -226,7 +254,7 @@ const VisitDetailsPanel = (
                 <b>{t('investigations.details.users.no_name')}</b>
               </Typography>
             )}
-          </Grid>
+          </StyledGrid>
         </div>
       )}
       {investigationData.samples && (
@@ -234,9 +262,9 @@ const VisitDetailsPanel = (
           id="visit-samples-panel"
           aria-labelledby="visit-samples-tab"
           role="tabpanel"
-          hidden={value !== 'samples'}
+          hidden={selectedTab !== 'samples'}
         >
-          <Grid container className={classes.root} direction="column">
+          <StyledGrid container direction="column">
             <Typography variant="overline">
               {t('investigations.details.samples.name', {
                 count: investigationData.samples.length,
@@ -247,6 +275,7 @@ const VisitDetailsPanel = (
                 return (
                   <Grid key={sample.id} item xs>
                     <Typography>
+                      {sample.type?.name ? `${sample.type.name}: ` : ''}
                       <b>{sample.name}</b>
                     </Typography>
                   </Grid>
@@ -257,7 +286,68 @@ const VisitDetailsPanel = (
                 <b>{t('investigations.details.samples.no_samples')}</b>
               </Typography>
             )}
-          </Grid>
+          </StyledGrid>
+        </div>
+      )}
+      {investigationData.parameters && (
+        <div
+          id="investigation-parameters-panel"
+          aria-labelledby="investigation-parameters-tab"
+          role="tabpanel"
+          hidden={selectedTab !== 'parameters'}
+        >
+          <StyledGrid id="parameter-grid" container direction="column">
+            {investigationData.parameters.length > 0 ? (
+              investigationData.parameters.map((parameter) => {
+                switch (parameter.type.valueType) {
+                  case 'STRING':
+                    return (
+                      <Grid key={parameter.id} item xs>
+                        <Typography variant="overline">
+                          {parameter.type.name}
+                        </Typography>
+                        <Typography>
+                          <b>{parameter.stringValue}</b>
+                        </Typography>
+                      </Grid>
+                    );
+                  case 'NUMERIC':
+                    return (
+                      <Grid key={parameter.id} item xs>
+                        <Typography variant="overline">
+                          {parameter.type.name}
+                        </Typography>
+                        <Typography>
+                          <b>{parameter.numericValue}</b> {parameter.type.units}
+                        </Typography>
+                      </Grid>
+                    );
+                  case 'DATE_AND_TIME':
+                    return (
+                      <Grid key={parameter.id} item xs>
+                        <Typography variant="overline">
+                          {parameter.type.name}
+                        </Typography>
+                        <Typography>
+                          <b>
+                            {parameter.dateTimeValue &&
+                              formatParameterDateTimeValue(
+                                parameter.dateTimeValue
+                              )}
+                          </b>
+                        </Typography>
+                      </Grid>
+                    );
+                  default:
+                    return null;
+                }
+              })
+            ) : (
+              <Typography data-testid="investigation-details-panel-no-parameters">
+                <b>{t('investigations.details.parameters.no_parameters')}</b>
+              </Typography>
+            )}
+          </StyledGrid>
         </div>
       )}
       {investigationData.publications && (
@@ -265,9 +355,9 @@ const VisitDetailsPanel = (
           id="visit-publications-panel"
           aria-labelledby="visit-publications-tab"
           role="tabpanel"
-          hidden={value !== 'publications'}
+          hidden={selectedTab !== 'publications'}
         >
-          <Grid container className={classes.root} direction="column">
+          <StyledGrid container direction="column">
             <Typography variant="overline">
               {t('investigations.details.publications.reference', {
                 count: investigationData.publications.length,
@@ -290,7 +380,7 @@ const VisitDetailsPanel = (
                 </b>
               </Typography>
             )}
-          </Grid>
+          </StyledGrid>
         </div>
       )}
     </div>

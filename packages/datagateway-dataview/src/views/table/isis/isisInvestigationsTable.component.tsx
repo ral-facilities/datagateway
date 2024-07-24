@@ -1,50 +1,50 @@
 import {
-  formatCountOrSize,
-  Investigation,
-  Table,
-  tableLink,
-  externalSiteLink,
-  useISISInvestigationsInfinite,
-  useISISInvestigationCount,
-  useISISInvestigationIds,
+  CalendarToday,
+  Fingerprint,
+  Person,
+  Public,
+  Save,
+  Subject,
+} from '@mui/icons-material';
+import {
+  AdditionalFilters,
   ColumnType,
+  DownloadButton,
+  externalSiteLink,
+  formatBytes,
+  Investigation,
+  ISISInvestigationDetailsPanel,
   parseSearchToQuery,
+  Table,
+  TableActionProps,
+  tableLink,
   useAddToCart,
   useCart,
   useDateFilter,
-  useInvestigationSizes,
+  useIds,
+  useInvestigationCount,
+  useInvestigationsInfinite,
   usePrincipalExperimenterFilter,
-  useSort,
   useRemoveFromCart,
+  useSort,
   useTextFilter,
-  TableActionProps,
-  DownloadButton,
-  ISISInvestigationDetailsPanel,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import { useHistory, useLocation } from 'react-router-dom';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { StateType } from '../../../state/app.types';
 
-import SubjectIcon from '@material-ui/icons/Subject';
-import FingerprintIcon from '@material-ui/icons/Fingerprint';
-import PublicIcon from '@material-ui/icons/Public';
-import SaveIcon from '@material-ui/icons/Save';
-import PersonIcon from '@material-ui/icons/Person';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import { useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router';
-
 interface ISISInvestigationsTableProps {
   instrumentId: string;
-  instrumentChildId: string;
-  studyHierarchy: boolean;
+  facilityCycleId: string;
 }
 
 const ISISInvestigationsTable = (
   props: ISISInvestigationsTableProps
 ): React.ReactElement => {
-  const { instrumentId, instrumentChildId, studyHierarchy } = props;
+  const { instrumentId, facilityCycleId } = props;
   const selectAllSetting = useSelector(
     (state: StateType) => state.dgdataview.selectAllSetting
   );
@@ -57,11 +57,24 @@ const ISISInvestigationsTable = (
     [location.search]
   );
 
-  const { data: totalDataCount } = useISISInvestigationCount(
-    parseInt(instrumentId),
-    parseInt(instrumentChildId),
-    studyHierarchy
-  );
+  const investigationQueryFilters: AdditionalFilters = [
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'investigationInstruments.instrument.id': {
+          eq: parseInt(instrumentId),
+        },
+      }),
+    },
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'investigationFacilityCycles.facilityCycle.id': {
+          eq: parseInt(facilityCycleId),
+        },
+      }),
+    },
+  ];
 
   // isMounted is used to disable queries when the component isn't fully mounted.
   // It prevents the request being sent twice if default sort is set.
@@ -71,26 +84,42 @@ const ISISInvestigationsTable = (
     setIsMounted(true);
   }, []);
 
-  const { fetchNextPage, data } = useISISInvestigationsInfinite(
-    parseInt(instrumentId),
-    parseInt(instrumentChildId),
-    studyHierarchy,
+  const { data: totalDataCount } = useInvestigationCount(
+    investigationQueryFilters
+  );
+  const { fetchNextPage, data } = useInvestigationsInfinite(
+    [
+      ...investigationQueryFilters,
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify([
+          {
+            investigationInstruments: 'instrument',
+          },
+          {
+            dataCollectionInvestigations: {
+              dataCollection: { dataPublications: 'type' },
+            },
+          },
+          {
+            investigationUsers: 'user',
+          },
+        ]),
+      },
+    ],
+    undefined,
     isMounted
   );
-  const { data: allIds } = useISISInvestigationIds(
-    parseInt(instrumentId),
-    parseInt(instrumentChildId),
-    studyHierarchy,
+  const { data: allIds, isLoading: allIdsLoading } = useIds(
+    'investigation',
+    investigationQueryFilters,
     selectAllSetting
   );
-  const { data: cartItems } = useCart();
-  const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
-    'investigation'
-  );
-  const {
-    mutate: removeFromCart,
-    isLoading: removeFromCartLoading,
-  } = useRemoveFromCart('investigation');
+  const { data: cartItems, isLoading: cartLoading } = useCart();
+  const { mutate: addToCart, isLoading: addToCartLoading } =
+    useAddToCart('investigation');
+  const { mutate: removeFromCart, isLoading: removeFromCartLoading } =
+    useRemoveFromCart('investigation');
 
   const selectedRows = React.useMemo(
     () =>
@@ -106,10 +135,18 @@ const ISISInvestigationsTable = (
     [cartItems, selectAllSetting, allIds]
   );
 
-  const aggregatedData: Investigation[] = React.useMemo(
-    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
-    [data]
-  );
+  /* istanbul ignore next */
+  const aggregatedData: Investigation[] = React.useMemo(() => {
+    if (data) {
+      if ('pages' in data) {
+        return data.pages.flat();
+      } else if ((data as unknown) instanceof Array) {
+        return data;
+      }
+    }
+
+    return [];
+  }, [data]);
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
@@ -121,33 +158,29 @@ const ISISInvestigationsTable = (
     [fetchNextPage]
   );
 
-  const sizeQueries = useInvestigationSizes(data);
-
-  const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
-  const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
-  const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation`;
-
   const detailsPanel = React.useCallback(
     ({ rowData, detailsPanelResize }) => (
       <ISISInvestigationDetailsPanel
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}
-        viewDatasets={(id: number) => push(`${urlPrefix}/${id}/dataset`)}
+        viewDatasets={(id: number) =>
+          push(`${location.pathname}/${id}/dataset`)
+        }
       />
     ),
-    [push, urlPrefix]
+    [push, location.pathname]
   );
 
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: SubjectIcon,
+        icon: Subject,
         label: t('investigations.title'),
         dataKey: 'title',
         cellContentRenderer: (cellProps: TableCellProps) => {
           const investigationData = cellProps.rowData as Investigation;
           return tableLink(
-            `${urlPrefix}/${investigationData.id}`,
+            `${location.pathname}/${investigationData.id}`,
             investigationData.title,
             view,
             'isis-investigations-table-title'
@@ -156,22 +189,29 @@ const ISISInvestigationsTable = (
         filterComponent: textFilter,
       },
       {
-        icon: FingerprintIcon,
+        icon: Fingerprint,
         label: t('investigations.name'),
         dataKey: 'name',
         filterComponent: textFilter,
       },
       {
-        icon: PublicIcon,
+        icon: Public,
         label: t('investigations.doi'),
-        dataKey: 'studyInvestigations.study.pid',
+        dataKey:
+          'dataCollectionInvestigations.dataCollection.dataPublications.pid',
         cellContentRenderer: (cellProps: TableCellProps) => {
           const investigationData = cellProps.rowData as Investigation;
-          if (investigationData?.studyInvestigations?.[0]?.study) {
+          const studyDataPublication =
+            investigationData.dataCollectionInvestigations?.filter(
+              (dci) =>
+                dci.dataCollection?.dataPublications?.[0]?.type?.name ===
+                'study'
+            )?.[0]?.dataCollection?.dataPublications?.[0];
+          if (studyDataPublication) {
             return externalSiteLink(
-              `https://doi.org/${investigationData.studyInvestigations[0].study.pid}`,
-              investigationData.studyInvestigations[0].study.pid,
-              'isis-investigation-table-doi-link'
+              `https://doi.org/${studyDataPublication.pid}`,
+              studyDataPublication.pid,
+              'isis-investigations-table-doi-link'
             );
           } else {
             return '';
@@ -180,23 +220,24 @@ const ISISInvestigationsTable = (
         filterComponent: textFilter,
       },
       {
-        icon: SaveIcon,
+        icon: Save,
         label: t('investigations.size'),
         dataKey: 'size',
         cellContentRenderer: (cellProps: TableCellProps): number | string =>
-          formatCountOrSize(sizeQueries[cellProps.rowIndex], true),
+          formatBytes(cellProps.rowData.fileSize),
         disableSort: true,
       },
       {
-        icon: PersonIcon,
+        icon: Person,
         label: t('investigations.principal_investigators'),
         dataKey: 'investigationUsers.user.fullName',
         disableSort: true,
         cellContentRenderer: (cellProps: TableCellProps) => {
           const investigationData = cellProps.rowData as Investigation;
-          const principal_investigators = investigationData?.investigationUsers?.filter(
-            (iu) => iu.role === 'principal_experimenter'
-          );
+          const principal_investigators =
+            investigationData?.investigationUsers?.filter(
+              (iu) => iu.role === 'principal_experimenter'
+            );
           if (principal_investigators && principal_investigators.length !== 0) {
             return principal_investigators?.[0].user?.fullName;
           } else {
@@ -206,14 +247,14 @@ const ISISInvestigationsTable = (
         filterComponent: principalExperimenterFilter,
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('investigations.start_date'),
         dataKey: 'startDate',
         filterComponent: dateFilter,
         defaultSort: 'desc',
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
 
         label: t('investigations.end_date'),
         dataKey: 'endDate',
@@ -225,15 +266,19 @@ const ISISInvestigationsTable = (
       textFilter,
       principalExperimenterFilter,
       dateFilter,
-      urlPrefix,
+      location.pathname,
       view,
-      sizeQueries,
     ]
   );
 
   return (
     <Table
-      loading={addToCartLoading || removeFromCartLoading}
+      loading={
+        addToCartLoading ||
+        removeFromCartLoading ||
+        cartLoading ||
+        allIdsLoading
+      }
       data={aggregatedData}
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}
@@ -252,10 +297,7 @@ const ISISInvestigationsTable = (
             entityId={rowData.id}
             entityName={rowData.name}
             variant="icon"
-            entitySize={
-              sizeQueries[aggregatedData.indexOf(rowData as Investigation)]
-                ?.data ?? -1
-            }
+            entitySize={rowData.fileSize ?? -1}
           />
         ),
       ]}

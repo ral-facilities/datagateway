@@ -1,15 +1,15 @@
 import {
-  useInstrumentsPaginated,
-  useInvestigation,
-  useFacilityCyclesByInvestigation,
-  Preloader,
+  buildDatasetTableUrlForInvestigation,
+  FACILITY_NAME,
   MicroFrontendId,
   NotificationType,
+  Preloader,
+  useInvestigation,
 } from 'datagateway-common';
+import log from 'loglevel';
 import React from 'react';
 import { Redirect, useParams } from 'react-router-dom';
 import { paths } from './pageContainer.component';
-import * as log from 'loglevel';
 
 type DoiRedirectRouteParams = {
   facilityName: string;
@@ -25,67 +25,49 @@ const DoiRedirect: React.FC = () => {
 
   const investigationId = parseInt(entityId);
 
-  const {
-    data: investigations,
-    isLoading: investigationLoading,
-  } = useInvestigation(investigationId);
+  const { data: investigations, isLoading: isInvestigationLoading } =
+    useInvestigation(investigationId, [
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify({
+          investigationInstruments: 'instrument',
+          investigationFacilityCycles: 'facilityCycle',
+        }),
+      },
+    ]);
+
   const investigation = investigations?.[0];
+  const redirectUrl = investigation
+    ? buildDatasetTableUrlForInvestigation({
+        investigation,
+        facilityName: FACILITY_NAME.isis,
+      })
+    : null;
 
-  const {
-    data: instruments,
-    isLoading: instrumentLoading,
-  } = useInstrumentsPaginated([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'investigationInstruments.investigation.id': { eq: investigationId },
-      }),
-    },
-  ]);
-  const instrument = instruments?.[0];
+  if (investigation && redirectUrl) {
+    return <Redirect to={redirectUrl} />;
+  }
 
-  const {
-    data: facilityCycles,
-    isLoading: facilityCycleLoading,
-    isIdle: facilityCycleIdle,
-  } = useFacilityCyclesByInvestigation(
-    investigation?.startDate?.replace('+', ' ')
-  );
-  const facilityCycle = facilityCycles?.[0];
-
-  const loading =
-    facilityCycleLoading ||
-    instrumentLoading ||
-    investigationLoading ||
-    (!!investigation && facilityCycleIdle);
-
-  if (investigation && instrument && facilityCycle) {
-    return (
-      <Redirect
-        to={`/browse/instrument/${instrument.id}/facilityCycle/${facilityCycle.id}/investigation/${investigation.id}/dataset`}
-      />
-    );
-  } else {
-    if (!loading && (!investigation || !instrument || !facilityCycle)) {
-      log.error('Invalid DOI redirect');
-      document.dispatchEvent(
-        new CustomEvent(MicroFrontendId, {
-          detail: {
-            type: NotificationType,
-            payload: {
-              severity: 'error',
-              message: `Cannot read the ${entityName}. You may not have read access, or it may not be published yet.`,
-            },
+  if (!isInvestigationLoading) {
+    log.error('Invalid DOI redirect');
+    document.dispatchEvent(
+      new CustomEvent(MicroFrontendId, {
+        detail: {
+          type: NotificationType,
+          payload: {
+            severity: 'error',
+            message: `Cannot read the ${entityName}. You may not have read access, or it may not be published yet.`,
           },
-        })
-      );
-    }
-    return (
-      <Preloader loading={loading}>
-        <Redirect to={paths.homepage} />
-      </Preloader>
+        },
+      })
     );
   }
+
+  return (
+    <Preloader loading={isInvestigationLoading}>
+      <Redirect to={paths.homepage} />
+    </Preloader>
+  );
 };
 
 export default DoiRedirect;

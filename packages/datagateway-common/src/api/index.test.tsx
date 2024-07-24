@@ -10,8 +10,16 @@ import {
   usePushPage,
   usePushResults,
   useSort,
-  usePushCurrentTab,
   useUpdateView,
+  useCustomFilterCount,
+  usePushSearchText,
+  usePushSearchToggles,
+  usePushSearchEndDate,
+  usePushSearchStartDate,
+  useUpdateQueryParam,
+  usePushQueryParams,
+  useSingleSort,
+  usePushSearchRestrict,
 } from './index';
 import {
   FiltersType,
@@ -29,16 +37,7 @@ import React from 'react';
 import { Router } from 'react-router-dom';
 import axios from 'axios';
 import handleICATError from '../handleICATError';
-
 import { createReactQueryWrapper } from '../setupTests';
-import {
-  useCustomFilterCount,
-  usePushSearchText,
-  usePushSearchToggles,
-  usePushSearchEndDate,
-  usePushSearchStartDate,
-  useUpdateQueryParam,
-} from '..';
 
 jest.mock('../handleICATError');
 
@@ -109,6 +108,7 @@ describe('generic api functions', () => {
         view: 'table',
         search: 'test',
         page: 1,
+        restrict: false,
         results: 10,
         filters: { name: { value: 'test', type: 'include' } },
         sort: { name: 'asc' },
@@ -124,12 +124,13 @@ describe('generic api functions', () => {
 
     it('parses query string with search parameters successfully', () => {
       const query =
-        'view=table&searchText=testText&datafile=false&startDate=2021-10-17&endDate=2021-10-25';
+        'view=table&searchText=testText&datafile=false&startDate=2021-10-17&endDate=2021-10-25&restrict=true';
 
       expect(parseSearchToQuery(query)).toEqual({
         view: 'table',
         search: null,
         page: null,
+        restrict: true,
         results: null,
         filters: {},
         sort: {},
@@ -163,6 +164,7 @@ describe('generic api functions', () => {
           startDate: new Date(NaN),
           endDate: new Date(NaN),
           currentTab: 'investigation',
+          restrict: false,
         })
       );
     });
@@ -189,6 +191,7 @@ describe('generic api functions', () => {
         search: 'test',
         page: 1,
         results: 10,
+        restrict: false,
         filters: { name: { value: 'test', type: 'include' } },
         sort: { name: 'asc' },
         searchText: null,
@@ -212,6 +215,7 @@ describe('generic api functions', () => {
         view: 'table',
         search: null,
         page: null,
+        restrict: true,
         results: null,
         filters: {},
         sort: {},
@@ -225,7 +229,7 @@ describe('generic api functions', () => {
       };
 
       const params = new URLSearchParams(
-        '?view=table&searchText=testText&datafile=false&startDate=2021-10-17&endDate=2021-10-25'
+        '?view=table&restrict=true&searchText=testText&datafile=false&startDate=2021-10-17&endDate=2021-10-25'
       );
 
       expect(parseQueryToSearch(query).toString()).toEqual(params.toString());
@@ -236,6 +240,7 @@ describe('generic api functions', () => {
         view: 'table',
         search: null,
         page: null,
+        restrict: false,
         results: null,
         filters: {},
         sort: {},
@@ -262,6 +267,7 @@ describe('generic api functions', () => {
         filters: {
           name: { value: 'test', type: 'include' },
           title: { value: 'test', type: 'exclude' },
+          doi: { value: 'test', type: 'exact' },
           startDate: {
             startDate: '2021-08-05',
             endDate: '2021-08-06',
@@ -276,6 +282,7 @@ describe('generic api functions', () => {
       params.append('order', JSON.stringify('id asc'));
       params.append('where', JSON.stringify({ name: { ilike: 'test' } }));
       params.append('where', JSON.stringify({ title: { nilike: 'test' } }));
+      params.append('where', JSON.stringify({ doi: { eq: 'test' } }));
       params.append(
         'where',
         JSON.stringify({ startDate: { gte: '2021-08-05 00:00:00' } })
@@ -296,6 +303,7 @@ describe('generic api functions', () => {
         filters: {
           name: { value: 'test', type: 'include' },
           title: { value: 'test', type: 'exclude' },
+          doi: { value: 'test', type: 'exact' },
           startDate: {
             startDate: '2021-08-05',
             endDate: '2021-08-06',
@@ -309,6 +317,7 @@ describe('generic api functions', () => {
       params.append('order', JSON.stringify('name asc'));
       params.append('where', JSON.stringify({ name: { ilike: 'test' } }));
       params.append('where', JSON.stringify({ title: { nilike: 'test' } }));
+      params.append('where', JSON.stringify({ doi: { eq: 'test' } }));
       params.append(
         'where',
         JSON.stringify({ startDate: { gte: '2021-08-05 00:00:00' } })
@@ -343,6 +352,7 @@ describe('generic api functions', () => {
     afterEach(() => {
       jest.restoreAllMocks();
       jest.resetModules();
+      window.history.pushState({}, 'Test', '/');
     });
 
     describe('useSort', () => {
@@ -394,6 +404,45 @@ describe('generic api functions', () => {
           search: '?',
         });
       });
+
+      it('returns callback that, when called without shift modifier, replaces sort with the new one', () => {
+        window.history.pushState(
+          {},
+          'Test',
+          '?sort=%7B%22name%22%3A%22asc%22%7D'
+        );
+        const { result } = renderHook(() => useSort(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current('title', 'asc', 'push', false);
+        });
+
+        expect(pushSpy).toHaveBeenCalledWith({
+          search: `?sort=${encodeURIComponent('{"title":"asc"}')}`,
+        });
+      });
+
+      it('returns callback that, when called with shift modifier, appends new sort to the existing one', () => {
+        window.history.pushState(
+          {},
+          'Test',
+          '?sort=%7B%22name%22%3A%22asc%22%7D'
+        );
+
+        const { result } = renderHook(() => useSort(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current('title', 'asc', 'push', true);
+        });
+
+        expect(pushSpy).toHaveBeenCalledWith({
+          search: `?sort=${encodeURIComponent('{"name":"asc","title":"asc"}')}`,
+        });
+      });
     });
 
     describe('usePushFilter', () => {
@@ -425,6 +474,38 @@ describe('generic api functions', () => {
         const { result } = renderHook(() => usePushFilter(), {
           wrapper,
         });
+
+        act(() => {
+          result.current('name', null);
+        });
+
+        expect(pushSpy).toHaveBeenCalledWith({
+          search: '?',
+        });
+      });
+
+      it('can pass a filter prefix to the callback', () => {
+        const { result } = renderHook(() => usePushFilter('prefix.'), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current('name', { value: 'test', type: 'include' });
+        });
+
+        expect(pushSpy).toHaveBeenCalledWith({
+          search: `?filters=${encodeURIComponent(
+            '{"prefix.name":{"value":"test","type":"include"}}'
+          )}`,
+        });
+
+        jest.mock('./index.tsx', () => ({
+          ...jest.requireActual('./index.tsx'),
+          parseSearchToQuery: jest.fn(
+            () =>
+              '?filters=%7B%22prefix.name%22%3A%7B%22value%22%3A%22test%22%2C%22type%22%3A%22include%22%7D%7D'
+          ),
+        }));
 
         act(() => {
           result.current('name', null);
@@ -493,20 +574,6 @@ describe('generic api functions', () => {
         });
 
         expect(pushSpy).toHaveBeenCalledWith('?page=1');
-      });
-    });
-
-    describe('usePushCurrentTab', () => {
-      it('returns callback that when called pushes a new tab to the url query', () => {
-        const { result } = renderHook(() => usePushCurrentTab(), {
-          wrapper,
-        });
-
-        act(() => {
-          result.current('dataset');
-        });
-
-        expect(pushSpy).toHaveBeenCalledWith('?currentTab=dataset');
       });
     });
 
@@ -746,7 +813,9 @@ describe('generic api functions', () => {
           result.current('test');
         });
 
-        expect(pushSpy).toHaveBeenCalledWith('?searchText=test');
+        expect(pushSpy).toHaveBeenCalledWith({
+          search: '?searchText=test',
+        });
       });
     });
 
@@ -819,6 +888,103 @@ describe('generic api functions', () => {
         });
 
         expect(pushSpy).toHaveBeenLastCalledWith('?');
+      });
+    });
+
+    describe('usePushQueryParams', () => {
+      it('returns callback that when called pushes query params to the url query', () => {
+        history.replace({
+          search:
+            '?view=table&searchText=testText&datafile=false&startDate=2021-10-17&endDate=2021-10-25',
+        });
+        replaceSpy.mockClear();
+
+        const { result } = renderHook(() => usePushQueryParams(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current({
+            view: 'card',
+            restrict: true,
+            searchText: 'newText',
+            dataset: false,
+            datafile: true,
+            investigation: false,
+            startDate: null,
+            currentTab: 'dataset',
+          });
+        });
+
+        expect(pushSpy).toHaveBeenCalledWith({
+          search:
+            '?view=card&searchText=newText&dataset=false&investigation=false&endDate=2021-10-25&currentTab=dataset&restrict=true',
+        });
+      });
+    });
+
+    describe('useSingleSort', () => {
+      it('returns callback that can push a new sort to the url query', () => {
+        const { result } = renderHook(() => useSingleSort(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current('name', 'asc', 'push');
+        });
+
+        expect(pushSpy).toHaveBeenCalledWith({
+          search: `?sort=${encodeURIComponent('{"name":"asc"}')}`,
+        });
+      });
+
+      it('returns callback that can replace the sort with a new one in the url query', () => {
+        const { result } = renderHook(() => useSingleSort(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current('name', 'asc', 'replace');
+        });
+
+        expect(replaceSpy).toHaveBeenCalledWith({
+          search: `?sort=${encodeURIComponent('{"name":"asc"}')}`,
+        });
+      });
+
+      it('returns callback that when called removes a null sort from the url query', () => {
+        jest.mock('./index.tsx', () => ({
+          ...jest.requireActual('./index.tsx'),
+          parseSearchToQuery: jest.fn(
+            () => '?sort=%7B%22name%22%3A%22asc%22%7D'
+          ),
+        }));
+
+        const { result } = renderHook(() => useSingleSort(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current('name', null, 'push');
+        });
+
+        expect(pushSpy).toHaveBeenCalledWith({
+          search: '?',
+        });
+      });
+    });
+
+    describe('usePushSearchRestrict', () => {
+      it('returns callback that when called pushes search restrict to the url query', () => {
+        const { result } = renderHook(() => usePushSearchRestrict(), {
+          wrapper,
+        });
+
+        act(() => {
+          result.current(true);
+        });
+
+        expect(pushSpy).toHaveBeenCalledWith('?restrict=true');
       });
     });
   });

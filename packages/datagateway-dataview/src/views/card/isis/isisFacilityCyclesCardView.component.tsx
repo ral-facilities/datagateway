@@ -14,9 +14,9 @@ import {
   useSort,
   useTextFilter,
 } from 'datagateway-common';
-import { CalendarToday } from '@material-ui/icons';
+import { CalendarToday } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 
 interface ISISFacilityCyclesCVProps {
   instrumentId: string;
@@ -49,10 +49,8 @@ const ISISFacilityCyclesCardView = (
     setIsMounted(true);
   }, []);
 
-  const {
-    data: totalDataCount,
-    isLoading: countLoading,
-  } = useFacilityCycleCount(parseInt(instrumentId));
+  const { data: totalDataCount, isLoading: countLoading } =
+    useFacilityCycleCount(parseInt(instrumentId));
   const { isLoading: dataLoading, data } = useFacilityCyclesPaginated(
     parseInt(instrumentId),
     isMounted
@@ -103,6 +101,7 @@ const ISISFacilityCyclesCardView = (
 
   return (
     <CardView
+      data-testid="isis-facility-card-view"
       data={data ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}

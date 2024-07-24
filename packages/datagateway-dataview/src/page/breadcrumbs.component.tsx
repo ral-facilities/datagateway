@@ -1,13 +1,11 @@
 import {
   Breadcrumbs,
-  createStyles,
+  breadcrumbsClasses,
   Link as MaterialLink,
   Paper,
-  Theme,
+  styled,
   Typography,
-  withStyles,
-} from '@material-ui/core';
-import { StyleRules } from '@material-ui/core/styles';
+} from '@mui/material';
 import axios, { AxiosError } from 'axios';
 import {
   ArrowTooltip,
@@ -51,95 +49,6 @@ const Breadcrumb: React.FC<BreadcrumbProps> = (props: BreadcrumbProps) => {
     );
   }
 };
-
-const breadcrumbsStyles = (theme: Theme): StyleRules =>
-  createStyles({
-    root: {
-      backgroundColor: theme.palette.background.default,
-      '& li': {
-        '& a, p': {
-          color: theme.palette.primary.contrastText,
-          backgroundColor: theme.palette.primary.light,
-          display: 'block',
-          textDecoration: 'none',
-          position: 'relative',
-
-          /* Positions breadcrumb */
-          lineHeight: '28px',
-          padding: ' 0 4px 0 14px',
-          textAlign: 'center',
-
-          /* Add the arrow between breadcrumbs */
-          '&:after': {
-            content: '""',
-            position: 'absolute',
-            top: '3px',
-            // half the width/height
-            right: '-11px',
-            // width/height same as lineHeight - 2* top height
-            height: '22px',
-            width: '22px',
-            // change skew to alter how shallow the arrow is
-            transform: 'scale(0.707) rotate(45deg) skew(15deg,15deg)',
-            zIndex: 1,
-            boxShadow: `2px -2px 0 2px ${theme.palette.background.default}`,
-            borderRadius: ' 0 5px 0 50px',
-            backgroundColor: theme.palette.primary.light,
-          },
-          '&:hover': {
-            backgroundColor: theme.palette.primary.light,
-            '&:after': {
-              backgroundColor: theme.palette.primary.light,
-            },
-          },
-          '&:active': {
-            backgroundColor: theme.palette.grey[600],
-            '&:after': {
-              backgroundColor: `${theme.palette.grey[600]} !important`,
-            },
-          },
-        },
-      },
-      /* Every even breadcrumb has a darker background */
-      '& li:nth-child(4n + 3)': {
-        '& a, p': {
-          backgroundColor: theme.palette.primary.main,
-          '&:after': {
-            backgroundColor: theme.palette.primary.main,
-          },
-        },
-      },
-      '& li:first-child': {
-        '& a, p': {
-          paddingLeft: '14px',
-        },
-      },
-      '& li:last-child': {
-        '& a, p': {
-          /* Curve the last breadcrumb border */
-          borderRadius: '0 5px 5px 0',
-          paddingLeft: '14px',
-          '&:after': {
-            content: 'none',
-          },
-        },
-      },
-
-      /* Control the width and shortening of text */
-      '& span': {
-        display: 'block',
-        whiteSpace: 'nowrap',
-        // TODO: Remove use of "vw" here?
-        maxWidth: '20vw',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-      },
-    },
-    separator: {
-      marginLeft: 0,
-      marginRight: 0,
-    },
-  });
 
 const fetchEntityInformation = async (
   apiUrl: string,
@@ -197,31 +106,43 @@ const useEntityInformation = (
         // the entity field we want is the name of the entity.
         let apiEntity = entity;
 
-        // If the entity is a investigation, we always want to fetch the title field.
-        let requestEntityField = entity === 'investigation' ? 'title' : 'name';
+        // If the entity is a investigation or a data publication, we can't use name field as the default
+        let requestEntityField =
+          entity === 'investigation'
+            ? 'title'
+            : entity === 'dataPublication'
+            ? 'title'
+            : 'name';
+
+        // this is the field we use to lookup the relevant entity in ICAT - it's usually ID
+        // but for DLS proposals this will be name
+        let requestQueryField = 'id';
 
         // Use breadcrumb settings in state to customise API call for entities.
-        if (
-          Object.entries(breadcrumbSettings).length !== 0 &&
-          entity in breadcrumbSettings
-        ) {
-          const entitySettings = breadcrumbSettings[entity];
+        breadcrumbSettings
+          .filter(
+            (breadcrumbSetting) => breadcrumbSetting.matchEntity === entity
+          )
+          .forEach((entitySettings) => {
+            // Check for a parent entity.
+            if (
+              !entitySettings.parentEntity ||
+              (entitySettings.parentEntity &&
+                currentPathnames.includes(entitySettings.parentEntity))
+            ) {
+              // Get the defined replace entity field.
+              requestEntityField = entitySettings.replaceEntityField;
 
-          // Check for a parent entity.
-          if (
-            !entitySettings.parentEntity ||
-            (entitySettings.parentEntity &&
-              currentPathnames.includes(entitySettings.parentEntity))
-          ) {
-            // Get the defined replace entity field.
-            requestEntityField = entitySettings.replaceEntityField;
+              // Get the replace entity, if one has been defined.
+              if (entitySettings.replaceEntity) {
+                apiEntity = entitySettings.replaceEntity;
+              }
 
-            // Get the replace entity, if one has been defined.
-            if (entitySettings.replaceEntity) {
-              apiEntity = entitySettings.replaceEntity;
+              if (entitySettings.replaceEntityQueryField) {
+                requestQueryField = entitySettings.replaceEntityQueryField;
+              }
             }
-          }
-        }
+          });
 
         // Create the entity url to request the name, this is pluralised to get the API endpoint.
         let requestEntityUrl: string;
@@ -241,7 +162,7 @@ const useEntityInformation = (
           requestEntityUrl =
             pluralisedApiEntity.toLowerCase() +
             '/findone?where=' +
-            JSON.stringify({ name: { eq: entityId } });
+            JSON.stringify({ [requestQueryField]: { eq: entityId } });
         }
 
         queryConfigs.push({
@@ -277,7 +198,91 @@ const useEntityInformation = (
   return useQueries(queryConfigs);
 };
 
-const StyledBreadcrumbs = withStyles(breadcrumbsStyles)(Breadcrumbs);
+const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
+  backgroundColor: theme.palette.background.default,
+  '& li': {
+    '& a, p': {
+      color: theme.palette.primary.contrastText,
+      backgroundColor: theme.palette.primary.light,
+      display: 'block',
+      textDecoration: 'none',
+      position: 'relative',
+
+      /* Positions breadcrumb */
+      lineHeight: '28px',
+      padding: '0 4px 0 14px',
+      textAlign: 'center',
+
+      /* Add the arrow between breadcrumbs */
+      '&:after': {
+        content: '""',
+        position: 'absolute',
+        top: '3px',
+        // half the width/height
+        right: '-11px',
+        // width/height same as lineHeight - 2* top height
+        height: '22px',
+        width: '22px',
+        // change skew to alter how shallow the arrow is
+        transform: 'scale(0.707) rotate(45deg) skew(15deg,15deg)',
+        zIndex: 1,
+        boxShadow: `2px -2px 0 2px ${theme.palette.background.default}`,
+        borderRadius: ' 0 5px 0 50px',
+        backgroundColor: theme.palette.primary.light,
+      },
+      '&:hover': {
+        backgroundColor: `${theme.palette.primary.light} !important`,
+        '&:after': {
+          backgroundColor: `${theme.palette.primary.light} !important`,
+        },
+      },
+      '&:active': {
+        backgroundColor: `${theme.palette.grey[600]} !important`,
+        '&:after': {
+          backgroundColor: `${theme.palette.grey[600]} !important`,
+        },
+      },
+    },
+  },
+  /* Every even breadcrumb has a darker background */
+  '& li:nth-of-type(4n + 3)': {
+    '& a, p': {
+      backgroundColor: theme.palette.primary.main,
+      '&:after': {
+        backgroundColor: theme.palette.primary.main,
+      },
+    },
+  },
+  '& li:first-of-type': {
+    '& a, p': {
+      paddingLeft: '14px',
+    },
+  },
+  '& li:last-of-type': {
+    '& a, p': {
+      /* Curve the last breadcrumb border */
+      borderRadius: '0 5px 5px 0',
+      paddingLeft: '14px',
+      '&:after': {
+        content: 'none',
+      },
+    },
+  },
+
+  /* Control the width and shortening of text */
+  '& span': {
+    display: 'block',
+    whiteSpace: 'nowrap',
+    // TODO: Remove use of "vw" here?
+    maxWidth: '20vw',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  },
+  [`& .${breadcrumbsClasses.separator}`]: {
+    marginLeft: 0,
+    marginRight: 0,
+  },
+}));
 
 interface PageBreadcrumbsProps {
   landingPageEntities: string[];
@@ -313,7 +318,7 @@ const PageBreadcrumbs: React.FC<PageBreadcrumbsProps> = (
 
             {/* // Return the base entity as a link. */}
             <Breadcrumb
-              displayName={t(`breadcrumbs.${currentPathnames[1]}`, {
+              displayName={t(`breadcrumbs.${currentPathnames[1]}` as const, {
                 count: 100,
               })}
               data-testid="Breadcrumb-base"

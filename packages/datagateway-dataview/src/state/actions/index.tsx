@@ -32,7 +32,7 @@ export const loadFeatureSwitches = (
 });
 
 export const loadBreadcrumbSettings = (
-  breadcrumbSettings: BreadcrumbSettings
+  breadcrumbSettings: BreadcrumbSettings[]
 ): ActionType<ConfigureBreadcrumbSettingsPayload> => ({
   type: ConfigureBreadcrumbSettingsType,
   payload: {

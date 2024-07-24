@@ -23,13 +23,18 @@ export {
   default as DateColumnFilter,
   useDateFilter,
 } from './table/columnFilters/dateColumnFilter.component';
-export { default as ActionCellComponent } from './table/cellRenderers/actionCell.component';
-export { default as DataCellComponent } from './table/cellRenderers/dataCell.component';
-export { default as ExpandCellComponent } from './table/cellRenderers/expandCell.component';
+export { default as ActionCell } from './table/cellRenderers/actionCell.component';
+export { default as DataCell } from './table/cellRenderers/dataCell.component';
+export { default as ExpandCell } from './table/cellRenderers/expandCell.component';
 export * from './table/cellRenderers/cellContentRenderers';
 
 export { default as CardView } from './card/cardView.component';
-export type { CardViewDetails } from './card/cardView.component';
+export type {
+  CardViewDetails,
+  CVFilterInfo,
+  CVSelectedFilter,
+  CVCustomFilters,
+} from './card/cardView.component';
 export { default as AdvancedFilter } from './card/advancedFilter.component';
 
 export * from './state/actions/index';
@@ -77,6 +82,8 @@ export { default as DLSDatasetDetailsPanel } from './detailsPanels/dls/datasetDe
 export { default as DLSVisitDetailsPanel } from './detailsPanels/dls/visitDetailsPanel.component';
 export { default as InvestigationDetailsPanel } from './detailsPanels/investigationDetailsPanel.component';
 export { default as DatasetDetailsPanel } from './detailsPanels/datasetDetailsPanel.component';
-export { default as DatafileDetailsPanel } from './detailsPanels/datasetDetailsPanel.component';
+export { default as DatafileDetailsPanel } from './detailsPanels/datafileDetailsPanel.component';
+
+export * from './urlBuilders';
 
 // ReactDOM.render(<App />, document.getElementById('root'));

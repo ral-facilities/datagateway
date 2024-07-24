@@ -19,11 +19,13 @@ export interface FeatureSwitchesPayload {
 export interface FeatureSwitches {}
 
 export interface ConfigureBreadcrumbSettingsPayload {
-  settings: BreadcrumbSettings;
+  settings: BreadcrumbSettings[];
 }
+
 export interface ConfigureSelectAllSettingPayload {
   settings: boolean;
 }
+
 export interface ConfigurePluginHostSettingPayload {
   settings: string;
 }
@@ -33,9 +35,9 @@ export interface ConfigureFacilityImageSettingPayload {
 }
 
 export interface BreadcrumbSettings {
-  [matchEntity: string]: {
-    replaceEntityField: string;
-    replaceEntity?: string;
-    parentEntity?: string;
-  };
+  matchEntity: string;
+  replaceEntityField: string;
+  replaceEntityQueryField?: string;
+  replaceEntity?: string;
+  parentEntity?: string;
 }

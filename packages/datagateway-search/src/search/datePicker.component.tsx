@@ -1,15 +1,4 @@
 import React, { useState } from 'react';
-import DateFnsUtils from '@date-io/date-fns';
-import {
-  KeyboardDatePicker,
-  MuiPickersUtilsProvider,
-} from '@material-ui/pickers';
-import {
-  Theme,
-  createStyles,
-  makeStyles,
-  useTheme,
-} from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { StateType } from '../state/app.types';
 import { useTranslation } from 'react-i18next';
@@ -18,9 +7,11 @@ import {
   usePushSearchEndDate,
   usePushSearchStartDate,
 } from 'datagateway-common';
-import { useLocation } from 'react-router';
-import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
-import { isValid } from 'date-fns';
+import { useLocation } from 'react-router-dom';
+import { isBefore, isValid } from 'date-fns';
+import { TextField, TextFieldProps } from '@mui/material';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 
 interface DatePickerProps {
   initiateSearch: () => void;
@@ -32,17 +23,40 @@ interface DatePickerStoreProps {
 
 type DatePickerCombinedProps = DatePickerProps & DatePickerStoreProps;
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      padding: theme.spacing(1, 0),
-    },
-  })
-);
+const CustomTextField: React.FC<TextFieldProps> = (props) => {
+  const { invalidDateRange, t, sideLayout, ...inputProps } =
+    props.inputProps ?? {};
+  const error =
+    // eslint-disable-next-line react/prop-types
+    (props.error || invalidDateRange) ?? undefined;
+  let helperText = t('searchBox.invalid_date_message');
+  if (invalidDateRange) helperText = t('searchBox.invalid_date_range_message');
+  return (
+    <TextField
+      {...props}
+      inputProps={{
+        // eslint-disable-next-line react/prop-types
+        ...inputProps,
+      }}
+      sx={
+        props.inputProps?.placeholder === t('searchBox.start_date')
+          ? sideLayout
+            ? {}
+            : { py: 1, width: '178px' }
+          : sideLayout
+          ? { py: 1, px: 0 }
+          : { pl: 1, py: 1, width: '178px' }
+      }
+      variant="outlined"
+      error={error}
+      // eslint-disable-next-line react/prop-types
+      {...(error && { helperText: helperText })}
+    />
+  );
+};
 
 export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
   const { sideLayout, initiateSearch } = props;
-  const classes = useStyles();
 
   const [t] = useTranslation();
 
@@ -84,7 +98,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
   };
 
   const handleChange = (
-    date: MaterialUiPickersDate,
+    date: Date | null,
     dateName: 'startDate' | 'endDate'
   ): void => {
     //Only push date when valid (and not every keypress when typing)
@@ -105,96 +119,69 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
     }
   };
 
-  //Obtain a contrast friendly button colour
-  const theme = useTheme();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const buttonColour = (theme as any).colours?.blue;
+  const invalidDateRange = startDate && endDate && isBefore(endDate, startDate);
 
   return (
     <div className="tour-search-dates">
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
         <>
-          <KeyboardDatePicker
-            clearable
-            className={classes.root}
-            allowKeyboardControl
-            disableFuture
-            inputVariant="outlined"
-            invalidDateMessage={t('searchBox.invalid_date_message')}
-            maxDate={endDate || new Date('2100-01-01T00:00:00Z')}
-            maxDateMessage={t('searchBox.invalid_date_range_message')}
+          <DatePicker
             format="yyyy-MM-dd"
+            views={['year', 'month', 'day']}
             value={startDate}
+            maxDate={endDate || new Date()}
             onChange={(date) => {
-              handleChange(date, 'startDate');
+              handleChange(date as Date, 'startDate');
             }}
-            onKeyDown={handleKeyDown}
-            animateYearScrolling
-            placeholder={t('searchBox.start_date')}
-            inputProps={{ 'aria-label': t('searchBox.start_date_arialabel') }}
-            KeyboardButtonProps={{
-              'aria-label': t('searchBox.start_date_button_arialabel'),
+            slots={{
+              textField: CustomTextField,
             }}
-            color="secondary"
-            style={sideLayout ? {} : { paddingRight: 6, width: '178px' }}
-            okLabel={
-              <span style={{ color: buttonColour }}>
-                {t('searchBox.date_picker.ok')}
-              </span>
-            }
-            cancelLabel={
-              <span style={{ color: buttonColour }}>
-                {t('searchBox.date_picker.cancel')}
-              </span>
-            }
-            clearLabel={
-              <span style={{ color: buttonColour }}>
-                {t('searchBox.date_picker.clear')}
-              </span>
-            }
+            slotProps={{
+              actionBar: {
+                actions: ['clear'],
+              },
+              textField: {
+                inputProps: {
+                  invalidDateRange,
+                  sideLayout,
+                  t: t,
+                  placeholder: t('searchBox.start_date'),
+                  'aria-label': t('searchBox.start_date_arialabel'),
+                },
+                onKeyDown: handleKeyDown,
+              },
+            }}
           />
           {sideLayout ? <br></br> : null}
-          <KeyboardDatePicker
-            clearable
-            className={classes.root}
-            allowKeyboardControl
-            disableFuture
-            inputVariant="outlined"
-            invalidDateMessage={t('searchBox.invalid_date_message')}
-            minDate={startDate || new Date('1984-01-01T00:00:00Z')}
-            minDateMessage={t('searchBox.invalid_date_range_message')}
+          <DatePicker
             format="yyyy-MM-dd"
+            views={['year', 'month', 'day']}
             value={endDate}
+            minDate={startDate || new Date('1984-01-01T00:00:00Z')}
             onChange={(date) => {
-              handleChange(date, 'endDate');
+              handleChange(date as Date, 'endDate');
             }}
-            onKeyDown={handleKeyDown}
-            animateYearScrolling
-            placeholder={t('searchBox.end_date')}
-            inputProps={{ 'aria-label': t('searchBox.end_date_arialabel') }}
-            KeyboardButtonProps={{
-              'aria-label': t('searchBox.end_date_button_arialabel'),
+            slots={{
+              textField: CustomTextField,
             }}
-            color="secondary"
-            style={sideLayout ? {} : { width: '178px' }}
-            okLabel={
-              <span style={{ color: buttonColour }}>
-                {t('searchBox.date_picker.ok')}
-              </span>
-            }
-            cancelLabel={
-              <span style={{ color: buttonColour }}>
-                {t('searchBox.date_picker.cancel')}
-              </span>
-            }
-            clearLabel={
-              <span style={{ color: buttonColour }}>
-                {t('searchBox.date_picker.clear')}
-              </span>
-            }
+            slotProps={{
+              actionBar: {
+                actions: ['clear'],
+              },
+              textField: {
+                inputProps: {
+                  invalidDateRange,
+                  sideLayout,
+                  t: t,
+                  placeholder: t('searchBox.end_date'),
+                  'aria-label': t('searchBox.end_date_arialabel'),
+                },
+                onKeyDown: handleKeyDown,
+              },
+            }}
           />
         </>
-      </MuiPickersUtilsProvider>
+      </LocalizationProvider>
     </div>
   );
 }

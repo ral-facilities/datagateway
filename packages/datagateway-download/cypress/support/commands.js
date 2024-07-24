@@ -89,35 +89,45 @@ export const readSciGatewayToken = () => {
   };
 };
 
-Cypress.Commands.add('login', (credentials) => {
-  return cy.readFile('server/e2e-settings.json').then((settings) => {
-    let body = {
-      username: '',
-      password: '',
-      mechanism: 'anon',
-    };
-    if (credentials) {
-      body = credentials;
-    }
-    cy.request('POST', `${settings.apiUrl}/sessions`, body).then((response) => {
-      const jwtHeader = { alg: 'HS256', typ: 'JWT' };
-      const payload = {
-        sessionId: response.body.sessionID,
-        username: 'test',
+Cypress.Commands.add('login', (credentials, user) => {
+  cy.session([credentials, user], () => {
+    cy.request('datagateway-download-settings.json').then((response) => {
+      const settings = response.body;
+      let body = {
+        username: '',
+        password: '',
+        mechanism: 'anon',
       };
-      const jwt = jsrsasign.KJUR.jws.JWS.sign(
-        'HS256',
-        jwtHeader,
-        payload,
-        'shh'
+      if (credentials) {
+        body = credentials;
+      }
+      cy.request('POST', `${settings.apiUrl}/sessions`, body).then(
+        (response) => {
+          const jwtHeader = { alg: 'HS256', typ: 'JWT' };
+          const payload = {
+            sessionId: response.body.sessionID,
+            username: user
+              ? user
+              : body.mechanism === 'anon'
+              ? 'anon/anon'
+              : 'Michael222',
+          };
+          const jwt = jsrsasign.KJUR.jws.JWS.sign(
+            'HS256',
+            jwtHeader,
+            payload,
+            'shh'
+          );
+          window.localStorage.setItem('scigateway:token', jwt);
+        }
       );
-      window.localStorage.setItem('scigateway:token', jwt);
     });
   });
 });
 
 Cypress.Commands.add('clearDownloadCart', () => {
-  return cy.readFile('server/e2e-settings.json').then((settings) => {
+  return cy.request('datagateway-download-settings.json').then((response) => {
+    const settings = response.body;
     cy.request({
       method: 'DELETE',
       url: `${settings.downloadApiUrl}/user/cart/${settings.facilityName}/cartItems`,
@@ -136,7 +146,8 @@ Cypress.Commands.add('seedDownloadCart', () => {
     .map((value, index) => `${entities[index % 2]} ${index}`)
     .join(', ');
 
-  return cy.readFile('server/e2e-settings.json').then((settings) => {
+  return cy.request('datagateway-download-settings.json').then((response) => {
+    const settings = response.body;
     cy.request({
       method: 'POST',
       url: `${settings.downloadApiUrl}/user/cart/${settings.facilityName}/cartItems`,
@@ -149,8 +160,58 @@ Cypress.Commands.add('seedDownloadCart', () => {
   });
 });
 
+Cypress.Commands.add('seedMintCart', () => {
+  const items = [
+    'dataset 75',
+    'datafile 371',
+    'datafile 14',
+    'datafile 133',
+    'datafile 252',
+  ].join(', ');
+
+  return cy.request('datagateway-download-settings.json').then((response) => {
+    const settings = response.body;
+    cy.request({
+      method: 'POST',
+      url: `${settings.downloadApiUrl}/user/cart/${settings.facilityName}/cartItems`,
+      body: {
+        sessionId: readSciGatewayToken().sessionId,
+        items,
+      },
+      form: true,
+    });
+  });
+});
+
+Cypress.Commands.add('clearDataPublications', () => {
+  return cy.request('datagateway-download-settings.json').then((response) => {
+    const settings = response.body;
+
+    cy.request({
+      method: 'GET',
+      url: `${settings.apiUrl}/datapublications`,
+      headers: { Authorization: `Bearer ${readSciGatewayToken().sessionId}` },
+      qs: {
+        where: JSON.stringify({ title: { eq: 'Test title' } }),
+      },
+    }).then((response) => {
+      const datapublications = response.body;
+      datapublications.forEach((datapublication) => {
+        cy.request({
+          method: 'DELETE',
+          url: `${settings.apiUrl}/datapublications/${datapublication.id}`,
+          headers: {
+            Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+          },
+        });
+      });
+    });
+  });
+});
+
 Cypress.Commands.add('addCartItem', (cartItem) => {
-  return cy.readFile('server/e2e-settings.json').then((settings) => {
+  return cy.request('datagateway-download-settings.json').then((response) => {
+    const settings = response.body;
     cy.request({
       method: 'POST',
       url: `${settings.downloadApiUrl}/user/cart/${settings.facilityName}/cartItems`,
@@ -164,7 +225,8 @@ Cypress.Commands.add('addCartItem', (cartItem) => {
 });
 
 Cypress.Commands.add('seedDownloads', () => {
-  return cy.readFile('server/e2e-settings.json').then((settings) => {
+  return cy.request('datagateway-download-settings.json').then((response) => {
+    const settings = response.body;
     let i = 1;
     for (var info of downloadsInfo) {
       // Seed a single cart item as items are cleared after each download.
@@ -220,7 +282,8 @@ Cypress.Commands.add('seedDownloads', () => {
 });
 
 Cypress.Commands.add('clearDownloads', () => {
-  return cy.readFile('server/e2e-settings.json').then((settings) => {
+  return cy.request('datagateway-download-settings.json').then((response) => {
+    const settings = response.body;
     cy.request({
       method: 'GET',
       url: `${settings.downloadApiUrl}/user/downloads`,

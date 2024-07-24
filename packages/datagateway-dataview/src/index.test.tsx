@@ -2,7 +2,7 @@ import axios from 'axios';
 import { MicroFrontendId, RegisterRouteType } from 'datagateway-common';
 import LogoLight from 'datagateway-common/src/images/datagateway-logo.svg';
 import LogoDark from 'datagateway-common/src/images/datgateway-white-text-blue-mark-logo.svg';
-import * as log from 'loglevel';
+import log from 'loglevel';
 import { fetchSettings } from './';
 
 jest.mock('loglevel');
@@ -25,11 +25,12 @@ describe('index - fetchSettings', () => {
       features: {},
       idsUrl: 'ids',
       apiUrl: 'api',
-      breadcrumbs: {
-        test: {
+      breadcrumbs: [
+        {
+          matchEntity: 'test',
           replaceEntityField: 'title',
         },
-      },
+      ],
       downloadApiUrl: 'download-api',
       selectAllSetting: false,
       routes: [
@@ -78,11 +79,12 @@ describe('index - fetchSettings', () => {
       features: {},
       idsUrl: 'ids',
       apiUrl: 'api',
-      breadcrumbs: {
-        test: {
+      breadcrumbs: [
+        {
+          matchEntity: 'test',
           replaceEntityField: 'title',
         },
-      },
+      ],
       downloadApiUrl: 'download-api',
       selectAllSetting: false,
       routes: [

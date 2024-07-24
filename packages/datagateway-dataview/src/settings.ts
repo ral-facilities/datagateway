@@ -6,10 +6,11 @@ export interface DataviewSettings {
   apiUrl: string;
   downloadApiUrl: string;
   idsUrl: string;
+  icatUrl: string;
   selectAllSetting?: boolean;
   facilityImageURL?: string;
   features?: never;
-  breadcrumbs?: BreadcrumbSettings;
+  breadcrumbs?: BreadcrumbSettings[];
   routes: PluginRoute[];
   helpSteps?: { target: string; content: string }[];
   pluginHost?: string;

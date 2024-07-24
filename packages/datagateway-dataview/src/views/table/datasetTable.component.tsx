@@ -1,12 +1,13 @@
 import React from 'react';
-import SubjectIcon from '@material-ui/icons/Subject';
-import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import {
+  Subject,
+  ConfirmationNumber,
+  CalendarToday,
+} from '@mui/icons-material';
 import {
   Table,
   datasetLink,
   Dataset,
-  formatCountOrSize,
   useDatasetCount,
   useDatasetsInfinite,
   parseSearchToQuery,
@@ -19,13 +20,12 @@ import {
   useAddToCart,
   useRemoveFromCart,
   DatasetDetailsPanel,
-  useDatasetsDatafileCount,
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../state/app.types';
-import { TableCellProps, IndexRange } from 'react-virtualized';
+import { IndexRange } from 'react-virtualized';
 
 interface DatasetTableProps {
   investigationId: string;
@@ -51,7 +51,7 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
   const dateFilter = useDateFilter(filters);
   const handleSort = useSort();
 
-  const { data: allIds } = useIds(
+  const { data: allIds, isLoading: allIdsLoading } = useIds(
     'dataset',
     [
       {
@@ -63,14 +63,11 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
     ],
     selectAllSetting
   );
-  const { data: cartItems } = useCart();
-  const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
-    'dataset'
-  );
-  const {
-    mutate: removeFromCart,
-    isLoading: removeFromCartLoading,
-  } = useRemoveFromCart('dataset');
+  const { data: cartItems, isLoading: cartLoading } = useCart();
+  const { mutate: addToCart, isLoading: addToCartLoading } =
+    useAddToCart('dataset');
+  const { mutate: removeFromCart, isLoading: removeFromCartLoading } =
+    useRemoveFromCart('dataset');
 
   const { data: totalDataCount } = useDatasetCount([
     {
@@ -95,17 +92,23 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
     [fetchNextPage]
   );
 
-  const datafileCountQueries = useDatasetsDatafileCount(data);
+  /* istanbul ignore next */
+  const aggregatedData: Dataset[] = React.useMemo(() => {
+    if (data) {
+      if ('pages' in data) {
+        return data.pages.flat();
+      } else if ((data as unknown) instanceof Array) {
+        return data;
+      }
+    }
 
-  const aggregatedData: Dataset[] = React.useMemo(
-    () => (data ? ('pages' in data ? data.pages.flat() : data) : []),
-    [data]
-  );
+    return [];
+  }, [data]);
 
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: SubjectIcon,
+        icon: Subject,
         label: t('datasets.name'),
         dataKey: 'name',
         cellContentRenderer: (cellProps) => {
@@ -120,27 +123,25 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: ConfirmationNumberIcon,
+        icon: ConfirmationNumber,
         label: t('datasets.datafile_count'),
-        dataKey: 'datafileCount',
-        cellContentRenderer: (cellProps: TableCellProps): number | string =>
-          formatCountOrSize(datafileCountQueries[cellProps.rowIndex]),
+        dataKey: 'fileCount',
         disableSort: true,
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('datasets.create_time'),
         dataKey: 'createTime',
         filterComponent: dateFilter,
       },
       {
-        icon: CalendarTodayIcon,
+        icon: CalendarToday,
         label: t('datasets.modified_time'),
         dataKey: 'modTime',
         filterComponent: dateFilter,
       },
     ],
-    [t, textFilter, dateFilter, investigationId, view, datafileCountQueries]
+    [t, textFilter, dateFilter, investigationId, view]
   );
 
   const selectedRows = React.useMemo(
@@ -157,9 +158,23 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
     [cartItems, selectAllSetting, allIds]
   );
 
+  const isParentSelected = React.useMemo(() => {
+    return cartItems?.some(
+      (cartItem) =>
+        cartItem.entityType === 'investigation' &&
+        cartItem.entityId.toString() === investigationId
+    );
+  }, [cartItems, investigationId]);
+
   return (
     <Table
-      loading={addToCartLoading || removeFromCartLoading}
+      loading={
+        addToCartLoading ||
+        removeFromCartLoading ||
+        cartLoading ||
+        allIdsLoading
+      }
+      parentSelected={isParentSelected}
       data={aggregatedData}
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount ?? 0}

@@ -1,29 +1,20 @@
-import React from 'react';
-import { createShallow } from '@material-ui/core/test-utils';
-import SubjectIcon from '@material-ui/icons/Subject';
-import FingerprintIcon from '@material-ui/icons/Fingerprint';
-import PublicIcon from '@material-ui/icons/Public';
-import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
-import AssessmentIcon from '@material-ui/icons/Assessment';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import ExploreIcon from '@material-ui/icons/Explore';
-import SaveIcon from '@material-ui/icons/Save';
-import DescriptionIcon from '@material-ui/icons/Description';
-import LinkIcon from '@material-ui/icons/Link';
-import PersonIcon from '@material-ui/icons/Person';
+import * as React from 'react';
 import AdvancedFilter, {
   UnmemoisedAdvancedFilter,
 } from './advancedFilter.component';
+import { render, screen } from '@testing-library/react';
+import { UserEvent } from '@testing-library/user-event/setup/setup';
+import userEvent from '@testing-library/user-event';
 
 describe('AdvancedFilter', () => {
-  let shallow;
+  let user: UserEvent;
 
   beforeEach(() => {
-    shallow = createShallow();
+    user = userEvent.setup();
   });
 
-  it('shows title correctly', () => {
-    const wrapper = shallow(
+  it('shows title correctly', async () => {
+    render(
       <UnmemoisedAdvancedFilter
         title={{
           label: 'Test',
@@ -34,20 +25,18 @@ describe('AdvancedFilter', () => {
     );
 
     // Click on the link to show the filters.
-    wrapper
-      .find('[data-testid="advanced-filters-link"]')
-      .first()
-      .simulate('click');
-    wrapper.update();
+    await user.click(
+      await screen.findByRole('button', { name: 'advanced_filters.show' })
+    );
 
-    expect(wrapper.find('[children="Test"]').exists()).toBe(true);
+    expect(await screen.findByText('Test')).toBeInTheDocument();
     expect(
-      wrapper.find('[data-testid="advanced-filters-link"]').text()
-    ).toEqual('advanced_filters.hide');
+      await screen.findByRole('button', { name: 'advanced_filters.hide' })
+    ).toBeInTheDocument();
   });
 
-  it('shows title correctly when no label provided', () => {
-    const wrapper = shallow(
+  it('shows title correctly when no label provided', async () => {
+    render(
       <UnmemoisedAdvancedFilter
         title={{
           dataKey: 'TEST',
@@ -57,20 +46,18 @@ describe('AdvancedFilter', () => {
     );
 
     // Click on the link to show the filters.
-    wrapper
-      .find('[data-testid="advanced-filters-link"]')
-      .first()
-      .simulate('click');
-    wrapper.update();
+    await user.click(
+      await screen.findByRole('button', { name: 'advanced_filters.show' })
+    );
 
-    expect(wrapper.find('[children="TEST"]').exists()).toBe(true);
+    expect(await screen.findByText('TEST')).toBeInTheDocument();
     expect(
-      wrapper.find('[data-testid="advanced-filters-link"]').text()
-    ).toEqual('advanced_filters.hide');
+      await screen.findByRole('button', { name: 'advanced_filters.hide' })
+    ).toBeInTheDocument();
   });
 
-  it('shows description correctly', () => {
-    const wrapper = shallow(
+  it('shows description correctly', async () => {
+    render(
       <UnmemoisedAdvancedFilter
         title={{ dataKey: 'TEST' }}
         description={{
@@ -82,20 +69,18 @@ describe('AdvancedFilter', () => {
     );
 
     // Click on the link to show the filters.
-    wrapper
-      .find('[data-testid="advanced-filters-link"]')
-      .first()
-      .simulate('click');
-    wrapper.update();
+    await user.click(
+      await screen.findByRole('button', { name: 'advanced_filters.show' })
+    );
 
-    expect(wrapper.find('[children="Desc"]').exists()).toBe(true);
+    expect(await screen.findByText('Desc')).toBeInTheDocument();
     expect(
-      wrapper.find('[data-testid="advanced-filters-link"]').text()
-    ).toEqual('advanced_filters.hide');
+      await screen.findByRole('button', { name: 'advanced_filters.hide' })
+    ).toBeInTheDocument();
   });
 
-  it('shows description correctly when no label provided', () => {
-    const wrapper = shallow(
+  it('shows description correctly when no label provided', async () => {
+    render(
       <UnmemoisedAdvancedFilter
         title={{ dataKey: 'TEST' }}
         description={{
@@ -106,20 +91,18 @@ describe('AdvancedFilter', () => {
     );
 
     // Click on the link to show the filters.
-    wrapper
-      .find('[data-testid="advanced-filters-link"]')
-      .first()
-      .simulate('click');
-    wrapper.update();
+    await user.click(
+      await screen.findByRole('button', { name: 'advanced_filters.show' })
+    );
 
-    expect(wrapper.find('[children="DESC"]').exists()).toBe(true);
+    expect(await screen.findByText('DESC')).toBeInTheDocument();
     expect(
-      wrapper.find('[data-testid="advanced-filters-link"]').text()
-    ).toEqual('advanced_filters.hide');
+      await screen.findByRole('button', { name: 'advanced_filters.hide' })
+    ).toBeInTheDocument();
   });
 
-  it('shows information correctly', () => {
-    const wrapper = shallow(
+  it('shows information correctly', async () => {
+    render(
       <UnmemoisedAdvancedFilter
         title={{ dataKey: 'TEST' }}
         information={[
@@ -133,20 +116,18 @@ describe('AdvancedFilter', () => {
     );
 
     // Click on the link to show the filters.
-    wrapper
-      .find('[data-testid="advanced-filters-link"]')
-      .first()
-      .simulate('click');
-    wrapper.update();
+    await user.click(
+      await screen.findByRole('button', { name: 'advanced_filters.show' })
+    );
 
-    expect(wrapper.find('[children="Info"]').exists()).toBe(true);
+    expect(await screen.findByText('Info')).toBeInTheDocument();
     expect(
-      wrapper.find('[data-testid="advanced-filters-link"]').text()
-    ).toEqual('advanced_filters.hide');
+      await screen.findByRole('button', { name: 'advanced_filters.hide' })
+    ).toBeInTheDocument();
   });
 
-  it('shows information correctly when label not provided', () => {
-    const wrapper = shallow(
+  it('shows information correctly when label not provided', async () => {
+    render(
       <UnmemoisedAdvancedFilter
         title={{ dataKey: 'TEST' }}
         information={[
@@ -159,20 +140,18 @@ describe('AdvancedFilter', () => {
     );
 
     // Click on the link to show the filters.
-    wrapper
-      .find('[data-testid="advanced-filters-link"]')
-      .first()
-      .simulate('click');
-    wrapper.update();
+    await user.click(
+      await screen.findByRole('button', { name: 'advanced_filters.show' })
+    );
 
-    expect(wrapper.find('[children="INFO"]').exists()).toBe(true);
+    expect(await screen.findByText('INFO')).toBeInTheDocument();
     expect(
-      wrapper.find('[data-testid="advanced-filters-link"]').text()
-    ).toEqual('advanced_filters.hide');
+      await screen.findByRole('button', { name: 'advanced_filters.hide' })
+    ).toBeInTheDocument();
   });
 
-  it('SubjectIcon displays correctly', () => {
-    const wrapper = shallow(
+  it('SubjectIcon displays correctly', async () => {
+    render(
       <AdvancedFilter
         title={{
           label: 'advanced_filters.icons.title',
@@ -181,17 +160,17 @@ describe('AdvancedFilter', () => {
         }}
       />
     );
+
     // Click on the link to show the filters.
-    wrapper
-      .find('[data-testid="advanced-filters-link"]')
-      .first()
-      .simulate('click');
-    wrapper.update();
-    expect(wrapper.exists(SubjectIcon)).toBeTruthy();
+    await user.click(
+      await screen.findByRole('button', { name: 'advanced_filters.show' })
+    );
+
+    expect(await screen.findByTestId('SubjectIcon')).toBeInTheDocument();
   });
 
-  it('FingerprintIcon displays correctly', () => {
-    const wrapper = shallow(
+  it('FingerprintIcon displays correctly', async () => {
+    render(
       <AdvancedFilter
         title={{
           label: 'advanced_filters.icons.fingerprint',
@@ -200,17 +179,17 @@ describe('AdvancedFilter', () => {
         }}
       />
     );
+
     // Click on the link to show the filters.
-    wrapper
-      .find('[data-testid="advanced-filters-link"]')
-      .first()
-      .simulate('click');
-    wrapper.update();
-    expect(wrapper.exists(FingerprintIcon)).toBeTruthy();
+    await user.click(
+      await screen.findByRole('button', { name: 'advanced_filters.show' })
+    );
+
+    expect(await screen.findByTestId('FingerprintIcon')).toBeInTheDocument();
   });
 
-  it('PublicIcon displays correctly', () => {
-    const wrapper = shallow(
+  it('PublicIcon displays correctly', async () => {
+    render(
       <AdvancedFilter
         title={{
           label: 'advanced_filters.icons.public',
@@ -219,17 +198,18 @@ describe('AdvancedFilter', () => {
         }}
       />
     );
+
     // Click on the link to show the filters.
-    wrapper
-      .find('[data-testid="advanced-filters-link"]')
-      .first()
-      .simulate('click');
-    wrapper.update();
-    expect(wrapper.exists(PublicIcon)).toBeTruthy();
+    // Click on the link to show the filters.
+    await user.click(
+      await screen.findByRole('button', { name: 'advanced_filters.show' })
+    );
+
+    expect(await screen.findByTestId('PublicIcon')).toBeInTheDocument();
   });
 
-  it('ConfirmationNumberIcon displays correctly', () => {
-    const wrapper = shallow(
+  it('ConfirmationNumberIcon displays correctly', async () => {
+    render(
       <AdvancedFilter
         title={{
           label: 'advanced_filters.icons.confirmation_number',
@@ -238,17 +218,19 @@ describe('AdvancedFilter', () => {
         }}
       />
     );
+
     // Click on the link to show the filters.
-    wrapper
-      .find('[data-testid="advanced-filters-link"]')
-      .first()
-      .simulate('click');
-    wrapper.update();
-    expect(wrapper.exists(ConfirmationNumberIcon)).toBeTruthy();
+    await user.click(
+      await screen.findByRole('button', { name: 'advanced_filters.show' })
+    );
+
+    expect(
+      await screen.findByTestId('ConfirmationNumberIcon')
+    ).toBeInTheDocument();
   });
 
-  it('AssessmentIcon displays correctly', () => {
-    const wrapper = shallow(
+  it('AssessmentIcon displays correctly', async () => {
+    render(
       <AdvancedFilter
         title={{
           label: 'advanced_filters.icons.assessment',
@@ -257,17 +239,17 @@ describe('AdvancedFilter', () => {
         }}
       />
     );
+
     // Click on the link to show the filters.
-    wrapper
-      .find('[data-testid="advanced-filters-link"]')
-      .first()
-      .simulate('click');
-    wrapper.update();
-    expect(wrapper.exists(AssessmentIcon)).toBeTruthy();
+    await user.click(
+      await screen.findByRole('button', { name: 'advanced_filters.show' })
+    );
+
+    expect(await screen.findByTestId('AssessmentIcon')).toBeInTheDocument();
   });
 
-  it('CalendarTodayIcon displays correctly', () => {
-    const wrapper = shallow(
+  it('CalendarTodayIcon displays correctly', async () => {
+    render(
       <AdvancedFilter
         title={{
           label: 'advanced_filters.icons.calendar_today',
@@ -276,17 +258,17 @@ describe('AdvancedFilter', () => {
         }}
       />
     );
+
     // Click on the link to show the filters.
-    wrapper
-      .find('[data-testid="advanced-filters-link"]')
-      .first()
-      .simulate('click');
-    wrapper.update();
-    expect(wrapper.exists(CalendarTodayIcon)).toBeTruthy();
+    await user.click(
+      await screen.findByRole('button', { name: 'advanced_filters.show' })
+    );
+
+    expect(await screen.findByTestId('CalendarTodayIcon')).toBeInTheDocument();
   });
 
-  it('ExploreIcon displays correctly', () => {
-    const wrapper = shallow(
+  it('ExploreIcon displays correctly', async () => {
+    render(
       <AdvancedFilter
         title={{
           label: 'advanced_filters.icons.explore',
@@ -295,17 +277,17 @@ describe('AdvancedFilter', () => {
         }}
       />
     );
+
     // Click on the link to show the filters.
-    wrapper
-      .find('[data-testid="advanced-filters-link"]')
-      .first()
-      .simulate('click');
-    wrapper.update();
-    expect(wrapper.exists(ExploreIcon)).toBeTruthy();
+    await user.click(
+      await screen.findByRole('button', { name: 'advanced_filters.show' })
+    );
+
+    expect(await screen.findByTestId('ExploreIcon')).toBeInTheDocument();
   });
 
-  it('SaveIcon displays correctly', () => {
-    const wrapper = shallow(
+  it('SaveIcon displays correctly', async () => {
+    render(
       <AdvancedFilter
         title={{
           label: 'advanced_filters.icons.save',
@@ -314,17 +296,17 @@ describe('AdvancedFilter', () => {
         }}
       />
     );
+
     // Click on the link to show the filters.
-    wrapper
-      .find('[data-testid="advanced-filters-link"]')
-      .first()
-      .simulate('click');
-    wrapper.update();
-    expect(wrapper.exists(SaveIcon)).toBeTruthy();
+    await user.click(
+      await screen.findByRole('button', { name: 'advanced_filters.show' })
+    );
+
+    expect(await screen.findByTestId('SaveIcon')).toBeInTheDocument();
   });
 
-  it('DescriptionIcon displays correctly', () => {
-    const wrapper = shallow(
+  it('DescriptionIcon displays correctly', async () => {
+    render(
       <AdvancedFilter
         title={{
           label: 'advanced_filters.icons.description',
@@ -333,17 +315,18 @@ describe('AdvancedFilter', () => {
         }}
       />
     );
+
     // Click on the link to show the filters.
-    wrapper
-      .find('[data-testid="advanced-filters-link"]')
-      .first()
-      .simulate('click');
-    wrapper.update();
-    expect(wrapper.exists(DescriptionIcon)).toBeTruthy();
+    // Click on the link to show the filters.
+    await user.click(
+      await screen.findByRole('button', { name: 'advanced_filters.show' })
+    );
+
+    expect(await screen.findByTestId('DescriptionIcon')).toBeInTheDocument();
   });
 
-  it('LinkIcon displays correctly', () => {
-    const wrapper = shallow(
+  it('LinkIcon displays correctly', async () => {
+    render(
       <AdvancedFilter
         title={{
           label: 'advanced_filters.icons.link',
@@ -352,17 +335,17 @@ describe('AdvancedFilter', () => {
         }}
       />
     );
+
     // Click on the link to show the filters.
-    wrapper
-      .find('[data-testid="advanced-filters-link"]')
-      .first()
-      .simulate('click');
-    wrapper.update();
-    expect(wrapper.exists(LinkIcon)).toBeTruthy();
+    await user.click(
+      await screen.findByRole('button', { name: 'advanced_filters.show' })
+    );
+
+    expect(await screen.findByTestId('LinkIcon')).toBeInTheDocument();
   });
 
-  it('LinkIcon displays correctly', () => {
-    const wrapper = shallow(
+  it('LinkIcon displays correctly', async () => {
+    render(
       <AdvancedFilter
         title={{
           label: 'advanced_filters.icons.person',
@@ -371,12 +354,12 @@ describe('AdvancedFilter', () => {
         }}
       />
     );
+
     // Click on the link to show the filters.
-    wrapper
-      .find('[data-testid="advanced-filters-link"]')
-      .first()
-      .simulate('click');
-    wrapper.update();
-    expect(wrapper.exists(PersonIcon)).toBeTruthy();
+    await user.click(
+      await screen.findByRole('button', { name: 'advanced_filters.show' })
+    );
+
+    expect(await screen.findByTestId('PersonIcon')).toBeInTheDocument();
   });
 });

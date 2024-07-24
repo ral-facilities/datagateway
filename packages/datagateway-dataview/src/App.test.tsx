@@ -1,42 +1,81 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import * as React from 'react';
 import App from './App';
-import { createMount } from '@material-ui/core/test-utils';
-import { mount as enzymeMount } from 'enzyme';
-import * as log from 'loglevel';
-import { Provider } from 'react-redux';
+import log from 'loglevel';
+import { render, screen, waitFor } from '@testing-library/react';
+import PageContainer from './page/pageContainer.component';
+import { configureApp, settingsLoaded } from './state/actions';
 
-jest.mock('loglevel');
+jest
+  .mock('loglevel')
+  .mock('./page/pageContainer.component')
+  .mock('./state/actions', () => ({
+    ...jest.requireActual('./state/actions'),
+    configureApp: jest.fn(),
+  }))
+  .mock('react', () => ({
+    ...jest.requireActual('react'),
+    // skip React suspense mechanism and show children directly.
+    Suspense: ({ children }: { children: React.ReactNode }) => children,
+  }));
 
 describe('App', () => {
-  let mount: typeof enzymeMount;
-
-  beforeAll(() => {
-    mount = createMount();
+  beforeEach(() => {
+    jest.restoreAllMocks();
   });
 
-  afterAll(() => {
-    mount.cleanUp();
+  it('renders without crashing', async () => {
+    // pretend app is configured successfully
+    (configureApp as jest.MockedFn<typeof configureApp>).mockReturnValue(
+      async (dispatch) => {
+        dispatch(settingsLoaded());
+      }
+    );
+    (PageContainer as jest.Mock).mockImplementation(() => <div>page</div>);
+
+    render(<App />);
+
+    expect(await screen.findByText('page')).toBeInTheDocument();
   });
 
-  it('renders without crashing', () => {
-    const div = document.createElement('div');
-    ReactDOM.render(<App />, div);
-    ReactDOM.unmountComponentAtNode(div);
+  it('shows loading screen when configuring app', async () => {
+    (configureApp as jest.MockedFn<typeof configureApp>).mockReturnValue(
+      () =>
+        new Promise((_) => {
+          // never resolve the promise to pretend the app is still being configured
+        })
+    );
+    (PageContainer as jest.Mock).mockImplementation(() => <div>page</div>);
+
+    render(<App />);
+
+    expect(await screen.findByText('Loading...')).toBeInTheDocument();
+    expect(screen.queryByText('page')).toBeNull();
   });
 
-  it('catches errors using componentDidCatch and shows fallback UI', () => {
-    const wrapper = mount(<App />);
-    const error = new Error('test');
-    wrapper.find(Provider).simulateError(error);
+  it('catches errors using componentDidCatch and shows fallback UI', async () => {
+    // pretend app is configured successfully
+    (configureApp as jest.MockedFn<typeof configureApp>).mockReturnValue(
+      async (dispatch) => {
+        dispatch(settingsLoaded());
+      }
+    );
+    // pretend PageContainer throw an error and see if <App /> will catch the error
+    (PageContainer as jest.Mock).mockImplementation(() => {
+      throw new Error('test PageContainer error');
+    });
 
-    expect(wrapper.exists('.error')).toBe(true);
+    jest.spyOn(console, 'error').mockImplementation(() => {
+      // suppress console error
+    });
 
-    expect(log.error).toHaveBeenCalled();
-    const mockLog = (log.error as jest.Mock).mock;
+    render(<App />);
 
-    expect(mockLog.calls).toContainEqual([
-      `datagateway_dataview failed with error: ${error}`,
-    ]);
+    await waitFor(() => {
+      // check that the error is logged
+      expect(log.error).toHaveBeenCalled();
+    });
+
+    // check that fallback UI is shown
+    expect(await screen.findByText('app.error')).toBeInTheDocument();
   });
 });
