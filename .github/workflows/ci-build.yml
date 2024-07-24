@@ -143,7 +143,7 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-          ref: v9.0.1
+          ref: v9.0.2
 
       # DataGateway API file setup
       - name: Create search_api_mapping.json
@@ -301,7 +301,7 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-          ref: v9.0.1
+          ref: v9.0.2
 
       # DataGateway API file setup
       - name: Create search_api_mapping.json
@@ -396,6 +396,12 @@ jobs:
       - name: Replace default payara user with Actions user
         run: |
           sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml
+      - name: Change icat.server version 
+        run: |
+          echo "icat_server_version: '6.1.0-SNAPSHOT'" >> icat-ansible/group_vars/all/vars.yml
+      - name: Change icat.lucene version 
+        run: |
+          echo "icat_lucene_version: '3.0.0-SNAPSHOT'" >> icat-ansible/group_vars/all/vars.yml
       - name: Amending roles
         run: |
           sed -i 's/role: authn_uows_isis/role: authn_anon/' icat-ansible/icat_test_hosts.yml
@@ -430,7 +436,7 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-          ref: v9.0.1
+          ref: v9.0.2
 
       # DataGateway API file setup
       - name: Create search_api_mapping.json
@@ -449,24 +455,14 @@ jobs:
       - name: Add dummy data to icatdb
         run: |
           cd datagateway-api/; poetry run python -m util.icat_db_generator
+      - name: Add ICAT rules & public steps
+        run: cd datagateway-api/; poetry run python ../.github/add_icat_rules.py
 
       # Recreate Lucene indexes
-      - name: Login to ICAT
-        run: |
-          curl -k --request POST 'https://localhost:8181/icat/session' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'json={"plugin":"simple", "credentials": [{"username":"root"}, {"password":"pw"}]}' > login_output
-      - name: Recreate Datafile index
-        run: |
-          curl -k --request POST 'https://localhost:8181/icat/lucene/db/Datafile/0' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'sessionId='`jq -r '.sessionId' login_output`
-      - name: Recreate Dataset index
-        run: |
-          curl -k --request POST 'https://localhost:8181/icat/lucene/db/Dataset/1' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'sessionId='`jq -r '.sessionId' login_output`
-      - name: Recreate Investigation index
-        run: |
-          curl -k --request POST 'https://localhost:8181/icat/lucene/db/Investigation/1' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'sessionId='`jq -r '.sessionId' login_output`
+      - name: Use icatadmin to reindex all indexes
+        run: ~/bin/icatadmin https://localhost:8181 simple username root password pw -- populate --delete
       - name: Let reindexes complete
         run: sleep 30
-      - name: Remove session ID data
-        run: rm -f login_output
 
       - name: Start API
         run: cd datagateway-api/; nohup poetry run python -m datagateway_api.src.main > api-output.txt &

@@ -12,6 +12,7 @@ export interface DGSearchState {
   settingsLoaded: boolean;
   sideLayout: boolean;
   searchableEntities: string[];
+  minNumResults: number;
   maxNumResults: number;
 }
 

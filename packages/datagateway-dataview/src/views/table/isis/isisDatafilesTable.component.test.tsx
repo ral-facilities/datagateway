@@ -35,7 +35,7 @@ import {
 import axios, { AxiosResponse } from 'axios';
 
 describe('ISIS datafiles table component', () => {
-  let mockStore;
+  const mockStore = configureStore([thunk]);
   let state: StateType;
   let rowData: Datafile[];
   let cartItems: DownloadCartItem[];
@@ -73,7 +73,6 @@ describe('ISIS datafiles table component', () => {
     holder.setAttribute('id', 'datagateway-dataview');
     document.body.appendChild(holder);
 
-    mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
         dgdataview: dgDataViewInitialState,
@@ -114,7 +113,7 @@ describe('ISIS datafiles table component', () => {
         (url: string, data: unknown): Promise<Partial<AxiosResponse>> => {
           if (/\/user\/cart\/\/cartItems$/.test(url)) {
             const isRemove: boolean = JSON.parse(
-              (data as URLSearchParams).get('remove')
+              (data as URLSearchParams).get('remove') ?? 'false'
             );
 
             if (isRemove) {

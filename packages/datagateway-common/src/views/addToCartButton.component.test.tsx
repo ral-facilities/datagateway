@@ -17,7 +17,6 @@ import {
   waitFor,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
 import { DownloadCartItem } from '../app.types';
 
 jest.mock('../handleICATError');
@@ -25,7 +24,7 @@ jest.mock('../handleICATError');
 describe('Generic add to cart button', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
   let holder: HTMLElement;
   let cartItems: DownloadCartItem[];
 

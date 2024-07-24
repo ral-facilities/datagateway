@@ -1,48 +1,42 @@
 import React from 'react';
 import ResizeObserver from 'resize-observer-polyfill';
 import { StateType } from './state/app.types';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
-  Switch,
+  Link,
   Route,
   RouteComponentProps,
-  Link,
+  Switch,
+  useHistory,
   useLocation,
 } from 'react-router-dom';
 
-import { Grid, Paper, LinearProgress, styled } from '@mui/material';
+import { Grid, Paper, styled } from '@mui/material';
 
 import SearchBoxContainer from './searchBoxContainer.component';
 import SearchBoxContainerSide from './searchBoxContainerSide.component';
-import SearchTabs from './searchTabs.component';
-
-import { useHistory } from 'react-router-dom';
+import SearchTabs from './searchTabs/searchTabs.component';
 import {
-  useLuceneSearch,
-  ViewsType,
-  parseSearchToQuery,
-  useUpdateView,
-  usePushSearchText,
-  useCart,
-  SelectionAlert,
-  readSciGatewayToken,
-  FiltersType,
-  SortType,
-  usePushCurrentTab,
-  useUpdateQueryParam,
-  ViewButton,
   ClearFiltersButton,
+  FiltersType,
+  parseSearchToQuery,
+  parseQueryToSearch,
+  readSciGatewayToken,
+  SelectionAlert,
+  useCart,
+  usePushQueryParams,
+  useUpdateQueryParam,
+  useUpdateView,
+  ViewButton,
+  ViewsType,
 } from 'datagateway-common';
-import { Action, AnyAction } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
 import {
   setDatafileTab,
   setDatasetTab,
   setInvestigationTab,
 } from './state/actions/actions';
-import { useIsFetching } from 'react-query';
 
-export const storeFilters = (
+const storeFilters = (
   filters: FiltersType,
   searchableEntities: string
 ): void => {
@@ -52,33 +46,20 @@ export const storeFilters = (
     localStorage.setItem(filter, JSON.stringify(filters));
 };
 
-export const storeSort = (
-  sorts: SortType,
-  searchableEntities: string
-): void => {
-  const sort = (searchableEntities as string) + 'Sort';
-
-  if (Object.keys(sorts).length !== 0)
-    localStorage.setItem(sort, JSON.stringify(sorts));
-};
-
-export const storePage = (page: number, searchableEntities: string): void => {
+const storePage = (page: number, searchableEntities: string): void => {
   const pageNumber = (searchableEntities as string) + 'Page';
 
   if (page !== 1) localStorage.setItem(pageNumber, JSON.stringify(page));
 };
 
-export const storeResults = (
-  results: number,
-  searchableEntities: string
-): void => {
+const storeResults = (results: number, searchableEntities: string): void => {
   const resultsNumber = (searchableEntities as string) + 'Results';
 
   if (results !== 10)
     localStorage.setItem(resultsNumber, JSON.stringify(results));
 };
 
-export const getFilters = (searchableEntities: string): FiltersType | null => {
+const getFilters = (searchableEntities: string): FiltersType | null => {
   const filter = (searchableEntities as string) + 'Filters';
   const savedFilters = localStorage.getItem(filter);
   if (savedFilters) {
@@ -88,17 +69,7 @@ export const getFilters = (searchableEntities: string): FiltersType | null => {
   }
 };
 
-export const getSorts = (searchableEntities: string): SortType | null => {
-  const sort = (searchableEntities as string) + 'Sort';
-  const savedSort = localStorage.getItem(sort);
-  if (savedSort) {
-    return JSON.parse(savedSort) as SortType;
-  } else {
-    return null;
-  }
-};
-
-export const getPage = (searchableEntities: string): number | null => {
+const getPage = (searchableEntities: string): number | null => {
   const pageNumber = (searchableEntities as string) + 'Page';
   const savedPage = localStorage.getItem(pageNumber);
   if (savedPage) {
@@ -108,7 +79,7 @@ export const getPage = (searchableEntities: string): number | null => {
   }
 };
 
-export const getResults = (searchableEntities: string): number | null => {
+const getResults = (searchableEntities: string): number | null => {
   const resultsNumber = (searchableEntities as string) + 'Results';
   const savedResults = localStorage.getItem(resultsNumber);
   if (savedResults) {
@@ -116,6 +87,41 @@ export const getResults = (searchableEntities: string): number | null => {
   } else {
     return null;
   }
+};
+
+export const usePushCurrentTab = (): ((newCurrentTab: string) => void) => {
+  const { push } = useHistory();
+  const location = useLocation();
+  const { filters, page, results, currentTab } = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
+
+  return React.useCallback(
+    (newCurrentTab: string) => {
+      storeFilters(filters, currentTab);
+      if (page) {
+        storePage(page, currentTab);
+      }
+      if (results) {
+        storeResults(results, currentTab);
+      }
+
+      const newFilters = getFilters(newCurrentTab) ?? {};
+      const newPage = getPage(newCurrentTab);
+      const newResults = getResults(newCurrentTab);
+
+      const query = {
+        ...parseSearchToQuery(window.location.search),
+        filters: newFilters,
+        page: newPage,
+        results: newResults,
+        currentTab: newCurrentTab,
+      };
+      push(`?${parseQueryToSearch(query).toString()}`);
+    },
+    [currentTab, filters, page, push, results]
+  );
 };
 
 const storeDataView = (view: NonNullable<ViewsType>): void => {
@@ -182,45 +188,31 @@ const DataViewPaper = styled(Paper, {
   })
 );
 
-interface SearchPageContainerStoreProps {
-  sideLayout: boolean;
-  searchableEntities: string[];
-  maxNumResults: number;
-  datafileTab: boolean;
-  datasetTab: boolean;
-  investigationTab: boolean;
-}
+const SearchPageContainer: React.FC = () => {
+  const investigationTab = useSelector(
+    (state: StateType) => state.dgsearch.tabs.investigationTab
+  );
+  const datasetTab = useSelector(
+    (state: StateType) => state.dgsearch.tabs.datasetTab
+  );
+  const datafileTab = useSelector(
+    (state: StateType) => state.dgsearch.tabs.datafileTab
+  );
+  const sideLayout = useSelector(
+    (state: StateType) => state.dgsearch.sideLayout
+  );
+  const searchableEntities = useSelector(
+    (state: StateType) => state.dgsearch.searchableEntities
+  );
 
-interface SearchPageContainerDispatchProps {
-  setDatasetTab: (toggleOption: boolean) => Action;
-  setDatafileTab: (toggleOption: boolean) => Action;
-  setInvestigationTab: (toggleOption: boolean) => Action;
-}
-
-type SearchPageContainerCombinedProps = SearchPageContainerStoreProps &
-  SearchPageContainerDispatchProps;
-
-const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
-  props: SearchPageContainerCombinedProps
-) => {
-  const {
-    setDatafileTab,
-    setDatasetTab,
-    setInvestigationTab,
-    investigationTab,
-    datasetTab,
-    datafileTab,
-    sideLayout,
-    searchableEntities,
-    maxNumResults,
-  } = props;
+  const dispatch = useDispatch();
 
   const location = useLocation();
   const queryParams = React.useMemo(
     () => parseSearchToQuery(location.search),
     [location.search]
   );
-  const { view, startDate, endDate } = queryParams;
+  const { view } = queryParams;
 
   const searchTextURL = queryParams.searchText ? queryParams.searchText : '';
 
@@ -228,8 +220,26 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   const checkedBoxes = boolSearchableEntities.flatMap((b, i) =>
     b ? searchableEntities[i] : []
   );
+
+  // keep track of first render as checkedBoxes isn't initalised from the URL yet
+  // and that causes us to lose the currentTab state from the URL without the isFirstRender check
+  const [isFirstRender, setIsFirstRender] = React.useState(true);
+  React.useEffect(() => {
+    setIsFirstRender(false);
+
+    // when page loads, reset all localstorage saved tab items
+    localStorage.removeItem('investigationFilters');
+    localStorage.removeItem('datasetFilters');
+    localStorage.removeItem('datafileFilters');
+    localStorage.removeItem('investigationPage');
+    localStorage.removeItem('datasetPage');
+    localStorage.removeItem('investigationResults');
+    localStorage.removeItem('datasetResults');
+  }, []);
+
   const currentTab =
-    queryParams.currentTab && checkedBoxes.includes(queryParams.currentTab)
+    queryParams.currentTab &&
+    (isFirstRender || checkedBoxes.includes(queryParams.currentTab))
       ? queryParams.currentTab
       : checkedBoxes.length !== 0
       ? checkedBoxes[0]
@@ -249,10 +259,9 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
 
   const pushView = useUpdateView('push');
   const replaceView = useUpdateView('replace');
-  const pushSearchText = usePushSearchText();
   const pushCurrentTab = usePushCurrentTab();
+  const pushQueryParams = usePushQueryParams();
   const replaceFilters = useUpdateQueryParam('filters', 'replace');
-  const replaceSorts = useUpdateQueryParam('sort', 'replace');
   const replacePage = useUpdateQueryParam('page', 'replace');
   const replaceResults = useUpdateQueryParam('results', 'replace');
 
@@ -261,7 +270,19 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   }, [checkedBoxes, currentTab, pushCurrentTab, queryParams.currentTab]);
 
   const [searchText, setSearchText] = React.useState(searchTextURL);
-  const [searchOnNextRender, setSearchOnNextRender] = React.useState(false);
+  const [isSearchInitiated, setIsSearchInitiated] = React.useState(
+    queryParams.searchText !== null && (investigation || dataset || datafile)
+  );
+
+  const username = readSciGatewayToken().username;
+  const loggedInAnonymously = username === null || username === 'anon/anon';
+
+  const [shouldRestrictSearch, setShouldRestrictSearch] = React.useState(
+    // restrict should be false if logged in as anon
+    // otherwise, default (i.e. !isSearchInitiated) should be checkbox set to true
+    // otherwise, if search already initiated - respect the restrict param
+    !loggedInAnonymously && (!isSearchInitiated || queryParams.restrict)
+  );
 
   const handleSearchTextChange = (searchText: string): void => {
     setSearchText(searchText);
@@ -287,142 +308,60 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
     }
   }, [location.pathname, view, replaceView]);
 
-  const {
-    refetch: searchInvestigations,
-    isIdle: investigationsIdle,
-    isFetching: investigationsFetching,
-  } = useLuceneSearch('Investigation', {
-    searchText: searchTextURL,
-    startDate,
-    endDate,
-    maxCount: maxNumResults,
-  });
-  const {
-    refetch: searchDatasets,
-    isIdle: datasetsIdle,
-    isFetching: datasetsFetching,
-  } = useLuceneSearch('Dataset', {
-    searchText: searchTextURL,
-    startDate,
-    endDate,
-    maxCount: maxNumResults,
-  });
-  const {
-    refetch: searchDatafiles,
-    isIdle: datafilesIdle,
-    isFetching: datafilesFetching,
-  } = useLuceneSearch('Datafile', {
-    searchText: searchTextURL,
-    startDate,
-    endDate,
-    maxCount: maxNumResults,
-  });
-
-  const isFetchingNum = useIsFetching({
-    predicate: (query) =>
-      !query.queryHash.includes('InvestigationCount') &&
-      !query.queryHash.includes('DatasetCount') &&
-      !query.queryHash.includes('DatafileCount'),
-  });
-
-  const requestReceived =
-    !investigationsIdle || !datasetsIdle || !datafilesIdle;
-
-  const loading =
-    investigationsFetching ||
-    datasetsFetching ||
-    datafilesFetching ||
-    isFetchingNum > 0;
-
   const initiateSearch = React.useCallback(() => {
-    pushSearchText(searchText);
-    setSearchOnNextRender(true);
+    if (investigation || dataset || datafile) {
+      pushQueryParams({
+        searchText,
+        restrict: shouldRestrictSearch,
+      });
 
-    localStorage.removeItem('investigationFilters');
-    localStorage.removeItem('datasetFilters');
-    localStorage.removeItem('datafileFilters');
-    localStorage.removeItem('investigationSort');
-    localStorage.removeItem('datasetSort');
-    localStorage.removeItem('datafileSort');
-    localStorage.removeItem('investigationPage');
-    localStorage.removeItem('datasetPage');
-    localStorage.removeItem('investigationResults');
-    localStorage.removeItem('datasetResults');
-    if (Object.keys(queryParams.filters).length !== 0) replaceFilters({});
-    if (Object.keys(queryParams.sort).length !== 0) replaceSorts({});
-    if (queryParams.page !== null) replacePage(null);
-    if (queryParams.results !== null) replaceResults(null);
+      dispatch(setDatafileTab(datafile));
+      dispatch(setDatasetTab(dataset));
+      dispatch(setInvestigationTab(investigation));
+
+      localStorage.removeItem('investigationFilters');
+      localStorage.removeItem('datasetFilters');
+      localStorage.removeItem('datafileFilters');
+      localStorage.removeItem('investigationPage');
+      localStorage.removeItem('datasetPage');
+      localStorage.removeItem('investigationResults');
+      localStorage.removeItem('datasetResults');
+
+      if (Object.keys(queryParams.filters).length !== 0) replaceFilters({});
+      if (queryParams.page !== null) replacePage(null);
+      if (queryParams.results !== null) replaceResults(null);
+
+      setIsSearchInitiated(true);
+    }
   }, [
-    pushSearchText,
+    investigation,
+    dataset,
+    datafile,
+    pushQueryParams,
     searchText,
+    shouldRestrictSearch,
+    dispatch,
     queryParams.filters,
-    queryParams.sort,
     queryParams.page,
     queryParams.results,
     replaceFilters,
-    replaceSorts,
     replacePage,
     replaceResults,
   ]);
 
+  // set initial tabs based off of page load query params
   React.useEffect(() => {
-    if (searchOnNextRender) {
-      if (dataset) {
-        // Fetch lucene datasets
-        searchDatasets();
-      }
+    // Set the appropriate tabs.
+    dispatch(setDatafileTab(datafile));
+    dispatch(setDatasetTab(dataset));
+    dispatch(setInvestigationTab(investigation));
 
-      if (datafile) {
-        // Fetch lucene datafiles
-        searchDatafiles();
-      }
-      if (investigation) {
-        // Fetch lucene investigations
-        searchInvestigations();
-      }
-
-      if (dataset || datafile || investigation) {
-        // Set the appropriate tabs.
-        setDatafileTab(datafile);
-        setDatasetTab(dataset);
-        setInvestigationTab(investigation);
-      }
-
-      setSearchOnNextRender(false);
-    }
-  }, [
-    searchOnNextRender,
-    dataset,
-    datafile,
-    investigation,
-    searchDatasets,
-    searchDatafiles,
-    searchInvestigations,
-    setDatafileTab,
-    setDatasetTab,
-    setInvestigationTab,
-  ]);
-
-  React.useEffect(() => {
-    //Start search automatically if URL has been supplied with parameters (other than just the checkbox states)
-    if (
-      queryParams.searchText !== null ||
-      queryParams.startDate ||
-      queryParams.endDate
-    )
-      setSearchOnNextRender(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   React.useEffect(() => {
-    if (searchTextURL !== searchText) {
-      //Ensure search text is assigned from the URL
-      setSearchText(searchTextURL);
-      setSearchOnNextRender(true);
-    }
-
-    //Want to search whenever the search text in the URL changes so that clicking a react-router link also initiates the search
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // Sync search text in URL with local search text state
+    setSearchText(searchTextURL);
   }, [searchTextURL]);
 
   const [searchBoxHeight, setSearchBoxHeight] = React.useState(0);
@@ -448,18 +387,13 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   }, []);
 
   // Table should take up page but leave room for: SG appbar, SG footer,
-  // search box, search box padding, display as cards button, loading bar
-  const containerHeight = `calc(100vh - 64px - 36px - ${searchBoxHeight}px - 8px - 49px${
-    loading ? ' - 4px' : ''
-  })`;
+  // search box, search box padding, display as cards button, loading bar, paper outline
+  const containerHeight = `calc(100vh - 64px - 36px - ${searchBoxHeight}px - 8px - 49px - 2px)`;
 
   const { data: cartItems } = useCart();
   const { push } = useHistory();
 
   const navigateToDownload = React.useCallback(() => push('/download'), [push]);
-
-  const username = readSciGatewayToken().username;
-  const loggedInAnonymously = username === null || username === 'anon/anon';
 
   const disabled = Object.keys(queryParams.filters).length === 0;
 
@@ -484,7 +418,7 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
             direction={sideLayout ? 'row' : 'column'}
             justifyContent="center"
             alignItems="center"
-            spacing={1}
+            rowSpacing={1}
             sx={{ margin: 0, width: '100%' }}
           >
             <Grid
@@ -497,22 +431,32 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                 <SideSearchBoxPaper>
                   <SearchBoxContainerSide
                     searchText={searchText}
+                    restrict={shouldRestrictSearch}
+                    loggedInAnonymously={loggedInAnonymously}
                     initiateSearch={initiateSearch}
                     onSearchTextChange={handleSearchTextChange}
+                    onMyDataCheckboxChange={(restrict) =>
+                      setShouldRestrictSearch(restrict)
+                    }
                   />
                 </SideSearchBoxPaper>
               ) : (
                 <TopSearchBoxPaper>
                   <SearchBoxContainer
                     searchText={searchText}
+                    restrict={shouldRestrictSearch}
+                    loggedInAnonymously={loggedInAnonymously}
                     initiateSearch={initiateSearch}
                     onSearchTextChange={handleSearchTextChange}
+                    onMyDataCheckboxChange={(restrict) =>
+                      setShouldRestrictSearch(restrict)
+                    }
                   />
                 </TopSearchBoxPaper>
               )}
             </Grid>
 
-            {requestReceived && (
+            {isSearchInitiated && (
               <div style={{ width: '100%' }}>
                 <Grid container justifyContent="center">
                   <Grid
@@ -542,15 +486,14 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
                 <Grid
                   container
                   justifyContent="center"
+                  data-testid="container-search-table"
                   id="container-search-table"
                 >
-                  <DataViewPaper view={view} containerHeight={containerHeight}>
-                    {/* Show loading progress if data is still being loaded */}
-                    {loading && (
-                      <Grid item xs={12}>
-                        <LinearProgress color="secondary" />
-                      </Grid>
-                    )}
+                  <DataViewPaper
+                    view={view}
+                    containerHeight={containerHeight}
+                    variant="outlined"
+                  >
                     <SearchTabs
                       view={view}
                       containerHeight={containerHeight}
@@ -571,27 +514,4 @@ const SearchPageContainer: React.FC<SearchPageContainerCombinedProps> = (
   );
 };
 
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
-): SearchPageContainerDispatchProps => ({
-  setDatasetTab: (toggleOption: boolean) =>
-    dispatch(setDatasetTab(toggleOption)),
-  setDatafileTab: (toggleOption: boolean) =>
-    dispatch(setDatafileTab(toggleOption)),
-  setInvestigationTab: (toggleOption: boolean) =>
-    dispatch(setInvestigationTab(toggleOption)),
-});
-
-const mapStateToProps = (state: StateType): SearchPageContainerStoreProps => ({
-  sideLayout: state.dgsearch.sideLayout,
-  searchableEntities: state.dgsearch.searchableEntities,
-  maxNumResults: state.dgsearch.maxNumResults,
-  datafileTab: state.dgsearch.tabs.datafileTab,
-  datasetTab: state.dgsearch.tabs.datasetTab,
-  investigationTab: state.dgsearch.tabs.investigationTab,
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SearchPageContainer);
+export default SearchPageContainer;

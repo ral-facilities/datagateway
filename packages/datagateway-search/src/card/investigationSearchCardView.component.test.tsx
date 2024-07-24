@@ -1,13 +1,11 @@
 import * as React from 'react';
 import {
   dGCommonInitialState,
+  SearchResponse,
+  SearchResult,
+  SearchResultSource,
   FACILITY_NAME,
-  Investigation,
   StateType,
-  useAllFacilityCycles,
-  useInvestigationCount,
-  useInvestigationsPaginated,
-  useLuceneSearch,
 } from 'datagateway-common';
 import InvestigationSearchCardView from './investigationSearchCardView.component';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -15,85 +13,91 @@ import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
-
-import { createMemoryHistory, History } from 'history';
+import type { RenderResult } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
+import { createMemoryHistory, MemoryHistory } from 'history';
 import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
-
-import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
-} from '../setupTests';
-import {
-  render,
-  RenderResult,
-  screen,
-  waitFor,
-  within,
-} from '@testing-library/react';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
-
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    useAllFacilityCycles: jest.fn(),
-    useLuceneSearch: jest.fn(),
-    useInvestigationCount: jest.fn(),
-    useInvestigationsPaginated: jest.fn(),
-    useInvestigationSizes: jest.fn(),
-  };
-});
+import axios, { AxiosResponse } from 'axios';
 
 describe('Investigation - Card View', () => {
-  let mockStore;
   let state: StateType;
-  let cardData: Investigation[];
-  let history: History;
-  let user: UserEvent;
+  let cardData: SearchResultSource;
+  let searchResult: SearchResult;
+  let searchResponse: SearchResponse;
+  let history: MemoryHistory;
+  let queryClient: QueryClient;
 
-  const renderComponent = (hierarchy?: string): RenderResult =>
-    render(
-      <Provider store={mockStore(state)}>
+  function renderComponent({ hierarchy = '' } = {}): RenderResult {
+    return render(
+      <Provider store={configureStore([thunk])(state)}>
         <Router history={history}>
-          <QueryClientProvider client={new QueryClient()}>
-            <InvestigationSearchCardView hierarchy={hierarchy ?? ''} />
+          <QueryClientProvider client={queryClient}>
+            <InvestigationSearchCardView hierarchy={hierarchy} />
           </QueryClientProvider>
         </Router>
       </Provider>
     );
+  }
+
+  const mockAxiosGet = (url: string): Promise<Partial<AxiosResponse>> => {
+    if (/\/investigations$/.test(url)) {
+      return Promise.resolve({
+        data: [],
+      });
+    }
+    if (/\/search\/documents$/.test(url)) {
+      // lucene search query
+      return Promise.resolve({
+        data: searchResponse,
+      });
+    }
+    return Promise.reject({
+      message: `Endpoint not mocked ${url}`,
+    });
+  };
 
   beforeEach(() => {
-    cardData = [
-      {
-        id: 1,
-        fileSize: 1,
-        fileCount: 1,
-        name: 'Investigation test name',
-        size: 1,
-        modTime: '2019-07-23',
-        createTime: '2019-07-23',
-        startDate: '2019-07-24',
-        endDate: '2019-07-25',
-        title: 'Test 1',
-        visitId: '1',
-        doi: 'doi 1',
-        investigationInstruments: [
-          {
-            id: 3,
-            instrument: {
-              id: 4,
-              name: 'LARMOR',
-            },
-          },
-        ],
+    cardData = {
+      id: 1,
+      name: 'Investigation test name',
+      startDate: 1563922800000,
+      endDate: 1564009200000,
+      fileSize: 10,
+      fileCount: 9,
+      title: 'Test 1',
+      visitId: '1',
+      doi: 'doi 1',
+      investigationinstrument: [
+        {
+          'instrument.id': 4,
+          'instrument.name': 'LARMOR',
+        },
+      ],
+      investigationfacilitycycle: [
+        {
+          'facilityCycle.id': 6,
+        },
+      ],
+    };
+    searchResult = {
+      score: 1,
+      id: 1,
+      source: cardData,
+    };
+    searchResponse = {
+      results: [searchResult],
+    };
+    history = createMemoryHistory({
+      initialEntries: [
+        { search: 'searchText=test search&currentTab=investigation' },
+      ],
+    });
+    queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
       },
-    ];
-    history = createMemoryHistory();
-    mockStore = configureStore([thunk]);
-    user = userEvent.setup();
+    });
 
     state = JSON.parse(
       JSON.stringify({
@@ -102,22 +106,7 @@ describe('Investigation - Card View', () => {
       })
     );
 
-    (useInvestigationCount as jest.Mock).mockReturnValue({
-      data: 1,
-      isLoading: false,
-    });
-    (useInvestigationsPaginated as jest.Mock).mockReturnValue({
-      data: cardData,
-      isLoading: false,
-    });
-    (useLuceneSearch as jest.Mock).mockReturnValue({
-      data: [],
-    });
-
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
-      data: [],
-    });
-
+    (axios.get as jest.Mock).mockImplementation(mockAxiosGet);
     window.scrollTo = jest.fn();
   });
 
@@ -125,91 +114,49 @@ describe('Investigation - Card View', () => {
     jest.clearAllMocks();
   });
 
-  //The below tests are modified from datasetSearchCardView
-
-  it('updates filter query params on text filter', async () => {
-    renderComponent();
-
-    await user.click(
-      await screen.findByRole('button', { name: 'advanced_filters.show' })
-    );
-
-    const filterInput = await screen.findByRole('textbox', {
-      name: 'Filter by investigations.title',
-      hidden: true,
-    });
-
-    await user.type(filterInput, 'test');
-
-    expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
-        '{"title":{"value":"test","type":"include"}}'
-      )}`
-    );
-
-    await user.clear(filterInput);
-    expect(history.location.search).toBe('?');
-  });
-
-  it('updates filter query params on date filter', async () => {
-    applyDatePickerWorkaround();
+  it('disables the search query if investigation search is disabled', async () => {
+    const searchParams = new URLSearchParams(history.location.search);
+    searchParams.append('investigation', 'false');
+    history.replace({ search: `?${searchParams.toString()}` });
 
     renderComponent();
 
-    await user.click(
-      await screen.findByRole('button', { name: 'advanced_filters.show' })
-    );
+    expect(
+      screen.queryByTestId('investigation-search-card-view')
+    ).toBeInTheDocument();
 
-    await user.type(
-      await screen.findByRole('textbox', {
-        name: 'investigations.details.end_date filter to',
-      }),
-      '2019-08-06'
-    );
+    // wait for queries to finish fetching
+    await waitFor(() => !queryClient.isFetching());
 
-    expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
-    );
-
-    await user.click(
-      await screen.findByRole('textbox', {
-        name: 'investigations.details.end_date filter to',
-      })
-    );
-    await user.keyboard('{Control}a{/Control}');
-    await user.keyboard('{Delete}');
-    // await user.clear(
-    // await screen.findByRole('textbox', {
-    //   name: 'investigations.details.end_date filter to',
-    // })
-    // );
-
-    expect(history.location.search).toBe('?');
-
-    cleanupDatePickerWorkaround();
-  });
-
-  it('updates sort query params on sort', async () => {
-    renderComponent();
-
-    await user.click(
-      await screen.findByRole('button', {
-        name: 'Sort by INVESTIGATIONS.TITLE',
-      })
-    );
-
-    expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"title":"asc"}')}`
-    );
-  });
-
-  it('renders fine with incomplete data', () => {
-    (useInvestigationCount as jest.Mock).mockReturnValue({});
-    (useInvestigationsPaginated as jest.Mock).mockReturnValue({});
-
-    renderComponent();
+    expect(
+      queryClient.getQueryState(['search', 'Investigation'], { exact: false })
+        ?.status
+    ).toBe('idle');
 
     expect(screen.queryAllByTestId('card')).toHaveLength(0);
+  });
+
+  it('renders correctly', async () => {
+    renderComponent();
+
+    const cards = await screen.findAllByTestId('card');
+    expect(cards).toHaveLength(1);
+
+    const card = cards[0];
+    expect(within(card).getByText('Test 1')).toBeInTheDocument();
+    expect(
+      within(card).getByText('entity_card.no_description')
+    ).toBeInTheDocument();
+    expect(
+      within(card).getByRole('button', { name: 'card-more-info-expand' })
+    ).toBeInTheDocument();
+    expect(within(card).getByText('investigations.size:')).toBeInTheDocument();
+    expect(
+      within(card).getByRole('button', { name: 'buttons.add_to_cart' })
+    ).toBeInTheDocument();
+    expect(
+      within(card).getByRole('button', { name: 'buttons.download' })
+    ).toBeInTheDocument();
   });
 
   it('renders generic link correctly', async () => {
@@ -224,7 +171,9 @@ describe('Investigation - Card View', () => {
   });
 
   it("renders DLS link correctly and doesn't allow for cart selection or download", async () => {
-    renderComponent(FACILITY_NAME.dls);
+    renderComponent({
+      hierarchy: FACILITY_NAME.dls,
+    });
 
     const card = (await screen.findAllByTestId('card'))[0];
 
@@ -232,28 +181,17 @@ describe('Investigation - Card View', () => {
       'href',
       '/browse/proposal/Investigation test name/investigation/1/dataset'
     );
+
     expect(
-      screen.queryByRole('button', { name: 'buttons.add_to_cart' })
+      within(card).queryByRole('button', { name: 'buttons.add_to_cart' })
     ).toBeNull();
     expect(
-      screen.queryByRole('button', { name: 'buttons.download' })
+      within(card).queryByRole('button', { name: 'buttons.download' })
     ).toBeNull();
   });
 
   it('renders ISIS link & file sizes correctly', async () => {
-    cardData[0].investigationFacilityCycles = [
-      {
-        id: 232,
-        facilityCycle: {
-          id: 6,
-          name: 'facility cycle name',
-          startDate: '2000-06-10',
-          endDate: '2020-06-11',
-        },
-      },
-    ];
-
-    renderComponent(FACILITY_NAME.isis);
+    renderComponent({ hierarchy: FACILITY_NAME.isis });
 
     const card = (await screen.findAllByTestId('card'))[0];
 
@@ -265,136 +203,111 @@ describe('Investigation - Card View', () => {
       'href',
       '/browse/instrument/4/facilityCycle/6/investigation/1/dataset'
     );
+
+    expect(within(card).getByText('10 B')).toBeInTheDocument();
   });
 
   it('displays DOI and renders the expected Link ', async () => {
     renderComponent();
 
-    expect(await screen.findByRole('link', { name: 'doi 1' })).toHaveAttribute(
+    const card = (await screen.findAllByTestId('card'))[0];
+
+    expect(within(card).getByRole('link', { name: 'doi 1' })).toHaveAttribute(
       'href',
       'https://doi.org/doi 1'
     );
   });
 
   it('does not render ISIS link when instrumentId cannot be found', async () => {
-    cardData[0].investigationFacilityCycles = [
-      {
-        id: 232,
-        facilityCycle: {
-          id: 6,
-          name: 'facility cycle name',
-          startDate: '2000-06-10',
-          endDate: '2020-06-11',
-        },
-      },
-    ];
-    delete cardData[0].investigationInstruments;
+    delete cardData.investigationinstrument;
 
-    (useInvestigationsPaginated as jest.Mock).mockReturnValue({
-      data: cardData,
-      fetchNextPage: jest.fn(),
-    });
-    renderComponent(FACILITY_NAME.isis);
+    renderComponent({ hierarchy: FACILITY_NAME.isis });
 
     const card = (await screen.findAllByTestId('card'))[0];
 
-    await waitFor(() => {
-      expect(within(card).queryByRole('link', { name: 'Test 1' })).toBeNull();
-    });
-    expect(within(card).getByLabelText('card-title')).toHaveTextContent(
-      'Test 1'
-    );
-  });
-
-  it('displays only the dataset name when there is no generic investigation to link to', async () => {
-    delete cardData[0].investigation;
-    (useInvestigationsPaginated as jest.Mock).mockReturnValue({
-      data: cardData,
-      fetchNextPage: jest.fn(),
-    });
-
-    renderComponent('data');
-
-    const card = (await screen.findAllByTestId('card'))[0];
-
-    expect(within(card).getAllByRole('link')).toHaveLength(2);
-    expect(
-      within(card).getByRole('link', { name: 'Test 1' })
-    ).toBeInTheDocument();
-  });
-
-  it('displays only the dataset name when there is no ISIS investigation to link to', async () => {
-    (useInvestigationsPaginated as jest.Mock).mockReturnValue({
-      data: cardData,
-      fetchNextPage: jest.fn(),
-    });
-
-    renderComponent(FACILITY_NAME.isis);
-
-    const card = (await screen.findAllByTestId('card'))[0];
-
-    expect(within(card).getAllByRole('link')).toHaveLength(1);
     expect(within(card).queryByRole('link', { name: 'Test 1' })).toBeNull();
     expect(within(card).getByText('Test 1')).toBeInTheDocument();
   });
 
   it('displays generic details panel when expanded', async () => {
+    const user = userEvent.setup();
+
     renderComponent();
+
+    expect(screen.queryByTestId('investigation-details-panel')).toBeNull();
+
     await user.click(
       await screen.findByRole('button', { name: 'card-more-info-expand' })
     );
+
     expect(
       await screen.findByTestId('investigation-details-panel')
-    ).toBeTruthy();
+    ).toBeInTheDocument();
   });
 
   it('displays correct details panel for ISIS when expanded', async () => {
-    renderComponent(FACILITY_NAME.isis);
+    cardData.investigationinstrument = [];
+    cardData.investigationfacilitycycle = [];
+
+    const user = userEvent.setup();
+
+    renderComponent({ hierarchy: FACILITY_NAME.isis });
+
+    expect(screen.queryByTestId('isis-investigation-details-panel')).toBeNull();
+
     await user.click(
       await screen.findByRole('button', { name: 'card-more-info-expand' })
     );
+
     expect(
       await screen.findByTestId('isis-investigation-details-panel')
-    ).toBeTruthy();
+    ).toBeInTheDocument();
   });
 
   it('can navigate using the details panel for ISIS when there are facility cycles', async () => {
-    cardData[0].investigationFacilityCycles = [
-      {
-        id: 906,
-        facilityCycle: {
-          id: 4,
-          name: 'facility cycle name',
-          startDate: '2000-06-10',
-          endDate: '2020-06-11',
-        },
-      },
-    ];
+    const user = userEvent.setup();
 
-    renderComponent(FACILITY_NAME.isis);
+    renderComponent({
+      hierarchy: FACILITY_NAME.isis,
+    });
+
+    expect(screen.queryByTestId('isis-investigation-details-panel')).toBeNull();
+
     await user.click(
       await screen.findByRole('button', { name: 'card-more-info-expand' })
     );
-    expect(
-      await screen.findByTestId('isis-investigation-details-panel')
-    ).toBeTruthy();
+
+    const panel = await screen.findByTestId('isis-investigation-details-panel');
+    expect(panel).toBeInTheDocument();
 
     await user.click(
-      await screen.findByRole('tab', {
+      within(panel).getByRole('tab', {
         name: 'investigations.details.datasets',
       })
     );
 
-    expect(history.location.pathname).toBe(
-      '/browse/instrument/4/facilityCycle/4/investigation/1/dataset'
-    );
+    await waitFor(() => {
+      expect(history.location.pathname).toBe(
+        '/browse/instrument/4/facilityCycle/6/investigation/1/dataset'
+      );
+    });
   });
 
   it('displays correct details panel for DLS when expanded', async () => {
-    renderComponent(FACILITY_NAME.dls);
+    const user = userEvent.setup();
+
+    renderComponent({
+      hierarchy: FACILITY_NAME.dls,
+    });
+
+    expect(screen.queryByTestId('dls-visit-details-panel')).toBeNull();
+
     await user.click(
       await screen.findByRole('button', { name: 'card-more-info-expand' })
     );
-    expect(await screen.findByTestId('visit-details-panel')).toBeTruthy();
+
+    expect(
+      await screen.findByTestId('dls-visit-details-panel')
+    ).toBeInTheDocument();
   });
 });

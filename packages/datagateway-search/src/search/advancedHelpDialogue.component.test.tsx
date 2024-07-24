@@ -3,17 +3,17 @@ import AdvancedHelpDialogue from './advancedHelpDialogue.component';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { dGCommonInitialState } from 'datagateway-common';
-import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
 import configureStore from 'redux-mock-store';
-import { StateType } from '../state/app.types';
 import { MemoryRouter } from 'react-router-dom';
+import type { RenderResult } from '@testing-library/react';
 import {
   render,
-  type RenderResult,
   screen,
-  waitFor,
+  waitForElementToBeRemoved,
 } from '@testing-library/react';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
+
+import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
+import { StateType } from '../state/app.types';
 import userEvent from '@testing-library/user-event';
 
 jest.mock('react-redux', () => ({
@@ -21,14 +21,24 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }));
 
-describe('Advanced help dialogue component tests', () => {
-  let mockStore;
+function renderComponent({
+  initialState,
+}: {
+  initialState: StateType;
+}): RenderResult {
+  return render(
+    <Provider store={configureStore([thunk])(initialState)}>
+      <MemoryRouter>
+        <AdvancedHelpDialogue />
+      </MemoryRouter>
+    </Provider>
+  );
+}
+
+describe('Advanced help dialogue', () => {
   let state: StateType;
-  let user: UserEvent;
 
   beforeEach(() => {
-    mockStore = configureStore([thunk]);
-    user = userEvent.setup();
     state = JSON.parse(
       JSON.stringify({
         dgcommon: dGCommonInitialState,
@@ -37,34 +47,39 @@ describe('Advanced help dialogue component tests', () => {
     );
   });
 
-  const renderComponent = (): RenderResult =>
-    render(
-      <Provider store={mockStore(state)}>
-        <MemoryRouter>
-          <AdvancedHelpDialogue />
-        </MemoryRouter>
-      </Provider>
-    );
+  it('is hidden initially', () => {
+    renderComponent({ initialState: state });
+    expect(
+      screen.queryByRole('dialog', { name: 'Advanced Search Tips' })
+    ).toBeNull();
+  });
 
-  it('can open and close help dialogue', async () => {
-    renderComponent();
+  it('opens when search options link is clicked and closes when the close button is clicked', async () => {
+    const user = userEvent.setup();
+
+    renderComponent({ initialState: state });
 
     await user.click(
-      await screen.findByRole('button', {
+      screen.getByRole('button', {
         name: 'advanced_search_help.search_options_arialabel',
       })
     );
 
-    expect(await screen.findByText('Advanced Search Tips')).toBeInTheDocument();
+    expect(
+      screen.getByRole('dialog', { name: 'Advanced Search Tips' })
+    ).toBeInTheDocument();
 
     await user.click(
-      await screen.findByRole('button', {
+      screen.getByRole('button', {
         name: 'advanced_search_help.close_button_arialabel',
       })
     );
 
-    await waitFor(() => {
-      expect(screen.queryByText('Advanced Search Tips')).toBeNull();
-    });
+    await waitForElementToBeRemoved(
+      screen.getByRole('dialog', { name: 'Advanced Search Tips' })
+    );
+    expect(
+      screen.queryByRole('dialog', { name: 'Advanced Search Tips' })
+    ).toBeNull();
   });
 });

@@ -244,6 +244,7 @@ exports[`Datafile details panel component should render parameters tab when pres
             <b>
               String test
             </b>
+             foo/s
           </p>
         </div>
         <div
@@ -260,6 +261,7 @@ exports[`Datafile details panel component should render parameters tab when pres
             <b>
               1337
             </b>
+             bar/s
           </p>
         </div>
         <div

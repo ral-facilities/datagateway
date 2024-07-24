@@ -4,11 +4,11 @@ import { render, screen, waitFor } from '@testing-library/react';
 import type DownloadRequestInfo from './DownloadRequestInfo';
 import DownloadRequestResult from './downloadRequestResult.component';
 
-const mockDownloadRequestInfo: DownloadRequestInfo = {
+const mockDownloadRequestInfo = {
   emailAddress: 'test@email.com',
   downloadName: 'download-name',
   transport: 'https',
-};
+} satisfies DownloadRequestInfo;
 
 describe('DownloadRequestResult', () => {
   it('should render correctly', () => {

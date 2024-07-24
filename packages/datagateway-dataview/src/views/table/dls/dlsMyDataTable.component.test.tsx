@@ -330,7 +330,7 @@ describe('DLS MyData table component', () => {
     );
 
     expect(
-      await screen.findByTestId('visit-details-panel')
+      await screen.findByTestId('dls-visit-details-panel')
     ).toBeInTheDocument();
   });
 });
