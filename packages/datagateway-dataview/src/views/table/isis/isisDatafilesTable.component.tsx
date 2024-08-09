@@ -149,7 +149,7 @@ const ISISDatafilesTable = (
       },
       {
         icon: CalendarTodayIcon,
-        label: t('datafiles.modified_time'),
+        label: t('datafiles.datafile_modified_time'),
         dataKey: 'name',
         filterComponent: dateFilter,
         defaultSort: 'desc',
