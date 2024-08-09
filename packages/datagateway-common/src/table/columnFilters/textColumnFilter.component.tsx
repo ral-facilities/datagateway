@@ -30,7 +30,7 @@ const TextColumnFilter = (props: {
     () =>
       debounce((value: string) => {
         onChange(value === '' ? null : { value: value, type: type });
-      }, 250),
+      }, 500),
     [onChange, type]
   );
 
