@@ -116,7 +116,7 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
       {
         icon: CalendarToday,
         label: t('datasets.create_time'),
-        dataKey: 'createTime',
+        dataKey: 'name',
         filterComponent: dateFilter,
         defaultSort: 'desc',
       },
