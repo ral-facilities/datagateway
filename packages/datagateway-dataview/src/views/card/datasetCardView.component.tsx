@@ -91,7 +91,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
       {
         icon: CalendarToday,
         label: t('datasets.create_time'),
-        dataKey: 'createTime',
+        dataKey: 'name',
         filterComponent: dateFilter,
       },
       {
