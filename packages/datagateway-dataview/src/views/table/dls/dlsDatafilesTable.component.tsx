@@ -133,8 +133,8 @@ const DLSDatafilesTable = (
       },
       {
         icon: CalendarToday,
-        label: t('datafiles.create_time'),
-        dataKey: 'createTime',
+        label: t('datafiles.datafile_create_time'),
+        dataKey: 'name',
         filterComponent: dateFilter,
         defaultSort: 'desc',
       },

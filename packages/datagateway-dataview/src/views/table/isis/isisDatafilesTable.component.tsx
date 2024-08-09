@@ -149,8 +149,8 @@ const ISISDatafilesTable = (
       },
       {
         icon: CalendarTodayIcon,
-        label: t('datafiles.modified_time'),
-        dataKey: 'modTime',
+        label: t('datafiles.datafile_modified_time'),
+        dataKey: 'name',
         filterComponent: dateFilter,
         defaultSort: 'desc',
       },
