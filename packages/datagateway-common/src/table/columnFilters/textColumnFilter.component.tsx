@@ -25,7 +25,7 @@ const TextColumnFilter = (props: {
   );
   const [type, setType] = React.useState(propType ? propType : 'include');
 
-  // Debounce the updating of the column filter by 250 milliseconds.
+  // Debounce the updating of the column filter by 500 milliseconds.
   const updateValue = React.useMemo(
     () =>
       debounce((value: string) => {

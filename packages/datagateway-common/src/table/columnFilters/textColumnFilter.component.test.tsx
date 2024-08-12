@@ -12,7 +12,7 @@ import userEvent from '@testing-library/user-event';
 
 jest.mock('../../api');
 jest.useFakeTimers('modern');
-const DEBOUNCE_DELAY = 250;
+const DEBOUNCE_DELAY = 500;
 
 describe('Text filter component', () => {
   let user: UserEvent;
