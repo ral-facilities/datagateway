@@ -214,7 +214,11 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
           '@type': 'DataCatalog',
           url: t('doi_constants.distribution.content_url'),
         },
-        license: t('doi_constants.distribution.license'),
+        license: {
+          '@type': 'license',
+          url: t('doi_constants.license.url'),
+          name: t('doi_constants.license.name'),
+        },
       });
 
       return () => {

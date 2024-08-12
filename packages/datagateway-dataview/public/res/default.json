@@ -354,7 +354,10 @@
       "title": "ISIS Neutron and Muon Source",
       "body": "This is a page describing data taken during an experiment at the ISIS Neutron and Muon Source. Information about the ISIS Neutron and Muon Source can be found at <a href='https://www.isis.stfc.ac.uk'>https://www.isis.stfc.ac.uk</a>."
     },
-    "license": "https://www.isis.stfc.ac.uk/Pages/Data-Policy.aspx"
+    "license": {
+      "url": "https://www.isis.stfc.ac.uk/Pages/Data-Policy.aspx",
+      "name": "licensename"
+    } 
   },
   "DOIGenerationForm": {
     "page_header": "Generate DOI",
