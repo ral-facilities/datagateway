@@ -135,7 +135,7 @@ const DLSDatafilesTable = (
       {
         icon: CalendarToday,
         label: t('datafiles.create_time'),
-        dataKey: 'name',
+        dataKey: 'createTime',
         filterComponent: dateFilter,
       },
     ],

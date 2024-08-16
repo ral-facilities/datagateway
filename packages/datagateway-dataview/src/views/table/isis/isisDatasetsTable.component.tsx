@@ -155,7 +155,7 @@ const ISISDatasetsTable = (
       {
         icon: CalendarTodayIcon,
         label: t('datasets.create_time'),
-        dataKey: 'name',
+        dataKey: 'createTime',
         filterComponent: dateFilter,
       },
       {

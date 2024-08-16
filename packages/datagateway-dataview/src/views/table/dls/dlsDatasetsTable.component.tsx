@@ -150,7 +150,7 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
       {
         icon: CalendarToday,
         label: t('datasets.create_time'),
-        dataKey: 'name',
+        dataKey: 'createTime',
         filterComponent: dateFilter,
       },
       {
