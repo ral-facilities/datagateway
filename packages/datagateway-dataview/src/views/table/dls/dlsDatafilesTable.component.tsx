@@ -116,6 +116,7 @@ const DLSDatafilesTable = (
         label: t('datafiles.name'),
         dataKey: 'name',
         filterComponent: textFilter,
+        defaultSort: 'asc',
       },
       {
         icon: Explore,
@@ -136,7 +137,6 @@ const DLSDatafilesTable = (
         label: t('datafiles.create_time'),
         dataKey: 'name',
         filterComponent: dateFilter,
-        defaultSort: 'desc',
       },
     ],
     [t, dateFilter, textFilter]

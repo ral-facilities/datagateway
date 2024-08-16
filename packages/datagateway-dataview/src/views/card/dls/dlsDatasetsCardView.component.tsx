@@ -86,6 +86,7 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
           view
         ),
       filterComponent: textFilter,
+      defaultSort: 'asc',
     }),
     [investigationId, proposalName, t, textFilter, view]
   );
@@ -118,7 +119,6 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
         label: t('datasets.create_time'),
         dataKey: 'name',
         filterComponent: dateFilter,
-        defaultSort: 'desc',
       },
       {
         icon: CalendarToday,
