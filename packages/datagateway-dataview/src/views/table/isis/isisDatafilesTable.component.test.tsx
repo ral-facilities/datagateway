@@ -262,7 +262,7 @@ describe('ISIS datafiles table component', () => {
     renderComponent();
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"modTime":"desc"}')}`
+      `?sort=${encodeURIComponent('{"name":"asc"}')}`
     );
 
     // check that the data request is sent only once after mounting
@@ -281,7 +281,7 @@ describe('ISIS datafiles table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"name":"asc"}')}`
+      `?sort=${encodeURIComponent('{"name":"desc"}')}`
     );
   });
 
