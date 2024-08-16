@@ -142,6 +142,7 @@ const ISISDatasetsTable = (
             view
           ),
         filterComponent: textFilter,
+        defaultSort: 'asc',
       },
       {
         icon: SaveIcon,
@@ -156,7 +157,6 @@ const ISISDatasetsTable = (
         label: t('datasets.create_time'),
         dataKey: 'name',
         filterComponent: dateFilter,
-        defaultSort: 'desc',
       },
       {
         icon: CalendarTodayIcon,

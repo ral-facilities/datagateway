@@ -132,6 +132,7 @@ const ISISDatafilesTable = (
         label: t('datafiles.name'),
         dataKey: 'name',
         filterComponent: textFilter,
+        defaultSort: 'asc',
       },
       {
         icon: ExploreIcon,
@@ -152,7 +153,6 @@ const ISISDatafilesTable = (
         label: t('datafiles.modified_time'),
         dataKey: 'name',
         filterComponent: dateFilter,
-        defaultSort: 'desc',
       },
     ],
     [t, dateFilter, textFilter]
