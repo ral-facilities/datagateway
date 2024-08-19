@@ -78,8 +78,8 @@ describe('DLS datafiles table component', () => {
         name: 'Test 1',
         location: '/test1',
         fileSize: 1,
-        modTime: '2019-07-23',
-        createTime: '2019-07-23',
+        datafileModTime: '2019-07-23',
+        datafileCreateTime: '2019-07-23',
       },
     ];
     history = createMemoryHistory();
@@ -228,7 +228,7 @@ describe('DLS datafiles table component', () => {
     renderComponent();
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"createTime":"desc"}')}`
+      `?sort=${encodeURIComponent('{"datafileCreateTime":"desc"}')}`
     );
 
     // check that the data request is sent only once after mounting
