@@ -244,7 +244,7 @@ describe('ISIS datafiles table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent('{"modTime":{"endDate":"2019-08-06"}}')}`
+      `?filters=${encodeURIComponent('{"datafileModTime":{"endDate":"2019-08-06"}}')}`
     );
 
     // await user.clear(filterInput);
@@ -262,7 +262,7 @@ describe('ISIS datafiles table component', () => {
     renderComponent();
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"modTime":"desc"}')}`
+      `?sort=${encodeURIComponent('{"datafileModTime":"desc"}')}`
     );
 
     // check that the data request is sent only once after mounting

@@ -209,7 +209,7 @@ describe('DLS datafiles table component', () => {
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
       `?filters=${encodeURIComponent(
-        '{"createTime":{"endDate":"2019-08-06"}}'
+        '{"datafileCreateTime":{"endDate":"2019-08-06"}}'
       )}`
     );
 
