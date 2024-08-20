@@ -63,8 +63,8 @@ describe('Datafile table component', () => {
         name: 'Test 1',
         location: '/test1',
         fileSize: 1,
-        modTime: '2019-07-23',
-        createTime: '2019-07-23',
+        datafileModTime: '2019-07-23',
+        datafileCreateTime: '2019-07-23',
       },
     ];
     history = createMemoryHistory();
@@ -243,7 +243,7 @@ describe('Datafile table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent('{"modTime":{"endDate":"2019-08-06"}}')}`
+      `?filters=${encodeURIComponent('{"datafileModTime":{"endDate":"2019-08-06"}}')}`
     );
 
     // await user.clear(filterInput);
