@@ -244,7 +244,9 @@ describe('ISIS datafiles table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent('{"datafileModTime":{"endDate":"2019-08-06"}}')}`
+      `?filters=${encodeURIComponent(
+        '{"datafileModTime":{"endDate":"2019-08-06"}}'
+      )}`
     );
 
     // await user.clear(filterInput);
