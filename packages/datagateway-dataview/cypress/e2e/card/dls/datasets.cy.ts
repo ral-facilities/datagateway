@@ -15,18 +15,18 @@ describe('DLS - Datasets Cards', () => {
     cy.get('#datagateway-dataview').should('be.visible');
 
     //Default sort
-    cy.contains('[role="button"]', 'desc').should('exist');
-    cy.get('.MuiTableSortLabel-iconDirectionDesc').should('be.visible');
+    cy.contains('[role="button"]', 'asc').should('exist');
+    cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
   });
 
   it('should be able to click a dataset to see its datafiles', () => {
     cy.get('[data-testid="card"]')
       .first()
-      .contains('DATASET 61')
+      .contains('DATASET 1')
       .click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/proposal/INVESTIGATION%201/investigation/1/dataset/61/datafile'
+      '/browse/proposal/INVESTIGATION%201/investigation/1/dataset/1/datafile'
     );
   });
 
@@ -38,17 +38,17 @@ describe('DLS - Datasets Cards', () => {
     cy.get('[data-testid="card"]')
       .first()
       .get('[aria-label="card-more-information"]')
-      .contains('DATASET 61');
+      .contains('DATASET 1');
     cy.get('[data-testid="card"]')
       .first()
       .get('[aria-label="card-more-information"]')
-      .contains('1.73 GB', { timeout: 10000 });
+      .contains('1.39 GB', { timeout: 10000 });
 
     cy.get('#dataset-type-tab').click({ force: true });
     cy.get('[data-testid="card"]')
       .first()
       .get('[aria-label="card-more-information"]')
-      .contains('DATASETTYPE 3');
+      .contains('DATASETTYPE 2');
   });
 
   it('should be able to sort by one field or multiple', () => {
@@ -58,9 +58,6 @@ describe('DLS - Datasets Cards', () => {
 
     // ascending
     cy.contains('[role="button"]', 'Name').as('nameSortButton').click();
-    cy.wait('@getDatasetsOrder', {
-      timeout: 10000,
-    });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('[data-testid="card"]').first().contains('DATASET 1');
