@@ -24,13 +24,12 @@ const TextColumnFilter = (props: {
     propValue ? propValue : ''
   );
   const [type, setType] = React.useState(propType ? propType : 'include');
-
-  // Debounce the updating of the column filter by 250 milliseconds.
+  // Debounce the updating of the column filter by 500 milliseconds.
   const updateValue = React.useMemo(
     () =>
       debounce((value: string) => {
         onChange(value === '' ? null : { value: value, type: type });
-      }, 250),
+      }, DEBOUNCE_DELAY),
     [onChange, type]
   );
 
@@ -128,6 +127,8 @@ const TextColumnFilter = (props: {
     </div>
   );
 };
+
+export const DEBOUNCE_DELAY = 500;
 
 export default TextColumnFilter;
 
