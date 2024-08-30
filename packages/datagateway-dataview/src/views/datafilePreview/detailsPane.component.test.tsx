@@ -96,14 +96,16 @@ describe('DetailsPane', () => {
       expect(
         await screen.findByText('datafiles.details.mod_time')
       ).toBeInTheDocument();
-      expect(screen.getByText(mockDatafile.datafileModTime)).toBeInTheDocument();
+      expect(
+        screen.getByText(mockDatafile.datafileModTime)
+      ).toBeInTheDocument();
     });
 
     it('with an unknown message if the last modified time is unknown', async () => {
       renderComponent({
         datafile: {
           ...mockDatafile,
-          datafileModTime: '',
+          datafileModTime: undefined,
         },
       });
 
@@ -121,14 +123,16 @@ describe('DetailsPane', () => {
       expect(
         await screen.findByText('datafiles.details.create_time')
       ).toBeInTheDocument();
-      expect(screen.getByText(mockDatafile.datafileCreateTime)).toBeInTheDocument();
+      expect(
+        screen.getByText(mockDatafile.datafileCreateTime)
+      ).toBeInTheDocument();
     });
 
     it('with an unknown message if the creation date is unknown', async () => {
       renderComponent({
         datafile: {
           ...mockDatafile,
-          datafileCreateTime: '',
+          datafileCreateTime: undefined,
         },
       });
 

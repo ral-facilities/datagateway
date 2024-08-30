@@ -3,13 +3,15 @@
 import type { Datafile } from 'datagateway-common';
 
 const mockDatafile = {
-  datafileCreateTime: '2020-01-01',
+  createTime: '2020-01-01',
+  datafileCreateTime: '2019-01-01',
   dataset: undefined,
   description: 'test description',
   fileSize: 100,
   id: 123,
   location: 'test location',
-  datafileModTime: '2020-01-02',
+  modTime: '2020-01-02',
+  datafileModTime: '2019-01-02',
   name: 'Datafile.txt',
   parameters: [],
 } satisfies Datafile;

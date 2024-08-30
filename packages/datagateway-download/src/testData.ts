@@ -323,8 +323,8 @@ export const mockDatafiles: Datafile[] = [
   {
     id: 70,
     name: 'datafile weekend',
-    datafileModTime: '2018-03-10T08:19:55Z',
-    datafileCreateTime: '2018-03-10T08:19:55Z',
+    modTime: '2018-03-10T08:19:55Z',
+    createTime: '2018-03-10T08:19:55Z',
     dataset: mockDatasets[0],
   },
 ];

@@ -61,8 +61,10 @@ describe('ISIS datafiles table component', () => {
         name: 'Test 1',
         location: '/test1',
         fileSize: 1,
-        datafileModTime: '2019-07-23',
-        datafileCreateTime: '2019-07-23',
+        modTime: '2019-07-23',
+        createTime: '2019-07-23',
+        datafileModTime: '2019-01-02',
+        datafileCreateTime: '2019-01-01',
       },
     ];
     cartItems = [];
@@ -201,7 +203,7 @@ describe('ISIS datafiles table component', () => {
         findCellInRow(row, {
           columnIndex: await findColumnIndexByName('datafiles.modified_time'),
         })
-      ).getByText('2019-07-23')
+      ).getByText('2019-01-02')
     ).toBeInTheDocument();
   });
 

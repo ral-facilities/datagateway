@@ -64,8 +64,10 @@ export interface Dataset {
 export interface Datafile {
   id: number;
   name: string;
-  datafileModTime: string;
-  datafileCreateTime: string;
+  modTime: string;
+  createTime: string;
+  datafileModTime?: string;
+  datafileCreateTime?: string;
   fileSize?: number;
   location?: string;
   description?: string;
