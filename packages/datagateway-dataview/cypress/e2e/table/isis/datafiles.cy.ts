@@ -119,9 +119,8 @@ describe('ISIS - Datafiles Table', () => {
 
   it('should change icons when sorting on a column', () => {
     // clear default sort
-    cy.contains('[role="button"]', 'Modified Time').click();
-    cy.contains('[role="button"]', 'Modified Time').click();
-    cy.contains('[role="button"]', 'Modified Time').click();
+    cy.contains('[role="button"]', 'Name').click();
+    cy.contains('[role="button"]', 'Name').click();
 
     cy.get('[data-testid="SortIcon"]').should('have.length', 4);
 
@@ -154,7 +153,7 @@ describe('ISIS - Datafiles Table', () => {
     );
 
     cy.get('[aria-rowcount="15"]').should('exist');
-    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('Datafile 1744');
+    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('Datafile 1030');
 
     // test text filter
     cy.get('[aria-label="Filter by Location"]').first().type('action');

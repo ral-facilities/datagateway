@@ -52,8 +52,10 @@ describe('DLS - Datasets Cards', () => {
   });
 
   it('should be able to sort by one field or multiple', () => {
-    //Revert the default sort
-    cy.contains('[role="button"]', 'Create Time').as('timeSortButton').click();
+    // Revert the default sort
+    cy.contains('[role="button"]', 'Name').as('nameSortButton').click();
+    cy.get('@nameSortButton').click();
+
     cy.wait('@getDatasetsOrder', { timeout: 10000 });
 
     // ascending
@@ -78,7 +80,7 @@ describe('DLS - Datasets Cards', () => {
     cy.get('[data-testid="card"]').first().contains('DATASET 1');
 
     // multiple fields (shift click)
-    cy.get('@timeSortButton').click();
+    cy.contains('[role="button"]', 'Create Time').as('timeSortButton').click();
     cy.wait('@getDatasetsOrder', {
       timeout: 10000,
     });

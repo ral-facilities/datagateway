@@ -49,11 +49,12 @@ describe('DLS - Datasets Table', () => {
   });
 
   it('should be able to sort by all sort directions on single and multiple columns', () => {
-    //Revert the default sort
-    cy.contains('[role="button"]', 'Create Time').as('timeSortButton').click();
+    // Revert the default sort
+    cy.contains('[role="button"]', 'Name').as('nameSortButton').click();
+    cy.get('@nameSortButton').click();
 
     // ascending order
-    cy.contains('[role="button"]', 'Name').as('nameSortButton').click();
+    cy.get('@nameSortButton').click();
     cy.wait('@datasets', { timeout: 10000 });
 
     cy.get('[aria-sort="ascending"]').should('exist');
@@ -84,7 +85,8 @@ describe('DLS - Datasets Table', () => {
     cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
 
     // multiple columns (shift click)
-    cy.get('@timeSortButton').click();
+    cy.contains('[role="button"]', 'Create Time').as('timeSortButton').click();
+    // ascending order
     cy.wait('@datasets', { timeout: 10000 });
     cy.get('@nameSortButton').click({ shiftKey: true });
     cy.wait('@datasets', { timeout: 10000 });
@@ -102,9 +104,9 @@ describe('DLS - Datasets Table', () => {
   });
 
   it('should change icons when sorting on a column', () => {
-    cy.contains('[role="button"]', 'Create Time').click();
-    cy.contains('[role="button"]', 'Create Time').click();
-    cy.contains('[role="button"]', 'Create Time').click();
+    // clear default sort
+    cy.contains('[role="button"]', 'Name').click();
+    cy.contains('[role="button"]', 'Name').click();
 
     cy.get('[data-testid="SortIcon"]').should('have.length', 5);
 

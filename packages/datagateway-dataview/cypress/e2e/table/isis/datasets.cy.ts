@@ -101,7 +101,8 @@ describe('ISIS - Datasets Table', () => {
 
   it('should change icons when sorting on a column', () => {
     // clear default sort
-    cy.contains('[role="button"]', 'Create Time').click();
+    cy.contains('[role="button"]', 'Name').click();
+    cy.contains('[role="button"]', 'Name').click();
 
     cy.get('[data-testid="SortIcon"]').should('have.length', 3);
 
