@@ -89,6 +89,7 @@ describe('DatafilePreviewer', () => {
             loaded: 10,
             bytes: 10,
             total: 10,
+            lengthComputable: true,
           });
           // this is download datafile content query, resolve with mock datafile content
           return Promise.resolve({
@@ -208,6 +209,7 @@ describe('DatafilePreviewer', () => {
             loaded: 2,
             bytes: 10,
             total: 10,
+            lengthComputable: true,
           });
           return new Promise((_) => {
             // never resolve the promise to pretend it is loading
