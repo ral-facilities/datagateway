@@ -2,6 +2,7 @@ import React from 'react';
 import TextColumnFilter, {
   usePrincipalExperimenterFilter,
   useTextFilter,
+  DEBOUNCE_DELAY,
 } from './textColumnFilter.component';
 import { act } from 'react-dom/test-utils';
 import { usePushFilter, usePushFilters } from '../../api';
@@ -12,7 +13,6 @@ import userEvent from '@testing-library/user-event';
 
 jest.mock('../../api');
 jest.useFakeTimers('modern');
-const DEBOUNCE_DELAY = 250;
 
 describe('Text filter component', () => {
   let user: UserEvent;
