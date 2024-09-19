@@ -21,8 +21,8 @@ describe('DLS - Datasets Table', () => {
     cy.get('#datagateway-dataview').should('be.visible');
 
     //Default sort
-    cy.get('[aria-sort="descending"]').should('exist');
-    cy.get('.MuiTableSortLabel-iconDirectionDesc').should('be.visible');
+    cy.get('[aria-sort="ascending"]').should('exist');
+    cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
   });
 
   it('should not load incorrect URL', () => {
@@ -37,7 +37,7 @@ describe('DLS - Datasets Table', () => {
 
     cy.location('pathname').should(
       'eq',
-      '/browse/proposal/INVESTIGATION%201/investigation/1/dataset/61/datafile'
+      '/browse/proposal/INVESTIGATION%201/investigation/1/dataset/1/datafile'
     );
   });
 
@@ -49,11 +49,12 @@ describe('DLS - Datasets Table', () => {
   });
 
   it('should be able to sort by all sort directions on single and multiple columns', () => {
-    //Revert the default sort
-    cy.contains('[role="button"]', 'Create Time').as('timeSortButton').click();
+    // Revert the default sort
+    cy.contains('[role="button"]', 'Name').as('nameSortButton').click();
+    cy.get('@nameSortButton').click();
 
     // ascending order
-    cy.contains('[role="button"]', 'Name').as('nameSortButton').click();
+    cy.get('@nameSortButton').click();
     cy.wait('@datasets', { timeout: 10000 });
 
     cy.get('[aria-sort="ascending"]').should('exist');
@@ -84,7 +85,8 @@ describe('DLS - Datasets Table', () => {
     cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
 
     // multiple columns (shift click)
-    cy.get('@timeSortButton').click();
+    cy.contains('[role="button"]', 'Create Time').as('timeSortButton').click();
+    // ascending order
     cy.wait('@datasets', { timeout: 10000 });
     cy.get('@nameSortButton').click({ shiftKey: true });
     cy.wait('@datasets', { timeout: 10000 });
@@ -102,8 +104,9 @@ describe('DLS - Datasets Table', () => {
   });
 
   it('should change icons when sorting on a column', () => {
-    // clear the default sort
-    cy.contains('[role="button"]', 'Create Time').click();
+    // clear default sort
+    cy.contains('[role="button"]', 'Name').click();
+    cy.contains('[role="button"]', 'Name').click();
 
     cy.get('[data-testid="SortIcon"]').should('have.length', 5);
 
@@ -145,21 +148,21 @@ describe('DLS - Datasets Table', () => {
 
       cy.get('#details-panel').should('be.visible');
       cy.get('[aria-label="Hide details"]').should('exist');
-      cy.get('#details-panel').contains('DATASET 1').should('be.visible');
+      cy.get('#details-panel').contains('DATASET 61').should('be.visible');
 
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.get('#details-panel').contains('DATASET 61').should('be.visible');
-      cy.get('#details-panel').contains('DATASET 1').should('not.exist');
+      cy.get('#details-panel').contains('DATASET 1').should('be.visible');
+      cy.get('#details-panel').contains('DATASET 61').should('not.exist');
       cy.get('[aria-label="Hide details"]').should('have.length', 1);
 
       cy.get('#details-panel')
-        .contains('Home down your nice amount successful')
+        .contains('Suggest shake effort many last prepare small')
         .should('be.visible');
 
       cy.get('[aria-controls="dataset-type-panel"]').click();
       cy.get('#dataset-type-panel').should('not.have.attr', 'hidden');
-      cy.get('#details-panel').contains('DATASETTYPE 3');
+      cy.get('#details-panel').contains('DATASETTYPE 2');
 
       cy.get('[aria-label="Hide details"]').first().click();
 

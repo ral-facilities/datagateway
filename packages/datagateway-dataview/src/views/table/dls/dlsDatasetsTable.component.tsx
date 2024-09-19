@@ -133,6 +133,7 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
             'dls-datasets-table-title'
           ),
         filterComponent: textFilter,
+        defaultSort: 'asc',
       },
       {
         icon: ConfirmationNumber,
@@ -151,7 +152,6 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
         label: t('datasets.create_time'),
         dataKey: 'createTime',
         filterComponent: dateFilter,
-        defaultSort: 'desc',
       },
       {
         icon: CalendarToday,

@@ -94,6 +94,7 @@ const ISISDatasetsCardView = (
       content: (dataset: Dataset) =>
         tableLink(`${location.pathname}/${dataset.id}`, dataset.name, view),
       filterComponent: textFilter,
+      defaultSort: 'asc',
     }),
     [t, textFilter, location.pathname, view]
   );
@@ -125,7 +126,6 @@ const ISISDatasetsCardView = (
         label: t('datasets.create_time'),
         dataKey: 'createTime',
         filterComponent: dateFilter,
-        defaultSort: 'desc',
       },
       {
         icon: CalendarToday,

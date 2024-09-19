@@ -182,7 +182,7 @@ describe('ISIS Datasets - Card View', () => {
     renderComponent();
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"createTime":"desc"}')}`
+      `?sort=${encodeURIComponent('{"name":"asc"}')}`
     );
 
     // check that the data request is sent only once after mounting
@@ -202,7 +202,7 @@ describe('ISIS Datasets - Card View', () => {
     );
 
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"name":"asc"}')}`
+      `?sort=${encodeURIComponent('{"name":"desc"}')}`
     );
   });
 
