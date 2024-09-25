@@ -62,7 +62,7 @@ describe('Actions', () => {
       apiUrl: 'api',
       downloadApiUrl: 'download-api',
       icatUrl: 'icat',
-      retries: 0,
+      queryRetries: 0,
       selectAllSetting: false,
       searchableEntities: ['investigation', 'dataset', 'datafile'],
       maxNumResults: 150,

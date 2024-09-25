@@ -65,7 +65,7 @@ setLogger({
 // mock retry function to ensure it doesn't slow down query failure tests
 jest.mock('./api/retryICATErrors', () => ({
   __esModule: true,
-  default: jest.fn().mockReturnValue(false),
+  useRetryICATErrors: jest.fn(() => () => false),
 }));
 
 // Mock Date.toLocaleDateString so that it always uses en-GB as locale and UTC timezone

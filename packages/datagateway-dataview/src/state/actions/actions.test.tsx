@@ -102,7 +102,7 @@ describe('Actions', () => {
       features: {},
       idsUrl: 'ids',
       apiUrl: 'api',
-      retries: 1,
+      queryRetries: 1,
       breadcrumbs: [
         {
           matchEntity: 'test',

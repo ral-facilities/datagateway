@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios';
 import { useQueryClient } from 'react-query';
 
-export const createRetryICATErrors = (
+const createRetryICATErrors = (
   retries: number
 ): ((failureCount: number, error: AxiosError) => boolean) => {
   return (failureCount: number, error: AxiosError) =>
@@ -26,7 +26,7 @@ const baseRetryICATErrors = (
   return true;
 };
 
-const useRetryICATErrors = (): ((
+export const useRetryICATErrors = (): ((
   failureCount: number,
   error: AxiosError
 ) => boolean) => {
@@ -34,9 +34,12 @@ const useRetryICATErrors = (): ((
   const opts = queryClient.getDefaultOptions();
   // TODO: do we want to be more elegant in handling other types of retry...
   const retries =
-    typeof opts.queries?.retry === 'number' ? opts.queries.retry : 3;
+    typeof opts.queries?.retry === 'number'
+      ? opts.queries.retry
+      : // explicitly handle boolean case as we set this in tests
+      opts.queries?.retry === false
+      ? 0
+      : 3;
 
   return createRetryICATErrors(retries);
 };
-
-export { useRetryICATErrors };
