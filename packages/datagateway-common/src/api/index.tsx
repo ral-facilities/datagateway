@@ -24,7 +24,7 @@ import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
 import format from 'date-fns/format';
 import { isValid } from 'date-fns';
-import retryICATErrors from './retryICATErrors';
+import { useRetryICATErrors } from './retryICATErrors';
 
 export * from './cart';
 export * from './facilityCycles';
@@ -678,6 +678,7 @@ export const useIds = (
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters } = parseSearchToQuery(location.search);
+  const retryICATErrors = useRetryICATErrors();
 
   return useQuery<
     number[],
@@ -758,6 +759,7 @@ export const useCustomFilter = (
   }[]
 ): UseQueryResult<string[], Error> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+  const retryICATErrors = useRetryICATErrors();
 
   return useQuery<
     string[],
@@ -842,6 +844,7 @@ export const useCustomFilterCount = (
   }[]
 ): UseQueryResult<number, AxiosError>[] => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+  const retryICATErrors = useRetryICATErrors();
 
   const queryConfigs: UseQueryOptions<
     number,
@@ -891,7 +894,14 @@ export const useCustomFilterCount = (
         staleTime: Infinity,
       };
     });
-  }, [apiUrl, entityType, filterIds, filterKey, additionalFilters]);
+  }, [
+    filterIds,
+    entityType,
+    filterKey,
+    additionalFilters,
+    retryICATErrors,
+    apiUrl,
+  ]);
 
   // useQueries doesn't allow us to specify type info, so ignore this line
   // since we strongly type the queries object anyway

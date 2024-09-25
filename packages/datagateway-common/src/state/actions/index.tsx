@@ -2,6 +2,8 @@ import { ActionType } from '../app.types';
 import {
   ConfigureFacilityNamePayload,
   ConfigureFacilityNameType,
+  ConfigureQueryRetriesPayload,
+  ConfigureQueryRetriesType,
   ConfigureUrlsPayload,
   ConfigureURLsType,
   URLs,
@@ -20,5 +22,14 @@ export const loadUrls = (urls: URLs): ActionType<ConfigureUrlsPayload> => ({
   type: ConfigureURLsType,
   payload: {
     urls,
+  },
+});
+
+export const loadQueryRetries = (
+  queryRetries?: number
+): ActionType<ConfigureQueryRetriesPayload> => ({
+  type: ConfigureQueryRetriesType,
+  payload: {
+    queryRetries,
   },
 });

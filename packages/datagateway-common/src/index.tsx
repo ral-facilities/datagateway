@@ -53,7 +53,7 @@ export type DGCommonState = StateType;
 
 export * from './parseTokens';
 export { default as handleICATError } from './handleICATError';
-export { default as retryICATErrors } from './api/retryICATErrors';
+export * from './api/retryICATErrors';
 
 export {
   default as ArrowTooltip,

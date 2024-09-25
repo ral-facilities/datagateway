@@ -1,9 +1,12 @@
-import { render } from '@testing-library/react';
+import { RenderResult, render } from '@testing-library/react';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { act } from 'react-dom/test-utils';
-import App, { ErrorFallback } from './App';
+import App, { ErrorFallback, QueryClientSettingUpdater } from './App';
 import { flushPromises } from './setupTests';
+import { mockedSettings } from './testData';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { DownloadSettingsContext } from './ConfigProvider';
 
 jest.mock('loglevel');
 jest.mock('./ConfigProvider');
@@ -26,5 +29,46 @@ describe('ErrorFallback', () => {
   it('should should render an error message for when app fails catastrophically', () => {
     const { asFragment } = render(<ErrorFallback />);
     expect(asFragment()).toMatchSnapshot();
+  });
+});
+
+describe('QueryClientSettingUpdater', () => {
+  let settings = mockedSettings;
+  const renderComponent = (queryClient = new QueryClient()): RenderResult => {
+    function Wrapper({
+      children,
+    }: React.PropsWithChildren<unknown>): JSX.Element {
+      return (
+        <DownloadSettingsContext.Provider value={settings}>
+          <QueryClientProvider client={queryClient}>
+            {children}
+          </QueryClientProvider>
+        </DownloadSettingsContext.Provider>
+      );
+    }
+    return render(<QueryClientSettingUpdater queryClient={queryClient} />, {
+      wrapper: Wrapper,
+    });
+  };
+
+  beforeEach(() => {
+    jest.restoreAllMocks();
+    settings = mockedSettings;
+  });
+
+  it('syncs retry setting to query client when it updates', async () => {
+    const queryClient = new QueryClient({
+      // set random other option to check it doesn't get overridden
+      defaultOptions: { queries: { staleTime: 300000 } },
+    });
+    const { rerender } = renderComponent(queryClient);
+
+    settings.queryRetries = 0;
+
+    rerender(<QueryClientSettingUpdater queryClient={queryClient} />);
+
+    expect(queryClient.getDefaultOptions()).toEqual({
+      queries: { staleTime: 300000, retry: 0 },
+    });
   });
 });

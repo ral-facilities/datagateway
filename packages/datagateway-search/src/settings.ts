@@ -6,6 +6,7 @@ export interface SearchSettings {
   downloadApiUrl: string;
   idsUrl: string;
   icatUrl: string;
+  queryRetries?: number;
   selectAllSetting?: boolean;
   searchableEntities?: string[];
   minNumResults?: number;

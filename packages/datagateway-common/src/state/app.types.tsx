@@ -18,6 +18,7 @@ import type { URLs } from './actions/actions.types';
 export interface DGCommonState {
   facilityName: string;
   urls: URLs;
+  queryRetries?: number;
   isisDatafileDetailsPanel: Record<
     Datafile['id'],
     {

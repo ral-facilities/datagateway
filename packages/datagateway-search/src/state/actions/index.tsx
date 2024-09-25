@@ -10,7 +10,11 @@ import {
   ConfigureMinNumResultsPayload,
   ConfigureMinNumResultsType,
 } from './actions.types';
-import { loadUrls, loadFacilityName } from 'datagateway-common';
+import {
+  loadUrls,
+  loadFacilityName,
+  loadQueryRetries,
+} from 'datagateway-common';
 import { Action } from 'redux';
 import { settings } from '../../settings';
 
@@ -68,6 +72,10 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
           icatUrl: settingsResult['icatUrl'],
         })
       );
+
+      if (settingsResult?.['queryRetries'] !== undefined) {
+        dispatch(loadQueryRetries(settingsResult['queryRetries']));
+      }
 
       if (settingsResult?.['selectAllSetting'] !== undefined) {
         dispatch(loadSelectAllSetting(settingsResult['selectAllSetting']));

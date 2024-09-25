@@ -11,7 +11,7 @@ import {
   InvestigationUser,
   parseSearchToQuery,
   readSciGatewayToken,
-  retryICATErrors,
+  useRetryICATErrors,
   StateType,
   usePushFilter,
 } from 'datagateway-common';
@@ -48,6 +48,7 @@ export const useRoles = (
   username: string
 ): UseQueryResult<string[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+  const retryICATErrors = useRetryICATErrors();
 
   return useQuery<string[], AxiosError, string[], [string, string]>(
     ['roles', username],

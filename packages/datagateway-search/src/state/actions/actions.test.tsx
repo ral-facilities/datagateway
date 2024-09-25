@@ -14,7 +14,12 @@ import {
   SettingsLoadedType,
 } from './actions.types';
 import { actions, resetActions, dispatch, getState } from '../../setupTests';
-import { loadUrls, loadFacilityName } from 'datagateway-common';
+import {
+  loadUrls,
+  loadFacilityName,
+  loadQueryRetries,
+  ConfigureQueryRetriesType,
+} from 'datagateway-common';
 
 const mockSettingsGetter = jest.fn();
 jest.mock('../../settings', () => ({
@@ -50,13 +55,14 @@ describe('Actions', () => {
     });
   });
 
-  it('settings are loaded and facilityName, loadUrls, loadSelectAllSetting, loadSearchableEntitites, loadMaxNumResults and settingsLoaded actions are sent', async () => {
+  it('settings are loaded and facilityName, loadUrls, loadQueryRetries, loadSelectAllSetting, loadSearchableEntitites, loadMaxNumResults and settingsLoaded actions are sent', async () => {
     mockSettingsGetter.mockReturnValue({
       facilityName: 'Generic',
       idsUrl: 'ids',
       apiUrl: 'api',
       downloadApiUrl: 'download-api',
       icatUrl: 'icat',
+      retries: 0,
       selectAllSetting: false,
       searchableEntities: ['investigation', 'dataset', 'datafile'],
       maxNumResults: 150,
@@ -64,7 +70,7 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState, null);
 
-    expect(actions.length).toEqual(6);
+    expect(actions.length).toEqual(7);
     expect(actions).toContainEqual(loadFacilityName('Generic'));
     expect(actions).toContainEqual(
       loadUrls({
@@ -79,11 +85,12 @@ describe('Actions', () => {
       loadSearchableEntitites(['investigation', 'dataset', 'datafile'])
     );
     expect(actions).toContainEqual(loadMaxNumResults(150));
+    expect(actions).toContainEqual(loadQueryRetries(0));
 
     expect(actions).toContainEqual(settingsLoaded());
   });
 
-  it("doesn't send loadSelectAllSetting, loadSearchableEntitites and loadMaxNumResults actions when they're not defined", async () => {
+  it("doesn't send loadQueryRetries, loadSelectAllSetting, loadSearchableEntitites and loadMaxNumResults actions when they're not defined", async () => {
     mockSettingsGetter.mockReturnValue({
       facilityName: 'Generic',
       idsUrl: 'ids',
@@ -103,6 +110,9 @@ describe('Actions', () => {
     ).toBe(true);
     expect(
       actions.every(({ type }) => type !== ConfigureMaxNumResultsType)
+    ).toBe(true);
+    expect(
+      actions.every(({ type }) => type !== ConfigureQueryRetriesType)
     ).toBe(true);
 
     expect(actions).toContainEqual(settingsLoaded());

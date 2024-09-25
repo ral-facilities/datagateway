@@ -19,7 +19,7 @@ import {
 } from '../app.types';
 import handleICATError from '../handleICATError';
 import { readSciGatewayToken } from '../parseTokens';
-import retryICATErrors from './retryICATErrors';
+import { useRetryICATErrors } from './retryICATErrors';
 
 interface QueryParameters {
   target: string;
@@ -352,6 +352,7 @@ export const useLuceneSearchInfinite = (
       {}
     );
   }
+  const retryICATErrors = useRetryICATErrors();
 
   return useInfiniteQuery(
     ['search', datasearchType, luceneParams],

@@ -16,7 +16,12 @@ import {
   ConfigureFacilityImageSettingType,
 } from './actions.types';
 import { actions, resetActions, dispatch, getState } from '../../setupTests';
-import { loadUrls, loadFacilityName } from 'datagateway-common';
+import {
+  loadUrls,
+  loadFacilityName,
+  loadQueryRetries,
+  ConfigureQueryRetriesType,
+} from 'datagateway-common';
 
 jest.mock('loglevel');
 
@@ -90,13 +95,14 @@ describe('Actions', () => {
     });
   });
 
-  it('settings are loaded and facilityName, loadFeatureSwitches, loadUrls, loadBreadcrumbSettings, loadSelectAllSetting and settingsLoaded actions are sent', async () => {
+  it('settings are loaded and facilityName, loadFeatureSwitches, loadUrls, loadQueryRetries, loadBreadcrumbSettings, loadSelectAllSetting and settingsLoaded actions are sent', async () => {
     mockSettingsGetter.mockReturnValue({
       facilityName: 'Generic',
       facilityImageURL: 'test-image.jpg',
       features: {},
       idsUrl: 'ids',
       apiUrl: 'api',
+      retries: 1,
       breadcrumbs: [
         {
           matchEntity: 'test',
@@ -117,7 +123,7 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState, null);
 
-    expect(actions.length).toEqual(8);
+    expect(actions.length).toEqual(9);
     expect(actions).toContainEqual(loadFacilityName('Generic'));
     expect(actions).toContainEqual(loadFacilityImageSetting('test-image.jpg'));
     expect(actions).toContainEqual(loadFeatureSwitches({}));
@@ -142,9 +148,10 @@ describe('Actions', () => {
     expect(actions).toContainEqual(
       loadPluginHostSetting('http://localhost:3000/')
     );
+    expect(actions).toContainEqual(loadQueryRetries(1));
   });
 
-  it("doesn't send loadSelectAllSetting, loadBreadcrumbSettings, loadPluginHostSetting, loadFacilityImageSetting and loadFeatureSwitches actions when they're not defined", async () => {
+  it("doesn't send loadQueryRetries, loadSelectAllSetting, loadBreadcrumbSettings, loadPluginHostSetting, loadFacilityImageSetting and loadFeatureSwitches actions when they're not defined", async () => {
     mockSettingsGetter.mockReturnValue({
       facilityName: 'Generic',
       idsUrl: 'ids',
@@ -170,6 +177,9 @@ describe('Actions', () => {
     ).toBe(true);
     expect(
       actions.every(({ type }) => type !== ConfigureFacilityImageSettingType)
+    ).toBe(true);
+    expect(
+      actions.every(({ type }) => type !== ConfigureQueryRetriesType)
     ).toBe(true);
 
     expect(actions).toContainEqual(settingsLoaded());

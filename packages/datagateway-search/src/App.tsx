@@ -16,7 +16,7 @@ import {
 } from 'history';
 import log from 'loglevel';
 import React from 'react';
-import { batch, connect, Provider } from 'react-redux';
+import { batch, connect, Provider, useSelector } from 'react-redux';
 import { AnyAction, applyMiddleware, compose, createStore, Store } from 'redux';
 import { createLogger } from 'redux-logger';
 import thunk, { ThunkDispatch } from 'redux-thunk';
@@ -99,6 +99,27 @@ const queryClient = new QueryClient({
   },
 });
 
+export const QueryClientSettingUpdater: React.FC<{
+  queryClient: QueryClient;
+}> = (props) => {
+  const { queryClient } = props;
+  const queryRetries = useSelector(
+    (state: StateType) => state.dgcommon.queryRetries
+  );
+
+  React.useEffect(() => {
+    if (typeof queryRetries !== 'undefined') {
+      const opts = queryClient.getDefaultOptions();
+      queryClient.setDefaultOptions({
+        ...opts,
+        queries: { ...opts.queries, retry: queryRetries },
+      });
+    }
+  }, [queryClient, queryRetries]);
+
+  return null;
+};
+
 document.addEventListener(MicroFrontendId, (e) => {
   const action = (e as CustomEvent).detail;
   if (action.type === BroadcastSignOutType) {
@@ -175,6 +196,7 @@ class App extends React.Component<unknown, { hasError: boolean }> {
           <Provider store={this.store}>
             <ConnectedRouter history={history}>
               <QueryClientProvider client={queryClient}>
+                <QueryClientSettingUpdater queryClient={queryClient} />
                 <DGThemeProvider>
                   <ConnectedPreloader>
                     <React.Suspense
