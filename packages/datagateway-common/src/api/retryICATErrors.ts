@@ -32,7 +32,7 @@ export const useRetryICATErrors = (): ((
 ) => boolean) => {
   const queryClient = useQueryClient();
   const opts = queryClient.getDefaultOptions();
-  // TODO: do we want to be more elegant in handling other types of retry...
+
   const retries =
     typeof opts.queries?.retry === 'number'
       ? opts.queries.retry

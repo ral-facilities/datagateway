@@ -62,6 +62,7 @@ export {
 export { default as Sticky } from './sticky.component';
 export { default as DGThemeProvider } from './dgThemeProvider.component';
 export { default as Mark } from './mark.component';
+export * from './queryClientSettingsUpdater.component';
 
 export { default as HomePage } from './homePage/homePage.component';
 

@@ -14,6 +14,7 @@ import DOIGenerationForm from './DOIGenerationForm/DOIGenerationForm.component';
 import AdminDownloadStatusTable from './downloadStatus/adminDownloadStatusTable.component';
 
 import DownloadTabs from './downloadTab/downloadTab.component';
+import { QueryClientSettingsUpdater } from 'datagateway-common';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -24,23 +25,18 @@ const queryClient = new QueryClient({
   },
 });
 
-export const QueryClientSettingUpdater: React.FC<{
+export const QueryClientSettingsUpdaterContext: React.FC<{
   queryClient: QueryClient;
 }> = (props) => {
   const { queryClient } = props;
   const { queryRetries } = React.useContext(DownloadSettingsContext);
 
-  React.useEffect(() => {
-    if (typeof queryRetries !== 'undefined') {
-      const opts = queryClient.getDefaultOptions();
-      queryClient.setDefaultOptions({
-        ...opts,
-        queries: { ...opts.queries, retry: queryRetries },
-      });
-    }
-  }, [queryClient, queryRetries]);
-
-  return null;
+  return (
+    <QueryClientSettingsUpdater
+      queryClient={queryClient}
+      queryRetries={queryRetries}
+    />
+  );
 };
 
 /**
@@ -99,7 +95,7 @@ class App extends Component<unknown, { hasError: boolean }> {
         <DGThemeProvider>
           <ConfigProvider>
             <QueryClientProvider client={queryClient}>
-              <QueryClientSettingUpdater queryClient={queryClient} />
+              <QueryClientSettingsUpdaterContext queryClient={queryClient} />
               <React.Suspense
                 fallback={
                   <Preloader loading={true}>Finished loading</Preloader>

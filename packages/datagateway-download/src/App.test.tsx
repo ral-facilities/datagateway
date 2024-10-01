@@ -2,7 +2,7 @@ import { RenderResult, render } from '@testing-library/react';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { act } from 'react-dom/test-utils';
-import App, { ErrorFallback, QueryClientSettingUpdater } from './App';
+import App, { ErrorFallback, QueryClientSettingsUpdaterContext } from './App';
 import { flushPromises } from './setupTests';
 import { mockedSettings } from './testData';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -32,7 +32,7 @@ describe('ErrorFallback', () => {
   });
 });
 
-describe('QueryClientSettingUpdater', () => {
+describe('QueryClientSettingUpdaterContext', () => {
   let settings = mockedSettings;
   const renderComponent = (queryClient = new QueryClient()): RenderResult => {
     function Wrapper({
@@ -46,9 +46,12 @@ describe('QueryClientSettingUpdater', () => {
         </DownloadSettingsContext.Provider>
       );
     }
-    return render(<QueryClientSettingUpdater queryClient={queryClient} />, {
-      wrapper: Wrapper,
-    });
+    return render(
+      <QueryClientSettingsUpdaterContext queryClient={queryClient} />,
+      {
+        wrapper: Wrapper,
+      }
+    );
   };
 
   beforeEach(() => {
@@ -65,7 +68,7 @@ describe('QueryClientSettingUpdater', () => {
 
     settings.queryRetries = 0;
 
-    rerender(<QueryClientSettingUpdater queryClient={queryClient} />);
+    rerender(<QueryClientSettingsUpdaterContext queryClient={queryClient} />);
 
     expect(queryClient.getDefaultOptions()).toEqual({
       queries: { staleTime: 300000, retry: 0 },
