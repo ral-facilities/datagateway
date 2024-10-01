@@ -122,7 +122,7 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
       {
         icon: CalendarToday,
         label: t('datafiles.modified_time'),
-        dataKey: 'modTime',
+        dataKey: 'datafileModTime',
         filterComponent: dateFilter,
       },
     ],

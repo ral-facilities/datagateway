@@ -189,8 +189,8 @@ describe('DatafilePreviewer', () => {
     expect(screen.getByText(mockDatafile.location)).toBeInTheDocument();
     // formatted size of the datafile
     expect(screen.getByText('100 B')).toBeInTheDocument();
-    expect(screen.getByText(mockDatafile.modTime)).toBeInTheDocument();
-    expect(screen.getByText(mockDatafile.createTime)).toBeInTheDocument();
+    expect(screen.getByText(mockDatafile.datafileModTime)).toBeInTheDocument();
+    expect(screen.getByText(mockDatafile.datafileCreateTime)).toBeInTheDocument();
   });
 
   it('should show the current progress of downloading datafile content', async () => {
@@ -229,8 +229,8 @@ describe('DatafilePreviewer', () => {
     expect(screen.getByText(mockDatafile.location)).toBeInTheDocument();
     // formatted size of the datafile
     expect(screen.getByText('100 B')).toBeInTheDocument();
-    expect(screen.getByText(mockDatafile.modTime)).toBeInTheDocument();
-    expect(screen.getByText(mockDatafile.createTime)).toBeInTheDocument();
+    expect(screen.getByText(mockDatafile.datafileModTime)).toBeInTheDocument();
+    expect(screen.getByText(mockDatafile.datafileCreateTime)).toBeInTheDocument();
   });
 
   it('should show a message saying the datafile cannot be previewed if the datafile extension is not supported', async () => {
@@ -262,9 +262,9 @@ describe('DatafilePreviewer', () => {
     expect(screen.getByText(unsupportedDatafile.location)).toBeInTheDocument();
     // formatted size of the datafile
     expect(screen.getByText('100 B')).toBeInTheDocument();
-    expect(screen.getByText(unsupportedDatafile.modTime)).toBeInTheDocument();
+    expect(screen.getByText(unsupportedDatafile.datafileModTime)).toBeInTheDocument();
     expect(
-      screen.getByText(unsupportedDatafile.createTime)
+      screen.getByText(unsupportedDatafile.datafileCreateTime)
     ).toBeInTheDocument();
   });
 
@@ -297,9 +297,9 @@ describe('DatafilePreviewer', () => {
     expect(screen.getByText(unsupportedDatafile.location)).toBeInTheDocument();
     // formatted size of the datafile
     expect(screen.getByText('100 B')).toBeInTheDocument();
-    expect(screen.getByText(unsupportedDatafile.modTime)).toBeInTheDocument();
+    expect(screen.getByText(unsupportedDatafile.datafileModTime)).toBeInTheDocument();
     expect(
-      screen.getByText(unsupportedDatafile.createTime)
+      screen.getByText(unsupportedDatafile.datafileCreateTime)
     ).toBeInTheDocument();
   });
 
@@ -330,8 +330,8 @@ describe('DatafilePreviewer', () => {
       expect(screen.getByText(mockDatafile.location)).toBeInTheDocument();
       // formatted size of the datafile
       expect(screen.getByText('100 B')).toBeInTheDocument();
-      expect(screen.getByText(mockDatafile.modTime)).toBeInTheDocument();
-      expect(screen.getByText(mockDatafile.createTime)).toBeInTheDocument();
+      expect(screen.getByText(mockDatafile.datafileModTime)).toBeInTheDocument();
+      expect(screen.getByText(mockDatafile.datafileCreateTime)).toBeInTheDocument();
     });
 
     it('hides the details pane when it is switched off', async () => {
@@ -355,8 +355,8 @@ describe('DatafilePreviewer', () => {
         expect(screen.queryByText(mockDatafile.location)).toBeNull();
         // formatted size of the datafile
         expect(screen.queryByText('100 B')).toBeNull();
-        expect(screen.queryByText(mockDatafile.modTime)).toBeNull();
-        expect(screen.queryByText(mockDatafile.createTime)).toBeNull();
+        expect(screen.queryByText(mockDatafile.datafileModTime)).toBeNull();
+        expect(screen.queryByText(mockDatafile.datafileCreateTime)).toBeNull();
       });
     });
 
@@ -387,8 +387,8 @@ describe('DatafilePreviewer', () => {
       expect(screen.getByText(mockDatafile.location)).toBeInTheDocument();
       // formatted size of the datafile
       expect(screen.getByText('100 B')).toBeInTheDocument();
-      expect(screen.getByText(mockDatafile.modTime)).toBeInTheDocument();
-      expect(screen.getByText(mockDatafile.createTime)).toBeInTheDocument();
+      expect(screen.getByText(mockDatafile.datafileModTime)).toBeInTheDocument();
+      expect(screen.getByText(mockDatafile.datafileCreateTime)).toBeInTheDocument();
     });
   });
 

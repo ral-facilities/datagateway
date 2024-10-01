@@ -151,7 +151,7 @@ const ISISDatafilesTable = (
       {
         icon: CalendarTodayIcon,
         label: t('datafiles.modified_time'),
-        dataKey: 'modTime',
+        dataKey: 'datafileModTime',
         filterComponent: dateFilter,
       },
     ],

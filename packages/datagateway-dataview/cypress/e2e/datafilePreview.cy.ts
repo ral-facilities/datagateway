@@ -64,7 +64,7 @@ describe('Datafile preview', () => {
     cy.contains('159.93 MB').should('exist');
     cy.contains('/wish/although/eat.txt').should('exist');
     cy.contains('2019-09-05 14:03:35+01:00').should('exist');
-    cy.contains('2019-09-05 14:03:35+01:00').should('exist');
+    cy.contains('2011-03-25 13:11:50+00:00').should('exist');
 
     // should be at 100% zoom
     cy.contains('100%').should('exist');
@@ -162,7 +162,7 @@ describe('Datafile preview', () => {
     cy.contains('159.93 MB').should('not.exist');
     cy.contains('/wish/although/eat.txt').should('not.exist');
     cy.contains('2019-09-05 14:03:35+01:00').should('not.exist');
-    cy.contains('2019-09-05 14:03:35+01:00').should('not.exist');
+    cy.contains('2011-03-25 13:11:50+00:00').should('not.exist');
 
     // see above for the HTML structure of the checkbox
     cy.get('label')
@@ -181,7 +181,7 @@ describe('Datafile preview', () => {
     cy.contains('159.93 MB').should('exist');
     cy.contains('/wish/although/eat.txt').should('exist');
     cy.contains('2019-09-05 14:03:35+01:00').should('exist');
-    cy.contains('2019-09-05 14:03:35+01:00').should('exist');
+    cy.contains('2011-03-25 13:11:50+00:00').should('exist');
 
     // see above for the HTML structure of the checkbox
     cy.get('label')
