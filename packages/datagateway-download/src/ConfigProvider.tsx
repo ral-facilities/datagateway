@@ -17,6 +17,7 @@ export interface DownloadSettings {
   idsUrl: string;
   doiMinterUrl?: string;
   dataCiteUrl?: string;
+  queryRetries?: number;
 
   fileCountMax?: number;
   totalSizeMax?: number;

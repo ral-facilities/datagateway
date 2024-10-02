@@ -18,7 +18,7 @@ import {
   useQuery,
   UseQueryResult,
 } from 'react-query';
-import retryICATErrors from './retryICATErrors';
+import { useRetryICATErrors } from './retryICATErrors';
 
 export const fetchInvestigations = (
   apiUrl: string,
@@ -61,6 +61,7 @@ export const useInvestigation = (
   additionalFilters?: AdditionalFilters
 ): UseQueryResult<Investigation[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+  const retryICATErrors = useRetryICATErrors();
 
   return useQuery<
     Investigation[],
@@ -97,6 +98,7 @@ export const useInvestigationsPaginated = (
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters, sort, page, results } = parseSearchToQuery(location.search);
+  const retryICATErrors = useRetryICATErrors();
 
   return useQuery<
     Investigation[],
@@ -158,6 +160,7 @@ export const useInvestigationsInfinite = (
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters, sort } = parseSearchToQuery(location.search);
+  const retryICATErrors = useRetryICATErrors();
 
   return useInfiniteQuery(
     [
@@ -216,6 +219,7 @@ export const useInvestigationCount = (
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const filters = parseSearchToQuery(location.search).filters;
+  const retryICATErrors = useRetryICATErrors();
 
   return useQuery<
     number,
@@ -267,6 +271,7 @@ export const useInvestigationDetails = (
   investigationId: number
 ): UseQueryResult<Investigation, AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+  const retryICATErrors = useRetryICATErrors();
 
   return useQuery<Investigation, AxiosError, Investigation, [string, number]>(
     ['investigationDetails', investigationId],

@@ -15,7 +15,7 @@ import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { getApiParams, parseSearchToQuery } from '.';
 import { StateType } from '..';
-import retryICATErrors from './retryICATErrors';
+import { useRetryICATErrors } from './retryICATErrors';
 
 const fetchDataPublications = (
   apiUrl: string,
@@ -61,6 +61,7 @@ export const useDataPublicationsPaginated = (
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters, sort, page, results } = parseSearchToQuery(location.search);
+  const retryICATErrors = useRetryICATErrors();
 
   return useQuery<
     DataPublication[],
@@ -118,6 +119,7 @@ export const useDataPublicationsInfinite = (
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters, sort } = parseSearchToQuery(location.search);
+  const retryICATErrors = useRetryICATErrors();
 
   return useInfiniteQuery(
     [
@@ -154,6 +156,7 @@ export const useDataPublication = (
   >
 ): UseQueryResult<DataPublication, AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+  const retryICATErrors = useRetryICATErrors();
 
   return useQuery(
     ['dataPublication', dataPublicationId],
@@ -203,6 +206,7 @@ export const useDataPublications = (
   additionalFilters: AdditionalFilters
 ): UseQueryResult<DataPublication[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+  const retryICATErrors = useRetryICATErrors();
 
   return useQuery<
     DataPublication[],
@@ -259,6 +263,7 @@ export const useDataPublicationCount = (
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters } = parseSearchToQuery(location.search);
+  const retryICATErrors = useRetryICATErrors();
 
   return useQuery<
     number,

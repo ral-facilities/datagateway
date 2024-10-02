@@ -53,7 +53,7 @@ export type DGCommonState = StateType;
 
 export * from './parseTokens';
 export { default as handleICATError } from './handleICATError';
-export { default as retryICATErrors } from './api/retryICATErrors';
+export * from './api/retryICATErrors';
 
 export {
   default as ArrowTooltip,
@@ -62,6 +62,7 @@ export {
 export { default as Sticky } from './sticky.component';
 export { default as DGThemeProvider } from './dgThemeProvider.component';
 export { default as Mark } from './mark.component';
+export * from './queryClientSettingsUpdater.component';
 
 export { default as HomePage } from './homePage/homePage.component';
 

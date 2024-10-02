@@ -18,7 +18,7 @@ import {
   useInfiniteQuery,
   UseInfiniteQueryResult,
 } from 'react-query';
-import retryICATErrors from './retryICATErrors';
+import { useRetryICATErrors } from './retryICATErrors';
 
 const fetchInstruments = (
   apiUrl: string,
@@ -62,6 +62,7 @@ export const useInstrumentsPaginated = (
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters, sort, page, results } = parseSearchToQuery(location.search);
+  const retryICATErrors = useRetryICATErrors();
 
   return useQuery<
     Instrument[],
@@ -112,6 +113,7 @@ export const useInstrumentsInfinite = (
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters, sort } = parseSearchToQuery(location.search);
+  const retryICATErrors = useRetryICATErrors();
 
   return useInfiniteQuery(
     ['instrument', { sort: JSON.stringify(sort), filters }], // need to stringify sort as property order is important!
@@ -155,6 +157,7 @@ export const useInstrumentCount = (): UseQueryResult<number, AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters } = parseSearchToQuery(location.search);
+  const retryICATErrors = useRetryICATErrors();
 
   return useQuery<
     number,
@@ -198,6 +201,7 @@ export const useInstrumentDetails = (
   instrumentId: number
 ): UseQueryResult<Instrument, AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+  const retryICATErrors = useRetryICATErrors();
 
   return useQuery<Instrument, AxiosError, Instrument, [string, number]>(
     ['instrumentDetails', instrumentId],
