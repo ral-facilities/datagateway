@@ -6321,7 +6321,7 @@ __metadata:
     redux-thunk: 2.4.1
     resize-observer-polyfill: 1.5.1
     tslib: 2.6.0
-    typescript: 5.3.3
+    typescript: 5.6.3
   peerDependencies:
     "@mui/icons-material": ">= 5.5.0 < 6"
     "@mui/material": ">= 5.5.0 < 6"
@@ -6403,7 +6403,7 @@ __metadata:
     single-spa-react: 4.6.1
     start-server-and-test: 2.0.0
     tslib: 2.6.0
-    typescript: 5.3.3
+    typescript: 5.6.3
     url-search-params-polyfill: 8.2.4
   languageName: unknown
   linkType: soft
@@ -6466,7 +6466,7 @@ __metadata:
     single-spa-react: 4.6.1
     start-server-and-test: 2.0.0
     tslib: 2.6.0
-    typescript: 5.3.3
+    typescript: 5.6.3
   languageName: unknown
   linkType: soft
 
@@ -6543,7 +6543,7 @@ __metadata:
     single-spa-react: 4.6.1
     start-server-and-test: 2.0.0
     tslib: 2.6.0
-    typescript: 5.3.3
+    typescript: 5.6.3
     url-search-params-polyfill: 8.2.4
   languageName: unknown
   linkType: soft
@@ -15604,23 +15604,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:5.3.3":
-  version: 5.3.3
-  resolution: "typescript@npm:5.3.3"
+"typescript@npm:5.6.3":
+  version: 5.6.3
+  resolution: "typescript@npm:5.6.3"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 2007ccb6e51bbbf6fde0a78099efe04dc1c3dfbdff04ca3b6a8bc717991862b39fd6126c0c3ebf2d2d98ac5e960bcaa873826bb2bb241f14277034148f41f6a2
+  checksum: ba302f8822777ebefb28b554105f3e074466b671e7444ec6b75dadc008a62f46f373d9e57ceced1c433756d06c8b7dc569a7eefdf3a9573122a49205ff99021a
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@5.3.3#~builtin<compat/typescript>":
-  version: 5.3.3
-  resolution: "typescript@patch:typescript@npm%3A5.3.3#~builtin<compat/typescript>::version=5.3.3&hash=e012d7"
+"typescript@patch:typescript@5.6.3#~builtin<compat/typescript>":
+  version: 5.6.3
+  resolution: "typescript@patch:typescript@npm%3A5.6.3#~builtin<compat/typescript>::version=5.6.3&hash=e012d7"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 4e604a9e107ce0c23b16a2f8d79d0531d4d8fe9ebbb7a8c395c66998c39892f0e0a071ef0b0d4e66420a8ec2b8d6cfd9cdb29ba24f25b37cba072e9282376df9
+  checksum: ade87bce2363ee963eed0e4ca8a312ea02c81873ebd53609bc3f6dc0a57f6e61ad7e3fb8cbb7f7ab8b5081cbee801b023f7c4823ee70b1c447eae050e6c7622b
   languageName: node
   linkType: hard
 
