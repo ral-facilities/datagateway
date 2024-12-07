@@ -20,7 +20,7 @@
     "i18next": "22.0.3",
     "lodash.debounce": "4.0.8",
     "loglevel": "1.9.1",
-    "prettier": "2.8.0",
+    "prettier": "3.4.2",
     "react-draggable": "4.4.3",
     "react-i18next": "12.3.1",
     "react-query": "3.39.2",
