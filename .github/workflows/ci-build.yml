@@ -22,10 +22,7 @@ jobs:
           cache: 'yarn'
 
       - name: Install dependencies
-        # Ubuntu 16+ does not install libgconf-2-4 by default, so we need to install it ourselves (for Cypress)
-        run: |
-          sudo apt-get install libgconf-2-4
-          yarn --immutable
+        run: yarn --immutable
 
       # Linting and unit testing
       - name: Run linting
@@ -174,10 +171,7 @@ jobs:
           cache: 'yarn'
      
       - name: Install dependencies
-        # Ubuntu 16+ does not install libgconf-2-4 by default, so we need to install it ourselves (for Cypress)
-        run: |
-          sudo apt-get install libgconf-2-4
-          yarn --immutable
+        run: yarn --immutable
 
       - name: Run datagateway-dataview e2e tests
         run: yarn workspace datagateway-dataview run e2e
@@ -342,10 +336,7 @@ jobs:
           cache: 'yarn'
       
       - name: Install dependencies
-        # Ubuntu 16+ does not install libgconf-2-4 by default, so we need to install it ourselves (for Cypress)
-        run: |
-          sudo apt-get install libgconf-2-4
-          yarn --immutable
+        run: yarn --immutable
 
       - name: Run datagateway-download e2e tests
         run: yarn workspace datagateway-download run e2e
@@ -475,10 +466,7 @@ jobs:
           cache: 'yarn'
      
       - name: Install dependencies
-        # Ubuntu 16+ does not install libgconf-2-4 by default, so we need to install it ourselves (for Cypress)
-        run: |
-          sudo apt-get install libgconf-2-4
-          yarn --immutable
+        run: yarn --immutable
 
       - name: Run datagateway-search e2e tests
         run: yarn workspace datagateway-search run e2e
