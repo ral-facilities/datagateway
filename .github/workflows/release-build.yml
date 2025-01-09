@@ -23,10 +23,7 @@ jobs:
           cache: 'yarn'
 
       - name: Install dependencies
-        # Ubuntu 16+ does not install libgconf-2-4 by default, so we need to install it ourselves (for Cypress)
-        run: |
-          sudo apt-get install libgconf-2-4
-          yarn --immutable
+        run: yarn --immutable
 
       - name: Determine tag name
         run: |
