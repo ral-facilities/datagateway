@@ -79,7 +79,7 @@ jobs:
           java-version: 8
           java-package: jdk
       - name: Setup Python
-        uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5
+        uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5
         with:
           python-version: 3.6
           architecture: x64
@@ -197,7 +197,7 @@ jobs:
           java-version: 8
           java-package: jdk
       - name: Setup Python
-        uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5
+        uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5
         with:
           python-version: 3.6
           architecture: x64
@@ -362,7 +362,7 @@ jobs:
           java-version: 8
           java-package: jdk
       - name: Setup Python
-        uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5
+        uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5
         with:
           python-version: 3.6
           architecture: x64
