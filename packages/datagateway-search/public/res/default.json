@@ -98,7 +98,8 @@
         "no_samples": "No samples"
       },
       "parameters": {
-        "label": "Investigation Parameters"
+        "label": "Investigation Parameters",
+        "no_parameters": "No parameters"
       },
       "publications": {
         "label": "Publications",
