@@ -12,18 +12,19 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { formatBytes } from 'datagateway-common';
+import { formatBytes } from '../table/cellRenderers/cellContentRenderers';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { DownloadSettingsContext } from '../ConfigProvider';
-import type { DownloadTypeStatus } from '../downloadApi';
-import { downloadPreparedCart } from '../downloadApi';
+import type {
+  DownloadSettingsAccessMethod,
+  DownloadTypeStatus,
+} from '../app.types';
 import {
-  useDownload,
   useDownloadTypeStatuses,
   useSubmitCart,
-} from '../downloadApiHooks';
+  useDownload,
+} from '../api/cart';
 import DialogContent from './dialogContent.component';
 import DialogTitle from './dialogTitle.component';
 import DownloadRequestResult from './downloadRequestResult.component';
@@ -53,6 +54,10 @@ interface DownloadConfirmDialogProps {
   isTwoLevel: boolean;
   open: boolean;
 
+  facilityName: string;
+  downloadApiUrl: string;
+  accessMethods: DownloadSettingsAccessMethod;
+
   redirectToStatusTab: () => void;
   setClose: () => void;
 }
@@ -66,10 +71,15 @@ interface DownloadTypeInfo extends DownloadTypeStatus {
 const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   props: DownloadConfirmDialogProps
 ) => {
-  const { totalSize, isTwoLevel, redirectToStatusTab, setClose } = props;
-
-  // Load the settings for use.
-  const settings = React.useContext(DownloadSettingsContext);
+  const {
+    totalSize,
+    isTwoLevel,
+    redirectToStatusTab,
+    setClose,
+    facilityName,
+    downloadApiUrl,
+    accessMethods,
+  } = props;
 
   // Download speed/time table.
   const [showDownloadTime, setShowDownloadTime] = React.useState(true);
@@ -93,10 +103,12 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   const [emailHelperText, setEmailHelperText] = React.useState(emailHelpText);
 
   const downloadTypeStatusQueries = useDownloadTypeStatuses({
-    downloadTypes: Object.keys(settings.accessMethods),
+    downloadTypes: Object.keys(accessMethods),
+    facilityName,
+    downloadApiUrl,
     enabled: props.open,
     select: (status) => {
-      const info = settings.accessMethods[status.type];
+      const info = accessMethods[status.type];
       return info
         ? {
             ...info,
@@ -120,7 +132,8 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     isSuccess: isCartSubmittedSuccessfully,
     isError: hasSubmitCartFailed,
     reset: resetSubmitCartMutation,
-  } = useSubmitCart();
+  } = useSubmitCart(facilityName, downloadApiUrl);
+
   // query download after cart is submitted
   const {
     data: downloadInfo,
@@ -129,6 +142,8 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     remove: resetDownloadQuery,
   } = useDownload({
     id: downloadId ?? -1,
+    facilityName,
+    downloadApiUrl,
     enabled: Boolean(downloadId) && isCartSubmittedSuccessfully,
   });
 
@@ -214,30 +229,31 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     }
   }, [isTwoLevel, props.open, totalSize]);
 
-  React.useEffect(() => {
-    if (
-      isDownloadInfoAvailable &&
-      downloadInfo &&
-      downloadInfo.status === 'COMPLETE'
-    ) {
-      // Download the file as long as it is available for instant download.
-      downloadPreparedCart(
-        downloadInfo.preparedId,
-        downloadInfo.fileName,
-        // Use the idsUrl that has been defined for this access method.
-        { idsUrl: settings.accessMethods[selectedMethod].idsUrl }
-      );
-    }
-  }, [
-    downloadInfo,
-    isDownloadInfoAvailable,
-    selectedMethod,
-    settings.accessMethods,
-  ]);
+  // TODO: change this so that the submit cart version can supply a function here
+  // React.useEffect(() => {
+  //   if (
+  //     isDownloadInfoAvailable &&
+  //     downloadInfo &&
+  //     downloadInfo.status === 'COMPLETE'
+  //   ) {
+  //     // Download the file as long as it is available for instant download.
+  //     downloadPreparedCart(
+  //       downloadInfo.preparedId,
+  //       downloadInfo.fileName,
+  //       // Use the idsUrl that has been defined for this access method.
+  //       { idsUrl: settings.accessMethods[selectedMethod].idsUrl }
+  //     );
+  //   }
+  // }, [
+  //   downloadInfo,
+  //   isDownloadInfoAvailable,
+  //   selectedMethod,
+  //   settings.accessMethods,
+  // ]);
 
   const getDefaultFileName = (): string => {
     const now = new Date(Date.now());
-    const defaultName = `${settings.facilityName}_${now.getFullYear()}-${
+    const defaultName = `${facilityName}_${now.getFullYear()}-${
       now.getMonth() + 1
     }-${now.getDate()}_${now.getHours()}-${now.getMinutes()}-${now.getSeconds()}`;
 
@@ -448,7 +464,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
               <Grid item xs={12}>
                 {/* Depending on the type of access method that has been selected,
                   show specific access information. */}
-                {Object.entries(settings.accessMethods)
+                {Object.entries(accessMethods)
                   .filter(
                     ([type, methodInfo]) =>
                       type === selectedMethod && methodInfo.description

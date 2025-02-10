@@ -3,17 +3,15 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as React from 'react';
 import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
-import { DownloadSettingsContext } from '../ConfigProvider';
 import {
-  downloadPreparedCart,
+  // downloadPreparedCart,
   getDownload,
   getDownloadTypeStatus,
   submitCart,
-} from '../downloadApi';
-import { mockedSettings } from '../testData';
+} from '../api/cart';
 import DownloadConfirmDialog from './downloadConfirmDialog.component';
 
-jest.mock('../downloadApi');
+jest.mock('../api/cart');
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
 
@@ -40,33 +38,53 @@ const createTestQueryClient = (): QueryClient =>
     },
   });
 
-const renderWrapper = (
-  size: number,
-  isTwoLevel: boolean,
-  open: boolean
-): RenderResult =>
-  render(
-    <QueryClientProvider client={createTestQueryClient()}>
-      <DownloadSettingsContext.Provider value={mockedSettings}>
+describe('DownloadConfirmDialog', () => {
+  let user: ReturnType<typeof userEvent.setup>;
+  let props: React.ComponentProps<typeof DownloadConfirmDialog>;
+
+  const renderWrapper = (
+    size: number,
+    isTwoLevel: boolean,
+    open: boolean
+  ): RenderResult =>
+    render(
+      <QueryClientProvider client={createTestQueryClient()}>
         <DownloadConfirmDialog
+          {...props}
           totalSize={size}
           isTwoLevel={isTwoLevel}
           open={open}
-          redirectToStatusTab={jest.fn()}
-          setClose={jest.fn()}
         />
-      </DownloadSettingsContext.Provider>
-    </QueryClientProvider>
-  );
-
-describe('DownloadConfirmDialog', () => {
-  let user: ReturnType<typeof userEvent.setup>;
+      </QueryClientProvider>
+    );
 
   beforeEach(() => {
     user = userEvent.setup();
     // Cannot mock to epoch time as Britain adopted BST permanently from 1968
     // to 1971, so snapshot will be an hour out depending on the date locale.
     global.Date.now = jest.fn(() => new Date(2020, 0, 1, 1, 1, 1).getTime());
+
+    props = {
+      totalSize: -1,
+      isTwoLevel: true,
+      open: true,
+      redirectToStatusTab: jest.fn(),
+      setClose: jest.fn(),
+      facilityName: 'LILS',
+      downloadApiUrl: 'https://example.com/downloadApi',
+      accessMethods: {
+        https: {
+          idsUrl: 'https://example.com/ids',
+          displayName: 'HTTPS',
+          description: 'Example description for <b>HTTPS</b> access method.',
+        },
+        globus: {
+          idsUrl: 'https://example.com/ids',
+          displayName: 'Globus',
+          description: 'Example description for Globus access method.',
+        },
+      },
+    };
 
     (getDownloadTypeStatus as jest.Mock).mockImplementation((type, _) =>
       Promise.resolve({
@@ -207,10 +225,8 @@ describe('DownloadConfirmDialog', () => {
       'https',
       'test@email.com',
       'custom download name',
-      {
-        facilityName: mockedSettings.facilityName,
-        downloadApiUrl: mockedSettings.downloadApiUrl,
-      },
+      props.facilityName,
+      props.downloadApiUrl,
       undefined
     );
     // should show success message
@@ -332,15 +348,12 @@ describe('DownloadConfirmDialog', () => {
 
     render(
       <QueryClientProvider client={new QueryClient()}>
-        <DownloadSettingsContext.Provider value={mockedSettings}>
-          <DownloadConfirmDialog
-            totalSize={1}
-            isTwoLevel={false}
-            open={true}
-            redirectToStatusTab={jest.fn()}
-            setClose={closeFunction}
-          />
-        </DownloadSettingsContext.Provider>
+        <DownloadConfirmDialog
+          {...props}
+          totalSize={1}
+          isTwoLevel={false}
+          setClose={closeFunction}
+        />
       </QueryClientProvider>
     );
 
@@ -373,113 +386,95 @@ describe('DownloadConfirmDialog', () => {
     expect(downloadButton).toBeInTheDocument();
     expect(downloadButton).toBeDisabled();
   });
-});
 
-describe('DownloadConfirmDialog - renders the estimated download speed/time table with varying values', () => {
-  const timeWrapper = (size: number): RenderResult =>
-    render(
-      <QueryClientProvider client={new QueryClient()}>
-        <DownloadSettingsContext.Provider value={mockedSettings}>
+  describe('DownloadConfirmDialog - renders the estimated download speed/time table with varying values', () => {
+    const timeWrapper = (size: number): RenderResult =>
+      render(
+        <QueryClientProvider client={new QueryClient()}>
           <DownloadConfirmDialog
+            {...props}
             totalSize={size}
             isTwoLevel={false}
-            open={true}
-            setClose={jest.fn()}
-            redirectToStatusTab={jest.fn()}
           />
-        </DownloadSettingsContext.Provider>
-      </QueryClientProvider>
-    );
+        </QueryClientProvider>
+      );
 
-  beforeEach(() => {
-    (getDownloadTypeStatus as jest.Mock).mockImplementation((type, _) =>
-      Promise.resolve({
-        type,
-        disabled: false,
-        message: '',
-      })
-    );
-  });
+    // Calculate the file size required to reach the given download time (at 1 Mbps).
+    const timeToSize = (
+      seconds: number,
+      minutes?: number,
+      hours?: number,
+      days?: number
+    ): number => {
+      // NOTE: For these tests to make it simple we use 1 Mbps for this.
+      const downloadSpeed = 1; // Mbps
 
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
+      // Get the all the time in seconds.
+      const inSeconds =
+        (days ? days * 86400 : 0) +
+        (hours ? hours * 3600 : 0) +
+        (minutes ? minutes * 60 : 0) +
+        seconds;
 
-  // Calculate the file size required to reach the given download time (at 1 Mbps).
-  const timeToSize = (
-    seconds: number,
-    minutes?: number,
-    hours?: number,
-    days?: number
-  ): number => {
-    // NOTE: For these tests to make it simple we use 1 Mbps for this.
-    const downloadSpeed = 1; // Mbps
+      // Calculate final file size required (in bytes).
+      const fileSize = inSeconds * (downloadSpeed / 8) * (1024 * 1024);
 
-    // Get the all the time in seconds.
-    const inSeconds =
-      (days ? days * 86400 : 0) +
-      (hours ? hours * 3600 : 0) +
-      (minutes ? minutes * 60 : 0) +
-      seconds;
+      return fileSize;
+    };
 
-    // Calculate final file size required (in bytes).
-    const fileSize = inSeconds * (downloadSpeed / 8) * (1024 * 1024);
-
-    return fileSize;
-  };
-
-  it('renders for multiple days, hours, minutes and seconds', async () => {
-    // Test for 2 seconds, 2 minutes, 2 hours and 2 days.
-    timeWrapper(timeToSize(2, 2, 2, 2));
-
-    expect(
-      await screen.findByText(
-        '2 downloadConfirmDialog.day {count:2}, 2 downloadConfirmDialog.hour {count:2}, 2 downloadConfirmDialog.minute {count:2}, 2 downloadConfirmDialog.second {count:2}'
-      )
-    ).toBeInTheDocument();
-  });
-
-  it('renders for a single day, hour, minute and second', async () => {
-    timeWrapper(timeToSize(1, 1, 1, 1));
-
-    expect(
-      await screen.findByText(
-        '1 downloadConfirmDialog.day {count:1}, 1 downloadConfirmDialog.hour {count:1}, 1 downloadConfirmDialog.minute {count:1}, 1 downloadConfirmDialog.second {count:1}'
-      )
-    ).toBeInTheDocument();
-  });
-
-  describe('estimated download table renders for single time measurements', () => {
-    it('renders for a single day', async () => {
-      timeWrapper(timeToSize(0, 0, 0, 1));
+    it('renders for multiple days, hours, minutes and seconds', async () => {
+      // Test for 2 seconds, 2 minutes, 2 hours and 2 days.
+      timeWrapper(timeToSize(2, 2, 2, 2));
 
       expect(
-        await screen.findByText('1 downloadConfirmDialog.day {count:1}')
+        await screen.findByText(
+          '2 downloadConfirmDialog.day {count:2}, 2 downloadConfirmDialog.hour {count:2}, 2 downloadConfirmDialog.minute {count:2}, 2 downloadConfirmDialog.second {count:2}'
+        )
       ).toBeInTheDocument();
     });
 
-    it('renders for a single hour', async () => {
-      timeWrapper(timeToSize(0, 0, 1, 0));
+    it('renders for a single day, hour, minute and second', async () => {
+      timeWrapper(timeToSize(1, 1, 1, 1));
 
       expect(
-        await screen.findByText('1 downloadConfirmDialog.hour {count:1}')
+        await screen.findByText(
+          '1 downloadConfirmDialog.day {count:1}, 1 downloadConfirmDialog.hour {count:1}, 1 downloadConfirmDialog.minute {count:1}, 1 downloadConfirmDialog.second {count:1}'
+        )
       ).toBeInTheDocument();
     });
 
-    it('renders for a single minute', async () => {
-      timeWrapper(timeToSize(0, 1, 0, 0));
+    describe('estimated download table renders for single time measurements', () => {
+      it('renders for a single day', async () => {
+        timeWrapper(timeToSize(0, 0, 0, 1));
 
-      expect(
-        await screen.findByText('1 downloadConfirmDialog.minute {count:1}')
-      ).toBeInTheDocument();
-    });
+        expect(
+          await screen.findByText('1 downloadConfirmDialog.day {count:1}')
+        ).toBeInTheDocument();
+      });
 
-    it('renders for a single second', async () => {
-      timeWrapper(timeToSize(1, 0, 0, 0));
+      it('renders for a single hour', async () => {
+        timeWrapper(timeToSize(0, 0, 1, 0));
 
-      expect(
-        await screen.findByText('1 downloadConfirmDialog.second {count:1}')
-      ).toBeInTheDocument();
+        expect(
+          await screen.findByText('1 downloadConfirmDialog.hour {count:1}')
+        ).toBeInTheDocument();
+      });
+
+      it('renders for a single minute', async () => {
+        timeWrapper(timeToSize(0, 1, 0, 0));
+
+        expect(
+          await screen.findByText('1 downloadConfirmDialog.minute {count:1}')
+        ).toBeInTheDocument();
+      });
+
+      it('renders for a single second', async () => {
+        timeWrapper(timeToSize(1, 0, 0, 0));
+
+        expect(
+          await screen.findByText('1 downloadConfirmDialog.second {count:1}')
+        ).toBeInTheDocument();
+      });
     });
   });
 });

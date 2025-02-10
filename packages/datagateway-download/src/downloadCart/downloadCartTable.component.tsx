@@ -16,6 +16,7 @@ import {
   type ColumnType,
   type DownloadCartItem,
   type DownloadCartTableItem,
+  DownloadConfirmDialog,
   formatBytes,
   Table,
   type TableActionProps,
@@ -36,7 +37,6 @@ import {
   useFileSizesAndCounts,
 } from '../downloadApiHooks';
 
-import DownloadConfirmDialog from '../downloadConfirmation/downloadConfirmDialog.component';
 import DownloadCartItemLink from './downloadCartItemLink.component';
 import {
   buildDatafileUrl,
@@ -58,6 +58,8 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     facilityName,
     doiMinterUrl,
     dataCiteUrl,
+    downloadApiUrl,
+    accessMethods,
   } = React.useContext(DownloadSettingsContext);
 
   const [sort, setSort] = React.useState<SortType>({});
@@ -657,6 +659,9 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
         aria-labelledby="downloadCartConfirmation"
         totalSize={totalSize}
         isTwoLevel={isTwoLevel ?? false}
+        facilityName={facilityName}
+        downloadApiUrl={downloadApiUrl}
+        accessMethods={accessMethods}
         open={showConfirmation}
         redirectToStatusTab={props.statusTabRedirect}
         setClose={() => setShowConfirmation(false)}

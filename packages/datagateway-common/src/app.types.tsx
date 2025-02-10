@@ -437,3 +437,20 @@ export interface QueryParams {
   currentTab: string;
   restrict: boolean;
 }
+
+/**
+ * Describes the status of a download type.
+ */
+export interface DownloadTypeStatus {
+  type: string;
+  disabled: boolean;
+  message: string;
+}
+
+export interface DownloadSettingsAccessMethod {
+  [type: string]: {
+    idsUrl: string;
+    displayName?: string;
+    description?: string;
+  };
+}

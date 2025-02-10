@@ -1,14 +1,10 @@
-import { PluginRoute, Preloader } from 'datagateway-common';
+import {
+  PluginRoute,
+  Preloader,
+  DownloadSettingsAccessMethod,
+} from 'datagateway-common';
 import React from 'react';
 import { settings } from './settings';
-
-export interface DownloadSettingsAccessMethod {
-  [type: string]: {
-    idsUrl: string;
-    displayName?: string;
-    description?: string;
-  };
-}
 
 export interface DownloadSettings {
   facilityName: string;

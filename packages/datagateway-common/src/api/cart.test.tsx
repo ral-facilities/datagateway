@@ -1,9 +1,17 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react-hooks';
 import axios, { AxiosError } from 'axios';
-import { useCart, useAddToCart, useRemoveFromCart } from '.';
+import {
+  useCart,
+  useAddToCart,
+  useRemoveFromCart,
+  useSubmitCart,
+  useDownloadTypeStatuses,
+} from '.';
 import { DownloadCart } from '../app.types';
 import handleICATError from '../handleICATError';
 import { createReactQueryWrapper } from '../setupTests';
+import { QueryClient } from 'react-query';
+import { NotificationType } from '../state/actions/actions.types';
 
 jest.mock('../handleICATError');
 
@@ -213,6 +221,211 @@ describe('Cart api functions', () => {
       expect(handleICATError).toHaveBeenCalledTimes(1);
       expect(handleICATError).toHaveBeenCalledWith({
         message: 'Test error message',
+      });
+    });
+  });
+
+  describe('useSubmitCart', () => {
+    it('should submit cart and clear cart on success', async () => {
+      axios.post = jest.fn().mockResolvedValue({ data: 123 });
+      axios.get = jest
+        .fn()
+        .mockResolvedValueOnce({
+          data: mockData,
+        })
+        .mockResolvedValueOnce({ data: { cartItems: [] } });
+
+      const { result, waitFor } = renderHook(
+        () => ({
+          useSubmitCart: useSubmitCart(
+            'LILS',
+            'https://example.com/downloadApiUrl'
+          ),
+          useCart: useCart(),
+        }),
+        { wrapper: createReactQueryWrapper() }
+      );
+
+      // wait for the cart to finish loading
+      await waitFor(() => result.current.useCart.isSuccess);
+      // submit the cart
+      result.current.useSubmitCart.mutate({
+        emailAddress: 'cat@dog.com',
+        fileName: 'test-file',
+        transport: 'https',
+      });
+      // wait for cart submission to finish
+      await waitFor(() => result.current.useSubmitCart.isSuccess);
+
+      expect(result.current.useCart.data).toEqual([]);
+    });
+
+    it('should call handleICATError when an error is encountered', async () => {
+      axios.post = jest.fn().mockRejectedValue({
+        message: 'test error message',
+      });
+      axios.get = jest.fn().mockResolvedValueOnce({
+        data: mockData,
+      });
+
+      const { result, waitFor } = renderHook(
+        () => ({
+          useSubmitCart: useSubmitCart(
+            'LILS',
+            'https://example.com/downloadApiUrl'
+          ),
+          useCart: useCart(),
+        }),
+        { wrapper: createReactQueryWrapper() }
+      );
+
+      await waitFor(() => result.current.useCart.isSuccess);
+      result.current.useSubmitCart.mutate({
+        emailAddress: 'a@b.c',
+        fileName: 'test-file',
+        transport: 'https',
+      });
+      await waitFor(() => result.current.useSubmitCart.isError);
+
+      expect(handleICATError).toHaveBeenCalledWith({
+        message: 'test error message',
+      });
+    });
+  });
+
+  describe('useDownloadTypeStatuses', () => {
+    const downloadTypes = ['https', 'globus'];
+
+    let queryClient: QueryClient;
+
+    beforeAll(() => {
+      queryClient = new QueryClient();
+    });
+
+    afterEach(() => {
+      queryClient.clear();
+    });
+
+    it('should query statuses of download types', async () => {
+      axios.get = jest.fn().mockResolvedValue({
+        data: {
+          disabled: false,
+          message: '',
+        },
+      });
+
+      const { result, waitFor } = renderHook(
+        () =>
+          useDownloadTypeStatuses({
+            downloadTypes,
+            facilityName: 'LILS',
+            downloadApiUrl: 'https://example.com/downloadApiUrl',
+          }),
+        { wrapper: createReactQueryWrapper() }
+      );
+
+      await waitFor(() => result.current.every((query) => query.isSuccess));
+
+      const data = result.current.map(({ data }) => data);
+      expect(data).toEqual([
+        {
+          type: 'https',
+          disabled: false,
+          message: '',
+        },
+        {
+          type: 'globus',
+          disabled: false,
+          message: '',
+        },
+      ]);
+    });
+
+    it('should dispatch event with the error messages of download type queries with errors', async () => {
+      axios.get = jest
+        .fn()
+        .mockResolvedValueOnce({
+          data: {
+            disabled: false,
+            message: '',
+          },
+        })
+        .mockImplementationOnce(() =>
+          Promise.reject({
+            message: 'Test error message',
+          })
+        );
+
+      const dispatchEventSpy = jest.spyOn(document, 'dispatchEvent');
+
+      const { result, waitFor } = renderHook(
+        () =>
+          useDownloadTypeStatuses({
+            downloadTypes,
+            facilityName: 'LILS',
+            downloadApiUrl: 'https://example.com/downloadApiUrl',
+          }),
+        { wrapper: createReactQueryWrapper() }
+      );
+
+      await waitFor(() =>
+        result.current.every((query) => query.isSuccess || query.isError)
+      );
+
+      expect((dispatchEventSpy.mock.calls[0][0] as CustomEvent).detail).toEqual(
+        {
+          type: NotificationType,
+          payload: {
+            severity: 'error',
+            message:
+              'downloadConfirmDialog.access_method_error {method:GLOBUS}',
+          },
+        }
+      );
+    });
+
+    it('should refetch data on every hook call', async () => {
+      axios.get = jest.fn().mockResolvedValue({
+        data: {
+          disabled: false,
+          message: '',
+        },
+      });
+
+      const wrapper = createReactQueryWrapper();
+
+      const { result, waitFor } = renderHook(
+        () =>
+          useDownloadTypeStatuses({
+            downloadTypes: ['https'],
+            facilityName: 'LILS',
+            downloadApiUrl: 'https://example.com/downloadApiUrl',
+          }),
+        { wrapper }
+      );
+
+      await waitFor(() => result.current.every((query) => query.isSuccess));
+
+      expect(result.current[0].isStale).toBe(true);
+      expect(axios.get).toHaveBeenCalledTimes(1);
+
+      await act(async () => {
+        const { result: newResult } = renderHook(
+          () =>
+            useDownloadTypeStatuses({
+              downloadTypes: ['https'],
+              facilityName: 'LILS',
+              downloadApiUrl: 'https://example.com/downloadApiUrl',
+            }),
+          { wrapper }
+        );
+
+        await waitFor(() =>
+          newResult.current.every((query) => query.isSuccess)
+        );
+
+        expect(newResult.current[0].isStale).toBe(true);
+        expect(axios.get).toHaveBeenCalledTimes(2);
       });
     });
   });

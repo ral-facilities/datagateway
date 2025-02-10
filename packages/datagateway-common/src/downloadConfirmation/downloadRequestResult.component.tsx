@@ -1,5 +1,5 @@
 import { Button, Grid, Typography } from '@mui/material';
-import { Mark } from 'datagateway-common';
+import Mark from '../mark.component';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import type DownloadRequestInfo from './DownloadRequestInfo';
