@@ -81,7 +81,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5
         with:
-          python-version: 3.6
+          python-version: 3.9
           architecture: x64
 
       # ICAT Ansible clone and install dependencies
@@ -199,7 +199,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5
         with:
-          python-version: 3.6
+          python-version: 3.9
           architecture: x64
 
       # ICAT Ansible clone and install dependencies
@@ -364,7 +364,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5
         with:
-          python-version: 3.6
+          python-version: 3.9
           architecture: x64
 
       # ICAT Ansible clone and install dependencies
