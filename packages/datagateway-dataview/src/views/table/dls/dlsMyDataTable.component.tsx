@@ -8,11 +8,11 @@ import {
   useDateFilter,
   useInvestigationCount,
   useInvestigationsInfinite,
-  usePushFilter,
   useSort,
   useTextFilter,
   DLSVisitDetailsPanel,
   formatBytes,
+  useReplaceFilter,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -47,8 +47,8 @@ const DLSMyDataTable = (): React.ReactElement => {
   ]);
 
   // isMounted is used to disable queries when the component isn't fully mounted.
-  // It prevents the request being sent twice if default sort is set.
-  // It is not needed for cards/tables that don't have default sort.
+  // It prevents the request being sent twice if default sort/filter is set.
+  // It is not needed for cards/tables that don't have default sort/filter.
   const [isMounted, setIsMounted] = React.useState(false);
   React.useEffect(() => {
     setIsMounted(true);
@@ -91,7 +91,7 @@ const DLSMyDataTable = (): React.ReactElement => {
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
   const handleSort = useSort();
-  const pushFilter = usePushFilter();
+  const handleDefaultFilter = useReplaceFilter();
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
@@ -158,6 +158,9 @@ const DLSMyDataTable = (): React.ReactElement => {
         dataKey: 'startDate',
         filterComponent: dateFilter,
         defaultSort: 'desc',
+        defaultFilter: {
+          endDate: `${new Date(Date.now()).toISOString().split('T')[0]}`,
+        },
       },
       {
         icon: CalendarToday,
@@ -170,16 +173,6 @@ const DLSMyDataTable = (): React.ReactElement => {
     [t, dateFilter, textFilter, view]
   );
 
-  React.useEffect(() => {
-    // Sort and filter by startDate upon load.
-    if (!('startDate' in filters))
-      pushFilter('startDate', {
-        endDate: `${new Date(Date.now()).toISOString().split('T')[0]}`,
-      });
-    // we only want this to run on mount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   return (
     <Table
       data={aggregatedData}
@@ -187,6 +180,7 @@ const DLSMyDataTable = (): React.ReactElement => {
       totalRowCount={totalDataCount ?? 0}
       sort={sort}
       onSort={handleSort}
+      onDefaultFilter={handleDefaultFilter}
       detailsPanel={DLSVisitDetailsPanel}
       columns={columns}
     />

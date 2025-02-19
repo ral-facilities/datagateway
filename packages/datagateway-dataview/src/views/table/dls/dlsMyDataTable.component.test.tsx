@@ -189,18 +189,27 @@ describe('DLS MyData table component', () => {
     ).toBeInTheDocument();
   });
 
-  it('sorts by startDate desc and filters startDate to be before the current date on load', () => {
+  it('sorts by startDate desc and filters startDate to be before the current date on load', async () => {
+    const replaceSpy = jest.spyOn(history, 'replace');
     renderComponent();
 
-    expect(history.length).toBe(2);
-    expect(history.entries[0].search).toBe(
-      `?sort=${encodeURIComponent(JSON.stringify({ startDate: 'desc' }))}`
-    );
-    expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
+    expect(
+      screen.getByRole('textbox', {
+        name: 'investigations.start_date filter to',
+      })
+    ).toHaveValue('1970-01-01');
+
+    expect(replaceSpy).toHaveBeenCalledTimes(2);
+    expect(replaceSpy).toHaveBeenCalledWith({
+      search: `?filters=${encodeURIComponent(
         JSON.stringify({ startDate: { endDate: '1970-01-01' } })
-      )}`
-    );
+      )}`,
+    });
+    expect(replaceSpy).toHaveBeenCalledWith({
+      search: `?sort=${encodeURIComponent(
+        JSON.stringify({ startDate: 'desc' })
+      )}`,
+    });
   });
 
   it('updates filter query params on text filter', async () => {

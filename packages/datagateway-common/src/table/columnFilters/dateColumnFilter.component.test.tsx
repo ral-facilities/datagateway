@@ -5,13 +5,12 @@ import DateColumnFilter, {
   useDateFilter,
 } from './dateColumnFilter.component';
 import { renderHook } from '@testing-library/react-hooks';
-import { act } from 'react-test-renderer';
 import { usePushFilter } from '../../api';
 import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
 } from '../../setupTests';
-import { render, screen } from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
 import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 
@@ -31,6 +30,21 @@ describe('Date filter component', () => {
     const { asFragment } = render(
       <DateColumnFilter
         value={{
+          startDate: '1999-01-01T00:00:00.000Z',
+          endDate: '2000-01-01T00:00:00.000Z',
+        }}
+        label="test"
+        onChange={jest.fn()}
+      />
+    );
+    expect(asFragment()).toMatchSnapshot();
+  });
+
+  it('renders correctly with default values', () => {
+    const { asFragment } = render(
+      <DateColumnFilter
+        value={{}}
+        defaultFilter={{
           startDate: '1999-01-01T00:00:00.000Z',
           endDate: '2000-01-01T00:00:00.000Z',
         }}

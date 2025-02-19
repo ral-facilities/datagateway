@@ -9,21 +9,24 @@ import {
 } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import debounce from 'lodash.debounce';
-import { FiltersType, TextFilter } from '../../app.types';
+import { Filter, FiltersType, TextFilter } from '../../app.types';
 import { usePushFilter, usePushFilters } from '../../api';
 
 const TextColumnFilter = (props: {
   label: string;
   onChange: (value: { value?: string | number; type: string } | null) => void;
   value: { value?: string | number; type: string } | undefined;
+  defaultFilter?: TextFilter;
 }): React.ReactElement => {
-  const { onChange, label } = props;
+  const { onChange, label, defaultFilter } = props;
   const { value: propValue, type: propType } = props.value ?? {};
 
   const [inputValue, setInputValue] = React.useState(
-    propValue ? propValue : ''
+    defaultFilter ? defaultFilter.value : propValue ? propValue : ''
   );
-  const [type, setType] = React.useState(propType ? propType : 'include');
+  const [type, setType] = React.useState(
+    defaultFilter ? defaultFilter.type : propType ? propType : 'include'
+  );
   // Debounce the updating of the column filter by 500 milliseconds.
   const updateValue = React.useMemo(
     () =>
@@ -134,16 +137,25 @@ export default TextColumnFilter;
 
 export const useTextFilter = (
   filters: FiltersType
-): ((label: string, dataKey: string) => React.ReactElement) => {
+): ((
+  label: string,
+  dataKey: string,
+  defaultFilter?: Filter
+) => React.ReactElement) => {
   const pushFilter = usePushFilter();
   return React.useMemo(() => {
-    const textFilter = (label: string, dataKey: string): React.ReactElement => (
+    const textFilter = (
+      label: string,
+      dataKey: string,
+      defaultFilter?: Filter
+    ): React.ReactElement => (
       <TextColumnFilter
         label={label}
         value={filters[dataKey] as TextFilter}
         onChange={(value: { value?: string | number; type: string } | null) =>
           pushFilter(dataKey, value ? value : null)
         }
+        defaultFilter={defaultFilter as TextFilter}
       />
     );
     return textFilter;

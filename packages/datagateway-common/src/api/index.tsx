@@ -364,10 +364,11 @@ export const useSingleSort = (): ((
   );
 };
 
-export const usePushFilter = (
+const useFilter = (
+  updateMethod: UpdateMethod,
   filterPrefix?: string
 ): ((filterKey: string, filter: Filter | null) => void) => {
-  const { push } = useHistory();
+  const { push, replace } = useHistory();
 
   return React.useCallback(
     (filterKey: string, filter: Filter | null) => {
@@ -394,10 +395,24 @@ export const usePushFilter = (
           },
         };
       }
-      push({ search: `?${parseQueryToSearch(query).toString()}` });
+      (updateMethod === 'push' ? push : replace)({
+        search: `?${parseQueryToSearch(query).toString()}`,
+      });
     },
-    [filterPrefix, push]
+    [filterPrefix, push, replace, updateMethod]
   );
+};
+
+export const usePushFilter = (
+  filterPrefix?: string
+): ((filterKey: string, filter: Filter | null) => void) => {
+  return useFilter('push', filterPrefix);
+};
+
+export const useReplaceFilter = (
+  filterPrefix?: string
+): ((filterKey: string, filter: Filter | null) => void) => {
+  return useFilter('replace', filterPrefix);
 };
 
 export const usePushInvestigationFilter = (): ((

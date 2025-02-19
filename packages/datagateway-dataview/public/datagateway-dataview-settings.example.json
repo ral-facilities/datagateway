@@ -142,7 +142,7 @@
     },
     {
       "section": "Browse",
-      "link": "/my-data/DLS?filters={\"startDate\":{\"endDate\":\"2022-04-01\"}}&sort={\"startDate\":\"desc\"}",
+      "link": "/my-data/DLS?sort={\"startDate\":\"desc\"}",
       "displayName": "My Data DLS",
       "order": 5
     },

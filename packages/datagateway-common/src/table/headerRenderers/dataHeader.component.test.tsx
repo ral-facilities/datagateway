@@ -4,6 +4,7 @@ import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import * as React from 'react';
 import DataHeader from './dataHeader.component';
 import TextColumnFilter from '../columnFilters/textColumnFilter.component';
+import { Filter } from '../../app.types';
 
 describe('Data column header component', () => {
   let user: UserEvent;
@@ -21,11 +22,14 @@ describe('Data column header component', () => {
     },
   };
 
-  const filterComponent = (
-    label: string,
-    dataKey: string
-  ): React.ReactElement => (
-    <TextColumnFilter label={label} onChange={jest.fn()} value={undefined} />
+  const filterComponent = jest.fn(
+    (
+      label: string,
+      dataKey: string,
+      defaultValue?: Filter
+    ): React.ReactElement => (
+      <TextColumnFilter label={label} onChange={jest.fn()} value={undefined} />
+    )
   );
 
   beforeEach(() => {
@@ -110,6 +114,26 @@ describe('Data column header component', () => {
     it('sets desc order', () => {
       render(<DataHeader {...dataHeaderProps} defaultSort="desc" />);
       expect(onSort).toHaveBeenCalledWith('test', 'desc', 'replace', false);
+    });
+  });
+
+  it('calls the onDefaultFilter method  and supplies default filter to filter component when default filter is specified', () => {
+    const onDefaultFilter = jest.fn();
+    render(
+      <DataHeader
+        {...dataHeaderProps}
+        filterComponent={filterComponent}
+        onDefaultFilter={onDefaultFilter}
+        defaultFilter={{ type: 'include', value: 'x' }}
+      />
+    );
+    expect(onDefaultFilter).toHaveBeenCalledWith('test', {
+      type: 'include',
+      value: 'x',
+    });
+    expect(filterComponent).toHaveBeenCalledWith('Test', 'test', {
+      type: 'include',
+      value: 'x',
     });
   });
 
