@@ -333,18 +333,20 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
                 i18nKey="advanced_search_help.special_characters.description"
               >
                 In addition to whitespace, there are other characters used to
-                split <strong>terms</strong> based on context.
-                A <strong>.</strong> character is treated as a separator only when
-                between a mixture of letters and numbers, but is preserved when
-                in-between two letters or two numbers. <strong>-</strong> is always
-                treated as a separator, and <strong>_</strong> is not treated as a
-                separator. Separators cannot be used in the same term as a wildcard, as
-                wildcard queries will not be able to match across terms. For example,
-                a*f will not match abc-def because two comparisons are against abc and
-                def, and neither match.<br/> <br/> When building
-                a <strong>phrase</strong> using quotes, other special characters in
-                the <strong>phrase</strong> will not perform their special function and
-                instead are treated as white space.
+                split <strong>terms</strong> based on context. A{' '}
+                <strong>.</strong>
+                character is treated as a separator only when between a mixture
+                of letters and numbers, but is preserved when in-between two
+                letters or two numbers. <strong>-</strong> is always treated as
+                a separator, and <strong>_</strong> is not treated as a
+                separator. Separators cannot be used in the same term as a
+                wildcard, as wildcard queries will not be able to match across
+                terms. For example, a*f will not match abc-def because two
+                comparisons are against abc and def, and neither match.
+                <br /> <br /> When building a <strong>phrase</strong> using
+                quotes, other special characters in the <strong>phrase</strong>{' '}
+                will not perform their special function and instead are treated
+                as white space.
               </Trans>
             </SectionText>
           </Section>
@@ -353,17 +355,23 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
               {t('advanced_search_help.file_paths.title')}
             </SectionTitle>
             <SectionText>
-              <Trans t={t} i18nKey="advanced_search_help.file_paths.description">
-                The fact that file paths often contain slashes separating directories,
-                dashes within directory names, and dots before extensions can make
-                searching challenging, especially in combination with wildcards. As
-                paths and the intended use case differ, a one size fits all approach is
-                not possible, but there are some techniques that can be used.<br/> <br/>
-                When searching for an exact match for full or partial path without
-                wildcards, field targeting (see below) and quoting will give the most
-                efficient query. This will escape all slashes and other separators, but
-                also ensure that you only get results containing all terms, i.e. every
-                directory specified in order. For example,{' '}
+              <Trans
+                t={t}
+                i18nKey="advanced_search_help.file_paths.description"
+              >
+                The fact that file paths often contain slashes separating
+                directories, dashes within directory names, and dots before
+                extensions can make searching challenging, especially in
+                combination with wildcards. As paths and the intended use case
+                differ, a one size fits all approach is not possible, but there
+                are some techniques that can be used.
+                <br /> <br />
+                When searching for an exact match for full or partial path
+                without wildcards, field targeting (see below) and quoting will
+                give the most efficient query. This will escape all slashes and
+                other separators, but also ensure that you only get results
+                containing all terms, i.e. every directory specified in order.
+                For example,{' '}
                 <Link
                   component={RouterLink}
                   to={t('advanced_search_help.file_paths.link1')}
@@ -371,9 +379,9 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
                 >
                   location:&quot;path/to/directory&quot;
                 </Link>
-                .<br/> <br/> To use wildcards in combination with other separators,
-                manually replace the latter with whitespace and consider if AND/OR logic
-                should be used, so instead of a??-def,{' '}
+                .<br /> <br /> To use wildcards in combination with other
+                separators, manually replace the latter with whitespace and
+                consider if AND/OR logic should be used, so instead of a??-def,{' '}
                 <Link
                   component={RouterLink}
                   to={t('advanced_search_help.file_paths.link2')}
@@ -389,10 +397,11 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
                 >
                   a?? def
                 </Link>{' '}
-                would be needed for AND/OR logic respectively.<br/> <br/> Finally, when
-                matching file extensions, the approach will differ depending on whether
-                the extension is preceded by a number or a letter. For numbers, to match
-                a name with any extension (or vice versa) the extension/name can be
+                would be needed for AND/OR logic respectively.
+                <br /> <br /> Finally, when matching file extensions, the
+                approach will differ depending on whether the extension is
+                preceded by a number or a letter. For numbers, to match a name
+                with any extension (or vice versa) the extension/name can be
                 omitted.{' '}
                 <Link
                   component={RouterLink}
@@ -402,8 +411,8 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
                   1234.dat
                 </Link>{' '}
                 is stored as two terms, 1234 and dat, so one can be matched
-                independently of the other. For letters, wildcards must be used. To
-                match a file named abcd.dat either{' '}
+                independently of the other. For letters, wildcards must be used.
+                To match a file named abcd.dat either{' '}
                 <Link
                   component={RouterLink}
                   to={t('advanced_search_help.file_paths.link5')}
@@ -419,8 +428,8 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
                 >
                   *.dat
                 </Link>{' '}
-                can be used, however please note that the latter, trailing wildcard can
-                take a long time to evaluate.
+                can be used, however please note that the latter, trailing
+                wildcard can take a long time to evaluate.
               </Trans>
             </SectionText>
           </Section>
