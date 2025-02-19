@@ -369,7 +369,7 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
                   to={t('advanced_search_help.file_paths.link1')}
                   onClick={handleClose}
                 >
-                  location:"path/to/directory"
+                  location:&quot;path/to/directory&quot;
                 </Link>
                 .<br/> <br/> To use wildcards in combination with other separators,
                 manually replace the latter with whitespace and consider if AND/OR logic
@@ -402,18 +402,16 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
                   1234.dat
                 </Link>{' '}
                 is stored as two terms, 1234 and dat, so one can be matched
-                independently of the other. For letters, wildcards must be used but care
-                must be taken as a trailing * alone will not match the . since it can
-                act as a separator. To match a file named abcd.dat either{' '}
+                independently of the other. For letters, wildcards must be used. To
+                match a file named abcd.dat either{' '}
                 <Link
                   component={RouterLink}
                   to={t('advanced_search_help.file_paths.link5')}
                   onClick={handleClose}
                 >
-                  abcd.?*
+                  abcd.*
                 </Link>{' '}
-                (where the ? indicates that there is at least one character after the .,
-                allowing it to be included without treated as a separator) or{' '}
+                or{' '}
                 <Link
                   component={RouterLink}
                   to={t('advanced_search_help.file_paths.link6')}
