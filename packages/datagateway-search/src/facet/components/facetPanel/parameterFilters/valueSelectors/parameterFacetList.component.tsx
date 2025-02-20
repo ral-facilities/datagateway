@@ -79,6 +79,7 @@ function ParameterFacetList({
         label={t('parameterFilters.creator.labels.parameterStringSelect')}
         data-testid="parameter-facet-list"
         value={selectedFacet?.label ?? ''}
+        color="secondary"
       >
         {facets.map((facet, index) => (
           <MenuItem

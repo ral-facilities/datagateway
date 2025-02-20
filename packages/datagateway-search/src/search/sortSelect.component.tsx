@@ -44,6 +44,7 @@ const SortSelectComponent = (): React.ReactElement => {
           minWidth: 120,
           maxWidth: 300,
         }}
+        color="secondary"
       >
         <InputLabel variant="outlined" shrink={true} id="sort-select-label">
           {t('sort.label')}

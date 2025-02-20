@@ -2,8 +2,15 @@ import React, { useState } from 'react';
 import { format, isValid, isEqual, isBefore } from 'date-fns';
 import { FiltersType, DateFilter } from '../../app.types';
 import { usePushFilter } from '../../api';
-import { TextField, TextFieldProps } from '@mui/material';
+import {
+  TextField,
+  TextFieldProps,
+  ThemeProvider,
+  createTheme,
+  useTheme,
+} from '@mui/material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { enGB } from 'date-fns/locale';
 import {
   DatePicker,
   DateTimePicker,
@@ -116,174 +123,193 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
     DateTimeValidationError | DateValidationError | null
   >(null);
 
+  // can't set the main colour to secondary the "normal" MUI way, so have a sub-theme
+  // to override the primary colour for the date pickers
+  const theme = useTheme();
+  const subTheme = createTheme(theme, {
+    palette: {
+      primary: {
+        main:
+          theme.palette.mode === 'dark'
+            ? theme.palette.secondary.main
+            : theme.palette.primary.main,
+      },
+    },
+  });
+
   return (
     <form>
-      {props.filterByTime ? (
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <DateTimePicker
-            format="yyyy-MM-dd HH:mm:ss"
-            views={['year', 'month', 'day', 'hours', 'minutes', 'seconds']}
-            value={startDate}
-            maxDate={endDate || new Date('2100-01-01 00:00:00')}
-            onChange={(date) => {
-              setStartDate(date as Date);
-              updateFilter({
-                date: date as Date,
-                prevDate: startDate,
-                otherDate: endDate,
-                startDateOrEndDateChanged: 'startDate',
-                onChange: props.onChange,
-                filterByTime: true,
-              });
-            }}
-            // Catch error messages for helper text
-            onError={(newError) => setError(newError)}
-            slots={{
-              textField: CustomTextField,
-            }}
-            slotProps={{
-              actionBar: {
-                actions: ['clear'],
-              },
-              textField: {
-                inputProps: {
-                  invalidDateRange: invalidDateRange,
-                  errorText: errorText,
-                  filterByTime: props.filterByTime,
-                  id: props.label + ' filter from',
-                  placeholder: 'From...',
-                  'aria-label': `${props.label} filter from`,
-                },
-              },
-              openPickerButton: {
-                size: 'small',
-                'aria-label': `${props.label} filter from, date-time picker`,
-              },
-            }}
-          />
-          <DateTimePicker
-            format="yyyy-MM-dd HH:mm:ss"
-            views={['year', 'month', 'day', 'hours', 'minutes', 'seconds']}
-            value={endDate}
-            minDate={startDate || new Date('1984-01-01 00:00:00')}
-            onChange={(date) => {
-              setEndDate(date as Date);
-              updateFilter({
-                date: date as Date,
-                prevDate: endDate,
-                otherDate: startDate,
-                startDateOrEndDateChanged: 'endDate',
-                onChange: props.onChange,
-                filterByTime: true,
-              });
-            }}
-            onError={(newError) => setError(newError)}
-            slots={{
-              textField: CustomTextField,
-            }}
-            slotProps={{
-              actionBar: {
-                actions: ['clear'],
-              },
-              textField: {
-                inputProps: {
-                  invalidDateRange,
-                  errorText,
-                  filterByTime: props.filterByTime,
-                  id: props.label + ' filter to',
-                  placeholder: 'To...',
-                  'aria-label': `${props.label} filter to`,
-                },
-              },
-              openPickerButton: {
-                size: 'small',
-                'aria-label': `${props.label} filter to, date-time picker`,
-              },
-            }}
-          />
+      <ThemeProvider theme={subTheme}>
+        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
+          {props.filterByTime ? (
+            <>
+              <DateTimePicker
+                format="yyyy-MM-dd HH:mm:ss"
+                views={['year', 'month', 'day', 'hours', 'minutes', 'seconds']}
+                value={startDate}
+                maxDate={endDate || new Date('2100-01-01 00:00:00')}
+                onChange={(date) => {
+                  setStartDate(date as Date);
+                  updateFilter({
+                    date: date as Date,
+                    prevDate: startDate,
+                    otherDate: endDate,
+                    startDateOrEndDateChanged: 'startDate',
+                    onChange: props.onChange,
+                    filterByTime: true,
+                  });
+                }}
+                // Catch error messages for helper text
+                onError={(newError) => setError(newError)}
+                slots={{
+                  textField: CustomTextField,
+                }}
+                slotProps={{
+                  actionBar: {
+                    actions: ['clear'],
+                  },
+                  textField: {
+                    inputProps: {
+                      invalidDateRange: invalidDateRange,
+                      errorText: errorText,
+                      filterByTime: props.filterByTime,
+                      id: props.label + ' filter from',
+                      placeholder: 'From...',
+                      'aria-label': `${props.label} filter from`,
+                    },
+                    color: 'secondary',
+                  },
+                  openPickerButton: {
+                    size: 'small',
+                    'aria-label': `${props.label} filter from, date-time picker`,
+                  },
+                }}
+              />
+              <DateTimePicker
+                format="yyyy-MM-dd HH:mm:ss"
+                views={['year', 'month', 'day', 'hours', 'minutes', 'seconds']}
+                value={endDate}
+                minDate={startDate || new Date('1984-01-01 00:00:00')}
+                onChange={(date) => {
+                  setEndDate(date as Date);
+                  updateFilter({
+                    date: date as Date,
+                    prevDate: endDate,
+                    otherDate: startDate,
+                    startDateOrEndDateChanged: 'endDate',
+                    onChange: props.onChange,
+                    filterByTime: true,
+                  });
+                }}
+                onError={(newError) => setError(newError)}
+                slots={{
+                  textField: CustomTextField,
+                }}
+                slotProps={{
+                  actionBar: {
+                    actions: ['clear'],
+                  },
+                  textField: {
+                    inputProps: {
+                      invalidDateRange,
+                      errorText,
+                      filterByTime: props.filterByTime,
+                      id: props.label + ' filter to',
+                      placeholder: 'To...',
+                      'aria-label': `${props.label} filter to`,
+                    },
+                  },
+                  openPickerButton: {
+                    size: 'small',
+                    'aria-label': `${props.label} filter to, date-time picker`,
+                  },
+                }}
+              />
+            </>
+          ) : (
+            <>
+              <DatePicker
+                format="yyyy-MM-dd"
+                views={['year', 'month', 'day']}
+                value={startDate}
+                maxDate={endDate || new Date('2100-01-01 00:00:00')}
+                onChange={(date) => {
+                  setStartDate(date as Date);
+                  updateFilter({
+                    date: date as Date,
+                    prevDate: startDate,
+                    otherDate: endDate,
+                    startDateOrEndDateChanged: 'startDate',
+                    onChange: props.onChange,
+                  });
+                }}
+                onError={(newError) => setError(newError)}
+                slots={{
+                  textField: CustomTextField,
+                }}
+                slotProps={{
+                  actionBar: {
+                    actions: ['clear'],
+                  },
+                  textField: {
+                    inputProps: {
+                      invalidDateRange,
+                      errorText,
+                      filterByTime: props.filterByTime,
+                      id: props.label + ' filter from',
+                      placeholder: 'From...',
+                      'aria-label': `${props.label} filter from`,
+                    },
+                  },
+                  openPickerButton: {
+                    size: 'small',
+                    'aria-label': `${props.label} filter from, date picker`,
+                  },
+                }}
+              />
+              <DatePicker
+                format="yyyy-MM-dd"
+                views={['year', 'month', 'day']}
+                value={endDate}
+                minDate={startDate || new Date('1984-01-01 00:00:00')}
+                onChange={(date) => {
+                  setEndDate(date as Date);
+                  updateFilter({
+                    date: date as Date,
+                    prevDate: endDate,
+                    otherDate: startDate,
+                    startDateOrEndDateChanged: 'endDate',
+                    onChange: props.onChange,
+                  });
+                }}
+                onError={(newError) => setError(newError)}
+                slots={{
+                  textField: CustomTextField,
+                }}
+                slotProps={{
+                  actionBar: {
+                    actions: ['clear'],
+                  },
+                  textField: {
+                    inputProps: {
+                      invalidDateRange,
+                      errorText,
+                      filterByTime: props.filterByTime,
+                      id: props.label + ' filter to',
+                      placeholder: 'To...',
+                      'aria-label': `${props.label} filter to`,
+                    },
+                  },
+                  openPickerButton: {
+                    size: 'small',
+                    'aria-label': `${props.label} filter to, date picker`,
+                  },
+                }}
+              />
+            </>
+          )}
         </LocalizationProvider>
-      ) : (
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <DatePicker
-            format="yyyy-MM-dd"
-            views={['year', 'month', 'day']}
-            value={startDate}
-            maxDate={endDate || new Date('2100-01-01 00:00:00')}
-            onChange={(date) => {
-              setStartDate(date as Date);
-              updateFilter({
-                date: date as Date,
-                prevDate: startDate,
-                otherDate: endDate,
-                startDateOrEndDateChanged: 'startDate',
-                onChange: props.onChange,
-              });
-            }}
-            onError={(newError) => setError(newError)}
-            slots={{
-              textField: CustomTextField,
-            }}
-            slotProps={{
-              actionBar: {
-                actions: ['clear'],
-              },
-              textField: {
-                inputProps: {
-                  invalidDateRange,
-                  errorText,
-                  filterByTime: props.filterByTime,
-                  id: props.label + ' filter from',
-                  placeholder: 'From...',
-                  'aria-label': `${props.label} filter from`,
-                },
-              },
-              openPickerButton: {
-                size: 'small',
-                'aria-label': `${props.label} filter from, date picker`,
-              },
-            }}
-          />
-          <DatePicker
-            format="yyyy-MM-dd"
-            views={['year', 'month', 'day']}
-            value={endDate}
-            minDate={startDate || new Date('1984-01-01 00:00:00')}
-            onChange={(date) => {
-              setEndDate(date as Date);
-              updateFilter({
-                date: date as Date,
-                prevDate: endDate,
-                otherDate: startDate,
-                startDateOrEndDateChanged: 'endDate',
-                onChange: props.onChange,
-              });
-            }}
-            onError={(newError) => setError(newError)}
-            slots={{
-              textField: CustomTextField,
-            }}
-            slotProps={{
-              actionBar: {
-                actions: ['clear'],
-              },
-              textField: {
-                inputProps: {
-                  invalidDateRange,
-                  errorText,
-                  filterByTime: props.filterByTime,
-                  id: props.label + ' filter to',
-                  placeholder: 'To...',
-                  'aria-label': `${props.label} filter to`,
-                },
-              },
-              openPickerButton: {
-                size: 'small',
-                'aria-label': `${props.label} filter to, date picker`,
-              },
-            }}
-          />
-        </LocalizationProvider>
-      )}
+      </ThemeProvider>
     </form>
   );
 };
