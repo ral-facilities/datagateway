@@ -128,12 +128,10 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
   const theme = useTheme();
   const subTheme = createTheme(theme, {
     palette: {
-      primary: {
-        main:
-          theme.palette.mode === 'dark'
-            ? theme.palette.secondary.main
-            : theme.palette.primary.main,
-      },
+      primary:
+        theme.palette.mode === 'dark'
+          ? theme.palette.secondary
+          : theme.palette.primary,
     },
   });
 

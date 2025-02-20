@@ -920,7 +920,7 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                               class="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
                             >
                               <div
-                                class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-adornedEnd css-1ptx2yq-MuiInputBase-root-MuiInput-root"
+                                class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorSecondary MuiInputBase-formControl MuiInputBase-adornedEnd css-89bi5l-MuiInputBase-root-MuiInput-root"
                               >
                                 <input
                                   aria-invalid="false"

@@ -133,12 +133,10 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
   const theme = useTheme();
   const subTheme = createTheme(theme, {
     palette: {
-      primary: {
-        main:
-          theme.palette.mode === 'dark'
-            ? theme.palette.secondary.main
-            : theme.palette.primary.main,
-      },
+      primary:
+        theme.palette.mode === 'dark'
+          ? theme.palette.secondary
+          : theme.palette.primary,
     },
   });
 
@@ -171,15 +169,6 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
                     'aria-label': t('searchBox.start_date_arialabel'),
                   },
                   onKeyDown: handleKeyDown,
-                },
-                layout: {
-                  sx: {
-                    '& .MuiPickersDay-root.Mui-selected': {
-                      '&:focus': {
-                        background: (theme) => theme.palette.primary.main,
-                      },
-                    },
-                  },
                 },
               }}
             />
