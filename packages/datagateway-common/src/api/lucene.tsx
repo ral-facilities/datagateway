@@ -368,6 +368,7 @@ export const useLuceneSearchInfinite = (
       },
       retry: retryICATErrors,
       getNextPageParam: (lastPage, _) => lastPage.search_after,
+      refetchOnWindowFocus: false,
       ...(options ?? {}),
     }
   );
