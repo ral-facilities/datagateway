@@ -11,6 +11,7 @@ import {
   useDataPublication,
   useDataPublications,
 } from './dataPublications';
+import { act } from 'react-dom/test-utils';
 
 jest.mock('../handleICATError');
 
@@ -24,15 +25,11 @@ describe('data publications api functions', () => {
         id: 1,
         pid: 'doi 1',
         title: 'Test 1',
-        modTime: '2000-01-01',
-        createTime: '2000-01-01',
       },
       {
         id: 2,
         pid: 'doi 2',
         title: 'Test 2',
-        modTime: '2000-01-02',
-        createTime: '2000-01-02',
       },
     ];
     history = createMemoryHistory({
@@ -54,7 +51,7 @@ describe('data publications api functions', () => {
         data: mockData,
       });
 
-      const { result, rerender } = renderHook(
+      const { result } = renderHook(
         () =>
           useDataPublicationsPaginated([
             {
@@ -106,11 +103,12 @@ describe('data publications api functions', () => {
       );
       expect(result.current.data).toEqual(mockData);
 
-      // test that order of sort object triggers new query
-      history.push(
-        '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
-      );
-      rerender();
+      act(() => {
+        // test that order of sort object triggers new query
+        history.push(
+          '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
+        );
+      });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
@@ -152,7 +150,7 @@ describe('data publications api functions', () => {
           : Promise.resolve({ data: mockData[1] })
       );
 
-      const { result, rerender } = renderHook(
+      const { result } = renderHook(
         () =>
           useDataPublicationsInfinite([
             {
@@ -228,11 +226,12 @@ describe('data publications api functions', () => {
         mockData[1],
       ]);
 
-      // test that order of sort object triggers new query
-      history.push(
-        '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}'
-      );
-      rerender();
+      act(() => {
+        // test that order of sort object triggers new query
+        history.push(
+          '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}'
+        );
+      });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
@@ -385,7 +384,7 @@ describe('data publications api functions', () => {
         })
       );
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           useDataPublications([
             {
@@ -398,7 +397,7 @@ describe('data publications api functions', () => {
         }
       );
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/api/datapublications',
@@ -420,7 +419,7 @@ describe('data publications api functions', () => {
       params.append('order', JSON.stringify('id asc'));
       params.append('include', '"type"');
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           useDataPublications([
             {
@@ -433,7 +432,7 @@ describe('data publications api functions', () => {
         }
       );
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/api/datapublications',

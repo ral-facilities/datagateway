@@ -12,6 +12,7 @@ import {
   useDatasetsInfinite,
   useDatasetsPaginated,
 } from './datasets';
+import { act } from 'react-dom/test-utils';
 
 jest.mock('../handleICATError');
 
@@ -123,7 +124,7 @@ describe('dataset api functions', () => {
         data: mockData,
       });
 
-      const { result, rerender } = renderHook(
+      const { result } = renderHook(
         () =>
           useDatasetsPaginated([
             {
@@ -169,11 +170,12 @@ describe('dataset api functions', () => {
       );
       expect(result.current.data).toEqual(mockData);
 
-      // test that order of sort object triggers new query
-      history.push(
-        '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
-      );
-      rerender();
+      act(() => {
+        // test that order of sort object triggers new query
+        history.push(
+          '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
+        );
+      });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
@@ -215,7 +217,7 @@ describe('dataset api functions', () => {
           : Promise.resolve({ data: mockData[1] })
       );
 
-      const { result, rerender } = renderHook(
+      const { result } = renderHook(
         () =>
           useDatasetsInfinite([
             {
@@ -285,11 +287,12 @@ describe('dataset api functions', () => {
         mockData[1],
       ]);
 
-      // test that order of sort object triggers new query
-      history.push(
-        '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}'
-      );
-      rerender();
+      act(() => {
+        // test that order of sort object triggers new query
+        history.push(
+          '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}'
+        );
+      });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 

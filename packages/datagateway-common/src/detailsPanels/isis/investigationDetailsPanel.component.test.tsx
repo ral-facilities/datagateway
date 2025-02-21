@@ -123,8 +123,13 @@ describe('Investigation details panel component', () => {
     jest.clearAllMocks();
   });
 
-  it('should render correctly', () => {
+  it('should render correctly', async () => {
     const { asFragment } = renderComponent({ rowData });
+    expect(
+      await screen.findByRole('tablist', {
+        name: 'investigations.details.tabs_label',
+      })
+    ).toBeInTheDocument();
     expect(asFragment()).toMatchSnapshot();
   });
 
@@ -135,7 +140,7 @@ describe('Investigation details panel component', () => {
     ).toHaveAttribute('aria-selected', 'true');
   });
 
-  it('should render user, sample and publication tabs when present in the data', () => {
+  it('should render user, sample and publication tabs when present in the data', async () => {
     rowData.investigationUsers = [
       {
         id: 4,
@@ -171,10 +176,15 @@ describe('Investigation details panel component', () => {
     ];
 
     const { asFragment } = renderComponent({ rowData });
+    expect(
+      await screen.findByRole('tab', {
+        name: 'investigations.details.users.label',
+      })
+    ).toBeInTheDocument();
     expect(asFragment()).toMatchSnapshot();
   });
 
-  it('should check if multiple samples result in change of title to plural version', () => {
+  it('should check if multiple samples result in change of title to plural version', async () => {
     rowData.samples = [
       {
         id: 7,
@@ -187,10 +197,15 @@ describe('Investigation details panel component', () => {
     ];
 
     const { asFragment } = renderComponent({ rowData });
+    expect(
+      await screen.findByRole('tab', {
+        name: 'investigations.details.samples.label',
+      })
+    ).toBeInTheDocument();
     expect(asFragment()).toMatchSnapshot();
   });
 
-  it('should check if multiple publications result in change of title to plural version', () => {
+  it('should check if multiple publications result in change of title to plural version', async () => {
     rowData.publications = [
       {
         id: 8,
@@ -203,6 +218,11 @@ describe('Investigation details panel component', () => {
     ];
 
     const { asFragment } = renderComponent({ rowData });
+    expect(
+      await screen.findByRole('tab', {
+        name: 'investigations.details.publications.label',
+      })
+    ).toBeInTheDocument();
     expect(asFragment()).toMatchSnapshot();
   });
 
@@ -359,7 +379,7 @@ describe('Investigation details panel component', () => {
     );
   });
 
-  it('should gracefully handles dataCollectionInvestigations without dataPublications and InvestigationUsers without Users', () => {
+  it('should gracefully handles dataCollectionInvestigations without dataPublications and InvestigationUsers without Users', async () => {
     rowData.dataCollectionInvestigations = [
       {
         id: 1,
@@ -374,6 +394,11 @@ describe('Investigation details panel component', () => {
     ];
 
     const { asFragment } = renderComponent({ rowData });
+    expect(
+      await screen.findByRole('tablist', {
+        name: 'investigations.details.tabs_label',
+      })
+    ).toBeInTheDocument();
     expect(asFragment()).toMatchSnapshot();
   });
 

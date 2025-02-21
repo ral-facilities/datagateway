@@ -39,12 +39,12 @@ describe('Lucene actions', () => {
         sort: { size: 'desc' },
       };
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useLuceneSearchInfinite('Dataset', luceneParams, filters),
         { wrapper: createReactQueryWrapper() }
       );
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       const params = new URLSearchParams();
       params.append('sessionId', '');
@@ -136,14 +136,14 @@ describe('Lucene actions', () => {
         maxCount: 300,
       };
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useLuceneSearchInfinite('Datafile', luceneSearchParams, {}),
         {
           wrapper: createReactQueryWrapper(),
         }
       );
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       const params = new URLSearchParams();
       params.append('sessionId', '');
@@ -177,14 +177,14 @@ describe('Lucene actions', () => {
         maxCount: 300,
       };
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useLuceneSearchInfinite('Investigation', luceneSearchParams, {}),
         {
           wrapper: createReactQueryWrapper(),
         }
       );
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       const params = new URLSearchParams();
       params.append('sessionId', '');
@@ -222,14 +222,14 @@ describe('Lucene actions', () => {
         },
       });
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useLuceneSearchInfinite('Investigation', luceneSearchParams, {}),
         {
           wrapper: createReactQueryWrapper(),
         }
       );
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       await act(async () => {
         await result.current.fetchNextPage();
@@ -292,14 +292,14 @@ describe('Lucene actions', () => {
           },
         });
 
-        const { result, waitFor } = renderHook(
+        const { result } = renderHook(
           () => useLuceneSearchInfinite('Dataset', luceneSearchParams, {}),
           {
             wrapper: createReactQueryWrapper(),
           }
         );
 
-        await waitFor(() => result.current.isError);
+        await waitFor(() => expect(result.current.isError).toBe(true));
 
         expect(mockDispatchEvent).toHaveBeenCalledTimes(1);
         const callArgs = mockDispatchEvent.mock.calls[0];
@@ -335,14 +335,14 @@ describe('Lucene actions', () => {
           },
         });
 
-        const { result, waitFor } = renderHook(
+        const { result } = renderHook(
           () => useLuceneSearchInfinite('Dataset', luceneSearchParams, {}),
           {
             wrapper: createReactQueryWrapper(),
           }
         );
 
-        await waitFor(() => result.current.isError);
+        await waitFor(() => expect(result.current.isError).toBe(true));
 
         expect(mockDispatchEvent).toHaveBeenCalledTimes(1);
         const callArgs = mockDispatchEvent.mock.calls[0];
@@ -373,14 +373,14 @@ describe('Lucene actions', () => {
 
         (axios.get as jest.Mock).mockRejectedValue(axiosError);
 
-        const { result, waitFor } = renderHook(
+        const { result } = renderHook(
           () => useLuceneSearchInfinite('Dataset', luceneSearchParams, {}),
           {
             wrapper: createReactQueryWrapper(),
           }
         );
 
-        await waitFor(() => result.current.isError);
+        await waitFor(() => expect(result.current.isError).toBe(true));
 
         expect(handleICATError).toHaveBeenCalledWith(axiosError);
       });
@@ -405,14 +405,14 @@ describe('Lucene actions', () => {
 
         (axios.get as jest.Mock).mockRejectedValue(axiosError);
 
-        const { result, waitFor } = renderHook(
+        const { result } = renderHook(
           () => useLuceneSearchInfinite('Dataset', luceneSearchParams, {}),
           {
             wrapper: createReactQueryWrapper(),
           }
         );
 
-        await waitFor(() => result.current.isError);
+        await waitFor(() => expect(result.current.isError).toBe(true));
 
         expect(handleICATError).toHaveBeenCalledWith(axiosError);
       });
@@ -437,14 +437,14 @@ describe('Lucene actions', () => {
 
         (axios.get as jest.Mock).mockRejectedValue(axiosError);
 
-        const { result, waitFor } = renderHook(
+        const { result } = renderHook(
           () => useLuceneSearchInfinite('Dataset', luceneSearchParams, {}),
           {
             wrapper: createReactQueryWrapper(),
           }
         );
 
-        await waitFor(() => result.current.isError);
+        await waitFor(() => expect(result.current.isError).toBe(true));
 
         expect(handleICATError).toHaveBeenCalledWith(axiosError);
       });
@@ -462,7 +462,7 @@ describe('Lucene actions', () => {
       };
       const facets = [{ target: 'test_target' }];
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           useLuceneFacet('Investigation', facets, filters, {
             select: (data) => data.results,
@@ -470,7 +470,7 @@ describe('Lucene actions', () => {
         { wrapper: createReactQueryWrapper() }
       );
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       const params = new URLSearchParams();
       params.append('sessionId', '');

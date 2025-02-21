@@ -1,4 +1,4 @@
-import { renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import axios from 'axios';
 import { createMemoryHistory, History } from 'history';
 import { Investigation } from '../app.types';
@@ -129,7 +129,7 @@ describe('investigation api functions', () => {
         data: mockData,
       });
 
-      const { result, , rerender } = renderHook(
+      const { result } = renderHook(
         () =>
           useInvestigationsPaginated([
             {
@@ -175,11 +175,12 @@ describe('investigation api functions', () => {
       );
       expect(result.current.data).toEqual(mockData);
 
-      // test that order of sort object triggers new query
-      history.push(
-        '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
-      );
-      rerender();
+      act(() => {
+        // test that order of sort object triggers new query
+        history.push(
+          '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
+        );
+      });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
@@ -275,7 +276,7 @@ describe('investigation api functions', () => {
           : Promise.resolve({ data: mockData[1] })
       );
 
-      const { result, , rerender } = renderHook(
+      const { result } = renderHook(
         () =>
           useInvestigationsInfinite([
             {
@@ -345,11 +346,12 @@ describe('investigation api functions', () => {
         mockData[1],
       ]);
 
-      // test that order of sort object triggers new query
-      history.push(
-        '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}'
-      );
-      rerender();
+      act(() => {
+        // test that order of sort object triggers new query
+        history.push(
+          '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}'
+        );
+      });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
