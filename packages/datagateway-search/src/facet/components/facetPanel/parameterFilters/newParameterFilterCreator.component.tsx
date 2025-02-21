@@ -155,6 +155,7 @@ function NewParameterFilterCreator({
           value={parameterName}
           onChange={(e) => changeParameterName(e.target.value)}
           label={t('parameterFilters.creator.labels.parameterNameSelect')}
+          color="secondary"
         >
           {parameterNames.map((param) => (
             <MenuItem key={param} value={param}>
@@ -169,6 +170,7 @@ function NewParameterFilterCreator({
           label={t('parameterFilters.creator.labels.parameterValueTypeSelect')}
           value={valueType}
           onChange={(e) => changeValueType(e.target.value)}
+          color="secondary"
         >
           {Object.values(PARAMETER_VALUE_TYPE).map((value) => (
             <MenuItem key={value} value={value}>

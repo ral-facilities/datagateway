@@ -98,6 +98,7 @@ const CheckboxesGroup = (props: CheckBoxStoreProps): React.ReactElement => {
         className="tour-search-checkbox"
         sx={{ margin: 1, minWidth: '120px', maxWidth: '300px' }}
         variant="standard"
+        color="secondary"
       >
         {error && (
           <InputLabel

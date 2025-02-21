@@ -91,6 +91,7 @@ function ParameterNumericRange({
         }}
         aria-valuemax={Number(max)}
         onChange={onMinChange}
+        color="secondary"
       />
       <TextField
         fullWidth
@@ -105,6 +106,7 @@ function ParameterNumericRange({
           min: Number(min),
         }}
         onChange={onMaxChange}
+        color="secondary"
       />
       <TextField
         fullWidth
@@ -114,6 +116,7 @@ function ParameterNumericRange({
         id="parameter-numeric-range-unit"
         value={units}
         onChange={onUnitsChange}
+        color="secondary"
       />
     </Stack>
   );
