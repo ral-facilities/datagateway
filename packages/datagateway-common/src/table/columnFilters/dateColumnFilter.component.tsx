@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { format, isValid, isEqual, isBefore } from 'date-fns';
-import { FiltersType, DateFilter } from '../../app.types';
+import { FiltersType, DateFilter, Filter } from '../../app.types';
 import { usePushFilter } from '../../api';
 import {
   TextField,
@@ -76,6 +76,7 @@ interface DateColumnFilterProps {
   onChange: (value: { startDate?: string; endDate?: string } | null) => void;
   value: { startDate?: string; endDate?: string } | undefined;
   filterByTime?: boolean;
+  defaultFilter?: DateFilter;
 }
 
 const CustomTextField: React.FC<TextFieldProps> = (renderProps) => {
@@ -110,10 +111,18 @@ const CustomTextField: React.FC<TextFieldProps> = (renderProps) => {
 const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
   //Need state to change otherwise wont update error messages for an invalid date
   const [startDate, setStartDate] = useState(
-    props.value?.startDate ? new Date(props.value.startDate) : null
+    props.defaultFilter?.startDate
+      ? new Date(props.defaultFilter.startDate)
+      : props.value?.startDate
+      ? new Date(props.value.startDate)
+      : null
   );
   const [endDate, setEndDate] = useState(
-    props.value?.endDate ? new Date(props.value.endDate) : null
+    props.defaultFilter?.endDate
+      ? new Date(props.defaultFilter.endDate)
+      : props.value?.endDate
+      ? new Date(props.value.endDate)
+      : null
   );
 
   const invalidDateRange = startDate && endDate && isBefore(endDate, startDate);
@@ -316,16 +325,25 @@ export default DateColumnFilter;
 
 export const useDateFilter = (
   filters: FiltersType
-): ((label: string, dataKey: string) => React.ReactElement) => {
+): ((
+  label: string,
+  dataKey: string,
+  defaultFilter?: Filter
+) => React.ReactElement) => {
   const pushFilter = usePushFilter();
   return React.useMemo(() => {
-    const dateFilter = (label: string, dataKey: string): React.ReactElement => (
+    const dateFilter = (
+      label: string,
+      dataKey: string,
+      defaultFilter?: Filter
+    ): React.ReactElement => (
       <DateColumnFilter
         label={label}
         value={filters[dataKey] as DateFilter}
         onChange={(value: { startDate?: string; endDate?: string } | null) =>
           pushFilter(dataKey, value ? value : null)
         }
+        defaultFilter={defaultFilter as DateFilter}
       />
     );
     return dateFilter;

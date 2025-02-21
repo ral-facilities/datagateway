@@ -4,15 +4,14 @@ import TextColumnFilter, {
   useTextFilter,
   DEBOUNCE_DELAY,
 } from './textColumnFilter.component';
-import { act } from 'react-dom/test-utils';
 import { usePushFilter, usePushFilters } from '../../api';
-import { render, screen } from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
 import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 
 jest.mock('../../api');
-jest.useFakeTimers('modern');
+jest.useFakeTimers();
 
 describe('Text filter component', () => {
   let user: UserEvent;
@@ -25,6 +24,18 @@ describe('Text filter component', () => {
     const { asFragment } = render(
       <TextColumnFilter
         value={{ value: 'test value', type: 'include' }}
+        label="test"
+        onChange={jest.fn()}
+      />
+    );
+    expect(asFragment()).toMatchSnapshot();
+  });
+
+  it('renders correctly with default value', () => {
+    const { asFragment } = render(
+      <TextColumnFilter
+        value={{ value: undefined, type: 'include' }}
+        defaultFilter={{ value: 'test default value', type: 'include' }}
         label="test"
         onChange={jest.fn()}
       />

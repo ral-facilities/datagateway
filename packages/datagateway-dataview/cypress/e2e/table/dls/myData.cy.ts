@@ -27,6 +27,12 @@ describe('DLS - MyData Table', () => {
       //Default sort
       cy.get('[aria-sort="descending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionDesc').should('be.visible');
+
+      // default filter
+      cy.get('input[id="Start Date filter to"]').should(
+        'have.value',
+        new Date().toISOString().split('T')[0]
+      );
     });
 
     it('should be able to click an investigation to see its datasets', () => {
