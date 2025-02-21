@@ -123,6 +123,7 @@ describe('Table component', () => {
         },
       ],
       onDefaultFilter,
+      filters: {},
     };
     render(<Table {...sortedTableProps} />);
 
@@ -274,10 +275,36 @@ describe('Table component', () => {
         },
       ],
       onDefaultFilter: undefined,
+      filters: {},
     };
 
     expect(() => render(<Table {...newTableProps} />)).toThrowError(
-      'Column has a default filter prop but onDefaultFilter was not passed to Table - either pass onDefaultFilter function or remove defaultFilter from the column definition'
+      'Column has a default filter prop but onDefaultFilter or filters was not passed to Table - either pass onDefaultFilter function & filters or remove defaultFilter from the column definition'
+    );
+
+    spy.mockRestore();
+  });
+
+  it('throws error when a default sort has been defined without passing filters', () => {
+    const spy = jest.spyOn(console, 'error');
+    spy.mockImplementation(() => {
+      // suppress react uncaught error warning as we're deliberately triggering an error!
+    });
+
+    const newTableProps = {
+      ...tableProps,
+      columns: [
+        {
+          ...tableProps.columns[0],
+          defaultFilter: { value: 'x', type: 'include' },
+        },
+      ],
+      onDefaultFilter: jest.fn(),
+      filters: undefined,
+    };
+
+    expect(() => render(<Table {...newTableProps} />)).toThrowError(
+      'Column has a default filter prop but onDefaultFilter or filters was not passed to Table - either pass onDefaultFilter function & filters or remove defaultFilter from the column definition'
     );
 
     spy.mockRestore();

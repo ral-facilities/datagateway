@@ -1,5 +1,11 @@
 import React from 'react';
-import { Filter, Order, UpdateMethod } from '../../app.types';
+import {
+  Filter,
+  FiltersType,
+  Order,
+  SortType,
+  UpdateMethod,
+} from '../../app.types';
 import { TableHeaderProps } from 'react-virtualized';
 import {
   TableCell,
@@ -18,7 +24,7 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 const DataHeader = (
   props: TableHeaderProps & {
     sx: SxProps;
-    sort: { [column: string]: Order };
+    sort: SortType;
     onSort: (
       column: string,
       order: Order | null,
@@ -37,6 +43,7 @@ const DataHeader = (
     shiftDown?: boolean;
     defaultFilter?: Filter;
     onDefaultFilter?: (column: string, filter: Filter | null) => void;
+    filters?: FiltersType;
   }
 ): React.ReactElement => {
   const {
@@ -54,25 +61,25 @@ const DataHeader = (
     shiftDown,
     defaultFilter,
     onDefaultFilter,
+    filters,
   } = props;
 
   const currSortDirection = sort[dataKey];
 
   const [hover, setHover] = React.useState(false);
 
+  const shouldApplyDefaultFilter =
+    typeof defaultFilter !== 'undefined' &&
+    typeof onDefaultFilter !== 'undefined' &&
+    typeof filters !== 'undefined' &&
+    Object.keys(filters).length === 0;
+
   //Apply default sort & filter on page load (but only if not already defined in URL params)
   //This will apply them in the order of the column definitions given to a table
   React.useEffect(() => {
-    if (
-      typeof defaultSort !== 'undefined' &&
-      typeof currSortDirection === 'undefined'
-    )
+    if (typeof defaultSort !== 'undefined' && Object.keys(sort).length === 0)
       onSort(dataKey, defaultSort, 'replace', false);
-    if (
-      typeof defaultFilter !== 'undefined' &&
-      typeof onDefaultFilter !== 'undefined'
-    )
-      onDefaultFilter(dataKey, defaultFilter);
+    if (shouldApplyDefaultFilter) onDefaultFilter(dataKey, defaultFilter);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -146,7 +153,11 @@ const DataHeader = (
           <Box marginRight={1}>{Icon && <Icon />}</Box>
           <Box>{inner}</Box>
         </Box>
-        {filterComponent?.(labelString, dataKey, defaultFilter)}
+        {filterComponent?.(
+          labelString,
+          dataKey,
+          shouldApplyDefaultFilter ? defaultFilter : undefined
+        )}
       </div>
       <Draggable
         axis="none"

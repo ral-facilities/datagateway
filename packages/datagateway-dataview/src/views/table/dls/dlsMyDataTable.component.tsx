@@ -181,6 +181,7 @@ const DLSMyDataTable = (): React.ReactElement => {
       sort={sort}
       onSort={handleSort}
       onDefaultFilter={handleDefaultFilter}
+      filters={filters}
       detailsPanel={DLSVisitDetailsPanel}
       columns={columns}
     />

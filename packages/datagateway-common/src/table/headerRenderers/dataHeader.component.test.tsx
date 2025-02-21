@@ -39,6 +39,7 @@ describe('Data column header component', () => {
   afterEach(() => {
     onSort.mockClear();
     resizeColumn.mockClear();
+    filterComponent.mockClear();
   });
 
   it('renders correctly without sort or filter', async () => {
@@ -117,7 +118,18 @@ describe('Data column header component', () => {
     });
   });
 
-  it('calls the onDefaultFilter method  and supplies default filter to filter component when default filter is specified', () => {
+  it('does not call the onSort method when default sort is specified but sort is not empty', () => {
+    render(
+      <DataHeader
+        {...dataHeaderProps}
+        defaultSort="asc"
+        sort={{ test: 'desc' }}
+      />
+    );
+    expect(onSort).not.toHaveBeenCalled();
+  });
+
+  it('calls the onDefaultFilter method and supplies default filter to filter component when default filter is specified', () => {
     const onDefaultFilter = jest.fn();
     render(
       <DataHeader
@@ -125,6 +137,7 @@ describe('Data column header component', () => {
         filterComponent={filterComponent}
         onDefaultFilter={onDefaultFilter}
         defaultFilter={{ type: 'include', value: 'x' }}
+        filters={{}}
       />
     );
     expect(onDefaultFilter).toHaveBeenCalledWith('test', {
@@ -135,6 +148,21 @@ describe('Data column header component', () => {
       type: 'include',
       value: 'x',
     });
+  });
+
+  it('does not call the onDefaultFilter method and not supply default filter to filter component when default filter is specified but filters is not empty', () => {
+    const onDefaultFilter = jest.fn();
+    render(
+      <DataHeader
+        {...dataHeaderProps}
+        filterComponent={filterComponent}
+        onDefaultFilter={onDefaultFilter}
+        defaultFilter={{ type: 'include', value: 'x' }}
+        filters={{ test: { type: 'exclude', value: 'y' } }}
+      />
+    );
+    expect(onDefaultFilter).not.toHaveBeenCalled();
+    expect(filterComponent).toHaveBeenCalledWith('Test', 'test', undefined);
   });
 
   describe('changes icons in the label', () => {
