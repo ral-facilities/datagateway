@@ -148,7 +148,8 @@ interface VirtualizedTableProps {
   onSort: (
     column: string,
     order: Order | null,
-    updateMethod: UpdateMethod
+    updateMethod: UpdateMethod,
+    shiftDown?: boolean
   ) => void;
   onDefaultFilter?: (filterKey: string, filterValue: Filter | null) => void;
   filters?: FiltersType;

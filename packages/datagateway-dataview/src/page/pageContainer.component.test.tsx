@@ -8,12 +8,7 @@ import {
   DownloadCartItem,
   readSciGatewayToken,
 } from 'datagateway-common';
-import {
-  createLocation,
-  createMemoryHistory,
-  createPath,
-  History,
-} from 'history';
+import { createMemoryHistory, createPath, History } from 'history';
 import { Router } from 'react-router-dom';
 
 import PageContainer, { paths } from './pageContainer.component';
@@ -80,10 +75,6 @@ describe('PageContainer - Tests', () => {
     const state: StateType = {
       dgcommon: dGCommonInitialState,
       dgdataview: dgDataViewInitialState,
-      router: {
-        action: 'POP',
-        location: { ...createLocation('/'), query: {} },
-      },
     };
     const mockStore = configureStore([thunk]);
     const testStore = mockStore(state);

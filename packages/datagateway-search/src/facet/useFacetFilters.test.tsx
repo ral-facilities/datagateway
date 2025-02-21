@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { act, renderHook } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import useFacetFilters from './useFacetFilters';
 import { createMemoryHistory, MemoryHistory } from 'history';
 import { Router } from 'react-router-dom';
@@ -39,7 +39,7 @@ describe('useFacetFilters', () => {
   });
 
   it('adds filter without applying the changes', async () => {
-    const { result, waitFor } = renderHook(() => useFacetFilters(), {
+    const { result } = renderHook(() => useFacetFilters(), {
       wrapper: Wrapper,
     });
 
@@ -91,7 +91,7 @@ describe('useFacetFilters', () => {
   });
 
   it('adds filters and apply the changes immediately when applyImmediately set to true', async () => {
-    const { result, waitFor } = renderHook(() => useFacetFilters(), {
+    const { result } = renderHook(() => useFacetFilters(), {
       wrapper: Wrapper,
     });
 
@@ -153,7 +153,7 @@ describe('useFacetFilters', () => {
     const searchParamStr = `?${searchParams.toString()}`;
     history.replace({ search: searchParamStr });
 
-    const { result, waitFor } = renderHook(() => useFacetFilters(), {
+    const { result } = renderHook(() => useFacetFilters(), {
       wrapper: Wrapper,
     });
 
@@ -225,7 +225,7 @@ describe('useFacetFilters', () => {
     const searchParamStr = `?${searchParams.toString()}`;
     history.replace({ search: searchParamStr });
 
-    const { result, waitFor } = renderHook(() => useFacetFilters(), {
+    const { result } = renderHook(() => useFacetFilters(), {
       wrapper: Wrapper,
     });
 
@@ -287,7 +287,7 @@ describe('useFacetFilters', () => {
     );
     history.replace({ search: `?${searchParams.toString()}` });
 
-    const { result, waitFor } = renderHook(() => useFacetFilters(), {
+    const { result } = renderHook(() => useFacetFilters(), {
       wrapper: Wrapper,
     });
 

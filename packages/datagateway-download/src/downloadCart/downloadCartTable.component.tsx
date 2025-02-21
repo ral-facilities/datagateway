@@ -287,19 +287,20 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     ],
     [apiUrl, facilityName, t, textFilter]
   );
-  const onSort = React.useCallback(
-    (column: string, order: 'desc' | 'asc' | null, _, shiftDown?: boolean) => {
-      if (order) {
-        shiftDown
-          ? setSort({ ...sort, [column]: order })
-          : setSort({ [column]: order });
-      } else {
-        const { [column]: order, ...restOfSort } = sort;
-        setSort(restOfSort);
-      }
-    },
-    [sort]
-  );
+  const onSort: React.ComponentProps<typeof Table>['onSort'] =
+    React.useCallback(
+      (column, order, _, shiftDown) => {
+        if (order) {
+          shiftDown
+            ? setSort({ ...sort, [column]: order })
+            : setSort({ [column]: order });
+        } else {
+          const { [column]: order, ...restOfSort } = sort;
+          setSort(restOfSort);
+        }
+      },
+      [sort]
+    );
   const actions = React.useMemo(
     () => [
       function RemoveButton({ rowData }: TableActionProps) {

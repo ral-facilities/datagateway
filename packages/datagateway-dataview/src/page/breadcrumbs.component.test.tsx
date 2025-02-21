@@ -109,12 +109,6 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
           ],
         },
         dgcommon: dGCommonInitialState,
-
-        // Initialise our router object to hold location information.
-        router: {
-          action: 'POP',
-          location: createLocation('/'),
-        },
       })
     );
 

@@ -205,16 +205,6 @@ describe('SearchPageContainer - Tests', () => {
         },
       },
       dgsearch: dGSearchInitialState,
-      router: {
-        action: 'POP',
-        location: {
-          hash: '',
-          key: '',
-          pathname: '/',
-          search: '',
-          state: {},
-        },
-      },
     };
 
     holder = document.createElement('div');
@@ -858,10 +848,7 @@ describe('SearchPageContainer - Tests', () => {
     function renderComponentWithRealStore(): RenderResult {
       return render(
         <Provider
-          store={createStore(
-            AppReducer(history),
-            compose(applyMiddleware(thunk))
-          )}
+          store={createStore(AppReducer(), compose(applyMiddleware(thunk)))}
         >
           <Router history={history}>
             <QueryClientProvider client={queryClient}>

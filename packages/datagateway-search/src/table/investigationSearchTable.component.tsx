@@ -156,10 +156,9 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
 
   const handleSort = useSort();
 
-  const loadMoreRows = React.useCallback(
-    (_) => fetchNextPage(),
-    [fetchNextPage]
-  );
+  const loadMoreRows: NonNullable<
+    React.ComponentProps<typeof Table>['loadMoreRows']
+  > = React.useCallback((_) => fetchNextPage(), [fetchNextPage]);
 
   const removeFilterChip = (
     dimension: string,

@@ -4,7 +4,7 @@ import {
   SearchResultCountDispatch,
   useSearchResultCounter,
 } from './useSearchResultCounter';
-import { renderHook } from '@testing-library/react';
+import { renderHook, waitFor } from '@testing-library/react';
 import { mockSearchResponses } from '../testData';
 
 describe('useSearchResultCounter', () => {
@@ -28,7 +28,7 @@ describe('useSearchResultCounter', () => {
   });
 
   it('dispatches search result count for the given search responses', () => {
-    const { waitFor } = renderHook(
+    renderHook(
       () =>
         useSearchResultCounter({
           dataSearchType: 'Investigation',
@@ -70,11 +70,8 @@ describe('useSearchResultCounter', () => {
   });
 
   it('resets search result count when isFetching is set to true', async () => {
-    const { waitFor, rerender } = renderHook<
-      Partial<Parameters<typeof useSearchResultCounter>[0]>,
-      void
-    >(
-      (props) =>
+    const { rerender } = renderHook(
+      (props: Partial<Parameters<typeof useSearchResultCounter>[0]>) =>
         useSearchResultCounter({
           dataSearchType: 'Investigation',
           searchResponses: mockSearchResponses,
@@ -83,8 +80,6 @@ describe('useSearchResultCounter', () => {
           ...props,
         }),
       {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         wrapper: Wrapper,
       }
     );
@@ -113,7 +108,7 @@ describe('useSearchResultCounter', () => {
   });
 
   it('dispatches hasMore if set to true', () => {
-    const { waitFor } = renderHook(
+    renderHook(
       () =>
         useSearchResultCounter({
           dataSearchType: 'Investigation',
@@ -137,7 +132,7 @@ describe('useSearchResultCounter', () => {
   });
 
   it('dispatches hasMore as false if hasMore not given', () => {
-    const { waitFor } = renderHook(
+    renderHook(
       () =>
         useSearchResultCounter({
           dataSearchType: 'Investigation',
@@ -160,7 +155,7 @@ describe('useSearchResultCounter', () => {
   });
 
   it('dispatches the same search result count after fetching and the same search responses are given', async () => {
-    const { waitFor, rerender } = renderHook(
+    const { rerender } = renderHook(
       (props: Partial<Parameters<typeof useSearchResultCounter>[0]>) =>
         useSearchResultCounter({
           dataSearchType: 'Investigation',
@@ -169,8 +164,6 @@ describe('useSearchResultCounter', () => {
           hasMore: false,
           ...props,
         }),
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       { wrapper: Wrapper }
     );
 
