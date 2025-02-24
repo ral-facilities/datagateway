@@ -22,6 +22,7 @@ const ViewCartButton = (props: CartProps): React.ReactElement => {
         badgeContent={
           props.cartItems.length > 0 ? props.cartItems.length : null
         }
+        max={999}
         color="primary"
       >
         <ShoppingCartIcon />
