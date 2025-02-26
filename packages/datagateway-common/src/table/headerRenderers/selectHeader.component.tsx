@@ -57,6 +57,7 @@ const SelectHeader = React.memo(
           <span style={{ margin: 'auto' }}>
             <Checkbox
               indeterminate={
+                !parentSelected &&
                 selectedRows &&
                 selectedRows.length > 0 &&
                 selectedRows.length < totalRowCount
@@ -69,7 +70,8 @@ const SelectHeader = React.memo(
               indeterminateIcon={<IndeterminateCheckBox fontSize="small" />}
               size="small"
               checked={
-                totalRowCount !== 0 && selectedRows?.length === totalRowCount
+                parentSelected ||
+                (totalRowCount !== 0 && selectedRows?.length === totalRowCount)
               }
               inputProps={{ 'aria-label': 'select all rows' }}
               onClick={() => {
