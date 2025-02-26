@@ -880,7 +880,7 @@ describe('Investigation Search Table component', () => {
     );
   });
 
-  it("renders DLS link correctly and doesn't allow for cart selection", async () => {
+  it("renders DLS link correctly and doesn't allow for cart selection or DOI column", async () => {
     renderComponent(FACILITY_NAME.dls);
 
     expect(await screen.findByText('Test title 1')).toHaveAttribute(
@@ -888,6 +888,7 @@ describe('Investigation Search Table component', () => {
       '/browse/proposal/Test name 1/investigation/1/dataset'
     );
     expect(screen.queryByRole('checkbox', { name: 'select row 0' })).toBeNull();
+    expect(screen.queryByRole('columnheader', { name: 'DOI' })).toBeNull();
   });
 
   it('renders ISIS link & file sizes correctly', async () => {

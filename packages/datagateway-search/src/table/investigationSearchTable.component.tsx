@@ -220,19 +220,23 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
         dataKey: 'name',
         disableSort: true,
       },
-      {
-        label: t('investigations.doi'),
-        dataKey: 'doi',
-        cellContentRenderer: (cellProps: TableCellProps) => {
-          const investigation = cellProps.rowData as SearchResultSource;
-          return externalSiteLink(
-            `https://doi.org/${investigation.doi}`,
-            investigation.doi,
-            'investigation-search-table-doi-link'
-          );
-        },
-        disableSort: true,
-      },
+      ...(hierarchy !== FACILITY_NAME.dls
+        ? [
+            {
+              label: t('investigations.doi'),
+              dataKey: 'doi',
+              cellContentRenderer: (cellProps: TableCellProps) => {
+                const investigation = cellProps.rowData as SearchResultSource;
+                return externalSiteLink(
+                  `https://doi.org/${investigation.doi}`,
+                  investigation.doi,
+                  'investigation-search-table-doi-link'
+                );
+              },
+              disableSort: true,
+            },
+          ]
+        : []),
       {
         label: t('investigations.size'),
         dataKey: 'size',
