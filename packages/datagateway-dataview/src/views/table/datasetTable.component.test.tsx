@@ -314,9 +314,9 @@ describe('Dataset table component', () => {
   it('selected rows only considers relevant cart items', async () => {
     cartItems = [
       {
-        entityId: 1,
+        entityId: 5,
         entityType: 'investigation',
-        id: 1,
+        id: 5,
         name: 'test',
         parentEntities: [],
       },
