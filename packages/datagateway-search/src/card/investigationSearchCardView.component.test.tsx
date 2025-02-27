@@ -170,7 +170,7 @@ describe('Investigation - Card View', () => {
     );
   });
 
-  it("renders DLS link correctly and doesn't allow for cart selection or download", async () => {
+  it("renders DLS link correctly and doesn't allow for cart selection or download or DOI link", async () => {
     renderComponent({
       hierarchy: FACILITY_NAME.dls,
     });
@@ -188,6 +188,7 @@ describe('Investigation - Card View', () => {
     expect(
       within(card).queryByRole('button', { name: 'buttons.download' })
     ).toBeNull();
+    expect(within(card).queryByRole('link', { name: 'doi 1' })).toBeNull();
   });
 
   it('renders ISIS link & file sizes correctly', async () => {
