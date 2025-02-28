@@ -1138,7 +1138,9 @@ describe('Download API react-query hooks test', () => {
       );
 
       await waitFor(() =>
-        result.current.every((query) => query.isSuccess || query.isError)
+        expect(
+          result.current.every((query) => query.isSuccess || query.isError)
+        ).toBe(true)
       );
 
       expect((dispatchEventSpy.mock.calls[0][0] as CustomEvent).detail).toEqual(
@@ -1171,27 +1173,27 @@ describe('Download API react-query hooks test', () => {
         { wrapper }
       );
 
-      await waitFor(() => result.current.every((query) => query.isSuccess));
+      await waitFor(() =>
+        expect(result.current.every((query) => query.isSuccess)).toBe(true)
+      );
 
       expect(result.current[0].isStale).toBe(true);
       expect(axios.get).toHaveBeenCalledTimes(1);
 
-      await act(async () => {
-        const { result: newResult } = renderHook(
-          () =>
-            useDownloadTypeStatuses({
-              downloadTypes: ['https'],
-            }),
-          { wrapper }
-        );
+      const { result: newResult } = renderHook(
+        () =>
+          useDownloadTypeStatuses({
+            downloadTypes: ['https'],
+          }),
+        { wrapper }
+      );
 
-        await waitFor(() =>
-          newResult.current.every((query) => query.isSuccess)
-        );
+      await waitFor(() =>
+        expect(newResult.current.every((query) => query.isSuccess)).toBe(true)
+      );
 
-        expect(newResult.current[0].isStale).toBe(true);
-        expect(axios.get).toHaveBeenCalledTimes(2);
-      });
+      expect(newResult.current[0].isStale).toBe(true);
+      expect(axios.get).toHaveBeenCalledTimes(2);
     });
   });
 

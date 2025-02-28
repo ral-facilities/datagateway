@@ -174,7 +174,10 @@ describe('Download cart table component', () => {
   it('should load cart confirmation dialog when Download Cart button is clicked', async () => {
     renderComponent();
 
-    await user.click(await screen.findByText('downloadCart.download'));
+    const downloadButton = await screen.findByText('downloadCart.download');
+    await waitFor(() => expect(downloadButton).toBeEnabled());
+
+    await user.click(downloadButton);
 
     expect(
       await screen.findByLabelText('downloadConfirmDialog.dialog_arialabel')
@@ -516,9 +519,12 @@ describe('Download cart table component', () => {
   it('should go to DOI generation form when Generate DOI button is clicked', async () => {
     const { history } = renderComponent();
 
-    await user.click(
-      screen.getByRole('link', { name: 'downloadCart.generate_DOI' })
-    );
+    const mintButton = await screen.findByRole('link', {
+      name: 'downloadCart.generate_DOI',
+    });
+    await waitFor(() => expect(mintButton).toBeEnabled());
+
+    await user.click(mintButton);
 
     expect(history.location).toMatchObject({
       pathname: '/download/mint',

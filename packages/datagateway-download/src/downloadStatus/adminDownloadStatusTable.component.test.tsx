@@ -14,6 +14,7 @@ import {
 } from '../setupTests';
 import userEvent from '@testing-library/user-event';
 import {
+  act,
   render,
   RenderResult,
   screen,
@@ -81,7 +82,7 @@ describe('Admin Download Status Table', () => {
     jest.clearAllMocks();
   });
 
-  it('should render correctly', async () => {
+  it.only('should render correctly', async () => {
     const mockedDate = new Date(Date.UTC(2020, 1, 1, 0, 0, 0)).toUTCString();
     global.Date.prototype.toLocaleString = jest.fn(() => mockedDate);
 
@@ -235,7 +236,10 @@ describe('Admin Download Status Table', () => {
       user = userEvent.setup({ delay: null, skipHover: true });
 
       renderComponent();
-      await flushPromises();
+
+      await act(async () => {
+        await flushPromises();
+      });
 
       // Table is sorted by createdAt desc by default
       // To keep working test, we will remove all sorts on the table beforehand
@@ -258,7 +262,10 @@ describe('Admin Download Status Table', () => {
       await user.click(
         within(await screen.findByRole('listbox')).getByText('Exact')
       );
-      await flushPromises();
+
+      await act(async () => {
+        await flushPromises();
+      });
 
       expect(fetchAdminDownloads).toHaveBeenCalledWith(
         {
@@ -269,7 +276,10 @@ describe('Admin Download Status Table', () => {
       );
 
       await user.clear(usernameFilterInput);
-      await flushPromises();
+
+      await act(async () => {
+        await flushPromises();
+      });
 
       expect(fetchAdminDownloads).toHaveBeenCalledWith(
         {
@@ -285,7 +295,10 @@ describe('Admin Download Status Table', () => {
       user = userEvent.setup({ delay: null, skipHover: true });
 
       renderComponent();
-      await flushPromises();
+
+      await act(async () => {
+        await flushPromises();
+      });
 
       // Table is sorted by createdAt desc by default
       // To keep working test, we will remove all sorts on the table beforehand
@@ -297,7 +310,10 @@ describe('Admin Download Status Table', () => {
       );
 
       await user.type(availabilityFilterInput, 'downloadStatus.complete');
-      await flushPromises();
+
+      await act(async () => {
+        await flushPromises();
+      });
 
       // test include filter
       expect(fetchAdminDownloads).toHaveBeenCalledWith(
@@ -319,7 +335,10 @@ describe('Admin Download Status Table', () => {
       await user.click(
         within(await screen.findByRole('listbox')).getByText('Exclude')
       );
-      await flushPromises();
+
+      await act(async () => {
+        await flushPromises();
+      });
 
       expect(fetchAdminDownloads).toHaveBeenCalledWith(
         {
@@ -330,7 +349,10 @@ describe('Admin Download Status Table', () => {
       );
 
       await user.clear(availabilityFilterInput);
-      await flushPromises();
+
+      await act(async () => {
+        await flushPromises();
+      });
 
       expect(fetchAdminDownloads).toHaveBeenCalledWith(
         {
@@ -348,19 +370,28 @@ describe('Admin Download Status Table', () => {
     user = userEvent.setup({ delay: null, skipHover: true });
 
     renderComponent();
-    await flushPromises();
+
+    await act(async () => {
+      await flushPromises();
+    });
 
     // Table is sorted by createdAt desc by default
     // To keep working test, we will remove all sorts on the table beforehand
     await user.click(await screen.findByText('downloadStatus.createdAt'));
-    await flushPromises();
+
+    await act(async () => {
+      await flushPromises();
+    });
 
     // Get the Requested Data From filter input
     const dateFromFilterInput = screen.getByRole('textbox', {
       name: 'downloadStatus.createdAt filter from',
     });
     await user.type(dateFromFilterInput, '2020-01-01_00:00:00');
-    await flushPromises();
+
+    await act(async () => {
+      await flushPromises();
+    });
 
     expect(fetchAdminDownloads).toHaveBeenCalledWith(
       {
@@ -378,7 +409,10 @@ describe('Admin Download Status Table', () => {
     // in v6 of date-picker spaces are considered to be a '0'
     // 20200102235900 is equivalent to 2020-01-02 03:59:00
     await user.type(dateToFilterInput, '2020-01-02_23:59:00');
-    await flushPromises();
+
+    await act(async () => {
+      await flushPromises();
+    });
 
     expect(fetchAdminDownloads).toHaveBeenCalledWith(
       {
@@ -392,7 +426,10 @@ describe('Admin Download Status Table', () => {
 
     await user.clear(dateFromFilterInput);
     await user.clear(dateToFilterInput);
-    await flushPromises();
+
+    await act(async () => {
+      await flushPromises();
+    });
 
     expect(fetchAdminDownloads).toHaveBeenCalledWith(
       {
@@ -464,7 +501,9 @@ describe('Admin Download Status Table', () => {
   it('should send restore item and item status requests when restore button is clicked', async () => {
     renderComponent();
 
-    await flushPromises();
+    await act(async () => {
+      await flushPromises();
+    });
 
     // without waitFor,
     // toBeInTheDocument will complain it can't find the element
@@ -507,7 +546,9 @@ describe('Admin Download Status Table', () => {
       })
     );
 
-    await flushPromises();
+    await act(async () => {
+      await flushPromises();
+    });
 
     expect(
       await screen.findByRole('button', {
@@ -519,7 +560,9 @@ describe('Admin Download Status Table', () => {
   it('should send pause restore request when pause button is clicked', async () => {
     renderComponent();
 
-    await flushPromises();
+    await act(async () => {
+      await flushPromises();
+    });
 
     expect(
       await screen.findByRole('button', {
@@ -556,7 +599,9 @@ describe('Admin Download Status Table', () => {
       })
     );
 
-    await flushPromises();
+    await act(async () => {
+      await flushPromises();
+    });
 
     expect(
       await screen.findByRole('button', {
@@ -568,7 +613,9 @@ describe('Admin Download Status Table', () => {
   it('should send resume restore request when resume button is clicked', async () => {
     renderComponent();
 
-    await flushPromises();
+    await act(async () => {
+      await flushPromises();
+    });
 
     expect(
       screen.getByRole('button', {
@@ -605,7 +652,9 @@ describe('Admin Download Status Table', () => {
       })
     );
 
-    await flushPromises();
+    await act(async () => {
+      await flushPromises();
+    });
 
     expect(
       await screen.findByRole('button', {
@@ -617,7 +666,9 @@ describe('Admin Download Status Table', () => {
   it('should send delete item request when delete button is clicked', async () => {
     renderComponent();
 
-    await flushPromises();
+    await act(async () => {
+      await flushPromises();
+    });
 
     await waitFor(async () => {
       expect(

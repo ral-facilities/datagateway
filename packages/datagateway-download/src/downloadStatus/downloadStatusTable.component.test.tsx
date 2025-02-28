@@ -66,8 +66,13 @@ describe('Download Status Table', () => {
     jest.clearAllMocks();
   });
 
-  it('should render correctly', () => {
+  it('should render correctly', async () => {
     const { asFragment } = renderComponent();
+
+    await waitFor(() =>
+      expect(screen.queryByRole('progressbar')).not.toBeInTheDocument()
+    );
+
     expect(asFragment()).toMatchSnapshot();
   });
 

@@ -1,5 +1,5 @@
 import type { RenderResult } from '@testing-library/react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as React from 'react';
 import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
@@ -12,6 +12,7 @@ import {
 } from '../downloadApi';
 import { mockedSettings } from '../testData';
 import DownloadConfirmDialog from './downloadConfirmDialog.component';
+import { flushPromises } from '../setupTests';
 
 jest.mock('../downloadApi');
 jest.mock('datagateway-common', () => {
@@ -85,6 +86,10 @@ describe('DownloadConfirmDialog', () => {
     // Pass in a size of 100 bytes and for the dialog to be open when mounted.
     const wrapper = renderWrapper(100, false, true);
 
+    await act(async () => {
+      await flushPromises();
+    });
+
     expect(
       await wrapper.findByLabelText('downloadConfirmDialog.dialog_arialabel')
     ).toMatchSnapshot();
@@ -93,6 +98,10 @@ describe('DownloadConfirmDialog', () => {
   it('should not load the download speed/time table when isTwoLevel is true', async () => {
     // Set isTwoLevel to true as a prop.
     const wrapper = renderWrapper(100, true, true);
+
+    await act(async () => {
+      await flushPromises();
+    });
 
     expect(
       await wrapper.findByLabelText('downloadConfirmDialog.dialog_arialabel')
