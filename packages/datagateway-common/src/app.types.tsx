@@ -380,7 +380,7 @@ export interface DateFilter {
 
 export interface TextFilter {
   value?: string | number;
-  type: string;
+  type: 'include' | 'exclude' | 'exact';
 }
 
 export interface RangeFilter {

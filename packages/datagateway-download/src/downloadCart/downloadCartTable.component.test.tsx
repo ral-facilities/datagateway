@@ -332,6 +332,19 @@ describe('Download cart table component', () => {
   });
 
   it('should filter data when text fields are typed into', async () => {
+    (
+      fetchDownloadCart as jest.MockedFunction<typeof fetchDownloadCart>
+    ).mockResolvedValue([
+      ...mockCartItems,
+      {
+        entityId: 11,
+        entityType: 'investigation',
+        id: 11,
+        name: 'INVESTIGATION 11',
+        parentEntities: [],
+      },
+    ]);
+
     renderComponent();
 
     // TEST NAME FILTER INPUT
@@ -341,11 +354,49 @@ describe('Download cart table component', () => {
     const nameFilterInput = await screen.findByLabelText(
       'Filter by downloadCart.name'
     );
-    await user.type(nameFilterInput, '1');
+    await user.type(nameFilterInput, 'INVESTIGATION 1');
 
     await waitFor(async () => {
       expect(screen.queryByText('INVESTIGATION 2')).toBeNull();
     });
+    expect(screen.getByText('INVESTIGATION 11')).toBeInTheDocument();
+    expect(screen.getByText('INVESTIGATION 1')).toBeInTheDocument();
+
+    // test exclude filter
+
+    await user.click(
+      within(
+        screen.getByRole('columnheader', { name: /downloadCart.name/ })
+      ).getByLabelText('include, exclude or exact')
+    );
+
+    await user.click(
+      within(await screen.findByRole('listbox')).getByText('Exclude')
+    );
+
+    await waitFor(async () => {
+      expect(screen.queryByText('INVESTIGATION 1')).toBeNull();
+    });
+    expect(screen.queryByText('INVESTIGATION 11')).toBeNull();
+    expect(screen.getByText('INVESTIGATION 2')).toBeInTheDocument();
+
+    // test exact filter
+
+    await user.click(
+      within(
+        screen.getByRole('columnheader', { name: /downloadCart.name/ })
+      ).getByLabelText('include, exclude or exact')
+    );
+
+    await user.click(
+      within(await screen.findByRole('listbox')).getByText('Exact')
+    );
+
+    await waitFor(async () => {
+      expect(screen.queryByText('INVESTIGATION 11')).toBeNull();
+    });
+    expect(screen.queryByText('INVESTIGATION 2')).toBeNull();
+    expect(screen.getByText('INVESTIGATION 1')).toBeInTheDocument();
 
     await user.clear(nameFilterInput);
 

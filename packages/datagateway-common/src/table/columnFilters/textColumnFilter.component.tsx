@@ -14,8 +14,8 @@ import { usePushFilter, usePushFilters } from '../../api';
 
 const TextColumnFilter = (props: {
   label: string;
-  onChange: (value: { value?: string | number; type: string } | null) => void;
-  value: { value?: string | number; type: string } | undefined;
+  onChange: (value: TextFilter | null) => void;
+  value: TextFilter | undefined;
   defaultFilter?: TextFilter;
 }): React.ReactElement => {
   const { onChange, label, defaultFilter } = props;
@@ -36,7 +36,7 @@ const TextColumnFilter = (props: {
     [onChange, type]
   );
 
-  const updateType = (type: string): void => {
+  const updateType = (type: TextFilter['type']): void => {
     onChange({ value: inputValue, type: type });
   };
 
@@ -47,7 +47,7 @@ const TextColumnFilter = (props: {
     setInputValue(event.target.value);
   };
 
-  const handleSelectChange = (type: string): void => {
+  const handleSelectChange = (type: TextFilter['type']): void => {
     // Only trigger onChange if input is not empty
     if (inputValue !== '') {
       updateType(type);
@@ -95,7 +95,9 @@ const TextColumnFilter = (props: {
                 IconComponent={SettingsIcon}
                 // Do not render a value
                 renderValue={() => ''}
-                onChange={(e) => handleSelectChange(e.target.value as string)}
+                onChange={(e) =>
+                  handleSelectChange(e.target.value as TextFilter['type'])
+                }
                 SelectDisplayProps={{
                   'aria-label': `include, exclude or exact`,
                 }}
@@ -152,7 +154,7 @@ export const useTextFilter = (
       <TextColumnFilter
         label={label}
         value={filters[dataKey] as TextFilter}
-        onChange={(value: { value?: string | number; type: string } | null) =>
+        onChange={(value: TextFilter | null) =>
           pushFilter(dataKey, value ? value : null)
         }
         defaultFilter={defaultFilter as TextFilter}
@@ -172,7 +174,7 @@ export const usePrincipalExperimenterFilter = (
       <TextColumnFilter
         label={label}
         value={filters[dataKey] as TextFilter}
-        onChange={(value: { value?: string | number; type: string } | null) => {
+        onChange={(value: TextFilter | null) => {
           pushFilters([
             { filterKey: dataKey, filter: value ? value : null },
             {
