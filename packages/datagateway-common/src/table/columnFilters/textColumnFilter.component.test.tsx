@@ -6,14 +6,13 @@ import TextColumnFilter, {
 } from './textColumnFilter.component';
 import { usePushFilter, usePushFilters } from '../../api';
 import { render, renderHook, screen, act } from '@testing-library/react';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 
 jest.mock('../../api');
 jest.useFakeTimers();
 
 describe('Text filter component', () => {
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   beforeEach(() => {
     user = userEvent.setup({ delay: null });

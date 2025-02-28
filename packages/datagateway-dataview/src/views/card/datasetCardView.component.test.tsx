@@ -24,7 +24,6 @@ import {
   screen,
   within,
 } from '@testing-library/react';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 
 jest.mock('datagateway-common', () => {
@@ -43,7 +42,7 @@ describe('Dataset - Card View', () => {
   let state: StateType;
   let cardData: Dataset[];
   let history: History;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult =>
     render(

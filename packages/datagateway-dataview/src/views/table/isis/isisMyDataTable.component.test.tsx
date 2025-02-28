@@ -37,7 +37,6 @@ import {
 import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import ISISMyDataTable from './isisMyDataTable.component';
-import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 
 jest.mock('datagateway-common', () => {
@@ -64,7 +63,7 @@ describe('ISIS MyData table component', () => {
   let state: StateType;
   let rowData: Investigation[];
   let history: History;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (
     element: React.ReactElement = <ISISMyDataTable />
@@ -338,8 +337,11 @@ describe('ISIS MyData table component', () => {
     cleanupDatePickerWorkaround();
   });
 
-  it('uses default sort', () => {
+  it('uses default sort', async () => {
     renderComponent();
+
+    expect(await screen.findAllByRole('gridcell')).toBeTruthy();
+
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"startDate":"desc"}')}`

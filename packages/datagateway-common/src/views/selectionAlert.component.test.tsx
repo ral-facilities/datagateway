@@ -4,7 +4,6 @@ import { NotificationType } from '../state/actions/actions.types';
 import SelectionAlert from './selectionAlert.component';
 import { render, RenderResult, screen, waitFor } from '@testing-library/react';
 import { AnyAction } from 'redux';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 
 describe('SelectionAlert', () => {
@@ -35,7 +34,7 @@ describe('SelectionAlert', () => {
   let storageGetItemMock: jest.Mock;
   let storageSetItemMock: jest.Mock;
   let storageRemoveItemMock: jest.Mock;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (
     selectedItems: DownloadCartItem[],

@@ -20,7 +20,6 @@ import {
   screen,
   waitFor,
 } from '@testing-library/react';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 
 jest.mock('../api/datafiles');
@@ -30,7 +29,7 @@ jest.mock('../api/investigations');
 describe('Generic download button', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   function renderComponent(props: DownloadButtonProps): RenderResult {
     const store = mockStore(state);

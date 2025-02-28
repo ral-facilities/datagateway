@@ -10,14 +10,13 @@ import ClearFiltersButton, {
   ClearFilterProps,
 } from './clearFiltersButton.component';
 import { render, screen, type RenderResult } from '@testing-library/react';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 
 describe('Generic clear filters button', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let props: ClearFilterProps;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   const handleButtonClearFilters = jest.fn();
 

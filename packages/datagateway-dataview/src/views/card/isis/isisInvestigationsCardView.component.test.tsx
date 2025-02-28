@@ -20,10 +20,10 @@ import {
   screen,
   within,
 } from '@testing-library/react';
-import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 import axios, { type AxiosResponse } from 'axios';
 import { paths } from '../../../page/pageContainer.component';
+import { act } from 'react-dom/test-utils';
 
 describe('ISIS Investigations - Card View', () => {
   const mockStore = configureStore([thunk]);
@@ -31,7 +31,7 @@ describe('ISIS Investigations - Card View', () => {
   let cardData: Investigation[];
   let history: History;
   let replaceSpy: jest.SpyInstance;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult =>
     render(
@@ -234,7 +234,10 @@ describe('ISIS Investigations - Card View', () => {
       });
 
     renderComponent();
-    await flushPromises();
+
+    await act(async () => {
+      await flushPromises();
+    });
 
     expect(screen.queryAllByTestId('card')).toHaveLength(0);
   });
@@ -310,8 +313,11 @@ describe('ISIS Investigations - Card View', () => {
     expect(await screen.findByText('Test PI')).toBeInTheDocument();
   });
 
-  it('uses default sort', () => {
+  it('uses default sort', async () => {
     renderComponent();
+
+    expect(await screen.findByTestId('card')).toBeInTheDocument();
+
     expect(history.length).toBe(1);
     expect(replaceSpy).toHaveBeenCalledWith({
       search: `?sort=${encodeURIComponent('{"startDate":"desc"}')}`,

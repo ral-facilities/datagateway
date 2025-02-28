@@ -15,7 +15,6 @@ import ISISInstrumentsCardView from './isisInstrumentsCardView.component';
 import { createMemoryHistory, type History } from 'history';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { render, type RenderResult, screen } from '@testing-library/react';
-import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 
 jest.mock('datagateway-common', () => {
@@ -34,7 +33,7 @@ describe('ISIS Instruments - Card View', () => {
   let state: StateType;
   let cardData: Instrument[];
   let history: History;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult =>
     render(
@@ -131,8 +130,11 @@ describe('ISIS Instruments - Card View', () => {
     expect(history.location.search).toBe('?');
   });
 
-  it('uses default sort', () => {
+  it('uses default sort', async () => {
     renderComponent();
+
+    expect(await screen.findByTestId('card')).toBeInTheDocument();
+
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"fullName":"asc"}')}`

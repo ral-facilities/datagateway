@@ -25,13 +25,13 @@ import {
 } from 'react-query';
 import { Provider } from 'react-redux';
 import {
+  act,
   render,
   type RenderResult,
   screen,
   waitFor,
   within,
 } from '@testing-library/react';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 
 jest.mock('loglevel');
@@ -64,7 +64,7 @@ jest.mock('react-query', () => ({
 describe('PageContainer - Tests', () => {
   let queryClient: QueryClient;
   let history: History;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
   let cartItems: DownloadCartItem[];
   let holder: HTMLElement;
 
@@ -191,7 +191,9 @@ describe('PageContainer - Tests', () => {
 
     expect(history.location.pathname).toBe('/search/data');
 
-    history.push('/browse/instrument');
+    act(() => {
+      history.push('/browse/instrument');
+    });
 
     await user.click(
       await screen.findByRole('button', { name: 'view-search' })
@@ -199,7 +201,9 @@ describe('PageContainer - Tests', () => {
 
     expect(history.location.pathname).toBe('/search/isis');
 
-    history.push('/browse/proposal');
+    act(() => {
+      history.push('/browse/proposal');
+    });
 
     await user.click(
       await screen.findByRole('button', { name: 'view-search' })
@@ -357,11 +361,15 @@ describe('PageContainer - Tests', () => {
     expect(screen.queryByTestId('styled-routing')).toBeNull();
   });
 
-  it('set view to card if cardview stored in localstorage', () => {
+  it('set view to card if cardview stored in localstorage', async () => {
     localStorage.setItem('dataView', 'card');
     history.replace(paths.toggle.investigation);
 
     renderComponent();
+
+    expect(
+      await screen.findByRole('button', { name: 'page view app.view_table' })
+    ).toBeInTheDocument();
 
     expect(history.location.search).toBe('?view=card');
 

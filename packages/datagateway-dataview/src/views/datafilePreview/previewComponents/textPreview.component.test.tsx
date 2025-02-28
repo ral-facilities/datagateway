@@ -1,5 +1,5 @@
 import type { RenderResult } from '@testing-library/react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import { DGThemeProvider } from 'datagateway-common';
 import * as React from 'react';
 import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
@@ -113,8 +113,10 @@ describe('TextPreview', () => {
       );
 
       // increase the zoom level
-      store.dispatch({
-        type: IncrementDatafilePreviewerZoomLevelType,
+      act(() => {
+        store.dispatch({
+          type: IncrementDatafilePreviewerZoomLevelType,
+        });
       });
 
       expect(
@@ -133,8 +135,10 @@ describe('TextPreview', () => {
       );
 
       // increase the zoom level
-      store.dispatch({
-        type: DecrementDatafilePreviewerZoomLevelType,
+      act(() => {
+        store.dispatch({
+          type: DecrementDatafilePreviewerZoomLevelType,
+        });
       });
 
       expect(

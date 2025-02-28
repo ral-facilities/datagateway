@@ -4,11 +4,10 @@ import { formatBytes } from './cellRenderers/cellContentRenderers';
 import { TableCellProps } from 'react-virtualized';
 import TextColumnFilter from './columnFilters/textColumnFilter.component';
 import { render, screen, waitFor, within } from '@testing-library/react';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 
 describe('Table component', () => {
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   const onSort = jest.fn();
 

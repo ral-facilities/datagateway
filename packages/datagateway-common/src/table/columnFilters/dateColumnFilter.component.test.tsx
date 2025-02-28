@@ -11,7 +11,6 @@ import {
   cleanupDatePickerWorkaround,
 } from '../../setupTests';
 import { render, screen, act } from '@testing-library/react';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 
 jest.mock('../../api');
@@ -223,7 +222,7 @@ describe('Date filter component', () => {
   });
 
   describe('DatePicker functionality', () => {
-    let user: UserEvent;
+    let user: ReturnType<typeof userEvent.setup>;
 
     beforeEach(() => {
       user = userEvent.setup();
@@ -449,7 +448,7 @@ describe('Date filter component', () => {
   });
 
   describe('DateTimePicker functionality', () => {
-    let user: UserEvent;
+    let user: ReturnType<typeof userEvent.setup>;
 
     beforeEach(() => {
       user = userEvent.setup();
