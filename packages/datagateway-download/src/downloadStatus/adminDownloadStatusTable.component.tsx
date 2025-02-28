@@ -4,8 +4,10 @@ import {
   Grid,
   IconButton,
   LinearProgress,
+  MenuItem,
   Paper,
   styled,
+  TextField,
   Typography,
 } from '@mui/material';
 
@@ -210,6 +212,39 @@ const AdminDownloadStatusTable: React.FC = () => {
     />
   );
 
+  const downloadFilter = (
+    label: string,
+    dataKey: string
+  ): React.ReactElement => (
+    <TextField
+      fullWidth
+      variant="standard"
+      color="secondary"
+      select
+      id={`${dataKey}-filter`}
+      label={`${label}?`}
+      InputLabelProps={{ 'aria-label': `Filter by ${label}` }}
+      value={(filters[dataKey] as TextFilter | null)?.value ?? ''}
+      onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.value.length > 0) {
+          setFilters({
+            ...filters,
+            [dataKey]: { type: 'exact', value: event.target.value },
+          });
+        } else {
+          const { [dataKey]: value, ...restOfFilters } = filters;
+          setFilters(restOfFilters);
+        }
+      }}
+    >
+      <MenuItem value="">
+        <em>Either</em>
+      </MenuItem>
+      <MenuItem value="true">Yes</MenuItem>
+      <MenuItem value="false">No</MenuItem>
+    </TextField>
+  );
+
   const dateFilter = (label: string, dataKey: string): React.ReactElement => (
     <DateColumnFilter
       label={label}
@@ -357,7 +392,6 @@ const AdminDownloadStatusTable: React.FC = () => {
                       cellContentRenderer: (cellProps) => {
                         return formatBytes(cellProps.cellData);
                       },
-                      disableSort: true,
                     },
                     {
                       label: t('downloadStatus.createdAt'),
@@ -375,7 +409,7 @@ const AdminDownloadStatusTable: React.FC = () => {
                     {
                       label: t('downloadStatus.deleted'),
                       dataKey: 'isDeleted',
-                      filterComponent: textFilter,
+                      filterComponent: downloadFilter,
                       cellContentRenderer: ({ rowData }) =>
                         (rowData as FormattedDownload).formattedIsDeleted,
                     },

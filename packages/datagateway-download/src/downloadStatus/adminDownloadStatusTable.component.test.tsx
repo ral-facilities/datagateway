@@ -405,6 +405,62 @@ describe('Admin Download Status Table', () => {
     cleanupDatePickerWorkaround();
   });
 
+  it('should filter deleted properly', async () => {
+    renderComponent();
+
+    // Table is sorted by createdAt desc by default
+    // To keep working test, we will remove all sorts on the table beforehand
+    await user.click(await screen.findByText('downloadStatus.createdAt'));
+    await flushPromises();
+
+    // Get the is deleted filter
+    const isDeletedFilter = await screen.findByRole('button', {
+      name: /Filter by downloadStatus\.deleted/,
+    });
+
+    await user.click(isDeletedFilter);
+
+    await user.click(await screen.findByRole('option', { name: 'No' }));
+
+    await flushPromises();
+
+    expect(fetchAdminDownloads).toHaveBeenCalledWith(
+      {
+        downloadApiUrl: mockedSettings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
+      },
+      `WHERE download.facilityName = '${mockedSettings.facilityName}' AND download.isDeleted = 'false' ORDER BY download.id ASC LIMIT 0, 50`
+    );
+
+    await user.click(isDeletedFilter);
+
+    await user.click(await screen.findByRole('option', { name: 'Yes' }));
+
+    await flushPromises();
+
+    expect(fetchAdminDownloads).toHaveBeenCalledWith(
+      {
+        downloadApiUrl: mockedSettings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
+      },
+      `WHERE download.facilityName = '${mockedSettings.facilityName}' AND download.isDeleted = 'true' ORDER BY download.id ASC LIMIT 0, 50`
+    );
+
+    await user.click(isDeletedFilter);
+
+    await user.click(await screen.findByRole('option', { name: 'Either' }));
+
+    await flushPromises();
+
+    expect(fetchAdminDownloads).toHaveBeenCalledWith(
+      {
+        downloadApiUrl: mockedSettings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
+      },
+      `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.id ASC LIMIT 0, 50`
+    );
+  });
+
   it('should send restore item and item status requests when restore button is clicked', async () => {
     renderComponent();
 

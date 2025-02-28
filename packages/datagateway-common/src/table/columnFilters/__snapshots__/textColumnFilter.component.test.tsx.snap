@@ -5,17 +5,15 @@ exports[`Text filter component renders correctly 1`] = `
   <div>
     <div
       class="MuiFormControl-root MuiFormControl-marginDense MuiFormControl-fullWidth css-zevgu-MuiFormControl-root"
-      id="test-filter"
     >
       <label
         class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard MuiFormLabel-colorSecondary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard css-1o0voyd-MuiFormLabel-root-MuiInputLabel-root"
         data-shrink="true"
-        id="test-filter"
+        for="test-filter"
       >
         Include
       </label>
       <div
-        aria-hidden="true"
         class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorSecondary MuiInputBase-formControl MuiInputBase-adornedEnd css-89bi5l-MuiInputBase-root-MuiInput-root"
       >
         <input
@@ -78,17 +76,15 @@ exports[`Text filter component renders correctly with default value 1`] = `
   <div>
     <div
       class="MuiFormControl-root MuiFormControl-marginDense MuiFormControl-fullWidth css-zevgu-MuiFormControl-root"
-      id="test-filter"
     >
       <label
         class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard MuiFormLabel-colorSecondary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard css-1o0voyd-MuiFormLabel-root-MuiInputLabel-root"
         data-shrink="true"
-        id="test-filter"
+        for="test-filter"
       >
         Include
       </label>
       <div
-        aria-hidden="true"
         class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorSecondary MuiInputBase-formControl MuiInputBase-adornedEnd css-89bi5l-MuiInputBase-root-MuiInput-root"
       >
         <input
@@ -151,17 +147,15 @@ exports[`Text filter component usePrincipalExperimenterFilter hook returns a fun
   <div>
     <div
       class="MuiFormControl-root MuiFormControl-marginDense MuiFormControl-fullWidth css-zevgu-MuiFormControl-root"
-      id="Principal Investigator-filter"
     >
       <label
         class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-colorSecondary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard css-t7bnno-MuiFormLabel-root-MuiInputLabel-root"
         data-shrink="false"
-        id="Principal Investigator-filter"
+        for="Principal Investigator-filter"
       >
         Include
       </label>
       <div
-        aria-hidden="true"
         class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorSecondary MuiInputBase-formControl MuiInputBase-adornedEnd css-89bi5l-MuiInputBase-root-MuiInput-root"
       >
         <input
@@ -224,17 +218,15 @@ exports[`Text filter component useTextFilter hook returns a function which can g
   <div>
     <div
       class="MuiFormControl-root MuiFormControl-marginDense MuiFormControl-fullWidth css-zevgu-MuiFormControl-root"
-      id="Name-filter"
     >
       <label
         class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-colorSecondary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard css-t7bnno-MuiFormLabel-root-MuiInputLabel-root"
         data-shrink="false"
-        id="Name-filter"
+        for="Name-filter"
       >
         Include
       </label>
       <div
-        aria-hidden="true"
         class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorSecondary MuiInputBase-formControl MuiInputBase-adornedEnd css-89bi5l-MuiInputBase-root-MuiInput-root"
       >
         <input

@@ -3,6 +3,7 @@
 exports[`Data column header component renders correctly with filter but no sort 1`] = `
 <DocumentFragment>
   <div
+    aria-label="Test"
     class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeSmall css-1howxi1-MuiTableCell-root"
   >
     <div
@@ -112,6 +113,7 @@ exports[`Data column header component renders correctly with filter but no sort 
 exports[`Data column header component renders correctly with sort and filter 1`] = `
 <DocumentFragment>
   <div
+    aria-label="Test"
     class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeSmall css-1howxi1-MuiTableCell-root"
   >
     <div
@@ -240,6 +242,7 @@ exports[`Data column header component renders correctly with sort and filter 1`]
 exports[`Data column header component renders correctly with sort but no filter 1`] = `
 <DocumentFragment>
   <div
+    aria-label="Test"
     class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeSmall css-1howxi1-MuiTableCell-root"
   >
     <div
@@ -300,6 +303,7 @@ exports[`Data column header component renders correctly with sort but no filter 
 exports[`Data column header component renders correctly without sort or filter 1`] = `
 <DocumentFragment>
   <div
+    aria-label="Test"
     class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeSmall css-1howxi1-MuiTableCell-root"
   >
     <div

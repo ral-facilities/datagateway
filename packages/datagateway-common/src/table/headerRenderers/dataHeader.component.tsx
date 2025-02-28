@@ -142,6 +142,7 @@ const DataHeader = (
       sx={sx}
       variant="head"
       sortDirection={currSortDirection}
+      aria-label={labelString}
     >
       <div
         style={{

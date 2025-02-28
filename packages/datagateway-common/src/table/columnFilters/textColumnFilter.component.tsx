@@ -72,13 +72,12 @@ const TextColumnFilter = (props: {
   return (
     <div>
       <FormControl
-        id={`${label}-filter`}
         variant="standard"
         color="secondary"
         fullWidth={true}
         margin="dense"
       >
-        <InputLabel id={`${label}-filter`}>
+        <InputLabel htmlFor={`${label}-filter`}>
           {type.charAt(0).toUpperCase() + type.slice(1)}
         </InputLabel>
         <Input
@@ -86,7 +85,6 @@ const TextColumnFilter = (props: {
           value={inputValue}
           onChange={handleInputChange}
           inputProps={{ 'aria-label': `Filter by ${label}` }}
-          aria-hidden={true}
           endAdornment={
             <InputAdornment position="end">
               <Select
