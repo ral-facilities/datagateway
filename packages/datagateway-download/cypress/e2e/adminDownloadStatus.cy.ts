@@ -80,7 +80,7 @@ describe('Admin Download Status', () => {
     cy.get('[aria-sort="descending"]').should('not.exist');
     cy.get('.MuiTableSortLabel-iconDirectionAsc').should('not.exist');
 
-    cy.get('[data-testid="SortIcon"]').should('have.length', 8);
+    cy.get('[data-testid="SortIcon"]').should('have.length', 9);
     cy.get('[data-testid="ArrowUpwardIcon"]').should('not.exist');
 
     cy.get('[aria-rowindex="1"] [aria-colindex="5"]').should(
@@ -93,11 +93,11 @@ describe('Admin Download Status', () => {
     cy.contains('[role="button"]', 'Availability').click({ shiftKey: true });
     cy.get('[aria-sort="ascending"]').should('have.length', 2);
 
-    cy.get('[aria-rowindex="2"] [aria-colindex="6"]').should(
+    cy.get('[aria-rowindex="1"] [aria-colindex="6"]').should(
       'have.text',
       'Available'
     );
-    cy.get('[aria-rowindex="3"] [aria-colindex="6"]').should(
+    cy.get('[aria-rowindex="2"] [aria-colindex="6"]').should(
       'have.text',
       'Expired'
     );
@@ -111,7 +111,7 @@ describe('Admin Download Status', () => {
     // clear default sort
     cy.contains('[role="button"]', 'Requested Date').click();
 
-    cy.get('[data-testid="SortIcon"]').should('have.length', 8);
+    cy.get('[data-testid="SortIcon"]').should('have.length', 9);
 
     // check icon when clicking on a column
     cy.contains('[role="button"]', 'ID').click();
@@ -130,7 +130,7 @@ describe('Admin Download Status', () => {
 
     // check icons when shift is held
     cy.get('.App').trigger('keydown', { key: 'Shift' });
-    cy.get('[data-testid="AddIcon"]').should('have.length', 6);
+    cy.get('[data-testid="AddIcon"]').should('have.length', 7);
   });
 
   it('should be able to filter with both text & date filters on multiple columns', () => {
@@ -158,18 +158,98 @@ describe('Admin Download Status', () => {
       .invoke('attr', 'aria-rowcount')
       .as('dateFilterRowCount', { type: 'static' });
 
-    cy.get('[aria-label="Filter by Availability"]')
-      .first()
-      .type('Available', { force: true });
+    cy.get('[aria-label="Filter by Access Method"]').first().as('methodFilter');
+    // test include
+    cy.get('@methodFilter').type('http');
+    cy.get('@dateFilterRowCount').then((dateFilterRowCount) => {
+      cy.get(`[aria-rowcount="${dateFilterRowCount}"]`).should('not.exist');
+    });
+    cy.findByRole('gridcell', { name: 'http' }).should('exist');
+    cy.findByRole('gridcell', { name: 'https' }).should('exist');
+    cy.findByRole('gridcell', { name: 'globus' }).should('not.exist');
 
-    cy.get('[aria-rowindex="1"] [aria-colindex="6"]').should(
-      'have.text',
-      'Available'
-    );
+    cy.get('[aria-rowcount]')
+      .invoke('attr', 'aria-rowcount')
+      .as('includeFilterRowCount', { type: 'static' });
+
+    cy.get('@methodFilter')
+      .parent()
+      .findByRole('button', { name: 'include, exclude or exact' })
+      .as('methodFilterOptionsButton')
+      .click();
+
+    // test exact
+    cy.findByRole('option', { name: 'Exact' }).click();
+
+    cy.get('@includeFilterRowCount').then((includeFilterRowCount) => {
+      cy.get(`[aria-rowcount="${includeFilterRowCount}"]`).should('not.exist');
+    });
+    cy.findByRole('gridcell', { name: 'http' }).should('exist');
+    cy.findByRole('gridcell', { name: 'https' }).should('not.exist');
+
+    cy.get('[aria-rowcount]')
+      .invoke('attr', 'aria-rowcount')
+      .as('exactFilterRowCount', { type: 'static' });
+
+    // test exclude
+    cy.get('@methodFilterOptionsButton').click();
+    cy.findByRole('option', { name: 'Exclude' }).click();
+
+    cy.get('@exactFilterRowCount').then((exactFilterRowCount) => {
+      cy.get(`[aria-rowcount="${exactFilterRowCount}"]`).should('not.exist');
+    });
+    cy.findAllByRole('gridcell', { name: 'globus' }).should('exist');
+    cy.findByRole('gridcell', { name: 'http' }).should('not.exist');
+    cy.findByRole('gridcell', { name: 'https' }).should('not.exist');
 
     cy.get('@dateFilterRowCount').then((dateFilterRowCount) => {
       cy.get(`[aria-rowcount="${dateFilterRowCount}"]`).should('not.exist');
     });
     cy.get('[aria-rowcount="0"]').should('not.exist');
+  });
+
+  it('should be able to delete a download & filter by deleted downloads', () => {
+    cy.get('[aria-rowcount]')
+      .invoke('attr', 'aria-rowcount')
+      .as('initialRowCount', { type: 'static' });
+    const now = Date.now();
+    // plus and minus 5 seconds from "now"
+    const fromDate = new Date(now - 5000);
+    const toDate = new Date(now + 5000);
+
+    cy.get('input[id="Requested Date filter from"]').type(
+      fromDate.toLocaleString('sv').split(' ').join('')
+    );
+    cy.get('input[id="Requested Date filter to"]').type(
+      toDate.toLocaleString('sv').split(' ').join('')
+    );
+
+    cy.get('@initialRowCount').then((initialRowCount) => {
+      cy.get(`[aria-rowcount="${initialRowCount}"]`).should('not.exist');
+    });
+    cy.get('[aria-rowcount="0"]').should('not.exist');
+
+    cy.get('[aria-rowcount]')
+      .invoke('attr', 'aria-rowcount')
+      .as('dateFilterRowCount', { type: 'static' });
+
+    cy.findAllByRole('button', { name: /Delete .*/ })
+      .first()
+      .click();
+
+    cy.findByRole('button', { name: /Filter by Deleted/ }).as(
+      'isDeletedFilter'
+    );
+    cy.get('@isDeletedFilter').click();
+    cy.findByRole('option', { name: 'Yes' }).click();
+
+    cy.get('[aria-rowcount="1"]').should('exist');
+
+    cy.get('@isDeletedFilter').click();
+    cy.findByRole('option', { name: 'No' }).click();
+
+    cy.get('@dateFilterRowCount').then((dateFilterRowCount) => {
+      cy.get(`[aria-rowcount="${dateFilterRowCount - 1}"]`).should('exist');
+    });
   });
 });
