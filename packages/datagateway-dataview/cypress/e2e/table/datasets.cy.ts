@@ -57,7 +57,7 @@ describe('Datasets Table', () => {
     cy.get('[aria-sort="descending"]').should('not.exist');
     cy.get('.MuiTableSortLabel-iconDirectionAsc').should('not.exist');
 
-    cy.get('[data-testid="SortIcon"]').should('have.length', 3);
+    cy.get('[data-testid="SortIcon"]').should('have.length', 4);
     cy.get('[data-testid="ArrowUpwardIcon"]').should('not.exist');
 
     cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
@@ -78,7 +78,7 @@ describe('Datasets Table', () => {
   });
 
   it('should change icons when sorting on a column', () => {
-    cy.get('[data-testid="SortIcon"]').should('have.length', 3);
+    cy.get('[data-testid="SortIcon"]').should('have.length', 4);
 
     // check icon when clicking on a column
     cy.contains('[role="button"]', 'Create Time').click();
@@ -97,7 +97,7 @@ describe('Datasets Table', () => {
 
     // check icons when shift is held
     cy.get('.App').trigger('keydown', { key: 'Shift' });
-    cy.get('[data-testid="AddIcon"]').should('have.length', 1);
+    cy.get('[data-testid="AddIcon"]').should('have.length', 2);
   });
 
   it('should be able to filter with both text & date filters on multiple columns', () => {
