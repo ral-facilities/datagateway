@@ -93,11 +93,11 @@ describe('Admin Download Status', () => {
     cy.contains('[role="button"]', 'Availability').click({ shiftKey: true });
     cy.get('[aria-sort="ascending"]').should('have.length', 2);
 
-    cy.get('[aria-rowindex="1"] [aria-colindex="6"]').should(
+    cy.get('[aria-rowindex="2"] [aria-colindex="6"]').should(
       'have.text',
       'Available'
     );
-    cy.get('[aria-rowindex="2"] [aria-colindex="6"]').should(
+    cy.get('[aria-rowindex="3"] [aria-colindex="6"]').should(
       'have.text',
       'Expired'
     );
