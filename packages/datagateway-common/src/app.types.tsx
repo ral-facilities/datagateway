@@ -31,8 +31,6 @@ export interface Investigation {
   investigationInstruments?: InvestigationInstrument[];
   dataCollectionInvestigations?: DataCollectionInvestigation[];
   investigationFacilityCycles?: InvestigationFacilityCycle[];
-  size?: number;
-  datasetCount?: number;
   investigationUsers?: InvestigationUser[];
   samples?: Sample[];
   parameters?: DatafileParameter[];
@@ -55,8 +53,6 @@ export interface Dataset {
   doi?: string;
   complete?: boolean;
   location?: string;
-  size?: number;
-  datafileCount?: number;
   investigation?: Investigation;
   type?: DatasetType;
 }

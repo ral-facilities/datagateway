@@ -72,7 +72,6 @@ describe('ISIS Dataset table component', () => {
       {
         id: 1,
         name: 'Test 1',
-        size: 1,
         modTime: '2019-07-23',
         createTime: '2019-07-23',
       },

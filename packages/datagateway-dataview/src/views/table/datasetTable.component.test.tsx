@@ -65,7 +65,6 @@ describe('Dataset table component', () => {
         name: 'Test 1',
         fileSize: 1,
         fileCount: 1,
-        size: 1,
         modTime: '2019-07-23',
         createTime: '2019-07-23',
       },

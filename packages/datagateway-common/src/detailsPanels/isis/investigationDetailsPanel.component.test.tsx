@@ -50,7 +50,7 @@ describe('Investigation details panel component', () => {
       summary: 'foo bar',
       visitId: '1',
       doi: 'doi 1',
-      size: 1,
+      fileSize: 1,
       investigationInstruments: [
         {
           id: 1,
@@ -76,8 +76,6 @@ describe('Investigation details panel component', () => {
                 id: 12,
                 pid: 'Data Publication Pid',
                 description: 'Data Publication description',
-                modTime: '2019-06-10',
-                createTime: '2019-06-11',
                 title: 'Data Publication',
                 type: {
                   id: 15,
@@ -102,8 +100,6 @@ describe('Investigation details panel component', () => {
                 id: 14,
                 pid: 'Data Publication Study Pid',
                 description: 'Data Publication description',
-                modTime: '2019-06-10',
-                createTime: '2019-06-11',
                 title: 'Data Publication Study',
                 type: {
                   id: 16,

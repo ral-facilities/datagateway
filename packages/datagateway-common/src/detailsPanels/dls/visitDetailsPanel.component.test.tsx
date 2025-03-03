@@ -48,7 +48,6 @@ describe('Visit details panel component', () => {
       summary: 'foo bar',
       visitId: '1',
       doi: 'doi 1',
-      size: 1,
       fileSize: 64,
       fileCount: 1,
       investigationInstruments: [

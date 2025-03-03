@@ -62,10 +62,10 @@ describe('Dataset - Card View', () => {
         id: 1,
         name: 'Test 1',
         description: 'Test description',
-        size: 1,
+        fileSize: 1,
         modTime: '2019-07-23',
         createTime: '2019-07-23',
-        datafileCount: 1,
+        fileCount: 1,
       },
     ];
     history = createMemoryHistory();
