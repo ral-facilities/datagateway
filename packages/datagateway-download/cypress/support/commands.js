@@ -25,6 +25,7 @@
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
 import jsrsasign from 'jsrsasign';
+import '@testing-library/cypress/add-commands';
 
 const downloadsInfo = [
   {

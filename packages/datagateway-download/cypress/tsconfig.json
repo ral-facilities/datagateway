@@ -8,7 +8,10 @@
       "dom.iterable",
       "esnext"
     ],
-    "types": ["cypress"]
+    "types": [
+      "cypress",
+      "@testing-library/cypress"
+    ]
   },
   "include": ["**/*"]
 }

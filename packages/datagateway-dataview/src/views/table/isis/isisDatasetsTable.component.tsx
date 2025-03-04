@@ -147,10 +147,9 @@ const ISISDatasetsTable = (
       {
         icon: SaveIcon,
         label: t('datasets.size'),
-        dataKey: 'size',
+        dataKey: 'fileSize',
         cellContentRenderer: (cellProps: TableCellProps): number | string =>
           formatBytes(cellProps.rowData.fileSize),
-        disableSort: true,
       },
       {
         icon: CalendarTodayIcon,

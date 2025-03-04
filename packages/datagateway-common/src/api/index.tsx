@@ -249,21 +249,29 @@ export const getApiParams = (
           );
         }
         if ('type' in filter && filter.type) {
-          if (filter.type === 'include') {
-            searchParams.append(
-              'where',
-              JSON.stringify({ [column]: { ilike: filter.value } })
-            );
-          } else if (filter.type === 'exclude') {
-            searchParams.append(
-              'where',
-              JSON.stringify({ [column]: { nilike: filter.value } })
-            );
-          } else {
-            searchParams.append(
-              'where',
-              JSON.stringify({ [column]: { eq: filter.value } })
-            );
+          // use switch statement to ensure TS can detect we cover all cases
+          switch (filter.type) {
+            case 'include':
+              searchParams.append(
+                'where',
+                JSON.stringify({ [column]: { ilike: filter.value } })
+              );
+              break;
+            case 'exclude':
+              searchParams.append(
+                'where',
+                JSON.stringify({ [column]: { nilike: filter.value } })
+              );
+              break;
+            case 'exact':
+              searchParams.append(
+                'where',
+                JSON.stringify({ [column]: { eq: filter.value } })
+              );
+              break;
+            default:
+              const exhaustiveCheck: never = filter.type;
+              throw new Error(`Unhandled text filter type: ${exhaustiveCheck}`);
           }
         }
       } else {

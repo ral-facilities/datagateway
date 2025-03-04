@@ -72,7 +72,6 @@ describe('DLS Visits table component', () => {
         summary: 'foo bar',
         visitId: '1',
         doi: 'doi 1',
-        size: 1,
         fileSize: 1,
         fileCount: 1,
         investigationInstruments: [

@@ -6,7 +6,7 @@ import userEvent from '@testing-library/user-event';
 
 const testFilters: FiltersType = {
   'unrelated.dimension': {
-    type: 'type',
+    type: 'include',
     value: 'asd',
   },
   'unrelated.dimension.2': [{ label: 'asd', key: 'key', filter: [] }],

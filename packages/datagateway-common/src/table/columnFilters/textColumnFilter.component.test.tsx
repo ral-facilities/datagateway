@@ -57,7 +57,6 @@ describe('Text filter component', () => {
     // We simulate a change in the input from 'test' to 'test-again'.
     const textFilterInput = await screen.findByRole('textbox', {
       name: 'Filter by test',
-      hidden: true,
     });
 
     await user.clear(textFilterInput);
@@ -86,7 +85,6 @@ describe('Text filter component', () => {
     // We simulate a change in the input from 'test' to 'test-again'.
     const textFilterInput = await screen.findByRole('textbox', {
       name: 'Filter by test',
-      hidden: true,
     });
 
     await user.clear(textFilterInput);
@@ -115,7 +113,6 @@ describe('Text filter component', () => {
     // We simulate a change in the input from 'test' to 'test-again'.
     const textFilterInput = await screen.findByRole('textbox', {
       name: 'Filter by test',
-      hidden: true,
     });
 
     await user.clear(textFilterInput);
@@ -145,7 +142,6 @@ describe('Text filter component', () => {
     await user.click(
       await screen.findByRole('button', {
         name: 'include, exclude or exact',
-        hidden: true,
       })
     );
     await user.click(await screen.findByText('Include'));
@@ -172,7 +168,6 @@ describe('Text filter component', () => {
     await user.click(
       await screen.findByRole('button', {
         name: 'include, exclude or exact',
-        hidden: true,
       })
     );
     await user.click(await screen.findByText('Exclude'));
@@ -199,7 +194,6 @@ describe('Text filter component', () => {
     await user.click(
       await screen.findByRole('button', {
         name: 'include, exclude or exact',
-        hidden: true,
       })
     );
     await user.click(await screen.findByText('Exact'));
@@ -226,7 +220,6 @@ describe('Text filter component', () => {
     await user.clear(
       await screen.findByRole('textbox', {
         name: 'Filter by test',
-        hidden: true,
       })
     );
 
@@ -250,7 +243,6 @@ describe('Text filter component', () => {
     await user.click(
       await screen.findByRole('button', {
         name: 'include, exclude or exact',
-        hidden: true,
       })
     );
     await user.click(await screen.findByText('Include'));
@@ -296,7 +288,6 @@ describe('Text filter component', () => {
     // We simulate a change in the input to 'test'.
     const textFilterInput = await screen.findByRole('textbox', {
       name: 'Filter by Name',
-      hidden: true,
     });
 
     await user.clear(textFilterInput);
@@ -338,7 +329,6 @@ describe('Text filter component', () => {
     // We simulate a change in the input to 'test'.
     const textFilterInput = await screen.findByRole('textbox', {
       name: 'Filter by Principal Investigator',
-      hidden: true,
     });
 
     await user.clear(textFilterInput);

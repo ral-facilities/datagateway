@@ -113,13 +113,9 @@ const ISISDatasetsCardView = (
       {
         icon: Save,
         label: t('datasets.size'),
-        dataKey: 'size',
-        content: (dataset: Dataset): string => {
-          const index = data?.findIndex((item) => item.id === dataset.id);
-          if (typeof index === 'undefined') return 'Unknown';
-          return formatBytes(dataset.fileSize);
-        },
-        disableSort: true,
+        dataKey: 'fileSize',
+        content: (dataset: Dataset): number | string =>
+          formatBytes(dataset.fileSize),
       },
       {
         icon: CalendarToday,
@@ -134,7 +130,7 @@ const ISISDatasetsCardView = (
         filterComponent: dateFilter,
       },
     ],
-    [data, dateFilter, t]
+    [dateFilter, t]
   );
 
   const buttons = React.useMemo(

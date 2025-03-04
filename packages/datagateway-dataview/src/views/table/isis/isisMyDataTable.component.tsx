@@ -246,10 +246,9 @@ const ISISMyDataTable = (): React.ReactElement => {
       {
         icon: Save,
         label: t('investigations.size'),
-        dataKey: 'size',
+        dataKey: 'fileSize',
         cellContentRenderer: (cellProps: TableCellProps): number | string =>
           formatBytes(cellProps.rowData.fileSize),
-        disableSort: true,
       },
       {
         icon: CalendarToday,

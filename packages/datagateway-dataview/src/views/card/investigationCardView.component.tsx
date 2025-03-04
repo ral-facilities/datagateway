@@ -125,15 +125,13 @@ const InvestigationCardView = (): React.ReactElement => {
         label: t('investigations.details.name'),
         dataKey: 'name',
         filterComponent: textFilter,
-        disableSort: true,
       },
       {
         icon: Save,
         label: t('investigations.details.size'),
-        dataKey: 'size',
+        dataKey: 'fileSize',
         content: (investigation: Investigation): number | string =>
           formatBytes(investigation.fileSize),
-        disableSort: true,
       },
       {
         icon: CalendarToday,

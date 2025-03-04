@@ -6418,6 +6418,7 @@ __metadata:
     "@emotion/styled": 11.11.0
     "@mui/icons-material": 5.11.0
     "@mui/material": 5.11.0
+    "@testing-library/cypress": 8.0.7
     "@testing-library/jest-dom": 6.4.1
     "@testing-library/react": 12.1.3
     "@testing-library/react-hooks": 8.0.1
