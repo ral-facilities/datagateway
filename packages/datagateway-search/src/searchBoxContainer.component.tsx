@@ -120,7 +120,7 @@ const SearchBoxContainer = (
             <Link
               component={RouterLink}
               sx={{ fontWeight: 'bold' }}
-              to={searchTextExampleLink('"instrument calibration"')}
+              to={searchTextExampleLink(t('searchBox.examples_label_link1'))}
             >
               &quot;instrument calibration&quot;
             </Link>
@@ -128,7 +128,7 @@ const SearchBoxContainer = (
             <Link
               component={RouterLink}
               sx={{ fontWeight: 'bold' }}
-              to={searchTextExampleLink('neutron AND scattering')}
+              to={searchTextExampleLink(t('searchBox.examples_label_link2'))}
             >
               neutron AND scattering
             </Link>
