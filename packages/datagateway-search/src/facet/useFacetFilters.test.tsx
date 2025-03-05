@@ -29,7 +29,10 @@ describe('useFacetFilters', () => {
         'investigation.type.name': ['experiment'],
       })
     );
-    history.push({ search: `?${searchParam.toString()}` });
+
+    act(() => {
+      history.push({ search: `?${searchParam.toString()}` });
+    });
 
     rerender();
 
@@ -223,6 +226,7 @@ describe('useFacetFilters', () => {
     );
 
     const searchParamStr = `?${searchParams.toString()}`;
+
     history.replace({ search: searchParamStr });
 
     const { result } = renderHook(() => useFacetFilters(), {

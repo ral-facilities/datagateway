@@ -740,7 +740,7 @@ describe('Dataset table component', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders fine with incomplete data', () => {
+  it('renders fine with incomplete data', async () => {
     // this can happen when navigating between tables and the previous table's state still exists
     searchResponse = {
       results: [
@@ -755,6 +755,9 @@ describe('Dataset table component', () => {
     };
 
     expect(() => renderComponent()).not.toThrowError();
+    await waitFor(async () => {
+      expect(await findAllRows()).toHaveLength(1);
+    });
   });
 
   it('renders generic link correctly', async () => {

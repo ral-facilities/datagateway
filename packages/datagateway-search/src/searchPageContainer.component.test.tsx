@@ -236,7 +236,7 @@ describe('SearchPageContainer - Tests', () => {
     jest.clearAllMocks();
   });
 
-  it('renders searchPageContainer correctly', () => {
+  it('renders searchPageContainer correctly', async () => {
     const localStorageRemoveItemMock = jest.spyOn(
       window.localStorage.__proto__,
       'removeItem'
@@ -245,10 +245,9 @@ describe('SearchPageContainer - Tests', () => {
 
     renderComponent();
 
-    expect(screen.getByRole('link', { name: 'Search data' })).toHaveAttribute(
-      'href',
-      '/search/data'
-    );
+    expect(
+      await screen.findByRole('link', { name: 'Search data' })
+    ).toHaveAttribute('href', '/search/data');
 
     // check it clears all the localstorage stuff
     expect(localStorageRemoveItemMock).toHaveBeenCalledWith(
@@ -266,10 +265,12 @@ describe('SearchPageContainer - Tests', () => {
     expect(localStorageRemoveItemMock).toHaveBeenCalledWith('datasetResults');
   });
 
-  it('renders initial layout at /search/data route', () => {
+  it('renders initial layout at /search/data route', async () => {
     renderComponent();
 
-    expect(screen.getByTestId('search-box-container')).toBeInTheDocument();
+    expect(
+      await screen.findByTestId('search-box-container')
+    ).toBeInTheDocument();
 
     // logged in, so my_data checkbox should be visible & checked by default
     expect(
@@ -288,7 +289,7 @@ describe('SearchPageContainer - Tests', () => {
     ).toBeNull();
   });
 
-  it('renders side layout correctly', () => {
+  it('renders side layout correctly', async () => {
     state = JSON.parse(
       JSON.stringify({
         dgcommon: { ...dGCommonInitialState },
@@ -301,7 +302,9 @@ describe('SearchPageContainer - Tests', () => {
 
     renderComponent();
 
-    expect(screen.getByTestId('search-box-container-side')).toBeInTheDocument();
+    expect(
+      await screen.findByTestId('search-box-container-side')
+    ).toBeInTheDocument();
     // no search results yet, so view button, clear filter button and tabs should be hidden
     expect(
       screen.queryByRole('button', { name: 'page view app.view_cards' })
@@ -364,12 +367,16 @@ describe('SearchPageContainer - Tests', () => {
     expect(await screen.findByRole('progressbar')).toBeInTheDocument();
   });
 
-  it('builds correct parameters for datafile request if date and search text properties are in use', () => {
+  it('builds correct parameters for datafile request if date and search text properties are in use', async () => {
     history.replace(
       '/search/data?searchText=hello&dataset=false&investigation=false&startDate=2013-11-11&endDate=2016-11-11'
     );
 
     renderComponent();
+
+    expect(
+      await screen.findByTestId('search-box-container')
+    ).toBeInTheDocument();
 
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
@@ -397,12 +404,16 @@ describe('SearchPageContainer - Tests', () => {
     );
   });
 
-  it('builds correct parameters for dataset request if date and search text properties are in use', () => {
+  it('builds correct parameters for dataset request if date and search text properties are in use', async () => {
     history.replace(
       '/search/data?searchText=hello&datafile=false&investigation=false&startDate=2013-11-11&endDate=2016-11-11'
     );
 
     renderComponent();
+
+    expect(
+      await screen.findByTestId('search-box-container')
+    ).toBeInTheDocument();
 
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
@@ -432,12 +443,16 @@ describe('SearchPageContainer - Tests', () => {
     );
   });
 
-  it('builds correct parameters for investigation request if date and search text properties are in use', () => {
+  it('builds correct parameters for investigation request if date and search text properties are in use', async () => {
     history.replace(
       '/search/data?searchText=hello&dataset=false&datafile=false&startDate=2013-11-11&endDate=2016-11-11'
     );
 
     renderComponent();
+
+    expect(
+      await screen.findByTestId('search-box-container')
+    ).toBeInTheDocument();
 
     expect(axios.get).toHaveBeenNthCalledWith(
       1,
@@ -470,12 +485,16 @@ describe('SearchPageContainer - Tests', () => {
     );
   });
 
-  it('builds correct parameters for datafile request if only start date is in use', () => {
+  it('builds correct parameters for datafile request if only start date is in use', async () => {
     history.replace(
       '/search/data?searchText=&dataset=false&investigation=false&startDate=2013-11-11'
     );
 
     renderComponent();
+
+    expect(
+      await screen.findByTestId('search-box-container')
+    ).toBeInTheDocument();
 
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
@@ -502,12 +521,16 @@ describe('SearchPageContainer - Tests', () => {
     );
   });
 
-  it('builds correct parameters for dataset request if only start date is in use', () => {
+  it('builds correct parameters for dataset request if only start date is in use', async () => {
     history.replace(
       '/search/data?searchText=test&datafile=false&investigation=false&startDate=2013-11-11'
     );
 
     renderComponent();
+
+    expect(
+      await screen.findByTestId('search-box-container')
+    ).toBeInTheDocument();
 
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
@@ -537,12 +560,16 @@ describe('SearchPageContainer - Tests', () => {
     );
   });
 
-  it('builds correct parameters for investigation request if only start date is in use', () => {
+  it('builds correct parameters for investigation request if only start date is in use', async () => {
     history.replace(
       '/search/data?searchText=test&dataset=false&datafile=false&startDate=2013-11-11'
     );
 
     renderComponent();
+
+    expect(
+      await screen.findByTestId('search-box-container')
+    ).toBeInTheDocument();
 
     expect(axios.get).toHaveBeenNthCalledWith(
       1,
@@ -616,12 +643,16 @@ describe('SearchPageContainer - Tests', () => {
     );
   });
 
-  it('builds correct parameters for dataset request if only end date is in use', () => {
+  it('builds correct parameters for dataset request if only end date is in use', async () => {
     history.replace(
       '/search/data?searchText=test&datafile=false&investigation=false&endDate=2016-11-11'
     );
 
     renderComponent();
+
+    expect(
+      await screen.findByTestId('search-box-container')
+    ).toBeInTheDocument();
 
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
@@ -651,12 +682,16 @@ describe('SearchPageContainer - Tests', () => {
     );
   });
 
-  it('builds correct parameters for investigation request if only end date is in use', () => {
+  it('builds correct parameters for investigation request if only end date is in use', async () => {
     history.replace(
       '/search/data?searchText=test&dataset=false&datafile=false&endDate=2016-11-11'
     );
 
     renderComponent();
+
+    expect(
+      await screen.findByTestId('search-box-container')
+    ).toBeInTheDocument();
 
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
@@ -812,9 +847,11 @@ describe('SearchPageContainer - Tests', () => {
       screen.getByRole('button', { name: 'searchBox.search_button_arialabel' })
     );
 
-    history.replace(
-      `/search/data?filters=%7B"title"%3A%7B"value"%3A"spend"%2C"type"%3A"include"%7D%7D`
-    );
+    act(() => {
+      history.replace(
+        `/search/data?filters=%7B"title"%3A%7B"value"%3A"spend"%2C"type"%3A"include"%7D%7D`
+      );
+    });
 
     expect(
       await screen.findByRole('button', { name: 'app.clear_filters' })
@@ -862,9 +899,11 @@ describe('SearchPageContainer - Tests', () => {
     const user = userEvent.setup();
 
     // test it works with loading from URL params
-    history.replace(
-      '/search/data?searchText=test&dataset=false&datafile=false'
-    );
+    act(() => {
+      history.replace(
+        '/search/data?searchText=test&dataset=false&datafile=false'
+      );
+    });
 
     renderComponentWithRealStore();
 
@@ -875,7 +914,9 @@ describe('SearchPageContainer - Tests', () => {
     expect(screen.queryByRole('tab', { name: 'tabs.datafile' })).toBeNull();
 
     // also test it works on initiateSearch
-    history.replace('/search/data?searchText=test&datafile=false');
+    act(() => {
+      history.replace('/search/data?searchText=test&datafile=false');
+    });
 
     await user.click(
       screen.getByRole('button', { name: 'searchBox.search_button_arialabel' })
@@ -962,6 +1003,12 @@ describe('SearchPageContainer - Tests', () => {
 
     renderComponent();
 
+    expect(
+      await screen.findByRole('tablist', {
+        name: 'searchPageTable.tabs_arialabel',
+      })
+    ).toBeInTheDocument();
+
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
       {
@@ -994,6 +1041,12 @@ describe('SearchPageContainer - Tests', () => {
 
     renderComponent();
 
+    expect(
+      await screen.findByRole('tablist', {
+        name: 'searchPageTable.tabs_arialabel',
+      })
+    ).toBeInTheDocument();
+
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
       {
@@ -1024,6 +1077,12 @@ describe('SearchPageContainer - Tests', () => {
     history.replace('/search/data?searchText=hello&datafiles=true');
 
     renderComponent();
+
+    expect(
+      await screen.findByRole('tablist', {
+        name: 'searchPageTable.tabs_arialabel',
+      })
+    ).toBeInTheDocument();
 
     expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
@@ -1098,7 +1157,7 @@ describe('SearchPageContainer - Tests', () => {
     (axios.get as jest.Mock).mockClear();
 
     await user.type(
-      screen.getByRole('searchbox', {
+      await screen.findByRole('searchbox', {
         name: 'searchBox.search_text_arialabel',
       }),
       'neutron AND scattering'
@@ -1176,6 +1235,10 @@ describe('SearchPageContainer - Tests', () => {
 
     renderComponent();
 
+    expect(
+      await screen.findByTestId('search-box-container')
+    ).toBeInTheDocument();
+
     expect(history.location.search).toEqual('?currentTab=dataset');
   });
 
@@ -1191,6 +1254,10 @@ describe('SearchPageContainer - Tests', () => {
 
     renderComponent();
 
+    expect(
+      await screen.findByTestId('search-box-container')
+    ).toBeInTheDocument();
+
     expect(history.location.search).toEqual('?currentTab=datafile');
   });
 
@@ -1205,6 +1272,10 @@ describe('SearchPageContainer - Tests', () => {
     };
 
     renderComponent();
+
+    expect(
+      await screen.findByTestId('search-box-container')
+    ).toBeInTheDocument();
 
     // i.e default value is investigation it set in the searchPageContainer
     expect(history.location.search).toEqual('');
