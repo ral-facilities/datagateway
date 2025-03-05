@@ -86,7 +86,6 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                       style="display: flex; flex-direction: row; box-sizing: border-box; overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
                     >
                       <div
-                        aria-label="downloadStatus.id"
                         class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeSmall css-1wleh9m-MuiTableCell-root"
                       >
                         <div
@@ -130,15 +129,17 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div>
                             <div
                               class="MuiFormControl-root MuiFormControl-marginDense MuiFormControl-fullWidth css-zevgu-MuiFormControl-root"
+                              id="downloadStatus.id-filter"
                             >
                               <label
                                 class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-colorSecondary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard css-t7bnno-MuiFormLabel-root-MuiInputLabel-root"
                                 data-shrink="false"
-                                for="downloadStatus.id-filter"
+                                id="downloadStatus.id-filter"
                               >
                                 Include
                               </label>
                               <div
+                                aria-hidden="true"
                                 class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorSecondary MuiInputBase-formControl MuiInputBase-adornedEnd css-89bi5l-MuiInputBase-root-MuiInput-root"
                               >
                                 <input
@@ -210,7 +211,6 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                       style="display: flex; flex-direction: row; box-sizing: border-box; overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
                     >
                       <div
-                        aria-label="downloadStatus.fullname"
                         class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeSmall css-1wleh9m-MuiTableCell-root"
                       >
                         <div
@@ -254,15 +254,17 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div>
                             <div
                               class="MuiFormControl-root MuiFormControl-marginDense MuiFormControl-fullWidth css-zevgu-MuiFormControl-root"
+                              id="downloadStatus.fullname-filter"
                             >
                               <label
                                 class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-colorSecondary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard css-t7bnno-MuiFormLabel-root-MuiInputLabel-root"
                                 data-shrink="false"
-                                for="downloadStatus.fullname-filter"
+                                id="downloadStatus.fullname-filter"
                               >
                                 Include
                               </label>
                               <div
+                                aria-hidden="true"
                                 class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorSecondary MuiInputBase-formControl MuiInputBase-adornedEnd css-89bi5l-MuiInputBase-root-MuiInput-root"
                               >
                                 <input
@@ -334,7 +336,6 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                       style="display: flex; flex-direction: row; box-sizing: border-box; overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
                     >
                       <div
-                        aria-label="downloadStatus.username"
                         class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeSmall css-1wleh9m-MuiTableCell-root"
                       >
                         <div
@@ -378,15 +379,17 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div>
                             <div
                               class="MuiFormControl-root MuiFormControl-marginDense MuiFormControl-fullWidth css-zevgu-MuiFormControl-root"
+                              id="downloadStatus.username-filter"
                             >
                               <label
                                 class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-colorSecondary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard css-t7bnno-MuiFormLabel-root-MuiInputLabel-root"
                                 data-shrink="false"
-                                for="downloadStatus.username-filter"
+                                id="downloadStatus.username-filter"
                               >
                                 Include
                               </label>
                               <div
+                                aria-hidden="true"
                                 class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorSecondary MuiInputBase-formControl MuiInputBase-adornedEnd css-89bi5l-MuiInputBase-root-MuiInput-root"
                               >
                                 <input
@@ -458,7 +461,6 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                       style="display: flex; flex-direction: row; box-sizing: border-box; overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
                     >
                       <div
-                        aria-label="downloadStatus.preparedId"
                         class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeSmall css-1wleh9m-MuiTableCell-root"
                       >
                         <div
@@ -502,15 +504,17 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div>
                             <div
                               class="MuiFormControl-root MuiFormControl-marginDense MuiFormControl-fullWidth css-zevgu-MuiFormControl-root"
+                              id="downloadStatus.preparedId-filter"
                             >
                               <label
                                 class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-colorSecondary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard css-t7bnno-MuiFormLabel-root-MuiInputLabel-root"
                                 data-shrink="false"
-                                for="downloadStatus.preparedId-filter"
+                                id="downloadStatus.preparedId-filter"
                               >
                                 Include
                               </label>
                               <div
+                                aria-hidden="true"
                                 class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorSecondary MuiInputBase-formControl MuiInputBase-adornedEnd css-89bi5l-MuiInputBase-root-MuiInput-root"
                               >
                                 <input
@@ -582,7 +586,6 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                       style="display: flex; flex-direction: row; box-sizing: border-box; overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
                     >
                       <div
-                        aria-label="downloadStatus.transport"
                         class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeSmall css-1wleh9m-MuiTableCell-root"
                       >
                         <div
@@ -626,15 +629,17 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div>
                             <div
                               class="MuiFormControl-root MuiFormControl-marginDense MuiFormControl-fullWidth css-zevgu-MuiFormControl-root"
+                              id="downloadStatus.transport-filter"
                             >
                               <label
                                 class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-colorSecondary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard css-t7bnno-MuiFormLabel-root-MuiInputLabel-root"
                                 data-shrink="false"
-                                for="downloadStatus.transport-filter"
+                                id="downloadStatus.transport-filter"
                               >
                                 Include
                               </label>
                               <div
+                                aria-hidden="true"
                                 class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorSecondary MuiInputBase-formControl MuiInputBase-adornedEnd css-89bi5l-MuiInputBase-root-MuiInput-root"
                               >
                                 <input
@@ -706,7 +711,6 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                       style="display: flex; flex-direction: row; box-sizing: border-box; overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
                     >
                       <div
-                        aria-label="downloadStatus.status"
                         class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeSmall css-1wleh9m-MuiTableCell-root"
                       >
                         <div
@@ -750,15 +754,17 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                           <div>
                             <div
                               class="MuiFormControl-root MuiFormControl-marginDense MuiFormControl-fullWidth css-zevgu-MuiFormControl-root"
+                              id="downloadStatus.status-filter"
                             >
                               <label
                                 class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-colorSecondary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard css-t7bnno-MuiFormLabel-root-MuiInputLabel-root"
                                 data-shrink="false"
-                                for="downloadStatus.status-filter"
+                                id="downloadStatus.status-filter"
                               >
                                 Include
                               </label>
                               <div
+                                aria-hidden="true"
                                 class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorSecondary MuiInputBase-formControl MuiInputBase-adornedEnd css-89bi5l-MuiInputBase-root-MuiInput-root"
                               >
                                 <input
@@ -830,7 +836,6 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                       style="display: flex; flex-direction: row; box-sizing: border-box; overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
                     >
                       <div
-                        aria-label="downloadStatus.size"
                         class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeSmall css-1wleh9m-MuiTableCell-root"
                       >
                         <div
@@ -888,7 +893,6 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                       style="display: flex; flex-direction: row; box-sizing: border-box; overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
                     >
                       <div
-                        aria-label="downloadStatus.createdAt"
                         aria-sort="descending"
                         class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeSmall css-1wleh9m-MuiTableCell-root"
                       >
@@ -1037,7 +1041,6 @@ exports[`Admin Download Status Table should render correctly 1`] = `
                       style="display: flex; flex-direction: row; box-sizing: border-box; overflow: hidden; flex: 1 1 113.77777777777777px; min-width: 84px;"
                     >
                       <div
-                        aria-label="downloadStatus.deleted"
                         class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeSmall css-1wleh9m-MuiTableCell-root"
                       >
                         <div
