@@ -165,7 +165,7 @@ describe('Datafile search tab', () => {
         cy.findByRole('button', {
           name: 'Add DATAFILEFORMAT 1 filter',
         })
-          .as('filter')
+          .as('filter', { type: 'static' })
           .click();
         cy.get('@filter').within(() => {
           cy.findByRole('checkbox').should('be.checked');
@@ -322,7 +322,7 @@ describe('Datafile search tab', () => {
         cy.findByRole('button', {
           name: 'Add SAMPLETYPE 30 filter',
         })
-          .as('filter')
+          .as('filter', { type: 'static' })
           .click();
         cy.get('@filter').within(() => {
           cy.findByRole('checkbox').should('be.checked');
@@ -363,7 +363,7 @@ describe('Datafile search tab', () => {
         cy.findByRole('button', {
           name: 'Add INSTRUMENT 13 filter',
         })
-          .as('filter')
+          .as('filter', { type: 'static' })
           .click();
         cy.get('@filter').within(() => {
           cy.findByRole('checkbox').should('be.checked');
