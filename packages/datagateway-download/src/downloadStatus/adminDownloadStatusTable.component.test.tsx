@@ -82,7 +82,7 @@ describe('Admin Download Status Table', () => {
     jest.clearAllMocks();
   });
 
-  it.only('should render correctly', async () => {
+  it('should render correctly', async () => {
     const mockedDate = new Date(Date.UTC(2020, 1, 1, 0, 0, 0)).toUTCString();
     global.Date.prototype.toLocaleString = jest.fn(() => mockedDate);
 
@@ -448,7 +448,9 @@ describe('Admin Download Status Table', () => {
     // Table is sorted by createdAt desc by default
     // To keep working test, we will remove all sorts on the table beforehand
     await user.click(await screen.findByText('downloadStatus.createdAt'));
-    await flushPromises();
+    await act(async () => {
+      await flushPromises();
+    });
 
     // Get the is deleted filter
     const isDeletedFilter = await screen.findByRole('button', {
@@ -459,7 +461,9 @@ describe('Admin Download Status Table', () => {
 
     await user.click(await screen.findByRole('option', { name: 'No' }));
 
-    await flushPromises();
+    await act(async () => {
+      await flushPromises();
+    });
 
     expect(fetchAdminDownloads).toHaveBeenCalledWith(
       {
@@ -473,7 +477,9 @@ describe('Admin Download Status Table', () => {
 
     await user.click(await screen.findByRole('option', { name: 'Yes' }));
 
-    await flushPromises();
+    await act(async () => {
+      await flushPromises();
+    });
 
     expect(fetchAdminDownloads).toHaveBeenCalledWith(
       {
@@ -487,7 +493,9 @@ describe('Admin Download Status Table', () => {
 
     await user.click(await screen.findByRole('option', { name: 'Either' }));
 
-    await flushPromises();
+    await act(async () => {
+      await flushPromises();
+    });
 
     expect(fetchAdminDownloads).toHaveBeenCalledWith(
       {
