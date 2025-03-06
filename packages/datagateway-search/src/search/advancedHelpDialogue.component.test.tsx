@@ -39,6 +39,7 @@ function renderComponent({
 describe('Advanced help dialogue', () => {
   let state: StateType;
   const tSpy = jest.fn((str) => str);
+  let originalUseTranslation: typeof reactI18Next.useTranslation;
 
   beforeEach(() => {
     state = JSON.parse(
@@ -48,7 +49,12 @@ describe('Advanced help dialogue', () => {
       })
     );
 
-    (reactI18Next.useTranslation as jest.Mock).mockReturnValue([tSpy]);
+    originalUseTranslation = reactI18Next.useTranslation;
+    reactI18Next.useTranslation = jest.fn().mockReturnValue([tSpy]);
+  });
+
+  afterEach(() => {
+    reactI18Next.useTranslation = originalUseTranslation;
   });
 
   it('is hidden initially', () => {
