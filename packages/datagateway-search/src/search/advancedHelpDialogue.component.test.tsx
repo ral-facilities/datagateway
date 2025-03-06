@@ -15,6 +15,7 @@ import {
 import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
 import { StateType } from '../state/app.types';
 import userEvent from '@testing-library/user-event';
+import reactI18Next from 'react-i18next';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -37,6 +38,7 @@ function renderComponent({
 
 describe('Advanced help dialogue', () => {
   let state: StateType;
+  const tSpy = jest.fn((str) => str);
 
   beforeEach(() => {
     state = JSON.parse(
@@ -45,6 +47,8 @@ describe('Advanced help dialogue', () => {
         dgsearch: dgSearchInitialState,
       })
     );
+
+    (reactI18Next.useTranslation as jest.Mock).mockReturnValue([tSpy]);
   });
 
   it('is hidden initially', () => {
@@ -66,7 +70,7 @@ describe('Advanced help dialogue', () => {
     );
 
     expect(
-      screen.getByRole('dialog', { name: 'Advanced Search Tips' })
+      screen.getByRole('dialog', { name: 'advanced_search_help.title' })
     ).toBeInTheDocument();
 
     await user.click(
@@ -75,11 +79,42 @@ describe('Advanced help dialogue', () => {
       })
     );
 
+    // advanced_search_help.examples.examples is not an array so example section is not rendered
+    expect(
+      screen.queryByText('advanced_search_help.examples.title')
+    ).not.toBeInTheDocument();
+
     await waitForElementToBeRemoved(
-      screen.getByRole('dialog', { name: 'Advanced Search Tips' })
+      screen.getByRole('dialog', { name: 'advanced_search_help.title' })
     );
     expect(
-      screen.queryByRole('dialog', { name: 'Advanced Search Tips' })
+      screen.queryByRole('dialog', { name: 'advanced_search_help.title' })
     ).toBeNull();
+  });
+
+  it('renders examples section when an example is given', async () => {
+    tSpy.mockImplementation((key) => {
+      if (key === 'advanced_search_help.examples.examples') {
+        return [{ name: 'example 1', value: 'example 1' }];
+      } else return key;
+    });
+    const user = userEvent.setup();
+
+    renderComponent({ initialState: state });
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'advanced_search_help.search_options_arialabel',
+      })
+    );
+
+    expect(
+      screen.getByRole('dialog', { name: 'advanced_search_help.title' })
+    ).toBeInTheDocument();
+
+    // advanced_search_help.examples.examples is an array with items in it so we should render example section
+    expect(
+      screen.getByText('advanced_search_help.examples.title')
+    ).toBeInTheDocument();
   });
 });

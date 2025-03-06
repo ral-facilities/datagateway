@@ -62,7 +62,7 @@ module.exports = {
       (k, o) => (o ? `${k} ${JSON.stringify(o).replace(/"/g, '')}` : k),
       { i18n: {} }
     ),
-  useTranslation: () => useMock,
+  useTranslation: jest.fn(() => useMock),
 
   // mock if needed
   I18nextProvider: reactI18next.I18nextProvider,
