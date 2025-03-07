@@ -69,11 +69,7 @@ describe('Advanced help dialogue', () => {
 
     renderComponent({ initialState: state });
 
-    await user.click(
-      screen.getByRole('button', {
-        name: 'advanced_search_help.search_options_arialabel',
-      })
-    );
+    await user.click(screen.getByTestId('advanced-search-help-link'));
 
     expect(
       screen.getByRole('dialog', { name: 'advanced_search_help.title' })
@@ -108,11 +104,7 @@ describe('Advanced help dialogue', () => {
 
     renderComponent({ initialState: state });
 
-    await user.click(
-      screen.getByRole('button', {
-        name: 'advanced_search_help.search_options_arialabel',
-      })
-    );
+    await user.click(screen.getByTestId('advanced-search-help-link'));
 
     expect(
       screen.getByRole('dialog', { name: 'advanced_search_help.title' })

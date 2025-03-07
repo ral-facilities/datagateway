@@ -299,7 +299,7 @@
     "show_less": "Show less"
   },
   "advanced_search_help": {
-    "search_options_arialabel": "Search options",
+    "search_help_label": "See all <2>search options</2>.",
     "close_button_arialabel": "Close",
     "title": "Advanced Search Tips",
     "description": "Searching the metadata catalogue using one or more words should be intuitive, with the most relevant matches appearing first. However, there is a powerful syntax that supports more advanced use cases, which are described below.",

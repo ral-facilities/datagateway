@@ -58,20 +58,22 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
 
   return (
     <React.Fragment>
-      See all{' '}
-      <Link
-        component="button"
-        sx={{
-          fontSize: '14px',
-          fontWeight: 'bold',
-          verticalAlign: 'baseline',
-        }}
-        aria-label={t('advanced_search_help.search_options_arialabel')}
-        onClick={handleClickOpen}
-      >
-        search options
-      </Link>
-      .
+      <Trans t={t} i18nKey="advanced_search_help.search_help_label">
+        See all{' '}
+        <Link
+          component="button"
+          sx={{
+            fontSize: '14px',
+            fontWeight: 'bold',
+            verticalAlign: 'baseline',
+          }}
+          data-testid="advanced-search-help-link"
+          onClick={handleClickOpen}
+        >
+          search options
+        </Link>
+        .
+      </Trans>
       <Dialog
         onClose={handleClose}
         aria-labelledby="advanced-search-dialog-title"
@@ -156,7 +158,6 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
                 </TableContainer>
               </Section>
             )}
-
           <Section>
             <SectionTitle>{t('advanced_search_help.terms.title')}</SectionTitle>
             <SectionText>
