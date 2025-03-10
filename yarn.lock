@@ -4651,14 +4651,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:1.7.4":
-  version: 1.7.4
-  resolution: "axios@npm:1.7.4"
+"axios@npm:1.8.2":
+  version: 1.8.2
+  resolution: "axios@npm:1.8.2"
   dependencies:
     follow-redirects: ^1.15.6
     form-data: ^4.0.0
     proxy-from-env: ^1.1.0
-  checksum: 0c17039a9acfe6a566fca8431ba5c1b455c83d30ea6157fec68a6722878fcd30f3bd32d172f6bee0c51fe75ca98e6414ddcd968a87b5606b573731629440bfaf
+  checksum: c47a43b79a058aa9e53a65bec9ade35c9f6e76a3999c795a79a2d205fb5f803fd4245497a0209a9727cbbe4f558791dd852ad2c168c5fc030259c11598ed8fd7
   languageName: node
   linkType: hard
 
@@ -6290,7 +6290,7 @@ __metadata:
     "@types/react-virtualized": 9.21.10
     "@typescript-eslint/eslint-plugin": 5.62.0
     "@typescript-eslint/parser": 5.62.0
-    axios: 1.7.4
+    axios: 1.8.2
     connected-react-router: 6.9.1
     date-fns: 2.30.0
     eslint: 8.56.0
@@ -6360,7 +6360,7 @@ __metadata:
     "@types/redux-mock-store": 1.0.3
     "@typescript-eslint/eslint-plugin": 5.62.0
     "@typescript-eslint/parser": 5.62.0
-    axios: 1.7.4
+    axios: 1.8.2
     blob-polyfill: 7.0.20220408
     connected-react-router: 6.9.1
     cross-env: 7.0.3
@@ -6433,7 +6433,7 @@ __metadata:
     "@types/react-virtualized": 9.21.10
     "@typescript-eslint/eslint-plugin": 5.62.0
     "@typescript-eslint/parser": 5.62.0
-    axios: 1.7.4
+    axios: 1.8.2
     cross-env: 7.0.3
     cypress: 13.6.4
     cypress-failed-log: 2.10.0
@@ -6502,7 +6502,7 @@ __metadata:
     "@types/redux-mock-store": 1.0.3
     "@typescript-eslint/eslint-plugin": 5.62.0
     "@typescript-eslint/parser": 5.62.0
-    axios: 1.7.4
+    axios: 1.8.2
     connected-react-router: 6.9.1
     cross-env: 7.0.3
     custom-event-polyfill: 1.0.7
