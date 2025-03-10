@@ -6267,7 +6267,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"datagateway-common@^2.0.0, datagateway-common@workspace:packages/datagateway-common":
+"datagateway-common@^2.1.0, datagateway-common@workspace:packages/datagateway-common":
   version: 0.0.0-use.local
   resolution: "datagateway-common@workspace:packages/datagateway-common"
   dependencies:
@@ -6367,7 +6367,7 @@ __metadata:
     custom-event-polyfill: 1.0.7
     cypress: 13.6.4
     cypress-failed-log: 2.10.0
-    datagateway-common: ^2.0.0
+    datagateway-common: ^2.1.0
     date-fns: 2.30.0
     eslint: 8.56.0
     eslint-config-prettier: 8.10.0
@@ -6437,7 +6437,7 @@ __metadata:
     cross-env: 7.0.3
     cypress: 13.6.4
     cypress-failed-log: 2.10.0
-    datagateway-common: ^2.0.0
+    datagateway-common: ^2.1.0
     date-fns: 2.30.0
     date-fns-tz: 2.0.0
     eslint: 8.56.0
@@ -6508,7 +6508,7 @@ __metadata:
     custom-event-polyfill: 1.0.7
     cypress: 13.6.4
     cypress-failed-log: 2.10.0
-    datagateway-common: ^2.0.0
+    datagateway-common: ^2.1.0
     date-fns: 2.30.0
     eslint: 8.56.0
     eslint-config-prettier: 8.10.0
