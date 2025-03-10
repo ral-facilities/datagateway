@@ -87,15 +87,15 @@ describe('SearchBoxContainer - Tests', () => {
       screen.getByRole('button', { name: 'searchBox.search_button_arialabel' })
     ).toBeInTheDocument();
 
-    // link to example instrument calibration should be visible
+    // link to example searchBox.examples_label_link1 should be visible
     expect(
       screen.getByRole('link', { name: '"instrument calibration"' })
-    ).toHaveAttribute('href', '/?searchText=%22instrument+calibration%22');
+    ).toHaveAttribute('href', '/?searchText=searchBox.examples_label_link1');
 
-    // link to example neutron and scattering should be visible
+    // link to example searchBox.examples_label_link2 should be visible
     expect(
       screen.getByRole('link', { name: 'neutron AND scattering' })
-    ).toHaveAttribute('href', '/?searchText=neutron+AND+scattering');
+    ).toHaveAttribute('href', '/?searchText=searchBox.examples_label_link2');
   });
 
   it('shows my data checkbox if user is logged in', () => {

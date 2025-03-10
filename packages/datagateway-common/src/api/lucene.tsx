@@ -19,7 +19,7 @@ import {
 } from '../app.types';
 import handleICATError from '../handleICATError';
 import { readSciGatewayToken } from '../parseTokens';
-import retryICATErrors from './retryICATErrors';
+import { useRetryICATErrors } from './retryICATErrors';
 
 interface QueryParameters {
   target: string;
@@ -169,7 +169,7 @@ const handleLuceneError = (error: AxiosError<LuceneError>): void => {
                 message: `Unable to complete requested search in under ${timeoutString}. To ensure searches complete quickly, please try:
 - Only searching "my data"
 - Only searching the type of entity you need results for
-- Using less wildcard characters in the search term(s)
+- Using fewer wildcard characters in the search term(s)
 - Making the search term(s) more specific
 - Using the default relevancy based sorting`,
               },
@@ -352,6 +352,7 @@ export const useLuceneSearchInfinite = (
       {}
     );
   }
+  const retryICATErrors = useRetryICATErrors();
 
   return useInfiniteQuery(
     ['search', datasearchType, luceneParams],
@@ -367,6 +368,7 @@ export const useLuceneSearchInfinite = (
       },
       retry: retryICATErrors,
       getNextPageParam: (lastPage, _) => lastPage.search_after,
+      refetchOnWindowFocus: false,
       ...(options ?? {}),
     }
   );

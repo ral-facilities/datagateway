@@ -32,8 +32,8 @@ describe('ISIS - Datafiles Table', () => {
     cy.get('#datagateway-dataview').should('be.visible');
 
     //Default sort
-    cy.get('[aria-sort="descending"]').should('exist');
-    cy.get('.MuiTableSortLabel-iconDirectionDesc').should('be.visible');
+    cy.get('[aria-sort="ascending"]').should('exist');
+    cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
   });
 
   it('should not load incorrect URL', () => {
@@ -119,7 +119,8 @@ describe('ISIS - Datafiles Table', () => {
 
   it('should change icons when sorting on a column', () => {
     // clear default sort
-    cy.contains('[role="button"]', 'Modified Time').click();
+    cy.contains('[role="button"]', 'Name').click();
+    cy.contains('[role="button"]', 'Name').click();
 
     cy.get('[data-testid="SortIcon"]').should('have.length', 4);
 
@@ -152,7 +153,7 @@ describe('ISIS - Datafiles Table', () => {
     );
 
     cy.get('[aria-rowcount="15"]').should('exist');
-    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('Datafile 1744');
+    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('Datafile 1030');
 
     // test text filter
     cy.get('[aria-label="Filter by Location"]').first().type('action');
@@ -165,26 +166,26 @@ describe('ISIS - Datafiles Table', () => {
     cy.get('[aria-label="Show details"]').eq(1).click();
 
     cy.get('#details-panel').should('be.visible');
-    cy.get('#details-panel').contains('Datafile 1625').should('be.visible');
+    cy.get('#details-panel').contains('Datafile 1149').should('be.visible');
     cy.get('[aria-label="Hide details"]').should('exist');
 
     cy.get('[aria-label="Show details"]').first().click();
 
-    cy.get('#details-panel').contains('Datafile 1744').should('be.visible');
-    cy.get('#details-panel').contains('Datafile 1625').should('not.exist');
+    cy.get('#details-panel').contains('Datafile 1030').should('be.visible');
+    cy.get('#details-panel').contains('Datafile 1149').should('not.exist');
     cy.get('[aria-label="Hide details"]').should('have.length', 1);
 
     cy.get('[aria-controls="datafile-details-panel"]').should('be.visible');
 
     cy.get('#details-panel')
-      .contains('Doctor involve recently treat')
+      .contains('See American arm college policy')
       .should('be.visible');
 
     cy.get('[aria-controls="datafile-parameters-panel"]').should('be.visible');
     cy.get('[aria-controls="datafile-parameters-panel"]').click();
 
     cy.get('#parameter-grid').should('be.visible');
-    cy.get('#details-panel').contains('PARAMETERTYPE 11').should('be.visible');
+    cy.get('#details-panel').contains('PARAMETERTYPE 18').should('be.visible');
 
     cy.get('[aria-label="Hide details"]').first().click();
 

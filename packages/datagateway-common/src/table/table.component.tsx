@@ -12,7 +12,15 @@ import {
   Index,
   TableRowRenderer,
 } from 'react-virtualized';
-import { Entity, Order, ICATEntity, UpdateMethod } from '../app.types';
+import {
+  Entity,
+  Order,
+  ICATEntity,
+  UpdateMethod,
+  Filter,
+  FiltersType,
+  SortType,
+} from '../app.types';
 import ExpandCell from './cellRenderers/expandCell.component';
 import DataCell from './cellRenderers/dataCell.component';
 import ActionCell from './cellRenderers/actionCell.component';
@@ -112,7 +120,12 @@ export interface ColumnType {
   className?: string;
   disableSort?: boolean;
   defaultSort?: Order;
-  filterComponent?: (label: string, dataKey: string) => React.ReactElement;
+  defaultFilter?: Filter;
+  filterComponent?: (
+    label: string,
+    dataKey: string,
+    defaultFilter?: Filter
+  ) => React.ReactElement;
 }
 
 export interface DetailsPanelProps {
@@ -131,12 +144,14 @@ interface VirtualizedTableProps {
   columns: ColumnType[];
   loadMoreRows?: (offsetParams: IndexRange) => Promise<unknown>;
   totalRowCount?: number;
-  sort: { [column: string]: Order };
+  sort: SortType;
   onSort: (
     column: string,
     order: Order | null,
     updateMethod: UpdateMethod
   ) => void;
+  onDefaultFilter?: (filterKey: string, filterValue: Filter | null) => void;
+  filters?: FiltersType;
   detailsPanel?: React.ComponentType<DetailsPanelProps>;
   actions?: React.ComponentType<TableActionProps>[];
   actionsWidth?: number;
@@ -174,6 +189,8 @@ const VirtualizedTable = React.memo(
       onSort,
       disableSelectAll,
       shortHeader,
+      onDefaultFilter,
+      filters,
     } = props;
 
     // Format dates to be more readable
@@ -222,6 +239,14 @@ const VirtualizedTable = React.memo(
     )
       throw new Error(
         'Only one of loadMoreRows and totalRowCount was defined - either define both for infinite loading functionality or neither for no infinite loading'
+      );
+
+    if (
+      columns.some((column) => column.defaultFilter) &&
+      (typeof onDefaultFilter === 'undefined' || typeof filters === 'undefined')
+    )
+      throw new Error(
+        'Column has a default filter prop but onDefaultFilter or filters was not passed to Table - either pass onDefaultFilter function & filters or remove defaultFilter from the column definition'
       );
 
     const [widthProps, setWidthProps] = React.useState<{
@@ -483,6 +508,7 @@ const VirtualizedTable = React.memo(
                         filterComponent,
                         disableSort,
                         defaultSort,
+                        defaultFilter,
                       },
                       index
                     ) => {
@@ -508,6 +534,9 @@ const VirtualizedTable = React.memo(
                               resizeColumn={resizeColumn}
                               defaultSort={defaultSort}
                               shiftDown={shiftDown}
+                              defaultFilter={defaultFilter}
+                              onDefaultFilter={onDefaultFilter}
+                              filters={filters}
                             />
                           )}
                           className={className}

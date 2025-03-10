@@ -172,7 +172,6 @@ describe('ISIS Investigation Landing page', () => {
         summary: 'foo bar',
         visitId: 'visit id 1',
         doi: 'doi 1',
-        size: 1,
         facility: {
           id: 17,
           name: 'LILS',

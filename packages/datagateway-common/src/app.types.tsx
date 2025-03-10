@@ -31,8 +31,6 @@ export interface Investigation {
   investigationInstruments?: InvestigationInstrument[];
   dataCollectionInvestigations?: DataCollectionInvestigation[];
   investigationFacilityCycles?: InvestigationFacilityCycle[];
-  size?: number;
-  datasetCount?: number;
   investigationUsers?: InvestigationUser[];
   samples?: Sample[];
   parameters?: DatafileParameter[];
@@ -55,8 +53,6 @@ export interface Dataset {
   doi?: string;
   complete?: boolean;
   location?: string;
-  size?: number;
-  datafileCount?: number;
   investigation?: Investigation;
   type?: DatasetType;
 }
@@ -66,6 +62,8 @@ export interface Datafile {
   name: string;
   modTime: string;
   createTime: string;
+  datafileModTime?: string;
+  datafileCreateTime?: string;
   fileSize?: number;
   location?: string;
   description?: string;
@@ -378,7 +376,7 @@ export interface DateFilter {
 
 export interface TextFilter {
   value?: string | number;
-  type: string;
+  type: 'include' | 'exclude' | 'exact';
 }
 
 export interface RangeFilter {

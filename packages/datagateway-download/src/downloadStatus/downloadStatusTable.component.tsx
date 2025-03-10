@@ -48,9 +48,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
     createdAt: 'desc',
   });
   const [filters, setFilters] = React.useState<{
-    [column: string]:
-      | { value?: string | number; type: string }
-      | { startDate?: string; endDate?: string };
+    [column: string]: TextFilter | DateFilter;
   }>({});
   const {
     data: downloads,
@@ -94,7 +92,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
-      onChange={(value: { value?: string | number; type: string } | null) => {
+      onChange={(value: TextFilter | null) => {
         if (value) {
           setFilters({ ...filters, [dataKey]: value });
         } else {
@@ -112,7 +110,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
   ): React.ReactElement => (
     <TextColumnFilter
       label={label}
-      onChange={(value: { value?: string | number; type: string } | null) => {
+      onChange={(value: TextFilter | null) => {
         if (value && typeof value.value === 'string') {
           setFilters({
             ...filters,
@@ -168,13 +166,25 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
         if (isTextFilter) {
           const filterKeyword = (filter.value as string).toLowerCase();
 
-          satisfiedFilters.push(
-            filter.type === 'exact'
-              ? tableValue.toLowerCase() === filterKeyword
-              : filter.type === 'exclude'
-              ? !tableValue.toLowerCase().includes(filterKeyword)
-              : tableValue.toLowerCase().includes(filterKeyword)
-          );
+          // use switch statement to ensure TS can detect we cover all cases
+          switch (filter.type) {
+            case 'include':
+              satisfiedFilters.push(
+                tableValue.toLowerCase().includes(filterKeyword)
+              );
+              break;
+            case 'exclude':
+              satisfiedFilters.push(
+                !tableValue.toLowerCase().includes(filterKeyword)
+              );
+              break;
+            case 'exact':
+              satisfiedFilters.push(tableValue.toLowerCase() === filterKeyword);
+              break;
+            default:
+              const exhaustiveCheck: never = filter.type;
+              throw new Error(`Unhandled text filter type: ${exhaustiveCheck}`);
+          }
 
           continue;
         }

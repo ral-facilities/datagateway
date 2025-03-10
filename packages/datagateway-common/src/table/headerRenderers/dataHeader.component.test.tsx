@@ -4,6 +4,7 @@ import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import * as React from 'react';
 import DataHeader from './dataHeader.component';
 import TextColumnFilter from '../columnFilters/textColumnFilter.component';
+import { Filter } from '../../app.types';
 
 describe('Data column header component', () => {
   let user: UserEvent;
@@ -21,11 +22,14 @@ describe('Data column header component', () => {
     },
   };
 
-  const filterComponent = (
-    label: string,
-    dataKey: string
-  ): React.ReactElement => (
-    <TextColumnFilter label={label} onChange={jest.fn()} value={undefined} />
+  const filterComponent = jest.fn(
+    (
+      label: string,
+      dataKey: string,
+      defaultValue?: Filter
+    ): React.ReactElement => (
+      <TextColumnFilter label={label} onChange={jest.fn()} value={undefined} />
+    )
   );
 
   beforeEach(() => {
@@ -35,6 +39,7 @@ describe('Data column header component', () => {
   afterEach(() => {
     onSort.mockClear();
     resizeColumn.mockClear();
+    filterComponent.mockClear();
   });
 
   it('renders correctly without sort or filter', async () => {
@@ -111,6 +116,53 @@ describe('Data column header component', () => {
       render(<DataHeader {...dataHeaderProps} defaultSort="desc" />);
       expect(onSort).toHaveBeenCalledWith('test', 'desc', 'replace', false);
     });
+  });
+
+  it('does not call the onSort method when default sort is specified but sort is not empty', () => {
+    render(
+      <DataHeader
+        {...dataHeaderProps}
+        defaultSort="asc"
+        sort={{ test: 'desc' }}
+      />
+    );
+    expect(onSort).not.toHaveBeenCalled();
+  });
+
+  it('calls the onDefaultFilter method and supplies default filter to filter component when default filter is specified', () => {
+    const onDefaultFilter = jest.fn();
+    render(
+      <DataHeader
+        {...dataHeaderProps}
+        filterComponent={filterComponent}
+        onDefaultFilter={onDefaultFilter}
+        defaultFilter={{ type: 'include', value: 'x' }}
+        filters={{}}
+      />
+    );
+    expect(onDefaultFilter).toHaveBeenCalledWith('test', {
+      type: 'include',
+      value: 'x',
+    });
+    expect(filterComponent).toHaveBeenCalledWith('Test', 'test', {
+      type: 'include',
+      value: 'x',
+    });
+  });
+
+  it('does not call the onDefaultFilter method and not supply default filter to filter component when default filter is specified but filters is not empty', () => {
+    const onDefaultFilter = jest.fn();
+    render(
+      <DataHeader
+        {...dataHeaderProps}
+        filterComponent={filterComponent}
+        onDefaultFilter={onDefaultFilter}
+        defaultFilter={{ type: 'include', value: 'x' }}
+        filters={{ test: { type: 'exclude', value: 'y' } }}
+      />
+    );
+    expect(onDefaultFilter).not.toHaveBeenCalled();
+    expect(filterComponent).toHaveBeenCalledWith('Test', 'test', undefined);
   });
 
   describe('changes icons in the label', () => {

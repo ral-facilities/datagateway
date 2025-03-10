@@ -11,7 +11,7 @@ import {
   handleICATError,
   MicroFrontendId,
   NotificationType,
-  retryICATErrors,
+  useRetryICATErrors,
 } from 'datagateway-common';
 import log from 'loglevel';
 import pLimit from 'p-limit';
@@ -105,6 +105,7 @@ type RollbackFunction = () => void;
 export const useCart = (): UseQueryResult<DownloadCartItem[], AxiosError> => {
   const settings = React.useContext(DownloadSettingsContext);
   const { facilityName, downloadApiUrl } = settings;
+  const retryICATErrors = useRetryICATErrors();
   return useQuery(
     QueryKey.CART,
     () =>
@@ -189,6 +190,8 @@ export const useRemoveEntityFromCart = (): UseMutationResult<
 export const useIsTwoLevel = (): UseQueryResult<boolean, AxiosError> => {
   const settings = React.useContext(DownloadSettingsContext);
   const { idsUrl } = settings;
+  const retryICATErrors = useRetryICATErrors();
+
   return useQuery('isTwoLevel', () => getIsTwoLevel({ idsUrl }), {
     onError: (error) => {
       handleICATError(error);
@@ -261,6 +264,7 @@ export const useFileSizesAndCounts = (
 ): UseQueryResult<FileSizeAndCount, AxiosError>[] => {
   const settings = React.useContext(DownloadSettingsContext);
   const { facilityName, apiUrl, downloadApiUrl } = settings;
+  const retryICATErrors = useRetryICATErrors();
 
   const queryConfigs: {
     queryKey: [string, number];
@@ -287,7 +291,7 @@ export const useFileSizesAndCounts = (
           };
         })
       : [];
-  }, [data, facilityName, apiUrl, downloadApiUrl]);
+  }, [data, retryICATErrors, facilityName, apiUrl, downloadApiUrl]);
 
   return useQueries(queryConfigs);
 };
@@ -320,6 +324,7 @@ export const useDownload = <T = Download>({
   >): UseQueryResult<T, AxiosError> => {
   // Load the download settings for use.
   const downloadSettings = React.useContext(DownloadSettingsContext);
+  const retryICATErrors = useRetryICATErrors();
 
   return useQuery(
     [QueryKey.DOWNLOAD, id],
@@ -351,6 +356,7 @@ export const useDownloads = <TData = Download[]>(
 ): UseQueryResult<TData, AxiosError> => {
   // Load the download settings for use.
   const downloadSettings = React.useContext(DownloadSettingsContext);
+  const retryICATErrors = useRetryICATErrors();
 
   return useQuery(
     QueryKey.DOWNLOADS,
@@ -763,6 +769,10 @@ export const useIsCartMintable = (
 > => {
   const settings = React.useContext(DownloadSettingsContext);
   const { doiMinterUrl } = settings;
+  const queryClient = useQueryClient();
+  const opts = queryClient.getDefaultOptions();
+  const retries =
+    typeof opts?.queries?.retry === 'number' ? opts.queries.retry : 3;
 
   return useQuery(
     ['ismintable', cart],
@@ -794,7 +804,7 @@ export const useIsCartMintable = (
       retry: (failureCount, error) => {
         // if we get 403 we know this is an legit response from the backend so don't bother retrying
         // all other errors use default retry behaviour
-        if (error.response?.status === 403 || failureCount >= 3) {
+        if (error.response?.status === 403 || failureCount >= retries) {
           return false;
         } else {
           return true;
@@ -876,6 +886,10 @@ export const useCheckUser = (
   username: string
 ): UseQueryResult<User, AxiosError> => {
   const settings = React.useContext(DownloadSettingsContext);
+  const queryClient = useQueryClient();
+  const opts = queryClient.getDefaultOptions();
+  const retries =
+    typeof opts?.queries?.retry === 'number' ? opts.queries.retry : 3;
 
   return useQuery(
     ['checkUser', username],
@@ -908,7 +922,7 @@ export const useCheckUser = (
           error.response?.status === 404 ||
           // email is invalid - don't retry as this is correct response from the server
           error.response?.status === 422 ||
-          failureCount >= 3
+          failureCount >= retries
         )
           return false;
         return true;
@@ -929,13 +943,17 @@ export const useCheckDOI = (
   doi: string
 ): UseQueryResult<RelatedDOI, AxiosError> => {
   const settings = React.useContext(DownloadSettingsContext);
+  const queryClient = useQueryClient();
+  const opts = queryClient.getDefaultOptions();
+  const retries =
+    typeof opts?.queries?.retry === 'number' ? opts.queries.retry : 3;
 
   return useQuery(['checkDOI', doi], () => fetchDOI(doi, settings), {
     retry: (failureCount: number, error: AxiosError) => {
       if (
         // DOI is invalid - don't retry as this is a correct response from the server
         error.response?.status === 404 ||
-        failureCount >= 3
+        failureCount >= retries
       )
         return false;
       return true;

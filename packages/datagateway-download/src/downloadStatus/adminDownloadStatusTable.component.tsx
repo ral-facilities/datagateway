@@ -4,8 +4,10 @@ import {
   Grid,
   IconButton,
   LinearProgress,
+  MenuItem,
   Paper,
   styled,
+  TextField,
   Typography,
 } from '@mui/material';
 
@@ -59,9 +61,7 @@ const AdminDownloadStatusTable: React.FC = () => {
     createdAt: 'desc',
   });
   const [filters, setFilters] = React.useState<{
-    [column: string]:
-      | { value?: string | number; type: string }
-      | { startDate?: string; endDate?: string };
+    [column: string]: TextFilter | DateFilter;
   }>({});
   const [refreshDownloads, setRefreshDownloads] = React.useState(false);
   const [t] = useTranslation();
@@ -92,14 +92,26 @@ const AdminDownloadStatusTable: React.FC = () => {
           if ('type' in filter && filter.type) {
             // As UPPER is used need to pass text filters in upper case to avoid case sensitivity
             const filterValue =
-              typeof filter.value === 'string'
+              typeof filter.value === 'string' && filter.type !== 'exact'
                 ? (filter.value as string).toUpperCase()
                 : filter.value;
 
-            if (filter.type === 'include') {
-              queryOffset += ` AND UPPER(download.${column}) LIKE CONCAT('%', '${filterValue}', '%')`;
-            } else {
-              queryOffset += ` AND UPPER(download.${column}) NOT LIKE CONCAT('%', '${filterValue}', '%')`;
+            // use switch statement to ensure TS can detect we cover all cases
+            switch (filter.type) {
+              case 'include':
+                queryOffset += ` AND UPPER(download.${column}) LIKE CONCAT('%', '${filterValue}', '%')`;
+                break;
+              case 'exclude':
+                queryOffset += ` AND UPPER(download.${column}) NOT LIKE CONCAT('%', '${filterValue}', '%')`;
+                break;
+              case 'exact':
+                queryOffset += ` AND download.${column} = '${filterValue}'`;
+                break;
+              default:
+                const exhaustiveCheck: never = filter.type;
+                throw new Error(
+                  `Unhandled text filter type: ${exhaustiveCheck}`
+                );
             }
           }
         }
@@ -173,7 +185,7 @@ const AdminDownloadStatusTable: React.FC = () => {
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
-      onChange={(value: { value?: string | number; type: string } | null) => {
+      onChange={(value: TextFilter | null) => {
         if (value) {
           if (dataKey === 'status') {
             const downloadStatus = (
@@ -200,10 +212,43 @@ const AdminDownloadStatusTable: React.FC = () => {
     />
   );
 
+  const downloadFilter = (
+    label: string,
+    dataKey: string
+  ): React.ReactElement => (
+    <TextField
+      fullWidth
+      variant="standard"
+      color="secondary"
+      select
+      id={`${dataKey}-filter`}
+      label={`${label}?`}
+      InputLabelProps={{ 'aria-label': `Filter by ${label}` }}
+      value={(filters[dataKey] as TextFilter | null)?.value ?? ''}
+      onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.value.length > 0) {
+          setFilters({
+            ...filters,
+            [dataKey]: { type: 'exact', value: event.target.value },
+          });
+        } else {
+          const { [dataKey]: value, ...restOfFilters } = filters;
+          setFilters(restOfFilters);
+        }
+      }}
+    >
+      <MenuItem value="">
+        <em>Either</em>
+      </MenuItem>
+      <MenuItem value="true">Yes</MenuItem>
+      <MenuItem value="false">No</MenuItem>
+    </TextField>
+  );
+
   const dateFilter = (label: string, dataKey: string): React.ReactElement => (
     <DateColumnFilter
       label={label}
-      onChange={(value: { startDate?: string; endDate?: string } | null) => {
+      onChange={(value: DateFilter | null) => {
         if (value) {
           setFilters({ ...filters, [dataKey]: value });
         } else {
@@ -347,7 +392,6 @@ const AdminDownloadStatusTable: React.FC = () => {
                       cellContentRenderer: (cellProps) => {
                         return formatBytes(cellProps.cellData);
                       },
-                      disableSort: true,
                     },
                     {
                       label: t('downloadStatus.createdAt'),
@@ -365,6 +409,7 @@ const AdminDownloadStatusTable: React.FC = () => {
                     {
                       label: t('downloadStatus.deleted'),
                       dataKey: 'isDeleted',
+                      filterComponent: downloadFilter,
                       cellContentRenderer: ({ rowData }) =>
                         (rowData as FormattedDownload).formattedIsDeleted,
                     },

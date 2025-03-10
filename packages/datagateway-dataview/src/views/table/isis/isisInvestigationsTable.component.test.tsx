@@ -69,7 +69,6 @@ describe('ISIS Investigations table component', () => {
         summary: 'foo bar',
         visitId: '1',
         doi: 'doi 1',
-        size: 1,
         investigationUsers: [
           {
             id: 2,

@@ -53,11 +53,11 @@ function DetailsPane(): JSX.Element {
         />
         <DetailsField
           name={t('datafiles.details.mod_time')}
-          value={datafile.modTime || t('datafiles.details.unknown')}
+          value={datafile.datafileModTime || t('datafiles.details.unknown')}
         />
         <DetailsField
           name={t('datafiles.details.create_time')}
-          value={datafile.createTime || t('datafiles.details.unknown')}
+          value={datafile.datafileCreateTime || t('datafiles.details.unknown')}
         />
       </Stack>
     </Paper>

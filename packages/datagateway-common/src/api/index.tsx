@@ -24,7 +24,7 @@ import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
 import format from 'date-fns/format';
 import { isValid } from 'date-fns';
-import retryICATErrors from './retryICATErrors';
+import { useRetryICATErrors } from './retryICATErrors';
 
 export * from './cart';
 export * from './facilityCycles';
@@ -249,21 +249,29 @@ export const getApiParams = (
           );
         }
         if ('type' in filter && filter.type) {
-          if (filter.type === 'include') {
-            searchParams.append(
-              'where',
-              JSON.stringify({ [column]: { ilike: filter.value } })
-            );
-          } else if (filter.type === 'exclude') {
-            searchParams.append(
-              'where',
-              JSON.stringify({ [column]: { nilike: filter.value } })
-            );
-          } else {
-            searchParams.append(
-              'where',
-              JSON.stringify({ [column]: { eq: filter.value } })
-            );
+          // use switch statement to ensure TS can detect we cover all cases
+          switch (filter.type) {
+            case 'include':
+              searchParams.append(
+                'where',
+                JSON.stringify({ [column]: { ilike: filter.value } })
+              );
+              break;
+            case 'exclude':
+              searchParams.append(
+                'where',
+                JSON.stringify({ [column]: { nilike: filter.value } })
+              );
+              break;
+            case 'exact':
+              searchParams.append(
+                'where',
+                JSON.stringify({ [column]: { eq: filter.value } })
+              );
+              break;
+            default:
+              const exhaustiveCheck: never = filter.type;
+              throw new Error(`Unhandled text filter type: ${exhaustiveCheck}`);
           }
         }
       } else {
@@ -364,10 +372,11 @@ export const useSingleSort = (): ((
   );
 };
 
-export const usePushFilter = (
+const useFilter = (
+  updateMethod: UpdateMethod,
   filterPrefix?: string
 ): ((filterKey: string, filter: Filter | null) => void) => {
-  const { push } = useHistory();
+  const { push, replace } = useHistory();
 
   return React.useCallback(
     (filterKey: string, filter: Filter | null) => {
@@ -394,10 +403,24 @@ export const usePushFilter = (
           },
         };
       }
-      push({ search: `?${parseQueryToSearch(query).toString()}` });
+      (updateMethod === 'push' ? push : replace)({
+        search: `?${parseQueryToSearch(query).toString()}`,
+      });
     },
-    [filterPrefix, push]
+    [filterPrefix, push, replace, updateMethod]
   );
+};
+
+export const usePushFilter = (
+  filterPrefix?: string
+): ((filterKey: string, filter: Filter | null) => void) => {
+  return useFilter('push', filterPrefix);
+};
+
+export const useReplaceFilter = (
+  filterPrefix?: string
+): ((filterKey: string, filter: Filter | null) => void) => {
+  return useFilter('replace', filterPrefix);
 };
 
 export const usePushInvestigationFilter = (): ((
@@ -678,6 +701,7 @@ export const useIds = (
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters } = parseSearchToQuery(location.search);
+  const retryICATErrors = useRetryICATErrors();
 
   return useQuery<
     number[],
@@ -758,6 +782,7 @@ export const useCustomFilter = (
   }[]
 ): UseQueryResult<string[], Error> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+  const retryICATErrors = useRetryICATErrors();
 
   return useQuery<
     string[],
@@ -842,6 +867,7 @@ export const useCustomFilterCount = (
   }[]
 ): UseQueryResult<number, AxiosError>[] => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+  const retryICATErrors = useRetryICATErrors();
 
   const queryConfigs: UseQueryOptions<
     number,
@@ -891,7 +917,14 @@ export const useCustomFilterCount = (
         staleTime: Infinity,
       };
     });
-  }, [apiUrl, entityType, filterIds, filterKey, additionalFilters]);
+  }, [
+    filterIds,
+    entityType,
+    filterKey,
+    additionalFilters,
+    retryICATErrors,
+    apiUrl,
+  ]);
 
   // useQueries doesn't allow us to specify type info, so ignore this line
   // since we strongly type the queries object anyway

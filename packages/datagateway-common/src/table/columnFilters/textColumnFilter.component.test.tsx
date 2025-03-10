@@ -2,17 +2,16 @@ import React from 'react';
 import TextColumnFilter, {
   usePrincipalExperimenterFilter,
   useTextFilter,
+  DEBOUNCE_DELAY,
 } from './textColumnFilter.component';
-import { act } from 'react-dom/test-utils';
 import { usePushFilter, usePushFilters } from '../../api';
-import { render, screen } from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
 import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 
 jest.mock('../../api');
-jest.useFakeTimers('modern');
-const DEBOUNCE_DELAY = 250;
+jest.useFakeTimers();
 
 describe('Text filter component', () => {
   let user: UserEvent;
@@ -25,6 +24,18 @@ describe('Text filter component', () => {
     const { asFragment } = render(
       <TextColumnFilter
         value={{ value: 'test value', type: 'include' }}
+        label="test"
+        onChange={jest.fn()}
+      />
+    );
+    expect(asFragment()).toMatchSnapshot();
+  });
+
+  it('renders correctly with default value', () => {
+    const { asFragment } = render(
+      <TextColumnFilter
+        value={{ value: undefined, type: 'include' }}
+        defaultFilter={{ value: 'test default value', type: 'include' }}
         label="test"
         onChange={jest.fn()}
       />
@@ -46,7 +57,6 @@ describe('Text filter component', () => {
     // We simulate a change in the input from 'test' to 'test-again'.
     const textFilterInput = await screen.findByRole('textbox', {
       name: 'Filter by test',
-      hidden: true,
     });
 
     await user.clear(textFilterInput);
@@ -75,7 +85,6 @@ describe('Text filter component', () => {
     // We simulate a change in the input from 'test' to 'test-again'.
     const textFilterInput = await screen.findByRole('textbox', {
       name: 'Filter by test',
-      hidden: true,
     });
 
     await user.clear(textFilterInput);
@@ -104,7 +113,6 @@ describe('Text filter component', () => {
     // We simulate a change in the input from 'test' to 'test-again'.
     const textFilterInput = await screen.findByRole('textbox', {
       name: 'Filter by test',
-      hidden: true,
     });
 
     await user.clear(textFilterInput);
@@ -134,7 +142,6 @@ describe('Text filter component', () => {
     await user.click(
       await screen.findByRole('button', {
         name: 'include, exclude or exact',
-        hidden: true,
       })
     );
     await user.click(await screen.findByText('Include'));
@@ -161,7 +168,6 @@ describe('Text filter component', () => {
     await user.click(
       await screen.findByRole('button', {
         name: 'include, exclude or exact',
-        hidden: true,
       })
     );
     await user.click(await screen.findByText('Exclude'));
@@ -188,7 +194,6 @@ describe('Text filter component', () => {
     await user.click(
       await screen.findByRole('button', {
         name: 'include, exclude or exact',
-        hidden: true,
       })
     );
     await user.click(await screen.findByText('Exact'));
@@ -215,7 +220,6 @@ describe('Text filter component', () => {
     await user.clear(
       await screen.findByRole('textbox', {
         name: 'Filter by test',
-        hidden: true,
       })
     );
 
@@ -239,7 +243,6 @@ describe('Text filter component', () => {
     await user.click(
       await screen.findByRole('button', {
         name: 'include, exclude or exact',
-        hidden: true,
       })
     );
     await user.click(await screen.findByText('Include'));
@@ -285,7 +288,6 @@ describe('Text filter component', () => {
     // We simulate a change in the input to 'test'.
     const textFilterInput = await screen.findByRole('textbox', {
       name: 'Filter by Name',
-      hidden: true,
     });
 
     await user.clear(textFilterInput);
@@ -327,7 +329,6 @@ describe('Text filter component', () => {
     // We simulate a change in the input to 'test'.
     const textFilterInput = await screen.findByRole('textbox', {
       name: 'Filter by Principal Investigator',
-      hidden: true,
     });
 
     await user.clear(textFilterInput);

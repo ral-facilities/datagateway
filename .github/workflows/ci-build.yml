@@ -11,7 +11,7 @@ on:
 jobs:
   lint-and-unit-test:
     name: Lint & Unit Tests
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout repo
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
@@ -22,10 +22,7 @@ jobs:
           cache: 'yarn'
 
       - name: Install dependencies
-        # Ubuntu 16+ does not install libgconf-2-4 by default, so we need to install it ourselves (for Cypress)
-        run: |
-          sudo apt-get install libgconf-2-4
-          yarn --immutable
+        run: yarn --immutable
 
       # Linting and unit testing
       - name: Run linting
@@ -69,7 +66,7 @@ jobs:
 
   dataview-e2e-tests:
     name: DataGateway DataView End to End Tests
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout repo
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
@@ -84,7 +81,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5
         with:
-          python-version: 3.6
+          python-version: 3.9
           architecture: x64
 
       # ICAT Ansible clone and install dependencies
@@ -94,8 +91,8 @@ jobs:
           repository: icatproject-contrib/icat-ansible
           ref: master
           path: icat-ansible
-      - name: Install Ansible
-        run: pip install -r icat-ansible/requirements.txt
+      - name: Install Ansible (ensure we're using the system python)
+        run: /usr/bin/python3 -m pip install -r icat-ansible/requirements.txt
 
       # Prep for running the playbook
       - name: Create hosts file
@@ -143,7 +140,7 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-          ref: v9.0.2
+          ref: v9.0.3
 
       # DataGateway API file setup
       - name: Create search_api_mapping.json
@@ -174,10 +171,7 @@ jobs:
           cache: 'yarn'
      
       - name: Install dependencies
-        # Ubuntu 16+ does not install libgconf-2-4 by default, so we need to install it ourselves (for Cypress)
-        run: |
-          sudo apt-get install libgconf-2-4
-          yarn --immutable
+        run: yarn --immutable
 
       - name: Run datagateway-dataview e2e tests
         run: yarn workspace datagateway-dataview run e2e
@@ -190,7 +184,7 @@ jobs:
 
   download-e2e-tests:
     name: DataGateway Download End to End Tests
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout repo
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
@@ -205,7 +199,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5
         with:
-          python-version: 3.6
+          python-version: 3.9
           architecture: x64
 
       # ICAT Ansible clone and install dependencies
@@ -215,8 +209,8 @@ jobs:
           repository: icatproject-contrib/icat-ansible
           ref: master
           path: icat-ansible
-      - name: Install Ansible
-        run: pip install -r icat-ansible/requirements.txt
+      - name: Install Ansible (ensure we're using the system python)
+        run: /usr/bin/python3 -m pip install -r icat-ansible/requirements.txt
 
       # Prep for running the playbook
       - name: Create hosts file
@@ -275,7 +269,7 @@ jobs:
           sed -i '/plugin.archive.class/,/tidyBlockSize/ s/^/#/' /home/runner/install/ids.server/run.properties
       - name: Reinstall IDS Server
         run: |
-          cd /home/runner/install/ids.server/ && python2 ./setup -vv install
+          cd /home/runner/install/ids.server/ && python ./setup -vv install
       - name: Add root (simple without prefix) to datagateway-download-api adminUserNames
         run: |
           awk -F" =" '/adminUserNames/{$2="= root";print;next}1' /home/runner/install/datagateway-download-api/run.properties > /home/runner/install/datagateway-download-api/run.properties.tmp
@@ -284,7 +278,7 @@ jobs:
           mv -f /home/runner/install/datagateway-download-api/run.properties.tmp /home/runner/install/datagateway-download-api/run.properties
       - name: Reinstall datagateway-download-api
         run: |
-          cd /home/runner/install/datagateway-download-api/ && python2 ./setup -vv install
+          cd /home/runner/install/datagateway-download-api/ && python ./setup -vv install
 
       # Disable Globus for Download e2e tests
       - name: Login to ICAT
@@ -301,7 +295,7 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-          ref: v9.0.2
+          ref: v9.0.3
 
       # DataGateway API file setup
       - name: Create search_api_mapping.json
@@ -332,7 +326,7 @@ jobs:
         run: echo DATACITE_PASSWORD=${{ secrets.DATACITE_PASSWORD }} >> ./.github/config.env
 
       - name: Run minting api
-        run: docker run --env-file ./.github/config.env -p 8000:8000 --add-host host.docker.internal:host-gateway -d harbor.stfc.ac.uk/icat/doi-mint-api      
+        run: docker run --env-file ./.github/config.env -p 8000:8000 --add-host host.docker.internal:host-gateway -d harbor.stfc.ac.uk/icat/doi-mint-api:v0.3.0      
 
       # E2E tests
       - name: Setup Node.js
@@ -342,10 +336,7 @@ jobs:
           cache: 'yarn'
       
       - name: Install dependencies
-        # Ubuntu 16+ does not install libgconf-2-4 by default, so we need to install it ourselves (for Cypress)
-        run: |
-          sudo apt-get install libgconf-2-4
-          yarn --immutable
+        run: yarn --immutable
 
       - name: Run datagateway-download e2e tests
         run: yarn workspace datagateway-download run e2e
@@ -358,7 +349,7 @@ jobs:
 
   search-e2e-tests:
     name: DataGateway Search End to End Tests
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout repo
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
@@ -373,7 +364,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5
         with:
-          python-version: 3.6
+          python-version: 3.9
           architecture: x64
 
       # ICAT Ansible clone and install dependencies
@@ -383,8 +374,8 @@ jobs:
           repository: icatproject-contrib/icat-ansible
           ref: master
           path: icat-ansible
-      - name: Install Ansible
-        run: pip install -r icat-ansible/requirements.txt
+      - name: Install Ansible (ensure we're using the system python)
+        run: /usr/bin/python3 -m pip install -r icat-ansible/requirements.txt
 
       # Prep for running the playbook
       - name: Create hosts file
@@ -436,7 +427,7 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-          ref: v9.0.2
+          ref: v9.0.3
 
       # DataGateway API file setup
       - name: Create search_api_mapping.json
@@ -475,10 +466,7 @@ jobs:
           cache: 'yarn'
      
       - name: Install dependencies
-        # Ubuntu 16+ does not install libgconf-2-4 by default, so we need to install it ourselves (for Cypress)
-        run: |
-          sudo apt-get install libgconf-2-4
-          yarn --immutable
+        run: yarn --immutable
 
       - name: Run datagateway-search e2e tests
         run: yarn workspace datagateway-search run e2e
@@ -494,7 +482,7 @@ jobs:
     # it pushes it to Harbor.
     needs: [lint-and-unit-test, dataview-e2e-tests, download-e2e-tests, search-e2e-tests]
     name: Docker
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout repo
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4

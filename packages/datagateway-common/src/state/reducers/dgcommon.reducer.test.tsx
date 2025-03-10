@@ -1,6 +1,6 @@
 import DGCommonReducer, { initialState } from './dgcommon.reducer';
 import { DGCommonState } from '../app.types';
-import { loadFacilityName, loadUrls } from '../actions';
+import { loadFacilityName, loadQueryRetries, loadUrls } from '../actions';
 
 describe('DGCommon reducer', () => {
   let state: DGCommonState;
@@ -35,5 +35,13 @@ describe('DGCommon reducer', () => {
     );
 
     expect(updatedState.urls.apiUrl).toEqual('test');
+  });
+
+  it('should set query retry property when configure query retry action is sent', () => {
+    expect(state.queryRetries).toEqual(undefined);
+
+    const updatedState = DGCommonReducer(state, loadQueryRetries(1));
+
+    expect(updatedState.queryRetries).toEqual(1);
   });
 });

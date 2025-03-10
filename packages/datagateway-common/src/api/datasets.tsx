@@ -18,7 +18,7 @@ import {
   useInfiniteQuery,
   UseInfiniteQueryResult,
 } from 'react-query';
-import retryICATErrors from './retryICATErrors';
+import { useRetryICATErrors } from './retryICATErrors';
 
 export const fetchDatasets = (
   apiUrl: string,
@@ -60,6 +60,7 @@ export const useDataset = (
   additionalFilters?: AdditionalFilters
 ): UseQueryResult<Dataset[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+  const retryICATErrors = useRetryICATErrors();
 
   return useQuery<
     Dataset[],
@@ -95,6 +96,7 @@ export const useDatasetsPaginated = (
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters, sort, page, results } = parseSearchToQuery(location.search);
+  const retryICATErrors = useRetryICATErrors();
 
   return useQuery<
     Dataset[],
@@ -147,6 +149,7 @@ export const useDatasetsInfinite = (
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters, sort } = parseSearchToQuery(location.search);
+  const retryICATErrors = useRetryICATErrors();
 
   return useInfiniteQuery(
     ['dataset', { sort: JSON.stringify(sort), filters }, additionalFilters], // need to stringify sort as property order is important!
@@ -199,6 +202,7 @@ export const useDatasetCount = (
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const filters = parseSearchToQuery(location.search).filters;
+  const retryICATErrors = useRetryICATErrors();
 
   return useQuery<
     number,
@@ -242,6 +246,7 @@ export const useDatasetDetails = (
   datasetId: number
 ): UseQueryResult<Dataset, AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+  const retryICATErrors = useRetryICATErrors();
 
   return useQuery<Dataset, AxiosError, Dataset, [string, number]>(
     ['datasetDetails', datasetId],

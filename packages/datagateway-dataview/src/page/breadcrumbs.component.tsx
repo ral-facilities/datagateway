@@ -13,7 +13,7 @@ import {
   handleICATError,
   parseSearchToQuery,
   readSciGatewayToken,
-  retryICATErrors,
+  useRetryICATErrors,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -81,6 +81,7 @@ const useEntityInformation = (
   const breadcrumbSettings = useSelector(
     (state: StateType) => state.dgdataview.breadcrumbSettings
   );
+  const retryICATErrors = useRetryICATErrors();
 
   const queryConfigs = React.useMemo(() => {
     const queryConfigs: UseQueryOptions<
@@ -187,7 +188,13 @@ const useEntityInformation = (
     }
 
     return queryConfigs;
-  }, [currentPathnames, landingPageEntities, breadcrumbSettings, apiUrl]);
+  }, [
+    currentPathnames,
+    landingPageEntities,
+    breadcrumbSettings,
+    retryICATErrors,
+    apiUrl,
+  ]);
 
   // useQueries doesn't allow us to specify type info, so ignore this line
   // since we strongly type the queries object anyway

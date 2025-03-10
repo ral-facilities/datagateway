@@ -35,6 +35,7 @@ const MyDataCheckBox = ({
           }}
           control={<Checkbox checked={checked} onChange={handleChange} />}
           label={t('check_boxes.my_data')}
+          color="secondary"
         />
       </div>
     </ArrowTooltip>

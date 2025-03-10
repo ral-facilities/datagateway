@@ -165,13 +165,13 @@ describe('Generic add to cart button', () => {
       parentId: '1',
     });
 
-    const addToCartButton = await screen.findByRole('button', {
-      name: 'buttons.add_to_cart',
+    const removeFromCartButton = await screen.findByRole('button', {
+      name: 'buttons.remove_from_cart',
     });
 
-    expect(addToCartButton).toBeDisabled();
+    expect(removeFromCartButton).toBeDisabled();
 
-    await user.hover(addToCartButton.parentElement);
+    await user.hover(removeFromCartButton.parentElement);
 
     expect(
       await screen.findByText('buttons.parent_selected_tooltip')

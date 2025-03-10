@@ -65,7 +65,6 @@ describe('Dataset table component', () => {
         name: 'Test 1',
         fileSize: 1,
         fileCount: 1,
-        size: 1,
         modTime: '2019-07-23',
         createTime: '2019-07-23',
       },
@@ -314,9 +313,9 @@ describe('Dataset table component', () => {
   it('selected rows only considers relevant cart items', async () => {
     cartItems = [
       {
-        entityId: 1,
+        entityId: 5,
         entityType: 'investigation',
-        id: 1,
+        id: 5,
         name: 'test',
         parentEntities: [],
       },
