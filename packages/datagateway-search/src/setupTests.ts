@@ -7,7 +7,6 @@ import { initialState as dgSearchInitialState } from './state/reducers/dgsearch.
 import { screen, within } from '@testing-library/react';
 import failOnConsole from 'jest-fail-on-console';
 import { ThunkAction, ThunkDispatch } from 'redux-thunk';
-import { createLocation } from 'history';
 
 failOnConsole();
 
@@ -45,7 +44,6 @@ export const resetActions = (): void => {
 export const getState = (): StateType => ({
   dgsearch: dgSearchInitialState,
   dgcommon: dGCommonInitialState,
-  router: { location: { ...createLocation('/'), query: {} }, action: 'POP' },
 });
 export const dispatch: ThunkDispatch<StateType, null, AnyAction> = (
   action: Action | ThunkAction<void, StateType, null, AnyAction>

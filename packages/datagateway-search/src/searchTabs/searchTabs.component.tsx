@@ -50,7 +50,7 @@ function TabPanel(props: TabPanelProps): React.ReactElement {
   );
 }
 
-function a11yProps(index: string): React.ReactFragment {
+function a11yProps(index: string): { id: string; 'aria-controls': string } {
   return {
     id: `simple-tab-${index}`,
     'aria-controls': `simple-tabpanel-${index}`,

@@ -27,11 +27,7 @@ import {
   QueryParams,
   SortType,
 } from '../app.types';
-import {
-  act,
-  renderHook,
-  WrapperComponent,
-} from '@testing-library/react-hooks';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { createMemoryHistory, History } from 'history';
 import React from 'react';
 import { Router } from 'react-router-dom';
@@ -336,16 +332,18 @@ describe('generic api functions', () => {
 
   describe('push functions', () => {
     let history: History;
-    let wrapper: WrapperComponent<unknown>;
+    let wrapper: React.JSXElementConstructor<{
+      children: React.ReactElement;
+    }>;
     let pushSpy: jest.SpyInstance;
     let replaceSpy: jest.SpyInstance;
     beforeEach(() => {
       history = createMemoryHistory();
       pushSpy = jest.spyOn(history, 'push');
       replaceSpy = jest.spyOn(history, 'replace');
-      const newWrapper: WrapperComponent<unknown> = ({ children }) => (
-        <Router history={history}>{children}</Router>
-      );
+      const newWrapper: React.JSXElementConstructor<{
+        children: React.ReactElement;
+      }> = ({ children }) => <Router history={history}>{children}</Router>;
       wrapper = newWrapper;
     });
 
@@ -995,7 +993,7 @@ describe('generic api functions', () => {
         data: [{ id: 1 }, { id: 2 }, { id: 3 }],
       });
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           useIds('investigation', [
             { filterType: 'distinct', filterValue: '"name"' },
@@ -1005,7 +1003,7 @@ describe('generic api functions', () => {
         }
       );
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       const params = new URLSearchParams();
       params.append('order', JSON.stringify('id asc'));
@@ -1039,11 +1037,11 @@ describe('generic api functions', () => {
       (axios.get as jest.Mock).mockRejectedValue({
         message: 'Test error',
       });
-      const { result, waitFor } = renderHook(() => useIds('investigation'), {
+      const { result } = renderHook(() => useIds('investigation'), {
         wrapper: createReactQueryWrapper(),
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
     });
@@ -1055,7 +1053,7 @@ describe('generic api functions', () => {
         data: [{ title: '1' }, { title: '2' }, { title: '3' }],
       });
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           useCustomFilter('investigation', 'title', [
             { filterType: 'distinct', filterValue: '"name"' },
@@ -1065,7 +1063,7 @@ describe('generic api functions', () => {
         }
       );
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       const params = new URLSearchParams();
       params.append('distinct', JSON.stringify(['name', 'title']));
@@ -1086,14 +1084,14 @@ describe('generic api functions', () => {
       (axios.get as jest.Mock).mockRejectedValue({
         message: 'Test error',
       });
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useCustomFilter('investigation', 'title'),
         {
           wrapper: createReactQueryWrapper(),
         }
       );
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
     });
@@ -1108,14 +1106,16 @@ describe('generic api functions', () => {
         })
       );
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useCustomFilterCount('investigation', 'title', ['1', '2', '3']),
         {
           wrapper: createReactQueryWrapper(),
         }
       );
 
-      await waitFor(() => result.current.every((query) => query.isSuccess));
+      await waitFor(() =>
+        expect(result.current.every((query) => query.isSuccess)).toBe(true)
+      );
 
       const params = new URLSearchParams();
       params.append(
@@ -1181,14 +1181,16 @@ describe('generic api functions', () => {
         message: 'Test error',
       });
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useCustomFilterCount('investigation', 'title', ['1', '2', '3']),
         {
           wrapper: createReactQueryWrapper(),
         }
       );
 
-      await waitFor(() => result.current.every((query) => query.isError));
+      await waitFor(() =>
+        expect(result.current.every((query) => query.isError)).toBe(true)
+      );
 
       expect(handleICATError).toHaveBeenCalledTimes(3);
       expect(result.current.map((query) => query.error)).toEqual(

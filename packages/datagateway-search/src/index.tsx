@@ -4,7 +4,7 @@ import 'custom-event-polyfill';
 import 'url-search-params-polyfill';
 import './i18n';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOMClient from 'react-dom/client';
 import './index.css';
 import App from './App';
 import log from 'loglevel';
@@ -35,7 +35,7 @@ function domElementGetter(): HTMLElement {
 
 const reactLifecycles = singleSpaReact({
   React,
-  ReactDOM,
+  ReactDOMClient,
   rootComponent: () => (document.getElementById(pluginName) ? <App /> : null),
   domElementGetter,
 });
@@ -43,7 +43,8 @@ const reactLifecycles = singleSpaReact({
 const render = (): void => {
   const el = document.getElementById(pluginName);
   if (el) {
-    ReactDOM.render(<App />, document.getElementById(pluginName));
+    const root = ReactDOMClient.createRoot(el);
+    root.render(<App />);
   }
 };
 
@@ -156,17 +157,26 @@ if (
   if (process.env.NODE_ENV === `development`) {
     settings.then((settingsResult) => {
       if (settingsResult) {
-        const apiUrl = settingsResult.apiUrl;
+        const apiUrl = settingsResult.icatUrl;
         axios
-          .post(`${apiUrl}/sessions`, {
-            username: 'root',
-            password: 'pw',
-            mechanism: 'simple',
-          })
+          .post(
+            `${apiUrl}/session`,
+            `json=${JSON.stringify({
+              // plugin: 'db',
+              // credentials: [{ username: 'dls_sysadmin' }, { password: 'pw' }],
+              plugin: 'anon',
+              credentials: [{ username: '' }, { password: '' }],
+            })}`,
+            {
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+              },
+            }
+          )
           .then((response) => {
             const jwtHeader = { alg: 'HS256', typ: 'JWT' };
             const payload = {
-              sessionId: response.data.sessionID,
+              sessionId: response.data.sessionId,
               username: 'dev',
             };
             const jwt = jsrsasign.KJUR.jws.JWS.sign(

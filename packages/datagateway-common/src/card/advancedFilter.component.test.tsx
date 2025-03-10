@@ -3,11 +3,10 @@ import AdvancedFilter, {
   UnmemoisedAdvancedFilter,
 } from './advancedFilter.component';
 import { render, screen } from '@testing-library/react';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 
 describe('AdvancedFilter', () => {
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   beforeEach(() => {
     user = userEvent.setup();

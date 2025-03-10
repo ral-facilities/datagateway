@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import useSticky from './useSticky';
 import { fireEvent } from '@testing-library/react';
 
@@ -15,9 +15,7 @@ describe('useSticky', () => {
       bottom: 50,
     });
 
-    const { waitFor, result } = renderHook(() =>
-      useSticky({ current: target })
-    );
+    const { result } = renderHook(() => useSticky({ current: target }));
 
     // scroll the window
     fireEvent.scroll(window, {});
@@ -39,9 +37,7 @@ describe('useSticky', () => {
       bottom: 150,
     });
 
-    const { waitFor, result } = renderHook(() =>
-      useSticky({ current: target })
-    );
+    const { result } = renderHook(() => useSticky({ current: target }));
 
     // scroll the window
     fireEvent.scroll(window, {});
@@ -52,7 +48,7 @@ describe('useSticky', () => {
   });
 
   it('returns isSticky false upon window scroll if the given react ref points to null', () => {
-    const { waitFor, result } = renderHook(() => useSticky({ current: null }));
+    const { result } = renderHook(() => useSticky({ current: null }));
     // scroll the window
     fireEvent.scroll(window, {});
     waitFor(() => {
@@ -72,9 +68,7 @@ describe('useSticky', () => {
       top: 150,
     });
 
-    const { waitFor, result } = renderHook(() =>
-      useSticky({ current: target })
-    );
+    const { result } = renderHook(() => useSticky({ current: target }));
 
     // scroll the window
     fireEvent.scroll(window, {});

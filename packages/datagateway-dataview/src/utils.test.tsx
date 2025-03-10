@@ -1,5 +1,5 @@
 import useAfterMountEffect from './utils';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 
 describe('Utils', () => {
   describe('useAfterMountEffect', () => {

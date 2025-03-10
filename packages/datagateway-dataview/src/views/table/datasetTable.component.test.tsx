@@ -26,7 +26,6 @@ import {
   waitFor,
   within,
 } from '@testing-library/react';
-import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 import {
   findCellInRow,
@@ -40,7 +39,7 @@ describe('Dataset table component', () => {
   let rowData: Dataset[];
   let cartItems: DownloadCartItem[];
   let history: History;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
   let holder: HTMLElement;
 
   const renderComponent = (): RenderResult => {

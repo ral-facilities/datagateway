@@ -19,7 +19,6 @@ import {
   cleanupDatePickerWorkaround,
 } from '../../../setupTests';
 import { render, type RenderResult, screen } from '@testing-library/react';
-import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 import { paths } from '../../../page/pageContainer.component';
 
@@ -39,7 +38,7 @@ describe('ISIS Datasets - Card View', () => {
   let state: StateType;
   let cardData: Dataset[];
   let history: History;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult =>
     render(
@@ -178,8 +177,11 @@ describe('ISIS Datasets - Card View', () => {
     cleanupDatePickerWorkaround();
   });
 
-  it('uses default sort', () => {
+  it('uses default sort', async () => {
     renderComponent();
+
+    expect(await screen.findByTestId('card')).toBeInTheDocument();
+
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"asc"}')}`

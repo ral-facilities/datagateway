@@ -2,11 +2,10 @@ import * as React from 'react';
 import type { Investigation } from '../app.types';
 import EntityCard from './entityCard.component';
 import { render, screen, waitFor } from '@testing-library/react';
-import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 
 describe('Card', () => {
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   const entity: Investigation = {
     id: 1,

@@ -9,10 +9,10 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { generatePath, Router } from 'react-router-dom';
 import { createMemoryHistory, type History } from 'history';
-import { parse } from 'date-fns';
 import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
+  findAllRows,
   findCellInRow,
   findColumnHeaderByName,
   findColumnIndexByName,
@@ -23,21 +23,19 @@ import {
   type RenderResult,
   screen,
   within,
+  waitFor,
 } from '@testing-library/react';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 import ISISDataPublicationsTable from './isisDataPublicationsTable.component';
 import axios, { AxiosResponse } from 'axios';
 import { paths } from '../../../page/pageContainer.component';
-
-jest.useFakeTimers().setSystemTime(parse('2021-10-27', 'yyyy-MM-dd', 0));
 
 describe('ISIS Data Publication table component', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let rowData: DataPublication[];
   let history: History;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (studyDataPublicationId?: string): RenderResult => {
     if (studyDataPublicationId)
@@ -140,9 +138,12 @@ describe('ISIS Data Publication table component', () => {
     it('renders correctly', async () => {
       renderComponent();
 
-      const rows = await screen.findAllByRole('row');
-      //should have 1 row in the table
-      expect(rows).toHaveLength(1);
+      let rows: HTMLElement[] = [];
+      await waitFor(async () => {
+        rows = await findAllRows();
+        // should have 1 row in the table
+        expect(rows).toHaveLength(1);
+      });
 
       expect(
         await findColumnHeaderByName('datapublications.title')
@@ -151,7 +152,7 @@ describe('ISIS Data Publication table component', () => {
         await findColumnHeaderByName('datapublications.pid')
       ).toBeInTheDocument();
 
-      const row = await findRowAt(0);
+      const row = rows[0];
 
       // check that every cell contains the correct values
       expect(
@@ -196,8 +197,11 @@ describe('ISIS Data Publication table component', () => {
       expect(history.location.search).toBe('?');
     });
 
-    it('uses default sort', () => {
+    it('uses default sort', async () => {
       renderComponent();
+
+      expect(await screen.findAllByRole('gridcell')).toBeTruthy();
+
       expect(history.length).toBe(1);
       expect(history.location.search).toBe(
         `?sort=${encodeURIComponent('{"title":"desc"}')}`
@@ -259,9 +263,12 @@ describe('ISIS Data Publication table component', () => {
     it('renders correctly', async () => {
       renderComponent('2');
 
-      const rows = await screen.findAllByRole('row');
-      //should have 1 row in the table
-      expect(rows).toHaveLength(1);
+      let rows: HTMLElement[] = [];
+      await waitFor(async () => {
+        rows = await findAllRows();
+        // should have 1 row in the table
+        expect(rows).toHaveLength(1);
+      });
 
       expect(
         await findColumnHeaderByName('datapublications.title')
@@ -273,7 +280,7 @@ describe('ISIS Data Publication table component', () => {
         await findColumnHeaderByName('datapublications.publication_date')
       ).toBeInTheDocument();
 
-      const row = await findRowAt(0);
+      const row = rows[0];
 
       // check that every cell contains the correct values
       expect(
@@ -321,8 +328,11 @@ describe('ISIS Data Publication table component', () => {
       cleanupDatePickerWorkaround();
     });
 
-    it('uses default sort', () => {
+    it('uses default sort', async () => {
       renderComponent('2');
+
+      expect(await screen.findAllByRole('gridcell')).toBeTruthy();
+
       expect(history.length).toBe(1);
       expect(history.location.search).toBe(
         `?sort=${encodeURIComponent('{"publicationDate":"desc"}')}`

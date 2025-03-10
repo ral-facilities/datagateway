@@ -10,7 +10,7 @@ import LogoDark from 'datagateway-common/src/images/datgateway-white-text-blue-m
 import jsrsasign from 'jsrsasign';
 import log from 'loglevel';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOMClient from 'react-dom/client';
 import singleSpaReact from 'single-spa-react';
 import App, { ErrorFallback } from './App';
 import { DownloadSettings } from './ConfigProvider';
@@ -30,7 +30,7 @@ function domElementGetter(): HTMLElement {
 
 const reactLifecycles = singleSpaReact({
   React,
-  ReactDOM,
+  ReactDOMClient,
   rootComponent: () =>
     document.getElementById('datagateway-download') ? <App /> : null,
   domElementGetter,
@@ -43,7 +43,8 @@ const reactLifecycles = singleSpaReact({
 const render = (): void => {
   const el = document.getElementById('datagateway-download');
   if (el) {
-    ReactDOM.render(<App />, document.getElementById('datagateway-download'));
+    const root = ReactDOMClient.createRoot(el);
+    root.render(<App />);
   }
 };
 
