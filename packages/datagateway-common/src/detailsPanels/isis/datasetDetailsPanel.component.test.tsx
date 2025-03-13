@@ -5,7 +5,7 @@ import axios from 'axios';
 import * as React from 'react';
 import { Provider } from 'react-redux';
 import { combineReducers, createStore } from 'redux';
-import { StateType } from '../../../lib';
+import { StateType } from '../../state/app.types';
 import dGCommonReducer from '../../state/reducers/dgcommon.reducer';
 import DatasetDetailsPanel from './datasetDetailsPanel.component';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';

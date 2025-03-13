@@ -14,7 +14,7 @@ import {
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { getApiParams, parseSearchToQuery } from '.';
-import { StateType } from '..';
+import { StateType } from '../../state/app.types';
 import { useRetryICATErrors } from './retryICATErrors';
 
 const fetchDataPublications = (

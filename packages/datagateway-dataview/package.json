@@ -2,8 +2,8 @@
   "name": "datagateway-dataview",
   "version": "2.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
-    "@craco/craco": "7.1.0",
     "@emotion/react": "11.11.1",
     "@emotion/styled": "11.11.0",
     "@mui/icons-material": "5.11.0",
@@ -21,8 +21,10 @@
     "@types/react-router-dom": "5.3.3",
     "@types/react-virtualized": "9.21.10",
     "@types/redux-logger": "3.0.8",
+    "@vitejs/plugin-react": "4.3.4",
     "axios": "1.8.3",
-    "custom-event-polyfill": "1.0.7",
+    "browserslist": "4.24.4",
+    "browserslist-to-esbuild": "2.1.1",
     "datagateway-common": "^2.1.0",
     "date-fns": "2.30.0",
     "eslint-config-prettier": "8.10.0",
@@ -38,12 +40,10 @@
     "loglevel": "1.9.1",
     "prettier": "2.8.0",
     "react": "18.2.0",
-    "react-app-polyfill": "3.0.0",
     "react-dom": "18.2.0",
     "react-i18next": "12.3.1",
     "react-redux": "8.1.3",
     "react-router-dom": "5.3.4",
-    "react-scripts": "5.0.0",
     "react-virtualized": "9.22.5",
     "redux": "4.2.0",
     "redux-logger": "3.0.6",
@@ -52,11 +52,11 @@
     "single-spa-react": "5.0.1",
     "tslib": "2.6.0",
     "typescript": "5.3.3",
-    "url-search-params-polyfill": "8.2.4"
+    "vite": "6.2.1"
   },
   "scripts": {
-    "start": "craco start",
-    "build": "craco build",
+    "dev": "vite --open",
+    "build": "vite build",
     "serve:build": "yarn build && serve -l 5001 build",
     "test": "craco test --env=jsdom --coverage --watchAll=false",
     "test:watch": "craco test --env=jsdom --watch",
@@ -67,21 +67,11 @@
     "cy:open": "cypress open",
     "cy:run": "cypress run",
     "lint:js": "eslint --max-warnings=0 --ext=tsx --ext=ts --ext=js --ext=jsx --fix ./src ./cypress && tsc --noEmit",
-    "eject": "react-scripts eject",
     "pre-commit": "lint-staged"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ]
-  },
+  "browserslist": [
+    "defaults"
+  ],
   "jest": {
     "transformIgnorePatterns": [
       "node_modules/(?!(axios|copy-anything|is-what))"

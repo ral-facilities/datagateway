@@ -5,7 +5,7 @@ import * as React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import { combineReducers, createStore } from 'redux';
-import { StateType } from '../../../lib';
+import { StateType } from '../../state/app.types';
 
 import type { Investigation } from '../../app.types';
 import dGCommonReducer from '../../state/reducers/dgcommon.reducer';

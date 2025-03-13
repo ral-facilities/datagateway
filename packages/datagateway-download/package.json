@@ -2,8 +2,8 @@
   "name": "datagateway-download",
   "version": "2.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
-    "@craco/craco": "7.1.0",
     "@emotion/react": "11.11.1",
     "@emotion/styled": "11.11.0",
     "@mui/icons-material": "5.11.0",
@@ -18,7 +18,10 @@
     "@types/react-dom": "18.0.11",
     "@types/react-router-dom": "5.3.3",
     "@types/react-virtualized": "9.21.10",
+    "@vitejs/plugin-react": "4.3.4",
     "axios": "1.8.3",
+    "browserslist": "4.24.4",
+    "browserslist-to-esbuild": "2.1.1",
     "datagateway-common": "^2.1.0",
     "date-fns": "2.30.0",
     "date-fns-tz": "2.0.0",
@@ -41,11 +44,11 @@
     "react-dom": "18.2.0",
     "react-i18next": "12.3.1",
     "react-router-dom": "5.3.4",
-    "react-scripts": "5.0.0",
     "react-virtualized": "9.22.5",
     "single-spa-react": "5.0.1",
     "tslib": "2.6.0",
-    "typescript": "5.3.3"
+    "typescript": "5.3.3",
+    "vite": "6.2.1"
   },
   "devDependencies": {
     "@babel/eslint-parser": "7.23.3",
@@ -68,8 +71,8 @@
     "start-server-and-test": "~2.0.11"
   },
   "scripts": {
-    "start": "craco start",
-    "build": "craco build",
+    "dev": "vite dev",
+    "build": "vite build",
     "serve:build": "yarn build && serve -l 5001 build",
     "test": "craco test --env=jsdom --coverage --watchAll=false",
     "test:watch": "craco test --env=jsdom --watch",

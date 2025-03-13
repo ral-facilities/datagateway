@@ -3,7 +3,7 @@ import { MicroFrontendId, RegisterRouteType } from 'datagateway-common';
 import LogoLight from 'datagateway-common/src/images/datagateway-logo.svg';
 import LogoDark from 'datagateway-common/src/images/datgateway-white-text-blue-mark-logo.svg';
 import log from 'loglevel';
-import { fetchSettings } from './';
+import { fetchSettings } from './main';
 
 jest.mock('loglevel');
 
@@ -18,21 +18,21 @@ describe('index - fetchSettings', () => {
     (CustomEvent as jest.Mock).mockClear();
   });
 
-  it('settings are loaded', async () => {
+  it('settings (facilityName, URLs and accessMethods) are loaded', async () => {
     const settingsResult = {
       facilityName: 'Generic',
-      facilityImageURL: 'test-image.jpg',
-      features: {},
       idsUrl: 'ids',
       apiUrl: 'api',
-      breadcrumbs: [
-        {
-          matchEntity: 'test',
-          replaceEntityField: 'title',
-        },
-      ],
       downloadApiUrl: 'download-api',
-      selectAllSetting: false,
+      fileCountMax: 5000,
+      totalSizeMax: 1000000000000,
+      accessMethods: {
+        https: {
+          idsUrl: 'https-ids',
+          displayName: 'HTTPS',
+          description: 'HTTP description',
+        },
+      },
       routes: [
         {
           section: 'section',
@@ -59,7 +59,7 @@ describe('index - fetchSettings', () => {
         payload: {
           section: 'section',
           link: 'link',
-          plugin: 'datagateway-dataview',
+          plugin: 'datagateway-download',
           displayName: 'displayName',
           admin: false,
           hideFromMenu: false,
@@ -76,31 +76,38 @@ describe('index - fetchSettings', () => {
   it('settings loaded and multiple routes registered with any helpSteps provided', async () => {
     const settingsResult = {
       facilityName: 'Generic',
-      features: {},
       idsUrl: 'ids',
       apiUrl: 'api',
-      breadcrumbs: [
-        {
-          matchEntity: 'test',
-          replaceEntityField: 'title',
-        },
-      ],
       downloadApiUrl: 'download-api',
-      selectAllSetting: false,
+      fileCountMax: 5000,
+      totalSizeMax: 1000000000000,
+      accessMethods: {
+        https: {
+          idsUrl: 'https-ids',
+          displayName: 'HTTPS',
+          description: 'HTTP description',
+        },
+      },
       routes: [
         {
           section: 'section0',
           link: 'link0',
           displayName: 'displayName0',
           order: 0,
-          admin: true,
         },
         {
           section: 'section1',
           link: 'link1',
           displayName: 'displayName1',
-          order: 1,
           hideFromMenu: true,
+          order: 1,
+        },
+        {
+          section: 'admin0',
+          link: 'link0',
+          displayName: 'displayNameAdmin0',
+          admin: true,
+          order: 0,
         },
       ],
       helpSteps: [{ target: '#id', content: 'content' }],
@@ -114,16 +121,16 @@ describe('index - fetchSettings', () => {
     const settings = await fetchSettings();
 
     expect(JSON.stringify(settings)).toEqual(JSON.stringify(settingsResult));
-    expect(CustomEvent).toHaveBeenCalledTimes(2);
+    expect(CustomEvent).toHaveBeenCalledTimes(3);
     expect(CustomEvent).toHaveBeenNthCalledWith(1, MicroFrontendId, {
       detail: {
         type: RegisterRouteType,
         payload: {
           section: 'section0',
           link: 'link0',
-          plugin: 'datagateway-dataview',
+          plugin: 'datagateway-download',
           displayName: 'displayName0',
-          admin: true,
+          admin: false,
           hideFromMenu: false,
           order: 0,
           helpSteps: [{ target: '#id', content: 'content' }],
@@ -139,11 +146,29 @@ describe('index - fetchSettings', () => {
         payload: {
           section: 'section1',
           link: 'link1',
-          plugin: 'datagateway-dataview',
+          plugin: 'datagateway-download',
           displayName: 'displayName1',
           admin: false,
           hideFromMenu: true,
           order: 1,
+          helpSteps: [],
+          logoLightMode: undefined,
+          logoDarkMode: undefined,
+          logoAltText: 'DataGateway',
+        },
+      },
+    });
+    expect(CustomEvent).toHaveBeenNthCalledWith(3, MicroFrontendId, {
+      detail: {
+        type: RegisterRouteType,
+        payload: {
+          section: 'admin0',
+          link: 'link0',
+          plugin: 'datagateway-download',
+          displayName: 'displayNameAdmin0',
+          admin: true,
+          hideFromMenu: false,
+          order: 0,
           helpSteps: [],
           logoLightMode: undefined,
           logoDarkMode: undefined,
@@ -160,6 +185,13 @@ describe('index - fetchSettings', () => {
           idsUrl: 'ids',
           apiUrl: 'api',
           downloadApiUrl: 'download-api',
+          accessMethods: {
+            https: {
+              idsUrl: 'https-ids',
+              displayName: 'HTTPS',
+              description: 'HTTP description',
+            },
+          },
         },
       })
     );
@@ -171,7 +203,7 @@ describe('index - fetchSettings', () => {
 
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
-      'Error loading /datagateway-dataview-settings.json: facilityName is undefined in settings'
+      'Error loading /datagateway-download-settings.json: facilityName is undefined in settings'
     );
   });
 
@@ -180,6 +212,13 @@ describe('index - fetchSettings', () => {
       Promise.resolve({
         data: {
           facilityName: 'Generic',
+          accessMethods: {
+            https: {
+              idsUrl: 'https-ids',
+              displayName: 'HTTPS',
+              description: 'HTTP description',
+            },
+          },
         },
       })
     );
@@ -191,7 +230,88 @@ describe('index - fetchSettings', () => {
 
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
-      'Error loading /datagateway-dataview-settings.json: One of the URL options (idsUrl, apiUrl, downloadApiUrl) is undefined in settings'
+      'Error loading /datagateway-download-settings.json: One of the URL options (idsUrl, apiUrl, downloadApiUrl) is undefined in settings'
+    );
+  });
+
+  it('logs an error if accessMethods is undefined in the settings', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: {
+          facilityName: 'Generic',
+          idsUrl: 'ids',
+          apiUrl: 'api',
+          downloadApiUrl: 'download-api',
+        },
+      })
+    );
+
+    const settings = await fetchSettings();
+
+    expect(settings).toBeUndefined();
+    expect(log.error).toHaveBeenCalled();
+
+    const mockLog = (log.error as jest.Mock).mock;
+    expect(mockLog.calls[0][0]).toEqual(
+      'Error loading /datagateway-download-settings.json: accessMethods is undefined in settings'
+    );
+  });
+
+  it('logs an error if there are no access methods defined within the accessMethods object in settings', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: {
+          facilityName: 'Generic',
+          idsUrl: 'ids',
+          apiUrl: 'api',
+          downloadApiUrl: 'download-api',
+          accessMethods: {
+            https: {
+              idsUrl: 'https-ids',
+              displayName: 'HTTPS',
+              description: 'HTTP description',
+            },
+            globus: {
+              displayName: 'Globus',
+              description: 'Globus description',
+            },
+          },
+        },
+      })
+    );
+
+    const settings = await fetchSettings();
+
+    expect(settings).toBeUndefined();
+    expect(log.error).toHaveBeenCalled();
+
+    const mockLog = (log.error as jest.Mock).mock;
+    expect(mockLog.calls[0][0]).toEqual(
+      'Error loading /datagateway-download-settings.json: Access method globus, defined in settings, does not contain a idsUrl'
+    );
+  });
+
+  it('logs an error if there is no idsUrl defined in any access method in the settings', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: {
+          facilityName: 'Generic',
+          idsUrl: 'ids',
+          apiUrl: 'api',
+          downloadApiUrl: 'download-api',
+          accessMethods: {},
+        },
+      })
+    );
+
+    const settings = await fetchSettings();
+
+    expect(settings).toBeUndefined();
+    expect(log.error).toHaveBeenCalled();
+
+    const mockLog = (log.error as jest.Mock).mock;
+    expect(mockLog.calls[0][0]).toEqual(
+      'Error loading /datagateway-download-settings.json: At least one access method should be defined under accessMethods in settings'
     );
   });
 
@@ -209,12 +329,12 @@ describe('index - fetchSettings', () => {
 
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
-      'Error loading /datagateway-dataview-settings.json: Invalid format'
+      'Error loading /datagateway-download-settings.json: Invalid format'
     );
   });
 
   it('logs an error if settings.json fails to be loaded with custom path', async () => {
-    process.env.REACT_APP_DATAVIEW_BUILD_DIRECTORY = '/custom/directory/';
+    process.env.REACT_APP_DOWNLOAD_BUILD_DIRECTORY = '/custom/directory/';
     (axios.get as jest.Mock).mockImplementationOnce(() => Promise.reject({}));
 
     const settings = await fetchSettings();
@@ -224,9 +344,9 @@ describe('index - fetchSettings', () => {
 
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
-      'Error loading /custom/directory/datagateway-dataview-settings.json: undefined'
+      'Error loading /custom/directory/datagateway-download-settings.json: undefined'
     );
-    delete process.env.REACT_APP_DATAVIEW_BUILD_DIRECTORY;
+    delete process.env.REACT_APP_DOWNLOAD_BUILD_DIRECTORY;
   });
 
   it('logs an error if fails to load a settings.json and is still in a loading state', async () => {
@@ -239,7 +359,7 @@ describe('index - fetchSettings', () => {
 
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
-      'Error loading /datagateway-dataview-settings.json: undefined'
+      'Error loading /datagateway-download-settings.json: undefined'
     );
   });
 
@@ -251,6 +371,18 @@ describe('index - fetchSettings', () => {
           idsUrl: 'ids',
           apiUrl: 'api',
           downloadApiUrl: 'download-api',
+          accessMethods: {
+            https: {
+              idsUrl: 'https-ids',
+              displayName: 'HTTPS',
+              description: 'HTTP description',
+            },
+            globus: {
+              idsUrl: 'https-ids',
+              displayName: 'Globus',
+              description: 'Globus description',
+            },
+          },
         },
       })
     );
@@ -262,7 +394,7 @@ describe('index - fetchSettings', () => {
 
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
-      'Error loading /datagateway-dataview-settings.json: No routes provided in the settings'
+      'Error loading /datagateway-download-settings.json: No routes provided in the settings'
     );
   });
 
@@ -274,10 +406,23 @@ describe('index - fetchSettings', () => {
           idsUrl: 'ids',
           apiUrl: 'api',
           downloadApiUrl: 'download-api',
+          accessMethods: {
+            https: {
+              idsUrl: 'https-ids',
+              displayName: 'HTTPS',
+              description: 'HTTP description',
+            },
+            globus: {
+              idsUrl: 'https-ids',
+              displayName: 'Globus',
+              description: 'Globus description',
+            },
+          },
           routes: [
             {
               section: 'section',
               link: 'link',
+              order: 0,
             },
           ],
         },
@@ -291,7 +436,7 @@ describe('index - fetchSettings', () => {
 
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
-      'Error loading /datagateway-dataview-settings.json: Route provided does not have all the required entries (section, link, displayName)'
+      'Error loading /datagateway-download-settings.json: Route provided does not have all the required entries (section, link, displayName)'
     );
   });
 });

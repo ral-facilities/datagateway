@@ -1,6 +1,5 @@
 import React from 'react';
-import { ArrowTooltip } from '.';
-import { getTooltipText } from './arrowtooltip.component';
+import ArrowTooltip, { getTooltipText } from './arrowtooltip.component';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
