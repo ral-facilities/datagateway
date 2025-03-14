@@ -91,9 +91,12 @@ const AdminDownloadStatusTable: React.FC = () => {
 
           if ('type' in filter && filter.type) {
             // As UPPER is used need to pass text filters in upper case to avoid case sensitivity
+            // also need to escape single quotes
             const filterValue =
-              typeof filter.value === 'string' && filter.type !== 'exact'
-                ? (filter.value as string).toUpperCase()
+              typeof filter.value === 'string'
+                ? filter.type !== 'exact'
+                  ? (filter.value as string).toUpperCase().replaceAll("'", "''")
+                  : filter.value.replaceAll("'", "''")
                 : filter.value;
 
             // use switch statement to ensure TS can detect we cover all cases

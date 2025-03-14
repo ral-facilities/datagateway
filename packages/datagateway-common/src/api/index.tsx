@@ -250,23 +250,45 @@ export const getApiParams = (
         }
         if ('type' in filter && filter.type) {
           // use switch statement to ensure TS can detect we cover all cases
+          // also need to escape single quotes
           switch (filter.type) {
             case 'include':
               searchParams.append(
                 'where',
-                JSON.stringify({ [column]: { ilike: filter.value } })
+                JSON.stringify({
+                  [column]: {
+                    ilike:
+                      typeof filter.value === 'string'
+                        ? filter.value.replaceAll("'", "''")
+                        : filter.value,
+                  },
+                })
               );
               break;
             case 'exclude':
               searchParams.append(
                 'where',
-                JSON.stringify({ [column]: { nilike: filter.value } })
+                JSON.stringify({
+                  [column]: {
+                    nilike:
+                      typeof filter.value === 'string'
+                        ? filter.value.replaceAll("'", "''")
+                        : filter.value,
+                  },
+                })
               );
               break;
             case 'exact':
               searchParams.append(
                 'where',
-                JSON.stringify({ [column]: { eq: filter.value } })
+                JSON.stringify({
+                  [column]: {
+                    eq:
+                      typeof filter.value === 'string'
+                        ? filter.value.replaceAll("'", "''")
+                        : filter.value,
+                  },
+                })
               );
               break;
             default:
