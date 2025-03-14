@@ -257,21 +257,16 @@ export const useSubmitCart = (
   );
 };
 
-const fileSizeAndCountLimit = pLimit(20);
+const fileSizeAndCountLimit = pLimit(5);
 
 export const useFileSizesAndCounts = (
   data: DownloadCartItem[] | undefined
 ): UseQueryResult<FileSizeAndCount, AxiosError>[] => {
   const settings = React.useContext(DownloadSettingsContext);
-  const { facilityName, apiUrl, downloadApiUrl } = settings;
+  const { apiUrl } = settings;
   const retryICATErrors = useRetryICATErrors();
 
-  const queryConfigs: {
-    queryKey: [string, number];
-    staleTime: number;
-    queryFn: () => Promise<FileSizeAndCount>;
-    retry: (failureCount: number, error: AxiosError) => boolean;
-  }[] = React.useMemo(() => {
+  const queryConfigs = React.useMemo(() => {
     return data
       ? data.map((cartItem) => {
           const { entityId, entityType } = cartItem;
@@ -279,19 +274,17 @@ export const useFileSizesAndCounts = (
             queryKey: ['fileSizeAndCount', entityId],
             queryFn: () =>
               fileSizeAndCountLimit(getFileSizeAndCount, entityId, entityType, {
-                facilityName,
                 apiUrl,
-                downloadApiUrl,
               }),
             onError: (error: AxiosError) => {
               handleICATError(error, false);
             },
             retry: retryICATErrors,
             staleTime: Infinity,
-          };
+          } as UseQueryOptions<FileSizeAndCount, AxiosError, FileSizeAndCount>;
         })
       : [];
-  }, [data, retryICATErrors, facilityName, apiUrl, downloadApiUrl]);
+  }, [data, retryICATErrors, apiUrl]);
 
   return useQueries(queryConfigs);
 };
