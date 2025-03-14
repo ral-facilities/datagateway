@@ -6310,7 +6310,7 @@ __metadata:
     react-dom: 17.0.2
     react-draggable: 4.4.3
     react-i18next: 12.3.1
-    react-query: 3.39.2
+    react-query: 3.33.5
     react-redux: 8.1.3
     react-router-dom: 5.3.0
     react-scripts: 5.0.0
@@ -6390,7 +6390,7 @@ __metadata:
     react-app-polyfill: 3.0.0
     react-dom: 17.0.2
     react-i18next: 12.3.1
-    react-query: 3.39.2
+    react-query: 3.33.5
     react-redux: 8.1.3
     react-router-dom: 5.3.0
     react-scripts: 5.0.0
@@ -6445,6 +6445,7 @@ __metadata:
     eslint-config-react-app: 7.0.0
     eslint-plugin-cypress: 2.15.1
     eslint-plugin-prettier: 4.2.1
+    fastq: ^1.19.1
     history: 4.10.1
     i18next: 22.0.3
     i18next-browser-languagedetector: 7.2.0
@@ -6455,11 +6456,13 @@ __metadata:
     lodash.chunk: 4.2.0
     loglevel: 1.9.1
     p-limit: 3.1.0
+    p-queue: 6.6.2
+    p-throttle: 4.1.1
     prettier: 2.8.0
     react: 17.0.2
     react-dom: 17.0.2
     react-i18next: 12.3.1
-    react-query: 3.39.2
+    react-query: 3.33.5
     react-router-dom: 5.3.0
     react-scripts: 5.0.0
     react-virtualized: 9.22.3
@@ -6530,7 +6533,7 @@ __metadata:
     react-app-polyfill: 3.0.0
     react-dom: 17.0.2
     react-i18next: 12.3.1
-    react-query: 3.39.2
+    react-query: 3.33.5
     react-redux: 8.1.3
     react-router-dom: 5.3.0
     react-scripts: 5.0.0
@@ -7794,7 +7797,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eventemitter3@npm:^4.0.0":
+"eventemitter3@npm:^4.0.0, eventemitter3@npm:^4.0.4":
   version: 4.0.7
   resolution: "eventemitter3@npm:4.0.7"
   checksum: 1875311c42fcfe9c707b2712c32664a245629b42bb0a5a84439762dd0fd637fc54d078155ea83c2af9e0323c9ac13687e03cfba79b03af9f40c89b4960099374
@@ -8031,6 +8034,15 @@ __metadata:
   dependencies:
     punycode: ^1.3.2
   checksum: 5043d0c4a8d775ff58504d56c096563c11b113e4cb8a2668c6f824a1cd4fb3812e2fdf76537eb24a7ce4ae7def6bd9747da630c617cf2a4b6ce0c42514e4f21c
+  languageName: node
+  linkType: hard
+
+"fastq@npm:^1.19.1":
+  version: 1.19.1
+  resolution: "fastq@npm:1.19.1"
+  dependencies:
+    reusify: ^1.0.4
+  checksum: 7691d1794fb84ad0ec2a185f10e00f0e1713b894e2c9c4d42f0bc0ba5f8c00e6e655a202074ca0b91b9c3d977aab7c30c41a8dc069fb5368576ac0054870a0e6
   languageName: node
   linkType: hard
 
@@ -11801,6 +11813,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"p-finally@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "p-finally@npm:1.0.0"
+  checksum: 93a654c53dc805dd5b5891bab16eb0ea46db8f66c4bfd99336ae929323b1af2b70a8b0654f8f1eae924b2b73d037031366d645f1fd18b3d30cbd15950cc4b1d4
+  languageName: node
+  linkType: hard
+
 "p-limit@npm:3.1.0, p-limit@npm:^3.0.2":
   version: 3.1.0
   resolution: "p-limit@npm:3.1.0"
@@ -11855,6 +11874,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"p-queue@npm:6.6.2":
+  version: 6.6.2
+  resolution: "p-queue@npm:6.6.2"
+  dependencies:
+    eventemitter3: ^4.0.4
+    p-timeout: ^3.2.0
+  checksum: 832642fcc4ab6477b43e6d7c30209ab10952969ed211c6d6f2931be8a4f9935e3578c72e8cce053dc34f2eb6941a408a2c516a54904e989851a1a209cf19761c
+  languageName: node
+  linkType: hard
+
 "p-retry@npm:^4.5.0":
   version: 4.6.2
   resolution: "p-retry@npm:4.6.2"
@@ -11862,6 +11891,22 @@ __metadata:
     "@types/retry": 0.12.0
     retry: ^0.13.1
   checksum: 45c270bfddaffb4a895cea16cb760dcc72bdecb6cb45fef1971fa6ea2e91ddeafddefe01e444ac73e33b1b3d5d29fb0dd18a7effb294262437221ddc03ce0f2e
+  languageName: node
+  linkType: hard
+
+"p-throttle@npm:4.1.1":
+  version: 4.1.1
+  resolution: "p-throttle@npm:4.1.1"
+  checksum: fe8709f3c3b1da7c033479375c2c302e80c1a5d86449013afa7cd46d1dc210bc824a7e4a9d088e66d31987d00878c2b5491bb2fe76246d4d2fc9a1636f5f8298
+  languageName: node
+  linkType: hard
+
+"p-timeout@npm:^3.2.0":
+  version: 3.2.0
+  resolution: "p-timeout@npm:3.2.0"
+  dependencies:
+    p-finally: ^1.0.0
+  checksum: 3dd0eaa048780a6f23e5855df3dd45c7beacff1f820476c1d0d1bcd6648e3298752ba2c877aa1c92f6453c7dd23faaf13d9f5149fc14c0598a142e2c5e8d649c
   languageName: node
   linkType: hard
 
@@ -13388,21 +13433,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-query@npm:3.39.2":
-  version: 3.39.2
-  resolution: "react-query@npm:3.39.2"
+"react-query@npm:3.33.5":
+  version: 3.33.5
+  resolution: "react-query@npm:3.33.5"
   dependencies:
     "@babel/runtime": ^7.5.5
     broadcast-channel: ^3.4.1
     match-sorter: ^6.0.2
   peerDependencies:
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    react: ^16.8.0 || ^17.0.0
   peerDependenciesMeta:
     react-dom:
       optional: true
     react-native:
       optional: true
-  checksum: 83b199e66af28ab67ec4d22e51da42f02447186623db926b75d27a1c09a3383da6ddc9e5b83d82578fac7abdba7e6f265aecbffdb91db61981950d3d59409346
+  checksum: 558194aaf3240ffc5640c842daea9da090e081fdd266c67ffb569ae352a6a718cf512ddc3f8f031b1e2e9581e4722e051ae30b29914375054e6645a8b2910586
   languageName: node
   linkType: hard
 
