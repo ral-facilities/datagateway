@@ -4,7 +4,11 @@ import type { Download } from 'datagateway-common';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import { getDownload, getPercentageComplete } from '../downloadApi';
 import DownloadProgressIndicator from './downloadProgressIndicator.component';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import {
+  QueryClient,
+  QueryClientProvider,
+  setLogger,
+} from '@tanstack/react-query';
 import { mockedSettings, mockDownloadItems } from '../testData';
 
 jest.mock('../downloadApi');

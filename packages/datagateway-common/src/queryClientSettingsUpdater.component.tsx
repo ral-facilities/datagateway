@@ -1,5 +1,5 @@
 import React from 'react';
-import { QueryClient } from 'react-query';
+import { QueryClient } from '@tanstack/react-query';
 import { StateType } from './state/app.types';
 import { useSelector } from 'react-redux';
 

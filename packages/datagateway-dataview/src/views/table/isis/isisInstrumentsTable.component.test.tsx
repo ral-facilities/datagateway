@@ -9,7 +9,7 @@ import {
   useInstrumentsInfinite,
 } from 'datagateway-common';
 import configureStore from 'redux-mock-store';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { Router } from 'react-router-dom';

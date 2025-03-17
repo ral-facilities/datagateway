@@ -13,7 +13,7 @@ import {
 } from 'datagateway-common';
 import { createMemoryHistory, type MemoryHistory } from 'history';
 import * as React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';

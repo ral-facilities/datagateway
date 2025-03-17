@@ -22,7 +22,7 @@ import {
   QueryClientProvider,
   useIsFetching,
   useQueryClient,
-} from 'react-query';
+} from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import {
   act,

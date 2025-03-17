@@ -16,8 +16,8 @@ import type {
   UseQueryResult,
   UseInfiniteQueryResult,
   UseQueryOptions,
-} from 'react-query';
-import { useQuery, useInfiniteQuery } from 'react-query';
+} from '@tanstack/react-query';
+import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
 import { useRetryICATErrors } from './retryICATErrors';
 
 export const fetchDatafiles = (

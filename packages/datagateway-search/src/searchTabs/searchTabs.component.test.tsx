@@ -12,7 +12,7 @@ import {
 import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios';
 import { createMemoryHistory, type History } from 'history';
 import { render, screen, within } from '@testing-library/react';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import SearchTabs from './searchTabs.component';
 import { initialState } from '../state/reducers/dgsearch.reducer';

@@ -4,7 +4,11 @@ import { Download, InvalidateTokenType } from 'datagateway-common';
 import { handleICATError, NotificationType } from 'datagateway-common';
 import { createMemoryHistory } from 'history';
 import * as React from 'react';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import {
+  QueryClient,
+  QueryClientProvider,
+  setLogger,
+} from '@tanstack/react-query';
 import { Router } from 'react-router-dom';
 import { DownloadSettingsContext } from './ConfigProvider';
 import {

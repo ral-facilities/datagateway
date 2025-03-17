@@ -10,7 +10,7 @@ import {
   useQueryClient,
   useMutation,
   UseMutationResult,
-} from 'react-query';
+} from '@tanstack/react-query';
 import { useRetryICATErrors } from './retryICATErrors';
 
 export const fetchDownloadCart = (config: {
@@ -59,7 +59,7 @@ export const useCart = (): UseQueryResult<DownloadCartItem[], AxiosError> => {
   );
   const retryICATErrors = useRetryICATErrors();
   return useQuery(
-    'cart',
+    ['cart'],
     () =>
       fetchDownloadCart({
         facilityName,
@@ -97,7 +97,7 @@ export const useAddToCart = (
       }),
     {
       onSuccess: (data) => {
-        queryClient.setQueryData('cart', data);
+        queryClient.setQueryData(['cart'], data);
       },
       retry: (failureCount, error) => {
         // if we get 431 we know this is an intermittent error so retry
@@ -138,7 +138,7 @@ export const useRemoveFromCart = (
       ),
     {
       onSuccess: (data) => {
-        queryClient.setQueryData('cart', data);
+        queryClient.setQueryData(['cart'], data);
       },
       retry: (failureCount, error) => {
         // if we get 431 we know this is an intermittent error so retry

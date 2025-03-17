@@ -17,7 +17,7 @@ import {
   useQuery,
   UseQueryOptions,
   UseQueryResult,
-} from 'react-query';
+} from '@tanstack/react-query';
 import handleICATError from '../handleICATError';
 import { readSciGatewayToken } from '../parseTokens';
 import { useSelector } from 'react-redux';
@@ -952,5 +952,7 @@ export const useCustomFilterCount = (
   // since we strongly type the queries object anyway
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  return useQueries(queryConfigs);
+  return useQueries({
+    queries: queryConfigs,
+  });
 };

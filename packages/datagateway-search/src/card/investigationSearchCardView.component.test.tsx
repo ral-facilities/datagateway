@@ -8,7 +8,7 @@ import {
   StateType,
 } from 'datagateway-common';
 import InvestigationSearchCardView from './investigationSearchCardView.component';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import thunk from 'redux-thunk';

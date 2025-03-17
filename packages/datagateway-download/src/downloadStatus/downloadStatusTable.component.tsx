@@ -20,9 +20,9 @@ import { useTranslation } from 'react-i18next';
 import { toDate } from 'date-fns-tz';
 import { format, isAfter, isBefore, isEqual, isWithinInterval } from 'date-fns';
 import DownloadProgressIndicator from './downloadProgressIndicator.component';
-import { useQueryClient } from 'react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import {
-  QueryKey,
+  QueryKeys,
   useDownloadOrRestoreDownload,
   useDownloads,
 } from '../downloadApiHooks';
@@ -69,7 +69,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
   const refreshTable = useCallback(async () => {
     await Promise.all([
       // mark download progress queries as invalid so that react-query will refetch them as well.
-      queryClient.invalidateQueries(QueryKey.DOWNLOAD_PROGRESS),
+      queryClient.invalidateQueries([QueryKeys.DOWNLOAD_PROGRESS]),
       refetchDownloads(),
     ]);
     setRefreshTable(false);

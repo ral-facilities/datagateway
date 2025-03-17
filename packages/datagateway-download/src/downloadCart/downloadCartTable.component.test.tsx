@@ -10,7 +10,11 @@ import userEvent from '@testing-library/user-event';
 import { fetchDownloadCart } from 'datagateway-common';
 import { createMemoryHistory, MemoryHistory } from 'history';
 import * as React from 'react';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import {
+  QueryClient,
+  QueryClientProvider,
+  setLogger,
+} from '@tanstack/react-query';
 import { Router } from 'react-router-dom';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import { mockCartItems, mockedSettings } from '../testData';

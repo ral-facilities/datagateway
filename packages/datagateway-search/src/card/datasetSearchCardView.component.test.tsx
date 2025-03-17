@@ -12,7 +12,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../state/app.types';
 import DatasetSearchCardView from './datasetSearchCardView.component';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createMemoryHistory, MemoryHistory } from 'history';
 import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
 import type { RenderResult } from '@testing-library/react';

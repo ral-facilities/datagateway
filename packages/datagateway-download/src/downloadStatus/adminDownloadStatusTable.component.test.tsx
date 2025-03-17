@@ -21,7 +21,7 @@ import {
   waitFor,
   within,
 } from '@testing-library/react';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { mockDownloadItems, mockedSettings } from '../testData';
 import { DownloadSettingsContext } from '../ConfigProvider';
 

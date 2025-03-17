@@ -20,7 +20,7 @@ import {
 import { findColumnHeaderByName, flushPromises } from '../setupTests';
 import { act } from 'react-dom/test-utils';
 import axios from 'axios';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createMemoryHistory, History } from 'history';
 import { render, screen } from '@testing-library/react';
 

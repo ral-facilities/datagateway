@@ -1,7 +1,7 @@
 import { Link as MuiLink } from '@mui/material';
 import React from 'react';
 import type { DownloadCartItem } from 'datagateway-common';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import pLimit from 'p-limit';
 

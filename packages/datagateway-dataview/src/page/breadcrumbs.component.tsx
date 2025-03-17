@@ -17,7 +17,11 @@ import {
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { UseQueryResult, useQueries, UseQueryOptions } from 'react-query';
+import {
+  UseQueryResult,
+  useQueries,
+  UseQueryOptions,
+} from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import { StateType } from '../state/app.types';
@@ -202,7 +206,9 @@ const useEntityInformation = (
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   // prettier-ignore
-  return useQueries(queryConfigs);
+  return useQueries({
+    queries: queryConfigs
+  });
 };
 
 const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({

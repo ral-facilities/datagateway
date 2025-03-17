@@ -12,7 +12,7 @@ import thunk from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import DLSDatasetsCardView from './dlsDatasetsCardView.component';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createMemoryHistory, History } from 'history';
 import {
   applyDatePickerWorkaround,

@@ -9,7 +9,7 @@ import { AxiosError } from 'axios';
 import { Mark } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { QueryStatus } from 'react-query';
+import { QueryStatus } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 
 import type { DoiResponse } from '../downloadApi';

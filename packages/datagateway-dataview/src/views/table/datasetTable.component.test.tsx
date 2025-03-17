@@ -11,7 +11,7 @@ import thunk from 'redux-thunk';
 import type { StateType } from '../../state/app.types';
 import { initialState } from '../../state/reducers/dgdataview.reducer';
 import DatasetTable from './datasetTable.component';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createMemoryHistory, type History } from 'history';
 import {
   applyDatePickerWorkaround,
