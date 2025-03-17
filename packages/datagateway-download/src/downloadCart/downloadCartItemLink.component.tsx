@@ -12,7 +12,7 @@ interface DownloadCartItemLinkProps {
   linkBuilder: LinkBuilder;
 }
 
-const cartLinkLimit = pLimit(5);
+const cartLinkLimit = pLimit(10);
 
 function DownloadCartItemLink({
   cartItem,

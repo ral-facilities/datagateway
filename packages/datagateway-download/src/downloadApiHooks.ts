@@ -257,7 +257,7 @@ export const useSubmitCart = (
   );
 };
 
-const fileSizeAndCountLimit = pLimit(5);
+const fileSizeAndCountLimit = pLimit(20);
 
 export const useFileSizesAndCounts = (
   data: DownloadCartItem[] | undefined

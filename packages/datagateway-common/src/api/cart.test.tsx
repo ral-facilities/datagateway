@@ -70,7 +70,9 @@ describe('Cart api functions', () => {
         wrapper: createReactQueryWrapper(),
       });
 
-      expect(result.current.isIdle).toBe(true);
+      expect(result.current.status).toBe('loading');
+      expect(result.current.fetchStatus).toBe('idle');
+
       expect(axios.get).not.toHaveBeenCalled();
     });
 

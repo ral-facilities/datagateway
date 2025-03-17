@@ -1291,7 +1291,9 @@ describe('Download API react-query hooks test', () => {
         }),
       });
 
-      expect(result.current.isIdle).toEqual(true);
+      expect(result.current.status).toBe('loading');
+      expect(result.current.fetchStatus).toBe('idle');
+
       expect(axios.post).not.toHaveBeenCalled();
     });
 
@@ -1718,7 +1720,8 @@ describe('Download API react-query hooks test', () => {
       const { result } = renderHook(() => useCheckUser('user 1'), {
         wrapper: createReactQueryWrapper(),
       });
-      expect(result.current.isIdle).toBe(true);
+      expect(result.current.status).toBe('loading');
+      expect(result.current.fetchStatus).toBe('idle');
       act(() => {
         result.current.refetch();
       });
@@ -1747,7 +1750,8 @@ describe('Download API react-query hooks test', () => {
       const { result } = renderHook(() => useCheckUser('user 1'), {
         wrapper: createReactQueryWrapper(),
       });
-      expect(result.current.isIdle).toBe(true);
+      expect(result.current.status).toBe('loading');
+      expect(result.current.fetchStatus).toBe('idle');
       act(() => {
         result.current.refetch();
       });
@@ -1781,7 +1785,8 @@ describe('Download API react-query hooks test', () => {
       const { result } = renderHook(() => useCheckUser('user 1'), {
         wrapper: createReactQueryWrapper(),
       });
-      expect(result.current.isIdle).toBe(true);
+      expect(result.current.status).toBe('loading');
+      expect(result.current.fetchStatus).toBe('idle');
       act(() => {
         result.current.refetch();
       });
@@ -1811,7 +1816,8 @@ describe('Download API react-query hooks test', () => {
       const { result } = renderHook(() => useCheckUser('user 1'), {
         wrapper: createReactQueryWrapper(),
       });
-      expect(result.current.isIdle).toBe(true);
+      expect(result.current.status).toBe('loading');
+      expect(result.current.fetchStatus).toBe('idle');
       act(() => {
         result.current.refetch();
       });
@@ -1833,7 +1839,8 @@ describe('Download API react-query hooks test', () => {
       const { result } = renderHook(() => useCheckUser('user 1'), {
         wrapper: createReactQueryWrapper(),
       });
-      expect(result.current.isIdle).toBe(true);
+      expect(result.current.status).toBe('loading');
+      expect(result.current.fetchStatus).toBe('idle');
       act(() => {
         result.current.refetch();
       });
@@ -1855,7 +1862,8 @@ describe('Download API react-query hooks test', () => {
       const { result } = renderHook(() => useCheckUser('user 1'), {
         wrapper: createReactQueryWrapper(),
       });
-      expect(result.current.isIdle).toBe(true);
+      expect(result.current.status).toBe('loading');
+      expect(result.current.fetchStatus).toBe('idle');
       act(() => {
         result.current.refetch();
       });
