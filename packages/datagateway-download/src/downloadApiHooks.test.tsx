@@ -4,11 +4,7 @@ import { Download, InvalidateTokenType } from 'datagateway-common';
 import { handleICATError, NotificationType } from 'datagateway-common';
 import { createMemoryHistory } from 'history';
 import * as React from 'react';
-import {
-  QueryClient,
-  QueryClientProvider,
-  setLogger,
-} from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Router } from 'react-router-dom';
 import { DownloadSettingsContext } from './ConfigProvider';
 import {
@@ -45,13 +41,6 @@ jest.mock('datagateway-common', () => {
   };
 });
 
-// silence react-query errors
-setLogger({
-  log: console.log,
-  warn: console.warn,
-  error: jest.fn(),
-});
-
 const createTestQueryClient = (): QueryClient =>
   new QueryClient({
     defaultOptions: {
@@ -60,6 +49,12 @@ const createTestQueryClient = (): QueryClient =>
         // set retryDelay = 0 to make retries quick for custom retry functions
         retryDelay: 0,
       },
+    },
+    // silence react-query errors
+    logger: {
+      log: console.log,
+      warn: console.warn,
+      error: jest.fn(),
     },
   });
 

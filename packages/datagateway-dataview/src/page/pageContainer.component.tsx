@@ -560,7 +560,7 @@ const DataviewPageContainer: React.FC = () => {
     const count =
       queryClient.getQueryData<number>(['count'], {
         exact: false,
-        active: true,
+        type: 'active',
       }) ?? 0;
     if (count !== totalDataCount) setTotalDataCount(count);
   });

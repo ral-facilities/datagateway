@@ -4,7 +4,6 @@ import React from 'react';
 import { Action } from 'redux';
 import { StateType } from './state/app.types';
 import { initialState } from './state/reducers/dgcommon.reducer';
-import { setLogger } from '@tanstack/react-query';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
@@ -54,13 +53,6 @@ export const dispatch = (action: Action): void | Promise<void> => {
   }
 };
 
-// silence react-query errors
-setLogger({
-  log: console.log,
-  warn: console.warn,
-  error: jest.fn(),
-});
-
 // mock retry function to ensure it doesn't slow down query failure tests
 jest.mock('./api/retryICATErrors', () => ({
   __esModule: true,
@@ -89,6 +81,12 @@ export const createTestQueryClient = (): QueryClient =>
       queries: {
         retry: false,
       },
+    },
+    // silence react-query errors
+    logger: {
+      log: console.log,
+      warn: console.warn,
+      error: jest.fn(),
     },
   });
 

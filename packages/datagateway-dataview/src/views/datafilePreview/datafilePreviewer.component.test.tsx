@@ -10,11 +10,7 @@ import axios, { type AxiosRequestConfig } from 'axios';
 import { downloadDatafile } from 'datagateway-common';
 import type { Datafile } from 'datagateway-common/lib/app.types';
 import * as React from 'react';
-import {
-  QueryClient,
-  QueryClientProvider,
-  setLogger,
-} from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 import { combineReducers, createStore, type Store } from 'redux';
@@ -26,13 +22,6 @@ jest.mock('datagateway-common', () => ({
   ...jest.requireActual('datagateway-common'),
   downloadDatafile: jest.fn(),
 }));
-
-// silence react-query errors
-setLogger({
-  log: console.log,
-  warn: console.warn,
-  error: jest.fn(),
-});
 
 function createMockStore(): Store {
   return createStore(
@@ -55,6 +44,12 @@ function createQueryClient(): QueryClient {
       queries: {
         retry: false,
       },
+    },
+    // silence react-query errors
+    logger: {
+      log: console.log,
+      warn: console.warn,
+      error: jest.fn(),
     },
   });
 }

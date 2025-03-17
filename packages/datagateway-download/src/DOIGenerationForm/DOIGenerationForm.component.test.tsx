@@ -10,11 +10,7 @@ import userEvent from '@testing-library/user-event';
 import { fetchDownloadCart } from 'datagateway-common';
 import { createMemoryHistory, MemoryHistory } from 'history';
 import * as React from 'react';
-import {
-  QueryClient,
-  QueryClientProvider,
-  setLogger,
-} from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Router } from 'react-router-dom';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import { mockCartItems, mockedSettings } from '../testData';
@@ -29,12 +25,6 @@ import {
 } from '../downloadApi';
 import DOIGenerationForm from './DOIGenerationForm.component';
 import { flushPromises } from '../setupTests';
-
-setLogger({
-  log: console.log,
-  warn: console.warn,
-  error: jest.fn(),
-});
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -65,6 +55,12 @@ const createTestQueryClient = (): QueryClient =>
       queries: {
         retry: false,
       },
+    },
+    // silence react-query errors
+    logger: {
+      log: console.log,
+      warn: console.warn,
+      error: jest.fn(),
     },
   });
 

@@ -399,23 +399,8 @@ export const useDownloadOrRestoreDownload = (): UseMutationResult<
         const prevDownloads = queryClient.getQueryData([QueryKeys.DOWNLOADS]);
 
         if (deleted) {
-          queryClient.setQueryData<Download[] | undefined>(
+          queryClient.setQueryData<Download[]>(
             [QueryKeys.DOWNLOADS],
-            // updater fn returns undefined if prev data is also undefined
-            // note that it is not until v4 can the updater return undefined
-            // in v4, when the updater returns undefined, react-query will bail out
-            // and do nothing
-            //
-            // not sure how it works in v3, but returning an empty array feels wrong
-            // here because of semantics -
-            // undefined means the query is unavailable, but an empty array
-            // indicates there's no download item.
-            // hence FormattedDownload[] | undefined is passed to setQueryData
-            // to allow undefined to be returned
-            //
-            // TODO: when migrating to react-query v4, the "| undefined" part is no longer needed and can be removed.
-            //
-            // related issue: https://github.com/TanStack/query/issues/506
             (oldDownloads) =>
               oldDownloads &&
               oldDownloads.filter((download) => download.id !== downloadId)
@@ -435,7 +420,7 @@ export const useDownloadOrRestoreDownload = (): UseMutationResult<
           });
 
           if (restoredDownload) {
-            queryClient.setQueryData<Download[] | undefined>(
+            queryClient.setQueryData<Download[]>(
               [QueryKeys.DOWNLOADS],
               (downloads) => downloads && [...downloads, restoredDownload]
             );
@@ -601,22 +586,7 @@ export const useAdminDownloadDeleted = (): UseMutationResult<
         );
         if (downloads.length > 0) {
           const updatedDownload = downloads[0];
-          // updater fn returns undefined if prev data is also undefined
-          // note that it is not until v4 can the updater return undefined
-          // in v4, when the updater returns undefined, react-query will bail out
-          // and do nothing
-          //
-          // not sure how it works in v3, but returning an empty array feels wrong
-          // here because of semantics -
-          // undefined means the query is unavailable, but an empty array
-          // indicates there's no download item.
-          // hence FormattedDownload[] | undefined is passed to setQueryData
-          // to allow undefined to be returned
-          //
-          // TODO: when migrating to react-query v4, the "| undefined" part is no longer needed and can be removed.
-          //
-          // related issue: https://github.com/TanStack/query/issues/506
-          queryClient.setQueryData<InfiniteData<Download[]> | undefined>(
+          queryClient.setQueryData<InfiniteData<Download[]>>(
             [QueryKeys.ADMIN_DOWNLOADS],
             (oldData) =>
               oldData && {
@@ -674,22 +644,7 @@ export const useAdminUpdateDownloadStatus = (): UseMutationResult<
           QueryKeys.ADMIN_DOWNLOADS,
         ]);
 
-        // updater fn returns undefined if prev data is also undefined
-        // note that it is not until v4 can the updater return undefined
-        // in v4, when the updater returns undefined, react-query will bail out
-        // and do nothing
-        //
-        // not sure how it works in v3, but returning an empty array feels wrong
-        // here because of semantics -
-        // undefined means the query is unavailable, but an empty array
-        // indicates there's no download item.
-        // hence FormattedDownload[] | undefined is passed to setQueryData
-        // to allow undefined to be returned
-        //
-        // TODO: when migrating to react-query v4, the "| undefined" part is no longer needed and can be removed.
-        //
-        // related issue: https://github.com/TanStack/query/issues/506
-        queryClient.setQueryData<InfiniteData<Download[]> | undefined>(
+        queryClient.setQueryData<InfiniteData<Download[]>>(
           [QueryKeys.ADMIN_DOWNLOADS],
           (oldData) =>
             oldData && {
