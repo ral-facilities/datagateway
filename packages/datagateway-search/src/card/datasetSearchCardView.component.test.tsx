@@ -140,6 +140,10 @@ describe('Dataset - Card View', () => {
 
     expect(
       queryClient.getQueryState(['search', 'Dataset'], { exact: false })?.status
+    ).toBe('loading');
+    expect(
+      queryClient.getQueryState(['search', 'Dataset'], { exact: false })
+        ?.fetchStatus
     ).toBe('idle');
 
     expect(screen.queryAllByTestId('card')).toHaveLength(0);

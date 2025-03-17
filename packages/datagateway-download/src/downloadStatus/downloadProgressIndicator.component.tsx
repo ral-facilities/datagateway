@@ -24,10 +24,6 @@ function DownloadProgressIndicator({
       enabled: download.status === 'RESTORING' || download.status === 'PAUSED',
     });
 
-  if (isLoadingProgress) {
-    return <>{t('downloadStatus.calculating_progress')}</>;
-  }
-
   // if the download is already completed/restored
   // should show text such as N/A, completed, or empty string.
   // depending on the translation configuration.
@@ -36,6 +32,15 @@ function DownloadProgressIndicator({
 
   // if the download is being prepared, show 0%
   if (download.status === 'PREPARING') return <ProgressBar progress={0} />;
+
+  // calculate loading after previous cases as if the query is disabled
+  // because status is not either restoring or paused then isLoading
+  // will be true as the query is disabled
+  // so essentially check for non-restoring & non-paused statuses first
+  // before checking loading state
+  if (isLoadingProgress) {
+    return <>{t('downloadStatus.calculating_progress')}</>;
+  }
 
   // display a label indicating progress unavailable when
   // progress is not returned or the download status doesn't match.

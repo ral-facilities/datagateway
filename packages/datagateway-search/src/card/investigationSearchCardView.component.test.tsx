@@ -131,6 +131,10 @@ describe('Investigation - Card View', () => {
     expect(
       queryClient.getQueryState(['search', 'Investigation'], { exact: false })
         ?.status
+    ).toBe('loading');
+    expect(
+      queryClient.getQueryState(['search', 'Investigation'], { exact: false })
+        ?.fetchStatus
     ).toBe('idle');
 
     expect(screen.queryAllByTestId('card')).toHaveLength(0);

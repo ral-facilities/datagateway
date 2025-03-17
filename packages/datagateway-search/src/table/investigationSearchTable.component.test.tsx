@@ -231,6 +231,10 @@ describe('Investigation Search Table component', () => {
     expect(
       queryClient.getQueryState(['search', 'Investigation'], { exact: false })
         ?.status
+    ).toBe('loading');
+    expect(
+      queryClient.getQueryState(['search', 'Investigation'], { exact: false })
+        ?.fetchStatus
     ).toBe('idle');
 
     expect(queryAllRows()).toHaveLength(0);
