@@ -322,7 +322,7 @@ describe('investigation api functions', () => {
       );
       expect(result.current.data.pages).toStrictEqual([mockData[0]]);
 
-      result.current.fetchNextPage({
+      await result.current.fetchNextPage({
         pageParam: { startIndex: 50, stopIndex: 74 },
       });
 
@@ -413,7 +413,7 @@ describe('investigation api functions', () => {
       );
       expect(result.current.data.pages).toStrictEqual([mockData[0]]);
 
-      result.current.fetchNextPage({
+      await result.current.fetchNextPage({
         pageParam: { startIndex: 50, stopIndex: 74 },
       });
 

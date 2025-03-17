@@ -632,7 +632,7 @@ describe('Download API react-query hooks test', () => {
 
       // then test fetching next page
 
-      result.current.fetchNextPage({
+      await result.current.fetchNextPage({
         pageParam: 'LIMIT 50, 100',
       });
       await waitFor(() =>
