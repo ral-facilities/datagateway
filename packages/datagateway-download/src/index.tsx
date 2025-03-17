@@ -177,27 +177,17 @@ if (
   if (process.env.NODE_ENV === `development`) {
     settings.then((settingsResult) => {
       if (settingsResult) {
-        const splitUrl = settingsResult.downloadApiUrl.split('/');
-        const icatUrl = `${splitUrl
-          .slice(0, splitUrl.length - 1)
-          .join('/')}/icat`;
+        const apiUrl = settingsResult.apiUrl;
         axios
-          .post(
-            `${icatUrl}/session`,
-            `json=${JSON.stringify({
-              plugin: 'simple',
-              credentials: [{ username: 'root' }, { password: 'pw' }],
-            })}`,
-            {
-              headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-              },
-            }
-          )
+          .post(`${apiUrl}/sessions`, {
+            username: 'root',
+            password: 'pw',
+            mechanism: 'simple',
+          })
           .then((response) => {
             const jwtHeader = { alg: 'HS256', typ: 'JWT' };
             const payload = {
-              sessionId: response.data.sessionId,
+              sessionId: response.data.sessionID,
               username: 'dev',
             };
             const jwt = jsrsasign.KJUR.jws.JWS.sign(
@@ -210,7 +200,7 @@ if (
             window.localStorage.setItem(MicroFrontendToken, jwt);
           })
           .catch((error) =>
-            console.error(`Can't log in to ICAT: ${error.message}`)
+            log.error(`Can't log in to ICAT: ${error.message}`)
           );
       }
     });
