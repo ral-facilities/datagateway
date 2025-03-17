@@ -1,5 +1,43 @@
 # Changelog
 
+## [v2.1.0](https://github.com/ral-facilities/datagateway/tree/v2.1.0) (2025-03-10)
+
+## What's Changed
+
+### Features
+
+* increase TextFilter debounce timer to 500ms #1662 by @akintomiwa in https://github.com/ral-facilities/datagateway/pull/1666
+* Sort DLS datasets & datafiles by name instead of createTime #1663 by @akintomiwa in https://github.com/ral-facilities/datagateway/pull/1667
+* Change DLS datafile create time to datafileCreateTime #1664 by @akintomiwa in https://github.com/ral-facilities/datagateway/pull/1668
+* Allow query retry setting to be configurable by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1677
+* Fix datagateway-download e2e tests broken by minting api update by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1681
+* Remove libgconf install step on CI jobs by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1692
+* Fix missing investigation parameter labels by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1693
+* Add explicit FilePaths section to advnaced help dialogue by @patrick-austin in https://github.com/ral-facilities/datagateway/pull/1696
+* Improve styling, fix date picker locales & disable refetchOnWindowFocus for Lucene queries by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1698
+* Fix default filter on my data DLS table by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1697
+* Add max of 999 to viewCartButton by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1699
+* Fix misc issues raised by Chris by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1700
+* Fix exact filters & add is deleted filter by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1701
+* Add examples section to advanced help dialogue by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1703
+
+### Dependencies
+
+* Bump webpack from 5.76.1 to 5.94.0 by @dependabot in https://github.com/ral-facilities/datagateway/pull/1670
+* Update dependency axios to v1.7.4 [SECURITY] by @renovate in https://github.com/ral-facilities/datagateway/pull/1669
+* Update dependency express to v4.20.0 [SECURITY] by @renovate in https://github.com/ral-facilities/datagateway/pull/1676
+* Bump rollup from 2.79.1 to 2.79.2 by @dependabot in https://github.com/ral-facilities/datagateway/pull/1678
+* Bump http-proxy-middleware from 2.0.6 to 2.0.7 by @dependabot in https://github.com/ral-facilities/datagateway/pull/1679
+* Bump cross-spawn from 7.0.3 to 7.0.6 by @dependabot in https://github.com/ral-facilities/datagateway/pull/1680
+* Bump nanoid from 3.3.4 to 3.3.8 by @dependabot in https://github.com/ral-facilities/datagateway/pull/1691
+* Update dependency ubuntu to v24 by @renovate in https://github.com/ral-facilities/datagateway/pull/1695
+
+## New Contributors
+
+* @akintomiwa made their first contribution in https://github.com/ral-facilities/datagateway/pull/1666
+
+**Full Changelog**: https://github.com/ral-facilities/datagateway/compare/v2.0.0...snapshot-develop
+
 ## [v2.0.0](https://github.com/ral-facilities/datagateway/tree/v2.0.0) (2024-07-24)
 
 ## What's Changed

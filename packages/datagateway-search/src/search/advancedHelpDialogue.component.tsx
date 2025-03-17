@@ -6,8 +6,14 @@ import {
   IconButton,
   Link,
   styled,
+  Table,
+  TableBody,
+  TableRow,
+  TableCell,
   Theme,
   Typography,
+  TableContainer,
+  Paper,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { Trans, useTranslation } from 'react-i18next';
@@ -52,20 +58,22 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
 
   return (
     <React.Fragment>
-      See all{' '}
-      <Link
-        component="button"
-        sx={{
-          fontSize: '14px',
-          fontWeight: 'bold',
-          verticalAlign: 'baseline',
-        }}
-        aria-label={t('advanced_search_help.search_options_arialabel')}
-        onClick={handleClickOpen}
-      >
-        search options
-      </Link>
-      .
+      <Trans t={t} i18nKey="advanced_search_help.search_help_label">
+        See all{' '}
+        <Link
+          component="button"
+          sx={{
+            fontSize: '14px',
+            fontWeight: 'bold',
+            verticalAlign: 'baseline',
+          }}
+          data-testid="advanced-search-help-link"
+          onClick={handleClickOpen}
+        >
+          search options
+        </Link>
+        .
+      </Trans>
       <Dialog
         onClose={handleClose}
         aria-labelledby="advanced-search-dialog-title"
@@ -80,7 +88,7 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
         }}
       >
         <DialogTitle id="advanced-search-dialog-title">
-          Advanced Search Tips
+          {t('advanced_search_help.title')}
           <IconButton
             aria-label={t('advanced_search_help.close_button_arialabel')}
             sx={{
@@ -99,6 +107,57 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
           <Typography gutterBottom>
             {t('advanced_search_help.description')}
           </Typography>
+          {Array.isArray(
+            t('advanced_search_help.examples.examples', {
+              returnObjects: true,
+            })
+          ) &&
+            (
+              t('advanced_search_help.examples.examples', {
+                returnObjects: true,
+              }) as { name: string; value: string }[]
+            ).length > 0 && (
+              <Section>
+                <SectionTitle>
+                  {t('advanced_search_help.examples.title')}
+                </SectionTitle>
+                <SectionText>
+                  <Trans
+                    t={t}
+                    i18nKey="advanced_search_help.examples.description"
+                  >
+                    Below are a few examples of common searches and how they can
+                    be crafted to execute efficiently for those with access to
+                    large volumes of data:
+                  </Trans>
+                </SectionText>
+
+                <TableContainer component={Paper}>
+                  <Table size="small">
+                    <TableBody>
+                      {(
+                        t('advanced_search_help.examples.examples', {
+                          returnObjects: true,
+                        }) as { name: string; value: string }[]
+                      ).map(({ name, value }, index) => (
+                        <TableRow key={index}>
+                          <TableCell>{name}</TableCell>
+                          <TableCell>
+                            <Link
+                              component={RouterLink}
+                              to={`?searchText=${value}`}
+                              onClick={handleClose}
+                            >
+                              {value}
+                            </Link>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Section>
+            )}
           <Section>
             <SectionTitle>{t('advanced_search_help.terms.title')}</SectionTitle>
             <SectionText>

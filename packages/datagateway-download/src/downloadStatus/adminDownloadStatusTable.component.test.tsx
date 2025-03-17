@@ -250,7 +250,7 @@ describe('Admin Download Status Table', () => {
         'Filter by downloadStatus.username'
       );
 
-      await user.type(usernameFilterInput, 'test user');
+      await user.type(usernameFilterInput, "test user'");
 
       // test exact filter
       await user.click(
@@ -272,7 +272,7 @@ describe('Admin Download Status Table', () => {
           downloadApiUrl: mockedSettings.downloadApiUrl,
           facilityName: mockedSettings.facilityName,
         },
-        `WHERE download.facilityName = '${mockedSettings.facilityName}' AND download.userName = 'test user' ORDER BY download.id ASC LIMIT 0, 50`
+        `WHERE download.facilityName = '${mockedSettings.facilityName}' AND download.userName = 'test user''' ORDER BY download.id ASC LIMIT 0, 50`
       );
 
       await user.clear(usernameFilterInput);
@@ -309,7 +309,7 @@ describe('Admin Download Status Table', () => {
         'Filter by downloadStatus.status'
       );
 
-      await user.type(availabilityFilterInput, 'downloadStatus.complete');
+      await user.type(availabilityFilterInput, "downloadStatus.complete'");
 
       await act(async () => {
         await flushPromises();
@@ -321,7 +321,7 @@ describe('Admin Download Status Table', () => {
           downloadApiUrl: mockedSettings.downloadApiUrl,
           facilityName: mockedSettings.facilityName,
         },
-        `WHERE download.facilityName = '${mockedSettings.facilityName}' AND UPPER(download.status) LIKE CONCAT('%', 'COMPLETE', '%') ORDER BY download.id ASC LIMIT 0, 50`
+        `WHERE download.facilityName = '${mockedSettings.facilityName}' AND UPPER(download.status) LIKE CONCAT('%', 'COMPLETE''', '%') ORDER BY download.id ASC LIMIT 0, 50`
       );
 
       // We simulate a change in the select from 'include' to 'exclude'.
@@ -345,7 +345,7 @@ describe('Admin Download Status Table', () => {
           downloadApiUrl: mockedSettings.downloadApiUrl,
           facilityName: mockedSettings.facilityName,
         },
-        `WHERE download.facilityName = '${mockedSettings.facilityName}' AND UPPER(download.status) NOT LIKE CONCAT('%', 'COMPLETE', '%') ORDER BY download.id ASC LIMIT 0, 50`
+        `WHERE download.facilityName = '${mockedSettings.facilityName}' AND UPPER(download.status) NOT LIKE CONCAT('%', 'COMPLETE''', '%') ORDER BY download.id ASC LIMIT 0, 50`
       );
 
       await user.clear(availabilityFilterInput);

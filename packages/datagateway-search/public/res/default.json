@@ -299,10 +299,24 @@
     "show_less": "Show less"
   },
   "advanced_search_help": {
-    "search_options_arialabel": "Search options",
+    "search_help_label": "See all <2>search options</2>.",
     "close_button_arialabel": "Close",
     "title": "Advanced Search Tips",
     "description": "Searching the metadata catalogue using one or more words should be intuitive, with the most relevant matches appearing first. However, there is a powerful syntax that supports more advanced use cases, which are described below.",
+    "examples": {
+      "title": "Examples",
+      "description": "Below are a few examples of common searches and how they can be crafted to execute efficiently for those with access to large volumes of data:",
+      "examples": [
+        {
+          "name": "To search for a visit and partial location",
+          "value": "+visitId:\"nt20-8\" +location:\"jpegs/pg1/\""
+        },
+        {
+          "name": "To search for a visit, partial location and filename ext",
+          "value": "+visitId:\"nt20-8\" +location:\" jpegs/pg1/\" +(location:jpeg location:*.jpeg)"
+        }
+      ]
+    },
     "terms": {
       "title": "Terms",
       "description": "By default, all words in the search text are treated as separate <strong>terms</strong>. Results must contain at least one <strong>term</strong> to be returned, and they can occur in any order in the result. When using the default relevancy based sorting, results containing the most <strong>terms</strong> will appear first. For example, <10>neutron scattering</10> will return results containing both <strong>terms</strong> first, then results containing only one or the other.",
