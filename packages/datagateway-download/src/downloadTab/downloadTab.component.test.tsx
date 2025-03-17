@@ -15,6 +15,7 @@ import {
   removeAllDownloadCartItems,
   removeFromCart,
   isCartMintable,
+  getIsTwoLevel,
 } from '../downloadApi';
 import { mockCartItems, mockDownloadItems, mockedSettings } from '../testData';
 import DownloadTabs from './downloadTab.component';
@@ -69,6 +70,7 @@ describe('DownloadTab', () => {
     (
       isCartMintable as jest.MockedFunction<typeof isCartMintable>
     ).mockResolvedValue(true);
+    (getIsTwoLevel as jest.Mock).mockResolvedValue(false);
   });
 
   const renderComponent = (): RenderResult => {

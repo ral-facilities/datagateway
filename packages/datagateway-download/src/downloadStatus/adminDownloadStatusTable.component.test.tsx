@@ -80,14 +80,17 @@ describe('Admin Download Status Table', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+    jest.useRealTimers();
   });
 
   it('should render correctly', async () => {
-    const mockedDate = new Date(Date.UTC(2020, 1, 1, 0, 0, 0)).toUTCString();
-    global.Date.prototype.toLocaleString = jest.fn(() => mockedDate);
+    const mockedDate = new Date(Date.UTC(2020, 1, 1, 0, 0, 0));
+
+    jest.useFakeTimers().setSystemTime(mockedDate);
 
     const { asFragment } = renderComponent();
 
+    jest.runAllTimers();
     // wait for data to finish loading
     expect(
       await screen.findByText(mockedDate.toLocaleString())

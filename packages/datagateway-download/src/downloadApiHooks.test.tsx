@@ -1438,11 +1438,15 @@ describe('Download API react-query hooks test', () => {
         wrapper: createReactQueryWrapper(),
       });
 
+      let data;
       await act(async () => {
-        await result.current.mutateAsync({ cart: mockCartItems, doiMetadata });
+        data = await result.current.mutateAsync({
+          cart: mockCartItems,
+          doiMetadata,
+        });
       });
 
-      expect(result.current.data).toEqual({
+      expect(data).toEqual({
         concept: { doi: 'test doi', data_publication: '1' },
         version: { doi: 'test doi v1', data_publication: '11' },
       });
