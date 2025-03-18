@@ -4,7 +4,7 @@ import 'custom-event-polyfill';
 import 'url-search-params-polyfill';
 import './i18n';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOMClient from 'react-dom/client';
 import './index.css';
 import App from './App';
 import singleSpaReact from 'single-spa-react';
@@ -26,7 +26,8 @@ const pluginName = 'datagateway-dataview';
 const render = (): void => {
   const el = document.getElementById(pluginName);
   if (el) {
-    ReactDOM.render(<App />, document.getElementById(pluginName));
+    const root = ReactDOMClient.createRoot(el);
+    root.render(<App />);
   }
 };
 
@@ -40,7 +41,7 @@ function domElementGetter(): HTMLElement {
 
 const reactLifecycles = singleSpaReact({
   React,
-  ReactDOM,
+  ReactDOMClient,
   rootComponent: () => (document.getElementById(pluginName) ? <App /> : null),
   domElementGetter,
 });
@@ -177,9 +178,9 @@ if (
         const apiUrl = settingsResult.apiUrl;
         axios
           .post(`${apiUrl}/sessions`, {
-            username: 'root',
-            password: 'pw',
-            mechanism: 'simple',
+            username: '',
+            password: '',
+            mechanism: 'anon',
           })
           .then((response) => {
             const jwtHeader = { alg: 'HS256', typ: 'JWT' };

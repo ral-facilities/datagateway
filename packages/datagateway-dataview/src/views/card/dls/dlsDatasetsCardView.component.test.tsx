@@ -19,7 +19,6 @@ import {
   cleanupDatePickerWorkaround,
 } from '../../../setupTests';
 import { render, RenderResult, screen } from '@testing-library/react';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 
 jest.mock('datagateway-common', () => {
@@ -38,7 +37,7 @@ describe('DLS Datasets - Card View', () => {
   let state: StateType;
   let cardData: Dataset[];
   let history: History;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult =>
     render(
@@ -145,8 +144,11 @@ describe('DLS Datasets - Card View', () => {
     cleanupDatePickerWorkaround();
   });
 
-  it('uses default sort', () => {
+  it('uses default sort', async () => {
     renderComponent();
+
+    expect(await screen.findByTestId('card')).toBeInTheDocument();
+
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"asc"}')}`
@@ -178,7 +180,9 @@ describe('DLS Datasets - Card View', () => {
     await user.click(
       await screen.findByRole('button', { name: 'card-more-info-expand' })
     );
-    expect(screen.findByTestId('dataset-details-panel')).toBeTruthy();
+    expect(
+      await screen.findByTestId('dls-dataset-details-panel')
+    ).toBeInTheDocument();
   });
 
   it('renders buttons correctly', async () => {

@@ -5,7 +5,6 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { initialState as dGCommonInitialState } from './state/reducers/dgcommon.reducer';
 import { StateType } from './state/app.types';
-import { createLocation } from 'history';
 import configureStore from 'redux-mock-store';
 import {
   QueryClientSettingsUpdater,
@@ -71,10 +70,6 @@ describe('QueryClientSettingsUpdater', () => {
 describe('QueryClientSettingsUpdaterRedux', () => {
   const initialState: StateType = {
     dgcommon: dGCommonInitialState,
-    router: {
-      action: 'POP',
-      location: { ...createLocation('/'), query: {} },
-    },
   };
   const renderComponent = (
     state: StateType = initialState,

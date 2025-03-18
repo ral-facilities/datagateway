@@ -1,6 +1,5 @@
 import { render, type RenderResult, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import * as React from 'react';
 import configureStore from 'redux-mock-store';
 import { initialState as dGCommonInitialState } from '../state/reducers/dgcommon.reducer';
@@ -14,7 +13,7 @@ import ViewCartButton, { CartProps } from './viewCartButton.component';
 describe('Generic cart button', () => {
   const mockStore = configureStore([thunk]);
   const navigateToDownload = jest.fn();
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
   let state: StateType;
   let props: CartProps;
 

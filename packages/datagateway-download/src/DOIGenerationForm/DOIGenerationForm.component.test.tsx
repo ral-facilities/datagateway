@@ -1,4 +1,5 @@
 import {
+  act,
   render,
   RenderResult,
   screen,
@@ -23,6 +24,7 @@ import {
   mintCart,
 } from '../downloadApi';
 import DOIGenerationForm from './DOIGenerationForm.component';
+import { flushPromises } from '../setupTests';
 
 setLogger({
   log: console.log,
@@ -136,6 +138,10 @@ describe('DOI generation form component', () => {
   it('should redirect back to /download if user directly accesses the url', async () => {
     const { history } = renderComponent(createMemoryHistory());
 
+    await act(async () => {
+      await flushPromises();
+    });
+
     expect(history.location).toMatchObject({ pathname: '/download' });
   });
 
@@ -143,7 +149,7 @@ describe('DOI generation form component', () => {
     renderComponent();
 
     expect(
-      screen.getByRole('button', { name: 'acceptDataPolicy.accept' })
+      await screen.findByRole('button', { name: 'acceptDataPolicy.accept' })
     ).toBeInTheDocument();
     expect(
       screen.queryByText('DOIGenerationForm.page_header')
