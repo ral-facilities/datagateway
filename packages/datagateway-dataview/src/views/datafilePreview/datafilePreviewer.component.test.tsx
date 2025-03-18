@@ -121,7 +121,7 @@ describe('DatafilePreviewer', () => {
       renderComponent();
 
       expect(
-        await screen.findByText('datafiles.preview.invalid_datafile')
+        await screen.findByText('datafiles.preview.cannot_load_metadata')
       ).toBeInTheDocument();
     });
   });

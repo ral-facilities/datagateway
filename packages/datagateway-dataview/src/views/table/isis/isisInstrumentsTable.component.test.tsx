@@ -27,6 +27,7 @@ import {
   findColumnHeaderByName,
   findColumnIndexByName,
 } from '../../../setupTests';
+import axios, { AxiosResponse } from 'axios';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -95,6 +96,18 @@ describe('ISIS Instruments table component', () => {
       data: { pages: [rowData] },
       fetchNextPage: jest.fn(),
     });
+
+    axios.get = jest
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/\/instruments$/.test(url)) {
+          return Promise.resolve({
+            data: rowData,
+          });
+        }
+
+        return Promise.reject(`Endpoint not mocked: ${url}`);
+      });
   });
 
   afterEach(() => {

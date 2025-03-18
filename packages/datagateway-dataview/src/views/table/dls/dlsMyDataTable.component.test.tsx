@@ -31,6 +31,7 @@ import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import DLSMyDataTable from './dlsMyDataTable.component';
 import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -110,6 +111,17 @@ describe('DLS MyData table component', () => {
       username: 'testUser',
     });
     global.Date.now = jest.fn(() => 1);
+    axios.get = jest
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/\/investigations$/.test(url)) {
+          return Promise.resolve({
+            data: rowData,
+          });
+        }
+
+        return Promise.reject(`Endpoint not mocked: ${url}`);
+      });
   });
 
   afterEach(() => {

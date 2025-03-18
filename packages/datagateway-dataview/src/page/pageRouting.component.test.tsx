@@ -151,7 +151,7 @@ describe('PageTable', () => {
           ],
         });
       } else {
-        return Promise.resolve({ data: [] });
+        return Promise.resolve({ data: [{ id: 1, name: '1' }] });
       }
     });
     checkInstrumentAndFacilityCycleId.mockImplementation(() =>
@@ -769,7 +769,7 @@ describe('PageTable', () => {
       );
 
       expect(
-        await screen.findByText('datafiles.preview.invalid_datafile')
+        await screen.findByText('datafiles.preview.cannot_preview')
       ).toBeInTheDocument();
     });
 
@@ -1157,7 +1157,7 @@ describe('PageTable', () => {
       );
 
       expect(
-        await screen.findByText('datafiles.preview.invalid_datafile')
+        await screen.findByText('datafiles.preview.cannot_preview')
       ).toBeInTheDocument();
     });
 

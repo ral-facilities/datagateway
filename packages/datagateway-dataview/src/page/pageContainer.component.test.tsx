@@ -9,7 +9,7 @@ import {
   readSciGatewayToken,
 } from 'datagateway-common';
 import { createMemoryHistory, createPath, History } from 'history';
-import { Router } from 'react-router-dom';
+import { generatePath, Router } from 'react-router-dom';
 
 import PageContainer, { paths } from './pageContainer.component';
 import {
@@ -52,9 +52,9 @@ jest.mock('datagateway-common', () => {
   };
 });
 
-jest.mock('react-query', () => ({
+jest.mock('@tanstack/react-query', () => ({
   __esModule: true,
-  ...jest.requireActual('react-query'),
+  ...jest.requireActual('@tanstack/react-query'),
   useQueryClient: jest.fn(() => ({
     getQueryData: jest.fn(() => 0),
   })),
@@ -95,6 +95,7 @@ describe('PageContainer - Tests', () => {
       initialEntries: ['/'],
     });
     user = userEvent.setup();
+    cartItems = [];
 
     // @ts-expect-error we need it this way
     delete window.location;
@@ -350,7 +351,10 @@ describe('PageContainer - Tests', () => {
       getQueryData: jest.fn(),
     });
     history.replace(
-      `${paths.dataPublications.landing.isisDataPublicationLanding}`
+      generatePath(paths.dataPublications.landing.isisDataPublicationLanding, {
+        instrumentId: 1,
+        dataPublicationId: 2,
+      })
     );
 
     renderComponent();
@@ -388,7 +392,11 @@ describe('PageContainer - Tests', () => {
   });
 
   it('displays warning label when browsing study hierarchy', async () => {
-    history.replace(paths.dataPublications.toggle.isisDataPublication);
+    history.replace(
+      generatePath(paths.dataPublications.toggle.isisDataPublication, {
+        instrumentId: 1,
+      })
+    );
     const response = { username: 'SomePerson' };
     (readSciGatewayToken as jest.Mock).mockReturnValueOnce(response);
 
@@ -455,7 +463,12 @@ describe('PageContainer - Tests', () => {
   });
 
   it('shows breadcrumb according to the current path', async () => {
-    history.replace('/browse/instrument/1/facilityCycle/1/investigation');
+    history.replace(
+      generatePath(paths.toggle.isisInvestigation, {
+        instrumentId: 1,
+        facilityCycleId: 1,
+      })
+    );
     renderComponent();
 
     expect(await screen.findByText('breadcrumbs.home')).toBeInTheDocument();
@@ -463,7 +476,9 @@ describe('PageContainer - Tests', () => {
     expect(baseBreadcrumb).toHaveAttribute('href', '/browse/instrument');
     expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.instrument');
 
-    const breadcrumbs = screen.getAllByTestId(/^Breadcrumb-hierarchy-\d+$/);
+    const breadcrumbs = await screen.findAllByTestId(
+      /^Breadcrumb-hierarchy-\d+$/
+    );
     expect(breadcrumbs[0]).toHaveAttribute(
       'href',
       '/browse/instrument/1/facilityCycle'
