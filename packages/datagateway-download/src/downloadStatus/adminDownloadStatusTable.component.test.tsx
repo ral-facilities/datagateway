@@ -88,12 +88,19 @@ describe('Admin Download Status Table', () => {
 
     jest.useFakeTimers().setSystemTime(mockedDate);
 
+    const origDate = global.Date.prototype.toLocaleString;
+    jest
+      .spyOn(global.Date.prototype, 'toLocaleString')
+      .mockImplementation(function () {
+        return origDate.call(this, 'en-GB');
+      });
+
     const { asFragment } = renderComponent();
 
-    jest.runAllTimers();
+    jest.runOnlyPendingTimers();
     // wait for data to finish loading
     expect(
-      await screen.findByText(mockedDate.toLocaleString())
+      await screen.findByText('downloadTab.last_checked', { exact: false })
     ).toBeInTheDocument();
 
     expect(asFragment()).toMatchSnapshot();
@@ -512,21 +519,16 @@ describe('Admin Download Status Table', () => {
   it('should send restore item and item status requests when restore button is clicked', async () => {
     renderComponent();
 
-    await act(async () => {
-      await flushPromises();
-    });
+    // wait for data to finish loading
+    expect(
+      await screen.findByText('downloadTab.last_checked', { exact: false })
+    ).toBeInTheDocument();
 
-    // without waitFor,
-    // toBeInTheDocument will complain it can't find the element
-    // even though findBy didn't throw...
-    // (it throws when the elemenet actually doesn't exist)
-    await waitFor(async () => {
-      expect(
-        await screen.findByRole('button', {
-          name: 'downloadStatus.restore {filename:test-file-4}',
-        })
-      ).toBeInTheDocument();
-    });
+    expect(
+      screen.getByRole('button', {
+        name: 'downloadStatus.restore {filename:test-file-4}',
+      })
+    ).toBeInTheDocument();
 
     (fetchAdminDownloads as jest.Mock).mockImplementation(
       (
@@ -571,12 +573,13 @@ describe('Admin Download Status Table', () => {
   it('should send pause restore request when pause button is clicked', async () => {
     renderComponent();
 
-    await act(async () => {
-      await flushPromises();
-    });
+    // wait for data to finish loading
+    expect(
+      await screen.findByText('downloadTab.last_checked', { exact: false })
+    ).toBeInTheDocument();
 
     expect(
-      await screen.findByRole('button', {
+      screen.getByRole('button', {
         name: 'downloadStatus.pause {filename:test-file-3}',
       })
     ).toBeInTheDocument();
@@ -624,9 +627,10 @@ describe('Admin Download Status Table', () => {
   it('should send resume restore request when resume button is clicked', async () => {
     renderComponent();
 
-    await act(async () => {
-      await flushPromises();
-    });
+    // wait for data to finish loading
+    expect(
+      await screen.findByText('downloadTab.last_checked', { exact: false })
+    ).toBeInTheDocument();
 
     expect(
       screen.getByRole('button', {
@@ -677,17 +681,16 @@ describe('Admin Download Status Table', () => {
   it('should send delete item request when delete button is clicked', async () => {
     renderComponent();
 
-    await act(async () => {
-      await flushPromises();
-    });
+    // wait for data to finish loading
+    expect(
+      await screen.findByText('downloadTab.last_checked', { exact: false })
+    ).toBeInTheDocument();
 
-    await waitFor(async () => {
-      expect(
-        await screen.findByRole('button', {
-          name: 'downloadStatus.delete {filename:test-file-1}',
-        })
-      ).toBeInTheDocument();
-    });
+    expect(
+      screen.getByRole('button', {
+        name: 'downloadStatus.delete {filename:test-file-1}',
+      })
+    ).toBeInTheDocument();
 
     (fetchAdminDownloads as jest.Mock).mockImplementation(
       (
@@ -712,7 +715,7 @@ describe('Admin Download Status Table', () => {
     );
 
     await user.click(
-      await screen.findByRole('button', {
+      screen.getByRole('button', {
         name: 'downloadStatus.delete {filename:test-file-1}',
       })
     );

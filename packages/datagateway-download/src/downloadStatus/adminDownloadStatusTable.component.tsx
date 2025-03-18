@@ -305,12 +305,10 @@ const AdminDownloadStatusTable: React.FC = () => {
               <CircularProgress size={20} />
             )}
 
-            {!refreshDownloads ? (
+            {!refreshDownloads && dataUpdatedAt > 0 ? (
               <p style={{ paddingLeft: '10px ' }}>
                 <b>{t('downloadTab.last_checked')}: </b>{' '}
-                {dataUpdatedAt > 0
-                  ? new Date(dataUpdatedAt).toLocaleString()
-                  : ''}
+                {new Date(dataUpdatedAt).toLocaleString()}
               </p>
             ) : (
               <p style={{ paddingLeft: '20px ' }}>
