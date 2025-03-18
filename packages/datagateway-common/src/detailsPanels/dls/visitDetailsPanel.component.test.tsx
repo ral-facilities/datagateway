@@ -294,7 +294,7 @@ describe('Visit details panel component', () => {
     const { summary, startDate, endDate, ...amendedRowData } = rowData;
 
     axios.get = jest.fn().mockResolvedValue({
-      data: amendedRowData,
+      data: [amendedRowData],
     });
 
     renderComponent({ rowData: amendedRowData });

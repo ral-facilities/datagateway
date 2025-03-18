@@ -422,7 +422,7 @@ describe('Investigation details panel component', () => {
     const { summary, doi, startDate, endDate, ...amendedRowData } = rowData;
 
     (axios.get as jest.Mock).mockResolvedValueOnce({
-      data: amendedRowData,
+      data: [amendedRowData],
     });
 
     renderComponent({ rowData: amendedRowData });

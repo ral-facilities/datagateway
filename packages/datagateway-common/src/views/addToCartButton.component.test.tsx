@@ -33,7 +33,18 @@ describe('Generic add to cart button', () => {
     return render(
       <Provider store={store}>
         <MemoryRouter>
-          <QueryClientProvider client={new QueryClient()}>
+          <QueryClientProvider
+            client={
+              new QueryClient({
+                // silence react-query errors
+                logger: {
+                  log: console.log,
+                  warn: console.warn,
+                  error: jest.fn(),
+                },
+              })
+            }
+          >
             <AddToCartButton {...props} />
           </QueryClientProvider>
         </MemoryRouter>
