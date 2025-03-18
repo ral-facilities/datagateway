@@ -1,6 +1,6 @@
 import React from 'react';
 import DatafileDetailsPanel from './datafileDetailsPanel.component';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Datafile } from '../../app.types';
 import { useDatafileDetails } from '../../api';
 import { render, RenderResult } from '@testing-library/react';

@@ -8,7 +8,7 @@ import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import ISISDataPublicationsCardView from './isisDataPublicationsCardView.component';
 import { createMemoryHistory, type History } from 'history';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
@@ -128,9 +128,7 @@ describe('ISIS Data Publication - Card View', () => {
     it('renders correctly', async () => {
       renderComponent();
 
-      const cards = await screen.findAllByTestId(
-        'isis-dataPublications-card-view'
-      );
+      const cards = await screen.findAllByTestId('card');
       expect(cards).toHaveLength(1);
 
       const card = cards[0];
@@ -212,9 +210,7 @@ describe('ISIS Data Publication - Card View', () => {
     it('renders correctly', async () => {
       renderComponent('2');
 
-      const cards = await screen.findAllByTestId(
-        'isis-dataPublications-card-view'
-      );
+      const cards = await screen.findAllByTestId('card');
       expect(cards).toHaveLength(1);
 
       const card = cards[0];

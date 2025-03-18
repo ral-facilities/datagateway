@@ -37,7 +37,7 @@ import BlackTooltip from '../tooltip.component';
 import { toDate } from 'date-fns-tz';
 import { format } from 'date-fns';
 import {
-  QueryKey,
+  QueryKeys,
   useAdminDownloadDeleted,
   useAdminDownloads,
   useAdminUpdateDownloadStatus,
@@ -45,7 +45,7 @@ import {
 import { DownloadSettingsContext } from '../ConfigProvider';
 import useDownloadFormatter from './hooks/useDownloadFormatter';
 import DownloadProgressIndicator from './downloadProgressIndicator.component';
-import { useQueryClient } from 'react-query';
+import { useQueryClient } from '@tanstack/react-query';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   flexGrow: 1,
@@ -155,7 +155,7 @@ const AdminDownloadStatusTable: React.FC = () => {
   const refreshTable = useCallback(async () => {
     await Promise.all([
       // mark download progress queries as invalid so that react-query will refetch them as well.
-      queryClient.invalidateQueries(QueryKey.DOWNLOAD_PROGRESS),
+      queryClient.invalidateQueries([QueryKeys.DOWNLOAD_PROGRESS]),
       refetchDownloads(),
     ]);
     setRefreshDownloads(false);
@@ -305,12 +305,10 @@ const AdminDownloadStatusTable: React.FC = () => {
               <CircularProgress size={20} />
             )}
 
-            {!refreshDownloads ? (
+            {!refreshDownloads && dataUpdatedAt > 0 ? (
               <p style={{ paddingLeft: '10px ' }}>
                 <b>{t('downloadTab.last_checked')}: </b>{' '}
-                {dataUpdatedAt > 0
-                  ? new Date(dataUpdatedAt).toLocaleString()
-                  : ''}
+                {new Date(dataUpdatedAt).toLocaleString()}
               </p>
             ) : (
               <p style={{ paddingLeft: '20px ' }}>

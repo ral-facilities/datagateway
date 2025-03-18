@@ -108,7 +108,7 @@ function DatafilePreviewer({
 
   const {
     data: datafile,
-    isLoading: isLoadingMetadata,
+    isInitialLoading: isLoadingMetadata,
     error: loadDatafileMetaError,
   } = useDatafileDetails(datafileId, undefined, {
     enabled: !Number.isNaN(datafileId),

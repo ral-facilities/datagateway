@@ -4,7 +4,7 @@ import { act } from 'react-dom/test-utils';
 import App, { ErrorFallback, QueryClientSettingsUpdaterContext } from './App';
 import { flushPromises } from './setupTests';
 import { mockedSettings } from './testData';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { DownloadSettingsContext } from './ConfigProvider';
 
 jest.mock('loglevel');

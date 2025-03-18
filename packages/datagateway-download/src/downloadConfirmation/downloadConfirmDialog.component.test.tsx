@@ -2,7 +2,7 @@ import type { RenderResult } from '@testing-library/react';
 import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as React from 'react';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import {
   downloadPreparedCart,
@@ -25,19 +25,18 @@ jest.mock('datagateway-common', () => {
   };
 });
 
-// silence react-query errors
-setLogger({
-  log: console.log,
-  warn: console.warn,
-  error: jest.fn(),
-});
-
 const createTestQueryClient = (): QueryClient =>
   new QueryClient({
     defaultOptions: {
       queries: {
         retry: false,
       },
+    },
+    // silence react-query errors
+    logger: {
+      log: console.log,
+      warn: console.warn,
+      error: jest.fn(),
     },
   });
 
@@ -181,6 +180,11 @@ describe('DownloadConfirmDialog', () => {
 
   it('should show successful view when download is successful', async () => {
     (submitCart as jest.Mock).mockResolvedValue(123);
+    (getDownload as jest.Mock).mockResolvedValue({
+      preparedId: 1,
+      fileName: 'test-file-name',
+      status: 'COMPLETE',
+    });
     (getDownloadTypeStatus as jest.Mock).mockImplementation((type, _) =>
       Promise.resolve({
         type,
@@ -278,6 +282,30 @@ describe('DownloadConfirmDialog', () => {
 
   it('should show error when download has failed', async () => {
     (submitCart as jest.Mock).mockRejectedValue({
+      message: 'error',
+    });
+
+    renderWrapper(100, true, true);
+    // click on download button to begin download
+    await user.click(await screen.findByText('downloadConfirmDialog.download'));
+
+    // should not show success message
+    await waitFor(() => {
+      expect(
+        screen.queryByText('downloadConfirmDialog.download_success')
+      ).toBeNull();
+    });
+    // should show error
+    expect(
+      await screen.findByText('Your download request was unsuccessful', {
+        exact: false,
+      })
+    ).toBeInTheDocument();
+  });
+
+  it('should show error when download info is not returned', async () => {
+    (submitCart as jest.Mock).mockResolvedValue(123);
+    (getDownload as jest.Mock).mockRejectedValue({
       message: 'error',
     });
 

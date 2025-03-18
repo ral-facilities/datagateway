@@ -10,7 +10,7 @@ import {
   UseInfiniteQueryResult,
   useInfiniteQuery,
   UseQueryOptions,
-} from 'react-query';
+} from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { getApiParams, parseSearchToQuery } from '.';

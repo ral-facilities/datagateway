@@ -17,7 +17,7 @@ import {
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { UseQueryResult, useQuery } from 'react-query';
+import { UseQueryResult, useQuery } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 

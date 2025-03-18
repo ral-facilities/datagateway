@@ -232,7 +232,7 @@ describe('Lucene actions', () => {
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       await act(async () => {
-        await result.current.fetchNextPage();
+        await await result.current.fetchNextPage();
       });
 
       const params = new URLSearchParams();

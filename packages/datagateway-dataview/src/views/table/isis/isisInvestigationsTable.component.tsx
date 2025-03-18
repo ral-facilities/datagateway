@@ -111,7 +111,7 @@ const ISISInvestigationsTable = (
     undefined,
     isMounted
   );
-  const { data: allIds, isLoading: allIdsLoading } = useIds(
+  const { data: allIds, isInitialLoading: allIdsLoading } = useIds(
     'investigation',
     investigationQueryFilters,
     selectAllSetting

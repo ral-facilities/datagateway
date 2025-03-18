@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import { useQueryClient } from 'react-query';
+import { useQueryClient } from '@tanstack/react-query';
 
 const createRetryICATErrors = (
   retries: number

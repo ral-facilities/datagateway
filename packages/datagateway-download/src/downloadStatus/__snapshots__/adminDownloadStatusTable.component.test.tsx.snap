@@ -49,7 +49,7 @@ exports[`Admin Download Status Table should render correctly 1`] = `
             <b>
               downloadTab.last_checked: 
             </b>
-             Sat, 01 Feb 2020 00:00:00 GMT
+             01/02/2020, 00:00:00
           </p>
         </h3>
       </div>

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import axios, { AxiosResponse } from 'axios';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, within } from '@testing-library/react';
 import ParameterDateTimeSelector from './parameterDateTimeSelector.component';
 import { DatasearchType, dGCommonInitialState } from 'datagateway-common';
