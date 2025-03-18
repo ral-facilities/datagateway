@@ -1,5 +1,23 @@
 # Changelog
 
+## [v2.1.1](https://github.com/ral-facilities/datagateway/tree/v2.1.1) (2025-03-18)
+
+## What's Changed
+
+### Features
+
+* Fix initial download table timestamp showing as UNIX epoch by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1708
+* Fix 500 errors in text filters when single quote is typed by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1709
+* Fix slow size calculation of large carts by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1707
+
+### Dependencies
+
+* Update dependency axios to v1.8.2 [SECURITY] by @renovate in https://github.com/ral-facilities/datagateway/pull/1705
+* Bump @babel/helpers from 7.20.13 to 7.26.10 by @dependabot in https://github.com/ral-facilities/datagateway/pull/1710
+* Bump @babel/runtime from 7.23.8 to 7.26.10 by @dependabot in https://github.com/ral-facilities/datagateway/pull/1711
+
+**Full Changelog**: https://github.com/ral-facilities/datagateway/compare/v2.1.0...v2.1.1
+
 ## [v2.1.0](https://github.com/ral-facilities/datagateway/tree/v2.1.0) (2025-03-10)
 
 ## What's Changed
@@ -36,7 +54,7 @@
 
 * @akintomiwa made their first contribution in https://github.com/ral-facilities/datagateway/pull/1666
 
-**Full Changelog**: https://github.com/ral-facilities/datagateway/compare/v2.0.0...snapshot-develop
+**Full Changelog**: https://github.com/ral-facilities/datagateway/compare/v2.0.0...v2.1.0
 
 ## [v2.0.0](https://github.com/ral-facilities/datagateway/tree/v2.0.0) (2024-07-24)
 
