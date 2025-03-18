@@ -265,9 +265,9 @@ describe('generic api functions', () => {
     it('parses all filter types to api params successfully', () => {
       const sortAndFilters: { sort: SortType; filters: FiltersType } = {
         filters: {
-          name: { value: 'test', type: 'include' },
-          title: { value: 'test', type: 'exclude' },
-          doi: { value: 'test', type: 'exact' },
+          name: { value: "test'", type: 'include' },
+          title: { value: "test'", type: 'exclude' },
+          doi: { value: "test'", type: 'exact' },
           startDate: {
             startDate: '2021-08-05',
             endDate: '2021-08-06',
@@ -280,9 +280,9 @@ describe('generic api functions', () => {
       const params = new URLSearchParams();
       params.append('order', JSON.stringify('name asc'));
       params.append('order', JSON.stringify('id asc'));
-      params.append('where', JSON.stringify({ name: { ilike: 'test' } }));
-      params.append('where', JSON.stringify({ title: { nilike: 'test' } }));
-      params.append('where', JSON.stringify({ doi: { eq: 'test' } }));
+      params.append('where', JSON.stringify({ name: { ilike: "test''" } }));
+      params.append('where', JSON.stringify({ title: { nilike: "test''" } }));
+      params.append('where', JSON.stringify({ doi: { eq: "test''" } }));
       params.append(
         'where',
         JSON.stringify({ startDate: { gte: '2021-08-05 00:00:00' } })
