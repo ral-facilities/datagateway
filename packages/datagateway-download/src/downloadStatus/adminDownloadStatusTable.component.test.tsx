@@ -91,7 +91,7 @@ describe('Admin Download Status Table', () => {
     const origDate = global.Date.prototype.toLocaleString;
     jest
       .spyOn(global.Date.prototype, 'toLocaleString')
-      .mockImplementation(function () {
+      .mockImplementation(function (this: Date) {
         return origDate.call(this, 'en-GB');
       });
 
