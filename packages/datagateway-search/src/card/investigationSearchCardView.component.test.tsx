@@ -43,7 +43,7 @@ describe('Investigation - Card View', () => {
   const mockAxiosGet = (url: string): Promise<Partial<AxiosResponse>> => {
     if (/\/investigations$/.test(url)) {
       return Promise.resolve({
-        data: [],
+        data: [cardData],
       });
     }
     if (/\/search\/documents$/.test(url)) {
