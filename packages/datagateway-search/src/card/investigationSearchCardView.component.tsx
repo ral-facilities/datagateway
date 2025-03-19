@@ -429,9 +429,7 @@ const InvestigationCardView: React.FC<InvestigationCardProps> = (props) => {
                 <CardView
                   entityName="Investigation"
                   data={paginatedSource ?? []}
-                  totalDataCount={
-                    aggregatedIds?.length + (hasNextPage ? 1 : 0) ?? 0
-                  }
+                  totalDataCount={aggregatedIds.length + (hasNextPage ? 1 : 0)}
                   onPageChange={pushPage}
                   onFilter={pushFilter}
                   onSort={handleSort}

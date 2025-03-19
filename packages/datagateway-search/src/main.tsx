@@ -1,7 +1,3 @@
-import 'react-app-polyfill/ie11';
-import 'react-app-polyfill/stable';
-import 'custom-event-polyfill';
-import 'url-search-params-polyfill';
 import './i18n';
 import React from 'react';
 import ReactDOMClient from 'react-dom/client';

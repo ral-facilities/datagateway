@@ -55,8 +55,8 @@
     "vite": "6.2.1"
   },
   "scripts": {
-    "start": "craco start",
-    "build": "craco build",
+    "dev": "vite dev",
+    "build": "vite build",
     "serve:build": "yarn build && serve -l 5001 build",
     "test": "craco test --env=jsdom --coverage --watchAll=false",
     "test:watch": "craco test --env=jsdom --watch",
