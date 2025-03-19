@@ -142,8 +142,8 @@ export function mount(props: unknown): Promise<void> {
 export function unmount(props: unknown): Promise<void> {
   return reactLifecycles.unmount(props);
 }
-/* eslint-enable @typescript-eslint/no-explicit-any */
-if (import.meta.env.DEV || import.meta.env.VITE_E2E_TESTING) {
+
+if (import.meta.env.DEV || import.meta.env.VITE_BUILD_STANDALONE) {
   render();
   log.setDefaultLevel(log.levels.DEBUG);
 

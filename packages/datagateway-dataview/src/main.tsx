@@ -161,7 +161,7 @@ export const fetchSettings = (): Promise<DataviewSettings | void> => {
 const settings = fetchSettings();
 setSettings(settings);
 
-if (import.meta.env.DEV || import.meta.env.VITE_E2E_TESTING) {
+if (import.meta.env.DEV || import.meta.env.VITE_BUILD_STANDALONE) {
   render();
   log.setDefaultLevel(log.levels.DEBUG);
 
