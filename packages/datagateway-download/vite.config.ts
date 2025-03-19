@@ -70,7 +70,7 @@ export default defineConfig(({ mode }) => {
       port: 3000,
     },
     preview: {
-      port: 5001,
+      port: 5002,
     },
     define: {
       // See https://vitejs.dev/guide/build.html#library-mode
@@ -143,6 +143,7 @@ export default defineConfig(({ mode }) => {
         exclude: [
           'public/*',
           'server/*',
+          'cypress/*',
           // Leave handlers to show up unused code
           'src/mocks/browser.ts',
           'src/mocks/server.ts',

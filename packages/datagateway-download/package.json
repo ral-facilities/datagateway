@@ -67,13 +67,14 @@
     "eslint-config-react-app": "7.0.0",
     "jest-fail-on-console": "3.1.1",
     "lint-staged": "13.3.0",
-    "serve": "14.2.0",
     "start-server-and-test": "~2.0.11"
   },
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
-    "serve:build": "yarn build && serve -l 5001 build",
+    "preview": "vite preview",
+    "preview:build": "yarn build && yarn preview",
+    "preview:build:dev": "yarn build --watch & yarn preview",
     "test": "craco test --env=jsdom --coverage --watchAll=false",
     "test:watch": "craco test --env=jsdom --watch",
     "build:e2e": "cross-env VITE_BUILD_STANDALONE=true GENERATE_SOURCEMAP=false vite build",

@@ -143,6 +143,7 @@ export default defineConfig(({ mode }) => {
         exclude: [
           'public/*',
           'server/*',
+          'cypress/*',
           // Leave handlers to show up unused code
           'src/mocks/browser.ts',
           'src/mocks/server.ts',
