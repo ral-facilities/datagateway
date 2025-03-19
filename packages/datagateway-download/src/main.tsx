@@ -64,8 +64,8 @@ export function unmount(props: unknown): Promise<void> {
 
 // only export this for testing
 export const fetchSettings = (): Promise<DownloadSettings | void> => {
-  const settingsPath = process.env.REACT_APP_DOWNLOAD_BUILD_DIRECTORY
-    ? process.env.REACT_APP_DOWNLOAD_BUILD_DIRECTORY +
+  const settingsPath = process.env.VITE_DOWNLOAD_BUILD_DIRECTORY
+    ? process.env.VITE_DOWNLOAD_BUILD_DIRECTORY +
       'datagateway-download-settings.json'
     : '/datagateway-download-settings.json';
   return axios
@@ -168,10 +168,7 @@ export const fetchSettings = (): Promise<DownloadSettings | void> => {
 const settings = fetchSettings();
 setSettings(settings);
 
-if (
-  process.env.NODE_ENV === `development` ||
-  process.env.REACT_APP_E2E_TESTING
-) {
+if (process.env.NODE_ENV === `development` || process.env.VITE_E2E_TESTING) {
   render();
 
   if (process.env.NODE_ENV === `development`) {

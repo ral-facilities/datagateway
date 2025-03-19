@@ -56,8 +56,8 @@ export function bootstrap(props: unknown): Promise<void> {
 
 // only export this for testing
 export const fetchSettings = (): Promise<SearchSettings | void> => {
-  const settingsPath = process.env.REACT_APP_SEARCH_BUILD_DIRECTORY
-    ? process.env.REACT_APP_SEARCH_BUILD_DIRECTORY +
+  const settingsPath = process.env.VITE_SEARCH_BUILD_DIRECTORY
+    ? process.env.VITE_SEARCH_BUILD_DIRECTORY +
       'datagateway-search-settings.json'
     : '/datagateway-search-settings.json';
   return axios
@@ -147,10 +147,7 @@ export function unmount(props: unknown): Promise<void> {
   return reactLifecycles.unmount(props);
 }
 /* eslint-enable @typescript-eslint/no-explicit-any */
-if (
-  process.env.NODE_ENV === `development` ||
-  process.env.REACT_APP_E2E_TESTING
-) {
+if (process.env.NODE_ENV === `development` || process.env.VITE_E2E_TESTING) {
   render();
   log.setDefaultLevel(log.levels.DEBUG);
 

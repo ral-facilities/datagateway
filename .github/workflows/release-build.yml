@@ -4,7 +4,7 @@ on:
     branches:
       - main
       - develop
-    tags: 
+    tags:
       - '*'
 
 jobs:
@@ -40,7 +40,7 @@ jobs:
       - name: Build datagateway-dataview
         run: |
           cd packages/datagateway-dataview
-          echo "REACT_APP_DATAVIEW_BUILD_DIRECTORY=/plugins/datagateway-dataview/" > .env.production
+          echo "VITE_DATAVIEW_BUILD_DIRECTORY=/plugins/datagateway-dataview/" > .env.production
           yarn build
           mv build datagateway-dataview-$TAG_NAME
           tar -czf ../../datagateway-dataview-$TAG_NAME.tar.gz datagateway-dataview-$TAG_NAME
@@ -48,7 +48,7 @@ jobs:
       - name: Build datagateway-download
         run: |
           cd packages/datagateway-download
-          echo "REACT_APP_DOWNLOAD_BUILD_DIRECTORY=/plugins/datagateway-download/" > .env.production
+          echo "VITE_DOWNLOAD_BUILD_DIRECTORY=/plugins/datagateway-download/" > .env.production
           yarn build
           mv build datagateway-download-$TAG_NAME
           tar -czf ../../datagateway-download-$TAG_NAME.tar.gz datagateway-download-$TAG_NAME
@@ -56,7 +56,7 @@ jobs:
       - name: Build datagateway-search
         run: |
           cd packages/datagateway-search
-          echo "REACT_APP_SEARCH_BUILD_DIRECTORY=/plugins/datagateway-search/" > .env.production
+          echo "VITE_SEARCH_BUILD_DIRECTORY=/plugins/datagateway-search/" > .env.production
           yarn build
           mv build datagateway-search-$TAG_NAME
           tar -czf ../../datagateway-search-$TAG_NAME.tar.gz datagateway-search-$TAG_NAME

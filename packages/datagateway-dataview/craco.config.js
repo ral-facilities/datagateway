@@ -6,7 +6,7 @@ module.exports = {
         'react-dom': 'ReactDOM', // Case matters here
       };
 
-      if (env === 'production' && !process.env.REACT_APP_E2E_TESTING) {
+      if (env === 'production' && !process.env.VITE_E2E_TESTING) {
         webpackConfig.output.library = 'datagateway-dataview';
         webpackConfig.output.libraryTarget = 'window';
 

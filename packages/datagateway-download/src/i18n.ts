@@ -3,8 +3,8 @@ import Backend from 'i18next-http-backend';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
 
-const loadPath = process.env.REACT_APP_DOWNLOAD_BUILD_DIRECTORY
-  ? process.env.REACT_APP_DOWNLOAD_BUILD_DIRECTORY + 'res/default.json'
+const loadPath = process.env.VITE_DOWNLOAD_BUILD_DIRECTORY
+  ? process.env.VITE_DOWNLOAD_BUILD_DIRECTORY + 'res/default.json'
   : '/res/default.json';
 
 i18n
