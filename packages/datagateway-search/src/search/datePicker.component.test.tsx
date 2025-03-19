@@ -1,4 +1,3 @@
-import React from 'react';
 import { StateType } from '../state/app.types';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';

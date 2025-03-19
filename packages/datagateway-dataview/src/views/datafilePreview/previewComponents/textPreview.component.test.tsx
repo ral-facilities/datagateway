@@ -1,7 +1,6 @@
 import type { RenderResult } from '@testing-library/react';
 import { act, render, screen, waitFor } from '@testing-library/react';
 import { DGThemeProvider } from 'datagateway-common';
-import * as React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import { combineReducers, createStore, Store } from 'redux';

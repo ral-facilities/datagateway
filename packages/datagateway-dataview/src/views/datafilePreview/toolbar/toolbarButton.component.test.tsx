@@ -2,7 +2,6 @@ import { Download } from '@mui/icons-material';
 import type { Theme } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
 import { render, screen } from '@testing-library/react';
-import * as React from 'react';
 import type { DeepPartial } from 'redux';
 import ToolbarButton from './toolbarButton.component';
 

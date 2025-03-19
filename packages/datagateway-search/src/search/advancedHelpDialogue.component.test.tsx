@@ -1,4 +1,3 @@
-import * as React from 'react';
 import AdvancedHelpDialogue from './advancedHelpDialogue.component';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';

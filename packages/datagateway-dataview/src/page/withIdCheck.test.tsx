@@ -35,7 +35,7 @@ describe('withIdCheck', () => {
     useEffect = jest.spyOn(React, 'useEffect');
     pendingPromiseMock = jest.fn().mockImplementation(
       () =>
-        new Promise((resolve, reject) => {
+        new Promise((_resolve, _reject) => {
           // do nothing
         })
     );

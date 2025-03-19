@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { render, screen, RenderResult, waitFor } from '@testing-library/react';
 import type { Download } from 'datagateway-common';
 import { DownloadSettingsContext } from '../ConfigProvider';

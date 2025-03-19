@@ -3,7 +3,7 @@ import { MicroFrontendId, RegisterRouteType } from 'datagateway-common';
 import LogoLight from 'datagateway-common/src/images/datagateway-logo.svg';
 import LogoDark from 'datagateway-common/src/images/datgateway-white-text-blue-mark-logo.svg';
 import log from 'loglevel';
-import { fetchSettings } from './';
+import { fetchSettings } from './main';
 
 jest.mock('loglevel');
 
@@ -204,7 +204,7 @@ describe('index - fetchSettings', () => {
   });
 
   it('logs an error if settings.json fails to be loaded with custom path', async () => {
-    process.env.VITE_SEARCH_BUILD_DIRECTORY = '/custom/directory/';
+    import.meta.env.VITE_SEARCH_BUILD_DIRECTORY = '/custom/directory/';
     (axios.get as jest.Mock).mockImplementationOnce(() => Promise.reject({}));
 
     const settings = await fetchSettings();
@@ -216,7 +216,7 @@ describe('index - fetchSettings', () => {
     expect(mockLog.calls[0][0]).toEqual(
       'Error loading /custom/directory/datagateway-search-settings.json: undefined'
     );
-    delete process.env.VITE_SEARCH_BUILD_DIRECTORY;
+    delete import.meta.env.VITE_SEARCH_BUILD_DIRECTORY;
   });
 
   it('logs an error if fails to load a settings.json and is still in a loading state', async () => {

@@ -34,6 +34,7 @@ module.exports = {
       },
     ],
     'import/no-extraneous-dependencies': 'error',
+    'react/react-in-jsx-scope': 'off',
   },
   overrides: [
     {

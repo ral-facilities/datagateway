@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { initialState } from '../state/reducers/dgsearch.reducer';
 import configureStore from 'redux-mock-store';
 import type { StateType } from '../state/app.types';

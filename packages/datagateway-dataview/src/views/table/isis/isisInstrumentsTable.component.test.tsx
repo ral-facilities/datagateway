@@ -1,4 +1,3 @@
-import * as React from 'react';
 import ISISInstrumentsTable from './isisInstrumentsTable.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import { StateType } from '../../../state/app.types';

@@ -42,7 +42,7 @@ const DOIConfirmDialog: React.FC<DOIConfirmDialogProps> = (
 
   return (
     <Dialog
-      onClose={(event) => {
+      onClose={(_event) => {
         if (isMintError) {
           setClose();
         }

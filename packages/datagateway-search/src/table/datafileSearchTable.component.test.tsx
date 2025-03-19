@@ -1,4 +1,3 @@
-import * as React from 'react';
 import DatafileSearchTable from './datafileSearchTable.component';
 import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
 import configureStore from 'redux-mock-store';

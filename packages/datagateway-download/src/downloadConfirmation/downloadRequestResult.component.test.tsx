@@ -1,5 +1,4 @@
 import userEvent from '@testing-library/user-event';
-import * as React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import type DownloadRequestInfo from './DownloadRequestInfo';
 import DownloadRequestResult from './downloadRequestResult.component';

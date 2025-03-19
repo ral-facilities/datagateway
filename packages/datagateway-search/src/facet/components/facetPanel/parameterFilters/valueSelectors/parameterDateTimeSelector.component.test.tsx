@@ -99,7 +99,7 @@ describe('ParameterDateTimeSelector', () => {
   it('shows loading when loading the list of available date time options', () => {
     axios.get = jest.fn().mockImplementation(
       () =>
-        new Promise((resolve) => {
+        new Promise((_resolve) => {
           // never resolve the promise to pretend it is loading
         })
     );

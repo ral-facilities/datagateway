@@ -214,7 +214,7 @@ describe('index - fetchSettings', () => {
   });
 
   it('logs an error if settings.json fails to be loaded with custom path', async () => {
-    process.env.VITE_DATAVIEW_BUILD_DIRECTORY = '/custom/directory/';
+    import.meta.env.VITE_DATAVIEW_BUILD_DIRECTORY = '/custom/directory/';
     (axios.get as jest.Mock).mockImplementationOnce(() => Promise.reject({}));
 
     const settings = await fetchSettings();
@@ -226,7 +226,7 @@ describe('index - fetchSettings', () => {
     expect(mockLog.calls[0][0]).toEqual(
       'Error loading /custom/directory/datagateway-dataview-settings.json: undefined'
     );
-    delete process.env.VITE_DATAVIEW_BUILD_DIRECTORY;
+    delete import.meta.env.VITE_DATAVIEW_BUILD_DIRECTORY;
   });
 
   it('logs an error if fails to load a settings.json and is still in a loading state', async () => {

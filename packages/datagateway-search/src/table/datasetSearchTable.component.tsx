@@ -182,7 +182,7 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
   const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
-    (offsetParams: IndexRange) => fetchNextPage(),
+    (_offsetParams: IndexRange) => fetchNextPage(),
     [fetchNextPage]
   );
 

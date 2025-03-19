@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { FiltersType } from 'datagateway-common';
 import { render, screen, within } from '@testing-library/react';
 import SelectedFilterChips from './selectedFilterChips.component';

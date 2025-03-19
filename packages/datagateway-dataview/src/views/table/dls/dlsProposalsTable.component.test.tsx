@@ -1,4 +1,3 @@
-import * as React from 'react';
 import DLSProposalsTable from './dlsProposalsTable.component';
 import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';

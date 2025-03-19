@@ -1,4 +1,3 @@
-import * as React from 'react';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../state/app.types';

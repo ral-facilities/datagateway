@@ -4,7 +4,6 @@ import {
   useDatasetCount,
   useDatasetsPaginated,
 } from 'datagateway-common';
-import React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';

@@ -1,7 +1,7 @@
 // Uncomment to use App to test components
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
+// import React from 'react';
+// import ReactDOM from 'react-dom/client';
+// import App from './App';
 
 import { StateType } from './state/app.types';
 
@@ -86,5 +86,5 @@ export { default as DatafileDetailsPanel } from './detailsPanels/datafileDetails
 
 export * from './urlBuilders';
 
-const root = ReactDOM.createRoot(document.getElementById('root')!);
-root.render(<App />);
+// const root = ReactDOM.createRoot(document.getElementById('root'));
+// root.render(<App />);

@@ -1,4 +1,3 @@
-import * as React from 'react';
 import DLSVisitsTable from './dlsVisitsTable.component';
 import { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';

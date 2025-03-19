@@ -1,0 +1,5 @@
+{
+  "extends": "../../tsconfig.base.json",
+  // Exclude test files from build
+  "exclude": ["**/?*test.*", "src/setupTests.ts", "src/testUtils.tsx"],
+}

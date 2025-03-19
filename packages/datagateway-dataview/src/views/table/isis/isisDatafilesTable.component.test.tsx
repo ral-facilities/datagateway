@@ -1,4 +1,3 @@
-import * as React from 'react';
 import ISISDatafilesTable from './isisDatafilesTable.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import configureStore from 'redux-mock-store';

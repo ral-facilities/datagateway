@@ -79,8 +79,8 @@ export function unmount(props: unknown): Promise<void> {
 
 // only export this for testing
 export const fetchSettings = (): Promise<DataviewSettings | void> => {
-  const settingsPath = process.env.VITE_DATAVIEW_BUILD_DIRECTORY
-    ? process.env.VITE_DATAVIEW_BUILD_DIRECTORY +
+  const settingsPath = import.meta.env.VITE_DATAVIEW_BUILD_DIRECTORY
+    ? import.meta.env.VITE_DATAVIEW_BUILD_DIRECTORY +
       'datagateway-dataview-settings.json'
     : '/datagateway-dataview-settings.json';
   return axios
@@ -161,11 +161,11 @@ export const fetchSettings = (): Promise<DataviewSettings | void> => {
 const settings = fetchSettings();
 setSettings(settings);
 
-if (process.env.NODE_ENV === `development` || process.env.VITE_E2E_TESTING) {
+if (import.meta.env.DEV || import.meta.env.VITE_E2E_TESTING) {
   render();
   log.setDefaultLevel(log.levels.DEBUG);
 
-  if (process.env.NODE_ENV === `development`) {
+  if (import.meta.env.DEV) {
     settings.then((settingsResult) => {
       if (settingsResult) {
         const apiUrl = settingsResult.apiUrl;

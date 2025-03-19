@@ -14,7 +14,7 @@ import {
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { getApiParams, parseSearchToQuery } from '.';
-import { StateType } from '../../state/app.types';
+import { StateType } from '../state/app.types';
 import { useRetryICATErrors } from './retryICATErrors';
 
 const fetchDataPublications = (
@@ -215,7 +215,7 @@ export const useDataPublications = (
     [string, AdditionalFilters?]
   >(
     ['dataPublication', additionalFilters],
-    (params) => {
+    (_params) => {
       return fetchDataPublications(
         apiUrl,
         { sort: {}, filters: {} },

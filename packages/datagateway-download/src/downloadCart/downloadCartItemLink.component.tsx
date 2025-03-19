@@ -1,5 +1,4 @@
 import { Link as MuiLink } from '@mui/material';
-import React from 'react';
 import type { DownloadCartItem } from 'datagateway-common';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';

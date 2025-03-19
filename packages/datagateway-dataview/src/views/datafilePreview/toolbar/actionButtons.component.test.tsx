@@ -8,7 +8,6 @@ import {
 import userEvent from '@testing-library/user-event';
 import { downloadDatafile } from 'datagateway-common';
 import { createMemoryHistory, History } from 'history';
-import * as React from 'react';
 import { Provider } from 'react-redux';
 import { MemoryRouter, Router } from 'react-router-dom';
 import type { Store } from 'redux';

@@ -1,5 +1,4 @@
 import { Paper, Stack } from '@mui/material';
-import React from 'react';
 import ActionButtons from './actionButtons.component';
 import RightAlignedControls from './rightAlignedControls';
 

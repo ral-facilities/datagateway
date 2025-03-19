@@ -6,7 +6,7 @@ module.exports = {
         'react-dom': 'ReactDOM', // Case matters here
       };
 
-      if (env === 'production' && !process.env.VITE_E2E_TESTING) {
+      if (env === 'production' && !import.meta.env.VITE_E2E_TESTING) {
         webpackConfig.output.library = 'datagateway-download';
         webpackConfig.output.libraryTarget = 'window';
 

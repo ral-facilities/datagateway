@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   TranslatedHomePage as HomePage,
   TranslatedHomePageStateProps,

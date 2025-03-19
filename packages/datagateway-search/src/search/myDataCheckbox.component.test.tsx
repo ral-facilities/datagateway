@@ -1,4 +1,3 @@
-import * as React from 'react';
 import MyDataCheckBox from './myDataCheckBox.component';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';

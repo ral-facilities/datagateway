@@ -1,5 +1,4 @@
 import { dGCommonInitialState, type Investigation } from 'datagateway-common';
-import * as React from 'react';
 import { Provider } from 'react-redux';
 import { generatePath, Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';

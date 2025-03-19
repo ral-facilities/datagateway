@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 
 import type { StateType } from '../../../state/app.types';

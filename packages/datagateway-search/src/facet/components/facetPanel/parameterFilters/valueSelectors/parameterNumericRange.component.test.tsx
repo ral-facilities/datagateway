@@ -1,5 +1,4 @@
 import { DatasearchType } from 'datagateway-common';
-import * as React from 'react';
 import userEvent from '@testing-library/user-event';
 import { render, screen } from '@testing-library/react';
 import ParameterNumericRange from './parameterNumericRange.component';

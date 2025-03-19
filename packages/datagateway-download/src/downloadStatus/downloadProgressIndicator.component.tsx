@@ -1,5 +1,4 @@
 import { Box, LinearProgress, Typography } from '@mui/material';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Download } from 'datagateway-common';
 import { useDownloadPercentageComplete } from '../downloadApiHooks';

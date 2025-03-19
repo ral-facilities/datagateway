@@ -1,4 +1,3 @@
-import * as React from 'react';
 import DatasetSearchTable from './datasetSearchTable.component';
 import { initialState } from '../state/reducers/dgsearch.reducer';
 import configureStore from 'redux-mock-store';

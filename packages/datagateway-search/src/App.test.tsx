@@ -1,4 +1,3 @@
-import React from 'react';
 import App from './App';
 import log from 'loglevel';
 import { render, screen, waitFor } from '@testing-library/react';

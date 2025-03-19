@@ -427,7 +427,7 @@ const EntityCard = React.memo((props: EntityCardProps): React.ReactElement => {
                 square
                 variant="outlined"
                 expanded={isMoreInfoCollapsed}
-                onChange={(e, expanded) => setMoreInfoCollapsed(expanded)}
+                onChange={(_e, expanded) => setMoreInfoCollapsed(expanded)}
                 className="tour-dataview-expand"
               >
                 <AccordionSummary

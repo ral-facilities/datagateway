@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { NestedFilter } from 'datagateway-common';
 import { render, screen } from '@testing-library/react';
 import ParameterFilterItem from './parameterFilterItem.component';

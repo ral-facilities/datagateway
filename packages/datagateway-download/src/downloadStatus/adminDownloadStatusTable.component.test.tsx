@@ -1,4 +1,3 @@
-import * as React from 'react';
 import {
   adminDownloadDeleted,
   adminDownloadStatus,
@@ -60,7 +59,7 @@ describe('Admin Download Status Table', () => {
     );
     (fetchAdminDownloads as jest.Mock).mockImplementation(
       (
-        settings: { facilityName: string; downloadApiUrl: string },
+        _settings: { facilityName: string; downloadApiUrl: string },
         queryOffset?: string
       ) => {
         //Only return the 5 results when initialy requesting so that only a total
@@ -142,7 +141,7 @@ describe('Admin Download Status Table', () => {
 
     (fetchAdminDownloads as jest.Mock).mockImplementation(
       (
-        settings: { facilityName: string; downloadApiUrl: string },
+        _settings: { facilityName: string; downloadApiUrl: string },
         queryOffset?: string
       ) => {
         //Only return the 5 results when initialy requesting so that only a total
@@ -532,7 +531,7 @@ describe('Admin Download Status Table', () => {
 
     (fetchAdminDownloads as jest.Mock).mockImplementation(
       (
-        settings: { facilityName: string; downloadApiUrl: string },
+        _settings: { facilityName: string; downloadApiUrl: string },
         queryOffset?: string
       ) => {
         //Only return the 5 results when initialy requesting so that only a total
@@ -586,7 +585,7 @@ describe('Admin Download Status Table', () => {
 
     (fetchAdminDownloads as jest.Mock).mockImplementation(
       (
-        settings: { facilityName: string; downloadApiUrl: string },
+        _settings: { facilityName: string; downloadApiUrl: string },
         queryOffset?: string
       ) => {
         //Only return the 5 results when initialy requesting so that only a total
@@ -640,7 +639,7 @@ describe('Admin Download Status Table', () => {
 
     (fetchAdminDownloads as jest.Mock).mockImplementation(
       (
-        settings: { facilityName: string; downloadApiUrl: string },
+        _settings: { facilityName: string; downloadApiUrl: string },
         queryOffset?: string
       ) => {
         //Only return the 5 results when initialy requesting so that only a total
@@ -694,7 +693,7 @@ describe('Admin Download Status Table', () => {
 
     (fetchAdminDownloads as jest.Mock).mockImplementation(
       (
-        settings: { facilityName: string; downloadApiUrl: string },
+        _settings: { facilityName: string; downloadApiUrl: string },
         queryOffset?: string
       ) => {
         //Only return the 5 results when initialy requesting so that only a total

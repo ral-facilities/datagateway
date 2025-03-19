@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { render, screen, within } from '@testing-library/react';
 import ToggleableFilterItem from './toggleableFilterItem.component';
 import userEvent from '@testing-library/user-event';

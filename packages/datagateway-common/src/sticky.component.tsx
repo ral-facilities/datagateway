@@ -14,7 +14,7 @@ const moveDown = keyframes`
 
 const StickyPaper = styled(Paper, {
   shouldForwardProp: (prop) => prop !== 'isSticky',
-})<{ isSticky: boolean }>(({ theme, isSticky }) => {
+})<{ isSticky: boolean }>(({ isSticky }) => {
   if (isSticky) {
     return {
       // Allow for the element to always be on top.
