@@ -13,6 +13,9 @@
     "importHelpers": true,
     "strictNullChecks": true,
     "noUnusedLocals": false,
+    "noEmit": false,
+    "isolatedModules": false,
+    "allowImportingTsExtensions": false,
   },
   "exclude": [
     "lib",
