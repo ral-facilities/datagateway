@@ -17,6 +17,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type {
+  Download,
   DownloadSettingsAccessMethod,
   DownloadTypeStatus,
 } from '../app.types';
@@ -60,6 +61,8 @@ interface DownloadConfirmDialogProps {
 
   redirectToStatusTab: () => void;
   setClose: () => void;
+
+  postDownloadSuccessFn?: (downloadInfo: Download) => void;
 }
 
 interface DownloadTypeInfo extends DownloadTypeStatus {
@@ -79,6 +82,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     facilityName,
     downloadApiUrl,
     accessMethods,
+    postDownloadSuccessFn,
   } = props;
 
   // Download speed/time table.
@@ -229,27 +233,13 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     }
   }, [isTwoLevel, props.open, totalSize]);
 
-  // TODO: change this so that the submit cart version can supply a function here
-  // React.useEffect(() => {
-  //   if (
-  //     isDownloadInfoAvailable &&
-  //     downloadInfo &&
-  //     downloadInfo.status === 'COMPLETE'
-  //   ) {
-  //     // Download the file as long as it is available for instant download.
-  //     downloadPreparedCart(
-  //       downloadInfo.preparedId,
-  //       downloadInfo.fileName,
-  //       // Use the idsUrl that has been defined for this access method.
-  //       { idsUrl: settings.accessMethods[selectedMethod].idsUrl }
-  //     );
-  //   }
-  // }, [
-  //   downloadInfo,
-  //   isDownloadInfoAvailable,
-  //   selectedMethod,
-  //   settings.accessMethods,
-  // ]);
+  // call post download success function when download completed succesfully
+  // allows for e.g. immediately triggering downloading the download if it's available
+  React.useEffect(() => {
+    if (isDownloadInfoAvailable && postDownloadSuccessFn) {
+      postDownloadSuccessFn(downloadInfo);
+    }
+  }, [downloadInfo, isDownloadInfoAvailable, postDownloadSuccessFn]);
 
   const getDefaultFileName = (): string => {
     const now = new Date(Date.now());

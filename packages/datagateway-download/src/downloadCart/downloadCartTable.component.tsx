@@ -43,6 +43,7 @@ import {
   buildDatasetUrl,
   buildInvestigationUrl,
 } from './urlBuilders';
+import { downloadPreparedCart } from '../downloadApi';
 
 interface DownloadCartTableProps {
   statusTabRedirect: () => void;
@@ -334,6 +335,20 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
       },
     ],
     [removeDownloadCartItem, t]
+  );
+
+  const downloadIfComplete = React.useCallback(
+    (download) => {
+      if (download.status === 'COMPLETE')
+        // Download the file as long as it is available for instant download.
+        downloadPreparedCart(
+          download.preparedId,
+          download.fileName,
+          // Use the idsUrl that has been defined for this access method.
+          { idsUrl: accessMethods[download.transport].idsUrl }
+        );
+    },
+    [accessMethods]
   );
 
   const emptyItems = fileSizesAndCounts.some(
@@ -665,6 +680,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
         open={showConfirmation}
         redirectToStatusTab={props.statusTabRedirect}
         setClose={() => setShowConfirmation(false)}
+        postDownloadSuccessFn={downloadIfComplete}
       />
     </>
   );
