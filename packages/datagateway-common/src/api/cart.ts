@@ -194,7 +194,7 @@ export const getDownloadTypeStatus: (
       ...response.data,
     }));
 
-export const useDownloadTypeStatuses = <TData = DownloadTypeStatus,>({
+export const useDownloadTypeStatuses = <TData = DownloadTypeStatus>({
   downloadTypes,
   facilityName,
   downloadApiUrl,
@@ -403,7 +403,7 @@ export interface UseDownloadParams {
  * })
  * ```
  */
-export const useDownload = <T = Download,>({
+export const useDownload = ({
   id,
   facilityName,
   downloadApiUrl,
@@ -412,9 +412,9 @@ export const useDownload = <T = Download,>({
   UseQueryOptions<
     Download,
     AxiosError,
-    T,
+    Download,
     ['download', number]
-  >): UseQueryResult<T, AxiosError> => {
+  >): UseQueryResult<Download, AxiosError> => {
   // Load the download settings for use.
   const retryICATErrors = useRetryICATErrors();
 
@@ -427,6 +427,124 @@ export const useDownload = <T = Download,>({
       },
       retry: retryICATErrors,
       ...queryOptions,
+    }
+  );
+};
+
+export const fetchQueueAllowed = (config: {
+  facilityName: string;
+  downloadApiUrl: string;
+}): Promise<boolean> => {
+  const { facilityName, downloadApiUrl } = config;
+
+  return axios
+    .get<boolean>(`${downloadApiUrl}/user/queue/allowed`, {
+      params: {
+        sessionId: readSciGatewayToken().sessionId,
+        facilityName,
+      },
+    })
+    .then((response) => response.data);
+};
+
+export const useQueueAllowed = (): UseQueryResult<boolean, AxiosError> => {
+  const downloadApiUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.downloadApiUrl
+  );
+  const facilityName = useSelector(
+    (state: StateType) => state.dgcommon.facilityName
+  );
+  const retryICATErrors = useRetryICATErrors();
+  return useQuery(
+    ['isQueueAllowed', readSciGatewayToken().sessionId], // put session id in here to ensure we refresh if user logs out and logs in as new user
+    () =>
+      fetchQueueAllowed({
+        facilityName,
+        downloadApiUrl,
+      }),
+    {
+      onError: (error) => {
+        handleICATError(error);
+      },
+      retry: retryICATErrors,
+      staleTime: Infinity,
+    }
+  );
+};
+
+export const queueVisit: (
+  visitId: string,
+  transport: string,
+  emailAddress: string,
+  fileName: string,
+  facilityName: string,
+  downloadApiUrl: string
+) => Promise<string[]> = (
+  visitId,
+  transport,
+  emailAddress,
+  fileName,
+  facilityName,
+  downloadApiUrl
+) => {
+  const params = new URLSearchParams();
+
+  // Construct the form parameters.
+  params.append('sessionId', readSciGatewayToken().sessionId || '');
+  params.append('transport', transport);
+  params.append('email', emailAddress);
+  params.append('fileName', fileName);
+  params.append('visitId', visitId);
+  params.append('facilityName', facilityName);
+
+  return axios
+    .post<string[]>(`${downloadApiUrl}/user/queue/visit`, { params })
+    .then((response) => {
+      return response.data;
+    });
+};
+
+interface QueueVisitParams
+  extends Pick<SubmitCartParams, 'emailAddress' | 'transport' | 'fileName'> {
+  visitId: string;
+}
+
+/**
+ * A React hook for submitting a visit to the queue.
+ * Returns the list of download ids for the submitted visit,
+ * which can then be used to query more info.
+ */
+export const useQueueVisit = (
+  facilityName: string,
+  downloadApiUrl: string,
+  options?: UseMutationOptions<
+    string[],
+    AxiosError,
+    QueueVisitParams,
+    RollbackFunction
+  >
+): UseMutationResult<
+  string[],
+  AxiosError,
+  QueueVisitParams,
+  RollbackFunction
+> => {
+  return useMutation(
+    ({ transport, emailAddress, fileName, visitId }) =>
+      queueVisit(
+        visitId,
+        transport,
+        emailAddress,
+        fileName,
+        facilityName,
+        downloadApiUrl
+      ),
+    {
+      onError: (error, _, rollback) => {
+        handleICATError(error);
+        if (rollback) rollback();
+      },
+      ...(options ?? {}),
     }
   );
 };

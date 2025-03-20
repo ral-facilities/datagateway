@@ -36,8 +36,11 @@ const renderNodes = (reactNodes) => {
   });
 };
 
-const useMock = [(k) => k, {}];
-useMock.t = (k) => k;
+const useMock = [
+  (k, o) => (o ? `${k} ${JSON.stringify(o).replace(/"/g, '')}` : k),
+  {},
+];
+useMock.t = (k, o) => (o ? `${k} ${JSON.stringify(o).replace(/"/g, '')}` : k);
 useMock.i18n = {};
 
 const applyTranslation = (Component) => {

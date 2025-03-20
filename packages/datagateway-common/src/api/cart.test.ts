@@ -6,6 +6,8 @@ import {
   useRemoveFromCart,
   useSubmitCart,
   useDownloadTypeStatuses,
+  useQueueAllowed,
+  useQueueVisit,
 } from '.';
 import { DownloadCart } from '../app.types';
 import handleICATError from '../handleICATError';
@@ -426,6 +428,114 @@ describe('Cart api functions', () => {
 
         expect(newResult.current[0].isStale).toBe(true);
         expect(axios.get).toHaveBeenCalledTimes(2);
+      });
+    });
+  });
+
+  describe('useQueueAllowed', () => {
+    it('sends axios request to check if the user has permission to use the queue and returns successful response', async () => {
+      (axios.get as jest.Mock).mockResolvedValue({
+        data: true,
+      });
+
+      const { result, waitFor } = renderHook(() => useQueueAllowed(), {
+        wrapper: createReactQueryWrapper(),
+      });
+
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://example.com/topcat/user/queue/allowed',
+        {
+          params: {
+            sessionId: null,
+            facilityName: 'TEST',
+          },
+        }
+      );
+      expect(result.current.data).toEqual(true);
+    });
+
+    it('sends axios request to fetch cart and calls handleICATError on failure', async () => {
+      (axios.get as jest.Mock).mockRejectedValue({
+        message: 'Test error message',
+      });
+
+      const { result, waitFor } = renderHook(() => useQueueAllowed(), {
+        wrapper: createReactQueryWrapper(),
+      });
+
+      await waitFor(() => expect(result.current.isError).toBe(true));
+
+      expect(handleICATError).toHaveBeenCalledWith({
+        message: 'Test error message',
+      });
+    });
+  });
+
+  describe('useQueueVisit', () => {
+    it('should submit visit to the queue', async () => {
+      axios.post = jest.fn().mockResolvedValue({ data: [123, 456] });
+
+      const params = {
+        sessionId: '',
+        transport: 'https',
+        email: 'cat@dog.com',
+        fileName: 'test-file',
+        visitId: 'VISIT_1',
+        facilityName: 'TEST',
+        downloadApiUrl: 'https://example.com/downloadApiUrl',
+      };
+      const { downloadApiUrl, ...queryParams } = params;
+      const searchParams = new URLSearchParams();
+      Object.entries(queryParams).forEach(([paramName, paramValue]) => {
+        searchParams.append(paramName, paramValue);
+      });
+
+      const { result, waitFor } = renderHook(
+        () => useQueueVisit(params.facilityName, downloadApiUrl),
+        { wrapper: createReactQueryWrapper() }
+      );
+
+      // submit the cart
+      result.current.mutate({
+        emailAddress: params.email,
+        fileName: params.fileName,
+        transport: params.transport,
+        visitId: params.visitId,
+      });
+      // wait for mutation to finish to finish
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+      expect(axios.post).toHaveBeenCalledWith(
+        `${downloadApiUrl}/user/queue/visit`,
+        {
+          params: searchParams,
+        }
+      );
+      expect(result.current.data).toEqual([123, 456]);
+    });
+
+    it('should call handleICATError when an error is encountered', async () => {
+      axios.post = jest.fn().mockRejectedValue({
+        message: 'test error message',
+      });
+
+      const { result, waitFor } = renderHook(
+        () => useQueueVisit('TEST', 'https://example.com/downloadApiUrl'),
+        { wrapper: createReactQueryWrapper() }
+      );
+
+      result.current.mutate({
+        emailAddress: 'a@b.c',
+        fileName: 'test-file',
+        transport: 'https',
+        visitId: 'VISIT_1',
+      });
+      await waitFor(() => expect(result.current.isError).toBe(true));
+
+      expect(handleICATError).toHaveBeenCalledWith({
+        message: 'test error message',
       });
     });
   });
