@@ -5,7 +5,6 @@ import type {
   Download,
   DownloadCart,
   DownloadCartItem,
-  DownloadTypeStatus,
   Investigation,
   User,
 } from 'datagateway-common';

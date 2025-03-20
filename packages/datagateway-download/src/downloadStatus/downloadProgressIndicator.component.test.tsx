@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { render, screen, RenderResult, waitFor } from '@testing-library/react';
-import type { Download } from 'datagateway-common';
+import { getDownload, type Download } from 'datagateway-common';
 import { DownloadSettingsContext } from '../ConfigProvider';
-import { getDownload, getPercentageComplete } from '../downloadApi';
+import { getPercentageComplete } from '../downloadApi';
 import DownloadProgressIndicator from './downloadProgressIndicator.component';
 import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 import { mockedSettings, mockDownloadItems } from '../testData';

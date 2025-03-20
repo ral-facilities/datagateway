@@ -3,7 +3,6 @@ import {
   adminDownloadDeleted,
   adminDownloadStatus,
   fetchAdminDownloads,
-  getDownload,
   getPercentageComplete,
 } from '../downloadApi';
 import AdminDownloadStatusTable from './adminDownloadStatusTable.component';
@@ -23,6 +22,7 @@ import {
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { mockDownloadItems, mockedSettings } from '../testData';
 import { DownloadSettingsContext } from '../ConfigProvider';
+import { getDownload } from 'datagateway-common';
 
 jest.mock('../downloadApi');
 
