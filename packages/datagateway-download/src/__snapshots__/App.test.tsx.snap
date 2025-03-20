@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ErrorFallback should should render an error message for when app fails catastrophically 1`] = `
+exports[`ErrorFallback > should should render an error message for when app fails catastrophically 1`] = `
 <DocumentFragment>
   <div
     class="error"

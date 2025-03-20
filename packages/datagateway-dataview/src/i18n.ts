@@ -13,7 +13,7 @@ i18n
   .use(initReactI18next)
   .init({
     fallbackLng: 'en',
-    debug: import.meta.env.DEV,
+    debug: import.meta.env.MODE === 'development',
     backend: {
       loadPath: loadPath,
     },

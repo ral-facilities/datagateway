@@ -1,9 +1,7 @@
-// TODO: move __mocks__ folder back to package root once facebook/create-react-app#7539 is fixed
-
 import axios from 'axios';
 
 const requests = {
-  get: jest.fn((path) => {
+  get: vi.fn((path) => {
     if (path.includes('/topcat/user/cart/')) {
       return Promise.resolve({ data: { cartItems: [] } });
     } else if (path === '/datagateway-download-settings.json') {
@@ -43,8 +41,8 @@ const requests = {
       return Promise.resolve({ data: {} });
     }
   }),
-  post: jest.fn(() => Promise.resolve({ data: {} })),
-  put: jest.fn(() => Promise.resolve({ data: {} })),
+  post: vi.fn(() => Promise.resolve({ data: {} })),
+  put: vi.fn(() => Promise.resolve({ data: {} })),
   CancelToken: axios.CancelToken,
 };
 

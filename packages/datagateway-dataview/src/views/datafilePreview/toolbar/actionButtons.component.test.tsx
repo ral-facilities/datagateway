@@ -21,7 +21,7 @@ import { mockDatafile } from '../testData';
 import ActionButtons from './actionButtons.component';
 
 jest.mock('datagateway-common', () => ({
-  ...jest.requireActual('datagateway-common'),
+  ...vi.importActual('datagateway-common'),
   downloadDatafile: jest.fn(),
 }));
 

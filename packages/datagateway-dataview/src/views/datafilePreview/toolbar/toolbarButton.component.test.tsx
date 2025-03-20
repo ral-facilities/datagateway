@@ -8,7 +8,7 @@ import ToolbarButton from './toolbarButton.component';
 // JSDOM doesn't support viewport resizing, so the hooks have to be stubbed for now.
 
 jest.mock('@mui/material', () => ({
-  ...jest.requireActual('@mui/material'),
+  ...vi.importActual('@mui/material'),
   useMediaQuery: jest.fn(),
   useTheme: jest.fn<DeepPartial<Theme>, []>().mockReturnValue({
     breakpoints: {

@@ -33,7 +33,7 @@ import {
 } from '../setupTests';
 
 jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+  const originalModule = vi.importActual('datagateway-common');
 
   return {
     __esModule: true,

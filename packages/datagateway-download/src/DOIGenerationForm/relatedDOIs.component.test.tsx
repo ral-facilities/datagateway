@@ -8,7 +8,7 @@ import { fetchDOI } from '../downloadApi';
 import RelatedDOIs from './relatedDOIs.component';
 
 jest.mock('../downloadApi', () => {
-  const originalModule = jest.requireActual('../downloadApi');
+  const originalModule = vi.importActual('../downloadApi');
 
   return {
     ...originalModule,

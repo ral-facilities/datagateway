@@ -10,31 +10,31 @@ import { Router } from 'react-router-dom';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import { createMemoryHistory, History } from 'history';
-import failOnConsole from 'jest-fail-on-console';
+import failOnConsole from 'vitest-fail-on-console';
 
 failOnConsole();
 
-jest.setTimeout(20000);
+vi.setConfig({ testTimeout: 20_000 });
 
 if (typeof window.URL.createObjectURL === 'undefined') {
-  // required as work-around for enzyme/jest environment not implementing window.URL.createObjectURL method
+  // required as work-around for jsdom environment not implementing window.URL.createObjectURL method
   Object.defineProperty(window.URL, 'createObjectURL', {
     value: () => 'testObjectUrl',
   });
 }
 
 if (typeof window.URL.revokeObjectURL === 'undefined') {
-  // required as work-around for enzyme/jest environment not implementing window.URL.createObjectURL method
+  // required as work-around for jsdom environment not implementing window.URL.createObjectURL method
   Object.defineProperty(window.URL, 'revokeObjectURL', {
     value: () => {},
   });
 }
 
-// Add in ResizeObserver as it's not in Jest's environment
+// Add in ResizeObserver as it's not in jsdom's environment
 global.ResizeObserver = require('resize-observer-polyfill');
 
 if (!global.structuredClone) {
-  // structuredClone not available in jest/node <17, so this is a quick polyfill that should do the exact same thing
+  // structuredClone not available in jsdom/node <17, so this is a quick polyfill that should do the exact same thing
   global.structuredClone = (obj: unknown) => JSON.parse(JSON.stringify(obj));
 }
 
@@ -54,9 +54,9 @@ export const dispatch = (action: Action): void | Promise<void> => {
 };
 
 // mock retry function to ensure it doesn't slow down query failure tests
-jest.mock('./api/retryICATErrors', () => ({
+vi.mock('./api/retryICATErrors', () => ({
   __esModule: true,
-  useRetryICATErrors: jest.fn(() => () => false),
+  useRetryICATErrors: vi.fn(() => () => false),
 }));
 
 // Mock Date.toLocaleDateString so that it always uses en-GB as locale and UTC timezone
@@ -65,15 +65,15 @@ jest.mock('./api/retryICATErrors', () => ({
 
 const toLocaleDateString = Date.prototype.toLocaleDateString;
 
-jest
-  .spyOn(Date.prototype, 'toLocaleDateString')
-  .mockImplementation(function (this: Date) {
-    // when toLocaleDateString is called with no argument
-    // pass in 'en-GB' as the locale & UTC as timezone
-    // so that Date.toLocaleDateString() is equivalent to
-    // Date.toLocaleDateString('en-GB', { timeZone: 'UTC' })
-    return toLocaleDateString.call(this, 'en-GB', { timeZone: 'UTC' });
-  });
+vi.spyOn(Date.prototype, 'toLocaleDateString').mockImplementation(function (
+  this: Date
+) {
+  // when toLocaleDateString is called with no argument
+  // pass in 'en-GB' as the locale & UTC as timezone
+  // so that Date.toLocaleDateString() is equivalent to
+  // Date.toLocaleDateString('en-GB', { timeZone: 'UTC' })
+  return toLocaleDateString.call(this, 'en-GB', { timeZone: 'UTC' });
+});
 
 export const createTestQueryClient = (): QueryClient =>
   new QueryClient({
@@ -86,7 +86,7 @@ export const createTestQueryClient = (): QueryClient =>
     logger: {
       log: console.log,
       warn: console.warn,
-      error: jest.fn(),
+      error: vi.fn(),
     },
   });
 
@@ -150,3 +150,7 @@ export const applyDatePickerWorkaround = (): void => {
 export const cleanupDatePickerWorkaround = (): void => {
   delete window.matchMedia;
 };
+
+// Recreate jest behaviour by mocking with __mocks__ by mocking globally here
+vi.mock('axios');
+vi.mock('react-i18next');

@@ -39,7 +39,7 @@ const checkInstrumentId = jest.mocked(unmockedCheckInstrumentId);
 const checkInvestigationId = jest.mocked(unmockedCheckInvestigationId);
 
 jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+  const originalModule = vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
@@ -53,7 +53,7 @@ jest.mock('datagateway-common', () => {
 
 jest.mock('@tanstack/react-query', () => ({
   __esModule: true,
-  ...jest.requireActual('@tanstack/react-query'),
+  ...vi.importActual('@tanstack/react-query'),
   useQueryClient: jest.fn(() => ({
     getQueryData: jest.fn(() => 0),
   })),

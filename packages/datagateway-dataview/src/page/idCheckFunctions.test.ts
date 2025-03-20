@@ -12,7 +12,7 @@ import { handleICATError, ConfigureURLsType } from 'datagateway-common';
 import configureStore from 'redux-mock-store';
 
 jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+  const originalModule = vi.importActual('datagateway-common');
 
   return {
     __esModule: true,

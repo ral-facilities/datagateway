@@ -21,6 +21,7 @@
     "lib",
     "node_modules",
     "dist",
+    "__mocks__",
     "coverage",
     "**/?*test.*",
     "src/setupTests.tsx",

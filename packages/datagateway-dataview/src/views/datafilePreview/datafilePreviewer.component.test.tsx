@@ -18,7 +18,7 @@ import DatafilePreviewer from './datafilePreviewer.component';
 import { mockDatafile, mockTxtFileContent } from './testData';
 
 jest.mock('datagateway-common', () => ({
-  ...jest.requireActual('datagateway-common'),
+  ...vi.importActual('datagateway-common'),
   downloadDatafile: jest.fn(),
 }));
 

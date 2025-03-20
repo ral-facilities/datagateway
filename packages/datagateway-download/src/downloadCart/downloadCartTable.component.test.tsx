@@ -23,7 +23,7 @@ import DownloadCartTable from './downloadCartTable.component';
 import { createTheme } from '@mui/material';
 
 jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+  const originalModule = vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
@@ -33,7 +33,7 @@ jest.mock('datagateway-common', () => {
 });
 
 jest.mock('../downloadApi', () => {
-  const originalModule = jest.requireActual('../downloadApi');
+  const originalModule = vi.importActual('../downloadApi');
 
   return {
     ...originalModule,

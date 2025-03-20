@@ -33,6 +33,18 @@ function reactVirtualized(): PluginOption {
   };
 }
 
+// Obtain default coverage config from vitest when not building for production
+// (to avoid importing vitest during build as its a dev dependency)
+let vitestDefaultExclude: string[] = [];
+let vitestCoverageConfigDefaultsExclude: string[] = [];
+if (process.env.NODE_ENV !== 'production') {
+  await import('vitest/config').then((vitestConfig) => {
+    vitestDefaultExclude = vitestConfig.defaultExclude;
+    vitestCoverageConfigDefaultsExclude =
+      vitestConfig.coverageConfigDefaults.exclude;
+  });
+}
+
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
@@ -68,8 +80,8 @@ export default defineConfig(({ mode }) => {
     test: {
       globals: true,
       environment: 'jsdom',
-      globalSetup: './globalSetup.js',
-      setupFiles: ['src/setupTests.ts'],
+      setupFiles: ['src/setupTests.tsx'],
+      exclude: [...vitestDefaultExclude, 'e2e/**'],
       coverage: {
         reporter: [
           // Default
@@ -81,11 +93,8 @@ export default defineConfig(({ mode }) => {
           ['lcov', { outputFile: 'lcov.info', silent: true }],
         ],
         exclude: [
+          ...vitestCoverageConfigDefaultsExclude,
           'public/*',
-          'server/*',
-          // Leave handlers to show up unused code
-          'src/mocks/browser.ts',
-          'src/mocks/server.ts',
           'src/vite-env.d.ts',
           'src/main.tsx',
         ],

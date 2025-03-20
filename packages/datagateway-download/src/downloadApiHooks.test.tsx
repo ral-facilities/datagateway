@@ -31,7 +31,7 @@ import log from 'loglevel';
 import { ContributorType } from './downloadApi';
 
 jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+  const originalModule = vi.importActual('datagateway-common');
 
   return {
     __esModule: true,

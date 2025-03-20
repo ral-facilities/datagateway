@@ -27,7 +27,7 @@ import { BrowserRouter } from 'react-router-dom';
 
 const middleware = [thunk, DGCommonMiddleware, saveApiUrlMiddleware];
 
-if (import.meta.env.DEV) {
+if (import.meta.env.MODE === 'development') {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   const logger = (createLogger as any)({ collapsed: true });
   middleware.push(logger);

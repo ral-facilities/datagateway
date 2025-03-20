@@ -12,7 +12,7 @@ import { render, type RenderResult, screen } from '@testing-library/react';
 import DoiRedirect from './doiRedirect.component';
 
 jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+  const originalModule = vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
@@ -22,7 +22,7 @@ jest.mock('datagateway-common', () => {
 });
 
 jest.mock('react-router-dom', () => {
-  const originalModule = jest.requireActual('react-router-dom');
+  const originalModule = vi.importActual('react-router-dom');
   return {
     __esModule: true,
     ...originalModule, // use actual for all non-hook parts

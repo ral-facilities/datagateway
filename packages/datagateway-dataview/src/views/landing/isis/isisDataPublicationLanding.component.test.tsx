@@ -18,7 +18,7 @@ import ISISDataPublicationLanding from './isisDataPublicationLanding.component';
 import { paths } from '../../../page/pageContainer.component';
 
 jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+  const originalModule = vi.importActual('datagateway-common');
 
   return {
     __esModule: true,

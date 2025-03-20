@@ -29,7 +29,7 @@ import {
 import axios, { AxiosResponse } from 'axios';
 
 jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+  const originalModule = vi.importActual('datagateway-common');
 
   return {
     __esModule: true,

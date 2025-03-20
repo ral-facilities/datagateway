@@ -30,7 +30,7 @@ const composeEnhancers =
 
 const middleware = [thunk, DGCommonMiddleware];
 
-if (import.meta.env.DEV) {
+if (import.meta.env.MODE === 'development') {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   const logger = (createLogger as any)({ collapsed: true });
   middleware.push(logger);

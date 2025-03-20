@@ -20,7 +20,7 @@ import { mockCartItems, mockDownloadItems, mockedSettings } from '../testData';
 import DownloadTabs from './downloadTab.component';
 
 jest.mock('datagateway-common', () => {
-  const og = jest.requireActual('datagateway-common');
+  const og = vi.importActual('datagateway-common');
   return {
     __esModule: true,
     ...og,

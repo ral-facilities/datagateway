@@ -14,7 +14,7 @@ import SearchBoxContainerSide from './searchBoxContainerSide.component';
 jest.mock('loglevel');
 
 jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
+  ...vi.importActual('react-redux'),
   useSelector: jest.fn(),
 }));
 

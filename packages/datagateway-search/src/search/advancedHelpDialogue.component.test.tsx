@@ -17,7 +17,7 @@ import userEvent from '@testing-library/user-event';
 import reactI18Next from 'react-i18next';
 
 jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
+  ...vi.importActual('react-redux'),
   useSelector: jest.fn(),
 }));
 

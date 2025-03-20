@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import '@testing-library/jest-dom';
-import failOnConsole from 'jest-fail-on-console';
+import failOnConsole from 'vitest-fail-on-console';
 
 failOnConsole();
 
-jest.setTimeout(20000);
+vi.setConfig({ testTimeout: 20_000 });
 
 function noOp(): void {
-  // required as work-around for enzyme/jest environment not implementing window.URL.createObjectURL method
+  // required as work-around for jsdom environment not implementing window.URL.createObjectURL method
 }
 
 if (typeof window.URL.createObjectURL === 'undefined') {
@@ -16,9 +16,6 @@ if (typeof window.URL.createObjectURL === 'undefined') {
 
 export const flushPromises = (): Promise<void> =>
   new Promise((resolve) => setTimeout(resolve));
-
-// Mock lodash.debounce to return the function we want to call.
-jest.mock('lodash.debounce', () => (fn: (args: unknown) => unknown) => fn);
 
 // MUI date pickers default to mobile versions during testing and so functions
 // like .simulate('change') will not work, this workaround ensures desktop
@@ -48,3 +45,14 @@ export const cleanupDatePickerWorkaround = (): void => {
   // @ts-expect-error this is a workaround
   delete window.matchMedia;
 };
+
+vi.mock('loglevel');
+
+// Recreate jest behaviour by mocking with __mocks__ by mocking globally here
+vi.mock('axios');
+vi.mock('react-i18next');
+
+// Mock lodash.debounce to return the function we want to call.
+vi.mock('lodash.debounce', () => ({
+  default: (fn: (args: unknown) => unknown) => fn,
+}));

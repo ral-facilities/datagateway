@@ -26,7 +26,7 @@ import { paths } from '../../../page/pageContainer.component';
 import userEvent from '@testing-library/user-event';
 
 jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+  const originalModule = vi.importActual('datagateway-common');
 
   return {
     __esModule: true,

@@ -161,11 +161,14 @@ export const fetchSettings = (): Promise<DataviewSettings | void> => {
 const settings = fetchSettings();
 setSettings(settings);
 
-if (import.meta.env.DEV || import.meta.env.VITE_BUILD_STANDALONE) {
+if (
+  import.meta.env.MODE === 'development' ||
+  import.meta.env.VITE_BUILD_STANDALONE
+) {
   render();
   log.setDefaultLevel(log.levels.DEBUG);
 
-  if (import.meta.env.DEV) {
+  if (import.meta.env.MODE === 'development') {
     settings.then((settingsResult) => {
       if (settingsResult) {
         const apiUrl = settingsResult.apiUrl;

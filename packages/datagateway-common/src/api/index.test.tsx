@@ -384,7 +384,7 @@ describe('generic api functions', () => {
 
       it('returns callback that when called removes a null sort from the url query', () => {
         jest.mock('./index.tsx', () => ({
-          ...jest.requireActual('./index.tsx'),
+          ...vi.importActual('./index.tsx'),
           parseSearchToQuery: jest.fn(
             () => '?sort=%7B%22name%22%3A%22asc%22%7D'
           ),
@@ -462,7 +462,7 @@ describe('generic api functions', () => {
 
       it('returns callback that when called removes a null sort from the url query', () => {
         jest.mock('./index.tsx', () => ({
-          ...jest.requireActual('./index.tsx'),
+          ...vi.importActual('./index.tsx'),
           parseSearchToQuery: jest.fn(
             () =>
               '?filters=%7B%22name%22%3A%7B%22value%22%3A%22test%22%2C%22type%22%3A%22include%22%7D%7D'
@@ -498,7 +498,7 @@ describe('generic api functions', () => {
         });
 
         jest.mock('./index.tsx', () => ({
-          ...jest.requireActual('./index.tsx'),
+          ...vi.importActual('./index.tsx'),
           parseSearchToQuery: jest.fn(
             () =>
               '?filters=%7B%22prefix.name%22%3A%7B%22value%22%3A%22test%22%2C%22type%22%3A%22include%22%7D%7D'
@@ -537,7 +537,7 @@ describe('generic api functions', () => {
 
       it('returns callback that when called removes multiple null filters from the url query', () => {
         jest.mock('./index.tsx', () => ({
-          ...jest.requireActual('./index.tsx'),
+          ...vi.importActual('./index.tsx'),
           parseSearchToQuery: jest.fn(
             () =>
               '?filters=%7B%22name%22%3A%7B%22value%22%3A%22test%22%2C%22type%22%3A%22include%22%7D%2C%22title%22%3A%7B%22value%22%3A%22test2%22%2C%22type%22%3A%22include%22%7D%7D'
@@ -592,7 +592,7 @@ describe('generic api functions', () => {
     describe('useUpdateQueryParam', () => {
       it('returns callback that when called removes all filters from the url query (push)', () => {
         jest.mock('./index.tsx', () => ({
-          ...jest.requireActual('./index.tsx'),
+          ...vi.importActual('./index.tsx'),
           parseSearchToQuery: jest.fn(() => '?'),
         }));
 
@@ -618,7 +618,7 @@ describe('generic api functions', () => {
 
       it('returns callback that when called removes all sorts from the url query (push)', () => {
         jest.mock('./index.tsx', () => ({
-          ...jest.requireActual('./index.tsx'),
+          ...vi.importActual('./index.tsx'),
           parseSearchToQuery: jest.fn(() => '?'),
         }));
 
@@ -640,7 +640,7 @@ describe('generic api functions', () => {
 
       it('returns callback that when called removes page number from the url query (push)', () => {
         jest.mock('./index.tsx', () => ({
-          ...jest.requireActual('./index.tsx'),
+          ...vi.importActual('./index.tsx'),
           parseSearchToQuery: jest.fn(() => '?'),
         }));
 
@@ -662,7 +662,7 @@ describe('generic api functions', () => {
 
       it('returns callback that when called removes results number from the url query (push)', () => {
         jest.mock('./index.tsx', () => ({
-          ...jest.requireActual('./index.tsx'),
+          ...vi.importActual('./index.tsx'),
           parseSearchToQuery: jest.fn(() => '?'),
         }));
 
@@ -684,7 +684,7 @@ describe('generic api functions', () => {
 
       it('returns callback that when called removes all filters from the url query (replace)', () => {
         jest.mock('./index.tsx', () => ({
-          ...jest.requireActual('./index.tsx'),
+          ...vi.importActual('./index.tsx'),
           parseSearchToQuery: jest.fn(() => '?'),
         }));
 
@@ -710,7 +710,7 @@ describe('generic api functions', () => {
 
       it('returns callback that when called removes all sorts from the url query (replace)', () => {
         jest.mock('./index.tsx', () => ({
-          ...jest.requireActual('./index.tsx'),
+          ...vi.importActual('./index.tsx'),
           parseSearchToQuery: jest.fn(() => '?'),
         }));
 
@@ -732,7 +732,7 @@ describe('generic api functions', () => {
 
       it('returns callback that when called removes page number from the url query (replace)', () => {
         jest.mock('./index.tsx', () => ({
-          ...jest.requireActual('./index.tsx'),
+          ...vi.importActual('./index.tsx'),
           parseSearchToQuery: jest.fn(() => '?'),
         }));
 
@@ -754,7 +754,7 @@ describe('generic api functions', () => {
 
       it('returns callback that when called removes results number from the url query (replace)', () => {
         jest.mock('./index.tsx', () => ({
-          ...jest.requireActual('./index.tsx'),
+          ...vi.importActual('./index.tsx'),
           parseSearchToQuery: jest.fn(() => '?'),
         }));
 
@@ -952,7 +952,7 @@ describe('generic api functions', () => {
 
       it('returns callback that when called removes a null sort from the url query', () => {
         jest.mock('./index.tsx', () => ({
-          ...jest.requireActual('./index.tsx'),
+          ...vi.importActual('./index.tsx'),
           parseSearchToQuery: jest.fn(
             () => '?sort=%7B%22name%22%3A%22asc%22%7D'
           ),
