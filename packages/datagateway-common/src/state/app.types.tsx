@@ -4,6 +4,7 @@ import type { ThunkAction } from 'redux-thunk';
 import type {
   Datafile,
   Dataset,
+  DownloadSettingsAccessMethod,
   Instrument,
   Investigation,
 } from '../app.types';
@@ -18,6 +19,7 @@ import type { URLs } from './actions/actions.types';
 export interface DGCommonState {
   facilityName: string;
   urls: URLs;
+  accessMethods?: DownloadSettingsAccessMethod;
   queryRetries?: number;
   isisDatafileDetailsPanel: Record<
     Datafile['id'],

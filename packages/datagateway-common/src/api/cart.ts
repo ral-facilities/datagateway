@@ -309,6 +309,15 @@ export const submitCart: (
     });
 };
 
+export const getDefaultFileName = (facilityName: string): string => {
+  const now = new Date(Date.now());
+  const defaultName = `${facilityName}_${now.getFullYear()}-${
+    now.getMonth() + 1
+  }-${now.getDate()}_${now.getHours()}-${now.getMinutes()}-${now.getSeconds()}`;
+
+  return defaultName;
+};
+
 /**
  * Defines the function that when called will roll back any optimistic changes
  * performed during a mutation.
@@ -318,7 +327,7 @@ type RollbackFunction = () => void;
 export interface SubmitCartParams {
   transport: string;
   emailAddress: string;
-  fileName: string;
+  fileName?: string;
   zipType?: SubmitCartZipType;
 }
 
@@ -345,15 +354,20 @@ export const useSubmitCart = (
   const queryClient = useQueryClient();
 
   return useMutation(
-    ({ transport, emailAddress, fileName, zipType }) =>
-      submitCart(
+    ({ transport, emailAddress, fileName: userFileName, zipType }) => {
+      let fileName = userFileName;
+      if (!fileName) {
+        fileName = getDefaultFileName(facilityName);
+      }
+      return submitCart(
         transport,
         emailAddress,
         fileName,
         facilityName,
         downloadApiUrl,
         zipType
-      ),
+      );
+    },
     {
       onError: (error, _, rollback) => {
         handleICATError(error);
@@ -476,7 +490,7 @@ export const queueVisit: (
   visitId: string,
   transport: string,
   emailAddress: string,
-  fileName: string,
+  fileName: string | undefined,
   facilityName: string,
   downloadApiUrl: string
 ) => Promise<string[]> = (
@@ -493,7 +507,7 @@ export const queueVisit: (
   params.append('sessionId', readSciGatewayToken().sessionId || '');
   params.append('transport', transport);
   params.append('email', emailAddress);
-  params.append('fileName', fileName);
+  if (fileName) params.append('fileName', fileName);
   params.append('visitId', visitId);
   params.append('facilityName', facilityName);
 
@@ -504,7 +518,7 @@ export const queueVisit: (
     });
 };
 
-interface QueueVisitParams
+export interface QueueVisitParams
   extends Pick<SubmitCartParams, 'emailAddress' | 'transport' | 'fileName'> {
   visitId: string;
 }

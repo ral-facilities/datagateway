@@ -12,6 +12,7 @@ import {
 import type { StateType } from '../../state/app.types';
 import type { Action } from '../../state/reducers/createReducer';
 import { format, parse } from 'date-fns';
+import QueueVisitButton from '../../views/queueVisitButton.component';
 
 const StyledGrid = styled(Grid)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -216,6 +217,9 @@ const VisitDetailsPanel = (
             <Typography>
               <b>{formatBytes(investigationData.fileSize)}</b>
             </Typography>
+          </Grid>
+          <Grid item xs>
+            <QueueVisitButton investigation={investigationData} />
           </Grid>
         </StyledGrid>
       </div>

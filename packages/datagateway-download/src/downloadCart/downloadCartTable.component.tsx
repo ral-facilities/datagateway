@@ -23,6 +23,7 @@ import {
   TextColumnFilter,
   type TextFilter,
   type SortType,
+  useSubmitCart,
 } from 'datagateway-common';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -671,7 +672,6 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
       )}
       {/* Show the download confirmation dialog. */}
       <DownloadConfirmDialog
-        aria-labelledby="downloadCartConfirmation"
         totalSize={totalSize}
         isTwoLevel={isTwoLevel ?? false}
         facilityName={facilityName}
@@ -681,6 +681,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
         redirectToStatusTab={props.statusTabRedirect}
         setClose={() => setShowConfirmation(false)}
         postDownloadSuccessFn={downloadIfComplete}
+        submitDownloadHook={useSubmitCart}
       />
     </>
   );

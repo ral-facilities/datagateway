@@ -475,7 +475,7 @@ describe('Cart api functions', () => {
 
   describe('useQueueVisit', () => {
     it('should submit visit to the queue', async () => {
-      axios.post = jest.fn().mockResolvedValue({ data: [123, 456] });
+      axios.post = jest.fn().mockResolvedValue({ data: ['123', '456'] });
 
       const params = {
         sessionId: '',
@@ -484,18 +484,15 @@ describe('Cart api functions', () => {
         fileName: 'test-file',
         visitId: 'VISIT_1',
         facilityName: 'TEST',
-        downloadApiUrl: 'https://example.com/downloadApiUrl',
       };
-      const { downloadApiUrl, ...queryParams } = params;
       const searchParams = new URLSearchParams();
-      Object.entries(queryParams).forEach(([paramName, paramValue]) => {
+      Object.entries(params).forEach(([paramName, paramValue]) => {
         searchParams.append(paramName, paramValue);
       });
 
-      const { result, waitFor } = renderHook(
-        () => useQueueVisit(params.facilityName, downloadApiUrl),
-        { wrapper: createReactQueryWrapper() }
-      );
+      const { result, waitFor } = renderHook(() => useQueueVisit(), {
+        wrapper: createReactQueryWrapper(),
+      });
 
       // submit the cart
       result.current.mutate({
@@ -508,12 +505,12 @@ describe('Cart api functions', () => {
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       expect(axios.post).toHaveBeenCalledWith(
-        `${downloadApiUrl}/user/queue/visit`,
+        `https://example.com/topcat/user/queue/visit`,
         {
           params: searchParams,
         }
       );
-      expect(result.current.data).toEqual([123, 456]);
+      expect(result.current.data).toEqual(['123', '456']);
     });
 
     it('should call handleICATError when an error is encountered', async () => {
@@ -521,10 +518,9 @@ describe('Cart api functions', () => {
         message: 'test error message',
       });
 
-      const { result, waitFor } = renderHook(
-        () => useQueueVisit('TEST', 'https://example.com/downloadApiUrl'),
-        { wrapper: createReactQueryWrapper() }
-      );
+      const { result, waitFor } = renderHook(() => useQueueVisit(), {
+        wrapper: createReactQueryWrapper(),
+      });
 
       result.current.mutate({
         emailAddress: 'a@b.c',

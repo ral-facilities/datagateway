@@ -43,9 +43,11 @@ function DownloadRequestInfoGrid({
     <Grid item xs>
       <div style={{ textAlign: 'center', margin: '0 auto' }}>
         <div style={{ float: 'left', textAlign: 'right' }}>
-          <Typography>
-            <b>{t('downloadConfirmDialog.confirmation_download_name')}: </b>
-          </Typography>
+          {info.downloadName && (
+            <Typography>
+              <b>{t('downloadConfirmDialog.confirmation_download_name')}: </b>
+            </Typography>
+          )}
           <Typography>
             <b>{t('downloadConfirmDialog.confirmation_access_method')}: </b>
           </Typography>
@@ -62,9 +64,11 @@ function DownloadRequestInfoGrid({
             paddingLeft: '25px',
           }}
         >
-          <Typography id="confirm-success-download-name">
-            {info.downloadName}
-          </Typography>
+          {info.downloadName && (
+            <Typography id="confirm-success-download-name">
+              {info.downloadName}
+            </Typography>
+          )}
           <Typography id="confirm-success-access-method">
             {info.transport.toUpperCase()}
           </Typography>
