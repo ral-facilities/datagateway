@@ -59,9 +59,6 @@ const QueueVisitButton: React.FC<QueueVisitButtonProps> = (props) => {
         downloadApiUrl={downloadApiUrl}
         accessMethods={accessMethods ?? {}}
         open={showConfirmation}
-        redirectToStatusTab={() => {
-          // no-op
-        }}
         visitId={investigation.visitId}
         submitDownloadHook={useQueueVisit}
         setClose={() => setShowConfirmation(false)}

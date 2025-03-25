@@ -25,6 +25,8 @@ import { useRetryICATErrors } from './retryICATErrors';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { NotificationType } from '../state/actions/actions.types';
+import { TFunction } from 'i18next';
+import { format } from 'date-fns';
 
 export const fetchDownloadCart = (config: {
   facilityName: string;
@@ -309,11 +311,35 @@ export const submitCart: (
     });
 };
 
-export const getDefaultFileName = (facilityName: string): string => {
+export const getDefaultFileName = (
+  t: TFunction,
+  substitutions?: Record<string, string>
+): string => {
+  const filenameFormat = t(
+    'downloadConfirmDialog.download_name_default_format'
+  );
+  let defaultName = '';
+
+  const formatArr = filenameFormat.split('_');
   const now = new Date(Date.now());
-  const defaultName = `${facilityName}_${now.getFullYear()}-${
-    now.getMonth() + 1
-  }-${now.getDate()}_${now.getHours()}-${now.getMinutes()}-${now.getSeconds()}`;
+
+  formatArr.forEach((s) => {
+    let formattedS = '';
+    try {
+      formattedS = format(now, s);
+    } catch {
+      formattedS = s;
+    }
+
+    defaultName =
+      defaultName.length === 0 ? formattedS : `${defaultName}_${formattedS}`;
+  });
+
+  if (substitutions) {
+    Object.entries(substitutions).forEach(([key, value]) => {
+      defaultName = defaultName.replace(key, value);
+    });
+  }
 
   return defaultName;
 };
@@ -352,12 +378,13 @@ export const useSubmitCart = (
   RollbackFunction
 > => {
   const queryClient = useQueryClient();
+  const [t] = useTranslation();
 
   return useMutation(
     ({ transport, emailAddress, fileName: userFileName, zipType }) => {
       let fileName = userFileName;
       if (!fileName) {
-        fileName = getDefaultFileName(facilityName);
+        fileName = getDefaultFileName(t, { facilityName });
       }
       return submitCart(
         transport,

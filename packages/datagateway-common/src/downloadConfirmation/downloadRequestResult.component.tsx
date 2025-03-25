@@ -20,7 +20,7 @@ interface DownloadRequestResultComponentProps {
   /**
    * Forwarded function for redirecting to the download status tab.
    */
-  redirectToStatusTab: () => void;
+  redirectToStatusTab?: () => void;
 
   /**
    * Metadata of the download request. null if the request has failed.
@@ -145,7 +145,7 @@ function DownloadRequestResult({
             <DownloadRequestInfoGrid info={requestInfo} />
           )}
 
-          {success && (
+          {success && redirectToStatusTab && (
             <Grid item xs>
               <Button
                 id="download-confirmation-status-link"

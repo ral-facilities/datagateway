@@ -67,7 +67,7 @@ interface DownloadConfirmDialogProps {
   visitId?: string;
   submitDownloadHook: typeof useSubmitCart | typeof useQueueVisit;
 
-  redirectToStatusTab: () => void;
+  redirectToStatusTab?: () => void;
   setClose: () => void;
 
   postDownloadSuccessFn?: (downloadInfo: Download) => void;
@@ -289,7 +289,12 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     // Check for file name, if there hasn't been one entered,
     // then generate a default one and update state for rendering later.
     if (!downloadName) {
-      setDownloadName(getDefaultFileName(facilityName));
+      setDownloadName(
+        getDefaultFileName(t, {
+          facilityName,
+          ...(visitId && { visitId }),
+        })
+      );
     }
 
     // need to typecast here to avoid the non-overlapping options parameter type that we don't use
@@ -369,7 +374,10 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                 <TextField
                   id="confirm-download-name"
                   label={t('downloadConfirmDialog.download_name_label')}
-                  placeholder={`${getDefaultFileName(facilityName)}`}
+                  placeholder={`${getDefaultFileName(t, {
+                    facilityName,
+                    ...(visitId && { visitId }),
+                  })}`}
                   fullWidth={true}
                   inputProps={{
                     maxLength: 255,

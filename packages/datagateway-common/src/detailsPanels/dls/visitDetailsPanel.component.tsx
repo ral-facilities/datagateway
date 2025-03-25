@@ -218,7 +218,7 @@ const VisitDetailsPanel = (
               <b>{formatBytes(investigationData.fileSize)}</b>
             </Typography>
           </Grid>
-          <Grid item xs>
+          <Grid item xs mt={1}>
             <QueueVisitButton investigation={investigationData} />
           </Grid>
         </StyledGrid>
