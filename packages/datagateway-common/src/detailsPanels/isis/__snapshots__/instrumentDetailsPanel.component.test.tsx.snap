@@ -148,7 +148,7 @@ exports[`Instrument details panel component should gracefully handle InstrumentS
         <span
           class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
         >
-          instruments.details.instrument_scientists.name
+          instruments.details.instrument_scientists.name {count:1}
         </span>
       </div>
     </div>
@@ -430,7 +430,7 @@ exports[`Instrument details panel component should render users tab when present
         <span
           class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
         >
-          instruments.details.instrument_scientists.name
+          instruments.details.instrument_scientists.name {count:2}
         </span>
         <div
           class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
