@@ -8,6 +8,7 @@ import {
   useDownloadTypeStatuses,
   useQueueAllowed,
   useQueueVisit,
+  getDefaultFileName,
 } from '.';
 import { DownloadCart } from '../app.types';
 import handleICATError from '../handleICATError';
@@ -490,9 +491,13 @@ describe('Cart api functions', () => {
         searchParams.append(paramName, paramValue);
       });
 
-      const { result, waitFor } = renderHook(() => useQueueVisit(), {
-        wrapper: createReactQueryWrapper(),
-      });
+      const { result, waitFor } = renderHook(
+        () =>
+          useQueueVisit(params.facilityName, 'https://example.com/downloadApi'),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
 
       // submit the cart
       result.current.mutate({
@@ -505,10 +510,8 @@ describe('Cart api functions', () => {
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       expect(axios.post).toHaveBeenCalledWith(
-        `https://example.com/topcat/user/queue/visit`,
-        {
-          params: searchParams,
-        }
+        `https://example.com/downloadApi/user/queue/visit`,
+        searchParams
       );
       expect(result.current.data).toEqual(['123', '456']);
     });
@@ -518,9 +521,12 @@ describe('Cart api functions', () => {
         message: 'test error message',
       });
 
-      const { result, waitFor } = renderHook(() => useQueueVisit(), {
-        wrapper: createReactQueryWrapper(),
-      });
+      const { result, waitFor } = renderHook(
+        () => useQueueVisit('LILS', 'https://example.com/downloadApi'),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
 
       result.current.mutate({
         emailAddress: 'a@b.c',
@@ -534,5 +540,26 @@ describe('Cart api functions', () => {
         message: 'test error message',
       });
     });
+  });
+});
+
+describe('getDefaultFileName', () => {
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  it('should render substitutions correctly ', async () => {
+    const t = jest.fn().mockReturnValue('facilityName_visitId');
+    expect(
+      getDefaultFileName(t, { facilityName: 'LILS', visitId: '1' })
+    ).toEqual('LILS_1');
+  });
+
+  it('should format dates if present', async () => {
+    jest.useFakeTimers().setSystemTime(new Date('2025-03-25 14:00:00'));
+    const t = jest.fn().mockReturnValue('facilityName_yyyy-MM-dd_HH-mm-ss');
+    expect(getDefaultFileName(t, { facilityName: 'LILS' })).toEqual(
+      'LILS_2025-03-25_14-00-00'
+    );
   });
 });

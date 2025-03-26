@@ -8,7 +8,7 @@ import DownloadConfirmDialog from '../downloadConfirmation/downloadConfirmDialog
 import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
 
-export interface QueueVisitButtonProps {
+interface QueueVisitButtonProps {
   investigation: Investigation;
 }
 

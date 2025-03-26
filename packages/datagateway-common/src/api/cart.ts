@@ -539,7 +539,7 @@ export const queueVisit: (
   params.append('facilityName', facilityName);
 
   return axios
-    .post<string[]>(`${downloadApiUrl}/user/queue/visit`, { params })
+    .post<string[]>(`${downloadApiUrl}/user/queue/visit`, params)
     .then((response) => {
       return response.data;
     });
