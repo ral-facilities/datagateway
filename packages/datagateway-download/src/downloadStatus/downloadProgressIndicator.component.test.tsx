@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { render, screen, RenderResult, waitFor } from '@testing-library/react';
-import { getDownload, type Download } from 'datagateway-common';
+import { type Download } from 'datagateway-common';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import { getPercentageComplete } from '../downloadApi';
 import DownloadProgressIndicator from './downloadProgressIndicator.component';
@@ -64,13 +64,6 @@ describe('DownloadProgressIndicator', () => {
 
   describe('should show the progress as complete', () => {
     it('when download is completed', async () => {
-      (
-        getDownload as jest.MockedFunction<typeof getDownload>
-      ).mockResolvedValue({
-        ...mockDownloadItems[0],
-        status: 'COMPLETE',
-      });
-
       renderComponent({
         download: {
           ...mockDownload,
@@ -86,13 +79,6 @@ describe('DownloadProgressIndicator', () => {
     });
 
     it('when download is expired', async () => {
-      (
-        getDownload as jest.MockedFunction<typeof getDownload>
-      ).mockResolvedValue({
-        ...mockDownloadItems[0],
-        status: 'EXPIRED',
-      });
-
       renderComponent({
         download: {
           ...mockDownload,
