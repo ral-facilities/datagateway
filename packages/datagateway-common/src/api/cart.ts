@@ -307,7 +307,19 @@ export const submitCart: (
     )
     .then((response) => {
       // Get the downloadId that was returned from the IDS server.
-      return response.data['downloadId'];
+      const downloadId = response.data['downloadId'];
+      if (downloadId) {
+        return downloadId;
+      } else {
+        // fake axios error to ensure it gets handled by handleICATError correctly
+        throw new axios.AxiosError(
+          'No downloadId returned from submitCart request',
+          '500',
+          response.config,
+          response.request,
+          response
+        );
+      }
     });
 };
 

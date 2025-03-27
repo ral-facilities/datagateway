@@ -329,9 +329,9 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   // whether the download request is successful
   const isDownloadSuccess =
     isDownloadSubmittedSuccessfully &&
-    (typeof submitDownloadData === 'number'
-      ? isDownloadInfoAvailable // for submit cart requests
-      : submitDownloadData.length > 0); // for queue visit requests
+    (Array.isArray(submitDownloadData)
+      ? submitDownloadData.length > 0 // for queue visit requests
+      : isDownloadInfoAvailable); // for submit cart requests
 
   // whether to show result of submit cart (i.e. successful or failed)
   const shouldShowSubmitCartResult = isDownloadSuccess || hasDownloadFailed;

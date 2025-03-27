@@ -292,7 +292,7 @@ export interface FormattedDownload extends Download {
 export interface SubmitCart {
   cartItems: DownloadCartItem[];
   facilityName: string;
-  downloadId: number;
+  downloadId?: number;
   userName: string;
 }
 

@@ -231,7 +231,7 @@ describe('Cart api functions', () => {
 
   describe('useSubmitCart', () => {
     it('should submit cart and clear cart on success', async () => {
-      axios.post = jest.fn().mockResolvedValue({ data: 123 });
+      axios.post = jest.fn().mockResolvedValue({ data: { downloadId: 123 } });
       axios.get = jest
         .fn()
         .mockResolvedValueOnce({
@@ -262,6 +262,41 @@ describe('Cart api functions', () => {
       await waitFor(() => result.current.useSubmitCart.isSuccess);
 
       expect(result.current.useCart.data).toEqual([]);
+    });
+
+    it('should error if api returns successful response with no downloadId', async () => {
+      axios.post = jest.fn().mockResolvedValue({ data: {} });
+      axios.get = jest.fn().mockResolvedValueOnce({
+        data: mockData,
+      });
+
+      const { result, waitFor } = renderHook(
+        () => ({
+          useSubmitCart: useSubmitCart(
+            'LILS',
+            'https://example.com/downloadApiUrl'
+          ),
+          useCart: useCart(),
+        }),
+        { wrapper: createReactQueryWrapper() }
+      );
+
+      // wait for the cart to finish loading
+      await waitFor(() => result.current.useCart.isSuccess);
+      // submit the cart
+      result.current.useSubmitCart.mutate({
+        emailAddress: '',
+        fileName: 'test-file',
+        transport: 'https',
+      });
+
+      await waitFor(() => result.current.useSubmitCart.isError);
+
+      expect(handleICATError).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: 'No downloadId returned from submitCart request',
+        })
+      );
     });
 
     it('should call handleICATError when an error is encountered', async () => {
