@@ -9,6 +9,7 @@ import {
   useQueueAllowed,
   useQueueVisit,
   getDefaultFileName,
+  useDownload,
 } from '.';
 import { DownloadCart } from '../app.types';
 import handleICATError from '../handleICATError';
@@ -292,6 +293,64 @@ describe('Cart api functions', () => {
 
       expect(handleICATError).toHaveBeenCalledWith({
         message: 'test error message',
+      });
+    });
+  });
+
+  describe('useDownload', () => {
+    it('sends axios request to fetch download and returns successful response', async () => {
+      (axios.get as jest.Mock).mockResolvedValue({
+        data: [{ id: 1, fileName: 'test' }],
+      });
+
+      const { result, waitFor } = renderHook(
+        () =>
+          useDownload({
+            id: 1,
+            facilityName: 'TEST',
+            downloadApiUrl: 'https://example.com/topcat',
+          }),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      await waitFor(() => result.current.isSuccess);
+
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://example.com/topcat/user/downloads',
+        {
+          params: {
+            sessionId: null,
+            facilityName: 'TEST',
+            queryOffset: 'where download.id = 1',
+          },
+        }
+      );
+      expect(result.current.data).toEqual({ id: 1, fileName: 'test' });
+    });
+
+    it('sends axios request to fetch cart and calls handleICATError on failure', async () => {
+      (axios.get as jest.Mock).mockRejectedValue({
+        message: 'Test error message',
+      });
+
+      const { result, waitFor } = renderHook(
+        () =>
+          useDownload({
+            id: 1,
+            facilityName: 'TEST',
+            downloadApiUrl: 'https://example.com/topcat',
+          }),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      await waitFor(() => result.current.isError);
+
+      expect(handleICATError).toHaveBeenCalledWith({
+        message: 'Test error message',
       });
     });
   });

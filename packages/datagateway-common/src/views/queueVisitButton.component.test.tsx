@@ -11,6 +11,7 @@ import {
   type RenderResult,
   screen,
   waitFor,
+  waitForElementToBeRemoved,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Investigation } from '../app.types';
@@ -106,7 +107,7 @@ describe('Generic add to cart button', () => {
     );
   });
 
-  it('opens download confirm dialogue when clicked', async () => {
+  it('opens download confirm dialogue when clicked & close when click close', async () => {
     renderComponent({
       investigation,
     });
@@ -115,10 +116,18 @@ describe('Generic add to cart button', () => {
       await screen.findByRole('button', { name: 'buttons.queue_visit' })
     );
 
-    expect(
-      await screen.findByRole('dialog', {
-        name: 'downloadConfirmDialog.dialog_title',
+    const dialogue = await screen.findByRole('dialog', {
+      name: 'downloadConfirmDialog.dialog_title',
+    });
+
+    expect(dialogue).toBeInTheDocument();
+
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'downloadConfirmDialog.close_arialabel',
       })
-    ).toBeInTheDocument();
+    );
+
+    await waitForElementToBeRemoved(dialogue);
   });
 });
