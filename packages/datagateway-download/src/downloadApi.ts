@@ -324,7 +324,7 @@ export const getPercentageComplete = async ({
   preparedId,
   settings: { idsUrl },
 }: {
-  preparedId: string;
+  preparedId: string | undefined;
   settings: { idsUrl: string };
 }): Promise<DownloadProgress> => {
   const { data } = await axios.get(`${idsUrl}/getPercentageComplete`, {
