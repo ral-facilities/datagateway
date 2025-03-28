@@ -41,6 +41,10 @@ function renderComponent({ download = mockDownload } = {}): RenderResult {
 }
 
 describe('DownloadProgressIndicator', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   describe('should show calculating text', () => {
     it('when querying the download progress', async () => {
       (
@@ -106,6 +110,21 @@ describe('DownloadProgressIndicator', () => {
       // should not show progress bar
       expect(screen.queryByRole('progressbar')).toBeNull();
     });
+
+    it('when download is deleted', async () => {
+      renderComponent({
+        download: {
+          ...mockDownload,
+          isDeleted: true,
+        },
+      });
+
+      expect(
+        await screen.findByText('downloadStatus.progress_complete')
+      ).toBeInTheDocument();
+      // should not show progress bar
+      expect(screen.queryByRole('progressbar')).toBeNull();
+    });
   });
 
   describe('should show unavailable', () => {
@@ -123,6 +142,20 @@ describe('DownloadProgressIndicator', () => {
       expect(
         await screen.findByText('downloadStatus.progress_unavailable')
       ).toBeInTheDocument();
+    });
+
+    it('when download has no preparedId', async () => {
+      renderComponent({
+        download: {
+          ...mockDownload,
+          preparedId: undefined,
+        },
+      });
+
+      expect(
+        await screen.findByText('downloadStatus.progress_unavailable')
+      ).toBeInTheDocument();
+      expect(getPercentageComplete).not.toHaveBeenCalled();
     });
   });
 
