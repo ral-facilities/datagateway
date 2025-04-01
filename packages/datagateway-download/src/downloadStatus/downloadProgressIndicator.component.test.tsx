@@ -173,6 +173,21 @@ describe('DownloadProgressIndicator', () => {
     expect(screen.getByText('0%')).toBeInTheDocument();
   });
 
+  it('should show queued when download is paused and has no preparedId', async () => {
+    renderComponent({
+      download: {
+        ...mockDownload,
+        status: 'PAUSED',
+        preparedId: undefined,
+      },
+    });
+
+    expect(
+      await screen.findByText('downloadStatus.progress_queued')
+    ).toBeInTheDocument();
+    expect(getPercentageComplete).not.toHaveBeenCalled();
+  });
+
   it('should show progress of the given download item', async () => {
     (
       getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>

@@ -44,6 +44,13 @@ function DownloadProgressIndicator({
   // if the download is being prepared, show 0%
   if (download.status === 'PREPARING') return <ProgressBar progress={0} />;
 
+  // if the download is paused with no preparedId, show that it is queued
+  if (
+    download.status === 'PAUSED' &&
+    typeof download.preparedId === 'undefined'
+  )
+    return <>{t('downloadStatus.progress_queued')}</>;
+
   // display a label indicating progress unavailable when
   // progress is not returned or the download status doesn't match.
   if (typeof progress === 'undefined')
