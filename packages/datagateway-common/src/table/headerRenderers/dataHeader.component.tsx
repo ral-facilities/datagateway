@@ -33,7 +33,7 @@ const DataHeader = (
     ) => void;
     resizeColumn: (dataKey: string, deltaX: number) => void;
     labelString: string;
-    icon?: React.ComponentType<unknown>;
+    icon?: React.ElementType;
     filterComponent?: (
       label: string,
       dataKey: string,

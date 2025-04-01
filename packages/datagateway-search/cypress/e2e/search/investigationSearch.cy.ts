@@ -160,7 +160,7 @@ describe('Investigation search tab', () => {
       cy.findByRole('button', {
         name: 'Add INVESTIGATIONTYPE 2 filter',
       })
-        .as('filter')
+        .as('filter', { type: 'static' })
         .click();
       cy.get('@filter').within(() => {
         cy.findByRole('checkbox').should('be.checked');
@@ -305,7 +305,7 @@ describe('Investigation search tab', () => {
       cy.findByRole('button', {
         name: 'Add SAMPLETYPE 38 filter',
       })
-        .as('filter')
+        .as('filter', { type: 'static' })
         .click();
       cy.get('@filter').within(() => {
         cy.findByRole('checkbox').should('be.checked');
@@ -344,7 +344,7 @@ describe('Investigation search tab', () => {
       cy.findByRole('button', {
         name: 'Add INSTRUMENT 8 filter',
       })
-        .as('filter')
+        .as('filter', { type: 'static' })
         .click();
       cy.get('@filter').within(() => {
         cy.findByRole('checkbox').should('be.checked');

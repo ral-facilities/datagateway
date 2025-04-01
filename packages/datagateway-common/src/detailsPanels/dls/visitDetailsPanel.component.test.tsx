@@ -1,7 +1,6 @@
 import type { RenderResult } from '@testing-library/react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { UserEvent } from '@testing-library/user-event/dist/types/setup';
 import axios from 'axios';
 import * as React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -37,7 +36,7 @@ function renderComponent({
 
 describe('Visit details panel component', () => {
   let rowData: Investigation;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   beforeEach(() => {
     user = userEvent.setup();
@@ -77,8 +76,13 @@ describe('Visit details panel component', () => {
     jest.clearAllMocks();
   });
 
-  it('should render correctly', () => {
+  it('should render correctly', async () => {
     const { asFragment } = renderComponent({ rowData });
+    expect(
+      await screen.findByRole('tablist', {
+        name: 'investigations.details.tabs_label',
+      })
+    ).toBeInTheDocument();
     expect(asFragment()).toMatchSnapshot();
   });
 
@@ -89,7 +93,7 @@ describe('Visit details panel component', () => {
     ).toHaveAttribute('aria-selected', 'true');
   });
 
-  it('should render user, sample and publication tabs when present in the data', () => {
+  it('should render user, sample and publication tabs when present in the data', async () => {
     rowData.investigationUsers = [
       {
         id: 4,
@@ -158,40 +162,57 @@ describe('Visit details panel component', () => {
     ];
 
     const { asFragment } = renderComponent({ rowData });
+
+    expect(
+      await screen.findByRole('tab', {
+        name: 'investigations.details.users.label',
+      })
+    ).toBeInTheDocument();
+
     expect(asFragment()).toMatchSnapshot();
   });
 
-  // it('should check if multiple samples result in change of title to plural version', () => {
-  //   rowData.samples = [
-  //     {
-  //       id: 7,
-  //       name: 'Test sample',
-  //     },
-  //     {
-  //       id: 8,
-  //       name: 'Test sample 1',
-  //     },
-  //   ];
+  it('should check if multiple samples result in change of title to plural version', async () => {
+    rowData.samples = [
+      {
+        id: 7,
+        name: 'Test sample',
+      },
+      {
+        id: 8,
+        name: 'Test sample 1',
+      },
+    ];
 
-  //   const { asFragment } = renderComponent({ rowData });
-  //   expect(asFragment()).toMatchSnapshot();
-  // });
+    const { asFragment } = renderComponent({ rowData });
+    expect(
+      await screen.findByRole('tab', {
+        name: 'investigations.details.samples.label',
+      })
+    ).toBeInTheDocument();
+    expect(asFragment()).toMatchSnapshot();
+  });
 
-  // it('should check if multiple publications result in change of title to plural version', () => {
-  //   rowData.publications = [
-  //     {
-  //       id: 8,
-  //       fullReference: 'Test publication',
-  //     },
-  //     {
-  //       id: 9,
-  //       fullReference: 'Test publication 1',
-  //     },
-  //   ];
+  it('should check if multiple publications result in change of title to plural version', async () => {
+    rowData.publications = [
+      {
+        id: 8,
+        fullReference: 'Test publication',
+      },
+      {
+        id: 9,
+        fullReference: 'Test publication 1',
+      },
+    ];
 
-  //   const { asFragment } = renderComponent({ rowData });
-  //   expect(asFragment()).toMatchSnapshot();
-  // });
+    const { asFragment } = renderComponent({ rowData });
+    expect(
+      await screen.findByRole('tab', {
+        name: 'investigations.details.publications.label',
+      })
+    ).toBeInTheDocument();
+    expect(asFragment()).toMatchSnapshot();
+  });
 
   it('should call detailsPanelResize on load and when tabs are switched between', async () => {
     rowData.investigationUsers = [
@@ -250,7 +271,7 @@ describe('Visit details panel component', () => {
     });
   });
 
-  it('should gracefully handles InvestigationUsers without Users', () => {
+  it('should gracefully handles InvestigationUsers without Users', async () => {
     rowData.investigationUsers = [
       {
         id: 4,
@@ -259,6 +280,12 @@ describe('Visit details panel component', () => {
     ];
 
     const { asFragment } = renderComponent({ rowData });
+
+    expect(
+      await screen.findByRole('tab', {
+        name: 'investigations.details.users.label',
+      })
+    ).toBeInTheDocument();
 
     expect(asFragment()).toMatchSnapshot();
   });

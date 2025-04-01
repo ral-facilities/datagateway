@@ -29,7 +29,6 @@ import {
   waitFor,
   within,
 } from '@testing-library/react';
-import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 import { paths } from '../../../page/pageContainer.component';
@@ -40,7 +39,7 @@ describe('ISIS Investigations table component', () => {
   let rowData: Investigation[];
   let history: History;
   let replaceSpy: jest.SpyInstance;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
   let cartItems: DownloadCartItem[];
   let holder: HTMLElement;
 
@@ -373,8 +372,11 @@ describe('ISIS Investigations table component', () => {
     cleanupDatePickerWorkaround();
   });
 
-  it('uses default sort', () => {
+  it('uses default sort', async () => {
     renderComponent();
+
+    expect(await screen.findAllByRole('gridcell')).toBeTruthy();
+
     expect(history.length).toBe(1);
     expect(replaceSpy).toHaveBeenCalledWith({
       search: `?sort=${encodeURIComponent('{"startDate":"desc"}')}`,

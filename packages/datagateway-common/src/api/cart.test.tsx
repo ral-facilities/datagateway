@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import axios, { AxiosError } from 'axios';
 import { useCart, useAddToCart, useRemoveFromCart } from '.';
 import { DownloadCart } from '../app.types';
@@ -46,11 +46,11 @@ describe('Cart api functions', () => {
         data: mockData,
       });
 
-      const { result, waitFor } = renderHook(() => useCart(), {
+      const { result } = renderHook(() => useCart(), {
         wrapper: createReactQueryWrapper(),
       });
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/topcat/user/cart/TEST',
@@ -79,11 +79,11 @@ describe('Cart api functions', () => {
         message: 'Test error message',
       });
 
-      const { result, waitFor } = renderHook(() => useCart(), {
+      const { result } = renderHook(() => useCart(), {
         wrapper: createReactQueryWrapper(),
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       expect(handleICATError).toHaveBeenCalledWith({
         message: 'Test error message',
@@ -97,7 +97,7 @@ describe('Cart api functions', () => {
         data: mockData,
       });
 
-      const { result, waitFor } = renderHook(() => useAddToCart('dataset'), {
+      const { result } = renderHook(() => useAddToCart('dataset'), {
         wrapper: createReactQueryWrapper(),
       });
 
@@ -106,7 +106,7 @@ describe('Cart api functions', () => {
 
       result.current.mutate([1, 2]);
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       const params = new URLSearchParams();
       params.append('sessionId', '');
@@ -131,7 +131,7 @@ describe('Cart api functions', () => {
           message: 'Test error message',
         });
 
-      const { result, waitFor } = renderHook(() => useAddToCart('dataset'), {
+      const { result } = renderHook(() => useAddToCart('dataset'), {
         wrapper: createReactQueryWrapper(),
       });
 
@@ -140,7 +140,9 @@ describe('Cart api functions', () => {
 
       result.current.mutate([1, 2]);
 
-      await waitFor(() => result.current.isError, { timeout: 2000 });
+      await waitFor(() => expect(result.current.isError).toBe(true), {
+        timeout: 2000,
+      });
 
       expect(result.current.failureCount).toBe(2);
       expect(handleICATError).toHaveBeenCalledTimes(1);
@@ -156,19 +158,16 @@ describe('Cart api functions', () => {
         data: mockData,
       });
 
-      const { result, waitFor } = renderHook(
-        () => useRemoveFromCart('dataset'),
-        {
-          wrapper: createReactQueryWrapper(),
-        }
-      );
+      const { result } = renderHook(() => useRemoveFromCart('dataset'), {
+        wrapper: createReactQueryWrapper(),
+      });
 
       expect(axios.get).not.toHaveBeenCalled();
       expect(result.current.isIdle).toBe(true);
 
       result.current.mutate([1, 2]);
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       const params = new URLSearchParams();
       params.append('sessionId', '');
@@ -195,19 +194,18 @@ describe('Cart api functions', () => {
           message: 'Test error message',
         });
 
-      const { result, waitFor } = renderHook(
-        () => useRemoveFromCart('dataset'),
-        {
-          wrapper: createReactQueryWrapper(),
-        }
-      );
+      const { result } = renderHook(() => useRemoveFromCart('dataset'), {
+        wrapper: createReactQueryWrapper(),
+      });
 
       expect(axios.post).not.toHaveBeenCalled();
       expect(result.current.isIdle).toBe(true);
 
       result.current.mutate([1, 2]);
 
-      await waitFor(() => result.current.isError, { timeout: 2000 });
+      await waitFor(() => expect(result.current.isError).toBe(true), {
+        timeout: 2000,
+      });
 
       expect(result.current.failureCount).toBe(2);
       expect(handleICATError).toHaveBeenCalledTimes(1);

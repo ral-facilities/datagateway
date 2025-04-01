@@ -156,7 +156,7 @@ describe('Dataset search tab', () => {
       cy.findByRole('button', {
         name: 'Add DATASETTYPE 1 filter',
       })
-        .as('filter')
+        .as('filter', { type: 'static' })
         .click();
       cy.get('@filter').within(() => {
         cy.findByRole('checkbox').should('be.checked');
@@ -313,7 +313,7 @@ describe('Dataset search tab', () => {
         cy.findByRole('button', {
           name: 'Add SAMPLETYPE 18 filter',
         })
-          .as('filter')
+          .as('filter', { type: 'static' })
           .click();
         cy.get('@filter').within(() => {
           cy.findByRole('checkbox').should('be.checked');
@@ -354,7 +354,7 @@ describe('Dataset search tab', () => {
         cy.findByRole('button', {
           name: 'Add INSTRUMENT 13 filter',
         })
-          .as('filter')
+          .as('filter', { type: 'static' })
           .click();
         cy.get('@filter').within(() => {
           cy.findByRole('checkbox').should('be.checked');

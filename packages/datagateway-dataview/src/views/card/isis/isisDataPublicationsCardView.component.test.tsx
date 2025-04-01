@@ -28,6 +28,7 @@ describe('ISIS Data Publication - Card View', () => {
   let state: StateType;
   let cardData: DataPublication[];
   let history: History;
+  let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (studyDataPublicationId?: string): RenderResult => {
     if (studyDataPublicationId)
@@ -95,6 +96,8 @@ describe('ISIS Data Publication - Card View', () => {
       })
     );
 
+    user = userEvent.setup();
+
     axios.get = jest
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
@@ -147,8 +150,11 @@ describe('ISIS Data Publication - Card View', () => {
       );
     });
 
-    it('uses default sort', () => {
+    it('uses default sort', async () => {
       renderComponent();
+
+      expect(await screen.findByTestId('card')).toBeInTheDocument();
+
       expect(history.length).toBe(1);
       expect(history.location.search).toBe(
         `?sort=${encodeURIComponent('{"title":"desc"}')}`
@@ -162,11 +168,6 @@ describe('ISIS Data Publication - Card View', () => {
     });
 
     it('updates filter query params on text filter', async () => {
-      jest.useFakeTimers();
-      const user = userEvent.setup({
-        advanceTimers: jest.advanceTimersByTime,
-      });
-
       renderComponent();
 
       // click on button to show advanced filters
@@ -190,13 +191,9 @@ describe('ISIS Data Publication - Card View', () => {
       await user.clear(filter);
 
       expect(history.location.search).toBe('?');
-
-      jest.useRealTimers();
     });
 
     it('updates sort query params on sort', async () => {
-      const user = userEvent.setup();
-
       renderComponent();
 
       await user.click(
@@ -238,8 +235,11 @@ describe('ISIS Data Publication - Card View', () => {
       expect(within(card).getByText('2001-01-01')).toBeInTheDocument();
     });
 
-    it('uses default sort', () => {
+    it('uses default sort', async () => {
       renderComponent('2');
+
+      expect(await screen.findByTestId('card')).toBeInTheDocument();
+
       expect(history.length).toBe(1);
       expect(history.location.search).toBe(
         `?sort=${encodeURIComponent('{"publicationDate":"desc"}')}`
@@ -253,7 +253,6 @@ describe('ISIS Data Publication - Card View', () => {
     });
 
     it('updates filter query params on date filter', async () => {
-      const user = userEvent.setup();
       applyDatePickerWorkaround();
 
       renderComponent('2');
