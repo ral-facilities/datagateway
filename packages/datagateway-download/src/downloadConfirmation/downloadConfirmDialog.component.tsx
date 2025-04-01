@@ -218,6 +218,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     if (
       isDownloadInfoAvailable &&
       downloadInfo &&
+      downloadInfo.preparedId &&
       downloadInfo.status === 'COMPLETE'
     ) {
       // Download the file as long as it is available for instant download.

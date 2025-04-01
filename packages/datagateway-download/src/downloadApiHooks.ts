@@ -735,7 +735,7 @@ export const useDownloadPercentageComplete = <T = DownloadProgress>({
   const idsUrl = accessMethods[download.transport]?.idsUrl;
 
   return useQuery(
-    [QueryKey.DOWNLOAD_PROGRESS, preparedId],
+    [QueryKey.DOWNLOAD_PROGRESS, preparedId ?? ''], // undefined preparedId is handled in downloadProgressIndicator & disables the query anyway
     () =>
       getPercentageComplete({
         preparedId: preparedId,
