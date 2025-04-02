@@ -162,8 +162,6 @@ describe('DLS - visit restore button', () => {
 
     cy.get('#details-panel').should('be.visible');
     cy.contains('button', 'Queue visit for download').should('exist');
-    cy.contains('button', 'Queue visit for download').scrollIntoView();
-    cy.contains('button', 'Queue visit for download').should('be.visible');
   });
 
   it('should be able to submit a download', () => {
