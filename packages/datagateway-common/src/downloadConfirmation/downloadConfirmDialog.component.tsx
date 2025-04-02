@@ -244,7 +244,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     }
   }, [isTwoLevel, props.open, totalSize]);
 
-  // call post download success function when download completed succesfully
+  // call post download success function when download completed successfully
   // allows for e.g. immediately triggering downloading the download if it's available
   React.useEffect(() => {
     if (isDownloadInfoAvailable && postDownloadSuccessFn) {
