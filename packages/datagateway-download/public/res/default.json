@@ -38,7 +38,8 @@
     "progress": "Progress",
     "calculating_progress": "Calculating...",
     "progress_unavailable": "Unknown",
-    "progress_complete": ""
+    "progress_complete": "",
+    "progress_queued": "Queued"
   },
   "downloadConfirmDialog": {
     "close_arialabel": "Close download confirmation dialog",

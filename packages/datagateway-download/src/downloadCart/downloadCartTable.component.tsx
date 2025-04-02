@@ -24,6 +24,7 @@ import {
   type TextFilter,
   type SortType,
   useSubmitCart,
+  Download,
 } from 'datagateway-common';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -339,8 +340,8 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   );
 
   const downloadIfComplete = React.useCallback(
-    (download) => {
-      if (download.status === 'COMPLETE')
+    (download: Download) => {
+      if (download.status === 'COMPLETE' && download.preparedId)
         // Download the file as long as it is available for instant download.
         downloadPreparedCart(
           download.preparedId,

@@ -266,7 +266,7 @@ export interface Download {
   isDeleted: boolean;
   isEmailSent: boolean;
   isTwoLevel: boolean;
-  preparedId: string;
+  preparedId?: string;
   sessionId: string;
   size: number;
   status: DownloadStatus;
