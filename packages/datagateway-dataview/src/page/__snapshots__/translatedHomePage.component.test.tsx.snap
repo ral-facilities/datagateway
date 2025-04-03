@@ -1,12 +1,12 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`HomePage translated homepage renders correctly 1`] = `
+exports[`HomePage > translated homepage renders correctly 1`] = `
 <DocumentFragment>
   <div
     id="dg-homepage"
   >
     <div
-      style="background-image: url(testbackground.jpg); width: 100%; height: 250px;"
+      style="background-image: url(test/@fs/C:/code/datagateway/packages/datagateway-common/src/images/background.jpg); width: 100%; height: 250px;"
     >
       <div
         style="background-repeat: no-repeat; width: 100%; height: 250px;"
@@ -92,10 +92,10 @@ exports[`HomePage translated homepage renders correctly 1`] = `
             class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-6 css-1osj8n2-MuiGrid-root"
           >
             <div
-              style="background-image: url(testfacility.jpg); background-repeat: no-repeat; background-position: bottom right; background-size: cover; width: 100%; height: 100%; border-radius: 4px;"
+              style="background-image: url(test/@fs/C:/code/datagateway/packages/datagateway-common/src/images/facility.jpg); background-repeat: no-repeat; background-position: bottom right; background-size: cover; width: 100%; height: 100%; border-radius: 4px;"
             >
               <div
-                class="css-14s0brp"
+                class="css-1bws31m"
               />
             </div>
           </div>
@@ -215,7 +215,7 @@ exports[`HomePage translated homepage renders correctly 1`] = `
             class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 css-19bggzh-MuiPaper-root"
           >
             <div
-              style="background-image: url(testgreen-swirl2.png); background-repeat: no-repeat; background-position: top right; background-size: auto 100%; height: 100%;"
+              style="background-image: url(test/@fs/C:/code/datagateway/packages/datagateway-common/src/images/green-swirl2.png); background-repeat: no-repeat; background-position: top right; background-size: auto 100%; height: 100%;"
             >
               <div
                 class="MuiBox-root css-1onku40"

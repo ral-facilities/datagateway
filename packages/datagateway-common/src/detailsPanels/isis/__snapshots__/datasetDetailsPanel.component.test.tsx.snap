@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Dataset details panel component should render correctly 1`] = `
+exports[`Dataset details panel component > should render correctly 1`] = `
 <DocumentFragment>
   <div
     data-testid="isis-dataset-details-panel"
@@ -144,7 +144,7 @@ exports[`Dataset details panel component should render correctly 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Dataset details panel component should render type tab when present in the data 1`] = `
+exports[`Dataset details panel component > should render type tab when present in the data 1`] = `
 <DocumentFragment>
   <div
     data-testid="isis-dataset-details-panel"

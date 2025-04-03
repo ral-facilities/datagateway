@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Select column header component renders correctly when checked 1`] = `
+exports[`Select column header component > renders correctly when checked 1`] = `
 <DocumentFragment>
   <div
     class="MuiTableCell-root MuiTableCell-head MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall css-blmy2t-MuiTableCell-root"
@@ -41,7 +41,7 @@ exports[`Select column header component renders correctly when checked 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Select column header component renders correctly when indeterminate 1`] = `
+exports[`Select column header component > renders correctly when indeterminate 1`] = `
 <DocumentFragment>
   <div
     class="MuiTableCell-root MuiTableCell-head MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall css-blmy2t-MuiTableCell-root"
@@ -81,7 +81,7 @@ exports[`Select column header component renders correctly when indeterminate 1`]
 </DocumentFragment>
 `;
 
-exports[`Select column header component renders correctly when loading is true 1`] = `
+exports[`Select column header component > renders correctly when loading is true 1`] = `
 <DocumentFragment>
   <div
     class="MuiTableCell-root MuiTableCell-head MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall css-blmy2t-MuiTableCell-root"
@@ -121,7 +121,7 @@ exports[`Select column header component renders correctly when loading is true 1
 </DocumentFragment>
 `;
 
-exports[`Select column header component renders correctly when selectedRows is undefined 1`] = `
+exports[`Select column header component > renders correctly when selectedRows is undefined 1`] = `
 <DocumentFragment>
   <div
     class="MuiTableCell-root MuiTableCell-head MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall css-blmy2t-MuiTableCell-root"
@@ -161,7 +161,7 @@ exports[`Select column header component renders correctly when selectedRows is u
 </DocumentFragment>
 `;
 
-exports[`Select column header component renders correctly when selectedRows parentSelected is true 1`] = `
+exports[`Select column header component > renders correctly when selectedRows parentSelected is true 1`] = `
 <DocumentFragment>
   <div
     class="MuiTableCell-root MuiTableCell-body MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall css-2u8re1-MuiTableCell-root"
@@ -202,7 +202,7 @@ exports[`Select column header component renders correctly when selectedRows pare
 </DocumentFragment>
 `;
 
-exports[`Select column header component renders correctly when unchecked 1`] = `
+exports[`Select column header component > renders correctly when unchecked 1`] = `
 <DocumentFragment>
   <div
     class="MuiTableCell-root MuiTableCell-head MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall css-blmy2t-MuiTableCell-root"
