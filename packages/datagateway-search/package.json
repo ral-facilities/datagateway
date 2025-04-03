@@ -13,7 +13,6 @@
     "@tanstack/react-query": "4.36.1",
     "@tanstack/react-query-devtools": "4.36.1",
     "@types/history": "4.7.11",
-    "@types/jest": "29.5.2",
     "@types/jsrsasign": "10.5.2",
     "@types/lodash.isequal": "4.5.8",
     "@types/node": "20.11.5",
@@ -82,18 +81,6 @@
       "not dead",
       "not op_mini all"
     ]
-  },
-  "jest": {
-    "transformIgnorePatterns": [
-      "node_modules/(?!(axios|copy-anything|is-what))"
-    ],
-    "collectCoverageFrom": [
-      "src/**/*.{tsx,js,jsx}",
-      "!src/index.tsx",
-      "!src/serviceWorker.ts",
-      "!src/setupTests.js"
-    ],
-    "resetMocks": false
   },
   "lint-staged": {
     "src/**/*.{tsx,ts,js,jsx,json}": [

@@ -13,7 +13,7 @@ import {
   useInvestigationsPaginated,
 } from './investigations';
 
-jest.mock('../handleICATError');
+vi.mock('../handleICATError');
 
 describe('investigation api functions', () => {
   let mockData: Investigation[] = [];
@@ -55,14 +55,14 @@ describe('investigation api functions', () => {
   });
 
   afterEach(() => {
-    (handleICATError as jest.Mock).mockClear();
-    (axios.get as jest.Mock).mockClear();
-    jest.useRealTimers();
+    vi.mocked(handleICATError).mockClear();
+    vi.mocked(axios.get).mockClear();
+    vi.useRealTimers();
   });
 
   describe('useInvestigation', () => {
     it('sends axios request to fetch investigation by ID and returns successful response', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: [mockData[0]],
       });
 
@@ -103,14 +103,14 @@ describe('investigation api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data).toEqual([mockData[0]]);
     });
 
     it('sends axios request to fetch ids and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
       const { result } = renderHook(() => useInvestigation(1), {
@@ -125,7 +125,7 @@ describe('investigation api functions', () => {
 
   describe('useInvestigationsPaginated', () => {
     it('sends axios request to fetch paginated investigations and returns successful response', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: mockData,
       });
 
@@ -170,7 +170,7 @@ describe('investigation api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data).toEqual(mockData);
@@ -184,11 +184,11 @@ describe('investigation api functions', () => {
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      expect(axios.get as jest.Mock).toHaveBeenCalledTimes(2);
+      expect(vi.mocked(axios.get)).toHaveBeenCalledTimes(2);
     });
 
     it('sends axios request to fetch paginated investigations and returns successful response when ignoreIDSort is true', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: mockData,
       });
 
@@ -235,14 +235,14 @@ describe('investigation api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data).toEqual(mockData);
     });
 
     it('sends axios request to fetch paginated investigations and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
       const { result } = renderHook(() => useInvestigationsPaginated(), {
@@ -261,7 +261,7 @@ describe('investigation api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
@@ -270,7 +270,7 @@ describe('investigation api functions', () => {
 
   describe('useInvestigationsInfinite', () => {
     it('sends axios request to fetch infinite investigations and returns successful response', async () => {
-      (axios.get as jest.Mock).mockImplementation((url, options) =>
+      vi.mocked(axios.get).mockImplementation((url, options) =>
         options.params.get('skip') === '0'
           ? Promise.resolve({ data: mockData[0] })
           : Promise.resolve({ data: mockData[1] })
@@ -317,7 +317,7 @@ describe('investigation api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data.pages).toStrictEqual([mockData[0]]);
@@ -337,7 +337,7 @@ describe('investigation api functions', () => {
       );
       params.set('skip', JSON.stringify(50));
       params.set('limit', JSON.stringify(25));
-      expect((axios.get as jest.Mock).mock.calls[1][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[1][1].params.toString()).toBe(
         params.toString()
       );
 
@@ -355,11 +355,11 @@ describe('investigation api functions', () => {
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      expect(axios.get as jest.Mock).toHaveBeenCalledTimes(3);
+      expectvi.mocked(axios.get).toHaveBeenCalledTimes(3);
     });
 
     it('sends axios request to fetch infinite investigations and returns successful response when ignoreIDSort is true', async () => {
-      (axios.get as jest.Mock).mockImplementation((url, options) =>
+      vi.mocked(axios.get).mockImplementation((url, options) =>
         options.params.get('skip') === '0'
           ? Promise.resolve({ data: mockData[0] })
           : Promise.resolve({ data: mockData[1] })
@@ -408,7 +408,7 @@ describe('investigation api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data.pages).toStrictEqual([mockData[0]]);
@@ -428,7 +428,7 @@ describe('investigation api functions', () => {
       );
       params.set('skip', JSON.stringify(50));
       params.set('limit', JSON.stringify(25));
-      expect((axios.get as jest.Mock).mock.calls[1][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[1][1].params.toString()).toBe(
         params.toString()
       );
 
@@ -439,7 +439,7 @@ describe('investigation api functions', () => {
     });
 
     it('sends axios request to fetch infinite investigations and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
       const { result } = renderHook(() => useInvestigationsInfinite(), {
@@ -458,7 +458,7 @@ describe('investigation api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
@@ -467,7 +467,7 @@ describe('investigation api functions', () => {
 
   describe('useInvestigationCount', () => {
     it('sends axios request to fetch investigation count and returns successful response', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: mockData.length,
       });
 
@@ -500,14 +500,14 @@ describe('investigation api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data).toEqual(mockData.length);
     });
 
     it('sends axios request to fetch investigation count and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
       const { result } = renderHook(() => useInvestigationCount(), {
@@ -522,7 +522,7 @@ describe('investigation api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
@@ -531,7 +531,7 @@ describe('investigation api functions', () => {
 
   describe('useInvestigationDetails', () => {
     it('sends axios request to fetch investigation details and returns successful response', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: [mockData[0]],
       });
 
@@ -563,14 +563,14 @@ describe('investigation api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data).toEqual(mockData[0]);
     });
 
     it('sends axios request to fetch investigation details and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
       const { result } = renderHook(() => useInvestigationDetails(1), {
@@ -585,8 +585,8 @@ describe('investigation api functions', () => {
 
   describe('downloadInvestigation', () => {
     it('clicks on IDS link upon downloadInvestigation action', async () => {
-      jest.spyOn(document, 'createElement');
-      jest.spyOn(document.body, 'appendChild');
+      vi.spyOn(document, 'createElement');
+      vi.spyOn(document.body, 'appendChild');
 
       downloadInvestigation('https://www.example.com/ids', 1, 'test');
 

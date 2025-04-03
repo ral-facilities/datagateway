@@ -172,8 +172,8 @@ describe('Dataset table component', () => {
       results: mockSearchResults,
     };
 
-    axios.get = jest.fn().mockImplementation(mockAxiosGet);
-    axios.post = jest.fn().mockImplementation((url: string) => {
+    axios.get = vi.fn().mockImplementation(mockAxiosGet);
+    axios.post = vi.fn().mockImplementation((url: string) => {
       if (/.*\/user\/cart\/.*\/cartItems$/.test(url)) {
         return Promise.resolve({ data: { cartItems } });
       }
@@ -182,7 +182,7 @@ describe('Dataset table component', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('disables the search query if dataset search is disabled', async () => {

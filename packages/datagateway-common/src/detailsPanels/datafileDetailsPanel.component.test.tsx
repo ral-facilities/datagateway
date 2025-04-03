@@ -5,7 +5,7 @@ import { render } from '@testing-library/react';
 
 describe('Datafile details panel component', () => {
   let rowData: Datafile;
-  const detailsPanelResize = jest.fn();
+  const detailsPanelResize = vi.fn();
 
   beforeEach(() => {
     rowData = {
@@ -19,7 +19,7 @@ describe('Datafile details panel component', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly', () => {

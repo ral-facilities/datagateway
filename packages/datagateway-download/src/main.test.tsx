@@ -5,17 +5,17 @@ import LogoDark from 'datagateway-common/src/images/datgateway-white-text-blue-m
 import log from 'loglevel';
 import { fetchSettings } from './main';
 
-jest.mock('loglevel');
+vi.mock('loglevel');
 
 describe('index - fetchSettings', () => {
   beforeEach(() => {
-    global.document.dispatchEvent = jest.fn();
-    global.CustomEvent = jest.fn();
+    global.document.dispatchEvent = vi.fn();
+    global.CustomEvent = vi.fn();
   });
   afterEach(() => {
-    (axios.get as jest.Mock).mockClear();
-    (log.error as jest.Mock).mockClear();
-    (CustomEvent as jest.Mock).mockClear();
+    vi.mocked(axios.get).mockClear();
+    vi.mocked(log.error).mockClear();
+    vi.mocked(CustomEvent).mockClear();
   });
 
   it('settings (facilityName, URLs and accessMethods) are loaded', async () => {
@@ -43,7 +43,7 @@ describe('index - fetchSettings', () => {
       pluginHost: 'http://localhost:3000/',
     };
 
-    (axios.get as jest.Mock).mockImplementationOnce(() =>
+    vi.mocked(axios.get).mockImplementationOnce(() =>
       Promise.resolve({
         data: settingsResult,
       })
@@ -113,7 +113,7 @@ describe('index - fetchSettings', () => {
       helpSteps: [{ target: '#id', content: 'content' }],
     };
 
-    (axios.get as jest.Mock).mockImplementationOnce(() =>
+    vi.mocked(axios.get).mockImplementationOnce(() =>
       Promise.resolve({
         data: settingsResult,
       })
@@ -179,7 +179,7 @@ describe('index - fetchSettings', () => {
   });
 
   it('logs an error if facilityName is not defined in the settings', async () => {
-    (axios.get as jest.Mock).mockImplementationOnce(() =>
+    vi.mocked(axios.get).mockImplementationOnce(() =>
       Promise.resolve({
         data: {
           idsUrl: 'ids',
@@ -201,14 +201,14 @@ describe('index - fetchSettings', () => {
     expect(settings).toBeUndefined();
     expect(log.error).toHaveBeenCalled();
 
-    const mockLog = (log.error as jest.Mock).mock;
+    const mockLog = vi.mocked(log.error).mock;
     expect(mockLog.calls[0][0]).toEqual(
       'Error loading /datagateway-download-settings.json: facilityName is undefined in settings'
     );
   });
 
   it('logs an error if any of the API URLs are not defined in the settings', async () => {
-    (axios.get as jest.Mock).mockImplementationOnce(() =>
+    vi.mocked(axios.get).mockImplementationOnce(() =>
       Promise.resolve({
         data: {
           facilityName: 'Generic',
@@ -228,14 +228,14 @@ describe('index - fetchSettings', () => {
     expect(settings).toBeUndefined();
     expect(log.error).toHaveBeenCalled();
 
-    const mockLog = (log.error as jest.Mock).mock;
+    const mockLog = vi.mocked(log.error).mock;
     expect(mockLog.calls[0][0]).toEqual(
       'Error loading /datagateway-download-settings.json: One of the URL options (idsUrl, apiUrl, downloadApiUrl) is undefined in settings'
     );
   });
 
   it('logs an error if accessMethods is undefined in the settings', async () => {
-    (axios.get as jest.Mock).mockImplementationOnce(() =>
+    vi.mocked(axios.get).mockImplementationOnce(() =>
       Promise.resolve({
         data: {
           facilityName: 'Generic',
@@ -251,14 +251,14 @@ describe('index - fetchSettings', () => {
     expect(settings).toBeUndefined();
     expect(log.error).toHaveBeenCalled();
 
-    const mockLog = (log.error as jest.Mock).mock;
+    const mockLog = vi.mocked(log.error).mock;
     expect(mockLog.calls[0][0]).toEqual(
       'Error loading /datagateway-download-settings.json: accessMethods is undefined in settings'
     );
   });
 
   it('logs an error if there are no access methods defined within the accessMethods object in settings', async () => {
-    (axios.get as jest.Mock).mockImplementationOnce(() =>
+    vi.mocked(axios.get).mockImplementationOnce(() =>
       Promise.resolve({
         data: {
           facilityName: 'Generic',
@@ -285,14 +285,14 @@ describe('index - fetchSettings', () => {
     expect(settings).toBeUndefined();
     expect(log.error).toHaveBeenCalled();
 
-    const mockLog = (log.error as jest.Mock).mock;
+    const mockLog = vi.mocked(log.error).mock;
     expect(mockLog.calls[0][0]).toEqual(
       'Error loading /datagateway-download-settings.json: Access method globus, defined in settings, does not contain a idsUrl'
     );
   });
 
   it('logs an error if there is no idsUrl defined in any access method in the settings', async () => {
-    (axios.get as jest.Mock).mockImplementationOnce(() =>
+    vi.mocked(axios.get).mockImplementationOnce(() =>
       Promise.resolve({
         data: {
           facilityName: 'Generic',
@@ -309,14 +309,14 @@ describe('index - fetchSettings', () => {
     expect(settings).toBeUndefined();
     expect(log.error).toHaveBeenCalled();
 
-    const mockLog = (log.error as jest.Mock).mock;
+    const mockLog = vi.mocked(log.error).mock;
     expect(mockLog.calls[0][0]).toEqual(
       'Error loading /datagateway-download-settings.json: At least one access method should be defined under accessMethods in settings'
     );
   });
 
   it('logs an error if settings.json is an invalid JSON object', async () => {
-    (axios.get as jest.Mock).mockImplementationOnce(() =>
+    vi.mocked(axios.get).mockImplementationOnce(() =>
       Promise.resolve({
         data: 1,
       })
@@ -327,7 +327,7 @@ describe('index - fetchSettings', () => {
     expect(settings).toBeUndefined();
     expect(log.error).toHaveBeenCalled();
 
-    const mockLog = (log.error as jest.Mock).mock;
+    const mockLog = vi.mocked(log.error).mock;
     expect(mockLog.calls[0][0]).toEqual(
       'Error loading /datagateway-download-settings.json: Invalid format'
     );
@@ -335,14 +335,14 @@ describe('index - fetchSettings', () => {
 
   it('logs an error if settings.json fails to be loaded with custom path', async () => {
     import.meta.env.VITE_DOWNLOAD_BUILD_DIRECTORY = '/custom/directory/';
-    (axios.get as jest.Mock).mockImplementationOnce(() => Promise.reject({}));
+    vi.mocked(axios.get).mockImplementationOnce(() => Promise.reject({}));
 
     const settings = await fetchSettings();
 
     expect(settings).toBeUndefined();
     expect(log.error).toHaveBeenCalled();
 
-    const mockLog = (log.error as jest.Mock).mock;
+    const mockLog = vi.mocked(log.error).mock;
     expect(mockLog.calls[0][0]).toEqual(
       'Error loading /custom/directory/datagateway-download-settings.json: undefined'
     );
@@ -350,21 +350,21 @@ describe('index - fetchSettings', () => {
   });
 
   it('logs an error if fails to load a settings.json and is still in a loading state', async () => {
-    (axios.get as jest.Mock).mockImplementationOnce(() => Promise.reject({}));
+    vi.mocked(axios.get).mockImplementationOnce(() => Promise.reject({}));
 
     const settings = await fetchSettings();
 
     expect(settings).toBeUndefined();
     expect(log.error).toHaveBeenCalled();
 
-    const mockLog = (log.error as jest.Mock).mock;
+    const mockLog = vi.mocked(log.error).mock;
     expect(mockLog.calls[0][0]).toEqual(
       'Error loading /datagateway-download-settings.json: undefined'
     );
   });
 
   it('logs an error if no routes are defined in the settings', async () => {
-    (axios.get as jest.Mock).mockImplementationOnce(() =>
+    vi.mocked(axios.get).mockImplementationOnce(() =>
       Promise.resolve({
         data: {
           facilityName: 'Generic',
@@ -392,14 +392,14 @@ describe('index - fetchSettings', () => {
     expect(settings).toBeUndefined();
     expect(log.error).toHaveBeenCalled();
 
-    const mockLog = (log.error as jest.Mock).mock;
+    const mockLog = vi.mocked(log.error).mock;
     expect(mockLog.calls[0][0]).toEqual(
       'Error loading /datagateway-download-settings.json: No routes provided in the settings'
     );
   });
 
   it('logs an error if route has missing entries', async () => {
-    (axios.get as jest.Mock).mockImplementationOnce(() =>
+    vi.mocked(axios.get).mockImplementationOnce(() =>
       Promise.resolve({
         data: {
           facilityName: 'Generic',
@@ -434,7 +434,7 @@ describe('index - fetchSettings', () => {
     expect(settings).toBeUndefined();
     expect(log.error).toHaveBeenCalled();
 
-    const mockLog = (log.error as jest.Mock).mock;
+    const mockLog = vi.mocked(log.error).mock;
     expect(mockLog.calls[0][0]).toEqual(
       'Error loading /datagateway-download-settings.json: Route provided does not have all the required entries (section, link, displayName)'
     );

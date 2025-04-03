@@ -49,13 +49,13 @@ describe('Datafile details panel component', () => {
       createTime: '2019-06-11',
       description: 'Test description',
     };
-    axios.get = jest.fn().mockResolvedValue({
+    axios.get = vi.fn().mockResolvedValue({
       data: [rowData],
     });
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should render correctly', async () => {
@@ -187,7 +187,7 @@ describe('Datafile details panel component', () => {
       },
     ];
 
-    const mockDetailsPanelResize = jest.fn();
+    const mockDetailsPanelResize = vi.fn();
     renderComponent({
       rowData,
       detailsPanelResize: mockDetailsPanelResize,
@@ -221,7 +221,7 @@ describe('Datafile details panel component', () => {
         },
       },
     ];
-    const mockDetailsPanelResize = jest.fn();
+    const mockDetailsPanelResize = vi.fn();
 
     renderComponent({ rowData });
 
@@ -242,7 +242,7 @@ describe('Datafile details panel component', () => {
       createTime: '2019-06-11',
     };
 
-    axios.get = jest.fn().mockResolvedValue({
+    axios.get = vi.fn().mockResolvedValue({
       data: [rowData],
     });
 
@@ -255,7 +255,7 @@ describe('Datafile details panel component', () => {
 
   it('should render datafile parameters tab and text "No parameters" when no data is present', async () => {
     rowData.parameters = [];
-    axios.get = jest.fn().mockResolvedValue({
+    axios.get = vi.fn().mockResolvedValue({
       data: [rowData],
     });
 

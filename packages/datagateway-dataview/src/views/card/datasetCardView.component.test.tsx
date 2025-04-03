@@ -25,14 +25,14 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = vi.importActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    useDatasetCount: jest.fn(),
-    useDatasetsPaginated: jest.fn(),
+    useDatasetCount: vi.fn(),
+    useDatasetsPaginated: vi.fn(),
   };
 });
 
@@ -76,20 +76,20 @@ describe('Dataset - Card View', () => {
       })
     );
 
-    (useDatasetCount as jest.Mock).mockReturnValue({
+    vi.mocked(useDatasetCount).mockReturnValue({
       data: 1,
       isLoading: false,
     });
-    (useDatasetsPaginated as jest.Mock).mockReturnValue({
+    vi.mocked(useDatasetsPaginated).mockReturnValue({
       data: cardData,
       isLoading: false,
     });
 
-    window.scrollTo = jest.fn();
+    window.scrollTo = vi.fn();
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders datasets as cards', async () => {
@@ -241,8 +241,8 @@ describe('Dataset - Card View', () => {
   });
 
   it('renders fine with incomplete data', () => {
-    (useDatasetCount as jest.Mock).mockReturnValue({});
-    (useDatasetsPaginated as jest.Mock).mockReturnValue({});
+    vi.mocked(useDatasetCount).mockReturnValue({});
+    vi.mocked(useDatasetsPaginated).mockReturnValue({});
 
     expect(() => renderComponent()).not.toThrowError();
   });

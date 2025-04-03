@@ -11,11 +11,11 @@ import type { StateType } from './state/app.types';
 import SearchBoxContainer from './searchBoxContainer.component';
 import SearchBoxContainerSide from './searchBoxContainerSide.component';
 
-jest.mock('loglevel');
+vi.mock('loglevel');
 
-jest.mock('react-redux', () => ({
-  ...vi.importActual('react-redux'),
-  useSelector: jest.fn(),
+vi.mock('react-redux', async () => ({
+  ...(await vi.importActual('react-redux')),
+  useSelector: vi.fn(),
 }));
 
 describe('SearchBoxContainer - Tests', () => {
@@ -27,11 +27,11 @@ describe('SearchBoxContainer - Tests', () => {
         <MemoryRouter>
           <SearchBoxContainer
             restrict={false}
-            initiateSearch={jest.fn()}
+            initiateSearch={vi.fn()}
             loggedInAnonymously={true}
-            onSearchTextChange={jest.fn()}
+            onSearchTextChange={vi.fn()}
             searchText="initial search text"
-            onMyDataCheckboxChange={jest.fn()}
+            onMyDataCheckboxChange={vi.fn()}
             {...props}
           />
         </MemoryRouter>
@@ -118,11 +118,11 @@ describe('SearchBoxContainerSide - Tests', () => {
         <MemoryRouter>
           <SearchBoxContainerSide
             restrict={false}
-            initiateSearch={jest.fn()}
+            initiateSearch={vi.fn()}
             loggedInAnonymously={true}
-            onSearchTextChange={jest.fn()}
+            onSearchTextChange={vi.fn()}
             searchText=""
-            onMyDataCheckboxChange={jest.fn()}
+            onMyDataCheckboxChange={vi.fn()}
             {...props}
           />
         </MemoryRouter>

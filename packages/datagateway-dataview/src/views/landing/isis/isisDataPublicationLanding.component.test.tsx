@@ -17,14 +17,14 @@ import userEvent from '@testing-library/user-event';
 import ISISDataPublicationLanding from './isisDataPublicationLanding.component';
 import { paths } from '../../../page/pageContainer.component';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = vi.importActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    useDataPublication: jest.fn(),
-    useDataPublications: jest.fn(),
+    useDataPublication: vi.fn(),
+    useDataPublications: vi.fn(),
   };
 });
 
@@ -181,17 +181,17 @@ describe('ISIS Data Publication Landing page', () => {
       },
     ];
 
-    (useDataPublication as jest.Mock).mockReturnValue({
+    vi.mocked(useDataPublication).mockReturnValue({
       data: initialStudyDataPublicationData,
     });
 
-    (useDataPublications as jest.Mock).mockReturnValue({
+    vi.mocked(useDataPublications).mockReturnValue({
       data: initialInvestigationDataPublicationsData,
     });
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('links to the correct url in the datafiles tab', () => {

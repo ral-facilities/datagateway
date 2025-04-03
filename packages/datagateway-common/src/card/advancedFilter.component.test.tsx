@@ -18,7 +18,7 @@ describe('AdvancedFilter', () => {
         title={{
           label: 'Test',
           dataKey: 'TEST',
-          filterComponent: jest.fn(),
+          filterComponent: vi.fn(),
         }}
       />
     );
@@ -39,7 +39,7 @@ describe('AdvancedFilter', () => {
       <UnmemoisedAdvancedFilter
         title={{
           dataKey: 'TEST',
-          filterComponent: jest.fn(),
+          filterComponent: vi.fn(),
         }}
       />
     );
@@ -62,7 +62,7 @@ describe('AdvancedFilter', () => {
         description={{
           label: 'Desc',
           dataKey: 'DESC',
-          filterComponent: jest.fn(),
+          filterComponent: vi.fn(),
         }}
       />
     );
@@ -84,7 +84,7 @@ describe('AdvancedFilter', () => {
         title={{ dataKey: 'TEST' }}
         description={{
           dataKey: 'DESC',
-          filterComponent: jest.fn(),
+          filterComponent: vi.fn(),
         }}
       />
     );
@@ -108,7 +108,7 @@ describe('AdvancedFilter', () => {
           {
             label: 'Info',
             dataKey: 'INFO',
-            filterComponent: jest.fn(),
+            filterComponent: vi.fn(),
           },
         ]}
       />
@@ -132,7 +132,7 @@ describe('AdvancedFilter', () => {
         information={[
           {
             dataKey: 'INFO',
-            filterComponent: jest.fn(),
+            filterComponent: vi.fn(),
           },
         ]}
       />
@@ -155,7 +155,7 @@ describe('AdvancedFilter', () => {
         title={{
           label: 'advanced_filters.icons.title',
           dataKey: 'TEST',
-          filterComponent: jest.fn(),
+          filterComponent: vi.fn(),
         }}
       />
     );
@@ -174,7 +174,7 @@ describe('AdvancedFilter', () => {
         title={{
           label: 'advanced_filters.icons.fingerprint',
           dataKey: 'TEST',
-          filterComponent: jest.fn(),
+          filterComponent: vi.fn(),
         }}
       />
     );
@@ -193,7 +193,7 @@ describe('AdvancedFilter', () => {
         title={{
           label: 'advanced_filters.icons.public',
           dataKey: 'TEST',
-          filterComponent: jest.fn(),
+          filterComponent: vi.fn(),
         }}
       />
     );
@@ -213,7 +213,7 @@ describe('AdvancedFilter', () => {
         title={{
           label: 'advanced_filters.icons.confirmation_number',
           dataKey: 'TEST',
-          filterComponent: jest.fn(),
+          filterComponent: vi.fn(),
         }}
       />
     );
@@ -234,7 +234,7 @@ describe('AdvancedFilter', () => {
         title={{
           label: 'advanced_filters.icons.assessment',
           dataKey: 'TEST',
-          filterComponent: jest.fn(),
+          filterComponent: vi.fn(),
         }}
       />
     );
@@ -253,7 +253,7 @@ describe('AdvancedFilter', () => {
         title={{
           label: 'advanced_filters.icons.calendar_today',
           dataKey: 'TEST',
-          filterComponent: jest.fn(),
+          filterComponent: vi.fn(),
         }}
       />
     );
@@ -272,7 +272,7 @@ describe('AdvancedFilter', () => {
         title={{
           label: 'advanced_filters.icons.explore',
           dataKey: 'TEST',
-          filterComponent: jest.fn(),
+          filterComponent: vi.fn(),
         }}
       />
     );
@@ -291,7 +291,7 @@ describe('AdvancedFilter', () => {
         title={{
           label: 'advanced_filters.icons.save',
           dataKey: 'TEST',
-          filterComponent: jest.fn(),
+          filterComponent: vi.fn(),
         }}
       />
     );
@@ -310,7 +310,7 @@ describe('AdvancedFilter', () => {
         title={{
           label: 'advanced_filters.icons.description',
           dataKey: 'TEST',
-          filterComponent: jest.fn(),
+          filterComponent: vi.fn(),
         }}
       />
     );
@@ -330,7 +330,7 @@ describe('AdvancedFilter', () => {
         title={{
           label: 'advanced_filters.icons.link',
           dataKey: 'TEST',
-          filterComponent: jest.fn(),
+          filterComponent: vi.fn(),
         }}
       />
     );
@@ -349,7 +349,7 @@ describe('AdvancedFilter', () => {
         title={{
           label: 'advanced_filters.icons.person',
           dataKey: 'TEST',
-          filterComponent: jest.fn(),
+          filterComponent: vi.fn(),
         }}
       />
     );

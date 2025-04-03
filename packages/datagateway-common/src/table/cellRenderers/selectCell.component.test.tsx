@@ -5,9 +5,9 @@ import SelectCell from './selectCell.component';
 
 describe('Select cell component', () => {
   let user: ReturnType<typeof userEvent.setup>;
-  const setLastChecked = jest.fn();
-  const onCheck = jest.fn();
-  const onUncheck = jest.fn();
+  const setLastChecked = vi.fn();
+  const onCheck = vi.fn();
+  const onUncheck = vi.fn();
   const data = [
     {
       id: 1,

@@ -105,12 +105,12 @@ describe('Investigation - Card View', () => {
       })
     );
 
-    (axios.get as jest.Mock).mockImplementation(mockAxiosGet);
-    window.scrollTo = jest.fn();
+    vi.mocked(axios.get).mockImplementation(mockAxiosGet);
+    window.scrollTo = vi.fn();
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('disables the search query if investigation search is disabled', async () => {

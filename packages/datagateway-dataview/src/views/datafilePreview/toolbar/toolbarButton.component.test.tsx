@@ -1,16 +1,15 @@
 import { Download } from '@mui/icons-material';
-import type { Theme } from '@mui/material';
+import type { useTheme } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
 import { render, screen } from '@testing-library/react';
-import type { DeepPartial } from 'redux';
 import ToolbarButton from './toolbarButton.component';
 
 // JSDOM doesn't support viewport resizing, so the hooks have to be stubbed for now.
 
-jest.mock('@mui/material', () => ({
-  ...vi.importActual('@mui/material'),
-  useMediaQuery: jest.fn(),
-  useTheme: jest.fn<DeepPartial<Theme>, []>().mockReturnValue({
+vi.mock('@mui/material', async () => ({
+  ...(await vi.importActual('@mui/material')),
+  useMediaQuery: vi.fn(),
+  useTheme: vi.fn<typeof useTheme>().mockReturnValue({
     breakpoints: {
       down: (_: unknown) => '',
     },
@@ -19,9 +18,7 @@ jest.mock('@mui/material', () => ({
 
 describe('ToolbarButton', () => {
   it('should show a normal MUI button with the given label and icon at >=md breakpoint', () => {
-    (
-      useMediaQuery as jest.MockedFunction<typeof useMediaQuery>
-    ).mockReturnValueOnce(false);
+    vi.mocked(useMediaQuery).mockReturnValueOnce(false);
 
     render(<ToolbarButton icon={<Download />} label="Download" />);
 
@@ -30,9 +27,7 @@ describe('ToolbarButton', () => {
   });
 
   it('should only show the given icon at sub md breakpoint', () => {
-    (
-      useMediaQuery as jest.MockedFunction<typeof useMediaQuery>
-    ).mockReturnValueOnce(true);
+    vi.mocked(useMediaQuery).mockReturnValueOnce(true);
 
     render(<ToolbarButton icon={<Download />} label="Download" />);
 

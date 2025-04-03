@@ -16,7 +16,7 @@ import {
   within,
 } from '@testing-library/react';
 
-jest.mock('loglevel');
+vi.mock('loglevel');
 
 // The generic routes to test.
 const genericRoutes = {
@@ -111,7 +111,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
       })
     );
 
-    (axios.get as jest.Mock).mockImplementation((url) => {
+    vi.mocked(axios.get).mockImplementation((url) => {
       const potentialId = parseInt(url.split('/').at(-1));
       let id = 1;
       if (!Number.isNaN(potentialId)) {
@@ -129,7 +129,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
   });
 
   afterEach(() => {
-    (axios.get as jest.Mock).mockClear();
+    vi.mocked(axios.get).mockClear();
   });
 
   describe('Generic', () => {

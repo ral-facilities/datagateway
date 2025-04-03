@@ -23,13 +23,14 @@ import userEvent from '@testing-library/user-event';
 import axios, { type AxiosResponse } from 'axios';
 import { paths } from '../../../page/pageContainer.component';
 import { act } from 'react-dom/test-utils';
+import type { MockInstance } from 'vitest';
 
 describe('ISIS Investigations - Card View', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let cardData: Investigation[];
   let history: History;
-  let replaceSpy: jest.SpyInstance;
+  let replaceSpy: MockInstance;
   let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult =>
@@ -120,7 +121,7 @@ describe('ISIS Investigations - Card View', () => {
         }),
       ],
     });
-    replaceSpy = jest.spyOn(history, 'replace');
+    replaceSpy = vi.spyOn(history, 'replace');
     user = userEvent.setup();
 
     state = JSON.parse(
@@ -130,7 +131,7 @@ describe('ISIS Investigations - Card View', () => {
       })
     );
 
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/\/investigations\/count$/.test(url)) {
@@ -161,11 +162,11 @@ describe('ISIS Investigations - Card View', () => {
       });
 
     // Prevent error logging
-    window.scrollTo = jest.fn();
+    window.scrollTo = vi.fn();
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders investigations as cards', async () => {
@@ -202,7 +203,7 @@ describe('ISIS Investigations - Card View', () => {
   });
 
   it('renders no card if no investigation is returned', async () => {
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/\/investigations\/count$/.test(url)) {
@@ -323,9 +324,9 @@ describe('ISIS Investigations - Card View', () => {
     });
 
     // check that the data request is sent only once after mounting
-    const datafilesCalls = (axios.get as jest.Mock).mock.calls.filter(
-      (call) => call[0] === '/investigations'
-    );
+    const datafilesCalls = vi
+      .mocked(axios.get)
+      .mock.calls.filter((call) => call[0] === '/investigations');
     expect(datafilesCalls).toHaveLength(1);
   });
 

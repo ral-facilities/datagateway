@@ -19,15 +19,16 @@ import {
 } from '../../../setupTests';
 import { render, RenderResult, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import type { MockInstance } from 'vitest';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = vi.importActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    useFacilityCycleCount: jest.fn(),
-    useFacilityCyclesPaginated: jest.fn(),
+    useFacilityCycleCount: vi.fn(),
+    useFacilityCyclesPaginated: vi.fn(),
   };
 });
 
@@ -36,7 +37,7 @@ describe('ISIS Facility Cycles - Card View', () => {
   let state: StateType;
   let cardData: FacilityCycle[];
   let history: History;
-  let replaceSpy: jest.SpyInstance;
+  let replaceSpy: MockInstance;
   let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult =>
@@ -66,23 +67,23 @@ describe('ISIS Facility Cycles - Card View', () => {
       },
     ];
     history = createMemoryHistory();
-    replaceSpy = jest.spyOn(history, 'replace');
+    replaceSpy = vi.spyOn(history, 'replace');
 
-    (useFacilityCycleCount as jest.Mock).mockReturnValue({
+    vi.mocked(useFacilityCycleCount).mockReturnValue({
       data: 1,
       isLoading: false,
     });
-    (useFacilityCyclesPaginated as jest.Mock).mockReturnValue({
+    vi.mocked(useFacilityCyclesPaginated).mockReturnValue({
       data: cardData,
       isLoading: false,
     });
 
     // Prevent error logging
-    window.scrollTo = jest.fn();
+    window.scrollTo = vi.fn();
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('updates filter query params on text filter', async () => {
@@ -176,8 +177,8 @@ describe('ISIS Facility Cycles - Card View', () => {
   });
 
   it('renders fine with incomplete data', () => {
-    (useFacilityCycleCount as jest.Mock).mockReturnValueOnce({});
-    (useFacilityCyclesPaginated as jest.Mock).mockReturnValueOnce({});
+    vi.mocked(useFacilityCycleCount).mockReturnValueOnce({});
+    vi.mocked(useFacilityCyclesPaginated).mockReturnValueOnce({});
 
     expect(() => renderComponent()).not.toThrowError();
   });

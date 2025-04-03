@@ -13,7 +13,7 @@ import type { Dataset, DatasetType } from '../../app.types';
 
 function renderComponent({
   rowData,
-  detailsPanelResize = jest.fn(),
+  detailsPanelResize = vi.fn(),
   viewDatafiles,
 }: {
   rowData: Dataset;
@@ -57,13 +57,13 @@ describe('Dataset details panel component', () => {
       type: rowDatasetType,
     };
 
-    axios.get = jest.fn().mockResolvedValue({
+    axios.get = vi.fn().mockResolvedValue({
       data: [rowData],
     });
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should render correctly', async () => {
@@ -130,7 +130,7 @@ describe('Dataset details panel component', () => {
       name: 'Test type',
       description: 'Test type description',
     };
-    const mockDetailsPanelResize = jest.fn();
+    const mockDetailsPanelResize = vi.fn();
 
     renderComponent({
       rowData,
@@ -156,7 +156,7 @@ describe('Dataset details panel component', () => {
       name: 'Test type',
       description: 'Test type description',
     };
-    const mockDetailsPanelResize = jest.fn();
+    const mockDetailsPanelResize = vi.fn();
 
     renderComponent({ rowData });
 
@@ -189,7 +189,7 @@ describe('Dataset details panel component', () => {
   });
 
   it('should call datafile view if view datafiles tab clicked', async () => {
-    const mockViewDatafiles = jest.fn();
+    const mockViewDatafiles = vi.fn();
 
     renderComponent({
       rowData,

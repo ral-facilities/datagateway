@@ -28,14 +28,14 @@ import {
 } from '../../../setupTests';
 import axios, { AxiosResponse } from 'axios';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = vi.importActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    useInstrumentCount: jest.fn(),
-    useInstrumentsInfinite: jest.fn(),
+    useInstrumentCount: vi.fn(),
+    useInstrumentsInfinite: vi.fn(),
   };
 });
 
@@ -87,16 +87,16 @@ describe('ISIS Instruments table component', () => {
       })
     );
 
-    (useInstrumentCount as jest.Mock).mockReturnValue({
+    vi.mocked(useInstrumentCount).mockReturnValue({
       data: 1,
       isLoading: false,
     });
-    (useInstrumentsInfinite as jest.Mock).mockReturnValue({
+    vi.mocked(useInstrumentsInfinite).mockReturnValue({
       data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
+      fetchNextPage: vi.fn(),
     });
 
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/\/instruments$/.test(url)) {
@@ -110,7 +110,7 @@ describe('ISIS Instruments table component', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly', async () => {
@@ -250,8 +250,8 @@ describe('ISIS Instruments table component', () => {
   });
 
   it('renders fine with incomplete data', () => {
-    (useInstrumentCount as jest.Mock).mockReturnValueOnce({});
-    (useInstrumentsInfinite as jest.Mock).mockReturnValueOnce({});
+    vi.mocked(useInstrumentCount).mockReturnValueOnce({});
+    vi.mocked(useInstrumentsInfinite).mockReturnValueOnce({});
 
     expect(() => renderComponent()).not.toThrowError();
   });

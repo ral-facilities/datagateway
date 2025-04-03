@@ -16,7 +16,7 @@ const testFilters: FiltersType = {
 describe('selectedFilterChips', () => {
   it('renders the given filters as chips', () => {
     render(
-      <SelectedFilterChips filters={testFilters} onRemoveFilter={jest.fn()} />
+      <SelectedFilterChips filters={testFilters} onRemoveFilter={vi.fn()} />
     );
 
     expect(
@@ -33,7 +33,7 @@ describe('selectedFilterChips', () => {
 
   it('calls the given callback function when chip is removed', async () => {
     const user = userEvent.setup();
-    const onRemoveFilter = jest.fn();
+    const onRemoveFilter = vi.fn();
 
     render(
       <SelectedFilterChips

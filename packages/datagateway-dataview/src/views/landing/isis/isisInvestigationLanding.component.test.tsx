@@ -25,15 +25,15 @@ import {
 import { paths } from '../../../page/pageContainer.component';
 import userEvent from '@testing-library/user-event';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = vi.importActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    useInvestigation: jest.fn(),
-    useDataPublication: jest.fn(),
-    useDataPublications: jest.fn(),
+    useInvestigation: vi.fn(),
+    useDataPublication: vi.fn(),
+    useDataPublications: vi.fn(),
   };
 });
 
@@ -250,21 +250,21 @@ describe('ISIS Investigation Landing page', () => {
       },
     };
 
-    (useInvestigation as jest.Mock).mockReturnValue({
+    vi.mocked(useInvestigation).mockReturnValue({
       data: initialInvestigationData,
     });
 
-    (useDataPublication as jest.Mock).mockReturnValue({
+    vi.mocked(useDataPublication).mockReturnValue({
       data: initialDataPublicationData,
     });
 
-    (useDataPublications as jest.Mock).mockReturnValue({
+    vi.mocked(useDataPublications).mockReturnValue({
       data: initialStudyDataPublicationData,
     });
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly for facility cycle hierarchy', async () => {

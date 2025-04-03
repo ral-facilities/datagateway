@@ -7,13 +7,13 @@ import { mockedSettings } from '../testData';
 import { fetchDOI } from '../downloadApi';
 import RelatedDOIs from './relatedDOIs.component';
 
-jest.mock('../downloadApi', () => {
-  const originalModule = vi.importActual('../downloadApi');
+vi.mock('../downloadApi', async () => {
+  const originalModule = await vi.importActual('../downloadApi');
 
   return {
     ...originalModule,
 
-    fetchDOI: jest.fn(),
+    fetchDOI: vi.fn(),
   };
 });
 
@@ -28,7 +28,7 @@ const createTestQueryClient = (): QueryClient =>
     logger: {
       log: console.log,
       warn: console.warn,
-      error: jest.fn(),
+      error: vi.fn(),
     },
   });
 
@@ -70,9 +70,9 @@ describe('DOI generation form component', () => {
           relatedItemType: '',
         },
       ],
-      changeRelatedDOIs: jest.fn(),
+      changeRelatedDOIs: vi.fn(),
     };
-    (fetchDOI as jest.MockedFunction<typeof fetchDOI>).mockResolvedValue({
+    vi.mocked(fetchDOI).mockResolvedValue({
       id: '2',
       type: 'DOI',
       attributes: {
@@ -84,7 +84,7 @@ describe('DOI generation form component', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should let the user add related dois (but not if fetchDOI fails) + lets you change the relation type + resource type', async () => {
@@ -141,7 +141,7 @@ describe('DOI generation form component', () => {
     expect(screen.getByText('Journal')).toBeInTheDocument();
 
     // test errors with various API error responses
-    (fetchDOI as jest.MockedFunction<typeof fetchDOI>).mockRejectedValueOnce({
+    vi.mocked(fetchDOI).mockRejectedValueOnce({
       response: { data: { errors: [{ title: 'error msg' }] }, status: 404 },
     });
 

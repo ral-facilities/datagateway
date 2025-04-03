@@ -21,14 +21,14 @@ import { render, RenderResult, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = vi.importActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    useDatasetCount: jest.fn(),
-    useDatasetsPaginated: jest.fn(),
+    useDatasetCount: vi.fn(),
+    useDatasetsPaginated: vi.fn(),
   };
 });
 
@@ -71,16 +71,16 @@ describe('DLS Datasets - Card View', () => {
       })
     );
 
-    (useDatasetCount as jest.Mock).mockReturnValue({
+    vi.mocked(useDatasetCount).mockReturnValue({
       data: 1,
       isLoading: false,
     });
-    (useDatasetsPaginated as jest.Mock).mockReturnValue({
+    vi.mocked(useDatasetsPaginated).mockReturnValue({
       data: cardData,
       isLoading: false,
     });
 
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/\/datasets$/.test(url)) {
@@ -93,11 +93,11 @@ describe('DLS Datasets - Card View', () => {
       });
 
     // Prevent error logging
-    window.scrollTo = jest.fn();
+    window.scrollTo = vi.fn();
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('updates filter query params on text filter', async () => {
@@ -205,8 +205,8 @@ describe('DLS Datasets - Card View', () => {
   });
 
   it('renders fine with incomplete data', () => {
-    (useDatasetCount as jest.Mock).mockReturnValueOnce({});
-    (useDatasetsPaginated as jest.Mock).mockReturnValueOnce({});
+    vi.mocked(useDatasetCount).mockReturnValueOnce({});
+    vi.mocked(useDatasetsPaginated).mockReturnValueOnce({});
 
     expect(() => renderComponent()).not.toThrowError();
   });

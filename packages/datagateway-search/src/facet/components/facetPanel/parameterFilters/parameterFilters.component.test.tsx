@@ -31,7 +31,7 @@ describe('ParameterFilters', () => {
   }
 
   beforeEach(() => {
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/\/facet\/documents$/.test(url)) {
@@ -64,8 +64,8 @@ describe('ParameterFilters', () => {
             label: 'Test Label',
           },
         ]}
-        onAddParameterFilter={jest.fn()}
-        onRemoveParameterFilter={jest.fn()}
+        onAddParameterFilter={vi.fn()}
+        onRemoveParameterFilter={vi.fn()}
       />,
       {
         wrapper: Wrapper,
@@ -102,8 +102,8 @@ describe('ParameterFilters', () => {
           'string-filter',
           { field: 'unrelated', from: 0, to: 1 },
         ]}
-        onAddParameterFilter={jest.fn()}
-        onRemoveParameterFilter={jest.fn()}
+        onAddParameterFilter={vi.fn()}
+        onRemoveParameterFilter={vi.fn()}
       />,
       {
         wrapper: Wrapper,
@@ -127,8 +127,8 @@ describe('ParameterFilters', () => {
         parameterNames={TEST_PARAMETER_NAMES}
         allIds={TEST_IDS}
         selectedFilters={[]}
-        onAddParameterFilter={jest.fn()}
-        onRemoveParameterFilter={jest.fn()}
+        onAddParameterFilter={vi.fn()}
+        onRemoveParameterFilter={vi.fn()}
       />,
       {
         wrapper: Wrapper,
@@ -150,7 +150,7 @@ describe('ParameterFilters', () => {
 
   it('updates parameter filter list when a new parameter filter is added', async () => {
     const user = userEvent.setup();
-    const onAddParameterFilter = jest.fn();
+    const onAddParameterFilter = vi.fn();
 
     const { rerender } = render(
       <ParameterFilters
@@ -159,7 +159,7 @@ describe('ParameterFilters', () => {
         allIds={TEST_IDS}
         selectedFilters={[]}
         onAddParameterFilter={onAddParameterFilter}
-        onRemoveParameterFilter={jest.fn()}
+        onRemoveParameterFilter={vi.fn()}
       />,
       {
         wrapper: Wrapper,
@@ -251,7 +251,7 @@ describe('ParameterFilters', () => {
           },
         ]}
         onAddParameterFilter={onAddParameterFilter}
-        onRemoveParameterFilter={jest.fn()}
+        onRemoveParameterFilter={vi.fn()}
       />
     );
 
@@ -273,7 +273,7 @@ describe('ParameterFilters', () => {
 
   it('updates parameter filter list when a parameter filter is removed', async () => {
     const user = userEvent.setup();
-    const onRemoveParameterFilter = jest.fn();
+    const onRemoveParameterFilter = vi.fn();
 
     const { rerender } = render(
       <ParameterFilters
@@ -287,7 +287,7 @@ describe('ParameterFilters', () => {
             label: 'PARAMETER STRING VALUE',
           },
         ]}
-        onAddParameterFilter={jest.fn()}
+        onAddParameterFilter={vi.fn()}
         onRemoveParameterFilter={onRemoveParameterFilter}
       />,
       {
@@ -325,7 +325,7 @@ describe('ParameterFilters', () => {
         parameterNames={TEST_PARAMETER_NAMES}
         allIds={TEST_IDS}
         selectedFilters={[]}
-        onAddParameterFilter={jest.fn()}
+        onAddParameterFilter={vi.fn()}
         onRemoveParameterFilter={onRemoveParameterFilter}
       />
     );

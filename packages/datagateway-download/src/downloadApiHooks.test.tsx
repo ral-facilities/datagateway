@@ -30,14 +30,14 @@ import { mockCartItems, mockDownloadItems, mockedSettings } from './testData';
 import log from 'loglevel';
 import { ContributorType } from './downloadApi';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = vi.importActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    handleICATError: jest.fn(),
-    retryICATErrors: jest.fn().mockReturnValue(false),
+    handleICATError: vi.fn(),
+    retryICATErrors: vi.fn().mockReturnValue(false),
   };
 });
 
@@ -54,7 +54,7 @@ const createTestQueryClient = (): QueryClient =>
     logger: {
       log: console.log,
       warn: console.warn,
-      error: jest.fn(),
+      error: vi.fn(),
     },
   });
 
@@ -81,7 +81,7 @@ const createReactQueryWrapper = (
 };
 
 describe('Download API react-query hooks test', () => {
-  const localStorageGetItemMock = jest.spyOn(
+  const localStorageGetItemMock = vi.spyOn(
     window.localStorage.__proto__,
     'getItem'
   );
@@ -101,7 +101,7 @@ describe('Download API react-query hooks test', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     localStorageGetItemMock.mockReset();
   });
 
@@ -131,7 +131,7 @@ describe('Download API react-query hooks test', () => {
         userName: 'test user',
       };
 
-      axios.get = jest.fn().mockResolvedValue({
+      axios.get = vi.fn().mockResolvedValue({
         data: downloadCartMockData,
       });
 
@@ -153,7 +153,7 @@ describe('Download API react-query hooks test', () => {
     });
 
     it('sends axios request to fetch cart and calls handleICATError on failure', async () => {
-      axios.get = jest.fn().mockRejectedValue({
+      axios.get = vi.fn().mockRejectedValue({
         message: 'Test error message',
       });
 
@@ -171,7 +171,7 @@ describe('Download API react-query hooks test', () => {
 
   describe('useRemoveAllFromCart', () => {
     it('returns nothing upon successful response', async () => {
-      axios.delete = jest.fn().mockImplementation(() =>
+      axios.delete = vi.fn().mockImplementation(() =>
         Promise.resolve({
           data: {
             cartItems: [],
@@ -201,7 +201,7 @@ describe('Download API react-query hooks test', () => {
     });
 
     it('logs error upon unsuccessful response, with a retry on code 431', async () => {
-      axios.delete = jest
+      axios.delete = vi
         .fn()
         .mockImplementationOnce(() =>
           Promise.reject({
@@ -241,7 +241,7 @@ describe('Download API react-query hooks test', () => {
 
   describe('useRemoveEntityFromCart', () => {
     it('returns empty array upon successful response', async () => {
-      axios.delete = jest.fn().mockImplementation(() =>
+      axios.delete = vi.fn().mockImplementation(() =>
         Promise.resolve({
           data: {
             cartItems: [],
@@ -271,7 +271,7 @@ describe('Download API react-query hooks test', () => {
     });
 
     it('logs error upon unsuccessful response', async () => {
-      axios.delete = jest
+      axios.delete = vi
         .fn()
         .mockImplementationOnce(() =>
           Promise.reject({
@@ -311,7 +311,7 @@ describe('Download API react-query hooks test', () => {
 
   describe('useIsTwoLevel', () => {
     it('returns true if IDS is two-level', async () => {
-      axios.get = jest.fn().mockImplementation(() =>
+      axios.get = vi.fn().mockImplementation(() =>
         Promise.resolve({
           data: true,
         })
@@ -330,7 +330,7 @@ describe('Download API react-query hooks test', () => {
     });
 
     it('returns false in the event of an error and logs error upon unsuccessful response', async () => {
-      axios.get = jest.fn().mockImplementation(() =>
+      axios.get = vi.fn().mockImplementation(() =>
         Promise.reject({
           message: 'Test error message',
         })
@@ -353,7 +353,7 @@ describe('Download API react-query hooks test', () => {
 
   describe('useFileCountsAndSizes', () => {
     it('returns the sizes and counts of all the items in a cart', async () => {
-      axios.get = jest
+      axios.get = vi
         .fn()
         .mockImplementation(() =>
           Promise.resolve({
@@ -429,7 +429,7 @@ describe('Download API react-query hooks test', () => {
 
   describe('useDownloads', () => {
     it('should retrieve user downloads', async () => {
-      axios.get = jest.fn().mockResolvedValue({ data: mockDownloadItems });
+      axios.get = vi.fn().mockResolvedValue({ data: mockDownloadItems });
 
       const { result } = renderHook(() => useDownloads(), {
         wrapper: createReactQueryWrapper(),
@@ -451,7 +451,7 @@ describe('Download API react-query hooks test', () => {
     });
 
     it('should call handleICATError on failure', async () => {
-      axios.get = jest.fn().mockRejectedValue({
+      axios.get = vi.fn().mockRejectedValue({
         message: 'Test error message',
       });
 
@@ -479,8 +479,8 @@ describe('Download API react-query hooks test', () => {
 
   describe('useDownloadOrRestoreDownload', () => {
     it('should delete download with given id and update the download list upon success', async () => {
-      axios.get = jest.fn().mockResolvedValue({ data: mockDownloadItems });
-      axios.put = jest.fn().mockImplementation(() => Promise.resolve());
+      axios.get = vi.fn().mockResolvedValue({ data: mockDownloadItems });
+      axios.put = vi.fn().mockImplementation(() => Promise.resolve());
 
       const { result } = renderHook(
         () => ({
@@ -532,7 +532,7 @@ describe('Download API react-query hooks test', () => {
         email: 'a@b.c',
       };
 
-      axios.get = jest.fn().mockImplementation((url, { params }) => {
+      axios.get = vi.fn().mockImplementation((url, { params }) => {
         // api call from fetchDownloads
         if (
           url === `${mockedSettings.downloadApiUrl}/user/downloads` &&
@@ -550,7 +550,7 @@ describe('Download API react-query hooks test', () => {
         return Promise.reject();
       });
 
-      axios.put = jest.fn().mockImplementation(() => Promise.resolve());
+      axios.put = vi.fn().mockImplementation(() => Promise.resolve());
 
       const { result } = renderHook(
         () => ({
@@ -582,7 +582,7 @@ describe('Download API react-query hooks test', () => {
     });
 
     it('should call handleICATError if an error is encountered', async () => {
-      axios.put = jest.fn().mockRejectedValue({
+      axios.put = vi.fn().mockRejectedValue({
         message: 'Test error message',
       });
 
@@ -604,7 +604,7 @@ describe('Download API react-query hooks test', () => {
 
   describe('useAdminDownloads', () => {
     it('should fetch admin downloads with pagination', async () => {
-      axios.get = jest.fn().mockResolvedValue({ data: mockDownloadItems });
+      axios.get = vi.fn().mockResolvedValue({ data: mockDownloadItems });
 
       // first, test fetching initial data
 
@@ -659,7 +659,7 @@ describe('Download API react-query hooks test', () => {
     });
 
     it('should call handleICATError when an error is encountered', async () => {
-      axios.get = jest.fn().mockRejectedValue({
+      axios.get = vi.fn().mockRejectedValue({
         message: 'Test error message',
       });
 
@@ -709,7 +709,7 @@ describe('Download API react-query hooks test', () => {
         isDeleted: true,
       };
 
-      axios.get = jest.fn().mockImplementation((url, { params }) => {
+      axios.get = vi.fn().mockImplementation((url, { params }) => {
         // fetchAdminDownloads from useAdminDownloads
         if (
           url === `${mockedSettings.downloadApiUrl}/admin/downloads` &&
@@ -737,7 +737,7 @@ describe('Download API react-query hooks test', () => {
         return Promise.reject();
       });
 
-      axios.put = jest.fn().mockImplementation(() => Promise.resolve());
+      axios.put = vi.fn().mockImplementation(() => Promise.resolve());
 
       const { result } = renderHook(
         () => ({
@@ -814,7 +814,7 @@ describe('Download API react-query hooks test', () => {
         isDeleted: true,
       };
 
-      axios.get = jest.fn().mockImplementation((url, { params }) => {
+      axios.get = vi.fn().mockImplementation((url, { params }) => {
         // fetchAdminDownloads from useAdminDownloads
         if (
           url === `${mockedSettings.downloadApiUrl}/admin/downloads` &&
@@ -842,7 +842,7 @@ describe('Download API react-query hooks test', () => {
         return Promise.reject();
       });
 
-      axios.put = jest.fn().mockImplementation(() => Promise.resolve());
+      axios.put = vi.fn().mockImplementation(() => Promise.resolve());
 
       const { result } = renderHook(
         () => ({
@@ -878,7 +878,7 @@ describe('Download API react-query hooks test', () => {
     });
 
     it('should call handleICATError when an error is encountered', async () => {
-      axios.put = jest.fn().mockRejectedValue({
+      axios.put = vi.fn().mockRejectedValue({
         message: 'Test error message',
       });
 
@@ -921,7 +921,7 @@ describe('Download API react-query hooks test', () => {
         status: 'PREPARING',
       };
 
-      axios.get = jest.fn().mockImplementation(() =>
+      axios.get = vi.fn().mockImplementation(() =>
         Promise.resolve({
           data: isMutated
             ? mockDownloadItems.map((download) =>
@@ -930,7 +930,7 @@ describe('Download API react-query hooks test', () => {
             : mockDownloadItems,
         })
       );
-      axios.put = jest.fn().mockImplementation(() => Promise.resolve());
+      axios.put = vi.fn().mockImplementation(() => Promise.resolve());
 
       const { result } = renderHook(
         () => ({
@@ -964,10 +964,10 @@ describe('Download API react-query hooks test', () => {
     });
 
     it('should call handleICATError and rollback optimistic changes if an error is encountered', async () => {
-      axios.put = jest.fn().mockRejectedValue({
+      axios.put = vi.fn().mockRejectedValue({
         message: 'Test error message',
       });
-      axios.get = jest.fn().mockResolvedValue({ data: mockDownloadItems });
+      axios.get = vi.fn().mockResolvedValue({ data: mockDownloadItems });
 
       const { result } = renderHook(
         () => ({
@@ -1001,8 +1001,8 @@ describe('Download API react-query hooks test', () => {
 
   describe('useSubmitCart', () => {
     it('should submit cart and clear cart on success', async () => {
-      axios.post = jest.fn().mockResolvedValue({ data: 123 });
-      axios.get = jest
+      axios.post = vi.fn().mockResolvedValue({ data: 123 });
+      axios.get = vi
         .fn()
         .mockResolvedValueOnce({
           data: {
@@ -1036,10 +1036,10 @@ describe('Download API react-query hooks test', () => {
     });
 
     it('should call handleICATError when an error is encountered', async () => {
-      axios.post = jest.fn().mockRejectedValue({
+      axios.post = vi.fn().mockRejectedValue({
         message: 'test error message',
       });
-      axios.get = jest.fn().mockResolvedValueOnce({
+      axios.get = vi.fn().mockResolvedValueOnce({
         data: {
           cartItems: mockCartItems,
         },
@@ -1083,7 +1083,7 @@ describe('Download API react-query hooks test', () => {
     });
 
     it('should query statuses of download types', async () => {
-      axios.get = jest.fn().mockResolvedValue({
+      axios.get = vi.fn().mockResolvedValue({
         data: {
           disabled: false,
           message: '',
@@ -1115,7 +1115,7 @@ describe('Download API react-query hooks test', () => {
     });
 
     it('should dispatch event with the error messages of download type queries with errors', async () => {
-      axios.get = jest
+      axios.get = vi
         .fn()
         .mockResolvedValueOnce({
           data: {
@@ -1129,7 +1129,7 @@ describe('Download API react-query hooks test', () => {
           })
         );
 
-      const dispatchEventSpy = jest.spyOn(document, 'dispatchEvent');
+      const dispatchEventSpy = vi.spyOn(document, 'dispatchEvent');
 
       const { result } = renderHook(
         () => useDownloadTypeStatuses({ downloadTypes }),
@@ -1155,7 +1155,7 @@ describe('Download API react-query hooks test', () => {
     });
 
     it('should refetch data on every hook call', async () => {
-      axios.get = jest.fn().mockResolvedValue({
+      axios.get = vi.fn().mockResolvedValue({
         data: {
           disabled: false,
           message: '',
@@ -1198,7 +1198,7 @@ describe('Download API react-query hooks test', () => {
 
   describe('useDownloadPercentageComplete', () => {
     it('should query progress of a download restore', async () => {
-      axios.get = jest.fn().mockResolvedValue({
+      axios.get = vi.fn().mockResolvedValue({
         data: '30',
       });
 
@@ -1217,7 +1217,7 @@ describe('Download API react-query hooks test', () => {
     });
 
     it('should query status of a download restore', async () => {
-      axios.get = jest.fn().mockResolvedValue({
+      axios.get = vi.fn().mockResolvedValue({
         data: 'UNKNOWN',
       });
 
@@ -1236,7 +1236,7 @@ describe('Download API react-query hooks test', () => {
     });
 
     it('should call handleICATError when an error is encountered', async () => {
-      axios.get = jest.fn().mockRejectedValue({
+      axios.get = vi.fn().mockRejectedValue({
         message: 'Test error message',
       });
 
@@ -1262,9 +1262,7 @@ describe('Download API react-query hooks test', () => {
 
   describe('useIsCartMintable', () => {
     it('should check whether a cart is mintable', async () => {
-      axios.post = jest
-        .fn()
-        .mockResolvedValue({ data: undefined, status: 200 });
+      axios.post = vi.fn().mockResolvedValue({ data: undefined, status: 200 });
 
       const { result } = renderHook(() => useIsCartMintable(mockCartItems), {
         wrapper: createReactQueryWrapper(),
@@ -1330,7 +1328,7 @@ describe('Download API react-query hooks test', () => {
           status: 401,
         },
       };
-      axios.post = jest.fn().mockRejectedValue(error);
+      axios.post = vi.fn().mockRejectedValue(error);
 
       const { result } = renderHook(
         () => useIsCartMintable([mockCartItems[0]]),
@@ -1370,7 +1368,7 @@ describe('Download API react-query hooks test', () => {
           status: 401,
         },
       };
-      axios.post = jest.fn().mockRejectedValue(error);
+      axios.post = vi.fn().mockRejectedValue(error);
 
       const { result } = renderHook(
         () => useIsCartMintable([mockCartItems[3]]),
@@ -1406,7 +1404,7 @@ describe('Download API react-query hooks test', () => {
           status: 403,
         },
       };
-      axios.post = jest.fn().mockRejectedValue(error);
+      axios.post = vi.fn().mockRejectedValue(error);
 
       const { result } = renderHook(() => useIsCartMintable(mockCartItems), {
         wrapper: createReactQueryWrapper(),
@@ -1426,7 +1424,7 @@ describe('Download API react-query hooks test', () => {
       related_items: [],
     };
     it('should send a request to mint a cart', async () => {
-      axios.post = jest.fn().mockResolvedValue({
+      axios.post = vi.fn().mockResolvedValue({
         data: {
           concept: { doi: 'test doi', data_publication: '1' },
           version: { doi: 'test doi v1', data_publication: '11' },
@@ -1476,7 +1474,7 @@ describe('Download API react-query hooks test', () => {
           status: 401,
         },
       };
-      axios.post = jest.fn().mockRejectedValue(error);
+      axios.post = vi.fn().mockRejectedValue(error);
 
       const { result } = renderHook(() => useMintCart(), {
         wrapper: createReactQueryWrapper(),
@@ -1520,7 +1518,7 @@ describe('Download API react-query hooks test', () => {
           status: 401,
         },
       };
-      axios.post = jest.fn().mockRejectedValue(error);
+      axios.post = vi.fn().mockRejectedValue(error);
 
       const { result } = renderHook(() => useMintCart(), {
         wrapper: createReactQueryWrapper(),
@@ -1556,7 +1554,7 @@ describe('Download API react-query hooks test', () => {
 
   describe('useCartUsers', () => {
     it('should get a list of users associated with each cart item', async () => {
-      axios.get = jest.fn().mockImplementation((url) => {
+      axios.get = vi.fn().mockImplementation((url) => {
         if (url.includes('investigations')) {
           return Promise.resolve({
             data: [
@@ -1717,7 +1715,7 @@ describe('Download API react-query hooks test', () => {
 
   describe('useCheckUser', () => {
     it('should check whether a user exists in ICAT', async () => {
-      axios.get = jest
+      axios.get = vi
         .fn()
         .mockResolvedValue({ data: { id: 1, name: 'user 1' } });
 
@@ -1749,7 +1747,7 @@ describe('Download API react-query hooks test', () => {
           status: 401,
         },
       };
-      axios.get = jest.fn().mockRejectedValue(error);
+      axios.get = vi.fn().mockRejectedValue(error);
 
       const { result } = renderHook(() => useCheckUser('user 1'), {
         wrapper: createReactQueryWrapper(),
@@ -1784,7 +1782,7 @@ describe('Download API react-query hooks test', () => {
           status: 401,
         },
       };
-      axios.get = jest.fn().mockRejectedValue(error);
+      axios.get = vi.fn().mockRejectedValue(error);
 
       const { result } = renderHook(() => useCheckUser('user 1'), {
         wrapper: createReactQueryWrapper(),
@@ -1815,7 +1813,7 @@ describe('Download API react-query hooks test', () => {
           status: 404,
         },
       };
-      axios.get = jest.fn().mockRejectedValue(error);
+      axios.get = vi.fn().mockRejectedValue(error);
 
       const { result } = renderHook(() => useCheckUser('user 1'), {
         wrapper: createReactQueryWrapper(),
@@ -1838,7 +1836,7 @@ describe('Download API react-query hooks test', () => {
           status: 422,
         },
       };
-      axios.get = jest.fn().mockRejectedValue(error);
+      axios.get = vi.fn().mockRejectedValue(error);
 
       const { result } = renderHook(() => useCheckUser('user 1'), {
         wrapper: createReactQueryWrapper(),
@@ -1861,7 +1859,7 @@ describe('Download API react-query hooks test', () => {
           status: 400,
         },
       };
-      axios.get = jest.fn().mockRejectedValue(error);
+      axios.get = vi.fn().mockRejectedValue(error);
 
       const { result } = renderHook(() => useCheckUser('user 1'), {
         wrapper: createReactQueryWrapper(),

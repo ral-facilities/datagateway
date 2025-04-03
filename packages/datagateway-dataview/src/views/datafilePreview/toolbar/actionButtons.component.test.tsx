@@ -20,9 +20,9 @@ import DatafilePreviewerContext, {
 import { mockDatafile } from '../testData';
 import ActionButtons from './actionButtons.component';
 
-jest.mock('datagateway-common', () => ({
-  ...vi.importActual('datagateway-common'),
-  downloadDatafile: jest.fn(),
+vi.mock('datagateway-common', async () => ({
+  ...(await vi.importActual('datagateway-common')),
+  downloadDatafile: vi.fn(),
 }));
 
 function renderComponent({
@@ -70,7 +70,7 @@ describe('ActionButtons', () => {
   });
 
   afterEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
   });
 
   it('should not show anything when datafile previewer context is not provided', () => {
@@ -142,9 +142,11 @@ describe('ActionButtons', () => {
   });
 
   it('should have a copy link button that copies the link to the current datafile to the clipboard', async () => {
-    jest.useFakeTimers();
+    vi.useFakeTimers({
+      toFake: ['setTimeout', 'clearTimeout'],
+    });
     user = userEvent.setup({
-      advanceTimers: jest.advanceTimersByTime,
+      advanceTimers: vi.advanceTimersByTime,
     });
 
     const ogLocation = window.location;
@@ -155,7 +157,7 @@ describe('ActionButtons', () => {
     delete window.location;
     // @ts-expect-error doesn't work if we don't do it exactly this way
     window.location = mockLocation;
-    const writeTextSpy = jest
+    const writeTextSpy = vi
       .spyOn(navigator.clipboard, 'writeText')
       .mockImplementationOnce(() => Promise.resolve());
 
@@ -177,7 +179,7 @@ describe('ActionButtons', () => {
 
     // confirmation message should be dismissed automatically
     act(() => {
-      jest.runAllTimers();
+      vi.runAllTimers();
     });
 
     await waitFor(() => {
@@ -186,7 +188,7 @@ describe('ActionButtons', () => {
 
     window.location = ogLocation;
 
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   it('should have a zoom in button that increases the zoom level of the datafile previewer when clicked', async () => {

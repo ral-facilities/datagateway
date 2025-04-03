@@ -1,4 +1,46 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Search text box component tests > renders correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="MuiFormControl-root MuiFormControl-marginNormal MuiFormControl-fullWidth MuiTextField-root tour-search-textfield css-17vbkzs-MuiFormControl-root-MuiTextField-root"
+  >
+    <label
+      class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-colorSecondary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined css-1v4qvbo-MuiFormLabel-root-MuiInputLabel-root"
+      data-shrink="false"
+      for="filled-search"
+      id="filled-search-label"
+    >
+      searchBox.search_text
+    </label>
+    <div
+      class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorSecondary MuiInputBase-fullWidth MuiInputBase-formControl css-1j0w0ul-MuiInputBase-root-MuiOutlinedInput-root"
+    >
+      <input
+        aria-invalid="false"
+        aria-label="searchBox.search_text_arialabel"
+        class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputTypeSearch css-1g24dm6-MuiInputBase-input-MuiOutlinedInput-input"
+        id="filled-search"
+        name="dgSearchTextField"
+        type="search"
+        value=""
+      />
+      <fieldset
+        aria-hidden="true"
+        class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
+      >
+        <legend
+          class="css-yjsfm1"
+        >
+          <span>
+            searchBox.search_text
+          </span>
+        </legend>
+      </fieldset>
+    </div>
+  </div>
+</DocumentFragment>
+`;
 
 exports[`Search text box component tests renders correctly 1`] = `
 <DocumentFragment>

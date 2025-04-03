@@ -114,13 +114,13 @@ describe('Investigation details panel component', () => {
       endDate: '2019-06-11',
     };
 
-    (axios.get as jest.Mock).mockResolvedValue({
+    vi.mocked(axios.get).mockResolvedValue({
       data: [rowData],
     });
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should render correctly', async () => {
@@ -340,7 +340,7 @@ describe('Investigation details panel component', () => {
       },
     ];
 
-    const mockDetailsPanelResize = jest.fn();
+    const mockDetailsPanelResize = vi.fn();
 
     renderComponent({
       rowData,
@@ -403,7 +403,7 @@ describe('Investigation details panel component', () => {
   });
 
   it('calls dataset view if view datasets tab clicked', async () => {
-    const mockViewDatasets = jest.fn();
+    const mockViewDatasets = vi.fn();
 
     renderComponent({
       rowData,
@@ -421,7 +421,7 @@ describe('Investigation details panel component', () => {
   it('Shows "No <field> provided" incase of a null field', async () => {
     const { summary, doi, startDate, endDate, ...amendedRowData } = rowData;
 
-    (axios.get as jest.Mock).mockResolvedValueOnce({
+    vi.mocked(axios.get).mockResolvedValueOnce({
       data: [amendedRowData],
     });
 

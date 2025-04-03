@@ -11,26 +11,28 @@ import axios from 'axios';
 import { handleICATError, ConfigureURLsType } from 'datagateway-common';
 import configureStore from 'redux-mock-store';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = vi.importActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    handleICATError: jest.fn(),
+    handleICATError: vi.fn(),
   };
 });
 
-jest.mock('lodash.memoize', () => (fn: (args: unknown) => unknown) => fn);
+vi.mock('lodash.memoize', () => ({
+  default: (fn: (args: unknown) => unknown) => fn,
+}));
 
 describe('ID check functions', () => {
   afterEach(() => {
-    (axios.get as jest.Mock).mockClear();
-    (handleICATError as jest.Mock).mockClear();
+    vi.mocked(axios.get).mockClear();
+    vi.mocked(handleICATError).mockClear();
   });
 
   it('saveApiUrlMiddleware sets apiUrl on ConfigureUrls action', async () => {
-    (axios.get as jest.Mock).mockImplementation(() => Promise.resolve());
+    vi.mocked(axios.get).mockImplementation(() => Promise.resolve());
 
     const store = configureStore()({});
 
@@ -49,7 +51,7 @@ describe('ID check functions', () => {
       params,
       headers: { Authorization: 'Bearer null' },
     });
-    (axios.get as jest.Mock).mockClear();
+    vi.mocked(axios.get).mockClear();
 
     saveApiUrlMiddleware(store)(store.dispatch)({
       type: ConfigureURLsType,
@@ -72,7 +74,7 @@ describe('ID check functions', () => {
   describe('checkInvestigationId', () => {
     it('returns true on valid investigation + dataset pair', async () => {
       expect.assertions(2);
-      (axios.get as jest.Mock).mockImplementation(() =>
+      vi.mocked(axios.get).mockImplementation(() =>
         Promise.resolve({
           data: { id: 2, name: 'Test dataset' },
         })
@@ -97,7 +99,7 @@ describe('ID check functions', () => {
     });
     it('returns false on invalid investigation + dataset pair', async () => {
       expect.assertions(2);
-      (axios.get as jest.Mock).mockImplementation(() =>
+      vi.mocked(axios.get).mockImplementation(() =>
         Promise.reject({
           response: { status: 404 },
           isAxiosError: true,
@@ -110,7 +112,7 @@ describe('ID check functions', () => {
     });
     it('returns false on HTTP error', async () => {
       expect.assertions(2);
-      (axios.get as jest.Mock).mockImplementation(() =>
+      vi.mocked(axios.get).mockImplementation(() =>
         Promise.reject({
           message: 'Test error message',
         })
@@ -127,7 +129,7 @@ describe('ID check functions', () => {
   describe('checkProposalName', () => {
     it('returns true on valid proposal + investigation pair', async () => {
       expect.assertions(2);
-      (axios.get as jest.Mock).mockImplementation(() =>
+      vi.mocked(axios.get).mockImplementation(() =>
         Promise.resolve({
           data: { id: 1, name: 'Proposal 1' },
         })
@@ -141,7 +143,7 @@ describe('ID check functions', () => {
     });
     it('returns false on invalid proposal + investigation pair', async () => {
       expect.assertions(1);
-      (axios.get as jest.Mock).mockImplementation(() =>
+      vi.mocked(axios.get).mockImplementation(() =>
         Promise.resolve({
           data: { id: 1, name: 'Proposal 2' },
         })
@@ -152,7 +154,7 @@ describe('ID check functions', () => {
     });
     it('returns false on HTTP error', async () => {
       expect.assertions(2);
-      (axios.get as jest.Mock).mockImplementation(() =>
+      vi.mocked(axios.get).mockImplementation(() =>
         Promise.reject({
           message: 'Test error message',
         })
@@ -169,7 +171,7 @@ describe('ID check functions', () => {
   describe('checkInstrumentAndFacilityCycleId', () => {
     it('returns true on valid instrument, facility cycle + investigation triple', async () => {
       expect.assertions(2);
-      (axios.get as jest.Mock).mockImplementation(() =>
+      vi.mocked(axios.get).mockImplementation(() =>
         Promise.resolve({
           data: [{ id: 3, name: 'Test investigation' }],
         })
@@ -192,7 +194,7 @@ describe('ID check functions', () => {
     });
     it('returns false on invalid instrument, facility cycle + investigation triple', async () => {
       expect.assertions(1);
-      (axios.get as jest.Mock).mockImplementation(() =>
+      vi.mocked(axios.get).mockImplementation(() =>
         Promise.resolve({
           data: [],
         })
@@ -203,7 +205,7 @@ describe('ID check functions', () => {
     });
     it('returns false on HTTP error', async () => {
       expect.assertions(2);
-      (axios.get as jest.Mock).mockImplementation(() =>
+      vi.mocked(axios.get).mockImplementation(() =>
         Promise.reject({
           message: 'Test error message',
         })
@@ -220,7 +222,7 @@ describe('ID check functions', () => {
   describe('checkInstrumentId', () => {
     it('returns true on valid instrument + data publication pair', async () => {
       expect.assertions(3);
-      (axios.get as jest.Mock).mockImplementation(() =>
+      vi.mocked(axios.get).mockImplementation(() =>
         Promise.resolve({
           data: [{ id: 2, name: 'Test Data Publication' }],
         })
@@ -250,13 +252,13 @@ describe('ID check functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
     });
     it('returns false on invalid instrument + study pair', async () => {
       expect.assertions(1);
-      (axios.get as jest.Mock).mockImplementation(() =>
+      vi.mocked(axios.get).mockImplementation(() =>
         Promise.resolve({
           data: [],
         })
@@ -267,7 +269,7 @@ describe('ID check functions', () => {
     });
     it('returns false on HTTP error', async () => {
       expect.assertions(2);
-      (axios.get as jest.Mock).mockImplementation(() =>
+      vi.mocked(axios.get).mockImplementation(() =>
         Promise.reject({
           message: 'Test error message',
         })
@@ -284,7 +286,7 @@ describe('ID check functions', () => {
   describe('checkStudyDataPublicationId', () => {
     it('returns true on valid study datapublication + investigation data publication pair', async () => {
       expect.assertions(3);
-      (axios.get as jest.Mock).mockImplementation(() =>
+      vi.mocked(axios.get).mockImplementation(() =>
         Promise.resolve({
           data: [{ id: 3, title: 'Test DataPublication' }],
         })
@@ -314,13 +316,13 @@ describe('ID check functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
     });
     it('returns false on invalid study datapublication + investigation data publication pair', async () => {
       expect.assertions(1);
-      (axios.get as jest.Mock).mockImplementation(() =>
+      vi.mocked(axios.get).mockImplementation(() =>
         Promise.resolve({
           data: [],
         })
@@ -331,7 +333,7 @@ describe('ID check functions', () => {
     });
     it('returns false on HTTP error', async () => {
       expect.assertions(2);
-      (axios.get as jest.Mock).mockImplementation(() =>
+      vi.mocked(axios.get).mockImplementation(() =>
         Promise.reject({
           message: 'Test error message',
         })
@@ -348,7 +350,7 @@ describe('ID check functions', () => {
   describe('checkDatasetId', () => {
     it('returns true on valid dataset + datafile pair', async () => {
       expect.assertions(2);
-      (axios.get as jest.Mock).mockImplementation(() =>
+      vi.mocked(axios.get).mockImplementation(() =>
         Promise.resolve({
           data: { id: 2, name: 'Test datafile' },
         })
@@ -373,7 +375,7 @@ describe('ID check functions', () => {
     });
     it('returns false on invalid dataset + datafile pair', async () => {
       expect.assertions(2);
-      (axios.get as jest.Mock).mockImplementation(() =>
+      vi.mocked(axios.get).mockImplementation(() =>
         Promise.reject({
           response: { status: 404 },
           isAxiosError: true,
@@ -386,7 +388,7 @@ describe('ID check functions', () => {
     });
     it('returns false on HTTP error', async () => {
       expect.assertions(2);
-      (axios.get as jest.Mock).mockImplementation(() =>
+      vi.mocked(axios.get).mockImplementation(() =>
         Promise.reject({
           message: 'Test error message',
         })

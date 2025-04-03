@@ -56,7 +56,7 @@ describe('Dataset details panel component', () => {
       },
     };
 
-    axios.get = jest.fn().mockImplementation((url: string) => {
+    axios.get = vi.fn().mockImplementation((url: string) => {
       if (/.*\/datasets$/.test(url))
         return Promise.resolve({
           data: [rowData],
@@ -72,7 +72,7 @@ describe('Dataset details panel component', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should render correctly', async () => {
@@ -144,7 +144,7 @@ describe('Dataset details panel component', () => {
       name: 'Test type',
       description: 'Test type description',
     };
-    const mockDetailsPanelResize = jest.fn();
+    const mockDetailsPanelResize = vi.fn();
 
     renderComponent({
       rowData,

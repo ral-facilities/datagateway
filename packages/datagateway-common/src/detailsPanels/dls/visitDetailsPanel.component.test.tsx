@@ -62,7 +62,7 @@ describe('Visit details panel component', () => {
       endDate: '2019-06-11',
     };
 
-    axios.get = jest.fn().mockImplementation((url: string) => {
+    axios.get = vi.fn().mockImplementation((url: string) => {
       if (/.*\/investigations/.test(url))
         return Promise.resolve({ data: [rowData] });
 
@@ -73,7 +73,7 @@ describe('Visit details panel component', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should render correctly', async () => {
@@ -249,7 +249,7 @@ describe('Visit details panel component', () => {
       },
     ];
 
-    const mockDetailsPanelResize = jest.fn();
+    const mockDetailsPanelResize = vi.fn();
 
     renderComponent({
       rowData,
@@ -293,7 +293,7 @@ describe('Visit details panel component', () => {
   it('Shows "No <field> provided" incase of a null field', async () => {
     const { summary, startDate, endDate, ...amendedRowData } = rowData;
 
-    axios.get = jest.fn().mockResolvedValue({
+    axios.get = vi.fn().mockResolvedValue({
       data: [amendedRowData],
     });
 

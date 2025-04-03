@@ -14,7 +14,7 @@ import {
 } from './datasets';
 import { act } from 'react-dom/test-utils';
 
-jest.mock('../handleICATError');
+vi.mock('../handleICATError');
 
 describe('dataset api functions', () => {
   let mockData: Dataset[] = [];
@@ -50,14 +50,14 @@ describe('dataset api functions', () => {
   });
 
   afterEach(() => {
-    (handleICATError as jest.Mock).mockClear();
-    (axios.get as jest.Mock).mockClear();
-    jest.useRealTimers();
+    vi.mocked(handleICATError).mockClear();
+    vi.mocked(axios.get).mockClear();
+    vi.useRealTimers();
   });
 
   describe('useDataset', () => {
     it('sends axios request to fetch dataset by ID and returns successful response', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: [mockData[0]],
       });
 
@@ -98,14 +98,14 @@ describe('dataset api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data).toEqual([mockData[0]]);
     });
 
     it('sends axios request to fetch ids and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
       const { result } = renderHook(() => useDataset(1), {
@@ -120,7 +120,7 @@ describe('dataset api functions', () => {
 
   describe('useDatasetsPaginated', () => {
     it('sends axios request to fetch paginated datasets and returns successful response', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: mockData,
       });
 
@@ -165,7 +165,7 @@ describe('dataset api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data).toEqual(mockData);
@@ -179,11 +179,11 @@ describe('dataset api functions', () => {
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      expect(axios.get as jest.Mock).toHaveBeenCalledTimes(2);
+      expect(vi.mocked(axios.get)).toHaveBeenCalledTimes(2);
     });
 
     it('sends axios request to fetch paginated datasets and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
       const { result } = renderHook(() => useDatasetsPaginated(), {
@@ -202,7 +202,7 @@ describe('dataset api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
@@ -211,7 +211,7 @@ describe('dataset api functions', () => {
 
   describe('useDatasetsInfinite', () => {
     it('sends axios request to fetch infinite datasets and returns successful response', async () => {
-      (axios.get as jest.Mock).mockImplementation((url, options) =>
+      vi.mocked(axios.get).mockImplementation((url, options) =>
         options.params.get('skip') === '0'
           ? Promise.resolve({ data: mockData[0] })
           : Promise.resolve({ data: mockData[1] })
@@ -258,7 +258,7 @@ describe('dataset api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data.pages).toStrictEqual([mockData[0]]);
@@ -278,7 +278,7 @@ describe('dataset api functions', () => {
       );
       params.set('skip', JSON.stringify(50));
       params.set('limit', JSON.stringify(25));
-      expect((axios.get as jest.Mock).mock.calls[1][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[1][1].params.toString()).toBe(
         params.toString()
       );
 
@@ -296,11 +296,11 @@ describe('dataset api functions', () => {
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      expect(axios.get as jest.Mock).toHaveBeenCalledTimes(3);
+      expect(vi.mocked(axios.get)).toHaveBeenCalledTimes(3);
     });
 
     it('sends axios request to fetch infinite datasets and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
       const { result } = renderHook(() => useDatasetsInfinite(), {
@@ -319,7 +319,7 @@ describe('dataset api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
@@ -328,7 +328,7 @@ describe('dataset api functions', () => {
 
   describe('useDatasetCount', () => {
     it('sends axios request to fetch dataset count and returns successful response', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: mockData.length,
       });
 
@@ -361,14 +361,14 @@ describe('dataset api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data).toEqual(mockData.length);
     });
 
     it('sends axios request to fetch dataset count and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
       const { result } = renderHook(() => useDatasetCount(), {
@@ -383,7 +383,7 @@ describe('dataset api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
@@ -392,7 +392,7 @@ describe('dataset api functions', () => {
 
   describe('useDatasetDetails', () => {
     it('sends axios request to fetch dataset details and returns successful response', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: [mockData[0]],
       });
 
@@ -416,14 +416,14 @@ describe('dataset api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data).toEqual(mockData[0]);
     });
 
     it('sends axios request to fetch dataset details and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
       const { result } = renderHook(() => useDatasetDetails(1), {
@@ -438,8 +438,8 @@ describe('dataset api functions', () => {
 
   describe('downloadDataset', () => {
     it('clicks on IDS link upon downloadDataset action', async () => {
-      jest.spyOn(document, 'createElement');
-      jest.spyOn(document.body, 'appendChild');
+      vi.spyOn(document, 'createElement');
+      vi.spyOn(document.body, 'appendChild');
 
       downloadDataset('https://www.example.com/ids', 1, 'test');
 

@@ -16,6 +16,10 @@ failOnConsole();
 
 vi.setConfig({ testTimeout: 20_000 });
 
+// see https://github.com/testing-library/react-testing-library/issues/1197
+// and https://github.com/testing-library/user-event/issues/1115
+vi.stubGlobal('jest', { advanceTimersByTime: vi.advanceTimersByTime.bind(vi) });
+
 if (typeof window.URL.createObjectURL === 'undefined') {
   // required as work-around for jsdom environment not implementing window.URL.createObjectURL method
   Object.defineProperty(window.URL, 'createObjectURL', {

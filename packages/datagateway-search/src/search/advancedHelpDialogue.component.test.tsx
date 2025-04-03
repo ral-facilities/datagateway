@@ -16,9 +16,9 @@ import { StateType } from '../state/app.types';
 import userEvent from '@testing-library/user-event';
 import reactI18Next from 'react-i18next';
 
-jest.mock('react-redux', () => ({
-  ...vi.importActual('react-redux'),
-  useSelector: jest.fn(),
+vi.mock('react-redux', async () => ({
+  ...(await vi.importActual('react-redux')),
+  useSelector: vi.fn(),
 }));
 
 function renderComponent({
@@ -37,7 +37,7 @@ function renderComponent({
 
 describe('Advanced help dialogue', () => {
   let state: StateType;
-  const tSpy = jest.fn((str) => str);
+  const tSpy = vi.fn((str) => str);
   let originalUseTranslation: typeof reactI18Next.useTranslation;
 
   beforeEach(() => {
@@ -49,7 +49,7 @@ describe('Advanced help dialogue', () => {
     );
 
     originalUseTranslation = reactI18Next.useTranslation;
-    reactI18Next.useTranslation = jest.fn().mockReturnValue([tSpy]);
+    reactI18Next.useTranslation = vi.fn().mockReturnValue([tSpy]);
   });
 
   afterEach(() => {

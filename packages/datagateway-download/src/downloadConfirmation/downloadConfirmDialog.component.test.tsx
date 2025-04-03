@@ -13,14 +13,14 @@ import { mockedSettings } from '../testData';
 import DownloadConfirmDialog from './downloadConfirmDialog.component';
 import { flushPromises } from '../setupTests';
 
-jest.mock('../downloadApi');
-jest.mock('datagateway-common', () => {
-  const originalModule = vi.importActual('datagateway-common');
+vi.mock('../downloadApi');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    handleICATError: jest.fn(),
+    handleICATError: vi.fn(),
   };
 });
 
@@ -35,7 +35,7 @@ const createTestQueryClient = (): QueryClient =>
     logger: {
       log: console.log,
       warn: console.warn,
-      error: jest.fn(),
+      error: vi.fn(),
     },
   });
 
@@ -51,8 +51,8 @@ const renderWrapper = (
           totalSize={size}
           isTwoLevel={isTwoLevel}
           open={open}
-          redirectToStatusTab={jest.fn()}
-          setClose={jest.fn()}
+          redirectToStatusTab={vi.fn()}
+          setClose={vi.fn()}
         />
       </DownloadSettingsContext.Provider>
     </QueryClientProvider>
@@ -65,9 +65,9 @@ describe('DownloadConfirmDialog', () => {
     user = userEvent.setup();
     // Cannot mock to epoch time as Britain adopted BST permanently from 1968
     // to 1971, so snapshot will be an hour out depending on the date locale.
-    global.Date.now = jest.fn(() => new Date(2020, 0, 1, 1, 1, 1).getTime());
+    global.Date.now = vi.fn(() => new Date(2020, 0, 1, 1, 1, 1).getTime());
 
-    (getDownloadTypeStatus as jest.Mock).mockImplementation((type, _) =>
+    vi.mocked(getDownloadTypeStatus).mockImplementation((type, _) =>
       Promise.resolve({
         type,
         disabled: false,
@@ -77,7 +77,7 @@ describe('DownloadConfirmDialog', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly', async () => {
@@ -108,7 +108,7 @@ describe('DownloadConfirmDialog', () => {
 
   it('should prevent a download if a selected access method is disabled', async () => {
     // disable https method for testing
-    (getDownloadTypeStatus as jest.Mock).mockImplementation((type, _) =>
+    vi.mocked(getDownloadTypeStatus).mockImplementation((type, _) =>
       Promise.resolve(
         type === 'https'
           ? {
@@ -144,7 +144,7 @@ describe('DownloadConfirmDialog', () => {
   it('should prevent a download if there are no available access methods', async () => {
     // Override default requests and return access method status'
     // as being disabled for both access methods.
-    (getDownloadTypeStatus as jest.Mock).mockImplementation((type, _) => ({
+    vi.mocked(getDownloadTypeStatus).mockImplementation((type, _) => ({
       type,
       disabled: true,
       message: 'disabled for testing',
@@ -161,7 +161,7 @@ describe('DownloadConfirmDialog', () => {
 
   it('should prevent download of an access method where the status was not fetched', async () => {
     // Return a response where one of the status requests has not been successful.
-    (getDownloadTypeStatus as jest.Mock)
+    vi.mocked(getDownloadTypeStatus)
       .mockImplementationOnce((type, _) =>
         Promise.resolve({ type, disabled: true, message: '' })
       )
@@ -178,13 +178,13 @@ describe('DownloadConfirmDialog', () => {
   });
 
   it('should show successful view when download is successful', async () => {
-    (submitCart as jest.Mock).mockResolvedValue(123);
-    (getDownload as jest.Mock).mockResolvedValue({
+    vi.mocked(submitCart).mockResolvedValue(123);
+    vi.mocked(getDownload).mockResolvedValue({
       preparedId: 1,
       fileName: 'test-file-name',
       status: 'COMPLETE',
     });
-    (getDownloadTypeStatus as jest.Mock).mockImplementation((type, _) =>
+    vi.mocked(getDownloadTypeStatus).mockImplementation((type, _) =>
       Promise.resolve({
         type,
         disabled: false,
@@ -235,15 +235,15 @@ describe('DownloadConfirmDialog', () => {
   });
 
   it('should download prepared cart upon successful submission of cart', async () => {
-    (submitCart as jest.Mock).mockResolvedValue(123);
-    (getDownloadTypeStatus as jest.Mock).mockImplementation((type, _) =>
+    vi.mocked(submitCart).mockResolvedValue(123);
+    vi.mocked(getDownloadTypeStatus).mockImplementation((type, _) =>
       Promise.resolve({
         type,
         disabled: false,
         message: '',
       })
     );
-    (getDownload as jest.Mock).mockResolvedValue({
+    vi.mocked(getDownload).mockResolvedValue({
       preparedId: 1,
       fileName: 'test-file-name',
       status: 'COMPLETE',
@@ -261,7 +261,7 @@ describe('DownloadConfirmDialog', () => {
   });
 
   it('should disable download when no download method is available', async () => {
-    (getDownloadTypeStatus as jest.Mock).mockRejectedValue({
+    vi.mocked(getDownloadTypeStatus).mockRejectedValue({
       error: 'test error',
     });
 
@@ -280,7 +280,7 @@ describe('DownloadConfirmDialog', () => {
   });
 
   it('should show error when download has failed', async () => {
-    (submitCart as jest.Mock).mockRejectedValue({
+    vi.mocked(submitCart).mockRejectedValue({
       message: 'error',
     });
 
@@ -303,8 +303,8 @@ describe('DownloadConfirmDialog', () => {
   });
 
   it('should show error when download info is not returned', async () => {
-    (submitCart as jest.Mock).mockResolvedValue(123);
-    (getDownload as jest.Mock).mockRejectedValue({
+    vi.mocked(submitCart).mockResolvedValue(123);
+    vi.mocked(getDownload).mockRejectedValue({
       message: 'error',
     });
 
@@ -364,7 +364,7 @@ describe('DownloadConfirmDialog', () => {
   });
 
   it('should close the download Confirmation Dialog and successfully call the setClose function', async () => {
-    const closeFunction = jest.fn();
+    const closeFunction = vi.fn();
 
     render(
       <QueryClientProvider client={new QueryClient()}>
@@ -373,7 +373,7 @@ describe('DownloadConfirmDialog', () => {
             totalSize={1}
             isTwoLevel={false}
             open={true}
-            redirectToStatusTab={jest.fn()}
+            redirectToStatusTab={vi.fn()}
             setClose={closeFunction}
           />
         </DownloadSettingsContext.Provider>
@@ -388,7 +388,7 @@ describe('DownloadConfirmDialog', () => {
   });
 
   it('shows loading status when submitting cart', async () => {
-    (submitCart as jest.Mock).mockReturnValue(
+    vi.mocked(submitCart).mockReturnValue(
       new Promise((_) => {
         // never resolve the promise to simulate loading state
       })
@@ -420,15 +420,15 @@ describe('DownloadConfirmDialog - renders the estimated download speed/time tabl
             totalSize={size}
             isTwoLevel={false}
             open={true}
-            setClose={jest.fn()}
-            redirectToStatusTab={jest.fn()}
+            setClose={vi.fn()}
+            redirectToStatusTab={vi.fn()}
           />
         </DownloadSettingsContext.Provider>
       </QueryClientProvider>
     );
 
   beforeEach(() => {
-    (getDownloadTypeStatus as jest.Mock).mockImplementation((type, _) =>
+    vi.mocked(getDownloadTypeStatus).mockImplementation((type, _) =>
       Promise.resolve({
         type,
         disabled: false,
@@ -438,7 +438,7 @@ describe('DownloadConfirmDialog - renders the estimated download speed/time tabl
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   // Calculate the file size required to reach the given download time (at 1 Mbps).

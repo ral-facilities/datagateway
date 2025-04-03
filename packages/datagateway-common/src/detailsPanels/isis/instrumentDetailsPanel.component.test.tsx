@@ -49,13 +49,13 @@ describe('Instrument details panel component', () => {
       url: 'www.example.com',
     };
 
-    axios.get = jest.fn().mockResolvedValue({
+    axios.get = vi.fn().mockResolvedValue({
       data: [rowData],
     });
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should render correctly', async () => {
@@ -149,7 +149,7 @@ describe('Instrument details panel component', () => {
       },
     ];
 
-    const mockDetailsPanelResize = jest.fn();
+    const mockDetailsPanelResize = vi.fn();
 
     renderComponent({
       rowData,
@@ -199,7 +199,7 @@ describe('Instrument details panel component', () => {
 
   it('should show "No <field> provided" incase of a null field', async () => {
     const { description, type, url, ...amendedRowData } = rowData;
-    axios.get = jest.fn().mockResolvedValue({
+    axios.get = vi.fn().mockResolvedValue({
       data: [amendedRowData],
     });
 

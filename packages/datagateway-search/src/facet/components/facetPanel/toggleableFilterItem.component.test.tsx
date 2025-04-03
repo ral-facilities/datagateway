@@ -12,7 +12,7 @@ describe('toggleableFilterItem', () => {
         classificationLabel={testClassificationLabel}
         count={testCount}
         selected={false}
-        onSelect={jest.fn()}
+        onSelect={vi.fn()}
       />
     );
 
@@ -35,7 +35,7 @@ describe('toggleableFilterItem', () => {
         selected
         classificationLabel={testClassificationLabel}
         count={testCount}
-        onSelect={jest.fn()}
+        onSelect={vi.fn()}
       />
     );
 
@@ -54,7 +54,7 @@ describe('toggleableFilterItem', () => {
 
   it('calls the given callback when toggled', async () => {
     const user = userEvent.setup();
-    const onSelect = jest.fn();
+    const onSelect = vi.fn();
 
     render(
       <ToggleableFilterItem

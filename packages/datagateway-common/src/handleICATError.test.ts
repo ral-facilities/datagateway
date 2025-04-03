@@ -7,7 +7,7 @@ import {
   InvalidateTokenType,
 } from './state/actions/actions.types';
 
-jest.mock('loglevel');
+vi.mock('loglevel');
 
 describe('handleICATError', () => {
   let error: AxiosError;
@@ -33,7 +33,7 @@ describe('handleICATError', () => {
       },
       name: 'Test error name',
       message: 'Test error message',
-      toJSON: jest.fn(),
+      toJSON: vi.fn(),
     };
   });
 
@@ -66,7 +66,7 @@ describe('handleICATError', () => {
       },
       name: 'Test error name',
       message: 'Test error message',
-      toJSON: jest.fn(),
+      toJSON: vi.fn(),
     };
 
     handleICATError(error);
@@ -88,7 +88,7 @@ describe('handleICATError', () => {
       config: {},
       name: 'Test error name',
       message: 'Network Error',
-      toJSON: jest.fn(),
+      toJSON: vi.fn(),
     };
 
     handleICATError(error);
@@ -114,13 +114,13 @@ describe('handleICATError', () => {
   });
 
   describe('sends messages to SciGateway on authentication error', () => {
-    const localStorageGetItemMock = jest.spyOn(
+    const localStorageGetItemMock = vi.spyOn(
       window.localStorage.__proto__,
       'getItem'
     );
 
     afterAll(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
     });
 
     it('just sends invalidate token message if broadcast is false ', () => {
@@ -142,7 +142,7 @@ describe('handleICATError', () => {
       });
 
       afterEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
       });
 
       it('if error code is 403', () => {
@@ -190,7 +190,7 @@ describe('handleICATError', () => {
       });
 
       afterEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
       });
 
       it('if error code is 403', () => {

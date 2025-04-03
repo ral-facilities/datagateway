@@ -5,11 +5,11 @@ import { DownloadCart } from '../app.types';
 import handleICATError from '../handleICATError';
 import { createReactQueryWrapper } from '../setupTests';
 
-jest.mock('../handleICATError');
+vi.mock('../handleICATError');
 
 describe('Cart api functions', () => {
   let mockData: DownloadCart;
-  const getElementByIdSpy = jest.spyOn(document, 'getElementById');
+  const getElementByIdSpy = vi.spyOn(document, 'getElementById');
 
   beforeEach(() => {
     mockData = {
@@ -33,16 +33,16 @@ describe('Cart api functions', () => {
   });
 
   afterEach(() => {
-    (axios.get as jest.Mock).mockClear();
-    (axios.post as jest.Mock).mockClear();
-    (axios.delete as jest.Mock).mockClear();
-    (handleICATError as jest.Mock).mockClear();
-    (getElementByIdSpy as jest.Mock).mockClear();
+    vi.mocked(axios.get).mockClear();
+    vi.mocked(axios.post).mockClear();
+    vi.mocked(axios.delete).mockClear();
+    vi.mocked(handleICATError).mockClear();
+    vi.mocked(getElementByIdSpy).mockClear();
   });
 
   describe('useCart', () => {
     it('sends axios request to fetch cart and returns successful response', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: mockData,
       });
 
@@ -77,7 +77,7 @@ describe('Cart api functions', () => {
     });
 
     it('sends axios request to fetch cart and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error message',
       });
 
@@ -95,7 +95,7 @@ describe('Cart api functions', () => {
 
   describe('useAddToCart', () => {
     it('sends axios request to add item to cart once mutate function is called and returns successful response', async () => {
-      (axios.post as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.post).mockResolvedValue({
         data: mockData,
       });
 
@@ -122,7 +122,7 @@ describe('Cart api functions', () => {
     });
 
     it('sends axios request to add item to cart once mutate function is called and calls handleICATError on failure, with a retry on code 431', async () => {
-      (axios.post as jest.MockedFunction<typeof axios.post>)
+      vi.mocked(axios.post)
         .mockRejectedValueOnce({
           response: {
             status: 431,
@@ -156,7 +156,7 @@ describe('Cart api functions', () => {
 
   describe('useRemoveFromCart', () => {
     it('sends axios request to remove item from cart once mutate function is called and returns successful response', async () => {
-      (axios.post as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.post).mockResolvedValue({
         data: mockData,
       });
 
@@ -185,7 +185,7 @@ describe('Cart api functions', () => {
     });
 
     it('sends axios request to remove item from cart once mutate function is called and calls handleICATError on failure, with a retry on code 431', async () => {
-      (axios.post as jest.MockedFunction<typeof axios.post>)
+      vi.mocked(axios.post)
         .mockRejectedValueOnce({
           response: {
             status: 431,

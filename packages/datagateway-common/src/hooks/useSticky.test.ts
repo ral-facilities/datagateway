@@ -4,7 +4,7 @@ import { fireEvent } from '@testing-library/react';
 
 describe('useSticky', () => {
   it('returns isSticky true if the bottom of the target element is scrolled past', () => {
-    const mockGetBoundingClientRect = jest.fn();
+    const mockGetBoundingClientRect = vi.fn();
     const target = document.createElement('div');
     target.getBoundingClientRect = mockGetBoundingClientRect;
 
@@ -26,7 +26,7 @@ describe('useSticky', () => {
   });
 
   it('returns isSticky false if the bottom of the target element is still in view', () => {
-    const mockGetBoundingClientRect = jest.fn();
+    const mockGetBoundingClientRect = vi.fn();
     const target = document.createElement('div');
     target.getBoundingClientRect = mockGetBoundingClientRect;
 
@@ -57,7 +57,7 @@ describe('useSticky', () => {
   });
 
   it('returns isStick false upon window scroll if bottom coordinate of the target element is unavailable', () => {
-    const mockGetBoundingClientRect = jest.fn();
+    const mockGetBoundingClientRect = vi.fn();
     const target = document.createElement('div');
     target.getBoundingClientRect = mockGetBoundingClientRect;
 

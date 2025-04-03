@@ -114,13 +114,13 @@ describe('Dataset - Card View', () => {
       })
     );
 
-    (axios.get as jest.Mock).mockImplementation(mockAxiosGet);
+    vi.mocked(axios.get).mockImplementation(mockAxiosGet);
 
-    window.scrollTo = jest.fn();
+    window.scrollTo = vi.fn();
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('disables the search query if dataset search is disabled', async () => {

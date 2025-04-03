@@ -16,14 +16,14 @@ import { render, type RenderResult, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { paths } from '../../../page/pageContainer.component';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = vi.importActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    useDatasetDetails: jest.fn(),
-    useDatasetSizes: jest.fn(),
+    useDatasetDetails: vi.fn(),
+    useDatasetSizes: vi.fn(),
   };
 });
 
@@ -80,13 +80,13 @@ describe('ISIS Dataset Landing page', () => {
     });
     user = userEvent.setup();
 
-    (useDatasetDetails as jest.Mock).mockReturnValue({
+    vi.mocked(useDatasetDetails).mockReturnValue({
       data: initialData,
     });
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('links to the correct url in the datafiles tab', () => {
@@ -172,7 +172,7 @@ describe('ISIS Dataset Landing page', () => {
 
   it('incomplete datasets render correctly', async () => {
     initialData.complete = false;
-    (useDatasetDetails as jest.Mock).mockReturnValue({
+    vi.mocked(useDatasetDetails).mockReturnValue({
       data: initialData,
     });
     renderComponent();

@@ -5,7 +5,7 @@ import DialogTitle from './dialogTitle.component';
 describe('DialogTitle', () => {
   it('should render correctly', () => {
     const { asFragment } = render(
-      <DialogTitle id="dialog-title" onClose={jest.fn()}>
+      <DialogTitle id="dialog-title" onClose={vi.fn()}>
         Title
       </DialogTitle>
     );
@@ -14,7 +14,7 @@ describe('DialogTitle', () => {
 
   it('should call dialog close callback when the close button is clicked', async () => {
     const user = userEvent.setup();
-    const mockCloseDialog = jest.fn();
+    const mockCloseDialog = vi.fn();
 
     render(
       <DialogTitle id="dialog-title" onClose={mockCloseDialog}>

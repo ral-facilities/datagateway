@@ -12,10 +12,7 @@ describe('ParameterFilterItem', () => {
 
   it('shows the label of the given parameter filter and a remove button to remove the filter', () => {
     render(
-      <ParameterFilterItem
-        filter={TEST_PARAMETER_FILTER}
-        onRemove={jest.fn()}
-      />
+      <ParameterFilterItem filter={TEST_PARAMETER_FILTER} onRemove={vi.fn()} />
     );
 
     expect(
@@ -30,7 +27,7 @@ describe('ParameterFilterItem', () => {
 
   it('calls onRemove callback when the remove button is clicked', async () => {
     const user = userEvent.setup();
-    const onRemove = jest.fn();
+    const onRemove = vi.fn();
 
     render(
       <ParameterFilterItem filter={TEST_PARAMETER_FILTER} onRemove={onRemove} />

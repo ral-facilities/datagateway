@@ -106,7 +106,7 @@ describe('ISIS Data Publication table component', () => {
       })
     );
 
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         switch (url) {
@@ -126,11 +126,11 @@ describe('ISIS Data Publication table component', () => {
       });
 
     // Prevent error logging
-    window.scrollTo = jest.fn();
+    window.scrollTo = vi.fn();
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('Study Data Publication', () => {
@@ -207,9 +207,9 @@ describe('ISIS Data Publication table component', () => {
       );
 
       // check that the data request is sent only once after mounting
-      const datafilesCalls = (axios.get as jest.Mock).mock.calls.filter(
-        (call) => call[0] === '/datapublications'
-      );
+      const datafilesCalls = vi
+        .mocked(axios.get)
+        .mock.calls.filter((call) => call[0] === '/datapublications');
       expect(datafilesCalls).toHaveLength(1);
     });
 
@@ -338,9 +338,9 @@ describe('ISIS Data Publication table component', () => {
       );
 
       // check that the data request is sent only once after mounting
-      const datafilesCalls = (axios.get as jest.Mock).mock.calls.filter(
-        (call) => call[0] === '/datapublications'
-      );
+      const datafilesCalls = vi
+        .mocked(axios.get)
+        .mock.calls.filter((call) => call[0] === '/datapublications');
       expect(datafilesCalls).toHaveLength(1);
     });
 

@@ -32,15 +32,15 @@ import DLSMyDataTable from './dlsMyDataTable.component';
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = vi.importActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    useInvestigationCount: jest.fn(),
-    useInvestigationsInfinite: jest.fn(),
-    readSciGatewayToken: jest.fn(),
+    useInvestigationCount: vi.fn(),
+    useInvestigationsInfinite: vi.fn(),
+    readSciGatewayToken: vi.fn(),
   };
 });
 
@@ -99,18 +99,18 @@ describe('DLS MyData table component', () => {
       },
     ];
 
-    (useInvestigationCount as jest.Mock).mockReturnValue({
+    vi.mocked(useInvestigationCount).mockReturnValue({
       data: 0,
     });
-    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
+    vi.mocked(useInvestigationsInfinite).mockReturnValue({
       data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
+      fetchNextPage: vi.fn(),
     });
-    (readSciGatewayToken as jest.Mock).mockReturnValue({
+    vi.mocked(readSciGatewayToken).mockReturnValue({
       username: 'testUser',
     });
-    global.Date.now = jest.fn(() => 1);
-    axios.get = jest
+    global.Date.now = vi.fn(() => 1);
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/\/investigations$/.test(url)) {
@@ -124,7 +124,7 @@ describe('DLS MyData table component', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly', async () => {
@@ -199,7 +199,7 @@ describe('DLS MyData table component', () => {
   });
 
   it('sorts by startDate desc and filters startDate to be before the current date on load', async () => {
-    const replaceSpy = jest.spyOn(history, 'replace');
+    const replaceSpy = vi.spyOn(history, 'replace');
     renderComponent();
 
     expect(
@@ -301,9 +301,9 @@ describe('DLS MyData table component', () => {
       ...rowData[0],
       investigationInstruments: [],
     };
-    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
+    vi.mocked(useInvestigationsInfinite).mockReturnValue({
       data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
+      fetchNextPage: vi.fn(),
     });
 
     renderComponent();
@@ -320,9 +320,9 @@ describe('DLS MyData table component', () => {
         },
       ],
     };
-    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
+    vi.mocked(useInvestigationsInfinite).mockReturnValue({
       data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
+      fetchNextPage: vi.fn(),
     });
 
     renderComponent();

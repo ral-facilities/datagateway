@@ -12,17 +12,18 @@ import {
 } from '../setupTests';
 import { render, type RenderResult, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import type { MockInstance } from 'vitest';
 
-jest.mock('loglevel');
+vi.mock('loglevel');
 
 describe('DatePicker component tests', () => {
   let state: StateType;
   const mockStore = configureStore([thunk]);
   let testStore: ReturnType<typeof mockStore>;
   let history: History;
-  let pushSpy: jest.SpyInstance;
+  let pushSpy: MockInstance;
 
-  const testInitiateSearch = jest.fn();
+  const testInitiateSearch = vi.fn();
 
   const renderComponent = (h: History = history): RenderResult =>
     render(
@@ -37,7 +38,7 @@ describe('DatePicker component tests', () => {
     applyDatePickerWorkaround();
 
     history = createMemoryHistory();
-    pushSpy = jest.spyOn(history, 'push');
+    pushSpy = vi.spyOn(history, 'push');
 
     state = JSON.parse(JSON.stringify({ dgsearch: initialState }));
 
@@ -56,7 +57,7 @@ describe('DatePicker component tests', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     cleanupDatePickerWorkaround();
   });
 

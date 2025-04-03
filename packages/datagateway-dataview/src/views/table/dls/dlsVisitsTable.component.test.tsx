@@ -31,14 +31,14 @@ import {
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = vi.importActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    useInvestigationCount: jest.fn(),
-    useInvestigationsInfinite: jest.fn(),
+    useInvestigationCount: vi.fn(),
+    useInvestigationsInfinite: vi.fn(),
   };
 });
 
@@ -96,16 +96,16 @@ describe('DLS Visits table component', () => {
       })
     );
 
-    (useInvestigationCount as jest.Mock).mockReturnValue({
+    vi.mocked(useInvestigationCount).mockReturnValue({
       data: 1,
       isLoading: false,
     });
-    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
+    vi.mocked(useInvestigationsInfinite).mockReturnValue({
       data: rowData,
       isLoading: false,
     });
 
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/\/investigations$/.test(url)) {
@@ -119,7 +119,7 @@ describe('DLS Visits table component', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly', async () => {
@@ -304,10 +304,10 @@ describe('DLS Visits table component', () => {
   });
 
   it('renders fine with incomplete data', async () => {
-    (useInvestigationCount as jest.Mock).mockReturnValueOnce({});
-    (useInvestigationsInfinite as jest.Mock).mockReturnValueOnce({});
+    vi.mocked(useInvestigationCount).mockReturnValueOnce({});
+    vi.mocked(useInvestigationsInfinite).mockReturnValueOnce({});
 
-    (useInvestigationsInfinite as jest.Mock).mockReturnValueOnce({
+    vi.mocked(useInvestigationsInfinite).mockReturnValueOnce({
       data: [
         {
           ...rowData[0],
@@ -327,11 +327,11 @@ describe('DLS Visits table component', () => {
   });
 
   it('renders fine if no investigation instrument is returned', async () => {
-    (useInvestigationCount as jest.Mock).mockReturnValue({
+    vi.mocked(useInvestigationCount).mockReturnValue({
       data: 1,
       isLoading: false,
     });
-    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
+    vi.mocked(useInvestigationsInfinite).mockReturnValue({
       data: [
         {
           ...rowData[0],

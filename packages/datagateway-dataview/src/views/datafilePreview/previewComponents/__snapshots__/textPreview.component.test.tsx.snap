@@ -1,4 +1,75 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`TextPreview > should render given text file 1`] = `
+<DocumentFragment>
+  <pre
+    aria-label="datafiles.preview.txt.file_content_label"
+    class="css-1pxm7zh"
+    font-size="12"
+  >
+    <span
+      style="display: flex;"
+    >
+      <span
+        class="css-xzflaj"
+      >
+        1
+      </span>
+      <code
+        class="css-jfzx4e"
+      >
+        First line
+
+      </code>
+    </span>
+    <span
+      style="display: flex;"
+    >
+      <span
+        class="css-xzflaj"
+      >
+        2
+      </span>
+      <code
+        class="css-jfzx4e"
+      >
+        Second line
+
+      </code>
+    </span>
+    <span
+      style="display: flex;"
+    >
+      <span
+        class="css-xzflaj"
+      >
+        3
+      </span>
+      <code
+        class="css-jfzx4e"
+      >
+        Third line
+
+      </code>
+    </span>
+    <span
+      style="display: flex;"
+    >
+      <span
+        class="css-xzflaj"
+      >
+        4
+      </span>
+      <code
+        class="css-jfzx4e"
+      >
+        
+
+      </code>
+    </span>
+  </pre>
+</DocumentFragment>
+`;
 
 exports[`TextPreview should render given text file 1`] = `
 <DocumentFragment>

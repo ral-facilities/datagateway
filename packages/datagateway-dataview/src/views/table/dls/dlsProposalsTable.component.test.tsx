@@ -28,14 +28,14 @@ import {
   findRowAt,
 } from '../../../setupTests';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = vi.importActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    useInvestigationCount: jest.fn(),
-    useInvestigationsInfinite: jest.fn(),
+    useInvestigationCount: vi.fn(),
+    useInvestigationsInfinite: vi.fn(),
   };
 });
 
@@ -91,18 +91,18 @@ describe('DLS Proposals table component', () => {
       })
     );
 
-    (useInvestigationCount as jest.Mock).mockReturnValue({
+    vi.mocked(useInvestigationCount).mockReturnValue({
       data: 1,
       isLoading: false,
     });
-    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
+    vi.mocked(useInvestigationsInfinite).mockReturnValue({
       data: rowData,
       isLoading: false,
     });
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly', async () => {

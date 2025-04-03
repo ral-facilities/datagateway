@@ -20,8 +20,8 @@ describe('ParameterNumericRange', () => {
         entityName={TEST_ENTITY_NAME}
         parameterName={TEST_PARAMETER_NAME}
         allIds={TEST_IDS}
-        onNewFilter={jest.fn()}
-        onResetFilter={jest.fn()}
+        onNewFilter={vi.fn()}
+        onResetFilter={vi.fn()}
       />
     );
 
@@ -43,7 +43,7 @@ describe('ParameterNumericRange', () => {
   });
 
   it('constructs new filter object and pass it to onNewFilter when min and max are set', async () => {
-    const onNewFilter = jest.fn();
+    const onNewFilter = vi.fn();
 
     render(
       <ParameterNumericRange
@@ -51,7 +51,7 @@ describe('ParameterNumericRange', () => {
         parameterName={TEST_PARAMETER_NAME}
         allIds={TEST_IDS}
         onNewFilter={onNewFilter}
-        onResetFilter={jest.fn()}
+        onResetFilter={vi.fn()}
       />
     );
 
@@ -84,7 +84,7 @@ describe('ParameterNumericRange', () => {
   });
 
   it('constructs new filter object and pass it to onNewFilter when min, max and unit are set', async () => {
-    const onNewFilter = jest.fn();
+    const onNewFilter = vi.fn();
 
     render(
       <ParameterNumericRange
@@ -92,7 +92,7 @@ describe('ParameterNumericRange', () => {
         parameterName={TEST_PARAMETER_NAME}
         allIds={TEST_IDS}
         onNewFilter={onNewFilter}
-        onResetFilter={jest.fn()}
+        onResetFilter={vi.fn()}
       />
     );
 
@@ -132,8 +132,8 @@ describe('ParameterNumericRange', () => {
   });
 
   it('resets filters when the numeric range becomes invalid', async () => {
-    const onNewFilter = jest.fn();
-    const onResetFilter = jest.fn();
+    const onNewFilter = vi.fn();
+    const onResetFilter = vi.fn();
 
     render(
       <ParameterNumericRange

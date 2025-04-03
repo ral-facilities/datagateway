@@ -3,14 +3,14 @@ import ArrowTooltip, { getTooltipText } from './arrowtooltip.component';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-jest.mock('resize-observer-polyfill', () => ({
+vi.mock('resize-observer-polyfill', () => ({
   __esModule: true,
   default: (() => {
     // a simple ResizeObserver mock implemented with constructor function
-    // because jest.mock doesn't allow access to ResizeObserver at this point
+    // because vi.mock doesn't allow access to ResizeObserver at this point
     // so extending it is impossible.
     //
-    // this is needed because the ResizeObserver polyfill WON'T WORK in jest env.
+    // this is needed because the ResizeObserver polyfill WON'T WORK in jdsom env.
 
     function MockResizeObserver(callback): void {
       this.callback = callback;

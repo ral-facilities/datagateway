@@ -14,8 +14,8 @@ describe('DownloadRequestResult', () => {
     const { asFragment } = render(
       <DownloadRequestResult
         success
-        closeDialog={jest.fn()}
-        redirectToStatusTab={jest.fn()}
+        closeDialog={vi.fn()}
+        redirectToStatusTab={vi.fn()}
         requestInfo={mockDownloadRequestInfo}
       />
     );
@@ -26,8 +26,8 @@ describe('DownloadRequestResult', () => {
     render(
       <DownloadRequestResult
         success={false}
-        closeDialog={jest.fn()}
-        redirectToStatusTab={jest.fn()}
+        closeDialog={vi.fn()}
+        redirectToStatusTab={vi.fn()}
         requestInfo={null}
       />
     );
@@ -49,8 +49,8 @@ describe('DownloadRequestResult', () => {
     render(
       <DownloadRequestResult
         success
-        closeDialog={jest.fn()}
-        redirectToStatusTab={jest.fn()}
+        closeDialog={vi.fn()}
+        redirectToStatusTab={vi.fn()}
         requestInfo={null}
       />
     );
@@ -72,8 +72,8 @@ describe('DownloadRequestResult', () => {
     render(
       <DownloadRequestResult
         success
-        closeDialog={jest.fn()}
-        redirectToStatusTab={jest.fn()}
+        closeDialog={vi.fn()}
+        redirectToStatusTab={vi.fn()}
         requestInfo={{
           emailAddress: '',
           downloadName: 'download-name',
@@ -94,12 +94,12 @@ describe('DownloadRequestResult', () => {
 
   it('should redirect to download status tab when user clicks on view download', async () => {
     const user = userEvent.setup();
-    const mockRedirect = jest.fn();
+    const mockRedirect = vi.fn();
 
     render(
       <DownloadRequestResult
         success
-        closeDialog={jest.fn()}
+        closeDialog={vi.fn()}
         redirectToStatusTab={mockRedirect}
         requestInfo={{
           emailAddress: '',

@@ -80,7 +80,7 @@ describe('ISIS datafiles table component', () => {
       })
     );
 
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/\/user\/cart\/$/.test(url)) {
@@ -107,7 +107,7 @@ describe('ISIS datafiles table component', () => {
         return Promise.reject(`Endpoint not mocked: ${url}`);
       });
 
-    axios.post = jest
+    axios.post = vi
       .fn()
       .mockImplementation(
         (url: string, data: unknown): Promise<Partial<AxiosResponse>> => {
@@ -149,7 +149,7 @@ describe('ISIS datafiles table component', () => {
 
   afterEach(() => {
     document.body.removeChild(holder);
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly', async () => {
@@ -271,9 +271,9 @@ describe('ISIS datafiles table component', () => {
     );
 
     // check that the data request is sent only once after mounting
-    const datafilesCalls = (axios.get as jest.Mock).mock.calls.filter(
-      (call) => call[0] === '/datafiles'
-    );
+    const datafilesCalls = vi
+      .mocked(axios.get)
+      .mock.calls.filter((call) => call[0] === '/datafiles');
     // 2 becasue there is also a call for ids
     expect(datafilesCalls).toHaveLength(2);
   });

@@ -13,17 +13,17 @@ import type { FiltersType } from '../app.types';
 import { NotificationType } from '../state/actions/actions.types';
 import type { DeepPartial } from 'redux';
 
-jest.mock('../handleICATError');
+vi.mock('../handleICATError');
 
 describe('Lucene actions', () => {
   afterEach(() => {
-    (axios.get as jest.Mock).mockClear();
-    (handleICATError as jest.Mock).mockClear();
+    vi.mocked(axios.get).mockClear();
+    vi.mocked(handleICATError).mockClear();
   });
 
   describe('useLuceneSearchInfinite', () => {
     it('sends lucene search request with appropriate filters applied', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: { results: [{ id: 1 }] },
       });
 
@@ -80,7 +80,7 @@ describe('Lucene actions', () => {
     });
 
     it('sends lucene search request with start date bound applied', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: { results: [{ id: 1 }] },
       });
 
@@ -125,7 +125,7 @@ describe('Lucene actions', () => {
     });
 
     it('sends lucene search request with end date bound applied', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: { results: [{ id: 1 }] },
       });
 
@@ -215,7 +215,7 @@ describe('Lucene actions', () => {
         endDate: null,
       };
 
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: {
           results: [],
           search_after: { doc: 5 },
@@ -260,7 +260,7 @@ describe('Lucene actions', () => {
 
     describe('sends a special notification', () => {
       const ogDispatchEvent = document.dispatchEvent;
-      const mockDispatchEvent = jest.fn();
+      const mockDispatchEvent = vi.fn();
 
       beforeEach(() => {
         document.dispatchEvent = mockDispatchEvent;
@@ -282,7 +282,7 @@ describe('Lucene actions', () => {
           maxCount: 300,
         };
 
-        (axios.get as jest.Mock).mockRejectedValue({
+        vi.mocked(axios.get).mockRejectedValue({
           code: 500,
           response: {
             data: {
@@ -325,7 +325,7 @@ describe('Lucene actions', () => {
           maxCount: 300,
         };
 
-        (axios.get as jest.Mock).mockRejectedValue({
+        vi.mocked(axios.get).mockRejectedValue({
           code: 500,
           response: {
             data: {
@@ -371,7 +371,7 @@ describe('Lucene actions', () => {
           code: '500',
         };
 
-        (axios.get as jest.Mock).mockRejectedValue(axiosError);
+        vi.mocked(axios.get).mockRejectedValue(axiosError);
 
         const { result } = renderHook(
           () => useLuceneSearchInfinite('Dataset', luceneSearchParams, {}),
@@ -403,7 +403,7 @@ describe('Lucene actions', () => {
           },
         };
 
-        (axios.get as jest.Mock).mockRejectedValue(axiosError);
+        vi.mocked(axios.get).mockRejectedValue(axiosError);
 
         const { result } = renderHook(
           () => useLuceneSearchInfinite('Dataset', luceneSearchParams, {}),
@@ -435,7 +435,7 @@ describe('Lucene actions', () => {
           },
         };
 
-        (axios.get as jest.Mock).mockRejectedValue(axiosError);
+        vi.mocked(axios.get).mockRejectedValue(axiosError);
 
         const { result } = renderHook(
           () => useLuceneSearchInfinite('Dataset', luceneSearchParams, {}),
@@ -453,7 +453,7 @@ describe('Lucene actions', () => {
 
   describe('useLuceneFacet', () => {
     it('sends lucene search request with appropriate filters applied', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: { results: [{ id: 1 }] },
       });
 
@@ -493,7 +493,7 @@ describe('Lucene actions', () => {
     });
 
     it('calls handleICAT error on error', async () => {
-      (axios.get as jest.Mock).mockRejectedValue('error');
+      vi.mocked(axios.get).mockRejectedValue('error');
 
       const { result } = renderHook(() => useLuceneFacet('Dataset', [], {}), {
         wrapper: createReactQueryWrapper(),

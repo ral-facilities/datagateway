@@ -21,7 +21,7 @@ import DownloadStatusTable from './downloadStatusTable.component';
 import { mockDownloadItems, mockedSettings } from '../testData';
 import { DownloadSettingsContext } from '../ConfigProvider';
 
-jest.mock('../downloadApi');
+vi.mock('../downloadApi');
 
 const createTestQueryClient = (): QueryClient =>
   new QueryClient({
@@ -41,8 +41,8 @@ const renderComponent = ({
       <QueryClientProvider client={queryClient}>
         <DownloadStatusTable
           refreshTable={false}
-          setRefreshTable={jest.fn()}
-          setLastCheckedTimestamp={jest.fn()}
+          setRefreshTable={vi.fn()}
+          setLastCheckedTimestamp={vi.fn()}
         />
       </QueryClientProvider>
     </DownloadSettingsContext.Provider>
@@ -54,15 +54,15 @@ describe('Download Status Table', () => {
   beforeEach(() => {
     user = userEvent.setup({ delay: null });
 
-    (downloadDeleted as jest.Mock).mockImplementation(() => Promise.resolve());
-    (fetchDownloads as jest.Mock).mockImplementation(() =>
+    vi.mocked(downloadDeleted).mockImplementation(() => Promise.resolve());
+    vi.mocked(fetchDownloads).mockImplementation(() =>
       Promise.resolve(mockDownloadItems)
     );
-    (getDataUrl as jest.Mock).mockImplementation(() => '/getData');
+    vi.mocked(getDataUrl).mockImplementation(() => '/getData');
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should render correctly', async () => {
@@ -96,9 +96,7 @@ describe('Download Status Table', () => {
   });
 
   it('should refresh data & download progress when required', async () => {
-    (
-      getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>
-    ).mockResolvedValue(30);
+    vi.mocked(getPercentageComplete).mockResolvedValue(30);
     const settings = {
       ...mockedSettings,
       uiFeatures: {
@@ -125,18 +123,16 @@ describe('Download Status Table', () => {
     });
 
     // pretend server returned a different list (with only the restoring download)
-    (fetchDownloads as jest.Mock).mockReturnValueOnce([mockDownloadItems[2]]);
+    vi.mocked(fetchDownloads).mockReturnValueOnce([mockDownloadItems[2]]);
     // pretend the server returns an updated value
-    (
-      getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>
-    ).mockResolvedValue(50);
+    vi.mocked(getPercentageComplete).mockResolvedValue(50);
     rerender(
       <DownloadSettingsContext.Provider value={settings}>
         <QueryClientProvider client={queryClient}>
           <DownloadStatusTable
             refreshTable
-            setRefreshTable={jest.fn()}
-            setLastCheckedTimestamp={jest.fn()}
+            setRefreshTable={vi.fn()}
+            setLastCheckedTimestamp={vi.fn()}
           />
         </QueryClientProvider>
       </DownloadSettingsContext.Provider>
@@ -278,7 +274,7 @@ describe('Download Status Table', () => {
   });
 
   it('should filter data when text fields are typed into', async () => {
-    (fetchDownloads as jest.Mock).mockImplementation(() =>
+    vi.mocked(fetchDownloads).mockImplementation(() =>
       Promise.resolve([
         ...mockDownloadItems,
         { ...mockDownloadItems[0], id: 11, fileName: 'test-file-11' },
@@ -463,9 +459,7 @@ describe('Download Status Table', () => {
   });
 
   it('should display download progress ui if enabled', async () => {
-    (
-      getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>
-    ).mockResolvedValue(20);
+    vi.mocked(getPercentageComplete).mockResolvedValue(20);
 
     renderComponent({
       settings: {

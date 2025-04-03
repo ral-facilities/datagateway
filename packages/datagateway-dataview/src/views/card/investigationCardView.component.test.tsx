@@ -70,7 +70,7 @@ describe('Investigation - Card View', () => {
       })
     );
 
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (url.includes('/investigations/count')) {
@@ -95,11 +95,11 @@ describe('Investigation - Card View', () => {
       });
 
     // Prevent error logging
-    window.scrollTo = jest.fn();
+    window.scrollTo = vi.fn();
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders investigations as cards', async () => {

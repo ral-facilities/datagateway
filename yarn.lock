@@ -5130,10 +5130,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "datagateway@workspace:."
   dependencies:
-    "@vitest/coverage-v8": 3.0.9
     husky: 8.0.1
-    jsdom: 26.0.0
-    vitest: 3.0.9
   languageName: unknown
   linkType: soft
 
