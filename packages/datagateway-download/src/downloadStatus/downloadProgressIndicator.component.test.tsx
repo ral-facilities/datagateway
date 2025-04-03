@@ -159,18 +159,29 @@ describe('DownloadProgressIndicator', () => {
     expect(screen.getByText('0%')).toBeInTheDocument();
   });
 
-  it('should show queued when download is paused and has no preparedId', async () => {
+  it('should show queued when download is queued', async () => {
     renderComponent({
       download: {
         ...mockDownload,
-        status: 'PAUSED',
-        preparedId: undefined,
+        status: 'QUEUED',
       },
     });
 
     expect(
       await screen.findByText('downloadStatus.progress_queued')
     ).toBeInTheDocument();
+    expect(getPercentageComplete).not.toHaveBeenCalled();
+  });
+
+  it('should not call getPercentageComplete if preparedId is undefined', async () => {
+    renderComponent({
+      download: {
+        ...mockDownload,
+        status: 'RESTORING',
+        preparedId: undefined,
+      },
+    });
+
     expect(getPercentageComplete).not.toHaveBeenCalled();
   });
 

@@ -35,6 +35,7 @@
     "paused": "Paused",
     "preparing": "Preparing",
     "restoring": "Restoring from tape",
+    "queued": "Queued",
     "progress": "Progress",
     "calculating_progress": "Calculating...",
     "progress_unavailable": "Unknown",

@@ -254,7 +254,8 @@ export type DownloadStatus =
   | 'RESTORING'
   | 'PAUSED'
   | 'COMPLETE'
-  | 'EXPIRED';
+  | 'EXPIRED'
+  | 'QUEUED';
 
 export interface Download {
   createdAt: string;
