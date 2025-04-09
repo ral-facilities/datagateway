@@ -13,10 +13,6 @@ import {
   getDataUrl,
   getPercentageComplete,
 } from '../downloadApi';
-import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
-} from '../setupTests';
 import DownloadStatusTable from './downloadStatusTable.component';
 import { mockDownloadItems, mockedSettings } from '../testData';
 import { DownloadSettingsContext } from '../ConfigProvider';
@@ -368,7 +364,6 @@ describe('Download Status Table', () => {
   });
 
   it('should filter data when date filter is altered', async () => {
-    applyDatePickerWorkaround();
     renderComponent();
 
     const dateFromFilterInput = await screen.findByRole('textbox', {
@@ -454,8 +449,6 @@ describe('Download Status Table', () => {
     expect(await screen.findByText('test-file-3')).toBeInTheDocument();
     expect(await screen.findByText('test-file-4')).toBeInTheDocument();
     expect(await screen.findByText('test-file-5')).toBeInTheDocument();
-
-    cleanupDatePickerWorkaround();
   });
 
   it('should display download progress ui if enabled', async () => {

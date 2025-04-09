@@ -13,10 +13,6 @@ import InvestigationCardView from './investigationCardView.component';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createMemoryHistory, type History } from 'history';
 import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
-} from '../../setupTests';
-import {
   render,
   type RenderResult,
   screen,
@@ -243,8 +239,6 @@ describe('Investigation - Card View', () => {
   });
 
   it('updates filter query params on date filter', async () => {
-    applyDatePickerWorkaround();
-
     renderComponent();
 
     await user.click(
@@ -267,8 +261,6 @@ describe('Investigation - Card View', () => {
     await user.keyboard('{Delete}');
 
     expect(history.location.search).toBe('?');
-
-    cleanupDatePickerWorkaround();
   });
 
   it('updates sort query params on sort', async () => {

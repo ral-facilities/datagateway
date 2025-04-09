@@ -13,10 +13,6 @@ import { initialState as dgDataViewInitialState } from '../../../state/reducers/
 import ISISFacilityCyclesCardView from './isisFacilityCyclesCardView.component';
 import { createMemoryHistory, History } from 'history';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
-} from '../../../setupTests';
 import { render, RenderResult, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { MockInstance } from 'vitest';
@@ -113,8 +109,6 @@ describe('ISIS Facility Cycles - Card View', () => {
   });
 
   it('updates filter query params on date filter', async () => {
-    applyDatePickerWorkaround();
-
     renderComponent();
 
     // click on button to show advanced filters
@@ -138,8 +132,6 @@ describe('ISIS Facility Cycles - Card View', () => {
     await user.keyboard('{Delete}');
 
     expect(history.location.search).toBe('?');
-
-    cleanupDatePickerWorkaround();
   });
 
   it('uses default sort', async () => {

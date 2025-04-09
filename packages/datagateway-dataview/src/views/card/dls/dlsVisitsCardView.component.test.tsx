@@ -13,10 +13,6 @@ import { initialState as dgDataViewInitialState } from '../../../state/reducers/
 import DLSVisitsCardView from './dlsVisitsCardView.component';
 import { createMemoryHistory, type History } from 'history';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
-} from '../../../setupTests';
 import { render, type RenderResult, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
@@ -127,8 +123,6 @@ describe('DLS Visits - Card View', () => {
   });
 
   it('updates filter query params on date filter', async () => {
-    applyDatePickerWorkaround();
-
     renderComponent();
 
     // click on button to show advanced filters
@@ -152,8 +146,6 @@ describe('DLS Visits - Card View', () => {
     await user.keyboard('{Delete}');
 
     expect(history.location.search).toBe('?');
-
-    cleanupDatePickerWorkaround();
   });
 
   it('uses default sort', async () => {

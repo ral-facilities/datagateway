@@ -14,10 +14,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createMemoryHistory, type History } from 'history';
 import { initialState as dgDataViewInitialState } from '../../state/reducers/dgdataview.reducer';
 import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
-} from '../../setupTests';
-import {
   render,
   type RenderResult,
   screen,
@@ -199,8 +195,6 @@ describe('Dataset - Card View', () => {
   });
 
   it('updates filter query params on date filter', async () => {
-    applyDatePickerWorkaround();
-
     renderComponent();
 
     // click on button to show advanced filters
@@ -224,8 +218,6 @@ describe('Dataset - Card View', () => {
     await user.keyboard('{Delete}');
 
     expect(history.location.search).toBe('?');
-
-    cleanupDatePickerWorkaround();
   });
 
   it('updates sort query params on sort', async () => {

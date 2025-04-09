@@ -12,12 +12,7 @@ import { initialState } from '../../state/reducers/dgdataview.reducer';
 import DatasetTable from './datasetTable.component';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createMemoryHistory, type History } from 'history';
-import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
-  findAllRows,
-  findColumnHeaderByName,
-} from '../../setupTests';
+import { findAllRows, findColumnHeaderByName } from '../../setupTests';
 import {
   render,
   type RenderResult,
@@ -237,8 +232,6 @@ describe('Dataset table component', () => {
   });
 
   it('updates filter query params on date filter', async () => {
-    applyDatePickerWorkaround();
-
     renderComponent();
 
     const filterInput = await screen.findByRole('textbox', {
@@ -259,8 +252,6 @@ describe('Dataset table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
-
-    cleanupDatePickerWorkaround();
   });
 
   it('updates sort query params on sort', async () => {

@@ -23,10 +23,6 @@ import {
   waitFor,
 } from '@testing-library/react';
 import { createMemoryHistory, type History } from 'history';
-import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
-} from '../../../setupTests';
 import userEvent from '@testing-library/user-event';
 import { paths } from '../../../page/pageContainer.component';
 import axios, { AxiosResponse } from 'axios';
@@ -157,8 +153,6 @@ describe('ISIS Dataset table component', () => {
   });
 
   it('updates filter query params on date filter', async () => {
-    applyDatePickerWorkaround();
-
     renderComponent();
 
     const filterInput = await screen.findByRole('textbox', {
@@ -178,8 +172,6 @@ describe('ISIS Dataset table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
-
-    cleanupDatePickerWorkaround();
   });
 
   it('uses default sort', async () => {

@@ -9,10 +9,6 @@ import ISISDataPublicationsCardView from './isisDataPublicationsCardView.compone
 import { createMemoryHistory, type History } from 'history';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
-} from '../../../setupTests';
-import {
   render,
   type RenderResult,
   screen,
@@ -248,8 +244,6 @@ describe('ISIS Data Publication - Card View', () => {
     });
 
     it('updates filter query params on date filter', async () => {
-      applyDatePickerWorkaround();
-
       renderComponent('2');
 
       // open advanced filter
@@ -274,8 +268,6 @@ describe('ISIS Data Publication - Card View', () => {
       await user.keyboard('{Delete}');
 
       expect(history.location.search).toBe('?');
-
-      cleanupDatePickerWorkaround();
     });
   });
 });

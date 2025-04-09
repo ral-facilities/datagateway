@@ -14,8 +14,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Router } from 'react-router-dom';
 import { createMemoryHistory, History } from 'history';
 import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
   findAllRows,
   findCellInRow,
   findColumnHeaderByName,
@@ -210,8 +208,6 @@ describe('DLS Visits table component', () => {
   });
 
   it('updates filter query params on date filter', async () => {
-    applyDatePickerWorkaround();
-
     renderComponent();
 
     const filterInput = await screen.findByRole('textbox', {
@@ -232,8 +228,6 @@ describe('DLS Visits table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
-
-    cleanupDatePickerWorkaround();
   });
 
   it('uses default sort', async () => {

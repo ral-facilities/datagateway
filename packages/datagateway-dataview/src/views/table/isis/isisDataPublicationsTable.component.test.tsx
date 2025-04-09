@@ -9,8 +9,6 @@ import thunk from 'redux-thunk';
 import { generatePath, Router } from 'react-router-dom';
 import { createMemoryHistory, type History } from 'history';
 import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
   findAllRows,
   findCellInRow,
   findColumnHeaderByName,
@@ -299,8 +297,6 @@ describe('ISIS Data Publication table component', () => {
     });
 
     it('updates filter query params on date filter', async () => {
-      applyDatePickerWorkaround();
-
       renderComponent('2');
 
       const filterInput = await screen.findByRole('textbox', {
@@ -323,8 +319,6 @@ describe('ISIS Data Publication table component', () => {
 
       expect(history.length).toBe(3);
       expect(history.location.search).toBe('?');
-
-      cleanupDatePickerWorkaround();
     });
 
     it('uses default sort', async () => {

@@ -6,11 +6,7 @@ import {
   getPercentageComplete,
 } from '../downloadApi';
 import AdminDownloadStatusTable from './adminDownloadStatusTable.component';
-import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
-  flushPromises,
-} from '../setupTests';
+import { flushPromises } from '../setupTests';
 import userEvent from '@testing-library/user-event';
 import {
   act,
@@ -368,7 +364,6 @@ describe('Admin Download Status Table', () => {
   });
 
   it('sends filter request on date filter', async () => {
-    applyDatePickerWorkaround();
     // use skipHover to avoid triggering sort tooltips which slow the test down
     user = userEvent.setup({ delay: null, skipHover: true });
 
@@ -441,8 +436,6 @@ describe('Admin Download Status Table', () => {
       },
       `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.id ASC LIMIT 0, 50`
     );
-
-    cleanupDatePickerWorkaround();
   });
 
   it('should filter deleted properly', async () => {

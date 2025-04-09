@@ -20,12 +20,7 @@ import {
   waitFor,
   within,
 } from '@testing-library/react';
-import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
-  findAllRows,
-  findColumnHeaderByName,
-} from '../../setupTests';
+import { findAllRows, findColumnHeaderByName } from '../../setupTests';
 import userEvent from '@testing-library/user-event';
 import {
   findCellInRow,
@@ -292,8 +287,6 @@ describe('Investigation table component', () => {
   });
 
   it('updates filter query params on date filter', async () => {
-    applyDatePickerWorkaround();
-
     renderComponent();
 
     const filterInput = await screen.findByRole('textbox', {
@@ -316,8 +309,6 @@ describe('Investigation table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
-
-    cleanupDatePickerWorkaround();
   });
 
   it('updates sort query params on sort', async () => {

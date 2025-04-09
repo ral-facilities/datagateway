@@ -8,11 +8,7 @@ import { initialState as dgDataViewInitialState } from '../../../state/reducers/
 import ISISInvestigationsCardView from './isisInvestigationsCardView.component';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createMemoryHistory, type History } from 'history';
-import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
-  flushPromises,
-} from '../../../setupTests';
+import { flushPromises } from '../../../setupTests';
 import {
   render,
   type RenderResult,
@@ -279,8 +275,6 @@ describe('ISIS Investigations - Card View', () => {
   });
 
   it('updates filter query params on date filter', async () => {
-    applyDatePickerWorkaround();
-
     renderComponent();
 
     // click on button to show advanced filters
@@ -304,8 +298,6 @@ describe('ISIS Investigations - Card View', () => {
     await user.keyboard('{Delete}');
 
     expect(history.location.search).toBe('?');
-
-    cleanupDatePickerWorkaround();
   });
 
   it('displays the correct user as the PI ', async () => {

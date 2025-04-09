@@ -6,22 +6,13 @@ import DateColumnFilter, {
 } from './dateColumnFilter.component';
 import { renderHook } from '@testing-library/react';
 import { usePushFilter } from '../../api';
-import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
-} from '../../setupTests';
 import { render, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 vi.mock('../../api');
 
 describe('Date filter component', () => {
-  beforeEach(() => {
-    applyDatePickerWorkaround();
-  });
-
   afterEach(() => {
-    cleanupDatePickerWorkaround();
     vi.clearAllMocks();
   });
 

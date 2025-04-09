@@ -14,8 +14,6 @@ import thunk from 'redux-thunk';
 import { Router } from 'react-router-dom';
 import { createMemoryHistory, type History } from 'history';
 import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
   findAllRows,
   findCellInRow,
   findColumnHeaderByName,
@@ -168,8 +166,6 @@ describe('ISIS FacilityCycles table component', () => {
   });
 
   it('updates filter query params on date filter', async () => {
-    applyDatePickerWorkaround();
-
     renderComponent();
 
     const filterInput = await screen.findByRole('textbox', {
@@ -190,8 +186,6 @@ describe('ISIS FacilityCycles table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
-
-    cleanupDatePickerWorkaround();
   });
 
   it('uses default sort', async () => {

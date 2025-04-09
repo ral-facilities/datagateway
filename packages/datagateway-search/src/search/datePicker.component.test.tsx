@@ -6,10 +6,6 @@ import thunk from 'redux-thunk';
 import { Router } from 'react-router-dom';
 import { initialState } from '../state/reducers/dgsearch.reducer';
 import { createMemoryHistory, History } from 'history';
-import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
-} from '../setupTests';
 import { render, type RenderResult, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { MockInstance } from 'vitest';
@@ -35,8 +31,6 @@ describe('DatePicker component tests', () => {
     );
 
   beforeEach(() => {
-    applyDatePickerWorkaround();
-
     history = createMemoryHistory();
     pushSpy = vi.spyOn(history, 'push');
 
@@ -58,7 +52,6 @@ describe('DatePicker component tests', () => {
 
   afterEach(() => {
     vi.clearAllMocks();
-    cleanupDatePickerWorkaround();
   });
 
   it('renders correctly', async () => {
