@@ -4,11 +4,10 @@ import DownloadButton, {
 } from './downloadButton.component';
 import configureStore from 'redux-mock-store';
 import { initialState as dGCommonInitialState } from '../state/reducers/dgcommon.reducer';
-import {
-  downloadDatafile,
-  downloadDataset,
-  downloadInvestigation,
-} from '../api';
+import { downloadDatafile } from '../api/datafiles';
+import { downloadDataset } from '../api/datasets';
+import { downloadInvestigation } from '../api/investigations';
+
 import { StateType } from '../state/app.types';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';

@@ -355,7 +355,7 @@ describe('investigation api functions', () => {
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      expectvi.mocked(axios.get).toHaveBeenCalledTimes(3);
+      expect(vi.mocked(axios.get)).toHaveBeenCalledTimes(3);
     });
 
     it('sends axios request to fetch infinite investigations and returns successful response when ignoreIDSort is true', async () => {
