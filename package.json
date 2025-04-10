@@ -19,7 +19,7 @@
     "lint": "yarn workspaces foreach --interlaced --verbose --parallel --jobs 4 run lint:js",
     "tsc": "yarn workspace datagateway-common tsc",
     "test": "yarn test:unit && yarn test:e2e",
-    "test:unit": "yarn workspaces foreach --interlaced --verbose --parallel --jobs 4 --exclude datagateway run test --runInBand",
+    "test:unit": "yarn workspaces foreach --interlaced --verbose --parallel --jobs 4 --exclude datagateway run test --watch=false",
     "test:e2e": "yarn workspaces foreach --interlaced --verbose --parallel --jobs 3 run e2e",
     "datagateway-dataview": "yarn workspace datagateway-dataview dev",
     "datagateway-download": "yarn workspace datagateway-download dev",
