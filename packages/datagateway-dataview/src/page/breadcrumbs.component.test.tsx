@@ -112,7 +112,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
     );
 
     vi.mocked(axios.get).mockImplementation((url) => {
-      const potentialId = parseInt(url.split('/').at(-1));
+      const potentialId = parseInt(url.split('/').at(-1) ?? '');
       let id = 1;
       if (!Number.isNaN(potentialId)) {
         id = potentialId;

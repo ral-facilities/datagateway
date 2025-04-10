@@ -137,7 +137,9 @@ describe('Admin Download Status Table', () => {
         //Only return the 5 results when initialy requesting so that only a total
         //of 5 results will be loaded
         if (queryOffset?.endsWith('LIMIT 0, 50'))
-          return mockDownloadItems.slice(0, mockDownloadItems.length - 1);
+          return Promise.resolve(
+            mockDownloadItems.slice(0, mockDownloadItems.length - 1)
+          );
         return Promise.resolve([]);
       }
     );

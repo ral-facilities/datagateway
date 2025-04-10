@@ -91,26 +91,26 @@ describe('DLS datafiles table component', () => {
       })
     );
 
-    vi.mocked(useCart).mockReturnValue({
+    vi.mocked(useCart, { partial: true }).mockReturnValue({
       data: [],
       isLoading: false,
     });
-    vi.mocked(useDatafileCount).mockReturnValue({
+    vi.mocked(useDatafileCount, { partial: true }).mockReturnValue({
       data: 0,
     });
-    vi.mocked(useDatafilesInfinite).mockReturnValue({
-      data: { pages: [rowData] },
+    vi.mocked(useDatafilesInfinite, { partial: true }).mockReturnValue({
+      data: { pages: [rowData], pageParams: [] },
       fetchNextPage: vi.fn(),
     });
-    vi.mocked(useIds).mockReturnValue({
+    vi.mocked(useIds, { partial: true }).mockReturnValue({
       data: [1],
       isLoading: false,
     });
-    vi.mocked(useAddToCart).mockReturnValue({
+    vi.mocked(useAddToCart, { partial: true }).mockReturnValue({
       mutate: vi.fn(),
       isLoading: false,
     });
-    vi.mocked(useRemoveFromCart).mockReturnValue({
+    vi.mocked(useRemoveFromCart, { partial: true }).mockReturnValue({
       mutate: vi.fn(),
       isLoading: false,
     });
@@ -265,9 +265,9 @@ describe('DLS datafiles table component', () => {
 
   it('calls addToCart mutate function on unchecked checkbox click', async () => {
     const addToCart = vi.fn();
-    vi.mocked(useAddToCart).mockReturnValue({
+    vi.mocked(useAddToCart, { partial: true }).mockReturnValue({
       mutate: addToCart,
-      loading: false,
+      isLoading: false,
     });
     renderComponent();
 
@@ -279,7 +279,7 @@ describe('DLS datafiles table component', () => {
   });
 
   it('calls removeFromCart mutate function on checked checkbox click', async () => {
-    vi.mocked(useCart).mockReturnValue({
+    vi.mocked(useCart, { partial: true }).mockReturnValue({
       data: [
         {
           entityId: 1,
@@ -293,9 +293,9 @@ describe('DLS datafiles table component', () => {
     });
 
     const removeFromCart = vi.fn();
-    vi.mocked(useRemoveFromCart).mockReturnValue({
+    vi.mocked(useRemoveFromCart, { partial: true }).mockReturnValue({
       mutate: removeFromCart,
-      loading: false,
+      isLoading: false,
     });
 
     renderComponent();
@@ -308,7 +308,7 @@ describe('DLS datafiles table component', () => {
   });
 
   it('selected rows only considers relevant cart items', async () => {
-    vi.mocked(useCart).mockReturnValueOnce({
+    vi.mocked(useCart, { partial: true }).mockReturnValueOnce({
       data: [
         {
           entityId: 1,
@@ -351,15 +351,22 @@ describe('DLS datafiles table component', () => {
   });
 
   it("doesn't display download button for datafiles with no location", async () => {
-    vi.mocked(useDatafilesInfinite).mockReturnValueOnce([
-      {
-        id: 1,
-        name: 'Test 1',
-        fileSize: 1,
-        modTime: '2019-07-23',
-        createTime: '2019-07-23',
+    vi.mocked(useDatafilesInfinite, { partial: true }).mockReturnValueOnce({
+      data: {
+        pages: [
+          [
+            {
+              id: 1,
+              name: 'Test 1',
+              fileSize: 1,
+              modTime: '2019-07-23',
+              createTime: '2019-07-23',
+            },
+          ],
+        ],
+        pageParams: [],
       },
-    ]);
+    });
 
     renderComponent();
 

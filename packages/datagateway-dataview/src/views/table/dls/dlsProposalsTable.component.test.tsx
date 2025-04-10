@@ -91,12 +91,12 @@ describe('DLS Proposals table component', () => {
       })
     );
 
-    vi.mocked(useInvestigationCount).mockReturnValue({
+    vi.mocked(useInvestigationCount, { partial: true }).mockReturnValue({
       data: 1,
       isLoading: false,
     });
-    vi.mocked(useInvestigationsInfinite).mockReturnValue({
-      data: rowData,
+    vi.mocked(useInvestigationsInfinite, { partial: true }).mockReturnValue({
+      data: { pages: [rowData], pageParams: [] },
       isLoading: false,
     });
   });

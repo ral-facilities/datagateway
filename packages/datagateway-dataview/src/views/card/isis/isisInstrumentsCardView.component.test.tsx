@@ -63,11 +63,11 @@ describe('ISIS Instruments - Card View', () => {
       })
     );
 
-    vi.mocked(useInstrumentCount).mockReturnValue({
+    vi.mocked(useInstrumentCount, { partial: true }).mockReturnValue({
       data: 1,
       isLoading: false,
     });
-    vi.mocked(useInstrumentsPaginated).mockReturnValue({
+    vi.mocked(useInstrumentsPaginated, { partial: true }).mockReturnValue({
       data: cardData,
       isLoading: false,
     });
@@ -177,8 +177,10 @@ describe('ISIS Instruments - Card View', () => {
   });
 
   it('renders fine with incomplete data', () => {
-    vi.mocked(useInstrumentCount).mockReturnValueOnce({});
-    vi.mocked(useInstrumentsPaginated).mockReturnValueOnce({});
+    vi.mocked(useInstrumentCount, { partial: true }).mockReturnValueOnce({});
+    vi.mocked(useInstrumentsPaginated, { partial: true }).mockReturnValueOnce(
+      {}
+    );
 
     expect(() => renderComponent()).not.toThrowError();
   });

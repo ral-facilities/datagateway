@@ -65,11 +65,11 @@ describe('ISIS Facility Cycles - Card View', () => {
     history = createMemoryHistory();
     replaceSpy = vi.spyOn(history, 'replace');
 
-    vi.mocked(useFacilityCycleCount).mockReturnValue({
+    vi.mocked(useFacilityCycleCount, { partial: true }).mockReturnValue({
       data: 1,
       isLoading: false,
     });
-    vi.mocked(useFacilityCyclesPaginated).mockReturnValue({
+    vi.mocked(useFacilityCyclesPaginated, { partial: true }).mockReturnValue({
       data: cardData,
       isLoading: false,
     });
@@ -169,8 +169,10 @@ describe('ISIS Facility Cycles - Card View', () => {
   });
 
   it('renders fine with incomplete data', () => {
-    vi.mocked(useFacilityCycleCount).mockReturnValueOnce({});
-    vi.mocked(useFacilityCyclesPaginated).mockReturnValueOnce({});
+    vi.mocked(useFacilityCycleCount, { partial: true }).mockReturnValueOnce({});
+    vi.mocked(useFacilityCyclesPaginated, {
+      partial: true,
+    }).mockReturnValueOnce({});
 
     expect(() => renderComponent()).not.toThrowError();
   });

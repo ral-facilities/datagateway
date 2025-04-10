@@ -1,4 +1,3 @@
-import * as React from 'react';
 import ISISInvestigationLanding from './isisInvestigationLanding.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import configureStore from 'redux-mock-store';
@@ -250,15 +249,15 @@ describe('ISIS Investigation Landing page', () => {
       },
     };
 
-    vi.mocked(useInvestigation).mockReturnValue({
+    vi.mocked(useInvestigation, { partial: true }).mockReturnValue({
       data: initialInvestigationData,
     });
 
-    vi.mocked(useDataPublication).mockReturnValue({
+    vi.mocked(useDataPublication, { partial: true }).mockReturnValue({
       data: initialDataPublicationData,
     });
 
-    vi.mocked(useDataPublications).mockReturnValue({
+    vi.mocked(useDataPublications, { partial: true }).mockReturnValue({
       data: initialStudyDataPublicationData,
     });
   });

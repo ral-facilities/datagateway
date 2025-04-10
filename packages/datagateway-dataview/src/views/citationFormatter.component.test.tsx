@@ -138,7 +138,7 @@ describe('Citation formatter component tests', () => {
         params,
       })
     );
-    expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
+    expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
       params.toString()
     );
 
@@ -209,7 +209,7 @@ describe('Citation formatter component tests', () => {
         params,
       })
     );
-    expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
+    expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
       params.toString()
     );
 

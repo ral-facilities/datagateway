@@ -145,30 +145,30 @@ describe('ISIS MyData table component', () => {
       },
     ];
 
-    vi.mocked(useCart).mockReturnValue({
+    vi.mocked(useCart, { partial: true }).mockReturnValue({
       data: [],
       isLoading: false,
     });
-    vi.mocked(useInvestigationCount).mockReturnValue({
+    vi.mocked(useInvestigationCount, { partial: true }).mockReturnValue({
       data: 0,
     });
-    vi.mocked(useInvestigationsInfinite).mockReturnValue({
-      data: { pages: [rowData] },
+    vi.mocked(useInvestigationsInfinite, { partial: true }).mockReturnValue({
+      data: { pages: [rowData], pageParams: [] },
       fetchNextPage: vi.fn(),
     });
-    vi.mocked(useIds).mockReturnValue({
+    vi.mocked(useIds, { partial: true }).mockReturnValue({
       data: [1],
       isLoading: false,
     });
-    vi.mocked(useAddToCart).mockReturnValue({
+    vi.mocked(useAddToCart, { partial: true }).mockReturnValue({
       mutate: vi.fn(),
       isLoading: false,
     });
-    vi.mocked(useRemoveFromCart).mockReturnValue({
+    vi.mocked(useRemoveFromCart, { partial: true }).mockReturnValue({
       mutate: vi.fn(),
       isLoading: false,
     });
-    vi.mocked(readSciGatewayToken).mockReturnValue({
+    vi.mocked(readSciGatewayToken, { partial: true }).mockReturnValue({
       username: 'testUser',
     });
 
@@ -378,9 +378,9 @@ describe('ISIS MyData table component', () => {
 
   it('calls addToCart mutate function on unchecked checkbox click', async () => {
     const addToCart = vi.fn();
-    vi.mocked(useAddToCart).mockReturnValue({
+    vi.mocked(useAddToCart, { partial: true }).mockReturnValue({
       mutate: addToCart,
-      loading: false,
+      isLoading: false,
     });
     renderComponent();
 
@@ -392,7 +392,7 @@ describe('ISIS MyData table component', () => {
   });
 
   it('calls removeFromCart mutate function on checked checkbox click', async () => {
-    vi.mocked(useCart).mockReturnValue({
+    vi.mocked(useCart, { partial: true }).mockReturnValue({
       data: [
         {
           entityId: 1,
@@ -406,9 +406,9 @@ describe('ISIS MyData table component', () => {
     });
 
     const removeFromCart = vi.fn();
-    vi.mocked(useRemoveFromCart).mockReturnValue({
+    vi.mocked(useRemoveFromCart, { partial: true }).mockReturnValue({
       mutate: removeFromCart,
-      loading: false,
+      isLoading: false,
     });
 
     renderComponent();
@@ -420,7 +420,7 @@ describe('ISIS MyData table component', () => {
   });
 
   it('selected rows only considers relevant cart items', async () => {
-    vi.mocked(useCart).mockReturnValue({
+    vi.mocked(useCart, { partial: true }).mockReturnValue({
       data: [
         {
           entityId: 2,
@@ -506,7 +506,7 @@ describe('ISIS MyData table component', () => {
   });
 
   it('renders details panel without datasets link if no facility cycles', async () => {
-    vi.mocked(useAllFacilityCycles).mockReturnValue({
+    vi.mocked(useAllFacilityCycles, { partial: true }).mockReturnValue({
       data: undefined,
     });
 
@@ -538,11 +538,11 @@ describe('ISIS MyData table component', () => {
       investigationInstruments: [],
       dataCollectionInvestigations: [],
     };
-    vi.mocked(useInvestigationsInfinite).mockReturnValue({
-      data: { pages: [rowData] },
+    vi.mocked(useInvestigationsInfinite, { partial: true }).mockReturnValue({
+      data: { pages: [rowData], pageParams: [] },
       fetchNextPage: vi.fn(),
     });
-    vi.mocked(useAllFacilityCycles).mockReturnValue({
+    vi.mocked(useAllFacilityCycles, { partial: true }).mockReturnValue({
       data: [],
     });
     renderComponent();
@@ -566,8 +566,8 @@ describe('ISIS MyData table component', () => {
         },
       ],
     };
-    vi.mocked(useInvestigationsInfinite).mockReturnValue({
-      data: { pages: [rowData] },
+    vi.mocked(useInvestigationsInfinite, { partial: true }).mockReturnValue({
+      data: { pages: [rowData], pageParams: [] },
       fetchNextPage: vi.fn(),
     });
     renderComponent();

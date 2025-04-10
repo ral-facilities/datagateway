@@ -144,11 +144,13 @@ describe('DownloadConfirmDialog', () => {
   it('should prevent a download if there are no available access methods', async () => {
     // Override default requests and return access method status'
     // as being disabled for both access methods.
-    vi.mocked(getDownloadTypeStatus).mockImplementation((type, _) => ({
-      type,
-      disabled: true,
-      message: 'disabled for testing',
-    }));
+    vi.mocked(getDownloadTypeStatus).mockImplementation((type, _) =>
+      Promise.resolve({
+        type,
+        disabled: true,
+        message: 'disabled for testing',
+      })
+    );
 
     renderWrapper(100, false, true);
 
@@ -179,8 +181,8 @@ describe('DownloadConfirmDialog', () => {
 
   it('should show successful view when download is successful', async () => {
     vi.mocked(submitCart).mockResolvedValue(123);
-    vi.mocked(getDownload).mockResolvedValue({
-      preparedId: 1,
+    vi.mocked(getDownload, { partial: true }).mockResolvedValue({
+      preparedId: '1',
       fileName: 'test-file-name',
       status: 'COMPLETE',
     });
@@ -243,8 +245,8 @@ describe('DownloadConfirmDialog', () => {
         message: '',
       })
     );
-    vi.mocked(getDownload).mockResolvedValue({
-      preparedId: 1,
+    vi.mocked(getDownload, { partial: true }).mockResolvedValue({
+      preparedId: '1',
       fileName: 'test-file-name',
       status: 'COMPLETE',
     });

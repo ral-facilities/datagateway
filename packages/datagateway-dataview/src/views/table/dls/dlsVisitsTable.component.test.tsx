@@ -94,12 +94,12 @@ describe('DLS Visits table component', () => {
       })
     );
 
-    vi.mocked(useInvestigationCount).mockReturnValue({
+    vi.mocked(useInvestigationCount, { partial: true }).mockReturnValue({
       data: 1,
       isLoading: false,
     });
-    vi.mocked(useInvestigationsInfinite).mockReturnValue({
-      data: rowData,
+    vi.mocked(useInvestigationsInfinite, { partial: true }).mockReturnValue({
+      data: { pages: [rowData], pageParams: [] },
       isLoading: false,
     });
 
@@ -298,22 +298,31 @@ describe('DLS Visits table component', () => {
   });
 
   it('renders fine with incomplete data', async () => {
-    vi.mocked(useInvestigationCount).mockReturnValueOnce({});
-    vi.mocked(useInvestigationsInfinite).mockReturnValueOnce({});
+    vi.mocked(useInvestigationCount, { partial: true }).mockReturnValueOnce({});
+    vi.mocked(useInvestigationsInfinite, { partial: true }).mockReturnValueOnce(
+      {}
+    );
 
-    vi.mocked(useInvestigationsInfinite).mockReturnValueOnce({
-      data: [
-        {
-          ...rowData[0],
-          investigationInstruments: [
-            {
-              id: 1,
-            },
+    vi.mocked(useInvestigationsInfinite, { partial: true }).mockReturnValueOnce(
+      {
+        data: {
+          pages: [
+            [
+              {
+                ...rowData[0],
+                investigationInstruments: [
+                  {
+                    id: 1,
+                  },
+                ],
+              },
+            ],
           ],
+          pageParams: [],
         },
-      ],
-      isLoading: false,
-    });
+        isLoading: false,
+      }
+    );
 
     renderComponent();
 
@@ -321,17 +330,22 @@ describe('DLS Visits table component', () => {
   });
 
   it('renders fine if no investigation instrument is returned', async () => {
-    vi.mocked(useInvestigationCount).mockReturnValue({
+    vi.mocked(useInvestigationCount, { partial: true }).mockReturnValue({
       data: 1,
       isLoading: false,
     });
-    vi.mocked(useInvestigationsInfinite).mockReturnValue({
-      data: [
-        {
-          ...rowData[0],
-          investigationInstruments: [],
-        },
-      ],
+    vi.mocked(useInvestigationsInfinite, { partial: true }).mockReturnValue({
+      data: {
+        pages: [
+          [
+            {
+              ...rowData[0],
+              investigationInstruments: [],
+            },
+          ],
+        ],
+        pageParams: [],
+      },
       isLoading: false,
     });
 

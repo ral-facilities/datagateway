@@ -80,7 +80,7 @@ describe('ISIS Dataset Landing page', () => {
     });
     user = userEvent.setup();
 
-    vi.mocked(useDatasetDetails).mockReturnValue({
+    vi.mocked(useDatasetDetails, { partial: true }).mockReturnValue({
       data: initialData,
     });
   });
@@ -172,7 +172,7 @@ describe('ISIS Dataset Landing page', () => {
 
   it('incomplete datasets render correctly', async () => {
     initialData.complete = false;
-    vi.mocked(useDatasetDetails).mockReturnValue({
+    vi.mocked(useDatasetDetails, { partial: true }).mockReturnValue({
       data: initialData,
     });
     renderComponent();

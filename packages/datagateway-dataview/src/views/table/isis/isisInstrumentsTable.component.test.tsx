@@ -87,12 +87,12 @@ describe('ISIS Instruments table component', () => {
       })
     );
 
-    vi.mocked(useInstrumentCount).mockReturnValue({
+    vi.mocked(useInstrumentCount, { partial: true }).mockReturnValue({
       data: 1,
       isLoading: false,
     });
-    vi.mocked(useInstrumentsInfinite).mockReturnValue({
-      data: { pages: [rowData] },
+    vi.mocked(useInstrumentsInfinite, { partial: true }).mockReturnValue({
+      data: { pages: [rowData], pageParams: [] },
       fetchNextPage: vi.fn(),
     });
 
@@ -250,8 +250,10 @@ describe('ISIS Instruments table component', () => {
   });
 
   it('renders fine with incomplete data', () => {
-    vi.mocked(useInstrumentCount).mockReturnValueOnce({});
-    vi.mocked(useInstrumentsInfinite).mockReturnValueOnce({});
+    vi.mocked(useInstrumentCount, { partial: true }).mockReturnValueOnce({});
+    vi.mocked(useInstrumentsInfinite, { partial: true }).mockReturnValueOnce(
+      {}
+    );
 
     expect(() => renderComponent()).not.toThrowError();
   });

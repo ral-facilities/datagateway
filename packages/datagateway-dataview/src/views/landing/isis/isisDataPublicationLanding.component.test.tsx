@@ -181,11 +181,11 @@ describe('ISIS Data Publication Landing page', () => {
       },
     ];
 
-    vi.mocked(useDataPublication).mockReturnValue({
+    vi.mocked(useDataPublication, { partial: true }).mockReturnValue({
       data: initialStudyDataPublicationData,
     });
 
-    vi.mocked(useDataPublications).mockReturnValue({
+    vi.mocked(useDataPublications, { partial: true }).mockReturnValue({
       data: initialInvestigationDataPublicationsData,
     });
   });

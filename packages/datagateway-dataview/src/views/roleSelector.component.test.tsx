@@ -75,11 +75,13 @@ describe('Role Selector', () => {
     vi.mocked(axios.get).mockResolvedValue({
       data: mockData,
     });
-    vi.mocked(readSciGatewayToken).mockReturnValue({
+    vi.mocked(readSciGatewayToken, { partial: true }).mockReturnValue({
       username: 'testUser',
     });
     vi.mocked(usePushFilter).mockReturnValue(mockPushFilters);
-    vi.mocked(parseSearchToQuery).mockReturnValue({ filters: {} });
+    vi.mocked(parseSearchToQuery, { partial: true }).mockReturnValue({
+      filters: {},
+    });
   });
 
   afterEach(() => {
@@ -104,7 +106,7 @@ describe('Role Selector', () => {
         params,
       })
     );
-    expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
+    expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
       params.toString()
     );
 
@@ -140,7 +142,7 @@ describe('Role Selector', () => {
   });
 
   it('parses current role from query params correctly', async () => {
-    vi.mocked(parseSearchToQuery).mockReturnValue({
+    vi.mocked(parseSearchToQuery, { partial: true }).mockReturnValue({
       filters: {
         'investigationUsers.role': {
           value: 'experimenter',

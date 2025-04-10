@@ -83,7 +83,7 @@ describe('DOI Redirect page', () => {
       },
     ];
 
-    vi.mocked(useInvestigation).mockReturnValue({
+    vi.mocked(useInvestigation, { partial: true }).mockReturnValue({
       data: mockInvestigationData,
       isLoading: false,
     });
@@ -101,8 +101,8 @@ describe('DOI Redirect page', () => {
   });
 
   it('displays loading spinner when things are loading', async () => {
-    vi.mocked(useInvestigation).mockReturnValue({
-      data: [],
+    vi.mocked(useInvestigation, { partial: true }).mockReturnValue({
+      data: undefined,
       isLoading: true,
     });
 
@@ -118,7 +118,7 @@ describe('DOI Redirect page', () => {
       events.push(e as CustomEvent<AnyAction>);
       return true;
     };
-    vi.mocked(useInvestigation).mockReturnValue({
+    vi.mocked(useInvestigation, { partial: true }).mockReturnValue({
       data: [],
       isLoading: false,
     });

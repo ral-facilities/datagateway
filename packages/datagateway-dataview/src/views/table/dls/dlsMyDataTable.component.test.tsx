@@ -97,14 +97,14 @@ describe('DLS MyData table component', () => {
       },
     ];
 
-    vi.mocked(useInvestigationCount).mockReturnValue({
+    vi.mocked(useInvestigationCount, { partial: true }).mockReturnValue({
       data: 0,
     });
-    vi.mocked(useInvestigationsInfinite).mockReturnValue({
-      data: { pages: [rowData] },
+    vi.mocked(useInvestigationsInfinite, { partial: true }).mockReturnValue({
+      data: { pages: [rowData], pageParams: [] },
       fetchNextPage: vi.fn(),
     });
-    vi.mocked(readSciGatewayToken).mockReturnValue({
+    vi.mocked(readSciGatewayToken, { partial: true }).mockReturnValue({
       username: 'testUser',
     });
     global.Date.now = vi.fn(() => 1);
@@ -295,8 +295,8 @@ describe('DLS MyData table component', () => {
       ...rowData[0],
       investigationInstruments: [],
     };
-    vi.mocked(useInvestigationsInfinite).mockReturnValue({
-      data: { pages: [rowData] },
+    vi.mocked(useInvestigationsInfinite, { partial: true }).mockReturnValue({
+      data: { pages: [rowData], pageParams: [] },
       fetchNextPage: vi.fn(),
     });
 
@@ -314,8 +314,8 @@ describe('DLS MyData table component', () => {
         },
       ],
     };
-    vi.mocked(useInvestigationsInfinite).mockReturnValue({
-      data: { pages: [rowData] },
+    vi.mocked(useInvestigationsInfinite, { partial: true }).mockReturnValue({
+      data: { pages: [rowData], pageParams: [] },
       fetchNextPage: vi.fn(),
     });
 

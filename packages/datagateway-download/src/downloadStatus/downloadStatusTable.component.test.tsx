@@ -119,7 +119,7 @@ describe('Download Status Table', () => {
     });
 
     // pretend server returned a different list (with only the restoring download)
-    vi.mocked(fetchDownloads).mockReturnValueOnce([mockDownloadItems[2]]);
+    vi.mocked(fetchDownloads).mockResolvedValueOnce([mockDownloadItems[2]]);
     // pretend the server returns an updated value
     vi.mocked(getPercentageComplete).mockResolvedValue(50);
     rerender(

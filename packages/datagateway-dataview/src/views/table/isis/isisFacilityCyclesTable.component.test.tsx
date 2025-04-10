@@ -81,12 +81,12 @@ describe('ISIS FacilityCycles table component', () => {
       })
     );
 
-    vi.mocked(useFacilityCycleCount).mockReturnValue({
+    vi.mocked(useFacilityCycleCount, { partial: true }).mockReturnValue({
       data: 1,
       isLoading: false,
     });
-    vi.mocked(useFacilityCyclesInfinite).mockReturnValue({
-      data: { pages: [rowData] },
+    vi.mocked(useFacilityCyclesInfinite, { partial: true }).mockReturnValue({
+      data: { pages: [rowData], pageParams: [] },
       fetchNextPage: vi.fn(),
     });
   });
@@ -227,8 +227,10 @@ describe('ISIS FacilityCycles table component', () => {
   });
 
   it('renders fine with incomplete data', () => {
-    vi.mocked(useFacilityCycleCount).mockReturnValueOnce({});
-    vi.mocked(useFacilityCyclesInfinite).mockReturnValueOnce({});
+    vi.mocked(useFacilityCycleCount, { partial: true }).mockReturnValueOnce({});
+    vi.mocked(useFacilityCyclesInfinite, { partial: true }).mockReturnValueOnce(
+      {}
+    );
 
     expect(() => renderComponent()).not.toThrowError();
   });

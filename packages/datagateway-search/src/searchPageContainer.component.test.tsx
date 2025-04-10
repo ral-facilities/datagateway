@@ -6,6 +6,8 @@ import {
   dGCommonInitialState,
   readSciGatewayToken,
   type DownloadCartItem,
+  useCart,
+  parseSearchToQuery,
 } from 'datagateway-common';
 import { createMemoryHistory, createPath, type History } from 'history';
 import { Router } from 'react-router-dom';
@@ -32,9 +34,11 @@ vi.mock('datagateway-common', async () => {
     __esModule: true,
     ...originalModule,
     parseSearchToQuery: vi.fn((queryParams: string) =>
-      originalModule.parseSearchToQuery(queryParams)
+      (originalModule.parseSearchToQuery as typeof parseSearchToQuery)(
+        queryParams
+      )
     ),
-    useCart: vi.fn(() => originalModule.useCart()),
+    useCart: vi.fn(() => (originalModule.useCart as typeof useCart)()),
     readSciGatewayToken: vi.fn(),
   };
 });

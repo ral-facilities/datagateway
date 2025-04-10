@@ -47,7 +47,9 @@ vi.mock('datagateway-common', async () => {
     // mock table and cardview to opt out of rendering them in these tests as there's no need
     Table: vi.fn(() => 'MockedTable'),
     CardView: vi.fn(() => 'MockedCardView'),
-    readSciGatewayToken: vi.fn(() => originalModule.readSciGatewayToken()),
+    readSciGatewayToken: vi.fn(() =>
+      (originalModule.readSciGatewayToken as typeof readSciGatewayToken)()
+    ),
   };
 });
 
@@ -132,7 +134,8 @@ describe('PageContainer - Tests', () => {
     holder.setAttribute('id', 'datagateway-search');
     document.body.appendChild(holder);
 
-    vi.mocked(useQueryClient).mockReturnValue({
+    vi.mocked(useQueryClient, { partial: true }).mockReturnValue({
+      // @ts-expect-error doesn't like that number isn't a generic type
       getQueryData: vi.fn(() => 0),
     });
 
@@ -172,6 +175,7 @@ describe('PageContainer - Tests', () => {
   it('displays the correct entity count', async () => {
     history.replace(paths.toggle.investigation);
     vi.mocked(useQueryClient).mockReturnValue({
+      // @ts-expect-error doesn't like that number isn't a generic type
       getQueryData: vi.fn(() => 101),
     });
 
@@ -261,7 +265,7 @@ describe('PageContainer - Tests', () => {
         '"%7D%2C"title"%3A%7B"value"%3A"test"%2C"type"%3A"include"%7D%7D&sort=%7B%22startDate%22%3A%22desc%22%7D'
     );
     const response = { username: 'SomePerson' };
-    vi.mocked(readSciGatewayToken).mockReturnValue(response);
+    vi.mocked(readSciGatewayToken, { partial: true }).mockReturnValue(response);
     renderComponent();
 
     await user.click(
@@ -346,7 +350,7 @@ describe('PageContainer - Tests', () => {
 
   it('do not use StyledRouting component on landing pages', async () => {
     vi.mocked(checkInstrumentId).mockResolvedValueOnce(true);
-    vi.mocked(useQueryClient).mockReturnValue({
+    vi.mocked(useQueryClient, { partial: true }).mockReturnValue({
       getQueryData: vi.fn(),
     });
     history.replace(
@@ -381,7 +385,7 @@ describe('PageContainer - Tests', () => {
 
   it('displays warning label when browsing data anonymously', async () => {
     const response = { username: 'anon/anon' };
-    vi.mocked(readSciGatewayToken).mockReturnValue(response);
+    vi.mocked(readSciGatewayToken, { partial: true }).mockReturnValue(response);
 
     renderComponent();
 
@@ -397,7 +401,9 @@ describe('PageContainer - Tests', () => {
       })
     );
     const response = { username: 'SomePerson' };
-    vi.mocked(readSciGatewayToken).mockReturnValueOnce(response);
+    vi.mocked(readSciGatewayToken, { partial: true }).mockReturnValueOnce(
+      response
+    );
 
     renderComponent();
 
@@ -408,7 +414,9 @@ describe('PageContainer - Tests', () => {
 
   it('does not display warning label when logged in', async () => {
     const response = { username: 'SomePerson' };
-    vi.mocked(readSciGatewayToken).mockReturnValueOnce(response);
+    vi.mocked(readSciGatewayToken, { partial: true }).mockReturnValueOnce(
+      response
+    );
 
     renderComponent();
 

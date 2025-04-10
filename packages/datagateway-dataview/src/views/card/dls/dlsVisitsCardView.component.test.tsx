@@ -67,11 +67,11 @@ describe('DLS Visits - Card View', () => {
       })
     );
 
-    vi.mocked(useInvestigationCount).mockReturnValue({
+    vi.mocked(useInvestigationCount, { partial: true }).mockReturnValue({
       data: 1,
       isLoading: false,
     });
-    vi.mocked(useInvestigationsPaginated).mockReturnValue({
+    vi.mocked(useInvestigationsPaginated, { partial: true }).mockReturnValue({
       data: cardData,
       isLoading: false,
     });
@@ -195,8 +195,10 @@ describe('DLS Visits - Card View', () => {
   });
 
   it('renders fine with incomplete data', () => {
-    vi.mocked(useInvestigationCount).mockReturnValueOnce({});
-    vi.mocked(useInvestigationsPaginated).mockReturnValueOnce({});
+    vi.mocked(useInvestigationCount, { partial: true }).mockReturnValueOnce({});
+    vi.mocked(useInvestigationsPaginated, {
+      partial: true,
+    }).mockReturnValueOnce({});
 
     expect(() => renderComponent()).not.toThrowError();
   });
