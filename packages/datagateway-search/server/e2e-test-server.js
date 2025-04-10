@@ -1,14 +1,15 @@
-const express = require('express');
-const path = require('path');
-const serveStatic = require('serve-static');
-const axios = require('axios');
-const fs = require('fs');
+import express from 'express';
+import path from 'path';
+import axios from 'axios';
+import fs from 'fs';
 
 const app = express();
 
 app.use(
   express.json(),
-  serveStatic(path.resolve('./build'), { index: ['index.html', 'index.htm'] })
+  express.static(path.resolve('./build'), {
+    index: ['index.html', 'index.htm'],
+  })
 );
 
 app.get('/datagateway-search-settings.json', function (req, res) {

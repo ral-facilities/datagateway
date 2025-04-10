@@ -1,6 +1,5 @@
-const express = require('express');
-const path = require('path');
-const serveStatic = require('serve-static');
+import express from 'express';
+import path from 'path';
 
 const app = express();
 
@@ -20,7 +19,9 @@ app.get('/datagateway-dataview-settings.json', function (req, res) {
 
 app.use(
   express.json(),
-  serveStatic(path.resolve('./build'), { index: ['index.html', 'index.htm'] })
+  express.static(path.resolve('./build'), {
+    index: ['index.html', 'index.htm'],
+  })
 );
 
 app.get('/*', function (req, res) {
