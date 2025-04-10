@@ -59,12 +59,12 @@ exports[`HomePage > translated homepage renders correctly 1`] = `
                 home_page.browse.title
               </h3>
               <p
-                class="MuiTypography-root MuiTypography-body1 css-16w7kz2-MuiTypography-root"
+                class="MuiTypography-root MuiTypography-body1 css-1i0o32f css-ahj2mt-MuiTypography-root"
               >
                 home_page.browse.description1
               </p>
               <p
-                class="MuiTypography-root MuiTypography-body1 css-16w7kz2-MuiTypography-root"
+                class="MuiTypography-root MuiTypography-body1 css-1i0o32f css-ahj2mt-MuiTypography-root"
               >
                 <strong>
                   DataGateway
@@ -129,12 +129,12 @@ exports[`HomePage > translated homepage renders correctly 1`] = `
                 </svg>
               </div>
               <h4
-                class="MuiTypography-root MuiTypography-h4 css-rspydk-MuiTypography-root"
+                class="MuiTypography-root MuiTypography-h4 css-13wasa5 css-5lbw0b-MuiTypography-root"
               >
                 home_page.search.title
               </h4>
               <p
-                class="MuiTypography-root MuiTypography-body1 css-16w7kz2-MuiTypography-root"
+                class="MuiTypography-root MuiTypography-body1 css-1i0o32f css-ahj2mt-MuiTypography-root"
               >
                 home_page.search.description
               </p>
@@ -181,12 +181,12 @@ exports[`HomePage > translated homepage renders correctly 1`] = `
                 </svg>
               </div>
               <h4
-                class="MuiTypography-root MuiTypography-h4 css-rspydk-MuiTypography-root"
+                class="MuiTypography-root MuiTypography-h4 css-13wasa5 css-5lbw0b-MuiTypography-root"
               >
                 home_page.download.title
               </h4>
               <p
-                class="MuiTypography-root MuiTypography-body1 css-16w7kz2-MuiTypography-root"
+                class="MuiTypography-root MuiTypography-body1 css-1i0o32f css-ahj2mt-MuiTypography-root"
               >
                 home_page.download.description
               </p>
@@ -221,12 +221,12 @@ exports[`HomePage > translated homepage renders correctly 1`] = `
                 class="MuiBox-root css-1onku40"
               >
                 <h4
-                  class="MuiTypography-root MuiTypography-h4 css-94tke6-MuiTypography-root"
+                  class="MuiTypography-root MuiTypography-h4 css-1yppny8 css-5lbw0b-MuiTypography-root"
                 >
                   home_page.facility.title
                 </h4>
                 <p
-                  class="MuiTypography-root MuiTypography-body1 css-16w7kz2-MuiTypography-root"
+                  class="MuiTypography-root MuiTypography-body1 css-1i0o32f css-ahj2mt-MuiTypography-root"
                 >
                   home_page.facility.description
                 </p>

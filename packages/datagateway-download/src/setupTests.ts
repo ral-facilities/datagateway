@@ -10,6 +10,16 @@ vi.setConfig({ testTimeout: 20_000 });
 // and https://github.com/testing-library/user-event/issues/1115
 vi.stubGlobal('jest', { advanceTimersByTime: vi.advanceTimersByTime.bind(vi) });
 
+// Add in ResizeObserver as it's not in jsdom's environment
+vi.stubGlobal(
+  'ResizeObserver',
+  vi.fn(() => ({
+    observe: vi.fn(),
+    unobserve: vi.fn(),
+    disconnect: vi.fn(),
+  }))
+);
+
 function noOp(): void {
   // required as work-around for jsdom environment not implementing window.URL.createObjectURL method
 }

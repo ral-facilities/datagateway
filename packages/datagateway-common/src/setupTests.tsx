@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import '@testing-library/jest-dom';
 import React from 'react';
-import { Action } from 'redux';
-import { StateType } from './state/app.types';
+import type { Action } from 'redux';
+import type { StateType } from './state/app.types';
 import { initialState } from './state/reducers/dgcommon.reducer';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';

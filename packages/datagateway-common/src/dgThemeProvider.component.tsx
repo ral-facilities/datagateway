@@ -4,14 +4,36 @@ import {
   StyledEngineProvider,
   Theme,
   createTheme,
-} from '@mui/material/styles';
+  CssBaseline,
+} from '@mui/material';
 import { MicroFrontendId } from './app.types';
 import { SendThemeOptionsType } from './state/actions/actions.types';
-import { CssBaseline } from '@mui/material';
 
 // Store the parent theme options when received.
 // Otherwise, set to an empty theme.
-let parentThemeOptions: Theme = createTheme();
+let parentThemeOptions: Theme = createTheme(
+  import.meta.env.MODE === 'test'
+    ? {
+        components: {
+          MuiButtonBase: {
+            defaultProps: {
+              // disable ripple effect in tests
+              disableRipple: true,
+            },
+          },
+          // disable animations and transitions in tests
+          MuiCssBaseline: {
+            styleOverrides: {
+              '*, *::before, *::after': {
+                transition: 'none !important',
+                animation: 'none !important',
+              },
+            },
+          },
+        },
+      }
+    : undefined
+);
 
 // Handle theme options sent from the parent app.
 document.addEventListener(MicroFrontendId, (e) => {

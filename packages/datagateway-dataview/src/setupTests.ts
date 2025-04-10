@@ -3,13 +3,13 @@ import '@testing-library/jest-dom';
 // Blob implementation in jsdom is not complete (https://github.com/jsdom/jsdom/issues/2555)
 // node blob implementation fills in the gap
 import { Blob as BlobPolyfill } from 'node:buffer';
-import { Action, AnyAction } from 'redux';
-import { StateType } from './state/app.types';
+import type { Action, AnyAction } from 'redux';
+import type { StateType } from './state/app.types';
 import { initialState as dgDataViewInitialState } from './state/reducers/dgdataview.reducer';
 import { dGCommonInitialState } from 'datagateway-common';
 import { screen, waitFor, within } from '@testing-library/react';
 import failOnConsole from 'vitest-fail-on-console';
-import { ThunkDispatch, ThunkAction } from 'redux-thunk';
+import type { ThunkDispatch, ThunkAction } from 'redux-thunk';
 
 global.Blob = BlobPolyfill as typeof global.Blob;
 
@@ -24,6 +24,16 @@ vi.stubGlobal('jest', { advanceTimersByTime: vi.advanceTimersByTime.bind(vi) });
 function noOp(): void {
   // required as work-around for jsdom environment not implementing window.URL.createObjectURL method
 }
+
+// Add in ResizeObserver as it's not in jsdom's environment
+vi.stubGlobal(
+  'ResizeObserver',
+  vi.fn(() => ({
+    observe: vi.fn(),
+    unobserve: vi.fn(),
+    disconnect: vi.fn(),
+  }))
+);
 
 if (typeof window.URL.createObjectURL === 'undefined') {
   Object.defineProperty(window.URL, 'createObjectURL', { value: noOp });

@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import '@testing-library/jest-dom';
-import { Action, AnyAction } from 'redux';
-import { StateType } from './state/app.types';
+import type { Action, AnyAction } from 'redux';
+import type { StateType } from './state/app.types';
 import { dGCommonInitialState } from 'datagateway-common';
 import { initialState as dgSearchInitialState } from './state/reducers/dgsearch.reducer';
 import { screen, within } from '@testing-library/react';
 import failOnConsole from 'vitest-fail-on-console';
-import { ThunkAction, ThunkDispatch } from 'redux-thunk';
+import type { ThunkAction, ThunkDispatch } from 'redux-thunk';
 
 failOnConsole();
 
@@ -72,10 +72,6 @@ export const dispatch: ThunkDispatch<StateType, null, AnyAction> = (
 
 export const flushPromises = (): Promise<void> =>
   new Promise((resolve) => setTimeout(resolve));
-
-vi.mock('@mui/utils/useId', () =>
-  vi.fn().mockImplementation((id?: string) => id ?? 'mui-test-id')
-);
 
 /**
  * Finds the index of the column with the given name.

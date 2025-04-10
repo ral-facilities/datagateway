@@ -81,7 +81,7 @@ exports[`Data column header component > renders correctly with filter but no sor
                 />
                 <svg
                   aria-hidden="true"
-                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconStandard css-pqjvzy-MuiSvgIcon-root-MuiSelect-icon"
+                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconStandard css-19xtc65-MuiSelect-icon css-i4bv87-MuiSvgIcon-root"
                   data-testid="SettingsIcon"
                   focusable="false"
                   viewBox="0 0 24 24"
@@ -144,7 +144,7 @@ exports[`Data column header component > renders correctly with sort and filter 1
             </p>
             <svg
               aria-hidden="true"
-              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionDesc css-3l415a-MuiSvgIcon-root-MuiTableSortLabel-icon"
+              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionDesc css-1ku2c56-MuiTableSortLabel-icon css-i4bv87-MuiSvgIcon-root"
               data-testid="SortIcon"
               focusable="false"
               viewBox="0 0 24 24"
@@ -208,7 +208,7 @@ exports[`Data column header component > renders correctly with sort and filter 1
                 />
                 <svg
                   aria-hidden="true"
-                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconStandard css-pqjvzy-MuiSvgIcon-root-MuiSelect-icon"
+                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconStandard css-19xtc65-MuiSelect-icon css-i4bv87-MuiSvgIcon-root"
                   data-testid="SettingsIcon"
                   focusable="false"
                   viewBox="0 0 24 24"
@@ -271,7 +271,7 @@ exports[`Data column header component > renders correctly with sort but no filte
             </p>
             <svg
               aria-hidden="true"
-              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionDesc css-3l415a-MuiSvgIcon-root-MuiTableSortLabel-icon"
+              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionDesc css-1ku2c56-MuiTableSortLabel-icon css-i4bv87-MuiSvgIcon-root"
               data-testid="SortIcon"
               focusable="false"
               viewBox="0 0 24 24"

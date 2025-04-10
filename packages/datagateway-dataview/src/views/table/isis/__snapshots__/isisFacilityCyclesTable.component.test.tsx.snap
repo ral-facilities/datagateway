@@ -8,12 +8,3 @@ exports[`ISIS FacilityCycles table component > renders facilitycycle name as a l
   Test 1
 </a>
 `;
-
-exports[`ISIS FacilityCycles table component renders facilitycycle name as a link 1`] = `
-<a
-  class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
-  href="/browse/instrument/1/facilityCycle/1/investigation"
->
-  Test 1
-</a>
-`;

@@ -142,6 +142,18 @@ export default defineConfig(({ mode }) => {
       environment: 'jsdom',
       setupFiles: ['src/setupTests.ts'],
       exclude: [...vitestDefaultExclude, 'e2e/**'],
+      deps: {
+        optimizer: {
+          web: {
+            enabled: true,
+            include: [
+              '@mui/material',
+              '@mui/icons-material',
+              'react/jsx-runtime',
+            ],
+          },
+        },
+      },
       coverage: {
         reporter: [
           // Default
