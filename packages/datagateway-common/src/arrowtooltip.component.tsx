@@ -1,5 +1,4 @@
 import React from 'react';
-import ResizeObserver from 'resize-observer-polyfill';
 import { Tooltip, TooltipProps } from '@mui/material';
 
 export const getTooltipText = (node: React.ReactNode): string => {

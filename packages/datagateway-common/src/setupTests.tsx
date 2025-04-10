@@ -35,7 +35,14 @@ if (typeof window.URL.revokeObjectURL === 'undefined') {
 }
 
 // Add in ResizeObserver as it's not in jsdom's environment
-global.ResizeObserver = require('resize-observer-polyfill');
+vi.stubGlobal(
+  'ResizeObserver',
+  vi.fn(() => ({
+    observe: vi.fn(),
+    unobserve: vi.fn(),
+    disconnect: vi.fn(),
+  }))
+);
 
 if (!global.structuredClone) {
   // structuredClone not available in jsdom/node <17, so this is a quick polyfill that should do the exact same thing

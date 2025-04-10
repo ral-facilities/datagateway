@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import '@testing-library/jest-dom';
 // Blob implementation in jsdom is not complete (https://github.com/jsdom/jsdom/issues/2555)
-// blob-polyfill fills in the gap
-import 'blob-polyfill';
+// node blob implementation fills in the gap
+import { Blob as BlobPolyfill } from 'node:buffer';
 import { Action, AnyAction } from 'redux';
 import { StateType } from './state/app.types';
 import { initialState as dgDataViewInitialState } from './state/reducers/dgdataview.reducer';
@@ -10,6 +10,8 @@ import { dGCommonInitialState } from 'datagateway-common';
 import { screen, waitFor, within } from '@testing-library/react';
 import failOnConsole from 'vitest-fail-on-console';
 import { ThunkDispatch, ThunkAction } from 'redux-thunk';
+
+global.Blob = BlobPolyfill as typeof global.Blob;
 
 failOnConsole();
 
