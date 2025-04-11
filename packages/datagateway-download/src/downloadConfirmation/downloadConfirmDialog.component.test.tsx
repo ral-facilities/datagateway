@@ -256,7 +256,7 @@ describe('DownloadConfirmDialog', () => {
     await user.click(await screen.findByText('downloadConfirmDialog.download'));
 
     await waitFor(() => {
-      expect(downloadPreparedCart).toHaveBeenCalledWith(1, 'test-file-name', {
+      expect(downloadPreparedCart).toHaveBeenCalledWith('1', 'test-file-name', {
         idsUrl: 'https://example.com/ids',
       });
     });

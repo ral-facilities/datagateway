@@ -19,6 +19,7 @@ import {
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { mockDownloadItems, mockedSettings } from '../testData';
 import { DownloadSettingsContext } from '../ConfigProvider';
+import { DGThemeProvider } from 'datagateway-common';
 
 vi.mock('../downloadApi');
 
@@ -33,11 +34,14 @@ const createTestQueryClient = (): QueryClient =>
 
 const renderComponent = ({ settings = mockedSettings } = {}): RenderResult =>
   render(
-    <DownloadSettingsContext.Provider value={settings}>
-      <QueryClientProvider client={createTestQueryClient()}>
-        <AdminDownloadStatusTable />
-      </QueryClientProvider>
-    </DownloadSettingsContext.Provider>
+    // wrap in theme provider to ensure no ripples end up in snapshots
+    <DGThemeProvider>
+      <DownloadSettingsContext.Provider value={settings}>
+        <QueryClientProvider client={createTestQueryClient()}>
+          <AdminDownloadStatusTable />
+        </QueryClientProvider>
+      </DownloadSettingsContext.Provider>
+    </DGThemeProvider>
   );
 
 describe('Admin Download Status Table', () => {
@@ -98,7 +102,7 @@ describe('Admin Download Status Table', () => {
   it('should fetch the download items and sorts by download requested time desc on load', async () => {
     renderComponent();
 
-    const rows = await screen.findAllByText(/^\d$/);
+    const rows = await screen.findAllByRole('gridcell', { name: /^\d$/ });
     expect(rows).toHaveLength(5);
   });
 
@@ -728,7 +732,9 @@ describe('Admin Download Status Table', () => {
     });
 
     await waitFor(() => {
-      for (const progressBar of screen.getAllByRole('progressbar')) {
+      for (const progressBar of screen.getAllByRole('progressbar', {
+        value: { now: 30 },
+      })) {
         expect(progressBar).toBeInTheDocument();
       }
       for (const progressText of screen.getAllByText('30%')) {
@@ -750,7 +756,9 @@ describe('Admin Download Status Table', () => {
     });
 
     await waitFor(() => {
-      for (const progressBar of screen.getAllByRole('progressbar')) {
+      for (const progressBar of screen.getAllByRole('progressbar', {
+        value: { now: 30 },
+      })) {
         expect(progressBar).toBeInTheDocument();
       }
       for (const progressText of screen.getAllByText('30%')) {

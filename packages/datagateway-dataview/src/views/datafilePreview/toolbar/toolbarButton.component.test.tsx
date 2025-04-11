@@ -1,24 +1,30 @@
-import { Download } from '@mui/icons-material';
-import type { useTheme } from '@mui/material';
-import { useMediaQuery } from '@mui/material';
+import Download from '@mui/icons-material/Download';
 import { render, screen } from '@testing-library/react';
 import ToolbarButton from './toolbarButton.component';
 
-// JSDOM doesn't support viewport resizing, so the hooks have to be stubbed for now.
-
-vi.mock('@mui/material', async () => ({
-  ...(await vi.importActual('@mui/material')),
-  useMediaQuery: vi.fn(),
-  useTheme: vi.fn<typeof useTheme>().mockReturnValue({
-    breakpoints: {
-      down: (_: unknown) => '',
-    },
-  }),
-}));
-
 describe('ToolbarButton', () => {
+  let mediaQueryShouldMatch = false;
+  beforeEach(() => {
+    // JSDOM doesn't support matchMedia, so mock it
+    // see: https://mui.com/material-ui/react-use-media-query/#testing
+    function createMatchMedia(_width: number) {
+      return (_query: string): MediaQueryList => ({
+        matches: mediaQueryShouldMatch,
+        media: '',
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        onchange: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(() => true),
+      });
+    }
+    // mock matchMedia for useMediaQuery to work properly
+    window.matchMedia = createMatchMedia(window.innerWidth);
+  });
+
   it('should show a normal MUI button with the given label and icon at >=md breakpoint', () => {
-    vi.mocked(useMediaQuery).mockReturnValueOnce(false);
+    mediaQueryShouldMatch = false;
 
     render(<ToolbarButton icon={<Download />} label="Download" />);
 
@@ -27,7 +33,7 @@ describe('ToolbarButton', () => {
   });
 
   it('should only show the given icon at sub md breakpoint', () => {
-    vi.mocked(useMediaQuery).mockReturnValueOnce(true);
+    mediaQueryShouldMatch = true;
 
     render(<ToolbarButton icon={<Download />} label="Download" />);
 
