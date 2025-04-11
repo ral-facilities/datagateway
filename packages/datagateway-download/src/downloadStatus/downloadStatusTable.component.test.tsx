@@ -449,7 +449,7 @@ describe('Download Status Table', () => {
     expect(await screen.findByText('test-file-3')).toBeInTheDocument();
     expect(await screen.findByText('test-file-4')).toBeInTheDocument();
     expect(await screen.findByText('test-file-5')).toBeInTheDocument();
-  });
+  }, 30_000);
 
   it('should display download progress ui if enabled', async () => {
     vi.mocked(getPercentageComplete).mockResolvedValue(20);

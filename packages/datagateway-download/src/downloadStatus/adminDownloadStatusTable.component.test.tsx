@@ -731,6 +731,10 @@ describe('Admin Download Status Table', () => {
       },
     });
 
+    // wait for data to load
+    const rows = await screen.findAllByRole('gridcell', { name: /^\d$/ });
+    expect(rows).toHaveLength(5);
+
     await waitFor(() => {
       for (const progressBar of screen.getAllByRole('progressbar', {
         value: { now: 30 },
@@ -754,6 +758,10 @@ describe('Admin Download Status Table', () => {
         },
       },
     });
+
+    // wait for data to load
+    const rows = await screen.findAllByRole('gridcell', { name: /^\d$/ });
+    expect(rows).toHaveLength(5);
 
     await waitFor(() => {
       for (const progressBar of screen.getAllByRole('progressbar', {
