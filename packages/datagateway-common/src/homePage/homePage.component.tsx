@@ -132,6 +132,7 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
   return (
     <div id="dg-homepage">
       <div
+        data-testid="background"
         style={{
           backgroundImage: `url(${props.backgroundImage})`,
           backgroundPosition: 'center 40%',
@@ -140,6 +141,7 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
         }}
       >
         <div
+          data-testid="background-decal"
           style={{
             backgroundImage: `url(${props.greenSwirl1Image}), url(${props.decal1Image})`,
             backgroundRepeat: 'no-repeat',
@@ -217,6 +219,7 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
             </Grid>
             <Grid item xs={6}>
               <div
+                data-testid="facility-image"
                 style={{
                   backgroundImage: `url(${props.facilityImage})`,
                   backgroundRepeat: 'no-repeat',
@@ -228,6 +231,7 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
                 }}
               >
                 <BrowseDecal
+                  data-testid="browse-decal"
                   decal2Image={props.decal2Image}
                   decal2DarkImage={props.decal2DarkImage}
                   decal2DarkHCImage={props.decal2DarkHCImage}
@@ -295,6 +299,7 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
               elevation={1}
             >
               <div
+                data-testid="facility-decal"
                 style={{
                   backgroundImage: `url(${props.greenSwirl2Image})`,
                   backgroundRepeat: 'no-repeat',

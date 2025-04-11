@@ -1,14 +1,16 @@
 import React from 'react';
 import { HomePage } from 'datagateway-common';
-import DGLogo from 'datagateway-common/src/images/datgateway-white-text-blue-mark-logo.svg';
-import BackgroundImage from 'datagateway-common/src/images/background.jpg';
-import GreenSwirl1Image from 'datagateway-common/src/images/green-swirl1.png';
-import GreenSwirl2Image from 'datagateway-common/src/images/green-swirl2.png';
-import Decal1Image from 'datagateway-common/src/images/decal1.svg';
-import Decal2Image from 'datagateway-common/src/images/decal2.svg';
-import Decal2DarkImage from 'datagateway-common/src/images/decal2-dark.svg';
-import Decal2DarkHCImage from 'datagateway-common/src/images/decal2-darkhc.svg';
-import FacilityImage from 'datagateway-common/src/images/facility.jpg';
+// explicitly set no-inline to ensure Vite doesn't inline the image imports, which wouldn't work with prepending pluginHost
+// TODO: explore whether it is better to explicitly inline everything & not use pluginHost
+import DGLogo from 'datagateway-common/src/images/datgateway-white-text-blue-mark-logo.svg?no-inline';
+import BackgroundImage from 'datagateway-common/src/images/background.jpg?no-inline';
+import GreenSwirl1Image from 'datagateway-common/src/images/green-swirl1.png?no-inline';
+import GreenSwirl2Image from 'datagateway-common/src/images/green-swirl2.png?no-inline';
+import Decal1Image from 'datagateway-common/src/images/decal1.svg?no-inline';
+import Decal2Image from 'datagateway-common/src/images/decal2.svg?no-inline';
+import Decal2DarkImage from 'datagateway-common/src/images/decal2-dark.svg?no-inline';
+import Decal2DarkHCImage from 'datagateway-common/src/images/decal2-darkhc.svg?no-inline';
+import FacilityImage from 'datagateway-common/src/images/facility.jpg?no-inline';
 import { StateType } from '../state/app.types';
 import { connect } from 'react-redux';
 

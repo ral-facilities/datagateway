@@ -6,9 +6,11 @@ exports[`Home page component > homepage renders correctly 1`] = `
     id="dg-homepage"
   >
     <div
+      data-testid="background"
       style="background-image: url(test-bakcgroundImage); width: 100%; height: 250px;"
     >
       <div
+        data-testid="background-decal"
         style="background-image: url(test-greenSwirl1Image), url(test-decal1Image); background-repeat: no-repeat; width: 100%; height: 250px;"
       >
         <div
@@ -92,10 +94,12 @@ exports[`Home page component > homepage renders correctly 1`] = `
             class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-6 css-1osj8n2-MuiGrid-root"
           >
             <div
+              data-testid="facility-image"
               style="background-image: url(test-facilityImage); background-repeat: no-repeat; background-position: bottom right; background-size: cover; width: 100%; height: 100%; border-radius: 4px;"
             >
               <div
                 class="css-10ik3yc"
+                data-testid="browse-decal"
               />
             </div>
           </div>
@@ -215,6 +219,7 @@ exports[`Home page component > homepage renders correctly 1`] = `
             class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 css-19bggzh-MuiPaper-root"
           >
             <div
+              data-testid="facility-decal"
               style="background-image: url(test-greenSwirl2Image); background-repeat: no-repeat; background-position: top right; background-size: auto 100%; height: 100%;"
             >
               <div

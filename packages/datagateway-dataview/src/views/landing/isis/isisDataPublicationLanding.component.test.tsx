@@ -127,6 +127,7 @@ describe('ISIS Data Publication Landing page', () => {
         dgcommon: dGCommonInitialState,
       })
     );
+    state.dgdataview.pluginHost = '/test/';
 
     history = createMemoryHistory({
       initialEntries: [
@@ -228,6 +229,14 @@ describe('ISIS Data Publication Landing page', () => {
 
   it('renders correctly', async () => {
     renderComponent();
+
+    // renders branding correctly
+    expect(
+      await screen.findByRole('img', { name: 'STFC Logo' })
+    ).toHaveAttribute(
+      'src',
+      expect.stringMatching(/\/test\/(.*)stfc-logo-white-text\.png/)
+    );
 
     // displays doi + link correctly
     expect(await screen.findByRole('link', { name: 'doi 1' })).toHaveAttribute(

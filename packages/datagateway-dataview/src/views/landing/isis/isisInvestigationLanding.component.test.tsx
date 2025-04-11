@@ -150,6 +150,7 @@ describe('ISIS Investigation Landing page', () => {
         dgcommon: dGCommonInitialState,
       })
     );
+    state.dgdataview.pluginHost = '/test/';
     history = createMemoryHistory({
       initialEntries: [
         generatePath(paths.landing.isisInvestigationLanding, {
@@ -273,6 +274,12 @@ describe('ISIS Investigation Landing page', () => {
     expect(
       await screen.findByRole('img', { name: 'STFC Logo' })
     ).toBeInTheDocument();
+    expect(
+      await screen.findByRole('img', { name: 'STFC Logo' })
+    ).toHaveAttribute(
+      'src',
+      expect.stringMatching(/\/test\/(.*)stfc-logo-white-text\.png/)
+    );
     expect(
       screen.getByText('doi_constants.branding.title')
     ).toBeInTheDocument();
@@ -431,6 +438,12 @@ describe('ISIS Investigation Landing page', () => {
     expect(
       await screen.findByRole('img', { name: 'STFC Logo' })
     ).toBeInTheDocument();
+    expect(
+      await screen.findByRole('img', { name: 'STFC Logo' })
+    ).toHaveAttribute(
+      'src',
+      expect.stringMatching(/\/test\/(.*)stfc-logo-white-text\.png/)
+    );
     expect(
       screen.getByText('doi_constants.branding.title')
     ).toBeInTheDocument();

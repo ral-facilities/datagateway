@@ -68,6 +68,7 @@ describe('ISIS Dataset Landing page', () => {
         dgcommon: dGCommonInitialState,
       })
     );
+    state.dgdataview.pluginHost = '/test/';
     history = createMemoryHistory({
       initialEntries: [
         generatePath(paths.landing.isisDatasetLanding, {
@@ -167,6 +168,14 @@ describe('ISIS Dataset Landing page', () => {
     expect(await screen.findByRole('link', { name: 'doi 1' })).toHaveAttribute(
       'href',
       'https://doi.org/doi 1'
+    );
+
+    // renders branding correctly
+    expect(
+      await screen.findByRole('img', { name: 'STFC Logo' })
+    ).toHaveAttribute(
+      'src',
+      expect.stringMatching(/\/test\/(.*)stfc-logo-white-text\.png/)
     );
   });
 
