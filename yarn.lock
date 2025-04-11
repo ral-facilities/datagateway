@@ -4349,7 +4349,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chalk@npm:^2.3.0, chalk@npm:^2.4.2":
+"chalk@npm:^2.4.2":
   version: 2.4.2
   resolution: "chalk@npm:2.4.2"
   dependencies:
@@ -4728,16 +4728,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cypress-failed-log@npm:2.10.0":
-  version: 2.10.0
-  resolution: "cypress-failed-log@npm:2.10.0"
-  dependencies:
-    debug: 4.3.4
-    logdown: 3.3.1
-  checksum: 05fb09ac19c5f3ee8b1883102efea3fa3f73e2710fe6254fb2a2cba9cd33d45bb9ee454ded31d18d008c84bd1cf00a1b65a0b581a408e1d2d2a311a62817f8ff
-  languageName: node
-  linkType: hard
-
 "cypress@npm:13.6.4":
   version: 13.6.4
   resolution: "cypress@npm:13.6.4"
@@ -4918,7 +4908,6 @@ __metadata:
     browserslist-to-esbuild: 2.1.1
     cross-env: 7.0.3
     cypress: 13.6.4
-    cypress-failed-log: 2.10.0
     datagateway-common: ^2.1.0
     date-fns: 2.30.0
     eslint: 8.56.0
@@ -4989,7 +4978,6 @@ __metadata:
     browserslist-to-esbuild: 2.1.1
     cross-env: 7.0.3
     cypress: 13.6.4
-    cypress-failed-log: 2.10.0
     datagateway-common: ^2.1.0
     date-fns: 2.30.0
     date-fns-tz: 2.0.0
@@ -5065,7 +5053,6 @@ __metadata:
     browserslist-to-esbuild: 2.1.1
     cross-env: 7.0.3
     cypress: 13.6.4
-    cypress-failed-log: 2.10.0
     datagateway-common: ^2.1.0
     date-fns: 2.30.0
     eslint: 8.56.0
@@ -8118,15 +8105,6 @@ __metadata:
     strip-ansi: ^7.0.1
     wrap-ansi: ^8.0.1
   checksum: 2c6b47dcce6f9233df6d232a37d9834cb3657a0749ef6398f1706118de74c55f158587d4128c225297ea66803f35c5ac3db4f3f617046d817233c45eedc32ef1
-  languageName: node
-  linkType: hard
-
-"logdown@npm:3.3.1":
-  version: 3.3.1
-  resolution: "logdown@npm:3.3.1"
-  dependencies:
-    chalk: ^2.3.0
-  checksum: 381e7be208f168fd6664ddfe6980ed4ff16ef73e1b9828795df22154e18b47f16737fec1c38f035dd12d10af947a9aded2d753f1b0ade190800e3a28e868a619
   languageName: node
   linkType: hard
 
