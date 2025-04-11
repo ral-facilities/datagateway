@@ -19,13 +19,13 @@ app.get('/datagateway-dataview-settings.json', function (req, res) {
 
 app.use(
   express.json(),
-  express.static(path.resolve('./build'), {
+  express.static(path.resolve('./dist'), {
     index: ['index.html', 'index.htm'],
   })
 );
 
 app.get('/*', function (req, res) {
-  res.sendFile(path.resolve('./build/index.html'));
+  res.sendFile(path.resolve('./dist/index.html'));
 });
 
 app.listen(3000);

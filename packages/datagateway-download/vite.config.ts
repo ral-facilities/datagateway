@@ -1,10 +1,9 @@
 import react from '@vitejs/plugin-react';
-// import browserslistToEsbuild from 'browserslist-to-esbuild';
+import browserslistToEsbuild from 'browserslist-to-esbuild';
 import fs from 'node:fs';
 import path from 'path';
 import url from 'url';
 import { PluginOption, UserConfig, defineConfig, loadEnv } from 'vite';
-import browserslistToEsbuild from 'browserslist-to-esbuild';
 
 // see https://github.com/bvaughn/react-virtualized/issues/1722#issuecomment-1893242667
 function reactVirtualized(): PluginOption {
@@ -70,7 +69,7 @@ export default defineConfig(({ mode }) => {
 
   // Whether to output build files in a way SciGateway can load (the default for production unless e2e testing)
   const buildLibrary =
-    env.NODE_ENV === 'production' && env.VITE_APP_BUILD_STANDALONE !== 'true';
+    env.NODE_ENV === 'production' && env.VITE_BUILD_STANDALONE !== 'true';
 
   const plugins: PluginOption[] = [react(), reactVirtualized()];
 
@@ -170,7 +169,6 @@ export default defineConfig(({ mode }) => {
           'server/*',
           'cypress/*',
           'src/vite-env.d.ts',
-          'src/main.tsx',
         ],
       },
     },

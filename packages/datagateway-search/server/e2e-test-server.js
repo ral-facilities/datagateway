@@ -7,7 +7,7 @@ const app = express();
 
 app.use(
   express.json(),
-  express.static(path.resolve('./build'), {
+  express.static(path.resolve('./dist'), {
     index: ['index.html', 'index.htm'],
   })
 );
@@ -57,7 +57,7 @@ app.post(/\/sessions|investigations|datasets|datafiles/, function (req, res) {
 });
 
 app.get('/*', function (req, res) {
-  res.sendFile(path.resolve('./build/index.html'));
+  res.sendFile(path.resolve('./dist/index.html'));
 });
 
 app.listen(3000);
