@@ -26,12 +26,7 @@ import { DownloadSettingsContext } from '../ConfigProvider';
 import { useCart, useCartUsers, useMintCart } from '../downloadApiHooks';
 import AcceptDataPolicy from './acceptDataPolicy.component';
 
-interface DOIGenerationFormProps {
-  // if we provide an existing data publication, it means we're editing instead of creating
-  dataPublicationId?: string;
-}
-
-const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
+const DOIGenerationForm: React.FC = () => {
   const [acceptedDataPolicy, setAcceptedDataPolicy] = React.useState(false);
   const [selectedUsers, setSelectedUsers] = React.useState<ContributorUser[]>(
     []
@@ -47,21 +42,6 @@ const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
   const { doiMinterUrl, dataCiteUrl } = React.useContext(
     DownloadSettingsContext
   );
-
-  // const { data: dataPublications } = useDataPublication(
-  //   parseInt(props.dataPublicationId ?? '0'),
-  //   typeof props.dataPublicationId === 'undefined'
-  // );
-  // const dataPublication = dataPublications?.[0];
-
-  // React.useEffect(() => {
-  //   if (dataPublication) {
-  //     setTitle(dataPublication.title);
-  //     setDescription(dataPublication.description ?? '');
-  //     setRelatedDOIs();
-  //     setSelectedUsers();
-  //   }
-  // }, [dataPublication]);
 
   const handleTabChange = (
     event: React.SyntheticEvent,
@@ -104,11 +84,8 @@ const DOIGenerationForm: React.FC<DOIGenerationFormProps> = (props) => {
 
   const [t] = useTranslation();
 
-  // redirect if the user tries to access the link directly instead of from the cart/edit button
-  if (
-    typeof props.dataPublicationId === 'undefined' &&
-    !location.state?.fromCart
-  ) {
+  // redirect if the user tries to access the link directly instead of from the cart
+  if (!location.state?.fromCart) {
     return <Redirect to="/download" />;
   }
 

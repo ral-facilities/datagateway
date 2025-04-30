@@ -115,14 +115,6 @@ class App extends Component<unknown, { hasError: boolean }> {
                     <Route exact path="/download/mint">
                       <DOIGenerationForm />
                     </Route>
-                    <Route
-                      path="/download/mint/:id"
-                      render={({ match }) => (
-                        <DOIGenerationForm
-                          dataPublicationId={match.params.id}
-                        />
-                      )}
-                    />
                     <Route exact path="/download">
                       <DownloadTabs />
                     </Route>
