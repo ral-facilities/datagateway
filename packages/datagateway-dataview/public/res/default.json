@@ -84,6 +84,7 @@
       "publisher": "Publisher",
       "format": "Data Format",
       "type": "Type",
+      "license": "License",
       "version_panel_label": "Versions",
       "citation_formatter": {
         "label": "Data Citation",
@@ -359,9 +360,9 @@
       "body": "This is a page describing data taken during an experiment at the ISIS Neutron and Muon Source. Information about the ISIS Neutron and Muon Source can be found at <a href='https://www.isis.stfc.ac.uk'>https://www.isis.stfc.ac.uk</a>."
     },
     "license": {
-      "url": "https://www.isis.stfc.ac.uk/Pages/Data-Policy.aspx",
-      "name": "licensename"
-    } 
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "name": "CC BY 4.0"
+    }
   },
   "DOIGenerationForm": {
     "page_header": "Generate DOI",

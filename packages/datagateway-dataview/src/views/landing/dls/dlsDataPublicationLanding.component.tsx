@@ -8,6 +8,7 @@ import {
   Tab,
   Tabs,
   Typography,
+  Link as MuiLink,
 } from '@mui/material';
 import {
   ContributorType,
@@ -215,7 +216,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
           url: t('doi_constants.distribution.content_url'),
         },
         license: {
-          '@type': 'license',
+          '@type': 'URL',
           url: t('doi_constants.license.url'),
           name: t('doi_constants.license.name'),
         },
@@ -295,6 +296,14 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       content: (dataPublication: DataPublication) =>
         t('doi_constants.publisher.name'),
       label: t('datapublications.details.publisher'),
+    },
+    {
+      content: (dataPublication: DataPublication) => (
+        <MuiLink href={t('doi_constants.license.url')} target="_blank">
+          {t('doi_constants.license.name')}
+        </MuiLink>
+      ),
+      label: t('datapublications.details.license'),
     },
     {
       content: (dataPublication: DataPublication) => dataPublication.type?.name,

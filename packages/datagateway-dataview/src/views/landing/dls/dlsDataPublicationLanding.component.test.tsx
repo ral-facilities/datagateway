@@ -207,6 +207,9 @@ describe('DLS Data Publication Landing page', () => {
     expect(
       screen.getByText('doi_constants.publisher.name')
     ).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: 'doi_constants.license.name' })
+    ).toHaveAttribute('href', 'doi_constants.license.url');
     expect(screen.getByText('Dataset')).toBeInTheDocument();
 
     expect(
@@ -376,7 +379,7 @@ describe('DLS Data Publication Landing page', () => {
         id="dataPublication-1"
         type="application/ld+json"
       >
-        {"@context":"http://schema.org","@type":"Dataset","@id":"https://doi.org/doi 1","url":"https://doi.org/doi 1","identifier":"doi 1","name":"Title","description":"foo bar","keywords":"doi_constants.keywords","publisher":{"@type":"Organization","url":"doi_constants.publisher.url","name":"doi_constants.publisher.name","logo":"doi_constants.publisher.logo","contactPoint":{"@type":"ContactPoint","contactType":"customer service","email":"doi_constants.publisher.email","url":"doi_constants.publisher.url"}},"creator":[{"@type":"Person","name":"John Smith"},{"@type":"Person","name":"Jane Smith"},{"@type":"Person","name":"Jesse Smith"}],"includedInDataCatalog":{"@type":"DataCatalog","url":"doi_constants.distribution.content_url"},"license":"doi_constants.distribution.license"}
+        {"@context":"http://schema.org","@type":"Dataset","@id":"https://doi.org/doi 1","url":"https://doi.org/doi 1","identifier":"doi 1","name":"Title","description":"foo bar","keywords":"doi_constants.keywords","publisher":{"@type":"Organization","url":"doi_constants.publisher.url","name":"doi_constants.publisher.name","logo":"doi_constants.publisher.logo","contactPoint":{"@type":"ContactPoint","contactType":"customer service","email":"doi_constants.publisher.email","url":"doi_constants.publisher.url"}},"creator":[{"@type":"Person","name":"John Smith"},{"@type":"Person","name":"Jane Smith"},{"@type":"Person","name":"Jesse Smith"}],"includedInDataCatalog":{"@type":"DataCatalog","url":"doi_constants.distribution.content_url"},"license":{"@type":"URL","url":"doi_constants.license.url","name":"doi_constants.license.name"}}
       </script>
     `);
   });
