@@ -7,9 +7,11 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
+  DataCiteDOI,
   DOIRelationType,
   DOIResourceType,
   fetchDownloadCart,
+  User,
 } from 'datagateway-common';
 import { createMemoryHistory, MemoryHistory } from 'history';
 import * as React from 'react';
@@ -76,8 +78,8 @@ const renderComponent = (
 describe('DOI generation form component', () => {
   let user: ReturnType<typeof userEvent.setup>;
 
-  let mockUser;
-  let mockDOIResponse;
+  let mockUser: User;
+  let mockDOIResponse: { data: DataCiteDOI };
 
   beforeEach(() => {
     user = userEvent.setup();

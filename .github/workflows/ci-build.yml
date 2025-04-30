@@ -154,7 +154,7 @@ jobs:
           mv -f /home/runner/install/datagateway-download-api/run.properties.tmp /home/runner/install/datagateway-download-api/run.properties
       - name: Reinstall datagateway-download-api
         run: |
-          cd /home/runner/install/datagateway-download-api/ && python2 ./setup -vv install
+          cd /home/runner/install/datagateway-download-api/ && python ./setup -vv install
 
       - name: Checkout datagateway-api
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
