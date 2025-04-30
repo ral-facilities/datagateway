@@ -48,7 +48,7 @@ describe('DOI Confirm Dialogue component', () => {
     await user.type(screen.getByRole('dialog'), '{Esc}');
     expect(
       screen.queryByRole('button', {
-        name: 'downloadConfirmDialog.close_arialabel',
+        name: 'DOIConfirmDialog.close_aria_label',
       })
     ).not.toBeInTheDocument();
     expect(props.setClose).not.toHaveBeenCalled();

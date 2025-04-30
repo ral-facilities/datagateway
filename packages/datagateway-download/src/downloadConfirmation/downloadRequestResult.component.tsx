@@ -1,10 +1,8 @@
 import { Button, Grid, Typography } from '@mui/material';
-import { Mark } from 'datagateway-common';
+import { DialogContent, DialogTitle, Mark } from 'datagateway-common';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import type DownloadRequestInfo from './DownloadRequestInfo';
-import DialogContent from './dialogContent.component';
-import DialogTitle from './dialogTitle.component';
 
 interface DownloadRequestResultComponentProps {
   /**
@@ -97,7 +95,11 @@ function DownloadRequestResult({
 
   return (
     <div>
-      <DialogTitle id="download-confirm-dialog-title" onClose={closeDialog} />
+      <DialogTitle
+        id="download-confirm-dialog-title"
+        onClose={closeDialog}
+        closeAriaLabel={t('downloadConfirmDialog.close_arialabel')}
+      />
 
       <DialogContent>
         <Grid

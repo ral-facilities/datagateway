@@ -147,12 +147,12 @@ export interface InvestigationType {
 
 export interface DataCollectionDatafile {
   id: number;
-  datafile: Datafile;
+  datafile?: Datafile;
 }
 
 export interface DataCollectionDataset {
   id: number;
-  dataset: Dataset;
+  dataset?: Dataset;
 }
 
 export interface DataCollectionInvestigation {
@@ -169,10 +169,24 @@ export interface DataCollection {
   dataPublications?: DataPublication[];
 }
 
+export interface Affiliation {
+  id: number;
+  name: string;
+  user?: DataPublicationUser;
+}
+
 export interface DataPublicationUser {
   id: number;
   contributorType: string;
   fullName: string;
+  user?: User;
+  email?: string;
+  affiliations?: Affiliation[];
+}
+
+export interface DataPublicationType {
+  id: number;
+  name: string;
 }
 
 export interface DataPublicationType {
@@ -190,7 +204,28 @@ export interface DataPublication {
   users?: DataPublicationUser[];
   content?: DataCollection;
   type?: DataPublicationType;
+  relatedItems?: RelatedItem[];
 }
+
+export type RelatedDOI = {
+  title: string;
+  fullReference: string;
+  identifier: string;
+  relationType: DOIRelationType | '';
+  relatedItemType: DOIResourceType | '';
+};
+
+/** Utility type to make subset of properties optional */
+type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
+
+export type RelatedItem = Optional<
+  RelatedDOI,
+  'fullReference' | 'title' | 'relatedItemType'
+> & {
+  id: number;
+  publication?: DataPublication;
+  createTime: string;
+};
 
 interface InstrumentScientist {
   id: number;
@@ -436,4 +471,114 @@ export interface QueryParams {
   endDate: Date | null;
   currentTab: string;
   restrict: boolean;
+}
+
+export enum ContributorType {
+  Minter = 'Minter',
+  Creator = 'Creator',
+  ContactPerson = 'ContactPerson',
+  DataCollector = 'DataCollector',
+  DataCurator = 'DataCurator',
+  DataManager = 'DataManager',
+  Distributor = 'Distributor',
+  Editor = 'Editor',
+  HostingInstitution = 'HostingInstitution',
+  Producer = 'Producer',
+  ProjectLeader = 'ProjectLeader',
+  ProjectManager = 'ProjectManager',
+  ProjectMember = 'ProjectMember',
+  RegistrationAgency = 'RegistrationAgency',
+  RelatedPerson = 'RelatedPerson',
+  Researcher = 'Researcher',
+  ResearchGroup = 'ResearchGroup',
+  RightsHolder = 'RightsHolder',
+  Sponsor = 'Sponsor',
+  Supervisor = 'Supervisor',
+  WorkPackageLeader = 'WorkPackageLeader',
+  Other = 'Other',
+}
+
+export enum DOIRelationType {
+  IsCitedBy = 'IsCitedBy',
+  Cites = 'Cites',
+  IsSupplementTo = 'IsSupplementTo',
+  IsSupplementedBy = 'IsSupplementedBy',
+  IsContinuedBy = 'IsContinuedBy',
+  Continues = 'Continues',
+  IsDescribedBy = 'IsDescribedBy',
+  Describes = 'Describes',
+  HasMetadata = 'HasMetadata',
+  IsMetadataFor = 'IsMetadataFor',
+  HasVersion = 'HasVersion',
+  IsVersionOf = 'IsVersionOf',
+  IsNewVersionOf = 'IsNewVersionOf',
+  IsPreviousVersionOf = 'IsPreviousVersionOf',
+  IsPartOf = 'IsPartOf',
+  HasPart = 'HasPart',
+  IsPublishedIn = 'IsPublishedIn',
+  IsReferencedBy = 'IsReferencedBy',
+  References = 'References',
+  IsDocumentedBy = 'IsDocumentedBy',
+  Documents = 'Documents',
+  IsCompiledBy = 'IsCompiledBy',
+  Compiles = 'Compiles',
+  IsVariantFormOf = 'IsVariantFormOf',
+  IsOriginalFormOf = 'IsOriginalFormOf',
+  IsIdenticalTo = 'IsIdenticalTo',
+  IsReviewedBy = 'IsReviewedBy',
+  Reviews = 'Reviews',
+  IsDerivedFrom = 'IsDerivedFrom',
+  IsSourceOf = 'IsSourceOf',
+  IsRequiredBy = 'IsRequiredBy',
+  Requires = 'Requires',
+  Obsoletes = 'Obsoletes',
+  IsObsoletedBy = 'IsObsoletedBy',
+}
+
+export enum DOIResourceType {
+  Audiovisual = 'Audiovisual',
+  Book = 'Book',
+  BookChapter = 'BookChapter',
+  Collection = 'Collection',
+  ComputationalNotebook = 'ComputationalNotebook',
+  ConferencePaper = 'ConferencePaper',
+  ConferenceProceeding = 'ConferenceProceeding',
+  DataPaper = 'DataPaper',
+  Dataset = 'Dataset',
+  Dissertation = 'Dissertation',
+  Event = 'Event',
+  Image = 'Image',
+  InteractiveResource = 'InteractiveResource',
+  Journal = 'Journal',
+  JournalArticle = 'JournalArticle',
+  Model = 'Model',
+  OutputManagementPlan = 'OutputManagementPlan',
+  PeerReview = 'PeerReview',
+  PhysicalObject = 'PhysicalObject',
+  Preprint = 'Preprint',
+  Report = 'Report',
+  Service = 'Service',
+  Software = 'Software',
+  Sound = 'Sound',
+  Standard = 'Standard',
+  Text = 'Text',
+  Workflow = 'Workflow',
+  Other = 'Other',
+}
+
+export interface DoiMetadata {
+  title: string;
+  description: string;
+  creators?: { username: string; contributor_type: ContributorType }[];
+  related_items: RelatedDOI[];
+}
+
+export interface DoiResponse {
+  concept: DoiResult;
+  version: DoiResult;
+}
+
+export interface DoiResult {
+  data_publication: string;
+  doi: string;
 }

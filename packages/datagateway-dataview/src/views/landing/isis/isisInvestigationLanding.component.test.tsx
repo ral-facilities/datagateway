@@ -8,7 +8,7 @@ import {
   dGCommonInitialState,
   Investigation,
   useDataPublication,
-  useDataPublications,
+  useDataPublicationsByFilters,
   useInvestigation,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
@@ -33,7 +33,7 @@ jest.mock('datagateway-common', () => {
     ...originalModule,
     useInvestigation: jest.fn(),
     useDataPublication: jest.fn(),
-    useDataPublications: jest.fn(),
+    useDataPublicationsByFilters: jest.fn(),
   };
 });
 
@@ -258,7 +258,7 @@ describe('ISIS Investigation Landing page', () => {
       data: initialDataPublicationData,
     });
 
-    (useDataPublications as jest.Mock).mockReturnValue({
+    (useDataPublicationsByFilters as jest.Mock).mockReturnValue({
       data: initialStudyDataPublicationData,
     });
   });

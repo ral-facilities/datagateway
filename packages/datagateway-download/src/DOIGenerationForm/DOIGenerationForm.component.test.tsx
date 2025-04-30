@@ -6,23 +6,22 @@ import {
   within,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { fetchDownloadCart } from 'datagateway-common';
+import {
+  DataCiteDOI,
+  DOIRelationType,
+  DOIResourceType,
+  fetchDownloadCart,
+  User,
+} from 'datagateway-common';
 import { createMemoryHistory, MemoryHistory } from 'history';
 import * as React from 'react';
 import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 import { Router } from 'react-router-dom';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import { mockCartItems, mockedSettings } from '../testData';
-import {
-  checkUser,
-  DOIRelationType,
-  DOIResourceType,
-  fetchDOI,
-  getCartUsers,
-  isCartMintable,
-  mintCart,
-} from '../downloadApi';
+import { getCartUsers, mintCart } from '../downloadApi';
 import DOIGenerationForm from './DOIGenerationForm.component';
+import axios, { AxiosResponse } from 'axios';
 
 setLogger({
   log: console.log,
@@ -45,11 +44,8 @@ jest.mock('../downloadApi', () => {
 
   return {
     ...originalModule,
-    isCartMintable: jest.fn(),
     getCartUsers: jest.fn(),
-    checkUser: jest.fn(),
     mintCart: jest.fn(),
-    fetchDOI: jest.fn(),
   };
 });
 
@@ -82,16 +78,33 @@ const renderComponent = (
 describe('DOI generation form component', () => {
   let user: ReturnType<typeof userEvent.setup>;
 
+  let mockUser: User;
+  let mockDOIResponse: { data: DataCiteDOI };
+
   beforeEach(() => {
     user = userEvent.setup();
 
+    mockUser = {
+      id: 2,
+      name: '2',
+      fullName: 'User 2',
+      email: 'user2@example.com',
+      affiliation: 'Example 2 Uni',
+    };
+    mockDOIResponse = {
+      data: {
+        id: '1',
+        type: 'DOI',
+        attributes: {
+          doi: 'related.doi.1',
+          titles: [{ title: 'Related DOI 1' }],
+          url: 'www.example.com',
+        },
+      },
+    };
     (
       fetchDownloadCart as jest.MockedFunction<typeof fetchDownloadCart>
     ).mockResolvedValue(mockCartItems);
-
-    (
-      isCartMintable as jest.MockedFunction<typeof isCartMintable>
-    ).mockResolvedValue(true);
 
     // mock mint cart error to test dialog can be closed after it errors
     (mintCart as jest.MockedFunction<typeof mintCart>).mockRejectedValue(
@@ -110,23 +123,31 @@ describe('DOI generation form component', () => {
       },
     ]);
 
-    (checkUser as jest.MockedFunction<typeof checkUser>).mockResolvedValue({
-      id: 2,
-      name: '2',
-      fullName: 'User 2',
-      email: 'user2@example.com',
-      affiliation: 'Example 2 Uni',
-    });
+    axios.get = jest
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/\/user\/.*/.test(url)) {
+          return Promise.resolve({
+            data: mockUser,
+          });
+        } else if (/\/dois\/.*/.test(url)) {
+          return Promise.resolve({
+            data: mockDOIResponse,
+          });
+        } else {
+          return Promise.reject(`Endpoint not mocked: ${url}`);
+        }
+      });
 
-    (fetchDOI as jest.MockedFunction<typeof fetchDOI>).mockResolvedValue({
-      id: '1',
-      type: 'DOI',
-      attributes: {
-        doi: 'related.doi.1',
-        titles: [{ title: 'Related DOI 1' }],
-        url: 'www.example.com',
-      },
-    });
+    axios.post = jest
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/\/ismintable$/.test(url)) {
+          return Promise.resolve({ status: 200 });
+        } else {
+          return Promise.reject(`Endpoint not mocked: ${url}`);
+        }
+      });
   });
 
   afterEach(() => {
@@ -180,7 +201,7 @@ describe('DOI generation form component', () => {
 
     await user.click(
       screen.getByRole('button', {
-        name: 'downloadConfirmDialog.close_arialabel',
+        name: 'DOIConfirmDialog.close_aria_label',
       })
     );
 
@@ -263,7 +284,9 @@ describe('DOI generation form component', () => {
         name: /DOIGenerationForm.related_doi_relationship/i,
       })
     );
-    await user.click(await screen.findByRole('option', { name: 'IsCitedBy' }));
+    await user.click(
+      await screen.findByRole('option', { name: DOIRelationType.IsCitedBy })
+    );
 
     // missing resource type
     expect(
@@ -275,7 +298,9 @@ describe('DOI generation form component', () => {
         name: /DOIGenerationForm.related_doi_resource_type/i,
       })
     );
-    await user.click(await screen.findByRole('option', { name: 'Journal' }));
+    await user.click(
+      await screen.findByRole('option', { name: DOIResourceType.Journal })
+    );
 
     await user.click(
       screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })

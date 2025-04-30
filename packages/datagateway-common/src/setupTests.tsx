@@ -89,6 +89,8 @@ export const createTestQueryClient = (): QueryClient =>
     defaultOptions: {
       queries: {
         retry: false,
+        // set retryDelay = 0 to make retries quick for custom retry functions
+        retryDelay: 0,
       },
     },
   });

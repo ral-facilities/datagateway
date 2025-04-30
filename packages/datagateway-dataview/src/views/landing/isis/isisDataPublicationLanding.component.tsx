@@ -24,7 +24,7 @@ import {
   AddToCartButton,
   ViewsType,
   parseSearchToQuery,
-  useDataPublications,
+  useDataPublicationsByFilters,
   DownloadButton,
 } from 'datagateway-common';
 import React from 'react';
@@ -181,7 +181,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     parseInt(dataPublicationId)
   );
 
-  const { data: investigationDataPublications } = useDataPublications([
+  const { data: investigationDataPublications } = useDataPublicationsByFilters([
     {
       filterType: 'where',
       filterValue: JSON.stringify({
@@ -302,7 +302,11 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         '@type': 'DataCatalog',
         url: t('doi_constants.distribution.content_url'),
       },
-      license: t('doi_constants.distribution.license'),
+      license: {
+        '@type': 'URL',
+        url: t('doi_constants.license.url'),
+        name: t('doi_constants.license.name'),
+      },
     });
 
     return () => {
@@ -331,9 +335,20 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       icon: <Public sx={shortInfoIconStyle} />,
     },
     {
+      content: (dataPublication: DataPublication) => (
+        <MuiLink href={t('doi_constants.license.url')} target="_blank">
+          {t('doi_constants.license.name')}
+        </MuiLink>
+      ),
+      label: t('datapublications.details.license'),
+    },
+    {
       content: function distributionFormat(entity: DataPublication) {
         return (
-          <MuiLink href="http://www.isis.stfc.ac.uk/groups/computing/isis-raw-file-format11200.html">
+          <MuiLink
+            href="http://www.isis.stfc.ac.uk/groups/computing/isis-raw-file-format11200.html"
+            target="_blank"
+          >
             {t('doi_constants.distribution.format')}
           </MuiLink>
         );

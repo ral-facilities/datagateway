@@ -85,6 +85,13 @@ export { default as InvestigationDetailsPanel } from './detailsPanels/investigat
 export { default as DatasetDetailsPanel } from './detailsPanels/datasetDetailsPanel.component';
 export { default as DatafileDetailsPanel } from './detailsPanels/datafileDetailsPanel.component';
 
+export { default as DOIMetadataForm } from './dois/DOIMetadataForm.component';
+export { default as DOIConfirmDialog } from './dois/DOIConfirmDialog.component';
+export type { ContributorUser } from './dois/creatorsAndContributors.component';
+
+export { default as DialogTitle } from './dialogTitle.component';
+export { default as DialogContent } from './dialogContent.component';
+
 export * from './urlBuilders';
 
 // ReactDOM.render(<App />, document.getElementById('root'));

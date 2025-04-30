@@ -12,7 +12,7 @@ exports[`DialogTitle should render correctly 1`] = `
       Title
     </p>
     <button
-      aria-label="downloadConfirmDialog.close_arialabel"
+      aria-label="close_aria_label"
       class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeLarge css-1f5482o-MuiButtonBase-root-MuiIconButton-root"
       tabindex="0"
       type="button"

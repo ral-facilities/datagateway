@@ -7,6 +7,8 @@ export interface DataviewSettings {
   downloadApiUrl: string;
   idsUrl: string;
   icatUrl: string;
+  doiMinterUrl?: string;
+  dataCiteUrl?: string;
   queryRetries?: number;
   selectAllSetting?: boolean;
   facilityImageURL?: string;

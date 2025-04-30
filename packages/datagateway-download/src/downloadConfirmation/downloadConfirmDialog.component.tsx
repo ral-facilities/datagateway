@@ -12,7 +12,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { formatBytes } from 'datagateway-common';
+import { DialogContent, DialogTitle, formatBytes } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -24,8 +24,6 @@ import {
   useDownloadTypeStatuses,
   useSubmitCart,
 } from '../downloadApiHooks';
-import DialogContent from './dialogContent.component';
-import DialogTitle from './dialogTitle.component';
 import DownloadRequestResult from './downloadRequestResult.component';
 
 const TableContentDiv = styled('div')(() => ({
@@ -344,7 +342,11 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       ) : shouldShowConfirmationForm ? (
         <div>
           {/* Custom title component which has a close button */}
-          <DialogTitle id="download-confirm-dialog-title" onClose={dialogClose}>
+          <DialogTitle
+            id="download-confirm-dialog-title"
+            onClose={dialogClose}
+            closeAriaLabel={t('downloadConfirmDialog.close_arialabel')}
+          >
             {t('downloadConfirmDialog.dialog_title')}
           </DialogTitle>
 

@@ -16,11 +16,11 @@ import {
   Typography,
 } from '@mui/material';
 import { AxiosError } from 'axios';
-import { readSciGatewayToken, User } from 'datagateway-common';
+import { User, ContributorType } from '../app.types';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { ContributorType } from '../downloadApi';
-import { useCheckUser } from '../downloadApiHooks';
+import { useCheckUser } from '../api/dois';
+import { readSciGatewayToken } from '../parseTokens';
 
 export type ContributorUser = User & {
   contributor_type: ContributorType | '';
@@ -28,13 +28,19 @@ export type ContributorUser = User & {
 
 const compareUsers = (a: ContributorUser, b: ContributorUser): number => {
   if (
-    a.contributor_type === ContributorType.Creator &&
-    b.contributor_type !== ContributorType.Creator
+    (a.contributor_type === ContributorType.Minter &&
+      b.contributor_type !== ContributorType.Minter) ||
+    (a.contributor_type === ContributorType.Creator &&
+      b.contributor_type !== ContributorType.Creator &&
+      b.contributor_type !== ContributorType.Minter)
   ) {
     return -1;
   } else if (
-    b.contributor_type === ContributorType.Creator &&
-    a.contributor_type !== ContributorType.Creator
+    (b.contributor_type === ContributorType.Minter &&
+      a.contributor_type !== ContributorType.Minter) ||
+    (b.contributor_type === ContributorType.Creator &&
+      a.contributor_type !== ContributorType.Creator &&
+      a.contributor_type !== ContributorType.Minter)
   ) {
     return 1;
   } else return 0;
@@ -43,16 +49,17 @@ const compareUsers = (a: ContributorUser, b: ContributorUser): number => {
 type CreatorsAndContributorsProps = {
   selectedUsers: ContributorUser[];
   changeSelectedUsers: React.Dispatch<React.SetStateAction<ContributorUser[]>>;
+  doiMinterUrl: string | undefined;
 };
 
 const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
   props
 ) => {
-  const { selectedUsers, changeSelectedUsers } = props;
+  const { selectedUsers, changeSelectedUsers, doiMinterUrl } = props;
   const [t] = useTranslation();
   const [username, setUsername] = React.useState('');
   const [usernameError, setUsernameError] = React.useState('');
-  const { refetch: checkUser } = useCheckUser(username);
+  const { refetch: checkUser } = useCheckUser(username, doiMinterUrl);
 
   /**
    * Returns a function, which you pass true or false to depending on whether
@@ -210,8 +217,9 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
                     <TableCell>{user?.affiliation}</TableCell>
                     <TableCell>{user?.email}</TableCell>
                     <TableCell>
-                      {user.contributor_type === ContributorType.Creator ? (
-                        ContributorType.Creator
+                      {user.contributor_type === ContributorType.Creator ||
+                      user.contributor_type === ContributorType.Minter ? (
+                        user.contributor_type
                       ) : (
                         <FormControl
                           fullWidth

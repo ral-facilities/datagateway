@@ -42,6 +42,7 @@ const fetchCitation = (
 };
 
 interface CitationFormatterProps {
+  label?: string;
   doi: string | undefined;
   formattedUsers: FormattedUser[];
   title: string | undefined;
@@ -86,7 +87,7 @@ const useCitation = (
 const CitationFormatter = (
   props: CitationFormatterProps
 ): React.ReactElement => {
-  const { doi } = props;
+  const { doi, label } = props;
 
   const [t] = useTranslation();
   const [copiedCitation, setCopiedCitation] = React.useState(false);
@@ -119,7 +120,7 @@ const CitationFormatter = (
   return (
     <Box className="tour-dataview-citation-formatter">
       <Subheading variant="h6" data-testid="citation-formatter-title">
-        {t('datapublications.details.citation_formatter.label')}
+        {label ?? t('datapublications.details.citation_formatter.label')}
       </Subheading>
       <Typography data-testid="citation-formatter-details">
         {t('datapublications.details.citation_formatter.details') +
@@ -130,7 +131,13 @@ const CitationFormatter = (
             : '')}
       </Typography>
       {doi && (
-        <FormControl id="citation-formatter" error={error} variant="standard">
+        <FormControl
+          id={`${
+            label ? `${label.replace(/\s/g, '-')}-` : ''
+          }citation-formatter`}
+          error={error}
+          variant="standard"
+        >
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <Select
               sx={{ my: 1 }}
@@ -139,7 +146,9 @@ const CitationFormatter = (
               aria-label={t(
                 'datapublications.details.citation_formatter.select_arialabel'
               )}
-              aria-describedby="citation-formatter-error-message"
+              aria-describedby={`${
+                label ? `${label.replace(/\s/g, '-')}-` : ''
+              }citation-formatter-error-message`}
               variant="standard"
             >
               <MenuItem value="default">
@@ -162,20 +171,30 @@ const CitationFormatter = (
             )}
           </div>
           {error && (
-            <FormHelperText id="citation-formatter-error-message">
+            <FormHelperText
+              id={`${
+                label ? `${label.replace(/\s/g, '-')}-` : ''
+              }citation-formatter-error-message`}
+            >
               {t('datapublications.details.citation_formatter.error')}
             </FormHelperText>
           )}
         </FormControl>
       )}
       <Typography>
-        <i data-testid="citation-formatter-citation">
+        <i
+          data-testid={`${
+            label ? `${label.replace(/\s/g, '-')}-` : ''
+          }citation-formatter-citation`}
+        >
           {citation && <Trans>{citation}</Trans>}
         </i>
       </Typography>
       {!copiedCitation ? (
         <Button
-          id="citation-formatter-copy-citation"
+          id={`${
+            label ? `${label.replace(/\s/g, '-')}-` : ''
+          }citation-formatter-copy-citation`}
           aria-label={t(
             'datapublications.details.citation_formatter.copy_citation_arialabel'
           )}
@@ -195,7 +214,9 @@ const CitationFormatter = (
         </Button>
       ) : (
         <Button
-          id="citation-formatter-copied-citation"
+          id={`${
+            label ? `${label.replace(/\s/g, '-')}-` : ''
+          }citation-formatter-copied-citation`}
           variant="contained"
           color="primary"
           size="small"
