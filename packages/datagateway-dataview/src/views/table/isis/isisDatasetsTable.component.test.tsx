@@ -48,7 +48,7 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('ISIS Dataset table component', () => {
-  let mockStore;
+  const mockStore = configureStore([thunk]);
   let state: StateType;
   let rowData: Dataset[];
   let history: History;
@@ -72,7 +72,6 @@ describe('ISIS Dataset table component', () => {
       {
         id: 1,
         name: 'Test 1',
-        size: 1,
         modTime: '2019-07-23',
         createTime: '2019-07-23',
       },
@@ -88,7 +87,6 @@ describe('ISIS Dataset table component', () => {
     });
     user = userEvent.setup();
 
-    mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
         dgdataview: dgDataViewInitialState,
@@ -178,7 +176,7 @@ describe('ISIS Dataset table component', () => {
     renderComponent();
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"createTime":"desc"}')}`
+      `?sort=${encodeURIComponent('{"name":"asc"}')}`
     );
 
     // check that the data request is sent only once after mounting
@@ -197,7 +195,7 @@ describe('ISIS Dataset table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"name":"asc"}')}`
+      `?sort=${encodeURIComponent('{"name":"desc"}')}`
     );
   });
 

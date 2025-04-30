@@ -142,21 +142,20 @@ const ISISDatasetsTable = (
             view
           ),
         filterComponent: textFilter,
+        defaultSort: 'asc',
       },
       {
         icon: SaveIcon,
         label: t('datasets.size'),
-        dataKey: 'size',
+        dataKey: 'fileSize',
         cellContentRenderer: (cellProps: TableCellProps): number | string =>
           formatBytes(cellProps.rowData.fileSize),
-        disableSort: true,
       },
       {
         icon: CalendarTodayIcon,
         label: t('datasets.create_time'),
         dataKey: 'createTime',
         filterComponent: dateFilter,
-        defaultSort: 'desc',
       },
       {
         icon: CalendarTodayIcon,

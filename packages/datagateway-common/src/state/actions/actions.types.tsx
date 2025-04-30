@@ -33,6 +33,7 @@ export const BroadcastSignOutType = `${CustomFrontendMessageType}:signout`;
 export const ConfigureFacilityNameType =
   'datagateway_common:configure_facility_name';
 export const ConfigureURLsType = 'datagateway_common:configure_urls';
+export const ConfigureQueryRetriesType = 'datagateway_common:configure_retries';
 
 export const SortTableType = 'datagateway_common:sort_table';
 export const FilterTableType = 'datagateway_common:filter_table';
@@ -270,6 +271,10 @@ export interface FeatureSwitches {}
 
 export interface ConfigureUrlsPayload {
   urls: URLs;
+}
+
+export interface ConfigureQueryRetriesPayload {
+  queryRetries?: number;
 }
 
 export interface URLs {

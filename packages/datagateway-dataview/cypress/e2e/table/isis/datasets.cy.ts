@@ -10,7 +10,7 @@ describe('ISIS - Datasets Table', () => {
     });
     // Check that we have received the size from the API as this will produce
     // a re-render which can prevent some interactions.
-    cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '1.36 GB').should(
+    cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '1.47 GB').should(
       'exist'
     );
   });
@@ -20,13 +20,12 @@ describe('ISIS - Datasets Table', () => {
     cy.get('#datagateway-dataview').should('be.visible');
 
     //Default sort
-    cy.get('[aria-sort="descending"]').should('exist');
-    cy.get('.MuiTableSortLabel-iconDirectionDesc').should('be.visible');
+    cy.get('[aria-sort="ascending"]').should('exist');
+    cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
   });
 
   it('should not load incorrect URL', () => {
     cy.visit('/browse/instrument/2/facilityCycle/15/investigation/87/dataset');
-
     cy.contains('Oops!').should('be.visible');
     cy.get('[role="grid"]').should('not.exist');
   });
@@ -36,7 +35,7 @@ describe('ISIS - Datasets Table', () => {
 
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/19/investigation/19/dataset/79'
+      '/browse/instrument/1/facilityCycle/19/investigation/19/dataset/19'
     );
   });
 
@@ -80,7 +79,7 @@ describe('ISIS - Datasets Table', () => {
     cy.get('[aria-sort="descending"]').should('not.exist');
     cy.get('.MuiTableSortLabel-iconDirectionAsc').should('not.exist');
 
-    cy.get('[data-testid="SortIcon"]').should('have.length', 3);
+    cy.get('[data-testid="SortIcon"]').should('have.length', 4);
     cy.get('[data-testid="ArrowUpwardIcon"]').should('not.exist');
 
     cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 19');
@@ -102,9 +101,10 @@ describe('ISIS - Datasets Table', () => {
 
   it('should change icons when sorting on a column', () => {
     // clear default sort
-    cy.contains('[role="button"]', 'Create Time').click();
+    cy.contains('[role="button"]', 'Name').click();
+    cy.contains('[role="button"]', 'Name').click();
 
-    cy.get('[data-testid="SortIcon"]').should('have.length', 3);
+    cy.get('[data-testid="SortIcon"]').should('have.length', 4);
 
     // check icon when clicking on a column
     cy.contains('[role="button"]', 'Create Time').click();
@@ -123,7 +123,7 @@ describe('ISIS - Datasets Table', () => {
 
     // check icons when shift is held
     cy.get('.App').trigger('keydown', { key: 'Shift' });
-    cy.get('[data-testid="AddIcon"]').should('have.length', 1);
+    cy.get('[data-testid="AddIcon"]').should('have.length', 2);
   });
 
   it('should be able to filter with both text & date filters on multiple columns', () => {
@@ -164,27 +164,23 @@ describe('ISIS - Datasets Table', () => {
 
       cy.get('#details-panel').should('be.visible');
       cy.get('[aria-label="Hide details"]').should('exist');
-      cy.get('#details-panel').contains('DATASET 19').should('be.visible');
+      cy.get('#details-panel').contains('DATASET 79').should('be.visible');
 
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.get('#details-panel').contains('DATASET 79').should('be.visible');
-      cy.get('#details-panel').contains('DATASET 19').should('not.exist');
+      cy.get('#details-panel').contains('DATASET 19').should('be.visible');
+      cy.get('#details-panel').contains('DATASET 79').should('not.exist');
       cy.get('[aria-label="Hide details"]').should('have.length', 1);
 
       cy.get('#details-panel')
-        .contains(
-          'Example early fight chance culture fill either collection. Someone similar space few should lawyer various quite. Page discuss so music worker lawyer'
-        )
+        .contains('Night out whether mouth participant chance')
         .should('be.visible');
 
       cy.get('[aria-controls="dataset-type-panel"]').should('be.visible');
       cy.get('[aria-controls="dataset-type-panel"]').click();
 
       cy.get('#details-panel')
-        .contains(
-          'Stop prove field onto think suffer measure. Table lose season identify professor happen third simply.'
-        )
+        .contains('Suggest shake effort many last prepare small')
         .should('be.visible');
 
       cy.get('[aria-label="Hide details"]').first().click();
@@ -199,7 +195,7 @@ describe('ISIS - Datasets Table', () => {
 
       cy.location('pathname').should(
         'eq',
-        '/browse/instrument/1/facilityCycle/19/investigation/19/dataset/79/datafile'
+        '/browse/instrument/1/facilityCycle/19/investigation/19/dataset/19/datafile'
       );
     });
   });

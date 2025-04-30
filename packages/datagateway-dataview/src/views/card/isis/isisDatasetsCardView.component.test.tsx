@@ -35,7 +35,7 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('ISIS Datasets - Card View', () => {
-  let mockStore;
+  const mockStore = configureStore([thunk]);
   let state: StateType;
   let cardData: Dataset[];
   let history: History;
@@ -57,7 +57,7 @@ describe('ISIS Datasets - Card View', () => {
       {
         id: 1,
         name: 'Test 1',
-        size: 1,
+        fileSize: 1,
         modTime: '2019-07-23',
         createTime: '2019-07-23',
       },
@@ -73,7 +73,6 @@ describe('ISIS Datasets - Card View', () => {
     });
     user = userEvent.setup();
 
-    mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
         dgcommon: dGCommonInitialState,
@@ -183,7 +182,7 @@ describe('ISIS Datasets - Card View', () => {
     renderComponent();
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"createTime":"desc"}')}`
+      `?sort=${encodeURIComponent('{"name":"asc"}')}`
     );
 
     // check that the data request is sent only once after mounting
@@ -203,7 +202,7 @@ describe('ISIS Datasets - Card View', () => {
     );
 
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"name":"asc"}')}`
+      `?sort=${encodeURIComponent('{"name":"desc"}')}`
     );
   });
 

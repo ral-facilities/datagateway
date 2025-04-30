@@ -21,11 +21,17 @@ import {
 } from 'react-query';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { getApiParams, parseSearchToQuery } from '.';
-import { fetchDatafileCountQuery, fetchDatafiles } from './datafiles';
-import { fetchDatasetCountQuery, fetchDatasets } from './datasets';
-import { fetchInvestigationCount, fetchInvestigations } from './investigations';
-import retryICATErrors from './retryICATErrors';
+import {
+  fetchDatafileCountQuery,
+  fetchDatafiles,
+  fetchDatasetCountQuery,
+  fetchDatasets,
+  fetchInvestigationCount,
+  fetchInvestigations,
+  getApiParams,
+  parseSearchToQuery,
+} from '.';
+import { useRetryICATErrors } from './retryICATErrors';
 
 const fetchDataPublications = (
   apiUrl: string,
@@ -76,6 +82,7 @@ export const useDataPublicationsPaginated = (
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters, sort, page, results } = parseSearchToQuery(location.search);
+  const retryICATErrors = useRetryICATErrors();
 
   return useQuery<
     DataPublication[],
@@ -133,6 +140,7 @@ export const useDataPublicationsInfinite = (
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters, sort } = parseSearchToQuery(location.search);
+  const retryICATErrors = useRetryICATErrors();
 
   return useInfiniteQuery(
     [
@@ -169,6 +177,7 @@ export const useDataPublication = (
   >
 ): UseQueryResult<DataPublication, AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+  const retryICATErrors = useRetryICATErrors();
 
   return useQuery(
     ['dataPublication', dataPublicationId ?? -1],
@@ -230,6 +239,7 @@ export const useDataPublicationsByFilters = (
   >
 ): UseQueryResult<DataPublication[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+  const retryICATErrors = useRetryICATErrors();
 
   return useQuery(
     ['dataPublication', additionalFilters],
@@ -260,6 +270,7 @@ export const useDataPublicationContent = (
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters, sort } = parseSearchToQuery(location.search);
+  const retryICATErrors = useRetryICATErrors();
 
   return useInfiniteQuery<
     (Investigation | Dataset | Datafile)[],
@@ -352,6 +363,7 @@ export const useDataPublicationContentCount = (
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters } = parseSearchToQuery(location.search);
+  const retryICATErrors = useRetryICATErrors();
 
   return useQuery(
     ['dataPublicationContentCount', entityType, dataPublicationId, filters],
@@ -436,6 +448,7 @@ export const useDataPublicationCount = (
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters } = parseSearchToQuery(location.search);
+  const retryICATErrors = useRetryICATErrors();
 
   return useQuery<
     number,

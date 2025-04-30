@@ -128,7 +128,6 @@ const InvestigationTable = (): React.ReactElement => {
         label: t('investigations.name'),
         dataKey: 'name',
         filterComponent: textFilter,
-        disableSort: true,
       },
       {
         icon: Public,
@@ -148,10 +147,9 @@ const InvestigationTable = (): React.ReactElement => {
       {
         icon: Save,
         label: t('investigations.size'),
-        dataKey: 'size',
+        dataKey: 'fileSize',
         cellContentRenderer: (cellProps: TableCellProps): number | string =>
           formatBytes(cellProps.rowData.fileSize),
-        disableSort: true,
       },
       {
         icon: Assessment,

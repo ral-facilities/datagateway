@@ -144,11 +144,18 @@ describe('ActionButtons', () => {
   });
 
   it('should have a copy link button that copies the link to the current datafile to the clipboard', async () => {
+    jest.useFakeTimers();
+    user = userEvent.setup({
+      advanceTimers: jest.advanceTimersByTime,
+    });
+
     const ogLocation = window.location;
     const mockLocation = new URL(
       `https://www.example.com/datafile/${mockDatafile.id}`
     );
+    // @ts-expect-error doesn't work if we don't do it exactly this way
     delete window.location;
+    // @ts-expect-error doesn't work if we don't do it exactly this way
     window.location = mockLocation;
     const writeTextSpy = jest
       .spyOn(navigator.clipboard, 'writeText')
@@ -166,28 +173,6 @@ describe('ActionButtons', () => {
       `https://www.example.com/datafile/${mockDatafile.id}`
     );
 
-    delete window.location;
-    window.location = ogLocation;
-  });
-
-  it('should show confirmation when the link to the current datafile is successfully copied to the clipboard', async () => {
-    jest.useFakeTimers();
-    user = userEvent.setup({
-      advanceTimers: jest.advanceTimersByTime,
-    });
-    const ogLocation = window.location;
-    const mockLocation = new URL('https://www.example.com');
-    delete window.location;
-    window.location = mockLocation;
-
-    renderComponent({ store, history });
-
-    await user.click(
-      screen.getByRole('button', {
-        name: 'datafiles.preview.toolbar.copy_link',
-      })
-    );
-
     expect(
       await screen.findByText('datafiles.preview.link_copied')
     ).toBeInTheDocument();
@@ -201,7 +186,6 @@ describe('ActionButtons', () => {
       expect(screen.queryByText('datafiles.preview.link_copied')).toBeNull();
     });
 
-    delete window.location;
     window.location = ogLocation;
 
     jest.useRealTimers();

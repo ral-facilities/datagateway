@@ -18,7 +18,7 @@ import type {
   UseQueryOptions,
 } from 'react-query';
 import { useQuery, useInfiniteQuery } from 'react-query';
-import retryICATErrors from './retryICATErrors';
+import { useRetryICATErrors } from './retryICATErrors';
 
 export const fetchDatafiles = (
   apiUrl: string,
@@ -62,6 +62,7 @@ export const useDatafilesPaginated = (
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters, sort, page, results } = parseSearchToQuery(location.search);
+  const retryICATErrors = useRetryICATErrors();
 
   return useQuery<
     Datafile[],
@@ -114,6 +115,7 @@ export const useDatafilesInfinite = (
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters, sort } = parseSearchToQuery(location.search);
+  const retryICATErrors = useRetryICATErrors();
 
   return useInfiniteQuery(
     ['datafile', { sort: JSON.stringify(sort), filters }, additionalFilters], // need to stringify sort as property order is important!
@@ -161,17 +163,13 @@ export const fetchDatafileCountQuery = (
 };
 
 export const useDatafileCount = (
-  additionalFilters?: AdditionalFilters,
-  storedFilters?: FiltersType,
-  currentTab?: string
+  additionalFilters?: AdditionalFilters
 ): UseQueryResult<number, AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
 
-  const filters =
-    currentTab === 'datafile' || !storedFilters
-      ? parseSearchToQuery(location.search).filters
-      : storedFilters;
+  const filters = parseSearchToQuery(location.search).filters;
+  const retryICATErrors = useRetryICATErrors();
 
   return useQuery<
     number,
@@ -228,6 +226,7 @@ export const useDatafileDetails = (
   >
 ): UseQueryResult<Datafile, AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+  const retryICATErrors = useRetryICATErrors();
 
   return useQuery<
     Datafile,

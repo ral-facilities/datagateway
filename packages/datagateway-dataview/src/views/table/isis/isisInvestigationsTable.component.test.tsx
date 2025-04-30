@@ -35,7 +35,7 @@ import axios, { AxiosResponse } from 'axios';
 import { paths } from '../../../page/pageContainer.component';
 
 describe('ISIS Investigations table component', () => {
-  let mockStore;
+  const mockStore = configureStore([thunk]);
   let state: StateType;
   let rowData: Investigation[];
   let history: History;
@@ -69,7 +69,6 @@ describe('ISIS Investigations table component', () => {
         summary: 'foo bar',
         visitId: '1',
         doi: 'doi 1',
-        size: 1,
         investigationUsers: [
           {
             id: 2,
@@ -139,7 +138,6 @@ describe('ISIS Investigations table component', () => {
     holder.setAttribute('id', 'datagateway-dataview');
     document.body.appendChild(holder);
 
-    mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
         dgdataview: dgDataViewInitialState,
@@ -176,7 +174,6 @@ describe('ISIS Investigations table component', () => {
           });
         }
 
-        console.log('url', url);
         return Promise.reject(`Endpoint not mocked: ${url}`);
       });
 
@@ -186,7 +183,7 @@ describe('ISIS Investigations table component', () => {
         (url: string, data: unknown): Promise<Partial<AxiosResponse>> => {
           if (/\/user\/cart\/\/cartItems$/.test(url)) {
             const isRemove: boolean = JSON.parse(
-              (data as URLSearchParams).get('remove')
+              (data as URLSearchParams).get('remove') ?? 'false'
             );
 
             if (isRemove) {
@@ -532,6 +529,7 @@ describe('ISIS Investigations table component', () => {
         investigationUsers: [
           {
             id: 1,
+            role: '',
           },
         ],
         dataCollectionInvestigations: [

@@ -31,10 +31,9 @@ export interface Investigation {
   investigationInstruments?: InvestigationInstrument[];
   dataCollectionInvestigations?: DataCollectionInvestigation[];
   investigationFacilityCycles?: InvestigationFacilityCycle[];
-  size?: number;
-  datasetCount?: number;
   investigationUsers?: InvestigationUser[];
   samples?: Sample[];
+  parameters?: DatafileParameter[];
   publications?: Publication[];
   facility?: Facility;
   datasets?: Dataset[];
@@ -54,8 +53,6 @@ export interface Dataset {
   doi?: string;
   complete?: boolean;
   location?: string;
-  size?: number;
-  datafileCount?: number;
   investigation?: Investigation;
   type?: DatasetType;
 }
@@ -65,6 +62,8 @@ export interface Datafile {
   name: string;
   modTime: string;
   createTime: string;
+  datafileModTime?: string;
+  datafileCreateTime?: string;
   fileSize?: number;
   location?: string;
   description?: string;
@@ -106,6 +105,11 @@ export interface User {
 
 export interface Sample {
   id: number;
+  name: string;
+  type?: SampleType;
+}
+
+interface SampleType {
   name: string;
 }
 
@@ -244,7 +248,7 @@ interface ParameterType {
   id: number;
   name: string;
   units: string;
-  valueType: string;
+  valueType: 'NUMERIC' | 'STRING' | 'DATE_AND_TIME';
 }
 
 interface Facility {
@@ -297,7 +301,7 @@ export interface Download {
   isDeleted: boolean;
   isEmailSent: boolean;
   isTwoLevel: boolean;
-  preparedId: string;
+  preparedId?: string;
   sessionId: string;
   size: number;
   status: DownloadStatus;
@@ -333,6 +337,41 @@ export type DownloadCartTableItem = DownloadCartItem & {
   [key: string]: string | number | DownloadCartItem[];
 };
 
+export interface SearchInstrumentSource {
+  'instrument.id': number;
+  'instrument.name': string;
+  'instrument.fullName'?: string;
+}
+
+export interface SearchFacilityCycleSource {
+  'facilityCycle.id': number;
+}
+
+export interface SearchResultSource {
+  id: number;
+  name: string;
+  title?: string;
+  visitId?: string;
+  doi?: string;
+  startDate?: number;
+  endDate?: number;
+  date?: number;
+  summary?: string;
+  location?: string;
+  investigationinstrument?: SearchInstrumentSource[];
+  investigationfacilitycycle?: SearchFacilityCycleSource[];
+  fileSize?: number;
+  fileCount?: number;
+  'dataset.id'?: number;
+  'dataset.name'?: string;
+  'investigation.id'?: number;
+  'investigation.name'?: string;
+  'investigation.title'?: string;
+  'investigation.startDate'?: number;
+  'facility.name'?: string;
+  'facility.id'?: number;
+}
+
 export type ICATEntity =
   | Investigation
   | Dataset
@@ -346,6 +385,7 @@ export type Entity = (
   | DownloadCartTableItem
   | Download
   | FormattedDownload
+  | SearchResultSource
 ) & {
   // We will have to ignore the any typing here to access
   // Entity attributes with string indexing.
@@ -371,10 +411,31 @@ export interface DateFilter {
 
 export interface TextFilter {
   value?: string | number;
-  type: string;
+  type: 'include' | 'exclude' | 'exact';
 }
 
-export type Filter = string[] | TextFilter | DateFilter;
+export interface RangeFilter {
+  field: string;
+  from?: number;
+  to?: number;
+  key?: string;
+  units?: string;
+}
+
+export interface TermFilter {
+  field: string;
+  value: string;
+}
+
+export interface NestedFilter {
+  key: string;
+  label: string;
+  filter: SearchFilter[];
+}
+
+export type SearchFilter = NestedFilter | RangeFilter | TermFilter | string;
+
+export type Filter = SearchFilter[] | TextFilter | DateFilter;
 
 export type Order = 'asc' | 'desc';
 
@@ -409,6 +470,7 @@ export interface QueryParams {
   startDate: Date | null;
   endDate: Date | null;
   currentTab: string;
+  restrict: boolean;
 }
 
 export enum ContributorType {

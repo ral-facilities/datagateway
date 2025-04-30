@@ -9,9 +9,16 @@ import {
 } from 'datagateway-common';
 import { useLocation } from 'react-router-dom';
 import { isBefore, isValid } from 'date-fns';
-import { TextField, TextFieldProps } from '@mui/material';
+import {
+  TextField,
+  TextFieldProps,
+  ThemeProvider,
+  createTheme,
+  useTheme,
+} from '@mui/material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { enGB } from 'date-fns/locale';
 
 interface DatePickerProps {
   initiateSearch: () => void;
@@ -121,67 +128,81 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
 
   const invalidDateRange = startDate && endDate && isBefore(endDate, startDate);
 
+  // can't set the main colour to secondary the "normal" MUI way, so have a sub-theme
+  // to override the primary colour for the date pickers
+  const theme = useTheme();
+  const subTheme = createTheme(theme, {
+    palette: {
+      primary:
+        theme.palette.mode === 'dark'
+          ? theme.palette.secondary
+          : theme.palette.primary,
+    },
+  });
+
   return (
     <div className="tour-search-dates">
-      <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <>
-          <DatePicker
-            format="yyyy-MM-dd"
-            views={['year', 'month', 'day']}
-            value={startDate}
-            maxDate={endDate || new Date()}
-            onChange={(date) => {
-              handleChange(date as Date, 'startDate');
-            }}
-            slots={{
-              textField: CustomTextField,
-            }}
-            slotProps={{
-              actionBar: {
-                actions: ['clear'],
-              },
-              textField: {
-                inputProps: {
-                  invalidDateRange,
-                  sideLayout,
-                  t: t,
-                  placeholder: t('searchBox.start_date'),
-                  'aria-label': t('searchBox.start_date_arialabel'),
+      <ThemeProvider theme={subTheme}>
+        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
+          <>
+            <DatePicker
+              format="yyyy-MM-dd"
+              views={['year', 'month', 'day']}
+              value={startDate}
+              maxDate={endDate || new Date()}
+              onChange={(date) => {
+                handleChange(date as Date, 'startDate');
+              }}
+              slots={{
+                textField: CustomTextField,
+              }}
+              slotProps={{
+                actionBar: {
+                  actions: ['clear'],
                 },
-                onKeyDown: handleKeyDown,
-              },
-            }}
-          />
-          {sideLayout ? <br></br> : null}
-          <DatePicker
-            format="yyyy-MM-dd"
-            views={['year', 'month', 'day']}
-            value={endDate}
-            minDate={startDate || new Date('1984-01-01T00:00:00Z')}
-            onChange={(date) => {
-              handleChange(date as Date, 'endDate');
-            }}
-            slots={{
-              textField: CustomTextField,
-            }}
-            slotProps={{
-              actionBar: {
-                actions: ['clear'],
-              },
-              textField: {
-                inputProps: {
-                  invalidDateRange,
-                  sideLayout,
-                  t: t,
-                  placeholder: t('searchBox.end_date'),
-                  'aria-label': t('searchBox.end_date_arialabel'),
+                textField: {
+                  inputProps: {
+                    invalidDateRange,
+                    sideLayout,
+                    t: t,
+                    placeholder: t('searchBox.start_date'),
+                    'aria-label': t('searchBox.start_date_arialabel'),
+                  },
+                  onKeyDown: handleKeyDown,
                 },
-                onKeyDown: handleKeyDown,
-              },
-            }}
-          />
-        </>
-      </LocalizationProvider>
+              }}
+            />
+            {sideLayout ? <br></br> : null}
+            <DatePicker
+              format="yyyy-MM-dd"
+              views={['year', 'month', 'day']}
+              value={endDate}
+              minDate={startDate || new Date('1984-01-01T00:00:00Z')}
+              onChange={(date) => {
+                handleChange(date as Date, 'endDate');
+              }}
+              slots={{
+                textField: CustomTextField,
+              }}
+              slotProps={{
+                actionBar: {
+                  actions: ['clear'],
+                },
+                textField: {
+                  inputProps: {
+                    invalidDateRange,
+                    sideLayout,
+                    t: t,
+                    placeholder: t('searchBox.end_date'),
+                    'aria-label': t('searchBox.end_date_arialabel'),
+                  },
+                  onKeyDown: handleKeyDown,
+                },
+              }}
+            />
+          </>
+        </LocalizationProvider>
+      </ThemeProvider>
     </div>
   );
 }

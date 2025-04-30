@@ -4,7 +4,8 @@ on:
     branches:
       - main
       - develop
-    tags: '*'
+    tags: 
+      - '*'
 
 jobs:
   build:
@@ -22,10 +23,7 @@ jobs:
           cache: 'yarn'
 
       - name: Install dependencies
-        # Ubuntu 16+ does not install libgconf-2-4 by default, so we need to install it ourselves (for Cypress)
-        run: |
-          sudo apt-get install libgconf-2-4
-          yarn --immutable
+        run: yarn --immutable
 
       - name: Determine tag name
         run: |
@@ -72,11 +70,15 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' }}
 
       - name: Create/update release
-        uses: johnwbyrd/update-release@1d5ec4791e40507e5eca3b4dbf90f0b27e7e4979 # v1.0.0
+        uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.0.8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          files: ./datagateway-dataview-${{ env.TAG_NAME }}.tar.gz ./datagateway-download-${{ env.TAG_NAME }}.tar.gz ./datagateway-search-${{ env.TAG_NAME }}.tar.gz
-          release: Release ${{ env.TAG_NAME }}
-          tag: ${{ env.TAG_NAME }}
+          files: |
+            ./datagateway-dataview-${{ env.TAG_NAME }}.tar.gz
+            ./datagateway-download-${{ env.TAG_NAME }}.tar.gz
+            ./datagateway-search-${{ env.TAG_NAME }}.tar.gz
+          name: ${{ env.TAG_NAME }}
+          tag_name: ${{ env.TAG_NAME }}
           prerelease: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' }}
           draft: false
+          generate_release_notes: true

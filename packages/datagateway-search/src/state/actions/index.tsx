@@ -7,8 +7,14 @@ import {
   SettingsLoadedType,
   ConfigureMaxNumResultsPayload,
   ConfigureMaxNumResultsType,
+  ConfigureMinNumResultsPayload,
+  ConfigureMinNumResultsType,
 } from './actions.types';
-import { loadUrls, loadFacilityName } from 'datagateway-common';
+import {
+  loadUrls,
+  loadFacilityName,
+  loadQueryRetries,
+} from 'datagateway-common';
 import { Action } from 'redux';
 import { settings } from '../../settings';
 
@@ -43,6 +49,15 @@ export const loadMaxNumResults = (
   },
 });
 
+export const loadMinNumResults = (
+  minNumResults: number
+): ActionType<ConfigureMinNumResultsPayload> => ({
+  type: ConfigureMinNumResultsType,
+  payload: {
+    minNumResults: minNumResults,
+  },
+});
+
 export const configureApp = (): ThunkResult<Promise<void>> => {
   return async (dispatch) => {
     const settingsResult = await settings;
@@ -58,12 +73,20 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
         })
       );
 
+      if (settingsResult?.['queryRetries'] !== undefined) {
+        dispatch(loadQueryRetries(settingsResult['queryRetries']));
+      }
+
       if (settingsResult?.['selectAllSetting'] !== undefined) {
         dispatch(loadSelectAllSetting(settingsResult['selectAllSetting']));
       }
 
       if (settingsResult?.['searchableEntities'] !== undefined) {
         dispatch(loadSearchableEntitites(settingsResult['searchableEntities']));
+      }
+
+      if (settingsResult?.['minNumResults'] !== undefined) {
+        dispatch(loadMinNumResults(settingsResult['minNumResults']));
       }
 
       if (settingsResult?.['maxNumResults'] !== undefined) {

@@ -212,9 +212,33 @@ describe('Download Status', () => {
         }
       });
 
-    cy.get('[aria-label="Filter by Access Method"]').first().type('globus');
+    cy.get('[aria-label="Filter by Access Method"]').first().as('methodFilter');
+    // test include
+    cy.get('@methodFilter').type('http');
+    cy.get('[aria-rowcount="2"]').should('exist');
+    cy.findByRole('gridcell', { name: 'http' }).should('exist');
+    cy.findByRole('gridcell', { name: 'https' }).should('exist');
+    cy.findByRole('gridcell', { name: 'globus' }).should('not.exist');
+
+    cy.get('@methodFilter')
+      .parent()
+      .findByRole('button', { name: 'include, exclude or exact' })
+      .as('methodFilterOptionsButton')
+      .click();
+
+    cy.findByRole('option', { name: 'Exact' }).click();
+
+    cy.get('[aria-rowcount="1"]').should('exist');
+    cy.findByRole('gridcell', { name: 'http' }).should('exist');
+    cy.findByRole('gridcell', { name: 'https' }).should('not.exist');
+
+    cy.get('@methodFilterOptionsButton').click();
+    cy.findByRole('option', { name: 'Exclude' }).click();
 
     cy.get('[aria-rowcount="2"]').should('exist');
+    cy.findByRole('gridcell', { name: 'http' }).should('not.exist');
+    cy.findByRole('gridcell', { name: 'https' }).should('not.exist');
+    cy.findAllByRole('gridcell', { name: 'globus' }).should('exist');
 
     cy.get('[aria-label="Filter by Availability"]').first().type('restoring');
 

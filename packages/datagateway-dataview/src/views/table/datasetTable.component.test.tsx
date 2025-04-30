@@ -35,7 +35,7 @@ import {
 import axios, { type AxiosResponse } from 'axios';
 
 describe('Dataset table component', () => {
-  let mockStore;
+  const mockStore = configureStore([thunk]);
   let state: StateType;
   let rowData: Dataset[];
   let cartItems: DownloadCartItem[];
@@ -65,7 +65,6 @@ describe('Dataset table component', () => {
         name: 'Test 1',
         fileSize: 1,
         fileCount: 1,
-        size: 1,
         modTime: '2019-07-23',
         createTime: '2019-07-23',
       },
@@ -76,7 +75,6 @@ describe('Dataset table component', () => {
     holder.setAttribute('id', 'datagateway-dataview');
     document.body.appendChild(holder);
 
-    mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
         dgcommon: dGCommonInitialState,
@@ -124,7 +122,7 @@ describe('Dataset table component', () => {
         (url: string, data: unknown): Promise<Partial<AxiosResponse>> => {
           if (/\/user\/cart\/\/cartItems$/.test(url)) {
             const isRemove: boolean = JSON.parse(
-              (data as URLSearchParams).get('remove')
+              (data as URLSearchParams).get('remove') ?? 'false'
             );
 
             if (isRemove) {
@@ -315,9 +313,9 @@ describe('Dataset table component', () => {
   it('selected rows only considers relevant cart items', async () => {
     cartItems = [
       {
-        entityId: 1,
+        entityId: 5,
         entityType: 'investigation',
-        id: 1,
+        id: 5,
         name: 'test',
         parentEntities: [],
       },

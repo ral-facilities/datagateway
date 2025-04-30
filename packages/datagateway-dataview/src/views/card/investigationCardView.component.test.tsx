@@ -28,7 +28,7 @@ import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 
 describe('Investigation - Card View', () => {
-  let mockStore;
+  const mockStore = configureStore([thunk]);
   let state: StateType;
   let cardData: Investigation[];
   let history: History;
@@ -65,7 +65,6 @@ describe('Investigation - Card View', () => {
     history = createMemoryHistory();
     user = userEvent.setup();
 
-    mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
         dgcommon: dGCommonInitialState,
@@ -93,6 +92,8 @@ describe('Investigation - Card View', () => {
             data: { cartItems },
           });
         }
+
+        return Promise.reject(`Endpoint not mocked: ${url}`);
       });
 
     // Prevent error logging

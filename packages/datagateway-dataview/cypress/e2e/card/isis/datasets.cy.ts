@@ -15,26 +15,27 @@ describe('ISIS - Datasets Cards', () => {
     cy.get('#datagateway-dataview').should('be.visible');
 
     //Default sort
-    cy.contains('[role="button"]', 'desc').should('exist');
-    cy.get('.MuiTableSortLabel-iconDirectionDesc').should('be.visible');
+    cy.contains('[role="button"]', 'asc').should('exist');
+    cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
   });
 
   it('should be able to click a dataset to see its datafiles', () => {
     cy.get('[data-testid="card"]')
       .first()
-      .contains('DATASET 79')
+      .contains('DATASET 19')
       .click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/19/investigation/19/dataset/79'
+      '/browse/instrument/1/facilityCycle/19/investigation/19/dataset/19'
     );
   });
 
   it('should be able to expand "More Information"', () => {
-    //Revert the default sort
-    cy.contains('[role="button"]', 'Create Time').click();
-    cy.wait('@getDatasetsOrder', { timeout: 10000 });
+    // Revert the default sort
+    cy.contains('[role="button"]', 'Name').as('nameSortButton').click();
+    cy.get('@nameSortButton').click();
 
+    cy.get('[data-testid="card"]').first().contains('DATASET 19');
     cy.get('[data-testid="card"]')
       .first()
       .contains('More Information')
@@ -56,15 +57,14 @@ describe('ISIS - Datasets Cards', () => {
   });
 
   it('should be able to sort by one field or multiple', () => {
-    //Revert the default sort
-    cy.contains('[role="button"]', 'Create Time').as('timeSortButton').click();
+    // Revert the default sort
+    cy.contains('[role="button"]', 'Name').as('nameSortButton').click();
+    cy.get('@nameSortButton').click();
     cy.wait('@getDatasetsOrder', { timeout: 10000 });
 
     // ascending
     cy.contains('[role="button"]', 'Name').as('nameSortButton').click();
-    cy.wait('@getDatasetsOrder', {
-      timeout: 10000,
-    });
+
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('[data-testid="card"]').first().contains('DATASET 19');
@@ -85,7 +85,7 @@ describe('ISIS - Datasets Cards', () => {
     cy.get('[data-testid="card"]').first().contains('DATASET 19');
 
     // multiple fields (shift click)
-    cy.get('@timeSortButton').click();
+    cy.contains('[role="button"]', 'Create Time').as('timeSortButton').click();
     cy.wait('@getDatasetsOrder', {
       timeout: 10000,
     });

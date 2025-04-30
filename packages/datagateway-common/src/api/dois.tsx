@@ -77,6 +77,11 @@ export const useCheckUser = (
   username: string,
   doiMinterUrl: string | undefined
 ): UseQueryResult<User, AxiosError> => {
+  const queryClient = useQueryClient();
+  const opts = queryClient.getDefaultOptions();
+  const retries =
+    typeof opts?.queries?.retry === 'number' ? opts.queries.retry : 3;
+
   return useQuery(
     ['checkUser', username],
     () => checkUser(username, doiMinterUrl),
@@ -90,7 +95,7 @@ export const useCheckUser = (
           error.response?.status === 404 ||
           // email is invalid - don't retry as this is correct response from the server
           error.response?.status === 422 ||
-          failureCount >= 3
+          failureCount >= retries
         )
           return false;
         return true;
@@ -140,12 +145,17 @@ export const useCheckDOI = (
   doi: string,
   dataCiteUrl: string | undefined
 ): UseQueryResult<RelatedDOI, AxiosError> => {
+  const queryClient = useQueryClient();
+  const opts = queryClient.getDefaultOptions();
+  const retries =
+    typeof opts?.queries?.retry === 'number' ? opts.queries.retry : 3;
+
   return useQuery(['checkDOI', doi], () => fetchDOI(doi, dataCiteUrl), {
     retry: (failureCount: number, error: AxiosError) => {
       if (
         // DOI is invalid - don't retry as this is a correct response from the server
         error.response?.status === 404 ||
-        failureCount >= 3
+        failureCount >= retries
       )
         return false;
       return true;
@@ -304,6 +314,11 @@ export const useIsCartMintable = (
   boolean,
   AxiosError<{ detail: { msg: string }[] } | { detail: string }>
 > => {
+  const queryClient = useQueryClient();
+  const opts = queryClient.getDefaultOptions();
+  const retries =
+    typeof opts?.queries?.retry === 'number' ? opts.queries.retry : 3;
+
   return useQuery(
     ['ismintable', cart],
     () => {
@@ -323,7 +338,7 @@ export const useIsCartMintable = (
       retry: (failureCount, error) => {
         // if we get 403 we know this is an legit response from the backend so don't bother retrying
         // all other errors use default retry behaviour
-        if (error.response?.status === 403 || failureCount >= 3) {
+        if (error.response?.status === 403 || failureCount >= retries) {
           return false;
         } else {
           return true;

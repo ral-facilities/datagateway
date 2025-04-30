@@ -71,7 +71,7 @@ describe('DataPublication content table component', () => {
         summary: 'foo bar',
         visitId: '1',
         doi: 'doi 1',
-        size: 1,
+        fileSize: 1,
         investigationInstruments: [
           {
             id: 4,
@@ -89,7 +89,7 @@ describe('DataPublication content table component', () => {
       {
         id: 2,
         name: 'Test 2',
-        size: 1,
+        fileSize: 1,
         modTime: '2019-07-23',
         createTime: '2019-07-23',
       },
@@ -177,7 +177,7 @@ describe('DataPublication content table component', () => {
         (url: string, data: unknown): Promise<Partial<AxiosResponse>> => {
           if (/\/user\/cart\/\/cartItems$/.test(url)) {
             const isRemove: boolean = JSON.parse(
-              (data as URLSearchParams).get('remove')
+              (data as URLSearchParams).get('remove') ?? 'false'
             );
 
             if (isRemove) {

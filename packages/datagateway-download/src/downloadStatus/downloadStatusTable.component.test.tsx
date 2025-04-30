@@ -1,4 +1,10 @@
-import { render, RenderResult, screen, waitFor } from '@testing-library/react';
+import {
+  render,
+  RenderResult,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -268,6 +274,12 @@ describe('Download Status Table', () => {
   });
 
   it('should filter data when text fields are typed into', async () => {
+    (fetchDownloads as jest.Mock).mockImplementation(() =>
+      Promise.resolve([
+        ...mockDownloadItems,
+        { ...mockDownloadItems[0], id: 11, fileName: 'test-file-11' },
+      ])
+    );
     renderComponent();
 
     const fileNameFilterBox = await screen.findByLabelText(
@@ -281,13 +293,53 @@ describe('Download Status Table', () => {
     );
 
     // type into file name filter textbox
-    await user.type(fileNameFilterBox, '1');
+    await user.type(fileNameFilterBox, 'test-file-1');
 
-    // should only show file-name-1
+    // should only show file-name-1 and file-name-11
     expect(await screen.findByText('test-file-1')).toBeInTheDocument();
+    expect(screen.getByText('test-file-11')).toBeInTheDocument();
     expect(screen.queryByText('test-file-2')).toBeNull();
+    expect(screen.queryByText('test-file-3')).toBeNull();
+    expect(screen.queryByText('test-file-4')).toBeNull();
+    expect(screen.queryByText('test-file-5')).toBeNull();
+
+    // test exclude filter
+
+    await user.click(
+      within(
+        screen.getByRole('columnheader', { name: /downloadStatus.filename/ })
+      ).getByLabelText('include, exclude or exact')
+    );
+
+    await user.click(
+      within(await screen.findByRole('listbox')).getByText('Exclude')
+    );
+
+    expect(await screen.findByText('test-file-2')).toBeInTheDocument();
+    expect(screen.queryByText('test-file-1')).toBeNull();
+    expect(screen.queryByText('test-file-11')).toBeNull();
+    expect(screen.getByText('test-file-3')).toBeInTheDocument();
+    expect(screen.getByText('test-file-4')).toBeInTheDocument();
+    expect(screen.getByText('test-file-5')).toBeInTheDocument();
+
+    // test exact filter
+
+    await user.click(
+      within(
+        screen.getByRole('columnheader', { name: /downloadStatus.filename/ })
+      ).getByLabelText('include, exclude or exact')
+    );
+
+    await user.click(
+      within(await screen.findByRole('listbox')).getByText('Exact')
+    );
+
+    expect(await screen.findByText('test-file-1')).toBeInTheDocument();
+    expect(screen.queryByText('test-file-11')).toBeNull();
     expect(screen.queryByText('test-file-2')).toBeNull();
-    expect(screen.queryByText('test-file-2')).toBeNull();
+    expect(screen.queryByText('test-file-3')).toBeNull();
+    expect(screen.queryByText('test-file-4')).toBeNull();
+    expect(screen.queryByText('test-file-5')).toBeNull();
 
     // clear file name filter textbox
     await user.clear(fileNameFilterBox);

@@ -4,7 +4,6 @@ import {
   useAddToCart,
   useCart,
   useDatasetCount,
-  useDatasetsDatafileCount,
   useDatasetsInfinite,
   useIds,
   useRemoveFromCart,
@@ -57,7 +56,7 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('DLS Dataset table component', () => {
-  let mockStore;
+  const mockStore = configureStore([thunk]);
   let state: StateType;
   let rowData: Dataset[];
   let history: History;
@@ -83,7 +82,6 @@ describe('DLS Dataset table component', () => {
         fileSize: 1,
         fileCount: 1,
         name: 'Test 1',
-        size: 1,
         modTime: '2019-07-23',
         createTime: '2019-07-23',
       },
@@ -91,7 +89,6 @@ describe('DLS Dataset table component', () => {
     history = createMemoryHistory();
     user = userEvent.setup();
 
-    mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
         dgdataview: dgDataViewInitialState,
@@ -123,9 +120,6 @@ describe('DLS Dataset table component', () => {
       mutate: jest.fn(),
       isLoading: false,
     });
-    (useDatasetsDatafileCount as jest.Mock).mockReturnValue([
-      { data: 1, isSuccess: true },
-    ]);
   });
 
   afterEach(() => {
@@ -234,7 +228,7 @@ describe('DLS Dataset table component', () => {
     renderComponent();
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"createTime":"desc"}')}`
+      `?sort=${encodeURIComponent('{"name":"asc"}')}`
     );
 
     // check that the data request is sent only once after mounting
@@ -255,7 +249,7 @@ describe('DLS Dataset table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"name":"asc"}')}`
+      `?sort=${encodeURIComponent('{"name":"desc"}')}`
     );
   });
 

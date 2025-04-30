@@ -103,7 +103,7 @@ describe('DLS MyDOIs table component', () => {
                 summary: 'foo bar',
                 visitId: '1',
                 doi: 'doi 1',
-                size: 1,
+                fileSize: 1,
                 investigationInstruments: [
                   {
                     id: 1,

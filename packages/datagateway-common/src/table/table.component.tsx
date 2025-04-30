@@ -12,7 +12,15 @@ import {
   Index,
   TableRowRenderer,
 } from 'react-virtualized';
-import { Entity, Order, ICATEntity, UpdateMethod } from '../app.types';
+import {
+  Entity,
+  Order,
+  ICATEntity,
+  UpdateMethod,
+  Filter,
+  FiltersType,
+  SortType,
+} from '../app.types';
 import ExpandCell from './cellRenderers/expandCell.component';
 import DataCell from './cellRenderers/dataCell.component';
 import ActionCell from './cellRenderers/actionCell.component';
@@ -82,6 +90,17 @@ const headerTableCellStyle = {
   },
 };
 
+const shortHeaderTableCellStyle = {
+  flex: 1,
+  height: rowHeight,
+  justifyContent: 'space-between',
+  padding: 0,
+  paddingLeft: '16px',
+  '&:last-child': {
+    paddingRight: 0,
+  },
+};
+
 const tableCellStyleCombined = { ...tableCellStyle, ...flexContainerStyle };
 const tableCellReducedPaddingStyleCombined = {
   ...tableCellStyle,
@@ -101,7 +120,12 @@ export interface ColumnType {
   className?: string;
   disableSort?: boolean;
   defaultSort?: Order;
-  filterComponent?: (label: string, dataKey: string) => React.ReactElement;
+  defaultFilter?: Filter;
+  filterComponent?: (
+    label: string,
+    dataKey: string,
+    defaultFilter?: Filter
+  ) => React.ReactElement;
 }
 
 export interface DetailsPanelProps {
@@ -120,12 +144,14 @@ interface VirtualizedTableProps {
   columns: ColumnType[];
   loadMoreRows?: (offsetParams: IndexRange) => Promise<unknown>;
   totalRowCount?: number;
-  sort: { [column: string]: Order };
+  sort: SortType;
   onSort: (
     column: string,
     order: Order | null,
     updateMethod: UpdateMethod
   ) => void;
+  onDefaultFilter?: (filterKey: string, filterValue: Filter | null) => void;
+  filters?: FiltersType;
   detailsPanel?: React.ComponentType<DetailsPanelProps>;
   actions?: React.ComponentType<TableActionProps>[];
   actionsWidth?: number;
@@ -134,6 +160,7 @@ interface VirtualizedTableProps {
   onUncheck?: (selectedIds: number[]) => void;
   allIds?: number[];
   disableSelectAll?: boolean;
+  shortHeader?: boolean;
 }
 
 const VirtualizedTable = React.memo(
@@ -161,6 +188,9 @@ const VirtualizedTable = React.memo(
       sort,
       onSort,
       disableSelectAll,
+      shortHeader,
+      onDefaultFilter,
+      filters,
     } = props;
 
     // Format dates to be more readable
@@ -209,6 +239,14 @@ const VirtualizedTable = React.memo(
     )
       throw new Error(
         'Only one of loadMoreRows and totalRowCount was defined - either define both for infinite loading functionality or neither for no infinite loading'
+      );
+
+    if (
+      columns.some((column) => column.defaultFilter) &&
+      (typeof onDefaultFilter === 'undefined' || typeof filters === 'undefined')
+    )
+      throw new Error(
+        'Column has a default filter prop but onDefaultFilter or filters was not passed to Table - either pass onDefaultFilter function & filters or remove defaultFilter from the column definition'
       );
 
     const [widthProps, setWidthProps] = React.useState<{
@@ -321,6 +359,20 @@ const VirtualizedTable = React.memo(
       [props.loadMoreRows]
     );
 
+    const headerTableCellStyle: SxProps = {
+      ...headerFlexContainerStyle,
+      ...(shortHeader
+        ? shortHeaderTableCellStyle
+        : headerTableCellStyleCombined),
+    };
+
+    const detailsHeaderTableCellStyle: SxProps = {
+      ...flexContainerStyle,
+      ...(shortHeader
+        ? shortHeaderTableCellStyle
+        : headerTableCellStyleCombined),
+    };
+
     return (
       <AutoSizer>
         {({ height, width }) => {
@@ -359,7 +411,7 @@ const VirtualizedTable = React.memo(
                   width={Math.max(width, min_table_width)}
                   rowCount={data.length}
                   onRowsRendered={onRowsRendered}
-                  headerHeight={headerHeight}
+                  headerHeight={shortHeader ? rowHeight : headerHeight}
                   rowHeight={getRowHeight}
                   rowStyle={tableRowStyleCombined}
                   rowClassName={getRowClassName}
@@ -379,7 +431,7 @@ const VirtualizedTable = React.memo(
                         !disableSelectAll && (
                           <SelectHeader
                             {...props}
-                            sx={headerTableCellStyleCombined as SxProps}
+                            sx={headerTableCellStyle}
                             selectedRows={selectedRows}
                             totalRowCount={rowCount}
                             allIds={
@@ -427,12 +479,7 @@ const VirtualizedTable = React.memo(
                           size="small"
                           padding="checkbox"
                           component="div"
-                          sx={
-                            {
-                              ...headerTableCellStyleCombined,
-                              ...flexContainerStyle,
-                            } as SxProps
-                          }
+                          sx={detailsHeaderTableCellStyle}
                           variant="head"
                         />
                       )}
@@ -461,6 +508,7 @@ const VirtualizedTable = React.memo(
                         filterComponent,
                         disableSort,
                         defaultSort,
+                        defaultFilter,
                       },
                       index
                     ) => {
@@ -477,7 +525,7 @@ const VirtualizedTable = React.memo(
                           headerRenderer={(headerProps) => (
                             <DataHeader
                               {...headerProps}
-                              sx={headerTableCellStyleCombined as SxProps}
+                              sx={headerTableCellStyle}
                               sort={sort}
                               onSort={onSort}
                               icon={icon}
@@ -486,6 +534,9 @@ const VirtualizedTable = React.memo(
                               resizeColumn={resizeColumn}
                               defaultSort={defaultSort}
                               shiftDown={shiftDown}
+                              defaultFilter={defaultFilter}
+                              onDefaultFilter={onDefaultFilter}
+                              filters={filters}
                             />
                           )}
                           className={className}

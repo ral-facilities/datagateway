@@ -23,7 +23,7 @@ describe('Select cell component', () => {
       name: 'test 3',
     },
   ];
-  const selectCellProps = {
+  const selectCellProps: React.ComponentProps<typeof SelectCell> = {
     columnIndex: 1,
     dataKey: 'test',
     isScrolling: false,
@@ -36,7 +36,8 @@ describe('Select cell component', () => {
     setLastChecked,
     onCheck,
     onUncheck,
-    loading: false,
+    sx: {},
+    parentSelected: false,
   };
 
   beforeEach(() => {

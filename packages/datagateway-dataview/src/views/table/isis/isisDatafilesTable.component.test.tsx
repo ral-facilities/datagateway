@@ -35,7 +35,7 @@ import {
 import axios, { AxiosResponse } from 'axios';
 
 describe('ISIS datafiles table component', () => {
-  let mockStore;
+  const mockStore = configureStore([thunk]);
   let state: StateType;
   let rowData: Datafile[];
   let cartItems: DownloadCartItem[];
@@ -63,6 +63,8 @@ describe('ISIS datafiles table component', () => {
         fileSize: 1,
         modTime: '2019-07-23',
         createTime: '2019-07-23',
+        datafileModTime: '2019-01-02',
+        datafileCreateTime: '2019-01-01',
       },
     ];
     cartItems = [];
@@ -73,7 +75,6 @@ describe('ISIS datafiles table component', () => {
     holder.setAttribute('id', 'datagateway-dataview');
     document.body.appendChild(holder);
 
-    mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
         dgdataview: dgDataViewInitialState,
@@ -114,7 +115,7 @@ describe('ISIS datafiles table component', () => {
         (url: string, data: unknown): Promise<Partial<AxiosResponse>> => {
           if (/\/user\/cart\/\/cartItems$/.test(url)) {
             const isRemove: boolean = JSON.parse(
-              (data as URLSearchParams).get('remove')
+              (data as URLSearchParams).get('remove') ?? 'false'
             );
 
             if (isRemove) {
@@ -202,7 +203,7 @@ describe('ISIS datafiles table component', () => {
         findCellInRow(row, {
           columnIndex: await findColumnIndexByName('datafiles.modified_time'),
         })
-      ).getByText('2019-07-23')
+      ).getByText('2019-01-02')
     ).toBeInTheDocument();
   });
 
@@ -245,7 +246,9 @@ describe('ISIS datafiles table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent('{"modTime":{"endDate":"2019-08-06"}}')}`
+      `?filters=${encodeURIComponent(
+        '{"datafileModTime":{"endDate":"2019-08-06"}}'
+      )}`
     );
 
     // await user.clear(filterInput);
@@ -263,7 +266,7 @@ describe('ISIS datafiles table component', () => {
     renderComponent();
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"modTime":"desc"}')}`
+      `?sort=${encodeURIComponent('{"name":"asc"}')}`
     );
 
     // check that the data request is sent only once after mounting
@@ -282,7 +285,7 @@ describe('ISIS datafiles table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"name":"asc"}')}`
+      `?sort=${encodeURIComponent('{"name":"desc"}')}`
     );
   });
 
@@ -319,9 +322,9 @@ describe('ISIS datafiles table component', () => {
   it('selected rows only considers relevant cart items', async () => {
     cartItems = [
       {
-        entityId: 1,
+        entityId: 5,
         entityType: 'dataset',
-        id: 1,
+        id: 5,
         name: 'test',
         parentEntities: [],
       },

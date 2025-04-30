@@ -23,13 +23,18 @@ export {
   default as DateColumnFilter,
   useDateFilter,
 } from './table/columnFilters/dateColumnFilter.component';
-export { default as ActionCellComponent } from './table/cellRenderers/actionCell.component';
-export { default as DataCellComponent } from './table/cellRenderers/dataCell.component';
-export { default as ExpandCellComponent } from './table/cellRenderers/expandCell.component';
+export { default as ActionCell } from './table/cellRenderers/actionCell.component';
+export { default as DataCell } from './table/cellRenderers/dataCell.component';
+export { default as ExpandCell } from './table/cellRenderers/expandCell.component';
 export * from './table/cellRenderers/cellContentRenderers';
 
 export { default as CardView } from './card/cardView.component';
-export type { CardViewDetails } from './card/cardView.component';
+export type {
+  CardViewDetails,
+  CVFilterInfo,
+  CVSelectedFilter,
+  CVCustomFilters,
+} from './card/cardView.component';
 export { default as AdvancedFilter } from './card/advancedFilter.component';
 
 export * from './state/actions/index';
@@ -48,7 +53,7 @@ export type DGCommonState = StateType;
 
 export * from './parseTokens';
 export { default as handleICATError } from './handleICATError';
-export { default as retryICATErrors } from './api/retryICATErrors';
+export * from './api/retryICATErrors';
 
 export {
   default as ArrowTooltip,
@@ -57,6 +62,7 @@ export {
 export { default as Sticky } from './sticky.component';
 export { default as DGThemeProvider } from './dgThemeProvider.component';
 export { default as Mark } from './mark.component';
+export * from './queryClientSettingsUpdater.component';
 
 export { default as HomePage } from './homePage/homePage.component';
 

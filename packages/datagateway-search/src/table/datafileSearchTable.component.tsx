@@ -1,44 +1,44 @@
 import {
+  ColumnType,
+  DatafileDetailsPanel,
+  DLSDatafileDetailsPanel,
+  formatBytes,
+  ISISDatafileDetailsPanel,
+  parseSearchToQuery,
+  SearchFilter,
+  SearchResponse,
+  SearchResultSource,
   buildDatafileTableUrlForDataset,
   buildDatasetLandingUrl,
   buildUrlToDatafileTableContainingDatafile,
-  ColumnType,
-  Datafile,
-  DatafileDetailsPanel,
-  Dataset,
-  DLSDatafileDetailsPanel,
   FACILITY_NAME,
-  formatBytes,
-  ISISDatafileDetailsPanel,
   isLandingPageSupportedForHierarchy,
-  parseSearchToQuery,
   Table,
   tableLink,
   useAddToCart,
   useCart,
-  useDatafileCount,
-  useDatafilesInfinite,
-  useDateFilter,
-  useIds,
-  useLuceneSearch,
+  useLuceneSearchInfinite,
   useRemoveFromCart,
   useSort,
-  useTextFilter,
 } from 'datagateway-common';
+import type { TableCellProps } from 'react-virtualized';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { IndexRange, TableCellProps } from 'react-virtualized';
 import { StateType } from '../state/app.types';
+import { Grid, Paper, Typography } from '@mui/material';
+import FacetPanel from '../facet/components/facetPanel/facetPanel.component';
+import { facetClassificationFromSearchResponses } from '../facet/facet';
+import useFacetFilters from '../facet/useFacetFilters';
+import SelectedFilterChips from '../facet/components/selectedFilterChips.component';
+import { useSearchResultCounter } from '../searchTabs/useSearchResultCounter';
 
 interface DatafileSearchTableProps {
   hierarchy: string;
 }
 
-const DatafileSearchTable = (
-  props: DatafileSearchTableProps
-): React.ReactElement => {
+const DatafileSearchTable: React.FC<DatafileSearchTableProps> = (props) => {
   const { hierarchy } = props;
 
   const location = useLocation();
@@ -46,96 +46,143 @@ const DatafileSearchTable = (
     () => parseSearchToQuery(location.search),
     [location.search]
   );
-  const { startDate, endDate } = queryParams;
+  const { startDate, endDate, sort, filters, restrict, datafile, currentTab } =
+    queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
   const selectAllSetting = useSelector(
     (state: StateType) => state.dgsearch.selectAllSetting
   );
 
+  const minNumResults = useSelector(
+    (state: StateType) => state.dgsearch.minNumResults
+  );
+
   const maxNumResults = useSelector(
     (state: StateType) => state.dgsearch.maxNumResults
   );
 
-  const { data: luceneData } = useLuceneSearch('Datafile', {
-    searchText,
-    startDate,
-    endDate,
-    maxCount: maxNumResults,
-  });
+  const { fetchNextPage, data, hasNextPage, isFetching } =
+    useLuceneSearchInfinite(
+      'Datafile',
+      {
+        searchText,
+        startDate,
+        endDate,
+        sort,
+        minCount: minNumResults,
+        maxCount: maxNumResults,
+        restrict,
+        facets: [
+          { target: 'Datafile' },
+          {
+            target: 'DatafileParameter',
+            dimensions: [{ dimension: 'type.name' }],
+          },
+          {
+            target: 'InvestigationInstrument',
+            dimensions: [{ dimension: 'instrument.name' }],
+          },
+        ],
+      },
+      currentTab === 'datafile' ? filters : {},
+      {
+        enabled: datafile,
+        // this select removes the facet count for the InvestigationInstrument.instrument.name
+        // facet since the number is confusing for datafiles
+        select: (data) => ({
+          ...data,
+          pages: data.pages.map((searchResponse) => ({
+            ...searchResponse,
+            dimensions: {
+              ...searchResponse.dimensions,
+              ...(searchResponse.dimensions?.[
+                'InvestigationInstrument.instrument.name'
+              ]
+                ? {
+                    'InvestigationInstrument.instrument.name': Object.keys(
+                      searchResponse.dimensions?.[
+                        'InvestigationInstrument.instrument.name'
+                      ]
+                    ).reduce(
+                      (
+                        accumulator: { [key: string]: undefined },
+                        current: string
+                      ) => {
+                        accumulator[current] = undefined;
+                        return accumulator;
+                      },
+                      {}
+                    ),
+                  }
+                : {}),
+            },
+          })),
+        }),
+      }
+    );
   const [t] = useTranslation();
 
-  const { filters, sort } = React.useMemo(
-    () => parseSearchToQuery(location.search),
-    [location.search]
-  );
-
-  const { data: totalDataCount } = useDatafileCount([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        id: { in: luceneData || [] },
-      }),
-    },
-  ]);
-  const { fetchNextPage, data } = useDatafilesInfinite([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        id: { in: luceneData || [] },
-      }),
-    },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify({
-        dataset: {
-          investigation: {
-            investigationInstruments: 'instrument',
-            investigationFacilityCycles: 'facilityCycle',
-          },
-        },
-      }),
-    },
-  ]);
-  const { data: allIds, isLoading: allIdsLoading } = useIds(
-    'datafile',
-    [
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: luceneData || [] },
-        }),
-      },
-    ],
-    selectAllSetting
-  );
   const { data: cartItems, isLoading: cartLoading } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } =
     useAddToCart('datafile');
   const { mutate: removeFromCart, isLoading: removeFromCartLoading } =
     useRemoveFromCart('datafile');
 
-  /* istanbul ignore next */
-  const aggregatedData: Dataset[] = React.useMemo(() => {
+  useSearchResultCounter({
+    isFetching,
+    dataSearchType: 'Datafile',
+    searchResponses: data?.pages,
+    hasMore: hasNextPage,
+  });
+
+  function mapSource(response: SearchResponse): SearchResultSource[] {
+    return response.results?.map((result) => result.source) ?? [];
+  }
+
+  function mapIds(response: SearchResponse): number[] {
+    return response.results?.map((result) => result.id) ?? [];
+  }
+
+  const { aggregatedSource, aggregatedIds, aborted } = React.useMemo(() => {
     if (data) {
-      if ('pages' in data) {
-        return data.pages.flat();
-      } else if ((data as unknown) instanceof Array) {
-        return data;
-      }
+      return {
+        aggregatedSource: data.pages
+          .map((response) => mapSource(response))
+          .flat(),
+        aggregatedIds: data.pages.map((response) => mapIds(response)).flat(),
+        aborted: data.pages[data.pages.length - 1].aborted,
+      };
     }
 
-    return [];
+    return {
+      aggregatedSource: [],
+      aggregatedIds: [],
+      aborted: false,
+    };
   }, [data]);
 
-  const textFilter = useTextFilter(filters);
-  const dateFilter = useDateFilter(filters);
+  const {
+    selectedFacetFilters,
+    addFacetFilter,
+    removeFacetFilter,
+    applyFacetFilters,
+    haveUnappliedFilters,
+  } = useFacetFilters();
+
   const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
-    (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
+    (_) => fetchNextPage(),
     [fetchNextPage]
   );
+
+  const removeFilterChip = (
+    dimension: string,
+    filterValue: SearchFilter
+  ): void => {
+    removeFacetFilter({ dimension, filterValue, applyImmediately: true });
+  };
 
   const selectedRows = React.useMemo(
     () =>
@@ -145,10 +192,10 @@ const DatafileSearchTable = (
             cartItem.entityType === 'datafile' &&
             // if select all is disabled, it's safe to just pass the whole cart as selectedRows
             (!selectAllSetting ||
-              (allIds && allIds.includes(cartItem.entityId)))
+              (aggregatedIds && aggregatedIds.includes(cartItem.entityId)))
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, selectAllSetting, allIds]
+    [cartItems, selectAllSetting, aggregatedIds]
   );
 
   const columns: ColumnType[] = React.useMemo(
@@ -157,19 +204,46 @@ const DatafileSearchTable = (
         label: t('datafiles.name'),
         dataKey: 'name',
         cellContentRenderer: (cellProps: TableCellProps) => {
-          const datafile = cellProps.rowData as Datafile;
+          const datafileData = cellProps.rowData as SearchResultSource;
+
+          if (
+            !datafileData['dataset.id'] ||
+            !datafileData['dataset.name'] ||
+            !datafileData['investigation.id'] ||
+            !datafileData['investigation.name']
+          )
+            return datafileData.name;
+
+          const datafile = {
+            id: datafileData.id,
+            name: datafileData.name,
+            dataset: {
+              id: datafileData['dataset.id'],
+              name: datafileData['dataset.name'],
+              investigation: {
+                id: datafileData['investigation.id'],
+                name: datafileData['investigation.name'],
+                instrumentId:
+                  datafileData.investigationinstrument?.[0]?.['instrument.id'],
+                facilityCycleId:
+                  datafileData.investigationfacilitycycle?.[0]?.[
+                    'facilityCycle.id'
+                  ],
+              },
+            },
+          };
           const link = buildUrlToDatafileTableContainingDatafile({
             datafile,
             facilityName: hierarchy,
           });
           return link ? tableLink(link, datafile.name) : datafile.name;
         },
-        filterComponent: textFilter,
+        disableSort: true,
       },
       {
         label: t('datafiles.location'),
         dataKey: 'location',
-        filterComponent: textFilter,
+        disableSort: true,
       },
       {
         label: t('datafiles.size'),
@@ -177,14 +251,36 @@ const DatafileSearchTable = (
         cellContentRenderer: (cellProps) => {
           return formatBytes(cellProps.cellData);
         },
+        disableSort: true,
       },
       {
         label: t('datafiles.dataset'),
         dataKey: 'dataset.name',
         cellContentRenderer: (cellProps: TableCellProps) => {
-          const datafileData = cellProps.rowData as Datafile;
-          const dataset = datafileData.dataset;
-          if (!dataset) return '';
+          const datafileData = cellProps.rowData as SearchResultSource;
+
+          if (
+            !datafileData['dataset.id'] ||
+            !datafileData['dataset.name'] ||
+            !datafileData['investigation.id'] ||
+            !datafileData['investigation.name']
+          )
+            return datafileData['dataset.name'] ?? '';
+
+          const dataset = {
+            id: datafileData['dataset.id'],
+            name: datafileData['dataset.name'],
+            investigation: {
+              id: datafileData['investigation.id'],
+              name: datafileData['investigation.name'],
+              instrumentId:
+                datafileData.investigationinstrument?.[0]?.['instrument.id'],
+              facilityCycleId:
+                datafileData.investigationfacilitycycle?.[0]?.[
+                  'facilityCycle.id'
+                ],
+            },
+          };
 
           const link = isLandingPageSupportedForHierarchy(hierarchy)
             ? buildDatasetLandingUrl(dataset)
@@ -194,15 +290,20 @@ const DatafileSearchTable = (
               });
           return link ? tableLink(link, dataset.name) : dataset.name;
         },
-        filterComponent: textFilter,
+        disableSort: true,
       },
       {
         label: t('datafiles.modified_time'),
-        dataKey: 'modTime',
-        filterComponent: dateFilter,
+        dataKey: 'date',
+        disableSort: true,
+        cellContentRenderer: (cellProps: TableCellProps) => {
+          if (cellProps.cellData) {
+            return new Date(cellProps.cellData).toLocaleDateString();
+          }
+        },
       },
     ],
-    [t, textFilter, dateFilter, hierarchy]
+    [t, hierarchy]
   );
 
   let detailsPanel = DatafileDetailsPanel;
@@ -210,27 +311,91 @@ const DatafileSearchTable = (
   else if (hierarchy === FACILITY_NAME.dls)
     detailsPanel = DLSDatafileDetailsPanel;
 
+  if (currentTab !== 'datafile') return null;
+
   return (
-    <Table
-      loading={
-        addToCartLoading ||
-        removeFromCartLoading ||
-        cartLoading ||
-        allIdsLoading
-      }
-      data={aggregatedData}
-      loadMoreRows={loadMoreRows}
-      totalRowCount={totalDataCount ?? 0}
-      sort={sort}
-      onSort={handleSort}
-      selectedRows={selectedRows}
-      disableSelectAll={!selectAllSetting}
-      allIds={allIds}
-      onCheck={addToCart}
-      onUncheck={removeFromCart}
-      detailsPanel={detailsPanel}
-      columns={columns}
-    />
+    <Grid
+      data-testid="datafile-search-table"
+      container
+      spacing={1}
+      sx={{ height: 'calc(100% - 24px)' }}
+    >
+      <Grid item xs={2} sx={{ height: '100%' }}>
+        {data?.pages && (
+          <FacetPanel
+            allIds={aggregatedIds}
+            entityName="Datafile"
+            showApplyButton={haveUnappliedFilters}
+            facetClassification={facetClassificationFromSearchResponses(
+              data.pages
+            )}
+            selectedFacetFilters={selectedFacetFilters}
+            onAddFilter={(dimension, filterValue) =>
+              addFacetFilter({
+                dimension,
+                filterValue,
+                applyImmediately: false,
+              })
+            }
+            onRemoveFilter={(dimension, filterValue) =>
+              removeFacetFilter({
+                dimension,
+                filterValue,
+                applyImmediately: false,
+              })
+            }
+            onApplyFacetFilters={applyFacetFilters}
+          />
+        )}
+      </Grid>
+      <Grid container item xs={10} direction="column">
+        <SelectedFilterChips
+          filters={filters}
+          onRemoveFilter={removeFilterChip}
+        />
+        <Grid item xs>
+          <Paper
+            variant="outlined"
+            sx={{
+              height: '100%',
+              minHeight: '300px',
+              marginTop: 1,
+            }}
+          >
+            <div style={{ height: '100%' }}>
+              {aborted ? (
+                <Paper>
+                  <Typography align="center" variant="h6" component="h6">
+                    {t('loading.abort_message')}
+                  </Typography>
+                </Paper>
+              ) : (
+                <Table
+                  loading={
+                    addToCartLoading || removeFromCartLoading || cartLoading
+                  }
+                  data={aggregatedSource}
+                  loadMoreRows={loadMoreRows}
+                  totalRowCount={
+                    aggregatedSource?.length + (hasNextPage ? 1 : 0) ?? 0
+                  }
+                  sort={{}}
+                  onSort={handleSort}
+                  selectedRows={selectedRows}
+                  disableSelectAll={!selectAllSetting}
+                  allIds={aggregatedIds}
+                  onCheck={addToCart}
+                  onUncheck={removeFromCart}
+                  detailsPanel={detailsPanel}
+                  columns={columns}
+                  shortHeader={true}
+                />
+              )}
+            </div>
+          </Paper>
+        </Grid>
+      </Grid>
+    </Grid>
   );
 };
 

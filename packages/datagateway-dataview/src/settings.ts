@@ -9,6 +9,7 @@ export interface DataviewSettings {
   icatUrl: string;
   doiMinterUrl?: string;
   dataCiteUrl?: string;
+  queryRetries?: number;
   selectAllSetting?: boolean;
   facilityImageURL?: string;
   features?: never;

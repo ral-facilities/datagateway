@@ -48,9 +48,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
     createdAt: 'desc',
   });
   const [filters, setFilters] = React.useState<{
-    [column: string]:
-      | { value?: string | number; type: string }
-      | { startDate?: string; endDate?: string };
+    [column: string]: TextFilter | DateFilter;
   }>({});
   const {
     data: downloads,
@@ -94,7 +92,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
-      onChange={(value: { value?: string | number; type: string } | null) => {
+      onChange={(value: TextFilter | null) => {
         if (value) {
           setFilters({ ...filters, [dataKey]: value });
         } else {
@@ -112,7 +110,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
   ): React.ReactElement => (
     <TextColumnFilter
       label={label}
-      onChange={(value: { value?: string | number; type: string } | null) => {
+      onChange={(value: TextFilter | null) => {
         if (value && typeof value.value === 'string') {
           setFilters({
             ...filters,
@@ -168,13 +166,25 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
         if (isTextFilter) {
           const filterKeyword = (filter.value as string).toLowerCase();
 
-          satisfiedFilters.push(
-            filter.type === 'exact'
-              ? tableValue.toLowerCase() === filterKeyword
-              : filter.type === 'exclude'
-              ? !tableValue.toLowerCase().includes(filterKeyword)
-              : tableValue.toLowerCase().includes(filterKeyword)
-          );
+          // use switch statement to ensure TS can detect we cover all cases
+          switch (filter.type) {
+            case 'include':
+              satisfiedFilters.push(
+                tableValue.toLowerCase().includes(filterKeyword)
+              );
+              break;
+            case 'exclude':
+              satisfiedFilters.push(
+                !tableValue.toLowerCase().includes(filterKeyword)
+              );
+              break;
+            case 'exact':
+              satisfiedFilters.push(tableValue.toLowerCase() === filterKeyword);
+              break;
+            default:
+              const exhaustiveCheck: never = filter.type;
+              throw new Error(`Unhandled text filter type: ${exhaustiveCheck}`);
+          }
 
           continue;
         }
@@ -347,10 +357,12 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
             actionsWidth={100}
             actions={[
               function DownloadButton({ rowData }: TableActionProps) {
-                const downloadItem = rowData as FormattedDownload;
-                const isHTTP = !!downloadItem.transport.match(/https|http/);
+                const { transport, status, preparedId, fileName, id } =
+                  rowData as FormattedDownload;
+                const isHTTP = !!transport.match(/https|http/);
 
-                const isComplete = downloadItem.status === 'COMPLETE';
+                const isComplete =
+                  status === 'COMPLETE' && typeof preparedId !== 'undefined';
 
                 const isDownloadable = isHTTP && isComplete;
 
@@ -360,7 +372,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                       !isHTTP
                         ? t<string, string>(
                             'downloadStatus.non_https_download_disabled_tooltip',
-                            { transport: downloadItem.transport }
+                            { transport }
                           )
                         : t<string, string>(
                             'downloadStatus.https_download_disabled_tooltip'
@@ -376,17 +388,17 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                         ? {
                             component: 'a',
                             href: getDataUrl(
-                              downloadItem.preparedId,
-                              downloadItem.fileName,
+                              preparedId,
+                              fileName,
                               settings.idsUrl
                             ),
                             target: '_blank',
                           }
                         : { component: 'button' })}
                       aria-label={t('downloadStatus.download', {
-                        filename: downloadItem.fileName,
+                        filename: fileName,
                       })}
-                      key={`download-${downloadItem.id}`}
+                      key={`download-${id}`}
                       size="small"
                       disabled={!isDownloadable}
                     >

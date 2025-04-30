@@ -1,8 +1,8 @@
 import { RenderResult } from '@testing-library/react';
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { fetchDownloadCart } from 'datagateway-common';
-import { createMemoryHistory } from 'history';
+import { createMemoryHistory, History } from 'history';
 import * as React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Router } from 'react-router-dom';
@@ -30,7 +30,7 @@ jest.mock('datagateway-common', () => {
 jest.mock('../downloadApi');
 
 describe('DownloadTab', () => {
-  let history;
+  let history: History;
   let holder;
   let user: ReturnType<typeof userEvent.setup>;
 
@@ -122,21 +122,44 @@ describe('DownloadTab', () => {
   });
 
   it('refreshes downloads when the refresh button is clicked', async () => {
+    const mockedDate = new Date(Date.UTC(2025, 4, 14, 14, 0, 0)).toUTCString();
+    global.Date.prototype.toLocaleString = jest.fn(() => mockedDate);
+
     renderComponent();
+
+    let resolve: (v: Awaited<ReturnType<typeof fetchDownloads>>) => void = (
+      _
+    ) => {
+      // no-op
+    };
 
     (
       fetchDownloads as jest.MockedFunction<typeof fetchDownloads>
     ).mockImplementation(
       () =>
-        new Promise((_) => {
+        new Promise((res) => {
           // do nothing, simulating pending promise
-          // to test refreshing state
+          // to test refreshing state that we can resolve
+          // whenever we want by calling resolve function
+          resolve = res;
         })
     );
 
     // go to downloads tab
 
     await user.click(await screen.findByText('downloadTab.downloads_tab'));
+
+    expect(
+      await screen.findByText('downloadTab.refreshing_downloads')
+    ).toBeInTheDocument();
+
+    act(() => {
+      resolve([]);
+    });
+
+    expect(
+      await screen.findByText(mockedDate.toLocaleString())
+    ).toBeInTheDocument();
 
     await user.click(
       screen.getByRole('button', {

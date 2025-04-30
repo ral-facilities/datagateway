@@ -85,8 +85,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
       {
         icon: ConfirmationNumber,
         label: t('datasets.datafile_count'),
-        dataKey: 'datafileCount',
-        disableSort: true,
+        dataKey: 'fileCount',
       },
       {
         icon: CalendarToday,

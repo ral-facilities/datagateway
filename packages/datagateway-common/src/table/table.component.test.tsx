@@ -108,6 +108,35 @@ describe('Table component', () => {
     expect(onSort).toHaveBeenCalledWith('TEST2', 'asc', 'push', false);
   });
 
+  it('calls onDefaultFilter function when defaultFilter has been specified', () => {
+    const onDefaultFilter = jest.fn();
+    const sortedTableProps = {
+      ...tableProps,
+      columns: [
+        {
+          ...tableProps.columns[0],
+          defaultFilter: { value: 'x', type: 'include' },
+        },
+        {
+          ...tableProps.columns[1],
+          defaultFilter: { startDate: '2025-01-01', endDate: '2025-01-02' },
+        },
+      ],
+      onDefaultFilter,
+      filters: {},
+    };
+    render(<Table {...sortedTableProps} />);
+
+    expect(onDefaultFilter).toHaveBeenCalledWith('TEST1', {
+      value: 'x',
+      type: 'include',
+    });
+    expect(onDefaultFilter).toHaveBeenCalledWith('TEST2', {
+      startDate: '2025-01-01',
+      endDate: '2025-01-02',
+    });
+  });
+
   it('renders select column correctly', async () => {
     render(
       <Table
@@ -226,6 +255,56 @@ describe('Table component', () => {
       render(<Table {...tableProps} loadMoreRows={undefined} />)
     ).toThrowError(
       'Only one of loadMoreRows and totalRowCount was defined - either define both for infinite loading functionality or neither for no infinite loading'
+    );
+
+    spy.mockRestore();
+  });
+
+  it('throws error when a default sort has been defined without passing onDefaultFilter', () => {
+    const spy = jest.spyOn(console, 'error');
+    spy.mockImplementation(() => {
+      // suppress react uncaught error warning as we're deliberately triggering an error!
+    });
+
+    const newTableProps = {
+      ...tableProps,
+      columns: [
+        {
+          ...tableProps.columns[0],
+          defaultFilter: { value: 'x', type: 'include' },
+        },
+      ],
+      onDefaultFilter: undefined,
+      filters: {},
+    };
+
+    expect(() => render(<Table {...newTableProps} />)).toThrowError(
+      'Column has a default filter prop but onDefaultFilter or filters was not passed to Table - either pass onDefaultFilter function & filters or remove defaultFilter from the column definition'
+    );
+
+    spy.mockRestore();
+  });
+
+  it('throws error when a default sort has been defined without passing filters', () => {
+    const spy = jest.spyOn(console, 'error');
+    spy.mockImplementation(() => {
+      // suppress react uncaught error warning as we're deliberately triggering an error!
+    });
+
+    const newTableProps = {
+      ...tableProps,
+      columns: [
+        {
+          ...tableProps.columns[0],
+          defaultFilter: { value: 'x', type: 'include' },
+        },
+      ],
+      onDefaultFilter: jest.fn(),
+      filters: undefined,
+    };
+
+    expect(() => render(<Table {...newTableProps} />)).toThrowError(
+      'Column has a default filter prop but onDefaultFilter or filters was not passed to Table - either pass onDefaultFilter function & filters or remove defaultFilter from the column definition'
     );
 
     spy.mockRestore();

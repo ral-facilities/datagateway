@@ -311,7 +311,7 @@ describe('Add/remove from cart functionality', () => {
           .and('eq', 'true');
 
         cy.get('[aria-label="select row 0"]').should('be.checked');
-        cy.get('[aria-label="select row 1"]').should('not.be.checked');
+        cy.get('[aria-label="select row 2"]').should('not.be.checked');
 
         cy.get('[aria-label="grid"]').scrollTo('bottom', {
           ensureScrollable: false,
@@ -319,8 +319,8 @@ describe('Add/remove from cart functionality', () => {
         cy.get('[aria-label="grid"]').scrollTo('bottom', {
           ensureScrollable: false,
         });
-        cy.get('[aria-label="select row 13"]').should('not.be.checked');
-        cy.get('[aria-label="select row 14"]').should('be.checked');
+        cy.get('[aria-label="select row 12"]').should('not.be.checked');
+        cy.get('[aria-label="select row 13"]').should('be.checked');
       });
 
       it('by shift clicking', () => {
@@ -467,7 +467,7 @@ describe('Add/remove from cart functionality', () => {
         cy.get('[aria-label="grid"]').scrollTo('bottom', {
           ensureScrollable: false,
         });
-        cy.get('[aria-label="select row 13"]').should('be.checked');
+        cy.get('[aria-label="select row 13"]').should('not.be.checked');
         cy.get('[aria-label="select row 14"]').should('be.checked');
       });
 

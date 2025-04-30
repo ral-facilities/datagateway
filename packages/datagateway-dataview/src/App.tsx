@@ -7,6 +7,7 @@ import {
   Preloader,
   BroadcastSignOutType,
   RequestPluginRerenderType,
+  QueryClientSettingsUpdaterRedux,
 } from 'datagateway-common';
 import {
   createBrowserHistory,
@@ -184,6 +185,7 @@ class App extends React.Component<unknown, { hasError: boolean }> {
           <Provider store={this.store}>
             <ConnectedRouter history={history}>
               <QueryClientProvider client={queryClient}>
+                <QueryClientSettingsUpdaterRedux queryClient={queryClient} />
                 <DGThemeProvider>
                   <ConnectedPreloader>
                     <React.Suspense

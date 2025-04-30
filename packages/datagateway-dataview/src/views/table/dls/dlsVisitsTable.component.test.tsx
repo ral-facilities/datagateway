@@ -44,7 +44,7 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('DLS Visits table component', () => {
-  let mockStore;
+  const mockStore = configureStore([thunk]);
   let state: StateType;
   let rowData: Investigation[];
   let history: History;
@@ -72,7 +72,6 @@ describe('DLS Visits table component', () => {
         summary: 'foo bar',
         visitId: '1',
         doi: 'doi 1',
-        size: 1,
         fileSize: 1,
         fileCount: 1,
         investigationInstruments: [
@@ -91,7 +90,6 @@ describe('DLS Visits table component', () => {
     history = createMemoryHistory();
     user = userEvent.setup();
 
-    mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
         dgdataview: dgDataViewInitialState,
@@ -268,7 +266,7 @@ describe('DLS Visits table component', () => {
 
     await user.click(within(row).getByRole('button', { name: 'Show details' }));
 
-    expect(await screen.findByTestId('visit-details-panel')).toBeTruthy();
+    expect(await screen.findByTestId('dls-visit-details-panel')).toBeTruthy();
   });
 
   it('renders visit ID as links', async () => {

@@ -65,8 +65,24 @@ setLogger({
 // mock retry function to ensure it doesn't slow down query failure tests
 jest.mock('./api/retryICATErrors', () => ({
   __esModule: true,
-  default: jest.fn().mockReturnValue(false),
+  useRetryICATErrors: jest.fn(() => () => false),
 }));
+
+// Mock Date.toLocaleDateString so that it always uses en-GB as locale and UTC timezone
+// instead of using the system default, which can be different depending on the environment.
+// save a reference to the original implementation of Date.toLocaleDateString
+
+const toLocaleDateString = Date.prototype.toLocaleDateString;
+
+jest
+  .spyOn(Date.prototype, 'toLocaleDateString')
+  .mockImplementation(function (this: Date) {
+    // when toLocaleDateString is called with no argument
+    // pass in 'en-GB' as the locale & UTC as timezone
+    // so that Date.toLocaleDateString() is equivalent to
+    // Date.toLocaleDateString('en-GB', { timeZone: 'UTC' })
+    return toLocaleDateString.call(this, 'en-GB', { timeZone: 'UTC' });
+  });
 
 export const createTestQueryClient = (): QueryClient =>
   new QueryClient({

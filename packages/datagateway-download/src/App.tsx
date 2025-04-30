@@ -9,11 +9,12 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom';
 
-import ConfigProvider from './ConfigProvider';
+import ConfigProvider, { DownloadSettingsContext } from './ConfigProvider';
 import DOIGenerationForm from './DOIGenerationForm/DOIGenerationForm.component';
 import AdminDownloadStatusTable from './downloadStatus/adminDownloadStatusTable.component';
 
 import DownloadTabs from './downloadTab/downloadTab.component';
+import { QueryClientSettingsUpdater } from 'datagateway-common';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -23,6 +24,20 @@ const queryClient = new QueryClient({
     },
   },
 });
+
+export const QueryClientSettingsUpdaterContext: React.FC<{
+  queryClient: QueryClient;
+}> = (props) => {
+  const { queryClient } = props;
+  const { queryRetries } = React.useContext(DownloadSettingsContext);
+
+  return (
+    <QueryClientSettingsUpdater
+      queryClient={queryClient}
+      queryRetries={queryRetries}
+    />
+  );
+};
 
 /**
  * A fallback component when the app fails to render.
@@ -80,6 +95,7 @@ class App extends Component<unknown, { hasError: boolean }> {
         <DGThemeProvider>
           <ConfigProvider>
             <QueryClientProvider client={queryClient}>
+              <QueryClientSettingsUpdaterContext queryClient={queryClient} />
               <React.Suspense
                 fallback={
                   <Preloader loading={true}>Finished loading</Preloader>

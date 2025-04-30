@@ -30,12 +30,10 @@ import ISISDataPublicationsTable from './isisDataPublicationsTable.component';
 import axios, { AxiosResponse } from 'axios';
 import { paths } from '../../../page/pageContainer.component';
 
-jest
-  .useFakeTimers('modern')
-  .setSystemTime(parse('2021-10-27', 'yyyy-MM-dd', 0));
+jest.useFakeTimers().setSystemTime(parse('2021-10-27', 'yyyy-MM-dd', 0));
 
 describe('ISIS Data Publication table component', () => {
-  let mockStore;
+  const mockStore = configureStore([thunk]);
   let state: StateType;
   let rowData: DataPublication[];
   let history: History;
@@ -74,8 +72,6 @@ describe('ISIS Data Publication table component', () => {
         pid: 'doi',
         title: 'Test 1',
         description: 'Data Publication Description',
-        modTime: '2000-01-01',
-        createTime: '2000-01-01',
         publicationDate: '2001-01-01',
         content: {
           id: 1,
@@ -106,7 +102,6 @@ describe('ISIS Data Publication table component', () => {
       delay: null,
     });
 
-    mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
         dgdataview: dgDataViewInitialState,
@@ -128,6 +123,8 @@ describe('ISIS Data Publication table component', () => {
               data: 1,
               isLoading: false,
             });
+          default:
+            return Promise.reject(`Endpoint not mocked: ${url}`);
         }
       });
 

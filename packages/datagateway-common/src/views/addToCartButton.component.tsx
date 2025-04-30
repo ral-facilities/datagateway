@@ -73,22 +73,32 @@ const AddToCartButton: React.FC<AddToCartButtonCombinedProps> = (
       placement="bottom"
     >
       <span style={{ display: 'inherit' }}>
-        <Button
-          id={`add-to-cart-btn-${entityType}-${entityId}`}
-          variant="contained"
-          color="primary"
-          disabled={
-            cartLoading ||
-            isParentSelected ||
-            typeof selectedIds === 'undefined'
-          }
-          startIcon={<AddCircleOutlineOutlined />}
-          disableElevation
-          onClick={() => addToCart([entityId])}
-          className="tour-dataview-add-to-cart"
-        >
-          {t('buttons.add_to_cart')}
-        </Button>
+        {isParentSelected || (selectedIds && selectedIds.includes(entityId)) ? (
+          <Button
+            id={`remove-from-cart-btn-${entityType}-${entityId}`}
+            variant="contained"
+            color="secondary"
+            startIcon={<RemoveCircleOutlineOutlined />}
+            disableElevation
+            disabled={isParentSelected}
+            onClick={() => removeFromCart([entityId])}
+          >
+            {t('buttons.remove_from_cart')}
+          </Button>
+        ) : (
+          <Button
+            id={`add-to-cart-btn-${entityType}-${entityId}`}
+            variant="contained"
+            color="primary"
+            disabled={cartLoading || typeof selectedIds === 'undefined'}
+            startIcon={<AddCircleOutlineOutlined />}
+            disableElevation
+            onClick={() => addToCart([entityId])}
+            className="tour-dataview-add-to-cart"
+          >
+            {t('buttons.add_to_cart')}
+          </Button>
+        )}
       </span>
     </StyledTooltip>
   );

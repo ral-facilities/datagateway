@@ -17,12 +17,12 @@ import {
   type DownloadCartItem,
   type DownloadCartTableItem,
   formatBytes,
-  type Order,
   Table,
   type TableActionProps,
   TextColumnFilter,
   type TextFilter,
   useIsCartMintable,
+  type SortType,
 } from 'datagateway-common';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -60,9 +60,9 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     dataCiteUrl,
   } = React.useContext(DownloadSettingsContext);
 
-  const [sort, setSort] = React.useState<{ [column: string]: Order }>({});
+  const [sort, setSort] = React.useState<SortType>({});
   const [filters, setFilters] = React.useState<{
-    [column: string]: { value?: string | number; type: string };
+    [column: string]: TextFilter;
   }>({});
 
   const [showConfirmation, setShowConfirmation] = React.useState(false);
@@ -108,7 +108,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     (label: string, dataKey: string): React.ReactElement => (
       <TextColumnFilter
         label={label}
-        onChange={(value: { value?: string | number; type: string } | null) => {
+        onChange={(value: TextFilter | null) => {
           if (value) {
             setFilters({ ...filters, [dataKey]: value });
           } else {
@@ -134,15 +134,23 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     const filteredData = sizeAndCountAddedData?.filter((item) => {
       for (const [key, value] of Object.entries(filters)) {
         const tableValue = item[key];
-        if (
-          tableValue === undefined ||
-          (typeof tableValue === 'string' &&
-            typeof value.value === 'string' &&
-            (value.type === 'include'
-              ? !tableValue.includes(value.value)
-              : tableValue.includes(value.value)))
-        ) {
-          return false;
+        if (tableValue === undefined) return false;
+        if (typeof tableValue === 'string' && typeof value.value === 'string') {
+          // use switch statement to ensure TS can detect we cover all cases
+          switch (value.type) {
+            case 'include':
+              if (!tableValue.includes(value.value)) return false;
+              break;
+            case 'exclude':
+              if (tableValue.includes(value.value)) return false;
+              break;
+            case 'exact':
+              if (tableValue !== value.value) return false;
+              break;
+            default:
+              const exhaustiveCheck: never = value.type;
+              throw new Error(`Unhandled text filter type: ${exhaustiveCheck}`);
+          }
         }
       }
       return true;

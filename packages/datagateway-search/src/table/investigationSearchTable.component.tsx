@@ -1,41 +1,42 @@
 import {
-  buildDatasetTableUrlForInvestigation,
   ColumnType,
   DLSVisitDetailsPanel,
   externalSiteLink,
-  FACILITY_NAME,
   formatBytes,
-  Investigation,
+  buildDatasetTableUrlForInvestigation,
+  FACILITY_NAME,
   InvestigationDetailsPanel,
   ISISInvestigationDetailsPanel,
   parseSearchToQuery,
+  SearchFilter,
+  SearchResponse,
+  SearchResultSource,
   Table,
   tableLink,
   useAddToCart,
   useCart,
-  useDateFilter,
-  useIds,
-  useInvestigationCount,
-  useInvestigationsInfinite,
-  useLuceneSearch,
+  useLuceneSearchInfinite,
   useRemoveFromCart,
   useSort,
-  useTextFilter,
 } from 'datagateway-common';
-import React from 'react';
+import { TableCellProps } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
-import { IndexRange, TableCellProps } from 'react-virtualized';
+import { useSelector } from 'react-redux';
+import { Grid, Paper, Typography } from '@mui/material';
 import { StateType } from '../state/app.types';
+import FacetPanel from '../facet/components/facetPanel/facetPanel.component';
+import { facetClassificationFromSearchResponses } from '../facet/facet';
+import SelectedFilterChips from '../facet/components/selectedFilterChips.component';
+import useFacetFilters from '../facet/useFacetFilters';
+import { useSearchResultCounter } from '../searchTabs/useSearchResultCounter';
+import React from 'react';
 
 interface InvestigationTableProps {
   hierarchy: string;
 }
 
-const InvestigationSearchTable = (
-  props: InvestigationTableProps
-): React.ReactElement => {
+const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
   const { hierarchy } = props;
 
   const location = useLocation();
@@ -44,93 +45,127 @@ const InvestigationSearchTable = (
     () => parseSearchToQuery(location.search),
     [location.search]
   );
-  const { startDate, endDate } = queryParams;
+  const {
+    startDate,
+    endDate,
+    sort,
+    filters,
+    restrict,
+    investigation,
+    currentTab,
+  } = queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
   const selectAllSetting = useSelector(
     (state: StateType) => state.dgsearch.selectAllSetting
   );
 
+  const minNumResults = useSelector(
+    (state: StateType) => state.dgsearch.minNumResults
+  );
+
   const maxNumResults = useSelector(
     (state: StateType) => state.dgsearch.maxNumResults
   );
 
-  const { data: luceneData } = useLuceneSearch('Investigation', {
-    searchText,
-    startDate,
-    endDate,
-    maxCount: maxNumResults,
-  });
-
   const [t] = useTranslation();
 
-  const { filters, sort } = React.useMemo(
-    () => parseSearchToQuery(location.search),
-    [location.search]
-  );
-
-  const { data: totalDataCount } = useInvestigationCount([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        id: { in: luceneData || [] },
-      }),
-    },
-  ]);
-  const { fetchNextPage, data } = useInvestigationsInfinite([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        id: { in: luceneData || [] },
-      }),
-    },
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify({
-        investigationInstruments: 'instrument',
-        investigationFacilityCycles: 'facilityCycle',
-      }),
-    },
-  ]);
-  const { data: allIds, isLoading: allIdsLoading } = useIds(
-    'investigation',
-    [
+  const { fetchNextPage, data, hasNextPage, isFetching } =
+    useLuceneSearchInfinite(
+      'Investigation',
       {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          id: { in: luceneData || [] },
-        }),
+        searchText,
+        startDate,
+        endDate,
+        sort,
+        minCount: minNumResults,
+        maxCount: maxNumResults,
+        restrict,
+        facets: [
+          { target: 'Investigation' },
+          {
+            target: 'InvestigationParameter',
+            dimensions: [{ dimension: 'type.name' }],
+          },
+          {
+            target: 'Sample',
+            dimensions: [{ dimension: 'sample.type.name' }],
+          },
+          {
+            target: 'InvestigationInstrument',
+            dimensions: [{ dimension: 'instrument.name' }],
+          },
+        ],
       },
-    ],
-    selectAllSetting
-  );
+      currentTab === 'investigation' ? filters : {},
+
+      { enabled: investigation }
+    );
   const { data: cartItems, isLoading: cartLoading } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } =
     useAddToCart('investigation');
   const { mutate: removeFromCart, isLoading: removeFromCartLoading } =
     useRemoveFromCart('investigation');
 
-  /* istanbul ignore next */
-  const aggregatedData: Investigation[] = React.useMemo(() => {
-    if (data) {
-      if ('pages' in data) {
-        return data.pages.flat();
-      } else if ((data as unknown) instanceof Array) {
-        return data;
-      }
-    }
+  const {
+    selectedFacetFilters,
+    addFacetFilter,
+    removeFacetFilter,
+    applyFacetFilters,
+    haveUnappliedFilters,
+  } = useFacetFilters();
 
-    return [];
+  useSearchResultCounter({
+    isFetching,
+    dataSearchType: 'Investigation',
+    searchResponses: data?.pages,
+    hasMore: hasNextPage,
+  });
+
+  function mapSource(response: SearchResponse): SearchResultSource[] {
+    return response.results?.map((result) => result.source) ?? [];
+  }
+
+  function mapIds(response: SearchResponse): number[] {
+    return response.results?.map((result) => result.id) ?? [];
+  }
+
+  const { aggregatedSource, aggregatedIds, aborted } = React.useMemo(() => {
+    const definedData = data ?? {
+      results: [],
+    };
+    if ('pages' in definedData) {
+      return {
+        aggregatedSource: definedData.pages
+          .map((response) => mapSource(response))
+          .flat(),
+        aggregatedIds: definedData.pages
+          .map((response) => mapIds(response))
+          .flat(),
+        aborted: definedData.pages[definedData.pages.length - 1].aborted,
+      };
+    } else {
+      return {
+        aggregatedSource: mapSource(definedData),
+        aggregatedIds: mapIds(definedData),
+        aborted: false,
+      };
+    }
   }, [data]);
 
-  const textFilter = useTextFilter(filters);
-  const dateFilter = useDateFilter(filters);
   const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
-    (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
+    (_) => fetchNextPage(),
     [fetchNextPage]
   );
+
+  const removeFilterChip = (
+    dimension: string,
+    filterValue: SearchFilter
+  ): void => {
+    removeFacetFilter({ dimension, filterValue, applyImmediately: true });
+  };
 
   const selectedRows = React.useMemo(
     () =>
@@ -140,10 +175,10 @@ const InvestigationSearchTable = (
             cartItem.entityType === 'investigation' &&
             // if select all is disabled, it's safe to just pass the whole cart as selectedRows
             (!selectAllSetting ||
-              (allIds && allIds.includes(cartItem.entityId)))
+              (aggregatedIds && aggregatedIds.includes(cartItem.entityId)))
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, selectAllSetting, allIds]
+    [cartItems, selectAllSetting, aggregatedIds]
   );
 
   const columns: ColumnType[] = React.useMemo(
@@ -152,40 +187,56 @@ const InvestigationSearchTable = (
         label: t('investigations.title'),
         dataKey: 'title',
         cellContentRenderer: (cellProps: TableCellProps) => {
-          const investigation = cellProps.rowData as Investigation;
+          const investigationData = cellProps.rowData as SearchResultSource;
           const link = buildDatasetTableUrlForInvestigation({
-            investigation,
+            investigation: {
+              id: investigationData.id,
+              name: investigationData.name,
+              instrumentId:
+                investigationData.investigationinstrument?.[0]?.[
+                  'instrument.id'
+                ],
+              facilityCycleId:
+                investigationData.investigationfacilitycycle?.[0]?.[
+                  'facilityCycle.id'
+                ],
+            },
             facilityName: hierarchy,
           });
+          if (!investigationData.title) return '';
           return link
-            ? tableLink(link, investigation.title)
-            : investigation.title;
+            ? tableLink(link, investigationData.title)
+            : investigationData.title;
         },
-        filterComponent: textFilter,
+        disableSort: true,
       },
       {
         label: t('investigations.visit_id'),
         dataKey: 'visitId',
-        filterComponent: textFilter,
+        disableSort: true,
       },
       {
         label: t('investigations.name'),
         dataKey: 'name',
-        filterComponent: textFilter,
+        disableSort: true,
       },
-      {
-        label: t('investigations.doi'),
-        dataKey: 'doi',
-        cellContentRenderer: (cellProps: TableCellProps) => {
-          const investigation = cellProps.rowData as Investigation;
-          return externalSiteLink(
-            `https://doi.org/${investigation.doi}`,
-            investigation.doi,
-            'investigation-search-table-doi-link'
-          );
-        },
-        filterComponent: textFilter,
-      },
+      ...(hierarchy !== FACILITY_NAME.dls
+        ? [
+            {
+              label: t('investigations.doi'),
+              dataKey: 'doi',
+              cellContentRenderer: (cellProps: TableCellProps) => {
+                const investigation = cellProps.rowData as SearchResultSource;
+                return externalSiteLink(
+                  `https://doi.org/${investigation.doi}`,
+                  investigation.doi,
+                  'investigation-search-table-doi-link'
+                );
+              },
+              disableSort: true,
+            },
+          ]
+        : []),
       {
         label: t('investigations.size'),
         dataKey: 'size',
@@ -197,47 +248,58 @@ const InvestigationSearchTable = (
         label: t('investigations.instrument'),
         dataKey: 'investigationInstruments.instrument.fullName',
         cellContentRenderer: (cellProps: TableCellProps) => {
-          const investigationData = cellProps.rowData as Investigation;
-          if (investigationData?.investigationInstruments?.[0]?.instrument) {
-            return investigationData.investigationInstruments[0].instrument
-              .fullName;
-          } else {
-            return '';
-          }
+          const investigationData = cellProps.rowData as SearchResultSource;
+          const investigationInstrument =
+            investigationData.investigationinstrument?.[0];
+          return (
+            investigationInstrument?.['instrument.fullName'] ??
+            investigationInstrument?.['instrument.name'] ??
+            ''
+          );
         },
-        filterComponent: textFilter,
+        disableSort: true,
       },
       {
         label: t('investigations.start_date'),
         dataKey: 'startDate',
-        filterComponent: dateFilter,
         cellContentRenderer: (cellProps: TableCellProps) => {
           if (cellProps.cellData) {
-            return cellProps.cellData.toString().split(' ')[0];
+            return new Date(cellProps.cellData).toLocaleDateString();
           }
         },
+        disableSort: true,
       },
       {
         label: t('investigations.end_date'),
         dataKey: 'endDate',
-        filterComponent: dateFilter,
         cellContentRenderer: (cellProps: TableCellProps) => {
           if (cellProps.cellData) {
-            return cellProps.cellData.toString().split(' ')[0];
+            return new Date(cellProps.cellData).toLocaleDateString();
           }
         },
+        disableSort: true,
       },
     ],
-    [t, textFilter, hierarchy, dateFilter]
+    [t, hierarchy]
   );
 
   const detailsPanel = React.useCallback(
     ({ rowData, detailsPanelResize }) => {
       switch (hierarchy) {
         case FACILITY_NAME.isis:
+          const investigation = rowData as SearchResultSource;
           const url = buildDatasetTableUrlForInvestigation({
             facilityName: hierarchy,
-            investigation: rowData as Investigation,
+            investigation: {
+              id: investigation.id,
+              name: investigation.name,
+              instrumentId:
+                investigation.investigationinstrument?.[0]?.['instrument.id'],
+              facilityCycleId:
+                investigation.investigationfacilitycycle?.[0]?.[
+                  'facilityCycle.id'
+                ],
+            },
           });
           return (
             <ISISInvestigationDetailsPanel
@@ -269,29 +331,91 @@ const InvestigationSearchTable = (
     [hierarchy, push]
   );
 
+  if (currentTab !== 'investigation') return null;
+
   return (
-    <Table
-      loading={
-        addToCartLoading ||
-        removeFromCartLoading ||
-        cartLoading ||
-        allIdsLoading
-      }
-      data={aggregatedData}
-      loadMoreRows={loadMoreRows}
-      totalRowCount={totalDataCount ?? 0}
-      sort={sort}
-      onSort={handleSort}
-      detailsPanel={detailsPanel}
-      columns={columns}
-      {...(hierarchy !== 'dls' && {
-        selectedRows,
-        allIds,
-        onCheck: addToCart,
-        onUncheck: removeFromCart,
-        disableSelectAll: !selectAllSetting,
-      })}
-    />
+    <Grid
+      data-testid="investigation-search-table"
+      container
+      spacing={1}
+      sx={{ height: 'calc(100% - 24px)' }}
+    >
+      <Grid item xs={2} sx={{ height: '100%' }}>
+        {data?.pages && (
+          <FacetPanel
+            allIds={aggregatedIds}
+            entityName="Investigation"
+            showApplyButton={haveUnappliedFilters}
+            facetClassification={facetClassificationFromSearchResponses(
+              data.pages
+            )}
+            selectedFacetFilters={selectedFacetFilters}
+            onAddFilter={(dimension, filterValue) =>
+              addFacetFilter({
+                dimension,
+                filterValue,
+                applyImmediately: false,
+              })
+            }
+            onRemoveFilter={(dimension, filterValue) =>
+              removeFacetFilter({
+                dimension,
+                filterValue,
+                applyImmediately: false,
+              })
+            }
+            onApplyFacetFilters={applyFacetFilters}
+          />
+        )}
+      </Grid>
+      <Grid container item xs={10} direction="column">
+        <SelectedFilterChips
+          filters={filters}
+          onRemoveFilter={removeFilterChip}
+        />
+        <Grid item xs>
+          <Paper
+            variant="outlined"
+            sx={{
+              height: '100%',
+              minHeight: '300px',
+              marginTop: 1,
+            }}
+          >
+            <div style={{ height: '100%' }}>
+              {aborted ? (
+                <Typography align="center" variant="h6" component="h6">
+                  {t('loading.abort_message')}
+                </Typography>
+              ) : (
+                <Table
+                  loading={
+                    addToCartLoading || removeFromCartLoading || cartLoading
+                  }
+                  data={aggregatedSource}
+                  loadMoreRows={loadMoreRows}
+                  totalRowCount={
+                    aggregatedSource?.length + (hasNextPage ? 1 : 0) ?? 0
+                  }
+                  sort={{}}
+                  onSort={handleSort}
+                  detailsPanel={detailsPanel}
+                  columns={columns}
+                  {...(hierarchy !== 'dls' && {
+                    selectedRows,
+                    aggregatedIds,
+                    onCheck: addToCart,
+                    onUncheck: removeFromCart,
+                    disableSelectAll: !selectAllSetting,
+                  })}
+                  shortHeader={true}
+                />
+              )}
+            </div>
+          </Paper>
+        </Grid>
+      </Grid>
+    </Grid>
   );
 };
 

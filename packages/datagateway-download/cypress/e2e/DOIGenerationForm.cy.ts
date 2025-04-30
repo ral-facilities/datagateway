@@ -159,9 +159,9 @@ describe('DOI Generation form', () => {
         'have.length',
         1
       );
-      cy.contains("No record found: name='invalid' in User").should(
-        'be.visible'
-      );
+      cy.contains(
+        'No record found: No ICAT User found with name invalid'
+      ).should('be.visible');
 
       cy.contains('button', 'Generate DOI').should('not.be.disabled');
     });

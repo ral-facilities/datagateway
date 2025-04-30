@@ -65,6 +65,8 @@ describe('Datafile table component', () => {
         fileSize: 1,
         modTime: '2019-07-23',
         createTime: '2019-07-23',
+        datafileModTime: '2019-01-02',
+        datafileCreateTime: '2019-01-01',
       },
     ];
     history = createMemoryHistory();
@@ -113,7 +115,7 @@ describe('Datafile table component', () => {
         (url: string, data: unknown): Promise<Partial<AxiosResponse>> => {
           if (/\/user\/cart\/\/cartItems$/.test(url)) {
             const isRemove: boolean = JSON.parse(
-              (data as URLSearchParams).get('remove')
+              (data as URLSearchParams).get('remove') ?? 'false'
             );
 
             if (isRemove) {
@@ -200,7 +202,7 @@ describe('Datafile table component', () => {
         findCellInRow(row, {
           columnIndex: await findColumnIndexByName('datafiles.modified_time'),
         })
-      ).getByText('2019-07-23')
+      ).getByText('2019-01-02')
     ).toBeInTheDocument();
   });
 
@@ -243,7 +245,9 @@ describe('Datafile table component', () => {
 
     expect(history.length).toBe(2);
     expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent('{"modTime":{"endDate":"2019-08-06"}}')}`
+      `?filters=${encodeURIComponent(
+        '{"datafileModTime":{"endDate":"2019-08-06"}}'
+      )}`
     );
 
     // await user.clear(filterInput);
@@ -300,9 +304,9 @@ describe('Datafile table component', () => {
   it('selected rows only considers relevant cart items', async () => {
     cartItems = [
       {
-        entityId: 1,
+        entityId: 5,
         entityType: 'dataset',
-        id: 1,
+        id: 5,
         name: 'test',
         parentEntities: [],
       },

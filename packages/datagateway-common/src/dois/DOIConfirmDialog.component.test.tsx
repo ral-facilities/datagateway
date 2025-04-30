@@ -80,6 +80,7 @@ describe('DOI Confirm Dialogue component', () => {
 
   it('should show error indicators when mintingStatus is error and allow user to close the dialog', async () => {
     props.mintingStatus = 'error';
+    // @ts-expect-error fake minimal axios error
     props.error = { response: { data: { detail: 'error msg' } } };
     renderComponent();
 

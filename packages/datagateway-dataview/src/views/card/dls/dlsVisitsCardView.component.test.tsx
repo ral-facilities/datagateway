@@ -34,7 +34,7 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('DLS Visits - Card View', () => {
-  let mockStore;
+  const mockStore = configureStore([thunk]);
   let state: StateType;
   let cardData: Investigation[];
   let history: History;
@@ -65,7 +65,6 @@ describe('DLS Visits - Card View', () => {
     history = createMemoryHistory();
     user = userEvent.setup();
 
-    mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
         dgcommon: dGCommonInitialState,
@@ -185,7 +184,7 @@ describe('DLS Visits - Card View', () => {
     renderComponent();
     await user.click(await screen.findByLabelText('card-more-info-expand'));
     expect(
-      await screen.findByTestId('visit-details-panel')
+      await screen.findByTestId('dls-visit-details-panel')
     ).toBeInTheDocument();
   });
 

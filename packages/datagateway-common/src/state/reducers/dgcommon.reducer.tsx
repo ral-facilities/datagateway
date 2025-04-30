@@ -1,6 +1,8 @@
 import {
   ConfigureFacilityNamePayload,
   ConfigureFacilityNameType,
+  ConfigureQueryRetriesPayload,
+  ConfigureQueryRetriesType,
   ConfigureUrlsPayload,
   ConfigureURLsType,
   DlsDatasetDetailsPanelChangeTabPayload,
@@ -52,6 +54,16 @@ export function handleConfigureUrls(
   return {
     ...state,
     urls: payload.urls,
+  };
+}
+
+export function handleConfigureQueryRetries(
+  state: DGCommonState,
+  payload: ConfigureQueryRetriesPayload
+): DGCommonState {
+  return {
+    ...state,
+    queryRetries: payload.queryRetries,
   };
 }
 
@@ -154,6 +166,7 @@ export function changeDlsVisitDetailsPanelTab(
 const dGCommonReducer = createReducer(initialState, {
   [ConfigureFacilityNameType]: handleConfigureFacilityName,
   [ConfigureURLsType]: handleConfigureUrls,
+  [ConfigureQueryRetriesType]: handleConfigureQueryRetries,
   [IsisDatafileDetailsPanelChangeTabType]: changeIsisDatafileDetailsPanelTab,
   [IsisDatasetDetailsPanelChangeTabType]: changeIsisDatasetDetailsPanelTab,
   [IsisInstrumentDetailsPanelChangeTabType]:

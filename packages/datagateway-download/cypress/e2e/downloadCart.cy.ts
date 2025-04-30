@@ -84,22 +84,55 @@ describe('Download Cart', () => {
   });
 
   it('should be able to filter cart items by name and type', () => {
-    cy.get('[aria-label="Filter by Name"]').first().as('nameFilter');
+    // sort by name to have consistency
+    cy.contains('[role="button"]', 'Name').click();
 
+    cy.findByRole('textbox', { name: 'Filter by Name' }).as('nameFilter');
+
+    cy.get('@nameFilter')
+      .parent()
+      .findByRole('button', { name: 'include, exclude or exact' })
+      .as('nameFilterOptionsButton')
+      .click();
+
+    cy.findByRole('option', { name: 'Exact' }).click();
+
+    // test exact filter
+    cy.get('@nameFilter').type('DATASET 1', { delay: 0 });
+
+    cy.get('[aria-rowcount=1]').should('exist');
+    cy.findByRole('gridcell', { name: 'DATASET 1' }).should('exist');
+    cy.findByRole('gridcell', { name: 'DATASET 11' }).should('not.exist');
+
+    // test exclude filter
+    cy.get('@nameFilterOptionsButton').click();
+    cy.findByRole('option', { name: 'Exclude' }).click();
+
+    cy.findByRole('gridcell', { name: 'DATASET 1' }).should('not.exist');
+    cy.findByRole('gridcell', { name: 'DATASET 11' }).should('not.exist');
+    cy.findByRole('gridcell', { name: 'DATASET 21' }).should('exist');
+
+    // test include filter
+    cy.get('@nameFilterOptionsButton').click();
+    cy.findByRole('option', { name: 'Include' }).click();
+
+    cy.get('[aria-rowcount=6]').should('exist');
+    cy.findByRole('gridcell', { name: 'DATASET 1' }).should('exist');
+    cy.findByRole('gridcell', { name: 'DATASET 11' }).should('exist');
+
+    cy.get('@nameFilter').clear();
     cy.get('@nameFilter').type('1');
     cy.get('[aria-rowcount=15]').should('exist');
-    cy.contains('DATASET 1').should('be.visible');
 
-    cy.get('[aria-label="Filter by Type"]').first().as('typeFilter');
+    cy.findByRole('textbox', { name: 'Filter by Type' }).as('typeFilter');
 
     cy.get('@typeFilter').type('in');
     cy.get('[aria-rowcount=5]').should('exist');
-    cy.contains('INVESTIGATION 16').should('be.visible');
+    cy.findByRole('gridcell', { name: 'INVESTIGATION 16' }).should('exist');
 
-    cy.contains('[role="button"]', 'Name').click();
     cy.get('@nameFilter').type('{backspace}');
     cy.get('[aria-rowcount=29]').should('exist');
-    cy.contains('INVESTIGATION 2').should('be.visible');
+    cy.findByRole('gridcell', { name: 'INVESTIGATION 2' }).should('exist');
   });
 
   it('should be able to remove individual items from the cart', () => {

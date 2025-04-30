@@ -21,21 +21,35 @@ function DownloadProgressIndicator({
   const { data: progress, isLoading: isLoadingProgress } =
     useDownloadPercentageComplete({
       download,
-      enabled: download.status === 'RESTORING' || download.status === 'PAUSED',
+      enabled:
+        !download.isDeleted &&
+        typeof download.preparedId !== 'undefined' && // do not send download status request for downloads with no preparedId as it will just fail
+        (download.status === 'RESTORING' || download.status === 'PAUSED'),
     });
 
   if (isLoadingProgress) {
     return <>{t('downloadStatus.calculating_progress')}</>;
   }
 
-  // if the download is already completed/restored
-  // should show text such as N/A, completed, or empty string.
+  // if the download is completed, expired or deleted
+  // should show text such as N/A or empty string.
   // depending on the translation configuration.
-  if (download.status === 'COMPLETE' || download.status === 'EXPIRED')
+  if (
+    download.status === 'COMPLETE' ||
+    download.status === 'EXPIRED' ||
+    download.isDeleted
+  )
     return <>{t('downloadStatus.progress_complete')}</>;
 
   // if the download is being prepared, show 0%
   if (download.status === 'PREPARING') return <ProgressBar progress={0} />;
+
+  // if the download is paused with no preparedId, show that it is queued
+  if (
+    download.status === 'PAUSED' &&
+    typeof download.preparedId === 'undefined'
+  )
+    return <>{t('downloadStatus.progress_queued')}</>;
 
   // display a label indicating progress unavailable when
   // progress is not returned or the download status doesn't match.

@@ -3,6 +3,7 @@
 exports[`Data column header component renders correctly with filter but no sort 1`] = `
 <DocumentFragment>
   <div
+    aria-label="Test"
     class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeSmall css-1howxi1-MuiTableCell-root"
   >
     <div
@@ -31,17 +32,15 @@ exports[`Data column header component renders correctly with filter but no sort 
       <div>
         <div
           class="MuiFormControl-root MuiFormControl-marginDense MuiFormControl-fullWidth css-zevgu-MuiFormControl-root"
-          id="Test-filter"
         >
           <label
             class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-colorSecondary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard css-t7bnno-MuiFormLabel-root-MuiInputLabel-root"
             data-shrink="false"
-            id="Test-filter"
+            for="Test-filter"
           >
             Include
           </label>
           <div
-            aria-hidden="true"
             class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorSecondary MuiInputBase-formControl MuiInputBase-adornedEnd css-89bi5l-MuiInputBase-root-MuiInput-root"
           >
             <input
@@ -112,6 +111,7 @@ exports[`Data column header component renders correctly with filter but no sort 
 exports[`Data column header component renders correctly with sort and filter 1`] = `
 <DocumentFragment>
   <div
+    aria-label="Test"
     class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeSmall css-1howxi1-MuiTableCell-root"
   >
     <div
@@ -159,17 +159,15 @@ exports[`Data column header component renders correctly with sort and filter 1`]
       <div>
         <div
           class="MuiFormControl-root MuiFormControl-marginDense MuiFormControl-fullWidth css-zevgu-MuiFormControl-root"
-          id="Test-filter"
         >
           <label
             class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-colorSecondary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard css-t7bnno-MuiFormLabel-root-MuiInputLabel-root"
             data-shrink="false"
-            id="Test-filter"
+            for="Test-filter"
           >
             Include
           </label>
           <div
-            aria-hidden="true"
             class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorSecondary MuiInputBase-formControl MuiInputBase-adornedEnd css-89bi5l-MuiInputBase-root-MuiInput-root"
           >
             <input
@@ -240,6 +238,7 @@ exports[`Data column header component renders correctly with sort and filter 1`]
 exports[`Data column header component renders correctly with sort but no filter 1`] = `
 <DocumentFragment>
   <div
+    aria-label="Test"
     class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeSmall css-1howxi1-MuiTableCell-root"
   >
     <div
@@ -300,6 +299,7 @@ exports[`Data column header component renders correctly with sort but no filter 
 exports[`Data column header component renders correctly without sort or filter 1`] = `
 <DocumentFragment>
   <div
+    aria-label="Test"
     class="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeSmall css-1howxi1-MuiTableCell-root"
   >
     <div

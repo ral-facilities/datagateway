@@ -3,68 +3,116 @@ import AdvancedHelpDialogue from './advancedHelpDialogue.component';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { dGCommonInitialState } from 'datagateway-common';
-import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
 import configureStore from 'redux-mock-store';
-import { StateType } from '../state/app.types';
 import { MemoryRouter } from 'react-router-dom';
+import type { RenderResult } from '@testing-library/react';
 import {
   render,
-  type RenderResult,
   screen,
-  waitFor,
+  waitForElementToBeRemoved,
 } from '@testing-library/react';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
+
+import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
+import { StateType } from '../state/app.types';
 import userEvent from '@testing-library/user-event';
+import reactI18Next from 'react-i18next';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useSelector: jest.fn(),
 }));
 
-describe('Advanced help dialogue component tests', () => {
-  let mockStore;
+function renderComponent({
+  initialState,
+}: {
+  initialState: StateType;
+}): RenderResult {
+  return render(
+    <Provider store={configureStore([thunk])(initialState)}>
+      <MemoryRouter>
+        <AdvancedHelpDialogue />
+      </MemoryRouter>
+    </Provider>
+  );
+}
+
+describe('Advanced help dialogue', () => {
   let state: StateType;
-  let user: UserEvent;
+  const tSpy = jest.fn((str) => str);
+  let originalUseTranslation: typeof reactI18Next.useTranslation;
 
   beforeEach(() => {
-    mockStore = configureStore([thunk]);
-    user = userEvent.setup();
     state = JSON.parse(
       JSON.stringify({
         dgcommon: dGCommonInitialState,
         dgsearch: dgSearchInitialState,
       })
     );
+
+    originalUseTranslation = reactI18Next.useTranslation;
+    reactI18Next.useTranslation = jest.fn().mockReturnValue([tSpy]);
   });
 
-  const renderComponent = (): RenderResult =>
-    render(
-      <Provider store={mockStore(state)}>
-        <MemoryRouter>
-          <AdvancedHelpDialogue />
-        </MemoryRouter>
-      </Provider>
-    );
+  afterEach(() => {
+    reactI18Next.useTranslation = originalUseTranslation;
+  });
 
-  it('can open and close help dialogue', async () => {
-    renderComponent();
+  it('is hidden initially', () => {
+    renderComponent({ initialState: state });
+    expect(
+      screen.queryByRole('dialog', { name: 'Advanced Search Tips' })
+    ).toBeNull();
+  });
+
+  it('opens when search options link is clicked and closes when the close button is clicked', async () => {
+    const user = userEvent.setup();
+
+    renderComponent({ initialState: state });
+
+    await user.click(screen.getByTestId('advanced-search-help-link'));
+
+    expect(
+      screen.getByRole('dialog', { name: 'advanced_search_help.title' })
+    ).toBeInTheDocument();
 
     await user.click(
-      await screen.findByRole('button', {
-        name: 'advanced_search_help.search_options_arialabel',
-      })
-    );
-
-    expect(await screen.findByText('Advanced Search Tips')).toBeInTheDocument();
-
-    await user.click(
-      await screen.findByRole('button', {
+      screen.getByRole('button', {
         name: 'advanced_search_help.close_button_arialabel',
       })
     );
 
-    await waitFor(() => {
-      expect(screen.queryByText('Advanced Search Tips')).toBeNull();
+    // advanced_search_help.examples.examples is not an array so example section is not rendered
+    expect(
+      screen.queryByText('advanced_search_help.examples.title')
+    ).not.toBeInTheDocument();
+
+    await waitForElementToBeRemoved(
+      screen.getByRole('dialog', { name: 'advanced_search_help.title' })
+    );
+    expect(
+      screen.queryByRole('dialog', { name: 'advanced_search_help.title' })
+    ).toBeNull();
+  });
+
+  it('renders examples section when an example is given', async () => {
+    tSpy.mockImplementation((key) => {
+      if (key === 'advanced_search_help.examples.examples') {
+        return [{ name: 'example 1', value: 'example 1' }];
+      } else return key;
     });
+    const user = userEvent.setup();
+
+    renderComponent({ initialState: state });
+
+    await user.click(screen.getByTestId('advanced-search-help-link'));
+
+    expect(
+      screen.getByRole('dialog', { name: 'advanced_search_help.title' })
+    ).toBeInTheDocument();
+
+    // advanced_search_help.examples.examples is an array with items in it so we should render example section
+    expect(
+      screen.getByText('advanced_search_help.examples.title')
+    ).toBeInTheDocument();
   });
 });

@@ -42,7 +42,7 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('DLS Proposals table component', () => {
-  let mockStore;
+  const mockStore = configureStore([thunk]);
   let state: StateType;
   let rowData: Investigation[];
   let history: History;
@@ -70,7 +70,6 @@ describe('DLS Proposals table component', () => {
         summary: 'foo bar',
         visitId: '1',
         doi: 'doi 1',
-        size: 1,
         investigationInstruments: [
           {
             id: 1,
@@ -87,7 +86,6 @@ describe('DLS Proposals table component', () => {
     history = createMemoryHistory();
     user = userEvent.setup();
 
-    mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
         dgdataview: dgDataViewInitialState,

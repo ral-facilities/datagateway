@@ -1,26 +1,12 @@
 describe('SearchPageContainer Component', () => {
-  // let facilityName: string;
-
-  // before(() => {
-  //   cy.readFile('server/e2e-settings.json').then((settings) => {
-  //     if (settings.facilityName) facilityName = settings.facilityName;
-  //   });
-  // });
-
   it('Should default back to 10 when any result is manually entered into the url', () => {
     cy.login();
-    cy.intercept('**/investigations/count?where=%7B%22id*').as(
-      'investigationsCount'
-    );
-    cy.intercept('**/investigations?*').as('investigations');
-    cy.visit('/search/data?view=card&results=100');
+
+    cy.visit('/search/data?view=card&searchText=&results=100&restrict=false');
 
     cy.get('[aria-label="Submit search"]').click();
-    cy.wait(['@investigations', '@investigations', '@investigationsCount'], {
-      timeout: 10000,
-    });
 
-    cy.get('[aria-label="card-buttons"]', { timeout: 10000 }).should(
+    cy.get('[data-testid="card"]:visible', { timeout: 10000 }).should(
       'have.length',
       10
     );
@@ -28,15 +14,10 @@ describe('SearchPageContainer Component', () => {
 
   it('should be able to load results from a URL', () => {
     cy.login();
-    cy.intercept('**/investigations/count?where=%7B%22id*').as(
-      'investigationsCount'
-    );
-    cy.intercept('**/investigations?*').as('investigations');
 
-    cy.visit('/search/data/?view=card&searchText=test&startDate=2000-06-01');
-    cy.wait(['@investigations', '@investigations', '@investigationsCount'], {
-      timeout: 10000,
-    });
+    cy.visit(
+      '/search/data/?view=card&searchText=test&startDate=2000-06-01&restrict=false'
+    );
 
     //Should be in card view
     cy.get('[aria-label="page view Display as table"]').should('exist');
@@ -62,18 +43,13 @@ describe('SearchPageContainer Component', () => {
     beforeEach(() => {
       cy.login();
       cy.clearDownloadCart();
-      cy.visit('/search/data/');
-      cy.intercept('**/investigations/count?where=%7B%22id*').as(
-        'investigationsCount'
-      );
-      cy.intercept('**/investigations?*').as('investigations');
+      cy.visit('/search/data');
 
       cy.get('#filled-search').type('dog');
 
+      cy.findByRole('checkbox', { name: 'My data' }).click();
+
       cy.get('[aria-label="Submit search"]').click();
-      cy.wait(['@investigations', '@investigations', '@investigationsCount'], {
-        timeout: 10000,
-      });
     });
 
     it('should load correctly', () => {
@@ -102,57 +78,63 @@ describe('SearchPageContainer Component', () => {
     });
 
     it('should be able to click clear filters button to clear filters', () => {
-      cy.url().then((url) => {
-        cy.get('#container-search-filters').should('exist');
-        cy.get('[aria-label="Filter by Title"]').type('ba');
-        cy.wait(
-          ['@investigations', '@investigations', '@investigationsCount'],
-          {
-            timeout: 10000,
-          }
+      cy.url().then((unfilteredUrl) => {
+        cy.visit(
+          '/search/data?searchText=dog&restrict=false&filters={"Investigation.type.name":["INVESTIGATIONTYPE+2"],"InvestigationInstrument.instrument.name":["INSTRUMENT+14"]}'
         );
 
-        cy.get('[aria-rowcount="4"]').should('exist');
+        cy.get('[aria-rowcount="1"]').should('exist');
 
         cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
           'Prove begin boy those always dream write inside. Cold drop season bill treat her wife. Nearly represent fire debate fish. Skin understand risk.'
         );
 
         cy.get('[data-testid="clear-filters-button"]').click();
-        cy.url().should('eq', url);
+        cy.url().should('eq', unfilteredUrl);
       });
     });
 
-    it('should be able to switch between tabs (and filters should not be lost)', () => {
-      cy.get('[aria-label="Search table"]')
-        .contains('Investigation')
-        .contains('5');
+    it('should be able to switch between tabs (and filters & pagination state should not be lost)', () => {
+      // visit url with pre-applied filters & pagination params
+      cy.visit(
+        '/search/data?view=card&page=2&results=20&searchText=&restrict=false&filters=%7B"Investigation.type.name"%3A%5B"INVESTIGATIONTYPE+3"%5D%7D'
+      );
 
-      cy.get('[aria-label="Filter by Title"]').type('ba');
-      cy.contains('Visit ID').first().click();
+      cy.findByRole('tab', { name: 'Investigation' }).contains('23');
 
-      cy.get('[aria-rowcount="4"]').should('exist');
+      cy.findByTestId('tabpanel-investigation').within(() => {
+        cy.findByLabelText('Selected filters')
+          .should('exist')
+          .within(() => {
+            cy.findByText('Type: INVESTIGATIONTYPE 3').should('exist');
+          });
+      });
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('18');
+      cy.get('[data-testid="card"]:visible')
+        .as('cards')
+        .should('have.length', 3);
 
-      cy.get('[aria-label="Search table"]')
-        .contains('Dataset')
-        .contains('3')
-        .click();
+      cy.findAllByRole('button', { name: /page 2/i, current: true });
 
-      cy.get('[aria-label="Search table"]')
-        .contains('Datafile')
-        .contains('44')
-        .click();
+      cy.findByRole('tab', { name: 'Dataset' }).click();
 
-      cy.get('[aria-label="Search table"]')
-        .contains('Investigation')
-        .contains('4')
-        .click();
+      cy.findByRole('tab', { name: 'Investigation' }).click();
 
-      cy.get('[aria-rowcount="4"]').should('exist');
+      cy.findByRole('tab', { name: 'Investigation' }).contains('23');
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('18');
+      cy.findByTestId('tabpanel-investigation').within(() => {
+        cy.findByLabelText('Selected filters')
+          .should('exist')
+          .within(() => {
+            cy.findByText('Type: INVESTIGATIONTYPE 3').should('exist');
+          });
+      });
+
+      cy.get('[data-testid="card"]:visible')
+        .as('cards')
+        .should('have.length', 3);
+
+      cy.findAllByRole('button', { name: /page 2/i, current: true });
     });
 
     it('should be able to switch to card view', () => {
@@ -196,16 +178,29 @@ describe('SearchPageContainer Component', () => {
     it('should be able to scroll down and load more rows', () => {
       cy.get('[aria-label="Search text input"').clear();
       cy.get('[aria-label="Submit search"]').click();
-      cy.wait(['@investigations', '@investigations', '@investigationsCount'], {
-        timeout: 10000,
+
+      cy.findByRole('tab', { name: 'Datafile' }).within(() => {
+        cy.findByText('300+').should('exist');
+        cy.findByText('300+').click();
       });
-      cy.get('[aria-label="Search table"]')
-        .contains('Datafile')
-        .contains('300')
-        .click();
-      cy.get('[aria-rowcount="50"]').should('exist');
-      cy.get('[aria-label="grid"]').scrollTo('bottom');
-      cy.get('[aria-rowcount="75"]').should('exist');
+      cy.get('[data-testid="tabpanel-datafile"] [aria-label="grid"]').should(
+        'be.visible'
+      );
+
+      cy.get('[aria-rowcount="300"]').should('exist');
+      cy.get('[data-testid="tabpanel-datafile"] [aria-label="grid"]').scrollTo(
+        'bottom'
+      );
+      cy.get('[aria-rowindex="300"] > [aria-colindex="3"]')
+        .contains('Datafile 300')
+        .should('exist');
+      cy.findByRole('tab', { name: 'Datafile' }).within(() => {
+        cy.findByText('600+').should('exist');
+      });
+      cy.get('[aria-rowcount="600"]').should('exist');
+      cy.get('[aria-rowindex="301"] > [aria-colindex="3"]')
+        .contains('Datafile 301')
+        .should('exist');
     });
 
     it('should be able to choose number of results to display', () => {
@@ -214,12 +209,14 @@ describe('SearchPageContainer Component', () => {
       cy.get('[aria-label="Submit search"]').click();
       cy.get('[aria-label="page view Display as cards"]').click();
 
-      cy.get('select[id="select-max-results"]')
+      cy.findByRole('combobox', {
+        name: /Max Results/i,
+      })
         .as('maxResultsSelect')
         .find('option:selected', { timeout: 10000 })
         .should('have.text', '10');
-      cy.get('[aria-label="card-buttons"]')
-        .as('cardButtons')
+      cy.get('[data-testid="card"]:visible')
+        .as('cards')
         .should('have.length', 10);
 
       cy.get('@maxResultsSelect').select('20');
@@ -227,7 +224,7 @@ describe('SearchPageContainer Component', () => {
       cy.get('@maxResultsSelect')
         .find('option:selected', { timeout: 10000 })
         .should('have.text', '20');
-      cy.get('@cardButtons').should('have.length', 20);
+      cy.get('@cards').should('have.length', 20);
 
       cy.get('@maxResultsSelect').select('30');
 
@@ -235,13 +232,17 @@ describe('SearchPageContainer Component', () => {
         .find('option:selected', { timeout: 10000 })
         .should('have.text', '30');
 
-      cy.get('@cardButtons').should('have.length', 30);
+      cy.get('@cards').should('have.length', 30);
     });
 
     it('should be able to change page in card view', () => {
+      cy.viewport('macbook-11');
+
       cy.get('[aria-label="Search text input"]').clear();
 
       cy.get('[aria-label="Submit search"]').click();
+
+      cy.findByRole('tab', { name: 'Dataset' }).click();
 
       cy.get('[aria-label="page view Display as cards"]').click();
 
@@ -250,32 +251,33 @@ describe('SearchPageContainer Component', () => {
       // wrong on one env or the other
 
       cy.get('[aria-label="Go to page 2"]', { timeout: 10000 }).first().click();
-      cy.contains('[data-testid="card"]', 'Star enter wide nearly off');
+      cy.contains('[data-testid="card"]', 'DATASET 15');
 
       cy.get('[aria-label="Go to next page"]', { timeout: 10000 })
         .first()
         .click();
-      cy.contains('[data-testid="card"]', 'Crime town perhaps');
+      cy.contains('[data-testid="card"]', 'DATASET 25');
 
       cy.get('[aria-label="Go to last page"]', { timeout: 10000 })
         .first()
         .click();
-      cy.contains('[data-testid="card"]', 'Imagine ball old window');
+      cy.contains('[data-testid="card"]', 'DATASET 115');
 
       cy.get('[aria-label="Go to previous page"]', { timeout: 10000 })
         .first()
         .click();
-      cy.contains('[data-testid="card"]', 'Deep watch simple');
+      cy.contains('[data-testid="card"]', 'DATASET 105');
 
       cy.get('[aria-label="Go to first page"]', { timeout: 10000 })
         .first()
         .click();
-      cy.contains('[data-testid="card"]', 'Now himself exist board space');
+      cy.contains('[data-testid="card"]', 'DATASET 5');
     });
 
     it('should display selection alert banner correctly', () => {
-      cy.get(`[aria-rowindex="1"] [aria-colindex="1"]`).click();
-      cy.wait('@investigations', { timeout: 10000 });
+      cy.get(
+        `[data-testid="tabpanel-investigation"] [aria-rowindex="1"] [aria-colindex="1"]`
+      ).click();
 
       cy.get('[aria-label="selection-alert"]').should('exist');
       cy.get('[aria-label="selection-alert-text"]')
@@ -304,9 +306,6 @@ describe('SearchPageContainer Component', () => {
       cy.get('body').type('{esc}');
 
       cy.get('[aria-label="Submit search"]').click();
-      cy.wait(['@investigations', '@investigations', '@investigationsCount'], {
-        timeout: 10000,
-      });
 
       cy.location().should((loc) => {
         expect(loc.search).to.eq(
@@ -373,13 +372,10 @@ describe('SearchPageContainer Component', () => {
       cy.url().should('include', '/download');
     });
 
-    it('should be able to select a start date', () => {
+    it('should be able to select a start & end date', () => {
       cy.get('[aria-label="Start date input"]').type('2009-01-01');
 
       cy.get('[aria-label="Submit search"]').click();
-      cy.wait(['@investigations', '@investigations', '@investigationsCount'], {
-        timeout: 10000,
-      });
 
       cy.location().should((loc) => {
         expect(loc.search).to.contains('?searchText=dog&startDate=2009-01-01');
@@ -389,6 +385,41 @@ describe('SearchPageContainer Component', () => {
         .contains('Investigation')
         .contains('2')
         .should('exist');
+
+      cy.get('[aria-label="End date input"]').type('2013-01-01');
+
+      cy.get('[aria-label="Submit search"]').click();
+
+      cy.location().should((loc) => {
+        expect(loc.search).to.contains(
+          '?searchText=dog&startDate=2009-01-01&endDate=2013-01-01'
+        );
+      });
+
+      cy.get('[aria-label="Search table"]')
+        .contains('Investigation')
+        .contains('1')
+        .should('exist');
+    });
+
+    it('should be able to sort by different criteria', () => {
+      cy.get(
+        `[data-testid="tabpanel-investigation"] [aria-rowindex="1"] [aria-colindex="3"]`
+      ).contains('Majority about dog');
+
+      cy.findByLabelText('Sort by').click();
+
+      cy.findByRole('option', { name: 'Name' }).click();
+
+      cy.location().should((loc) => {
+        expect(loc.search).to.contains(
+          '?searchText=dog&sort=%7B%22name%22%3A%22asc%22%7D'
+        );
+      });
+
+      cy.get(
+        `[data-testid="tabpanel-investigation"] [aria-rowindex="1"] [aria-colindex="3"]`
+      ).contains('Prove begin boy');
     });
   });
 });

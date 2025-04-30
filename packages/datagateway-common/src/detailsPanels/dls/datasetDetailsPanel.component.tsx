@@ -139,7 +139,7 @@ const DatasetDetailsPanel = (
             <Typography>
               <b>
                 {datasetData.startDate && datasetData.startDate !== 'null'
-                  ? datasetData.startDate
+                  ? new Date(datasetData.startDate).toLocaleDateString()
                   : `${t('datasets.details.start_date')} not provided`}
               </b>
             </Typography>
@@ -151,7 +151,7 @@ const DatasetDetailsPanel = (
             <Typography>
               <b>
                 {datasetData.endDate && datasetData.endDate !== 'null'
-                  ? datasetData.endDate
+                  ? new Date(datasetData.endDate).toLocaleDateString()
                   : `${t('datasets.details.end_date')} not provided`}
               </b>
             </Typography>

@@ -19,10 +19,10 @@ jest.mock('loglevel');
 
 describe('DatePicker component tests', () => {
   let state: StateType;
-  let mockStore;
-  let testStore;
+  const mockStore = configureStore([thunk]);
+  let testStore: ReturnType<typeof mockStore>;
   let history: History;
-  let pushSpy;
+  let pushSpy: jest.SpyInstance;
 
   const testInitiateSearch = jest.fn();
 
@@ -44,22 +44,16 @@ describe('DatePicker component tests', () => {
     state = JSON.parse(JSON.stringify({ dgsearch: initialState }));
 
     state.dgsearch = {
+      ...state.dgsearch,
       tabs: {
         datasetTab: true,
         datafileTab: true,
         investigationTab: true,
       },
-      requestReceived: false,
-      searchData: {
-        dataset: [],
-        datafile: [],
-        investigation: [],
-      },
       settingsLoaded: true,
       sideLayout: false,
     };
 
-    mockStore = configureStore([thunk]);
     testStore = mockStore(state);
   });
 

@@ -17,7 +17,6 @@ import {
   waitFor,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
 import { DownloadCartItem } from '../app.types';
 
 jest.mock('../handleICATError');
@@ -25,7 +24,7 @@ jest.mock('../handleICATError');
 describe('Generic add to cart button', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
   let holder: HTMLElement;
   let cartItems: DownloadCartItem[];
 
@@ -166,13 +165,13 @@ describe('Generic add to cart button', () => {
       parentId: '1',
     });
 
-    const addToCartButton = await screen.findByRole('button', {
-      name: 'buttons.add_to_cart',
+    const removeFromCartButton = await screen.findByRole('button', {
+      name: 'buttons.remove_from_cart',
     });
 
-    expect(addToCartButton).toBeDisabled();
+    expect(removeFromCartButton).toBeDisabled();
 
-    await user.hover(addToCartButton.parentElement);
+    await user.hover(removeFromCartButton.parentElement);
 
     expect(
       await screen.findByText('buttons.parent_selected_tooltip')

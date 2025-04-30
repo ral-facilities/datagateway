@@ -3,12 +3,14 @@ import '@testing-library/jest-dom';
 // Blob implementation in jsdom is not complete (https://github.com/jsdom/jsdom/issues/2555)
 // blob-polyfill fills in the gap
 import 'blob-polyfill';
-import { Action } from 'redux';
+import { Action, AnyAction } from 'redux';
 import { StateType } from './state/app.types';
 import { initialState as dgDataViewInitialState } from './state/reducers/dgdataview.reducer';
 import { dGCommonInitialState } from 'datagateway-common';
 import { screen, within } from '@testing-library/react';
 import failOnConsole from 'jest-fail-on-console';
+import { createLocation } from 'history';
+import { ThunkDispatch, ThunkAction } from 'redux-thunk';
 
 failOnConsole();
 
@@ -27,13 +29,16 @@ export let actions: Action[] = [];
 export const resetActions = (): void => {
   actions = [];
 };
-export const getState = (): Partial<StateType> => ({
+export const getState = (): StateType => ({
   dgdataview: dgDataViewInitialState,
   dgcommon: dGCommonInitialState,
+  router: { location: { ...createLocation('/'), query: {} }, action: 'POP' },
 });
-export const dispatch = (action: Action): void | Promise<void> => {
+export const dispatch: ThunkDispatch<StateType, null, AnyAction> = (
+  action: Action | ThunkAction<void, StateType, null, AnyAction>
+) => {
   if (typeof action === 'function') {
-    action(dispatch, getState);
+    action(dispatch, getState, null);
     return Promise.resolve();
   } else {
     actions.push(action);
@@ -71,6 +76,7 @@ export const applyDatePickerWorkaround = (): void => {
 };
 
 export const cleanupDatePickerWorkaround = (): void => {
+  // @ts-expect-error it's a workaround
   delete window.matchMedia;
 };
 

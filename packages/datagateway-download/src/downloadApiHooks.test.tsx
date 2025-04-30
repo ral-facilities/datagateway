@@ -479,7 +479,7 @@ describe('Download API react-query hooks test', () => {
         mockDownloadItems.length - 1
       );
       expect(
-        result.current.useDownloads.data.find(({ id }) => id === 123)
+        result.current.useDownloads.data?.find(({ id }) => id === 123)
       ).toBeUndefined();
     });
 
@@ -600,7 +600,7 @@ describe('Download API react-query hooks test', () => {
           },
         }
       );
-      expect(result.current.data.pages).toEqual([mockDownloadItems]);
+      expect(result.current.data?.pages).toEqual([mockDownloadItems]);
 
       // then test fetching next page
 
@@ -623,7 +623,7 @@ describe('Download API react-query hooks test', () => {
           },
         }
       );
-      expect(result.current.data.pages).toEqual([
+      expect(result.current.data?.pages).toEqual([
         mockDownloadItems,
         mockDownloadItems,
       ]);
@@ -732,11 +732,11 @@ describe('Download API react-query hooks test', () => {
       // wait for mutation to complete
       await waitFor(() => result.current.useAdminDownloadDeleted.isSuccess);
 
-      const updated = result.current.useAdminDownloads.data.pages[0].find(
+      const updated = result.current.useAdminDownloads.data?.pages?.[0]?.find(
         ({ id }) => id === 1
       );
 
-      expect(updated.isDeleted).toBe(true);
+      expect(updated?.isDeleted).toBe(true);
     });
 
     it('should restore download with the given id', async () => {
@@ -833,11 +833,11 @@ describe('Download API react-query hooks test', () => {
       // wait for mutation to complete
       await waitFor(() => result.current.useAdminDownloadDeleted.isSuccess);
 
-      const updated = result.current.useAdminDownloads.data.pages[0].find(
+      const updated = result.current.useAdminDownloads.data?.pages?.[0]?.find(
         ({ id }) => id === restoredDownload.id
       );
 
-      expect(updated.isDeleted).toBe(false);
+      expect(updated?.isDeleted).toBe(false);
     });
 
     it('should call handleICATError when an error is encountered', async () => {
@@ -879,7 +879,8 @@ describe('Download API react-query hooks test', () => {
       let isMutated = false;
 
       const updatedDownload: Download = {
-        ...mockDownloadItems.find(({ id }) => id === 1),
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        ...mockDownloadItems.find(({ id }) => id === 1)!,
         status: 'PREPARING',
       };
 
@@ -917,7 +918,7 @@ describe('Download API react-query hooks test', () => {
       );
 
       expect(
-        result.current.useAdminDownloads.data.pages[0].find(
+        result.current.useAdminDownloads.data?.pages?.[0]?.find(
           ({ id }) => id === 1
         )
       ).toEqual(updatedDownload);
@@ -949,7 +950,7 @@ describe('Download API react-query hooks test', () => {
       expect(handleICATError).toHaveBeenCalledWith({
         message: 'Test error message',
       });
-      expect(result.current.useAdminDownloads.data.pages).toEqual([
+      expect(result.current.useAdminDownloads.data?.pages).toEqual([
         mockDownloadItems,
       ]);
     });

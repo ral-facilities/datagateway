@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { UserEvent } from '@testing-library/user-event/dist/types/setup';
 import {
   adminDownloadDeleted,
   adminDownloadStatus,
@@ -46,7 +45,7 @@ const renderComponent = ({ settings = mockedSettings } = {}): RenderResult =>
   );
 
 describe('Admin Download Status Table', () => {
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   beforeEach(() => {
     user = userEvent.setup({ delay: null });
@@ -54,7 +53,8 @@ describe('Admin Download Status Table', () => {
     (getDownload as jest.MockedFunction<typeof getDownload>).mockImplementation(
       (id, _) =>
         Promise.resolve(
-          mockDownloadItems.find((download) => download.id === id)
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          mockDownloadItems.find((download) => download.id === id)!
         )
     );
     (fetchAdminDownloads as jest.Mock).mockImplementation(
@@ -246,7 +246,18 @@ describe('Admin Download Status Table', () => {
         'Filter by downloadStatus.username'
       );
 
-      await user.type(usernameFilterInput, 'test user');
+      await user.type(usernameFilterInput, "test user'");
+
+      // test exact filter
+      await user.click(
+        within(
+          screen.getByRole('columnheader', { name: /downloadStatus.username/ })
+        ).getByLabelText('include, exclude or exact')
+      );
+      // click on exclude option
+      await user.click(
+        within(await screen.findByRole('listbox')).getByText('Exact')
+      );
       await flushPromises();
 
       expect(fetchAdminDownloads).toHaveBeenCalledWith(
@@ -254,7 +265,7 @@ describe('Admin Download Status Table', () => {
           downloadApiUrl: mockedSettings.downloadApiUrl,
           facilityName: mockedSettings.facilityName,
         },
-        `WHERE download.facilityName = '${mockedSettings.facilityName}' AND UPPER(download.userName) LIKE CONCAT('%', 'TEST USER', '%') ORDER BY download.id ASC LIMIT 0, 50`
+        `WHERE download.facilityName = '${mockedSettings.facilityName}' AND download.userName = 'test user''' ORDER BY download.id ASC LIMIT 0, 50`
       );
 
       await user.clear(usernameFilterInput);
@@ -285,21 +296,24 @@ describe('Admin Download Status Table', () => {
         'Filter by downloadStatus.status'
       );
 
-      await user.type(availabilityFilterInput, 'downloadStatus.complete');
+      await user.type(availabilityFilterInput, "downloadStatus.complete'");
       await flushPromises();
 
+      // test include filter
       expect(fetchAdminDownloads).toHaveBeenCalledWith(
         {
           downloadApiUrl: mockedSettings.downloadApiUrl,
           facilityName: mockedSettings.facilityName,
         },
-        `WHERE download.facilityName = '${mockedSettings.facilityName}' AND UPPER(download.status) LIKE CONCAT('%', 'COMPLETE', '%') ORDER BY download.id ASC LIMIT 0, 50`
+        `WHERE download.facilityName = '${mockedSettings.facilityName}' AND UPPER(download.status) LIKE CONCAT('%', 'COMPLETE''', '%') ORDER BY download.id ASC LIMIT 0, 50`
       );
 
       // We simulate a change in the select from 'include' to 'exclude'.
       // click on the select box
       await user.click(
-        screen.getAllByLabelText('include, exclude or exact')[5]
+        within(
+          screen.getByRole('columnheader', { name: /downloadStatus.status/ })
+        ).getByLabelText('include, exclude or exact')
       );
       // click on exclude option
       await user.click(
@@ -312,7 +326,7 @@ describe('Admin Download Status Table', () => {
           downloadApiUrl: mockedSettings.downloadApiUrl,
           facilityName: mockedSettings.facilityName,
         },
-        `WHERE download.facilityName = '${mockedSettings.facilityName}' AND UPPER(download.status) NOT LIKE CONCAT('%', 'COMPLETE', '%') ORDER BY download.id ASC LIMIT 0, 50`
+        `WHERE download.facilityName = '${mockedSettings.facilityName}' AND UPPER(download.status) NOT LIKE CONCAT('%', 'COMPLETE''', '%') ORDER BY download.id ASC LIMIT 0, 50`
       );
 
       await user.clear(availabilityFilterInput);
@@ -389,6 +403,62 @@ describe('Admin Download Status Table', () => {
     );
 
     cleanupDatePickerWorkaround();
+  });
+
+  it('should filter deleted properly', async () => {
+    renderComponent();
+
+    // Table is sorted by createdAt desc by default
+    // To keep working test, we will remove all sorts on the table beforehand
+    await user.click(await screen.findByText('downloadStatus.createdAt'));
+    await flushPromises();
+
+    // Get the is deleted filter
+    const isDeletedFilter = await screen.findByRole('button', {
+      name: /Filter by downloadStatus\.deleted/,
+    });
+
+    await user.click(isDeletedFilter);
+
+    await user.click(await screen.findByRole('option', { name: 'No' }));
+
+    await flushPromises();
+
+    expect(fetchAdminDownloads).toHaveBeenCalledWith(
+      {
+        downloadApiUrl: mockedSettings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
+      },
+      `WHERE download.facilityName = '${mockedSettings.facilityName}' AND download.isDeleted = 'false' ORDER BY download.id ASC LIMIT 0, 50`
+    );
+
+    await user.click(isDeletedFilter);
+
+    await user.click(await screen.findByRole('option', { name: 'Yes' }));
+
+    await flushPromises();
+
+    expect(fetchAdminDownloads).toHaveBeenCalledWith(
+      {
+        downloadApiUrl: mockedSettings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
+      },
+      `WHERE download.facilityName = '${mockedSettings.facilityName}' AND download.isDeleted = 'true' ORDER BY download.id ASC LIMIT 0, 50`
+    );
+
+    await user.click(isDeletedFilter);
+
+    await user.click(await screen.findByRole('option', { name: 'Either' }));
+
+    await flushPromises();
+
+    expect(fetchAdminDownloads).toHaveBeenCalledWith(
+      {
+        downloadApiUrl: mockedSettings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
+      },
+      `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.id ASC LIMIT 0, 50`
+    );
   });
 
   it('should send restore item and item status requests when restore button is clicked', async () => {

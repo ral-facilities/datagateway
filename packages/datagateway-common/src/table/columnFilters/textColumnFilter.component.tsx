@@ -9,32 +9,34 @@ import {
 } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import debounce from 'lodash.debounce';
-import { FiltersType, TextFilter } from '../../app.types';
+import { Filter, FiltersType, TextFilter } from '../../app.types';
 import { usePushFilter, usePushFilters } from '../../api';
 
 const TextColumnFilter = (props: {
   label: string;
-  onChange: (value: { value?: string | number; type: string } | null) => void;
-  value: { value?: string | number; type: string } | undefined;
+  onChange: (value: TextFilter | null) => void;
+  value: TextFilter | undefined;
+  defaultFilter?: TextFilter;
 }): React.ReactElement => {
-  const { onChange, label } = props;
+  const { onChange, label, defaultFilter } = props;
   const { value: propValue, type: propType } = props.value ?? {};
 
   const [inputValue, setInputValue] = React.useState(
-    propValue ? propValue : ''
+    defaultFilter ? defaultFilter.value : propValue ? propValue : ''
   );
-  const [type, setType] = React.useState(propType ? propType : 'include');
-
-  // Debounce the updating of the column filter by 250 milliseconds.
+  const [type, setType] = React.useState(
+    defaultFilter ? defaultFilter.type : propType ? propType : 'include'
+  );
+  // Debounce the updating of the column filter by 500 milliseconds.
   const updateValue = React.useMemo(
     () =>
       debounce((value: string) => {
         onChange(value === '' ? null : { value: value, type: type });
-      }, 250),
+      }, DEBOUNCE_DELAY),
     [onChange, type]
   );
 
-  const updateType = (type: string): void => {
+  const updateType = (type: TextFilter['type']): void => {
     onChange({ value: inputValue, type: type });
   };
 
@@ -45,7 +47,7 @@ const TextColumnFilter = (props: {
     setInputValue(event.target.value);
   };
 
-  const handleSelectChange = (type: string): void => {
+  const handleSelectChange = (type: TextFilter['type']): void => {
     // Only trigger onChange if input is not empty
     if (inputValue !== '') {
       updateType(type);
@@ -70,13 +72,12 @@ const TextColumnFilter = (props: {
   return (
     <div>
       <FormControl
-        id={`${label}-filter`}
         variant="standard"
         color="secondary"
         fullWidth={true}
         margin="dense"
       >
-        <InputLabel id={`${label}-filter`}>
+        <InputLabel htmlFor={`${label}-filter`}>
           {type.charAt(0).toUpperCase() + type.slice(1)}
         </InputLabel>
         <Input
@@ -84,7 +85,6 @@ const TextColumnFilter = (props: {
           value={inputValue}
           onChange={handleInputChange}
           inputProps={{ 'aria-label': `Filter by ${label}` }}
-          aria-hidden={true}
           endAdornment={
             <InputAdornment position="end">
               <Select
@@ -93,7 +93,9 @@ const TextColumnFilter = (props: {
                 IconComponent={SettingsIcon}
                 // Do not render a value
                 renderValue={() => ''}
-                onChange={(e) => handleSelectChange(e.target.value as string)}
+                onChange={(e) =>
+                  handleSelectChange(e.target.value as TextFilter['type'])
+                }
                 SelectDisplayProps={{
                   'aria-label': `include, exclude or exact`,
                 }}
@@ -129,20 +131,31 @@ const TextColumnFilter = (props: {
   );
 };
 
+export const DEBOUNCE_DELAY = 500;
+
 export default TextColumnFilter;
 
 export const useTextFilter = (
   filters: FiltersType
-): ((label: string, dataKey: string) => React.ReactElement) => {
+): ((
+  label: string,
+  dataKey: string,
+  defaultFilter?: Filter
+) => React.ReactElement) => {
   const pushFilter = usePushFilter();
   return React.useMemo(() => {
-    const textFilter = (label: string, dataKey: string): React.ReactElement => (
+    const textFilter = (
+      label: string,
+      dataKey: string,
+      defaultFilter?: Filter
+    ): React.ReactElement => (
       <TextColumnFilter
         label={label}
         value={filters[dataKey] as TextFilter}
-        onChange={(value: { value?: string | number; type: string } | null) =>
+        onChange={(value: TextFilter | null) =>
           pushFilter(dataKey, value ? value : null)
         }
+        defaultFilter={defaultFilter as TextFilter}
       />
     );
     return textFilter;
@@ -159,7 +172,7 @@ export const usePrincipalExperimenterFilter = (
       <TextColumnFilter
         label={label}
         value={filters[dataKey] as TextFilter}
-        onChange={(value: { value?: string | number; type: string } | null) => {
+        onChange={(value: TextFilter | null) => {
           pushFilters([
             { filterKey: dataKey, filter: value ? value : null },
             {

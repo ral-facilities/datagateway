@@ -181,10 +181,9 @@ const ISISInvestigationsCardView = (
       {
         icon: Save,
         label: t('investigations.details.size'),
-        dataKey: 'size',
+        dataKey: 'fileSize',
         content: (investigation: Investigation): number | string =>
           formatBytes(investigation.fileSize),
-        disableSort: true,
       },
       {
         icon: Person,

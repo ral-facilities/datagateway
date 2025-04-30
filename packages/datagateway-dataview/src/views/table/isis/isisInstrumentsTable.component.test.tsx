@@ -41,7 +41,7 @@ jest.mock('datagateway-common', () => {
 });
 
 describe('ISIS Instruments table component', () => {
-  let mockStore;
+  const mockStore = configureStore([thunk]);
   let state: StateType;
   let rowData: Instrument[];
   let history: History;
@@ -81,7 +81,6 @@ describe('ISIS Instruments table component', () => {
     history = createMemoryHistory();
     user = userEvent.setup();
 
-    mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
         dgdataview: dgDataViewInitialState,

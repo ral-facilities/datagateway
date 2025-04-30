@@ -2,6 +2,7 @@ import { Divider, Grid, styled, Tab, Tabs, Typography } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
+import { formatBytes } from '../../table/cellRenderers/cellContentRenderers';
 import { useInvestigationDetails } from '../../api';
 import { Entity, Investigation } from '../../app.types';
 import {
@@ -10,7 +11,7 @@ import {
 } from '../../state/actions/actions.types';
 import type { StateType } from '../../state/app.types';
 import type { Action } from '../../state/reducers/createReducer';
-import { formatBytes } from '../../table/cellRenderers/cellContentRenderers';
+import { format, parse } from 'date-fns';
 
 const StyledGrid = styled(Grid)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -31,7 +32,8 @@ export type DlsVisitDetailsPanelTab =
   | 'details'
   | 'users'
   | 'samples'
-  | 'publications';
+  | 'publications'
+  | 'parameters';
 
 const VisitDetailsPanel = (
   props: VisitDetailsPanelProps
@@ -80,9 +82,14 @@ const VisitDetailsPanel = (
     }
   }, [data, selectedTab, changeTab]);
 
+  function formatParameterDateTimeValue(dateTime: string): string {
+    const date = parse(dateTime, 'yyyy-MM-dd HH:mm:ssXXX', new Date());
+    return format(date, 'yyyy-MM-dd');
+  }
+
   return (
     <div
-      data-testid="visit-details-panel"
+      data-testid="dls-visit-details-panel"
       id="details-panel"
       style={{ minWidth: 0 }}
     >
@@ -115,6 +122,14 @@ const VisitDetailsPanel = (
             aria-controls="visit-samples-panel"
             label={t('investigations.details.samples.label')}
             value="samples"
+          />
+        )}
+        {investigationData.parameters && (
+          <Tab
+            id="visit-parameters-tab"
+            aria-controls="visit-parameters-panel"
+            label={t('investigations.details.parameters.label')}
+            value="parameters"
           />
         )}
         {investigationData.publications && (
@@ -176,7 +191,7 @@ const VisitDetailsPanel = (
               <b>
                 {investigationData.startDate &&
                 investigationData.startDate !== 'null'
-                  ? investigationData.startDate
+                  ? new Date(investigationData.startDate).toLocaleDateString()
                   : `${t('investigations.details.start_date')} not provided`}
               </b>
             </Typography>
@@ -189,7 +204,7 @@ const VisitDetailsPanel = (
               <b>
                 {investigationData.endDate &&
                 investigationData.endDate !== 'null'
-                  ? investigationData.endDate
+                  ? new Date(investigationData.endDate).toLocaleDateString()
                   : `${t('investigations.details.end_date')} not provided`}
               </b>
             </Typography>
@@ -260,6 +275,7 @@ const VisitDetailsPanel = (
                 return (
                   <Grid key={sample.id} item xs>
                     <Typography>
+                      {sample.type?.name ? `${sample.type.name}: ` : ''}
                       <b>{sample.name}</b>
                     </Typography>
                   </Grid>
@@ -268,6 +284,67 @@ const VisitDetailsPanel = (
             ) : (
               <Typography data-testid="visit-details-panel-no-samples">
                 <b>{t('investigations.details.samples.no_samples')}</b>
+              </Typography>
+            )}
+          </StyledGrid>
+        </div>
+      )}
+      {investigationData.parameters && (
+        <div
+          id="investigation-parameters-panel"
+          aria-labelledby="investigation-parameters-tab"
+          role="tabpanel"
+          hidden={selectedTab !== 'parameters'}
+        >
+          <StyledGrid id="parameter-grid" container direction="column">
+            {investigationData.parameters.length > 0 ? (
+              investigationData.parameters.map((parameter) => {
+                switch (parameter.type.valueType) {
+                  case 'STRING':
+                    return (
+                      <Grid key={parameter.id} item xs>
+                        <Typography variant="overline">
+                          {parameter.type.name}
+                        </Typography>
+                        <Typography>
+                          <b>{parameter.stringValue}</b>
+                        </Typography>
+                      </Grid>
+                    );
+                  case 'NUMERIC':
+                    return (
+                      <Grid key={parameter.id} item xs>
+                        <Typography variant="overline">
+                          {parameter.type.name}
+                        </Typography>
+                        <Typography>
+                          <b>{parameter.numericValue}</b> {parameter.type.units}
+                        </Typography>
+                      </Grid>
+                    );
+                  case 'DATE_AND_TIME':
+                    return (
+                      <Grid key={parameter.id} item xs>
+                        <Typography variant="overline">
+                          {parameter.type.name}
+                        </Typography>
+                        <Typography>
+                          <b>
+                            {parameter.dateTimeValue &&
+                              formatParameterDateTimeValue(
+                                parameter.dateTimeValue
+                              )}
+                          </b>
+                        </Typography>
+                      </Grid>
+                    );
+                  default:
+                    return null;
+                }
+              })
+            ) : (
+              <Typography data-testid="investigation-details-panel-no-parameters">
+                <b>{t('investigations.details.parameters.no_parameters')}</b>
               </Typography>
             )}
           </StyledGrid>

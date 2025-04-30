@@ -10,12 +10,12 @@ import { initialState as dgDataViewInitialState } from '../state/reducers/dgdata
 import { DataPublication, dGCommonInitialState } from 'datagateway-common';
 
 import {
-  checkDatasetId,
-  checkInstrumentAndFacilityCycleId,
-  checkInstrumentId,
-  checkInvestigationId,
-  checkProposalName,
-  checkStudyDataPublicationId,
+  checkDatasetId as unmockedCheckDatasetId,
+  checkInstrumentAndFacilityCycleId as unmockedCheckInstrumentAndFacilityCycleId,
+  checkInstrumentId as unmockedCheckInstrumentId,
+  checkInvestigationId as unmockedCheckInvestigationId,
+  checkProposalName as unmockedCheckProposalName,
+  checkStudyDataPublicationId as unmockedCheckStudyDataPublicationId,
 } from './idCheckFunctions';
 import { findColumnHeaderByName, flushPromises } from '../setupTests';
 import { act } from 'react-dom/test-utils';
@@ -26,6 +26,16 @@ import { render, screen } from '@testing-library/react';
 
 jest.mock('loglevel');
 jest.mock('./idCheckFunctions');
+const checkDatasetId = jest.mocked(unmockedCheckDatasetId);
+const checkInstrumentAndFacilityCycleId = jest.mocked(
+  unmockedCheckInstrumentAndFacilityCycleId
+);
+const checkInstrumentId = jest.mocked(unmockedCheckInstrumentId);
+const checkInvestigationId = jest.mocked(unmockedCheckInvestigationId);
+const checkProposalName = jest.mocked(unmockedCheckProposalName);
+const checkStudyDataPublicationId = jest.mocked(
+  unmockedCheckStudyDataPublicationId
+);
 
 // The generic routes to test.
 const genericRoutes = {
@@ -146,24 +156,14 @@ describe('PageTable', () => {
         return Promise.resolve({ data: [] });
       }
     });
-    (checkInstrumentAndFacilityCycleId as jest.Mock).mockImplementation(() =>
+    checkInstrumentAndFacilityCycleId.mockImplementation(() =>
       Promise.resolve(true)
     );
-    (checkInstrumentId as jest.Mock).mockImplementation(() =>
-      Promise.resolve(true)
-    );
-    (checkStudyDataPublicationId as jest.Mock).mockImplementation(() =>
-      Promise.resolve(true)
-    );
-    (checkInvestigationId as jest.Mock).mockImplementation(() =>
-      Promise.resolve(true)
-    );
-    (checkProposalName as jest.Mock).mockImplementation(() =>
-      Promise.resolve(true)
-    );
-    (checkDatasetId as jest.Mock).mockImplementation(() =>
-      Promise.resolve(true)
-    );
+    checkInstrumentId.mockImplementation(() => Promise.resolve(true));
+    checkStudyDataPublicationId.mockImplementation(() => Promise.resolve(true));
+    checkInvestigationId.mockImplementation(() => Promise.resolve(true));
+    checkProposalName.mockImplementation(() => Promise.resolve(true));
+    checkDatasetId.mockImplementation(() => Promise.resolve(true));
   });
 
   afterEach(() => {
@@ -336,9 +336,7 @@ describe('PageTable', () => {
     });
 
     it('does not render DatafileTable for incorrect generic datafiles route', async () => {
-      (checkInvestigationId as jest.Mock).mockImplementation(() =>
-        Promise.resolve(false)
-      );
+      checkInvestigationId.mockImplementation(() => Promise.resolve(false));
       history.push(genericRoutes['datafiles']);
 
       render(
@@ -569,7 +567,7 @@ describe('PageTable', () => {
     });
 
     it('does not render ISISInvestigationLanding for incorrect ISIS investigation route', async () => {
-      (checkInstrumentAndFacilityCycleId as jest.Mock).mockImplementation(() =>
+      checkInstrumentAndFacilityCycleId.mockImplementation(() =>
         Promise.resolve(false)
       );
 
@@ -618,7 +616,7 @@ describe('PageTable', () => {
     });
 
     it('does not render ISISDatasetsTable for incorrect ISIS datasets route', async () => {
-      (checkInstrumentAndFacilityCycleId as jest.Mock).mockImplementation(() =>
+      checkInstrumentAndFacilityCycleId.mockImplementation(() =>
         Promise.resolve(false)
       );
 
@@ -660,7 +658,7 @@ describe('PageTable', () => {
     });
 
     it('does not render ISISDatasetsCardView for incorrect ISIS datasets route', async () => {
-      (checkInstrumentAndFacilityCycleId as jest.Mock).mockImplementation(() =>
+      checkInstrumentAndFacilityCycleId.mockImplementation(() =>
         Promise.resolve(false)
       );
 
@@ -696,7 +694,7 @@ describe('PageTable', () => {
     });
 
     it('does not render ISISDatasetLanding for incorrect ISIS dataset route', async () => {
-      (checkInstrumentAndFacilityCycleId as jest.Mock).mockImplementation(() =>
+      checkInstrumentAndFacilityCycleId.mockImplementation(() =>
         Promise.resolve(false)
       );
 
@@ -741,12 +739,10 @@ describe('PageTable', () => {
     });
 
     it('does not render ISISDatafilesTable for incorrect ISIS datafiles route', async () => {
-      (checkInstrumentAndFacilityCycleId as jest.Mock).mockImplementation(() =>
+      checkInstrumentAndFacilityCycleId.mockImplementation(() =>
         Promise.resolve(false)
       );
-      (checkInvestigationId as jest.Mock).mockImplementation(() =>
-        Promise.resolve(false)
-      );
+      checkInvestigationId.mockImplementation(() => Promise.resolve(false));
 
       history.push(ISISRoutes.datafiles);
 
@@ -780,15 +776,11 @@ describe('PageTable', () => {
     });
 
     it('does not render DatafilePreviewer for incorrect ISIS datafiles previewer route', async () => {
-      (checkInstrumentAndFacilityCycleId as jest.Mock).mockImplementation(() =>
+      checkInstrumentAndFacilityCycleId.mockImplementation(() =>
         Promise.resolve(false)
       );
-      (checkInvestigationId as jest.Mock).mockImplementation(() =>
-        Promise.resolve(false)
-      );
-      (checkDatasetId as jest.Mock).mockImplementation(() =>
-        Promise.resolve(false)
-      );
+      checkInvestigationId.mockImplementation(() => Promise.resolve(false));
+      checkDatasetId.mockImplementation(() => Promise.resolve(false));
 
       history.push(ISISRoutes.datafilePreview);
 
@@ -898,9 +890,7 @@ describe('PageTable', () => {
     });
 
     it('does not render ISISDataPublicationLanding for incorrect ISIS dataPublications route for Data Publication Hierarchy', async () => {
-      (checkInstrumentId as jest.Mock).mockImplementation(() =>
-        Promise.resolve(false)
-      );
+      checkInstrumentId.mockImplementation(() => Promise.resolve(false));
 
       history.push(ISISDataPublicationsRoutes.landing.dataPublication);
 
@@ -979,10 +969,8 @@ describe('PageTable', () => {
     });
 
     it('does not render ISISDatasetsTable for incorrect ISIS datasets route in Data Publication Hierarchy', async () => {
-      (checkInstrumentId as jest.Mock).mockImplementation(() =>
-        Promise.resolve(false)
-      );
-      (checkStudyDataPublicationId as jest.Mock).mockImplementation(() =>
+      checkInstrumentId.mockImplementation(() => Promise.resolve(false));
+      checkStudyDataPublicationId.mockImplementation(() =>
         Promise.resolve(false)
       );
 
@@ -1018,10 +1006,8 @@ describe('PageTable', () => {
     });
 
     it('does not render ISISInvestigationLanding for incorrect ISIS investigation route for Data Publication Hierarchy', async () => {
-      (checkInstrumentId as jest.Mock).mockImplementation(() =>
-        Promise.resolve(false)
-      );
-      (checkStudyDataPublicationId as jest.Mock).mockImplementation(() =>
+      checkInstrumentId.mockImplementation(() => Promise.resolve(false));
+      checkStudyDataPublicationId.mockImplementation(() =>
         Promise.resolve(false)
       );
 
@@ -1057,10 +1043,8 @@ describe('PageTable', () => {
     });
 
     it('does not render ISISDatasetsCardView for incorrect ISIS datasets route in Data Publication Hierarchy', async () => {
-      (checkInstrumentId as jest.Mock).mockImplementation(() =>
-        Promise.resolve(false)
-      );
-      (checkStudyDataPublicationId as jest.Mock).mockImplementation(() =>
+      checkInstrumentId.mockImplementation(() => Promise.resolve(false));
+      checkStudyDataPublicationId.mockImplementation(() =>
         Promise.resolve(false)
       );
 
@@ -1096,10 +1080,8 @@ describe('PageTable', () => {
     });
 
     it('does not render ISISDatasetLanding for incorrect ISIS dataset route for Data Publication Hierarchy', async () => {
-      (checkInstrumentId as jest.Mock).mockImplementation(() =>
-        Promise.resolve(false)
-      );
-      (checkStudyDataPublicationId as jest.Mock).mockImplementation(() =>
+      checkInstrumentId.mockImplementation(() => Promise.resolve(false));
+      checkStudyDataPublicationId.mockImplementation(() =>
         Promise.resolve(false)
       );
 
@@ -1144,15 +1126,11 @@ describe('PageTable', () => {
     });
 
     it('does not render ISISDatafilesTable for incorrect ISIS datafiles route in Data Publication Hierarchy', async () => {
-      (checkInstrumentId as jest.Mock).mockImplementation(() =>
+      checkInstrumentId.mockImplementation(() => Promise.resolve(false));
+      checkStudyDataPublicationId.mockImplementation(() =>
         Promise.resolve(false)
       );
-      (checkStudyDataPublicationId as jest.Mock).mockImplementation(() =>
-        Promise.resolve(false)
-      );
-      (checkInvestigationId as jest.Mock).mockImplementation(() =>
-        Promise.resolve(false)
-      );
+      checkInvestigationId.mockImplementation(() => Promise.resolve(false));
 
       history.push(ISISDataPublicationsRoutes.datafiles);
 
@@ -1186,18 +1164,12 @@ describe('PageTable', () => {
     });
 
     it('does not render DatafilePreviewer for incorrect ISIS datafile preview route in Data Publication Hierarchy', async () => {
-      (checkInstrumentId as jest.Mock).mockImplementation(() =>
+      checkInstrumentId.mockImplementation(() => Promise.resolve(false));
+      checkStudyDataPublicationId.mockImplementation(() =>
         Promise.resolve(false)
       );
-      (checkStudyDataPublicationId as jest.Mock).mockImplementation(() =>
-        Promise.resolve(false)
-      );
-      (checkInvestigationId as jest.Mock).mockImplementation(() =>
-        Promise.resolve(false)
-      );
-      (checkDatasetId as jest.Mock).mockImplementation(() =>
-        Promise.resolve(false)
-      );
+      checkInvestigationId.mockImplementation(() => Promise.resolve(false));
+      checkDatasetId.mockImplementation(() => Promise.resolve(false));
 
       history.push(ISISDataPublicationsRoutes.datafilePreview);
 
@@ -1409,9 +1381,7 @@ describe('PageTable', () => {
     });
 
     it('does not render DLSDatasetsTable for incorrect DLS datasets route', async () => {
-      (checkProposalName as jest.Mock).mockImplementation(() =>
-        Promise.resolve(false)
-      );
+      checkProposalName.mockImplementation(() => Promise.resolve(false));
 
       history.push(DLSRoutes.datasets);
 
@@ -1445,9 +1415,7 @@ describe('PageTable', () => {
     });
 
     it('does not render DLSDatasetsCardView for incorrect DLS datasets route', async () => {
-      (checkProposalName as jest.Mock).mockImplementation(() =>
-        Promise.resolve(false)
-      );
+      checkProposalName.mockImplementation(() => Promise.resolve(false));
 
       history.push(DLSRoutes.datasets);
 
@@ -1490,12 +1458,8 @@ describe('PageTable', () => {
     });
 
     it('does not render DLSDatafilesTable for incorrect DLS datafiles route', async () => {
-      (checkProposalName as jest.Mock).mockImplementation(() =>
-        Promise.resolve(false)
-      );
-      (checkInvestigationId as jest.Mock).mockImplementation(() =>
-        Promise.resolve(false)
-      );
+      checkProposalName.mockImplementation(() => Promise.resolve(false));
+      checkInvestigationId.mockImplementation(() => Promise.resolve(false));
 
       history.push(DLSRoutes.datafiles);
 

@@ -133,12 +133,13 @@ exports[`Select cell component renders correctly when selectedRows parentSelecte
     >
       <span
         aria-disabled="true"
-        class="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary Mui-disabled PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary Mui-disabled MuiCheckbox-root MuiCheckbox-colorPrimary tour-dataview-add-to-cart css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root"
+        class="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary Mui-disabled PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary Mui-checked Mui-disabled MuiCheckbox-root MuiCheckbox-colorPrimary tour-dataview-add-to-cart css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root"
         style="padding: inherit;"
         tabindex="-1"
       >
         <input
           aria-label="select row 2"
+          checked=""
           class="PrivateSwitchBase-input css-1m9pwf3"
           data-indeterminate="false"
           disabled=""
@@ -147,12 +148,12 @@ exports[`Select cell component renders correctly when selectedRows parentSelecte
         <svg
           aria-hidden="true"
           class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-ptiqhd-MuiSvgIcon-root"
-          data-testid="CheckBoxOutlineBlankIcon"
+          data-testid="CheckBoxIcon"
           focusable="false"
           viewBox="0 0 24 24"
         >
           <path
-            d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
+            d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
           />
         </svg>
       </span>

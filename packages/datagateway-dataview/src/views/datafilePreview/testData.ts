@@ -2,17 +2,19 @@
 
 import type { Datafile } from 'datagateway-common';
 
-const mockDatafile: Datafile = {
+const mockDatafile = {
   createTime: '2020-01-01',
+  datafileCreateTime: '2019-01-01',
   dataset: undefined,
   description: 'test description',
   fileSize: 100,
   id: 123,
   location: 'test location',
   modTime: '2020-01-02',
+  datafileModTime: '2019-01-02',
   name: 'Datafile.txt',
   parameters: [],
-};
+} satisfies Datafile;
 
 const mockTxtFileContent = `First line
 Second line

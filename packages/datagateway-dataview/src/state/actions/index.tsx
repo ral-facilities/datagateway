@@ -14,7 +14,11 @@ import {
   ConfigureFacilityImageSettingPayload,
   ConfigureFacilityImageSettingType,
 } from './actions.types';
-import { loadUrls, loadFacilityName } from 'datagateway-common';
+import {
+  loadUrls,
+  loadFacilityName,
+  loadQueryRetries,
+} from 'datagateway-common';
 import { Action } from 'redux';
 import { settings } from '../../settings';
 
@@ -88,6 +92,10 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
           dataCiteUrl: settingsResult['dataCiteUrl'],
         })
       );
+
+      if (settingsResult?.['queryRetries'] !== undefined) {
+        dispatch(loadQueryRetries(settingsResult['queryRetries']));
+      }
 
       // Dispatch the action to load the breadcrumb settings (optional settings).
       if (settingsResult?.['breadcrumbs'] !== undefined) {

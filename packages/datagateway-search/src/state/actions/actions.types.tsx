@@ -8,6 +8,8 @@ export const ConfigureSelectAllSettingType =
   'datagateway_search:configure_select_all';
 export const ConfigureSearchableEntitiesType =
   'datagateway_search:configure_searchable_entities';
+export const ConfigureMinNumResultsType =
+  'datagateway_search:configure_min_num_results';
 export const ConfigureMaxNumResultsType =
   'datagateway_search:configure_max_num_results';
 
@@ -21,6 +23,10 @@ export interface ConfigureSelectAllSettingPayload {
 
 export interface ConfigureSearchableEntitiesPayload {
   entities: string[];
+}
+
+export interface ConfigureMinNumResultsPayload {
+  minNumResults: number;
 }
 
 export interface ConfigureMaxNumResultsPayload {

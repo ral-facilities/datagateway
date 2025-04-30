@@ -13,7 +13,7 @@ import {
   handleICATError,
   MicroFrontendId,
   NotificationType,
-  retryICATErrors,
+  useRetryICATErrors,
 } from 'datagateway-common';
 import pLimit from 'p-limit';
 import React from 'react';
@@ -100,6 +100,7 @@ type RollbackFunction = () => void;
 export const useCart = (): UseQueryResult<DownloadCartItem[], AxiosError> => {
   const settings = React.useContext(DownloadSettingsContext);
   const { facilityName, downloadApiUrl } = settings;
+  const retryICATErrors = useRetryICATErrors();
   return useQuery(
     QueryKey.CART,
     () =>
@@ -184,6 +185,8 @@ export const useRemoveEntityFromCart = (): UseMutationResult<
 export const useIsTwoLevel = (): UseQueryResult<boolean, AxiosError> => {
   const settings = React.useContext(DownloadSettingsContext);
   const { idsUrl } = settings;
+  const retryICATErrors = useRetryICATErrors();
+
   return useQuery('isTwoLevel', () => getIsTwoLevel({ idsUrl }), {
     onError: (error) => {
       handleICATError(error);
@@ -249,20 +252,16 @@ export const useSubmitCart = (
   );
 };
 
-const fileSizeAndCountLimit = pLimit(20);
+const fileSizeAndCountLimit = pLimit(5);
 
 export const useFileSizesAndCounts = (
   data: DownloadCartItem[] | undefined
 ): UseQueryResult<FileSizeAndCount, AxiosError>[] => {
   const settings = React.useContext(DownloadSettingsContext);
-  const { facilityName, apiUrl, downloadApiUrl } = settings;
+  const { apiUrl } = settings;
+  const retryICATErrors = useRetryICATErrors();
 
-  const queryConfigs: {
-    queryKey: [string, number];
-    staleTime: number;
-    queryFn: () => Promise<FileSizeAndCount>;
-    retry: (failureCount: number, error: AxiosError) => boolean;
-  }[] = React.useMemo(() => {
+  const queryConfigs = React.useMemo(() => {
     return data
       ? data.map((cartItem) => {
           const { entityId, entityType } = cartItem;
@@ -270,19 +269,17 @@ export const useFileSizesAndCounts = (
             queryKey: ['fileSizeAndCount', entityId],
             queryFn: () =>
               fileSizeAndCountLimit(getFileSizeAndCount, entityId, entityType, {
-                facilityName,
                 apiUrl,
-                downloadApiUrl,
               }),
             onError: (error: AxiosError) => {
               handleICATError(error, false);
             },
             retry: retryICATErrors,
             staleTime: Infinity,
-          };
+          } as UseQueryOptions<FileSizeAndCount, AxiosError, FileSizeAndCount>;
         })
       : [];
-  }, [data, facilityName, apiUrl, downloadApiUrl]);
+  }, [data, retryICATErrors, apiUrl]);
 
   return useQueries(queryConfigs);
 };
@@ -315,6 +312,7 @@ export const useDownload = <T = Download>({
   >): UseQueryResult<T, AxiosError> => {
   // Load the download settings for use.
   const downloadSettings = React.useContext(DownloadSettingsContext);
+  const retryICATErrors = useRetryICATErrors();
 
   return useQuery(
     [QueryKey.DOWNLOAD, id],
@@ -346,6 +344,7 @@ export const useDownloads = <TData = Download[]>(
 ): UseQueryResult<TData, AxiosError> => {
   // Load the download settings for use.
   const downloadSettings = React.useContext(DownloadSettingsContext);
+  const retryICATErrors = useRetryICATErrors();
 
   return useQuery(
     QueryKey.DOWNLOADS,
@@ -731,7 +730,7 @@ export const useDownloadPercentageComplete = <T = DownloadProgress>({
   const idsUrl = accessMethods[download.transport]?.idsUrl;
 
   return useQuery(
-    [QueryKey.DOWNLOAD_PROGRESS, preparedId],
+    [QueryKey.DOWNLOAD_PROGRESS, preparedId ?? ''], // undefined preparedId is handled in downloadProgressIndicator & disables the query anyway
     () =>
       getPercentageComplete({
         preparedId: preparedId,

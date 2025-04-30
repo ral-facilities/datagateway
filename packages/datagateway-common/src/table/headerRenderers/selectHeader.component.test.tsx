@@ -18,6 +18,7 @@ describe('Select column header component', () => {
     onUncheck,
     allIds: [1, 2, 3],
     loading: false,
+    parentSelected: false,
   };
 
   beforeEach(() => {
@@ -72,7 +73,7 @@ describe('Select column header component', () => {
       <SelectCell
         {...selectHeaderProps}
         parentSelected={true}
-        selectedRows={undefined}
+        selectedRows={[1]}
       />
     );
     expect(asFragment()).toMatchSnapshot();
