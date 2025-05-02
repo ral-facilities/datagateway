@@ -1,34 +1,35 @@
-import React from 'react';
 import {
-  Subject,
-  CalendarToday,
   Assessment,
-  Fingerprint,
+  CalendarToday,
+  ConfirmationNumber,
   Explore,
+  Fingerprint,
   Save,
+  Subject,
 } from '@mui/icons-material';
+import { Tab, Tabs } from '@mui/material';
 import {
-  Table,
-  parseSearchToQuery,
-  useTextFilter,
-  useDateFilter,
   ColumnType,
-  useSort,
-  useCart,
-  useAddToCart,
-  useRemoveFromCart,
+  DLSDatafileDetailsPanel,
   DLSDatasetDetailsPanel,
+  DLSVisitDetailsPanel,
+  Investigation,
+  Table,
+  formatBytes,
+  parseSearchToQuery,
+  useAddToCart,
+  useCart,
   useDataPublicationContent,
   useDataPublicationContentCount,
-  Investigation,
-  formatBytes,
-  DLSVisitDetailsPanel,
-  DLSDatafileDetailsPanel,
+  useDateFilter,
+  useRemoveFromCart,
+  useSort,
+  useTextFilter,
 } from 'datagateway-common';
-import { IndexRange, TableCellProps } from 'react-virtualized';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
-import { Tabs, Tab } from '@mui/material';
+import { IndexRange, TableCellProps } from 'react-virtualized';
 
 interface DLSDataPublicationContentTableProps {
   dataPublicationId: string;
@@ -110,7 +111,13 @@ const DLSDataPublicationContentTable = (
           dataKey: 'visitId',
           filterComponent: textFilter,
         },
-        // TODO: add fileSize or fileCount depending on what DLS want
+        {
+          icon: Save,
+          label: t('investigations.size'),
+          dataKey: 'fileSize',
+          cellContentRenderer: (cellProps: TableCellProps): number | string =>
+            formatBytes(cellProps.rowData.fileSize),
+        },
         {
           icon: Assessment,
           label: t('investigations.instrument'),
@@ -147,7 +154,18 @@ const DLSDataPublicationContentTable = (
           dataKey: 'name',
           filterComponent: textFilter,
         },
-        // TODO: add fileSize or fileCount depending on what DLS want
+        {
+          icon: ConfirmationNumber,
+          label: t('datasets.datafile_count'),
+          dataKey: 'fileCount',
+        },
+        {
+          icon: Save,
+          label: t('datasets.size'),
+          dataKey: 'fileSize',
+          cellContentRenderer: (cellProps: TableCellProps): number | string =>
+            formatBytes(cellProps.rowData.fileSize),
+        },
         {
           icon: CalendarToday,
           label: t('datasets.create_time'),

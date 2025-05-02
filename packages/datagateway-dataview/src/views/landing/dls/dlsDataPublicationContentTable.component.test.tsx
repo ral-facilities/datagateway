@@ -1,40 +1,40 @@
 import {
+  render,
+  screen,
+  waitFor,
+  within,
+  type RenderResult,
+} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import type { UserEvent } from '@testing-library/user-event/setup/setup';
+import axios, { type AxiosResponse } from 'axios';
+import {
+  Dataset,
+  Investigation,
+  dGCommonInitialState,
   type Datafile,
   type DownloadCartItem,
-  dGCommonInitialState,
-  Investigation,
-  Dataset,
 } from 'datagateway-common';
 import * as React from 'react';
+import {
+  findCellInRow,
+  findColumnIndexByName,
+} from 'datagateway-search/src/setupTests';
+import { createMemoryHistory, type History } from 'history';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import type { StateType } from '../../../state/app.types';
-import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
-import DLSDataPublicationContentTable from './dlsDataPublicationContentTable.component';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { createMemoryHistory, type History } from 'history';
 import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
   findAllRows,
   findColumnHeaderByName,
 } from '../../../setupTests';
-import {
-  render,
-  type RenderResult,
-  screen,
-  waitFor,
-  within,
-} from '@testing-library/react';
-import type { UserEvent } from '@testing-library/user-event/setup/setup';
-import userEvent from '@testing-library/user-event';
-import {
-  findCellInRow,
-  findColumnIndexByName,
-} from 'datagateway-search/src/setupTests';
-import axios, { type AxiosResponse } from 'axios';
+import type { StateType } from '../../../state/app.types';
+import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
+import DLSDataPublicationContentTable from './dlsDataPublicationContentTable.component';
 
 describe('DataPublication content table component', () => {
   const mockStore = configureStore([thunk]);
@@ -89,6 +89,7 @@ describe('DataPublication content table component', () => {
       {
         id: 2,
         name: 'Test 2',
+        fileCount: 1,
         fileSize: 1,
         modTime: '2019-07-23',
         createTime: '2019-07-23',
@@ -231,10 +232,9 @@ describe('DataPublication content table component', () => {
     expect(
       await findColumnHeaderByName('investigations.visit_id')
     ).toBeInTheDocument();
-    // TODO: test for this once DLS decides what they want
-    // expect(
-    //   await findColumnHeaderByName('investigations.dataset_count')
-    // ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.size')
+    ).toBeInTheDocument();
     expect(
       await findColumnHeaderByName('investigations.instrument')
     ).toBeInTheDocument();
@@ -252,16 +252,13 @@ describe('DataPublication content table component', () => {
         })
       ).getByText('1')
     ).toBeInTheDocument();
-    // TODO: test for this once DLS decides what they want
-    // expect(
-    //   within(
-    //     findCellInRow(row, {
-    //       columnIndex: await findColumnIndexByName(
-    //         'investigations.dataset_count'
-    //       ),
-    //     })
-    //   ).getByText('1')
-    // ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.size'),
+        })
+      ).getByText('1 B')
+    ).toBeInTheDocument();
     expect(
       within(
         findCellInRow(row, {
@@ -302,10 +299,10 @@ describe('DataPublication content table component', () => {
     const row = rows[0];
 
     expect(await findColumnHeaderByName('datasets.name')).toBeInTheDocument();
-    // TODO: test for this once DLS decides what they want
-    // expect(
-    //   await findColumnHeaderByName('datasets.datafile_count')
-    // ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datasets.datafile_count')
+    ).toBeInTheDocument();
+    expect(await findColumnHeaderByName('datasets.size')).toBeInTheDocument();
     expect(
       await findColumnHeaderByName('datasets.create_time')
     ).toBeInTheDocument();
@@ -320,14 +317,20 @@ describe('DataPublication content table component', () => {
         })
       ).getByText('Test 2')
     ).toBeInTheDocument();
-    // TODO: test for this once DLS decides what they want
-    // expect(
-    //   within(
-    //     findCellInRow(row, {
-    //       columnIndex: await findColumnIndexByName('datasets.datafile_count'),
-    //     })
-    //   ).getByText('1')
-    // ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('datasets.datafile_count'),
+        })
+      ).getByText('1')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('datasets.size'),
+        })
+      ).getByText('1 B')
+    ).toBeInTheDocument();
     expect(
       within(
         findCellInRow(row, {
@@ -511,6 +514,6 @@ describe('DataPublication content table component', () => {
 
     await user.click(within(row).getByRole('button', { name: 'Show details' }));
 
-    expect(await screen.findByTestId('visit-details-panel')).toBeTruthy();
+    expect(await screen.findByTestId('dls-visit-details-panel')).toBeTruthy();
   });
 });
