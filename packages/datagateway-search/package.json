@@ -106,7 +106,7 @@
     ]
   },
   "devDependencies": {
-    "@babel/eslint-parser": "7.23.3",
+    "@babel/eslint-parser": "7.27.1",
     "@testing-library/cypress": "8.0.7",
     "@testing-library/jest-dom": "6.4.1",
     "@testing-library/react": "12.1.3",
