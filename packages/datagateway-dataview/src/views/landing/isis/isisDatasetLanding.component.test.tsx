@@ -1,4 +1,3 @@
-import * as React from 'react';
 import ISISDatasetLanding from './isisDatasetLanding.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import configureStore from 'redux-mock-store';
@@ -17,14 +16,14 @@ import { render, type RenderResult, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { paths } from '../../../page/pageContainer.component';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    useDatasetDetails: jest.fn(),
-    useDatasetSizes: jest.fn(),
+    useDatasetDetails: vi.fn(),
+    useDatasetSizes: vi.fn(),
   };
 });
 
@@ -69,6 +68,7 @@ describe('ISIS Dataset Landing page', () => {
         dgcommon: dGCommonInitialState,
       })
     );
+    state.dgdataview.pluginHost = '/test/';
     history = createMemoryHistory({
       initialEntries: [
         generatePath(paths.landing.isisDatasetLanding, {
@@ -81,13 +81,13 @@ describe('ISIS Dataset Landing page', () => {
     });
     user = userEvent.setup();
 
-    (useDatasetDetails as jest.Mock).mockReturnValue({
+    vi.mocked(useDatasetDetails, { partial: true }).mockReturnValue({
       data: initialData,
     });
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('links to the correct url in the datafiles tab', () => {
@@ -169,11 +169,19 @@ describe('ISIS Dataset Landing page', () => {
       'href',
       'https://doi.org/doi 1'
     );
+
+    // renders branding correctly
+    expect(
+      await screen.findByRole('img', { name: 'STFC Logo' })
+    ).toHaveAttribute(
+      'src',
+      expect.stringMatching(/\/test\/(.*)stfc-logo-white-text\.png/)
+    );
   });
 
   it('incomplete datasets render correctly', async () => {
     initialData.complete = false;
-    (useDatasetDetails as jest.Mock).mockReturnValue({
+    vi.mocked(useDatasetDetails, { partial: true }).mockReturnValue({
       data: initialData,
     });
     renderComponent();

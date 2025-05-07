@@ -4,7 +4,6 @@ import {
   useFacilityCycleCount,
   useFacilityCyclesPaginated,
 } from 'datagateway-common';
-import React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
@@ -14,21 +13,18 @@ import { initialState as dgDataViewInitialState } from '../../../state/reducers/
 import ISISFacilityCyclesCardView from './isisFacilityCyclesCardView.component';
 import { createMemoryHistory, History } from 'history';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
-} from '../../../setupTests';
 import { render, RenderResult, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import type { MockInstance } from 'vitest';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    useFacilityCycleCount: jest.fn(),
-    useFacilityCyclesPaginated: jest.fn(),
+    useFacilityCycleCount: vi.fn(),
+    useFacilityCyclesPaginated: vi.fn(),
   };
 });
 
@@ -37,7 +33,7 @@ describe('ISIS Facility Cycles - Card View', () => {
   let state: StateType;
   let cardData: FacilityCycle[];
   let history: History;
-  let replaceSpy: jest.SpyInstance;
+  let replaceSpy: MockInstance;
   let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult =>
@@ -67,23 +63,23 @@ describe('ISIS Facility Cycles - Card View', () => {
       },
     ];
     history = createMemoryHistory();
-    replaceSpy = jest.spyOn(history, 'replace');
+    replaceSpy = vi.spyOn(history, 'replace');
 
-    (useFacilityCycleCount as jest.Mock).mockReturnValue({
+    vi.mocked(useFacilityCycleCount, { partial: true }).mockReturnValue({
       data: 1,
       isLoading: false,
     });
-    (useFacilityCyclesPaginated as jest.Mock).mockReturnValue({
+    vi.mocked(useFacilityCyclesPaginated, { partial: true }).mockReturnValue({
       data: cardData,
       isLoading: false,
     });
 
     // Prevent error logging
-    window.scrollTo = jest.fn();
+    window.scrollTo = vi.fn();
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('updates filter query params on text filter', async () => {
@@ -113,8 +109,6 @@ describe('ISIS Facility Cycles - Card View', () => {
   });
 
   it('updates filter query params on date filter', async () => {
-    applyDatePickerWorkaround();
-
     renderComponent();
 
     // click on button to show advanced filters
@@ -138,8 +132,6 @@ describe('ISIS Facility Cycles - Card View', () => {
     await user.keyboard('{Delete}');
 
     expect(history.location.search).toBe('?');
-
-    cleanupDatePickerWorkaround();
   });
 
   it('uses default sort', async () => {
@@ -177,8 +169,10 @@ describe('ISIS Facility Cycles - Card View', () => {
   });
 
   it('renders fine with incomplete data', () => {
-    (useFacilityCycleCount as jest.Mock).mockReturnValueOnce({});
-    (useFacilityCyclesPaginated as jest.Mock).mockReturnValueOnce({});
+    vi.mocked(useFacilityCycleCount, { partial: true }).mockReturnValueOnce({});
+    vi.mocked(useFacilityCyclesPaginated, {
+      partial: true,
+    }).mockReturnValueOnce({});
 
     expect(() => renderComponent()).not.toThrowError();
   });

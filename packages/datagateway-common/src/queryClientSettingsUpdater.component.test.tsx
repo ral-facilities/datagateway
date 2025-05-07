@@ -37,7 +37,7 @@ describe('QueryClientSettingsUpdater', () => {
   };
 
   beforeEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('syncs retry prop to query client when it updates', async () => {
@@ -96,7 +96,7 @@ describe('QueryClientSettingsUpdaterRedux', () => {
   };
 
   beforeEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('syncs retry setting to query client when it updates', async () => {

@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`DownloadConfirmDialog renders correctly 1`] = `
+exports[`DownloadConfirmDialog > renders correctly 1`] = `
 <div
   aria-label="downloadConfirmDialog.dialog_arialabel"
   class="MuiDialog-root MuiModal-root css-zw3mfo-MuiModal-root-MuiDialog-root"
@@ -309,7 +309,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
 </div>
 `;
 
-exports[`DownloadConfirmDialog should not load the download speed/time table when isTwoLevel is true 1`] = `
+exports[`DownloadConfirmDialog > should not load the download speed/time table when isTwoLevel is true 1`] = `
 <div
   aria-label="downloadConfirmDialog.dialog_arialabel"
   class="MuiDialog-root MuiModal-root css-zw3mfo-MuiModal-root-MuiDialog-root"

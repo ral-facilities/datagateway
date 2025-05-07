@@ -1,4 +1,3 @@
-import React from 'react';
 import { Badge, badgeClasses, styled } from '@mui/material';
 
 const StyledBadge = styled(Badge)(({ theme }) => ({

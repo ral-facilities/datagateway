@@ -7,8 +7,8 @@ import { mockedSettings } from './testData';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { DownloadSettingsContext } from './ConfigProvider';
 
-jest.mock('loglevel');
-jest.mock('./ConfigProvider');
+vi.mock('loglevel');
+vi.mock('./ConfigProvider');
 
 describe('App', () => {
   it('renders without crashing', async () => {
@@ -52,7 +52,7 @@ describe('QueryClientSettingUpdaterContext', () => {
   };
 
   beforeEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
     settings = mockedSettings;
   });
 

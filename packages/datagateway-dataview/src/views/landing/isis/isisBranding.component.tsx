@@ -1,7 +1,9 @@
 import { Grid, Paper, styled, Typography } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import STFCLogoWhite from 'datagateway-common/src/images/stfc-logo-white-text.png';
+// explicitly set no-inline to ensure Vite doesn't inline the image imports, which wouldn't work with prepending pluginHost
+// TODO: explore whether it is better to explicitly inline everything & not use pluginHost
+import STFCLogoWhite from 'datagateway-common/src/images/stfc-logo-white-text.png?no-inline';
 import { StateType } from '../../../state/app.types';
 import { connect } from 'react-redux';
 

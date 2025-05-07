@@ -6,23 +6,14 @@ import DateColumnFilter, {
 } from './dateColumnFilter.component';
 import { renderHook } from '@testing-library/react';
 import { usePushFilter } from '../../api';
-import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
-} from '../../setupTests';
 import { render, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-jest.mock('../../api');
+vi.mock('../../api');
 
 describe('Date filter component', () => {
-  beforeEach(() => {
-    applyDatePickerWorkaround();
-  });
-
   afterEach(() => {
-    cleanupDatePickerWorkaround();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly', () => {
@@ -33,7 +24,7 @@ describe('Date filter component', () => {
           endDate: '2000-01-01T00:00:00.000Z',
         }}
         label="test"
-        onChange={jest.fn()}
+        onChange={vi.fn()}
       />
     );
     expect(asFragment()).toMatchSnapshot();
@@ -48,7 +39,7 @@ describe('Date filter component', () => {
           endDate: '2000-01-01T00:00:00.000Z',
         }}
         label="test"
-        onChange={jest.fn()}
+        onChange={vi.fn()}
       />
     );
     expect(asFragment()).toMatchSnapshot();
@@ -100,7 +91,7 @@ describe('Date filter component', () => {
 
   describe('updateFilter function', () => {
     it("doesn't call onChange if date value hasn't updated", () => {
-      const onChange = jest.fn();
+      const onChange = vi.fn();
       const otherDate = null;
 
       let prevDate = null;
@@ -134,7 +125,7 @@ describe('Date filter component', () => {
     });
 
     it('calls onChange with null if both date and otherDate are null or invalid', () => {
-      const onChange = jest.fn();
+      const onChange = vi.fn();
       let otherDate = null;
       const prevDate = new Date('2019-09-18');
 
@@ -160,7 +151,7 @@ describe('Date filter component', () => {
     });
 
     it('calls onChange with updated filter if one of date or otherDate are valid', () => {
-      const onChange = jest.fn();
+      const onChange = vi.fn();
       const prevDate = null;
 
       updateFilter({
@@ -229,7 +220,7 @@ describe('Date filter component', () => {
     });
 
     it('calls the onChange method correctly when filling out the date inputs', async () => {
-      const onChange = jest.fn();
+      const onChange = vi.fn();
 
       const baseProps = {
         label: 'test',
@@ -297,7 +288,7 @@ describe('Date filter component', () => {
     });
 
     it('handles invalid date values correctly by not calling onChange, unless there was previously a value there', async () => {
-      const onChange = jest.fn();
+      const onChange = vi.fn();
 
       const baseProps = {
         label: 'test',
@@ -380,7 +371,7 @@ describe('Date filter component', () => {
     });
 
     it('displays error for invalid date', async () => {
-      const onChange = jest.fn();
+      const onChange = vi.fn();
 
       const baseProps = {
         label: 'test',
@@ -402,7 +393,7 @@ describe('Date filter component', () => {
     });
 
     it('displays error for invalid date range', async () => {
-      const onChange = jest.fn();
+      const onChange = vi.fn();
 
       const baseProps = {
         label: 'test',
@@ -422,8 +413,8 @@ describe('Date filter component', () => {
     });
 
     it('useDateFilter hook returns a function which can generate a working date filter', async () => {
-      const pushFilter = jest.fn();
-      (usePushFilter as jest.Mock).mockImplementation(() => pushFilter);
+      const pushFilter = vi.fn();
+      vi.mocked(usePushFilter).mockImplementation(() => pushFilter);
 
       const { result } = renderHook(() => useDateFilter({}));
       let dateFilter;
@@ -455,7 +446,7 @@ describe('Date filter component', () => {
     });
 
     it('calls the onChange method correctly when filling out the date-time inputs', async () => {
-      const onChange = jest.fn();
+      const onChange = vi.fn();
 
       const baseProps = {
         label: 'test',
@@ -530,7 +521,7 @@ describe('Date filter component', () => {
     });
 
     it('handles invalid date values correctly by not calling onChange, unless there was previously a value there', async () => {
-      const onChange = jest.fn();
+      const onChange = vi.fn();
 
       const baseProps = {
         label: 'test',
@@ -623,7 +614,7 @@ describe('Date filter component', () => {
     });
 
     it('displays error for invalid date', async () => {
-      const onChange = jest.fn();
+      const onChange = vi.fn();
 
       const baseProps = {
         label: 'test',
@@ -645,7 +636,7 @@ describe('Date filter component', () => {
     });
 
     it('displays error for invalid time', async () => {
-      const onChange = jest.fn();
+      const onChange = vi.fn();
 
       const baseProps = {
         label: 'test',
@@ -667,7 +658,7 @@ describe('Date filter component', () => {
     });
 
     it('displays error for invalid date-time range', async () => {
-      const onChange = jest.fn();
+      const onChange = vi.fn();
 
       const baseProps = {
         label: 'test',

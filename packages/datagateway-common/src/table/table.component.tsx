@@ -570,7 +570,7 @@ const VirtualizedTable = React.memo(
                       headerStyle={
                         headerFlexContainerStyle as React.CSSProperties
                       }
-                      headerRenderer={(headerProps) => (
+                      headerRenderer={(_headerProps) => (
                         <TableCell
                           size="small"
                           component="div"

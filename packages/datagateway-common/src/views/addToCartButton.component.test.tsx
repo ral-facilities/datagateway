@@ -19,7 +19,7 @@ import {
 import userEvent from '@testing-library/user-event';
 import { DownloadCartItem } from '../app.types';
 
-jest.mock('../handleICATError');
+vi.mock('../handleICATError');
 
 describe('Generic add to cart button', () => {
   const mockStore = configureStore([thunk]);
@@ -40,7 +40,7 @@ describe('Generic add to cart button', () => {
                 logger: {
                   log: console.log,
                   warn: console.warn,
-                  error: jest.fn(),
+                  error: vi.fn(),
                 },
               })
             }
@@ -68,7 +68,7 @@ describe('Generic add to cart button', () => {
     holder.setAttribute('id', 'datagateway-dataview');
     document.body.appendChild(holder);
 
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/.*\/user\/cart\/.*$/.test(url)) {
@@ -79,7 +79,7 @@ describe('Generic add to cart button', () => {
         return Promise.reject(`Endpoint not mocked: ${url}`);
       });
 
-    axios.post = jest
+    axios.post = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/.*\/user\/cart\/.*\/cartItems/.test(url)) {
@@ -93,7 +93,7 @@ describe('Generic add to cart button', () => {
 
   afterEach(() => {
     document.body.removeChild(holder);
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly', async () => {
@@ -109,7 +109,7 @@ describe('Generic add to cart button', () => {
   });
 
   it('renders as disabled when cart is loading', async () => {
-    axios.get = jest.fn().mockReturnValue(
+    axios.get = vi.fn().mockReturnValue(
       new Promise((_) => {
         // never resolve the promise to pretend the query is loading
       })
@@ -135,7 +135,7 @@ describe('Generic add to cart button', () => {
   });
 
   it('renders as disabled with tooltip when cart does not load', async () => {
-    axios.get = jest.fn().mockRejectedValue({
+    axios.get = vi.fn().mockRejectedValue({
       message: 'Test error message',
     });
 
@@ -203,7 +203,7 @@ describe('Generic add to cart button', () => {
       ).not.toBeDisabled();
     });
 
-    axios.post = jest.fn().mockResolvedValue({
+    axios.post = vi.fn().mockResolvedValue({
       data: {
         cartItems: [
           {
@@ -224,7 +224,7 @@ describe('Generic add to cart button', () => {
   });
 
   it('calls removeFromCart on button press with item already in cart', async () => {
-    axios.get = jest.fn().mockResolvedValue({
+    axios.get = vi.fn().mockResolvedValue({
       data: {
         cartItems: [
           {
@@ -248,7 +248,7 @@ describe('Generic add to cart button', () => {
       await screen.findByRole('button', { name: 'buttons.remove_from_cart' })
     ).toBeInTheDocument();
 
-    axios.post = jest.fn().mockResolvedValue({
+    axios.post = vi.fn().mockResolvedValue({
       data: {
         cartItems: [],
       },

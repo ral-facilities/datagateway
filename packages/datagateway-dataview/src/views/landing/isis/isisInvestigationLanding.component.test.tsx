@@ -1,4 +1,3 @@
-import * as React from 'react';
 import ISISInvestigationLanding from './isisInvestigationLanding.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import configureStore from 'redux-mock-store';
@@ -25,15 +24,15 @@ import {
 import { paths } from '../../../page/pageContainer.component';
 import userEvent from '@testing-library/user-event';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    useInvestigation: jest.fn(),
-    useDataPublication: jest.fn(),
-    useDataPublications: jest.fn(),
+    useInvestigation: vi.fn(),
+    useDataPublication: vi.fn(),
+    useDataPublications: vi.fn(),
   };
 });
 
@@ -151,6 +150,7 @@ describe('ISIS Investigation Landing page', () => {
         dgcommon: dGCommonInitialState,
       })
     );
+    state.dgdataview.pluginHost = '/test/';
     history = createMemoryHistory({
       initialEntries: [
         generatePath(paths.landing.isisInvestigationLanding, {
@@ -250,21 +250,21 @@ describe('ISIS Investigation Landing page', () => {
       },
     };
 
-    (useInvestigation as jest.Mock).mockReturnValue({
+    vi.mocked(useInvestigation, { partial: true }).mockReturnValue({
       data: initialInvestigationData,
     });
 
-    (useDataPublication as jest.Mock).mockReturnValue({
+    vi.mocked(useDataPublication, { partial: true }).mockReturnValue({
       data: initialDataPublicationData,
     });
 
-    (useDataPublications as jest.Mock).mockReturnValue({
+    vi.mocked(useDataPublications, { partial: true }).mockReturnValue({
       data: initialStudyDataPublicationData,
     });
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly for facility cycle hierarchy', async () => {
@@ -274,6 +274,12 @@ describe('ISIS Investigation Landing page', () => {
     expect(
       await screen.findByRole('img', { name: 'STFC Logo' })
     ).toBeInTheDocument();
+    expect(
+      await screen.findByRole('img', { name: 'STFC Logo' })
+    ).toHaveAttribute(
+      'src',
+      expect.stringMatching(/\/test\/(.*)stfc-logo-white-text\.png/)
+    );
     expect(
       screen.getByText('doi_constants.branding.title')
     ).toBeInTheDocument();
@@ -432,6 +438,12 @@ describe('ISIS Investigation Landing page', () => {
     expect(
       await screen.findByRole('img', { name: 'STFC Logo' })
     ).toBeInTheDocument();
+    expect(
+      await screen.findByRole('img', { name: 'STFC Logo' })
+    ).toHaveAttribute(
+      'src',
+      expect.stringMatching(/\/test\/(.*)stfc-logo-white-text\.png/)
+    );
     expect(
       screen.getByText('doi_constants.branding.title')
     ).toBeInTheDocument();

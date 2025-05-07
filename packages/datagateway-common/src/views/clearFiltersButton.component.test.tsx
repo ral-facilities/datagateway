@@ -18,7 +18,7 @@ describe('Generic clear filters button', () => {
   let props: ClearFilterProps;
   let user: ReturnType<typeof userEvent.setup>;
 
-  const handleButtonClearFilters = jest.fn();
+  const handleButtonClearFilters = vi.fn();
 
   const renderComponent = (props: ClearFilterProps): RenderResult => {
     const store = mockStore(state);
@@ -55,7 +55,7 @@ describe('Generic clear filters button', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     handleButtonClearFilters.mockClear();
   });
 

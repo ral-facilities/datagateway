@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../../../state/app.types';
@@ -18,14 +17,14 @@ import userEvent from '@testing-library/user-event';
 import ISISDataPublicationLanding from './isisDataPublicationLanding.component';
 import { paths } from '../../../page/pageContainer.component';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    useDataPublication: jest.fn(),
-    useDataPublications: jest.fn(),
+    useDataPublication: vi.fn(),
+    useDataPublications: vi.fn(),
   };
 });
 
@@ -128,6 +127,7 @@ describe('ISIS Data Publication Landing page', () => {
         dgcommon: dGCommonInitialState,
       })
     );
+    state.dgdataview.pluginHost = '/test/';
 
     history = createMemoryHistory({
       initialEntries: [
@@ -182,17 +182,17 @@ describe('ISIS Data Publication Landing page', () => {
       },
     ];
 
-    (useDataPublication as jest.Mock).mockReturnValue({
+    vi.mocked(useDataPublication, { partial: true }).mockReturnValue({
       data: initialStudyDataPublicationData,
     });
 
-    (useDataPublications as jest.Mock).mockReturnValue({
+    vi.mocked(useDataPublications, { partial: true }).mockReturnValue({
       data: initialInvestigationDataPublicationsData,
     });
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('links to the correct url in the datafiles tab', () => {
@@ -229,6 +229,14 @@ describe('ISIS Data Publication Landing page', () => {
 
   it('renders correctly', async () => {
     renderComponent();
+
+    // renders branding correctly
+    expect(
+      await screen.findByRole('img', { name: 'STFC Logo' })
+    ).toHaveAttribute(
+      'src',
+      expect.stringMatching(/\/test\/(.*)stfc-logo-white-text\.png/)
+    );
 
     // displays doi + link correctly
     expect(await screen.findByRole('link', { name: 'doi 1' })).toHaveAttribute(

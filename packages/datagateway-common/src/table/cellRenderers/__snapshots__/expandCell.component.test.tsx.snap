@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Expand cell component renders correctly when expanded 1`] = `
+exports[`Expand cell component > renders correctly when expanded 1`] = `
 <DocumentFragment>
   <div
     class="MuiTableCell-root MuiTableCell-body MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall css-2u8re1-MuiTableCell-root"
@@ -30,7 +30,7 @@ exports[`Expand cell component renders correctly when expanded 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Expand cell component renders correctly when not expanded 1`] = `
+exports[`Expand cell component > renders correctly when not expanded 1`] = `
 <DocumentFragment>
   <div
     class="MuiTableCell-root MuiTableCell-body MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall css-2u8re1-MuiTableCell-root"

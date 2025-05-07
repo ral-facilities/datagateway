@@ -5,32 +5,33 @@ import { render, screen, waitFor } from '@testing-library/react';
 import PageContainer from './page/pageContainer.component';
 import { configureApp, settingsLoaded } from './state/actions';
 
-jest
-  .mock('loglevel')
-  .mock('./page/pageContainer.component')
-  .mock('./state/actions', () => ({
-    ...jest.requireActual('./state/actions'),
-    configureApp: jest.fn(),
-  }))
-  .mock('react', () => ({
-    ...jest.requireActual('react'),
-    // skip React suspense mechanism and show children directly.
+vi.mock('loglevel');
+vi.mock('./page/pageContainer.component');
+vi.mock('./state/actions', async () => {
+  const originalModule = await vi.importActual('./state/actions');
+
+  return { ...originalModule, configureApp: vi.fn() };
+});
+vi.mock('react', async () => {
+  const originalModule = await vi.importActual('react');
+
+  return {
+    ...originalModule,
     Suspense: ({ children }: { children: React.ReactNode }) => children,
-  }));
+  };
+});
 
 describe('App', () => {
   beforeEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('renders without crashing', async () => {
     // pretend app is configured successfully
-    (configureApp as jest.MockedFn<typeof configureApp>).mockReturnValue(
-      async (dispatch) => {
-        dispatch(settingsLoaded());
-      }
-    );
-    (PageContainer as jest.Mock).mockImplementation(() => <div>page</div>);
+    vi.mocked(configureApp).mockReturnValue(async (dispatch) => {
+      dispatch(settingsLoaded());
+    });
+    vi.mocked(PageContainer).mockImplementation(() => <div>page</div>);
 
     render(<App />);
 
@@ -38,13 +39,13 @@ describe('App', () => {
   });
 
   it('shows loading screen when configuring app', async () => {
-    (configureApp as jest.MockedFn<typeof configureApp>).mockReturnValue(
+    vi.mocked(configureApp).mockReturnValue(
       () =>
         new Promise((_) => {
           // never resolve the promise to pretend the app is still being configured
         })
     );
-    (PageContainer as jest.Mock).mockImplementation(() => <div>page</div>);
+    vi.mocked(PageContainer).mockImplementation(() => <div>page</div>);
 
     render(<App />);
 
@@ -54,17 +55,15 @@ describe('App', () => {
 
   it('catches errors using componentDidCatch and shows fallback UI', async () => {
     // pretend app is configured successfully
-    (configureApp as jest.MockedFn<typeof configureApp>).mockReturnValue(
-      async (dispatch) => {
-        dispatch(settingsLoaded());
-      }
-    );
+    vi.mocked(configureApp).mockReturnValue(async (dispatch) => {
+      dispatch(settingsLoaded());
+    });
     // pretend PageContainer throw an error and see if <App /> will catch the error
-    (PageContainer as jest.Mock).mockImplementation(() => {
+    vi.mocked(PageContainer).mockImplementation(() => {
       throw new Error('test PageContainer error');
     });
 
-    jest.spyOn(console, 'error').mockImplementation(() => {
+    vi.spyOn(console, 'error').mockImplementation(() => {
       // suppress console error
     });
 

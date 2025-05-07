@@ -5,7 +5,7 @@ import ExpandCell from './expandCell.component';
 
 describe('Expand cell component', () => {
   let user: ReturnType<typeof userEvent.setup>;
-  const setExpandedIndex = jest.fn();
+  const setExpandedIndex = vi.fn();
   const expandCellProps = {
     columnIndex: 1,
     dataKey: 'test',

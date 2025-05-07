@@ -1,7 +1,7 @@
 import { readSciGatewayToken } from './parseTokens';
 
 describe('readSciGatewayToken', () => {
-  const localStorageGetItemMock = jest.spyOn(
+  const localStorageGetItemMock = vi.spyOn(
     window.localStorage.__proto__,
     'getItem'
   );

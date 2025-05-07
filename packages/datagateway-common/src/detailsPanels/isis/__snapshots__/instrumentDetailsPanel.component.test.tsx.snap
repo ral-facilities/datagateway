@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Instrument details panel component should gracefully handle InstrumentScientists without Users 1`] = `
+exports[`Instrument details panel component > should gracefully handle InstrumentScientists without Users 1`] = `
 <DocumentFragment>
   <div
     data-testid="instrument-details-panel"
@@ -156,7 +156,7 @@ exports[`Instrument details panel component should gracefully handle InstrumentS
 </DocumentFragment>
 `;
 
-exports[`Instrument details panel component should render correctly 1`] = `
+exports[`Instrument details panel component > should render correctly 1`] = `
 <DocumentFragment>
   <div
     data-testid="instrument-details-panel"
@@ -282,7 +282,7 @@ exports[`Instrument details panel component should render correctly 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Instrument details panel component should render users tab when present in the data 1`] = `
+exports[`Instrument details panel component > should render users tab when present in the data 1`] = `
 <DocumentFragment>
   <div
     data-testid="instrument-details-panel"

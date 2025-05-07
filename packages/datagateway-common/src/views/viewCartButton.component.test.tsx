@@ -12,7 +12,7 @@ import ViewCartButton, { CartProps } from './viewCartButton.component';
 
 describe('Generic cart button', () => {
   const mockStore = configureStore([thunk]);
-  const navigateToDownload = jest.fn();
+  const navigateToDownload = vi.fn();
   let user: ReturnType<typeof userEvent.setup>;
   let state: StateType;
   let props: CartProps;
@@ -59,7 +59,7 @@ describe('Generic cart button', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     navigateToDownload.mockClear();
   });
 

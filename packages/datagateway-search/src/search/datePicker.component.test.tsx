@@ -1,4 +1,3 @@
-import React from 'react';
 import { StateType } from '../state/app.types';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
@@ -7,23 +6,20 @@ import thunk from 'redux-thunk';
 import { Router } from 'react-router-dom';
 import { initialState } from '../state/reducers/dgsearch.reducer';
 import { createMemoryHistory, History } from 'history';
-import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
-} from '../setupTests';
 import { render, type RenderResult, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import type { MockInstance } from 'vitest';
 
-jest.mock('loglevel');
+vi.mock('loglevel');
 
 describe('DatePicker component tests', () => {
   let state: StateType;
   const mockStore = configureStore([thunk]);
   let testStore: ReturnType<typeof mockStore>;
   let history: History;
-  let pushSpy: jest.SpyInstance;
+  let pushSpy: MockInstance;
 
-  const testInitiateSearch = jest.fn();
+  const testInitiateSearch = vi.fn();
 
   const renderComponent = (h: History = history): RenderResult =>
     render(
@@ -35,10 +31,8 @@ describe('DatePicker component tests', () => {
     );
 
   beforeEach(() => {
-    applyDatePickerWorkaround();
-
     history = createMemoryHistory();
-    pushSpy = jest.spyOn(history, 'push');
+    pushSpy = vi.spyOn(history, 'push');
 
     state = JSON.parse(JSON.stringify({ dgsearch: initialState }));
 
@@ -57,8 +51,7 @@ describe('DatePicker component tests', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
-    cleanupDatePickerWorkaround();
+    vi.clearAllMocks();
   });
 
   it('renders correctly', async () => {

@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Investigation details panel component should check if multiple publications result in change of title to plural version 1`] = `
+exports[`Investigation details panel component > should check if multiple publications result in change of title to plural version 1`] = `
 <DocumentFragment>
   <div
     data-testid="isis-investigation-details-panel"
@@ -245,7 +245,7 @@ exports[`Investigation details panel component should check if multiple publicat
 </DocumentFragment>
 `;
 
-exports[`Investigation details panel component should check if multiple samples result in change of title to plural version 1`] = `
+exports[`Investigation details panel component > should check if multiple samples result in change of title to plural version 1`] = `
 <DocumentFragment>
   <div
     data-testid="isis-investigation-details-panel"
@@ -490,7 +490,7 @@ exports[`Investigation details panel component should check if multiple samples 
 </DocumentFragment>
 `;
 
-exports[`Investigation details panel component should gracefully handles dataCollectionInvestigations without dataPublications and InvestigationUsers without Users 1`] = `
+exports[`Investigation details panel component > should gracefully handles dataCollectionInvestigations without dataPublications and InvestigationUsers without Users 1`] = `
 <DocumentFragment>
   <div
     data-testid="isis-investigation-details-panel"
@@ -693,7 +693,7 @@ exports[`Investigation details panel component should gracefully handles dataCol
 </DocumentFragment>
 `;
 
-exports[`Investigation details panel component should render correctly 1`] = `
+exports[`Investigation details panel component > should render correctly 1`] = `
 <DocumentFragment>
   <div
     data-testid="isis-investigation-details-panel"
@@ -886,7 +886,7 @@ exports[`Investigation details panel component should render correctly 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Investigation details panel component should render user, sample and publication tabs when present in the data 1`] = `
+exports[`Investigation details panel component > should render user, sample and publication tabs when present in the data 1`] = `
 <DocumentFragment>
   <div
     data-testid="isis-investigation-details-panel"

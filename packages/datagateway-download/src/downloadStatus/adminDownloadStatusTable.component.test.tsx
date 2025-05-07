@@ -1,4 +1,3 @@
-import * as React from 'react';
 import {
   adminDownloadDeleted,
   adminDownloadStatus,
@@ -7,11 +6,7 @@ import {
   getPercentageComplete,
 } from '../downloadApi';
 import AdminDownloadStatusTable from './adminDownloadStatusTable.component';
-import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
-  flushPromises,
-} from '../setupTests';
+import { flushPromises } from '../setupTests';
 import userEvent from '@testing-library/user-event';
 import {
   act,
@@ -24,8 +19,9 @@ import {
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { mockDownloadItems, mockedSettings } from '../testData';
 import { DownloadSettingsContext } from '../ConfigProvider';
+import { DGThemeProvider } from 'datagateway-common';
 
-jest.mock('../downloadApi');
+vi.mock('../downloadApi');
 
 const createTestQueryClient = (): QueryClient =>
   new QueryClient({
@@ -38,11 +34,14 @@ const createTestQueryClient = (): QueryClient =>
 
 const renderComponent = ({ settings = mockedSettings } = {}): RenderResult =>
   render(
-    <DownloadSettingsContext.Provider value={settings}>
-      <QueryClientProvider client={createTestQueryClient()}>
-        <AdminDownloadStatusTable />
-      </QueryClientProvider>
-    </DownloadSettingsContext.Provider>
+    // wrap in theme provider to ensure no ripples end up in snapshots
+    <DGThemeProvider>
+      <DownloadSettingsContext.Provider value={settings}>
+        <QueryClientProvider client={createTestQueryClient()}>
+          <AdminDownloadStatusTable />
+        </QueryClientProvider>
+      </DownloadSettingsContext.Provider>
+    </DGThemeProvider>
   );
 
 describe('Admin Download Status Table', () => {
@@ -51,16 +50,15 @@ describe('Admin Download Status Table', () => {
   beforeEach(() => {
     user = userEvent.setup({ delay: null });
 
-    (getDownload as jest.MockedFunction<typeof getDownload>).mockImplementation(
-      (id, _) =>
-        Promise.resolve(
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          mockDownloadItems.find((download) => download.id === id)!
-        )
+    vi.mocked(getDownload).mockImplementation((id, _) =>
+      Promise.resolve(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        mockDownloadItems.find((download) => download.id === id)!
+      )
     );
-    (fetchAdminDownloads as jest.Mock).mockImplementation(
+    vi.mocked(fetchAdminDownloads).mockImplementation(
       (
-        settings: { facilityName: string; downloadApiUrl: string },
+        _settings: { facilityName: string; downloadApiUrl: string },
         queryOffset?: string
       ) => {
         //Only return the 5 results when initialy requesting so that only a total
@@ -70,34 +68,29 @@ describe('Admin Download Status Table', () => {
         else return Promise.resolve([]);
       }
     );
-    (adminDownloadDeleted as jest.Mock).mockImplementation(() =>
-      Promise.resolve()
-    );
-    (adminDownloadStatus as jest.Mock).mockImplementation(() =>
-      Promise.resolve()
-    );
+    vi.mocked(adminDownloadDeleted).mockImplementation(() => Promise.resolve());
+    vi.mocked(adminDownloadStatus).mockImplementation(() => Promise.resolve());
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
-    jest.useRealTimers();
+    vi.clearAllMocks();
+    vi.useRealTimers();
   });
 
   it('should render correctly', async () => {
     const mockedDate = new Date(Date.UTC(2020, 1, 1, 0, 0, 0));
 
-    jest.useFakeTimers().setSystemTime(mockedDate);
+    vi.useFakeTimers({ toFake: ['Date'] }).setSystemTime(mockedDate);
 
     const origDate = global.Date.prototype.toLocaleString;
-    jest
-      .spyOn(global.Date.prototype, 'toLocaleString')
-      .mockImplementation(function (this: Date) {
+    vi.spyOn(global.Date.prototype, 'toLocaleString').mockImplementation(
+      function (this: Date) {
         return origDate.call(this, 'en-GB');
-      });
+      }
+    );
 
     const { asFragment } = renderComponent();
 
-    jest.runOnlyPendingTimers();
     // wait for data to finish loading
     expect(
       await screen.findByText('downloadTab.last_checked', { exact: false })
@@ -109,7 +102,7 @@ describe('Admin Download Status Table', () => {
   it('should fetch the download items and sorts by download requested time desc on load', async () => {
     renderComponent();
 
-    const rows = await screen.findAllByText(/^\d$/);
+    const rows = await screen.findAllByRole('gridcell', { name: /^\d$/ });
     expect(rows).toHaveLength(5);
   });
 
@@ -140,15 +133,17 @@ describe('Admin Download Status Table', () => {
       mockDownloadItems.length
     );
 
-    (fetchAdminDownloads as jest.Mock).mockImplementation(
+    vi.mocked(fetchAdminDownloads).mockImplementation(
       (
-        settings: { facilityName: string; downloadApiUrl: string },
+        _settings: { facilityName: string; downloadApiUrl: string },
         queryOffset?: string
       ) => {
         //Only return the 5 results when initialy requesting so that only a total
         //of 5 results will be loaded
         if (queryOffset?.endsWith('LIMIT 0, 50'))
-          return mockDownloadItems.slice(0, mockDownloadItems.length - 1);
+          return Promise.resolve(
+            mockDownloadItems.slice(0, mockDownloadItems.length - 1)
+          );
         return Promise.resolve([]);
       }
     );
@@ -375,7 +370,6 @@ describe('Admin Download Status Table', () => {
   });
 
   it('sends filter request on date filter', async () => {
-    applyDatePickerWorkaround();
     // use skipHover to avoid triggering sort tooltips which slow the test down
     user = userEvent.setup({ delay: null, skipHover: true });
 
@@ -432,7 +426,7 @@ describe('Admin Download Status Table', () => {
       `WHERE download.facilityName = '${mockedSettings.facilityName}' AND download.createdAt BETWEEN {ts '2020-01-01 00:00:00'} AND {ts '2020-01-02 23:59:00'} ORDER BY download.id ASC LIMIT 0, 50`
     );
 
-    (fetchAdminDownloads as jest.Mock).mockClear();
+    vi.mocked(fetchAdminDownloads).mockClear();
 
     await user.clear(dateFromFilterInput);
     await user.clear(dateToFilterInput);
@@ -448,8 +442,6 @@ describe('Admin Download Status Table', () => {
       },
       `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.id ASC LIMIT 0, 50`
     );
-
-    cleanupDatePickerWorkaround();
   });
 
   it('should filter deleted properly', async () => {
@@ -530,9 +522,9 @@ describe('Admin Download Status Table', () => {
       })
     ).toBeInTheDocument();
 
-    (fetchAdminDownloads as jest.Mock).mockImplementation(
+    vi.mocked(fetchAdminDownloads).mockImplementation(
       (
-        settings: { facilityName: string; downloadApiUrl: string },
+        _settings: { facilityName: string; downloadApiUrl: string },
         queryOffset?: string
       ) => {
         //Only return the 5 results when initialy requesting so that only a total
@@ -584,9 +576,9 @@ describe('Admin Download Status Table', () => {
       })
     ).toBeInTheDocument();
 
-    (fetchAdminDownloads as jest.Mock).mockImplementation(
+    vi.mocked(fetchAdminDownloads).mockImplementation(
       (
-        settings: { facilityName: string; downloadApiUrl: string },
+        _settings: { facilityName: string; downloadApiUrl: string },
         queryOffset?: string
       ) => {
         //Only return the 5 results when initialy requesting so that only a total
@@ -638,9 +630,9 @@ describe('Admin Download Status Table', () => {
       })
     ).toBeInTheDocument();
 
-    (fetchAdminDownloads as jest.Mock).mockImplementation(
+    vi.mocked(fetchAdminDownloads).mockImplementation(
       (
-        settings: { facilityName: string; downloadApiUrl: string },
+        _settings: { facilityName: string; downloadApiUrl: string },
         queryOffset?: string
       ) => {
         //Only return the 5 results when initialy requesting so that only a total
@@ -692,9 +684,9 @@ describe('Admin Download Status Table', () => {
       })
     ).toBeInTheDocument();
 
-    (fetchAdminDownloads as jest.Mock).mockImplementation(
+    vi.mocked(fetchAdminDownloads).mockImplementation(
       (
-        settings: { facilityName: string; downloadApiUrl: string },
+        _settings: { facilityName: string; downloadApiUrl: string },
         queryOffset?: string
       ) => {
         //Only return the 5 results when initialy requesting so that only a total
@@ -728,9 +720,7 @@ describe('Admin Download Status Table', () => {
   });
 
   it('should display progress ui if enabled', async () => {
-    (
-      getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>
-    ).mockResolvedValue(30);
+    vi.mocked(getPercentageComplete).mockResolvedValue(30);
 
     renderComponent({
       settings: {
@@ -741,8 +731,14 @@ describe('Admin Download Status Table', () => {
       },
     });
 
+    // wait for data to load
+    const rows = await screen.findAllByRole('gridcell', { name: /^\d$/ });
+    expect(rows).toHaveLength(5);
+
     await waitFor(() => {
-      for (const progressBar of screen.getAllByRole('progressbar')) {
+      for (const progressBar of screen.getAllByRole('progressbar', {
+        value: { now: 30 },
+      })) {
         expect(progressBar).toBeInTheDocument();
       }
       for (const progressText of screen.getAllByText('30%')) {
@@ -752,9 +748,7 @@ describe('Admin Download Status Table', () => {
   });
 
   it('should refresh download progress when refresh button is clicked', async () => {
-    (
-      getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>
-    ).mockResolvedValue(30);
+    vi.mocked(getPercentageComplete).mockResolvedValue(30);
 
     renderComponent({
       settings: {
@@ -765,8 +759,14 @@ describe('Admin Download Status Table', () => {
       },
     });
 
+    // wait for data to load
+    const rows = await screen.findAllByRole('gridcell', { name: /^\d$/ });
+    expect(rows).toHaveLength(5);
+
     await waitFor(() => {
-      for (const progressBar of screen.getAllByRole('progressbar')) {
+      for (const progressBar of screen.getAllByRole('progressbar', {
+        value: { now: 30 },
+      })) {
         expect(progressBar).toBeInTheDocument();
       }
       for (const progressText of screen.getAllByText('30%')) {
@@ -775,9 +775,7 @@ describe('Admin Download Status Table', () => {
     });
 
     // pretend the server returns an updated value
-    (
-      getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>
-    ).mockResolvedValue(50);
+    vi.mocked(getPercentageComplete).mockResolvedValue(50);
 
     await user.click(
       screen.getByRole('button', {

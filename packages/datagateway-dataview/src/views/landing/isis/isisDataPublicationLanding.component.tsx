@@ -331,7 +331,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       icon: <Public sx={shortInfoIconStyle} />,
     },
     {
-      content: function distributionFormat(entity: DataPublication) {
+      content: function distributionFormat(_entity: DataPublication) {
         return (
           <MuiLink href="http://www.isis.stfc.ac.uk/groups/computing/isis-raw-file-format11200.html">
             {t('doi_constants.distribution.format')}
@@ -362,7 +362,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
           <Paper square elevation={0} sx={{ mx: -1.5, px: 1.5 }}>
             <Tabs
               value={value}
-              onChange={(event, newValue) => setValue(newValue)}
+              onChange={(_event, newValue) => setValue(newValue)}
               indicatorColor="secondary"
               textColor="secondary"
             >

@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Data cell component renders correctly 1`] = `
+exports[`Data cell component > renders correctly 1`] = `
 <DocumentFragment>
   <div
     class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-dsuxgy-MuiTableCell-root"
@@ -23,7 +23,7 @@ exports[`Data cell component renders correctly 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Data cell component renders nested cell data correctly 1`] = `
+exports[`Data cell component > renders nested cell data correctly 1`] = `
 <DocumentFragment>
   <div
     class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-dsuxgy-MuiTableCell-root"
@@ -46,7 +46,7 @@ exports[`Data cell component renders nested cell data correctly 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Data cell component renders provided cell data correctly 1`] = `
+exports[`Data cell component > renders provided cell data correctly 1`] = `
 <DocumentFragment>
   <div
     class="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall css-dsuxgy-MuiTableCell-root"

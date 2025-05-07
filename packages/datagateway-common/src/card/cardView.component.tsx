@@ -151,7 +151,7 @@ function CVPagination(
       sx={{ textAlign: 'center' }}
       count={numPages}
       page={page}
-      onChange={(e, p) => {
+      onChange={(_e, p) => {
         // If we are not clicking on the same page.
         if (p !== page) {
           changePage(p);

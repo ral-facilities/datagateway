@@ -144,7 +144,9 @@ function DatafilePreviewer({
   const [isDetailsPaneIn, setIsDetailsPaneIn] =
     React.useState(isDetailsPaneShown);
 
-  const animationTimeoutRef = React.useRef<NodeJS.Timeout | undefined>();
+  const animationTimeoutRef = React.useRef<
+    ReturnType<typeof setTimeout> | undefined
+  >();
 
   React.useEffect(() => {
     // This effect controls the appearance of details panel

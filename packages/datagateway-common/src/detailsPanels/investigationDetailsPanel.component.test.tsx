@@ -5,7 +5,7 @@ import { render, screen } from '@testing-library/react';
 
 describe('Investigation details panel component', () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('shows investigation details correctly', () => {

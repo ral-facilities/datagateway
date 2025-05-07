@@ -9,7 +9,7 @@ describe('buildInvestigationUrl', () => {
 
     beforeEach(() => {
       investigation = mockInvestigations[0];
-      axios.get = jest.fn().mockResolvedValue({
+      axios.get = vi.fn().mockResolvedValue({
         data: [investigation],
       });
     });
@@ -54,7 +54,7 @@ describe('buildInvestigationUrl', () => {
 
     beforeEach(() => {
       investigation = mockInvestigations[1];
-      axios.get = jest.fn().mockResolvedValue({
+      axios.get = vi.fn().mockResolvedValue({
         data: [investigation],
       });
     });
@@ -107,7 +107,7 @@ describe('buildInvestigationUrl', () => {
     const { investigationInstruments, ...investigation } =
       mockInvestigations[0];
 
-    axios.get = jest.fn().mockResolvedValue({
+    axios.get = vi.fn().mockResolvedValue({
       data: [investigation],
     });
 
@@ -121,7 +121,7 @@ describe('buildInvestigationUrl', () => {
   });
 
   it('should return null if the investigation object does not belong to any facility cycle', async () => {
-    axios.get = jest.fn().mockResolvedValue({
+    axios.get = vi.fn().mockResolvedValue({
       data: [
         {
           ...mockInvestigations[0],
@@ -142,7 +142,7 @@ describe('buildInvestigationUrl', () => {
   });
 
   it('should return null if the investigation object cannot be fetched', async () => {
-    axios.get = jest.fn().mockResolvedValue({
+    axios.get = vi.fn().mockResolvedValue({
       data: [],
     });
 
