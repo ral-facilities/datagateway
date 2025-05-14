@@ -47,7 +47,7 @@
     "single-spa-react": "5.0.1",
     "tslib": "2.6.0",
     "typescript": "5.3.3",
-    "vite": "6.2.1"
+    "vite": "5.4.19"
   },
   "devDependencies": {
     "@babel/eslint-parser": "7.23.3",
