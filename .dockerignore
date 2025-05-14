@@ -5,6 +5,7 @@
 /packages/datagateway-*/server
 /packages/datagateway-*/README.md
 **/build
+**/dist
 **/coverage
 **/lib
 **/node_modules
