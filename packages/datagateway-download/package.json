@@ -85,7 +85,6 @@
     "cy:open": "cypress open",
     "cy:run": "cypress run",
     "lint:js": "eslint --max-warnings=0 --ext=tsx --ext=ts --ext=js --ext=jsx --fix ./src ./cypress && tsc --noEmit",
-    "eject": "react-scripts eject",
     "pre-commit": "lint-staged"
   },
   "browserslist": {

@@ -77,7 +77,6 @@
     "build": "vite build",
     "test": "vitest --coverage",
     "postinstall": "yarn tsc",
-    "test:watch": "react-scripts test --env=jsdom --watch",
     "lint:js": "eslint --ext=tsx --ext=ts --ext=js --ext=jsx --fix ./src",
     "tsc": "tsc -p tsconfig.lib.json",
     "pre-commit": "lint-staged"
