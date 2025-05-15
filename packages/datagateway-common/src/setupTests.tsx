@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import '@testing-library/jest-dom';
-import React from 'react';
-import type { Action } from 'redux';
-import type { StateType } from './state/app.types';
-import { initialState } from './state/reducers/dgcommon.reducer';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import '@testing-library/jest-dom';
+import { History, createMemoryHistory } from 'history';
+import React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
-import thunk from 'redux-thunk';
+import type { Action } from 'redux';
 import configureStore from 'redux-mock-store';
-import { createMemoryHistory, History } from 'history';
+import thunk from 'redux-thunk';
 import failOnConsole from 'vitest-fail-on-console';
+import type { StateType } from './state/app.types';
+import { initialState } from './state/reducers/dgcommon.reducer';
 
 failOnConsole();
 
@@ -43,11 +43,6 @@ vi.stubGlobal(
     disconnect: vi.fn(),
   }))
 );
-
-if (!global.structuredClone) {
-  // structuredClone not available in jsdom/node <17, so this is a quick polyfill that should do the exact same thing
-  global.structuredClone = (obj: unknown) => JSON.parse(JSON.stringify(obj));
-}
 
 // these are used for testing async actions
 export let actions: Action[] = [];
