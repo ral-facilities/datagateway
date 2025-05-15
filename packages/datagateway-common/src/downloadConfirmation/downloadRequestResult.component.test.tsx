@@ -23,6 +23,17 @@ describe('DownloadRequestResult', () => {
     expect(asFragment()).toMatchSnapshot();
   });
 
+  it('should render correctly without redirect to download status button', () => {
+    const { asFragment } = render(
+      <DownloadRequestResult
+        success
+        closeDialog={jest.fn()}
+        requestInfo={mockDownloadRequestInfo}
+      />
+    );
+    expect(asFragment()).toMatchSnapshot();
+  });
+
   it('should show failure message if download request has failed', async () => {
     render(
       <DownloadRequestResult
@@ -69,7 +80,7 @@ describe('DownloadRequestResult', () => {
     });
   });
 
-  it('should not show email address info if none is given', async () => {
+  it('should not show email address or name info if none is given', async () => {
     render(
       <DownloadRequestResult
         success
@@ -77,7 +88,7 @@ describe('DownloadRequestResult', () => {
         redirectToStatusTab={jest.fn()}
         requestInfo={{
           emailAddress: '',
-          downloadName: 'download-name',
+          downloadName: '',
           transport: 'httpd',
         }}
       />
@@ -89,6 +100,12 @@ describe('DownloadRequestResult', () => {
       ).toBeNull();
       expect(
         screen.queryByText(mockDownloadRequestInfo.emailAddress)
+      ).toBeNull();
+      expect(
+        screen.queryByText('downloadConfirmDialog.confirmation_download_name')
+      ).toBeNull();
+      expect(
+        screen.queryByText(mockDownloadRequestInfo.downloadName)
       ).toBeNull();
     });
   });

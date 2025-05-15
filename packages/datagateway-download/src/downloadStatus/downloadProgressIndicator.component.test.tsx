@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { render, screen, RenderResult, waitFor } from '@testing-library/react';
-import type { Download } from 'datagateway-common';
+import { type Download } from 'datagateway-common';
 import { DownloadSettingsContext } from '../ConfigProvider';
-import { getDownload, getPercentageComplete } from '../downloadApi';
+import { getPercentageComplete } from '../downloadApi';
 import DownloadProgressIndicator from './downloadProgressIndicator.component';
 import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 import { mockedSettings, mockDownloadItems } from '../testData';
@@ -68,13 +68,6 @@ describe('DownloadProgressIndicator', () => {
 
   describe('should show the progress as complete', () => {
     it('when download is completed', async () => {
-      (
-        getDownload as jest.MockedFunction<typeof getDownload>
-      ).mockResolvedValue({
-        ...mockDownloadItems[0],
-        status: 'COMPLETE',
-      });
-
       renderComponent({
         download: {
           ...mockDownload,
@@ -90,13 +83,6 @@ describe('DownloadProgressIndicator', () => {
     });
 
     it('when download is expired', async () => {
-      (
-        getDownload as jest.MockedFunction<typeof getDownload>
-      ).mockResolvedValue({
-        ...mockDownloadItems[0],
-        status: 'EXPIRED',
-      });
-
       renderComponent({
         download: {
           ...mockDownload,
@@ -173,18 +159,29 @@ describe('DownloadProgressIndicator', () => {
     expect(screen.getByText('0%')).toBeInTheDocument();
   });
 
-  it('should show queued when download is paused and has no preparedId', async () => {
+  it('should show queued when download is queued', async () => {
     renderComponent({
       download: {
         ...mockDownload,
-        status: 'PAUSED',
-        preparedId: undefined,
+        status: 'QUEUED',
       },
     });
 
     expect(
       await screen.findByText('downloadStatus.progress_queued')
     ).toBeInTheDocument();
+    expect(getPercentageComplete).not.toHaveBeenCalled();
+  });
+
+  it('should not call getPercentageComplete if preparedId is undefined', async () => {
+    renderComponent({
+      download: {
+        ...mockDownload,
+        status: 'RESTORING',
+        preparedId: undefined,
+      },
+    });
+
     expect(getPercentageComplete).not.toHaveBeenCalled();
   });
 

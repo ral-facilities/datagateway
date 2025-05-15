@@ -1,5 +1,5 @@
 import { Button, Grid, Typography } from '@mui/material';
-import { Mark } from 'datagateway-common';
+import Mark from '../mark.component';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import type DownloadRequestInfo from './DownloadRequestInfo';
@@ -20,7 +20,7 @@ interface DownloadRequestResultComponentProps {
   /**
    * Forwarded function for redirecting to the download status tab.
    */
-  redirectToStatusTab: () => void;
+  redirectToStatusTab?: () => void;
 
   /**
    * Metadata of the download request. null if the request has failed.
@@ -43,9 +43,11 @@ function DownloadRequestInfoGrid({
     <Grid item xs>
       <div style={{ textAlign: 'center', margin: '0 auto' }}>
         <div style={{ float: 'left', textAlign: 'right' }}>
-          <Typography>
-            <b>{t('downloadConfirmDialog.confirmation_download_name')}: </b>
-          </Typography>
+          {info.downloadName && (
+            <Typography>
+              <b>{t('downloadConfirmDialog.confirmation_download_name')}: </b>
+            </Typography>
+          )}
           <Typography>
             <b>{t('downloadConfirmDialog.confirmation_access_method')}: </b>
           </Typography>
@@ -62,9 +64,11 @@ function DownloadRequestInfoGrid({
             paddingLeft: '25px',
           }}
         >
-          <Typography id="confirm-success-download-name">
-            {info.downloadName}
-          </Typography>
+          {info.downloadName && (
+            <Typography id="confirm-success-download-name">
+              {info.downloadName}
+            </Typography>
+          )}
           <Typography id="confirm-success-access-method">
             {info.transport.toUpperCase()}
           </Typography>
@@ -141,7 +145,7 @@ function DownloadRequestResult({
             <DownloadRequestInfoGrid info={requestInfo} />
           )}
 
-          {success && (
+          {success && redirectToStatusTab && (
             <Grid item xs>
               <Button
                 id="download-confirmation-status-link"

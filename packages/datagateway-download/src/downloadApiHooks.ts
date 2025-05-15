@@ -4,25 +4,23 @@ import {
   DownloadStatus,
   InvalidateTokenType,
   User,
+  getDownload,
 } from 'datagateway-common';
 import {
   DownloadCartItem,
   fetchDownloadCart,
   handleICATError,
   MicroFrontendId,
-  NotificationType,
   useRetryICATErrors,
 } from 'datagateway-common';
 import log from 'loglevel';
 import pLimit from 'p-limit';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import {
   InfiniteData,
   useInfiniteQuery,
   UseInfiniteQueryResult,
   useMutation,
-  UseMutationOptions,
   UseMutationResult,
   useQueries,
   useQuery,
@@ -36,7 +34,6 @@ import {
   DoiMetadata,
   DoiResponse,
   DownloadProgress,
-  DownloadTypeStatus,
   fetchDOI,
   FileSizeAndCount,
   getCartUsers,
@@ -44,7 +41,6 @@ import {
   isCartMintable,
   mintCart,
   RelatedDOI,
-  SubmitCartZipType,
 } from './downloadApi';
 import {
   adminDownloadDeleted,
@@ -52,13 +48,10 @@ import {
   downloadDeleted,
   fetchAdminDownloads,
   fetchDownloads,
-  getDownload,
-  getDownloadTypeStatus,
   getIsTwoLevel,
   getPercentageComplete,
   removeAllDownloadCartItems,
   removeFromCart,
-  submitCart,
 } from './downloadApi';
 
 /**
@@ -74,11 +67,6 @@ export enum QueryKey {
    * Key for querying list of downloads.
    */
   DOWNLOADS = 'downloads',
-
-  /**
-   * Key for querying the status of a particular download type
-   */
-  DOWNLOAD_TYPE_STATUS = 'download-type-status',
 
   /**
    * Key for querying the progress of a download.
@@ -201,62 +189,6 @@ export const useIsTwoLevel = (): UseQueryResult<boolean, AxiosError> => {
   });
 };
 
-export interface SubmitCartParams {
-  transport: string;
-  emailAddress: string;
-  fileName: string;
-  zipType?: SubmitCartZipType;
-}
-
-/**
- * A React hook for submitting a download cart.
- * Returns the download id for the submitted cart, which can then be used
- * to query more info.
- */
-export const useSubmitCart = (
-  options?: UseMutationOptions<
-    number,
-    AxiosError,
-    SubmitCartParams,
-    RollbackFunction
-  >
-): UseMutationResult<
-  number,
-  AxiosError,
-  SubmitCartParams,
-  RollbackFunction
-> => {
-  const queryClient = useQueryClient();
-  const settings = React.useContext(DownloadSettingsContext);
-  const { facilityName, downloadApiUrl } = settings;
-
-  return useMutation(
-    ({ transport, emailAddress, fileName, zipType }) =>
-      submitCart(
-        transport,
-        emailAddress,
-        fileName,
-        {
-          facilityName,
-          downloadApiUrl,
-        },
-        zipType
-      ),
-    {
-      onError: (error, _, rollback) => {
-        handleICATError(error);
-        if (rollback) rollback();
-      },
-
-      onSettled: () => {
-        queryClient.invalidateQueries(QueryKey.CART);
-      },
-
-      ...(options ?? {}),
-    }
-  );
-};
-
 const fileSizeAndCountLimit = pLimit(5);
 
 export const useFileSizesAndCounts = (
@@ -287,53 +219,6 @@ export const useFileSizesAndCounts = (
   }, [data, retryICATErrors, apiUrl]);
 
   return useQueries(queryConfigs);
-};
-
-export interface UseDownloadParams {
-  id: number;
-}
-
-/**
- * A React hook that fetches a single download with the given id.
- * useQuery options can be passed in, which will override the default used.
- *
- * Example:
- * ```
- * useDownload({
- *   id: 123,
- *   select: (download) => format(download)
- * })
- * ```
- */
-export const useDownload = <T = Download>({
-  id,
-  ...queryOptions
-}: UseDownloadParams &
-  UseQueryOptions<
-    Download,
-    AxiosError,
-    T,
-    [QueryKey.DOWNLOAD, number]
-  >): UseQueryResult<T, AxiosError> => {
-  // Load the download settings for use.
-  const downloadSettings = React.useContext(DownloadSettingsContext);
-  const retryICATErrors = useRetryICATErrors();
-
-  return useQuery(
-    [QueryKey.DOWNLOAD, id],
-    () =>
-      getDownload(id, {
-        facilityName: downloadSettings.facilityName,
-        downloadApiUrl: downloadSettings.downloadApiUrl,
-      }),
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-      ...queryOptions,
-    }
-  );
 };
 
 /**
@@ -427,10 +312,11 @@ export const useDownloadOrRestoreDownload = (): UseMutationResult<
       onSuccess: async (_, { downloadId, deleted }) => {
         if (!deleted) {
           // download is restored (un-deleted), fetch the download info
-          const restoredDownload = await getDownload(downloadId, {
-            facilityName: downloadSettings.facilityName,
-            downloadApiUrl: downloadSettings.downloadApiUrl,
-          });
+          const restoredDownload = await getDownload(
+            downloadId,
+            downloadSettings.facilityName,
+            downloadSettings.downloadApiUrl
+          );
 
           if (restoredDownload) {
             queryClient.setQueryData<Download[] | undefined>(
@@ -452,83 +338,6 @@ export const useDownloadOrRestoreDownload = (): UseMutationResult<
       },
     }
   );
-};
-
-export const useDownloadTypeStatuses = <TData = DownloadTypeStatus>({
-  downloadTypes,
-  ...queryOptions
-}: {
-  downloadTypes: string[];
-} & UseQueryOptions<DownloadTypeStatus, AxiosError, TData>): UseQueryResult<
-  TData,
-  AxiosError
->[] => {
-  // Load the download settings for use
-  const downloadSettings = React.useContext(DownloadSettingsContext);
-  const [t] = useTranslation();
-
-  const queryCount = downloadTypes.length;
-  const loadedQueriesCount = React.useRef(0);
-  const downloadTypesWithError = React.useRef<string[]>([]);
-
-  function broadcastError(message: string): void {
-    document.dispatchEvent(
-      new CustomEvent(MicroFrontendId, {
-        detail: {
-          type: NotificationType,
-          payload: {
-            severity: 'error',
-            message,
-          },
-        },
-      })
-    );
-  }
-
-  function handleQueryError(downloadType: string): void {
-    downloadTypesWithError.current.push(downloadType);
-
-    if (loadedQueriesCount.current === queryCount) {
-      if (downloadTypesWithError.current.length === queryCount) {
-        broadcastError(t('downloadConfirmDialog.access_methods_error'));
-      } else {
-        downloadTypesWithError.current.forEach((type) => {
-          broadcastError(
-            t('downloadConfirmDialog.access_method_error', {
-              method: type.toUpperCase(),
-            })
-          );
-        });
-      }
-    }
-  }
-
-  const queries = downloadTypes.map<
-    UseQueryOptions<DownloadTypeStatus, AxiosError, TData>
-  >((type) => ({
-    queryKey: [QueryKey.DOWNLOAD_TYPE_STATUS, type],
-    queryFn: () =>
-      getDownloadTypeStatus(type, {
-        facilityName: downloadSettings.facilityName,
-        downloadApiUrl: downloadSettings.downloadApiUrl,
-      }),
-    onSettled: (_, error) => {
-      loadedQueriesCount.current += 1;
-      if (error) handleQueryError(type);
-    },
-    ...queryOptions,
-    cacheTime: 0,
-    staleTime: 0,
-  }));
-
-  // I have spent hours on this trying to make the type work,
-  // but due to the limitation of TypeScript, it is basically impossible
-  // for the type system to infer the return type of select properly.
-  // https://github.com/TanStack/query/pull/2634#issuecomment-939537730
-  //
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  return useQueries(queries);
 };
 
 /**

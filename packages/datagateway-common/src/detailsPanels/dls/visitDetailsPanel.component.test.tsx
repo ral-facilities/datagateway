@@ -1,9 +1,9 @@
+import React from 'react';
 import type { RenderResult } from '@testing-library/react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { UserEvent } from '@testing-library/user-event/dist/types/setup';
 import axios from 'axios';
-import * as React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
 import { combineReducers, createStore } from 'redux';
@@ -11,6 +11,7 @@ import { StateType } from '../../../lib';
 import { Investigation } from '../../app.types';
 import dGCommonReducer from '../../state/reducers/dgcommon.reducer';
 import VisitDetailsPanel from './visitDetailsPanel.component';
+import { dGCommonInitialState } from '../..';
 
 function renderComponent({
   rowData,
@@ -22,7 +23,8 @@ function renderComponent({
   return render(
     <Provider
       store={createStore(
-        combineReducers<Partial<StateType>>({ dgcommon: dGCommonReducer })
+        combineReducers<Partial<StateType>>({ dgcommon: dGCommonReducer }),
+        { dgcommon: { ...dGCommonInitialState, accessMethods: {} } }
       )}
     >
       <QueryClientProvider client={new QueryClient()}>
@@ -69,6 +71,9 @@ describe('Visit details panel component', () => {
 
       if (/.*\/user\/getSize/.test(url)) return Promise.resolve({ data: 64 });
 
+      if (/.*\/queue\/allowed/.test(url))
+        return Promise.resolve({ data: true });
+
       return Promise.resolve();
     });
   });
@@ -77,8 +82,11 @@ describe('Visit details panel component', () => {
     jest.clearAllMocks();
   });
 
-  it('should render correctly', () => {
+  it('should render correctly', async () => {
     const { asFragment } = renderComponent({ rowData });
+    expect(
+      await screen.findByRole('button', { name: 'buttons.queue_visit' })
+    ).toBeInTheDocument();
     expect(asFragment()).toMatchSnapshot();
   });
 

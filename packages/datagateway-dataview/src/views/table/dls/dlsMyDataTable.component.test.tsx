@@ -72,7 +72,7 @@ describe('DLS MyData table component', () => {
     state = JSON.parse(
       JSON.stringify({
         dgdataview: dgDataViewInitialState,
-        dgcommon: dGCommonInitialState,
+        dgcommon: { ...dGCommonInitialState, accessMethods: {} },
       })
     );
     rowData = [
