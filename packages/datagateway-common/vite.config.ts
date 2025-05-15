@@ -1,10 +1,9 @@
 import react from '@vitejs/plugin-react';
-// import browserslistToEsbuild from 'browserslist-to-esbuild';
+import browserslistToEsbuild from 'browserslist-to-esbuild';
 import fs from 'node:fs';
 import path from 'path';
 import url from 'url';
 import { PluginOption, UserConfig, defineConfig, loadEnv } from 'vite';
-import browserslistToEsbuild from 'browserslist-to-esbuild';
 
 // see https://github.com/bvaughn/react-virtualized/issues/1722#issuecomment-1893242667
 function reactVirtualized(): PluginOption {

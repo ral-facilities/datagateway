@@ -87,18 +87,9 @@
     "lint:js": "eslint --max-warnings=0 --ext=tsx --ext=ts --ext=js --ext=jsx --fix ./src ./cypress && tsc --noEmit",
     "pre-commit": "lint-staged"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
+  "browserslist": [
+    "defaults"
+  ],
   "lint-staged": {
     "src/**/*.{tsx,js,jsx,json}": [
       "eslint --max-warnings=0 --ext=tsx --ext=ts --ext=js --ext=jsx --fix",
