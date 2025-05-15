@@ -1,5 +1,16 @@
 # Changelog
 
+## [v2.2.0](https://github.com/ral-facilities/datagateway/tree/v2.2.0) (2025-05-16)
+
+## What's Changed
+
+### Features
+
+* Handle isDeleted and no prepared id cases in progress bars by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1715
+* Restore visit button #1694 by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1714
+
+**Full Changelog**: https://github.com/ral-facilities/datagateway/compare/v2.1.1...2.2.0
+
 ## [v2.1.1](https://github.com/ral-facilities/datagateway/tree/v2.1.1) (2025-03-18)
 
 ## What's Changed
