@@ -16,12 +16,15 @@ import {
   type ColumnType,
   type DownloadCartItem,
   type DownloadCartTableItem,
+  DownloadConfirmDialog,
   formatBytes,
   Table,
   type TableActionProps,
   TextColumnFilter,
   type TextFilter,
   type SortType,
+  useSubmitCart,
+  Download,
 } from 'datagateway-common';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -36,13 +39,13 @@ import {
   useFileSizesAndCounts,
 } from '../downloadApiHooks';
 
-import DownloadConfirmDialog from '../downloadConfirmation/downloadConfirmDialog.component';
 import DownloadCartItemLink from './downloadCartItemLink.component';
 import {
   buildDatafileUrl,
   buildDatasetUrl,
   buildInvestigationUrl,
 } from './urlBuilders';
+import { downloadPreparedCart } from '../downloadApi';
 
 interface DownloadCartTableProps {
   statusTabRedirect: () => void;
@@ -58,6 +61,8 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     facilityName,
     doiMinterUrl,
     dataCiteUrl,
+    downloadApiUrl,
+    accessMethods,
   } = React.useContext(DownloadSettingsContext);
 
   const [sort, setSort] = React.useState<SortType>({});
@@ -332,6 +337,20 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
       },
     ],
     [removeDownloadCartItem, t]
+  );
+
+  const downloadIfComplete = React.useCallback(
+    (download: Download) => {
+      if (download.status === 'COMPLETE' && download.preparedId)
+        // Download the file as long as it is available for instant download.
+        downloadPreparedCart(
+          download.preparedId,
+          download.fileName,
+          // Use the idsUrl that has been defined for this access method.
+          { idsUrl: accessMethods[download.transport].idsUrl }
+        );
+    },
+    [accessMethods]
   );
 
   const emptyItems = fileSizesAndCounts.some(
@@ -654,12 +673,16 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
       )}
       {/* Show the download confirmation dialog. */}
       <DownloadConfirmDialog
-        aria-labelledby="downloadCartConfirmation"
         totalSize={totalSize}
         isTwoLevel={isTwoLevel ?? false}
+        facilityName={facilityName}
+        downloadApiUrl={downloadApiUrl}
+        accessMethods={accessMethods}
         open={showConfirmation}
         redirectToStatusTab={props.statusTabRedirect}
         setClose={() => setShowConfirmation(false)}
+        postDownloadSuccessFn={downloadIfComplete}
+        submitDownloadHook={useSubmitCart}
       />
     </>
   );

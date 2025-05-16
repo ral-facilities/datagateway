@@ -35,6 +35,7 @@ function useDownloadFormatter(): {
       PAUSED: t('downloadStatus.paused'),
       PREPARING: t('downloadStatus.preparing'),
       RESTORING: t('downloadStatus.restoring'),
+      QUEUED: t('downloadStatus.queued'),
     }),
     [t]
   );

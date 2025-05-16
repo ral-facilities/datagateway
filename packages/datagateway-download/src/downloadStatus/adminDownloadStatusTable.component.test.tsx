@@ -3,7 +3,6 @@ import {
   adminDownloadDeleted,
   adminDownloadStatus,
   fetchAdminDownloads,
-  getDownload,
   getPercentageComplete,
 } from '../downloadApi';
 import AdminDownloadStatusTable from './adminDownloadStatusTable.component';
@@ -50,13 +49,6 @@ describe('Admin Download Status Table', () => {
   beforeEach(() => {
     user = userEvent.setup({ delay: null });
 
-    (getDownload as jest.MockedFunction<typeof getDownload>).mockImplementation(
-      (id, _) =>
-        Promise.resolve(
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          mockDownloadItems.find((download) => download.id === id)!
-        )
-    );
     (fetchAdminDownloads as jest.Mock).mockImplementation(
       (
         settings: { facilityName: string; downloadApiUrl: string },

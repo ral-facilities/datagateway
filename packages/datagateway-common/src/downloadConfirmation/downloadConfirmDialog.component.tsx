@@ -12,21 +12,28 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { formatBytes } from 'datagateway-common';
+import { formatBytes } from '../table/cellRenderers/cellContentRenderers';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { DownloadSettingsContext } from '../ConfigProvider';
-import type { DownloadTypeStatus } from '../downloadApi';
-import { downloadPreparedCart } from '../downloadApi';
+import type {
+  Download,
+  DownloadSettingsAccessMethod,
+  DownloadTypeStatus,
+} from '../app.types';
 import {
-  useDownload,
   useDownloadTypeStatuses,
   useSubmitCart,
-} from '../downloadApiHooks';
+  useDownload,
+  useQueueVisit,
+  getDefaultFileName,
+  SubmitCartParams,
+  QueueVisitParams,
+} from '../api/cart';
 import DialogContent from './dialogContent.component';
 import DialogTitle from './dialogTitle.component';
 import DownloadRequestResult from './downloadRequestResult.component';
+import { UseMutateFunction } from 'react-query';
 
 const TableContentDiv = styled('div')(() => ({
   paddingTop: '10px',
@@ -53,8 +60,17 @@ interface DownloadConfirmDialogProps {
   isTwoLevel: boolean;
   open: boolean;
 
-  redirectToStatusTab: () => void;
+  facilityName: string;
+  downloadApiUrl: string;
+  accessMethods: DownloadSettingsAccessMethod;
+
+  visitId?: string;
+  submitDownloadHook: typeof useSubmitCart | typeof useQueueVisit;
+
+  redirectToStatusTab?: () => void;
   setClose: () => void;
+
+  postDownloadSuccessFn?: (downloadInfo: Download) => void;
 }
 
 interface DownloadTypeInfo extends DownloadTypeStatus {
@@ -66,10 +82,18 @@ interface DownloadTypeInfo extends DownloadTypeStatus {
 const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   props: DownloadConfirmDialogProps
 ) => {
-  const { totalSize, isTwoLevel, redirectToStatusTab, setClose } = props;
-
-  // Load the settings for use.
-  const settings = React.useContext(DownloadSettingsContext);
+  const {
+    totalSize,
+    isTwoLevel,
+    redirectToStatusTab,
+    setClose,
+    facilityName,
+    downloadApiUrl,
+    accessMethods,
+    postDownloadSuccessFn,
+    submitDownloadHook,
+    visitId,
+  } = props;
 
   // Download speed/time table.
   const [showDownloadTime, setShowDownloadTime] = React.useState(true);
@@ -93,10 +117,12 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   const [emailHelperText, setEmailHelperText] = React.useState(emailHelpText);
 
   const downloadTypeStatusQueries = useDownloadTypeStatuses({
-    downloadTypes: Object.keys(settings.accessMethods),
+    downloadTypes: Object.keys(accessMethods),
+    facilityName,
+    downloadApiUrl,
     enabled: props.open,
     select: (status) => {
-      const info = settings.accessMethods[status.type];
+      const info = accessMethods[status.type];
       return info
         ? {
             ...info,
@@ -114,13 +140,14 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     downloadTypeStatusQueries.every(({ isLoading }) => !isLoading);
 
   const {
-    data: downloadId,
-    mutate: submitCart,
-    isLoading: isSubmittingCart,
-    isSuccess: isCartSubmittedSuccessfully,
-    isError: hasSubmitCartFailed,
-    reset: resetSubmitCartMutation,
-  } = useSubmitCart();
+    data: submitDownloadData,
+    mutate: submitDownload,
+    isLoading: isSubmittingDownload,
+    isSuccess: isDownloadSubmittedSuccessfully,
+    isError: hasSubmitDownloadFailed,
+    reset: resetSubmitDownloadMutation,
+  } = submitDownloadHook(facilityName, downloadApiUrl, undefined);
+
   // query download after cart is submitted
   const {
     data: downloadInfo,
@@ -128,8 +155,11 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     isError: isDownloadInfoUnavailable,
     remove: resetDownloadQuery,
   } = useDownload({
-    id: downloadId ?? -1,
-    enabled: Boolean(downloadId) && isCartSubmittedSuccessfully,
+    id: typeof submitDownloadData === 'number' ? submitDownloadData : -1,
+    facilityName,
+    downloadApiUrl,
+    enabled:
+      typeof submitDownloadData === 'number' && isDownloadSubmittedSuccessfully,
   });
 
   /**
@@ -192,11 +222,11 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   React.useEffect(() => {
     if (props.open) {
       resetDownloadQuery();
-      resetSubmitCartMutation();
+      resetSubmitDownloadMutation();
       setDownloadName('');
       setEmailAddress('');
     }
-  }, [props.open, resetDownloadQuery, resetSubmitCartMutation]);
+  }, [props.open, resetDownloadQuery, resetSubmitDownloadMutation]);
 
   React.useEffect(() => {
     if (props.open) {
@@ -214,35 +244,13 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     }
   }, [isTwoLevel, props.open, totalSize]);
 
+  // call post download success function when download completed successfully
+  // allows for e.g. immediately triggering downloading the download if it's available
   React.useEffect(() => {
-    if (
-      isDownloadInfoAvailable &&
-      downloadInfo &&
-      downloadInfo.status === 'COMPLETE'
-    ) {
-      // Download the file as long as it is available for instant download.
-      downloadPreparedCart(
-        downloadInfo.preparedId,
-        downloadInfo.fileName,
-        // Use the idsUrl that has been defined for this access method.
-        { idsUrl: settings.accessMethods[selectedMethod].idsUrl }
-      );
+    if (isDownloadInfoAvailable && postDownloadSuccessFn) {
+      postDownloadSuccessFn(downloadInfo);
     }
-  }, [
-    downloadInfo,
-    isDownloadInfoAvailable,
-    selectedMethod,
-    settings.accessMethods,
-  ]);
-
-  const getDefaultFileName = (): string => {
-    const now = new Date(Date.now());
-    const defaultName = `${settings.facilityName}_${now.getFullYear()}-${
-      now.getMonth() + 1
-    }-${now.getDate()}_${now.getHours()}-${now.getMinutes()}-${now.getSeconds()}`;
-
-    return defaultName;
-  };
+  }, [downloadInfo, isDownloadInfoAvailable, postDownloadSuccessFn]);
 
   const secondsToDHMS = (seconds: number): string => {
     const d = Math.floor(seconds / (3600 * 24));
@@ -280,16 +288,27 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   const processDownload = (): void => {
     // Check for file name, if there hasn't been one entered,
     // then generate a default one and update state for rendering later.
-    let fileName = downloadName;
-    if (!fileName) {
-      fileName = getDefaultFileName();
-      setDownloadName(fileName);
+    if (!downloadName) {
+      setDownloadName(
+        getDefaultFileName(t, {
+          facilityName,
+          ...(visitId && { visitId }),
+        })
+      );
     }
 
-    submitCart({
+    // need to typecast here to avoid the non-overlapping options parameter type that we don't use
+    (
+      submitDownload as UseMutateFunction<
+        unknown,
+        unknown,
+        SubmitCartParams | QueueVisitParams
+      >
+    )({
       emailAddress,
-      fileName,
+      fileName: downloadName ?? undefined,
       transport: selectedMethod,
+      visitId,
     });
   };
 
@@ -305,14 +324,14 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
   // whether the download request has failed
   const hasDownloadFailed =
-    // cart submitted "successfully" but server doesn't return a download id
-    (isCartSubmittedSuccessfully && !downloadId) ||
-    hasSubmitCartFailed ||
-    isDownloadInfoUnavailable;
+    hasSubmitDownloadFailed || isDownloadInfoUnavailable;
 
   // whether the download request is successful
   const isDownloadSuccess =
-    isDownloadInfoAvailable && isCartSubmittedSuccessfully;
+    isDownloadSubmittedSuccessfully &&
+    (Array.isArray(submitDownloadData)
+      ? submitDownloadData.length > 0 // for queue visit requests
+      : isDownloadInfoAvailable); // for submit cart requests
 
   // whether to show result of submit cart (i.e. successful or failed)
   const shouldShowSubmitCartResult = isDownloadSuccess || hasDownloadFailed;
@@ -355,7 +374,10 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                 <TextField
                   id="confirm-download-name"
                   label={t('downloadConfirmDialog.download_name_label')}
-                  placeholder={`${getDefaultFileName()}`}
+                  placeholder={`${getDefaultFileName(t, {
+                    facilityName,
+                    ...(visitId && { visitId }),
+                  })}`}
                   fullWidth={true}
                   inputProps={{
                     maxLength: 255,
@@ -448,7 +470,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
               <Grid item xs={12}>
                 {/* Depending on the type of access method that has been selected,
                   show specific access information. */}
-                {Object.entries(settings.accessMethods)
+                {Object.entries(accessMethods)
                   .filter(
                     ([type, methodInfo]) =>
                       type === selectedMethod && methodInfo.description
@@ -560,13 +582,13 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                 (!downloadTypeInfoMap?.has(selectedMethod) ?? true) ||
                 downloadTypeInfoMap?.get(selectedMethod)?.disabled ||
                 methodsUnavailable ||
-                isSubmittingCart
+                isSubmittingDownload
               }
               onClick={processDownload}
               color="primary"
               variant="contained"
             >
-              {isSubmittingCart
+              {isSubmittingDownload
                 ? t('downloadConfirmDialog.submitting_cart')
                 : t('downloadConfirmDialog.download')}
             </Button>

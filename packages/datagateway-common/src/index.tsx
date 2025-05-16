@@ -74,6 +74,10 @@ export { default as ClearFiltersButton } from './views/clearFiltersButton.compon
 export { default as DownloadButton } from './views/downloadButton.component';
 export { default as SelectionAlert } from './views/selectionAlert.component';
 
+export { default as DialogContent } from './downloadConfirmation/dialogContent.component';
+export { default as DialogTitle } from './downloadConfirmation/dialogTitle.component';
+export { default as DownloadConfirmDialog } from './downloadConfirmation/downloadConfirmDialog.component';
+
 export { default as ISISDatafileDetailsPanel } from './detailsPanels/isis/datafileDetailsPanel.component';
 export { default as ISISDatasetDetailsPanel } from './detailsPanels/isis/datasetDetailsPanel.component';
 export { default as ISISInstrumentDetailsPanel } from './detailsPanels/isis/instrumentDetailsPanel.component';

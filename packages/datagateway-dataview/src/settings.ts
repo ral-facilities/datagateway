@@ -1,4 +1,4 @@
-import { PluginRoute } from 'datagateway-common';
+import { DownloadSettingsAccessMethod, PluginRoute } from 'datagateway-common';
 import { BreadcrumbSettings } from './state/actions/actions.types';
 
 export interface DataviewSettings {
@@ -8,6 +8,7 @@ export interface DataviewSettings {
   idsUrl: string;
   icatUrl: string;
   queryRetries?: number;
+  accessMethods?: DownloadSettingsAccessMethod;
   selectAllSetting?: boolean;
   facilityImageURL?: string;
   features?: never;
