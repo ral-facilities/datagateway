@@ -1,8 +1,7 @@
-import * as React from 'react';
-import type { Investigation } from '../app.types';
-import EntityCard from './entityCard.component';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import type { Investigation } from '../app.types';
+import EntityCard from './entityCard.component';
 
 describe('Card', () => {
   let user: ReturnType<typeof userEvent.setup>;

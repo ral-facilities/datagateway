@@ -1,14 +1,13 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { RenderResult } from '@testing-library/react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios from 'axios';
-import * as React from 'react';
 import { Provider } from 'react-redux';
 import { combineReducers, createStore } from 'redux';
+import type { Instrument } from '../../app.types';
 import { StateType } from '../../state/app.types';
 import dGCommonReducer from '../../state/reducers/dgcommon.reducer';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import type { Instrument } from '../../app.types';
 import InstrumentDetailsPanel from './instrumentDetailsPanel.component';
 
 function renderComponent({

@@ -1,13 +1,11 @@
-import * as React from 'react';
+import { act, render, renderHook, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { usePushFilter } from '../../api';
 import DateColumnFilter, {
   datesEqual,
   updateFilter,
   useDateFilter,
 } from './dateColumnFilter.component';
-import { renderHook } from '@testing-library/react';
-import { usePushFilter } from '../../api';
-import { render, screen, act } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 vi.mock('../../api');
 

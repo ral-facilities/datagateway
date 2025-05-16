@@ -1,24 +1,24 @@
-import * as React from 'react';
-import type { StateType } from '../state/app.types';
-import { Provider } from 'react-redux';
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import { Router } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { render, screen, within } from '@testing-library/react';
+import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios';
 import {
-  type DatasearchType,
   dGCommonInitialState,
+  type DatasearchType,
   type SearchResponse,
 } from 'datagateway-common';
-import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios';
 import { createMemoryHistory, type History } from 'history';
-import { render, screen, within } from '@testing-library/react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import * as React from 'react';
+import { Provider } from 'react-redux';
+import { Router } from 'react-router-dom';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import type { StateType } from '../state/app.types';
 
-import SearchTabs from './searchTabs.component';
-import { initialState } from '../state/reducers/dgsearch.reducer';
 import userEvent from '@testing-library/user-event';
-import { queryAllRows } from '../setupTests';
 import { act } from 'react-dom/test-utils';
+import { queryAllRows } from '../setupTests';
+import { initialState } from '../state/reducers/dgsearch.reducer';
+import SearchTabs from './searchTabs.component';
 
 describe('SearchTabs', () => {
   let state: StateType;

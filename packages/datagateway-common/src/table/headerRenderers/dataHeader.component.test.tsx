@@ -1,9 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as React from 'react';
-import DataHeader from './dataHeader.component';
-import TextColumnFilter from '../columnFilters/textColumnFilter.component';
 import { Filter } from '../../app.types';
+import TextColumnFilter from '../columnFilters/textColumnFilter.component';
+import DataHeader from './dataHeader.component';
 
 describe('Data column header component', () => {
   let user: ReturnType<typeof userEvent.setup>;

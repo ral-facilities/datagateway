@@ -1,13 +1,13 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
+import { DatasearchType, dGCommonInitialState } from 'datagateway-common';
 import * as React from 'react';
 import { Provider } from 'react-redux';
 import createMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { DatasearchType, dGCommonInitialState } from 'datagateway-common';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import NewParameterFilterCreator from './newParameterFilterCreator.component';
-import axios, { AxiosResponse } from 'axios';
 
 describe('NewParameterFilterCreator', () => {
   const TEST_ENTITY_NAME: DatasearchType = 'Investigation';

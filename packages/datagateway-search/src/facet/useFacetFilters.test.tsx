@@ -1,8 +1,8 @@
-import * as React from 'react';
 import { act, renderHook, waitFor } from '@testing-library/react';
-import useFacetFilters from './useFacetFilters';
-import { createMemoryHistory, MemoryHistory } from 'history';
+import { MemoryHistory, createMemoryHistory } from 'history';
+import * as React from 'react';
 import { Router } from 'react-router-dom';
+import useFacetFilters from './useFacetFilters';
 
 describe('useFacetFilters', () => {
   let history: MemoryHistory;

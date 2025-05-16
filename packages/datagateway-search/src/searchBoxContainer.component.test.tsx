@@ -1,11 +1,11 @@
-import * as React from 'react';
-import { Provider } from 'react-redux';
 import type { RenderResult } from '@testing-library/react';
 import { render, screen } from '@testing-library/react';
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import * as React from 'react';
+import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 import type { DeepPartial } from 'redux';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 import type { StateType } from './state/app.types';
 
 import SearchBoxContainer from './searchBoxContainer.component';

@@ -1,10 +1,10 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, RenderResult, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as React from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { DownloadSettingsContext } from '../ConfigProvider';
-import { mockedSettings } from '../testData';
 import { checkUser, ContributorType } from '../downloadApi';
+import { mockedSettings } from '../testData';
 import CreatorsAndContributors from './creatorsAndContributors.component';
 
 vi.mock('datagateway-common', async () => {

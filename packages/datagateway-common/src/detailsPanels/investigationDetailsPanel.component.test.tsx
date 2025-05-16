@@ -1,7 +1,6 @@
-import * as React from 'react';
-import InvestigationDetailsPanel from './investigationDetailsPanel.component';
-import { Investigation, type SearchResultSource } from '../app.types';
 import { render, screen } from '@testing-library/react';
+import { Investigation, type SearchResultSource } from '../app.types';
+import InvestigationDetailsPanel from './investigationDetailsPanel.component';
 
 describe('Investigation details panel component', () => {
   afterEach(() => {

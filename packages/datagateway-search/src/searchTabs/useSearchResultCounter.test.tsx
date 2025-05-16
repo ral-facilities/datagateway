@@ -1,12 +1,12 @@
+import { renderHook, waitFor } from '@testing-library/react';
 import * as React from 'react';
+import type { MockedFunction } from 'vitest';
+import { mockSearchResponses } from '../testData';
 import {
-  type SearchResultCountAction,
   SearchResultCountDispatch,
   useSearchResultCounter,
+  type SearchResultCountAction,
 } from './useSearchResultCounter';
-import { renderHook, waitFor } from '@testing-library/react';
-import { mockSearchResponses } from '../testData';
-import type { MockedFunction } from 'vitest';
 
 describe('useSearchResultCounter', () => {
   const mockDispatch: MockedFunction<React.Dispatch<SearchResultCountAction>> =

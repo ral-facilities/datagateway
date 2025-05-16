@@ -1,9 +1,8 @@
-import * as React from 'react';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import AdvancedFilter, {
   UnmemoisedAdvancedFilter,
 } from './advancedFilter.component';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 describe('AdvancedFilter', () => {
   let user: ReturnType<typeof userEvent.setup>;

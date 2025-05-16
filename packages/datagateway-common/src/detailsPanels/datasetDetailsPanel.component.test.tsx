@@ -1,7 +1,6 @@
-import * as React from 'react';
+import { render } from '@testing-library/react';
 import { Dataset } from '../app.types';
 import DatasetDetailsPanel from './datasetDetailsPanel.component';
-import { render } from '@testing-library/react';
 
 describe('Dataset details panel component', () => {
   let rowData: Dataset;

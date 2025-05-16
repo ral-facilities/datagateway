@@ -1,10 +1,10 @@
-import * as React from 'react';
-import Table, { ColumnType } from './table.component';
-import { formatBytes } from './cellRenderers/cellContentRenderers';
-import { TableCellProps } from 'react-virtualized';
-import TextColumnFilter from './columnFilters/textColumnFilter.component';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import * as React from 'react';
+import { TableCellProps } from 'react-virtualized';
+import { formatBytes } from './cellRenderers/cellContentRenderers';
+import TextColumnFilter from './columnFilters/textColumnFilter.component';
+import Table, { ColumnType } from './table.component';
 
 describe('Table component', () => {
   let user: ReturnType<typeof userEvent.setup>;

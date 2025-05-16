@@ -1,13 +1,15 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   render,
-  type RenderResult,
   screen,
   waitFor,
   within,
+  type RenderResult,
 } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
 import {
   dGCommonInitialState,
-  type Investigation,
   readSciGatewayToken,
   useAddToCart,
   useAllFacilityCycles,
@@ -16,10 +18,10 @@ import {
   useInvestigationCount,
   useInvestigationsInfinite,
   useRemoveFromCart,
+  type Investigation,
 } from 'datagateway-common';
 import { createMemoryHistory, type History } from 'history';
 import * as React from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
@@ -34,8 +36,6 @@ import {
 import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import ISISMyDataTable from './isisMyDataTable.component';
-import userEvent from '@testing-library/user-event';
-import axios, { AxiosResponse } from 'axios';
 
 vi.mock('datagateway-common', async () => {
   const originalModule = await vi.importActual('datagateway-common');

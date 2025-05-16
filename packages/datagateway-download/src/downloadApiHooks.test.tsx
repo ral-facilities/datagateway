@@ -1,12 +1,18 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import axios, { AxiosError } from 'axios';
-import { Download, InvalidateTokenType } from 'datagateway-common';
-import { handleICATError, NotificationType } from 'datagateway-common';
+import {
+  Download,
+  InvalidateTokenType,
+  NotificationType,
+  handleICATError,
+} from 'datagateway-common';
 import { createMemoryHistory } from 'history';
+import log from 'loglevel';
 import * as React from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Router } from 'react-router-dom';
 import { DownloadSettingsContext } from './ConfigProvider';
+import { ContributorType } from './downloadApi';
 import {
   useAdminDownloadDeleted,
   useAdminDownloads,
@@ -16,8 +22,8 @@ import {
   useCheckUser,
   useDownloadOrRestoreDownload,
   useDownloadPercentageComplete,
-  useDownloads,
   useDownloadTypeStatuses,
+  useDownloads,
   useFileSizesAndCounts,
   useIsCartMintable,
   useIsTwoLevel,
@@ -27,8 +33,6 @@ import {
   useSubmitCart,
 } from './downloadApiHooks';
 import { mockCartItems, mockDownloadItems, mockedSettings } from './testData';
-import log from 'loglevel';
-import { ContributorType } from './downloadApi';
 
 vi.mock('datagateway-common', async () => {
   const originalModule = await vi.importActual('datagateway-common');

@@ -1,5 +1,4 @@
 import { render } from '@testing-library/react';
-import * as React from 'react';
 import DataCell from './dataCell.component';
 
 describe('Data cell component', () => {

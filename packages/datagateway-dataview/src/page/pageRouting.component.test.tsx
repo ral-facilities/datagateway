@@ -1,14 +1,20 @@
 import * as React from 'react';
-import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 import { StateType } from '../state/app.types';
 
-import { Router } from 'react-router-dom';
-import PageRouting from './pageRouting.component';
-import { Provider } from 'react-redux';
-import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
 import { DataPublication, dGCommonInitialState } from 'datagateway-common';
+import { Provider } from 'react-redux';
+import { Router } from 'react-router-dom';
+import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
+import PageRouting from './pageRouting.component';
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { render, screen } from '@testing-library/react';
+import axios from 'axios';
+import { History, createMemoryHistory } from 'history';
+import { act } from 'react-dom/test-utils';
+import { findColumnHeaderByName, flushPromises } from '../setupTests';
 import {
   checkDatasetId as unmockedCheckDatasetId,
   checkInstrumentAndFacilityCycleId as unmockedCheckInstrumentAndFacilityCycleId,
@@ -17,12 +23,6 @@ import {
   checkProposalName as unmockedCheckProposalName,
   checkStudyDataPublicationId as unmockedCheckStudyDataPublicationId,
 } from './idCheckFunctions';
-import { findColumnHeaderByName, flushPromises } from '../setupTests';
-import { act } from 'react-dom/test-utils';
-import axios from 'axios';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { createMemoryHistory, History } from 'history';
-import { render, screen } from '@testing-library/react';
 
 vi.mock('loglevel');
 vi.mock('./idCheckFunctions');

@@ -1,11 +1,10 @@
-import * as React from 'react';
+import { render, RenderResult, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { AnyAction } from 'redux';
+import { Mock } from 'vitest';
 import { DownloadCartItem } from '../app.types';
 import { NotificationType } from '../state/actions/actions.types';
 import SelectionAlert from './selectionAlert.component';
-import { render, RenderResult, screen, waitFor } from '@testing-library/react';
-import { AnyAction } from 'redux';
-import userEvent from '@testing-library/user-event';
-import { Mock } from 'vitest';
 
 describe('SelectionAlert', () => {
   let events: CustomEvent<AnyAction>[] = [];

@@ -1,10 +1,10 @@
-import * as React from 'react';
-import axios from 'axios';
-import CardView, { type CardViewProps } from './cardView.component';
-import type { Entity, Investigation } from '../app.types';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import axios from 'axios';
+import * as React from 'react';
+import type { Entity, Investigation } from '../app.types';
 import TextColumnFilter from '../table/columnFilters/textColumnFilter.component';
+import CardView, { type CardViewProps } from './cardView.component';
 
 describe('Card View', () => {
   let props: CardViewProps;
