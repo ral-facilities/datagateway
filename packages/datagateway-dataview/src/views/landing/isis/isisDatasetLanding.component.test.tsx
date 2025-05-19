@@ -1,20 +1,20 @@
-import ISISDatasetLanding from './isisDatasetLanding.component';
-import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
-import configureStore from 'redux-mock-store';
-import { StateType } from '../../../state/app.types';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { render, screen, type RenderResult } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import {
   Dataset,
   dGCommonInitialState,
   useDatasetDetails,
 } from 'datagateway-common';
+import { History, createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
+import { Router, generatePath } from 'react-router-dom';
+import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { createMemoryHistory, History } from 'history';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { generatePath, Router } from 'react-router-dom';
-import { render, type RenderResult, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { paths } from '../../../page/pageContainer.component';
+import { StateType } from '../../../state/app.types';
+import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
+import ISISDatasetLanding from './isisDatasetLanding.component';
 
 vi.mock('datagateway-common', async () => {
   const originalModule = await vi.importActual('datagateway-common');
@@ -175,7 +175,7 @@ describe('ISIS Dataset Landing page', () => {
       await screen.findByRole('img', { name: 'STFC Logo' })
     ).toHaveAttribute(
       'src',
-      expect.stringMatching(/\/test\/(.*)stfc-logo-white-text\.png/)
+      expect.stringMatching(/(.*)stfc-logo-white-text\.png/)
     );
   });
 

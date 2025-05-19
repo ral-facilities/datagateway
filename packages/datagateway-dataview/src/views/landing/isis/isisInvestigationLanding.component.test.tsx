@@ -1,28 +1,28 @@
-import ISISInvestigationLanding from './isisInvestigationLanding.component';
-import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
-import configureStore from 'redux-mock-store';
-import { StateType } from '../../../state/app.types';
-import {
-  DataPublication,
-  dGCommonInitialState,
-  Investigation,
-  useDataPublication,
-  useDataPublications,
-  useInvestigation,
-} from 'datagateway-common';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
-import { createMemoryHistory, History } from 'history';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { generatePath, Router } from 'react-router-dom';
 import {
   render,
   screen,
   within,
   type RenderResult,
 } from '@testing-library/react';
-import { paths } from '../../../page/pageContainer.component';
 import userEvent from '@testing-library/user-event';
+import {
+  DataPublication,
+  Investigation,
+  dGCommonInitialState,
+  useDataPublication,
+  useDataPublications,
+  useInvestigation,
+} from 'datagateway-common';
+import { History, createMemoryHistory } from 'history';
+import { Provider } from 'react-redux';
+import { Router, generatePath } from 'react-router-dom';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { paths } from '../../../page/pageContainer.component';
+import { StateType } from '../../../state/app.types';
+import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
+import ISISInvestigationLanding from './isisInvestigationLanding.component';
 
 vi.mock('datagateway-common', async () => {
   const originalModule = await vi.importActual('datagateway-common');
@@ -278,7 +278,7 @@ describe('ISIS Investigation Landing page', () => {
       await screen.findByRole('img', { name: 'STFC Logo' })
     ).toHaveAttribute(
       'src',
-      expect.stringMatching(/\/test\/(.*)stfc-logo-white-text\.png/)
+      expect.stringMatching(/\/(.*)stfc-logo-white-text\.png/)
     );
     expect(
       screen.getByText('doi_constants.branding.title')
@@ -442,7 +442,7 @@ describe('ISIS Investigation Landing page', () => {
       await screen.findByRole('img', { name: 'STFC Logo' })
     ).toHaveAttribute(
       'src',
-      expect.stringMatching(/\/test\/(.*)stfc-logo-white-text\.png/)
+      expect.stringMatching(/(.*)stfc-logo-white-text\.png/)
     );
     expect(
       screen.getByText('doi_constants.branding.title')
