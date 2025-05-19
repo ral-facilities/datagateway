@@ -1,13 +1,4 @@
-import './i18n';
-import React from 'react';
-import ReactDOMClient from 'react-dom/client';
-import './index.css';
-import App from './App';
-import log from 'loglevel';
-import singleSpaReact from 'single-spa-react';
 import axios from 'axios';
-import jsrsasign from 'jsrsasign';
-import { SearchSettings, setSettings } from './settings';
 import {
   MicroFrontendId,
   MicroFrontendToken,
@@ -16,6 +7,15 @@ import {
 } from 'datagateway-common';
 import LogoLight from 'datagateway-common/src/images/datagateway-logo.svg';
 import LogoDark from 'datagateway-common/src/images/datgateway-white-text-blue-mark-logo.svg';
+import jsrsasign from 'jsrsasign';
+import log from 'loglevel';
+import React from 'react';
+import ReactDOMClient from 'react-dom/client';
+import singleSpaReact from 'single-spa-react';
+import App from './App';
+import './i18n';
+import './index.css';
+import { SearchSettings, setSettings } from './settings';
 
 const pluginName = 'datagateway-search';
 
@@ -102,12 +102,9 @@ export const fetchSettings = (): Promise<SearchSettings | void> => {
                   index === 0 && 'helpSteps' in settings
                     ? settings['helpSteps']
                     : [],
-                logoLightMode: settings['pluginHost']
-                  ? settings['pluginHost'] + LogoLight
-                  : undefined,
-                logoDarkMode: settings['pluginHost']
-                  ? settings['pluginHost'] + LogoDark
-                  : undefined,
+                // TODO: when vite 6, explore no-inline w/ pluginHost vs inline as we have to inline in vite 5
+                logoLightMode: LogoLight,
+                logoDarkMode: LogoDark,
                 logoAltText: 'DataGateway',
               },
             };

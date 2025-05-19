@@ -1,10 +1,4 @@
-import './i18n';
-import React from 'react';
-import ReactDOMClient from 'react-dom/client';
-import './index.css';
-import App from './App';
-import singleSpaReact from 'single-spa-react';
-import log from 'loglevel';
+import axios from 'axios';
 import {
   MicroFrontendId,
   MicroFrontendToken,
@@ -13,8 +7,14 @@ import {
 } from 'datagateway-common';
 import LogoLight from 'datagateway-common/src/images/datagateway-logo.svg';
 import LogoDark from 'datagateway-common/src/images/datgateway-white-text-blue-mark-logo.svg';
-import axios from 'axios';
 import jsrsasign from 'jsrsasign';
+import log from 'loglevel';
+import React from 'react';
+import ReactDOMClient from 'react-dom/client';
+import singleSpaReact from 'single-spa-react';
+import App from './App';
+import './i18n';
+import './index.css';
 import { DataviewSettings, setSettings } from './settings';
 
 const pluginName = 'datagateway-dataview';
@@ -128,12 +128,9 @@ export const fetchSettings = (): Promise<DataviewSettings | void> => {
                   index === 0 && 'helpSteps' in settings
                     ? settings['helpSteps']
                     : [],
-                logoLightMode: settings['pluginHost']
-                  ? settings['pluginHost'] + LogoLight
-                  : undefined,
-                logoDarkMode: settings['pluginHost']
-                  ? settings['pluginHost'] + LogoDark
-                  : undefined,
+                // TODO: when vite 6, explore no-inline w/ pluginHost vs inline as we have to inline in vite 5
+                logoLightMode: LogoLight,
+                logoDarkMode: LogoDark,
                 logoAltText: 'DataGateway',
               },
             };

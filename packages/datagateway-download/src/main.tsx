@@ -144,12 +144,9 @@ export const fetchSettings = (): Promise<DownloadSettings | void> => {
               index === 0 && 'helpSteps' in settings
                 ? settings['helpSteps']
                 : [],
-            logoLightMode: settings['pluginHost']
-              ? settings['pluginHost'] + LogoLight
-              : undefined,
-            logoDarkMode: settings['pluginHost']
-              ? settings['pluginHost'] + LogoDark
-              : undefined,
+            // TODO: when vite 6, explore no-inline w/ pluginHost vs inline as we have to inline in vite 5
+            logoLightMode: LogoLight,
+            logoDarkMode: LogoDark,
             logoAltText: 'DataGateway',
           },
         };
