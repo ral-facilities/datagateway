@@ -727,9 +727,6 @@ exports[`Download Status Table > should render correctly 1`] = `
                             d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"
                           />
                         </svg>
-                        <span
-                          class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                        />
                       </button>
                     </div>
                   </div>
@@ -891,9 +888,6 @@ exports[`Download Status Table > should render correctly 1`] = `
                             d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"
                           />
                         </svg>
-                        <span
-                          class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                        />
                       </button>
                     </div>
                   </div>
@@ -1055,9 +1049,6 @@ exports[`Download Status Table > should render correctly 1`] = `
                             d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"
                           />
                         </svg>
-                        <span
-                          class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                        />
                       </button>
                     </div>
                   </div>
@@ -1219,9 +1210,6 @@ exports[`Download Status Table > should render correctly 1`] = `
                             d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"
                           />
                         </svg>
-                        <span
-                          class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                        />
                       </button>
                     </div>
                   </div>
@@ -1364,9 +1352,6 @@ exports[`Download Status Table > should render correctly 1`] = `
                               d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
                             />
                           </svg>
-                          <span
-                            class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                          />
                         </a>
                       </span>
                       <button
@@ -1386,9 +1371,6 @@ exports[`Download Status Table > should render correctly 1`] = `
                             d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"
                           />
                         </svg>
-                        <span
-                          class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                        />
                       </button>
                     </div>
                   </div>

@@ -1,21 +1,22 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
-  render,
   RenderResult,
+  render,
   screen,
   waitFor,
   within,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { DGThemeProvider } from 'datagateway-common';
+import { DownloadSettingsContext } from '../ConfigProvider';
 import {
   downloadDeleted,
   fetchDownloads,
   getDataUrl,
   getPercentageComplete,
 } from '../downloadApi';
-import DownloadStatusTable from './downloadStatusTable.component';
 import { mockDownloadItems, mockedSettings } from '../testData';
-import { DownloadSettingsContext } from '../ConfigProvider';
+import DownloadStatusTable from './downloadStatusTable.component';
 
 vi.mock('../downloadApi');
 
@@ -33,15 +34,22 @@ const renderComponent = ({
   queryClient = createTestQueryClient(),
 } = {}): RenderResult =>
   render(
-    <DownloadSettingsContext.Provider value={settings}>
-      <QueryClientProvider client={queryClient}>
-        <DownloadStatusTable
-          refreshTable={false}
-          setRefreshTable={vi.fn()}
-          setLastCheckedTimestamp={vi.fn()}
-        />
-      </QueryClientProvider>
-    </DownloadSettingsContext.Provider>
+    <DownloadStatusTable
+      refreshTable={false}
+      setRefreshTable={vi.fn()}
+      setLastCheckedTimestamp={vi.fn()}
+    />,
+    {
+      wrapper: (props) => (
+        <DGThemeProvider>
+          <DownloadSettingsContext.Provider value={settings}>
+            <QueryClientProvider client={queryClient}>
+              {props.children}
+            </QueryClientProvider>
+          </DownloadSettingsContext.Provider>
+        </DGThemeProvider>
+      ),
+    }
   );
 
 describe('Download Status Table', () => {
@@ -123,15 +131,11 @@ describe('Download Status Table', () => {
     // pretend the server returns an updated value
     vi.mocked(getPercentageComplete).mockResolvedValue(50);
     rerender(
-      <DownloadSettingsContext.Provider value={settings}>
-        <QueryClientProvider client={queryClient}>
-          <DownloadStatusTable
-            refreshTable
-            setRefreshTable={vi.fn()}
-            setLastCheckedTimestamp={vi.fn()}
-          />
-        </QueryClientProvider>
-      </DownloadSettingsContext.Provider>
+      <DownloadStatusTable
+        refreshTable
+        setRefreshTable={vi.fn()}
+        setLastCheckedTimestamp={vi.fn()}
+      />
     );
 
     await waitFor(() => {
