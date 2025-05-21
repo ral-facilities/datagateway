@@ -42,7 +42,7 @@ jobs:
           cd packages/datagateway-dataview
           echo "VITE_DATAVIEW_BUILD_DIRECTORY=/plugins/datagateway-dataview/" > .env.production
           yarn build
-          mv build datagateway-dataview-$TAG_NAME
+          mv dist datagateway-dataview-$TAG_NAME
           tar -czf ../../datagateway-dataview-$TAG_NAME.tar.gz datagateway-dataview-$TAG_NAME
 
       - name: Build datagateway-download
@@ -50,7 +50,7 @@ jobs:
           cd packages/datagateway-download
           echo "VITE_DOWNLOAD_BUILD_DIRECTORY=/plugins/datagateway-download/" > .env.production
           yarn build
-          mv build datagateway-download-$TAG_NAME
+          mv dist datagateway-download-$TAG_NAME
           tar -czf ../../datagateway-download-$TAG_NAME.tar.gz datagateway-download-$TAG_NAME
 
       - name: Build datagateway-search
@@ -58,7 +58,7 @@ jobs:
           cd packages/datagateway-search
           echo "VITE_SEARCH_BUILD_DIRECTORY=/plugins/datagateway-search/" > .env.production
           yarn build
-          mv build datagateway-search-$TAG_NAME
+          mv dist datagateway-search-$TAG_NAME
           tar -czf ../../datagateway-search-$TAG_NAME.tar.gz datagateway-search-$TAG_NAME
 
       - name: Update snapshot tag
