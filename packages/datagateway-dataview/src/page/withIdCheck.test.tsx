@@ -4,17 +4,18 @@ import { act } from 'react-dom/test-utils';
 import { flushPromises } from '../setupTests';
 import { MemoryRouter } from 'react-router-dom';
 import { render, RenderResult } from '@testing-library/react';
+import type { Mock, MockInstance } from 'vitest';
 
 describe('withIdCheck', () => {
-  let useEffect: jest.SpyInstance;
+  let useEffect: MockInstance;
 
   const Test: React.FC<{ message: string }> = (props: { message: string }) => (
     <div>{props.message}</div>
   );
-  let pendingPromiseMock: jest.Mock;
-  let resolvedTruePromiseMock: jest.Mock;
-  let resolvedFalsePromiseMock: jest.Mock;
-  let rejectedPromiseMock: jest.Mock;
+  let pendingPromiseMock: Mock;
+  let resolvedTruePromiseMock: Mock;
+  let resolvedFalsePromiseMock: Mock;
+  let rejectedPromiseMock: Mock;
 
   const mockUseEffect = (): void => {
     useEffect.mockImplementationOnce((f) => f());
@@ -32,16 +33,16 @@ describe('withIdCheck', () => {
   };
 
   beforeEach(() => {
-    useEffect = jest.spyOn(React, 'useEffect');
-    pendingPromiseMock = jest.fn().mockImplementation(
+    useEffect = vi.spyOn(React, 'useEffect');
+    pendingPromiseMock = vi.fn().mockImplementation(
       () =>
-        new Promise((resolve, reject) => {
+        new Promise((_resolve, _reject) => {
           // do nothing
         })
     );
-    resolvedTruePromiseMock = jest.fn().mockResolvedValue(true);
-    resolvedFalsePromiseMock = jest.fn().mockResolvedValue(false);
-    rejectedPromiseMock = jest.fn().mockRejectedValue('');
+    resolvedTruePromiseMock = vi.fn().mockResolvedValue(true);
+    resolvedFalsePromiseMock = vi.fn().mockResolvedValue(false);
+    rejectedPromiseMock = vi.fn().mockRejectedValue('');
 
     mockUseEffect(); // initial run
     mockUseEffect(); // promise resolve/reject

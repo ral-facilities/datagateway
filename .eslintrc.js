@@ -2,7 +2,6 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   env: {
     browser: true,
-    jest: true,
     es6: true,
     node: true,
   },
@@ -34,6 +33,7 @@ module.exports = {
       },
     ],
     'import/no-extraneous-dependencies': 'error',
+    'react/react-in-jsx-scope': 'off',
   },
   overrides: [
     {

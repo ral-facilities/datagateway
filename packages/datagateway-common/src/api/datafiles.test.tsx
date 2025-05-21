@@ -13,7 +13,7 @@ import {
   useDatafilesPaginated,
 } from './datafiles';
 
-jest.mock('../handleICATError');
+vi.mock('../handleICATError');
 
 describe('datafile api functions', () => {
   let mockData: Datafile[] = [];
@@ -47,14 +47,14 @@ describe('datafile api functions', () => {
   });
 
   afterEach(() => {
-    (handleICATError as jest.Mock).mockClear();
-    (axios.get as jest.Mock).mockClear();
-    jest.restoreAllMocks();
+    vi.mocked(handleICATError).mockClear();
+    vi.mocked(axios.get).mockClear();
+    vi.restoreAllMocks();
   });
 
   describe('useDatafilesPaginated', () => {
     it('sends axios request to fetch paginated datafiles and returns successful response', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: mockData,
       });
 
@@ -99,7 +99,7 @@ describe('datafile api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data).toEqual(mockData);
@@ -113,11 +113,11 @@ describe('datafile api functions', () => {
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      expect(axios.get as jest.Mock).toHaveBeenCalledTimes(2);
+      expect(vi.mocked(axios.get)).toHaveBeenCalledTimes(2);
     });
 
     it('sends axios request to fetch paginated datafiles and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
       const { result } = renderHook(() => useDatafilesPaginated(), {
@@ -136,7 +136,7 @@ describe('datafile api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
       expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
@@ -145,8 +145,8 @@ describe('datafile api functions', () => {
 
   describe('useDatafilesInfinite', () => {
     it('sends axios request to fetch infinite datafiles and returns successful response', async () => {
-      (axios.get as jest.Mock).mockImplementation((url, options) =>
-        options.params.get('skip') === '0'
+      vi.mocked(axios.get).mockImplementation((url, options) =>
+        options?.params.get('skip') === '0'
           ? Promise.resolve({ data: mockData[0] })
           : Promise.resolve({ data: mockData[1] })
       );
@@ -192,10 +192,10 @@ describe('datafile api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
-      expect(result.current.data.pages).toStrictEqual([mockData[0]]);
+      expect(result.current.data?.pages).toStrictEqual([mockData[0]]);
 
       await result.current.fetchNextPage({
         pageParam: { startIndex: 50, stopIndex: 74 },
@@ -212,11 +212,11 @@ describe('datafile api functions', () => {
       );
       params.set('skip', JSON.stringify(50));
       params.set('limit', JSON.stringify(25));
-      expect((axios.get as jest.Mock).mock.calls[1][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[1][1]?.params.toString()).toBe(
         params.toString()
       );
 
-      expect(result.current.data.pages).toStrictEqual([
+      expect(result.current.data?.pages).toStrictEqual([
         mockData[0],
         mockData[1],
       ]);
@@ -230,11 +230,11 @@ describe('datafile api functions', () => {
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      expect(axios.get as jest.Mock).toHaveBeenCalledTimes(3);
+      expect(vi.mocked(axios.get)).toHaveBeenCalledTimes(3);
     });
 
     it('sends axios request to fetch infinite datafiles and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
       const { result } = renderHook(() => useDatafilesInfinite(), {
@@ -253,7 +253,7 @@ describe('datafile api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
       expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
@@ -262,7 +262,7 @@ describe('datafile api functions', () => {
 
   describe('useDatafileCount', () => {
     it('sends axios request to fetch datafile count and returns successful response', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: mockData.length,
       });
 
@@ -295,14 +295,14 @@ describe('datafile api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data).toEqual(mockData.length);
     });
 
     it('sends axios request to fetch datafile count and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
       const { result } = renderHook(() => useDatafileCount(), {
@@ -317,7 +317,7 @@ describe('datafile api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
       expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
@@ -326,7 +326,7 @@ describe('datafile api functions', () => {
 
   describe('useDatafileDetails', () => {
     it('sends axios request to fetch datafile details and returns successful response', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: [mockData[0]],
       });
 
@@ -349,14 +349,14 @@ describe('datafile api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data).toEqual(mockData[0]);
     });
 
     it('sends axios request to fetch datafile details and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
       const { result } = renderHook(() => useDatafileDetails(1), {
@@ -371,16 +371,14 @@ describe('datafile api functions', () => {
 
   describe('useDatafileContent', () => {
     it('should send a request to download datafile to a blob', async () => {
-      (
-        axios.get as jest.MockedFunction<typeof axios.get>
-      ).mockResolvedValueOnce({
+      vi.mocked(axios.get).mockResolvedValueOnce({
         data: 'datafile content',
       });
-      const downloadProgressCb = jest.fn();
-      jest.spyOn(global, 'Blob').mockImplementationOnce(
+      const downloadProgressCb = vi.fn();
+      vi.spyOn(global, 'Blob').mockImplementationOnce(
         (data) =>
           ({
-            text: () => Promise.resolve(data[0] as string),
+            text: () => Promise.resolve(data?.[0] as string),
           } as unknown as Blob)
       );
 
@@ -406,7 +404,7 @@ describe('datafile api functions', () => {
           },
         }
       );
-      expect(await result.current.data.text()).toEqual('datafile content');
+      expect(await result.current.data?.text()).toEqual('datafile content');
     });
 
     it('should call the download progress callback when progress is made for the download', async () => {
@@ -414,16 +412,14 @@ describe('datafile api functions', () => {
         loaded: 2,
         total: 10,
       });
-      (axios.get as jest.MockedFunction<typeof axios.get>).mockImplementation(
-        (_, config) => {
-          config.onDownloadProgress(mockProgressEvent);
-          return new Promise((_) => {
-            // never resolve the promise
-            // pretend the download is still going
-          });
-        }
-      );
-      const downloadProgressCb = jest.fn();
+      vi.mocked(axios.get).mockImplementation((_, config) => {
+        config?.onDownloadProgress?.(mockProgressEvent);
+        return new Promise((_) => {
+          // never resolve the promise
+          // pretend the download is still going
+        });
+      });
+      const downloadProgressCb = vi.fn();
 
       renderHook(
         () =>
@@ -440,7 +436,7 @@ describe('datafile api functions', () => {
     });
 
     it('should call handleICATError when the query for datafile content fails', async () => {
-      (axios.get as jest.MockedFunction<typeof axios.get>).mockRejectedValue({
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
 
@@ -448,7 +444,7 @@ describe('datafile api functions', () => {
         () =>
           useDatafileContent({
             datafileId: 1,
-            onDownloadProgress: jest.fn(),
+            onDownloadProgress: vi.fn(),
           }),
         { wrapper: createReactQueryWrapper() }
       );
@@ -461,8 +457,8 @@ describe('datafile api functions', () => {
 
   describe('downloadDatafile', () => {
     it('should create a download for the datafile with a server URL', async () => {
-      jest.spyOn(document, 'createElement');
-      jest.spyOn(document.body, 'appendChild');
+      vi.spyOn(document, 'createElement');
+      vi.spyOn(document.body, 'appendChild');
 
       downloadDatafile('https://www.example.com/ids', 1, 'test');
 
@@ -475,8 +471,8 @@ describe('datafile api functions', () => {
     });
 
     it('should create a download for the datafile with the given Blob content', async () => {
-      jest.spyOn(document, 'createElement');
-      jest.spyOn(document.body, 'appendChild');
+      vi.spyOn(document, 'createElement');
+      vi.spyOn(document.body, 'appendChild');
 
       downloadDatafile(
         'https://www.example.com/ids',

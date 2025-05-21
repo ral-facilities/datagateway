@@ -3,14 +3,14 @@ import { renderHook } from '@testing-library/react';
 
 describe('Utils', () => {
   describe('useAfterMountEffect', () => {
-    const mockFunction = jest.fn();
+    const mockFunction = vi.fn();
 
     afterEach(() => {
       mockFunction.mockClear();
     });
 
     it('calls effect only upon prop changes, not on mount', () => {
-      const callback = jest.fn();
+      const callback = vi.fn();
 
       const { rerender } = renderHook(() => useAfterMountEffect(callback));
 
@@ -21,7 +21,7 @@ describe('Utils', () => {
     });
 
     it('respects dependency array', () => {
-      const callback = jest.fn();
+      const callback = vi.fn();
 
       const { rerender } = renderHook(
         (testProp) => useAfterMountEffect(callback, [testProp]),

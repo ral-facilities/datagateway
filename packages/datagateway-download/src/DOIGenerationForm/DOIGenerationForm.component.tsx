@@ -40,7 +40,7 @@ const DOIGenerationForm: React.FC = () => {
   const [showMintConfirmation, setShowMintConfirmation] = React.useState(false);
 
   const handleTabChange = (
-    event: React.SyntheticEvent,
+    _event: React.SyntheticEvent,
     newValue: 'investigation' | 'dataset' | 'datafile'
   ): void => {
     setCurrentTab(newValue);

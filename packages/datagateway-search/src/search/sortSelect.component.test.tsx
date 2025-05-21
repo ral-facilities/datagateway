@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { render, screen } from '@testing-library/react';
 import SortSelectComponent from './sortSelect.component';
 import { MemoryRouter, Router } from 'react-router-dom';

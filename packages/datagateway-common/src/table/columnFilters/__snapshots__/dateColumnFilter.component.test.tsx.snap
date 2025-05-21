@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Date filter component DatePicker functionality useDateFilter hook returns a function which can generate a working date filter 1`] = `
+exports[`Date filter component > DatePicker functionality > useDateFilter hook returns a function which can generate a working date filter 1`] = `
 <DocumentFragment>
   <form>
     <div
@@ -21,7 +21,7 @@ exports[`Date filter component DatePicker functionality useDateFilter hook retur
           value=""
         />
         <div
-          class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-standard MuiInputAdornment-sizeMedium css-1laqsz7-MuiInputAdornment-root"
+          class="MuiInputAdornment-root MuiInputAdornment-positionEnd css-1laqsz7-MuiInputAdornment-root"
         >
           <button
             aria-label="Start Date filter from, date picker"
@@ -65,7 +65,7 @@ exports[`Date filter component DatePicker functionality useDateFilter hook retur
           value=""
         />
         <div
-          class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-standard MuiInputAdornment-sizeMedium css-1laqsz7-MuiInputAdornment-root"
+          class="MuiInputAdornment-root MuiInputAdornment-positionEnd css-1laqsz7-MuiInputAdornment-root"
         >
           <button
             aria-label="Start Date filter to, date picker"
@@ -95,7 +95,7 @@ exports[`Date filter component DatePicker functionality useDateFilter hook retur
 </DocumentFragment>
 `;
 
-exports[`Date filter component renders correctly 1`] = `
+exports[`Date filter component > renders correctly 1`] = `
 <DocumentFragment>
   <form>
     <div
@@ -116,7 +116,7 @@ exports[`Date filter component renders correctly 1`] = `
           value="1999-01-01"
         />
         <div
-          class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-standard MuiInputAdornment-sizeMedium css-1laqsz7-MuiInputAdornment-root"
+          class="MuiInputAdornment-root MuiInputAdornment-positionEnd css-1laqsz7-MuiInputAdornment-root"
         >
           <button
             aria-label="test filter from, date picker"
@@ -160,7 +160,7 @@ exports[`Date filter component renders correctly 1`] = `
           value="2000-01-01"
         />
         <div
-          class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-standard MuiInputAdornment-sizeMedium css-1laqsz7-MuiInputAdornment-root"
+          class="MuiInputAdornment-root MuiInputAdornment-positionEnd css-1laqsz7-MuiInputAdornment-root"
         >
           <button
             aria-label="test filter to, date picker"
@@ -190,7 +190,7 @@ exports[`Date filter component renders correctly 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Date filter component renders correctly with default values 1`] = `
+exports[`Date filter component > renders correctly with default values 1`] = `
 <DocumentFragment>
   <form>
     <div
@@ -211,7 +211,7 @@ exports[`Date filter component renders correctly with default values 1`] = `
           value="1999-01-01"
         />
         <div
-          class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-standard MuiInputAdornment-sizeMedium css-1laqsz7-MuiInputAdornment-root"
+          class="MuiInputAdornment-root MuiInputAdornment-positionEnd css-1laqsz7-MuiInputAdornment-root"
         >
           <button
             aria-label="test filter from, date picker"
@@ -255,7 +255,7 @@ exports[`Date filter component renders correctly with default values 1`] = `
           value="2000-01-01"
         />
         <div
-          class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-standard MuiInputAdornment-sizeMedium css-1laqsz7-MuiInputAdornment-root"
+          class="MuiInputAdornment-root MuiInputAdornment-positionEnd css-1laqsz7-MuiInputAdornment-root"
         >
           <button
             aria-label="test filter to, date picker"

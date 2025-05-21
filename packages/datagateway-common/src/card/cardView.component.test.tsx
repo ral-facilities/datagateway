@@ -1,19 +1,19 @@
-import * as React from 'react';
-import axios from 'axios';
-import CardView, { type CardViewProps } from './cardView.component';
-import { TextColumnFilter } from '..';
-import type { Entity, Investigation } from '../app.types';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import axios from 'axios';
+import * as React from 'react';
+import type { Entity, Investigation } from '../app.types';
+import TextColumnFilter from '../table/columnFilters/textColumnFilter.component';
+import CardView, { type CardViewProps } from './cardView.component';
 
 describe('Card View', () => {
   let props: CardViewProps;
   let user: ReturnType<typeof userEvent.setup>;
 
-  const onFilter = jest.fn();
-  const onPageChange = jest.fn();
-  const onSort = jest.fn();
-  const onResultsChange = jest.fn();
+  const onFilter = vi.fn();
+  const onPageChange = vi.fn();
+  const onSort = vi.fn();
+  const onResultsChange = vi.fn();
 
   beforeEach(() => {
     user = userEvent.setup();
@@ -60,16 +60,16 @@ describe('Card View', () => {
       onResultsChange: onResultsChange,
     };
 
-    (axios.get as jest.Mock).mockImplementation(() =>
+    vi.mocked(axios.get).mockImplementation(() =>
       Promise.resolve({ data: [] })
     );
-    global.Date.now = jest.fn(() => 1);
+    global.Date.now = vi.fn(() => 1);
     // Prevent error logging
-    window.scrollTo = jest.fn();
+    window.scrollTo = vi.fn();
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly', () => {
@@ -82,7 +82,7 @@ describe('Card View', () => {
       <TextColumnFilter
         label={label}
         value={{ value: '', type: 'include' }}
-        onChange={jest.fn()}
+        onChange={vi.fn()}
       />
     );
     const updatedProps = {

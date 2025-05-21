@@ -1,5 +1,4 @@
 import React from 'react';
-import ResizeObserver from 'resize-observer-polyfill';
 import { StateType } from './state/app.types';
 import { useDispatch, useSelector } from 'react-redux';
 import {

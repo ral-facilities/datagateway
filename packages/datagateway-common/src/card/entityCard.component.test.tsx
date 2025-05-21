@@ -1,8 +1,7 @@
-import * as React from 'react';
-import type { Investigation } from '../app.types';
-import EntityCard from './entityCard.component';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import type { Investigation } from '../app.types';
+import EntityCard from './entityCard.component';
 
 describe('Card', () => {
   let user: ReturnType<typeof userEvent.setup>;
@@ -70,7 +69,7 @@ describe('Card', () => {
 
   it('shows a collapsed description if it is too long', async () => {
     // Mock the value of clientHeight to be greater than defaultCollapsedHeight
-    Object.defineProperty(HTMLElement.prototype, 'clientHeight', {
+    Object.defineProperty(HTMLParagraphElement.prototype, 'clientHeight', {
       configurable: true,
       value: 101,
     });
@@ -101,7 +100,7 @@ describe('Card', () => {
 
   it('no card-description-link if clientHeight < defaultCollapsedHeight', async () => {
     // Mock the value of clientHeight to be greater than defaultCollapsedHeight
-    Object.defineProperty(HTMLElement.prototype, 'clientHeight', {
+    Object.defineProperty(HTMLParagraphElement.prototype, 'clientHeight', {
       configurable: true,
       value: 0,
     });

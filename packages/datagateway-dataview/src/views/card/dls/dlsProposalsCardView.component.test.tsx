@@ -4,7 +4,6 @@ import {
   useInvestigationCount,
   useInvestigationsPaginated,
 } from 'datagateway-common';
-import * as React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
@@ -17,14 +16,14 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, type RenderResult, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    useInvestigationCount: jest.fn(),
-    useInvestigationsPaginated: jest.fn(),
+    useInvestigationCount: vi.fn(),
+    useInvestigationsPaginated: vi.fn(),
   };
 });
 
@@ -65,21 +64,21 @@ describe('DLS Proposals - Card View', () => {
       })
     );
 
-    (useInvestigationCount as jest.Mock).mockReturnValue({
+    vi.mocked(useInvestigationCount, { partial: true }).mockReturnValue({
       data: 1,
       isLoading: false,
     });
-    (useInvestigationsPaginated as jest.Mock).mockReturnValue({
+    vi.mocked(useInvestigationsPaginated, { partial: true }).mockReturnValue({
       data: cardData,
       isLoading: false,
     });
 
     // Prevent error logging
-    window.scrollTo = jest.fn();
+    window.scrollTo = vi.fn();
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('updates filter query params on text filter', async () => {
@@ -133,8 +132,10 @@ describe('DLS Proposals - Card View', () => {
   });
 
   it('renders fine with incomplete data', () => {
-    (useInvestigationCount as jest.Mock).mockReturnValueOnce({});
-    (useInvestigationsPaginated as jest.Mock).mockReturnValueOnce({});
+    vi.mocked(useInvestigationCount, { partial: true }).mockReturnValueOnce({});
+    vi.mocked(useInvestigationsPaginated, {
+      partial: true,
+    }).mockReturnValueOnce({});
 
     expect(() => renderComponent()).not.toThrowError();
   });

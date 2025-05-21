@@ -99,7 +99,7 @@ const VisitDetailsPanel = (
         indicatorColor="secondary"
         scrollButtons="auto"
         value={selectedTab ?? DEFAULT_TAB}
-        onChange={(event, newValue) => changeTab(newValue)}
+        onChange={(_event, newValue) => changeTab(newValue)}
         aria-label={t('investigations.details.tabs_label')}
       >
         <Tab

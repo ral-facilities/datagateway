@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 
 import type { StateType } from '../../../state/app.types';
@@ -10,8 +9,6 @@ import thunk from 'redux-thunk';
 import { generatePath, Router } from 'react-router-dom';
 import { createMemoryHistory, type History } from 'history';
 import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
   findAllRows,
   findCellInRow,
   findColumnHeaderByName,
@@ -107,7 +104,7 @@ describe('ISIS Data Publication table component', () => {
       })
     );
 
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         switch (url) {
@@ -127,11 +124,11 @@ describe('ISIS Data Publication table component', () => {
       });
 
     // Prevent error logging
-    window.scrollTo = jest.fn();
+    window.scrollTo = vi.fn();
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('Study Data Publication', () => {
@@ -208,9 +205,9 @@ describe('ISIS Data Publication table component', () => {
       );
 
       // check that the data request is sent only once after mounting
-      const datafilesCalls = (axios.get as jest.Mock).mock.calls.filter(
-        (call) => call[0] === '/datapublications'
-      );
+      const datafilesCalls = vi
+        .mocked(axios.get)
+        .mock.calls.filter((call) => call[0] === '/datapublications');
       expect(datafilesCalls).toHaveLength(1);
     });
 
@@ -300,8 +297,6 @@ describe('ISIS Data Publication table component', () => {
     });
 
     it('updates filter query params on date filter', async () => {
-      applyDatePickerWorkaround();
-
       renderComponent('2');
 
       const filterInput = await screen.findByRole('textbox', {
@@ -324,8 +319,6 @@ describe('ISIS Data Publication table component', () => {
 
       expect(history.length).toBe(3);
       expect(history.location.search).toBe('?');
-
-      cleanupDatePickerWorkaround();
     });
 
     it('uses default sort', async () => {
@@ -339,9 +332,9 @@ describe('ISIS Data Publication table component', () => {
       );
 
       // check that the data request is sent only once after mounting
-      const datafilesCalls = (axios.get as jest.Mock).mock.calls.filter(
-        (call) => call[0] === '/datapublications'
-      );
+      const datafilesCalls = vi
+        .mocked(axios.get)
+        .mock.calls.filter((call) => call[0] === '/datapublications');
       expect(datafilesCalls).toHaveLength(1);
     });
 

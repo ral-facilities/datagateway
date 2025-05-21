@@ -8,8 +8,8 @@ import { usePushFilter, usePushFilters } from '../../api';
 import { render, renderHook, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-jest.mock('../../api');
-jest.useFakeTimers();
+vi.mock('../../api');
+vi.useFakeTimers({ toFake: ['Date', 'setTimeout', 'clearTimeout'] });
 
 describe('Text filter component', () => {
   let user: ReturnType<typeof userEvent.setup>;
@@ -23,7 +23,7 @@ describe('Text filter component', () => {
       <TextColumnFilter
         value={{ value: 'test value', type: 'include' }}
         label="test"
-        onChange={jest.fn()}
+        onChange={vi.fn()}
       />
     );
     expect(asFragment()).toMatchSnapshot();
@@ -35,14 +35,14 @@ describe('Text filter component', () => {
         value={{ value: undefined, type: 'include' }}
         defaultFilter={{ value: 'test default value', type: 'include' }}
         label="test"
-        onChange={jest.fn()}
+        onChange={vi.fn()}
       />
     );
     expect(asFragment()).toMatchSnapshot();
   });
 
   it('calls the onChange method once when input is typed while include filter type is selected and calls again by debounced function after timeout', async () => {
-    const onChange = jest.fn();
+    const onChange = vi.fn();
 
     render(
       <TextColumnFilter
@@ -60,7 +60,7 @@ describe('Text filter component', () => {
     await user.clear(textFilterInput);
     await user.type(textFilterInput, 'test-again');
 
-    jest.advanceTimersByTime(DEBOUNCE_DELAY);
+    vi.advanceTimersByTime(DEBOUNCE_DELAY);
 
     expect(onChange).toHaveBeenCalledTimes(1);
     expect(onChange).toHaveBeenLastCalledWith({
@@ -70,7 +70,7 @@ describe('Text filter component', () => {
   });
 
   it('calls the onChange method once when input is typed while exclude filter type is selected and calls again by debounced function after timeout', async () => {
-    const onChange = jest.fn();
+    const onChange = vi.fn();
 
     render(
       <TextColumnFilter
@@ -88,7 +88,7 @@ describe('Text filter component', () => {
     await user.clear(textFilterInput);
     await user.type(textFilterInput, 'test-again');
 
-    jest.advanceTimersByTime(DEBOUNCE_DELAY);
+    vi.advanceTimersByTime(DEBOUNCE_DELAY);
 
     expect(onChange).toHaveBeenCalledTimes(1);
     expect(onChange).toHaveBeenLastCalledWith({
@@ -98,7 +98,7 @@ describe('Text filter component', () => {
   });
 
   it('calls the onChange method once when input is typed while exact filter type is selected and calls again by debounced function after timeout', async () => {
-    const onChange = jest.fn();
+    const onChange = vi.fn();
 
     render(
       <TextColumnFilter
@@ -116,7 +116,7 @@ describe('Text filter component', () => {
     await user.clear(textFilterInput);
     await user.type(textFilterInput, 'test-again');
 
-    jest.advanceTimersByTime(DEBOUNCE_DELAY);
+    vi.advanceTimersByTime(DEBOUNCE_DELAY);
 
     expect(onChange).toHaveBeenCalledTimes(1);
     expect(onChange).toHaveBeenLastCalledWith({
@@ -126,7 +126,7 @@ describe('Text filter component', () => {
   });
 
   it('calls the onChange method once when include filter type is selected while there is input', async () => {
-    const onChange = jest.fn();
+    const onChange = vi.fn();
 
     render(
       <TextColumnFilter
@@ -152,7 +152,7 @@ describe('Text filter component', () => {
   });
 
   it('calls the onChange method once when exclude filter type is selected while there is input', async () => {
-    const onChange = jest.fn();
+    const onChange = vi.fn();
 
     render(
       <TextColumnFilter
@@ -178,7 +178,7 @@ describe('Text filter component', () => {
   });
 
   it('calls the onChange method once when exact filter type is selected while there is input', async () => {
-    const onChange = jest.fn();
+    const onChange = vi.fn();
 
     render(
       <TextColumnFilter
@@ -204,7 +204,7 @@ describe('Text filter component', () => {
   });
 
   it('calls the onChange method once when input is cleared and calls again by debounced function after timeout', async () => {
-    const onChange = jest.fn();
+    const onChange = vi.fn();
 
     render(
       <TextColumnFilter
@@ -221,13 +221,13 @@ describe('Text filter component', () => {
       })
     );
 
-    jest.advanceTimersByTime(DEBOUNCE_DELAY);
+    vi.advanceTimersByTime(DEBOUNCE_DELAY);
     expect(onChange).toHaveBeenCalledTimes(1);
     expect(onChange).toHaveBeenLastCalledWith(null);
   });
 
   it('does not call the onChange method when filter type is selected while input is empty', async () => {
-    const onChange = jest.fn();
+    const onChange = vi.fn();
 
     render(
       <TextColumnFilter
@@ -249,7 +249,7 @@ describe('Text filter component', () => {
   });
 
   it('updates the input value when the value prop changes', async () => {
-    const baseProps = { label: 'test', onChange: jest.fn(), value: undefined };
+    const baseProps = { label: 'test', onChange: vi.fn(), value: undefined };
 
     const { rerender } = render(<TextColumnFilter {...baseProps} />);
 
@@ -270,8 +270,8 @@ describe('Text filter component', () => {
   });
 
   it('useTextFilter hook returns a function which can generate a working text filter', async () => {
-    const pushFilter = jest.fn();
-    (usePushFilter as jest.Mock).mockImplementation(() => pushFilter);
+    const pushFilter = vi.fn();
+    vi.mocked(usePushFilter).mockImplementation(() => pushFilter);
 
     const { result } = renderHook(() => useTextFilter({}));
     let textFilter;
@@ -291,7 +291,7 @@ describe('Text filter component', () => {
     await user.clear(textFilterInput);
     await user.type(textFilterInput, 'test');
 
-    jest.advanceTimersByTime(DEBOUNCE_DELAY);
+    vi.advanceTimersByTime(DEBOUNCE_DELAY);
 
     expect(pushFilter).toHaveBeenCalledTimes(1);
     expect(pushFilter).toHaveBeenLastCalledWith('name', {
@@ -301,15 +301,15 @@ describe('Text filter component', () => {
 
     await user.clear(textFilterInput);
 
-    jest.advanceTimersByTime(DEBOUNCE_DELAY);
+    vi.advanceTimersByTime(DEBOUNCE_DELAY);
 
     expect(pushFilter).toHaveBeenCalledTimes(2);
     expect(pushFilter).toHaveBeenLastCalledWith('name', null);
   });
 
   it('usePrincipalExperimenterFilter hook returns a function which can generate a working PI filter', async () => {
-    const pushFilters = jest.fn();
-    (usePushFilters as jest.Mock).mockImplementation(() => pushFilters);
+    const pushFilters = vi.fn();
+    vi.mocked(usePushFilters).mockImplementation(() => pushFilters);
 
     const { result } = renderHook(() => usePrincipalExperimenterFilter({}));
     let piFilter;
@@ -332,7 +332,7 @@ describe('Text filter component', () => {
     await user.clear(textFilterInput);
     await user.type(textFilterInput, 'test');
 
-    jest.advanceTimersByTime(DEBOUNCE_DELAY);
+    vi.advanceTimersByTime(DEBOUNCE_DELAY);
 
     expect(pushFilters).toHaveBeenCalledTimes(1);
     expect(pushFilters).toHaveBeenLastCalledWith([
@@ -354,7 +354,7 @@ describe('Text filter component', () => {
 
     await user.clear(textFilterInput);
 
-    jest.advanceTimersByTime(DEBOUNCE_DELAY);
+    vi.advanceTimersByTime(DEBOUNCE_DELAY);
 
     expect(pushFilters).toHaveBeenCalledTimes(2);
     expect(pushFilters).toHaveBeenLastCalledWith([

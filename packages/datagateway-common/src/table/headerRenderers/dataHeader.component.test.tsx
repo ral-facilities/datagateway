@@ -1,14 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as React from 'react';
-import DataHeader from './dataHeader.component';
-import TextColumnFilter from '../columnFilters/textColumnFilter.component';
 import { Filter } from '../../app.types';
+import TextColumnFilter from '../columnFilters/textColumnFilter.component';
+import DataHeader from './dataHeader.component';
 
 describe('Data column header component', () => {
   let user: ReturnType<typeof userEvent.setup>;
-  const onSort = jest.fn();
-  const resizeColumn = jest.fn();
+  const onSort = vi.fn();
+  const resizeColumn = vi.fn();
   const dataHeaderProps = {
     label: 'Test',
     labelString: 'Test',
@@ -21,13 +21,13 @@ describe('Data column header component', () => {
     },
   };
 
-  const filterComponent = jest.fn(
+  const filterComponent = vi.fn(
     (
       label: string,
       dataKey: string,
       defaultValue?: Filter
     ): React.ReactElement => (
-      <TextColumnFilter label={label} onChange={jest.fn()} value={undefined} />
+      <TextColumnFilter label={label} onChange={vi.fn()} value={undefined} />
     )
   );
 
@@ -129,7 +129,7 @@ describe('Data column header component', () => {
   });
 
   it('calls the onDefaultFilter method and supplies default filter to filter component when default filter is specified', () => {
-    const onDefaultFilter = jest.fn();
+    const onDefaultFilter = vi.fn();
     render(
       <DataHeader
         {...dataHeaderProps}
@@ -150,7 +150,7 @@ describe('Data column header component', () => {
   });
 
   it('does not call the onDefaultFilter method and not supply default filter to filter component when default filter is specified but filters is not empty', () => {
-    const onDefaultFilter = jest.fn();
+    const onDefaultFilter = vi.fn();
     render(
       <DataHeader
         {...dataHeaderProps}

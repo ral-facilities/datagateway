@@ -1,14 +1,13 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { RenderResult } from '@testing-library/react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios from 'axios';
-import * as React from 'react';
 import { Provider } from 'react-redux';
 import { combineReducers, createStore } from 'redux';
-import { StateType } from '../../../lib';
-import dGCommonReducer from '../../state/reducers/dgcommon.reducer';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { Instrument } from '../../app.types';
+import { StateType } from '../../state/app.types';
+import dGCommonReducer from '../../state/reducers/dgcommon.reducer';
 import InstrumentDetailsPanel from './instrumentDetailsPanel.component';
 
 function renderComponent({
@@ -49,13 +48,13 @@ describe('Instrument details panel component', () => {
       url: 'www.example.com',
     };
 
-    axios.get = jest.fn().mockResolvedValue({
+    axios.get = vi.fn().mockResolvedValue({
       data: [rowData],
     });
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should render correctly', async () => {
@@ -149,7 +148,7 @@ describe('Instrument details panel component', () => {
       },
     ];
 
-    const mockDetailsPanelResize = jest.fn();
+    const mockDetailsPanelResize = vi.fn();
 
     renderComponent({
       rowData,
@@ -199,7 +198,7 @@ describe('Instrument details panel component', () => {
 
   it('should show "No <field> provided" incase of a null field', async () => {
     const { description, type, url, ...amendedRowData } = rowData;
-    axios.get = jest.fn().mockResolvedValue({
+    axios.get = vi.fn().mockResolvedValue({
       data: [amendedRowData],
     });
 

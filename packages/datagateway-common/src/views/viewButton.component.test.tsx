@@ -1,13 +1,13 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as React from 'react';
-import configureStore from 'redux-mock-store';
-import { initialState as dGCommonInitialState } from '../state/reducers/dgcommon.reducer';
-import type { StateType } from '../state/app.types';
 import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import type { StateType } from '../state/app.types';
+import { initialState as dGCommonInitialState } from '../state/reducers/dgcommon.reducer';
 import ViewButton from './viewButton.component';
 
 describe('Generic view button', () => {
@@ -53,7 +53,7 @@ describe('Generic view button', () => {
   });
 
   it('displays as view table when card view is enabled', async () => {
-    render(<ViewButton viewCards handleButtonChange={jest.fn()} />, {
+    render(<ViewButton viewCards handleButtonChange={vi.fn()} />, {
       wrapper: Wrapper,
     });
 
@@ -66,7 +66,7 @@ describe('Generic view button', () => {
   });
 
   it('displays as view cards when card view is disabled', () => {
-    render(<ViewButton viewCards={false} handleButtonChange={jest.fn()} />, {
+    render(<ViewButton viewCards={false} handleButtonChange={vi.fn()} />, {
       wrapper: Wrapper,
     });
 
@@ -80,7 +80,7 @@ describe('Generic view button', () => {
 
   it('calls the handle button change when the view button is clicked', async () => {
     const user = userEvent.setup();
-    const handleButtonChange = jest.fn();
+    const handleButtonChange = vi.fn();
 
     render(<ViewButton viewCards handleButtonChange={handleButtonChange} />, {
       wrapper: Wrapper,
@@ -96,7 +96,7 @@ describe('Generic view button', () => {
 
   it('is disabled when prop disabled is equal to true', async () => {
     const user = userEvent.setup();
-    const handleButtonChange = jest.fn();
+    const handleButtonChange = vi.fn();
 
     render(
       <ViewButton viewCards disabled handleButtonChange={handleButtonChange} />,

@@ -4,7 +4,6 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import React from 'react';
 
 interface ToolbarButtonProps
   extends Omit<ButtonProps, 'startIcon' | 'children'> {

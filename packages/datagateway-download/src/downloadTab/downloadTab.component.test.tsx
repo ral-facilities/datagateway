@@ -3,7 +3,6 @@ import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { fetchDownloadCart } from 'datagateway-common';
 import { createMemoryHistory, History } from 'history';
-import * as React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Router } from 'react-router-dom';
 import { DownloadSettingsContext } from '../ConfigProvider';
@@ -20,15 +19,15 @@ import {
 import { mockCartItems, mockDownloadItems, mockedSettings } from '../testData';
 import DownloadTabs from './downloadTab.component';
 
-jest.mock('datagateway-common', () => {
-  const og = jest.requireActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const og = await vi.importActual('datagateway-common');
   return {
     __esModule: true,
     ...og,
-    fetchDownloadCart: jest.fn(),
+    fetchDownloadCart: vi.fn(),
   };
 });
-jest.mock('../downloadApi');
+vi.mock('../downloadApi');
 
 describe('DownloadTab', () => {
   let history: History;
@@ -43,34 +42,25 @@ describe('DownloadTab', () => {
     holder.setAttribute('id', 'datagateway-download');
     document.body.appendChild(holder);
 
-    (downloadDeleted as jest.Mock).mockImplementation(() => Promise.resolve());
-    (fetchDownloads as jest.Mock).mockImplementation(() =>
+    vi.mocked(downloadDeleted).mockImplementation(() => Promise.resolve());
+    vi.mocked(fetchDownloads).mockImplementation(() =>
       Promise.resolve(mockDownloadItems)
     );
-    (getDataUrl as jest.Mock).mockImplementation(() => '/getData');
-    (
-      fetchDownloadCart as jest.MockedFunction<typeof fetchDownloadCart>
-    ).mockResolvedValue(mockCartItems);
-    (
-      removeAllDownloadCartItems as jest.MockedFunction<
-        typeof removeAllDownloadCartItems
-      >
-    ).mockResolvedValue();
-    (
-      removeFromCart as jest.MockedFunction<typeof removeFromCart>
-    ).mockImplementation((entityType, entityIds) => {
+    vi.mocked(getDataUrl).mockImplementation(() => '/getData');
+    vi.mocked(fetchDownloadCart).mockResolvedValue(mockCartItems);
+    vi.mocked(removeAllDownloadCartItems).mockResolvedValue();
+    vi.mocked(removeFromCart).mockImplementation((_entityType, entityIds) => {
       return Promise.resolve(
         mockCartItems.filter((item) => !entityIds.includes(item.entityId))
       );
     });
 
-    (
-      getFileSizeAndCount as jest.MockedFunction<typeof getFileSizeAndCount>
-    ).mockResolvedValue({ fileSize: 1, fileCount: 7 });
-    (
-      isCartMintable as jest.MockedFunction<typeof isCartMintable>
-    ).mockResolvedValue(true);
-    (getIsTwoLevel as jest.Mock).mockResolvedValue(false);
+    vi.mocked(getFileSizeAndCount).mockResolvedValue({
+      fileSize: 1,
+      fileCount: 7,
+    });
+    vi.mocked(isCartMintable).mockResolvedValue(true);
+    vi.mocked(getIsTwoLevel).mockResolvedValue(false);
   });
 
   const renderComponent = (): RenderResult => {
@@ -118,7 +108,7 @@ describe('DownloadTab', () => {
 
   it('refreshes downloads when the refresh button is clicked', async () => {
     const mockedDate = new Date(Date.UTC(2025, 4, 14, 14, 0, 0)).toUTCString();
-    global.Date.prototype.toLocaleString = jest.fn(() => mockedDate);
+    global.Date.prototype.toLocaleString = vi.fn(() => mockedDate);
 
     renderComponent();
 
@@ -128,9 +118,7 @@ describe('DownloadTab', () => {
       // no-op
     };
 
-    (
-      fetchDownloads as jest.MockedFunction<typeof fetchDownloads>
-    ).mockImplementation(
+    vi.mocked(fetchDownloads).mockImplementation(
       () =>
         new Promise((res) => {
           // do nothing, simulating pending promise

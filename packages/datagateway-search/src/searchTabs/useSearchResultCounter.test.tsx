@@ -1,15 +1,16 @@
+import { renderHook, waitFor } from '@testing-library/react';
 import * as React from 'react';
+import type { MockedFunction } from 'vitest';
+import { mockSearchResponses } from '../testData';
 import {
-  type SearchResultCountAction,
   SearchResultCountDispatch,
   useSearchResultCounter,
+  type SearchResultCountAction,
 } from './useSearchResultCounter';
-import { renderHook, waitFor } from '@testing-library/react';
-import { mockSearchResponses } from '../testData';
 
 describe('useSearchResultCounter', () => {
-  const mockDispatch: jest.MockedFn<React.Dispatch<SearchResultCountAction>> =
-    jest.fn();
+  const mockDispatch: MockedFunction<React.Dispatch<SearchResultCountAction>> =
+    vi.fn();
 
   function Wrapper({
     children,
@@ -24,7 +25,7 @@ describe('useSearchResultCounter', () => {
   }
 
   afterEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
   });
 
   it('dispatches search result count for the given search responses', () => {

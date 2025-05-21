@@ -1,16 +1,15 @@
-import * as React from 'react';
-import configureStore from 'redux-mock-store';
-import { initialState as dGCommonInitialState } from '../state/reducers/dgcommon.reducer';
-import { StateType } from '../state/app.types';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
-import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { render, screen, type RenderResult } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { Provider } from 'react-redux';
+import { MemoryRouter } from 'react-router-dom';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { StateType } from '../state/app.types';
+import { initialState as dGCommonInitialState } from '../state/reducers/dgcommon.reducer';
 import ClearFiltersButton, {
   ClearFilterProps,
 } from './clearFiltersButton.component';
-import { render, screen, type RenderResult } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 describe('Generic clear filters button', () => {
   const mockStore = configureStore([thunk]);
@@ -18,7 +17,7 @@ describe('Generic clear filters button', () => {
   let props: ClearFilterProps;
   let user: ReturnType<typeof userEvent.setup>;
 
-  const handleButtonClearFilters = jest.fn();
+  const handleButtonClearFilters = vi.fn();
 
   const renderComponent = (props: ClearFilterProps): RenderResult => {
     const store = mockStore(state);
@@ -55,7 +54,7 @@ describe('Generic clear filters button', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     handleButtonClearFilters.mockClear();
   });
 

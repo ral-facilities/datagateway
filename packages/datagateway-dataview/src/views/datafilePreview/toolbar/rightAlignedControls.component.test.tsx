@@ -5,7 +5,6 @@ import {
   screen,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import * as React from 'react';
 import { Provider } from 'react-redux';
 import { combineReducers, createStore } from 'redux';
 import DGDataViewReducer from '../../../state/reducers/dgdataview.reducer';

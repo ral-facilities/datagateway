@@ -1,28 +1,24 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
-  render,
   RenderResult,
+  render,
   screen,
   waitFor,
   within,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import * as React from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { DGThemeProvider } from 'datagateway-common';
+import { DownloadSettingsContext } from '../ConfigProvider';
 import {
   downloadDeleted,
   fetchDownloads,
   getDataUrl,
   getPercentageComplete,
 } from '../downloadApi';
-import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
-} from '../setupTests';
-import DownloadStatusTable from './downloadStatusTable.component';
 import { mockDownloadItems, mockedSettings } from '../testData';
-import { DownloadSettingsContext } from '../ConfigProvider';
+import DownloadStatusTable from './downloadStatusTable.component';
 
-jest.mock('../downloadApi');
+vi.mock('../downloadApi');
 
 const createTestQueryClient = (): QueryClient =>
   new QueryClient({
@@ -38,15 +34,22 @@ const renderComponent = ({
   queryClient = createTestQueryClient(),
 } = {}): RenderResult =>
   render(
-    <DownloadSettingsContext.Provider value={settings}>
-      <QueryClientProvider client={queryClient}>
-        <DownloadStatusTable
-          refreshTable={false}
-          setRefreshTable={jest.fn()}
-          setLastCheckedTimestamp={jest.fn()}
-        />
-      </QueryClientProvider>
-    </DownloadSettingsContext.Provider>
+    <DownloadStatusTable
+      refreshTable={false}
+      setRefreshTable={vi.fn()}
+      setLastCheckedTimestamp={vi.fn()}
+    />,
+    {
+      wrapper: (props) => (
+        <DGThemeProvider>
+          <DownloadSettingsContext.Provider value={settings}>
+            <QueryClientProvider client={queryClient}>
+              {props.children}
+            </QueryClientProvider>
+          </DownloadSettingsContext.Provider>
+        </DGThemeProvider>
+      ),
+    }
   );
 
 describe('Download Status Table', () => {
@@ -55,15 +58,15 @@ describe('Download Status Table', () => {
   beforeEach(() => {
     user = userEvent.setup({ delay: null });
 
-    (downloadDeleted as jest.Mock).mockImplementation(() => Promise.resolve());
-    (fetchDownloads as jest.Mock).mockImplementation(() =>
+    vi.mocked(downloadDeleted).mockImplementation(() => Promise.resolve());
+    vi.mocked(fetchDownloads).mockImplementation(() =>
       Promise.resolve(mockDownloadItems)
     );
-    (getDataUrl as jest.Mock).mockImplementation(() => '/getData');
+    vi.mocked(getDataUrl).mockImplementation(() => '/getData');
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should render correctly', async () => {
@@ -97,9 +100,7 @@ describe('Download Status Table', () => {
   });
 
   it('should refresh data & download progress when required', async () => {
-    (
-      getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>
-    ).mockResolvedValue(30);
+    vi.mocked(getPercentageComplete).mockResolvedValue(30);
     const settings = {
       ...mockedSettings,
       uiFeatures: {
@@ -126,21 +127,15 @@ describe('Download Status Table', () => {
     });
 
     // pretend server returned a different list (with only the restoring download)
-    (fetchDownloads as jest.Mock).mockReturnValueOnce([mockDownloadItems[2]]);
+    vi.mocked(fetchDownloads).mockResolvedValueOnce([mockDownloadItems[2]]);
     // pretend the server returns an updated value
-    (
-      getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>
-    ).mockResolvedValue(50);
+    vi.mocked(getPercentageComplete).mockResolvedValue(50);
     rerender(
-      <DownloadSettingsContext.Provider value={settings}>
-        <QueryClientProvider client={queryClient}>
-          <DownloadStatusTable
-            refreshTable
-            setRefreshTable={jest.fn()}
-            setLastCheckedTimestamp={jest.fn()}
-          />
-        </QueryClientProvider>
-      </DownloadSettingsContext.Provider>
+      <DownloadStatusTable
+        refreshTable
+        setRefreshTable={vi.fn()}
+        setLastCheckedTimestamp={vi.fn()}
+      />
     );
 
     await waitFor(() => {
@@ -279,7 +274,7 @@ describe('Download Status Table', () => {
   });
 
   it('should filter data when text fields are typed into', async () => {
-    (fetchDownloads as jest.Mock).mockImplementation(() =>
+    vi.mocked(fetchDownloads).mockImplementation(() =>
       Promise.resolve([
         ...mockDownloadItems,
         { ...mockDownloadItems[0], id: 11, fileName: 'test-file-11' },
@@ -373,7 +368,6 @@ describe('Download Status Table', () => {
   });
 
   it('should filter data when date filter is altered', async () => {
-    applyDatePickerWorkaround();
     renderComponent();
 
     const dateFromFilterInput = await screen.findByRole('textbox', {
@@ -459,14 +453,10 @@ describe('Download Status Table', () => {
     expect(await screen.findByText('test-file-3')).toBeInTheDocument();
     expect(await screen.findByText('test-file-4')).toBeInTheDocument();
     expect(await screen.findByText('test-file-5')).toBeInTheDocument();
-
-    cleanupDatePickerWorkaround();
-  });
+  }, 30_000);
 
   it('should display download progress ui if enabled', async () => {
-    (
-      getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>
-    ).mockResolvedValue(20);
+    vi.mocked(getPercentageComplete).mockResolvedValue(20);
 
     renderComponent({
       settings: {

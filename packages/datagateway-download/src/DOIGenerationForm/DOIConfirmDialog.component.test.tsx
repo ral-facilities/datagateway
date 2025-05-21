@@ -28,12 +28,12 @@ describe('DOI Confirm Dialogue component', () => {
       mintingStatus: 'loading',
       data: undefined,
       error: null,
-      setClose: jest.fn(),
+      setClose: vi.fn(),
     };
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should show loading indicator when mintingStatus is loading', async () => {

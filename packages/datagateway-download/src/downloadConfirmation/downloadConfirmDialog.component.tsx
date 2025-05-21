@@ -557,8 +557,8 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
               id="download-confirmation-download"
               disabled={
                 !emailValid ||
-                (!downloadTypeInfoMap?.has(selectedMethod) ?? true) ||
-                downloadTypeInfoMap?.get(selectedMethod)?.disabled ||
+                !(downloadTypeInfoMap?.has(selectedMethod) ?? false) ||
+                (downloadTypeInfoMap?.get(selectedMethod)?.disabled ?? true) ||
                 methodsUnavailable ||
                 isSubmittingCart
               }

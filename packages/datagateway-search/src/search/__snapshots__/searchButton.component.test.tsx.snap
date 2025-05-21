@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Search Button component tests renders correctly 1`] = `
+exports[`Search Button component tests > renders correctly 1`] = `
 <DocumentFragment>
   <div>
     <button

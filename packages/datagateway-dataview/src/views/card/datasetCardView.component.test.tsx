@@ -4,7 +4,6 @@ import {
   useDatasetCount,
   useDatasetsPaginated,
 } from 'datagateway-common';
-import * as React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
@@ -15,10 +14,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createMemoryHistory, type History } from 'history';
 import { initialState as dgDataViewInitialState } from '../../state/reducers/dgdataview.reducer';
 import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
-} from '../../setupTests';
-import {
   render,
   type RenderResult,
   screen,
@@ -26,14 +21,14 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    useDatasetCount: jest.fn(),
-    useDatasetsPaginated: jest.fn(),
+    useDatasetCount: vi.fn(),
+    useDatasetsPaginated: vi.fn(),
   };
 });
 
@@ -77,20 +72,20 @@ describe('Dataset - Card View', () => {
       })
     );
 
-    (useDatasetCount as jest.Mock).mockReturnValue({
+    vi.mocked(useDatasetCount, { partial: true }).mockReturnValue({
       data: 1,
       isLoading: false,
     });
-    (useDatasetsPaginated as jest.Mock).mockReturnValue({
+    vi.mocked(useDatasetsPaginated, { partial: true }).mockReturnValue({
       data: cardData,
       isLoading: false,
     });
 
-    window.scrollTo = jest.fn();
+    window.scrollTo = vi.fn();
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders datasets as cards', async () => {
@@ -200,8 +195,6 @@ describe('Dataset - Card View', () => {
   });
 
   it('updates filter query params on date filter', async () => {
-    applyDatePickerWorkaround();
-
     renderComponent();
 
     // click on button to show advanced filters
@@ -225,8 +218,6 @@ describe('Dataset - Card View', () => {
     await user.keyboard('{Delete}');
 
     expect(history.location.search).toBe('?');
-
-    cleanupDatePickerWorkaround();
   });
 
   it('updates sort query params on sort', async () => {
@@ -242,8 +233,8 @@ describe('Dataset - Card View', () => {
   });
 
   it('renders fine with incomplete data', () => {
-    (useDatasetCount as jest.Mock).mockReturnValue({});
-    (useDatasetsPaginated as jest.Mock).mockReturnValue({});
+    vi.mocked(useDatasetCount, { partial: true }).mockReturnValue({});
+    vi.mocked(useDatasetsPaginated, { partial: true }).mockReturnValue({});
 
     expect(() => renderComponent()).not.toThrowError();
   });

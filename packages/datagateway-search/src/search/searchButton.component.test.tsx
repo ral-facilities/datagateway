@@ -1,14 +1,13 @@
-import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import SearchButton from './searchButton.component';
 
-jest.mock('loglevel');
+vi.mock('loglevel');
 
 describe('Search Button component tests', () => {
-  const testInitiateSearch = jest.fn();
+  const testInitiateSearch = vi.fn();
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly', () => {

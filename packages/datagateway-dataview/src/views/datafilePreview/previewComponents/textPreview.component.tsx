@@ -1,5 +1,4 @@
 import { styled, Typography } from '@mui/material';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';

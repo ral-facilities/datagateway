@@ -1,47 +1,37 @@
 import React from 'react';
-import { ArrowTooltip } from '.';
-import { getTooltipText } from './arrowtooltip.component';
+import ArrowTooltip, { getTooltipText } from './arrowtooltip.component';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-jest.mock('resize-observer-polyfill', () => ({
-  __esModule: true,
-  default: (() => {
-    // a simple ResizeObserver mock implemented with constructor function
-    // because jest.mock doesn't allow access to ResizeObserver at this point
-    // so extending it is impossible.
-    //
-    // this is needed because the ResizeObserver polyfill WON'T WORK in jest env.
+// a simple ResizeObserver mock implemented to emulate ResizeObserver behaviour for
+// our tests correctly
+const ResizeObserverMock = vi.fn(function (callback) {
+  this.callback = callback;
 
-    function MockResizeObserver(callback): void {
-      this.callback = callback;
-
-      this.observe = (target: HTMLElement) => {
-        this.callback(
-          [
+  this.observe = (target: HTMLElement) => {
+    this.callback(
+      [
+        {
+          target: {
+            scrollWidth: 100,
+          },
+          borderBoxSize: [
             {
-              target: {
-                scrollWidth: 100,
-              },
-              borderBoxSize: [
-                {
-                  inlineSize: Number(target.style.width.replace('px', '')),
-                },
-              ],
+              inlineSize: Number(target.style.width.replace('px', '')),
             },
           ],
-          this
-        );
-      };
+        },
+      ],
+      this
+    );
+  };
 
-      this.disconnect = () => {
-        // disconnected
-      };
-    }
+  this.disconnect = () => {
+    // disconnected
+  };
+});
 
-    return MockResizeObserver;
-  })(),
-}));
+vi.stubGlobal('ResizeObserver', ResizeObserverMock);
 
 describe('ArrowTooltip component', () => {
   describe('getTooltipText', () => {

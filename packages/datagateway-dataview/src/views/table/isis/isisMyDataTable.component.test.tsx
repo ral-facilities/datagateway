@@ -1,13 +1,15 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   render,
-  type RenderResult,
   screen,
   waitFor,
   within,
+  type RenderResult,
 } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
 import {
   dGCommonInitialState,
-  type Investigation,
   readSciGatewayToken,
   useAddToCart,
   useAllFacilityCycles,
@@ -16,17 +18,15 @@ import {
   useInvestigationCount,
   useInvestigationsInfinite,
   useRemoveFromCart,
+  type Investigation,
 } from 'datagateway-common';
 import { createMemoryHistory, type History } from 'history';
 import * as React from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
   findAllRows,
   findCellInRow,
   findColumnHeaderByName,
@@ -36,24 +36,22 @@ import {
 import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import ISISMyDataTable from './isisMyDataTable.component';
-import userEvent from '@testing-library/user-event';
-import axios, { AxiosResponse } from 'axios';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    useInvestigationCount: jest.fn(),
-    useInvestigationsInfinite: jest.fn(),
-    useInvestigationSizes: jest.fn(),
-    useIds: jest.fn(),
-    useCart: jest.fn(),
-    useAddToCart: jest.fn(),
-    useRemoveFromCart: jest.fn(),
-    useAllFacilityCycles: jest.fn(),
-    readSciGatewayToken: jest.fn(),
+    useInvestigationCount: vi.fn(),
+    useInvestigationsInfinite: vi.fn(),
+    useInvestigationSizes: vi.fn(),
+    useIds: vi.fn(),
+    useCart: vi.fn(),
+    useAddToCart: vi.fn(),
+    useRemoveFromCart: vi.fn(),
+    useAllFacilityCycles: vi.fn(),
+    readSciGatewayToken: vi.fn(),
   };
 });
 
@@ -147,34 +145,34 @@ describe('ISIS MyData table component', () => {
       },
     ];
 
-    (useCart as jest.Mock).mockReturnValue({
+    vi.mocked(useCart, { partial: true }).mockReturnValue({
       data: [],
       isLoading: false,
     });
-    (useInvestigationCount as jest.Mock).mockReturnValue({
+    vi.mocked(useInvestigationCount, { partial: true }).mockReturnValue({
       data: 0,
     });
-    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
+    vi.mocked(useInvestigationsInfinite, { partial: true }).mockReturnValue({
+      data: { pages: [rowData], pageParams: [] },
+      fetchNextPage: vi.fn(),
     });
-    (useIds as jest.Mock).mockReturnValue({
+    vi.mocked(useIds, { partial: true }).mockReturnValue({
       data: [1],
       isLoading: false,
     });
-    (useAddToCart as jest.Mock).mockReturnValue({
-      mutate: jest.fn(),
+    vi.mocked(useAddToCart, { partial: true }).mockReturnValue({
+      mutate: vi.fn(),
       isLoading: false,
     });
-    (useRemoveFromCart as jest.Mock).mockReturnValue({
-      mutate: jest.fn(),
+    vi.mocked(useRemoveFromCart, { partial: true }).mockReturnValue({
+      mutate: vi.fn(),
       isLoading: false,
     });
-    (readSciGatewayToken as jest.Mock).mockReturnValue({
+    vi.mocked(readSciGatewayToken, { partial: true }).mockReturnValue({
       username: 'testUser',
     });
 
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/\/investigations$/.test(url)) {
@@ -188,7 +186,7 @@ describe('ISIS MyData table component', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly', async () => {
@@ -317,8 +315,6 @@ describe('ISIS MyData table component', () => {
   });
 
   it('updates filter query params on date filter', async () => {
-    applyDatePickerWorkaround();
-
     renderComponent();
 
     const filterInput = await screen.findByRole('textbox', {
@@ -341,8 +337,6 @@ describe('ISIS MyData table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
-
-    cleanupDatePickerWorkaround();
   });
 
   it('uses default sort', async () => {
@@ -383,10 +377,10 @@ describe('ISIS MyData table component', () => {
   });
 
   it('calls addToCart mutate function on unchecked checkbox click', async () => {
-    const addToCart = jest.fn();
-    (useAddToCart as jest.Mock).mockReturnValue({
+    const addToCart = vi.fn();
+    vi.mocked(useAddToCart, { partial: true }).mockReturnValue({
       mutate: addToCart,
-      loading: false,
+      isLoading: false,
     });
     renderComponent();
 
@@ -398,7 +392,7 @@ describe('ISIS MyData table component', () => {
   });
 
   it('calls removeFromCart mutate function on checked checkbox click', async () => {
-    (useCart as jest.Mock).mockReturnValue({
+    vi.mocked(useCart, { partial: true }).mockReturnValue({
       data: [
         {
           entityId: 1,
@@ -411,10 +405,10 @@ describe('ISIS MyData table component', () => {
       isLoading: false,
     });
 
-    const removeFromCart = jest.fn();
-    (useRemoveFromCart as jest.Mock).mockReturnValue({
+    const removeFromCart = vi.fn();
+    vi.mocked(useRemoveFromCart, { partial: true }).mockReturnValue({
       mutate: removeFromCart,
-      loading: false,
+      isLoading: false,
     });
 
     renderComponent();
@@ -426,7 +420,7 @@ describe('ISIS MyData table component', () => {
   });
 
   it('selected rows only considers relevant cart items', async () => {
-    (useCart as jest.Mock).mockReturnValue({
+    vi.mocked(useCart, { partial: true }).mockReturnValue({
       data: [
         {
           entityId: 2,
@@ -512,7 +506,7 @@ describe('ISIS MyData table component', () => {
   });
 
   it('renders details panel without datasets link if no facility cycles', async () => {
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
+    vi.mocked(useAllFacilityCycles, { partial: true }).mockReturnValue({
       data: undefined,
     });
 
@@ -544,11 +538,11 @@ describe('ISIS MyData table component', () => {
       investigationInstruments: [],
       dataCollectionInvestigations: [],
     };
-    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
+    vi.mocked(useInvestigationsInfinite, { partial: true }).mockReturnValue({
+      data: { pages: [rowData], pageParams: [] },
+      fetchNextPage: vi.fn(),
     });
-    (useAllFacilityCycles as jest.Mock).mockReturnValue({
+    vi.mocked(useAllFacilityCycles, { partial: true }).mockReturnValue({
       data: [],
     });
     renderComponent();
@@ -572,9 +566,9 @@ describe('ISIS MyData table component', () => {
         },
       ],
     };
-    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
+    vi.mocked(useInvestigationsInfinite, { partial: true }).mockReturnValue({
+      data: { pages: [rowData], pageParams: [] },
+      fetchNextPage: vi.fn(),
     });
     renderComponent();
 

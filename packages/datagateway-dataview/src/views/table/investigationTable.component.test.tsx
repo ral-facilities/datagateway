@@ -3,7 +3,6 @@ import {
   type DownloadCartItem,
   type Investigation,
 } from 'datagateway-common';
-import * as React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
@@ -20,12 +19,7 @@ import {
   waitFor,
   within,
 } from '@testing-library/react';
-import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
-  findAllRows,
-  findColumnHeaderByName,
-} from '../../setupTests';
+import { findAllRows, findColumnHeaderByName } from '../../setupTests';
 import userEvent from '@testing-library/user-event';
 import {
   findCellInRow,
@@ -93,7 +87,7 @@ describe('Investigation table component', () => {
       })
     );
 
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/\/user\/cart\/$/.test(url)) {
@@ -126,7 +120,7 @@ describe('Investigation table component', () => {
         return Promise.reject(`Endpoint not mocked: ${url}`);
       });
 
-    axios.post = jest
+    axios.post = vi
       .fn()
       .mockImplementation(
         (url: string, data: unknown): Promise<Partial<AxiosResponse>> => {
@@ -168,18 +162,21 @@ describe('Investigation table component', () => {
 
   afterEach(() => {
     document.body.removeChild(holder);
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly', async () => {
     renderComponent();
 
     let rows: HTMLElement[] = [];
-    await waitFor(async () => {
-      rows = await findAllRows();
-      // should have 1 row in the table
-      expect(rows).toHaveLength(1);
-    });
+    await waitFor(
+      async () => {
+        rows = await findAllRows();
+        // should have 1 row in the table
+        expect(rows).toHaveLength(1);
+      },
+      { timeout: 5_000 } // this can timeout sometimes in CI without so bump it up from minimum
+    );
 
     const row = rows[0];
 
@@ -292,8 +289,6 @@ describe('Investigation table component', () => {
   });
 
   it('updates filter query params on date filter', async () => {
-    applyDatePickerWorkaround();
-
     renderComponent();
 
     const filterInput = await screen.findByRole('textbox', {
@@ -316,8 +311,6 @@ describe('Investigation table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
-
-    cleanupDatePickerWorkaround();
   });
 
   it('updates sort query params on sort', async () => {

@@ -1,19 +1,18 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { RenderResult } from '@testing-library/react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios from 'axios';
-import * as React from 'react';
 import { Provider } from 'react-redux';
 import { combineReducers, createStore } from 'redux';
-import { StateType } from '../../../lib';
+import type { Dataset, DatasetType } from '../../app.types';
+import { StateType } from '../../state/app.types';
 import dGCommonReducer from '../../state/reducers/dgcommon.reducer';
 import DatasetDetailsPanel from './datasetDetailsPanel.component';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import type { Dataset, DatasetType } from '../../app.types';
 
 function renderComponent({
   rowData,
-  detailsPanelResize = jest.fn(),
+  detailsPanelResize = vi.fn(),
   viewDatafiles,
 }: {
   rowData: Dataset;
@@ -57,13 +56,13 @@ describe('Dataset details panel component', () => {
       type: rowDatasetType,
     };
 
-    axios.get = jest.fn().mockResolvedValue({
+    axios.get = vi.fn().mockResolvedValue({
       data: [rowData],
     });
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should render correctly', async () => {
@@ -130,7 +129,7 @@ describe('Dataset details panel component', () => {
       name: 'Test type',
       description: 'Test type description',
     };
-    const mockDetailsPanelResize = jest.fn();
+    const mockDetailsPanelResize = vi.fn();
 
     renderComponent({
       rowData,
@@ -156,7 +155,7 @@ describe('Dataset details panel component', () => {
       name: 'Test type',
       description: 'Test type description',
     };
-    const mockDetailsPanelResize = jest.fn();
+    const mockDetailsPanelResize = vi.fn();
 
     renderComponent({ rowData });
 
@@ -189,7 +188,7 @@ describe('Dataset details panel component', () => {
   });
 
   it('should call datafile view if view datafiles tab clicked', async () => {
-    const mockViewDatafiles = jest.fn();
+    const mockViewDatafiles = vi.fn();
 
     renderComponent({
       rowData,

@@ -182,7 +182,7 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
   const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
-    (offsetParams: IndexRange) => fetchNextPage(),
+    (_offsetParams: IndexRange) => fetchNextPage(),
     [fetchNextPage]
   );
 
@@ -441,7 +441,7 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
                   data={aggregatedSource}
                   loadMoreRows={loadMoreRows}
                   totalRowCount={
-                    aggregatedSource?.length + (hasNextPage ? 1 : 0) ?? 0
+                    aggregatedSource.length + (hasNextPage ? 1 : 0)
                   }
                   sort={{}}
                   onSort={handleSort}

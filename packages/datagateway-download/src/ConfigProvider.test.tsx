@@ -6,7 +6,7 @@ import * as React from 'react';
 import ConfigProvider, { DownloadSettingsContext } from './ConfigProvider';
 import { flushPromises } from './setupTests';
 
-jest.mock('loglevel');
+vi.mock('loglevel');
 
 const ConfigTest: React.FC = (): React.ReactElement => {
   const settings = React.useContext(DownloadSettingsContext);
@@ -15,7 +15,7 @@ const ConfigTest: React.FC = (): React.ReactElement => {
   return <div data-testid="settings">{JSON.stringify(settings)}</div>;
 };
 
-jest.mock('./settings', () => ({
+vi.mock('./settings', () => ({
   settings: Promise.resolve({
     facilityName: 'Generic',
     idsUrl: 'ids',
@@ -43,14 +43,14 @@ jest.mock('./settings', () => ({
 
 describe('ConfigProvider', () => {
   beforeEach(() => {
-    global.document.dispatchEvent = jest.fn();
-    global.CustomEvent = jest.fn();
+    global.document.dispatchEvent = vi.fn();
+    global.CustomEvent = vi.fn();
   });
 
   afterEach(() => {
-    (axios.get as jest.Mock).mockClear();
-    (log.error as jest.Mock).mockClear();
-    (CustomEvent as jest.Mock).mockClear();
+    vi.mocked(axios.get).mockClear();
+    vi.mocked(log.error).mockClear();
+    vi.mocked(CustomEvent).mockClear();
   });
 
   // Create a wrapper for our settings tests.

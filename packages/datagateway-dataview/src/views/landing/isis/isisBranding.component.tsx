@@ -1,9 +1,10 @@
 import { Grid, Paper, styled, Typography } from '@mui/material';
+// TODO: when vite 6, explore no-inline w/ pluginHost vs inline as we have to inline in vite 5
+import STFCLogoWhite from 'datagateway-common/src/images/stfc-logo-white-text.png';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import STFCLogoWhite from 'datagateway-common/src/images/stfc-logo-white-text.png';
-import { StateType } from '../../../state/app.types';
 import { connect } from 'react-redux';
+import { StateType } from '../../../state/app.types';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.primary.light,
@@ -31,8 +32,7 @@ const StyledTypography = styled(Typography)(({ theme }) => ({
   },
 }));
 
-const Branding = (props: { pluginHost: string }): React.ReactElement => {
-  const pluginHost = props.pluginHost;
+const Branding = (): React.ReactElement => {
   const [t] = useTranslation();
 
   return (
@@ -41,7 +41,7 @@ const Branding = (props: { pluginHost: string }): React.ReactElement => {
         <Grid item sm={12} md="auto" sx={{ display: 'flex' }}>
           <img
             style={{ height: 'auto', maxHeight: 90, margin: 'auto' }}
-            src={pluginHost + STFCLogoWhite}
+            src={STFCLogoWhite}
             alt="STFC Logo"
           />
         </Grid>
