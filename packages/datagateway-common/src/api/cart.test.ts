@@ -430,8 +430,6 @@ describe('Cart api functions', () => {
         expect(result.current.every((query) => query.isSuccess)).toBe(true)
       );
 
-      console.log('result.current', result.current);
-
       const data = result.current.map(({ data }) => data);
       expect(data).toEqual([
         {

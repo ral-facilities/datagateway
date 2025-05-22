@@ -120,6 +120,10 @@ describe('DLS MyData table component', () => {
           });
         }
 
+        if (/\/allowed$/.test(url)) {
+          return Promise.resolve({ data: true });
+        }
+
         return Promise.reject(`Endpoint not mocked: ${url}`);
       });
   });

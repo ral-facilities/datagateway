@@ -18,7 +18,7 @@ function DownloadProgressIndicator({
   download,
 }: DownloadProgressIndicatorProps): JSX.Element {
   const [t] = useTranslation();
-  const { data: progress, isLoading: isLoadingProgress } =
+  const { data: progress, isFetching: isLoadingProgress } =
     useDownloadPercentageComplete({
       download,
       enabled:
@@ -27,8 +27,7 @@ function DownloadProgressIndicator({
         (download.status === 'RESTORING' || download.status === 'PAUSED'),
     });
 
-  // if the download is already completed/restored
-  // should show text such as N/A, completed, or empty string.
+  // if query is fetching show some loading text
   if (isLoadingProgress) {
     return <>{t('downloadStatus.calculating_progress')}</>;
   }
@@ -49,15 +48,6 @@ function DownloadProgressIndicator({
   // if the download is queued, show that it is queued
   if (download.status === 'QUEUED')
     return <>{t('downloadStatus.progress_queued')}</>;
-
-  // calculate loading after previous cases as if the query is disabled
-  // because status is not either restoring or paused then isLoading
-  // will be true as the query is disabled
-  // so essentially check for non-restoring & non-paused statuses first
-  // before checking loading state
-  if (isLoadingProgress) {
-    return <>{t('downloadStatus.calculating_progress')}</>;
-  }
 
   // display a label indicating progress unavailable when
   // progress is not returned or the download status doesn't match.

@@ -90,6 +90,10 @@ describe('DLS Visits - Card View', () => {
           });
         }
 
+        if (/\/allowed$/.test(url)) {
+          return Promise.resolve({ data: true });
+        }
+
         return Promise.reject(`Endpoint not mocked: ${url}`);
       });
 
