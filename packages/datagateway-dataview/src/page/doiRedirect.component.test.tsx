@@ -5,7 +5,7 @@ import {
   useInvestigation,
 } from 'datagateway-common';
 import { Router } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createLocation, createMemoryHistory, History } from 'history';
 import log from 'loglevel';
 import { AnyAction } from 'redux';

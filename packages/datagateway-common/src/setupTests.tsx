@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import '@testing-library/jest-dom';
 import { History, createMemoryHistory } from 'history';
 import failOnConsole from 'jest-fail-on-console';
 import React from 'react';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import { Action } from 'redux';
@@ -53,13 +53,6 @@ export const dispatch = (action: Action): void | Promise<void> => {
   }
 };
 
-// silence react-query errors
-setLogger({
-  log: console.log,
-  warn: console.warn,
-  error: jest.fn(),
-});
-
 // mock retry function to ensure it doesn't slow down query failure tests
 jest.mock('./api/retryICATErrors', () => ({
   __esModule: true,
@@ -88,6 +81,12 @@ export const createTestQueryClient = (): QueryClient =>
       queries: {
         retry: false,
       },
+    },
+    // silence react-query errors
+    logger: {
+      log: console.log,
+      warn: console.warn,
+      error: jest.fn(),
     },
   });
 
@@ -151,6 +150,3 @@ export const applyDatePickerWorkaround = (): void => {
 export const cleanupDatePickerWorkaround = (): void => {
   delete window.matchMedia;
 };
-
-export const flushPromises = (): Promise<void> =>
-  new Promise((resolve) => setTimeout(resolve));

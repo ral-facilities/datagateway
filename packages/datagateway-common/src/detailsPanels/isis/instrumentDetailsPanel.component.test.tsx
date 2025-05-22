@@ -7,7 +7,7 @@ import { Provider } from 'react-redux';
 import { combineReducers, createStore } from 'redux';
 import { StateType } from '../../../lib';
 import dGCommonReducer from '../../state/reducers/dgcommon.reducer';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { Instrument } from '../../app.types';
 import InstrumentDetailsPanel from './instrumentDetailsPanel.component';
 

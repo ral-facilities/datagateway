@@ -14,13 +14,12 @@ import {
   useCart,
   useIds,
   useInvestigationCount,
-  useInvestigationDetails,
   useInvestigationsInfinite,
   useRemoveFromCart,
 } from 'datagateway-common';
 import { createMemoryHistory, type History } from 'history';
 import * as React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
@@ -38,6 +37,7 @@ import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import ISISMyDataTable from './isisMyDataTable.component';
 import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -54,7 +54,6 @@ jest.mock('datagateway-common', () => {
     useRemoveFromCart: jest.fn(),
     useAllFacilityCycles: jest.fn(),
     readSciGatewayToken: jest.fn(),
-    useInvestigationDetails: jest.fn(),
   };
 });
 
@@ -174,9 +173,18 @@ describe('ISIS MyData table component', () => {
     (readSciGatewayToken as jest.Mock).mockReturnValue({
       username: 'testUser',
     });
-    (useInvestigationDetails as jest.Mock).mockReturnValue({
-      data: [],
-    });
+
+    axios.get = jest
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/\/investigations$/.test(url)) {
+          return Promise.resolve({
+            data: rowData,
+          });
+        }
+
+        return Promise.reject(`Endpoint not mocked: ${url}`);
+      });
   });
 
   afterEach(() => {

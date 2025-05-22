@@ -9,7 +9,7 @@ import type { StateType } from '../state/app.types';
 import { createLocation, createMemoryHistory, type History } from 'history';
 import PageBreadcrumbs from './breadcrumbs.component';
 import axios from 'axios';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   render,
   type RenderResult,

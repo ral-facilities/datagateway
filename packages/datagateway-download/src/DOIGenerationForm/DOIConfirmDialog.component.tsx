@@ -9,14 +9,14 @@ import { AxiosError } from 'axios';
 import { Mark, DialogTitle, DialogContent } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { QueryStatus } from 'react-query';
+import { MutationStatus } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 
 import type { DoiResponse } from '../downloadApi';
 
 interface DOIConfirmDialogProps {
   open: boolean;
-  mintingStatus: QueryStatus;
+  mintingStatus: MutationStatus;
   data: DoiResponse | undefined;
   error: AxiosError<{
     detail: { msg: string }[] | string;

@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { fetchDownloadCart } from 'datagateway-common';
 import { createMemoryHistory, History } from 'history';
 import * as React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Router } from 'react-router-dom';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import {
@@ -15,6 +15,7 @@ import {
   removeAllDownloadCartItems,
   removeFromCart,
   isCartMintable,
+  getIsTwoLevel,
 } from '../downloadApi';
 import { mockCartItems, mockDownloadItems, mockedSettings } from '../testData';
 import DownloadTabs from './downloadTab.component';
@@ -69,6 +70,7 @@ describe('DownloadTab', () => {
     (
       isCartMintable as jest.MockedFunction<typeof isCartMintable>
     ).mockResolvedValue(true);
+    (getIsTwoLevel as jest.Mock).mockResolvedValue(false);
   });
 
   const renderComponent = (): RenderResult => {

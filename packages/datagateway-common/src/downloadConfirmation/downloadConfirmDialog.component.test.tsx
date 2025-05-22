@@ -1,25 +1,18 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { RenderResult } from '@testing-library/react';
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 import * as React from 'react';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 import {
+  getDownload,
   getDownloadTypeStatus,
   useQueueVisit,
   useSubmitCart,
 } from '../api/cart';
-import { flushPromises } from '../setupTests';
 import DownloadConfirmDialog from './downloadConfirmDialog.component';
 
 jest.mock('../handleICATError');
-
-// silence react-query errors
-setLogger({
-  log: console.log,
-  warn: console.warn,
-  error: jest.fn(),
-});
 
 const createTestQueryClient = (): QueryClient =>
   new QueryClient({
@@ -27,6 +20,12 @@ const createTestQueryClient = (): QueryClient =>
       queries: {
         retry: false,
       },
+    },
+    // silence react-query errors
+    logger: {
+      log: console.log,
+      warn: console.warn,
+      error: jest.fn(),
     },
   });
 
@@ -44,6 +43,15 @@ describe('DownloadConfirmDialog', () => {
         payload: { message: string };
       }
   >;
+  let getDownloadResponse:
+    | {
+        error: false;
+        payload: Partial<Awaited<ReturnType<typeof getDownload>>>;
+      }
+    | {
+        error: true;
+        payload: { message: string };
+      };
 
   const renderWrapper = (): RenderResult =>
     render(
@@ -100,19 +108,26 @@ describe('DownloadConfirmDialog', () => {
       },
     };
 
+    getDownloadResponse = {
+      error: false,
+      payload: {
+        preparedId: '1',
+        fileName: 'test-file-name',
+        status: 'COMPLETE',
+      },
+    };
+
     axios.get = jest
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/.*\/user\/downloads/.test(url)) {
-          return Promise.resolve({
-            data: [
-              {
-                preparedId: 1,
-                fileName: 'test-file-name',
-                status: 'COMPLETE',
-              },
-            ],
-          });
+          if (!getDownloadResponse.error) {
+            return Promise.resolve({
+              data: [getDownloadResponse.payload],
+            });
+          } else {
+            return Promise.reject(getDownloadResponse.payload);
+          }
         }
         const downloadTypeStatusMatches = url.match(
           /.*\/user\/downloadType\/(.*)\/status/
@@ -155,12 +170,13 @@ describe('DownloadConfirmDialog', () => {
 
   it('renders correctly', async () => {
     props.isTwoLevel = false;
-    // Pass in a size of 100 bytes and for the dialog to be open when mounted.
     const wrapper = renderWrapper();
 
-    await act(async () => {
-      await flushPromises();
-    });
+    expect(
+      await wrapper.findByText('downloadConfirmDialog.access_method_info', {
+        exact: false,
+      })
+    );
 
     expect(
       await wrapper.findByLabelText('downloadConfirmDialog.dialog_arialabel')
@@ -171,9 +187,11 @@ describe('DownloadConfirmDialog', () => {
     props.isTwoLevel = true;
     const wrapper = renderWrapper();
 
-    await act(async () => {
-      await flushPromises();
-    });
+    expect(
+      await wrapper.findByText('downloadConfirmDialog.access_method_info', {
+        exact: false,
+      })
+    );
 
     expect(
       await wrapper.findByLabelText('downloadConfirmDialog.dialog_arialabel')
@@ -306,7 +324,7 @@ describe('DownloadConfirmDialog', () => {
 
     await waitFor(() => {
       expect(props.postDownloadSuccessFn).toHaveBeenCalledWith({
-        preparedId: 1,
+        preparedId: '1',
         fileName: 'test-file-name',
         status: 'COMPLETE',
       });
@@ -355,6 +373,32 @@ describe('DownloadConfirmDialog', () => {
       });
 
     props.isTwoLevel = true;
+    renderWrapper();
+    // click on download button to begin download
+    await user.click(await screen.findByText('downloadConfirmDialog.download'));
+
+    // should not show success message
+    await waitFor(() => {
+      expect(
+        screen.queryByText('downloadConfirmDialog.download_success')
+      ).toBeNull();
+    });
+    // should show error
+    expect(
+      await screen.findByText('Your download request was unsuccessful', {
+        exact: false,
+      })
+    ).toBeInTheDocument();
+  });
+
+  it('should show error when download info is not returned', async () => {
+    getDownloadResponse = {
+      error: true,
+      payload: {
+        message: 'error',
+      },
+    };
+
     renderWrapper();
     // click on download button to begin download
     await user.click(await screen.findByText('downloadConfirmDialog.download'));

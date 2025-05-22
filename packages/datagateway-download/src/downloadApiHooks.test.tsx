@@ -8,7 +8,7 @@ import {
 import { createMemoryHistory } from 'history';
 import log from 'loglevel';
 import * as React from 'react';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Router } from 'react-router-dom';
 import { DownloadSettingsContext } from './ConfigProvider';
 import { ContributorType } from './downloadApi';
@@ -42,13 +42,6 @@ jest.mock('datagateway-common', () => {
   };
 });
 
-// silence react-query errors
-setLogger({
-  log: console.log,
-  warn: console.warn,
-  error: jest.fn(),
-});
-
 const createTestQueryClient = (): QueryClient =>
   new QueryClient({
     defaultOptions: {
@@ -57,6 +50,12 @@ const createTestQueryClient = (): QueryClient =>
         // set retryDelay = 0 to make retries quick for custom retry functions
         retryDelay: 0,
       },
+    },
+    // silence react-query errors
+    logger: {
+      log: console.log,
+      warn: console.warn,
+      error: jest.fn(),
     },
   });
 
@@ -634,7 +633,7 @@ describe('Download API react-query hooks test', () => {
 
       // then test fetching next page
 
-      result.current.fetchNextPage({
+      await result.current.fetchNextPage({
         pageParam: 'LIMIT 50, 100',
       });
       await waitFor(() =>
@@ -1096,7 +1095,9 @@ describe('Download API react-query hooks test', () => {
         }),
       });
 
-      expect(result.current.isIdle).toEqual(true);
+      expect(result.current.status).toBe('loading');
+      expect(result.current.fetchStatus).toBe('idle');
+
       expect(axios.post).not.toHaveBeenCalled();
     });
 
@@ -1241,11 +1242,15 @@ describe('Download API react-query hooks test', () => {
         wrapper: createReactQueryWrapper(),
       });
 
+      let data;
       await act(async () => {
-        await result.current.mutateAsync({ cart: mockCartItems, doiMetadata });
+        data = await result.current.mutateAsync({
+          cart: mockCartItems,
+          doiMetadata,
+        });
       });
 
-      expect(result.current.data).toEqual({
+      expect(data).toEqual({
         concept: { doi: 'test doi', data_publication: '1' },
         version: { doi: 'test doi v1', data_publication: '11' },
       });
@@ -1523,7 +1528,8 @@ describe('Download API react-query hooks test', () => {
       const { result } = renderHook(() => useCheckUser('user 1'), {
         wrapper: createReactQueryWrapper(),
       });
-      expect(result.current.isIdle).toBe(true);
+      expect(result.current.status).toBe('loading');
+      expect(result.current.fetchStatus).toBe('idle');
       act(() => {
         result.current.refetch();
       });
@@ -1552,7 +1558,8 @@ describe('Download API react-query hooks test', () => {
       const { result } = renderHook(() => useCheckUser('user 1'), {
         wrapper: createReactQueryWrapper(),
       });
-      expect(result.current.isIdle).toBe(true);
+      expect(result.current.status).toBe('loading');
+      expect(result.current.fetchStatus).toBe('idle');
       act(() => {
         result.current.refetch();
       });
@@ -1586,7 +1593,8 @@ describe('Download API react-query hooks test', () => {
       const { result } = renderHook(() => useCheckUser('user 1'), {
         wrapper: createReactQueryWrapper(),
       });
-      expect(result.current.isIdle).toBe(true);
+      expect(result.current.status).toBe('loading');
+      expect(result.current.fetchStatus).toBe('idle');
       act(() => {
         result.current.refetch();
       });
@@ -1616,7 +1624,8 @@ describe('Download API react-query hooks test', () => {
       const { result } = renderHook(() => useCheckUser('user 1'), {
         wrapper: createReactQueryWrapper(),
       });
-      expect(result.current.isIdle).toBe(true);
+      expect(result.current.status).toBe('loading');
+      expect(result.current.fetchStatus).toBe('idle');
       act(() => {
         result.current.refetch();
       });
@@ -1638,7 +1647,8 @@ describe('Download API react-query hooks test', () => {
       const { result } = renderHook(() => useCheckUser('user 1'), {
         wrapper: createReactQueryWrapper(),
       });
-      expect(result.current.isIdle).toBe(true);
+      expect(result.current.status).toBe('loading');
+      expect(result.current.fetchStatus).toBe('idle');
       act(() => {
         result.current.refetch();
       });
@@ -1660,7 +1670,8 @@ describe('Download API react-query hooks test', () => {
       const { result } = renderHook(() => useCheckUser('user 1'), {
         wrapper: createReactQueryWrapper(),
       });
-      expect(result.current.isIdle).toBe(true);
+      expect(result.current.status).toBe('loading');
+      expect(result.current.fetchStatus).toBe('idle');
       act(() => {
         result.current.refetch();
       });

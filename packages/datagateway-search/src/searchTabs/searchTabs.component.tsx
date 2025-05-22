@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import { CartProps, ViewCartButton, ViewsType } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
-import { useIsFetching } from 'react-query';
+import { useIsFetching } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import type { StateType } from '../state/app.types';
 import InvestigationSearchTable from '../table/investigationSearchTable.component';

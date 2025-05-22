@@ -8,7 +8,7 @@ import { combineReducers, createStore } from 'redux';
 import { StateType } from '../../../lib';
 import dGCommonReducer from '../../state/reducers/dgcommon.reducer';
 import DatasetDetailsPanel from './datasetDetailsPanel.component';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { Dataset, DatasetType } from '../../app.types';
 
 function renderComponent({

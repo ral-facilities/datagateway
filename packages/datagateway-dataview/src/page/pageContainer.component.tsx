@@ -40,7 +40,7 @@ import { Location as LocationType } from 'history';
 import TranslatedHomePage from './translatedHomePage.component';
 import DoiRedirect from './doiRedirect.component';
 import RoleSelector from '../views/roleSelector.component';
-import { useIsFetching, useQueryClient } from 'react-query';
+import { useIsFetching, useQueryClient } from '@tanstack/react-query';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const getTablePaperStyle = (
@@ -558,9 +558,9 @@ const DataviewPageContainer: React.FC = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   React.useEffect(() => {
     const count =
-      queryClient.getQueryData<number>('count', {
+      queryClient.getQueryData<number>(['count'], {
         exact: false,
-        active: true,
+        type: 'active',
       }) ?? 0;
     if (count !== totalDataCount) setTotalDataCount(count);
   });
@@ -569,7 +569,7 @@ const DataviewPageContainer: React.FC = () => {
     loading ? setlinearProgressHeight('4px') : setlinearProgressHeight('0px');
   }, [loading]);
 
-  const isCountFetchingNum = useIsFetching('count', {
+  const isCountFetchingNum = useIsFetching(['count'], {
     exact: false,
   });
   const loadedCount = isCountFetchingNum === 0;

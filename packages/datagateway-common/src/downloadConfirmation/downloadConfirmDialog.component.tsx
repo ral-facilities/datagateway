@@ -2,38 +2,38 @@ import {
   Button,
   CircularProgress,
   Dialog,
-  DialogActions as MuiDialogActions,
   FormControl,
   FormHelperText,
   Grid,
   InputLabel,
+  DialogActions as MuiDialogActions,
   Select,
-  styled,
   TextField,
   Typography,
+  styled,
 } from '@mui/material';
-import { formatBytes } from '../table/cellRenderers/cellContentRenderers';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { formatBytes } from '../table/cellRenderers/cellContentRenderers';
 
+import { UseMutateFunction } from '@tanstack/react-query';
+import {
+  QueueVisitParams,
+  SubmitCartParams,
+  getDefaultFileName,
+  useDownload,
+  useDownloadTypeStatuses,
+  useQueueVisit,
+  useSubmitCart,
+} from '../api/cart';
 import type {
   Download,
   DownloadSettingsAccessMethod,
   DownloadTypeStatus,
 } from '../app.types';
-import {
-  useDownloadTypeStatuses,
-  useSubmitCart,
-  useDownload,
-  useQueueVisit,
-  getDefaultFileName,
-  SubmitCartParams,
-  QueueVisitParams,
-} from '../api/cart';
 import DialogContent from './dialogContent.component';
 import DialogTitle from './dialogTitle.component';
 import DownloadRequestResult from './downloadRequestResult.component';
-import { UseMutateFunction } from 'react-query';
 
 const TableContentDiv = styled('div')(() => ({
   paddingTop: '10px',

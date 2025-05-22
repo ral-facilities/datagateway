@@ -1,9 +1,9 @@
 import * as React from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { RenderResult } from '@testing-library/react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios from 'axios';
-import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
 import { combineReducers, createStore } from 'redux';
 import { dGCommonInitialState } from '../..';
@@ -301,7 +301,7 @@ describe('Visit details panel component', () => {
     const { summary, startDate, endDate, ...amendedRowData } = rowData;
 
     axios.get = jest.fn().mockResolvedValue({
-      data: amendedRowData,
+      data: [amendedRowData],
     });
 
     renderComponent({ rowData: amendedRowData });

@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import createMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { DatasearchType, dGCommonInitialState } from 'datagateway-common';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import NewParameterFilterCreator from './newParameterFilterCreator.component';
 import axios, { AxiosResponse } from 'axios';
 
