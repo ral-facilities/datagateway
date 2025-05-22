@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { RenderResult } from '@testing-library/react';
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 import * as React from 'react';
@@ -10,7 +10,6 @@ import {
   useQueueVisit,
   useSubmitCart,
 } from '../api/cart';
-import { flushPromises } from '../setupTests';
 import DownloadConfirmDialog from './downloadConfirmDialog.component';
 
 jest.mock('../handleICATError');
@@ -171,12 +170,13 @@ describe('DownloadConfirmDialog', () => {
 
   it('renders correctly', async () => {
     props.isTwoLevel = false;
-    // Pass in a size of 100 bytes and for the dialog to be open when mounted.
     const wrapper = renderWrapper();
 
-    await act(async () => {
-      await flushPromises();
-    });
+    expect(
+      await wrapper.findByText('downloadConfirmDialog.access_method_info', {
+        exact: false,
+      })
+    );
 
     expect(
       await wrapper.findByLabelText('downloadConfirmDialog.dialog_arialabel')
@@ -187,9 +187,11 @@ describe('DownloadConfirmDialog', () => {
     props.isTwoLevel = true;
     const wrapper = renderWrapper();
 
-    await act(async () => {
-      await flushPromises();
-    });
+    expect(
+      await wrapper.findByText('downloadConfirmDialog.access_method_info', {
+        exact: false,
+      })
+    );
 
     expect(
       await wrapper.findByLabelText('downloadConfirmDialog.dialog_arialabel')

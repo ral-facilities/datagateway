@@ -150,6 +150,3 @@ export const applyDatePickerWorkaround = (): void => {
 export const cleanupDatePickerWorkaround = (): void => {
   delete window.matchMedia;
 };
-
-export const flushPromises = (): Promise<void> =>
-  new Promise((resolve) => setTimeout(resolve));
