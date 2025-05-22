@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import '@testing-library/jest-dom';
-import React from 'react';
-import { Action } from 'redux';
-import { StateType } from './state/app.types';
-import { initialState } from './state/reducers/dgcommon.reducer';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import '@testing-library/jest-dom';
+import { History, createMemoryHistory } from 'history';
+import failOnConsole from 'jest-fail-on-console';
+import React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
-import thunk from 'redux-thunk';
+import { Action } from 'redux';
 import configureStore from 'redux-mock-store';
-import { createMemoryHistory, History } from 'history';
-import failOnConsole from 'jest-fail-on-console';
+import thunk from 'redux-thunk';
+import { StateType } from './state/app.types';
+import { initialState } from './state/reducers/dgcommon.reducer';
 
 failOnConsole();
 
@@ -150,3 +150,6 @@ export const applyDatePickerWorkaround = (): void => {
 export const cleanupDatePickerWorkaround = (): void => {
   delete window.matchMedia;
 };
+
+export const flushPromises = (): Promise<void> =>
+  new Promise((resolve) => setTimeout(resolve));

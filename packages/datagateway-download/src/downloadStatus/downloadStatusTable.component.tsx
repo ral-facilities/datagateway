@@ -357,10 +357,12 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
             actionsWidth={100}
             actions={[
               function DownloadButton({ rowData }: TableActionProps) {
-                const downloadItem = rowData as FormattedDownload;
-                const isHTTP = !!downloadItem.transport.match(/https|http/);
+                const { transport, status, preparedId, fileName, id } =
+                  rowData as FormattedDownload;
+                const isHTTP = !!transport.match(/https|http/);
 
-                const isComplete = downloadItem.status === 'COMPLETE';
+                const isComplete =
+                  status === 'COMPLETE' && typeof preparedId !== 'undefined';
 
                 const isDownloadable = isHTTP && isComplete;
 
@@ -370,7 +372,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                       !isHTTP
                         ? t<string, string>(
                             'downloadStatus.non_https_download_disabled_tooltip',
-                            { transport: downloadItem.transport }
+                            { transport }
                           )
                         : t<string, string>(
                             'downloadStatus.https_download_disabled_tooltip'
@@ -386,17 +388,17 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                         ? {
                             component: 'a',
                             href: getDataUrl(
-                              downloadItem.preparedId,
-                              downloadItem.fileName,
+                              preparedId,
+                              fileName,
                               settings.idsUrl
                             ),
                             target: '_blank',
                           }
                         : { component: 'button' })}
                       aria-label={t('downloadStatus.download', {
-                        filename: downloadItem.fileName,
+                        filename: fileName,
                       })}
-                      key={`download-${downloadItem.id}`}
+                      key={`download-${id}`}
                       size="small"
                       disabled={!isDownloadable}
                     >

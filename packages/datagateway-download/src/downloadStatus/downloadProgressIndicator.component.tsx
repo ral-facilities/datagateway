@@ -1,7 +1,7 @@
+import * as React from 'react';
 import { Box, LinearProgress, Typography } from '@mui/material';
-import React from 'react';
-import { useTranslation } from 'react-i18next';
 import type { Download } from 'datagateway-common';
+import { useTranslation } from 'react-i18next';
 import { useDownloadPercentageComplete } from '../downloadApiHooks';
 
 interface DownloadProgressIndicatorProps {
@@ -21,17 +21,34 @@ function DownloadProgressIndicator({
   const { data: progress, isLoading: isLoadingProgress } =
     useDownloadPercentageComplete({
       download,
-      enabled: download.status === 'RESTORING' || download.status === 'PAUSED',
+      enabled:
+        !download.isDeleted &&
+        typeof download.preparedId !== 'undefined' && // do not send download status request for downloads with no preparedId as it will just fail
+        (download.status === 'RESTORING' || download.status === 'PAUSED'),
     });
 
   // if the download is already completed/restored
   // should show text such as N/A, completed, or empty string.
+  if (isLoadingProgress) {
+    return <>{t('downloadStatus.calculating_progress')}</>;
+  }
+
+  // if the download is completed, expired or deleted
+  // should show text such as N/A or empty string.
   // depending on the translation configuration.
-  if (download.status === 'COMPLETE' || download.status === 'EXPIRED')
+  if (
+    download.status === 'COMPLETE' ||
+    download.status === 'EXPIRED' ||
+    download.isDeleted
+  )
     return <>{t('downloadStatus.progress_complete')}</>;
 
   // if the download is being prepared, show 0%
   if (download.status === 'PREPARING') return <ProgressBar progress={0} />;
+
+  // if the download is queued, show that it is queued
+  if (download.status === 'QUEUED')
+    return <>{t('downloadStatus.progress_queued')}</>;
 
   // calculate loading after previous cases as if the query is disabled
   // because status is not either restoring or paused then isLoading

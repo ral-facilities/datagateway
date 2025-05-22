@@ -93,7 +93,7 @@ describe('DLS Visits table component', () => {
     state = JSON.parse(
       JSON.stringify({
         dgdataview: dgDataViewInitialState,
-        dgcommon: dGCommonInitialState,
+        dgcommon: { ...dGCommonInitialState, accessMethods: {} },
       })
     );
 

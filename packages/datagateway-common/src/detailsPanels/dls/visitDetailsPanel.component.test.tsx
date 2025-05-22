@@ -1,11 +1,12 @@
+import * as React from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { RenderResult } from '@testing-library/react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios from 'axios';
-import * as React from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import { combineReducers, createStore } from 'redux';
+import { dGCommonInitialState } from '../..';
 import { StateType } from '../../../lib';
 import { Investigation } from '../../app.types';
 import dGCommonReducer from '../../state/reducers/dgcommon.reducer';
@@ -21,7 +22,8 @@ function renderComponent({
   return render(
     <Provider
       store={createStore(
-        combineReducers<Partial<StateType>>({ dgcommon: dGCommonReducer })
+        combineReducers<Partial<StateType>>({ dgcommon: dGCommonReducer }),
+        { dgcommon: { ...dGCommonInitialState, accessMethods: {} } }
       )}
     >
       <QueryClientProvider client={new QueryClient()}>
@@ -68,6 +70,9 @@ describe('Visit details panel component', () => {
 
       if (/.*\/user\/getSize/.test(url)) return Promise.resolve({ data: 64 });
 
+      if (/.*\/queue\/allowed/.test(url))
+        return Promise.resolve({ data: true });
+
       return Promise.resolve();
     });
   });
@@ -83,6 +88,8 @@ describe('Visit details panel component', () => {
         name: 'investigations.details.tabs_label',
       })
     ).toBeInTheDocument();
+    expect(await screen.findByRole('button', { name: 'buttons.queue_visit' }));
+
     expect(asFragment()).toMatchSnapshot();
   });
 

@@ -13,8 +13,9 @@ import * as React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Router } from 'react-router-dom';
 import { DownloadSettingsContext } from '../ConfigProvider';
-import { mockCartItems, mockedSettings } from '../testData';
+import { mockCartItems, mockDownloadItems, mockedSettings } from '../testData';
 import {
+  downloadPreparedCart,
   getFileSizeAndCount,
   isCartMintable,
   removeAllDownloadCartItems,
@@ -22,6 +23,7 @@ import {
 } from '../downloadApi';
 import DownloadCartTable from './downloadCartTable.component';
 import { createTheme } from '@mui/material';
+import axios, { AxiosResponse } from 'axios';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -43,6 +45,7 @@ jest.mock('../downloadApi', () => {
     getIsTwoLevel: jest.fn().mockResolvedValue(true),
     removeFromCart: jest.fn(),
     isCartMintable: jest.fn(),
+    downloadPreparedCart: jest.fn(),
   };
 });
 
@@ -119,6 +122,38 @@ describe('Download cart table component', () => {
     (
       isCartMintable as jest.MockedFunction<typeof isCartMintable>
     ).mockResolvedValue(true);
+
+    axios.get = jest
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/.*\/user\/downloads/.test(url)) {
+          return Promise.resolve({
+            data: [
+              {
+                ...mockDownloadItems[0],
+                status: 'COMPLETE',
+              },
+            ],
+          });
+        }
+        if (/.*\/user\/downloadType\/(.*)\/status/.test(url)) {
+          return Promise.resolve({
+            data: { disabled: false, type: 'https', message: '' },
+          });
+        }
+        return Promise.reject(`Endpoint not mocked: ${url}`);
+      });
+
+    axios.post = jest
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/.*\/user\/cart\/.*\/submit/.test(url)) {
+          return Promise.resolve({
+            data: { downloadId: mockDownloadItems[0].id },
+          });
+        }
+        return Promise.reject(`Endpoint not mocked: ${url}`);
+      });
   });
 
   afterEach(() => {
@@ -182,6 +217,27 @@ describe('Download cart table component', () => {
     expect(
       await screen.findByLabelText('downloadConfirmDialog.dialog_arialabel')
     ).toBeTruthy();
+  });
+
+  it('should download immediately on successful download submission if download is already complete', async () => {
+    renderComponent();
+
+    await user.click(await screen.findByText('downloadCart.download'));
+
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'downloadConfirmDialog.download',
+      })
+    );
+
+    expect(downloadPreparedCart).toHaveBeenCalledWith(
+      mockDownloadItems[0].preparedId,
+      mockDownloadItems[0].fileName,
+      {
+        idsUrl:
+          mockedSettings.accessMethods[mockDownloadItems[0].transport].idsUrl,
+      }
+    );
   });
 
   it('should remove all items from cart when Remove All button is clicked', async () => {
