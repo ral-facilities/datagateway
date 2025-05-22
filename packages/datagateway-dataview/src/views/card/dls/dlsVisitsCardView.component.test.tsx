@@ -66,7 +66,7 @@ describe('DLS Visits - Card View', () => {
 
     state = JSON.parse(
       JSON.stringify({
-        dgcommon: dGCommonInitialState,
+        dgcommon: { ...dGCommonInitialState, accessMethods: {} },
         dgdataview: dgDataViewInitialState,
       })
     );

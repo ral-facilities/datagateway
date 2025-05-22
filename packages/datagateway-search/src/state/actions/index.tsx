@@ -14,6 +14,7 @@ import {
   loadUrls,
   loadFacilityName,
   loadQueryRetries,
+  loadAccessMethods,
 } from 'datagateway-common';
 import { Action } from 'redux';
 import { settings } from '../../settings';
@@ -75,6 +76,10 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
 
       if (settingsResult?.['queryRetries'] !== undefined) {
         dispatch(loadQueryRetries(settingsResult['queryRetries']));
+      }
+
+      if (settingsResult?.['accessMethods'] !== undefined) {
+        dispatch(loadAccessMethods(settingsResult['accessMethods']));
       }
 
       if (settingsResult?.['selectAllSetting'] !== undefined) {

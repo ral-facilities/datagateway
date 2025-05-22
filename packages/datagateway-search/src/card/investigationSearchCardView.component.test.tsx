@@ -52,6 +52,11 @@ describe('Investigation - Card View', () => {
         data: searchResponse,
       });
     }
+    if (/\/user\/queue\/allowed$/.test(url)) {
+      return Promise.resolve({
+        data: true,
+      });
+    }
     return Promise.reject({
       message: `Endpoint not mocked ${url}`,
     });
@@ -295,6 +300,8 @@ describe('Investigation - Card View', () => {
   });
 
   it('displays correct details panel for DLS when expanded', async () => {
+    state.dgcommon.accessMethods = {};
+
     const user = userEvent.setup();
 
     renderComponent({

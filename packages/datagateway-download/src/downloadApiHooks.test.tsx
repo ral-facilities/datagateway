@@ -1,12 +1,17 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
 import axios, { AxiosError } from 'axios';
-import { Download, InvalidateTokenType } from 'datagateway-common';
-import { handleICATError, NotificationType } from 'datagateway-common';
+import {
+  Download,
+  InvalidateTokenType,
+  handleICATError,
+} from 'datagateway-common';
 import { createMemoryHistory } from 'history';
+import log from 'loglevel';
 import * as React from 'react';
 import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 import { Router } from 'react-router-dom';
 import { DownloadSettingsContext } from './ConfigProvider';
+import { ContributorType } from './downloadApi';
 import {
   useAdminDownloadDeleted,
   useAdminDownloads,
@@ -17,18 +22,14 @@ import {
   useDownloadOrRestoreDownload,
   useDownloadPercentageComplete,
   useDownloads,
-  useDownloadTypeStatuses,
   useFileSizesAndCounts,
   useIsCartMintable,
   useIsTwoLevel,
   useMintCart,
   useRemoveAllFromCart,
   useRemoveEntityFromCart,
-  useSubmitCart,
 } from './downloadApiHooks';
 import { mockCartItems, mockDownloadItems, mockedSettings } from './testData';
-import log from 'loglevel';
-import { ContributorType } from './downloadApi';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -997,203 +998,6 @@ describe('Download API react-query hooks test', () => {
       expect(result.current.useAdminDownloads.data?.pages).toEqual([
         mockDownloadItems,
       ]);
-    });
-  });
-
-  describe('useSubmitCart', () => {
-    it('should submit cart and clear cart on success', async () => {
-      axios.post = jest.fn().mockResolvedValue({ data: 123 });
-      axios.get = jest
-        .fn()
-        .mockResolvedValueOnce({
-          data: {
-            cartItems: mockCartItems,
-          },
-        })
-        .mockResolvedValueOnce({ data: { cartItems: [] } });
-
-      const { result } = renderHook(
-        () => ({
-          useSubmitCart: useSubmitCart(),
-          useCart: useCart(),
-        }),
-        { wrapper: createReactQueryWrapper() }
-      );
-
-      // wait for the cart to finish loading
-      await waitFor(() => expect(result.current.useCart.isSuccess).toBe(true));
-      // submit the cart
-      result.current.useSubmitCart.mutate({
-        emailAddress: 'cat@dog.com',
-        fileName: 'test-file',
-        transport: 'https',
-      });
-      // wait for cart submission to finish
-      await waitFor(() =>
-        expect(result.current.useSubmitCart.isSuccess).toBe(true)
-      );
-
-      expect(result.current.useCart.data).toEqual([]);
-    });
-
-    it('should call handleICATError when an error is encountered', async () => {
-      axios.post = jest.fn().mockRejectedValue({
-        message: 'test error message',
-      });
-      axios.get = jest.fn().mockResolvedValueOnce({
-        data: {
-          cartItems: mockCartItems,
-        },
-      });
-
-      const { result } = renderHook(
-        () => ({
-          useSubmitCart: useSubmitCart(),
-          useCart: useCart(),
-        }),
-        { wrapper: createReactQueryWrapper() }
-      );
-
-      await waitFor(() => expect(result.current.useCart.isSuccess).toBe(true));
-      result.current.useSubmitCart.mutate({
-        emailAddress: 'a@b.c',
-        fileName: 'test-file',
-        transport: 'https',
-      });
-      await waitFor(() =>
-        expect(result.current.useSubmitCart.isError).toBe(true)
-      );
-
-      expect(handleICATError).toHaveBeenCalledWith({
-        message: 'test error message',
-      });
-    });
-  });
-
-  describe('useDownloadTypeStatuses', () => {
-    const downloadTypes = ['https', 'globus'];
-
-    let queryClient: QueryClient;
-
-    beforeAll(() => {
-      queryClient = new QueryClient();
-    });
-
-    afterEach(() => {
-      queryClient.clear();
-    });
-
-    it('should query statuses of download types', async () => {
-      axios.get = jest.fn().mockResolvedValue({
-        data: {
-          disabled: false,
-          message: '',
-        },
-      });
-
-      const { result } = renderHook(
-        () => useDownloadTypeStatuses({ downloadTypes }),
-        { wrapper: createReactQueryWrapper() }
-      );
-
-      await waitFor(() =>
-        expect(result.current.every((query) => query.isSuccess)).toBe(true)
-      );
-
-      const data = result.current.map(({ data }) => data);
-      expect(data).toEqual([
-        {
-          type: 'https',
-          disabled: false,
-          message: '',
-        },
-        {
-          type: 'globus',
-          disabled: false,
-          message: '',
-        },
-      ]);
-    });
-
-    it('should dispatch event with the error messages of download type queries with errors', async () => {
-      axios.get = jest
-        .fn()
-        .mockResolvedValueOnce({
-          data: {
-            disabled: false,
-            message: '',
-          },
-        })
-        .mockImplementationOnce(() =>
-          Promise.reject({
-            message: 'Test error message',
-          })
-        );
-
-      const dispatchEventSpy = jest.spyOn(document, 'dispatchEvent');
-
-      const { result } = renderHook(
-        () => useDownloadTypeStatuses({ downloadTypes }),
-        { wrapper: createReactQueryWrapper() }
-      );
-
-      await waitFor(() =>
-        expect(
-          result.current.every((query) => query.isSuccess || query.isError)
-        ).toBe(true)
-      );
-
-      expect((dispatchEventSpy.mock.calls[0][0] as CustomEvent).detail).toEqual(
-        {
-          type: NotificationType,
-          payload: {
-            severity: 'error',
-            message:
-              'downloadConfirmDialog.access_method_error {method:GLOBUS}',
-          },
-        }
-      );
-    });
-
-    it('should refetch data on every hook call', async () => {
-      axios.get = jest.fn().mockResolvedValue({
-        data: {
-          disabled: false,
-          message: '',
-        },
-      });
-
-      const wrapper = createReactQueryWrapper();
-
-      const { result } = renderHook(
-        () =>
-          useDownloadTypeStatuses({
-            downloadTypes: ['https'],
-          }),
-        { wrapper }
-      );
-
-      await waitFor(() =>
-        expect(result.current.every((query) => query.isSuccess)).toBe(true)
-      );
-
-      expect(result.current[0].isStale).toBe(true);
-      expect(axios.get).toHaveBeenCalledTimes(1);
-
-      const { result: newResult } = renderHook(
-        () =>
-          useDownloadTypeStatuses({
-            downloadTypes: ['https'],
-          }),
-        { wrapper }
-      );
-
-      await waitFor(() =>
-        expect(newResult.current.every((query) => query.isSuccess)).toBe(true)
-      );
-
-      expect(newResult.current[0].isStale).toBe(true);
-      expect(axios.get).toHaveBeenCalledTimes(2);
     });
   });
 

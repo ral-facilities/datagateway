@@ -16,7 +16,7 @@ exports[`SelectionAlert renders correctly 1`] = `
           aria-label="selection-alert-text"
           class="MuiTypography-root MuiTypography-body1 css-1sx1eu0-MuiTypography-root"
         >
-          selec_alert.added
+          selec_alert.added {count:1}
         </p>
          
         <button
