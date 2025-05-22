@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
 import { useRetryICATErrors } from './retryICATErrors';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { createReactQueryWrapper } from '../setupTests';
 import { QueryClient } from 'react-query';
 

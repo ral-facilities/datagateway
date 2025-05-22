@@ -1,6 +1,5 @@
 import { RenderResult, render } from '@testing-library/react';
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 import { act } from 'react-dom/test-utils';
 import App, { ErrorFallback, QueryClientSettingsUpdaterContext } from './App';
 import { flushPromises } from './setupTests';
@@ -13,15 +12,13 @@ jest.mock('./ConfigProvider');
 
 describe('App', () => {
   it('renders without crashing', async () => {
-    const div = document.createElement('div');
-
-    ReactDOM.render(<App />, div);
+    const { unmount } = render(<App />);
 
     await act(async () => {
       await flushPromises();
     });
 
-    ReactDOM.unmountComponentAtNode(div);
+    unmount();
   });
 });
 

@@ -1,12 +1,11 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import * as React from 'react';
 import SelectHeader from './selectHeader.component';
 import SelectCell from '../cellRenderers/selectCell.component';
 
 describe('Select column header component', () => {
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
   const setLastChecked = jest.fn();
   const onCheck = jest.fn();
   const onUncheck = jest.fn();

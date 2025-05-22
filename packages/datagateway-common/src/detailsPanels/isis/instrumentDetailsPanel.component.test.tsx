@@ -1,7 +1,6 @@
 import type { RenderResult } from '@testing-library/react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { UserEvent } from '@testing-library/user-event/dist/types/setup';
 import axios from 'axios';
 import * as React from 'react';
 import { Provider } from 'react-redux';
@@ -37,7 +36,7 @@ function renderComponent({
 
 describe('Instrument details panel component', () => {
   let rowData: Instrument;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   beforeEach(() => {
     user = userEvent.setup();
@@ -59,8 +58,13 @@ describe('Instrument details panel component', () => {
     jest.clearAllMocks();
   });
 
-  it('should render correctly', () => {
+  it('should render correctly', async () => {
     const { asFragment } = renderComponent({ rowData });
+    expect(
+      await screen.findByRole('tablist', {
+        name: 'instruments.details.tabs_label',
+      })
+    ).toBeInTheDocument();
     expect(asFragment()).toMatchSnapshot();
   });
 
@@ -71,7 +75,7 @@ describe('Instrument details panel component', () => {
     ).toHaveAttribute('aria-selected', 'true');
   });
 
-  it('should render users tab when present in the data', () => {
+  it('should render users tab when present in the data', async () => {
     rowData.instrumentScientists = [
       {
         id: 4,
@@ -91,6 +95,13 @@ describe('Instrument details panel component', () => {
     ];
 
     const { asFragment } = renderComponent({ rowData });
+
+    expect(
+      await screen.findByRole('tab', {
+        name: 'instruments.details.instrument_scientists.label',
+      })
+    ).toBeInTheDocument();
+
     expect(asFragment()).toMatchSnapshot();
   });
 
@@ -160,7 +171,7 @@ describe('Instrument details panel component', () => {
     });
   });
 
-  it('should gracefully handle InstrumentScientists without Users', () => {
+  it('should gracefully handle InstrumentScientists without Users', async () => {
     rowData.instrumentScientists = [
       {
         id: 4,
@@ -168,6 +179,11 @@ describe('Instrument details panel component', () => {
     ];
 
     const { asFragment } = renderComponent({ rowData });
+    expect(
+      await screen.findByRole('tablist', {
+        name: 'instruments.details.tabs_label',
+      })
+    ).toBeInTheDocument();
     expect(asFragment()).toMatchSnapshot();
   });
 

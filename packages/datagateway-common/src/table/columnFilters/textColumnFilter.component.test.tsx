@@ -5,16 +5,14 @@ import TextColumnFilter, {
   DEBOUNCE_DELAY,
 } from './textColumnFilter.component';
 import { usePushFilter, usePushFilters } from '../../api';
-import { render, screen, act } from '@testing-library/react';
-import { renderHook } from '@testing-library/react-hooks';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
+import { render, renderHook, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 jest.mock('../../api');
 jest.useFakeTimers();
 
 describe('Text filter component', () => {
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   beforeEach(() => {
     user = userEvent.setup({ delay: null });

@@ -20,7 +20,6 @@ import {
   screen,
   within,
 } from '@testing-library/react';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 import {
   findAllRows,
@@ -45,7 +44,7 @@ describe('ISIS Instruments table component', () => {
   let state: StateType;
   let rowData: Instrument[];
   let history: History;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (dataPublication = false): RenderResult => {
     const store = mockStore(state);
@@ -177,8 +176,11 @@ describe('ISIS Instruments table component', () => {
     expect(history.location.search).toBe('?');
   });
 
-  it('uses default sort', () => {
+  it('uses default sort', async () => {
     renderComponent();
+
+    expect(await screen.findAllByRole('gridcell')).toBeTruthy();
+
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"fullName":"asc"}')}`

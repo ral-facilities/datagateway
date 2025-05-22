@@ -1,6 +1,7 @@
 import type { RenderResult } from '@testing-library/react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
 import * as React from 'react';
 import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 import {
@@ -8,8 +9,8 @@ import {
   useQueueVisit,
   useSubmitCart,
 } from '../api/cart';
+import { flushPromises } from '../setupTests';
 import DownloadConfirmDialog from './downloadConfirmDialog.component';
-import axios, { AxiosResponse } from 'axios';
 
 jest.mock('../handleICATError');
 
@@ -157,6 +158,10 @@ describe('DownloadConfirmDialog', () => {
     // Pass in a size of 100 bytes and for the dialog to be open when mounted.
     const wrapper = renderWrapper();
 
+    await act(async () => {
+      await flushPromises();
+    });
+
     expect(
       await wrapper.findByLabelText('downloadConfirmDialog.dialog_arialabel')
     ).toMatchSnapshot();
@@ -165,6 +170,10 @@ describe('DownloadConfirmDialog', () => {
   it('should not load the download speed/time table when isTwoLevel is true', async () => {
     props.isTwoLevel = true;
     const wrapper = renderWrapper();
+
+    await act(async () => {
+      await flushPromises();
+    });
 
     expect(
       await wrapper.findByLabelText('downloadConfirmDialog.dialog_arialabel')

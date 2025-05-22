@@ -13,7 +13,6 @@ import {
 } from '../setupTests';
 import { render, type RenderResult, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
 
 jest.mock('loglevel');
 
@@ -82,7 +81,7 @@ describe('DatePicker component tests', () => {
   });
 
   describe('Start date box', () => {
-    let user: UserEvent;
+    let user: ReturnType<typeof userEvent.setup>;
 
     beforeEach(() => {
       user = userEvent.setup();
@@ -219,7 +218,7 @@ describe('DatePicker component tests', () => {
   });
 
   describe('End date box', () => {
-    let user: UserEvent;
+    let user: ReturnType<typeof userEvent.setup>;
 
     beforeEach(() => {
       user = userEvent.setup();

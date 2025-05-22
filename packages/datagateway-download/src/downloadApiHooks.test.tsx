@@ -1,16 +1,17 @@
-import {
-  act,
-  renderHook,
-  WrapperComponent,
-} from '@testing-library/react-hooks';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import axios, { AxiosError } from 'axios';
-import { Download, InvalidateTokenType } from 'datagateway-common';
-import { handleICATError } from 'datagateway-common';
+import {
+  Download,
+  InvalidateTokenType,
+  handleICATError,
+} from 'datagateway-common';
 import { createMemoryHistory } from 'history';
+import log from 'loglevel';
 import * as React from 'react';
 import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 import { Router } from 'react-router-dom';
 import { DownloadSettingsContext } from './ConfigProvider';
+import { ContributorType } from './downloadApi';
 import {
   useAdminDownloadDeleted,
   useAdminDownloads,
@@ -29,8 +30,6 @@ import {
   useRemoveEntityFromCart,
 } from './downloadApiHooks';
 import { mockCartItems, mockDownloadItems, mockedSettings } from './testData';
-import log from 'loglevel';
-import { ContributorType } from './downloadApi';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -63,11 +62,15 @@ const createTestQueryClient = (): QueryClient =>
 
 const createReactQueryWrapper = (
   settings = mockedSettings
-): WrapperComponent<unknown> => {
+): React.JSXElementConstructor<{
+  children: React.ReactElement;
+}> => {
   const testQueryClient = createTestQueryClient();
   const history = createMemoryHistory();
 
-  const wrapper: WrapperComponent<unknown> = ({ children }) => (
+  const wrapper: React.JSXElementConstructor<{
+    children: React.ReactElement;
+  }> = ({ children }) => (
     <DownloadSettingsContext.Provider value={settings}>
       <Router history={history}>
         <QueryClientProvider client={testQueryClient}>
@@ -134,11 +137,11 @@ describe('Download API react-query hooks test', () => {
         data: downloadCartMockData,
       });
 
-      const { result, waitFor } = renderHook(() => useCart(), {
+      const { result } = renderHook(() => useCart(), {
         wrapper: createReactQueryWrapper(),
       });
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/downloadApi/user/cart/LILS',
@@ -156,11 +159,11 @@ describe('Download API react-query hooks test', () => {
         message: 'Test error message',
       });
 
-      const { result, waitFor } = renderHook(() => useCart(), {
+      const { result } = renderHook(() => useCart(), {
         wrapper: createReactQueryWrapper(),
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       expect(handleICATError).toHaveBeenCalledWith({
         message: 'Test error message',
@@ -180,7 +183,7 @@ describe('Download API react-query hooks test', () => {
         })
       );
 
-      const { result, waitFor } = renderHook(() => useRemoveAllFromCart(), {
+      const { result } = renderHook(() => useRemoveAllFromCart(), {
         wrapper: createReactQueryWrapper(),
       });
 
@@ -189,7 +192,7 @@ describe('Download API react-query hooks test', () => {
 
       result.current.mutate();
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       expect(result.current.data).toBeUndefined();
       expect(axios.delete).toHaveBeenCalled();
@@ -216,13 +219,15 @@ describe('Download API react-query hooks test', () => {
           })
         );
 
-      const { result, waitFor } = renderHook(() => useRemoveAllFromCart(), {
+      const { result } = renderHook(() => useRemoveAllFromCart(), {
         wrapper: createReactQueryWrapper(),
       });
 
       result.current.mutate();
 
-      await waitFor(() => result.current.isError, { timeout: 2000 });
+      await waitFor(() => expect(result.current.isError).toBe(true), {
+        timeout: 2000,
+      });
 
       expect(axios.delete).toHaveBeenCalledWith(
         `${mockedSettings.downloadApiUrl}/user/cart/${mockedSettings.facilityName}/cartItems`,
@@ -248,7 +253,7 @@ describe('Download API react-query hooks test', () => {
         })
       );
 
-      const { result, waitFor } = renderHook(() => useRemoveEntityFromCart(), {
+      const { result } = renderHook(() => useRemoveEntityFromCart(), {
         wrapper: createReactQueryWrapper(),
       });
 
@@ -257,7 +262,7 @@ describe('Download API react-query hooks test', () => {
 
       result.current.mutate({ entityId: 1, entityType: 'datafile' });
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       expect(result.current.data).toEqual([]);
       expect(axios.delete).toHaveBeenCalled();
@@ -284,13 +289,15 @@ describe('Download API react-query hooks test', () => {
           })
         );
 
-      const { result, waitFor } = renderHook(() => useRemoveEntityFromCart(), {
+      const { result } = renderHook(() => useRemoveEntityFromCart(), {
         wrapper: createReactQueryWrapper(),
       });
 
       result.current.mutate({ entityId: 1, entityType: 'investigation' });
 
-      await waitFor(() => result.current.isError, { timeout: 2000 });
+      await waitFor(() => expect(result.current.isError).toBe(true), {
+        timeout: 2000,
+      });
 
       expect(axios.delete).toHaveBeenCalledWith(
         `${mockedSettings.downloadApiUrl}/user/cart/${mockedSettings.facilityName}/cartItems`,
@@ -312,11 +319,11 @@ describe('Download API react-query hooks test', () => {
         })
       );
 
-      const { result, waitFor } = renderHook(() => useIsTwoLevel(), {
+      const { result } = renderHook(() => useIsTwoLevel(), {
         wrapper: createReactQueryWrapper(),
       });
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       expect(axios.get).toHaveBeenCalledWith(
         `${mockedSettings.idsUrl}/isTwoLevel`
@@ -331,11 +338,11 @@ describe('Download API react-query hooks test', () => {
         })
       );
 
-      const { result, waitFor } = renderHook(() => useIsTwoLevel(), {
+      const { result } = renderHook(() => useIsTwoLevel(), {
         wrapper: createReactQueryWrapper(),
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       expect(axios.get).toHaveBeenCalledWith(
         `${mockedSettings.idsUrl}/isTwoLevel`
@@ -361,7 +368,7 @@ describe('Download API react-query hooks test', () => {
           })
         );
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useFileSizesAndCounts(mockCartItems),
         {
           wrapper: createReactQueryWrapper(),
@@ -369,7 +376,9 @@ describe('Download API react-query hooks test', () => {
       );
 
       await waitFor(() =>
-        result.current.every((query) => query.isSuccess || query.isError)
+        expect(
+          result.current.every((query) => query.isSuccess || query.isError)
+        ).toBe(true)
       );
 
       expect(result.current.map((query) => query.data)).toEqual([
@@ -424,11 +433,11 @@ describe('Download API react-query hooks test', () => {
     it('should retrieve user downloads', async () => {
       axios.get = jest.fn().mockResolvedValue({ data: mockDownloadItems });
 
-      const { result, waitFor } = renderHook(() => useDownloads(), {
+      const { result } = renderHook(() => useDownloads(), {
         wrapper: createReactQueryWrapper(),
       });
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       expect(axios.get).toHaveBeenCalledWith(
         `${mockedSettings.downloadApiUrl}/user/downloads`,
@@ -448,11 +457,11 @@ describe('Download API react-query hooks test', () => {
         message: 'Test error message',
       });
 
-      const { result, waitFor } = renderHook(() => useDownloads(), {
+      const { result } = renderHook(() => useDownloads(), {
         wrapper: createReactQueryWrapper(),
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       expect(axios.get).toHaveBeenCalledWith(
         `${mockedSettings.downloadApiUrl}/user/downloads`,
@@ -475,7 +484,7 @@ describe('Download API react-query hooks test', () => {
       axios.get = jest.fn().mockResolvedValue({ data: mockDownloadItems });
       axios.put = jest.fn().mockImplementation(() => Promise.resolve());
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => ({
           useDownloads: useDownloads(),
           useDownloadOrRestoreDownload: useDownloadOrRestoreDownload(),
@@ -484,15 +493,17 @@ describe('Download API react-query hooks test', () => {
       );
 
       // wait for useDownloads to finish loading mock download items
-      await waitFor(() => result.current.useDownloads.isSuccess);
+      await waitFor(() =>
+        expect(result.current.useDownloads.isSuccess).toBe(true)
+      );
       // delete the mock item
       result.current.useDownloadOrRestoreDownload.mutate({
         downloadId: 1,
         deleted: true,
       });
       // wait for mutation to complete
-      await waitFor(
-        () => result.current.useDownloadOrRestoreDownload.isSuccess
+      await waitFor(() =>
+        expect(result.current.useDownloadOrRestoreDownload.isSuccess).toBe(true)
       );
 
       expect(result.current.useDownloads.data).toHaveLength(
@@ -543,7 +554,7 @@ describe('Download API react-query hooks test', () => {
 
       axios.put = jest.fn().mockImplementation(() => Promise.resolve());
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => ({
           useDownloads: useDownloads(),
           useDownloadOrRestoreDownload: useDownloadOrRestoreDownload(),
@@ -553,13 +564,15 @@ describe('Download API react-query hooks test', () => {
         }
       );
 
-      await waitFor(() => result.current.useDownloads.isSuccess);
+      await waitFor(() =>
+        expect(result.current.useDownloads.isSuccess).toBe(true)
+      );
       result.current.useDownloadOrRestoreDownload.mutate({
         downloadId: 124,
         deleted: false,
       });
-      await waitFor(
-        () => result.current.useDownloadOrRestoreDownload.isSuccess
+      await waitFor(() =>
+        expect(result.current.useDownloadOrRestoreDownload.isSuccess).toBe(true)
       );
 
       const newList = result.current.useDownloads.data;
@@ -575,18 +588,15 @@ describe('Download API react-query hooks test', () => {
         message: 'Test error message',
       });
 
-      const { result, waitFor } = renderHook(
-        () => useDownloadOrRestoreDownload(),
-        {
-          wrapper: createReactQueryWrapper(),
-        }
-      );
+      const { result } = renderHook(() => useDownloadOrRestoreDownload(), {
+        wrapper: createReactQueryWrapper(),
+      });
 
       result.current.mutate({
         downloadId: 123,
         deleted: true,
       });
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       expect(handleICATError).toHaveBeenCalledWith({
         message: 'Test error message',
@@ -600,14 +610,14 @@ describe('Download API react-query hooks test', () => {
 
       // first, test fetching initial data
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useAdminDownloads({ initialQueryOffset: 'LIMIT 0, 50' }),
         {
           wrapper: createReactQueryWrapper(),
         }
       );
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       expect(axios.get).toHaveBeenNthCalledWith(
         1,
@@ -627,9 +637,10 @@ describe('Download API react-query hooks test', () => {
       result.current.fetchNextPage({
         pageParam: 'LIMIT 50, 100',
       });
-      await waitFor(() => result.current.isFetchingNextPage);
-      await waitFor(
-        () => !result.current.isFetchingNextPage && result.current.isSuccess
+      await waitFor(() =>
+        expect(
+          !result.current.isFetchingNextPage && result.current.isSuccess
+        ).toBe(true)
       );
 
       expect(axios.get).toHaveBeenNthCalledWith(
@@ -654,14 +665,14 @@ describe('Download API react-query hooks test', () => {
         message: 'Test error message',
       });
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useAdminDownloads({ initialQueryOffset: 'LIMIT 0, 50' }),
         {
           wrapper: createReactQueryWrapper(),
         }
       );
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       expect(axios.get).toHaveBeenCalledWith(
         `${mockedSettings.downloadApiUrl}/admin/downloads`,
@@ -730,7 +741,7 @@ describe('Download API react-query hooks test', () => {
 
       axios.put = jest.fn().mockImplementation(() => Promise.resolve());
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => ({
           useAdminDownloads: useAdminDownloads({
             initialQueryOffset: 'LIMIT 0, 50',
@@ -743,14 +754,18 @@ describe('Download API react-query hooks test', () => {
       );
 
       // wait for admin downloads to finish loading
-      await waitFor(() => result.current.useAdminDownloads.isSuccess);
+      await waitFor(() =>
+        expect(result.current.useAdminDownloads.isSuccess).toBe(true)
+      );
       isMutated = true;
       result.current.useAdminDownloadDeleted.mutate({
         downloadId: 1,
         deleted: true,
       });
       // wait for mutation to complete
-      await waitFor(() => result.current.useAdminDownloadDeleted.isSuccess);
+      await waitFor(() =>
+        expect(result.current.useAdminDownloadDeleted.isSuccess).toBe(true)
+      );
 
       const updated = result.current.useAdminDownloads.data?.pages?.[0]?.find(
         ({ id }) => id === 1
@@ -831,7 +846,7 @@ describe('Download API react-query hooks test', () => {
 
       axios.put = jest.fn().mockImplementation(() => Promise.resolve());
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => ({
           useAdminDownloads: useAdminDownloads({
             initialQueryOffset: 'LIMIT 0, 50',
@@ -844,14 +859,18 @@ describe('Download API react-query hooks test', () => {
       );
 
       // wait for admin downloads to finish loading
-      await waitFor(() => result.current.useAdminDownloads.isSuccess);
+      await waitFor(() =>
+        expect(result.current.useAdminDownloads.isSuccess).toBe(true)
+      );
       isMutated = true;
       result.current.useAdminDownloadDeleted.mutate({
         downloadId: 6,
         deleted: false,
       });
       // wait for mutation to complete
-      await waitFor(() => result.current.useAdminDownloadDeleted.isSuccess);
+      await waitFor(() =>
+        expect(result.current.useAdminDownloadDeleted.isSuccess).toBe(true)
+      );
 
       const updated = result.current.useAdminDownloads.data?.pages?.[0]?.find(
         ({ id }) => id === restoredDownload.id
@@ -865,7 +884,7 @@ describe('Download API react-query hooks test', () => {
         message: 'Test error message',
       });
 
-      const { result, waitFor } = renderHook(() => useAdminDownloadDeleted(), {
+      const { result } = renderHook(() => useAdminDownloadDeleted(), {
         wrapper: createReactQueryWrapper(),
       });
 
@@ -873,7 +892,7 @@ describe('Download API react-query hooks test', () => {
         downloadId: 1,
         deleted: true,
       });
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       expect(handleICATError).toHaveBeenCalledWith({
         message: 'Test error message',
@@ -915,7 +934,7 @@ describe('Download API react-query hooks test', () => {
       );
       axios.put = jest.fn().mockImplementation(() => Promise.resolve());
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => ({
           useAdminDownloads: useAdminDownloads({
             initialQueryOffset: 'LIMIT 0, 50 ',
@@ -927,14 +946,16 @@ describe('Download API react-query hooks test', () => {
         }
       );
 
-      await waitFor(() => result.current.useAdminDownloads.isSuccess);
+      await waitFor(() =>
+        expect(result.current.useAdminDownloads.isSuccess).toBe(true)
+      );
       isMutated = true;
       result.current.useAdminUpdateDownloadStatus.mutate({
         downloadId: 1,
         status: 'PREPARING',
       });
-      await waitFor(
-        () => result.current.useAdminUpdateDownloadStatus.isSuccess
+      await waitFor(() =>
+        expect(result.current.useAdminUpdateDownloadStatus.isSuccess).toBe(true)
       );
 
       expect(
@@ -950,7 +971,7 @@ describe('Download API react-query hooks test', () => {
       });
       axios.get = jest.fn().mockResolvedValue({ data: mockDownloadItems });
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => ({
           useAdminDownloads: useAdminDownloads({
             initialQueryOffset: 'LIMIT 0, 50',
@@ -960,12 +981,16 @@ describe('Download API react-query hooks test', () => {
         { wrapper: createReactQueryWrapper() }
       );
 
-      await waitFor(() => result.current.useAdminDownloads.isSuccess);
+      await waitFor(() =>
+        expect(result.current.useAdminDownloads.isSuccess).toBe(true)
+      );
       result.current.useAdminUpdateDownloadStatus.mutate({
         downloadId: 1,
         status: 'PREPARING',
       });
-      await waitFor(() => result.current.useAdminUpdateDownloadStatus.isError);
+      await waitFor(() =>
+        expect(result.current.useAdminUpdateDownloadStatus.isError).toBe(true)
+      );
 
       expect(handleICATError).toHaveBeenCalledWith({
         message: 'Test error message',
@@ -982,7 +1007,7 @@ describe('Download API react-query hooks test', () => {
         data: '30',
       });
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           useDownloadPercentageComplete({
             download: mockDownloadItems[0],
@@ -991,7 +1016,7 @@ describe('Download API react-query hooks test', () => {
           wrapper: createReactQueryWrapper(),
         }
       );
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       expect(result.current.data).toEqual(30);
     });
@@ -1001,7 +1026,7 @@ describe('Download API react-query hooks test', () => {
         data: 'UNKNOWN',
       });
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           useDownloadPercentageComplete({
             download: mockDownloadItems[0],
@@ -1010,7 +1035,7 @@ describe('Download API react-query hooks test', () => {
           wrapper: createReactQueryWrapper(),
         }
       );
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       expect(result.current.data).toEqual('UNKNOWN');
     });
@@ -1020,7 +1045,7 @@ describe('Download API react-query hooks test', () => {
         message: 'Test error message',
       });
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           useDownloadPercentageComplete({
             download: mockDownloadItems[0],
@@ -1029,7 +1054,7 @@ describe('Download API react-query hooks test', () => {
           wrapper: createReactQueryWrapper(),
         }
       );
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       expect(handleICATError).toHaveBeenCalledWith(
         {
@@ -1046,12 +1071,9 @@ describe('Download API react-query hooks test', () => {
         .fn()
         .mockResolvedValue({ data: undefined, status: 200 });
 
-      const { result, waitFor } = renderHook(
-        () => useIsCartMintable(mockCartItems),
-        {
-          wrapper: createReactQueryWrapper(),
-        }
-      );
+      const { result } = renderHook(() => useIsCartMintable(mockCartItems), {
+        wrapper: createReactQueryWrapper(),
+      });
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       expect(result.current.data).toEqual(true);
@@ -1079,12 +1101,9 @@ describe('Download API react-query hooks test', () => {
     });
 
     it('should return false if cart is undefined', async () => {
-      const { result, waitFor } = renderHook(
-        () => useIsCartMintable(undefined),
-        {
-          wrapper: createReactQueryWrapper(),
-        }
-      );
+      const { result } = renderHook(() => useIsCartMintable(undefined), {
+        wrapper: createReactQueryWrapper(),
+      });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
@@ -1093,7 +1112,7 @@ describe('Download API react-query hooks test', () => {
     });
 
     it('should return false if cart is empty', async () => {
-      const { result, waitFor } = renderHook(() => useIsCartMintable([]), {
+      const { result } = renderHook(() => useIsCartMintable([]), {
         wrapper: createReactQueryWrapper(),
       });
 
@@ -1116,7 +1135,7 @@ describe('Download API react-query hooks test', () => {
       };
       axios.post = jest.fn().mockRejectedValue(error);
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useIsCartMintable([mockCartItems[0]]),
         {
           wrapper: createReactQueryWrapper(),
@@ -1156,7 +1175,7 @@ describe('Download API react-query hooks test', () => {
       };
       axios.post = jest.fn().mockRejectedValue(error);
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useIsCartMintable([mockCartItems[3]]),
         {
           wrapper: createReactQueryWrapper(),
@@ -1192,12 +1211,9 @@ describe('Download API react-query hooks test', () => {
       };
       axios.post = jest.fn().mockRejectedValue(error);
 
-      const { result, waitFor } = renderHook(
-        () => useIsCartMintable(mockCartItems),
-        {
-          wrapper: createReactQueryWrapper(),
-        }
-      );
+      const { result } = renderHook(() => useIsCartMintable(mockCartItems), {
+        wrapper: createReactQueryWrapper(),
+      });
       await waitFor(() => expect(result.current.isError).toBe(true));
 
       expect(log.error).not.toHaveBeenCalled();
@@ -1261,7 +1277,7 @@ describe('Download API react-query hooks test', () => {
       };
       axios.post = jest.fn().mockRejectedValue(error);
 
-      const { result, waitFor } = renderHook(() => useMintCart(), {
+      const { result } = renderHook(() => useMintCart(), {
         wrapper: createReactQueryWrapper(),
       });
 
@@ -1305,7 +1321,7 @@ describe('Download API react-query hooks test', () => {
       };
       axios.post = jest.fn().mockRejectedValue(error);
 
-      const { result, waitFor } = renderHook(() => useMintCart(), {
+      const { result } = renderHook(() => useMintCart(), {
         wrapper: createReactQueryWrapper(),
       });
 
@@ -1386,12 +1402,9 @@ describe('Download API react-query hooks test', () => {
         }
       });
 
-      const { result, waitFor } = renderHook(
-        () => useCartUsers(mockCartItems),
-        {
-          wrapper: createReactQueryWrapper(),
-        }
-      );
+      const { result } = renderHook(() => useCartUsers(mockCartItems), {
+        wrapper: createReactQueryWrapper(),
+      });
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       // data should be deduped
@@ -1490,7 +1503,7 @@ describe('Download API react-query hooks test', () => {
     });
 
     it('should not query for users if cart is undefined', async () => {
-      const { result, waitFor } = renderHook(() => useCartUsers(undefined), {
+      const { result } = renderHook(() => useCartUsers(undefined), {
         wrapper: createReactQueryWrapper(),
       });
 
@@ -1507,7 +1520,7 @@ describe('Download API react-query hooks test', () => {
         .fn()
         .mockResolvedValue({ data: { id: 1, name: 'user 1' } });
 
-      const { result, waitFor } = renderHook(() => useCheckUser('user 1'), {
+      const { result } = renderHook(() => useCheckUser('user 1'), {
         wrapper: createReactQueryWrapper(),
       });
       expect(result.current.isIdle).toBe(true);
@@ -1536,7 +1549,7 @@ describe('Download API react-query hooks test', () => {
       };
       axios.get = jest.fn().mockRejectedValue(error);
 
-      const { result, waitFor } = renderHook(() => useCheckUser('user 1'), {
+      const { result } = renderHook(() => useCheckUser('user 1'), {
         wrapper: createReactQueryWrapper(),
       });
       expect(result.current.isIdle).toBe(true);
@@ -1570,7 +1583,7 @@ describe('Download API react-query hooks test', () => {
       };
       axios.get = jest.fn().mockRejectedValue(error);
 
-      const { result, waitFor } = renderHook(() => useCheckUser('user 1'), {
+      const { result } = renderHook(() => useCheckUser('user 1'), {
         wrapper: createReactQueryWrapper(),
       });
       expect(result.current.isIdle).toBe(true);
@@ -1600,7 +1613,7 @@ describe('Download API react-query hooks test', () => {
       };
       axios.get = jest.fn().mockRejectedValue(error);
 
-      const { result, waitFor } = renderHook(() => useCheckUser('user 1'), {
+      const { result } = renderHook(() => useCheckUser('user 1'), {
         wrapper: createReactQueryWrapper(),
       });
       expect(result.current.isIdle).toBe(true);
@@ -1622,7 +1635,7 @@ describe('Download API react-query hooks test', () => {
       };
       axios.get = jest.fn().mockRejectedValue(error);
 
-      const { result, waitFor } = renderHook(() => useCheckUser('user 1'), {
+      const { result } = renderHook(() => useCheckUser('user 1'), {
         wrapper: createReactQueryWrapper(),
       });
       expect(result.current.isIdle).toBe(true);
@@ -1644,7 +1657,7 @@ describe('Download API react-query hooks test', () => {
       };
       axios.get = jest.fn().mockRejectedValue(error);
 
-      const { result, waitFor } = renderHook(() => useCheckUser('user 1'), {
+      const { result } = renderHook(() => useCheckUser('user 1'), {
         wrapper: createReactQueryWrapper(),
       });
       expect(result.current.isIdle).toBe(true);

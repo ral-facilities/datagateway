@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import App from './App';
 import log from 'loglevel';
 import { render, screen, waitFor } from '@testing-library/react';
@@ -23,10 +22,12 @@ describe('App', () => {
     );
   });
 
-  it('renders without crashing', () => {
-    const div = document.createElement('div');
-    ReactDOM.render(<App />, div);
-    ReactDOM.unmountComponentAtNode(div);
+  it('renders without crashing', async () => {
+    const { unmount } = render(<App />);
+
+    expect(await screen.findByText('Search data')).toBeInTheDocument();
+
+    unmount();
   });
 
   it('shows loading screen when configuring app', async () => {

@@ -1,13 +1,12 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import * as React from 'react';
 import DataHeader from './dataHeader.component';
 import TextColumnFilter from '../columnFilters/textColumnFilter.component';
 import { Filter } from '../../app.types';
 
 describe('Data column header component', () => {
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
   const onSort = jest.fn();
   const resizeColumn = jest.fn();
   const dataHeaderProps = {
