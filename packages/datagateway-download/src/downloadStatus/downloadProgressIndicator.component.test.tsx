@@ -1,10 +1,10 @@
-import { render, screen, RenderResult, waitFor } from '@testing-library/react';
-import type { Download } from 'datagateway-common';
-import { DownloadSettingsContext } from '../ConfigProvider';
-import { getDownload, getPercentageComplete } from '../downloadApi';
-import DownloadProgressIndicator from './downloadProgressIndicator.component';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { mockedSettings, mockDownloadItems } from '../testData';
+import { RenderResult, render, screen, waitFor } from '@testing-library/react';
+import { type Download } from 'datagateway-common';
+import { DownloadSettingsContext } from '../ConfigProvider';
+import { getPercentageComplete } from '../downloadApi';
+import { mockDownloadItems, mockedSettings } from '../testData';
+import DownloadProgressIndicator from './downloadProgressIndicator.component';
 
 vi.mock('../downloadApi');
 
@@ -39,6 +39,10 @@ function renderComponent({ download = mockDownload } = {}): RenderResult {
 }
 
 describe('DownloadProgressIndicator', () => {
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
   describe('should show calculating text', () => {
     it('when querying the download progress', async () => {
       vi.mocked(getPercentageComplete).mockReturnValue(
@@ -58,11 +62,6 @@ describe('DownloadProgressIndicator', () => {
 
   describe('should show the progress as complete', () => {
     it('when download is completed', async () => {
-      vi.mocked(getDownload).mockResolvedValue({
-        ...mockDownloadItems[0],
-        status: 'COMPLETE',
-      });
-
       renderComponent({
         download: {
           ...mockDownload,
@@ -78,15 +77,25 @@ describe('DownloadProgressIndicator', () => {
     });
 
     it('when download is expired', async () => {
-      vi.mocked(getDownload).mockResolvedValue({
-        ...mockDownloadItems[0],
-        status: 'EXPIRED',
-      });
-
       renderComponent({
         download: {
           ...mockDownload,
           status: 'EXPIRED',
+        },
+      });
+
+      expect(
+        await screen.findByText('downloadStatus.progress_complete')
+      ).toBeInTheDocument();
+      // should not show progress bar
+      expect(screen.queryByRole('progressbar')).toBeNull();
+    });
+
+    it('when download is deleted', async () => {
+      renderComponent({
+        download: {
+          ...mockDownload,
+          isDeleted: true,
         },
       });
 
@@ -110,6 +119,20 @@ describe('DownloadProgressIndicator', () => {
         await screen.findByText('downloadStatus.progress_unavailable')
       ).toBeInTheDocument();
     });
+
+    it('when download has no preparedId', async () => {
+      renderComponent({
+        download: {
+          ...mockDownload,
+          preparedId: undefined,
+        },
+      });
+
+      expect(
+        await screen.findByText('downloadStatus.progress_unavailable')
+      ).toBeInTheDocument();
+      expect(getPercentageComplete).not.toHaveBeenCalled();
+    });
   });
 
   it('should show progress at 0% when the download is being prepared', async () => {
@@ -124,6 +147,32 @@ describe('DownloadProgressIndicator', () => {
     expect(progressBar).toBeInTheDocument();
     expect(progressBar).toHaveAttribute('aria-valuenow', '0');
     expect(screen.getByText('0%')).toBeInTheDocument();
+  });
+
+  it('should show queued when download is queued', async () => {
+    renderComponent({
+      download: {
+        ...mockDownload,
+        status: 'QUEUED',
+      },
+    });
+
+    expect(
+      await screen.findByText('downloadStatus.progress_queued')
+    ).toBeInTheDocument();
+    expect(getPercentageComplete).not.toHaveBeenCalled();
+  });
+
+  it('should not call getPercentageComplete if preparedId is undefined', async () => {
+    renderComponent({
+      download: {
+        ...mockDownload,
+        status: 'RESTORING',
+        preparedId: undefined,
+      },
+    });
+
+    expect(getPercentageComplete).not.toHaveBeenCalled();
   });
 
   it('should show progress of the given download item', async () => {

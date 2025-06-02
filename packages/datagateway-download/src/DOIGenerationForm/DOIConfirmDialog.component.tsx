@@ -6,15 +6,13 @@ import {
   Typography,
 } from '@mui/material';
 import { AxiosError } from 'axios';
-import { Mark } from 'datagateway-common';
+import { Mark, DialogTitle, DialogContent } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { MutationStatus } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 
 import type { DoiResponse } from '../downloadApi';
-import DialogContent from '../downloadConfirmation/dialogContent.component';
-import DialogTitle from '../downloadConfirmation/dialogTitle.component';
 
 interface DOIConfirmDialogProps {
   open: boolean;

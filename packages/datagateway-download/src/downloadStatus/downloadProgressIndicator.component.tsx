@@ -1,6 +1,6 @@
 import { Box, LinearProgress, Typography } from '@mui/material';
-import { useTranslation } from 'react-i18next';
 import type { Download } from 'datagateway-common';
+import { useTranslation } from 'react-i18next';
 import { useDownloadPercentageComplete } from '../downloadApiHooks';
 
 interface DownloadProgressIndicatorProps {
@@ -17,29 +17,36 @@ function DownloadProgressIndicator({
   download,
 }: DownloadProgressIndicatorProps): JSX.Element {
   const [t] = useTranslation();
-  const { data: progress, isLoading: isLoadingProgress } =
+  const { data: progress, isFetching: isLoadingProgress } =
     useDownloadPercentageComplete({
       download,
-      enabled: download.status === 'RESTORING' || download.status === 'PAUSED',
+      enabled:
+        !download.isDeleted &&
+        typeof download.preparedId !== 'undefined' && // do not send download status request for downloads with no preparedId as it will just fail
+        (download.status === 'RESTORING' || download.status === 'PAUSED'),
     });
 
-  // if the download is already completed/restored
-  // should show text such as N/A, completed, or empty string.
+  // if query is fetching show some loading text
+  if (isLoadingProgress) {
+    return <>{t('downloadStatus.calculating_progress')}</>;
+  }
+
+  // if the download is completed, expired or deleted
+  // should show text such as N/A or empty string.
   // depending on the translation configuration.
-  if (download.status === 'COMPLETE' || download.status === 'EXPIRED')
+  if (
+    download.status === 'COMPLETE' ||
+    download.status === 'EXPIRED' ||
+    download.isDeleted
+  )
     return <>{t('downloadStatus.progress_complete')}</>;
 
   // if the download is being prepared, show 0%
   if (download.status === 'PREPARING') return <ProgressBar progress={0} />;
 
-  // calculate loading after previous cases as if the query is disabled
-  // because status is not either restoring or paused then isLoading
-  // will be true as the query is disabled
-  // so essentially check for non-restoring & non-paused statuses first
-  // before checking loading state
-  if (isLoadingProgress) {
-    return <>{t('downloadStatus.calculating_progress')}</>;
-  }
+  // if the download is queued, show that it is queued
+  if (download.status === 'QUEUED')
+    return <>{t('downloadStatus.progress_queued')}</>;
 
   // display a label indicating progress unavailable when
   // progress is not returned or the download status doesn't match.

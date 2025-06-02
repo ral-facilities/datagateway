@@ -215,7 +215,7 @@ exports[`Investigation details panel component > should check if multiple public
         <span
           class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
         >
-          investigations.details.publications.reference
+          investigations.details.publications.reference {count:2}
         </span>
         <div
           class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
@@ -460,7 +460,7 @@ exports[`Investigation details panel component > should check if multiple sample
         <span
           class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
         >
-          investigations.details.samples.name
+          investigations.details.samples.name {count:2}
         </span>
         <div
           class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
@@ -685,7 +685,7 @@ exports[`Investigation details panel component > should gracefully handles dataC
         <span
           class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
         >
-          investigations.details.users.name
+          investigations.details.users.name {count:1}
         </span>
       </div>
     </div>
@@ -1129,7 +1129,7 @@ exports[`Investigation details panel component > should render user, sample and 
         <span
           class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
         >
-          investigations.details.users.name
+          investigations.details.users.name {count:2}
         </span>
         <div
           class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
@@ -1167,7 +1167,7 @@ exports[`Investigation details panel component > should render user, sample and 
         <span
           class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
         >
-          investigations.details.samples.name
+          investigations.details.samples.name {count:1}
         </span>
         <div
           class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
@@ -1194,7 +1194,7 @@ exports[`Investigation details panel component > should render user, sample and 
         <span
           class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
         >
-          investigations.details.publications.reference
+          investigations.details.publications.reference {count:1}
         </span>
         <div
           class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"

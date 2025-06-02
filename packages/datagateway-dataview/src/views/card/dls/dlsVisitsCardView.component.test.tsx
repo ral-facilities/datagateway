@@ -62,7 +62,7 @@ describe('DLS Visits - Card View', () => {
 
     state = JSON.parse(
       JSON.stringify({
-        dgcommon: dGCommonInitialState,
+        dgcommon: { ...dGCommonInitialState, accessMethods: {} },
         dgdataview: dgDataViewInitialState,
       })
     );
@@ -83,6 +83,10 @@ describe('DLS Visits - Card View', () => {
           return Promise.resolve({
             data: cardData,
           });
+        }
+
+        if (/\/allowed$/.test(url)) {
+          return Promise.resolve({ data: true });
         }
 
         return Promise.reject(`Endpoint not mocked: ${url}`);

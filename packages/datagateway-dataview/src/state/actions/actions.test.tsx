@@ -21,6 +21,8 @@ import {
   loadFacilityName,
   loadQueryRetries,
   ConfigureQueryRetriesType,
+  loadAccessMethods,
+  ConfigureAccessMethodsType,
 } from 'datagateway-common';
 
 vi.mock('loglevel');
@@ -95,7 +97,7 @@ describe('Actions', () => {
     });
   });
 
-  it('settings are loaded and facilityName, loadFeatureSwitches, loadUrls, loadQueryRetries, loadBreadcrumbSettings, loadSelectAllSetting and settingsLoaded actions are sent', async () => {
+  it('settings are loaded and facilityName, loadFeatureSwitches, loadUrls, loadAccessMethods, loadQueryRetries, loadBreadcrumbSettings, loadSelectAllSetting and settingsLoaded actions are sent', async () => {
     mockSettingsGetter.mockReturnValue({
       facilityName: 'Generic',
       facilityImageURL: 'test-image.jpg',
@@ -103,6 +105,11 @@ describe('Actions', () => {
       idsUrl: 'ids',
       apiUrl: 'api',
       queryRetries: 1,
+      accessMethods: {
+        https: {
+          idsUrl: 'ids',
+        },
+      },
       breadcrumbs: [
         {
           matchEntity: 'test',
@@ -123,7 +130,7 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState, null);
 
-    expect(actions.length).toEqual(9);
+    expect(actions.length).toEqual(10);
     expect(actions).toContainEqual(loadFacilityName('Generic'));
     expect(actions).toContainEqual(loadFacilityImageSetting('test-image.jpg'));
     expect(actions).toContainEqual(loadFeatureSwitches({}));
@@ -149,9 +156,12 @@ describe('Actions', () => {
       loadPluginHostSetting('http://localhost:3000/')
     );
     expect(actions).toContainEqual(loadQueryRetries(1));
+    expect(actions).toContainEqual(
+      loadAccessMethods({ https: { idsUrl: 'ids' } })
+    );
   });
 
-  it("doesn't send loadQueryRetries, loadSelectAllSetting, loadBreadcrumbSettings, loadPluginHostSetting, loadFacilityImageSetting and loadFeatureSwitches actions when they're not defined", async () => {
+  it("doesn't send loadQueryRetries, loadAccessRetries, loadSelectAllSetting, loadBreadcrumbSettings, loadPluginHostSetting, loadFacilityImageSetting and loadFeatureSwitches actions when they're not defined", async () => {
     mockSettingsGetter.mockReturnValue({
       facilityName: 'Generic',
       idsUrl: 'ids',
@@ -180,6 +190,9 @@ describe('Actions', () => {
     ).toBe(true);
     expect(
       actions.every(({ type }) => type !== ConfigureQueryRetriesType)
+    ).toBe(true);
+    expect(
+      actions.every(({ type }) => type !== ConfigureAccessMethodsType)
     ).toBe(true);
 
     expect(actions).toContainEqual(settingsLoaded());

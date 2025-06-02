@@ -1,5 +1,5 @@
-import userEvent from '@testing-library/user-event';
 import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import type DownloadRequestInfo from './DownloadRequestInfo';
 import DownloadRequestResult from './downloadRequestResult.component';
 
@@ -16,6 +16,17 @@ describe('DownloadRequestResult', () => {
         success
         closeDialog={vi.fn()}
         redirectToStatusTab={vi.fn()}
+        requestInfo={mockDownloadRequestInfo}
+      />
+    );
+    expect(asFragment()).toMatchSnapshot();
+  });
+
+  it('should render correctly without redirect to download status button', () => {
+    const { asFragment } = render(
+      <DownloadRequestResult
+        success
+        closeDialog={vi.fn()}
         requestInfo={mockDownloadRequestInfo}
       />
     );
@@ -68,7 +79,7 @@ describe('DownloadRequestResult', () => {
     });
   });
 
-  it('should not show email address info if none is given', async () => {
+  it('should not show email address or name info if none is given', async () => {
     render(
       <DownloadRequestResult
         success
@@ -76,7 +87,7 @@ describe('DownloadRequestResult', () => {
         redirectToStatusTab={vi.fn()}
         requestInfo={{
           emailAddress: '',
-          downloadName: 'download-name',
+          downloadName: '',
           transport: 'httpd',
         }}
       />
@@ -88,6 +99,12 @@ describe('DownloadRequestResult', () => {
       ).toBeNull();
       expect(
         screen.queryByText(mockDownloadRequestInfo.emailAddress)
+      ).toBeNull();
+      expect(
+        screen.queryByText('downloadConfirmDialog.confirmation_download_name')
+      ).toBeNull();
+      expect(
+        screen.queryByText(mockDownloadRequestInfo.downloadName)
       ).toBeNull();
     });
   });

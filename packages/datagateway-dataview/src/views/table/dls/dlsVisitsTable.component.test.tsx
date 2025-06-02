@@ -90,7 +90,7 @@ describe('DLS Visits table component', () => {
     state = JSON.parse(
       JSON.stringify({
         dgdataview: dgDataViewInitialState,
-        dgcommon: dGCommonInitialState,
+        dgcommon: { ...dGCommonInitialState, accessMethods: {} },
       })
     );
 
@@ -110,6 +110,10 @@ describe('DLS Visits table component', () => {
           return Promise.resolve({
             data: rowData,
           });
+        }
+
+        if (/\/allowed$/.test(url)) {
+          return Promise.resolve({ data: true });
         }
 
         return Promise.reject(`Endpoint not mocked: ${url}`);

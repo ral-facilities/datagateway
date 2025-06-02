@@ -87,7 +87,7 @@ exports[`DownloadConfirmDialog > renders correctly 1`] = `
                     class="MuiInputBase-input MuiInput-input css-1x51dt5-MuiInputBase-input-MuiInput-input"
                     id="confirm-download-name"
                     maxlength="255"
-                    placeholder="LILS_2020-1-1_1-1-1"
+                    placeholder="downloadConfirmDialog.download_name_default_format"
                     type="text"
                     value=""
                   />
@@ -396,7 +396,7 @@ exports[`DownloadConfirmDialog > should not load the download speed/time table w
                     class="MuiInputBase-input MuiInput-input css-1x51dt5-MuiInputBase-input-MuiInput-input"
                     id="confirm-download-name"
                     maxlength="255"
-                    placeholder="LILS_2020-1-1_1-1-1"
+                    placeholder="downloadConfirmDialog.download_name_default_format"
                     type="text"
                     value=""
                   />

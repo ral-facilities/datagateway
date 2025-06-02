@@ -254,7 +254,8 @@ export type DownloadStatus =
   | 'RESTORING'
   | 'PAUSED'
   | 'COMPLETE'
-  | 'EXPIRED';
+  | 'EXPIRED'
+  | 'QUEUED';
 
 export interface Download {
   createdAt: string;
@@ -266,7 +267,7 @@ export interface Download {
   isDeleted: boolean;
   isEmailSent: boolean;
   isTwoLevel: boolean;
-  preparedId: string;
+  preparedId?: string;
   sessionId: string;
   size: number;
   status: DownloadStatus;
@@ -292,7 +293,7 @@ export interface FormattedDownload extends Download {
 export interface SubmitCart {
   cartItems: DownloadCartItem[];
   facilityName: string;
-  downloadId: number;
+  downloadId?: number;
   userName: string;
 }
 
@@ -436,4 +437,21 @@ export interface QueryParams {
   endDate: Date | null;
   currentTab: string;
   restrict: boolean;
+}
+
+/**
+ * Describes the status of a download type.
+ */
+export interface DownloadTypeStatus {
+  type: string;
+  disabled: boolean;
+  message: string;
+}
+
+export interface DownloadSettingsAccessMethod {
+  [type: string]: {
+    idsUrl: string;
+    displayName?: string;
+    description?: string;
+  };
 }

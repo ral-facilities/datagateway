@@ -169,7 +169,9 @@ describe('SelectionAlert', () => {
 
   it('renders correctly with more than one item selected', async () => {
     renderComponent(cartItems, false);
-    expect(await screen.findByText('selec_alert.added')).toBeInTheDocument();
+    expect(
+      await screen.findByText('selec_alert.added', { exact: false })
+    ).toBeInTheDocument();
   });
 
   it('renders correctly with one item removed', async () => {
@@ -185,7 +187,9 @@ describe('SelectionAlert', () => {
       />
     );
 
-    expect(await screen.findByText('selec_alert.removed')).toBeInTheDocument();
+    expect(
+      await screen.findByText('selec_alert.removed', { exact: false })
+    ).toBeInTheDocument();
   });
 
   it('renders correctly with all items removed', async () => {
@@ -201,7 +205,9 @@ describe('SelectionAlert', () => {
       />
     );
 
-    expect(await screen.findByText('selec_alert.removed')).toBeInTheDocument();
+    expect(
+      await screen.findByText('selec_alert.removed', { exact: false })
+    ).toBeInTheDocument();
   });
 
   it('does not render when nothing has changed', async () => {

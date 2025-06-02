@@ -6,7 +6,6 @@ import type {
   DownloadCart,
   DownloadCartItem,
   Investigation,
-  SubmitCart,
   User,
 } from 'datagateway-common';
 import { readSciGatewayToken } from 'datagateway-common';
@@ -62,43 +61,6 @@ export const getIsTwoLevel: (settings: {
     .then((response) => response.data);
 };
 
-export type SubmitCartZipType = 'ZIP' | 'ZIP_AND_COMPRESS';
-
-export const submitCart: (
-  transport: string,
-  emailAddress: string,
-  fileName: string,
-  settings: Pick<DownloadSettings, 'facilityName' | 'downloadApiUrl'>,
-  zipType?: SubmitCartZipType
-) => Promise<number> = (
-  transport,
-  emailAddress,
-  fileName,
-  settings,
-  zipType
-) => {
-  const params = new URLSearchParams();
-
-  // Construct the form parameters.
-  params.append('sessionId', readSciGatewayToken().sessionId || '');
-  params.append('transport', transport);
-  params.append('email', emailAddress);
-  params.append('fileName', fileName);
-
-  // NOTE: zipType by default is 'ZIP', it can be 'ZIP_AND_COMPRESS'.
-  params.append('zipType', zipType ? zipType : 'ZIP');
-
-  return axios
-    .post<SubmitCart>(
-      `${settings.downloadApiUrl}/user/cart/${settings.facilityName}/submit`,
-      params
-    )
-    .then((response) => {
-      // Get the downloadId that was returned from the IDS server.
-      return response.data['downloadId'];
-    });
-};
-
 export const fetchDownloads: (
   settings: Pick<DownloadSettings, 'facilityName' | 'downloadApiUrl'>,
   queryOffset?: string
@@ -133,21 +95,6 @@ export const fetchAdminDownloads: (
     .then((response) => response.data);
 };
 
-export const getDownload: (
-  downloadId: number,
-  settings: Pick<DownloadSettings, 'facilityName' | 'downloadApiUrl'>
-) => Promise<Download> = (downloadId, settings) => {
-  return axios
-    .get<Download[]>(`${settings.downloadApiUrl}/user/downloads`, {
-      params: {
-        sessionId: readSciGatewayToken().sessionId,
-        facilityName: settings.facilityName,
-        queryOffset: `where download.id = ${downloadId}`,
-      },
-    })
-    .then((response) => response.data[0]);
-};
-
 export const downloadPreparedCart: (
   preparedId: string,
   fileName: string,
@@ -172,36 +119,6 @@ export const downloadPreparedCart: (
     link.remove();
   }
 };
-
-/**
- * Describes the status of a download type.
- */
-export interface DownloadTypeStatus {
-  type: string;
-  disabled: boolean;
-  message: string;
-}
-
-export const getDownloadTypeStatus: (
-  transportType: string,
-  settings: Pick<DownloadSettings, 'facilityName' | 'downloadApiUrl'>
-) => Promise<DownloadTypeStatus> = (transportType, settings) =>
-  axios
-    // the server doesn't put the transport type into the response object
-    // it will be put in after the fact so that it is easier to work with
-    .get<Omit<DownloadTypeStatus, 'type'>>(
-      `${settings.downloadApiUrl}/user/downloadType/${transportType}/status`,
-      {
-        params: {
-          sessionId: readSciGatewayToken().sessionId,
-          facilityName: settings.facilityName,
-        },
-      }
-    )
-    .then((response) => ({
-      type: transportType,
-      ...response.data,
-    }));
 
 export const downloadDeleted: (
   downloadId: number,
@@ -324,7 +241,7 @@ export const getPercentageComplete = async ({
   preparedId,
   settings: { idsUrl },
 }: {
-  preparedId: string;
+  preparedId: string | undefined;
   settings: { idsUrl: string };
 }): Promise<DownloadProgress> => {
   const { data } = await axios.get(`${idsUrl}/getPercentageComplete`, {

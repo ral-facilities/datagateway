@@ -177,6 +177,9 @@ exports[`Visit details panel component > should check if multiple publications r
             </b>
           </p>
         </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-cl5kk9-MuiGrid-root"
+        />
       </div>
     </div>
     <div
@@ -191,7 +194,7 @@ exports[`Visit details panel component > should check if multiple publications r
         <span
           class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
         >
-          investigations.details.publications.reference
+          investigations.details.publications.reference {count:2}
         </span>
         <div
           class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
@@ -398,6 +401,9 @@ exports[`Visit details panel component > should check if multiple samples result
             </b>
           </p>
         </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-cl5kk9-MuiGrid-root"
+        />
       </div>
     </div>
     <div
@@ -412,7 +418,7 @@ exports[`Visit details panel component > should check if multiple samples result
         <span
           class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
         >
-          investigations.details.samples.name
+          investigations.details.samples.name {count:2}
         </span>
         <div
           class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
@@ -619,6 +625,9 @@ exports[`Visit details panel component > should gracefully handles Investigation
             </b>
           </p>
         </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-cl5kk9-MuiGrid-root"
+        />
       </div>
     </div>
     <div
@@ -633,7 +642,7 @@ exports[`Visit details panel component > should gracefully handles Investigation
         <span
           class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
         >
-          investigations.details.users.name
+          investigations.details.users.name {count:1}
         </span>
       </div>
     </div>
@@ -687,7 +696,6 @@ exports[`Visit details panel component > should render correctly 1`] = `
     </div>
     <div
       aria-labelledby="visit-details-tab"
-      hidden=""
       id="visit-details-panel"
       role="tabpanel"
     >
@@ -803,6 +811,35 @@ exports[`Visit details panel component > should render correctly 1`] = `
               64 B
             </b>
           </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-cl5kk9-MuiGrid-root"
+        >
+          <button
+            class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedSecondary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-disableElevation MuiButton-root MuiButton-contained MuiButton-containedSecondary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-disableElevation css-s42839-MuiButtonBase-root-MuiButton-root"
+            tabindex="0"
+            type="button"
+          >
+            <span
+              class="MuiButton-startIcon MuiButton-iconSizeMedium css-1d6wzja-MuiButton-startIcon"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                data-testid="RestoreOutlinedIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M13 3c-4.97 0-9 4.03-9 9H1l4 3.99L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.25 2.52.77-1.28-3.52-2.09V8z"
+                />
+              </svg>
+            </span>
+            buttons.queue_visit
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
         </div>
       </div>
     </div>
@@ -1029,6 +1066,9 @@ exports[`Visit details panel component > should render user, sample and publicat
             </b>
           </p>
         </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-cl5kk9-MuiGrid-root"
+        />
       </div>
     </div>
     <div
@@ -1043,7 +1083,7 @@ exports[`Visit details panel component > should render user, sample and publicat
         <span
           class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
         >
-          investigations.details.users.name
+          investigations.details.users.name {count:2}
         </span>
         <div
           class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
@@ -1081,7 +1121,7 @@ exports[`Visit details panel component > should render user, sample and publicat
         <span
           class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
         >
-          investigations.details.samples.name
+          investigations.details.samples.name {count:1}
         </span>
         <div
           class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
@@ -1169,7 +1209,7 @@ exports[`Visit details panel component > should render user, sample and publicat
         <span
           class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
         >
-          investigations.details.publications.reference
+          investigations.details.publications.reference {count:1}
         </span>
         <div
           class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"

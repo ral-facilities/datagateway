@@ -8,10 +8,7 @@ import {
   fetchAdminDownloads,
   fetchDownloads,
   getDataUrl,
-  getDownload,
-  getDownloadTypeStatus,
   getPercentageComplete,
-  submitCart,
 } from './downloadApi';
 import { mockedSettings } from './testData';
 
@@ -28,97 +25,6 @@ vi.mock('datagateway-common', async () => {
 describe('Download Cart API functions test', () => {
   afterEach(() => {
     vi.mocked(handleICATError).mockClear();
-  });
-
-  describe('submitCart', () => {
-    it('returns the downloadId after the submitting cart', async () => {
-      axios.post = vi.fn().mockImplementation(() => {
-        return Promise.resolve({
-          data: {
-            facilityName: mockedSettings.facilityName,
-            userrName: 'test user',
-            cartItems: [],
-            downloadId: 1,
-          },
-        });
-      });
-
-      // Wait for our mocked response with a download id.
-      const downloadId = await submitCart(
-        'https',
-        'test@email.com',
-        'test-file',
-        {
-          facilityName: mockedSettings.facilityName,
-          downloadApiUrl: mockedSettings.downloadApiUrl,
-        }
-      );
-      const params = new URLSearchParams();
-      params.append('sessionId', '');
-      params.append('transport', 'https');
-      params.append('email', 'test@email.com');
-      params.append('fileName', 'test-file');
-      params.append('zipType', 'ZIP');
-
-      expect(downloadId).toBe(1);
-      expect(axios.post).toHaveBeenCalled();
-      expect(axios.post).toHaveBeenCalledWith(
-        `${mockedSettings.downloadApiUrl}/user/cart/${mockedSettings.facilityName}/submit`,
-        params
-      );
-    });
-  });
-
-  describe('getDownload', () => {
-    it('returns the download information upon successful response for download ID', async () => {
-      axios.get = vi.fn().mockImplementation(() =>
-        Promise.resolve({
-          data: [
-            {
-              createdAt: '2020-01-01T01:01:01Z',
-              downloadItems: [
-                {
-                  entityId: 1,
-                  entityType: 'investigation',
-                  id: 1,
-                },
-              ],
-              facilityName: mockedSettings.facilityName,
-              fileName: 'test-file',
-              fullName: 'simple/root',
-              id: 1,
-              isDeleted: false,
-              isEmailSent: false,
-              isTwoLevel: false,
-              preparedId: 'test-prepared-id',
-              sessionId: '',
-              size: 0,
-              status: 'COMPLETE',
-              transport: 'https',
-              userName: 'simple/root',
-            },
-          ],
-        })
-      );
-
-      const download = await getDownload(1, {
-        facilityName: mockedSettings.facilityName,
-        downloadApiUrl: mockedSettings.downloadApiUrl,
-      });
-
-      expect(download).not.toBe(null);
-      expect(axios.get).toHaveBeenCalled();
-      expect(axios.get).toHaveBeenCalledWith(
-        `${mockedSettings.downloadApiUrl}/user/downloads`,
-        {
-          params: {
-            sessionId: null,
-            facilityName: mockedSettings.facilityName,
-            queryOffset: `where download.id = 1`,
-          },
-        }
-      );
-    });
   });
 
   describe('downloadPreparedCart', () => {
@@ -390,28 +296,6 @@ describe('Admin Download Status API functions test', () => {
         `${mockedSettings.downloadApiUrl}/admin/download/1/status`,
         params
       );
-    });
-  });
-
-  describe('getDownloadTypeStatus', () => {
-    it('should retrieve the status of the given download type', async () => {
-      axios.get = vi.fn().mockResolvedValue({
-        data: {
-          disabled: false,
-          message: '',
-        },
-      });
-
-      const response = await getDownloadTypeStatus('https', {
-        facilityName: mockedSettings.facilityName,
-        downloadApiUrl: mockedSettings.downloadApiUrl,
-      });
-
-      expect(response).toEqual({
-        type: 'https',
-        disabled: false,
-        message: '',
-      });
     });
   });
 
