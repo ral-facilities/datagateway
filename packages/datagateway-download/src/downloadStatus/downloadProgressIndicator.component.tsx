@@ -1,7 +1,7 @@
+import * as React from 'react';
 import { Box, LinearProgress, Typography } from '@mui/material';
-import React from 'react';
-import { useTranslation } from 'react-i18next';
 import type { Download } from 'datagateway-common';
+import { useTranslation } from 'react-i18next';
 import { useDownloadPercentageComplete } from '../downloadApiHooks';
 
 interface DownloadProgressIndicatorProps {
@@ -18,7 +18,7 @@ function DownloadProgressIndicator({
   download,
 }: DownloadProgressIndicatorProps): JSX.Element {
   const [t] = useTranslation();
-  const { data: progress, isLoading: isLoadingProgress } =
+  const { data: progress, isFetching: isLoadingProgress } =
     useDownloadPercentageComplete({
       download,
       enabled:
@@ -27,6 +27,7 @@ function DownloadProgressIndicator({
         (download.status === 'RESTORING' || download.status === 'PAUSED'),
     });
 
+  // if query is fetching show some loading text
   if (isLoadingProgress) {
     return <>{t('downloadStatus.calculating_progress')}</>;
   }

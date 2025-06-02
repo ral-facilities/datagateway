@@ -7,7 +7,7 @@ import {
   useQuery,
   useInfiniteQuery,
   UseQueryOptions,
-} from 'react-query';
+} from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
 import { NotificationType } from '../state/actions/actions.types';

@@ -1,6 +1,6 @@
+import { QueryClient } from '@tanstack/react-query';
 import { renderHook, waitFor } from '@testing-library/react';
 import axios, { AxiosError } from 'axios';
-import { QueryClient } from 'react-query';
 import {
   getDefaultFileName,
   useAddToCart,
@@ -82,7 +82,8 @@ describe('Cart api functions', () => {
         wrapper: createReactQueryWrapper(),
       });
 
-      expect(result.current.isIdle).toBe(true);
+      expect(result.current.status).toBe('loading');
+      expect(result.current.fetchStatus).toBe('idle');
       expect(axios.get).not.toHaveBeenCalled();
     });
 

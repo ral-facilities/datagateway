@@ -177,6 +177,9 @@ exports[`Visit details panel component should check if multiple publications res
             </b>
           </p>
         </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-cl5kk9-MuiGrid-root"
+        />
       </div>
     </div>
     <div
@@ -191,7 +194,7 @@ exports[`Visit details panel component should check if multiple publications res
         <span
           class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
         >
-          investigations.details.publications.reference
+          investigations.details.publications.reference {count:2}
         </span>
         <div
           class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
@@ -398,6 +401,9 @@ exports[`Visit details panel component should check if multiple samples result i
             </b>
           </p>
         </div>
+        <div
+          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-cl5kk9-MuiGrid-root"
+        />
       </div>
     </div>
     <div
@@ -412,7 +418,7 @@ exports[`Visit details panel component should check if multiple samples result i
         <span
           class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
         >
-          investigations.details.samples.name
+          investigations.details.samples.name {count:2}
         </span>
         <div
           class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"

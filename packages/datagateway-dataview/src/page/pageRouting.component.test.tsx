@@ -20,7 +20,7 @@ import {
 import { findColumnHeaderByName, flushPromises } from '../setupTests';
 import { act } from 'react-dom/test-utils';
 import axios from 'axios';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createMemoryHistory, History } from 'history';
 import { render, screen } from '@testing-library/react';
 
@@ -151,7 +151,7 @@ describe('PageTable', () => {
           ],
         });
       } else {
-        return Promise.resolve({ data: [] });
+        return Promise.resolve({ data: [{ id: 1, name: '1' }] });
       }
     });
     checkInstrumentAndFacilityCycleId.mockImplementation(() =>
@@ -769,7 +769,7 @@ describe('PageTable', () => {
       );
 
       expect(
-        await screen.findByText('datafiles.preview.invalid_datafile')
+        await screen.findByText('datafiles.preview.cannot_preview')
       ).toBeInTheDocument();
     });
 
@@ -1157,7 +1157,7 @@ describe('PageTable', () => {
       );
 
       expect(
-        await screen.findByText('datafiles.preview.invalid_datafile')
+        await screen.findByText('datafiles.preview.cannot_preview')
       ).toBeInTheDocument();
     });
 

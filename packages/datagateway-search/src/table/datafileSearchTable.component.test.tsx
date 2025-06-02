@@ -14,7 +14,7 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { Router } from 'react-router-dom';
 import { createMemoryHistory, History } from 'history';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   findAllRows,
   findCellInRow,
@@ -184,7 +184,7 @@ describe('Datafile search table component', () => {
 
               return Promise.resolve({
                 data: {
-                  cardItems: [],
+                  cartItems: [],
                 },
               });
             }
@@ -241,6 +241,10 @@ describe('Datafile search table component', () => {
     expect(
       queryClient.getQueryState(['search', 'Datafile'], { exact: false })
         ?.status
+    ).toBe('loading');
+    expect(
+      queryClient.getQueryState(['search', 'Datafile'], { exact: false })
+        ?.fetchStatus
     ).toBe('idle');
 
     expect(queryAllRows()).toHaveLength(0);

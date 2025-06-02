@@ -12,7 +12,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../state/app.types';
 import DatasetSearchCardView from './datasetSearchCardView.component';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createMemoryHistory, MemoryHistory } from 'history';
 import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
 import type { RenderResult } from '@testing-library/react';
@@ -43,7 +43,7 @@ describe('Dataset - Card View', () => {
   const mockAxiosGet = (url: string): Promise<Partial<AxiosResponse>> => {
     if (/\/datasets$/.test(url)) {
       return Promise.resolve({
-        data: [],
+        data: [cardData],
       });
     }
     if (/\/search\/documents$/.test(url)) {
@@ -140,6 +140,10 @@ describe('Dataset - Card View', () => {
 
     expect(
       queryClient.getQueryState(['search', 'Dataset'], { exact: false })?.status
+    ).toBe('loading');
+    expect(
+      queryClient.getQueryState(['search', 'Dataset'], { exact: false })
+        ?.fetchStatus
     ).toBe('idle');
 
     expect(screen.queryAllByTestId('card')).toHaveLength(0);

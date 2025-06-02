@@ -4,7 +4,7 @@ import { initialState as dgDataViewInitialState } from '../../../state/reducers/
 import type { StateType } from '../../../state/app.types';
 import { dGCommonInitialState, type DataPublication } from 'datagateway-common';
 import configureStore from 'redux-mock-store';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { generatePath, Router } from 'react-router-dom';

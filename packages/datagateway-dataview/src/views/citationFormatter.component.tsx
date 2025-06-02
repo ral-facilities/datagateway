@@ -15,7 +15,7 @@ import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import axios, { AxiosError } from 'axios';
 import { FormattedUser } from './landing/isis/isisDataPublicationLanding.component';
-import { useQuery, UseQueryResult } from 'react-query';
+import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
 const Subheading = styled(Typography)(({ theme }) => ({
   marginTop: theme.spacing(1),
