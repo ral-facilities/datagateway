@@ -13,10 +13,9 @@ import { initialState as dgDataViewInitialState } from '../state/reducers/dgdata
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import RoleSelector from './roleSelector.component';
 import { render, type RenderResult, screen } from '@testing-library/react';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 
 jest.mock('datagateway-common', () => {
@@ -33,7 +32,7 @@ jest.mock('datagateway-common', () => {
 
 describe('Role Selector', () => {
   let state: StateType;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
   let mockData: InvestigationUser[] = [];
   const mockPushFilters = jest.fn();
   const mockStore = configureStore([thunk]);

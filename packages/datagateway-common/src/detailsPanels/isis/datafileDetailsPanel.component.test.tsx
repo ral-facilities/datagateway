@@ -1,10 +1,9 @@
 import type { RenderResult } from '@testing-library/react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { UserEvent } from '@testing-library/user-event/dist/types/setup';
 import axios from 'axios';
 import * as React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import { combineReducers, createStore } from 'redux';
 import type { StateType } from '../../../lib';
@@ -38,7 +37,7 @@ function renderComponent({
 
 describe('Datafile details panel component', () => {
   let rowData: Datafile;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   beforeEach(() => {
     user = userEvent.setup();
@@ -59,8 +58,13 @@ describe('Datafile details panel component', () => {
     jest.clearAllMocks();
   });
 
-  it('should render correctly', () => {
+  it('should render correctly', async () => {
     const { asFragment } = renderComponent({ rowData });
+    expect(
+      await screen.findByRole('tablist', {
+        name: 'datafiles.details.tabs_label',
+      })
+    ).toBeInTheDocument();
     expect(asFragment()).toMatchSnapshot();
   });
 
@@ -108,7 +112,7 @@ describe('Datafile details panel component', () => {
     ).toBeVisible();
   });
 
-  it('should render parameters tab when present in the data', () => {
+  it('should render parameters tab when present in the data', async () => {
     rowData.parameters = [
       {
         id: 2,
@@ -159,6 +163,12 @@ describe('Datafile details panel component', () => {
     const { asFragment } = renderComponent({
       rowData,
     });
+
+    expect(
+      await screen.findByRole('tab', {
+        name: 'datafiles.details.parameters.label',
+      })
+    ).toBeInTheDocument();
 
     expect(asFragment()).toMatchSnapshot();
   });

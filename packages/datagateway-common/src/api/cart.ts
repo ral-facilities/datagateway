@@ -1,7 +1,19 @@
+import {
+  UseMutationOptions,
+  UseMutationResult,
+  UseQueryOptions,
+  UseQueryResult,
+  useMutation,
+  useQueries,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
+import { format } from 'date-fns';
+import { TFunction } from 'i18next';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import handleICATError from '../handleICATError';
-import { readSciGatewayToken } from '../parseTokens';
 import {
   Download,
   DownloadCart,
@@ -10,23 +22,11 @@ import {
   MicroFrontendId,
   SubmitCart,
 } from '../app.types';
-import { StateType } from '../state/app.types';
-import {
-  useQuery,
-  UseQueryResult,
-  useQueryClient,
-  useMutation,
-  UseMutationResult,
-  UseQueryOptions,
-  useQueries,
-  UseMutationOptions,
-} from 'react-query';
-import { useRetryICATErrors } from './retryICATErrors';
-import React from 'react';
-import { useTranslation } from 'react-i18next';
+import handleICATError from '../handleICATError';
+import { readSciGatewayToken } from '../parseTokens';
 import { NotificationType } from '../state/actions/actions.types';
-import { TFunction } from 'i18next';
-import { format } from 'date-fns';
+import { StateType } from '../state/app.types';
+import { useRetryICATErrors } from './retryICATErrors';
 
 export const fetchDownloadCart = (config: {
   facilityName: string;
@@ -74,7 +74,7 @@ export const useCart = (): UseQueryResult<DownloadCartItem[], AxiosError> => {
   );
   const retryICATErrors = useRetryICATErrors();
   return useQuery(
-    'cart',
+    ['cart'],
     () =>
       fetchDownloadCart({
         facilityName,
@@ -112,7 +112,7 @@ export const useAddToCart = (
       }),
     {
       onSuccess: (data) => {
-        queryClient.setQueryData('cart', data);
+        queryClient.setQueryData(['cart'], data);
       },
       retry: (failureCount, error) => {
         // if we get 431 we know this is an intermittent error so retry
@@ -153,7 +153,7 @@ export const useRemoveFromCart = (
       ),
     {
       onSuccess: (data) => {
-        queryClient.setQueryData('cart', data);
+        queryClient.setQueryData(['cart'], data);
       },
       retry: (failureCount, error) => {
         // if we get 431 we know this is an intermittent error so retry
@@ -269,7 +269,7 @@ export const useDownloadTypeStatuses = <TData = DownloadTypeStatus>({
   //
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  return useQueries(queries);
+  return useQueries({ queries: queries });
 };
 
 export type SubmitCartZipType = 'ZIP' | 'ZIP_AND_COMPRESS';
@@ -414,7 +414,7 @@ export const useSubmitCart = (
       },
 
       onSettled: () => {
-        queryClient.invalidateQueries('cart');
+        queryClient.invalidateQueries(['cart']);
       },
 
       ...(options ?? {}),

@@ -13,13 +13,12 @@ import { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import ISISFacilityCyclesCardView from './isisFacilityCyclesCardView.component';
 import { createMemoryHistory, History } from 'history';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
 } from '../../../setupTests';
 import { render, RenderResult, screen } from '@testing-library/react';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 
 jest.mock('datagateway-common', () => {
@@ -39,7 +38,7 @@ describe('ISIS Facility Cycles - Card View', () => {
   let cardData: FacilityCycle[];
   let history: History;
   let replaceSpy: jest.SpyInstance;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult =>
     render(
@@ -143,8 +142,11 @@ describe('ISIS Facility Cycles - Card View', () => {
     cleanupDatePickerWorkaround();
   });
 
-  it('uses default sort', () => {
+  it('uses default sort', async () => {
     renderComponent();
+
+    expect(await screen.findByTestId('card')).toBeInTheDocument();
+
     expect(history.length).toBe(1);
     expect(replaceSpy).toHaveBeenCalledWith({
       search: `?sort=${encodeURIComponent('{"startDate":"desc"}')}`,

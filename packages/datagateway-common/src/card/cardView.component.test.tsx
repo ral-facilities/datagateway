@@ -4,12 +4,11 @@ import CardView, { type CardViewProps } from './cardView.component';
 import { TextColumnFilter } from '..';
 import type { Entity, Investigation } from '../app.types';
 import { render, screen, waitFor, within } from '@testing-library/react';
-import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 
 describe('Card View', () => {
   let props: CardViewProps;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   const onFilter = jest.fn();
   const onPageChange = jest.fn();

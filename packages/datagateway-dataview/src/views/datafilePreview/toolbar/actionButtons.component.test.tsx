@@ -6,7 +6,6 @@ import {
   waitFor,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import { downloadDatafile } from 'datagateway-common';
 import { createMemoryHistory, History } from 'history';
 import * as React from 'react';
@@ -52,7 +51,7 @@ function renderComponent({
 }
 
 describe('ActionButtons', () => {
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
   let store: Store<StateType>;
   let history: History;
 

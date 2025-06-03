@@ -1,20 +1,20 @@
-import * as React from 'react';
-import configureStore from 'redux-mock-store';
-import { initialState as dGCommonInitialState } from '../state/reducers/dgcommon.reducer';
-import { StateType } from '../state/app.types';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import axios from 'axios';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   render,
-  type RenderResult,
   screen,
   waitFor,
   waitForElementToBeRemoved,
+  type RenderResult,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import axios from 'axios';
+import * as React from 'react';
+import { Provider } from 'react-redux';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 import { Investigation } from '../app.types';
+import { StateType } from '../state/app.types';
+import { initialState as dGCommonInitialState } from '../state/reducers/dgcommon.reducer';
 import QueueVisitButton from './queueVisitButton.component';
 
 jest.mock('../handleICATError');

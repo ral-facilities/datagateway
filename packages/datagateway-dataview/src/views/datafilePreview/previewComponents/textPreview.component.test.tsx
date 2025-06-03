@@ -1,8 +1,8 @@
 import type { RenderResult } from '@testing-library/react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import { DGThemeProvider } from 'datagateway-common';
 import * as React from 'react';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import { combineReducers, createStore, Store } from 'redux';
 import { StateType } from '../../../state/app.types';
@@ -14,20 +14,21 @@ import {
 import { mockDatafile, mockTxtFileContent } from '../testData';
 import TextPreview from './textPreview.component';
 
-// silence react-query errors
-setLogger({
-  log: console.log,
-  warn: console.warn,
-  error: jest.fn(),
-});
-
 function renderComponent(store: Store): RenderResult {
   return render(
     <DGThemeProvider>
       <Provider store={store}>
         <QueryClientProvider
           client={
-            new QueryClient({ defaultOptions: { queries: { retry: false } } })
+            new QueryClient({
+              defaultOptions: { queries: { retry: false } },
+              // silence react-query errors
+              logger: {
+                log: console.log,
+                warn: console.warn,
+                error: jest.fn(),
+              },
+            })
           }
         >
           <TextPreview
@@ -113,8 +114,10 @@ describe('TextPreview', () => {
       );
 
       // increase the zoom level
-      store.dispatch({
-        type: IncrementDatafilePreviewerZoomLevelType,
+      act(() => {
+        store.dispatch({
+          type: IncrementDatafilePreviewerZoomLevelType,
+        });
       });
 
       expect(
@@ -133,8 +136,10 @@ describe('TextPreview', () => {
       );
 
       // increase the zoom level
-      store.dispatch({
-        type: DecrementDatafilePreviewerZoomLevelType,
+      act(() => {
+        store.dispatch({
+          type: DecrementDatafilePreviewerZoomLevelType,
+        });
       });
 
       expect(

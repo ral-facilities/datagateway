@@ -11,10 +11,9 @@ import {
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { createMemoryHistory, History } from 'history';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { generatePath, Router } from 'react-router-dom';
 import { render, type RenderResult, screen } from '@testing-library/react';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 import { paths } from '../../../page/pageContainer.component';
 
@@ -33,7 +32,7 @@ describe('ISIS Dataset Landing page', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let history: History;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult =>
     render(

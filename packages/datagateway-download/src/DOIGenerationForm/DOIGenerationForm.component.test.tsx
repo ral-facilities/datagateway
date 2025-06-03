@@ -1,4 +1,5 @@
 import {
+  act,
   render,
   RenderResult,
   screen,
@@ -9,7 +10,7 @@ import userEvent from '@testing-library/user-event';
 import { fetchDownloadCart } from 'datagateway-common';
 import { createMemoryHistory, MemoryHistory } from 'history';
 import * as React from 'react';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Router } from 'react-router-dom';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import { mockCartItems, mockedSettings } from '../testData';
@@ -23,12 +24,7 @@ import {
   mintCart,
 } from '../downloadApi';
 import DOIGenerationForm from './DOIGenerationForm.component';
-
-setLogger({
-  log: console.log,
-  warn: console.warn,
-  error: jest.fn(),
-});
+import { flushPromises } from '../setupTests';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -59,6 +55,12 @@ const createTestQueryClient = (): QueryClient =>
       queries: {
         retry: false,
       },
+    },
+    // silence react-query errors
+    logger: {
+      log: console.log,
+      warn: console.warn,
+      error: jest.fn(),
     },
   });
 
@@ -136,6 +138,10 @@ describe('DOI generation form component', () => {
   it('should redirect back to /download if user directly accesses the url', async () => {
     const { history } = renderComponent(createMemoryHistory());
 
+    await act(async () => {
+      await flushPromises();
+    });
+
     expect(history.location).toMatchObject({ pathname: '/download' });
   });
 
@@ -143,7 +149,7 @@ describe('DOI generation form component', () => {
     renderComponent();
 
     expect(
-      screen.getByRole('button', { name: 'acceptDataPolicy.accept' })
+      await screen.findByRole('button', { name: 'acceptDataPolicy.accept' })
     ).toBeInTheDocument();
     expect(
       screen.queryByText('DOIGenerationForm.page_header')

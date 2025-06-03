@@ -12,12 +12,13 @@ import {
 import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios';
 import { createMemoryHistory, type History } from 'history';
 import { render, screen, within } from '@testing-library/react';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import SearchTabs from './searchTabs.component';
 import { initialState } from '../state/reducers/dgsearch.reducer';
 import userEvent from '@testing-library/user-event';
 import { queryAllRows } from '../setupTests';
+import { act } from 'react-dom/test-utils';
 
 describe('SearchTabs', () => {
   let state: StateType;
@@ -301,7 +302,10 @@ describe('SearchTabs', () => {
       />
     );
     searchParams.set('currentTab', 'dataset');
-    history.replace({ search: searchParams.toString() });
+
+    act(() => {
+      history.replace({ search: searchParams.toString() });
+    });
 
     expect(
       screen.queryByTestId('investigation-search-table')
@@ -323,7 +327,10 @@ describe('SearchTabs', () => {
       />
     );
     searchParams.set('currentTab', 'datafile');
-    history.replace({ search: searchParams.toString() });
+
+    act(() => {
+      history.replace({ search: searchParams.toString() });
+    });
 
     expect(
       screen.queryByTestId('investigation-search-table')
@@ -398,7 +405,9 @@ describe('SearchTabs', () => {
       />
     );
     searchParams.set('currentTab', 'dataset');
-    history.replace({ search: searchParams.toString() });
+    act(() => {
+      history.replace({ search: searchParams.toString() });
+    });
 
     expect(
       screen.queryByTestId('investigation-search-card-view')
@@ -420,7 +429,9 @@ describe('SearchTabs', () => {
       />
     );
     searchParams.set('currentTab', 'datafile');
-    history.replace({ search: searchParams.toString() });
+    act(() => {
+      history.replace({ search: searchParams.toString() });
+    });
 
     expect(
       screen.queryByTestId('investigation-search-card-view')
@@ -542,7 +553,7 @@ describe('SearchTabs', () => {
     const datafileTab = screen.getByRole('tab', { name: 'tabs.datafile' });
 
     // initial search count should be visible
-    expect(within(investigationTab).getByText('1')).toBeInTheDocument();
+    expect(await within(investigationTab).findByText('1')).toBeInTheDocument();
     expect(within(datasetTab).getByText('1')).toBeInTheDocument();
     expect(within(datafileTab).getByText('1')).toBeInTheDocument();
 

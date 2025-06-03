@@ -7,9 +7,8 @@ import { Action, AnyAction } from 'redux';
 import { StateType } from './state/app.types';
 import { initialState as dgDataViewInitialState } from './state/reducers/dgdataview.reducer';
 import { dGCommonInitialState } from 'datagateway-common';
-import { screen, within } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import failOnConsole from 'jest-fail-on-console';
-import { createLocation } from 'history';
 import { ThunkDispatch, ThunkAction } from 'redux-thunk';
 
 failOnConsole();
@@ -32,7 +31,6 @@ export const resetActions = (): void => {
 export const getState = (): StateType => ({
   dgdataview: dgDataViewInitialState,
   dgcommon: dGCommonInitialState,
-  router: { location: { ...createLocation('/'), query: {} }, action: 'POP' },
 });
 export const dispatch: ThunkDispatch<StateType, null, AnyAction> = (
   action: Action | ThunkAction<void, StateType, null, AnyAction>
@@ -122,8 +120,13 @@ export const findAllRows = async (): Promise<HTMLElement[]> =>
  *              the actual row that contains the data is considered the first row, and has an index of 0.
  */
 export const findRowAt = async (index: number): Promise<HTMLElement> => {
-  const rows = await screen.findAllByRole('row');
-  const row = rows[index + 1];
+  let rows;
+  await waitFor(async () => {
+    rows = await findAllRows();
+    // should have 1 row in the table
+    expect(rows).toHaveLength(1);
+  });
+  const row = rows?.[index];
   if (!row) {
     throw new Error(`Cannot find row at index ${index}`);
   }

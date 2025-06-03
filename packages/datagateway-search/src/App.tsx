@@ -1,4 +1,3 @@
-import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
 import {
   DGCommonMiddleware,
   DGThemeProvider,
@@ -8,16 +7,9 @@ import {
   RequestPluginRerenderType,
   QueryClientSettingsUpdaterRedux,
 } from 'datagateway-common';
-import {
-  createBrowserHistory,
-  LocationListener,
-  Location,
-  Action,
-  // eslint-disable-next-line import/no-extraneous-dependencies
-} from 'history';
 import log from 'loglevel';
 import React from 'react';
-import { batch, connect, Provider } from 'react-redux';
+import { connect, Provider } from 'react-redux';
 import { AnyAction, applyMiddleware, compose, createStore, Store } from 'redux';
 import { createLogger } from 'redux-logger';
 import thunk, { ThunkDispatch } from 'redux-thunk';
@@ -27,55 +19,16 @@ import { configureApp } from './state/actions';
 import { StateType } from './state/app.types';
 import AppReducer from './state/reducers/app.reducer';
 import { Translation } from 'react-i18next';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { BrowserRouter } from 'react-router-dom';
 
 /* eslint-disable no-underscore-dangle, @typescript-eslint/no-explicit-any */
 const composeEnhancers =
   (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 /* eslint-enable */
 
-const history = createBrowserHistory();
-
-// fix query string freeze bug
-// see https://github.com/supasate/connected-react-router/issues/311#issuecomment-692017995
-let listeners: LocationListener<unknown>[] = [];
-
-function appendListener(fn: LocationListener<unknown>): () => void {
-  let isActive = true;
-
-  const listener: LocationListener<unknown> = (...args) => {
-    if (isActive) fn(...args);
-  };
-
-  listeners.push(listener);
-
-  return () => {
-    isActive = false;
-    listeners = listeners.filter((item) => item !== listener);
-  };
-}
-
-function notifyListeners(
-  ...args: [location: Location<unknown>, action: Action]
-): void {
-  listeners.forEach((listener) => listener(...args));
-}
-
-// make only one subscription to history changes and proxy to our internal listeners
-history.listen((...args) => {
-  // here's the key change
-  batch(() => {
-    notifyListeners(...args);
-  });
-});
-
-// monkey patch to store subscriptions into our own pool
-history.listen = (fn) => {
-  return appendListener(fn);
-};
-
-const middleware = [thunk, routerMiddleware(history), DGCommonMiddleware];
+const middleware = [thunk, DGCommonMiddleware];
 
 if (process.env.NODE_ENV === `development`) {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
@@ -117,7 +70,7 @@ class App extends React.Component<unknown, { hasError: boolean }> {
 
     // set up store in constructor to isolate from SciGateway redux store: https://redux.js.org/recipes/isolating-redux-sub-apps
     this.store = createStore(
-      AppReducer(history),
+      AppReducer(),
       composeEnhancers(applyMiddleware(...middleware))
     );
 
@@ -174,7 +127,7 @@ class App extends React.Component<unknown, { hasError: boolean }> {
       return (
         <div className="App">
           <Provider store={this.store}>
-            <ConnectedRouter history={history}>
+            <BrowserRouter>
               <QueryClientProvider client={queryClient}>
                 <QueryClientSettingsUpdaterRedux queryClient={queryClient} />
                 <DGThemeProvider>
@@ -190,7 +143,7 @@ class App extends React.Component<unknown, { hasError: boolean }> {
                 </DGThemeProvider>
                 <ReactQueryDevtools initialIsOpen={false} />
               </QueryClientProvider>
-            </ConnectedRouter>
+            </BrowserRouter>
           </Provider>
         </div>
       );

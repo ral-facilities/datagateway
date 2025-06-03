@@ -1,19 +1,20 @@
+import * as React from 'react';
+import { createTheme } from '@mui/material';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
+  RenderResult,
   fireEvent,
   render,
-  RenderResult,
   screen,
   waitFor,
   within,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
 import { fetchDownloadCart } from 'datagateway-common';
-import { createMemoryHistory, MemoryHistory } from 'history';
-import * as React from 'react';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import { MemoryHistory, createMemoryHistory } from 'history';
 import { Router } from 'react-router-dom';
 import { DownloadSettingsContext } from '../ConfigProvider';
-import { mockCartItems, mockDownloadItems, mockedSettings } from '../testData';
 import {
   downloadPreparedCart,
   getFileSizeAndCount,
@@ -21,15 +22,8 @@ import {
   removeAllDownloadCartItems,
   removeFromCart,
 } from '../downloadApi';
+import { mockCartItems, mockDownloadItems, mockedSettings } from '../testData';
 import DownloadCartTable from './downloadCartTable.component';
-import { createTheme } from '@mui/material';
-import axios, { AxiosResponse } from 'axios';
-
-setLogger({
-  log: console.log,
-  warn: console.warn,
-  error: jest.fn(),
-});
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -61,6 +55,12 @@ const createTestQueryClient = (): QueryClient =>
       queries: {
         retry: false,
       },
+    },
+    // silence react-query errors
+    logger: {
+      log: console.log,
+      warn: console.warn,
+      error: jest.fn(),
     },
   });
 
@@ -141,6 +141,16 @@ describe('Download cart table component', () => {
             data: { disabled: false, type: 'https', message: '' },
           });
         }
+        if (/.*\/datasets/.test(url)) {
+          return Promise.resolve({
+            data: [],
+          });
+        }
+        if (/.*\/datafiles/.test(url)) {
+          return Promise.resolve({
+            data: [],
+          });
+        }
         return Promise.reject(`Endpoint not mocked: ${url}`);
       });
 
@@ -209,7 +219,10 @@ describe('Download cart table component', () => {
   it('should load cart confirmation dialog when Download Cart button is clicked', async () => {
     renderComponent();
 
-    await user.click(await screen.findByText('downloadCart.download'));
+    const downloadButton = await screen.findByText('downloadCart.download');
+    await waitFor(() => expect(downloadButton).toBeEnabled());
+
+    await user.click(downloadButton);
 
     expect(
       await screen.findByLabelText('downloadConfirmDialog.dialog_arialabel')
@@ -572,9 +585,12 @@ describe('Download cart table component', () => {
   it('should go to DOI generation form when Generate DOI button is clicked', async () => {
     const { history } = renderComponent();
 
-    await user.click(
-      screen.getByRole('link', { name: 'downloadCart.generate_DOI' })
-    );
+    const mintButton = await screen.findByRole('link', {
+      name: 'downloadCart.generate_DOI',
+    });
+    await waitFor(() => expect(mintButton).toBeEnabled());
+
+    await user.click(mintButton);
 
     expect(history.location).toMatchObject({
       pathname: '/download/mint',

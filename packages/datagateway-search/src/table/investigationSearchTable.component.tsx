@@ -18,6 +18,7 @@ import {
   useLuceneSearchInfinite,
   useRemoveFromCart,
   useSort,
+  DetailsPanelProps,
 } from 'datagateway-common';
 import { TableCellProps } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
@@ -155,10 +156,9 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
 
   const handleSort = useSort();
 
-  const loadMoreRows = React.useCallback(
-    (_) => fetchNextPage(),
-    [fetchNextPage]
-  );
+  const loadMoreRows: NonNullable<
+    React.ComponentProps<typeof Table>['loadMoreRows']
+  > = React.useCallback((_) => fetchNextPage(), [fetchNextPage]);
 
   const removeFilterChip = (
     dimension: string,
@@ -283,53 +283,54 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
     [t, hierarchy]
   );
 
-  const detailsPanel = React.useCallback(
-    ({ rowData, detailsPanelResize }) => {
-      switch (hierarchy) {
-        case FACILITY_NAME.isis:
-          const investigation = rowData as SearchResultSource;
-          const url = buildDatasetTableUrlForInvestigation({
-            facilityName: hierarchy,
-            investigation: {
-              id: investigation.id,
-              name: investigation.name,
-              instrumentId:
-                investigation.investigationinstrument?.[0]?.['instrument.id'],
-              facilityCycleId:
-                investigation.investigationfacilitycycle?.[0]?.[
-                  'facilityCycle.id'
-                ],
-            },
-          });
-          return (
-            <ISISInvestigationDetailsPanel
-              rowData={rowData}
-              detailsPanelResize={detailsPanelResize}
-              viewDatasets={() => {
-                if (url) push(url);
-              }}
-            />
-          );
+  const detailsPanel: React.ComponentType<DetailsPanelProps> =
+    React.useCallback(
+      ({ rowData, detailsPanelResize }) => {
+        switch (hierarchy) {
+          case FACILITY_NAME.isis:
+            const investigation = rowData as SearchResultSource;
+            const url = buildDatasetTableUrlForInvestigation({
+              facilityName: hierarchy,
+              investigation: {
+                id: investigation.id,
+                name: investigation.name,
+                instrumentId:
+                  investigation.investigationinstrument?.[0]?.['instrument.id'],
+                facilityCycleId:
+                  investigation.investigationfacilitycycle?.[0]?.[
+                    'facilityCycle.id'
+                  ],
+              },
+            });
+            return (
+              <ISISInvestigationDetailsPanel
+                rowData={rowData}
+                detailsPanelResize={detailsPanelResize}
+                viewDatasets={() => {
+                  if (url) push(url);
+                }}
+              />
+            );
 
-        case FACILITY_NAME.dls:
-          return (
-            <DLSVisitDetailsPanel
-              rowData={rowData}
-              detailsPanelResize={detailsPanelResize}
-            />
-          );
+          case FACILITY_NAME.dls:
+            return (
+              <DLSVisitDetailsPanel
+                rowData={rowData}
+                detailsPanelResize={detailsPanelResize}
+              />
+            );
 
-        default:
-          return (
-            <InvestigationDetailsPanel
-              rowData={rowData}
-              detailsPanelResize={detailsPanelResize}
-            />
-          );
-      }
-    },
-    [hierarchy, push]
-  );
+          default:
+            return (
+              <InvestigationDetailsPanel
+                rowData={rowData}
+                detailsPanelResize={detailsPanelResize}
+              />
+            );
+        }
+      },
+      [hierarchy, push]
+    );
 
   if (currentTab !== 'investigation') return null;
 

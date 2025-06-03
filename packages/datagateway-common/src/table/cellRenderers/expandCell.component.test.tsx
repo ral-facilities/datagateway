@@ -1,11 +1,10 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import * as React from 'react';
 import ExpandCell from './expandCell.component';
 
 describe('Expand cell component', () => {
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
   const setExpandedIndex = jest.fn();
   const expandCellProps = {
     columnIndex: 1,

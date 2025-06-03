@@ -13,14 +13,14 @@ import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import DLSVisitsCardView from './dlsVisitsCardView.component';
 import { createMemoryHistory, type History } from 'history';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
 } from '../../../setupTests';
 import { render, type RenderResult, screen } from '@testing-library/react';
-import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -38,7 +38,7 @@ describe('DLS Visits - Card View', () => {
   let state: StateType;
   let cardData: Investigation[];
   let history: History;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult =>
     render(
@@ -80,6 +80,22 @@ describe('DLS Visits - Card View', () => {
       data: cardData,
       isLoading: false,
     });
+
+    axios.get = jest
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/\/investigations$/.test(url)) {
+          return Promise.resolve({
+            data: cardData,
+          });
+        }
+
+        if (/\/allowed$/.test(url)) {
+          return Promise.resolve({ data: true });
+        }
+
+        return Promise.reject(`Endpoint not mocked: ${url}`);
+      });
 
     // Prevent error logging
     window.scrollTo = jest.fn();
@@ -145,8 +161,11 @@ describe('DLS Visits - Card View', () => {
     cleanupDatePickerWorkaround();
   });
 
-  it('uses default sort', () => {
+  it('uses default sort', async () => {
     renderComponent();
+
+    expect(await screen.findByTestId('card')).toBeInTheDocument();
+
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"startDate":"desc"}')}`

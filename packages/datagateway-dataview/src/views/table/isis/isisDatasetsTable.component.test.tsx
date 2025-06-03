@@ -16,7 +16,7 @@ import {
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { generatePath, Router } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   render,
   type RenderResult,
@@ -28,9 +28,9 @@ import {
   applyDatePickerWorkaround,
   cleanupDatePickerWorkaround,
 } from '../../../setupTests';
-import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 import { paths } from '../../../page/pageContainer.component';
+import axios, { AxiosResponse } from 'axios';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -52,7 +52,7 @@ describe('ISIS Dataset table component', () => {
   let state: StateType;
   let rowData: Dataset[];
   let history: History;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult => {
     const store = mockStore(state);
@@ -117,6 +117,17 @@ describe('ISIS Dataset table component', () => {
       mutate: jest.fn(),
       isLoading: false,
     });
+    axios.get = jest
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/\/datasets$/.test(url)) {
+          return Promise.resolve({
+            data: rowData,
+          });
+        }
+
+        return Promise.reject(`Endpoint not mocked: ${url}`);
+      });
   });
 
   afterEach(() => {
@@ -172,8 +183,11 @@ describe('ISIS Dataset table component', () => {
     cleanupDatePickerWorkaround();
   });
 
-  it('uses default sort', () => {
+  it('uses default sort', async () => {
     renderComponent();
+
+    expect(await screen.findAllByRole('gridcell')).toBeTruthy();
+
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"asc"}')}`

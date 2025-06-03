@@ -11,7 +11,7 @@ import thunk from 'redux-thunk';
 import type { StateType } from '../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../state/reducers/dgdataview.reducer';
 import InvestigationCardView from './investigationCardView.component';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createMemoryHistory, type History } from 'history';
 import {
   applyDatePickerWorkaround,
@@ -23,7 +23,6 @@ import {
   screen,
   within,
 } from '@testing-library/react';
-import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 
@@ -32,7 +31,7 @@ describe('Investigation - Card View', () => {
   let state: StateType;
   let cardData: Investigation[];
   let history: History;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
   let cartItems: DownloadCartItem[];
 
   const renderComponent = (): RenderResult =>

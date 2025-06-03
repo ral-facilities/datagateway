@@ -8,7 +8,7 @@ import { StateType } from '../state/app.types';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import axios, { AxiosResponse } from 'axios';
 import {
   render,
@@ -33,7 +33,18 @@ describe('Generic add to cart button', () => {
     return render(
       <Provider store={store}>
         <MemoryRouter>
-          <QueryClientProvider client={new QueryClient()}>
+          <QueryClientProvider
+            client={
+              new QueryClient({
+                // silence react-query errors
+                logger: {
+                  log: console.log,
+                  warn: console.warn,
+                  error: jest.fn(),
+                },
+              })
+            }
+          >
             <AddToCartButton {...props} />
           </QueryClientProvider>
         </MemoryRouter>

@@ -14,7 +14,7 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { Router } from 'react-router-dom';
 import { createMemoryHistory, History } from 'history';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   findAllRows,
   findCellInRow,
@@ -184,7 +184,7 @@ describe('Datafile search table component', () => {
 
               return Promise.resolve({
                 data: {
-                  cardItems: [],
+                  cartItems: [],
                 },
               });
             }
@@ -241,6 +241,10 @@ describe('Datafile search table component', () => {
     expect(
       queryClient.getQueryState(['search', 'Datafile'], { exact: false })
         ?.status
+    ).toBe('loading');
+    expect(
+      queryClient.getQueryState(['search', 'Datafile'], { exact: false })
+        ?.fetchStatus
     ).toBe('idle');
 
     expect(queryAllRows()).toHaveLength(0);
@@ -676,6 +680,10 @@ describe('Datafile search table component', () => {
   it('renders generic link correctly', async () => {
     renderComponent('data');
 
+    expect(
+      await screen.findByRole('link', { name: 'Datafile test name' })
+    ).toHaveAttribute('href', '/browse/investigation/3/dataset/2/datafile');
+
     const datasetColIndex = await findColumnIndexByName('datafiles.dataset');
 
     const row = await findRowAt(0);
@@ -697,7 +705,7 @@ describe('Datafile search table component', () => {
       'href',
       '/browse/proposal/Investigation test name/investigation/3/dataset/2/datafile'
     );
-    const datasetColIndex = await findColumnIndexByName('datafiles.name');
+    const datasetColIndex = await findColumnIndexByName('datafiles.dataset');
 
     const row = await findRowAt(0);
     const datasetLinkCell = await findCellInRow(row, {
@@ -705,7 +713,7 @@ describe('Datafile search table component', () => {
     });
 
     expect(
-      within(datasetLinkCell).getByRole('link', { name: 'Datafile test name' })
+      within(datasetLinkCell).getByRole('link', { name: 'Dataset test name' })
     ).toHaveAttribute(
       'href',
       '/browse/proposal/Investigation test name/investigation/3/dataset/2/datafile'
@@ -715,7 +723,14 @@ describe('Datafile search table component', () => {
   it('renders ISIS link correctly', async () => {
     renderComponent('isis');
 
-    const datasetColIndex = await findColumnIndexByName('datafiles.name');
+    expect(
+      await screen.findByRole('link', { name: 'Datafile test name' })
+    ).toHaveAttribute(
+      'href',
+      '/browse/instrument/5/facilityCycle/6/investigation/3/dataset/2/datafile'
+    );
+
+    const datasetColIndex = await findColumnIndexByName('datafiles.dataset');
 
     const row = await findRowAt(0);
     const datasetLinkCell = await findCellInRow(row, {
@@ -723,10 +738,10 @@ describe('Datafile search table component', () => {
     });
 
     expect(
-      within(datasetLinkCell).getByRole('link', { name: 'Datafile test name' })
+      within(datasetLinkCell).getByRole('link', { name: 'Dataset test name' })
     ).toHaveAttribute(
       'href',
-      '/browse/instrument/5/facilityCycle/6/investigation/3/dataset/2/datafile'
+      '/browse/instrument/5/facilityCycle/6/investigation/3/dataset/2'
     );
   });
 
@@ -734,6 +749,10 @@ describe('Datafile search table component', () => {
     delete rowData.investigationinstrument;
 
     renderComponent('isis');
+
+    await waitFor(async () => {
+      expect(await findAllRows()).toHaveLength(1);
+    });
 
     const datasetColIndex = await findColumnIndexByName('datafiles.name');
 
@@ -759,6 +778,10 @@ describe('Datafile search table component', () => {
     delete rowData.investigationfacilitycycle;
 
     renderComponent('isis');
+
+    await waitFor(async () => {
+      expect(await findAllRows()).toHaveLength(1);
+    });
 
     const datasetColIndex = await findColumnIndexByName('datafiles.name');
 
@@ -810,6 +833,10 @@ describe('Datafile search table component', () => {
 
     renderComponent('data');
 
+    await waitFor(async () => {
+      expect(await findAllRows()).toHaveLength(1);
+    });
+
     const datasetColIndex = await findColumnIndexByName('datafiles.name');
 
     const row = await findRowAt(0);
@@ -859,6 +886,10 @@ describe('Datafile search table component', () => {
 
     renderComponent('dls');
 
+    await waitFor(async () => {
+      expect(await findAllRows()).toHaveLength(1);
+    });
+
     const datasetColIndex = await findColumnIndexByName('datafiles.name');
 
     const row = await findRowAt(0);
@@ -900,6 +931,10 @@ describe('Datafile search table component', () => {
     };
 
     renderComponent('isis');
+
+    await waitFor(async () => {
+      expect(await findAllRows()).toHaveLength(1);
+    });
 
     const datasetColIndex = await findColumnIndexByName('datafiles.name');
 

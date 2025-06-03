@@ -13,8 +13,7 @@ import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import DLSProposalsCardView from './dlsProposalsCardView.component';
 import { createMemoryHistory, type History } from 'history';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import type { UserEvent } from '@testing-library/user-event/setup/setup';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, type RenderResult, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
@@ -34,7 +33,7 @@ describe('DLS Proposals - Card View', () => {
   let state: StateType;
   let cardData: Investigation[];
   let history: History;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult =>
     render(
@@ -109,8 +108,11 @@ describe('DLS Proposals - Card View', () => {
     expect(history.location.search).toBe('?');
   });
 
-  it('uses default sort', () => {
+  it('uses default sort', async () => {
     renderComponent();
+
+    expect(await screen.findByTestId('card')).toBeInTheDocument();
+
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"title":"asc"}')}`

@@ -5,19 +5,18 @@ import { StateType } from '../state/app.types';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ClearFiltersButton, {
   ClearFilterProps,
 } from './clearFiltersButton.component';
 import { render, screen, type RenderResult } from '@testing-library/react';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 
 describe('Generic clear filters button', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let props: ClearFilterProps;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   const handleButtonClearFilters = jest.fn();
 

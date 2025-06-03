@@ -11,7 +11,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import type { StateType } from '../../state/app.types';
 import DatasetCardView from './datasetCardView.component';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createMemoryHistory, type History } from 'history';
 import { initialState as dgDataViewInitialState } from '../../state/reducers/dgdataview.reducer';
 import {
@@ -24,7 +24,6 @@ import {
   screen,
   within,
 } from '@testing-library/react';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 
 jest.mock('datagateway-common', () => {
@@ -43,7 +42,7 @@ describe('Dataset - Card View', () => {
   let state: StateType;
   let cardData: Dataset[];
   let history: History;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult =>
     render(

@@ -8,13 +8,8 @@ import {
   DownloadCartItem,
   readSciGatewayToken,
 } from 'datagateway-common';
-import {
-  createLocation,
-  createMemoryHistory,
-  createPath,
-  History,
-} from 'history';
-import { Router } from 'react-router-dom';
+import { createMemoryHistory, createPath, History } from 'history';
+import { generatePath, Router } from 'react-router-dom';
 
 import PageContainer, { paths } from './pageContainer.component';
 import {
@@ -27,16 +22,16 @@ import {
   QueryClientProvider,
   useIsFetching,
   useQueryClient,
-} from 'react-query';
+} from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import {
+  act,
   render,
   type RenderResult,
   screen,
   waitFor,
   within,
 } from '@testing-library/react';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 
 jest.mock('loglevel');
@@ -57,9 +52,9 @@ jest.mock('datagateway-common', () => {
   };
 });
 
-jest.mock('react-query', () => ({
+jest.mock('@tanstack/react-query', () => ({
   __esModule: true,
-  ...jest.requireActual('react-query'),
+  ...jest.requireActual('@tanstack/react-query'),
   useQueryClient: jest.fn(() => ({
     getQueryData: jest.fn(() => 0),
   })),
@@ -69,7 +64,7 @@ jest.mock('react-query', () => ({
 describe('PageContainer - Tests', () => {
   let queryClient: QueryClient;
   let history: History;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
   let cartItems: DownloadCartItem[];
   let holder: HTMLElement;
 
@@ -80,10 +75,6 @@ describe('PageContainer - Tests', () => {
     const state: StateType = {
       dgcommon: dGCommonInitialState,
       dgdataview: dgDataViewInitialState,
-      router: {
-        action: 'POP',
-        location: { ...createLocation('/'), query: {} },
-      },
     };
     const mockStore = configureStore([thunk]);
     const testStore = mockStore(state);
@@ -104,6 +95,7 @@ describe('PageContainer - Tests', () => {
       initialEntries: ['/'],
     });
     user = userEvent.setup();
+    cartItems = [];
 
     // @ts-expect-error we need it this way
     delete window.location;
@@ -200,7 +192,9 @@ describe('PageContainer - Tests', () => {
 
     expect(history.location.pathname).toBe('/search/data');
 
-    history.push('/browse/instrument');
+    act(() => {
+      history.push('/browse/instrument');
+    });
 
     await user.click(
       await screen.findByRole('button', { name: 'view-search' })
@@ -208,7 +202,9 @@ describe('PageContainer - Tests', () => {
 
     expect(history.location.pathname).toBe('/search/isis');
 
-    history.push('/browse/proposal');
+    act(() => {
+      history.push('/browse/proposal');
+    });
 
     await user.click(
       await screen.findByRole('button', { name: 'view-search' })
@@ -355,7 +351,10 @@ describe('PageContainer - Tests', () => {
       getQueryData: jest.fn(),
     });
     history.replace(
-      `${paths.dataPublications.landing.isisDataPublicationLanding}`
+      generatePath(paths.dataPublications.landing.isisDataPublicationLanding, {
+        instrumentId: 1,
+        dataPublicationId: 2,
+      })
     );
 
     renderComponent();
@@ -366,11 +365,15 @@ describe('PageContainer - Tests', () => {
     expect(screen.queryByTestId('styled-routing')).toBeNull();
   });
 
-  it('set view to card if cardview stored in localstorage', () => {
+  it('set view to card if cardview stored in localstorage', async () => {
     localStorage.setItem('dataView', 'card');
     history.replace(paths.toggle.investigation);
 
     renderComponent();
+
+    expect(
+      await screen.findByRole('button', { name: 'page view app.view_table' })
+    ).toBeInTheDocument();
 
     expect(history.location.search).toBe('?view=card');
 
@@ -389,7 +392,11 @@ describe('PageContainer - Tests', () => {
   });
 
   it('displays warning label when browsing study hierarchy', async () => {
-    history.replace(paths.dataPublications.toggle.isisDataPublication);
+    history.replace(
+      generatePath(paths.dataPublications.toggle.isisDataPublication, {
+        instrumentId: 1,
+      })
+    );
     const response = { username: 'SomePerson' };
     (readSciGatewayToken as jest.Mock).mockReturnValueOnce(response);
 
@@ -456,7 +463,12 @@ describe('PageContainer - Tests', () => {
   });
 
   it('shows breadcrumb according to the current path', async () => {
-    history.replace('/browse/instrument/1/facilityCycle/1/investigation');
+    history.replace(
+      generatePath(paths.toggle.isisInvestigation, {
+        instrumentId: 1,
+        facilityCycleId: 1,
+      })
+    );
     renderComponent();
 
     expect(await screen.findByText('breadcrumbs.home')).toBeInTheDocument();
@@ -464,7 +476,9 @@ describe('PageContainer - Tests', () => {
     expect(baseBreadcrumb).toHaveAttribute('href', '/browse/instrument');
     expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.instrument');
 
-    const breadcrumbs = screen.getAllByTestId(/^Breadcrumb-hierarchy-\d+$/);
+    const breadcrumbs = await screen.findAllByTestId(
+      /^Breadcrumb-hierarchy-\d+$/
+    );
     expect(breadcrumbs[0]).toHaveAttribute(
       'href',
       '/browse/instrument/1/facilityCycle'

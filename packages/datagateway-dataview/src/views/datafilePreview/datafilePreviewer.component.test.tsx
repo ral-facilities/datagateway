@@ -6,12 +6,11 @@ import {
   waitFor,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import axios, { type AxiosRequestConfig } from 'axios';
 import { downloadDatafile } from 'datagateway-common';
 import type { Datafile } from 'datagateway-common/lib/app.types';
 import * as React from 'react';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 import { combineReducers, createStore, type Store } from 'redux';
@@ -23,13 +22,6 @@ jest.mock('datagateway-common', () => ({
   ...jest.requireActual('datagateway-common'),
   downloadDatafile: jest.fn(),
 }));
-
-// silence react-query errors
-setLogger({
-  log: console.log,
-  warn: console.warn,
-  error: jest.fn(),
-});
 
 function createMockStore(): Store {
   return createStore(
@@ -53,6 +45,12 @@ function createQueryClient(): QueryClient {
         retry: false,
       },
     },
+    // silence react-query errors
+    logger: {
+      log: console.log,
+      warn: console.warn,
+      error: jest.fn(),
+    },
   });
 }
 
@@ -71,7 +69,7 @@ function renderComponent(): RenderResult {
 }
 
 describe('DatafilePreviewer', () => {
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   beforeEach(() => {
     user = userEvent.setup();
@@ -123,7 +121,7 @@ describe('DatafilePreviewer', () => {
       renderComponent();
 
       expect(
-        await screen.findByText('datafiles.preview.invalid_datafile')
+        await screen.findByText('datafiles.preview.cannot_load_metadata')
       ).toBeInTheDocument();
     });
   });

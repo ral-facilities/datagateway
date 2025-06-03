@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import { CartProps, ViewCartButton, ViewsType } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
-import { useIsFetching } from 'react-query';
+import { useIsFetching } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import type { StateType } from '../state/app.types';
 import InvestigationSearchTable from '../table/investigationSearchTable.component';
@@ -50,7 +50,7 @@ function TabPanel(props: TabPanelProps): React.ReactElement {
   );
 }
 
-function a11yProps(index: string): React.ReactFragment {
+function a11yProps(index: string): { id: string; 'aria-controls': string } {
   return {
     id: `simple-tab-${index}`,
     'aria-controls': `simple-tabpanel-${index}`,

@@ -11,7 +11,7 @@ import thunk from 'redux-thunk';
 import type { StateType } from '../../state/app.types';
 import { initialState } from '../../state/reducers/dgdataview.reducer';
 import InvestigationTable from './investigationTable.component';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createMemoryHistory, type History } from 'history';
 import {
   render,
@@ -26,7 +26,6 @@ import {
   findAllRows,
   findColumnHeaderByName,
 } from '../../setupTests';
-import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 import {
   findCellInRow,
@@ -40,7 +39,7 @@ describe('Investigation table component', () => {
   let rowData: Investigation[];
   let cartItems: DownloadCartItem[];
   let history: History;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
   let holder: HTMLElement;
 
   const renderComponent = (): RenderResult => {
@@ -411,7 +410,7 @@ describe('Investigation table component', () => {
     ).toBeNull();
   });
 
-  it('renders fine with incomplete data', () => {
+  it('renders fine with incomplete data', async () => {
     // this can happen when navigating between tables and the previous table's state still exists
     rowData = [
       {
@@ -424,6 +423,9 @@ describe('Investigation table component', () => {
     ];
 
     expect(() => renderComponent()).not.toThrowError();
+    await waitFor(async () => {
+      expect(await findAllRows()).toHaveLength(1);
+    });
   });
 
   it('displays details panel when expanded', async () => {

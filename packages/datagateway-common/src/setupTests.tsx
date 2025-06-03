@@ -1,18 +1,16 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import '@testing-library/jest-dom';
+import { History, createMemoryHistory } from 'history';
+import failOnConsole from 'jest-fail-on-console';
 import React from 'react';
-import { Action } from 'redux';
-import { StateType } from './state/app.types';
-import { initialState } from './state/reducers/dgcommon.reducer';
-import { setLogger } from 'react-query';
-import { WrapperComponent } from '@testing-library/react-hooks';
-import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
-import thunk from 'redux-thunk';
+import { Action } from 'redux';
 import configureStore from 'redux-mock-store';
-import { createMemoryHistory, History } from 'history';
-import failOnConsole from 'jest-fail-on-console';
+import thunk from 'redux-thunk';
+import { StateType } from './state/app.types';
+import { initialState } from './state/reducers/dgcommon.reducer';
 
 failOnConsole();
 
@@ -55,13 +53,6 @@ export const dispatch = (action: Action): void | Promise<void> => {
   }
 };
 
-// silence react-query errors
-setLogger({
-  log: console.log,
-  warn: console.warn,
-  error: jest.fn(),
-});
-
 // mock retry function to ensure it doesn't slow down query failure tests
 jest.mock('./api/retryICATErrors', () => ({
   __esModule: true,
@@ -91,12 +82,18 @@ export const createTestQueryClient = (): QueryClient =>
         retry: false,
       },
     },
+    // silence react-query errors
+    logger: {
+      log: console.log,
+      warn: console.warn,
+      error: jest.fn(),
+    },
   });
 
 export const createReactQueryWrapper = (
   history: History = createMemoryHistory(),
   queryClient: QueryClient = createTestQueryClient()
-): WrapperComponent<unknown> => {
+): React.JSXElementConstructor<{ children: React.ReactElement }> => {
   const state = {
     dgcommon: {
       ...initialState,
@@ -112,7 +109,9 @@ export const createReactQueryWrapper = (
 
   const mockStore = configureStore([thunk]);
 
-  const wrapper: WrapperComponent<unknown> = ({ children }) => (
+  const wrapper: React.JSXElementConstructor<{
+    children: React.ReactElement;
+  }> = ({ children }) => (
     <Provider store={mockStore(state)}>
       <Router history={history}>
         <QueryClientProvider client={queryClient}>

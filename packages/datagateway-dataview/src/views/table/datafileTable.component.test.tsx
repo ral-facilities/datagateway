@@ -11,7 +11,7 @@ import thunk from 'redux-thunk';
 import type { StateType } from '../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../state/reducers/dgdataview.reducer';
 import DatafileTable from './datafileTable.component';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createMemoryHistory, type History } from 'history';
 import {
   applyDatePickerWorkaround,
@@ -26,7 +26,6 @@ import {
   waitFor,
   within,
 } from '@testing-library/react';
-import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 import {
   findCellInRow,
@@ -40,7 +39,7 @@ describe('Datafile table component', () => {
   let rowData: Datafile[];
   let cartItems: DownloadCartItem[];
   let history: History;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
   let holder: HTMLElement;
 
   const renderComponent = (): RenderResult =>

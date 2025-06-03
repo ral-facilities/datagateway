@@ -9,6 +9,7 @@ import {
 import {
   AdditionalFilters,
   ColumnType,
+  DetailsPanelProps,
   DownloadButton,
   externalSiteLink,
   formatBytes,
@@ -110,7 +111,7 @@ const ISISInvestigationsTable = (
     undefined,
     isMounted
   );
-  const { data: allIds, isLoading: allIdsLoading } = useIds(
+  const { data: allIds, isInitialLoading: allIdsLoading } = useIds(
     'investigation',
     investigationQueryFilters,
     selectAllSetting
@@ -158,18 +159,19 @@ const ISISInvestigationsTable = (
     [fetchNextPage]
   );
 
-  const detailsPanel = React.useCallback(
-    ({ rowData, detailsPanelResize }) => (
-      <ISISInvestigationDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        viewDatasets={(id: number) =>
-          push(`${location.pathname}/${id}/dataset`)
-        }
-      />
-    ),
-    [push, location.pathname]
-  );
+  const detailsPanel: React.ComponentType<DetailsPanelProps> =
+    React.useCallback(
+      ({ rowData, detailsPanelResize }) => (
+        <ISISInvestigationDetailsPanel
+          rowData={rowData}
+          detailsPanelResize={detailsPanelResize}
+          viewDatasets={(id: number) =>
+            push(`${location.pathname}/${id}/dataset`)
+          }
+        />
+      ),
+      [push, location.pathname]
+    );
 
   const columns: ColumnType[] = React.useMemo(
     () => [

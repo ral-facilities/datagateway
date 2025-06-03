@@ -115,7 +115,7 @@ const headerTableCellStyleCombined = {
 export interface ColumnType {
   label: string;
   dataKey: string;
-  icon?: React.ComponentType<unknown>;
+  icon?: React.ElementType;
   cellContentRenderer?: TableCellRenderer;
   className?: string;
   disableSort?: boolean;
@@ -148,7 +148,8 @@ interface VirtualizedTableProps {
   onSort: (
     column: string,
     order: Order | null,
-    updateMethod: UpdateMethod
+    updateMethod: UpdateMethod,
+    shiftDown?: boolean
   ) => void;
   onDefaultFilter?: (filterKey: string, filterValue: Filter | null) => void;
   filters?: FiltersType;
@@ -166,7 +167,6 @@ interface VirtualizedTableProps {
 const VirtualizedTable = React.memo(
   (props: VirtualizedTableProps): React.ReactElement => {
     const [expandedIndex, setExpandedIndex] = React.useState(-1);
-    const [detailPanelHeight, setDetailPanelHeight] = React.useState(rowHeight);
     const [lastChecked, setLastChecked] = React.useState(-1);
 
     let tableRef: Table | null = null;
@@ -282,13 +282,10 @@ const VirtualizedTable = React.memo(
     );
 
     const detailsPanelResize = React.useCallback((): void => {
-      if (detailPanelRef && detailPanelRef.current) {
-        setDetailPanelHeight(detailPanelRef.current.clientHeight);
-      }
       if (tableRef) {
         tableRef.recomputeRowHeights();
       }
-    }, [tableRef, setDetailPanelHeight]);
+    }, [tableRef]);
 
     React.useEffect(detailsPanelResize, [
       tableRef,
@@ -305,9 +302,12 @@ const VirtualizedTable = React.memo(
     );
 
     const getRowHeight = React.useCallback(
-      ({ index }: Index): number =>
-        index === expandedIndex ? rowHeight + detailPanelHeight : rowHeight,
-      [detailPanelHeight, expandedIndex]
+      ({ index }: Index): number => {
+        return index === expandedIndex && detailPanelRef.current?.clientHeight
+          ? rowHeight + detailPanelRef.current.clientHeight
+          : rowHeight;
+      },
+      [detailPanelRef, expandedIndex]
     );
 
     const getRowClassName = React.useCallback(({ index }: Index) => {
@@ -401,7 +401,7 @@ const VirtualizedTable = React.memo(
             >
               {({ onRowsRendered, registerChild }) => (
                 <StyledTable
-                  ref={(ref) => {
+                  ref={(ref: Table | null) => {
                     if (ref !== null) {
                       tableRef = ref;
                     }

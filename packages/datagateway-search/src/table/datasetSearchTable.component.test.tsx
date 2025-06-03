@@ -13,7 +13,7 @@ import {
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createMemoryHistory, type History } from 'history';
 import { Router } from 'react-router-dom';
 import {
@@ -214,6 +214,10 @@ describe('Dataset table component', () => {
 
     expect(
       queryClient.getQueryState(['search', 'Dataset'], { exact: false })?.status
+    ).toBe('loading');
+    expect(
+      queryClient.getQueryState(['search', 'Dataset'], { exact: false })
+        ?.fetchStatus
     ).toBe('idle');
 
     expect(queryAllRows()).toHaveLength(0);
@@ -740,7 +744,7 @@ describe('Dataset table component', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders fine with incomplete data', () => {
+  it('renders fine with incomplete data', async () => {
     // this can happen when navigating between tables and the previous table's state still exists
     searchResponse = {
       results: [
@@ -755,6 +759,9 @@ describe('Dataset table component', () => {
     };
 
     expect(() => renderComponent()).not.toThrowError();
+    await waitFor(async () => {
+      expect(await findAllRows()).toHaveLength(1);
+    });
   });
 
   it('renders generic link correctly', async () => {

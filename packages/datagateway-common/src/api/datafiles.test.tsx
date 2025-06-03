@@ -1,5 +1,5 @@
 import { Datafile } from '../app.types';
-import { renderHook } from '@testing-library/react-hooks';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { createMemoryHistory, History } from 'history';
 import axios from 'axios';
 import handleICATError from '../handleICATError';
@@ -58,7 +58,7 @@ describe('datafile api functions', () => {
         data: mockData,
       });
 
-      const { result, waitFor, rerender } = renderHook(
+      const { result } = renderHook(
         () =>
           useDatafilesPaginated([
             {
@@ -73,7 +73,7 @@ describe('datafile api functions', () => {
         }
       );
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       params.append('order', JSON.stringify('name asc'));
       params.append('order', JSON.stringify('title desc'));
@@ -104,11 +104,12 @@ describe('datafile api functions', () => {
       );
       expect(result.current.data).toEqual(mockData);
 
-      // test that order of sort object triggers new query
-      history.push(
-        '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
-      );
-      rerender();
+      act(() => {
+        // test that order of sort object triggers new query
+        history.push(
+          '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
+        );
+      });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
@@ -119,11 +120,11 @@ describe('datafile api functions', () => {
       (axios.get as jest.Mock).mockRejectedValue({
         message: 'Test error',
       });
-      const { result, waitFor } = renderHook(() => useDatafilesPaginated(), {
+      const { result } = renderHook(() => useDatafilesPaginated(), {
         wrapper: createReactQueryWrapper(),
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       params.append('order', JSON.stringify('id asc'));
       params.append('skip', JSON.stringify(0));
@@ -150,7 +151,7 @@ describe('datafile api functions', () => {
           : Promise.resolve({ data: mockData[1] })
       );
 
-      const { result, waitFor, rerender } = renderHook(
+      const { result } = renderHook(
         () =>
           useDatafilesInfinite([
             {
@@ -165,7 +166,7 @@ describe('datafile api functions', () => {
         }
       );
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       params.append('order', JSON.stringify('name asc'));
       params.append('order', JSON.stringify('title desc'));
@@ -196,13 +197,11 @@ describe('datafile api functions', () => {
       );
       expect(result.current.data.pages).toStrictEqual([mockData[0]]);
 
-      result.current.fetchNextPage({
+      await result.current.fetchNextPage({
         pageParam: { startIndex: 50, stopIndex: 74 },
       });
 
-      await waitFor(() => result.current.isFetching);
-
-      await waitFor(() => !result.current.isFetching);
+      await waitFor(() => expect(result.current.isFetching).toBe(false));
 
       expect(axios.get).toHaveBeenNthCalledWith(
         2,
@@ -222,11 +221,12 @@ describe('datafile api functions', () => {
         mockData[1],
       ]);
 
-      // test that order of sort object triggers new query
-      history.push(
-        '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}'
-      );
-      rerender();
+      act(() => {
+        // test that order of sort object triggers new query
+        history.push(
+          '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}'
+        );
+      });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
@@ -237,11 +237,11 @@ describe('datafile api functions', () => {
       (axios.get as jest.Mock).mockRejectedValue({
         message: 'Test error',
       });
-      const { result, waitFor } = renderHook(() => useDatafilesInfinite(), {
+      const { result } = renderHook(() => useDatafilesInfinite(), {
         wrapper: createReactQueryWrapper(),
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       params.append('order', JSON.stringify('id asc'));
       params.append('skip', JSON.stringify(0));
@@ -266,7 +266,7 @@ describe('datafile api functions', () => {
         data: mockData.length,
       });
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           useDatafileCount([
             {
@@ -279,7 +279,7 @@ describe('datafile api functions', () => {
         }
       );
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       params.append(
         'where',
@@ -305,11 +305,11 @@ describe('datafile api functions', () => {
       (axios.get as jest.Mock).mockRejectedValue({
         message: 'Test error',
       });
-      const { result, waitFor } = renderHook(() => useDatafileCount(), {
+      const { result } = renderHook(() => useDatafileCount(), {
         wrapper: createReactQueryWrapper(),
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/api/datafiles/count',
@@ -330,11 +330,11 @@ describe('datafile api functions', () => {
         data: [mockData[0]],
       });
 
-      const { result, waitFor } = renderHook(() => useDatafileDetails(1), {
+      const { result } = renderHook(() => useDatafileDetails(1), {
         wrapper: createReactQueryWrapper(),
       });
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       params.append(
         'where',
@@ -359,11 +359,11 @@ describe('datafile api functions', () => {
       (axios.get as jest.Mock).mockRejectedValue({
         message: 'Test error',
       });
-      const { result, waitFor } = renderHook(() => useDatafileDetails(1), {
+      const { result } = renderHook(() => useDatafileDetails(1), {
         wrapper: createReactQueryWrapper(),
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
     });
@@ -384,7 +384,7 @@ describe('datafile api functions', () => {
           } as unknown as Blob)
       );
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           useDatafileContent({
             datafileId: 1,
@@ -393,7 +393,7 @@ describe('datafile api functions', () => {
         { wrapper: createReactQueryWrapper() }
       );
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       expect(axios.get).toHaveBeenCalledWith(
         `https://example.com/ids/getData`,
@@ -425,7 +425,7 @@ describe('datafile api functions', () => {
       );
       const downloadProgressCb = jest.fn();
 
-      const { waitFor } = renderHook(
+      renderHook(
         () =>
           useDatafileContent({
             datafileId: 1,
@@ -444,7 +444,7 @@ describe('datafile api functions', () => {
         message: 'Test error',
       });
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           useDatafileContent({
             datafileId: 1,
@@ -453,7 +453,7 @@ describe('datafile api functions', () => {
         { wrapper: createReactQueryWrapper() }
       );
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
     });

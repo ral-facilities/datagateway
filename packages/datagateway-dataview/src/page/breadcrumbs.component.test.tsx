@@ -9,7 +9,7 @@ import type { StateType } from '../state/app.types';
 import { createLocation, createMemoryHistory, type History } from 'history';
 import PageBreadcrumbs from './breadcrumbs.component';
 import axios from 'axios';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   render,
   type RenderResult,
@@ -109,12 +109,6 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
           ],
         },
         dgcommon: dGCommonInitialState,
-
-        // Initialise our router object to hold location information.
-        router: {
-          action: 'POP',
-          location: createLocation('/'),
-        },
       })
     );
 
@@ -184,7 +178,9 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
       );
       expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.investigation');
 
-      const breadcrumbs = screen.getAllByTestId(/^Breadcrumb-hierarchy-\d+$/);
+      const breadcrumbs = await screen.findAllByTestId(
+        /^Breadcrumb-hierarchy-\d+$/
+      );
       expect(within(breadcrumbs[0]).getByText('Title 1')).toBeInTheDocument();
 
       expect(
@@ -220,7 +216,9 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
       expect(baseBreadcrumb).toHaveAttribute('href', '/browse/investigation');
       expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.investigation');
 
-      const breadcrumbs = screen.getAllByTestId(/^Breadcrumb-hierarchy-\d+$/);
+      const breadcrumbs = await screen.findAllByTestId(
+        /^Breadcrumb-hierarchy-\d+$/
+      );
       expect(within(breadcrumbs[0]).getByText('Title 1')).toBeInTheDocument();
       expect(within(breadcrumbs[1]).getByText('Name 2')).toBeInTheDocument();
 
@@ -303,7 +301,9 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
       expect(baseBreadcrumb).toHaveAttribute('href', '/browse/proposal');
       expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.proposal');
 
-      const breadcrumbs = screen.getAllByTestId(/^Breadcrumb-hierarchy-\d+$/);
+      const breadcrumbs = await screen.findAllByTestId(
+        /^Breadcrumb-hierarchy-\d+$/
+      );
       expect(breadcrumbs[0]).toHaveAttribute(
         'href',
         '/browse/proposal/INVESTIGATION 1/investigation'
@@ -353,7 +353,9 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
       expect(baseBreadcrumb).toHaveAttribute('href', '/browse/proposal');
       expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.proposal');
 
-      const breadcrumbs = screen.getAllByTestId(/^Breadcrumb-hierarchy-\d+$/);
+      const breadcrumbs = await screen.findAllByTestId(
+        /^Breadcrumb-hierarchy-\d+$/
+      );
       expect(breadcrumbs[0]).toHaveAttribute(
         'href',
         '/browse/proposal/INVESTIGATION 1/investigation'
@@ -411,7 +413,9 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
       expect(baseBreadcrumb).toHaveAttribute('href', '/browse/instrument');
       expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.instrument');
 
-      const breadcrumbs = screen.getAllByTestId(/^Breadcrumb-hierarchy-\d+$/);
+      const breadcrumbs = await screen.findAllByTestId(
+        /^Breadcrumb-hierarchy-\d+$/
+      );
       expect(within(breadcrumbs[0]).getByText('Name 1')).toBeInTheDocument();
 
       expect(
@@ -446,7 +450,9 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
       expect(baseBreadcrumb).toHaveAttribute('href', '/browse/instrument');
       expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.instrument');
 
-      const breadcrumbs = screen.getAllByTestId(/^Breadcrumb-hierarchy-\d+$/);
+      const breadcrumbs = await screen.findAllByTestId(
+        /^Breadcrumb-hierarchy-\d+$/
+      );
       expect(breadcrumbs[0]).toHaveAttribute(
         'href',
         '/browse/instrument/1/facilityCycle'
@@ -491,7 +497,9 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
       expect(baseBreadcrumb).toHaveAttribute('href', '/browse/instrument');
       expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.instrument');
 
-      const breadcrumbs = screen.getAllByTestId(/^Breadcrumb-hierarchy-\d+$/);
+      const breadcrumbs = await screen.findAllByTestId(
+        /^Breadcrumb-hierarchy-\d+$/
+      );
       expect(breadcrumbs[0]).toHaveAttribute(
         'href',
         '/browse/instrument/1/facilityCycle'
@@ -550,7 +558,9 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
       expect(baseBreadcrumb).toHaveAttribute('href', '/browse/instrument');
       expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.instrument');
 
-      const breadcrumbs = screen.getAllByTestId(/^Breadcrumb-hierarchy-\d+$/);
+      const breadcrumbs = await screen.findAllByTestId(
+        /^Breadcrumb-hierarchy-\d+$/
+      );
       expect(breadcrumbs[0]).toHaveAttribute(
         'href',
         '/browse/instrument/1/facilityCycle'
@@ -615,7 +625,9 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
       );
       expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.instrument');
 
-      const breadcrumbs = screen.getAllByTestId(/^Breadcrumb-hierarchy-\d+$/);
+      const breadcrumbs = await screen.findAllByTestId(
+        /^Breadcrumb-hierarchy-\d+$/
+      );
       expect(within(breadcrumbs[0]).getByText('Name 1')).toBeInTheDocument();
 
       expect(
@@ -655,7 +667,9 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
       );
       expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.instrument');
 
-      const breadcrumbs = screen.getAllByTestId(/^Breadcrumb-hierarchy-\d+$/);
+      const breadcrumbs = await screen.findAllByTestId(
+        /^Breadcrumb-hierarchy-\d+$/
+      );
       expect(breadcrumbs[0]).toHaveAttribute(
         'href',
         '/browseDataPublications/instrument/1/dataPublication'
@@ -703,7 +717,9 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
       );
       expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.instrument');
 
-      const breadcrumbs = screen.getAllByTestId(/^Breadcrumb-hierarchy-\d+$/);
+      const breadcrumbs = await screen.findAllByTestId(
+        /^Breadcrumb-hierarchy-\d+$/
+      );
       expect(breadcrumbs[0]).toHaveAttribute(
         'href',
         '/browseDataPublications/instrument/1/dataPublication'
@@ -765,7 +781,9 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
       );
       expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.instrument');
 
-      const breadcrumbs = screen.getAllByTestId(/^Breadcrumb-hierarchy-\d+$/);
+      const breadcrumbs = await screen.findAllByTestId(
+        /^Breadcrumb-hierarchy-\d+$/
+      );
       expect(breadcrumbs[0]).toHaveAttribute(
         'href',
         '/browseDataPublications/instrument/1/dataPublication'

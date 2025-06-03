@@ -14,7 +14,7 @@ import {
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { createMemoryHistory, History } from 'history';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { generatePath, Router } from 'react-router-dom';
 import {
   render,
@@ -267,11 +267,13 @@ describe('ISIS Investigation Landing page', () => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly for facility cycle hierarchy', () => {
+  it('renders correctly for facility cycle hierarchy', async () => {
     renderComponent();
 
     // branding should be visible
-    expect(screen.getByRole('img', { name: 'STFC Logo' })).toBeInTheDocument();
+    expect(
+      await screen.findByRole('img', { name: 'STFC Logo' })
+    ).toBeInTheDocument();
     expect(
       screen.getByText('doi_constants.branding.title')
     ).toBeInTheDocument();
@@ -399,7 +401,7 @@ describe('ISIS Investigation Landing page', () => {
 
     renderComponent();
 
-    expect(screen.getByText('Test title 1')).toBeInTheDocument();
+    expect(await screen.findByText('Test title 1')).toBeInTheDocument();
     expect(screen.getByText('Description not provided')).toBeInTheDocument();
 
     // no investigation samples, so show no samples message
@@ -416,7 +418,7 @@ describe('ISIS Investigation Landing page', () => {
     expect(screen.queryByText('investigations.details.users.label')).toBeNull();
   });
 
-  it('renders correctly for data publication hierarchy', () => {
+  it('renders correctly for data publication hierarchy', async () => {
     history.replace(
       generatePath(paths.dataPublications.landing.isisInvestigationLanding, {
         instrumentId: '4',
@@ -427,7 +429,9 @@ describe('ISIS Investigation Landing page', () => {
     renderComponent(true);
 
     // branding should be visible
-    expect(screen.getByRole('img', { name: 'STFC Logo' })).toBeInTheDocument();
+    expect(
+      await screen.findByRole('img', { name: 'STFC Logo' })
+    ).toBeInTheDocument();
     expect(
       screen.getByText('doi_constants.branding.title')
     ).toBeInTheDocument();
@@ -537,7 +541,7 @@ describe('ISIS Investigation Landing page', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders correctly for data publication hierarchy when no investigations or description', () => {
+  it('renders correctly for data publication hierarchy when no investigations or description', async () => {
     initialDataPublicationData.description = undefined;
     if (initialDataPublicationData.content?.dataCollectionInvestigations?.[0])
       initialDataPublicationData.content.dataCollectionInvestigations[0].investigation =
@@ -552,7 +556,9 @@ describe('ISIS Investigation Landing page', () => {
     );
     renderComponent(true);
 
-    expect(screen.getByText('Description not provided')).toBeInTheDocument();
+    expect(
+      await screen.findByText('Description not provided')
+    ).toBeInTheDocument();
 
     expect(
       screen.getByText(

@@ -13,7 +13,7 @@ import {
 } from 'datagateway-common';
 import { createMemoryHistory, type MemoryHistory } from 'history';
 import * as React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
@@ -31,7 +31,7 @@ import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import DLSMyDataTable from './dlsMyDataTable.component';
 import userEvent from '@testing-library/user-event';
-import type { UserEvent } from '@testing-library/user-event/setup/setup';
+import axios, { AxiosResponse } from 'axios';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -50,7 +50,7 @@ describe('DLS MyData table component', () => {
   let state: StateType;
   let rowData: Investigation[];
   let history: MemoryHistory;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult => {
     const store = mockStore(state);
@@ -111,6 +111,21 @@ describe('DLS MyData table component', () => {
       username: 'testUser',
     });
     global.Date.now = jest.fn(() => 1);
+    axios.get = jest
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/\/investigations$/.test(url)) {
+          return Promise.resolve({
+            data: rowData,
+          });
+        }
+
+        if (/\/allowed$/.test(url)) {
+          return Promise.resolve({ data: true });
+        }
+
+        return Promise.reject(`Endpoint not mocked: ${url}`);
+      });
   });
 
   afterEach(() => {
@@ -193,7 +208,7 @@ describe('DLS MyData table component', () => {
     renderComponent();
 
     expect(
-      screen.getByRole('textbox', {
+      await screen.findByRole('textbox', {
         name: 'investigations.start_date filter to',
       })
     ).toHaveValue('1970-01-01');

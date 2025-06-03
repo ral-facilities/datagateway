@@ -10,7 +10,7 @@ import LogoDark from 'datagateway-common/src/images/datgateway-white-text-blue-m
 import jsrsasign from 'jsrsasign';
 import log from 'loglevel';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOMClient from 'react-dom/client';
 import singleSpaReact from 'single-spa-react';
 import App, { ErrorFallback } from './App';
 import { DownloadSettings } from './ConfigProvider';
@@ -30,7 +30,7 @@ function domElementGetter(): HTMLElement {
 
 const reactLifecycles = singleSpaReact({
   React,
-  ReactDOM,
+  ReactDOMClient,
   rootComponent: () =>
     document.getElementById('datagateway-download') ? <App /> : null,
   domElementGetter,
@@ -43,7 +43,8 @@ const reactLifecycles = singleSpaReact({
 const render = (): void => {
   const el = document.getElementById('datagateway-download');
   if (el) {
-    ReactDOM.render(<App />, document.getElementById('datagateway-download'));
+    const root = ReactDOMClient.createRoot(el);
+    root.render(<App />);
   }
 };
 
@@ -176,27 +177,17 @@ if (
   if (process.env.NODE_ENV === `development`) {
     settings.then((settingsResult) => {
       if (settingsResult) {
-        const splitUrl = settingsResult.downloadApiUrl.split('/');
-        const icatUrl = `${splitUrl
-          .slice(0, splitUrl.length - 1)
-          .join('/')}/icat`;
+        const apiUrl = settingsResult.apiUrl;
         axios
-          .post(
-            `${icatUrl}/session`,
-            `json=${JSON.stringify({
-              plugin: 'simple',
-              credentials: [{ username: 'root' }, { password: 'pw' }],
-            })}`,
-            {
-              headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-              },
-            }
-          )
+          .post(`${apiUrl}/sessions`, {
+            username: 'root',
+            password: 'pw',
+            mechanism: 'simple',
+          })
           .then((response) => {
             const jwtHeader = { alg: 'HS256', typ: 'JWT' };
             const payload = {
-              sessionId: response.data.sessionId,
+              sessionId: response.data.sessionID,
               username: 'dev',
             };
             const jwt = jsrsasign.KJUR.jws.JWS.sign(
@@ -209,7 +200,7 @@ if (
             window.localStorage.setItem(MicroFrontendToken, jwt);
           })
           .catch((error) =>
-            console.error(`Can't log in to ICAT: ${error.message}`)
+            log.error(`Can't log in to ICAT: ${error.message}`)
           );
       }
     });

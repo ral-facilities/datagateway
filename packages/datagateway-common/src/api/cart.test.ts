@@ -1,20 +1,20 @@
-import { act, renderHook } from '@testing-library/react-hooks';
+import { QueryClient } from '@tanstack/react-query';
+import { renderHook, waitFor } from '@testing-library/react';
 import axios, { AxiosError } from 'axios';
 import {
-  useCart,
+  getDefaultFileName,
   useAddToCart,
-  useRemoveFromCart,
-  useSubmitCart,
+  useCart,
+  useDownload,
   useDownloadTypeStatuses,
   useQueueAllowed,
   useQueueVisit,
-  getDefaultFileName,
-  useDownload,
+  useRemoveFromCart,
+  useSubmitCart,
 } from '.';
 import { DownloadCart } from '../app.types';
 import handleICATError from '../handleICATError';
 import { createReactQueryWrapper } from '../setupTests';
-import { QueryClient } from 'react-query';
 import { NotificationType } from '../state/actions/actions.types';
 
 jest.mock('../handleICATError');
@@ -58,11 +58,11 @@ describe('Cart api functions', () => {
         data: mockData,
       });
 
-      const { result, waitFor } = renderHook(() => useCart(), {
+      const { result } = renderHook(() => useCart(), {
         wrapper: createReactQueryWrapper(),
       });
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/topcat/user/cart/TEST',
@@ -82,7 +82,8 @@ describe('Cart api functions', () => {
         wrapper: createReactQueryWrapper(),
       });
 
-      expect(result.current.isIdle).toBe(true);
+      expect(result.current.status).toBe('loading');
+      expect(result.current.fetchStatus).toBe('idle');
       expect(axios.get).not.toHaveBeenCalled();
     });
 
@@ -91,11 +92,11 @@ describe('Cart api functions', () => {
         message: 'Test error message',
       });
 
-      const { result, waitFor } = renderHook(() => useCart(), {
+      const { result } = renderHook(() => useCart(), {
         wrapper: createReactQueryWrapper(),
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       expect(handleICATError).toHaveBeenCalledWith({
         message: 'Test error message',
@@ -109,7 +110,7 @@ describe('Cart api functions', () => {
         data: mockData,
       });
 
-      const { result, waitFor } = renderHook(() => useAddToCart('dataset'), {
+      const { result } = renderHook(() => useAddToCart('dataset'), {
         wrapper: createReactQueryWrapper(),
       });
 
@@ -118,7 +119,7 @@ describe('Cart api functions', () => {
 
       result.current.mutate([1, 2]);
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       const params = new URLSearchParams();
       params.append('sessionId', '');
@@ -143,7 +144,7 @@ describe('Cart api functions', () => {
           message: 'Test error message',
         });
 
-      const { result, waitFor } = renderHook(() => useAddToCart('dataset'), {
+      const { result } = renderHook(() => useAddToCart('dataset'), {
         wrapper: createReactQueryWrapper(),
       });
 
@@ -152,7 +153,9 @@ describe('Cart api functions', () => {
 
       result.current.mutate([1, 2]);
 
-      await waitFor(() => result.current.isError, { timeout: 2000 });
+      await waitFor(() => expect(result.current.isError).toBe(true), {
+        timeout: 2000,
+      });
 
       expect(result.current.failureCount).toBe(2);
       expect(handleICATError).toHaveBeenCalledTimes(1);
@@ -168,19 +171,16 @@ describe('Cart api functions', () => {
         data: mockData,
       });
 
-      const { result, waitFor } = renderHook(
-        () => useRemoveFromCart('dataset'),
-        {
-          wrapper: createReactQueryWrapper(),
-        }
-      );
+      const { result } = renderHook(() => useRemoveFromCart('dataset'), {
+        wrapper: createReactQueryWrapper(),
+      });
 
       expect(axios.get).not.toHaveBeenCalled();
       expect(result.current.isIdle).toBe(true);
 
       result.current.mutate([1, 2]);
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       const params = new URLSearchParams();
       params.append('sessionId', '');
@@ -207,19 +207,18 @@ describe('Cart api functions', () => {
           message: 'Test error message',
         });
 
-      const { result, waitFor } = renderHook(
-        () => useRemoveFromCart('dataset'),
-        {
-          wrapper: createReactQueryWrapper(),
-        }
-      );
+      const { result } = renderHook(() => useRemoveFromCart('dataset'), {
+        wrapper: createReactQueryWrapper(),
+      });
 
       expect(axios.post).not.toHaveBeenCalled();
       expect(result.current.isIdle).toBe(true);
 
       result.current.mutate([1, 2]);
 
-      await waitFor(() => result.current.isError, { timeout: 2000 });
+      await waitFor(() => expect(result.current.isError).toBe(true), {
+        timeout: 2000,
+      });
 
       expect(result.current.failureCount).toBe(2);
       expect(handleICATError).toHaveBeenCalledTimes(1);
@@ -239,7 +238,7 @@ describe('Cart api functions', () => {
         })
         .mockResolvedValueOnce({ data: { cartItems: [] } });
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => ({
           useSubmitCart: useSubmitCart(
             'LILS',
@@ -251,7 +250,7 @@ describe('Cart api functions', () => {
       );
 
       // wait for the cart to finish loading
-      await waitFor(() => result.current.useCart.isSuccess);
+      await waitFor(() => expect(result.current.useCart.isSuccess).toBe(true));
       // submit the cart
       result.current.useSubmitCart.mutate({
         emailAddress: 'cat@dog.com',
@@ -259,7 +258,9 @@ describe('Cart api functions', () => {
         transport: 'https',
       });
       // wait for cart submission to finish
-      await waitFor(() => result.current.useSubmitCart.isSuccess);
+      await waitFor(() =>
+        expect(result.current.useSubmitCart.isSuccess).toBe(true)
+      );
 
       expect(result.current.useCart.data).toEqual([]);
     });
@@ -270,7 +271,7 @@ describe('Cart api functions', () => {
         data: mockData,
       });
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => ({
           useSubmitCart: useSubmitCart(
             'LILS',
@@ -282,7 +283,7 @@ describe('Cart api functions', () => {
       );
 
       // wait for the cart to finish loading
-      await waitFor(() => result.current.useCart.isSuccess);
+      await waitFor(() => expect(result.current.useCart.isSuccess).toBe(true));
       // submit the cart
       result.current.useSubmitCart.mutate({
         emailAddress: '',
@@ -290,7 +291,9 @@ describe('Cart api functions', () => {
         transport: 'https',
       });
 
-      await waitFor(() => result.current.useSubmitCart.isError);
+      await waitFor(() =>
+        expect(result.current.useSubmitCart.isError).toBe(true)
+      );
 
       expect(handleICATError).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -307,7 +310,7 @@ describe('Cart api functions', () => {
         data: mockData,
       });
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => ({
           useSubmitCart: useSubmitCart(
             'LILS',
@@ -318,13 +321,15 @@ describe('Cart api functions', () => {
         { wrapper: createReactQueryWrapper() }
       );
 
-      await waitFor(() => result.current.useCart.isSuccess);
+      await waitFor(() => expect(result.current.useCart.isSuccess).toBe(true));
       result.current.useSubmitCart.mutate({
         emailAddress: 'a@b.c',
         fileName: 'test-file',
         transport: 'https',
       });
-      await waitFor(() => result.current.useSubmitCart.isError);
+      await waitFor(() =>
+        expect(result.current.useSubmitCart.isError).toBe(true)
+      );
 
       expect(handleICATError).toHaveBeenCalledWith({
         message: 'test error message',
@@ -338,7 +343,7 @@ describe('Cart api functions', () => {
         data: [{ id: 1, fileName: 'test' }],
       });
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           useDownload({
             id: 1,
@@ -350,7 +355,7 @@ describe('Cart api functions', () => {
         }
       );
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/topcat/user/downloads',
@@ -370,7 +375,7 @@ describe('Cart api functions', () => {
         message: 'Test error message',
       });
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           useDownload({
             id: 1,
@@ -382,7 +387,7 @@ describe('Cart api functions', () => {
         }
       );
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       expect(handleICATError).toHaveBeenCalledWith({
         message: 'Test error message',
@@ -411,7 +416,7 @@ describe('Cart api functions', () => {
         },
       });
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           useDownloadTypeStatuses({
             downloadTypes,
@@ -421,7 +426,9 @@ describe('Cart api functions', () => {
         { wrapper: createReactQueryWrapper() }
       );
 
-      await waitFor(() => result.current.every((query) => query.isSuccess));
+      await waitFor(() =>
+        expect(result.current.every((query) => query.isSuccess)).toBe(true)
+      );
 
       const data = result.current.map(({ data }) => data);
       expect(data).toEqual([
@@ -455,7 +462,7 @@ describe('Cart api functions', () => {
 
       const dispatchEventSpy = jest.spyOn(document, 'dispatchEvent');
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           useDownloadTypeStatuses({
             downloadTypes,
@@ -466,7 +473,9 @@ describe('Cart api functions', () => {
       );
 
       await waitFor(() =>
-        result.current.every((query) => query.isSuccess || query.isError)
+        expect(
+          result.current.every((query) => query.isSuccess || query.isError)
+        ).toBe(true)
       );
 
       expect((dispatchEventSpy.mock.calls[0][0] as CustomEvent).detail).toEqual(
@@ -491,7 +500,7 @@ describe('Cart api functions', () => {
 
       const wrapper = createReactQueryWrapper();
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           useDownloadTypeStatuses({
             downloadTypes: ['https'],
@@ -501,29 +510,29 @@ describe('Cart api functions', () => {
         { wrapper }
       );
 
-      await waitFor(() => result.current.every((query) => query.isSuccess));
+      await waitFor(() =>
+        expect(result.current.every((query) => query.isSuccess)).toBe(true)
+      );
 
       expect(result.current[0].isStale).toBe(true);
       expect(axios.get).toHaveBeenCalledTimes(1);
 
-      await act(async () => {
-        const { result: newResult } = renderHook(
-          () =>
-            useDownloadTypeStatuses({
-              downloadTypes: ['https'],
-              facilityName: 'LILS',
-              downloadApiUrl: 'https://example.com/downloadApiUrl',
-            }),
-          { wrapper }
-        );
+      const { result: newResult } = renderHook(
+        () =>
+          useDownloadTypeStatuses({
+            downloadTypes: ['https'],
+            facilityName: 'LILS',
+            downloadApiUrl: 'https://example.com/downloadApiUrl',
+          }),
+        { wrapper }
+      );
 
-        await waitFor(() =>
-          newResult.current.every((query) => query.isSuccess)
-        );
+      await waitFor(() =>
+        expect(newResult.current.every((query) => query.isSuccess)).toBe(true)
+      );
 
-        expect(newResult.current[0].isStale).toBe(true);
-        expect(axios.get).toHaveBeenCalledTimes(2);
-      });
+      expect(newResult.current[0].isStale).toBe(true);
+      expect(axios.get).toHaveBeenCalledTimes(2);
     });
   });
 
@@ -533,7 +542,7 @@ describe('Cart api functions', () => {
         data: true,
       });
 
-      const { result, waitFor } = renderHook(() => useQueueAllowed(), {
+      const { result } = renderHook(() => useQueueAllowed(), {
         wrapper: createReactQueryWrapper(),
       });
 
@@ -556,7 +565,7 @@ describe('Cart api functions', () => {
         message: 'Test error message',
       });
 
-      const { result, waitFor } = renderHook(() => useQueueAllowed(), {
+      const { result } = renderHook(() => useQueueAllowed(), {
         wrapper: createReactQueryWrapper(),
       });
 
@@ -585,7 +594,7 @@ describe('Cart api functions', () => {
         searchParams.append(paramName, paramValue);
       });
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           useQueueVisit(params.facilityName, 'https://example.com/downloadApi'),
         {
@@ -615,7 +624,7 @@ describe('Cart api functions', () => {
         message: 'test error message',
       });
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useQueueVisit('LILS', 'https://example.com/downloadApi'),
         {
           wrapper: createReactQueryWrapper(),
