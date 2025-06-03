@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { Box, LinearProgress, Typography } from '@mui/material';
 import type { Download } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';

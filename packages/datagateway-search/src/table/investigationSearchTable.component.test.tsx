@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { initialState } from '../state/reducers/dgsearch.reducer';
 import configureStore from 'redux-mock-store';
 import type { StateType } from '../state/app.types';
@@ -33,13 +32,13 @@ import {
   queryAllRows,
 } from '../setupTests';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    handleICATError: jest.fn(),
+    handleICATError: vi.fn(),
   };
 });
 
@@ -183,9 +182,9 @@ describe('Investigation Search Table component', () => {
       results: [searchResult],
     };
 
-    axios.get = jest.fn().mockImplementation(mockAxiosGet);
+    axios.get = vi.fn().mockImplementation(mockAxiosGet);
 
-    axios.post = jest.fn().mockImplementation((url: string) => {
+    axios.post = vi.fn().mockImplementation((url: string) => {
       if (/.*\/user\/cart\/.*\/cartItems$/.test(url)) {
         return Promise.resolve({ data: { cartItems } });
       }
@@ -194,7 +193,7 @@ describe('Investigation Search Table component', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('disables the search query if investigation search is disabled', async () => {

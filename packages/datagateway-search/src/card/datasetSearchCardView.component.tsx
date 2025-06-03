@@ -454,9 +454,7 @@ const DatasetCardView: React.FC<DatasetCardViewProps> = (props) => {
                 <CardView
                   entityName="Dataset"
                   data={paginatedSource ?? []}
-                  totalDataCount={
-                    aggregatedIds?.length + (hasNextPage ? 1 : 0) ?? 0
-                  }
+                  totalDataCount={aggregatedIds.length + (hasNextPage ? 1 : 0)}
                   onPageChange={pushPage}
                   onFilter={pushFilter}
                   onSort={handleSort}

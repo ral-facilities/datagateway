@@ -1,31 +1,31 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, RenderResult, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as React from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { DownloadSettingsContext } from '../ConfigProvider';
-import { mockedSettings } from '../testData';
 import { checkUser, ContributorType } from '../downloadApi';
+import { mockedSettings } from '../testData';
 import CreatorsAndContributors from './creatorsAndContributors.component';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    readSciGatewayToken: jest.fn(() => ({
+    readSciGatewayToken: vi.fn(() => ({
       username: '1',
     })),
   };
 });
 
-jest.mock('../downloadApi', () => {
-  const originalModule = jest.requireActual('../downloadApi');
+vi.mock('../downloadApi', async () => {
+  const originalModule = await vi.importActual('../downloadApi');
 
   return {
     ...originalModule,
 
-    checkUser: jest.fn(),
+    checkUser: vi.fn(),
   };
 });
 
@@ -40,7 +40,7 @@ const createTestQueryClient = (): QueryClient =>
     logger: {
       log: console.log,
       warn: console.warn,
-      error: jest.fn(),
+      error: vi.fn(),
     },
   });
 
@@ -91,9 +91,9 @@ describe('DOI generation form component', () => {
           contributor_type: ContributorType.Creator,
         },
       ],
-      changeSelectedUsers: jest.fn(),
+      changeSelectedUsers: vi.fn(),
     };
-    (checkUser as jest.MockedFunction<typeof checkUser>).mockResolvedValue({
+    vi.mocked(checkUser).mockResolvedValue({
       id: 3,
       name: '3',
       fullName: 'User 3',
@@ -103,7 +103,7 @@ describe('DOI generation form component', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should let the user delete users (but not delete the logged in user)', async () => {
@@ -182,7 +182,7 @@ describe('DOI generation form component', () => {
     ).toHaveValue('');
 
     // test errors with various API error responses
-    (checkUser as jest.MockedFunction<typeof checkUser>).mockRejectedValueOnce({
+    vi.mocked(checkUser).mockRejectedValueOnce({
       response: { data: { detail: 'error msg' }, status: 404 },
     });
 
@@ -202,7 +202,7 @@ describe('DOI generation form component', () => {
         .slice(1) // ignores the header row
     ).toHaveLength(3);
 
-    (checkUser as jest.MockedFunction<typeof checkUser>).mockRejectedValue({
+    vi.mocked(checkUser).mockRejectedValue({
       response: { data: { detail: [{ msg: 'error msg 2' }] }, status: 404 },
     });
     await user.click(
@@ -216,7 +216,7 @@ describe('DOI generation form component', () => {
         .slice(1) // ignores the header row
     ).toHaveLength(3);
 
-    (checkUser as jest.MockedFunction<typeof checkUser>).mockRejectedValueOnce({
+    vi.mocked(checkUser).mockRejectedValueOnce({
       response: { status: 422 },
     });
     await user.click(

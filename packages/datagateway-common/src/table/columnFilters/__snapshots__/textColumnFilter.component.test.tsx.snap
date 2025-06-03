@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Text filter component renders correctly 1`] = `
+exports[`Text filter component > renders correctly 1`] = `
 <DocumentFragment>
   <div>
     <div
@@ -54,7 +54,7 @@ exports[`Text filter component renders correctly 1`] = `
             />
             <svg
               aria-hidden="true"
-              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconStandard css-pqjvzy-MuiSvgIcon-root-MuiSelect-icon"
+              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconStandard css-19xtc65-MuiSelect-icon css-i4bv87-MuiSvgIcon-root"
               data-testid="SettingsIcon"
               focusable="false"
               viewBox="0 0 24 24"
@@ -71,7 +71,7 @@ exports[`Text filter component renders correctly 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Text filter component renders correctly with default value 1`] = `
+exports[`Text filter component > renders correctly with default value 1`] = `
 <DocumentFragment>
   <div>
     <div
@@ -125,7 +125,7 @@ exports[`Text filter component renders correctly with default value 1`] = `
             />
             <svg
               aria-hidden="true"
-              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconStandard css-pqjvzy-MuiSvgIcon-root-MuiSelect-icon"
+              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconStandard css-19xtc65-MuiSelect-icon css-i4bv87-MuiSvgIcon-root"
               data-testid="SettingsIcon"
               focusable="false"
               viewBox="0 0 24 24"
@@ -142,7 +142,7 @@ exports[`Text filter component renders correctly with default value 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Text filter component usePrincipalExperimenterFilter hook returns a function which can generate a working PI filter 1`] = `
+exports[`Text filter component > usePrincipalExperimenterFilter hook returns a function which can generate a working PI filter 1`] = `
 <DocumentFragment>
   <div>
     <div
@@ -196,7 +196,7 @@ exports[`Text filter component usePrincipalExperimenterFilter hook returns a fun
             />
             <svg
               aria-hidden="true"
-              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconStandard css-pqjvzy-MuiSvgIcon-root-MuiSelect-icon"
+              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconStandard css-19xtc65-MuiSelect-icon css-i4bv87-MuiSvgIcon-root"
               data-testid="SettingsIcon"
               focusable="false"
               viewBox="0 0 24 24"
@@ -213,7 +213,7 @@ exports[`Text filter component usePrincipalExperimenterFilter hook returns a fun
 </DocumentFragment>
 `;
 
-exports[`Text filter component useTextFilter hook returns a function which can generate a working text filter 1`] = `
+exports[`Text filter component > useTextFilter hook returns a function which can generate a working text filter 1`] = `
 <DocumentFragment>
   <div>
     <div
@@ -267,7 +267,7 @@ exports[`Text filter component useTextFilter hook returns a function which can g
             />
             <svg
               aria-hidden="true"
-              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconStandard css-pqjvzy-MuiSvgIcon-root-MuiSelect-icon"
+              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconStandard css-19xtc65-MuiSelect-icon css-i4bv87-MuiSvgIcon-root"
               data-testid="SettingsIcon"
               focusable="false"
               viewBox="0 0 24 24"

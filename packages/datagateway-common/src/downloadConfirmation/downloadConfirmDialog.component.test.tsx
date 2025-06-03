@@ -1,18 +1,25 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import type { RenderResult } from '@testing-library/react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { RenderResult, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
-import * as React from 'react';
 import {
   getDownload,
   getDownloadTypeStatus,
   useQueueVisit,
   useSubmitCart,
-} from '../api/cart';
+} from '../api';
 import DownloadConfirmDialog from './downloadConfirmDialog.component';
 
-jest.mock('../handleICATError');
+vi.mock('../downloadApi');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    handleICATError: vi.fn(),
+  };
+});
 
 const createTestQueryClient = (): QueryClient =>
   new QueryClient({
@@ -25,7 +32,7 @@ const createTestQueryClient = (): QueryClient =>
     logger: {
       log: console.log,
       warn: console.warn,
-      error: jest.fn(),
+      error: vi.fn(),
     },
   });
 
@@ -64,14 +71,14 @@ describe('DownloadConfirmDialog', () => {
     user = userEvent.setup();
     // Cannot mock to epoch time as Britain adopted BST permanently from 1968
     // to 1971, so snapshot will be an hour out depending on the date locale.
-    global.Date.now = jest.fn(() => new Date(2020, 0, 1, 1, 1, 1).getTime());
+    global.Date.now = vi.fn(() => new Date(2020, 0, 1, 1, 1, 1).getTime());
 
     props = {
       totalSize: 100,
       isTwoLevel: true,
       open: true,
-      redirectToStatusTab: jest.fn(),
-      setClose: jest.fn(),
+      redirectToStatusTab: vi.fn(),
+      setClose: vi.fn(),
       facilityName: 'LILS',
       downloadApiUrl: 'https://example.com/downloadApi',
       accessMethods: {
@@ -117,7 +124,7 @@ describe('DownloadConfirmDialog', () => {
       },
     };
 
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/.*\/user\/downloads/.test(url)) {
@@ -147,7 +154,7 @@ describe('DownloadConfirmDialog', () => {
         return Promise.reject(`Endpoint not mocked: ${url}`);
       });
 
-    axios.post = jest
+    axios.post = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/.*\/user\/cart\/.*\/submit/.test(url)) {
@@ -165,7 +172,7 @@ describe('DownloadConfirmDialog', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly', async () => {
@@ -317,7 +324,7 @@ describe('DownloadConfirmDialog', () => {
 
   it('should call post download success function upon successful submission of cart', async () => {
     props.isTwoLevel = true;
-    props.postDownloadSuccessFn = jest.fn();
+    props.postDownloadSuccessFn = vi.fn();
     renderWrapper();
     // click on download button to begin download
     await user.click(await screen.findByText('downloadConfirmDialog.download'));
@@ -361,7 +368,7 @@ describe('DownloadConfirmDialog', () => {
   });
 
   it('should show error when download has failed', async () => {
-    axios.post = jest
+    axios.post = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/.*\/user\/cart\/.*\/submit/.test(url)) {
@@ -508,7 +515,7 @@ describe('DownloadConfirmDialog', () => {
   });
 
   it('should close the download Confirmation Dialog and successfully call the setClose function', async () => {
-    const closeFunction = jest.fn();
+    const closeFunction = vi.fn();
 
     props.isTwoLevel = false;
     props.setClose = closeFunction;
@@ -523,7 +530,7 @@ describe('DownloadConfirmDialog', () => {
   });
 
   it('shows loading status when submitting cart', async () => {
-    axios.post = jest
+    axios.post = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/.*\/user\/cart\/.*\/submit/.test(url)) {

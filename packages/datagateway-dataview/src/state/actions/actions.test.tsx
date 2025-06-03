@@ -25,10 +25,10 @@ import {
   ConfigureAccessMethodsType,
 } from 'datagateway-common';
 
-jest.mock('loglevel');
+vi.mock('loglevel');
 
-const mockSettingsGetter = jest.fn();
-jest.mock('../../settings', () => ({
+const mockSettingsGetter = vi.fn();
+vi.mock('../../settings', () => ({
   get settings() {
     return mockSettingsGetter();
   },

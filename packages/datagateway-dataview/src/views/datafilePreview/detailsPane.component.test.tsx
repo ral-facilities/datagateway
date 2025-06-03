@@ -1,6 +1,5 @@
 import { render, type RenderResult, screen } from '@testing-library/react';
 import type { Datafile } from 'datagateway-common';
-import * as React from 'react';
 import DatafilePreviewerContext from './datafilePreviewerContext';
 import DetailsPane from './detailsPane.component';
 import { mockDatafile } from './testData';
@@ -143,7 +142,7 @@ describe('DetailsPane', () => {
     });
   });
 
-  describe('should show nothing if the datafile previewer context is not given', () => {
+  it('should show nothing if the datafile previewer context is not given', () => {
     const { container } = render(<DetailsPane />);
     expect(container.children).toHaveLength(0);
   });

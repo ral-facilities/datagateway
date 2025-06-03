@@ -1,4 +1,3 @@
-import * as React from 'react';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../state/app.types';
@@ -34,31 +33,33 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-jest.mock('loglevel');
-jest.mock('./idCheckFunctions');
-const checkInstrumentId = jest.mocked(unmockedCheckInstrumentId);
-const checkInvestigationId = jest.mocked(unmockedCheckInvestigationId);
+vi.mock('loglevel');
+vi.mock('./idCheckFunctions');
+const checkInstrumentId = vi.mocked(unmockedCheckInstrumentId);
+const checkInvestigationId = vi.mocked(unmockedCheckInvestigationId);
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
     // mock table and cardview to opt out of rendering them in these tests as there's no need
-    Table: jest.fn(() => 'MockedTable'),
-    CardView: jest.fn(() => 'MockedCardView'),
-    readSciGatewayToken: jest.fn(() => originalModule.readSciGatewayToken()),
+    Table: vi.fn(() => 'MockedTable'),
+    CardView: vi.fn(() => 'MockedCardView'),
+    readSciGatewayToken: vi.fn(() =>
+      (originalModule.readSciGatewayToken as typeof readSciGatewayToken)()
+    ),
   };
 });
 
-jest.mock('@tanstack/react-query', () => ({
+vi.mock('@tanstack/react-query', async () => ({
   __esModule: true,
-  ...jest.requireActual('@tanstack/react-query'),
-  useQueryClient: jest.fn(() => ({
-    getQueryData: jest.fn(() => 0),
+  ...(await vi.importActual('@tanstack/react-query')),
+  useQueryClient: vi.fn(() => ({
+    getQueryData: vi.fn(() => 0),
   })),
-  useIsFetching: jest.fn(() => 0),
+  useIsFetching: vi.fn(() => 0),
 }));
 
 describe('PageContainer - Tests', () => {
@@ -105,7 +106,7 @@ describe('PageContainer - Tests', () => {
     // below code keeps window.location in sync with history changes
     // (needed because useUpdateQueryParam uses window.location not history)
     const historyReplace = history.replace;
-    const historyReplaceSpy = jest.spyOn(history, 'replace');
+    const historyReplaceSpy = vi.spyOn(history, 'replace');
     historyReplaceSpy.mockImplementation((args) => {
       historyReplace(args);
       if (typeof args === 'string') {
@@ -117,7 +118,7 @@ describe('PageContainer - Tests', () => {
       }
     });
     const historyPush = history.push;
-    const historyPushSpy = jest.spyOn(history, 'push');
+    const historyPushSpy = vi.spyOn(history, 'push');
     historyPushSpy.mockImplementation((args) => {
       historyPush(args);
       if (typeof args === 'string') {
@@ -133,11 +134,12 @@ describe('PageContainer - Tests', () => {
     holder.setAttribute('id', 'datagateway-search');
     document.body.appendChild(holder);
 
-    (useQueryClient as jest.Mock).mockReturnValue({
-      getQueryData: jest.fn(() => 0),
+    vi.mocked(useQueryClient, { partial: true }).mockReturnValue({
+      // @ts-expect-error doesn't like that number isn't a generic type
+      getQueryData: vi.fn(() => 0),
     });
 
-    (axios.get as jest.Mock).mockImplementation(
+    vi.mocked(axios.get).mockImplementation(
       (url: string): Promise<Partial<AxiosResponse>> => {
         if (url.includes('count')) {
           return Promise.resolve({ data: 0 });
@@ -172,8 +174,9 @@ describe('PageContainer - Tests', () => {
 
   it('displays the correct entity count', async () => {
     history.replace(paths.toggle.investigation);
-    (useQueryClient as jest.Mock).mockReturnValue({
-      getQueryData: jest.fn(() => 101),
+    vi.mocked(useQueryClient).mockReturnValue({
+      // @ts-expect-error doesn't like that number isn't a generic type
+      getQueryData: vi.fn(() => 101),
     });
 
     renderComponent();
@@ -232,10 +235,10 @@ describe('PageContainer - Tests', () => {
   });
 
   it('display loading bar when loading true', async () => {
-    (useIsFetching as jest.Mock).mockReturnValue(1);
+    vi.mocked(useIsFetching).mockReturnValue(1);
     renderComponent();
     expect(await screen.findByRole('progressbar')).toBeInTheDocument();
-    (useIsFetching as jest.Mock).mockReturnValue(0);
+    vi.mocked(useIsFetching).mockReturnValue(0);
   });
 
   it('display clear filters button and clear for filters onClick', async () => {
@@ -262,7 +265,7 @@ describe('PageContainer - Tests', () => {
         '"%7D%2C"title"%3A%7B"value"%3A"test"%2C"type"%3A"include"%7D%7D&sort=%7B%22startDate%22%3A%22desc%22%7D'
     );
     const response = { username: 'SomePerson' };
-    (readSciGatewayToken as jest.Mock).mockReturnValue(response);
+    vi.mocked(readSciGatewayToken, { partial: true }).mockReturnValue(response);
     renderComponent();
 
     await user.click(
@@ -277,7 +280,7 @@ describe('PageContainer - Tests', () => {
         '%22%7D%7D&sort=%7B%22startDate%22%3A%22desc%22%7D'
     );
 
-    (readSciGatewayToken as jest.Mock).mockClear();
+    vi.mocked(readSciGatewayToken).mockClear();
   });
 
   it('display disabled clear filters button', async () => {
@@ -291,7 +294,7 @@ describe('PageContainer - Tests', () => {
 
   it('display filter warning on datafile table', async () => {
     history.replace('/browse/investigation/1/dataset/25/datafile');
-    (checkInvestigationId as jest.Mock).mockResolvedValueOnce(true);
+    vi.mocked(checkInvestigationId).mockResolvedValueOnce(true);
 
     renderComponent();
 
@@ -346,9 +349,9 @@ describe('PageContainer - Tests', () => {
   });
 
   it('do not use StyledRouting component on landing pages', async () => {
-    (checkInstrumentId as jest.Mock).mockResolvedValueOnce(true);
-    (useQueryClient as jest.Mock).mockReturnValue({
-      getQueryData: jest.fn(),
+    vi.mocked(checkInstrumentId).mockResolvedValueOnce(true);
+    vi.mocked(useQueryClient, { partial: true }).mockReturnValue({
+      getQueryData: vi.fn(),
     });
     history.replace(
       generatePath(paths.dataPublications.landing.isisDataPublicationLanding, {
@@ -382,7 +385,7 @@ describe('PageContainer - Tests', () => {
 
   it('displays warning label when browsing data anonymously', async () => {
     const response = { username: 'anon/anon' };
-    (readSciGatewayToken as jest.Mock).mockReturnValue(response);
+    vi.mocked(readSciGatewayToken, { partial: true }).mockReturnValue(response);
 
     renderComponent();
 
@@ -398,7 +401,9 @@ describe('PageContainer - Tests', () => {
       })
     );
     const response = { username: 'SomePerson' };
-    (readSciGatewayToken as jest.Mock).mockReturnValueOnce(response);
+    vi.mocked(readSciGatewayToken, { partial: true }).mockReturnValueOnce(
+      response
+    );
 
     renderComponent();
 
@@ -409,7 +414,9 @@ describe('PageContainer - Tests', () => {
 
   it('does not display warning label when logged in', async () => {
     const response = { username: 'SomePerson' };
-    (readSciGatewayToken as jest.Mock).mockReturnValueOnce(response);
+    vi.mocked(readSciGatewayToken, { partial: true }).mockReturnValueOnce(
+      response
+    );
 
     renderComponent();
 

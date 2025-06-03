@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Data column header component renders correctly with filter but no sort 1`] = `
+exports[`Data column header component > renders correctly with filter but no sort 1`] = `
 <DocumentFragment>
   <div
     aria-label="Test"
@@ -81,7 +81,7 @@ exports[`Data column header component renders correctly with filter but no sort 
                 />
                 <svg
                   aria-hidden="true"
-                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconStandard css-pqjvzy-MuiSvgIcon-root-MuiSelect-icon"
+                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconStandard css-19xtc65-MuiSelect-icon css-i4bv87-MuiSvgIcon-root"
                   data-testid="SettingsIcon"
                   focusable="false"
                   viewBox="0 0 24 24"
@@ -108,7 +108,7 @@ exports[`Data column header component renders correctly with filter but no sort 
 </DocumentFragment>
 `;
 
-exports[`Data column header component renders correctly with sort and filter 1`] = `
+exports[`Data column header component > renders correctly with sort and filter 1`] = `
 <DocumentFragment>
   <div
     aria-label="Test"
@@ -144,7 +144,7 @@ exports[`Data column header component renders correctly with sort and filter 1`]
             </p>
             <svg
               aria-hidden="true"
-              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionDesc css-3l415a-MuiSvgIcon-root-MuiTableSortLabel-icon"
+              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionDesc css-1ku2c56-MuiTableSortLabel-icon css-i4bv87-MuiSvgIcon-root"
               data-testid="SortIcon"
               focusable="false"
               viewBox="0 0 24 24"
@@ -208,7 +208,7 @@ exports[`Data column header component renders correctly with sort and filter 1`]
                 />
                 <svg
                   aria-hidden="true"
-                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconStandard css-pqjvzy-MuiSvgIcon-root-MuiSelect-icon"
+                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconStandard css-19xtc65-MuiSelect-icon css-i4bv87-MuiSvgIcon-root"
                   data-testid="SettingsIcon"
                   focusable="false"
                   viewBox="0 0 24 24"
@@ -235,7 +235,7 @@ exports[`Data column header component renders correctly with sort and filter 1`]
 </DocumentFragment>
 `;
 
-exports[`Data column header component renders correctly with sort but no filter 1`] = `
+exports[`Data column header component > renders correctly with sort but no filter 1`] = `
 <DocumentFragment>
   <div
     aria-label="Test"
@@ -271,7 +271,7 @@ exports[`Data column header component renders correctly with sort but no filter 
             </p>
             <svg
               aria-hidden="true"
-              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionDesc css-3l415a-MuiSvgIcon-root-MuiTableSortLabel-icon"
+              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionDesc css-1ku2c56-MuiTableSortLabel-icon css-i4bv87-MuiSvgIcon-root"
               data-testid="SortIcon"
               focusable="false"
               viewBox="0 0 24 24"
@@ -296,7 +296,7 @@ exports[`Data column header component renders correctly with sort but no filter 
 </DocumentFragment>
 `;
 
-exports[`Data column header component renders correctly without sort or filter 1`] = `
+exports[`Data column header component > renders correctly without sort or filter 1`] = `
 <DocumentFragment>
   <div
     aria-label="Test"

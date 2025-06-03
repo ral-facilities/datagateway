@@ -4,7 +4,6 @@ import {
   useInstrumentCount,
   useInstrumentsPaginated,
 } from 'datagateway-common';
-import * as React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
@@ -18,14 +17,14 @@ import { render, type RenderResult, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    useInstrumentCount: jest.fn(),
-    useInstrumentsPaginated: jest.fn(),
+    useInstrumentCount: vi.fn(),
+    useInstrumentsPaginated: vi.fn(),
   };
 });
 
@@ -64,16 +63,16 @@ describe('ISIS Instruments - Card View', () => {
       })
     );
 
-    (useInstrumentCount as jest.Mock).mockReturnValue({
+    vi.mocked(useInstrumentCount, { partial: true }).mockReturnValue({
       data: 1,
       isLoading: false,
     });
-    (useInstrumentsPaginated as jest.Mock).mockReturnValue({
+    vi.mocked(useInstrumentsPaginated, { partial: true }).mockReturnValue({
       data: cardData,
       isLoading: false,
     });
 
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/\/instruments$/.test(url)) {
@@ -86,11 +85,11 @@ describe('ISIS Instruments - Card View', () => {
       });
 
     // Prevent error logging
-    window.scrollTo = jest.fn();
+    window.scrollTo = vi.fn();
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('correct link used when NOT in studyHierarchy', async () => {
@@ -178,8 +177,10 @@ describe('ISIS Instruments - Card View', () => {
   });
 
   it('renders fine with incomplete data', () => {
-    (useInstrumentCount as jest.Mock).mockReturnValueOnce({});
-    (useInstrumentsPaginated as jest.Mock).mockReturnValueOnce({});
+    vi.mocked(useInstrumentCount, { partial: true }).mockReturnValueOnce({});
+    vi.mocked(useInstrumentsPaginated, { partial: true }).mockReturnValueOnce(
+      {}
+    );
 
     expect(() => renderComponent()).not.toThrowError();
   });

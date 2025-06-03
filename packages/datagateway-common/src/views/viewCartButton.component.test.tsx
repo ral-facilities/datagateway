@@ -1,18 +1,17 @@
-import { render, type RenderResult, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import * as React from 'react';
-import configureStore from 'redux-mock-store';
-import { initialState as dGCommonInitialState } from '../state/reducers/dgcommon.reducer';
-import { StateType } from '../state/app.types';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
-import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { render, screen, type RenderResult } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { Provider } from 'react-redux';
+import { MemoryRouter } from 'react-router-dom';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { StateType } from '../state/app.types';
+import { initialState as dGCommonInitialState } from '../state/reducers/dgcommon.reducer';
 import ViewCartButton, { CartProps } from './viewCartButton.component';
 
 describe('Generic cart button', () => {
   const mockStore = configureStore([thunk]);
-  const navigateToDownload = jest.fn();
+  const navigateToDownload = vi.fn();
   let user: ReturnType<typeof userEvent.setup>;
   let state: StateType;
   let props: CartProps;
@@ -59,7 +58,7 @@ describe('Generic cart button', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     navigateToDownload.mockClear();
   });
 

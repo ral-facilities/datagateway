@@ -1,13 +1,12 @@
-import * as React from 'react';
-import { render, screen, RenderResult, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { RenderResult, render, screen, waitFor } from '@testing-library/react';
 import { type Download } from 'datagateway-common';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import { getPercentageComplete } from '../downloadApi';
+import { mockDownloadItems, mockedSettings } from '../testData';
 import DownloadProgressIndicator from './downloadProgressIndicator.component';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { mockedSettings, mockDownloadItems } from '../testData';
 
-jest.mock('../downloadApi');
+vi.mock('../downloadApi');
 
 const createTestQueryClient = (): QueryClient =>
   new QueryClient({
@@ -20,7 +19,7 @@ const createTestQueryClient = (): QueryClient =>
     logger: {
       log: console.log,
       warn: console.warn,
-      error: jest.fn(),
+      error: vi.fn(),
     },
   });
 
@@ -41,16 +40,12 @@ function renderComponent({ download = mockDownload } = {}): RenderResult {
 
 describe('DownloadProgressIndicator', () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('should show calculating text', () => {
     it('when querying the download progress', async () => {
-      (
-        getPercentageComplete as jest.MockedFunction<
-          typeof getPercentageComplete
-        >
-      ).mockReturnValue(
+      vi.mocked(getPercentageComplete).mockReturnValue(
         new Promise(() => {
           // do nothing, pretend this is loading
         })
@@ -114,11 +109,7 @@ describe('DownloadProgressIndicator', () => {
 
   describe('should show unavailable', () => {
     it('when progress is unavailable', async () => {
-      (
-        getPercentageComplete as jest.MockedFunction<
-          typeof getPercentageComplete
-        >
-      ).mockRejectedValue({
+      vi.mocked(getPercentageComplete).mockRejectedValue({
         message: 'test error',
       });
 
@@ -185,9 +176,7 @@ describe('DownloadProgressIndicator', () => {
   });
 
   it('should show progress of the given download item', async () => {
-    (
-      getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>
-    ).mockResolvedValue(20);
+    vi.mocked(getPercentageComplete).mockResolvedValue(20);
 
     renderComponent();
 
@@ -200,9 +189,7 @@ describe('DownloadProgressIndicator', () => {
   });
 
   it('should show progress at 99% if the download is being restored but server returns 100% progress', async () => {
-    (
-      getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>
-    ).mockResolvedValue(100);
+    vi.mocked(getPercentageComplete).mockResolvedValue(100);
 
     renderComponent();
 
@@ -213,9 +200,7 @@ describe('DownloadProgressIndicator', () => {
   });
 
   it('should show progress status if the server does not return a number', async () => {
-    (
-      getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>
-    ).mockResolvedValue('INVALID');
+    vi.mocked(getPercentageComplete).mockResolvedValue('INVALID');
 
     renderComponent();
 

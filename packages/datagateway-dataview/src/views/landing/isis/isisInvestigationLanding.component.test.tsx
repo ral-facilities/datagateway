@@ -1,39 +1,38 @@
-import * as React from 'react';
-import ISISInvestigationLanding from './isisInvestigationLanding.component';
-import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
-import configureStore from 'redux-mock-store';
-import { StateType } from '../../../state/app.types';
-import {
-  DataPublication,
-  dGCommonInitialState,
-  Investigation,
-  useDataPublication,
-  useDataPublications,
-  useInvestigation,
-} from 'datagateway-common';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
-import { createMemoryHistory, History } from 'history';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { generatePath, Router } from 'react-router-dom';
 import {
   render,
   screen,
   within,
   type RenderResult,
 } from '@testing-library/react';
-import { paths } from '../../../page/pageContainer.component';
 import userEvent from '@testing-library/user-event';
+import {
+  DataPublication,
+  Investigation,
+  dGCommonInitialState,
+  useDataPublication,
+  useDataPublications,
+  useInvestigation,
+} from 'datagateway-common';
+import { History, createMemoryHistory } from 'history';
+import { Provider } from 'react-redux';
+import { Router, generatePath } from 'react-router-dom';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { paths } from '../../../page/pageContainer.component';
+import { StateType } from '../../../state/app.types';
+import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
+import ISISInvestigationLanding from './isisInvestigationLanding.component';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    useInvestigation: jest.fn(),
-    useDataPublication: jest.fn(),
-    useDataPublications: jest.fn(),
+    useInvestigation: vi.fn(),
+    useDataPublication: vi.fn(),
+    useDataPublications: vi.fn(),
   };
 });
 
@@ -151,6 +150,7 @@ describe('ISIS Investigation Landing page', () => {
         dgcommon: dGCommonInitialState,
       })
     );
+    state.dgdataview.pluginHost = '/test/';
     history = createMemoryHistory({
       initialEntries: [
         generatePath(paths.landing.isisInvestigationLanding, {
@@ -250,21 +250,21 @@ describe('ISIS Investigation Landing page', () => {
       },
     };
 
-    (useInvestigation as jest.Mock).mockReturnValue({
+    vi.mocked(useInvestigation, { partial: true }).mockReturnValue({
       data: initialInvestigationData,
     });
 
-    (useDataPublication as jest.Mock).mockReturnValue({
+    vi.mocked(useDataPublication, { partial: true }).mockReturnValue({
       data: initialDataPublicationData,
     });
 
-    (useDataPublications as jest.Mock).mockReturnValue({
+    vi.mocked(useDataPublications, { partial: true }).mockReturnValue({
       data: initialStudyDataPublicationData,
     });
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly for facility cycle hierarchy', async () => {
@@ -274,6 +274,12 @@ describe('ISIS Investigation Landing page', () => {
     expect(
       await screen.findByRole('img', { name: 'STFC Logo' })
     ).toBeInTheDocument();
+    expect(
+      await screen.findByRole('img', { name: 'STFC Logo' })
+    ).toHaveAttribute(
+      'src',
+      expect.stringMatching(/\/(.*)stfc-logo-white-text\.png/)
+    );
     expect(
       screen.getByText('doi_constants.branding.title')
     ).toBeInTheDocument();
@@ -432,6 +438,12 @@ describe('ISIS Investigation Landing page', () => {
     expect(
       await screen.findByRole('img', { name: 'STFC Logo' })
     ).toBeInTheDocument();
+    expect(
+      await screen.findByRole('img', { name: 'STFC Logo' })
+    ).toHaveAttribute(
+      'src',
+      expect.stringMatching(/(.*)stfc-logo-white-text\.png/)
+    );
     expect(
       screen.getByText('doi_constants.branding.title')
     ).toBeInTheDocument();

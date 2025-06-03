@@ -9,7 +9,6 @@ import {
 import userEvent from '@testing-library/user-event';
 import { fetchDownloadCart } from 'datagateway-common';
 import { createMemoryHistory, MemoryHistory } from 'history';
-import * as React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Router } from 'react-router-dom';
 import { DownloadSettingsContext } from '../ConfigProvider';
@@ -26,26 +25,26 @@ import {
 import DOIGenerationForm from './DOIGenerationForm.component';
 import { flushPromises } from '../setupTests';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    fetchDownloadCart: jest.fn(),
+    fetchDownloadCart: vi.fn(),
   };
 });
 
-jest.mock('../downloadApi', () => {
-  const originalModule = jest.requireActual('../downloadApi');
+vi.mock('../downloadApi', async () => {
+  const originalModule = await vi.importActual('../downloadApi');
 
   return {
     ...originalModule,
-    isCartMintable: jest.fn(),
-    getCartUsers: jest.fn(),
-    checkUser: jest.fn(),
-    mintCart: jest.fn(),
-    fetchDOI: jest.fn(),
+    isCartMintable: vi.fn(),
+    getCartUsers: vi.fn(),
+    checkUser: vi.fn(),
+    mintCart: vi.fn(),
+    fetchDOI: vi.fn(),
   };
 });
 
@@ -60,7 +59,7 @@ const createTestQueryClient = (): QueryClient =>
     logger: {
       log: console.log,
       warn: console.warn,
-      error: jest.fn(),
+      error: vi.fn(),
     },
   });
 
@@ -87,22 +86,14 @@ describe('DOI generation form component', () => {
   beforeEach(() => {
     user = userEvent.setup();
 
-    (
-      fetchDownloadCart as jest.MockedFunction<typeof fetchDownloadCart>
-    ).mockResolvedValue(mockCartItems);
+    vi.mocked(fetchDownloadCart).mockResolvedValue(mockCartItems);
 
-    (
-      isCartMintable as jest.MockedFunction<typeof isCartMintable>
-    ).mockResolvedValue(true);
+    vi.mocked(isCartMintable).mockResolvedValue(true);
 
     // mock mint cart error to test dialog can be closed after it errors
-    (mintCart as jest.MockedFunction<typeof mintCart>).mockRejectedValue(
-      'error'
-    );
+    vi.mocked(mintCart).mockRejectedValue('error');
 
-    (
-      getCartUsers as jest.MockedFunction<typeof getCartUsers>
-    ).mockResolvedValue([
+    vi.mocked(getCartUsers).mockResolvedValue([
       {
         id: 1,
         name: '1',
@@ -112,7 +103,7 @@ describe('DOI generation form component', () => {
       },
     ]);
 
-    (checkUser as jest.MockedFunction<typeof checkUser>).mockResolvedValue({
+    vi.mocked(checkUser).mockResolvedValue({
       id: 2,
       name: '2',
       fullName: 'User 2',
@@ -120,7 +111,7 @@ describe('DOI generation form component', () => {
       affiliation: 'Example 2 Uni',
     });
 
-    (fetchDOI as jest.MockedFunction<typeof fetchDOI>).mockResolvedValue({
+    vi.mocked(fetchDOI).mockResolvedValue({
       id: '1',
       type: 'DOI',
       attributes: {
@@ -132,7 +123,7 @@ describe('DOI generation form component', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should redirect back to /download if user directly accesses the url', async () => {
@@ -311,9 +302,7 @@ describe('DOI generation form component', () => {
   });
 
   it('should not let the user submit a mint request if cart fails to load', async () => {
-    (
-      fetchDownloadCart as jest.MockedFunction<typeof fetchDownloadCart>
-    ).mockRejectedValue({ message: 'error' });
+    vi.mocked(fetchDownloadCart).mockRejectedValue({ message: 'error' });
     renderComponent();
 
     // accept data policy
@@ -338,9 +327,7 @@ describe('DOI generation form component', () => {
   });
 
   it('should not let the user submit a mint request if cart is empty', async () => {
-    (
-      fetchDownloadCart as jest.MockedFunction<typeof fetchDownloadCart>
-    ).mockResolvedValue([]);
+    vi.mocked(fetchDownloadCart).mockResolvedValue([]);
     renderComponent();
 
     // accept data policy
@@ -365,9 +352,7 @@ describe('DOI generation form component', () => {
   });
 
   it('should not let the user submit a mint request if no users selected', async () => {
-    (
-      getCartUsers as jest.MockedFunction<typeof getCartUsers>
-    ).mockResolvedValue([]);
+    vi.mocked(getCartUsers).mockResolvedValue([]);
     renderComponent();
 
     // accept data policy
@@ -426,9 +411,7 @@ describe('DOI generation form component', () => {
 
   describe('only displays cart tabs if the corresponding entity type exists in the cart: ', () => {
     it('investigations', async () => {
-      (
-        fetchDownloadCart as jest.MockedFunction<typeof fetchDownloadCart>
-      ).mockResolvedValue([mockCartItems[0]]);
+      vi.mocked(fetchDownloadCart).mockResolvedValue([mockCartItems[0]]);
 
       renderComponent();
 
@@ -461,9 +444,7 @@ describe('DOI generation form component', () => {
     });
 
     it('datasets', async () => {
-      (
-        fetchDownloadCart as jest.MockedFunction<typeof fetchDownloadCart>
-      ).mockResolvedValue([mockCartItems[2]]);
+      vi.mocked(fetchDownloadCart).mockResolvedValue([mockCartItems[2]]);
 
       renderComponent();
 
@@ -494,9 +475,7 @@ describe('DOI generation form component', () => {
     });
 
     it('datafiles', async () => {
-      (
-        fetchDownloadCart as jest.MockedFunction<typeof fetchDownloadCart>
-      ).mockResolvedValue([mockCartItems[3]]);
+      vi.mocked(fetchDownloadCart).mockResolvedValue([mockCartItems[3]]);
 
       renderComponent();
 

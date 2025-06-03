@@ -1,7 +1,6 @@
 import { Button, Grid, Typography } from '@mui/material';
-import Mark from '../mark.component';
-import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import Mark from '../mark.component';
 import type DownloadRequestInfo from './DownloadRequestInfo';
 import DialogContent from './dialogContent.component';
 import DialogTitle from './dialogTitle.component';

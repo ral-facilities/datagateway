@@ -4,7 +4,7 @@ import buildDatafileUrl from './buildDatafileUrl';
 
 describe('buildDatafileUrl', () => {
   beforeEach(() => {
-    axios.get = jest.fn().mockResolvedValue({
+    axios.get = vi.fn().mockResolvedValue({
       data: [mockDatafiles[0]],
     });
   });
@@ -44,7 +44,7 @@ describe('buildDatafileUrl', () => {
   });
 
   it('should return null if the parent dataset of the datafile cannot be fetched', async () => {
-    axios.get = jest.fn().mockResolvedValue({
+    axios.get = vi.fn().mockResolvedValue({
       data: [],
     });
 

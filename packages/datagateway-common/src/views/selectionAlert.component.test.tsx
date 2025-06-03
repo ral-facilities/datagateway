@@ -1,10 +1,10 @@
-import * as React from 'react';
+import { render, RenderResult, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { AnyAction } from 'redux';
+import { Mock } from 'vitest';
 import { DownloadCartItem } from '../app.types';
 import { NotificationType } from '../state/actions/actions.types';
 import SelectionAlert from './selectionAlert.component';
-import { render, RenderResult, screen, waitFor } from '@testing-library/react';
-import { AnyAction } from 'redux';
-import userEvent from '@testing-library/user-event';
 
 describe('SelectionAlert', () => {
   let events: CustomEvent<AnyAction>[] = [];
@@ -31,9 +31,9 @@ describe('SelectionAlert', () => {
       parentEntities: [],
     },
   ];
-  let storageGetItemMock: jest.Mock;
-  let storageSetItemMock: jest.Mock;
-  let storageRemoveItemMock: jest.Mock;
+  let storageGetItemMock: Mock;
+  let storageSetItemMock: Mock;
+  let storageRemoveItemMock: Mock;
   let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (
@@ -59,9 +59,9 @@ describe('SelectionAlert', () => {
       return true;
     };
 
-    storageGetItemMock = jest.fn();
-    storageSetItemMock = jest.fn();
-    storageRemoveItemMock = jest.fn();
+    storageGetItemMock = vi.fn();
+    storageSetItemMock = vi.fn();
+    storageRemoveItemMock = vi.fn();
 
     window.localStorage.__proto__.getItem = storageGetItemMock;
     window.localStorage.__proto__.setItem = storageSetItemMock;
@@ -69,7 +69,7 @@ describe('SelectionAlert', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly', () => {

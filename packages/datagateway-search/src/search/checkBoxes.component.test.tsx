@@ -1,4 +1,3 @@
-import * as React from 'react';
 import type { StateType } from '../state/app.types';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
@@ -9,8 +8,9 @@ import { createMemoryHistory, type History } from 'history';
 import { Router } from 'react-router-dom';
 import { render, type RenderResult, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import type { MockInstance } from 'vitest';
 
-jest.mock('loglevel');
+vi.mock('loglevel');
 
 describe('Checkbox component tests', () => {
   let user: ReturnType<typeof userEvent.setup>;
@@ -18,7 +18,7 @@ describe('Checkbox component tests', () => {
   const mockStore = configureStore([thunk]);
   let testStore: ReturnType<typeof mockStore>;
   let history: History;
-  let pushSpy: jest.SpyInstance;
+  let pushSpy: MockInstance;
 
   function renderComponent(): RenderResult {
     return render(
@@ -33,7 +33,7 @@ describe('Checkbox component tests', () => {
   beforeEach(() => {
     user = userEvent.setup();
     history = createMemoryHistory();
-    pushSpy = jest.spyOn(history, 'push');
+    pushSpy = vi.spyOn(history, 'push');
 
     state = JSON.parse(JSON.stringify({ dgsearch: initialState }));
 
@@ -52,7 +52,7 @@ describe('Checkbox component tests', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders a dropdown button that expands to show search type checkboxes', async () => {

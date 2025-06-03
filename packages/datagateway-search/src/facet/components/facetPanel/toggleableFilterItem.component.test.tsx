@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { render, screen, within } from '@testing-library/react';
 import ToggleableFilterItem from './toggleableFilterItem.component';
 import userEvent from '@testing-library/user-event';
@@ -13,7 +12,7 @@ describe('toggleableFilterItem', () => {
         classificationLabel={testClassificationLabel}
         count={testCount}
         selected={false}
-        onSelect={jest.fn()}
+        onSelect={vi.fn()}
       />
     );
 
@@ -36,7 +35,7 @@ describe('toggleableFilterItem', () => {
         selected
         classificationLabel={testClassificationLabel}
         count={testCount}
-        onSelect={jest.fn()}
+        onSelect={vi.fn()}
       />
     );
 
@@ -55,7 +54,7 @@ describe('toggleableFilterItem', () => {
 
   it('calls the given callback when toggled', async () => {
     const user = userEvent.setup();
-    const onSelect = jest.fn();
+    const onSelect = vi.fn();
 
     render(
       <ToggleableFilterItem

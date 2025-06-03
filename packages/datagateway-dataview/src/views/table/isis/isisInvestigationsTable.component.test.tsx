@@ -1,4 +1,3 @@
-import * as React from 'react';
 import ISISInvestigationsTable from './isisInvestigationsTable.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import configureStore from 'redux-mock-store';
@@ -14,8 +13,6 @@ import { generatePath, Router } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createMemoryHistory, type History } from 'history';
 import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
   findAllRows,
   findCellInRow,
   findColumnHeaderByName,
@@ -32,13 +29,14 @@ import {
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 import { paths } from '../../../page/pageContainer.component';
+import type { MockInstance } from 'vitest';
 
 describe('ISIS Investigations table component', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let rowData: Investigation[];
   let history: History;
-  let replaceSpy: jest.SpyInstance;
+  let replaceSpy: MockInstance;
   let user: ReturnType<typeof userEvent.setup>;
   let cartItems: DownloadCartItem[];
   let holder: HTMLElement;
@@ -130,7 +128,7 @@ describe('ISIS Investigations table component', () => {
         }),
       ],
     });
-    replaceSpy = jest.spyOn(history, 'replace');
+    replaceSpy = vi.spyOn(history, 'replace');
     user = userEvent.setup();
 
     holder = document.createElement('div');
@@ -144,7 +142,7 @@ describe('ISIS Investigations table component', () => {
       })
     );
 
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/\/user\/cart\/$/.test(url)) {
@@ -176,7 +174,7 @@ describe('ISIS Investigations table component', () => {
         return Promise.reject(`Endpoint not mocked: ${url}`);
       });
 
-    axios.post = jest
+    axios.post = vi
       .fn()
       .mockImplementation(
         (url: string, data: unknown): Promise<Partial<AxiosResponse>> => {
@@ -218,18 +216,21 @@ describe('ISIS Investigations table component', () => {
 
   afterEach(() => {
     document.body.removeChild(holder);
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly', async () => {
     renderComponent();
 
     let rows: HTMLElement[] = [];
-    await waitFor(async () => {
-      rows = await findAllRows();
-      // should have 1 row in the table
-      expect(rows).toHaveLength(1);
-    });
+    await waitFor(
+      async () => {
+        rows = await findAllRows();
+        // should have 1 row in the table
+        expect(rows).toHaveLength(1);
+      },
+      { timeout: 5_000 } // this can timeout sometimes in CI without so bump it up from minimum
+    );
 
     // check that column headers are shown correctly.
     expect(
@@ -344,8 +345,6 @@ describe('ISIS Investigations table component', () => {
   });
 
   it('updates filter query params on date filter', async () => {
-    applyDatePickerWorkaround();
-
     renderComponent();
 
     const filterInput = await screen.findByRole('textbox', {
@@ -368,8 +367,6 @@ describe('ISIS Investigations table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
-
-    cleanupDatePickerWorkaround();
   });
 
   it('uses default sort', async () => {
@@ -383,9 +380,9 @@ describe('ISIS Investigations table component', () => {
     });
 
     // check that the data request is sent only once after mounting
-    const datafilesCalls = (axios.get as jest.Mock).mock.calls.filter(
-      (call) => call[0] === '/investigations'
-    );
+    const datafilesCalls = vi
+      .mocked(axios.get)
+      .mock.calls.filter((call) => call[0] === '/investigations');
     // 2 becasue there is also a call for ids
     expect(datafilesCalls).toHaveLength(2);
   });

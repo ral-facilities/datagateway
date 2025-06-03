@@ -1,4 +1,3 @@
-import * as React from 'react';
 import {
   Investigation,
   NotificationType,
@@ -12,18 +11,18 @@ import { AnyAction } from 'redux';
 import { render, type RenderResult, screen } from '@testing-library/react';
 import DoiRedirect from './doiRedirect.component';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    useInvestigation: jest.fn(),
+    useInvestigation: vi.fn(),
   };
 });
 
-jest.mock('react-router-dom', () => {
-  const originalModule = jest.requireActual('react-router-dom');
+vi.mock('react-router-dom', async () => {
+  const originalModule = await vi.importActual('react-router-dom');
   return {
     __esModule: true,
     ...originalModule, // use actual for all non-hook parts
@@ -84,14 +83,14 @@ describe('DOI Redirect page', () => {
       },
     ];
 
-    (useInvestigation as jest.Mock).mockReturnValue({
+    vi.mocked(useInvestigation, { partial: true }).mockReturnValue({
       data: mockInvestigationData,
       isLoading: false,
     });
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('redirects to correct link when everything loads correctly', async () => {
@@ -102,8 +101,8 @@ describe('DOI Redirect page', () => {
   });
 
   it('displays loading spinner when things are loading', async () => {
-    (useInvestigation as jest.Mock).mockReturnValue({
-      data: [],
+    vi.mocked(useInvestigation, { partial: true }).mockReturnValue({
+      data: undefined,
       isLoading: true,
     });
 
@@ -119,7 +118,7 @@ describe('DOI Redirect page', () => {
       events.push(e as CustomEvent<AnyAction>);
       return true;
     };
-    (useInvestigation as jest.Mock).mockReturnValue({
+    vi.mocked(useInvestigation, { partial: true }).mockReturnValue({
       data: [],
       isLoading: false,
     });

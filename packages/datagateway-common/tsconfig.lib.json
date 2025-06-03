@@ -1,8 +1,8 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "baseUrl": ".",
     "outDir": "./lib",
-    "target": "es5",
     "sourceMap": true,
     "rootDir": "src",
     "declaration": true,
@@ -13,27 +13,19 @@
     "importHelpers": true,
     "strictNullChecks": true,
     "noUnusedLocals": false,
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "jsx": "react"
+    "noEmit": false,
+    "isolatedModules": false,
+    "allowImportingTsExtensions": false,
   },
   "exclude": [
     "lib",
     "node_modules",
-    "build",
-    "scripts",
-    "acceptance-tests",
-    "webpack",
-    "jest",
+    "dist",
+    "__mocks__",
+    "coverage",
+    "**/?*test.*",
     "src/setupTests.tsx",
-    "**/*.test.*"
+    "src/testUtils.tsx"
   ],
   "include": ["src"]
 }

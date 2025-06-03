@@ -1,13 +1,12 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { RenderResult } from '@testing-library/react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios from 'axios';
-import * as React from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import { combineReducers, createStore } from 'redux';
-import { StateType } from '../../../lib';
 import { Datafile, Dataset } from '../../app.types';
+import { StateType } from '../../state/app.types';
 import dGCommonReducer from '../../state/reducers/dgcommon.reducer';
 import DatasetDetailsPanel from './datasetDetailsPanel.component';
 
@@ -56,7 +55,7 @@ describe('Dataset details panel component', () => {
       },
     };
 
-    axios.get = jest.fn().mockImplementation((url: string) => {
+    axios.get = vi.fn().mockImplementation((url: string) => {
       if (/.*\/datasets$/.test(url))
         return Promise.resolve({
           data: [rowData],
@@ -72,7 +71,7 @@ describe('Dataset details panel component', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should render correctly', async () => {
@@ -144,7 +143,7 @@ describe('Dataset details panel component', () => {
       name: 'Test type',
       description: 'Test type description',
     };
-    const mockDetailsPanelResize = jest.fn();
+    const mockDetailsPanelResize = vi.fn();
 
     renderComponent({
       rowData,

@@ -14,9 +14,9 @@ COPY . .
 RUN --mount=type=cache,target=/root/.cache/.yarn/cache \
     set -eux; \
     # Set the React production variables which hold reference to the paths of the plugin builds \
-    echo "REACT_APP_DATAVIEW_BUILD_DIRECTORY=/datagateway-dataview/" > packages/datagateway-dataview/.env.production; \
-    echo "REACT_APP_DOWNLOAD_BUILD_DIRECTORY=/datagateway-download/" > packages/datagateway-download/.env.production; \
-    echo "REACT_APP_SEARCH_BUILD_DIRECTORY=/datagateway-search/" > packages/datagateway-search/.env.production; \
+    echo "VITE_DATAVIEW_BUILD_DIRECTORY=/datagateway-dataview/" > packages/datagateway-dataview/.env.production; \
+    echo "VITE_DOWNLOAD_BUILD_DIRECTORY=/datagateway-download/" > packages/datagateway-download/.env.production; \
+    echo "VITE_SEARCH_BUILD_DIRECTORY=/datagateway-search/" > packages/datagateway-search/.env.production; \
     \
     cp packages/datagateway-dataview/public/datagateway-dataview-settings.example.json packages/datagateway-dataview/public/datagateway-dataview-settings.json; \
     cp packages/datagateway-download/public/datagateway-download-settings.example.json packages/datagateway-download/public/datagateway-download-settings.json; \
@@ -31,9 +31,9 @@ FROM httpd:2.4.58-alpine3.19@sha256:92535cf7f151901ba91b04186292c3bd5bf82aa6ffa6
 WORKDIR /usr/local/apache2/htdocs
 
 # Put the output of the build into an apache server
-COPY --from=builder /datagateway-build/packages/datagateway-dataview/build/. ./datagateway-dataview/
-COPY --from=builder /datagateway-build/packages/datagateway-download/build/. ./datagateway-download/
-COPY --from=builder /datagateway-build/packages/datagateway-search/build/. ./datagateway-search/
+COPY --from=builder /datagateway-build/packages/datagateway-dataview/dist/. ./datagateway-dataview/
+COPY --from=builder /datagateway-build/packages/datagateway-download/dist/. ./datagateway-download/
+COPY --from=builder /datagateway-build/packages/datagateway-search/dist/. ./datagateway-search/
 
 RUN set -eux; \
     \

@@ -114,7 +114,7 @@ export const downloadPreparedCart: (
   document.body.appendChild(link);
 
   // Prevent the link from being clicked if this is an e2e test.
-  if (!process.env.REACT_APP_E2E_TESTING) {
+  if (!import.meta.env.VITE_BUILD_STANDALONE) {
     link.click();
     link.remove();
   }

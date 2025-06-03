@@ -1,15 +1,15 @@
-import * as React from 'react';
-import Table, { ColumnType } from './table.component';
-import { formatBytes } from './cellRenderers/cellContentRenderers';
-import { TableCellProps } from 'react-virtualized';
-import TextColumnFilter from './columnFilters/textColumnFilter.component';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import * as React from 'react';
+import { TableCellProps } from 'react-virtualized';
+import { formatBytes } from './cellRenderers/cellContentRenderers';
+import TextColumnFilter from './columnFilters/textColumnFilter.component';
+import Table, { ColumnType } from './table.component';
 
 describe('Table component', () => {
   let user: ReturnType<typeof userEvent.setup>;
 
-  const onSort = jest.fn();
+  const onSort = vi.fn();
 
   const tableProps = {
     data: [
@@ -19,7 +19,7 @@ describe('Table component', () => {
         TEST2: 2,
       },
     ],
-    loadMoreRows: jest.fn(),
+    loadMoreRows: vi.fn(),
     totalRowCount: 50,
     sort: {},
     onSort,
@@ -34,7 +34,7 @@ describe('Table component', () => {
           return (
             <TextColumnFilter
               label={label}
-              onChange={jest.fn()}
+              onChange={vi.fn()}
               value={undefined}
             />
           );
@@ -108,7 +108,7 @@ describe('Table component', () => {
   });
 
   it('calls onDefaultFilter function when defaultFilter has been specified', () => {
-    const onDefaultFilter = jest.fn();
+    const onDefaultFilter = vi.fn();
     const sortedTableProps = {
       ...tableProps,
       columns: [
@@ -141,8 +141,8 @@ describe('Table component', () => {
       <Table
         {...tableProps}
         selectedRows={[]}
-        onCheck={jest.fn()}
-        onUncheck={jest.fn()}
+        onCheck={vi.fn()}
+        onUncheck={vi.fn()}
         selectAllSetting={true}
       />
     );
@@ -211,7 +211,7 @@ describe('Table component', () => {
         actions={[
           function action() {
             return (
-              <button key="test" onClick={jest.fn()}>
+              <button key="test" onClick={vi.fn()}>
                 I am an action
               </button>
             );
@@ -239,7 +239,7 @@ describe('Table component', () => {
   });
 
   it('throws error when only one of loadMoreRows or totalRowCount are defined', () => {
-    const spy = jest.spyOn(console, 'error');
+    const spy = vi.spyOn(console, 'error');
     spy.mockImplementation(() => {
       // suppress react uncaught error warning as we're deliberately triggering an error!
     });
@@ -260,7 +260,7 @@ describe('Table component', () => {
   });
 
   it('throws error when a default sort has been defined without passing onDefaultFilter', () => {
-    const spy = jest.spyOn(console, 'error');
+    const spy = vi.spyOn(console, 'error');
     spy.mockImplementation(() => {
       // suppress react uncaught error warning as we're deliberately triggering an error!
     });
@@ -285,7 +285,7 @@ describe('Table component', () => {
   });
 
   it('throws error when a default sort has been defined without passing filters', () => {
-    const spy = jest.spyOn(console, 'error');
+    const spy = vi.spyOn(console, 'error');
     spy.mockImplementation(() => {
       // suppress react uncaught error warning as we're deliberately triggering an error!
     });
@@ -298,7 +298,7 @@ describe('Table component', () => {
           defaultFilter: { value: 'x', type: 'include' },
         },
       ],
-      onDefaultFilter: jest.fn(),
+      onDefaultFilter: vi.fn(),
       filters: undefined,
     };
 

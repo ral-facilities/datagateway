@@ -1,12 +1,11 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { RenderResult } from '@testing-library/react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios from 'axios';
-import * as React from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import { combineReducers, createStore } from 'redux';
-import type { StateType } from '../../../lib';
+import type { StateType } from '../../state/app.types';
 
 import type { Datafile } from '../../app.types';
 import dGCommonReducer from '../../state/reducers/dgcommon.reducer';
@@ -49,13 +48,13 @@ describe('Datafile details panel component', () => {
       createTime: '2019-06-11',
       description: 'Test description',
     };
-    axios.get = jest.fn().mockResolvedValue({
+    axios.get = vi.fn().mockResolvedValue({
       data: [rowData],
     });
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should render correctly', async () => {
@@ -187,7 +186,7 @@ describe('Datafile details panel component', () => {
       },
     ];
 
-    const mockDetailsPanelResize = jest.fn();
+    const mockDetailsPanelResize = vi.fn();
     renderComponent({
       rowData,
       detailsPanelResize: mockDetailsPanelResize,
@@ -221,7 +220,7 @@ describe('Datafile details panel component', () => {
         },
       },
     ];
-    const mockDetailsPanelResize = jest.fn();
+    const mockDetailsPanelResize = vi.fn();
 
     renderComponent({ rowData });
 
@@ -242,7 +241,7 @@ describe('Datafile details panel component', () => {
       createTime: '2019-06-11',
     };
 
-    axios.get = jest.fn().mockResolvedValue({
+    axios.get = vi.fn().mockResolvedValue({
       data: [rowData],
     });
 
@@ -255,7 +254,7 @@ describe('Datafile details panel component', () => {
 
   it('should render datafile parameters tab and text "No parameters" when no data is present', async () => {
     rowData.parameters = [];
-    axios.get = jest.fn().mockResolvedValue({
+    axios.get = vi.fn().mockResolvedValue({
       data: [rowData],
     });
 

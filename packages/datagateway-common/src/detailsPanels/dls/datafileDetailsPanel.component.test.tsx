@@ -5,11 +5,11 @@ import { Datafile } from '../../app.types';
 import { useDatafileDetails } from '../../api';
 import { render, RenderResult } from '@testing-library/react';
 
-jest.mock('../../api/datafiles');
+vi.mock('../../api/datafiles');
 
 describe('Datafile details panel component', () => {
   let rowData: Datafile;
-  const detailsPanelResize = jest.fn();
+  const detailsPanelResize = vi.fn();
 
   const renderComponent = (): RenderResult =>
     render(
@@ -30,13 +30,13 @@ describe('Datafile details panel component', () => {
       createTime: '2019-06-11',
     };
 
-    (useDatafileDetails as jest.Mock).mockReturnValue({
+    vi.mocked(useDatafileDetails).mockReturnValue({
       data: rowData,
     });
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly', () => {

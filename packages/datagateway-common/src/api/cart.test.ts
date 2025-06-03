@@ -14,14 +14,14 @@ import {
 } from '.';
 import { DownloadCart } from '../app.types';
 import handleICATError from '../handleICATError';
+import { NotificationType } from '../main';
 import { createReactQueryWrapper } from '../setupTests';
-import { NotificationType } from '../state/actions/actions.types';
 
-jest.mock('../handleICATError');
+vi.mock('../handleICATError');
 
 describe('Cart api functions', () => {
   let mockData: DownloadCart;
-  const getElementByIdSpy = jest.spyOn(document, 'getElementById');
+  const getElementByIdSpy = vi.spyOn(document, 'getElementById');
 
   beforeEach(() => {
     mockData = {
@@ -45,16 +45,16 @@ describe('Cart api functions', () => {
   });
 
   afterEach(() => {
-    (axios.get as jest.Mock).mockClear();
-    (axios.post as jest.Mock).mockClear();
-    (axios.delete as jest.Mock).mockClear();
-    (handleICATError as jest.Mock).mockClear();
-    (getElementByIdSpy as jest.Mock).mockClear();
+    vi.mocked(axios.get).mockClear();
+    vi.mocked(axios.post).mockClear();
+    vi.mocked(axios.delete).mockClear();
+    vi.mocked(handleICATError).mockClear();
+    vi.mocked(getElementByIdSpy).mockClear();
   });
 
   describe('useCart', () => {
     it('sends axios request to fetch cart and returns successful response', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: mockData,
       });
 
@@ -84,11 +84,12 @@ describe('Cart api functions', () => {
 
       expect(result.current.status).toBe('loading');
       expect(result.current.fetchStatus).toBe('idle');
+
       expect(axios.get).not.toHaveBeenCalled();
     });
 
     it('sends axios request to fetch cart and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error message',
       });
 
@@ -106,7 +107,7 @@ describe('Cart api functions', () => {
 
   describe('useAddToCart', () => {
     it('sends axios request to add item to cart once mutate function is called and returns successful response', async () => {
-      (axios.post as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.post).mockResolvedValue({
         data: mockData,
       });
 
@@ -133,7 +134,7 @@ describe('Cart api functions', () => {
     });
 
     it('sends axios request to add item to cart once mutate function is called and calls handleICATError on failure, with a retry on code 431', async () => {
-      (axios.post as jest.MockedFunction<typeof axios.post>)
+      vi.mocked(axios.post)
         .mockRejectedValueOnce({
           response: {
             status: 431,
@@ -167,7 +168,7 @@ describe('Cart api functions', () => {
 
   describe('useRemoveFromCart', () => {
     it('sends axios request to remove item from cart once mutate function is called and returns successful response', async () => {
-      (axios.post as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.post).mockResolvedValue({
         data: mockData,
       });
 
@@ -196,7 +197,7 @@ describe('Cart api functions', () => {
     });
 
     it('sends axios request to remove item from cart once mutate function is called and calls handleICATError on failure, with a retry on code 431', async () => {
-      (axios.post as jest.MockedFunction<typeof axios.post>)
+      vi.mocked(axios.post)
         .mockRejectedValueOnce({
           response: {
             status: 431,
@@ -230,8 +231,8 @@ describe('Cart api functions', () => {
 
   describe('useSubmitCart', () => {
     it('should submit cart and clear cart on success', async () => {
-      axios.post = jest.fn().mockResolvedValue({ data: { downloadId: 123 } });
-      axios.get = jest
+      axios.post = vi.fn().mockResolvedValue({ data: { downloadId: 123 } });
+      axios.get = vi
         .fn()
         .mockResolvedValueOnce({
           data: mockData,
@@ -266,8 +267,8 @@ describe('Cart api functions', () => {
     });
 
     it('should error if api returns successful response with no downloadId', async () => {
-      axios.post = jest.fn().mockResolvedValue({ data: {} });
-      axios.get = jest.fn().mockResolvedValueOnce({
+      axios.post = vi.fn().mockResolvedValue({ data: {} });
+      axios.get = vi.fn().mockResolvedValueOnce({
         data: mockData,
       });
 
@@ -303,10 +304,10 @@ describe('Cart api functions', () => {
     });
 
     it('should call handleICATError when an error is encountered', async () => {
-      axios.post = jest.fn().mockRejectedValue({
+      axios.post = vi.fn().mockRejectedValue({
         message: 'test error message',
       });
-      axios.get = jest.fn().mockResolvedValueOnce({
+      axios.get = vi.fn().mockResolvedValueOnce({
         data: mockData,
       });
 
@@ -339,7 +340,7 @@ describe('Cart api functions', () => {
 
   describe('useDownload', () => {
     it('sends axios request to fetch download and returns successful response', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: [{ id: 1, fileName: 'test' }],
       });
 
@@ -371,7 +372,7 @@ describe('Cart api functions', () => {
     });
 
     it('sends axios request to fetch cart and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error message',
       });
 
@@ -409,7 +410,7 @@ describe('Cart api functions', () => {
     });
 
     it('should query statuses of download types', async () => {
-      axios.get = jest.fn().mockResolvedValue({
+      axios.get = vi.fn().mockResolvedValue({
         data: {
           disabled: false,
           message: '',
@@ -446,7 +447,7 @@ describe('Cart api functions', () => {
     });
 
     it('should dispatch event with the error messages of download type queries with errors', async () => {
-      axios.get = jest
+      axios.get = vi
         .fn()
         .mockResolvedValueOnce({
           data: {
@@ -460,7 +461,7 @@ describe('Cart api functions', () => {
           })
         );
 
-      const dispatchEventSpy = jest.spyOn(document, 'dispatchEvent');
+      const dispatchEventSpy = vi.spyOn(document, 'dispatchEvent');
 
       const { result } = renderHook(
         () =>
@@ -491,7 +492,7 @@ describe('Cart api functions', () => {
     });
 
     it('should refetch data on every hook call', async () => {
-      axios.get = jest.fn().mockResolvedValue({
+      axios.get = vi.fn().mockResolvedValue({
         data: {
           disabled: false,
           message: '',
@@ -538,7 +539,7 @@ describe('Cart api functions', () => {
 
   describe('useQueueAllowed', () => {
     it('sends axios request to check if the user has permission to use the queue and returns successful response', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: true,
       });
 
@@ -561,7 +562,7 @@ describe('Cart api functions', () => {
     });
 
     it('sends axios request to fetch cart and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error message',
       });
 
@@ -579,7 +580,7 @@ describe('Cart api functions', () => {
 
   describe('useQueueVisit', () => {
     it('should submit visit to the queue', async () => {
-      axios.post = jest.fn().mockResolvedValue({ data: ['123', '456'] });
+      axios.post = vi.fn().mockResolvedValue({ data: ['123', '456'] });
 
       const params = {
         sessionId: '',
@@ -620,7 +621,7 @@ describe('Cart api functions', () => {
     });
 
     it('should call handleICATError when an error is encountered', async () => {
-      axios.post = jest.fn().mockRejectedValue({
+      axios.post = vi.fn().mockRejectedValue({
         message: 'test error message',
       });
 
@@ -648,19 +649,19 @@ describe('Cart api functions', () => {
 
 describe('getDefaultFileName', () => {
   afterEach(() => {
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   it('should render substitutions correctly ', async () => {
-    const t = jest.fn().mockReturnValue('facilityName_visitId');
+    const t = vi.fn().mockReturnValue('facilityName_visitId');
     expect(
       getDefaultFileName(t, { facilityName: 'LILS', visitId: '1' })
     ).toEqual('LILS_1');
   });
 
   it('should format dates if present', async () => {
-    jest.useFakeTimers().setSystemTime(new Date('2025-03-25 14:00:00'));
-    const t = jest.fn().mockReturnValue('facilityName_yyyy-MM-dd_HH-mm-ss');
+    vi.useFakeTimers().setSystemTime(new Date('2025-03-25 14:00:00'));
+    const t = vi.fn().mockReturnValue('facilityName_yyyy-MM-dd_HH-mm-ss');
     expect(getDefaultFileName(t, { facilityName: 'LILS' })).toEqual(
       'LILS_2025-03-25_14-00-00'
     );

@@ -1,12 +1,12 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
 import { DatasearchType, dGCommonInitialState } from 'datagateway-common';
 import * as React from 'react';
 import { Provider } from 'react-redux';
 import createMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import userEvent from '@testing-library/user-event';
-import axios, { AxiosResponse } from 'axios';
-import { render, screen, within } from '@testing-library/react';
 import ParameterFacetList from './parameterFacetList.component';
 
 describe('ParameterFacetList', () => {
@@ -35,7 +35,7 @@ describe('ParameterFacetList', () => {
   beforeEach(() => {
     user = userEvent.setup();
 
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/\/facet\/documents$/.test(url)) {
@@ -61,8 +61,8 @@ describe('ParameterFacetList', () => {
         entityName={TEST_ENTITY_NAME}
         parameterName={TEST_PARAMETER_NAME}
         allIds={TEST_IDS}
-        onNewFilter={jest.fn()}
-        onResetFilter={jest.fn()}
+        onNewFilter={vi.fn()}
+        onResetFilter={vi.fn()}
       />,
       { wrapper: Wrapper }
     );
@@ -93,9 +93,9 @@ describe('ParameterFacetList', () => {
   });
 
   it('shows loading when loading the list of available string values', () => {
-    axios.get = jest.fn().mockImplementation(
+    axios.get = vi.fn().mockImplementation(
       () =>
-        new Promise((resolve) => {
+        new Promise((_resolve) => {
           // never resolve the promise to pretend it is loading
         })
     );
@@ -105,8 +105,8 @@ describe('ParameterFacetList', () => {
         entityName={TEST_ENTITY_NAME}
         parameterName={TEST_PARAMETER_NAME}
         allIds={TEST_IDS}
-        onNewFilter={jest.fn()}
-        onResetFilter={jest.fn()}
+        onNewFilter={vi.fn()}
+        onResetFilter={vi.fn()}
       />,
       { wrapper: Wrapper }
     );
@@ -118,7 +118,7 @@ describe('ParameterFacetList', () => {
   });
 
   it('calls onNewFilter and shows the selected option when an option is selected ', async () => {
-    const onNewFilter = jest.fn();
+    const onNewFilter = vi.fn();
 
     render(
       <ParameterFacetList
@@ -126,7 +126,7 @@ describe('ParameterFacetList', () => {
         parameterName={TEST_PARAMETER_NAME}
         allIds={TEST_IDS}
         onNewFilter={onNewFilter}
-        onResetFilter={jest.fn()}
+        onResetFilter={vi.fn()}
       />,
       { wrapper: Wrapper }
     );

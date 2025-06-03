@@ -1,4 +1,3 @@
-import React from 'react';
 import axios from 'axios';
 import configureStore from 'redux-mock-store';
 import {
@@ -18,15 +17,15 @@ import RoleSelector from './roleSelector.component';
 import { render, type RenderResult, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    readSciGatewayToken: jest.fn(),
-    usePushFilter: jest.fn(),
-    parseSearchToQuery: jest.fn(),
+    readSciGatewayToken: vi.fn(),
+    usePushFilter: vi.fn(),
+    parseSearchToQuery: vi.fn(),
   };
 });
 
@@ -34,7 +33,7 @@ describe('Role Selector', () => {
   let state: StateType;
   let user: ReturnType<typeof userEvent.setup>;
   let mockData: InvestigationUser[] = [];
-  const mockPushFilters = jest.fn();
+  const mockPushFilters = vi.fn();
   const mockStore = configureStore([thunk]);
 
   const renderComponent = (): RenderResult =>
@@ -73,18 +72,20 @@ describe('Role Selector', () => {
         role: 'experimenter',
       },
     ];
-    (axios.get as jest.Mock).mockResolvedValue({
+    vi.mocked(axios.get).mockResolvedValue({
       data: mockData,
     });
-    (readSciGatewayToken as jest.Mock).mockReturnValue({
+    vi.mocked(readSciGatewayToken, { partial: true }).mockReturnValue({
       username: 'testUser',
     });
-    (usePushFilter as jest.Mock).mockReturnValue(mockPushFilters);
-    (parseSearchToQuery as jest.Mock).mockReturnValue({ filters: {} });
+    vi.mocked(usePushFilter).mockReturnValue(mockPushFilters);
+    vi.mocked(parseSearchToQuery, { partial: true }).mockReturnValue({
+      filters: {},
+    });
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('fetches roles when rendered and displays them in dropdown', async () => {
@@ -105,7 +106,7 @@ describe('Role Selector', () => {
         params,
       })
     );
-    expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+    expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
       params.toString()
     );
 
@@ -141,7 +142,7 @@ describe('Role Selector', () => {
   });
 
   it('parses current role from query params correctly', async () => {
-    (parseSearchToQuery as jest.Mock).mockReturnValue({
+    vi.mocked(parseSearchToQuery, { partial: true }).mockReturnValue({
       filters: {
         'investigationUsers.role': {
           value: 'experimenter',

@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`withIdCheck renders component when checkingPromise resolves to be true 1`] = `
+exports[`withIdCheck > renders component when checkingPromise resolves to be true 1`] = `
 <DocumentFragment>
   <div>
     test
@@ -8,7 +8,7 @@ exports[`withIdCheck renders component when checkingPromise resolves to be true 
 </DocumentFragment>
 `;
 
-exports[`withIdCheck renders error when checkingPromise does not resolve to be true 1`] = `
+exports[`withIdCheck > renders error when checkingPromise does not resolve to be true 1`] = `
 <DocumentFragment>
   <div
     class="MuiGrid-root MuiGrid-container MuiGrid-item MuiGrid-direction-xs-column css-1ee6rd7-MuiGrid-root"
@@ -53,7 +53,7 @@ exports[`withIdCheck renders error when checkingPromise does not resolve to be t
 </DocumentFragment>
 `;
 
-exports[`withIdCheck renders error when checkingPromise is rejected 1`] = `
+exports[`withIdCheck > renders error when checkingPromise is rejected 1`] = `
 <DocumentFragment>
   <div
     class="MuiGrid-root MuiGrid-container MuiGrid-item MuiGrid-direction-xs-column css-1ee6rd7-MuiGrid-root"
@@ -98,7 +98,7 @@ exports[`withIdCheck renders error when checkingPromise is rejected 1`] = `
 </DocumentFragment>
 `;
 
-exports[`withIdCheck renders loading indicator when loading 1`] = `
+exports[`withIdCheck > renders loading indicator when loading 1`] = `
 <DocumentFragment>
   <div
     class="MuiGrid-root MuiGrid-container MuiGrid-item MuiGrid-direction-xs-column css-12b27yk-MuiGrid-root"

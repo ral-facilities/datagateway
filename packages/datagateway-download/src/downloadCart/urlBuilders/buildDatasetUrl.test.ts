@@ -9,7 +9,7 @@ describe('buildDatasetUrl', () => {
 
     beforeEach(() => {
       dataset = mockDatasets[0];
-      axios.get = jest.fn().mockResolvedValue({
+      axios.get = vi.fn().mockResolvedValue({
         data: [dataset],
       });
     });
@@ -97,7 +97,7 @@ describe('buildDatasetUrl', () => {
   });
 
   it('should return null if the dataset object cannot be fetched', async () => {
-    axios.get = jest.fn().mockResolvedValue({
+    axios.get = vi.fn().mockResolvedValue({
       data: [],
     });
 
@@ -113,7 +113,7 @@ describe('buildDatasetUrl', () => {
   it('should return null if the parent investigation of the dataset is not fetched', async () => {
     const { investigation, ...dataset } = mockDatasets[0];
 
-    axios.get = jest.fn().mockResolvedValue({
+    axios.get = vi.fn().mockResolvedValue({
       data: [dataset],
     });
 

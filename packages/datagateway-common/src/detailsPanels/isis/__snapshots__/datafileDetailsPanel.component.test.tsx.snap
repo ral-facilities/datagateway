@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Datafile details panel component should render correctly 1`] = `
+exports[`Datafile details panel component > should render correctly 1`] = `
 <DocumentFragment>
   <div
     data-testid="isis-datafile-details-panel"
@@ -105,7 +105,7 @@ exports[`Datafile details panel component should render correctly 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Datafile details panel component should render parameters tab when present in the data 1`] = `
+exports[`Datafile details panel component > should render parameters tab when present in the data 1`] = `
 <DocumentFragment>
   <div
     data-testid="isis-datafile-details-panel"

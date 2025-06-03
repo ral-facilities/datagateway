@@ -35,7 +35,7 @@ describe('DGCommon middleware', () => {
       return true;
     };
 
-    document.addEventListener = jest.fn(
+    document.addEventListener = vi.fn(
       (id: string, inputHandler: (event: Event) => void) => {
         handler = inputHandler;
       }
@@ -63,9 +63,9 @@ describe('DGCommon middleware', () => {
   });
 
   it('should cancel axios requests + generate new cancel token when router location changes', () => {
-    const cancelMock = jest.fn();
+    const cancelMock = vi.fn();
     middlewareMock.source.cancel = cancelMock;
-    const sourceSpy = jest.spyOn(axios.CancelToken, 'source');
+    const sourceSpy = vi.spyOn(axios.CancelToken, 'source');
 
     DGCommonMiddleware(store)(store.dispatch)({
       type: '@@router/LOCATION_CHANGE',
@@ -96,7 +96,7 @@ describe('DGCommon middleware', () => {
   });
 
   it('should listen for events and not fire unrecognised action', () => {
-    log.warn = jest.fn();
+    log.warn = vi.fn();
     listenToMessages(store.dispatch);
 
     handler(new CustomEvent('test', { detail: action }));
@@ -105,14 +105,14 @@ describe('DGCommon middleware', () => {
     expect(store.getActions().length).toEqual(0);
 
     expect(log.warn).toHaveBeenCalled();
-    const mockLog = (log.warn as jest.Mock).mock;
+    const mockLog = vi.mocked(log.warn).mock;
     expect(mockLog.calls[0][0]).toContain(
       'Unexpected message received, not dispatched'
     );
   });
 
   it('should not fire actions for events without detail', () => {
-    log.error = jest.fn();
+    log.error = vi.fn();
 
     listenToMessages(store.dispatch);
 
@@ -122,14 +122,14 @@ describe('DGCommon middleware', () => {
     expect(store.getActions().length).toEqual(0);
 
     expect(log.error).toHaveBeenCalled();
-    const mockLog = (log.error as jest.Mock).mock;
+    const mockLog = vi.mocked(log.error).mock;
     expect(mockLog.calls[0][0]).toEqual(
       'Invalid message received:\nevent.detail = null'
     );
   });
 
   it('should not fire actions for events without type on detail', () => {
-    log.error = jest.fn();
+    log.error = vi.fn();
 
     listenToMessages(store.dispatch);
 
@@ -139,7 +139,7 @@ describe('DGCommon middleware', () => {
     expect(store.getActions().length).toEqual(0);
 
     expect(log.error).toHaveBeenCalled();
-    const mockLog = (log.error as jest.Mock).mock;
+    const mockLog = vi.mocked(log.error).mock;
     expect(mockLog.calls[0][0]).toEqual(
       'Invalid message received:\nevent.detail = {"actionWithoutType":true}'
     );

@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { createTheme } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
@@ -25,27 +24,27 @@ import {
 import { mockCartItems, mockDownloadItems, mockedSettings } from '../testData';
 import DownloadCartTable from './downloadCartTable.component';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    fetchDownloadCart: jest.fn(),
+    fetchDownloadCart: vi.fn(),
   };
 });
 
-jest.mock('../downloadApi', () => {
-  const originalModule = jest.requireActual('../downloadApi');
+vi.mock('../downloadApi', async () => {
+  const originalModule = await vi.importActual('../downloadApi');
 
   return {
     ...originalModule,
-    removeAllDownloadCartItems: jest.fn(),
-    getFileSizeAndCount: jest.fn(),
-    getIsTwoLevel: jest.fn().mockResolvedValue(true),
-    removeFromCart: jest.fn(),
-    isCartMintable: jest.fn(),
-    downloadPreparedCart: jest.fn(),
+    removeAllDownloadCartItems: vi.fn(),
+    getFileSizeAndCount: vi.fn(),
+    getIsTwoLevel: vi.fn().mockResolvedValue(true),
+    removeFromCart: vi.fn(),
+    isCartMintable: vi.fn(),
+    downloadPreparedCart: vi.fn(),
   };
 });
 
@@ -60,7 +59,7 @@ const createTestQueryClient = (): QueryClient =>
     logger: {
       log: console.log,
       warn: console.warn,
-      error: jest.fn(),
+      error: vi.fn(),
     },
   });
 
@@ -72,7 +71,7 @@ const renderComponent = (): RenderResult & { history: MemoryHistory } => {
       <QueryClientProvider client={createTestQueryClient()}>
         <DownloadSettingsContext.Provider value={mockedSettings}>
           <Router history={history}>
-            <DownloadCartTable statusTabRedirect={jest.fn()} />
+            <DownloadCartTable statusTabRedirect={vi.fn()} />
           </Router>
         </DownloadSettingsContext.Provider>
       </QueryClientProvider>
@@ -100,30 +99,21 @@ describe('Download cart table component', () => {
     holder.setAttribute('id', 'datagateway-download');
     document.body.appendChild(holder);
 
-    (
-      fetchDownloadCart as jest.MockedFunction<typeof fetchDownloadCart>
-    ).mockResolvedValue(mockCartItems);
-    (
-      removeAllDownloadCartItems as jest.MockedFunction<
-        typeof removeAllDownloadCartItems
-      >
-    ).mockResolvedValue(undefined);
-    (
-      removeFromCart as jest.MockedFunction<typeof removeFromCart>
-    ).mockImplementation((entityType, entityIds) => {
+    vi.mocked(fetchDownloadCart).mockResolvedValue(mockCartItems);
+    vi.mocked(removeAllDownloadCartItems).mockResolvedValue(undefined);
+    vi.mocked(removeFromCart).mockImplementation((_entityType, entityIds) => {
       return Promise.resolve(
         mockCartItems.filter((item) => !entityIds.includes(item.entityId))
       );
     });
 
-    (
-      getFileSizeAndCount as jest.MockedFunction<typeof getFileSizeAndCount>
-    ).mockResolvedValue({ fileSize: 1, fileCount: 7 });
-    (
-      isCartMintable as jest.MockedFunction<typeof isCartMintable>
-    ).mockResolvedValue(true);
+    vi.mocked(getFileSizeAndCount).mockResolvedValue({
+      fileSize: 1,
+      fileCount: 7,
+    });
+    vi.mocked(isCartMintable).mockResolvedValue(true);
 
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/.*\/user\/downloads/.test(url)) {
@@ -154,7 +144,7 @@ describe('Download cart table component', () => {
         return Promise.reject(`Endpoint not mocked: ${url}`);
       });
 
-    axios.post = jest
+    axios.post = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/.*\/user\/cart\/.*\/submit/.test(url)) {
@@ -168,13 +158,13 @@ describe('Download cart table component', () => {
 
   afterEach(() => {
     resetDOM();
-    jest.clearAllMocks();
-    jest.clearAllTimers();
-    jest.useRealTimers();
+    vi.clearAllMocks();
+    vi.clearAllTimers();
+    vi.useRealTimers();
   });
 
   it('should render no cart message correctly', async () => {
-    (fetchDownloadCart as jest.Mock).mockResolvedValue([]);
+    vi.mocked(fetchDownloadCart).mockResolvedValue([]);
 
     renderComponent();
 
@@ -192,14 +182,12 @@ describe('Download cart table component', () => {
   });
 
   it('should show progress indicator when calculating file count & size of cart', async () => {
-    (getFileSizeAndCount as jest.Mock).mockImplementation(
+    vi.mocked(getFileSizeAndCount).mockImplementation(
       () =>
         new Promise((_) => {
           // never resolve promise so that progress indicator stays visible.
         })
     );
-
-    jest.useFakeTimers();
 
     renderComponent();
 
@@ -266,11 +254,7 @@ describe('Download cart table component', () => {
       // no-op
     };
 
-    (
-      removeAllDownloadCartItems as jest.MockedFunction<
-        typeof removeAllDownloadCartItems
-      >
-    ).mockImplementation(
+    vi.mocked(removeAllDownloadCartItems).mockImplementation(
       () =>
         new Promise((resolve) => {
           promiseResolve = resolve;
@@ -295,9 +279,10 @@ describe('Download cart table component', () => {
   });
 
   it('should disable download button when there are empty items in the cart ', async () => {
-    (
-      getFileSizeAndCount as jest.MockedFunction<typeof getFileSizeAndCount>
-    ).mockResolvedValue({ fileSize: 0, fileCount: 0 });
+    vi.mocked(getFileSizeAndCount).mockResolvedValue({
+      fileSize: 0,
+      fileCount: 0,
+    });
 
     renderComponent();
 
@@ -401,9 +386,7 @@ describe('Download cart table component', () => {
   });
 
   it('should filter data when text fields are typed into', async () => {
-    (
-      fetchDownloadCart as jest.MockedFunction<typeof fetchDownloadCart>
-    ).mockResolvedValue([
+    vi.mocked(fetchDownloadCart).mockResolvedValue([
       ...mockCartItems,
       {
         entityId: 11,
@@ -509,7 +492,7 @@ describe('Download cart table component', () => {
           }}
         >
           <Router history={createMemoryHistory()}>
-            <DownloadCartTable statusTabRedirect={jest.fn()} />
+            <DownloadCartTable statusTabRedirect={vi.fn()} />
           </Router>
         </DownloadSettingsContext.Provider>
       </QueryClientProvider>
@@ -532,7 +515,7 @@ describe('Download cart table component', () => {
           }}
         >
           <Router history={createMemoryHistory()}>
-            <DownloadCartTable statusTabRedirect={jest.fn()} />
+            <DownloadCartTable statusTabRedirect={vi.fn()} />
           </Router>
         </DownloadSettingsContext.Provider>
       </QueryClientProvider>
@@ -557,7 +540,7 @@ describe('Download cart table component', () => {
           }}
         >
           <Router history={createMemoryHistory()}>
-            <DownloadCartTable statusTabRedirect={jest.fn()} />
+            <DownloadCartTable statusTabRedirect={vi.fn()} />
           </Router>
         </DownloadSettingsContext.Provider>
       </QueryClientProvider>
@@ -599,9 +582,7 @@ describe('Download cart table component', () => {
   });
 
   it('should disable Generate DOI button when mintability is loading', async () => {
-    (
-      isCartMintable as jest.MockedFunction<typeof isCartMintable>
-    ).mockImplementation(
+    vi.mocked(isCartMintable).mockImplementation(
       () =>
         new Promise((_) => {
           // do nothing, simulating pending promise to test loading state
@@ -629,9 +610,7 @@ describe('Download cart table component', () => {
   });
 
   it('should disable Generate DOI button when cart is not mintable', async () => {
-    (
-      isCartMintable as jest.MockedFunction<typeof isCartMintable>
-    ).mockRejectedValue({
+    vi.mocked(isCartMintable).mockRejectedValue({
       response: {
         data: { detail: 'Not allowed to mint the following items: [2,4]' },
         status: 403,

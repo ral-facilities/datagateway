@@ -17,7 +17,7 @@ import { StateType } from '../state/app.types';
 import { initialState as dGCommonInitialState } from '../state/reducers/dgcommon.reducer';
 import QueueVisitButton from './queueVisitButton.component';
 
-jest.mock('../handleICATError');
+vi.mock('../handleICATError');
 
 describe('Generic add to cart button', () => {
   const mockStore = configureStore([thunk]);
@@ -57,13 +57,13 @@ describe('Generic add to cart button', () => {
       })
     );
 
-    axios.get = jest.fn().mockResolvedValue({
+    axios.get = vi.fn().mockResolvedValue({
       data: true,
     });
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly', async () => {
@@ -77,7 +77,7 @@ describe('Generic add to cart button', () => {
   });
 
   it('renders no button if user does not have permission', async () => {
-    axios.get = jest.fn().mockResolvedValue({
+    axios.get = vi.fn().mockResolvedValue({
       data: false,
     });
 
@@ -94,7 +94,9 @@ describe('Generic add to cart button', () => {
 
   it('logs error if access methods not provided', async () => {
     state.dgcommon.accessMethods = undefined;
-    const errorSpy = jest.spyOn(console, 'error').mockImplementation();
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {
+      // no-op
+    });
 
     renderComponent({
       investigation,

@@ -4,7 +4,6 @@ import {
   useInvestigationCount,
   useInvestigationsPaginated,
 } from 'datagateway-common';
-import * as React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
@@ -14,22 +13,18 @@ import { initialState as dgDataViewInitialState } from '../../../state/reducers/
 import DLSVisitsCardView from './dlsVisitsCardView.component';
 import { createMemoryHistory, type History } from 'history';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
-} from '../../../setupTests';
 import { render, type RenderResult, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    useInvestigationCount: jest.fn(),
-    useInvestigationsPaginated: jest.fn(),
+    useInvestigationCount: vi.fn(),
+    useInvestigationsPaginated: vi.fn(),
   };
 });
 
@@ -72,16 +67,16 @@ describe('DLS Visits - Card View', () => {
       })
     );
 
-    (useInvestigationCount as jest.Mock).mockReturnValue({
+    vi.mocked(useInvestigationCount, { partial: true }).mockReturnValue({
       data: 1,
       isLoading: false,
     });
-    (useInvestigationsPaginated as jest.Mock).mockReturnValue({
+    vi.mocked(useInvestigationsPaginated, { partial: true }).mockReturnValue({
       data: cardData,
       isLoading: false,
     });
 
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/\/investigations$/.test(url)) {
@@ -98,11 +93,11 @@ describe('DLS Visits - Card View', () => {
       });
 
     // Prevent error logging
-    window.scrollTo = jest.fn();
+    window.scrollTo = vi.fn();
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('updates filter query params on text filter', async () => {
@@ -132,8 +127,6 @@ describe('DLS Visits - Card View', () => {
   });
 
   it('updates filter query params on date filter', async () => {
-    applyDatePickerWorkaround();
-
     renderComponent();
 
     // click on button to show advanced filters
@@ -157,8 +150,6 @@ describe('DLS Visits - Card View', () => {
     await user.keyboard('{Delete}');
 
     expect(history.location.search).toBe('?');
-
-    cleanupDatePickerWorkaround();
   });
 
   it('uses default sort', async () => {
@@ -208,8 +199,10 @@ describe('DLS Visits - Card View', () => {
   });
 
   it('renders fine with incomplete data', () => {
-    (useInvestigationCount as jest.Mock).mockReturnValueOnce({});
-    (useInvestigationsPaginated as jest.Mock).mockReturnValueOnce({});
+    vi.mocked(useInvestigationCount, { partial: true }).mockReturnValueOnce({});
+    vi.mocked(useInvestigationsPaginated, {
+      partial: true,
+    }).mockReturnValueOnce({});
 
     expect(() => renderComponent()).not.toThrowError();
   });

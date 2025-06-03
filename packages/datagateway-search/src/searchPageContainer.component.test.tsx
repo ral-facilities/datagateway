@@ -1,4 +1,3 @@
-import * as React from 'react';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import { StateType } from './state/app.types';
@@ -7,6 +6,8 @@ import {
   dGCommonInitialState,
   readSciGatewayToken,
   type DownloadCartItem,
+  useCart,
+  parseSearchToQuery,
 } from 'datagateway-common';
 import { createMemoryHistory, createPath, type History } from 'history';
 import { Router } from 'react-router-dom';
@@ -22,20 +23,23 @@ import type { DeepPartial } from 'redux';
 import { applyMiddleware, compose, createStore } from 'redux';
 import AppReducer from './state/reducers/app.reducer';
 import { renderHook } from '@testing-library/react';
+import type { MockInstance } from 'vitest';
 
-jest.mock('loglevel');
+vi.mock('loglevel');
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    parseSearchToQuery: jest.fn((queryParams: string) =>
-      originalModule.parseSearchToQuery(queryParams)
+    parseSearchToQuery: vi.fn((queryParams: string) =>
+      (originalModule.parseSearchToQuery as typeof parseSearchToQuery)(
+        queryParams
+      )
     ),
-    useCart: jest.fn(() => originalModule.useCart()),
-    readSciGatewayToken: jest.fn(),
+    useCart: vi.fn(() => (originalModule.useCart as typeof useCart)()),
+    readSciGatewayToken: vi.fn(),
   };
 });
 
@@ -56,14 +60,14 @@ function generateURLSearchParams({
 }
 
 describe('usePushCurrentTab', () => {
-  let localStorageSetItemMock: jest.SpyInstance;
-  let localStorageGetItemMock: jest.SpyInstance;
+  let localStorageSetItemMock: MockInstance;
+  let localStorageGetItemMock: MockInstance;
   beforeEach(() => {
-    localStorageSetItemMock = jest.spyOn(
+    localStorageSetItemMock = vi.spyOn(
       window.localStorage.__proto__,
       'setItem'
     );
-    localStorageGetItemMock = jest.spyOn(
+    localStorageGetItemMock = vi.spyOn(
       window.localStorage.__proto__,
       'getItem'
     );
@@ -159,7 +163,7 @@ describe('SearchPageContainer - Tests', () => {
     // below code keeps window.location in sync with history changes
     // (needed because useUpdateQueryParam uses window.location not history)
     const historyReplace = history.replace;
-    const historyReplaceSpy = jest.spyOn(history, 'replace');
+    const historyReplaceSpy = vi.spyOn(history, 'replace');
     historyReplaceSpy.mockImplementation((args) => {
       historyReplace(args);
       if (typeof args === 'string') {
@@ -171,7 +175,7 @@ describe('SearchPageContainer - Tests', () => {
       }
     });
     const historyPush = history.push;
-    const historyPushSpy = jest.spyOn(history, 'push');
+    const historyPushSpy = vi.spyOn(history, 'push');
     historyPushSpy.mockImplementation((args) => {
       historyPush(args);
       if (typeof args === 'string') {
@@ -211,7 +215,7 @@ describe('SearchPageContainer - Tests', () => {
     holder.setAttribute('id', 'datagateway-search');
     document.body.appendChild(holder);
 
-    (axios.get as jest.Mock).mockImplementation((url) => {
+    vi.mocked(axios.get).mockImplementation((url) => {
       if (url.includes('/user/cart')) {
         return Promise.resolve({ data: { cartItems } });
       }
@@ -223,9 +227,7 @@ describe('SearchPageContainer - Tests', () => {
       return Promise.resolve({ data: [] });
     });
 
-    (
-      readSciGatewayToken as jest.MockedFn<typeof readSciGatewayToken>
-    ).mockReturnValue({
+    vi.mocked(readSciGatewayToken).mockReturnValue({
       sessionId: null,
       username: 'test',
     });
@@ -233,11 +235,11 @@ describe('SearchPageContainer - Tests', () => {
 
   afterEach(() => {
     document.body.removeChild(holder);
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders searchPageContainer correctly', async () => {
-    const localStorageRemoveItemMock = jest.spyOn(
+    const localStorageRemoveItemMock = vi.spyOn(
       window.localStorage.__proto__,
       'removeItem'
     );
@@ -350,7 +352,7 @@ describe('SearchPageContainer - Tests', () => {
 
   it('display loading bar when loading true', async () => {
     const user = userEvent.setup();
-    (axios.get as jest.Mock).mockImplementation(
+    vi.mocked(axios.get).mockImplementation(
       () =>
         new Promise((_) => {
           // do nothing, simulating pending promise
@@ -1154,7 +1156,7 @@ describe('SearchPageContainer - Tests', () => {
 
     renderComponent();
 
-    (axios.get as jest.Mock).mockClear();
+    vi.mocked(axios.get).mockClear();
 
     await user.type(
       await screen.findByRole('searchbox', {
@@ -1282,9 +1284,7 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('handles anonymous users correctly', async () => {
-    (
-      readSciGatewayToken as jest.MockedFn<typeof readSciGatewayToken>
-    ).mockReturnValue({
+    vi.mocked(readSciGatewayToken).mockReturnValue({
       sessionId: null,
       username: 'anon/anon',
     });

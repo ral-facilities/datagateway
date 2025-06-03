@@ -34,13 +34,14 @@ import { Router } from 'react-router-dom';
 import axios from 'axios';
 import handleICATError from '../handleICATError';
 import { createReactQueryWrapper } from '../setupTests';
+import type { MockInstance } from 'vitest';
 
-jest.mock('../handleICATError');
+vi.mock('../handleICATError');
 
 describe('generic api functions', () => {
   afterEach(() => {
-    (handleICATError as jest.Mock).mockClear();
-    (axios.get as jest.Mock).mockClear();
+    vi.mocked(handleICATError).mockClear();
+    vi.mocked(axios.get).mockClear();
   });
 
   describe('nestedValue', () => {
@@ -166,7 +167,7 @@ describe('generic api functions', () => {
     });
 
     it('logs errors if filter or search params are wrong', () => {
-      console.error = jest.fn();
+      console.error = vi.fn();
 
       const query = '?filters={"name"%3A"test"&sort=["name","asc"';
       parseSearchToQuery(query);
@@ -335,12 +336,12 @@ describe('generic api functions', () => {
     let wrapper: React.JSXElementConstructor<{
       children: React.ReactElement;
     }>;
-    let pushSpy: jest.SpyInstance;
-    let replaceSpy: jest.SpyInstance;
+    let pushSpy: MockInstance<typeof history.push>;
+    let replaceSpy: MockInstance<typeof history.replace>;
     beforeEach(() => {
       history = createMemoryHistory();
-      pushSpy = jest.spyOn(history, 'push');
-      replaceSpy = jest.spyOn(history, 'replace');
+      pushSpy = vi.spyOn(history, 'push');
+      replaceSpy = vi.spyOn(history, 'replace');
       const newWrapper: React.JSXElementConstructor<{
         children: React.ReactElement;
       }> = ({ children }) => <Router history={history}>{children}</Router>;
@@ -348,9 +349,10 @@ describe('generic api functions', () => {
     });
 
     afterEach(() => {
-      jest.restoreAllMocks();
-      jest.resetModules();
+      vi.restoreAllMocks();
+      vi.resetModules();
       window.history.pushState({}, 'Test', '/');
+      vi.doUnmock('./index.tsx');
     });
 
     describe('useSort', () => {
@@ -383,11 +385,9 @@ describe('generic api functions', () => {
       });
 
       it('returns callback that when called removes a null sort from the url query', () => {
-        jest.mock('./index.tsx', () => ({
-          ...jest.requireActual('./index.tsx'),
-          parseSearchToQuery: jest.fn(
-            () => '?sort=%7B%22name%22%3A%22asc%22%7D'
-          ),
+        vi.doMock('./index.tsx', async () => ({
+          ...(await vi.importActual('./index.tsx')),
+          parseSearchToQuery: vi.fn(() => '?sort=%7B%22name%22%3A%22asc%22%7D'),
         }));
 
         const { result } = renderHook(() => useSort(), {
@@ -461,9 +461,9 @@ describe('generic api functions', () => {
       });
 
       it('returns callback that when called removes a null sort from the url query', () => {
-        jest.mock('./index.tsx', () => ({
-          ...jest.requireActual('./index.tsx'),
-          parseSearchToQuery: jest.fn(
+        vi.doMock('./index.tsx', async () => ({
+          ...(await vi.importActual('./index.tsx')),
+          parseSearchToQuery: vi.fn(
             () =>
               '?filters=%7B%22name%22%3A%7B%22value%22%3A%22test%22%2C%22type%22%3A%22include%22%7D%7D'
           ),
@@ -497,9 +497,9 @@ describe('generic api functions', () => {
           )}`,
         });
 
-        jest.mock('./index.tsx', () => ({
-          ...jest.requireActual('./index.tsx'),
-          parseSearchToQuery: jest.fn(
+        vi.doMock('./index.tsx', async () => ({
+          ...(await vi.importActual('./index.tsx')),
+          parseSearchToQuery: vi.fn(
             () =>
               '?filters=%7B%22prefix.name%22%3A%7B%22value%22%3A%22test%22%2C%22type%22%3A%22include%22%7D%7D'
           ),
@@ -536,9 +536,9 @@ describe('generic api functions', () => {
       });
 
       it('returns callback that when called removes multiple null filters from the url query', () => {
-        jest.mock('./index.tsx', () => ({
-          ...jest.requireActual('./index.tsx'),
-          parseSearchToQuery: jest.fn(
+        vi.doMock('./index.tsx', async () => ({
+          ...(await vi.importActual('./index.tsx')),
+          parseSearchToQuery: vi.fn(
             () =>
               '?filters=%7B%22name%22%3A%7B%22value%22%3A%22test%22%2C%22type%22%3A%22include%22%7D%2C%22title%22%3A%7B%22value%22%3A%22test2%22%2C%22type%22%3A%22include%22%7D%7D'
           ),
@@ -591,9 +591,9 @@ describe('generic api functions', () => {
 
     describe('useUpdateQueryParam', () => {
       it('returns callback that when called removes all filters from the url query (push)', () => {
-        jest.mock('./index.tsx', () => ({
-          ...jest.requireActual('./index.tsx'),
-          parseSearchToQuery: jest.fn(() => '?'),
+        vi.doMock('./index.tsx', async () => ({
+          ...(await vi.importActual('./index.tsx')),
+          parseSearchToQuery: vi.fn(() => '?'),
         }));
 
         const { result } = renderHook(
@@ -617,9 +617,9 @@ describe('generic api functions', () => {
       });
 
       it('returns callback that when called removes all sorts from the url query (push)', () => {
-        jest.mock('./index.tsx', () => ({
-          ...jest.requireActual('./index.tsx'),
-          parseSearchToQuery: jest.fn(() => '?'),
+        vi.doMock('./index.tsx', async () => ({
+          ...(await vi.importActual('./index.tsx')),
+          parseSearchToQuery: vi.fn(() => '?'),
         }));
 
         const { result } = renderHook(
@@ -639,9 +639,9 @@ describe('generic api functions', () => {
       });
 
       it('returns callback that when called removes page number from the url query (push)', () => {
-        jest.mock('./index.tsx', () => ({
-          ...jest.requireActual('./index.tsx'),
-          parseSearchToQuery: jest.fn(() => '?'),
+        vi.doMock('./index.tsx', async () => ({
+          ...(await vi.importActual('./index.tsx')),
+          parseSearchToQuery: vi.fn(() => '?'),
         }));
 
         const { result } = renderHook(
@@ -661,9 +661,9 @@ describe('generic api functions', () => {
       });
 
       it('returns callback that when called removes results number from the url query (push)', () => {
-        jest.mock('./index.tsx', () => ({
-          ...jest.requireActual('./index.tsx'),
-          parseSearchToQuery: jest.fn(() => '?'),
+        vi.doMock('./index.tsx', async () => ({
+          ...(await vi.importActual('./index.tsx')),
+          parseSearchToQuery: vi.fn(() => '?'),
         }));
 
         const { result } = renderHook(
@@ -683,9 +683,9 @@ describe('generic api functions', () => {
       });
 
       it('returns callback that when called removes all filters from the url query (replace)', () => {
-        jest.mock('./index.tsx', () => ({
-          ...jest.requireActual('./index.tsx'),
-          parseSearchToQuery: jest.fn(() => '?'),
+        vi.doMock('./index.tsx', async () => ({
+          ...(await vi.importActual('./index.tsx')),
+          parseSearchToQuery: vi.fn(() => '?'),
         }));
 
         const { result } = renderHook(
@@ -709,9 +709,9 @@ describe('generic api functions', () => {
       });
 
       it('returns callback that when called removes all sorts from the url query (replace)', () => {
-        jest.mock('./index.tsx', () => ({
-          ...jest.requireActual('./index.tsx'),
-          parseSearchToQuery: jest.fn(() => '?'),
+        vi.doMock('./index.tsx', async () => ({
+          ...(await vi.importActual('./index.tsx')),
+          parseSearchToQuery: vi.fn(() => '?'),
         }));
 
         const { result } = renderHook(
@@ -731,9 +731,9 @@ describe('generic api functions', () => {
       });
 
       it('returns callback that when called removes page number from the url query (replace)', () => {
-        jest.mock('./index.tsx', () => ({
-          ...jest.requireActual('./index.tsx'),
-          parseSearchToQuery: jest.fn(() => '?'),
+        vi.doMock('./index.tsx', async () => ({
+          ...(await vi.importActual('./index.tsx')),
+          parseSearchToQuery: vi.fn(() => '?'),
         }));
 
         const { result } = renderHook(
@@ -753,9 +753,9 @@ describe('generic api functions', () => {
       });
 
       it('returns callback that when called removes results number from the url query (replace)', () => {
-        jest.mock('./index.tsx', () => ({
-          ...jest.requireActual('./index.tsx'),
-          parseSearchToQuery: jest.fn(() => '?'),
+        vi.doMock('./index.tsx', async () => ({
+          ...(await vi.importActual('./index.tsx')),
+          parseSearchToQuery: vi.fn(() => '?'),
         }));
 
         const { result } = renderHook(
@@ -951,11 +951,9 @@ describe('generic api functions', () => {
       });
 
       it('returns callback that when called removes a null sort from the url query', () => {
-        jest.mock('./index.tsx', () => ({
-          ...jest.requireActual('./index.tsx'),
-          parseSearchToQuery: jest.fn(
-            () => '?sort=%7B%22name%22%3A%22asc%22%7D'
-          ),
+        vi.doMock('./index.tsx', async () => ({
+          ...(await vi.importActual('./index.tsx')),
+          parseSearchToQuery: vi.fn(() => '?sort=%7B%22name%22%3A%22asc%22%7D'),
         }));
 
         const { result } = renderHook(() => useSingleSort(), {
@@ -989,7 +987,7 @@ describe('generic api functions', () => {
 
   describe('useIds', () => {
     it('sends axios request to fetch ids and returns successful response', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: [{ id: 1 }, { id: 2 }, { id: 3 }],
       });
 
@@ -1015,7 +1013,7 @@ describe('generic api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data).toEqual([1, 2, 3]);
@@ -1036,7 +1034,7 @@ describe('generic api functions', () => {
     });
 
     it('sends axios request to fetch ids and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
       const { result } = renderHook(() => useIds('investigation'), {
@@ -1051,7 +1049,7 @@ describe('generic api functions', () => {
 
   describe('useCustomFilter', () => {
     it('sends axios request to fetch filters and returns successful response', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: [{ title: '1' }, { title: '2' }, { title: '3' }],
       });
 
@@ -1076,14 +1074,14 @@ describe('generic api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data).toEqual(['1', '2', '3']);
     });
 
     it('sends axios request to fetch filters and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
       const { result } = renderHook(
@@ -1102,7 +1100,7 @@ describe('generic api functions', () => {
   describe('useCustomFilterCount', () => {
     it('sends axios request to fetch filter counts and returns successful response', async () => {
       const filterKey = 'title';
-      (axios.get as jest.Mock).mockImplementation((url, options) =>
+      vi.mocked(axios.get).mockImplementation((url, options) =>
         Promise.resolve({
           data: JSON.parse(options.params.get('where'))[filterKey].eq ?? 0,
         })
@@ -1133,7 +1131,7 @@ describe('generic api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
 
@@ -1150,7 +1148,7 @@ describe('generic api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[1][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[1][1].params.toString()).toBe(
         params.toString()
       );
 
@@ -1167,7 +1165,7 @@ describe('generic api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[2][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[2][1].params.toString()).toBe(
         params.toString()
       );
 
@@ -1179,7 +1177,7 @@ describe('generic api functions', () => {
     });
 
     it('sends axios request to fetch filter counts and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
 

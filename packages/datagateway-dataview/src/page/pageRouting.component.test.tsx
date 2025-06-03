@@ -1,14 +1,20 @@
 import * as React from 'react';
-import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 import { StateType } from '../state/app.types';
 
-import { Router } from 'react-router-dom';
-import PageRouting from './pageRouting.component';
-import { Provider } from 'react-redux';
-import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
 import { DataPublication, dGCommonInitialState } from 'datagateway-common';
+import { Provider } from 'react-redux';
+import { Router } from 'react-router-dom';
+import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
+import PageRouting from './pageRouting.component';
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { render, screen } from '@testing-library/react';
+import axios from 'axios';
+import { History, createMemoryHistory } from 'history';
+import { act } from 'react-dom/test-utils';
+import { findColumnHeaderByName, flushPromises } from '../setupTests';
 import {
   checkDatasetId as unmockedCheckDatasetId,
   checkInstrumentAndFacilityCycleId as unmockedCheckInstrumentAndFacilityCycleId,
@@ -17,23 +23,17 @@ import {
   checkProposalName as unmockedCheckProposalName,
   checkStudyDataPublicationId as unmockedCheckStudyDataPublicationId,
 } from './idCheckFunctions';
-import { findColumnHeaderByName, flushPromises } from '../setupTests';
-import { act } from 'react-dom/test-utils';
-import axios from 'axios';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { createMemoryHistory, History } from 'history';
-import { render, screen } from '@testing-library/react';
 
-jest.mock('loglevel');
-jest.mock('./idCheckFunctions');
-const checkDatasetId = jest.mocked(unmockedCheckDatasetId);
-const checkInstrumentAndFacilityCycleId = jest.mocked(
+vi.mock('loglevel');
+vi.mock('./idCheckFunctions');
+const checkDatasetId = vi.mocked(unmockedCheckDatasetId);
+const checkInstrumentAndFacilityCycleId = vi.mocked(
   unmockedCheckInstrumentAndFacilityCycleId
 );
-const checkInstrumentId = jest.mocked(unmockedCheckInstrumentId);
-const checkInvestigationId = jest.mocked(unmockedCheckInvestigationId);
-const checkProposalName = jest.mocked(unmockedCheckProposalName);
-const checkStudyDataPublicationId = jest.mocked(
+const checkInstrumentId = vi.mocked(unmockedCheckInstrumentId);
+const checkInvestigationId = vi.mocked(unmockedCheckInvestigationId);
+const checkProposalName = vi.mocked(unmockedCheckProposalName);
+const checkStudyDataPublicationId = vi.mocked(
   unmockedCheckStudyDataPublicationId
 );
 
@@ -122,7 +122,7 @@ describe('PageTable', () => {
       })
     );
 
-    (axios.get as jest.Mock).mockImplementation((url: string) => {
+    vi.mocked(axios.get).mockImplementation((url: string) => {
       if (url.includes('count')) {
         return Promise.resolve({ data: 0 });
       } else if (url.includes('datapublications')) {
@@ -165,7 +165,7 @@ describe('PageTable', () => {
   });
 
   afterEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
   });
 
   describe('Generic', () => {

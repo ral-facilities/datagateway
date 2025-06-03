@@ -2,8 +2,8 @@
   "name": "datagateway-search",
   "version": "2.2.0",
   "private": true,
+  "type": "module",
   "dependencies": {
-    "@craco/craco": "7.1.0",
     "@date-io/date-fns": "2.17.0",
     "@emotion/react": "11.11.1",
     "@emotion/styled": "11.11.0",
@@ -13,7 +13,6 @@
     "@tanstack/react-query": "4.36.1",
     "@tanstack/react-query-devtools": "4.36.1",
     "@types/history": "4.7.11",
-    "@types/jest": "29.5.2",
     "@types/jsrsasign": "10.5.2",
     "@types/lodash.isequal": "4.5.8",
     "@types/node": "20.11.5",
@@ -22,8 +21,10 @@
     "@types/react-router-dom": "5.3.3",
     "@types/react-virtualized": "9.21.10",
     "@types/redux-logger": "3.0.8",
+    "@vitejs/plugin-react": "4.3.4",
     "axios": "1.8.3",
-    "custom-event-polyfill": "1.0.7",
+    "browserslist": "4.24.4",
+    "browserslist-to-esbuild": "2.1.1",
     "datagateway-common": "^2.2.0",
     "date-fns": "2.30.0",
     "eslint-config-prettier": "8.10.0",
@@ -38,63 +39,39 @@
     "loglevel": "1.9.1",
     "prettier": "2.8.0",
     "react": "18.2.0",
-    "react-app-polyfill": "3.0.0",
     "react-dom": "18.2.0",
     "react-i18next": "12.3.1",
     "react-redux": "8.1.3",
     "react-router-dom": "5.3.4",
-    "react-scripts": "5.0.0",
     "react-virtualized": "9.22.5",
     "redux": "4.2.0",
     "redux-logger": "3.0.6",
     "redux-mock-store": "1.5.4",
     "redux-thunk": "2.4.1",
-    "resize-observer-polyfill": "1.5.1",
     "single-spa-react": "5.0.1",
     "tslib": "2.6.0",
     "typescript": "5.3.3",
-    "url-search-params-polyfill": "8.2.4"
+    "vite": "5.4.19"
   },
   "scripts": {
-    "start": "craco start",
-    "build": "craco build",
-    "serve:build": "yarn build && serve -l 5001 build",
-    "test": "craco test --env=jsdom --coverage --watchAll=false",
-    "test:watch": "craco test --env=jsdom --watch",
-    "build:e2e": "cross-env REACT_APP_E2E_TESTING=true GENERATE_SOURCEMAP=false craco build",
+    "dev": "vite dev",
+    "build": "tsc --project tsconfig.build.json && vite build",
+    "preview": "vite preview",
+    "preview:build": "yarn build && yarn preview",
+    "preview:build:dev": "yarn build --watch & yarn preview",
+    "test": "vitest --coverage",
+    "build:e2e": "cross-env VITE_BUILD_STANDALONE=true GENERATE_SOURCEMAP=false yarn build",
     "e2e:serve": "yarn build:e2e && node ./server/e2e-test-server.js",
     "e2e:interactive": "start-server-and-test e2e:serve http://localhost:3000 cy:open",
     "e2e": "start-server-and-test e2e:serve http://localhost:3000 cy:run",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
     "lint:js": "eslint --max-warnings=0 --ext=tsx --ext=ts --ext=js --ext=jsx --fix ./src ./cypress && tsc --noEmit",
-    "eject": "react-scripts eject",
     "pre-commit": "lint-staged"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ]
-  },
-  "jest": {
-    "transformIgnorePatterns": [
-      "node_modules/(?!(axios|copy-anything|is-what))"
-    ],
-    "collectCoverageFrom": [
-      "src/**/*.{tsx,js,jsx}",
-      "!src/index.tsx",
-      "!src/serviceWorker.ts",
-      "!src/setupTests.js"
-    ],
-    "resetMocks": false
-  },
+  "browserslist": [
+    "defaults"
+  ],
   "lint-staged": {
     "src/**/*.{tsx,ts,js,jsx,json}": [
       "eslint --max-warnings=0 --ext=tsx --ext=ts --ext=js --ext=jsx  --fix",
@@ -115,15 +92,16 @@
     "@types/redux-mock-store": "1.0.3",
     "@typescript-eslint/eslint-plugin": "5.62.0",
     "@typescript-eslint/parser": "5.62.0",
+    "@vitest/coverage-v8": "3.0.9",
     "cross-env": "7.0.3",
     "cypress": "13.6.4",
-    "cypress-failed-log": "2.10.0",
     "eslint": "8.56.0",
     "eslint-config-react-app": "7.0.0",
     "express": "4.20.0",
-    "jest-fail-on-console": "3.1.1",
+    "jsdom": "26.0.0",
     "lint-staged": "13.3.0",
-    "serve": "14.2.0",
-    "start-server-and-test": "~2.0.11"
+    "start-server-and-test": "~2.0.11",
+    "vitest": "3.0.9",
+    "vitest-fail-on-console": "0.7.1"
   }
 }

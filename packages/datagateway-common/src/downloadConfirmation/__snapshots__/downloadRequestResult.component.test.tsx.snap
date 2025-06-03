@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`DownloadRequestResult should render correctly 1`] = `
+exports[`DownloadRequestResult > should render correctly 1`] = `
 <DocumentFragment>
   <div>
     <h2
@@ -147,7 +147,7 @@ exports[`DownloadRequestResult should render correctly 1`] = `
 </DocumentFragment>
 `;
 
-exports[`DownloadRequestResult should render correctly without redirect to download status button 1`] = `
+exports[`DownloadRequestResult > should render correctly without redirect to download status button 1`] = `
 <DocumentFragment>
   <div>
     <h2

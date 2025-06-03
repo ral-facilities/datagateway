@@ -1,30 +1,28 @@
-import * as React from 'react';
+import configureStore from 'redux-mock-store';
+import { downloadDatafile } from '../api/datafiles';
+import { downloadDataset } from '../api/datasets';
+import { downloadInvestigation } from '../api/investigations';
+import { initialState as dGCommonInitialState } from '../state/reducers/dgcommon.reducer';
 import DownloadButton, {
   DownloadButtonProps,
 } from './downloadButton.component';
-import configureStore from 'redux-mock-store';
-import { initialState as dGCommonInitialState } from '../state/reducers/dgcommon.reducer';
-import {
-  downloadDatafile,
-  downloadDataset,
-  downloadInvestigation,
-} from '../api';
-import { StateType } from '../state/app.types';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
-import { MemoryRouter } from 'react-router-dom';
+
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   render,
-  type RenderResult,
   screen,
   waitFor,
+  type RenderResult,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { Provider } from 'react-redux';
+import { MemoryRouter } from 'react-router-dom';
+import thunk from 'redux-thunk';
+import { StateType } from '../state/app.types';
 
-jest.mock('../api/datafiles');
-jest.mock('../api/datasets');
-jest.mock('../api/investigations');
+vi.mock('../api/datafiles');
+vi.mock('../api/datasets');
+vi.mock('../api/investigations');
 
 describe('Generic download button', () => {
   const mockStore = configureStore([thunk]);
@@ -61,7 +59,7 @@ describe('Generic download button', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('text variant', () => {

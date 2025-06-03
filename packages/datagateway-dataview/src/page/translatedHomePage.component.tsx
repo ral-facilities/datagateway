@@ -1,16 +1,17 @@
-import React from 'react';
 import { HomePage } from 'datagateway-common';
-import DGLogo from 'datagateway-common/src/images/datgateway-white-text-blue-mark-logo.svg';
+// TODO: when vite 6, explore no-inline w/ pluginHost vs inline as we have to inline in vite 5
 import BackgroundImage from 'datagateway-common/src/images/background.jpg';
-import GreenSwirl1Image from 'datagateway-common/src/images/green-swirl1.png';
-import GreenSwirl2Image from 'datagateway-common/src/images/green-swirl2.png';
+import DGLogo from 'datagateway-common/src/images/datgateway-white-text-blue-mark-logo.svg';
 import Decal1Image from 'datagateway-common/src/images/decal1.svg';
-import Decal2Image from 'datagateway-common/src/images/decal2.svg';
 import Decal2DarkImage from 'datagateway-common/src/images/decal2-dark.svg';
 import Decal2DarkHCImage from 'datagateway-common/src/images/decal2-darkhc.svg';
+import Decal2Image from 'datagateway-common/src/images/decal2.svg';
 import FacilityImage from 'datagateway-common/src/images/facility.jpg';
-import { StateType } from '../state/app.types';
+import GreenSwirl1Image from 'datagateway-common/src/images/green-swirl1.png';
+import GreenSwirl2Image from 'datagateway-common/src/images/green-swirl2.png';
+import React from 'react';
 import { connect } from 'react-redux';
+import { StateType } from '../state/app.types';
 
 export interface TranslatedHomePageStateProps {
   facilityImageURL?: string | undefined;
@@ -22,18 +23,16 @@ export const TranslatedHomePage = React.memo(
     const TranslatedHomePage = HomePage;
     return (
       <TranslatedHomePage
-        logo={props.pluginHost + DGLogo}
-        backgroundImage={props.pluginHost + BackgroundImage}
-        greenSwirl1Image={props.pluginHost + GreenSwirl1Image}
-        greenSwirl2Image={props.pluginHost + GreenSwirl2Image}
-        decal1Image={props.pluginHost + Decal1Image}
-        decal2Image={props.pluginHost + Decal2Image}
-        decal2DarkImage={props.pluginHost + Decal2DarkImage}
-        decal2DarkHCImage={props.pluginHost + Decal2DarkHCImage}
+        logo={`"${DGLogo}"`} // need double quotes for SVGs, see https://v5.vite.dev/guide/assets.html#importing-asset-as-url
+        backgroundImage={BackgroundImage}
+        greenSwirl1Image={GreenSwirl1Image}
+        greenSwirl2Image={GreenSwirl2Image}
+        decal1Image={`"${Decal1Image}"`}
+        decal2Image={`"${Decal2Image}"`}
+        decal2DarkImage={`"${Decal2DarkImage}"`}
+        decal2DarkHCImage={`"${Decal2DarkHCImage}"`}
         facilityImage={
-          props.facilityImageURL
-            ? props.facilityImageURL
-            : props.pluginHost + FacilityImage
+          props.facilityImageURL ? props.facilityImageURL : FacilityImage
         }
       />
     );

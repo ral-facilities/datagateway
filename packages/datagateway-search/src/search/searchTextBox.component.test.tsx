@@ -1,4 +1,3 @@
-import React from 'react';
 import { StateType } from '../state/app.types';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
@@ -9,7 +8,7 @@ import { createMemoryHistory, History } from 'history';
 import { Router } from 'react-router-dom';
 import { fireEvent, render, RenderResult } from '@testing-library/react';
 
-jest.mock('loglevel');
+vi.mock('loglevel');
 
 describe('Search text box component tests', () => {
   let state: StateType;
@@ -17,8 +16,8 @@ describe('Search text box component tests', () => {
   let testStore: ReturnType<typeof mockStore>;
   let history: History;
 
-  const testInitiateSearch = jest.fn();
-  const handleChange = jest.fn();
+  const testInitiateSearch = vi.fn();
+  const handleChange = vi.fn();
 
   const createWrapper = (h: History = history): RenderResult => {
     return render(
@@ -53,7 +52,7 @@ describe('Search text box component tests', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly', () => {

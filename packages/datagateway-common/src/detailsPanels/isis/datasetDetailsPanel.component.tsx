@@ -90,7 +90,7 @@ const DatasetDetailsPanel = (
         indicatorColor="secondary"
         scrollButtons="auto"
         value={selectedTab ?? DEFAULT_TAB}
-        onChange={(event, newValue) => changeTab(newValue)}
+        onChange={(_event, newValue) => changeTab(newValue)}
         aria-label={t('datasets.details.tabs_label')}
       >
         <Tab

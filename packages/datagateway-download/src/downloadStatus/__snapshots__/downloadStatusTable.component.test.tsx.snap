@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Download Status Table should render correctly 1`] = `
+exports[`Download Status Table > should render correctly 1`] = `
 <DocumentFragment>
   <div
     class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column css-1vpwcmr-MuiGrid-root"
@@ -60,7 +60,7 @@ exports[`Download Status Table should render correctly 1`] = `
                           </p>
                           <svg
                             aria-hidden="true"
-                            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionDesc css-3l415a-MuiSvgIcon-root-MuiTableSortLabel-icon"
+                            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionDesc css-1ku2c56-MuiTableSortLabel-icon css-i4bv87-MuiSvgIcon-root"
                             data-testid="SortIcon"
                             focusable="false"
                             viewBox="0 0 24 24"
@@ -124,7 +124,7 @@ exports[`Download Status Table should render correctly 1`] = `
                               />
                               <svg
                                 aria-hidden="true"
-                                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconStandard css-pqjvzy-MuiSvgIcon-root-MuiSelect-icon"
+                                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconStandard css-19xtc65-MuiSelect-icon css-i4bv87-MuiSvgIcon-root"
                                 data-testid="SettingsIcon"
                                 focusable="false"
                                 viewBox="0 0 24 24"
@@ -184,7 +184,7 @@ exports[`Download Status Table should render correctly 1`] = `
                           </p>
                           <svg
                             aria-hidden="true"
-                            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionDesc css-3l415a-MuiSvgIcon-root-MuiTableSortLabel-icon"
+                            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionDesc css-1ku2c56-MuiTableSortLabel-icon css-i4bv87-MuiSvgIcon-root"
                             data-testid="SortIcon"
                             focusable="false"
                             viewBox="0 0 24 24"
@@ -248,7 +248,7 @@ exports[`Download Status Table should render correctly 1`] = `
                               />
                               <svg
                                 aria-hidden="true"
-                                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconStandard css-pqjvzy-MuiSvgIcon-root-MuiSelect-icon"
+                                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconStandard css-19xtc65-MuiSelect-icon css-i4bv87-MuiSvgIcon-root"
                                 data-testid="SettingsIcon"
                                 focusable="false"
                                 viewBox="0 0 24 24"
@@ -308,7 +308,7 @@ exports[`Download Status Table should render correctly 1`] = `
                           </p>
                           <svg
                             aria-hidden="true"
-                            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionDesc css-3l415a-MuiSvgIcon-root-MuiTableSortLabel-icon"
+                            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiTableSortLabel-icon MuiTableSortLabel-iconDirectionDesc css-1ku2c56-MuiTableSortLabel-icon css-i4bv87-MuiSvgIcon-root"
                             data-testid="SortIcon"
                             focusable="false"
                             viewBox="0 0 24 24"
@@ -372,7 +372,7 @@ exports[`Download Status Table should render correctly 1`] = `
                               />
                               <svg
                                 aria-hidden="true"
-                                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconStandard css-pqjvzy-MuiSvgIcon-root-MuiSelect-icon"
+                                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconStandard css-19xtc65-MuiSelect-icon css-i4bv87-MuiSvgIcon-root"
                                 data-testid="SettingsIcon"
                                 focusable="false"
                                 viewBox="0 0 24 24"
@@ -464,7 +464,7 @@ exports[`Download Status Table should render correctly 1`] = `
                             value=""
                           />
                           <div
-                            class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-standard MuiInputAdornment-sizeMedium css-1laqsz7-MuiInputAdornment-root"
+                            class="MuiInputAdornment-root MuiInputAdornment-positionEnd css-1laqsz7-MuiInputAdornment-root"
                           >
                             <button
                               aria-label="downloadStatus.createdAt filter from, date-time picker"
@@ -508,7 +508,7 @@ exports[`Download Status Table should render correctly 1`] = `
                             value=""
                           />
                           <div
-                            class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-standard MuiInputAdornment-sizeMedium css-1laqsz7-MuiInputAdornment-root"
+                            class="MuiInputAdornment-root MuiInputAdornment-positionEnd css-1laqsz7-MuiInputAdornment-root"
                           >
                             <button
                               aria-label="downloadStatus.createdAt filter to, date-time picker"
@@ -727,9 +727,6 @@ exports[`Download Status Table should render correctly 1`] = `
                             d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"
                           />
                         </svg>
-                        <span
-                          class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                        />
                       </button>
                     </div>
                   </div>
@@ -891,9 +888,6 @@ exports[`Download Status Table should render correctly 1`] = `
                             d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"
                           />
                         </svg>
-                        <span
-                          class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                        />
                       </button>
                     </div>
                   </div>
@@ -1055,9 +1049,6 @@ exports[`Download Status Table should render correctly 1`] = `
                             d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"
                           />
                         </svg>
-                        <span
-                          class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                        />
                       </button>
                     </div>
                   </div>
@@ -1219,9 +1210,6 @@ exports[`Download Status Table should render correctly 1`] = `
                             d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"
                           />
                         </svg>
-                        <span
-                          class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                        />
                       </button>
                     </div>
                   </div>
@@ -1364,9 +1352,6 @@ exports[`Download Status Table should render correctly 1`] = `
                               d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
                             />
                           </svg>
-                          <span
-                            class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                          />
                         </a>
                       </span>
                       <button
@@ -1386,9 +1371,6 @@ exports[`Download Status Table should render correctly 1`] = `
                             d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"
                           />
                         </svg>
-                        <span
-                          class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                        />
                       </button>
                     </div>
                   </div>

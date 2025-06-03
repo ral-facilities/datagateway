@@ -8,7 +8,6 @@ import {
   useIds,
   useRemoveFromCart,
 } from 'datagateway-common';
-import * as React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
@@ -19,8 +18,6 @@ import DLSDatafilesTable from './dlsDatafilesTable.component';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createMemoryHistory, type History } from 'history';
 import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
   findAllRows,
   findCellInRow,
   findColumnHeaderByName,
@@ -37,19 +34,19 @@ import {
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    useDatafileCount: jest.fn(),
-    useDatafilesInfinite: jest.fn(),
-    useIds: jest.fn(),
-    useCart: jest.fn(),
-    useAddToCart: jest.fn(),
-    useRemoveFromCart: jest.fn(),
-    downloadDatafile: jest.fn(),
+    useDatafileCount: vi.fn(),
+    useDatafilesInfinite: vi.fn(),
+    useIds: vi.fn(),
+    useCart: vi.fn(),
+    useAddToCart: vi.fn(),
+    useRemoveFromCart: vi.fn(),
+    downloadDatafile: vi.fn(),
   };
 });
 
@@ -94,31 +91,31 @@ describe('DLS datafiles table component', () => {
       })
     );
 
-    (useCart as jest.Mock).mockReturnValue({
+    vi.mocked(useCart, { partial: true }).mockReturnValue({
       data: [],
       isLoading: false,
     });
-    (useDatafileCount as jest.Mock).mockReturnValue({
+    vi.mocked(useDatafileCount, { partial: true }).mockReturnValue({
       data: 0,
     });
-    (useDatafilesInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
+    vi.mocked(useDatafilesInfinite, { partial: true }).mockReturnValue({
+      data: { pages: [rowData], pageParams: [] },
+      fetchNextPage: vi.fn(),
     });
-    (useIds as jest.Mock).mockReturnValue({
+    vi.mocked(useIds, { partial: true }).mockReturnValue({
       data: [1],
       isLoading: false,
     });
-    (useAddToCart as jest.Mock).mockReturnValue({
-      mutate: jest.fn(),
+    vi.mocked(useAddToCart, { partial: true }).mockReturnValue({
+      mutate: vi.fn(),
       isLoading: false,
     });
-    (useRemoveFromCart as jest.Mock).mockReturnValue({
-      mutate: jest.fn(),
+    vi.mocked(useRemoveFromCart, { partial: true }).mockReturnValue({
+      mutate: vi.fn(),
       isLoading: false,
     });
 
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/\/datafiles$/.test(url)) {
@@ -132,7 +129,7 @@ describe('DLS datafiles table component', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly', async () => {
@@ -210,8 +207,6 @@ describe('DLS datafiles table component', () => {
   });
 
   it('updates filter query params on date filter', async () => {
-    applyDatePickerWorkaround();
-
     renderComponent();
 
     const filterInput = await screen.findByRole('textbox', {
@@ -234,8 +229,6 @@ describe('DLS datafiles table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
-
-    cleanupDatePickerWorkaround();
   });
 
   it('uses default sort', async () => {
@@ -271,10 +264,10 @@ describe('DLS datafiles table component', () => {
   });
 
   it('calls addToCart mutate function on unchecked checkbox click', async () => {
-    const addToCart = jest.fn();
-    (useAddToCart as jest.Mock).mockReturnValue({
+    const addToCart = vi.fn();
+    vi.mocked(useAddToCart, { partial: true }).mockReturnValue({
       mutate: addToCart,
-      loading: false,
+      isLoading: false,
     });
     renderComponent();
 
@@ -286,7 +279,7 @@ describe('DLS datafiles table component', () => {
   });
 
   it('calls removeFromCart mutate function on checked checkbox click', async () => {
-    (useCart as jest.Mock).mockReturnValue({
+    vi.mocked(useCart, { partial: true }).mockReturnValue({
       data: [
         {
           entityId: 1,
@@ -299,10 +292,10 @@ describe('DLS datafiles table component', () => {
       isLoading: false,
     });
 
-    const removeFromCart = jest.fn();
-    (useRemoveFromCart as jest.Mock).mockReturnValue({
+    const removeFromCart = vi.fn();
+    vi.mocked(useRemoveFromCart, { partial: true }).mockReturnValue({
       mutate: removeFromCart,
-      loading: false,
+      isLoading: false,
     });
 
     renderComponent();
@@ -315,7 +308,7 @@ describe('DLS datafiles table component', () => {
   });
 
   it('selected rows only considers relevant cart items', async () => {
-    (useCart as jest.Mock).mockReturnValueOnce({
+    vi.mocked(useCart, { partial: true }).mockReturnValueOnce({
       data: [
         {
           entityId: 1,
@@ -358,15 +351,22 @@ describe('DLS datafiles table component', () => {
   });
 
   it("doesn't display download button for datafiles with no location", async () => {
-    (useDatafilesInfinite as jest.Mock).mockReturnValueOnce([
-      {
-        id: 1,
-        name: 'Test 1',
-        fileSize: 1,
-        modTime: '2019-07-23',
-        createTime: '2019-07-23',
+    vi.mocked(useDatafilesInfinite, { partial: true }).mockReturnValueOnce({
+      data: {
+        pages: [
+          [
+            {
+              id: 1,
+              name: 'Test 1',
+              fileSize: 1,
+              modTime: '2019-07-23',
+              createTime: '2019-07-23',
+            },
+          ],
+        ],
+        pageParams: [],
       },
-    ]);
+    });
 
     renderComponent();
 

@@ -162,7 +162,7 @@ const DataHeader = (
       </div>
       <Draggable
         axis="none"
-        onDrag={(event, { deltaX }) => resizeColumn(dataKey, deltaX)}
+        onDrag={(_event, { deltaX }) => resizeColumn(dataKey, deltaX)}
       >
         <div
           style={{

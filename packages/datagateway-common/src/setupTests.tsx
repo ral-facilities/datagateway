@@ -2,41 +2,47 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import '@testing-library/jest-dom';
 import { History, createMemoryHistory } from 'history';
-import failOnConsole from 'jest-fail-on-console';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
-import { Action } from 'redux';
+import type { Action } from 'redux';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { StateType } from './state/app.types';
+import failOnConsole from 'vitest-fail-on-console';
+import type { StateType } from './state/app.types';
 import { initialState } from './state/reducers/dgcommon.reducer';
 
 failOnConsole();
 
-jest.setTimeout(20000);
+vi.setConfig({ testTimeout: 20_000 });
+
+// see https://github.com/testing-library/react-testing-library/issues/1197
+// and https://github.com/testing-library/user-event/issues/1115
+vi.stubGlobal('jest', { advanceTimersByTime: vi.advanceTimersByTime.bind(vi) });
 
 if (typeof window.URL.createObjectURL === 'undefined') {
-  // required as work-around for enzyme/jest environment not implementing window.URL.createObjectURL method
+  // required as work-around for jsdom environment not implementing window.URL.createObjectURL method
   Object.defineProperty(window.URL, 'createObjectURL', {
     value: () => 'testObjectUrl',
   });
 }
 
 if (typeof window.URL.revokeObjectURL === 'undefined') {
-  // required as work-around for enzyme/jest environment not implementing window.URL.createObjectURL method
+  // required as work-around for jsdom environment not implementing window.URL.createObjectURL method
   Object.defineProperty(window.URL, 'revokeObjectURL', {
     value: () => {},
   });
 }
 
-// Add in ResizeObserver as it's not in Jest's environment
-global.ResizeObserver = require('resize-observer-polyfill');
-
-if (!global.structuredClone) {
-  // structuredClone not available in jest/node <17, so this is a quick polyfill that should do the exact same thing
-  global.structuredClone = (obj: unknown) => JSON.parse(JSON.stringify(obj));
-}
+// Add in ResizeObserver as it's not in jsdom's environment
+vi.stubGlobal(
+  'ResizeObserver',
+  vi.fn(() => ({
+    observe: vi.fn(),
+    unobserve: vi.fn(),
+    disconnect: vi.fn(),
+  }))
+);
 
 // these are used for testing async actions
 export let actions: Action[] = [];
@@ -54,9 +60,9 @@ export const dispatch = (action: Action): void | Promise<void> => {
 };
 
 // mock retry function to ensure it doesn't slow down query failure tests
-jest.mock('./api/retryICATErrors', () => ({
+vi.mock('./api/retryICATErrors', () => ({
   __esModule: true,
-  useRetryICATErrors: jest.fn(() => () => false),
+  useRetryICATErrors: vi.fn(() => () => false),
 }));
 
 // Mock Date.toLocaleDateString so that it always uses en-GB as locale and UTC timezone
@@ -65,15 +71,15 @@ jest.mock('./api/retryICATErrors', () => ({
 
 const toLocaleDateString = Date.prototype.toLocaleDateString;
 
-jest
-  .spyOn(Date.prototype, 'toLocaleDateString')
-  .mockImplementation(function (this: Date) {
-    // when toLocaleDateString is called with no argument
-    // pass in 'en-GB' as the locale & UTC as timezone
-    // so that Date.toLocaleDateString() is equivalent to
-    // Date.toLocaleDateString('en-GB', { timeZone: 'UTC' })
-    return toLocaleDateString.call(this, 'en-GB', { timeZone: 'UTC' });
-  });
+vi.spyOn(Date.prototype, 'toLocaleDateString').mockImplementation(function (
+  this: Date
+) {
+  // when toLocaleDateString is called with no argument
+  // pass in 'en-GB' as the locale & UTC as timezone
+  // so that Date.toLocaleDateString() is equivalent to
+  // Date.toLocaleDateString('en-GB', { timeZone: 'UTC' })
+  return toLocaleDateString.call(this, 'en-GB', { timeZone: 'UTC' });
+});
 
 export const createTestQueryClient = (): QueryClient =>
   new QueryClient({
@@ -86,7 +92,7 @@ export const createTestQueryClient = (): QueryClient =>
     logger: {
       log: console.log,
       warn: console.warn,
-      error: jest.fn(),
+      error: vi.fn(),
     },
   });
 
@@ -123,30 +129,6 @@ export const createReactQueryWrapper = (
   return wrapper;
 };
 
-// MUI date pickers default to mobile versions during testing and so functions
-// like .simulate('change') will not work, this workaround ensures desktop
-// datepickers are used in tests instead
-// https://github.com/mui/material-ui-pickers/issues/2073
-export const applyDatePickerWorkaround = (): void => {
-  // add window.matchMedia
-  // this is necessary for the date picker to be rendered in desktop mode.
-  // if this is not provided, the mobile mode is rendered, which might lead to unexpected behavior
-  Object.defineProperty(window, 'matchMedia', {
-    writable: true,
-    value: (query: string) => ({
-      media: query,
-      // this is the media query that @material-ui/pickers uses to determine if a device is a desktop device
-      matches: query === '(pointer: fine)',
-      onchange: () => {},
-      addEventListener: () => {},
-      removeEventListener: () => {},
-      addListener: () => {},
-      removeListener: () => {},
-      dispatchEvent: () => false,
-    }),
-  });
-};
-
-export const cleanupDatePickerWorkaround = (): void => {
-  delete window.matchMedia;
-};
+// Recreate jest behaviour by mocking with __mocks__ by mocking globally here
+vi.mock('axios');
+vi.mock('react-i18next');

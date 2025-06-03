@@ -23,8 +23,8 @@ import {
   ConfigureAccessMethodsType,
 } from 'datagateway-common';
 
-const mockSettingsGetter = jest.fn();
-jest.mock('../../settings', () => ({
+const mockSettingsGetter = vi.fn();
+vi.mock('../../settings', () => ({
   get settings() {
     return mockSettingsGetter();
   },

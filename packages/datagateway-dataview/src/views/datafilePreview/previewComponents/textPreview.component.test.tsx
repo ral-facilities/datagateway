@@ -1,7 +1,6 @@
 import type { RenderResult } from '@testing-library/react';
 import { act, render, screen, waitFor } from '@testing-library/react';
 import { DGThemeProvider } from 'datagateway-common';
-import * as React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import { combineReducers, createStore, Store } from 'redux';
@@ -26,7 +25,7 @@ function renderComponent(store: Store): RenderResult {
               logger: {
                 log: console.log,
                 warn: console.warn,
-                error: jest.fn(),
+                error: vi.fn(),
               },
             })
           }
@@ -53,7 +52,7 @@ describe('TextPreview', () => {
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('should render given text file', async () => {
@@ -68,12 +67,12 @@ describe('TextPreview', () => {
   });
 
   it('should show loading when reading the text file from blob', () => {
-    jest.spyOn(global, 'Blob').mockImplementationOnce(() => ({
+    vi.spyOn(global, 'Blob').mockImplementationOnce(() => ({
       size: 123,
       type: 'text/plain',
-      arrayBuffer: jest.fn(),
-      slice: jest.fn(),
-      stream: jest.fn(),
+      arrayBuffer: vi.fn(),
+      slice: vi.fn(),
+      stream: vi.fn(),
       text: () =>
         new Promise<string>(() => {
           // a promise that never resolves to pretend this is reading content
@@ -88,12 +87,12 @@ describe('TextPreview', () => {
   });
 
   it('should show an error message when the blob cannot be read as text properly', async () => {
-    jest.spyOn(global, 'Blob').mockImplementationOnce(() => ({
+    vi.spyOn(global, 'Blob').mockImplementationOnce(() => ({
       size: 123,
       type: 'text/plain',
-      arrayBuffer: jest.fn(),
-      slice: jest.fn(),
-      stream: jest.fn(),
+      arrayBuffer: vi.fn(),
+      slice: vi.fn(),
+      stream: vi.fn(),
       text: () => Promise.reject(),
     }));
 

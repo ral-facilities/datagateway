@@ -3,14 +3,14 @@ import { render, screen } from '@testing-library/react';
 import Sticky from './sticky.component';
 import useSticky from './hooks/useSticky';
 
-jest.mock('./hooks/useSticky', () => ({
+vi.mock('./hooks/useSticky', () => ({
   __esModule: true,
-  default: jest.fn(),
+  default: vi.fn(),
 }));
 
 describe('Sticky component', () => {
   it('renders children with fixed position and 100% width when sticky', async () => {
-    (useSticky as jest.MockedFn<typeof useSticky>).mockReturnValue({
+    vi.mocked(useSticky).mockReturnValue({
       isSticky: true,
     });
     render(
@@ -28,7 +28,7 @@ describe('Sticky component', () => {
   });
 
   it('renders children normally when not sticky', () => {
-    (useSticky as jest.MockedFn<typeof useSticky>).mockReturnValue({
+    vi.mocked(useSticky).mockReturnValue({
       isSticky: false,
     });
     render(

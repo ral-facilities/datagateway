@@ -1,4 +1,3 @@
-import * as React from 'react';
 import DatafileSearchTable from './datafileSearchTable.component';
 import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
 import configureStore from 'redux-mock-store';
@@ -168,9 +167,9 @@ describe('Datafile search table component', () => {
       source: rowData,
     };
 
-    axios.get = jest.fn().mockImplementation(mockAxiosGet);
+    axios.get = vi.fn().mockImplementation(mockAxiosGet);
 
-    axios.post = jest
+    axios.post = vi
       .fn()
       .mockImplementation(
         (url: string, data: unknown): Promise<Partial<AxiosResponse>> => {
@@ -212,7 +211,7 @@ describe('Datafile search table component', () => {
 
   afterEach(() => {
     document.body.removeChild(holder);
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('disables the search query if datafile search is disabled', async () => {

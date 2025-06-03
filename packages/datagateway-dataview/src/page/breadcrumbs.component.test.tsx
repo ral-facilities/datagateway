@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -17,7 +16,7 @@ import {
   within,
 } from '@testing-library/react';
 
-jest.mock('loglevel');
+vi.mock('loglevel');
 
 // The generic routes to test.
 const genericRoutes = {
@@ -112,8 +111,8 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
       })
     );
 
-    (axios.get as jest.Mock).mockImplementation((url) => {
-      const potentialId = parseInt(url.split('/').at(-1));
+    vi.mocked(axios.get).mockImplementation((url) => {
+      const potentialId = parseInt(url.split('/').at(-1) ?? '');
       let id = 1;
       if (!Number.isNaN(potentialId)) {
         id = potentialId;
@@ -130,7 +129,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
   });
 
   afterEach(() => {
-    (axios.get as jest.Mock).mockClear();
+    vi.mocked(axios.get).mockClear();
   });
 
   describe('Generic', () => {

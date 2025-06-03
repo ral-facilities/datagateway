@@ -3,8 +3,8 @@ import Backend from 'i18next-http-backend';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
 
-const loadPath = process.env.REACT_APP_SEARCH_BUILD_DIRECTORY
-  ? process.env.REACT_APP_SEARCH_BUILD_DIRECTORY + 'res/default.json'
+const loadPath = import.meta.env.VITE_SEARCH_BUILD_DIRECTORY
+  ? import.meta.env.VITE_SEARCH_BUILD_DIRECTORY + 'res/default.json'
   : '/res/default.json';
 
 i18n
@@ -13,7 +13,7 @@ i18n
   .use(initReactI18next)
   .init({
     fallbackLng: 'en',
-    debug: process.env.NODE_ENV === 'development',
+    debug: import.meta.env.MODE === 'development',
     backend: {
       loadPath: loadPath,
     },

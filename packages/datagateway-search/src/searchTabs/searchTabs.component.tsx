@@ -117,7 +117,7 @@ const SearchTabs = ({
   const loading = isFetchingNum > 0;
 
   function handleChange(
-    event: React.ChangeEvent<unknown>,
+    _event: React.ChangeEvent<unknown>,
     newValue: string
   ): void {
     onTabChange(newValue);

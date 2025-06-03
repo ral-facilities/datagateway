@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Select cell component renders correctly when checked 1`] = `
+exports[`Select cell component > renders correctly when checked 1`] = `
 <DocumentFragment>
   <div
     class="MuiTableCell-root MuiTableCell-body MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall css-2u8re1-MuiTableCell-root"
@@ -41,7 +41,7 @@ exports[`Select cell component renders correctly when checked 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Select cell component renders correctly when selectedRows is undefined 1`] = `
+exports[`Select cell component > renders correctly when selectedRows is undefined 1`] = `
 <DocumentFragment>
   <div
     class="MuiTableCell-root MuiTableCell-body MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall css-2u8re1-MuiTableCell-root"
@@ -81,7 +81,7 @@ exports[`Select cell component renders correctly when selectedRows is undefined 
 </DocumentFragment>
 `;
 
-exports[`Select cell component renders correctly when selectedRows loading is true 1`] = `
+exports[`Select cell component > renders correctly when selectedRows loading is true 1`] = `
 <DocumentFragment>
   <div
     class="MuiTableCell-root MuiTableCell-body MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall css-2u8re1-MuiTableCell-root"
@@ -121,7 +121,7 @@ exports[`Select cell component renders correctly when selectedRows loading is tr
 </DocumentFragment>
 `;
 
-exports[`Select cell component renders correctly when selectedRows parentSelected is true 1`] = `
+exports[`Select cell component > renders correctly when selectedRows parentSelected is true 1`] = `
 <DocumentFragment>
   <div
     class="MuiTableCell-root MuiTableCell-body MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall css-2u8re1-MuiTableCell-root"
@@ -162,7 +162,7 @@ exports[`Select cell component renders correctly when selectedRows parentSelecte
 </DocumentFragment>
 `;
 
-exports[`Select cell component renders correctly when unchecked 1`] = `
+exports[`Select cell component > renders correctly when unchecked 1`] = `
 <DocumentFragment>
   <div
     class="MuiTableCell-root MuiTableCell-body MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall css-2u8re1-MuiTableCell-root"
