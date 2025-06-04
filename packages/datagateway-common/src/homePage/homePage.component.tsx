@@ -1,8 +1,8 @@
-import React from 'react';
-import Typography from '@mui/material/Typography';
-import { Grid, Box, Paper, Button, Avatar, alpha, styled } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
 import DownloadIcon from '@mui/icons-material/GetApp';
+import SearchIcon from '@mui/icons-material/Search';
+import { Avatar, Box, Button, Grid, Paper, alpha, styled } from '@mui/material';
+import Typography from '@mui/material/Typography';
+import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
@@ -241,7 +241,7 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
           </Grid>
         </Paper>
         <Grid container spacing={2}>
-          <Grid item sm={12} md={4}>
+          <Grid item xs={12} md={4}>
             <Paper sx={paperStyles} elevation={1}>
               <Box sx={paperContentStyles}>
                 <Avatar sx={avatarStyles}>
@@ -267,7 +267,7 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
               </Box>
             </Paper>
           </Grid>
-          <Grid item sm={12} md={4}>
+          <Grid item xs={12} md={4}>
             <Paper sx={paperStyles} elevation={1}>
               <Box sx={paperContentStyles}>
                 <Avatar sx={avatarStyles}>
@@ -293,7 +293,7 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
               </Box>
             </Paper>
           </Grid>
-          <Grid item sm={12} md={4}>
+          <Grid item xs={12} md={4}>
             <Paper
               sx={{ ...paperStyles, backgroundColor: '#003088' }}
               elevation={1}
