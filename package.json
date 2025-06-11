@@ -26,5 +26,5 @@
     "datagateway-search": "yarn workspace datagateway-search dev",
     "postinstall": "husky install"
   },
-  "packageManager": "yarn@3.7.0"
+  "packageManager": "yarn@3.8.7"
 }
