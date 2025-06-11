@@ -45,7 +45,7 @@
     "react-router-dom": ">= 5.2.0 < 6"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "7.23.3",
+    "@babel/eslint-parser": "7.27.5",
     "@mui/icons-material": "5.11.0",
     "@mui/material": "5.11.0",
     "@testing-library/jest-dom": "6.4.1",
