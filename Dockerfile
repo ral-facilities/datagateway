@@ -1,7 +1,7 @@
 # Dockerfile to build and serve datagateway
 
 # Build stage
-FROM node:20.11.1-alpine3.19@sha256:bf77dc26e48ea95fca9d1aceb5acfa69d2e546b765ec2abfb502975f1a2d4def as builder
+FROM node:20.18.1-alpine3.19@sha256:1cc9088b0fbcb2009a8fc2cb57916cd129cd5e32b3c75fb12bb24bac76917a96 as builder
 
 WORKDIR /datagateway-build
 

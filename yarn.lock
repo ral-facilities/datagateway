@@ -3037,12 +3037,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:20.11.5":
-  version: 20.11.5
-  resolution: "@types/node@npm:20.11.5"
+"@types/node@npm:*, @types/node@npm:20.19.0":
+  version: 20.19.0
+  resolution: "@types/node@npm:20.19.0"
   dependencies:
-    undici-types: ~5.26.4
-  checksum: a542727de1334ae20a3ca034b0ecf4b464a57ca01efc4f9cf43bd9ab93896125ab3c2de060ecd8f6ae23b86c6bf3463f681b643e69c032c6a662d376c98a6092
+    undici-types: ~6.21.0
+  checksum: 21468a6fd9b56618af881bdd02466736149c8096699256350e27ec47442c6be4942a5b849a21da71653d4d5b819988303c24b19848761887cf73dcff1a408b68
   languageName: node
   linkType: hard
 
@@ -4704,7 +4704,7 @@ __metadata:
     "@testing-library/react": 14.0.0
     "@testing-library/user-event": 14.5.2
     "@types/lodash.debounce": 4.0.6
-    "@types/node": 20.11.5
+    "@types/node": 20.19.0
     "@types/react": 18.0.33
     "@types/react-router-dom": 5.3.3
     "@types/react-virtualized": 9.22.2
@@ -4772,7 +4772,7 @@ __metadata:
     "@types/jsrsasign": 10.5.2
     "@types/lodash.debounce": 4.0.6
     "@types/lodash.memoize": 4.1.6
-    "@types/node": 20.11.5
+    "@types/node": 20.19.0
     "@types/react": 18.0.33
     "@types/react-dom": 18.0.11
     "@types/react-redux": 7.1.22
@@ -4845,7 +4845,7 @@ __metadata:
     "@testing-library/user-event": 14.5.2
     "@types/jsrsasign": 10.5.2
     "@types/lodash.chunk": 4.2.6
-    "@types/node": 20.11.5
+    "@types/node": 20.19.0
     "@types/react": 18.0.33
     "@types/react-dom": 18.0.11
     "@types/react-router-dom": 5.3.3
@@ -4917,7 +4917,7 @@ __metadata:
     "@types/history": 4.7.11
     "@types/jsrsasign": 10.5.2
     "@types/lodash.isequal": 4.5.8
-    "@types/node": 20.11.5
+    "@types/node": 20.19.0
     "@types/react": 18.0.33
     "@types/react-dom": 18.0.11
     "@types/react-redux": 7.1.22
@@ -10567,10 +10567,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici-types@npm:~5.26.4":
-  version: 5.26.5
-  resolution: "undici-types@npm:5.26.5"
-  checksum: 3192ef6f3fd5df652f2dc1cd782b49d6ff14dc98e5dced492aa8a8c65425227da5da6aafe22523c67f035a272c599bb89cfe803c1db6311e44bed3042fc25487
+"undici-types@npm:~6.21.0":
+  version: 6.21.0
+  resolution: "undici-types@npm:6.21.0"
+  checksum: 46331c7d6016bf85b3e8f20c159d62f5ae471aba1eb3dc52fff35a0259d58dcc7d592d4cc4f00c5f9243fa738a11cfa48bd20203040d4a9e6bc25e807fab7ab3
   languageName: node
   linkType: hard
 
