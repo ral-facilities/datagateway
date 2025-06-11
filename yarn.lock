@@ -3120,13 +3120,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-virtualized@npm:9.21.10":
-  version: 9.21.10
-  resolution: "@types/react-virtualized@npm:9.21.10"
+"@types/react-virtualized@npm:9.22.2":
+  version: 9.22.2
+  resolution: "@types/react-virtualized@npm:9.22.2"
   dependencies:
     "@types/prop-types": "*"
     "@types/react": "*"
-  checksum: 7beb56a0f9f2fad8ddc64bbeaed18be294380a5ac390b1f0343d7c1c80685e7adfa4b955bac0e50181c2412d90d18e7002a582c768f38ac7e8ed00950427241d
+  checksum: 893105cfa89043cc72ae6f918bd8ea30f33ffd7bbd23158d17c8703df980e51b2539e01a3417c9617e115941dab1130e33fcd047e369844f241b2d1bbeda4276
   languageName: node
   linkType: hard
 
@@ -4707,7 +4707,7 @@ __metadata:
     "@types/node": 20.11.5
     "@types/react": 18.0.33
     "@types/react-router-dom": 5.3.3
-    "@types/react-virtualized": 9.21.10
+    "@types/react-virtualized": 9.22.2
     "@typescript-eslint/eslint-plugin": 5.62.0
     "@typescript-eslint/parser": 5.62.0
     "@vitejs/plugin-react": 4.5.1
@@ -4777,7 +4777,7 @@ __metadata:
     "@types/react-dom": 18.0.11
     "@types/react-redux": 7.1.22
     "@types/react-router-dom": 5.3.3
-    "@types/react-virtualized": 9.21.10
+    "@types/react-virtualized": 9.22.2
     "@types/redux-logger": 3.0.8
     "@types/redux-mock-store": 1.0.3
     "@typescript-eslint/eslint-plugin": 5.62.0
@@ -4849,7 +4849,7 @@ __metadata:
     "@types/react": 18.0.33
     "@types/react-dom": 18.0.11
     "@types/react-router-dom": 5.3.3
-    "@types/react-virtualized": 9.21.10
+    "@types/react-virtualized": 9.22.2
     "@typescript-eslint/eslint-plugin": 5.62.0
     "@typescript-eslint/parser": 5.62.0
     "@vitejs/plugin-react": 4.5.1
@@ -4922,7 +4922,7 @@ __metadata:
     "@types/react-dom": 18.0.11
     "@types/react-redux": 7.1.22
     "@types/react-router-dom": 5.3.3
-    "@types/react-virtualized": 9.21.10
+    "@types/react-virtualized": 9.22.2
     "@types/redux-logger": 3.0.8
     "@types/redux-mock-store": 1.0.3
     "@typescript-eslint/eslint-plugin": 5.62.0
