@@ -4115,17 +4115,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"browserslist@npm:4.24.4, browserslist@npm:^4.21.4, browserslist@npm:^4.24.0":
-  version: 4.24.4
-  resolution: "browserslist@npm:4.24.4"
+"browserslist@npm:4.25.0, browserslist@npm:^4.21.4, browserslist@npm:^4.24.0":
+  version: 4.25.0
+  resolution: "browserslist@npm:4.25.0"
   dependencies:
-    caniuse-lite: ^1.0.30001688
-    electron-to-chromium: ^1.5.73
+    caniuse-lite: ^1.0.30001718
+    electron-to-chromium: ^1.5.160
     node-releases: ^2.0.19
-    update-browserslist-db: ^1.1.1
+    update-browserslist-db: ^1.1.3
   bin:
     browserslist: cli.js
-  checksum: 64074bf6cf0a9ae3094d753270e3eae9cf925149db45d646f0bc67bacc2e46d7ded64a4e835b95f5fdcf0350f63a83c3755b32f80831f643a47f0886deb8a065
+  checksum: 0d34fa0c6e23e962598ba68ee9f4566a4b575ec550ff7e9e7287c5e94a6e0f208f75f4f7d578ccd060f843167e0e495bde8f6d278f353f0da783cd50f758e5c7
   languageName: node
   linkType: hard
 
@@ -4223,10 +4223,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caniuse-lite@npm:^1.0.30001688":
-  version: 1.0.30001703
-  resolution: "caniuse-lite@npm:1.0.30001703"
-  checksum: f3c19e357df7f5ff480a8a24a61213d1442bf3df9e2f9563a47f4c95e9c08ea7d3c8faa965bc84dcc57c569542584c965b30d552d9b35e421f352c974980de17
+"caniuse-lite@npm:^1.0.30001718":
+  version: 1.0.30001722
+  resolution: "caniuse-lite@npm:1.0.30001722"
+  checksum: 318e40d938bbc6fe2e6b8524195622421588b43bfc3068d0ba24e1ffc6744ac032571181446f9f6a91c374755109af0520e06227fa70611c32252e0d71be24f8
   languageName: node
   linkType: hard
 
@@ -4713,7 +4713,7 @@ __metadata:
     "@vitejs/plugin-react": 4.5.1
     "@vitest/coverage-v8": 3.0.9
     axios: 1.8.3
-    browserslist: 4.24.4
+    browserslist: 4.25.0
     browserslist-to-esbuild: 2.1.1
     date-fns: 2.30.0
     eslint: 8.56.0
@@ -4785,7 +4785,7 @@ __metadata:
     "@vitejs/plugin-react": 4.5.1
     "@vitest/coverage-v8": 3.0.9
     axios: 1.8.3
-    browserslist: 4.24.4
+    browserslist: 4.25.0
     browserslist-to-esbuild: 2.1.1
     cross-env: 7.0.3
     cypress: 13.6.4
@@ -4855,7 +4855,7 @@ __metadata:
     "@vitejs/plugin-react": 4.5.1
     "@vitest/coverage-v8": 3.0.9
     axios: 1.8.3
-    browserslist: 4.24.4
+    browserslist: 4.25.0
     browserslist-to-esbuild: 2.1.1
     cross-env: 7.0.3
     cypress: 13.6.4
@@ -4930,7 +4930,7 @@ __metadata:
     "@vitejs/plugin-react": 4.5.1
     "@vitest/coverage-v8": 3.0.9
     axios: 1.8.3
-    browserslist: 4.24.4
+    browserslist: 4.25.0
     browserslist-to-esbuild: 2.1.1
     cross-env: 7.0.3
     cypress: 13.6.4
@@ -5256,10 +5256,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-to-chromium@npm:^1.5.73":
-  version: 1.5.114
-  resolution: "electron-to-chromium@npm:1.5.114"
-  checksum: af696acf7c57007e3362a0a7e5fb4613210d55d6bc7c7cfee32f4000aaa604a75fce41d12b081cab7d9757eefb44cafa69c17b6f8ea450d5da938c0bf84b5697
+"electron-to-chromium@npm:^1.5.160":
+  version: 1.5.166
+  resolution: "electron-to-chromium@npm:1.5.166"
+  checksum: 8924ae3dc3dcf4aaa9262e079496682c1f5bdcef481c88b7c6a3b54a671e16726870a89c566fae77fc8f5ea32dc661e59aaebeea3f51a9b7a85a00c3d930e9a9
   languageName: node
   linkType: hard
 
@@ -10651,7 +10651,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"update-browserslist-db@npm:^1.1.1":
+"update-browserslist-db@npm:^1.1.3":
   version: 1.1.3
   resolution: "update-browserslist-db@npm:1.1.3"
   dependencies:
