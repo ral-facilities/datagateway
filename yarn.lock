@@ -3912,14 +3912,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:1.8.3, axios@npm:^1.8.2":
-  version: 1.8.3
-  resolution: "axios@npm:1.8.3"
+"axios@npm:1.9.0, axios@npm:^1.8.2":
+  version: 1.9.0
+  resolution: "axios@npm:1.9.0"
   dependencies:
     follow-redirects: ^1.15.6
     form-data: ^4.0.0
     proxy-from-env: ^1.1.0
-  checksum: 85fc8ad7d968e43ea9da5513310637d29654b181411012ee14cc0a4b3662782e6c81ac25eea40b5684f86ed2d8a01fa6fc20b9b48c4da14ef4eaee848fea43bc
+  checksum: 631f02c9c279f2ae90637a4989cc9d75c1c27aefd16b6e8eb90f98a4d0bddaccfd1cb1387be12101d1ab0f9bbf0c47e2451b4de0cf2870462a7d9ed3de8da3f2
   languageName: node
   linkType: hard
 
@@ -4712,7 +4712,7 @@ __metadata:
     "@typescript-eslint/parser": 5.62.0
     "@vitejs/plugin-react": 4.5.1
     "@vitest/coverage-v8": 3.0.9
-    axios: 1.8.3
+    axios: 1.9.0
     browserslist: 4.25.0
     browserslist-to-esbuild: 2.1.1
     date-fns: 2.30.0
@@ -4784,7 +4784,7 @@ __metadata:
     "@typescript-eslint/parser": 5.62.0
     "@vitejs/plugin-react": 4.5.1
     "@vitest/coverage-v8": 3.0.9
-    axios: 1.8.3
+    axios: 1.9.0
     browserslist: 4.25.0
     browserslist-to-esbuild: 2.1.1
     cross-env: 7.0.3
@@ -4854,7 +4854,7 @@ __metadata:
     "@typescript-eslint/parser": 5.62.0
     "@vitejs/plugin-react": 4.5.1
     "@vitest/coverage-v8": 3.0.9
-    axios: 1.8.3
+    axios: 1.9.0
     browserslist: 4.25.0
     browserslist-to-esbuild: 2.1.1
     cross-env: 7.0.3
@@ -4929,7 +4929,7 @@ __metadata:
     "@typescript-eslint/parser": 5.62.0
     "@vitejs/plugin-react": 4.5.1
     "@vitest/coverage-v8": 3.0.9
-    axios: 1.8.3
+    axios: 1.9.0
     browserslist: 4.25.0
     browserslist-to-esbuild: 2.1.1
     cross-env: 7.0.3

@@ -21,7 +21,7 @@
     "@types/react-virtualized": "9.22.2",
     "@types/redux-logger": "3.0.8",
     "@vitejs/plugin-react": "4.5.1",
-    "axios": "1.8.3",
+    "axios": "1.9.0",
     "browserslist": "4.25.0",
     "browserslist-to-esbuild": "2.1.1",
     "datagateway-common": "^2.2.0",
