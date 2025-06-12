@@ -1,31 +1,31 @@
-import ISISDatafilesTable from './isisDatafilesTable.component';
-import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
-import configureStore from 'redux-mock-store';
-import type { StateType } from '../../../state/app.types';
-import {
-  type Datafile,
-  dGCommonInitialState,
-  DownloadCartItem,
-} from 'datagateway-common';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
-import { Router } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { createMemoryHistory, type History } from 'history';
-import { findAllRows, findColumnHeaderByName } from '../../../setupTests';
 import {
   render,
-  type RenderResult,
   screen,
   waitFor,
   within,
+  type RenderResult,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
+import {
+  DownloadCartItem,
+  dGCommonInitialState,
+  type Datafile,
+} from 'datagateway-common';
 import {
   findCellInRow,
   findColumnIndexByName,
 } from 'datagateway-search/src/setupTests';
-import axios, { AxiosResponse } from 'axios';
+import { createMemoryHistory, type History } from 'history';
+import { Provider } from 'react-redux';
+import { Router } from 'react-router-dom';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { findAllRows, findColumnHeaderByName } from '../../../setupTests';
+import type { StateType } from '../../../state/app.types';
+import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
+import ISISDatafilesTable from './isisDatafilesTable.component';
 
 describe('ISIS datafiles table component', () => {
   const mockStore = configureStore([thunk]);
@@ -151,11 +151,14 @@ describe('ISIS datafiles table component', () => {
     renderComponent();
 
     let rows: HTMLElement[] = [];
-    await waitFor(async () => {
-      rows = await findAllRows();
-      // should have 1 row in the table
-      expect(rows).toHaveLength(1);
-    });
+    await waitFor(
+      async () => {
+        rows = await findAllRows();
+        // should have 1 row in the table
+        expect(rows).toHaveLength(1);
+      },
+      { timeout: 5_000 }
+    );
 
     // check that column headers are shown correctly
     expect(await findColumnHeaderByName('datafiles.name')).toBeInTheDocument();
@@ -285,9 +288,12 @@ describe('ISIS datafiles table component', () => {
     renderComponent();
 
     // wait for rows to show up
-    await waitFor(async () => {
-      expect(await findAllRows()).toHaveLength(1);
-    });
+    await waitFor(
+      async () => {
+        expect(await findAllRows()).toHaveLength(1);
+      },
+      { timeout: 5_000 }
+    );
 
     // row should not be selected initially as the cart is empty
     expect(

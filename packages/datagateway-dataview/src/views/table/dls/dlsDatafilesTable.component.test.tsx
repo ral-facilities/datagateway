@@ -1,3 +1,13 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  render,
+  screen,
+  waitFor,
+  within,
+  type RenderResult,
+} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
 import {
   Datafile,
   dGCommonInitialState,
@@ -8,15 +18,11 @@ import {
   useIds,
   useRemoveFromCart,
 } from 'datagateway-common';
+import { createMemoryHistory, type History } from 'history';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { StateType } from '../../../state/app.types';
-import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
-import DLSDatafilesTable from './dlsDatafilesTable.component';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { createMemoryHistory, type History } from 'history';
 import {
   findAllRows,
   findCellInRow,
@@ -24,15 +30,9 @@ import {
   findColumnIndexByName,
   findRowAt,
 } from '../../../setupTests';
-import {
-  render,
-  type RenderResult,
-  screen,
-  waitFor,
-  within,
-} from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import axios, { AxiosResponse } from 'axios';
+import { StateType } from '../../../state/app.types';
+import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
+import DLSDatafilesTable from './dlsDatafilesTable.component';
 
 vi.mock('datagateway-common', async () => {
   const originalModule = await vi.importActual('datagateway-common');
@@ -135,9 +135,15 @@ describe('DLS datafiles table component', () => {
   it('renders correctly', async () => {
     renderComponent();
 
-    const rows = await findAllRows();
-    // should have 1 row in the table
-    expect(rows).toHaveLength(1);
+    let rows: HTMLElement[] = [];
+    await waitFor(
+      async () => {
+        rows = await findAllRows();
+        // should have 1 row in the table
+        expect(rows).toHaveLength(1);
+      },
+      { timeout: 5_000 }
+    );
 
     expect(await findColumnHeaderByName('datafiles.name')).toBeInTheDocument();
     expect(
