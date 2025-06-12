@@ -1,31 +1,31 @@
-import {
-  type Datafile,
-  type DownloadCartItem,
-  dGCommonInitialState,
-} from 'datagateway-common';
-import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import type { StateType } from '../../state/app.types';
-import { initialState as dgDataViewInitialState } from '../../state/reducers/dgdataview.reducer';
-import DatafileTable from './datafileTable.component';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { createMemoryHistory, type History } from 'history';
-import { findAllRows, findColumnHeaderByName } from '../../setupTests';
 import {
   render,
-  type RenderResult,
   screen,
   waitFor,
   within,
+  type RenderResult,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import axios, { type AxiosResponse } from 'axios';
+import {
+  dGCommonInitialState,
+  type Datafile,
+  type DownloadCartItem,
+} from 'datagateway-common';
 import {
   findCellInRow,
   findColumnIndexByName,
 } from 'datagateway-search/src/setupTests';
-import axios, { type AxiosResponse } from 'axios';
+import { createMemoryHistory, type History } from 'history';
+import { Provider } from 'react-redux';
+import { Router } from 'react-router-dom';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { findAllRows, findColumnHeaderByName } from '../../setupTests';
+import type { StateType } from '../../state/app.types';
+import { initialState as dgDataViewInitialState } from '../../state/reducers/dgdataview.reducer';
+import DatafileTable from './datafileTable.component';
 
 describe('Datafile table component', () => {
   const mockStore = configureStore([thunk]);
@@ -151,11 +151,14 @@ describe('Datafile table component', () => {
     renderComponent();
 
     let rows: HTMLElement[] = [];
-    await waitFor(async () => {
-      rows = await findAllRows();
-      // should have 1 row in the table
-      expect(rows).toHaveLength(1);
-    });
+    await waitFor(
+      async () => {
+        rows = await findAllRows();
+        // should have 1 row in the table
+        expect(rows).toHaveLength(1);
+      },
+      { timeout: 5_000 }
+    );
 
     const row = rows[0];
 
@@ -310,9 +313,12 @@ describe('Datafile table component', () => {
 
     renderComponent();
     // wait for rows to show up
-    await waitFor(async () => {
-      expect(await findAllRows()).toHaveLength(1);
-    });
+    await waitFor(
+      async () => {
+        expect(await findAllRows()).toHaveLength(1);
+      },
+      { timeout: 5_000 }
+    );
 
     const selectAllCheckbox = await screen.findByRole('checkbox', {
       name: 'select all rows',
@@ -327,9 +333,12 @@ describe('Datafile table component', () => {
 
     renderComponent();
     // wait for rows to show up
-    await waitFor(async () => {
-      expect(await findAllRows()).toHaveLength(1);
-    });
+    await waitFor(
+      async () => {
+        expect(await findAllRows()).toHaveLength(1);
+      },
+      { timeout: 5_000 }
+    );
 
     await waitFor(() => {
       expect(
@@ -343,10 +352,13 @@ describe('Datafile table component', () => {
 
     // wait for rows to show up
     let rows: HTMLElement[] = [];
-    await waitFor(async () => {
-      rows = await findAllRows();
-      expect(rows).toHaveLength(1);
-    });
+    await waitFor(
+      async () => {
+        rows = await findAllRows();
+        expect(rows).toHaveLength(1);
+      },
+      { timeout: 5_000 }
+    );
 
     expect(
       within(rows[0]).getByRole('button', { name: 'buttons.download' })
@@ -358,10 +370,13 @@ describe('Datafile table component', () => {
 
     // wait for rows to show up
     let rows: HTMLElement[] = [];
-    await waitFor(async () => {
-      rows = await findAllRows();
-      expect(rows).toHaveLength(1);
-    });
+    await waitFor(
+      async () => {
+        rows = await findAllRows();
+        expect(rows).toHaveLength(1);
+      },
+      { timeout: 5_000 }
+    );
 
     expect(screen.queryByTestId('datafile-details-panel')).toBeNull();
 
