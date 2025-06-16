@@ -4818,7 +4818,7 @@ __metadata:
     redux-logger: 3.0.6
     redux-mock-store: 1.5.4
     redux-thunk: 2.4.1
-    single-spa-react: 5.0.1
+    single-spa-react: 5.1.4
     start-server-and-test: ~2.0.11
     tslib: 2.6.0
     typescript: 5.3.3
@@ -4887,7 +4887,7 @@ __metadata:
     react-i18next: 12.3.1
     react-router-dom: 5.3.4
     react-virtualized: 9.22.5
-    single-spa-react: 5.0.1
+    single-spa-react: 5.1.4
     start-server-and-test: ~2.0.11
     tslib: 2.6.0
     typescript: 5.3.3
@@ -4962,7 +4962,7 @@ __metadata:
     redux-logger: 3.0.6
     redux-mock-store: 1.5.4
     redux-thunk: 2.4.1
-    single-spa-react: 5.0.1
+    single-spa-react: 5.1.4
     start-server-and-test: ~2.0.11
     tslib: 2.6.0
     typescript: 5.3.3
@@ -9847,9 +9847,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"single-spa-react@npm:5.0.1":
-  version: 5.0.1
-  resolution: "single-spa-react@npm:5.0.1"
+"single-spa-react@npm:5.1.4":
+  version: 5.1.4
+  resolution: "single-spa-react@npm:5.1.4"
   dependencies:
     browserslist-config-single-spa: ^1.0.1
   peerDependencies:
@@ -9861,7 +9861,7 @@ __metadata:
       optional: true
     "@types/react-dom":
       optional: true
-  checksum: fb0669e9c46808be6c47c6b74c4a1629c4755b7b087730ede03e3d0f665ee6067fd4401340f0dc8a232f5b1daf60896f8c1694415a85f29924ea6daf4fa64d08
+  checksum: 20a9c33c1a260617cff03ed1d2a0c066b01b1eaed5f60c9eb29b7f2cd4f5ee23ada535c6afa400921730143301adb79dd79e012d352ba78162c1962eb98555eb
   languageName: node
   linkType: hard
 
