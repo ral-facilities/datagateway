@@ -4802,7 +4802,7 @@ __metadata:
     i18next-browser-languagedetector: 7.2.0
     i18next-http-backend: 2.4.2
     jsdom: 26.0.0
-    jsrsasign: 11.0.0
+    jsrsasign: 11.1.0
     lint-staged: 13.3.0
     lodash.debounce: 4.0.8
     lodash.memoize: 4.1.2
@@ -4874,7 +4874,7 @@ __metadata:
     i18next-browser-languagedetector: 7.2.0
     i18next-http-backend: 2.4.2
     jsdom: 26.0.0
-    jsrsasign: 11.0.0
+    jsrsasign: 11.1.0
     lint-staged: 13.3.0
     lodash.chunk: 4.2.0
     loglevel: 1.9.1
@@ -4947,7 +4947,7 @@ __metadata:
     i18next-browser-languagedetector: 7.2.0
     i18next-http-backend: 2.4.2
     jsdom: 26.0.0
-    jsrsasign: 11.0.0
+    jsrsasign: 11.1.0
     lint-staged: 13.3.0
     lodash.isequal: 4.5.0
     loglevel: 1.9.1
@@ -7725,10 +7725,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsrsasign@npm:11.0.0":
-  version: 11.0.0
-  resolution: "jsrsasign@npm:11.0.0"
-  checksum: 9bbcbb9d2609e279fb015eec259490053be0afd9a6a98743ce0bf42f825e8415b377bfb1aef1d988d3d9ece0bce34bec5bc64f71e99406d0743c37cbbb2f89a5
+"jsrsasign@npm:11.1.0":
+  version: 11.1.0
+  resolution: "jsrsasign@npm:11.1.0"
+  checksum: 1ce5eb44490be260c8b667d14fa8c62bfd75ee2b28f8193043ebd62dc9ac9d371a424d3e648cc2f0c220edada1ea4910d5c8cdebc69fc8c49087539c2e9009c6
   languageName: node
   linkType: hard
 
