@@ -107,6 +107,8 @@
       "section": "Homepage",
       "link": "/datagateway",
       "displayName": "DataGateway",
+      "unauthorised": true,
+      "hideFromMenu": true,
       "order": 0
     },
     {
