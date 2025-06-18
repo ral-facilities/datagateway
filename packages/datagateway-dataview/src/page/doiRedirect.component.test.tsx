@@ -1,15 +1,15 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { render, screen, type RenderResult } from '@testing-library/react';
 import {
   Investigation,
   NotificationType,
   useInvestigation,
 } from 'datagateway-common';
-import { Router } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { createLocation, createMemoryHistory, History } from 'history';
+import { History, createLocation, createMemoryHistory } from 'history';
 import log from 'loglevel';
+import { Router } from 'react-router-dom';
 import { AnyAction } from 'redux';
-import { render, type RenderResult, screen } from '@testing-library/react';
-import DoiRedirect from './doiRedirect.component';
+import { DoiRedirect } from './doiRedirect.component';
 
 vi.mock('datagateway-common', async () => {
   const originalModule = await vi.importActual('datagateway-common');
