@@ -3060,12 +3060,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:18.0.11":
-  version: 18.0.11
-  resolution: "@types/react-dom@npm:18.0.11"
-  dependencies:
-    "@types/react": "*"
-  checksum: 579691e4d5ec09688087568037c35edf8cfb1ab3e07f6c60029280733ee7b5c06d66df6fcc90786702c93ac8cb13bc7ff16c79ddfc75d082938fbaa36e1cdbf4
+"@types/react-dom@npm:18.3.7":
+  version: 18.3.7
+  resolution: "@types/react-dom@npm:18.3.7"
+  peerDependencies:
+    "@types/react": ^18.0.0
+  checksum: c8b63ec944d2a68992b4dba474003fe55ee1d949c4b9c8fe97eecb2290de23f76acfb670b2f7ceb46a5fc8e46808d1745369b03edda48a7a0cf730eff4c5d315
   languageName: node
   linkType: hard
 
@@ -3130,14 +3130,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:18.0.33":
-  version: 18.0.33
-  resolution: "@types/react@npm:18.0.33"
+"@types/react@npm:18.3.23":
+  version: 18.3.23
+  resolution: "@types/react@npm:18.3.23"
   dependencies:
     "@types/prop-types": "*"
-    "@types/scheduler": "*"
     csstype: ^3.0.2
-  checksum: 4fbd2b2b6a26378bdfde121081a6406ec2d39e4ba87ea5f6897ab7bb2198713165e6fd703ad4ed7ba1d4f23ef54a4c9f108f3105c7ed8e136411ee6bdebc5669
+  checksum: d781257d42bf3c66f4bcd21e76a86cd9b6e21fbaf377fe0f840f1ff35049efa59491aa6a4dcf2b3db42af4ab085acebe185f0ae28b7c36d60be5e9094c707bdd
   languageName: node
   linkType: hard
 
@@ -3156,13 +3155,6 @@ __metadata:
   dependencies:
     redux: ^4.0.5
   checksum: 82248c276fed1303c4c85b38cdb9604b6ea1118b5c9a6968e84dd9820ea8c08dd1d8d2fcbf940ac2f6b379d88d87aaa05d2787e6841b65ccfee09cdf23b4c32b
-  languageName: node
-  linkType: hard
-
-"@types/scheduler@npm:*":
-  version: 0.16.2
-  resolution: "@types/scheduler@npm:0.16.2"
-  checksum: b6b4dcfeae6deba2e06a70941860fb1435730576d3689225a421280b7742318d1548b3d22c1f66ab68e414f346a9542f29240bc955b6332c5b11e561077583bc
   languageName: node
   linkType: hard
 
@@ -4723,7 +4715,7 @@ __metadata:
     "@testing-library/user-event": 14.5.2
     "@types/lodash.debounce": 4.0.6
     "@types/node": 20.19.0
-    "@types/react": 18.0.33
+    "@types/react": 18.3.23
     "@types/react-router-dom": 5.3.3
     "@types/react-virtualized": 9.22.2
     "@typescript-eslint/eslint-plugin": 5.62.0
@@ -4747,8 +4739,8 @@ __metadata:
     lodash.debounce: 4.0.8
     loglevel: 1.9.1
     prettier: 2.8.0
-    react: 18.2.0
-    react-dom: 18.2.0
+    react: 18.3.1
+    react-dom: 18.3.1
     react-draggable: 4.4.5
     react-i18next: 12.3.1
     react-redux: 8.1.3
@@ -4791,8 +4783,8 @@ __metadata:
     "@types/lodash.debounce": 4.0.6
     "@types/lodash.memoize": 4.1.6
     "@types/node": 20.19.0
-    "@types/react": 18.0.33
-    "@types/react-dom": 18.0.11
+    "@types/react": 18.3.23
+    "@types/react-dom": 18.3.7
     "@types/react-redux": 7.1.22
     "@types/react-router-dom": 5.3.3
     "@types/react-virtualized": 9.22.2
@@ -4826,8 +4818,8 @@ __metadata:
     lodash.memoize: 4.1.2
     loglevel: 1.9.1
     prettier: 2.8.0
-    react: 18.2.0
-    react-dom: 18.2.0
+    react: 18.3.1
+    react-dom: 18.3.1
     react-i18next: 12.3.1
     react-redux: 8.1.3
     react-router-dom: 5.3.4
@@ -4864,8 +4856,8 @@ __metadata:
     "@types/jsrsasign": 10.5.2
     "@types/lodash.chunk": 4.2.6
     "@types/node": 20.19.0
-    "@types/react": 18.0.33
-    "@types/react-dom": 18.0.11
+    "@types/react": 18.3.23
+    "@types/react-dom": 18.3.7
     "@types/react-router-dom": 5.3.3
     "@types/react-virtualized": 9.22.2
     "@typescript-eslint/eslint-plugin": 5.62.0
@@ -4900,8 +4892,8 @@ __metadata:
     p-queue: 6.6.2
     p-throttle: 4.1.1
     prettier: 2.8.0
-    react: 18.2.0
-    react-dom: 18.2.0
+    react: 18.3.1
+    react-dom: 18.3.1
     react-i18next: 12.3.1
     react-router-dom: 5.3.4
     react-virtualized: 9.22.5
@@ -4936,8 +4928,8 @@ __metadata:
     "@types/jsrsasign": 10.5.2
     "@types/lodash.isequal": 4.5.8
     "@types/node": 20.19.0
-    "@types/react": 18.0.33
-    "@types/react-dom": 18.0.11
+    "@types/react": 18.3.23
+    "@types/react-dom": 18.3.7
     "@types/react-redux": 7.1.22
     "@types/react-router-dom": 5.3.3
     "@types/react-virtualized": 9.22.2
@@ -4970,8 +4962,8 @@ __metadata:
     lodash.isequal: 4.5.0
     loglevel: 1.9.1
     prettier: 2.8.0
-    react: 18.2.0
-    react-dom: 18.2.0
+    react: 18.3.1
+    react-dom: 18.3.1
     react-i18next: 12.3.1
     react-redux: 8.1.3
     react-router-dom: 5.3.4
@@ -9021,15 +9013,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:18.2.0":
-  version: 18.2.0
-  resolution: "react-dom@npm:18.2.0"
+"react-dom@npm:18.3.1":
+  version: 18.3.1
+  resolution: "react-dom@npm:18.3.1"
   dependencies:
     loose-envify: ^1.1.0
-    scheduler: ^0.23.0
+    scheduler: ^0.23.2
   peerDependencies:
-    react: ^18.2.0
-  checksum: 7d323310bea3a91be2965f9468d552f201b1c27891e45ddc2d6b8f717680c95a75ae0bc1e3f5cf41472446a2589a75aed4483aee8169287909fcd59ad149e8cc
+    react: ^18.3.1
+  checksum: 298954ecd8f78288dcaece05e88b570014d8f6dce5db6f66e6ee91448debeb59dcd31561dddb354eee47e6c1bb234669459060deb238ed0213497146e555a0b9
   languageName: node
   linkType: hard
 
@@ -9225,12 +9217,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:18.2.0":
-  version: 18.2.0
-  resolution: "react@npm:18.2.0"
+"react@npm:18.3.1":
+  version: 18.3.1
+  resolution: "react@npm:18.3.1"
   dependencies:
     loose-envify: ^1.1.0
-  checksum: 88e38092da8839b830cda6feef2e8505dec8ace60579e46aa5490fc3dc9bba0bd50336507dc166f43e3afc1c42939c09fe33b25fae889d6f402721dcd78fca1b
+  checksum: a27bcfa8ff7c15a1e50244ad0d0c1cb2ad4375eeffefd266a64889beea6f6b64c4966c9b37d14ee32d6c9fcd5aa6ba183b6988167ab4d127d13e7cb5b386a376
   languageName: node
   linkType: hard
 
@@ -9653,12 +9645,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"scheduler@npm:^0.23.0":
-  version: 0.23.0
-  resolution: "scheduler@npm:0.23.0"
+"scheduler@npm:^0.23.2":
+  version: 0.23.2
+  resolution: "scheduler@npm:0.23.2"
   dependencies:
     loose-envify: ^1.1.0
-  checksum: d79192eeaa12abef860c195ea45d37cbf2bbf5f66e3c4dcd16f54a7da53b17788a70d109ee3d3dde1a0fd50e6a8fc171f4300356c5aee4fc0171de526bf35f8a
+  checksum: 3e82d1f419e240ef6219d794ff29c7ee415fbdc19e038f680a10c067108e06284f1847450a210b29bbaf97b9d8a97ced5f624c31c681248ac84c80d56ad5a2c4
   languageName: node
   linkType: hard
 
