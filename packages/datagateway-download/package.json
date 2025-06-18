@@ -44,7 +44,7 @@
     "react-i18next": "12.3.1",
     "react-router-dom": "5.3.4",
     "react-virtualized": "9.22.5",
-    "single-spa-react": "5.0.1",
+    "single-spa-react": "5.1.4",
     "tslib": "2.6.0",
     "typescript": "5.3.3",
     "vite": "5.4.19"
