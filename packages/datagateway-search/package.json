@@ -33,7 +33,7 @@
     "history": "4.10.1",
     "i18next": "22.0.3",
     "i18next-browser-languagedetector": "7.2.0",
-    "i18next-http-backend": "2.4.2",
+    "i18next-http-backend": "2.7.3",
     "jsrsasign": "11.1.0",
     "lodash.isequal": "4.5.0",
     "loglevel": "1.9.1",
