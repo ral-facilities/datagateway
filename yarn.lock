@@ -4758,7 +4758,7 @@ __metadata:
     redux: 4.2.0
     redux-mock-store: 1.5.4
     redux-thunk: 2.4.1
-    tslib: 2.6.0
+    tslib: 2.8.1
     typescript: 5.3.3
     vite: 5.4.19
     vitest: 3.0.9
@@ -4838,7 +4838,7 @@ __metadata:
     redux-thunk: 2.4.1
     single-spa-react: 5.1.4
     start-server-and-test: ~2.0.11
-    tslib: 2.6.0
+    tslib: 2.8.1
     typescript: 5.3.3
     vite: 5.4.19
     vitest: 3.0.9
@@ -4907,7 +4907,7 @@ __metadata:
     react-virtualized: 9.22.5
     single-spa-react: 5.1.4
     start-server-and-test: ~2.0.11
-    tslib: 2.6.0
+    tslib: 2.8.1
     typescript: 5.3.3
     vite: 5.4.19
     vitest: 3.0.9
@@ -4982,7 +4982,7 @@ __metadata:
     redux-thunk: 2.4.1
     single-spa-react: 5.1.4
     start-server-and-test: ~2.0.11
-    tslib: 2.6.0
+    tslib: 2.8.1
     typescript: 5.3.3
     vite: 5.4.19
     vitest: 3.0.9
@@ -10419,10 +10419,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:2.6.0, tslib@npm:^2.1.0":
-  version: 2.6.0
-  resolution: "tslib@npm:2.6.0"
-  checksum: c01066038f950016a18106ddeca4649b4d76caa76ec5a31e2a26e10586a59fceb4ee45e96719bf6c715648e7c14085a81fee5c62f7e9ebee68e77a5396e5538f
+"tslib@npm:2.8.1, tslib@npm:^2.1.0":
+  version: 2.8.1
+  resolution: "tslib@npm:2.8.1"
+  checksum: e4aba30e632b8c8902b47587fd13345e2827fa639e7c3121074d5ee0880723282411a8838f830b55100cbe4517672f84a2472667d355b81e8af165a55dc6203a
   languageName: node
   linkType: hard
 
