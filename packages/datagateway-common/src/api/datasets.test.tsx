@@ -345,9 +345,7 @@ describe('dataset api functions', () => {
           id: { eq: '1' },
         })
       );
-      JSON.stringify({
-        parameters: 'type',
-      });
+      params.append('include', JSON.stringify('type'));
 
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/api/datasets',
