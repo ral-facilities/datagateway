@@ -12,7 +12,7 @@ import {
   dGCommonInitialState,
   useDataPublication,
   useDataPublications,
-  useInvestigation,
+  useEntity,
 } from 'datagateway-common';
 import { History, createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
@@ -30,7 +30,7 @@ vi.mock('datagateway-common', async () => {
   return {
     __esModule: true,
     ...originalModule,
-    useInvestigation: vi.fn(),
+    useEntity: vi.fn(),
     useDataPublication: vi.fn(),
     useDataPublications: vi.fn(),
   };
@@ -250,7 +250,7 @@ describe('ISIS Investigation Landing page', () => {
       },
     };
 
-    vi.mocked(useInvestigation, { partial: true }).mockReturnValue({
+    vi.mocked(useEntity, { partial: true }).mockReturnValue({
       data: initialInvestigationData,
     });
 

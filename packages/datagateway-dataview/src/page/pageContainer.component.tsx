@@ -38,8 +38,8 @@ import {
 } from 'react-router-dom';
 import RoleSelector from '../views/roleSelector.component';
 import PageBreadcrumbs from './breadcrumbs.component';
-import { DoiRedirect, GenericRedirect } from './doiRedirect.component';
 import PageRouting from './pageRouting.component';
+import { DoiRedirect, GenericRedirect } from './redirect.component';
 import TranslatedHomePage from './translatedHomePage.component';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type

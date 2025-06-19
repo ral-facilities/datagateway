@@ -1,14 +1,4 @@
 import {
-  Box,
-  Divider,
-  Grid,
-  Paper,
-  styled,
-  Tab,
-  Tabs,
-  Typography,
-} from '@mui/material';
-import {
   Assessment,
   Business,
   CalendarToday,
@@ -18,22 +8,32 @@ import {
   Storage,
 } from '@mui/icons-material';
 import {
+  Box,
+  Divider,
+  Grid,
+  Paper,
+  Tab,
+  Tabs,
+  Typography,
+  styled,
+} from '@mui/material';
+import {
+  AddToCartButton,
+  ArrowTooltip,
+  DataPublication,
   Dataset,
+  DownloadButton,
   Investigation,
-  parseSearchToQuery,
   Publication,
   Sample,
-  tableLink,
-  useInvestigation,
-  AddToCartButton,
-  DownloadButton,
-  ArrowTooltip,
-  getTooltipText,
-  formatBytes,
   externalSiteLink,
+  formatBytes,
+  getTooltipText,
+  parseSearchToQuery,
+  tableLink,
   useDataPublication,
-  DataPublication,
   useDataPublications,
+  useEntity,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -128,27 +128,25 @@ const InvestigationLandingPage = (
   props: LandingPageProps
 ): React.ReactElement => {
   const { investigationId } = props;
-  const { data } = useInvestigation(parseInt(investigationId), [
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify([
-        {
-          investigationUsers: 'user',
+  const { data } = useEntity('investigation', 'id', investigationId, {
+    filterType: 'include',
+    filterValue: JSON.stringify([
+      {
+        investigationUsers: 'user',
+      },
+      'samples',
+      'publications',
+      'datasets',
+      {
+        dataCollectionInvestigations: {
+          dataCollection: { dataPublications: 'type' },
         },
-        'samples',
-        'publications',
-        'datasets',
-        {
-          dataCollectionInvestigations: {
-            dataCollection: { dataPublications: 'type' },
-          },
-        },
-        {
-          investigationInstruments: 'instrument',
-        },
-      ]),
-    },
-  ]);
+      },
+      {
+        investigationInstruments: 'instrument',
+      },
+    ]),
+  });
 
   return <CommonLandingPage data={data} />;
 };

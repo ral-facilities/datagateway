@@ -1,23 +1,25 @@
+import type {
+  UseInfiniteQueryResult,
+  UseQueryOptions,
+  UseQueryResult,
+} from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import axios, { AxiosError, AxiosProgressEvent } from 'axios';
-import { getApiParams, parseSearchToQuery } from '.';
-import { readSciGatewayToken } from '../parseTokens';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { IndexRange } from 'react-virtualized';
-import handleICATError from '../handleICATError';
+import { getApiParams, parseSearchToQuery, useEntity } from '.';
 import {
   AdditionalFilters,
-  FiltersType,
   Datafile,
+  Dataset,
+  FiltersType,
+  Investigation,
   SortType,
 } from '../app.types';
+import handleICATError from '../handleICATError';
+import { readSciGatewayToken } from '../parseTokens';
 import { StateType } from '../state/app.types';
-import type {
-  UseQueryResult,
-  UseInfiniteQueryResult,
-  UseQueryOptions,
-} from '@tanstack/react-query';
-import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
 import { useRetryICATErrors } from './retryICATErrors';
 
 export const fetchDatafiles = (
@@ -191,59 +193,23 @@ export const useDatafileCount = (
   );
 };
 
-const fetchDatafileDetails = (
-  apiUrl: string,
-  datafileId: number,
-  additionalFilters?: AdditionalFilters
-): Promise<Datafile> => {
-  const params = new URLSearchParams();
-  params.append('where', JSON.stringify({ id: { eq: datafileId } }));
-
-  if (additionalFilters) {
-    additionalFilters.forEach((filter) => {
-      params.append(filter.filterType, filter.filterValue);
-    });
-  }
-
-  return axios
-    .get(`${apiUrl}/datafiles`, {
-      params,
-      headers: {
-        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
-      },
-    })
-    .then((response) => response.data[0]);
-};
-
 export const useDatafileDetails = (
   datafileId: number,
-  additionalFilters?: AdditionalFilters,
-  options?: UseQueryOptions<
-    Datafile,
-    AxiosError,
-    Datafile,
-    [string, number, AdditionalFilters?]
-  >
+  includeFilter?: {
+    filterType: 'include';
+    filterValue: string;
+  },
+  options?: UseQueryOptions<Datafile, AxiosError>
 ): UseQueryResult<Datafile, AxiosError> => {
-  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
-  const retryICATErrors = useRetryICATErrors();
-
-  return useQuery<
-    Datafile,
-    AxiosError,
-    Datafile,
-    [string, number, AdditionalFilters?]
-  >(
-    ['datafileDetails', datafileId, additionalFilters],
-    (params) =>
-      fetchDatafileDetails(apiUrl, params.queryKey[1], params.queryKey[2]),
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-      ...options,
-    }
+  return useEntity(
+    'datafile',
+    'id',
+    datafileId.toString(),
+    includeFilter,
+    options as UseQueryOptions<
+      Datafile | Investigation | Dataset,
+      AxiosError | Error
+    >
   );
 };
 
