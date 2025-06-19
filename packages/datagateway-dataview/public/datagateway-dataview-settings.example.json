@@ -119,6 +119,13 @@
       "hideFromMenu": true
     },
     {
+      "section": "Redirect",
+      "link": "/redirect",
+      "displayName": "Redirect",
+      "order": 0,
+      "hideFromMenu": true
+    },
+    {
       "section": "Browse",
       "link": "/browse/investigation",
       "displayName": "DataView",
