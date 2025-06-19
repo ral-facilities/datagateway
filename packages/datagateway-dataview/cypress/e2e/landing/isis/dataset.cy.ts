@@ -36,7 +36,7 @@ describe('ISIS - Dataset Landing', () => {
 
   it('should disable the hover tool tip by pressing escape', () => {
     cy.intercept(
-      '**/datasets?where=%7B%22id%22%3A%7B%22eq%22%3A79%7D%7D&include=%22type%22',
+      '**/datasets?*where=%7B%22id%22%3A%7B%22eq%22%3A%2279%22%7D%7D&include=%22type%22',
       [
         {
           id: 79,
