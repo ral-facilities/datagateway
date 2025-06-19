@@ -14,8 +14,8 @@ import {
 } from '.';
 import { DownloadCart } from '../app.types';
 import handleICATError from '../handleICATError';
-import { NotificationType } from '../main';
 import { createReactQueryWrapper } from '../setupTests';
+import { NotificationType } from '../state/actions/actions.types';
 
 vi.mock('../handleICATError');
 
