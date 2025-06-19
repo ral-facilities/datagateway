@@ -1,7 +1,7 @@
-import { Datafile } from '../app.types';
 import { act, renderHook, waitFor } from '@testing-library/react';
-import { createMemoryHistory, History } from 'history';
 import axios from 'axios';
+import { History, createMemoryHistory } from 'history';
+import { Datafile } from '../app.types';
 import handleICATError from '../handleICATError';
 import { createReactQueryWrapper } from '../setupTests';
 import {
@@ -336,10 +336,11 @@ describe('datafile api functions', () => {
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
+      params.append('order', JSON.stringify('id asc'));
       params.append(
         'where',
         JSON.stringify({
-          id: { eq: 1 },
+          id: { eq: '1' },
         })
       );
 
@@ -356,16 +357,15 @@ describe('datafile api functions', () => {
     });
 
     it('sends axios request to fetch datafile details and calls handleICATError on failure', async () => {
-      vi.mocked(axios.get).mockRejectedValue({
-        message: 'Test error',
-      });
+      const error = axios.AxiosError.from(new Error('Test error'));
+      vi.mocked(axios.get).mockRejectedValue(error);
       const { result } = renderHook(() => useDatafileDetails(1), {
         wrapper: createReactQueryWrapper(),
       });
 
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
+      expect(handleICATError).toHaveBeenCalledWith(error);
     });
   });
 

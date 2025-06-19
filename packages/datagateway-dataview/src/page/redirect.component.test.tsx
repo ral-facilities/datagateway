@@ -24,15 +24,6 @@ vi.mock('datagateway-common', async () => {
   };
 });
 
-// vi.mock('react-router-dom', async () => {
-//   const originalModule = await vi.importActual('react-router-dom');
-//   return {
-//     __esModule: true,
-//     ...originalModule, // use actual for all non-hook parts
-//     useParams: vi.fn(),
-//   };
-// });
-
 describe('Redirect component', () => {
   let history: History;
   let mockInvestigationData: Investigation;
