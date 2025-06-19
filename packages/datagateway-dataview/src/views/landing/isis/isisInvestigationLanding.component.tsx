@@ -152,7 +152,7 @@ const InvestigationLandingPage = (
 };
 
 interface CommonLandingPageProps {
-  data?: DataPublication | Investigation[];
+  data?: DataPublication | Investigation;
   studyDataPublication?: DataPublication;
 }
 
@@ -169,22 +169,13 @@ const CommonLandingPage = (
   const [value, setValue] = React.useState<'details'>('details');
   const { data, studyDataPublication } = props;
 
-  const title = React.useMemo(
-    () => (Array.isArray(data) ? data?.[0]?.title : data?.title),
-    [data]
-  );
-  const doi = React.useMemo(
-    () => (Array.isArray(data) ? data?.[0]?.doi : data?.pid),
-    [data]
-  );
+  const isInvestigation = data && 'visitId' in data;
 
   const formattedUsers = React.useMemo(() => {
     const principals: FormattedUser[] = [];
     const contacts: FormattedUser[] = [];
     const experimenters: FormattedUser[] = [];
-    const users = Array.isArray(data)
-      ? data?.[0]?.investigationUsers
-      : data?.users;
+    const users = isInvestigation ? data.investigationUsers : data?.users;
     if (users) {
       users.forEach((u) => {
         let user: { role?: string; fullName?: string } = {};
@@ -215,36 +206,36 @@ const CommonLandingPage = (
     contacts.sort((a, b) => a.fullName.localeCompare(b.fullName));
     experimenters.sort((a, b) => a.fullName.localeCompare(b.fullName));
     return principals.concat(contacts, experimenters);
-  }, [data]);
+  }, [data, isInvestigation]);
 
   const formattedPublications = React.useMemo(() => {
-    if (Array.isArray(data) && data?.[0]?.publications) {
-      return (data[0].publications as Publication[]).map(
+    if (isInvestigation && data.publications) {
+      return (data.publications as Publication[]).map(
         (publication) => publication.fullReference
       );
     }
-  }, [data]);
+  }, [data, isInvestigation]);
 
   const formattedSamples = React.useMemo(() => {
-    if (Array.isArray(data) && data?.[0]?.samples) {
-      return (data[0].samples as Sample[]).map((sample) => sample.name);
+    if (isInvestigation && data.samples) {
+      return (data.samples as Sample[]).map((sample) => sample.name);
     }
-  }, [data]);
+  }, [data, isInvestigation]);
 
-  const shortInfo = Array.isArray(data)
+  const shortInfo = isInvestigation
     ? [
         {
-          content: () => data?.[0]?.visitId,
+          content: () => data.visitId,
           label: t('investigations.visit_id'),
           icon: <Fingerprint sx={shortInfoIconStyle} />,
         },
         {
           content: function doiFormat() {
             return (
-              data?.[0]?.doi &&
+              data.doi &&
               externalSiteLink(
-                `https://doi.org/${data[0].doi}`,
-                data[0].doi,
+                `https://doi.org/${data.doi}`,
+                data.doi,
                 'isis-investigation-landing-doi-link'
               )
             );
@@ -255,7 +246,7 @@ const CommonLandingPage = (
         {
           content: function parentDoiFormat() {
             const studyDataPublication =
-              data?.[0]?.dataCollectionInvestigations?.filter(
+              data.dataCollectionInvestigations?.filter(
                 (dci) =>
                   dci.dataCollection?.dataPublications?.[0]?.type?.name ===
                   'study'
@@ -273,25 +264,24 @@ const CommonLandingPage = (
           icon: <Public sx={shortInfoIconStyle} />,
         },
         {
-          content: () => data?.[0]?.name,
+          content: () => data.name,
           label: t('investigations.name'),
           icon: <Fingerprint sx={shortInfoIconStyle} />,
         },
         {
           content: () => {
-            return formatBytes(data?.[0]?.fileSize);
+            return formatBytes(data.fileSize);
           },
           label: t('investigations.size'),
           icon: <Save sx={shortInfoIconStyle} />,
         },
         {
-          content: () => data?.[0]?.facility?.name,
+          content: () => data.facility?.name,
           label: t('investigations.details.facility'),
           icon: <Business sx={shortInfoIconStyle} />,
         },
         {
-          content: () =>
-            data?.[0]?.investigationInstruments?.[0]?.instrument?.name,
+          content: () => data.investigationInstruments?.[0]?.instrument?.name,
           label: t('investigations.instrument'),
           icon: <Assessment sx={shortInfoIconStyle} />,
         },
@@ -306,17 +296,17 @@ const CommonLandingPage = (
           icon: <Storage sx={shortInfoIconStyle} />,
         },
         {
-          content: () => data?.[0]?.releaseDate?.slice(0, 10),
+          content: () => data.releaseDate?.slice(0, 10),
           label: t('investigations.release_date'),
           icon: <CalendarToday sx={shortInfoIconStyle} />,
         },
         {
-          content: () => data?.[0]?.startDate?.slice(0, 10),
+          content: () => data.startDate?.slice(0, 10),
           label: t('investigations.start_date'),
           icon: <CalendarToday sx={shortInfoIconStyle} />,
         },
         {
-          content: () => data?.[0]?.endDate?.slice(0, 10),
+          content: () => data.endDate?.slice(0, 10),
           label: t('investigations.end_date'),
           icon: <CalendarToday sx={shortInfoIconStyle} />,
         },
@@ -393,7 +383,7 @@ const CommonLandingPage = (
         },
       ];
 
-  const shortDatasetInfo = Array.isArray(data)
+  const shortDatasetInfo = isInvestigation
     ? [
         {
           content: function doiFormat(entity: Dataset) {
@@ -436,7 +426,7 @@ const CommonLandingPage = (
                 value="details"
               />
               {typeof data !== 'undefined' &&
-                (Array.isArray(data) ||
+                (isInvestigation ||
                   data?.content?.dataCollectionInvestigations?.[0]
                     ?.investigation) && (
                   <Tab
@@ -459,13 +449,13 @@ const CommonLandingPage = (
           {/* Long format information */}
           <Grid item xs>
             <Subheading variant="h5" aria-label="landing-investigation-title">
-              {Array.isArray(data) ? data?.[0]?.title : data?.title}
+              {data?.title}
             </Subheading>
 
             <Typography aria-label="landing-investigation-summary">
-              {Array.isArray(data)
-                ? data?.[0]?.summary && data[0].summary !== 'null'
-                  ? data[0].summary
+              {isInvestigation
+                ? data.summary && data.summary !== 'null'
+                  ? data.summary
                   : 'Description not provided'
                 : data?.description && data.description !== 'null'
                 ? data.description
@@ -500,13 +490,11 @@ const CommonLandingPage = (
               {t('doi_constants.publisher.name')}
             </Typography>
             <CitationFormatter
-              doi={doi}
+              doi={isInvestigation ? data.doi : data?.pid}
               formattedUsers={formattedUsers}
-              title={title}
+              title={data?.title}
               startDate={
-                Array.isArray(data)
-                  ? data?.[0]?.startDate
-                  : data?.publicationDate
+                isInvestigation ? data.startDate : data?.publicationDate
               }
             />
 
@@ -576,23 +564,23 @@ const CommonLandingPage = (
                 )
             )}
             {/* Actions */}
-            {(Array.isArray(data) ||
+            {(isInvestigation ||
               data?.content?.dataCollectionInvestigations?.[0]?.investigation
                 ?.id) && (
               <ActionButtonsContainer data-testid="investigation-landing-action-container">
                 <AddToCartButton
                   entityType="investigation"
                   allIds={
-                    Array.isArray(data)
-                      ? [data?.[0]?.id]
+                    isInvestigation
+                      ? [data.id]
                       : [
                           data.content?.dataCollectionInvestigations?.[0]
                             ?.investigation?.id as number,
                         ]
                   }
                   entityId={
-                    Array.isArray(data)
-                      ? data?.[0]?.id
+                    isInvestigation
+                      ? data.id
                       : (data.content?.dataCollectionInvestigations?.[0]
                           ?.investigation?.id as number)
                   }
@@ -600,20 +588,20 @@ const CommonLandingPage = (
                 <DownloadButton
                   entityType="investigation"
                   entityId={
-                    Array.isArray(data)
-                      ? data?.[0]?.id
+                    isInvestigation
+                      ? data.id
                       : (data.content?.dataCollectionInvestigations?.[0]
                           ?.investigation?.id as number)
                   }
                   entityName={
-                    Array.isArray(data)
-                      ? data?.[0]?.name
+                    isInvestigation
+                      ? data.name
                       : (data.content?.dataCollectionInvestigations?.[0]
                           ?.investigation?.name as string)
                   }
                   entitySize={
-                    (Array.isArray(data)
-                      ? data?.[0]?.fileSize
+                    (isInvestigation
+                      ? data.fileSize
                       : (data.content?.dataCollectionInvestigations?.[0]
                           ?.investigation?.fileSize as number)) ?? -1
                   }
@@ -621,8 +609,8 @@ const CommonLandingPage = (
               </ActionButtonsContainer>
             )}
             {/* Parts */}
-            {(Array.isArray(data)
-              ? data?.[0]
+            {(isInvestigation
+              ? data
               : data?.content?.dataCollectionInvestigations?.[0]?.investigation
             )?.datasets?.map((dataset, i) => (
               <Box key={i} sx={{ my: 1 }}>
