@@ -4798,7 +4798,7 @@ __metadata:
     redux-mock-store: 1.5.4
     redux-thunk: 2.4.1
     tslib: 2.8.1
-    typescript: 5.3.3
+    typescript: 5.8.3
     vite: 5.4.19
     vitest: 3.2.3
     vitest-fail-on-console: 0.7.1
@@ -4878,7 +4878,7 @@ __metadata:
     single-spa-react: 5.1.4
     start-server-and-test: ~2.0.11
     tslib: 2.8.1
-    typescript: 5.3.3
+    typescript: 5.8.3
     vite: 5.4.19
     vitest: 3.2.3
     vitest-fail-on-console: 0.7.1
@@ -4947,7 +4947,7 @@ __metadata:
     single-spa-react: 5.1.4
     start-server-and-test: ~2.0.11
     tslib: 2.8.1
-    typescript: 5.3.3
+    typescript: 5.8.3
     vite: 5.4.19
     vitest: 3.2.3
     vitest-fail-on-console: 0.7.1
@@ -5022,7 +5022,7 @@ __metadata:
     single-spa-react: 5.1.4
     start-server-and-test: ~2.0.11
     tslib: 2.8.1
-    typescript: 5.3.3
+    typescript: 5.8.3
     vite: 5.4.19
     vitest: 3.2.3
     vitest-fail-on-console: 0.7.1
@@ -10607,23 +10607,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:5.3.3":
-  version: 5.3.3
-  resolution: "typescript@npm:5.3.3"
+"typescript@npm:5.8.3":
+  version: 5.8.3
+  resolution: "typescript@npm:5.8.3"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 2007ccb6e51bbbf6fde0a78099efe04dc1c3dfbdff04ca3b6a8bc717991862b39fd6126c0c3ebf2d2d98ac5e960bcaa873826bb2bb241f14277034148f41f6a2
+  checksum: cb1d081c889a288b962d3c8ae18d337ad6ee88a8e81ae0103fa1fecbe923737f3ba1dbdb3e6d8b776c72bc73bfa6d8d850c0306eed1a51377d2fccdfd75d92c4
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@5.3.3#~builtin<compat/typescript>":
-  version: 5.3.3
-  resolution: "typescript@patch:typescript@npm%3A5.3.3#~builtin<compat/typescript>::version=5.3.3&hash=e012d7"
+"typescript@patch:typescript@5.8.3#~builtin<compat/typescript>":
+  version: 5.8.3
+  resolution: "typescript@patch:typescript@npm%3A5.8.3#~builtin<compat/typescript>::version=5.8.3&hash=5786d5"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 4e604a9e107ce0c23b16a2f8d79d0531d4d8fe9ebbb7a8c395c66998c39892f0e0a071ef0b0d4e66420a8ec2b8d6cfd9cdb29ba24f25b37cba072e9282376df9
+  checksum: f1743b6850976b3debf7cbd53d2bc0b67e75d47eb6410db564c8bb475e92a8a48f8a3fcd14d89cf93426835281c31a8f8a94dad90be4dc899279a898532ba97f
   languageName: node
   linkType: hard
 
