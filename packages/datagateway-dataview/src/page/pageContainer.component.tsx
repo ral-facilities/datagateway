@@ -1,46 +1,46 @@
+import InfoIcon from '@mui/icons-material/Info';
+import SearchIcon from '@mui/icons-material/Search';
 import {
   Grid,
+  IconButton,
   LinearProgress,
   Paper,
-  Typography,
   Theme,
-  IconButton,
+  Typography,
   styled,
 } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import InfoIcon from '@mui/icons-material/Info';
+import { useIsFetching, useQueryClient } from '@tanstack/react-query';
 import {
-  Sticky,
-  ViewsType,
-  useCart,
-  parseSearchToQuery,
-  useUpdateView,
-  readSciGatewayToken,
   ArrowTooltip,
-  SelectionAlert,
-  ViewCartButton,
   CartProps,
-  useUpdateQueryParam,
-  ViewButton,
   ClearFiltersButton,
+  SelectionAlert,
+  Sticky,
+  ViewButton,
+  ViewCartButton,
+  ViewsType,
+  parseSearchToQuery,
+  readSciGatewayToken,
+  useCart,
+  useUpdateQueryParam,
+  useUpdateView,
 } from 'datagateway-common';
+import { Location as LocationType } from 'history';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Switch as SwitchRouting,
   Route,
-  useLocation,
-  useHistory,
-  useRouteMatch,
+  Switch as SwitchRouting,
   matchPath,
+  useHistory,
+  useLocation,
+  useRouteMatch,
 } from 'react-router-dom';
+import RoleSelector from '../views/roleSelector.component';
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageRouting from './pageRouting.component';
-import { Location as LocationType } from 'history';
+import { DoiRedirect, GenericRedirect } from './redirect.component';
 import TranslatedHomePage from './translatedHomePage.component';
-import DoiRedirect from './doiRedirect.component';
-import RoleSelector from '../views/roleSelector.component';
-import { useIsFetching, useQueryClient } from '@tanstack/react-query';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const getTablePaperStyle = (
@@ -87,6 +87,8 @@ export const paths = {
   homepage: '/datagateway',
   root: '/browse',
   doiRedirect: '/doi-redirect/:facilityName/:entityName/:entityId',
+  genericRedirect:
+    '/redirect/:facilityName/:entityName/:entityField/:fieldValue',
   myData: {
     root: '/my-data',
     dls: '/my-data/DLS',
@@ -749,6 +751,9 @@ const PageContainer: React.FC = () => {
       <Route exact path={paths.homepage} component={TranslatedHomePage} />
       <Route exact path={paths.doiRedirect}>
         <DoiRedirect />
+      </Route>
+      <Route path={paths.genericRedirect}>
+        <GenericRedirect />
       </Route>
       {/* Load the standard dataview pageContainer */}
       <Route>

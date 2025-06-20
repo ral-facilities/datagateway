@@ -12,7 +12,7 @@ import {
   dGCommonInitialState,
   useDataPublication,
   useDataPublications,
-  useInvestigation,
+  useEntity,
 } from 'datagateway-common';
 import { History, createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
@@ -30,7 +30,7 @@ vi.mock('datagateway-common', async () => {
   return {
     __esModule: true,
     ...originalModule,
-    useInvestigation: vi.fn(),
+    useEntity: vi.fn(),
     useDataPublication: vi.fn(),
     useDataPublications: vi.fn(),
   };
@@ -110,7 +110,13 @@ describe('ISIS Investigation Landing page', () => {
     },
   ];
 
-  let initialInvestigationData: Investigation[] = [];
+  // dummy data to stop TS from complaining, gets overwritten in beforeEach
+  let initialInvestigationData: Investigation = {
+    id: 1,
+    visitId: '1',
+    title: '1',
+    name: '1',
+  };
 
   const users = [
     {
@@ -162,63 +168,61 @@ describe('ISIS Investigation Landing page', () => {
     });
     user = userEvent.setup();
 
-    initialInvestigationData = [
-      {
-        id: 1,
-        title: 'Test title 1',
-        name: 'Test 1',
-        fileSize: 1,
-        fileCount: 1,
-        summary: 'foo bar',
-        visitId: 'visit id 1',
-        doi: 'doi 1',
-        facility: {
-          id: 17,
-          name: 'LILS',
-        },
-        investigationInstruments: [
-          {
-            id: 1,
-            instrument: {
-              id: 3,
-              name: 'LARMOR',
-            },
-          },
-        ],
-        dataCollectionInvestigations: [
-          {
-            id: 1,
-            dataCollection: {
-              id: 11,
-              dataPublications: [
-                {
-                  id: 7,
-                  pid: 'Data Publication Pid',
-                  description: 'Data Publication description',
-
-                  title: 'Data Publication',
-                  type: { id: 12, name: 'study' },
-                },
-              ],
-            },
-          },
-        ],
-        startDate: '2019-06-10',
-        endDate: '2019-06-11',
-        datasets: [
-          {
-            id: 1,
-            name: 'dataset 1',
-            doi: 'dataset doi',
-            modTime: '2019-06-10',
-            createTime: '2019-06-10',
-          },
-        ],
-        investigationUsers: investigationUser,
-        publications: publication,
-        samples: sample,
+    initialInvestigationData = {
+      id: 1,
+      title: 'Test title 1',
+      name: 'Test 1',
+      fileSize: 1,
+      fileCount: 1,
+      summary: 'foo bar',
+      visitId: 'visit id 1',
+      doi: 'doi 1',
+      facility: {
+        id: 17,
+        name: 'LILS',
       },
-    ];
+      investigationInstruments: [
+        {
+          id: 1,
+          instrument: {
+            id: 3,
+            name: 'LARMOR',
+          },
+        },
+      ],
+      dataCollectionInvestigations: [
+        {
+          id: 1,
+          dataCollection: {
+            id: 11,
+            dataPublications: [
+              {
+                id: 7,
+                pid: 'Data Publication Pid',
+                description: 'Data Publication description',
+
+                title: 'Data Publication',
+                type: { id: 12, name: 'study' },
+              },
+            ],
+          },
+        },
+      ],
+      startDate: '2019-06-10',
+      endDate: '2019-06-11',
+      datasets: [
+        {
+          id: 1,
+          name: 'dataset 1',
+          doi: 'dataset doi',
+          modTime: '2019-06-10',
+          createTime: '2019-06-10',
+        },
+      ],
+      investigationUsers: investigationUser,
+      publications: publication,
+      samples: sample,
+    };
 
     initialStudyDataPublicationData = [
       {
@@ -239,7 +243,7 @@ describe('ISIS Investigation Landing page', () => {
         dataCollectionInvestigations: [
           {
             id: 9,
-            investigation: initialInvestigationData[0],
+            investigation: initialInvestigationData,
           },
         ],
       },
@@ -250,7 +254,7 @@ describe('ISIS Investigation Landing page', () => {
       },
     };
 
-    vi.mocked(useInvestigation, { partial: true }).mockReturnValue({
+    vi.mocked(useEntity, { partial: true }).mockReturnValue({
       data: initialInvestigationData,
     });
 
@@ -400,10 +404,10 @@ describe('ISIS Investigation Landing page', () => {
   });
 
   it('renders correctly for facility cycle hierarchy when no description, users, samples or publications', async () => {
-    initialInvestigationData[0].summary = undefined;
-    initialInvestigationData[0].publications = [];
-    initialInvestigationData[0].samples = [];
-    initialInvestigationData[0].investigationUsers = undefined;
+    initialInvestigationData.summary = undefined;
+    initialInvestigationData.publications = [];
+    initialInvestigationData.samples = [];
+    initialInvestigationData.investigationUsers = undefined;
 
     renderComponent();
 
