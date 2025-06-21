@@ -1437,7 +1437,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.14.6, @babel/runtime@npm:^7.16.3, @babel/runtime@npm:^7.17.2, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.20.6, @babel/runtime@npm:^7.20.7, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.22.6, @babel/runtime@npm:^7.23.2, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.14.6, @babel/runtime@npm:^7.16.3, @babel/runtime@npm:^7.17.2, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.20.6, @babel/runtime@npm:^7.20.7, @babel/runtime@npm:^7.22.6, @babel/runtime@npm:^7.23.2, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
   version: 7.26.10
   resolution: "@babel/runtime@npm:7.26.10"
   dependencies:
@@ -4772,7 +4772,7 @@ __metadata:
     axios: 1.10.0
     browserslist: 4.25.0
     browserslist-to-esbuild: 2.1.1
-    date-fns: 2.30.0
+    date-fns: 4.1.0
     eslint: 8.57.1
     eslint-config-prettier: 8.10.0
     eslint-config-react-app: 7.0.0
@@ -4847,7 +4847,7 @@ __metadata:
     cross-env: 7.0.3
     cypress: 13.17.0
     datagateway-common: ^2.2.0
-    date-fns: 2.30.0
+    date-fns: 4.1.0
     eslint: 8.57.1
     eslint-config-prettier: 8.10.0
     eslint-config-react-app: 7.0.0
@@ -4917,7 +4917,7 @@ __metadata:
     cross-env: 7.0.3
     cypress: 13.17.0
     datagateway-common: ^2.2.0
-    date-fns: 2.30.0
+    date-fns: 4.1.0
     date-fns-tz: 2.0.0
     eslint: 8.57.1
     eslint-config-prettier: 8.10.0
@@ -4992,7 +4992,7 @@ __metadata:
     cross-env: 7.0.3
     cypress: 13.17.0
     datagateway-common: ^2.2.0
-    date-fns: 2.30.0
+    date-fns: 4.1.0
     eslint: 8.57.1
     eslint-config-prettier: 8.10.0
     eslint-config-react-app: 7.0.0
@@ -5046,12 +5046,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"date-fns@npm:2.30.0":
-  version: 2.30.0
-  resolution: "date-fns@npm:2.30.0"
-  dependencies:
-    "@babel/runtime": ^7.21.0
-  checksum: f7be01523282e9bb06c0cd2693d34f245247a29098527d4420628966a2d9aad154bd0e90a6b1cf66d37adcb769cd108cf8a7bd49d76db0fb119af5cdd13644f4
+"date-fns@npm:4.1.0":
+  version: 4.1.0
+  resolution: "date-fns@npm:4.1.0"
+  checksum: fb681b242cccabed45494468f64282a7d375ea970e0adbcc5dcc92dcb7aba49b2081c2c9739d41bf71ce89ed68dd73bebfe06ca35129490704775d091895710b
   languageName: node
   linkType: hard
 

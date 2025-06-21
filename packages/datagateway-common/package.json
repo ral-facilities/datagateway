@@ -19,7 +19,7 @@
     "axios": "1.10.0",
     "browserslist": "4.25.0",
     "browserslist-to-esbuild": "2.1.1",
-    "date-fns": "2.30.0",
+    "date-fns": "4.1.0",
     "hex-to-rgba": "2.0.1",
     "history": "4.10.1",
     "i18next": "22.0.3",
