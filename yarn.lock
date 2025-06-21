@@ -1578,24 +1578,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@date-io/core@npm:^2.17.0":
-  version: 2.17.0
-  resolution: "@date-io/core@npm:2.17.0"
-  checksum: 008dfc79eb54256805113d76feca82fe0b08a245ecbfb2d53809e6a129dc201f9dbd053c8ad63512203ab1a13ff7f76de0edc31829588ef507d53307974c29a8
+"@date-io/core@npm:^3.2.0":
+  version: 3.2.0
+  resolution: "@date-io/core@npm:3.2.0"
+  checksum: 711e43b449bc29f5f1aaf49e34e722a9fe42238b1ee20e81e3a11692118002872d915c2a289f1ed24e53f88bd220ce3888d7ec0a1705c131e305478f534a3450
   languageName: node
   linkType: hard
 
-"@date-io/date-fns@npm:2.17.0":
-  version: 2.17.0
-  resolution: "@date-io/date-fns@npm:2.17.0"
+"@date-io/date-fns@npm:3.2.1":
+  version: 3.2.1
+  resolution: "@date-io/date-fns@npm:3.2.1"
   dependencies:
-    "@date-io/core": ^2.17.0
+    "@date-io/core": ^3.2.0
   peerDependencies:
-    date-fns: ^2.0.0
+    date-fns: ^3.2.0 || ^4.1.0
   peerDependenciesMeta:
     date-fns:
       optional: true
-  checksum: bfab634c985a98dd44fdfc5f982b0348da2886c9ad79a8d71fd7bfa05b740af7f5cf340508cd7ce51d67c141fb8766998c8efdf50653252c68ec078471cd76e6
+  checksum: 3c8ab25d604c36b47e8309d50bdb9c0052cb3697a391be030839605449eaff4527e0a9c1bc99e917f40268a6bbff8d8548daaa3bbc864cdcbe79702b53c649db
   languageName: node
   linkType: hard
 
@@ -4749,7 +4749,7 @@ __metadata:
   resolution: "datagateway-common@workspace:packages/datagateway-common"
   dependencies:
     "@babel/eslint-parser": 7.27.5
-    "@date-io/date-fns": 2.17.0
+    "@date-io/date-fns": 3.2.1
     "@emotion/react": 11.11.1
     "@emotion/styled": 11.11.0
     "@mui/icons-material": 5.11.0
@@ -4959,7 +4959,7 @@ __metadata:
   resolution: "datagateway-search@workspace:packages/datagateway-search"
   dependencies:
     "@babel/eslint-parser": 7.27.5
-    "@date-io/date-fns": 2.17.0
+    "@date-io/date-fns": 3.2.1
     "@emotion/react": 11.11.1
     "@emotion/styled": 11.11.0
     "@mui/icons-material": 5.11.0
