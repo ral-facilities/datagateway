@@ -4918,7 +4918,7 @@ __metadata:
     cypress: 13.17.0
     datagateway-common: ^2.2.0
     date-fns: 2.30.0
-    date-fns-tz: 2.0.0
+    date-fns-tz: 3.2.0
     eslint: 8.57.1
     eslint-config-prettier: 8.10.0
     eslint-config-react-app: 7.0.0
@@ -5037,12 +5037,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"date-fns-tz@npm:2.0.0":
-  version: 2.0.0
-  resolution: "date-fns-tz@npm:2.0.0"
+"date-fns-tz@npm:3.2.0":
+  version: 3.2.0
+  resolution: "date-fns-tz@npm:3.2.0"
   peerDependencies:
-    date-fns: ">=2.0.0"
-  checksum: a6553603a9d26dd9669326c99a58a2335ac550bc060c74b86a5ad9e1de73c9d4e3e5236f0f552f990e616e4e8dcc2b6a637913a04d2e04396e6a9f8ae83c73da
+    date-fns: ^3.0.0 || ^4.0.0
+  checksum: c49289a3944fc1eacaa08649c2c1adc1652456d405841f2093fdd365596dac46553a303629b5d528c3f5e4c49919fc3d3ff98da93ad32a1a193243aa04cc0987
   languageName: node
   linkType: hard
 
