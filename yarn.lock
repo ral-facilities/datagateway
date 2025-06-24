@@ -2749,33 +2749,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/query-core@npm:4.36.1":
-  version: 4.36.1
-  resolution: "@tanstack/query-core@npm:4.36.1"
-  checksum: 47672094da20d89402d9fe03bb7b0462be73a76ff9ca715169738bc600a719d064d106d083a8eedae22a2c22de22f87d5eb5d31ef447aba771d9190f2117ed10
+"@tanstack/query-core@npm:4.40.0":
+  version: 4.40.0
+  resolution: "@tanstack/query-core@npm:4.40.0"
+  checksum: 0d51f905819bdaeeeddad30a94a85c2cdda6de90dde716195274613ef0f2840cbc476fc2401848b5ef70bbcbc67749ac4c216a3c5bc56fc933b642a346f32b87
   languageName: node
   linkType: hard
 
-"@tanstack/react-query-devtools@npm:4.36.1":
-  version: 4.36.1
-  resolution: "@tanstack/react-query-devtools@npm:4.36.1"
+"@tanstack/react-query-devtools@npm:4.40.0":
+  version: 4.40.0
+  resolution: "@tanstack/react-query-devtools@npm:4.40.0"
   dependencies:
     "@tanstack/match-sorter-utils": ^8.7.0
     superjson: ^1.10.0
     use-sync-external-store: ^1.2.0
   peerDependencies:
-    "@tanstack/react-query": ^4.36.1
+    "@tanstack/react-query": ^4.40.0
     react: ^16.8.0 || ^17.0.0 || ^18.0.0
     react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-  checksum: d4f7da4121a933be0d0406fb75f682b193a33e7d4ba9a4d54ff19e04db823d00513fbe86230c43d34aae55f6d0d1f8be17315f19d515b298b6bb0dabd0c5d261
+  checksum: d898ba93be69f1fb09924fa4ae20b60e16df9aa2c181b6a017008dee5f010b8018a7cb2c9ba0da4b267c5bd4af0aa1fe7997b7703dec9349bb9a078318da7b17
   languageName: node
   linkType: hard
 
-"@tanstack/react-query@npm:4.36.1":
-  version: 4.36.1
-  resolution: "@tanstack/react-query@npm:4.36.1"
+"@tanstack/react-query@npm:4.40.0":
+  version: 4.40.0
+  resolution: "@tanstack/react-query@npm:4.40.0"
   dependencies:
-    "@tanstack/query-core": 4.36.1
+    "@tanstack/query-core": 4.40.0
     use-sync-external-store: ^1.2.0
   peerDependencies:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0
@@ -2786,7 +2786,7 @@ __metadata:
       optional: true
     react-native:
       optional: true
-  checksum: 1aff0a476859386f8d32253fa0d0bde7b81769a6d4d4d9cbd78778f0f955459a3bdb7ee27a0d2ee7373090f12998b45df80db0b5b313bd0a7a39d36c6e8e51c5
+  checksum: 146fb59e0c47545d25b6518d000738de80c9a0be800693269dc420eef6633b8e944aa5642700b44b15d7071fad023af3035384d040568f2b082c51e1fcf6b9f2
   languageName: node
   linkType: hard
 
@@ -4755,8 +4755,8 @@ __metadata:
     "@mui/icons-material": 5.11.0
     "@mui/material": 5.11.0
     "@mui/x-date-pickers": 6.11.2
-    "@tanstack/react-query": 4.36.1
-    "@tanstack/react-query-devtools": 4.36.1
+    "@tanstack/react-query": 4.40.0
+    "@tanstack/react-query-devtools": 4.40.0
     "@testing-library/jest-dom": 6.4.1
     "@testing-library/react": 14.0.0
     "@testing-library/user-event": 14.5.2
@@ -4820,8 +4820,8 @@ __metadata:
     "@emotion/styled": 11.11.0
     "@mui/icons-material": 5.11.0
     "@mui/material": 5.11.0
-    "@tanstack/react-query": 4.36.1
-    "@tanstack/react-query-devtools": 4.36.1
+    "@tanstack/react-query": 4.40.0
+    "@tanstack/react-query-devtools": 4.40.0
     "@testing-library/jest-dom": 6.4.1
     "@testing-library/react": 14.0.0
     "@testing-library/user-event": 14.5.2
@@ -4894,8 +4894,8 @@ __metadata:
     "@emotion/styled": 11.11.0
     "@mui/icons-material": 5.11.0
     "@mui/material": 5.11.0
-    "@tanstack/react-query": 4.36.1
-    "@tanstack/react-query-devtools": 4.36.1
+    "@tanstack/react-query": 4.40.0
+    "@tanstack/react-query-devtools": 4.40.0
     "@testing-library/cypress": 10.0.0
     "@testing-library/jest-dom": 6.4.1
     "@testing-library/react": 14.0.0
@@ -4965,8 +4965,8 @@ __metadata:
     "@mui/icons-material": 5.11.0
     "@mui/material": 5.11.0
     "@mui/x-date-pickers": 6.11.2
-    "@tanstack/react-query": 4.36.1
-    "@tanstack/react-query-devtools": 4.36.1
+    "@tanstack/react-query": 4.40.0
+    "@tanstack/react-query-devtools": 4.40.0
     "@testing-library/cypress": 10.0.0
     "@testing-library/jest-dom": 6.4.1
     "@testing-library/react": 14.0.0
