@@ -4774,7 +4774,7 @@ __metadata:
     browserslist-to-esbuild: 2.1.1
     date-fns: 2.30.0
     eslint: 8.57.1
-    eslint-config-prettier: 8.10.0
+    eslint-config-prettier: 10.1.5
     eslint-config-react-app: 7.0.0
     eslint-plugin-cypress: 2.15.1
     eslint-plugin-prettier: 4.2.1
@@ -4849,7 +4849,7 @@ __metadata:
     datagateway-common: ^2.2.0
     date-fns: 2.30.0
     eslint: 8.57.1
-    eslint-config-prettier: 8.10.0
+    eslint-config-prettier: 10.1.5
     eslint-config-react-app: 7.0.0
     eslint-plugin-cypress: 2.15.1
     eslint-plugin-prettier: 4.2.1
@@ -4920,7 +4920,7 @@ __metadata:
     date-fns: 2.30.0
     date-fns-tz: 2.0.0
     eslint: 8.57.1
-    eslint-config-prettier: 8.10.0
+    eslint-config-prettier: 10.1.5
     eslint-config-react-app: 7.0.0
     eslint-plugin-cypress: 2.15.1
     eslint-plugin-prettier: 4.2.1
@@ -4994,7 +4994,7 @@ __metadata:
     datagateway-common: ^2.2.0
     date-fns: 2.30.0
     eslint: 8.57.1
-    eslint-config-prettier: 8.10.0
+    eslint-config-prettier: 10.1.5
     eslint-config-react-app: 7.0.0
     eslint-plugin-cypress: 2.15.1
     eslint-plugin-prettier: 4.2.1
@@ -5738,14 +5738,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-prettier@npm:8.10.0":
-  version: 8.10.0
-  resolution: "eslint-config-prettier@npm:8.10.0"
+"eslint-config-prettier@npm:10.1.5":
+  version: 10.1.5
+  resolution: "eslint-config-prettier@npm:10.1.5"
   peerDependencies:
     eslint: ">=7.0.0"
   bin:
     eslint-config-prettier: bin/cli.js
-  checksum: 153266badd477e49b0759816246b2132f1dbdb6c7f313ca60a9af5822fd1071c2bc5684a3720d78b725452bbac04bb130878b2513aea5e72b1b792de5a69fec8
+  checksum: 6d8eb41c716fc2b073bfd9daede0c87c4c2b29055f15c94618eec00a19c5499024ddb89902d6793b5ac9102075e4739d7cc2d4d58c7e7ed4cc2dcf79e3fbcacc
   languageName: node
   linkType: hard
 
