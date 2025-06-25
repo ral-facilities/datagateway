@@ -24,7 +24,7 @@
     "datagateway-common": "^2.2.0",
     "date-fns": "2.30.0",
     "date-fns-tz": "2.0.0",
-    "eslint-config-prettier": "8.10.0",
+    "eslint-config-prettier": "10.1.5",
     "eslint-plugin-cypress": "2.15.1",
     "eslint-plugin-prettier": "4.2.1",
     "fastq": "^1.19.1",
