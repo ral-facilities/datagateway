@@ -26,7 +26,7 @@
     "date-fns-tz": "2.0.0",
     "eslint-config-prettier": "10.1.5",
     "eslint-plugin-cypress": "2.15.1",
-    "eslint-plugin-prettier": "4.2.1",
+    "eslint-plugin-prettier": "5.5.0",
     "fastq": "^1.19.1",
     "history": "4.10.1",
     "i18next": "22.0.3",
