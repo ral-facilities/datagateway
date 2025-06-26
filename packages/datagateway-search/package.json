@@ -28,7 +28,7 @@
     "datagateway-common": "^2.2.0",
     "date-fns": "2.30.0",
     "eslint-config-prettier": "10.1.5",
-    "eslint-plugin-cypress": "2.15.1",
+    "eslint-plugin-cypress": "5.1.0",
     "eslint-plugin-prettier": "4.2.1",
     "history": "4.10.1",
     "i18next": "22.0.3",
