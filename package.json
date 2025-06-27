@@ -6,7 +6,7 @@
     "packages/*"
   ],
   "dependencies": {
-    "husky": "8.0.1"
+    "husky": "9.1.7"
   },
   "resolutions": {
     "@types/react": "18.0.33",
