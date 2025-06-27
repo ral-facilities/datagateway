@@ -20,7 +20,7 @@
     "@types/react-router-dom": "5.3.3",
     "@types/react-virtualized": "9.22.2",
     "@types/redux-logger": "3.0.8",
-    "@vitejs/plugin-react": "4.5.1",
+    "@vitejs/plugin-react": "4.6.0",
     "axios": "1.10.0",
     "browserslist": "4.25.0",
     "browserslist-to-esbuild": "2.1.1",
