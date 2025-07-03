@@ -24,7 +24,7 @@
     "datagateway-dataview": "yarn workspace datagateway-dataview dev",
     "datagateway-download": "yarn workspace datagateway-download dev",
     "datagateway-search": "yarn workspace datagateway-search dev",
-    "postinstall": "husky install"
+    "postinstall": "husky"
   },
   "packageManager": "yarn@3.8.7"
 }

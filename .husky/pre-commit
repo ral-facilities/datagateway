@@ -1,5 +1,1 @@
-#!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
-. "$(dirname "$0")/common.sh"
-
 yarn workspaces foreach --interlaced --verbose --jobs 1 run pre-commit
