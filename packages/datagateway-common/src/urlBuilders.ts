@@ -1,7 +1,7 @@
 import {
   Datafile,
-  type Dataset,
   FACILITY_NAME,
+  type Dataset,
   type Investigation,
 } from './app.types';
 
@@ -39,8 +39,9 @@ function buildDatasetTableUrlForInvestigation({
   investigation: Investigation | SearchResultSourceConstructedInvestigation;
   facilityName: string;
 }): string | null {
-  const isISIS = facilityName === FACILITY_NAME.isis;
-  const isDLS = facilityName === FACILITY_NAME.dls;
+  const isISIS =
+    facilityName.toLowerCase() === FACILITY_NAME.isis.toLowerCase();
+  const isDLS = facilityName.toLowerCase() === FACILITY_NAME.dls.toLowerCase();
 
   if (!isISIS && !isDLS) {
     // is a generic facility, return a generic link to the investigation
@@ -128,10 +129,10 @@ function buildUrlToDatafileTableContainingDatafile({
 }
 
 export {
-  isLandingPageSupportedForHierarchy,
-  buildInvestigationLandingUrl,
-  buildDatasetTableUrlForInvestigation,
-  buildDatasetLandingUrl,
   buildDatafileTableUrlForDataset,
+  buildDatasetLandingUrl,
+  buildDatasetTableUrlForInvestigation,
+  buildInvestigationLandingUrl,
   buildUrlToDatafileTableContainingDatafile,
+  isLandingPageSupportedForHierarchy,
 };

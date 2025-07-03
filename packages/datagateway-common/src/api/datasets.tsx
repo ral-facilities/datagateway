@@ -1,23 +1,23 @@
+import {
+  UseInfiniteQueryResult,
+  UseQueryResult,
+  useInfiniteQuery,
+  useQuery,
+} from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
-import { getApiParams, parseSearchToQuery } from '.';
-import { readSciGatewayToken } from '../parseTokens';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { IndexRange } from 'react-virtualized';
-import handleICATError from '../handleICATError';
+import { getApiParams, parseSearchToQuery, useEntity } from '.';
 import {
   AdditionalFilters,
-  FiltersType,
   Dataset,
+  FiltersType,
   SortType,
 } from '../app.types';
+import handleICATError from '../handleICATError';
+import { readSciGatewayToken } from '../parseTokens';
 import { StateType } from '../state/app.types';
-import {
-  useQuery,
-  UseQueryResult,
-  useInfiniteQuery,
-  UseInfiniteQueryResult,
-} from '@tanstack/react-query';
 import { useRetryICATErrors } from './retryICATErrors';
 
 export const fetchDatasets = (
@@ -53,40 +53,6 @@ export const fetchDatasets = (
     .then((response) => {
       return response.data;
     });
-};
-
-export const useDataset = (
-  datasetId: number,
-  additionalFilters?: AdditionalFilters
-): UseQueryResult<Dataset[], AxiosError> => {
-  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
-  const retryICATErrors = useRetryICATErrors();
-
-  return useQuery<
-    Dataset[],
-    AxiosError,
-    Dataset[],
-    [string, number, AdditionalFilters?]
-  >(
-    ['dataset', datasetId, additionalFilters],
-    (_) => {
-      return fetchDatasets(apiUrl, { sort: {}, filters: {} }, [
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            id: { eq: datasetId },
-          }),
-        },
-        ...(additionalFilters ?? []),
-      ]);
-    },
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-    }
-  );
 };
 
 export const useDatasetsPaginated = (
@@ -224,40 +190,13 @@ export const useDatasetCount = (
   );
 };
 
-const fetchDatasetDetails = (
-  apiUrl: string,
-  datasetId: number
-): Promise<Dataset> => {
-  const params = new URLSearchParams();
-  params.append('where', JSON.stringify({ id: { eq: datasetId } }));
-  params.append('include', JSON.stringify('type'));
-
-  return axios
-    .get(`${apiUrl}/datasets`, {
-      params,
-      headers: {
-        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
-      },
-    })
-    .then((response) => response.data[0]);
-};
-
 export const useDatasetDetails = (
   datasetId: number
 ): UseQueryResult<Dataset, AxiosError> => {
-  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
-  const retryICATErrors = useRetryICATErrors();
-
-  return useQuery<Dataset, AxiosError, Dataset, [string, number]>(
-    ['datasetDetails', datasetId],
-    (params) => fetchDatasetDetails(apiUrl, params.queryKey[1]),
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-    }
-  );
+  return useEntity('dataset', 'id', datasetId.toString(), {
+    filterType: 'include',
+    filterValue: JSON.stringify('type'),
+  });
 };
 
 export const downloadDataset = (

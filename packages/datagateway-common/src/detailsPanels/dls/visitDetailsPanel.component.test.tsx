@@ -6,9 +6,11 @@ import axios from 'axios';
 import { Provider } from 'react-redux';
 import { combineReducers, createStore } from 'redux';
 import { Investigation } from '../../app.types';
-import { dGCommonInitialState } from '../../main';
+import DGThemeProvider from '../../dgThemeProvider.component';
 import { StateType } from '../../state/app.types';
-import dGCommonReducer from '../../state/reducers/dgcommon.reducer';
+import dGCommonReducer, {
+  initialState as dGCommonInitialState,
+} from '../../state/reducers/dgcommon.reducer';
 import VisitDetailsPanel from './visitDetailsPanel.component';
 
 function renderComponent({
@@ -19,19 +21,22 @@ function renderComponent({
   detailsPanelResize?: () => void;
 }): RenderResult {
   return render(
-    <Provider
-      store={createStore(
-        combineReducers<Partial<StateType>>({ dgcommon: dGCommonReducer }),
-        { dgcommon: { ...dGCommonInitialState, accessMethods: {} } }
-      )}
-    >
-      <QueryClientProvider client={new QueryClient()}>
-        <VisitDetailsPanel
-          rowData={rowData}
-          detailsPanelResize={detailsPanelResize}
-        />
-      </QueryClientProvider>
-    </Provider>
+    // wrap in theme provider to ensure no ripples end up in snapshots
+    <DGThemeProvider>
+      <Provider
+        store={createStore(
+          combineReducers<Partial<StateType>>({ dgcommon: dGCommonReducer }),
+          { dgcommon: { ...dGCommonInitialState, accessMethods: {} } }
+        )}
+      >
+        <QueryClientProvider client={new QueryClient()}>
+          <VisitDetailsPanel
+            rowData={rowData}
+            detailsPanelResize={detailsPanelResize}
+          />
+        </QueryClientProvider>
+      </Provider>
+    </DGThemeProvider>
   );
 }
 
