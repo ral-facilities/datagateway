@@ -1,10 +1,10 @@
 import {
-  MicroFrontendId,
   Datafile,
   Dataset,
+  DownloadSettingsAccessMethod,
   Instrument,
   Investigation,
-  DownloadSettingsAccessMethod,
+  MicroFrontendId,
 } from '../../app.types';
 import { DlsDatasetDetailsPanelTab } from '../../detailsPanels/dls/datasetDetailsPanel.component';
 import { DlsVisitDetailsPanelTab } from '../../detailsPanels/dls/visitDetailsPanel.component';
@@ -75,6 +75,7 @@ export interface PluginRoute {
   displayName: string;
   admin?: boolean;
   hideFromMenu?: boolean;
+  unauthorised?: boolean;
   order: number;
 }
 

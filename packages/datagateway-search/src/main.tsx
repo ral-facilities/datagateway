@@ -98,6 +98,7 @@ export const fetchSettings = (): Promise<SearchSettings | void> => {
                 order: route['order'] ?? 0,
                 hideFromMenu: route['hideFromMenu'] ?? false,
                 admin: route['admin'] ?? false,
+                unauthorised: route['unauthorised'] ?? false,
                 helpSteps:
                   index === 0 && 'helpSteps' in settings
                     ? settings['helpSteps']
