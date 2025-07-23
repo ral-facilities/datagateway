@@ -139,6 +139,7 @@ export const fetchSettings = (): Promise<DownloadSettings | void> => {
             displayName: route['displayName'],
             hideFromMenu: route['hideFromMenu'] ?? false,
             admin: route['admin'] ?? false,
+            unauthorised: route['unauthorised'] ?? false,
             order: route['order'] ?? 0,
             helpSteps:
               index === 0 && 'helpSteps' in settings
