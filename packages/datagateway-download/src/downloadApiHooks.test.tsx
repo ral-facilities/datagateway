@@ -62,13 +62,13 @@ const createTestQueryClient = (): QueryClient =>
 const createReactQueryWrapper = (
   settings = mockedSettings
 ): React.JSXElementConstructor<{
-  children: React.ReactElement;
+  children: React.ReactNode;
 }> => {
   const testQueryClient = createTestQueryClient();
   const history = createMemoryHistory();
 
   const wrapper: React.JSXElementConstructor<{
-    children: React.ReactElement;
+    children: React.ReactNode;
   }> = ({ children }) => (
     <DownloadSettingsContext.Provider value={settings}>
       <Router history={history}>
