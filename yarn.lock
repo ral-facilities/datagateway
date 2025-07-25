@@ -83,9 +83,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/eslint-parser@npm:7.27.5, @babel/eslint-parser@npm:^7.16.3":
-  version: 7.27.5
-  resolution: "@babel/eslint-parser@npm:7.27.5"
+"@babel/eslint-parser@npm:7.28.0, @babel/eslint-parser@npm:^7.16.3":
+  version: 7.28.0
+  resolution: "@babel/eslint-parser@npm:7.28.0"
   dependencies:
     "@nicolo-ribaudo/eslint-scope-5-internals": 5.1.1-v1
     eslint-visitor-keys: ^2.1.0
@@ -93,7 +93,7 @@ __metadata:
   peerDependencies:
     "@babel/core": ^7.11.0
     eslint: ^7.5.0 || ^8.0.0 || ^9.0.0
-  checksum: 133191a3ea312dea92abb0f2cae87bc8d36b4a02ce7dce9367473940d91a1102d0dbb53418ba4b1e955d430741c1a1ed622ad3e5973e727e0a6d8d094a65aa5c
+  checksum: ccfc4b9b9fdca2b8df95da3827b70231e9588a71447ff7b2de76c4f36710e4e0a7dc5e2e98623f398a737c2429c46500cb11d4ccdfeb98271e067d0bf0eec9b5
   languageName: node
   linkType: hard
 
@@ -4612,7 +4612,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "datagateway-common@workspace:packages/datagateway-common"
   dependencies:
-    "@babel/eslint-parser": 7.27.5
+    "@babel/eslint-parser": 7.28.0
     "@date-io/date-fns": 2.17.0
     "@emotion/react": 11.11.1
     "@emotion/styled": 11.11.0
@@ -4679,7 +4679,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "datagateway-dataview@workspace:packages/datagateway-dataview"
   dependencies:
-    "@babel/eslint-parser": 7.27.5
+    "@babel/eslint-parser": 7.28.0
     "@emotion/react": 11.11.1
     "@emotion/styled": 11.11.0
     "@mui/icons-material": 5.11.0
@@ -4753,7 +4753,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "datagateway-download@workspace:packages/datagateway-download"
   dependencies:
-    "@babel/eslint-parser": 7.27.5
+    "@babel/eslint-parser": 7.28.0
     "@emotion/react": 11.11.1
     "@emotion/styled": 11.11.0
     "@mui/icons-material": 5.11.0
@@ -4822,7 +4822,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "datagateway-search@workspace:packages/datagateway-search"
   dependencies:
-    "@babel/eslint-parser": 7.27.5
+    "@babel/eslint-parser": 7.28.0
     "@date-io/date-fns": 2.17.0
     "@emotion/react": 11.11.1
     "@emotion/styled": 11.11.0
