@@ -1,4 +1,3 @@
-import * as React from 'react';
 import DLSProposalsTable from './dlsProposalsTable.component';
 import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
@@ -11,7 +10,7 @@ import {
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Router } from 'react-router-dom';
 import { createMemoryHistory, History } from 'history';
 import {
@@ -20,7 +19,6 @@ import {
   screen,
   within,
 } from '@testing-library/react';
-import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 import {
   findAllRows,
@@ -30,14 +28,14 @@ import {
   findRowAt,
 } from '../../../setupTests';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    useInvestigationCount: jest.fn(),
-    useInvestigationsInfinite: jest.fn(),
+    useInvestigationCount: vi.fn(),
+    useInvestigationsInfinite: vi.fn(),
   };
 });
 
@@ -46,7 +44,7 @@ describe('DLS Proposals table component', () => {
   let state: StateType;
   let rowData: Investigation[];
   let history: History;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult => {
     const store = mockStore(state);
@@ -93,18 +91,18 @@ describe('DLS Proposals table component', () => {
       })
     );
 
-    (useInvestigationCount as jest.Mock).mockReturnValue({
+    vi.mocked(useInvestigationCount, { partial: true }).mockReturnValue({
       data: 1,
       isLoading: false,
     });
-    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
-      data: rowData,
+    vi.mocked(useInvestigationsInfinite, { partial: true }).mockReturnValue({
+      data: { pages: [rowData], pageParams: [] },
       isLoading: false,
     });
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly', async () => {
@@ -164,8 +162,11 @@ describe('DLS Proposals table component', () => {
     expect(history.location.search).toBe('?');
   });
 
-  it('uses default sort', () => {
+  it('uses default sort', async () => {
     renderComponent();
+
+    expect(await screen.findAllByRole('gridcell')).toBeTruthy();
+
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"title":"asc"}')}`

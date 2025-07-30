@@ -1,32 +1,32 @@
+import {
+  UseMutationResult,
+  UseQueryResult,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import log from 'loglevel';
-import {
-  UseQueryResult,
-  useQuery,
-  useMutation,
-  UseMutationResult,
-  useQueryClient,
-} from 'react-query';
 import { useSelector } from 'react-redux';
-import { StateType } from '../state/app.types';
-import { InvalidateTokenType } from '../state/actions/actions.types';
 import {
-  User,
-  MicroFrontendId,
-  RelatedDOI,
   DoiMetadata,
   DoiResponse,
   DownloadCartItem,
+  MicroFrontendId,
+  RelatedDOI,
+  User,
 } from '../app.types';
 import { readSciGatewayToken } from '../parseTokens';
+import { InvalidateTokenType } from '../state/actions/actions.types';
+import { StateType } from '../state/app.types';
 
 export const handleDOIAPIError = (
   // one hook complains if we use unknown, another complains if we use never
   // so just use any - we never access the custom error payload anyway
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   error: AxiosError<any>,
-  variables?: unknown,
-  context?: unknown,
+  _variables?: unknown,
+  _context?: unknown,
   logCondition?: boolean
 ): void => {
   if (typeof logCondition === 'undefined' || logCondition === true)
@@ -209,6 +209,16 @@ export const updateDOI = (
     .then((response) => response.data);
 };
 
+type UseUpdateDOIVariables = {
+  dataPublicationId: string;
+  content: {
+    investigation_ids: number[];
+    dataset_ids: number[];
+    datafile_ids: number[];
+  };
+  doiMetadata: DoiMetadata;
+};
+
 /**
  * Updates a datapublication
  * @param cart The {@link Cart} to mint
@@ -219,15 +229,7 @@ export const useUpdateDOI = (): UseMutationResult<
   AxiosError<{
     detail: { msg: string }[] | string;
   }>,
-  {
-    dataPublicationId: string;
-    content: {
-      investigation_ids: number[];
-      dataset_ids: number[];
-      datafile_ids: number[];
-    };
-    doiMetadata: DoiMetadata;
-  }
+  UseUpdateDOIVariables
 > => {
   const queryClient = useQueryClient();
   const doiMinterUrl = useSelector(
@@ -241,7 +243,7 @@ export const useUpdateDOI = (): UseMutationResult<
     },
     {
       onError: handleDOIAPIError,
-      onSuccess: (_data, { dataPublicationId, content, doiMetadata }) => {
+      onSuccess: (_data, { dataPublicationId }: UseUpdateDOIVariables) => {
         // resetQueries instead of invalidateQueries as otherwise invalidateQueries shows out-of-date data
         queryClient.resetQueries({
           predicate: (query) =>

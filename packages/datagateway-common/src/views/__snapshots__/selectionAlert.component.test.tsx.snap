@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`SelectionAlert renders correctly 1`] = `
+exports[`SelectionAlert > renders correctly 1`] = `
 <DocumentFragment>
   <div
     aria-label="selection-alert"
@@ -16,7 +16,7 @@ exports[`SelectionAlert renders correctly 1`] = `
           aria-label="selection-alert-text"
           class="MuiTypography-root MuiTypography-body1 css-1sx1eu0-MuiTypography-root"
         >
-          selec_alert.added
+          selec_alert.added {count:1}
         </p>
          
         <button

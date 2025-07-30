@@ -1,4 +1,3 @@
-import * as React from 'react';
 import ISISFacilityCyclesTable from './isisFacilityCyclesTable.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import type { StateType } from '../../../state/app.types';
@@ -9,14 +8,12 @@ import {
   useFacilityCyclesInfinite,
 } from 'datagateway-common';
 import configureStore from 'redux-mock-store';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { Router } from 'react-router-dom';
 import { createMemoryHistory, type History } from 'history';
 import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
   findAllRows,
   findCellInRow,
   findColumnHeaderByName,
@@ -28,17 +25,17 @@ import {
   screen,
   within,
 } from '@testing-library/react';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
+import type { MockInstance } from 'vitest';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    useFacilityCycleCount: jest.fn(),
-    useFacilityCyclesInfinite: jest.fn(),
+    useFacilityCycleCount: vi.fn(),
+    useFacilityCyclesInfinite: vi.fn(),
   };
 });
 
@@ -47,8 +44,8 @@ describe('ISIS FacilityCycles table component', () => {
   let state: StateType;
   let rowData: FacilityCycle[];
   let history: History;
-  let replaceSpy: jest.SpyInstance;
-  let user: UserEvent;
+  let replaceSpy: MockInstance;
+  let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult => {
     const store = mockStore(state);
@@ -74,7 +71,7 @@ describe('ISIS FacilityCycles table component', () => {
       },
     ];
     history = createMemoryHistory();
-    replaceSpy = jest.spyOn(history, 'replace');
+    replaceSpy = vi.spyOn(history, 'replace');
     user = userEvent.setup();
 
     state = JSON.parse(
@@ -84,18 +81,18 @@ describe('ISIS FacilityCycles table component', () => {
       })
     );
 
-    (useFacilityCycleCount as jest.Mock).mockReturnValue({
+    vi.mocked(useFacilityCycleCount, { partial: true }).mockReturnValue({
       data: 1,
       isLoading: false,
     });
-    (useFacilityCyclesInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
+    vi.mocked(useFacilityCyclesInfinite, { partial: true }).mockReturnValue({
+      data: { pages: [rowData], pageParams: [] },
+      fetchNextPage: vi.fn(),
     });
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly', async () => {
@@ -169,8 +166,6 @@ describe('ISIS FacilityCycles table component', () => {
   });
 
   it('updates filter query params on date filter', async () => {
-    applyDatePickerWorkaround();
-
     renderComponent();
 
     const filterInput = await screen.findByRole('textbox', {
@@ -191,12 +186,13 @@ describe('ISIS FacilityCycles table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
-
-    cleanupDatePickerWorkaround();
   });
 
-  it('uses default sort', () => {
+  it('uses default sort', async () => {
     renderComponent();
+
+    expect(await screen.findAllByRole('gridcell')).toBeTruthy();
+
     expect(history.length).toBe(1);
     expect(replaceSpy).toHaveBeenCalledWith({
       search: `?sort=${encodeURIComponent('{"startDate":"desc"}')}`,
@@ -231,8 +227,10 @@ describe('ISIS FacilityCycles table component', () => {
   });
 
   it('renders fine with incomplete data', () => {
-    (useFacilityCycleCount as jest.Mock).mockReturnValueOnce({});
-    (useFacilityCyclesInfinite as jest.Mock).mockReturnValueOnce({});
+    vi.mocked(useFacilityCycleCount, { partial: true }).mockReturnValueOnce({});
+    vi.mocked(useFacilityCyclesInfinite, { partial: true }).mockReturnValueOnce(
+      {}
+    );
 
     expect(() => renderComponent()).not.toThrowError();
   });

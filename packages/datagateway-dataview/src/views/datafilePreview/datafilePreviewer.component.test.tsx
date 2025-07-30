@@ -6,12 +6,10 @@ import {
   waitFor,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import axios, { type AxiosRequestConfig } from 'axios';
 import { downloadDatafile } from 'datagateway-common';
 import type { Datafile } from 'datagateway-common/lib/app.types';
-import * as React from 'react';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 import { combineReducers, createStore, type Store } from 'redux';
@@ -19,17 +17,10 @@ import DGDataViewReducer from '../../state/reducers/dgdataview.reducer';
 import DatafilePreviewer from './datafilePreviewer.component';
 import { mockDatafile, mockTxtFileContent } from './testData';
 
-jest.mock('datagateway-common', () => ({
-  ...jest.requireActual('datagateway-common'),
-  downloadDatafile: jest.fn(),
+vi.mock('datagateway-common', async () => ({
+  ...(await vi.importActual('datagateway-common')),
+  downloadDatafile: vi.fn(),
 }));
-
-// silence react-query errors
-setLogger({
-  log: console.log,
-  warn: console.warn,
-  error: jest.fn(),
-});
 
 function createMockStore(): Store {
   return createStore(
@@ -53,6 +44,12 @@ function createQueryClient(): QueryClient {
         retry: false,
       },
     },
+    // silence react-query errors
+    logger: {
+      log: console.log,
+      warn: console.warn,
+      error: vi.fn(),
+    },
   });
 }
 
@@ -71,11 +68,11 @@ function renderComponent(): RenderResult {
 }
 
 describe('DatafilePreviewer', () => {
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   beforeEach(() => {
     user = userEvent.setup();
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string, config: AxiosRequestConfig) => {
         if (/.*\/datafiles$/.test(url)) {
@@ -116,20 +113,20 @@ describe('DatafilePreviewer', () => {
 
     it('when the datafile query returns null', async () => {
       // pretend the server returns an empty array for the datafile query.
-      axios.get = jest.fn().mockResolvedValueOnce({
+      axios.get = vi.fn().mockResolvedValueOnce({
         data: [],
       });
 
       renderComponent();
 
       expect(
-        await screen.findByText('datafiles.preview.invalid_datafile')
+        await screen.findByText('datafiles.preview.cannot_load_metadata')
       ).toBeInTheDocument();
     });
   });
 
   it('should show a message saying the datafile metadata is unavailable when the datafile query fails', async () => {
-    axios.get = jest.fn().mockImplementation(() =>
+    axios.get = vi.fn().mockImplementation(() =>
       Promise.reject({
         response: { status: 403 },
         message: 'Cannot fetch datafile',
@@ -145,7 +142,7 @@ describe('DatafilePreviewer', () => {
   });
 
   it('should show a message saying the datafile metadata is being fetched when the datafile metadata query is loading', async () => {
-    axios.get = jest.fn().mockReturnValue(
+    axios.get = vi.fn().mockReturnValue(
       new Promise((_) => {
         // never resolve this promise to pretend the queries are still loading
       })
@@ -160,7 +157,7 @@ describe('DatafilePreviewer', () => {
   });
 
   it('should show a message saying the datafile content is unavailable when the previewer failed to download the content', async () => {
-    axios.get = jest.fn().mockImplementation((url: string) => {
+    axios.get = vi.fn().mockImplementation((url: string) => {
       if (/.*\/datafiles$/.test(url)) {
         // this is fetch datafile query, resolve normally
         return Promise.resolve({
@@ -196,7 +193,7 @@ describe('DatafilePreviewer', () => {
   });
 
   it('should show the current progress of downloading datafile content', async () => {
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string, config: AxiosRequestConfig) => {
         if (/.*\/datafiles$/.test(url)) {
@@ -244,7 +241,7 @@ describe('DatafilePreviewer', () => {
       name: 'Datafile.exe',
     } satisfies Datafile;
 
-    axios.get = jest.fn().mockResolvedValueOnce({
+    axios.get = vi.fn().mockResolvedValueOnce({
       data: [unsupportedDatafile],
     });
 
@@ -281,7 +278,7 @@ describe('DatafilePreviewer', () => {
       name: 'Datafile',
     } satisfies Datafile;
 
-    axios.get = jest.fn().mockResolvedValueOnce({
+    axios.get = vi.fn().mockResolvedValueOnce({
       data: [unsupportedDatafile],
     });
 

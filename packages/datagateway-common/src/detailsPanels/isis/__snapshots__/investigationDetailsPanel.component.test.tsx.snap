@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Investigation details panel component should check if multiple publications result in change of title to plural version 1`] = `
+exports[`Investigation details panel component > should check if multiple publications result in change of title to plural version 1`] = `
 <DocumentFragment>
   <div
     data-testid="isis-investigation-details-panel"
@@ -215,7 +215,7 @@ exports[`Investigation details panel component should check if multiple publicat
         <span
           class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
         >
-          investigations.details.publications.reference
+          investigations.details.publications.reference {count:2}
         </span>
         <div
           class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
@@ -245,7 +245,7 @@ exports[`Investigation details panel component should check if multiple publicat
 </DocumentFragment>
 `;
 
-exports[`Investigation details panel component should check if multiple samples result in change of title to plural version 1`] = `
+exports[`Investigation details panel component > should check if multiple samples result in change of title to plural version 1`] = `
 <DocumentFragment>
   <div
     data-testid="isis-investigation-details-panel"
@@ -460,7 +460,7 @@ exports[`Investigation details panel component should check if multiple samples 
         <span
           class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
         >
-          investigations.details.samples.name
+          investigations.details.samples.name {count:2}
         </span>
         <div
           class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
@@ -490,7 +490,7 @@ exports[`Investigation details panel component should check if multiple samples 
 </DocumentFragment>
 `;
 
-exports[`Investigation details panel component should gracefully handles dataCollectionInvestigations without dataPublications and InvestigationUsers without Users 1`] = `
+exports[`Investigation details panel component > should gracefully handles dataCollectionInvestigations without dataPublications and InvestigationUsers without Users 1`] = `
 <DocumentFragment>
   <div
     data-testid="isis-investigation-details-panel"
@@ -685,7 +685,7 @@ exports[`Investigation details panel component should gracefully handles dataCol
         <span
           class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
         >
-          investigations.details.users.name
+          investigations.details.users.name {count:1}
         </span>
       </div>
     </div>
@@ -693,7 +693,7 @@ exports[`Investigation details panel component should gracefully handles dataCol
 </DocumentFragment>
 `;
 
-exports[`Investigation details panel component should render correctly 1`] = `
+exports[`Investigation details panel component > should render correctly 1`] = `
 <DocumentFragment>
   <div
     data-testid="isis-investigation-details-panel"
@@ -886,7 +886,7 @@ exports[`Investigation details panel component should render correctly 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Investigation details panel component should render user, sample and publication tabs when present in the data 1`] = `
+exports[`Investigation details panel component > should render user, sample and publication tabs when present in the data 1`] = `
 <DocumentFragment>
   <div
     data-testid="isis-investigation-details-panel"
@@ -1129,7 +1129,7 @@ exports[`Investigation details panel component should render user, sample and pu
         <span
           class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
         >
-          investigations.details.users.name
+          investigations.details.users.name {count:2}
         </span>
         <div
           class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
@@ -1167,7 +1167,7 @@ exports[`Investigation details panel component should render user, sample and pu
         <span
           class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
         >
-          investigations.details.samples.name
+          investigations.details.samples.name {count:1}
         </span>
         <div
           class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
@@ -1194,7 +1194,7 @@ exports[`Investigation details panel component should render user, sample and pu
         <span
           class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
         >
-          investigations.details.publications.reference
+          investigations.details.publications.reference {count:1}
         </span>
         <div
           class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"

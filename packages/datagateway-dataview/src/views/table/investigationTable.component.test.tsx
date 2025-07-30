@@ -3,7 +3,6 @@ import {
   type DownloadCartItem,
   type Investigation,
 } from 'datagateway-common';
-import * as React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
@@ -11,7 +10,7 @@ import thunk from 'redux-thunk';
 import type { StateType } from '../../state/app.types';
 import { initialState } from '../../state/reducers/dgdataview.reducer';
 import InvestigationTable from './investigationTable.component';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createMemoryHistory, type History } from 'history';
 import {
   render,
@@ -20,13 +19,7 @@ import {
   waitFor,
   within,
 } from '@testing-library/react';
-import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
-  findAllRows,
-  findColumnHeaderByName,
-} from '../../setupTests';
-import type { UserEvent } from '@testing-library/user-event/setup/setup';
+import { findAllRows, findColumnHeaderByName } from '../../setupTests';
 import userEvent from '@testing-library/user-event';
 import {
   findCellInRow,
@@ -40,7 +33,7 @@ describe('Investigation table component', () => {
   let rowData: Investigation[];
   let cartItems: DownloadCartItem[];
   let history: History;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
   let holder: HTMLElement;
 
   const renderComponent = (): RenderResult => {
@@ -94,7 +87,7 @@ describe('Investigation table component', () => {
       })
     );
 
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/\/user\/cart\/$/.test(url)) {
@@ -127,7 +120,7 @@ describe('Investigation table component', () => {
         return Promise.reject(`Endpoint not mocked: ${url}`);
       });
 
-    axios.post = jest
+    axios.post = vi
       .fn()
       .mockImplementation(
         (url: string, data: unknown): Promise<Partial<AxiosResponse>> => {
@@ -169,18 +162,21 @@ describe('Investigation table component', () => {
 
   afterEach(() => {
     document.body.removeChild(holder);
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly', async () => {
     renderComponent();
 
     let rows: HTMLElement[] = [];
-    await waitFor(async () => {
-      rows = await findAllRows();
-      // should have 1 row in the table
-      expect(rows).toHaveLength(1);
-    });
+    await waitFor(
+      async () => {
+        rows = await findAllRows();
+        // should have 1 row in the table
+        expect(rows).toHaveLength(1);
+      },
+      { timeout: 5_000 } // this can timeout sometimes in CI without so bump it up from minimum
+    );
 
     const row = rows[0];
 
@@ -293,8 +289,6 @@ describe('Investigation table component', () => {
   });
 
   it('updates filter query params on date filter', async () => {
-    applyDatePickerWorkaround();
-
     renderComponent();
 
     const filterInput = await screen.findByRole('textbox', {
@@ -317,8 +311,6 @@ describe('Investigation table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
-
-    cleanupDatePickerWorkaround();
   });
 
   it('updates sort query params on sort', async () => {
@@ -411,7 +403,7 @@ describe('Investigation table component', () => {
     ).toBeNull();
   });
 
-  it('renders fine with incomplete data', () => {
+  it('renders fine with incomplete data', async () => {
     // this can happen when navigating between tables and the previous table's state still exists
     rowData = [
       {
@@ -424,6 +416,9 @@ describe('Investigation table component', () => {
     ];
 
     expect(() => renderComponent()).not.toThrowError();
+    await waitFor(async () => {
+      expect(await findAllRows()).toHaveLength(1);
+    });
   });
 
   it('displays details panel when expanded', async () => {

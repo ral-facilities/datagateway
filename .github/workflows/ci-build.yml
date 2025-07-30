@@ -14,9 +14,9 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repo
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Setup Node.js
-        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 20
           cache: 'yarn'
@@ -33,7 +33,7 @@ jobs:
       # Test coverage upload
       - name: Upload unit test coverage for the Common package
         if: success()
-        uses: codecov/codecov-action@e0b68c6749509c5f83f984dd99a76a1c1a231044 # v4
+        uses: codecov/codecov-action@18283e04ce6e62d37312384ff67231eb8fd56d24 # v5.4.3
         with:
           directory: ./packages/datagateway-common/
           flags: common
@@ -41,7 +41,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
       - name: Upload unit test coverage for the DataView package
         if: success()
-        uses: codecov/codecov-action@e0b68c6749509c5f83f984dd99a76a1c1a231044 # v4
+        uses: codecov/codecov-action@18283e04ce6e62d37312384ff67231eb8fd56d24 # v5.4.3
         with:
           directory: ./packages/datagateway-dataview/
           flags: dataview
@@ -49,7 +49,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
       - name: Upload unit test coverage for the Search package
         if: success()
-        uses: codecov/codecov-action@e0b68c6749509c5f83f984dd99a76a1c1a231044 # v4
+        uses: codecov/codecov-action@18283e04ce6e62d37312384ff67231eb8fd56d24 # v5.4.3
         with:
           directory: ./packages/datagateway-search/
           flags: search
@@ -57,7 +57,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
       - name: Upload unit test coverage for the Download package
         if: success()
-        uses: codecov/codecov-action@e0b68c6749509c5f83f984dd99a76a1c1a231044 # v4
+        uses: codecov/codecov-action@18283e04ce6e62d37312384ff67231eb8fd56d24 # v5.4.3
         with:
           directory: ./packages/datagateway-download/
           flags: download
@@ -69,27 +69,27 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repo
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Add apt repo
         run: sudo add-apt-repository universe
       - name: Setup Java
-        uses: actions/setup-java@387ac29b308b003ca37ba93a6cab5eb57c8f5f93 # v4
+        uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4.7.1
         with:
           distribution: 'zulu'
           java-version: 8
           java-package: jdk
       - name: Setup Python
-        uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: 3.9
           architecture: x64
 
       # ICAT Ansible clone and install dependencies
       - name: Checkout icat-ansible
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: icatproject-contrib/icat-ansible
-          ref: master
+          ref: datagateway-download-api-3.1.0
           path: icat-ansible
       - name: Install Ansible (ensure we're using the system python)
         run: /usr/bin/python3 -m pip install -r icat-ansible/requirements.txt
@@ -157,7 +157,7 @@ jobs:
           cd /home/runner/install/datagateway-download-api/ && python ./setup -vv install
 
       - name: Checkout datagateway-api
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
@@ -196,7 +196,7 @@ jobs:
 
       # E2E tests
       - name: Setup Node.js
-        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 20
           cache: 'yarn'
@@ -208,7 +208,7 @@ jobs:
         run: yarn workspace datagateway-dataview run e2e
       - name: Upload Cypress screenshots
         if: failure()
-        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: DataView-Screenshots
           path: packages/datagateway-dataview/cypress/screenshots
@@ -218,24 +218,24 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repo
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Add apt repo
         run: sudo add-apt-repository universe
       - name: Setup Java
-        uses: actions/setup-java@387ac29b308b003ca37ba93a6cab5eb57c8f5f93 # v4
+        uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4.7.1
         with:
           distribution: 'zulu'
           java-version: 8
           java-package: jdk
       - name: Setup Python
-        uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: 3.9
           architecture: x64
 
       # ICAT Ansible clone and install dependencies
       - name: Checkout icat-ansible
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: icatproject-contrib/icat-ansible
           ref: master
@@ -322,7 +322,7 @@ jobs:
         run: rm -f login_output
 
       - name: Checkout datagateway-api
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
@@ -361,7 +361,7 @@ jobs:
 
       # E2E tests
       - name: Setup Node.js
-        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 20
           cache: 'yarn'
@@ -373,7 +373,7 @@ jobs:
         run: yarn workspace datagateway-download run e2e
       - name: Upload Cypress screenshots
         if: failure()
-        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: Download-Screenshots
           path: packages/datagateway-download/cypress/screenshots
@@ -383,24 +383,24 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repo
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Add apt repo
         run: sudo add-apt-repository universe
       - name: Setup Java
-        uses: actions/setup-java@387ac29b308b003ca37ba93a6cab5eb57c8f5f93 # v4
+        uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4.7.1
         with:
           distribution: 'zulu'
           java-version: 8
           java-package: jdk
       - name: Setup Python
-        uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: 3.9
           architecture: x64
 
       # ICAT Ansible clone and install dependencies
       - name: Checkout icat-ansible
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: icatproject-contrib/icat-ansible
           ref: master
@@ -454,7 +454,7 @@ jobs:
           cd /home/runner/install/icat.server/ && ./setup -vv install
 
       - name: Checkout datagateway-api
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
@@ -491,7 +491,7 @@ jobs:
 
       # E2E tests
       - name: Setup Node.js
-        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 20
           cache: 'yarn'
@@ -503,7 +503,7 @@ jobs:
         run: yarn workspace datagateway-search run e2e
       - name: Upload Cypress screenshots
         if: failure()
-        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: Search-Screenshots
           path: packages/datagateway-search/cypress/screenshots
@@ -516,7 +516,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repo
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Login to Harbor
         uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc # v2.2.0

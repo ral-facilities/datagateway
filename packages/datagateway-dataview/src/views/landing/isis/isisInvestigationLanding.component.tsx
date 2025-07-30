@@ -427,7 +427,7 @@ const CommonLandingPage = (
           <Paper square elevation={0} sx={{ mx: -1.5, px: 1.5 }}>
             <Tabs
               value={value}
-              onChange={(event, newValue) => setValue(newValue)}
+              onChange={(_event, newValue) => setValue(newValue)}
               indicatorColor="secondary"
               textColor="secondary"
             >

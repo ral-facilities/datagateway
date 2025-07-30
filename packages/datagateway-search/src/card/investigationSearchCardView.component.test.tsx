@@ -1,4 +1,3 @@
-import * as React from 'react';
 import {
   dGCommonInitialState,
   SearchResponse,
@@ -8,7 +7,7 @@ import {
   StateType,
 } from 'datagateway-common';
 import InvestigationSearchCardView from './investigationSearchCardView.component';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import thunk from 'redux-thunk';
@@ -43,13 +42,18 @@ describe('Investigation - Card View', () => {
   const mockAxiosGet = (url: string): Promise<Partial<AxiosResponse>> => {
     if (/\/investigations$/.test(url)) {
       return Promise.resolve({
-        data: [],
+        data: [cardData],
       });
     }
     if (/\/search\/documents$/.test(url)) {
       // lucene search query
       return Promise.resolve({
         data: searchResponse,
+      });
+    }
+    if (/\/user\/queue\/allowed$/.test(url)) {
+      return Promise.resolve({
+        data: true,
       });
     }
     return Promise.reject({
@@ -106,12 +110,12 @@ describe('Investigation - Card View', () => {
       })
     );
 
-    (axios.get as jest.Mock).mockImplementation(mockAxiosGet);
-    window.scrollTo = jest.fn();
+    vi.mocked(axios.get).mockImplementation(mockAxiosGet);
+    window.scrollTo = vi.fn();
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('disables the search query if investigation search is disabled', async () => {
@@ -131,6 +135,10 @@ describe('Investigation - Card View', () => {
     expect(
       queryClient.getQueryState(['search', 'Investigation'], { exact: false })
         ?.status
+    ).toBe('loading');
+    expect(
+      queryClient.getQueryState(['search', 'Investigation'], { exact: false })
+        ?.fetchStatus
     ).toBe('idle');
 
     expect(screen.queryAllByTestId('card')).toHaveLength(0);
@@ -295,6 +303,8 @@ describe('Investigation - Card View', () => {
   });
 
   it('displays correct details panel for DLS when expanded', async () => {
+    state.dgcommon.accessMethods = {};
+
     const user = userEvent.setup();
 
     renderComponent({

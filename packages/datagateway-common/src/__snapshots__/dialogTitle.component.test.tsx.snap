@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`DialogTitle should render correctly 1`] = `
+exports[`DialogTitle > should render correctly 1`] = `
 <DocumentFragment>
   <h2
     class="MuiTypography-root MuiTypography-h6 MuiDialogTitle-root css-140puxv-MuiTypography-root-MuiDialogTitle-root"

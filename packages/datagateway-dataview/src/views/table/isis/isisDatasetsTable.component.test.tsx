@@ -1,4 +1,3 @@
-import * as React from 'react';
 import ISISDatasetsTable from './isisDatasetsTable.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import configureStore from 'redux-mock-store';
@@ -16,7 +15,7 @@ import {
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { generatePath, Router } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   render,
   type RenderResult,
@@ -24,26 +23,22 @@ import {
   waitFor,
 } from '@testing-library/react';
 import { createMemoryHistory, type History } from 'history';
-import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
-} from '../../../setupTests';
-import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 import { paths } from '../../../page/pageContainer.component';
+import axios, { AxiosResponse } from 'axios';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    useDatasetCount: jest.fn(),
-    useDatasetsInfinite: jest.fn(),
-    useIds: jest.fn(),
-    useCart: jest.fn(),
-    useAddToCart: jest.fn(),
-    useRemoveFromCart: jest.fn(),
+    useDatasetCount: vi.fn(),
+    useDatasetsInfinite: vi.fn(),
+    useIds: vi.fn(),
+    useCart: vi.fn(),
+    useAddToCart: vi.fn(),
+    useRemoveFromCart: vi.fn(),
   };
 });
 
@@ -52,7 +47,7 @@ describe('ISIS Dataset table component', () => {
   let state: StateType;
   let rowData: Dataset[];
   let history: History;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult => {
     const store = mockStore(state);
@@ -94,33 +89,44 @@ describe('ISIS Dataset table component', () => {
       })
     );
 
-    (useCart as jest.Mock).mockReturnValue({
+    vi.mocked(useCart, { partial: true }).mockReturnValue({
       data: [],
       isLoading: false,
     });
-    (useDatasetCount as jest.Mock).mockReturnValue({
+    vi.mocked(useDatasetCount, { partial: true }).mockReturnValue({
       data: 0,
     });
-    (useDatasetsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
+    vi.mocked(useDatasetsInfinite, { partial: true }).mockReturnValue({
+      data: { pages: [rowData], pageParams: [] },
+      fetchNextPage: vi.fn(),
     });
-    (useIds as jest.Mock).mockReturnValue({
+    vi.mocked(useIds, { partial: true }).mockReturnValue({
       data: [1],
       isLoading: false,
     });
-    (useAddToCart as jest.Mock).mockReturnValue({
-      mutate: jest.fn(),
+    vi.mocked(useAddToCart, { partial: true }).mockReturnValue({
+      mutate: vi.fn(),
       isLoading: false,
     });
-    (useRemoveFromCart as jest.Mock).mockReturnValue({
-      mutate: jest.fn(),
+    vi.mocked(useRemoveFromCart, { partial: true }).mockReturnValue({
+      mutate: vi.fn(),
       isLoading: false,
     });
+    axios.get = vi
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/\/datasets$/.test(url)) {
+          return Promise.resolve({
+            data: rowData,
+          });
+        }
+
+        return Promise.reject(`Endpoint not mocked: ${url}`);
+      });
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('updates filter query params on text filter', async () => {
@@ -147,8 +153,6 @@ describe('ISIS Dataset table component', () => {
   });
 
   it('updates filter query params on date filter', async () => {
-    applyDatePickerWorkaround();
-
     renderComponent();
 
     const filterInput = await screen.findByRole('textbox', {
@@ -168,12 +172,13 @@ describe('ISIS Dataset table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
-
-    cleanupDatePickerWorkaround();
   });
 
-  it('uses default sort', () => {
+  it('uses default sort', async () => {
     renderComponent();
+
+    expect(await screen.findAllByRole('gridcell')).toBeTruthy();
+
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"asc"}')}`
@@ -200,10 +205,10 @@ describe('ISIS Dataset table component', () => {
   });
 
   it('calls addToCart mutate function on unchecked checkbox click', async () => {
-    const addToCart = jest.fn();
-    (useAddToCart as jest.Mock).mockReturnValue({
+    const addToCart = vi.fn();
+    vi.mocked(useAddToCart, { partial: true }).mockReturnValue({
       mutate: addToCart,
-      loading: false,
+      isLoading: false,
     });
     renderComponent();
 
@@ -215,7 +220,7 @@ describe('ISIS Dataset table component', () => {
   });
 
   it('calls removeFromCart mutate function on checked checkbox click', async () => {
-    (useCart as jest.Mock).mockReturnValue({
+    vi.mocked(useCart, { partial: true }).mockReturnValue({
       data: [
         {
           entityId: 1,
@@ -228,10 +233,10 @@ describe('ISIS Dataset table component', () => {
       isLoading: false,
     });
 
-    const removeFromCart = jest.fn();
-    (useRemoveFromCart as jest.Mock).mockReturnValue({
+    const removeFromCart = vi.fn();
+    vi.mocked(useRemoveFromCart, { partial: true }).mockReturnValue({
       mutate: removeFromCart,
-      loading: false,
+      isLoading: false,
     });
 
     renderComponent();
@@ -244,7 +249,7 @@ describe('ISIS Dataset table component', () => {
   });
 
   it('selected rows only considers relevant cart items', async () => {
-    (useCart as jest.Mock).mockReturnValueOnce({
+    vi.mocked(useCart, { partial: true }).mockReturnValueOnce({
       data: [
         {
           entityId: 1,

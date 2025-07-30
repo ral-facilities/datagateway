@@ -1,17 +1,11 @@
-import { render, RenderResult, screen, within } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { RenderResult, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import * as React from 'react';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
-import RelatedDOIs from './relatedDOIs.component';
 import axios, { AxiosResponse } from 'axios';
+import * as React from 'react';
+import RelatedDOIs from './relatedDOIs.component';
 
-setLogger({
-  log: console.log,
-  warn: console.warn,
-  error: jest.fn(),
-});
-
-jest.mock('loglevel');
+vi.mock('loglevel');
 
 const createTestQueryClient = (): QueryClient =>
   new QueryClient({
@@ -19,6 +13,12 @@ const createTestQueryClient = (): QueryClient =>
       queries: {
         retry: false,
       },
+    },
+    // silence react-query errors
+    logger: {
+      log: console.log,
+      warn: console.warn,
+      error: vi.fn(),
     },
   });
 
@@ -91,7 +91,7 @@ describe('DOI generation form component', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should let the user add related dois (but not if fetchDOI fails) + lets you change the relation type + resource type', async () => {
@@ -148,7 +148,7 @@ describe('DOI generation form component', () => {
     expect(screen.getByText('Journal')).toBeInTheDocument();
 
     // test errors with various API error responses
-    (axios.get as jest.Mock).mockRejectedValueOnce({
+    vi.mocked(axios.get).mockRejectedValueOnce({
       response: { data: { errors: [{ title: 'error msg' }] }, status: 404 },
     });
 

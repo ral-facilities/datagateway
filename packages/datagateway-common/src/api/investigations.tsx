@@ -17,7 +17,7 @@ import {
   UseInfiniteQueryResult,
   useQuery,
   UseQueryResult,
-} from 'react-query';
+} from '@tanstack/react-query';
 import { useRetryICATErrors } from './retryICATErrors';
 
 export const fetchInvestigations = (

@@ -5,10 +5,10 @@ import {
   Grid,
   Typography,
 } from '@mui/material';
+import { MutationStatus } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { QueryStatus } from 'react-query';
 import { Link } from 'react-router-dom';
 import { DoiResponse } from '../app.types';
 
@@ -18,7 +18,7 @@ import Mark from '../mark.component';
 
 interface DOIConfirmDialogProps {
   open: boolean;
-  mintingStatus: QueryStatus;
+  mintingStatus: MutationStatus;
   data: DoiResponse | undefined;
   error: AxiosError<{
     detail: { msg: string }[] | string;
@@ -42,7 +42,7 @@ const DOIConfirmDialog: React.FC<DOIConfirmDialogProps> = (
 
   return (
     <Dialog
-      onClose={(event) => {
+      onClose={(_event) => {
         if (isMintError) {
           setClose();
         }

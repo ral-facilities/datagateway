@@ -1,32 +1,30 @@
-import * as React from 'react';
-import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
-import configureStore from 'redux-mock-store';
-import { StateType } from '../../../state/app.types';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { render, screen, type RenderResult } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import {
   DataPublication,
   dGCommonInitialState,
   useDataPublication,
   useDataPublicationsByFilters,
 } from 'datagateway-common';
+import { History, createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
+import { Router, generatePath } from 'react-router-dom';
+import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { createMemoryHistory, History } from 'history';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { generatePath, Router } from 'react-router-dom';
-import { render, type RenderResult, screen } from '@testing-library/react';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
-import userEvent from '@testing-library/user-event';
-import ISISDataPublicationLanding from './isisDataPublicationLanding.component';
 import { paths } from '../../../page/pageContainer.component';
+import { StateType } from '../../../state/app.types';
+import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
+import ISISDataPublicationLanding from './isisDataPublicationLanding.component';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    useDataPublication: jest.fn(),
-    useDataPublicationsByFilters: jest.fn(),
+    useDataPublication: vi.fn(),
+    useDataPublicationsByFilters: vi.fn(),
   };
 });
 
@@ -34,7 +32,7 @@ describe('ISIS Data Publication Landing page', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let history: History;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult =>
     render(
@@ -129,6 +127,7 @@ describe('ISIS Data Publication Landing page', () => {
         dgcommon: dGCommonInitialState,
       })
     );
+    state.dgdataview.pluginHost = '/test/';
 
     history = createMemoryHistory({
       initialEntries: [
@@ -183,17 +182,17 @@ describe('ISIS Data Publication Landing page', () => {
       },
     ];
 
-    (useDataPublication as jest.Mock).mockReturnValue({
+    vi.mocked(useDataPublication, { partial: true }).mockReturnValue({
       data: initialStudyDataPublicationData,
     });
 
-    (useDataPublicationsByFilters as jest.Mock).mockReturnValue({
+    vi.mocked(useDataPublicationsByFilters, { partial: true }).mockReturnValue({
       data: initialInvestigationDataPublicationsData,
     });
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('links to the correct url in the datafiles tab', () => {
@@ -230,6 +229,14 @@ describe('ISIS Data Publication Landing page', () => {
 
   it('renders correctly', async () => {
     renderComponent();
+
+    // renders branding correctly
+    expect(
+      await screen.findByRole('img', { name: 'STFC Logo' })
+    ).toHaveAttribute(
+      'src',
+      expect.stringMatching(/(.*)stfc-logo-white-text\.png/)
+    );
 
     // displays doi + link correctly
     expect(await screen.findByRole('link', { name: 'doi 1' })).toHaveAttribute(
@@ -320,7 +327,9 @@ describe('ISIS Data Publication Landing page', () => {
 
     renderComponent();
 
-    expect(screen.getByText('Description not provided')).toBeInTheDocument();
+    expect(
+      await screen.findByText('Description not provided')
+    ).toBeInTheDocument();
 
     expect(screen.queryByText('investigations.details.users.label')).toBeNull();
 

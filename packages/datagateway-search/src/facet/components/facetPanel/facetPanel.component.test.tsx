@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { render, screen, within } from '@testing-library/react';
 import FacetPanel from './facetPanel.component';
 import { FacetClassification } from '../../facet';
@@ -29,9 +28,9 @@ describe('facetPanel', () => {
         allIds={TEST_IDS}
         facetClassification={TEST_FACET_CLASSIFICATION}
         selectedFacetFilters={{}}
-        onAddFilter={jest.fn()}
-        onRemoveFilter={jest.fn()}
-        onApplyFacetFilters={jest.fn()}
+        onAddFilter={vi.fn()}
+        onRemoveFilter={vi.fn()}
+        onApplyFacetFilters={vi.fn()}
       />
     );
 
@@ -145,9 +144,9 @@ describe('facetPanel', () => {
           'investigation.type.name': ['experiment'],
           'investigationparameter.type.name': ['bcat_inv_str'],
         }}
-        onAddFilter={jest.fn()}
-        onRemoveFilter={jest.fn()}
-        onApplyFacetFilters={jest.fn()}
+        onAddFilter={vi.fn()}
+        onRemoveFilter={vi.fn()}
+        onApplyFacetFilters={vi.fn()}
       />
     );
 
@@ -184,8 +183,8 @@ describe('facetPanel', () => {
 
   it('reflects the changes when a filter is added', async () => {
     const user = userEvent.setup();
-    const onAddFilter = jest.fn();
-    const onApplyFacetFilters = jest.fn();
+    const onAddFilter = vi.fn();
+    const onApplyFacetFilters = vi.fn();
 
     const { rerender } = render(
       <FacetPanel
@@ -198,7 +197,7 @@ describe('facetPanel', () => {
           'investigationparameter.type.name': ['bcat_inv_str'],
         }}
         onAddFilter={onAddFilter}
-        onRemoveFilter={jest.fn()}
+        onRemoveFilter={vi.fn()}
         onApplyFacetFilters={onApplyFacetFilters}
       />
     );
@@ -233,7 +232,7 @@ describe('facetPanel', () => {
           'investigationparameter.type.name': ['bcat_inv_str'],
         }}
         onAddFilter={onAddFilter}
-        onRemoveFilter={jest.fn()}
+        onRemoveFilter={vi.fn()}
         onApplyFacetFilters={onApplyFacetFilters}
       />
     );
@@ -266,8 +265,8 @@ describe('facetPanel', () => {
 
   it('reflects the changes when a filter is removed', async () => {
     const user = userEvent.setup();
-    const onRemoveFilter = jest.fn();
-    const onApplyFacetFilters = jest.fn();
+    const onRemoveFilter = vi.fn();
+    const onApplyFacetFilters = vi.fn();
 
     const { rerender } = render(
       <FacetPanel
@@ -279,9 +278,9 @@ describe('facetPanel', () => {
           'investigation.type.name': ['experiment'],
           'investigationparameter.type.name': ['bcat_inv_str'],
         }}
-        onAddFilter={jest.fn()}
+        onAddFilter={vi.fn()}
         onRemoveFilter={onRemoveFilter}
-        onApplyFacetFilters={jest.fn()}
+        onApplyFacetFilters={vi.fn()}
       />
     );
 
@@ -314,7 +313,7 @@ describe('facetPanel', () => {
         selectedFacetFilters={{
           'investigationparameter.type.name': ['bcat_inv_str'],
         }}
-        onAddFilter={jest.fn()}
+        onAddFilter={vi.fn()}
         onRemoveFilter={onRemoveFilter}
         onApplyFacetFilters={onApplyFacetFilters}
       />
@@ -359,9 +358,9 @@ describe('facetPanel', () => {
             'investigation.type.name': ['experiment'],
             'investigationparameter.type.name': ['bcat_inv_str'],
           }}
-          onAddFilter={jest.fn()}
-          onRemoveFilter={jest.fn()}
-          onApplyFacetFilters={jest.fn()}
+          onAddFilter={vi.fn()}
+          onRemoveFilter={vi.fn()}
+          onApplyFacetFilters={vi.fn()}
         />
       );
 
@@ -390,9 +389,9 @@ describe('facetPanel', () => {
             },
           }}
           selectedFacetFilters={{}}
-          onAddFilter={jest.fn()}
-          onRemoveFilter={jest.fn()}
-          onApplyFacetFilters={jest.fn()}
+          onAddFilter={vi.fn()}
+          onRemoveFilter={vi.fn()}
+          onApplyFacetFilters={vi.fn()}
         />
       );
 
@@ -421,9 +420,9 @@ describe('facetPanel', () => {
             },
           }}
           selectedFacetFilters={{}}
-          onAddFilter={jest.fn()}
-          onRemoveFilter={jest.fn()}
-          onApplyFacetFilters={jest.fn()}
+          onAddFilter={vi.fn()}
+          onRemoveFilter={vi.fn()}
+          onApplyFacetFilters={vi.fn()}
         />
       );
 
@@ -458,9 +457,9 @@ describe('facetPanel', () => {
             },
           ],
         }}
-        onAddFilter={jest.fn()}
-        onRemoveFilter={jest.fn()}
-        onApplyFacetFilters={jest.fn()}
+        onAddFilter={vi.fn()}
+        onRemoveFilter={vi.fn()}
+        onApplyFacetFilters={vi.fn()}
       />
     );
 

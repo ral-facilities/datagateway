@@ -1,9 +1,9 @@
-import type { RouterState } from 'connected-react-router';
 import type { AnyAction } from 'redux';
 import type { ThunkAction } from 'redux-thunk';
 import type {
   Datafile,
   Dataset,
+  DownloadSettingsAccessMethod,
   Instrument,
   Investigation,
 } from '../app.types';
@@ -18,6 +18,7 @@ import type { URLs } from './actions/actions.types';
 export interface DGCommonState {
   facilityName: string;
   urls: URLs;
+  accessMethods?: DownloadSettingsAccessMethod;
   queryRetries?: number;
   isisDatafileDetailsPanel: Record<
     Datafile['id'],
@@ -59,7 +60,6 @@ export interface DGCommonState {
 
 export interface StateType {
   dgcommon: DGCommonState;
-  router: RouterState;
 }
 
 export interface ActionType<T> {

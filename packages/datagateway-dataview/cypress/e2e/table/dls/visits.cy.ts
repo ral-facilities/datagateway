@@ -111,10 +111,18 @@ describe('DLS - Visits Table', () => {
   });
 
   it('should be able to view details & also able to hide the panel', () => {
+    cy.intercept('**/queue/allowed?*').as('queueAllowed');
     cy.get('[aria-label="Show details"]').first().click();
 
     cy.get('#details-panel').should('be.visible');
     cy.get('[aria-label="Hide details"]').should('exist');
+
+    // verify /queue/allowed returned successfully
+    // need to check this explicitly because if this errored the button also wouldn't appear!
+    // but we want to check it's not throwing an error as well
+    cy.wait('@queueAllowed').its('response.statusCode').should('eq', 200);
+    // logged in as anon user so should not be able to see visit restore button
+    cy.contains('button', 'Queue visit for download').should('not.exist');
 
     cy.get('[aria-controls="visit-users-panel"]').click();
     cy.get('#visit-users-panel').should('not.have.attr', 'hidden');
@@ -134,5 +142,76 @@ describe('DLS - Visits Table', () => {
 
     cy.get('#details-panel').should('not.exist');
     cy.get('[aria-label="Hide details"]').should('not.exist');
+  });
+});
+
+describe('DLS - visit restore button', () => {
+  beforeEach(() => {
+    cy.login({ username: 'root', password: 'pw', mechanism: 'simple' });
+    cy.intercept('**/investigations?*').as('investigations');
+    cy.intercept('**/investigations/count?*').as('investigationsCount');
+
+    cy.visit('/browse/proposal/INVESTIGATION%201/investigation/').wait(
+      ['@investigations', '@investigationsCount'],
+      { timeout: 10000 }
+    );
+  });
+
+  it('authenticated user should be able to see the button', () => {
+    cy.get('[aria-label="Show details"]').first().click();
+
+    cy.get('#details-panel').should('be.visible');
+    cy.contains('button', 'Queue visit for download').should('exist');
+  });
+
+  it('should be able to submit a download', () => {
+    cy.get('[aria-label="Show details"]').first().click();
+
+    cy.contains('button', 'Queue visit for download').click();
+
+    cy.get('[aria-label="Download confirmation dialog"]').should('exist');
+
+    cy.contains('button', 'Download').click();
+
+    cy.contains(
+      '#download-confirmation-success',
+      'Successfully submitted download request'
+    ).should('exist');
+
+    cy.contains('#confirm-success-download-name', 'LILS_70').should('exist');
+    cy.contains('#confirm-success-access-method', 'HTTPS').should('exist');
+  });
+
+  it('should be able to submit a download with custom values', () => {
+    cy.get('[aria-label="Show details"]').first().click();
+
+    cy.contains('button', 'Queue visit for download').click();
+
+    cy.get('[aria-label="Download confirmation dialog"]').should('exist');
+
+    // Set download name.
+    cy.get('#confirm-download-name').type('test-file-name');
+
+    // set email
+    cy.get('#confirm-download-email').type('email.address@example.com');
+
+    // set transport
+    cy.get('#confirm-access-method').select('Globus');
+
+    cy.contains('button', 'Download').click();
+
+    cy.contains(
+      '#download-confirmation-success',
+      'Successfully submitted download request'
+    ).should('exist');
+
+    cy.contains('#confirm-success-download-name', 'test-file-name').should(
+      'exist'
+    );
+    cy.contains('#confirm-success-access-method', 'GLOBUS').should('exist');
+    cy.contains(
+      '#confirm-success-email-address',
+      'email.address@example.com'
+    ).should('exist');
   });
 });

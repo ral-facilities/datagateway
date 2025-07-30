@@ -1,4 +1,3 @@
-import React from 'react';
 import { FiltersType, SearchFilter } from 'datagateway-common';
 import { Chip, Stack } from '@mui/material';
 import { useTranslation } from 'react-i18next';

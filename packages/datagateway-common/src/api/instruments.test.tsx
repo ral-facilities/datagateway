@@ -1,5 +1,5 @@
 import { Instrument } from '../app.types';
-import { renderHook } from '@testing-library/react-hooks';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { createMemoryHistory, History } from 'history';
 import axios from 'axios';
 import handleICATError from '../handleICATError';
@@ -11,7 +11,7 @@ import {
   useInstrumentsPaginated,
 } from './instruments';
 
-jest.mock('../handleICATError');
+vi.mock('../handleICATError');
 
 describe('instrument api functions', () => {
   let mockData: Instrument[] = [];
@@ -37,24 +37,21 @@ describe('instrument api functions', () => {
   });
 
   afterEach(() => {
-    (handleICATError as jest.Mock).mockClear();
-    (axios.get as jest.Mock).mockClear();
+    vi.mocked(handleICATError).mockClear();
+    vi.mocked(axios.get).mockClear();
   });
 
   describe('useInstrumentsPaginated', () => {
     it('sends axios request to fetch paginated instruments and returns successful response', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: mockData,
       });
 
-      const { result, waitFor, rerender } = renderHook(
-        () => useInstrumentsPaginated(),
-        {
-          wrapper: createReactQueryWrapper(history),
-        }
-      );
+      const { result } = renderHook(() => useInstrumentsPaginated(), {
+        wrapper: createReactQueryWrapper(history),
+      });
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       params.append('order', JSON.stringify('name asc'));
       params.append('order', JSON.stringify('title desc'));
@@ -74,27 +71,28 @@ describe('instrument api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data).toEqual(mockData);
 
-      // test that order of sort object triggers new query
-      history.push(
-        '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
-      );
-      rerender();
+      act(() => {
+        // test that order of sort object triggers new query
+        history.push(
+          '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
+        );
+      });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      expect(axios.get as jest.Mock).toHaveBeenCalledTimes(2);
+      expect(vi.mocked(axios.get)).toHaveBeenCalledTimes(2);
     });
 
     it('sends axios request to fetch paginated instruments and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           useInstrumentsPaginated([
             {
@@ -107,7 +105,7 @@ describe('instrument api functions', () => {
         }
       );
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       params.append('order', JSON.stringify('id asc'));
       params.append('skip', JSON.stringify(0));
@@ -120,7 +118,7 @@ describe('instrument api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
@@ -129,20 +127,17 @@ describe('instrument api functions', () => {
 
   describe('useInstrumentsInfinite', () => {
     it('sends axios request to fetch infinite instruments and returns successful response', async () => {
-      (axios.get as jest.Mock).mockImplementation((url, options) =>
+      vi.mocked(axios.get).mockImplementation((url, options) =>
         options.params.get('skip') === '0'
           ? Promise.resolve({ data: mockData[0] })
           : Promise.resolve({ data: mockData[1] })
       );
 
-      const { result, waitFor, rerender } = renderHook(
-        () => useInstrumentsInfinite(),
-        {
-          wrapper: createReactQueryWrapper(history),
-        }
-      );
+      const { result } = renderHook(() => useInstrumentsInfinite(), {
+        wrapper: createReactQueryWrapper(history),
+      });
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       params.append('order', JSON.stringify('name asc'));
       params.append('order', JSON.stringify('title desc'));
@@ -162,18 +157,16 @@ describe('instrument api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data.pages).toStrictEqual([mockData[0]]);
 
-      result.current.fetchNextPage({
+      await result.current.fetchNextPage({
         pageParam: { startIndex: 50, stopIndex: 74 },
       });
 
-      await waitFor(() => result.current.isFetching);
-
-      await waitFor(() => !result.current.isFetching);
+      await waitFor(() => expect(result.current.isFetching).toBe(false));
 
       expect(axios.get).toHaveBeenNthCalledWith(
         2,
@@ -184,7 +177,7 @@ describe('instrument api functions', () => {
       );
       params.set('skip', JSON.stringify(50));
       params.set('limit', JSON.stringify(25));
-      expect((axios.get as jest.Mock).mock.calls[1][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[1][1].params.toString()).toBe(
         params.toString()
       );
 
@@ -193,22 +186,23 @@ describe('instrument api functions', () => {
         mockData[1],
       ]);
 
-      // test that order of sort object triggers new query
-      history.push(
-        '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}'
-      );
-      rerender();
+      act(() => {
+        // test that order of sort object triggers new query
+        history.push(
+          '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}'
+        );
+      });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      expect(axios.get as jest.Mock).toHaveBeenCalledTimes(3);
+      expect(vi.mocked(axios.get)).toHaveBeenCalledTimes(3);
     });
 
     it('sends axios request to fetch infinite instruments and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           useInstrumentsInfinite([
             {
@@ -221,7 +215,7 @@ describe('instrument api functions', () => {
         }
       );
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       params.append('order', JSON.stringify('id asc'));
       params.append('skip', JSON.stringify(0));
@@ -234,7 +228,7 @@ describe('instrument api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
@@ -243,15 +237,15 @@ describe('instrument api functions', () => {
 
   describe('useInstrumentCount', () => {
     it('sends axios request to fetch instrument count and returns successful response', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: mockData.length,
       });
 
-      const { result, waitFor } = renderHook(() => useInstrumentCount(), {
+      const { result } = renderHook(() => useInstrumentCount(), {
         wrapper: createReactQueryWrapper(history),
       });
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       params.append(
         'where',
@@ -266,21 +260,21 @@ describe('instrument api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data).toEqual(mockData.length);
     });
 
     it('sends axios request to fetch instrument count and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
-      const { result, waitFor } = renderHook(() => useInstrumentCount(), {
+      const { result } = renderHook(() => useInstrumentCount(), {
         wrapper: createReactQueryWrapper(),
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/api/instruments/count',
@@ -288,7 +282,7 @@ describe('instrument api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
@@ -297,15 +291,15 @@ describe('instrument api functions', () => {
 
   describe('useInstrumentDetails', () => {
     it('sends axios request to fetch instrument details and returns successful response', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: [mockData[0]],
       });
 
-      const { result, waitFor } = renderHook(() => useInstrumentDetails(1), {
+      const { result } = renderHook(() => useInstrumentDetails(1), {
         wrapper: createReactQueryWrapper(),
       });
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       params.append(
         'where',
@@ -324,21 +318,21 @@ describe('instrument api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data).toEqual(mockData[0]);
     });
 
     it('sends axios request to fetch instrument details and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
-      const { result, waitFor } = renderHook(() => useInstrumentDetails(1), {
+      const { result } = renderHook(() => useInstrumentDetails(1), {
         wrapper: createReactQueryWrapper(),
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
     });

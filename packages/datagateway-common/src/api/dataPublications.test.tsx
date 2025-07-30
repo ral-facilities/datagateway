@@ -1,5 +1,5 @@
 import { DataPublication } from '../app.types';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import { createMemoryHistory, History } from 'history';
 import axios from 'axios';
 import handleICATError from '../handleICATError';
@@ -13,8 +13,9 @@ import {
   useDataPublicationContentCount,
   useDataPublicationsByFilters,
 } from './dataPublications';
+import { act } from 'react-dom/test-utils';
 
-jest.mock('../handleICATError');
+vi.mock('../handleICATError');
 
 describe('data publications api functions', () => {
   let mockData: DataPublication[] = [];
@@ -42,17 +43,17 @@ describe('data publications api functions', () => {
   });
 
   afterEach(() => {
-    (handleICATError as jest.Mock).mockClear();
-    (axios.get as jest.Mock).mockClear();
+    vi.mocked(handleICATError).mockClear();
+    vi.mocked(axios.get).mockClear();
   });
 
   describe('useDataPublicationsPaginated', () => {
     it('sends axios request to fetch paginated data publications and returns successful response', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: mockData,
       });
 
-      const { result, waitFor, rerender } = renderHook(
+      const { result } = renderHook(
         () =>
           useDataPublicationsPaginated([
             {
@@ -70,7 +71,7 @@ describe('data publications api functions', () => {
         }
       );
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       params.append('order', JSON.stringify('name asc'));
       params.append('order', JSON.stringify('title desc'));
@@ -99,34 +100,32 @@ describe('data publications api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data).toEqual(mockData);
 
-      // test that order of sort object triggers new query
-      history.push(
-        '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
-      );
-      rerender();
+      act(() => {
+        // test that order of sort object triggers new query
+        history.push(
+          '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
+        );
+      });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      expect(axios.get as jest.Mock).toHaveBeenCalledTimes(2);
+      expect(vi.mocked(axios.get)).toHaveBeenCalledTimes(2);
     });
 
     it('sends axios request to fetch paginated data publications and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
-      const { result, waitFor } = renderHook(
-        () => useDataPublicationsPaginated(),
-        {
-          wrapper: createReactQueryWrapper(),
-        }
-      );
+      const { result } = renderHook(() => useDataPublicationsPaginated(), {
+        wrapper: createReactQueryWrapper(),
+      });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       params.append('order', JSON.stringify('id asc'));
       params.append('skip', JSON.stringify(0));
@@ -138,7 +137,7 @@ describe('data publications api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
@@ -147,13 +146,13 @@ describe('data publications api functions', () => {
 
   describe('useDataPublicationsInfinite', () => {
     it('sends axios request to fetch infinite data publications and returns successful response', async () => {
-      (axios.get as jest.Mock).mockImplementation((url, options) =>
+      vi.mocked(axios.get).mockImplementation((url, options) =>
         options.params.get('skip') === '0'
           ? Promise.resolve({ data: mockData[0] })
           : Promise.resolve({ data: mockData[1] })
       );
 
-      const { result, waitFor, rerender } = renderHook(
+      const { result } = renderHook(
         () =>
           useDataPublicationsInfinite([
             {
@@ -171,7 +170,7 @@ describe('data publications api functions', () => {
         }
       );
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       params.append('order', JSON.stringify('name asc'));
       params.append('order', JSON.stringify('title desc'));
@@ -200,18 +199,16 @@ describe('data publications api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data.pages).toStrictEqual([mockData[0]]);
 
-      result.current.fetchNextPage({
+      await result.current.fetchNextPage({
         pageParam: { startIndex: 50, stopIndex: 74 },
       });
 
-      await waitFor(() => result.current.isFetching);
-
-      await waitFor(() => !result.current.isFetching);
+      await waitFor(() => expect(result.current.isFetching).toBe(false));
 
       expect(axios.get).toHaveBeenNthCalledWith(
         2,
@@ -222,7 +219,7 @@ describe('data publications api functions', () => {
       );
       params.set('skip', JSON.stringify(50));
       params.set('limit', JSON.stringify(25));
-      expect((axios.get as jest.Mock).mock.calls[1][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[1][1].params.toString()).toBe(
         params.toString()
       );
 
@@ -231,29 +228,27 @@ describe('data publications api functions', () => {
         mockData[1],
       ]);
 
-      // test that order of sort object triggers new query
-      history.push(
-        '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}'
-      );
-      rerender();
+      act(() => {
+        // test that order of sort object triggers new query
+        history.push(
+          '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}'
+        );
+      });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      expect(axios.get as jest.Mock).toHaveBeenCalledTimes(3);
+      expect(vi.mocked(axios.get)).toHaveBeenCalledTimes(3);
     });
 
     it('sends axios request to fetch infinite data publications and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
-      const { result, waitFor } = renderHook(
-        () => useDataPublicationsInfinite(),
-        {
-          wrapper: createReactQueryWrapper(),
-        }
-      );
+      const { result } = renderHook(() => useDataPublicationsInfinite(), {
+        wrapper: createReactQueryWrapper(),
+      });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       params.append('order', JSON.stringify('id asc'));
       params.append('skip', JSON.stringify(0));
@@ -265,7 +260,7 @@ describe('data publications api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
@@ -274,15 +269,15 @@ describe('data publications api functions', () => {
 
   describe('useDataPublication', () => {
     it('sends axios request to fetch a single data publication and returns successful response', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: mockData,
       });
 
-      const { result, waitFor } = renderHook(() => useDataPublication(1), {
+      const { result } = renderHook(() => useDataPublication(1), {
         wrapper: createReactQueryWrapper(history),
       });
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       params.append('order', JSON.stringify('id asc'));
       params.append(
@@ -324,21 +319,21 @@ describe('data publications api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data).toEqual(mockData[0]);
     });
 
     it('sends axios request to fetch a single data publication and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
-      const { result, waitFor } = renderHook(() => useDataPublication(1), {
+      const { result } = renderHook(() => useDataPublication(1), {
         wrapper: createReactQueryWrapper(),
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       params.append('order', JSON.stringify('id asc'));
       params.append(
@@ -380,7 +375,7 @@ describe('data publications api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
@@ -389,7 +384,7 @@ describe('data publications api functions', () => {
 
   describe('useDataPublicationsByFilters', () => {
     it('sends axios request to fetch a data publications with specified filters and returns successful response', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: mockData,
       });
 
@@ -401,7 +396,7 @@ describe('data publications api functions', () => {
         })
       );
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           useDataPublicationsByFilters([
             {
@@ -414,7 +409,7 @@ describe('data publications api functions', () => {
         }
       );
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/api/datapublications',
@@ -422,21 +417,21 @@ describe('data publications api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data).toEqual(mockData);
     });
 
     it('sends axios request to fetch a single data publication and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
 
       params.append('order', JSON.stringify('id asc'));
       params.append('include', '"type"');
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           useDataPublicationsByFilters([
             {
@@ -449,7 +444,7 @@ describe('data publications api functions', () => {
         }
       );
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/api/datapublications',
@@ -457,7 +452,7 @@ describe('data publications api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
@@ -466,11 +461,11 @@ describe('data publications api functions', () => {
 
   describe('useDataPublicationCount', () => {
     it('sends axios request to fetch data publication count and returns successful response', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: mockData.length,
       });
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           useDataPublicationCount([
             {
@@ -488,7 +483,7 @@ describe('data publications api functions', () => {
         }
       );
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       params.append(
         'where',
@@ -512,21 +507,21 @@ describe('data publications api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data).toEqual(mockData.length);
     });
 
     it('sends axios request to fetch data publication count and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
-      const { result, waitFor } = renderHook(() => useDataPublicationCount(), {
+      const { result } = renderHook(() => useDataPublicationCount(), {
         wrapper: createReactQueryWrapper(),
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/api/datapublications/count',
@@ -534,7 +529,7 @@ describe('data publications api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });

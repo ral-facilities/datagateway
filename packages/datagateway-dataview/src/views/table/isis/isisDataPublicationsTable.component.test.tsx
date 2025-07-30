@@ -1,18 +1,15 @@
-import * as React from 'react';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 
 import type { StateType } from '../../../state/app.types';
 import { dGCommonInitialState, type DataPublication } from 'datagateway-common';
 import configureStore from 'redux-mock-store';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { generatePath, Router } from 'react-router-dom';
 import { createMemoryHistory, type History } from 'history';
-import { parse } from 'date-fns';
 import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
+  findAllRows,
   findCellInRow,
   findColumnHeaderByName,
   findColumnIndexByName,
@@ -23,21 +20,19 @@ import {
   type RenderResult,
   screen,
   within,
+  waitFor,
 } from '@testing-library/react';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 import ISISDataPublicationsTable from './isisDataPublicationsTable.component';
 import axios, { AxiosResponse } from 'axios';
 import { paths } from '../../../page/pageContainer.component';
-
-jest.useFakeTimers().setSystemTime(parse('2021-10-27', 'yyyy-MM-dd', 0));
 
 describe('ISIS Data Publication table component', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let rowData: DataPublication[];
   let history: History;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (studyDataPublicationId?: string): RenderResult => {
     if (studyDataPublicationId)
@@ -109,7 +104,7 @@ describe('ISIS Data Publication table component', () => {
       })
     );
 
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         switch (url) {
@@ -129,20 +124,23 @@ describe('ISIS Data Publication table component', () => {
       });
 
     // Prevent error logging
-    window.scrollTo = jest.fn();
+    window.scrollTo = vi.fn();
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('Study Data Publication', () => {
     it('renders correctly', async () => {
       renderComponent();
 
-      const rows = await screen.findAllByRole('row');
-      //should have 1 row in the table
-      expect(rows).toHaveLength(1);
+      let rows: HTMLElement[] = [];
+      await waitFor(async () => {
+        rows = await findAllRows();
+        // should have 1 row in the table
+        expect(rows).toHaveLength(1);
+      });
 
       expect(
         await findColumnHeaderByName('datapublications.title')
@@ -151,7 +149,7 @@ describe('ISIS Data Publication table component', () => {
         await findColumnHeaderByName('datapublications.pid')
       ).toBeInTheDocument();
 
-      const row = await findRowAt(0);
+      const row = rows[0];
 
       // check that every cell contains the correct values
       expect(
@@ -196,17 +194,20 @@ describe('ISIS Data Publication table component', () => {
       expect(history.location.search).toBe('?');
     });
 
-    it('uses default sort', () => {
+    it('uses default sort', async () => {
       renderComponent();
+
+      expect(await screen.findAllByRole('gridcell')).toBeTruthy();
+
       expect(history.length).toBe(1);
       expect(history.location.search).toBe(
         `?sort=${encodeURIComponent('{"title":"desc"}')}`
       );
 
       // check that the data request is sent only once after mounting
-      const datafilesCalls = (axios.get as jest.Mock).mock.calls.filter(
-        (call) => call[0] === '/datapublications'
-      );
+      const datafilesCalls = vi
+        .mocked(axios.get)
+        .mock.calls.filter((call) => call[0] === '/datapublications');
       expect(datafilesCalls).toHaveLength(1);
     });
 
@@ -259,9 +260,12 @@ describe('ISIS Data Publication table component', () => {
     it('renders correctly', async () => {
       renderComponent('2');
 
-      const rows = await screen.findAllByRole('row');
-      //should have 1 row in the table
-      expect(rows).toHaveLength(1);
+      let rows: HTMLElement[] = [];
+      await waitFor(async () => {
+        rows = await findAllRows();
+        // should have 1 row in the table
+        expect(rows).toHaveLength(1);
+      });
 
       expect(
         await findColumnHeaderByName('datapublications.title')
@@ -273,7 +277,7 @@ describe('ISIS Data Publication table component', () => {
         await findColumnHeaderByName('datapublications.publication_date')
       ).toBeInTheDocument();
 
-      const row = await findRowAt(0);
+      const row = rows[0];
 
       // check that every cell contains the correct values
       expect(
@@ -293,8 +297,6 @@ describe('ISIS Data Publication table component', () => {
     });
 
     it('updates filter query params on date filter', async () => {
-      applyDatePickerWorkaround();
-
       renderComponent('2');
 
       const filterInput = await screen.findByRole('textbox', {
@@ -317,21 +319,22 @@ describe('ISIS Data Publication table component', () => {
 
       expect(history.length).toBe(3);
       expect(history.location.search).toBe('?');
-
-      cleanupDatePickerWorkaround();
     });
 
-    it('uses default sort', () => {
+    it('uses default sort', async () => {
       renderComponent('2');
+
+      expect(await screen.findAllByRole('gridcell')).toBeTruthy();
+
       expect(history.length).toBe(1);
       expect(history.location.search).toBe(
         `?sort=${encodeURIComponent('{"publicationDate":"desc"}')}`
       );
 
       // check that the data request is sent only once after mounting
-      const datafilesCalls = (axios.get as jest.Mock).mock.calls.filter(
-        (call) => call[0] === '/datapublications'
-      );
+      const datafilesCalls = vi
+        .mocked(axios.get)
+        .mock.calls.filter((call) => call[0] === '/datapublications');
       expect(datafilesCalls).toHaveLength(1);
     });
 

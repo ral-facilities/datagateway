@@ -1,11 +1,10 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, RenderResult, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios from 'axios';
-import * as React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
 import { combineReducers, createStore } from 'redux';
-import { StateType } from '../../../lib';
+import { StateType } from '../../state/app.types';
 
 import type { Investigation } from '../../app.types';
 import dGCommonReducer from '../../state/reducers/dgcommon.reducer';
@@ -114,17 +113,22 @@ describe('Investigation details panel component', () => {
       endDate: '2019-06-11',
     };
 
-    (axios.get as jest.Mock).mockResolvedValue({
+    vi.mocked(axios.get).mockResolvedValue({
       data: [rowData],
     });
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
-  it('should render correctly', () => {
+  it('should render correctly', async () => {
     const { asFragment } = renderComponent({ rowData });
+    expect(
+      await screen.findByRole('tablist', {
+        name: 'investigations.details.tabs_label',
+      })
+    ).toBeInTheDocument();
     expect(asFragment()).toMatchSnapshot();
   });
 
@@ -135,7 +139,7 @@ describe('Investigation details panel component', () => {
     ).toHaveAttribute('aria-selected', 'true');
   });
 
-  it('should render user, sample and publication tabs when present in the data', () => {
+  it('should render user, sample and publication tabs when present in the data', async () => {
     rowData.investigationUsers = [
       {
         id: 4,
@@ -171,10 +175,15 @@ describe('Investigation details panel component', () => {
     ];
 
     const { asFragment } = renderComponent({ rowData });
+    expect(
+      await screen.findByRole('tab', {
+        name: 'investigations.details.users.label',
+      })
+    ).toBeInTheDocument();
     expect(asFragment()).toMatchSnapshot();
   });
 
-  it('should check if multiple samples result in change of title to plural version', () => {
+  it('should check if multiple samples result in change of title to plural version', async () => {
     rowData.samples = [
       {
         id: 7,
@@ -187,10 +196,15 @@ describe('Investigation details panel component', () => {
     ];
 
     const { asFragment } = renderComponent({ rowData });
+    expect(
+      await screen.findByRole('tab', {
+        name: 'investigations.details.samples.label',
+      })
+    ).toBeInTheDocument();
     expect(asFragment()).toMatchSnapshot();
   });
 
-  it('should check if multiple publications result in change of title to plural version', () => {
+  it('should check if multiple publications result in change of title to plural version', async () => {
     rowData.publications = [
       {
         id: 8,
@@ -203,6 +217,11 @@ describe('Investigation details panel component', () => {
     ];
 
     const { asFragment } = renderComponent({ rowData });
+    expect(
+      await screen.findByRole('tab', {
+        name: 'investigations.details.publications.label',
+      })
+    ).toBeInTheDocument();
     expect(asFragment()).toMatchSnapshot();
   });
 
@@ -320,7 +339,7 @@ describe('Investigation details panel component', () => {
       },
     ];
 
-    const mockDetailsPanelResize = jest.fn();
+    const mockDetailsPanelResize = vi.fn();
 
     renderComponent({
       rowData,
@@ -359,7 +378,7 @@ describe('Investigation details panel component', () => {
     );
   });
 
-  it('should gracefully handles dataCollectionInvestigations without dataPublications and InvestigationUsers without Users', () => {
+  it('should gracefully handles dataCollectionInvestigations without dataPublications and InvestigationUsers without Users', async () => {
     rowData.dataCollectionInvestigations = [
       {
         id: 1,
@@ -374,11 +393,16 @@ describe('Investigation details panel component', () => {
     ];
 
     const { asFragment } = renderComponent({ rowData });
+    expect(
+      await screen.findByRole('tablist', {
+        name: 'investigations.details.tabs_label',
+      })
+    ).toBeInTheDocument();
     expect(asFragment()).toMatchSnapshot();
   });
 
   it('calls dataset view if view datasets tab clicked', async () => {
-    const mockViewDatasets = jest.fn();
+    const mockViewDatasets = vi.fn();
 
     renderComponent({
       rowData,
@@ -396,8 +420,8 @@ describe('Investigation details panel component', () => {
   it('Shows "No <field> provided" incase of a null field', async () => {
     const { summary, doi, startDate, endDate, ...amendedRowData } = rowData;
 
-    (axios.get as jest.Mock).mockResolvedValueOnce({
-      data: amendedRowData,
+    vi.mocked(axios.get).mockResolvedValueOnce({
+      data: [amendedRowData],
     });
 
     renderComponent({ rowData: amendedRowData });

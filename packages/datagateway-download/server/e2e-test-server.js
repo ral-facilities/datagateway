@@ -1,6 +1,5 @@
-const express = require('express');
-const path = require('path');
-const serveStatic = require('serve-static');
+import express from 'express';
+import path from 'path';
 
 const app = express();
 
@@ -19,11 +18,13 @@ app.get('/datagateway-download-settings.json', function (req, res) {
 });
 
 app.use(
-  serveStatic(path.resolve('./build'), { index: ['index.html', 'index.htm'] })
+  express.static(path.resolve('./dist'), {
+    index: ['index.html', 'index.htm'],
+  })
 );
 
 app.get('/*', function (req, res) {
-  res.sendFile(path.resolve('./build/index.html'));
+  res.sendFile(path.resolve('./dist/index.html'));
 });
 
 app.listen(3000);

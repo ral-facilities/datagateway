@@ -1,37 +1,37 @@
 import {
-  Box,
-  Divider,
-  Grid,
-  Link as MuiLink,
-  Paper,
-  styled,
-  Tab,
-  Tabs,
-  Typography,
-} from '@mui/material';
-import {
   Assessment,
   CalendarToday,
   Public,
   Storage,
 } from '@mui/icons-material';
 import {
-  DataPublication,
-  useDataPublication,
-  ArrowTooltip,
-  getTooltipText,
-  tableLink,
+  Box,
+  Divider,
+  Grid,
+  Link as MuiLink,
+  Paper,
+  Tab,
+  Tabs,
+  Typography,
+  styled,
+} from '@mui/material';
+import {
   AddToCartButton,
-  ViewsType,
-  parseSearchToQuery,
-  useDataPublicationsByFilters,
+  ArrowTooltip,
+  DataPublication,
   DownloadButton,
+  ViewsType,
+  getTooltipText,
+  parseSearchToQuery,
+  tableLink,
+  useDataPublication,
+  useDataPublicationsByFilters,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import Branding from './isisBranding.component';
-import CitationFormatter from '../../citationFormatter.component';
 import { useHistory, useLocation } from 'react-router-dom';
+import CitationFormatter from '../../citationFormatter.component';
+import Branding from './isisBranding.component';
 
 const Subheading = styled(Typography)(({ theme }) => ({
   marginTop: theme.spacing(1),
@@ -335,7 +335,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       icon: <Public sx={shortInfoIconStyle} />,
     },
     {
-      content: (dataPublication: DataPublication) => (
+      content: (_dataPublication: DataPublication) => (
         <MuiLink href={t('doi_constants.license.url')} target="_blank">
           {t('doi_constants.license.name')}
         </MuiLink>
@@ -343,7 +343,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       label: t('datapublications.details.license'),
     },
     {
-      content: function distributionFormat(entity: DataPublication) {
+      content: function distributionFormat(_entity: DataPublication) {
         return (
           <MuiLink
             href="http://www.isis.stfc.ac.uk/groups/computing/isis-raw-file-format11200.html"
@@ -377,7 +377,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
           <Paper square elevation={0} sx={{ mx: -1.5, px: 1.5 }}>
             <Tabs
               value={value}
-              onChange={(event, newValue) => setValue(newValue)}
+              onChange={(_event, newValue) => setValue(newValue)}
               indicatorColor="secondary"
               textColor="secondary"
             >

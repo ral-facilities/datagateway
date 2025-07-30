@@ -1,36 +1,30 @@
 import {
+  UseInfiniteQueryResult,
+  UseQueryOptions,
+  UseQueryResult,
+  useInfiniteQuery,
+  useQuery,
+} from '@tanstack/react-query';
+import axios, { AxiosError } from 'axios';
+import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+import { IndexRange } from 'react-virtualized';
+import {
   AdditionalFilters,
+  DataPublication,
   Datafile,
   Dataset,
-  DataPublication,
   FiltersType,
   Investigation,
   SortType,
 } from '../app.types';
-import axios, { AxiosError } from 'axios';
-import { StateType } from '../state/app.types';
-import { IndexRange } from 'react-virtualized';
-import { readSciGatewayToken } from '../parseTokens';
 import handleICATError from '../handleICATError';
-import {
-  UseQueryResult,
-  useQuery,
-  UseInfiniteQueryResult,
-  useInfiniteQuery,
-  UseQueryOptions,
-} from 'react-query';
-import { useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
-import {
-  fetchDatafileCountQuery,
-  fetchDatafiles,
-  fetchDatasetCountQuery,
-  fetchDatasets,
-  fetchInvestigationCount,
-  fetchInvestigations,
-  getApiParams,
-  parseSearchToQuery,
-} from '.';
+import { readSciGatewayToken } from '../parseTokens';
+import { StateType } from '../state/app.types';
+import { fetchDatafileCountQuery, fetchDatafiles } from './datafiles';
+import { fetchDatasetCountQuery, fetchDatasets } from './datasets';
+import { getApiParams, parseSearchToQuery } from './index';
+import { fetchInvestigationCount, fetchInvestigations } from './investigations';
 import { useRetryICATErrors } from './retryICATErrors';
 
 const fetchDataPublications = (
@@ -243,7 +237,7 @@ export const useDataPublicationsByFilters = (
 
   return useQuery(
     ['dataPublication', additionalFilters],
-    () => {
+    (_params) => {
       return fetchDataPublications(
         apiUrl,
         { sort: {}, filters: {} },

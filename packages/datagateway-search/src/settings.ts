@@ -1,4 +1,4 @@
-import { PluginRoute } from 'datagateway-common';
+import { DownloadSettingsAccessMethod, PluginRoute } from 'datagateway-common';
 
 export interface SearchSettings {
   facilityName: string;
@@ -7,6 +7,7 @@ export interface SearchSettings {
   idsUrl: string;
   icatUrl: string;
   queryRetries?: number;
+  accessMethods?: DownloadSettingsAccessMethod;
   selectAllSetting?: boolean;
   searchableEntities?: string[];
   minNumResults?: number;

@@ -19,7 +19,7 @@ const broadcastMessage = (action: AnyAction): void => {
 
 type microFrontendMessageType = CustomEvent<AnyAction>;
 
-export const listenToMessages = (dispatch: Dispatch): void => {
+export const listenToMessages = (_dispatch: Dispatch): void => {
   document.addEventListener(MicroFrontendId, (event) => {
     const pluginMessage = event as microFrontendMessageType;
 

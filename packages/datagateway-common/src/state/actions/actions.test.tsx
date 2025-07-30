@@ -1,5 +1,9 @@
-import { loadUrls, loadFacilityName } from '.';
-import { ConfigureURLsType, ConfigureFacilityNameType } from './actions.types';
+import { loadUrls, loadFacilityName, loadAccessMethods } from '.';
+import {
+  ConfigureURLsType,
+  ConfigureFacilityNameType,
+  ConfigureAccessMethodsType,
+} from './actions.types';
 import { resetActions } from '../../setupTests';
 
 describe('Actions', () => {
@@ -30,6 +34,14 @@ describe('Actions', () => {
     expect(action.type).toEqual(ConfigureFacilityNameType);
     expect(action.payload).toEqual({
       facilityName: 'Generic',
+    });
+  });
+
+  it('given JSON loadAccessMethods returns a ConfigureAccessMethodsType with ConfigureAccessMethodsPayload', () => {
+    const action = loadAccessMethods({});
+    expect(action.type).toEqual(ConfigureAccessMethodsType);
+    expect(action.payload).toEqual({
+      accessMethods: {},
     });
   });
 });

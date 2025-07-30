@@ -1,6 +1,5 @@
-import * as React from 'react';
-import userEvent from '@testing-library/user-event';
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import DialogTitle from './dialogTitle.component';
 
 describe('DialogTitle', () => {
@@ -8,7 +7,7 @@ describe('DialogTitle', () => {
     const { asFragment } = render(
       <DialogTitle
         id="dialog-title"
-        onClose={jest.fn()}
+        onClose={vi.fn()}
         closeAriaLabel="close_aria_label"
       >
         Title
@@ -19,7 +18,7 @@ describe('DialogTitle', () => {
 
   it('should call dialog close callback when the close button is clicked', async () => {
     const user = userEvent.setup();
-    const mockCloseDialog = jest.fn();
+    const mockCloseDialog = vi.fn();
 
     render(
       <DialogTitle

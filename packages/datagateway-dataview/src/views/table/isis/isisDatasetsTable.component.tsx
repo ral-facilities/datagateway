@@ -21,6 +21,7 @@ import {
   useRemoveFromCart,
   DownloadButton,
   ISISDatasetDetailsPanel,
+  DetailsPanelProps,
 } from 'datagateway-common';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
@@ -56,7 +57,7 @@ const ISISDatasetsTable = (
   const dateFilter = useDateFilter(filters);
   const handleSort = useSort();
 
-  const { data: allIds, isLoading: allIdsLoading } = useIds(
+  const { data: allIds, isInitialLoading: allIdsLoading } = useIds(
     'dataset',
     [
       {
@@ -181,18 +182,19 @@ const ISISDatasetsTable = (
     [cartItems, selectAllSetting, allIds]
   );
 
-  const detailsPanel = React.useCallback(
-    ({ rowData, detailsPanelResize }) => (
-      <ISISDatasetDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        viewDatafiles={(id: number) =>
-          push(`${location.pathname}/${id}/datafile`)
-        }
-      />
-    ),
-    [location.pathname, push]
-  );
+  const detailsPanel: React.ComponentType<DetailsPanelProps> =
+    React.useCallback(
+      ({ rowData, detailsPanelResize }) => (
+        <ISISDatasetDetailsPanel
+          rowData={rowData}
+          detailsPanelResize={detailsPanelResize}
+          viewDatafiles={(id: number) =>
+            push(`${location.pathname}/${id}/datafile`)
+          }
+        />
+      ),
+      [location.pathname, push]
+    );
 
   return (
     <Table

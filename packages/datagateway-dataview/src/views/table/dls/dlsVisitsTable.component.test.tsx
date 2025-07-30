@@ -1,4 +1,3 @@
-import * as React from 'react';
 import DLSVisitsTable from './dlsVisitsTable.component';
 import { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
@@ -11,12 +10,10 @@ import {
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Router } from 'react-router-dom';
 import { createMemoryHistory, History } from 'history';
 import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
   findAllRows,
   findCellInRow,
   findColumnHeaderByName,
@@ -29,17 +26,17 @@ import {
   screen,
   within,
 } from '@testing-library/react';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    useInvestigationCount: jest.fn(),
-    useInvestigationsInfinite: jest.fn(),
+    useInvestigationCount: vi.fn(),
+    useInvestigationsInfinite: vi.fn(),
   };
 });
 
@@ -48,7 +45,7 @@ describe('DLS Visits table component', () => {
   let state: StateType;
   let rowData: Investigation[];
   let history: History;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult => {
     const store = mockStore(state);
@@ -93,22 +90,38 @@ describe('DLS Visits table component', () => {
     state = JSON.parse(
       JSON.stringify({
         dgdataview: dgDataViewInitialState,
-        dgcommon: dGCommonInitialState,
+        dgcommon: { ...dGCommonInitialState, accessMethods: {} },
       })
     );
 
-    (useInvestigationCount as jest.Mock).mockReturnValue({
+    vi.mocked(useInvestigationCount, { partial: true }).mockReturnValue({
       data: 1,
       isLoading: false,
     });
-    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
-      data: rowData,
+    vi.mocked(useInvestigationsInfinite, { partial: true }).mockReturnValue({
+      data: { pages: [rowData], pageParams: [] },
       isLoading: false,
     });
+
+    axios.get = vi
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/\/investigations$/.test(url)) {
+          return Promise.resolve({
+            data: rowData,
+          });
+        }
+
+        if (/\/allowed$/.test(url)) {
+          return Promise.resolve({ data: true });
+        }
+
+        return Promise.reject(`Endpoint not mocked: ${url}`);
+      });
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly', async () => {
@@ -199,8 +212,6 @@ describe('DLS Visits table component', () => {
   });
 
   it('updates filter query params on date filter', async () => {
-    applyDatePickerWorkaround();
-
     renderComponent();
 
     const filterInput = await screen.findByRole('textbox', {
@@ -221,12 +232,13 @@ describe('DLS Visits table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
-
-    cleanupDatePickerWorkaround();
   });
 
-  it('uses default sort', () => {
+  it('uses default sort', async () => {
     renderComponent();
+
+    expect(await screen.findAllByRole('gridcell')).toBeTruthy();
+
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"startDate":"desc"}')}`
@@ -290,22 +302,31 @@ describe('DLS Visits table component', () => {
   });
 
   it('renders fine with incomplete data', async () => {
-    (useInvestigationCount as jest.Mock).mockReturnValueOnce({});
-    (useInvestigationsInfinite as jest.Mock).mockReturnValueOnce({});
+    vi.mocked(useInvestigationCount, { partial: true }).mockReturnValueOnce({});
+    vi.mocked(useInvestigationsInfinite, { partial: true }).mockReturnValueOnce(
+      {}
+    );
 
-    (useInvestigationsInfinite as jest.Mock).mockReturnValueOnce({
-      data: [
-        {
-          ...rowData[0],
-          investigationInstruments: [
-            {
-              id: 1,
-            },
+    vi.mocked(useInvestigationsInfinite, { partial: true }).mockReturnValueOnce(
+      {
+        data: {
+          pages: [
+            [
+              {
+                ...rowData[0],
+                investigationInstruments: [
+                  {
+                    id: 1,
+                  },
+                ],
+              },
+            ],
           ],
+          pageParams: [],
         },
-      ],
-      isLoading: false,
-    });
+        isLoading: false,
+      }
+    );
 
     renderComponent();
 
@@ -313,17 +334,22 @@ describe('DLS Visits table component', () => {
   });
 
   it('renders fine if no investigation instrument is returned', async () => {
-    (useInvestigationCount as jest.Mock).mockReturnValue({
+    vi.mocked(useInvestigationCount, { partial: true }).mockReturnValue({
       data: 1,
       isLoading: false,
     });
-    (useInvestigationsInfinite as jest.Mock).mockReturnValue({
-      data: [
-        {
-          ...rowData[0],
-          investigationInstruments: [],
-        },
-      ],
+    vi.mocked(useInvestigationsInfinite, { partial: true }).mockReturnValue({
+      data: {
+        pages: [
+          [
+            {
+              ...rowData[0],
+              investigationInstruments: [],
+            },
+          ],
+        ],
+        pageParams: [],
+      },
       isLoading: false,
     });
 

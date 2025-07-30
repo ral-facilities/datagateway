@@ -1,6 +1,4 @@
-import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import type { Datafile } from 'datagateway-common';
-import * as React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
@@ -8,7 +6,7 @@ import PreviewDatafileButton from './previewDatafileButton.component';
 import { mockDatafile } from './testData';
 
 describe('PreviewDatafileButton', () => {
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   beforeEach(() => {
     user = userEvent.setup();

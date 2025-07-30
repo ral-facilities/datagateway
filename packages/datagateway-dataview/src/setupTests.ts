@@ -1,24 +1,39 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import '@testing-library/jest-dom';
 // Blob implementation in jsdom is not complete (https://github.com/jsdom/jsdom/issues/2555)
-// blob-polyfill fills in the gap
-import 'blob-polyfill';
-import { Action, AnyAction } from 'redux';
-import { StateType } from './state/app.types';
+// node blob implementation fills in the gap
+import { Blob as BlobPolyfill } from 'node:buffer';
+import type { Action, AnyAction } from 'redux';
+import type { StateType } from './state/app.types';
 import { initialState as dgDataViewInitialState } from './state/reducers/dgdataview.reducer';
 import { dGCommonInitialState } from 'datagateway-common';
-import { screen, within } from '@testing-library/react';
-import failOnConsole from 'jest-fail-on-console';
-import { createLocation } from 'history';
-import { ThunkDispatch, ThunkAction } from 'redux-thunk';
+import { screen, waitFor, within } from '@testing-library/react';
+import failOnConsole from 'vitest-fail-on-console';
+import type { ThunkDispatch, ThunkAction } from 'redux-thunk';
+
+global.Blob = BlobPolyfill as typeof global.Blob;
 
 failOnConsole();
 
-jest.setTimeout(20000);
+vi.setConfig({ testTimeout: 20_000 });
+
+// see https://github.com/testing-library/react-testing-library/issues/1197
+// and https://github.com/testing-library/user-event/issues/1115
+vi.stubGlobal('jest', { advanceTimersByTime: vi.advanceTimersByTime.bind(vi) });
 
 function noOp(): void {
-  // required as work-around for enzyme/jest environment not implementing window.URL.createObjectURL method
+  // required as work-around for jsdom environment not implementing window.URL.createObjectURL method
 }
+
+// Add in ResizeObserver as it's not in jsdom's environment
+vi.stubGlobal(
+  'ResizeObserver',
+  vi.fn(() => ({
+    observe: vi.fn(),
+    unobserve: vi.fn(),
+    disconnect: vi.fn(),
+  }))
+);
 
 if (typeof window.URL.createObjectURL === 'undefined') {
   Object.defineProperty(window.URL, 'createObjectURL', { value: noOp });
@@ -32,7 +47,6 @@ export const resetActions = (): void => {
 export const getState = (): StateType => ({
   dgdataview: dgDataViewInitialState,
   dgcommon: dGCommonInitialState,
-  router: { location: { ...createLocation('/'), query: {} }, action: 'POP' },
 });
 export const dispatch: ThunkDispatch<StateType, null, AnyAction> = (
   action: Action | ThunkAction<void, StateType, null, AnyAction>
@@ -47,38 +61,6 @@ export const dispatch: ThunkDispatch<StateType, null, AnyAction> = (
 
 export const flushPromises = (): Promise<void> =>
   new Promise((resolve) => setTimeout(resolve));
-
-// Mock lodash.debounce to return the function we want to call.
-jest.mock('lodash.debounce', () => (fn: (args: unknown) => unknown) => fn);
-
-// MUI date pickers default to mobile versions during testing and so functions
-// like .simulate('change') will not work, this workaround ensures desktop
-// datepickers are used in tests instead
-// https://github.com/mui/material-ui-pickers/issues/2073
-export const applyDatePickerWorkaround = (): void => {
-  // add window.matchMedia
-  // this is necessary for the date picker to be rendered in desktop mode.
-  // if this is not provided, the mobile mode is rendered, which might lead to unexpected behavior
-  Object.defineProperty(window, 'matchMedia', {
-    writable: true,
-    value: (query: string) => ({
-      media: query,
-      // this is the media query that @material-ui/pickers uses to determine if a device is a desktop device
-      matches: query === '(pointer: fine)',
-      onchange: () => {},
-      addEventListener: () => {},
-      removeEventListener: () => {},
-      addListener: () => {},
-      removeListener: () => {},
-      dispatchEvent: () => false,
-    }),
-  });
-};
-
-export const cleanupDatePickerWorkaround = (): void => {
-  // @ts-expect-error it's a workaround
-  delete window.matchMedia;
-};
 
 /**
  * Finds the index of the column with the given name.
@@ -122,8 +104,13 @@ export const findAllRows = async (): Promise<HTMLElement[]> =>
  *              the actual row that contains the data is considered the first row, and has an index of 0.
  */
 export const findRowAt = async (index: number): Promise<HTMLElement> => {
-  const rows = await screen.findAllByRole('row');
-  const row = rows[index + 1];
+  let rows;
+  await waitFor(async () => {
+    rows = await findAllRows();
+    // should have 1 row in the table
+    expect(rows).toHaveLength(1);
+  });
+  const row = rows?.[index];
   if (!row) {
     throw new Error(`Cannot find row at index ${index}`);
   }
@@ -141,3 +128,14 @@ export const findCellInRow = (
   }
   return cell;
 };
+
+vi.mock('loglevel');
+
+// Recreate jest behaviour by mocking with __mocks__ by mocking globally here
+vi.mock('axios');
+vi.mock('react-i18next');
+
+// Mock lodash.debounce to return the function we want to call.
+vi.mock('lodash.debounce', () => ({
+  default: (fn: (args: unknown) => unknown) => fn,
+}));

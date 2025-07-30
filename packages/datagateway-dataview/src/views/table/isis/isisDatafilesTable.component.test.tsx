@@ -1,38 +1,31 @@
-import * as React from 'react';
-import ISISDatafilesTable from './isisDatafilesTable.component';
-import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
-import configureStore from 'redux-mock-store';
-import type { StateType } from '../../../state/app.types';
-import {
-  type Datafile,
-  dGCommonInitialState,
-  DownloadCartItem,
-} from 'datagateway-common';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
-import { Router } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { createMemoryHistory, type History } from 'history';
-import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
-  findAllRows,
-  findColumnHeaderByName,
-} from '../../../setupTests';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   render,
-  type RenderResult,
   screen,
   waitFor,
   within,
+  type RenderResult,
 } from '@testing-library/react';
-import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
+import {
+  DownloadCartItem,
+  dGCommonInitialState,
+  type Datafile,
+} from 'datagateway-common';
 import {
   findCellInRow,
   findColumnIndexByName,
 } from 'datagateway-search/src/setupTests';
-import axios, { AxiosResponse } from 'axios';
+import { createMemoryHistory, type History } from 'history';
+import { Provider } from 'react-redux';
+import { Router } from 'react-router-dom';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { findAllRows, findColumnHeaderByName } from '../../../setupTests';
+import type { StateType } from '../../../state/app.types';
+import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
+import ISISDatafilesTable from './isisDatafilesTable.component';
 
 describe('ISIS datafiles table component', () => {
   const mockStore = configureStore([thunk]);
@@ -40,7 +33,7 @@ describe('ISIS datafiles table component', () => {
   let rowData: Datafile[];
   let cartItems: DownloadCartItem[];
   let history: History;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
   let holder: HTMLElement;
 
   const renderComponent = (): RenderResult =>
@@ -82,7 +75,7 @@ describe('ISIS datafiles table component', () => {
       })
     );
 
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/\/user\/cart\/$/.test(url)) {
@@ -109,7 +102,7 @@ describe('ISIS datafiles table component', () => {
         return Promise.reject(`Endpoint not mocked: ${url}`);
       });
 
-    axios.post = jest
+    axios.post = vi
       .fn()
       .mockImplementation(
         (url: string, data: unknown): Promise<Partial<AxiosResponse>> => {
@@ -151,18 +144,21 @@ describe('ISIS datafiles table component', () => {
 
   afterEach(() => {
     document.body.removeChild(holder);
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly', async () => {
     renderComponent();
 
     let rows: HTMLElement[] = [];
-    await waitFor(async () => {
-      rows = await findAllRows();
-      // should have 1 row in the table
-      expect(rows).toHaveLength(1);
-    });
+    await waitFor(
+      async () => {
+        rows = await findAllRows();
+        // should have 1 row in the table
+        expect(rows).toHaveLength(1);
+      },
+      { timeout: 5_000 }
+    );
 
     // check that column headers are shown correctly
     expect(await findColumnHeaderByName('datafiles.name')).toBeInTheDocument();
@@ -234,8 +230,6 @@ describe('ISIS datafiles table component', () => {
   });
 
   it('updates filter query params on date filter', async () => {
-    applyDatePickerWorkaround();
-
     renderComponent();
 
     const filterInput = await screen.findByRole('textbox', {
@@ -258,21 +252,22 @@ describe('ISIS datafiles table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
-
-    cleanupDatePickerWorkaround();
   });
 
-  it('uses default sort', () => {
+  it('uses default sort', async () => {
     renderComponent();
+
+    expect(await screen.findAllByRole('gridcell')).toBeTruthy();
+
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"asc"}')}`
     );
 
     // check that the data request is sent only once after mounting
-    const datafilesCalls = (axios.get as jest.Mock).mock.calls.filter(
-      (call) => call[0] === '/datafiles'
-    );
+    const datafilesCalls = vi
+      .mocked(axios.get)
+      .mock.calls.filter((call) => call[0] === '/datafiles');
     // 2 becasue there is also a call for ids
     expect(datafilesCalls).toHaveLength(2);
   });
@@ -293,9 +288,12 @@ describe('ISIS datafiles table component', () => {
     renderComponent();
 
     // wait for rows to show up
-    await waitFor(async () => {
-      expect(await findAllRows()).toHaveLength(1);
-    });
+    await waitFor(
+      async () => {
+        expect(await findAllRows()).toHaveLength(1);
+      },
+      { timeout: 5_000 }
+    );
 
     // row should not be selected initially as the cart is empty
     expect(

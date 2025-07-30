@@ -1,30 +1,26 @@
-import * as React from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
-  adminDownloadDeleted,
-  adminDownloadStatus,
-  fetchAdminDownloads,
-  getDownload,
-  getPercentageComplete,
-} from '../downloadApi';
-import AdminDownloadStatusTable from './adminDownloadStatusTable.component';
-import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
-  flushPromises,
-} from '../setupTests';
-import userEvent from '@testing-library/user-event';
-import {
-  render,
   RenderResult,
+  act,
+  render,
   screen,
   waitFor,
   within,
 } from '@testing-library/react';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { mockDownloadItems, mockedSettings } from '../testData';
+import userEvent from '@testing-library/user-event';
+import { DGThemeProvider } from 'datagateway-common';
 import { DownloadSettingsContext } from '../ConfigProvider';
+import {
+  adminDownloadDeleted,
+  adminDownloadStatus,
+  fetchAdminDownloads,
+  getPercentageComplete,
+} from '../downloadApi';
+import { flushPromises } from '../setupTests';
+import { mockDownloadItems, mockedSettings } from '../testData';
+import AdminDownloadStatusTable from './adminDownloadStatusTable.component';
 
-jest.mock('../downloadApi');
+vi.mock('../downloadApi');
 
 const createTestQueryClient = (): QueryClient =>
   new QueryClient({
@@ -37,11 +33,14 @@ const createTestQueryClient = (): QueryClient =>
 
 const renderComponent = ({ settings = mockedSettings } = {}): RenderResult =>
   render(
-    <DownloadSettingsContext.Provider value={settings}>
-      <QueryClientProvider client={createTestQueryClient()}>
-        <AdminDownloadStatusTable />
-      </QueryClientProvider>
-    </DownloadSettingsContext.Provider>
+    // wrap in theme provider to ensure no ripples end up in snapshots
+    <DGThemeProvider>
+      <DownloadSettingsContext.Provider value={settings}>
+        <QueryClientProvider client={createTestQueryClient()}>
+          <AdminDownloadStatusTable />
+        </QueryClientProvider>
+      </DownloadSettingsContext.Provider>
+    </DGThemeProvider>
   );
 
 describe('Admin Download Status Table', () => {
@@ -50,16 +49,9 @@ describe('Admin Download Status Table', () => {
   beforeEach(() => {
     user = userEvent.setup({ delay: null });
 
-    (getDownload as jest.MockedFunction<typeof getDownload>).mockImplementation(
-      (id, _) =>
-        Promise.resolve(
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          mockDownloadItems.find((download) => download.id === id)!
-        )
-    );
-    (fetchAdminDownloads as jest.Mock).mockImplementation(
+    vi.mocked(fetchAdminDownloads).mockImplementation(
       (
-        settings: { facilityName: string; downloadApiUrl: string },
+        _settings: { facilityName: string; downloadApiUrl: string },
         queryOffset?: string
       ) => {
         //Only return the 5 results when initialy requesting so that only a total
@@ -69,27 +61,32 @@ describe('Admin Download Status Table', () => {
         else return Promise.resolve([]);
       }
     );
-    (adminDownloadDeleted as jest.Mock).mockImplementation(() =>
-      Promise.resolve()
-    );
-    (adminDownloadStatus as jest.Mock).mockImplementation(() =>
-      Promise.resolve()
-    );
+    vi.mocked(adminDownloadDeleted).mockImplementation(() => Promise.resolve());
+    vi.mocked(adminDownloadStatus).mockImplementation(() => Promise.resolve());
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
+    vi.useRealTimers();
   });
 
   it('should render correctly', async () => {
-    const mockedDate = new Date(Date.UTC(2020, 1, 1, 0, 0, 0)).toUTCString();
-    global.Date.prototype.toLocaleString = jest.fn(() => mockedDate);
+    const mockedDate = new Date(Date.UTC(2020, 1, 1, 0, 0, 0));
+
+    vi.useFakeTimers({ toFake: ['Date'] }).setSystemTime(mockedDate);
+
+    const origDate = global.Date.prototype.toLocaleString;
+    vi.spyOn(global.Date.prototype, 'toLocaleString').mockImplementation(
+      function (this: Date) {
+        return origDate.call(this, 'en-GB');
+      }
+    );
 
     const { asFragment } = renderComponent();
 
     // wait for data to finish loading
     expect(
-      await screen.findByText(mockedDate.toLocaleString())
+      await screen.findByText('downloadTab.last_checked', { exact: false })
     ).toBeInTheDocument();
 
     expect(asFragment()).toMatchSnapshot();
@@ -98,7 +95,7 @@ describe('Admin Download Status Table', () => {
   it('should fetch the download items and sorts by download requested time desc on load', async () => {
     renderComponent();
 
-    const rows = await screen.findAllByText(/^\d$/);
+    const rows = await screen.findAllByRole('gridcell', { name: /^\d$/ });
     expect(rows).toHaveLength(5);
   });
 
@@ -129,15 +126,17 @@ describe('Admin Download Status Table', () => {
       mockDownloadItems.length
     );
 
-    (fetchAdminDownloads as jest.Mock).mockImplementation(
+    vi.mocked(fetchAdminDownloads).mockImplementation(
       (
-        settings: { facilityName: string; downloadApiUrl: string },
+        _settings: { facilityName: string; downloadApiUrl: string },
         queryOffset?: string
       ) => {
         //Only return the 5 results when initialy requesting so that only a total
         //of 5 results will be loaded
         if (queryOffset?.endsWith('LIMIT 0, 50'))
-          return mockDownloadItems.slice(0, mockDownloadItems.length - 1);
+          return Promise.resolve(
+            mockDownloadItems.slice(0, mockDownloadItems.length - 1)
+          );
         return Promise.resolve([]);
       }
     );
@@ -235,7 +234,10 @@ describe('Admin Download Status Table', () => {
       user = userEvent.setup({ delay: null, skipHover: true });
 
       renderComponent();
-      await flushPromises();
+
+      await act(async () => {
+        await flushPromises();
+      });
 
       // Table is sorted by createdAt desc by default
       // To keep working test, we will remove all sorts on the table beforehand
@@ -258,7 +260,10 @@ describe('Admin Download Status Table', () => {
       await user.click(
         within(await screen.findByRole('listbox')).getByText('Exact')
       );
-      await flushPromises();
+
+      await act(async () => {
+        await flushPromises();
+      });
 
       expect(fetchAdminDownloads).toHaveBeenCalledWith(
         {
@@ -269,7 +274,10 @@ describe('Admin Download Status Table', () => {
       );
 
       await user.clear(usernameFilterInput);
-      await flushPromises();
+
+      await act(async () => {
+        await flushPromises();
+      });
 
       expect(fetchAdminDownloads).toHaveBeenCalledWith(
         {
@@ -285,7 +293,10 @@ describe('Admin Download Status Table', () => {
       user = userEvent.setup({ delay: null, skipHover: true });
 
       renderComponent();
-      await flushPromises();
+
+      await act(async () => {
+        await flushPromises();
+      });
 
       // Table is sorted by createdAt desc by default
       // To keep working test, we will remove all sorts on the table beforehand
@@ -297,7 +308,10 @@ describe('Admin Download Status Table', () => {
       );
 
       await user.type(availabilityFilterInput, "downloadStatus.complete'");
-      await flushPromises();
+
+      await act(async () => {
+        await flushPromises();
+      });
 
       // test include filter
       expect(fetchAdminDownloads).toHaveBeenCalledWith(
@@ -319,7 +333,10 @@ describe('Admin Download Status Table', () => {
       await user.click(
         within(await screen.findByRole('listbox')).getByText('Exclude')
       );
-      await flushPromises();
+
+      await act(async () => {
+        await flushPromises();
+      });
 
       expect(fetchAdminDownloads).toHaveBeenCalledWith(
         {
@@ -330,7 +347,10 @@ describe('Admin Download Status Table', () => {
       );
 
       await user.clear(availabilityFilterInput);
-      await flushPromises();
+
+      await act(async () => {
+        await flushPromises();
+      });
 
       expect(fetchAdminDownloads).toHaveBeenCalledWith(
         {
@@ -343,24 +363,32 @@ describe('Admin Download Status Table', () => {
   });
 
   it('sends filter request on date filter', async () => {
-    applyDatePickerWorkaround();
     // use skipHover to avoid triggering sort tooltips which slow the test down
     user = userEvent.setup({ delay: null, skipHover: true });
 
     renderComponent();
-    await flushPromises();
+
+    await act(async () => {
+      await flushPromises();
+    });
 
     // Table is sorted by createdAt desc by default
     // To keep working test, we will remove all sorts on the table beforehand
     await user.click(await screen.findByText('downloadStatus.createdAt'));
-    await flushPromises();
+
+    await act(async () => {
+      await flushPromises();
+    });
 
     // Get the Requested Data From filter input
     const dateFromFilterInput = screen.getByRole('textbox', {
       name: 'downloadStatus.createdAt filter from',
     });
     await user.type(dateFromFilterInput, '2020-01-01_00:00:00');
-    await flushPromises();
+
+    await act(async () => {
+      await flushPromises();
+    });
 
     expect(fetchAdminDownloads).toHaveBeenCalledWith(
       {
@@ -378,7 +406,10 @@ describe('Admin Download Status Table', () => {
     // in v6 of date-picker spaces are considered to be a '0'
     // 20200102235900 is equivalent to 2020-01-02 03:59:00
     await user.type(dateToFilterInput, '2020-01-02_23:59:00');
-    await flushPromises();
+
+    await act(async () => {
+      await flushPromises();
+    });
 
     expect(fetchAdminDownloads).toHaveBeenCalledWith(
       {
@@ -388,11 +419,14 @@ describe('Admin Download Status Table', () => {
       `WHERE download.facilityName = '${mockedSettings.facilityName}' AND download.createdAt BETWEEN {ts '2020-01-01 00:00:00'} AND {ts '2020-01-02 23:59:00'} ORDER BY download.id ASC LIMIT 0, 50`
     );
 
-    (fetchAdminDownloads as jest.Mock).mockClear();
+    vi.mocked(fetchAdminDownloads).mockClear();
 
     await user.clear(dateFromFilterInput);
     await user.clear(dateToFilterInput);
-    await flushPromises();
+
+    await act(async () => {
+      await flushPromises();
+    });
 
     expect(fetchAdminDownloads).toHaveBeenCalledWith(
       {
@@ -401,8 +435,6 @@ describe('Admin Download Status Table', () => {
       },
       `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.id ASC LIMIT 0, 50`
     );
-
-    cleanupDatePickerWorkaround();
   });
 
   it('should filter deleted properly', async () => {
@@ -411,7 +443,9 @@ describe('Admin Download Status Table', () => {
     // Table is sorted by createdAt desc by default
     // To keep working test, we will remove all sorts on the table beforehand
     await user.click(await screen.findByText('downloadStatus.createdAt'));
-    await flushPromises();
+    await act(async () => {
+      await flushPromises();
+    });
 
     // Get the is deleted filter
     const isDeletedFilter = await screen.findByRole('button', {
@@ -422,7 +456,9 @@ describe('Admin Download Status Table', () => {
 
     await user.click(await screen.findByRole('option', { name: 'No' }));
 
-    await flushPromises();
+    await act(async () => {
+      await flushPromises();
+    });
 
     expect(fetchAdminDownloads).toHaveBeenCalledWith(
       {
@@ -436,7 +472,9 @@ describe('Admin Download Status Table', () => {
 
     await user.click(await screen.findByRole('option', { name: 'Yes' }));
 
-    await flushPromises();
+    await act(async () => {
+      await flushPromises();
+    });
 
     expect(fetchAdminDownloads).toHaveBeenCalledWith(
       {
@@ -450,7 +488,9 @@ describe('Admin Download Status Table', () => {
 
     await user.click(await screen.findByRole('option', { name: 'Either' }));
 
-    await flushPromises();
+    await act(async () => {
+      await flushPromises();
+    });
 
     expect(fetchAdminDownloads).toHaveBeenCalledWith(
       {
@@ -464,23 +504,20 @@ describe('Admin Download Status Table', () => {
   it('should send restore item and item status requests when restore button is clicked', async () => {
     renderComponent();
 
-    await flushPromises();
+    // wait for data to finish loading
+    expect(
+      await screen.findByText('downloadTab.last_checked', { exact: false })
+    ).toBeInTheDocument();
 
-    // without waitFor,
-    // toBeInTheDocument will complain it can't find the element
-    // even though findBy didn't throw...
-    // (it throws when the elemenet actually doesn't exist)
-    await waitFor(async () => {
-      expect(
-        await screen.findByRole('button', {
-          name: 'downloadStatus.restore {filename:test-file-4}',
-        })
-      ).toBeInTheDocument();
-    });
+    expect(
+      screen.getByRole('button', {
+        name: 'downloadStatus.restore {filename:test-file-4}',
+      })
+    ).toBeInTheDocument();
 
-    (fetchAdminDownloads as jest.Mock).mockImplementation(
+    vi.mocked(fetchAdminDownloads).mockImplementation(
       (
-        settings: { facilityName: string; downloadApiUrl: string },
+        _settings: { facilityName: string; downloadApiUrl: string },
         queryOffset?: string
       ) => {
         //Only return the 5 results when initialy requesting so that only a total
@@ -507,7 +544,9 @@ describe('Admin Download Status Table', () => {
       })
     );
 
-    await flushPromises();
+    await act(async () => {
+      await flushPromises();
+    });
 
     expect(
       await screen.findByRole('button', {
@@ -519,17 +558,20 @@ describe('Admin Download Status Table', () => {
   it('should send pause restore request when pause button is clicked', async () => {
     renderComponent();
 
-    await flushPromises();
+    // wait for data to finish loading
+    expect(
+      await screen.findByText('downloadTab.last_checked', { exact: false })
+    ).toBeInTheDocument();
 
     expect(
-      await screen.findByRole('button', {
+      screen.getByRole('button', {
         name: 'downloadStatus.pause {filename:test-file-3}',
       })
     ).toBeInTheDocument();
 
-    (fetchAdminDownloads as jest.Mock).mockImplementation(
+    vi.mocked(fetchAdminDownloads).mockImplementation(
       (
-        settings: { facilityName: string; downloadApiUrl: string },
+        _settings: { facilityName: string; downloadApiUrl: string },
         queryOffset?: string
       ) => {
         //Only return the 5 results when initialy requesting so that only a total
@@ -556,7 +598,9 @@ describe('Admin Download Status Table', () => {
       })
     );
 
-    await flushPromises();
+    await act(async () => {
+      await flushPromises();
+    });
 
     expect(
       await screen.findByRole('button', {
@@ -568,7 +612,10 @@ describe('Admin Download Status Table', () => {
   it('should send resume restore request when resume button is clicked', async () => {
     renderComponent();
 
-    await flushPromises();
+    // wait for data to finish loading
+    expect(
+      await screen.findByText('downloadTab.last_checked', { exact: false })
+    ).toBeInTheDocument();
 
     expect(
       screen.getByRole('button', {
@@ -576,9 +623,9 @@ describe('Admin Download Status Table', () => {
       })
     ).toBeInTheDocument();
 
-    (fetchAdminDownloads as jest.Mock).mockImplementation(
+    vi.mocked(fetchAdminDownloads).mockImplementation(
       (
-        settings: { facilityName: string; downloadApiUrl: string },
+        _settings: { facilityName: string; downloadApiUrl: string },
         queryOffset?: string
       ) => {
         //Only return the 5 results when initialy requesting so that only a total
@@ -605,7 +652,9 @@ describe('Admin Download Status Table', () => {
       })
     );
 
-    await flushPromises();
+    await act(async () => {
+      await flushPromises();
+    });
 
     expect(
       await screen.findByRole('button', {
@@ -617,19 +666,20 @@ describe('Admin Download Status Table', () => {
   it('should send delete item request when delete button is clicked', async () => {
     renderComponent();
 
-    await flushPromises();
+    // wait for data to finish loading
+    expect(
+      await screen.findByText('downloadTab.last_checked', { exact: false })
+    ).toBeInTheDocument();
 
-    await waitFor(async () => {
-      expect(
-        await screen.findByRole('button', {
-          name: 'downloadStatus.delete {filename:test-file-1}',
-        })
-      ).toBeInTheDocument();
-    });
+    expect(
+      screen.getByRole('button', {
+        name: 'downloadStatus.delete {filename:test-file-1}',
+      })
+    ).toBeInTheDocument();
 
-    (fetchAdminDownloads as jest.Mock).mockImplementation(
+    vi.mocked(fetchAdminDownloads).mockImplementation(
       (
-        settings: { facilityName: string; downloadApiUrl: string },
+        _settings: { facilityName: string; downloadApiUrl: string },
         queryOffset?: string
       ) => {
         //Only return the 5 results when initialy requesting so that only a total
@@ -650,7 +700,7 @@ describe('Admin Download Status Table', () => {
     );
 
     await user.click(
-      await screen.findByRole('button', {
+      screen.getByRole('button', {
         name: 'downloadStatus.delete {filename:test-file-1}',
       })
     );
@@ -663,9 +713,7 @@ describe('Admin Download Status Table', () => {
   });
 
   it('should display progress ui if enabled', async () => {
-    (
-      getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>
-    ).mockResolvedValue(30);
+    vi.mocked(getPercentageComplete).mockResolvedValue(30);
 
     renderComponent({
       settings: {
@@ -676,8 +724,14 @@ describe('Admin Download Status Table', () => {
       },
     });
 
+    // wait for data to load
+    const rows = await screen.findAllByRole('gridcell', { name: /^\d$/ });
+    expect(rows).toHaveLength(5);
+
     await waitFor(() => {
-      for (const progressBar of screen.getAllByRole('progressbar')) {
+      for (const progressBar of screen.getAllByRole('progressbar', {
+        value: { now: 30 },
+      })) {
         expect(progressBar).toBeInTheDocument();
       }
       for (const progressText of screen.getAllByText('30%')) {
@@ -687,9 +741,7 @@ describe('Admin Download Status Table', () => {
   });
 
   it('should refresh download progress when refresh button is clicked', async () => {
-    (
-      getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>
-    ).mockResolvedValue(30);
+    vi.mocked(getPercentageComplete).mockResolvedValue(30);
 
     renderComponent({
       settings: {
@@ -700,8 +752,14 @@ describe('Admin Download Status Table', () => {
       },
     });
 
+    // wait for data to load
+    const rows = await screen.findAllByRole('gridcell', { name: /^\d$/ });
+    expect(rows).toHaveLength(5);
+
     await waitFor(() => {
-      for (const progressBar of screen.getAllByRole('progressbar')) {
+      for (const progressBar of screen.getAllByRole('progressbar', {
+        value: { now: 30 },
+      })) {
         expect(progressBar).toBeInTheDocument();
       }
       for (const progressText of screen.getAllByText('30%')) {
@@ -710,9 +768,7 @@ describe('Admin Download Status Table', () => {
     });
 
     // pretend the server returns an updated value
-    (
-      getPercentageComplete as jest.MockedFunction<typeof getPercentageComplete>
-    ).mockResolvedValue(50);
+    vi.mocked(getPercentageComplete).mockResolvedValue(50);
 
     await user.click(
       screen.getByRole('button', {

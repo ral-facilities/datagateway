@@ -1,23 +1,24 @@
-import * as React from 'react';
-import type { StateType } from '../state/app.types';
-import { Provider } from 'react-redux';
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import { Router } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { render, screen, within } from '@testing-library/react';
+import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios';
 import {
-  type DatasearchType,
   dGCommonInitialState,
+  type DatasearchType,
   type SearchResponse,
 } from 'datagateway-common';
-import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios';
 import { createMemoryHistory, type History } from 'history';
-import { render, screen, within } from '@testing-library/react';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import * as React from 'react';
+import { Provider } from 'react-redux';
+import { Router } from 'react-router-dom';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import type { StateType } from '../state/app.types';
 
-import SearchTabs from './searchTabs.component';
-import { initialState } from '../state/reducers/dgsearch.reducer';
 import userEvent from '@testing-library/user-event';
+import { act } from 'react-dom/test-utils';
 import { queryAllRows } from '../setupTests';
+import { initialState } from '../state/reducers/dgsearch.reducer';
+import SearchTabs from './searchTabs.component';
 
 describe('SearchTabs', () => {
   let state: StateType;
@@ -173,16 +174,16 @@ describe('SearchTabs', () => {
       JSON.stringify({ dgsearch: initialState, dgcommon: dGCommonInitialState })
     );
 
-    axios.get = jest.fn().mockImplementation(mockAxiosGet);
+    axios.get = vi.fn().mockImplementation(mockAxiosGet);
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
-    jest.resetAllMocks();
+    vi.clearAllMocks();
+    vi.resetAllMocks();
   });
 
   it('renders tabs and empty tables when loading search query', async () => {
-    axios.get = jest.fn().mockImplementation(
+    axios.get = vi.fn().mockImplementation(
       () =>
         new Promise((_) => {
           // never resolve the promise to pretend the search query is loading
@@ -203,10 +204,10 @@ describe('SearchTabs', () => {
         view="table"
         containerHeight="100"
         hierarchy="data"
-        onTabChange={jest.fn()}
+        onTabChange={vi.fn()}
         currentTab="investigation"
         cartItems={[]}
-        navigateToDownload={jest.fn()}
+        navigateToDownload={vi.fn()}
       />,
       { wrapper: Wrapper }
     );
@@ -255,10 +256,10 @@ describe('SearchTabs', () => {
         view="table"
         containerHeight="100"
         hierarchy="data"
-        onTabChange={jest.fn()}
+        onTabChange={vi.fn()}
         currentTab="investigation"
         cartItems={[]}
-        navigateToDownload={jest.fn()}
+        navigateToDownload={vi.fn()}
       />,
       { wrapper: Wrapper }
     );
@@ -294,14 +295,17 @@ describe('SearchTabs', () => {
         view="table"
         containerHeight="100"
         hierarchy="data"
-        onTabChange={jest.fn()}
+        onTabChange={vi.fn()}
         currentTab="dataset"
         cartItems={[]}
-        navigateToDownload={jest.fn()}
+        navigateToDownload={vi.fn()}
       />
     );
     searchParams.set('currentTab', 'dataset');
-    history.replace({ search: searchParams.toString() });
+
+    act(() => {
+      history.replace({ search: searchParams.toString() });
+    });
 
     expect(
       screen.queryByTestId('investigation-search-table')
@@ -316,14 +320,17 @@ describe('SearchTabs', () => {
         view="table"
         containerHeight="100"
         hierarchy="data"
-        onTabChange={jest.fn()}
+        onTabChange={vi.fn()}
         currentTab="datafile"
         cartItems={[]}
-        navigateToDownload={jest.fn()}
+        navigateToDownload={vi.fn()}
       />
     );
     searchParams.set('currentTab', 'datafile');
-    history.replace({ search: searchParams.toString() });
+
+    act(() => {
+      history.replace({ search: searchParams.toString() });
+    });
 
     expect(
       screen.queryByTestId('investigation-search-table')
@@ -349,10 +356,10 @@ describe('SearchTabs', () => {
         view="card"
         containerHeight="100"
         hierarchy="data"
-        onTabChange={jest.fn()}
+        onTabChange={vi.fn()}
         currentTab="investigation"
         cartItems={[]}
-        navigateToDownload={jest.fn()}
+        navigateToDownload={vi.fn()}
       />,
       { wrapper: Wrapper }
     );
@@ -391,14 +398,16 @@ describe('SearchTabs', () => {
         view="card"
         containerHeight="100"
         hierarchy="data"
-        onTabChange={jest.fn()}
+        onTabChange={vi.fn()}
         currentTab="dataset"
         cartItems={[]}
-        navigateToDownload={jest.fn()}
+        navigateToDownload={vi.fn()}
       />
     );
     searchParams.set('currentTab', 'dataset');
-    history.replace({ search: searchParams.toString() });
+    act(() => {
+      history.replace({ search: searchParams.toString() });
+    });
 
     expect(
       screen.queryByTestId('investigation-search-card-view')
@@ -413,14 +422,16 @@ describe('SearchTabs', () => {
         view="card"
         containerHeight="100"
         hierarchy="data"
-        onTabChange={jest.fn()}
+        onTabChange={vi.fn()}
         currentTab="datafile"
         cartItems={[]}
-        navigateToDownload={jest.fn()}
+        navigateToDownload={vi.fn()}
       />
     );
     searchParams.set('currentTab', 'datafile');
-    history.replace({ search: searchParams.toString() });
+    act(() => {
+      history.replace({ search: searchParams.toString() });
+    });
 
     expect(
       screen.queryByTestId('investigation-search-card-view')
@@ -441,7 +452,7 @@ describe('SearchTabs', () => {
       },
     };
 
-    const onTabChange = jest.fn((newTab) => {
+    const onTabChange = vi.fn((newTab) => {
       searchParams.set('currentTab', newTab);
       history.replace({ search: searchParams.toString() });
     });
@@ -454,7 +465,7 @@ describe('SearchTabs', () => {
         onTabChange={onTabChange}
         currentTab="investigation"
         cartItems={[]}
-        navigateToDownload={jest.fn()}
+        navigateToDownload={vi.fn()}
       />,
       { wrapper: Wrapper }
     );
@@ -488,7 +499,7 @@ describe('SearchTabs', () => {
         onTabChange={onTabChange}
         currentTab="dataset"
         cartItems={[]}
-        navigateToDownload={jest.fn()}
+        navigateToDownload={vi.fn()}
       />
     );
 
@@ -504,7 +515,7 @@ describe('SearchTabs', () => {
   it('resets search result count when filters are applied', async () => {
     let isFilterApplied = false;
 
-    axios.get = jest.fn().mockImplementation((url, config) => {
+    axios.get = vi.fn().mockImplementation((url, config) => {
       if (isFilterApplied) {
         return new Promise((_) => {
           // never resolve the promise to pretend it is loading
@@ -527,10 +538,10 @@ describe('SearchTabs', () => {
         view="card"
         containerHeight="100"
         hierarchy="data"
-        onTabChange={jest.fn()}
+        onTabChange={vi.fn()}
         currentTab="investigation"
         cartItems={[]}
-        navigateToDownload={jest.fn()}
+        navigateToDownload={vi.fn()}
       />,
       { wrapper: Wrapper }
     );
@@ -542,7 +553,7 @@ describe('SearchTabs', () => {
     const datafileTab = screen.getByRole('tab', { name: 'tabs.datafile' });
 
     // initial search count should be visible
-    expect(within(investigationTab).getByText('1')).toBeInTheDocument();
+    expect(await within(investigationTab).findByText('1')).toBeInTheDocument();
     expect(within(datasetTab).getByText('1')).toBeInTheDocument();
     expect(within(datafileTab).getByText('1')).toBeInTheDocument();
 
@@ -563,14 +574,14 @@ describe('SearchTabs', () => {
   });
 
   it('redirects to download cart page when view card button is clicked', async () => {
-    const navigateToDownload = jest.fn();
+    const navigateToDownload = vi.fn();
 
     render(
       <SearchTabs
         view="card"
         containerHeight="100"
         hierarchy="data"
-        onTabChange={jest.fn()}
+        onTabChange={vi.fn()}
         currentTab="investigation"
         cartItems={[]}
         navigateToDownload={navigateToDownload}
@@ -602,10 +613,10 @@ describe('SearchTabs', () => {
         view="card"
         containerHeight="100"
         hierarchy="data"
-        onTabChange={jest.fn()}
+        onTabChange={vi.fn()}
         currentTab="investigation"
         cartItems={[]}
-        navigateToDownload={jest.fn()}
+        navigateToDownload={vi.fn()}
       />,
       { wrapper: Wrapper }
     );

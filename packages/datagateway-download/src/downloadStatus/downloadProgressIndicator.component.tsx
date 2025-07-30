@@ -1,7 +1,6 @@
 import { Box, LinearProgress, Typography } from '@mui/material';
-import React from 'react';
-import { useTranslation } from 'react-i18next';
 import type { Download } from 'datagateway-common';
+import { useTranslation } from 'react-i18next';
 import { useDownloadPercentageComplete } from '../downloadApiHooks';
 
 interface DownloadProgressIndicatorProps {
@@ -18,7 +17,7 @@ function DownloadProgressIndicator({
   download,
 }: DownloadProgressIndicatorProps): JSX.Element {
   const [t] = useTranslation();
-  const { data: progress, isLoading: isLoadingProgress } =
+  const { data: progress, isFetching: isLoadingProgress } =
     useDownloadPercentageComplete({
       download,
       enabled:
@@ -27,6 +26,7 @@ function DownloadProgressIndicator({
         (download.status === 'RESTORING' || download.status === 'PAUSED'),
     });
 
+  // if query is fetching show some loading text
   if (isLoadingProgress) {
     return <>{t('downloadStatus.calculating_progress')}</>;
   }
@@ -44,11 +44,8 @@ function DownloadProgressIndicator({
   // if the download is being prepared, show 0%
   if (download.status === 'PREPARING') return <ProgressBar progress={0} />;
 
-  // if the download is paused with no preparedId, show that it is queued
-  if (
-    download.status === 'PAUSED' &&
-    typeof download.preparedId === 'undefined'
-  )
+  // if the download is queued, show that it is queued
+  if (download.status === 'QUEUED')
     return <>{t('downloadStatus.progress_queued')}</>;
 
   // display a label indicating progress unavailable when

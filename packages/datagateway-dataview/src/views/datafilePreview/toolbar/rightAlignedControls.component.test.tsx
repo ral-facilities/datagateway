@@ -5,8 +5,6 @@ import {
   screen,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { UserEvent } from '@testing-library/user-event/setup/setup';
-import * as React from 'react';
 import { Provider } from 'react-redux';
 import { combineReducers, createStore } from 'redux';
 import DGDataViewReducer from '../../../state/reducers/dgdataview.reducer';
@@ -27,7 +25,7 @@ function renderComponent(): RenderResult {
 }
 
 describe('RightAlignedControls', () => {
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   beforeEach(() => {
     user = userEvent.setup();

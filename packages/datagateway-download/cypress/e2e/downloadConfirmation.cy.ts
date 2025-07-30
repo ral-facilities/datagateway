@@ -67,9 +67,10 @@ describe('Download Confirmation', () => {
       'Successfully submitted download request'
     ).should('exist');
 
-    cy.contains('#confirm-success-download-name', 'LILS_2020-1-1_1-1-1').should(
-      'exist'
-    );
+    cy.contains(
+      '#confirm-success-download-name',
+      'LILS_2020-01-01_01-01-01'
+    ).should('exist');
     cy.contains('#confirm-success-access-method', 'HTTPS').should('exist');
 
     // Click on the download status link and expect the download

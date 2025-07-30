@@ -48,7 +48,7 @@ const SelectedChips = styled('ul')(({ theme }) => ({
 export interface CardViewDetails {
   dataKey: string;
 
-  icon?: React.ComponentType<unknown>;
+  icon?: React.ElementType;
   label?: string;
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   content?: (data?: any) => React.ReactNode;
@@ -151,7 +151,7 @@ function CVPagination(
       sx={{ textAlign: 'center' }}
       count={numPages}
       page={page}
-      onChange={(e, p) => {
+      onChange={(_e, p) => {
         // If we are not clicking on the same page.
         if (p !== page) {
           changePage(p);

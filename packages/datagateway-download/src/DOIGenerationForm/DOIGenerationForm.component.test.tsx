@@ -1,51 +1,46 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
-  render,
   RenderResult,
+  act,
+  render,
   screen,
   waitForElementToBeRemoved,
   within,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
 import {
-  DataCiteDOI,
   DOIRelationType,
   DOIResourceType,
-  fetchDownloadCart,
+  DataCiteDOI,
   User,
+  fetchDownloadCart,
 } from 'datagateway-common';
-import { createMemoryHistory, MemoryHistory } from 'history';
-import * as React from 'react';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import { MemoryHistory, createMemoryHistory } from 'history';
 import { Router } from 'react-router-dom';
 import { DownloadSettingsContext } from '../ConfigProvider';
-import { mockCartItems, mockedSettings } from '../testData';
 import { getCartUsers, mintCart } from '../downloadApi';
+import { flushPromises } from '../setupTests';
+import { mockCartItems, mockedSettings } from '../testData';
 import DOIGenerationForm from './DOIGenerationForm.component';
-import axios, { AxiosResponse } from 'axios';
 
-setLogger({
-  log: console.log,
-  warn: console.warn,
-  error: jest.fn(),
-});
-
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    fetchDownloadCart: jest.fn(),
+    fetchDownloadCart: vi.fn(),
   };
 });
 
-jest.mock('../downloadApi', () => {
-  const originalModule = jest.requireActual('../downloadApi');
+vi.mock('../downloadApi', async () => {
+  const originalModule = await vi.importActual('../downloadApi');
 
   return {
     ...originalModule,
-    getCartUsers: jest.fn(),
-    mintCart: jest.fn(),
+    getCartUsers: vi.fn(),
+    mintCart: vi.fn(),
   };
 });
 
@@ -55,6 +50,12 @@ const createTestQueryClient = (): QueryClient =>
       queries: {
         retry: false,
       },
+    },
+    // silence react-query errors
+    logger: {
+      log: console.log,
+      warn: console.warn,
+      error: vi.fn(),
     },
   });
 
@@ -102,18 +103,13 @@ describe('DOI generation form component', () => {
         },
       },
     };
-    (
-      fetchDownloadCart as jest.MockedFunction<typeof fetchDownloadCart>
-    ).mockResolvedValue(mockCartItems);
+
+    vi.mocked(fetchDownloadCart).mockResolvedValue(mockCartItems);
 
     // mock mint cart error to test dialog can be closed after it errors
-    (mintCart as jest.MockedFunction<typeof mintCart>).mockRejectedValue(
-      'error'
-    );
+    vi.mocked(mintCart).mockRejectedValue('error');
 
-    (
-      getCartUsers as jest.MockedFunction<typeof getCartUsers>
-    ).mockResolvedValue([
+    vi.mocked(getCartUsers).mockResolvedValue([
       {
         id: 1,
         name: '1',
@@ -151,11 +147,15 @@ describe('DOI generation form component', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should redirect back to /download if user directly accesses the url', async () => {
     const { history } = renderComponent(createMemoryHistory());
+
+    await act(async () => {
+      await flushPromises();
+    });
 
     expect(history.location).toMatchObject({ pathname: '/download' });
   });
@@ -164,7 +164,7 @@ describe('DOI generation form component', () => {
     renderComponent();
 
     expect(
-      screen.getByRole('button', { name: 'acceptDataPolicy.accept' })
+      await screen.findByRole('button', { name: 'acceptDataPolicy.accept' })
     ).toBeInTheDocument();
     expect(
       screen.queryByText('DOIGenerationForm.page_header')
@@ -330,9 +330,7 @@ describe('DOI generation form component', () => {
   });
 
   it('should not let the user submit a mint request if cart fails to load', async () => {
-    (
-      fetchDownloadCart as jest.MockedFunction<typeof fetchDownloadCart>
-    ).mockRejectedValue({ message: 'error' });
+    vi.mocked(fetchDownloadCart).mockRejectedValue({ message: 'error' });
     renderComponent();
 
     // accept data policy
@@ -357,9 +355,7 @@ describe('DOI generation form component', () => {
   });
 
   it('should not let the user submit a mint request if cart is empty', async () => {
-    (
-      fetchDownloadCart as jest.MockedFunction<typeof fetchDownloadCart>
-    ).mockResolvedValue([]);
+    vi.mocked(fetchDownloadCart).mockResolvedValue([]);
     renderComponent();
 
     // accept data policy
@@ -384,9 +380,7 @@ describe('DOI generation form component', () => {
   });
 
   it('should not let the user submit a mint request if no users selected', async () => {
-    (
-      getCartUsers as jest.MockedFunction<typeof getCartUsers>
-    ).mockResolvedValue([]);
+    vi.mocked(getCartUsers).mockResolvedValue([]);
     renderComponent();
 
     // accept data policy
@@ -445,9 +439,7 @@ describe('DOI generation form component', () => {
 
   describe('only displays cart tabs if the corresponding entity type exists in the cart: ', () => {
     it('investigations', async () => {
-      (
-        fetchDownloadCart as jest.MockedFunction<typeof fetchDownloadCart>
-      ).mockResolvedValue([mockCartItems[0]]);
+      vi.mocked(fetchDownloadCart).mockResolvedValue([mockCartItems[0]]);
 
       renderComponent();
 
@@ -480,9 +472,7 @@ describe('DOI generation form component', () => {
     });
 
     it('datasets', async () => {
-      (
-        fetchDownloadCart as jest.MockedFunction<typeof fetchDownloadCart>
-      ).mockResolvedValue([mockCartItems[2]]);
+      vi.mocked(fetchDownloadCart).mockResolvedValue([mockCartItems[2]]);
 
       renderComponent();
 
@@ -513,9 +503,7 @@ describe('DOI generation form component', () => {
     });
 
     it('datafiles', async () => {
-      (
-        fetchDownloadCart as jest.MockedFunction<typeof fetchDownloadCart>
-      ).mockResolvedValue([mockCartItems[3]]);
+      vi.mocked(fetchDownloadCart).mockResolvedValue([mockCartItems[3]]);
 
       renderComponent();
 

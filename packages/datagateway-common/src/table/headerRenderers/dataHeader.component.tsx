@@ -33,7 +33,7 @@ const DataHeader = (
     ) => void;
     resizeColumn: (dataKey: string, deltaX: number) => void;
     labelString: string;
-    icon?: React.ComponentType<unknown>;
+    icon?: React.ElementType;
     filterComponent?: (
       label: string,
       dataKey: string,
@@ -162,7 +162,7 @@ const DataHeader = (
       </div>
       <Draggable
         axis="none"
-        onDrag={(event, { deltaX }) => resizeColumn(dataKey, deltaX)}
+        onDrag={(_event, { deltaX }) => resizeColumn(dataKey, deltaX)}
       >
         <div
           style={{

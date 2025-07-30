@@ -1,7 +1,6 @@
 import { render } from '@testing-library/react';
-import * as React from 'react';
-import ActionCell from './actionCell.component';
 import { TableActionProps } from '../table.component';
+import ActionCell from './actionCell.component';
 
 describe('Action cell component', () => {
   const actionCellProps = {

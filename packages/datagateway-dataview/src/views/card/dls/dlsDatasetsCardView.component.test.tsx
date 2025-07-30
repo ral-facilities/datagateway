@@ -4,7 +4,6 @@ import {
   useDatasetCount,
   useDatasetsPaginated,
 } from 'datagateway-common';
-import React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
@@ -12,24 +11,20 @@ import thunk from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import DLSDatasetsCardView from './dlsDatasetsCardView.component';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createMemoryHistory, History } from 'history';
-import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
-} from '../../../setupTests';
 import { render, RenderResult, screen } from '@testing-library/react';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    useDatasetCount: jest.fn(),
-    useDatasetsPaginated: jest.fn(),
+    useDatasetCount: vi.fn(),
+    useDatasetsPaginated: vi.fn(),
   };
 });
 
@@ -38,7 +33,7 @@ describe('DLS Datasets - Card View', () => {
   let state: StateType;
   let cardData: Dataset[];
   let history: History;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult =>
     render(
@@ -72,21 +67,33 @@ describe('DLS Datasets - Card View', () => {
       })
     );
 
-    (useDatasetCount as jest.Mock).mockReturnValue({
+    vi.mocked(useDatasetCount, { partial: true }).mockReturnValue({
       data: 1,
       isLoading: false,
     });
-    (useDatasetsPaginated as jest.Mock).mockReturnValue({
+    vi.mocked(useDatasetsPaginated, { partial: true }).mockReturnValue({
       data: cardData,
       isLoading: false,
     });
 
+    axios.get = vi
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/\/datasets$/.test(url)) {
+          return Promise.resolve({
+            data: cardData,
+          });
+        }
+
+        return Promise.reject(`Endpoint not mocked: ${url}`);
+      });
+
     // Prevent error logging
-    window.scrollTo = jest.fn();
+    window.scrollTo = vi.fn();
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('updates filter query params on text filter', async () => {
@@ -116,8 +123,6 @@ describe('DLS Datasets - Card View', () => {
   });
 
   it('updates filter query params on date filter', async () => {
-    applyDatePickerWorkaround();
-
     renderComponent();
 
     // click on button to show advanced filters
@@ -141,12 +146,13 @@ describe('DLS Datasets - Card View', () => {
     await user.keyboard('{Delete}');
 
     expect(history.location.search).toBe('?');
-
-    cleanupDatePickerWorkaround();
   });
 
-  it('uses default sort', () => {
+  it('uses default sort', async () => {
     renderComponent();
+
+    expect(await screen.findByTestId('card')).toBeInTheDocument();
+
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"asc"}')}`
@@ -178,7 +184,9 @@ describe('DLS Datasets - Card View', () => {
     await user.click(
       await screen.findByRole('button', { name: 'card-more-info-expand' })
     );
-    expect(screen.findByTestId('dataset-details-panel')).toBeTruthy();
+    expect(
+      await screen.findByTestId('dls-dataset-details-panel')
+    ).toBeInTheDocument();
   });
 
   it('renders buttons correctly', async () => {
@@ -189,8 +197,8 @@ describe('DLS Datasets - Card View', () => {
   });
 
   it('renders fine with incomplete data', () => {
-    (useDatasetCount as jest.Mock).mockReturnValueOnce({});
-    (useDatasetsPaginated as jest.Mock).mockReturnValueOnce({});
+    vi.mocked(useDatasetCount, { partial: true }).mockReturnValueOnce({});
+    vi.mocked(useDatasetsPaginated, { partial: true }).mockReturnValueOnce({});
 
     expect(() => renderComponent()).not.toThrowError();
   });

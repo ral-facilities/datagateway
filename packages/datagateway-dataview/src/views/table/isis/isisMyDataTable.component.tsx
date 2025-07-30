@@ -8,6 +8,7 @@ import {
 } from '@mui/icons-material';
 import {
   ColumnType,
+  DetailsPanelProps,
   externalSiteLink,
   FACILITY_NAME,
   formatBytes,
@@ -94,7 +95,7 @@ const ISISMyDataTable = (): React.ReactElement => {
     undefined,
     isMounted
   );
-  const { data: allIds, isLoading: allIdsLoading } = useIds(
+  const { data: allIds, isInitialLoading: allIdsLoading } = useIds(
     'investigation',
     [
       {
@@ -148,24 +149,25 @@ const ISISMyDataTable = (): React.ReactElement => {
     [fetchNextPage]
   );
 
-  const detailsPanel = React.useCallback(
-    ({ rowData, detailsPanelResize }) => {
-      const datasetTableUrl = buildDatasetTableUrlForInvestigation({
-        facilityName: FACILITY_NAME.isis,
-        investigation: rowData as Investigation,
-      });
-      return (
-        <ISISInvestigationDetailsPanel
-          rowData={rowData}
-          detailsPanelResize={detailsPanelResize}
-          viewDatasets={() => {
-            if (datasetTableUrl) push(datasetTableUrl);
-          }}
-        />
-      );
-    },
-    [push]
-  );
+  const detailsPanel: React.ComponentType<DetailsPanelProps> =
+    React.useCallback(
+      ({ rowData, detailsPanelResize }) => {
+        const datasetTableUrl = buildDatasetTableUrlForInvestigation({
+          facilityName: FACILITY_NAME.isis,
+          investigation: rowData as Investigation,
+        });
+        return (
+          <ISISInvestigationDetailsPanel
+            rowData={rowData}
+            detailsPanelResize={detailsPanelResize}
+            viewDatasets={() => {
+              if (datasetTableUrl) push(datasetTableUrl);
+            }}
+          />
+        );
+      },
+      [push]
+    );
 
   const columns: ColumnType[] = React.useMemo(
     () => [

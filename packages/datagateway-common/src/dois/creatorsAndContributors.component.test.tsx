@@ -1,19 +1,13 @@
-import { render, RenderResult, screen, within } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { RenderResult, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import * as React from 'react';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
-import CreatorsAndContributors from './creatorsAndContributors.component';
-import * as parseTokens from '../parseTokens';
-import { ContributorType } from '../app.types';
 import axios, { AxiosResponse } from 'axios';
+import * as React from 'react';
+import { ContributorType, User } from '../app.types';
+import * as parseTokens from '../parseTokens';
+import CreatorsAndContributors from './creatorsAndContributors.component';
 
-setLogger({
-  log: console.log,
-  warn: console.warn,
-  error: jest.fn(),
-});
-
-jest.mock('loglevel');
+vi.mock('loglevel');
 
 const createTestQueryClient = (): QueryClient =>
   new QueryClient({
@@ -22,6 +16,12 @@ const createTestQueryClient = (): QueryClient =>
         retry: false,
       },
     },
+    // silence react-query errors
+    logger: {
+      log: console.log,
+      warn: console.warn,
+      error: vi.fn(),
+    },
   });
 
 describe('DOI generation form component', () => {
@@ -29,7 +29,7 @@ describe('DOI generation form component', () => {
 
   let props: React.ComponentProps<typeof CreatorsAndContributors>;
 
-  let mockUser;
+  let mockUser: User;
 
   const TestComponent: React.FC = () => {
     const [selectedUsers, changeSelectedUsers] = React.useState(
@@ -102,7 +102,7 @@ describe('DOI generation form component', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should let the user delete users (but not delete the logged in user)', async () => {
@@ -181,7 +181,7 @@ describe('DOI generation form component', () => {
     ).toHaveValue('');
 
     // test errors with various API error responses
-    (axios.get as jest.Mock).mockRejectedValueOnce({
+    vi.mocked(axios.get).mockRejectedValueOnce({
       response: {
         data: { detail: 'error msg' },
         status: 404,
@@ -204,7 +204,7 @@ describe('DOI generation form component', () => {
         .slice(1) // ignores the header row
     ).toHaveLength(3);
 
-    (axios.get as jest.Mock).mockRejectedValue({
+    vi.mocked(axios.get).mockRejectedValue({
       response: { data: { detail: [{ msg: 'error msg 2' }] }, status: 404 },
     });
     await user.click(
@@ -218,7 +218,7 @@ describe('DOI generation form component', () => {
         .slice(1) // ignores the header row
     ).toHaveLength(3);
 
-    (axios.get as jest.Mock).mockRejectedValueOnce({
+    vi.mocked(axios.get).mockRejectedValueOnce({
       response: { status: 422 },
     });
     await user.click(

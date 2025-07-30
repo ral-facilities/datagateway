@@ -66,7 +66,7 @@ const DownloadTabs: React.FC = () => {
   const [t] = useTranslation();
 
   const handleChange = (
-    event: React.ChangeEvent<unknown>,
+    _event: React.ChangeEvent<unknown>,
     setTab: number
   ): void => {
     setSelectedTab(setTab);

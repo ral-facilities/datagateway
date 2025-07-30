@@ -1,8 +1,8 @@
-import React from 'react';
-import Typography from '@mui/material/Typography';
-import { Grid, Box, Paper, Button, Avatar, alpha, styled } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
 import DownloadIcon from '@mui/icons-material/GetApp';
+import SearchIcon from '@mui/icons-material/Search';
+import { Avatar, Box, Button, Grid, Paper, alpha, styled } from '@mui/material';
+import Typography from '@mui/material/Typography';
+import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
@@ -132,6 +132,7 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
   return (
     <div id="dg-homepage">
       <div
+        data-testid="background"
         style={{
           backgroundImage: `url(${props.backgroundImage})`,
           backgroundPosition: 'center 40%',
@@ -140,6 +141,7 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
         }}
       >
         <div
+          data-testid="background-decal"
           style={{
             backgroundImage: `url(${props.greenSwirl1Image}), url(${props.decal1Image})`,
             backgroundRepeat: 'no-repeat',
@@ -217,6 +219,7 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
             </Grid>
             <Grid item xs={6}>
               <div
+                data-testid="facility-image"
                 style={{
                   backgroundImage: `url(${props.facilityImage})`,
                   backgroundRepeat: 'no-repeat',
@@ -228,6 +231,7 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
                 }}
               >
                 <BrowseDecal
+                  data-testid="browse-decal"
                   decal2Image={props.decal2Image}
                   decal2DarkImage={props.decal2DarkImage}
                   decal2DarkHCImage={props.decal2DarkHCImage}
@@ -237,7 +241,7 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
           </Grid>
         </Paper>
         <Grid container spacing={2}>
-          <Grid item sm={12} md={4}>
+          <Grid item xs={12} md={4}>
             <Paper sx={paperStyles} elevation={1}>
               <Box sx={paperContentStyles}>
                 <Avatar sx={avatarStyles}>
@@ -263,7 +267,7 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
               </Box>
             </Paper>
           </Grid>
-          <Grid item sm={12} md={4}>
+          <Grid item xs={12} md={4}>
             <Paper sx={paperStyles} elevation={1}>
               <Box sx={paperContentStyles}>
                 <Avatar sx={avatarStyles}>
@@ -289,12 +293,13 @@ const HomePage = (props: HomePageProps): React.ReactElement => {
               </Box>
             </Paper>
           </Grid>
-          <Grid item sm={12} md={4}>
+          <Grid item xs={12} md={4}>
             <Paper
               sx={{ ...paperStyles, backgroundColor: '#003088' }}
               elevation={1}
             >
               <div
+                data-testid="facility-decal"
                 style={{
                   backgroundImage: `url(${props.greenSwirl2Image})`,
                   backgroundRepeat: 'no-repeat',

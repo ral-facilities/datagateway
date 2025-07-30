@@ -21,6 +21,7 @@ import {
   useRemoveFromCart,
   useSort,
   formatBytes,
+  DetailsPanelProps,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -181,7 +182,7 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
   const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
-    (offsetParams: IndexRange) => fetchNextPage(),
+    (_offsetParams: IndexRange) => fetchNextPage(),
     [fetchNextPage]
   );
 
@@ -317,59 +318,62 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
     [t, hierarchy]
   );
 
-  const detailsPanel = React.useCallback(
-    ({ rowData, detailsPanelResize }) => {
-      switch (hierarchy) {
-        case FACILITY_NAME.isis:
-          const dataset = rowData as SearchResultSource;
-          let url: string | null = null;
-          if (dataset['investigation.id'] && dataset['investigation.name']) {
-            const formattedDataset = {
-              id: dataset.id,
-              name: dataset.name,
-              investigation: {
-                id: dataset['investigation.id'],
-                name: dataset['investigation.name'],
-                instrumentId:
-                  dataset.investigationinstrument?.[0]?.['instrument.id'],
-                facilityCycleId:
-                  dataset.investigationfacilitycycle?.[0]?.['facilityCycle.id'],
-              },
-            };
-            url = buildDatafileTableUrlForDataset({
-              dataset: formattedDataset,
-              facilityName: hierarchy,
-            });
-          }
-          return (
-            <ISISDatasetDetailsPanel
-              rowData={rowData}
-              detailsPanelResize={detailsPanelResize}
-              viewDatafiles={() => {
-                if (url) push(url);
-              }}
-            />
-          );
+  const detailsPanel: React.ComponentType<DetailsPanelProps> =
+    React.useCallback(
+      ({ rowData, detailsPanelResize }) => {
+        switch (hierarchy) {
+          case FACILITY_NAME.isis:
+            const dataset = rowData as SearchResultSource;
+            let url: string | null = null;
+            if (dataset['investigation.id'] && dataset['investigation.name']) {
+              const formattedDataset = {
+                id: dataset.id,
+                name: dataset.name,
+                investigation: {
+                  id: dataset['investigation.id'],
+                  name: dataset['investigation.name'],
+                  instrumentId:
+                    dataset.investigationinstrument?.[0]?.['instrument.id'],
+                  facilityCycleId:
+                    dataset.investigationfacilitycycle?.[0]?.[
+                      'facilityCycle.id'
+                    ],
+                },
+              };
+              url = buildDatafileTableUrlForDataset({
+                dataset: formattedDataset,
+                facilityName: hierarchy,
+              });
+            }
+            return (
+              <ISISDatasetDetailsPanel
+                rowData={rowData}
+                detailsPanelResize={detailsPanelResize}
+                viewDatafiles={() => {
+                  if (url) push(url);
+                }}
+              />
+            );
 
-        case FACILITY_NAME.dls:
-          return (
-            <DLSDatasetDetailsPanel
-              rowData={rowData}
-              detailsPanelResize={detailsPanelResize}
-            />
-          );
+          case FACILITY_NAME.dls:
+            return (
+              <DLSDatasetDetailsPanel
+                rowData={rowData}
+                detailsPanelResize={detailsPanelResize}
+              />
+            );
 
-        default:
-          return (
-            <DatasetDetailsPanel
-              rowData={rowData}
-              detailsPanelResize={detailsPanelResize}
-            />
-          );
-      }
-    },
-    [hierarchy, push]
-  );
+          default:
+            return (
+              <DatasetDetailsPanel
+                rowData={rowData}
+                detailsPanelResize={detailsPanelResize}
+              />
+            );
+        }
+      },
+      [hierarchy, push]
+    );
 
   if (currentTab !== 'dataset') return null;
 
@@ -437,7 +441,7 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
                   data={aggregatedSource}
                   loadMoreRows={loadMoreRows}
                   totalRowCount={
-                    aggregatedSource?.length + (hasNextPage ? 1 : 0) ?? 0
+                    aggregatedSource.length + (hasNextPage ? 1 : 0)
                   }
                   sort={{}}
                   onSort={handleSort}

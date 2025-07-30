@@ -8,123 +8,29 @@ import {
   fetchAdminDownloads,
   fetchDownloads,
   getDataUrl,
-  getDownload,
-  getDownloadTypeStatus,
   getPercentageComplete,
-  submitCart,
 } from './downloadApi';
 import { mockedSettings } from './testData';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    handleICATError: jest.fn(),
+    handleICATError: vi.fn(),
   };
 });
 
 describe('Download Cart API functions test', () => {
   afterEach(() => {
-    (handleICATError as jest.Mock).mockClear();
-  });
-
-  describe('submitCart', () => {
-    it('returns the downloadId after the submitting cart', async () => {
-      axios.post = jest.fn().mockImplementation(() => {
-        return Promise.resolve({
-          data: {
-            facilityName: mockedSettings.facilityName,
-            userrName: 'test user',
-            cartItems: [],
-            downloadId: 1,
-          },
-        });
-      });
-
-      // Wait for our mocked response with a download id.
-      const downloadId = await submitCart(
-        'https',
-        'test@email.com',
-        'test-file',
-        {
-          facilityName: mockedSettings.facilityName,
-          downloadApiUrl: mockedSettings.downloadApiUrl,
-        }
-      );
-      const params = new URLSearchParams();
-      params.append('sessionId', '');
-      params.append('transport', 'https');
-      params.append('email', 'test@email.com');
-      params.append('fileName', 'test-file');
-      params.append('zipType', 'ZIP');
-
-      expect(downloadId).toBe(1);
-      expect(axios.post).toHaveBeenCalled();
-      expect(axios.post).toHaveBeenCalledWith(
-        `${mockedSettings.downloadApiUrl}/user/cart/${mockedSettings.facilityName}/submit`,
-        params
-      );
-    });
-  });
-
-  describe('getDownload', () => {
-    it('returns the download information upon successful response for download ID', async () => {
-      axios.get = jest.fn().mockImplementation(() =>
-        Promise.resolve({
-          data: [
-            {
-              createdAt: '2020-01-01T01:01:01Z',
-              downloadItems: [
-                {
-                  entityId: 1,
-                  entityType: 'investigation',
-                  id: 1,
-                },
-              ],
-              facilityName: mockedSettings.facilityName,
-              fileName: 'test-file',
-              fullName: 'simple/root',
-              id: 1,
-              isDeleted: false,
-              isEmailSent: false,
-              isTwoLevel: false,
-              preparedId: 'test-prepared-id',
-              sessionId: '',
-              size: 0,
-              status: 'COMPLETE',
-              transport: 'https',
-              userName: 'simple/root',
-            },
-          ],
-        })
-      );
-
-      const download = await getDownload(1, {
-        facilityName: mockedSettings.facilityName,
-        downloadApiUrl: mockedSettings.downloadApiUrl,
-      });
-
-      expect(download).not.toBe(null);
-      expect(axios.get).toHaveBeenCalled();
-      expect(axios.get).toHaveBeenCalledWith(
-        `${mockedSettings.downloadApiUrl}/user/downloads`,
-        {
-          params: {
-            sessionId: null,
-            facilityName: mockedSettings.facilityName,
-            queryOffset: `where download.id = 1`,
-          },
-        }
-      );
-    });
+    vi.mocked(handleICATError).mockClear();
   });
 
   describe('downloadPreparedCart', () => {
     it('opens a link to download "test-file" upon successful response for a download request', async () => {
-      jest.spyOn(document, 'createElement');
-      jest.spyOn(document.body, 'appendChild');
+      vi.spyOn(document, 'createElement');
+      vi.spyOn(document.body, 'appendChild');
 
       await downloadPreparedCart('test-id', 'test-file.zip', {
         idsUrl: mockedSettings.idsUrl,
@@ -169,7 +75,7 @@ describe('Download Status API functions test', () => {
     ];
 
     it('returns downloads upon successful response', async () => {
-      axios.get = jest.fn().mockImplementation(() =>
+      axios.get = vi.fn().mockImplementation(() =>
         Promise.resolve({
           data: downloadsMockData,
         })
@@ -200,7 +106,7 @@ describe('Download Status API functions test', () => {
         isDeleted: true,
       };
 
-      axios.get = jest.fn().mockImplementation(() =>
+      axios.get = vi.fn().mockImplementation(() =>
         Promise.resolve({
           data: downloadsData,
         })
@@ -231,7 +137,7 @@ describe('Download Status API functions test', () => {
 
   describe('downloadDeleted', () => {
     it('successfully sets a download as deleted', async () => {
-      axios.put = jest.fn().mockImplementation(() => Promise.resolve());
+      axios.put = vi.fn().mockImplementation(() => Promise.resolve());
 
       await downloadDeleted(1, true, {
         facilityName: mockedSettings.facilityName,
@@ -289,7 +195,7 @@ describe('Admin Download Status API functions test', () => {
     ];
 
     it('returns downloads upon successful response', async () => {
-      axios.get = jest.fn().mockImplementation(() =>
+      axios.get = vi.fn().mockImplementation(() =>
         Promise.resolve({
           data: downloadsMockData,
         })
@@ -320,7 +226,7 @@ describe('Admin Download Status API functions test', () => {
         isDeleted: true,
       };
 
-      axios.get = jest.fn().mockImplementation(() =>
+      axios.get = vi.fn().mockImplementation(() =>
         Promise.resolve({
           data: downloadsData,
         })
@@ -351,7 +257,7 @@ describe('Admin Download Status API functions test', () => {
 
   describe('adminDownloadDeleted', () => {
     it('successfully sets a download as deleted', async () => {
-      axios.put = jest.fn().mockImplementation(() => Promise.resolve());
+      axios.put = vi.fn().mockImplementation(() => Promise.resolve());
 
       await adminDownloadDeleted(1, true, {
         facilityName: mockedSettings.facilityName,
@@ -373,7 +279,7 @@ describe('Admin Download Status API functions test', () => {
 
   describe('adminDownloadStatus', () => {
     it('successfully sets the status of a download', async () => {
-      axios.put = jest.fn().mockImplementation(() => Promise.resolve());
+      axios.put = vi.fn().mockImplementation(() => Promise.resolve());
 
       await adminDownloadStatus(1, 'RESTORING', {
         facilityName: mockedSettings.facilityName,
@@ -393,31 +299,9 @@ describe('Admin Download Status API functions test', () => {
     });
   });
 
-  describe('getDownloadTypeStatus', () => {
-    it('should retrieve the status of the given download type', async () => {
-      axios.get = jest.fn().mockResolvedValue({
-        data: {
-          disabled: false,
-          message: '',
-        },
-      });
-
-      const response = await getDownloadTypeStatus('https', {
-        facilityName: mockedSettings.facilityName,
-        downloadApiUrl: mockedSettings.downloadApiUrl,
-      });
-
-      expect(response).toEqual({
-        type: 'https',
-        disabled: false,
-        message: '',
-      });
-    });
-  });
-
   describe('getPercentageComplete', () => {
     it('should return the percentage of a download restore from 0 to 100', async () => {
-      axios.get = jest.fn().mockResolvedValue({
+      axios.get = vi.fn().mockResolvedValue({
         data: '2',
       });
 
@@ -432,7 +316,7 @@ describe('Admin Download Status API functions test', () => {
     });
 
     it('should return the status of a download restore', async () => {
-      axios.get = jest.fn().mockResolvedValue({
+      axios.get = vi.fn().mockResolvedValue({
         data: 'INVALID',
       });
 

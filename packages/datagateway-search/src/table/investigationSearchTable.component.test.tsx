@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { initialState } from '../state/reducers/dgsearch.reducer';
 import configureStore from 'redux-mock-store';
 import type { StateType } from '../state/app.types';
@@ -11,7 +10,7 @@ import {
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createMemoryHistory, type History } from 'history';
 import { Router } from 'react-router-dom';
 import InvestigationSearchTable from './investigationSearchTable.component';
@@ -33,13 +32,13 @@ import {
   queryAllRows,
 } from '../setupTests';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    handleICATError: jest.fn(),
+    handleICATError: vi.fn(),
   };
 });
 
@@ -78,6 +77,11 @@ describe('Investigation Search Table component', () => {
     config: AxiosRequestConfig
   ): Promise<Partial<AxiosResponse>> => {
     if (/.*\/user\/cart\/.*$/.test(url)) {
+      // fetchDownloadCart
+      return Promise.resolve({ data: { cartItems } });
+    }
+
+    if (/.*\/user\/queue\/allowed$/.test(url)) {
       // fetchDownloadCart
       return Promise.resolve({ data: { cartItems } });
     }
@@ -178,9 +182,9 @@ describe('Investigation Search Table component', () => {
       results: [searchResult],
     };
 
-    axios.get = jest.fn().mockImplementation(mockAxiosGet);
+    axios.get = vi.fn().mockImplementation(mockAxiosGet);
 
-    axios.post = jest.fn().mockImplementation((url: string) => {
+    axios.post = vi.fn().mockImplementation((url: string) => {
       if (/.*\/user\/cart\/.*\/cartItems$/.test(url)) {
         return Promise.resolve({ data: { cartItems } });
       }
@@ -189,7 +193,7 @@ describe('Investigation Search Table component', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('disables the search query if investigation search is disabled', async () => {
@@ -231,6 +235,10 @@ describe('Investigation Search Table component', () => {
     expect(
       queryClient.getQueryState(['search', 'Investigation'], { exact: false })
         ?.status
+    ).toBe('loading');
+    expect(
+      queryClient.getQueryState(['search', 'Investigation'], { exact: false })
+        ?.fetchStatus
     ).toBe('idle');
 
     expect(queryAllRows()).toHaveLength(0);
@@ -829,6 +837,7 @@ describe('Investigation Search Table component', () => {
   });
 
   it('displays correct details panel for DLS when expanded', async () => {
+    state.dgcommon.accessMethods = {};
     renderComponent(FACILITY_NAME.dls);
 
     await user.click(

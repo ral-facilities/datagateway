@@ -1,4 +1,6 @@
 import {
+  ConfigureAccessMethodsPayload,
+  ConfigureAccessMethodsType,
   ConfigureFacilityNamePayload,
   ConfigureFacilityNameType,
   ConfigureQueryRetriesPayload,
@@ -64,6 +66,16 @@ export function handleConfigureQueryRetries(
   return {
     ...state,
     queryRetries: payload.queryRetries,
+  };
+}
+
+export function handleConfigureAccessMethods(
+  state: DGCommonState,
+  payload: ConfigureAccessMethodsPayload
+): DGCommonState {
+  return {
+    ...state,
+    accessMethods: payload.accessMethods,
   };
 }
 
@@ -167,6 +179,7 @@ const dGCommonReducer = createReducer(initialState, {
   [ConfigureFacilityNameType]: handleConfigureFacilityName,
   [ConfigureURLsType]: handleConfigureUrls,
   [ConfigureQueryRetriesType]: handleConfigureQueryRetries,
+  [ConfigureAccessMethodsType]: handleConfigureAccessMethods,
   [IsisDatafileDetailsPanelChangeTabType]: changeIsisDatafileDetailsPanelTab,
   [IsisDatasetDetailsPanelChangeTabType]: changeIsisDatasetDetailsPanelTab,
   [IsisInstrumentDetailsPanelChangeTabType]:
