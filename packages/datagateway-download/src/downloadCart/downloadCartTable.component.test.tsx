@@ -111,18 +111,6 @@ describe('Download cart table component', () => {
       fileCount: 7,
     });
 
-    mintabilityResponse = Promise.resolve({ status: 200 });
-
-    axios.post = jest
-      .fn()
-      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
-        if (/\/ismintable$/.test(url)) {
-          return mintabilityResponse;
-        } else {
-          return Promise.reject(`Endpoint not mocked: ${url}`);
-        }
-      });
-
     axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
@@ -154,6 +142,8 @@ describe('Download cart table component', () => {
         return Promise.reject(`Endpoint not mocked: ${url}`);
       });
 
+    mintabilityResponse = Promise.resolve({ status: 200 });
+
     axios.post = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
@@ -161,6 +151,9 @@ describe('Download cart table component', () => {
           return Promise.resolve({
             data: { downloadId: mockDownloadItems[0].id },
           });
+        }
+        if (/\/ismintable$/.test(url)) {
+          return mintabilityResponse;
         }
         return Promise.reject(`Endpoint not mocked: ${url}`);
       });
@@ -623,6 +616,8 @@ describe('Download cart table component', () => {
         status: 403,
       },
     });
+    // have to assert here to suppress vitest complaining about the mintabilityResponse promise rejection
+    await expect(mintabilityResponse).rejects.toThrow();
 
     const { history } = renderComponent();
 

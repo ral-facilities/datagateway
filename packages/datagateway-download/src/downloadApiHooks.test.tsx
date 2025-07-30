@@ -1,8 +1,12 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import axios, { AxiosError } from 'axios';
-import type { ContributorType } from 'datagateway-common';
-import { Download, handleICATError } from 'datagateway-common';
+import {
+  ContributorType,
+  Download,
+  handleDOIAPIError,
+  handleICATError,
+} from 'datagateway-common';
 import { createMemoryHistory } from 'history';
 import * as React from 'react';
 import { Router } from 'react-router-dom';

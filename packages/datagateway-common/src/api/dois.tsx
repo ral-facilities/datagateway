@@ -107,7 +107,7 @@ export const useCheckUser = (
   );
 };
 
-interface DataCiteResponse {
+export interface DataCiteResponse {
   data: DataCiteDOI;
 }
 

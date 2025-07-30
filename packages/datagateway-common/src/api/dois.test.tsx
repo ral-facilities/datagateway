@@ -1,28 +1,20 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import axios, { AxiosError, AxiosHeaders } from 'axios';
+import log from 'loglevel';
 import {
   handleDOIAPIError,
   useCheckUser,
   useIsCartMintable,
   useUpdateDOI,
 } from '.';
+import { ContributorType, DownloadCartItem } from '../app.types';
 import { createReactQueryWrapper, createTestQueryClient } from '../setupTests';
 import { InvalidateTokenType } from '../state/actions/actions.types';
-import { setLogger } from 'react-query';
-import log from 'loglevel';
-import { ContributorType, DownloadCartItem } from '../app.types';
 
-// silence react-query errors
-setLogger({
-  log: console.log,
-  warn: console.warn,
-  error: jest.fn(),
-});
-
-jest.mock('loglevel');
+vi.mock('loglevel');
 
 describe('handleDOIAPIError', () => {
-  const localStorageGetItemMock = jest.spyOn(
+  const localStorageGetItemMock = vi.spyOn(
     window.localStorage.__proto__,
     'getItem'
   );
@@ -58,12 +50,12 @@ describe('handleDOIAPIError', () => {
       },
       name: 'Test error name',
       message: 'Test error message',
-      toJSON: jest.fn(),
+      toJSON: vi.fn(),
     };
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     localStorageGetItemMock.mockReset();
   });
 
@@ -118,22 +110,23 @@ describe('handleDOIAPIError', () => {
 
 describe('doi api functions', () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('useCheckUser', () => {
     it('should check whether a user exists in ICAT', async () => {
-      axios.get = jest
+      axios.get = vi
         .fn()
         .mockResolvedValue({ data: { id: 1, name: 'user 1' } });
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useCheckUser('user 1', '/doi-minter'),
         {
           wrapper: createReactQueryWrapper(),
         }
       );
-      expect(result.current.isIdle).toBe(true);
+      expect(result.current.status).toBe('loading');
+      expect(result.current.fetchStatus).toBe('idle');
       act(() => {
         result.current.refetch();
       });
@@ -152,15 +145,16 @@ describe('doi api functions', () => {
           status: 401,
         },
       };
-      axios.get = jest.fn().mockRejectedValue(error);
+      axios.get = vi.fn().mockRejectedValue(error);
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useCheckUser('user 1', '/doi-minter'),
         {
           wrapper: createReactQueryWrapper(),
         }
       );
-      expect(result.current.isIdle).toBe(true);
+      expect(result.current.status).toBe('loading');
+      expect(result.current.fetchStatus).toBe('idle');
       act(() => {
         result.current.refetch();
       });
@@ -177,15 +171,16 @@ describe('doi api functions', () => {
           status: 404,
         },
       };
-      axios.get = jest.fn().mockRejectedValue(error);
+      axios.get = vi.fn().mockRejectedValue(error);
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useCheckUser('user 1', '/doi-minter'),
         {
           wrapper: createReactQueryWrapper(),
         }
       );
-      expect(result.current.isIdle).toBe(true);
+      expect(result.current.status).toBe('loading');
+      expect(result.current.fetchStatus).toBe('idle');
       act(() => {
         result.current.refetch();
       });
@@ -202,15 +197,16 @@ describe('doi api functions', () => {
           status: 422,
         },
       };
-      axios.get = jest.fn().mockRejectedValue(error);
+      axios.get = vi.fn().mockRejectedValue(error);
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useCheckUser('user 1', '/doi-minter'),
         {
           wrapper: createReactQueryWrapper(),
         }
       );
-      expect(result.current.isIdle).toBe(true);
+      expect(result.current.status).toBe('loading');
+      expect(result.current.fetchStatus).toBe('idle');
       act(() => {
         result.current.refetch();
       });
@@ -227,15 +223,16 @@ describe('doi api functions', () => {
           status: 400,
         },
       };
-      axios.get = jest.fn().mockRejectedValue(error);
+      axios.get = vi.fn().mockRejectedValue(error);
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useCheckUser('user 1', '/doi-minter'),
         {
           wrapper: createReactQueryWrapper(),
         }
       );
-      expect(result.current.isIdle).toBe(true);
+      expect(result.current.status).toBe('loading');
+      expect(result.current.fetchStatus).toBe('idle');
       act(() => {
         result.current.refetch();
       });
@@ -259,7 +256,7 @@ describe('doi api functions', () => {
       investigation_ids: [3],
     };
     it('should send a put request with payload indicating the updated data', async () => {
-      axios.put = jest.fn().mockResolvedValue({
+      axios.put = vi.fn().mockResolvedValue({
         data: {
           concept: { data_publication: 'new', doi: 'pid' },
           version: {
@@ -270,19 +267,21 @@ describe('doi api functions', () => {
       });
 
       const queryClient = createTestQueryClient();
-      const resetQueriesSpy = jest.spyOn(queryClient, 'resetQueries');
+      const resetQueriesSpy = vi.spyOn(queryClient, 'resetQueries');
 
       const { result } = renderHook(() => useUpdateDOI(), {
         wrapper: createReactQueryWrapper(undefined, queryClient),
       });
 
-      await act(async () => {
-        await result.current.mutateAsync({
+      act(() => {
+        result.current.mutate({
           dataPublicationId: 'pid',
           content,
           doiMetadata,
         });
       });
+
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       expect(result.current.data).toEqual({
         concept: { data_publication: 'new', doi: 'pid' },
@@ -314,9 +313,9 @@ describe('doi api functions', () => {
           status: 500,
         },
       };
-      axios.put = jest.fn().mockRejectedValue(error);
+      axios.put = vi.fn().mockRejectedValue(error);
 
-      const { result, waitFor } = renderHook(() => useUpdateDOI(), {
+      const { result } = renderHook(() => useUpdateDOI(), {
         wrapper: createReactQueryWrapper(),
       });
 
@@ -379,11 +378,9 @@ describe('doi api functions', () => {
     ];
 
     it('should check whether a cart is mintable', async () => {
-      axios.post = jest
-        .fn()
-        .mockResolvedValue({ data: undefined, status: 200 });
+      axios.post = vi.fn().mockResolvedValue({ data: undefined, status: 200 });
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           useIsCartMintable(mockCartItems, 'https://example.com/doi-minter'),
         {
@@ -410,12 +407,13 @@ describe('doi api functions', () => {
         { wrapper: createReactQueryWrapper() }
       );
 
-      expect(result.current.isIdle).toEqual(true);
+      expect(result.current.status).toBe('loading');
+      expect(result.current.fetchStatus).toBe('idle');
       expect(axios.post).not.toHaveBeenCalled();
     });
 
     it('should return false if cart is undefined', async () => {
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useIsCartMintable(undefined, 'https://example.com/doi-minter'),
         {
           wrapper: createReactQueryWrapper(),
@@ -429,7 +427,7 @@ describe('doi api functions', () => {
     });
 
     it('should return false if cart is empty', async () => {
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useIsCartMintable([], 'https://example.com/doi-minter'),
         {
           wrapper: createReactQueryWrapper(),
@@ -449,9 +447,9 @@ describe('doi api functions', () => {
           status: 403,
         },
       };
-      axios.post = jest.fn().mockRejectedValue(error);
+      axios.post = vi.fn().mockRejectedValue(error);
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           useIsCartMintable(mockCartItems, 'https://example.com/doi-minter'),
         {

@@ -11,6 +11,7 @@ import {
   fetchDownloads,
   getDataUrl,
   getFileSizeAndCount,
+  getIsTwoLevel,
   removeAllDownloadCartItems,
   removeFromCart,
 } from '../downloadApi';
@@ -52,13 +53,13 @@ describe('DownloadTab', () => {
         mockCartItems.filter((item) => !entityIds.includes(item.entityId))
       );
     });
-
+    vi.mocked(getIsTwoLevel).mockResolvedValue(true);
     vi.mocked(getFileSizeAndCount).mockResolvedValue({
       fileSize: 1,
       fileCount: 7,
     });
 
-    axios.post = jest
+    axios.post = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/\/ismintable$/.test(url)) {

@@ -1,28 +1,27 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   render,
-  type RenderResult,
   screen,
   within,
+  type RenderResult,
 } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import {
+  ContributorType,
+  DOIRelationType,
   dGCommonInitialState,
-  type DataPublication,
   readSciGatewayToken,
   useDataPublicationCount,
   useDataPublicationsInfinite,
-  ContributorType,
-  DOIRelationType,
+  type DataPublication,
 } from 'datagateway-common';
 import { createMemoryHistory, type MemoryHistory } from 'history';
-import * as React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
   findAllRows,
   findCellInRow,
   findColumnHeaderByName,
@@ -32,18 +31,16 @@ import {
 import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import DLSMyDOIsTable from './dlsMyDOIsTable.component';
-import userEvent from '@testing-library/user-event';
-import type { UserEvent } from '@testing-library/user-event/setup/setup';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    useDataPublicationCount: jest.fn(),
-    useDataPublicationsInfinite: jest.fn(),
-    readSciGatewayToken: jest.fn(),
+    useDataPublicationCount: vi.fn(),
+    useDataPublicationsInfinite: vi.fn(),
+    readSciGatewayToken: vi.fn(),
   };
 });
 
@@ -123,21 +120,21 @@ describe('DLS MyDOIs table component', () => {
       },
     ];
 
-    (useDataPublicationCount as jest.Mock).mockReturnValue({
+    vi.mocked(useDataPublicationCount, { partial: true }).mockReturnValue({
       data: 0,
     });
-    (useDataPublicationsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
+    vi.mocked(useDataPublicationsInfinite, { partial: true }).mockReturnValue({
+      data: { pages: [rowData], pageParams: [] },
+      fetchNextPage: vi.fn(),
     });
-    (readSciGatewayToken as jest.Mock).mockReturnValue({
+    vi.mocked(readSciGatewayToken, { partial: true }).mockReturnValue({
       username: 'testUser',
     });
-    global.Date.now = jest.fn(() => 1);
+    global.Date.now = vi.fn(() => 1);
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly', async () => {
@@ -237,8 +234,6 @@ describe('DLS MyDOIs table component', () => {
   });
 
   it('updates filter query params on date filter', async () => {
-    applyDatePickerWorkaround();
-
     renderComponent();
 
     const filterInput = await screen.findByRole('textbox', {
@@ -259,8 +254,6 @@ describe('DLS MyDOIs table component', () => {
     await user.keyboard('{Delete}');
 
     expect(history.location.search).toBe('?');
-
-    cleanupDatePickerWorkaround();
   });
 
   it('updates sort query params on sort', async () => {

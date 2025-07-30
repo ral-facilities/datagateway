@@ -1,38 +1,31 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
-  render,
   RenderResult,
+  render,
   screen,
   waitFor,
   within,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
 import {
   ContributorType,
-  DataPublication,
-  DataPublicationUser,
-  dGCommonInitialState,
   DOIRelationType,
   DOIResourceType,
+  DataPublication,
+  DataPublicationUser,
   DownloadCartItem,
+  dGCommonInitialState,
 } from 'datagateway-common';
-import { createMemoryHistory, History } from 'history';
-import * as React from 'react';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
-import { generatePath, Router } from 'react-router-dom';
-import DLSDataPublicationEditForm from './dlsDataPublicationEditForm.component';
-import axios, { AxiosResponse } from 'axios';
+import { History, createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
+import { Router, generatePath } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { paths } from '../../../page/pageContainer.component';
 import { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
-import { paths } from '../../../page/pageContainer.component';
-
-setLogger({
-  log: console.log,
-  warn: console.warn,
-  error: jest.fn(),
-});
+import DLSDataPublicationEditForm from './dlsDataPublicationEditForm.component';
 
 const createTestQueryClient = (): QueryClient =>
   new QueryClient({
@@ -40,6 +33,11 @@ const createTestQueryClient = (): QueryClient =>
       queries: {
         retry: false,
       },
+    },
+    logger: {
+      log: console.log,
+      warn: console.warn,
+      error: vi.fn(),
     },
   });
 
@@ -229,7 +227,7 @@ describe('DOI edit form component', () => {
 
     mintabilityResponse = Promise.resolve({ status: 200 });
 
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/\/datapublications$/.test(url)) {
@@ -245,7 +243,7 @@ describe('DOI edit form component', () => {
         }
       });
 
-    axios.post = jest
+    axios.post = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/\/ismintable$/.test(url)) {
@@ -255,7 +253,7 @@ describe('DOI edit form component', () => {
         }
       });
 
-    axios.put = jest
+    axios.put = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/\/mint\/version\/update\/.*/.test(url)) {
@@ -276,7 +274,7 @@ describe('DOI edit form component', () => {
 
   afterEach(() => {
     document.body.removeChild(holder);
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should redirect back to landing page if user directly accesses the url', async () => {

@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, RenderResult, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as React from 'react';
@@ -7,7 +8,6 @@ import {
   DOIResourceType,
 } from '../app.types';
 import DOIMetadataForm from './DOIMetadataForm.component';
-import { QueryClient, QueryClientProvider } from 'react-query';
 
 describe('DOI generation form component', () => {
   let props: React.ComponentProps<typeof DOIMetadataForm>;
@@ -28,13 +28,13 @@ describe('DOI generation form component', () => {
 
     props = {
       title: 'test',
-      setTitle: jest.fn(),
+      setTitle: vi.fn(),
       description: 'description',
-      setDescription: jest.fn(),
+      setDescription: vi.fn(),
       selectedUsers: [
         { id: 1, name: 'test', contributor_type: ContributorType.Minter },
       ],
-      setSelectedUsers: jest.fn(),
+      setSelectedUsers: vi.fn(),
       relatedDOIs: [
         {
           title: 'DOI Title',
@@ -44,16 +44,16 @@ describe('DOI generation form component', () => {
           relationType: DOIRelationType.Cites,
         },
       ],
-      setRelatedDOIs: jest.fn(),
+      setRelatedDOIs: vi.fn(),
       disableMintButton: false,
-      onMintClick: jest.fn(),
+      onMintClick: vi.fn(),
       doiMinterUrl: 'https://example.com/doi-minter',
       dataCiteUrl: 'https://example.com/datacite',
     };
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should call onChange handlers when user interacts with fields', async () => {

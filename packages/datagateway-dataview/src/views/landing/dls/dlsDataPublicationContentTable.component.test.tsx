@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   render,
   screen,
@@ -15,23 +16,16 @@ import {
   type Datafile,
   type DownloadCartItem,
 } from 'datagateway-common';
-import * as React from 'react';
 import {
   findCellInRow,
   findColumnIndexByName,
 } from 'datagateway-search/src/setupTests';
 import { createMemoryHistory, type History } from 'history';
-import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
-  findAllRows,
-  findColumnHeaderByName,
-} from '../../../setupTests';
+import { findAllRows, findColumnHeaderByName } from '../../../setupTests';
 import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import DLSDataPublicationContentTable from './dlsDataPublicationContentTable.component';
@@ -117,7 +111,7 @@ describe('DataPublication content table component', () => {
       })
     );
 
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/\/user\/cart\/$/.test(url)) {
@@ -172,7 +166,7 @@ describe('DataPublication content table component', () => {
         return Promise.reject(`Endpoint not mocked: ${url}`);
       });
 
-    axios.post = jest
+    axios.post = vi
       .fn()
       .mockImplementation(
         (url: string, data: unknown): Promise<Partial<AxiosResponse>> => {
@@ -214,7 +208,7 @@ describe('DataPublication content table component', () => {
 
   afterEach(() => {
     document.body.removeChild(holder);
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders investigations correctly', async () => {
@@ -430,8 +424,6 @@ describe('DataPublication content table component', () => {
   });
 
   it('updates filter query params on date filter', async () => {
-    applyDatePickerWorkaround();
-
     renderComponent();
 
     const filterInput = await screen.findByRole('textbox', {
@@ -452,8 +444,6 @@ describe('DataPublication content table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
-
-    cleanupDatePickerWorkaround();
   });
 
   it('updates sort query params on sort', async () => {
@@ -503,6 +493,10 @@ describe('DataPublication content table component', () => {
   it('displays details panel when expanded', async () => {
     renderComponent();
 
+    await user.click(
+      screen.getByRole('tab', { name: 'breadcrumbs.dataset_other' })
+    );
+
     let rows: HTMLElement[] = [];
     await waitFor(async () => {
       rows = await findAllRows();
@@ -514,6 +508,6 @@ describe('DataPublication content table component', () => {
 
     await user.click(within(row).getByRole('button', { name: 'Show details' }));
 
-    expect(await screen.findByTestId('dls-visit-details-panel')).toBeTruthy();
+    expect(await screen.findByTestId('dls-dataset-details-panel')).toBeTruthy();
   });
 });

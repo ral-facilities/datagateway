@@ -3,6 +3,7 @@ import { RenderResult, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 import * as React from 'react';
+import { DataCiteResponse } from '../api/dois';
 import RelatedDOIs from './relatedDOIs.component';
 
 vi.mock('loglevel');
@@ -27,7 +28,7 @@ describe('DOI generation form component', () => {
 
   let props: React.ComponentProps<typeof RelatedDOIs>;
 
-  let mockDOIResponse;
+  let mockDOIResponse: DataCiteResponse;
 
   const TestComponent: React.FC = () => {
     const [relatedDOIs, changeRelatedDOIs] = React.useState(
@@ -61,7 +62,7 @@ describe('DOI generation form component', () => {
           relatedItemType: '',
         },
       ],
-      changeRelatedDOIs: jest.fn(),
+      changeRelatedDOIs: vi.fn(),
       dataCiteUrl: 'example.com',
     };
 
@@ -77,7 +78,7 @@ describe('DOI generation form component', () => {
       },
     };
 
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/\/dois\/.*/.test(url)) {

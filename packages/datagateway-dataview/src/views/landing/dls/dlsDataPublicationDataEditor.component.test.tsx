@@ -1,12 +1,12 @@
-import * as React from 'react';
-import DLSDataPublicationDataEditor from './dlsDataPublicationDataEditor.component';
 import {
   render,
+  screen,
   within,
   type RenderResult,
-  screen,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import * as React from 'react';
+import DLSDataPublicationDataEditor from './dlsDataPublicationDataEditor.component';
 
 describe('DataPublication Data editor component', () => {
   let user: ReturnType<typeof userEvent.setup>;
@@ -27,13 +27,13 @@ describe('DataPublication Data editor component', () => {
         { id: 5, label: 'ds2', entityType: 'dataset' },
         { id: 6, label: 'i2', entityType: 'investigation' },
       ],
-      changeContent: jest.fn(),
-      changeUnselectedContent: jest.fn(),
+      changeContent: vi.fn(),
+      changeUnselectedContent: vi.fn(),
     };
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders content table & tabs correctly', async () => {

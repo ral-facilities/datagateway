@@ -1,7 +1,12 @@
-import * as React from 'react';
-import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
-import configureStore from 'redux-mock-store';
-import { StateType } from '../../../state/app.types';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  render,
+  screen,
+  within,
+  type RenderResult,
+} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { UserEvent } from '@testing-library/user-event/setup/setup';
 import {
   ContributorType,
   DOIRelationType,
@@ -10,33 +15,27 @@ import {
   readSciGatewayToken,
   useDataPublication,
 } from 'datagateway-common';
+import { History, createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
-import { createMemoryHistory, History } from 'history';
-import { QueryClient, QueryClientProvider } from 'react-query';
 import { Router, generatePath } from 'react-router-dom';
-import {
-  render,
-  type RenderResult,
-  screen,
-  within,
-} from '@testing-library/react';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
-import userEvent from '@testing-library/user-event';
-import DLSDataPublicationLanding from './dlsDataPublicationLanding.component';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 import { paths } from '../../../page/pageContainer.component';
+import { StateType } from '../../../state/app.types';
+import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
+import DLSDataPublicationLanding from './dlsDataPublicationLanding.component';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    readSciGatewayToken: jest
+    readSciGatewayToken: vi
       .fn()
       .mockReturnValue({ sessionId: 'abcdef', username: 'John1' }),
-    useDataPublication: jest.fn(),
-    useDataPublicationContentCount: jest.fn(() =>
+    useDataPublication: vi.fn(),
+    useDataPublicationContentCount: vi.fn(() =>
       // mock to prevent errors when we check we can switch to the content tab
       ({ data: 0 })
     ),
@@ -174,13 +173,13 @@ describe('DLS Data Publication Landing page', () => {
     });
     user = userEvent.setup();
 
-    (useDataPublication as jest.Mock).mockReturnValue({
+    vi.mocked(useDataPublication, { partial: true }).mockReturnValue({
       data: initialData,
     });
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly', async () => {
@@ -271,7 +270,7 @@ describe('DLS Data Publication Landing page', () => {
   });
 
   it('renders version panel when showing a concept DOI & does not show edit button if user is not the minter', async () => {
-    (readSciGatewayToken as jest.Mock).mockReturnValue({
+    vi.mocked(readSciGatewayToken).mockReturnValue({
       sessionId: 'abcdef',
       username: 'Jane2',
     });

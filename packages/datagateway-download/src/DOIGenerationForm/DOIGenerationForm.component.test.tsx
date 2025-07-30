@@ -119,7 +119,7 @@ describe('DOI generation form component', () => {
       },
     ]);
 
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/\/user\/.*/.test(url)) {
@@ -135,7 +135,7 @@ describe('DOI generation form component', () => {
         }
       });
 
-    axios.post = jest
+    axios.post = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/\/ismintable$/.test(url)) {

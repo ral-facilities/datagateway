@@ -101,7 +101,7 @@ export const createTestQueryClient = (): QueryClient =>
 export const createReactQueryWrapper = (
   history: History = createMemoryHistory(),
   queryClient: QueryClient = createTestQueryClient()
-): React.JSXElementConstructor<{ children: React.ReactElement }> => {
+): React.JSXElementConstructor<{ children: React.ReactNode }> => {
   const state = {
     dgcommon: {
       ...initialState,
@@ -118,7 +118,7 @@ export const createReactQueryWrapper = (
   const mockStore = configureStore([thunk]);
 
   const wrapper: React.JSXElementConstructor<{
-    children: React.ReactElement;
+    children: React.ReactNode;
   }> = ({ children }) => (
     <Provider store={mockStore(state)}>
       <Router history={history}>

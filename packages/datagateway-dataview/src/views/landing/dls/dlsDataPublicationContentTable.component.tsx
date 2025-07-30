@@ -45,7 +45,7 @@ const DLSDataPublicationContentTable = (
   >('investigation');
 
   const handleTabChange = (
-    event: React.SyntheticEvent,
+    _event: React.SyntheticEvent,
     newValue: 'investigation' | 'dataset' | 'datafile'
   ): void => {
     setCurrentTab(newValue);

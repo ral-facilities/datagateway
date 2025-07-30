@@ -53,9 +53,10 @@ describe('DOI generation form component', () => {
   beforeEach(() => {
     user = userEvent.setup();
 
-    jest
-      .spyOn(parseTokens, 'readSciGatewayToken')
-      .mockReturnValue({ username: '1', sessionId: 'abcdef' });
+    vi.spyOn(parseTokens, 'readSciGatewayToken').mockReturnValue({
+      username: '1',
+      sessionId: 'abcdef',
+    });
 
     props = {
       selectedUsers: [
@@ -76,7 +77,7 @@ describe('DOI generation form component', () => {
           contributor_type: ContributorType.Creator,
         },
       ],
-      changeSelectedUsers: jest.fn(),
+      changeSelectedUsers: vi.fn(),
       doiMinterUrl: 'example.com',
     };
 
@@ -88,7 +89,7 @@ describe('DOI generation form component', () => {
       affiliation: 'Example 3 Uni',
     };
 
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/\/user\/\d/.test(url)) {

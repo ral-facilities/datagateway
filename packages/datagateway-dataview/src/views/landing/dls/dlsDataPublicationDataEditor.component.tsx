@@ -1,29 +1,29 @@
-import * as React from 'react';
-import Grid from '@mui/material/Grid';
-import List from '@mui/material/List';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import Checkbox from '@mui/material/Checkbox';
-import Button from '@mui/material/Button';
-import Divider from '@mui/material/Divider';
+import { Edit } from '@mui/icons-material';
 import {
   Box,
-  Tabs,
+  IconButton,
   Tab,
+  Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
-  Table,
-  IconButton,
+  Tabs,
   Tooltip,
 } from '@mui/material';
-import { Edit } from '@mui/icons-material';
-import { useTranslation } from 'react-i18next';
+import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import CardHeader from '@mui/material/CardHeader';
+import Checkbox from '@mui/material/Checkbox';
+import Divider from '@mui/material/Divider';
+import Grid from '@mui/material/Grid';
+import List from '@mui/material/List';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
 import { DownloadCartItem } from 'datagateway-common';
+import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 
 function not(a: TransferListItem[], b: TransferListItem[]): TransferListItem[] {
   return a.filter((value) => b.every((x) => x.id !== value.id));
@@ -291,7 +291,7 @@ export default function DLSDataPublicationDataEditor(
   );
 
   const handleTabChange = (
-    event: React.SyntheticEvent,
+    _event: React.SyntheticEvent,
     newValue: TransferListItem['entityType']
   ): void => {
     setCurrentTab(newValue);

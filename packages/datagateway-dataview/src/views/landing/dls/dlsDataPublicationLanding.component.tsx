@@ -1,32 +1,32 @@
+import { Edit } from '@mui/icons-material';
 import {
   Box,
   Divider,
   Grid,
   IconButton,
+  Link as MuiLink,
   Paper,
-  styled,
   Tab,
   Tabs,
   Typography,
-  Link as MuiLink,
+  styled,
 } from '@mui/material';
 import {
   ContributorType,
-  DataPublication,
   DOIRelationType,
+  DataPublication,
   readSciGatewayToken,
   useDataPublication,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import Branding from './dlsBranding.component';
+import { useHistory } from 'react-router-dom';
 import CitationFormatter from '../../citationFormatter.component';
+import Branding from './dlsBranding.component';
 import DLSDataPublicationContentTable from './dlsDataPublicationContentTable.component';
 import DLSDataPublicationVersionPanel, {
   sortVersions,
 } from './dlsDataPublicationVersionPanel.component';
-import { Edit } from '@mui/icons-material';
-import { useHistory } from 'react-router-dom';
 
 const Subheading = styled(Typography)(({ theme }) => ({
   marginTop: theme.spacing(1),
@@ -252,7 +252,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
           },
           {
             content: function dataPublicationPidFormat(
-              entity: DataPublication
+              _entity: DataPublication
             ) {
               const conceptPid = data?.relatedItems?.filter(
                 (relatedItem) =>
@@ -268,7 +268,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       : [
           {
             content: function dataPublicationPidFormat(
-              entity: DataPublication
+              _entity: DataPublication
             ) {
               if (latestVersionPid) return <StyledDOI doi={latestVersionPid} />;
             },
@@ -293,12 +293,12 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       label: t('datapublications.publication_date'),
     },
     {
-      content: (dataPublication: DataPublication) =>
+      content: (_dataPublication: DataPublication) =>
         t('doi_constants.publisher.name'),
       label: t('datapublications.details.publisher'),
     },
     {
-      content: (dataPublication: DataPublication) => (
+      content: (_dataPublication: DataPublication) => (
         <MuiLink href={t('doi_constants.license.url')} target="_blank">
           {t('doi_constants.license.name')}
         </MuiLink>
@@ -329,7 +329,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               <Grid item xs>
                 <Tabs
                   value={currentTab}
-                  onChange={(event, newValue) => setCurrentTab(newValue)}
+                  onChange={(_event, newValue) => setCurrentTab(newValue)}
                   indicatorColor="secondary"
                   textColor="secondary"
                 >
