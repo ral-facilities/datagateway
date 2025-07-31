@@ -324,7 +324,15 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
           <Branding />
         </Grid>
         <Grid container item xs={12}>
-          <Paper square elevation={0} sx={{ mx: -1.5, px: 1.5, width: '100%' }}>
+          <Paper
+            square
+            elevation={0}
+            sx={{
+              mx: -1.5,
+              px: 1.5,
+              width: (theme) => `calc(100% + ${theme.spacing(1.5 * 2)})`,
+            }}
+          >
             <Grid container>
               <Grid item xs>
                 <Tabs

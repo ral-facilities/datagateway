@@ -448,6 +448,9 @@ describe('DOI edit form component', () => {
         },
       },
     });
+    // have to assert here to suppress vitest complaining about the mintabilityResponse promise rejection
+    await expect(mintabilityResponse).rejects.toThrow();
+
     renderComponent();
 
     // wait for data publication content to load
