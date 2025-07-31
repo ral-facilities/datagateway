@@ -159,6 +159,13 @@
       "link": "/my-dois/DLS",
       "displayName": "My DOIs DLS",
       "order": 7
+    },
+    {
+      "section": "Browse",
+      "link": "/browse/dataPublication",
+      "displayName": "DataPublications",
+      "order": 8,
+      "hideFromMenu": true
     }
   ],
   "breadcrumbs": [
