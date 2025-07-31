@@ -152,6 +152,12 @@ jobs:
       - name: Apply adminUserNames change
         run: |
           mv -f /home/runner/install/datagateway-download-api/run.properties.tmp /home/runner/install/datagateway-download-api/run.properties
+      - name: Add root (simple without prefix) to datagateway-download-api queue.priority.user
+        run: |
+          awk -F" =" '/queue.priority.user/{sub(/}/,", \"root\": 1}");print;next}1' /home/runner/install/datagateway-download-api/run.properties > /home/runner/install/datagateway-download-api/run.properties.tmp
+      - name: Apply queue.priority.user change
+        run: |
+          mv -f /home/runner/install/datagateway-download-api/run.properties.tmp /home/runner/install/datagateway-download-api/run.properties
       - name: Reinstall datagateway-download-api
         run: |
           cd /home/runner/install/datagateway-download-api/ && python ./setup -vv install
