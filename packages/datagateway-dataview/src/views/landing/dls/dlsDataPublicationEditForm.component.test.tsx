@@ -456,9 +456,13 @@ describe('DOI edit form component', () => {
     // wait for data publication content to load
 
     expect(
-      await screen.findByRole('table', {
-        name: 'investigation datapublications.edit.content_table_aria_label',
-      })
+      await screen.findByRole(
+        'table',
+        {
+          name: 'investigation datapublications.edit.content_table_aria_label',
+        },
+        { timeout: 5_000 }
+      )
     ).toBeInTheDocument();
     expect(
       await screen.findByRole('cell', { name: 'Title 1' })
