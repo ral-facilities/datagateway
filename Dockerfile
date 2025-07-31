@@ -68,6 +68,8 @@ ENV API_URL="/datagateway-api"
 ENV DOWNLOAD_API_URL="http://localhost/topcat"
 ENV ICAT_URL="http://localhost/icat"
 ENV IDS_URL="http://localhost/ids"
+ENV DOI_MINTER_URL="http://localhost/doi-minter"
+ENV DATACITE_URL="https://api.test.datacite.org"
 
 COPY docker/docker-entrypoint.sh /usr/local/bin/
 ENTRYPOINT ["docker-entrypoint.sh"]
