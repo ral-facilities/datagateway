@@ -69,7 +69,7 @@
     "lint-staged": "13.3.0",
     "start-server-and-test": "~2.0.11",
     "vitest": "3.2.3",
-    "vitest-fail-on-console": "0.7.1"
+    "vitest-fail-on-console": "0.8.0"
   },
   "scripts": {
     "dev": "vite dev",
