@@ -4679,7 +4679,7 @@ __metadata:
     typescript: 5.3.3
     vite: 5.4.19
     vitest: 3.2.3
-    vitest-fail-on-console: 0.8.0
+    vitest-fail-on-console: 0.9.0
   peerDependencies:
     "@mui/icons-material": ">= 5.5.0 < 6"
     "@mui/material": ">= 5.5.0 < 6"
@@ -4759,7 +4759,7 @@ __metadata:
     typescript: 5.3.3
     vite: 5.4.19
     vitest: 3.2.3
-    vitest-fail-on-console: 0.8.0
+    vitest-fail-on-console: 0.9.0
   languageName: unknown
   linkType: soft
 
@@ -4828,7 +4828,7 @@ __metadata:
     typescript: 5.3.3
     vite: 5.4.19
     vitest: 3.2.3
-    vitest-fail-on-console: 0.8.0
+    vitest-fail-on-console: 0.9.0
   languageName: unknown
   linkType: soft
 
@@ -4903,7 +4903,7 @@ __metadata:
     typescript: 5.3.3
     vite: 5.4.19
     vitest: 3.2.3
-    vitest-fail-on-console: 0.8.0
+    vitest-fail-on-console: 0.9.0
   languageName: unknown
   linkType: soft
 
@@ -10661,15 +10661,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vitest-fail-on-console@npm:0.8.0":
-  version: 0.8.0
-  resolution: "vitest-fail-on-console@npm:0.8.0"
+"vitest-fail-on-console@npm:0.9.0":
+  version: 0.9.0
+  resolution: "vitest-fail-on-console@npm:0.9.0"
   dependencies:
     chalk: ^5.4.1
   peerDependencies:
     vite: ">=4.5.2"
     vitest: ">=0.26.2"
-  checksum: 15263f9bd7a44c98abe4e8d1878cc3afeb6f1ae602c29a82292b0ae8032f1a50e7ddc36239525e9ad3b96402f9220ad88b071e29326a46acc7d780ae856a6dcb
+  checksum: 57a9f09d22eefb85fb8c720a7d01b03d4ee9ca0da011a6567bf9db9a54f8ff6c160ee9502d7a93d14aceb840c43be23d1a5985f83601fc6ef8ff4cf3a0130f79
   languageName: node
   linkType: hard
 
