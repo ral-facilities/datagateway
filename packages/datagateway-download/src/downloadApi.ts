@@ -2,8 +2,8 @@ import axios from 'axios';
 import type {
   Datafile,
   Dataset,
-  DoiMetadata,
-  DoiResponse,
+  DOIMetadata,
+  DOIResponse,
   Download,
   DownloadCart,
   DownloadCartItem,
@@ -261,9 +261,9 @@ export const getPercentageComplete = async ({
  */
 export const mintCart = (
   cart: DownloadCartItem[],
-  doiMetadata: DoiMetadata,
+  doiMetadata: DOIMetadata,
   settings: Pick<DownloadSettings, 'doiMinterUrl'>
-): Promise<DoiResponse> => {
+): Promise<DOIResponse> => {
   const investigations: number[] = [];
   const datasets: number[] = [];
   const datafiles: number[] = [];

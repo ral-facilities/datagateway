@@ -4,8 +4,8 @@ import {
   ContributorUser,
   DOIConfirmDialog,
   DOIMetadataForm,
-  readSciGatewayToken,
   RelatedDOI,
+  readSciGatewayToken,
   useCart,
   useDataPublication,
   useDataPublicationsByFilters,
@@ -15,8 +15,8 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { paths } from '../../../page/pageContainer.component';
 import { Redirect, useLocation } from 'react-router-dom';
+import { paths } from '../../../page/pageContainer.component';
 import { StateType } from '../../../state/app.types';
 import DLSDataPublicationDataEditor, {
   TransferListItem,
@@ -96,13 +96,16 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
           ?.filter(
             (relatedItem) => !relatedItem.relationType.includes('Version')
           )
-          .map((relatedItem) => ({
-            title: relatedItem.title ?? '',
-            fullReference: relatedItem.fullReference ?? '',
-            identifier: relatedItem.identifier,
-            relationType: relatedItem.relationType,
-            relatedItemType: relatedItem.relatedItemType ?? '',
-          })) ?? []
+          .map(
+            (relatedItem) =>
+              ({
+                title: relatedItem.title,
+                fullReference: relatedItem.fullReference,
+                identifier: relatedItem.identifier,
+                relationType: relatedItem.relationType,
+                relatedItemType: relatedItem.relatedItemType,
+              } satisfies RelatedDOI)
+          ) ?? []
       );
       setSelectedUsers(
         dataPublication.users?.map((user) => ({

@@ -9,8 +9,8 @@ import axios, { AxiosError } from 'axios';
 import log from 'loglevel';
 import { useSelector } from 'react-redux';
 import {
-  DoiMetadata,
-  DoiResponse,
+  DOIMetadata,
+  DOIResponse,
   DownloadCartItem,
   MicroFrontendId,
   RelatedDOI,
@@ -163,9 +163,7 @@ export const useCheckDOI = (
     select: (doi) => ({
       title: doi.attributes.titles[0].title,
       identifier: doi.attributes.doi,
-      fullReference: '', // TODO: what should we put here?
       relationType: '',
-      relatedItemType: '',
     }),
     // set enabled false to only fetch on demand when the add creator button is pressed
     enabled: false,
@@ -186,9 +184,9 @@ export const updateDOI = (
     dataset_ids: number[];
     datafile_ids: number[];
   },
-  doiMetadata: DoiMetadata,
+  doiMetadata: DOIMetadata,
   doiMinterUrl: string | undefined
-): Promise<DoiResponse> => {
+): Promise<DOIResponse> => {
   return axios
     .put(
       `${doiMinterUrl}/mint/version/update/${dataPublicationId}`,
@@ -216,7 +214,7 @@ type UseUpdateDOIVariables = {
     dataset_ids: number[];
     datafile_ids: number[];
   };
-  doiMetadata: DoiMetadata;
+  doiMetadata: DOIMetadata;
 };
 
 /**
@@ -225,7 +223,7 @@ type UseUpdateDOIVariables = {
  * @param doiMetadata The required metadata for the DOI
  */
 export const useUpdateDOI = (): UseMutationResult<
-  DoiResponse,
+  DOIResponse,
   AxiosError<{
     detail: { msg: string }[] | string;
   }>,

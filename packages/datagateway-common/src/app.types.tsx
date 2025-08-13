@@ -207,21 +207,17 @@ export interface DataPublication {
   relatedItems?: RelatedItem[];
 }
 
-export type RelatedDOI = {
-  title: string;
-  fullReference: string;
+export type RelatedDOI = Pick<
+  RelatedItem,
+  'title' | 'fullReference' | 'identifier' | 'relatedItemType'
+> & { relationType: DOIRelationType | '' };
+
+export type RelatedItem = {
+  title?: string;
+  fullReference?: string;
   identifier: string;
-  relationType: DOIRelationType | '';
-  relatedItemType: DOIResourceType | '';
-};
-
-/** Utility type to make subset of properties optional */
-type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
-
-export type RelatedItem = Optional<
-  RelatedDOI,
-  'fullReference' | 'title' | 'relatedItemType'
-> & {
+  relationType: DOIRelationType;
+  relatedItemType?: DOIResourceType;
   id: number;
   publication?: DataPublication;
   createTime: string;
@@ -567,19 +563,19 @@ export enum DOIResourceType {
   Other = 'Other',
 }
 
-export interface DoiMetadata {
+export interface DOIMetadata {
   title: string;
   description: string;
   creators?: { username: string; contributor_type: ContributorType }[];
   related_items: RelatedDOI[];
 }
 
-export interface DoiResponse {
-  concept: DoiResult;
-  version: DoiResult;
+export interface DOIResponse {
+  concept: DOIResult;
+  version: DOIResult;
 }
 
-export interface DoiResult {
+export interface DOIResult {
   data_publication: string;
   doi: string;
 }

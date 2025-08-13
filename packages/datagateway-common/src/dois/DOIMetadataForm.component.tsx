@@ -1,4 +1,4 @@
-import { Typography, TextField, Button, Grid } from '@mui/material';
+import { Button, Grid, TextField, Typography } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { RelatedDOI } from '../app.types';
@@ -104,7 +104,7 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
             relatedDOIs.some(
               (relatedDOI) =>
                 relatedDOI.relationType === '' ||
-                relatedDOI.relatedItemType === ''
+                relatedDOI.relatedItemType === undefined
             )
           }
           onClick={onMintClick}

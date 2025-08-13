@@ -12,8 +12,8 @@ import {
 } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import {
-  DoiMetadata,
-  DoiResponse,
+  DOIMetadata,
+  DOIResponse,
   Download,
   DownloadCartItem,
   DownloadStatus,
@@ -512,11 +512,11 @@ export const useDownloadPercentageComplete = <T = DownloadProgress>({
  * @param doiMetadata The required metadata for the DOI
  */
 export const useMintCart = (): UseMutationResult<
-  DoiResponse,
+  DOIResponse,
   AxiosError<{
     detail: { msg: string }[] | string;
   }>,
-  { cart: DownloadCartItem[]; doiMetadata: DoiMetadata }
+  { cart: DownloadCartItem[]; doiMetadata: DOIMetadata }
 > => {
   const settings = React.useContext(DownloadSettingsContext);
 

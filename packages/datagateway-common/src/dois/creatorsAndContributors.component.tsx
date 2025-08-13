@@ -16,16 +16,24 @@ import {
   Typography,
 } from '@mui/material';
 import { AxiosError } from 'axios';
-import { User, ContributorType } from '../app.types';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCheckUser } from '../api/dois';
+import { ContributorType, User } from '../app.types';
 import { readSciGatewayToken } from '../parseTokens';
 
 export type ContributorUser = User & {
   contributor_type: ContributorType | '';
 };
 
+/**
+ * A compare function for {@link ContributorUser ContributorUser} intended to be used with {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort Array.sort}
+ *
+ * This basically ensures we order {@link ContributorType.Minter Minters} before {@link ContributorType.Creator Creators} and {@link ContributorType.Creator Creators} before other {@link ContributorType ContributorTypes}
+ * @param a first user for comparison
+ * @param b second user for comparison
+ * @returns either 1, -1 or 0 to indicate a before b, a after b and a == b respectively
+ */
 const compareUsers = (a: ContributorUser, b: ContributorUser): number => {
   if (
     (a.contributor_type === ContributorType.Minter &&

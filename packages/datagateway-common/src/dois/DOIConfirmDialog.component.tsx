@@ -10,7 +10,7 @@ import { AxiosError } from 'axios';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { DoiResponse } from '../app.types';
+import { DOIResponse } from '../app.types';
 
 import DialogContent from '../dialogContent.component';
 import DialogTitle from '../dialogTitle.component';
@@ -19,7 +19,7 @@ import Mark from '../mark.component';
 interface DOIConfirmDialogProps {
   open: boolean;
   mintingStatus: MutationStatus;
-  data: DoiResponse | undefined;
+  data: DOIResponse | undefined;
   error: AxiosError<{
     detail: { msg: string }[] | string;
   }> | null;

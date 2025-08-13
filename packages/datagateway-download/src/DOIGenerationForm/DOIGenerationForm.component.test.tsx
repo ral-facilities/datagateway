@@ -318,7 +318,6 @@ describe('DOI generation form component', () => {
         related_items: [
           {
             title: 'Related DOI 1',
-            fullReference: '',
             identifier: 'related.doi.1',
             relationType: DOIRelationType.IsCitedBy,
             relatedItemType: DOIResourceType.Journal,

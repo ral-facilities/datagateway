@@ -16,11 +16,11 @@ import {
   Typography,
 } from '@mui/material';
 import { AxiosError } from 'axios';
-import { StyledTooltip } from '../arrowtooltip.component';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { DOIRelationType, DOIResourceType, RelatedDOI } from '../app.types';
 import { useCheckDOI } from '../api/dois';
+import { DOIRelationType, DOIResourceType, RelatedDOI } from '../app.types';
+import { StyledTooltip } from '../arrowtooltip.component';
 
 type RelatedDOIsProps = {
   relatedDOIs: RelatedDOI[];
@@ -221,7 +221,7 @@ const RelatedDOIs: React.FC<RelatedDOIsProps> = (props) => {
                         </InputLabel>
                         <Select
                           labelId={`${relatedItem.identifier}-resource-type-select-label`}
-                          value={relatedItem.relatedItemType}
+                          value={relatedItem.relatedItemType ?? ''}
                           label={t(
                             'DOIGenerationForm.related_doi_resource_type'
                           )}
@@ -231,9 +231,11 @@ const RelatedDOIs: React.FC<RelatedDOIsProps> = (props) => {
                                 if (d.identifier === relatedItem.identifier) {
                                   return {
                                     ...d,
-                                    relatedItemType: event.target.value as
-                                      | DOIResourceType
-                                      | '',
+                                    relatedItemType:
+                                      event.target.value !== ''
+                                        ? (event.target
+                                            .value as DOIResourceType)
+                                        : undefined,
                                   } satisfies RelatedDOI;
                                 } else {
                                   return d;

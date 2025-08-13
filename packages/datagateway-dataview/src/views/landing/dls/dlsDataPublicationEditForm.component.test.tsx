@@ -153,6 +153,8 @@ describe('DOI edit form component', () => {
       relatedItems: [
         {
           id: 11,
+          title: 'DOI 3',
+          fullReference: 'DOI 3 full reference',
           identifier: 'doi 3',
           relationType: DOIRelationType.IsSupplementedBy,
           relatedItemType: DOIResourceType.Book,
@@ -167,6 +169,7 @@ describe('DOI edit form component', () => {
         },
         {
           id: 12,
+          title: 'DOI 4',
           identifier: 'doi 4',
           relationType: DOIRelationType.IsVersionOf,
           relatedItemType: DOIResourceType.Dataset,
@@ -399,8 +402,8 @@ describe('DOI edit form component', () => {
               relationType: DOIRelationType.IsCitedBy,
             },
           ].map((ri) => ({
-            fullReference: ri.fullReference ?? '',
-            title: ri.title ?? '',
+            fullReference: ri.fullReference,
+            title: ri.title,
             identifier: ri.identifier,
             relatedItemType: ri.relatedItemType,
             relationType: ri.relationType,
@@ -573,8 +576,8 @@ describe('DOI edit form component', () => {
           related_items: initialData.relatedItems
             ?.filter((i) => i.relationType !== DOIRelationType.IsVersionOf)
             ?.map((ri) => ({
-              fullReference: ri.fullReference ?? '',
-              title: ri.title ?? '',
+              fullReference: ri.fullReference,
+              title: ri.title,
               identifier: ri.identifier,
               relatedItemType: ri.relatedItemType,
               relationType: ri.relationType,
