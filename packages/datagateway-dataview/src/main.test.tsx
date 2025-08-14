@@ -25,6 +25,8 @@ describe('index - fetchSettings', () => {
       features: {},
       idsUrl: 'ids',
       apiUrl: 'api',
+      dataCiteUrl: 'datacite',
+      doiMinterUrl: 'doi-minter',
       breadcrumbs: [
         {
           matchEntity: 'test',
@@ -74,12 +76,14 @@ describe('index - fetchSettings', () => {
     });
   });
 
-  it('settings loaded and multiple routes registered with any helpSteps provided', async () => {
+  it('settings loaded and multiple routes registered with any helpSteps provided and null urls changed to undefined', async () => {
     const settingsResult = {
       facilityName: 'Generic',
       features: {},
       idsUrl: 'ids',
       apiUrl: 'api',
+      doiMinterUrl: null,
+      dataCiteUrl: null,
       breadcrumbs: [
         {
           matchEntity: 'test',
@@ -115,7 +119,12 @@ describe('index - fetchSettings', () => {
     );
     const settings = await fetchSettings();
 
-    expect(JSON.stringify(settings)).toEqual(JSON.stringify(settingsResult));
+    const { dataCiteUrl, doiMinterUrl, ...expectedSettingsResult } =
+      settingsResult;
+
+    expect(JSON.stringify(settings)).toEqual(
+      JSON.stringify(expectedSettingsResult)
+    );
     expect(CustomEvent).toHaveBeenCalledTimes(2);
     expect(CustomEvent).toHaveBeenNthCalledWith(1, MicroFrontendId, {
       detail: {

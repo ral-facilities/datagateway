@@ -31,8 +31,8 @@ import type {
   DownloadSettingsAccessMethod,
   DownloadTypeStatus,
 } from '../app.types';
-import DialogContent from './dialogContent.component';
-import DialogTitle from './dialogTitle.component';
+import DialogContent from '../dialogContent.component';
+import DialogTitle from '../dialogTitle.component';
 import DownloadRequestResult from './downloadRequestResult.component';
 
 const TableContentDiv = styled('div')(() => ({
@@ -362,7 +362,11 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       ) : shouldShowConfirmationForm ? (
         <div>
           {/* Custom title component which has a close button */}
-          <DialogTitle id="download-confirm-dialog-title" onClose={dialogClose}>
+          <DialogTitle
+            id="download-confirm-dialog-title"
+            onClose={dialogClose}
+            closeAriaLabel={t('downloadConfirmDialog.close_arialabel')}
+          >
             {t('downloadConfirmDialog.dialog_title')}
           </DialogTitle>
 

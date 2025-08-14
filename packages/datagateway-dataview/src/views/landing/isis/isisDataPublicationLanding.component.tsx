@@ -1,37 +1,37 @@
 import {
-  Box,
-  Divider,
-  Grid,
-  Link as MuiLink,
-  Paper,
-  styled,
-  Tab,
-  Tabs,
-  Typography,
-} from '@mui/material';
-import {
   Assessment,
   CalendarToday,
   Public,
   Storage,
 } from '@mui/icons-material';
 import {
-  DataPublication,
-  useDataPublication,
-  ArrowTooltip,
-  getTooltipText,
-  tableLink,
+  Box,
+  Divider,
+  Grid,
+  Link as MuiLink,
+  Paper,
+  Tab,
+  Tabs,
+  Typography,
+  styled,
+} from '@mui/material';
+import {
   AddToCartButton,
-  ViewsType,
-  parseSearchToQuery,
-  useDataPublications,
+  ArrowTooltip,
+  DataPublication,
   DownloadButton,
+  ViewsType,
+  getTooltipText,
+  parseSearchToQuery,
+  tableLink,
+  useDataPublication,
+  useDataPublicationsByFilters,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import Branding from './isisBranding.component';
-import CitationFormatter from '../../citationFormatter.component';
 import { useHistory, useLocation } from 'react-router-dom';
+import CitationFormatter from '../../citationFormatter.component';
+import Branding from './isisBranding.component';
 
 const Subheading = styled(Typography)(({ theme }) => ({
   marginTop: theme.spacing(1),
@@ -181,7 +181,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     parseInt(dataPublicationId)
   );
 
-  const { data: investigationDataPublications } = useDataPublications([
+  const { data: investigationDataPublications } = useDataPublicationsByFilters([
     {
       filterType: 'where',
       filterValue: JSON.stringify({
@@ -302,7 +302,11 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         '@type': 'DataCatalog',
         url: t('doi_constants.distribution.content_url'),
       },
-      license: t('doi_constants.distribution.license'),
+      license: {
+        '@type': 'URL',
+        url: t('doi_constants.license.url'),
+        name: t('doi_constants.license.name'),
+      },
     });
 
     return () => {
@@ -331,9 +335,20 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       icon: <Public sx={shortInfoIconStyle} />,
     },
     {
+      content: (_dataPublication: DataPublication) => (
+        <MuiLink href={t('doi_constants.license.url')} target="_blank">
+          {t('doi_constants.license.name')}
+        </MuiLink>
+      ),
+      label: t('datapublications.details.license'),
+    },
+    {
       content: function distributionFormat(_entity: DataPublication) {
         return (
-          <MuiLink href="http://www.isis.stfc.ac.uk/groups/computing/isis-raw-file-format11200.html">
+          <MuiLink
+            href="http://www.isis.stfc.ac.uk/groups/computing/isis-raw-file-format11200.html"
+            target="_blank"
+          >
             {t('doi_constants.distribution.format')}
           </MuiLink>
         );

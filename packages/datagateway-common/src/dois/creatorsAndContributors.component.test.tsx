@@ -1,33 +1,13 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render, RenderResult, screen, within } from '@testing-library/react';
+import { RenderResult, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
 import * as React from 'react';
-import { DownloadSettingsContext } from '../ConfigProvider';
-import { checkUser, ContributorType } from '../downloadApi';
-import { mockedSettings } from '../testData';
+import { ContributorType, User } from '../app.types';
+import * as parseTokens from '../parseTokens';
 import CreatorsAndContributors from './creatorsAndContributors.component';
 
-vi.mock('datagateway-common', async () => {
-  const originalModule = await vi.importActual('datagateway-common');
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    readSciGatewayToken: vi.fn(() => ({
-      username: '1',
-    })),
-  };
-});
-
-vi.mock('../downloadApi', async () => {
-  const originalModule = await vi.importActual('../downloadApi');
-
-  return {
-    ...originalModule,
-
-    checkUser: vi.fn(),
-  };
-});
+vi.mock('loglevel');
 
 const createTestQueryClient = (): QueryClient =>
   new QueryClient({
@@ -49,6 +29,8 @@ describe('DOI generation form component', () => {
 
   let props: React.ComponentProps<typeof CreatorsAndContributors>;
 
+  let mockUser: User;
+
   const TestComponent: React.FC = () => {
     const [selectedUsers, changeSelectedUsers] = React.useState(
       // eslint-disable-next-line react/prop-types
@@ -57,12 +39,11 @@ describe('DOI generation form component', () => {
 
     return (
       <QueryClientProvider client={createTestQueryClient()}>
-        <DownloadSettingsContext.Provider value={mockedSettings}>
-          <CreatorsAndContributors
-            selectedUsers={selectedUsers}
-            changeSelectedUsers={changeSelectedUsers}
-          />
-        </DownloadSettingsContext.Provider>
+        <CreatorsAndContributors
+          selectedUsers={selectedUsers}
+          changeSelectedUsers={changeSelectedUsers}
+          doiMinterUrl="example.com"
+        />
       </QueryClientProvider>
     );
   };
@@ -71,6 +52,11 @@ describe('DOI generation form component', () => {
 
   beforeEach(() => {
     user = userEvent.setup();
+
+    vi.spyOn(parseTokens, 'readSciGatewayToken').mockReturnValue({
+      username: '1',
+      sessionId: 'abcdef',
+    });
 
     props = {
       selectedUsers: [
@@ -92,14 +78,28 @@ describe('DOI generation form component', () => {
         },
       ],
       changeSelectedUsers: vi.fn(),
+      doiMinterUrl: 'example.com',
     };
-    vi.mocked(checkUser).mockResolvedValue({
+
+    mockUser = {
       id: 3,
       name: '3',
       fullName: 'User 3',
       email: 'user3@example.com',
       affiliation: 'Example 3 Uni',
-    });
+    };
+
+    axios.get = vi
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/\/user\/\d/.test(url)) {
+          return Promise.resolve({
+            data: mockUser,
+          });
+        } else {
+          return Promise.reject(`Endpoint not mocked: ${url}`);
+        }
+      });
   });
 
   afterEach(() => {
@@ -182,8 +182,11 @@ describe('DOI generation form component', () => {
     ).toHaveValue('');
 
     // test errors with various API error responses
-    vi.mocked(checkUser).mockRejectedValueOnce({
-      response: { data: { detail: 'error msg' }, status: 404 },
+    vi.mocked(axios.get).mockRejectedValueOnce({
+      response: {
+        data: { detail: 'error msg' },
+        status: 404,
+      },
     });
 
     await user.type(
@@ -202,7 +205,7 @@ describe('DOI generation form component', () => {
         .slice(1) // ignores the header row
     ).toHaveLength(3);
 
-    vi.mocked(checkUser).mockRejectedValue({
+    vi.mocked(axios.get).mockRejectedValue({
       response: { data: { detail: [{ msg: 'error msg 2' }] }, status: 404 },
     });
     await user.click(
@@ -216,7 +219,7 @@ describe('DOI generation form component', () => {
         .slice(1) // ignores the header row
     ).toHaveLength(3);
 
-    vi.mocked(checkUser).mockRejectedValueOnce({
+    vi.mocked(axios.get).mockRejectedValueOnce({
       response: { status: 422 },
     });
     await user.click(

@@ -24,6 +24,8 @@ describe('index - fetchSettings', () => {
       idsUrl: 'ids',
       apiUrl: 'api',
       downloadApiUrl: 'download-api',
+      dataCiteUrl: 'datacite',
+      doiMinterUrl: 'doi-minter',
       fileCountMax: 5000,
       totalSizeMax: 1000000000000,
       accessMethods: {
@@ -74,12 +76,14 @@ describe('index - fetchSettings', () => {
     });
   });
 
-  it('settings loaded and multiple routes registered with any helpSteps provided', async () => {
+  it('settings loaded and multiple routes registered with any helpSteps provided and null urls changed to undefined', async () => {
     const settingsResult = {
       facilityName: 'Generic',
       idsUrl: 'ids',
       apiUrl: 'api',
       downloadApiUrl: 'download-api',
+      doiMinterUrl: null,
+      dataCiteUrl: null,
       fileCountMax: 5000,
       totalSizeMax: 1000000000000,
       accessMethods: {
@@ -122,7 +126,12 @@ describe('index - fetchSettings', () => {
     );
     const settings = await fetchSettings();
 
-    expect(JSON.stringify(settings)).toEqual(JSON.stringify(settingsResult));
+    const { dataCiteUrl, doiMinterUrl, ...expectedSettingsResult } =
+      settingsResult;
+
+    expect(JSON.stringify(settings)).toEqual(
+      JSON.stringify(expectedSettingsResult)
+    );
     expect(CustomEvent).toHaveBeenCalledTimes(3);
     expect(CustomEvent).toHaveBeenNthCalledWith(1, MicroFrontendId, {
       detail: {

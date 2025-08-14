@@ -11,7 +11,7 @@ import {
   Investigation,
   dGCommonInitialState,
   useDataPublication,
-  useDataPublications,
+  useDataPublicationsByFilters,
   useInvestigation,
 } from 'datagateway-common';
 import { History, createMemoryHistory } from 'history';
@@ -32,7 +32,7 @@ vi.mock('datagateway-common', async () => {
     ...originalModule,
     useInvestigation: vi.fn(),
     useDataPublication: vi.fn(),
-    useDataPublications: vi.fn(),
+    useDataPublicationsByFilters: vi.fn(),
   };
 });
 
@@ -258,7 +258,7 @@ describe('ISIS Investigation Landing page', () => {
       data: initialDataPublicationData,
     });
 
-    vi.mocked(useDataPublications, { partial: true }).mockReturnValue({
+    vi.mocked(useDataPublicationsByFilters, { partial: true }).mockReturnValue({
       data: initialStudyDataPublicationData,
     });
   });

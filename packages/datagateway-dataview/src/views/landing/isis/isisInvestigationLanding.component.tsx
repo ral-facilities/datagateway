@@ -33,7 +33,7 @@ import {
   externalSiteLink,
   useDataPublication,
   DataPublication,
-  useDataPublications,
+  useDataPublicationsByFilters,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -94,7 +94,7 @@ const InvestigationDataPublicationLandingPage = (
 
   const { data } = useDataPublication(parseInt(investigationId));
 
-  const { data: studyDataPublications } = useDataPublications([
+  const { data: studyDataPublications } = useDataPublicationsByFilters([
     {
       filterType: 'where',
       filterValue: JSON.stringify({
@@ -190,7 +190,7 @@ const CommonLandingPage = (
     if (users) {
       users.forEach((u) => {
         let user: { role?: string; fullName?: string } = {};
-        if ('user' in u) user = { fullName: u.user?.fullName, role: u.role };
+        if ('role' in u) user = { fullName: u.user?.fullName, role: u.role };
         if ('contributorType' in u)
           user = { fullName: u.fullName, role: u.contributorType };
         // Only keep users where we have their fullName

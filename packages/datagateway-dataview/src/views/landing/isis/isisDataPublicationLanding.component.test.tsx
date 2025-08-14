@@ -5,7 +5,7 @@ import {
   DataPublication,
   dGCommonInitialState,
   useDataPublication,
-  useDataPublications,
+  useDataPublicationsByFilters,
 } from 'datagateway-common';
 import { History, createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
@@ -24,7 +24,7 @@ vi.mock('datagateway-common', async () => {
     __esModule: true,
     ...originalModule,
     useDataPublication: vi.fn(),
-    useDataPublications: vi.fn(),
+    useDataPublicationsByFilters: vi.fn(),
   };
 });
 
@@ -186,7 +186,7 @@ describe('ISIS Data Publication Landing page', () => {
       data: initialStudyDataPublicationData,
     });
 
-    vi.mocked(useDataPublications, { partial: true }).mockReturnValue({
+    vi.mocked(useDataPublicationsByFilters, { partial: true }).mockReturnValue({
       data: initialInvestigationDataPublicationsData,
     });
   });
@@ -288,6 +288,9 @@ describe('ISIS Data Publication Landing page', () => {
       '/browseDataPublications/instrument/4/dataPublication/5/investigation/9'
     );
     expect(
+      screen.getByRole('link', { name: 'doi_constants.license.name' })
+    ).toHaveAttribute('href', 'doi_constants.license.url');
+    expect(
       screen.getByText(
         (_, element) => element?.textContent === 'investigations.instrument:ALF'
       )
@@ -368,7 +371,7 @@ describe('ISIS Data Publication Landing page', () => {
         id="dataPublication-5"
         type="application/ld+json"
       >
-        {"@context":"http://schema.org","@type":"Dataset","@id":"https://doi.org/doi 1","url":"https://doi.org/doi 1","identifier":"doi 1","name":"Title 1","description":"foo bar","keywords":"doi_constants.keywords","publisher":{"@type":"Organization","url":"doi_constants.publisher.url","name":"doi_constants.publisher.name","logo":"doi_constants.publisher.logo","contactPoint":{"@type":"ContactPoint","contactType":"customer service","email":"doi_constants.publisher.email","url":"doi_constants.publisher.url"}},"creator":[{"@type":"Person","name":"John Smith"},{"@type":"Person","name":"Jane Smith"},{"@type":"Person","name":"Jesse Smith"}],"includedInDataCatalog":{"@type":"DataCatalog","url":"doi_constants.distribution.content_url"},"license":"doi_constants.distribution.license"}
+        {"@context":"http://schema.org","@type":"Dataset","@id":"https://doi.org/doi 1","url":"https://doi.org/doi 1","identifier":"doi 1","name":"Title 1","description":"foo bar","keywords":"doi_constants.keywords","publisher":{"@type":"Organization","url":"doi_constants.publisher.url","name":"doi_constants.publisher.name","logo":"doi_constants.publisher.logo","contactPoint":{"@type":"ContactPoint","contactType":"customer service","email":"doi_constants.publisher.email","url":"doi_constants.publisher.url"}},"creator":[{"@type":"Person","name":"John Smith"},{"@type":"Person","name":"Jane Smith"},{"@type":"Person","name":"Jesse Smith"}],"includedInDataCatalog":{"@type":"DataCatalog","url":"doi_constants.distribution.content_url"},"license":{"@type":"URL","url":"doi_constants.license.url","name":"doi_constants.license.name"}}
       </script>
     `);
   });

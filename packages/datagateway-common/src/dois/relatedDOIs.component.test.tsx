@@ -1,21 +1,12 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render, RenderResult, screen, within } from '@testing-library/react';
+import { RenderResult, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
 import * as React from 'react';
-import { DownloadSettingsContext } from '../ConfigProvider';
-import { fetchDOI } from '../downloadApi';
-import { mockedSettings } from '../testData';
+import { DataCiteResponse } from '../api/dois';
 import RelatedDOIs from './relatedDOIs.component';
 
-vi.mock('../downloadApi', async () => {
-  const originalModule = await vi.importActual('../downloadApi');
-
-  return {
-    ...originalModule,
-
-    fetchDOI: vi.fn(),
-  };
-});
+vi.mock('loglevel');
 
 const createTestQueryClient = (): QueryClient =>
   new QueryClient({
@@ -37,6 +28,8 @@ describe('DOI generation form component', () => {
 
   let props: React.ComponentProps<typeof RelatedDOIs>;
 
+  let mockDOIResponse: DataCiteResponse;
+
   const TestComponent: React.FC = () => {
     const [relatedDOIs, changeRelatedDOIs] = React.useState(
       // eslint-disable-next-line react/prop-types
@@ -45,12 +38,11 @@ describe('DOI generation form component', () => {
 
     return (
       <QueryClientProvider client={createTestQueryClient()}>
-        <DownloadSettingsContext.Provider value={mockedSettings}>
-          <RelatedDOIs
-            relatedDOIs={relatedDOIs}
-            changeRelatedDOIs={changeRelatedDOIs}
-          />
-        </DownloadSettingsContext.Provider>
+        <RelatedDOIs
+          relatedDOIs={relatedDOIs}
+          changeRelatedDOIs={changeRelatedDOIs}
+          dataCiteUrl="example.com"
+        />
       </QueryClientProvider>
     );
   };
@@ -71,16 +63,32 @@ describe('DOI generation form component', () => {
         },
       ],
       changeRelatedDOIs: vi.fn(),
+      dataCiteUrl: 'example.com',
     };
-    vi.mocked(fetchDOI).mockResolvedValue({
-      id: '2',
-      type: 'DOI',
-      attributes: {
-        doi: 'related.doi.2',
-        titles: [{ title: 'Related DOI 2' }],
-        url: 'www.example.com',
+
+    mockDOIResponse = {
+      data: {
+        id: '2',
+        type: 'DOI',
+        attributes: {
+          doi: 'related.doi.2',
+          titles: [{ title: 'Related DOI 2' }],
+          url: 'www.example.com',
+        },
       },
-    });
+    };
+
+    axios.get = vi
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/\/dois\/.*/.test(url)) {
+          return Promise.resolve({
+            data: mockDOIResponse,
+          });
+        } else {
+          return Promise.reject(`Endpoint not mocked: ${url}`);
+        }
+      });
   });
 
   afterEach(() => {
@@ -141,7 +149,7 @@ describe('DOI generation form component', () => {
     expect(screen.getByText('Journal')).toBeInTheDocument();
 
     // test errors with various API error responses
-    vi.mocked(fetchDOI).mockRejectedValueOnce({
+    vi.mocked(axios.get).mockRejectedValueOnce({
       response: { data: { errors: [{ title: 'error msg' }] }, status: 404 },
     });
 

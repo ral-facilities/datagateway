@@ -16,23 +16,24 @@ import {
   Typography,
 } from '@mui/material';
 import { AxiosError } from 'axios';
-import { StyledTooltip } from 'datagateway-common/lib/arrowtooltip.component';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { DOIRelationType, DOIResourceType, RelatedDOI } from '../downloadApi';
-import { useCheckDOI } from '../downloadApiHooks';
+import { useCheckDOI } from '../api/dois';
+import { DOIRelationType, DOIResourceType, RelatedDOI } from '../app.types';
+import { StyledTooltip } from '../arrowtooltip.component';
 
 type RelatedDOIsProps = {
   relatedDOIs: RelatedDOI[];
   changeRelatedDOIs: React.Dispatch<React.SetStateAction<RelatedDOI[]>>;
+  dataCiteUrl: string | undefined;
 };
 
 const RelatedDOIs: React.FC<RelatedDOIsProps> = (props) => {
-  const { relatedDOIs, changeRelatedDOIs } = props;
+  const { relatedDOIs, changeRelatedDOIs, dataCiteUrl } = props;
   const [t] = useTranslation();
   const [relatedDOI, setRelatedDOI] = React.useState('');
   const [relatedDOIError, setRelatedDOIError] = React.useState('');
-  const { refetch: checkDOI } = useCheckDOI(relatedDOI);
+  const { refetch: checkDOI } = useCheckDOI(relatedDOI, dataCiteUrl);
 
   return (
     <Paper
@@ -194,13 +195,15 @@ const RelatedDOIs: React.FC<RelatedDOIsProps> = (props) => {
                             });
                           }}
                         >
-                          {Object.values(DOIRelationType).map((relation) => {
-                            return (
-                              <MenuItem key={relation} value={relation}>
-                                {relation}
-                              </MenuItem>
-                            );
-                          })}
+                          {Object.values(DOIRelationType)
+                            .filter((relation) => !relation.includes('Version'))
+                            .map((relation) => {
+                              return (
+                                <MenuItem key={relation} value={relation}>
+                                  {relation}
+                                </MenuItem>
+                              );
+                            })}
                         </Select>
                       </FormControl>
                     </TableCell>
@@ -218,7 +221,7 @@ const RelatedDOIs: React.FC<RelatedDOIsProps> = (props) => {
                         </InputLabel>
                         <Select
                           labelId={`${relatedItem.identifier}-resource-type-select-label`}
-                          value={relatedItem.relatedItemType}
+                          value={relatedItem.relatedItemType ?? ''}
                           label={t(
                             'DOIGenerationForm.related_doi_resource_type'
                           )}
@@ -228,9 +231,11 @@ const RelatedDOIs: React.FC<RelatedDOIsProps> = (props) => {
                                 if (d.identifier === relatedItem.identifier) {
                                   return {
                                     ...d,
-                                    relatedItemType: event.target.value as
-                                      | DOIResourceType
-                                      | '',
+                                    relatedItemType:
+                                      event.target.value !== ''
+                                        ? (event.target
+                                            .value as DOIResourceType)
+                                        : undefined,
                                   } satisfies RelatedDOI;
                                 } else {
                                   return d;

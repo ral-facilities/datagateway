@@ -17,7 +17,6 @@ import { DownloadSettingsContext } from '../ConfigProvider';
 import {
   downloadPreparedCart,
   getFileSizeAndCount,
-  isCartMintable,
   removeAllDownloadCartItems,
   removeFromCart,
 } from '../downloadApi';
@@ -43,7 +42,6 @@ vi.mock('../downloadApi', async () => {
     getFileSizeAndCount: vi.fn(),
     getIsTwoLevel: vi.fn().mockResolvedValue(true),
     removeFromCart: vi.fn(),
-    isCartMintable: vi.fn(),
     downloadPreparedCart: vi.fn(),
   };
 });
@@ -83,6 +81,7 @@ describe('Download cart table component', () => {
   let holder: HTMLElement | null;
   let queryClient: QueryClient;
   let user: ReturnType<typeof userEvent.setup>;
+  let mintabilityResponse: Promise<Partial<AxiosResponse>>;
 
   const resetDOM = (): void => {
     if (holder) document.body.removeChild(holder);
@@ -111,7 +110,6 @@ describe('Download cart table component', () => {
       fileSize: 1,
       fileCount: 7,
     });
-    vi.mocked(isCartMintable).mockResolvedValue(true);
 
     axios.get = vi
       .fn()
@@ -144,6 +142,8 @@ describe('Download cart table component', () => {
         return Promise.reject(`Endpoint not mocked: ${url}`);
       });
 
+    mintabilityResponse = Promise.resolve({ status: 200 });
+
     axios.post = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
@@ -151,6 +151,9 @@ describe('Download cart table component', () => {
           return Promise.resolve({
             data: { downloadId: mockDownloadItems[0].id },
           });
+        }
+        if (/\/ismintable$/.test(url)) {
+          return mintabilityResponse;
         }
         return Promise.reject(`Endpoint not mocked: ${url}`);
       });
@@ -582,12 +585,9 @@ describe('Download cart table component', () => {
   });
 
   it('should disable Generate DOI button when mintability is loading', async () => {
-    vi.mocked(isCartMintable).mockImplementation(
-      () =>
-        new Promise((_) => {
-          // do nothing, simulating pending promise to test loading state
-        })
-    );
+    mintabilityResponse = new Promise((_) => {
+      // do nothing, simulating pending promise to test loading state
+    });
     const { history } = renderComponent();
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -610,12 +610,15 @@ describe('Download cart table component', () => {
   });
 
   it('should disable Generate DOI button when cart is not mintable', async () => {
-    vi.mocked(isCartMintable).mockRejectedValue({
+    mintabilityResponse = Promise.reject({
       response: {
         data: { detail: 'Not allowed to mint the following items: [2,4]' },
         status: 403,
       },
     });
+    // have to assert here to suppress vitest complaining about the mintabilityResponse promise rejection
+    await expect(mintabilityResponse).rejects.toThrow();
+
     const { history } = renderComponent();
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
