@@ -5,6 +5,8 @@
   "idsUrl": "example.ids.url",
   "apiUrl": "example.api.url",
   "downloadApiUrl": "example.download.api.url",
+  "doiMinterUrl": null,
+  "dataCiteUrl": null,
   "selectAllSetting": true,
   "helpSteps": [
     {
