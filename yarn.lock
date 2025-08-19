@@ -4735,7 +4735,7 @@ __metadata:
     history: 4.10.1
     i18next: 22.0.3
     i18next-browser-languagedetector: 8.2.0
-    i18next-http-backend: 2.7.3
+    i18next-http-backend: 3.0.2
     jsdom: 26.1.0
     jsrsasign: 11.1.0
     lint-staged: 13.3.0
@@ -4807,7 +4807,7 @@ __metadata:
     history: 4.10.1
     i18next: 22.0.3
     i18next-browser-languagedetector: 8.2.0
-    i18next-http-backend: 2.7.3
+    i18next-http-backend: 3.0.2
     jsdom: 26.1.0
     jsrsasign: 11.1.0
     lint-staged: 13.3.0
@@ -4880,7 +4880,7 @@ __metadata:
     history: 4.10.1
     i18next: 22.0.3
     i18next-browser-languagedetector: 8.2.0
-    i18next-http-backend: 2.7.3
+    i18next-http-backend: 3.0.2
     jsdom: 26.1.0
     jsrsasign: 11.1.0
     lint-staged: 13.3.0
@@ -6913,12 +6913,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next-http-backend@npm:2.7.3":
-  version: 2.7.3
-  resolution: "i18next-http-backend@npm:2.7.3"
+"i18next-http-backend@npm:3.0.2":
+  version: 3.0.2
+  resolution: "i18next-http-backend@npm:3.0.2"
   dependencies:
     cross-fetch: 4.0.0
-  checksum: 45315b3c8e0a34f02c30805aa5900b164f82ac1a15c68b147a9bb335c8d6136059bdf5339c17302d0bbd95936f8d62d4989f1eceba6178fb309a3d6adaf87759
+  checksum: 08522b4cadf000991b54513259b2b619cd2d58747dbf3af7c0f668895bcd18ab2ca1ead7581d0f2d5a222f039dc262ff52e6a74fd2d9d021c8218aa2fc42a18d
   languageName: node
   linkType: hard
 
