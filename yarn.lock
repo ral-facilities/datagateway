@@ -2785,18 +2785,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/jest-dom@npm:6.6.3":
-  version: 6.6.3
-  resolution: "@testing-library/jest-dom@npm:6.6.3"
+"@testing-library/jest-dom@npm:6.7.0":
+  version: 6.7.0
+  resolution: "@testing-library/jest-dom@npm:6.7.0"
   dependencies:
     "@adobe/css-tools": ^4.4.0
     aria-query: ^5.0.0
-    chalk: ^3.0.0
     css.escape: ^1.5.1
     dom-accessibility-api: ^0.6.3
-    lodash: ^4.17.21
+    picocolors: ^1.1.1
     redent: ^3.0.0
-  checksum: c1dc4260b05309a0084416639006cd105849acc5b102bef682a3b19bd6fce07ff6762085fc7f2599546c995a2fc66fdb1d70e50e22a634a0098524056cc9e511
+  checksum: b73ca999ebc33b63c259b9a7c47cc3eec159986931ff4ba7b68b889ce99bd6ddc7b87c71dcb5c39f0d72e6c9351ea60ece1265dfa56527e9d42350fd901662c2
   languageName: node
   linkType: hard
 
@@ -4187,16 +4186,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chalk@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "chalk@npm:3.0.0"
-  dependencies:
-    ansi-styles: ^4.1.0
-    supports-color: ^7.1.0
-  checksum: 8e3ddf3981c4da405ddbd7d9c8d91944ddf6e33d6837756979f7840a29272a69a5189ecae0ff84006750d6d1e92368d413335eab4db5476db6e6703a1d1e0505
-  languageName: node
-  linkType: hard
-
 "chalk@npm:^4.0.0, chalk@npm:^4.1.0":
   version: 4.1.2
   resolution: "chalk@npm:4.1.2"
@@ -4628,7 +4617,7 @@ __metadata:
     "@mui/x-date-pickers": 6.11.2
     "@tanstack/react-query": 4.40.0
     "@tanstack/react-query-devtools": 4.40.0
-    "@testing-library/jest-dom": 6.6.3
+    "@testing-library/jest-dom": 6.7.0
     "@testing-library/react": 14.3.1
     "@testing-library/user-event": 14.6.1
     "@types/lodash.debounce": 4.0.6
@@ -4693,7 +4682,7 @@ __metadata:
     "@mui/material": 5.11.0
     "@tanstack/react-query": 4.40.0
     "@tanstack/react-query-devtools": 4.40.0
-    "@testing-library/jest-dom": 6.6.3
+    "@testing-library/jest-dom": 6.7.0
     "@testing-library/react": 14.3.1
     "@testing-library/user-event": 14.6.1
     "@types/history": 4.7.11
@@ -4768,7 +4757,7 @@ __metadata:
     "@tanstack/react-query": 4.40.0
     "@tanstack/react-query-devtools": 4.40.0
     "@testing-library/cypress": 10.0.0
-    "@testing-library/jest-dom": 6.6.3
+    "@testing-library/jest-dom": 6.7.0
     "@testing-library/react": 14.3.1
     "@testing-library/user-event": 14.6.1
     "@types/jsrsasign": 10.5.2
@@ -4839,7 +4828,7 @@ __metadata:
     "@tanstack/react-query": 4.40.0
     "@tanstack/react-query-devtools": 4.40.0
     "@testing-library/cypress": 10.0.0
-    "@testing-library/jest-dom": 6.6.3
+    "@testing-library/jest-dom": 6.7.0
     "@testing-library/react": 14.3.1
     "@testing-library/user-event": 14.6.1
     "@types/history": 4.7.11
