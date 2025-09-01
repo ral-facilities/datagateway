@@ -87,6 +87,7 @@ export { default as ISISInstrumentDetailsPanel } from './detailsPanels/isis/inst
 export { default as ISISInvestigationDetailsPanel } from './detailsPanels/isis/investigationDetailsPanel.component';
 
 export { default as DOIConfirmDialog } from './dois/DOIConfirmDialog.component';
+export { default as DOIMetadataConfirmation } from './dois/DOIMetadataConfirmation.component';
 export { default as DOIMetadataForm } from './dois/DOIMetadataForm.component';
 export type { ContributorUser } from './dois/creatorsAndContributors.component';
 

@@ -345,7 +345,11 @@ describe('DOI edit form component', () => {
 
     // editing users
     expect(
-      within(screen.getByRole('table', { name: 'DOIGenerationForm.creators' }))
+      within(
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.creators_and_contributors',
+        })
+      )
         .getAllByRole('row')
         .slice(1) // ignores the header row
     ).toHaveLength(3);
@@ -360,7 +364,11 @@ describe('DOI edit form component', () => {
     );
 
     expect(
-      within(screen.getByRole('table', { name: 'DOIGenerationForm.creators' }))
+      within(
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.creators_and_contributors',
+        })
+      )
         .getAllByRole('row')
         .slice(1) // ignores the header row
     ).toHaveLength(2);

@@ -110,7 +110,11 @@ describe('DOI generation form component', () => {
     renderComponent();
 
     expect(
-      within(screen.getByRole('table', { name: 'DOIGenerationForm.creators' }))
+      within(
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.creators_and_contributors',
+        })
+      )
         .getAllByRole('row')
         .slice(1) // ignores the header row
     ).toHaveLength(2);
@@ -126,7 +130,11 @@ describe('DOI generation form component', () => {
     await user.click(userDeleteButtons[1]);
 
     expect(
-      within(screen.getByRole('table', { name: 'DOIGenerationForm.creators' }))
+      within(
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.creators_and_contributors',
+        })
+      )
         .getAllByRole('row')
         .slice(1)
     ).toHaveLength(1);
@@ -139,7 +147,11 @@ describe('DOI generation form component', () => {
     renderComponent();
 
     expect(
-      within(screen.getByRole('table', { name: 'DOIGenerationForm.creators' }))
+      within(
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.creators_and_contributors',
+        })
+      )
         .getAllByRole('row')
         .slice(1) // ignores the header row
     ).toHaveLength(2);
@@ -154,7 +166,11 @@ describe('DOI generation form component', () => {
     );
 
     expect(
-      within(screen.getByRole('table', { name: 'DOIGenerationForm.creators' }))
+      within(
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.creators_and_contributors',
+        })
+      )
         .getAllByRole('row')
         .slice(1) // ignores the header row
     ).toHaveLength(3);
@@ -172,7 +188,11 @@ describe('DOI generation form component', () => {
     );
 
     expect(
-      within(screen.getByRole('table', { name: 'DOIGenerationForm.creators' }))
+      within(
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.creators_and_contributors',
+        })
+      )
         .getAllByRole('row')
         .slice(1) // ignores the header row
     ).toHaveLength(3);
@@ -200,7 +220,11 @@ describe('DOI generation form component', () => {
 
     expect(await screen.findByText('error msg')).toBeInTheDocument();
     expect(
-      within(screen.getByRole('table', { name: 'DOIGenerationForm.creators' }))
+      within(
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.creators_and_contributors',
+        })
+      )
         .getAllByRole('row')
         .slice(1) // ignores the header row
     ).toHaveLength(3);
@@ -214,7 +238,11 @@ describe('DOI generation form component', () => {
 
     expect(await screen.findByText('error msg 2')).toBeInTheDocument();
     expect(
-      within(screen.getByRole('table', { name: 'DOIGenerationForm.creators' }))
+      within(
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.creators_and_contributors',
+        })
+      )
         .getAllByRole('row')
         .slice(1) // ignores the header row
     ).toHaveLength(3);
@@ -228,7 +256,11 @@ describe('DOI generation form component', () => {
 
     expect(await screen.findByText('Error')).toBeInTheDocument();
     expect(
-      within(screen.getByRole('table', { name: 'DOIGenerationForm.creators' }))
+      within(
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.creators_and_contributors',
+        })
+      )
         .getAllByRole('row')
         .slice(1) // ignores the header row
     ).toHaveLength(3);
@@ -238,7 +270,11 @@ describe('DOI generation form component', () => {
     renderComponent();
 
     expect(
-      within(screen.getByRole('table', { name: 'DOIGenerationForm.creators' }))
+      within(
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.creators_and_contributors',
+        })
+      )
         .getAllByRole('row')
         .slice(1) // ignores the header row
     ).toHaveLength(2);
@@ -253,7 +289,11 @@ describe('DOI generation form component', () => {
     );
 
     expect(
-      within(screen.getByRole('table', { name: 'DOIGenerationForm.creators' }))
+      within(
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.creators_and_contributors',
+        })
+      )
         .getAllByRole('row')
         .slice(1) // ignores the header row
     ).toHaveLength(3);

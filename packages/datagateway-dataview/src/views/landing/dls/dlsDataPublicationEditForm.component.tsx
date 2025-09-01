@@ -3,6 +3,7 @@ import {
   ContributorType,
   ContributorUser,
   DOIConfirmDialog,
+  DOIMetadataConfirmation,
   DOIMetadataForm,
   RelatedDOI,
   readSciGatewayToken,
@@ -38,6 +39,8 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
   const [description, setDescription] = React.useState('');
 
   const [showMintConfirmation, setShowMintConfirmation] = React.useState(false);
+  const [showMetadataConfirmation, setShowMetadataConfirmation] =
+    React.useState(false);
 
   const doiMinterUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.doiMinterUrl
@@ -227,8 +230,56 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
 
   return (
     <Box m={1}>
-      {
-        <>
+      <>
+        {showMetadataConfirmation ? (
+          <DOIMetadataConfirmation
+            title={title}
+            description={description}
+            selectedUsers={selectedUsers}
+            relatedDOIs={relatedDOIs}
+            doiMinterUrl={doiMinterUrl}
+            onBackClick={() => {
+              setShowMetadataConfirmation(false);
+            }}
+            onConfirmClick={() => {
+              if (dataPublication && versionDataPublication) {
+                setShowMintConfirmation(true);
+                const creatorsList = selectedUsers
+                  .filter(
+                    (user) =>
+                      // the user requesting the mint is added automatically
+                      // by the backend, so don't pass them to the backend
+                      user.name !== readSciGatewayToken().username
+                  )
+                  .map((user) => ({
+                    username: user.name,
+                    contributor_type: user.contributor_type as ContributorType, // we check this is true in the disabled field above
+                  }));
+                updateDOI({
+                  dataPublicationId,
+                  content: {
+                    investigation_ids: content
+                      .filter((v) => v.entityType === 'investigation')
+                      .map((i) => i.id),
+                    dataset_ids: content
+                      .filter((v) => v.entityType === 'dataset')
+                      .map((d) => d.id),
+                    datafile_ids: content
+                      .filter((v) => v.entityType === 'datafile')
+                      .map((d) => d.id),
+                  },
+                  doiMetadata: {
+                    title,
+                    description,
+                    creators:
+                      creatorsList.length > 0 ? creatorsList : undefined,
+                    related_items: relatedDOIs,
+                  },
+                });
+              }
+            }}
+          />
+        ) : (
           <Box>
             {/* need to specify colour is textPrimary since this Typography is not in a Paper */}
             <Typography variant="h5" component="h2" color="textPrimary">
@@ -270,58 +321,21 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
                   relatedDOIs={relatedDOIs}
                   setRelatedDOIs={setRelatedDOIs}
                   disableMintButton={false}
-                  onMintClick={() => {
-                    if (dataPublication && versionDataPublication) {
-                      setShowMintConfirmation(true);
-                      const creatorsList = selectedUsers
-                        .filter(
-                          (user) =>
-                            // the user requesting the mint is added automatically
-                            // by the backend, so don't pass them to the backend
-                            user.name !== readSciGatewayToken().username
-                        )
-                        .map((user) => ({
-                          username: user.name,
-                          contributor_type:
-                            user.contributor_type as ContributorType, // we check this is true in the disabled field above
-                        }));
-                      updateDOI({
-                        dataPublicationId,
-                        content: {
-                          investigation_ids: content
-                            .filter((v) => v.entityType === 'investigation')
-                            .map((i) => i.id),
-                          dataset_ids: content
-                            .filter((v) => v.entityType === 'dataset')
-                            .map((d) => d.id),
-                          datafile_ids: content
-                            .filter((v) => v.entityType === 'datafile')
-                            .map((d) => d.id),
-                        },
-                        doiMetadata: {
-                          title,
-                          description,
-                          creators:
-                            creatorsList.length > 0 ? creatorsList : undefined,
-                          related_items: relatedDOIs,
-                        },
-                      });
-                    }
-                  }}
+                  onMintClick={() => setShowMetadataConfirmation(true)}
                 />
               </Grid>
             </Paper>
           </Box>
-          {/* Show the download confirmation dialog. */}
-          <DOIConfirmDialog
-            open={showMintConfirmation}
-            mintingStatus={mintingStatus}
-            data={mintData}
-            error={mintError}
-            setClose={() => setShowMintConfirmation(false)}
-          />
-        </>
-      }
+        )}
+        {/* Show the download confirmation dialog. */}
+        <DOIConfirmDialog
+          open={showMintConfirmation}
+          mintingStatus={mintingStatus}
+          data={mintData}
+          error={mintError}
+          setClose={() => setShowMintConfirmation(false)}
+        />
+      </>
     </Box>
   );
 };

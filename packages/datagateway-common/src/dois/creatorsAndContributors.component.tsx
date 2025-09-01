@@ -130,7 +130,7 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
       <Grid container direction="row" spacing={1}>
         <Grid item>
           <Typography variant="h6" component="h4" id="creators-label">
-            {t('DOIGenerationForm.creators')}
+            {t('DOIGenerationForm.creators_and_contributors')}
           </Typography>
         </Grid>
         <Grid

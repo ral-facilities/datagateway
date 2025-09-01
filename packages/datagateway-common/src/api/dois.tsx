@@ -349,3 +349,77 @@ export const useIsCartMintable = (
     }
   );
 };
+
+interface StaticDataciteMetadata {
+  publisher: {
+    name: string;
+    publisherIdentifier: string | null;
+    publisherIdentifierScheme: string | null;
+    schemeURI: string | null;
+  };
+  publicationYear: number;
+  dates: {
+    date: string;
+    dateType: string;
+    dateInformation: string | null;
+  }[];
+  types: {
+    resourceType: string;
+    resourceTypeGeneral: string;
+  };
+  rightsList: {
+    rights: string;
+    rightsUri: string | null;
+    rightsIdentifier: string | null;
+    rightsIdentifierScheme: string | null;
+    schemeUri: string | null;
+  }[];
+  geoLocations: {
+    geoLocationPlace: string | null;
+    geoLocationPoint: {
+      pointLatitude: number | null;
+      pointLongitude: number | null;
+    };
+  }[];
+  fundingReferences: {
+    funderName: string;
+    funderIdentifier: string | null;
+    funderIdentifierType: string | null;
+    schemeUri: string | null;
+    awardUri: string | null;
+    awardTitle: string | null;
+    awardNumber: string;
+  }[];
+}
+
+export const getStaticDataciteMetadata = async (
+  doiMinterUrl: string | undefined
+): Promise<StaticDataciteMetadata> => {
+  return axios
+    .get<StaticDataciteMetadata>(`${doiMinterUrl}/static_metadata`, {
+      // we don't strictly need to add this but might as well/future proofs in case in the future this endpoint is secured
+      headers: {
+        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+      },
+    })
+    .then((response) => response.data);
+};
+
+/**
+ * Gets the static metadata that is sent to DataCite
+ * @param metadata {@link StaticDataciteMetadata}
+ */
+export const useStaticDataciteMetadata = (
+  doiMinterUrl: string | undefined
+): UseQueryResult<StaticDataciteMetadata, AxiosError> => {
+  return useQuery(
+    ['staticDataCiteMetadata'],
+    () => {
+      return getStaticDataciteMetadata(doiMinterUrl);
+    },
+    {
+      onError: handleDOIAPIError,
+      refetchOnWindowFocus: false,
+    }
+  );
+};
