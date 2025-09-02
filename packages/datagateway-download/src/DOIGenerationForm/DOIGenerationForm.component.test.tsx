@@ -82,6 +82,60 @@ describe('DOI generation form component', () => {
   let mockUser: User;
   let mockDOIResponse: { data: DataCiteDOI };
 
+  const staticMetadata: ReturnType<
+    typeof useStaticDataciteMetadata
+  > extends UseQueryResult<infer X>
+    ? X
+    : never = {
+    publisher: {
+      name: 'test',
+      publisherIdentifier: '234',
+      publisherIdentifierScheme: '2345',
+      schemeURI: 'https://example.com/publisher',
+    },
+    publicationYear: 2025,
+    dates: [
+      {
+        date: '2025-09-01',
+        dateType: 'Created',
+        dateInformation: 'date info',
+      },
+    ],
+    types: {
+      resourceType: 'Experimental Datasets',
+      resourceTypeGeneral: 'Other',
+    },
+    rightsList: [
+      {
+        rights: 'cc by',
+        rightsUri: 'https://example.com/rights',
+        rightsIdentifier: '12',
+        rightsIdentifierScheme: '1234',
+        schemeUri: 'https://example.com/rights-scheme',
+      },
+    ],
+    geoLocations: [
+      {
+        geoLocationPlace: 'DLS',
+        geoLocationPoint: {
+          pointLatitude: 51.57452869855099,
+          pointLongitude: -1.3108818134944835,
+        },
+      },
+    ],
+    fundingReferences: [
+      {
+        funderName: 'test',
+        funderIdentifier: '123',
+        funderIdentifierType: 'Other',
+        schemeUri: 'https://example.com/funder',
+        awardUri: 'https://example.com/award',
+        awardTitle: 'test 1',
+        awardNumber: '1',
+      },
+    ],
+  };
+
   beforeEach(() => {
     user = userEvent.setup();
 
@@ -125,6 +179,10 @@ describe('DOI generation form component', () => {
         if (/\/user\/.*/.test(url)) {
           return Promise.resolve({
             data: mockUser,
+          });
+        } else if (/\/static_metadata$/.test(url)) {
+          return Promise.resolve({
+            data: staticMetadata,
           });
         } else if (/\/dois\/.*/.test(url)) {
           return Promise.resolve({
@@ -188,6 +246,14 @@ describe('DOI generation form component', () => {
       screen.getByRole('textbox', { name: 'DOIGenerationForm.description' }),
       'd'
     );
+
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+    );
+
+    // expect confirmation page to appear, confirm submission
+
+    await screen.findByText('DOIGenerationForm.review_metadata');
 
     await user.click(
       screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
@@ -301,6 +367,14 @@ describe('DOI generation form component', () => {
     await user.click(
       await screen.findByRole('option', { name: DOIResourceType.Journal })
     );
+
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+    );
+
+    // expect confirmation page to appear, confirm submission
+
+    await screen.findByText('DOIGenerationForm.review_metadata');
 
     await user.click(
       screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })

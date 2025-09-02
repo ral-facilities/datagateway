@@ -5,6 +5,7 @@ import {
   handleDOIAPIError,
   useCheckUser,
   useIsCartMintable,
+  useStaticDataciteMetadata,
   useUpdateDOI,
 } from '.';
 import { ContributorType, DownloadCartItem } from '../app.types';
@@ -12,6 +13,7 @@ import { createReactQueryWrapper, createTestQueryClient } from '../setupTests';
 import { InvalidateTokenType } from '../state/actions/actions.types';
 
 vi.mock('loglevel');
+vi.mock('../handleICATError');
 
 describe('handleDOIAPIError', () => {
   const localStorageGetItemMock = vi.spyOn(
@@ -460,6 +462,97 @@ describe('doi api functions', () => {
 
       expect(log.error).not.toHaveBeenCalled();
       expect(axios.post).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('useStaticDataciteMetadata', () => {
+    it('should fetch static datacite metadata', async () => {
+      const staticMetadata = {
+        publisher: {
+          name: 'test',
+          publisherIdentifier: '234',
+          publisherIdentifierScheme: '2345',
+          schemeURI: 'https://example.com/publisher',
+        },
+        publicationYear: 2025,
+        dates: [
+          {
+            date: '2025-09-01',
+            dateType: 'Created',
+            dateInformation: null,
+          },
+        ],
+        types: {
+          resourceType: 'Experimental Datasets',
+          resourceTypeGeneral: 'Other',
+        },
+        rightsList: [
+          {
+            rights: 'cc by',
+            rightsUri: 'https://example.com/rights',
+            rightsIdentifier: '12',
+            rightsIdentifierScheme: '1234',
+            schemeUri: 'https://example.com/rights-scheme',
+          },
+        ],
+        geoLocations: [
+          {
+            geoLocationPlace: 'DLS',
+            geoLocationPoint: {
+              pointLatitude: 51.57452869855099,
+              pointLongitude: -1.3108818134944835,
+            },
+          },
+        ],
+        fundingReferences: [
+          {
+            funderName: 'test',
+            funderIdentifier: '123',
+            funderIdentifierType: 'Other',
+            schemeUri: null,
+            awardUri: 'https://example.com/award',
+            awardTitle: 'test 1',
+            awardNumber: '1',
+          },
+        ],
+      };
+      axios.get = vi.fn().mockResolvedValue({
+        data: staticMetadata,
+      });
+
+      const { result } = renderHook(
+        () => useStaticDataciteMetadata('/doi-minter'),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+      expect(result.current.data).toEqual(staticMetadata);
+      expect(axios.get).toHaveBeenCalledWith('/doi-minter/static_metadata', {
+        headers: { Authorization: 'Bearer null' },
+      });
+    });
+
+    it('should handle errors', async () => {
+      vi.mocked(axios.get).mockRejectedValue({
+        message: 'Test error',
+      });
+
+      const { result } = renderHook(
+        () => useStaticDataciteMetadata('/doi-minter'),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      await waitFor(() => expect(result.current.isError).toBe(true));
+
+      expect(log.error).toHaveBeenCalledWith({
+        message: 'Test error',
+      });
+      expect(axios.get).toHaveBeenCalledTimes(1);
     });
   });
 });

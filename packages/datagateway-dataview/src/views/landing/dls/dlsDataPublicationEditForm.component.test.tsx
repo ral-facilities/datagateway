@@ -1,4 +1,8 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  QueryClient,
+  QueryClientProvider,
+  UseQueryResult,
+} from '@tanstack/react-query';
 import {
   RenderResult,
   render,
@@ -16,6 +20,7 @@ import {
   DataPublicationUser,
   DownloadCartItem,
   dGCommonInitialState,
+  useStaticDataciteMetadata,
 } from 'datagateway-common';
 import { History, createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
@@ -110,6 +115,60 @@ describe('DOI edit form component', () => {
   };
   let cartItems: DownloadCartItem[];
   let mintabilityResponse: Promise<Partial<AxiosResponse>>;
+
+  const staticMetadata: ReturnType<
+    typeof useStaticDataciteMetadata
+  > extends UseQueryResult<infer X>
+    ? X
+    : never = {
+    publisher: {
+      name: 'test',
+      publisherIdentifier: '234',
+      publisherIdentifierScheme: '2345',
+      schemeURI: 'https://example.com/publisher',
+    },
+    publicationYear: 2025,
+    dates: [
+      {
+        date: '2025-09-01',
+        dateType: 'Created',
+        dateInformation: 'date info',
+      },
+    ],
+    types: {
+      resourceType: 'Experimental Datasets',
+      resourceTypeGeneral: 'Other',
+    },
+    rightsList: [
+      {
+        rights: 'cc by',
+        rightsUri: 'https://example.com/rights',
+        rightsIdentifier: '12',
+        rightsIdentifierScheme: '1234',
+        schemeUri: 'https://example.com/rights-scheme',
+      },
+    ],
+    geoLocations: [
+      {
+        geoLocationPlace: 'DLS',
+        geoLocationPoint: {
+          pointLatitude: 51.57452869855099,
+          pointLongitude: -1.3108818134944835,
+        },
+      },
+    ],
+    fundingReferences: [
+      {
+        funderName: 'test',
+        funderIdentifier: '123',
+        funderIdentifierType: 'Other',
+        schemeUri: 'https://example.com/funder',
+        awardUri: 'https://example.com/award',
+        awardTitle: 'test 1',
+        awardNumber: '1',
+      },
+    ],
+  };
 
   beforeEach(() => {
     initialData = {
@@ -236,6 +295,10 @@ describe('DOI edit form component', () => {
         if (/\/datapublications$/.test(url)) {
           return Promise.resolve({
             data: [initialData],
+          });
+        } else if (/\/static_metadata$/.test(url)) {
+          return Promise.resolve({
+            data: staticMetadata,
           });
         } else if (/.*\/user\/cart\/.*$/.test(url)) {
           return Promise.resolve({
@@ -383,6 +446,14 @@ describe('DOI edit form component', () => {
     );
 
     // submit edited data publication
+
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+    );
+
+    // expect confirmation page to appear, confirm submission
+
+    await screen.findByText('DOIGenerationForm.review_metadata');
 
     await user.click(
       screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
@@ -563,6 +634,14 @@ describe('DOI edit form component', () => {
     ).toBeInTheDocument();
 
     // submit edited data publication
+
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+    );
+
+    // expect confirmation page to appear, confirm submission
+
+    await screen.findByText('DOIGenerationForm.review_metadata');
 
     await user.click(
       screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
