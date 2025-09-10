@@ -1,32 +1,32 @@
-import React from 'react';
 import {
-  Subject,
-  ConfirmationNumber,
   CalendarToday,
+  ConfirmationNumber,
   Save,
+  Subject,
 } from '@mui/icons-material';
 import {
-  Table,
-  tableLink,
+  ColumnType,
+  DLSDatasetDetailsPanel,
   Dataset,
+  ConnectedTable as Table,
+  formatBytes,
+  parseSearchToQuery,
+  tableLink,
+  useAddToCart,
+  useCart,
   useDatasetCount,
   useDatasetsInfinite,
-  parseSearchToQuery,
-  useTextFilter,
   useDateFilter,
-  ColumnType,
-  useSort,
   useIds,
-  useCart,
-  useAddToCart,
   useRemoveFromCart,
-  DLSDatasetDetailsPanel,
-  formatBytes,
+  useSort,
+  useTextFilter,
 } from 'datagateway-common';
-import { IndexRange, TableCellProps } from 'react-virtualized';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+import { IndexRange, TableCellProps } from 'react-virtualized';
 import { StateType } from '../../../state/app.types';
 
 interface DLSDatasetsTableProps {
@@ -41,8 +41,8 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
 
   const location = useLocation();
 
-  const selectAllSetting = useSelector(
-    (state: StateType) => state.dgdataview.selectAllSetting
+  const disableSelectAll = useSelector(
+    (state: StateType) => state.dgcommon.features?.disableSelectAll ?? false
   );
 
   const { filters, sort, view } = React.useMemo(
@@ -64,7 +64,7 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
         }),
       },
     ],
-    selectAllSetting
+    !disableSelectAll
   );
   const { data: cartItems, isLoading: cartLoading } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } =
@@ -171,11 +171,10 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
           (cartItem) =>
             cartItem.entityType === 'dataset' &&
             // if select all is disabled, it's safe to just pass the whole cart as selectedRows
-            (!selectAllSetting ||
-              (allIds && allIds.includes(cartItem.entityId)))
+            (disableSelectAll || (allIds && allIds.includes(cartItem.entityId)))
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, selectAllSetting, allIds]
+    [cartItems, disableSelectAll, allIds]
   );
 
   const isParentSelected = React.useMemo(() => {
@@ -204,7 +203,6 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}
-      disableSelectAll={!selectAllSetting}
       detailsPanel={DLSDatasetDetailsPanel}
       columns={columns}
     />

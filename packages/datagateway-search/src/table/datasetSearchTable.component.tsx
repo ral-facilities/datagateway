@@ -1,40 +1,40 @@
+import { Grid, Paper, Typography } from '@mui/material';
 import {
-  type ColumnType,
-  DatasetDetailsPanel,
   DLSDatasetDetailsPanel,
+  DatasetDetailsPanel,
+  DetailsPanelProps,
+  FACILITY_NAME,
   ISISDatasetDetailsPanel,
-  parseSearchToQuery,
   SearchFilter,
-  type SearchResponse,
-  type SearchResultSource,
+  ConnectedTable as Table,
   buildDatafileTableUrlForDataset,
   buildDatasetLandingUrl,
   buildDatasetTableUrlForInvestigation,
   buildInvestigationLandingUrl,
-  FACILITY_NAME,
+  formatBytes,
   isLandingPageSupportedForHierarchy,
-  Table,
+  parseSearchToQuery,
   tableLink,
   useAddToCart,
   useCart,
   useLuceneSearchInfinite,
   useRemoveFromCart,
   useSort,
-  formatBytes,
-  DetailsPanelProps,
+  type ColumnType,
+  type SearchResponse,
+  type SearchResultSource,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import type { StateType } from '../state/app.types';
-import { Grid, Paper, Typography } from '@mui/material';
-import FacetPanel from '../facet/components/facetPanel/facetPanel.component';
-import { facetClassificationFromSearchResponses } from '../facet/facet';
-import useFacetFilters from '../facet/useFacetFilters';
-import SelectedFilterChips from '../facet/components/selectedFilterChips.component';
-import { useSearchResultCounter } from '../searchTabs/useSearchResultCounter';
 import { useHistory, useLocation } from 'react-router-dom';
 import type { IndexRange, TableCellProps } from 'react-virtualized';
+import FacetPanel from '../facet/components/facetPanel/facetPanel.component';
+import SelectedFilterChips from '../facet/components/selectedFilterChips.component';
+import { facetClassificationFromSearchResponses } from '../facet/facet';
+import useFacetFilters from '../facet/useFacetFilters';
+import { useSearchResultCounter } from '../searchTabs/useSearchResultCounter';
+import type { StateType } from '../state/app.types';
 
 interface DatasetTableProps {
   hierarchy: string;
@@ -58,8 +58,8 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
     currentTab,
   } = queryParams;
 
-  const selectAllSetting = useSelector(
-    (state: StateType) => state.dgsearch.selectAllSetting
+  const disableSelectAll = useSelector(
+    (state: StateType) => state.dgcommon.features?.disableSelectAll ?? false
   );
 
   const minNumResults = useSelector(
@@ -200,11 +200,11 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
           (cartItem) =>
             cartItem.entityType === 'dataset' &&
             // if select all is disabled, it's safe to just pass the whole cart as selectedRows
-            (!selectAllSetting ||
+            (disableSelectAll ||
               (aggregatedIds && aggregatedIds.includes(cartItem.entityId)))
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, selectAllSetting, aggregatedIds]
+    [cartItems, disableSelectAll, aggregatedIds]
   );
 
   const columns: ColumnType[] = React.useMemo(
@@ -446,7 +446,6 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
                   sort={{}}
                   onSort={handleSort}
                   selectedRows={selectedRows}
-                  disableSelectAll={!selectAllSetting}
                   allIds={aggregatedIds}
                   onCheck={addToCart}
                   onUncheck={removeFromCart}

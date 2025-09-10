@@ -1,37 +1,37 @@
+import { Grid, Paper, Typography } from '@mui/material';
 import {
   ColumnType,
   DLSVisitDetailsPanel,
-  externalSiteLink,
-  formatBytes,
-  buildDatasetTableUrlForInvestigation,
+  DetailsPanelProps,
   FACILITY_NAME,
-  InvestigationDetailsPanel,
   ISISInvestigationDetailsPanel,
-  parseSearchToQuery,
+  InvestigationDetailsPanel,
   SearchFilter,
   SearchResponse,
   SearchResultSource,
-  Table,
+  ConnectedTable as Table,
+  buildDatasetTableUrlForInvestigation,
+  externalSiteLink,
+  formatBytes,
+  parseSearchToQuery,
   tableLink,
   useAddToCart,
   useCart,
   useLuceneSearchInfinite,
   useRemoveFromCart,
   useSort,
-  DetailsPanelProps,
 } from 'datagateway-common';
-import { TableCellProps } from 'react-virtualized';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { Grid, Paper, Typography } from '@mui/material';
-import { StateType } from '../state/app.types';
+import { useHistory, useLocation } from 'react-router-dom';
+import { TableCellProps } from 'react-virtualized';
 import FacetPanel from '../facet/components/facetPanel/facetPanel.component';
-import { facetClassificationFromSearchResponses } from '../facet/facet';
 import SelectedFilterChips from '../facet/components/selectedFilterChips.component';
+import { facetClassificationFromSearchResponses } from '../facet/facet';
 import useFacetFilters from '../facet/useFacetFilters';
 import { useSearchResultCounter } from '../searchTabs/useSearchResultCounter';
-import React from 'react';
+import { StateType } from '../state/app.types';
 
 interface InvestigationTableProps {
   hierarchy: string;
@@ -57,8 +57,8 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
   } = queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
-  const selectAllSetting = useSelector(
-    (state: StateType) => state.dgsearch.selectAllSetting
+  const disableSelectAll = useSelector(
+    (state: StateType) => state.dgcommon.features?.disableSelectAll ?? false
   );
 
   const minNumResults = useSelector(
@@ -174,11 +174,11 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
           (cartItem) =>
             cartItem.entityType === 'investigation' &&
             // if select all is disabled, it's safe to just pass the whole cart as selectedRows
-            (!selectAllSetting ||
+            (disableSelectAll ||
               (aggregatedIds && aggregatedIds.includes(cartItem.entityId)))
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, selectAllSetting, aggregatedIds]
+    [cartItems, disableSelectAll, aggregatedIds]
   );
 
   const columns: ColumnType[] = React.useMemo(
@@ -407,7 +407,6 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
                     aggregatedIds,
                     onCheck: addToCart,
                     onUncheck: removeFromCart,
-                    disableSelectAll: !selectAllSetting,
                   })}
                   shortHeader={true}
                 />

@@ -13,13 +13,15 @@ import type { IsisDatafileDetailsPanelTab } from '../detailsPanels/isis/datafile
 import type { IsisDatasetDetailsPanelTab } from '../detailsPanels/isis/datasetDetailsPanel.component';
 import type { IsisInstrumentDetailsPanelTab } from '../detailsPanels/isis/instrumentDetailsPanel.component';
 import type { IsisInvestigationDetailsPanelTab } from '../detailsPanels/isis/investigationDetailsPanel.component';
-import type { URLs } from './actions/actions.types';
+import type { FeatureSwitches, URLs } from './actions/actions.types';
 
 export interface DGCommonState {
   facilityName: string;
   urls: URLs;
   accessMethods?: DownloadSettingsAccessMethod;
   queryRetries?: number;
+  features?: FeatureSwitches;
+  anonUserName?: string;
   isisDatafileDetailsPanel: Record<
     Datafile['id'],
     {

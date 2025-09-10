@@ -4,8 +4,6 @@ export const SetInvestigationTabType =
   'datagateway_search:set_investigation_tab';
 
 export const SettingsLoadedType = 'datagateway_search:settings_loaded';
-export const ConfigureSelectAllSettingType =
-  'datagateway_search:configure_select_all';
 export const ConfigureSearchableEntitiesType =
   'datagateway_search:configure_searchable_entities';
 export const ConfigureMinNumResultsType =
@@ -15,10 +13,6 @@ export const ConfigureMaxNumResultsType =
 
 export interface TogglePayload {
   toggleOption: boolean;
-}
-
-export interface ConfigureSelectAllSettingPayload {
-  settings: boolean;
 }
 
 export interface ConfigureSearchableEntitiesPayload {

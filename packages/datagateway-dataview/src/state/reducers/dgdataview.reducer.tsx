@@ -3,26 +3,20 @@ import {
   datafilePreviewerInitialState,
   datafilePreviewerReducer,
 } from '../../views/datafilePreview/state/reducer';
-import { DGDataViewState } from '../app.types';
 import {
-  FeatureSwitchesPayload,
-  ConfigureFeatureSwitchesType,
   ConfigureBreadcrumbSettingsPayload,
   ConfigureBreadcrumbSettingsType,
-  SettingsLoadedType,
-  ConfigureSelectAllSettingPayload,
-  ConfigureSelectAllSettingType,
-  ConfigurePluginHostSettingPayload,
-  ConfigurePluginHostSettingType,
   ConfigureFacilityImageSettingPayload,
   ConfigureFacilityImageSettingType,
+  ConfigurePluginHostSettingPayload,
+  ConfigurePluginHostSettingType,
+  SettingsLoadedType,
 } from '../actions/actions.types';
+import { DGDataViewState } from '../app.types';
 
 export const initialState: DGDataViewState = {
-  features: {},
   breadcrumbSettings: [],
   settingsLoaded: false,
-  selectAllSetting: true,
   pluginHost: '',
   facilityImageURL: '',
   datafilePreviewer: datafilePreviewerInitialState,
@@ -35,16 +29,6 @@ export function handleSettingsLoaded(state: DGDataViewState): DGDataViewState {
   };
 }
 
-export function handleConfigureFeatureSwitches(
-  state: DGDataViewState,
-  payload: FeatureSwitchesPayload
-): DGDataViewState {
-  return {
-    ...state,
-    features: payload.switches,
-  };
-}
-
 // Reducer for the breadcrumb settings action,
 // in order to add settings to the Redux state.
 export function handleConfigureBreadcrumbSettings(
@@ -54,16 +38,6 @@ export function handleConfigureBreadcrumbSettings(
   return {
     ...state,
     breadcrumbSettings: payload.settings,
-  };
-}
-
-export function handleConfigureSelectAllSetting(
-  state: DGDataViewState,
-  payload: ConfigureSelectAllSettingPayload
-): DGDataViewState {
-  return {
-    ...state,
-    selectAllSetting: payload.settings,
   };
 }
 
@@ -89,9 +63,7 @@ export function handleConfigureFacilityImageSetting(
 
 const DGDataViewReducer = createReducer(initialState, {
   [SettingsLoadedType]: handleSettingsLoaded,
-  [ConfigureFeatureSwitchesType]: handleConfigureFeatureSwitches,
   [ConfigureBreadcrumbSettingsType]: handleConfigureBreadcrumbSettings,
-  [ConfigureSelectAllSettingType]: handleConfigureSelectAllSetting,
   [ConfigurePluginHostSettingType]: handleConfigurePluginHostSetting,
   [ConfigureFacilityImageSettingType]: handleConfigureFacilityImageSetting,
   ...datafilePreviewerReducer,

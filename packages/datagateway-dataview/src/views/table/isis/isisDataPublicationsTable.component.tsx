@@ -1,15 +1,15 @@
 import {
   ColumnType,
+  DataPublication,
+  ConnectedTable as Table,
   externalSiteLink,
   parseSearchToQuery,
-  DataPublication,
-  Table,
   tableLink,
+  useDataPublicationCount,
+  useDataPublicationsInfinite,
   useDateFilter,
   useSort,
-  useDataPublicationsInfinite,
   useTextFilter,
-  useDataPublicationCount,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';

@@ -1,38 +1,22 @@
-import {
-  PluginRoute,
-  Preloader,
-  DownloadSettingsAccessMethod,
-} from 'datagateway-common';
+import { CommonSettings, DOISettings, Preloader } from 'datagateway-common';
 import React from 'react';
 import { settings } from './settings';
 
-export interface DownloadSettings {
-  facilityName: string;
-  apiUrl: string;
-  downloadApiUrl: string;
-  idsUrl: string;
-  doiMinterUrl?: string;
-  dataCiteUrl?: string;
-  queryRetries?: number;
+export type DownloadSettings = Omit<CommonSettings, 'icatUrl'> &
+  DOISettings & {
+    fileCountMax?: number;
+    totalSizeMax?: number;
 
-  fileCountMax?: number;
-  totalSizeMax?: number;
-
-  accessMethods: DownloadSettingsAccessMethod;
-  routes: PluginRoute[];
-  helpSteps: { target: string; content: string }[];
-  pluginHost?: string;
-
-  /**
-   * A map of UI flags that can toggle certain UI features..
-   */
-  uiFeatures: {
     /**
-     * Enables download progress to be displayed in download status tables when set to true.
+     * A map of UI flags that can toggle certain UI features..
      */
-    downloadProgress: boolean;
+    uiFeatures: {
+      /**
+       * Enables download progress to be displayed in download status tables when set to true.
+       */
+      downloadProgress: boolean;
+    };
   };
-}
 
 const initialConfiguration: DownloadSettings = {
   facilityName: '',

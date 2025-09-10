@@ -1,29 +1,29 @@
 import {
   ColumnType,
+  DLSVisitDetailsPanel,
   Investigation,
+  ConnectedTable as Table,
+  formatBytes,
   parseSearchToQuery,
   readSciGatewayToken,
-  Table,
   tableLink,
   useDateFilter,
   useInvestigationCount,
   useInvestigationsInfinite,
+  useReplaceFilter,
   useSort,
   useTextFilter,
-  DLSVisitDetailsPanel,
-  formatBytes,
-  useReplaceFilter,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 
 import {
-  Subject,
-  Fingerprint,
   Assessment,
   CalendarToday,
+  Fingerprint,
   Save,
+  Subject,
 } from '@mui/icons-material';
 import { useLocation } from 'react-router-dom';
 
