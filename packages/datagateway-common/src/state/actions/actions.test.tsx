@@ -1,10 +1,18 @@
-import { loadUrls, loadFacilityName, loadAccessMethods } from '.';
 import {
-  ConfigureURLsType,
-  ConfigureFacilityNameType,
-  ConfigureAccessMethodsType,
-} from './actions.types';
+  loadAccessMethods,
+  loadAnonUserName,
+  loadFacilityName,
+  loadFeatureSwitches,
+  loadUrls,
+} from '.';
 import { resetActions } from '../../setupTests';
+import {
+  ConfigureAccessMethodsType,
+  ConfigureAnonUserNameType,
+  ConfigureFacilityNameType,
+  ConfigureFeatureSwitchesType,
+  ConfigureURLsType,
+} from './actions.types';
 
 describe('Actions', () => {
   afterEach(() => {
@@ -42,6 +50,22 @@ describe('Actions', () => {
     expect(action.type).toEqual(ConfigureAccessMethodsType);
     expect(action.payload).toEqual({
       accessMethods: {},
+    });
+  });
+
+  it('given JSON loadFeatureSwitches returns a ConfigureFeatureSwitchesType with ConfigureFeatureSwitchesPayload', () => {
+    const action = loadFeatureSwitches({ disableAnonDownload: true });
+    expect(action.type).toEqual(ConfigureFeatureSwitchesType);
+    expect(action.payload).toEqual({
+      switches: { disableAnonDownload: true },
+    });
+  });
+
+  it('given JSON loadAnonUserName returns a ConfigureAnonUserNameType with ConfigureAnonUserNamePayload', () => {
+    const action = loadAnonUserName('anon');
+    expect(action.type).toEqual(ConfigureAnonUserNameType);
+    expect(action.payload).toEqual({
+      anonUserName: 'anon',
     });
   });
 });

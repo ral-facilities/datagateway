@@ -1,9 +1,13 @@
-import ISISDatasetsTable from './isisDatasetsTable.component';
-import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
-import configureStore from 'redux-mock-store';
-import type { StateType } from '../../../state/app.types';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
-  type Dataset,
+  render,
+  screen,
+  waitFor,
+  type RenderResult,
+} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
+import {
   dGCommonInitialState,
   useAddToCart,
   useCart,
@@ -11,21 +15,17 @@ import {
   useDatasetsInfinite,
   useIds,
   useRemoveFromCart,
+  type Dataset,
 } from 'datagateway-common';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
-import { generatePath, Router } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import {
-  render,
-  type RenderResult,
-  screen,
-  waitFor,
-} from '@testing-library/react';
 import { createMemoryHistory, type History } from 'history';
-import userEvent from '@testing-library/user-event';
+import { Provider } from 'react-redux';
+import { Router, generatePath } from 'react-router-dom';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 import { paths } from '../../../page/pageContainer.component';
-import axios, { AxiosResponse } from 'axios';
+import type { StateType } from '../../../state/app.types';
+import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
+import ISISDatasetsTable from './isisDatasetsTable.component';
 
 vi.mock('datagateway-common', async () => {
   const originalModule = await vi.importActual('datagateway-common');
@@ -279,8 +279,8 @@ describe('ISIS Dataset table component', () => {
     expect(selectAllCheckbox).toHaveAttribute('data-indeterminate', 'false');
   });
 
-  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', async () => {
-    state.dgdataview.selectAllSetting = false;
+  it('no select all checkbox appears and no fetchAllIds sent if disableSelectAll is true', async () => {
+    state.dgcommon.features = { disableSelectAll: true };
     renderComponent();
 
     await waitFor(() => {

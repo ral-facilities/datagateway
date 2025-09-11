@@ -1,27 +1,27 @@
 import {
+  ConfigureAccessMethodsType,
+  ConfigureFeatureSwitchesType,
+  ConfigureQueryRetriesType,
+  loadAccessMethods,
+  loadFacilityName,
+  loadFeatureSwitches,
+  loadQueryRetries,
+  loadUrls,
+} from 'datagateway-common';
+import {
   configureApp,
   loadMaxNumResults,
   loadMinNumResults,
   loadSearchableEntitites,
-  loadSelectAllSetting,
   settingsLoaded,
 } from '.';
+import { actions, dispatch, getState, resetActions } from '../../setupTests';
 import {
   ConfigureMaxNumResultsType,
   ConfigureMinNumResultsType,
   ConfigureSearchableEntitiesType,
-  ConfigureSelectAllSettingType,
   SettingsLoadedType,
 } from './actions.types';
-import { actions, resetActions, dispatch, getState } from '../../setupTests';
-import {
-  loadUrls,
-  loadFacilityName,
-  loadQueryRetries,
-  ConfigureQueryRetriesType,
-  loadAccessMethods,
-  ConfigureAccessMethodsType,
-} from 'datagateway-common';
 
 const mockSettingsGetter = vi.fn();
 vi.mock('../../settings', () => ({
@@ -41,14 +41,6 @@ describe('Actions', () => {
     expect(action.type).toEqual(SettingsLoadedType);
   });
 
-  it('given JSON loadSelectAllSetting returns a ConfigureSelectAllSettingType with ConfigureSelectAllSettingPayload', () => {
-    const action = loadSelectAllSetting(false);
-    expect(action.type).toEqual(ConfigureSelectAllSettingType);
-    expect(action.payload).toEqual({
-      settings: false,
-    });
-  });
-
   it('given JSON loadSearchableEntitites returns a ConfigureSearchableEntitiesType with ConfigureSearchableEntitiesPayload', () => {
     const action = loadSearchableEntitites(['investigation', 'dataset']);
     expect(action.type).toEqual(ConfigureSearchableEntitiesType);
@@ -57,7 +49,7 @@ describe('Actions', () => {
     });
   });
 
-  it('settings are loaded and facilityName, loadUrls, loadQueryRetries, loadAccessMethods, loadSelectAllSetting, loadSearchableEntitites, loadMaxNumResults and settingsLoaded actions are sent', async () => {
+  it('settings are loaded and facilityName, loadUrls, loadQueryRetries, loadAccessMethods, loadFeatureSwitches, loadSearchableEntitites, loadMaxNumResults and settingsLoaded actions are sent', async () => {
     mockSettingsGetter.mockReturnValue({
       facilityName: 'Generic',
       idsUrl: 'ids',
@@ -70,7 +62,7 @@ describe('Actions', () => {
           idsUrl: 'ids',
         },
       },
-      selectAllSetting: false,
+      features: {},
       searchableEntities: ['investigation', 'dataset', 'datafile'],
       maxNumResults: 150,
     });
@@ -87,7 +79,7 @@ describe('Actions', () => {
         icatUrl: 'icat',
       })
     );
-    expect(actions).toContainEqual(loadSelectAllSetting(false));
+    expect(actions).toContainEqual(loadFeatureSwitches({}));
     expect(actions).toContainEqual(
       loadSearchableEntitites(['investigation', 'dataset', 'datafile'])
     );
@@ -104,7 +96,7 @@ describe('Actions', () => {
     expect(actions).toContainEqual(settingsLoaded());
   });
 
-  it("doesn't send loadQueryRetries, loadAccessMethods, loadSelectAllSetting, loadSearchableEntitites and loadMaxNumResults actions when they're not defined", async () => {
+  it("doesn't send loadQueryRetries, loadAccessMethods, loadFeatureSwitches, loadSearchableEntitites and loadMaxNumResults actions when they're not defined", async () => {
     mockSettingsGetter.mockReturnValue({
       facilityName: 'Generic',
       idsUrl: 'ids',
@@ -117,7 +109,7 @@ describe('Actions', () => {
 
     expect(actions.length).toEqual(3);
     expect(
-      actions.every(({ type }) => type !== ConfigureSelectAllSettingType)
+      actions.every(({ type }) => type !== ConfigureFeatureSwitchesType)
     ).toBe(true);
     expect(
       actions.every(({ type }) => type !== ConfigureSearchableEntitiesType)

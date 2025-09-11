@@ -1,10 +1,19 @@
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as React from 'react';
+import { Provider } from 'react-redux';
 import { TableCellProps } from 'react-virtualized';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { StateType, dGCommonInitialState } from '../main';
+import * as parseTokens from '../parseTokens';
 import { formatBytes } from './cellRenderers/cellContentRenderers';
 import TextColumnFilter from './columnFilters/textColumnFilter.component';
-import Table, { ColumnType } from './table.component';
+import {
+  ColumnType,
+  ConnectedVirtualizedTable as ConnectedTable,
+  VirtualizedTable as Table,
+} from './table.component';
 
 describe('Table component', () => {
   let user: ReturnType<typeof userEvent.setup>;
@@ -134,22 +143,6 @@ describe('Table component', () => {
       startDate: '2025-01-01',
       endDate: '2025-01-02',
     });
-  });
-
-  it('renders select column correctly', async () => {
-    render(
-      <Table
-        {...tableProps}
-        selectedRows={[]}
-        onCheck={vi.fn()}
-        onUncheck={vi.fn()}
-        selectAllSetting={true}
-      />
-    );
-
-    expect(
-      await screen.findByRole('checkbox', { name: 'select all rows' })
-    ).toBeInTheDocument();
   });
 
   it.skip('resizes data columns correctly when a column is resized', () => {
@@ -307,5 +300,109 @@ describe('Table component', () => {
     );
 
     spy.mockRestore();
+  });
+
+  describe('ConnectedTable', () => {
+    const mockStore = configureStore([thunk]);
+    let state: StateType;
+    beforeEach(() => {
+      state = JSON.parse(
+        JSON.stringify({
+          dgdataview: {}, //Dont need to fill, since not part of the test
+          dgcommon: {
+            ...dGCommonInitialState,
+          },
+        })
+      );
+    });
+
+    it('connected variant disables anon download', async () => {
+      state.dgcommon.features = { disableAnonDownload: true };
+      vi.spyOn(parseTokens, 'readSciGatewayToken').mockReturnValue({
+        username: 'anon/anon',
+        sessionId: 'abcdef',
+      });
+
+      render(
+        <Provider store={mockStore(state)}>
+          <ConnectedTable
+            {...tableProps}
+            selectedRows={[]}
+            onCheck={vi.fn()}
+            onUncheck={vi.fn()}
+          />
+        </Provider>
+      );
+
+      // check that select all is disabled and shows tooltip
+      const selectAll = await screen.findByRole('checkbox', {
+        name: 'select all rows',
+      });
+      expect(selectAll).toBeInTheDocument();
+      expect(selectAll).toBeDisabled();
+      await user.hover(selectAll.parentElement?.parentElement);
+      expect(
+        await screen.findByText('buttons.disallow_anon_tooltip')
+      ).toBeInTheDocument();
+
+      // check that normal checkboxes are disabled and shows tooltip
+
+      const checkbox = await screen.findByRole('checkbox', {
+        name: 'select row 0',
+      });
+      expect(checkbox).toBeInTheDocument();
+      expect(checkbox).toBeDisabled();
+      await user.hover(checkbox.parentElement?.parentElement);
+      expect(
+        await screen.findByText('buttons.disallow_anon_tooltip')
+      ).toBeInTheDocument();
+    });
+
+    it('connected variant disables select all', async () => {
+      state.dgcommon.features = { disableSelectAll: true };
+
+      render(
+        <Provider store={mockStore(state)}>
+          <ConnectedTable
+            {...tableProps}
+            selectedRows={[]}
+            onCheck={vi.fn()}
+            onUncheck={vi.fn()}
+          />
+        </Provider>
+      );
+
+      // check that select all is not rendered but normal checkboxes are
+      expect(
+        await screen.findByRole('checkbox', {
+          name: 'select row 0',
+        })
+      ).toBeInTheDocument();
+
+      expect(
+        screen.queryByRole('checkbox', {
+          name: 'select all rows',
+        })
+      ).not.toBeInTheDocument();
+    });
+
+    it('renders select all correctly when supplying overriding disableSelectAll setting to settings', async () => {
+      state.dgcommon.features = { disableSelectAll: true };
+      render(
+        <Provider store={mockStore(state)}>
+          <ConnectedTable
+            {...tableProps}
+            selectedRows={[]}
+            onCheck={vi.fn()}
+            onUncheck={vi.fn()}
+            disableSelectAll={false}
+          />
+        </Provider>
+      );
+
+      expect(
+        await screen.findByRole('checkbox', { name: 'select all rows' })
+      ).toBeInTheDocument();
+    });
   });
 });
