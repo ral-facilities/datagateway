@@ -4659,7 +4659,7 @@ __metadata:
     redux-thunk: 2.4.1
     tslib: 2.8.1
     typescript: 5.3.3
-    vite: 5.4.19
+    vite: 5.4.20
     vitest: 3.2.3
     vitest-fail-on-console: 0.10.0
   peerDependencies:
@@ -4739,7 +4739,7 @@ __metadata:
     start-server-and-test: ~2.0.11
     tslib: 2.8.1
     typescript: 5.3.3
-    vite: 5.4.19
+    vite: 5.4.20
     vitest: 3.2.3
     vitest-fail-on-console: 0.10.0
   languageName: unknown
@@ -4808,7 +4808,7 @@ __metadata:
     start-server-and-test: ~2.0.11
     tslib: 2.8.1
     typescript: 5.3.3
-    vite: 5.4.19
+    vite: 5.4.20
     vitest: 3.2.3
     vitest-fail-on-console: 0.10.0
   languageName: unknown
@@ -4883,7 +4883,7 @@ __metadata:
     start-server-and-test: ~2.0.11
     tslib: 2.8.1
     typescript: 5.3.3
-    vite: 5.4.19
+    vite: 5.4.20
     vitest: 3.2.3
     vitest-fail-on-console: 0.10.0
   languageName: unknown
@@ -10518,9 +10518,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:5.4.19":
-  version: 5.4.19
-  resolution: "vite@npm:5.4.19"
+"vite@npm:5.4.20":
+  version: 5.4.20
+  resolution: "vite@npm:5.4.20"
   dependencies:
     esbuild: ^0.21.3
     fsevents: ~2.3.3
@@ -10557,7 +10557,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: c15af65f2370b59e674c5fab22d8e05ec5c7f8f0345ed99ffec155c77feb5636b4e0680dbd096a6f06d7c386b259dc0b9c67c4f1ec08486a2f2a677c9ea6971b
+  checksum: 67af97e818977e92d1e55bc35d45f58d41eba6fc87f2a18435d3402adb07f4c4ec1ba838d954829f80f7784e65b65f8d147db695cfaefe45f667ee283530770d
   languageName: node
   linkType: hard
 
