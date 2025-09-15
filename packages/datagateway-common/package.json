@@ -35,7 +35,7 @@
     "redux-thunk": "2.4.1",
     "tslib": "2.8.1",
     "typescript": "5.3.3",
-    "vite": "5.4.19"
+    "vite": "5.4.20"
   },
   "peerDependencies": {
     "@mui/icons-material": ">= 5.5.0 < 6",
