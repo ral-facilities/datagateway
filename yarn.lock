@@ -2757,15 +2757,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/cypress@npm:10.0.0":
-  version: 10.0.0
-  resolution: "@testing-library/cypress@npm:10.0.0"
+"@testing-library/cypress@npm:10.1.0":
+  version: 10.1.0
+  resolution: "@testing-library/cypress@npm:10.1.0"
   dependencies:
     "@babel/runtime": ^7.14.6
-    "@testing-library/dom": ^9.0.0
+    "@testing-library/dom": ^10.1.0
   peerDependencies:
-    cypress: ^12.0.0 || ^13.0.0
-  checksum: cb0fad24c74b7022678e8431d24af9be16de0cd96597a90c1a916c97eb3c414405f28eab3be127f22bd54646182b467aa563cff9c813529d3a8e0bdb52ab2dc3
+    cypress: ^12.0.0 || ^13.0.0 || ^14.0.0 || ^15.0.0
+  checksum: 0a5a433fff11c35244d87f2a1d5974d5ef4478212a94245062b4dce5459bc367b26faa9f436cf11f2cb956927658b9849506735a93f64247fffc8690fc603fcb
+  languageName: node
+  linkType: hard
+
+"@testing-library/dom@npm:^10.1.0":
+  version: 10.4.1
+  resolution: "@testing-library/dom@npm:10.4.1"
+  dependencies:
+    "@babel/code-frame": ^7.10.4
+    "@babel/runtime": ^7.12.5
+    "@types/aria-query": ^5.0.1
+    aria-query: 5.3.0
+    dom-accessibility-api: ^0.5.9
+    lz-string: ^1.5.0
+    picocolors: 1.1.1
+    pretty-format: ^27.0.2
+  checksum: 3887fe95594b6d9467a804e2cc82e719c57f4d55d7d9459b72a949b3a8189db40375b89034637326d4be559f115abc6b6bcfcc6fec0591c4a4d4cdde96751a6c
   languageName: node
   linkType: hard
 
@@ -3668,12 +3684,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"aria-query@npm:5.1.3, aria-query@npm:^5.0.0, aria-query@npm:^5.1.3":
+"aria-query@npm:5.1.3":
   version: 5.1.3
   resolution: "aria-query@npm:5.1.3"
   dependencies:
     deep-equal: ^2.0.5
   checksum: 929ff95f02857b650fb4cbcd2f41072eee2f46159a6605ea03bf63aa572e35ffdff43d69e815ddc462e16e07de8faba3978afc2813650b4448ee18c9895d982b
+  languageName: node
+  linkType: hard
+
+"aria-query@npm:5.3.0, aria-query@npm:^5.0.0, aria-query@npm:^5.1.3":
+  version: 5.3.0
+  resolution: "aria-query@npm:5.3.0"
+  dependencies:
+    dequal: ^2.0.3
+  checksum: 305bd73c76756117b59aba121d08f413c7ff5e80fa1b98e217a3443fcddb9a232ee790e24e432b59ae7625aebcf4c47cb01c2cac872994f0b426f5bdfcd96ba9
   languageName: node
   linkType: hard
 
@@ -4756,7 +4781,7 @@ __metadata:
     "@mui/material": 5.11.0
     "@tanstack/react-query": 4.40.0
     "@tanstack/react-query-devtools": 4.40.0
-    "@testing-library/cypress": 10.0.0
+    "@testing-library/cypress": 10.1.0
     "@testing-library/jest-dom": 6.8.0
     "@testing-library/react": 14.3.1
     "@testing-library/user-event": 14.6.1
@@ -4827,7 +4852,7 @@ __metadata:
     "@mui/x-date-pickers": 6.11.2
     "@tanstack/react-query": 4.40.0
     "@tanstack/react-query-devtools": 4.40.0
-    "@testing-library/cypress": 10.0.0
+    "@testing-library/cypress": 10.1.0
     "@testing-library/jest-dom": 6.8.0
     "@testing-library/react": 14.3.1
     "@testing-library/user-event": 14.6.1
@@ -5063,6 +5088,13 @@ __metadata:
   version: 1.1.2
   resolution: "depd@npm:1.1.2"
   checksum: 6b406620d269619852885ce15965272b829df6f409724415e0002c8632ab6a8c0a08ec1f0bd2add05dc7bd7507606f7e2cc034fa24224ab829580040b835ecd9
+  languageName: node
+  linkType: hard
+
+"dequal@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "dequal@npm:2.0.3"
+  checksum: 8679b850e1a3d0ebbc46ee780d5df7b478c23f335887464023a631d1b9af051ad4a6595a44220f9ff8ff95a8ddccf019b5ad778a976fd7bbf77383d36f412f90
   languageName: node
   linkType: hard
 
@@ -8602,7 +8634,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"picocolors@npm:^1.1.1":
+"picocolors@npm:1.1.1, picocolors@npm:^1.1.1":
   version: 1.1.1
   resolution: "picocolors@npm:1.1.1"
   checksum: e1cf46bf84886c79055fdfa9dcb3e4711ad259949e3565154b004b260cd356c5d54b31a1437ce9782624bf766272fe6b0154f5f0c744fb7af5d454d2b60db045
