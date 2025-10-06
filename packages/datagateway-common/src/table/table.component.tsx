@@ -165,7 +165,7 @@ interface VirtualizedTableProps {
   allIds?: number[];
   disableSelectAll?: boolean;
   shortHeader?: boolean;
-  disableDownloadIfAnon: boolean;
+  disableDownloadIfAnon?: boolean;
 }
 
 export const VirtualizedTable = React.memo(

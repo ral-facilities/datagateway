@@ -124,7 +124,8 @@ describe('PreviewDatafileButton', () => {
       })
     ).toHaveAttribute('aria-disabled', 'true');
 
-    await user.hover(previewButton.parentElement);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    await user.hover(previewButton.parentElement!);
 
     expect(
       await screen.findByText('buttons.disallow_anon_tooltip')
