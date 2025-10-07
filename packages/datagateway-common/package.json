@@ -17,7 +17,7 @@
     "@types/lodash.debounce": "4.0.6",
     "@vitejs/plugin-react": "5.0.0",
     "axios": "1.12.0",
-    "browserslist": "4.25.0",
+    "browserslist": "4.26.3",
     "browserslist-to-esbuild": "2.1.1",
     "date-fns": "2.30.0",
     "hex-to-rgba": "2.0.1",
