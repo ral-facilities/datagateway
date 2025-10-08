@@ -3975,6 +3975,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"baseline-browser-mapping@npm:^2.8.9":
+  version: 2.8.12
+  resolution: "baseline-browser-mapping@npm:2.8.12"
+  bin:
+    baseline-browser-mapping: dist/cli.js
+  checksum: 2972a58d059d0ffc2a11bf6ad4cc78490f939cfd8276896e01913699d37059337eeca27f42591c1ffab898db16cc490855991be7306480894160932086a81bcd
+  languageName: node
+  linkType: hard
+
 "bcrypt-pbkdf@npm:^1.0.0":
   version: 1.0.2
   resolution: "bcrypt-pbkdf@npm:1.0.2"
@@ -4066,17 +4075,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"browserslist@npm:4.25.0, browserslist@npm:^4.21.4, browserslist@npm:^4.24.0":
-  version: 4.25.0
-  resolution: "browserslist@npm:4.25.0"
+"browserslist@npm:4.26.3, browserslist@npm:^4.21.4, browserslist@npm:^4.24.0":
+  version: 4.26.3
+  resolution: "browserslist@npm:4.26.3"
   dependencies:
-    caniuse-lite: ^1.0.30001718
-    electron-to-chromium: ^1.5.160
-    node-releases: ^2.0.19
+    baseline-browser-mapping: ^2.8.9
+    caniuse-lite: ^1.0.30001746
+    electron-to-chromium: ^1.5.227
+    node-releases: ^2.0.21
     update-browserslist-db: ^1.1.3
   bin:
     browserslist: cli.js
-  checksum: 0d34fa0c6e23e962598ba68ee9f4566a4b575ec550ff7e9e7287c5e94a6e0f208f75f4f7d578ccd060f843167e0e495bde8f6d278f353f0da783cd50f758e5c7
+  checksum: aa5bbcda9db1eeb9952b4c2f11f9a5a2247da7bcce7fa14d3cc215e67246a93394eda2f86378a41c3f73e6e1a1561bf0e7eade93c5392cb6d37bc66f70d0c53f
   languageName: node
   linkType: hard
 
@@ -4184,10 +4194,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caniuse-lite@npm:^1.0.30001718":
-  version: 1.0.30001722
-  resolution: "caniuse-lite@npm:1.0.30001722"
-  checksum: 318e40d938bbc6fe2e6b8524195622421588b43bfc3068d0ba24e1ffc6744ac032571181446f9f6a91c374755109af0520e06227fa70611c32252e0d71be24f8
+"caniuse-lite@npm:^1.0.30001746":
+  version: 1.0.30001748
+  resolution: "caniuse-lite@npm:1.0.30001748"
+  checksum: b3c19786e384d7a54796138f2b1d4e675ca4f9f1fd5e0402ffe1442025e799e5c27e64b0c3fcebef542aa5fa3410c5af8b965f890fff3c0e10cc2b3127a043fa
   languageName: node
   linkType: hard
 
@@ -4655,7 +4665,7 @@ __metadata:
     "@vitejs/plugin-react": 5.0.0
     "@vitest/coverage-v8": 3.2.3
     axios: 1.12.0
-    browserslist: 4.25.0
+    browserslist: 4.26.3
     browserslist-to-esbuild: 2.1.1
     date-fns: 2.30.0
     eslint: 8.57.1
@@ -4727,7 +4737,7 @@ __metadata:
     "@vitejs/plugin-react": 5.0.0
     "@vitest/coverage-v8": 3.2.3
     axios: 1.12.0
-    browserslist: 4.25.0
+    browserslist: 4.26.3
     browserslist-to-esbuild: 2.1.1
     cross-env: 10.0.0
     cypress: 13.17.0
@@ -4797,7 +4807,7 @@ __metadata:
     "@vitejs/plugin-react": 5.0.0
     "@vitest/coverage-v8": 3.2.3
     axios: 1.12.0
-    browserslist: 4.25.0
+    browserslist: 4.26.3
     browserslist-to-esbuild: 2.1.1
     cross-env: 10.0.0
     cypress: 13.17.0
@@ -4872,7 +4882,7 @@ __metadata:
     "@vitejs/plugin-react": 5.0.0
     "@vitest/coverage-v8": 3.2.3
     axios: 1.12.0
-    browserslist: 4.25.0
+    browserslist: 4.26.3
     browserslist-to-esbuild: 2.1.1
     cross-env: 10.0.0
     cypress: 13.17.0
@@ -5198,10 +5208,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-to-chromium@npm:^1.5.160":
-  version: 1.5.166
-  resolution: "electron-to-chromium@npm:1.5.166"
-  checksum: 8924ae3dc3dcf4aaa9262e079496682c1f5bdcef481c88b7c6a3b54a671e16726870a89c566fae77fc8f5ea32dc661e59aaebeea3f51a9b7a85a00c3d930e9a9
+"electron-to-chromium@npm:^1.5.227":
+  version: 1.5.231
+  resolution: "electron-to-chromium@npm:1.5.231"
+  checksum: f885a1edf959d70ddb1adace0a434641ac0f3b218b1eb7a6c91136a1fd9fa2aaa7bb136b8d33d9d90c1a555f176d92a3cc22868c084c2fe1584c5e93dcbd61d9
   languageName: node
   linkType: hard
 
@@ -8243,10 +8253,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-releases@npm:^2.0.19":
-  version: 2.0.19
-  resolution: "node-releases@npm:2.0.19"
-  checksum: 917dbced519f48c6289a44830a0ca6dc944c3ee9243c468ebd8515a41c97c8b2c256edb7f3f750416bc37952cc9608684e6483c7b6c6f39f6bd8d86c52cfe658
+"node-releases@npm:^2.0.21":
+  version: 2.0.23
+  resolution: "node-releases@npm:2.0.23"
+  checksum: dc3194ffdf04975f8525a5e175c03f5a95cecd7607b6b0e80d28aaa03900706d920722b5f2ae2e8e28e029e6ae75f0d0f7eae87e8ee2a363c704785e3118f13d
   languageName: node
   linkType: hard
 
