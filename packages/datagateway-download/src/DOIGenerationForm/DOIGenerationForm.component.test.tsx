@@ -19,7 +19,7 @@ import {
 import { MemoryHistory, createMemoryHistory } from 'history';
 import { Router } from 'react-router-dom';
 import { DownloadSettingsContext } from '../ConfigProvider';
-import { getCartUsers, mintCart } from '../downloadApi';
+import { getCartUsers, mintDraftCart } from '../downloadApi';
 import { flushPromises } from '../setupTests';
 import { mockCartItems, mockedSettings } from '../testData';
 import DOIGenerationForm from './DOIGenerationForm.component';
@@ -161,7 +161,7 @@ describe('DOI generation form component', () => {
     vi.mocked(fetchDownloadCart).mockResolvedValue(mockCartItems);
 
     // mock mint cart error to test dialog can be closed after it errors
-    vi.mocked(mintCart).mockRejectedValue('error');
+    vi.mocked(mintDraftCart).mockRejectedValue('error');
 
     vi.mocked(getCartUsers).mockResolvedValue([
       {
@@ -380,7 +380,7 @@ describe('DOI generation form component', () => {
       screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
     );
 
-    expect(mintCart).toHaveBeenCalledWith(
+    expect(mintDraftCart).toHaveBeenCalledWith(
       mockCartItems,
       {
         title: 't',

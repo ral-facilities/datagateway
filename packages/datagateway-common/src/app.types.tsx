@@ -563,6 +563,28 @@ export enum DOIResourceType {
   Other = 'Other',
 }
 
+export enum DOIIdentifierType {
+  ARK = 'ARK',
+  arXiv = 'arXiv',
+  bibcode = 'bibcode',
+  DOI = 'DOI',
+  EAN13 = 'EAN13',
+  EISSN = 'EISSN',
+  Handle = 'Handle',
+  IGSN = 'IGSN',
+  ISBN = 'ISBN',
+  ISSN = 'ISSN',
+  ISTC = 'ISTC',
+  LISSN = 'LISSN',
+  LSID = 'LSID',
+  PMID = 'PMID',
+  PURL = 'PURL',
+  UPC = 'UPC',
+  URL = 'URL',
+  URN = 'URN',
+  w3id = 'w3id',
+}
+
 export interface DOIMetadata {
   title: string;
   description: string;
@@ -570,14 +592,121 @@ export interface DOIMetadata {
   related_items: RelatedDOI[];
 }
 
+export interface DOICreator {
+  name: string;
+  nameType: string;
+  givenName: string;
+  familyName: string;
+  nameIdentifiers: {
+    nameIdentifier: string;
+    nameIdentifierScheme: string;
+    schemeUri: string | null;
+  }[];
+  affiliations: {
+    affiliationIdentifier: string | null;
+    affiliation: string;
+    affiliationIdentifierScheme: string | null;
+    schemeUri: string | null;
+  }[];
+}
+
+export type DOIContributor = DOICreator & {
+  contributorType: ContributorType;
+};
+
+export interface DOIRelatedIdentifier {
+  relatedIdentifier: string;
+  relatedIdentifierType: DOIIdentifierType;
+  relationType: DOIRelationType;
+  resourceTypeGeneral: DOIResourceType;
+  relatedMetadataScheme: null;
+  schemeUri: null;
+  schemeType: null;
+}
+
+export interface DataciteMetadata {
+  publisher: {
+    name: string;
+    publisherIdentifier: string | null;
+    publisherIdentifierScheme: string | null;
+    schemeUri: string | null;
+  };
+  publicationYear: number;
+  dates: {
+    date: string;
+    dateType: string;
+    dateInformation: string | null;
+  }[];
+  types: {
+    resourceType: string;
+    resourceTypeGeneral: string;
+  };
+  rightsList: {
+    rights: string;
+    rightsUri: string | null;
+    rightsIdentifier: string | null;
+    rightsIdentifierScheme: string | null;
+    schemeUri: string | null;
+  }[];
+  geoLocations: {
+    geoLocationPlace: string | null;
+    geoLocationPoint: {
+      pointLatitude: number | null;
+      pointLongitude: number | null;
+    };
+  }[];
+  fundingReferences: {
+    funderName: string;
+    funderIdentifier: string | null;
+    funderIdentifierType: string | null;
+    schemeUri: string | null;
+    awardUri: string | null;
+    awardTitle: string | null;
+    awardNumber: string;
+  }[];
+  url: string;
+  identifiers: {
+    identifier: string;
+    identifierType: DOIIdentifierType;
+  }[];
+  creators: DOICreator[];
+  titles: {
+    title: string;
+  }[];
+  subjects: {
+    subject: string;
+    subjectScheme: string;
+    schemeUri: string;
+    valueUri: string;
+    classificationCode: string;
+  }[];
+  contributors: DOIContributor[];
+  language: string | null;
+  alternateIdentifiers: never[];
+  relatedIdentifiers: DOIRelatedIdentifier[];
+  sizes: string[];
+  formats: never[];
+  version: string;
+  descriptions: {
+    description: string;
+    descriptionType: string;
+  }[];
+  relatedItems: never[];
+  doi: string;
+}
+
 export interface DOIResponse {
   concept: DOIResult;
   version: DOIResult;
 }
 
+export interface DOIDraftResponse {
+  concept: DOIResult;
+}
+
 export interface DOIResult {
-  data_publication: string;
-  doi: string;
+  data_publication_id: string;
+  attributes: DataciteMetadata;
 }
 
 /**

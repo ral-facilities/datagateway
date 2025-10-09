@@ -27,10 +27,35 @@ export const handleDOIAPIError = (
   error: AxiosError<any>,
   _variables?: unknown,
   _context?: unknown,
-  logCondition?: boolean
+  logCondition?: boolean,
+  broadcastCondition?: boolean
 ): void => {
+  const message =
+    (error as AxiosError<{ detail?: { msg?: string } }>).response?.data?.detail
+      ?.msg ?? error.message;
+
   if (typeof logCondition === 'undefined' || logCondition === true)
-    log.error(error);
+    log.error(message);
+
+  if (broadcastCondition === true) {
+    let broadcastMessage = message;
+    // no reponse so it's a network error
+    if (!error.response)
+      broadcastMessage =
+        'Network Error, please reload the page or try again later';
+    document.dispatchEvent(
+      new CustomEvent(MicroFrontendId, {
+        detail: {
+          type: InvalidateTokenType,
+          payload: {
+            severity: 'error',
+            message: broadcastMessage,
+          },
+        },
+      })
+    );
+  }
+
   if (error.response?.status === 401) {
     document.dispatchEvent(
       new CustomEvent(MicroFrontendId, {
@@ -284,6 +309,7 @@ export const isCartMintable = async (
     if (cartItem.entityType === 'dataset') datasets.push(cartItem.entityId);
     if (cartItem.entityType === 'datafile') datafiles.push(cartItem.entityId);
   });
+
   const { status } = await axios.post(
     `${doiMinterUrl}/ismintable`,
     {
@@ -332,6 +358,7 @@ export const useIsCartMintable = (
           error,
           undefined,
           undefined,
+          error.response?.status !== 403,
           error.response?.status !== 403
         );
       },
@@ -346,80 +373,6 @@ export const useIsCartMintable = (
       },
       refetchOnWindowFocus: false,
       enabled: typeof doiMinterUrl !== 'undefined',
-    }
-  );
-};
-
-interface StaticDataciteMetadata {
-  publisher: {
-    name: string;
-    publisherIdentifier: string | null;
-    publisherIdentifierScheme: string | null;
-    schemeURI: string | null;
-  };
-  publicationYear: number;
-  dates: {
-    date: string;
-    dateType: string;
-    dateInformation: string | null;
-  }[];
-  types: {
-    resourceType: string;
-    resourceTypeGeneral: string;
-  };
-  rightsList: {
-    rights: string;
-    rightsUri: string | null;
-    rightsIdentifier: string | null;
-    rightsIdentifierScheme: string | null;
-    schemeUri: string | null;
-  }[];
-  geoLocations: {
-    geoLocationPlace: string | null;
-    geoLocationPoint: {
-      pointLatitude: number | null;
-      pointLongitude: number | null;
-    };
-  }[];
-  fundingReferences: {
-    funderName: string;
-    funderIdentifier: string | null;
-    funderIdentifierType: string | null;
-    schemeUri: string | null;
-    awardUri: string | null;
-    awardTitle: string | null;
-    awardNumber: string;
-  }[];
-}
-
-export const getStaticDataciteMetadata = async (
-  doiMinterUrl: string | undefined
-): Promise<StaticDataciteMetadata> => {
-  return axios
-    .get<StaticDataciteMetadata>(`${doiMinterUrl}/static_metadata`, {
-      // we don't strictly need to add this but might as well/future proofs in case in the future this endpoint is secured
-      headers: {
-        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
-      },
-    })
-    .then((response) => response.data);
-};
-
-/**
- * Gets the static metadata that is sent to DataCite
- * @param metadata {@link StaticDataciteMetadata}
- */
-export const useStaticDataciteMetadata = (
-  doiMinterUrl: string | undefined
-): UseQueryResult<StaticDataciteMetadata, AxiosError> => {
-  return useQuery(
-    ['staticDataCiteMetadata'],
-    () => {
-      return getStaticDataciteMetadata(doiMinterUrl);
-    },
-    {
-      onError: handleDOIAPIError,
-      refetchOnWindowFocus: false,
     }
   );
 };

@@ -190,7 +190,7 @@ if (
         const apiUrl = settingsResult.apiUrl;
         axios
           .post(`${apiUrl}/sessions`, {
-            username: 'root',
+            username: 'Chris481',
             password: 'pw',
             mechanism: 'simple',
           })
@@ -198,7 +198,7 @@ if (
             const jwtHeader = { alg: 'HS256', typ: 'JWT' };
             const payload = {
               sessionId: response.data.sessionID,
-              username: 'dev',
+              username: 'Chris481',
             };
             const jwt = jsrsasign.KJUR.jws.JWS.sign(
               'HS256',

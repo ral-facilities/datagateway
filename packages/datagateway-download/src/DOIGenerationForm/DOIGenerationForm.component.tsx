@@ -24,7 +24,13 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Redirect, useLocation } from 'react-router-dom';
 import { DownloadSettingsContext } from '../ConfigProvider';
-import { useCart, useCartUsers, useMintCart } from '../downloadApiHooks';
+import {
+  useCart,
+  useCartUsers,
+  useDeleteDraft,
+  useMintDraftCart,
+  usePublishDraft,
+} from '../downloadApiHooks';
 import AcceptDataPolicy from './acceptDataPolicy.component';
 
 const DOIGenerationForm: React.FC = () => {
@@ -54,11 +60,22 @@ const DOIGenerationForm: React.FC = () => {
   const { data: cart } = useCart();
   const { data: users } = useCartUsers(cart);
   const {
-    mutate: mintCart,
-    status: mintingStatus,
-    data: mintData,
-    error: mintError,
-  } = useMintCart();
+    mutateAsync: mintDraftCart,
+    status: mintingDraftStatus,
+    data: mintDraftData,
+  } = useMintDraftCart();
+
+  const draftDataPublicationId = mintDraftData?.concept.data_publication_id;
+
+  const {
+    mutate: publishDraft,
+    status: publishingStatus,
+    data: publishData,
+    error: publishError,
+  } = usePublishDraft();
+
+  const { mutateAsync: deleteDraft, status: deleteDraftStatus } =
+    useDeleteDraft();
 
   React.useEffect(() => {
     if (users)
@@ -88,6 +105,48 @@ const DOIGenerationForm: React.FC = () => {
   const [showMetadataConfirmation, setShowMetadataConfirmation] =
     React.useState(false);
 
+  const handleMintClick = React.useCallback(() => {
+    if (cart) {
+      const creatorsList = selectedUsers
+        .filter(
+          (user) =>
+            // the user requesting the mint is added automatically
+            // by the backend, so don't pass them to the backend
+            user.name !== readSciGatewayToken().username
+        )
+        .map((user) => ({
+          username: user.name,
+          contributor_type: user.contributor_type as ContributorType, // we check this is true in the disabled field above
+        }));
+      mintDraftCart({
+        cart,
+        doiMetadata: {
+          title,
+          description,
+          creators: creatorsList.length > 0 ? creatorsList : undefined,
+          related_items: relatedDOIs,
+        },
+      }).then(() => {
+        setShowMetadataConfirmation(true);
+      });
+    }
+  }, [cart, description, mintDraftCart, relatedDOIs, selectedUsers, title]);
+
+  const handleConfirmClick = React.useCallback(() => {
+    if (draftDataPublicationId) {
+      setShowMintConfirmation(true);
+
+      publishDraft(draftDataPublicationId);
+    }
+  }, [draftDataPublicationId, publishDraft]);
+
+  const handleBackClick = React.useCallback(() => {
+    if (draftDataPublicationId)
+      deleteDraft(draftDataPublicationId).then(() => {
+        setShowMetadataConfirmation(false);
+      });
+  }, [deleteDraft, draftDataPublicationId]);
+
   // redirect if the user tries to access the link directly instead of from the cart
   if (!location.state?.fromCart) {
     return <Redirect to="/download" />;
@@ -99,41 +158,11 @@ const DOIGenerationForm: React.FC = () => {
         <>
           {showMetadataConfirmation ? (
             <DOIMetadataConfirmation
-              title={title}
-              description={description}
-              selectedUsers={selectedUsers}
-              relatedDOIs={relatedDOIs}
-              doiMinterUrl={doiMinterUrl}
-              onBackClick={() => {
-                setShowMetadataConfirmation(false);
-              }}
-              onConfirmClick={() => {
-                if (cart) {
-                  setShowMintConfirmation(true);
-                  const creatorsList = selectedUsers
-                    .filter(
-                      (user) =>
-                        // the user requesting the mint is added automatically
-                        // by the backend, so don't pass them to the backend
-                        user.name !== readSciGatewayToken().username
-                    )
-                    .map((user) => ({
-                      username: user.name,
-                      contributor_type:
-                        user.contributor_type as ContributorType, // we check this is true in the disabled field above
-                    }));
-                  mintCart({
-                    cart,
-                    doiMetadata: {
-                      title,
-                      description,
-                      creators:
-                        creatorsList.length > 0 ? creatorsList : undefined,
-                      related_items: relatedDOIs,
-                    },
-                  });
-                }
-              }}
+              draftMetadata={mintDraftData?.concept.attributes}
+              onBackClick={handleBackClick}
+              onConfirmClick={handleConfirmClick}
+              deleteLoading={deleteDraftStatus === 'loading'}
+              publishLoading={publishingStatus === 'loading'}
             />
           ) : (
             <Box>
@@ -249,7 +278,8 @@ const DOIGenerationForm: React.FC = () => {
                     disableMintButton={
                       typeof cart === 'undefined' || cart.length === 0
                     }
-                    onMintClick={() => setShowMetadataConfirmation(true)}
+                    mintLoading={mintingDraftStatus === 'loading'}
+                    onMintClick={handleMintClick}
                   />
                 </Grid>
               </Paper>
@@ -258,9 +288,9 @@ const DOIGenerationForm: React.FC = () => {
           {/* Show the download confirmation dialog. */}
           <DOIConfirmDialog
             open={showMintConfirmation}
-            mintingStatus={mintingStatus}
-            data={mintData}
-            error={mintError}
+            mintingStatus={publishingStatus}
+            data={publishData}
+            error={publishError}
             setClose={() => setShowMintConfirmation(false)}
           />
         </>

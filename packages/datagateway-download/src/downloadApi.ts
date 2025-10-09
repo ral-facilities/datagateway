@@ -2,6 +2,7 @@ import axios from 'axios';
 import type {
   Datafile,
   Dataset,
+  DOIDraftResponse,
   DOIMetadata,
   DOIResponse,
   Download,
@@ -257,13 +258,13 @@ export const getPercentageComplete = async ({
 };
 
 /**
- * Mint a DOI for a cart, returns a DataPublication ID & DOI
+ * Mint a draft a DOI for a cart, returns a DataPublication ID & DOI
  */
-export const mintCart = (
+export const mintDraftCart = (
   cart: DownloadCartItem[],
   doiMetadata: DOIMetadata,
   settings: Pick<DownloadSettings, 'doiMinterUrl'>
-): Promise<DOIResponse> => {
+): Promise<DOIDraftResponse> => {
   const investigations: number[] = [];
   const datasets: number[] = [];
   const datafiles: number[] = [];
@@ -275,7 +276,7 @@ export const mintCart = (
   });
   return axios
     .post(
-      `${settings.doiMinterUrl}/mint`,
+      `${settings.doiMinterUrl}/draft`,
       {
         metadata: {
           ...doiMetadata,
@@ -294,6 +295,40 @@ export const mintCart = (
       }
     )
     .then((response) => response.data);
+};
+
+/**
+ * Publish a draft DOI, returns a DataPublication ID & DOI
+ */
+export const publishDraftDOI = (
+  dataPublicationId: string,
+  settings: Pick<DownloadSettings, 'doiMinterUrl'>
+): Promise<DOIResponse> => {
+  return axios
+    .put(
+      `${settings.doiMinterUrl}/draft/${dataPublicationId}/publish`,
+      undefined,
+      {
+        headers: {
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+        },
+      }
+    )
+    .then((response) => response.data);
+};
+
+/**
+ * Delete a draft DOI
+ */
+export const deleteDraftDOI = (
+  dataPublicationId: string,
+  settings: Pick<DownloadSettings, 'doiMinterUrl'>
+): Promise<void> => {
+  return axios.delete(`${settings.doiMinterUrl}/draft/${dataPublicationId}`, {
+    headers: {
+      Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+    },
+  });
 };
 
 const fetchEntityUsers = (

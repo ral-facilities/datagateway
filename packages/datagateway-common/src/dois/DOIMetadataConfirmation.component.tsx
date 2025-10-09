@@ -1,59 +1,76 @@
-import { ArrowBack, Check } from '@mui/icons-material';
-import { Button, CircularProgress, Grid, Typography } from '@mui/material';
+import { ArrowBack, Publish } from '@mui/icons-material';
+import LoadingButton from '@mui/lab/LoadingButton';
+import { CircularProgress, Grid, Link, Typography } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useStaticDataciteMetadata } from '../api/dois';
-import { ContributorType, RelatedDOI } from '../app.types';
-import { ContributorUser } from './creatorsAndContributors.component';
+import {
+  DOIContributor,
+  DOICreator,
+  DOIIdentifierType,
+  DataciteMetadata,
+} from '../app.types';
 
 type DOIMetadataConfirmationProps = {
-  title: string;
-  description: string;
-  selectedUsers: ContributorUser[];
-  relatedDOIs: RelatedDOI[];
+  draftMetadata: DataciteMetadata | undefined;
+  deleteLoading: boolean;
+  publishLoading: boolean;
   onConfirmClick: () => void;
   onBackClick: () => void;
-  doiMinterUrl: string | undefined; // this is because since it loads from settings it is technically undefined at some point
 };
 
 const CreatorsAndContributorsMetadata: React.FC<{
-  users: ContributorUser[];
+  users: DOICreator[] | DOIContributor[];
 }> = (props) => {
   const [t] = useTranslation();
   return (
     <>
       {props.users.map((user) => {
         return (
-          <Grid container item key={user.id} columnSpacing={1} ml={1}>
+          <Grid container item key={user.name} columnSpacing={1} ml={1}>
             <Grid item>
               <Typography>
-                {t('DOIGenerationForm.creator_name')}: {user.fullName}
+                {t('DOIGenerationForm.creator_name')}: {user.name}
               </Typography>
             </Grid>
-            {user.affiliation && (
+            {user.affiliations && (
+              <Grid container item>
+                {user.affiliations.map((affiliation) => (
+                  <Grid item key={affiliation.affiliation}>
+                    <Typography>
+                      {t('DOIGenerationForm.creator_affiliation')}:{' '}
+                      {affiliation.affiliation}
+                    </Typography>
+                  </Grid>
+                ))}
+              </Grid>
+            )}
+            {'contributorType' in user && (
               <Grid item>
                 <Typography>
-                  {t('DOIGenerationForm.creator_affiliation')}:{' '}
-                  {user.affiliation}
+                  {t('DOIGenerationForm.creator_type')}: {user.contributorType}
                 </Typography>
               </Grid>
             )}
-            {user.email && (
-              <Grid item>
-                <Typography>
-                  {t('DOIGenerationForm.creator_email')}: {user.email}
-                </Typography>
+            {user.nameIdentifiers && (
+              <Grid container item>
+                {user.nameIdentifiers.map((nameIdentifier) => (
+                  <Grid item key={nameIdentifier.nameIdentifier}>
+                    <Typography>
+                      {nameIdentifier.nameIdentifierScheme}:{' '}
+                      {nameIdentifier.schemeUri ? (
+                        <Link
+                          href={`${nameIdentifier.schemeUri}/${nameIdentifier.nameIdentifier}`}
+                        >
+                          {nameIdentifier.nameIdentifier}
+                        </Link>
+                      ) : (
+                        nameIdentifier.nameIdentifier
+                      )}
+                    </Typography>
+                  </Grid>
+                ))}
               </Grid>
             )}
-            {user.contributor_type !== ContributorType.Creator &&
-              user.contributor_type !== ContributorType.Minter && (
-                <Grid item>
-                  <Typography>
-                    {t('DOIGenerationForm.creator_type')}:{' '}
-                    {user.contributor_type}
-                  </Typography>
-                </Grid>
-              )}
           </Grid>
         );
       })}
@@ -64,19 +81,10 @@ const CreatorsAndContributorsMetadata: React.FC<{
 const DOIMetadataConfirmation: React.FC<DOIMetadataConfirmationProps> = (
   props
 ) => {
-  const {
-    title,
-    description,
-    selectedUsers,
-    relatedDOIs,
-    onConfirmClick,
-    onBackClick,
-    doiMinterUrl,
-  } = props;
-  const { data: staticMetadata } = useStaticDataciteMetadata(doiMinterUrl);
+  const { draftMetadata: metadata, onConfirmClick, onBackClick } = props;
   const [t] = useTranslation();
 
-  if (typeof staticMetadata === 'undefined') return <CircularProgress />;
+  if (typeof metadata === 'undefined') return <CircularProgress />;
 
   return (
     <>
@@ -86,40 +94,54 @@ const DOIMetadataConfirmation: React.FC<DOIMetadataConfirmationProps> = (
       <Grid container spacing={1} direction="column">
         <Grid item>
           <Typography>
-            {t('DOIGenerationForm.title')}: {title}
+            {t('DOIGenerationForm.title')}: {metadata.titles[0].title}
           </Typography>
         </Grid>
         <Grid item>
           <Typography>
-            {t('DOIGenerationForm.description')}: {description}
+            {t('DOIGenerationForm.description')}:{' '}
+            {metadata.descriptions[0].description}
           </Typography>
         </Grid>
         <Grid container item spacing={1}>
           <Grid item>
             <Typography>{t('DOIGenerationForm.related_dois')}</Typography>
           </Grid>
-          {relatedDOIs.map((relatedDOI) => {
+          {metadata.relatedIdentifiers.map((relatedDOI) => {
             return (
               <Grid
                 container
                 item
-                key={relatedDOI.identifier}
+                key={relatedDOI.relatedIdentifier}
                 columnSpacing={1}
                 ml={1}
               >
                 <Grid item>
                   <Typography>
-                    {t('DOIGenerationForm.related_doi_doi')}:{' '}
-                    {relatedDOI.identifier}
+                    {t('DOIGenerationForm.related_doi_identifier')}:{' '}
+                    {relatedDOI.relatedIdentifierType ===
+                    DOIIdentifierType.DOI ? (
+                      <Link
+                        href={`https://doi.org/${relatedDOI.relatedIdentifier}`}
+                      >
+                        {relatedDOI.relatedIdentifier}
+                      </Link>
+                    ) : relatedDOI.relatedIdentifierType ===
+                      DOIIdentifierType.URL ? (
+                      <Link href={relatedDOI.relatedIdentifier}>
+                        {relatedDOI.relatedIdentifier}
+                      </Link>
+                    ) : (
+                      relatedDOI.relatedIdentifier
+                    )}
                   </Typography>
                 </Grid>
-                {title && (
-                  <Grid item>
-                    <Typography>
-                      {t('DOIGenerationForm.title')}: {relatedDOI.title}
-                    </Typography>
-                  </Grid>
-                )}
+                <Grid item>
+                  <Typography>
+                    {t('DOIGenerationForm.related_doi_type')}:{' '}
+                    {relatedDOI.relatedIdentifierType}
+                  </Typography>
+                </Grid>
                 <Grid item>
                   <Typography>
                     {t('DOIGenerationForm.related_doi_relationship')}:{' '}
@@ -129,7 +151,7 @@ const DOIMetadataConfirmation: React.FC<DOIMetadataConfirmationProps> = (
                 <Grid item>
                   <Typography>
                     {t('DOIGenerationForm.related_doi_resource_type')}:{' '}
-                    {relatedDOI.relatedItemType}
+                    {relatedDOI.resourceTypeGeneral}
                   </Typography>
                 </Grid>
               </Grid>
@@ -140,25 +162,13 @@ const DOIMetadataConfirmation: React.FC<DOIMetadataConfirmationProps> = (
           <Grid item>
             <Typography>{t('DOIGenerationForm.creators')}</Typography>
           </Grid>
-          <CreatorsAndContributorsMetadata
-            users={selectedUsers.filter(
-              (user) =>
-                user.contributor_type === ContributorType.Creator ||
-                user.contributor_type === ContributorType.Minter
-            )}
-          />
+          <CreatorsAndContributorsMetadata users={metadata.creators} />
         </Grid>
         <Grid container item spacing={1}>
           <Grid item>
             <Typography>{t('DOIGenerationForm.contributors')}</Typography>
           </Grid>
-          <CreatorsAndContributorsMetadata
-            users={selectedUsers.filter(
-              (user) =>
-                user.contributor_type !== ContributorType.Creator &&
-                user.contributor_type !== ContributorType.Minter
-            )}
-          />
+          <CreatorsAndContributorsMetadata users={metadata.contributors} />
         </Grid>
         <Grid container item spacing={1}>
           <Grid item>
@@ -167,31 +177,32 @@ const DOIMetadataConfirmation: React.FC<DOIMetadataConfirmationProps> = (
           <Grid container item direction="column" ml={1}>
             <Grid item>
               <Typography>
-                {t('DOIGenerationForm.publisher')}:{' '}
-                {staticMetadata?.publisher.name}
+                {t('DOIGenerationForm.publisher')}: {metadata.publisher.name}
               </Typography>
             </Grid>
-            {staticMetadata?.publisher.publisherIdentifier && (
+            {metadata.publisher.publisherIdentifier && (
               <Grid item>
                 <Typography>
                   {t('DOIGenerationForm.publisherIdentifier')}:{' '}
-                  {staticMetadata?.publisher.publisherIdentifier}
+                  {metadata.publisher.publisherIdentifier}
                 </Typography>
               </Grid>
             )}
-            {staticMetadata?.publisher.publisherIdentifierScheme && (
+            {metadata.publisher.publisherIdentifierScheme && (
               <Grid item>
                 <Typography>
                   {t('DOIGenerationForm.publisherIdentifierScheme')}:{' '}
-                  {staticMetadata?.publisher.publisherIdentifierScheme}
+                  {metadata.publisher.publisherIdentifierScheme}
                 </Typography>
               </Grid>
             )}
-            {staticMetadata?.publisher.schemeURI && (
+            {metadata.publisher.schemeUri && (
               <Grid item>
                 <Typography>
                   {t('DOIGenerationForm.publisherSchemeURI')}:{' '}
-                  {staticMetadata?.publisher.schemeURI}
+                  <Link href={metadata.publisher.schemeUri}>
+                    {metadata.publisher.schemeUri}
+                  </Link>
                 </Typography>
               </Grid>
             )}
@@ -199,15 +210,14 @@ const DOIMetadataConfirmation: React.FC<DOIMetadataConfirmationProps> = (
         </Grid>
         <Grid item>
           <Typography>
-            {t('DOIGenerationForm.publicationYear')}:{' '}
-            {staticMetadata?.publicationYear}
+            {t('DOIGenerationForm.publicationYear')}: {metadata.publicationYear}
           </Typography>
         </Grid>
         <Grid container item spacing={1}>
           <Grid item>
             <Typography>{t('DOIGenerationForm.dates')}</Typography>
           </Grid>
-          {staticMetadata?.dates.map((date) => {
+          {metadata.dates.map((date) => {
             return (
               <Grid container item key={date.date} columnSpacing={1} ml={1}>
                 <Grid item>
@@ -234,21 +244,32 @@ const DOIMetadataConfirmation: React.FC<DOIMetadataConfirmationProps> = (
         </Grid>
         <Grid item>
           <Typography>
-            {t('DOIGenerationForm.resourceType')}:{' '}
-            {staticMetadata?.types.resourceType}
+            {t('DOIGenerationForm.resourceType')}: {metadata.types.resourceType}
           </Typography>
         </Grid>
         <Grid item>
           <Typography>
             {t('DOIGenerationForm.resourceTypeGeneral')}:{' '}
-            {staticMetadata?.types.resourceTypeGeneral}
+            {metadata.types.resourceTypeGeneral}
+          </Typography>
+        </Grid>
+        {metadata.language && (
+          <Grid item>
+            <Typography>
+              {t('DOIGenerationForm.language')}: {metadata.language}
+            </Typography>
+          </Grid>
+        )}
+        <Grid item>
+          <Typography>
+            {t('DOIGenerationForm.size')}: {metadata.sizes[0]}
           </Typography>
         </Grid>
         <Grid container item spacing={1}>
           <Grid item>
             <Typography>{t('DOIGenerationForm.rights')}</Typography>
           </Grid>
-          {staticMetadata?.rightsList.map((rights) => {
+          {metadata.rightsList.map((rights) => {
             return (
               <Grid
                 container
@@ -265,7 +286,8 @@ const DOIMetadataConfirmation: React.FC<DOIMetadataConfirmationProps> = (
                 {rights.rightsUri && (
                   <Grid item>
                     <Typography>
-                      {t('DOIGenerationForm.rightsURI')}: {rights.rightsUri}
+                      {t('DOIGenerationForm.rightsURI')}:{' '}
+                      <Link href={rights.rightsUri}>{rights.rightsUri}</Link>
                     </Typography>
                   </Grid>
                 )}
@@ -289,7 +311,7 @@ const DOIMetadataConfirmation: React.FC<DOIMetadataConfirmationProps> = (
                   <Grid item>
                     <Typography>
                       {t('DOIGenerationForm.rightsSchemeURI')}:{' '}
-                      {rights.schemeUri}
+                      <Link href={rights.schemeUri}>{rights.schemeUri}</Link>
                     </Typography>
                   </Grid>
                 )}
@@ -301,7 +323,7 @@ const DOIMetadataConfirmation: React.FC<DOIMetadataConfirmationProps> = (
           <Grid item>
             <Typography>{t('DOIGenerationForm.geoLocations')}</Typography>
           </Grid>
-          {staticMetadata?.geoLocations.map((geoLocation, index) => {
+          {metadata.geoLocations.map((geoLocation, index) => {
             const latitude = geoLocation.geoLocationPoint?.pointLatitude;
             const longitude = geoLocation.geoLocationPoint?.pointLongitude;
             return (
@@ -330,7 +352,7 @@ const DOIMetadataConfirmation: React.FC<DOIMetadataConfirmationProps> = (
           <Grid item>
             <Typography>{t('DOIGenerationForm.fundingReferences')}</Typography>
           </Grid>
-          {staticMetadata?.fundingReferences.map((funder, index) => {
+          {metadata.fundingReferences.map((funder, index) => {
             return (
               <Grid container item key={index} direction="column" ml={1}>
                 <Grid item>
@@ -358,14 +380,15 @@ const DOIMetadataConfirmation: React.FC<DOIMetadataConfirmationProps> = (
                   <Grid item>
                     <Typography>
                       {t('DOIGenerationForm.funderSchemeURI')}:{' '}
-                      {funder.schemeUri}
+                      <Link href={funder.schemeUri}>{funder.schemeUri}</Link>
                     </Typography>
                   </Grid>
                 )}
                 {funder.awardUri && (
                   <Grid item>
                     <Typography>
-                      {t('DOIGenerationForm.awardURI')}: {funder.awardUri}
+                      {t('DOIGenerationForm.awardURI')}:{' '}
+                      <Link href={funder.awardUri}>{funder.awardUri}</Link>
                     </Typography>
                   </Grid>
                 )}
@@ -388,22 +411,28 @@ const DOIMetadataConfirmation: React.FC<DOIMetadataConfirmationProps> = (
       </Grid>
       <Grid container spacing={2} justifyContent="center">
         <Grid item>
-          <Button
+          <LoadingButton
             variant="contained"
             onClick={onBackClick}
             startIcon={<ArrowBack />}
+            loadingPosition="start"
+            loading={props.deleteLoading}
+            disabled={props.publishLoading}
           >
             {t('DOIGenerationForm.back_button')}
-          </Button>
+          </LoadingButton>
         </Grid>
         <Grid item>
-          <Button
+          <LoadingButton
             variant="contained"
             onClick={onConfirmClick}
-            startIcon={<Check />}
+            startIcon={<Publish />}
+            loadingPosition="start"
+            loading={props.publishLoading}
+            disabled={props.deleteLoading}
           >
             {t('DOIGenerationForm.generate_DOI')}
-          </Button>
+          </LoadingButton>
         </Grid>
       </Grid>
     </>

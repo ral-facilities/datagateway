@@ -22,7 +22,7 @@ import {
   useDownloads,
   useFileSizesAndCounts,
   useIsTwoLevel,
-  useMintCart,
+  useMintDraftCart,
   useRemoveAllFromCart,
   useRemoveEntityFromCart,
 } from './downloadApiHooks';
@@ -1078,7 +1078,7 @@ describe('Download API react-query hooks test', () => {
         status: 200,
       });
 
-      const { result } = renderHook(() => useMintCart(), {
+      const { result } = renderHook(() => useMintDraftCart(), {
         wrapper: createReactQueryWrapper(),
       });
 
@@ -1118,7 +1118,7 @@ describe('Download API react-query hooks test', () => {
       };
       axios.post = vi.fn().mockRejectedValue(error);
 
-      const { result } = renderHook(() => useMintCart(), {
+      const { result } = renderHook(() => useMintDraftCart(), {
         wrapper: createReactQueryWrapper(),
       });
 
