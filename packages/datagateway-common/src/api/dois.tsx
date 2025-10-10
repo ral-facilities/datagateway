@@ -9,6 +9,7 @@ import axios, { AxiosError } from 'axios';
 import log from 'loglevel';
 import { useSelector } from 'react-redux';
 import {
+  DOIDraftVersionResponse,
   DOIMetadata,
   DOIResponse,
   DownloadCartItem,
@@ -197,13 +198,13 @@ export const useCheckDOI = (
 };
 
 /**
- * Update a datapublication
- * @param dataPublicationId The DataPublication to update
- * @param cart The DataPublication to update
- * @param doiMetadata The DataPublication to update
+ * Create a draft of a new version DOI based on an existing concept DOI
+ * @param conceptDataPublicationId The concept DataPublication to update
+ * @param content The updated contents
+ * @param doiMetadata The updated metadata
  */
-export const updateDOI = (
-  dataPublicationId: string,
+export const draftVersionDOI = (
+  conceptDataPublicationId: string,
   content: {
     investigation_ids: number[];
     dataset_ids: number[];
@@ -211,10 +212,10 @@ export const updateDOI = (
   },
   doiMetadata: DOIMetadata,
   doiMinterUrl: string | undefined
-): Promise<DOIResponse> => {
+): Promise<DOIDraftVersionResponse> => {
   return axios
-    .put(
-      `${doiMinterUrl}/mint/version/update/${dataPublicationId}`,
+    .post(
+      `${doiMinterUrl}/draft/${conceptDataPublicationId}/version`,
       {
         metadata: {
           ...doiMetadata,
@@ -232,27 +233,83 @@ export const updateDOI = (
     .then((response) => response.data);
 };
 
-type UseUpdateDOIVariables = {
-  dataPublicationId: string;
-  content: {
-    investigation_ids: number[];
-    dataset_ids: number[];
-    datafile_ids: number[];
-  };
-  doiMetadata: DOIMetadata;
-};
-
 /**
  * Updates a datapublication
  * @param cart The {@link Cart} to mint
  * @param doiMetadata The required metadata for the DOI
  */
-export const useUpdateDOI = (): UseMutationResult<
+export const useDraftVersionDOI = (): UseMutationResult<
+  DOIDraftVersionResponse,
+  AxiosError<{
+    detail: { msg: string }[] | string;
+  }>,
+  {
+    contentDataPublicationId: string;
+    content: {
+      investigation_ids: number[];
+      dataset_ids: number[];
+      datafile_ids: number[];
+    };
+    doiMetadata: DOIMetadata;
+  }
+> => {
+  const doiMinterUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.doiMinterUrl
+  );
+
+  return useMutation(
+    ({ contentDataPublicationId, content, doiMetadata }) => {
+      return draftVersionDOI(
+        contentDataPublicationId,
+        content,
+        doiMetadata,
+        doiMinterUrl
+      );
+    },
+    {
+      onError: (error) => {
+        handleDOIAPIError(error, undefined, undefined, true, true);
+      },
+    }
+  );
+};
+
+/**
+ * Publish a draft version DOI, returns a DataPublication ID & DOI
+ */
+export const publishDraftVersionDOI = (
+  contentDataPublicationId: string,
+  draftVersionDataPublicationId: string,
+  doiMinterUrl: string | undefined
+): Promise<DOIResponse> => {
+  return axios
+    .put(
+      `${doiMinterUrl}/draft/${contentDataPublicationId}/version/${draftVersionDataPublicationId}/publish`,
+      undefined,
+      {
+        headers: {
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+        },
+      }
+    )
+    .then((response) => response.data);
+};
+
+type UsePublishDraftVersionVariables = {
+  contentDataPublicationId: string;
+  draftVersionDataPublicationId: string;
+};
+
+/**
+ * Publishes a draft data publication
+ * @param dataPublicationId The {@link DataPublication} to publish
+ */
+export const usePublishDraftVersion = (): UseMutationResult<
   DOIResponse,
   AxiosError<{
     detail: { msg: string }[] | string;
   }>,
-  UseUpdateDOIVariables
+  UsePublishDraftVersionVariables
 > => {
   const queryClient = useQueryClient();
   const doiMinterUrl = useSelector(
@@ -261,12 +318,19 @@ export const useUpdateDOI = (): UseMutationResult<
   const username = readSciGatewayToken().username;
 
   return useMutation(
-    ({ dataPublicationId, content, doiMetadata }) => {
-      return updateDOI(dataPublicationId, content, doiMetadata, doiMinterUrl);
+    ({ contentDataPublicationId, draftVersionDataPublicationId }) => {
+      return publishDraftVersionDOI(
+        contentDataPublicationId,
+        draftVersionDataPublicationId,
+        doiMinterUrl
+      );
     },
     {
       onError: handleDOIAPIError,
-      onSuccess: (_data, { dataPublicationId }: UseUpdateDOIVariables) => {
+      onSuccess: (
+        _data,
+        { contentDataPublicationId }: UsePublishDraftVersionVariables
+      ) => {
         // resetQueries instead of invalidateQueries as otherwise invalidateQueries shows out-of-date data
         queryClient.resetQueries({
           predicate: (query) =>
@@ -278,16 +342,67 @@ export const useUpdateDOI = (): UseMutationResult<
             // invalidate the data publication info query
             (query.queryKey[0] === 'dataPublication' &&
               typeof query.queryKey[1] !== 'undefined' &&
-              JSON.stringify(query.queryKey[1]).includes(dataPublicationId)) ||
+              JSON.stringify(query.queryKey[1]).includes(
+                contentDataPublicationId
+              )) ||
             // invalidate the data publication content table queries
             (query.queryKey[0] === 'dataPublicationContent' &&
               // use double equals to ignore difference between 1 and "1"
               // eslint-disable-next-line eqeqeq
-              query.queryKey[2] == dataPublicationId) ||
+              query.queryKey[2] == contentDataPublicationId) ||
             (query.queryKey[0] === 'dataPublicationContentCount' &&
               // eslint-disable-next-line eqeqeq
-              query.queryKey[2] == dataPublicationId),
+              query.queryKey[2] == contentDataPublicationId),
         });
+      },
+    }
+  );
+};
+
+/**
+ * Delete a draft version DOI
+ */
+export const deleteDraftVersionDOI = (
+  contentDataPublicationId: string,
+  draftVersionDataPublicationId: string,
+  doiMinterUrl: string | undefined
+): Promise<void> => {
+  return axios.delete(
+    `${doiMinterUrl}/draft/${contentDataPublicationId}/version/${draftVersionDataPublicationId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+      },
+    }
+  );
+};
+
+/**
+ * Deletes a draft version data publication
+ * @param dataPublicationId The {@link DataPublication} to publish
+ */
+export const useDeleteDraftVersion = (): UseMutationResult<
+  void,
+  AxiosError<{
+    detail: { msg: string }[] | string;
+  }>,
+  UsePublishDraftVersionVariables
+> => {
+  const doiMinterUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.doiMinterUrl
+  );
+
+  return useMutation(
+    ({ contentDataPublicationId, draftVersionDataPublicationId }) => {
+      return deleteDraftVersionDOI(
+        contentDataPublicationId,
+        draftVersionDataPublicationId,
+        doiMinterUrl
+      );
+    },
+    {
+      onError: (error) => {
+        handleDOIAPIError(error, undefined, undefined, true, true);
       },
     }
   );

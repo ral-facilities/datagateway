@@ -142,7 +142,9 @@ const DOIGenerationForm: React.FC = () => {
 
   const handleBackClick = React.useCallback(() => {
     if (draftDataPublicationId)
-      deleteDraft(draftDataPublicationId).then(() => {
+      deleteDraft(draftDataPublicationId).finally(() => {
+        // finally instead of then is that we should let the user go back even if delete fails
+        // we'll need a job to clear up lingering drafts anyway
         setShowMetadataConfirmation(false);
       });
   }, [deleteDraft, draftDataPublicationId]);

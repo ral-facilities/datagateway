@@ -700,9 +700,8 @@ export interface DOIResponse {
   version: DOIResult;
 }
 
-export interface DOIDraftResponse {
-  concept: DOIResult;
-}
+export type DOIDraftResponse = Pick<DOIResponse, 'concept'>;
+export type DOIDraftVersionResponse = Pick<DOIResponse, 'version'>;
 
 export interface DOIResult {
   data_publication_id: string;

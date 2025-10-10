@@ -10,8 +10,10 @@ import {
   useCart,
   useDataPublication,
   useDataPublicationsByFilters,
+  useDeleteDraftVersion,
+  useDraftVersionDOI,
   useIsCartMintable,
-  useUpdateDOI,
+  usePublishDraftVersion,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -166,11 +168,23 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
   }, [versionDataPublication]);
 
   const {
-    mutate: updateDOI,
-    status: mintingStatus,
-    data: mintData,
-    error: mintError,
-  } = useUpdateDOI();
+    mutateAsync: mintDraftVersionDOI,
+    status: mintDraftVersionStatus,
+    data: mintDraftVersionData,
+  } = useDraftVersionDOI();
+
+  const draftVersionDataPublicationId =
+    mintDraftVersionData?.version.data_publication_id;
+
+  const {
+    mutate: publishVersionDraft,
+    status: publishingVersionStatus,
+    data: publishVersionData,
+    error: publishVersionError,
+  } = usePublishDraftVersion();
+
+  const { mutateAsync: deleteVersionDraft, status: deleteVersionDraftStatus } =
+    useDeleteDraftVersion();
 
   const { data: cart } = useCart();
   const { isLoading: cartMintabilityLoading, error: mintableError } =
@@ -219,6 +233,77 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
 
   const [t] = useTranslation();
 
+  const handleMintClick = React.useCallback(() => {
+    if (dataPublication && versionDataPublication) {
+      const creatorsList = selectedUsers
+        .filter(
+          (user) =>
+            // the user requesting the mint is added automatically
+            // by the backend, so don't pass them to the backend
+            user.name !== readSciGatewayToken().username
+        )
+        .map((user) => ({
+          username: user.name,
+          contributor_type: user.contributor_type as ContributorType, // we check this is true in the disabled field above
+        }));
+      mintDraftVersionDOI({
+        contentDataPublicationId: dataPublicationId,
+        content: {
+          investigation_ids: content
+            .filter((v) => v.entityType === 'investigation')
+            .map((i) => i.id),
+          dataset_ids: content
+            .filter((v) => v.entityType === 'dataset')
+            .map((d) => d.id),
+          datafile_ids: content
+            .filter((v) => v.entityType === 'datafile')
+            .map((d) => d.id),
+        },
+        doiMetadata: {
+          title,
+          description,
+          creators: creatorsList.length > 0 ? creatorsList : undefined,
+          related_items: relatedDOIs,
+        },
+      }).then(() => {
+        setShowMetadataConfirmation(true);
+      });
+    }
+  }, [
+    content,
+    dataPublication,
+    dataPublicationId,
+    description,
+    mintDraftVersionDOI,
+    relatedDOIs,
+    selectedUsers,
+    title,
+    versionDataPublication,
+  ]);
+
+  const handleConfirmClick = React.useCallback(() => {
+    if (draftVersionDataPublicationId) {
+      setShowMintConfirmation(true);
+
+      publishVersionDraft({
+        contentDataPublicationId: dataPublicationId,
+        draftVersionDataPublicationId,
+      });
+    }
+  }, [dataPublicationId, draftVersionDataPublicationId, publishVersionDraft]);
+
+  const handleBackClick = React.useCallback(() => {
+    if (draftVersionDataPublicationId)
+      deleteVersionDraft({
+        contentDataPublicationId: dataPublicationId,
+        draftVersionDataPublicationId,
+      }).finally(() => {
+        // finally instead of then is that we should let the user go back even if delete fails
+        // we'll need a job to clear up lingering drafts anyway
+        setShowMetadataConfirmation(false);
+      });
+  }, [draftVersionDataPublicationId, deleteVersionDraft, dataPublicationId]);
+
   // redirect if the user tries to access the link directly instead of from the edit button
   if (!location.state?.fromEdit) {
     const landingPageUrl = paths.landing.dlsDataPublicationLanding.replace(
@@ -233,51 +318,11 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
       <>
         {showMetadataConfirmation ? (
           <DOIMetadataConfirmation
-            title={title}
-            description={description}
-            selectedUsers={selectedUsers}
-            relatedDOIs={relatedDOIs}
-            doiMinterUrl={doiMinterUrl}
-            onBackClick={() => {
-              setShowMetadataConfirmation(false);
-            }}
-            onConfirmClick={() => {
-              if (dataPublication && versionDataPublication) {
-                setShowMintConfirmation(true);
-                const creatorsList = selectedUsers
-                  .filter(
-                    (user) =>
-                      // the user requesting the mint is added automatically
-                      // by the backend, so don't pass them to the backend
-                      user.name !== readSciGatewayToken().username
-                  )
-                  .map((user) => ({
-                    username: user.name,
-                    contributor_type: user.contributor_type as ContributorType, // we check this is true in the disabled field above
-                  }));
-                updateDOI({
-                  dataPublicationId,
-                  content: {
-                    investigation_ids: content
-                      .filter((v) => v.entityType === 'investigation')
-                      .map((i) => i.id),
-                    dataset_ids: content
-                      .filter((v) => v.entityType === 'dataset')
-                      .map((d) => d.id),
-                    datafile_ids: content
-                      .filter((v) => v.entityType === 'datafile')
-                      .map((d) => d.id),
-                  },
-                  doiMetadata: {
-                    title,
-                    description,
-                    creators:
-                      creatorsList.length > 0 ? creatorsList : undefined,
-                    related_items: relatedDOIs,
-                  },
-                });
-              }
-            }}
+            draftMetadata={mintDraftVersionData?.version.attributes}
+            onBackClick={handleBackClick}
+            onConfirmClick={handleConfirmClick}
+            deleteLoading={deleteVersionDraftStatus === 'loading'}
+            publishLoading={publishingVersionStatus === 'loading'}
           />
         ) : (
           <Box>
@@ -321,7 +366,8 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
                   relatedDOIs={relatedDOIs}
                   setRelatedDOIs={setRelatedDOIs}
                   disableMintButton={false}
-                  onMintClick={() => setShowMetadataConfirmation(true)}
+                  mintLoading={mintDraftVersionStatus === 'loading'}
+                  onMintClick={handleMintClick}
                 />
               </Grid>
             </Paper>
@@ -330,9 +376,9 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
         {/* Show the download confirmation dialog. */}
         <DOIConfirmDialog
           open={showMintConfirmation}
-          mintingStatus={mintingStatus}
-          data={mintData}
-          error={mintError}
+          mintingStatus={publishingVersionStatus}
+          data={publishVersionData}
+          error={publishVersionError}
           setClose={() => setShowMintConfirmation(false)}
         />
       </>

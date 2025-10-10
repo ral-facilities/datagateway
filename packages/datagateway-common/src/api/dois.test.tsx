@@ -4,9 +4,9 @@ import log from 'loglevel';
 import {
   handleDOIAPIError,
   useCheckUser,
+  useDraftVersionDOI,
   useIsCartMintable,
   useStaticDataciteMetadata,
-  useUpdateDOI,
 } from '.';
 import { ContributorType, DownloadCartItem } from '../app.types';
 import { createReactQueryWrapper, createTestQueryClient } from '../setupTests';
@@ -271,13 +271,13 @@ describe('doi api functions', () => {
       const queryClient = createTestQueryClient();
       const resetQueriesSpy = vi.spyOn(queryClient, 'resetQueries');
 
-      const { result } = renderHook(() => useUpdateDOI(), {
+      const { result } = renderHook(() => useDraftVersionDOI(), {
         wrapper: createReactQueryWrapper(undefined, queryClient),
       });
 
       act(() => {
         result.current.mutate({
-          dataPublicationId: 'pid',
+          contentDataPublicationId: 'pid',
           content,
           doiMetadata,
         });
@@ -317,13 +317,13 @@ describe('doi api functions', () => {
       };
       axios.put = vi.fn().mockRejectedValue(error);
 
-      const { result } = renderHook(() => useUpdateDOI(), {
+      const { result } = renderHook(() => useDraftVersionDOI(), {
         wrapper: createReactQueryWrapper(),
       });
 
       act(() => {
         result.current.mutate({
-          dataPublicationId: 'pid',
+          contentDataPublicationId: 'pid',
           content: { ...content, investigation_ids: [] },
           doiMetadata,
         });

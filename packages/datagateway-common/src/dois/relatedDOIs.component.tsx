@@ -138,7 +138,7 @@ const RelatedDOIs: React.FC<RelatedDOIsProps> = (props) => {
               <TableHead>
                 <TableRow>
                   <TableCell>
-                    {t('DOIGenerationForm.related_doi_doi')}
+                    {t('DOIGenerationForm.related_doi_identifier')}
                   </TableCell>
                   <TableCell>
                     {t('DOIGenerationForm.related_doi_relationship')}
