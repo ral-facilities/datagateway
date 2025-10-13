@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 import * as React from 'react';
 import { DataCiteResponse } from '../api/dois';
-import RelatedDOIs from './relatedDOIs.component';
+import RelatedIdentifiers from './relatedIdentifiers.component';
 
 vi.mock('loglevel');
 
@@ -26,21 +26,21 @@ const createTestQueryClient = (): QueryClient =>
 describe('DOI generation form component', () => {
   let user: ReturnType<typeof userEvent.setup>;
 
-  let props: React.ComponentProps<typeof RelatedDOIs>;
+  let props: React.ComponentProps<typeof RelatedIdentifiers>;
 
   let mockDOIResponse: DataCiteResponse;
 
   const TestComponent: React.FC = () => {
     const [relatedDOIs, changeRelatedDOIs] = React.useState(
       // eslint-disable-next-line react/prop-types
-      props.relatedDOIs
+      props.relatedIdentifiers
     );
 
     return (
       <QueryClientProvider client={createTestQueryClient()}>
-        <RelatedDOIs
-          relatedDOIs={relatedDOIs}
-          changeRelatedDOIs={changeRelatedDOIs}
+        <RelatedIdentifiers
+          relatedIdentifiers={relatedDOIs}
+          changeRelatedIdentifiers={changeRelatedDOIs}
           dataCiteUrl="example.com"
         />
       </QueryClientProvider>
@@ -53,7 +53,7 @@ describe('DOI generation form component', () => {
     user = userEvent.setup();
 
     props = {
-      relatedDOIs: [
+      relatedIdentifiers: [
         {
           title: 'Related DOI 1',
           fullReference: '',
@@ -62,7 +62,7 @@ describe('DOI generation form component', () => {
           relatedItemType: '',
         },
       ],
-      changeRelatedDOIs: vi.fn(),
+      changeRelatedIdentifiers: vi.fn(),
       dataCiteUrl: 'example.com',
     };
 
@@ -100,7 +100,9 @@ describe('DOI generation form component', () => {
 
     expect(
       within(
-        screen.getByRole('table', { name: 'DOIGenerationForm.related_dois' })
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.related_identifiers',
+        })
       )
         .getAllByRole('row')
         .slice(1) // ignores the header row
@@ -117,7 +119,9 @@ describe('DOI generation form component', () => {
 
     expect(
       within(
-        screen.getByRole('table', { name: 'DOIGenerationForm.related_dois' })
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.related_identifiers',
+        })
       )
         .getAllByRole('row')
         .slice(1) // ignores the header row
@@ -165,7 +169,9 @@ describe('DOI generation form component', () => {
     expect(await screen.findByText('error msg')).toBeInTheDocument();
     expect(
       within(
-        screen.getByRole('table', { name: 'DOIGenerationForm.related_dois' })
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.related_identifiers',
+        })
       )
         .getAllByRole('row')
         .slice(1) // ignores the header row
@@ -177,7 +183,9 @@ describe('DOI generation form component', () => {
 
     expect(
       within(
-        screen.getByRole('table', { name: 'DOIGenerationForm.related_dois' })
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.related_identifiers',
+        })
       )
         .getAllByRole('row')
         .slice(1) // ignores the header row
@@ -193,7 +201,9 @@ describe('DOI generation form component', () => {
     );
 
     expect(
-      screen.queryByRole('table', { name: 'DOIGenerationForm.related_dois' })
+      screen.queryByRole('table', {
+        name: 'DOIGenerationForm.related_identifiers',
+      })
     ).not.toBeInTheDocument();
   });
 

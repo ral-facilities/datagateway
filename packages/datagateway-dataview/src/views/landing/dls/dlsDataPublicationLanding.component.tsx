@@ -16,6 +16,7 @@ import {
   DOIRelationType,
   DataPublication,
   readSciGatewayToken,
+  useDOI,
   useDataPublication,
 } from 'datagateway-common';
 import React from 'react';
@@ -117,6 +118,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   const { dataPublicationId } = props;
 
   const { data } = useDataPublication(parseInt(dataPublicationId));
+  const { data: doiData } = useDOI(data?.pid);
 
   const isVersionDOI = data?.relatedItems?.some(
     (relatedItem) => relatedItem.relationType === DOIRelationType.IsVersionOf
@@ -197,6 +199,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         description: description,
         keywords: t('doi_constants.keywords', { returnObjects: true }),
         publisher: {
+          // could get publisher info from DOI? but no logo...
           '@type': 'Organization',
           url: t('doi_constants.publisher.url'),
           name: t('doi_constants.publisher.name'),
@@ -213,8 +216,9 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         }),
         includedInDataCatalog: {
           '@type': 'DataCatalog',
-          url: t('doi_constants.distribution.content_url'),
+          url: t('doi_constants.content_url'),
         },
+        // could get license info from DOIdata
         license: {
           '@type': 'URL',
           url: t('doi_constants.license.url'),
@@ -237,6 +241,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     description,
     formattedUsers,
     isVersionDOI,
+    doiData,
   ]);
 
   const shortInfo = [

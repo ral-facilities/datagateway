@@ -1,11 +1,11 @@
 import { Button, Grid, TextField, Typography } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { RelatedDOI } from '../app.types';
+import { RelatedIdentifier } from '../app.types';
 import CreatorsAndContributors, {
   ContributorUser,
 } from './creatorsAndContributors.component';
-import RelatedDOIs from './relatedDOIs.component';
+import RelatedIdentifiers from './relatedIdentifiers.component';
 
 type DOIMetadataFormProps = {
   title: string;
@@ -14,8 +14,10 @@ type DOIMetadataFormProps = {
   setDescription: React.Dispatch<React.SetStateAction<string>>;
   selectedUsers: ContributorUser[];
   setSelectedUsers: React.Dispatch<React.SetStateAction<ContributorUser[]>>;
-  relatedDOIs: RelatedDOI[];
-  setRelatedDOIs: React.Dispatch<React.SetStateAction<RelatedDOI[]>>;
+  relatedIdentifiers: RelatedIdentifier[];
+  setRelatedIdentifiers: React.Dispatch<
+    React.SetStateAction<RelatedIdentifier[]>
+  >;
   disableMintButton: boolean;
   onMintClick: () => void;
   doiMinterUrl: string | undefined; // this is because since it loads from settings it is technically undefined at some point
@@ -30,8 +32,8 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
     setDescription,
     selectedUsers,
     setSelectedUsers,
-    relatedDOIs,
-    setRelatedDOIs,
+    relatedIdentifiers,
+    setRelatedIdentifiers,
     disableMintButton,
     onMintClick,
     doiMinterUrl,
@@ -79,9 +81,9 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
         />
       </Grid>
       <Grid item>
-        <RelatedDOIs
-          relatedDOIs={relatedDOIs}
-          changeRelatedDOIs={setRelatedDOIs}
+        <RelatedIdentifiers
+          relatedIdentifiers={relatedIdentifiers}
+          changeRelatedIdentifiers={setRelatedIdentifiers}
           dataCiteUrl={dataCiteUrl}
         />
       </Grid>
@@ -101,10 +103,10 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
             description.length === 0 ||
             selectedUsers.length === 0 ||
             selectedUsers.some((user) => user.contributor_type === '') ||
-            relatedDOIs.some(
+            relatedIdentifiers.some(
               (relatedDOI) =>
                 relatedDOI.relationType === '' ||
-                relatedDOI.relatedItemType === undefined
+                relatedDOI.relatedIdentifierType === undefined
             )
           }
           onClick={onMintClick}

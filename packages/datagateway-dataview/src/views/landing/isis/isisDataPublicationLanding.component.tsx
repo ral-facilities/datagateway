@@ -300,7 +300,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       }),
       includedInDataCatalog: {
         '@type': 'DataCatalog',
-        url: t('doi_constants.distribution.content_url'),
+        url: t('doi_constants.content_url'),
       },
       license: {
         '@type': 'URL',

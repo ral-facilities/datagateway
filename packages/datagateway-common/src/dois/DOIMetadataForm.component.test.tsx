@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render, RenderResult, screen } from '@testing-library/react';
+import { RenderResult, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as React from 'react';
 import {
@@ -35,7 +35,7 @@ describe('DOI generation form component', () => {
         { id: 1, name: 'test', contributor_type: ContributorType.Minter },
       ],
       setSelectedUsers: vi.fn(),
-      relatedDOIs: [
+      relatedIdentifiers: [
         {
           title: 'DOI Title',
           fullReference: '',
@@ -44,7 +44,7 @@ describe('DOI generation form component', () => {
           relationType: DOIRelationType.Cites,
         },
       ],
-      setRelatedDOIs: vi.fn(),
+      setRelatedIdentifiers: vi.fn(),
       disableMintButton: false,
       onMintClick: vi.fn(),
       doiMinterUrl: 'https://example.com/doi-minter',
@@ -125,7 +125,7 @@ describe('DOI generation form component', () => {
     props.selectedUsers = [
       { id: 1, name: 'test', contributor_type: ContributorType.Minter },
     ];
-    props.relatedDOIs = [
+    props.relatedIdentifiers = [
       {
         title: 'DOI Title',
         fullReference: '',
@@ -148,7 +148,7 @@ describe('DOI generation form component', () => {
     ).toBeDisabled();
 
     // disableMintButton is set to true
-    props.relatedDOIs = [
+    props.relatedIdentifiers = [
       {
         title: 'DOI Title',
         fullReference: '',
