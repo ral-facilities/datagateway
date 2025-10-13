@@ -1,32 +1,32 @@
-import React from 'react';
-import SubjectIcon from '@mui/icons-material/Subject';
-import SaveIcon from '@mui/icons-material/Save';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import SaveIcon from '@mui/icons-material/Save';
+import SubjectIcon from '@mui/icons-material/Subject';
 import {
-  Table,
-  tableLink,
-  TableActionProps,
-  Dataset,
-  formatBytes,
-  useDatasetCount,
-  useDatasetsInfinite,
-  parseSearchToQuery,
-  useTextFilter,
-  useDateFilter,
   ColumnType,
-  useSort,
-  useIds,
-  useCart,
-  useAddToCart,
-  useRemoveFromCart,
+  Dataset,
+  DetailsPanelProps,
   DownloadButton,
   ISISDatasetDetailsPanel,
-  DetailsPanelProps,
+  ConnectedTable as Table,
+  TableActionProps,
+  formatBytes,
+  parseSearchToQuery,
+  tableLink,
+  useAddToCart,
+  useCart,
+  useDatasetCount,
+  useDatasetsInfinite,
+  useDateFilter,
+  useIds,
+  useRemoveFromCart,
+  useSort,
+  useTextFilter,
 } from 'datagateway-common';
-import { TableCellProps, IndexRange } from 'react-virtualized';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useHistory, useLocation } from 'react-router-dom';
+import { IndexRange, TableCellProps } from 'react-virtualized';
 import { StateType } from '../../../state/app.types';
 
 interface ISISDatasetsTableProps {
@@ -44,8 +44,8 @@ const ISISDatasetsTable = (
 
   const { push } = useHistory();
 
-  const selectAllSetting = useSelector(
-    (state: StateType) => state.dgdataview.selectAllSetting
+  const disableSelectAll = useSelector(
+    (state: StateType) => state.dgcommon.features?.disableSelectAll ?? false
   );
 
   const { filters, sort, view } = React.useMemo(
@@ -67,7 +67,7 @@ const ISISDatasetsTable = (
         }),
       },
     ],
-    selectAllSetting
+    !disableSelectAll
   );
   const { data: cartItems, isLoading: cartLoading } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } =
@@ -175,11 +175,10 @@ const ISISDatasetsTable = (
           (cartItem) =>
             cartItem.entityType === 'dataset' &&
             // if select all is disabled, it's safe to just pass the whole cart as selectedRows
-            (!selectAllSetting ||
-              (allIds && allIds.includes(cartItem.entityId)))
+            (disableSelectAll || (allIds && allIds.includes(cartItem.entityId)))
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, selectAllSetting, allIds]
+    [cartItems, disableSelectAll, allIds]
   );
 
   const detailsPanel: React.ComponentType<DetailsPanelProps> =
@@ -214,7 +213,6 @@ const ISISDatasetsTable = (
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}
-      disableSelectAll={!selectAllSetting}
       detailsPanel={detailsPanel}
       actions={[
         ({ rowData }: TableActionProps) => (

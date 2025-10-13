@@ -1,19 +1,19 @@
+import SubjectIcon from '@mui/icons-material/Subject';
 import {
-  Table,
-  tableLink,
-  Investigation,
   ColumnType,
-  useInvestigationsInfinite,
-  useInvestigationCount,
+  Investigation,
+  ConnectedTable as Table,
   parseSearchToQuery,
+  tableLink,
+  useInvestigationCount,
+  useInvestigationsInfinite,
   useSort,
   useTextFilter,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { IndexRange, TableCellProps } from 'react-virtualized';
 import { useLocation } from 'react-router-dom';
-import SubjectIcon from '@mui/icons-material/Subject';
+import { IndexRange, TableCellProps } from 'react-virtualized';
 
 const DLSProposalsTable = (): React.ReactElement => {
   const location = useLocation();

@@ -13,9 +13,7 @@ describe('Datafile previewer reducers', () => {
     state = {
       breadcrumbSettings: [],
       facilityImageURL: '',
-      features: {},
       pluginHost: '',
-      selectAllSetting: false,
       settingsLoaded: false,
       datafilePreviewer: {
         zoomLevel: 100,
@@ -34,9 +32,7 @@ describe('Datafile previewer reducers', () => {
         expect(newState).toEqual<DGDataViewState>({
           breadcrumbSettings: [],
           facilityImageURL: '',
-          features: {},
           pluginHost: '',
-          selectAllSetting: false,
           settingsLoaded: false,
           datafilePreviewer: {
             zoomLevel: 100,
@@ -53,9 +49,7 @@ describe('Datafile previewer reducers', () => {
       expect(newState).toEqual<DGDataViewState>({
         breadcrumbSettings: [],
         facilityImageURL: '',
-        features: {},
         pluginHost: '',
-        selectAllSetting: false,
         settingsLoaded: false,
         datafilePreviewer: {
           zoomLevel: 110,
@@ -71,9 +65,7 @@ describe('Datafile previewer reducers', () => {
       expect(newState).toEqual<DGDataViewState>({
         breadcrumbSettings: [],
         facilityImageURL: '',
-        features: {},
         pluginHost: '',
-        selectAllSetting: false,
         settingsLoaded: false,
         datafilePreviewer: {
           zoomLevel: 90,
@@ -88,9 +80,7 @@ describe('Datafile previewer reducers', () => {
       state = {
         breadcrumbSettings: [],
         facilityImageURL: '',
-        features: {},
         pluginHost: '',
-        selectAllSetting: false,
         settingsLoaded: false,
         datafilePreviewer: {
           zoomLevel: 80,
@@ -101,9 +91,7 @@ describe('Datafile previewer reducers', () => {
       expect(newState).toEqual<DGDataViewState>({
         breadcrumbSettings: [],
         facilityImageURL: '',
-        features: {},
         pluginHost: '',
-        selectAllSetting: false,
         settingsLoaded: false,
         datafilePreviewer: {
           zoomLevel: 100,

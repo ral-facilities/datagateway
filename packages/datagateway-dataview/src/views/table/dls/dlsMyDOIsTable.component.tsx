@@ -1,24 +1,24 @@
 import {
   ColumnType,
+  ContributorType,
+  DOIRelationType,
+  DataPublication,
+  ConnectedTable as Table,
+  externalSiteLink,
   parseSearchToQuery,
   readSciGatewayToken,
-  Table,
   tableLink,
+  useDataPublicationCount,
+  useDataPublicationsInfinite,
   useDateFilter,
   useSort,
   useTextFilter,
-  DataPublication,
-  externalSiteLink,
-  useDataPublicationCount,
-  useDataPublicationsInfinite,
-  DOIRelationType,
-  ContributorType,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 
-import { Fingerprint, CalendarToday, Public } from '@mui/icons-material';
+import { CalendarToday, Fingerprint, Public } from '@mui/icons-material';
 import { useLocation } from 'react-router-dom';
 
 const DLSMyDOIsTable = (): React.ReactElement => {

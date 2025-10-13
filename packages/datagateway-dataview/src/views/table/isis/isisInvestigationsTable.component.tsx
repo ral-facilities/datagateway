@@ -11,13 +11,13 @@ import {
   ColumnType,
   DetailsPanelProps,
   DownloadButton,
+  ISISInvestigationDetailsPanel,
+  Investigation,
+  ConnectedTable as Table,
+  TableActionProps,
   externalSiteLink,
   formatBytes,
-  Investigation,
-  ISISInvestigationDetailsPanel,
   parseSearchToQuery,
-  Table,
-  TableActionProps,
   tableLink,
   useAddToCart,
   useCart,
@@ -46,8 +46,8 @@ const ISISInvestigationsTable = (
   props: ISISInvestigationsTableProps
 ): React.ReactElement => {
   const { instrumentId, facilityCycleId } = props;
-  const selectAllSetting = useSelector(
-    (state: StateType) => state.dgdataview.selectAllSetting
+  const disableSelectAll = useSelector(
+    (state: StateType) => state.dgcommon.features?.disableSelectAll ?? false
   );
   const location = useLocation();
   const { push } = useHistory();
@@ -114,7 +114,7 @@ const ISISInvestigationsTable = (
   const { data: allIds, isInitialLoading: allIdsLoading } = useIds(
     'investigation',
     investigationQueryFilters,
-    selectAllSetting
+    !disableSelectAll
   );
   const { data: cartItems, isLoading: cartLoading } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } =
@@ -129,11 +129,10 @@ const ISISInvestigationsTable = (
           (cartItem) =>
             cartItem.entityType === 'investigation' &&
             // if select all is disabled, it's safe to just pass the whole cart as selectedRows
-            (!selectAllSetting ||
-              (allIds && allIds.includes(cartItem.entityId)))
+            (disableSelectAll || (allIds && allIds.includes(cartItem.entityId)))
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, selectAllSetting, allIds]
+    [cartItems, disableSelectAll, allIds]
   );
 
   /* istanbul ignore next */
@@ -289,7 +288,6 @@ const ISISInvestigationsTable = (
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}
-      disableSelectAll={!selectAllSetting}
       detailsPanel={detailsPanel}
       actions={[
         ({ rowData }: TableActionProps) => (

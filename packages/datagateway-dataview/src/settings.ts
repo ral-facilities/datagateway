@@ -1,24 +1,16 @@
-import { DownloadSettingsAccessMethod, PluginRoute } from 'datagateway-common';
+import { DOISettings, DataviewSearchCommonSettings } from 'datagateway-common';
 import { BreadcrumbSettings } from './state/actions/actions.types';
 
-export interface DataviewSettings {
-  facilityName: string;
-  apiUrl: string;
-  downloadApiUrl: string;
-  idsUrl: string;
-  icatUrl: string;
-  doiMinterUrl?: string;
-  dataCiteUrl?: string;
-  queryRetries?: number;
-  accessMethods?: DownloadSettingsAccessMethod;
-  selectAllSetting?: boolean;
-  facilityImageURL?: string;
-  features?: never;
-  breadcrumbs?: BreadcrumbSettings[];
-  routes: PluginRoute[];
-  helpSteps?: { target: string; content: string }[];
-  pluginHost?: string;
-}
+type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
+
+export type DataviewSettings = Optional<
+  DataviewSearchCommonSettings,
+  'accessMethods'
+> &
+  DOISettings & {
+    facilityImageURL?: string;
+    breadcrumbs?: BreadcrumbSettings[];
+  };
 
 export let settings: Promise<DataviewSettings | void>;
 export const setSettings = (

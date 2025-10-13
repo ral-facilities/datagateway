@@ -258,7 +258,8 @@
     "remove_from_cart": "Remove from selection",
     "download": "Download",
     "unable_to_download_tooltip": "Unable to download - this item is empty",
-    "queue_visit": "Queue visit for download"
+    "queue_visit": "Queue visit for download",
+    "disallow_anon_tooltip": "Anonymous download is disabled - please login and try again"
   },
   "selec_alert": {
     "added_one": "{{count}} item has been added to selection.",
