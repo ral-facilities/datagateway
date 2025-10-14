@@ -1,9 +1,9 @@
+import { Divider, Grid, Tab, Tabs, Typography, styled } from '@mui/material';
 import React from 'react';
-import { Typography, Grid, Divider, Tabs, Tab, styled } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { Datafile, Entity } from '../../app.types';
 import { useDatafileDetails } from '../../api';
+import { Datafile, Entity } from '../../app.types';
 import type { IsisDatafileDetailsPanelChangeTabPayload } from '../../state/actions/actions.types';
 import { IsisDatafileDetailsPanelChangeTabType } from '../../state/actions/actions.types';
 import type { StateType } from '../../state/app.types';
@@ -35,14 +35,12 @@ const DatafileDetailsPanel = (
   const { rowData, detailsPanelResize } = props;
 
   const [t] = useTranslation();
-  const { data } = useDatafileDetails(rowData.id, [
-    {
-      filterType: 'include',
-      filterValue: JSON.stringify({
-        parameters: 'type',
-      }),
-    },
-  ]);
+  const { data } = useDatafileDetails(rowData.id, {
+    filterType: 'include',
+    filterValue: JSON.stringify({
+      parameters: 'type',
+    }),
+  });
   const datafileData: Datafile = { ...data, ...(rowData as Datafile) };
   const selectedTab = useSelector<
     StateType,

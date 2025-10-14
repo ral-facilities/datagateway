@@ -1,18 +1,17 @@
-import { Dataset } from '../app.types';
 import { renderHook, waitFor } from '@testing-library/react';
-import { createMemoryHistory, History } from 'history';
 import axios from 'axios';
+import { History, createMemoryHistory } from 'history';
+import { act } from 'react-dom/test-utils';
+import { Dataset } from '../app.types';
 import handleICATError from '../handleICATError';
 import { createReactQueryWrapper } from '../setupTests';
 import {
   downloadDataset,
-  useDataset,
   useDatasetCount,
   useDatasetDetails,
   useDatasetsInfinite,
   useDatasetsPaginated,
 } from './datasets';
-import { act } from 'react-dom/test-utils';
 
 vi.mock('../handleICATError');
 
@@ -53,69 +52,6 @@ describe('dataset api functions', () => {
     vi.mocked(handleICATError).mockClear();
     vi.mocked(axios.get).mockClear();
     vi.useRealTimers();
-  });
-
-  describe('useDataset', () => {
-    it('sends axios request to fetch dataset by ID and returns successful response', async () => {
-      vi.mocked(axios.get).mockResolvedValue({
-        data: [mockData[0]],
-      });
-
-      const { result } = renderHook(
-        () =>
-          useDataset(1, [
-            {
-              filterType: 'include',
-              filterValue: JSON.stringify({
-                datasetInstruments: 'instrument',
-              }),
-            },
-          ]),
-        {
-          wrapper: createReactQueryWrapper(),
-        }
-      );
-
-      await waitFor(() => expect(result.current.isSuccess).toBe(true));
-
-      params.append('order', JSON.stringify('id asc'));
-      params.append(
-        'where',
-        JSON.stringify({
-          id: { eq: 1 },
-        })
-      );
-      params.append(
-        'include',
-        JSON.stringify({
-          datasetInstruments: 'instrument',
-        })
-      );
-
-      expect(axios.get).toHaveBeenCalledWith(
-        'https://example.com/api/datasets',
-        expect.objectContaining({
-          params,
-        })
-      );
-      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
-        params.toString()
-      );
-      expect(result.current.data).toEqual([mockData[0]]);
-    });
-
-    it('sends axios request to fetch ids and calls handleICATError on failure', async () => {
-      vi.mocked(axios.get).mockRejectedValue({
-        message: 'Test error',
-      });
-      const { result } = renderHook(() => useDataset(1), {
-        wrapper: createReactQueryWrapper(),
-      });
-
-      await waitFor(() => expect(result.current.isError).toBe(true));
-
-      expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
-    });
   });
 
   describe('useDatasetsPaginated', () => {
@@ -402,10 +338,11 @@ describe('dataset api functions', () => {
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
+      params.append('order', JSON.stringify('id asc'));
       params.append(
         'where',
         JSON.stringify({
-          id: { eq: 1 },
+          id: { eq: '1' },
         })
       );
       params.append('include', JSON.stringify('type'));
@@ -423,16 +360,15 @@ describe('dataset api functions', () => {
     });
 
     it('sends axios request to fetch dataset details and calls handleICATError on failure', async () => {
-      vi.mocked(axios.get).mockRejectedValue({
-        message: 'Test error',
-      });
+      const error = axios.AxiosError.from(new Error('Test error'));
+      vi.mocked(axios.get).mockRejectedValue(error);
       const { result } = renderHook(() => useDatasetDetails(1), {
         wrapper: createReactQueryWrapper(),
       });
 
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
+      expect(handleICATError).toHaveBeenCalledWith(error);
     });
   });
 
