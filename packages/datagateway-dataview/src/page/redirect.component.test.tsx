@@ -69,7 +69,7 @@ describe('Redirect component', () => {
 
     mockDatafileData = {
       id: 3,
-      name: 'dataset3',
+      name: 'datafile3',
       dataset: mockDatasetData,
       modTime: '2022-04-01 00:00:00',
       createTime: '2022-04-02 00:00:00',
@@ -188,6 +188,11 @@ describe('Redirect component', () => {
       renderComponent();
       expect(history.location.pathname).toBe(
         '/browse/investigation/1/dataset/2/datafile'
+      );
+      expect(history.location.search).toBe(
+        `?filters=${encodeURIComponent(
+          '{"name":{"value":"datafile3","type":"exact"}}'
+        )}`
       );
       expect(vi.mocked(useEntity, { partial: true })).toHaveBeenCalledWith(
         'datafile',

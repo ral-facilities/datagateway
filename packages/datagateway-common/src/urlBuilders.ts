@@ -93,9 +93,11 @@ function buildDatasetLandingUrl(
 function buildDatafileTableUrlForDataset({
   dataset,
   facilityName,
+  queryParams,
 }: {
   dataset: Dataset | SearchResultSourceConstructedDataset;
   facilityName: string;
+  queryParams?: URLSearchParams;
 }): string | null {
   const investigation = dataset.investigation;
   if (!investigation) return null;
@@ -106,7 +108,9 @@ function buildDatafileTableUrlForDataset({
   });
   if (!datasetTableUrl) return null;
 
-  return `${datasetTableUrl}/${dataset.id}/datafile`;
+  return `${datasetTableUrl}/${dataset.id}/datafile${
+    queryParams ? `?${queryParams.toString()}` : ''
+  }`;
 }
 
 type SearchResultSourceConstructedDatafile = {

@@ -157,11 +157,15 @@ export const GenericRedirect: React.FC = () => {
           facilityName,
         })
       : entityName === 'datafile'
-      ? // TODO: better link for a datafile redirect?
-        buildDatafileTableUrlForDataset({
+      ? buildDatafileTableUrlForDataset({
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           dataset: (entity as Datafile).dataset!,
           facilityName,
+          queryParams: new URLSearchParams({
+            filters: JSON.stringify({
+              name: { value: entity.name, type: 'exact' },
+            }),
+          }),
         })
       : null);
 
