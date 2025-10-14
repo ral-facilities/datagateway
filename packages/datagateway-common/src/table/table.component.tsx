@@ -1,33 +1,36 @@
-import React from 'react';
-import TableCell from '@mui/material/TableCell';
 import { styled, SxProps } from '@mui/material/styles';
+import TableCell from '@mui/material/TableCell';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import {
   AutoSizer,
   Column,
+  defaultTableRowRenderer,
+  Index,
+  IndexRange,
+  InfiniteLoader,
   Table,
   TableCellRenderer,
-  defaultTableRowRenderer,
-  InfiniteLoader,
-  IndexRange,
-  Index,
   TableRowRenderer,
 } from 'react-virtualized';
 import {
   Entity,
-  Order,
-  ICATEntity,
-  UpdateMethod,
   Filter,
   FiltersType,
+  ICATEntity,
+  Order,
   SortType,
+  UpdateMethod,
 } from '../app.types';
-import ExpandCell from './cellRenderers/expandCell.component';
-import DataCell from './cellRenderers/dataCell.component';
+import { StateType } from '../main';
+import { readSciGatewayToken } from '../parseTokens';
 import ActionCell from './cellRenderers/actionCell.component';
-import DataHeader from './headerRenderers/dataHeader.component';
-import DetailsPanelRow from './rowRenderers/detailsPanelRow.component';
+import DataCell from './cellRenderers/dataCell.component';
+import ExpandCell from './cellRenderers/expandCell.component';
 import SelectCell from './cellRenderers/selectCell.component';
+import DataHeader from './headerRenderers/dataHeader.component';
 import SelectHeader from './headerRenderers/selectHeader.component';
+import DetailsPanelRow from './rowRenderers/detailsPanelRow.component';
 
 const rowHeight = 30;
 const headerHeight = 148;
@@ -162,9 +165,10 @@ interface VirtualizedTableProps {
   allIds?: number[];
   disableSelectAll?: boolean;
   shortHeader?: boolean;
+  disableDownloadIfAnon?: boolean;
 }
 
-const VirtualizedTable = React.memo(
+export const VirtualizedTable = React.memo(
   (props: VirtualizedTableProps): React.ReactElement => {
     const [expandedIndex, setExpandedIndex] = React.useState(-1);
     const [lastChecked, setLastChecked] = React.useState(-1);
@@ -191,6 +195,7 @@ const VirtualizedTable = React.memo(
       shortHeader,
       onDefaultFilter,
       filters,
+      disableDownloadIfAnon,
     } = props;
 
     // Format dates to be more readable
@@ -445,6 +450,7 @@ const VirtualizedTable = React.memo(
                             parentSelected={parentSelected ?? false}
                             onCheck={onCheck}
                             onUncheck={onUncheck}
+                            disableIfAnon={disableDownloadIfAnon}
                           />
                         )
                       }
@@ -464,6 +470,7 @@ const VirtualizedTable = React.memo(
                           setLastChecked={setLastChecked}
                           loading={loading ?? false}
                           parentSelected={parentSelected ?? false}
+                          disableIfAnon={disableDownloadIfAnon}
                         />
                       )}
                     />
@@ -600,4 +607,36 @@ const VirtualizedTable = React.memo(
 );
 VirtualizedTable.displayName = 'VirtualizedTable';
 
-export default VirtualizedTable;
+export const ConnectedVirtualizedTable = (
+  props: Omit<VirtualizedTableProps, 'disableDownloadIfAnon'>
+): React.ReactElement => {
+  const disableAnonDownload =
+    useSelector(
+      (state: StateType) => state.dgcommon.features?.disableAnonDownload
+    ) ?? false;
+  const anonUserName = useSelector(
+    (state: StateType) => state.dgcommon.anonUserName
+  );
+
+  const disableSelectAll = useSelector(
+    (state: StateType) => state.dgcommon.features?.disableSelectAll
+  );
+
+  const username = readSciGatewayToken().username;
+  const loggedInAnonymously =
+    username === null || username === (anonUserName ?? 'anon/anon');
+
+  const disableIfAnon = disableAnonDownload && loggedInAnonymously;
+
+  return (
+    <VirtualizedTable
+      {...props}
+      disableDownloadIfAnon={disableIfAnon}
+      disableSelectAll={
+        typeof props.disableSelectAll !== 'undefined'
+          ? props.disableSelectAll
+          : disableSelectAll
+      }
+    />
+  );
+};

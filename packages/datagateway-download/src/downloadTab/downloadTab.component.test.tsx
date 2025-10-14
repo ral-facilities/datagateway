@@ -1,9 +1,9 @@
-import { RenderResult } from '@testing-library/react';
-import { act, render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { fetchDownloadCart } from 'datagateway-common';
-import { createMemoryHistory, History } from 'history';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { RenderResult, act, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
+import { fetchDownloadCart } from 'datagateway-common';
+import { History, createMemoryHistory } from 'history';
 import { Router } from 'react-router-dom';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import {
@@ -11,10 +11,9 @@ import {
   fetchDownloads,
   getDataUrl,
   getFileSizeAndCount,
+  getIsTwoLevel,
   removeAllDownloadCartItems,
   removeFromCart,
-  isCartMintable,
-  getIsTwoLevel,
 } from '../downloadApi';
 import { mockCartItems, mockDownloadItems, mockedSettings } from '../testData';
 import DownloadTabs from './downloadTab.component';
@@ -54,13 +53,21 @@ describe('DownloadTab', () => {
         mockCartItems.filter((item) => !entityIds.includes(item.entityId))
       );
     });
-
+    vi.mocked(getIsTwoLevel).mockResolvedValue(true);
     vi.mocked(getFileSizeAndCount).mockResolvedValue({
       fileSize: 1,
       fileCount: 7,
     });
-    vi.mocked(isCartMintable).mockResolvedValue(true);
-    vi.mocked(getIsTwoLevel).mockResolvedValue(false);
+
+    axios.post = vi
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/\/ismintable$/.test(url)) {
+          return Promise.resolve({ status: 200 });
+        } else {
+          return Promise.reject(`Endpoint not mocked: ${url}`);
+        }
+      });
   });
 
   const renderComponent = (): RenderResult => {

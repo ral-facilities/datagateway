@@ -121,3 +121,71 @@ Cypress.Commands.add('isScrolledTo', { prevSubject: true }, (element) => {
     );
   });
 });
+
+Cypress.Commands.add('seedUserGeneratedDataPublication', (title) => {
+  return cy.request('datagateway-dataview-settings.json').then((response) => {
+    const settings = response.body;
+    return cy.request({
+      method: 'POST',
+      url: `${settings.doiMinterUrl}/mint`,
+      headers: {
+        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+      },
+      body: {
+        metadata: {
+          title: title ?? 'Test DOI title',
+          description: 'Test DOI description',
+          // creators: [],
+          related_items: [],
+          resource_type: 'Collection',
+        },
+        // these ids are specifically mintable by the Chris481 user
+        investigation_ids: [],
+        dataset_ids: [15],
+        datafile_ids: [74, 193],
+      },
+    });
+  });
+});
+
+Cypress.Commands.add('clearUserGeneratedDataPublications', (ids) => {
+  return cy.request('datagateway-dataview-settings.json').then((response) => {
+    const settings = response.body;
+    ids.forEach((id) => {
+      cy.request({
+        method: 'DELETE',
+        url: `${settings.apiUrl}/datapublications/${id}`,
+        headers: {
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+        },
+      });
+    });
+  });
+});
+
+Cypress.Commands.add('seedDownloadCart', (cartItems) => {
+  let items = '';
+
+  if (!cartItems) {
+    const entities = ['investigation', 'dataset', 'datafile'];
+    items = Array(60)
+      .fill()
+      .map((value, index) => `${entities[index % 2]} ${index}`)
+      .join(', ');
+  } else {
+    items = cartItems.join(', ');
+  }
+
+  return cy.request('datagateway-dataview-settings.json').then((response) => {
+    const settings = response.body;
+    cy.request({
+      method: 'POST',
+      url: `${settings.downloadApiUrl}/user/cart/${settings.facilityName}/cartItems`,
+      body: {
+        sessionId: readSciGatewayToken().sessionId,
+        items,
+      },
+      form: true,
+    });
+  });
+});

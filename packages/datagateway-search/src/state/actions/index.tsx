@@ -1,35 +1,26 @@
+import {
+  loadAccessMethods,
+  loadAnonUserName,
+  loadFacilityName,
+  loadFeatureSwitches,
+  loadQueryRetries,
+  loadUrls,
+} from 'datagateway-common';
+import { Action } from 'redux';
+import { settings } from '../../settings';
 import { ActionType, ThunkResult } from '../app.types';
 import {
-  ConfigureSelectAllSettingPayload,
-  ConfigureSelectAllSettingType,
-  ConfigureSearchableEntitiesPayload,
-  ConfigureSearchableEntitiesType,
-  SettingsLoadedType,
   ConfigureMaxNumResultsPayload,
   ConfigureMaxNumResultsType,
   ConfigureMinNumResultsPayload,
   ConfigureMinNumResultsType,
+  ConfigureSearchableEntitiesPayload,
+  ConfigureSearchableEntitiesType,
+  SettingsLoadedType,
 } from './actions.types';
-import {
-  loadUrls,
-  loadFacilityName,
-  loadQueryRetries,
-  loadAccessMethods,
-} from 'datagateway-common';
-import { Action } from 'redux';
-import { settings } from '../../settings';
 
 export const settingsLoaded = (): Action => ({
   type: SettingsLoadedType,
-});
-
-export const loadSelectAllSetting = (
-  selectAllSetting: boolean
-): ActionType<ConfigureSelectAllSettingPayload> => ({
-  type: ConfigureSelectAllSettingType,
-  payload: {
-    settings: selectAllSetting,
-  },
 });
 
 export const loadSearchableEntitites = (
@@ -74,16 +65,21 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
         })
       );
 
+      // features is an optional setting
+      if (settingsResult?.['features'] !== undefined) {
+        dispatch(loadFeatureSwitches(settingsResult['features']));
+      }
+
+      if (settingsResult?.['anonUserName'] !== undefined) {
+        dispatch(loadAnonUserName(settingsResult['anonUserName']));
+      }
+
       if (settingsResult?.['queryRetries'] !== undefined) {
         dispatch(loadQueryRetries(settingsResult['queryRetries']));
       }
 
       if (settingsResult?.['accessMethods'] !== undefined) {
         dispatch(loadAccessMethods(settingsResult['accessMethods']));
-      }
-
-      if (settingsResult?.['selectAllSetting'] !== undefined) {
-        dispatch(loadSelectAllSetting(settingsResult['selectAllSetting']));
       }
 
       if (settingsResult?.['searchableEntities'] !== undefined) {

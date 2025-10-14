@@ -12,6 +12,7 @@ import { MemoryRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { DownloadCartItem } from '../app.types';
+import * as parseTokens from '../parseTokens';
 import { StateType } from '../state/app.types';
 import { initialState as dGCommonInitialState } from '../state/reducers/dgcommon.reducer';
 import AddToCartButton, {
@@ -104,6 +105,32 @@ describe('Generic add to cart button', () => {
 
     expect(
       await screen.findByRole('button', { name: 'buttons.add_to_cart' })
+    ).toBeInTheDocument();
+  });
+
+  it('renders as disabled when logged in as anon and disableAnonDownload is true', async () => {
+    state.dgcommon.features = { disableAnonDownload: true };
+    vi.spyOn(parseTokens, 'readSciGatewayToken').mockReturnValue({
+      username: 'anon/anon',
+      sessionId: 'abcdef',
+    });
+
+    renderComponent({
+      allIds: [1],
+      entityId: 1,
+      entityType: 'investigation',
+    });
+
+    const addToCartButton = await screen.findByRole('button', {
+      name: 'buttons.add_to_cart',
+    });
+
+    expect(addToCartButton).toBeDisabled();
+
+    await user.hover(addToCartButton.parentElement);
+
+    expect(
+      await screen.findByText('buttons.disallow_anon_tooltip')
     ).toBeInTheDocument();
   });
 

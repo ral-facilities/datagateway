@@ -1,17 +1,25 @@
-import ISISInvestigationsTable from './isisInvestigationsTable.component';
-import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
-import configureStore from 'redux-mock-store';
-import type { StateType } from '../../../state/app.types';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
-  dGCommonInitialState,
+  render,
+  screen,
+  waitFor,
+  within,
+  type RenderResult,
+} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
+import {
   DownloadCartItem,
+  dGCommonInitialState,
   type Investigation,
 } from 'datagateway-common';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
-import { generatePath, Router } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createMemoryHistory, type History } from 'history';
+import { Provider } from 'react-redux';
+import { Router, generatePath } from 'react-router-dom';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import type { MockInstance } from 'vitest';
+import { paths } from '../../../page/pageContainer.component';
 import {
   findAllRows,
   findCellInRow,
@@ -19,17 +27,9 @@ import {
   findColumnIndexByName,
   findRowAt,
 } from '../../../setupTests';
-import {
-  render,
-  type RenderResult,
-  screen,
-  waitFor,
-  within,
-} from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import axios, { AxiosResponse } from 'axios';
-import { paths } from '../../../page/pageContainer.component';
-import type { MockInstance } from 'vitest';
+import type { StateType } from '../../../state/app.types';
+import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
+import ISISInvestigationsTable from './isisInvestigationsTable.component';
 
 describe('ISIS Investigations table component', () => {
   const mockStore = configureStore([thunk]);
@@ -460,8 +460,8 @@ describe('ISIS Investigations table component', () => {
     expect(selectAllCheckbox).toHaveAttribute('data-indeterminate', 'false');
   });
 
-  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', async () => {
-    state.dgdataview.selectAllSetting = false;
+  it('no select all checkbox appears and no fetchAllIds sent if disableSelectAll is true', async () => {
+    state.dgcommon.features = { disableSelectAll: true };
     renderComponent();
     await waitFor(() => {
       expect(

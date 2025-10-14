@@ -1,7 +1,3 @@
-import thunk from 'redux-thunk';
-import configureStore from 'redux-mock-store';
-import { StateType } from '../state/app.types';
-import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
 import {
   dGCommonInitialState,
   DownloadCartItem,
@@ -9,29 +5,33 @@ import {
 } from 'datagateway-common';
 import { createMemoryHistory, createPath, History } from 'history';
 import { generatePath, Router } from 'react-router-dom';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { StateType } from '../state/app.types';
+import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
 
-import PageContainer, { paths } from './pageContainer.component';
-import {
-  checkInstrumentId as unmockedCheckInstrumentId,
-  checkInvestigationId as unmockedCheckInvestigationId,
-} from './idCheckFunctions';
-import axios, { AxiosResponse } from 'axios';
 import {
   QueryClient,
   QueryClientProvider,
   useIsFetching,
   useQueryClient,
 } from '@tanstack/react-query';
-import { Provider } from 'react-redux';
 import {
   act,
   render,
-  type RenderResult,
   screen,
   waitFor,
   within,
+  type RenderResult,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
+import { Provider } from 'react-redux';
+import {
+  checkInstrumentId as unmockedCheckInstrumentId,
+  checkInvestigationId as unmockedCheckInvestigationId,
+} from './idCheckFunctions';
+import PageContainer, { paths } from './pageContainer.component';
 
 vi.mock('loglevel');
 vi.mock('./idCheckFunctions');
@@ -135,7 +135,6 @@ describe('PageContainer - Tests', () => {
     document.body.appendChild(holder);
 
     vi.mocked(useQueryClient, { partial: true }).mockReturnValue({
-      // @ts-expect-error doesn't like that number isn't a generic type
       getQueryData: vi.fn(() => 0),
     });
 
@@ -174,8 +173,7 @@ describe('PageContainer - Tests', () => {
 
   it('displays the correct entity count', async () => {
     history.replace(paths.toggle.investigation);
-    vi.mocked(useQueryClient).mockReturnValue({
-      // @ts-expect-error doesn't like that number isn't a generic type
+    vi.mocked(useQueryClient, { partial: true }).mockReturnValue({
       getQueryData: vi.fn(() => 101),
     });
 

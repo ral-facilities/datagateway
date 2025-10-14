@@ -1,20 +1,20 @@
+import SubjectIcon from '@mui/icons-material/Subject';
 import {
   ColumnType,
+  ISISInstrumentDetailsPanel,
   Instrument,
+  ConnectedTable as Table,
   parseSearchToQuery,
-  Table,
   tableLink,
   useInstrumentCount,
   useInstrumentsInfinite,
   useSort,
   useTextFilter,
-  ISISInstrumentDetailsPanel,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { IndexRange, TableCellProps } from 'react-virtualized';
-import SubjectIcon from '@mui/icons-material/Subject';
 import { useLocation } from 'react-router-dom';
+import { IndexRange, TableCellProps } from 'react-virtualized';
 
 interface ISISInstrumentsTableProps {
   dataPublication: boolean;

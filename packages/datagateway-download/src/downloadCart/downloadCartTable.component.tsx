@@ -22,6 +22,7 @@ import {
   type TableActionProps,
   TextColumnFilter,
   type TextFilter,
+  useIsCartMintable,
   type SortType,
   useSubmitCart,
   Download,
@@ -32,7 +33,6 @@ import { Link as RouterLink } from 'react-router-dom';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import {
   useCart,
-  useIsCartMintable,
   useIsTwoLevel,
   useRemoveAllFromCart,
   useRemoveEntityFromCart,
@@ -81,7 +81,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     data: mintable,
     isLoading: cartMintabilityLoading,
     error: mintableError,
-  } = useIsCartMintable(cartItems);
+  } = useIsCartMintable(cartItems, doiMinterUrl);
 
   const fileSizesAndCounts = useFileSizesAndCounts(cartItems);
 
@@ -186,16 +186,17 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     return filteredData?.sort(sortCartItems);
   }, [cartItems, fileSizesAndCounts, filters, sort]);
 
-  const unmintableEntityIDs: number[] | null | undefined = React.useMemo(
+  const unmintableEntityIDs: number[] | undefined = React.useMemo(
     () =>
       mintableError?.response?.status === 403 &&
-      typeof mintableError?.response?.data?.detail === 'string' &&
-      JSON.parse(
-        mintableError.response.data.detail.substring(
-          mintableError.response.data.detail.indexOf('['),
-          mintableError.response.data.detail.lastIndexOf(']') + 1
-        )
-      ),
+      typeof mintableError?.response?.data?.detail === 'string'
+        ? JSON.parse(
+            mintableError.response.data.detail.substring(
+              mintableError.response.data.detail.indexOf('['),
+              mintableError.response.data.detail.lastIndexOf(']') + 1
+            )
+          )
+        : undefined,
     [mintableError]
   );
 

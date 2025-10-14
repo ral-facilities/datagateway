@@ -84,7 +84,12 @@ export const fetchSettings = (): Promise<DataviewSettings | void> => {
       'datagateway-dataview-settings.json'
     : '/datagateway-dataview-settings.json';
   return axios
-    .get<DataviewSettings>(settingsPath)
+    .get<
+      Omit<DataviewSettings, 'doiMinterUrl' | 'dataCiteUrl'> & {
+        doiMinterUrl?: string | null;
+        dataCiteUrl?: string | null;
+      }
+    >(settingsPath)
     .then((res) => {
       const settings = res.data;
 
@@ -124,6 +129,7 @@ export const fetchSettings = (): Promise<DataviewSettings | void> => {
                 order: route['order'] ?? 0,
                 hideFromMenu: route['hideFromMenu'] ?? false,
                 admin: route['admin'] ?? false,
+                unauthorised: route['unauthorised'] ?? false,
                 helpSteps:
                   index === 0 && 'helpSteps' in settings
                     ? settings['helpSteps']
@@ -148,7 +154,15 @@ export const fetchSettings = (): Promise<DataviewSettings | void> => {
       } else {
         throw new Error('No routes provided in the settings');
       }
-      return settings;
+
+      // convert null values to undefined - simplifies type handling in the code
+      // whilst allowing us to specify null in the example config
+      if (settings.doiMinterUrl === null) settings.doiMinterUrl = undefined;
+      if (settings.dataCiteUrl === null) settings.dataCiteUrl = undefined;
+
+      // have to typecast as TS can't see that we've eliminated null from the above properties
+      // see: https://github.com/microsoft/TypeScript/issues/50651
+      return settings as DataviewSettings;
     })
     .catch((error) => {
       log.error(`Error loading ${settingsPath}: ${error.message}`);

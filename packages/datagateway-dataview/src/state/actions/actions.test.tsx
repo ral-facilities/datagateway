@@ -1,29 +1,27 @@
 import {
-  loadFeatureSwitches,
-  loadBreadcrumbSettings,
-  configureApp,
-  settingsLoaded,
-  loadSelectAllSetting,
-  loadPluginHostSetting,
-  loadFacilityImageSetting,
-} from '.';
-import {
+  ConfigureAccessMethodsType,
   ConfigureFeatureSwitchesType,
-  ConfigureBreadcrumbSettingsType,
-  SettingsLoadedType,
-  ConfigureSelectAllSettingType,
-  ConfigurePluginHostSettingType,
-  ConfigureFacilityImageSettingType,
-} from './actions.types';
-import { actions, resetActions, dispatch, getState } from '../../setupTests';
-import {
-  loadUrls,
-  loadFacilityName,
-  loadQueryRetries,
   ConfigureQueryRetriesType,
   loadAccessMethods,
-  ConfigureAccessMethodsType,
+  loadFacilityName,
+  loadFeatureSwitches,
+  loadQueryRetries,
+  loadUrls,
 } from 'datagateway-common';
+import {
+  configureApp,
+  loadBreadcrumbSettings,
+  loadFacilityImageSetting,
+  loadPluginHostSetting,
+  settingsLoaded,
+} from '.';
+import { actions, dispatch, getState, resetActions } from '../../setupTests';
+import {
+  ConfigureBreadcrumbSettingsType,
+  ConfigureFacilityImageSettingType,
+  ConfigurePluginHostSettingType,
+  SettingsLoadedType,
+} from './actions.types';
 
 vi.mock('loglevel');
 
@@ -45,14 +43,6 @@ describe('Actions', () => {
     expect(action.type).toEqual(SettingsLoadedType);
   });
 
-  it('given JSON loadFeatureSwitches returns a ConfigureFeatureSwitchesType with ConfigureFeatureSwitchesPayload', () => {
-    const action = loadFeatureSwitches({});
-    expect(action.type).toEqual(ConfigureFeatureSwitchesType);
-    expect(action.payload).toEqual({
-      switches: {},
-    });
-  });
-
   it('given JSON loadBreadcrumbSettings returns a ConfigureBreadcrumbSettingsType with ConfigureBreadcrumbSettingsPayload', () => {
     const action = loadBreadcrumbSettings([
       {
@@ -70,14 +60,6 @@ describe('Actions', () => {
           replaceEntityField: 'testField',
         },
       ],
-    });
-  });
-
-  it('given JSON loadSelectAllSetting returns a ConfigureSelectAllSettingType with ConfigureSelectAllSettingPayload', () => {
-    const action = loadSelectAllSetting(false);
-    expect(action.type).toEqual(ConfigureSelectAllSettingType);
-    expect(action.payload).toEqual({
-      settings: false,
     });
   });
 
@@ -130,7 +112,7 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState, null);
 
-    expect(actions.length).toEqual(10);
+    expect(actions.length).toEqual(9);
     expect(actions).toContainEqual(loadFacilityName('Generic'));
     expect(actions).toContainEqual(loadFacilityImageSetting('test-image.jpg'));
     expect(actions).toContainEqual(loadFeatureSwitches({}));
@@ -151,7 +133,6 @@ describe('Actions', () => {
       ])
     );
     expect(actions).toContainEqual(settingsLoaded());
-    expect(actions).toContainEqual(loadSelectAllSetting(false));
     expect(actions).toContainEqual(
       loadPluginHostSetting('http://localhost:3000/')
     );
@@ -161,7 +142,7 @@ describe('Actions', () => {
     );
   });
 
-  it("doesn't send loadQueryRetries, loadAccessRetries, loadSelectAllSetting, loadBreadcrumbSettings, loadPluginHostSetting, loadFacilityImageSetting and loadFeatureSwitches actions when they're not defined", async () => {
+  it("doesn't send loadQueryRetries, loadAccessRetries, loadBreadcrumbSettings, loadPluginHostSetting, loadFacilityImageSetting and loadFeatureSwitches actions when they're not defined", async () => {
     mockSettingsGetter.mockReturnValue({
       facilityName: 'Generic',
       idsUrl: 'ids',
@@ -173,9 +154,6 @@ describe('Actions', () => {
     await asyncAction(dispatch, getState, null);
 
     expect(actions.length).toEqual(3);
-    expect(
-      actions.every(({ type }) => type !== ConfigureSelectAllSettingType)
-    ).toBe(true);
     expect(
       actions.every(({ type }) => type !== ConfigureBreadcrumbSettingsType)
     ).toBe(true);

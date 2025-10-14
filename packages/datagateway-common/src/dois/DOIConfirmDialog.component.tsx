@@ -5,19 +5,21 @@ import {
   Grid,
   Typography,
 } from '@mui/material';
+import { MutationStatus } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { Mark, DialogTitle, DialogContent } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { MutationStatus } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
+import { DOIResponse } from '../app.types';
 
-import type { DoiResponse } from '../downloadApi';
+import DialogContent from '../dialogContent.component';
+import DialogTitle from '../dialogTitle.component';
+import Mark from '../mark.component';
 
 interface DOIConfirmDialogProps {
   open: boolean;
   mintingStatus: MutationStatus;
-  data: DoiResponse | undefined;
+  data: DOIResponse | undefined;
   error: AxiosError<{
     detail: { msg: string }[] | string;
   }> | null;
@@ -50,7 +52,10 @@ const DOIConfirmDialog: React.FC<DOIConfirmDialogProps> = (
       maxWidth={'sm'}
     >
       <div>
-        <DialogTitle onClose={isMintError ? () => setClose() : undefined}>
+        <DialogTitle
+          onClose={isMintError ? () => setClose() : undefined}
+          closeAriaLabel={t('DOIConfirmDialog.close_aria_label')}
+        >
           {t('DOIConfirmDialog.dialog_title')}
         </DialogTitle>
         <DialogContent>

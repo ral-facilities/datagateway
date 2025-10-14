@@ -1,39 +1,27 @@
-import { ActionType, ThunkResult } from '../app.types';
 import {
-  FeatureSwitches,
-  FeatureSwitchesPayload,
-  ConfigureFeatureSwitchesType,
-  BreadcrumbSettings,
-  ConfigureBreadcrumbSettingsPayload,
-  ConfigureBreadcrumbSettingsType,
-  SettingsLoadedType,
-  ConfigureSelectAllSettingPayload,
-  ConfigureSelectAllSettingType,
-  ConfigurePluginHostSettingPayload,
-  ConfigurePluginHostSettingType,
-  ConfigureFacilityImageSettingPayload,
-  ConfigureFacilityImageSettingType,
-} from './actions.types';
-import {
-  loadUrls,
-  loadFacilityName,
-  loadQueryRetries,
   loadAccessMethods,
+  loadAnonUserName,
+  loadFacilityName,
+  loadFeatureSwitches,
+  loadQueryRetries,
+  loadUrls,
 } from 'datagateway-common';
 import { Action } from 'redux';
 import { settings } from '../../settings';
+import { ActionType, ThunkResult } from '../app.types';
+import {
+  BreadcrumbSettings,
+  ConfigureBreadcrumbSettingsPayload,
+  ConfigureBreadcrumbSettingsType,
+  ConfigureFacilityImageSettingPayload,
+  ConfigureFacilityImageSettingType,
+  ConfigurePluginHostSettingPayload,
+  ConfigurePluginHostSettingType,
+  SettingsLoadedType,
+} from './actions.types';
 
 export const settingsLoaded = (): Action => ({
   type: SettingsLoadedType,
-});
-
-export const loadFeatureSwitches = (
-  featureSwitches: FeatureSwitches
-): ActionType<FeatureSwitchesPayload> => ({
-  type: ConfigureFeatureSwitchesType,
-  payload: {
-    switches: featureSwitches,
-  },
 });
 
 export const loadBreadcrumbSettings = (
@@ -42,15 +30,6 @@ export const loadBreadcrumbSettings = (
   type: ConfigureBreadcrumbSettingsType,
   payload: {
     settings: breadcrumbSettings,
-  },
-});
-
-export const loadSelectAllSetting = (
-  selectAllSetting: boolean
-): ActionType<ConfigureSelectAllSettingPayload> => ({
-  type: ConfigureSelectAllSettingType,
-  payload: {
-    settings: selectAllSetting,
   },
 });
 
@@ -83,12 +62,18 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
         dispatch(loadFeatureSwitches(settingsResult['features']));
       }
 
+      if (settingsResult?.['anonUserName'] !== undefined) {
+        dispatch(loadAnonUserName(settingsResult['anonUserName']));
+      }
+
       dispatch(
         loadUrls({
           idsUrl: settingsResult['idsUrl'],
           apiUrl: settingsResult['apiUrl'],
           downloadApiUrl: settingsResult['downloadApiUrl'],
           icatUrl: '', // we currently don't need icatUrl in dataview so just pass empty string for now
+          doiMinterUrl: settingsResult['doiMinterUrl'],
+          dataCiteUrl: settingsResult['dataCiteUrl'],
         })
       );
 
@@ -103,10 +88,6 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
       // Dispatch the action to load the breadcrumb settings (optional settings).
       if (settingsResult?.['breadcrumbs'] !== undefined) {
         dispatch(loadBreadcrumbSettings(settingsResult['breadcrumbs']));
-      }
-
-      if (settingsResult?.['selectAllSetting'] !== undefined) {
-        dispatch(loadSelectAllSetting(settingsResult['selectAllSetting']));
       }
 
       if (settingsResult?.['pluginHost'] !== undefined) {

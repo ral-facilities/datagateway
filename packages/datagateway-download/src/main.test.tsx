@@ -24,6 +24,8 @@ describe('index - fetchSettings', () => {
       idsUrl: 'ids',
       apiUrl: 'api',
       downloadApiUrl: 'download-api',
+      dataCiteUrl: 'datacite',
+      doiMinterUrl: 'doi-minter',
       fileCountMax: 5000,
       totalSizeMax: 1000000000000,
       accessMethods: {
@@ -63,6 +65,7 @@ describe('index - fetchSettings', () => {
           displayName: 'displayName',
           admin: false,
           hideFromMenu: false,
+          unauthorised: false,
           order: 0,
           helpSteps: [],
           logoLightMode: LogoLight,
@@ -73,12 +76,14 @@ describe('index - fetchSettings', () => {
     });
   });
 
-  it('settings loaded and multiple routes registered with any helpSteps provided', async () => {
+  it('settings loaded and multiple routes registered with any helpSteps provided and null urls changed to undefined', async () => {
     const settingsResult = {
       facilityName: 'Generic',
       idsUrl: 'ids',
       apiUrl: 'api',
       downloadApiUrl: 'download-api',
+      doiMinterUrl: null,
+      dataCiteUrl: null,
       fileCountMax: 5000,
       totalSizeMax: 1000000000000,
       accessMethods: {
@@ -100,6 +105,7 @@ describe('index - fetchSettings', () => {
           link: 'link1',
           displayName: 'displayName1',
           hideFromMenu: true,
+          unauthorised: true,
           order: 1,
         },
         {
@@ -120,7 +126,12 @@ describe('index - fetchSettings', () => {
     );
     const settings = await fetchSettings();
 
-    expect(JSON.stringify(settings)).toEqual(JSON.stringify(settingsResult));
+    const { dataCiteUrl, doiMinterUrl, ...expectedSettingsResult } =
+      settingsResult;
+
+    expect(JSON.stringify(settings)).toEqual(
+      JSON.stringify(expectedSettingsResult)
+    );
     expect(CustomEvent).toHaveBeenCalledTimes(3);
     expect(CustomEvent).toHaveBeenNthCalledWith(1, MicroFrontendId, {
       detail: {
@@ -132,6 +143,7 @@ describe('index - fetchSettings', () => {
           displayName: 'displayName0',
           admin: false,
           hideFromMenu: false,
+          unauthorised: false,
           order: 0,
           helpSteps: [{ target: '#id', content: 'content' }],
           logoLightMode: LogoLight,
@@ -150,6 +162,7 @@ describe('index - fetchSettings', () => {
           displayName: 'displayName1',
           admin: false,
           hideFromMenu: true,
+          unauthorised: true,
           order: 1,
           helpSteps: [],
           logoLightMode: LogoLight,
@@ -168,6 +181,7 @@ describe('index - fetchSettings', () => {
           displayName: 'displayNameAdmin0',
           admin: true,
           hideFromMenu: false,
+          unauthorised: false,
           order: 0,
           helpSteps: [],
           logoLightMode: LogoLight,

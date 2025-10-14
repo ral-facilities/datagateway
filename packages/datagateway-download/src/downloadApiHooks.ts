@@ -12,39 +12,33 @@ import {
 } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import {
+  DOIMetadata,
+  DOIResponse,
   Download,
   DownloadCartItem,
   DownloadStatus,
-  InvalidateTokenType,
-  MicroFrontendId,
   User,
   fetchDownloadCart,
   getDownload,
+  handleDOIAPIError,
   handleICATError,
   useRetryICATErrors,
 } from 'datagateway-common';
-import log from 'loglevel';
 import pLimit from 'p-limit';
 import React from 'react';
 import { DownloadSettingsContext } from './ConfigProvider';
 import {
-  DoiMetadata,
-  DoiResponse,
   DownloadProgress,
   FileSizeAndCount,
-  RelatedDOI,
   adminDownloadDeleted,
   adminDownloadStatus,
-  checkUser,
   downloadDeleted,
   fetchAdminDownloads,
-  fetchDOI,
   fetchDownloads,
   getCartUsers,
   getFileSizeAndCount,
   getIsTwoLevel,
   getPercentageComplete,
-  isCartMintable,
   mintCart,
   removeAllDownloadCartItems,
   removeFromCart,
@@ -513,75 +507,16 @@ export const useDownloadPercentageComplete = <T = DownloadProgress>({
 };
 
 /**
- * Queries whether a cart is mintable.
- * @param cart The {@link Cart} that is checked
- */
-export const useIsCartMintable = (
-  cart: DownloadCartItem[] | undefined
-): UseQueryResult<
-  boolean,
-  AxiosError<{ detail: { msg: string }[] } | { detail: string }>
-> => {
-  const settings = React.useContext(DownloadSettingsContext);
-  const { doiMinterUrl } = settings;
-  const queryClient = useQueryClient();
-  const opts = queryClient.getDefaultOptions();
-  const retries =
-    typeof opts?.queries?.retry === 'number' ? opts.queries.retry : 3;
-
-  return useQuery(
-    ['ismintable', cart],
-    () => {
-      if (doiMinterUrl && cart && cart.length > 0)
-        return isCartMintable(cart, doiMinterUrl);
-      else return Promise.resolve(false);
-    },
-    {
-      onError: (error) => {
-        if (error.response?.status !== 403) log.error(error);
-        if (error.response?.status === 401) {
-          document.dispatchEvent(
-            new CustomEvent(MicroFrontendId, {
-              detail: {
-                type: InvalidateTokenType,
-                payload: {
-                  severity: 'error',
-                  message:
-                    localStorage.getItem('autoLogin') === 'true'
-                      ? 'Your session has expired, please reload the page'
-                      : 'Your session has expired, please login again',
-                },
-              },
-            })
-          );
-        }
-      },
-      retry: (failureCount, error) => {
-        // if we get 403 we know this is an legit response from the backend so don't bother retrying
-        // all other errors use default retry behaviour
-        if (error.response?.status === 403 || failureCount >= retries) {
-          return false;
-        } else {
-          return true;
-        }
-      },
-      refetchOnWindowFocus: false,
-      enabled: typeof doiMinterUrl !== 'undefined',
-    }
-  );
-};
-
-/**
  * Mints a cart
  * @param cart The {@link Cart} to mint
  * @param doiMetadata The required metadata for the DOI
  */
 export const useMintCart = (): UseMutationResult<
-  DoiResponse,
+  DOIResponse,
   AxiosError<{
     detail: { msg: string }[] | string;
   }>,
-  { cart: DownloadCartItem[]; doiMetadata: DoiMetadata }
+  { cart: DownloadCartItem[]; doiMetadata: DOIMetadata }
 > => {
   const settings = React.useContext(DownloadSettingsContext);
 
@@ -590,25 +525,7 @@ export const useMintCart = (): UseMutationResult<
       return mintCart(cart, doiMetadata, settings);
     },
     {
-      onError: (error) => {
-        log.error(error);
-        if (error.response?.status === 401) {
-          document.dispatchEvent(
-            new CustomEvent(MicroFrontendId, {
-              detail: {
-                type: InvalidateTokenType,
-                payload: {
-                  severity: 'error',
-                  message:
-                    localStorage.getItem('autoLogin') === 'true'
-                      ? 'Your session has expired, please reload the page'
-                      : 'Your session has expired, please login again',
-                },
-              },
-            })
-          );
-        }
-      },
+      onError: handleDOIAPIError,
     }
   );
 };
@@ -630,98 +547,4 @@ export const useCartUsers = (
       staleTime: Infinity,
     }
   );
-};
-
-/**
- * Checks whether a username belongs to an ICAT User
- * @param username The username that we're checking
- * @returns the {@link User} that matches the username, or 404
- */
-export const useCheckUser = (
-  username: string
-): UseQueryResult<User, AxiosError> => {
-  const settings = React.useContext(DownloadSettingsContext);
-  const queryClient = useQueryClient();
-  const opts = queryClient.getDefaultOptions();
-  const retries =
-    typeof opts?.queries?.retry === 'number' ? opts.queries.retry : 3;
-
-  return useQuery(
-    ['checkUser', username],
-    () => checkUser(username, settings),
-    {
-      onError: (error) => {
-        log.error(error);
-        if (error.response?.status === 401) {
-          document.dispatchEvent(
-            new CustomEvent(MicroFrontendId, {
-              detail: {
-                type: InvalidateTokenType,
-                payload: {
-                  severity: 'error',
-                  message:
-                    localStorage.getItem('autoLogin') === 'true'
-                      ? 'Your session has expired, please reload the page'
-                      : 'Your session has expired, please login again',
-                },
-              },
-            })
-          );
-        }
-      },
-      retry: (failureCount: number, error: AxiosError) => {
-        if (
-          // user not logged in, error code will log them out
-          error.response?.status === 401 ||
-          // email doesn't match user - don't retry as this is a correct response from the server
-          error.response?.status === 404 ||
-          // email is invalid - don't retry as this is correct response from the server
-          error.response?.status === 422 ||
-          failureCount >= retries
-        )
-          return false;
-        return true;
-      },
-      // set enabled false to only fetch on demand when the add creator button is pressed
-      enabled: false,
-      cacheTime: 0,
-    }
-  );
-};
-
-/**
- * Checks whether a DOI is valid and returns the DOI metadata
- * @param doi The DOI that we're checking
- * @returns the {@link RelatedDOI} that matches the username, or 404
- */
-export const useCheckDOI = (
-  doi: string
-): UseQueryResult<RelatedDOI, AxiosError> => {
-  const settings = React.useContext(DownloadSettingsContext);
-  const queryClient = useQueryClient();
-  const opts = queryClient.getDefaultOptions();
-  const retries =
-    typeof opts?.queries?.retry === 'number' ? opts.queries.retry : 3;
-
-  return useQuery(['checkDOI', doi], () => fetchDOI(doi, settings), {
-    retry: (failureCount: number, error: AxiosError) => {
-      if (
-        // DOI is invalid - don't retry as this is a correct response from the server
-        error.response?.status === 404 ||
-        failureCount >= retries
-      )
-        return false;
-      return true;
-    },
-    select: (doi) => ({
-      title: doi.attributes.titles[0].title,
-      identifier: doi.attributes.doi,
-      fullReference: '', // TODO: what should we put here?
-      relationType: '',
-      relatedItemType: '',
-    }),
-    // set enabled false to only fetch on demand when the add creator button is pressed
-    enabled: false,
-    cacheTime: 0,
-  });
 };

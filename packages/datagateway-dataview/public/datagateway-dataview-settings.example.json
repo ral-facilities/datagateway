@@ -1,11 +1,16 @@
 {
   "facilityName": "Generic",
   "facilityImageURL": "",
-  "features": {},
+  "features": {
+    "disableAnonDownload": false,
+    "disableSelectAll": false
+  },
   "idsUrl": "example.ids.url",
   "apiUrl": "example.api.url",
   "downloadApiUrl": "example.download.api.url",
-  "selectAllSetting": true,
+  "doiMinterUrl": null,
+  "dataCiteUrl": null,
+  "anonUserName": "anon/anon",
   "helpSteps": [
     {
       "target": "#plugin-link--browse-investigation",
@@ -160,6 +165,19 @@
       "link": "/my-data/ISIS?sort={\"startDate\":\"desc\"}",
       "displayName": "My Data ISIS",
       "order": 6
+    },
+    {
+      "section": "Browse",
+      "link": "/my-dois/DLS",
+      "displayName": "My DOIs DLS",
+      "order": 7
+    },
+    {
+      "section": "Browse",
+      "link": "/browse/dataPublication",
+      "displayName": "DataPublications",
+      "order": 8,
+      "hideFromMenu": true
     }
   ],
   "breadcrumbs": [

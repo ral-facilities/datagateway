@@ -35,6 +35,7 @@ export * from './generic';
 export * from './instruments';
 export * from './investigations';
 export * from './lucene';
+export * from './dois';
 
 /**
  * Get the nested value from an Entity object given a dataKey

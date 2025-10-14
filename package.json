@@ -6,7 +6,7 @@
     "packages/*"
   ],
   "dependencies": {
-    "husky": "8.0.1"
+    "husky": "9.1.7"
   },
   "resolutions": {
     "@types/react": "18.0.33",
@@ -24,7 +24,7 @@
     "datagateway-dataview": "yarn workspace datagateway-dataview dev",
     "datagateway-download": "yarn workspace datagateway-download dev",
     "datagateway-search": "yarn workspace datagateway-search dev",
-    "postinstall": "husky install"
+    "postinstall": "husky"
   },
   "packageManager": "yarn@3.8.7"
 }

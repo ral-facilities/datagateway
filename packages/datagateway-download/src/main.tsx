@@ -69,7 +69,12 @@ export const fetchSettings = (): Promise<DownloadSettings | void> => {
       'datagateway-download-settings.json'
     : '/datagateway-download-settings.json';
   return axios
-    .get<DownloadSettings>(settingsPath)
+    .get<
+      Omit<DownloadSettings, 'doiMinterUrl' | 'dataCiteUrl'> & {
+        doiMinterUrl?: string | null;
+        dataCiteUrl?: string | null;
+      }
+    >(settingsPath)
     .then((res) => {
       const settings = res.data;
 
@@ -139,6 +144,7 @@ export const fetchSettings = (): Promise<DownloadSettings | void> => {
             displayName: route['displayName'],
             hideFromMenu: route['hideFromMenu'] ?? false,
             admin: route['admin'] ?? false,
+            unauthorised: route['unauthorised'] ?? false,
             order: route['order'] ?? 0,
             helpSteps:
               index === 0 && 'helpSteps' in settings
@@ -155,7 +161,14 @@ export const fetchSettings = (): Promise<DownloadSettings | void> => {
         );
       });
 
-      return settings;
+      // convert null values to undefined - simplifies type handling in the code
+      // whilst allowing us to specify null in the example config
+      if (settings.doiMinterUrl === null) settings.doiMinterUrl = undefined;
+      if (settings.dataCiteUrl === null) settings.dataCiteUrl = undefined;
+
+      // have to typecast as TS can't see that we've eliminated null from the above properties
+      // see: https://github.com/microsoft/TypeScript/issues/50651
+      return settings as DownloadSettings;
     })
     .catch((error) => {
       log.error(`Error loading ${settingsPath}: ${error.message}`);

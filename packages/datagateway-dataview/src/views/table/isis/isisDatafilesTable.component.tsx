@@ -1,32 +1,32 @@
-import React from 'react';
-import SubjectIcon from '@mui/icons-material/Subject';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import ExploreIcon from '@mui/icons-material/Explore';
 import SaveIcon from '@mui/icons-material/Save';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import SubjectIcon from '@mui/icons-material/Subject';
 import {
-  Table,
-  TableActionProps,
-  formatBytes,
-  Datafile,
-  useDatafileCount,
-  useDatafilesInfinite,
-  parseSearchToQuery,
-  useTextFilter,
-  useDateFilter,
   ColumnType,
-  useSort,
-  useIds,
-  useCart,
-  useAddToCart,
-  useRemoveFromCart,
+  Datafile,
   DownloadButton,
   ISISDatafileDetailsPanel,
+  ConnectedTable as Table,
+  TableActionProps,
+  formatBytes,
+  parseSearchToQuery,
+  useAddToCart,
+  useCart,
+  useDatafileCount,
+  useDatafilesInfinite,
+  useDateFilter,
+  useIds,
+  useRemoveFromCart,
+  useSort,
+  useTextFilter,
 } from 'datagateway-common';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { StateType } from '../../../state/app.types';
+import { useLocation } from 'react-router-dom';
 import { IndexRange } from 'react-virtualized';
+import { StateType } from '../../../state/app.types';
 import PreviewDatafileButton from '../../datafilePreview/previewDatafileButton.component';
 
 interface ISISDatafilesTableProps {
@@ -43,8 +43,8 @@ const ISISDatafilesTable = (
 
   const location = useLocation();
 
-  const selectAllSetting = useSelector(
-    (state: StateType) => state.dgdataview.selectAllSetting
+  const disableSelectAll = useSelector(
+    (state: StateType) => state.dgcommon.features?.disableSelectAll ?? false
   );
 
   const { filters, sort } = React.useMemo(
@@ -64,7 +64,7 @@ const ISISDatafilesTable = (
         filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
       },
     ],
-    selectAllSetting
+    !disableSelectAll
   );
   const { data: cartItems, isLoading: cartLoading } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } =
@@ -165,11 +165,10 @@ const ISISDatafilesTable = (
           (cartItem) =>
             cartItem.entityType === 'datafile' &&
             // if select all is disabled, it's safe to just pass the whole cart as selectedRows
-            (!selectAllSetting ||
-              (allIds && allIds.includes(cartItem.entityId)))
+            (disableSelectAll || (allIds && allIds.includes(cartItem.entityId)))
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, selectAllSetting, allIds]
+    [cartItems, disableSelectAll, allIds]
   );
 
   return (
@@ -190,7 +189,6 @@ const ISISDatafilesTable = (
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}
-      disableSelectAll={!selectAllSetting}
       detailsPanel={ISISDatafileDetailsPanel}
       actionsWidth={96}
       actions={[
