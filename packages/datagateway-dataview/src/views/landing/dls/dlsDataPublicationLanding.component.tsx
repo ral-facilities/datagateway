@@ -25,6 +25,7 @@ import { useHistory } from 'react-router-dom';
 import CitationFormatter from '../../citationFormatter.component';
 import Branding from './dlsBranding.component';
 import DLSDataPublicationContentTable from './dlsDataPublicationContentTable.component';
+import DLSDataPublicationRelatedIdentifiersPanel from './dlsDataPublicationRelatedIdentifiersPanel.component';
 import DLSDataPublicationVersionPanel, {
   sortVersions,
 } from './dlsDataPublicationVersionPanel.component';
@@ -224,6 +225,19 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
           url: t('doi_constants.license.url'),
           name: t('doi_constants.license.name'),
         },
+        isAccessibleForFree: true,
+        hasPart: data?.relatedItems
+          ?.filter(
+            (relatedItem) =>
+              relatedItem.relationType === DOIRelationType.HasPart
+          )
+          .map((relatedItem) => relatedItem.identifier),
+        isPartOf: data?.relatedItems
+          ?.filter(
+            (relatedItem) =>
+              relatedItem.relationType === DOIRelationType.IsPartOf
+          )
+          .map((relatedItem) => relatedItem.identifier),
       });
 
       return () => {
@@ -242,6 +256,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     formattedUsers,
     isVersionDOI,
     doiData,
+    data?.relatedItems,
   ]);
 
   const shortInfo = [
@@ -478,6 +493,9 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                     </Grid>
                   )
               )}
+              <Grid item sx={{ pt: '0px !important' }}>
+                <DLSDataPublicationRelatedIdentifiersPanel doi={data?.pid} />
+              </Grid>
               {isVersionDOI === false && (
                 <Grid item sx={{ pt: '0px !important' }}>
                   <DLSDataPublicationVersionPanel

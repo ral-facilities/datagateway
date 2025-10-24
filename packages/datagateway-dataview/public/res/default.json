@@ -85,6 +85,7 @@
       "format": "Data Format",
       "type": "Type",
       "license": "License",
+      "related_identifiers_panel_label": "Related Identifiers",
       "version_panel_label": "Versions",
       "citation_formatter": {
         "label": "Data Citation",

@@ -307,6 +307,8 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         url: t('doi_constants.license.url'),
         name: t('doi_constants.license.name'),
       },
+      isAccessibleForFree: true,
+      hasPart: investigationDataPublications?.map((dp) => dp.pid),
     });
 
     return () => {
@@ -315,7 +317,15 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         currentScript.remove();
       }
     };
-  }, [t, title, pid, dataPublicationId, description, formattedUsers]);
+  }, [
+    t,
+    title,
+    pid,
+    dataPublicationId,
+    description,
+    formattedUsers,
+    investigationDataPublications,
+  ]);
 
   const shortInfo = [
     {

@@ -315,7 +315,11 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
                           }}
                         >
                           {Object.values(DOIRelationType)
-                            .filter((relation) => !relation.includes('Version'))
+                            .filter(
+                              (relation) =>
+                                !relation.includes('Version') &&
+                                !relation.includes('Part')
+                            )
                             .map((relation) => {
                               return (
                                 <MenuItem key={relation} value={relation}>
@@ -342,7 +346,7 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
                         </InputLabel>
                         <Select
                           labelId={`${relatedIdentifier.identifier}-resource-type-select-label`}
-                          value={relatedIdentifier.resourceType ?? ''}
+                          value={relatedIdentifier.relatedItemType ?? ''}
                           label={t(
                             'DOIGenerationForm.related_identifier_resource_type'
                           )}
@@ -354,7 +358,7 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
                                 ) {
                                   return {
                                     ...d,
-                                    resourceType:
+                                    relatedItemType:
                                       event.target.value !== ''
                                         ? (event.target
                                             .value as DOIResourceType)

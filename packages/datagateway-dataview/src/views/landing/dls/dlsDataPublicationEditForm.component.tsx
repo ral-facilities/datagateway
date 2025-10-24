@@ -113,14 +113,16 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
         dataciteData.attributes.relatedIdentifiers
           // filter out our generated versions from here
           ?.filter(
-            (relatedItem) => !relatedItem.relationType.includes('Version')
+            (relatedItem) =>
+              !relatedItem.relationType.includes('Version') &&
+              !relatedItem.relationType.includes('Part')
           )
           .map(
             (relatedItem) =>
               ({
                 identifier: relatedItem.relatedIdentifier,
                 relationType: relatedItem.relationType,
-                resourceType: relatedItem.resourceTypeGeneral,
+                relatedItemType: relatedItem.resourceTypeGeneral,
                 relatedIdentifierType: relatedItem.relatedIdentifierType,
               } satisfies RelatedIdentifier)
           ) ?? []

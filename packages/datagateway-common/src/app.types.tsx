@@ -232,15 +232,17 @@ export interface DataPublication {
   relatedItems?: RelatedItem[];
 }
 
+/** The related identifier type that gets used in the related identifier picker component & what is sent to the doi minter api */
 export type RelatedIdentifier = Pick<
   RelatedItem,
   'title' | 'fullReference' | 'identifier'
 > & {
   relationType: DOIRelationType | '';
-  resourceType?: DOIResourceType;
+  relatedItemType?: DOIResourceType;
   relatedIdentifierType: DOIIdentifierType;
 };
 
+/** The ICAT RelatedItem type */
 export type RelatedItem = {
   title?: string;
   fullReference?: string;
