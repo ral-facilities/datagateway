@@ -16,7 +16,6 @@ import {
   DOIRelationType,
   DataPublication,
   readSciGatewayToken,
-  useDOI,
   useDataPublication,
 } from 'datagateway-common';
 import React from 'react';
@@ -119,7 +118,6 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   const { dataPublicationId } = props;
 
   const { data } = useDataPublication(parseInt(dataPublicationId));
-  const { data: doiData } = useDOI(data?.pid);
 
   const isVersionDOI = data?.relatedItems?.some(
     (relatedItem) => relatedItem.relationType === DOIRelationType.IsVersionOf
@@ -255,7 +253,6 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     description,
     formattedUsers,
     isVersionDOI,
-    doiData,
     data?.relatedItems,
   ]);
 

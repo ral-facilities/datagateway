@@ -3,7 +3,7 @@ import { RenderResult, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 import * as React from 'react';
-import { DataCiteResponse } from '../api/dois';
+import { DOIIdentifierType, DataCiteResponse } from '../app.types';
 import RelatedIdentifiers from './relatedIdentifiers.component';
 
 vi.mock('loglevel');
@@ -23,7 +23,7 @@ const createTestQueryClient = (): QueryClient =>
     },
   });
 
-describe('DOI generation form component', () => {
+describe('Related identifiers form component', () => {
   let user: ReturnType<typeof userEvent.setup>;
 
   let props: React.ComponentProps<typeof RelatedIdentifiers>;
@@ -59,7 +59,8 @@ describe('DOI generation form component', () => {
           fullReference: '',
           identifier: 'related.doi.1',
           relationType: '',
-          relatedItemType: '',
+          relatedItemType: undefined,
+          relatedIdentifierType: DOIIdentifierType.DOI,
         },
       ],
       changeRelatedIdentifiers: vi.fn(),
@@ -74,7 +75,35 @@ describe('DOI generation form component', () => {
           doi: 'related.doi.2',
           titles: [{ title: 'Related DOI 2' }],
           url: 'www.example.com',
+          publisher: {
+            name: '',
+            publisherIdentifier: null,
+            publisherIdentifierScheme: null,
+            schemeUri: null,
+          },
+          publicationYear: 2025,
+          dates: [],
+          types: {
+            resourceType: '',
+            resourceTypeGeneral: '',
+          },
+          rightsList: [],
+          geoLocations: [],
+          fundingReferences: [],
+          identifiers: [],
+          creators: [],
+          subjects: [],
+          contributors: [],
+          language: null,
+          alternateIdentifiers: [],
+          relatedIdentifiers: [],
+          sizes: [],
+          formats: [],
+          version: '',
+          descriptions: [],
+          relatedItems: [],
         },
+        relationships: undefined,
       },
     };
 
@@ -109,7 +138,9 @@ describe('DOI generation form component', () => {
     ).toHaveLength(1);
 
     await user.type(
-      screen.getByRole('textbox', { name: 'DOIGenerationForm.related_doi' }),
+      screen.getByRole('textbox', {
+        name: 'DOIGenerationForm.related_identifier',
+      }),
       '2'
     );
 
@@ -132,7 +163,7 @@ describe('DOI generation form component', () => {
 
     await user.click(
       screen.getAllByRole('button', {
-        name: /DOIGenerationForm.related_doi_relationship/i,
+        name: /DOIGenerationForm.related_identifier_relationship/i,
       })[0]
     );
     await user.click(await screen.findByRole('option', { name: 'IsCitedBy' }));
@@ -143,7 +174,7 @@ describe('DOI generation form component', () => {
 
     await user.click(
       screen.getAllByRole('button', {
-        name: /DOIGenerationForm.related_doi_resource_type/i,
+        name: /DOIGenerationForm.related_identifier_resource_type/i,
       })[0]
     );
     await user.click(await screen.findByRole('option', { name: 'Journal' }));
@@ -158,7 +189,9 @@ describe('DOI generation form component', () => {
     });
 
     await user.type(
-      screen.getByRole('textbox', { name: 'DOIGenerationForm.related_doi' }),
+      screen.getByRole('textbox', {
+        name: 'DOIGenerationForm.related_identifier',
+      }),
       '3'
     );
 
@@ -178,7 +211,83 @@ describe('DOI generation form component', () => {
     ).toHaveLength(2);
   });
 
-  it('should let the user delete related dois', async () => {
+  it('should let the user add related non-dois + lets you change the relation type + resource type + identifier type', async () => {
+    props.relatedIdentifiers = [];
+    renderComponent();
+
+    await user.type(
+      screen.getByRole('textbox', {
+        name: 'DOIGenerationForm.related_identifier',
+      }),
+      'non.doi'
+    );
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.add_related_other',
+      })
+    );
+
+    expect(
+      within(
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.related_identifiers',
+        })
+      )
+        .getAllByRole('row')
+        .slice(1) // ignores the header row
+    ).toHaveLength(1);
+
+    expect(screen.getByRole('cell', { name: 'non.doi' })).toBeInTheDocument();
+
+    // check that it defaults to URL
+    expect(screen.getByText('URL')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'non.doi' })).toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole('button', {
+        name: /DOIGenerationForm.related_identifier_relationship/i,
+      })
+    );
+    await user.click(
+      await screen.findByRole('option', { name: 'IsSupplementedBy' })
+    );
+
+    expect(screen.queryByRole('option')).not.toBeInTheDocument();
+    // check that the option is actually selected in the table even after the menu closes
+    expect(screen.getByText('IsSupplementedBy')).toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole('button', {
+        name: /DOIGenerationForm.related_identifier_resource_type/i,
+      })
+    );
+    await user.click(
+      await screen.findByRole('option', { name: 'ComputationalNotebook' })
+    );
+
+    expect(screen.queryByRole('option')).not.toBeInTheDocument();
+    // check that the option is actually selected in the table even after the menu closes
+    expect(screen.getByText('ComputationalNotebook')).toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole('button', {
+        name: /DOIGenerationForm.related_identifier_identifier_type/i,
+      })
+    );
+    await user.click(await screen.findByRole('option', { name: 'ISBN' }));
+
+    expect(screen.queryByRole('option')).not.toBeInTheDocument();
+    // check that the option is actually selected in the table even after the menu closes
+    expect(screen.getByText('ISBN')).toBeInTheDocument();
+
+    // expect to not render as a link anymore
+    expect(
+      screen.queryByRole('link', { name: 'non.doi' })
+    ).not.toBeInTheDocument();
+  });
+
+  it('should let the user delete related identifiers', async () => {
     renderComponent();
 
     expect(
@@ -196,7 +305,7 @@ describe('DOI generation form component', () => {
 
     await user.click(
       screen.getByRole('button', {
-        name: 'DOIGenerationForm.delete_related_doi',
+        name: 'DOIGenerationForm.delete_related_identifier',
       })
     );
 
@@ -219,5 +328,22 @@ describe('DOI generation form component', () => {
     expect(
       await screen.findByRole('tooltip', { name: 'Related DOI 1' })
     ).toBeInTheDocument();
+  });
+
+  it('should render urls as links', async () => {
+    props.relatedIdentifiers[0] = {
+      title: 'URL 1',
+      fullReference: '',
+      identifier: 'https://example.com',
+      relationType: '',
+      relatedItemType: undefined,
+      relatedIdentifierType: DOIIdentifierType.URL,
+    };
+
+    renderComponent();
+
+    const urlLink = screen.getByRole('link', { name: 'https://example.com' });
+
+    expect(urlLink).toHaveAttribute('href', 'https://example.com');
   });
 });

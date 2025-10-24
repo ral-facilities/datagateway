@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import * as React from 'react';
 import {
   ContributorType,
+  DOIIdentifierType,
   DOIRelationType,
   DOIResourceType,
 } from '../app.types';
@@ -40,6 +41,7 @@ describe('DOI generation form component', () => {
           title: 'DOI Title',
           fullReference: '',
           identifier: 'doi',
+          relatedIdentifierType: DOIIdentifierType.DOI,
           relatedItemType: DOIResourceType.Dataset,
           relationType: DOIRelationType.Cites,
         },
@@ -128,16 +130,15 @@ describe('DOI generation form component', () => {
     props.relatedIdentifiers = [
       {
         title: 'DOI Title',
-        fullReference: '',
         identifier: 'doi',
+        relatedIdentifierType: DOIIdentifierType.DOI,
         relatedItemType: DOIResourceType.Dataset,
         relationType: '',
       },
       {
-        title: 'DOI Title 2',
-        fullReference: '',
-        identifier: 'doi2',
-        relatedItemType: '',
+        identifier: 'https://example.com',
+        relatedIdentifierType: DOIIdentifierType.URL,
+        relatedItemType: undefined,
         relationType: DOIRelationType.Cites,
       },
     ];
@@ -151,8 +152,8 @@ describe('DOI generation form component', () => {
     props.relatedIdentifiers = [
       {
         title: 'DOI Title',
-        fullReference: '',
         identifier: 'doi',
+        relatedIdentifierType: DOIIdentifierType.DOI,
         relatedItemType: DOIResourceType.Dataset,
         relationType: DOIRelationType.Cites,
       },

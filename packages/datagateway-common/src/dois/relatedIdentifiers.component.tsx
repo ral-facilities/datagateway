@@ -168,7 +168,7 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
                 backgroundColor: 'background.default',
               }}
               size="small"
-              aria-labelledby="related-dois-label"
+              aria-labelledby="related-identifiers-label"
             >
               <TableHead>
                 <TableRow>
@@ -205,7 +205,8 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
                             {relatedIdentifier.identifier}
                           </Link>
                         </StyledTooltip>
-                      ) : DOIIdentifierType.URL ? (
+                      ) : relatedIdentifier.relatedIdentifierType ===
+                        DOIIdentifierType.URL ? (
                         <Link href={relatedIdentifier.identifier}>
                           {relatedIdentifier.identifier}
                         </Link>

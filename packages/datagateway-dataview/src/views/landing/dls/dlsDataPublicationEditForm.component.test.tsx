@@ -10,8 +10,10 @@ import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 import {
   ContributorType,
+  DOIIdentifierType,
   DOIRelationType,
   DOIResourceType,
+  DataCiteDOI,
   DataPublication,
   DataPublicationUser,
   DownloadCartItem,
@@ -61,6 +63,7 @@ describe('DOI edit form component', () => {
   let user: ReturnType<typeof userEvent.setup>;
 
   let initialData: DataPublication;
+  let initialDataCiteData: DataCiteDOI;
 
   const users = [
     {
@@ -150,33 +153,74 @@ describe('DOI edit form component', () => {
         ],
       },
       type: { id: 13, name: 'Dataset' },
-      relatedItems: [
-        {
-          id: 11,
-          title: 'DOI 3',
-          fullReference: 'DOI 3 full reference',
-          identifier: 'doi 3',
-          relationType: DOIRelationType.IsSupplementedBy,
-          relatedItemType: DOIResourceType.Book,
-          createTime: '2024-01-02 12:00:00',
-        },
-        {
-          id: 14,
-          identifier: 'doi 6',
-          relationType: DOIRelationType.IsContinuedBy,
-          relatedItemType: DOIResourceType.DataPaper,
-          createTime: '2024-01-06 12:00:00',
-        },
-        {
-          id: 12,
-          title: 'DOI 4',
-          identifier: 'doi 4',
-          relationType: DOIRelationType.IsVersionOf,
-          relatedItemType: DOIResourceType.Dataset,
-          createTime: '2024-01-02 12:00:00',
-        },
-      ],
+      relatedItems: [],
       publicationDate: '2023-07-20',
+    };
+
+    initialDataCiteData = {
+      id: '1',
+      type: 'doi',
+      attributes: {
+        publisher: {
+          name: '',
+          publisherIdentifier: null,
+          publisherIdentifierScheme: null,
+          schemeUri: null,
+        },
+        publicationYear: 2025,
+        dates: [],
+        types: {
+          resourceType: '',
+          resourceTypeGeneral: '',
+        },
+        rightsList: [],
+        geoLocations: [],
+        fundingReferences: [],
+        url: '',
+        identifiers: [],
+        creators: [],
+        titles: [],
+        subjects: [],
+        contributors: [],
+        language: null,
+        alternateIdentifiers: [],
+        relatedIdentifiers: [
+          {
+            relatedIdentifier: 'doi 3',
+            relationType: DOIRelationType.IsDocumentedBy,
+            resourceTypeGeneral: DOIResourceType.Book,
+            relatedIdentifierType: DOIIdentifierType.DOI,
+            relatedMetadataScheme: null,
+            schemeType: null,
+            schemeUri: null,
+          },
+          {
+            relatedIdentifier: 'https://example.com',
+            relationType: DOIRelationType.IsSupplementedBy,
+            resourceTypeGeneral: DOIResourceType.ComputationalNotebook,
+            relatedIdentifierType: DOIIdentifierType.URL,
+            relatedMetadataScheme: null,
+            schemeType: null,
+            schemeUri: null,
+          },
+          {
+            relatedIdentifier: 'doi 4',
+            relationType: DOIRelationType.IsVersionOf,
+            resourceTypeGeneral: DOIResourceType.Dataset,
+            relatedIdentifierType: DOIIdentifierType.DOI,
+            relatedMetadataScheme: null,
+            schemeType: null,
+            schemeUri: null,
+          },
+        ],
+        sizes: [],
+        formats: [],
+        version: '',
+        descriptions: [],
+        relatedItems: [],
+        doi: '',
+      },
+      relationships: undefined,
     };
 
     cartItems = [
@@ -207,6 +251,7 @@ describe('DOI edit form component', () => {
           urls: {
             ...dGCommonInitialState.urls,
             doiMinterUrl: 'https://example.com/doi-minter',
+            dataCiteUrl: 'https://example.com/datacite',
           },
         },
       })
@@ -236,6 +281,10 @@ describe('DOI edit form component', () => {
         if (/\/datapublications$/.test(url)) {
           return Promise.resolve({
             data: [initialData],
+          });
+        } else if (/\/dois/.test(url)) {
+          return Promise.resolve({
+            data: { data: initialDataCiteData },
           });
         } else if (/.*\/user\/cart\/.*$/.test(url)) {
           return Promise.resolve({
@@ -316,18 +365,32 @@ describe('DOI edit form component', () => {
     // editing related DOIs
 
     expect(
+      await screen.findByRole(
+        'table',
+        {
+          name: 'DOIGenerationForm.related_identifiers',
+        },
+        { timeout: 5_000 }
+      )
+    ).toBeInTheDocument();
+
+    expect(
       within(
-        screen.getByRole('table', { name: 'DOIGenerationForm.related_dois' })
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.related_identifiers',
+        })
       )
         .getAllByRole('row')
         .slice(1) // ignores the header row
     ).toHaveLength(2);
     expect(screen.getByRole('cell', { name: 'doi 3' })).toBeInTheDocument();
-    expect(screen.getByRole('cell', { name: 'doi 6' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('cell', { name: 'https://example.com' })
+    ).toBeInTheDocument();
 
     await user.click(
       screen.getByRole('button', {
-        name: DOIRelationType.IsSupplementedBy,
+        name: DOIRelationType.IsDocumentedBy,
       })
     );
     await user.click(
@@ -336,11 +399,11 @@ describe('DOI edit form component', () => {
 
     await user.click(
       screen.getAllByRole('button', {
-        name: 'DOIGenerationForm.delete_related_doi',
+        name: 'DOIGenerationForm.delete_related_identifier',
       })[1]
     );
     expect(
-      screen.queryByRole('cell', { name: 'doi 6' })
+      screen.queryByRole('cell', { name: 'https://example.com' })
     ).not.toBeInTheDocument();
 
     // editing users
@@ -398,15 +461,14 @@ describe('DOI edit form component', () => {
           })),
           related_items: [
             {
-              ...initialData.relatedItems?.[0],
+              ...initialDataCiteData.attributes.relatedIdentifiers?.[0],
               relationType: DOIRelationType.IsCitedBy,
             },
           ].map((ri) => ({
-            fullReference: ri.fullReference,
-            title: ri.title,
-            identifier: ri.identifier,
-            relatedItemType: ri.relatedItemType,
+            identifier: ri.relatedIdentifier,
+            relatedIdentifierType: ri.relatedIdentifierType,
             relationType: ri.relationType,
+            relatedItemType: ri.resourceTypeGeneral,
           })),
           resource_type: 'Collection',
         },
@@ -573,14 +635,13 @@ describe('DOI edit form component', () => {
             username: user.user?.name ?? user.fullName,
             contributor_type: user.contributorType,
           })),
-          related_items: initialData.relatedItems
+          related_items: initialDataCiteData.attributes.relatedIdentifiers
             ?.filter((i) => i.relationType !== DOIRelationType.IsVersionOf)
-            ?.map((ri) => ({
-              fullReference: ri.fullReference,
-              title: ri.title,
-              identifier: ri.identifier,
-              relatedItemType: ri.relatedItemType,
+            .map((ri) => ({
+              identifier: ri.relatedIdentifier,
+              relatedIdentifierType: ri.relatedIdentifierType,
               relationType: ri.relationType,
+              relatedItemType: ri.resourceTypeGeneral,
             })),
           resource_type: 'Collection',
         },
