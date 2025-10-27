@@ -166,7 +166,7 @@ describe('DOI Generation form', () => {
       cy.contains('button', 'Generate DOI').should('not.be.disabled');
     });
 
-    it('should let user add related DOIs and select their relation & resource type', () => {
+    it('should let user add a related DOI and select their relation & resource type', () => {
       cy.contains('DOI Title').parent().find('input').type('Test title');
       cy.contains('DOI Description')
         .parent()
@@ -178,7 +178,10 @@ describe('DOI Generation form', () => {
       cy.contains('button', 'Generate DOI').should('not.be.disabled');
 
       // DOI from https://support.datacite.org/docs/testing-guide
-      cy.contains(/^DOI$/).parent().find('input').type('10.17596/w76y-4s92');
+      cy.contains('Identifier (e.g. DOI, URL)')
+        .parent()
+        .find('input')
+        .type('10.17596/w76y-4s92');
       cy.contains('button', 'Add DOI').click();
 
       // shouldn't let users submit DOIs without selecting a relation or resource type
@@ -194,6 +197,52 @@ describe('DOI Generation form', () => {
       cy.contains('label', 'Relationship').parent().click();
 
       cy.contains('IsCitedBy').click();
+
+      // check that related DOIs info doesn't break the API
+      cy.contains('button', 'Generate DOI').click();
+
+      cy.contains('Mint was successful', { timeout: 10000 }).should(
+        'be.visible'
+      );
+    });
+
+    it('should let user add a non-DOI related identifier and select their relation, identifier & resource type', () => {
+      cy.contains('DOI Title').parent().find('input').type('Test title');
+      cy.contains('DOI Description')
+        .parent()
+        .find('textarea')
+        .first()
+        .type('Test description');
+
+      // wait for users to load
+      cy.contains('button', 'Generate DOI').should('not.be.disabled');
+
+      // DOI from https://support.datacite.org/docs/testing-guide
+      cy.contains('Identifier (e.g. DOI, URL)')
+        .parent()
+        .find('input')
+        .type('my.identifier');
+      cy.contains('button', 'Add Other').click();
+
+      // shouldn't let users submit DOIs without selecting a relation or resource type
+      cy.contains('button', 'Generate DOI').should('be.disabled');
+
+      // expect it defaults to a URL
+      cy.contains('a', 'my.identifier');
+      cy.contains('label', 'Identifier Type').parent().click();
+
+      cy.contains('ISBN').click();
+
+      cy.contains('label', 'Resource Type').parent().click();
+
+      cy.contains('ComputationalNotebook').click();
+
+      // shouldn't let users submit DOIs without selecting a relation type
+      cy.contains('button', 'Generate DOI').should('be.disabled');
+
+      cy.contains('label', 'Relationship').parent().click();
+
+      cy.contains('IsSupplementedBy').click();
 
       // check that related DOIs info doesn't break the API
       cy.contains('button', 'Generate DOI').click();
