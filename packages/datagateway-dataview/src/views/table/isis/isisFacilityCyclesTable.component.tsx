@@ -1,4 +1,5 @@
-import { CalendarToday, Subject } from '@mui/icons-material';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import Subject from '@mui/icons-material/Subject';
 import {
   ColumnType,
   FacilityCycle,

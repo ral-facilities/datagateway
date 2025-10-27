@@ -1,4 +1,4 @@
-import { Search } from '@mui/icons-material';
+import Search from '@mui/icons-material/Search';
 import { Chip, FormControlLabel, Stack, Switch, Tooltip } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';

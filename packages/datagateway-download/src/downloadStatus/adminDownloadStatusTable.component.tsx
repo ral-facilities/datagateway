@@ -26,13 +26,11 @@ import {
 
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
-import {
-  PauseCircleFilled,
-  PlayCircleFilled,
-  Refresh,
-  RemoveCircle,
-  Restore,
-} from '@mui/icons-material';
+import PauseCircleFilled from '@mui/icons-material/PauseCircleFilled';
+import PlayCircleFilled from '@mui/icons-material/PlayCircleFilled';
+import Refresh from '@mui/icons-material/Refresh';
+import RemoveCircle from '@mui/icons-material/RemoveCircle';
+import Restore from '@mui/icons-material/Restore';
 import BlackTooltip from '../tooltip.component';
 import { toDate } from 'date-fns-tz';
 import { format } from 'date-fns';

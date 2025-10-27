@@ -1,9 +1,7 @@
-import {
-  Assessment,
-  CalendarToday,
-  Public,
-  Storage,
-} from '@mui/icons-material';
+import Assessment from '@mui/icons-material/Assessment';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import Public from '@mui/icons-material/Public';
+import Storage from '@mui/icons-material/Storage';
 import {
   Box,
   Divider,

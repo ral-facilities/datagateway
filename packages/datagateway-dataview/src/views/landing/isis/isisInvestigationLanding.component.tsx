@@ -8,15 +8,13 @@ import {
   Tabs,
   Typography,
 } from '@mui/material';
-import {
-  Assessment,
-  Business,
-  CalendarToday,
-  Fingerprint,
-  Public,
-  Save,
-  Storage,
-} from '@mui/icons-material';
+import Assessment from '@mui/icons-material/Assessment';
+import Business from '@mui/icons-material/Business';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import Fingerprint from '@mui/icons-material/Fingerprint';
+import Public from '@mui/icons-material/Public';
+import Save from '@mui/icons-material/Save';
+import Storage from '@mui/icons-material/Storage';
 import {
   Dataset,
   Investigation,

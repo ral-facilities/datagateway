@@ -1,11 +1,9 @@
-import {
-  CalendarToday,
-  Fingerprint,
-  Person,
-  Public,
-  Save,
-  Subject,
-} from '@mui/icons-material';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import Fingerprint from '@mui/icons-material/Fingerprint';
+import Person from '@mui/icons-material/Person';
+import Public from '@mui/icons-material/Public';
+import Save from '@mui/icons-material/Save';
+import Subject from '@mui/icons-material/Subject';
 import {
   AdditionalFilters,
   ColumnType,

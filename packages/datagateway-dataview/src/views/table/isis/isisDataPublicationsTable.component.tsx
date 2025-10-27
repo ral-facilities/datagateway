@@ -15,7 +15,9 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 
-import { CalendarToday, Fingerprint, Public } from '@mui/icons-material';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import Fingerprint from '@mui/icons-material/Fingerprint';
+import Public from '@mui/icons-material/Public';
 import { useLocation } from 'react-router-dom';
 
 interface ISISDataPublicationsTableProps {
