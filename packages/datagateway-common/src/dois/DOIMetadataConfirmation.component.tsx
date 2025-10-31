@@ -57,10 +57,8 @@ const CreatorsAndContributorsMetadata: React.FC<{
                   <Grid item key={nameIdentifier.nameIdentifier}>
                     <Typography>
                       {nameIdentifier.nameIdentifierScheme}:{' '}
-                      {nameIdentifier.schemeUri ? (
-                        <Link
-                          href={`${nameIdentifier.schemeUri}/${nameIdentifier.nameIdentifier}`}
-                        >
+                      {nameIdentifier.nameIdentifier.startsWith('http') ? (
+                        <Link href={nameIdentifier.nameIdentifier}>
                           {nameIdentifier.nameIdentifier}
                         </Link>
                       ) : (
@@ -94,13 +92,13 @@ const DOIMetadataConfirmation: React.FC<DOIMetadataConfirmationProps> = (
       <Grid container spacing={1} direction="column">
         <Grid item>
           <Typography>
-            {t('DOIGenerationForm.title')}: {metadata.titles[0].title}
+            {t('DOIGenerationForm.title')}: {metadata.titles?.[0]?.title}
           </Typography>
         </Grid>
         <Grid item>
           <Typography>
             {t('DOIGenerationForm.description')}:{' '}
-            {metadata.descriptions[0].description}
+            {metadata.descriptions?.[0]?.description}
           </Typography>
         </Grid>
         <Grid container item spacing={1}>
@@ -262,7 +260,7 @@ const DOIMetadataConfirmation: React.FC<DOIMetadataConfirmationProps> = (
         )}
         <Grid item>
           <Typography>
-            {t('DOIGenerationForm.size')}: {metadata.sizes[0]}
+            {t('DOIGenerationForm.size')}: {metadata.sizes?.[0]}
           </Typography>
         </Grid>
         <Grid container item spacing={1}>

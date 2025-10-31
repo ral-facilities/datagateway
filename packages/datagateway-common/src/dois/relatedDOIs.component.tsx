@@ -172,12 +172,18 @@ const RelatedDOIs: React.FC<RelatedDOIsProps> = (props) => {
                         disabled={disabled}
                       >
                         <InputLabel
-                          id={`${relatedItem.identifier}-relationship-select-label`}
+                          id={`${relatedItem.identifier.replaceAll(
+                            ' ',
+                            '-'
+                          )}-relationship-select-label`}
                         >
                           {t('DOIGenerationForm.related_doi_relationship')}
                         </InputLabel>
                         <Select
-                          labelId={`${relatedItem.identifier}-relationship-select-label`}
+                          labelId={`${relatedItem.identifier.replaceAll(
+                            ' ',
+                            '-'
+                          )}-relationship-select-label`}
                           value={relatedItem.relationType}
                           label={t(
                             'DOIGenerationForm.related_doi_relationship'
@@ -200,7 +206,11 @@ const RelatedDOIs: React.FC<RelatedDOIsProps> = (props) => {
                           }}
                         >
                           {Object.values(DOIRelationType)
-                            .filter((relation) => !relation.includes('Version'))
+                            .filter(
+                              (relation) =>
+                                !relation.includes('Version') &&
+                                !relation.includes('Part')
+                            )
                             .map((relation) => {
                               return (
                                 <MenuItem key={relation} value={relation}>
@@ -220,12 +230,18 @@ const RelatedDOIs: React.FC<RelatedDOIsProps> = (props) => {
                         disabled={disabled}
                       >
                         <InputLabel
-                          id={`${relatedItem.identifier}-resource-type-select-label`}
+                          id={`${relatedItem.identifier.replaceAll(
+                            ' ',
+                            '-'
+                          )}-resource-type-select-label`}
                         >
                           {t('DOIGenerationForm.related_doi_resource_type')}
                         </InputLabel>
                         <Select
-                          labelId={`${relatedItem.identifier}-resource-type-select-label`}
+                          labelId={`${relatedItem.identifier.replaceAll(
+                            ' ',
+                            '-'
+                          )}-resource-type-select-label`}
                           value={relatedItem.relatedItemType ?? ''}
                           label={t(
                             'DOIGenerationForm.related_doi_resource_type'

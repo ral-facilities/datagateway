@@ -17,12 +17,14 @@ import {
   useAdminUpdateDownloadStatus,
   useCart,
   useCartUsers,
+  useDeleteDraft,
   useDownloadOrRestoreDownload,
   useDownloadPercentageComplete,
   useDownloads,
   useFileSizesAndCounts,
   useIsTwoLevel,
   useMintDraftCart,
+  usePublishDraft,
   useRemoveAllFromCart,
   useRemoveEntityFromCart,
 } from './downloadApiHooks';
@@ -1062,7 +1064,7 @@ describe('Download API react-query hooks test', () => {
     });
   });
 
-  describe('useMintCart', () => {
+  describe('useMintDraftCart', () => {
     const doiMetadata = {
       title: 'Test title',
       description: 'Test description',
@@ -1072,8 +1074,10 @@ describe('Download API react-query hooks test', () => {
     it('should send a request to mint a cart', async () => {
       axios.post = vi.fn().mockResolvedValue({
         data: {
-          concept: { doi: 'test doi', data_publication: '1' },
-          version: { doi: 'test doi v1', data_publication: '11' },
+          concept: {
+            data_publication_id: '1',
+            attributes: { doi: 'test doi' },
+          },
         },
         status: 200,
       });
@@ -1091,11 +1095,13 @@ describe('Download API react-query hooks test', () => {
       });
 
       expect(data).toEqual({
-        concept: { doi: 'test doi', data_publication: '1' },
-        version: { doi: 'test doi v1', data_publication: '11' },
+        concept: {
+          data_publication_id: '1',
+          attributes: { doi: 'test doi' },
+        },
       });
       expect(axios.post).toHaveBeenCalledWith(
-        `${mockedSettings.doiMinterUrl}/mint`,
+        `${mockedSettings.doiMinterUrl}/draft`,
         {
           metadata: {
             ...doiMetadata,
@@ -1129,11 +1135,13 @@ describe('Download API react-query hooks test', () => {
 
       expect(handleDOIAPIError).toHaveBeenCalledWith(
         error,
-        expect.anything(),
-        undefined
+        undefined,
+        undefined,
+        true,
+        true
       );
       expect(axios.post).toHaveBeenCalledWith(
-        `${mockedSettings.doiMinterUrl}/mint`,
+        `${mockedSettings.doiMinterUrl}/draft`,
         {
           metadata: {
             ...doiMetadata,
@@ -1141,6 +1149,127 @@ describe('Download API react-query hooks test', () => {
           },
           investigation_ids: [1],
         },
+        { headers: { Authorization: 'Bearer null' } }
+      );
+    });
+  });
+
+  describe('usePublishDraft', () => {
+    it('should send a request to mint a cart', async () => {
+      axios.put = vi.fn().mockResolvedValue({
+        data: {
+          concept: {
+            data_publication_id: '1',
+            attributes: { doi: 'test doi' },
+          },
+          version: {
+            data_publication_id: '2',
+            attributes: { doi: 'test doi v1' },
+          },
+        },
+        status: 200,
+      });
+
+      const { result } = renderHook(() => usePublishDraft(), {
+        wrapper: createReactQueryWrapper(),
+      });
+
+      let data;
+      await act(async () => {
+        data = await result.current.mutateAsync('1');
+      });
+
+      expect(data).toEqual({
+        concept: {
+          data_publication_id: '1',
+          attributes: { doi: 'test doi' },
+        },
+        version: {
+          data_publication_id: '2',
+          attributes: { doi: 'test doi v1' },
+        },
+      });
+      expect(axios.put).toHaveBeenCalledWith(
+        `${mockedSettings.doiMinterUrl}/draft/1/publish`,
+        undefined,
+        { headers: { Authorization: 'Bearer null' } }
+      );
+    });
+
+    it('should handle errors correctly', async () => {
+      const error = {
+        message: 'Test error message',
+        response: {
+          status: 401,
+        },
+      };
+      axios.put = vi.fn().mockRejectedValue(error);
+
+      const { result } = renderHook(() => usePublishDraft(), {
+        wrapper: createReactQueryWrapper(),
+      });
+
+      act(() => {
+        result.current.mutate('1');
+      });
+      await waitFor(() => expect(result.current.isError).toBe(true));
+
+      expect(handleDOIAPIError).toHaveBeenCalledWith(error, '1', undefined);
+      expect(axios.put).toHaveBeenCalledWith(
+        `${mockedSettings.doiMinterUrl}/draft/1/publish`,
+        undefined,
+        { headers: { Authorization: 'Bearer null' } }
+      );
+    });
+  });
+
+  describe('useDeleteDraft', () => {
+    it('should send a request to mint a cart', async () => {
+      axios.delete = vi.fn().mockResolvedValue(undefined);
+
+      const { result } = renderHook(() => useDeleteDraft(), {
+        wrapper: createReactQueryWrapper(),
+      });
+
+      let data;
+      await act(async () => {
+        data = await result.current.mutateAsync('1');
+      });
+
+      expect(data).toEqual(undefined);
+      expect(axios.delete).toHaveBeenCalledWith(
+        `${mockedSettings.doiMinterUrl}/draft/1`,
+        { headers: { Authorization: 'Bearer null' } }
+      );
+    });
+
+    it('should handle errors correctly', async () => {
+      const error = {
+        message: 'Test error message',
+        response: {
+          status: 401,
+        },
+      };
+      axios.delete = vi.fn().mockRejectedValue(error);
+
+      const { result } = renderHook(() => useDeleteDraft(), {
+        wrapper: createReactQueryWrapper(),
+      });
+
+      act(() => {
+        result.current.mutate('1');
+      });
+      await waitFor(() => expect(result.current.isError).toBe(true));
+
+      expect(handleDOIAPIError).toHaveBeenCalledWith(
+        error,
+        undefined,
+        undefined,
+        true,
+        true
+      );
+      expect(axios.delete).toHaveBeenCalledWith(
+        `${mockedSettings.doiMinterUrl}/draft/1`,
         { headers: { Authorization: 'Bearer null' } }
       );
     });

@@ -239,12 +239,12 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
                           disabled={disabled}
                         >
                           <InputLabel
-                            id={`${user.name}-contributor-type-select-label`}
+                            id={`${user.id}-contributor-type-select-label`}
                           >
                             {t('DOIGenerationForm.creator_type')}
                           </InputLabel>
                           <Select
-                            labelId={`${user.name}-contributor-type-select-label`}
+                            labelId={`${user.id}-contributor-type-select-label`}
                             value={user.contributor_type}
                             label={t('DOIGenerationForm.creator_type')}
                             onChange={(event) => {

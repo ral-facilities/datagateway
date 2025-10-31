@@ -106,9 +106,13 @@ function SelectAllTransferList(props: TransferListProps): React.ReactElement {
     title: React.ReactNode,
     items: TransferListItem[]
   ): React.ReactElement => {
+    const idSafeTitle = title.replace(' ', '-');
     const itemsExcludingDisabled = items.filter((v) => !v.disabled);
     return (
-      <Card sx={{ height: '100%' }} aria-labelledby={`${title}-card-title`}>
+      <Card
+        sx={{ height: '100%' }}
+        aria-labelledby={`${idSafeTitle}-card-title`}
+      >
         <CardHeader
           sx={{ p: 1 }}
           avatar={
@@ -152,10 +156,10 @@ function SelectAllTransferList(props: TransferListProps): React.ReactElement {
           role="list"
           dense
           disablePadding
-          aria-labelledby={`${title}-card-title`}
+          aria-labelledby={`${idSafeTitle}-card-title`}
         >
           {items.map((value) => {
-            const labelId = `${title}-list-item-${value.id}-label`;
+            const labelId = `${idSafeTitle}-list-item-${value.id}-label`;
 
             return (
               <Tooltip

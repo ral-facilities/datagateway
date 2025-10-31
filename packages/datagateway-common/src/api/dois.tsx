@@ -18,22 +18,26 @@ import {
   User,
 } from '../app.types';
 import { readSciGatewayToken } from '../parseTokens';
-import { InvalidateTokenType } from '../state/actions/actions.types';
+import {
+  InvalidateTokenType,
+  NotificationType,
+} from '../state/actions/actions.types';
 import { StateType } from '../state/app.types';
 
 export const handleDOIAPIError = (
-  // one hook complains if we use unknown, another complains if we use never
-  // so just use any - we never access the custom error payload anyway
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  error: AxiosError<any>,
+  error: AxiosError<{
+    detail: { msg: string }[] | string;
+  }>,
   _variables?: unknown,
   _context?: unknown,
   logCondition?: boolean,
   broadcastCondition?: boolean
 ): void => {
-  const message =
-    (error as AxiosError<{ detail?: { msg?: string } }>).response?.data?.detail
-      ?.msg ?? error.message;
+  const message = error.response?.data?.detail
+    ? typeof error.response.data.detail === 'string'
+      ? error.response.data.detail
+      : error.response.data.detail[0].msg
+    : error.message;
 
   if (typeof logCondition === 'undefined' || logCondition === true)
     log.error(message);
@@ -47,7 +51,7 @@ export const handleDOIAPIError = (
     document.dispatchEvent(
       new CustomEvent(MicroFrontendId, {
         detail: {
-          type: InvalidateTokenType,
+          type: NotificationType,
           payload: {
             severity: 'error',
             message: broadcastMessage,
@@ -453,7 +457,9 @@ export const useIsCartMintable = (
   doiMinterUrl: string | undefined
 ): UseQueryResult<
   boolean,
-  AxiosError<{ detail: { msg: string }[] } | { detail: string }>
+  AxiosError<{
+    detail: { msg: string }[] | string;
+  }>
 > => {
   const queryClient = useQueryClient();
   const opts = queryClient.getDefaultOptions();

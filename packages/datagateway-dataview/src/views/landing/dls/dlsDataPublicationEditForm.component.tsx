@@ -99,7 +99,9 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
         dataPublication.relatedItems
           // filter out our generated versions from here
           ?.filter(
-            (relatedItem) => !relatedItem.relationType.includes('Version')
+            (relatedItem) =>
+              !relatedItem.relationType.includes('Version') &&
+              !relatedItem.relationType.includes('Part')
           )
           .map(
             (relatedItem) =>

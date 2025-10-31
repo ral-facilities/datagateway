@@ -19,7 +19,12 @@ import {
 import { MemoryHistory, createMemoryHistory } from 'history';
 import { Router } from 'react-router-dom';
 import { DownloadSettingsContext } from '../ConfigProvider';
-import { getCartUsers, mintDraftCart } from '../downloadApi';
+import {
+  deleteDraftDOI,
+  getCartUsers,
+  mintDraftCart,
+  publishDraftDOI,
+} from '../downloadApi';
 import { flushPromises } from '../setupTests';
 import { mockCartItems, mockedSettings } from '../testData';
 import DOIGenerationForm from './DOIGenerationForm.component';
@@ -40,7 +45,9 @@ vi.mock('../downloadApi', async () => {
   return {
     ...originalModule,
     getCartUsers: vi.fn(),
-    mintCart: vi.fn(),
+    mintDraftCart: vi.fn(),
+    publishDraftDOI: vi.fn(),
+    deleteDraftDOI: vi.fn(),
   };
 });
 
@@ -81,60 +88,7 @@ describe('DOI generation form component', () => {
 
   let mockUser: User;
   let mockDOIResponse: { data: DataCiteDOI };
-
-  const staticMetadata: ReturnType<
-    typeof useStaticDataciteMetadata
-  > extends UseQueryResult<infer X>
-    ? X
-    : never = {
-    publisher: {
-      name: 'test',
-      publisherIdentifier: '234',
-      publisherIdentifierScheme: '2345',
-      schemeURI: 'https://example.com/publisher',
-    },
-    publicationYear: 2025,
-    dates: [
-      {
-        date: '2025-09-01',
-        dateType: 'Created',
-        dateInformation: 'date info',
-      },
-    ],
-    types: {
-      resourceType: 'Experimental Datasets',
-      resourceTypeGeneral: 'Other',
-    },
-    rightsList: [
-      {
-        rights: 'cc by',
-        rightsUri: 'https://example.com/rights',
-        rightsIdentifier: '12',
-        rightsIdentifierScheme: '1234',
-        schemeUri: 'https://example.com/rights-scheme',
-      },
-    ],
-    geoLocations: [
-      {
-        geoLocationPlace: 'DLS',
-        geoLocationPoint: {
-          pointLatitude: 51.57452869855099,
-          pointLongitude: -1.3108818134944835,
-        },
-      },
-    ],
-    fundingReferences: [
-      {
-        funderName: 'test',
-        funderIdentifier: '123',
-        funderIdentifierType: 'Other',
-        schemeUri: 'https://example.com/funder',
-        awardUri: 'https://example.com/award',
-        awardTitle: 'test 1',
-        awardNumber: '1',
-      },
-    ],
-  };
+  let mockDraftResponse: Awaited<ReturnType<typeof mintDraftCart>>;
 
   beforeEach(() => {
     user = userEvent.setup();
@@ -157,11 +111,53 @@ describe('DOI generation form component', () => {
         },
       },
     };
+    mockDraftResponse = {
+      concept: {
+        data_publication_id: '1',
+        attributes: {
+          doi: 'pid',
+          // minimum data to not error
+          titles: [],
+          descriptions: [],
+          creators: [],
+          contributors: [],
+          relatedIdentifiers: [],
+          publisher: {
+            name: 'test',
+            publisherIdentifier: null,
+            publisherIdentifierScheme: null,
+            schemeUri: null,
+          },
+          publicationYear: 2025,
+          dates: [],
+          types: {
+            resourceType: 'Experimental Datasets',
+            resourceTypeGeneral: 'Other',
+          },
+          rightsList: [],
+          geoLocations: [],
+          fundingReferences: [],
+          subjects: [],
+          sizes: [],
+          url: 'https://example.com',
+          identifiers: [],
+          alternateIdentifiers: [],
+          language: null,
+          formats: [],
+          relatedItems: [],
+          version: '1',
+        },
+      },
+    };
 
     vi.mocked(fetchDownloadCart).mockResolvedValue(mockCartItems);
 
-    // mock mint cart error to test dialog can be closed after it errors
-    vi.mocked(mintDraftCart).mockRejectedValue('error');
+    vi.mocked(mintDraftCart).mockResolvedValue(mockDraftResponse);
+
+    // mock publish draft error to test dialog can be closed after it errors
+    vi.mocked(publishDraftDOI).mockRejectedValue('error');
+
+    vi.mocked(deleteDraftDOI).mockResolvedValue();
 
     vi.mocked(getCartUsers).mockResolvedValue([
       {
@@ -179,10 +175,6 @@ describe('DOI generation form component', () => {
         if (/\/user\/.*/.test(url)) {
           return Promise.resolve({
             data: mockUser,
-          });
-        } else if (/\/static_metadata$/.test(url)) {
-          return Promise.resolve({
-            data: staticMetadata,
           });
         } else if (/\/dois\/.*/.test(url)) {
           return Promise.resolve({
@@ -323,8 +315,8 @@ describe('DOI generation form component', () => {
     ).toBeDisabled();
 
     await user.click(
-      screen.getByRole('button', {
-        name: /DOIGenerationForm.creator_type/i,
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.creator_type',
       })
     );
     await user.click(
@@ -346,8 +338,8 @@ describe('DOI generation form component', () => {
     ).toBeDisabled();
 
     await user.click(
-      screen.getByRole('button', {
-        name: /DOIGenerationForm.related_doi_relationship/i,
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.related_doi_relationship',
       })
     );
     await user.click(
@@ -360,8 +352,8 @@ describe('DOI generation form component', () => {
     ).toBeDisabled();
 
     await user.click(
-      screen.getByRole('button', {
-        name: /DOIGenerationForm.related_doi_resource_type/i,
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.related_doi_resource_type',
       })
     );
     await user.click(
@@ -375,10 +367,6 @@ describe('DOI generation form component', () => {
     // expect confirmation page to appear, confirm submission
 
     await screen.findByText('DOIGenerationForm.review_metadata');
-
-    await user.click(
-      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
-    );
 
     expect(mintDraftCart).toHaveBeenCalledWith(
       mockCartItems,
@@ -400,6 +388,58 @@ describe('DOI generation form component', () => {
       },
       expect.any(Object)
     );
+
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+    );
+
+    expect(publishDraftDOI).toHaveBeenCalledWith('1', expect.anything());
+  });
+
+  it('should let the user go back from the confirmation page', async () => {
+    renderComponent();
+
+    // accept data policy
+    await user.click(
+      screen.getByRole('button', { name: 'acceptDataPolicy.accept' })
+    );
+
+    expect(
+      await screen.findByText('DOIGenerationForm.page_header')
+    ).toBeInTheDocument();
+
+    await user.type(
+      screen.getByRole('textbox', { name: 'DOIGenerationForm.title' }),
+      't'
+    );
+
+    await user.type(
+      screen.getByRole('textbox', { name: 'DOIGenerationForm.description' }),
+      'd'
+    );
+
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+    );
+
+    // expect confirmation page to appear, confirm submission
+
+    await screen.findByText('DOIGenerationForm.review_metadata');
+    expect(
+      screen.queryByText('DOIGenerationForm.page_header')
+    ).not.toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.back_button' })
+    );
+
+    expect(
+      await screen.findByText('DOIGenerationForm.page_header')
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText('DOIGenerationForm.review_metadata')
+    ).not.toBeInTheDocument();
+    expect(deleteDraftDOI).toHaveBeenCalledWith('1', expect.anything());
   });
 
   it('should not let the user submit a mint request if cart fails to load', async () => {

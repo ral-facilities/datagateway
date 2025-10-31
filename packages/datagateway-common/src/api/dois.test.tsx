@@ -4,13 +4,17 @@ import log from 'loglevel';
 import {
   handleDOIAPIError,
   useCheckUser,
+  useDeleteDraftVersion,
   useDraftVersionDOI,
   useIsCartMintable,
-  useStaticDataciteMetadata,
+  usePublishDraftVersion,
 } from '.';
 import { ContributorType, DownloadCartItem } from '../app.types';
 import { createReactQueryWrapper, createTestQueryClient } from '../setupTests';
-import { InvalidateTokenType } from '../state/actions/actions.types';
+import {
+  InvalidateTokenType,
+  NotificationType,
+} from '../state/actions/actions.types';
 
 vi.mock('loglevel');
 vi.mock('../handleICATError');
@@ -23,7 +27,9 @@ describe('handleDOIAPIError', () => {
   let events: CustomEvent<{
     detail: { type: string; payload?: unknown };
   }>[] = [];
-  let error: AxiosError;
+  let error: AxiosError<{
+    detail: { msg: string }[] | string;
+  }>;
 
   beforeEach(() => {
     events = [];
@@ -44,7 +50,7 @@ describe('handleDOIAPIError', () => {
       isAxiosError: true,
       config,
       response: {
-        data: { message: 'Test error message (response data)' },
+        data: { detail: [{ msg: 'Test error message (response data)' }] },
         status: 401,
         statusText: 'Unauthorized',
         headers: {},
@@ -68,7 +74,9 @@ describe('handleDOIAPIError', () => {
 
     handleDOIAPIError(error);
 
-    expect(log.error).toHaveBeenCalledWith(error);
+    expect(log.error).toHaveBeenCalledWith(
+      error.response?.data?.detail?.[0]?.msg
+    );
     expect(events.length).toBe(1);
     expect(events[0].detail).toEqual({
       type: InvalidateTokenType,
@@ -98,15 +106,31 @@ describe('handleDOIAPIError', () => {
   });
 
   it('should handle other errors by not broadcasting a message & log if true logging condition given', async () => {
-    localStorageGetItemMock.mockImplementation((name) => {
-      return name === 'autoLogin' ? 'false' : null;
-    });
-
-    if (error.response) error.response.status = 400;
+    if (error.response) {
+      error.response.status = 400;
+      error.response.data.detail =
+        'Test error message (response data) (string detail)';
+    }
     handleDOIAPIError(error, undefined, undefined, true);
 
-    expect(log.error).toHaveBeenCalledWith(error);
+    expect(log.error).toHaveBeenCalledWith(error.response.data.detail);
     expect(events.length).toBe(0);
+  });
+
+  it('should handle other errors by broadcasting a message if broadcast condition is true', async () => {
+    error.response = undefined;
+
+    handleDOIAPIError(error, undefined, undefined, false, true);
+
+    expect(log.error).not.toHaveBeenCalled();
+    expect(events.length).toBe(1);
+    expect(events[0].detail).toEqual({
+      type: NotificationType,
+      payload: {
+        severity: 'error',
+        message: 'Network Error, please reload the page or try again later',
+      },
+    });
   });
 });
 
@@ -162,7 +186,7 @@ describe('doi api functions', () => {
       });
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(log.error).toHaveBeenCalledWith(error);
+      expect(log.error).toHaveBeenCalledWith(error.message);
       expect(axios.get).toHaveBeenCalledTimes(1);
     });
 
@@ -188,7 +212,7 @@ describe('doi api functions', () => {
       });
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(log.error).toHaveBeenCalledWith(error);
+      expect(log.error).toHaveBeenCalledWith(error.message);
       expect(axios.get).toHaveBeenCalledTimes(1);
     });
 
@@ -214,7 +238,7 @@ describe('doi api functions', () => {
       });
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(log.error).toHaveBeenCalledWith(error);
+      expect(log.error).toHaveBeenCalledWith(error.message);
       expect(axios.get).toHaveBeenCalledTimes(1);
     });
 
@@ -240,12 +264,12 @@ describe('doi api functions', () => {
       });
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(log.error).toHaveBeenCalledWith(error);
+      expect(log.error).toHaveBeenCalledWith(error.message);
       expect(axios.get).toHaveBeenCalledTimes(4);
     });
   });
 
-  describe('useUpdateDOI', () => {
+  describe('useDraftVersionDOI', () => {
     const doiMetadata = {
       title: 'Test title',
       description: 'Test description',
@@ -257,22 +281,18 @@ describe('doi api functions', () => {
       dataset_ids: [2],
       investigation_ids: [3],
     };
-    it('should send a put request with payload indicating the updated data', async () => {
-      axios.put = vi.fn().mockResolvedValue({
+    it('should send a post request with payload indicating the updated data', async () => {
+      axios.post = vi.fn().mockResolvedValue({
         data: {
-          concept: { data_publication: 'new', doi: 'pid' },
           version: {
-            data_publication: 'new_version',
-            doi: 'new.version.pid',
+            data_publication_id: '1',
+            attributes: { doi: 'new.version.pid' },
           },
         },
       });
 
-      const queryClient = createTestQueryClient();
-      const resetQueriesSpy = vi.spyOn(queryClient, 'resetQueries');
-
       const { result } = renderHook(() => useDraftVersionDOI(), {
-        wrapper: createReactQueryWrapper(undefined, queryClient),
+        wrapper: createReactQueryWrapper(),
       });
 
       act(() => {
@@ -286,14 +306,13 @@ describe('doi api functions', () => {
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       expect(result.current.data).toEqual({
-        concept: { data_publication: 'new', doi: 'pid' },
         version: {
-          data_publication: 'new_version',
-          doi: 'new.version.pid',
+          data_publication_id: '1',
+          attributes: { doi: 'new.version.pid' },
         },
       });
-      expect(axios.put).toHaveBeenCalledWith(
-        expect.stringContaining('/mint/version/update/pid'),
+      expect(axios.post).toHaveBeenCalledWith(
+        expect.stringContaining('/draft/pid/version'),
         {
           metadata: {
             ...doiMetadata,
@@ -305,7 +324,6 @@ describe('doi api functions', () => {
         },
         { headers: { Authorization: 'Bearer null' } }
       );
-      expect(resetQueriesSpy).toHaveBeenCalled();
     });
 
     it('handles errors correctly', async () => {
@@ -315,7 +333,7 @@ describe('doi api functions', () => {
           status: 500,
         },
       };
-      axios.put = vi.fn().mockRejectedValue(error);
+      axios.post = vi.fn().mockRejectedValue(error);
 
       const { result } = renderHook(() => useDraftVersionDOI(), {
         wrapper: createReactQueryWrapper(),
@@ -330,9 +348,10 @@ describe('doi api functions', () => {
       });
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(log.error).toHaveBeenCalledWith(error);
-      expect(axios.put).toHaveBeenCalledWith(
-        expect.stringContaining('/mint/version/update/pid'),
+      expect(log.error).toHaveBeenCalledWith(error.message);
+
+      expect(axios.post).toHaveBeenCalledWith(
+        expect.stringContaining('/draft/pid/version'),
         {
           metadata: {
             ...doiMetadata,
@@ -342,6 +361,138 @@ describe('doi api functions', () => {
           dataset_ids: [2],
           datafile_ids: [1],
         },
+        { headers: { Authorization: 'Bearer null' } }
+      );
+    });
+  });
+
+  describe('usePublishDraftVersion', () => {
+    it('should send a put request with a path of the draft version doi to publish', async () => {
+      axios.put = vi.fn().mockResolvedValue({
+        data: {
+          concept: {
+            data_publication_id: '1',
+            attributes: { doi: 'pid' },
+          },
+          version: {
+            data_publication_id: '2',
+            attributes: { doi: 'new.version.pid' },
+          },
+        },
+      });
+
+      const queryClient = createTestQueryClient();
+      const resetQueriesSpy = vi.spyOn(queryClient, 'resetQueries');
+
+      const { result } = renderHook(() => usePublishDraftVersion(), {
+        wrapper: createReactQueryWrapper(undefined, queryClient),
+      });
+
+      act(() => {
+        result.current.mutate({
+          contentDataPublicationId: 'pid',
+          draftVersionDataPublicationId: 'new.version.pid',
+        });
+      });
+
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+      expect(result.current.data).toEqual({
+        concept: {
+          data_publication_id: '1',
+          attributes: { doi: 'pid' },
+        },
+        version: {
+          data_publication_id: '2',
+          attributes: { doi: 'new.version.pid' },
+        },
+      });
+      expect(axios.put).toHaveBeenCalledWith(
+        expect.stringContaining('/draft/pid/version/new.version.pid/publish'),
+        undefined,
+        { headers: { Authorization: 'Bearer null' } }
+      );
+      expect(resetQueriesSpy).toHaveBeenCalled();
+    });
+
+    it('handles errors correctly', async () => {
+      const error = {
+        message: 'Test error message',
+        response: {
+          status: 500,
+        },
+      };
+      axios.put = vi.fn().mockRejectedValue(error);
+
+      const { result } = renderHook(() => usePublishDraftVersion(), {
+        wrapper: createReactQueryWrapper(),
+      });
+
+      act(() => {
+        result.current.mutate({
+          contentDataPublicationId: 'pid',
+          draftVersionDataPublicationId: 'new.version.pid',
+        });
+      });
+      await waitFor(() => expect(result.current.isError).toBe(true));
+
+      expect(log.error).toHaveBeenCalledWith(error.message);
+      expect(axios.put).toHaveBeenCalledWith(
+        expect.stringContaining('/draft/pid/version/new.version.pid/publish'),
+        undefined,
+        { headers: { Authorization: 'Bearer null' } }
+      );
+    });
+  });
+
+  describe('useDeleteDraftVersion', () => {
+    it('should send a delete request with a path of the draft version doi to delete', async () => {
+      axios.delete = vi.fn().mockResolvedValue(undefined);
+
+      const { result } = renderHook(() => useDeleteDraftVersion(), {
+        wrapper: createReactQueryWrapper(),
+      });
+
+      act(() => {
+        result.current.mutate({
+          contentDataPublicationId: 'pid',
+          draftVersionDataPublicationId: 'new.version.pid',
+        });
+      });
+
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+      expect(result.current.data).toEqual(undefined);
+      expect(axios.delete).toHaveBeenCalledWith(
+        expect.stringContaining('/draft/pid/version/new.version.pid'),
+        { headers: { Authorization: 'Bearer null' } }
+      );
+    });
+
+    it('handles errors correctly', async () => {
+      const error = {
+        message: 'Test error message',
+        response: {
+          status: 500,
+        },
+      };
+      axios.delete = vi.fn().mockRejectedValue(error);
+
+      const { result } = renderHook(() => useDeleteDraftVersion(), {
+        wrapper: createReactQueryWrapper(),
+      });
+
+      act(() => {
+        result.current.mutate({
+          contentDataPublicationId: 'pid',
+          draftVersionDataPublicationId: 'new.version.pid',
+        });
+      });
+      await waitFor(() => expect(result.current.isError).toBe(true));
+
+      expect(log.error).toHaveBeenCalledWith(error.message);
+      expect(axios.delete).toHaveBeenCalledWith(
+        expect.stringContaining('/draft/pid/version/new.version.pid'),
         { headers: { Authorization: 'Bearer null' } }
       );
     });
@@ -462,97 +613,6 @@ describe('doi api functions', () => {
 
       expect(log.error).not.toHaveBeenCalled();
       expect(axios.post).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('useStaticDataciteMetadata', () => {
-    it('should fetch static datacite metadata', async () => {
-      const staticMetadata = {
-        publisher: {
-          name: 'test',
-          publisherIdentifier: '234',
-          publisherIdentifierScheme: '2345',
-          schemeURI: 'https://example.com/publisher',
-        },
-        publicationYear: 2025,
-        dates: [
-          {
-            date: '2025-09-01',
-            dateType: 'Created',
-            dateInformation: null,
-          },
-        ],
-        types: {
-          resourceType: 'Experimental Datasets',
-          resourceTypeGeneral: 'Other',
-        },
-        rightsList: [
-          {
-            rights: 'cc by',
-            rightsUri: 'https://example.com/rights',
-            rightsIdentifier: '12',
-            rightsIdentifierScheme: '1234',
-            schemeUri: 'https://example.com/rights-scheme',
-          },
-        ],
-        geoLocations: [
-          {
-            geoLocationPlace: 'DLS',
-            geoLocationPoint: {
-              pointLatitude: 51.57452869855099,
-              pointLongitude: -1.3108818134944835,
-            },
-          },
-        ],
-        fundingReferences: [
-          {
-            funderName: 'test',
-            funderIdentifier: '123',
-            funderIdentifierType: 'Other',
-            schemeUri: null,
-            awardUri: 'https://example.com/award',
-            awardTitle: 'test 1',
-            awardNumber: '1',
-          },
-        ],
-      };
-      axios.get = vi.fn().mockResolvedValue({
-        data: staticMetadata,
-      });
-
-      const { result } = renderHook(
-        () => useStaticDataciteMetadata('/doi-minter'),
-        {
-          wrapper: createReactQueryWrapper(),
-        }
-      );
-
-      await waitFor(() => expect(result.current.isSuccess).toBe(true));
-
-      expect(result.current.data).toEqual(staticMetadata);
-      expect(axios.get).toHaveBeenCalledWith('/doi-minter/static_metadata', {
-        headers: { Authorization: 'Bearer null' },
-      });
-    });
-
-    it('should handle errors', async () => {
-      vi.mocked(axios.get).mockRejectedValue({
-        message: 'Test error',
-      });
-
-      const { result } = renderHook(
-        () => useStaticDataciteMetadata('/doi-minter'),
-        {
-          wrapper: createReactQueryWrapper(),
-        }
-      );
-
-      await waitFor(() => expect(result.current.isError).toBe(true));
-
-      expect(log.error).toHaveBeenCalledWith({
-        message: 'Test error',
-      });
-      expect(axios.get).toHaveBeenCalledTimes(1);
     });
   });
 });
