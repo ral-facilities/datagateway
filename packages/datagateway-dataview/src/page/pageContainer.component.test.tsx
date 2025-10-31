@@ -322,7 +322,9 @@ describe('PageContainer - Tests', () => {
     renderComponent();
 
     expect(
-      await screen.findByRole('button', { name: 'my_data_table.role_selector' })
+      await screen.findByRole('combobox', {
+        name: 'my_data_table.role_selector',
+      })
     ).toBeInTheDocument();
   });
 

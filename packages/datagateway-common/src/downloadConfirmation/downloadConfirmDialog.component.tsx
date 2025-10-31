@@ -360,10 +360,9 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
           }
         />
       ) : shouldShowConfirmationForm ? (
-        <div>
+        <>
           {/* Custom title component which has a close button */}
           <DialogTitle
-            id="download-confirm-dialog-title"
             onClose={dialogClose}
             closeAriaLabel={t('downloadConfirmDialog.close_arialabel')}
           >
@@ -597,7 +596,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                 : t('downloadConfirmDialog.download')}
             </Button>
           </DialogActions>
-        </div>
+        </>
       ) : (
         <DialogContent>
           <div style={{ textAlign: 'center', padding: '25px' }}>

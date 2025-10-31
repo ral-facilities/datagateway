@@ -1,5 +1,7 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { render, screen, type RenderResult } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import axios from 'axios';
-import configureStore from 'redux-mock-store';
 import {
   dGCommonInitialState,
   InvestigationUser,
@@ -8,14 +10,12 @@ import {
   StateType,
   usePushFilter,
 } from 'datagateway-common';
-import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
 import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
 import RoleSelector from './roleSelector.component';
-import { render, type RenderResult, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 vi.mock('datagateway-common', async () => {
   const originalModule = await vi.importActual('datagateway-common');
@@ -111,7 +111,9 @@ describe('Role Selector', () => {
     );
 
     await user.click(
-      await screen.findByRole('button', { name: 'my_data_table.role_selector' })
+      await screen.findByRole('combobox', {
+        name: 'my_data_table.role_selector',
+      })
     );
 
     expect(
@@ -131,7 +133,9 @@ describe('Role Selector', () => {
     renderComponent();
 
     await user.click(
-      await screen.findByRole('button', { name: 'my_data_table.role_selector' })
+      await screen.findByRole('combobox', {
+        name: 'my_data_table.role_selector',
+      })
     );
     await user.click(await screen.findByRole('option', { name: 'pi' }));
 

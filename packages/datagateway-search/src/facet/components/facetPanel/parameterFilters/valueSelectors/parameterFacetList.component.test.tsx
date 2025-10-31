@@ -68,8 +68,8 @@ describe('ParameterFacetList', () => {
     );
 
     await user.click(
-      await screen.findByRole('button', {
-        name: /parameterFilters.creator.labels.parameterStringSelect /i,
+      await screen.findByRole('combobox', {
+        name: 'parameterFilters.creator.labels.parameterStringSelect',
       })
     );
 
@@ -132,8 +132,8 @@ describe('ParameterFacetList', () => {
     );
 
     await user.click(
-      await screen.findByRole('button', {
-        name: /parameterFilters.creator.labels.parameterStringSelect /i,
+      await screen.findByRole('combobox', {
+        name: 'parameterFilters.creator.labels.parameterStringSelect',
       })
     );
 
@@ -153,9 +153,11 @@ describe('ParameterFacetList', () => {
       ],
     });
     expect(
-      screen.getByRole('button', {
-        name: /parameterFilters.creator.labels.parameterStringSelect PARAMETER STRING VALUE/i,
-      })
+      within(
+        screen.getByRole('combobox', {
+          name: 'parameterFilters.creator.labels.parameterStringSelect',
+        })
+      ).getByText('PARAMETER STRING VALUE')
     ).toBeInTheDocument();
   });
 });

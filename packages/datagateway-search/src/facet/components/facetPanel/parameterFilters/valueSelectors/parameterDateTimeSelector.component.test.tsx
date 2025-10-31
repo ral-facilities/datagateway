@@ -76,8 +76,8 @@ describe('ParameterDateTimeSelector', () => {
     );
 
     await user.click(
-      await screen.findByRole('button', {
-        name: /parameterFilters.creator.labels.parameterDateTimeSelect /i,
+      await screen.findByRole('combobox', {
+        name: 'parameterFilters.creator.labels.parameterDateTimeSelect',
       })
     );
 
@@ -136,8 +136,8 @@ describe('ParameterDateTimeSelector', () => {
     );
 
     await user.click(
-      await screen.findByRole('button', {
-        name: /parameterFilters.creator.labels.parameterDateTimeSelect /i,
+      await screen.findByRole('combobox', {
+        name: 'parameterFilters.creator.labels.parameterDateTimeSelect',
       })
     );
 
@@ -165,9 +165,11 @@ describe('ParameterDateTimeSelector', () => {
       ],
     });
     expect(
-      screen.getByRole('button', {
-        name: /parameterFilters.creator.labels.parameterDateTimeSelect 2020/i,
-      })
+      within(
+        screen.getByRole('combobox', {
+          name: 'parameterFilters.creator.labels.parameterDateTimeSelect',
+        })
+      ).getByText('2020')
     ).toBeInTheDocument();
   });
 });

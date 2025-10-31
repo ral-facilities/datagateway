@@ -99,9 +99,8 @@ function DownloadRequestResult({
   const [t] = useTranslation();
 
   return (
-    <div>
+    <>
       <DialogTitle
-        id="download-confirm-dialog-title"
         onClose={closeDialog}
         closeAriaLabel={t('downloadConfirmDialog.close_arialabel')}
       />
@@ -162,7 +161,7 @@ function DownloadRequestResult({
           )}
         </Grid>
       </DialogContent>
-    </div>
+    </>
   );
 }
 
