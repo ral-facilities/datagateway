@@ -1,8 +1,11 @@
 import {
   ConfigureAccessMethodsPayload,
   ConfigureAccessMethodsType,
+  ConfigureAnonUserNamePayload,
+  ConfigureAnonUserNameType,
   ConfigureFacilityNamePayload,
   ConfigureFacilityNameType,
+  ConfigureFeatureSwitchesType,
   ConfigureQueryRetriesPayload,
   ConfigureQueryRetriesType,
   ConfigureUrlsPayload,
@@ -11,6 +14,7 @@ import {
   DlsDatasetDetailsPanelChangeTabType,
   DlsVisitDetailsPanelChangeTabPayload,
   DlsVisitDetailsPanelChangeTabType,
+  FeatureSwitchesPayload,
   IsisDatafileDetailsPanelChangeTabPayload,
   IsisDatafileDetailsPanelChangeTabType,
   IsisDatasetDetailsPanelChangeTabPayload,
@@ -76,6 +80,26 @@ export function handleConfigureAccessMethods(
   return {
     ...state,
     accessMethods: payload.accessMethods,
+  };
+}
+
+export function handleConfigureFeatureSwitches(
+  state: DGCommonState,
+  payload: FeatureSwitchesPayload
+): DGCommonState {
+  return {
+    ...state,
+    features: payload.switches,
+  };
+}
+
+export function handleConfigureAnonUserName(
+  state: DGCommonState,
+  payload: ConfigureAnonUserNamePayload
+): DGCommonState {
+  return {
+    ...state,
+    anonUserName: payload.anonUserName,
   };
 }
 
@@ -180,6 +204,8 @@ const dGCommonReducer = createReducer(initialState, {
   [ConfigureURLsType]: handleConfigureUrls,
   [ConfigureQueryRetriesType]: handleConfigureQueryRetries,
   [ConfigureAccessMethodsType]: handleConfigureAccessMethods,
+  [ConfigureFeatureSwitchesType]: handleConfigureFeatureSwitches,
+  [ConfigureAnonUserNameType]: handleConfigureAnonUserName,
   [IsisDatafileDetailsPanelChangeTabType]: changeIsisDatafileDetailsPanelTab,
   [IsisDatasetDetailsPanelChangeTabType]: changeIsisDatasetDetailsPanelTab,
   [IsisInstrumentDetailsPanelChangeTabType]:

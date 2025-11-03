@@ -25,7 +25,10 @@ export {
 export { default as DataHeader } from './table/headerRenderers/dataHeader.component';
 export { default as DetailsPanelRow } from './table/rowRenderers/detailsPanelRow.component';
 export * from './table/table.component';
-export { default as Table } from './table/table.component';
+export {
+  ConnectedVirtualizedTable as ConnectedTable,
+  VirtualizedTable as Table,
+} from './table/table.component';
 
 export { default as AdvancedFilter } from './card/advancedFilter.component';
 export { default as CardView } from './card/cardView.component';

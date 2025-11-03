@@ -18,6 +18,7 @@ import userEvent from '@testing-library/user-event';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 import thunk from 'redux-thunk';
+import * as parseTokens from '../parseTokens';
 import { StateType } from '../state/app.types';
 
 vi.mock('../api/datafiles');
@@ -254,5 +255,33 @@ describe('Generic download button', () => {
     await waitFor(() => {
       expect(screen.queryByRole('button')).toBeNull();
     });
+  });
+
+  it('renders a tooltip and disabled button if anon and disableAnonDownload', async () => {
+    state.dgcommon.features = { disableAnonDownload: true };
+    state.dgcommon.anonUserName = 'anon';
+
+    vi.spyOn(parseTokens, 'readSciGatewayToken').mockReturnValue({
+      username: 'anon',
+      sessionId: 'abcdef',
+    });
+
+    renderComponent({
+      entityType: 'datafile',
+      entityName: 'test',
+      entityId: 1,
+      entitySize: 1,
+    });
+
+    const button = await screen.findByRole('button', {
+      name: 'buttons.download',
+    });
+
+    expect(button).toBeDisabled();
+
+    await user.hover(button.parentElement);
+    expect(
+      await screen.findByText('buttons.disallow_anon_tooltip')
+    ).toBeInTheDocument();
   });
 });

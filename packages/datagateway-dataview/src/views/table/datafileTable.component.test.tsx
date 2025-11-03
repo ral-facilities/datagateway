@@ -329,7 +329,7 @@ describe('Datafile table component', () => {
   });
 
   it('no select all checkbox appears if selectAllSetting is false', async () => {
-    state.dgdataview.selectAllSetting = false;
+    state.dgcommon.features = { disableSelectAll: true };
 
     renderComponent();
     // wait for rows to show up

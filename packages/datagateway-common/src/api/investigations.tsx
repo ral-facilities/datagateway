@@ -1,23 +1,24 @@
+import {
+  UseInfiniteQueryResult,
+  UseQueryResult,
+  useInfiniteQuery,
+  useQuery,
+} from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import type { IndexRange } from 'react-virtualized';
 import { getApiParams, parseSearchToQuery } from '.';
-import handleICATError from '../handleICATError';
-import { readSciGatewayToken } from '../parseTokens';
 import type {
   AdditionalFilters,
   FiltersType,
   Investigation,
   SortType,
 } from '../app.types';
+import handleICATError from '../handleICATError';
+import { readSciGatewayToken } from '../parseTokens';
 import { StateType } from '../state/app.types';
-import {
-  useInfiniteQuery,
-  UseInfiniteQueryResult,
-  useQuery,
-  UseQueryResult,
-} from '@tanstack/react-query';
+import { useEntity } from './generic';
 import { useRetryICATErrors } from './retryICATErrors';
 
 export const fetchInvestigations = (
@@ -54,40 +55,6 @@ export const fetchInvestigations = (
     .then((response) => {
       return response.data;
     });
-};
-
-export const useInvestigation = (
-  investigationId: number,
-  additionalFilters?: AdditionalFilters
-): UseQueryResult<Investigation[], AxiosError> => {
-  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
-  const retryICATErrors = useRetryICATErrors();
-
-  return useQuery<
-    Investigation[],
-    AxiosError,
-    Investigation[],
-    [string, number, AdditionalFilters?, boolean?]
-  >(
-    ['investigation', investigationId, additionalFilters],
-    (_) => {
-      return fetchInvestigations(apiUrl, { sort: {}, filters: {} }, [
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            id: { eq: investigationId },
-          }),
-        },
-        ...(additionalFilters ?? []),
-      ]);
-    },
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-    }
-  );
 };
 
 export const useInvestigationsPaginated = (
@@ -241,48 +208,18 @@ export const useInvestigationCount = (
   );
 };
 
-const fetchInvestigationDetails = (
-  apiUrl: string,
+export const useInvestigationDetails = (
   investigationId: number
-): Promise<Investigation> => {
-  const params = new URLSearchParams();
-  params.append('where', JSON.stringify({ id: { eq: investigationId } }));
-  params.append(
-    'include',
-    JSON.stringify([
+): UseQueryResult<Investigation, AxiosError> => {
+  return useEntity('investigation', 'id', investigationId.toString(), {
+    filterType: 'include',
+    filterValue: JSON.stringify([
       { investigationUsers: 'user' },
       { samples: 'type' },
       { parameters: 'type' },
       'publications',
-    ])
-  );
-
-  return axios
-    .get(`${apiUrl}/investigations`, {
-      params,
-      headers: {
-        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
-      },
-    })
-    .then((response) => response.data[0]);
-};
-
-export const useInvestigationDetails = (
-  investigationId: number
-): UseQueryResult<Investigation, AxiosError> => {
-  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
-  const retryICATErrors = useRetryICATErrors();
-
-  return useQuery<Investigation, AxiosError, Investigation, [string, number]>(
-    ['investigationDetails', investigationId],
-    (params) => fetchInvestigationDetails(apiUrl, params.queryKey[1]),
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-    }
-  );
+    ]),
+  });
 };
 
 export const downloadInvestigation = (

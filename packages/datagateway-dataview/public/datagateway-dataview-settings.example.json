@@ -1,13 +1,16 @@
 {
   "facilityName": "Generic",
   "facilityImageURL": "",
-  "features": {},
+  "features": {
+    "disableAnonDownload": false,
+    "disableSelectAll": false
+  },
   "idsUrl": "example.ids.url",
   "apiUrl": "example.api.url",
   "downloadApiUrl": "example.download.api.url",
   "doiMinterUrl": null,
   "dataCiteUrl": null,
-  "selectAllSetting": true,
+  "anonUserName": "anon/anon",
   "helpSteps": [
     {
       "target": "#plugin-link--browse-investigation",
@@ -117,6 +120,13 @@
       "section": "Browse",
       "link": "/doi-redirect",
       "displayName": "DOI Redirect",
+      "order": 0,
+      "hideFromMenu": true
+    },
+    {
+      "section": "Redirect",
+      "link": "/redirect",
+      "displayName": "Redirect",
       "order": 0,
       "hideFromMenu": true
     },

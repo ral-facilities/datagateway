@@ -9,14 +9,16 @@ import {
 import {
   ColumnType,
   DetailsPanelProps,
-  externalSiteLink,
   FACILITY_NAME,
-  formatBytes,
-  Investigation,
   ISISInvestigationDetailsPanel,
+  Investigation,
+  ConnectedTable as Table,
+  buildDatasetTableUrlForInvestigation,
+  buildInvestigationLandingUrl,
+  externalSiteLink,
+  formatBytes,
   parseSearchToQuery,
   readSciGatewayToken,
-  Table,
   tableLink,
   useAddToCart,
   useCart,
@@ -28,10 +30,6 @@ import {
   useSort,
   useTextFilter,
 } from 'datagateway-common';
-import {
-  buildDatasetTableUrlForInvestigation,
-  buildInvestigationLandingUrl,
-} from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
@@ -40,8 +38,8 @@ import { IndexRange, TableCellProps } from 'react-virtualized';
 import { StateType } from '../../../state/app.types';
 
 const ISISMyDataTable = (): React.ReactElement => {
-  const selectAllSetting = useSelector(
-    (state: StateType) => state.dgdataview.selectAllSetting
+  const disableSelectAll = useSelector(
+    (state: StateType) => state.dgcommon.features?.disableSelectAll ?? false
   );
   const location = useLocation();
   const { push } = useHistory();
@@ -105,7 +103,7 @@ const ISISMyDataTable = (): React.ReactElement => {
         }),
       },
     ],
-    selectAllSetting
+    !disableSelectAll
   );
   const { data: cartItems, isLoading: cartLoading } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } =
@@ -120,11 +118,10 @@ const ISISMyDataTable = (): React.ReactElement => {
           (cartItem) =>
             cartItem.entityType === 'investigation' &&
             // if select all is disabled, it's safe to just pass the whole cart as selectedRows
-            (!selectAllSetting ||
-              (allIds && allIds.includes(cartItem.entityId)))
+            (disableSelectAll || (allIds && allIds.includes(cartItem.entityId)))
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, selectAllSetting, allIds]
+    [cartItems, disableSelectAll, allIds]
   );
 
   /* istanbul ignore next */
@@ -286,7 +283,6 @@ const ISISMyDataTable = (): React.ReactElement => {
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}
-      disableSelectAll={!selectAllSetting}
       detailsPanel={detailsPanel}
       columns={columns}
     />

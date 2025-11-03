@@ -276,7 +276,8 @@
     "unable_to_download_tooltip": "Unable to download - this item is empty",
     "preview": "Preview datafile",
     "preview_tooltip": "Preview this datafile",
-    "queue_visit": "Queue visit for download"
+    "queue_visit": "Queue visit for download",
+    "disallow_anon_tooltip": "Anonymous download is disabled - please login and try again"
   },
   "advanced_filters": {
     "show": "Show Advanced Filters",

@@ -1,19 +1,25 @@
-import DatafileSearchTable from './datafileSearchTable.component';
-import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
-import configureStore from 'redux-mock-store';
-import { StateType } from '../state/app.types';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
-  dGCommonInitialState,
+  render,
+  screen,
+  waitFor,
+  within,
+  type RenderResult,
+} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import {
   DownloadCartItem,
   SearchResponse,
   SearchResult,
   SearchResultSource,
+  dGCommonInitialState,
 } from 'datagateway-common';
+import { History, createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
 import { Router } from 'react-router-dom';
-import { createMemoryHistory, History } from 'history';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 import {
   findAllRows,
   findCellInRow,
@@ -22,15 +28,9 @@ import {
   findRowAt,
   queryAllRows,
 } from '../setupTests';
-import {
-  render,
-  type RenderResult,
-  screen,
-  waitFor,
-  within,
-} from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { StateType } from '../state/app.types';
+import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
+import DatafileSearchTable from './datafileSearchTable.component';
 
 describe('Datafile search table component', () => {
   const mockStore = configureStore([thunk]);
@@ -586,8 +586,8 @@ describe('Datafile search table component', () => {
     expect(selectAllCheckbox).not.toBeChecked();
   });
 
-  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', async () => {
-    state.dgsearch.selectAllSetting = false;
+  it('no select all checkbox appears and no fetchAllIds sent if disableSelectAll is true', async () => {
+    state.dgcommon.features = { disableSelectAll: true };
     renderComponent();
     await waitFor(() => {
       expect(

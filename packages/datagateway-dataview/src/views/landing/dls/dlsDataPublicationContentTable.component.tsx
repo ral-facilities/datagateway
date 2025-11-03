@@ -14,7 +14,7 @@ import {
   DLSDatasetDetailsPanel,
   DLSVisitDetailsPanel,
   Investigation,
-  Table,
+  ConnectedTable as Table,
   formatBytes,
   parseSearchToQuery,
   useAddToCart,
@@ -282,7 +282,7 @@ const DLSDataPublicationContentTable = (
           selectedRows={selectedRows}
           onCheck={addToCart}
           onUncheck={removeFromCart}
-          disableSelectAll={true}
+          disableSelectAll={true} // TODO: can we get all IDs here? or just keep this set to true...
           detailsPanel={detailsPanel}
           columns={columns}
           // key prop forces the table to fully rerender on entity type change

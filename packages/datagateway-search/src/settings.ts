@@ -1,21 +1,15 @@
-import { DownloadSettingsAccessMethod, PluginRoute } from 'datagateway-common';
+import { DataviewSearchCommonSettings } from 'datagateway-common';
 
-export interface SearchSettings {
-  facilityName: string;
-  apiUrl: string;
-  downloadApiUrl: string;
-  idsUrl: string;
-  icatUrl: string;
-  queryRetries?: number;
-  accessMethods?: DownloadSettingsAccessMethod;
-  selectAllSetting?: boolean;
+type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
+
+export type SearchSettings = Optional<
+  DataviewSearchCommonSettings,
+  'accessMethods'
+> & {
   searchableEntities?: string[];
   minNumResults?: number;
   maxNumResults?: number;
-  routes: PluginRoute[];
-  helpSteps?: { target: string; content: string }[];
-  pluginHost?: string;
-}
+};
 
 export let settings: Promise<SearchSettings | void>;
 export const setSettings = (

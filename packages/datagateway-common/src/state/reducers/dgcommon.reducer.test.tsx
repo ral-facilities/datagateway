@@ -1,11 +1,13 @@
-import DGCommonReducer, { initialState } from './dgcommon.reducer';
-import { DGCommonState } from '../app.types';
 import {
   loadAccessMethods,
+  loadAnonUserName,
   loadFacilityName,
+  loadFeatureSwitches,
   loadQueryRetries,
   loadUrls,
 } from '../actions';
+import { DGCommonState } from '../app.types';
+import DGCommonReducer, { initialState } from './dgcommon.reducer';
 
 describe('DGCommon reducer', () => {
   let state: DGCommonState;
@@ -56,5 +58,21 @@ describe('DGCommon reducer', () => {
     const updatedState = DGCommonReducer(state, loadAccessMethods({}));
 
     expect(updatedState.accessMethods).toEqual({});
+  });
+
+  it('should set feature switches property when configure feature switches action is sent', () => {
+    expect(state.features).toEqual(undefined);
+
+    const updatedState = DGCommonReducer(state, loadFeatureSwitches({}));
+
+    expect(updatedState.features).toEqual({});
+  });
+
+  it('should set anonUserName property when configure anon username action is sent', () => {
+    expect(state.accessMethods).toEqual(undefined);
+
+    const updatedState = DGCommonReducer(state, loadAnonUserName('anon'));
+
+    expect(updatedState.anonUserName).toEqual('anon');
   });
 });

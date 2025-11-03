@@ -33,9 +33,6 @@ exports[`Visit details panel component > should check if multiple publications r
             type="button"
           >
             investigations.details.label
-            <span
-              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-            />
           </button>
           <button
             aria-controls="visit-publications-panel"
@@ -47,9 +44,6 @@ exports[`Visit details panel component > should check if multiple publications r
             type="button"
           >
             investigations.details.publications.label
-            <span
-              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-            />
           </button>
         </div>
         <span
@@ -257,9 +251,6 @@ exports[`Visit details panel component > should check if multiple samples result
             type="button"
           >
             investigations.details.label
-            <span
-              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-            />
           </button>
           <button
             aria-controls="visit-samples-panel"
@@ -271,9 +262,6 @@ exports[`Visit details panel component > should check if multiple samples result
             type="button"
           >
             investigations.details.samples.label
-            <span
-              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-            />
           </button>
         </div>
         <span
@@ -481,9 +469,6 @@ exports[`Visit details panel component > should gracefully handles Investigation
             type="button"
           >
             investigations.details.label
-            <span
-              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-            />
           </button>
           <button
             aria-controls="visit-users-panel"
@@ -495,9 +480,6 @@ exports[`Visit details panel component > should gracefully handles Investigation
             type="button"
           >
             investigations.details.users.label
-            <span
-              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-            />
           </button>
         </div>
         <span
@@ -683,9 +665,6 @@ exports[`Visit details panel component > should render correctly 1`] = `
             type="button"
           >
             investigations.details.label
-            <span
-              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-            />
           </button>
         </div>
         <span
@@ -836,9 +815,6 @@ exports[`Visit details panel component > should render correctly 1`] = `
               </svg>
             </span>
             buttons.queue_visit
-            <span
-              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-            />
           </button>
         </div>
       </div>
@@ -880,9 +856,6 @@ exports[`Visit details panel component > should render user, sample and publicat
             type="button"
           >
             investigations.details.label
-            <span
-              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-            />
           </button>
           <button
             aria-controls="visit-users-panel"
@@ -894,9 +867,6 @@ exports[`Visit details panel component > should render user, sample and publicat
             type="button"
           >
             investigations.details.users.label
-            <span
-              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-            />
           </button>
           <button
             aria-controls="visit-samples-panel"
@@ -908,9 +878,6 @@ exports[`Visit details panel component > should render user, sample and publicat
             type="button"
           >
             investigations.details.samples.label
-            <span
-              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-            />
           </button>
           <button
             aria-controls="visit-parameters-panel"
@@ -922,9 +889,6 @@ exports[`Visit details panel component > should render user, sample and publicat
             type="button"
           >
             investigations.details.parameters.label
-            <span
-              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-            />
           </button>
           <button
             aria-controls="visit-publications-panel"
@@ -936,9 +900,6 @@ exports[`Visit details panel component > should render user, sample and publicat
             type="button"
           >
             investigations.details.publications.label
-            <span
-              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-            />
           </button>
         </div>
         <span

@@ -1,20 +1,18 @@
-import { DGSearchState } from '../app.types';
 import { createReducer } from 'datagateway-common';
 import {
-  TogglePayload,
-  SetDatasetTabType,
-  SetDatafileTabType,
-  SetInvestigationTabType,
-  SettingsLoadedType,
-  ConfigureSelectAllSettingType,
-  ConfigureSelectAllSettingPayload,
-  ConfigureSearchableEntitiesPayload,
-  ConfigureSearchableEntitiesType,
   ConfigureMaxNumResultsPayload,
   ConfigureMaxNumResultsType,
-  ConfigureMinNumResultsType,
   ConfigureMinNumResultsPayload,
+  ConfigureMinNumResultsType,
+  ConfigureSearchableEntitiesPayload,
+  ConfigureSearchableEntitiesType,
+  SetDatafileTabType,
+  SetDatasetTabType,
+  SetInvestigationTabType,
+  SettingsLoadedType,
+  TogglePayload,
 } from '../actions/actions.types';
+import { DGSearchState } from '../app.types';
 
 export const initialState: DGSearchState = {
   tabs: {
@@ -22,7 +20,6 @@ export const initialState: DGSearchState = {
     datafileTab: false,
     investigationTab: false,
   },
-  selectAllSetting: true,
   settingsLoaded: false,
   sideLayout: false,
   searchableEntities: ['investigation', 'dataset', 'datafile'],
@@ -76,16 +73,6 @@ export function handleSetInvestigationTab(
   };
 }
 
-export function handleConfigureSelectAllSetting(
-  state: DGSearchState,
-  payload: ConfigureSelectAllSettingPayload
-): DGSearchState {
-  return {
-    ...state,
-    selectAllSetting: payload.settings,
-  };
-}
-
 export function handleConfigureSearchableEntities(
   state: DGSearchState,
   payload: ConfigureSearchableEntitiesPayload
@@ -121,7 +108,6 @@ const DGSearchReducer = createReducer(initialState, {
   [SetDatafileTabType]: handleSetDatafileTab,
   [SetInvestigationTabType]: handleSetInvestigationTab,
   [SettingsLoadedType]: handleSettingsLoaded,
-  [ConfigureSelectAllSettingType]: handleConfigureSelectAllSetting,
   [ConfigureSearchableEntitiesType]: handleConfigureSearchableEntities,
   [ConfigureMaxNumResultsType]: handleConfigureMaxNumResults,
   [ConfigureMinNumResultsType]: handleConfigureMinNumResults,

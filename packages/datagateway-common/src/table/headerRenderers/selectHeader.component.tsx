@@ -1,12 +1,12 @@
-import React from 'react';
-import { TableHeaderProps } from 'react-virtualized';
-import { TableCell, Checkbox, SxProps } from '@mui/material';
 import {
-  CheckBoxOutlineBlank,
   CheckBox as CheckBoxIcon,
+  CheckBoxOutlineBlank,
   IndeterminateCheckBox,
 } from '@mui/icons-material';
+import { Checkbox, SxProps, TableCell } from '@mui/material';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { TableHeaderProps } from 'react-virtualized';
 import { StyledTooltip } from '../../arrowtooltip.component';
 
 type SelectHeaderProps = TableHeaderProps & {
@@ -18,6 +18,7 @@ type SelectHeaderProps = TableHeaderProps & {
   onCheck: (selectedIds: number[]) => void;
   onUncheck: (selectedIds: number[]) => void;
   allIds: number[];
+  disableIfAnon?: boolean;
 };
 
 const SelectHeader = React.memo(
@@ -31,6 +32,7 @@ const SelectHeader = React.memo(
       allIds,
       loading,
       parentSelected,
+      disableIfAnon,
     } = props;
     const { t } = useTranslation();
 
@@ -44,7 +46,11 @@ const SelectHeader = React.memo(
       >
         <StyledTooltip
           title={
-            !loading && !parentSelected && typeof selectedRows === 'undefined'
+            disableIfAnon
+              ? t('buttons.disallow_anon_tooltip')
+              : !loading &&
+                !parentSelected &&
+                typeof selectedRows === 'undefined'
               ? t<string, string>('buttons.cart_loading_failed_tooltip')
               : loading
               ? t<string, string>('buttons.cart_loading_tooltip')
@@ -63,7 +69,10 @@ const SelectHeader = React.memo(
                 selectedRows.length < totalRowCount
               }
               disabled={
-                loading || parentSelected || typeof selectedRows === 'undefined'
+                disableIfAnon ||
+                loading ||
+                parentSelected ||
+                typeof selectedRows === 'undefined'
               }
               icon={<CheckBoxOutlineBlank fontSize="small" />}
               checkedIcon={<CheckBoxIcon fontSize="small" />}

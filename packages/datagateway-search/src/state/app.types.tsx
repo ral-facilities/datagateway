@@ -1,6 +1,6 @@
-import { ThunkAction } from 'redux-thunk';
-import { AnyAction } from 'redux';
 import { DGCommonState } from 'datagateway-common';
+import { AnyAction } from 'redux';
+import { ThunkAction } from 'redux-thunk';
 
 export interface DGSearchState {
   tabs: {
@@ -8,7 +8,6 @@ export interface DGSearchState {
     datafileTab: boolean;
     investigationTab: boolean;
   };
-  selectAllSetting: boolean;
   settingsLoaded: boolean;
   sideLayout: boolean;
   searchableEntities: string[];

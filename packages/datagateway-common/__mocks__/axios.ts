@@ -7,6 +7,7 @@ const requests = {
   delete: vi.fn(() => Promise.resolve({ data: {} })),
   CancelToken: axios.CancelToken,
   AxiosError: axios.AxiosError,
+  isAxiosError: axios.isAxiosError,
 };
 
 export default requests;

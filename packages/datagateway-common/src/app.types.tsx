@@ -1,3 +1,5 @@
+import { FeatureSwitches, PluginRoute } from './state/actions/actions.types';
+
 // Parent app name and token in localstorage.
 export const MicroFrontendId = 'scigateway';
 export const MicroFrontendToken = `${MicroFrontendId}:token`;
@@ -13,6 +15,29 @@ export const FACILITY_NAME = {
 } as const;
 
 export type FacilityName = typeof FACILITY_NAME[keyof typeof FACILITY_NAME];
+
+export interface CommonSettings {
+  facilityName: string;
+  apiUrl: string;
+  downloadApiUrl: string;
+  idsUrl: string;
+  icatUrl: string;
+  routes: PluginRoute[];
+  helpSteps?: { target: string; content: string }[];
+  pluginHost?: string;
+  queryRetries?: number;
+  accessMethods: DownloadSettingsAccessMethod;
+}
+
+export interface DOISettings {
+  doiMinterUrl?: string;
+  dataCiteUrl?: string;
+}
+
+export type DataviewSearchCommonSettings = CommonSettings & {
+  features?: FeatureSwitches;
+  anonUserName?: string;
+};
 
 // TODO: type entities properly; DownloadCartItem does not
 //       include string indexing due to DownloadCartTableItem
