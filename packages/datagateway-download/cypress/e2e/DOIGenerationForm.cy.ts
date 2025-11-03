@@ -54,12 +54,27 @@ describe('DOI Generation form', () => {
     });
 
     it('should let user generate DOI when fields are filled', () => {
+      cy.contains('h2', 'Generate DOI').should('be.visible');
       cy.contains('DOI Title').parent().find('input').type('Test title');
       cy.contains('DOI Description')
         .parent()
         .find('textarea')
         .first()
         .type('Test description');
+
+      cy.contains('button', 'Generate DOI').click();
+
+      // expect confirmation page
+
+      cy.contains('Please review the metadata', { timeout: 10000 }).should(
+        'be.visible'
+      );
+      cy.contains('h2', 'Generate DOI').should('not.exist');
+
+      // check it correctly shows user defined metadata
+      cy.contains('DOI Description: Test description').should('be.visible');
+      // check it correctly shows metadata that the API has added
+      cy.contains('Relationship: HasPart').should('be.visible');
 
       cy.contains('button', 'Generate DOI').click();
 
@@ -70,6 +85,32 @@ describe('DOI Generation form', () => {
       cy.contains('View Data Publication').click();
 
       cy.url().should('match', /\/browse\/dataPublication\/[0-9]+$/);
+    });
+
+    it.only('should let the user click back on the confirmation page', () => {
+      cy.contains('h2', 'Generate DOI').should('be.visible');
+      cy.contains('DOI Title').parent().find('input').type('Test title');
+      cy.contains('DOI Description')
+        .parent()
+        .find('textarea')
+        .first()
+        .type('Test description');
+
+      cy.contains('button', 'Generate DOI').click();
+
+      // expect confirmation page
+
+      cy.contains('Please review the metadata', { timeout: 10000 }).should(
+        'be.visible'
+      );
+      cy.contains('h2', 'Generate DOI').should('not.exist');
+
+      cy.contains('button', 'Go back').click();
+
+      cy.contains('h2', 'Generate DOI', { timeout: 10000 }).should(
+        'be.visible'
+      );
+      cy.contains('Please review the metadata').should('not.exist');
     });
 
     it('should let user add and remove creators', () => {
@@ -121,6 +162,11 @@ describe('DOI Generation form', () => {
       cy.contains('DataCollector').click();
 
       // check that contributor info doesn't break the API
+      cy.contains('button', 'Generate DOI').click();
+      cy.contains('Contributor Type: DataCollector', { timeout: 10000 }).should(
+        'be.visible'
+      );
+
       cy.contains('button', 'Generate DOI').click();
 
       cy.contains('Mint was successful', { timeout: 10000 }).should(
@@ -196,6 +242,21 @@ describe('DOI Generation form', () => {
       cy.contains('IsCitedBy').click();
 
       // check that related DOIs info doesn't break the API
+      cy.contains('button', 'Generate DOI').click();
+
+      cy.contains('div', 'Identifier: 10.17596/w76y-4s92', { timeout: 10000 })
+        .as('relatedDOI')
+        .should('exist');
+      cy.get('@relatedDOI')
+        .parent()
+        .contains('Relationship: IsCitedBy')
+        .should('exist');
+      cy.get('@relatedDOI')
+        .parent()
+        .contains('Resource Type: Journal')
+        .should('exist');
+      cy.get('@relatedDOI').parent().contains('Type: DOI').should('exist');
+
       cy.contains('button', 'Generate DOI').click();
 
       cy.contains('Mint was successful', { timeout: 10000 }).should(

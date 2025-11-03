@@ -103,7 +103,7 @@ function SelectAllTransferList(props: TransferListProps): React.ReactElement {
   };
 
   const customList = (
-    title: React.ReactNode,
+    title: string,
     items: TransferListItem[]
   ): React.ReactElement => {
     const idSafeTitle = title.replace(' ', '-');
