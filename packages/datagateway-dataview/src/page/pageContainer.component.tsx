@@ -40,8 +40,8 @@ import {
 import { StateType } from '../state/app.types';
 import RoleSelector from '../views/roleSelector.component';
 import PageBreadcrumbs from './breadcrumbs.component';
-import DoiRedirect from './doiRedirect.component';
 import PageRouting from './pageRouting.component';
+import { DoiRedirect, GenericRedirect } from './redirect.component';
 import TranslatedHomePage from './translatedHomePage.component';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -89,6 +89,8 @@ export const paths = {
   homepage: '/datagateway',
   root: '/browse',
   doiRedirect: '/doi-redirect/:facilityName/:entityName/:entityId',
+  genericRedirect:
+    '/redirect/:facilityName/:entityName/:entityField/:fieldValue',
   myData: {
     root: '/my-data',
     dls: '/my-data/DLS',
@@ -771,6 +773,9 @@ const PageContainer: React.FC = () => {
       <Route exact path={paths.homepage} component={TranslatedHomePage} />
       <Route exact path={paths.doiRedirect}>
         <DoiRedirect />
+      </Route>
+      <Route path={paths.genericRedirect}>
+        <GenericRedirect />
       </Route>
       {/* Load the standard dataview pageContainer */}
       <Route>

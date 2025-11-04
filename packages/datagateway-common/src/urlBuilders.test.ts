@@ -200,6 +200,16 @@ describe('URL builders', () => {
         })
       ).toEqual('/browse/investigation/0/dataset/623/datafile');
     });
+
+    it('can be passed some query params that will be appended to the URL', () => {
+      expect(
+        buildDatafileTableUrlForDataset({
+          dataset: TEST_DATASET,
+          facilityName: 'data',
+          queryParams: new URLSearchParams({ test: '1' }),
+        })
+      ).toEqual('/browse/investigation/0/dataset/623/datafile?test=1');
+    });
   });
 
   describe('buildUrlToDatafileTableContainingDatafile', () => {
