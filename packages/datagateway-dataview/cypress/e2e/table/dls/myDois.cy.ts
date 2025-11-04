@@ -34,10 +34,10 @@ describe('DLS - MyDOIs Table', () => {
       cy.get<MintResponse>('@dataPublication1').then((dp1) => {
         cy.get<MintResponse>('@dataPublication2').then((dp2) => {
           cy.clearUserGeneratedDataPublications([
-            dp1.body.concept.data_publication,
-            dp1.body.version.data_publication,
-            dp2.body.concept.data_publication,
-            dp2.body.version.data_publication,
+            dp1.body.concept.data_publication_id,
+            dp1.body.version.data_publication_id,
+            dp2.body.concept.data_publication_id,
+            dp2.body.version.data_publication_id,
           ]);
         });
       });
@@ -56,7 +56,7 @@ describe('DLS - MyDOIs Table', () => {
       cy.contains('Test DOI Title 1').click();
 
       cy.get('@dataPublication1')
-        .its('body.concept.data_publication')
+        .its('body.concept.data_publication_id')
         .then((id) =>
           cy.location('pathname').should('eq', `/browse/dataPublication/${id}`)
         );
