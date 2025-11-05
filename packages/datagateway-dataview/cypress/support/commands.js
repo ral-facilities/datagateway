@@ -153,19 +153,6 @@ Cypress.Commands.add('seedUserGeneratedDataPublication', (title) => {
           headers: {
             Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
           },
-          body: {
-            metadata: {
-              title: title ?? 'Test DOI title',
-              description: 'Test DOI description',
-              // creators: [],
-              related_items: [],
-              resource_type: 'Collection',
-            },
-            // these ids are specifically mintable by the Chris481 user
-            investigation_ids: [],
-            dataset_ids: [15],
-            datafile_ids: [74, 193],
-          },
         });
       });
   });
