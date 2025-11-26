@@ -479,23 +479,22 @@ export const useAdminUpdateDownloadStatus = (): UseMutationResult<
  */
 export const useDownloadPercentageComplete = <T = DownloadProgress>({
   download,
+  idsUrl,
   ...queryOptions
-}: { download: Download } & UseQueryOptions<
+}: { download: Download; idsUrl: string } & UseQueryOptions<
   DownloadProgress,
   AxiosError,
   T,
   string[]
 >): UseQueryResult<T, AxiosError> => {
-  const { accessMethods } = React.useContext(DownloadSettingsContext);
   const preparedId = download.preparedId;
-  const idsUrl = accessMethods[download.transport]?.idsUrl;
 
   return useQuery(
     [QueryKeys.DOWNLOAD_PROGRESS, preparedId ?? ''], // undefined preparedId is handled in downloadProgressIndicator & disables the query anyway
     () =>
       getPercentageComplete({
         preparedId: preparedId,
-        settings: { idsUrl: idsUrl ?? '' },
+        settings: { idsUrl },
       }),
     {
       onError: (error) => {

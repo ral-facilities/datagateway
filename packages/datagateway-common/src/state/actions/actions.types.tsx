@@ -1,7 +1,6 @@
 import {
   Datafile,
   Dataset,
-  DownloadSettingsAccessMethod,
   Instrument,
   Investigation,
   MicroFrontendId,
@@ -27,8 +26,6 @@ export const ConfigureFacilityNameType =
   'datagateway_common:configure_facility_name';
 export const ConfigureURLsType = 'datagateway_common:configure_urls';
 export const ConfigureQueryRetriesType = 'datagateway_common:configure_retries';
-export const ConfigureAccessMethodsType =
-  'datagateway_common:configure_access_methods';
 export const ConfigureFeatureSwitchesType =
   'datagateway_dataview:configure_feature_switches';
 export const ConfigureAnonUserNameType =
@@ -66,10 +63,6 @@ export interface ConfigureUrlsPayload {
 
 export interface ConfigureQueryRetriesPayload {
   queryRetries?: number;
-}
-
-export interface ConfigureAccessMethodsPayload {
-  accessMethods?: DownloadSettingsAccessMethod;
 }
 
 export interface ConfigureAnonUserNamePayload {

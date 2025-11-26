@@ -1,18 +1,20 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   render,
-  type RenderResult,
   screen,
   within,
+  type RenderResult,
 } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
 import {
   dGCommonInitialState,
-  type Investigation,
   readSciGatewayToken,
   useInvestigationCount,
   useInvestigationsInfinite,
+  type Investigation,
 } from 'datagateway-common';
 import { createMemoryHistory, type MemoryHistory } from 'history';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
@@ -27,8 +29,6 @@ import {
 import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import DLSMyDataTable from './dlsMyDataTable.component';
-import userEvent from '@testing-library/user-event';
-import axios, { AxiosResponse } from 'axios';
 
 vi.mock('datagateway-common', async () => {
   const originalModule = await vi.importActual('datagateway-common');
@@ -69,7 +69,7 @@ describe('DLS MyData table component', () => {
     state = JSON.parse(
       JSON.stringify({
         dgdataview: dgDataViewInitialState,
-        dgcommon: { ...dGCommonInitialState, accessMethods: {} },
+        dgcommon: dGCommonInitialState,
       })
     );
     rowData = [

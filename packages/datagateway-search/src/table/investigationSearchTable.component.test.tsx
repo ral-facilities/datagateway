@@ -86,6 +86,12 @@ describe('Investigation Search Table component', () => {
       return Promise.resolve({ data: { cartItems } });
     }
 
+    if (/.*\/downloadType\/status$/.test(url)) {
+      return Promise.resolve({
+        data: {},
+      });
+    }
+
     if (/.*\/search\/documents$/.test(url)) {
       // fetchLuceneData
 
@@ -837,7 +843,6 @@ describe('Investigation Search Table component', () => {
   });
 
   it('displays correct details panel for DLS when expanded', async () => {
-    state.dgcommon.accessMethods = {};
     renderComponent(FACILITY_NAME.dls);
 
     await user.click(
