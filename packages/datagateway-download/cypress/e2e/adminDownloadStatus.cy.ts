@@ -44,6 +44,8 @@ describe('Admin Download Status', () => {
   });
 
   it('should be able to sort by all sort directions on single and multiple columns', () => {
+    // filter out the single "stfc" access method download performed as root
+    cy.get('[aria-label="Filter by Username"]').first().type('anon');
     // remove default sort
     cy.contains('[role="button"]', 'Requested Date').click();
 

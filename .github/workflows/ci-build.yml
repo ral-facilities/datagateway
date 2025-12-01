@@ -89,7 +89,7 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           repository: icatproject-contrib/icat-ansible
-          ref: datagateway-download-api-3.1.0
+          ref: datagateway-download-api-3.2.0
           path: icat-ansible
       - name: Install Ansible (ensure we're using the system python)
         run: /usr/bin/python3 -m pip install -r icat-ansible/requirements.txt
@@ -206,7 +206,7 @@ jobs:
         with:
           node-version: 20
           cache: 'yarn'
-     
+
       - name: Install dependencies
         run: yarn --immutable
 
@@ -244,7 +244,7 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           repository: icatproject-contrib/icat-ansible
-          ref: master
+          ref: datagateway-download-api-3.2.0
           path: icat-ansible
       - name: Install Ansible (ensure we're using the system python)
         run: /usr/bin/python3 -m pip install -r icat-ansible/requirements.txt
@@ -363,7 +363,7 @@ jobs:
         run: echo DATACITE_PASSWORD=${{ secrets.DATACITE_PASSWORD }} >> ./.github/config.env
 
       - name: Run minting api
-        run: docker run --env-file ./.github/config.env -p 8000:8000 --add-host host.docker.internal:host-gateway -d harbor.stfc.ac.uk/icat/doi-mint-api:v0.3.0      
+        run: docker run --env-file ./.github/config.env -p 8000:8000 --add-host host.docker.internal:host-gateway -d harbor.stfc.ac.uk/icat/doi-mint-api:v0.3.0
 
       # E2E tests
       - name: Setup Node.js
@@ -371,7 +371,7 @@ jobs:
         with:
           node-version: 20
           cache: 'yarn'
-      
+
       - name: Install dependencies
         run: yarn --immutable
 
@@ -409,7 +409,7 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           repository: icatproject-contrib/icat-ansible
-          ref: master
+          ref: datagateway-download-api-3.2.0
           path: icat-ansible
       - name: Install Ansible (ensure we're using the system python)
         run: /usr/bin/python3 -m pip install -r icat-ansible/requirements.txt
@@ -424,10 +424,10 @@ jobs:
       - name: Replace default payara user with Actions user
         run: |
           sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml
-      - name: Change icat.server version 
+      - name: Change icat.server version
         run: |
           echo "icat_server_version: '6.1.0-SNAPSHOT'" >> icat-ansible/group_vars/all/vars.yml
-      - name: Change icat.lucene version 
+      - name: Change icat.lucene version
         run: |
           echo "icat_lucene_version: '3.0.0-SNAPSHOT'" >> icat-ansible/group_vars/all/vars.yml
       - name: Amending roles
@@ -501,7 +501,7 @@ jobs:
         with:
           node-version: 20
           cache: 'yarn'
-     
+
       - name: Install dependencies
         run: yarn --immutable
 
@@ -517,7 +517,13 @@ jobs:
   docker:
     # This job triggers only if all the other jobs succeed. It builds the Docker image and if successful,
     # it pushes it to Harbor.
-    needs: [lint-and-unit-test, dataview-e2e-tests, download-e2e-tests, search-e2e-tests]
+    needs:
+      [
+        lint-and-unit-test,
+        dataview-e2e-tests,
+        download-e2e-tests,
+        search-e2e-tests,
+      ]
     name: Docker
     runs-on: ubuntu-24.04
     steps:

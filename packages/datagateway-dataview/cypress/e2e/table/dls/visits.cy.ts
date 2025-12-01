@@ -170,6 +170,8 @@ describe('DLS - visit restore button', () => {
     cy.contains('button', 'Queue visit for download').click();
 
     cy.get('[aria-label="Download confirmation dialog"]').should('exist');
+    // set transport
+    cy.get('#confirm-access-method').select('HTTPS');
 
     cy.contains('button', 'Download').click();
 
