@@ -1008,6 +1008,7 @@ describe('Download API react-query hooks test', () => {
         () =>
           useDownloadPercentageComplete({
             download: mockDownloadItems[0],
+            idsUrl: 'https://example.com/ids',
           }),
         {
           wrapper: createReactQueryWrapper(),
@@ -1027,6 +1028,7 @@ describe('Download API react-query hooks test', () => {
         () =>
           useDownloadPercentageComplete({
             download: mockDownloadItems[0],
+            idsUrl: 'https://example.com/ids',
           }),
         {
           wrapper: createReactQueryWrapper(),
@@ -1046,6 +1048,7 @@ describe('Download API react-query hooks test', () => {
         () =>
           useDownloadPercentageComplete({
             download: mockDownloadItems[0],
+            idsUrl: 'https://example.com/ids',
           }),
         {
           wrapper: createReactQueryWrapper(),
