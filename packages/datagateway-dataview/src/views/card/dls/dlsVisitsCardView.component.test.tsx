@@ -85,6 +85,10 @@ describe('DLS Visits - Card View', () => {
           });
         }
 
+        if (/\/status$/.test(url)) {
+          return Promise.resolve({ data: {} });
+        }
+
         if (/\/allowed$/.test(url)) {
           return Promise.resolve({ data: true });
         }
