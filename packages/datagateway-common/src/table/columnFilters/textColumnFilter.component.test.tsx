@@ -1,12 +1,11 @@
-import React from 'react';
+import { act, render, renderHook, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { usePushFilter, usePushFilters } from '../../api';
 import TextColumnFilter, {
+  DEBOUNCE_DELAY,
   usePrincipalExperimenterFilter,
   useTextFilter,
-  DEBOUNCE_DELAY,
 } from './textColumnFilter.component';
-import { usePushFilter, usePushFilters } from '../../api';
-import { render, renderHook, screen, act } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 vi.mock('../../api');
 vi.useFakeTimers({ toFake: ['Date', 'setTimeout', 'clearTimeout'] });
@@ -138,7 +137,7 @@ describe('Text filter component', () => {
 
     // We simulate a change in the select from 'exclude' to 'include'.
     await user.click(
-      await screen.findByRole('button', {
+      await screen.findByRole('combobox', {
         name: 'include, exclude or exact',
       })
     );
@@ -164,7 +163,7 @@ describe('Text filter component', () => {
 
     // We simulate a change in the select from 'include' to 'exclude'.
     await user.click(
-      await screen.findByRole('button', {
+      await screen.findByRole('combobox', {
         name: 'include, exclude or exact',
       })
     );
@@ -190,7 +189,7 @@ describe('Text filter component', () => {
 
     // We simulate a change in the select from 'include' to 'exact'.
     await user.click(
-      await screen.findByRole('button', {
+      await screen.findByRole('combobox', {
         name: 'include, exclude or exact',
       })
     );
@@ -239,7 +238,7 @@ describe('Text filter component', () => {
 
     // We simulate a change in the select from 'exclude' to 'include'.
     await user.click(
-      await screen.findByRole('button', {
+      await screen.findByRole('combobox', {
         name: 'include, exclude or exact',
       })
     );

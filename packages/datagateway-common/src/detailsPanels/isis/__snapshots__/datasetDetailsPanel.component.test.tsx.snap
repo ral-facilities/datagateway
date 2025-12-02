@@ -11,7 +11,7 @@ exports[`Dataset details panel component > should render correctly 1`] = `
       class="MuiTabs-root css-1ujnqem-MuiTabs-root"
     >
       <div
-        class="MuiTabs-scrollableX MuiTabs-hideScrollbar css-agdkjh-MuiTabs-scrollbarSize"
+        class="MuiTabs-scrollableX MuiTabs-hideScrollbar css-oqr85h"
         style="width: 99px; height: 99px; position: absolute; top: -9999px; overflow: scroll;"
       />
       <div
@@ -155,7 +155,7 @@ exports[`Dataset details panel component > should render type tab when present i
       class="MuiTabs-root css-1ujnqem-MuiTabs-root"
     >
       <div
-        class="MuiTabs-scrollableX MuiTabs-hideScrollbar css-agdkjh-MuiTabs-scrollbarSize"
+        class="MuiTabs-scrollableX MuiTabs-hideScrollbar css-oqr85h"
         style="width: 99px; height: 99px; position: absolute; top: -9999px; overflow: scroll;"
       />
       <div

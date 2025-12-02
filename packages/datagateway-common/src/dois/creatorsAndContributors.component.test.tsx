@@ -40,9 +40,9 @@ describe('DOI generation form component', () => {
     return (
       <QueryClientProvider client={createTestQueryClient()}>
         <CreatorsAndContributors
+          {...props}
           selectedUsers={selectedUsers}
           changeSelectedUsers={changeSelectedUsers}
-          doiMinterUrl="example.com"
         />
       </QueryClientProvider>
     );
@@ -79,6 +79,7 @@ describe('DOI generation form component', () => {
       ],
       changeSelectedUsers: vi.fn(),
       doiMinterUrl: 'example.com',
+      disabled: false,
     };
 
     mockUser = {
@@ -110,7 +111,11 @@ describe('DOI generation form component', () => {
     renderComponent();
 
     expect(
-      within(screen.getByRole('table', { name: 'DOIGenerationForm.creators' }))
+      within(
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.creators_and_contributors',
+        })
+      )
         .getAllByRole('row')
         .slice(1) // ignores the header row
     ).toHaveLength(2);
@@ -126,7 +131,11 @@ describe('DOI generation form component', () => {
     await user.click(userDeleteButtons[1]);
 
     expect(
-      within(screen.getByRole('table', { name: 'DOIGenerationForm.creators' }))
+      within(
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.creators_and_contributors',
+        })
+      )
         .getAllByRole('row')
         .slice(1)
     ).toHaveLength(1);
@@ -139,7 +148,11 @@ describe('DOI generation form component', () => {
     renderComponent();
 
     expect(
-      within(screen.getByRole('table', { name: 'DOIGenerationForm.creators' }))
+      within(
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.creators_and_contributors',
+        })
+      )
         .getAllByRole('row')
         .slice(1) // ignores the header row
     ).toHaveLength(2);
@@ -154,7 +167,11 @@ describe('DOI generation form component', () => {
     );
 
     expect(
-      within(screen.getByRole('table', { name: 'DOIGenerationForm.creators' }))
+      within(
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.creators_and_contributors',
+        })
+      )
         .getAllByRole('row')
         .slice(1) // ignores the header row
     ).toHaveLength(3);
@@ -172,7 +189,11 @@ describe('DOI generation form component', () => {
     );
 
     expect(
-      within(screen.getByRole('table', { name: 'DOIGenerationForm.creators' }))
+      within(
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.creators_and_contributors',
+        })
+      )
         .getAllByRole('row')
         .slice(1) // ignores the header row
     ).toHaveLength(3);
@@ -200,7 +221,11 @@ describe('DOI generation form component', () => {
 
     expect(await screen.findByText('error msg')).toBeInTheDocument();
     expect(
-      within(screen.getByRole('table', { name: 'DOIGenerationForm.creators' }))
+      within(
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.creators_and_contributors',
+        })
+      )
         .getAllByRole('row')
         .slice(1) // ignores the header row
     ).toHaveLength(3);
@@ -214,7 +239,11 @@ describe('DOI generation form component', () => {
 
     expect(await screen.findByText('error msg 2')).toBeInTheDocument();
     expect(
-      within(screen.getByRole('table', { name: 'DOIGenerationForm.creators' }))
+      within(
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.creators_and_contributors',
+        })
+      )
         .getAllByRole('row')
         .slice(1) // ignores the header row
     ).toHaveLength(3);
@@ -228,7 +257,11 @@ describe('DOI generation form component', () => {
 
     expect(await screen.findByText('Error')).toBeInTheDocument();
     expect(
-      within(screen.getByRole('table', { name: 'DOIGenerationForm.creators' }))
+      within(
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.creators_and_contributors',
+        })
+      )
         .getAllByRole('row')
         .slice(1) // ignores the header row
     ).toHaveLength(3);
@@ -238,7 +271,11 @@ describe('DOI generation form component', () => {
     renderComponent();
 
     expect(
-      within(screen.getByRole('table', { name: 'DOIGenerationForm.creators' }))
+      within(
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.creators_and_contributors',
+        })
+      )
         .getAllByRole('row')
         .slice(1) // ignores the header row
     ).toHaveLength(2);
@@ -253,21 +290,25 @@ describe('DOI generation form component', () => {
     );
 
     expect(
-      within(screen.getByRole('table', { name: 'DOIGenerationForm.creators' }))
+      within(
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.creators_and_contributors',
+        })
+      )
         .getAllByRole('row')
         .slice(1) // ignores the header row
     ).toHaveLength(3);
     expect(screen.getByRole('cell', { name: 'User 3' })).toBeInTheDocument();
 
     expect(
-      screen.getByRole('button', {
-        name: /DOIGenerationForm.creator_type/i,
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.creator_type',
       })
     ).toBeInTheDocument();
 
     await user.click(
-      screen.getByRole('button', {
-        name: /DOIGenerationForm.creator_type/i,
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.creator_type',
       })
     );
     await user.click(
@@ -277,5 +318,45 @@ describe('DOI generation form component', () => {
     expect(screen.queryByRole('option')).not.toBeInTheDocument();
     // check that the option is actually selected in the table even after the menu closes
     expect(screen.getByText('DataCollector')).toBeInTheDocument();
+  });
+
+  it('should disable all fields/buttons when disabled is true', () => {
+    props.disabled = true;
+    props.selectedUsers = [
+      {
+        id: 1,
+        name: '1',
+        fullName: 'User 1',
+        contributor_type: ContributorType.Sponsor,
+      },
+    ];
+    renderComponent();
+
+    expect(
+      screen.getByRole('textbox', { name: 'DOIGenerationForm.username' })
+    ).toBeDisabled();
+    expect(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.add_creator',
+      })
+    ).toBeDisabled();
+    expect(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.add_contributor',
+      })
+    ).toBeDisabled();
+
+    expect(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.creator_type',
+      })
+    ).toHaveAttribute('aria-disabled', 'true');
+  });
+
+  it('should show loading spinner if no users provided (as there should always be at least the Minter once it has loaded)', () => {
+    props.selectedUsers = [];
+    renderComponent();
+
+    expect(screen.getByRole('progressbar')).toBeInTheDocument();
   });
 });

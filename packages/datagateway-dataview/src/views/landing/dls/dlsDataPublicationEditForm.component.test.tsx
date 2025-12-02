@@ -251,6 +251,40 @@ describe('DOI edit form component', () => {
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/\/ismintable$/.test(url)) {
           return mintabilityResponse;
+        } else if (/\/draft\/.*\/version$/.test(url)) {
+          return Promise.resolve({
+            data: {
+              version: {
+                data_publication_id: '2',
+                attributes: {
+                  doi: 'new.version.pid',
+                  // minimum data to not error
+                  titles: [],
+                  descriptions: [],
+                  creators: [],
+                  contributors: [],
+                  relatedIdentifiers: [],
+                  publisher: {
+                    name: 'test',
+                    publisherIdentifier: null,
+                    publisherIdentifierScheme: null,
+                    schemeUri: null,
+                  },
+                  publicationYear: 2025,
+                  dates: [],
+                  types: {
+                    resourceType: 'Experimental Datasets',
+                    resourceTypeGeneral: 'Other',
+                  },
+                  rightsList: [],
+                  geoLocations: [],
+                  fundingReferences: [],
+                  subjects: [],
+                  sizes: [],
+                },
+              },
+            },
+          });
         } else {
           return Promise.reject(`Endpoint not mocked: ${url}`);
         }
@@ -259,16 +293,29 @@ describe('DOI edit form component', () => {
     axios.put = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
-        if (/\/mint\/version\/update\/.*/.test(url)) {
+        if (/\/draft\/.*\/version\/.*\/publish$/.test(url)) {
           return Promise.resolve({
             data: {
-              concept: { data_publication: 'new', doi: initialData.pid },
+              concept: {
+                data_publication_id: '1',
+                attributes: { doi: initialData.pid },
+              },
               version: {
-                data_publication: 'new_version',
-                doi: 'new.version.pid',
+                data_publication_id: '2',
+                attributes: { doi: 'new.version.pid' },
               },
             },
           });
+        } else {
+          return Promise.reject(`Endpoint not mocked: ${url}`);
+        }
+      });
+
+    axios.delete = vi
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/\/draft\/.*\/version\/.*$/.test(url)) {
+          return Promise.resolve({ data: undefined });
         } else {
           return Promise.reject(`Endpoint not mocked: ${url}`);
         }
@@ -326,9 +373,9 @@ describe('DOI edit form component', () => {
     expect(screen.getByRole('cell', { name: 'doi 6' })).toBeInTheDocument();
 
     await user.click(
-      screen.getByRole('button', {
-        name: DOIRelationType.IsSupplementedBy,
-      })
+      screen.getAllByRole('combobox', {
+        name: 'DOIGenerationForm.related_doi_relationship',
+      })[0]
     );
     await user.click(
       await screen.findByRole('option', { name: DOIRelationType.IsCitedBy })
@@ -345,7 +392,11 @@ describe('DOI edit form component', () => {
 
     // editing users
     expect(
-      within(screen.getByRole('table', { name: 'DOIGenerationForm.creators' }))
+      within(
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.creators_and_contributors',
+        })
+      )
         .getAllByRole('row')
         .slice(1) // ignores the header row
     ).toHaveLength(3);
@@ -360,14 +411,18 @@ describe('DOI edit form component', () => {
     );
 
     expect(
-      within(screen.getByRole('table', { name: 'DOIGenerationForm.creators' }))
+      within(
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.creators_and_contributors',
+        })
+      )
         .getAllByRole('row')
         .slice(1) // ignores the header row
     ).toHaveLength(2);
 
     await user.click(
-      screen.getByRole('button', {
-        name: ContributorType.Editor,
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.creator_type',
       })
     );
     await user.click(
@@ -380,8 +435,8 @@ describe('DOI edit form component', () => {
       screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
     );
 
-    expect(axios.put).toHaveBeenCalledWith(
-      expect.any(String),
+    expect(axios.post).toHaveBeenCalledWith(
+      expect.stringContaining(`/draft/1/version`),
       {
         datafile_ids: [3],
         dataset_ids: [2],
@@ -414,6 +469,20 @@ describe('DOI edit form component', () => {
       expect.any(Object)
     );
 
+    // expect confirmation page to appear, confirm submission
+
+    await screen.findByText('DOIGenerationForm.review_metadata');
+
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+    );
+
+    expect(axios.put).toHaveBeenCalledWith(
+      expect.stringContaining(`/draft/1/version/2/publish`),
+      undefined,
+      expect.any(Object)
+    );
+
     expect(
       await screen.findByRole('dialog', {
         name: 'DOIConfirmDialog.dialog_title',
@@ -427,8 +496,48 @@ describe('DOI edit form component', () => {
     ).toHaveAttribute(
       'href',
       generatePath(paths.landing.dlsDataPublicationLanding, {
-        dataPublicationId: 'new_version',
+        dataPublicationId: '2',
       })
+    );
+  });
+
+  it('should let the user go back from the confirmation page', async () => {
+    renderComponent();
+
+    expect(
+      await screen.findByText('DOIGenerationForm.page_header')
+    ).toBeInTheDocument();
+    // wait for data publication to load
+    await waitFor(() =>
+      expect(
+        screen.getByRole('textbox', { name: 'DOIGenerationForm.title' })
+      ).toHaveValue('Title')
+    );
+
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+    );
+
+    // expect confirmation page to appear, confirm submission
+
+    await screen.findByText('DOIGenerationForm.review_metadata');
+    expect(
+      screen.queryByText('DOIGenerationForm.page_header')
+    ).not.toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.back_button' })
+    );
+
+    expect(
+      await screen.findByText('DOIGenerationForm.page_header')
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText('DOIGenerationForm.review_metadata')
+    ).not.toBeInTheDocument();
+    expect(axios.delete).toHaveBeenCalledWith(
+      expect.stringContaining(`/draft/1/version/2`),
+      expect.any(Object)
     );
   });
 
@@ -560,8 +669,8 @@ describe('DOI edit form component', () => {
       screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
     );
 
-    expect(axios.put).toHaveBeenCalledWith(
-      expect.any(String),
+    expect(axios.post).toHaveBeenCalledWith(
+      expect.stringContaining(`/draft/1/version`),
       {
         datafile_ids: [3],
         dataset_ids: [2],
@@ -588,6 +697,20 @@ describe('DOI edit form component', () => {
       expect.any(Object)
     );
 
+    // expect confirmation page to appear, confirm submission
+
+    await screen.findByText('DOIGenerationForm.review_metadata');
+
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+    );
+
+    expect(axios.put).toHaveBeenCalledWith(
+      expect.stringContaining(`/draft/1/version/2/publish`),
+      undefined,
+      expect.any(Object)
+    );
+
     expect(
       await screen.findByRole('dialog', {
         name: 'DOIConfirmDialog.dialog_title',
@@ -601,7 +724,7 @@ describe('DOI edit form component', () => {
     ).toHaveAttribute(
       'href',
       generatePath(paths.landing.dlsDataPublicationLanding, {
-        dataPublicationId: 'new_version',
+        dataPublicationId: '2',
       })
     );
   });

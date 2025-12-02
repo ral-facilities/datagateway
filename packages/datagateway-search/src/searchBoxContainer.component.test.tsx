@@ -1,5 +1,5 @@
 import type { RenderResult } from '@testing-library/react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import * as React from 'react';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
@@ -60,7 +60,9 @@ describe('SearchBoxContainer - Tests', () => {
 
     // search toggle dropdown should be visible
     expect(
-      screen.getByRole('button', { name: 'searchBox.checkboxes.types (2)' })
+      within(
+        screen.getByRole('combobox', { name: 'searchBox.checkboxes.types' })
+      ).getByText('searchBox.checkboxes.types (2)')
     ).toBeInTheDocument();
 
     // date select should be visible
@@ -74,7 +76,7 @@ describe('SearchBoxContainer - Tests', () => {
     // sort select should be visible
     // default value is sort by score
     expect(
-      screen.getByRole('button', { name: 'sort.label sort._score' })
+      screen.getByRole('combobox', { name: 'sort.label' })
     ).toBeInTheDocument();
 
     // logged in anonymously so my data checkbox should be hidden
@@ -149,7 +151,9 @@ describe('SearchBoxContainerSide - Tests', () => {
 
     // search toggle dropdown should be visible
     expect(
-      screen.getByRole('button', { name: 'searchBox.checkboxes.types (2)' })
+      within(
+        screen.getByRole('combobox', { name: 'searchBox.checkboxes.types' })
+      ).getByText('searchBox.checkboxes.types (2)')
     ).toBeInTheDocument();
 
     // date select should be visible

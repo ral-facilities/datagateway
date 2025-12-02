@@ -24,7 +24,7 @@ exports[`Card View > renders correctly 1`] = `
               <li>
                 <button
                   aria-label="Go to first page"
-                  class="MuiButtonBase-root Mui-disabled MuiPaginationItem-root MuiPaginationItem-sizeLarge MuiPaginationItem-text MuiPaginationItem-circular MuiPaginationItem-textSecondary Mui-disabled MuiPaginationItem-firstLast css-1mtig89-MuiButtonBase-root-MuiPaginationItem-root"
+                  class="MuiButtonBase-root Mui-disabled MuiPaginationItem-root MuiPaginationItem-sizeLarge MuiPaginationItem-text MuiPaginationItem-circular MuiPaginationItem-colorSecondary MuiPaginationItem-textSecondary Mui-disabled MuiPaginationItem-firstLast css-1mtig89-MuiButtonBase-root-MuiPaginationItem-root"
                   disabled=""
                   tabindex="-1"
                   type="button"
@@ -46,7 +46,7 @@ exports[`Card View > renders correctly 1`] = `
                 <button
                   aria-current="true"
                   aria-label="page 1"
-                  class="MuiButtonBase-root MuiPaginationItem-root MuiPaginationItem-sizeLarge MuiPaginationItem-text MuiPaginationItem-circular MuiPaginationItem-textSecondary Mui-selected MuiPaginationItem-page css-1mtig89-MuiButtonBase-root-MuiPaginationItem-root"
+                  class="MuiButtonBase-root MuiPaginationItem-root MuiPaginationItem-sizeLarge MuiPaginationItem-text MuiPaginationItem-circular MuiPaginationItem-colorSecondary MuiPaginationItem-textSecondary Mui-selected MuiPaginationItem-page css-1mtig89-MuiButtonBase-root-MuiPaginationItem-root"
                   tabindex="0"
                   type="button"
                 >
@@ -59,7 +59,7 @@ exports[`Card View > renders correctly 1`] = `
               <li>
                 <button
                   aria-label="Go to last page"
-                  class="MuiButtonBase-root Mui-disabled MuiPaginationItem-root MuiPaginationItem-sizeLarge MuiPaginationItem-text MuiPaginationItem-circular MuiPaginationItem-textSecondary Mui-disabled MuiPaginationItem-firstLast css-1mtig89-MuiButtonBase-root-MuiPaginationItem-root"
+                  class="MuiButtonBase-root Mui-disabled MuiPaginationItem-root MuiPaginationItem-sizeLarge MuiPaginationItem-text MuiPaginationItem-circular MuiPaginationItem-colorSecondary MuiPaginationItem-textSecondary Mui-disabled MuiPaginationItem-firstLast css-1mtig89-MuiButtonBase-root-MuiPaginationItem-root"
                   disabled=""
                   tabindex="-1"
                   type="button"
@@ -355,7 +355,7 @@ exports[`Card View > renders correctly 1`] = `
           <li>
             <button
               aria-label="Go to first page"
-              class="MuiButtonBase-root Mui-disabled MuiPaginationItem-root MuiPaginationItem-sizeLarge MuiPaginationItem-text MuiPaginationItem-circular MuiPaginationItem-textSecondary Mui-disabled MuiPaginationItem-firstLast css-1mtig89-MuiButtonBase-root-MuiPaginationItem-root"
+              class="MuiButtonBase-root Mui-disabled MuiPaginationItem-root MuiPaginationItem-sizeLarge MuiPaginationItem-text MuiPaginationItem-circular MuiPaginationItem-colorSecondary MuiPaginationItem-textSecondary Mui-disabled MuiPaginationItem-firstLast css-1mtig89-MuiButtonBase-root-MuiPaginationItem-root"
               disabled=""
               tabindex="-1"
               type="button"
@@ -377,7 +377,7 @@ exports[`Card View > renders correctly 1`] = `
             <button
               aria-current="true"
               aria-label="page 1"
-              class="MuiButtonBase-root MuiPaginationItem-root MuiPaginationItem-sizeLarge MuiPaginationItem-text MuiPaginationItem-circular MuiPaginationItem-textSecondary Mui-selected MuiPaginationItem-page css-1mtig89-MuiButtonBase-root-MuiPaginationItem-root"
+              class="MuiButtonBase-root MuiPaginationItem-root MuiPaginationItem-sizeLarge MuiPaginationItem-text MuiPaginationItem-circular MuiPaginationItem-colorSecondary MuiPaginationItem-textSecondary Mui-selected MuiPaginationItem-page css-1mtig89-MuiButtonBase-root-MuiPaginationItem-root"
               tabindex="0"
               type="button"
             >
@@ -390,7 +390,7 @@ exports[`Card View > renders correctly 1`] = `
           <li>
             <button
               aria-label="Go to last page"
-              class="MuiButtonBase-root Mui-disabled MuiPaginationItem-root MuiPaginationItem-sizeLarge MuiPaginationItem-text MuiPaginationItem-circular MuiPaginationItem-textSecondary Mui-disabled MuiPaginationItem-firstLast css-1mtig89-MuiButtonBase-root-MuiPaginationItem-root"
+              class="MuiButtonBase-root Mui-disabled MuiPaginationItem-root MuiPaginationItem-sizeLarge MuiPaginationItem-text MuiPaginationItem-circular MuiPaginationItem-colorSecondary MuiPaginationItem-textSecondary Mui-disabled MuiPaginationItem-firstLast css-1mtig89-MuiButtonBase-root-MuiPaginationItem-root"
               disabled=""
               tabindex="-1"
               type="button"

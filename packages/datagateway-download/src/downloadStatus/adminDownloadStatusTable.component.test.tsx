@@ -448,7 +448,7 @@ describe('Admin Download Status Table', () => {
     });
 
     // Get the is deleted filter
-    const isDeletedFilter = await screen.findByRole('button', {
+    const isDeletedFilter = await screen.findByRole('combobox', {
       name: /Filter by downloadStatus\.deleted/,
     });
 

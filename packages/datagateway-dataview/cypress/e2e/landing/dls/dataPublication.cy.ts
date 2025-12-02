@@ -1,6 +1,6 @@
 export type MintResponse = Cypress.Response<{
-  concept: { doi: string; data_publication: string };
-  version: { doi: string; data_publication: string };
+  concept: { data_publication_id: string; attributes: { doi: string } };
+  version: { data_publication_id: string; attributes: { doi: string } };
 }>;
 
 describe('DLS - Data Publication Landing', () => {
@@ -14,8 +14,8 @@ describe('DLS - Data Publication Landing', () => {
       'Chris481'
     );
     cy.seedUserGeneratedDataPublication().as('dataPublication1');
-    cy.get('@dataPublication1')
-      .its('body.concept.data_publication')
+    cy.get<MintResponse>('@dataPublication1')
+      .its('body.concept.data_publication_id')
       .then((id) => cy.visit(`/browse/dataPublication/${id}`));
     cy.seedDownloadCart(['datafile 550']);
   });
@@ -23,8 +23,8 @@ describe('DLS - Data Publication Landing', () => {
   afterEach(() => {
     cy.get<MintResponse>('@dataPublication1').then((dp) => {
       cy.clearUserGeneratedDataPublications([
-        dp.body.concept.data_publication,
-        dp.body.version.data_publication,
+        dp.body.concept.data_publication_id,
+        dp.body.version.data_publication_id,
       ]);
     });
     cy.clearDownloadCart();
@@ -38,9 +38,9 @@ describe('DLS - Data Publication Landing', () => {
     cy.contains('Thomas Chambers').should('be.visible');
 
     cy.get<MintResponse>('@dataPublication1').then((dp) => {
-      cy.contains('a', dp.body.concept.doi);
+      cy.contains('a', dp.body.concept.attributes.doi);
 
-      cy.contains('a', dp.body.version.doi);
+      cy.contains('a', dp.body.version.attributes.doi);
     });
   });
 
@@ -81,10 +81,10 @@ describe('DLS - Data Publication Landing', () => {
 
   it('should be able to click a DOI & it renders the correct webpage ', () => {
     cy.get<MintResponse>('@dataPublication1').then((dp) => {
-      cy.contains('a', dp.body.concept.doi).should(
+      cy.contains('a', dp.body.concept.attributes.doi).should(
         'have.attr',
         'href',
-        `https://doi.org/${dp.body.concept.doi}`
+        `https://doi.org/${dp.body.concept.attributes.doi}`
       );
     });
   });
@@ -138,6 +138,26 @@ describe('DLS - Data Publication Landing', () => {
 
     cy.contains('button', 'Generate DOI').click();
 
+    cy.contains('Please review the metadata', { timeout: 10000 }).should(
+      'exist'
+    );
+    cy.contains('h2', 'Generate DOI').should('not.exist');
+
+    cy.contains('div', 'Identifier: 10.17596/w76y-4s92')
+      .as('relatedDOI')
+      .should('exist');
+    cy.get('@relatedDOI')
+      .parent()
+      .contains('Relationship: IsCitedBy')
+      .should('exist');
+    cy.get('@relatedDOI')
+      .parent()
+      .contains('Resource Type: Journal')
+      .should('exist');
+    cy.get('@relatedDOI').parent().contains('Type: DOI').should('exist');
+
+    cy.contains('button', 'Generate DOI').click();
+
     cy.contains('Mint Confirmation').should('be.visible');
     cy.contains('Mint was successful', { timeout: 10000 }).should('be.visible');
     cy.contains('View Data Publication').click();
@@ -154,7 +174,7 @@ describe('DLS - Data Publication Landing', () => {
 
     // visit concept DOI and check it's updated there
     cy.get('@dataPublication1')
-      .its('body.concept.data_publication')
+      .its('body.concept.data_publication_id')
       .then((id) => cy.visit(`/browse/dataPublication/${id}`));
 
     cy.contains('New DOI title').should('be.visible');
@@ -177,27 +197,33 @@ describe('DLS - Data Publication Landing', () => {
     cy.contains('Test DOI title').should('be.visible');
 
     cy.get<MintResponse>('@dataPublication1').then((response) => {
-      cy.intercept(`**/text/x-bibliography/${response.body.concept.doi}?*`, [
-        '@misc{dr sabrina gaertner_mr vincent deguin_dr pierre ghesquiere_dr claire...}',
-      ]);
+      cy.intercept(
+        `**/text/x-bibliography/${response.body.concept.attributes.doi}?*`,
+        [
+          '@misc{dr sabrina gaertner_mr vincent deguin_dr pierre ghesquiere_dr claire...}',
+        ]
+      );
 
-      cy.intercept(`**/text/x-bibliography/${response.body.version.doi}?*`, [
-        '@misc{dr alice barrett_mr charlie deguin_dr elizabeth francis_dr gary...}',
-      ]);
+      cy.intercept(
+        `**/text/x-bibliography/${response.body.version.attributes.doi}?*`,
+        [
+          '@misc{dr alice barrett_mr charlie deguin_dr elizabeth francis_dr gary...}',
+        ]
+      );
 
       cy.get(
         '[data-testid="Latest-Version-Data-Citation-citation-formatter-citation"]'
       )
         .first()
         .contains(
-          `STFC ISIS Neutron and Muon Source, https://doi.org/${response.body.version.doi}`
+          `STFC ISIS Neutron and Muon Source, https://doi.org/${response.body.version.attributes.doi}`
         );
       cy.get(
         '[data-testid="Concept-Data-Citation-citation-formatter-citation"]'
       )
         .last()
         .contains(
-          `STFC ISIS Neutron and Muon Source, https://doi.org/${response.body.concept.doi}`
+          `STFC ISIS Neutron and Muon Source, https://doi.org/${response.body.concept.attributes.doi}`
         );
     });
 
@@ -236,27 +262,33 @@ describe('DLS - Data Publication Landing', () => {
     cy.contains('Test DOI title').should('be.visible');
 
     cy.get<MintResponse>('@dataPublication1').then((response) => {
-      cy.intercept(`**/text/x-bibliography/${response.body.concept.doi}?*`, {
-        statusCode: 503,
-      });
+      cy.intercept(
+        `**/text/x-bibliography/${response.body.concept.attributes.doi}?*`,
+        {
+          statusCode: 503,
+        }
+      );
 
-      cy.intercept(`**/text/x-bibliography/${response.body.version.doi}?*`, {
-        statusCode: 503,
-      });
+      cy.intercept(
+        `**/text/x-bibliography/${response.body.version.attributes.doi}?*`,
+        {
+          statusCode: 503,
+        }
+      );
 
       cy.get(
         '[data-testid="Latest-Version-Data-Citation-citation-formatter-citation"]'
       )
         .first()
         .contains(
-          `STFC ISIS Neutron and Muon Source, https://doi.org/${response.body.version.doi}`
+          `STFC ISIS Neutron and Muon Source, https://doi.org/${response.body.version.attributes.doi}`
         );
       cy.get(
         '[data-testid="Concept-Data-Citation-citation-formatter-citation"]'
       )
         .last()
         .contains(
-          `STFC ISIS Neutron and Muon Source, https://doi.org/${response.body.concept.doi}`
+          `STFC ISIS Neutron and Muon Source, https://doi.org/${response.body.concept.attributes.doi}`
         );
     });
 
