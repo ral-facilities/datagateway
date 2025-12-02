@@ -9,8 +9,6 @@ describe('DLS - MyDOIs Table', () => {
 
   describe('Logged in tests', () => {
     beforeEach(() => {
-      cy.intercept('**/datapublications?order=*').as('dataPublicationsOrder');
-
       cy.login(
         {
           username: 'Chris481',
@@ -34,10 +32,10 @@ describe('DLS - MyDOIs Table', () => {
       cy.get<MintResponse>('@dataPublication1').then((dp1) => {
         cy.get<MintResponse>('@dataPublication2').then((dp2) => {
           cy.clearUserGeneratedDataPublications([
-            dp1.body.concept.data_publication,
-            dp1.body.version.data_publication,
-            dp2.body.concept.data_publication,
-            dp2.body.version.data_publication,
+            dp1.body.concept.data_publication_id,
+            dp1.body.version.data_publication_id,
+            dp2.body.concept.data_publication_id,
+            dp2.body.version.data_publication_id,
           ]);
         });
       });
@@ -56,7 +54,7 @@ describe('DLS - MyDOIs Table', () => {
       cy.contains('Test DOI Title 1').click();
 
       cy.get('@dataPublication1')
-        .its('body.concept.data_publication')
+        .its('body.concept.data_publication_id')
         .then((id) =>
           cy.location('pathname').should('eq', `/browse/dataPublication/${id}`)
         );
@@ -67,11 +65,9 @@ describe('DLS - MyDOIs Table', () => {
       cy.contains('[role="button"]', 'Publication Date')
         .as('dateSortButton')
         .click();
-      cy.wait('@dataPublicationsOrder', { timeout: 10000 });
 
       // ascending order
       cy.contains('[role="button"]', 'Title').as('titleSortButton').click();
-      cy.wait('@dataPublicationsOrder', { timeout: 10000 });
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
@@ -81,14 +77,9 @@ describe('DLS - MyDOIs Table', () => {
 
       // descending order
       cy.get('@titleSortButton').click();
-      cy.wait('@dataPublicationsOrder', { timeout: 10000 });
 
       cy.get('[aria-sort="descending"]').should('exist');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
-        'not.have.css',
-        'opacity',
-        '0'
-      );
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('be.visible');
       cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
         'Test DOI Title 2'
       );
@@ -107,34 +98,27 @@ describe('DLS - MyDOIs Table', () => {
         'Test DOI Title 1'
       );
 
-      // multiple columns (shift click)
-      cy.get('@dateSortButton').click();
-      cy.wait('@dataPublicationsOrder', { timeout: 10000 });
-      cy.get('@titleSortButton').click({ shiftKey: true });
-      cy.wait('@dataPublicationsOrder', { timeout: 10000 });
-      cy.get('@titleSortButton').click({ shiftKey: true });
-      cy.wait('@dataPublicationsOrder', { timeout: 10000 });
-
-      cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
-        'Test DOI Title 2'
-      );
-
-      // should replace previous sort when clicked without shift
-      cy.contains('[role="button"]', 'DOI').click();
-      cy.get('[aria-sort="ascending"]').should('have.length', 1);
+      // can't test multiple sort as no fields are the same that a shift-click would re-sort
     });
 
     it('should be able to filter with text & date filters on multiple columns', () => {
       // test text filter
-      // cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-label="Filter by Title"]').type('random text');
+      cy.get('[aria-label="Filter by Title"]').type('random text', {
+        delay: 0,
+      });
 
+      cy.get('[role="progressbar"]').should('exist');
+      cy.get('[role="progressbar"]').should('not.exist');
       cy.get('[aria-rowcount="0"]').should('exist');
+
       cy.get('[aria-label="Filter by Title"]').clear();
+
+      cy.get('[aria-rowcount="0"]').should('not.exist');
       cy.get('[aria-label="Filter by Title"]').type('1');
 
-      // test date filter
       cy.get('[aria-rowcount="1"]').should('exist');
+
+      // test date filter
 
       const date = new Date();
 

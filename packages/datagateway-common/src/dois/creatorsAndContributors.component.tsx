@@ -58,12 +58,13 @@ type CreatorsAndContributorsProps = {
   selectedUsers: ContributorUser[];
   changeSelectedUsers: React.Dispatch<React.SetStateAction<ContributorUser[]>>;
   doiMinterUrl: string | undefined;
+  disabled: boolean;
 };
 
 const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
   props
 ) => {
-  const { selectedUsers, changeSelectedUsers, doiMinterUrl } = props;
+  const { selectedUsers, changeSelectedUsers, doiMinterUrl, disabled } = props;
   const [t] = useTranslation();
   const [username, setUsername] = React.useState('');
   const [usernameError, setUsernameError] = React.useState('');
@@ -130,7 +131,7 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
       <Grid container direction="row" spacing={1}>
         <Grid item>
           <Typography variant="h6" component="h4" id="creators-label">
-            {t('DOIGenerationForm.creators')}
+            {t('DOIGenerationForm.creators_and_contributors')}
           </Typography>
         </Grid>
         <Grid
@@ -167,6 +168,7 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
                 setUsername(event.target.value);
                 setUsernameError('');
               }}
+              disabled={disabled}
             />
           </Grid>
           <Grid container item spacing={1} xs="auto">
@@ -174,7 +176,7 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
               <Button
                 variant="contained"
                 onClick={handleAddCreatorOrContributorClick(true)}
-                disabled={selectedUsers.length === 0}
+                disabled={selectedUsers.length === 0 || disabled}
               >
                 {t('DOIGenerationForm.add_creator')}
               </Button>
@@ -183,7 +185,7 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
               <Button
                 variant="contained"
                 onClick={handleAddCreatorOrContributorClick(false)}
-                disabled={selectedUsers.length === 0}
+                disabled={selectedUsers.length === 0 || disabled}
               >
                 {t('DOIGenerationForm.add_contributor')}
               </Button>
@@ -234,14 +236,15 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
                           size="small"
                           required
                           sx={{ minWidth: 180 }}
+                          disabled={disabled}
                         >
                           <InputLabel
-                            id={`${user.name}-contributor-type-select-label`}
+                            id={`${user.id}-contributor-type-select-label`}
                           >
                             {t('DOIGenerationForm.creator_type')}
                           </InputLabel>
                           <Select
-                            labelId={`${user.name}-contributor-type-select-label`}
+                            labelId={`${user.id}-contributor-type-select-label`}
                             value={user.contributor_type}
                             label={t('DOIGenerationForm.creator_type')}
                             onChange={(event) => {
@@ -279,7 +282,10 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
                     <TableCell>
                       <Button
                         size="small"
-                        disabled={user.name === readSciGatewayToken().username}
+                        disabled={
+                          user.name === readSciGatewayToken().username ||
+                          disabled
+                        }
                         onClick={() =>
                           changeSelectedUsers((selectedUsers) =>
                             selectedUsers.filter(

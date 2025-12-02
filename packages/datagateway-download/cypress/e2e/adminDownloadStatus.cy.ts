@@ -174,7 +174,7 @@ describe('Admin Download Status', () => {
 
     cy.get('@methodFilter')
       .parent()
-      .findByRole('button', { name: 'include, exclude or exact' })
+      .findByRole('combobox', { name: 'include, exclude or exact' })
       .as('methodFilterOptionsButton')
       .click();
 
@@ -237,7 +237,7 @@ describe('Admin Download Status', () => {
       .first()
       .click();
 
-    cy.findByRole('button', { name: /Filter by Deleted/ }).as(
+    cy.findByRole('combobox', { name: 'Filter by Deleted' }).as(
       'isDeletedFilter'
     );
     cy.get('@isDeletedFilter').click();

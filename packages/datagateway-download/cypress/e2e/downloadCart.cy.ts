@@ -91,7 +91,7 @@ describe('Download Cart', () => {
 
     cy.get('@nameFilter')
       .parent()
-      .findByRole('button', { name: 'include, exclude or exact' })
+      .findByRole('combobox', { name: 'include, exclude or exact' })
       .as('nameFilterOptionsButton')
       .click();
 

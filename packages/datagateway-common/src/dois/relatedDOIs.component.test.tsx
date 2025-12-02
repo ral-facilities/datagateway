@@ -39,9 +39,9 @@ describe('DOI generation form component', () => {
     return (
       <QueryClientProvider client={createTestQueryClient()}>
         <RelatedDOIs
+          {...props}
           relatedDOIs={relatedDOIs}
           changeRelatedDOIs={changeRelatedDOIs}
-          dataCiteUrl="example.com"
         />
       </QueryClientProvider>
     );
@@ -59,11 +59,12 @@ describe('DOI generation form component', () => {
           fullReference: '',
           identifier: 'related.doi.1',
           relationType: '',
-          relatedItemType: '',
+          relatedItemType: undefined,
         },
       ],
       changeRelatedDOIs: vi.fn(),
       dataCiteUrl: 'example.com',
+      disabled: false,
     };
 
     mockDOIResponse = {
@@ -127,10 +128,18 @@ describe('DOI generation form component', () => {
     ).toBeInTheDocument();
 
     await user.click(
-      screen.getAllByRole('button', {
-        name: /DOIGenerationForm.related_doi_relationship/i,
+      screen.getAllByRole('combobox', {
+        name: 'DOIGenerationForm.related_doi_relationship',
       })[0]
     );
+    // assert banned relations don't appear
+    await screen.findByRole('option', { name: 'IsCitedBy' });
+    expect(
+      screen.queryByRole('option', { name: /Version/i })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('option', { name: /Part/i })
+    ).not.toBeInTheDocument();
     await user.click(await screen.findByRole('option', { name: 'IsCitedBy' }));
 
     expect(screen.queryByRole('option')).not.toBeInTheDocument();
@@ -138,8 +147,8 @@ describe('DOI generation form component', () => {
     expect(screen.getByText('IsCitedBy')).toBeInTheDocument();
 
     await user.click(
-      screen.getAllByRole('button', {
-        name: /DOIGenerationForm.related_doi_resource_type/i,
+      screen.getAllByRole('combobox', {
+        name: 'DOIGenerationForm.related_doi_resource_type',
       })[0]
     );
     await user.click(await screen.findByRole('option', { name: 'Journal' }));
@@ -209,5 +218,28 @@ describe('DOI generation form component', () => {
     expect(
       await screen.findByRole('tooltip', { name: 'Related DOI 1' })
     ).toBeInTheDocument();
+  });
+
+  it('should render dois as links and show title on hover', () => {
+    props.disabled = true;
+    renderComponent();
+
+    expect(
+      screen.getByRole('textbox', { name: 'DOIGenerationForm.related_doi' })
+    ).toBeDisabled();
+    expect(
+      screen.getByRole('button', { name: 'DOIGenerationForm.add_related_doi' })
+    ).toBeDisabled();
+
+    expect(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.related_doi_resource_type',
+      })
+    ).toHaveAttribute('aria-disabled', 'true');
+    expect(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.related_doi_relationship',
+      })
+    ).toHaveAttribute('aria-disabled', 'true');
   });
 });

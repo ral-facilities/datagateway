@@ -179,8 +179,8 @@ describe('ParameterFilters', () => {
     );
     // open parameter name dropdown
     await user.click(
-      screen.getByRole('button', {
-        name: /parameterFilters.creator.labels.parameterNameSelect /i,
+      screen.getByRole('combobox', {
+        name: 'parameterFilters.creator.labels.parameterNameSelect',
       })
     );
     // select bcat_inv_str as parameter name
@@ -192,8 +192,8 @@ describe('ParameterFilters', () => {
     );
     // open parameter value type dropdown
     await user.click(
-      screen.getByRole('button', {
-        name: /parameterFilters.creator.labels.parameterValueTypeSelect /i,
+      screen.getByRole('combobox', {
+        name: 'parameterFilters.creator.labels.parameterValueTypeSelect',
       })
     );
     // select string as value type
@@ -207,8 +207,8 @@ describe('ParameterFilters', () => {
     );
     // open parameter string value dropdown
     await user.click(
-      await screen.findByRole('button', {
-        name: /parameterFilters.creator.labels.parameterStringSelect /i,
+      await screen.findByRole('combobox', {
+        name: 'parameterFilters.creator.labels.parameterStringSelect',
       })
     );
     // select PARAMETER STRING VALUE as the filter value

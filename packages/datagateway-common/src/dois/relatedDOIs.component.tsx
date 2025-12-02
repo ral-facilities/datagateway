@@ -26,10 +26,11 @@ type RelatedDOIsProps = {
   relatedDOIs: RelatedDOI[];
   changeRelatedDOIs: React.Dispatch<React.SetStateAction<RelatedDOI[]>>;
   dataCiteUrl: string | undefined;
+  disabled: boolean;
 };
 
 const RelatedDOIs: React.FC<RelatedDOIsProps> = (props) => {
-  const { relatedDOIs, changeRelatedDOIs, dataCiteUrl } = props;
+  const { relatedDOIs, changeRelatedDOIs, dataCiteUrl, disabled } = props;
   const [t] = useTranslation();
   const [relatedDOI, setRelatedDOI] = React.useState('');
   const [relatedDOIError, setRelatedDOIError] = React.useState('');
@@ -86,11 +87,13 @@ const RelatedDOIs: React.FC<RelatedDOIsProps> = (props) => {
                 setRelatedDOI(event.target.value);
                 setRelatedDOIError('');
               }}
+              disabled={disabled}
             />
           </Grid>
           <Grid item>
             <Button
               variant="contained"
+              disabled={disabled}
               onClick={() => {
                 return checkDOI({ throwOnError: true })
                   .then((response) => {
@@ -135,7 +138,7 @@ const RelatedDOIs: React.FC<RelatedDOIsProps> = (props) => {
               <TableHead>
                 <TableRow>
                   <TableCell>
-                    {t('DOIGenerationForm.related_doi_doi')}
+                    {t('DOIGenerationForm.related_doi_identifier')}
                   </TableCell>
                   <TableCell>
                     {t('DOIGenerationForm.related_doi_relationship')}
@@ -166,14 +169,21 @@ const RelatedDOIs: React.FC<RelatedDOIsProps> = (props) => {
                         size="small"
                         required
                         sx={{ minWidth: 150 }}
+                        disabled={disabled}
                       >
                         <InputLabel
-                          id={`${relatedItem.identifier}-relationship-select-label`}
+                          id={`${relatedItem.identifier.replaceAll(
+                            ' ',
+                            '-'
+                          )}-relationship-select-label`}
                         >
                           {t('DOIGenerationForm.related_doi_relationship')}
                         </InputLabel>
                         <Select
-                          labelId={`${relatedItem.identifier}-relationship-select-label`}
+                          labelId={`${relatedItem.identifier.replaceAll(
+                            ' ',
+                            '-'
+                          )}-relationship-select-label`}
                           value={relatedItem.relationType}
                           label={t(
                             'DOIGenerationForm.related_doi_relationship'
@@ -196,7 +206,11 @@ const RelatedDOIs: React.FC<RelatedDOIsProps> = (props) => {
                           }}
                         >
                           {Object.values(DOIRelationType)
-                            .filter((relation) => !relation.includes('Version'))
+                            .filter(
+                              (relation) =>
+                                !relation.includes('Version') &&
+                                !relation.includes('Part')
+                            )
                             .map((relation) => {
                               return (
                                 <MenuItem key={relation} value={relation}>
@@ -213,14 +227,21 @@ const RelatedDOIs: React.FC<RelatedDOIsProps> = (props) => {
                         size="small"
                         required
                         sx={{ minWidth: 150 }}
+                        disabled={disabled}
                       >
                         <InputLabel
-                          id={`${relatedItem.identifier}-resource-type-select-label`}
+                          id={`${relatedItem.identifier.replaceAll(
+                            ' ',
+                            '-'
+                          )}-resource-type-select-label`}
                         >
                           {t('DOIGenerationForm.related_doi_resource_type')}
                         </InputLabel>
                         <Select
-                          labelId={`${relatedItem.identifier}-resource-type-select-label`}
+                          labelId={`${relatedItem.identifier.replaceAll(
+                            ' ',
+                            '-'
+                          )}-resource-type-select-label`}
                           value={relatedItem.relatedItemType ?? ''}
                           label={t(
                             'DOIGenerationForm.related_doi_resource_type'
@@ -265,6 +286,7 @@ const RelatedDOIs: React.FC<RelatedDOIsProps> = (props) => {
                           )
                         }
                         color="secondary"
+                        disabled={disabled}
                       >
                         {t('DOIGenerationForm.delete_related_doi')}
                       </Button>

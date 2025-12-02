@@ -12,6 +12,7 @@ import {
 } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import {
+  DOIDraftResponse,
   DOIMetadata,
   DOIResponse,
   Download,
@@ -32,6 +33,7 @@ import {
   FileSizeAndCount,
   adminDownloadDeleted,
   adminDownloadStatus,
+  deleteDraftDOI,
   downloadDeleted,
   fetchAdminDownloads,
   fetchDownloads,
@@ -39,7 +41,8 @@ import {
   getFileSizeAndCount,
   getIsTwoLevel,
   getPercentageComplete,
-  mintCart,
+  mintDraftCart,
+  publishDraftDOI,
   removeAllDownloadCartItems,
   removeFromCart,
 } from './downloadApi';
@@ -506,12 +509,12 @@ export const useDownloadPercentageComplete = <T = DownloadProgress>({
 };
 
 /**
- * Mints a cart
+ * Mints a draft of a cart
  * @param cart The {@link Cart} to mint
  * @param doiMetadata The required metadata for the DOI
  */
-export const useMintCart = (): UseMutationResult<
-  DOIResponse,
+export const useMintDraftCart = (): UseMutationResult<
+  DOIDraftResponse,
   AxiosError<{
     detail: { msg: string }[] | string;
   }>,
@@ -521,10 +524,60 @@ export const useMintCart = (): UseMutationResult<
 
   return useMutation(
     ({ cart, doiMetadata }) => {
-      return mintCart(cart, doiMetadata, settings);
+      return mintDraftCart(cart, doiMetadata, settings);
+    },
+    {
+      onError: (error) => {
+        handleDOIAPIError(error, undefined, undefined, true, true);
+      },
+    }
+  );
+};
+
+/**
+ * Publishes a draft data publication
+ * @param dataPublicationId The {@link DataPublication} to publish
+ */
+export const usePublishDraft = (): UseMutationResult<
+  DOIResponse,
+  AxiosError<{
+    detail: { msg: string }[] | string;
+  }>,
+  string
+> => {
+  const settings = React.useContext(DownloadSettingsContext);
+
+  return useMutation(
+    (dataPublicationId: string) => {
+      return publishDraftDOI(dataPublicationId, settings);
     },
     {
       onError: handleDOIAPIError,
+    }
+  );
+};
+
+/**
+ * Deletes a draft data publication
+ * @param dataPublicationId The {@link DataPublication} to publish
+ */
+export const useDeleteDraft = (): UseMutationResult<
+  void,
+  AxiosError<{
+    detail: { msg: string }[] | string;
+  }>,
+  string
+> => {
+  const settings = React.useContext(DownloadSettingsContext);
+
+  return useMutation(
+    (dataPublicationId: string) => {
+      return deleteDraftDOI(dataPublicationId, settings);
+    },
+    {
+      onError: (error) => {
+        handleDOIAPIError(error, undefined, undefined, true, true);
+      },
     }
   );
 };
