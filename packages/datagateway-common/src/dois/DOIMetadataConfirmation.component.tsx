@@ -138,7 +138,7 @@ const DOIMetadataConfirmation: React.FC<DOIMetadataConfirmationProps> = (
                 </Grid>
                 <Grid item>
                   <Typography>
-                    {t('DOIGenerationForm.related_identifier_type')}:{' '}
+                    {t('DOIGenerationForm.related_identifier_identifier_type')}:{' '}
                     {relatedIdentifier.relatedIdentifierType}
                   </Typography>
                 </Grid>

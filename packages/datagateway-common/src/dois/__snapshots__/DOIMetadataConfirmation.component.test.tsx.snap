@@ -64,7 +64,7 @@ exports[`DOI metadata confirmation component > should display the provided draft
           <p
             class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
           >
-            DOIGenerationForm.related_identifier_type: DOI
+            DOIGenerationForm.related_identifier_identifier_type: DOI
           </p>
         </div>
         <div
@@ -110,7 +110,7 @@ exports[`DOI metadata confirmation component > should display the provided draft
           <p
             class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
           >
-            DOIGenerationForm.related_identifier_type: URL
+            DOIGenerationForm.related_identifier_identifier_type: URL
           </p>
         </div>
         <div
@@ -150,7 +150,7 @@ exports[`DOI metadata confirmation component > should display the provided draft
           <p
             class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
           >
-            DOIGenerationForm.related_identifier_type: ISBN
+            DOIGenerationForm.related_identifier_identifier_type: ISBN
           </p>
         </div>
         <div
