@@ -66,17 +66,13 @@ describe('NewParameterFilterCreator', () => {
     );
 
     expect(
-      screen.getByRole('button', {
-        // have to use regex with case-insensitive option here instead of regular string
-        // because for some reason even though testing-library *says* it can't find the element by string
-        // in the actual error message it shows the matching element with the exact same label and casing
-        // but somehow this works
-        name: /parameterFilters.creator.labels.parameterNameSelect /i,
+      screen.getByRole('combobox', {
+        name: 'parameterFilters.creator.labels.parameterNameSelect',
       })
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('button', {
-        name: /parameterFilters.creator.labels.parameterValueTypeSelect /i,
+      screen.getByRole('combobox', {
+        name: 'parameterFilters.creator.labels.parameterValueTypeSelect',
       })
     ).toBeInTheDocument();
 
@@ -125,12 +121,8 @@ describe('NewParameterFilterCreator', () => {
     );
 
     await user.click(
-      screen.getByRole('button', {
-        // have to use regex with case-insensitive option here instead of regular string
-        // because for some reason even though testing-library *says* it can't find the element by string
-        // in the actual error message it shows the matching element with the exact same label and casing
-        // but somehow this works
-        name: /parameterFilters.creator.labels.parameterNameSelect /i,
+      screen.getByRole('combobox', {
+        name: 'parameterFilters.creator.labels.parameterNameSelect',
       })
     );
     await user.selectOptions(
@@ -164,12 +156,8 @@ describe('NewParameterFilterCreator', () => {
     );
 
     await user.click(
-      screen.getByRole('button', {
-        // have to use regex with case-insensitive option here instead of regular string
-        // because for some reason even though testing-library *says* it can't find the element by string
-        // in the actual error message it shows the matching element with the exact same label and casing
-        // but somehow this works
-        name: /parameterFilters.creator.labels.parameterValueTypeSelect /i,
+      screen.getByRole('combobox', {
+        name: 'parameterFilters.creator.labels.parameterValueTypeSelect',
       })
     );
     await user.selectOptions(
@@ -206,8 +194,8 @@ describe('NewParameterFilterCreator', () => {
 
     // select parameter name
     await user.click(
-      screen.getByRole('button', {
-        name: /parameterFilters.creator.labels.parameterNameSelect /i,
+      screen.getByRole('combobox', {
+        name: 'parameterFilters.creator.labels.parameterNameSelect',
       })
     );
     await user.selectOptions(
@@ -218,8 +206,8 @@ describe('NewParameterFilterCreator', () => {
     );
     // select parameter value type
     await user.click(
-      screen.getByRole('button', {
-        name: /parameterFilters.creator.labels.parameterValueTypeSelect /i,
+      screen.getByRole('combobox', {
+        name: 'parameterFilters.creator.labels.parameterValueTypeSelect',
       })
     );
 
@@ -236,8 +224,8 @@ describe('NewParameterFilterCreator', () => {
     ).toBeInTheDocument();
 
     await user.click(
-      screen.getByRole('button', {
-        name: /parameterFilters.creator.labels.parameterValueTypeSelect /i,
+      screen.getByRole('combobox', {
+        name: 'parameterFilters.creator.labels.parameterValueTypeSelect',
       })
     );
     await user.selectOptions(
@@ -253,8 +241,8 @@ describe('NewParameterFilterCreator', () => {
     ).toBeInTheDocument();
 
     await user.click(
-      screen.getByRole('button', {
-        name: /parameterFilters.creator.labels.parameterValueTypeSelect /i,
+      screen.getByRole('combobox', {
+        name: 'parameterFilters.creator.labels.parameterValueTypeSelect',
       })
     );
     await user.selectOptions(
@@ -287,8 +275,8 @@ describe('NewParameterFilterCreator', () => {
 
     // select parameter name
     await user.click(
-      screen.getByRole('button', {
-        name: /parameterFilters.creator.labels.parameterNameSelect /i,
+      screen.getByRole('combobox', {
+        name: 'parameterFilters.creator.labels.parameterNameSelect',
       })
     );
     await user.selectOptions(
@@ -299,8 +287,8 @@ describe('NewParameterFilterCreator', () => {
     );
     // select parameter value type
     await user.click(
-      screen.getByRole('button', {
-        name: /parameterFilters.creator.labels.parameterValueTypeSelect /i,
+      screen.getByRole('combobox', {
+        name: 'parameterFilters.creator.labels.parameterValueTypeSelect',
       })
     );
     await user.selectOptions(
@@ -313,8 +301,8 @@ describe('NewParameterFilterCreator', () => {
     );
 
     await user.click(
-      screen.getByRole('button', {
-        name: /parameterFilters.creator.labels.parameterStringSelect /i,
+      screen.getByRole('combobox', {
+        name: 'parameterFilters.creator.labels.parameterStringSelect',
       })
     );
     await user.selectOptions(
@@ -361,8 +349,8 @@ describe('NewParameterFilterCreator', () => {
 
     // select parameter name
     await user.click(
-      screen.getByRole('button', {
-        name: /parameterFilters.creator.labels.parameterNameSelect /i,
+      screen.getByRole('combobox', {
+        name: 'parameterFilters.creator.labels.parameterNameSelect',
       })
     );
     await user.selectOptions(
@@ -373,8 +361,8 @@ describe('NewParameterFilterCreator', () => {
     );
     // select parameter value type
     await user.click(
-      screen.getByRole('button', {
-        name: /parameterFilters.creator.labels.parameterValueTypeSelect /i,
+      screen.getByRole('combobox', {
+        name: 'parameterFilters.creator.labels.parameterValueTypeSelect',
       })
     );
     await user.selectOptions(

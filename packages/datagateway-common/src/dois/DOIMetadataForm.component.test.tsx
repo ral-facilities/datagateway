@@ -49,6 +49,7 @@ describe('DOI generation form component', () => {
       setRelatedIdentifiers: vi.fn(),
       disableMintButton: false,
       onMintClick: vi.fn(),
+      mintLoading: false,
       doiMinterUrl: 'https://example.com/doi-minter',
       dataCiteUrl: 'https://example.com/datacite',
     };
@@ -82,7 +83,7 @@ describe('DOI generation form component', () => {
     expect(props.setDescription).toHaveBeenCalledWith('description2');
   });
 
-  it('should disable mint button button at correct times', () => {
+  it('should disable mint button at correct times', () => {
     const { rerender } = renderComponent();
 
     expect(
@@ -123,7 +124,7 @@ describe('DOI generation form component', () => {
       screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
     ).toBeDisabled();
 
-    // relatedDOIs has empty relationtypes or relatedItemtypes
+    // relatedIdentifiers has empty relationtypes or relatedItemtypes
     props.selectedUsers = [
       { id: 1, name: 'test', contributor_type: ContributorType.Minter },
     ];
@@ -163,6 +164,33 @@ describe('DOI generation form component', () => {
 
     expect(
       screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+    ).toBeDisabled();
+  });
+
+  it('should disable mint button & all form fields when mintLoading is true', () => {
+    props.mintLoading = true;
+    renderComponent();
+
+    expect(
+      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+    ).toBeDisabled();
+    expect(screen.getByRole('progressbar')).toBeInTheDocument();
+
+    expect(
+      screen.getByRole('textbox', { name: 'DOIGenerationForm.title' })
+    ).toBeDisabled();
+    expect(
+      screen.getByRole('textbox', { name: 'DOIGenerationForm.description' })
+    ).toBeDisabled();
+    expect(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.add_creator',
+      })
+    ).toBeDisabled();
+    expect(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.delete_related_identifier',
+      })
     ).toBeDisabled();
   });
 });

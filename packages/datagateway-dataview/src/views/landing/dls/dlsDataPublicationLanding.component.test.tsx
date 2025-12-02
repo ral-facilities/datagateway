@@ -247,10 +247,6 @@ describe('DLS Data Publication Landing page', () => {
     });
     user = userEvent.setup();
 
-    // vi.mocked(useDataPublication, { partial: true }).mockReturnValue({
-    //   data: initialData,
-    // });
-
     axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
@@ -265,6 +261,10 @@ describe('DLS Data Publication Landing page', () => {
         } else if (/\/count$/.test(url)) {
           return Promise.resolve({
             data: 0,
+          });
+        } else if (/\/investigations$/.test(url)) {
+          return Promise.resolve({
+            data: [investigation],
           });
         } else {
           return Promise.reject(`Endpoint not mocked: ${url}`);

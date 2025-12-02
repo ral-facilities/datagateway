@@ -33,10 +33,16 @@ type RelatedIdentifiersProps = {
     React.SetStateAction<RelatedIdentifier[]>
   >;
   dataCiteUrl: string | undefined;
+  disabled: boolean;
 };
 
 const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
-  const { relatedIdentifiers, changeRelatedIdentifiers, dataCiteUrl } = props;
+  const {
+    relatedIdentifiers,
+    changeRelatedIdentifiers,
+    dataCiteUrl,
+    disabled,
+  } = props;
   const [t] = useTranslation();
   const [relatedIdentiferInputText, setRelatedIdentifierInputText] =
     React.useState('');
@@ -101,12 +107,14 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
                 setRelatedIdentifierInputText(event.target.value);
                 setRelatedDOIError('');
               }}
+              disabled={disabled}
             />
           </Grid>
           <Grid container item spacing={1} xs="auto">
             <Grid item>
               <Button
                 variant="contained"
+                disabled={disabled}
                 onClick={() => {
                   return checkDOI({ throwOnError: true })
                     .then((response) => {
@@ -224,16 +232,23 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
                           size="small"
                           required
                           sx={{ minWidth: 150 }}
+                          disabled={disabled}
                         >
                           <InputLabel
-                            id={`${relatedIdentifier.identifier}-identifier-type-select-label`}
+                            id={`${relatedIdentifier.identifier.replaceAll(
+                              ' ',
+                              '-'
+                            )}-identifier-type-select-label`}
                           >
                             {t(
                               'DOIGenerationForm.related_identifier_identifier_type'
                             )}
                           </InputLabel>
                           <Select
-                            labelId={`${relatedIdentifier.identifier}-identifier-type-select-label`}
+                            labelId={`${relatedIdentifier.identifier.replaceAll(
+                              ' ',
+                              '-'
+                            )}-identifier-type-select-label`}
                             value={relatedIdentifier.relatedIdentifierType}
                             label={t(
                               'DOIGenerationForm.related_identifier_identifier_type'
@@ -282,16 +297,23 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
                         size="small"
                         required
                         sx={{ minWidth: 150 }}
+                        disabled={disabled}
                       >
                         <InputLabel
-                          id={`${relatedIdentifier.identifier}-relationship-select-label`}
+                          id={`${relatedIdentifier.identifier.replaceAll(
+                            ' ',
+                            '-'
+                          )}-relationship-select-label`}
                         >
                           {t(
                             'DOIGenerationForm.related_identifier_relationship'
                           )}
                         </InputLabel>
                         <Select
-                          labelId={`${relatedIdentifier.identifier}-relationship-select-label`}
+                          labelId={`${relatedIdentifier.identifier.replaceAll(
+                            ' ',
+                            '-'
+                          )}-relationship-select-label`}
                           value={relatedIdentifier.relationType}
                           label={t(
                             'DOIGenerationForm.related_identifier_relationship'
@@ -337,16 +359,23 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
                         size="small"
                         required
                         sx={{ minWidth: 150 }}
+                        disabled={disabled}
                       >
                         <InputLabel
-                          id={`${relatedIdentifier.identifier}-resource-type-select-label`}
+                          id={`${relatedIdentifier.identifier.replaceAll(
+                            ' ',
+                            '-'
+                          )}-resource-type-select-label`}
                         >
                           {t(
                             'DOIGenerationForm.related_identifier_resource_type'
                           )}
                         </InputLabel>
                         <Select
-                          labelId={`${relatedIdentifier.identifier}-resource-type-select-label`}
+                          labelId={`${relatedIdentifier.identifier.replaceAll(
+                            ' ',
+                            '-'
+                          )}-resource-type-select-label`}
                           value={relatedIdentifier.relatedItemType ?? ''}
                           label={t(
                             'DOIGenerationForm.related_identifier_resource_type'
@@ -394,6 +423,7 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
                           )
                         }
                         color="secondary"
+                        disabled={disabled}
                       >
                         {t('DOIGenerationForm.delete_related_identifier')}
                       </Button>

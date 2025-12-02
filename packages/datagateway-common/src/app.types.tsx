@@ -641,6 +641,45 @@ export interface DOICreator {
   }[];
 }
 
+export interface DOIRelatedIdentifier {
+  relatedIdentifier: string;
+  relatedIdentifierType: DOIIdentifierType;
+  relationType: DOIRelationType;
+  resourceTypeGeneral: DOIResourceType;
+  relatedMetadataScheme: null;
+  schemeUri: null;
+  schemeType: null;
+}
+
+export interface DataCiteDOI {
+  id: string;
+  type: string;
+  attributes: DataciteMetadata; // DataciteMetadata isn't the complete type of attributes here, just the attributes that are returned from the DOI api
+  relationships: unknown; // we don't use this so don't bother typing for now
+}
+
+export interface DataCiteResponse {
+  data: DataCiteDOI;
+}
+
+export interface DOICreator {
+  name: string;
+  nameType: string;
+  givenName: string;
+  familyName: string;
+  nameIdentifiers: {
+    nameIdentifier: string;
+    nameIdentifierScheme: string;
+    schemeUri: string | null;
+  }[];
+  affiliations: {
+    affiliationIdentifier: string | null;
+    affiliation: string;
+    affiliationIdentifierScheme: string | null;
+    schemeUri: string | null;
+  }[];
+}
+
 export type DOIContributor = DOICreator & {
   contributorType: ContributorType;
 };
@@ -726,25 +765,17 @@ export interface DataciteMetadata {
   doi: string;
 }
 
-export interface DataCiteDOI {
-  id: string;
-  type: string;
-  attributes: DataciteMetadata; // DataciteMetadata isn't the complete type of attributes here, just the attributes that are returned from the DOI api
-  relationships: unknown; // we don't use this so don't bother typing for now
-}
-
-export interface DataCiteResponse {
-  data: DataCiteDOI;
-}
-
 export interface DOIResponse {
   concept: DOIResult;
   version: DOIResult;
 }
 
+export type DOIDraftResponse = Pick<DOIResponse, 'concept'>;
+export type DOIDraftVersionResponse = Pick<DOIResponse, 'version'>;
+
 export interface DOIResult {
-  data_publication: string;
-  doi: string;
+  data_publication_id: string;
+  attributes: DataciteMetadata;
 }
 
 /**

@@ -95,12 +95,12 @@ const DOIConfirmDialog: React.FC<DOIConfirmDialogProps> = (
               <Grid item xs>
                 <Typography>
                   {`${t('DOIConfirmDialog.concept_doi_label')}: ${
-                    data.concept.doi
+                    data.concept.attributes.doi
                   }`}
                 </Typography>
                 <Typography>
                   {`${t('DOIConfirmDialog.version_doi_label')}: ${
-                    data.version.doi
+                    data.version.attributes.doi
                   }`}
                 </Typography>
               </Grid>
@@ -125,7 +125,7 @@ const DOIConfirmDialog: React.FC<DOIConfirmDialogProps> = (
               <Grid item xs>
                 <Button
                   component={Link}
-                  to={`/browse/dataPublication/${data.version.data_publication}`}
+                  to={`/browse/dataPublication/${data.version.data_publication_id}`}
                   variant="contained"
                   color="primary"
                 >

@@ -57,8 +57,14 @@ describe('DOI Confirm Dialogue component', () => {
   it('should show success indicators when mintingStatus is success and allow user to view their data publication', async () => {
     props.mintingStatus = 'success';
     props.data = {
-      concept: { data_publication: '123456', doi: 'test_doi' },
-      version: { data_publication: '1234561', doi: 'test_doiv1' },
+      concept: {
+        data_publication_id: '123456',
+        attributes: { doi: 'test_doi' },
+      },
+      version: {
+        data_publication_id: '1234561',
+        attributes: { doi: 'test_doiv1' },
+      },
     };
     const { history } = renderComponent();
 
@@ -74,7 +80,7 @@ describe('DOI Confirm Dialogue component', () => {
       })
     );
     expect(history.location).toMatchObject({
-      pathname: `/browse/dataPublication/${props.data.version.data_publication}`,
+      pathname: `/browse/dataPublication/${props.data.version.data_publication_id}`,
     });
   });
 

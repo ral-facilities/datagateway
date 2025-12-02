@@ -1,0 +1,760 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`DOI metadata confirmation component > should display the provided draft metadata 1`] = `
+<DocumentFragment>
+  <h3
+    class="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+  >
+    DOIGenerationForm.review_metadata
+  </h3>
+  <div
+    class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-1 MuiGrid-direction-xs-column css-ffjoah-MuiGrid-root"
+  >
+    <div
+      class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+    >
+      <p
+        class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      >
+        DOIGenerationForm.title: test
+      </p>
+    </div>
+    <div
+      class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+    >
+      <p
+        class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      >
+        DOIGenerationForm.description: description
+      </p>
+    </div>
+    <div
+      class="MuiGrid-root MuiGrid-container MuiGrid-item MuiGrid-spacing-xs-1 css-v8g4am-MuiGrid-root"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+      >
+        <p
+          class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+        >
+          DOIGenerationForm.related_dois
+        </p>
+      </div>
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-item css-unj32y-MuiGrid-root"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.related_doi_identifier: 
+            <a
+              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
+              href="https://doi.org/related.doi"
+            >
+              related.doi
+            </a>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.related_doi_type: DOI
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.related_doi_relationship: Cites
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.related_doi_resource_type: Dataset
+          </p>
+        </div>
+      </div>
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-item css-unj32y-MuiGrid-root"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.related_doi_identifier: 
+            <a
+              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
+              href="https://example.com/related-url"
+            >
+              https://example.com/related-url
+            </a>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.related_doi_type: URL
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.related_doi_relationship: IsCompiledBy
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.related_doi_resource_type: ComputationalNotebook
+          </p>
+        </div>
+      </div>
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-item css-unj32y-MuiGrid-root"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.related_doi_identifier: 12345
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.related_doi_type: ISBN
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.related_doi_relationship: IsDocumentedBy
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.related_doi_resource_type: Book
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      class="MuiGrid-root MuiGrid-container MuiGrid-item MuiGrid-spacing-xs-1 css-v8g4am-MuiGrid-root"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+      >
+        <p
+          class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+        >
+          DOIGenerationForm.creators
+        </p>
+      </div>
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-item css-unj32y-MuiGrid-root"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.creator_name: Test
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-container MuiGrid-item css-1f064cs-MuiGrid-root"
+        >
+          <div
+            class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+          >
+            <p
+              class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+            >
+              DOIGenerationForm.creator_affiliation: test university
+            </p>
+          </div>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-container MuiGrid-item css-1f064cs-MuiGrid-root"
+        >
+          <div
+            class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+          >
+            <p
+              class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+            >
+              other: 123
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="MuiGrid-root MuiGrid-container MuiGrid-item MuiGrid-spacing-xs-1 css-v8g4am-MuiGrid-root"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+      >
+        <p
+          class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+        >
+          DOIGenerationForm.contributors
+        </p>
+      </div>
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-item css-unj32y-MuiGrid-root"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.creator_name: Test 2
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-container MuiGrid-item css-1f064cs-MuiGrid-root"
+        />
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.creator_type: ContactPerson
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-container MuiGrid-item css-1f064cs-MuiGrid-root"
+        >
+          <div
+            class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+          >
+            <p
+              class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+            >
+              ORCID: 
+              <a
+                class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
+                href="https://orcid.org/123"
+              >
+                https://orcid.org/123
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="MuiGrid-root MuiGrid-container MuiGrid-item MuiGrid-spacing-xs-1 css-v8g4am-MuiGrid-root"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+      >
+        <p
+          class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+        >
+          DOIGenerationForm.publisher
+        </p>
+      </div>
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-item MuiGrid-direction-xs-column css-1fermdn-MuiGrid-root"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.publisher: test
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.publisherIdentifier: 234
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.publisherIdentifierScheme: 2345
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.publisherSchemeURI: 
+            <a
+              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
+              href="https://example.com/publisher"
+            >
+              https://example.com/publisher
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+    >
+      <p
+        class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      >
+        DOIGenerationForm.publicationYear: 2025
+      </p>
+    </div>
+    <div
+      class="MuiGrid-root MuiGrid-container MuiGrid-item MuiGrid-spacing-xs-1 css-v8g4am-MuiGrid-root"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+      >
+        <p
+          class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+        >
+          DOIGenerationForm.dates
+        </p>
+      </div>
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-item css-unj32y-MuiGrid-root"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.date: 2025-09-01
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.dateType: Created
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.dateInformation: date info
+          </p>
+        </div>
+      </div>
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-item css-unj32y-MuiGrid-root"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.date: 2025-09-02
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.dateType: Minted
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+    >
+      <p
+        class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      >
+        DOIGenerationForm.resourceType: Experimental Datasets
+      </p>
+    </div>
+    <div
+      class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+    >
+      <p
+        class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      >
+        DOIGenerationForm.resourceTypeGeneral: Other
+      </p>
+    </div>
+    <div
+      class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+    >
+      <p
+        class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      >
+        DOIGenerationForm.language: en-GB
+      </p>
+    </div>
+    <div
+      class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+    >
+      <p
+        class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      >
+        DOIGenerationForm.size: 1 B
+      </p>
+    </div>
+    <div
+      class="MuiGrid-root MuiGrid-container MuiGrid-item MuiGrid-spacing-xs-1 css-v8g4am-MuiGrid-root"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+      >
+        <p
+          class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+        >
+          DOIGenerationForm.rights
+        </p>
+      </div>
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-item MuiGrid-direction-xs-column css-1fermdn-MuiGrid-root"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.rights: cc by
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.rightsURI: 
+            <a
+              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
+              href="https://example.com/rights"
+            >
+              https://example.com/rights
+            </a>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.rightsIdentifier: 12
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.rightsIdentifierScheme: 1234
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.rightsSchemeURI: 
+            <a
+              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
+              href="https://example.com/rights-scheme"
+            >
+              https://example.com/rights-scheme
+            </a>
+          </p>
+        </div>
+      </div>
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-item MuiGrid-direction-xs-column css-1fermdn-MuiGrid-root"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.rights: other rights
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      class="MuiGrid-root MuiGrid-container MuiGrid-item MuiGrid-spacing-xs-1 css-v8g4am-MuiGrid-root"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+      >
+        <p
+          class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+        >
+          DOIGenerationForm.geoLocations
+        </p>
+      </div>
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-item css-unj32y-MuiGrid-root"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.geoLocationPlace: DLS
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.geoLocationPoint: 51.57452869855099, -1.3108818134944835
+          </p>
+        </div>
+      </div>
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-item css-unj32y-MuiGrid-root"
+      />
+    </div>
+    <div
+      class="MuiGrid-root MuiGrid-container MuiGrid-item MuiGrid-spacing-xs-1 css-v8g4am-MuiGrid-root"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+      >
+        <p
+          class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+        >
+          DOIGenerationForm.fundingReferences
+        </p>
+      </div>
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-item MuiGrid-direction-xs-column css-1fermdn-MuiGrid-root"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.funderName: test
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.funderIdentifier: 123
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.funderIdentifierType: Other
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.funderSchemeURI: 
+            <a
+              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
+              href="https://example.com/funder"
+            >
+              https://example.com/funder
+            </a>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.awardURI: 
+            <a
+              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
+              href="https://example.com/award"
+            >
+              https://example.com/award
+            </a>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.awardTitle: test 1
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.awardNumber: 1
+          </p>
+        </div>
+      </div>
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-item MuiGrid-direction-xs-column css-1fermdn-MuiGrid-root"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.funderName: null test
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.awardNumber: 2
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2 css-12n0uxm-MuiGrid-root"
+  >
+    <div
+      class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+    >
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiLoadingButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary MuiButton-root MuiLoadingButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary css-h4t5eh-MuiButtonBase-root-MuiButton-root-MuiLoadingButton-root"
+        id=":r0:"
+        tabindex="0"
+        type="button"
+      >
+        <span
+          class="MuiButton-icon MuiButton-startIcon MuiButton-iconSizeMedium css-1d6wzja-MuiButton-startIcon"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+            data-testid="ArrowBackIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20z"
+            />
+          </svg>
+        </span>
+        DOIGenerationForm.back_button
+        <span
+          class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+        />
+      </button>
+    </div>
+    <div
+      class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+    >
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiLoadingButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary MuiButton-root MuiLoadingButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary css-h4t5eh-MuiButtonBase-root-MuiButton-root-MuiLoadingButton-root"
+        id=":r1:"
+        tabindex="0"
+        type="button"
+      >
+        <span
+          class="MuiButton-icon MuiButton-startIcon MuiButton-iconSizeMedium css-1d6wzja-MuiButton-startIcon"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+            data-testid="PublishIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M5 4v2h14V4zm0 10h4v6h6v-6h4l-7-7z"
+            />
+          </svg>
+        </span>
+        DOIGenerationForm.generate_DOI
+        <span
+          class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+        />
+      </button>
+    </div>
+  </div>
+</DocumentFragment>
+`;

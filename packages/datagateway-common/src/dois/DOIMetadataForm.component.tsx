@@ -1,4 +1,6 @@
-import { Button, Grid, TextField, Typography } from '@mui/material';
+import { Publish } from '@mui/icons-material';
+import LoadingButton from '@mui/lab/LoadingButton';
+import { Grid, TextField, Typography } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { RelatedIdentifier } from '../app.types';
@@ -20,6 +22,7 @@ type DOIMetadataFormProps = {
   >;
   disableMintButton: boolean;
   onMintClick: () => void;
+  mintLoading: boolean;
   doiMinterUrl: string | undefined; // this is because since it loads from settings it is technically undefined at some point
   dataCiteUrl: string | undefined;
 } & React.ComponentProps<typeof Grid>;
@@ -38,6 +41,7 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
     onMintClick,
     doiMinterUrl,
     dataCiteUrl,
+    mintLoading,
     ...gridProps
   } = props;
 
@@ -66,6 +70,7 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
           color="secondary"
           value={title}
           onChange={(event) => setTitle(event.target.value)}
+          disabled={mintLoading}
         />
       </Grid>
       <Grid item>
@@ -78,6 +83,7 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
           color="secondary"
           value={description}
           onChange={(event) => setDescription(event.target.value)}
+          disabled={mintLoading}
         />
       </Grid>
       <Grid item>
@@ -85,6 +91,7 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
           relatedIdentifiers={relatedIdentifiers}
           changeRelatedIdentifiers={setRelatedIdentifiers}
           dataCiteUrl={dataCiteUrl}
+          disabled={mintLoading}
         />
       </Grid>
       <Grid item>
@@ -92,11 +99,15 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
           selectedUsers={selectedUsers}
           changeSelectedUsers={setSelectedUsers}
           doiMinterUrl={doiMinterUrl}
+          disabled={mintLoading}
         />
       </Grid>
       <Grid item alignSelf="flex-end">
-        <Button
+        <LoadingButton
           variant="contained"
+          startIcon={<Publish />}
+          loadingPosition="start"
+          loading={mintLoading}
           disabled={
             disableMintButton ||
             title.length === 0 ||
@@ -113,7 +124,7 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
           onClick={onMintClick}
         >
           {t('DOIGenerationForm.generate_DOI')}
-        </Button>
+        </LoadingButton>
       </Grid>
     </Grid>
   );

@@ -1,20 +1,20 @@
-import React from 'react';
 import {
-  Theme,
-  FormControl,
   Checkbox,
+  FormControl,
   FormHelperText,
   InputLabel,
   ListItemText,
   MenuItem,
   Select,
   SelectChangeEvent,
+  Theme,
 } from '@mui/material';
-import { connect } from 'react-redux';
-import { StateType } from '../state/app.types';
-import { useTranslation } from 'react-i18next';
 import { parseSearchToQuery, usePushSearchToggles } from 'datagateway-common';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { connect } from 'react-redux';
 import { useLocation } from 'react-router-dom';
+import { StateType } from '../state/app.types';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -100,17 +100,16 @@ const CheckboxesGroup = (props: CheckBoxStoreProps): React.ReactElement => {
         variant="standard"
         color="secondary"
       >
-        {error && (
-          <InputLabel
-            id="search-entities-checkbox-label"
-            variant="outlined"
-            shrink={false}
-          >
-            {t('searchBox.checkboxes.types')}
-          </InputLabel>
-        )}
+        <InputLabel
+          id="search-entities-checkbox-label"
+          variant="outlined"
+          shrink={false}
+          sx={error ? {} : { visibility: 'hidden' }}
+        >
+          {t('searchBox.checkboxes.types')}
+        </InputLabel>
         <Select
-          {...(error ? { labelId: 'search-entities-checkbox-label' } : {})}
+          labelId="search-entities-checkbox-label"
           id="search-entities-menu"
           sx={{
             // eslint-disable-next-line @typescript-eslint/no-explicit-any

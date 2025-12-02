@@ -1,15 +1,15 @@
-import React from 'react';
-import CitationFormatter from './citationFormatter.component';
-import axios from 'axios';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   render,
-  type RenderResult,
   screen,
   waitFor,
   within,
+  type RenderResult,
 } from '@testing-library/react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import userEvent from '@testing-library/user-event';
+import axios from 'axios';
+import React from 'react';
+import CitationFormatter from './citationFormatter.component';
 
 describe('Citation formatter component tests', () => {
   let queryClient: QueryClient;
@@ -122,7 +122,7 @@ describe('Citation formatter component tests', () => {
         await screen.findByLabelText(
           'datapublications.details.citation_formatter.select_arialabel'
         )
-      ).getByRole('button')
+      ).getByRole('combobox')
     );
     // then select the format2 option
     await user.click(await screen.findByRole('option', { name: 'format2' }));
@@ -193,7 +193,7 @@ describe('Citation formatter component tests', () => {
         await screen.findByLabelText(
           'datapublications.details.citation_formatter.select_arialabel'
         )
-      ).getByRole('button')
+      ).getByRole('combobox')
     );
     // then select the format2 option
     await user.click(await screen.findByRole('option', { name: 'format2' }));
@@ -245,7 +245,7 @@ describe('Citation formatter component tests', () => {
         await screen.findByLabelText(
           'datapublications.details.citation_formatter.select_arialabel'
         )
-      ).getByRole('button')
+      ).getByRole('combobox')
     );
     // then select the format2 option
     await user.click(await screen.findByRole('option', { name: 'format2' }));

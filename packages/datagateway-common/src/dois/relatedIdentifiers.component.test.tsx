@@ -31,7 +31,7 @@ describe('Related identifiers form component', () => {
   let mockDOIResponse: DataCiteResponse;
 
   const TestComponent: React.FC = () => {
-    const [relatedDOIs, changeRelatedDOIs] = React.useState(
+    const [relatedIdentifiers, changeRelatedIdentifiers] = React.useState(
       // eslint-disable-next-line react/prop-types
       props.relatedIdentifiers
     );
@@ -39,9 +39,9 @@ describe('Related identifiers form component', () => {
     return (
       <QueryClientProvider client={createTestQueryClient()}>
         <RelatedIdentifiers
-          relatedIdentifiers={relatedDOIs}
-          changeRelatedIdentifiers={changeRelatedDOIs}
-          dataCiteUrl="example.com"
+          {...props}
+          relatedIdentifiers={relatedIdentifiers}
+          changeRelatedIdentifiers={changeRelatedIdentifiers}
         />
       </QueryClientProvider>
     );
@@ -65,6 +65,7 @@ describe('Related identifiers form component', () => {
       ],
       changeRelatedIdentifiers: vi.fn(),
       dataCiteUrl: 'example.com',
+      disabled: false,
     };
 
     mockDOIResponse = {
@@ -162,10 +163,18 @@ describe('Related identifiers form component', () => {
     ).toBeInTheDocument();
 
     await user.click(
-      screen.getAllByRole('button', {
-        name: /DOIGenerationForm.related_identifier_relationship/i,
+      screen.getAllByRole('combobox', {
+        name: 'DOIGenerationForm.related_identifier_relationship',
       })[0]
     );
+    // assert banned relations don't appear
+    await screen.findByRole('option', { name: 'IsCitedBy' });
+    expect(
+      screen.queryByRole('option', { name: /Version/i })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('option', { name: /Part/i })
+    ).not.toBeInTheDocument();
     await user.click(await screen.findByRole('option', { name: 'IsCitedBy' }));
 
     expect(screen.queryByRole('option')).not.toBeInTheDocument();
@@ -173,8 +182,8 @@ describe('Related identifiers form component', () => {
     expect(screen.getByText('IsCitedBy')).toBeInTheDocument();
 
     await user.click(
-      screen.getAllByRole('button', {
-        name: /DOIGenerationForm.related_identifier_resource_type/i,
+      screen.getAllByRole('combobox', {
+        name: 'DOIGenerationForm.related_identifier_resource_type',
       })[0]
     );
     await user.click(await screen.findByRole('option', { name: 'Journal' }));
@@ -245,8 +254,8 @@ describe('Related identifiers form component', () => {
     expect(screen.getByRole('link', { name: 'non.doi' })).toBeInTheDocument();
 
     await user.click(
-      screen.getByRole('button', {
-        name: /DOIGenerationForm.related_identifier_relationship/i,
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.related_identifier_relationship',
       })
     );
     await user.click(
@@ -258,8 +267,8 @@ describe('Related identifiers form component', () => {
     expect(screen.getByText('IsSupplementedBy')).toBeInTheDocument();
 
     await user.click(
-      screen.getByRole('button', {
-        name: /DOIGenerationForm.related_identifier_resource_type/i,
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.related_identifier_resource_type',
       })
     );
     await user.click(
@@ -271,8 +280,8 @@ describe('Related identifiers form component', () => {
     expect(screen.getByText('ComputationalNotebook')).toBeInTheDocument();
 
     await user.click(
-      screen.getByRole('button', {
-        name: /DOIGenerationForm.related_identifier_identifier_type/i,
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.related_identifier_identifier_type',
       })
     );
     await user.click(await screen.findByRole('option', { name: 'ISBN' }));
@@ -345,5 +354,30 @@ describe('Related identifiers form component', () => {
     const urlLink = screen.getByRole('link', { name: 'https://example.com' });
 
     expect(urlLink).toHaveAttribute('href', 'https://example.com');
+  });
+
+  it('should disable all inputs when disabled prop is true', () => {
+    props.disabled = true;
+    renderComponent();
+
+    expect(
+      screen.getByRole('textbox', {
+        name: 'DOIGenerationForm.related_identifier',
+      })
+    ).toBeDisabled();
+    expect(
+      screen.getByRole('button', { name: 'DOIGenerationForm.add_related_doi' })
+    ).toBeDisabled();
+
+    expect(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.related_identifier_resource_type',
+      })
+    ).toHaveAttribute('aria-disabled', 'true');
+    expect(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.related_identifier_relationship',
+      })
+    ).toHaveAttribute('aria-disabled', 'true');
   });
 });

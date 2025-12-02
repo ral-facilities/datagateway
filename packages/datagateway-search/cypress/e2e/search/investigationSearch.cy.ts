@@ -5,7 +5,7 @@ describe('Investigation search tab', () => {
 
     // only the investigation tab is tested here, so we want to hide dataset & datafile tabs
     // open search type dropdown menu
-    cy.findByRole('button', { name: 'Types (3)' }).click();
+    cy.findByRole('combobox', { name: 'Types' }).click();
 
     cy.findByRole('listbox').within(() => {
       cy.findByRole('checkbox', { name: 'Dataset checkbox' }).click();
@@ -386,12 +386,12 @@ describe('Investigation search tab', () => {
         cy.findByRole('button', { name: 'Add' }).click();
       });
 
-    cy.findByRole('button', { name: /Parameter name /i }).click();
+    cy.findByRole('combobox', { name: 'Parameter name' }).click();
 
     // numeric parameter
     cy.findByRole('option', { name: 'PARAMETERTYPE 2' }).click();
 
-    cy.findByRole('button', { name: /Parameter type /i }).click();
+    cy.findByRole('combobox', { name: 'Parameter type' }).click();
 
     cy.findByRole('option', { name: 'Numeric' }).click();
 
@@ -430,16 +430,16 @@ describe('Investigation search tab', () => {
         cy.findByRole('button', { name: 'Add' }).click();
       });
 
-    cy.findByRole('button', { name: /Parameter name /i }).click();
+    cy.findByRole('combobox', { name: 'Parameter name' }).click();
 
     // string parameter
     cy.findByRole('option', { name: 'PARAMETERTYPE 47' }).click();
 
-    cy.findByRole('button', { name: /Parameter type /i }).click();
+    cy.findByRole('combobox', { name: 'Parameter type' }).click();
 
     cy.findByRole('option', { name: 'String' }).click();
 
-    cy.findByRole('button', { name: /Parameter equals /i }).click();
+    cy.findByRole('combobox', { name: 'Parameter equals' }).click();
 
     cy.findByRole('option', { name: /value 47/i }).click();
 
@@ -474,16 +474,16 @@ describe('Investigation search tab', () => {
         cy.findByRole('button', { name: 'Add' }).click();
       });
 
-    cy.findByRole('button', { name: /Parameter name /i }).click();
+    cy.findByRole('combobox', { name: 'Parameter name' }).click();
 
     // datetime parameter
     cy.findByRole('option', { name: 'PARAMETERTYPE 25' }).click();
 
-    cy.findByRole('button', { name: /Parameter type /i }).click();
+    cy.findByRole('combobox', { name: 'Parameter type' }).click();
 
     cy.findByRole('option', { name: 'Date and time' }).click();
 
-    cy.findByRole('button', { name: /Parameter is in /i }).click();
+    cy.findByRole('combobox', { name: 'Parameter is in' }).click();
 
     cy.findByRole('option', { name: /Older/i }).click();
 

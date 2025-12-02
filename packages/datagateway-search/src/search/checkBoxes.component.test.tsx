@@ -1,14 +1,19 @@
-import type { StateType } from '../state/app.types';
-import { Provider } from 'react-redux';
-import configureStore from 'redux-mock-store';
-import CheckBoxesGroup from './checkBoxes.component';
-import thunk from 'redux-thunk';
-import { initialState } from '../state/reducers/dgsearch.reducer';
-import { createMemoryHistory, type History } from 'history';
-import { Router } from 'react-router-dom';
-import { render, type RenderResult, screen } from '@testing-library/react';
+import {
+  render,
+  screen,
+  within,
+  type RenderResult,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { createMemoryHistory, type History } from 'history';
+import { Provider } from 'react-redux';
+import { Router } from 'react-router-dom';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 import type { MockInstance } from 'vitest';
+import type { StateType } from '../state/app.types';
+import { initialState } from '../state/reducers/dgsearch.reducer';
+import CheckBoxesGroup from './checkBoxes.component';
 
 vi.mock('loglevel');
 
@@ -60,7 +65,7 @@ describe('Checkbox component tests', () => {
     renderComponent();
 
     // open the dropdown
-    await user.click(await screen.findByRole('button'));
+    await user.click(await screen.findByRole('combobox'));
 
     const investigationCheckbox = await screen.findByRole('checkbox', {
       name: 'searchBox.checkboxes.investigation_arialabel',
@@ -84,7 +89,7 @@ describe('Checkbox component tests', () => {
     renderComponent();
 
     // open the dropdown
-    await user.click(await screen.findByRole('button'));
+    await user.click(await screen.findByRole('combobox'));
 
     const investigationCheckbox = await screen.findByRole('checkbox', {
       name: 'searchBox.checkboxes.investigation_arialabel',
@@ -120,9 +125,9 @@ describe('Checkbox component tests', () => {
     renderComponent();
 
     await user.click(
-      screen.getByRole('button', {
-        name: 'searchBox.checkboxes.types (2)',
-      })
+      within(
+        screen.getByRole('combobox', { name: 'searchBox.checkboxes.types' })
+      ).getByText('searchBox.checkboxes.types (2)')
     );
     await user.click(
       screen.getByRole('checkbox', {
@@ -140,9 +145,9 @@ describe('Checkbox component tests', () => {
     renderComponent();
 
     await user.click(
-      screen.getByRole('button', {
-        name: 'searchBox.checkboxes.types (2)',
-      })
+      within(
+        screen.getByRole('combobox', { name: 'searchBox.checkboxes.types' })
+      ).getByText('searchBox.checkboxes.types (2)')
     );
     await user.click(
       screen.getByRole('checkbox', {
@@ -160,9 +165,9 @@ describe('Checkbox component tests', () => {
     renderComponent();
 
     await user.click(
-      screen.getByRole('button', {
-        name: 'searchBox.checkboxes.types (2)',
-      })
+      within(
+        screen.getByRole('combobox', { name: 'searchBox.checkboxes.types' })
+      ).getByText('searchBox.checkboxes.types (2)')
     );
     await user.click(
       screen.getByRole('checkbox', {

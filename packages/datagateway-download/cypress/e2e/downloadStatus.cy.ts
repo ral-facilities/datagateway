@@ -222,7 +222,7 @@ describe('Download Status', () => {
 
     cy.get('@methodFilter')
       .parent()
-      .findByRole('button', { name: 'include, exclude or exact' })
+      .findByRole('combobox', { name: 'include, exclude or exact' })
       .as('methodFilterOptionsButton')
       .click();
 
