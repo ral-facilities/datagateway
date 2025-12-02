@@ -46,7 +46,8 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
   const [t] = useTranslation();
   const [relatedIdentiferInputText, setRelatedIdentifierInputText] =
     React.useState('');
-  const [relatedDOIError, setRelatedDOIError] = React.useState('');
+  const [relatedIdentifierError, setRelatedIdentifierError] =
+    React.useState('');
   const { refetch: checkDOI } = useCheckDOI(
     relatedIdentiferInputText,
     dataCiteUrl
@@ -80,15 +81,17 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
           spacing={1}
           alignItems="center"
           sx={{
-            marginBottom: relatedDOIError.length > 0 ? 2 : 0,
+            marginBottom: relatedIdentifierError.length > 0 ? 2 : 0,
           }}
         >
           <Grid item xs>
             <TextField
               label={t('DOIGenerationForm.related_identifier')}
               fullWidth
-              error={relatedDOIError.length > 0}
-              helperText={relatedDOIError.length > 0 ? relatedDOIError : ''}
+              error={relatedIdentifierError.length > 0}
+              helperText={
+                relatedIdentifierError.length > 0 ? relatedIdentifierError : ''
+              }
               color="secondary"
               sx={{
                 // this CSS makes it so that the helperText doesn't mess with the button alignment
@@ -105,7 +108,7 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
               value={relatedIdentiferInputText}
               onChange={(event) => {
                 setRelatedIdentifierInputText(event.target.value);
-                setRelatedDOIError('');
+                setRelatedIdentifierError('');
               }}
               disabled={disabled}
             />
@@ -137,7 +140,7 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
                         }>
                       ) => {
                         // TODO: check this is the right message from the API
-                        setRelatedDOIError(
+                        setRelatedIdentifierError(
                           error.response?.data?.errors
                             ? error.response.data.errors[0].title
                             : 'Error'

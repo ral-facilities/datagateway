@@ -115,10 +115,10 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
             selectedUsers.length === 0 ||
             selectedUsers.some((user) => user.contributor_type === '') ||
             relatedIdentifiers.some(
-              (relatedDOI) =>
-                relatedDOI.relationType === '' ||
-                relatedDOI.relatedItemType === undefined ||
-                relatedDOI.relatedIdentifierType === undefined // should never happen
+              (relatedIdentifier) =>
+                relatedIdentifier.relationType === '' ||
+                relatedIdentifier.relatedItemType === undefined ||
+                relatedIdentifier.relatedIdentifierType === undefined // should never happen
             )
           }
           onClick={onMintClick}

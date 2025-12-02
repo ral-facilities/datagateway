@@ -103,53 +103,55 @@ const DOIMetadataConfirmation: React.FC<DOIMetadataConfirmationProps> = (
         </Grid>
         <Grid container item spacing={1}>
           <Grid item>
-            <Typography>{t('DOIGenerationForm.related_dois')}</Typography>
+            <Typography>
+              {t('DOIGenerationForm.related_identifiers')}
+            </Typography>
           </Grid>
-          {metadata.relatedIdentifiers.map((relatedDOI) => {
+          {metadata.relatedIdentifiers.map((relatedIdentifier) => {
             return (
               <Grid
                 container
                 item
-                key={relatedDOI.relatedIdentifier}
+                key={relatedIdentifier.relatedIdentifier}
                 columnSpacing={1}
                 ml={1}
               >
                 <Grid item>
                   <Typography>
-                    {t('DOIGenerationForm.related_doi_identifier')}:{' '}
-                    {relatedDOI.relatedIdentifierType ===
+                    {t('DOIGenerationForm.related_identifier_identifier')}:{' '}
+                    {relatedIdentifier.relatedIdentifierType ===
                     DOIIdentifierType.DOI ? (
                       <Link
-                        href={`https://doi.org/${relatedDOI.relatedIdentifier}`}
+                        href={`https://doi.org/${relatedIdentifier.relatedIdentifier}`}
                       >
-                        {relatedDOI.relatedIdentifier}
+                        {relatedIdentifier.relatedIdentifier}
                       </Link>
-                    ) : relatedDOI.relatedIdentifierType ===
+                    ) : relatedIdentifier.relatedIdentifierType ===
                       DOIIdentifierType.URL ? (
-                      <Link href={relatedDOI.relatedIdentifier}>
-                        {relatedDOI.relatedIdentifier}
+                      <Link href={relatedIdentifier.relatedIdentifier}>
+                        {relatedIdentifier.relatedIdentifier}
                       </Link>
                     ) : (
-                      relatedDOI.relatedIdentifier
+                      relatedIdentifier.relatedIdentifier
                     )}
                   </Typography>
                 </Grid>
                 <Grid item>
                   <Typography>
-                    {t('DOIGenerationForm.related_doi_type')}:{' '}
-                    {relatedDOI.relatedIdentifierType}
+                    {t('DOIGenerationForm.related_identifier_type')}:{' '}
+                    {relatedIdentifier.relatedIdentifierType}
                   </Typography>
                 </Grid>
                 <Grid item>
                   <Typography>
-                    {t('DOIGenerationForm.related_doi_relationship')}:{' '}
-                    {relatedDOI.relationType}
+                    {t('DOIGenerationForm.related_identifier_relationship')}:{' '}
+                    {relatedIdentifier.relationType}
                   </Typography>
                 </Grid>
                 <Grid item>
                   <Typography>
-                    {t('DOIGenerationForm.related_doi_resource_type')}:{' '}
-                    {relatedDOI.resourceTypeGeneral}
+                    {t('DOIGenerationForm.related_identifier_resource_type')}:{' '}
+                    {relatedIdentifier.resourceTypeGeneral}
                   </Typography>
                 </Grid>
               </Grid>
