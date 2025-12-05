@@ -156,6 +156,9 @@ const VisitDetailsPanel = (
             <StyledDivider />
           </Grid>
           <Grid item xs>
+            <QueueVisitButton investigation={investigationData} />
+          </Grid>
+          <Grid item xs>
             <Typography variant="overline">
               {t('investigations.details.title')}
             </Typography>
@@ -217,9 +220,6 @@ const VisitDetailsPanel = (
             <Typography>
               <b>{formatBytes(investigationData.fileSize)}</b>
             </Typography>
-          </Grid>
-          <Grid item xs mt={1}>
-            <QueueVisitButton investigation={investigationData} />
           </Grid>
         </StyledGrid>
       </div>
