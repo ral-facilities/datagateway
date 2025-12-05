@@ -14,18 +14,18 @@ import {
 } from '@mui/material';
 import {
   type ColumnType,
+  Download,
   type DownloadCartItem,
   type DownloadCartTableItem,
   DownloadConfirmDialog,
   formatBytes,
+  type SortType,
   Table,
   type TableActionProps,
   TextColumnFilter,
   type TextFilter,
   useIsCartMintable,
-  type SortType,
   useSubmitCart,
-  Download,
 } from 'datagateway-common';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -33,19 +33,19 @@ import { Link as RouterLink } from 'react-router-dom';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import {
   useCart,
+  useFileSizesAndCounts,
   useIsTwoLevel,
   useRemoveAllFromCart,
   useRemoveEntityFromCart,
-  useFileSizesAndCounts,
 } from '../downloadApiHooks';
 
+import { downloadPreparedCart } from '../downloadApi';
 import DownloadCartItemLink from './downloadCartItemLink.component';
 import {
   buildDatafileUrl,
   buildDatasetUrl,
   buildInvestigationUrl,
 } from './urlBuilders';
-import { downloadPreparedCart } from '../downloadApi';
 
 interface DownloadCartTableProps {
   statusTabRedirect: () => void;
@@ -685,6 +685,9 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
         setClose={() => setShowConfirmation(false)}
         postDownloadSuccessFn={downloadIfComplete}
         submitDownloadHook={useSubmitCart}
+        defaultFileNameFormat={t(
+          'downloadConfirmDialog.download_name_cart_default_format'
+        )}
       />
     </>
   );

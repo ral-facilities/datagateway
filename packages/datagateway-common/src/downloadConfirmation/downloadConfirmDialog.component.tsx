@@ -18,11 +18,13 @@ import { formatBytes } from '../table/cellRenderers/cellContentRenderers';
 
 import { UseMutateFunction } from '@tanstack/react-query';
 import {
+  QueueDataCollectionParams,
   QueueVisitParams,
   SubmitCartParams,
   getDefaultFileName,
   useDownload,
   useDownloadTypeStatuses,
+  useQueueDataCollection,
   useQueueVisit,
   useSubmitCart,
 } from '../api/cart';
@@ -56,7 +58,7 @@ const DialogActions = styled(MuiDialogActions)(({ theme }) => ({
 }));
 
 interface DownloadConfirmDialogProps {
-  totalSize: number;
+  totalSize?: number;
   isTwoLevel: boolean;
   open: boolean;
 
@@ -64,8 +66,12 @@ interface DownloadConfirmDialogProps {
   downloadApiUrl: string;
   accessMethods: DownloadSettingsAccessMethod;
 
-  visitId?: string;
-  submitDownloadHook: typeof useSubmitCart | typeof useQueueVisit;
+  entityId?: string;
+  submitDownloadHook:
+    | typeof useSubmitCart
+    | typeof useQueueVisit
+    | typeof useQueueDataCollection;
+  defaultFileNameFormat: string;
 
   redirectToStatusTab?: () => void;
   setClose: () => void;
@@ -92,7 +98,8 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     accessMethods,
     postDownloadSuccessFn,
     submitDownloadHook,
-    visitId,
+    entityId,
+    defaultFileNameFormat,
   } = props;
 
   // Download speed/time table.
@@ -230,7 +237,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
   React.useEffect(() => {
     if (props.open) {
-      if (!isTwoLevel) {
+      if (!isTwoLevel && totalSize) {
         // Calculate the download times as storage is not two-level;
         // varied for 1 Mbps, 30 Mbps and 100 Mbps.
         setTimeAtOne(totalSize / (1024 * 1024) / (1 / 8));
@@ -290,9 +297,9 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     // then generate a default one and update state for rendering later.
     if (!downloadName) {
       setDownloadName(
-        getDefaultFileName(t, {
+        getDefaultFileName(defaultFileNameFormat, {
           facilityName,
-          ...(visitId && { visitId }),
+          ...(entityId && { entityId }),
         })
       );
     }
@@ -302,13 +309,13 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       submitDownload as UseMutateFunction<
         unknown,
         unknown,
-        SubmitCartParams | QueueVisitParams
+        SubmitCartParams | QueueVisitParams | QueueDataCollectionParams
       >
     )({
       emailAddress,
       fileName: downloadName ?? undefined,
       transport: selectedMethod,
-      visitId,
+      entityId,
     });
   };
 
@@ -377,9 +384,9 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                 <TextField
                   id="confirm-download-name"
                   label={t('downloadConfirmDialog.download_name_label')}
-                  placeholder={`${getDefaultFileName(t, {
+                  placeholder={`${getDefaultFileName(defaultFileNameFormat, {
                     facilityName,
-                    ...(visitId && { visitId }),
+                    ...(entityId && { entityId }),
                   })}`}
                   fullWidth={true}
                   inputProps={{
@@ -389,7 +396,8 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                     setDownloadName(e.target.value as string);
                   }}
                   helperText={t(
-                    'downloadConfirmDialog.download_name_helpertext'
+                    'downloadConfirmDialog.download_name_helpertext',
+                    { format: defaultFileNameFormat, skipOnVariables: false }
                   )}
                   variant="standard"
                 />
@@ -495,12 +503,14 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
               </Grid>
 
               {/* Get the size of the download  */}
-              <Grid item xs={12}>
-                <Typography>
-                  <b>{t('downloadConfirmDialog.download_size')}:</b>{' '}
-                  {formatBytes(totalSize)}
-                </Typography>
-              </Grid>
+              {totalSize && (
+                <Grid item xs={12}>
+                  <Typography>
+                    <b>{t('downloadConfirmDialog.download_size')}:</b>{' '}
+                    {formatBytes(totalSize)}
+                  </Typography>
+                </Grid>
+              )}
 
               {/* Show the estimated download times */}
               {showDownloadTime && (

@@ -185,15 +185,15 @@ if (
         const apiUrl = settingsResult.apiUrl;
         axios
           .post(`${apiUrl}/sessions`, {
-            username: '',
-            password: '',
-            mechanism: 'anon',
+            username: 'Chris481',
+            password: 'pw',
+            mechanism: 'simple',
           })
           .then((response) => {
             const jwtHeader = { alg: 'HS256', typ: 'JWT' };
             const payload = {
               sessionId: response.data.sessionID,
-              username: 'Richard459',
+              username: 'Chris481',
             };
             const jwt = jsrsasign.KJUR.jws.JWS.sign(
               'HS256',

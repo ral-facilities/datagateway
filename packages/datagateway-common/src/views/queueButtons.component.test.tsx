@@ -15,7 +15,7 @@ import thunk from 'redux-thunk';
 import { Investigation } from '../app.types';
 import { StateType } from '../state/app.types';
 import { initialState as dGCommonInitialState } from '../state/reducers/dgcommon.reducer';
-import QueueVisitButton from './queueVisitButton.component';
+import QueueVisitButton from './queueButtons.component';
 
 vi.mock('../handleICATError');
 

@@ -15,6 +15,7 @@ import {
   ContributorType,
   DOIRelationType,
   DataPublication,
+  QueueDataCollectionButton,
   readSciGatewayToken,
   useDataPublication,
 } from 'datagateway-common';
@@ -355,6 +356,11 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                   />
                 </Tabs>
               </Grid>
+              {data?.content && (
+                <Grid item xs="auto" alignSelf="center">
+                  <QueueDataCollectionButton dataCollection={data.content} />
+                </Grid>
+              )}
               {/* Only let the minter edit the DOI & only if it's a concept DOI */}
               {isVersionDOI === false &&
                 data?.users?.some(

@@ -465,7 +465,7 @@ describe('DownloadConfirmDialog', () => {
   it('should show successful view when download is successful using isQueueVisit', async () => {
     props.isTwoLevel = true;
     props.submitDownloadHook = useQueueVisit;
-    props.visitId = '1';
+    props.entityId = '1';
     renderWrapper();
     // input an email
     await user.type(
