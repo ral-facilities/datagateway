@@ -454,7 +454,7 @@
     "download_name_label": "Download Name (optional)",
     "download_name_helpertext": "Enter a custom file name or leave as the default format ({{format}}).",
     "download_name_visit_default_format": "facilityName_visitId",
-    "download_name_data_collection_default_format": "facilityName_DataCollectionentityId",
+    "download_name_data_collection_default_format": "facilityName_DataCollectionid",
     "access_method_label": "Access method",
     "access_method_helpertext": "Select an access method for download.",
     "access_method_helpertext_all_disabled_error": "Access methods currently unavailable.",

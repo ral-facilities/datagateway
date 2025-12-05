@@ -299,7 +299,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       setDownloadName(
         getDefaultFileName(defaultFileNameFormat, {
           facilityName,
-          ...(entityId && { entityId }),
+          ...(entityId && { entityId, visitId: entityId, id: entityId }),
         })
       );
     }
@@ -386,7 +386,11 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                   label={t('downloadConfirmDialog.download_name_label')}
                   placeholder={`${getDefaultFileName(defaultFileNameFormat, {
                     facilityName,
-                    ...(entityId && { entityId }),
+                    ...(entityId && {
+                      entityId,
+                      visitId: entityId,
+                      id: entityId,
+                    }),
                   })}`}
                   fullWidth={true}
                   inputProps={{
