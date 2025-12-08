@@ -177,6 +177,11 @@ describe('DLS Data Publication Landing page', () => {
             data: [initialData],
           });
         }
+        if (/\/investigations$/.test(url)) {
+          return Promise.resolve({
+            data: [],
+          });
+        }
         if (/\/count$/.test(url)) {
           return Promise.resolve({
             data: 0,

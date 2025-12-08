@@ -89,7 +89,7 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           repository: icatproject-contrib/icat-ansible
-          ref: datagateway-download-api-3.1.0
+          ref: datagateway-download-api-3.2.0
           path: icat-ansible
       - name: Install Ansible (ensure we're using the system python)
         run: /usr/bin/python3 -m pip install -r icat-ansible/requirements.txt
