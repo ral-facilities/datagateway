@@ -94,6 +94,7 @@ describe('DownloadConfirmDialog', () => {
         },
       },
       submitDownloadHook: useSubmitCart,
+      defaultFileNameFormat: 'facilityName_entityId',
     };
 
     downloadTypeStatusResponses = {

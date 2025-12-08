@@ -12,31 +12,23 @@ import * as React from 'react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { Investigation } from '../app.types';
+import { DataCollection, Investigation } from '../app.types';
+import * as parseTokens from '../parseTokens';
 import { StateType } from '../state/app.types';
 import { initialState as dGCommonInitialState } from '../state/reducers/dgcommon.reducer';
-import QueueVisitButton from './queueButtons.component';
+import {
+  QueueDataCollectionButton,
+  QueueVisitButton,
+} from './queueButtons.component';
 
 vi.mock('../handleICATError');
 
-describe('Generic add to cart button', () => {
+describe('Queue buttons', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let user: ReturnType<typeof userEvent.setup>;
   let investigation: Investigation;
-
-  function renderComponent(
-    props: React.ComponentProps<typeof QueueVisitButton>
-  ): RenderResult {
-    const store = mockStore(state);
-    return render(
-      <Provider store={store}>
-        <QueryClientProvider client={new QueryClient()}>
-          <QueueVisitButton {...props} />
-        </QueryClientProvider>
-      </Provider>
-    );
-  }
+  let dataCollection: DataCollection;
 
   beforeEach(() => {
     investigation = {
@@ -44,6 +36,9 @@ describe('Generic add to cart button', () => {
       visitId: '1',
       title: 'Test',
       name: 'test',
+    };
+    dataCollection = {
+      id: 2,
     };
     user = userEvent.setup();
     state = JSON.parse(
@@ -66,70 +61,168 @@ describe('Generic add to cart button', () => {
     vi.clearAllMocks();
   });
 
-  it('renders correctly', async () => {
-    renderComponent({
-      investigation,
+  describe('Queue Visit button', () => {
+    function renderComponent(
+      props: React.ComponentProps<typeof QueueVisitButton>
+    ): RenderResult {
+      const store = mockStore(state);
+      return render(
+        <Provider store={store}>
+          <QueryClientProvider client={new QueryClient()}>
+            <QueueVisitButton {...props} />
+          </QueryClientProvider>
+        </Provider>
+      );
+    }
+
+    it('renders correctly', async () => {
+      renderComponent({
+        investigation,
+      });
+
+      expect(
+        await screen.findByRole('button', { name: 'buttons.queue_visit' })
+      ).toBeInTheDocument();
     });
 
-    expect(
-      await screen.findByRole('button', { name: 'buttons.queue_visit' })
-    ).toBeInTheDocument();
+    it('renders no button if user does not have permission', async () => {
+      axios.get = vi.fn().mockResolvedValue({
+        data: false,
+      });
+
+      renderComponent({
+        investigation,
+      });
+
+      await waitFor(() => expect(axios.get).toHaveBeenCalledTimes(1));
+
+      expect(
+        screen.queryByRole('button', { name: 'buttons.queue_visit' })
+      ).not.toBeInTheDocument();
+    });
+
+    it('logs error if access methods not provided', async () => {
+      state.dgcommon.accessMethods = undefined;
+      const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {
+        // no-op
+      });
+
+      renderComponent({
+        investigation,
+      });
+
+      await waitFor(() =>
+        expect(errorSpy).toHaveBeenCalledWith(
+          'Access methods not provided but using QueueVisitButton - please provide access methods in the settings'
+        )
+      );
+    });
+
+    it('opens download confirm dialogue when clicked & close when click close', async () => {
+      renderComponent({
+        investigation,
+      });
+
+      await user.click(
+        await screen.findByRole('button', { name: 'buttons.queue_visit' })
+      );
+
+      const dialogue = await screen.findByRole('dialog', {
+        name: 'downloadConfirmDialog.dialog_title',
+      });
+
+      expect(dialogue).toBeInTheDocument();
+
+      await user.click(
+        await screen.findByRole('button', {
+          name: 'downloadConfirmDialog.close_arialabel',
+        })
+      );
+
+      await waitForElementToBeRemoved(dialogue);
+    });
   });
 
-  it('renders no button if user does not have permission', async () => {
-    axios.get = vi.fn().mockResolvedValue({
-      data: false,
+  describe('Queue DataCollection button', () => {
+    function renderComponent(
+      props: React.ComponentProps<typeof QueueDataCollectionButton>
+    ): RenderResult {
+      const store = mockStore(state);
+      return render(
+        <Provider store={store}>
+          <QueryClientProvider client={new QueryClient()}>
+            <QueueDataCollectionButton {...props} />
+          </QueryClientProvider>
+        </Provider>
+      );
+    }
+
+    it('renders correctly', async () => {
+      renderComponent({
+        dataCollection,
+      });
+
+      expect(
+        await screen.findByRole('button', {
+          name: 'buttons.queue_data_collection',
+        })
+      ).toBeInTheDocument();
     });
 
-    renderComponent({
-      investigation,
+    it('renders disabled button if user does not have permission', async () => {
+      axios.get = vi.fn().mockResolvedValue({
+        data: false,
+      });
+
+      renderComponent({
+        dataCollection,
+      });
+
+      await waitFor(() => expect(axios.get).toHaveBeenCalledTimes(1));
+
+      const button = await screen.findByRole('button', {
+        name: 'buttons.queue_data_collection',
+      });
+
+      expect(button).toBeDisabled();
+
+      await user.hover(
+        await screen.getByLabelText('buttons.unable_to_queue_tooltip')
+      );
+
+      expect(
+        await screen.findByText('buttons.unable_to_queue_tooltip')
+      ).toBeInTheDocument();
     });
 
-    await waitFor(() => expect(axios.get).toHaveBeenCalledTimes(1));
+    it('renders disabled button if anon download is disallowed', async () => {
+      state.dgcommon.features = { disableAnonDownload: true };
+      state.dgcommon.anonUserName = 'anon';
 
-    expect(
-      screen.queryByRole('button', { name: 'buttons.queue_visit' })
-    ).not.toBeInTheDocument();
-  });
+      vi.spyOn(parseTokens, 'readSciGatewayToken').mockReturnValue({
+        username: 'anon',
+        sessionId: 'abcdef',
+      });
 
-  it('logs error if access methods not provided', async () => {
-    state.dgcommon.accessMethods = undefined;
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {
-      // no-op
+      renderComponent({
+        dataCollection,
+      });
+
+      await waitFor(() => expect(axios.get).toHaveBeenCalledTimes(1));
+
+      const button = await screen.findByRole('button', {
+        name: 'buttons.queue_data_collection',
+      });
+
+      expect(button).toBeDisabled();
+
+      await user.hover(
+        await screen.getByLabelText('buttons.disallow_anon_tooltip')
+      );
+
+      expect(
+        await screen.findByText('buttons.disallow_anon_tooltip')
+      ).toBeInTheDocument();
     });
-
-    renderComponent({
-      investigation,
-    });
-
-    await waitFor(() =>
-      expect(errorSpy).toHaveBeenCalledWith(
-        'Access methods not provided but using QueueVisitButton - please provide access methods in the settings'
-      )
-    );
-  });
-
-  it('opens download confirm dialogue when clicked & close when click close', async () => {
-    renderComponent({
-      investigation,
-    });
-
-    await user.click(
-      await screen.findByRole('button', { name: 'buttons.queue_visit' })
-    );
-
-    const dialogue = await screen.findByRole('dialog', {
-      name: 'downloadConfirmDialog.dialog_title',
-    });
-
-    expect(dialogue).toBeInTheDocument();
-
-    await user.click(
-      await screen.findByRole('button', {
-        name: 'downloadConfirmDialog.close_arialabel',
-      })
-    );
-
-    await waitForElementToBeRemoved(dialogue);
   });
 });

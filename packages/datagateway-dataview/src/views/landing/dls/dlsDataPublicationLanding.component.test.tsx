@@ -2,18 +2,19 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   render,
   screen,
+  waitFor,
   within,
   type RenderResult,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { UserEvent } from '@testing-library/user-event/setup/setup';
+import axios, { AxiosResponse } from 'axios';
 import {
   ContributorType,
   DOIRelationType,
   DataPublication,
   dGCommonInitialState,
   readSciGatewayToken,
-  useDataPublication,
 } from 'datagateway-common';
 import { History, createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
@@ -34,11 +35,6 @@ vi.mock('datagateway-common', async () => {
     readSciGatewayToken: vi
       .fn()
       .mockReturnValue({ sessionId: 'abcdef', username: 'John1' }),
-    useDataPublication: vi.fn(),
-    useDataPublicationContentCount: vi.fn(() =>
-      // mock to prevent errors when we check we can switch to the content tab
-      ({ data: 0 })
-    ),
   };
 });
 
@@ -160,7 +156,7 @@ describe('DLS Data Publication Landing page', () => {
     state = JSON.parse(
       JSON.stringify({
         dgdataview: dgDataViewInitialState,
-        dgcommon: dGCommonInitialState,
+        dgcommon: { ...dGCommonInitialState, accessMethods: {} },
       })
     );
 
@@ -173,9 +169,26 @@ describe('DLS Data Publication Landing page', () => {
     });
     user = userEvent.setup();
 
-    vi.mocked(useDataPublication, { partial: true }).mockReturnValue({
-      data: initialData,
-    });
+    axios.get = vi
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/\/datapublications$/.test(url)) {
+          return Promise.resolve({
+            data: [initialData],
+          });
+        }
+        if (/\/count$/.test(url)) {
+          return Promise.resolve({
+            data: 0,
+          });
+        } else if (/\/queue\/allowed$/.test(url)) {
+          return Promise.resolve({
+            data: true,
+          });
+        } else {
+          return Promise.reject(`Endpoint not mocked: ${url}`);
+        }
+      });
   });
 
   afterEach(() => {
@@ -187,7 +200,7 @@ describe('DLS Data Publication Landing page', () => {
 
     // displays doi + link correctly
     expect(
-      screen.getByText('datapublications.concept datapublications.pid')
+      await screen.findByText('datapublications.concept datapublications.pid')
     ).toBeInTheDocument();
     expect(
       await screen.findByRole('link', { name: 'DOI doi 1' })
@@ -269,6 +282,29 @@ describe('DLS Data Publication Landing page', () => {
     });
   });
 
+  it('renders download button & clicking it opens download dialogue', async () => {
+    renderComponent();
+
+    // need to wait for fetching of /queue/allowed
+    await waitFor(() =>
+      expect(
+        screen.getByRole('button', {
+          name: 'buttons.queue_data_collection',
+        })
+      ).not.toBeDisabled()
+    );
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'buttons.queue_data_collection',
+      })
+    );
+
+    await screen.findByRole('dialog', {
+      name: 'downloadConfirmDialog.dialog_title',
+    });
+  });
+
   it('renders version panel when showing a concept DOI & does not show edit button if user is not the minter', async () => {
     vi.mocked(readSciGatewayToken).mockReturnValue({
       sessionId: 'abcdef',
@@ -330,10 +366,9 @@ describe('DLS Data Publication Landing page', () => {
       screen.getByText('datapublications.details.citation_formatter.label')
     ).toBeInTheDocument();
 
-    expect(screen.getByRole('link', { name: 'DOI doi 1' })).toHaveAttribute(
-      'href',
-      'https://doi.org/doi 1'
-    );
+    expect(
+      await screen.findByRole('link', { name: 'DOI doi 1' })
+    ).toHaveAttribute('href', 'https://doi.org/doi 1');
 
     expect(
       screen.getByText('datapublications.concept datapublications.pid')

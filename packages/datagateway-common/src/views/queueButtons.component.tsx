@@ -118,7 +118,7 @@ const QueueEntityButton: React.FC<QueueEntityButtonProps> = (props) => {
             ? t('buttons.unable_to_queue_tooltip')
             : ''
         }
-        placement="left"
+        placement="bottom"
         arrow
       >
         <span style={iconButton ? { margin: 'auto' } : {}}>
@@ -180,6 +180,7 @@ export const QueueDataCollectionButton: React.FC<
 
   return (
     <QueueEntityButton
+      // TODO: get size from DOI info and pass here? needs useDOI hook from other branch...
       entityId={dataCollection.id.toString()}
       queueHook={useQueueDataCollection}
       label={'buttons.queue_data_collection'}
