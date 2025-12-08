@@ -277,7 +277,7 @@
     "preview": "Preview datafile",
     "preview_tooltip": "Preview this datafile",
     "queue_visit": "Queue visit for download",
-    "queue_data_collection": "Queue Data Publication for download",
+    "queue_data_collection": "Download Data Publication",
     "disallow_anon_tooltip": "Anonymous download is disabled - please login and try again",
     "unable_to_queue_tooltip": "Unauthorised to submit to queue - please check you're logged in with a user with permission to download this data"
   },
