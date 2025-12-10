@@ -158,7 +158,7 @@ export const fetchDOI = (
 /**
  * Returns the DOI metadata for a DOI
  * @param doi The DOI that we're checking
- * @returns the {@link RelatedIdentifier} that matches the username, or 404
+ * @returns the {@link DataCiteDOI} record that matches the DOI
  */
 export const useDOI = (
   doi: string | undefined
@@ -514,6 +514,47 @@ export const useIsCartMintable = (
       },
       refetchOnWindowFocus: false,
       enabled: typeof doiMinterUrl !== 'undefined',
+    }
+  );
+};
+
+export const openDataPublication: (
+  dataPublicationId: string,
+  doiMinterUrl: string | undefined
+) => Promise<void> = (dataPublicationId, doiMinterUrl) => {
+  return axios.put(
+    `${doiMinterUrl}/open/${dataPublicationId}`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+      },
+    }
+  );
+};
+
+/**
+ * A React hook for submitting a visit to the queue.
+ * Returns the list of download ids for the submitted visit,
+ * which can then be used to query more info.
+ */
+export const useOpenDataPublication = (): UseMutationResult<
+  void,
+  AxiosError<{
+    detail: { msg: string }[] | string;
+  }>,
+  { dataPublicationId: string }
+> => {
+  const doiMinterUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.doiMinterUrl
+  );
+  return useMutation(
+    ({ dataPublicationId }) =>
+      openDataPublication(dataPublicationId, doiMinterUrl),
+    {
+      onError: (error) => {
+        handleDOIAPIError(error, undefined, undefined, true, true);
+      },
     }
   );
 };

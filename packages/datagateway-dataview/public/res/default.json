@@ -60,6 +60,8 @@
     "concept": "Concept",
     "latest_version": "Latest Version",
     "id": "Data Publication ID",
+    "instruments": "Instruments",
+    "dates": "Dates",
     "publication_date": "Publication Date",
     "content_tab_label": "View Content",
     "content_tab_entity_tabs_aria_label": "content tabs",
@@ -110,6 +112,9 @@
           "science"
         ]
       }
+    },
+    "publish": {
+      "publish_label": "Publish"
     }
   },
   "investigations": {
@@ -260,6 +265,12 @@
   "my_data_table": {
     "role_selector": "Select role",
     "all_roles": "All"
+  },
+  "my_doi_table": {
+    "button_group_aria_label": "Select DOIs where I",
+    "minter": "Minted the user-created DOI",
+    "user": "Am listed on the user-created DOI",
+    "session": "Am listed on the session DOI"
   },
   "loading": {
     "verifying": "Verifying URL",
@@ -440,7 +451,17 @@
     "concept_doi_label": "Concept DOI",
     "version_doi_label": "Version DOI",
     "error_label": "Error",
-    "view_data_publication": "View Data Publication"
+    "view_data_publication": "View Data Publication",
+    "close_aria_label": "Close mint confirm dialogue"
+  },
+  "DOIPublishConfirmDialog": {
+    "dialog_title": "Publish Data Publication",
+    "close_aria_label": "Close publish data publication dialogue",
+    "accept": "Accept & publish data publication",
+    "data_policy": "Accept data policy: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum lore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    "publish_success": "Publish was successful",
+    "publish_error": "Publish was unsuccessful",
+    "publish_loading": "Loading..."
   },
   "downloadConfirmDialog": {
     "close_arialabel": "Close download confirmation dialog",

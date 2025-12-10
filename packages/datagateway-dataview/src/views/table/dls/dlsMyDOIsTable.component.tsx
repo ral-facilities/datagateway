@@ -28,7 +28,7 @@ const DLSMyDOIsTable = (): React.ReactElement => {
   const [t] = useTranslation();
   const username = readSciGatewayToken().username || '';
 
-  const { filters, view, sort } = React.useMemo(
+  const { filters, view, sort, doiType } = React.useMemo(
     () => parseSearchToQuery(location.search),
     [location.search]
   );
@@ -36,59 +36,96 @@ const DLSMyDOIsTable = (): React.ReactElement => {
   /** TODO do we want to display concept dois instead of latest version DOIs (like Zenodo does iirc?)
    * Is there a nicer way of checking for version vs concept? idk
    */
-  const { data: totalDataCount } = useDataPublicationCount([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'users.user.name': { eq: username },
-      }),
-    },
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'users.contributorType': {
-          eq: ContributorType.Minter,
-        },
-      }),
-    },
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'relatedItems.relationType': { eq: DOIRelationType.HasVersion },
-      }),
-    },
-    {
-      filterType: 'distinct',
-      filterValue: JSON.stringify(['id', 'title', 'pid', 'publicationDate']),
-    },
-  ]);
+  const params =
+    doiType === 'session'
+      ? [
+          {
+            filterType: 'where',
+            filterValue: JSON.stringify({
+              'users.user.name': { eq: username },
+            }),
+          },
+          {
+            filterType: 'where',
+            filterValue: JSON.stringify({
+              'type.name': { eq: 'Investigation' },
+            }),
+          },
+        ]
+      : doiType === 'creator'
+      ? [
+          {
+            filterType: 'where',
+            filterValue: JSON.stringify({
+              'users.user.name': { eq: username },
+            }),
+          },
+          {
+            filterType: 'where',
+            filterValue: JSON.stringify({
+              'relatedItems.relationType': { eq: DOIRelationType.HasVersion },
+            }),
+          },
+          {
+            filterType: 'distinct',
+            filterValue: JSON.stringify([
+              'id',
+              'title',
+              'pid',
+              'publicationDate',
+            ]),
+          },
+          {
+            filterType: 'where',
+            filterValue: JSON.stringify({
+              'type.name': { eq: 'User-defined' },
+            }),
+          },
+        ]
+      : [
+          {
+            filterType: 'where',
+            filterValue: JSON.stringify({
+              'users.user.name': { eq: username },
+            }),
+          },
+          {
+            filterType: 'where',
+            filterValue: JSON.stringify({
+              'users.contributorType': {
+                eq: ContributorType.Minter,
+              },
+            }),
+          },
+          {
+            filterType: 'where',
+            filterValue: JSON.stringify({
+              'relatedItems.relationType': { eq: DOIRelationType.HasVersion },
+            }),
+          },
+          {
+            filterType: 'distinct',
+            filterValue: JSON.stringify([
+              'id',
+              'title',
+              'pid',
+              'publicationDate',
+            ]),
+          },
+          {
+            filterType: 'where',
+            filterValue: JSON.stringify({
+              'type.name': { eq: 'User-defined' },
+            }),
+          },
+        ];
 
-  const { fetchNextPage, data } = useDataPublicationsInfinite([
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'users.user.name': { eq: username },
-      }),
-    },
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'users.contributorType': {
-          eq: ContributorType.Minter,
-        },
-      }),
-    },
-    {
-      filterType: 'where',
-      filterValue: JSON.stringify({
-        'relatedItems.relationType': { eq: DOIRelationType.HasVersion },
-      }),
-    },
-    {
-      filterType: 'distinct',
-      filterValue: JSON.stringify(['id', 'title', 'pid', 'publicationDate']),
-    },
-  ]);
+  /** TODO do we want to display concept dois instead of latest version DOIs (like Zenodo does iirc?)
+   * Is there a nicer way of checking for version vs concept? idk
+   */
+  const { data: totalDataCount } = useDataPublicationCount(params);
+
+  const { fetchNextPage, data } = useDataPublicationsInfinite(params);
 
   /* istanbul ignore next */
   const aggregatedData: DataPublication[] = React.useMemo(() => {

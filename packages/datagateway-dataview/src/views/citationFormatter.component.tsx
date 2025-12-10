@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   CircularProgress,
   FormControl,
   FormHelperText,
@@ -8,14 +9,13 @@ import {
   SelectChangeEvent,
   styled,
   Typography,
-  Button,
 } from '@mui/material';
+import { useQuery, UseQueryResult } from '@tanstack/react-query';
+import axios, { AxiosError } from 'axios';
 import { Mark } from 'datagateway-common';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import axios, { AxiosError } from 'axios';
 import { FormattedUser } from './landing/isis/isisDataPublicationLanding.component';
-import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
 const Subheading = styled(Typography)(({ theme }) => ({
   marginTop: theme.spacing(1),
@@ -46,7 +46,7 @@ interface CitationFormatterProps {
   doi: string | undefined;
   formattedUsers: FormattedUser[];
   title: string | undefined;
-  startDate: string | undefined;
+  startDate: string | null | undefined;
 }
 
 const useCitation = (
