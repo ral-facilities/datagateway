@@ -110,6 +110,8 @@
     "form_header": "Details",
     "title": "DOI Title",
     "description": "DOI Description",
+    "technique_selector_label": "Select technique",
+    "techniques_subjects_label": "Techniques & Subjects",
     "creators_and_contributors": "Creators & Contributors",
     "creators": "Creators",
     "contributors": "Contributors",

@@ -517,3 +517,99 @@ export const useIsCartMintable = (
     }
   );
 };
+
+export interface BioPortalTerm {
+  prefLabel: string;
+  synonym?: string[];
+  '@id': string;
+  links: {
+    descendants: string;
+  };
+}
+
+interface BioPortalResponse {
+  page: number;
+  pageCount: number;
+  totalCount: number;
+  prevPage: number | null;
+  nextPage: number | null;
+  links: {
+    nextPage: string | null;
+    prevPage: string | null;
+  };
+  collection: BioPortalTerm[];
+}
+
+/**
+ * Fetch list of PANET techniques matching the search text
+ * @param searchText The text to filter techniques by
+ */
+export const fetchPANETTechniquesFromSearchText = (
+  searchText: string
+): Promise<BioPortalTerm[]> => {
+  return axios
+    .get<BioPortalResponse>(
+      `/PANET/search?ontologies=PANET&include=prefLabel,synonym${
+        searchText.length === 0 ? '' : '&suggest=true'
+      }&q=${searchText}&pagesize=500&format=json`
+    )
+    .then((response) => {
+      return response.data.collection;
+    });
+};
+
+/**
+ * Fetch descendants using the parent's descendants URL
+ * @param descendantsUrl The URL to query
+ */
+export const fetchDescendantPANETTechniques = (
+  descendantsUrl: string
+): Promise<BioPortalTerm[]> => {
+  const descendantsPath = new URL(descendantsUrl).pathname;
+  console.log('descendantsPath', descendantsPath);
+  return axios
+    .get<BioPortalResponse | never[]>(
+      `/PANET${descendantsPath}?pagesize=500&format=json`
+    )
+    .then((response) => {
+      return 'collection' in response.data ? response.data.collection : [];
+    });
+};
+
+/**
+ * Searches the PANET ontology for techniques matching the search term
+ * @param doi The DOI that we're checking
+ * @returns a list of PANET techniques that matches the search text
+ */
+export const useSearchPANETTechniques = (
+  searchText: string
+): UseQueryResult<BioPortalTerm[], AxiosError> => {
+  return useQuery(
+    ['SearchPANETTechniques', searchText],
+    () => fetchPANETTechniquesFromSearchText(searchText),
+    {
+      staleTime: Infinity,
+    }
+  );
+};
+
+/**
+ * Gets the descendant techniques for a specified PANET technique
+ * @param selectedTechnique The technique that we want to find the descendants of
+ * @returns the child techniques of the specified parent
+ */
+export const useGetDescendantTechniques = (
+  selectedTechnique: BioPortalTerm | null
+): UseQueryResult<BioPortalTerm[], AxiosError> => {
+  return useQuery(
+    ['getDescendantTechniques', selectedTechnique],
+    () =>
+      selectedTechnique
+        ? fetchDescendantPANETTechniques(selectedTechnique?.links.descendants)
+        : Promise.resolve([]),
+    {
+      staleTime: Infinity,
+      enabled: selectedTechnique !== null,
+    }
+  );
+};

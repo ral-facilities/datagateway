@@ -8,6 +8,7 @@ import CreatorsAndContributors, {
   ContributorUser,
 } from './creatorsAndContributors.component';
 import RelatedIdentifiers from './relatedIdentifiers.component';
+import TechniquesAndSubjects from './techniquesAndSubjects.component';
 
 type DOIMetadataFormProps = {
   title: string;
@@ -85,6 +86,9 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
           onChange={(event) => setDescription(event.target.value)}
           disabled={mintLoading}
         />
+      </Grid>
+      <Grid item>
+        <TechniquesAndSubjects />
       </Grid>
       <Grid item>
         <RelatedIdentifiers
