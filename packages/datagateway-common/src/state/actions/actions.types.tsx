@@ -83,6 +83,7 @@ export interface URLs {
   icatUrl: string;
   doiMinterUrl?: string;
   dataCiteUrl?: string;
+  bioportalUrl?: string;
 }
 
 export interface PluginRoute {

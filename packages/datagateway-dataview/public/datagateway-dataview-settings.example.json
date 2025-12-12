@@ -10,6 +10,7 @@
   "downloadApiUrl": "example.download.api.url",
   "doiMinterUrl": null,
   "dataCiteUrl": null,
+  "bioportalUrl": "/PANET",
   "anonUserName": "anon/anon",
   "helpSteps": [
     {

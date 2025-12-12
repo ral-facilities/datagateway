@@ -1,3 +1,4 @@
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import {
   Autocomplete,
   Button,
@@ -15,15 +16,16 @@ import {
   TableHead,
   TableRow,
   TextField,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  BioPortalTerm,
   useGetDescendantTechniques,
   useSearchPANETTechniques,
 } from '../api/dois';
+import { BioPortalTerm } from '../app.types';
 import DialogContent from '../dialogContent.component';
 import DialogTitle from '../dialogTitle.component';
 
@@ -48,8 +50,9 @@ const AUTOCOMPLETE_DEBOUNCE_DELAY = 300;
 const TechniqueSelector: React.FC<{
   value: BioPortalTerm | null;
   changeValue: (value: BioPortalTerm | null) => void;
+  bioportalUrl: string | undefined;
 }> = (props) => {
-  const { value, changeValue } = props;
+  const { value, changeValue, bioportalUrl } = props;
   const [t] = useTranslation();
 
   const [inputValue, setInputValue] = React.useState('');
@@ -58,8 +61,10 @@ const TechniqueSelector: React.FC<{
     inputValue,
     AUTOCOMPLETE_DEBOUNCE_DELAY
   );
-  const { data: techniques, isFetching } =
-    useSearchPANETTechniques(debouncedInputValue);
+  const { data: techniques, isFetching } = useSearchPANETTechniques(
+    debouncedInputValue,
+    bioportalUrl
+  );
 
   return (
     <Autocomplete
@@ -95,6 +100,13 @@ const TechniqueSelector: React.FC<{
               </React.Fragment>
             ),
           }}
+          error={typeof bioportalUrl === 'undefined'}
+          helperText={
+            typeof bioportalUrl === 'undefined'
+              ? // don't bother translating as this should be a developer focused message i.e. that they haven't configured DGW correctly
+                "Can't fetch techniques as BioPortal API URL not specified"
+              : undefined
+          }
         />
       )}
     />
@@ -105,8 +117,9 @@ const TechniqueDialogue: React.FC<{
   open: boolean;
   changeOpen: (open: boolean) => void;
   addNewTechnique: (technique: BioPortalTerm) => void;
+  bioportalUrl: string | undefined;
 }> = (props) => {
-  const { open: isOpen, changeOpen, addNewTechnique } = props;
+  const { open: isOpen, changeOpen, addNewTechnique, bioportalUrl } = props;
 
   const [t] = useTranslation();
 
@@ -128,7 +141,8 @@ const TechniqueDialogue: React.FC<{
   }, [changeOpen]);
 
   const { data: descendantTechniques } = useGetDescendantTechniques(
-    initiallySelectedTechnique
+    initiallySelectedTechnique,
+    bioportalUrl
   );
 
   return (
@@ -147,59 +161,74 @@ const TechniqueDialogue: React.FC<{
         {'Select a Technique'}
       </DialogTitle>
       <DialogContent>
-        <Grid container direction="column" mt={1}>
+        <Grid container direction="column" spacing={1}>
+          <Grid item>
+            <Typography>
+              {t('DOIGenerationForm.technique_dialogue_initial_help')}
+            </Typography>
+          </Grid>
           <Grid item>
             <TechniqueSelector
               value={initiallySelectedTechnique}
               changeValue={setInitiallySelectedTechnique}
+              bioportalUrl={bioportalUrl}
             />
           </Grid>
           {initiallySelectedTechnique ? (
-            <Grid item>
-              <TableContainer>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Name</TableCell>
-                      <TableCell>PID</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    <TableRow
-                      onClick={(_event) =>
-                        setSelectedTechnique(initiallySelectedTechnique)
-                      }
-                      selected={
-                        selectedTechnique === initiallySelectedTechnique
-                      }
-                    >
-                      <TableCell>
-                        {initiallySelectedTechnique.prefLabel}
-                      </TableCell>
-                      <TableCell>
-                        {
-                          <Link href={initiallySelectedTechnique['@id']}>
-                            {initiallySelectedTechnique['@id']}
-                          </Link>
-                        }
-                      </TableCell>
-                    </TableRow>
-                    {descendantTechniques?.map((t) => (
+            <>
+              <Grid item>
+                <Typography>
+                  {t(
+                    'DOIGenerationForm.technique_dialogue_select_technique_help'
+                  )}
+                </Typography>
+              </Grid>
+              <Grid item>
+                <TableContainer>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Name</TableCell>
+                        <TableCell>PID</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
                       <TableRow
-                        key={t['@id']}
-                        onClick={(_event) => setSelectedTechnique(t)}
-                        selected={selectedTechnique === t}
+                        onClick={(_event) =>
+                          setSelectedTechnique(initiallySelectedTechnique)
+                        }
+                        selected={
+                          selectedTechnique === initiallySelectedTechnique
+                        }
                       >
-                        <TableCell>{t.prefLabel}</TableCell>
                         <TableCell>
-                          {<Link href={t['@id']}>{t['@id']}</Link>}
+                          {initiallySelectedTechnique.prefLabel}
+                        </TableCell>
+                        <TableCell>
+                          {
+                            <Link href={initiallySelectedTechnique['@id']}>
+                              {initiallySelectedTechnique['@id']}
+                            </Link>
+                          }
                         </TableCell>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Grid>
+                      {descendantTechniques?.map((t) => (
+                        <TableRow
+                          key={t['@id']}
+                          onClick={(_event) => setSelectedTechnique(t)}
+                          selected={selectedTechnique === t}
+                        >
+                          <TableCell>{t.prefLabel}</TableCell>
+                          <TableCell>
+                            {<Link href={t['@id']}>{t['@id']}</Link>}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Grid>
+            </>
           ) : null}
         </Grid>
       </DialogContent>
@@ -220,13 +249,24 @@ const TechniqueDialogue: React.FC<{
   );
 };
 
-const TechniquesAndSubjects: React.FC = () => {
+const TechniquesAndSubjects: React.FC<{
+  techniques: BioPortalTerm[];
+  setTechniques: React.Dispatch<React.SetStateAction<BioPortalTerm[]>>;
+  subjects: string[];
+  setSubjects: React.Dispatch<React.SetStateAction<string[]>>;
+  disabled: boolean;
+  bioportalUrl: string | undefined;
+}> = (props) => {
   const [t] = useTranslation();
+  const {
+    techniques,
+    setTechniques,
+    subjects,
+    setSubjects,
+    disabled,
+    bioportalUrl,
+  } = props;
 
-  const [selectedTechniques, setSelectedTechniques] = React.useState<
-    BioPortalTerm[]
-  >([]);
-  const [selectedSubjects, setSelectedSubjects] = React.useState<string[]>([]);
   const [isTechniqueDialogueOpen, setIsTechniqueDialogueOpen] =
     React.useState(false);
 
@@ -243,14 +283,23 @@ const TechniquesAndSubjects: React.FC = () => {
       variant="outlined"
     >
       <Grid container direction="row" spacing={1}>
-        <Grid item>
-          <Typography
-            variant="h6"
-            component="h4"
-            id="techniques-subjects-label"
-          >
-            {t('DOIGenerationForm.techniques_subjects_label')}
-          </Typography>
+        <Grid container item alignItems="end" spacing={0.5}>
+          <Grid item>
+            <Typography
+              variant="h6"
+              component="h4"
+              id="techniques-subjects-label"
+            >
+              {t('DOIGenerationForm.techniques_subjects_label')}
+            </Typography>
+          </Grid>
+          <Grid item>
+            <Tooltip
+              title={t('DOIGenerationForm.techniques_subjects_help_tooltip')}
+            >
+              <HelpOutlineIcon fontSize="small" />
+            </Tooltip>
+          </Grid>
         </Grid>
         <Grid container item spacing={1} direction="row">
           <Grid container item xs={12} alignItems="center" spacing={1}>
@@ -258,8 +307,8 @@ const TechniquesAndSubjects: React.FC = () => {
               <Autocomplete
                 multiple
                 options={[]}
-                value={selectedTechniques}
-                onChange={(_event, value) => setSelectedTechniques(value)}
+                value={techniques}
+                onChange={(_event, value) => setTechniques(value)}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -282,12 +331,14 @@ const TechniquesAndSubjects: React.FC = () => {
                 }
                 forcePopupIcon={false}
                 open={false}
+                disabled={disabled}
               />
             </Grid>
             <Grid item xs="auto">
               <Button
                 variant="contained"
                 onClick={() => setIsTechniqueDialogueOpen(true)}
+                disabled={disabled}
               >
                 Add technique
               </Button>
@@ -295,11 +346,12 @@ const TechniquesAndSubjects: React.FC = () => {
                 open={isTechniqueDialogueOpen}
                 changeOpen={setIsTechniqueDialogueOpen}
                 addNewTechnique={(technique: BioPortalTerm) => {
-                  setSelectedTechniques((existingTechniques) => [
+                  setTechniques((existingTechniques) => [
                     ...existingTechniques,
                     technique,
                   ]);
                 }}
+                bioportalUrl={bioportalUrl}
               />
             </Grid>
           </Grid>
@@ -321,11 +373,12 @@ const TechniquesAndSubjects: React.FC = () => {
                   );
                 })
               }
-              value={selectedSubjects}
-              onChange={(_event, value) => setSelectedSubjects(value)}
+              value={subjects}
+              onChange={(_event, value) => setSubjects(value)}
               renderInput={(params) => (
                 <TextField {...params} variant="filled" label="Subjects" />
               )}
+              disabled={disabled}
             />
           </Grid>
         </Grid>

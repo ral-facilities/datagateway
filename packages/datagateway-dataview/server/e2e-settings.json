@@ -11,6 +11,7 @@
   "downloadApiUrl": "https://localhost:8181/topcat",
   "doiMinterUrl": "http://localhost:8000",
   "dataCiteUrl": "https://api.test.datacite.org",
+  "bioportalUrl": "/PANET",
   "accessMethods": {
     "https": {
       "idsUrl": "https://localhost:8181/ids",

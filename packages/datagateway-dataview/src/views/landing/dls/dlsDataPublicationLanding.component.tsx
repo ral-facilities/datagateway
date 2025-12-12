@@ -12,10 +12,12 @@ import {
   styled,
 } from '@mui/material';
 import {
+  BioPortalTerm,
   ContributorType,
   DOIRelationType,
   DataPublication,
   readSciGatewayToken,
+  useDOI,
   useDataPublication,
 } from 'datagateway-common';
 import React from 'react';
@@ -118,6 +120,21 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   const { dataPublicationId } = props;
 
   const { data } = useDataPublication(parseInt(dataPublicationId));
+  const { data: dataciteData } = useDOI(data?.pid);
+
+  const subjects: string[] = [];
+  const techniques: BioPortalTerm[] = [];
+  dataciteData?.attributes.subjects.forEach((s) => {
+    if (s.valueUri && s.subjectScheme?.includes('PaNET')) {
+      techniques.push({
+        '@id': s.valueUri,
+        prefLabel: s.subject,
+        links: { descendants: '' }, // just put empty string here - it's not needed for display
+      });
+    } else {
+      subjects.push(s.subject);
+    }
+  });
 
   const isVersionDOI = data?.relatedItems?.some(
     (relatedItem) => relatedItem.relationType === DOIRelationType.IsVersionOf
@@ -414,6 +431,37 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               <Typography data-testid="landing-datapublication-description">
                 {description}
               </Typography>
+
+              {techniques.length > 0 && (
+                <div>
+                  <Subheading
+                    variant="h6"
+                    data-testid="landing-dataPublication-techniques-label"
+                  >
+                    {t('datapublications.details.techniques')}
+                  </Subheading>
+                  {techniques.map((t, i) => (
+                    <>
+                      {i === 0 ? null : ', '}
+                      <MuiLink key={t['@id']} href={t['@id']}>
+                        {t.prefLabel}
+                      </MuiLink>
+                    </>
+                  ))}
+                </div>
+              )}
+
+              {subjects.length > 0 && (
+                <div>
+                  <Subheading
+                    variant="h6"
+                    data-testid="landing-dataPublication-subjects-label"
+                  >
+                    {t('datapublications.details.subjects')}
+                  </Subheading>
+                  {subjects.join(', ')}
+                </div>
+              )}
 
               {formattedUsers.length > 0 && (
                 <div>

@@ -1,5 +1,6 @@
 import { Box, CircularProgress, Grid, Paper, Typography } from '@mui/material';
 import {
+  BioPortalTerm,
   ContributorType,
   ContributorUser,
   DOIConfirmDialog,
@@ -42,6 +43,8 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
   >([]);
   const [title, setTitle] = React.useState('');
   const [description, setDescription] = React.useState('');
+  const [techniques, setTechniques] = React.useState<BioPortalTerm[]>([]);
+  const [subjects, setSubjects] = React.useState<string[]>([]);
 
   const [showMintConfirmation, setShowMintConfirmation] = React.useState(false);
   const [showMetadataConfirmation, setShowMetadataConfirmation] =
@@ -52,6 +55,9 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
   );
   const dataCiteUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.dataCiteUrl
+  );
+  const bioportalUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.bioportalUrl
   );
 
   const { data: dataPublication } = useDataPublication(
@@ -132,6 +138,21 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
               } satisfies RelatedIdentifier)
           ) ?? []
       );
+      const originalSubjects: string[] = [];
+      const originalTechniques: BioPortalTerm[] = [];
+      dataciteData.attributes.subjects.forEach((s) => {
+        if (s.valueUri && s.subjectScheme?.includes('PaNET')) {
+          originalTechniques.push({
+            '@id': s.valueUri,
+            prefLabel: s.subject,
+            links: { descendants: '' }, // just put empty string here - it's not needed once it's selected
+          });
+        } else {
+          originalSubjects.push(s.subject);
+        }
+      });
+      setSubjects(originalSubjects);
+      setTechniques(originalTechniques);
     }
   }, [dataciteData]);
 
@@ -274,6 +295,18 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
           description,
           creators: creatorsList.length > 0 ? creatorsList : undefined,
           related_items: relatedIdentifiers,
+          subjects: [
+            ...subjects.map((s) => ({
+              subject: s,
+            })),
+            ...techniques.map((t) => ({
+              subject: t.prefLabel,
+              subjectScheme:
+                'Photon and Neutron Experimental Techniques (PaNET) ontology',
+              schemeUri: 'http://purl.org/pan-science/PaNET/',
+              valueUri: t['@id'],
+            })),
+          ],
         },
       }).then(() => {
         setShowMetadataConfirmation(true);
@@ -287,6 +320,8 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
     mintDraftVersionDOI,
     relatedIdentifiers,
     selectedUsers,
+    subjects,
+    techniques,
     title,
     versionDataPublication,
   ]);
@@ -367,6 +402,7 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
                   lg={6}
                   dataCiteUrl={dataCiteUrl}
                   doiMinterUrl={doiMinterUrl}
+                  bioportalUrl={bioportalUrl}
                   title={title}
                   setTitle={setTitle}
                   description={description}
@@ -375,6 +411,10 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
                   setSelectedUsers={setSelectedUsers}
                   relatedIdentifiers={relatedIdentifiers}
                   setRelatedIdentifiers={setRelatedIdentifiers}
+                  techniques={techniques}
+                  setTechniques={setTechniques}
+                  subjects={subjects}
+                  setSubjects={setSubjects}
                   disableMintButton={false}
                   mintLoading={mintDraftVersionStatus === 'loading'}
                   onMintClick={handleMintClick}

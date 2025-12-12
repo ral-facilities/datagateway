@@ -12,6 +12,7 @@ import {
   Typography,
 } from '@mui/material';
 import {
+  BioPortalTerm,
   ContributorType,
   ContributorUser,
   DOIConfirmDialog,
@@ -43,12 +44,14 @@ const DOIGenerationForm: React.FC = () => {
   >([]);
   const [title, setTitle] = React.useState('');
   const [description, setDescription] = React.useState('');
+  const [techniques, setTechniques] = React.useState<BioPortalTerm[]>([]);
+  const [subjects, setSubjects] = React.useState<string[]>([]);
   const [currentTab, setCurrentTab] = React.useState<
     'investigation' | 'dataset' | 'datafile'
   >('investigation');
   const [showMintConfirmation, setShowMintConfirmation] = React.useState(false);
 
-  const { doiMinterUrl, dataCiteUrl } = React.useContext(
+  const { doiMinterUrl, dataCiteUrl, bioportalUrl } = React.useContext(
     DownloadSettingsContext
   );
 
@@ -127,6 +130,23 @@ const DOIGenerationForm: React.FC = () => {
           description,
           creators: creatorsList.length > 0 ? creatorsList : undefined,
           related_items: relatedIdentifiers,
+          subjects: [
+            ...subjects.map((s) => ({
+              subject: s,
+              subjectScheme: null,
+              schemeUri: null,
+              valueUri: null,
+              classificationCode: null,
+            })),
+            ...techniques.map((t) => ({
+              subject: t.prefLabel,
+              subjectScheme:
+                'Photon and Neutron Experimental Techniques (PaNET) ontology',
+              schemeUri: 'http://purl.org/pan-science/PaNET/',
+              valueUri: t['@id'],
+              classificationCode: null,
+            })),
+          ],
         },
       }).then(() => {
         setShowMetadataConfirmation(true);
@@ -138,6 +158,8 @@ const DOIGenerationForm: React.FC = () => {
     mintDraftCart,
     relatedIdentifiers,
     selectedUsers,
+    subjects,
+    techniques,
     title,
   ]);
 
@@ -278,6 +300,7 @@ const DOIGenerationForm: React.FC = () => {
                     lg={7}
                     dataCiteUrl={dataCiteUrl}
                     doiMinterUrl={doiMinterUrl}
+                    bioportalUrl={bioportalUrl}
                     title={title}
                     setTitle={setTitle}
                     description={description}
@@ -286,6 +309,10 @@ const DOIGenerationForm: React.FC = () => {
                     setSelectedUsers={setSelectedUsers}
                     relatedIdentifiers={relatedIdentifiers}
                     setRelatedIdentifiers={setRelatedIdentifiers}
+                    techniques={techniques}
+                    setTechniques={setTechniques}
+                    subjects={subjects}
+                    setSubjects={setSubjects}
                     disableMintButton={
                       typeof cart === 'undefined' || cart.length === 0
                     }

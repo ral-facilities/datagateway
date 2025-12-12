@@ -9,6 +9,7 @@ import axios, { AxiosError } from 'axios';
 import log from 'loglevel';
 import { useSelector } from 'react-redux';
 import {
+  BioPortalTerm,
   DOIDraftVersionResponse,
   DOIIdentifierType,
   DOIMetadata,
@@ -518,15 +519,6 @@ export const useIsCartMintable = (
   );
 };
 
-export interface BioPortalTerm {
-  prefLabel: string;
-  synonym?: string[];
-  '@id': string;
-  links: {
-    descendants: string;
-  };
-}
-
 interface BioPortalResponse {
   page: number;
   pageCount: number;
@@ -545,13 +537,14 @@ interface BioPortalResponse {
  * @param searchText The text to filter techniques by
  */
 export const fetchPANETTechniquesFromSearchText = (
-  searchText: string
+  searchText: string,
+  bioportalUrl: string | undefined
 ): Promise<BioPortalTerm[]> => {
   return axios
     .get<BioPortalResponse>(
-      `/PANET/search?ontologies=PANET&include=prefLabel,synonym${
+      `${bioportalUrl}/search?ontology=PANET&subtree_root_id=http://purl.org/pan-science/PaNET/PaNET00001&include=prefLabel,synonym${
         searchText.length === 0 ? '' : '&suggest=true'
-      }&q=${searchText}&pagesize=500&format=json`
+      }&q=${searchText}&pagesize=500&format=json&display_context=false`
     )
     .then((response) => {
       return response.data.collection;
@@ -563,13 +556,13 @@ export const fetchPANETTechniquesFromSearchText = (
  * @param descendantsUrl The URL to query
  */
 export const fetchDescendantPANETTechniques = (
-  descendantsUrl: string
+  descendantsUrl: string,
+  bioportalUrl: string | undefined
 ): Promise<BioPortalTerm[]> => {
   const descendantsPath = new URL(descendantsUrl).pathname;
-  console.log('descendantsPath', descendantsPath);
   return axios
     .get<BioPortalResponse | never[]>(
-      `/PANET${descendantsPath}?pagesize=500&format=json`
+      `${bioportalUrl}${descendantsPath}?pagesize=500&format=json&include=prefLabel,synonym&display_context=false`
     )
     .then((response) => {
       return 'collection' in response.data ? response.data.collection : [];
@@ -582,13 +575,15 @@ export const fetchDescendantPANETTechniques = (
  * @returns a list of PANET techniques that matches the search text
  */
 export const useSearchPANETTechniques = (
-  searchText: string
+  searchText: string,
+  bioportalUrl: string | undefined
 ): UseQueryResult<BioPortalTerm[], AxiosError> => {
   return useQuery(
     ['SearchPANETTechniques', searchText],
-    () => fetchPANETTechniquesFromSearchText(searchText),
+    () => fetchPANETTechniquesFromSearchText(searchText, bioportalUrl),
     {
       staleTime: Infinity,
+      enabled: typeof bioportalUrl !== 'undefined',
     }
   );
 };
@@ -599,17 +594,22 @@ export const useSearchPANETTechniques = (
  * @returns the child techniques of the specified parent
  */
 export const useGetDescendantTechniques = (
-  selectedTechnique: BioPortalTerm | null
+  selectedTechnique: BioPortalTerm | null,
+  bioportalUrl: string | undefined
 ): UseQueryResult<BioPortalTerm[], AxiosError> => {
   return useQuery(
     ['getDescendantTechniques', selectedTechnique],
     () =>
       selectedTechnique
-        ? fetchDescendantPANETTechniques(selectedTechnique?.links.descendants)
+        ? fetchDescendantPANETTechniques(
+            selectedTechnique?.links.descendants,
+            bioportalUrl
+          )
         : Promise.resolve([]),
     {
       staleTime: Infinity,
-      enabled: selectedTechnique !== null,
+      enabled:
+        selectedTechnique !== null && typeof bioportalUrl !== 'undefined',
     }
   );
 };

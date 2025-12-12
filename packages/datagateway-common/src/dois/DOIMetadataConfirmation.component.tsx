@@ -103,6 +103,52 @@ const DOIMetadataConfirmation: React.FC<DOIMetadataConfirmationProps> = (
         </Grid>
         <Grid container item spacing={1}>
           <Grid item>
+            <Typography>{t('DOIGenerationForm.subjects')}</Typography>
+          </Grid>
+          {metadata.subjects.map((subject) => {
+            return (
+              <Grid
+                container
+                item
+                key={subject.subject}
+                columnSpacing={1}
+                ml={1}
+              >
+                <Grid item>
+                  <Typography>
+                    {t('DOIGenerationForm.subject_subject')}: {subject.subject}
+                  </Typography>
+                </Grid>
+                {subject.subjectScheme && (
+                  <Grid item>
+                    <Typography>
+                      {t('DOIGenerationForm.subject_subjectScheme')}:{' '}
+                      {subject.subjectScheme}
+                    </Typography>
+                  </Grid>
+                )}
+                {subject.schemeUri && (
+                  <Grid item>
+                    <Typography>
+                      {t('DOIGenerationForm.subject_schemeUri')}:{' '}
+                      <Link href={subject.schemeUri}>{subject.schemeUri}</Link>
+                    </Typography>
+                  </Grid>
+                )}
+                {subject.valueUri && (
+                  <Grid item>
+                    <Typography>
+                      {t('DOIGenerationForm.subject_valueUri')}:{' '}
+                      <Link href={subject.valueUri}>{subject.valueUri}</Link>
+                    </Typography>
+                  </Grid>
+                )}
+              </Grid>
+            );
+          })}
+        </Grid>
+        <Grid container item spacing={1}>
+          <Grid item>
             <Typography>
               {t('DOIGenerationForm.related_identifiers')}
             </Typography>

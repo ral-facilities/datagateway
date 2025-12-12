@@ -32,6 +32,7 @@ export interface CommonSettings {
 export interface DOISettings {
   doiMinterUrl?: string;
   dataCiteUrl?: string;
+  bioportalUrl?: string;
 }
 
 export type DataviewSearchCommonSettings = CommonSettings & {
@@ -621,45 +622,7 @@ export interface DOIMetadata {
   description: string;
   creators?: { username: string; contributor_type: ContributorType }[];
   related_items: RelatedIdentifier[];
-}
-
-export interface DOICreator {
-  name: string;
-  nameType: string;
-  givenName: string;
-  familyName: string;
-  nameIdentifiers: {
-    nameIdentifier: string;
-    nameIdentifierScheme: string;
-    schemeUri: string | null;
-  }[];
-  affiliations: {
-    affiliationIdentifier: string | null;
-    affiliation: string;
-    affiliationIdentifierScheme: string | null;
-    schemeUri: string | null;
-  }[];
-}
-
-export interface DOIRelatedIdentifier {
-  relatedIdentifier: string;
-  relatedIdentifierType: DOIIdentifierType;
-  relationType: DOIRelationType;
-  resourceTypeGeneral: DOIResourceType;
-  relatedMetadataScheme: null;
-  schemeUri: null;
-  schemeType: null;
-}
-
-export interface DataCiteDOI {
-  id: string;
-  type: string;
-  attributes: DataciteMetadata; // DataciteMetadata isn't the complete type of attributes here, just the attributes that are returned from the DOI api
-  relationships: unknown; // we don't use this so don't bother typing for now
-}
-
-export interface DataCiteResponse {
-  data: DataCiteDOI;
+  subjects: DOISubject[];
 }
 
 export interface DOICreator {
@@ -692,6 +655,25 @@ export interface DOIRelatedIdentifier {
   relatedMetadataScheme: null;
   schemeUri: null;
   schemeType: null;
+}
+
+export interface DOISubject {
+  subject: string;
+  subjectScheme?: string | null;
+  schemeUri?: string | null;
+  valueUri?: string | null;
+  classificationCode?: string | null;
+}
+
+export interface DataCiteDOI {
+  id: string;
+  type: string;
+  attributes: DataciteMetadata; // DataciteMetadata isn't the complete type of attributes here, just the attributes that are returned from the DOI api
+  relationships: unknown; // we don't use this so don't bother typing for now
+}
+
+export interface DataCiteResponse {
+  data: DataCiteDOI;
 }
 
 export interface DataciteMetadata {
@@ -743,13 +725,7 @@ export interface DataciteMetadata {
   titles: {
     title: string;
   }[];
-  subjects: {
-    subject: string;
-    subjectScheme: string;
-    schemeUri: string;
-    valueUri: string;
-    classificationCode: string;
-  }[];
+  subjects: DOISubject[];
   contributors: DOIContributor[];
   language: string | null;
   alternateIdentifiers: never[];
@@ -792,5 +768,14 @@ export interface DownloadSettingsAccessMethod {
     idsUrl: string;
     displayName?: string;
     description?: string;
+  };
+}
+
+export interface BioPortalTerm {
+  prefLabel: string;
+  synonym?: string[];
+  '@id': string;
+  links: {
+    descendants: string;
   };
 }

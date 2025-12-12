@@ -3,7 +3,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { Grid, TextField, Typography } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { RelatedIdentifier } from '../app.types';
+import { BioPortalTerm, RelatedIdentifier } from '../app.types';
 import CreatorsAndContributors, {
   ContributorUser,
 } from './creatorsAndContributors.component';
@@ -26,6 +26,11 @@ type DOIMetadataFormProps = {
   mintLoading: boolean;
   doiMinterUrl: string | undefined; // this is because since it loads from settings it is technically undefined at some point
   dataCiteUrl: string | undefined;
+  bioportalUrl: string | undefined;
+  techniques: BioPortalTerm[];
+  setTechniques: React.Dispatch<React.SetStateAction<BioPortalTerm[]>>;
+  subjects: string[];
+  setSubjects: React.Dispatch<React.SetStateAction<string[]>>;
 } & React.ComponentProps<typeof Grid>;
 
 const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
@@ -38,10 +43,15 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
     setSelectedUsers,
     relatedIdentifiers,
     setRelatedIdentifiers,
+    techniques,
+    setTechniques,
+    subjects,
+    setSubjects,
     disableMintButton,
     onMintClick,
     doiMinterUrl,
     dataCiteUrl,
+    bioportalUrl,
     mintLoading,
     ...gridProps
   } = props;
@@ -88,7 +98,14 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
         />
       </Grid>
       <Grid item>
-        <TechniquesAndSubjects />
+        <TechniquesAndSubjects
+          techniques={techniques}
+          setTechniques={setTechniques}
+          subjects={subjects}
+          setSubjects={setSubjects}
+          disabled={mintLoading}
+          bioportalUrl={bioportalUrl}
+        />
       </Grid>
       <Grid item>
         <RelatedIdentifiers
