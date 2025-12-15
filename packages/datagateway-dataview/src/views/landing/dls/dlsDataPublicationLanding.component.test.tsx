@@ -15,6 +15,7 @@ import {
   DOIResourceType,
   DataCiteDOI,
   DataPublication,
+  DataPublicationUser,
   dGCommonInitialState,
   readSciGatewayToken,
 } from 'datagateway-common';
@@ -34,9 +35,7 @@ vi.mock('datagateway-common', async () => {
   return {
     __esModule: true,
     ...originalModule,
-    readSciGatewayToken: vi
-      .fn()
-      .mockReturnValue({ sessionId: 'abcdef', username: 'John1' }),
+    readSciGatewayToken: vi.fn(),
   };
 });
 
@@ -57,7 +56,7 @@ describe('DLS Data Publication Landing page', () => {
       </Provider>
     );
 
-  const users = [
+  const users: DataPublicationUser[] = [
     {
       id: 1,
       contributorType: ContributorType.Minter,
@@ -65,7 +64,12 @@ describe('DLS Data Publication Landing page', () => {
       user: {
         id: 1,
         name: 'John1',
+        orcidId: '123456',
       },
+      affiliations: [
+        { id: 1, name: 'ABC Uni' },
+        { id: 2, name: 'XYZ Org' },
+      ],
     },
     {
       id: 2,
@@ -126,7 +130,7 @@ describe('DLS Data Publication Landing page', () => {
           },
         ],
       },
-      type: { id: 13, name: 'Dataset' },
+      type: { id: 13, name: 'User-defined' },
       relatedItems: [
         {
           id: 10,
@@ -154,6 +158,10 @@ describe('DLS Data Publication Landing page', () => {
         },
       ],
       publicationDate: '2023-07-20',
+      dates: [
+        { id: 1, date: '2025-12-08', dateType: 'Issued' },
+        { id: 2, date: '2024-11-19', dateType: 'Collected' },
+      ],
     };
 
     initialDataCiteData = {
@@ -167,7 +175,10 @@ describe('DLS Data Publication Landing page', () => {
           schemeUri: null,
         },
         publicationYear: 2025,
-        dates: [],
+        dates: [
+          { date: '2025-12-08', dateType: 'Issued', dateInformation: null },
+          { date: '2024-11-19', dateType: 'Collected', dateInformation: null },
+        ],
         types: {
           resourceType: '',
           resourceTypeGeneral: '',
@@ -270,6 +281,11 @@ describe('DLS Data Publication Landing page', () => {
           return Promise.reject(`Endpoint not mocked: ${url}`);
         }
       });
+
+    vi.mocked(readSciGatewayToken).mockReturnValue({
+      sessionId: 'abcdef',
+      username: 'John1',
+    });
   });
 
   afterEach(() => {
@@ -304,11 +320,16 @@ describe('DLS Data Publication Landing page', () => {
     expect(
       screen.getByRole('link', { name: 'doi_constants.license.name' })
     ).toHaveAttribute('href', 'doi_constants.license.url');
-    expect(screen.getByText('Dataset')).toBeInTheDocument();
+    expect(screen.getByText('User-defined')).toBeInTheDocument();
 
     expect(
       await screen.findByTestId('landing-dataPublication-user-0')
-    ).toHaveTextContent('Principal Investigator: John Smith');
+    ).toHaveTextContent('Principal Investigator: John Smith(ABC Uni, XYZ Org)');
+    expect(
+      within(screen.getByTestId('landing-dataPublication-user-0')).getByTestId(
+        'landing-dataPublication-orcidId-link'
+      )
+    ).toHaveAttribute('href', 'https://orcid.org/123456');
     expect(
       await screen.findByTestId('landing-dataPublication-user-1')
     ).toHaveTextContent('Experimenter: Jane Smith');
@@ -347,6 +368,15 @@ describe('DLS Data Publication Landing page', () => {
     expect(screen.queryByText('datapublications.details.users')).toBeNull();
   });
 
+  it('renders correctly whilst loading', async () => {
+    renderComponent();
+
+    expect(screen.getByRole('progressbar')).toBeInTheDocument();
+    expect(
+      screen.queryByText('doi_constants.publisher.name')
+    ).not.toBeInTheDocument();
+  });
+
   it('renders edit button if the user is minter & clicking it takes you to the edit page', async () => {
     renderComponent();
 
@@ -365,7 +395,7 @@ describe('DLS Data Publication Landing page', () => {
   });
 
   it('renders version panel when showing a concept DOI & does not show edit button if user is not the minter', async () => {
-    vi.mocked(readSciGatewayToken).mockReturnValue({
+    vi.mocked(readSciGatewayToken).mockReturnValueOnce({
       sessionId: 'abcdef',
       username: 'Jane2',
     });
@@ -446,6 +476,10 @@ describe('DLS Data Publication Landing page', () => {
     renderComponent();
 
     expect(
+      await screen.findByRole('link', { name: 'DOI doi 1' })
+    ).toHaveAttribute('href', 'https://doi.org/doi 1');
+
+    expect(
       screen.queryByRole('button', { name: 'datapublications.edit.edit_label' })
     ).not.toBeInTheDocument();
 
@@ -460,10 +494,6 @@ describe('DLS Data Publication Landing page', () => {
     ).toBeInTheDocument();
 
     expect(
-      await screen.findByRole('link', { name: 'DOI doi 1' })
-    ).toHaveAttribute('href', 'https://doi.org/doi 1');
-
-    expect(
       screen.getByText('datapublications.concept datapublications.pid')
     ).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'DOI doi 2' })).toHaveAttribute(
@@ -475,11 +505,121 @@ describe('DLS Data Publication Landing page', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('renders a session DOI correctly & shows the publish button when unpublished', async () => {
+    initialData.type = { id: 1, name: 'Investigation' };
+    initialData.users = [
+      { ...users[0], contributorType: ContributorType.Creator },
+      ...users.slice(1),
+    ];
+    initialData.publicationDate = null;
+    // check we don't render related identifiers panel if we have none
+    initialDataCiteData.attributes.relatedIdentifiers = [];
+    initialDataCiteData.attributes.relatedItems = [
+      {
+        titles: [
+          {
+            title: 'Instrument 1',
+          },
+        ],
+        relationType: DOIRelationType.IsCollectedBy,
+        relatedItemType: DOIResourceType.Instrument,
+      },
+      {
+        titles: [
+          {
+            title: 'Instrument 2',
+          },
+        ],
+        relationType: DOIRelationType.IsCollectedBy,
+        relatedItemType: DOIResourceType.Instrument,
+      },
+    ];
+    renderComponent();
+
+    // info panel contents
+    expect(
+      await screen.findByRole('link', { name: 'DOI doi 1' })
+    ).toHaveAttribute('href', 'https://doi.org/doi 1');
+    expect(
+      await screen.findByText('Instrument 1, Instrument 2')
+    ).toBeInTheDocument();
+    expect(await screen.findByText(/Issued: 2025-12-08/i)).toBeInTheDocument();
+    expect(
+      await screen.findByText(/Collected: 2024-11-19/i)
+    ).toBeInTheDocument();
+    expect(screen.getByText('Investigation')).toBeInTheDocument();
+
+    expect(
+      screen.queryByRole('button', { name: 'datapublications.edit.edit_label' })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
+        name: 'datapublications.publish.publish_label',
+      })
+    ).toBeInTheDocument();
+
+    expect(
+      screen.queryByRole('button', {
+        name: 'datapublications.details.version_panel_label',
+      })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', {
+        name: 'datapublications.details.related_identifiers_panel_label',
+      })
+    ).not.toBeInTheDocument();
+
+    expect(
+      screen.getByText('datapublications.details.citation_formatter.label')
+    ).toBeInTheDocument();
+
+    // expect structured data
+    expect(document.getElementById('dataPublication-1')).not.toBeNull();
+  });
+
+  it('session DOI page does not show publish button when publication date is set ', async () => {
+    initialData.type = { id: 1, name: 'Investigation' };
+    initialData.users = [
+      { ...users[0], contributorType: ContributorType.Creator },
+      ...users.slice(1),
+    ];
+    initialData.publicationDate = '2025-12-15';
+    initialDataCiteData.attributes.relatedItems = [
+      {
+        titles: [
+          {
+            title: 'Instrument 1',
+          },
+        ],
+        relationType: DOIRelationType.IsCollectedBy,
+        relatedItemType: DOIResourceType.Instrument,
+      },
+    ];
+    renderComponent();
+
+    // check page loaded
+    expect(await screen.findByText('Instrument 1')).toBeInTheDocument();
+    // should load related identifiers panel as it's not empty
+    expect(
+      screen.getByRole('button', {
+        name: 'datapublications.details.related_identifiers_panel_label',
+      })
+    ).toBeInTheDocument();
+
+    expect(
+      screen.queryByRole('button', {
+        name: 'datapublications.publish.publish_label',
+      })
+    ).not.toBeInTheDocument();
+  });
+
   it('displays content table when tab is clicked', async () => {
     renderComponent();
 
     await user.click(
-      screen.getByRole('tab', { name: 'datapublications.content_tab_label' })
+      await screen.findByRole('tab', {
+        name: 'datapublications.content_tab_label',
+      })
     );
 
     expect(
@@ -520,7 +660,7 @@ describe('DLS Data Publication Landing page', () => {
         id="dataPublication-1"
         type="application/ld+json"
       >
-        {"@context":"http://schema.org","@type":"Dataset","@id":"https://doi.org/doi 1","url":"https://doi.org/doi 1","identifier":"doi 1","name":"Title","description":"foo bar","keywords":"doi_constants.keywords","publisher":{"@type":"Organization","url":"doi_constants.publisher.url","name":"doi_constants.publisher.name","logo":"doi_constants.publisher.logo","contactPoint":{"@type":"ContactPoint","contactType":"customer service","email":"doi_constants.publisher.email","url":"doi_constants.publisher.url"}},"creator":[{"@type":"Person","name":"John Smith"},{"@type":"Person","name":"Jane Smith"},{"@type":"Person","name":"Jesse Smith"}],"includedInDataCatalog":{"@type":"DataCatalog","url":"doi_constants.content_url"},"license":{"@type":"URL","url":"doi_constants.license.url","name":"doi_constants.license.name"},"isAccessibleForFree":true,"hasPart":["doi 1"],"isPartOf":["doi 2"]}
+        {"@context":"http://schema.org","@type":"Dataset","@id":"https://doi.org/doi 1","url":"https://doi.org/doi 1","identifier":"doi 1","name":"Title","description":"foo bar","keywords":"doi_constants.keywords","publisher":{"@type":"Organization","url":"doi_constants.publisher.url","name":"doi_constants.publisher.name","logo":"doi_constants.publisher.logo","contactPoint":{"@type":"ContactPoint","contactType":"customer service","email":"doi_constants.publisher.email","url":"doi_constants.publisher.url"}},"creator":[{"@type":"Person","name":"John Smith","sameAs":"https://orcid.org/123456","affiliation":[{"name":"ABC Uni"},{"name":"XYZ Org"}]},{"@type":"Person","name":"Jane Smith"},{"@type":"Person","name":"Jesse Smith"}],"includedInDataCatalog":{"@type":"DataCatalog","url":"doi_constants.content_url"},"license":{"@type":"URL","url":"doi_constants.license.url","name":"doi_constants.license.name"},"isAccessibleForFree":true,"hasPart":["doi 1"],"isPartOf":["doi 2"]}
       </script>
     `);
   });

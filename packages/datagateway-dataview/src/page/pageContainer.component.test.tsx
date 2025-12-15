@@ -317,6 +317,8 @@ describe('PageContainer - Tests', () => {
   });
 
   it('displays role selector when on My Data route', async () => {
+    const response = { username: 'SomePerson' };
+    vi.mocked(readSciGatewayToken, { partial: true }).mockReturnValue(response);
     history.replace(paths.myData.root);
 
     renderComponent();
@@ -324,6 +326,20 @@ describe('PageContainer - Tests', () => {
     expect(
       await screen.findByRole('combobox', {
         name: 'my_data_table.role_selector',
+      })
+    ).toBeInTheDocument();
+  });
+
+  it('displays doi type selector when on My DOIs route', async () => {
+    const response = { username: 'SomePerson' };
+    vi.mocked(readSciGatewayToken, { partial: true }).mockReturnValue(response);
+    history.replace(paths.myDOIs.dls);
+
+    renderComponent();
+
+    expect(
+      await screen.findByRole('group', {
+        name: 'my_doi_table.button_group_aria_label',
       })
     ).toBeInTheDocument();
   });

@@ -8,6 +8,7 @@ import {
   useDeleteDraftVersion,
   useDraftVersionDOI,
   useIsCartMintable,
+  useOpenDataPublication,
   usePublishDraftVersion,
 } from '.';
 import { ContributorType, DownloadCartItem } from '../app.types';
@@ -684,5 +685,62 @@ describe('useDOI', () => {
 
     await waitFor(() => expect(result.current.isError).toBe(true));
     expect(axios.get).toHaveBeenCalledTimes(4);
+  });
+});
+
+describe('useOpenDataPublication', () => {
+  it('should send an open data request with an id of the data publication to open', async () => {
+    axios.put = vi.fn().mockResolvedValue(undefined);
+
+    const { result } = renderHook(() => useOpenDataPublication(), {
+      wrapper: createReactQueryWrapper(),
+    });
+
+    act(() => {
+      result.current.mutate({
+        dataPublicationId: '1',
+      });
+    });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+    expect(result.current.data).toEqual(undefined);
+    expect(axios.put).toHaveBeenCalledWith(
+      expect.stringContaining('/open/1'),
+      {},
+      {
+        headers: { Authorization: 'Bearer null' },
+      }
+    );
+  });
+
+  it('handles errors correctly', async () => {
+    const error = {
+      message: 'Test error message',
+      response: {
+        status: 500,
+      },
+    };
+    axios.put = vi.fn().mockRejectedValue(error);
+
+    const { result } = renderHook(() => useOpenDataPublication(), {
+      wrapper: createReactQueryWrapper(),
+    });
+
+    act(() => {
+      result.current.mutate({
+        dataPublicationId: '1',
+      });
+    });
+    await waitFor(() => expect(result.current.isError).toBe(true));
+
+    expect(log.error).toHaveBeenCalledWith(error.message);
+    expect(axios.put).toHaveBeenCalledWith(
+      expect.stringContaining('/open/1'),
+      {},
+      {
+        headers: { Authorization: 'Bearer null' },
+      }
+    );
   });
 });

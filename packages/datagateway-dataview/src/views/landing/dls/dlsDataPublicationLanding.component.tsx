@@ -332,10 +332,11 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
           },
           {
             content: (dataPublication: DataPublication) =>
-              dataPublication.dates?.map((d) => (
-                <Typography key={d.id}>
-                  {d.dateType}: {d.date.split('T')[0]}
-                </Typography>
+              dataPublication.dates?.map((d, i) => (
+                <React.Fragment key={d.id}>
+                  {i !== 0 && <br />}
+                  {`${d.dateType}: ${d.date.split('T')[0]}`}
+                </React.Fragment>
               )),
             label: t('datapublications.dates'),
           },
@@ -601,7 +602,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 <Grid item sx={{ pt: '0px !important' }}>
                   <DLSDataPublicationRelatedIdentifiersPanel doi={data?.pid} />
                 </Grid>
-                {isVersionDOI === false && isSessionDOI === false && (
+                {isConceptDOI && (
                   <Grid item sx={{ pt: '0px !important' }}>
                     <DLSDataPublicationVersionPanel
                       dataPublicationId={dataPublicationId}

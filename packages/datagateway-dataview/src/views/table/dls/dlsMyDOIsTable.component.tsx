@@ -52,7 +52,7 @@ const DLSMyDOIsTable = (): React.ReactElement => {
             }),
           },
         ]
-      : doiType === 'creator'
+      : doiType === 'user'
       ? [
           {
             filterType: 'where',

@@ -1,40 +1,40 @@
-import {
-  getApiParams,
-  nestedValue,
-  parseQueryToSearch,
-  parseSearchToQuery,
-  useCustomFilter,
-  useIds,
-  usePushFilter,
-  usePushFilters,
-  usePushPage,
-  usePushResults,
-  useSort,
-  useUpdateView,
-  useCustomFilterCount,
-  usePushSearchText,
-  usePushSearchToggles,
-  usePushSearchEndDate,
-  usePushSearchStartDate,
-  useUpdateQueryParam,
-  usePushQueryParams,
-  useSingleSort,
-  usePushSearchRestrict,
-} from './index';
+import { act, renderHook, waitFor } from '@testing-library/react';
+import axios from 'axios';
+import { createMemoryHistory, History } from 'history';
+import React from 'react';
+import { Router } from 'react-router-dom';
+import type { MockInstance } from 'vitest';
 import {
   FiltersType,
   Investigation,
   QueryParams,
   SortType,
 } from '../app.types';
-import { act, renderHook, waitFor } from '@testing-library/react';
-import { createMemoryHistory, History } from 'history';
-import React from 'react';
-import { Router } from 'react-router-dom';
-import axios from 'axios';
 import handleICATError from '../handleICATError';
 import { createReactQueryWrapper } from '../setupTests';
-import type { MockInstance } from 'vitest';
+import {
+  getApiParams,
+  nestedValue,
+  parseQueryToSearch,
+  parseSearchToQuery,
+  useCustomFilter,
+  useCustomFilterCount,
+  useIds,
+  usePushFilter,
+  usePushFilters,
+  usePushPage,
+  usePushQueryParams,
+  usePushResults,
+  usePushSearchEndDate,
+  usePushSearchRestrict,
+  usePushSearchStartDate,
+  usePushSearchText,
+  usePushSearchToggles,
+  useSingleSort,
+  useSort,
+  useUpdateQueryParam,
+  useUpdateView,
+} from './index';
 
 vi.mock('../handleICATError');
 
@@ -99,7 +99,7 @@ describe('generic api functions', () => {
   describe('parseSearchToQuery', () => {
     it('parses query string successfully', () => {
       const query =
-        '?view=table&search=test&page=1&results=10&filters={"name"%3A{"value"%3A"test"%2C"type"%3A"include"}}&sort={"name"%3A"asc"}';
+        '?view=table&search=test&page=1&results=10&filters={"name"%3A{"value"%3A"test"%2C"type"%3A"include"}}&sort={"name"%3A"asc"}&doiType=session';
 
       expect(parseSearchToQuery(query)).toEqual({
         view: 'table',
@@ -116,6 +116,7 @@ describe('generic api functions', () => {
         startDate: null,
         endDate: null,
         currentTab: 'investigation',
+        doiType: 'session',
       });
     });
 
@@ -138,6 +139,7 @@ describe('generic api functions', () => {
         startDate: new Date('2021-10-17T00:00:00Z'),
         endDate: new Date('2021-10-25T00:00:00Z'),
         currentTab: 'investigation',
+        doiType: null,
       });
     });
 
@@ -162,6 +164,7 @@ describe('generic api functions', () => {
           endDate: new Date(NaN),
           currentTab: 'investigation',
           restrict: false,
+          doiType: null,
         })
       );
     });

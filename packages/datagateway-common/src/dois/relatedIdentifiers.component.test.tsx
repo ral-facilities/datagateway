@@ -175,6 +175,9 @@ describe('Related identifiers form component', () => {
     expect(
       screen.queryByRole('option', { name: /Part/i })
     ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('option', { name: /Collect/i })
+    ).not.toBeInTheDocument();
     await user.click(await screen.findByRole('option', { name: 'IsCitedBy' }));
 
     expect(screen.queryByRole('option')).not.toBeInTheDocument();
