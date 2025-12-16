@@ -461,13 +461,13 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                     />
                   </Tabs>
                 </Grid>
-                {/* Only let creators publish DOIs & only if it's an unopened session DOI */}
+                {/* Only let PIs publish DOIs & only if it's an unopened session DOI */}
                 {isSessionDOI &&
                   !data?.publicationDate &&
-                  data?.users?.some(
+                  data?.content?.dataCollectionInvestigations?.[0]?.investigation?.investigationUsers?.some(
                     (user) =>
                       user.user?.name === readSciGatewayToken().username &&
-                      user.contributorType === ContributorType.Creator
+                      user.role === 'PI'
                   ) && (
                     <Grid item xs="auto" alignSelf="center">
                       <PublishButton dataPublication={data} />

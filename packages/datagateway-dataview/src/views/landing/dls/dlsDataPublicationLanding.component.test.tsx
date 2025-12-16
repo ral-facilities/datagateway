@@ -98,6 +98,8 @@ describe('DLS Data Publication Landing page', () => {
     },
   ];
 
+  const investigationUsers = [{ id: 1, user: users[0].user, role: 'PI' }];
+
   const investigation = {
     id: 1,
     title: 'Title 1',
@@ -107,6 +109,7 @@ describe('DLS Data Publication Landing page', () => {
     doi: 'doi 1',
     size: 1,
     investigationInstruments: investigationInstrument,
+    investigationUsers,
     startDate: '2023-07-20',
     endDate: '2023-07-21',
   };
@@ -507,10 +510,6 @@ describe('DLS Data Publication Landing page', () => {
 
   it('renders a session DOI correctly & shows the publish button when unpublished', async () => {
     initialData.type = { id: 1, name: 'Investigation' };
-    initialData.users = [
-      { ...users[0], contributorType: ContributorType.Creator },
-      ...users.slice(1),
-    ];
     initialData.publicationDate = null;
     // check we don't render related identifiers panel if we have none
     initialDataCiteData.attributes.relatedIdentifiers = [];
@@ -579,10 +578,6 @@ describe('DLS Data Publication Landing page', () => {
 
   it('session DOI page does not show publish button when publication date is set ', async () => {
     initialData.type = { id: 1, name: 'Investigation' };
-    initialData.users = [
-      { ...users[0], contributorType: ContributorType.Creator },
-      ...users.slice(1),
-    ];
     initialData.publicationDate = '2025-12-15';
     initialDataCiteData.attributes.relatedItems = [
       {
