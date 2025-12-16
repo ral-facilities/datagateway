@@ -139,7 +139,6 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
                           }[];
                         }>
                       ) => {
-                        // TODO: check this is the right message from the API
                         setRelatedIdentifierError(
                           error.response?.data?.errors
                             ? error.response.data.errors[0].title

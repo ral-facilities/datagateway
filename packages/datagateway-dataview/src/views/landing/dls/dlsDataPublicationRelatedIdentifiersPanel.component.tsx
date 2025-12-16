@@ -47,36 +47,32 @@ const DLSDataPublicationRelatedIdentifiersPanel: React.FC<
               (relatedIdentifier) =>
                 !relatedIdentifier.relationType.includes('Version')
             )
-            .map((relatedIdentifier) => (
-              <Grid
-                container
-                item
-                key={relatedIdentifier.relatedIdentifier}
-                spacing={1}
-              >
-                <Grid item xs="auto">
-                  <Typography>{relatedIdentifier.relationType}</Typography>
+            .map(
+              ({
+                relatedIdentifier,
+                relationType,
+                resourceTypeGeneral,
+                relatedIdentifierType,
+              }) => (
+                <Grid container item key={relatedIdentifier} spacing={1}>
+                  <Grid item xs="auto">
+                    <Typography>{relationType}</Typography>
+                  </Grid>
+                  <Grid item xs="auto">
+                    <Typography>{resourceTypeGeneral}</Typography>
+                  </Grid>
+                  <Grid item xs maxWidth="300px !important">
+                    {relatedIdentifierType === DOIIdentifierType.DOI ? (
+                      <StyledDOI doi={relatedIdentifier} />
+                    ) : relatedIdentifierType === DOIIdentifierType.URL ? (
+                      <Link href={relatedIdentifier}>{relatedIdentifier}</Link>
+                    ) : (
+                      relatedIdentifier
+                    )}
+                  </Grid>
                 </Grid>
-                <Grid item xs="auto">
-                  <Typography>
-                    {relatedIdentifier.resourceTypeGeneral}
-                  </Typography>
-                </Grid>
-                <Grid item xs maxWidth="300px !important">
-                  {relatedIdentifier.relatedIdentifierType ===
-                  DOIIdentifierType.DOI ? (
-                    <StyledDOI doi={relatedIdentifier.relatedIdentifier} />
-                  ) : relatedIdentifier.relatedIdentifierType ===
-                    DOIIdentifierType.URL ? (
-                    <Link href={relatedIdentifier.relatedIdentifier}>
-                      {relatedIdentifier.relatedIdentifier}
-                    </Link>
-                  ) : (
-                    relatedIdentifier.relatedIdentifier
-                  )}
-                </Grid>
-              </Grid>
-            ))}
+              )
+            )}
         </Grid>
       </AccordionDetails>
     </Accordion>

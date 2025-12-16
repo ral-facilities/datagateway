@@ -107,56 +107,61 @@ const DOIMetadataConfirmation: React.FC<DOIMetadataConfirmationProps> = (
               {t('DOIGenerationForm.related_identifiers')}
             </Typography>
           </Grid>
-          {metadata.relatedIdentifiers.map((relatedIdentifier) => {
-            return (
-              <Grid
-                container
-                item
-                key={relatedIdentifier.relatedIdentifier}
-                columnSpacing={1}
-                ml={1}
-              >
-                <Grid item>
-                  <Typography>
-                    {t('DOIGenerationForm.related_identifier_identifier')}:{' '}
-                    {relatedIdentifier.relatedIdentifierType ===
-                    DOIIdentifierType.DOI ? (
-                      <Link
-                        href={`https://doi.org/${relatedIdentifier.relatedIdentifier}`}
-                      >
-                        {relatedIdentifier.relatedIdentifier}
-                      </Link>
-                    ) : relatedIdentifier.relatedIdentifierType ===
-                      DOIIdentifierType.URL ? (
-                      <Link href={relatedIdentifier.relatedIdentifier}>
-                        {relatedIdentifier.relatedIdentifier}
-                      </Link>
-                    ) : (
-                      relatedIdentifier.relatedIdentifier
-                    )}
-                  </Typography>
+          {metadata.relatedIdentifiers.map(
+            ({
+              relatedIdentifier,
+              relatedIdentifierType,
+              relationType,
+              resourceTypeGeneral,
+            }) => {
+              return (
+                <Grid
+                  container
+                  item
+                  key={relatedIdentifier}
+                  columnSpacing={1}
+                  ml={1}
+                >
+                  <Grid item>
+                    <Typography>
+                      {t('DOIGenerationForm.related_identifier_identifier')}:{' '}
+                      {relatedIdentifierType === DOIIdentifierType.DOI ? (
+                        <Link href={`https://doi.org/${relatedIdentifier}`}>
+                          {relatedIdentifier}
+                        </Link>
+                      ) : relatedIdentifierType === DOIIdentifierType.URL ? (
+                        <Link href={relatedIdentifier}>
+                          {relatedIdentifier}
+                        </Link>
+                      ) : (
+                        relatedIdentifier
+                      )}
+                    </Typography>
+                  </Grid>
+                  <Grid item>
+                    <Typography>
+                      {t(
+                        'DOIGenerationForm.related_identifier_identifier_type'
+                      )}
+                      : {relatedIdentifierType}
+                    </Typography>
+                  </Grid>
+                  <Grid item>
+                    <Typography>
+                      {t('DOIGenerationForm.related_identifier_relationship')}:{' '}
+                      {relationType}
+                    </Typography>
+                  </Grid>
+                  <Grid item>
+                    <Typography>
+                      {t('DOIGenerationForm.related_identifier_resource_type')}:{' '}
+                      {resourceTypeGeneral}
+                    </Typography>
+                  </Grid>
                 </Grid>
-                <Grid item>
-                  <Typography>
-                    {t('DOIGenerationForm.related_identifier_identifier_type')}:{' '}
-                    {relatedIdentifier.relatedIdentifierType}
-                  </Typography>
-                </Grid>
-                <Grid item>
-                  <Typography>
-                    {t('DOIGenerationForm.related_identifier_relationship')}:{' '}
-                    {relatedIdentifier.relationType}
-                  </Typography>
-                </Grid>
-                <Grid item>
-                  <Typography>
-                    {t('DOIGenerationForm.related_identifier_resource_type')}:{' '}
-                    {relatedIdentifier.resourceTypeGeneral}
-                  </Typography>
-                </Grid>
-              </Grid>
-            );
-          })}
+              );
+            }
+          )}
         </Grid>
         <Grid container item spacing={1}>
           <Grid item>
@@ -217,24 +222,24 @@ const DOIMetadataConfirmation: React.FC<DOIMetadataConfirmationProps> = (
           <Grid item>
             <Typography>{t('DOIGenerationForm.dates')}</Typography>
           </Grid>
-          {metadata.dates.map((date) => {
+          {metadata.dates.map(({ date, dateType, dateInformation }) => {
             return (
-              <Grid container item key={date.date} columnSpacing={1} ml={1}>
+              <Grid container item key={date} columnSpacing={1} ml={1}>
                 <Grid item>
                   <Typography>
-                    {t('DOIGenerationForm.date')}: {date.date}
+                    {t('DOIGenerationForm.date')}: {date}
                   </Typography>
                 </Grid>
                 <Grid item>
                   <Typography>
-                    {t('DOIGenerationForm.dateType')}: {date.dateType}
+                    {t('DOIGenerationForm.dateType')}: {dateType}
                   </Typography>
                 </Grid>
-                {date.dateInformation && (
+                {dateInformation && (
                   <Grid item>
                     <Typography>
                       {t('DOIGenerationForm.dateInformation')}:{' '}
-                      {date.dateInformation}
+                      {dateInformation}
                     </Typography>
                   </Grid>
                 )}
@@ -269,55 +274,57 @@ const DOIMetadataConfirmation: React.FC<DOIMetadataConfirmationProps> = (
           <Grid item>
             <Typography>{t('DOIGenerationForm.rights')}</Typography>
           </Grid>
-          {metadata.rightsList.map((rights) => {
-            return (
-              <Grid
-                container
-                item
-                key={rights.rights}
-                direction="column"
-                ml={1}
-              >
-                <Grid item>
-                  <Typography>
-                    {t('DOIGenerationForm.rights')}: {rights.rights}
-                  </Typography>
+          {metadata.rightsList.map(
+            ({
+              rights,
+              rightsUri,
+              rightsIdentifier,
+              rightsIdentifierScheme,
+              schemeUri,
+            }) => {
+              return (
+                <Grid container item key={rights} direction="column" ml={1}>
+                  <Grid item>
+                    <Typography>
+                      {t('DOIGenerationForm.rights')}: {rights}
+                    </Typography>
+                  </Grid>
+                  {rightsUri && (
+                    <Grid item>
+                      <Typography>
+                        {t('DOIGenerationForm.rightsURI')}:{' '}
+                        <Link href={rightsUri}>{rightsUri}</Link>
+                      </Typography>
+                    </Grid>
+                  )}
+                  {rightsIdentifier && (
+                    <Grid item>
+                      <Typography>
+                        {t('DOIGenerationForm.rightsIdentifier')}:{' '}
+                        {rightsIdentifier}
+                      </Typography>
+                    </Grid>
+                  )}
+                  {rightsIdentifierScheme && (
+                    <Grid item>
+                      <Typography>
+                        {t('DOIGenerationForm.rightsIdentifierScheme')}:{' '}
+                        {rightsIdentifierScheme}
+                      </Typography>
+                    </Grid>
+                  )}
+                  {schemeUri && (
+                    <Grid item>
+                      <Typography>
+                        {t('DOIGenerationForm.rightsSchemeURI')}:{' '}
+                        <Link href={schemeUri}>{schemeUri}</Link>
+                      </Typography>
+                    </Grid>
+                  )}
                 </Grid>
-                {rights.rightsUri && (
-                  <Grid item>
-                    <Typography>
-                      {t('DOIGenerationForm.rightsURI')}:{' '}
-                      <Link href={rights.rightsUri}>{rights.rightsUri}</Link>
-                    </Typography>
-                  </Grid>
-                )}
-                {rights.rightsIdentifier && (
-                  <Grid item>
-                    <Typography>
-                      {t('DOIGenerationForm.rightsIdentifier')}:{' '}
-                      {rights.rightsIdentifier}
-                    </Typography>
-                  </Grid>
-                )}
-                {rights.rightsIdentifierScheme && (
-                  <Grid item>
-                    <Typography>
-                      {t('DOIGenerationForm.rightsIdentifierScheme')}:{' '}
-                      {rights.rightsIdentifierScheme}
-                    </Typography>
-                  </Grid>
-                )}
-                {rights.schemeUri && (
-                  <Grid item>
-                    <Typography>
-                      {t('DOIGenerationForm.rightsSchemeURI')}:{' '}
-                      <Link href={rights.schemeUri}>{rights.schemeUri}</Link>
-                    </Typography>
-                  </Grid>
-                )}
-              </Grid>
-            );
-          })}
+              );
+            }
+          )}
         </Grid>
         <Grid container item spacing={1}>
           <Grid item>
