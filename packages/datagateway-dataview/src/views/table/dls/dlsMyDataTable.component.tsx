@@ -18,13 +18,11 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 
-import {
-  Assessment,
-  CalendarToday,
-  Fingerprint,
-  Save,
-  Subject,
-} from '@mui/icons-material';
+import Assessment from '@mui/icons-material/Assessment';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import Fingerprint from '@mui/icons-material/Fingerprint';
+import Save from '@mui/icons-material/Save';
+import Subject from '@mui/icons-material/Subject';
 import { useLocation } from 'react-router-dom';
 
 const DLSMyDataTable = (): React.ReactElement => {

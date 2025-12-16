@@ -10,11 +10,14 @@ import log from 'loglevel';
 import { useSelector } from 'react-redux';
 import {
   DOIDraftVersionResponse,
+  DOIIdentifierType,
   DOIMetadata,
   DOIResponse,
+  DataCiteDOI,
+  DataCiteResponse,
   DownloadCartItem,
   MicroFrontendId,
-  RelatedDOI,
+  RelatedIdentifier,
   User,
 } from '../app.types';
 import { readSciGatewayToken } from '../parseTokens';
@@ -137,20 +140,6 @@ export const useCheckUser = (
   );
 };
 
-export interface DataCiteResponse {
-  data: DataCiteDOI;
-}
-
-export interface DataCiteDOI {
-  id: string;
-  type: string;
-  attributes: {
-    doi: string;
-    titles: { title: string }[];
-    url: string;
-  };
-}
-
 /**
  * Retrieve metadata for a DOI
  * @param doi The DOI to fetch metadata for
@@ -167,14 +156,44 @@ export const fetchDOI = (
 };
 
 /**
+ * Returns the DOI metadata for a DOI
+ * @param doi The DOI that we're checking
+ * @returns the {@link RelatedIdentifier} that matches the username, or 404
+ */
+export const useDOI = (
+  doi: string | undefined
+): UseQueryResult<DataCiteDOI, AxiosError> => {
+  const dataCiteUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.dataCiteUrl
+  );
+  const queryClient = useQueryClient();
+  const opts = queryClient.getDefaultOptions();
+  const retries =
+    typeof opts?.queries?.retry === 'number' ? opts.queries.retry : 3;
+
+  return useQuery(['doi', doi], () => fetchDOI(doi ?? '', dataCiteUrl), {
+    retry: (failureCount: number, error: AxiosError) => {
+      if (
+        // DOI is invalid - don't retry as this is a correct response from the server
+        error.response?.status === 404 ||
+        failureCount >= retries
+      )
+        return false;
+      return true;
+    },
+    enabled: typeof doi !== 'undefined',
+  });
+};
+
+/**
  * Checks whether a DOI is valid and returns the DOI metadata
  * @param doi The DOI that we're checking
- * @returns the {@link RelatedDOI} that matches the username, or 404
+ * @returns the {@link RelatedIdentifier} that matches the username, or 404
  */
 export const useCheckDOI = (
   doi: string,
   dataCiteUrl: string | undefined
-): UseQueryResult<RelatedDOI, AxiosError> => {
+): UseQueryResult<RelatedIdentifier, AxiosError> => {
   const queryClient = useQueryClient();
   const opts = queryClient.getDefaultOptions();
   const retries =
@@ -193,6 +212,7 @@ export const useCheckDOI = (
     select: (doi) => ({
       title: doi.attributes.titles[0].title,
       identifier: doi.attributes.doi,
+      relatedIdentifierType: DOIIdentifierType.DOI,
       relationType: '',
     }),
     // set enabled false to only fetch on demand when the add creator button is pressed

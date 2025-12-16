@@ -8,7 +8,10 @@ import {
   Tabs,
   Typography,
 } from '@mui/material';
-import { CalendarToday, CheckCircle, Public, Save } from '@mui/icons-material';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import CheckCircle from '@mui/icons-material/CheckCircle';
+import Public from '@mui/icons-material/Public';
+import Save from '@mui/icons-material/Save';
 import {
   Dataset,
   formatBytes,

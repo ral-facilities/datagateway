@@ -1,19 +1,19 @@
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
   Accordion,
-  AccordionSummary,
   AccordionDetails,
-  Typography,
+  AccordionSummary,
   Grid,
+  Typography,
 } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import React from 'react';
 import {
   DOIRelationType,
   RelatedItem,
   useDataPublication,
 } from 'datagateway-common';
-import { StyledDOI } from './dlsDataPublicationLanding.component';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { StyledDOI } from './dlsDataPublicationLanding.component';
 
 type DLSDataPublicationVersionPanelProps = { dataPublicationId: string };
 
@@ -35,7 +35,7 @@ const DLSDataPublicationVersionPanel: React.FC<
   const { data } = useDataPublication(parseInt(dataPublicationId));
 
   return (
-    <Accordion defaultExpanded disableGutters elevation={0}>
+    <Accordion disableGutters elevation={0}>
       <AccordionSummary
         sx={{ p: 0 }}
         expandIcon={<ExpandMoreIcon />}

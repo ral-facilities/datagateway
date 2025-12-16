@@ -1,4 +1,7 @@
-import { CalendarToday, Explore, Save, Subject } from '@mui/icons-material';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import Explore from '@mui/icons-material/Explore';
+import Save from '@mui/icons-material/Save';
+import Subject from '@mui/icons-material/Subject';
 import {
   ColumnType,
   Datafile,

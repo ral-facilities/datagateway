@@ -1,4 +1,4 @@
-import { RemoveCircle } from '@mui/icons-material';
+import RemoveCircle from '@mui/icons-material/RemoveCircle';
 import {
   Alert,
   Button,

@@ -1,7 +1,5 @@
-import {
-  AddCircleOutlineOutlined,
-  RemoveCircleOutlineOutlined,
-} from '@mui/icons-material';
+import AddCircleOutlineOutlined from '@mui/icons-material/AddCircleOutlineOutlined';
+import RemoveCircleOutlineOutlined from '@mui/icons-material/RemoveCircleOutlineOutlined';
 import { Button } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';

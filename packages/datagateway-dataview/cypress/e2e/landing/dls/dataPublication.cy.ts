@@ -117,12 +117,35 @@ describe('DLS - Data Publication Landing', () => {
     cy.contains('button', 'Add Creator').click();
 
     // DOI from https://support.datacite.org/docs/testing-guide
-    cy.contains(/^DOI$/).parent().find('input').type('10.17596/w76y-4s92');
+    cy.contains('Identifier (e.g. DOI, URL)')
+      .parent()
+      .find('input')
+      .type('10.17596/w76y-4s92');
     cy.contains('button', 'Add DOI').click();
     cy.contains('label', 'Resource Type').parent().click();
     cy.contains('Journal').click();
     cy.contains('label', 'Relationship').parent().click();
     cy.contains('IsCitedBy').click();
+
+    cy.contains('Identifier (e.g. DOI, URL)')
+      .parent()
+      .find('input')
+      .type('my.identifier');
+    cy.contains('button', 'Add Other').click();
+    cy.contains('td', 'my.identifier')
+      .parent()
+      .contains('label', 'Resource Type')
+      .last()
+      .parent()
+      .click();
+    cy.contains('ComputationalNotebook').click();
+    cy.contains('td', 'my.identifier')
+      .parent()
+      .contains('label', 'Relationship')
+      .last()
+      .parent()
+      .click();
+    cy.contains('IsSupplementedBy').click();
 
     // edit content
     cy.contains('Datafiles').click();
@@ -191,6 +214,20 @@ describe('DLS - Data Publication Landing', () => {
     cy.get(
       '#version-panel-content [data-testid="landing-dataPublication-pid-link"]'
     ).should('have.length', 2);
+
+    cy.contains('Related Identifiers').click();
+
+    cy.contains('my.identifier').should('be.visible');
+    cy.contains('my.identifier').parent().parent().as('my.identifier-row');
+    cy.get('@my.identifier-row')
+      .contains('IsSupplementedBy')
+      .should('be.visible');
+    cy.get('@my.identifier-row')
+      .contains('ComputationalNotebook')
+      .should('be.visible');
+
+    // expect both user added related identifiers and a part relation
+    cy.get('@my.identifier-row').siblings().should('have.length', 2);
   });
 
   it('should be able to use the citation formatters', () => {

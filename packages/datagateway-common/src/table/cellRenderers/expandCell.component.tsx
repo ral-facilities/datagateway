@@ -1,7 +1,8 @@
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import { IconButton, SxProps, TableCell } from '@mui/material';
 import React from 'react';
 import { TableCellProps } from 'react-virtualized';
-import { TableCell, IconButton, SxProps } from '@mui/material';
-import { ExpandMore, ExpandLess } from '@mui/icons-material';
 
 type ExpandCellProps = TableCellProps & {
   expandedIndex: number;

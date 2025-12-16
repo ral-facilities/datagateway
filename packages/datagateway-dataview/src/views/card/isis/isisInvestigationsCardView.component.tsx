@@ -1,10 +1,8 @@
-import {
-  CalendarToday,
-  Fingerprint,
-  Person,
-  Public,
-  Save,
-} from '@mui/icons-material';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import Fingerprint from '@mui/icons-material/Fingerprint';
+import Person from '@mui/icons-material/Person';
+import Public from '@mui/icons-material/Public';
+import Save from '@mui/icons-material/Save';
 import { styled } from '@mui/material';
 import {
   AdditionalFilters,

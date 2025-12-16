@@ -1,4 +1,7 @@
-import { CalendarToday, Save, Fingerprint, Public } from '@mui/icons-material';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import Fingerprint from '@mui/icons-material/Fingerprint';
+import Public from '@mui/icons-material/Public';
+import Save from '@mui/icons-material/Save';
 import { Link as MuiLink } from '@mui/material';
 import {
   CardView,

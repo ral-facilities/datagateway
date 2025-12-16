@@ -232,11 +232,17 @@ export interface DataPublication {
   relatedItems?: RelatedItem[];
 }
 
-export type RelatedDOI = Pick<
+/** The related identifier type that gets used in the related identifier picker component & what is sent to the doi minter api */
+export type RelatedIdentifier = Pick<
   RelatedItem,
-  'title' | 'fullReference' | 'identifier' | 'relatedItemType'
-> & { relationType: DOIRelationType | '' };
+  'title' | 'fullReference' | 'identifier'
+> & {
+  relationType: DOIRelationType | '';
+  relatedItemType?: DOIResourceType;
+  relatedIdentifierType: DOIIdentifierType;
+};
 
+/** The ICAT RelatedItem type */
 export type RelatedItem = {
   title?: string;
   fullReference?: string;
@@ -614,7 +620,46 @@ export interface DOIMetadata {
   title: string;
   description: string;
   creators?: { username: string; contributor_type: ContributorType }[];
-  related_items: RelatedDOI[];
+  related_items: RelatedIdentifier[];
+}
+
+export interface DOICreator {
+  name: string;
+  nameType: string;
+  givenName: string;
+  familyName: string;
+  nameIdentifiers: {
+    nameIdentifier: string;
+    nameIdentifierScheme: string;
+    schemeUri: string | null;
+  }[];
+  affiliations: {
+    affiliationIdentifier: string | null;
+    affiliation: string;
+    affiliationIdentifierScheme: string | null;
+    schemeUri: string | null;
+  }[];
+}
+
+export interface DOIRelatedIdentifier {
+  relatedIdentifier: string;
+  relatedIdentifierType: DOIIdentifierType;
+  relationType: DOIRelationType;
+  resourceTypeGeneral: DOIResourceType;
+  relatedMetadataScheme: null;
+  schemeUri: null;
+  schemeType: null;
+}
+
+export interface DataCiteDOI {
+  id: string;
+  type: string;
+  attributes: DataciteMetadata; // DataciteMetadata isn't the complete type of attributes here, just the attributes that are returned from the DOI api
+  relationships: unknown; // we don't use this so don't bother typing for now
+}
+
+export interface DataCiteResponse {
+  data: DataCiteDOI;
 }
 
 export interface DOICreator {

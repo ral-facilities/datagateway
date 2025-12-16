@@ -7,13 +7,16 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { UserEvent } from '@testing-library/user-event/setup/setup';
+import axios, { AxiosResponse } from 'axios';
 import {
   ContributorType,
+  DOIIdentifierType,
   DOIRelationType,
+  DOIResourceType,
+  DataCiteDOI,
   DataPublication,
   dGCommonInitialState,
   readSciGatewayToken,
-  useDataPublication,
 } from 'datagateway-common';
 import { History, createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
@@ -34,11 +37,6 @@ vi.mock('datagateway-common', async () => {
     readSciGatewayToken: vi
       .fn()
       .mockReturnValue({ sessionId: 'abcdef', username: 'John1' }),
-    useDataPublication: vi.fn(),
-    useDataPublicationContentCount: vi.fn(() =>
-      // mock to prevent errors when we check we can switch to the content tab
-      ({ data: 0 })
-    ),
   };
 });
 
@@ -110,6 +108,7 @@ describe('DLS Data Publication Landing page', () => {
   };
 
   let initialData: DataPublication;
+  let initialDataCiteData: DataCiteDOI;
 
   beforeEach(() => {
     initialData = {
@@ -157,6 +156,81 @@ describe('DLS Data Publication Landing page', () => {
       publicationDate: '2023-07-20',
     };
 
+    initialDataCiteData = {
+      id: '1',
+      type: 'doi',
+      attributes: {
+        publisher: {
+          name: '',
+          publisherIdentifier: null,
+          publisherIdentifierScheme: null,
+          schemeUri: null,
+        },
+        publicationYear: 2025,
+        dates: [],
+        types: {
+          resourceType: '',
+          resourceTypeGeneral: '',
+        },
+        rightsList: [],
+        geoLocations: [],
+        fundingReferences: [],
+        url: '',
+        identifiers: [],
+        creators: [],
+        titles: [],
+        subjects: [],
+        contributors: [],
+        language: null,
+        alternateIdentifiers: [],
+        relatedIdentifiers: [
+          {
+            relatedIdentifier: 'doi 3',
+            relationType: DOIRelationType.IsDocumentedBy,
+            resourceTypeGeneral: DOIResourceType.Book,
+            relatedIdentifierType: DOIIdentifierType.DOI,
+            relatedMetadataScheme: null,
+            schemeType: null,
+            schemeUri: null,
+          },
+          {
+            relatedIdentifier: 'non-url',
+            relationType: DOIRelationType.IsSupplementedBy,
+            resourceTypeGeneral: DOIResourceType.ComputationalNotebook,
+            relatedIdentifierType: DOIIdentifierType.PURL,
+            relatedMetadataScheme: null,
+            schemeType: null,
+            schemeUri: null,
+          },
+          {
+            relatedIdentifier: 'https://example.com/part',
+            relationType: DOIRelationType.HasPart,
+            resourceTypeGeneral: DOIResourceType.Dataset,
+            relatedIdentifierType: DOIIdentifierType.URL,
+            relatedMetadataScheme: null,
+            schemeType: null,
+            schemeUri: null,
+          },
+          {
+            relatedIdentifier: 'doi 4',
+            relationType: DOIRelationType.HasVersion,
+            resourceTypeGeneral: DOIResourceType.Dataset,
+            relatedIdentifierType: DOIIdentifierType.DOI,
+            relatedMetadataScheme: null,
+            schemeType: null,
+            schemeUri: null,
+          },
+        ],
+        sizes: [],
+        formats: [],
+        version: '',
+        descriptions: [],
+        relatedItems: [],
+        doi: '',
+      },
+      relationships: undefined,
+    };
+
     state = JSON.parse(
       JSON.stringify({
         dgdataview: dgDataViewInitialState,
@@ -173,9 +247,29 @@ describe('DLS Data Publication Landing page', () => {
     });
     user = userEvent.setup();
 
-    vi.mocked(useDataPublication, { partial: true }).mockReturnValue({
-      data: initialData,
-    });
+    axios.get = vi
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/\/datapublications$/.test(url)) {
+          return Promise.resolve({
+            data: [initialData],
+          });
+        } else if (/\/dois/.test(url)) {
+          return Promise.resolve({
+            data: { data: initialDataCiteData },
+          });
+        } else if (/\/count$/.test(url)) {
+          return Promise.resolve({
+            data: 0,
+          });
+        } else if (/\/investigations$/.test(url)) {
+          return Promise.resolve({
+            data: [investigation],
+          });
+        } else {
+          return Promise.reject(`Endpoint not mocked: ${url}`);
+        }
+      });
   });
 
   afterEach(() => {
@@ -187,7 +281,7 @@ describe('DLS Data Publication Landing page', () => {
 
     // displays doi + link correctly
     expect(
-      screen.getByText('datapublications.concept datapublications.pid')
+      await screen.findByText('datapublications.concept datapublications.pid')
     ).toBeInTheDocument();
     expect(
       await screen.findByRole('link', { name: 'DOI doi 1' })
@@ -196,9 +290,10 @@ describe('DLS Data Publication Landing page', () => {
     expect(
       screen.getByText('datapublications.latest_version datapublications.pid')
     ).toBeInTheDocument();
-    // should be 2 versions of the latest version DOI - one in the latest version label
-    // and one in the version panel
-    expect(screen.getAllByRole('link', { name: 'DOI doi 5' })).toHaveLength(2);
+    expect(screen.getByRole('link', { name: 'DOI doi 5' })).toHaveAttribute(
+      'href',
+      'https://doi.org/doi 5'
+    );
 
     expect(screen.getByText('2023-07-20')).toBeInTheDocument();
     expect(screen.getByText('Title')).toBeInTheDocument();
@@ -280,6 +375,11 @@ describe('DLS Data Publication Landing page', () => {
       screen.queryByRole('button', { name: 'datapublications.edit.edit_label' })
     ).not.toBeInTheDocument();
 
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'datapublications.details.version_panel_label',
+      })
+    );
     const versionPanel = await screen.findByRole('region', {
       name: 'datapublications.details.version_panel_label',
     });
@@ -297,6 +397,35 @@ describe('DLS Data Publication Landing page', () => {
     expect(
       within(versionPanel).getByRole('link', { name: 'DOI doi 5' })
     ).toHaveAttribute('href', 'https://doi.org/doi 5');
+  });
+
+  it('renders related identifiers panel', async () => {
+    renderComponent();
+
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'datapublications.details.related_identifiers_panel_label',
+      })
+    );
+    const relatedIdentifiersPanel = await screen.findByRole('region', {
+      name: 'datapublications.details.related_identifiers_panel_label',
+    });
+    expect(relatedIdentifiersPanel).toBeInTheDocument();
+
+    expect(
+      within(relatedIdentifiersPanel).getByRole('link', { name: 'DOI doi 3' })
+    ).toHaveAttribute('href', 'https://doi.org/doi 3');
+    expect(
+      within(relatedIdentifiersPanel).queryByRole('link', { name: 'DOI doi 4' })
+    ).not.toBeInTheDocument();
+    expect(
+      within(relatedIdentifiersPanel).getByRole('link', {
+        name: 'https://example.com/part',
+      })
+    ).toHaveAttribute('href', 'https://example.com/part');
+    expect(
+      within(relatedIdentifiersPanel).getByText('non-url')
+    ).toBeInTheDocument();
   });
 
   it('renders a version DOI correctly & does not show the edit button', async () => {
@@ -330,10 +459,9 @@ describe('DLS Data Publication Landing page', () => {
       screen.getByText('datapublications.details.citation_formatter.label')
     ).toBeInTheDocument();
 
-    expect(screen.getByRole('link', { name: 'DOI doi 1' })).toHaveAttribute(
-      'href',
-      'https://doi.org/doi 1'
-    );
+    expect(
+      await screen.findByRole('link', { name: 'DOI doi 1' })
+    ).toHaveAttribute('href', 'https://doi.org/doi 1');
 
     expect(
       screen.getByText('datapublications.concept datapublications.pid')
@@ -367,6 +495,20 @@ describe('DLS Data Publication Landing page', () => {
   });
 
   it('renders structured data correctly for concept DOI', async () => {
+    initialData.relatedItems = [
+      {
+        id: 10,
+        identifier: 'doi 1',
+        relationType: DOIRelationType.HasPart,
+        createTime: '2024-01-01 12:00:00',
+      },
+      {
+        id: 11,
+        identifier: 'doi 2',
+        relationType: DOIRelationType.IsPartOf,
+        createTime: '2024-01-01 12:00:00',
+      },
+    ];
     renderComponent();
 
     expect(
@@ -378,7 +520,7 @@ describe('DLS Data Publication Landing page', () => {
         id="dataPublication-1"
         type="application/ld+json"
       >
-        {"@context":"http://schema.org","@type":"Dataset","@id":"https://doi.org/doi 1","url":"https://doi.org/doi 1","identifier":"doi 1","name":"Title","description":"foo bar","keywords":"doi_constants.keywords","publisher":{"@type":"Organization","url":"doi_constants.publisher.url","name":"doi_constants.publisher.name","logo":"doi_constants.publisher.logo","contactPoint":{"@type":"ContactPoint","contactType":"customer service","email":"doi_constants.publisher.email","url":"doi_constants.publisher.url"}},"creator":[{"@type":"Person","name":"John Smith"},{"@type":"Person","name":"Jane Smith"},{"@type":"Person","name":"Jesse Smith"}],"includedInDataCatalog":{"@type":"DataCatalog","url":"doi_constants.distribution.content_url"},"license":{"@type":"URL","url":"doi_constants.license.url","name":"doi_constants.license.name"}}
+        {"@context":"http://schema.org","@type":"Dataset","@id":"https://doi.org/doi 1","url":"https://doi.org/doi 1","identifier":"doi 1","name":"Title","description":"foo bar","keywords":"doi_constants.keywords","publisher":{"@type":"Organization","url":"doi_constants.publisher.url","name":"doi_constants.publisher.name","logo":"doi_constants.publisher.logo","contactPoint":{"@type":"ContactPoint","contactType":"customer service","email":"doi_constants.publisher.email","url":"doi_constants.publisher.url"}},"creator":[{"@type":"Person","name":"John Smith"},{"@type":"Person","name":"Jane Smith"},{"@type":"Person","name":"Jesse Smith"}],"includedInDataCatalog":{"@type":"DataCatalog","url":"doi_constants.content_url"},"license":{"@type":"URL","url":"doi_constants.license.url","name":"doi_constants.license.name"},"isAccessibleForFree":true,"hasPart":["doi 1"],"isPartOf":["doi 2"]}
       </script>
     `);
   });

@@ -1,5 +1,5 @@
 import { Button } from '@mui/material';
-import { RestoreOutlined } from '@mui/icons-material';
+import RestoreOutlined from '@mui/icons-material/RestoreOutlined';
 import { useQueueAllowed, useQueueVisit } from '../api/cart';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
