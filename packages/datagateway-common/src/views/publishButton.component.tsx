@@ -16,6 +16,7 @@ import { StyledTooltip } from '../arrowtooltip.component';
 import DialogContent from '../dialogContent.component';
 import DialogTitle from '../dialogTitle.component';
 import Mark from '../mark.component';
+import { readSciGatewayToken } from '../parseTokens';
 
 export interface PublishButtonProps {
   dataPublication: DataPublication;
@@ -41,11 +42,46 @@ const PublishButton: React.FC<PublishButtonProps> = (props) => {
 
   const close = React.useCallback(() => {
     if (isPublishSuccess) {
-      queryClient.invalidateQueries({
-        queryKey: ['dataPublication', dataPublication.id],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ['doi', dataPublication.pid],
+      const username = readSciGatewayToken().username;
+
+      queryClient.resetQueries({
+        predicate: (query) => {
+          // invalidate data publication info query
+          if (
+            query.queryKey[0] === 'dataPublication' &&
+            // eslint-disable-next-line eqeqeq
+            query.queryKey[1] == dataPublication.id
+          )
+            return true;
+
+          // invalidate data publication datacite info query
+          if (
+            query.queryKey[0] === 'doi' &&
+            // eslint-disable-next-line eqeqeq
+            query.queryKey[1] == dataPublication.pid
+          )
+            return true;
+
+          // invalidate the data publication content table queries
+          if (
+            (query.queryKey[0] === 'dataPublicationContent' ||
+              query.queryKey[0] === 'dataPublicationContentCount') &&
+            // eslint-disable-next-line eqeqeq
+            query.queryKey[2] == dataPublication.id
+          )
+            return true;
+
+          // invalidate my dois query
+          if (
+            query.queryKey[0] === 'dataPublication' &&
+            username !== null &&
+            typeof query.queryKey[2] !== 'undefined' &&
+            JSON.stringify(query.queryKey[2]).includes(username) &&
+            JSON.stringify(query.queryKey[2]).includes('Investigation')
+          )
+            return true;
+          return false;
+        },
       });
     }
     setOpen(false);

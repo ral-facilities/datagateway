@@ -77,7 +77,7 @@ describe('Publish button', () => {
   });
 
   it('opens publish confirm dialogue when clicked & close when click close', async () => {
-    const invalidateQueriesSpy = vi.spyOn(queryClient, 'invalidateQueries');
+    const resetQueriesSpy = vi.spyOn(queryClient, 'resetQueries');
 
     renderComponent({
       dataPublication,
@@ -102,11 +102,11 @@ describe('Publish button', () => {
     );
 
     await waitForElementToBeRemoved(dialogue);
-    expect(invalidateQueriesSpy).not.toHaveBeenCalled();
+    expect(resetQueriesSpy).not.toHaveBeenCalled();
   });
 
   it('sends open data request and shows success dialogue', async () => {
-    const invalidateQueriesSpy = vi.spyOn(queryClient, 'invalidateQueries');
+    const resetQueriesSpy = vi.spyOn(queryClient, 'resetQueries');
     renderComponent({
       dataPublication,
     });
@@ -141,11 +141,8 @@ describe('Publish button', () => {
 
     await waitForElementToBeRemoved(dialogue);
 
-    expect(invalidateQueriesSpy).toHaveBeenCalledWith({
-      queryKey: ['dataPublication', dataPublication.id],
-    });
-    expect(invalidateQueriesSpy).toHaveBeenCalledWith({
-      queryKey: ['doi', dataPublication.pid],
+    expect(resetQueriesSpy).toHaveBeenCalledWith({
+      predicate: expect.any(Function),
     });
   });
 
@@ -161,7 +158,7 @@ describe('Publish button', () => {
     vi.spyOn(console, 'error').mockImplementation(() => {
       // void
     });
-    const invalidateQueriesSpy = vi.spyOn(queryClient, 'invalidateQueries');
+    const resetQueriesSpy = vi.spyOn(queryClient, 'resetQueries');
     renderComponent({
       dataPublication,
     });
@@ -195,6 +192,6 @@ describe('Publish button', () => {
     );
 
     await waitForElementToBeRemoved(dialogue);
-    expect(invalidateQueriesSpy).not.toHaveBeenCalled();
+    expect(resetQueriesSpy).not.toHaveBeenCalled();
   });
 });

@@ -352,7 +352,7 @@ export const usePublishDraftVersion = (): UseMutationResult<
     {
       onError: handleDOIAPIError,
       onSuccess: (
-        _data,
+        data,
         { contentDataPublicationId }: UsePublishDraftVersionVariables
       ) => {
         // resetQueries instead of invalidateQueries as otherwise invalidateQueries shows out-of-date data
@@ -362,12 +362,19 @@ export const usePublishDraftVersion = (): UseMutationResult<
             (query.queryKey[0] === 'dataPublication' &&
               username !== null &&
               typeof query.queryKey[2] !== 'undefined' &&
-              JSON.stringify(query.queryKey[2]).includes(username)) ||
+              JSON.stringify(query.queryKey[2]).includes(username) &&
+              JSON.stringify(query.queryKey[2]).includes('User-defined')) ||
             // invalidate the data publication info query
             (query.queryKey[0] === 'dataPublication' &&
               typeof query.queryKey[1] !== 'undefined' &&
               JSON.stringify(query.queryKey[1]).includes(
                 contentDataPublicationId
+              )) ||
+            // invalidate the data publication datacite info query
+            (query.queryKey[0] === 'doi' &&
+              typeof query.queryKey[1] !== 'undefined' &&
+              JSON.stringify(query.queryKey[1]).includes(
+                data.concept.attributes.doi
               )) ||
             // invalidate the data publication content table queries
             (query.queryKey[0] === 'dataPublicationContent' &&
