@@ -20,13 +20,13 @@ const appendView = (
   link: React.ComponentProps<typeof RouterLink>['to'],
   view?: ViewsType
 ): React.ComponentProps<typeof RouterLink>['to'] => {
-  if (typeof view === 'undefined') return link;
+  if (!view) return link;
   if (typeof link === 'string') {
     return (link += `?view=${view}`);
   }
   if (typeof link === 'object') {
     const search = new URLSearchParams(link.search);
-    if (view) search.set('view', view);
+    search.set('view', view);
     return { ...link, search: `?${search.toString()}` };
   } else {
     return link;
