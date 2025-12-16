@@ -1,6 +1,6 @@
+import { Link } from '@mui/material';
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { Link } from '@mui/material';
 import type { ViewsType } from '../../app.types';
 
 export function formatBytes(bytes: number | undefined): string {
@@ -16,8 +16,22 @@ export function formatBytes(bytes: number | undefined): string {
 }
 
 // NOTE: Allow the link to specify the view to keep the same view when navigating.
-const appendView = (link: string, view?: ViewsType): string =>
-  view ? (link += `?view=${view}`) : link;
+const appendView = (
+  link: React.ComponentProps<typeof RouterLink>['to'],
+  view?: ViewsType
+): React.ComponentProps<typeof RouterLink>['to'] => {
+  if (typeof view === 'undefined') return link;
+  if (typeof link === 'string') {
+    return (link += `?view=${view}`);
+  }
+  if (typeof link === 'object') {
+    const search = new URLSearchParams(link.search);
+    if (view) search.set('view', view);
+    return { ...link, search: `?${search.toString()}` };
+  } else {
+    return link;
+  }
+};
 
 export function datasetLink(
   investigationId: string,
@@ -52,7 +66,7 @@ export function investigationLink(
 }
 
 export function tableLink(
-  linkUrl: string,
+  linkLocation: React.ComponentProps<typeof RouterLink>['to'],
   linkText: string,
   view?: ViewsType,
   testid?: string
@@ -60,7 +74,7 @@ export function tableLink(
   return (
     <Link
       component={RouterLink}
-      to={appendView(linkUrl, view)}
+      to={appendView(linkLocation, view)}
       data-testid={testid}
     >
       {linkText}

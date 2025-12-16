@@ -244,8 +244,11 @@ describe('DataPublication content table component', () => {
         findCellInRow(row, {
           columnIndex: await findColumnIndexByName('investigations.visit_id'),
         })
-      ).getByText('1')
-    ).toBeInTheDocument();
+      ).getByRole('link', { name: '1' })
+    ).toHaveAttribute(
+      'href',
+      `/redirect/DLS/investigation/id/${investigations[0].id}`
+    );
     expect(
       within(
         findCellInRow(row, {
@@ -309,8 +312,8 @@ describe('DataPublication content table component', () => {
         findCellInRow(row, {
           columnIndex: await findColumnIndexByName('datasets.name'),
         })
-      ).getByText('Test 2')
-    ).toBeInTheDocument();
+      ).getByRole('link', { name: 'Test 2' })
+    ).toHaveAttribute('href', `/redirect/DLS/dataset/id/${datasets[0].id}`);
     expect(
       within(
         findCellInRow(row, {
@@ -372,8 +375,8 @@ describe('DataPublication content table component', () => {
         findCellInRow(row, {
           columnIndex: await findColumnIndexByName('datafiles.name'),
         })
-      ).getByText('Test 3')
-    ).toBeInTheDocument();
+      ).getByRole('link', { name: 'Test 3' })
+    ).toHaveAttribute('href', `/redirect/DLS/datafile/id/${datafiles[0].id}`);
     expect(
       within(
         findCellInRow(row, {

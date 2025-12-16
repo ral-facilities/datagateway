@@ -15,6 +15,7 @@ import {
   ConnectedTable as Table,
   formatBytes,
   parseSearchToQuery,
+  tableLink,
   useAddToCart,
   useCart,
   useDataPublicationContent,
@@ -108,6 +109,14 @@ const DLSDataPublicationContentTable = (
           label: t('investigations.visit_id'),
           dataKey: 'visitId',
           filterComponent: textFilter,
+          cellContentRenderer: (cellProps: TableCellProps) =>
+            tableLink(
+              {
+                pathname: `/redirect/DLS/investigation/id/${cellProps.rowData.id}`,
+                state: { fromDataPublication: true },
+              },
+              cellProps.rowData.visitId
+            ),
         },
         {
           icon: Save,
@@ -151,6 +160,14 @@ const DLSDataPublicationContentTable = (
           label: t('datasets.name'),
           dataKey: 'name',
           filterComponent: textFilter,
+          cellContentRenderer: (cellProps: TableCellProps) =>
+            tableLink(
+              {
+                pathname: `/redirect/DLS/dataset/id/${cellProps.rowData.id}`,
+                state: { fromDataPublication: true },
+              },
+              cellProps.rowData.name
+            ),
         },
         {
           icon: ConfirmationNumber,
@@ -185,6 +202,14 @@ const DLSDataPublicationContentTable = (
           label: t('datafiles.name'),
           dataKey: 'name',
           filterComponent: textFilter,
+          cellContentRenderer: (cellProps: TableCellProps) =>
+            tableLink(
+              {
+                pathname: `/redirect/DLS/datafile/id/${cellProps.rowData.id}`,
+                state: { fromDataPublication: true },
+              },
+              cellProps.rowData.name
+            ),
         },
         {
           icon: Explore,
