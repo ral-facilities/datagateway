@@ -180,9 +180,7 @@ describe('Download Cart', () => {
   });
 
   it('should not be able to mint an unmintable cart', () => {
-    cy.get('[aria-label="Calculating"]', { timeout: 20000 }).should(
-      'not.exist'
-    );
+    cy.get('[aria-role="progress"]', { timeout: 20000 }).should('not.exist');
 
     // this "button" is a link so can't actually be disabled, check pointer-events
     cy.contains('Generate DOI').should('have.css', 'pointer-events', 'none');

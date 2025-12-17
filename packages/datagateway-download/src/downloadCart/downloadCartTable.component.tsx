@@ -13,19 +13,20 @@ import {
   Typography,
 } from '@mui/material';
 import {
+  Download,
+  DownloadConfirmDialog,
+  Table,
+  TextColumnFilter,
+  formatBytes,
+  useDownloadTypes,
+  useIsCartMintable,
+  useSubmitCart,
   type ColumnType,
   type DownloadCartItem,
   type DownloadCartTableItem,
-  DownloadConfirmDialog,
-  formatBytes,
-  Table,
-  type TableActionProps,
-  TextColumnFilter,
-  type TextFilter,
-  useIsCartMintable,
   type SortType,
-  useSubmitCart,
-  Download,
+  type TableActionProps,
+  type TextFilter,
 } from 'datagateway-common';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -33,19 +34,19 @@ import { Link as RouterLink } from 'react-router-dom';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import {
   useCart,
+  useFileSizesAndCounts,
   useIsTwoLevel,
   useRemoveAllFromCart,
   useRemoveEntityFromCart,
-  useFileSizesAndCounts,
 } from '../downloadApiHooks';
 
+import { downloadPreparedCart } from '../downloadApi';
 import DownloadCartItemLink from './downloadCartItemLink.component';
 import {
   buildDatafileUrl,
   buildDatasetUrl,
   buildInvestigationUrl,
 } from './urlBuilders';
-import { downloadPreparedCart } from '../downloadApi';
 
 interface DownloadCartTableProps {
   statusTabRedirect: () => void;
@@ -62,7 +63,6 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     doiMinterUrl,
     dataCiteUrl,
     downloadApiUrl,
-    accessMethods,
   } = React.useContext(DownloadSettingsContext);
 
   const [sort, setSort] = React.useState<SortType>({});
@@ -72,6 +72,8 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
 
   const [showConfirmation, setShowConfirmation] = React.useState(false);
 
+  const { data: accessMethods, refetch: refetchDownloadTypes } =
+    useDownloadTypes(facilityName, downloadApiUrl);
   const { data: isTwoLevel } = useIsTwoLevel();
   const { mutate: removeDownloadCartItem } = useRemoveEntityFromCart();
   const { mutate: removeAllDownloadCartItems, isLoading: removingAll } =
@@ -343,7 +345,12 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
 
   const downloadIfComplete = React.useCallback(
     (download: Download) => {
-      if (download.status === 'COMPLETE' && download.preparedId)
+      if (
+        download.status === 'COMPLETE' &&
+        download.preparedId &&
+        accessMethods &&
+        download.transport in accessMethods
+      )
         // Download the file as long as it is available for instant download.
         downloadPreparedCart(
           download.preparedId,
@@ -652,7 +659,11 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                 <Grid item>
                   <Button
                     className="tour-download-download-button"
-                    onClick={() => setShowConfirmation(true)}
+                    onClick={() => {
+                      // refetch the download types when opening the dialogue to ensure statuses are up to date
+                      refetchDownloadTypes();
+                      setShowConfirmation(true);
+                    }}
                     id="downloadCartButton"
                     variant="contained"
                     color="primary"
@@ -679,7 +690,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
         isTwoLevel={isTwoLevel ?? false}
         facilityName={facilityName}
         downloadApiUrl={downloadApiUrl}
-        accessMethods={accessMethods}
+        accessMethods={accessMethods ?? {}}
         open={showConfirmation}
         redirectToStatusTab={props.statusTabRedirect}
         setClose={() => setShowConfirmation(false)}

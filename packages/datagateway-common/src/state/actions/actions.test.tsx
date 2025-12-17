@@ -1,5 +1,4 @@
 import {
-  loadAccessMethods,
   loadAnonUserName,
   loadFacilityName,
   loadFeatureSwitches,
@@ -7,7 +6,6 @@ import {
 } from '.';
 import { resetActions } from '../../setupTests';
 import {
-  ConfigureAccessMethodsType,
   ConfigureAnonUserNameType,
   ConfigureFacilityNameType,
   ConfigureFeatureSwitchesType,
@@ -42,14 +40,6 @@ describe('Actions', () => {
     expect(action.type).toEqual(ConfigureFacilityNameType);
     expect(action.payload).toEqual({
       facilityName: 'Generic',
-    });
-  });
-
-  it('given JSON loadAccessMethods returns a ConfigureAccessMethodsType with ConfigureAccessMethodsPayload', () => {
-    const action = loadAccessMethods({});
-    expect(action.type).toEqual(ConfigureAccessMethodsType);
-    expect(action.payload).toEqual({
-      accessMethods: {},
     });
   });
 

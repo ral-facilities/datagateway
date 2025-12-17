@@ -1,11 +1,11 @@
-import { Button } from '@mui/material';
 import RestoreOutlined from '@mui/icons-material/RestoreOutlined';
-import { useQueueAllowed, useQueueVisit } from '../api/cart';
+import { Button } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import { useDownloadTypes, useQueueAllowed, useQueueVisit } from '../api/cart';
 import { Investigation } from '../app.types';
 import DownloadConfirmDialog from '../downloadConfirmation/downloadConfirmDialog.component';
-import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
 
 interface QueueVisitButtonProps {
@@ -22,20 +22,13 @@ const QueueVisitButton: React.FC<QueueVisitButtonProps> = (props) => {
   const facilityName = useSelector(
     (state: StateType) => state.dgcommon.facilityName
   );
-  const accessMethods = useSelector(
-    (state: StateType) => state.dgcommon.accessMethods
-  );
+
+  const { data: accessMethods, refetch: refetchDownloadTypes } =
+    useDownloadTypes(facilityName, downloadApiUrl);
 
   const { data: isQueueAllowed } = useQueueAllowed();
 
   const [showConfirmation, setShowConfirmation] = React.useState(false);
-
-  // log error if we haven't defined access methods to help debug why they're missing from the dropdown if they're not provided
-  if (!accessMethods) {
-    console.error(
-      'Access methods not provided but using QueueVisitButton - please provide access methods in the settings'
-    );
-  }
 
   // do not render if user doesn't have permissions
   if (!isQueueAllowed) return <></>;
@@ -47,7 +40,11 @@ const QueueVisitButton: React.FC<QueueVisitButtonProps> = (props) => {
         color="secondary"
         startIcon={<RestoreOutlined />}
         disableElevation
-        onClick={() => setShowConfirmation(true)}
+        onClick={() => {
+          // refetch the download types when opening the dialogue to ensure statuses are up to date
+          refetchDownloadTypes();
+          setShowConfirmation(true);
+        }}
       >
         {t('buttons.queue_visit')}
       </Button>

@@ -24,6 +24,7 @@ describe('Generic add to cart button', () => {
   let state: StateType;
   let user: ReturnType<typeof userEvent.setup>;
   let investigation: Investigation;
+  let permissionResponse: boolean;
 
   function renderComponent(
     props: React.ComponentProps<typeof QueueVisitButton>
@@ -48,17 +49,30 @@ describe('Generic add to cart button', () => {
     user = userEvent.setup();
     state = JSON.parse(
       JSON.stringify({
-        dgcommon: {
-          ...dGCommonInitialState,
-          accessMethods: {
-            https: { idsUrl: 'https://example.com/ids' },
-          },
-        },
+        dgcommon: dGCommonInitialState,
       })
     );
+    permissionResponse = true;
 
-    axios.get = vi.fn().mockResolvedValue({
-      data: true,
+    axios.get = vi.fn().mockImplementation((url: string) => {
+      if (/.*\/queue\/allowed$/.test(url)) {
+        return Promise.resolve({
+          data: permissionResponse,
+        });
+      }
+      if (/.*\/downloadType\/status$/.test(url)) {
+        return Promise.resolve({
+          data: {
+            https: {
+              idsUrl: 'https://example.com/ids',
+              disabled: false,
+              message: '',
+              displayName: 'HTTPS',
+              description: '',
+            },
+          },
+        });
+      }
     });
   });
 
@@ -77,36 +91,17 @@ describe('Generic add to cart button', () => {
   });
 
   it('renders no button if user does not have permission', async () => {
-    axios.get = vi.fn().mockResolvedValue({
-      data: false,
-    });
+    permissionResponse = false;
 
     renderComponent({
       investigation,
     });
 
-    await waitFor(() => expect(axios.get).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(axios.get).toHaveBeenCalledTimes(2));
 
     expect(
       screen.queryByRole('button', { name: 'buttons.queue_visit' })
     ).not.toBeInTheDocument();
-  });
-
-  it('logs error if access methods not provided', async () => {
-    state.dgcommon.accessMethods = undefined;
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {
-      // no-op
-    });
-
-    renderComponent({
-      investigation,
-    });
-
-    await waitFor(() =>
-      expect(errorSpy).toHaveBeenCalledWith(
-        'Access methods not provided but using QueueVisitButton - please provide access methods in the settings'
-      )
-    );
   });
 
   it('opens download confirm dialogue when clicked & close when click close', async () => {
