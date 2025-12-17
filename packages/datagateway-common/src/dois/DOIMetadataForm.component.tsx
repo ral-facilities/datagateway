@@ -140,7 +140,9 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
                 relatedIdentifier.relationType === '' ||
                 relatedIdentifier.relatedItemType === undefined ||
                 relatedIdentifier.relatedIdentifierType === undefined // should never happen
-            )
+            ) ||
+            subjects.length === 0 ||
+            techniques.length === 0
           }
           onClick={onMintClick}
         >

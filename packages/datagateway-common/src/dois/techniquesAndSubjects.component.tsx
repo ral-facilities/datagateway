@@ -47,6 +47,11 @@ export function useDebounce<T>(value: T, delay: number): T {
 
 const AUTOCOMPLETE_DEBOUNCE_DELAY = 300;
 
+const getTechniqueDisplayName = (technique: BioPortalTerm): string =>
+  technique.synonym && technique.synonym.length > 0
+    ? `${technique.prefLabel} (${technique.synonym.join(', ')})`
+    : technique.prefLabel;
+
 const TechniqueSelector: React.FC<{
   value: BioPortalTerm | null;
   changeValue: (value: BioPortalTerm | null) => void;
@@ -69,11 +74,7 @@ const TechniqueSelector: React.FC<{
   return (
     <Autocomplete
       options={techniques ?? []}
-      getOptionLabel={(x) =>
-        x.synonym && x.synonym.length > 0
-          ? `${x.prefLabel} (${x.synonym.join(', ')})`
-          : x.prefLabel
-      }
+      getOptionLabel={getTechniqueDisplayName}
       inputValue={inputValue}
       onInputChange={(_event, newInputValue) => {
         setInputValue(newInputValue);
@@ -208,7 +209,7 @@ const TechniqueDialog: React.FC<{
                         }
                       >
                         <TableCell>
-                          {initiallySelectedTechnique.prefLabel}
+                          {getTechniqueDisplayName(initiallySelectedTechnique)}
                         </TableCell>
                         <TableCell>
                           {
@@ -224,7 +225,7 @@ const TechniqueDialog: React.FC<{
                           onClick={(_event) => setSelectedTechnique(t)}
                           selected={selectedTechnique === t}
                         >
-                          <TableCell>{t.prefLabel}</TableCell>
+                          <TableCell>{getTechniqueDisplayName(t)}</TableCell>
                           <TableCell>
                             {<Link href={t['@id']}>{t['@id']}</Link>}
                           </TableCell>
@@ -328,13 +329,10 @@ const TechniquesAndSubjects: React.FC<{
                       readOnly: true,
                       sx: { caretColor: 'transparent', cursor: 'default' },
                     }}
+                    required={true}
                   />
                 )}
-                getOptionLabel={(x) =>
-                  x.synonym && x.synonym.length > 0
-                    ? `${x.prefLabel} (${x.synonym.join(', ')})`
-                    : x.prefLabel
-                }
+                getOptionLabel={getTechniqueDisplayName}
                 forcePopupIcon={false}
                 open={false}
                 disabled={disabled}
@@ -386,6 +384,7 @@ const TechniquesAndSubjects: React.FC<{
                   {...params}
                   variant="filled"
                   label={t('DOIGenerationForm.subjects')}
+                  required={true}
                 />
               )}
               disabled={disabled}
