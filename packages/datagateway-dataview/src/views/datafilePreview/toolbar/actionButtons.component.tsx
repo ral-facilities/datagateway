@@ -1,11 +1,9 @@
-import {
-  ArrowBack,
-  CopyAll,
-  Download,
-  RestartAlt,
-  ZoomIn,
-  ZoomOut,
-} from '@mui/icons-material';
+import ArrowBack from '@mui/icons-material/ArrowBack';
+import CopyAll from '@mui/icons-material/CopyAll';
+import Download from '@mui/icons-material/Download';
+import RestartAlt from '@mui/icons-material/RestartAlt';
+import ZoomIn from '@mui/icons-material/ZoomIn';
+import ZoomOut from '@mui/icons-material/ZoomOut';
 import { Alert, ButtonGroup, Fade, Snackbar, Stack } from '@mui/material';
 import { downloadDatafile } from 'datagateway-common';
 import React from 'react';

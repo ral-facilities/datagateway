@@ -1,8 +1,6 @@
-import {
-  CalendarToday,
-  ConfirmationNumber,
-  Subject,
-} from '@mui/icons-material';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import ConfirmationNumber from '@mui/icons-material/ConfirmationNumber';
+import Subject from '@mui/icons-material/Subject';
 import {
   ColumnType,
   Dataset,

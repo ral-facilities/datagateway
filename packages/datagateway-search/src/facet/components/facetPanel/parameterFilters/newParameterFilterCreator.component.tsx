@@ -18,7 +18,7 @@ import type ParameterValueSelectorProps from './valueSelectors/parameterValueSel
 import ParameterNumericRange from './valueSelectors/parameterNumericRange.component';
 import ParameterFacetList from './valueSelectors/parameterFacetList.component';
 import ParameterDateTimeSelector from './valueSelectors/parameterDateTimeSelector.component';
-import { Close } from '@mui/icons-material';
+import Close from '@mui/icons-material/Close';
 
 interface NewParameterFilterCreatorProps {
   allIds: number[];

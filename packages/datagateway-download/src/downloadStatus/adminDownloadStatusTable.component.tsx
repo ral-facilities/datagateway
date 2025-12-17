@@ -25,13 +25,11 @@ import {
   useDownloadTypes,
 } from 'datagateway-common';
 
-import {
-  PauseCircleFilled,
-  PlayCircleFilled,
-  Refresh,
-  RemoveCircle,
-  Restore,
-} from '@mui/icons-material';
+import PauseCircleFilled from '@mui/icons-material/PauseCircleFilled';
+import PlayCircleFilled from '@mui/icons-material/PlayCircleFilled';
+import Refresh from '@mui/icons-material/Refresh';
+import RemoveCircle from '@mui/icons-material/RemoveCircle';
+import Restore from '@mui/icons-material/Restore';
 import { useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { toDate } from 'date-fns-tz';

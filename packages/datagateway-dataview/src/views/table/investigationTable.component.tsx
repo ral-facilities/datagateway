@@ -1,11 +1,9 @@
-import {
-  Assessment,
-  CalendarToday,
-  Fingerprint,
-  Public,
-  Save,
-  Subject,
-} from '@mui/icons-material';
+import Assessment from '@mui/icons-material/Assessment';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import Fingerprint from '@mui/icons-material/Fingerprint';
+import Public from '@mui/icons-material/Public';
+import Save from '@mui/icons-material/Save';
+import Subject from '@mui/icons-material/Subject';
 import {
   ColumnType,
   Investigation,

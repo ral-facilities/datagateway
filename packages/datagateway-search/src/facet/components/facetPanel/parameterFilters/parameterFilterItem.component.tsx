@@ -1,6 +1,6 @@
 import { NestedFilter } from 'datagateway-common';
 import { IconButton, ListItem, ListItemText } from '@mui/material';
-import { Close } from '@mui/icons-material';
+import Close from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
 
 interface ParameterFilterItemProps {

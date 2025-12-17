@@ -1,7 +1,8 @@
 import { Grid, IconButton, LinearProgress, Paper } from '@mui/material';
 import React, { useCallback } from 'react';
 
-import { GetApp, RemoveCircle } from '@mui/icons-material';
+import GetApp from '@mui/icons-material/GetApp';
+import RemoveCircle from '@mui/icons-material/RemoveCircle';
 import { useQueryClient } from '@tanstack/react-query';
 import {
   DateColumnFilter,

@@ -1,7 +1,5 @@
-import {
-  CheckBox as CheckBoxIcon,
-  CheckBoxOutlineBlank,
-} from '@mui/icons-material';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import CheckBoxOutlineBlank from '@mui/icons-material/CheckBoxOutlineBlank';
 import { Checkbox, SxProps, TableCell } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';

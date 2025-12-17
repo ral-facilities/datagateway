@@ -1,4 +1,4 @@
-import { RestoreOutlined } from '@mui/icons-material';
+import RestoreOutlined from '@mui/icons-material/RestoreOutlined';
 import { Button } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';

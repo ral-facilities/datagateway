@@ -4,6 +4,7 @@ import log from 'loglevel';
 import {
   handleDOIAPIError,
   useCheckUser,
+  useDOI,
   useDeleteDraftVersion,
   useDraftVersionDOI,
   useIsCartMintable,
@@ -614,5 +615,74 @@ describe('doi api functions', () => {
       expect(log.error).not.toHaveBeenCalled();
       expect(axios.post).toHaveBeenCalledTimes(1);
     });
+  });
+});
+
+describe('useDOI', () => {
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('fetches DOI info from DataCite given a DOI', async () => {
+    axios.get = vi.fn().mockResolvedValue({
+      data: { data: { id: 1, attributes: { doi: 'doi' } } },
+    });
+
+    const { result } = renderHook(() => useDOI('doi'), {
+      wrapper: createReactQueryWrapper(),
+    });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(axios.get).toHaveBeenCalledWith(
+      'https://example.com/datacite/dois/doi'
+    );
+    expect(result.current.data).toEqual({
+      id: 1,
+      attributes: { doi: 'doi' },
+    });
+  });
+
+  it('is disabled if DOI is undefined', async () => {
+    const { result } = renderHook(() => useDOI(undefined), {
+      wrapper: createReactQueryWrapper(),
+    });
+
+    expect(result.current.status).toBe('loading');
+    expect(result.current.fetchStatus).toBe('idle');
+    expect(axios.get).not.toHaveBeenCalled();
+  });
+
+  it('does not retry 404 errors', async () => {
+    const error = {
+      message: 'Test error message',
+      response: {
+        status: 404,
+      },
+    };
+    axios.get = vi.fn().mockRejectedValue(error);
+
+    const { result } = renderHook(() => useDOI('doi'), {
+      wrapper: createReactQueryWrapper(),
+    });
+
+    await waitFor(() => expect(result.current.isError).toBe(true));
+    expect(axios.get).toHaveBeenCalledTimes(1);
+  });
+
+  it('should retry other errors', async () => {
+    const error = {
+      message: 'Test error message',
+      response: {
+        status: 400,
+      },
+    };
+    axios.get = vi.fn().mockRejectedValue(error);
+
+    const { result } = renderHook(() => useDOI('doi'), {
+      wrapper: createReactQueryWrapper(),
+    });
+
+    await waitFor(() => expect(result.current.isError).toBe(true));
+    expect(axios.get).toHaveBeenCalledTimes(4);
   });
 });

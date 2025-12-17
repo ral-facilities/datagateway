@@ -1,5 +1,5 @@
 import React from 'react';
-import { BugReport } from '@mui/icons-material';
+import BugReport from '@mui/icons-material/BugReport';
 import { Typography, Grid, CircularProgress, Link } from '@mui/material';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { Link as RouterLink } from 'react-router-dom';
