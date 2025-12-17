@@ -1,21 +1,21 @@
-import React from 'react';
+import CloseIcon from '@mui/icons-material/Close';
 import {
   Dialog,
   DialogContent,
   DialogTitle,
   IconButton,
   Link,
+  Paper,
   styled,
   Table,
   TableBody,
-  TableRow,
   TableCell,
+  TableContainer,
+  TableRow,
   Theme,
   Typography,
-  TableContainer,
-  Paper,
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -44,7 +44,7 @@ const SectionText = ({
   </Typography>
 );
 
-const AdvancedHelpDialogue = (): React.ReactElement => {
+const AdvancedHelpDialog = (): React.ReactElement => {
   const [open, setOpen] = React.useState(false);
   const [t] = useTranslation();
 
@@ -566,4 +566,4 @@ const AdvancedHelpDialogue = (): React.ReactElement => {
   );
 };
 
-export default AdvancedHelpDialogue;
+export default AdvancedHelpDialog;

@@ -109,7 +109,7 @@ describe('Generic add to cart button', () => {
     );
   });
 
-  it('opens download confirm dialogue when clicked & close when click close', async () => {
+  it('opens download confirm dialog when clicked & close when click close', async () => {
     renderComponent({
       investigation,
     });
@@ -118,11 +118,11 @@ describe('Generic add to cart button', () => {
       await screen.findByRole('button', { name: 'buttons.queue_visit' })
     );
 
-    const dialogue = await screen.findByRole('dialog', {
+    const dialog = await screen.findByRole('dialog', {
       name: 'downloadConfirmDialog.dialog_title',
     });
 
-    expect(dialogue).toBeInTheDocument();
+    expect(dialog).toBeInTheDocument();
 
     await user.click(
       await screen.findByRole('button', {
@@ -130,6 +130,6 @@ describe('Generic add to cart button', () => {
       })
     );
 
-    await waitForElementToBeRemoved(dialogue);
+    await waitForElementToBeRemoved(dialog);
   });
 });

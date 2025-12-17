@@ -113,7 +113,7 @@ const TechniqueSelector: React.FC<{
   );
 };
 
-const TechniqueDialogue: React.FC<{
+const TechniqueDialog: React.FC<{
   open: boolean;
   changeOpen: (open: boolean) => void;
   addNewTechnique: (technique: BioPortalTerm) => void;
@@ -156,15 +156,17 @@ const TechniqueDialogue: React.FC<{
       <DialogTitle
         onClose={handleClose}
         id="technique-dialog-title"
-        closeAriaLabel={t('DOIConfirmDialog.close_aria_label')}
+        closeAriaLabel={t(
+          'DOIGenerationForm.technique_dialog_close_aria_label'
+        )}
       >
-        {'Select a Technique'}
+        {t('DOIGenerationForm.technique_dialog_title')}
       </DialogTitle>
       <DialogContent>
         <Grid container direction="column" spacing={1}>
           <Grid item>
             <Typography>
-              {t('DOIGenerationForm.technique_dialogue_initial_help')}
+              {t('DOIGenerationForm.technique_dialog_initial_help')}
             </Typography>
           </Grid>
           <Grid item>
@@ -179,7 +181,7 @@ const TechniqueDialogue: React.FC<{
               <Grid item>
                 <Typography>
                   {t(
-                    'DOIGenerationForm.technique_dialogue_select_technique_help'
+                    'DOIGenerationForm.technique_dialog_select_technique_help'
                   )}
                 </Typography>
               </Grid>
@@ -188,8 +190,12 @@ const TechniqueDialogue: React.FC<{
                   <Table>
                     <TableHead>
                       <TableRow>
-                        <TableCell>Name</TableCell>
-                        <TableCell>PID</TableCell>
+                        <TableCell>
+                          {t('DOIGenerationForm.technique_name')}
+                        </TableCell>
+                        <TableCell>
+                          {t('DOIGenerationForm.technique_pid')}
+                        </TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -242,7 +248,7 @@ const TechniqueDialogue: React.FC<{
           }}
           disabled={selectedTechnique === null}
         >
-          Confirm
+          {t('DOIGenerationForm.technique_dialog_confirm_button')}
         </Button>
       </DialogActions>
     </Dialog>
@@ -267,7 +273,7 @@ const TechniquesAndSubjects: React.FC<{
     bioportalUrl,
   } = props;
 
-  const [isTechniqueDialogueOpen, setIsTechniqueDialogueOpen] =
+  const [isTechniqueDialogOpen, setIsTechniqueDialogOpen] =
     React.useState(false);
 
   return (
@@ -312,7 +318,7 @@ const TechniquesAndSubjects: React.FC<{
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    label="Techniques"
+                    label={t('DOIGenerationForm.techniques')}
                     InputProps={{
                       ...params.InputProps,
                       sx: { cursor: 'default' },
@@ -337,14 +343,14 @@ const TechniquesAndSubjects: React.FC<{
             <Grid item xs="auto">
               <Button
                 variant="contained"
-                onClick={() => setIsTechniqueDialogueOpen(true)}
+                onClick={() => setIsTechniqueDialogOpen(true)}
                 disabled={disabled}
               >
-                Add technique
+                {t('DOIGenerationForm.add_technique')}
               </Button>
-              <TechniqueDialogue
-                open={isTechniqueDialogueOpen}
-                changeOpen={setIsTechniqueDialogueOpen}
+              <TechniqueDialog
+                open={isTechniqueDialogOpen}
+                changeOpen={setIsTechniqueDialogOpen}
                 addNewTechnique={(technique: BioPortalTerm) => {
                   setTechniques((existingTechniques) => [
                     ...existingTechniques,
@@ -376,7 +382,11 @@ const TechniquesAndSubjects: React.FC<{
               value={subjects}
               onChange={(_event, value) => setSubjects(value)}
               renderInput={(params) => (
-                <TextField {...params} variant="filled" label="Subjects" />
+                <TextField
+                  {...params}
+                  variant="filled"
+                  label={t('DOIGenerationForm.subjects')}
+                />
               )}
               disabled={disabled}
             />

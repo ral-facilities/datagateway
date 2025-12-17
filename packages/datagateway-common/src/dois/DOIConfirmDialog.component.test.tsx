@@ -5,7 +5,7 @@ import * as React from 'react';
 import { Router } from 'react-router-dom';
 import DOIConfirmDialog from './DOIConfirmDialog.component';
 
-describe('DOI Confirm Dialogue component', () => {
+describe('DOI Confirm Dialog component', () => {
   let user: ReturnType<typeof userEvent.setup>;
   let props: React.ComponentProps<typeof DOIConfirmDialog>;
 

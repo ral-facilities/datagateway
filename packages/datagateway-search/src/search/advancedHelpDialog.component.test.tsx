@@ -1,20 +1,20 @@
-import AdvancedHelpDialogue from './advancedHelpDialogue.component';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
-import { dGCommonInitialState } from 'datagateway-common';
-import configureStore from 'redux-mock-store';
-import { MemoryRouter } from 'react-router-dom';
 import type { RenderResult } from '@testing-library/react';
 import {
   render,
   screen,
   waitForElementToBeRemoved,
 } from '@testing-library/react';
+import { dGCommonInitialState } from 'datagateway-common';
+import { Provider } from 'react-redux';
+import { MemoryRouter } from 'react-router-dom';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import AdvancedHelpDialog from './advancedHelpDialog.component';
 
-import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
-import { StateType } from '../state/app.types';
 import userEvent from '@testing-library/user-event';
 import reactI18Next from 'react-i18next';
+import { StateType } from '../state/app.types';
+import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
 
 vi.mock('react-redux', async () => ({
   ...(await vi.importActual('react-redux')),
@@ -29,13 +29,13 @@ function renderComponent({
   return render(
     <Provider store={configureStore([thunk])(initialState)}>
       <MemoryRouter>
-        <AdvancedHelpDialogue />
+        <AdvancedHelpDialog />
       </MemoryRouter>
     </Provider>
   );
 }
 
-describe('Advanced help dialogue', () => {
+describe('Advanced help dialog', () => {
   let state: StateType;
   const tSpy = vi.fn((str) => str);
   let originalUseTranslation: typeof reactI18Next.useTranslation;
