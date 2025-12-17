@@ -519,7 +519,7 @@ export const useIsCartMintable = (
   );
 };
 
-interface BioPortalResponse {
+export interface BioPortalResponse {
   page: number;
   pageCount: number;
   totalCount: number;

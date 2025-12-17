@@ -179,7 +179,24 @@ describe('DLS Data Publication Landing page', () => {
         identifiers: [],
         creators: [],
         titles: [],
-        subjects: [],
+        subjects: [
+          { subject: 'subject 1' },
+          { subject: 'subject 2' },
+          {
+            subject: 'technique 1',
+            schemeUri: 'http://purl.org/pan-science/PaNET/',
+            valueUri: 'http://purl.org/pan-science/PaNET/1',
+            subjectScheme:
+              'Photon and Neutron Experimental Techniques (PaNET) ontology',
+          },
+          {
+            subject: 'technique 2',
+            schemeUri: 'http://purl.org/pan-science/PaNET/',
+            valueUri: 'http://purl.org/pan-science/PaNET/2',
+            subjectScheme:
+              'Photon and Neutron Experimental Techniques (PaNET) ontology',
+          },
+        ],
         contributors: [],
         language: null,
         alternateIdentifiers: [],
@@ -316,6 +333,15 @@ describe('DLS Data Publication Landing page', () => {
       await screen.findByTestId('landing-dataPublication-user-2')
     ).toHaveTextContent('Experimenter: Jesse Smith');
 
+    expect(
+      screen.getByRole('link', { name: 'technique 1' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: 'technique 2' })
+    ).toBeInTheDocument();
+
+    expect(screen.getByText('subject 1, subject 2')).toBeInTheDocument();
+
     // two citation formatters
     expect(
       screen.getByText(
@@ -335,6 +361,7 @@ describe('DLS Data Publication Landing page', () => {
     initialData.users = undefined;
     initialData.publicationDate = undefined;
     initialData.type = undefined;
+    initialDataCiteData.attributes.subjects = [];
     renderComponent();
 
     // displays doi + link correctly
@@ -345,6 +372,10 @@ describe('DLS Data Publication Landing page', () => {
     expect(screen.getByText('Description not provided')).toBeInTheDocument();
 
     expect(screen.queryByText('datapublications.details.users')).toBeNull();
+    expect(
+      screen.queryByText('datapublications.details.techniques')
+    ).toBeNull();
+    expect(screen.queryByText('datapublications.details.subjects')).toBeNull();
   });
 
   it('renders edit button if the user is minter & clicking it takes you to the edit page', async () => {
@@ -514,13 +545,16 @@ describe('DLS Data Publication Landing page', () => {
     expect(
       await screen.findByTestId('landing-dataPublication-user-0')
     ).toBeInTheDocument();
+    expect(
+      await screen.findByTestId('landing-dataPublication-techniques-label')
+    ).toBeInTheDocument();
 
     expect(document.getElementById('dataPublication-1')).toMatchInlineSnapshot(`
       <script
         id="dataPublication-1"
         type="application/ld+json"
       >
-        {"@context":"http://schema.org","@type":"Dataset","@id":"https://doi.org/doi 1","url":"https://doi.org/doi 1","identifier":"doi 1","name":"Title","description":"foo bar","keywords":"doi_constants.keywords","publisher":{"@type":"Organization","url":"doi_constants.publisher.url","name":"doi_constants.publisher.name","logo":"doi_constants.publisher.logo","contactPoint":{"@type":"ContactPoint","contactType":"customer service","email":"doi_constants.publisher.email","url":"doi_constants.publisher.url"}},"creator":[{"@type":"Person","name":"John Smith"},{"@type":"Person","name":"Jane Smith"},{"@type":"Person","name":"Jesse Smith"}],"includedInDataCatalog":{"@type":"DataCatalog","url":"doi_constants.content_url"},"license":{"@type":"URL","url":"doi_constants.license.url","name":"doi_constants.license.name"},"isAccessibleForFree":true,"hasPart":["doi 1"],"isPartOf":["doi 2"]}
+        {"@context":"http://schema.org","@type":"Dataset","@id":"https://doi.org/doi 1","url":"https://doi.org/doi 1","identifier":"doi 1","name":"Title","description":"foo bar","keywords":["subject 1","subject 2",{"name":"technique 1","identifier":"http://purl.org/pan-science/PaNET/1","url":"http://purl.org/pan-science/PaNET/1","inDefinedTermSet":"http://purl.org/pan-science/PaNET/"},{"name":"technique 2","identifier":"http://purl.org/pan-science/PaNET/2","url":"http://purl.org/pan-science/PaNET/2","inDefinedTermSet":"http://purl.org/pan-science/PaNET/"}],"publisher":{"@type":"Organization","url":"doi_constants.publisher.url","name":"doi_constants.publisher.name","logo":"doi_constants.publisher.logo","contactPoint":{"@type":"ContactPoint","contactType":"customer service","email":"doi_constants.publisher.email","url":"doi_constants.publisher.url"}},"creator":[{"@type":"Person","name":"John Smith"},{"@type":"Person","name":"Jane Smith"},{"@type":"Person","name":"Jesse Smith"}],"includedInDataCatalog":{"@type":"DataCatalog","url":"doi_constants.content_url"},"license":{"@type":"URL","url":"doi_constants.license.url","name":"doi_constants.license.name"},"isAccessibleForFree":true,"hasPart":["doi 1"],"isPartOf":["doi 2"]}
       </script>
     `);
   });
@@ -539,6 +573,9 @@ describe('DLS Data Publication Landing page', () => {
 
     expect(
       await screen.findByTestId('landing-dataPublication-user-0')
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByTestId('landing-dataPublication-techniques-label')
     ).toBeInTheDocument();
 
     expect(document.getElementById('dataPublication-1')).toBeNull();

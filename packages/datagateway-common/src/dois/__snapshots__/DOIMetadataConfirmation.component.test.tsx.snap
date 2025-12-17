@@ -37,6 +37,149 @@ exports[`DOI metadata confirmation component > should display the provided draft
         <p
           class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
         >
+          DOIGenerationForm.subjects
+        </p>
+      </div>
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-item css-unj32y-MuiGrid-root"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.subject_subject: subject 1
+          </p>
+        </div>
+      </div>
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-item css-unj32y-MuiGrid-root"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.subject_subject: subject 2
+          </p>
+        </div>
+      </div>
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-item css-unj32y-MuiGrid-root"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.subject_subject: technique 1
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.subject_subjectScheme: technique
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.subject_schemeUri: 
+            <a
+              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
+              href="https://example.com/technique"
+            >
+              https://example.com/technique
+            </a>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.subject_valueUri: 
+            <a
+              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
+              href="https://example.com/technique/1"
+            >
+              https://example.com/technique/1
+            </a>
+          </p>
+        </div>
+      </div>
+      <div
+        class="MuiGrid-root MuiGrid-container MuiGrid-item css-unj32y-MuiGrid-root"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.subject_subject: technique 2
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.subject_subjectScheme: technique
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.subject_schemeUri: 
+            <a
+              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
+              href="https://example.com/technique"
+            >
+              https://example.com/technique
+            </a>
+          </p>
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            DOIGenerationForm.subject_valueUri: 
+            <a
+              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
+              href="https://example.com/technique/2"
+            >
+              https://example.com/technique/2
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      class="MuiGrid-root MuiGrid-container MuiGrid-item MuiGrid-spacing-xs-1 css-v8g4am-MuiGrid-root"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+      >
+        <p
+          class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+        >
           DOIGenerationForm.related_identifiers
         </p>
       </div>

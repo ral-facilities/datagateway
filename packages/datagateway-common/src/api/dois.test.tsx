@@ -7,11 +7,17 @@ import {
   useDOI,
   useDeleteDraftVersion,
   useDraftVersionDOI,
+  useGetDescendantTechniques,
   useIsCartMintable,
   usePublishDraftVersion,
+  useSearchPANETTechniques,
 } from '.';
 import { ContributorType, DownloadCartItem } from '../app.types';
-import { createReactQueryWrapper, createTestQueryClient } from '../setupTests';
+import {
+  createBioPortalTerm,
+  createReactQueryWrapper,
+  createTestQueryClient,
+} from '../setupTests';
 import {
   InvalidateTokenType,
   NotificationType,
@@ -684,5 +690,147 @@ describe('useDOI', () => {
 
     await waitFor(() => expect(result.current.isError).toBe(true));
     expect(axios.get).toHaveBeenCalledTimes(4);
+  });
+});
+
+describe('BioPortal API functions', () => {
+  const technique = createBioPortalTerm(1, ['1']);
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
+  describe('useSearchPANETTechniques', () => {
+    it('fetches techniques info from BioPortal given a search string', async () => {
+      axios.get = vi.fn().mockResolvedValue({
+        data: {
+          collection: [technique],
+        },
+      });
+
+      const { result } = renderHook(
+        () => useSearchPANETTechniques('1', 'https://example.com/bioportal'),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://example.com/bioportal/search?ontology=PANET&subtree_root_id=http://purl.org/pan-science/PaNET/PaNET00001&include=prefLabel,synonym&suggest=true&q=1&pagesize=500&format=json&display_context=false'
+      );
+      expect(result.current.data).toEqual([technique]);
+    });
+
+    it('does not ask for suggestions if search string is empty', async () => {
+      axios.get = vi.fn().mockResolvedValue({
+        data: {
+          collection: [],
+        },
+      });
+      const { result } = renderHook(
+        () => useSearchPANETTechniques('', 'https://example.com/bioportal'),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://example.com/bioportal/search?ontology=PANET&subtree_root_id=http://purl.org/pan-science/PaNET/PaNET00001&include=prefLabel,synonym&q=&pagesize=500&format=json&display_context=false'
+      );
+      expect(result.current.data).toEqual([]);
+    });
+
+    it('is disabled if bioportal URL is not defined', async () => {
+      const { result } = renderHook(
+        () => useSearchPANETTechniques('test', undefined),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      expect(result.current.status).toBe('loading');
+      expect(result.current.fetchStatus).toBe('idle');
+      expect(axios.get).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('useGetDescendantTechniques', () => {
+    it('fetches descendant techniques from BioPortal given a technique', async () => {
+      axios.get = vi.fn().mockResolvedValue({
+        data: {
+          collection: [technique],
+        },
+      });
+
+      const { result } = renderHook(
+        () =>
+          useGetDescendantTechniques(
+            technique,
+            'https://example.com/bioportal'
+          ),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+      expect(axios.get).toHaveBeenCalledWith(
+        `https://example.com/bioportal${
+          new URL(technique.links.descendants).pathname
+        }?pagesize=500&format=json&include=prefLabel,synonym&display_context=false`
+      );
+      expect(result.current.data).toEqual([technique]);
+    });
+
+    it('returns empty array if no collection is returned', async () => {
+      axios.get = vi.fn().mockResolvedValue({
+        data: {},
+      });
+      const { result } = renderHook(
+        () =>
+          useGetDescendantTechniques(
+            technique,
+            'https://example.com/bioportal'
+          ),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+      expect(axios.get).toHaveBeenCalledWith(
+        `https://example.com/bioportal${
+          new URL(technique.links.descendants).pathname
+        }?pagesize=500&format=json&include=prefLabel,synonym&display_context=false`
+      );
+      expect(result.current.data).toEqual([]);
+    });
+
+    it('is disabled if bioportal URL is not defined', async () => {
+      const { result } = renderHook(
+        () => useGetDescendantTechniques(technique, undefined),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      expect(result.current.status).toBe('loading');
+      expect(result.current.fetchStatus).toBe('idle');
+      expect(axios.get).not.toHaveBeenCalled();
+    });
+
+    it('is disabled if no technique is passed', async () => {
+      const { result } = renderHook(
+        () => useGetDescendantTechniques(null, 'https://example.com/bioportal'),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      expect(result.current.status).toBe('loading');
+      expect(result.current.fetchStatus).toBe('idle');
+      expect(axios.get).not.toHaveBeenCalled();
+    });
   });
 });

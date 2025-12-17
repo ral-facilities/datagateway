@@ -180,7 +180,24 @@ describe('DOI edit form component', () => {
         identifiers: [],
         creators: [],
         titles: [],
-        subjects: [],
+        subjects: [
+          { subject: 'subject 1' },
+          { subject: 'subject 2' },
+          {
+            subject: 'technique 1',
+            schemeUri: 'http://purl.org/pan-science/PaNET/',
+            valueUri: 'http://purl.org/pan-science/PaNET/1',
+            subjectScheme:
+              'Photon and Neutron Experimental Techniques (PaNET) ontology',
+          },
+          {
+            subject: 'technique 2',
+            schemeUri: 'http://purl.org/pan-science/PaNET/',
+            valueUri: 'http://purl.org/pan-science/PaNET/2',
+            subjectScheme:
+              'Photon and Neutron Experimental Techniques (PaNET) ontology',
+          },
+        ],
         contributors: [],
         language: null,
         alternateIdentifiers: [],
@@ -289,6 +306,36 @@ describe('DOI edit form component', () => {
         } else if (/.*\/user\/cart\/.*$/.test(url)) {
           return Promise.resolve({
             data: { cartItems },
+          });
+        } else if (/\/search.*/.test(url)) {
+          return Promise.resolve({
+            data: {
+              collection: [
+                {
+                  '@id': `https://example.com/1`,
+                  prefLabel: `technique1`,
+                  synonym: ['1'],
+                  links: {
+                    descendants: `https://example.com/1/descendants`,
+                  },
+                },
+              ],
+            },
+          });
+        } else if (/\/descendants/.test(url)) {
+          return Promise.resolve({
+            data: {
+              collection: [
+                {
+                  '@id': `https://example.com/2`,
+                  prefLabel: `technique2`,
+                  synonym: ['2'],
+                  links: {
+                    descendants: `https://example.com/2/descendants`,
+                  },
+                },
+              ],
+            },
           });
         } else {
           return Promise.reject(`Endpoint not mocked: ${url}`);
@@ -492,6 +539,40 @@ describe('DOI edit form component', () => {
       await screen.findByRole('option', { name: ContributorType.ProjectLeader })
     );
 
+    // editing subjects
+    expect(
+      screen.getByRole('button', { name: 'subject 1' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'subject 2' })
+    ).toBeInTheDocument();
+
+    await user.type(
+      screen.getByRole('combobox', { name: 'DOIGenerationForm.subjects' }),
+      '{backspace}'
+    );
+
+    expect(
+      screen.queryByRole('button', { name: 'subject 2' })
+    ).not.toBeInTheDocument();
+
+    // editing techniques
+    expect(
+      screen.getByRole('button', { name: 'technique 1' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'technique 2' })
+    ).toBeInTheDocument();
+
+    await user.type(
+      screen.getByRole('combobox', { name: 'DOIGenerationForm.techniques' }),
+      '{backspace}'
+    );
+
+    expect(
+      screen.queryByRole('button', { name: 'technique 2' })
+    ).not.toBeInTheDocument();
+
     // submit edited data publication
 
     await user.click(
@@ -525,6 +606,16 @@ describe('DOI edit form component', () => {
             relationType: ri.relationType,
             relatedItemType: ri.resourceTypeGeneral,
           })),
+          subjects: [
+            { subject: 'subject 1' },
+            {
+              subject: 'technique 1',
+              schemeUri: 'http://purl.org/pan-science/PaNET/',
+              valueUri: 'http://purl.org/pan-science/PaNET/1',
+              subjectScheme:
+                'Photon and Neutron Experimental Techniques (PaNET) ontology',
+            },
+          ],
           resource_type: 'Collection',
         },
       },
@@ -752,6 +843,24 @@ describe('DOI edit form component', () => {
               relationType: ri.relationType,
               relatedItemType: ri.resourceTypeGeneral,
             })),
+          subjects: [
+            { subject: 'subject 1' },
+            { subject: 'subject 2' },
+            {
+              subject: 'technique 1',
+              schemeUri: 'http://purl.org/pan-science/PaNET/',
+              valueUri: 'http://purl.org/pan-science/PaNET/1',
+              subjectScheme:
+                'Photon and Neutron Experimental Techniques (PaNET) ontology',
+            },
+            {
+              subject: 'technique 2',
+              schemeUri: 'http://purl.org/pan-science/PaNET/',
+              valueUri: 'http://purl.org/pan-science/PaNET/2',
+              subjectScheme:
+                'Photon and Neutron Experimental Techniques (PaNET) ontology',
+            },
+          ],
           resource_type: 'Collection',
         },
       },

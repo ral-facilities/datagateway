@@ -122,19 +122,24 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   const { data } = useDataPublication(parseInt(dataPublicationId));
   const { data: dataciteData } = useDOI(data?.pid);
 
-  const subjects: string[] = [];
-  const techniques: BioPortalTerm[] = [];
-  dataciteData?.attributes.subjects.forEach((s) => {
-    if (s.valueUri && s.subjectScheme?.includes('PaNET')) {
-      techniques.push({
-        '@id': s.valueUri,
-        prefLabel: s.subject,
-        links: { descendants: '' }, // just put empty string here - it's not needed for display
-      });
-    } else {
-      subjects.push(s.subject);
-    }
-  });
+  const [techniques, subjects] = React.useMemo(
+    () =>
+      dataciteData?.attributes.subjects.reduce(
+        (result: [BioPortalTerm[], string[]], element) => {
+          element.valueUri && element.subjectScheme?.includes('PaNET')
+            ? result[0].push({
+                '@id': element.valueUri,
+                prefLabel: element.subject,
+                links: { descendants: '' }, // just put empty string here - it's not needed for display
+              })
+            : result[1].push(element.subject);
+
+          return result;
+        },
+        [[], []]
+      ) ?? [[], []],
+    [dataciteData?.attributes.subjects]
+  );
 
   const isVersionDOI = data?.relatedItems?.some(
     (relatedItem) => relatedItem.relationType === DOIRelationType.IsVersionOf
@@ -213,7 +218,15 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         identifier: pid,
         name: title,
         description: description,
-        keywords: t('doi_constants.keywords', { returnObjects: true }),
+        keywords: [
+          ...subjects,
+          ...techniques.map((technique) => ({
+            name: technique.prefLabel,
+            identifier: technique['@id'],
+            url: technique['@id'],
+            inDefinedTermSet: 'http://purl.org/pan-science/PaNET/',
+          })),
+        ],
         publisher: {
           // could get publisher info from DOI? but no logo...
           '@type': 'Organization',
@@ -271,6 +284,8 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     formattedUsers,
     isVersionDOI,
     data?.relatedItems,
+    subjects,
+    techniques,
   ]);
 
   const shortInfo = [
@@ -441,12 +456,10 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                     {t('datapublications.details.techniques')}
                   </Subheading>
                   {techniques.map((t, i) => (
-                    <>
+                    <React.Fragment key={t['@id']}>
                       {i === 0 ? null : ', '}
-                      <MuiLink key={t['@id']} href={t['@id']}>
-                        {t.prefLabel}
-                      </MuiLink>
-                    </>
+                      <MuiLink href={t['@id']}>{t.prefLabel}</MuiLink>
+                    </React.Fragment>
                   ))}
                 </div>
               )}
