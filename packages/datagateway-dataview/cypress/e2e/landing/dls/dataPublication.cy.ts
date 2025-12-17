@@ -394,7 +394,13 @@ describe('DLS - Session Data Publication Landing', () => {
     cy.contains('Thomas Chambers').should('be.visible');
     // dates
     cy.contains('Collected: 2003-11-19').should('be.visible');
-    cy.contains('Issued: 2025-12-16').should('be.visible');
+
+    cy.window().then((win) => {
+      const today = new Date(win.Date());
+      cy.contains(`Issued: ${today.toISOString().split('T')[0]}`).should(
+        'be.visible'
+      );
+    });
     // instrument
     cy.contains(
       'Respond between friend wide prevent six. Sea hard prepare production view it human. Major entire by activity increase sometimes present. Learn help maybe spring.'
