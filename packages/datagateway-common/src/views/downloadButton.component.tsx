@@ -1,4 +1,4 @@
-import { GetApp } from '@mui/icons-material';
+import GetApp from '@mui/icons-material/GetApp';
 import {
   Button,
   ButtonProps,

@@ -1,12 +1,10 @@
-import {
-  Assessment,
-  CalendarToday,
-  ConfirmationNumber,
-  Explore,
-  Fingerprint,
-  Save,
-  Subject,
-} from '@mui/icons-material';
+import Assessment from '@mui/icons-material/Assessment';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import ConfirmationNumber from '@mui/icons-material/ConfirmationNumber';
+import Explore from '@mui/icons-material/Explore';
+import Fingerprint from '@mui/icons-material/Fingerprint';
+import Save from '@mui/icons-material/Save';
+import Subject from '@mui/icons-material/Subject';
 import { Tab, Tabs } from '@mui/material';
 import {
   ColumnType,

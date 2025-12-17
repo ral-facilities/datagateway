@@ -18,7 +18,8 @@ import {
   DownloadButton,
   ISISDatasetDetailsPanel,
 } from 'datagateway-common';
-import { Save, CalendarToday } from '@mui/icons-material';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import Save from '@mui/icons-material/Save';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
 import { styled } from '@mui/material';

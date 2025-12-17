@@ -37,7 +37,7 @@ exports[`DOI metadata confirmation component > should display the provided draft
         <p
           class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
         >
-          DOIGenerationForm.related_dois
+          DOIGenerationForm.related_identifiers
         </p>
       </div>
       <div
@@ -49,7 +49,7 @@ exports[`DOI metadata confirmation component > should display the provided draft
           <p
             class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
           >
-            DOIGenerationForm.related_doi_identifier: 
+            DOIGenerationForm.related_identifier_identifier: 
             <a
               class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
               href="https://doi.org/related.doi"
@@ -64,7 +64,7 @@ exports[`DOI metadata confirmation component > should display the provided draft
           <p
             class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
           >
-            DOIGenerationForm.related_doi_type: DOI
+            DOIGenerationForm.related_identifier_identifier_type: DOI
           </p>
         </div>
         <div
@@ -73,7 +73,7 @@ exports[`DOI metadata confirmation component > should display the provided draft
           <p
             class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
           >
-            DOIGenerationForm.related_doi_relationship: Cites
+            DOIGenerationForm.related_identifier_relationship: Cites
           </p>
         </div>
         <div
@@ -82,7 +82,7 @@ exports[`DOI metadata confirmation component > should display the provided draft
           <p
             class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
           >
-            DOIGenerationForm.related_doi_resource_type: Dataset
+            DOIGenerationForm.related_identifier_resource_type: Dataset
           </p>
         </div>
       </div>
@@ -95,7 +95,7 @@ exports[`DOI metadata confirmation component > should display the provided draft
           <p
             class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
           >
-            DOIGenerationForm.related_doi_identifier: 
+            DOIGenerationForm.related_identifier_identifier: 
             <a
               class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
               href="https://example.com/related-url"
@@ -110,7 +110,7 @@ exports[`DOI metadata confirmation component > should display the provided draft
           <p
             class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
           >
-            DOIGenerationForm.related_doi_type: URL
+            DOIGenerationForm.related_identifier_identifier_type: URL
           </p>
         </div>
         <div
@@ -119,7 +119,7 @@ exports[`DOI metadata confirmation component > should display the provided draft
           <p
             class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
           >
-            DOIGenerationForm.related_doi_relationship: IsCompiledBy
+            DOIGenerationForm.related_identifier_relationship: IsCompiledBy
           </p>
         </div>
         <div
@@ -128,7 +128,7 @@ exports[`DOI metadata confirmation component > should display the provided draft
           <p
             class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
           >
-            DOIGenerationForm.related_doi_resource_type: ComputationalNotebook
+            DOIGenerationForm.related_identifier_resource_type: ComputationalNotebook
           </p>
         </div>
       </div>
@@ -141,7 +141,7 @@ exports[`DOI metadata confirmation component > should display the provided draft
           <p
             class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
           >
-            DOIGenerationForm.related_doi_identifier: 12345
+            DOIGenerationForm.related_identifier_identifier: 12345
           </p>
         </div>
         <div
@@ -150,7 +150,7 @@ exports[`DOI metadata confirmation component > should display the provided draft
           <p
             class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
           >
-            DOIGenerationForm.related_doi_type: ISBN
+            DOIGenerationForm.related_identifier_identifier_type: ISBN
           </p>
         </div>
         <div
@@ -159,7 +159,7 @@ exports[`DOI metadata confirmation component > should display the provided draft
           <p
             class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
           >
-            DOIGenerationForm.related_doi_relationship: IsDocumentedBy
+            DOIGenerationForm.related_identifier_relationship: IsDocumentedBy
           </p>
         </div>
         <div
@@ -168,7 +168,7 @@ exports[`DOI metadata confirmation component > should display the provided draft
           <p
             class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
           >
-            DOIGenerationForm.related_doi_resource_type: Book
+            DOIGenerationForm.related_identifier_resource_type: Book
           </p>
         </div>
       </div>

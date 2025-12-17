@@ -17,7 +17,7 @@ import {
   DOIConfirmDialog,
   DOIMetadataConfirmation,
   DOIMetadataForm,
-  RelatedDOI,
+  RelatedIdentifier,
   readSciGatewayToken,
 } from 'datagateway-common';
 import React from 'react';
@@ -38,7 +38,9 @@ const DOIGenerationForm: React.FC = () => {
   const [selectedUsers, setSelectedUsers] = React.useState<ContributorUser[]>(
     []
   );
-  const [relatedDOIs, setRelatedDOIs] = React.useState<RelatedDOI[]>([]);
+  const [relatedIdentifiers, setRelatedIdentifiers] = React.useState<
+    RelatedIdentifier[]
+  >([]);
   const [title, setTitle] = React.useState('');
   const [description, setDescription] = React.useState('');
   const [currentTab, setCurrentTab] = React.useState<
@@ -124,13 +126,20 @@ const DOIGenerationForm: React.FC = () => {
           title,
           description,
           creators: creatorsList.length > 0 ? creatorsList : undefined,
-          related_items: relatedDOIs,
+          related_items: relatedIdentifiers,
         },
       }).then(() => {
         setShowMetadataConfirmation(true);
       });
     }
-  }, [cart, description, mintDraftCart, relatedDOIs, selectedUsers, title]);
+  }, [
+    cart,
+    description,
+    mintDraftCart,
+    relatedIdentifiers,
+    selectedUsers,
+    title,
+  ]);
 
   const handleConfirmClick = React.useCallback(() => {
     if (draftDataPublicationId) {
@@ -275,8 +284,8 @@ const DOIGenerationForm: React.FC = () => {
                     setDescription={setDescription}
                     selectedUsers={selectedUsers}
                     setSelectedUsers={setSelectedUsers}
-                    relatedDOIs={relatedDOIs}
-                    setRelatedDOIs={setRelatedDOIs}
+                    relatedIdentifiers={relatedIdentifiers}
+                    setRelatedIdentifiers={setRelatedIdentifiers}
                     disableMintButton={
                       typeof cart === 'undefined' || cart.length === 0
                     }

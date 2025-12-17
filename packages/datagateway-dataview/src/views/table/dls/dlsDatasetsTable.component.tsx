@@ -1,9 +1,7 @@
-import {
-  CalendarToday,
-  ConfirmationNumber,
-  Save,
-  Subject,
-} from '@mui/icons-material';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import ConfirmationNumber from '@mui/icons-material/ConfirmationNumber';
+import Save from '@mui/icons-material/Save';
+import Subject from '@mui/icons-material/Subject';
 import {
   ColumnType,
   DLSDatasetDetailsPanel,

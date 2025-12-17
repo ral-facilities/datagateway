@@ -10,6 +10,7 @@ import {
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 import {
+  DOIIdentifierType,
   DOIRelationType,
   DOIResourceType,
   DataCiteDOI,
@@ -108,7 +109,36 @@ describe('DOI generation form component', () => {
           doi: 'related.doi.1',
           titles: [{ title: 'Related DOI 1' }],
           url: 'www.example.com',
+          // minimum data to not error
+          descriptions: [],
+          creators: [],
+          contributors: [],
+          relatedIdentifiers: [],
+          publisher: {
+            name: 'test',
+            publisherIdentifier: null,
+            publisherIdentifierScheme: null,
+            schemeUri: null,
+          },
+          publicationYear: 2025,
+          dates: [],
+          types: {
+            resourceType: 'Experimental Datasets',
+            resourceTypeGeneral: 'Other',
+          },
+          rightsList: [],
+          geoLocations: [],
+          fundingReferences: [],
+          subjects: [],
+          sizes: [],
+          identifiers: [],
+          alternateIdentifiers: [],
+          language: null,
+          formats: [],
+          relatedItems: [],
+          version: '1',
         },
+        relationships: [],
       },
     };
     mockDraftResponse = {
@@ -324,7 +354,9 @@ describe('DOI generation form component', () => {
     );
 
     await user.type(
-      screen.getByRole('textbox', { name: 'DOIGenerationForm.related_doi' }),
+      screen.getByRole('textbox', {
+        name: 'DOIGenerationForm.related_identifier',
+      }),
       '1'
     );
 
@@ -339,7 +371,7 @@ describe('DOI generation form component', () => {
 
     await user.click(
       screen.getByRole('combobox', {
-        name: 'DOIGenerationForm.related_doi_relationship',
+        name: 'DOIGenerationForm.related_identifier_relationship',
       })
     );
     await user.click(
@@ -353,7 +385,7 @@ describe('DOI generation form component', () => {
 
     await user.click(
       screen.getByRole('combobox', {
-        name: 'DOIGenerationForm.related_doi_resource_type',
+        name: 'DOIGenerationForm.related_identifier_resource_type',
       })
     );
     await user.click(
@@ -381,6 +413,7 @@ describe('DOI generation form component', () => {
           {
             title: 'Related DOI 1',
             identifier: 'related.doi.1',
+            relatedIdentifierType: DOIIdentifierType.DOI,
             relationType: DOIRelationType.IsCitedBy,
             relatedItemType: DOIResourceType.Journal,
           },

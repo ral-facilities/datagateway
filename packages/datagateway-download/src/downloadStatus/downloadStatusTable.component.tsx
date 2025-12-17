@@ -13,7 +13,8 @@ import {
 } from 'datagateway-common';
 import { getDataUrl } from '../downloadApi';
 import { TableCellProps } from 'react-virtualized';
-import { GetApp, RemoveCircle } from '@mui/icons-material';
+import GetApp from '@mui/icons-material/GetApp';
+import RemoveCircle from '@mui/icons-material/RemoveCircle';
 import BlackTooltip from '../tooltip.component';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import { useTranslation } from 'react-i18next';

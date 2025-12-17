@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import * as React from 'react';
 import {
   ContributorType,
+  DOIIdentifierType,
   DOIRelationType,
   DOIResourceType,
 } from '../app.types';
@@ -35,16 +36,17 @@ describe('DOI generation form component', () => {
         { id: 1, name: 'test', contributor_type: ContributorType.Minter },
       ],
       setSelectedUsers: vi.fn(),
-      relatedDOIs: [
+      relatedIdentifiers: [
         {
           title: 'DOI Title',
           fullReference: '',
           identifier: 'doi',
+          relatedIdentifierType: DOIIdentifierType.DOI,
           relatedItemType: DOIResourceType.Dataset,
           relationType: DOIRelationType.Cites,
         },
       ],
-      setRelatedDOIs: vi.fn(),
+      setRelatedIdentifiers: vi.fn(),
       disableMintButton: false,
       onMintClick: vi.fn(),
       mintLoading: false,
@@ -122,22 +124,21 @@ describe('DOI generation form component', () => {
       screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
     ).toBeDisabled();
 
-    // relatedDOIs has empty relationtypes or relatedItemtypes
+    // relatedIdentifiers has empty relationtypes or relatedItemtypes
     props.selectedUsers = [
       { id: 1, name: 'test', contributor_type: ContributorType.Minter },
     ];
-    props.relatedDOIs = [
+    props.relatedIdentifiers = [
       {
         title: 'DOI Title',
-        fullReference: '',
         identifier: 'doi',
+        relatedIdentifierType: DOIIdentifierType.DOI,
         relatedItemType: DOIResourceType.Dataset,
         relationType: '',
       },
       {
-        title: 'DOI Title 2',
-        fullReference: '',
-        identifier: 'doi2',
+        identifier: 'https://example.com',
+        relatedIdentifierType: DOIIdentifierType.URL,
         relatedItemType: undefined,
         relationType: DOIRelationType.Cites,
       },
@@ -149,11 +150,11 @@ describe('DOI generation form component', () => {
     ).toBeDisabled();
 
     // disableMintButton is set to true
-    props.relatedDOIs = [
+    props.relatedIdentifiers = [
       {
         title: 'DOI Title',
-        fullReference: '',
         identifier: 'doi',
+        relatedIdentifierType: DOIIdentifierType.DOI,
         relatedItemType: DOIResourceType.Dataset,
         relationType: DOIRelationType.Cites,
       },
@@ -188,7 +189,7 @@ describe('DOI generation form component', () => {
     ).toBeDisabled();
     expect(
       screen.getByRole('button', {
-        name: 'DOIGenerationForm.delete_related_doi',
+        name: 'DOIGenerationForm.delete_related_identifier',
       })
     ).toBeDisabled();
   });

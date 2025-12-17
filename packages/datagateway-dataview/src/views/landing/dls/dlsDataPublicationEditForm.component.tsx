@@ -5,9 +5,10 @@ import {
   DOIConfirmDialog,
   DOIMetadataConfirmation,
   DOIMetadataForm,
-  RelatedDOI,
+  RelatedIdentifier,
   readSciGatewayToken,
   useCart,
+  useDOI,
   useDataPublication,
   useDataPublicationsByFilters,
   useDeleteDraftVersion,
@@ -36,7 +37,9 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
   const [selectedUsers, setSelectedUsers] = React.useState<ContributorUser[]>(
     []
   );
-  const [relatedDOIs, setRelatedDOIs] = React.useState<RelatedDOI[]>([]);
+  const [relatedIdentifiers, setRelatedIdentifiers] = React.useState<
+    RelatedIdentifier[]
+  >([]);
   const [title, setTitle] = React.useState('');
   const [description, setDescription] = React.useState('');
 
@@ -54,6 +57,7 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
   const { data: dataPublication } = useDataPublication(
     parseInt(dataPublicationId)
   );
+  const { data: dataciteData } = useDOI(dataPublication?.pid);
 
   const { data: versionDataPublications } = useDataPublicationsByFilters(
     [
@@ -95,25 +99,6 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
     if (dataPublication) {
       setTitle(dataPublication.title);
       setDescription(dataPublication.description ?? '');
-      setRelatedDOIs(
-        dataPublication.relatedItems
-          // filter out our generated versions from here
-          ?.filter(
-            (relatedItem) =>
-              !relatedItem.relationType.includes('Version') &&
-              !relatedItem.relationType.includes('Part')
-          )
-          .map(
-            (relatedItem) =>
-              ({
-                title: relatedItem.title,
-                fullReference: relatedItem.fullReference,
-                identifier: relatedItem.identifier,
-                relationType: relatedItem.relationType,
-                relatedItemType: relatedItem.relatedItemType,
-              } satisfies RelatedDOI)
-          ) ?? []
-      );
       setSelectedUsers(
         dataPublication.users?.map((user) => ({
           id: user.id,
@@ -126,6 +111,29 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
       );
     }
   }, [dataPublication]);
+
+  React.useEffect(() => {
+    if (dataciteData) {
+      setRelatedIdentifiers(
+        dataciteData.attributes.relatedIdentifiers
+          // filter out our generated versions from here
+          ?.filter(
+            (relatedItem) =>
+              !relatedItem.relationType.includes('Version') &&
+              !relatedItem.relationType.includes('Part')
+          )
+          .map(
+            (relatedItem) =>
+              ({
+                identifier: relatedItem.relatedIdentifier,
+                relationType: relatedItem.relationType,
+                relatedItemType: relatedItem.resourceTypeGeneral,
+                relatedIdentifierType: relatedItem.relatedIdentifierType,
+              } satisfies RelatedIdentifier)
+          ) ?? []
+      );
+    }
+  }, [dataciteData]);
 
   const [content, setContent] = React.useState<TransferListItem[]>([]);
   const [unselectedContent, setUnselectedContent] = React.useState<
@@ -265,7 +273,7 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
           title,
           description,
           creators: creatorsList.length > 0 ? creatorsList : undefined,
-          related_items: relatedDOIs,
+          related_items: relatedIdentifiers,
         },
       }).then(() => {
         setShowMetadataConfirmation(true);
@@ -277,7 +285,7 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
     dataPublicationId,
     description,
     mintDraftVersionDOI,
-    relatedDOIs,
+    relatedIdentifiers,
     selectedUsers,
     title,
     versionDataPublication,
@@ -365,8 +373,8 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
                   setDescription={setDescription}
                   selectedUsers={selectedUsers}
                   setSelectedUsers={setSelectedUsers}
-                  relatedDOIs={relatedDOIs}
-                  setRelatedDOIs={setRelatedDOIs}
+                  relatedIdentifiers={relatedIdentifiers}
+                  setRelatedIdentifiers={setRelatedIdentifiers}
                   disableMintButton={false}
                   mintLoading={mintDraftVersionStatus === 'loading'}
                   onMintClick={handleMintClick}

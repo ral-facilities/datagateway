@@ -1,4 +1,5 @@
-import { GetApp, RestoreOutlined } from '@mui/icons-material';
+import GetApp from '@mui/icons-material/GetApp';
+import RestoreOutlined from '@mui/icons-material/RestoreOutlined';
 import {
   Button,
   ButtonProps,

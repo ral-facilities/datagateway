@@ -1,4 +1,4 @@
-import { Edit } from '@mui/icons-material';
+import Edit from '@mui/icons-material/Edit';
 import {
   Box,
   Divider,
@@ -25,6 +25,7 @@ import { useHistory } from 'react-router-dom';
 import CitationFormatter from '../../citationFormatter.component';
 import Branding from './dlsBranding.component';
 import DLSDataPublicationContentTable from './dlsDataPublicationContentTable.component';
+import DLSDataPublicationRelatedIdentifiersPanel from './dlsDataPublicationRelatedIdentifiersPanel.component';
 import DLSDataPublicationVersionPanel, {
   sortVersions,
 } from './dlsDataPublicationVersionPanel.component';
@@ -198,6 +199,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         description: description,
         keywords: t('doi_constants.keywords', { returnObjects: true }),
         publisher: {
+          // could get publisher info from DOI? but no logo...
           '@type': 'Organization',
           url: t('doi_constants.publisher.url'),
           name: t('doi_constants.publisher.name'),
@@ -214,13 +216,27 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         }),
         includedInDataCatalog: {
           '@type': 'DataCatalog',
-          url: t('doi_constants.distribution.content_url'),
+          url: t('doi_constants.content_url'),
         },
+        // could get license info from DOIdata
         license: {
           '@type': 'URL',
           url: t('doi_constants.license.url'),
           name: t('doi_constants.license.name'),
         },
+        isAccessibleForFree: true,
+        hasPart: data?.relatedItems
+          ?.filter(
+            (relatedItem) =>
+              relatedItem.relationType === DOIRelationType.HasPart
+          )
+          .map((relatedItem) => relatedItem.identifier),
+        isPartOf: data?.relatedItems
+          ?.filter(
+            (relatedItem) =>
+              relatedItem.relationType === DOIRelationType.IsPartOf
+          )
+          .map((relatedItem) => relatedItem.identifier),
       });
 
       return () => {
@@ -238,6 +254,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     description,
     formattedUsers,
     isVersionDOI,
+    data?.relatedItems,
   ]);
 
   const shortInfo = [
@@ -479,6 +496,9 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                     </Grid>
                   )
               )}
+              <Grid item sx={{ pt: '0px !important' }}>
+                <DLSDataPublicationRelatedIdentifiersPanel doi={data?.pid} />
+              </Grid>
               {isVersionDOI === false && (
                 <Grid item sx={{ pt: '0px !important' }}>
                   <DLSDataPublicationVersionPanel

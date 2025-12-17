@@ -17,7 +17,9 @@ import {
   DLSDatasetDetailsPanel,
   formatBytes,
 } from 'datagateway-common';
-import { CalendarToday, Save } from '@mui/icons-material';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import Save from '@mui/icons-material/Save';
+
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';

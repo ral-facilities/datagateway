@@ -19,7 +19,9 @@ import {
   DLSVisitDetailsPanel,
   formatBytes,
 } from 'datagateway-common';
-import { Assessment, CalendarToday, Save } from '@mui/icons-material';
+import Assessment from '@mui/icons-material/Assessment';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import Save from '@mui/icons-material/Save';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { Typography } from '@mui/material';

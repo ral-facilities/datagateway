@@ -1,9 +1,7 @@
-import {
-  Assessment,
-  CalendarToday,
-  Fingerprint,
-  Save,
-} from '@mui/icons-material';
+import Assessment from '@mui/icons-material/Assessment';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import Fingerprint from '@mui/icons-material/Fingerprint';
+import Save from '@mui/icons-material/Save';
 import {
   ColumnType,
   DLSVisitDetailsPanel,

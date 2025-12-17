@@ -1,9 +1,7 @@
-import {
-  Assessment,
-  CalendarToday,
-  Public,
-  Storage,
-} from '@mui/icons-material';
+import Assessment from '@mui/icons-material/Assessment';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import Public from '@mui/icons-material/Public';
+import Storage from '@mui/icons-material/Storage';
 import {
   Box,
   Divider,
@@ -300,13 +298,15 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       }),
       includedInDataCatalog: {
         '@type': 'DataCatalog',
-        url: t('doi_constants.distribution.content_url'),
+        url: t('doi_constants.content_url'),
       },
       license: {
         '@type': 'URL',
         url: t('doi_constants.license.url'),
         name: t('doi_constants.license.name'),
       },
+      isAccessibleForFree: true,
+      hasPart: investigationDataPublications?.map((dp) => dp.pid),
     });
 
     return () => {
@@ -315,7 +315,15 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         currentScript.remove();
       }
     };
-  }, [t, title, pid, dataPublicationId, description, formattedUsers]);
+  }, [
+    t,
+    title,
+    pid,
+    dataPublicationId,
+    description,
+    formattedUsers,
+    investigationDataPublications,
+  ]);
 
   const shortInfo = [
     {
