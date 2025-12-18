@@ -158,7 +158,7 @@ Cypress.Commands.add('seedUserGeneratedDataPublication', (title) => {
   });
 });
 
-Cypress.Commands.add('clearUserGeneratedDataPublications', (ids) => {
+Cypress.Commands.add('clearDataPublications', (ids) => {
   return cy.request('datagateway-dataview-settings.json').then((response) => {
     const settings = response.body;
     ids.forEach((id) => {
@@ -169,6 +169,19 @@ Cypress.Commands.add('clearUserGeneratedDataPublications', (ids) => {
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       });
+    });
+  });
+});
+
+Cypress.Commands.add('seedSessionDataPublication', () => {
+  return cy.request('datagateway-dataview-settings.json').then((response) => {
+    const settings = response.body;
+    return cy.request({
+      method: 'POST',
+      url: `${settings.doiMinterUrl}/mint/investigation/15`,
+      headers: {
+        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+      },
     });
   });
 });

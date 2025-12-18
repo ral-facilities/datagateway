@@ -1,9 +1,14 @@
-export type MintResponse = Cypress.Response<{
+export type UserDefinedMintResponse = Cypress.Response<{
   concept: { data_publication_id: string; attributes: { doi: string } };
   version: { data_publication_id: string; attributes: { doi: string } };
 }>;
 
-describe('DLS - Data Publication Landing', () => {
+export type SessionMintResponse = Cypress.Response<{
+  data_publication_id: string;
+  attributes: { doi: string };
+}>;
+
+describe('DLS - User Generated Data Publication Landing', () => {
   beforeEach(() => {
     cy.login(
       {
@@ -14,7 +19,7 @@ describe('DLS - Data Publication Landing', () => {
       'Chris481'
     );
     cy.seedUserGeneratedDataPublication().as('dataPublication1');
-    cy.get<MintResponse>('@dataPublication1')
+    cy.get<UserDefinedMintResponse>('@dataPublication1')
       .its('body.concept.data_publication_id')
       .then((id) => cy.visit(`/browse/dataPublication/${id}`));
     cy.seedDownloadCart(['datafile 550']);
@@ -22,8 +27,8 @@ describe('DLS - Data Publication Landing', () => {
   });
 
   afterEach(() => {
-    cy.get<MintResponse>('@dataPublication1').then((dp) => {
-      cy.clearUserGeneratedDataPublications([
+    cy.get<UserDefinedMintResponse>('@dataPublication1').then((dp) => {
+      cy.clearDataPublications([
         dp.body.concept.data_publication_id,
         dp.body.version.data_publication_id,
       ]);
@@ -38,7 +43,7 @@ describe('DLS - Data Publication Landing', () => {
     cy.contains('Test DOI description').should('be.visible');
     cy.contains('Thomas Chambers').should('be.visible');
 
-    cy.get<MintResponse>('@dataPublication1').then((dp) => {
+    cy.get<UserDefinedMintResponse>('@dataPublication1').then((dp) => {
       cy.contains('a', dp.body.concept.attributes.doi);
 
       cy.contains('a', dp.body.version.attributes.doi);
@@ -51,16 +56,16 @@ describe('DLS - Data Publication Landing', () => {
     cy.contains('Datafiles').click();
 
     cy.get('[aria-rowcount="2"]').should('exist');
-    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('74');
+    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('a', '74');
 
     // test sorting
     cy.contains('Name').click();
-    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('193');
+    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('a', '193');
 
     // test filtering
     cy.get('[aria-label="Filter by Name"]').type('7');
     cy.get('[aria-rowcount="1"]').should('exist');
-    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('74');
+    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('a', '74');
   });
 
   it('should be able to click tab to see content and switch between entity types', () => {
@@ -81,7 +86,7 @@ describe('DLS - Data Publication Landing', () => {
   });
 
   it('should be able to click a DOI & it renders the correct webpage ', () => {
-    cy.get<MintResponse>('@dataPublication1').then((dp) => {
+    cy.get<UserDefinedMintResponse>('@dataPublication1').then((dp) => {
       cy.contains('a', dp.body.concept.attributes.doi).should(
         'have.attr',
         'href',
@@ -260,7 +265,7 @@ describe('DLS - Data Publication Landing', () => {
   it('should be able to use the citation formatters', () => {
     cy.contains('Test DOI title').should('be.visible');
 
-    cy.get<MintResponse>('@dataPublication1').then((response) => {
+    cy.get<UserDefinedMintResponse>('@dataPublication1').then((response) => {
       cy.intercept(
         `**/text/x-bibliography/${response.body.concept.attributes.doi}?*`,
         [
@@ -325,7 +330,7 @@ describe('DLS - Data Publication Landing', () => {
   it('citation formatters should give an error when there is a problem', () => {
     cy.contains('Test DOI title').should('be.visible');
 
-    cy.get<MintResponse>('@dataPublication1').then((response) => {
+    cy.get<UserDefinedMintResponse>('@dataPublication1').then((response) => {
       cy.intercept(
         `**/text/x-bibliography/${response.body.concept.attributes.doi}?*`,
         {
@@ -375,5 +380,123 @@ describe('DLS - Data Publication Landing', () => {
     cy.get('#Latest-Version-Data-Citation-citation-formatter-error-message', {
       timeout: 10000,
     }).should('exist');
+  });
+});
+
+describe('DLS - Session Data Publication Landing', () => {
+  beforeEach(() => {
+    cy.login({
+      username: 'root',
+      password: 'pw',
+      mechanism: 'simple',
+    });
+    cy.seedSessionDataPublication().as('sessionDataPublication');
+    cy.login(
+      {
+        username: 'Chris481',
+        password: 'pw',
+        mechanism: 'simple',
+      },
+      'Chris481'
+    );
+    cy.get<SessionMintResponse>('@sessionDataPublication')
+      .its('body.data_publication_id')
+      .then((id) => cy.visit(`/browse/dataPublication/${id}`));
+  });
+
+  afterEach(() => {
+    cy.get<SessionMintResponse>('@sessionDataPublication').then((dp) => {
+      cy.clearDataPublications([dp.body.data_publication_id]);
+    });
+    cy.clearDownloadCart();
+  });
+
+  it('should load correctly', () => {
+    cy.title().should('equal', 'DataGateway DataView');
+    cy.get('#datagateway-dataview').should('be.visible');
+    cy.contains(
+      '72: Star enter wide nearly off. Base remember toward weight including call nearly political. Decision everyone lose scene feeling. State avoid firm understand teacher.'
+    ).should('be.visible');
+    cy.contains('Description not provided').should('be.visible');
+    cy.contains('Thomas Chambers').should('be.visible');
+    // dates
+    cy.contains('Collected: 2003-11-19').should('be.visible');
+
+    cy.window().then((win) => {
+      const today = new Date(win.Date());
+      cy.contains(`Issued: ${today.toISOString().split('T')[0]}`).should(
+        'be.visible'
+      );
+    });
+    // instrument
+    cy.contains(
+      'Respond between friend wide prevent six. Sea hard prepare production view it human. Major entire by activity increase sometimes present. Learn help maybe spring.'
+    ).should('be.visible');
+
+    cy.get<SessionMintResponse>('@sessionDataPublication').then((dp) => {
+      cy.contains('a', dp.body.attributes.doi).should(
+        'have.attr',
+        'href',
+        `https://doi.org/${dp.body.attributes.doi}`
+      );
+    });
+  });
+
+  it("should show the publish button and let's the PI publish once", () => {
+    cy.contains('Publication Date').should('not.exist');
+
+    cy.get('[aria-label="Publish"]').should('be.visible');
+    cy.get('[aria-label="Publish"]').click();
+
+    cy.contains('Publish Data Publication').should('be.visible');
+
+    cy.contains('Accept & publish data publication').click();
+
+    cy.contains('Publish was successful').should('be.visible');
+
+    cy.get('[aria-label="Close publish data publication dialogue"]').click();
+
+    // once published it should have a date and an abstract and shouldn't let you publish again
+    cy.contains('Publication Date').should('be.visible');
+    cy.contains(
+      'See somebody other new you assume parent so. Indeed your so offer box off. Total from happy nearly.'
+    ).should('be.visible');
+    cy.get('[aria-label="Publish"]').should('not.exist');
+
+    cy.get('#datapublication-content-tab').first().click();
+
+    cy.contains('Datasets').click();
+    cy.get('[aria-rowcount="2"]').should('exist');
+  });
+
+  it('should not show publish button if not the PI', () => {
+    cy.login({
+      username: 'root',
+      password: 'pw',
+      mechanism: 'simple',
+    });
+
+    cy.get<SessionMintResponse>('@sessionDataPublication')
+      .its('body.data_publication_id')
+      .then((id) => cy.visit(`/browse/dataPublication/${id}`));
+
+    cy.contains(
+      '72: Star enter wide nearly off. Base remember toward weight including call nearly political. Decision everyone lose scene feeling. State avoid firm understand teacher.'
+    ).should('be.visible');
+
+    cy.get('[aria-label="Publish"]').should('not.exist');
+  });
+
+  it('should be able to click tab to see content (but should only have an investigation when un-published)', () => {
+    cy.get('#datapublication-content-tab').first().click();
+
+    cy.contains('Investigations').click();
+
+    cy.get('[aria-rowcount="1"]').should('exist');
+    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('a', '72');
+
+    cy.contains('Datasets').click();
+
+    cy.get('[aria-rowcount="0"]').should('exist');
   });
 });

@@ -87,7 +87,7 @@ describe('DOI Generation form', () => {
       cy.url().should('match', /\/browse\/dataPublication\/[0-9]+$/);
     });
 
-    it.only('should let the user click back on the confirmation page', () => {
+    it('should let the user click back on the confirmation page', () => {
       cy.contains('h2', 'Generate DOI').should('be.visible');
       cy.contains('DOI Title').parent().find('input').type('Test title');
       cy.contains('DOI Description')
@@ -306,6 +306,21 @@ describe('DOI Generation form', () => {
       cy.contains('IsSupplementedBy').click();
 
       // check that related DOIs info doesn't break the API
+      cy.contains('button', 'Generate DOI').click();
+
+      cy.contains('div', 'Identifier: my.identifier', { timeout: 10000 })
+        .as('relatedItem')
+        .should('exist');
+      cy.get('@relatedItem')
+        .parent()
+        .contains('Relationship: IsSupplementedBy')
+        .should('exist');
+      cy.get('@relatedItem')
+        .parent()
+        .contains('Resource Type: ComputationalNotebook')
+        .should('exist');
+      cy.get('@relatedItem').parent().contains('Type: ISBN').should('exist');
+
       cy.contains('button', 'Generate DOI').click();
 
       cy.contains('Mint was successful', { timeout: 10000 }).should(

@@ -13,8 +13,7 @@ declare namespace Cypress {
     seedUserGeneratedDataPublication(
       title?: string
     ): Cypress.Chainable<Cypress.Response>;
-    clearUserGeneratedDataPublications(
-      ids: string[]
-    ): Cypress.Chainable<Cypress.Response>;
+    clearDataPublications(ids: string[]): Cypress.Chainable<Cypress.Response>;
+    seedSessionDataPublication(): Cypress.Chainable<Cypress.Response>;
   }
 }

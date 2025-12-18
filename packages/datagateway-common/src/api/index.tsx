@@ -12,6 +12,7 @@ import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import {
   AdditionalFilters,
+  DOIViewType,
   Entity,
   Filter,
   FiltersType,
@@ -27,15 +28,15 @@ import { StateType } from '../state/app.types';
 import { useRetryICATErrors } from './retryICATErrors';
 
 export * from './cart';
-export * from './dataPublications';
 export * from './datafiles';
+export * from './dataPublications';
 export * from './datasets';
+export * from './dois';
 export * from './facilityCycles';
 export * from './generic';
 export * from './instruments';
 export * from './investigations';
 export * from './lucene';
-export * from './dois';
 
 /**
  * Get the nested value from an Entity object given a dataKey
@@ -74,6 +75,7 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
   const endDateString = query.get('endDate');
   const currentTab = query.get('currentTab');
   const restrict = query.get('restrict');
+  const doiType = query.get('doiType') as DOIViewType;
 
   // Parse filters in the query.
   const parsedFilters: FiltersType = {};
@@ -133,6 +135,7 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
     endDate: endDate,
     currentTab: currentTab ? currentTab : 'investigation',
     restrict: restrict === 'true',
+    doiType,
   };
 
   return params;

@@ -24,6 +24,14 @@ const DLSDataPublicationRelatedIdentifiersPanel: React.FC<
   const [t] = useTranslation();
   const { data } = useDOI(doi);
 
+  if (
+    typeof data === 'undefined' ||
+    data.attributes.relatedIdentifiers.filter(
+      (relatedIdentifier) => !relatedIdentifier.relationType.includes('Version')
+    ).length === 0
+  )
+    return null;
+
   return (
     <Accordion
       disableGutters

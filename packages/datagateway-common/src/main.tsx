@@ -71,6 +71,7 @@ export { default as HomePage } from './homePage/homePage.component';
 export { default as AddToCartButton } from './views/addToCartButton.component';
 export { default as ClearFiltersButton } from './views/clearFiltersButton.component';
 export { default as DownloadButton } from './views/downloadButton.component';
+export { default as PublishButton } from './views/publishButton.component';
 export * from './views/queueButtons.component';
 export { default as SelectionAlert } from './views/selectionAlert.component';
 export { default as ViewButton } from './views/viewButton.component';

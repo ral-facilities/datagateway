@@ -297,6 +297,7 @@ describe('data publications api functions', () => {
                   {
                     datasets: 'type',
                     investigationInstruments: 'instrument',
+                    investigationUsers: 'user',
                   },
                 ],
               },
@@ -353,6 +354,7 @@ describe('data publications api functions', () => {
                   {
                     datasets: 'type',
                     investigationInstruments: 'instrument',
+                    investigationUsers: 'user',
                   },
                 ],
               },

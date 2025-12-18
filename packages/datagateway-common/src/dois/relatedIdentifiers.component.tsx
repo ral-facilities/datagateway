@@ -343,7 +343,8 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
                             .filter(
                               (relation) =>
                                 !relation.includes('Version') &&
-                                !relation.includes('Part')
+                                !relation.includes('Part') &&
+                                !relation.includes('Collect')
                             )
                             .map((relation) => {
                               return (
