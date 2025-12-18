@@ -13,20 +13,20 @@ import {
   Typography,
 } from '@mui/material';
 import {
+  type ColumnType,
   Download,
+  type DownloadCartItem,
+  type DownloadCartTableItem,
   DownloadConfirmDialog,
-  Table,
-  TextColumnFilter,
   formatBytes,
+  type SortType,
+  Table,
+  type TableActionProps,
+  TextColumnFilter,
+  type TextFilter,
   useDownloadTypes,
   useIsCartMintable,
   useSubmitCart,
-  type ColumnType,
-  type DownloadCartItem,
-  type DownloadCartTableItem,
-  type SortType,
-  type TableActionProps,
-  type TextFilter,
 } from 'datagateway-common';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -696,6 +696,9 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
         setClose={() => setShowConfirmation(false)}
         postDownloadSuccessFn={downloadIfComplete}
         submitDownloadHook={useSubmitCart}
+        defaultFileNameFormat={t(
+          'downloadConfirmDialog.download_name_cart_default_format'
+        )}
       />
     </>
   );

@@ -18,6 +18,7 @@ describe('DLS - Data Publication Landing', () => {
       .its('body.concept.data_publication_id')
       .then((id) => cy.visit(`/browse/dataPublication/${id}`));
     cy.seedDownloadCart(['datafile 550']);
+    cy.intercept('**/datapublications?**').as('fetchDataPublication');
   });
 
   afterEach(() => {
@@ -228,6 +229,32 @@ describe('DLS - Data Publication Landing', () => {
 
     // expect both user added related identifiers and a part relation
     cy.get('@my.identifier-row').siblings().should('have.length', 2);
+  });
+
+  it('should let the user download their data publication', () => {
+    cy.get('[aria-label="Download Data Publication"]').click();
+
+    cy.get('[aria-label="Download confirmation dialog"]').should('exist');
+    // set transport
+    cy.get('#confirm-access-method').select('HTTPS');
+
+    cy.contains('button', 'Download').click();
+
+    cy.contains(
+      '#download-confirmation-success',
+      'Successfully submitted download request'
+    ).should('exist');
+
+    cy.get<{
+      response: Cypress.Response<{ content: { id: string } }[]>;
+    }>('@fetchDataPublication').then((res) => {
+      cy.contains(
+        '#confirm-success-download-name',
+        `LILS_DataCollection${res.response.body[0].content.id}`
+      ).should('exist');
+    });
+
+    cy.contains('#confirm-success-access-method', 'HTTPS').should('exist');
   });
 
   it('should be able to use the citation formatters', () => {

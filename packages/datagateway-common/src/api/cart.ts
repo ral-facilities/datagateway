@@ -9,7 +9,6 @@ import {
 } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import { format } from 'date-fns';
-import { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import {
@@ -249,15 +248,12 @@ export const submitCart: (
 };
 
 export const getDefaultFileName = (
-  t: TFunction,
+  defaultFileNameFormat: string,
   substitutions?: Record<string, string>
 ): string => {
-  const filenameFormat = t(
-    'downloadConfirmDialog.download_name_default_format'
-  );
   let defaultName = '';
 
-  const formatArr = filenameFormat.split('_');
+  const formatArr = defaultFileNameFormat.split('_');
   const now = new Date(Date.now());
 
   formatArr.forEach((s) => {
@@ -321,7 +317,10 @@ export const useSubmitCart = (
     ({ transport, emailAddress, fileName: userFileName, zipType }) => {
       let fileName = userFileName;
       if (!fileName) {
-        fileName = getDefaultFileName(t, { facilityName });
+        fileName = getDefaultFileName(
+          t('downloadConfirmDialog.download_name_cart_default_format'),
+          { facilityName }
+        );
       }
       return submitCart(
         transport,
@@ -484,7 +483,7 @@ export const queueVisit: (
 
 export interface QueueVisitParams
   extends Pick<SubmitCartParams, 'emailAddress' | 'transport' | 'fileName'> {
-  visitId: string;
+  entityId: string;
 }
 
 /**
@@ -508,9 +507,86 @@ export const useQueueVisit = (
   RollbackFunction
 > => {
   return useMutation(
-    ({ transport, emailAddress, fileName, visitId }) =>
+    ({ transport, emailAddress, fileName, entityId }) =>
       queueVisit(
-        visitId,
+        entityId,
+        transport,
+        emailAddress,
+        fileName,
+        facilityName,
+        downloadApiUrl
+      ),
+    {
+      onError: (error, _, rollback) => {
+        handleICATError(error);
+        if (rollback) rollback();
+      },
+      ...(options ?? {}),
+    }
+  );
+};
+
+export const queueDataCollection: (
+  dataCollectionId: string,
+  transport: string,
+  emailAddress: string,
+  fileName: string | undefined,
+  facilityName: string,
+  downloadApiUrl: string
+) => Promise<string[]> = (
+  dataCollectionId,
+  transport,
+  emailAddress,
+  fileName,
+  facilityName,
+  downloadApiUrl
+) => {
+  const params = new URLSearchParams();
+
+  // Construct the form parameters.
+  params.append('sessionId', readSciGatewayToken().sessionId || '');
+  params.append('transport', transport);
+  params.append('email', emailAddress);
+  if (fileName) params.append('fileName', fileName);
+  params.append('dataCollectionId', dataCollectionId);
+  params.append('facilityName', facilityName);
+
+  return axios
+    .post<string[]>(`${downloadApiUrl}/user/queue/dataCollection`, params)
+    .then((response) => {
+      return response.data;
+    });
+};
+
+export interface QueueDataCollectionParams
+  extends Pick<SubmitCartParams, 'emailAddress' | 'transport' | 'fileName'> {
+  entityId: string;
+}
+
+/**
+ * A React hook for submitting a data collection to the queue.
+ * Returns the list of download ids for the submitted data collection,
+ * which can then be used to query more info.
+ */
+export const useQueueDataCollection = (
+  facilityName: string,
+  downloadApiUrl: string,
+  options?: UseMutationOptions<
+    string[],
+    AxiosError,
+    QueueVisitParams,
+    RollbackFunction
+  >
+): UseMutationResult<
+  string[],
+  AxiosError,
+  QueueVisitParams,
+  RollbackFunction
+> => {
+  return useMutation(
+    ({ transport, emailAddress, fileName, entityId }) =>
+      queueDataCollection(
+        entityId,
         transport,
         emailAddress,
         fileName,

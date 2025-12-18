@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   render,
   screen,
+  waitFor,
   within,
   type RenderResult,
 } from '@testing-library/react';
@@ -234,7 +235,7 @@ describe('DLS Data Publication Landing page', () => {
     state = JSON.parse(
       JSON.stringify({
         dgdataview: dgDataViewInitialState,
-        dgcommon: dGCommonInitialState,
+        dgcommon: { ...dGCommonInitialState, accessMethods: {} },
       })
     );
 
@@ -254,17 +255,33 @@ describe('DLS Data Publication Landing page', () => {
           return Promise.resolve({
             data: [initialData],
           });
-        } else if (/\/dois/.test(url)) {
+        } else if (/\/investigations$/.test(url)) {
           return Promise.resolve({
-            data: { data: initialDataCiteData },
+            data: [],
           });
         } else if (/\/count$/.test(url)) {
           return Promise.resolve({
             data: 0,
           });
-        } else if (/\/investigations$/.test(url)) {
+        } else if (/\/dois/.test(url)) {
           return Promise.resolve({
-            data: [investigation],
+            data: { data: initialDataCiteData },
+          });
+        } else if (/\/queue\/allowed$/.test(url)) {
+          return Promise.resolve({
+            data: true,
+          });
+        } else if (/.*\/downloadType\/status$/.test(url)) {
+          return Promise.resolve({
+            data: {
+              https: {
+                idsUrl: 'https://example.com/ids',
+                disabled: false,
+                message: '',
+                displayName: 'HTTPS',
+                description: '',
+              },
+            },
           });
         } else {
           return Promise.reject(`Endpoint not mocked: ${url}`);
@@ -361,6 +378,31 @@ describe('DLS Data Publication Landing page', () => {
         dataPublicationId: '1',
       })}/edit`,
       state: { fromEdit: true },
+    });
+  });
+
+  it('renders download button & clicking it opens download dialogue', async () => {
+    renderComponent();
+
+    // need to wait for fetching of /queue/allowed
+    await waitFor(
+      () =>
+        expect(
+          screen.getByRole('button', {
+            name: 'buttons.queue_data_collection',
+          })
+        ).not.toBeDisabled(),
+      { timeout: 5_000 }
+    );
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'buttons.queue_data_collection',
+      })
+    );
+
+    await screen.findByRole('dialog', {
+      name: 'downloadConfirmDialog.dialog_title',
     });
   });
 
