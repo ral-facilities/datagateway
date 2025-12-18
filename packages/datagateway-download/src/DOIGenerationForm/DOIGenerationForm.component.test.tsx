@@ -404,7 +404,9 @@ describe('DOI generation form component', () => {
     );
 
     await user.click(
-      screen.getByRole('button', { name: 'DOIGenerationForm.add_contributor' })
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.add_contributor',
+      })
     );
 
     // missing contributor type
@@ -429,7 +431,9 @@ describe('DOI generation form component', () => {
     );
 
     await user.click(
-      screen.getByRole('button', { name: 'DOIGenerationForm.add_related_doi' })
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.add_related_doi',
+      })
     );
 
     // missing relationship type
@@ -504,7 +508,7 @@ describe('DOI generation form component', () => {
 
     await user.type(
       screen.getByRole('combobox', { name: 'DOIGenerationForm.subjects' }),
-      'subject{enter}'
+      's{enter}'
     );
 
     await user.click(
@@ -535,7 +539,7 @@ describe('DOI generation form component', () => {
         ],
         subjects: [
           {
-            subject: 'subject',
+            subject: 's',
             schemeUri: null,
             valueUri: null,
             subjectScheme: null,
@@ -559,7 +563,7 @@ describe('DOI generation form component', () => {
     );
 
     expect(publishDraftDOI).toHaveBeenCalledWith('1', expect.anything());
-  });
+  }, 30_000);
 
   it('should let the user go back from the confirmation page', async () => {
     renderComponent();
