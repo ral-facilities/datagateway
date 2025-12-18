@@ -235,6 +235,8 @@ describe('DLS - Data Publication Landing', () => {
     cy.get('[aria-label="Download Data Publication"]').click();
 
     cy.get('[aria-label="Download confirmation dialog"]').should('exist');
+    // set transport
+    cy.get('#confirm-access-method').select('HTTPS');
 
     cy.contains('button', 'Download').click();
 
