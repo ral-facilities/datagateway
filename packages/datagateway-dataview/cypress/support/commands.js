@@ -24,6 +24,7 @@
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
+import '@testing-library/cypress/add-commands';
 import jsrsasign from 'jsrsasign';
 
 const parseJwt = (token) => {
@@ -136,8 +137,9 @@ Cypress.Commands.add('seedUserGeneratedDataPublication', (title) => {
           metadata: {
             title: title ?? 'Test DOI title',
             description: 'Test DOI description',
-            // creators: [],
+            creators: [],
             related_items: [],
+            subjects: [],
             resource_type: 'Collection',
           },
           // these ids are specifically mintable by the Chris481 user
