@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
+  act,
   render,
   RenderResult,
   screen,
@@ -11,7 +12,11 @@ import axios, { AxiosResponse } from 'axios';
 import React from 'react';
 import { BioPortalResponse } from '../api/dois';
 import { createBioPortalTerm } from '../setupTests';
-import TechniquesAndSubjects from './techniquesAndSubjects.component';
+import TechniquesAndSubjects, {
+  AUTOCOMPLETE_DEBOUNCE_DELAY,
+} from './techniquesAndSubjects.component';
+
+vi.useFakeTimers({ toFake: ['Date', 'setTimeout', 'clearTimeout'] });
 
 const createTestQueryClient = (): QueryClient =>
   new QueryClient({
@@ -58,7 +63,7 @@ describe('Techniques & Subjects selector component', () => {
   const renderComponent = (): RenderResult => render(<TestComponent />);
 
   beforeEach(() => {
-    user = userEvent.setup();
+    user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
 
     props = {
       subjects: ['subject 1', 'subject 2'],
@@ -84,9 +89,14 @@ describe('Techniques & Subjects selector component', () => {
     axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
-        if (/\/search.*/.test(url)) {
+        // only return terms when query is filled to test the debouncing
+        if (/\/search.*q=\w+.*/.test(url)) {
           return Promise.resolve({
             data: mockSearchResponse,
+          });
+        } else if (/\/search.*/.test(url)) {
+          return Promise.resolve({
+            data: { collection: [] },
           });
         } else if (/\/descendants/.test(url)) {
           return Promise.resolve({
@@ -234,28 +244,28 @@ describe('Techniques & Subjects selector component', () => {
       screen.getByRole('combobox', {
         name: 'DOIGenerationForm.technique_selector_label',
       }),
-      'technique'
+      't'
     );
 
     expect(
       screen.getByRole('combobox', {
         name: 'DOIGenerationForm.technique_selector_label',
       })
-    ).toHaveValue('technique');
+    ).toHaveValue('t');
 
-    // check dropdown loads
+    // test we debounce properly
     expect(
-      await screen.findByRole(
-        'listbox',
-        {
-          name: 'DOIGenerationForm.technique_selector_label',
-        },
-        { timeout: 5_000 }
-      )
-    ).toBeInTheDocument();
+      await screen.queryByRole('option', {
+        name: 'technique 1 (1)',
+      })
+    ).not.toBeInTheDocument();
+
+    act(() => {
+      vi.advanceTimersByTime(AUTOCOMPLETE_DEBOUNCE_DELAY);
+    });
 
     expect(
-      screen.getByRole('option', {
+      await screen.findByRole('option', {
         name: 'technique 1 (1)',
       })
     ).toBeInTheDocument();

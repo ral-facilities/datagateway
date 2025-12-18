@@ -19,6 +19,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import debounce from 'lodash.debounce';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -29,23 +30,7 @@ import { BioPortalTerm } from '../app.types';
 import DialogContent from '../dialogContent.component';
 import DialogTitle from '../dialogTitle.component';
 
-export function useDebounce<T>(value: T, delay: number): T {
-  const [debouncedValue, setDebouncedValue] = React.useState<T>(value);
-
-  React.useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
-
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [value, delay]);
-
-  return debouncedValue;
-}
-
-const AUTOCOMPLETE_DEBOUNCE_DELAY = 300;
+export const AUTOCOMPLETE_DEBOUNCE_DELAY = 300;
 
 const getTechniqueDisplayName = (technique: BioPortalTerm): string =>
   technique.synonym && technique.synonym.length > 0
@@ -62,10 +47,16 @@ const TechniqueSelector: React.FC<{
 
   const [inputValue, setInputValue] = React.useState('');
 
-  const debouncedInputValue = useDebounce(
-    inputValue,
-    AUTOCOMPLETE_DEBOUNCE_DELAY
+  const [debouncedInputValue, setDebouncedInputValue] =
+    React.useState(inputValue);
+  const updateDebouncedValue = React.useMemo(
+    () =>
+      debounce((value: string) => {
+        setDebouncedInputValue(value);
+      }, AUTOCOMPLETE_DEBOUNCE_DELAY),
+    []
   );
+
   const { data: techniques, isFetching } = useSearchPANETTechniques(
     debouncedInputValue,
     bioportalUrl
@@ -78,6 +69,7 @@ const TechniqueSelector: React.FC<{
       inputValue={inputValue}
       onInputChange={(_event, newInputValue) => {
         setInputValue(newInputValue);
+        updateDebouncedValue(newInputValue);
       }}
       value={value}
       loading={isFetching}
