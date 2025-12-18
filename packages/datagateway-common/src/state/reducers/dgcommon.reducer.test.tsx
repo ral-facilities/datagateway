@@ -1,5 +1,4 @@
 import {
-  loadAccessMethods,
   loadAnonUserName,
   loadFacilityName,
   loadFeatureSwitches,
@@ -52,14 +51,6 @@ describe('DGCommon reducer', () => {
     expect(updatedState.queryRetries).toEqual(1);
   });
 
-  it('should set access methods property when configure access methods action is sent', () => {
-    expect(state.accessMethods).toEqual(undefined);
-
-    const updatedState = DGCommonReducer(state, loadAccessMethods({}));
-
-    expect(updatedState.accessMethods).toEqual({});
-  });
-
   it('should set feature switches property when configure feature switches action is sent', () => {
     expect(state.features).toEqual(undefined);
 
@@ -69,7 +60,7 @@ describe('DGCommon reducer', () => {
   });
 
   it('should set anonUserName property when configure anon username action is sent', () => {
-    expect(state.accessMethods).toEqual(undefined);
+    expect(state.anonUserName).toEqual(undefined);
 
     const updatedState = DGCommonReducer(state, loadAnonUserName('anon'));
 

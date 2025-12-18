@@ -1,4 +1,3 @@
-import React, { useCallback, useRef } from 'react';
 import {
   CircularProgress,
   Grid,
@@ -10,6 +9,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import React, { useCallback, useRef } from 'react';
 
 import {
   DateColumnFilter,
@@ -22,28 +22,29 @@ import {
   TableActionProps,
   TextColumnFilter,
   TextFilter,
+  useDownloadTypes,
 } from 'datagateway-common';
 
-import { useTranslation } from 'react-i18next';
-import { IndexRange, TableCellProps } from 'react-virtualized';
 import PauseCircleFilled from '@mui/icons-material/PauseCircleFilled';
 import PlayCircleFilled from '@mui/icons-material/PlayCircleFilled';
 import Refresh from '@mui/icons-material/Refresh';
 import RemoveCircle from '@mui/icons-material/RemoveCircle';
 import Restore from '@mui/icons-material/Restore';
-import BlackTooltip from '../tooltip.component';
-import { toDate } from 'date-fns-tz';
+import { useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
+import { toDate } from 'date-fns-tz';
+import { useTranslation } from 'react-i18next';
+import { IndexRange, TableCellProps } from 'react-virtualized';
+import { DownloadSettingsContext } from '../ConfigProvider';
 import {
   QueryKeys,
   useAdminDownloadDeleted,
   useAdminDownloads,
   useAdminUpdateDownloadStatus,
 } from '../downloadApiHooks';
-import { DownloadSettingsContext } from '../ConfigProvider';
-import useDownloadFormatter from './hooks/useDownloadFormatter';
+import BlackTooltip from '../tooltip.component';
 import DownloadProgressIndicator from './downloadProgressIndicator.component';
-import { useQueryClient } from '@tanstack/react-query';
+import useDownloadFormatter from './hooks/useDownloadFormatter';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   flexGrow: 1,
@@ -139,6 +140,11 @@ const AdminDownloadStatusTable: React.FC = () => {
   } = useAdminDownloads({
     initialQueryOffset: `${buildQueryOffset()} LIMIT 0, 50`,
   });
+
+  const { data: accessMethods } = useDownloadTypes(
+    settings.facilityName,
+    settings.downloadApiUrl
+  );
 
   const fetchMoreData = useCallback(
     (offsetParams: IndexRange) =>
@@ -380,6 +386,11 @@ const AdminDownloadStatusTable: React.FC = () => {
                             }: TableCellProps) => (
                               <DownloadProgressIndicator
                                 download={rowData as FormattedDownload}
+                                idsUrl={
+                                  accessMethods?.[
+                                    (rowData as FormattedDownload).transport
+                                  ]?.idsUrl ?? ''
+                                }
                               />
                             ),
                           },

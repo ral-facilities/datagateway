@@ -32,7 +32,10 @@ function renderComponent({ download = mockDownload } = {}): RenderResult {
   return render(
     <DownloadSettingsContext.Provider value={mockedSettings}>
       <QueryClientProvider client={createTestQueryClient()}>
-        <DownloadProgressIndicator download={download} />
+        <DownloadProgressIndicator
+          download={download}
+          idsUrl="https://example.com/ids"
+        />
       </QueryClientProvider>
     </DownloadSettingsContext.Provider>
   );

@@ -1,6 +1,9 @@
-import React, { useCallback } from 'react';
 import { Grid, IconButton, LinearProgress, Paper } from '@mui/material';
+import React, { useCallback } from 'react';
 
+import GetApp from '@mui/icons-material/GetApp';
+import RemoveCircle from '@mui/icons-material/RemoveCircle';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   DateColumnFilter,
   DateFilter,
@@ -10,23 +13,21 @@ import {
   TableActionProps,
   TextColumnFilter,
   TextFilter,
+  useDownloadTypes,
 } from 'datagateway-common';
-import { getDataUrl } from '../downloadApi';
-import { TableCellProps } from 'react-virtualized';
-import GetApp from '@mui/icons-material/GetApp';
-import RemoveCircle from '@mui/icons-material/RemoveCircle';
-import BlackTooltip from '../tooltip.component';
-import { DownloadSettingsContext } from '../ConfigProvider';
-import { useTranslation } from 'react-i18next';
-import { toDate } from 'date-fns-tz';
 import { format, isAfter, isBefore, isEqual, isWithinInterval } from 'date-fns';
-import DownloadProgressIndicator from './downloadProgressIndicator.component';
-import { useQueryClient } from '@tanstack/react-query';
+import { toDate } from 'date-fns-tz';
+import { useTranslation } from 'react-i18next';
+import { TableCellProps } from 'react-virtualized';
+import { DownloadSettingsContext } from '../ConfigProvider';
+import { getDataUrl } from '../downloadApi';
 import {
   QueryKeys,
   useDownloadOrRestoreDownload,
   useDownloads,
 } from '../downloadApiHooks';
+import BlackTooltip from '../tooltip.component';
+import DownloadProgressIndicator from './downloadProgressIndicator.component';
 import useDownloadFormatter from './hooks/useDownloadFormatter';
 
 interface DownloadStatusTableProps {
@@ -60,6 +61,11 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
   } = useDownloads({
     select: (data) => data.map(formatDownload),
   });
+
+  const { data: accessMethods } = useDownloadTypes(
+    settings.facilityName,
+    settings.downloadApiUrl
+  );
 
   const {
     refreshTable: shouldRefreshTable,
@@ -319,6 +325,11 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                       cellContentRenderer: ({ rowData }: TableCellProps) => (
                         <DownloadProgressIndicator
                           download={rowData as FormattedDownload}
+                          idsUrl={
+                            accessMethods?.[
+                              (rowData as FormattedDownload).transport
+                            ]?.idsUrl ?? ''
+                          }
                         />
                       ),
                     },

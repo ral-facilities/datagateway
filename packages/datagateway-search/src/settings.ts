@@ -1,11 +1,6 @@
 import { DataviewSearchCommonSettings } from 'datagateway-common';
 
-type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
-
-export type SearchSettings = Optional<
-  DataviewSearchCommonSettings,
-  'accessMethods'
-> & {
+export type SearchSettings = DataviewSearchCommonSettings & {
   searchableEntities?: string[];
   minNumResults?: number;
   maxNumResults?: number;

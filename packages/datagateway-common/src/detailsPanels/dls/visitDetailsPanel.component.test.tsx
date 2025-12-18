@@ -26,7 +26,7 @@ function renderComponent({
       <Provider
         store={createStore(
           combineReducers<Partial<StateType>>({ dgcommon: dGCommonReducer }),
-          { dgcommon: { ...dGCommonInitialState, accessMethods: {} } }
+          { dgcommon: dGCommonInitialState }
         )}
       >
         <QueryClientProvider client={new QueryClient()}>
@@ -76,6 +76,12 @@ describe('Visit details panel component', () => {
 
       if (/.*\/queue\/allowed/.test(url))
         return Promise.resolve({ data: true });
+
+      if (/.*\/downloadType\/status$/.test(url)) {
+        return Promise.resolve({
+          data: {},
+        });
+      }
 
       return Promise.resolve();
     });

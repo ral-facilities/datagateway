@@ -3,7 +3,6 @@ import type { ThunkAction } from 'redux-thunk';
 import type {
   Datafile,
   Dataset,
-  DownloadSettingsAccessMethod,
   Instrument,
   Investigation,
 } from '../app.types';
@@ -18,7 +17,6 @@ import type { FeatureSwitches, URLs } from './actions/actions.types';
 export interface DGCommonState {
   facilityName: string;
   urls: URLs;
-  accessMethods?: DownloadSettingsAccessMethod;
   queryRetries?: number;
   features?: FeatureSwitches;
   anonUserName?: string;

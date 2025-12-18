@@ -10,6 +10,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import {
+  useDownloadTypes,
   useQueueAllowed,
   useQueueDataCollection,
   useQueueVisit,
@@ -50,15 +51,15 @@ const QueueEntityButton: React.FC<QueueEntityButtonProps> = (props) => {
   const facilityName = useSelector(
     (state: StateType) => state.dgcommon.facilityName
   );
-  const accessMethods = useSelector(
-    (state: StateType) => state.dgcommon.accessMethods
-  );
   const disableAnonDownload = useSelector(
     (state: StateType) => state.dgcommon.features?.disableAnonDownload
   );
   const anonUserName = useSelector(
     (state: StateType) => state.dgcommon.anonUserName
   );
+
+  const { data: accessMethods, refetch: refetchDownloadTypes } =
+    useDownloadTypes(facilityName, downloadApiUrl);
 
   const { data: isQueueAllowed } = useQueueAllowed();
 
@@ -93,13 +94,6 @@ const QueueEntityButton: React.FC<QueueEntityButtonProps> = (props) => {
     [iconButton, t, label]
   );
 
-  // log error if we haven't defined access methods to help debug why they're missing from the dropdown if they're not provided
-  if (!accessMethods) {
-    console.error(
-      'Access methods not provided but using QueueVisitButton - please provide access methods in the settings'
-    );
-  }
-
   const username = readSciGatewayToken().username;
   const loggedInAnonymously =
     username === null || username === (anonUserName ?? 'anon/anon');
@@ -124,7 +118,11 @@ const QueueEntityButton: React.FC<QueueEntityButtonProps> = (props) => {
       >
         <span style={iconButton ? { margin: 'auto' } : {}}>
           <BaseQueueButton
-            onClick={() => setShowConfirmation(true)}
+            onClick={() => {
+              // refetch the download types when opening the dialogue to ensure statuses are up to date
+              refetchDownloadTypes();
+              setShowConfirmation(true);
+            }}
             disabled={
               disableIfAnon ||
               (!isQueueAllowed && disallowedBehaviour === 'disable')

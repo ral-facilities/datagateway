@@ -23,16 +23,11 @@ import {
   SubmitCartParams,
   getDefaultFileName,
   useDownload,
-  useDownloadTypeStatuses,
   useQueueDataCollection,
   useQueueVisit,
   useSubmitCart,
 } from '../api/cart';
-import type {
-  Download,
-  DownloadSettingsAccessMethod,
-  DownloadTypeStatus,
-} from '../app.types';
+import type { AccessMethods, Download } from '../app.types';
 import DialogContent from '../dialogContent.component';
 import DialogTitle from '../dialogTitle.component';
 import DownloadRequestResult from './downloadRequestResult.component';
@@ -64,7 +59,7 @@ interface DownloadConfirmDialogProps {
 
   facilityName: string;
   downloadApiUrl: string;
-  accessMethods: DownloadSettingsAccessMethod;
+  accessMethods: AccessMethods;
 
   entityId?: string;
   submitDownloadHook:
@@ -77,12 +72,6 @@ interface DownloadConfirmDialogProps {
   setClose: () => void;
 
   postDownloadSuccessFn?: (downloadInfo: Download) => void;
-}
-
-interface DownloadTypeInfo extends DownloadTypeStatus {
-  idsUrl: string;
-  displayName?: string;
-  description?: string;
 }
 
 const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
@@ -122,30 +111,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     /^[a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
   const [emailValid, setEmailValid] = React.useState(true);
   const [emailHelperText, setEmailHelperText] = React.useState(emailHelpText);
-
-  const downloadTypeStatusQueries = useDownloadTypeStatuses({
-    downloadTypes: Object.keys(accessMethods),
-    facilityName,
-    downloadApiUrl,
-    enabled: props.open,
-    select: (status) => {
-      const info = accessMethods[status.type];
-      return info
-        ? {
-            ...info,
-            ...status,
-          }
-        : {
-            type: status.type,
-            disabled: undefined,
-            message: '',
-          };
-    },
-  });
-
-  const hasFinishedLoadingDownloadTypeStatuses =
-    downloadTypeStatusQueries.every(({ isLoading }) => !isLoading);
-
   const {
     data: submitDownloadData,
     mutate: submitDownload,
@@ -170,42 +135,26 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   });
 
   /**
-   * Maps download types to their corresponding info object
-   */
-  const downloadTypeInfoMap = React.useMemo(
-    () =>
-      hasFinishedLoadingDownloadTypeStatuses
-        ? downloadTypeStatusQueries.reduce((m, { data }) => {
-            if (data && data.disabled !== undefined) {
-              m.set(data.type, data);
-            }
-            return m;
-          }, new Map<string, DownloadTypeInfo>())
-        : null,
-    [hasFinishedLoadingDownloadTypeStatuses, downloadTypeStatusQueries]
-  );
-
-  /**
    * Sorted download types based on whether they are disabled.
    */
   const sortedDownloadTypes = React.useMemo(
     () =>
-      downloadTypeInfoMap
-        ? Array.from(downloadTypeInfoMap.values()).sort(
-            (methodInfoA, methodInfoB) =>
-              (methodInfoA.disabled !== undefined
-                ? !methodInfoA.disabled
-                  ? -1
-                  : 0
-                : 1) -
-              (methodInfoB.disabled !== undefined
-                ? !methodInfoB?.disabled
-                  ? -1
-                  : 0
-                : 1)
-          )
-        : null,
-    [downloadTypeInfoMap]
+      Object.entries(accessMethods)
+        .map(([type, info]) => ({ type, ...info }))
+        .sort(
+          (methodInfoA, methodInfoB) =>
+            (methodInfoA.disabled !== undefined
+              ? !methodInfoA.disabled
+                ? -1
+                : 0
+              : 1) -
+            (methodInfoB.disabled !== undefined
+              ? !methodInfoB?.disabled
+                ? -1
+                : 0
+              : 1)
+        ),
+    [accessMethods]
   );
 
   // Hide the confirmation dialog and clear the download cart
@@ -320,14 +269,9 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   };
 
   // check if every query for download type status failed
-  const methodsUnavailable = downloadTypeStatusQueries.every(
-    ({ isLoading, isError }) => !isLoading && isError
-  );
+  const methodsUnavailable = sortedDownloadTypes.length === 0;
 
-  const shouldShowConfirmationForm =
-    props.open &&
-    hasFinishedLoadingDownloadTypeStatuses &&
-    Boolean(sortedDownloadTypes);
+  const shouldShowConfirmationForm = props.open;
 
   // whether the download request has failed
   const hasDownloadFailed =
@@ -412,7 +356,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                 <FormControl
                   sx={{ minWidth: 120 }}
                   error={
-                    downloadTypeInfoMap?.get(selectedMethod)?.disabled ||
+                    accessMethods[selectedMethod]?.disabled ||
                     methodsUnavailable
                   }
                   variant="standard"
@@ -436,28 +380,29 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                   >
                     {/* Access methods from settings as items for selection */}
                     {sortedDownloadTypes &&
-                      sortedDownloadTypes.map(
-                        ({ type, ...methodInfo }, index) => {
-                          const methodName =
-                            methodInfo?.displayName || type.toUpperCase();
-                          return (
-                            <option
-                              key={index}
-                              id={`confirm-access-method-${type}`}
-                              aria-label={methodName}
-                              value={type}
-                              disabled={methodInfo.disabled === undefined}
-                            >
-                              {methodName}
-                            </option>
-                          );
-                        }
-                      )}
+                      sortedDownloadTypes.map((downloadType, index) => {
+                        const { type, displayName, disabled } = downloadType;
+                        const methodName =
+                          displayName.length > 0
+                            ? displayName
+                            : type.toUpperCase();
+                        return (
+                          <option
+                            key={index}
+                            id={`confirm-access-method-${type}`}
+                            aria-label={methodName}
+                            value={type}
+                            disabled={disabled === undefined}
+                          >
+                            {methodName}
+                          </option>
+                        );
+                      })}
                   </Select>
 
                   <FormHelperText id="confirm-access-method-help">
                     {(() => {
-                      const method = downloadTypeInfoMap?.get(selectedMethod);
+                      const method = accessMethods[selectedMethod];
                       if (methodsUnavailable)
                         return t(
                           'downloadConfirmDialog.access_method_helpertext_all_disabled_error'
@@ -468,12 +413,11 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                         );
                       }
                       if (method.disabled)
-                        return (
-                          method.message ||
-                          t(
-                            'downloadConfirmDialog.access_method_helpertext_disabled_error'
-                          )
-                        );
+                        return method.message.length > 0
+                          ? method.message
+                          : t(
+                              'downloadConfirmDialog.access_method_helpertext_disabled_error'
+                            );
                       return t(
                         'downloadConfirmDialog.access_method_helpertext'
                       );
@@ -488,7 +432,8 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                 {Object.entries(accessMethods)
                   .filter(
                     ([type, methodInfo]) =>
-                      type === selectedMethod && methodInfo.description
+                      type === selectedMethod &&
+                      methodInfo.description.length > 0
                   )
                   .map(([type, methodInfo], index) => (
                     <span key={index} style={{ paddingTop: '20px' }}>
@@ -499,7 +444,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                       <Typography
                         id={`confirm-access-method-${type}-description`}
                         dangerouslySetInnerHTML={{
-                          __html: methodInfo.description || '',
+                          __html: methodInfo.description,
                         }}
                       />
                     </span>
@@ -596,8 +541,8 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
               id="download-confirmation-download"
               disabled={
                 !emailValid ||
-                !(downloadTypeInfoMap?.has(selectedMethod) ?? false) ||
-                (downloadTypeInfoMap?.get(selectedMethod)?.disabled ?? true) ||
+                !(selectedMethod in accessMethods) ||
+                accessMethods[selectedMethod].disabled ||
                 methodsUnavailable ||
                 isSubmittingDownload
               }

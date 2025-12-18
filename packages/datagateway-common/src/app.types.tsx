@@ -26,7 +26,6 @@ export interface CommonSettings {
   helpSteps?: { target: string; content: string }[];
   pluginHost?: string;
   queryRetries?: number;
-  accessMethods: DownloadSettingsAccessMethod;
 }
 
 export interface DOISettings {
@@ -778,19 +777,14 @@ export interface DOIResult {
   attributes: DataciteMetadata;
 }
 
-/**
- * Describes the status of a download type.
- */
-export interface DownloadTypeStatus {
-  type: string;
-  disabled: boolean;
-  message: string;
+export interface AccessMethods {
+  [type: string]: DownloadTypeInfo;
 }
 
-export interface DownloadSettingsAccessMethod {
-  [type: string]: {
-    idsUrl: string;
-    displayName?: string;
-    description?: string;
-  };
+export interface DownloadTypeInfo {
+  idsUrl: string;
+  displayName: string;
+  description: string;
+  disabled: boolean;
+  message: string;
 }
