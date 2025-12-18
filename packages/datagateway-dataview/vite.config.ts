@@ -80,11 +80,11 @@ export default defineConfig(({ mode }) => {
     server: {
       port: 3000,
       proxy: {
-        '/PANET': {
+        '/bioportal': {
           target: 'https://data.bioontology.org',
           changeOrigin: true,
           rewrite: (path) => {
-            return path.replace(/^\/PANET/, '');
+            return path.replace(/^\/bioportal/, '');
           },
           headers: {
             Authorization: `apikey token=${env.VITE_BIOPORTAL_API_KEY}`,

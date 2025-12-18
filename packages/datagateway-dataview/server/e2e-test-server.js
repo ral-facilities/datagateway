@@ -17,6 +17,22 @@ app.get('/datagateway-dataview-settings.json', function (req, res) {
   );
 });
 
+app.get('/bioportal/*', async function (req, res) {
+  const newUrl =
+    'https://data.bioontology.org' + req.url.replace(/^\/bioportal/, '');
+  const newReq = new Request(newUrl, {
+    headers: {
+      ...req.headers,
+      referer: '',
+      authorization: `apikey token=${process.env.VITE_BIOPORTAL_API_KEY}`,
+    },
+  });
+
+  const response = await fetch(newReq);
+  const responseJson = await response.json();
+  res.send(responseJson);
+});
+
 app.use(
   express.json(),
   express.static(path.resolve('./dist'), {

@@ -5,7 +5,7 @@
   "idsUrl": "example.ids.url",
   "doiMinterUrl": null,
   "dataCiteUrl": null,
-  "bioportalUrl": "/PANET",
+  "bioportalUrl": "/bioportal",
   "fileCountMax": 5000,
   "totalSizeMax": 1000000000000,
   "accessMethods": {
