@@ -1073,6 +1073,7 @@ describe('Download API react-query hooks test', () => {
       description: 'Test description',
       creators: [{ username: '1', contributor_type: ContributorType.Creator }],
       related_items: [],
+      subjects: [],
     };
     it('should send a request to mint a cart', async () => {
       axios.post = vi.fn().mockResolvedValue({

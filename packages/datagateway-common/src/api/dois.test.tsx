@@ -283,6 +283,7 @@ describe('doi api functions', () => {
       description: 'Test description',
       creators: [{ username: '1', contributor_type: ContributorType.Minter }],
       related_items: [],
+      subjects: [],
     };
     const content = {
       datafile_ids: [1],
