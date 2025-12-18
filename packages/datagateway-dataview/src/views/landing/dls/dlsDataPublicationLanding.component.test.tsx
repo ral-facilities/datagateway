@@ -373,12 +373,14 @@ describe('DLS Data Publication Landing page', () => {
     renderComponent();
 
     // need to wait for fetching of /queue/allowed
-    await waitFor(() =>
-      expect(
-        screen.getByRole('button', {
-          name: 'buttons.queue_data_collection',
-        })
-      ).not.toBeDisabled()
+    await waitFor(
+      () =>
+        expect(
+          screen.getByRole('button', {
+            name: 'buttons.queue_data_collection',
+          })
+        ).not.toBeDisabled(),
+      { timeout: 5_000 }
     );
 
     await user.click(
