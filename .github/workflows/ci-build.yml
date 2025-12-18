@@ -210,6 +210,11 @@ jobs:
       - name: Install dependencies
         run: yarn --immutable
 
+      - name: 'Make local env file'
+        run: cp packages/datagateway-dataview/.env.production packages/datagateway-dataview/.env.local
+      - name: 'Add bioportal API key to local env file'
+        run: echo VITE_BIOPORTAL_API_KEY=${{ secrets.BIOPORTAL_API_KEY }} >> packages/datagateway-download/.env.local
+
       - name: Run datagateway-dataview e2e tests
         run: yarn workspace datagateway-dataview run e2e
       - name: Upload Cypress screenshots
@@ -374,6 +379,11 @@ jobs:
 
       - name: Install dependencies
         run: yarn --immutable
+
+      - name: 'Make local env file'
+        run: cp packages/datagateway-download/.env.production packages/datagateway-download/.env.local
+      - name: 'Add bioportal API key to local env file'
+        run: echo VITE_BIOPORTAL_API_KEY=${{ secrets.BIOPORTAL_API_KEY }} >> packages/datagateway-download/.env.local
 
       - name: Run datagateway-download e2e tests
         run: yarn workspace datagateway-download run e2e
