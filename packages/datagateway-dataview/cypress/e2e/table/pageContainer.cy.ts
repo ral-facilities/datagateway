@@ -184,8 +184,15 @@ describe('PageContainer Component', () => {
     cy.window()
       .then((window) => {
         const windowWidth = window.innerWidth;
-        // Account for select and details column widths
-        columnWidth = (windowWidth - 40 - 40) / 8;
+
+        const table =
+          window.document.querySelector<HTMLElement>('[role="rowgroup"]');
+        const scrollBarWidth = table
+          ? table.offsetWidth - table.clientWidth
+          : 0;
+
+        // Account for select and details column widths & scroll bar
+        columnWidth = (windowWidth - 40 - 40 - scrollBarWidth) / 8;
       })
       .then(() => expect(columnWidth).to.not.equal(0));
 
