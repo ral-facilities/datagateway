@@ -42,7 +42,6 @@ const DOITypeSelector = (): React.ReactElement => {
       <Grid item>
         <ToggleButtonGroup
           value={doiType ?? 'minter'}
-          color="primary"
           exclusive
           onChange={handleType}
           aria-labelledby="doi-type-selector-label"
