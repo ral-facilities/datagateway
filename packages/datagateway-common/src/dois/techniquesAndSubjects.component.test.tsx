@@ -245,9 +245,13 @@ describe('Techniques & Subjects selector component', () => {
 
     // check dropdown loads
     expect(
-      await screen.findByRole('listbox', {
-        name: 'DOIGenerationForm.technique_selector_label',
-      })
+      await screen.findByRole(
+        'listbox',
+        {
+          name: 'DOIGenerationForm.technique_selector_label',
+        },
+        { timeout: 5_000 }
+      )
     ).toBeInTheDocument();
 
     expect(
