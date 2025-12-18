@@ -5,6 +5,7 @@ import { useDownloadPercentageComplete } from '../downloadApiHooks';
 
 interface DownloadProgressIndicatorProps {
   download: Download;
+  idsUrl: string;
 }
 
 /**
@@ -15,11 +16,13 @@ interface DownloadProgressIndicatorProps {
  */
 function DownloadProgressIndicator({
   download,
+  idsUrl,
 }: DownloadProgressIndicatorProps): JSX.Element {
   const [t] = useTranslation();
   const { data: progress, isFetching: isLoadingProgress } =
     useDownloadPercentageComplete({
       download,
+      idsUrl,
       enabled:
         !download.isDeleted &&
         typeof download.preparedId !== 'undefined' && // do not send download status request for downloads with no preparedId as it will just fail

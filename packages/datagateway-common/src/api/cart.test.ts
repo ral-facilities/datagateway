@@ -1,4 +1,3 @@
-import { QueryClient } from '@tanstack/react-query';
 import { renderHook, waitFor } from '@testing-library/react';
 import axios, { AxiosError } from 'axios';
 import {
@@ -6,8 +5,8 @@ import {
   useAddToCart,
   useCart,
   useDownload,
-  useDownloadTypeStatuses,
   useQueueAllowed,
+  useQueueDataCollection,
   useQueueVisit,
   useRemoveFromCart,
   useSubmitCart,
@@ -15,7 +14,6 @@ import {
 import { DownloadCart } from '../app.types';
 import handleICATError from '../handleICATError';
 import { createReactQueryWrapper } from '../setupTests';
-import { NotificationType } from '../state/actions/actions.types';
 
 vi.mock('../handleICATError');
 
@@ -396,147 +394,6 @@ describe('Cart api functions', () => {
     });
   });
 
-  describe('useDownloadTypeStatuses', () => {
-    const downloadTypes = ['https', 'globus'];
-
-    let queryClient: QueryClient;
-
-    beforeAll(() => {
-      queryClient = new QueryClient();
-    });
-
-    afterEach(() => {
-      queryClient.clear();
-    });
-
-    it('should query statuses of download types', async () => {
-      axios.get = vi.fn().mockResolvedValue({
-        data: {
-          disabled: false,
-          message: '',
-        },
-      });
-
-      const { result } = renderHook(
-        () =>
-          useDownloadTypeStatuses({
-            downloadTypes,
-            facilityName: 'LILS',
-            downloadApiUrl: 'https://example.com/downloadApiUrl',
-          }),
-        { wrapper: createReactQueryWrapper() }
-      );
-
-      await waitFor(() =>
-        expect(result.current.every((query) => query.isSuccess)).toBe(true)
-      );
-
-      const data = result.current.map(({ data }) => data);
-      expect(data).toEqual([
-        {
-          type: 'https',
-          disabled: false,
-          message: '',
-        },
-        {
-          type: 'globus',
-          disabled: false,
-          message: '',
-        },
-      ]);
-    });
-
-    it('should dispatch event with the error messages of download type queries with errors', async () => {
-      axios.get = vi
-        .fn()
-        .mockResolvedValueOnce({
-          data: {
-            disabled: false,
-            message: '',
-          },
-        })
-        .mockImplementationOnce(() =>
-          Promise.reject({
-            message: 'Test error message',
-          })
-        );
-
-      const dispatchEventSpy = vi.spyOn(document, 'dispatchEvent');
-
-      const { result } = renderHook(
-        () =>
-          useDownloadTypeStatuses({
-            downloadTypes,
-            facilityName: 'LILS',
-            downloadApiUrl: 'https://example.com/downloadApiUrl',
-          }),
-        { wrapper: createReactQueryWrapper() }
-      );
-
-      await waitFor(() =>
-        expect(
-          result.current.every((query) => query.isSuccess || query.isError)
-        ).toBe(true)
-      );
-
-      expect((dispatchEventSpy.mock.calls[0][0] as CustomEvent).detail).toEqual(
-        {
-          type: NotificationType,
-          payload: {
-            severity: 'error',
-            message:
-              'downloadConfirmDialog.access_method_error {method:GLOBUS}',
-          },
-        }
-      );
-    });
-
-    it('should refetch data on every hook call', async () => {
-      axios.get = vi.fn().mockResolvedValue({
-        data: {
-          disabled: false,
-          message: '',
-        },
-      });
-
-      const wrapper = createReactQueryWrapper();
-
-      const { result } = renderHook(
-        () =>
-          useDownloadTypeStatuses({
-            downloadTypes: ['https'],
-            facilityName: 'LILS',
-            downloadApiUrl: 'https://example.com/downloadApiUrl',
-          }),
-        { wrapper }
-      );
-
-      await waitFor(() =>
-        expect(result.current.every((query) => query.isSuccess)).toBe(true)
-      );
-
-      expect(result.current[0].isStale).toBe(true);
-      expect(axios.get).toHaveBeenCalledTimes(1);
-
-      const { result: newResult } = renderHook(
-        () =>
-          useDownloadTypeStatuses({
-            downloadTypes: ['https'],
-            facilityName: 'LILS',
-            downloadApiUrl: 'https://example.com/downloadApiUrl',
-          }),
-        { wrapper }
-      );
-
-      await waitFor(() =>
-        expect(newResult.current.every((query) => query.isSuccess)).toBe(true)
-      );
-
-      expect(newResult.current[0].isStale).toBe(true);
-      expect(axios.get).toHaveBeenCalledTimes(2);
-    });
-  });
-
   describe('useQueueAllowed', () => {
     it('sends axios request to check if the user has permission to use the queue and returns successful response', async () => {
       vi.mocked(axios.get).mockResolvedValue({
@@ -608,7 +465,7 @@ describe('Cart api functions', () => {
         emailAddress: params.email,
         fileName: params.fileName,
         transport: params.transport,
-        visitId: params.visitId,
+        entityId: params.visitId,
       });
       // wait for mutation to finish to finish
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
@@ -636,7 +493,78 @@ describe('Cart api functions', () => {
         emailAddress: 'a@b.c',
         fileName: 'test-file',
         transport: 'https',
-        visitId: 'VISIT_1',
+        entityId: 'VISIT_1',
+      });
+      await waitFor(() => expect(result.current.isError).toBe(true));
+
+      expect(handleICATError).toHaveBeenCalledWith({
+        message: 'test error message',
+      });
+    });
+  });
+
+  describe('useQueueDataCollection', () => {
+    it('should submit data collection to the queue', async () => {
+      axios.post = vi.fn().mockResolvedValue({ data: ['123', '456'] });
+
+      const params = {
+        sessionId: '',
+        transport: 'https',
+        email: 'cat@dog.com',
+        fileName: 'test-file',
+        dataCollectionId: '1',
+        facilityName: 'TEST',
+      };
+      const searchParams = new URLSearchParams();
+      Object.entries(params).forEach(([paramName, paramValue]) => {
+        searchParams.append(paramName, paramValue);
+      });
+
+      const { result } = renderHook(
+        () =>
+          useQueueDataCollection(
+            params.facilityName,
+            'https://example.com/downloadApi'
+          ),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      // submit the cart
+      result.current.mutate({
+        emailAddress: params.email,
+        fileName: params.fileName,
+        transport: params.transport,
+        entityId: params.dataCollectionId,
+      });
+      // wait for mutation to finish to finish
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+      expect(axios.post).toHaveBeenCalledWith(
+        `https://example.com/downloadApi/user/queue/dataCollection`,
+        searchParams
+      );
+      expect(result.current.data).toEqual(['123', '456']);
+    });
+
+    it('should call handleICATError when an error is encountered', async () => {
+      axios.post = vi.fn().mockRejectedValue({
+        message: 'test error message',
+      });
+
+      const { result } = renderHook(
+        () => useQueueDataCollection('LILS', 'https://example.com/downloadApi'),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      result.current.mutate({
+        emailAddress: 'a@b.c',
+        fileName: 'test-file',
+        transport: 'https',
+        entityId: '1',
       });
       await waitFor(() => expect(result.current.isError).toBe(true));
 
@@ -653,17 +581,29 @@ describe('getDefaultFileName', () => {
   });
 
   it('should render substitutions correctly ', async () => {
-    const t = vi.fn().mockReturnValue('facilityName_visitId');
     expect(
-      getDefaultFileName(t, { facilityName: 'LILS', visitId: '1' })
+      getDefaultFileName('facilityName_visitId', {
+        facilityName: 'LILS',
+        visitId: '1',
+      })
     ).toEqual('LILS_1');
+  });
+
+  it('should render substitutions correctly (DataCollection)', async () => {
+    expect(
+      getDefaultFileName('facilityName_DataCollectionid', {
+        facilityName: 'LILS',
+        id: '1',
+      })
+    ).toEqual('LILS_DataCollection1');
   });
 
   it('should format dates if present', async () => {
     vi.useFakeTimers().setSystemTime(new Date('2025-03-25 14:00:00'));
-    const t = vi.fn().mockReturnValue('facilityName_yyyy-MM-dd_HH-mm-ss');
-    expect(getDefaultFileName(t, { facilityName: 'LILS' })).toEqual(
-      'LILS_2025-03-25_14-00-00'
-    );
+    expect(
+      getDefaultFileName('facilityName_yyyy-MM-dd_HH-mm-ss', {
+        facilityName: 'LILS',
+      })
+    ).toEqual('LILS_2025-03-25_14-00-00');
   });
 });

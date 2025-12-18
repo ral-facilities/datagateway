@@ -1,23 +1,23 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import type { RenderResult } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
 import {
-  dGCommonInitialState,
+  FACILITY_NAME,
   SearchResponse,
   SearchResult,
   SearchResultSource,
-  FACILITY_NAME,
   StateType,
+  dGCommonInitialState,
 } from 'datagateway-common';
-import InvestigationSearchCardView from './investigationSearchCardView.component';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { MemoryHistory, createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
-import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
-import type { RenderResult } from '@testing-library/react';
-import { render, screen, waitFor, within } from '@testing-library/react';
-import { createMemoryHistory, MemoryHistory } from 'history';
+import thunk from 'redux-thunk';
 import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
-import userEvent from '@testing-library/user-event';
-import axios, { AxiosResponse } from 'axios';
+import InvestigationSearchCardView from './investigationSearchCardView.component';
 
 describe('Investigation - Card View', () => {
   let state: StateType;
@@ -56,6 +56,13 @@ describe('Investigation - Card View', () => {
         data: true,
       });
     }
+
+    if (/.*\/downloadType\/status$/.test(url)) {
+      return Promise.resolve({
+        data: {},
+      });
+    }
+
     return Promise.reject({
       message: `Endpoint not mocked ${url}`,
     });
@@ -303,8 +310,6 @@ describe('Investigation - Card View', () => {
   });
 
   it('displays correct details panel for DLS when expanded', async () => {
-    state.dgcommon.accessMethods = {};
-
     const user = userEvent.setup();
 
     renderComponent({

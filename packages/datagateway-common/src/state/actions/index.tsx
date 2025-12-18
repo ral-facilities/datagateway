@@ -1,8 +1,5 @@
-import { DownloadSettingsAccessMethod } from '../../app.types';
 import { ActionType } from '../app.types';
 import {
-  ConfigureAccessMethodsPayload,
-  ConfigureAccessMethodsType,
   ConfigureAnonUserNamePayload,
   ConfigureAnonUserNameType,
   ConfigureFacilityNamePayload,
@@ -39,15 +36,6 @@ export const loadQueryRetries = (
   type: ConfigureQueryRetriesType,
   payload: {
     queryRetries,
-  },
-});
-
-export const loadAccessMethods = (
-  accessMethods?: DownloadSettingsAccessMethod
-): ActionType<ConfigureAccessMethodsPayload> => ({
-  type: ConfigureAccessMethodsType,
-  payload: {
-    accessMethods,
   },
 });
 

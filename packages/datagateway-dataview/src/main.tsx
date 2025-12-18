@@ -183,17 +183,18 @@ if (
     settings.then((settingsResult) => {
       if (settingsResult) {
         const apiUrl = settingsResult.apiUrl;
+        const credentials = {
+          username: '',
+          password: '',
+          mechanism: 'anon',
+        };
         axios
-          .post(`${apiUrl}/sessions`, {
-            username: '',
-            password: '',
-            mechanism: 'anon',
-          })
+          .post(`${apiUrl}/sessions`, credentials)
           .then((response) => {
             const jwtHeader = { alg: 'HS256', typ: 'JWT' };
             const payload = {
               sessionId: response.data.sessionID,
-              username: 'Richard459',
+              username: credentials.username ?? 'Richard459',
             };
             const jwt = jsrsasign.KJUR.jws.JWS.sign(
               'HS256',

@@ -1,8 +1,6 @@
 import {
-  ConfigureAccessMethodsType,
   ConfigureFeatureSwitchesType,
   ConfigureQueryRetriesType,
-  loadAccessMethods,
   loadFacilityName,
   loadFeatureSwitches,
   loadQueryRetries,
@@ -49,7 +47,7 @@ describe('Actions', () => {
     });
   });
 
-  it('settings are loaded and facilityName, loadUrls, loadQueryRetries, loadAccessMethods, loadFeatureSwitches, loadSearchableEntitites, loadMaxNumResults and settingsLoaded actions are sent', async () => {
+  it('settings are loaded and facilityName, loadUrls, loadQueryRetries, loadFeatureSwitches, loadSearchableEntitites, loadMaxNumResults and settingsLoaded actions are sent', async () => {
     mockSettingsGetter.mockReturnValue({
       facilityName: 'Generic',
       idsUrl: 'ids',
@@ -57,11 +55,6 @@ describe('Actions', () => {
       downloadApiUrl: 'download-api',
       icatUrl: 'icat',
       queryRetries: 0,
-      accessMethods: {
-        globus: {
-          idsUrl: 'ids',
-        },
-      },
       features: {},
       searchableEntities: ['investigation', 'dataset', 'datafile'],
       maxNumResults: 150,
@@ -69,7 +62,7 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState, null);
 
-    expect(actions.length).toEqual(8);
+    expect(actions.length).toEqual(7);
     expect(actions).toContainEqual(loadFacilityName('Generic'));
     expect(actions).toContainEqual(
       loadUrls({
@@ -85,18 +78,11 @@ describe('Actions', () => {
     );
     expect(actions).toContainEqual(loadMaxNumResults(150));
     expect(actions).toContainEqual(loadQueryRetries(0));
-    expect(actions).toContainEqual(
-      loadAccessMethods({
-        globus: {
-          idsUrl: 'ids',
-        },
-      })
-    );
 
     expect(actions).toContainEqual(settingsLoaded());
   });
 
-  it("doesn't send loadQueryRetries, loadAccessMethods, loadFeatureSwitches, loadSearchableEntitites and loadMaxNumResults actions when they're not defined", async () => {
+  it("doesn't send loadQueryRetries, loadFeatureSwitches, loadSearchableEntitites and loadMaxNumResults actions when they're not defined", async () => {
     mockSettingsGetter.mockReturnValue({
       facilityName: 'Generic',
       idsUrl: 'ids',
@@ -119,9 +105,6 @@ describe('Actions', () => {
     ).toBe(true);
     expect(
       actions.every(({ type }) => type !== ConfigureQueryRetriesType)
-    ).toBe(true);
-    expect(
-      actions.every(({ type }) => type !== ConfigureAccessMethodsType)
     ).toBe(true);
 
     expect(actions).toContainEqual(settingsLoaded());

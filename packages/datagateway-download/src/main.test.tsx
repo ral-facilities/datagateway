@@ -18,7 +18,7 @@ describe('index - fetchSettings', () => {
     vi.mocked(CustomEvent).mockClear();
   });
 
-  it('settings (facilityName, URLs and accessMethods) are loaded', async () => {
+  it('settings (facilityName & URLs) are loaded', async () => {
     const settingsResult = {
       facilityName: 'Generic',
       idsUrl: 'ids',
@@ -28,13 +28,6 @@ describe('index - fetchSettings', () => {
       doiMinterUrl: 'doi-minter',
       fileCountMax: 5000,
       totalSizeMax: 1000000000000,
-      accessMethods: {
-        https: {
-          idsUrl: 'https-ids',
-          displayName: 'HTTPS',
-          description: 'HTTP description',
-        },
-      },
       routes: [
         {
           section: 'section',
@@ -86,13 +79,6 @@ describe('index - fetchSettings', () => {
       dataCiteUrl: null,
       fileCountMax: 5000,
       totalSizeMax: 1000000000000,
-      accessMethods: {
-        https: {
-          idsUrl: 'https-ids',
-          displayName: 'HTTPS',
-          description: 'HTTP description',
-        },
-      },
       routes: [
         {
           section: 'section0',
@@ -199,13 +185,6 @@ describe('index - fetchSettings', () => {
           idsUrl: 'ids',
           apiUrl: 'api',
           downloadApiUrl: 'download-api',
-          accessMethods: {
-            https: {
-              idsUrl: 'https-ids',
-              displayName: 'HTTPS',
-              description: 'HTTP description',
-            },
-          },
         },
       })
     );
@@ -226,13 +205,6 @@ describe('index - fetchSettings', () => {
       Promise.resolve({
         data: {
           facilityName: 'Generic',
-          accessMethods: {
-            https: {
-              idsUrl: 'https-ids',
-              displayName: 'HTTPS',
-              description: 'HTTP description',
-            },
-          },
         },
       })
     );
@@ -245,87 +217,6 @@ describe('index - fetchSettings', () => {
     const mockLog = vi.mocked(log.error).mock;
     expect(mockLog.calls[0][0]).toEqual(
       'Error loading /datagateway-download-settings.json: One of the URL options (idsUrl, apiUrl, downloadApiUrl) is undefined in settings'
-    );
-  });
-
-  it('logs an error if accessMethods is undefined in the settings', async () => {
-    vi.mocked(axios.get).mockImplementationOnce(() =>
-      Promise.resolve({
-        data: {
-          facilityName: 'Generic',
-          idsUrl: 'ids',
-          apiUrl: 'api',
-          downloadApiUrl: 'download-api',
-        },
-      })
-    );
-
-    const settings = await fetchSettings();
-
-    expect(settings).toBeUndefined();
-    expect(log.error).toHaveBeenCalled();
-
-    const mockLog = vi.mocked(log.error).mock;
-    expect(mockLog.calls[0][0]).toEqual(
-      'Error loading /datagateway-download-settings.json: accessMethods is undefined in settings'
-    );
-  });
-
-  it('logs an error if there are no access methods defined within the accessMethods object in settings', async () => {
-    vi.mocked(axios.get).mockImplementationOnce(() =>
-      Promise.resolve({
-        data: {
-          facilityName: 'Generic',
-          idsUrl: 'ids',
-          apiUrl: 'api',
-          downloadApiUrl: 'download-api',
-          accessMethods: {
-            https: {
-              idsUrl: 'https-ids',
-              displayName: 'HTTPS',
-              description: 'HTTP description',
-            },
-            globus: {
-              displayName: 'Globus',
-              description: 'Globus description',
-            },
-          },
-        },
-      })
-    );
-
-    const settings = await fetchSettings();
-
-    expect(settings).toBeUndefined();
-    expect(log.error).toHaveBeenCalled();
-
-    const mockLog = vi.mocked(log.error).mock;
-    expect(mockLog.calls[0][0]).toEqual(
-      'Error loading /datagateway-download-settings.json: Access method globus, defined in settings, does not contain a idsUrl'
-    );
-  });
-
-  it('logs an error if there is no idsUrl defined in any access method in the settings', async () => {
-    vi.mocked(axios.get).mockImplementationOnce(() =>
-      Promise.resolve({
-        data: {
-          facilityName: 'Generic',
-          idsUrl: 'ids',
-          apiUrl: 'api',
-          downloadApiUrl: 'download-api',
-          accessMethods: {},
-        },
-      })
-    );
-
-    const settings = await fetchSettings();
-
-    expect(settings).toBeUndefined();
-    expect(log.error).toHaveBeenCalled();
-
-    const mockLog = vi.mocked(log.error).mock;
-    expect(mockLog.calls[0][0]).toEqual(
-      'Error loading /datagateway-download-settings.json: At least one access method should be defined under accessMethods in settings'
     );
   });
 
@@ -385,18 +276,6 @@ describe('index - fetchSettings', () => {
           idsUrl: 'ids',
           apiUrl: 'api',
           downloadApiUrl: 'download-api',
-          accessMethods: {
-            https: {
-              idsUrl: 'https-ids',
-              displayName: 'HTTPS',
-              description: 'HTTP description',
-            },
-            globus: {
-              idsUrl: 'https-ids',
-              displayName: 'Globus',
-              description: 'Globus description',
-            },
-          },
         },
       })
     );
@@ -420,18 +299,6 @@ describe('index - fetchSettings', () => {
           idsUrl: 'ids',
           apiUrl: 'api',
           downloadApiUrl: 'download-api',
-          accessMethods: {
-            https: {
-              idsUrl: 'https-ids',
-              displayName: 'HTTPS',
-              description: 'HTTP description',
-            },
-            globus: {
-              idsUrl: 'https-ids',
-              displayName: 'Globus',
-              description: 'Globus description',
-            },
-          },
           routes: [
             {
               section: 'section',

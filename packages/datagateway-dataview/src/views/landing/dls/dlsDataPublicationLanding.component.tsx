@@ -18,6 +18,7 @@ import {
   DataPublication,
   DataPublicationUser,
   PublishButton,
+  QueueDataCollectionButton,
   readSciGatewayToken,
   useDOI,
   useDataPublication,
@@ -461,6 +462,11 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                     />
                   </Tabs>
                 </Grid>
+                {data?.content && (
+                  <Grid item xs="auto" alignSelf="center">
+                    <QueueDataCollectionButton dataCollection={data.content} />
+                  </Grid>
+                )}
                 {/* Only let PIs publish DOIs & only if it's an unopened session DOI */}
                 {isSessionDOI &&
                   !data?.publicationDate &&

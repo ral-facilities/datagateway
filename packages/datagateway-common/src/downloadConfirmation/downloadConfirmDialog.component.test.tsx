@@ -2,12 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RenderResult, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
-import {
-  getDownload,
-  getDownloadTypeStatus,
-  useQueueVisit,
-  useSubmitCart,
-} from '../api';
+import { getDownload, useQueueVisit, useSubmitCart } from '../api';
 import DownloadConfirmDialog from './downloadConfirmDialog.component';
 
 vi.mock('../downloadApi');
@@ -39,17 +34,6 @@ const createTestQueryClient = (): QueryClient =>
 describe('DownloadConfirmDialog', () => {
   let user: ReturnType<typeof userEvent.setup>;
   let props: React.ComponentProps<typeof DownloadConfirmDialog>;
-  let downloadTypeStatusResponses: Record<
-    string,
-    | {
-        error: false;
-        payload: Awaited<ReturnType<typeof getDownloadTypeStatus>>;
-      }
-    | {
-        error: true;
-        payload: { message: string };
-      }
-  >;
   let getDownloadResponse:
     | {
         error: false;
@@ -86,33 +70,19 @@ describe('DownloadConfirmDialog', () => {
           idsUrl: 'https://example.com/ids',
           displayName: 'HTTPS',
           description: 'Example description for <b>HTTPS</b> access method.',
+          message: '',
+          disabled: false,
         },
         globus: {
           idsUrl: 'https://example.com/ids',
           displayName: 'Globus',
           description: 'Example description for Globus access method.',
+          message: '',
+          disabled: false,
         },
       },
       submitDownloadHook: useSubmitCart,
-    };
-
-    downloadTypeStatusResponses = {
-      https: {
-        error: false,
-        payload: {
-          type: 'https',
-          disabled: false,
-          message: '',
-        },
-      },
-      globus: {
-        error: false,
-        payload: {
-          type: 'globus',
-          disabled: false,
-          message: '',
-        },
-      },
+      defaultFileNameFormat: 'facilityName_entityId',
     };
 
     getDownloadResponse = {
@@ -134,21 +104,6 @@ describe('DownloadConfirmDialog', () => {
             });
           } else {
             return Promise.reject(getDownloadResponse.payload);
-          }
-        }
-        const downloadTypeStatusMatches = url.match(
-          /.*\/user\/downloadType\/(.*)\/status/
-        );
-        if (downloadTypeStatusMatches) {
-          const response =
-            downloadTypeStatusResponses[downloadTypeStatusMatches[1]];
-
-          if (!response.error) {
-            return Promise.resolve({
-              data: response.payload,
-            });
-          } else {
-            return Promise.reject(response.payload);
           }
         }
         return Promise.reject(`Endpoint not mocked: ${url}`);
@@ -207,11 +162,8 @@ describe('DownloadConfirmDialog', () => {
 
   it('should prevent a download if a selected access method is disabled', async () => {
     // disable https method for testing
-    downloadTypeStatusResponses['https'].payload = {
-      type: 'https',
-      disabled: true,
-      message: 'Disabled for testing',
-    };
+    props.accessMethods['https'].disabled = true;
+    props.accessMethods['https'].message = 'Disabled for testing';
 
     props.isTwoLevel = false;
     renderWrapper();
@@ -236,18 +188,9 @@ describe('DownloadConfirmDialog', () => {
   });
 
   it('should prevent a download if there are no available access methods', async () => {
-    // Override default requests and return access method status'
-    // as being disabled for both access methods.
-    downloadTypeStatusResponses['https'].payload = {
-      type: 'https',
-      disabled: true,
-      message: 'disabled for testing',
-    };
-    downloadTypeStatusResponses['globus'].payload = {
-      type: 'globus',
-      disabled: true,
-      message: 'disabled for testing',
-    };
+    props.accessMethods['https'].disabled = true;
+    props.accessMethods['https'].message = 'disabled for testing';
+    props.accessMethods['globus'].disabled = true;
 
     props.isTwoLevel = false;
     renderWrapper();
@@ -257,24 +200,6 @@ describe('DownloadConfirmDialog', () => {
         name: 'downloadConfirmDialog.download',
       })
     ).toBeDisabled();
-  });
-
-  it('should prevent download of an access method where the status was not fetched', async () => {
-    // Return a response where one of the status requests has not been successful.
-    downloadTypeStatusResponses['globus'] = {
-      error: true,
-      payload: {
-        message: 'Test error message',
-      },
-    };
-
-    props.isTwoLevel = false;
-    renderWrapper();
-
-    await waitFor(() => {
-      expect(screen.queryByRole('option', { name: 'GLOBUS' })).toBeNull();
-      expect(screen.getByRole('option', { name: 'HTTPS' })).toBeInTheDocument();
-    });
   });
 
   it('should show successful view when download is successful', async () => {
@@ -339,18 +264,7 @@ describe('DownloadConfirmDialog', () => {
   });
 
   it('should disable download when no download method is available', async () => {
-    downloadTypeStatusResponses['https'] = {
-      error: true,
-      payload: {
-        message: 'test error',
-      },
-    };
-    downloadTypeStatusResponses['globus'] = {
-      error: true,
-      payload: {
-        message: 'test error',
-      },
-    };
+    props.accessMethods = {};
 
     props.isTwoLevel = true;
     renderWrapper();
@@ -465,7 +379,7 @@ describe('DownloadConfirmDialog', () => {
   it('should show successful view when download is successful using isQueueVisit', async () => {
     props.isTwoLevel = true;
     props.submitDownloadHook = useQueueVisit;
-    props.visitId = '1';
+    props.entityId = '1';
     renderWrapper();
     // input an email
     await user.type(
