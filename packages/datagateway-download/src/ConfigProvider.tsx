@@ -26,7 +26,6 @@ const initialConfiguration: DownloadSettings = {
   doiMinterUrl: '',
   fileCountMax: undefined,
   totalSizeMax: undefined,
-  accessMethods: {},
   routes: [],
   helpSteps: [],
   uiFeatures: {

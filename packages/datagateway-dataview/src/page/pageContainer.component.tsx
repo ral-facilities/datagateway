@@ -38,6 +38,7 @@ import {
   useRouteMatch,
 } from 'react-router-dom';
 import { StateType } from '../state/app.types';
+import DOITypeSelector from '../views/doiTypeSelector.component';
 import RoleSelector from '../views/roleSelector.component';
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageRouting from './pageRouting.component';
@@ -694,20 +695,34 @@ const DataviewPageContainer: React.FC = () => {
         <Grid item xs={12} style={{ marginTop: '10px', marginBottom: '10px' }}>
           <StyledGrid container alignItems="baseline">
             {/* Toggle between the table and card view */}
-            <Grid item style={{ display: 'flex', alignItems: 'baseline' }}>
+            <Grid container item alignItems="end">
               <Route
                 exact
                 path={Object.values(paths.myData)}
-                render={() => <RoleSelector />}
+                render={() => (
+                  <Grid item ml={1} xs="auto">
+                    <RoleSelector />
+                  </Grid>
+                )}
+              />
+              <Route
+                exact
+                path={Object.values(paths.myDOIs)}
+                render={() => (
+                  // doesn't need a grid item wrapper as it's already got a grid
+                  <DOITypeSelector />
+                )}
               />
               <Route
                 exact
                 path={togglePaths}
                 render={() => (
-                  <ViewButton
-                    viewCards={view === 'card'}
-                    handleButtonChange={handleButtonChange}
-                  />
+                  <Grid item ml={1} xs="auto">
+                    <ViewButton
+                      viewCards={view === 'card'}
+                      handleButtonChange={handleButtonChange}
+                    />
+                  </Grid>
                 )}
               />
               <Route
@@ -720,10 +735,12 @@ const DataviewPageContainer: React.FC = () => {
                   Object.values(paths.dataPublications.standard)
                 )}
                 render={() => (
-                  <ClearFiltersButton
-                    handleButtonClearFilters={handleButtonClearFilters}
-                    disabled={disabled}
-                  />
+                  <Grid item ml={1} xs="auto">
+                    <ClearFiltersButton
+                      handleButtonClearFilters={handleButtonClearFilters}
+                      disabled={disabled}
+                    />
+                  </Grid>
                 )}
               />
             </Grid>

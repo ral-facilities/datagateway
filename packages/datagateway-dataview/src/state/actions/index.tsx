@@ -1,5 +1,4 @@
 import {
-  loadAccessMethods,
   loadAnonUserName,
   loadFacilityName,
   loadFeatureSwitches,
@@ -80,10 +79,6 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
 
       if (settingsResult?.['queryRetries'] !== undefined) {
         dispatch(loadQueryRetries(settingsResult['queryRetries']));
-      }
-
-      if (settingsResult?.['accessMethods'] !== undefined) {
-        dispatch(loadAccessMethods(settingsResult['accessMethods']));
       }
 
       // Dispatch the action to load the breadcrumb settings (optional settings).

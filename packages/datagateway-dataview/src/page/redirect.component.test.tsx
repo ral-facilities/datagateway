@@ -321,5 +321,40 @@ describe('Redirect component', () => {
         },
       });
     });
+
+    it('throws error and redirects to homepage if no investigation is returned with fromDataPublication true', async () => {
+      history.replace({
+        pathname: '/redirect/DLS/investigation/id/1',
+        state: { fromDataPublication: true },
+      });
+      const events: CustomEvent[] = [];
+
+      document.dispatchEvent = (e: Event) => {
+        events.push(e as CustomEvent<AnyAction>);
+        return true;
+      };
+      vi.mocked(useEntity, { partial: true }).mockReturnValue({
+        data: undefined,
+        isLoading: false,
+      });
+      renderComponent();
+
+      expect(vi.mocked(useEntity, { partial: true })).toHaveBeenCalledWith(
+        'investigation',
+        'id',
+        '1',
+        undefined
+      );
+      expect(history.location.pathname).toBe('/datagateway');
+      expect(log.error).toHaveBeenCalledWith('Invalid redirect');
+      expect(events.length).toBe(1);
+      expect(events[0].detail).toEqual({
+        type: NotificationType,
+        payload: {
+          severity: 'error',
+          message: `Cannot redirect to the investigation matching the given id: 1. It may not be published and you don't have permission to see it yet, or you may not have read access for other reasons`,
+        },
+      });
+    });
   });
 });

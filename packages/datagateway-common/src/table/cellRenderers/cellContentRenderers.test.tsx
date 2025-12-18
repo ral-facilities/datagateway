@@ -1,4 +1,4 @@
-import React from 'react';
+import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import {
   datasetLink,
@@ -6,7 +6,6 @@ import {
   investigationLink,
   tableLink,
 } from './cellContentRenderers';
-import { render, screen } from '@testing-library/react';
 
 describe('Cell content renderers', () => {
   describe('formatBytes', () => {
@@ -58,11 +57,39 @@ describe('Cell content renderers', () => {
   describe('tableLink', () => {
     it('renders correctly', () => {
       render(
+        <MemoryRouter>
+          {tableLink('/test/url', 'test text', 'table')}
+        </MemoryRouter>
+      );
+      expect(screen.getByRole('link', { name: 'test text' })).toHaveAttribute(
+        'href',
+        '/test/url?view=table'
+      );
+    });
+
+    it('renders correctly without view', () => {
+      render(
         <MemoryRouter>{tableLink('/test/url', 'test text')}</MemoryRouter>
       );
       expect(screen.getByRole('link', { name: 'test text' })).toHaveAttribute(
         'href',
         '/test/url'
+      );
+    });
+
+    it('renders correctly with object location', () => {
+      render(
+        <MemoryRouter>
+          {tableLink(
+            { pathname: '/test/url', search: '?test=true' },
+            'test text',
+            'card'
+          )}
+        </MemoryRouter>
+      );
+      expect(screen.getByRole('link', { name: 'test text' })).toHaveAttribute(
+        'href',
+        '/test/url?test=true&view=card'
       );
     });
   });

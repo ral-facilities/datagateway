@@ -194,6 +194,7 @@ export const useDataPublication = (
                     {
                       datasets: 'type',
                       investigationInstruments: 'instrument',
+                      investigationUsers: 'user',
                     },
                   ],
                 },

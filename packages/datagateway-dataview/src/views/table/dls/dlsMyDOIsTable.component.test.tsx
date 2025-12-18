@@ -140,7 +140,6 @@ describe('DLS MyDOIs table component', () => {
   it('renders correctly', async () => {
     renderComponent();
 
-    // test that we're calling with the "minter" string instead of the e2e testing string
     const filterParams = [
       {
         filterType: 'where',
@@ -167,6 +166,12 @@ describe('DLS MyDOIs table component', () => {
       {
         filterType: 'distinct',
         filterValue: JSON.stringify(['id', 'title', 'pid', 'publicationDate']),
+      },
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'type.name': { eq: 'User-defined' },
+        }),
       },
     ];
     expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
@@ -210,6 +215,62 @@ describe('DLS MyDOIs table component', () => {
         })
       ).getByText('2023-07-21')
     ).toBeInTheDocument();
+  });
+
+  it('supplies the correct filter params for user doiType', async () => {
+    history.replace('?doiType=user');
+    renderComponent();
+
+    const filterParams = [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'users.user.name': { eq: 'testUser' },
+        }),
+      },
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'relatedItems.relationType': {
+            eq: DOIRelationType.HasVersion,
+          },
+        }),
+      },
+      {
+        filterType: 'distinct',
+        filterValue: JSON.stringify(['id', 'title', 'pid', 'publicationDate']),
+      },
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'type.name': { eq: 'User-defined' },
+        }),
+      },
+    ];
+    expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
+    expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
+  });
+
+  it('supplies the correct filter params for session doiType', async () => {
+    history.replace('?doiType=session');
+    renderComponent();
+
+    const filterParams = [
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'users.user.name': { eq: 'testUser' },
+        }),
+      },
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'type.name': { eq: 'Investigation' },
+        }),
+      },
+    ];
+    expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
+    expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
   });
 
   it('updates filter query params on text filter', async () => {

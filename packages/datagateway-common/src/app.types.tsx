@@ -26,7 +26,6 @@ export interface CommonSettings {
   helpSteps?: { target: string; content: string }[];
   pluginHost?: string;
   queryRetries?: number;
-  accessMethods: DownloadSettingsAccessMethod;
 }
 
 export interface DOISettings {
@@ -127,6 +126,7 @@ export interface User {
   fullName?: string;
   email?: string;
   affiliation?: string;
+  orcidId?: string;
 }
 
 export interface Sample {
@@ -215,9 +215,10 @@ export interface DataPublicationType {
   name: string;
 }
 
-export interface DataPublicationType {
+export interface DataPublicationDate {
   id: number;
-  name: string;
+  dateType: string;
+  date: string;
 }
 
 export interface DataPublication {
@@ -226,11 +227,12 @@ export interface DataPublication {
   title: string;
   facility?: Facility;
   description?: string;
-  publicationDate?: string;
+  publicationDate?: string | null;
   users?: DataPublicationUser[];
   content?: DataCollection;
   type?: DataPublicationType;
   relatedItems?: RelatedItem[];
+  dates?: DataPublicationDate[];
 }
 
 /** The related identifier type that gets used in the related identifier picker component & what is sent to the doi minter api */
@@ -485,6 +487,8 @@ export interface SortType {
 
 export type ViewsType = 'table' | 'card' | null;
 
+export type DOIViewType = 'minter' | 'user' | 'session' | null;
+
 export interface QueryParams {
   sort: SortType;
   filters: FiltersType;
@@ -500,6 +504,7 @@ export interface QueryParams {
   endDate: Date | null;
   currentTab: string;
   restrict: boolean;
+  doiType: DOIViewType;
 }
 
 export enum ContributorType {
@@ -562,6 +567,8 @@ export enum DOIRelationType {
   Requires = 'Requires',
   Obsoletes = 'Obsoletes',
   IsObsoletedBy = 'IsObsoletedBy',
+  Collects = 'Collects',
+  IsCollectedBy = 'IsCollectedBy',
 }
 
 export enum DOIResourceType {
@@ -578,6 +585,7 @@ export enum DOIResourceType {
   Event = 'Event',
   Image = 'Image',
   InteractiveResource = 'InteractiveResource',
+  Instrument = 'Instrument',
   Journal = 'Journal',
   JournalArticle = 'JournalArticle',
   Model = 'Model',
@@ -655,6 +663,14 @@ export interface DOIRelatedIdentifier {
   relatedMetadataScheme: null;
   schemeUri: null;
   schemeType: null;
+}
+
+export interface DOIRelatedItem {
+  relatedItemType: DOIResourceType;
+  relationType: DOIRelationType;
+  titles: {
+    title: string;
+  }[];
 }
 
 export interface DOISubject {
@@ -737,7 +753,7 @@ export interface DataciteMetadata {
     description: string;
     descriptionType: string;
   }[];
-  relatedItems: never[];
+  relatedItems: DOIRelatedItem[];
   doi: string;
 }
 
@@ -754,21 +770,16 @@ export interface DOIResult {
   attributes: DataciteMetadata;
 }
 
-/**
- * Describes the status of a download type.
- */
-export interface DownloadTypeStatus {
-  type: string;
-  disabled: boolean;
-  message: string;
+export interface AccessMethods {
+  [type: string]: DownloadTypeInfo;
 }
 
-export interface DownloadSettingsAccessMethod {
-  [type: string]: {
-    idsUrl: string;
-    displayName?: string;
-    description?: string;
-  };
+export interface DownloadTypeInfo {
+  idsUrl: string;
+  displayName: string;
+  description: string;
+  disabled: boolean;
+  message: string;
 }
 
 export interface BioPortalTerm {

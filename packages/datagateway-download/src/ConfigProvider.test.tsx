@@ -23,13 +23,6 @@ vi.mock('./settings', () => ({
     downloadApiUrl: 'download-api',
     fileCountMax: 5000,
     totalSizeMax: 1000000000000,
-    accessMethods: {
-      https: {
-        idsUrl: 'https-ids',
-        displayName: 'HTTPS',
-        description: 'HTTP description',
-      },
-    },
     routes: [
       {
         section: 'section',
@@ -82,13 +75,6 @@ describe('ConfigProvider', () => {
           downloadApiUrl: 'download-api',
           fileCountMax: 5000,
           totalSizeMax: 1000000000000,
-          accessMethods: {
-            https: {
-              idsUrl: 'https-ids',
-              displayName: 'HTTPS',
-              description: 'HTTP description',
-            },
-          },
           routes: [
             {
               section: 'section',

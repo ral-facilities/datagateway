@@ -124,9 +124,17 @@ describe('Download cart table component', () => {
             ],
           });
         }
-        if (/.*\/user\/downloadType\/(.*)\/status/.test(url)) {
+        if (/.*\/downloadType\/status$/.test(url)) {
           return Promise.resolve({
-            data: { disabled: false, type: 'https', message: '' },
+            data: {
+              https: {
+                idsUrl: 'https://example.com/ids',
+                disabled: false,
+                message: '',
+                displayName: 'HTTPS',
+                description: '',
+              },
+            },
           });
         }
         if (/.*\/datasets/.test(url)) {
@@ -235,8 +243,7 @@ describe('Download cart table component', () => {
       mockDownloadItems[0].preparedId,
       mockDownloadItems[0].fileName,
       {
-        idsUrl:
-          mockedSettings.accessMethods[mockDownloadItems[0].transport].idsUrl,
+        idsUrl: 'https://example.com/ids',
       }
     );
   });

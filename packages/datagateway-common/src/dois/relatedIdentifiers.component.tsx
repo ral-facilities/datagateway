@@ -139,7 +139,6 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
                           }[];
                         }>
                       ) => {
-                        // TODO: check this is the right message from the API
                         setRelatedIdentifierError(
                           error.response?.data?.errors
                             ? error.response.data.errors[0].title
@@ -345,7 +344,8 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
                             .filter(
                               (relation) =>
                                 !relation.includes('Version') &&
-                                !relation.includes('Part')
+                                !relation.includes('Part') &&
+                                !relation.includes('Collect')
                             )
                             .map((relation) => {
                               return (

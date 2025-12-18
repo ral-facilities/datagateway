@@ -104,26 +104,6 @@ export const fetchSettings = (): Promise<DownloadSettings | void> => {
         );
       }
 
-      // Ensure access methods are present in the configuration.
-      if (!('accessMethods' in settings)) {
-        throw new Error('accessMethods is undefined in settings');
-      } else {
-        // Check to ensure at least one access method has been defined.
-        if (Object.entries(settings['accessMethods']).length < 1) {
-          throw new Error(
-            'At least one access method should be defined under accessMethods in settings'
-          );
-        } else {
-          // Check all defined access methods to ensure idsUrl has been stated.
-          for (const method in settings['accessMethods']) {
-            if (!settings['accessMethods'][method].idsUrl)
-              throw new Error(
-                `Access method ${method}, defined in settings, does not contain a idsUrl`
-              );
-          }
-        }
-      }
-
       if (!(Array.isArray(settings['routes']) && settings['routes'].length)) {
         throw new Error('No routes provided in the settings');
       } else {

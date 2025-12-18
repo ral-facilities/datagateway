@@ -12,7 +12,7 @@ import {
 } from 'datagateway-common';
 import log from 'loglevel';
 import React from 'react';
-import { Redirect, useParams } from 'react-router-dom';
+import { Redirect, useLocation, useParams } from 'react-router-dom';
 import { paths } from './pageContainer.component';
 
 export const RedirectComponent: React.FC<{
@@ -97,6 +97,8 @@ export const GenericRedirect: React.FC = () => {
   const { facilityName, entityName, entityField, fieldValue } =
     useParams<GenericRedirectRouteParams>();
 
+  const { state } = useLocation<{ fromDataPublication?: boolean }>();
+
   const isISIS =
     facilityName.toLowerCase() === FACILITY_NAME.isis.toLowerCase();
 
@@ -175,7 +177,9 @@ export const GenericRedirect: React.FC = () => {
       loading={isEntityLoading}
       errorMessage={
         !isEntityLoading && !entity
-          ? `Cannot redirect to the ${entityName} matching the given ${entityField}: ${fieldValue}. You may not have read access, or the given ${entityName} ${entityField} may not be valid or unique.`
+          ? state?.fromDataPublication
+            ? `Cannot redirect to the ${entityName} matching the given ${entityField}: ${fieldValue}. It may not be published and you don't have permission to see it yet, or you may not have read access for other reasons`
+            : `Cannot redirect to the ${entityName} matching the given ${entityField}: ${fieldValue}. You may not have read access, or the given ${entityName} ${entityField} may not be valid or unique.`
           : undefined
       }
     />

@@ -89,7 +89,7 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           repository: icatproject-contrib/icat-ansible
-          ref: datagateway-download-api-3.1.0
+          ref: datagateway-download-api-3.2.0
           path: icat-ansible
       - name: Install Ansible (ensure we're using the system python)
         run: /usr/bin/python3 -m pip install -r icat-ansible/requirements.txt
@@ -191,7 +191,7 @@ jobs:
         run: cd datagateway-api/; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
 
       # DOI minter setup
-      - name: Adding 'User-defined' DataPublicationType (needed for DOI minting api)
+      - name: Adding 'User-defined' and 'Investigation' DataPublicationTypes (needed for DOI minting api)
         run: cd datagateway-api/; poetry run python ../.github/add_doi_datapublicationtype.py
 
       - name: 'Add password to env file'
@@ -249,7 +249,7 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           repository: icatproject-contrib/icat-ansible
-          ref: master
+          ref: datagateway-download-api-3.2.0
           path: icat-ansible
       - name: Install Ansible (ensure we're using the system python)
         run: /usr/bin/python3 -m pip install -r icat-ansible/requirements.txt
@@ -361,7 +361,7 @@ jobs:
         run: cd datagateway-api/; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
 
       # DOI minter setup
-      - name: Adding 'User-defined' DataPublicationType (needed for DOI minting api)
+      - name: Adding 'User-defined' and 'Investigation' DataPublicationTypes (needed for DOI minting api)
         run: cd datagateway-api/; poetry run python ../.github/add_doi_datapublicationtype.py
 
       - name: 'Add password to env file'
@@ -419,7 +419,7 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           repository: icatproject-contrib/icat-ansible
-          ref: master
+          ref: datagateway-download-api-3.2.0
           path: icat-ansible
       - name: Install Ansible (ensure we're using the system python)
         run: /usr/bin/python3 -m pip install -r icat-ansible/requirements.txt
