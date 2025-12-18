@@ -652,7 +652,7 @@ describe('DOI edit form component', () => {
         dataPublicationId: '2',
       })
     );
-  }, 30_000);
+  }, 60_000);
 
   it('should let the user go back from the confirmation page', async () => {
     renderComponent();

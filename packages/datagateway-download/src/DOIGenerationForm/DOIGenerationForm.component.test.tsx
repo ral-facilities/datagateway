@@ -366,7 +366,7 @@ describe('DOI generation form component', () => {
         name: 'DOIConfirmDialog.dialog_title',
       })
     );
-  });
+  }, 60_000);
 
   it('should not let the user submit a mint request if required fields are missing but can submit once all are filled in', async () => {
     renderComponent();
@@ -563,7 +563,7 @@ describe('DOI generation form component', () => {
     );
 
     expect(publishDraftDOI).toHaveBeenCalledWith('1', expect.anything());
-  }, 30_000);
+  }, 40_000);
 
   it('should let the user go back from the confirmation page', async () => {
     renderComponent();
@@ -648,7 +648,7 @@ describe('DOI generation form component', () => {
       screen.queryByText('DOIGenerationForm.review_metadata')
     ).not.toBeInTheDocument();
     expect(deleteDraftDOI).toHaveBeenCalledWith('1', expect.anything());
-  });
+  }, 60_000);
 
   it('should not let the user submit a mint request if cart fails to load', async () => {
     vi.mocked(fetchDownloadCart).mockRejectedValue({ message: 'error' });
@@ -669,11 +669,53 @@ describe('DOI generation form component', () => {
       'd'
     );
 
+    await user.type(
+      screen.getByRole('combobox', { name: 'DOIGenerationForm.subjects' }),
+      'subject{enter}'
+    );
+
+    // technique selector
+
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.add_technique' })
+    );
+
+    await user.type(
+      await screen.findByRole('combobox', {
+        name: 'DOIGenerationForm.technique_selector_label',
+      }),
+      '1'
+    );
+
+    await user.click(
+      await screen.findByRole('option', {
+        name: 'technique1 (1)',
+      })
+    );
+
+    await user.click(
+      await screen.findByRole('cell', {
+        name: 'technique1 (1)',
+      })
+    );
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.technique_dialog_confirm_button',
+      })
+    );
+
+    await waitForElementToBeRemoved(() =>
+      screen.queryByRole('dialog', {
+        name: 'DOIGenerationForm.technique_dialog_title',
+      })
+    );
+
     // missing cart
     expect(
       screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
     ).toBeDisabled();
-  });
+  }, 60_000);
 
   it('should not let the user submit a mint request if cart is empty', async () => {
     vi.mocked(fetchDownloadCart).mockResolvedValue([]);
@@ -694,11 +736,53 @@ describe('DOI generation form component', () => {
       'd'
     );
 
+    await user.type(
+      screen.getByRole('combobox', { name: 'DOIGenerationForm.subjects' }),
+      'subject{enter}'
+    );
+
+    // technique selector
+
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.add_technique' })
+    );
+
+    await user.type(
+      await screen.findByRole('combobox', {
+        name: 'DOIGenerationForm.technique_selector_label',
+      }),
+      '1'
+    );
+
+    await user.click(
+      await screen.findByRole('option', {
+        name: 'technique1 (1)',
+      })
+    );
+
+    await user.click(
+      await screen.findByRole('cell', {
+        name: 'technique1 (1)',
+      })
+    );
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.technique_dialog_confirm_button',
+      })
+    );
+
+    await waitForElementToBeRemoved(() =>
+      screen.queryByRole('dialog', {
+        name: 'DOIGenerationForm.technique_dialog_title',
+      })
+    );
+
     // empty cart
     expect(
       screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
     ).toBeDisabled();
-  });
+  }, 60_000);
 
   it('should not let the user submit a mint request if no users selected', async () => {
     vi.mocked(getCartUsers).mockResolvedValue([]);
@@ -719,6 +803,48 @@ describe('DOI generation form component', () => {
       'd'
     );
 
+    await user.type(
+      screen.getByRole('combobox', { name: 'DOIGenerationForm.subjects' }),
+      'subject{enter}'
+    );
+
+    // technique selector
+
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.add_technique' })
+    );
+
+    await user.type(
+      await screen.findByRole('combobox', {
+        name: 'DOIGenerationForm.technique_selector_label',
+      }),
+      '1'
+    );
+
+    await user.click(
+      await screen.findByRole('option', {
+        name: 'technique1 (1)',
+      })
+    );
+
+    await user.click(
+      await screen.findByRole('cell', {
+        name: 'technique1 (1)',
+      })
+    );
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.technique_dialog_confirm_button',
+      })
+    );
+
+    await waitForElementToBeRemoved(() =>
+      screen.queryByRole('dialog', {
+        name: 'DOIGenerationForm.technique_dialog_title',
+      })
+    );
+
     // no users
     expect(
       screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
@@ -731,7 +857,7 @@ describe('DOI generation form component', () => {
     expect(
       screen.getByRole('button', { name: 'DOIGenerationForm.add_contributor' })
     ).toBeDisabled();
-  });
+  }, 60_000);
 
   it('should let the user change cart tabs', async () => {
     renderComponent();

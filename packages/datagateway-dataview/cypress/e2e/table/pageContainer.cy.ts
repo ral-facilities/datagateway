@@ -163,6 +163,8 @@ describe('PageContainer Component', () => {
   });
 
   it('should display table tooltips correctly (and be dismissable by pressing esc)', () => {
+    cy.findByRole('progressbar').should('not.exist');
+
     cy.get('[data-testid="investigation-table-title"]')
       .first()
       .as('firstTitle')
@@ -175,6 +177,8 @@ describe('PageContainer Component', () => {
   });
 
   it('should not table display tooltips after column resizing', () => {
+    cy.findByRole('progressbar').should('not.exist');
+
     let columnWidth = 0;
 
     cy.window()
@@ -208,17 +212,23 @@ describe('PageContainer Component', () => {
       .first()
       .as('firstTitle')
       .trigger('mouseover', { force: true });
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(1_000);
     cy.get('@firstTitle').get('[role="tooltip"]').should('not.exist');
   });
 
   it('should not display table tooltips after making the window bigger', () => {
     cy.viewport(10000, 750);
 
+    cy.findByRole('progressbar').should('not.exist');
+
     cy.get('[data-testid="investigation-table-title"]')
       .first()
       .as('firstTitle')
       .trigger('mouseover', { force: true });
 
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(1_000);
     cy.get('@firstTitle').get('[role="tooltip"]').should('not.exist');
   });
 });
