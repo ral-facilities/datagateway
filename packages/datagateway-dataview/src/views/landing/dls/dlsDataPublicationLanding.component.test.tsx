@@ -271,6 +271,18 @@ describe('DLS Data Publication Landing page', () => {
           return Promise.resolve({
             data: true,
           });
+        } else if (/.*\/downloadType\/status$/.test(url)) {
+          return Promise.resolve({
+            data: {
+              https: {
+                idsUrl: 'https://example.com/ids',
+                disabled: false,
+                message: '',
+                displayName: 'HTTPS',
+                description: '',
+              },
+            },
+          });
         } else {
           return Promise.reject(`Endpoint not mocked: ${url}`);
         }
