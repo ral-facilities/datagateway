@@ -82,6 +82,7 @@ const TechniqueSelector: React.FC<{
         <TextField
           {...params}
           label={t('DOIGenerationForm.technique_selector_label')}
+          color="secondary"
           InputProps={{
             ...params.InputProps,
             endAdornment: (
@@ -193,6 +194,7 @@ const TechniqueDialog: React.FC<{
                     </TableHead>
                     <TableBody>
                       <TableRow
+                        sx={{ cursor: 'pointer' }}
                         onClick={(_event) =>
                           setSelectedTechnique(initiallySelectedTechnique)
                         }
@@ -240,6 +242,8 @@ const TechniqueDialog: React.FC<{
             }
           }}
           disabled={selectedTechnique === null}
+          color="primary"
+          variant="contained"
         >
           {t('DOIGenerationForm.technique_dialog_confirm_button')}
         </Button>
@@ -312,9 +316,13 @@ const TechniquesAndSubjects: React.FC<{
                   <TextField
                     {...params}
                     label={t('DOIGenerationForm.techniques')}
+                    color="secondary"
                     InputProps={{
                       ...params.InputProps,
-                      sx: { cursor: 'default' },
+                      sx: {
+                        cursor: 'default',
+                        backgroundColor: 'background.default',
+                      },
                     }}
                     inputProps={{
                       ...params.inputProps,
@@ -374,9 +382,15 @@ const TechniquesAndSubjects: React.FC<{
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  variant="filled"
                   label={t('DOIGenerationForm.subjects')}
                   required={true}
+                  color="secondary"
+                  InputProps={{
+                    ...params.InputProps,
+                    sx: {
+                      backgroundColor: 'background.default',
+                    },
+                  }}
                 />
               )}
               disabled={disabled}
