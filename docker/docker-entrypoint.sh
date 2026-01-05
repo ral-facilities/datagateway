@@ -8,8 +8,8 @@ sed -e "s|\"facilityName\": \".*\"|\"facilityName\": \"$FACILITY_NAME\"|" \
     -e "s|\"idsUrl\": \".*\"|\"idsUrl\": \"$IDS_URL\"|" \
     -e "s|\"apiUrl\": \".*\"|\"apiUrl\": \"$API_URL\"|" \
     -e "s|\"downloadApiUrl\": \".*\"|\"downloadApiUrl\": \"$DOWNLOAD_API_URL\"|" \
-    -e "s|\"doiMinterUrl\": \".*\"|\"apiUrl\": \"$DOI_MINTER_URL\"|" \
-    -e "s|\"dataCiteUrl\": \".*\"|\"apiUrl\": \"$DATACITE_URL\"|" \
+    -e "s|\"doiMinterUrl\": .*,|\"doiMinterUrl\": \"$DOI_MINTER_URL\",|" \
+    -e "s|\"dataCiteUrl\": .*,|\"dataCiteUrl\": \"$DATACITE_URL\",|" \
     -e "s|\"pluginHost\": \".*\"|\"pluginHost\": \"/datagateway-dataview\"|" \
     /usr/local/apache2/htdocs/datagateway-dataview/datagateway-dataview-settings.json > "$TEMPFILE"
 
@@ -20,8 +20,8 @@ sed -e "s|\"facilityName\": \".*\"|\"facilityName\": \"$FACILITY_NAME\"|" \
     -e "s|\"idsUrl\": \".*\"|\"idsUrl\": \"$IDS_URL\"|" \
     -e "s|\"apiUrl\": \".*\"|\"apiUrl\": \"$API_URL\"|" \
     -e "s|\"downloadApiUrl\": \".*\"|\"downloadApiUrl\": \"$DOWNLOAD_API_URL\"|" \
-    -e "s|\"doiMinterUrl\": \".*\"|\"apiUrl\": \"$DOI_MINTER_URL\"|" \
-    -e "s|\"dataCiteUrl\": \".*\"|\"apiUrl\": \"$DATACITE_URL\"|" \
+    -e "s|\"doiMinterUrl\": .*,|\"doiMinterUrl\": \"$DOI_MINTER_URL\",|" \
+    -e "s|\"dataCiteUrl\": .*,|\"dataCiteUrl\": \"$DATACITE_URL\",|" \
     -e "s|\"pluginHost\": \".*\"|\"pluginHost\": \"/datagateway-download\"|" \
     /usr/local/apache2/htdocs/datagateway-download/datagateway-download-settings.json > "$TEMPFILE"
 
