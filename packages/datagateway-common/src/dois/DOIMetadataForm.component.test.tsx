@@ -8,6 +8,7 @@ import {
   DOIRelationType,
   DOIResourceType,
 } from '../app.types';
+import { createBioPortalTerm } from '../setupTests';
 import DOIMetadataForm from './DOIMetadataForm.component';
 
 describe('DOI generation form component', () => {
@@ -46,12 +47,17 @@ describe('DOI generation form component', () => {
           relationType: DOIRelationType.Cites,
         },
       ],
+      subjects: ['subject 1', 'subject 2'],
+      setSubjects: vi.fn(),
+      techniques: [createBioPortalTerm(1, ['1']), createBioPortalTerm(2)],
+      setTechniques: vi.fn(),
       setRelatedIdentifiers: vi.fn(),
       disableMintButton: false,
       onMintClick: vi.fn(),
       mintLoading: false,
       doiMinterUrl: 'https://example.com/doi-minter',
       dataCiteUrl: 'https://example.com/datacite',
+      bioportalUrl: 'https://example.com/bioportal',
     };
   });
 
@@ -165,6 +171,24 @@ describe('DOI generation form component', () => {
     expect(
       screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
     ).toBeDisabled();
+
+    // empty subjects
+    props.disableMintButton = false;
+    props.subjects = [];
+    rerender(<DOIMetadataForm {...props} />);
+
+    expect(
+      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+    ).toBeDisabled();
+
+    // empty techniques
+    props.subjects = ['1'];
+    props.techniques = [];
+    rerender(<DOIMetadataForm {...props} />);
+
+    expect(
+      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+    ).toBeDisabled();
   });
 
   it('should disable mint button & all form fields when mintLoading is true', () => {
@@ -191,6 +215,27 @@ describe('DOI generation form component', () => {
       screen.getByRole('button', {
         name: 'DOIGenerationForm.delete_related_identifier',
       })
+    ).toBeDisabled();
+    expect(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.add_related_doi',
+      })
+    ).toBeDisabled();
+    expect(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.add_related_other',
+      })
+    ).toBeDisabled();
+
+    expect(
+      screen.getByRole('combobox', { name: 'DOIGenerationForm.subjects' })
+    ).toBeDisabled();
+
+    expect(
+      screen.getByRole('combobox', { name: 'DOIGenerationForm.techniques' })
+    ).toBeDisabled();
+    expect(
+      screen.getByRole('button', { name: 'DOIGenerationForm.add_technique' })
     ).toBeDisabled();
   });
 });

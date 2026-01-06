@@ -9,6 +9,7 @@ import type { Action } from 'redux';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import failOnConsole from 'vitest-fail-on-console';
+import { BioPortalTerm } from './app.types';
 import type { StateType } from './state/app.types';
 import { initialState } from './state/reducers/dgcommon.reducer';
 
@@ -132,6 +133,16 @@ export const createReactQueryWrapper = (
   );
   return wrapper;
 };
+
+export const createBioPortalTerm = (
+  id: number,
+  synonyms?: string[]
+): BioPortalTerm => ({
+  '@id': `https://example.com/${id}`,
+  prefLabel: `technique ${id}`,
+  synonym: synonyms,
+  links: { descendants: `https://example.com/${1}/descendants` },
+});
 
 // Recreate jest behaviour by mocking with __mocks__ by mocking globally here
 vi.mock('axios');

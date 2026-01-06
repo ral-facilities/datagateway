@@ -180,7 +180,22 @@ describe('DOI metadata confirmation component', () => {
         ],
         url: 'https://example.com',
         identifiers: [],
-        subjects: [],
+        subjects: [
+          { subject: 'subject 1' },
+          { subject: 'subject 2' },
+          {
+            subject: 'technique 1',
+            schemeUri: 'https://example.com/technique',
+            valueUri: 'https://example.com/technique/1',
+            subjectScheme: 'technique',
+          },
+          {
+            subject: 'technique 2',
+            schemeUri: 'https://example.com/technique',
+            valueUri: 'https://example.com/technique/2',
+            subjectScheme: 'technique',
+          },
+        ],
         alternateIdentifiers: [],
         language: 'en-GB',
         sizes: ['1 B'],

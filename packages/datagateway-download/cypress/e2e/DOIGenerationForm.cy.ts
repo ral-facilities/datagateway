@@ -62,6 +62,16 @@ describe('DOI Generation form', () => {
         .first()
         .type('Test description');
 
+      // add a subject
+      cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
+
+      // add a technique
+      cy.findByRole('button', { name: 'Add technique' }).click();
+      cy.findByRole('combobox', { name: 'Select technique' }).type('x-ray');
+      cy.findByRole('option', { name: 'x-ray standing wave (XSW)' }).click();
+      cy.findByRole('cell', { name: 'borrmann effect' }).click();
+      cy.findByRole('button', { name: 'Confirm' }).click();
+
       cy.contains('button', 'Generate DOI').click();
 
       // expect confirmation page
@@ -96,6 +106,16 @@ describe('DOI Generation form', () => {
         .first()
         .type('Test description');
 
+      // add a subject
+      cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
+
+      // add a technique
+      cy.findByRole('button', { name: 'Add technique' }).click();
+      cy.findByRole('combobox', { name: 'Select technique' }).type('x-ray');
+      cy.findByRole('option', { name: 'x-ray standing wave (XSW)' }).click();
+      cy.findByRole('cell', { name: 'x-ray standing wave (XSW)' }).click();
+      cy.findByRole('button', { name: 'Confirm' }).click();
+
       cy.contains('button', 'Generate DOI').click();
 
       // expect confirmation page
@@ -113,6 +133,114 @@ describe('DOI Generation form', () => {
       cy.contains('Please review the metadata').should('not.exist');
     });
 
+    it('should let user add and remove subjects', () => {
+      cy.contains('DOI Title').parent().find('input').type('Test title');
+      cy.contains('DOI Description')
+        .parent()
+        .find('textarea')
+        .first()
+        .type('Test description');
+
+      // add a technique
+      cy.findByRole('button', { name: 'Add technique' }).click();
+      cy.findByRole('combobox', { name: 'Select technique' }).type('x-ray');
+      cy.findByRole('option', { name: 'x-ray standing wave (XSW)' }).click();
+      cy.findByRole('cell', { name: 'borrmann effect' }).click();
+      cy.findByRole('button', { name: 'Confirm' }).click();
+
+      // add a subject
+      cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
+      cy.findByRole('combobox', { name: 'Subjects' }).type('subject2{enter}');
+      cy.findByRole('combobox', { name: 'Subjects' }).type('subject3{enter}');
+
+      cy.findByRole('button', { name: 'subject1' }).should('be.visible');
+      cy.findByRole('button', { name: 'subject2' }).should('be.visible');
+      cy.findByRole('button', { name: 'subject3' }).should('be.visible');
+
+      cy.findByRole('combobox', { name: 'Subjects' }).click();
+      cy.findByRole('combobox', { name: 'Subjects' }).type(
+        '{leftArrow}{leftArrow}{del}'
+      );
+
+      cy.findByRole('button', { name: 'subject2' }).should('not.exist');
+
+      // check that subject info displays correctly in confirmation page
+      cy.contains('button', 'Generate DOI').click();
+
+      cy.contains('Subject: subject1').should('be.visible');
+      cy.contains('Subject: subject3').should('be.visible');
+      cy.contains('Subject: subject2').should('not.exist');
+
+      cy.contains('button', 'Generate DOI').click();
+
+      cy.contains('Mint was successful', { timeout: 10000 }).should(
+        'be.visible'
+      );
+    });
+
+    it('should let user add and remove techniques', () => {
+      cy.contains('DOI Title').parent().find('input').type('Test title');
+      cy.contains('DOI Description')
+        .parent()
+        .find('textarea')
+        .first()
+        .type('Test description');
+
+      // add a subject
+      cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
+
+      // add a technique
+      cy.findByRole('button', { name: 'Add technique' }).click();
+      cy.findByRole('combobox', { name: 'Select technique' }).type('x-ray');
+      cy.findByRole('option', { name: 'x-ray standing wave (XSW)' }).click();
+      cy.findByRole('cell', { name: 'borrmann effect' }).click();
+      cy.findByRole('button', { name: 'Confirm' }).click();
+
+      cy.findByRole('button', { name: 'Add technique' }).click();
+      cy.findByRole('combobox', { name: 'Select technique' }).type('x-ray');
+      cy.findByRole('option', { name: 'x-ray standing wave (XSW)' }).click();
+      cy.findByRole('cell', { name: 'x-ray standing wave (XSW)' }).click();
+      cy.findByRole('button', { name: 'Confirm' }).click();
+
+      cy.findByRole('button', { name: 'Add technique' }).click();
+      cy.findByRole('combobox', { name: 'Select technique' }).type('x-ray');
+      cy.findByRole('option', { name: 'x-ray imaging' }).click();
+      cy.findByRole('cell', { name: 'x-ray tomography (CT scan)' }).click();
+      cy.findByRole('button', { name: 'Confirm' }).click();
+
+      cy.findByRole('button', { name: 'borrmann effect' }).should('be.visible');
+      cy.findByRole('button', { name: 'x-ray standing wave (XSW)' }).should(
+        'be.visible'
+      );
+      cy.findByRole('button', { name: 'x-ray tomography (CT scan)' }).should(
+        'be.visible'
+      );
+
+      cy.findByRole('button', { name: 'borrmann effect' })
+        .findByTestId('CancelIcon')
+        .click();
+      cy.findByRole('button', { name: 'borrmann effect' }).should('not.exist');
+
+      // check that technique info displays correctly in confirmation page
+      cy.contains('button', 'Generate DOI').click();
+
+      cy.contains('Subject: x-ray standing wave').should('be.visible');
+      cy.contains(
+        'Value URI: http://purl.org/pan-science/PaNET/PaNET01173'
+      ).should('be.visible');
+      cy.contains('Subject: x-ray tomography').should('be.visible');
+      cy.contains(
+        'Value URI: http://purl.org/pan-science/PaNET/PaNET01207'
+      ).should('be.visible');
+      cy.contains('Subject: borrmann effect').should('not.exist');
+
+      cy.contains('button', 'Generate DOI').click();
+
+      cy.contains('Mint was successful', { timeout: 10000 }).should(
+        'be.visible'
+      );
+    });
+
     it('should let user add and remove creators', () => {
       cy.contains('DOI Title').parent().find('input').type('Test title');
       cy.contains('DOI Description')
@@ -120,6 +248,15 @@ describe('DOI Generation form', () => {
         .find('textarea')
         .first()
         .type('Test description');
+      // add a subject
+      cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
+
+      // add a technique
+      cy.findByRole('button', { name: 'Add technique' }).click();
+      cy.findByRole('combobox', { name: 'Select technique' }).type('x-ray');
+      cy.findByRole('option', { name: 'x-ray standing wave (XSW)' }).click();
+      cy.findByRole('cell', { name: 'borrmann effect' }).click();
+      cy.findByRole('button', { name: 'Confirm' }).click();
 
       // wait for users to load
       cy.contains('button', 'Generate DOI').should('not.be.disabled');
@@ -147,6 +284,15 @@ describe('DOI Generation form', () => {
         .find('textarea')
         .first()
         .type('Test description');
+      // add a subject
+      cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
+
+      // add a technique
+      cy.findByRole('button', { name: 'Add technique' }).click();
+      cy.findByRole('combobox', { name: 'Select technique' }).type('x-ray');
+      cy.findByRole('option', { name: 'x-ray standing wave (XSW)' }).click();
+      cy.findByRole('cell', { name: 'borrmann effect' }).click();
+      cy.findByRole('button', { name: 'Confirm' }).click();
 
       // wait for users to load
       cy.contains('button', 'Generate DOI').should('not.be.disabled');
@@ -181,6 +327,15 @@ describe('DOI Generation form', () => {
         .find('textarea')
         .first()
         .type('Test description');
+      // add a subject
+      cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
+
+      // add a technique
+      cy.findByRole('button', { name: 'Add technique' }).click();
+      cy.findByRole('combobox', { name: 'Select technique' }).type('x-ray');
+      cy.findByRole('option', { name: 'x-ray standing wave (XSW)' }).click();
+      cy.findByRole('cell', { name: 'borrmann effect' }).click();
+      cy.findByRole('button', { name: 'Confirm' }).click();
 
       // wait for users to load
       cy.contains('button', 'Generate DOI').should('not.be.disabled');
@@ -219,6 +374,15 @@ describe('DOI Generation form', () => {
         .find('textarea')
         .first()
         .type('Test description');
+      // add a subject
+      cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
+
+      // add a technique
+      cy.findByRole('button', { name: 'Add technique' }).click();
+      cy.findByRole('combobox', { name: 'Select technique' }).type('x-ray');
+      cy.findByRole('option', { name: 'x-ray standing wave (XSW)' }).click();
+      cy.findByRole('cell', { name: 'borrmann effect' }).click();
+      cy.findByRole('button', { name: 'Confirm' }).click();
 
       // wait for users to load
       cy.contains('button', 'Generate DOI').should('not.be.disabled');
@@ -274,6 +438,15 @@ describe('DOI Generation form', () => {
         .find('textarea')
         .first()
         .type('Test description');
+      // add a subject
+      cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
+
+      // add a technique
+      cy.findByRole('button', { name: 'Add technique' }).click();
+      cy.findByRole('combobox', { name: 'Select technique' }).type('x-ray');
+      cy.findByRole('option', { name: 'x-ray standing wave (XSW)' }).click();
+      cy.findByRole('cell', { name: 'borrmann effect' }).click();
+      cy.findByRole('button', { name: 'Confirm' }).click();
 
       // wait for users to load
       cy.contains('button', 'Generate DOI').should('not.be.disabled');

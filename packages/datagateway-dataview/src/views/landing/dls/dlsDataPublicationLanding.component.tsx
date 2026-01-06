@@ -13,6 +13,7 @@ import {
   styled,
 } from '@mui/material';
 import {
+  BioPortalTerm,
   ContributorType,
   DOIRelationType,
   DataPublication,
@@ -138,8 +139,26 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   const { data, isInitialLoading } = useDataPublication(
     parseInt(dataPublicationId)
   );
+  const { data: dataciteData } = useDOI(data?.pid);
 
-  const { data: dataCiteData } = useDOI(data?.pid);
+  const [techniques, subjects] = React.useMemo(
+    () =>
+      dataciteData?.attributes.subjects.reduce(
+        (result: [BioPortalTerm[], string[]], element) => {
+          element.valueUri && element.subjectScheme?.includes('PaNET')
+            ? result[0].push({
+                '@id': element.valueUri,
+                prefLabel: element.subject,
+                links: { descendants: '' }, // just put empty string here - it's not needed for display
+              })
+            : result[1].push(element.subject);
+
+          return result;
+        },
+        [[], []]
+      ) ?? [[], []],
+    [dataciteData?.attributes.subjects]
+  );
 
   const isVersionDOI = data?.relatedItems?.some(
     (relatedItem) => relatedItem.relationType === DOIRelationType.IsVersionOf
@@ -225,7 +244,15 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         identifier: pid,
         name: title,
         description: description,
-        keywords: t('doi_constants.keywords', { returnObjects: true }),
+        keywords: [
+          ...subjects,
+          ...techniques.map((technique) => ({
+            name: technique.prefLabel,
+            identifier: technique['@id'],
+            url: technique['@id'],
+            inDefinedTermSet: 'http://purl.org/pan-science/PaNET/',
+          })),
+        ],
         publisher: {
           // could get publisher info from DOI? but no logo...
           '@type': 'Organization',
@@ -296,14 +323,16 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     formattedUsers,
     isVersionDOI,
     data?.relatedItems,
+    subjects,
+    techniques,
   ]);
 
-  const instruments = dataCiteData
+  const instruments = dataciteData
     ? [
-        ...dataCiteData.attributes.relatedIdentifiers.filter(
+        ...dataciteData.attributes.relatedIdentifiers.filter(
           (ri) => ri.relationType === DOIRelationType.IsCollectedBy
         ),
-        ...dataCiteData.attributes.relatedItems.filter(
+        ...dataciteData.attributes.relatedItems.filter(
           (ri) => ri.relationType === DOIRelationType.IsCollectedBy
         ),
       ]
@@ -521,6 +550,35 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 <Typography data-testid="landing-datapublication-description">
                   {description}
                 </Typography>
+
+                {techniques.length > 0 && (
+                  <div>
+                    <Subheading
+                      variant="h6"
+                      data-testid="landing-dataPublication-techniques-label"
+                    >
+                      {t('datapublications.details.techniques')}
+                    </Subheading>
+                    {techniques.map((t, i) => (
+                      <React.Fragment key={t['@id']}>
+                        {i === 0 ? null : ', '}
+                        <MuiLink href={t['@id']}>{t.prefLabel}</MuiLink>
+                      </React.Fragment>
+                    ))}
+                  </div>
+                )}
+
+                {subjects.length > 0 && (
+                  <div>
+                    <Subheading
+                      variant="h6"
+                      data-testid="landing-dataPublication-subjects-label"
+                    >
+                      {t('datapublications.details.subjects')}
+                    </Subheading>
+                    {subjects.join(', ')}
+                  </div>
+                )}
 
                 {formattedUsers.length > 0 && (
                   <div>

@@ -84,6 +84,9 @@ describe('Actions', () => {
       features: {},
       idsUrl: 'ids',
       apiUrl: 'api',
+      doiMinterUrl: 'doi',
+      dataCiteUrl: 'datacite',
+      bioportalUrl: 'bioportalUrl',
       queryRetries: 1,
       breadcrumbs: [
         {
@@ -115,6 +118,9 @@ describe('Actions', () => {
         apiUrl: 'api',
         downloadApiUrl: 'download-api',
         icatUrl: '',
+        doiMinterUrl: 'doi',
+        dataCiteUrl: 'datacite',
+        bioportalUrl: 'bioportalUrl',
       })
     );
     expect(actions).toContainEqual(

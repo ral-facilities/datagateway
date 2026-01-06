@@ -371,6 +371,11 @@ describe('Related identifiers form component', () => {
     expect(
       screen.getByRole('button', { name: 'DOIGenerationForm.add_related_doi' })
     ).toBeDisabled();
+    expect(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.add_related_other',
+      })
+    ).toBeDisabled();
 
     expect(
       screen.getByRole('combobox', {

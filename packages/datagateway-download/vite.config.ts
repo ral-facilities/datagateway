@@ -79,6 +79,19 @@ export default defineConfig(({ mode }) => {
     plugins: plugins,
     server: {
       port: 3000,
+      proxy: {
+        '/bioportal': {
+          target: 'https://data.bioontology.org',
+          changeOrigin: true,
+          rewrite: (path) => {
+            return path.replace(/^\/bioportal/, '');
+          },
+          headers: {
+            Authorization: `apikey token=${env.VITE_BIOPORTAL_API_KEY}`,
+            referer: '', // need to unset referer header as otherwise data.bioontology.org complains
+          },
+        },
+      },
     },
     preview: {
       port: 5002,

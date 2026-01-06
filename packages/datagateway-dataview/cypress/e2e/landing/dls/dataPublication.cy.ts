@@ -153,6 +153,16 @@ describe('DLS - User Generated Data Publication Landing', () => {
       .click();
     cy.contains('IsSupplementedBy').click();
 
+    // add a subject
+    cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
+
+    // add a technique
+    cy.findByRole('button', { name: 'Add technique' }).click();
+    cy.findByRole('combobox', { name: 'Select technique' }).type('x-ray');
+    cy.findByRole('option', { name: 'x-ray standing wave (XSW)' }).click();
+    cy.findByRole('cell', { name: 'borrmann effect' }).click();
+    cy.findByRole('button', { name: 'Confirm' }).click();
+
     // edit content
     cy.contains('Datafiles').click();
     cy.get('[aria-label="Edit data"]').click();
@@ -171,6 +181,12 @@ describe('DLS - User Generated Data Publication Landing', () => {
       'exist'
     );
     cy.contains('h2', 'Generate DOI').should('not.exist');
+
+    cy.contains('Subject: subject1').should('exist');
+    cy.contains('Subject: borrmann effect').should('exist');
+    cy.contains(
+      'Value URI: http://purl.org/pan-science/PaNET/PaNET01325'
+    ).should('exist');
 
     cy.contains('div', 'Identifier: 10.17596/w76y-4s92')
       .as('relatedDOI')
@@ -195,6 +211,8 @@ describe('DLS - User Generated Data Publication Landing', () => {
     cy.contains('New DOI title').should('be.visible');
     cy.contains('New DOI description').should('be.visible');
     cy.contains('Randy Beasley').should('be.visible');
+    cy.contains('a', 'borrmann effect').should('be.visible');
+    cy.contains('subject1').should('be.visible');
 
     cy.get('[data-testid="landing-dataPublication-pid-link"]')
       .first()
@@ -209,6 +227,8 @@ describe('DLS - User Generated Data Publication Landing', () => {
     cy.contains('New DOI title').should('be.visible');
     cy.contains('New DOI description').should('be.visible');
     cy.contains('Randy Beasley').should('be.visible');
+    cy.contains('a', 'borrmann effect').should('be.visible');
+    cy.contains('subject1').should('be.visible');
 
     cy.get('@newVersionDOI').then((doi) => {
       cy.contains('Latest Version DOI')

@@ -85,9 +85,13 @@ export const fetchSettings = (): Promise<DataviewSettings | void> => {
     : '/datagateway-dataview-settings.json';
   return axios
     .get<
-      Omit<DataviewSettings, 'doiMinterUrl' | 'dataCiteUrl'> & {
+      Omit<
+        DataviewSettings,
+        'doiMinterUrl' | 'dataCiteUrl' | 'bioportalUrl'
+      > & {
         doiMinterUrl?: string | null;
         dataCiteUrl?: string | null;
+        bioportalUrl?: string | null;
       }
     >(settingsPath)
     .then((res) => {
@@ -159,6 +163,7 @@ export const fetchSettings = (): Promise<DataviewSettings | void> => {
       // whilst allowing us to specify null in the example config
       if (settings.doiMinterUrl === null) settings.doiMinterUrl = undefined;
       if (settings.dataCiteUrl === null) settings.dataCiteUrl = undefined;
+      if (settings.bioportalUrl === null) settings.bioportalUrl = undefined;
 
       // have to typecast as TS can't see that we've eliminated null from the above properties
       // see: https://github.com/microsoft/TypeScript/issues/50651

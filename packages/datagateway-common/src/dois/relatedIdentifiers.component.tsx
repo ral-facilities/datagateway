@@ -154,6 +154,7 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
             <Grid item>
               <Button
                 variant="contained"
+                disabled={disabled}
                 onClick={() => {
                   changeRelatedIdentifiers((relatedIdentifiers) => [
                     ...relatedIdentifiers,
