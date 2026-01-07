@@ -57,10 +57,11 @@ const TechniqueSelector: React.FC<{
     []
   );
 
-  const { data: techniques, isFetching } = useSearchPANETTechniques(
-    debouncedInputValue,
-    bioportalUrl
-  );
+  const {
+    data: techniques,
+    isFetching,
+    isError,
+  } = useSearchPANETTechniques(debouncedInputValue, bioportalUrl);
 
   return (
     <Autocomplete
@@ -94,11 +95,13 @@ const TechniqueSelector: React.FC<{
               </React.Fragment>
             ),
           }}
-          error={typeof bioportalUrl === 'undefined'}
+          error={typeof bioportalUrl === 'undefined' || isError}
           helperText={
             typeof bioportalUrl === 'undefined'
               ? // don't bother translating as this should be a developer focused message i.e. that they haven't configured DGW correctly
                 "Can't fetch techniques as BioPortal API URL not specified"
+              : isError
+              ? t('DOIGenerationForm.bioportal_search_error')
               : undefined
           }
         />
@@ -134,7 +137,7 @@ const TechniqueDialog: React.FC<{
     setSelectedTechnique(null);
   }, [changeOpen]);
 
-  const { data: descendantTechniques } = useGetDescendantTechniques(
+  const { data: descendantTechniques, isError } = useGetDescendantTechniques(
     initiallySelectedTechnique,
     bioportalUrl
   );
@@ -179,6 +182,13 @@ const TechniqueDialog: React.FC<{
                   )}
                 </Typography>
               </Grid>
+              {isError && (
+                <Grid item>
+                  <Typography variant="caption" color="error">
+                    {t('DOIGenerationForm.bioportal_descendant_error')}
+                  </Typography>
+                </Grid>
+              )}
               <Grid item>
                 <TableContainer>
                   <Table>
