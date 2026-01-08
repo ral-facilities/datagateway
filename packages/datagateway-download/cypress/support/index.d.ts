@@ -17,10 +17,20 @@ declare namespace Cypress {
 
     clearDataPublications(): Cypress.Chainable<Cypress.Response>;
 
+    clearDataPublicationsByIds(
+      ids: string[]
+    ): Cypress.Chainable<Cypress.Response>;
+    seedSessionDataPublication(
+      recreateSessionDPIfExists: boolean
+    ): Cypress.Chainable<Cypress.Response>;
+
     addCartItem(cartItem: string): Cypress.Chainable<Cypress.Response>;
 
     seedDownloads(): Cypress.Chainable<Cypress.Response>;
 
     clearDownloads(): Cypress.Chainable<Cypress.Response>;
+
+    dumpAliases(store: Record<string, unknown>, aliases?: string[]): void;
+    restoreAliases(store: Record<string, unknown>, aliases?: string[]): void;
   }
 }

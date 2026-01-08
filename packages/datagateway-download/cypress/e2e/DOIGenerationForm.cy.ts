@@ -1,5 +1,19 @@
+export type SessionMintResponse = Cypress.Response<{
+  data_publication_id: string;
+  attributes: { doi: string };
+}>;
+
 describe('DOI Generation form', () => {
+  const store = {};
+  before(() => {
+    cy.login({ username: 'root', password: 'pw', mechanism: 'simple' });
+    cy.seedSessionDataPublication(false).as('sessionDataPublication');
+    cy.dumpAliases(store);
+  });
+
   beforeEach(() => {
+    cy.restoreAliases(store);
+
     cy.intercept('GET', '**/topcat/user/cart/**').as('fetchCart');
     cy.intercept('GET', '**/topcat/user/downloads**').as('fetchDownloads');
     cy.login(
@@ -19,7 +33,12 @@ describe('DOI Generation form', () => {
 
   // tidy up the data publications table
   after(() => {
+    cy.restoreAliases(store);
+    cy.login({ username: 'root', password: 'pw', mechanism: 'simple' });
     cy.clearDataPublications();
+    cy.get<SessionMintResponse>('@sessionDataPublication').then((dp) => {
+      cy.clearDataPublicationsByIds([dp.body.data_publication_id]);
+    });
   });
 
   it('should be able to mint a mintable cart', () => {

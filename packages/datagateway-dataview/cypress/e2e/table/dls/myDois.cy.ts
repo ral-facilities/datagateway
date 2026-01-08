@@ -13,7 +13,12 @@ describe('DLS - MyDOIs Table', () => {
   describe('Logged in tests', () => {
     // can only test the "minted" view as we don't have another user set up that can mint and this user can be listed on
     describe('User-defined DOIs', () => {
-      beforeEach(() => {
+      const store = {};
+
+      before(() => {
+        cy.login({ username: 'root', password: 'pw', mechanism: 'simple' });
+        cy.seedSessionDataPublication(false).as('sessionDataPublication');
+
         cy.login(
           {
             username: 'Chris481',
@@ -23,6 +28,7 @@ describe('DLS - MyDOIs Table', () => {
           'Chris481'
         );
 
+        // can seed the user defined DP in before rather than beforeEach as myDOI page is read-only
         cy.seedUserGeneratedDataPublication('Test DOI Title 1').as(
           'dataPublication1'
         );
@@ -30,19 +36,41 @@ describe('DLS - MyDOIs Table', () => {
         cy.seedUserGeneratedDataPublication('Test DOI Title 2').as(
           'dataPublication2'
         );
+        cy.dumpAliases(store);
+      });
+
+      beforeEach(() => {
+        cy.restoreAliases(store);
+
+        cy.login(
+          {
+            username: 'Chris481',
+            password: 'pw',
+            mechanism: 'simple',
+          },
+          'Chris481'
+        );
 
         cy.visit('/my-dois/DLS');
       });
 
-      afterEach(() => {
+      after(() => {
+        cy.restoreAliases(store);
+
+        cy.login({ username: 'root', password: 'pw', mechanism: 'simple' });
         cy.get<UserDefinedMintResponse>('@dataPublication1').then((dp1) => {
           cy.get<UserDefinedMintResponse>('@dataPublication2').then((dp2) => {
-            cy.clearDataPublications([
-              dp1.body.concept.data_publication_id,
-              dp1.body.version.data_publication_id,
-              dp2.body.concept.data_publication_id,
-              dp2.body.version.data_publication_id,
-            ]);
+            cy.get<SessionMintResponse>('@sessionDataPublication').then(
+              (dp3) => {
+                cy.clearDataPublications([
+                  dp1.body.concept.data_publication_id,
+                  dp1.body.version.data_publication_id,
+                  dp2.body.concept.data_publication_id,
+                  dp2.body.version.data_publication_id,
+                  dp3.body.data_publication_id,
+                ]);
+              }
+            );
           });
         });
       });
@@ -158,14 +186,16 @@ describe('DLS - MyDOIs Table', () => {
     });
 
     describe('Session DOIs', () => {
-      beforeEach(() => {
-        cy.login({
-          username: 'root',
-          password: 'pw',
-          mechanism: 'simple',
-        });
+      const store = {};
 
-        cy.seedSessionDataPublication().as('sessionDataPublication');
+      before(() => {
+        cy.login({ username: 'root', password: 'pw', mechanism: 'simple' });
+        cy.seedSessionDataPublication(false).as('sessionDataPublication');
+        cy.dumpAliases(store);
+      });
+
+      beforeEach(() => {
+        cy.restoreAliases(store);
 
         cy.login(
           {
@@ -179,7 +209,9 @@ describe('DLS - MyDOIs Table', () => {
         cy.visit('/my-dois/DLS');
       });
 
-      afterEach(() => {
+      after(() => {
+        cy.restoreAliases(store);
+        cy.login({ username: 'root', password: 'pw', mechanism: 'simple' });
         cy.get<SessionMintResponse>('@sessionDataPublication').then((dp) => {
           cy.clearDataPublications([dp.body.data_publication_id]);
         });

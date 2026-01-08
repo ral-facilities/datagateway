@@ -9,7 +9,16 @@ export type SessionMintResponse = Cypress.Response<{
 }>;
 
 describe('DLS - User Generated Data Publication Landing', () => {
+  const store = {};
+
+  before(() => {
+    cy.login({ username: 'root', password: 'pw', mechanism: 'simple' });
+    cy.seedSessionDataPublication(false).as('sessionDataPublication');
+    cy.dumpAliases(store);
+  });
+
   beforeEach(() => {
+    cy.restoreAliases(store);
     cy.login(
       {
         username: 'Chris481',
@@ -33,7 +42,16 @@ describe('DLS - User Generated Data Publication Landing', () => {
         dp.body.version.data_publication_id,
       ]);
     });
+
     cy.clearDownloadCart();
+  });
+
+  after(() => {
+    cy.restoreAliases(store);
+    cy.login({ username: 'root', password: 'pw', mechanism: 'simple' });
+    cy.get<SessionMintResponse>('@sessionDataPublication').then((dp) => {
+      cy.clearDataPublications([dp.body.data_publication_id]);
+    });
   });
 
   it('should load correctly', () => {
@@ -410,7 +428,7 @@ describe('DLS - Session Data Publication Landing', () => {
       password: 'pw',
       mechanism: 'simple',
     });
-    cy.seedSessionDataPublication().as('sessionDataPublication');
+    cy.seedSessionDataPublication(true).as('sessionDataPublication');
     cy.login(
       {
         username: 'Chris481',
