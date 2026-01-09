@@ -38,8 +38,12 @@ describe('Techniques & Subjects selector component', () => {
 
   let props: React.ComponentProps<typeof TechniquesAndSubjects>;
 
-  let mockSearchResponse: Partial<BioPortalResponse>;
-  let mockDescendantsResponse: Partial<BioPortalResponse>;
+  let mockSearchResponse: Promise<
+    Partial<AxiosResponse<Partial<BioPortalResponse>>>
+  >;
+  let mockDescendantsResponse: Promise<
+    Partial<AxiosResponse<Partial<BioPortalResponse>>>
+  >;
 
   const TestComponent: React.FC = () => {
     // eslint-disable-next-line react/prop-types
@@ -74,34 +78,34 @@ describe('Techniques & Subjects selector component', () => {
       disabled: false,
     };
 
-    mockSearchResponse = {
-      collection: [
-        createBioPortalTerm(1, ['1']),
-        createBioPortalTerm(2),
-        createBioPortalTerm(3),
-      ],
-    };
+    mockSearchResponse = Promise.resolve({
+      data: {
+        collection: [
+          createBioPortalTerm(1, ['1']),
+          createBioPortalTerm(2),
+          createBioPortalTerm(3),
+        ],
+      },
+    });
 
-    mockDescendantsResponse = {
-      collection: [createBioPortalTerm(4, ['4']), createBioPortalTerm(5)],
-    };
+    mockDescendantsResponse = Promise.resolve({
+      data: {
+        collection: [createBioPortalTerm(4, ['4']), createBioPortalTerm(5)],
+      },
+    });
 
     axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         // only return terms when query is filled to test the debouncing
         if (/\/search.*q=\w+.*/.test(url)) {
-          return Promise.resolve({
-            data: mockSearchResponse,
-          });
+          return mockSearchResponse;
         } else if (/\/search.*/.test(url)) {
           return Promise.resolve({
             data: { collection: [] },
           });
         } else if (/\/descendants/.test(url)) {
-          return Promise.resolve({
-            data: mockDescendantsResponse,
-          });
+          return mockDescendantsResponse;
         } else {
           return Promise.reject(`Endpoint not mocked: ${url}`);
         }
@@ -288,23 +292,24 @@ describe('Techniques & Subjects selector component', () => {
         'DOIGenerationForm.technique_dialog_select_technique_help'
       )
     ).toBeInTheDocument();
+    const descendantsResponse = (await mockDescendantsResponse)?.data;
     expect(
       screen.getByRole('cell', {
         name: `${
-          mockDescendantsResponse.collection?.[0].prefLabel
-        } (${mockDescendantsResponse.collection?.[0].synonym?.join(', ')})`,
+          descendantsResponse?.collection?.[0].prefLabel
+        } (${descendantsResponse?.collection?.[0].synonym?.join(', ')})`,
       })
     );
     expect(
       screen.getByRole('cell', {
-        name: mockDescendantsResponse.collection?.[1]['@id'],
+        name: descendantsResponse?.collection?.[1]['@id'],
       })
     );
 
     // select descendant
     await user.click(
       screen.getByRole('cell', {
-        name: mockDescendantsResponse.collection?.[1].prefLabel,
+        name: descendantsResponse?.collection?.[1].prefLabel,
       })
     );
 
@@ -322,7 +327,7 @@ describe('Techniques & Subjects selector component', () => {
 
     expect(
       screen.getByRole('button', {
-        name: mockDescendantsResponse.collection?.[1].prefLabel,
+        name: descendantsResponse?.collection?.[1].prefLabel,
       })
     ).toBeInTheDocument();
   });
@@ -339,6 +344,58 @@ describe('Techniques & Subjects selector component', () => {
       await screen.findByText(
         "Can't fetch techniques as BioPortal API URL not specified"
       )
+    ).toBeVisible();
+  });
+
+  it('displays error message on technique selector autocomplete when bioportal api returns an error', async () => {
+    // need to catch promise to handle Vitest complaining about unhandled promise rejection
+    mockSearchResponse = Promise.reject('error').catch((e) => {
+      return e;
+    });
+    renderComponent();
+
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.add_technique' })
+    );
+
+    await user.type(
+      await screen.findByRole('combobox', {
+        name: 'DOIGenerationForm.technique_selector_label',
+      }),
+      't'
+    );
+
+    expect(
+      await screen.findByText('DOIGenerationForm.bioportal_search_error')
+    ).toBeVisible();
+  });
+
+  it('displays error message on technique selector autocomplete when bioportal api returns an error', async () => {
+    // need to catch promise to handle Vitest complaining about unhandled promise rejection
+    mockDescendantsResponse = Promise.reject('error').catch((e) => {
+      return e;
+    });
+    renderComponent();
+
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.add_technique' })
+    );
+
+    await user.type(
+      await screen.findByRole('combobox', {
+        name: 'DOIGenerationForm.technique_selector_label',
+      }),
+      't'
+    );
+
+    await user.click(
+      await screen.findByRole('option', {
+        name: 'technique 3',
+      })
+    );
+
+    expect(
+      await screen.findByText('DOIGenerationForm.bioportal_descendant_error')
     ).toBeVisible();
   });
 });

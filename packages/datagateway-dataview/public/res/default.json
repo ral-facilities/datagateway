@@ -397,6 +397,8 @@
     "technique_dialog_initial_help": "Please search for a technique and select the technique that matches or is more general",
     "technique_dialog_select_technique_help": "Please select the most relevant technique from the list below",
     "technique_dialog_confirm_button": "Confirm",
+    "bioportal_search_error": "Can't fetch techniques as the BioPortal API returned an error",
+    "bioportal_descendant_error": "Can't fetch descendant techniques as the BioPortal API returned an error",
     "techniques": "Techniques",
     "technique_name": "Name",
     "technique_pid": "PID",
