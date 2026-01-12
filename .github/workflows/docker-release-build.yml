@@ -1,0 +1,52 @@
+name: Docker Release Build
+on:
+  push:
+    branches:
+      - main
+      - develop
+    tags:
+      - '*'
+  workflow_dispatch:
+    inputs:
+      push-docker-image-to-harbor:
+        description: 'Push Docker Image to Harbor'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  docker:
+    # This job builds the Docker image and if successful, it pushes it to Harbor.
+    name: Docker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - name: Login to Harbor
+        uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3.5.0
+        with:
+          registry: ${{ secrets.HARBOR_URL }}
+          username: ${{ secrets.HARBOR_USERNAME }}
+          password: ${{ secrets.HARBOR_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@c1e51972afc2121e065aed6d45c65596fe445f3f # v5.8.0
+        with:
+          images: ${{ secrets.HARBOR_URL }}/plugins
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=ref,event=tag,pattern={{ref}}
+
+      - name: Build and push Docker image to Harbor
+        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          annotations: ${{ steps.meta.outputs.annotations }}
+          cache-from: type=gha,scope=prod
+          cache-to: type=gha,scope=prod,mode=max

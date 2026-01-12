@@ -77,7 +77,7 @@
     "dev": "vite --open",
     "build": "vite build",
     "test": "vitest --coverage",
-    "postinstall": "yarn tsc",
+    "postinstall": "node -e \"if(process.env.SKIP_POSTINSTALL !== 'true')process.exit(1);\" || yarn tsc",
     "lint:js": "eslint --ext=tsx --ext=ts --ext=js --ext=jsx --fix ./src",
     "tsc": "tsc -p tsconfig.lib.json",
     "pre-commit": "lint-staged"

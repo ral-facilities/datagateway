@@ -9,20 +9,24 @@ WORKDIR /datagateway-build
 ENV YARN_ENABLE_GLOBAL_CACHE=true
 ENV YARN_GLOBAL_FOLDER=/root/.cache/.yarn
 
-COPY . .
+# only copy what's needed to install dependencies first
+COPY --parents yarn.lock .yarnrc.yml .yarn **/package.json ./
 
 RUN --mount=type=cache,target=/root/.cache/.yarn/cache \
     set -eux; \
+    \
+    SKIP_POSTINSTALL=true yarn workspaces focus --all --production;
+
+COPY . .
+
+RUN set -eux; \
+    \
     # Set the React production variables which hold reference to the paths of the plugin builds \
     echo "VITE_DATAVIEW_BUILD_DIRECTORY=/datagateway-dataview/" > packages/datagateway-dataview/.env.production; \
     echo "VITE_DOWNLOAD_BUILD_DIRECTORY=/datagateway-download/" > packages/datagateway-download/.env.production; \
     echo "VITE_SEARCH_BUILD_DIRECTORY=/datagateway-search/" > packages/datagateway-search/.env.production; \
     \
-    cp packages/datagateway-dataview/public/datagateway-dataview-settings.example.json packages/datagateway-dataview/public/datagateway-dataview-settings.json; \
-    cp packages/datagateway-download/public/datagateway-download-settings.example.json packages/datagateway-download/public/datagateway-download-settings.json; \
-    cp packages/datagateway-search/public/datagateway-search-settings.example.json packages/datagateway-search/public/datagateway-search-settings.json; \
-    \
-    yarn workspaces focus --all --production; \
+    yarn tsc; \
     yarn build;
 
 # Run stage
@@ -55,10 +59,10 @@ RUN set -eux; \
     # Change ownership of logs directory \
     chown www-data:www-data /usr/local/apache2/logs; \
     \
-    # Change ownership of setting files \
-    chown www-data:www-data /usr/local/apache2/htdocs/datagateway-dataview/datagateway-dataview-settings.json; \
-    chown www-data:www-data /usr/local/apache2/htdocs/datagateway-download/datagateway-download-settings.json; \
-    chown www-data:www-data /usr/local/apache2/htdocs/datagateway-search/datagateway-search-settings.json;
+    # Change ownership of settings locations \
+    chown www-data:www-data -R /usr/local/apache2/htdocs/datagateway-dataview/; \
+    chown www-data:www-data -R /usr/local/apache2/htdocs/datagateway-download/; \
+    chown www-data:www-data -R /usr/local/apache2/htdocs/datagateway-search/;
 
 # Switch to non-root user defined in httpd image
 USER www-data
