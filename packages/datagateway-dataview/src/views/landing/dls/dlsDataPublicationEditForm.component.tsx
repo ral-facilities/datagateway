@@ -7,6 +7,7 @@ import {
   DOIMetadataConfirmation,
   DOIMetadataForm,
   RelatedIdentifier,
+  isMintabilityErrorExpected,
   readSciGatewayToken,
   useCart,
   useDOI,
@@ -224,7 +225,8 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
 
   const unmintableEntityIDs: number[] | undefined = React.useMemo(
     () =>
-      mintableError?.response?.status === 403 &&
+      mintableError !== null &&
+      isMintabilityErrorExpected(mintableError) &&
       typeof mintableError?.response?.data?.detail === 'string'
         ? JSON.parse(
             mintableError.response.data.detail.substring(

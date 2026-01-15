@@ -19,6 +19,7 @@ import {
   type DownloadCartTableItem,
   DownloadConfirmDialog,
   formatBytes,
+  isMintabilityErrorExpected,
   type SortType,
   Table,
   type TableActionProps,
@@ -190,7 +191,8 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
 
   const unmintableEntityIDs: number[] | undefined = React.useMemo(
     () =>
-      mintableError?.response?.status === 403 &&
+      mintableError !== null &&
+      isMintabilityErrorExpected(mintableError) &&
       typeof mintableError?.response?.data?.detail === 'string'
         ? JSON.parse(
             mintableError.response.data.detail.substring(
