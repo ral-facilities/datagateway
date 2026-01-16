@@ -266,7 +266,9 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
                           >
                             {Object.values(ContributorType)
                               .filter(
-                                (value) => value !== ContributorType.Creator
+                                (value) =>
+                                  value !== ContributorType.Creator &&
+                                  value !== ContributorType.Minter
                               )
                               .map((type) => {
                                 return (
