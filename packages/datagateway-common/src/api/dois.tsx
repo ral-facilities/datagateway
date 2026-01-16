@@ -476,6 +476,21 @@ export const isCartMintable = async (
   return status === 200;
 };
 
+// these are "expected" errors i.e. user not a PI or no session DOI
+export const isMintabilityErrorExpected = (
+  error: AxiosError<{
+    detail: { msg: string }[] | string;
+  }>
+): boolean => {
+  return (
+    error.response?.status === 403 ||
+    (error.response?.status === 400 &&
+    typeof error.response?.data?.detail === 'string'
+      ? error.response.data.detail.includes('session DOI')
+      : false)
+  );
+};
+
 /**
  * Queries whether a cart is mintable.
  * @param cart The {@link Cart} that is checked
@@ -507,14 +522,14 @@ export const useIsCartMintable = (
           error,
           undefined,
           undefined,
-          error.response?.status !== 403,
-          error.response?.status !== 403
+          // don't broadcast or log "expected" errors
+          !isMintabilityErrorExpected(error),
+          !isMintabilityErrorExpected(error)
         );
       },
       retry: (failureCount, error) => {
-        // if we get 403 we know this is an legit response from the backend so don't bother retrying
-        // all other errors use default retry behaviour
-        if (error.response?.status === 403 || failureCount >= retries) {
+        // don't bother retrying "expected" errors - all other errors use default retry behaviour
+        if (isMintabilityErrorExpected(error) || failureCount >= retries) {
           return false;
         } else {
           return true;
