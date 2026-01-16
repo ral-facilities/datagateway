@@ -74,7 +74,7 @@ describe('ISIS Investigations table component', () => {
           },
           {
             id: 3,
-            role: 'principal_experimenter',
+            role: 'PI',
             user: { id: 3, name: 'testpi', fullName: 'Test PI' },
           },
         ],

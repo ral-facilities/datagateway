@@ -5,6 +5,7 @@ export type DataviewSettings = DataviewSearchCommonSettings &
   DOISettings & {
     facilityImageURL?: string;
     breadcrumbs?: BreadcrumbSettings[];
+    PIRole?: string;
   };
 
 export let settings: Promise<DataviewSettings | void>;

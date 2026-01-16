@@ -27,7 +27,9 @@ import {
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
+import { StateType } from '../../../state/app.types';
 import CitationFormatter from '../../citationFormatter.component';
 import Branding from './isisBranding.component';
 
@@ -171,6 +173,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     () => parseSearchToQuery(location.search),
     [location.search]
   );
+  const PIRole = useSelector((state: StateType) => state.dgdataview.PIRole);
 
   const [value, setValue] = React.useState<'details'>('details');
   const { dataPublicationId } = props;
@@ -232,7 +235,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       const fullname = user.fullName;
       if (fullname) {
         switch (user.contributorType) {
-          case 'principal_experimenter':
+          case PIRole:
             principals.push({
               fullName: fullname,
               contributorType: 'Principal Investigator',
@@ -258,7 +261,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     contacts.sort((a, b) => a.fullName.localeCompare(b.fullName));
     experimenters.sort((a, b) => a.fullName.localeCompare(b.fullName));
     return principals.concat(contacts, experimenters);
-  }, [studyDataPublication]);
+  }, [PIRole, studyDataPublication?.users]);
 
   React.useEffect(() => {
     const scriptId = `dataPublication-${dataPublicationId}`;

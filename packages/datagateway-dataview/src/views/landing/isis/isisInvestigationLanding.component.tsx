@@ -35,7 +35,9 @@ import {
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
+import { StateType } from '../../../state/app.types';
 import CitationFormatter from '../../citationFormatter.component';
 import Branding from './isisBranding.component';
 
@@ -164,6 +166,7 @@ const CommonLandingPage = (
     () => parseSearchToQuery(location.search),
     [location.search]
   );
+  const PIRole = useSelector((state: StateType) => state.dgdataview.PIRole);
   const [value, setValue] = React.useState<'details'>('details');
   const { data, studyDataPublication } = props;
 
@@ -184,7 +187,7 @@ const CommonLandingPage = (
         const fullname = user.fullName;
         if (fullname) {
           switch (user.role) {
-            case 'principal_experimenter':
+            case PIRole:
               principals.push({
                 fullName: fullname,
                 role: 'Principal Investigator',
@@ -204,7 +207,7 @@ const CommonLandingPage = (
     contacts.sort((a, b) => a.fullName.localeCompare(b.fullName));
     experimenters.sort((a, b) => a.fullName.localeCompare(b.fullName));
     return principals.concat(contacts, experimenters);
-  }, [data, isInvestigation]);
+  }, [PIRole, data.investigationUsers, data?.users, isInvestigation]);
 
   const formattedPublications = React.useMemo(() => {
     if (isInvestigation && data.publications) {

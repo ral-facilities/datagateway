@@ -47,6 +47,7 @@ const ISISInvestigationsTable = (
   const disableSelectAll = useSelector(
     (state: StateType) => state.dgcommon.features?.disableSelectAll ?? false
   );
+  const PIRole = useSelector((state: StateType) => state.dgdataview.PIRole);
   const location = useLocation();
   const { push } = useHistory();
   const [t] = useTranslation();
@@ -149,7 +150,10 @@ const ISISInvestigationsTable = (
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
   const handleSort = useSort();
-  const principalExperimenterFilter = usePrincipalExperimenterFilter(filters);
+  const principalExperimenterFilter = usePrincipalExperimenterFilter(
+    filters,
+    PIRole
+  );
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
@@ -234,7 +238,7 @@ const ISISInvestigationsTable = (
           const investigationData = cellProps.rowData as Investigation;
           const principal_investigators =
             investigationData?.investigationUsers?.filter(
-              (iu) => iu.role === 'principal_experimenter'
+              (iu) => iu.role === PIRole
             );
           if (principal_investigators && principal_investigators.length !== 0) {
             return principal_investigators?.[0].user?.fullName;
@@ -266,6 +270,7 @@ const ISISInvestigationsTable = (
       dateFilter,
       location.pathname,
       view,
+      PIRole,
     ]
   );
 

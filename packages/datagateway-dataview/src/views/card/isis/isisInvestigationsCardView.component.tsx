@@ -9,12 +9,13 @@ import {
   AddToCartButton,
   CardView,
   CardViewDetails,
-  Investigation,
-  tableLink,
   DownloadButton,
   externalSiteLink,
+  formatBytes,
+  Investigation,
   ISISInvestigationDetailsPanel,
   parseSearchToQuery,
+  tableLink,
   useDateFilter,
   useInvestigationCount,
   useInvestigationsPaginated,
@@ -24,11 +25,12 @@ import {
   usePushResults,
   useSort,
   useTextFilter,
-  formatBytes,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
+import { StateType } from '../../../state/app.types';
 
 const ActionButtonsContainer = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -58,9 +60,14 @@ const ISISInvestigationsCardView = (
     [location.search]
   );
 
+  const PIRole = useSelector((state: StateType) => state.dgdataview.PIRole);
+
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
-  const principalExperimenterFilter = usePrincipalExperimenterFilter(filters);
+  const principalExperimenterFilter = usePrincipalExperimenterFilter(
+    filters,
+    PIRole
+  );
   const handleSort = useSort();
   const pushFilter = usePushFilter();
   const pushPage = usePushPage();
@@ -191,7 +198,7 @@ const ISISInvestigationsCardView = (
         content: function Content(investigation: Investigation) {
           const principal_investigators =
             investigation?.investigationUsers?.filter(
-              (iu) => iu.role === 'principal_experimenter'
+              (iu) => iu.role === PIRole
             );
           let principal_investigator = '';
           if (principal_investigators && principal_investigators.length !== 0) {
@@ -217,7 +224,7 @@ const ISISInvestigationsCardView = (
         filterComponent: dateFilter,
       },
     ],
-    [dateFilter, principalExperimenterFilter, t, textFilter]
+    [PIRole, dateFilter, principalExperimenterFilter, t, textFilter]
   );
 
   const buttons = React.useMemo(

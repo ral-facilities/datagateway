@@ -10,6 +10,7 @@ import {
   configureApp,
   loadBreadcrumbSettings,
   loadFacilityImageSetting,
+  loadPIRoleSetting,
   loadPluginHostSetting,
   settingsLoaded,
 } from '.';
@@ -17,6 +18,7 @@ import { actions, dispatch, getState, resetActions } from '../../setupTests';
 import {
   ConfigureBreadcrumbSettingsType,
   ConfigureFacilityImageSettingType,
+  ConfigurePIRoleSettingType,
   ConfigurePluginHostSettingType,
   SettingsLoadedType,
 } from './actions.types';
@@ -77,7 +79,23 @@ describe('Actions', () => {
     });
   });
 
-  it('settings are loaded and facilityName, loadFeatureSwitches, loadUrls, loadQueryRetries, loadBreadcrumbSettings, loadSelectAllSetting and settingsLoaded actions are sent', async () => {
+  it('given string loadPIRoleSetting returns a ConfigurePIRoleSettingType with ConfigurePIRoleSettingPayload', () => {
+    const action = loadPIRoleSetting('principal_experimenter');
+    expect(action.type).toEqual(ConfigurePIRoleSettingType);
+    expect(action.payload).toEqual({
+      settings: 'principal_experimenter',
+    });
+  });
+
+  it('given undefined loadPIRoleSetting returns a ConfigurePIRoleSettingType with default ConfigurePIRoleSettingPayload', () => {
+    const action = loadPIRoleSetting(undefined);
+    expect(action.type).toEqual(ConfigurePIRoleSettingType);
+    expect(action.payload).toEqual({
+      settings: 'PI',
+    });
+  });
+
+  it('settings are loaded and facilityName, loadFeatureSwitches, loadUrls, loadQueryRetries, loadBreadcrumbSettings, loadSelectAllSetting, loadPIRoleSetting and settingsLoaded actions are sent', async () => {
     mockSettingsGetter.mockReturnValue({
       facilityName: 'Generic',
       facilityImageURL: 'test-image.jpg',
@@ -87,6 +105,7 @@ describe('Actions', () => {
       doiMinterUrl: 'doi',
       dataCiteUrl: 'datacite',
       bioportalUrl: 'bioportalUrl',
+      PIRole: 'principal_experimenter',
       queryRetries: 1,
       breadcrumbs: [
         {
@@ -108,7 +127,7 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState, null);
 
-    expect(actions.length).toEqual(8);
+    expect(actions.length).toEqual(9);
     expect(actions).toContainEqual(loadFacilityName('Generic'));
     expect(actions).toContainEqual(loadFacilityImageSetting('test-image.jpg'));
     expect(actions).toContainEqual(loadFeatureSwitches({}));
@@ -136,6 +155,7 @@ describe('Actions', () => {
       loadPluginHostSetting('http://localhost:3000/')
     );
     expect(actions).toContainEqual(loadQueryRetries(1));
+    expect(actions).toContainEqual(loadPIRoleSetting('principal_experimenter'));
   });
 
   it("doesn't send loadQueryRetries, loadBreadcrumbSettings, loadPluginHostSetting, loadFacilityImageSetting and loadFeatureSwitches actions when they're not defined", async () => {
@@ -149,7 +169,7 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState, null);
 
-    expect(actions.length).toEqual(3);
+    expect(actions.length).toEqual(4);
     expect(
       actions.every(({ type }) => type !== ConfigureBreadcrumbSettingsType)
     ).toBe(true);
@@ -165,6 +185,8 @@ describe('Actions', () => {
     expect(
       actions.every(({ type }) => type !== ConfigureQueryRetriesType)
     ).toBe(true);
+
+    expect(actions).toContainEqual(loadPIRoleSetting(undefined));
 
     expect(actions).toContainEqual(settingsLoaded());
   });

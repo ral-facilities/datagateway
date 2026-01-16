@@ -8,6 +8,8 @@ import {
   ConfigureBreadcrumbSettingsType,
   ConfigureFacilityImageSettingPayload,
   ConfigureFacilityImageSettingType,
+  ConfigurePIRoleSettingPayload,
+  ConfigurePIRoleSettingType,
   ConfigurePluginHostSettingPayload,
   ConfigurePluginHostSettingType,
   SettingsLoadedType,
@@ -20,6 +22,7 @@ export const initialState: DGDataViewState = {
   pluginHost: '',
   facilityImageURL: '',
   datafilePreviewer: datafilePreviewerInitialState,
+  PIRole: 'PI',
 };
 
 export function handleSettingsLoaded(state: DGDataViewState): DGDataViewState {
@@ -61,11 +64,22 @@ export function handleConfigureFacilityImageSetting(
   };
 }
 
+export function handleConfigurePIRoleSetting(
+  state: DGDataViewState,
+  payload: ConfigurePIRoleSettingPayload
+): DGDataViewState {
+  return {
+    ...state,
+    PIRole: payload.settings,
+  };
+}
+
 const DGDataViewReducer = createReducer(initialState, {
   [SettingsLoadedType]: handleSettingsLoaded,
   [ConfigureBreadcrumbSettingsType]: handleConfigureBreadcrumbSettings,
   [ConfigurePluginHostSettingType]: handleConfigurePluginHostSetting,
   [ConfigureFacilityImageSettingType]: handleConfigureFacilityImageSetting,
+  [ConfigurePIRoleSettingType]: handleConfigurePIRoleSetting,
   ...datafilePreviewerReducer,
 });
 

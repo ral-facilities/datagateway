@@ -1,14 +1,4 @@
-import { dGCommonInitialState, type Investigation } from 'datagateway-common';
-import { Provider } from 'react-redux';
-import { generatePath, Router } from 'react-router-dom';
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import type { StateType } from '../../../state/app.types';
-import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
-import ISISInvestigationsCardView from './isisInvestigationsCardView.component';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { createMemoryHistory, type History } from 'history';
-import { flushPromises } from '../../../setupTests';
 import {
   render,
   type RenderResult,
@@ -17,9 +7,19 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios, { type AxiosResponse } from 'axios';
-import { paths } from '../../../page/pageContainer.component';
+import { dGCommonInitialState, type Investigation } from 'datagateway-common';
+import { createMemoryHistory, type History } from 'history';
 import { act } from 'react-dom/test-utils';
+import { Provider } from 'react-redux';
+import { generatePath, Router } from 'react-router-dom';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 import type { MockInstance } from 'vitest';
+import { paths } from '../../../page/pageContainer.component';
+import { flushPromises } from '../../../setupTests';
+import type { StateType } from '../../../state/app.types';
+import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
+import ISISInvestigationsCardView from './isisInvestigationsCardView.component';
 
 describe('ISIS Investigations - Card View', () => {
   const mockStore = configureStore([thunk]);
@@ -103,7 +103,7 @@ describe('ISIS Investigations - Card View', () => {
           },
           {
             id: 3,
-            role: 'principal_experimenter',
+            role: 'PI',
             user: { id: 3, name: 'testpi', fullName: 'Test PI' },
           },
         ],

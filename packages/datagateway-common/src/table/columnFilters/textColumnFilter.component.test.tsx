@@ -310,7 +310,9 @@ describe('Text filter component', () => {
     const pushFilters = vi.fn();
     vi.mocked(usePushFilters).mockImplementation(() => pushFilters);
 
-    const { result } = renderHook(() => usePrincipalExperimenterFilter({}));
+    const { result } = renderHook(() =>
+      usePrincipalExperimenterFilter({}, 'principal_experimenter')
+    );
     let piFilter;
 
     act(() => {

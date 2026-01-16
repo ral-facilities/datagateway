@@ -36,6 +36,8 @@ import DLSDataPublicationVersionPanel, {
 } from './dlsDataPublicationVersionPanel.component';
 // TODO: when vite 6, explore no-inline w/ pluginHost vs inline as we have to inline in vite 5
 import ORCIDIdLogo from 'datagateway-common/src/images/ORCID-iD_icon_unauth_vector.svg';
+import { useSelector } from 'react-redux';
+import { StateType } from '../../../state/app.types';
 
 const Subheading = styled(Typography)(({ theme }) => ({
   marginTop: theme.spacing(1),
@@ -128,6 +130,8 @@ TabPanel.displayName = 'TabPanel';
 
 const LandingPage = (props: LandingPageProps): React.ReactElement => {
   const [t] = useTranslation();
+
+  const PIRole = useSelector((state: StateType) => state.dgdataview.PIRole);
 
   const history = useHistory();
 
@@ -502,7 +506,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                   data?.content?.dataCollectionInvestigations?.[0]?.investigation?.investigationUsers?.some(
                     (user) =>
                       user.user?.name === readSciGatewayToken().username &&
-                      user.role === 'PI'
+                      user.role === PIRole
                   ) && (
                     <Grid item xs="auto" alignSelf="center">
                       <PublishButton dataPublication={data} />
