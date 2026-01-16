@@ -207,7 +207,7 @@ const CommonLandingPage = (
     contacts.sort((a, b) => a.fullName.localeCompare(b.fullName));
     experimenters.sort((a, b) => a.fullName.localeCompare(b.fullName));
     return principals.concat(contacts, experimenters);
-  }, [PIRole, data.investigationUsers, data?.users, isInvestigation]);
+  }, [PIRole, data, isInvestigation]);
 
   const formattedPublications = React.useMemo(() => {
     if (isInvestigation && data.publications) {

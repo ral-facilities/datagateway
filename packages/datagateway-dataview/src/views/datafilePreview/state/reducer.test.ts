@@ -15,6 +15,7 @@ describe('Datafile previewer reducers', () => {
       facilityImageURL: '',
       pluginHost: '',
       settingsLoaded: false,
+      PIRole: 'PI',
       datafilePreviewer: {
         zoomLevel: 100,
         isDetailsPaneShown: false,
@@ -34,6 +35,7 @@ describe('Datafile previewer reducers', () => {
           facilityImageURL: '',
           pluginHost: '',
           settingsLoaded: false,
+          PIRole: 'PI',
           datafilePreviewer: {
             zoomLevel: 100,
             isDetailsPaneShown: true,
@@ -51,6 +53,7 @@ describe('Datafile previewer reducers', () => {
         facilityImageURL: '',
         pluginHost: '',
         settingsLoaded: false,
+        PIRole: 'PI',
         datafilePreviewer: {
           zoomLevel: 110,
           isDetailsPaneShown: false,
@@ -67,6 +70,7 @@ describe('Datafile previewer reducers', () => {
         facilityImageURL: '',
         pluginHost: '',
         settingsLoaded: false,
+        PIRole: 'PI',
         datafilePreviewer: {
           zoomLevel: 90,
           isDetailsPaneShown: false,
@@ -82,6 +86,7 @@ describe('Datafile previewer reducers', () => {
         facilityImageURL: '',
         pluginHost: '',
         settingsLoaded: false,
+        PIRole: 'PI',
         datafilePreviewer: {
           zoomLevel: 80,
           isDetailsPaneShown: false,
@@ -93,6 +98,7 @@ describe('Datafile previewer reducers', () => {
         facilityImageURL: '',
         pluginHost: '',
         settingsLoaded: false,
+        PIRole: 'PI',
         datafilePreviewer: {
           zoomLevel: 100,
           isDetailsPaneShown: false,
