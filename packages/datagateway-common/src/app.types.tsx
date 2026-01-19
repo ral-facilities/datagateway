@@ -652,7 +652,10 @@ export interface DOICreator {
 }
 
 export type DOIContributor = DOICreator & {
-  contributorType: ContributorType;
+  contributorType: Exclude<
+    ContributorType,
+    ContributorType.Creator | ContributorType.Minter
+  >;
 };
 
 export interface DOIRelatedIdentifier {

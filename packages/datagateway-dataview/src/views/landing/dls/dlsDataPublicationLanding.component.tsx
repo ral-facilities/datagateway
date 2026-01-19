@@ -83,7 +83,9 @@ export const StyledDOI: React.FC<{ doi: string }> = ({ doi }) => (
 export const ORCIDLink: React.FC<{ orcidId: string }> = ({ orcidId }) => (
   <a
     style={{ verticalAlign: 'text-top', marginLeft: '4px', marginRight: '4px' }}
-    href={`https://orcid.org/${orcidId}`}
+    href={
+      orcidId.startsWith('https://') ? orcidId : `https://orcid.org/${orcidId}`
+    }
     data-testid="landing-dataPublication-orcidId-link"
   >
     <img style={{ width: '1rem' }} src={ORCIDIdLogo} alt="ORCID Logo"></img>
@@ -271,7 +273,11 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
             '@type': 'Person',
             name: user.fullName,
             ...(user.orcidId
-              ? { sameAs: `https://orcid.org/${user.orcidId}` }
+              ? {
+                  sameAs: user.orcidId.startsWith('https://')
+                    ? user.orcidId
+                    : `https://orcid.org/${user.orcidId}`,
+                }
               : {}),
             ...(user.affiliations
               ? {
