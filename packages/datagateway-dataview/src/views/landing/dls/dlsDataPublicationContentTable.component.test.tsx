@@ -214,6 +214,8 @@ describe('DataPublication content table component', () => {
   it('renders investigations correctly', async () => {
     renderComponent();
 
+    expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
+
     let rows: HTMLElement[] = [];
     await waitFor(async () => {
       rows = await findAllRows();
@@ -277,6 +279,9 @@ describe('DataPublication content table component', () => {
         })
       ).getByText('2019-06-11')
     ).toBeInTheDocument();
+
+    // expect no checkboxes when on investigations table
+    expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
   });
 
   it('renders datasets correctly', async () => {
@@ -342,6 +347,9 @@ describe('DataPublication content table component', () => {
         })
       ).getByText('2019-07-23')
     ).toBeInTheDocument();
+
+    // expect checkboxes when not on investigations table
+    expect(screen.getByRole('checkbox')).toBeInTheDocument();
   });
 
   it('renders datafiles correctly', async () => {
@@ -398,6 +406,9 @@ describe('DataPublication content table component', () => {
         })
       ).getByText('2019-07-23')
     ).toBeInTheDocument();
+
+    // expect checkboxes when not on investigations table
+    expect(screen.getByRole('checkbox')).toBeInTheDocument();
   });
 
   it('updates filter query params on text filter', async () => {
@@ -478,7 +489,7 @@ describe('DataPublication content table component', () => {
       await screen.findByRole('checkbox', { name: 'select row 0' })
     );
 
-    // investigation should be added to the cart
+    // datafile should be added to the cart
     expect(
       await screen.findByRole('checkbox', { name: 'select row 0' })
     ).toBeChecked();
@@ -486,7 +497,7 @@ describe('DataPublication content table component', () => {
     // unselect the row
     await user.click(screen.getByRole('checkbox', { name: 'select row 0' }));
 
-    // investigation should be removed from the cart
+    // datafile should be removed from the cart
     expect(
       await screen.findByRole('checkbox', { name: 'select row 0' })
     ).not.toBeChecked();

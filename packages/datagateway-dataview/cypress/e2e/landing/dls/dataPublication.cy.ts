@@ -531,7 +531,7 @@ describe('DLS - Session Data Publication Landing', () => {
     cy.contains('Investigations').click();
 
     cy.get('[aria-rowcount="1"]').should('exist');
-    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('a', '72');
+    cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('a', '72');
 
     cy.contains('Datasets').click();
 
