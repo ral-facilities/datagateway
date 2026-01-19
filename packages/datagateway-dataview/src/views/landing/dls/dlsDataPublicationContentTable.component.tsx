@@ -302,9 +302,9 @@ const DLSDataPublicationContentTable = (
           totalRowCount={totalDataCount ?? 0}
           sort={sort}
           onSort={handleSort}
-          selectedRows={selectedRows}
-          onCheck={addToCart}
-          onUncheck={removeFromCart}
+          {...(currentTab === 'investigation'
+            ? {}
+            : { selectedRows, onCheck: addToCart, onUncheck: removeFromCart })}
           disableSelectAll={true} // TODO: can we get all IDs here? or just keep this set to true...
           detailsPanel={detailsPanel}
           columns={columns}
