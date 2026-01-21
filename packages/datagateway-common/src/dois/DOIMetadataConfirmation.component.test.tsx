@@ -47,13 +47,14 @@ describe('DOI metadata confirmation component', () => {
                 schemeUri: null,
               },
             ],
-            affiliations: [
+            affiliation: [
               {
                 affiliation: 'test university',
                 affiliationIdentifier: null,
                 affiliationIdentifierScheme: null,
                 schemeUri: null,
               },
+              'test university 2',
             ],
           },
         ],
@@ -70,7 +71,7 @@ describe('DOI metadata confirmation component', () => {
                 schemeUri: null,
               },
             ],
-            affiliations: [],
+            affiliation: [],
             contributorType: ContributorType.ContactPerson,
           },
         ],

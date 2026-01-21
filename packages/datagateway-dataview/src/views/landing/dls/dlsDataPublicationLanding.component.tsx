@@ -283,7 +283,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                     : `https://orcid.org/${user.orcidId}`,
                 }
               : {}),
-            ...(user.affiliations
+            ...(user.affiliations && user.affiliations.length > 0
               ? {
                   affiliation: user.affiliations.map((a) => ({
                     name: a.name,
@@ -606,8 +606,10 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                         <b>{user.contributorType}:</b> {user.fullName}
                         {user.orcidId ? (
                           <ORCIDLink orcidId={user.orcidId} />
-                        ) : null}
-                        {user.affiliations
+                        ) : (
+                          ' ' // add a space here to ensure there's a gap between name and affiliations even if no orcid
+                        )}
+                        {user.affiliations && user.affiliations.length > 0
                           ? `(${user.affiliations
                               .map((a) => a.name)
                               .join(', ')})`

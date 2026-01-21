@@ -643,12 +643,15 @@ export interface DOICreator {
     nameIdentifierScheme: string;
     schemeUri: string | null;
   }[];
-  affiliations: {
-    affiliationIdentifier: string | null;
-    affiliation: string;
-    affiliationIdentifierScheme: string | null;
-    schemeUri: string | null;
-  }[];
+  affiliation: (
+    | {
+        affiliationIdentifier: string | null;
+        affiliation: string;
+        affiliationIdentifierScheme: string | null;
+        schemeUri: string | null;
+      }
+    | string
+  )[];
 }
 
 export type DOIContributor = DOICreator & {
