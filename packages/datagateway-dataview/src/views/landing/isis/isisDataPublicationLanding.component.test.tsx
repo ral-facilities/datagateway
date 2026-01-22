@@ -48,7 +48,7 @@ describe('ISIS Data Publication Landing page', () => {
   const users = [
     {
       id: 1,
-      contributorType: 'principal_experimenter',
+      contributorType: 'PI',
       fullName: 'John Smith',
     },
     {

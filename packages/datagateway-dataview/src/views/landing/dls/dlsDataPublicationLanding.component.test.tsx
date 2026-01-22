@@ -81,6 +81,7 @@ describe('DLS Data Publication Landing page', () => {
         name: 'John1',
         orcidId: 'https://orcid.org/234567',
       },
+      affiliations: [],
     },
     {
       id: 3,

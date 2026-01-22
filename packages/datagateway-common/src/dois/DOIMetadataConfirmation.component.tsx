@@ -32,16 +32,22 @@ const CreatorsAndContributorsMetadata: React.FC<{
                 {t('DOIGenerationForm.creator_name')}: {user.name}
               </Typography>
             </Grid>
-            {user.affiliations && (
+            {user.affiliation && (
               <Grid container item>
-                {user.affiliations.map((affiliation) => (
-                  <Grid item key={affiliation.affiliation}>
-                    <Typography>
-                      {t('DOIGenerationForm.creator_affiliation')}:{' '}
-                      {affiliation.affiliation}
-                    </Typography>
-                  </Grid>
-                ))}
+                {user.affiliation.map((affiliation, i) => {
+                  const affiliationName =
+                    typeof affiliation === 'string'
+                      ? affiliation
+                      : affiliation.affiliation;
+                  return (
+                    <Grid item key={i}>
+                      <Typography>
+                        {t('DOIGenerationForm.creator_affiliation')}:{' '}
+                        {affiliationName}
+                      </Typography>
+                    </Grid>
+                  );
+                })}
               </Grid>
             )}
             {'contributorType' in user && (

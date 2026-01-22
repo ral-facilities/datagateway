@@ -14,6 +14,7 @@ import {
   ConfigureBreadcrumbSettingsType,
   ConfigureFacilityImageSettingPayload,
   ConfigureFacilityImageSettingType,
+  ConfigurePIRoleSettingType,
   ConfigurePluginHostSettingPayload,
   ConfigurePluginHostSettingType,
   SettingsLoadedType,
@@ -47,6 +48,15 @@ export const loadFacilityImageSetting = (
   type: ConfigureFacilityImageSettingType,
   payload: {
     settings: facilityImageSetting,
+  },
+});
+
+export const loadPIRoleSetting = (
+  PIRoleSetting: string | undefined
+): ActionType<ConfigurePluginHostSettingPayload> => ({
+  type: ConfigurePIRoleSettingType,
+  payload: {
+    settings: PIRoleSetting ?? 'PI', // if it's not defined in the settings default to PI
   },
 });
 
@@ -93,6 +103,8 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
       if (settingsResult?.['facilityImageURL'] !== undefined) {
         dispatch(loadFacilityImageSetting(settingsResult['facilityImageURL']));
       }
+
+      dispatch(loadPIRoleSetting(settingsResult['PIRole']));
 
       dispatch(settingsLoaded());
     }

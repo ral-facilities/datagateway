@@ -12,6 +12,7 @@
   "dataCiteUrl": null,
   "bioportalUrl": "/bioportal",
   "anonUserName": "anon/anon",
+  "PIRole": "PI",
   "helpSteps": [
     {
       "target": "#plugin-link--browse-investigation",

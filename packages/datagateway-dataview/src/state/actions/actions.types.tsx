@@ -5,6 +5,8 @@ export const ConfigurePluginHostSettingType =
   'datagateway_dataview:configure_plugin_host';
 export const ConfigureFacilityImageSettingType =
   'datagateway_dataview:configure_facility_image';
+export const ConfigurePIRoleSettingType =
+  'datagateway_dataview:configure_pi_role';
 export const SettingsLoadedType = 'datagateway_dataview:settings_loaded';
 
 export interface ConfigureBreadcrumbSettingsPayload {
@@ -16,6 +18,10 @@ export interface ConfigurePluginHostSettingPayload {
 }
 
 export interface ConfigureFacilityImageSettingPayload {
+  settings: string;
+}
+
+export interface ConfigurePIRoleSettingPayload {
   settings: string;
 }
 

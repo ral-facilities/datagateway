@@ -352,6 +352,15 @@ exports[`DOI metadata confirmation component > should display the provided draft
               DOIGenerationForm.creator_affiliation: test university
             </p>
           </div>
+          <div
+            class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+          >
+            <p
+              class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+            >
+              DOIGenerationForm.creator_affiliation: test university 2
+            </p>
+          </div>
         </div>
         <div
           class="MuiGrid-root MuiGrid-container MuiGrid-item css-1f064cs-MuiGrid-root"

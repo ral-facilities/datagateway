@@ -1,6 +1,7 @@
 import {
   loadBreadcrumbSettings,
   loadFacilityImageSetting,
+  loadPIRoleSetting,
   loadPluginHostSetting,
   settingsLoaded,
 } from '../actions';
@@ -71,5 +72,16 @@ describe('dgdataview reducer', () => {
     );
 
     expect(updatedState.facilityImageURL).toEqual('test-image.jpg');
+  });
+
+  it('should set loadPIRoleSetting when configuring action is sent', () => {
+    expect(state.PIRole).toEqual('PI');
+
+    const updatedState = DGDataViewReducer(
+      state,
+      loadPIRoleSetting('principal_experimenter')
+    );
+
+    expect(updatedState.PIRole).toEqual('principal_experimenter');
   });
 });

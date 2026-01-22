@@ -59,7 +59,7 @@ describe('ISIS Investigation Landing page', () => {
   const investigationUser = [
     {
       id: 1,
-      role: 'principal_experimenter',
+      role: 'PI',
       user: {
         id: 1,
         name: 'JS',
@@ -121,7 +121,7 @@ describe('ISIS Investigation Landing page', () => {
   const users = [
     {
       id: 1,
-      contributorType: 'principal_experimenter',
+      contributorType: 'PI',
       fullName: 'John Smith',
     },
     {

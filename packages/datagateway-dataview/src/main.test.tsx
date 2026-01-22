@@ -33,6 +33,7 @@ describe('index - fetchSettings', () => {
           replaceEntityField: 'title',
         },
       ],
+      PIRole: 'principal_experimenter',
       downloadApiUrl: 'download-api',
       selectAllSetting: false,
       routes: [

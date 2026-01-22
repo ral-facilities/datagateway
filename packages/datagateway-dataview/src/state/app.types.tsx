@@ -10,6 +10,7 @@ export interface DGDataViewState {
   settingsLoaded: boolean;
   pluginHost: string;
   datafilePreviewer: DatafilePreviewerState;
+  PIRole: string;
 }
 
 export interface EntityCache {

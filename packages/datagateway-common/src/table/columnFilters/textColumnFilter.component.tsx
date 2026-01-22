@@ -1,4 +1,4 @@
-import React from 'react';
+import SettingsIcon from '@mui/icons-material/Settings';
 import {
   FormControl,
   Input,
@@ -7,10 +7,10 @@ import {
   MenuItem,
   Select,
 } from '@mui/material';
-import SettingsIcon from '@mui/icons-material/Settings';
 import debounce from 'lodash.debounce';
-import { Filter, FiltersType, TextFilter } from '../../app.types';
+import React from 'react';
 import { usePushFilter, usePushFilters } from '../../api';
+import { Filter, FiltersType, TextFilter } from '../../app.types';
 
 const TextColumnFilter = (props: {
   label: string;
@@ -163,7 +163,8 @@ export const useTextFilter = (
 };
 
 export const usePrincipalExperimenterFilter = (
-  filters: FiltersType
+  filters: FiltersType,
+  PIRole: string
 ): ((label: string, dataKey: string) => React.ReactElement) => {
   const pushFilters = usePushFilters();
 
@@ -177,14 +178,12 @@ export const usePrincipalExperimenterFilter = (
             { filterKey: dataKey, filter: value ? value : null },
             {
               filterKey: 'investigationUsers.role',
-              filter: value
-                ? { value: 'principal_experimenter', type: 'include' }
-                : null,
+              filter: value ? { value: PIRole, type: 'include' } : null,
             },
           ]);
         }}
       />
     );
     return textFilter;
-  }, [filters, pushFilters]);
+  }, [PIRole, filters, pushFilters]);
 };

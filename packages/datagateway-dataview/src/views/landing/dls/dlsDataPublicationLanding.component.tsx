@@ -36,6 +36,8 @@ import DLSDataPublicationVersionPanel, {
 } from './dlsDataPublicationVersionPanel.component';
 // TODO: when vite 6, explore no-inline w/ pluginHost vs inline as we have to inline in vite 5
 import ORCIDIdLogo from 'datagateway-common/src/images/ORCID-iD_icon_unauth_vector.svg';
+import { useSelector } from 'react-redux';
+import { StateType } from '../../../state/app.types';
 
 const Subheading = styled(Typography)(({ theme }) => ({
   marginTop: theme.spacing(1),
@@ -130,6 +132,8 @@ TabPanel.displayName = 'TabPanel';
 
 const LandingPage = (props: LandingPageProps): React.ReactElement => {
   const [t] = useTranslation();
+
+  const PIRole = useSelector((state: StateType) => state.dgdataview.PIRole);
 
   const history = useHistory();
 
@@ -279,7 +283,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                     : `https://orcid.org/${user.orcidId}`,
                 }
               : {}),
-            ...(user.affiliations
+            ...(user.affiliations && user.affiliations.length > 0
               ? {
                   affiliation: user.affiliations.map((a) => ({
                     name: a.name,
@@ -508,7 +512,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                   data?.content?.dataCollectionInvestigations?.[0]?.investigation?.investigationUsers?.some(
                     (user) =>
                       user.user?.name === readSciGatewayToken().username &&
-                      user.role === 'PI'
+                      user.role === PIRole
                   ) && (
                     <Grid item xs="auto" alignSelf="center">
                       <PublishButton dataPublication={data} />
@@ -602,8 +606,10 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                         <b>{user.contributorType}:</b> {user.fullName}
                         {user.orcidId ? (
                           <ORCIDLink orcidId={user.orcidId} />
-                        ) : null}
-                        {user.affiliations
+                        ) : (
+                          ' ' // add a space here to ensure there's a gap between name and affiliations even if no orcid
+                        )}
+                        {user.affiliations && user.affiliations.length > 0
                           ? `(${user.affiliations
                               .map((a) => a.name)
                               .join(', ')})`
