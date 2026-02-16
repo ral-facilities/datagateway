@@ -170,7 +170,7 @@ export const QueueVisitButton: React.FC<QueueVisitButtonProps> = (props) => {
   return (
     <QueueEntityButton
       entityId={investigation.visitId}
-      totalSize={investigation.fileSize ?? -1}
+      totalSize={investigation.fileSize}
       queueHook={useQueueVisit}
       label={'buttons.queue_visit'}
       defaultFileNameFormat={

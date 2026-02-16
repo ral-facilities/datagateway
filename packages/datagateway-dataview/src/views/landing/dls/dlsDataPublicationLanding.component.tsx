@@ -456,7 +456,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   ];
 
   const totalSize = dataciteData?.attributes.sizes?.[0]?.includes(' GB')
-    ? parseInt(dataciteData.attributes.sizes[0].split(' ')[0]) * (10 ^ 9)
+    ? parseFloat(dataciteData.attributes.sizes[0].split(' ')[0]) * 10 ** 9
     : undefined;
 
   // return true for both null and undefined
