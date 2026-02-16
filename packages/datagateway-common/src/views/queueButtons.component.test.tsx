@@ -155,6 +155,8 @@ describe('Queue buttons', () => {
     it('renders correctly', async () => {
       renderComponent({
         dataCollection,
+        isClosed: false,
+        totalSize: 12345,
       });
 
       expect(
@@ -169,6 +171,7 @@ describe('Queue buttons', () => {
 
       renderComponent({
         dataCollection,
+        isClosed: false,
       });
 
       await waitFor(() => expect(axios.get).toHaveBeenCalledTimes(2));
@@ -188,6 +191,27 @@ describe('Queue buttons', () => {
       ).toBeInTheDocument();
     });
 
+    it('renders disabled button if data is closed', async () => {
+      renderComponent({
+        dataCollection,
+        isClosed: true,
+      });
+
+      const button = await screen.findByRole('button', {
+        name: 'buttons.queue_data_collection',
+      });
+
+      expect(button).toBeDisabled();
+
+      await user.hover(
+        await screen.getByLabelText('buttons.disallow_closed_tooltip')
+      );
+
+      expect(
+        await screen.findByText('buttons.disallow_closed_tooltip')
+      ).toBeInTheDocument();
+    });
+
     it('renders disabled button if anon download is disallowed', async () => {
       state.dgcommon.features = { disableAnonDownload: true };
       state.dgcommon.anonUserName = 'anon';
@@ -199,6 +223,7 @@ describe('Queue buttons', () => {
 
       renderComponent({
         dataCollection,
+        isClosed: false,
       });
 
       await waitFor(() => expect(axios.get).toHaveBeenCalledTimes(2));

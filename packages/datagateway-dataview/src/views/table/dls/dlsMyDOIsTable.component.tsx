@@ -20,7 +20,9 @@ import { IndexRange, TableCellProps } from 'react-virtualized';
 
 import CalendarToday from '@mui/icons-material/CalendarToday';
 import Fingerprint from '@mui/icons-material/Fingerprint';
+import Lock from '@mui/icons-material/Lock';
 import Public from '@mui/icons-material/Public';
+import { Chip } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 
 const DLSMyDOIsTable = (): React.ReactElement => {
@@ -188,7 +190,14 @@ const DLSMyDOIsTable = (): React.ReactElement => {
           (cellProps.rowData as DataPublication).publicationDate?.slice(
             0,
             10
-          ) ?? '',
+          ) ?? (
+            <Chip
+              icon={<Lock />}
+              color="error"
+              label={t('datapublications.closed')}
+              size="small"
+            />
+          ),
         filterComponent: dateFilter,
         defaultSort: 'desc',
       },
