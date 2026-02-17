@@ -345,15 +345,6 @@ describe('ISIS Investigation Landing page', () => {
     expect(screen.getByText('LILS')).toBeInTheDocument();
     expect(screen.getByText('investigations.instrument:')).toBeInTheDocument();
     expect(screen.getByText('LARMOR')).toBeInTheDocument();
-    expect(
-      screen.getByText('datapublications.details.format:')
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('link', { name: 'doi_constants.distribution.format' })
-    ).toHaveAttribute(
-      'href',
-      'https://www.isis.stfc.ac.uk/Pages/ISIS-Raw-File-Format.aspx'
-    );
     expect(screen.queryByText('investigations.release_date:')).toBeNull();
     expect(screen.getByText('investigations.start_date:')).toBeInTheDocument();
     expect(screen.getByText('2019-06-10')).toBeInTheDocument();
@@ -506,15 +497,6 @@ describe('ISIS Investigation Landing page', () => {
     expect(screen.getByText('LILS')).toBeInTheDocument();
     expect(screen.getByText('investigations.instrument:')).toBeInTheDocument();
     expect(screen.getByText('LARMOR')).toBeInTheDocument();
-    expect(
-      screen.getByText('datapublications.details.format:')
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('link', { name: 'doi_constants.distribution.format' })
-    ).toHaveAttribute(
-      'href',
-      'https://www.isis.stfc.ac.uk/Pages/ISIS-Raw-File-Format.aspx'
-    );
     expect(
       screen.getByText('investigations.release_date:')
     ).toBeInTheDocument();

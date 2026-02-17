@@ -11,7 +11,8 @@
       "message": "Open data",
       "tooltip": "Only open data is displayed when browsing anonymously. Please login to see embargoed data.",
       "datapublications_tooltip": "Only open data is currently supported by the experiment view. Please browse via facility cycle to view closed data",
-      "tooltip_link": "Click here to learn more about our data policy.",
+      "tooltip_link_text": "Click here to learn more about our data policy.",
+      "tooltip_link_url": "https://www.isis.stfc.ac.uk/using-isis/academics/policies/",
       "aria_label": "More information about open data"
     }
   },
@@ -88,7 +89,6 @@
       "techniques": "Techniques",
       "subjects": "Subjects",
       "publisher": "Publisher",
-      "format": "Data Format",
       "type": "Type",
       "license": "License",
       "related_identifiers_panel_label": "Related Identifiers",
@@ -350,7 +350,7 @@
     "facility": {
       "title": "ISIS Neutron and Muon Source",
       "description": "World-leading centre for research giving unique insights into the properties of materials on the atomic scale.",
-      "link": "https://www.isis.stfc.ac.uk/Pages/About.aspx",
+      "link": "https://www.isis.stfc.ac.uk/about/",
       "button": "Read more"
     }
   },
@@ -372,7 +372,7 @@
     ],
     "publisher": {
       "name": "STFC ISIS Neutron and Muon Source",
-      "url": "https://www.isis.stfc.ac.uk/Pages/home.aspx",
+      "url": "https://www.isis.stfc.ac.uk/",
       "email": "isisdata@stfc.ac.uk",
       "logo": "https://data.isis.stfc.ac.uk/doi/ISIS/images/dsLogo.png"
     },
