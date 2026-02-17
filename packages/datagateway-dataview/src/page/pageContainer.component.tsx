@@ -251,10 +251,10 @@ const NavBar = React.memo(
                           <br />
                           <br />
                           <a
-                            href="https://www.isis.stfc.ac.uk/Pages/Data-Policy.aspx"
+                            href={t('app.open_data_warning.tooltip_link_url')}
                             style={{ color: '#6793FF' }}
                           >
-                            {t('app.open_data_warning.tooltip_link')}
+                            {t('app.open_data_warning.tooltip_link_text')}
                           </a>
                         </h4>
                       }

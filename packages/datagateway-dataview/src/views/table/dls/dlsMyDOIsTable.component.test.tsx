@@ -118,6 +118,14 @@ describe('DLS MyDOIs table component', () => {
           ],
         },
       },
+      {
+        id: 17,
+        pid: 'doi 2',
+        description: 'foo bar 2',
+        title: 'Data Publication Title 2',
+        publicationDate: null,
+        users: [],
+      },
     ];
 
     vi.mocked(useDataPublicationCount, { partial: true }).mockReturnValue({
@@ -178,7 +186,7 @@ describe('DLS MyDOIs table component', () => {
     expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
 
     const rows = await findAllRows();
-    expect(rows).toHaveLength(1);
+    expect(rows).toHaveLength(2);
 
     expect(
       await findColumnHeaderByName('datapublications.title')
@@ -214,6 +222,17 @@ describe('DLS MyDOIs table component', () => {
           ),
         })
       ).getByText('2023-07-21')
+    ).toBeInTheDocument();
+
+    // expect it renders no date as the closed indicator
+    expect(
+      within(
+        findCellInRow(rows[1], {
+          columnIndex: await findColumnIndexByName(
+            'datapublications.publication_date'
+          ),
+        })
+      ).getByText('datapublications.closed')
     ).toBeInTheDocument();
   });
 

@@ -259,7 +259,7 @@ describe('DLS Data Publication Landing page', () => {
             schemeUri: null,
           },
         ],
-        sizes: [],
+        sizes: ['0.1 GB'],
         formats: [],
         version: '',
         descriptions: [],
@@ -587,7 +587,7 @@ describe('DLS Data Publication Landing page', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('renders a session DOI correctly & shows the publish button when unpublished', async () => {
+  it('renders a session DOI correctly & shows as closed (closed label, publish button, disabled download button) when unpublished', async () => {
     initialData.type = { id: 1, name: 'Investigation' };
     initialData.publicationDate = null;
     // check we don't render related identifiers panel if we have none
@@ -612,6 +612,8 @@ describe('DLS Data Publication Landing page', () => {
         relatedItemType: DOIResourceType.Instrument,
       },
     ];
+    // check we can handle missing sizes
+    initialDataCiteData.attributes.sizes = [];
     renderComponent();
 
     // info panel contents
@@ -630,11 +632,23 @@ describe('DLS Data Publication Landing page', () => {
     expect(
       screen.queryByRole('button', { name: 'datapublications.edit.edit_label' })
     ).not.toBeInTheDocument();
+    expect(screen.getByText('datapublications.closed')).toBeInTheDocument();
     expect(
       screen.getByRole('button', {
         name: 'datapublications.publish.publish_label',
       })
     ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
+        name: 'datapublications.publish.publish_label',
+      })
+    ).toBeInTheDocument();
+    // expect download button to be disabled when unpublished
+    expect(
+      screen.getByRole('button', {
+        name: 'buttons.queue_data_collection',
+      })
+    ).toBeDisabled();
 
     expect(
       screen.queryByRole('button', {
@@ -655,7 +669,7 @@ describe('DLS Data Publication Landing page', () => {
     expect(document.getElementById('dataPublication-1')).not.toBeNull();
   });
 
-  it('session DOI page does not show publish button when publication date is set ', async () => {
+  it('session DOI page shows as open (no publish button, open label, enabled download button) when publication date is set ', async () => {
     initialData.type = { id: 1, name: 'Investigation' };
     initialData.publicationDate = '2025-12-15';
     initialDataCiteData.attributes.relatedItems = [
@@ -685,6 +699,13 @@ describe('DLS Data Publication Landing page', () => {
         name: 'datapublications.publish.publish_label',
       })
     ).not.toBeInTheDocument();
+    expect(screen.getByText('datapublications.open')).toBeInTheDocument();
+    // expect download button to be enabled when published
+    expect(
+      screen.getByRole('button', {
+        name: 'buttons.queue_data_collection',
+      })
+    ).not.toBeDisabled();
   });
 
   it('displays content table when tab is clicked', async () => {

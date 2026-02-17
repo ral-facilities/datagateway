@@ -160,6 +160,29 @@ describe('DownloadConfirmDialog', () => {
     ).toMatchSnapshot();
   });
 
+  it('renders correctly with no size', async () => {
+    props.isTwoLevel = false;
+    props.totalSize = undefined;
+    const wrapper = renderWrapper();
+
+    expect(
+      wrapper.queryByText('downloadConfirmDialog.download_size')
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders correctly with 0 size', async () => {
+    props.isTwoLevel = false;
+    props.totalSize = 0;
+    const wrapper = renderWrapper();
+
+    expect(
+      await wrapper.findByText('downloadConfirmDialog.download_size', {
+        exact: false,
+      })
+    ).toBeInTheDocument();
+    expect(await wrapper.findByText('0 B')).toBeInTheDocument();
+  });
+
   it('should prevent a download if a selected access method is disabled', async () => {
     // disable https method for testing
     props.accessMethods['https'].disabled = true;

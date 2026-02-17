@@ -1,6 +1,9 @@
 import Edit from '@mui/icons-material/Edit';
+import Lock from '@mui/icons-material/Lock';
+import LockOpen from '@mui/icons-material/LockOpen';
 import {
   Box,
+  Chip,
   CircularProgress,
   Divider,
   Grid,
@@ -452,6 +455,13 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     },
   ];
 
+  const totalSize = dataciteData?.attributes.sizes?.[0]?.includes(' GB')
+    ? parseFloat(dataciteData.attributes.sizes[0].split(' ')[0]) * 10 ** 9
+    : undefined;
+
+  // return true for both null and undefined
+  const isClosed = (data?.publicationDate ?? null) === null;
+
   return (
     <Paper
       sx={{
@@ -501,9 +511,28 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                     />
                   </Tabs>
                 </Grid>
+                <Grid item xs="auto" alignSelf="center">
+                  {isClosed ? (
+                    <Chip
+                      icon={<Lock />}
+                      color="error"
+                      label={t('datapublications.closed')}
+                    />
+                  ) : (
+                    <Chip
+                      icon={<LockOpen />}
+                      color="success"
+                      label={t('datapublications.open')}
+                    />
+                  )}
+                </Grid>
                 {data?.content && (
                   <Grid item xs="auto" alignSelf="center">
-                    <QueueDataCollectionButton dataCollection={data.content} />
+                    <QueueDataCollectionButton
+                      dataCollection={data.content}
+                      isClosed={isClosed}
+                      totalSize={totalSize}
+                    />
                   </Grid>
                 )}
                 {/* Only let PIs publish DOIs & only if it's an unopened session DOI */}

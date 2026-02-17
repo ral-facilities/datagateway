@@ -2,14 +2,14 @@
 import '@testing-library/jest-dom';
 // Blob implementation in jsdom is not complete (https://github.com/jsdom/jsdom/issues/2555)
 // node blob implementation fills in the gap
+import { screen, waitFor, within } from '@testing-library/react';
+import { dGCommonInitialState } from 'datagateway-common';
 import { Blob as BlobPolyfill } from 'node:buffer';
 import type { Action, AnyAction } from 'redux';
+import type { ThunkAction, ThunkDispatch } from 'redux-thunk';
+import failOnConsole from 'vitest-fail-on-console';
 import type { StateType } from './state/app.types';
 import { initialState as dgDataViewInitialState } from './state/reducers/dgdataview.reducer';
-import { dGCommonInitialState } from 'datagateway-common';
-import { screen, waitFor, within } from '@testing-library/react';
-import failOnConsole from 'vitest-fail-on-console';
-import type { ThunkDispatch, ThunkAction } from 'redux-thunk';
 
 global.Blob = BlobPolyfill as typeof global.Blob;
 
@@ -107,8 +107,8 @@ export const findRowAt = async (index: number): Promise<HTMLElement> => {
   let rows;
   await waitFor(async () => {
     rows = await findAllRows();
-    // should have 1 row in the table
-    expect(rows).toHaveLength(1);
+    // should have at least 1 row in the table
+    expect(rows.length).toBeGreaterThan(0);
   });
   const row = rows?.[index];
   if (!row) {

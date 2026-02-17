@@ -4,7 +4,6 @@ import CalendarToday from '@mui/icons-material/CalendarToday';
 import Fingerprint from '@mui/icons-material/Fingerprint';
 import Public from '@mui/icons-material/Public';
 import Save from '@mui/icons-material/Save';
-import Storage from '@mui/icons-material/Storage';
 import {
   Box,
   Divider,
@@ -287,16 +286,6 @@ const CommonLandingPage = (
           icon: <Assessment sx={shortInfoIconStyle} />,
         },
         {
-          content: function distributionFormat() {
-            return externalSiteLink(
-              'https://www.isis.stfc.ac.uk/Pages/ISIS-Raw-File-Format.aspx',
-              t('doi_constants.distribution.format')
-            );
-          },
-          label: t('datapublications.details.format'),
-          icon: <Storage sx={shortInfoIconStyle} />,
-        },
-        {
           content: () => data.releaseDate?.slice(0, 10),
           label: t('investigations.release_date'),
           icon: <CalendarToday sx={shortInfoIconStyle} />,
@@ -366,16 +355,6 @@ const CommonLandingPage = (
               ?.investigationInstruments?.[0]?.instrument?.name,
           label: t('investigations.instrument'),
           icon: <Assessment sx={shortInfoIconStyle} />,
-        },
-        {
-          content: function distributionFormat() {
-            return externalSiteLink(
-              'https://www.isis.stfc.ac.uk/Pages/ISIS-Raw-File-Format.aspx',
-              t('doi_constants.distribution.format')
-            );
-          },
-          label: t('datapublications.details.format'),
-          icon: <Storage sx={shortInfoIconStyle} />,
         },
         {
           content: () => data?.publicationDate?.slice(0, 10),

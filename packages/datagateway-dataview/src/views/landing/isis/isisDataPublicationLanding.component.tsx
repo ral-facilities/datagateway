@@ -1,7 +1,6 @@
 import Assessment from '@mui/icons-material/Assessment';
 import CalendarToday from '@mui/icons-material/CalendarToday';
 import Public from '@mui/icons-material/Public';
-import Storage from '@mui/icons-material/Storage';
 import {
   Box,
   Divider,
@@ -352,20 +351,6 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         </MuiLink>
       ),
       label: t('datapublications.details.license'),
-    },
-    {
-      content: function distributionFormat(_entity: DataPublication) {
-        return (
-          <MuiLink
-            href="http://www.isis.stfc.ac.uk/groups/computing/isis-raw-file-format11200.html"
-            target="_blank"
-          >
-            {t('doi_constants.distribution.format')}
-          </MuiLink>
-        );
-      },
-      label: t('datapublications.details.format'),
-      icon: <Storage sx={shortInfoIconStyle} />,
     },
     {
       content: (dataPublication: DataPublication) =>

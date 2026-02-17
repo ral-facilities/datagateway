@@ -452,7 +452,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
               </Grid>
 
               {/* Get the size of the download  */}
-              {totalSize && (
+              {typeof totalSize !== 'undefined' && (
                 <Grid item xs={12}>
                   <Typography>
                     <b>{t('downloadConfirmDialog.download_size')}:</b>{' '}

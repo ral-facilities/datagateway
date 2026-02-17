@@ -278,6 +278,7 @@ describe('DLS - User Generated Data Publication Landing', () => {
     cy.get('[aria-label="Download Data Publication"]').click();
 
     cy.get('[aria-label="Download confirmation dialog"]').should('exist');
+    cy.contains('Download Size: 90.11 MB').should('be.visible');
     // set transport
     cy.get('#confirm-access-method').select('HTTPS');
 
@@ -482,6 +483,9 @@ describe('DLS - Session Data Publication Landing', () => {
 
   it("should show the publish button and let's the PI publish once", () => {
     cy.contains('Publication Date').should('not.exist');
+    cy.contains('Closed').should('be.visible');
+    cy.contains('Open').should('not.exist');
+    cy.get('[aria-label="Download Data Publication"]').should('be.disabled');
 
     cy.get('[aria-label="Publish"]').should('be.visible');
     cy.get('[aria-label="Publish"]').click();
@@ -496,10 +500,15 @@ describe('DLS - Session Data Publication Landing', () => {
 
     // once published it should have a date and an abstract and shouldn't let you publish again
     cy.contains('Publication Date').should('be.visible');
+    cy.contains('Open').should('be.visible');
+    cy.contains('Closed').should('not.exist');
     cy.contains(
       'See somebody other new you assume parent so. Indeed your so offer box off. Total from happy nearly.'
     ).should('be.visible');
     cy.get('[aria-label="Publish"]').should('not.exist');
+    cy.get('[aria-label="Download Data Publication"]').should(
+      'not.be.disabled'
+    );
 
     cy.get('#datapublication-content-tab').first().click();
 

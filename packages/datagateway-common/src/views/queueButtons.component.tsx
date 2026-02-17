@@ -31,6 +31,7 @@ interface QueueEntityButtonProps {
   queueHook: React.ComponentProps<
     typeof DownloadConfirmDialog
   >['submitDownloadHook'];
+  customDisallowedConditions?: { disallowed: boolean; message: string }[];
 }
 
 const QueueEntityButton: React.FC<QueueEntityButtonProps> = (props) => {
@@ -42,6 +43,7 @@ const QueueEntityButton: React.FC<QueueEntityButtonProps> = (props) => {
     defaultFileNameFormat,
     disallowedBehaviour,
     iconButton,
+    customDisallowedConditions,
   } = props;
   const [t] = useTranslation();
 
@@ -100,14 +102,24 @@ const QueueEntityButton: React.FC<QueueEntityButtonProps> = (props) => {
 
   const disableIfAnon = disableAnonDownload && loggedInAnonymously;
 
+  const customDisallowedReason = customDisallowedConditions?.find(
+    (cond) => cond.disallowed
+  );
+
   // do not render if user doesn't have permissions
-  if (!isQueueAllowed && disallowedBehaviour === 'hide') return <></>;
+  if (
+    (!isQueueAllowed || customDisallowedReason) &&
+    disallowedBehaviour === 'hide'
+  )
+    return <></>;
 
   return (
     <>
       <StyledTooltip
         title={
-          disableIfAnon
+          customDisallowedReason
+            ? customDisallowedReason.message
+            : disableIfAnon
             ? t('buttons.disallow_anon_tooltip')
             : !isQueueAllowed && disallowedBehaviour === 'disable'
             ? t('buttons.unable_to_queue_tooltip')
@@ -125,6 +137,7 @@ const QueueEntityButton: React.FC<QueueEntityButtonProps> = (props) => {
             }}
             disabled={
               disableIfAnon ||
+              typeof customDisallowedReason !== 'undefined' ||
               (!isQueueAllowed && disallowedBehaviour === 'disable')
             }
           />
@@ -157,7 +170,7 @@ export const QueueVisitButton: React.FC<QueueVisitButtonProps> = (props) => {
   return (
     <QueueEntityButton
       entityId={investigation.visitId}
-      totalSize={investigation.fileSize ?? -1}
+      totalSize={investigation.fileSize}
       queueHook={useQueueVisit}
       label={'buttons.queue_visit'}
       defaultFileNameFormat={
@@ -170,23 +183,34 @@ export const QueueVisitButton: React.FC<QueueVisitButtonProps> = (props) => {
 
 interface QueueDataCollectionButtonProps {
   dataCollection: DataCollection;
+  isClosed: boolean;
+  totalSize?: number;
 }
 
 export const QueueDataCollectionButton: React.FC<
   QueueDataCollectionButtonProps
 > = (props) => {
-  const { dataCollection } = props;
+  const { dataCollection, isClosed, totalSize } = props;
+
+  const [t] = useTranslation();
+  const customDisallowedConditions = React.useMemo(
+    () => [
+      { disallowed: isClosed, message: t('buttons.disallow_closed_tooltip') },
+    ],
+    [isClosed, t]
+  );
 
   return (
     <QueueEntityButton
-      // TODO: get size from DOI info and pass here? needs useDOI hook from other branch...
       entityId={dataCollection.id.toString()}
+      totalSize={totalSize}
       queueHook={useQueueDataCollection}
       label={'buttons.queue_data_collection'}
       defaultFileNameFormat={
         'downloadConfirmDialog.download_name_data_collection_default_format'
       }
       disallowedBehaviour={'disable'}
+      customDisallowedConditions={customDisallowedConditions}
       iconButton={true}
     />
   );
