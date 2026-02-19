@@ -3975,7 +3975,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:1.12.0, axios@npm:^1.8.2":
+"axios@npm:1.13.5":
+  version: 1.13.5
+  resolution: "axios@npm:1.13.5"
+  dependencies:
+    follow-redirects: ^1.15.11
+    form-data: ^4.0.5
+    proxy-from-env: ^1.1.0
+  checksum: 985024c4a32f837053f198f02a308fd6f8bfb4053a2f21e39e37992bc6d06917f008679c36b3e7f0f0c9060c85ffe37c61e58d2ac662595d68dc1b89cef78de8
+  languageName: node
+  linkType: hard
+
+"axios@npm:^1.8.2":
   version: 1.12.0
   resolution: "axios@npm:1.12.0"
   dependencies:
@@ -4784,7 +4795,7 @@ __metadata:
     "@typescript-eslint/parser": 5.62.0
     "@vitejs/plugin-react": 5.0.0
     "@vitest/coverage-v8": 3.2.3
-    axios: 1.12.0
+    axios: 1.13.5
     browserslist: 4.26.3
     browserslist-to-esbuild: 2.1.1
     date-fns: 2.30.0
@@ -4858,7 +4869,7 @@ __metadata:
     "@typescript-eslint/parser": 5.62.0
     "@vitejs/plugin-react": 5.0.0
     "@vitest/coverage-v8": 3.2.3
-    axios: 1.12.0
+    axios: 1.13.5
     browserslist: 4.26.3
     browserslist-to-esbuild: 2.1.1
     cross-env: 10.1.0
@@ -4929,7 +4940,7 @@ __metadata:
     "@typescript-eslint/parser": 5.62.0
     "@vitejs/plugin-react": 5.0.0
     "@vitest/coverage-v8": 3.2.3
-    axios: 1.12.0
+    axios: 1.13.5
     browserslist: 4.26.3
     browserslist-to-esbuild: 2.1.1
     cross-env: 10.1.0
@@ -5004,7 +5015,7 @@ __metadata:
     "@typescript-eslint/parser": 5.62.0
     "@vitejs/plugin-react": 5.0.0
     "@vitest/coverage-v8": 3.2.3
-    axios: 1.12.0
+    axios: 1.13.5
     browserslist: 4.26.3
     browserslist-to-esbuild: 2.1.1
     cross-env: 10.1.0
@@ -6462,6 +6473,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"follow-redirects@npm:^1.15.11":
+  version: 1.15.11
+  resolution: "follow-redirects@npm:1.15.11"
+  peerDependenciesMeta:
+    debug:
+      optional: true
+  checksum: 20bf55e9504f59e6cc3743ba27edb2ebf41edea1baab34799408f2c050f73f0c612728db21c691276296d2795ea8a812dc532a98e8793619fcab91abe06d017f
+  languageName: node
+  linkType: hard
+
 "follow-redirects@npm:^1.15.6":
   version: 1.15.6
   resolution: "follow-redirects@npm:1.15.6"
@@ -6508,6 +6529,19 @@ __metadata:
     hasown: ^2.0.2
     mime-types: ^2.1.12
   checksum: 9b7788836df9fa5a6999e0c02515b001946b2a868cfe53f026c69e2c537a2ff9fbfb8e9d2b678744628f3dc7a2d6e14e4e45dfaf68aa6239727f0bdb8ce0abf2
+  languageName: node
+  linkType: hard
+
+"form-data@npm:^4.0.5":
+  version: 4.0.5
+  resolution: "form-data@npm:4.0.5"
+  dependencies:
+    asynckit: ^0.4.0
+    combined-stream: ^1.0.8
+    es-set-tostringtag: ^2.1.0
+    hasown: ^2.0.2
+    mime-types: ^2.1.12
+  checksum: af8328413c16d0cded5fccc975a44d227c5120fd46a9e81de8acf619d43ed838414cc6d7792195b30b248f76a65246949a129a4dadd148721948f90cd6d4fb69
   languageName: node
   linkType: hard
 
