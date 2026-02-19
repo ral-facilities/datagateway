@@ -1,4 +1,5 @@
 /.github
+/.git
 /.husky
 /packages/datagateway-*/cypress
 /packages/datagateway-*/cypress.json
@@ -15,7 +16,11 @@ codecov.yml
 CODEOWNERS
 LICENSE.md
 README.md
+CHANGELOG*
+CONTRIBUTING.md
 Dockerfile
 **/*.test.*
 **/setupTests*
 **/testData*
+**/public/*settings*.json
+!**/public/*settings.example.json
