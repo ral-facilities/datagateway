@@ -3118,12 +3118,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:20.19.0":
-  version: 20.19.0
-  resolution: "@types/node@npm:20.19.0"
+"@types/node@npm:*, @types/node@npm:24.10.13":
+  version: 24.10.13
+  resolution: "@types/node@npm:24.10.13"
   dependencies:
-    undici-types: ~6.21.0
-  checksum: 21468a6fd9b56618af881bdd02466736149c8096699256350e27ec47442c6be4942a5b849a21da71653d4d5b819988303c24b19848761887cf73dcff1a408b68
+    undici-types: ~7.16.0
+  checksum: 254559915b60e204c855d3ea1b94cce187106c49c815a7b8edee1517f8a35301850545a52965e3dd2b5be3b26108e355108bcdb917445e855255a53dbcab3818
   languageName: node
   linkType: hard
 
@@ -4776,7 +4776,7 @@ __metadata:
     "@testing-library/react": 14.3.1
     "@testing-library/user-event": 14.6.1
     "@types/lodash.debounce": 4.0.6
-    "@types/node": 20.19.0
+    "@types/node": 24.10.13
     "@types/react": 18.0.33
     "@types/react-router-dom": 5.3.3
     "@types/react-virtualized": 9.22.2
@@ -4846,7 +4846,7 @@ __metadata:
     "@types/jsrsasign": 10.5.2
     "@types/lodash.debounce": 4.0.6
     "@types/lodash.memoize": 4.1.6
-    "@types/node": 20.19.0
+    "@types/node": 24.10.13
     "@types/react": 18.0.33
     "@types/react-dom": 18.0.11
     "@types/react-redux": 7.1.22
@@ -4920,7 +4920,7 @@ __metadata:
     "@testing-library/user-event": 14.6.1
     "@types/jsrsasign": 10.5.2
     "@types/lodash.chunk": 4.2.6
-    "@types/node": 20.19.0
+    "@types/node": 24.10.13
     "@types/react": 18.0.33
     "@types/react-dom": 18.0.11
     "@types/react-router-dom": 5.3.3
@@ -4992,7 +4992,7 @@ __metadata:
     "@types/history": 4.7.11
     "@types/jsrsasign": 10.5.2
     "@types/lodash.isequal": 4.5.8
-    "@types/node": 20.19.0
+    "@types/node": 24.10.13
     "@types/react": 18.0.33
     "@types/react-dom": 18.0.11
     "@types/react-redux": 7.1.22
@@ -6362,7 +6362,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fdir@npm:^6.2.0":
+"fdir@npm:^6.2.0, fdir@npm:^6.4.4, fdir@npm:^6.4.6":
   version: 6.5.0
   resolution: "fdir@npm:6.5.0"
   peerDependencies:
@@ -6371,18 +6371,6 @@ __metadata:
     picomatch:
       optional: true
   checksum: bd537daa9d3cd53887eed35efa0eab2dbb1ca408790e10e024120e7a36c6e9ae2b33710cb8381e35def01bc9c1d7eaba746f886338413e68ff6ebaee07b9a6e8
-  languageName: node
-  linkType: hard
-
-"fdir@npm:^6.4.4, fdir@npm:^6.4.6":
-  version: 6.4.6
-  resolution: "fdir@npm:6.4.6"
-  peerDependencies:
-    picomatch: ^3 || ^4
-  peerDependenciesMeta:
-    picomatch:
-      optional: true
-  checksum: fe9f3014901d023cf631831dcb9eae5447f4d7f69218001dd01ecf007eccc40f6c129a04411b5cc273a5f93c14e02e971e17270afc9022041c80be924091eb6f
   languageName: node
   linkType: hard
 
@@ -7119,14 +7107,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ignore@npm:^5.2.0":
-  version: 5.2.4
-  resolution: "ignore@npm:5.2.4"
-  checksum: 3d4c309c6006e2621659311783eaea7ebcd41fe4ca1d78c91c473157ad6666a57a2df790fe0d07a12300d9aac2888204d7be8d59f9aaf665b1c7fcdb432517ef
-  languageName: node
-  linkType: hard
-
-"ignore@npm:^5.3.0":
+"ignore@npm:^5.2.0, ignore@npm:^5.3.0":
   version: 5.3.2
   resolution: "ignore@npm:5.3.2"
   checksum: 2acfd32a573260ea522ea0bfeff880af426d68f6831f973129e2ba7363f422923cf53aab62f8369cbf4667c7b25b6f8a3761b34ecdb284ea18e87a5262a865be
@@ -10563,10 +10544,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici-types@npm:~6.21.0":
-  version: 6.21.0
-  resolution: "undici-types@npm:6.21.0"
-  checksum: 46331c7d6016bf85b3e8f20c159d62f5ae471aba1eb3dc52fff35a0259d58dcc7d592d4cc4f00c5f9243fa738a11cfa48bd20203040d4a9e6bc25e807fab7ab3
+"undici-types@npm:~7.16.0":
+  version: 7.16.0
+  resolution: "undici-types@npm:7.16.0"
+  checksum: 1ef68fc6c5bad200c8b6f17de8e5bc5cfdcadc164ba8d7208cd087cfa8583d922d8316a7fd76c9a658c22b4123d3ff847429185094484fbc65377d695c905857
   languageName: node
   linkType: hard
 
