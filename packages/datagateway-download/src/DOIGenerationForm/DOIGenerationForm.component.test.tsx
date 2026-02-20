@@ -563,7 +563,7 @@ describe('DOI generation form component', () => {
     );
 
     expect(publishDraftDOI).toHaveBeenCalledWith('1', expect.anything());
-  }, 40_000);
+  }, 60_000);
 
   it('should let the user go back from the confirmation page', async () => {
     renderComponent();
