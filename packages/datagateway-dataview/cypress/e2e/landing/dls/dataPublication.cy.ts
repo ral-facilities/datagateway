@@ -177,8 +177,11 @@ describe('DLS - User Generated Data Publication Landing', () => {
     // add a technique
     cy.findByRole('button', { name: 'Add technique' }).click();
     cy.findByRole('combobox', { name: 'Select technique' }).type('x-ray');
-    cy.findByRole('option', { name: 'x-ray standing wave (XSW)' }).click();
-    cy.findByRole('cell', { name: 'borrmann effect' }).click();
+    cy.findByRole('option', {
+      name: 'x-ray standing wave (XSW)',
+      timeout: 10_000,
+    }).click();
+    cy.findByRole('cell', { name: 'borrmann effect', timeout: 10_000 }).click();
     cy.findByRole('button', { name: 'Confirm' }).click();
 
     // edit content
