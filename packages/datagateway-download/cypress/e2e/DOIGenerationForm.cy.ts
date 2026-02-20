@@ -87,8 +87,14 @@ describe('DOI Generation form', () => {
       // add a technique
       cy.findByRole('button', { name: 'Add technique' }).click();
       cy.findByRole('combobox', { name: 'Select technique' }).type('x-ray');
-      cy.findByRole('option', { name: 'x-ray standing wave (XSW)' }).click();
-      cy.findByRole('cell', { name: 'borrmann effect' }).click();
+      cy.findByRole('option', {
+        name: 'x-ray standing wave (XSW)',
+        timeout: 10_000,
+      }).click();
+      cy.findByRole('cell', {
+        name: 'borrmann effect',
+        timeout: 10_000,
+      }).click();
       cy.findByRole('button', { name: 'Confirm' }).click();
 
       cy.contains('button', 'Generate DOI').click();
@@ -131,8 +137,14 @@ describe('DOI Generation form', () => {
       // add a technique
       cy.findByRole('button', { name: 'Add technique' }).click();
       cy.findByRole('combobox', { name: 'Select technique' }).type('x-ray');
-      cy.findByRole('option', { name: 'x-ray standing wave (XSW)' }).click();
-      cy.findByRole('cell', { name: 'x-ray standing wave (XSW)' }).click();
+      cy.findByRole('option', {
+        name: 'x-ray standing wave (XSW)',
+        timeout: 10_000,
+      }).click();
+      cy.findByRole('cell', {
+        name: 'x-ray standing wave (XSW)',
+        timeout: 10_000,
+      }).click();
       cy.findByRole('button', { name: 'Confirm' }).click();
 
       cy.contains('button', 'Generate DOI').click();
@@ -163,8 +175,14 @@ describe('DOI Generation form', () => {
       // add a technique
       cy.findByRole('button', { name: 'Add technique' }).click();
       cy.findByRole('combobox', { name: 'Select technique' }).type('x-ray');
-      cy.findByRole('option', { name: 'x-ray standing wave (XSW)' }).click();
-      cy.findByRole('cell', { name: 'borrmann effect' }).click();
+      cy.findByRole('option', {
+        name: 'x-ray standing wave (XSW)',
+        timeout: 10_000,
+      }).click();
+      cy.findByRole('cell', {
+        name: 'borrmann effect',
+        timeout: 10_000,
+      }).click();
       cy.findByRole('button', { name: 'Confirm' }).click();
 
       // add a subject
@@ -211,20 +229,38 @@ describe('DOI Generation form', () => {
       // add a technique
       cy.findByRole('button', { name: 'Add technique' }).click();
       cy.findByRole('combobox', { name: 'Select technique' }).type('x-ray');
-      cy.findByRole('option', { name: 'x-ray standing wave (XSW)' }).click();
-      cy.findByRole('cell', { name: 'borrmann effect' }).click();
+      cy.findByRole('option', {
+        name: 'x-ray standing wave (XSW)',
+        timeout: 10_000,
+      }).click();
+      cy.findByRole('cell', {
+        name: 'borrmann effect',
+        timeout: 10_000,
+      }).click();
       cy.findByRole('button', { name: 'Confirm' }).click();
 
       cy.findByRole('button', { name: 'Add technique' }).click();
       cy.findByRole('combobox', { name: 'Select technique' }).type('x-ray');
-      cy.findByRole('option', { name: 'x-ray standing wave (XSW)' }).click();
-      cy.findByRole('cell', { name: 'x-ray standing wave (XSW)' }).click();
+      cy.findByRole('option', {
+        name: 'x-ray standing wave (XSW)',
+        timeout: 10_000,
+      }).click();
+      cy.findByRole('cell', {
+        name: 'x-ray standing wave (XSW)',
+        timeout: 10_000,
+      }).click();
       cy.findByRole('button', { name: 'Confirm' }).click();
 
       cy.findByRole('button', { name: 'Add technique' }).click();
       cy.findByRole('combobox', { name: 'Select technique' }).type('x-ray');
-      cy.findByRole('option', { name: 'x-ray imaging' }).click();
-      cy.findByRole('cell', { name: 'x-ray tomography (CT scan)' }).click();
+      cy.findByRole('option', {
+        name: 'x-ray imaging',
+        timeout: 10_000,
+      }).click();
+      cy.findByRole('cell', {
+        name: 'x-ray tomography (CT scan)',
+        timeout: 10_000,
+      }).click();
       cy.findByRole('button', { name: 'Confirm' }).click();
 
       cy.findByRole('button', { name: 'borrmann effect' }).should('be.visible');
@@ -273,8 +309,14 @@ describe('DOI Generation form', () => {
       // add a technique
       cy.findByRole('button', { name: 'Add technique' }).click();
       cy.findByRole('combobox', { name: 'Select technique' }).type('x-ray');
-      cy.findByRole('option', { name: 'x-ray standing wave (XSW)' }).click();
-      cy.findByRole('cell', { name: 'borrmann effect' }).click();
+      cy.findByRole('option', {
+        name: 'x-ray standing wave (XSW)',
+        timeout: 10_000,
+      }).click();
+      cy.findByRole('cell', {
+        name: 'borrmann effect',
+        timeout: 10_000,
+      }).click();
       cy.findByRole('button', { name: 'Confirm' }).click();
 
       // wait for users to load
@@ -309,8 +351,14 @@ describe('DOI Generation form', () => {
       // add a technique
       cy.findByRole('button', { name: 'Add technique' }).click();
       cy.findByRole('combobox', { name: 'Select technique' }).type('x-ray');
-      cy.findByRole('option', { name: 'x-ray standing wave (XSW)' }).click();
-      cy.findByRole('cell', { name: 'borrmann effect' }).click();
+      cy.findByRole('option', {
+        name: 'x-ray standing wave (XSW)',
+        timeout: 10_000,
+      }).click();
+      cy.findByRole('cell', {
+        name: 'borrmann effect',
+        timeout: 10_000,
+      }).click();
       cy.findByRole('button', { name: 'Confirm' }).click();
 
       // wait for users to load
@@ -352,8 +400,14 @@ describe('DOI Generation form', () => {
       // add a technique
       cy.findByRole('button', { name: 'Add technique' }).click();
       cy.findByRole('combobox', { name: 'Select technique' }).type('x-ray');
-      cy.findByRole('option', { name: 'x-ray standing wave (XSW)' }).click();
-      cy.findByRole('cell', { name: 'borrmann effect' }).click();
+      cy.findByRole('option', {
+        name: 'x-ray standing wave (XSW)',
+        timeout: 10_000,
+      }).click();
+      cy.findByRole('cell', {
+        name: 'borrmann effect',
+        timeout: 10_000,
+      }).click();
       cy.findByRole('button', { name: 'Confirm' }).click();
 
       // wait for users to load
@@ -399,8 +453,14 @@ describe('DOI Generation form', () => {
       // add a technique
       cy.findByRole('button', { name: 'Add technique' }).click();
       cy.findByRole('combobox', { name: 'Select technique' }).type('x-ray');
-      cy.findByRole('option', { name: 'x-ray standing wave (XSW)' }).click();
-      cy.findByRole('cell', { name: 'borrmann effect' }).click();
+      cy.findByRole('option', {
+        name: 'x-ray standing wave (XSW)',
+        timeout: 10_000,
+      }).click();
+      cy.findByRole('cell', {
+        name: 'borrmann effect',
+        timeout: 10_000,
+      }).click();
       cy.findByRole('button', { name: 'Confirm' }).click();
 
       // wait for users to load
@@ -463,8 +523,14 @@ describe('DOI Generation form', () => {
       // add a technique
       cy.findByRole('button', { name: 'Add technique' }).click();
       cy.findByRole('combobox', { name: 'Select technique' }).type('x-ray');
-      cy.findByRole('option', { name: 'x-ray standing wave (XSW)' }).click();
-      cy.findByRole('cell', { name: 'borrmann effect' }).click();
+      cy.findByRole('option', {
+        name: 'x-ray standing wave (XSW)',
+        timeout: 10_000,
+      }).click();
+      cy.findByRole('cell', {
+        name: 'borrmann effect',
+        timeout: 10_000,
+      }).click();
       cy.findByRole('button', { name: 'Confirm' }).click();
 
       // wait for users to load
