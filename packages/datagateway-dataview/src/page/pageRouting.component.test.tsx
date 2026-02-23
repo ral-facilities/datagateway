@@ -92,6 +92,7 @@ const DLSRoutes = {
   dataPublicationLanding: '/browse/dataPublication/1',
   mydata: '/my-data/DLS',
   mydois: '/my-dois/DLS',
+  alldois: '/browse/dataPublication',
 };
 
 describe('PageTable', () => {
@@ -1236,6 +1237,29 @@ describe('PageTable', () => {
 
     it('renders DLSMyDOIsTable for DLS my dois route', async () => {
       history.push(DLSRoutes.mydois);
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(
+        await findColumnHeaderByName('datapublications.title')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datapublications.pid')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datapublications.publication_date')
+      ).toBeInTheDocument();
+    });
+
+    it('renders DLSMyDOIsTable for DLS all dois route', async () => {
+      history.push(DLSRoutes.alldois);
 
       render(
         <PageRouting

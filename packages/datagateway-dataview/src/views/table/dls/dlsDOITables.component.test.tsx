@@ -30,7 +30,7 @@ import {
 } from '../../../setupTests';
 import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
-import DLSMyDOIsTable from './dlsDOITables.component';
+import { DLSAllDOIsTable, DLSMyDOIsTable } from './dlsDOITables.component';
 
 vi.mock('datagateway-common', async () => {
   const originalModule = await vi.importActual('datagateway-common');
@@ -44,25 +44,12 @@ vi.mock('datagateway-common', async () => {
   };
 });
 
-describe('DLS MyDOIs table component', () => {
+describe('DLS DOI table components', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let rowData: DataPublication[];
   let history: MemoryHistory;
   let user: UserEvent;
-
-  const renderComponent = (): RenderResult => {
-    const store = mockStore(state);
-    return render(
-      <Provider store={store}>
-        <Router history={history}>
-          <QueryClientProvider client={new QueryClient()}>
-            <DLSMyDOIsTable />
-          </QueryClientProvider>
-        </Router>
-      </Provider>
-    );
-  };
 
   beforeEach(() => {
     history = createMemoryHistory();
@@ -145,219 +132,434 @@ describe('DLS MyDOIs table component', () => {
     vi.clearAllMocks();
   });
 
-  it('renders correctly', async () => {
-    renderComponent();
+  describe('MyDOIs table', () => {
+    const renderComponent = (): RenderResult => {
+      const store = mockStore(state);
+      return render(
+        <Provider store={store}>
+          <Router history={history}>
+            <QueryClientProvider client={new QueryClient()}>
+              <DLSMyDOIsTable />
+            </QueryClientProvider>
+          </Router>
+        </Provider>
+      );
+    };
 
-    const filterParams = [
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'users.user.name': { eq: 'testUser' },
-        }),
-      },
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'users.contributorType': {
-            eq: ContributorType.Minter,
-          },
-        }),
-      },
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'relatedItems.relationType': {
-            eq: DOIRelationType.HasVersion,
-          },
-        }),
-      },
-      {
-        filterType: 'distinct',
-        filterValue: JSON.stringify(['id', 'title', 'pid', 'publicationDate']),
-      },
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'type.name': { eq: 'User-defined' },
-        }),
-      },
-    ];
-    expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
-    expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
+    it('renders correctly', async () => {
+      renderComponent();
 
-    const rows = await findAllRows();
-    expect(rows).toHaveLength(2);
+      const filterParams = [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'users.user.name': { eq: 'testUser' },
+          }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'users.contributorType': {
+              eq: ContributorType.Minter,
+            },
+          }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'relatedItems.relationType': {
+              eq: DOIRelationType.HasVersion,
+            },
+          }),
+        },
+        {
+          filterType: 'distinct',
+          filterValue: JSON.stringify([
+            'id',
+            'title',
+            'pid',
+            'publicationDate',
+          ]),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'type.name': { eq: 'User-defined' },
+          }),
+        },
+      ];
+      expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
+      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
 
-    expect(
-      await findColumnHeaderByName('datapublications.title')
-    ).toBeInTheDocument();
-    expect(
-      await findColumnHeaderByName('datapublications.pid')
-    ).toBeInTheDocument();
-    expect(
-      await findColumnHeaderByName('datapublications.publication_date')
-    ).toBeInTheDocument();
+      const rows = await findAllRows();
+      expect(rows).toHaveLength(2);
 
-    const row = rows[0];
+      expect(
+        await findColumnHeaderByName('datapublications.title')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datapublications.pid')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datapublications.publication_date')
+      ).toBeInTheDocument();
 
-    expect(
-      within(
-        findCellInRow(row, {
-          columnIndex: await findColumnIndexByName('datapublications.title'),
-        })
-      ).getByText('Data Publication Title')
-    ).toBeInTheDocument();
-    expect(
-      within(
-        findCellInRow(row, {
-          columnIndex: await findColumnIndexByName('datapublications.pid'),
-        })
-      ).getByText('doi 1')
-    ).toBeInTheDocument();
-    expect(
-      within(
-        findCellInRow(row, {
-          columnIndex: await findColumnIndexByName(
-            'datapublications.publication_date'
-          ),
-        })
-      ).getByText('2023-07-21')
-    ).toBeInTheDocument();
+      const row = rows[0];
 
-    // expect it renders no date as the closed indicator
-    expect(
-      within(
-        findCellInRow(rows[1], {
-          columnIndex: await findColumnIndexByName(
-            'datapublications.publication_date'
-          ),
-        })
-      ).getByText('datapublications.closed')
-    ).toBeInTheDocument();
-  });
+      expect(
+        within(
+          findCellInRow(row, {
+            columnIndex: await findColumnIndexByName('datapublications.title'),
+          })
+        ).getByText('Data Publication Title')
+      ).toBeInTheDocument();
+      expect(
+        within(
+          findCellInRow(row, {
+            columnIndex: await findColumnIndexByName('datapublications.pid'),
+          })
+        ).getByText('doi 1')
+      ).toBeInTheDocument();
+      expect(
+        within(
+          findCellInRow(row, {
+            columnIndex: await findColumnIndexByName(
+              'datapublications.publication_date'
+            ),
+          })
+        ).getByText('2023-07-21')
+      ).toBeInTheDocument();
 
-  it('supplies the correct filter params for user doiType', async () => {
-    history.replace('?doiType=user');
-    renderComponent();
-
-    const filterParams = [
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'users.user.name': { eq: 'testUser' },
-        }),
-      },
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'relatedItems.relationType': {
-            eq: DOIRelationType.HasVersion,
-          },
-        }),
-      },
-      {
-        filterType: 'distinct',
-        filterValue: JSON.stringify(['id', 'title', 'pid', 'publicationDate']),
-      },
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'type.name': { eq: 'User-defined' },
-        }),
-      },
-    ];
-    expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
-    expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
-  });
-
-  it('supplies the correct filter params for session doiType', async () => {
-    history.replace('?doiType=session');
-    renderComponent();
-
-    const filterParams = [
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'users.user.name': { eq: 'testUser' },
-        }),
-      },
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'type.name': { eq: 'Investigation' },
-        }),
-      },
-    ];
-    expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
-    expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
-  });
-
-  it('updates filter query params on text filter', async () => {
-    renderComponent();
-
-    const filterInput = await screen.findByRole('textbox', {
-      name: 'Filter by datapublications.title',
-      hidden: true,
+      // expect it renders no date as the closed indicator
+      expect(
+        within(
+          findCellInRow(rows[1], {
+            columnIndex: await findColumnIndexByName(
+              'datapublications.publication_date'
+            ),
+          })
+        ).getByText('datapublications.closed')
+      ).toBeInTheDocument();
     });
 
-    await user.type(filterInput, 'test');
+    it('supplies the correct filter params for user doiType', async () => {
+      history.replace('?doiType=user');
+      renderComponent();
 
-    expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
-        '{"title":{"value":"test","type":"include"}}'
-      )}`
-    );
-
-    await user.clear(filterInput);
-
-    expect(history.location.search).toBe('?');
-  });
-
-  it('updates filter query params on date filter', async () => {
-    renderComponent();
-
-    const filterInput = await screen.findByRole('textbox', {
-      name: 'datapublications.publication_date filter to',
+      const filterParams = [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'users.user.name': { eq: 'testUser' },
+          }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'relatedItems.relationType': {
+              eq: DOIRelationType.HasVersion,
+            },
+          }),
+        },
+        {
+          filterType: 'distinct',
+          filterValue: JSON.stringify([
+            'id',
+            'title',
+            'pid',
+            'publicationDate',
+          ]),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'type.name': { eq: 'User-defined' },
+          }),
+        },
+      ];
+      expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
+      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
     });
 
-    await user.type(filterInput, '2023-07-21');
+    it('supplies the correct filter params for session doiType', async () => {
+      history.replace('?doiType=session');
+      renderComponent();
 
-    expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
-        '{"publicationDate":{"endDate":"2023-07-21"}}'
-      )}`
-    );
+      const filterParams = [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'users.user.name': { eq: 'testUser' },
+          }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'type.name': { eq: 'Investigation' },
+          }),
+        },
+      ];
+      expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
+      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
+    });
 
-    // await user.clear(filterInput);
-    await user.click(filterInput);
-    await user.keyboard('{Control}a{/Control}');
-    await user.keyboard('{Delete}');
+    it('supplies the correct filter params for openSession doiType', async () => {
+      history.replace('?doiType=openSession');
+      renderComponent();
 
-    expect(history.location.search).toBe('?');
+      const filterParams = [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'users.user.name': { eq: 'testUser' },
+          }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'type.name': { eq: 'Investigation' },
+          }),
+        },
+      ];
+      expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
+      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
+    });
+
+    it('supplies the correct filter params for closedSession doiType', async () => {
+      history.replace('?doiType=closedSession');
+      renderComponent();
+
+      const filterParams = [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'users.user.name': { eq: 'testUser' },
+          }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'type.name': { eq: 'Investigation' },
+          }),
+        },
+      ];
+      expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
+      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
+    });
+
+    it('updates filter query params on text filter', async () => {
+      renderComponent();
+
+      const filterInput = await screen.findByRole('textbox', {
+        name: 'Filter by datapublications.title',
+        hidden: true,
+      });
+
+      await user.type(filterInput, 'test');
+
+      expect(history.location.search).toBe(
+        `?filters=${encodeURIComponent(
+          '{"title":{"value":"test","type":"include"}}'
+        )}`
+      );
+
+      await user.clear(filterInput);
+
+      expect(history.location.search).toBe('?');
+    });
+
+    it('updates filter query params on date filter', async () => {
+      renderComponent();
+
+      const filterInput = await screen.findByRole('textbox', {
+        name: 'datapublications.publication_date filter to',
+      });
+
+      await user.type(filterInput, '2023-07-21');
+
+      expect(history.location.search).toBe(
+        `?filters=${encodeURIComponent(
+          '{"publicationDate":{"endDate":"2023-07-21"}}'
+        )}`
+      );
+
+      // await user.clear(filterInput);
+      await user.click(filterInput);
+      await user.keyboard('{Control}a{/Control}');
+      await user.keyboard('{Delete}');
+
+      expect(history.location.search).toBe('?');
+    });
+
+    it('updates sort query params on sort', async () => {
+      renderComponent();
+
+      await user.click(
+        await screen.findByRole('button', { name: 'datapublications.title' })
+      );
+
+      expect(history.location.search).toBe(
+        `?sort=${encodeURIComponent('{"title":"asc"}')}`
+      );
+    });
+
+    it('renders title and DOI as a links', async () => {
+      renderComponent();
+
+      const row = await findRowAt(0);
+
+      expect(
+        await within(row).findByRole('link', { name: 'Data Publication Title' })
+      ).toHaveAttribute('href', '/browse/dataPublication/7');
+      expect(
+        await within(row).findByRole('link', { name: 'doi 1' })
+      ).toHaveAttribute('href', 'https://doi.org/doi 1');
+    });
   });
 
-  it('updates sort query params on sort', async () => {
-    renderComponent();
+  describe('All DOIs table', () => {
+    const renderComponent = (): RenderResult => {
+      const store = mockStore(state);
+      return render(
+        <Provider store={store}>
+          <Router history={history}>
+            <QueryClientProvider client={new QueryClient()}>
+              <DLSAllDOIsTable />
+            </QueryClientProvider>
+          </Router>
+        </Provider>
+      );
+    };
 
-    await user.click(
-      await screen.findByRole('button', { name: 'datapublications.title' })
-    );
+    it('renders correctly', async () => {
+      renderComponent();
 
-    expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"title":"asc"}')}`
-    );
-  });
+      const filterParams = [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'type.name': { eq: 'Investigation' },
+          }),
+        },
+      ];
 
-  it('renders title and DOI as a links', async () => {
-    renderComponent();
+      expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
+      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
 
-    const row = await findRowAt(0);
+      const rows = await findAllRows();
+      expect(rows).toHaveLength(2);
 
-    expect(
-      await within(row).findByRole('link', { name: 'Data Publication Title' })
-    ).toHaveAttribute('href', '/browse/dataPublication/7');
-    expect(
-      await within(row).findByRole('link', { name: 'doi 1' })
-    ).toHaveAttribute('href', 'https://doi.org/doi 1');
+      expect(
+        await findColumnHeaderByName('datapublications.title')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datapublications.pid')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datapublications.publication_date')
+      ).toBeInTheDocument();
+
+      const row = rows[0];
+
+      expect(
+        within(
+          findCellInRow(row, {
+            columnIndex: await findColumnIndexByName('datapublications.title'),
+          })
+        ).getByText('Data Publication Title')
+      ).toBeInTheDocument();
+      expect(
+        within(
+          findCellInRow(row, {
+            columnIndex: await findColumnIndexByName('datapublications.pid'),
+          })
+        ).getByText('doi 1')
+      ).toBeInTheDocument();
+      expect(
+        within(
+          findCellInRow(row, {
+            columnIndex: await findColumnIndexByName(
+              'datapublications.publication_date'
+            ),
+          })
+        ).getByText('2023-07-21')
+      ).toBeInTheDocument();
+
+      // expect it renders no date as the closed indicator
+      expect(
+        within(
+          findCellInRow(rows[1], {
+            columnIndex: await findColumnIndexByName(
+              'datapublications.publication_date'
+            ),
+          })
+        ).getByText('datapublications.closed')
+      ).toBeInTheDocument();
+    });
+
+    it('supplies the correct filter params for user doiType', async () => {
+      history.replace('?doiType=user');
+      renderComponent();
+
+      const filterParams = [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'relatedItems.relationType': {
+              eq: DOIRelationType.HasVersion,
+            },
+          }),
+        },
+        {
+          filterType: 'distinct',
+          filterValue: JSON.stringify([
+            'id',
+            'title',
+            'pid',
+            'publicationDate',
+          ]),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'type.name': { eq: 'User-defined' },
+          }),
+        },
+      ];
+      expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
+      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
+    });
+
+    it('supplies the correct filter params for openSession doiType', async () => {
+      history.replace('?doiType=openSession');
+      renderComponent();
+
+      const filterParams = [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'type.name': { eq: 'Investigation' },
+          }),
+        },
+      ];
+      expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
+      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
+    });
+
+    it('supplies the correct filter params for closedSession doiType', async () => {
+      history.replace('?doiType=closedSession');
+      renderComponent();
+
+      const filterParams = [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'type.name': { eq: 'Investigation' },
+          }),
+        },
+      ];
+      expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
+      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
+    });
   });
 });

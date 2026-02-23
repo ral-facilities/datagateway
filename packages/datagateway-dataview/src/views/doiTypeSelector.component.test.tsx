@@ -1,6 +1,7 @@
 import { render, screen, type RenderResult } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { parseSearchToQuery, usePushQueryParams } from 'datagateway-common';
+import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import DOITypeSelector from './doiTypeSelector.component';
 
@@ -20,10 +21,12 @@ describe('DOI Type Selector', () => {
 
   const mockPushQueryParams = vi.fn();
 
-  const renderComponent = (): RenderResult =>
+  const renderComponent = (
+    type: React.ComponentProps<typeof DOITypeSelector>['type']
+  ): RenderResult =>
     render(
       <MemoryRouter>
-        <DOITypeSelector />
+        <DOITypeSelector type={type} />
       </MemoryRouter>
     );
 
@@ -41,11 +44,11 @@ describe('DOI Type Selector', () => {
   });
 
   it('displays button group correctly', () => {
-    renderComponent();
+    renderComponent('myDOIs');
 
     expect(
       screen.getByRole('group', {
-        name: 'my_doi_table.button_group_aria_label',
+        name: 'my_doi_table.type_button_group_aria_label',
       })
     ).toBeInTheDocument();
     expect(
@@ -68,8 +71,35 @@ describe('DOI Type Selector', () => {
     ).toBeInTheDocument();
   });
 
+  it('displays button group correctly for all dois type', () => {
+    renderComponent('allDOIs');
+
+    expect(
+      screen.getByRole('group', {
+        name: 'all_doi_table.type_button_group_aria_label',
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', {
+        name: /minter/,
+      })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
+        name: 'all_doi_table.user',
+        pressed: false,
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
+        name: 'all_doi_table.session',
+        pressed: true,
+      })
+    ).toBeInTheDocument();
+  });
+
   it('updates filters when a button is clicked', async () => {
-    renderComponent();
+    renderComponent('myDOIs');
 
     await user.click(
       screen.getByRole('button', {
@@ -85,7 +115,7 @@ describe('DOI Type Selector', () => {
       doiType: 'user',
     });
 
-    renderComponent();
+    renderComponent('myDOIs');
 
     expect(
       screen.getByRole('button', {
