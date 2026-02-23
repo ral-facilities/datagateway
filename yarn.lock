@@ -1604,9 +1604,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@dotenvx/dotenvx@npm:1.51.2":
-  version: 1.51.2
-  resolution: "@dotenvx/dotenvx@npm:1.51.2"
+"@dotenvx/dotenvx@npm:1.52.0":
+  version: 1.52.0
+  resolution: "@dotenvx/dotenvx@npm:1.52.0"
   dependencies:
     commander: ^11.1.0
     dotenv: ^17.2.1
@@ -1619,7 +1619,7 @@ __metadata:
     which: ^4.0.0
   bin:
     dotenvx: src/cli/dotenvx.js
-  checksum: c7e19dbecd668fb9669c4492e2c91531d90d8e6dd33b5d41a7a38e705eb3e6c865a8f97ebae30e094ff419074c1ab0775bebf214da9ce7569b7a246ab3461f6a
+  checksum: c2fcd5826316e80962eebd8c76f9644f3610bc631bf0920328c3bb20fac8c176585fea93134eca6fac2932ff2a869b1f0492b970058d5c60422654c4bde1a60c
   languageName: node
   linkType: hard
 
@@ -4831,7 +4831,7 @@ __metadata:
   resolution: "datagateway-dataview@workspace:packages/datagateway-dataview"
   dependencies:
     "@babel/eslint-parser": 7.28.0
-    "@dotenvx/dotenvx": 1.51.2
+    "@dotenvx/dotenvx": 1.52.0
     "@emotion/react": 11.14.0
     "@emotion/styled": 11.14.1
     "@mui/icons-material": 5.18.0
@@ -4907,7 +4907,7 @@ __metadata:
   resolution: "datagateway-download@workspace:packages/datagateway-download"
   dependencies:
     "@babel/eslint-parser": 7.28.0
-    "@dotenvx/dotenvx": 1.51.2
+    "@dotenvx/dotenvx": 1.52.0
     "@emotion/react": 11.14.0
     "@emotion/styled": 11.14.1
     "@mui/icons-material": 5.18.0
