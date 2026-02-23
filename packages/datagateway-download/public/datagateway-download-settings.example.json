@@ -8,18 +8,6 @@
   "bioportalUrl": "/bioportal",
   "fileCountMax": 5000,
   "totalSizeMax": 1000000000000,
-  "accessMethods": {
-    "https": {
-      "idsUrl": "example.ids.url",
-      "displayName": "HTTPS",
-      "description": "Example description for HTTPS access method."
-    },
-    "globus": {
-      "idsUrl": "example.ids.url",
-      "displayName": "Globus",
-      "description": "Example description for Globus access method."
-    }
-  },
   "helpSteps": [
     {
       "target": "#plugin-link--download",
