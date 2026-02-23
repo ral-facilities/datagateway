@@ -45,12 +45,7 @@ describe('Publish button', () => {
     user = userEvent.setup();
     state = JSON.parse(
       JSON.stringify({
-        dgcommon: {
-          ...dGCommonInitialState,
-          accessMethods: {
-            https: { idsUrl: 'https://example.com/ids' },
-          },
-        },
+        dgcommon: dGCommonInitialState,
       })
     );
     queryClient = new QueryClient();

@@ -42,13 +42,7 @@ describe('Generic clear filters button', () => {
     state = JSON.parse(
       JSON.stringify({
         dgdataview: {}, //Dont need to fill, since not part of the test
-        dgcommon: {
-          ...dGCommonInitialState,
-          urls: {
-            ...dGCommonInitialState.urls,
-            idsUrl: 'https://www.example.com/ids',
-          },
-        },
+        dgcommon: dGCommonInitialState,
       })
     );
   });
