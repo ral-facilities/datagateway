@@ -30,7 +30,7 @@ import {
 } from '../../../setupTests';
 import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
-import DLSMyDOIsTable from './dlsMyDOIsTable.component';
+import DLSMyDOIsTable from './dlsDOITables.component';
 
 vi.mock('datagateway-common', async () => {
   const originalModule = await vi.importActual('datagateway-common');

@@ -271,10 +271,23 @@
     "all_roles": "All"
   },
   "my_doi_table": {
-    "button_group_aria_label": "Select DOIs where I",
+    "type_button_group_aria_label": "Select DOIs where I",
     "minter": "Minted the user-created DOI",
     "user": "Am listed on the user-created DOI",
-    "session": "Am listed on the session DOI"
+    "session": "Am listed on the session DOI",
+    "open_button_group_aria_label": "Select Session DOIs which are",
+    "open_or_closed": "Open or Closed",
+    "open": "Open",
+    "closed": "Closed"
+  },
+  "all_doi_table": {
+    "type_button_group_aria_label": "Select DOI type",
+    "user": "User-created DOIs",
+    "session": "Session DOIs",
+    "open_button_group_aria_label": "Select Session DOIs which are",
+    "open_or_closed": "Open or Closed",
+    "open": "Open",
+    "closed": "Closed"
   },
   "loading": {
     "verifying": "Verifying URL",

@@ -97,7 +97,6 @@ export const paths = {
     dls: '/my-data/DLS',
     isis: '/my-data/ISIS',
   },
-  myDOIs: { dls: '/my-dois/DLS' },
   landing: {
     isisInvestigationLanding:
       '/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation/:investigationId',
@@ -128,6 +127,7 @@ export const paths = {
       '/browse/proposal/:proposalName/investigation/:investigationId/dataset/:datasetId/datafile',
   },
   dataPublications: {
+    dls: { myDOIs: '/my-dois/DLS', allDOIs: '/browse/dataPublication' },
     root: '/browseDataPublications',
     toggle: {
       isisInstrument: '/browseDataPublications/instrument',
@@ -176,7 +176,8 @@ const isisPaths = [
 // DLS base paths - required for linking to correct search view
 const dlsPaths = [
   paths.myData.dls,
-  paths.myDOIs.dls,
+  paths.dataPublications.dls.myDOIs,
+  paths.dataPublications.dls.allDOIs,
   paths.toggle.dlsProposal,
   paths.landing.dlsDataPublicationLanding,
 ];
@@ -222,7 +223,12 @@ const NavBar = React.memo(
           >
             {/* don't show breadcrumbs on /my-data or dls landing pages - only on browse */}
             <SwitchRouting>
-              <Route path={[paths.landing.dlsDataPublicationLanding]} />
+              <Route
+                path={[
+                  paths.landing.dlsDataPublicationLanding,
+                  paths.dataPublications.dls.allDOIs,
+                ]}
+              />
               <Route path={[paths.root, paths.dataPublications.root]}>
                 <PageBreadcrumbs landingPageEntities={landingPageEntities} />
               </Route>
@@ -291,7 +297,10 @@ const NavBar = React.memo(
           <Route
             exact
             path={Object.values(paths.myData).concat(
-              Object.values(paths.myDOIs),
+              [
+                paths.dataPublications.dls.allDOIs,
+                paths.dataPublications.dls.myDOIs,
+              ],
               Object.values(paths.toggle),
               Object.values(paths.standard),
               Object.values(paths.dataPublications.toggle),
@@ -707,10 +716,18 @@ const DataviewPageContainer: React.FC = () => {
               />
               <Route
                 exact
-                path={Object.values(paths.myDOIs)}
+                path={paths.dataPublications.dls.myDOIs}
                 render={() => (
                   // doesn't need a grid item wrapper as it's already got a grid
-                  <DOITypeSelector />
+                  <DOITypeSelector type="myDOIs" />
+                )}
+              />
+              <Route
+                exact
+                path={paths.dataPublications.dls.allDOIs}
+                render={() => (
+                  // doesn't need a grid item wrapper as it's already got a grid
+                  <DOITypeSelector type="allDOIs" />
                 )}
               />
               <Route
@@ -728,7 +745,10 @@ const DataviewPageContainer: React.FC = () => {
               <Route
                 exact
                 path={Object.values(paths.myData).concat(
-                  Object.values(paths.myDOIs),
+                  [
+                    paths.dataPublications.dls.allDOIs,
+                    paths.dataPublications.dls.myDOIs,
+                  ],
                   Object.values(paths.toggle),
                   Object.values(paths.standard),
                   Object.values(paths.dataPublications.toggle),
