@@ -2900,7 +2900,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/dom@npm:^10.1.0":
+"@testing-library/dom@npm:10.4.1, @testing-library/dom@npm:^10.1.0":
   version: 10.4.1
   resolution: "@testing-library/dom@npm:10.4.1"
   dependencies:
@@ -2913,22 +2913,6 @@ __metadata:
     picocolors: 1.1.1
     pretty-format: ^27.0.2
   checksum: 3887fe95594b6d9467a804e2cc82e719c57f4d55d7d9459b72a949b3a8189db40375b89034637326d4be559f115abc6b6bcfcc6fec0591c4a4d4cdde96751a6c
-  languageName: node
-  linkType: hard
-
-"@testing-library/dom@npm:^9.0.0":
-  version: 9.2.0
-  resolution: "@testing-library/dom@npm:9.2.0"
-  dependencies:
-    "@babel/code-frame": ^7.10.4
-    "@babel/runtime": ^7.12.5
-    "@types/aria-query": ^5.0.1
-    aria-query: 5.1.3
-    chalk: ^4.1.0
-    dom-accessibility-api: ^0.5.9
-    lz-string: ^1.5.0
-    pretty-format: ^27.0.2
-  checksum: b145f43cd06ff083012cf2503aff6ccba97ff80715fcb106fe64af690f5536557bf24d37b97e8d685bbe3803d7f71d685ce71426cb1b9e250c3611e4372dcfa9
   languageName: node
   linkType: hard
 
@@ -2946,17 +2930,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/react@npm:14.3.1":
-  version: 14.3.1
-  resolution: "@testing-library/react@npm:14.3.1"
+"@testing-library/react@npm:16.3.2":
+  version: 16.3.2
+  resolution: "@testing-library/react@npm:16.3.2"
   dependencies:
     "@babel/runtime": ^7.12.5
-    "@testing-library/dom": ^9.0.0
-    "@types/react-dom": ^18.0.0
   peerDependencies:
-    react: ^18.0.0
-    react-dom: ^18.0.0
-  checksum: b057d4c9db5a523acfc24d7bc4665a924ab8d6f252c7f51eecf7dd30f1239413e1134925fd5cc9cbdef80496af64c04e6719b2081f89fe05ba87e8c6305bcc16
+    "@testing-library/dom": ^10.0.0
+    "@types/react": ^18.0.0 || ^19.0.0
+    "@types/react-dom": ^18.0.0 || ^19.0.0
+    react: ^18.0.0 || ^19.0.0
+    react-dom: ^18.0.0 || ^19.0.0
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+    "@types/react-dom":
+      optional: true
+  checksum: 1f6f4d8374aab54214229eecdd429d5e878e902c6136a48e187a24d4917014bf91ab9aa7fab18c17f6bf05f226fac228ba9a5c1803657129173dd8a062139c17
   languageName: node
   linkType: hard
 
@@ -3803,15 +3793,6 @@ __metadata:
   version: 2.0.1
   resolution: "argparse@npm:2.0.1"
   checksum: 83644b56493e89a254bae05702abf3a1101b4fa4d0ca31df1c9985275a5a5bd47b3c27b7fa0b71098d41114d8ca000e6ed90cad764b306f8a503665e4d517ced
-  languageName: node
-  linkType: hard
-
-"aria-query@npm:5.1.3":
-  version: 5.1.3
-  resolution: "aria-query@npm:5.1.3"
-  dependencies:
-    deep-equal: ^2.0.5
-  checksum: 929ff95f02857b650fb4cbcd2f41072eee2f46159a6605ea03bf63aa572e35ffdff43d69e815ddc462e16e07de8faba3978afc2813650b4448ee18c9895d982b
   languageName: node
   linkType: hard
 
@@ -4782,8 +4763,9 @@ __metadata:
     "@mui/x-date-pickers": 6.11.2
     "@tanstack/react-query": 4.40.0
     "@tanstack/react-query-devtools": 4.40.0
+    "@testing-library/dom": 10.4.1
     "@testing-library/jest-dom": 6.9.1
-    "@testing-library/react": 14.3.1
+    "@testing-library/react": 16.3.2
     "@testing-library/user-event": 14.6.1
     "@types/lodash.debounce": 4.0.6
     "@types/node": 24.10.13
@@ -4849,8 +4831,9 @@ __metadata:
     "@tanstack/react-query": 4.40.0
     "@tanstack/react-query-devtools": 4.40.0
     "@testing-library/cypress": 10.1.0
+    "@testing-library/dom": 10.4.1
     "@testing-library/jest-dom": 6.9.1
-    "@testing-library/react": 14.3.1
+    "@testing-library/react": 16.3.2
     "@testing-library/user-event": 14.6.1
     "@types/history": 4.7.11
     "@types/jsrsasign": 10.5.2
@@ -4925,8 +4908,9 @@ __metadata:
     "@tanstack/react-query": 4.40.0
     "@tanstack/react-query-devtools": 4.40.0
     "@testing-library/cypress": 10.1.0
+    "@testing-library/dom": 10.4.1
     "@testing-library/jest-dom": 6.9.1
-    "@testing-library/react": 14.3.1
+    "@testing-library/react": 16.3.2
     "@testing-library/user-event": 14.6.1
     "@types/jsrsasign": 10.5.2
     "@types/lodash.chunk": 4.2.6
@@ -4996,8 +4980,9 @@ __metadata:
     "@tanstack/react-query": 4.40.0
     "@tanstack/react-query-devtools": 4.40.0
     "@testing-library/cypress": 10.1.0
+    "@testing-library/dom": 10.4.1
     "@testing-library/jest-dom": 6.9.1
-    "@testing-library/react": 14.3.1
+    "@testing-library/react": 16.3.2
     "@testing-library/user-event": 14.6.1
     "@types/history": 4.7.11
     "@types/jsrsasign": 10.5.2
