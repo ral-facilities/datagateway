@@ -128,7 +128,7 @@ describe('Download cart table component', () => {
           return Promise.resolve({
             data: {
               https: {
-                idsUrl: 'https://example.com/ids',
+                idsUrl: 'https://example.ids.com',
                 disabled: false,
                 message: '',
                 displayName: 'HTTPS',
@@ -243,7 +243,7 @@ describe('Download cart table component', () => {
       mockDownloadItems[0].preparedId,
       mockDownloadItems[0].fileName,
       {
-        idsUrl: 'https://example.com/ids',
+        idsUrl: 'https://example.ids.com/ids',
       }
     );
   });

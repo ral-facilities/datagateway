@@ -5,6 +5,7 @@ import {
   useAddToCart,
   useCart,
   useDownload,
+  useDownloadTypes,
   useQueueAllowed,
   useQueueDataCollection,
   useQueueVisit,
@@ -369,7 +370,7 @@ describe('Cart api functions', () => {
       expect(result.current.data).toEqual({ id: 1, fileName: 'test' });
     });
 
-    it('sends axios request to fetch cart and calls handleICATError on failure', async () => {
+    it('sends axios request to fetch download and calls handleICATError on failure', async () => {
       vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error message',
       });
@@ -381,6 +382,83 @@ describe('Cart api functions', () => {
             facilityName: 'TEST',
             downloadApiUrl: 'https://example.com/topcat',
           }),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      await waitFor(() => expect(result.current.isError).toBe(true));
+
+      expect(handleICATError).toHaveBeenCalledWith({
+        message: 'Test error message',
+      });
+    });
+  });
+
+  describe('useDownloadTypes', () => {
+    it('sends axios request to fetch download types and returns successful response', async () => {
+      vi.mocked(axios.get).mockResolvedValue({
+        data: {
+          https: {
+            idsUrl: 'https://example.https-ids.com',
+            disabled: false,
+            message: '',
+            displayName: 'HTTPS',
+            description: '',
+          },
+          globus: {
+            idsUrl: 'https://example.globus-ids.com',
+            disabled: false,
+            message: '',
+            displayName: 'Globus',
+            description: '',
+          },
+        },
+      });
+
+      const { result } = renderHook(
+        () => useDownloadTypes('TEST', 'https://example.com/topcat'),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://example.com/topcat/user/downloadType/status',
+        {
+          params: {
+            sessionId: null,
+            facilityName: 'TEST',
+          },
+        }
+      );
+      expect(result.current.data).toEqual({
+        https: {
+          idsUrl: 'https://example.https-ids.com/ids',
+          disabled: false,
+          message: '',
+          displayName: 'HTTPS',
+          description: '',
+        },
+        globus: {
+          idsUrl: 'https://example.globus-ids.com/ids',
+          disabled: false,
+          message: '',
+          displayName: 'Globus',
+          description: '',
+        },
+      });
+    });
+
+    it('sends axios request to fetch download types and calls handleICATError on failure', async () => {
+      vi.mocked(axios.get).mockRejectedValue({
+        message: 'Test error message',
+      });
+
+      const { result } = renderHook(
+        () => useDownloadTypes('TEST', 'https://example.com/topcat'),
         {
           wrapper: createReactQueryWrapper(),
         }

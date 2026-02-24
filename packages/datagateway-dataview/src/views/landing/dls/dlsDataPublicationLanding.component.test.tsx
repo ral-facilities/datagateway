@@ -312,7 +312,7 @@ describe('DLS Data Publication Landing page', () => {
           return Promise.resolve({
             data: {
               https: {
-                idsUrl: 'https://example.com/ids',
+                idsUrl: 'https://example.ids.com',
                 disabled: false,
                 message: '',
                 displayName: 'HTTPS',

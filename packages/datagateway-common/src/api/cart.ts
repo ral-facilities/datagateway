@@ -170,13 +170,20 @@ export const getDownloadTypes: (
   downloadApiUrl: string
 ) => Promise<AccessMethods> = (facilityName, downloadApiUrl) =>
   axios
-    .get(`${downloadApiUrl}/user/downloadType/status`, {
+    .get<AccessMethods>(`${downloadApiUrl}/user/downloadType/status`, {
       params: {
         sessionId: readSciGatewayToken().sessionId,
         facilityName: facilityName,
       },
     })
-    .then((response) => response.data);
+    .then((response) =>
+      Object.fromEntries(
+        Object.entries(response.data).map(([id, accessMethod]) => [
+          id,
+          { ...accessMethod, idsUrl: accessMethod.idsUrl + '/ids' },
+        ])
+      )
+    );
 
 export const useDownloadTypes = (
   facilityName: string,

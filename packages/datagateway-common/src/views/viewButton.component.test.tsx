@@ -41,13 +41,7 @@ describe('Generic view button', () => {
       JSON.stringify({
         dgdataview: {},
         //Dont need to fill, since not part of the test
-        dgcommon: {
-          ...dGCommonInitialState,
-          urls: {
-            ...dGCommonInitialState.urls,
-            idsUrl: 'https://www.example.com/ids',
-          },
-        },
+        dgcommon: dGCommonInitialState,
       })
     );
   });
