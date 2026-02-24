@@ -487,7 +487,13 @@ export interface SortType {
 
 export type ViewsType = 'table' | 'card' | null;
 
-export type DOIViewType = 'minter' | 'user' | 'session' | null;
+export type DOIViewType =
+  | 'minter'
+  | 'user'
+  | 'session'
+  | 'openSession'
+  | 'closedSession'
+  | null;
 
 export interface QueryParams {
   sort: SortType;

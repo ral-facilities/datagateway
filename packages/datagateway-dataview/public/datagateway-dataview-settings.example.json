@@ -158,28 +158,27 @@
     },
     {
       "section": "Browse",
+      "link": "/browse/dataPublication",
+      "displayName": "DataPublications",
+      "order": 5
+    },
+    {
+      "section": "Browse",
       "link": "/my-data/DLS?sort={\"startDate\":\"desc\"}",
       "displayName": "My Data DLS",
-      "order": 5
+      "order": 6
     },
     {
       "section": "Browse",
       "link": "/my-data/ISIS?sort={\"startDate\":\"desc\"}",
       "displayName": "My Data ISIS",
-      "order": 6
+      "order": 7
     },
     {
       "section": "Browse",
       "link": "/my-dois/DLS",
       "displayName": "My DOIs DLS",
-      "order": 7
-    },
-    {
-      "section": "Browse",
-      "link": "/browse/dataPublication",
-      "displayName": "DataPublications",
-      "order": 8,
-      "hideFromMenu": true
+      "order": 8
     }
   ],
   "breadcrumbs": [

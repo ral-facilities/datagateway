@@ -333,13 +333,27 @@ describe('PageContainer - Tests', () => {
   it('displays doi type selector when on My DOIs route', async () => {
     const response = { username: 'SomePerson' };
     vi.mocked(readSciGatewayToken, { partial: true }).mockReturnValue(response);
-    history.replace(paths.myDOIs.dls);
+    history.replace(paths.dataPublications.dls.myDOIs);
 
     renderComponent();
 
     expect(
       await screen.findByRole('group', {
-        name: 'my_doi_table.button_group_aria_label',
+        name: 'my_doi_table.type_button_group_aria_label',
+      })
+    ).toBeInTheDocument();
+  });
+
+  it('displays doi type selector when on All DOIs route', async () => {
+    const response = { username: 'SomePerson' };
+    vi.mocked(readSciGatewayToken, { partial: true }).mockReturnValue(response);
+    history.replace(paths.dataPublications.dls.allDOIs);
+
+    renderComponent();
+
+    expect(
+      await screen.findByRole('group', {
+        name: 'all_doi_table.type_button_group_aria_label',
       })
     ).toBeInTheDocument();
   });

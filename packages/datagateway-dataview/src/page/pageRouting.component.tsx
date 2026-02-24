@@ -1,64 +1,67 @@
-import React from 'react';
 import type { Location as LocationType } from 'history';
+import React from 'react';
 import {
-  Switch,
-  Route,
-  type RouteComponentProps,
-  Redirect,
   Link,
+  Redirect,
+  Route,
+  Switch,
+  type RouteComponentProps,
 } from 'react-router-dom';
 import DatafilePreviewer from '../views/datafilePreview/datafilePreviewer.component';
 
-import InvestigationTable from '../views/table/investigationTable.component';
-import DatasetTable from '../views/table/datasetTable.component';
 import DatafileTable from '../views/table/datafileTable.component';
+import DatasetTable from '../views/table/datasetTable.component';
+import InvestigationTable from '../views/table/investigationTable.component';
 
+import DLSDatafilesTable from '../views/table/dls/dlsDatafilesTable.component';
+import DLSDatasetsTable from '../views/table/dls/dlsDatasetsTable.component';
 import DLSProposalsTable from '../views/table/dls/dlsProposalsTable.component';
 import DLSVisitsTable from '../views/table/dls/dlsVisitsTable.component';
-import DLSDatasetsTable from '../views/table/dls/dlsDatasetsTable.component';
-import DLSDatafilesTable from '../views/table/dls/dlsDatafilesTable.component';
 
-import ISISInstrumentsTable from '../views/table/isis/isisInstrumentsTable.component';
-import ISISDataPublicationsTable from '../views/table/isis/isisDataPublicationsTable.component';
-import ISISFacilityCyclesTable from '../views/table/isis/isisFacilityCyclesTable.component';
-import ISISInvestigationsTable from '../views/table/isis/isisInvestigationsTable.component';
-import ISISDatasetsTable from '../views/table/isis/isisDatasetsTable.component';
 import ISISDatafilesTable from '../views/table/isis/isisDatafilesTable.component';
+import ISISDataPublicationsTable from '../views/table/isis/isisDataPublicationsTable.component';
+import ISISDatasetsTable from '../views/table/isis/isisDatasetsTable.component';
+import ISISFacilityCyclesTable from '../views/table/isis/isisFacilityCyclesTable.component';
+import ISISInstrumentsTable from '../views/table/isis/isisInstrumentsTable.component';
+import ISISInvestigationsTable from '../views/table/isis/isisInvestigationsTable.component';
 
+import {
+  DLSAllDOIsTable,
+  DLSMyDOIsTable,
+} from '../views/table/dls/dlsDOITables.component';
 import DLSMyDataTable from '../views/table/dls/dlsMyDataTable.component';
-import DLSMyDOIsTable from '../views/table/dls/dlsMyDOIsTable.component';
 import ISISMyDataTable from '../views/table/isis/isisMyDataTable.component';
 
-import InvestigationCardView from '../views/card/investigationCardView.component';
 import DatasetCardView from '../views/card/datasetCardView.component';
+import InvestigationCardView from '../views/card/investigationCardView.component';
 
-import ISISInstrumentsCardView from '../views/card/isis/isisInstrumentsCardView.component';
 import ISISDataPublicationsCardView from '../views/card/isis/isisDataPublicationsCardView.component';
-import ISISDataPublicationLanding from '../views/landing/isis/isisDataPublicationLanding.component';
-import ISISFacilityCyclesCardView from '../views/card/isis/isisFacilityCyclesCardView.component';
-import ISISInvestigationsCardView from '../views/card/isis/isisInvestigationsCardView.component';
-import ISISInvestigationLanding from '../views/landing/isis/isisInvestigationLanding.component';
 import ISISDatasetsCardView from '../views/card/isis/isisDatasetsCardView.component';
+import ISISFacilityCyclesCardView from '../views/card/isis/isisFacilityCyclesCardView.component';
+import ISISInstrumentsCardView from '../views/card/isis/isisInstrumentsCardView.component';
+import ISISInvestigationsCardView from '../views/card/isis/isisInvestigationsCardView.component';
+import ISISDataPublicationLanding from '../views/landing/isis/isisDataPublicationLanding.component';
 import ISISDatasetLanding from '../views/landing/isis/isisDatasetLanding.component';
+import ISISInvestigationLanding from '../views/landing/isis/isisInvestigationLanding.component';
 
+import DLSDatasetsCardView from '../views/card/dls/dlsDatasetsCardView.component';
 import DLSProposalsCardView from '../views/card/dls/dlsProposalsCardView.component';
 import DLSVisitsCardView from '../views/card/dls/dlsVisitsCardView.component';
-import DLSDatasetsCardView from '../views/card/dls/dlsDatasetsCardView.component';
 import DLSDataPublicationLanding from '../views/landing/dls/dlsDataPublicationLanding.component';
 
-import withIdCheck from './withIdCheck';
 import {
-  checkProposalName,
-  checkInvestigationId,
+  checkDatasetId,
   checkInstrumentAndFacilityCycleId,
   checkInstrumentId,
+  checkInvestigationId,
+  checkProposalName,
   checkStudyDataPublicationId,
-  checkDatasetId,
 } from './idCheckFunctions';
+import withIdCheck from './withIdCheck';
 
-import { paths } from './pageContainer.component';
-import DLSDataPublicationEditForm from '../views/landing/dls/dlsDataPublicationEditForm.component';
 import { useDataPublication, ViewsType } from 'datagateway-common';
+import DLSDataPublicationEditForm from '../views/landing/dls/dlsDataPublicationEditForm.component';
+import { paths } from './pageContainer.component';
 
 const SafeDatafileTable = React.memo(
   (props: {
@@ -570,12 +573,16 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           )}
         </Route>
 
-        <Route exact path={paths.myDOIs.dls}>
+        <Route exact path={paths.dataPublications.dls.myDOIs}>
           {this.props.loggedInAnonymously === true ? (
             <Redirect to={'/login'} />
           ) : (
             <DLSMyDOIsTable />
           )}
+        </Route>
+
+        <Route exact path={paths.dataPublications.dls.allDOIs}>
+          <DLSAllDOIsTable />
         </Route>
 
         {/* DLS routes */}
