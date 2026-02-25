@@ -210,6 +210,8 @@ describe('PageContainer Component', () => {
 
   it('should display tooltips correctly', () => {
     cy.findByRole('progressbar').should('not.exist');
+    cy.contains('No results found').should('not.exist');
+
     // The hover tool tip has an enter delay of 500ms.
     cy.get('[data-testid="card"]')
       .get('[data-testid="investigation-card-title"]')
@@ -222,6 +224,7 @@ describe('PageContainer Component', () => {
     cy.viewport(3500, 750);
 
     cy.findByRole('progressbar').should('not.exist');
+    cy.contains('No results found').should('not.exist');
 
     cy.get('[data-testid="card"]')
       .get('[data-testid="investigation-card-title"]')
