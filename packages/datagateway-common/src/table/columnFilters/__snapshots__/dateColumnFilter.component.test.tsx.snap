@@ -4,7 +4,7 @@ exports[`Date filter component > DatePicker functionality > useDateFilter hook r
 <DocumentFragment>
   <form>
     <div
-      class="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
+      class="MuiFormControl-root MuiTextField-root css-z3c6am-MuiFormControl-root-MuiTextField-root"
     >
       <div
         class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-adornedEnd css-1eed5fa-MuiInputBase-root-MuiInput-root"
@@ -48,7 +48,7 @@ exports[`Date filter component > DatePicker functionality > useDateFilter hook r
       </div>
     </div>
     <div
-      class="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
+      class="MuiFormControl-root MuiTextField-root css-z3c6am-MuiFormControl-root-MuiTextField-root"
     >
       <div
         class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-adornedEnd css-1eed5fa-MuiInputBase-root-MuiInput-root"
@@ -99,7 +99,7 @@ exports[`Date filter component > renders correctly 1`] = `
 <DocumentFragment>
   <form>
     <div
-      class="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
+      class="MuiFormControl-root MuiTextField-root css-z3c6am-MuiFormControl-root-MuiTextField-root"
     >
       <div
         class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-adornedEnd css-1eed5fa-MuiInputBase-root-MuiInput-root"
@@ -143,7 +143,7 @@ exports[`Date filter component > renders correctly 1`] = `
       </div>
     </div>
     <div
-      class="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
+      class="MuiFormControl-root MuiTextField-root css-z3c6am-MuiFormControl-root-MuiTextField-root"
     >
       <div
         class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-adornedEnd css-1eed5fa-MuiInputBase-root-MuiInput-root"
@@ -194,7 +194,7 @@ exports[`Date filter component > renders correctly with default values 1`] = `
 <DocumentFragment>
   <form>
     <div
-      class="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
+      class="MuiFormControl-root MuiTextField-root css-z3c6am-MuiFormControl-root-MuiTextField-root"
     >
       <div
         class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-adornedEnd css-1eed5fa-MuiInputBase-root-MuiInput-root"
@@ -238,7 +238,7 @@ exports[`Date filter component > renders correctly with default values 1`] = `
       </div>
     </div>
     <div
-      class="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
+      class="MuiFormControl-root MuiTextField-root css-z3c6am-MuiFormControl-root-MuiTextField-root"
     >
       <div
         class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-adornedEnd css-1eed5fa-MuiInputBase-root-MuiInput-root"
