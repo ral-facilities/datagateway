@@ -58,7 +58,7 @@ const Branding = (): React.ReactElement => {
               aria-label="branding-body"
               align="center"
               dangerouslySetInnerHTML={{
-                __html: t('doi_constants.branding.body'),
+                __html: t('doi_constants.branding.body') satisfies string,
               }}
             />
           </div>
