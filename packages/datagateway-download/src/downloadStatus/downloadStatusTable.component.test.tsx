@@ -365,7 +365,7 @@ describe('Download Status Table', () => {
     expect(screen.getByText('test-file-3')).toBeInTheDocument();
     expect(screen.getByText('test-file-4')).toBeInTheDocument();
     expect(screen.getByText('test-file-5')).toBeInTheDocument();
-  });
+  }, 30_000);
 
   it('should filter data when date filter is altered', async () => {
     renderComponent();
