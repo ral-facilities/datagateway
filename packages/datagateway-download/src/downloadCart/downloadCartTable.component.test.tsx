@@ -639,12 +639,12 @@ describe('Download cart table component', () => {
       await screen.findByText('downloadCart.not_mintable')
     ).toBeInTheDocument();
 
-    const tableRows = within(
-      screen.getByRole('rowgroup', { name: 'grid' })
-    ).getAllByRole('row');
+    const tableRows = within(screen.getByRole('rowgroup', { name: 'grid' }))
+      .getAllByRole('row')
+      .filter((e) => e.hasAttribute('aria-rowindex'));
     const muiErrorColor = createTheme().palette.error.main;
     expect(tableRows[1]).toHaveStyle(`background-color: ${muiErrorColor}`);
-    expect(tableRows[1]).toHaveStyle(`background-color: ${muiErrorColor}`);
+    expect(tableRows[3]).toHaveStyle(`background-color: ${muiErrorColor}`);
     expect(tableRows[0]).not.toHaveStyle(`background-color: ${muiErrorColor}`);
     expect(tableRows[2]).not.toHaveStyle(`background-color: ${muiErrorColor}`);
 

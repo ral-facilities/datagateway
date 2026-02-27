@@ -29,8 +29,7 @@ describe('Datafile search tab', () => {
       cy.findByText('2').should('exist');
     });
 
-    // 3 rows, 2 for search results, 1 for the header row
-    cy.findAllByRole('row').should('have.length', 3);
+    cy.get('[role="row"][aria-rowindex]').should('have.length', 2);
 
     cy.findByRole('button', { name: 'Toggle Format filter panel' }).click();
 
@@ -104,18 +103,17 @@ describe('Datafile search tab', () => {
     // click on search button
     cy.findByRole('button', { name: 'Submit search' }).click();
 
-    // 3 rows, 2 for search results, 1 for the header row
-    cy.findAllByRole('row').should('have.length', 3);
+    cy.get('[role="row"][aria-rowindex]').should('have.length', 2);
 
-    cy.findAllByRole('row')
-      .eq(1)
+    cy.get('[role="row"][aria-rowindex]')
+      .first()
       .within(() => {
         cy.findByRole('checkbox').click();
         cy.findByRole('checkbox').should('be.checked');
       });
 
-    cy.findAllByRole('row')
-      .eq(1)
+    cy.get('[role="row"][aria-rowindex]')
+      .first()
       .within(() => {
         cy.findByRole('checkbox').click();
         cy.findByRole('checkbox').should('not.be.checked');
@@ -130,10 +128,10 @@ describe('Datafile search tab', () => {
     // click on search button
     cy.findByRole('button', { name: 'Submit search' }).click();
 
-    cy.findAllByRole('row').should('have.length', 3);
+    cy.get('[role="row"][aria-rowindex]').should('have.length', 2);
 
-    cy.findAllByRole('row')
-      .eq(1)
+    cy.get('[role="row"][aria-rowindex]')
+      .first()
       .within(() => {
         cy.findByRole('button', { name: 'Show details' }).click();
       });
@@ -153,7 +151,7 @@ describe('Datafile search tab', () => {
     // click on search button
     cy.findByRole('button', { name: 'Submit search' }).click();
 
-    cy.findAllByRole('row').should('have.length', 24);
+    cy.get('[role="row"][aria-rowindex]').should('have.length', 23);
 
     // open the filter panel, then select some filters
     cy.findByRole('button', { name: 'Toggle Format filter panel' }).click();
@@ -176,7 +174,7 @@ describe('Datafile search tab', () => {
     cy.findAllByRole('button', { name: 'Apply' }).click();
 
     // the search result should be filtered
-    cy.findAllByRole('row').should('have.length', 4);
+    cy.get('[role="row"][aria-rowindex]').should('have.length', 3);
 
     // check that filter chips are displayed
     cy.findByTestId('tabpanel-datafile').within(() => {
@@ -221,7 +219,7 @@ describe('Datafile search tab', () => {
 
     cy.findByRole('button', { name: 'Apply' }).click();
 
-    cy.findAllByRole('row').should('have.length', 2);
+    cy.get('[role="row"][aria-rowindex]').should('have.length', 1);
 
     // remove both filters, one by deselecting the filter, one via removing the chip
 
@@ -246,7 +244,7 @@ describe('Datafile search tab', () => {
         });
     });
 
-    cy.findAllByRole('row').should('have.length', 5);
+    cy.get('[role="row"][aria-rowindex]').should('have.length', 4);
 
     cy.findByRole('button', {
       name: 'Toggle Parameter name filter panel',
@@ -261,7 +259,7 @@ describe('Datafile search tab', () => {
 
     cy.findByRole('button', { name: 'Apply' }).click();
 
-    cy.findAllByRole('row').should('have.length', 24);
+    cy.get('[role="row"][aria-rowindex]').should('have.length', 23);
 
     // filter chips should not exist anymore
     cy.findByTestId('tabpanel-datafile').within(() => {
@@ -333,7 +331,7 @@ describe('Datafile search tab', () => {
     cy.findAllByRole('button', { name: 'Apply' }).click();
 
     // the search result should be filtered
-    cy.findAllByRole('row').should('have.length', 7);
+    cy.get('[role="row"][aria-rowindex]').should('have.length', 6);
 
     // check that filter chips are displayed
     cy.findByTestId('tabpanel-datafile').within(() => {
@@ -374,7 +372,7 @@ describe('Datafile search tab', () => {
     cy.findAllByRole('button', { name: 'Apply' }).click();
 
     // the search result should be filtered
-    cy.findAllByRole('row').should('have.length', 12);
+    cy.get('[role="row"][aria-rowindex]').should('have.length', 11);
 
     // check that filter chips are displayed
     cy.findByTestId('tabpanel-datafile').within(() => {
@@ -394,7 +392,7 @@ describe('Datafile search tab', () => {
     // click on search button
     cy.findByRole('button', { name: 'Submit search' }).click();
 
-    cy.findAllByRole('row').should('have.length', 24);
+    cy.get('[role="row"][aria-rowindex]').should('have.length', 23);
 
     cy.findByRole('button', {
       name: 'Toggle Parameter name filter panel',
@@ -422,7 +420,7 @@ describe('Datafile search tab', () => {
 
     cy.findByRole('button', { name: 'Apply' }).click();
 
-    cy.findAllByRole('row').should('have.length', 3);
+    cy.get('[role="row"][aria-rowindex]').should('have.length', 2);
 
     // check that filter chips are displayed & remove
     cy.findByTestId('tabpanel-datafile').within(() => {
@@ -466,7 +464,7 @@ describe('Datafile search tab', () => {
 
     cy.findByRole('button', { name: 'Apply' }).click();
 
-    cy.findAllByRole('row').should('have.length', 5);
+    cy.get('[role="row"][aria-rowindex]').should('have.length', 4);
 
     // check that filter chips are displayed & remove
     cy.findByTestId('tabpanel-datafile').within(() => {
@@ -510,7 +508,7 @@ describe('Datafile search tab', () => {
 
     cy.findByRole('button', { name: 'Apply' }).click();
 
-    cy.findAllByRole('row').should('have.length', 2);
+    cy.get('[role="row"][aria-rowindex]').should('have.length', 1);
 
     // check that filter chips are displayed
     cy.findByTestId('tabpanel-datafile').within(() => {

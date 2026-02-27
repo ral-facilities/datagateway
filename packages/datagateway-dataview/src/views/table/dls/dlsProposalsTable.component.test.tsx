@@ -1,25 +1,22 @@
-import DLSProposalsTable from './dlsProposalsTable.component';
-import type { StateType } from '../../../state/app.types';
-import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
-import {
-  dGCommonInitialState,
-  type Investigation,
-  useInvestigationCount,
-  useInvestigationsInfinite,
-} from 'datagateway-common';
-import configureStore from 'redux-mock-store';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Router } from 'react-router-dom';
-import { createMemoryHistory, History } from 'history';
 import {
   render,
-  type RenderResult,
   screen,
   within,
+  type RenderResult,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import {
+  dGCommonInitialState,
+  useInvestigationCount,
+  useInvestigationsInfinite,
+  type Investigation,
+} from 'datagateway-common';
+import { History, createMemoryHistory } from 'history';
+import { Provider } from 'react-redux';
+import { Router } from 'react-router-dom';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 import {
   findAllRows,
   findCellInRow,
@@ -27,6 +24,9 @@ import {
   findColumnIndexByName,
   findRowAt,
 } from '../../../setupTests';
+import type { StateType } from '../../../state/app.types';
+import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
+import DLSProposalsTable from './dlsProposalsTable.component';
 
 vi.mock('datagateway-common', async () => {
   const originalModule = await vi.importActual('datagateway-common');

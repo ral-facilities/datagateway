@@ -75,8 +75,10 @@ describe('Table component', () => {
     expect(within(columnHeaders[0]).getByText('Test 1')).toBeInTheDocument();
     expect(within(columnHeaders[1]).getByText('Test 2')).toBeInTheDocument();
 
-    const rows = await screen.findAllByRole('row');
-    const cellsInFirstRow = within(rows[1]).getAllByRole('gridcell');
+    const rows = (await screen.findAllByRole('row')).filter((e) =>
+      e.hasAttribute('aria-rowindex')
+    );
+    const cellsInFirstRow = within(rows[0]).getAllByRole('gridcell');
     expect(within(cellsInFirstRow[0]).getByText('test1')).toBeInTheDocument();
     expect(within(cellsInFirstRow[1]).getByText('2 B')).toBeInTheDocument();
   });

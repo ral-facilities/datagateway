@@ -10,10 +10,9 @@ import { initialState as dgDataViewInitialState } from '../state/reducers/dgdata
 import PageRouting from './pageRouting.component';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import axios from 'axios';
 import { History, createMemoryHistory } from 'history';
-import { act } from 'react-dom/test-utils';
 import { findColumnHeaderByName, flushPromises } from '../setupTests';
 import {
   checkDatasetId as unmockedCheckDatasetId,

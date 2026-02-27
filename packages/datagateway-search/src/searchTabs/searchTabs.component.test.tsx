@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render, screen, within } from '@testing-library/react';
+import { act, render, screen, within } from '@testing-library/react';
 import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios';
 import {
   dGCommonInitialState,
@@ -15,7 +15,6 @@ import thunk from 'redux-thunk';
 import type { StateType } from '../state/app.types';
 
 import userEvent from '@testing-library/user-event';
-import { act } from 'react-dom/test-utils';
 import { queryAllRows } from '../setupTests';
 import { initialState } from '../state/reducers/dgsearch.reducer';
 import SearchTabs from './searchTabs.component';

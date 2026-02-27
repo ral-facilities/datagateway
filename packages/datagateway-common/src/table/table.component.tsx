@@ -330,6 +330,8 @@ export const VirtualizedTable = React.memo(
           return (
             <DetailsPanelRow
               {...props}
+              // eslint-disable-next-line react/prop-types
+              key={props.key}
               detailsPanel={detailsPanel}
               detailPanelRef={detailPanelRef}
               detailsPanelResize={detailsPanelResize}

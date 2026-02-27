@@ -1,17 +1,17 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
+  act,
   render,
-  type RenderResult,
   screen,
   within,
+  type RenderResult,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios, { type AxiosResponse } from 'axios';
 import { dGCommonInitialState, type Investigation } from 'datagateway-common';
 import { createMemoryHistory, type History } from 'history';
-import { act } from 'react-dom/test-utils';
 import { Provider } from 'react-redux';
-import { generatePath, Router } from 'react-router-dom';
+import { Router, generatePath } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import type { MockInstance } from 'vitest';

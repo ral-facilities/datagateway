@@ -573,7 +573,7 @@ exports[`Download Status Table > should render correctly 1`] = `
             >
               <div
                 class="ReactVirtualized__Grid__innerScrollContainer"
-                role="rowgroup"
+                role="row"
                 style="width: auto; height: 150px; max-width: 436px; max-height: 150px; overflow: hidden; position: relative;"
               >
                 <div

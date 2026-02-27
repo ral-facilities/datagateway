@@ -13,21 +13,21 @@ import {
   Typography,
 } from '@mui/material';
 import {
-  type ColumnType,
   Download,
-  type DownloadCartItem,
-  type DownloadCartTableItem,
   DownloadConfirmDialog,
+  Table,
+  TextColumnFilter,
   formatBytes,
   isMintabilityErrorExpected,
-  type SortType,
-  Table,
-  type TableActionProps,
-  TextColumnFilter,
-  type TextFilter,
   useDownloadTypes,
   useIsCartMintable,
   useSubmitCart,
+  type ColumnType,
+  type DownloadCartItem,
+  type DownloadCartTableItem,
+  type SortType,
+  type TableActionProps,
+  type TextFilter,
 } from 'datagateway-common';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -452,17 +452,18 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                   overflowX: 'auto',
                   // handle the highlight of unmintable entities
                   ...(generateDOIButtonHover && {
-                    '& [role="rowgroup"] [role="row"]': Object.assign(
-                      {},
-                      ...unmintableRowIDs.map((id) => ({
-                        [`&:nth-of-type(${id + 1})`]: {
-                          bgcolor: 'error.main',
-                          '& [role="gridcell"] *': {
-                            color: 'error.contrastText',
+                    '& [role="rowgroup"] [role="row"][aria-rowindex]':
+                      Object.assign(
+                        {},
+                        ...unmintableRowIDs.map((id) => ({
+                          [`&:nth-of-type(${id + 1})`]: {
+                            bgcolor: 'error.main',
+                            '& [role="gridcell"] *': {
+                              color: 'error.contrastText',
+                            },
                           },
-                        },
-                      }))
-                    ),
+                        }))
+                      ),
                   }),
                 }}
               >
