@@ -2945,44 +2945,44 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/query-core@npm:4.40.0":
-  version: 4.40.0
-  resolution: "@tanstack/query-core@npm:4.40.0"
-  checksum: 0d51f905819bdaeeeddad30a94a85c2cdda6de90dde716195274613ef0f2840cbc476fc2401848b5ef70bbcbc67749ac4c216a3c5bc56fc933b642a346f32b87
+"@tanstack/query-core@npm:4.43.0":
+  version: 4.43.0
+  resolution: "@tanstack/query-core@npm:4.43.0"
+  checksum: 3e37f8cedd533aaacaaa40bb940b45c4c428e48f11db15665932c71d15d200c0f69ae3ca2bb3233078f1620f521712a4294610b5b87ffe51cd07acffacaef17d
   languageName: node
   linkType: hard
 
-"@tanstack/react-query-devtools@npm:4.40.0":
-  version: 4.40.0
-  resolution: "@tanstack/react-query-devtools@npm:4.40.0"
+"@tanstack/react-query-devtools@npm:4.43.0":
+  version: 4.43.0
+  resolution: "@tanstack/react-query-devtools@npm:4.43.0"
   dependencies:
     "@tanstack/match-sorter-utils": ^8.7.0
     superjson: ^1.10.0
     use-sync-external-store: ^1.2.0
   peerDependencies:
-    "@tanstack/react-query": ^4.40.0
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0
-    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-  checksum: d898ba93be69f1fb09924fa4ae20b60e16df9aa2c181b6a017008dee5f010b8018a7cb2c9ba0da4b267c5bd4af0aa1fe7997b7703dec9349bb9a078318da7b17
+    "@tanstack/react-query": ^4.43.0
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: debd8accde638388164936f1c0878edfc62720ae79aff966840adc40a38011db1dae0af82784904d367187b7f5b82d9899e5c84ca5ebc87e8adf5aef76fb11bd
   languageName: node
   linkType: hard
 
-"@tanstack/react-query@npm:4.40.0":
-  version: 4.40.0
-  resolution: "@tanstack/react-query@npm:4.40.0"
+"@tanstack/react-query@npm:4.43.0":
+  version: 4.43.0
+  resolution: "@tanstack/react-query@npm:4.43.0"
   dependencies:
-    "@tanstack/query-core": 4.40.0
-    use-sync-external-store: ^1.2.0
+    "@tanstack/query-core": 4.43.0
+    use-sync-external-store: ^1.6.0
   peerDependencies:
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0
-    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     react-native: "*"
   peerDependenciesMeta:
     react-dom:
       optional: true
     react-native:
       optional: true
-  checksum: 146fb59e0c47545d25b6518d000738de80c9a0be800693269dc420eef6633b8e944aa5642700b44b15d7071fad023af3035384d040568f2b082c51e1fcf6b9f2
+  checksum: 059d4c0663b8f9b8ce592f22bf7de7121da4861bff5d5c9cfc9f527251243cd983d8377dcb7267d080282e5b0ff950790d1cca83c5ce4406be4bb9371b4263ec
   languageName: node
   linkType: hard
 
@@ -4865,8 +4865,8 @@ __metadata:
     "@mui/lab": 5.0.0-alpha.177
     "@mui/material": 5.18.0
     "@mui/x-date-pickers": 6.20.2
-    "@tanstack/react-query": 4.40.0
-    "@tanstack/react-query-devtools": 4.40.0
+    "@tanstack/react-query": 4.43.0
+    "@tanstack/react-query-devtools": 4.43.0
     "@testing-library/dom": 10.4.1
     "@testing-library/jest-dom": 6.9.1
     "@testing-library/react": 16.3.2
@@ -4932,8 +4932,8 @@ __metadata:
     "@emotion/styled": 11.14.1
     "@mui/icons-material": 5.18.0
     "@mui/material": 5.18.0
-    "@tanstack/react-query": 4.40.0
-    "@tanstack/react-query-devtools": 4.40.0
+    "@tanstack/react-query": 4.43.0
+    "@tanstack/react-query-devtools": 4.43.0
     "@testing-library/cypress": 10.1.0
     "@testing-library/dom": 10.4.1
     "@testing-library/jest-dom": 6.9.1
@@ -5009,8 +5009,8 @@ __metadata:
     "@emotion/styled": 11.14.1
     "@mui/icons-material": 5.18.0
     "@mui/material": 5.18.0
-    "@tanstack/react-query": 4.40.0
-    "@tanstack/react-query-devtools": 4.40.0
+    "@tanstack/react-query": 4.43.0
+    "@tanstack/react-query-devtools": 4.43.0
     "@testing-library/cypress": 10.1.0
     "@testing-library/dom": 10.4.1
     "@testing-library/jest-dom": 6.9.1
@@ -5081,8 +5081,8 @@ __metadata:
     "@mui/icons-material": 5.18.0
     "@mui/material": 5.18.0
     "@mui/x-date-pickers": 6.20.2
-    "@tanstack/react-query": 4.40.0
-    "@tanstack/react-query-devtools": 4.40.0
+    "@tanstack/react-query": 4.43.0
+    "@tanstack/react-query-devtools": 4.43.0
     "@testing-library/cypress": 10.1.0
     "@testing-library/dom": 10.4.1
     "@testing-library/jest-dom": 6.9.1
@@ -10733,12 +10733,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"use-sync-external-store@npm:^1.0.0, use-sync-external-store@npm:^1.2.0":
-  version: 1.4.0
-  resolution: "use-sync-external-store@npm:1.4.0"
+"use-sync-external-store@npm:^1.0.0, use-sync-external-store@npm:^1.2.0, use-sync-external-store@npm:^1.6.0":
+  version: 1.6.0
+  resolution: "use-sync-external-store@npm:1.6.0"
   peerDependencies:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: dc3843a1b59ac8bd01417bd79498d4c688d5df8bf4801be50008ef4bfaacb349058c0b1605b5b43c828e0a2d62722d7e861573b3f31cea77a7f23e8b0fc2f7e3
+  checksum: 61a62e910713adfaf91bdb72ff2cd30e5ba83687accaf3b6e75a903b45bf635f5722e3694af30d83a03e92cb533c0a5c699298d2fef639a03ffc86b469f4eee2
   languageName: node
   linkType: hard
 
