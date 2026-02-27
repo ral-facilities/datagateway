@@ -1,10 +1,9 @@
+import { act, render, RenderResult } from '@testing-library/react';
 import React from 'react';
-import withIdCheck from './withIdCheck';
-import { act } from 'react-dom/test-utils';
-import { flushPromises } from '../setupTests';
 import { MemoryRouter } from 'react-router-dom';
-import { render, RenderResult } from '@testing-library/react';
 import type { Mock, MockInstance } from 'vitest';
+import { flushPromises } from '../setupTests';
+import withIdCheck from './withIdCheck';
 
 describe('withIdCheck', () => {
   let useEffect: MockInstance;

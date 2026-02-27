@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import '@testing-library/jest-dom';
-import type { Action, AnyAction } from 'redux';
-import type { StateType } from './state/app.types';
-import { dGCommonInitialState } from 'datagateway-common';
-import { initialState as dgSearchInitialState } from './state/reducers/dgsearch.reducer';
 import { screen, within } from '@testing-library/react';
-import failOnConsole from 'vitest-fail-on-console';
+import { dGCommonInitialState } from 'datagateway-common';
+import type { Action, AnyAction } from 'redux';
 import type { ThunkAction, ThunkDispatch } from 'redux-thunk';
+import failOnConsole from 'vitest-fail-on-console';
+import type { StateType } from './state/app.types';
+import { initialState as dgSearchInitialState } from './state/reducers/dgsearch.reducer';
 
 failOnConsole();
 
@@ -106,20 +106,21 @@ export const findColumnHeaderByName = async (
  * Finds all table rows except the header row.
  */
 export const findAllRows = async (): Promise<HTMLElement[]> =>
-  (await screen.findAllByRole('row')).slice(1);
+  (await screen.findAllByRole('row')).filter((e) =>
+    e.hasAttribute('aria-rowindex')
+  );
 
 export const queryAllRows = (): HTMLElement[] =>
-  screen.queryAllByRole('row').slice(1);
+  screen.queryAllByRole('row').filter((e) => e.hasAttribute('aria-rowindex'));
 
 /**
- * Find the table row at the given index. This assumes the first table row is always the header row.
+ * Find the table row at the given index.
  *
- * @param index The index of the table row, igoring the header row. For example, if the table has 2 rows and the first row is the header row,
- *              the actual row that contains the data is considered the first row, and has an index of 0.
+ * @param index The index of the table row to find - so the first data row of the table is 0.
  */
 export const findRowAt = async (index: number): Promise<HTMLElement> => {
-  const rows = await screen.findAllByRole('row');
-  const row = rows[index + 1];
+  const rows = await findAllRows();
+  const row = rows[index];
   if (!row) {
     throw new Error(`Cannot find row at index ${index}`);
   }

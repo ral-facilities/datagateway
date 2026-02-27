@@ -27,8 +27,7 @@ describe('Investigation search tab', () => {
       cy.findByText('5').should('exist');
     });
 
-    // expecting 6 rows, 5 for search results, 1 for the header row
-    cy.findAllByRole('row').should('have.length', 6);
+    cy.get('[role="row"][aria-rowindex]').should('have.length', 5);
 
     cy.findByRole('button', { name: 'Toggle Type filter panel' }).click();
     cy.findAllByLabelText('Type filter panel').within(() => {
@@ -99,11 +98,10 @@ describe('Investigation search tab', () => {
     // click on search button
     cy.findByRole('button', { name: 'Submit search' }).click();
 
-    // 6 rows, 5 for search results, 1 for the header row
-    cy.findAllByRole('row').should('have.length', 6);
+    cy.get('[role="row"][aria-rowindex]').should('have.length', 5);
 
-    cy.findAllByRole('row')
-      .eq(1)
+    cy.get('[role="row"][aria-rowindex]')
+      .first()
       .within(() => {
         cy.findByRole('button', { name: 'Show details' }).click();
       });
@@ -124,18 +122,17 @@ describe('Investigation search tab', () => {
     // click on search button
     cy.findByRole('button', { name: 'Submit search' }).click();
 
-    // 6 rows, 5 for search results, 1 for the header row
-    cy.findAllByRole('row').should('have.length', 6);
+    cy.get('[role="row"][aria-rowindex]').should('have.length', 5);
 
-    cy.findAllByRole('row')
-      .eq(1)
+    cy.get('[role="row"][aria-rowindex]')
+      .first()
       .within(() => {
         cy.findByRole('checkbox').click();
         cy.findByRole('checkbox').should('be.checked');
       });
 
-    cy.findAllByRole('row')
-      .eq(1)
+    cy.get('[role="row"][aria-rowindex]')
+      .first()
       .within(() => {
         cy.findByRole('checkbox').click();
         cy.findByRole('checkbox').should('not.be.checked');
@@ -150,7 +147,7 @@ describe('Investigation search tab', () => {
     // click on search button
     cy.findByRole('button', { name: 'Submit search' }).click();
 
-    cy.findAllByRole('row').should('have.length', 6);
+    cy.get('[role="row"][aria-rowindex]').should('have.length', 5);
 
     // open the filter panel, then select some filters
     cy.findByRole('button', { name: 'Toggle Type filter panel' }).click();
@@ -171,7 +168,7 @@ describe('Investigation search tab', () => {
     cy.findAllByRole('button', { name: 'Apply' }).click();
 
     // the search result should be filtered
-    cy.findAllByRole('row').should('have.length', 4);
+    cy.get('[role="row"][aria-rowindex]').should('have.length', 3);
 
     // check that filter chips are displayed
     cy.findByTestId('tabpanel-investigation').within(() => {
@@ -212,7 +209,7 @@ describe('Investigation search tab', () => {
 
     cy.findByRole('button', { name: 'Apply' }).click();
 
-    cy.findAllByRole('row').should('have.length', 2);
+    cy.get('[role="row"][aria-rowindex]').should('have.length', 1);
 
     // remove both filters, one by deselecting the filter, one via removing the chip
 
@@ -237,7 +234,7 @@ describe('Investigation search tab', () => {
         });
     });
 
-    cy.findAllByRole('row').should('have.length', 3);
+    cy.get('[role="row"][aria-rowindex]').should('have.length', 2);
 
     cy.findByRole('button', {
       name: 'Toggle Parameter name filter panel',
@@ -250,7 +247,7 @@ describe('Investigation search tab', () => {
 
     cy.findByRole('button', { name: 'Apply' }).click();
 
-    cy.findAllByRole('row').should('have.length', 6);
+    cy.get('[role="row"][aria-rowindex]').should('have.length', 5);
 
     // filter chips should not exist anymore
     cy.findByTestId('tabpanel-investigation').within(() => {
@@ -316,7 +313,7 @@ describe('Investigation search tab', () => {
     cy.findAllByRole('button', { name: 'Apply' }).click();
 
     // the search result should be filtered
-    cy.findAllByRole('row').should('have.length', 2);
+    cy.get('[role="row"][aria-rowindex]').should('have.length', 1);
 
     // check that filter chips are displayed
     cy.findByTestId('tabpanel-investigation').within(() => {
@@ -355,7 +352,7 @@ describe('Investigation search tab', () => {
     cy.findAllByRole('button', { name: 'Apply' }).click();
 
     // the search result should be filtered
-    cy.findAllByRole('row').should('have.length', 3);
+    cy.get('[role="row"][aria-rowindex]').should('have.length', 2);
 
     // check that filter chips are displayed
     cy.findByTestId('tabpanel-investigation').within(() => {
@@ -375,7 +372,7 @@ describe('Investigation search tab', () => {
     // click on search button
     cy.findByRole('button', { name: 'Submit search' }).click();
 
-    cy.findAllByRole('row').should('have.length', 6);
+    cy.get('[role="row"][aria-rowindex]').should('have.length', 5);
 
     cy.findByRole('button', {
       name: 'Toggle Parameter name filter panel',
@@ -403,7 +400,7 @@ describe('Investigation search tab', () => {
 
     cy.findByRole('button', { name: 'Apply' }).click();
 
-    cy.findAllByRole('row').should('have.length', 2);
+    cy.get('[role="row"][aria-rowindex]').should('have.length', 1);
 
     // check that filter chips are displayed & remove
     cy.findByTestId('tabpanel-investigation').within(() => {
@@ -447,7 +444,7 @@ describe('Investigation search tab', () => {
 
     cy.findByRole('button', { name: 'Apply' }).click();
 
-    cy.findAllByRole('row').should('have.length', 2);
+    cy.get('[role="row"][aria-rowindex]').should('have.length', 1);
 
     // check that filter chips are displayed & remove
     cy.findByTestId('tabpanel-investigation').within(() => {
@@ -491,7 +488,7 @@ describe('Investigation search tab', () => {
 
     cy.findByRole('button', { name: 'Apply' }).click();
 
-    cy.findAllByRole('row').should('have.length', 2);
+    cy.get('[role="row"][aria-rowindex]').should('have.length', 1);
 
     // check that filter chips are displayed
     cy.findByTestId('tabpanel-investigation').within(() => {

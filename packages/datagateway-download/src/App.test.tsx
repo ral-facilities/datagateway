@@ -1,7 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { RenderResult, render } from '@testing-library/react';
+import { RenderResult, act, render } from '@testing-library/react';
 import * as React from 'react';
-import { act } from 'react-dom/test-utils';
 import App, { ErrorFallback, QueryClientSettingsUpdaterContext } from './App';
 import { DownloadSettingsContext } from './ConfigProvider';
 import { flushPromises } from './setupTests';

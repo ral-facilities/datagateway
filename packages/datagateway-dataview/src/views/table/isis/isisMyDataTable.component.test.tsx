@@ -547,9 +547,8 @@ describe('ISIS MyData table component', () => {
     });
     renderComponent();
 
-    const rows = await screen.findAllByRole('row');
-    // 2 rows expected, 1 for the header row, and 1 for the items in rowData.
-    expect(rows).toHaveLength(2);
+    const rows = await findAllRows();
+    expect(rows).toHaveLength(1);
   });
 
   it('gracefully handles missing Study from Study Investigation object and missing Instrument from InvestigationInstrument object', async () => {
@@ -577,9 +576,8 @@ describe('ISIS MyData table component', () => {
       'investigations.instrument'
     );
 
-    const rows = await screen.findAllByRole('row');
-    // 2 rows expected, 1 for the header row, and 1 for the items in rowData.
-    expect(rows).toHaveLength(2);
+    const rows = await findAllRows();
+    expect(rows).toHaveLength(1);
 
     const row = await findRowAt(0);
 

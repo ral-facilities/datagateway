@@ -95,13 +95,14 @@ export const findColumnHeaderByName = async (
  * Finds all table rows except the header row.
  */
 export const findAllRows = async (): Promise<HTMLElement[]> =>
-  (await screen.findAllByRole('row')).slice(1);
+  (await screen.findAllByRole('row')).filter((e) =>
+    e.hasAttribute('aria-rowindex')
+  );
 
 /**
- * Find the table row at the given index. This assumes the first table row is always the header row.
+ * Find the table row at the given index.
  *
- * @param index The index of the table row, igoring the header row. For example, if the table has 2 rows and the first row is the header row,
- *              the actual row that contains the data is considered the first row, and has an index of 0.
+ * @param index The index of the table row to find - so the first data row of the table is 0.
  */
 export const findRowAt = async (index: number): Promise<HTMLElement> => {
   let rows;
