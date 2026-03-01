@@ -5046,7 +5046,7 @@ __metadata:
     loglevel: 1.9.1
     p-limit: 7.3.0
     p-queue: 9.1.0
-    p-throttle: 4.1.1
+    p-throttle: 8.1.0
     prettier: 2.8.0
     react: 18.3.1
     react-dom: 18.3.1
@@ -8696,10 +8696,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"p-throttle@npm:4.1.1":
-  version: 4.1.1
-  resolution: "p-throttle@npm:4.1.1"
-  checksum: fe8709f3c3b1da7c033479375c2c302e80c1a5d86449013afa7cd46d1dc210bc824a7e4a9d088e66d31987d00878c2b5491bb2fe76246d4d2fc9a1636f5f8298
+"p-throttle@npm:8.1.0":
+  version: 8.1.0
+  resolution: "p-throttle@npm:8.1.0"
+  checksum: 549744d21190a1d6d9cb92814bfa25a78f167c3716a4130a16c54310514c3d4686e88ca8e039c47d865e3e6db1a4b4b9673483ec4ab917217b47ee06355833c3
   languageName: node
   linkType: hard
 
