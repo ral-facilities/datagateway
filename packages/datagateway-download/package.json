@@ -36,7 +36,7 @@
     "lodash.chunk": "4.2.0",
     "loglevel": "1.9.1",
     "p-limit": "7.3.0",
-    "p-queue": "6.6.2",
+    "p-queue": "9.1.0",
     "p-throttle": "4.1.1",
     "prettier": "2.8.0",
     "react": "18.3.1",
