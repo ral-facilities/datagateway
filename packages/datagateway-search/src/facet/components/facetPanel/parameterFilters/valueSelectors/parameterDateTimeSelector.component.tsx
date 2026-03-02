@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   CircularProgress,
   ListItemText,
@@ -8,15 +7,16 @@ import {
   Typography,
 } from '@mui/material';
 import {
+  useLuceneFacet,
   type FacetRequest,
   type FiltersType,
-  useLuceneFacet,
 } from 'datagateway-common';
-import type { ParameterValueFacet } from '../parameterFilterTypes';
-import parameterFacetsFromSearchResponse from '../parameterFacetsFromSearchResponse';
-import ParameterValueSelectorProps from './parameterValueSelectorProps';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ExtraSmallChip } from '../../toggleableFilterItem.component';
+import parameterFacetsFromSearchResponse from '../parameterFacetsFromSearchResponse';
+import type { ParameterValueFacet } from '../parameterFilterTypes';
+import ParameterValueSelectorProps from './parameterValueSelectorProps';
 
 function ParameterDateTimeSelector({
   entityName,
@@ -26,8 +26,10 @@ function ParameterDateTimeSelector({
 }: ParameterValueSelectorProps): JSX.Element {
   const [t] = useTranslation();
 
+  const [currentDate] = React.useState(() => new Date());
+
   const facetRequests: FacetRequest[] = React.useMemo(() => {
-    const currentYear = new Date().getFullYear();
+    const currentYear = currentDate.getFullYear();
     return [
       {
         target: `${entityName}Parameter`,
@@ -38,7 +40,7 @@ function ParameterDateTimeSelector({
               {
                 key: `${currentYear}`,
                 from: new Date(currentYear, 0).getTime(),
-                to: Date.now(),
+                to: currentDate.getTime(),
               },
               {
                 key: `${currentYear - 1}`,
@@ -64,7 +66,7 @@ function ParameterDateTimeSelector({
         ],
       },
     ];
-  }, [entityName]);
+  }, [currentDate, entityName]);
 
   const { data: facets, isLoading: isLoadingFacets } = useLuceneFacet(
     entityName,

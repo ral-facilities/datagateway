@@ -137,7 +137,7 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
                 relationType: relatedItem.relationType,
                 relatedItemType: relatedItem.resourceTypeGeneral,
                 relatedIdentifierType: relatedItem.relatedIdentifierType,
-              } satisfies RelatedIdentifier)
+              }) satisfies RelatedIdentifier
           ) ?? []
       );
       const originalSubjects: string[] = [];
@@ -238,14 +238,15 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
     [mintableError]
   );
 
-  const loadedUnselectedContent = React.useRef(false);
+  const [loadedUnselectedContent, setLoadedUnselectedContent] =
+    React.useState(false);
 
   React.useEffect(() => {
     if (
       cart &&
       content.length > 0 &&
       !cartMintabilityLoading &&
-      !loadedUnselectedContent.current
+      !loadedUnselectedContent
     ) {
       setUnselectedContent(
         cart
@@ -259,9 +260,15 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
             disabled: unmintableEntityIDs?.includes(cartItem.entityId),
           }))
       );
-      loadedUnselectedContent.current = true;
+      setLoadedUnselectedContent(true);
     }
-  }, [cart, cartMintabilityLoading, content, unmintableEntityIDs]);
+  }, [
+    cart,
+    cartMintabilityLoading,
+    content,
+    loadedUnselectedContent,
+    unmintableEntityIDs,
+  ]);
 
   const location = useLocation<{ fromEdit: boolean } | undefined>();
 
@@ -389,7 +396,7 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
                 spacing={2}
               >
                 <Grid container item direction="column" xs lg={6}>
-                  {!loadedUnselectedContent.current ? (
+                  {!loadedUnselectedContent ? (
                     <CircularProgress sx={{ alignSelf: 'center' }} />
                   ) : (
                     <DLSDataPublicationDataEditor

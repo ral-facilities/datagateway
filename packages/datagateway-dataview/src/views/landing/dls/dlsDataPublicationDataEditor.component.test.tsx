@@ -387,10 +387,10 @@ describe('DataPublication Data editor component', () => {
 
     await user.hover(
       // need to hover on the parent span as listitem itself is disabled and so isn't listening to mouse events
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
       screen.getByRole('listitem', {
         name: 'ds3',
-      }).parentElement!
+      }).parentElement! // eslint-disable-line testing-library/no-node-access
     );
 
     expect(

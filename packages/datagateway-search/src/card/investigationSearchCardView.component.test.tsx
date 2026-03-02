@@ -133,7 +133,7 @@ describe('Investigation - Card View', () => {
     renderComponent();
 
     expect(
-      screen.queryByTestId('investigation-search-card-view')
+      screen.getByTestId('investigation-search-card-view')
     ).toBeInTheDocument();
 
     // wait for queries to finish fetching

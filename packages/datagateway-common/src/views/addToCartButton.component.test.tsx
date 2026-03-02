@@ -127,7 +127,8 @@ describe('Generic add to cart button', () => {
 
     expect(addToCartButton).toBeDisabled();
 
-    await user.hover(addToCartButton.parentElement);
+    // eslint-disable-next-line testing-library/no-node-access
+    await user.hover(addToCartButton.parentElement!);
 
     expect(
       await screen.findByText('buttons.disallow_anon_tooltip')
@@ -153,7 +154,8 @@ describe('Generic add to cart button', () => {
 
     expect(addToCartButton).toBeDisabled();
 
-    await user.hover(addToCartButton.parentElement);
+    // eslint-disable-next-line testing-library/no-node-access
+    await user.hover(addToCartButton.parentElement!);
 
     expect(
       await screen.findByText('buttons.cart_loading_tooltip')
@@ -177,7 +179,8 @@ describe('Generic add to cart button', () => {
 
     expect(addToCartButton).toBeDisabled();
 
-    await user.hover(addToCartButton.parentElement);
+    // eslint-disable-next-line testing-library/no-node-access
+    await user.hover(addToCartButton.parentElement!);
 
     expect(
       await screen.findByText('buttons.cart_loading_failed_tooltip')
@@ -208,7 +211,8 @@ describe('Generic add to cart button', () => {
 
     expect(removeFromCartButton).toBeDisabled();
 
-    await user.hover(removeFromCartButton.parentElement);
+    // eslint-disable-next-line testing-library/no-node-access
+    await user.hover(removeFromCartButton.parentElement!);
 
     expect(
       await screen.findByText('buttons.parent_selected_tooltip')

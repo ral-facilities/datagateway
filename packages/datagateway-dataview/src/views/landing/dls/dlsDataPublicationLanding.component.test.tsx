@@ -666,6 +666,7 @@ describe('DLS Data Publication Landing page', () => {
     ).toBeInTheDocument();
 
     // expect structured data
+    // eslint-disable-next-line testing-library/no-node-access
     expect(document.getElementById('dataPublication-1')).not.toBeNull();
   });
 
@@ -753,6 +754,7 @@ describe('DLS Data Publication Landing page', () => {
       await screen.findByTestId('landing-dataPublication-techniques-label')
     ).toBeInTheDocument();
 
+    // eslint-disable-next-line testing-library/no-node-access
     expect(document.getElementById('dataPublication-1')).toMatchInlineSnapshot(`
       <script
         id="dataPublication-1"
@@ -782,6 +784,7 @@ describe('DLS Data Publication Landing page', () => {
       await screen.findByTestId('landing-dataPublication-techniques-label')
     ).toBeInTheDocument();
 
+    // eslint-disable-next-line testing-library/no-node-access
     expect(document.getElementById('dataPublication-1')).toBeNull();
   });
 });

@@ -146,8 +146,8 @@ describe('dataset api functions', () => {
 
   describe('useDatasetsInfinite', () => {
     it('sends axios request to fetch infinite datasets and returns successful response', async () => {
-      vi.mocked(axios.get).mockImplementation((url, options) =>
-        options.params.get('skip') === '0'
+      vi.mocked(axios.get).mockImplementation((_url, options) =>
+        options?.params.get('skip') === '0'
           ? Promise.resolve({ data: mockData[0] })
           : Promise.resolve({ data: mockData[1] })
       );

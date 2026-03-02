@@ -1,7 +1,6 @@
-import React from 'react';
+import { render } from '@testing-library/react';
 import { Datafile } from '../app.types';
 import DatafileDetailsPanel from './datafileDetailsPanel.component';
-import { render } from '@testing-library/react';
 
 describe('Datafile details panel component', () => {
   let rowData: Datafile;

@@ -85,6 +85,7 @@ describe('Download cart table component', () => {
 
   const resetDOM = (): void => {
     if (holder) document.body.removeChild(holder);
+    // eslint-disable-next-line testing-library/no-node-access
     holder = document.getElementById('datagateway-download');
     if (holder) document.body.removeChild(holder);
   };
@@ -476,8 +477,8 @@ describe('Download cart table component', () => {
 
     await waitFor(async () => {
       expect(screen.queryByText('dataset')).toBeNull();
-      expect(screen.queryByText('datafile')).toBeNull();
     });
+    expect(screen.queryByText('datafile')).toBeNull();
   });
 
   it('should display error alert if file/size limit exceeded', async () => {
@@ -487,10 +488,10 @@ describe('Download cart table component', () => {
       expect(
         screen.queryByText('downloadCart.file_limit_error', { exact: false })
       ).toBeNull();
-      expect(
-        screen.queryByText('downloadCart.size_limit_error', { exact: false })
-      ).toBeNull();
     });
+    expect(
+      screen.queryByText('downloadCart.size_limit_error', { exact: false })
+    ).toBeNull();
 
     resetDOM();
     render(
@@ -560,10 +561,10 @@ describe('Download cart table component', () => {
       expect(
         screen.queryByText('downloadCart.file_limit_error', { exact: false })
       ).toBeNull();
-      expect(
-        screen.queryByText('downloadCart.size_limit_error', { exact: false })
-      ).toBeNull();
     });
+    expect(
+      screen.queryByText('downloadCart.size_limit_error', { exact: false })
+    ).toBeNull();
 
     expect(
       await screen.findByText('downloadCart.total_size: 4 B', { exact: true })
@@ -597,9 +598,9 @@ describe('Download cart table component', () => {
     });
     const { history } = renderComponent();
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const generateDOIButton = screen
       .getByRole('link', { name: 'downloadCart.generate_DOI' })
+      // eslint-disable-next-line testing-library/no-node-access
       .closest('span')!;
 
     await user.hover(generateDOIButton);
@@ -628,9 +629,9 @@ describe('Download cart table component', () => {
 
     const { history } = renderComponent();
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const generateDOIButton = screen
       .getByRole('link', { name: 'downloadCart.generate_DOI' })
+      // eslint-disable-next-line testing-library/no-node-access
       .closest('span')!;
 
     await user.hover(generateDOIButton);

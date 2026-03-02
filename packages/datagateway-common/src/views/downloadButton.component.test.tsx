@@ -148,7 +148,8 @@ describe('Generic download button', () => {
 
       expect(button).toBeDisabled();
 
-      await user.hover(button.parentElement);
+      // eslint-disable-next-line testing-library/no-node-access
+      await user.hover(button.parentElement!);
       expect(
         await screen.findByText('buttons.unable_to_download_tooltip')
       ).toBeInTheDocument();
@@ -237,7 +238,8 @@ describe('Generic download button', () => {
 
       expect(button).toBeDisabled();
 
-      await user.hover(button.parentElement);
+      // eslint-disable-next-line testing-library/no-node-access
+      await user.hover(button.parentElement!);
       expect(
         await screen.findByText('buttons.unable_to_download_tooltip')
       ).toBeInTheDocument();
@@ -279,7 +281,8 @@ describe('Generic download button', () => {
 
     expect(button).toBeDisabled();
 
-    await user.hover(button.parentElement);
+    // eslint-disable-next-line testing-library/no-node-access
+    await user.hover(button.parentElement!);
     expect(
       await screen.findByText('buttons.disallow_anon_tooltip')
     ).toBeInTheDocument();

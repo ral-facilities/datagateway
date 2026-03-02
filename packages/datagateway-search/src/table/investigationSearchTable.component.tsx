@@ -287,7 +287,7 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
     React.useCallback(
       ({ rowData, detailsPanelResize }) => {
         switch (hierarchy) {
-          case FACILITY_NAME.isis:
+          case FACILITY_NAME.isis: {
             const investigation = rowData as SearchResultSource;
             const url = buildDatasetTableUrlForInvestigation({
               facilityName: hierarchy,
@@ -311,6 +311,7 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
                 }}
               />
             );
+          }
 
           case FACILITY_NAME.dls:
             return (

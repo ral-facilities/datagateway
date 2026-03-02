@@ -1,24 +1,24 @@
+import {
+  UseQueryOptions,
+  useInfiniteQuery,
+  useQuery,
+  type UseInfiniteQueryOptions,
+  type UseInfiniteQueryResult,
+  type UseQueryResult,
+} from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import { format, set } from 'date-fns';
-import {
-  type UseInfiniteQueryResult,
-  type UseInfiniteQueryOptions,
-  type UseQueryResult,
-  useQuery,
-  useInfiniteQuery,
-  UseQueryOptions,
-} from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
-import { StateType } from '../state/app.types';
-import { NotificationType } from '../state/actions/actions.types';
 import {
-  MicroFrontendId,
   FiltersType,
+  MicroFrontendId,
   SearchResultSource,
   SortType,
 } from '../app.types';
 import handleICATError from '../handleICATError';
 import { readSciGatewayToken } from '../parseTokens';
+import { NotificationType } from '../state/actions/actions.types';
+import { StateType } from '../state/app.types';
 import { useRetryICATErrors } from './retryICATErrors';
 
 interface QueryParameters {
@@ -108,7 +108,7 @@ export const LUCENE_ERROR_CODE = {
  * Union of error codes that the Lucene backend can return.
  */
 export type LuceneErrorCode =
-  | typeof LUCENE_ERROR_CODE[keyof typeof LUCENE_ERROR_CODE]
+  | (typeof LUCENE_ERROR_CODE)[keyof typeof LUCENE_ERROR_CODE]
   // there are other icat specific errors as well,
   // but no point coding them in if they aren't handled specially
   // in the future, update LUCENE_ERROR_CODE as needed if other error codes require special handling.
@@ -342,8 +342,10 @@ export const useLuceneSearchInfinite = (
     (state: StateType) => state.dgcommon.urls.icatUrl
   );
 
+  const apiLuceneParams = { ...luceneParams };
+
   if (facetFilters) {
-    luceneParams.filters = Object.entries(facetFilters).reduce<FiltersType>(
+    apiLuceneParams.filters = Object.entries(facetFilters).reduce<FiltersType>(
       (filters, [filterKey, filterValue]) => {
         const k = filterKey[0].toLocaleLowerCase() + filterKey.substring(1);
         filters[k] = filterValue;
@@ -355,11 +357,11 @@ export const useLuceneSearchInfinite = (
   const retryICATErrors = useRetryICATErrors();
 
   return useInfiniteQuery(
-    ['search', datasearchType, luceneParams],
+    ['search', datasearchType, apiLuceneParams],
     ({ pageParam }) =>
       fetchLuceneData(
         datasearchType,
-        { ...luceneParams, search_after: pageParam },
+        { ...apiLuceneParams, search_after: pageParam },
         { icatUrl }
       ),
     {

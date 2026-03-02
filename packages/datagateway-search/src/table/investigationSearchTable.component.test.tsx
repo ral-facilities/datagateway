@@ -297,7 +297,7 @@ describe('Investigation Search Table component', () => {
 
     await user.click(accordion);
 
-    const filterPanel = await screen.getByLabelText(
+    const filterPanel = screen.getByLabelText(
       'facetDimensionLabel.Investigation.type.name filter panel'
     );
 
@@ -922,13 +922,11 @@ describe('Investigation Search Table component', () => {
 
     renderComponent('isis');
 
-    await waitFor(async () => {
-      // the title should not be rendered as a link...
-      expect(screen.queryByRole('link', { name: 'Test title 1' })).toBeNull();
-      // ...but it should still be rendered as a normal text
-      expect(screen.getByText('Test title 1')).toBeInTheDocument();
-      expect(await screen.findByText('1 B')).toBeInTheDocument();
-    });
+    // title should be rendered as normal text
+    expect(await screen.findByText('Test title 1')).toBeInTheDocument();
+    // not a link
+    expect(screen.queryByRole('link', { name: 'Test title 1' })).toBeNull();
+    expect(await screen.findByText('1 B')).toBeInTheDocument();
   });
 
   it('does not render ISIS link when facilityCycleId cannot be found', async () => {
@@ -936,12 +934,10 @@ describe('Investigation Search Table component', () => {
 
     renderComponent('isis');
 
-    await waitFor(async () => {
-      // the title should not be rendered as a link...
-      expect(screen.queryByRole('link', { name: 'Test title 1' })).toBeNull();
-      // ...but it should still be rendered as a normal text
-      expect(screen.getByText('Test title 1')).toBeInTheDocument();
-      expect(await screen.findByText('1 B')).toBeInTheDocument();
-    });
+    // title should be rendered as normal text
+    expect(await screen.findByText('Test title 1')).toBeInTheDocument();
+    // not a link
+    expect(screen.queryByRole('link', { name: 'Test title 1' })).toBeNull();
+    expect(await screen.findByText('1 B')).toBeInTheDocument();
   });
 });

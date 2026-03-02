@@ -78,7 +78,10 @@ describe('Card View', () => {
   });
 
   it('advancedFilter displayed when filter component given', async () => {
-    const textFilter = (label: string, dataKey: string): React.ReactElement => (
+    const textFilter = (
+      label: string,
+      _dataKey: string
+    ): React.ReactElement => (
       <TextColumnFilter
         label={label}
         value={{ value: '', type: 'include' }}
@@ -474,11 +477,11 @@ describe('Card View', () => {
       expect(
         screen.queryByRole('button', { name: 'Sort by TITLE' })
       ).toBeNull();
-      expect(screen.queryByRole('button', { name: 'Sort by NAME' })).toBeNull();
-      expect(
-        screen.queryByRole('button', { name: 'Sort by VISITID' })
-      ).toBeNull();
     });
+    expect(screen.queryByRole('button', { name: 'Sort by NAME' })).toBeNull();
+    expect(
+      screen.queryByRole('button', { name: 'Sort by VISITID' })
+    ).toBeNull();
   });
 
   it('pagination dispatches onPageChange', async () => {
@@ -491,16 +494,12 @@ describe('Card View', () => {
     render(<CardView {...updatedProps} />);
 
     await user.click(
-      (
-        await screen.findAllByRole('button', { name: 'page 1' })
-      )[0]
+      (await screen.findAllByRole('button', { name: 'page 1' }))[0]
     );
     expect(onPageChange).toHaveBeenCalledTimes(0);
 
     await user.click(
-      (
-        await screen.findAllByRole('button', { name: 'Go to page 2' })
-      )[1]
+      (await screen.findAllByRole('button', { name: 'Go to page 2' }))[1]
     );
     expect(onPageChange).toHaveBeenNthCalledWith(1, 2);
   });

@@ -28,8 +28,8 @@ import { StateType } from '../state/app.types';
 import { useRetryICATErrors } from './retryICATErrors';
 
 export * from './cart';
-export * from './datafiles';
 export * from './dataPublications';
+export * from './datafiles';
 export * from './datasets';
 export * from './dois';
 export * from './facilityCycles';
@@ -94,7 +94,7 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
           parsedFilters[f] = v;
         }
       }
-    } catch (e) {
+    } catch (_e) {
       console.error('Filter query provided in an incorrect format.');
     }
   }
@@ -108,7 +108,7 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
       for (const [s, v] of Object.entries(sq)) {
         parsedSort[s] = v;
       }
-    } catch (e) {
+    } catch (_e) {
       console.error('Sort query provided in an incorrect format.');
     }
   }
@@ -296,9 +296,10 @@ export const getApiParams = (
                 })
               );
               break;
-            default:
+            default: {
               const exhaustiveCheck: never = filter.type;
               throw new Error(`Unhandled text filter type: ${exhaustiveCheck}`);
+            }
           }
         }
       } else {
@@ -821,7 +822,7 @@ export const useCustomFilter = (
       {
         filterType: 'where' | 'distinct' | 'include';
         filterValue: string;
-      }[]?
+      }[]?,
     ]
   >(
     [entityType, filterKey, additionalFilters],
@@ -913,7 +914,7 @@ export const useCustomFilterCount = (
       ),
       string,
       string,
-      AdditionalFilters?
+      AdditionalFilters?,
     ]
   >[] = React.useMemo(() => {
     const ids = filterIds ?? [];

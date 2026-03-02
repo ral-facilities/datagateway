@@ -19,13 +19,14 @@ describe('Data column header component', () => {
     icon: function Icon() {
       return <div>Test</div>;
     },
+    sx: {},
   };
 
   const filterComponent = vi.fn(
     (
       label: string,
-      dataKey: string,
-      defaultValue?: Filter
+      _dataKey: string,
+      _defaultValue?: Filter
     ): React.ReactElement => (
       <TextColumnFilter label={label} onChange={vi.fn()} value={undefined} />
     )

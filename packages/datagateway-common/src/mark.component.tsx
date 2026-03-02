@@ -15,7 +15,6 @@ const scale = keyframes`
     transform: scale3d(1.1, 1.1, 1);
   }`;
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const fill = (colour?: string) => keyframes`
   100% {
     box-shadow: inset 0 0 0 100vh ${colour ? colour : 'inherit'};

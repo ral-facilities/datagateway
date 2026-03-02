@@ -1,8 +1,8 @@
-import React from 'react';
 import type { SelectChangeEvent } from '@mui/material';
-import { InputLabel, MenuItem, Select, FormControl } from '@mui/material';
-import { useTranslation } from 'react-i18next';
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import { Order, parseSearchToQuery, useSingleSort } from 'datagateway-common';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 
 const ITEM_HEIGHT = 48;

@@ -138,16 +138,14 @@ describe('Download Status Table', () => {
       />
     );
 
-    await waitFor(() => {
-      expect(screen.getByText('test-file-3')).toBeInTheDocument();
-      expect(screen.queryByText('test-file-1')).toBeNull();
-      expect(screen.queryByText('test-file-2')).toBeNull();
-      expect(screen.queryByText('test-file-4')).toBeNull();
-      expect(screen.queryByText('test-file-5')).toBeNull();
+    expect(await screen.findByRole('progressbar')).toBeInTheDocument();
+    expect(await screen.findByText('50%')).toBeInTheDocument();
 
-      expect(screen.getByRole('progressbar')).toBeInTheDocument();
-      expect(screen.getByText('50%')).toBeInTheDocument();
-    });
+    expect(await screen.findByText('test-file-3')).toBeInTheDocument();
+    expect(screen.queryByText('test-file-1')).toBeNull();
+    expect(screen.queryByText('test-file-2')).toBeNull();
+    expect(screen.queryByText('test-file-4')).toBeNull();
+    expect(screen.queryByText('test-file-5')).toBeNull();
   });
 
   it('should have a link for a download item', async () => {
@@ -393,11 +391,11 @@ describe('Download Status Table', () => {
     // Should show no files
     await waitFor(() => {
       expect(screen.queryByText('test-file-1')).toBeNull();
-      expect(screen.queryByText('test-file-2')).toBeNull();
-      expect(screen.queryByText('test-file-3')).toBeNull();
-      expect(screen.queryByText('test-file-4')).toBeNull();
-      expect(screen.queryByText('test-file-5')).toBeNull();
     });
+    expect(screen.queryByText('test-file-2')).toBeNull();
+    expect(screen.queryByText('test-file-3')).toBeNull();
+    expect(screen.queryByText('test-file-4')).toBeNull();
+    expect(screen.queryByText('test-file-5')).toBeNull();
 
     // Clear both date filter textboxes
     await user.clear(dateFromFilterInput);

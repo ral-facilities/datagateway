@@ -917,7 +917,6 @@ describe('Download API react-query hooks test', () => {
       let isMutated = false;
 
       const updatedDownload: Download = {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         ...mockDownloadItems.find(({ id }) => id === 1)!,
         status: 'PREPARING',
       };

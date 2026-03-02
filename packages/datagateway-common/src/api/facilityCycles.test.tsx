@@ -1,7 +1,7 @@
-import { FacilityCycle } from '../app.types';
 import { act, renderHook, waitFor } from '@testing-library/react';
-import { createMemoryHistory, History } from 'history';
 import axios from 'axios';
+import { History, createMemoryHistory } from 'history';
+import { FacilityCycle } from '../app.types';
 import handleICATError from '../handleICATError';
 import { createReactQueryWrapper } from '../setupTests';
 import {
@@ -184,8 +184,8 @@ describe('facility cycle api functions', () => {
 
   describe('useFacilityCyclesInfinite', () => {
     it('sends axios request to fetch infinite facility cycles and returns successful response', async () => {
-      vi.mocked(axios.get).mockImplementation((url, options) =>
-        options.params.get('skip') === '0'
+      vi.mocked(axios.get).mockImplementation((_url, options) =>
+        options?.params.get('skip') === '0'
           ? Promise.resolve({ data: mockData[0] })
           : Promise.resolve({ data: mockData[1] })
       );

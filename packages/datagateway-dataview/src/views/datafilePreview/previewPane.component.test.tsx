@@ -1,5 +1,5 @@
-import { type RenderResult, render, screen } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { render, screen, type RenderResult } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { combineReducers, createStore } from 'redux';
 import DGDataViewReducer from '../../state/reducers/dgdataview.reducer';
@@ -48,6 +48,7 @@ describe('PreviewPane', () => {
 
   it('should render nothing if datafile previewer context is not provided', () => {
     const { container } = render(<PreviewPane datafileExtension="txt" />);
+    // eslint-disable-next-line testing-library/no-node-access
     expect(container.children).toHaveLength(0);
   });
 
@@ -61,6 +62,7 @@ describe('PreviewPane', () => {
         <PreviewPane datafileExtension="txt" />
       </DatafilePreviewerContext.Provider>
     );
+    // eslint-disable-next-line testing-library/no-node-access
     expect(container.children).toHaveLength(0);
   });
 });

@@ -1,5 +1,5 @@
-import React from 'react';
 import { Box } from '@mui/material';
+import React from 'react';
 import { TableRowProps, defaultTableRowRenderer } from 'react-virtualized';
 import { DetailsPanelProps } from '../table.component';
 
@@ -10,34 +10,41 @@ const ExpandableRow = (
     detailsPanelResize: () => void;
   }
 ): React.ReactElement => {
-  const { height, width, ...otherStyles } = props.style;
+  const {
+    index,
+    className,
+    detailPanelRef,
+    detailsPanel: DetailsPanel,
+    detailsPanelResize,
+    rowData,
+    style,
+  } = props;
 
   return (
     <Box
       sx={{
-        ...otherStyles,
-        height,
+        ...style,
         display: 'flex',
         flexDirection: 'column',
       }}
-      className={props.className}
-      key={props.index}
+      className={className}
+      key={index}
     >
       {defaultTableRowRenderer({
         ...props,
-        style: { ...props.style, position: 'static' },
+        style: { ...style, position: 'static' },
       })}
       <div
-        ref={props.detailPanelRef}
+        ref={detailPanelRef}
         style={{
           marginRight: 'auto',
           marginLeft: 10,
-          maxWidth: width - 10,
+          maxWidth: style.width - 10,
         }}
       >
-        <props.detailsPanel
-          rowData={props.rowData}
-          detailsPanelResize={props.detailsPanelResize}
+        <DetailsPanel
+          rowData={rowData}
+          detailsPanelResize={detailsPanelResize}
         />
       </div>
     </Box>

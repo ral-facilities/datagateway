@@ -1,11 +1,11 @@
-import { act, render, RenderResult } from '@testing-library/react';
+import { act, render } from '@testing-library/react';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import type { Mock, MockInstance } from 'vitest';
 import { flushPromises } from '../setupTests';
-import withIdCheck from './withIdCheck';
+import WithIdCheck from './withIdCheck';
 
-describe('withIdCheck', () => {
+describe('WithIdCheck', () => {
   let useEffect: MockInstance;
 
   const Test: React.FC<{ message: string }> = (props: { message: string }) => (
@@ -18,17 +18,6 @@ describe('withIdCheck', () => {
 
   const mockUseEffect = (): void => {
     useEffect.mockImplementationOnce((f) => f());
-  };
-
-  const createWrapper = (
-    Component: React.ComponentType<{ message: string }>,
-    locationPath: string
-  ): RenderResult => {
-    return render(
-      <MemoryRouter initialEntries={[locationPath]}>
-        <Component message="test" />
-      </MemoryRouter>
-    );
   };
 
   beforeEach(() => {
@@ -49,48 +38,82 @@ describe('withIdCheck', () => {
   });
 
   it('renders loading indicator when loading', () => {
-    const SafeComponent = withIdCheck(pendingPromiseMock())(Test);
-    const wrapper = createWrapper(SafeComponent, '/');
+    const view = render(
+      <WithIdCheck checkingPromise={pendingPromiseMock()}>
+        <Test message="test" />
+      </WithIdCheck>,
+      {
+        wrapper: ({ children }) => (
+          <MemoryRouter initialEntries={['/']}>{children}</MemoryRouter>
+        ),
+      }
+    );
 
-    expect(wrapper.asFragment()).toMatchSnapshot();
+    expect(view.asFragment()).toMatchSnapshot();
   });
 
   it('renders component when checkingPromise resolves to be true', async () => {
-    const SafeComponent = withIdCheck(resolvedTruePromiseMock())(Test);
-    const wrapper = createWrapper(SafeComponent, '/');
+    const view = render(
+      <WithIdCheck checkingPromise={resolvedTruePromiseMock()}>
+        <Test message="test" />
+      </WithIdCheck>,
+      {
+        wrapper: ({ children }) => (
+          <MemoryRouter initialEntries={['/']}>{children}</MemoryRouter>
+        ),
+      }
+    );
 
     await act(async () => {
       await flushPromises();
     });
 
-    expect(wrapper.asFragment()).toMatchSnapshot();
+    expect(view.asFragment()).toMatchSnapshot();
   });
 
   it('renders error when checkingPromise is rejected', async () => {
-    const SafeComponent = withIdCheck(rejectedPromiseMock())(Test);
-    const wrapper = createWrapper(
-      SafeComponent,
-      '/browse/investigation/2/dataset/1/datafile'
+    const view = render(
+      <WithIdCheck checkingPromise={rejectedPromiseMock()}>
+        <Test message="test" />
+      </WithIdCheck>,
+      {
+        wrapper: ({ children }) => (
+          <MemoryRouter
+            initialEntries={['/browse/investigation/2/dataset/1/datafile']}
+          >
+            {children}
+          </MemoryRouter>
+        ),
+      }
     );
 
     await act(async () => {
       await flushPromises();
     });
 
-    expect(wrapper.asFragment()).toMatchSnapshot();
+    expect(view.asFragment()).toMatchSnapshot();
   });
 
   it('renders error when checkingPromise does not resolve to be true', async () => {
-    const SafeComponent = withIdCheck(resolvedFalsePromiseMock())(Test);
-    const wrapper = createWrapper(
-      SafeComponent,
-      '/browse/investigation/2/dataset/1/datafile'
+    const view = render(
+      <WithIdCheck checkingPromise={resolvedFalsePromiseMock()}>
+        <Test message="test" />
+      </WithIdCheck>,
+      {
+        wrapper: ({ children }) => (
+          <MemoryRouter
+            initialEntries={['/browse/investigation/2/dataset/1/datafile']}
+          >
+            {children}
+          </MemoryRouter>
+        ),
+      }
     );
 
     await act(async () => {
       await flushPromises();
     });
 
-    expect(wrapper.asFragment()).toMatchSnapshot();
+    expect(view.asFragment()).toMatchSnapshot();
   });
 });

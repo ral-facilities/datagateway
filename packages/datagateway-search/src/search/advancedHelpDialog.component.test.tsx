@@ -86,7 +86,7 @@ describe('Advanced help dialog', () => {
     ).not.toBeInTheDocument();
 
     await waitForElementToBeRemoved(
-      screen.getByRole('dialog', { name: 'advanced_search_help.title' })
+      screen.queryByRole('dialog', { name: 'advanced_search_help.title' })
     );
     expect(
       screen.queryByRole('dialog', { name: 'advanced_search_help.title' })

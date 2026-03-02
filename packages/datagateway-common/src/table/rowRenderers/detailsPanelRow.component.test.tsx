@@ -1,7 +1,7 @@
-import * as React from 'react';
-import DetailsPanelRow from './detailsPanelRow.component';
-import { DetailsPanelProps } from '../table.component';
 import { render } from '@testing-library/react';
+import * as React from 'react';
+import { DetailsPanelProps } from '../table.component';
+import DetailsPanelRow from './detailsPanelRow.component';
 
 describe('Details panel row component', () => {
   const detailsPanelRowProps = {
@@ -19,11 +19,12 @@ describe('Details panel row component', () => {
       return <div>{`Details panel using ${rowData}`}</div>;
     },
     detailPanelRef: React.createRef<HTMLDivElement>(),
+    detailsPanelResize: vi.fn(),
   };
 
   it('renders correctly', () => {
     const { asFragment } = render(
-      <DetailsPanelRow {...detailsPanelRowProps} />
+      <DetailsPanelRow key="test" {...detailsPanelRowProps} />
     );
     expect(asFragment()).toMatchSnapshot();
   });

@@ -1,9 +1,8 @@
-import React from 'react';
-import DatafileDetailsPanel from './datafileDetailsPanel.component';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Datafile } from '../../app.types';
+import { RenderResult, render } from '@testing-library/react';
 import { useDatafileDetails } from '../../api';
-import { render, RenderResult } from '@testing-library/react';
+import { Datafile } from '../../app.types';
+import DatafileDetailsPanel from './datafileDetailsPanel.component';
 
 vi.mock('../../api/datafiles');
 

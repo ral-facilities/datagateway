@@ -82,20 +82,16 @@ describe('SelectionAlert', () => {
 
     await waitFor(() => {
       expect(events.length).toBe(1);
-      expect(events[0].detail).toEqual({
-        type: NotificationType,
-        payload: {
-          severity: 'warning',
-          message: 'selec_alert.warning_message_session_token',
-        },
-      });
-
-      expect(storageSetItemMock).toHaveBeenCalledTimes(1);
-      expect(storageSetItemMock).toHaveBeenCalledWith(
-        'sentExpiredMessage',
-        '1'
-      );
     });
+    expect(events[0].detail).toEqual({
+      type: NotificationType,
+      payload: {
+        severity: 'warning',
+        message: 'selec_alert.warning_message_session_token',
+      },
+    });
+    expect(storageSetItemMock).toHaveBeenCalledTimes(1);
+    expect(storageSetItemMock).toHaveBeenCalledWith('sentExpiredMessage', '1');
 
     storageGetItemMock.mockReturnValueOnce('1');
 

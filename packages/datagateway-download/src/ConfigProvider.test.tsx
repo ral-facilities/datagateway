@@ -66,25 +66,27 @@ describe('ConfigProvider', () => {
 
     await waitFor(() => {
       expect(screen.queryByRole('progressbar')).toBeNull();
-      expect(screen.getByTestId('settings')).toBeInTheDocument();
-      expect(screen.getByTestId('settings')).toHaveTextContent(
-        JSON.stringify({
-          facilityName: 'Generic',
-          idsUrl: 'ids',
-          apiUrl: 'api',
-          downloadApiUrl: 'download-api',
-          fileCountMax: 5000,
-          totalSizeMax: 1000000000000,
-          routes: [
-            {
-              section: 'section',
-              link: 'link',
-              displayName: 'displayName',
-            },
-          ],
-          pluginHost: 'http://localhost:3000/',
-        })
-      );
     });
+    await waitFor(() => {
+      expect(screen.getByTestId('settings')).toBeInTheDocument();
+    });
+    expect(screen.getByTestId('settings')).toHaveTextContent(
+      JSON.stringify({
+        facilityName: 'Generic',
+        idsUrl: 'ids',
+        apiUrl: 'api',
+        downloadApiUrl: 'download-api',
+        fileCountMax: 5000,
+        totalSizeMax: 1000000000000,
+        routes: [
+          {
+            section: 'section',
+            link: 'link',
+            displayName: 'displayName',
+          },
+        ],
+        pluginHost: 'http://localhost:3000/',
+      })
+    );
   });
 });
