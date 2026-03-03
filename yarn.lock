@@ -4846,7 +4846,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"datagateway-common@^2.2.0, datagateway-common@workspace:packages/datagateway-common":
+"datagateway-common@^3.0.0, datagateway-common@workspace:packages/datagateway-common":
   version: 0.0.0-use.local
   resolution: "datagateway-common@workspace:packages/datagateway-common"
   dependencies:
@@ -4953,7 +4953,7 @@ __metadata:
     browserslist-to-esbuild: 2.1.1
     cross-env: 10.1.0
     cypress: 15.11.0
-    datagateway-common: ^2.2.0
+    datagateway-common: ^3.0.0
     date-fns: 2.30.0
     eslint: 8.57.1
     eslint-config-prettier: 10.1.5
@@ -5025,7 +5025,7 @@ __metadata:
     browserslist-to-esbuild: 2.1.1
     cross-env: 10.1.0
     cypress: 15.11.0
-    datagateway-common: ^2.2.0
+    datagateway-common: ^3.0.0
     date-fns: 2.30.0
     date-fns-tz: 2.0.0
     eslint: 8.57.1
@@ -5101,7 +5101,7 @@ __metadata:
     browserslist-to-esbuild: 2.1.1
     cross-env: 10.1.0
     cypress: 15.11.0
-    datagateway-common: ^2.2.0
+    datagateway-common: ^3.0.0
     date-fns: 2.30.0
     eslint: 8.57.1
     eslint-config-prettier: 10.1.5
