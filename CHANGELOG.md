@@ -1,5 +1,138 @@
 # Changelog
 
+## [v3.0.0](https://github.com/ral-facilities/datagateway/tree/v3.0.0) (2026-03-04)
+
+## What's Changed
+
+### Features
+
+* #1500 - upgrade react query to v4 by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1712
+* React 18 #1445 by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1702
+* Migrate from CRA to Vite by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1716
+* Fix sizing of grids on home page by @joelvdavies in https://github.com/ral-facilities/datagateway/pull/1723
+* Fix flaky unit tests by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1736
+* Make homepage route config more explicit due to ral-facilities/scigateway#1442 by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1727
+* Actually handle unauthorised route config by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1773
+* DLS data publications views #1532 #1533 by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1538
+* Bump vite version to address security alert by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1806
+* Add option to disable anonymous users from downloading data by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1809
+* Add ability to redirect to investigations/datasets/datafiles using a single field value #1753 by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1754
+* Add DataCite metadata confirmation page by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1817
+* Allow for non-doi-related-identifiers by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1816
+* Use server side download methods by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1819
+* Add Download data publication button by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1825
+* Better support Session DOIs and add publish button by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1826
+* Add technique & subject selector by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1828
+* Display error messages to the user if the BioPortal API is not working by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1830
+* Improve handling of no session DOI errors from the ismintable request by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1832
+* Disable investigation checkboxes for DLS content table by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1834
+* DLS DOI bugfixes by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1835
+* Make PI role configurable via settings & fix affiliations by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1833
+* Improve closed DataPublication handling by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1840
+* Improve docker image & build workflow by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1831
+* All DOIs view by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1846
+* Add `/ids` prefix to `idsUrl`s fetched via `useDownloadTypes` by @louise-davies in https://github.com/ral-facilities/datagateway/pull/1847
+
+### Dependencies
+
+* Update actions/upload-artifact action to v4.6.2 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1726
+* Update actions/setup-node action to v4.4.0 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1724
+* Update actions/setup-java action to v4.7.1 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1722
+* Update actions/setup-python action to v5.6.0 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1725
+* Update actions/checkout action to v4.2.2 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1721
+* Update codecov/codecov-action action to v4.6.0 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1728
+* Update dependency @vitejs/plugin-react to v4.5.1 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1731
+* Update dependency @types/react-virtualized to v9.22.2 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1729
+* Update Yarn to v3.8.7 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1643
+* Update Node.js to v20.18.1 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1688
+* Bump brace-expansion from 1.1.11 to 1.1.12 by @dependabot[bot] in https://github.com/ral-facilities/datagateway/pull/1733
+* Update dependency browserslist to v4.25.0 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1735
+* Update dependency axios to v1.9.0 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1734
+* Update dependency jsrsasign to v11.1.0 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1742
+* Update dependency cypress to v13.17.0 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1737
+* Update dependency eslint to v8.57.1 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1738
+* Update dependency jsdom to v26.1.0 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1741
+* Migrate renovate config by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1744
+* Update dependency express to v4.21.2 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1739
+* Update dependency i18next-http-backend to v2.7.3 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1740
+* Update dependency single-spa-react to v5.1.4 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1743
+* Update dependency axios to v1.10.0 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1745
+* Update dependency @types/redux-mock-store to v1.5.0 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1730
+* Update softprops/action-gh-release action to v2.3.2 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1751
+* Update dependency tslib to v2.8.1 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1746
+* Update dependency @babel/eslint-parser to v7.27.5 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1689
+* Update codecov/codecov-action action to v5 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1756
+* Update vitest monorepo to v3.2.3 (minor) by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1755
+* Update tanstack-query monorepo to v4.40.0 (minor) by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1752
+* Update dependency eslint-config-prettier to v10 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1764
+* Update dependency @vitejs/plugin-react to v4.6.0 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1767
+* Update dependency husky to v9 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1769
+* Bump form-data from 4.0.3 to 4.0.4 by @dependabot[bot] in https://github.com/ral-facilities/datagateway/pull/1772
+* Update dependency axios to v1.11.0 [SECURITY] by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1778
+* Update testing-library monorepo (minor) by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1690
+* Update dependency @babel/eslint-parser to v7.28.0 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1780
+* Update dependency @vitejs/plugin-react to v4.7.0 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1781
+* Update richardsimko/update-tag action to v1.1.6 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1782
+* Update dependency cross-env to v10 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1783
+* Update dependency vitest-fail-on-console to v0.8.0 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1784
+* Bump tmp from 0.2.3 to 0.2.4 by @dependabot[bot] in https://github.com/ral-facilities/datagateway/pull/1786
+* Update dependency react-draggable to v4.5.0 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1771
+* Update dependency i18next-browser-languagedetector to v8 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1785
+* Update actions/checkout action to v4.3.0 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1787
+* Update dependency vitest-fail-on-console to v0.9.0 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1789
+* Update dependency @vitejs/plugin-react to v5 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1791
+* Update actions/checkout action to v5 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1790
+* Update dependency i18next-http-backend to v3 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1792
+* Update dependency lint-staged to v16 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1795
+* Update dependency @testing-library/jest-dom to v6.7.0 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1794
+* Update codecov/codecov-action action to v5.5.0 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1796
+* Update actions/setup-java action to v5 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1797
+* Update dependency @testing-library/jest-dom to v6.8.0 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1799
+* Update dependency vitest-fail-on-console to v0.10.0 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1800
+* Update dependency axios to v1.12.0 [SECURITY] by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1805
+* Update actions/setup-node action to v5 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1802
+* Update dependency @testing-library/cypress to v10.1.0 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1807
+* Update dependency @testing-library/jest-dom to v6.9.1 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1808
+* Update dependency browserslist to v4.26.3 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1810
+* Update dependency cross-env to v10.1.0 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1812
+* Bump js-yaml from 4.1.0 to 4.1.1 by @dependabot[bot] in https://github.com/ral-facilities/datagateway/pull/1818
+* Update dependency node to v24 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1841
+* Update dependency axios to v1.13.5 [SECURITY] by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1839
+* Update dependency express to v4.22.1 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1843
+* Bump lodash from 4.17.21 to 4.17.23 by @dependabot[bot] in https://github.com/ral-facilities/datagateway/pull/1836
+* Bump vite from 5.4.20 to 5.4.21 by @dependabot[bot] in https://github.com/ral-facilities/datagateway/pull/1827
+* Update dependency @dotenvx/dotenvx to v1.52.0 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1844
+* Bump ajv from 6.12.6 to 6.14.0 by @dependabot[bot] in https://github.com/ral-facilities/datagateway/pull/1845
+* Update dependency @vitejs/plugin-react to v5.1.4 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1823
+* Update actions/setup-java action to v5.2.0 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1824
+* Update dependency @testing-library/react to v16 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1758
+* Update dependency browserslist to v4.28.1 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1848
+* Update dependency start-server-and-test to v2.1.3 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1851
+* Update dependency fastq to v1.20.1 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1849
+* Update dependency lint-staged to v16.2.7 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1813
+* Update docker/login-action action to v3.7.0 - autoclosed by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1854
+* Bump minimatch from 3.1.2 to 3.1.4 by @dependabot[bot] in https://github.com/ral-facilities/datagateway/pull/1855
+* Update docker/build-push-action action to v6.19.2 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1853
+* Update dependency cypress to v15 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1798
+* Update docker/metadata-action action to v5.10.0 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1856
+* Update softprops/action-gh-release action to v2.5.0 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1858
+* Update Node.js to v24.14.0 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1857
+* Bump rollup from 4.44.0 to 4.59.0 by @dependabot[bot] in https://github.com/ral-facilities/datagateway/pull/1859
+* Migrate Renovate config by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1860
+* Update dependency @mui/x-date-pickers to v6.20.2 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1749
+* Update tanstack-query monorepo to v4.43.0 (minor) by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1861
+* Update actions/checkout action to v6 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1862
+* Update react monorepo (minor) by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1750
+* Update actions/setup-node action to v6 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1863
+* Update actions/setup-python action to v6 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1864
+* Update actions/upload-artifact action to v7 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1865
+* Update dependency p-limit to v7 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1870
+* Update dependency p-queue to v9 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1871
+* Update dependency cypress to v15.11.0 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1873
+* Update dependency p-throttle to v8 by @renovate[bot] in https://github.com/ral-facilities/datagateway/pull/1872
+
+**Full Changelog**: https://github.com/ral-facilities/datagateway/compare/v2.2.0...v3.0.0
+
 ## [v2.2.0](https://github.com/ral-facilities/datagateway/tree/v2.2.0) (2025-05-16)
 
 ## What's Changed
