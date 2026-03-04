@@ -140,7 +140,7 @@ export interface EntityImageDetails {
 export interface EntityCardDetails {
   label: string;
   content?: React.ReactNode;
-  icon?: React.ComponentType<unknown>;
+  icon?: React.ElementType;
 }
 
 interface EntityCardProps {
@@ -287,7 +287,6 @@ const EntityCard = React.memo((props: EntityCardProps): React.ReactElement => {
           title={image.title}
         />
       )}
-
       {/* Card content is a flexbox (as a row):
             - has a card information area (split in horizontally - column) for title/description and tags
             - has card details area which takes up smaller space */}
@@ -428,7 +427,7 @@ const EntityCard = React.memo((props: EntityCardProps): React.ReactElement => {
                 square
                 variant="outlined"
                 expanded={isMoreInfoCollapsed}
-                onChange={(e, expanded) => setMoreInfoCollapsed(expanded)}
+                onChange={(_e, expanded) => setMoreInfoCollapsed(expanded)}
                 className="tour-dataview-expand"
               >
                 <AccordionSummary

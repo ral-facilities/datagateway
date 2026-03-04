@@ -1,19 +1,20 @@
+import { Grid, Paper, Typography } from '@mui/material';
 import {
   ColumnType,
-  DatafileDetailsPanel,
   DLSDatafileDetailsPanel,
-  formatBytes,
+  DatafileDetailsPanel,
+  FACILITY_NAME,
   ISISDatafileDetailsPanel,
-  parseSearchToQuery,
   SearchFilter,
   SearchResponse,
   SearchResultSource,
+  ConnectedTable as Table,
   buildDatafileTableUrlForDataset,
   buildDatasetLandingUrl,
   buildUrlToDatafileTableContainingDatafile,
-  FACILITY_NAME,
+  formatBytes,
   isLandingPageSupportedForHierarchy,
-  Table,
+  parseSearchToQuery,
   tableLink,
   useAddToCart,
   useCart,
@@ -21,18 +22,17 @@ import {
   useRemoveFromCart,
   useSort,
 } from 'datagateway-common';
-import type { TableCellProps } from 'react-virtualized';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { StateType } from '../state/app.types';
-import { Grid, Paper, Typography } from '@mui/material';
+import type { TableCellProps } from 'react-virtualized';
 import FacetPanel from '../facet/components/facetPanel/facetPanel.component';
+import SelectedFilterChips from '../facet/components/selectedFilterChips.component';
 import { facetClassificationFromSearchResponses } from '../facet/facet';
 import useFacetFilters from '../facet/useFacetFilters';
-import SelectedFilterChips from '../facet/components/selectedFilterChips.component';
 import { useSearchResultCounter } from '../searchTabs/useSearchResultCounter';
+import { StateType } from '../state/app.types';
 
 interface DatafileSearchTableProps {
   hierarchy: string;
@@ -50,8 +50,8 @@ const DatafileSearchTable: React.FC<DatafileSearchTableProps> = (props) => {
     queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
-  const selectAllSetting = useSelector(
-    (state: StateType) => state.dgsearch.selectAllSetting
+  const disableSelectAll = useSelector(
+    (state: StateType) => state.dgcommon.features?.disableSelectAll ?? false
   );
 
   const minNumResults = useSelector(
@@ -172,10 +172,9 @@ const DatafileSearchTable: React.FC<DatafileSearchTableProps> = (props) => {
 
   const handleSort = useSort();
 
-  const loadMoreRows = React.useCallback(
-    (_) => fetchNextPage(),
-    [fetchNextPage]
-  );
+  const loadMoreRows: NonNullable<
+    React.ComponentProps<typeof Table>['loadMoreRows']
+  > = React.useCallback((_) => fetchNextPage(), [fetchNextPage]);
 
   const removeFilterChip = (
     dimension: string,
@@ -191,11 +190,11 @@ const DatafileSearchTable: React.FC<DatafileSearchTableProps> = (props) => {
           (cartItem) =>
             cartItem.entityType === 'datafile' &&
             // if select all is disabled, it's safe to just pass the whole cart as selectedRows
-            (!selectAllSetting ||
+            (disableSelectAll ||
               (aggregatedIds && aggregatedIds.includes(cartItem.entityId)))
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, selectAllSetting, aggregatedIds]
+    [cartItems, disableSelectAll, aggregatedIds]
   );
 
   const columns: ColumnType[] = React.useMemo(
@@ -377,12 +376,11 @@ const DatafileSearchTable: React.FC<DatafileSearchTableProps> = (props) => {
                   data={aggregatedSource}
                   loadMoreRows={loadMoreRows}
                   totalRowCount={
-                    aggregatedSource?.length + (hasNextPage ? 1 : 0) ?? 0
+                    aggregatedSource.length + (hasNextPage ? 1 : 0)
                   }
                   sort={{}}
                   onSort={handleSort}
                   selectedRows={selectedRows}
-                  disableSelectAll={!selectAllSetting}
                   allIds={aggregatedIds}
                   onCheck={addToCart}
                   onUncheck={removeFromCart}

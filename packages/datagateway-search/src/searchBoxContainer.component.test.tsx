@@ -1,21 +1,21 @@
+import type { RenderResult } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import * as React from 'react';
 import { Provider } from 'react-redux';
-import type { RenderResult } from '@testing-library/react';
-import { render, screen } from '@testing-library/react';
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router-dom';
 import type { DeepPartial } from 'redux';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 import type { StateType } from './state/app.types';
 
 import SearchBoxContainer from './searchBoxContainer.component';
 import SearchBoxContainerSide from './searchBoxContainerSide.component';
 
-jest.mock('loglevel');
+vi.mock('loglevel');
 
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useSelector: jest.fn(),
+vi.mock('react-redux', async () => ({
+  ...(await vi.importActual('react-redux')),
+  useSelector: vi.fn(),
 }));
 
 describe('SearchBoxContainer - Tests', () => {
@@ -27,11 +27,11 @@ describe('SearchBoxContainer - Tests', () => {
         <MemoryRouter>
           <SearchBoxContainer
             restrict={false}
-            initiateSearch={jest.fn()}
+            initiateSearch={vi.fn()}
             loggedInAnonymously={true}
-            onSearchTextChange={jest.fn()}
+            onSearchTextChange={vi.fn()}
             searchText="initial search text"
-            onMyDataCheckboxChange={jest.fn()}
+            onMyDataCheckboxChange={vi.fn()}
             {...props}
           />
         </MemoryRouter>
@@ -60,7 +60,9 @@ describe('SearchBoxContainer - Tests', () => {
 
     // search toggle dropdown should be visible
     expect(
-      screen.getByRole('button', { name: 'searchBox.checkboxes.types (2)' })
+      within(
+        screen.getByRole('combobox', { name: 'searchBox.checkboxes.types' })
+      ).getByText('searchBox.checkboxes.types (2)')
     ).toBeInTheDocument();
 
     // date select should be visible
@@ -74,7 +76,7 @@ describe('SearchBoxContainer - Tests', () => {
     // sort select should be visible
     // default value is sort by score
     expect(
-      screen.getByRole('button', { name: 'sort.label sort._score' })
+      screen.getByRole('combobox', { name: 'sort.label' })
     ).toBeInTheDocument();
 
     // logged in anonymously so my data checkbox should be hidden
@@ -118,11 +120,11 @@ describe('SearchBoxContainerSide - Tests', () => {
         <MemoryRouter>
           <SearchBoxContainerSide
             restrict={false}
-            initiateSearch={jest.fn()}
+            initiateSearch={vi.fn()}
             loggedInAnonymously={true}
-            onSearchTextChange={jest.fn()}
+            onSearchTextChange={vi.fn()}
             searchText=""
-            onMyDataCheckboxChange={jest.fn()}
+            onMyDataCheckboxChange={vi.fn()}
             {...props}
           />
         </MemoryRouter>
@@ -149,7 +151,9 @@ describe('SearchBoxContainerSide - Tests', () => {
 
     // search toggle dropdown should be visible
     expect(
-      screen.getByRole('button', { name: 'searchBox.checkboxes.types (2)' })
+      within(
+        screen.getByRole('combobox', { name: 'searchBox.checkboxes.types' })
+      ).getByText('searchBox.checkboxes.types (2)')
     ).toBeInTheDocument();
 
     // date select should be visible

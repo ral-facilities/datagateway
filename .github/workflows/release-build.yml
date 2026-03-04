@@ -4,7 +4,7 @@ on:
     branches:
       - main
       - develop
-    tags: 
+    tags:
       - '*'
 
 jobs:
@@ -14,12 +14,12 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Setup Node.js
-        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
-          node-version: 20
+          node-version: 24
           cache: 'yarn'
 
       - name: Install dependencies
@@ -40,29 +40,29 @@ jobs:
       - name: Build datagateway-dataview
         run: |
           cd packages/datagateway-dataview
-          echo "REACT_APP_DATAVIEW_BUILD_DIRECTORY=/plugins/datagateway-dataview/" > .env.production
+          echo "VITE_DATAVIEW_BUILD_DIRECTORY=/plugins/datagateway-dataview/" > .env.production
           yarn build
-          mv build datagateway-dataview-$TAG_NAME
+          mv dist datagateway-dataview-$TAG_NAME
           tar -czf ../../datagateway-dataview-$TAG_NAME.tar.gz datagateway-dataview-$TAG_NAME
 
       - name: Build datagateway-download
         run: |
           cd packages/datagateway-download
-          echo "REACT_APP_DOWNLOAD_BUILD_DIRECTORY=/plugins/datagateway-download/" > .env.production
+          echo "VITE_DOWNLOAD_BUILD_DIRECTORY=/plugins/datagateway-download/" > .env.production
           yarn build
-          mv build datagateway-download-$TAG_NAME
+          mv dist datagateway-download-$TAG_NAME
           tar -czf ../../datagateway-download-$TAG_NAME.tar.gz datagateway-download-$TAG_NAME
 
       - name: Build datagateway-search
         run: |
           cd packages/datagateway-search
-          echo "REACT_APP_SEARCH_BUILD_DIRECTORY=/plugins/datagateway-search/" > .env.production
+          echo "VITE_SEARCH_BUILD_DIRECTORY=/plugins/datagateway-search/" > .env.production
           yarn build
-          mv build datagateway-search-$TAG_NAME
+          mv dist datagateway-search-$TAG_NAME
           tar -czf ../../datagateway-search-$TAG_NAME.tar.gz datagateway-search-$TAG_NAME
 
       - name: Update snapshot tag
-        uses: richardsimko/update-tag@e173a8ef8f54ab526a91dad6139a25efed62424c # v1
+        uses: richardsimko/update-tag@aab2434e9a5040687874aa39d1c6377ec0cb0d94 # v1.1.6
         with:
           tag_name: ${{ env.TAG_NAME }}
         env:
@@ -70,7 +70,7 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' }}
 
       - name: Create/update release
-        uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.0.8
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           files: |

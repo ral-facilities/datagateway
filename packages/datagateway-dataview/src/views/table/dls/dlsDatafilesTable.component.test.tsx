@@ -1,3 +1,13 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  render,
+  screen,
+  waitFor,
+  within,
+  type RenderResult,
+} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
 import {
   Datafile,
   dGCommonInitialState,
@@ -8,48 +18,35 @@ import {
   useIds,
   useRemoveFromCart,
 } from 'datagateway-common';
-import * as React from 'react';
+import { createMemoryHistory, type History } from 'history';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { StateType } from '../../../state/app.types';
-import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
-import DLSDatafilesTable from './dlsDatafilesTable.component';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { createMemoryHistory, type History } from 'history';
 import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
   findAllRows,
   findCellInRow,
   findColumnHeaderByName,
   findColumnIndexByName,
   findRowAt,
 } from '../../../setupTests';
-import {
-  render,
-  type RenderResult,
-  screen,
-  waitFor,
-  within,
-} from '@testing-library/react';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
-import userEvent from '@testing-library/user-event';
+import { StateType } from '../../../state/app.types';
+import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
+import DLSDatafilesTable from './dlsDatafilesTable.component';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    useDatafileCount: jest.fn(),
-    useDatafilesInfinite: jest.fn(),
-    useIds: jest.fn(),
-    useCart: jest.fn(),
-    useAddToCart: jest.fn(),
-    useRemoveFromCart: jest.fn(),
-    downloadDatafile: jest.fn(),
+    useDatafileCount: vi.fn(),
+    useDatafilesInfinite: vi.fn(),
+    useIds: vi.fn(),
+    useCart: vi.fn(),
+    useAddToCart: vi.fn(),
+    useRemoveFromCart: vi.fn(),
+    downloadDatafile: vi.fn(),
   };
 });
 
@@ -58,7 +55,7 @@ describe('DLS datafiles table component', () => {
   let state: StateType;
   let rowData: Datafile[];
   let history: History;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult =>
     render(
@@ -94,41 +91,59 @@ describe('DLS datafiles table component', () => {
       })
     );
 
-    (useCart as jest.Mock).mockReturnValue({
+    vi.mocked(useCart, { partial: true }).mockReturnValue({
       data: [],
       isLoading: false,
     });
-    (useDatafileCount as jest.Mock).mockReturnValue({
+    vi.mocked(useDatafileCount, { partial: true }).mockReturnValue({
       data: 0,
     });
-    (useDatafilesInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
+    vi.mocked(useDatafilesInfinite, { partial: true }).mockReturnValue({
+      data: { pages: [rowData], pageParams: [] },
+      fetchNextPage: vi.fn(),
     });
-    (useIds as jest.Mock).mockReturnValue({
+    vi.mocked(useIds, { partial: true }).mockReturnValue({
       data: [1],
       isLoading: false,
     });
-    (useAddToCart as jest.Mock).mockReturnValue({
-      mutate: jest.fn(),
+    vi.mocked(useAddToCart, { partial: true }).mockReturnValue({
+      mutate: vi.fn(),
       isLoading: false,
     });
-    (useRemoveFromCart as jest.Mock).mockReturnValue({
-      mutate: jest.fn(),
+    vi.mocked(useRemoveFromCart, { partial: true }).mockReturnValue({
+      mutate: vi.fn(),
       isLoading: false,
     });
+
+    axios.get = vi
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/\/datafiles$/.test(url)) {
+          return Promise.resolve({
+            data: rowData,
+          });
+        }
+
+        return Promise.reject(`Endpoint not mocked: ${url}`);
+      });
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly', async () => {
     renderComponent();
 
-    const rows = await findAllRows();
-    // should have 1 row in the table
-    expect(rows).toHaveLength(1);
+    let rows: HTMLElement[] = [];
+    await waitFor(
+      async () => {
+        rows = await findAllRows();
+        // should have 1 row in the table
+        expect(rows).toHaveLength(1);
+      },
+      { timeout: 5_000 }
+    );
 
     expect(await findColumnHeaderByName('datafiles.name')).toBeInTheDocument();
     expect(
@@ -198,8 +213,6 @@ describe('DLS datafiles table component', () => {
   });
 
   it('updates filter query params on date filter', async () => {
-    applyDatePickerWorkaround();
-
     renderComponent();
 
     const filterInput = await screen.findByRole('textbox', {
@@ -222,12 +235,13 @@ describe('DLS datafiles table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
-
-    cleanupDatePickerWorkaround();
   });
 
-  it('uses default sort', () => {
+  it('uses default sort', async () => {
     renderComponent();
+
+    expect(await screen.findAllByRole('gridcell')).toBeTruthy();
+
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"asc"}')}`
@@ -256,10 +270,10 @@ describe('DLS datafiles table component', () => {
   });
 
   it('calls addToCart mutate function on unchecked checkbox click', async () => {
-    const addToCart = jest.fn();
-    (useAddToCart as jest.Mock).mockReturnValue({
+    const addToCart = vi.fn();
+    vi.mocked(useAddToCart, { partial: true }).mockReturnValue({
       mutate: addToCart,
-      loading: false,
+      isLoading: false,
     });
     renderComponent();
 
@@ -271,7 +285,7 @@ describe('DLS datafiles table component', () => {
   });
 
   it('calls removeFromCart mutate function on checked checkbox click', async () => {
-    (useCart as jest.Mock).mockReturnValue({
+    vi.mocked(useCart, { partial: true }).mockReturnValue({
       data: [
         {
           entityId: 1,
@@ -284,10 +298,10 @@ describe('DLS datafiles table component', () => {
       isLoading: false,
     });
 
-    const removeFromCart = jest.fn();
-    (useRemoveFromCart as jest.Mock).mockReturnValue({
+    const removeFromCart = vi.fn();
+    vi.mocked(useRemoveFromCart, { partial: true }).mockReturnValue({
       mutate: removeFromCart,
-      loading: false,
+      isLoading: false,
     });
 
     renderComponent();
@@ -300,7 +314,7 @@ describe('DLS datafiles table component', () => {
   });
 
   it('selected rows only considers relevant cart items', async () => {
-    (useCart as jest.Mock).mockReturnValueOnce({
+    vi.mocked(useCart, { partial: true }).mockReturnValueOnce({
       data: [
         {
           entityId: 1,
@@ -330,8 +344,8 @@ describe('DLS datafiles table component', () => {
     expect(selectAllCheckbox).toHaveAttribute('data-indeterminate', 'false');
   });
 
-  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', async () => {
-    state.dgdataview.selectAllSetting = false;
+  it('no select all checkbox appears and no fetchAllIds sent if disableSelectAll is true', async () => {
+    state.dgcommon.features = { disableSelectAll: true };
 
     renderComponent();
 
@@ -343,15 +357,22 @@ describe('DLS datafiles table component', () => {
   });
 
   it("doesn't display download button for datafiles with no location", async () => {
-    (useDatafilesInfinite as jest.Mock).mockReturnValueOnce([
-      {
-        id: 1,
-        name: 'Test 1',
-        fileSize: 1,
-        modTime: '2019-07-23',
-        createTime: '2019-07-23',
+    vi.mocked(useDatafilesInfinite, { partial: true }).mockReturnValueOnce({
+      data: {
+        pages: [
+          [
+            {
+              id: 1,
+              name: 'Test 1',
+              fileSize: 1,
+              modTime: '2019-07-23',
+              createTime: '2019-07-23',
+            },
+          ],
+        ],
+        pageParams: [],
       },
-    ]);
+    });
 
     renderComponent();
 

@@ -1,31 +1,29 @@
-import React from 'react';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import ConfirmationNumber from '@mui/icons-material/ConfirmationNumber';
+import Subject from '@mui/icons-material/Subject';
 import {
-  Subject,
-  ConfirmationNumber,
-  CalendarToday,
-} from '@mui/icons-material';
-import {
-  Table,
-  datasetLink,
+  ColumnType,
   Dataset,
+  DatasetDetailsPanel,
+  ConnectedTable as Table,
+  datasetLink,
+  parseSearchToQuery,
+  useAddToCart,
+  useCart,
   useDatasetCount,
   useDatasetsInfinite,
-  parseSearchToQuery,
-  useTextFilter,
   useDateFilter,
-  ColumnType,
-  useSort,
   useIds,
-  useCart,
-  useAddToCart,
   useRemoveFromCart,
-  DatasetDetailsPanel,
+  useSort,
+  useTextFilter,
 } from 'datagateway-common';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { StateType } from '../../state/app.types';
+import { useLocation } from 'react-router-dom';
 import { IndexRange } from 'react-virtualized';
+import { StateType } from '../../state/app.types';
 
 interface DatasetTableProps {
   investigationId: string;
@@ -38,8 +36,8 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
 
   const location = useLocation();
 
-  const selectAllSetting = useSelector(
-    (state: StateType) => state.dgdataview.selectAllSetting
+  const disableSelectAll = useSelector(
+    (state: StateType) => state.dgcommon.features?.disableSelectAll ?? false
   );
 
   const { filters, sort, view } = React.useMemo(
@@ -51,7 +49,7 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
   const dateFilter = useDateFilter(filters);
   const handleSort = useSort();
 
-  const { data: allIds, isLoading: allIdsLoading } = useIds(
+  const { data: allIds, isInitialLoading: allIdsLoading } = useIds(
     'dataset',
     [
       {
@@ -61,7 +59,7 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
         }),
       },
     ],
-    selectAllSetting
+    !disableSelectAll
   );
   const { data: cartItems, isLoading: cartLoading } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } =
@@ -150,11 +148,10 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
           (cartItem) =>
             cartItem.entityType === 'dataset' &&
             // if select all is disabled, it's safe to just pass the whole cart as selectedRows
-            (!selectAllSetting ||
-              (allIds && allIds.includes(cartItem.entityId)))
+            (disableSelectAll || (allIds && allIds.includes(cartItem.entityId)))
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, selectAllSetting, allIds]
+    [cartItems, disableSelectAll, allIds]
   );
 
   const isParentSelected = React.useMemo(() => {
@@ -183,7 +180,6 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}
-      disableSelectAll={!selectAllSetting}
       detailsPanel={DatasetDetailsPanel}
       columns={columns}
     />

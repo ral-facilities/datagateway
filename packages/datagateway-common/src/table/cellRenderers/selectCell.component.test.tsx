@@ -1,14 +1,13 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import React from 'react';
 import SelectCell from './selectCell.component';
 
 describe('Select cell component', () => {
-  let user: UserEvent;
-  const setLastChecked = jest.fn();
-  const onCheck = jest.fn();
-  const onUncheck = jest.fn();
+  let user: ReturnType<typeof userEvent.setup>;
+  const setLastChecked = vi.fn();
+  const onCheck = vi.fn();
+  const onUncheck = vi.fn();
   const data = [
     {
       id: 1,

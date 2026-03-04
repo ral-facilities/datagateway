@@ -1,32 +1,27 @@
-import axios, { AxiosError } from 'axios';
-import { useSelector } from 'react-redux';
-import handleICATError from '../handleICATError';
-import { readSciGatewayToken } from '../parseTokens';
 import {
+  UseMutationOptions,
+  UseMutationResult,
+  UseQueryOptions,
+  UseQueryResult,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
+import axios, { AxiosError } from 'axios';
+import { format } from 'date-fns';
+import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import {
+  AccessMethods,
   Download,
   DownloadCart,
   DownloadCartItem,
-  DownloadTypeStatus,
-  MicroFrontendId,
   SubmitCart,
 } from '../app.types';
+import handleICATError from '../handleICATError';
+import { readSciGatewayToken } from '../parseTokens';
 import { StateType } from '../state/app.types';
-import {
-  useQuery,
-  UseQueryResult,
-  useQueryClient,
-  useMutation,
-  UseMutationResult,
-  UseQueryOptions,
-  useQueries,
-  UseMutationOptions,
-} from 'react-query';
 import { useRetryICATErrors } from './retryICATErrors';
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { NotificationType } from '../state/actions/actions.types';
-import { TFunction } from 'i18next';
-import { format } from 'date-fns';
 
 export const fetchDownloadCart = (config: {
   facilityName: string;
@@ -74,7 +69,7 @@ export const useCart = (): UseQueryResult<DownloadCartItem[], AxiosError> => {
   );
   const retryICATErrors = useRetryICATErrors();
   return useQuery(
-    'cart',
+    ['cart'],
     () =>
       fetchDownloadCart({
         facilityName,
@@ -112,7 +107,7 @@ export const useAddToCart = (
       }),
     {
       onSuccess: (data) => {
-        queryClient.setQueryData('cart', data);
+        queryClient.setQueryData(['cart'], data);
       },
       retry: (failureCount, error) => {
         // if we get 431 we know this is an intermittent error so retry
@@ -153,7 +148,7 @@ export const useRemoveFromCart = (
       ),
     {
       onSuccess: (data) => {
-        queryClient.setQueryData('cart', data);
+        queryClient.setQueryData(['cart'], data);
       },
       retry: (failureCount, error) => {
         // if we get 431 we know this is an intermittent error so retry
@@ -170,106 +165,42 @@ export const useRemoveFromCart = (
   );
 };
 
-export const getDownloadTypeStatus: (
-  transportType: string,
+export const getDownloadTypes: (
   facilityName: string,
   downloadApiUrl: string
-) => Promise<DownloadTypeStatus> = (
-  transportType,
-  facilityName,
-  downloadApiUrl
-) =>
+) => Promise<AccessMethods> = (facilityName, downloadApiUrl) =>
   axios
-    // the server doesn't put the transport type into the response object
-    // it will be put in after the fact so that it is easier to work with
-    .get<Omit<DownloadTypeStatus, 'type'>>(
-      `${downloadApiUrl}/user/downloadType/${transportType}/status`,
-      {
-        params: {
-          sessionId: readSciGatewayToken().sessionId,
-          facilityName: facilityName,
-        },
-      }
-    )
-    .then((response) => ({
-      type: transportType,
-      ...response.data,
-    }));
-
-export const useDownloadTypeStatuses = <TData = DownloadTypeStatus>({
-  downloadTypes,
-  facilityName,
-  downloadApiUrl,
-  ...queryOptions
-}: {
-  downloadTypes: string[];
-  facilityName: string;
-  downloadApiUrl: string;
-} & UseQueryOptions<DownloadTypeStatus, AxiosError, TData>): UseQueryResult<
-  TData,
-  AxiosError
->[] => {
-  // Load the download settings for use
-  const [t] = useTranslation();
-
-  const queryCount = downloadTypes.length;
-  const loadedQueriesCount = React.useRef(0);
-  const downloadTypesWithError = React.useRef<string[]>([]);
-
-  function broadcastError(message: string): void {
-    document.dispatchEvent(
-      new CustomEvent(MicroFrontendId, {
-        detail: {
-          type: NotificationType,
-          payload: {
-            severity: 'error',
-            message,
-          },
-        },
-      })
+    .get<AccessMethods>(`${downloadApiUrl}/user/downloadType/status`, {
+      params: {
+        sessionId: readSciGatewayToken().sessionId,
+        facilityName: facilityName,
+      },
+    })
+    .then((response) =>
+      Object.fromEntries(
+        Object.entries(response.data).map(([id, accessMethod]) => [
+          id,
+          { ...accessMethod, idsUrl: accessMethod.idsUrl + '/ids' },
+        ])
+      )
     );
-  }
 
-  function handleQueryError(downloadType: string): void {
-    downloadTypesWithError.current.push(downloadType);
+export const useDownloadTypes = (
+  facilityName: string,
+  downloadApiUrl: string
+): UseQueryResult<AccessMethods, AxiosError> => {
+  const retryICATErrors = useRetryICATErrors();
 
-    if (loadedQueriesCount.current === queryCount) {
-      if (downloadTypesWithError.current.length === queryCount) {
-        broadcastError(t('downloadConfirmDialog.access_methods_error'));
-      } else {
-        downloadTypesWithError.current.forEach((type) => {
-          broadcastError(
-            t('downloadConfirmDialog.access_method_error', {
-              method: type.toUpperCase(),
-            })
-          );
-        });
-      }
+  return useQuery(
+    ['downloadtypes'],
+    () => getDownloadTypes(facilityName, downloadApiUrl),
+    {
+      onError: (error) => {
+        handleICATError(error);
+      },
+      retry: retryICATErrors,
     }
-  }
-
-  const queries = downloadTypes.map<
-    UseQueryOptions<DownloadTypeStatus, AxiosError, TData>
-  >((type) => ({
-    queryKey: ['download-type-status', type],
-    queryFn: () => getDownloadTypeStatus(type, facilityName, downloadApiUrl),
-    onSettled: (_, error) => {
-      loadedQueriesCount.current += 1;
-      if (error) handleQueryError(type);
-    },
-    ...queryOptions,
-    cacheTime: 0,
-    staleTime: 0,
-  }));
-
-  // I have spent hours on this trying to make the type work,
-  // but due to the limitation of TypeScript, it is basically impossible
-  // for the type system to infer the return type of select properly.
-  // https://github.com/TanStack/query/pull/2634#issuecomment-939537730
-  //
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  return useQueries(queries);
+  );
 };
 
 export type SubmitCartZipType = 'ZIP' | 'ZIP_AND_COMPRESS';
@@ -324,15 +255,12 @@ export const submitCart: (
 };
 
 export const getDefaultFileName = (
-  t: TFunction,
+  defaultFileNameFormat: string,
   substitutions?: Record<string, string>
 ): string => {
-  const filenameFormat = t(
-    'downloadConfirmDialog.download_name_default_format'
-  );
   let defaultName = '';
 
-  const formatArr = filenameFormat.split('_');
+  const formatArr = defaultFileNameFormat.split('_');
   const now = new Date(Date.now());
 
   formatArr.forEach((s) => {
@@ -396,7 +324,10 @@ export const useSubmitCart = (
     ({ transport, emailAddress, fileName: userFileName, zipType }) => {
       let fileName = userFileName;
       if (!fileName) {
-        fileName = getDefaultFileName(t, { facilityName });
+        fileName = getDefaultFileName(
+          t('downloadConfirmDialog.download_name_cart_default_format'),
+          { facilityName }
+        );
       }
       return submitCart(
         transport,
@@ -414,7 +345,7 @@ export const useSubmitCart = (
       },
 
       onSettled: () => {
-        queryClient.invalidateQueries('cart');
+        queryClient.invalidateQueries(['cart']);
       },
 
       ...(options ?? {}),
@@ -559,7 +490,7 @@ export const queueVisit: (
 
 export interface QueueVisitParams
   extends Pick<SubmitCartParams, 'emailAddress' | 'transport' | 'fileName'> {
-  visitId: string;
+  entityId: string;
 }
 
 /**
@@ -583,9 +514,86 @@ export const useQueueVisit = (
   RollbackFunction
 > => {
   return useMutation(
-    ({ transport, emailAddress, fileName, visitId }) =>
+    ({ transport, emailAddress, fileName, entityId }) =>
       queueVisit(
-        visitId,
+        entityId,
+        transport,
+        emailAddress,
+        fileName,
+        facilityName,
+        downloadApiUrl
+      ),
+    {
+      onError: (error, _, rollback) => {
+        handleICATError(error);
+        if (rollback) rollback();
+      },
+      ...(options ?? {}),
+    }
+  );
+};
+
+export const queueDataCollection: (
+  dataCollectionId: string,
+  transport: string,
+  emailAddress: string,
+  fileName: string | undefined,
+  facilityName: string,
+  downloadApiUrl: string
+) => Promise<string[]> = (
+  dataCollectionId,
+  transport,
+  emailAddress,
+  fileName,
+  facilityName,
+  downloadApiUrl
+) => {
+  const params = new URLSearchParams();
+
+  // Construct the form parameters.
+  params.append('sessionId', readSciGatewayToken().sessionId || '');
+  params.append('transport', transport);
+  params.append('email', emailAddress);
+  if (fileName) params.append('fileName', fileName);
+  params.append('dataCollectionId', dataCollectionId);
+  params.append('facilityName', facilityName);
+
+  return axios
+    .post<string[]>(`${downloadApiUrl}/user/queue/dataCollection`, params)
+    .then((response) => {
+      return response.data;
+    });
+};
+
+export interface QueueDataCollectionParams
+  extends Pick<SubmitCartParams, 'emailAddress' | 'transport' | 'fileName'> {
+  entityId: string;
+}
+
+/**
+ * A React hook for submitting a data collection to the queue.
+ * Returns the list of download ids for the submitted data collection,
+ * which can then be used to query more info.
+ */
+export const useQueueDataCollection = (
+  facilityName: string,
+  downloadApiUrl: string,
+  options?: UseMutationOptions<
+    string[],
+    AxiosError,
+    QueueVisitParams,
+    RollbackFunction
+  >
+): UseMutationResult<
+  string[],
+  AxiosError,
+  QueueVisitParams,
+  RollbackFunction
+> => {
+  return useMutation(
+    ({ transport, emailAddress, fileName, entityId }) =>
+      queueDataCollection(
+        entityId,
         transport,
         emailAddress,
         fileName,

@@ -8,7 +8,10 @@ import {
   Tabs,
   Typography,
 } from '@mui/material';
-import { CalendarToday, CheckCircle, Public, Save } from '@mui/icons-material';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import CheckCircle from '@mui/icons-material/CheckCircle';
+import Public from '@mui/icons-material/Public';
+import Save from '@mui/icons-material/Save';
 import {
   Dataset,
   formatBytes,
@@ -128,7 +131,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
           <Paper square elevation={0} sx={{ mx: -1.5, px: 1.5 }}>
             <Tabs
               value={value}
-              onChange={(event, newValue) => setValue(newValue)}
+              onChange={(_event, newValue) => setValue(newValue)}
               indicatorColor="secondary"
               textColor="secondary"
             >

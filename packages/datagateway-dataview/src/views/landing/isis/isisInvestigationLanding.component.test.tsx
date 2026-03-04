@@ -1,39 +1,38 @@
-import * as React from 'react';
-import ISISInvestigationLanding from './isisInvestigationLanding.component';
-import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
-import configureStore from 'redux-mock-store';
-import { StateType } from '../../../state/app.types';
-import {
-  DataPublication,
-  dGCommonInitialState,
-  Investigation,
-  useDataPublication,
-  useDataPublications,
-  useInvestigation,
-} from 'datagateway-common';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
-import { createMemoryHistory, History } from 'history';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { generatePath, Router } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   render,
   screen,
   within,
   type RenderResult,
 } from '@testing-library/react';
-import { paths } from '../../../page/pageContainer.component';
 import userEvent from '@testing-library/user-event';
+import {
+  DataPublication,
+  Investigation,
+  dGCommonInitialState,
+  useDataPublication,
+  useDataPublicationsByFilters,
+  useEntity,
+} from 'datagateway-common';
+import { History, createMemoryHistory } from 'history';
+import { Provider } from 'react-redux';
+import { Router, generatePath } from 'react-router-dom';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { paths } from '../../../page/pageContainer.component';
+import { StateType } from '../../../state/app.types';
+import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
+import ISISInvestigationLanding from './isisInvestigationLanding.component';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    useInvestigation: jest.fn(),
-    useDataPublication: jest.fn(),
-    useDataPublications: jest.fn(),
+    useEntity: vi.fn(),
+    useDataPublication: vi.fn(),
+    useDataPublicationsByFilters: vi.fn(),
   };
 });
 
@@ -60,7 +59,7 @@ describe('ISIS Investigation Landing page', () => {
   const investigationUser = [
     {
       id: 1,
-      role: 'principal_experimenter',
+      role: 'PI',
       user: {
         id: 1,
         name: 'JS',
@@ -111,12 +110,18 @@ describe('ISIS Investigation Landing page', () => {
     },
   ];
 
-  let initialInvestigationData: Investigation[] = [];
+  // dummy data to stop TS from complaining, gets overwritten in beforeEach
+  let initialInvestigationData: Investigation = {
+    id: 1,
+    visitId: '1',
+    title: '1',
+    name: '1',
+  };
 
   const users = [
     {
       id: 1,
-      contributorType: 'principal_experimenter',
+      contributorType: 'PI',
       fullName: 'John Smith',
     },
     {
@@ -151,6 +156,7 @@ describe('ISIS Investigation Landing page', () => {
         dgcommon: dGCommonInitialState,
       })
     );
+    state.dgdataview.pluginHost = '/test/';
     history = createMemoryHistory({
       initialEntries: [
         generatePath(paths.landing.isisInvestigationLanding, {
@@ -162,63 +168,61 @@ describe('ISIS Investigation Landing page', () => {
     });
     user = userEvent.setup();
 
-    initialInvestigationData = [
-      {
-        id: 1,
-        title: 'Test title 1',
-        name: 'Test 1',
-        fileSize: 1,
-        fileCount: 1,
-        summary: 'foo bar',
-        visitId: 'visit id 1',
-        doi: 'doi 1',
-        facility: {
-          id: 17,
-          name: 'LILS',
-        },
-        investigationInstruments: [
-          {
-            id: 1,
-            instrument: {
-              id: 3,
-              name: 'LARMOR',
-            },
-          },
-        ],
-        dataCollectionInvestigations: [
-          {
-            id: 1,
-            dataCollection: {
-              id: 11,
-              dataPublications: [
-                {
-                  id: 7,
-                  pid: 'Data Publication Pid',
-                  description: 'Data Publication description',
-
-                  title: 'Data Publication',
-                  type: { id: 12, name: 'study' },
-                },
-              ],
-            },
-          },
-        ],
-        startDate: '2019-06-10',
-        endDate: '2019-06-11',
-        datasets: [
-          {
-            id: 1,
-            name: 'dataset 1',
-            doi: 'dataset doi',
-            modTime: '2019-06-10',
-            createTime: '2019-06-10',
-          },
-        ],
-        investigationUsers: investigationUser,
-        publications: publication,
-        samples: sample,
+    initialInvestigationData = {
+      id: 1,
+      title: 'Test title 1',
+      name: 'Test 1',
+      fileSize: 1,
+      fileCount: 1,
+      summary: 'foo bar',
+      visitId: 'visit id 1',
+      doi: 'doi 1',
+      facility: {
+        id: 17,
+        name: 'LILS',
       },
-    ];
+      investigationInstruments: [
+        {
+          id: 1,
+          instrument: {
+            id: 3,
+            name: 'LARMOR',
+          },
+        },
+      ],
+      dataCollectionInvestigations: [
+        {
+          id: 1,
+          dataCollection: {
+            id: 11,
+            dataPublications: [
+              {
+                id: 7,
+                pid: 'Data Publication Pid',
+                description: 'Data Publication description',
+
+                title: 'Data Publication',
+                type: { id: 12, name: 'study' },
+              },
+            ],
+          },
+        },
+      ],
+      startDate: '2019-06-10',
+      endDate: '2019-06-11',
+      datasets: [
+        {
+          id: 1,
+          name: 'dataset 1',
+          doi: 'dataset doi',
+          modTime: '2019-06-10',
+          createTime: '2019-06-10',
+        },
+      ],
+      investigationUsers: investigationUser,
+      publications: publication,
+      samples: sample,
+    };
 
     initialStudyDataPublicationData = [
       {
@@ -239,7 +243,7 @@ describe('ISIS Investigation Landing page', () => {
         dataCollectionInvestigations: [
           {
             id: 9,
-            investigation: initialInvestigationData[0],
+            investigation: initialInvestigationData,
           },
         ],
       },
@@ -250,28 +254,36 @@ describe('ISIS Investigation Landing page', () => {
       },
     };
 
-    (useInvestigation as jest.Mock).mockReturnValue({
+    vi.mocked(useEntity, { partial: true }).mockReturnValue({
       data: initialInvestigationData,
     });
 
-    (useDataPublication as jest.Mock).mockReturnValue({
+    vi.mocked(useDataPublication, { partial: true }).mockReturnValue({
       data: initialDataPublicationData,
     });
 
-    (useDataPublications as jest.Mock).mockReturnValue({
+    vi.mocked(useDataPublicationsByFilters, { partial: true }).mockReturnValue({
       data: initialStudyDataPublicationData,
     });
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
-  it('renders correctly for facility cycle hierarchy', () => {
+  it('renders correctly for facility cycle hierarchy', async () => {
     renderComponent();
 
     // branding should be visible
-    expect(screen.getByRole('img', { name: 'STFC Logo' })).toBeInTheDocument();
+    expect(
+      await screen.findByRole('img', { name: 'STFC Logo' })
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByRole('img', { name: 'STFC Logo' })
+    ).toHaveAttribute(
+      'src',
+      expect.stringMatching(/\/(.*)stfc-logo-white-text\.png/)
+    );
     expect(
       screen.getByText('doi_constants.branding.title')
     ).toBeInTheDocument();
@@ -333,15 +345,6 @@ describe('ISIS Investigation Landing page', () => {
     expect(screen.getByText('LILS')).toBeInTheDocument();
     expect(screen.getByText('investigations.instrument:')).toBeInTheDocument();
     expect(screen.getByText('LARMOR')).toBeInTheDocument();
-    expect(
-      screen.getByText('datapublications.details.format:')
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('link', { name: 'doi_constants.distribution.format' })
-    ).toHaveAttribute(
-      'href',
-      'https://www.isis.stfc.ac.uk/Pages/ISIS-Raw-File-Format.aspx'
-    );
     expect(screen.queryByText('investigations.release_date:')).toBeNull();
     expect(screen.getByText('investigations.start_date:')).toBeInTheDocument();
     expect(screen.getByText('2019-06-10')).toBeInTheDocument();
@@ -392,14 +395,14 @@ describe('ISIS Investigation Landing page', () => {
   });
 
   it('renders correctly for facility cycle hierarchy when no description, users, samples or publications', async () => {
-    initialInvestigationData[0].summary = undefined;
-    initialInvestigationData[0].publications = [];
-    initialInvestigationData[0].samples = [];
-    initialInvestigationData[0].investigationUsers = undefined;
+    initialInvestigationData.summary = undefined;
+    initialInvestigationData.publications = [];
+    initialInvestigationData.samples = [];
+    initialInvestigationData.investigationUsers = undefined;
 
     renderComponent();
 
-    expect(screen.getByText('Test title 1')).toBeInTheDocument();
+    expect(await screen.findByText('Test title 1')).toBeInTheDocument();
     expect(screen.getByText('Description not provided')).toBeInTheDocument();
 
     // no investigation samples, so show no samples message
@@ -416,7 +419,7 @@ describe('ISIS Investigation Landing page', () => {
     expect(screen.queryByText('investigations.details.users.label')).toBeNull();
   });
 
-  it('renders correctly for data publication hierarchy', () => {
+  it('renders correctly for data publication hierarchy', async () => {
     history.replace(
       generatePath(paths.dataPublications.landing.isisInvestigationLanding, {
         instrumentId: '4',
@@ -427,7 +430,15 @@ describe('ISIS Investigation Landing page', () => {
     renderComponent(true);
 
     // branding should be visible
-    expect(screen.getByRole('img', { name: 'STFC Logo' })).toBeInTheDocument();
+    expect(
+      await screen.findByRole('img', { name: 'STFC Logo' })
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByRole('img', { name: 'STFC Logo' })
+    ).toHaveAttribute(
+      'src',
+      expect.stringMatching(/(.*)stfc-logo-white-text\.png/)
+    );
     expect(
       screen.getByText('doi_constants.branding.title')
     ).toBeInTheDocument();
@@ -487,15 +498,6 @@ describe('ISIS Investigation Landing page', () => {
     expect(screen.getByText('investigations.instrument:')).toBeInTheDocument();
     expect(screen.getByText('LARMOR')).toBeInTheDocument();
     expect(
-      screen.getByText('datapublications.details.format:')
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('link', { name: 'doi_constants.distribution.format' })
-    ).toHaveAttribute(
-      'href',
-      'https://www.isis.stfc.ac.uk/Pages/ISIS-Raw-File-Format.aspx'
-    );
-    expect(
       screen.getByText('investigations.release_date:')
     ).toBeInTheDocument();
     expect(screen.getByText('2019-06-10')).toBeInTheDocument();
@@ -537,7 +539,7 @@ describe('ISIS Investigation Landing page', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders correctly for data publication hierarchy when no investigations or description', () => {
+  it('renders correctly for data publication hierarchy when no investigations or description', async () => {
     initialDataPublicationData.description = undefined;
     if (initialDataPublicationData.content?.dataCollectionInvestigations?.[0])
       initialDataPublicationData.content.dataCollectionInvestigations[0].investigation =
@@ -552,7 +554,9 @@ describe('ISIS Investigation Landing page', () => {
     );
     renderComponent(true);
 
-    expect(screen.getByText('Description not provided')).toBeInTheDocument();
+    expect(
+      await screen.findByText('Description not provided')
+    ).toBeInTheDocument();
 
     expect(
       screen.getByText(

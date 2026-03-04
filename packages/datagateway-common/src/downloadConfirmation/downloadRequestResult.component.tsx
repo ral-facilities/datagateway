@@ -1,10 +1,9 @@
 import { Button, Grid, Typography } from '@mui/material';
-import Mark from '../mark.component';
-import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import DialogContent from '../dialogContent.component';
+import DialogTitle from '../dialogTitle.component';
+import Mark from '../mark.component';
 import type DownloadRequestInfo from './DownloadRequestInfo';
-import DialogContent from './dialogContent.component';
-import DialogTitle from './dialogTitle.component';
 
 interface DownloadRequestResultComponentProps {
   /**
@@ -100,8 +99,11 @@ function DownloadRequestResult({
   const [t] = useTranslation();
 
   return (
-    <div>
-      <DialogTitle id="download-confirm-dialog-title" onClose={closeDialog} />
+    <>
+      <DialogTitle
+        onClose={closeDialog}
+        closeAriaLabel={t('downloadConfirmDialog.close_arialabel')}
+      />
 
       <DialogContent>
         <Grid
@@ -159,7 +161,7 @@ function DownloadRequestResult({
           )}
         </Grid>
       </DialogContent>
-    </div>
+    </>
   );
 }
 

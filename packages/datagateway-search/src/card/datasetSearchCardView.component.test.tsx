@@ -5,14 +5,13 @@ import {
   SearchResultSource,
   FACILITY_NAME,
 } from 'datagateway-common';
-import * as React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../state/app.types';
 import DatasetSearchCardView from './datasetSearchCardView.component';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createMemoryHistory, MemoryHistory } from 'history';
 import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
 import type { RenderResult } from '@testing-library/react';
@@ -43,7 +42,7 @@ describe('Dataset - Card View', () => {
   const mockAxiosGet = (url: string): Promise<Partial<AxiosResponse>> => {
     if (/\/datasets$/.test(url)) {
       return Promise.resolve({
-        data: [],
+        data: [cardData],
       });
     }
     if (/\/search\/documents$/.test(url)) {
@@ -115,13 +114,13 @@ describe('Dataset - Card View', () => {
       })
     );
 
-    (axios.get as jest.Mock).mockImplementation(mockAxiosGet);
+    vi.mocked(axios.get).mockImplementation(mockAxiosGet);
 
-    window.scrollTo = jest.fn();
+    window.scrollTo = vi.fn();
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('disables the search query if dataset search is disabled', async () => {
@@ -140,6 +139,10 @@ describe('Dataset - Card View', () => {
 
     expect(
       queryClient.getQueryState(['search', 'Dataset'], { exact: false })?.status
+    ).toBe('loading');
+    expect(
+      queryClient.getQueryState(['search', 'Dataset'], { exact: false })
+        ?.fetchStatus
     ).toBe('idle');
 
     expect(screen.queryAllByTestId('card')).toHaveLength(0);

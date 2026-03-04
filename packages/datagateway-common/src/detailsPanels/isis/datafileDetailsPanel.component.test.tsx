@@ -1,13 +1,11 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { RenderResult } from '@testing-library/react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { UserEvent } from '@testing-library/user-event/dist/types/setup';
 import axios from 'axios';
-import * as React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
 import { combineReducers, createStore } from 'redux';
-import type { StateType } from '../../../lib';
+import type { StateType } from '../../state/app.types';
 
 import type { Datafile } from '../../app.types';
 import dGCommonReducer from '../../state/reducers/dgcommon.reducer';
@@ -38,7 +36,7 @@ function renderComponent({
 
 describe('Datafile details panel component', () => {
   let rowData: Datafile;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   beforeEach(() => {
     user = userEvent.setup();
@@ -50,17 +48,22 @@ describe('Datafile details panel component', () => {
       createTime: '2019-06-11',
       description: 'Test description',
     };
-    axios.get = jest.fn().mockResolvedValue({
+    axios.get = vi.fn().mockResolvedValue({
       data: [rowData],
     });
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
-  it('should render correctly', () => {
+  it('should render correctly', async () => {
     const { asFragment } = renderComponent({ rowData });
+    expect(
+      await screen.findByRole('tablist', {
+        name: 'datafiles.details.tabs_label',
+      })
+    ).toBeInTheDocument();
     expect(asFragment()).toMatchSnapshot();
   });
 
@@ -108,7 +111,7 @@ describe('Datafile details panel component', () => {
     ).toBeVisible();
   });
 
-  it('should render parameters tab when present in the data', () => {
+  it('should render parameters tab when present in the data', async () => {
     rowData.parameters = [
       {
         id: 2,
@@ -160,6 +163,12 @@ describe('Datafile details panel component', () => {
       rowData,
     });
 
+    expect(
+      await screen.findByRole('tab', {
+        name: 'datafiles.details.parameters.label',
+      })
+    ).toBeInTheDocument();
+
     expect(asFragment()).toMatchSnapshot();
   });
 
@@ -177,7 +186,7 @@ describe('Datafile details panel component', () => {
       },
     ];
 
-    const mockDetailsPanelResize = jest.fn();
+    const mockDetailsPanelResize = vi.fn();
     renderComponent({
       rowData,
       detailsPanelResize: mockDetailsPanelResize,
@@ -211,7 +220,7 @@ describe('Datafile details panel component', () => {
         },
       },
     ];
-    const mockDetailsPanelResize = jest.fn();
+    const mockDetailsPanelResize = vi.fn();
 
     renderComponent({ rowData });
 
@@ -232,7 +241,7 @@ describe('Datafile details panel component', () => {
       createTime: '2019-06-11',
     };
 
-    axios.get = jest.fn().mockResolvedValue({
+    axios.get = vi.fn().mockResolvedValue({
       data: [rowData],
     });
 
@@ -245,7 +254,7 @@ describe('Datafile details panel component', () => {
 
   it('should render datafile parameters tab and text "No parameters" when no data is present', async () => {
     rowData.parameters = [];
-    axios.get = jest.fn().mockResolvedValue({
+    axios.get = vi.fn().mockResolvedValue({
       data: [rowData],
     });
 

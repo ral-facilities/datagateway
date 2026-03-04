@@ -1,37 +1,36 @@
+import Assessment from '@mui/icons-material/Assessment';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import Public from '@mui/icons-material/Public';
 import {
   Box,
   Divider,
   Grid,
   Link as MuiLink,
   Paper,
-  styled,
   Tab,
   Tabs,
   Typography,
+  styled,
 } from '@mui/material';
 import {
-  Assessment,
-  CalendarToday,
-  Public,
-  Storage,
-} from '@mui/icons-material';
-import {
-  DataPublication,
-  useDataPublication,
-  ArrowTooltip,
-  getTooltipText,
-  tableLink,
   AddToCartButton,
-  ViewsType,
-  parseSearchToQuery,
-  useDataPublications,
+  ArrowTooltip,
+  DataPublication,
   DownloadButton,
+  ViewsType,
+  getTooltipText,
+  parseSearchToQuery,
+  tableLink,
+  useDataPublication,
+  useDataPublicationsByFilters,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import Branding from './isisBranding.component';
-import CitationFormatter from '../../citationFormatter.component';
+import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
+import { StateType } from '../../../state/app.types';
+import CitationFormatter from '../../citationFormatter.component';
+import Branding from './isisBranding.component';
 
 const Subheading = styled(Typography)(({ theme }) => ({
   marginTop: theme.spacing(1),
@@ -173,6 +172,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     () => parseSearchToQuery(location.search),
     [location.search]
   );
+  const PIRole = useSelector((state: StateType) => state.dgdataview.PIRole);
 
   const [value, setValue] = React.useState<'details'>('details');
   const { dataPublicationId } = props;
@@ -181,7 +181,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     parseInt(dataPublicationId)
   );
 
-  const { data: investigationDataPublications } = useDataPublications([
+  const { data: investigationDataPublications } = useDataPublicationsByFilters([
     {
       filterType: 'where',
       filterValue: JSON.stringify({
@@ -234,7 +234,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       const fullname = user.fullName;
       if (fullname) {
         switch (user.contributorType) {
-          case 'principal_experimenter':
+          case PIRole:
             principals.push({
               fullName: fullname,
               contributorType: 'Principal Investigator',
@@ -260,7 +260,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     contacts.sort((a, b) => a.fullName.localeCompare(b.fullName));
     experimenters.sort((a, b) => a.fullName.localeCompare(b.fullName));
     return principals.concat(contacts, experimenters);
-  }, [studyDataPublication]);
+  }, [PIRole, studyDataPublication?.users]);
 
   React.useEffect(() => {
     const scriptId = `dataPublication-${dataPublicationId}`;
@@ -300,9 +300,15 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       }),
       includedInDataCatalog: {
         '@type': 'DataCatalog',
-        url: t('doi_constants.distribution.content_url'),
+        url: t('doi_constants.content_url'),
       },
-      license: t('doi_constants.distribution.license'),
+      license: {
+        '@type': 'URL',
+        url: t('doi_constants.license.url'),
+        name: t('doi_constants.license.name'),
+      },
+      isAccessibleForFree: true,
+      hasPart: investigationDataPublications?.map((dp) => dp.pid),
     });
 
     return () => {
@@ -311,7 +317,15 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         currentScript.remove();
       }
     };
-  }, [t, title, pid, dataPublicationId, description, formattedUsers]);
+  }, [
+    t,
+    title,
+    pid,
+    dataPublicationId,
+    description,
+    formattedUsers,
+    investigationDataPublications,
+  ]);
 
   const shortInfo = [
     {
@@ -331,15 +345,12 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       icon: <Public sx={shortInfoIconStyle} />,
     },
     {
-      content: function distributionFormat(entity: DataPublication) {
-        return (
-          <MuiLink href="http://www.isis.stfc.ac.uk/groups/computing/isis-raw-file-format11200.html">
-            {t('doi_constants.distribution.format')}
-          </MuiLink>
-        );
-      },
-      label: t('datapublications.details.format'),
-      icon: <Storage sx={shortInfoIconStyle} />,
+      content: (_dataPublication: DataPublication) => (
+        <MuiLink href={t('doi_constants.license.url')} target="_blank">
+          {t('doi_constants.license.name')}
+        </MuiLink>
+      ),
+      label: t('datapublications.details.license'),
     },
     {
       content: (dataPublication: DataPublication) =>
@@ -362,7 +373,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
           <Paper square elevation={0} sx={{ mx: -1.5, px: 1.5 }}>
             <Tabs
               value={value}
-              onChange={(event, newValue) => setValue(newValue)}
+              onChange={(_event, newValue) => setValue(newValue)}
               indicatorColor="secondary"
               textColor="secondary"
             >

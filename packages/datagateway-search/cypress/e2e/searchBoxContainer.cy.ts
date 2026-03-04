@@ -78,7 +78,7 @@ describe('SearchBoxContainer Component', () => {
     cy.get('.MuiFormHelperText-root').contains('Invalid date range');
   });
 
-  it('should display advanced help dialogue when advanced button is clicked', () => {
+  it('should display advanced help dialog when advanced button is clicked', () => {
     cy.findByRole('button', { name: 'search options' }).click();
 
     cy.get('[aria-labelledby="advanced-search-dialog-title"')

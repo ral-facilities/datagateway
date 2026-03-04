@@ -1,6 +1,5 @@
-const express = require('express');
-const path = require('path');
-const serveStatic = require('serve-static');
+import express from 'express';
+import path from 'path';
 
 const app = express();
 
@@ -18,12 +17,30 @@ app.get('/datagateway-download-settings.json', function (req, res) {
   );
 });
 
+app.get('/bioportal/*', async function (req, res) {
+  const newUrl =
+    'https://data.bioontology.org' + req.url.replace(/^\/bioportal/, '');
+  const newReq = new Request(newUrl, {
+    headers: {
+      ...req.headers,
+      referer: '',
+      authorization: `apikey token=${process.env.VITE_BIOPORTAL_API_KEY}`,
+    },
+  });
+
+  const response = await fetch(newReq);
+  const responseJson = await response.json();
+  res.send(responseJson);
+});
+
 app.use(
-  serveStatic(path.resolve('./build'), { index: ['index.html', 'index.htm'] })
+  express.static(path.resolve('./dist'), {
+    index: ['index.html', 'index.htm'],
+  })
 );
 
 app.get('/*', function (req, res) {
-  res.sendFile(path.resolve('./build/index.html'));
+  res.sendFile(path.resolve('./dist/index.html'));
 });
 
 app.listen(3000);

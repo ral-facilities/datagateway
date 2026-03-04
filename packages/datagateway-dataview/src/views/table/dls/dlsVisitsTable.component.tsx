@@ -1,27 +1,25 @@
+import Assessment from '@mui/icons-material/Assessment';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import Fingerprint from '@mui/icons-material/Fingerprint';
+import Save from '@mui/icons-material/Save';
 import {
-  Investigation,
-  Table,
-  tableLink,
   ColumnType,
+  DLSVisitDetailsPanel,
+  Investigation,
+  ConnectedTable as Table,
+  formatBytes,
   parseSearchToQuery,
+  tableLink,
   useDateFilter,
   useInvestigationCount,
   useInvestigationsInfinite,
   useSort,
   useTextFilter,
-  DLSVisitDetailsPanel,
-  formatBytes,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { IndexRange, TableCellProps } from 'react-virtualized';
-import {
-  Fingerprint,
-  Assessment,
-  CalendarToday,
-  Save,
-} from '@mui/icons-material';
 import { useLocation } from 'react-router-dom';
+import { IndexRange, TableCellProps } from 'react-virtualized';
 
 interface DLSVisitsTableProps {
   proposalName: string;

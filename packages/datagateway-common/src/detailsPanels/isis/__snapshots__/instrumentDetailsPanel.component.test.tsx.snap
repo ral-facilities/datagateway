@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Instrument details panel component should gracefully handle InstrumentScientists without Users 1`] = `
+exports[`Instrument details panel component > should gracefully handle InstrumentScientists without Users 1`] = `
 <DocumentFragment>
   <div
     data-testid="instrument-details-panel"
@@ -11,7 +11,7 @@ exports[`Instrument details panel component should gracefully handle InstrumentS
       class="MuiTabs-root css-1ujnqem-MuiTabs-root"
     >
       <div
-        class="MuiTabs-scrollableX MuiTabs-hideScrollbar css-agdkjh-MuiTabs-scrollbarSize"
+        class="MuiTabs-scrollableX MuiTabs-hideScrollbar css-oqr85h"
         style="width: 99px; height: 99px; position: absolute; top: -9999px; overflow: scroll;"
       />
       <div
@@ -126,7 +126,7 @@ exports[`Instrument details panel component should gracefully handle InstrumentS
           >
             <b>
               <a
-                class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
+                class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
                 href="www.example.com"
               >
                 www.example.com
@@ -156,7 +156,7 @@ exports[`Instrument details panel component should gracefully handle InstrumentS
 </DocumentFragment>
 `;
 
-exports[`Instrument details panel component should render correctly 1`] = `
+exports[`Instrument details panel component > should render correctly 1`] = `
 <DocumentFragment>
   <div
     data-testid="instrument-details-panel"
@@ -167,7 +167,7 @@ exports[`Instrument details panel component should render correctly 1`] = `
       class="MuiTabs-root css-1ujnqem-MuiTabs-root"
     >
       <div
-        class="MuiTabs-scrollableX MuiTabs-hideScrollbar css-agdkjh-MuiTabs-scrollbarSize"
+        class="MuiTabs-scrollableX MuiTabs-hideScrollbar css-oqr85h"
         style="width: 99px; height: 99px; position: absolute; top: -9999px; overflow: scroll;"
       />
       <div
@@ -268,7 +268,7 @@ exports[`Instrument details panel component should render correctly 1`] = `
           >
             <b>
               <a
-                class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
+                class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
                 href="www.example.com"
               >
                 www.example.com
@@ -282,7 +282,7 @@ exports[`Instrument details panel component should render correctly 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Instrument details panel component should render users tab when present in the data 1`] = `
+exports[`Instrument details panel component > should render users tab when present in the data 1`] = `
 <DocumentFragment>
   <div
     data-testid="instrument-details-panel"
@@ -293,7 +293,7 @@ exports[`Instrument details panel component should render users tab when present
       class="MuiTabs-root css-1ujnqem-MuiTabs-root"
     >
       <div
-        class="MuiTabs-scrollableX MuiTabs-hideScrollbar css-agdkjh-MuiTabs-scrollbarSize"
+        class="MuiTabs-scrollableX MuiTabs-hideScrollbar css-oqr85h"
         style="width: 99px; height: 99px; position: absolute; top: -9999px; overflow: scroll;"
       />
       <div
@@ -408,7 +408,7 @@ exports[`Instrument details panel component should render users tab when present
           >
             <b>
               <a
-                class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
+                class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
                 href="www.example.com"
               >
                 www.example.com

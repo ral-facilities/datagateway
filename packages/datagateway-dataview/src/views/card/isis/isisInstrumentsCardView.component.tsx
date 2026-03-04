@@ -1,5 +1,6 @@
 import { Link } from '@mui/material';
-import { Title, Link as LinkIcon } from '@mui/icons-material';
+import LinkIcon from '@mui/icons-material/Link';
+import Title from '@mui/icons-material/Title';
 import {
   CardView,
   CardViewDetails,

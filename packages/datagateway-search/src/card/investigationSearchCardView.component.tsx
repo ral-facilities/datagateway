@@ -1,10 +1,8 @@
-import {
-  Assessment,
-  CalendarToday,
-  Fingerprint,
-  Public,
-  Save,
-} from '@mui/icons-material';
+import Assessment from '@mui/icons-material/Assessment';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import Public from '@mui/icons-material/Public';
+import Fingerprint from '@mui/icons-material/Fingerprint';
+import Save from '@mui/icons-material/Save';
 import {
   AddToCartButton,
   ArrowTooltip,
@@ -429,9 +427,7 @@ const InvestigationCardView: React.FC<InvestigationCardProps> = (props) => {
                 <CardView
                   entityName="Investigation"
                   data={paginatedSource ?? []}
-                  totalDataCount={
-                    aggregatedIds?.length + (hasNextPage ? 1 : 0) ?? 0
-                  }
+                  totalDataCount={aggregatedIds.length + (hasNextPage ? 1 : 0)}
                   onPageChange={pushPage}
                   onFilter={pushFilter}
                   onSort={handleSort}

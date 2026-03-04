@@ -1,9 +1,7 @@
-import {
-  CalendarToday,
-  ConfirmationNumber,
-  Fingerprint,
-  Save,
-} from '@mui/icons-material';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import ConfirmationNumber from '@mui/icons-material/ConfirmationNumber';
+import Fingerprint from '@mui/icons-material/Fingerprint';
+import Save from '@mui/icons-material/Save';
 import {
   AddToCartButton,
   CardView,
@@ -454,9 +452,7 @@ const DatasetCardView: React.FC<DatasetCardViewProps> = (props) => {
                 <CardView
                   entityName="Dataset"
                   data={paginatedSource ?? []}
-                  totalDataCount={
-                    aggregatedIds?.length + (hasNextPage ? 1 : 0) ?? 0
-                  }
+                  totalDataCount={aggregatedIds.length + (hasNextPage ? 1 : 0)}
                   onPageChange={pushPage}
                   onFilter={pushFilter}
                   onSort={handleSort}

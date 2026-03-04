@@ -1,38 +1,31 @@
-import {
-  type Dataset,
-  dGCommonInitialState,
-  type DownloadCartItem,
-} from 'datagateway-common';
-import * as React from 'react';
-import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import type { StateType } from '../../state/app.types';
-import { initialState } from '../../state/reducers/dgdataview.reducer';
-import DatasetTable from './datasetTable.component';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { createMemoryHistory, type History } from 'history';
-import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
-  findAllRows,
-  findColumnHeaderByName,
-} from '../../setupTests';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   render,
-  type RenderResult,
   screen,
   waitFor,
   within,
+  type RenderResult,
 } from '@testing-library/react';
-import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
+import axios, { type AxiosResponse } from 'axios';
+import {
+  dGCommonInitialState,
+  type Dataset,
+  type DownloadCartItem,
+} from 'datagateway-common';
 import {
   findCellInRow,
   findColumnIndexByName,
 } from 'datagateway-search/src/setupTests';
-import axios, { type AxiosResponse } from 'axios';
+import { createMemoryHistory, type History } from 'history';
+import { Provider } from 'react-redux';
+import { Router } from 'react-router-dom';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { findAllRows, findColumnHeaderByName } from '../../setupTests';
+import type { StateType } from '../../state/app.types';
+import { initialState } from '../../state/reducers/dgdataview.reducer';
+import DatasetTable from './datasetTable.component';
 
 describe('Dataset table component', () => {
   const mockStore = configureStore([thunk]);
@@ -40,7 +33,7 @@ describe('Dataset table component', () => {
   let rowData: Dataset[];
   let cartItems: DownloadCartItem[];
   let history: History;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
   let holder: HTMLElement;
 
   const renderComponent = (): RenderResult => {
@@ -82,7 +75,7 @@ describe('Dataset table component', () => {
       })
     );
 
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/\/user\/cart\/$/.test(url)) {
@@ -116,7 +109,7 @@ describe('Dataset table component', () => {
         return Promise.reject(`Endpoint not mocked: ${url}`);
       });
 
-    axios.post = jest
+    axios.post = vi
       .fn()
       .mockImplementation(
         (url: string, data: unknown): Promise<Partial<AxiosResponse>> => {
@@ -158,7 +151,7 @@ describe('Dataset table component', () => {
 
   afterEach(() => {
     document.body.removeChild(holder);
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly', async () => {
@@ -239,8 +232,6 @@ describe('Dataset table component', () => {
   });
 
   it('updates filter query params on date filter', async () => {
-    applyDatePickerWorkaround();
-
     renderComponent();
 
     const filterInput = await screen.findByRole('textbox', {
@@ -261,8 +252,6 @@ describe('Dataset table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
-
-    cleanupDatePickerWorkaround();
   });
 
   it('updates sort query params on sort', async () => {
@@ -342,8 +331,8 @@ describe('Dataset table component', () => {
     expect(selectAllCheckbox).toHaveAttribute('data-indeterminate', 'false');
   });
 
-  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', async () => {
-    state.dgdataview.selectAllSetting = false;
+  it('no select all checkbox appears and no fetchAllIds sent if disableSelectAll is true', async () => {
+    state.dgcommon.features = { disableSelectAll: true };
 
     renderComponent();
     // wait for rows to show up

@@ -1,46 +1,49 @@
+import InfoIcon from '@mui/icons-material/Info';
+import SearchIcon from '@mui/icons-material/Search';
 import {
   Grid,
+  IconButton,
   LinearProgress,
   Paper,
-  Typography,
   Theme,
-  IconButton,
+  Typography,
   styled,
 } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import InfoIcon from '@mui/icons-material/Info';
+import { useIsFetching, useQueryClient } from '@tanstack/react-query';
 import {
-  Sticky,
-  ViewsType,
-  useCart,
-  parseSearchToQuery,
-  useUpdateView,
-  readSciGatewayToken,
   ArrowTooltip,
-  SelectionAlert,
-  ViewCartButton,
   CartProps,
-  useUpdateQueryParam,
-  ViewButton,
   ClearFiltersButton,
+  SelectionAlert,
+  Sticky,
+  ViewButton,
+  ViewCartButton,
+  ViewsType,
+  parseSearchToQuery,
+  readSciGatewayToken,
+  useCart,
+  useUpdateQueryParam,
+  useUpdateView,
 } from 'datagateway-common';
+import { Location as LocationType } from 'history';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 import {
-  Switch as SwitchRouting,
   Route,
-  useLocation,
-  useHistory,
-  useRouteMatch,
+  Switch as SwitchRouting,
   matchPath,
+  useHistory,
+  useLocation,
+  useRouteMatch,
 } from 'react-router-dom';
+import { StateType } from '../state/app.types';
+import DOITypeSelector from '../views/doiTypeSelector.component';
+import RoleSelector from '../views/roleSelector.component';
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageRouting from './pageRouting.component';
-import { Location as LocationType } from 'history';
+import { DoiRedirect, GenericRedirect } from './redirect.component';
 import TranslatedHomePage from './translatedHomePage.component';
-import DoiRedirect from './doiRedirect.component';
-import RoleSelector from '../views/roleSelector.component';
-import { useIsFetching, useQueryClient } from 'react-query';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const getTablePaperStyle = (
@@ -87,6 +90,8 @@ export const paths = {
   homepage: '/datagateway',
   root: '/browse',
   doiRedirect: '/doi-redirect/:facilityName/:entityName/:entityId',
+  genericRedirect:
+    '/redirect/:facilityName/:entityName/:entityField/:fieldValue',
   myData: {
     root: '/my-data',
     dls: '/my-data/DLS',
@@ -97,6 +102,7 @@ export const paths = {
       '/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation/:investigationId',
     isisDatasetLanding:
       '/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation/:investigationId/dataset/:datasetId',
+    dlsDataPublicationLanding: '/browse/dataPublication/:dataPublicationId',
   },
   toggle: {
     investigation: '/browse/investigation',
@@ -121,6 +127,7 @@ export const paths = {
       '/browse/proposal/:proposalName/investigation/:investigationId/dataset/:datasetId/datafile',
   },
   dataPublications: {
+    dls: { myDOIs: '/my-dois/DLS', allDOIs: '/browse/dataPublication' },
     root: '/browseDataPublications',
     toggle: {
       isisInstrument: '/browseDataPublications/instrument',
@@ -167,7 +174,13 @@ const isisPaths = [
 ];
 
 // DLS base paths - required for linking to correct search view
-const dlsPaths = [paths.myData.dls, paths.toggle.dlsProposal];
+const dlsPaths = [
+  paths.myData.dls,
+  paths.dataPublications.dls.myDOIs,
+  paths.dataPublications.dls.allDOIs,
+  paths.toggle.dlsProposal,
+  paths.landing.dlsDataPublicationLanding,
+];
 
 const BlackTextTypography = styled(Typography)({
   color: '#000000',
@@ -208,10 +221,18 @@ const NavBar = React.memo(
             xs
             aria-label="page-breadcrumbs"
           >
-            {/* don't show breadcrumbs on /my-data - only on browse */}
-            <Route path={[paths.root, paths.dataPublications.root]}>
-              <PageBreadcrumbs landingPageEntities={landingPageEntities} />
-            </Route>
+            {/* don't show breadcrumbs on /my-data or dls landing pages - only on browse */}
+            <SwitchRouting>
+              <Route
+                path={[
+                  paths.landing.dlsDataPublicationLanding,
+                  paths.dataPublications.dls.allDOIs,
+                ]}
+              />
+              <Route path={[paths.root, paths.dataPublications.root]}>
+                <PageBreadcrumbs landingPageEntities={landingPageEntities} />
+              </Route>
+            </SwitchRouting>
           </Grid>
 
           {props.loggedInAnonymously || isDataPublication ? (
@@ -236,10 +257,10 @@ const NavBar = React.memo(
                           <br />
                           <br />
                           <a
-                            href="https://www.isis.stfc.ac.uk/Pages/Data-Policy.aspx"
+                            href={t('app.open_data_warning.tooltip_link_url')}
                             style={{ color: '#6793FF' }}
                           >
-                            {t('app.open_data_warning.tooltip_link')}
+                            {t('app.open_data_warning.tooltip_link_text')}
                           </a>
                         </h4>
                       }
@@ -276,6 +297,10 @@ const NavBar = React.memo(
           <Route
             exact
             path={Object.values(paths.myData).concat(
+              [
+                paths.dataPublications.dls.allDOIs,
+                paths.dataPublications.dls.myDOIs,
+              ],
               Object.values(paths.toggle),
               Object.values(paths.standard),
               Object.values(paths.dataPublications.toggle),
@@ -441,6 +466,10 @@ const ViewRouting = React.memo(
       !matchPath(location.pathname, {
         path: Object.values(paths.preview),
         exact: true,
+      }) &&
+      !matchPath(location.pathname, {
+        path: paths.landing.dlsDataPublicationLanding + '/edit',
+        exact: true,
       });
 
     return (
@@ -530,6 +559,9 @@ const getToggle = (pathname: string, view: ViewsType): boolean => {
 const DataviewPageContainer: React.FC = () => {
   const location = useLocation();
   const { push } = useHistory();
+  const anonUserName = useSelector(
+    (state: StateType) => state.dgcommon.anonUserName
+  );
   const prevLocationRef = React.useRef(location);
   const { view } = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -558,9 +590,9 @@ const DataviewPageContainer: React.FC = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   React.useEffect(() => {
     const count =
-      queryClient.getQueryData<number>('count', {
+      queryClient.getQueryData<number>(['count'], {
         exact: false,
-        active: true,
+        type: 'active',
       }) ?? 0;
     if (count !== totalDataCount) setTotalDataCount(count);
   });
@@ -569,7 +601,7 @@ const DataviewPageContainer: React.FC = () => {
     loading ? setlinearProgressHeight('4px') : setlinearProgressHeight('0px');
   }, [loading]);
 
-  const isCountFetchingNum = useIsFetching('count', {
+  const isCountFetchingNum = useIsFetching(['count'], {
     exact: false,
   });
   const loadedCount = isCountFetchingNum === 0;
@@ -625,9 +657,10 @@ const DataviewPageContainer: React.FC = () => {
     }
   }, [location.pathname, view, prevView, prevLocation.pathname, replaceView]);
 
-  //Determine whether logged in anonymously (assume this if username is null)
+  // Determine whether logged in anonymously (assume this if username is null)
   const username = readSciGatewayToken().username;
-  const loggedInAnonymously = username === null || username === 'anon/anon';
+  const loggedInAnonymously =
+    username === null || username === (anonUserName ?? 'anon/anon');
 
   const { filters } = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -671,35 +704,63 @@ const DataviewPageContainer: React.FC = () => {
         <Grid item xs={12} style={{ marginTop: '10px', marginBottom: '10px' }}>
           <StyledGrid container alignItems="baseline">
             {/* Toggle between the table and card view */}
-            <Grid item style={{ display: 'flex', alignItems: 'baseline' }}>
+            <Grid container item alignItems="end">
               <Route
                 exact
                 path={Object.values(paths.myData)}
-                render={() => <RoleSelector />}
+                render={() => (
+                  <Grid item ml={1} xs="auto">
+                    <RoleSelector />
+                  </Grid>
+                )}
+              />
+              <Route
+                exact
+                path={paths.dataPublications.dls.myDOIs}
+                render={() => (
+                  // doesn't need a grid item wrapper as it's already got a grid
+                  <DOITypeSelector type="myDOIs" />
+                )}
+              />
+              <Route
+                exact
+                path={paths.dataPublications.dls.allDOIs}
+                render={() => (
+                  // doesn't need a grid item wrapper as it's already got a grid
+                  <DOITypeSelector type="allDOIs" />
+                )}
               />
               <Route
                 exact
                 path={togglePaths}
                 render={() => (
-                  <ViewButton
-                    viewCards={view === 'card'}
-                    handleButtonChange={handleButtonChange}
-                  />
+                  <Grid item ml={1} xs="auto">
+                    <ViewButton
+                      viewCards={view === 'card'}
+                      handleButtonChange={handleButtonChange}
+                    />
+                  </Grid>
                 )}
               />
               <Route
                 exact
                 path={Object.values(paths.myData).concat(
+                  [
+                    paths.dataPublications.dls.allDOIs,
+                    paths.dataPublications.dls.myDOIs,
+                  ],
                   Object.values(paths.toggle),
                   Object.values(paths.standard),
                   Object.values(paths.dataPublications.toggle),
                   Object.values(paths.dataPublications.standard)
                 )}
                 render={() => (
-                  <ClearFiltersButton
-                    handleButtonClearFilters={handleButtonClearFilters}
-                    disabled={disabled}
-                  />
+                  <Grid item ml={1} xs="auto">
+                    <ClearFiltersButton
+                      handleButtonClearFilters={handleButtonClearFilters}
+                      disabled={disabled}
+                    />
+                  </Grid>
                 )}
               />
             </Grid>
@@ -749,6 +810,9 @@ const PageContainer: React.FC = () => {
       <Route exact path={paths.homepage} component={TranslatedHomePage} />
       <Route exact path={paths.doiRedirect}>
         <DoiRedirect />
+      </Route>
+      <Route path={paths.genericRedirect}>
+        <GenericRedirect />
       </Route>
       {/* Load the standard dataview pageContainer */}
       <Route>

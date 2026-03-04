@@ -1,14 +1,16 @@
-import { DownloadSettingsAccessMethod } from '../../app.types';
 import { ActionType } from '../app.types';
 import {
-  ConfigureAccessMethodsPayload,
-  ConfigureAccessMethodsType,
+  ConfigureAnonUserNamePayload,
+  ConfigureAnonUserNameType,
   ConfigureFacilityNamePayload,
   ConfigureFacilityNameType,
+  ConfigureFeatureSwitchesType,
   ConfigureQueryRetriesPayload,
   ConfigureQueryRetriesType,
   ConfigureUrlsPayload,
   ConfigureURLsType,
+  FeatureSwitches,
+  FeatureSwitchesPayload,
   URLs,
 } from './actions.types';
 
@@ -37,11 +39,20 @@ export const loadQueryRetries = (
   },
 });
 
-export const loadAccessMethods = (
-  accessMethods?: DownloadSettingsAccessMethod
-): ActionType<ConfigureAccessMethodsPayload> => ({
-  type: ConfigureAccessMethodsType,
+export const loadFeatureSwitches = (
+  featureSwitches: FeatureSwitches
+): ActionType<FeatureSwitchesPayload> => ({
+  type: ConfigureFeatureSwitchesType,
   payload: {
-    accessMethods,
+    switches: featureSwitches,
+  },
+});
+
+export const loadAnonUserName = (
+  anonUserName?: string
+): ActionType<ConfigureAnonUserNamePayload> => ({
+  type: ConfigureAnonUserNameType,
+  payload: {
+    anonUserName,
   },
 });

@@ -1,7 +1,7 @@
 # Dockerfile to build and serve datagateway
 
 # Build stage
-FROM node:20.11.1-alpine3.19@sha256:bf77dc26e48ea95fca9d1aceb5acfa69d2e546b765ec2abfb502975f1a2d4def as builder
+FROM node:24.14.0-alpine@sha256:7fddd9ddeae8196abf4a3ef2de34e11f7b1a722119f91f28ddf1e99dcafdf114 AS builder
 
 WORKDIR /datagateway-build
 
@@ -9,31 +9,35 @@ WORKDIR /datagateway-build
 ENV YARN_ENABLE_GLOBAL_CACHE=true
 ENV YARN_GLOBAL_FOLDER=/root/.cache/.yarn
 
-COPY . .
+# only copy what's needed to install dependencies first
+COPY --parents yarn.lock .yarnrc.yml .yarn **/package.json ./
 
 RUN --mount=type=cache,target=/root/.cache/.yarn/cache \
     set -eux; \
+    \
+    SKIP_POSTINSTALL=true yarn workspaces focus --all --production;
+
+COPY . .
+
+RUN set -eux; \
+    \
     # Set the React production variables which hold reference to the paths of the plugin builds \
-    echo "REACT_APP_DATAVIEW_BUILD_DIRECTORY=/datagateway-dataview/" > packages/datagateway-dataview/.env.production; \
-    echo "REACT_APP_DOWNLOAD_BUILD_DIRECTORY=/datagateway-download/" > packages/datagateway-download/.env.production; \
-    echo "REACT_APP_SEARCH_BUILD_DIRECTORY=/datagateway-search/" > packages/datagateway-search/.env.production; \
+    echo "VITE_DATAVIEW_BUILD_DIRECTORY=/datagateway-dataview/" > packages/datagateway-dataview/.env.production; \
+    echo "VITE_DOWNLOAD_BUILD_DIRECTORY=/datagateway-download/" > packages/datagateway-download/.env.production; \
+    echo "VITE_SEARCH_BUILD_DIRECTORY=/datagateway-search/" > packages/datagateway-search/.env.production; \
     \
-    cp packages/datagateway-dataview/public/datagateway-dataview-settings.example.json packages/datagateway-dataview/public/datagateway-dataview-settings.json; \
-    cp packages/datagateway-download/public/datagateway-download-settings.example.json packages/datagateway-download/public/datagateway-download-settings.json; \
-    cp packages/datagateway-search/public/datagateway-search-settings.example.json packages/datagateway-search/public/datagateway-search-settings.json; \
-    \
-    yarn workspaces focus --all --production; \
+    yarn tsc; \
     yarn build;
 
 # Run stage
-FROM httpd:2.4.58-alpine3.19@sha256:92535cf7f151901ba91b04186292c3bd5bf82aa6ffa6eb7bc405fefbffedd480
+FROM httpd:2.4.66-alpine@sha256:8f26f33a7002658050e9ab2cd6b77502619dfc89d0a6ba2e9e4a202e0ef04596
 
 WORKDIR /usr/local/apache2/htdocs
 
 # Put the output of the build into an apache server
-COPY --from=builder /datagateway-build/packages/datagateway-dataview/build/. ./datagateway-dataview/
-COPY --from=builder /datagateway-build/packages/datagateway-download/build/. ./datagateway-download/
-COPY --from=builder /datagateway-build/packages/datagateway-search/build/. ./datagateway-search/
+COPY --from=builder /datagateway-build/packages/datagateway-dataview/dist/. ./datagateway-dataview/
+COPY --from=builder /datagateway-build/packages/datagateway-download/dist/. ./datagateway-download/
+COPY --from=builder /datagateway-build/packages/datagateway-search/dist/. ./datagateway-search/
 
 RUN set -eux; \
     \
@@ -55,10 +59,10 @@ RUN set -eux; \
     # Change ownership of logs directory \
     chown www-data:www-data /usr/local/apache2/logs; \
     \
-    # Change ownership of setting files \
-    chown www-data:www-data /usr/local/apache2/htdocs/datagateway-dataview/datagateway-dataview-settings.json; \
-    chown www-data:www-data /usr/local/apache2/htdocs/datagateway-download/datagateway-download-settings.json; \
-    chown www-data:www-data /usr/local/apache2/htdocs/datagateway-search/datagateway-search-settings.json;
+    # Change ownership of settings locations \
+    chown www-data:www-data -R /usr/local/apache2/htdocs/datagateway-dataview/; \
+    chown www-data:www-data -R /usr/local/apache2/htdocs/datagateway-download/; \
+    chown www-data:www-data -R /usr/local/apache2/htdocs/datagateway-search/;
 
 # Switch to non-root user defined in httpd image
 USER www-data
@@ -68,6 +72,8 @@ ENV API_URL="/datagateway-api"
 ENV DOWNLOAD_API_URL="http://localhost/topcat"
 ENV ICAT_URL="http://localhost/icat"
 ENV IDS_URL="http://localhost/ids"
+ENV DOI_MINTER_URL="http://localhost/doi-minter"
+ENV DATACITE_URL="https://api.test.datacite.org"
 
 COPY docker/docker-entrypoint.sh /usr/local/bin/
 ENTRYPOINT ["docker-entrypoint.sh"]

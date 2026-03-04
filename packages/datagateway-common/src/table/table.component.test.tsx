@@ -1,16 +1,24 @@
-import * as React from 'react';
-import Table, { ColumnType } from './table.component';
-import { formatBytes } from './cellRenderers/cellContentRenderers';
-import { TableCellProps } from 'react-virtualized';
-import TextColumnFilter from './columnFilters/textColumnFilter.component';
 import { render, screen, waitFor, within } from '@testing-library/react';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
+import * as React from 'react';
+import { Provider } from 'react-redux';
+import { TableCellProps } from 'react-virtualized';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { StateType, dGCommonInitialState } from '../main';
+import * as parseTokens from '../parseTokens';
+import { formatBytes } from './cellRenderers/cellContentRenderers';
+import TextColumnFilter from './columnFilters/textColumnFilter.component';
+import {
+  ColumnType,
+  ConnectedVirtualizedTable as ConnectedTable,
+  VirtualizedTable as Table,
+} from './table.component';
 
 describe('Table component', () => {
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
-  const onSort = jest.fn();
+  const onSort = vi.fn();
 
   const tableProps = {
     data: [
@@ -20,7 +28,7 @@ describe('Table component', () => {
         TEST2: 2,
       },
     ],
-    loadMoreRows: jest.fn(),
+    loadMoreRows: vi.fn(),
     totalRowCount: 50,
     sort: {},
     onSort,
@@ -35,7 +43,7 @@ describe('Table component', () => {
           return (
             <TextColumnFilter
               label={label}
-              onChange={jest.fn()}
+              onChange={vi.fn()}
               value={undefined}
             />
           );
@@ -67,8 +75,10 @@ describe('Table component', () => {
     expect(within(columnHeaders[0]).getByText('Test 1')).toBeInTheDocument();
     expect(within(columnHeaders[1]).getByText('Test 2')).toBeInTheDocument();
 
-    const rows = await screen.findAllByRole('row');
-    const cellsInFirstRow = within(rows[1]).getAllByRole('gridcell');
+    const rows = (await screen.findAllByRole('row')).filter((e) =>
+      e.hasAttribute('aria-rowindex')
+    );
+    const cellsInFirstRow = within(rows[0]).getAllByRole('gridcell');
     expect(within(cellsInFirstRow[0]).getByText('test1')).toBeInTheDocument();
     expect(within(cellsInFirstRow[1]).getByText('2 B')).toBeInTheDocument();
   });
@@ -109,7 +119,7 @@ describe('Table component', () => {
   });
 
   it('calls onDefaultFilter function when defaultFilter has been specified', () => {
-    const onDefaultFilter = jest.fn();
+    const onDefaultFilter = vi.fn();
     const sortedTableProps = {
       ...tableProps,
       columns: [
@@ -135,22 +145,6 @@ describe('Table component', () => {
       startDate: '2025-01-01',
       endDate: '2025-01-02',
     });
-  });
-
-  it('renders select column correctly', async () => {
-    render(
-      <Table
-        {...tableProps}
-        selectedRows={[]}
-        onCheck={jest.fn()}
-        onUncheck={jest.fn()}
-        selectAllSetting={true}
-      />
-    );
-
-    expect(
-      await screen.findByRole('checkbox', { name: 'select all rows' })
-    ).toBeInTheDocument();
   });
 
   it.skip('resizes data columns correctly when a column is resized', () => {
@@ -212,7 +206,7 @@ describe('Table component', () => {
         actions={[
           function action() {
             return (
-              <button key="test" onClick={jest.fn()}>
+              <button key="test" onClick={vi.fn()}>
                 I am an action
               </button>
             );
@@ -240,7 +234,7 @@ describe('Table component', () => {
   });
 
   it('throws error when only one of loadMoreRows or totalRowCount are defined', () => {
-    const spy = jest.spyOn(console, 'error');
+    const spy = vi.spyOn(console, 'error');
     spy.mockImplementation(() => {
       // suppress react uncaught error warning as we're deliberately triggering an error!
     });
@@ -261,7 +255,7 @@ describe('Table component', () => {
   });
 
   it('throws error when a default sort has been defined without passing onDefaultFilter', () => {
-    const spy = jest.spyOn(console, 'error');
+    const spy = vi.spyOn(console, 'error');
     spy.mockImplementation(() => {
       // suppress react uncaught error warning as we're deliberately triggering an error!
     });
@@ -286,7 +280,7 @@ describe('Table component', () => {
   });
 
   it('throws error when a default sort has been defined without passing filters', () => {
-    const spy = jest.spyOn(console, 'error');
+    const spy = vi.spyOn(console, 'error');
     spy.mockImplementation(() => {
       // suppress react uncaught error warning as we're deliberately triggering an error!
     });
@@ -299,7 +293,7 @@ describe('Table component', () => {
           defaultFilter: { value: 'x', type: 'include' },
         },
       ],
-      onDefaultFilter: jest.fn(),
+      onDefaultFilter: vi.fn(),
       filters: undefined,
     };
 
@@ -308,5 +302,109 @@ describe('Table component', () => {
     );
 
     spy.mockRestore();
+  });
+
+  describe('ConnectedTable', () => {
+    const mockStore = configureStore([thunk]);
+    let state: StateType;
+    beforeEach(() => {
+      state = JSON.parse(
+        JSON.stringify({
+          dgdataview: {}, //Dont need to fill, since not part of the test
+          dgcommon: {
+            ...dGCommonInitialState,
+          },
+        })
+      );
+    });
+
+    it('connected variant disables anon download', async () => {
+      state.dgcommon.features = { disableAnonDownload: true };
+      vi.spyOn(parseTokens, 'readSciGatewayToken').mockReturnValue({
+        username: 'anon/anon',
+        sessionId: 'abcdef',
+      });
+
+      render(
+        <Provider store={mockStore(state)}>
+          <ConnectedTable
+            {...tableProps}
+            selectedRows={[]}
+            onCheck={vi.fn()}
+            onUncheck={vi.fn()}
+          />
+        </Provider>
+      );
+
+      // check that select all is disabled and shows tooltip
+      const selectAll = await screen.findByRole('checkbox', {
+        name: 'select all rows',
+      });
+      expect(selectAll).toBeInTheDocument();
+      expect(selectAll).toBeDisabled();
+      await user.hover(selectAll.parentElement?.parentElement);
+      expect(
+        await screen.findByText('buttons.disallow_anon_tooltip')
+      ).toBeInTheDocument();
+
+      // check that normal checkboxes are disabled and shows tooltip
+
+      const checkbox = await screen.findByRole('checkbox', {
+        name: 'select row 0',
+      });
+      expect(checkbox).toBeInTheDocument();
+      expect(checkbox).toBeDisabled();
+      await user.hover(checkbox.parentElement?.parentElement);
+      expect(
+        await screen.findByText('buttons.disallow_anon_tooltip')
+      ).toBeInTheDocument();
+    });
+
+    it('connected variant disables select all', async () => {
+      state.dgcommon.features = { disableSelectAll: true };
+
+      render(
+        <Provider store={mockStore(state)}>
+          <ConnectedTable
+            {...tableProps}
+            selectedRows={[]}
+            onCheck={vi.fn()}
+            onUncheck={vi.fn()}
+          />
+        </Provider>
+      );
+
+      // check that select all is not rendered but normal checkboxes are
+      expect(
+        await screen.findByRole('checkbox', {
+          name: 'select row 0',
+        })
+      ).toBeInTheDocument();
+
+      expect(
+        screen.queryByRole('checkbox', {
+          name: 'select all rows',
+        })
+      ).not.toBeInTheDocument();
+    });
+
+    it('renders select all correctly when supplying overriding disableSelectAll setting to settings', async () => {
+      state.dgcommon.features = { disableSelectAll: true };
+      render(
+        <Provider store={mockStore(state)}>
+          <ConnectedTable
+            {...tableProps}
+            selectedRows={[]}
+            onCheck={vi.fn()}
+            onUncheck={vi.fn()}
+            disableSelectAll={false}
+          />
+        </Provider>
+      );
+
+      expect(
+        await screen.findByRole('checkbox', { name: 'select all rows' })
+      ).toBeInTheDocument();
+    });
   });
 });

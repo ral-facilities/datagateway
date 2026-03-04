@@ -1,46 +1,43 @@
-import * as React from 'react';
-import ISISInvestigationsTable from './isisInvestigationsTable.component';
-import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
-import configureStore from 'redux-mock-store';
-import type { StateType } from '../../../state/app.types';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
-  dGCommonInitialState,
+  render,
+  screen,
+  waitFor,
+  within,
+  type RenderResult,
+} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
+import {
   DownloadCartItem,
+  dGCommonInitialState,
   type Investigation,
 } from 'datagateway-common';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
-import { generatePath, Router } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from 'react-query';
 import { createMemoryHistory, type History } from 'history';
+import { Provider } from 'react-redux';
+import { Router, generatePath } from 'react-router-dom';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import type { MockInstance } from 'vitest';
+import { paths } from '../../../page/pageContainer.component';
 import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
   findAllRows,
   findCellInRow,
   findColumnHeaderByName,
   findColumnIndexByName,
   findRowAt,
 } from '../../../setupTests';
-import {
-  render,
-  type RenderResult,
-  screen,
-  waitFor,
-  within,
-} from '@testing-library/react';
-import type { UserEvent } from '@testing-library/user-event/setup/setup';
-import userEvent from '@testing-library/user-event';
-import axios, { AxiosResponse } from 'axios';
-import { paths } from '../../../page/pageContainer.component';
+import type { StateType } from '../../../state/app.types';
+import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
+import ISISInvestigationsTable from './isisInvestigationsTable.component';
 
 describe('ISIS Investigations table component', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let rowData: Investigation[];
   let history: History;
-  let replaceSpy: jest.SpyInstance;
-  let user: UserEvent;
+  let replaceSpy: MockInstance;
+  let user: ReturnType<typeof userEvent.setup>;
   let cartItems: DownloadCartItem[];
   let holder: HTMLElement;
 
@@ -77,7 +74,7 @@ describe('ISIS Investigations table component', () => {
           },
           {
             id: 3,
-            role: 'principal_experimenter',
+            role: 'PI',
             user: { id: 3, name: 'testpi', fullName: 'Test PI' },
           },
         ],
@@ -131,7 +128,7 @@ describe('ISIS Investigations table component', () => {
         }),
       ],
     });
-    replaceSpy = jest.spyOn(history, 'replace');
+    replaceSpy = vi.spyOn(history, 'replace');
     user = userEvent.setup();
 
     holder = document.createElement('div');
@@ -145,7 +142,7 @@ describe('ISIS Investigations table component', () => {
       })
     );
 
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/\/user\/cart\/$/.test(url)) {
@@ -177,7 +174,7 @@ describe('ISIS Investigations table component', () => {
         return Promise.reject(`Endpoint not mocked: ${url}`);
       });
 
-    axios.post = jest
+    axios.post = vi
       .fn()
       .mockImplementation(
         (url: string, data: unknown): Promise<Partial<AxiosResponse>> => {
@@ -219,18 +216,21 @@ describe('ISIS Investigations table component', () => {
 
   afterEach(() => {
     document.body.removeChild(holder);
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly', async () => {
     renderComponent();
 
     let rows: HTMLElement[] = [];
-    await waitFor(async () => {
-      rows = await findAllRows();
-      // should have 1 row in the table
-      expect(rows).toHaveLength(1);
-    });
+    await waitFor(
+      async () => {
+        rows = await findAllRows();
+        // should have 1 row in the table
+        expect(rows).toHaveLength(1);
+      },
+      { timeout: 5_000 } // this can timeout sometimes in CI without so bump it up from minimum
+    );
 
     // check that column headers are shown correctly.
     expect(
@@ -345,8 +345,6 @@ describe('ISIS Investigations table component', () => {
   });
 
   it('updates filter query params on date filter', async () => {
-    applyDatePickerWorkaround();
-
     renderComponent();
 
     const filterInput = await screen.findByRole('textbox', {
@@ -369,21 +367,22 @@ describe('ISIS Investigations table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
-
-    cleanupDatePickerWorkaround();
   });
 
-  it('uses default sort', () => {
+  it('uses default sort', async () => {
     renderComponent();
+
+    expect(await screen.findAllByRole('gridcell')).toBeTruthy();
+
     expect(history.length).toBe(1);
     expect(replaceSpy).toHaveBeenCalledWith({
       search: `?sort=${encodeURIComponent('{"startDate":"desc"}')}`,
     });
 
     // check that the data request is sent only once after mounting
-    const datafilesCalls = (axios.get as jest.Mock).mock.calls.filter(
-      (call) => call[0] === '/investigations'
-    );
+    const datafilesCalls = vi
+      .mocked(axios.get)
+      .mock.calls.filter((call) => call[0] === '/investigations');
     // 2 becasue there is also a call for ids
     expect(datafilesCalls).toHaveLength(2);
   });
@@ -461,8 +460,8 @@ describe('ISIS Investigations table component', () => {
     expect(selectAllCheckbox).toHaveAttribute('data-indeterminate', 'false');
   });
 
-  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', async () => {
-    state.dgdataview.selectAllSetting = false;
+  it('no select all checkbox appears and no fetchAllIds sent if disableSelectAll is true', async () => {
+    state.dgcommon.features = { disableSelectAll: true };
     renderComponent();
     await waitFor(() => {
       expect(

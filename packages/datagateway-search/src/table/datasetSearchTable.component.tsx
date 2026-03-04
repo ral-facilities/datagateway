@@ -1,39 +1,40 @@
+import { Grid, Paper, Typography } from '@mui/material';
 import {
-  type ColumnType,
-  DatasetDetailsPanel,
   DLSDatasetDetailsPanel,
+  DatasetDetailsPanel,
+  DetailsPanelProps,
+  FACILITY_NAME,
   ISISDatasetDetailsPanel,
-  parseSearchToQuery,
   SearchFilter,
-  type SearchResponse,
-  type SearchResultSource,
+  ConnectedTable as Table,
   buildDatafileTableUrlForDataset,
   buildDatasetLandingUrl,
   buildDatasetTableUrlForInvestigation,
   buildInvestigationLandingUrl,
-  FACILITY_NAME,
+  formatBytes,
   isLandingPageSupportedForHierarchy,
-  Table,
+  parseSearchToQuery,
   tableLink,
   useAddToCart,
   useCart,
   useLuceneSearchInfinite,
   useRemoveFromCart,
   useSort,
-  formatBytes,
+  type ColumnType,
+  type SearchResponse,
+  type SearchResultSource,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import type { StateType } from '../state/app.types';
-import { Grid, Paper, Typography } from '@mui/material';
-import FacetPanel from '../facet/components/facetPanel/facetPanel.component';
-import { facetClassificationFromSearchResponses } from '../facet/facet';
-import useFacetFilters from '../facet/useFacetFilters';
-import SelectedFilterChips from '../facet/components/selectedFilterChips.component';
-import { useSearchResultCounter } from '../searchTabs/useSearchResultCounter';
 import { useHistory, useLocation } from 'react-router-dom';
 import type { IndexRange, TableCellProps } from 'react-virtualized';
+import FacetPanel from '../facet/components/facetPanel/facetPanel.component';
+import SelectedFilterChips from '../facet/components/selectedFilterChips.component';
+import { facetClassificationFromSearchResponses } from '../facet/facet';
+import useFacetFilters from '../facet/useFacetFilters';
+import { useSearchResultCounter } from '../searchTabs/useSearchResultCounter';
+import type { StateType } from '../state/app.types';
 
 interface DatasetTableProps {
   hierarchy: string;
@@ -57,8 +58,8 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
     currentTab,
   } = queryParams;
 
-  const selectAllSetting = useSelector(
-    (state: StateType) => state.dgsearch.selectAllSetting
+  const disableSelectAll = useSelector(
+    (state: StateType) => state.dgcommon.features?.disableSelectAll ?? false
   );
 
   const minNumResults = useSelector(
@@ -181,7 +182,7 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
   const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
-    (offsetParams: IndexRange) => fetchNextPage(),
+    (_offsetParams: IndexRange) => fetchNextPage(),
     [fetchNextPage]
   );
 
@@ -199,11 +200,11 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
           (cartItem) =>
             cartItem.entityType === 'dataset' &&
             // if select all is disabled, it's safe to just pass the whole cart as selectedRows
-            (!selectAllSetting ||
+            (disableSelectAll ||
               (aggregatedIds && aggregatedIds.includes(cartItem.entityId)))
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, selectAllSetting, aggregatedIds]
+    [cartItems, disableSelectAll, aggregatedIds]
   );
 
   const columns: ColumnType[] = React.useMemo(
@@ -317,59 +318,62 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
     [t, hierarchy]
   );
 
-  const detailsPanel = React.useCallback(
-    ({ rowData, detailsPanelResize }) => {
-      switch (hierarchy) {
-        case FACILITY_NAME.isis:
-          const dataset = rowData as SearchResultSource;
-          let url: string | null = null;
-          if (dataset['investigation.id'] && dataset['investigation.name']) {
-            const formattedDataset = {
-              id: dataset.id,
-              name: dataset.name,
-              investigation: {
-                id: dataset['investigation.id'],
-                name: dataset['investigation.name'],
-                instrumentId:
-                  dataset.investigationinstrument?.[0]?.['instrument.id'],
-                facilityCycleId:
-                  dataset.investigationfacilitycycle?.[0]?.['facilityCycle.id'],
-              },
-            };
-            url = buildDatafileTableUrlForDataset({
-              dataset: formattedDataset,
-              facilityName: hierarchy,
-            });
-          }
-          return (
-            <ISISDatasetDetailsPanel
-              rowData={rowData}
-              detailsPanelResize={detailsPanelResize}
-              viewDatafiles={() => {
-                if (url) push(url);
-              }}
-            />
-          );
+  const detailsPanel: React.ComponentType<DetailsPanelProps> =
+    React.useCallback(
+      ({ rowData, detailsPanelResize }) => {
+        switch (hierarchy) {
+          case FACILITY_NAME.isis:
+            const dataset = rowData as SearchResultSource;
+            let url: string | null = null;
+            if (dataset['investigation.id'] && dataset['investigation.name']) {
+              const formattedDataset = {
+                id: dataset.id,
+                name: dataset.name,
+                investigation: {
+                  id: dataset['investigation.id'],
+                  name: dataset['investigation.name'],
+                  instrumentId:
+                    dataset.investigationinstrument?.[0]?.['instrument.id'],
+                  facilityCycleId:
+                    dataset.investigationfacilitycycle?.[0]?.[
+                      'facilityCycle.id'
+                    ],
+                },
+              };
+              url = buildDatafileTableUrlForDataset({
+                dataset: formattedDataset,
+                facilityName: hierarchy,
+              });
+            }
+            return (
+              <ISISDatasetDetailsPanel
+                rowData={rowData}
+                detailsPanelResize={detailsPanelResize}
+                viewDatafiles={() => {
+                  if (url) push(url);
+                }}
+              />
+            );
 
-        case FACILITY_NAME.dls:
-          return (
-            <DLSDatasetDetailsPanel
-              rowData={rowData}
-              detailsPanelResize={detailsPanelResize}
-            />
-          );
+          case FACILITY_NAME.dls:
+            return (
+              <DLSDatasetDetailsPanel
+                rowData={rowData}
+                detailsPanelResize={detailsPanelResize}
+              />
+            );
 
-        default:
-          return (
-            <DatasetDetailsPanel
-              rowData={rowData}
-              detailsPanelResize={detailsPanelResize}
-            />
-          );
-      }
-    },
-    [hierarchy, push]
-  );
+          default:
+            return (
+              <DatasetDetailsPanel
+                rowData={rowData}
+                detailsPanelResize={detailsPanelResize}
+              />
+            );
+        }
+      },
+      [hierarchy, push]
+    );
 
   if (currentTab !== 'dataset') return null;
 
@@ -437,12 +441,11 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
                   data={aggregatedSource}
                   loadMoreRows={loadMoreRows}
                   totalRowCount={
-                    aggregatedSource?.length + (hasNextPage ? 1 : 0) ?? 0
+                    aggregatedSource.length + (hasNextPage ? 1 : 0)
                   }
                   sort={{}}
                   onSort={handleSort}
                   selectedRows={selectedRows}
-                  disableSelectAll={!selectAllSetting}
                   allIds={aggregatedIds}
                   onCheck={addToCart}
                   onUncheck={removeFromCart}

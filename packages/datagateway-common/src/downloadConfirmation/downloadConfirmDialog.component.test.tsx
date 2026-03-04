@@ -1,23 +1,19 @@
-import type { RenderResult } from '@testing-library/react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { RenderResult, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import * as React from 'react';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
-import {
-  getDownloadTypeStatus,
-  useQueueVisit,
-  useSubmitCart,
-} from '../api/cart';
-import DownloadConfirmDialog from './downloadConfirmDialog.component';
 import axios, { AxiosResponse } from 'axios';
+import { getDownload, useQueueVisit, useSubmitCart } from '../api';
+import DownloadConfirmDialog from './downloadConfirmDialog.component';
 
-jest.mock('../handleICATError');
+vi.mock('../downloadApi');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
-// silence react-query errors
-setLogger({
-  log: console.log,
-  warn: console.warn,
-  error: jest.fn(),
+  return {
+    __esModule: true,
+    ...originalModule,
+    handleICATError: vi.fn(),
+  };
 });
 
 const createTestQueryClient = (): QueryClient =>
@@ -27,22 +23,26 @@ const createTestQueryClient = (): QueryClient =>
         retry: false,
       },
     },
+    // silence react-query errors
+    logger: {
+      log: console.log,
+      warn: console.warn,
+      error: vi.fn(),
+    },
   });
 
 describe('DownloadConfirmDialog', () => {
   let user: ReturnType<typeof userEvent.setup>;
   let props: React.ComponentProps<typeof DownloadConfirmDialog>;
-  let downloadTypeStatusResponses: Record<
-    string,
+  let getDownloadResponse:
     | {
         error: false;
-        payload: Awaited<ReturnType<typeof getDownloadTypeStatus>>;
+        payload: Partial<Awaited<ReturnType<typeof getDownload>>>;
       }
     | {
         error: true;
         payload: { message: string };
-      }
-  >;
+      };
 
   const renderWrapper = (): RenderResult =>
     render(
@@ -55,14 +55,14 @@ describe('DownloadConfirmDialog', () => {
     user = userEvent.setup();
     // Cannot mock to epoch time as Britain adopted BST permanently from 1968
     // to 1971, so snapshot will be an hour out depending on the date locale.
-    global.Date.now = jest.fn(() => new Date(2020, 0, 1, 1, 1, 1).getTime());
+    global.Date.now = vi.fn(() => new Date(2020, 0, 1, 1, 1, 1).getTime());
 
     props = {
       totalSize: 100,
       isTwoLevel: true,
       open: true,
-      redirectToStatusTab: jest.fn(),
-      setClose: jest.fn(),
+      redirectToStatusTab: vi.fn(),
+      setClose: vi.fn(),
       facilityName: 'LILS',
       downloadApiUrl: 'https://example.com/downloadApi',
       accessMethods: {
@@ -70,68 +70,46 @@ describe('DownloadConfirmDialog', () => {
           idsUrl: 'https://example.com/ids',
           displayName: 'HTTPS',
           description: 'Example description for <b>HTTPS</b> access method.',
+          message: '',
+          disabled: false,
         },
         globus: {
           idsUrl: 'https://example.com/ids',
           displayName: 'Globus',
           description: 'Example description for Globus access method.',
+          message: '',
+          disabled: false,
         },
       },
       submitDownloadHook: useSubmitCart,
+      defaultFileNameFormat: 'facilityName_entityId',
     };
 
-    downloadTypeStatusResponses = {
-      https: {
-        error: false,
-        payload: {
-          type: 'https',
-          disabled: false,
-          message: '',
-        },
-      },
-      globus: {
-        error: false,
-        payload: {
-          type: 'globus',
-          disabled: false,
-          message: '',
-        },
+    getDownloadResponse = {
+      error: false,
+      payload: {
+        preparedId: '1',
+        fileName: 'test-file-name',
+        status: 'COMPLETE',
       },
     };
 
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/.*\/user\/downloads/.test(url)) {
-          return Promise.resolve({
-            data: [
-              {
-                preparedId: 1,
-                fileName: 'test-file-name',
-                status: 'COMPLETE',
-              },
-            ],
-          });
-        }
-        const downloadTypeStatusMatches = url.match(
-          /.*\/user\/downloadType\/(.*)\/status/
-        );
-        if (downloadTypeStatusMatches) {
-          const response =
-            downloadTypeStatusResponses[downloadTypeStatusMatches[1]];
-
-          if (!response.error) {
+          if (!getDownloadResponse.error) {
             return Promise.resolve({
-              data: response.payload,
+              data: [getDownloadResponse.payload],
             });
           } else {
-            return Promise.reject(response.payload);
+            return Promise.reject(getDownloadResponse.payload);
           }
         }
         return Promise.reject(`Endpoint not mocked: ${url}`);
       });
 
-    axios.post = jest
+    axios.post = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/.*\/user\/cart\/.*\/submit/.test(url)) {
@@ -149,13 +127,18 @@ describe('DownloadConfirmDialog', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly', async () => {
     props.isTwoLevel = false;
-    // Pass in a size of 100 bytes and for the dialog to be open when mounted.
     const wrapper = renderWrapper();
+
+    expect(
+      await wrapper.findByText('downloadConfirmDialog.access_method_info', {
+        exact: false,
+      })
+    );
 
     expect(
       await wrapper.findByLabelText('downloadConfirmDialog.dialog_arialabel')
@@ -167,17 +150,43 @@ describe('DownloadConfirmDialog', () => {
     const wrapper = renderWrapper();
 
     expect(
+      await wrapper.findByText('downloadConfirmDialog.access_method_info', {
+        exact: false,
+      })
+    );
+
+    expect(
       await wrapper.findByLabelText('downloadConfirmDialog.dialog_arialabel')
     ).toMatchSnapshot();
   });
 
+  it('renders correctly with no size', async () => {
+    props.isTwoLevel = false;
+    props.totalSize = undefined;
+    const wrapper = renderWrapper();
+
+    expect(
+      wrapper.queryByText('downloadConfirmDialog.download_size')
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders correctly with 0 size', async () => {
+    props.isTwoLevel = false;
+    props.totalSize = 0;
+    const wrapper = renderWrapper();
+
+    expect(
+      await wrapper.findByText('downloadConfirmDialog.download_size', {
+        exact: false,
+      })
+    ).toBeInTheDocument();
+    expect(await wrapper.findByText('0 B')).toBeInTheDocument();
+  });
+
   it('should prevent a download if a selected access method is disabled', async () => {
     // disable https method for testing
-    downloadTypeStatusResponses['https'].payload = {
-      type: 'https',
-      disabled: true,
-      message: 'Disabled for testing',
-    };
+    props.accessMethods['https'].disabled = true;
+    props.accessMethods['https'].message = 'Disabled for testing';
 
     props.isTwoLevel = false;
     renderWrapper();
@@ -202,18 +211,9 @@ describe('DownloadConfirmDialog', () => {
   });
 
   it('should prevent a download if there are no available access methods', async () => {
-    // Override default requests and return access method status'
-    // as being disabled for both access methods.
-    downloadTypeStatusResponses['https'].payload = {
-      type: 'https',
-      disabled: true,
-      message: 'disabled for testing',
-    };
-    downloadTypeStatusResponses['globus'].payload = {
-      type: 'globus',
-      disabled: true,
-      message: 'disabled for testing',
-    };
+    props.accessMethods['https'].disabled = true;
+    props.accessMethods['https'].message = 'disabled for testing';
+    props.accessMethods['globus'].disabled = true;
 
     props.isTwoLevel = false;
     renderWrapper();
@@ -223,24 +223,6 @@ describe('DownloadConfirmDialog', () => {
         name: 'downloadConfirmDialog.download',
       })
     ).toBeDisabled();
-  });
-
-  it('should prevent download of an access method where the status was not fetched', async () => {
-    // Return a response where one of the status requests has not been successful.
-    downloadTypeStatusResponses['globus'] = {
-      error: true,
-      payload: {
-        message: 'Test error message',
-      },
-    };
-
-    props.isTwoLevel = false;
-    renderWrapper();
-
-    await waitFor(() => {
-      expect(screen.queryByRole('option', { name: 'GLOBUS' })).toBeNull();
-      expect(screen.getByRole('option', { name: 'HTTPS' })).toBeInTheDocument();
-    });
   });
 
   it('should show successful view when download is successful', async () => {
@@ -290,14 +272,14 @@ describe('DownloadConfirmDialog', () => {
 
   it('should call post download success function upon successful submission of cart', async () => {
     props.isTwoLevel = true;
-    props.postDownloadSuccessFn = jest.fn();
+    props.postDownloadSuccessFn = vi.fn();
     renderWrapper();
     // click on download button to begin download
     await user.click(await screen.findByText('downloadConfirmDialog.download'));
 
     await waitFor(() => {
       expect(props.postDownloadSuccessFn).toHaveBeenCalledWith({
-        preparedId: 1,
+        preparedId: '1',
         fileName: 'test-file-name',
         status: 'COMPLETE',
       });
@@ -305,18 +287,7 @@ describe('DownloadConfirmDialog', () => {
   });
 
   it('should disable download when no download method is available', async () => {
-    downloadTypeStatusResponses['https'] = {
-      error: true,
-      payload: {
-        message: 'test error',
-      },
-    };
-    downloadTypeStatusResponses['globus'] = {
-      error: true,
-      payload: {
-        message: 'test error',
-      },
-    };
+    props.accessMethods = {};
 
     props.isTwoLevel = true;
     renderWrapper();
@@ -334,7 +305,7 @@ describe('DownloadConfirmDialog', () => {
   });
 
   it('should show error when download has failed', async () => {
-    axios.post = jest
+    axios.post = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/.*\/user\/cart\/.*\/submit/.test(url)) {
@@ -346,6 +317,32 @@ describe('DownloadConfirmDialog', () => {
       });
 
     props.isTwoLevel = true;
+    renderWrapper();
+    // click on download button to begin download
+    await user.click(await screen.findByText('downloadConfirmDialog.download'));
+
+    // should not show success message
+    await waitFor(() => {
+      expect(
+        screen.queryByText('downloadConfirmDialog.download_success')
+      ).toBeNull();
+    });
+    // should show error
+    expect(
+      await screen.findByText('Your download request was unsuccessful', {
+        exact: false,
+      })
+    ).toBeInTheDocument();
+  });
+
+  it('should show error when download info is not returned', async () => {
+    getDownloadResponse = {
+      error: true,
+      payload: {
+        message: 'error',
+      },
+    };
+
     renderWrapper();
     // click on download button to begin download
     await user.click(await screen.findByText('downloadConfirmDialog.download'));
@@ -405,7 +402,7 @@ describe('DownloadConfirmDialog', () => {
   it('should show successful view when download is successful using isQueueVisit', async () => {
     props.isTwoLevel = true;
     props.submitDownloadHook = useQueueVisit;
-    props.visitId = '1';
+    props.entityId = '1';
     renderWrapper();
     // input an email
     await user.type(
@@ -455,7 +452,7 @@ describe('DownloadConfirmDialog', () => {
   });
 
   it('should close the download Confirmation Dialog and successfully call the setClose function', async () => {
-    const closeFunction = jest.fn();
+    const closeFunction = vi.fn();
 
     props.isTwoLevel = false;
     props.setClose = closeFunction;
@@ -470,7 +467,7 @@ describe('DownloadConfirmDialog', () => {
   });
 
   it('shows loading status when submitting cart', async () => {
-    axios.post = jest
+    axios.post = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/.*\/user\/cart\/.*\/submit/.test(url)) {

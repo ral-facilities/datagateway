@@ -1,12 +1,12 @@
+import AddCircleOutlineOutlined from '@mui/icons-material/AddCircleOutlineOutlined';
+import RemoveCircleOutlineOutlined from '@mui/icons-material/RemoveCircleOutlineOutlined';
 import { Button } from '@mui/material';
-import {
-  AddCircleOutlineOutlined,
-  RemoveCircleOutlineOutlined,
-} from '@mui/icons-material';
-import { useAddToCart, useCart, useRemoveFromCart } from '../api/cart';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import { useAddToCart, useCart, useRemoveFromCart } from '../api/cart';
 import { StyledTooltip } from '../arrowtooltip.component';
+import { StateType, readSciGatewayToken } from '../main';
 
 export interface AddToCartButtonProps {
   entityType: 'investigation' | 'dataset' | 'datafile';
@@ -22,6 +22,13 @@ const AddToCartButton: React.FC<AddToCartButtonCombinedProps> = (
 ) => {
   const { entityType, entityId, allIds, parentId } = props;
   const [t] = useTranslation();
+
+  const disableAnonDownload = useSelector(
+    (state: StateType) => state.dgcommon.features?.disableAnonDownload
+  );
+  const anonUserName = useSelector(
+    (state: StateType) => state.dgcommon.anonUserName
+  );
 
   const { data: cartItems, isLoading: cartLoading } = useCart();
   const { mutate: addToCart } = useAddToCart(entityType);
@@ -48,21 +55,20 @@ const AddToCartButton: React.FC<AddToCartButtonCombinedProps> = (
     [cartItems, entityType, allIds]
   );
 
-  return selectedIds && selectedIds.includes(entityId) ? (
-    <Button
-      id={`remove-from-cart-btn-${entityType}-${entityId}`}
-      variant="contained"
-      color="secondary"
-      startIcon={<RemoveCircleOutlineOutlined />}
-      disableElevation
-      onClick={() => removeFromCart([entityId])}
-    >
-      {t('buttons.remove_from_cart')}
-    </Button>
-  ) : (
+  const username = readSciGatewayToken().username;
+  const loggedInAnonymously =
+    username === null || username === (anonUserName ?? 'anon/anon');
+
+  const disableIfAnon = disableAnonDownload && loggedInAnonymously;
+
+  return (
     <StyledTooltip
       title={
-        !cartLoading && !isParentSelected && typeof selectedIds === 'undefined'
+        disableIfAnon
+          ? t('buttons.disallow_anon_tooltip')
+          : !cartLoading &&
+            !isParentSelected &&
+            typeof selectedIds === 'undefined'
           ? t<string, string>('buttons.cart_loading_failed_tooltip')
           : cartLoading
           ? t<string, string>('buttons.cart_loading_tooltip')
@@ -80,7 +86,7 @@ const AddToCartButton: React.FC<AddToCartButtonCombinedProps> = (
             color="secondary"
             startIcon={<RemoveCircleOutlineOutlined />}
             disableElevation
-            disabled={isParentSelected}
+            disabled={disableIfAnon || isParentSelected}
             onClick={() => removeFromCart([entityId])}
           >
             {t('buttons.remove_from_cart')}
@@ -90,7 +96,9 @@ const AddToCartButton: React.FC<AddToCartButtonCombinedProps> = (
             id={`add-to-cart-btn-${entityType}-${entityId}`}
             variant="contained"
             color="primary"
-            disabled={cartLoading || typeof selectedIds === 'undefined'}
+            disabled={
+              disableIfAnon || cartLoading || typeof selectedIds === 'undefined'
+            }
             startIcon={<AddCircleOutlineOutlined />}
             disableElevation
             onClick={() => addToCart([entityId])}

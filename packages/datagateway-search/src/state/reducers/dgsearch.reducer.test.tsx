@@ -1,17 +1,16 @@
-import DGSearchReducer, { initialState } from './dgsearch.reducer';
-import { DGSearchState } from '../app.types';
-import {
-  setDatasetTab,
-  setDatafileTab,
-  setInvestigationTab,
-} from '../actions/actions';
 import {
   loadMaxNumResults,
   loadMinNumResults,
   loadSearchableEntitites,
-  loadSelectAllSetting,
   settingsLoaded,
 } from '../actions';
+import {
+  setDatafileTab,
+  setDatasetTab,
+  setInvestigationTab,
+} from '../actions/actions';
+import { DGSearchState } from '../app.types';
+import DGSearchReducer, { initialState } from './dgsearch.reducer';
 
 describe('dgsearch reducer', () => {
   let state: DGSearchState;
@@ -56,14 +55,6 @@ describe('dgsearch reducer', () => {
     const updatedState = DGSearchReducer(state, setInvestigationTab(true));
 
     expect(updatedState.tabs.investigationTab).toEqual(true);
-  });
-
-  it('should set selectAllSetting when configuring action is sent', () => {
-    expect(state.selectAllSetting).toEqual(true);
-
-    const updatedState = DGSearchReducer(state, loadSelectAllSetting(false));
-
-    expect(updatedState.selectAllSetting).toEqual(false);
   });
 
   it('should set searchableEntities property when configuring action is sent', () => {

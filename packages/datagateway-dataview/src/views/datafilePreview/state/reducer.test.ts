@@ -13,10 +13,9 @@ describe('Datafile previewer reducers', () => {
     state = {
       breadcrumbSettings: [],
       facilityImageURL: '',
-      features: {},
       pluginHost: '',
-      selectAllSetting: false,
       settingsLoaded: false,
+      PIRole: 'PI',
       datafilePreviewer: {
         zoomLevel: 100,
         isDetailsPaneShown: false,
@@ -34,10 +33,9 @@ describe('Datafile previewer reducers', () => {
         expect(newState).toEqual<DGDataViewState>({
           breadcrumbSettings: [],
           facilityImageURL: '',
-          features: {},
           pluginHost: '',
-          selectAllSetting: false,
           settingsLoaded: false,
+          PIRole: 'PI',
           datafilePreviewer: {
             zoomLevel: 100,
             isDetailsPaneShown: true,
@@ -53,10 +51,9 @@ describe('Datafile previewer reducers', () => {
       expect(newState).toEqual<DGDataViewState>({
         breadcrumbSettings: [],
         facilityImageURL: '',
-        features: {},
         pluginHost: '',
-        selectAllSetting: false,
         settingsLoaded: false,
+        PIRole: 'PI',
         datafilePreviewer: {
           zoomLevel: 110,
           isDetailsPaneShown: false,
@@ -71,10 +68,9 @@ describe('Datafile previewer reducers', () => {
       expect(newState).toEqual<DGDataViewState>({
         breadcrumbSettings: [],
         facilityImageURL: '',
-        features: {},
         pluginHost: '',
-        selectAllSetting: false,
         settingsLoaded: false,
+        PIRole: 'PI',
         datafilePreviewer: {
           zoomLevel: 90,
           isDetailsPaneShown: false,
@@ -88,10 +84,9 @@ describe('Datafile previewer reducers', () => {
       state = {
         breadcrumbSettings: [],
         facilityImageURL: '',
-        features: {},
         pluginHost: '',
-        selectAllSetting: false,
         settingsLoaded: false,
+        PIRole: 'PI',
         datafilePreviewer: {
           zoomLevel: 80,
           isDetailsPaneShown: false,
@@ -101,10 +96,9 @@ describe('Datafile previewer reducers', () => {
       expect(newState).toEqual<DGDataViewState>({
         breadcrumbSettings: [],
         facilityImageURL: '',
-        features: {},
         pluginHost: '',
-        selectAllSetting: false,
         settingsLoaded: false,
+        PIRole: 'PI',
         datafilePreviewer: {
           zoomLevel: 100,
           isDetailsPaneShown: false,

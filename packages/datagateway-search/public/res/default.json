@@ -258,7 +258,8 @@
     "remove_from_cart": "Remove from selection",
     "download": "Download",
     "unable_to_download_tooltip": "Unable to download - this item is empty",
-    "queue_visit": "Queue visit for download"
+    "queue_visit": "Queue visit for download",
+    "disallow_anon_tooltip": "Anonymous download is disabled - please login and try again"
   },
   "selec_alert": {
     "added_one": "{{count}} item has been added to selection.",
@@ -388,8 +389,9 @@
     "loading_confirmation": "Loading Confirmation...",
     "dialog_title": "Confirm Your Download",
     "download_name_label": "Download Name (optional)",
-    "download_name_helpertext": "Enter a custom file name or leave as the default format ($t(downloadConfirmDialog.download_name_default_format)).",
-    "download_name_default_format": "facilityName_visitId",
+    "download_name_helpertext": "Enter a custom file name or leave as the default format ({{format}}).",
+    "download_name_visit_default_format": "facilityName_visitId",
+    "download_name_data_collection_default_format": "facilityName_DataCollectionentityId",
     "access_method_label": "Access method",
     "access_method_helpertext": "Select an access method for download.",
     "access_method_helpertext_all_disabled_error": "Access methods currently unavailable.",

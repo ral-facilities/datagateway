@@ -1,0 +1,731 @@
+import Edit from '@mui/icons-material/Edit';
+import Lock from '@mui/icons-material/Lock';
+import LockOpen from '@mui/icons-material/LockOpen';
+import {
+  Box,
+  Chip,
+  CircularProgress,
+  Divider,
+  Grid,
+  IconButton,
+  Link as MuiLink,
+  Paper,
+  Tab,
+  Tabs,
+  Typography,
+  styled,
+} from '@mui/material';
+import {
+  BioPortalTerm,
+  ContributorType,
+  DOIRelationType,
+  DataPublication,
+  DataPublicationUser,
+  PublishButton,
+  QueueDataCollectionButton,
+  readSciGatewayToken,
+  useDOI,
+  useDataPublication,
+} from 'datagateway-common';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { useHistory } from 'react-router-dom';
+import CitationFormatter from '../../citationFormatter.component';
+import Branding from './dlsBranding.component';
+import DLSDataPublicationContentTable from './dlsDataPublicationContentTable.component';
+import DLSDataPublicationRelatedIdentifiersPanel from './dlsDataPublicationRelatedIdentifiersPanel.component';
+import DLSDataPublicationVersionPanel, {
+  sortVersions,
+} from './dlsDataPublicationVersionPanel.component';
+// TODO: when vite 6, explore no-inline w/ pluginHost vs inline as we have to inline in vite 5
+import ORCIDIdLogo from 'datagateway-common/src/images/ORCID-iD_icon_unauth_vector.svg';
+import { useSelector } from 'react-redux';
+import { StateType } from '../../../state/app.types';
+
+const Subheading = styled(Typography)(({ theme }) => ({
+  marginTop: theme.spacing(1),
+}));
+
+const ShortInfoLabel = styled(Typography)({
+  fontWeight: 'bold',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+});
+
+const ShortInfoValue = styled(Typography)({
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+});
+
+const StyledDOILink = styled('a')({
+  display: 'inline-flex',
+  backgroundColor: '#000',
+  color: '#fff',
+  textDecoration: 'none',
+  paddingLeft: '5px',
+  borderRadius: '5px',
+  overflow: 'hidden',
+});
+
+const StyledDOISpan = styled('span')({
+  backgroundColor: '#09c',
+  padding: '0 5px',
+  marginLeft: '5px',
+  '&:hover': {
+    backgroundColor: '#006a8d',
+  },
+});
+
+export const StyledDOI: React.FC<{ doi: string }> = ({ doi }) => (
+  <StyledDOILink
+    href={`https://doi.org/${doi}`}
+    data-testid="landing-dataPublication-pid-link"
+  >
+    DOI <StyledDOISpan>{doi}</StyledDOISpan>
+  </StyledDOILink>
+);
+
+export const ORCIDLink: React.FC<{ orcidId: string }> = ({ orcidId }) => (
+  <a
+    style={{ verticalAlign: 'text-top', marginLeft: '4px', marginRight: '4px' }}
+    href={
+      orcidId.startsWith('https://') ? orcidId : `https://orcid.org/${orcidId}`
+    }
+    data-testid="landing-dataPublication-orcidId-link"
+  >
+    <img style={{ width: '1rem' }} src={ORCIDIdLogo} alt="ORCID Logo"></img>
+  </a>
+);
+
+export type FormattedUser = Pick<
+  DataPublicationUser,
+  'contributorType' | 'fullName' | 'affiliations'
+> &
+  Pick<NonNullable<DataPublicationUser['user']>, 'orcidId'>;
+
+interface LandingPageProps {
+  dataPublicationId: string;
+}
+
+type TabPanelProps = {
+  children?: React.ReactNode;
+  index: string;
+  value: string;
+  height?: string;
+};
+
+const TabPanel = React.forwardRef((props: TabPanelProps, ref) => {
+  const { children, value, index, height, ...other } = props;
+
+  return (
+    <Box
+      role="tabpanel"
+      hidden={value !== index}
+      id={`datapublication-${index}-panel`}
+      aria-labelledby={`datapublication-${index}-tab`}
+      sx={{ width: '100%', height }}
+      ref={ref}
+      {...other}
+    >
+      {value === index && children}
+    </Box>
+  );
+});
+TabPanel.displayName = 'TabPanel';
+
+const LandingPage = (props: LandingPageProps): React.ReactElement => {
+  const [t] = useTranslation();
+
+  const PIRole = useSelector((state: StateType) => state.dgdataview.PIRole);
+
+  const history = useHistory();
+
+  const [currentTab, setCurrentTab] = React.useState<'details' | 'content'>(
+    'details'
+  );
+  const { dataPublicationId } = props;
+
+  const { data, isInitialLoading } = useDataPublication(
+    parseInt(dataPublicationId)
+  );
+  const { data: dataciteData } = useDOI(data?.pid);
+
+  const [techniques, subjects] = React.useMemo(
+    () =>
+      dataciteData?.attributes.subjects.reduce(
+        (result: [BioPortalTerm[], string[]], element) => {
+          element.valueUri && element.subjectScheme?.includes('PaNET')
+            ? result[0].push({
+                '@id': element.valueUri,
+                prefLabel: element.subject,
+                links: { descendants: '' }, // just put empty string here - it's not needed for display
+              })
+            : result[1].push(element.subject);
+
+          return result;
+        },
+        [[], []]
+      ) ?? [[], []],
+    [dataciteData?.attributes.subjects]
+  );
+
+  const isVersionDOI = data?.relatedItems?.some(
+    (relatedItem) => relatedItem.relationType === DOIRelationType.IsVersionOf
+  );
+
+  const isSessionDOI = data?.type?.name === 'Investigation';
+  const isConceptDOI = !isVersionDOI && !isSessionDOI;
+
+  const pid = data?.pid;
+  const title = data?.title;
+  const description = React.useMemo(
+    () =>
+      data?.description && data?.description !== 'null'
+        ? data?.description
+        : 'Description not provided',
+    [data]
+  );
+
+  const latestVersionPid = data?.relatedItems
+    ?.filter(
+      (relatedItem) => relatedItem.relationType === DOIRelationType.HasVersion
+    )
+    .sort(sortVersions)?.[0]?.identifier;
+
+  const formattedUsers = React.useMemo(() => {
+    const principals: FormattedUser[] = [];
+    const experimenters: FormattedUser[] = [];
+
+    if (data?.users) {
+      const dataPublicationUsers = data.users;
+      dataPublicationUsers.forEach((user) => {
+        // Only keep users where we have their fullName
+        const fullname = user.fullName;
+        if (fullname) {
+          switch (user.contributorType) {
+            case ContributorType.Minter:
+              principals.push({
+                fullName: fullname,
+                contributorType: 'Principal Investigator',
+                orcidId: user.user?.orcidId,
+                affiliations: user.affiliations,
+              });
+              break;
+            default:
+              experimenters.push({
+                fullName: fullname,
+                contributorType: user.contributorType,
+                orcidId: user.user?.orcidId,
+                affiliations: user.affiliations,
+              });
+          }
+        }
+      });
+    }
+    // Ensure PIs are listed first, and sort within roles for consistency
+    principals.sort((a, b) => a.fullName.localeCompare(b.fullName));
+    experimenters.sort((a, b) => a.fullName.localeCompare(b.fullName));
+    return principals.concat(experimenters);
+  }, [data]);
+
+  React.useEffect(() => {
+    // only add structured data for concept DOI landing pages or session DOI pages
+    // TODO: we might want all versions to be searchable though - check with DLS
+    // in that case we'll likely need to exclude the concept to ensure we're not duplicating the latest version...
+    if (isVersionDOI === false) {
+      const scriptId = `dataPublication-${dataPublicationId}`;
+      let structuredDataScript = document.getElementById(scriptId);
+
+      if (!structuredDataScript) {
+        structuredDataScript = document.createElement('script');
+        structuredDataScript.id = scriptId;
+        (structuredDataScript as HTMLScriptElement).type =
+          'application/ld+json';
+        const head = document.getElementsByTagName('head')[0];
+        head.appendChild(structuredDataScript);
+      }
+
+      structuredDataScript.innerHTML = JSON.stringify({
+        '@context': 'http://schema.org',
+        '@type': 'Dataset',
+        '@id': pid ? `https://doi.org/${pid}` : '',
+        url: pid ? `https://doi.org/${pid}` : '',
+        identifier: pid,
+        name: title,
+        description: description,
+        keywords: [
+          ...subjects,
+          ...techniques.map((technique) => ({
+            name: technique.prefLabel,
+            identifier: technique['@id'],
+            url: technique['@id'],
+            inDefinedTermSet: 'http://purl.org/pan-science/PaNET/',
+          })),
+        ],
+        publisher: {
+          // could get publisher info from DOI? but no logo...
+          '@type': 'Organization',
+          url: t('doi_constants.publisher.url'),
+          name: t('doi_constants.publisher.name'),
+          logo: t('doi_constants.publisher.logo'),
+          contactPoint: {
+            '@type': 'ContactPoint',
+            contactType: 'customer service',
+            email: t('doi_constants.publisher.email'),
+            url: t('doi_constants.publisher.url'),
+          },
+        },
+        creator: formattedUsers.map((user) => {
+          return {
+            '@type': 'Person',
+            name: user.fullName,
+            ...(user.orcidId
+              ? {
+                  sameAs: user.orcidId.startsWith('https://')
+                    ? user.orcidId
+                    : `https://orcid.org/${user.orcidId}`,
+                }
+              : {}),
+            ...(user.affiliations && user.affiliations.length > 0
+              ? {
+                  affiliation: user.affiliations.map((a) => ({
+                    name: a.name,
+                  })),
+                }
+              : {}),
+          };
+        }),
+        includedInDataCatalog: {
+          '@type': 'DataCatalog',
+          url: t('doi_constants.content_url'),
+        },
+        // could get license info from DOIdata
+        license: {
+          '@type': 'URL',
+          url: t('doi_constants.license.url'),
+          name: t('doi_constants.license.name'),
+        },
+        isAccessibleForFree: true,
+        hasPart: data?.relatedItems
+          ?.filter(
+            (relatedItem) =>
+              relatedItem.relationType === DOIRelationType.HasPart
+          )
+          .map((relatedItem) => relatedItem.identifier),
+        isPartOf: data?.relatedItems
+          ?.filter(
+            (relatedItem) =>
+              relatedItem.relationType === DOIRelationType.IsPartOf
+          )
+          .map((relatedItem) => relatedItem.identifier),
+      });
+
+      return () => {
+        const currentScript = document.getElementById(scriptId);
+        if (currentScript) {
+          currentScript.remove();
+        }
+      };
+    }
+  }, [
+    t,
+    title,
+    pid,
+    dataPublicationId,
+    description,
+    formattedUsers,
+    isVersionDOI,
+    data?.relatedItems,
+    subjects,
+    techniques,
+  ]);
+
+  const instruments = dataciteData
+    ? [
+        ...dataciteData.attributes.relatedIdentifiers.filter(
+          (ri) => ri.relationType === DOIRelationType.IsCollectedBy
+        ),
+        ...dataciteData.attributes.relatedItems.filter(
+          (ri) => ri.relationType === DOIRelationType.IsCollectedBy
+        ),
+      ]
+    : [];
+
+  const shortInfo = [
+    ...(isSessionDOI
+      ? [
+          {
+            content: function dataPublicationPidFormat(
+              entity: DataPublication
+            ) {
+              return <StyledDOI doi={entity.pid} />;
+            },
+            label: t('datapublications.pid'),
+          },
+          {
+            content: (_dataPublication: DataPublication) =>
+              instruments
+                .map((ri) =>
+                  'relatedIdentifier' in ri
+                    ? ri.relatedIdentifier
+                    : ri.titles[0].title
+                )
+                .join(', '),
+            label: t('datapublications.instruments'),
+          },
+          {
+            content: (dataPublication: DataPublication) =>
+              dataPublication.dates?.map((d, i) => (
+                <React.Fragment key={d.id}>
+                  {i !== 0 && <br />}
+                  {`${d.dateType}: ${d.date.split('T')[0]}`}
+                </React.Fragment>
+              )),
+            label: t('datapublications.dates'),
+          },
+        ]
+      : isVersionDOI
+      ? [
+          {
+            content: function dataPublicationPidFormat(
+              entity: DataPublication
+            ) {
+              return <StyledDOI doi={entity.pid} />;
+            },
+            label: t('datapublications.pid'),
+          },
+          {
+            content: function dataPublicationPidFormat(
+              _entity: DataPublication
+            ) {
+              const conceptPid = data?.relatedItems?.filter(
+                (relatedItem) =>
+                  relatedItem.relationType === DOIRelationType.IsVersionOf
+              )?.[0]?.identifier;
+              if (conceptPid) return <StyledDOI doi={conceptPid} />;
+            },
+            label: `${t('datapublications.concept')} ${t(
+              'datapublications.pid'
+            )}`,
+          },
+        ]
+      : [
+          {
+            content: function dataPublicationPidFormat(
+              _entity: DataPublication
+            ) {
+              if (latestVersionPid) return <StyledDOI doi={latestVersionPid} />;
+            },
+            label: `${t('datapublications.latest_version')} ${t(
+              'datapublications.pid'
+            )}`,
+          },
+          {
+            content: function dataPublicationPidFormat(
+              entity: DataPublication
+            ) {
+              return <StyledDOI doi={entity.pid} />;
+            },
+            label: `${t('datapublications.concept')} ${t(
+              'datapublications.pid'
+            )}`,
+          },
+        ]),
+    {
+      content: (dataPublication: DataPublication) =>
+        dataPublication.publicationDate?.slice(0, 10) ?? '',
+      label: t('datapublications.publication_date'),
+    },
+    {
+      content: (_dataPublication: DataPublication) =>
+        t('doi_constants.publisher.name'),
+      label: t('datapublications.details.publisher'),
+    },
+    {
+      content: (_dataPublication: DataPublication) => (
+        <MuiLink href={t('doi_constants.license.url')} target="_blank">
+          {t('doi_constants.license.name')}
+        </MuiLink>
+      ),
+      label: t('datapublications.details.license'),
+    },
+    {
+      content: (dataPublication: DataPublication) => dataPublication.type?.name,
+      label: t('datapublications.details.type'),
+    },
+  ];
+
+  const totalSize = dataciteData?.attributes.sizes?.[0]?.includes(' GB')
+    ? parseFloat(dataciteData.attributes.sizes[0].split(' ')[0]) * 10 ** 9
+    : undefined;
+
+  // return true for both null and undefined
+  const isClosed = (data?.publicationDate ?? null) === null;
+
+  return (
+    <Paper
+      sx={{
+        margin: 1,
+        padding: 1,
+      }}
+      data-testid="dls-dataPublication-landing"
+    >
+      {isInitialLoading ? (
+        <div style={{ textAlign: 'center' }}>
+          <CircularProgress />
+        </div>
+      ) : (
+        <Grid container sx={{ padding: 0.5 }}>
+          <Grid item xs={12}>
+            <Branding />
+          </Grid>
+          <Grid container item xs={12}>
+            <Paper
+              square
+              elevation={0}
+              sx={{
+                mx: -1.5,
+                px: 1.5,
+                width: (theme) => `calc(100% + ${theme.spacing(1.5 * 2)})`,
+              }}
+            >
+              <Grid container>
+                <Grid item xs>
+                  <Tabs
+                    value={currentTab}
+                    onChange={(_event, newValue) => setCurrentTab(newValue)}
+                    indicatorColor="secondary"
+                    textColor="secondary"
+                  >
+                    <Tab
+                      id="datapublication-details-tab"
+                      aria-controls="datapublication-details-panel"
+                      label={t('datapublications.details.label')}
+                      value="details"
+                    />
+                    <Tab
+                      id="datapublication-content-tab"
+                      aria-controls="datapublication-content-panel"
+                      label={t('datapublications.content_tab_label')}
+                      value="content"
+                    />
+                  </Tabs>
+                </Grid>
+                <Grid item xs="auto" alignSelf="center">
+                  {isClosed ? (
+                    <Chip
+                      icon={<Lock />}
+                      color="error"
+                      label={t('datapublications.closed')}
+                    />
+                  ) : (
+                    <Chip
+                      icon={<LockOpen />}
+                      color="success"
+                      label={t('datapublications.open')}
+                    />
+                  )}
+                </Grid>
+                {data?.content && (
+                  <Grid item xs="auto" alignSelf="center">
+                    <QueueDataCollectionButton
+                      dataCollection={data.content}
+                      isClosed={isClosed}
+                      totalSize={totalSize}
+                    />
+                  </Grid>
+                )}
+                {/* Only let PIs publish DOIs & only if it's an unopened session DOI */}
+                {isSessionDOI &&
+                  !data?.publicationDate &&
+                  data?.content?.dataCollectionInvestigations?.[0]?.investigation?.investigationUsers?.some(
+                    (user) =>
+                      user.user?.name === readSciGatewayToken().username &&
+                      user.role === PIRole
+                  ) && (
+                    <Grid item xs="auto" alignSelf="center">
+                      <PublishButton dataPublication={data} />
+                    </Grid>
+                  )}
+                {/* Only let the minter edit the DOI & only if it's a concept DOI */}
+                {isConceptDOI &&
+                  data?.users?.some(
+                    (user) =>
+                      user.user?.name === readSciGatewayToken().username &&
+                      user.contributorType === ContributorType.Minter
+                  ) && (
+                    <Grid item xs="auto" alignSelf="center">
+                      <IconButton
+                        sx={{ ml: 'auto' }}
+                        onClick={() =>
+                          history.push({
+                            pathname: `${dataPublicationId}/edit`,
+                            state: { fromEdit: true },
+                          })
+                        }
+                        aria-label={t('datapublications.edit.edit_label')}
+                      >
+                        <Edit />
+                      </IconButton>
+                    </Grid>
+                  )}
+              </Grid>
+            </Paper>
+          </Grid>
+          <Grid item xs={12}>
+            <Divider />
+          </Grid>
+
+          <TabPanel value={currentTab} index="details">
+            <Grid item container xs={12} id="datapublication-details-panel">
+              {/* Long format information */}
+              <Grid item xs>
+                <Subheading
+                  variant="h5"
+                  data-testid="landing-investigation-title"
+                >
+                  {title}
+                </Subheading>
+                <Typography data-testid="landing-datapublication-description">
+                  {description}
+                </Typography>
+
+                {techniques.length > 0 && (
+                  <div>
+                    <Subheading
+                      variant="h6"
+                      data-testid="landing-dataPublication-techniques-label"
+                    >
+                      {t('datapublications.details.techniques')}
+                    </Subheading>
+                    {techniques.map((t, i) => (
+                      <React.Fragment key={t['@id']}>
+                        {i === 0 ? null : ', '}
+                        <MuiLink href={t['@id']}>{t.prefLabel}</MuiLink>
+                      </React.Fragment>
+                    ))}
+                  </div>
+                )}
+
+                {subjects.length > 0 && (
+                  <div>
+                    <Subheading
+                      variant="h6"
+                      data-testid="landing-dataPublication-subjects-label"
+                    >
+                      {t('datapublications.details.subjects')}
+                    </Subheading>
+                    {subjects.join(', ')}
+                  </div>
+                )}
+
+                {formattedUsers.length > 0 && (
+                  <div>
+                    <Subheading
+                      variant="h6"
+                      data-testid="landing-dataPublication-users-label"
+                    >
+                      {t('datapublications.details.users')}
+                    </Subheading>
+                    {formattedUsers.map((user, i) => (
+                      <Typography
+                        data-testid={`landing-dataPublication-user-${i}`}
+                        key={i}
+                      >
+                        <b>{user.contributorType}:</b> {user.fullName}
+                        {user.orcidId ? (
+                          <ORCIDLink orcidId={user.orcidId} />
+                        ) : (
+                          ' ' // add a space here to ensure there's a gap between name and affiliations even if no orcid
+                        )}
+                        {user.affiliations && user.affiliations.length > 0
+                          ? `(${user.affiliations
+                              .map((a) => a.name)
+                              .join(', ')})`
+                          : null}
+                      </Typography>
+                    ))}
+                  </div>
+                )}
+
+                {isConceptDOI && (
+                  <CitationFormatter
+                    label={`${t('datapublications.latest_version')} ${t(
+                      'datapublications.details.citation_formatter.label'
+                    )}`}
+                    doi={latestVersionPid}
+                    formattedUsers={formattedUsers}
+                    title={title}
+                    startDate={data?.publicationDate}
+                  />
+                )}
+                <CitationFormatter
+                  label={
+                    isConceptDOI
+                      ? `${t('datapublications.concept')} ${t(
+                          'datapublications.details.citation_formatter.label'
+                        )}`
+                      : undefined
+                  }
+                  doi={pid}
+                  formattedUsers={formattedUsers}
+                  title={title}
+                  startDate={data?.publicationDate}
+                />
+              </Grid>
+
+              <Divider orientation="vertical" flexItem sx={{ ml: 1, mr: 1 }} />
+              {/* Short format information */}
+              <Grid
+                container
+                item
+                xs="auto"
+                direction="column"
+                spacing={1}
+                mt={0}
+              >
+                {shortInfo.map(
+                  (field, i) =>
+                    data &&
+                    field.content(data) && (
+                      <Grid
+                        container
+                        item
+                        key={i}
+                        spacing={1}
+                        direction={'column'}
+                      >
+                        <Grid item>
+                          <ShortInfoLabel>{field.label}</ShortInfoLabel>
+                        </Grid>
+                        <Grid item>
+                          <ShortInfoValue>{field.content(data)}</ShortInfoValue>
+                        </Grid>
+                      </Grid>
+                    )
+                )}
+                <Grid item sx={{ pt: '0px !important' }}>
+                  <DLSDataPublicationRelatedIdentifiersPanel doi={data?.pid} />
+                </Grid>
+                {isConceptDOI && (
+                  <Grid item sx={{ pt: '0px !important' }}>
+                    <DLSDataPublicationVersionPanel
+                      dataPublicationId={dataPublicationId}
+                    />
+                  </Grid>
+                )}
+              </Grid>
+            </Grid>
+          </TabPanel>
+          <TabPanel value={currentTab} index="content">
+            <DLSDataPublicationContentTable
+              dataPublicationId={dataPublicationId}
+            />
+          </TabPanel>
+        </Grid>
+      )}
+    </Paper>
+  );
+};
+
+export default LandingPage;

@@ -1,20 +1,18 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { RenderResult } from '@testing-library/react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { UserEvent } from '@testing-library/user-event/dist/types/setup';
 import axios from 'axios';
-import * as React from 'react';
 import { Provider } from 'react-redux';
 import { combineReducers, createStore } from 'redux';
-import { StateType } from '../../../lib';
+import type { Dataset, DatasetType } from '../../app.types';
+import { StateType } from '../../state/app.types';
 import dGCommonReducer from '../../state/reducers/dgcommon.reducer';
 import DatasetDetailsPanel from './datasetDetailsPanel.component';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import type { Dataset, DatasetType } from '../../app.types';
 
 function renderComponent({
   rowData,
-  detailsPanelResize = jest.fn(),
+  detailsPanelResize = vi.fn(),
   viewDatafiles,
 }: {
   rowData: Dataset;
@@ -41,7 +39,7 @@ function renderComponent({
 describe('Dataset details panel component', () => {
   let rowData: Dataset;
   let rowDatasetType: DatasetType;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   beforeEach(() => {
     user = userEvent.setup();
@@ -58,17 +56,22 @@ describe('Dataset details panel component', () => {
       type: rowDatasetType,
     };
 
-    axios.get = jest.fn().mockResolvedValue({
+    axios.get = vi.fn().mockResolvedValue({
       data: [rowData],
     });
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
-  it('should render correctly', () => {
+  it('should render correctly', async () => {
     const { asFragment } = renderComponent({ rowData });
+    expect(
+      await screen.findByRole('tablist', {
+        name: 'datasets.details.tabs_label',
+      })
+    );
     expect(asFragment()).toMatchSnapshot();
   });
 
@@ -79,7 +82,7 @@ describe('Dataset details panel component', () => {
     ).toHaveAttribute('aria-selected', 'true');
   });
 
-  it('should render type tab when present in the data', () => {
+  it('should render type tab when present in the data', async () => {
     rowData.type = {
       id: 7,
       name: 'Test type',
@@ -87,6 +90,11 @@ describe('Dataset details panel component', () => {
     };
 
     const { asFragment } = renderComponent({ rowData });
+
+    expect(
+      await screen.findByRole('tab', { name: 'datasets.details.type.label' })
+    );
+
     expect(asFragment()).toMatchSnapshot();
   });
 
@@ -121,7 +129,7 @@ describe('Dataset details panel component', () => {
       name: 'Test type',
       description: 'Test type description',
     };
-    const mockDetailsPanelResize = jest.fn();
+    const mockDetailsPanelResize = vi.fn();
 
     renderComponent({
       rowData,
@@ -147,7 +155,7 @@ describe('Dataset details panel component', () => {
       name: 'Test type',
       description: 'Test type description',
     };
-    const mockDetailsPanelResize = jest.fn();
+    const mockDetailsPanelResize = vi.fn();
 
     renderComponent({ rowData });
 
@@ -180,7 +188,7 @@ describe('Dataset details panel component', () => {
   });
 
   it('should call datafile view if view datafiles tab clicked', async () => {
-    const mockViewDatafiles = jest.fn();
+    const mockViewDatafiles = vi.fn();
 
     renderComponent({
       rowData,

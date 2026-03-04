@@ -1,55 +1,48 @@
-import { AxiosError } from 'axios';
-import {
-  Download,
-  DownloadStatus,
-  InvalidateTokenType,
-  User,
-  getDownload,
-} from 'datagateway-common';
-import {
-  DownloadCartItem,
-  fetchDownloadCart,
-  handleICATError,
-  MicroFrontendId,
-  useRetryICATErrors,
-} from 'datagateway-common';
-import log from 'loglevel';
-import pLimit from 'p-limit';
-import React from 'react';
 import {
   InfiniteData,
-  useInfiniteQuery,
   UseInfiniteQueryResult,
-  useMutation,
   UseMutationResult,
+  UseQueryOptions,
+  UseQueryResult,
+  useInfiniteQuery,
+  useMutation,
   useQueries,
   useQuery,
   useQueryClient,
-  UseQueryOptions,
-  UseQueryResult,
-} from 'react-query';
+} from '@tanstack/react-query';
+import { AxiosError } from 'axios';
+import {
+  DOIDraftResponse,
+  DOIMetadata,
+  DOIResponse,
+  Download,
+  DownloadCartItem,
+  DownloadStatus,
+  User,
+  fetchDownloadCart,
+  getDownload,
+  handleDOIAPIError,
+  handleICATError,
+  useRetryICATErrors,
+} from 'datagateway-common';
+import pLimit from 'p-limit';
+import React from 'react';
 import { DownloadSettingsContext } from './ConfigProvider';
 import {
-  checkUser,
-  DoiMetadata,
-  DoiResponse,
   DownloadProgress,
-  fetchDOI,
   FileSizeAndCount,
-  getCartUsers,
-  getFileSizeAndCount,
-  isCartMintable,
-  mintCart,
-  RelatedDOI,
-} from './downloadApi';
-import {
   adminDownloadDeleted,
   adminDownloadStatus,
+  deleteDraftDOI,
   downloadDeleted,
   fetchAdminDownloads,
   fetchDownloads,
+  getCartUsers,
+  getFileSizeAndCount,
   getIsTwoLevel,
   getPercentageComplete,
+  mintDraftCart,
+  publishDraftDOI,
   removeAllDownloadCartItems,
   removeFromCart,
 } from './downloadApi';
@@ -57,7 +50,7 @@ import {
 /**
  * An enumeration of react query keys.
  */
-export enum QueryKey {
+export enum QueryKeys {
   /**
    * Key for querying a particular download.
    */
@@ -95,7 +88,7 @@ export const useCart = (): UseQueryResult<DownloadCartItem[], AxiosError> => {
   const { facilityName, downloadApiUrl } = settings;
   const retryICATErrors = useRetryICATErrors();
   return useQuery(
-    QueryKey.CART,
+    [QueryKeys.CART],
     () =>
       fetchDownloadCart({
         facilityName,
@@ -124,7 +117,7 @@ export const useRemoveAllFromCart = (): UseMutationResult<
     () => removeAllDownloadCartItems({ facilityName, downloadApiUrl }),
     {
       onSuccess: () => {
-        queryClient.setQueryData(QueryKey.CART, []);
+        queryClient.setQueryData([QueryKeys.CART], []);
       },
       retry: (failureCount, error) => {
         // if we get 431 we know this is an intermittent error so retry
@@ -158,7 +151,7 @@ export const useRemoveEntityFromCart = (): UseMutationResult<
       }),
     {
       onSuccess: (data) => {
-        queryClient.setQueryData(QueryKey.CART, data);
+        queryClient.setQueryData([QueryKeys.CART], data);
       },
       retry: (failureCount, error) => {
         // if we get 431 we know this is an intermittent error so retry
@@ -180,7 +173,7 @@ export const useIsTwoLevel = (): UseQueryResult<boolean, AxiosError> => {
   const { idsUrl } = settings;
   const retryICATErrors = useRetryICATErrors();
 
-  return useQuery('isTwoLevel', () => getIsTwoLevel({ idsUrl }), {
+  return useQuery(['isTwoLevel'], () => getIsTwoLevel({ idsUrl }), {
     onError: (error) => {
       handleICATError(error);
     },
@@ -189,7 +182,7 @@ export const useIsTwoLevel = (): UseQueryResult<boolean, AxiosError> => {
   });
 };
 
-const fileSizeAndCountLimit = pLimit(5);
+const fileSizeAndCountLimit = pLimit(20);
 
 export const useFileSizesAndCounts = (
   data: DownloadCartItem[] | undefined
@@ -218,7 +211,9 @@ export const useFileSizesAndCounts = (
       : [];
   }, [data, retryICATErrors, apiUrl]);
 
-  return useQueries(queryConfigs);
+  return useQueries({
+    queries: queryConfigs,
+  });
 };
 
 /**
@@ -229,7 +224,7 @@ export const useDownloads = <TData = Download[]>(
     Download[],
     AxiosError,
     TData,
-    QueryKey.DOWNLOADS
+    [QueryKeys.DOWNLOADS]
   >
 ): UseQueryResult<TData, AxiosError> => {
   // Load the download settings for use.
@@ -237,7 +232,7 @@ export const useDownloads = <TData = Download[]>(
   const retryICATErrors = useRetryICATErrors();
 
   return useQuery(
-    QueryKey.DOWNLOADS,
+    [QueryKeys.DOWNLOADS],
     () =>
       fetchDownloads({
         facilityName: downloadSettings.facilityName,
@@ -279,26 +274,11 @@ export const useDownloadOrRestoreDownload = (): UseMutationResult<
       }),
     {
       onMutate: ({ downloadId, deleted }) => {
-        const prevDownloads = queryClient.getQueryData(QueryKey.DOWNLOADS);
+        const prevDownloads = queryClient.getQueryData([QueryKeys.DOWNLOADS]);
 
         if (deleted) {
-          queryClient.setQueryData<Download[] | undefined>(
-            QueryKey.DOWNLOADS,
-            // updater fn returns undefined if prev data is also undefined
-            // note that it is not until v4 can the updater return undefined
-            // in v4, when the updater returns undefined, react-query will bail out
-            // and do nothing
-            //
-            // not sure how it works in v3, but returning an empty array feels wrong
-            // here because of semantics -
-            // undefined means the query is unavailable, but an empty array
-            // indicates there's no download item.
-            // hence FormattedDownload[] | undefined is passed to setQueryData
-            // to allow undefined to be returned
-            //
-            // TODO: when migrating to react-query v4, the "| undefined" part is no longer needed and can be removed.
-            //
-            // related issue: https://github.com/TanStack/query/issues/506
+          queryClient.setQueryData<Download[]>(
+            [QueryKeys.DOWNLOADS],
             (oldDownloads) =>
               oldDownloads &&
               oldDownloads.filter((download) => download.id !== downloadId)
@@ -306,7 +286,7 @@ export const useDownloadOrRestoreDownload = (): UseMutationResult<
         }
 
         return () =>
-          queryClient.setQueryData(QueryKey.DOWNLOADS, prevDownloads);
+          queryClient.setQueryData([QueryKeys.DOWNLOADS], prevDownloads);
       },
 
       onSuccess: async (_, { downloadId, deleted }) => {
@@ -319,8 +299,8 @@ export const useDownloadOrRestoreDownload = (): UseMutationResult<
           );
 
           if (restoredDownload) {
-            queryClient.setQueryData<Download[] | undefined>(
-              QueryKey.DOWNLOADS,
+            queryClient.setQueryData<Download[]>(
+              [QueryKeys.DOWNLOADS],
               (downloads) => downloads && [...downloads, restoredDownload]
             );
           }
@@ -354,7 +334,7 @@ export const useAdminDownloads = ({
   const downloadSettings = React.useContext(DownloadSettingsContext);
 
   return useInfiniteQuery(
-    [QueryKey.ADMIN_DOWNLOADS, initialQueryOffset],
+    [QueryKeys.ADMIN_DOWNLOADS, initialQueryOffset],
     ({ pageParam = initialQueryOffset }) =>
       fetchAdminDownloads(
         {
@@ -406,23 +386,8 @@ export const useAdminDownloadDeleted = (): UseMutationResult<
         );
         if (downloads.length > 0) {
           const updatedDownload = downloads[0];
-          // updater fn returns undefined if prev data is also undefined
-          // note that it is not until v4 can the updater return undefined
-          // in v4, when the updater returns undefined, react-query will bail out
-          // and do nothing
-          //
-          // not sure how it works in v3, but returning an empty array feels wrong
-          // here because of semantics -
-          // undefined means the query is unavailable, but an empty array
-          // indicates there's no download item.
-          // hence FormattedDownload[] | undefined is passed to setQueryData
-          // to allow undefined to be returned
-          //
-          // TODO: when migrating to react-query v4, the "| undefined" part is no longer needed and can be removed.
-          //
-          // related issue: https://github.com/TanStack/query/issues/506
-          queryClient.setQueryData<InfiniteData<Download[]> | undefined>(
-            QueryKey.ADMIN_DOWNLOADS,
+          queryClient.setQueryData<InfiniteData<Download[]>>(
+            [QueryKeys.ADMIN_DOWNLOADS],
             (oldData) =>
               oldData && {
                 ...oldData,
@@ -443,7 +408,7 @@ export const useAdminDownloadDeleted = (): UseMutationResult<
       },
 
       onSettled: () => {
-        queryClient.invalidateQueries(QueryKey.ADMIN_DOWNLOADS);
+        queryClient.invalidateQueries([QueryKeys.ADMIN_DOWNLOADS]);
       },
     }
   );
@@ -475,27 +440,12 @@ export const useAdminUpdateDownloadStatus = (): UseMutationResult<
       }),
     {
       onMutate: ({ downloadId, status }) => {
-        const prevDownloads = queryClient.getQueryData(
-          QueryKey.ADMIN_DOWNLOADS
-        );
+        const prevDownloads = queryClient.getQueryData([
+          QueryKeys.ADMIN_DOWNLOADS,
+        ]);
 
-        // updater fn returns undefined if prev data is also undefined
-        // note that it is not until v4 can the updater return undefined
-        // in v4, when the updater returns undefined, react-query will bail out
-        // and do nothing
-        //
-        // not sure how it works in v3, but returning an empty array feels wrong
-        // here because of semantics -
-        // undefined means the query is unavailable, but an empty array
-        // indicates there's no download item.
-        // hence FormattedDownload[] | undefined is passed to setQueryData
-        // to allow undefined to be returned
-        //
-        // TODO: when migrating to react-query v4, the "| undefined" part is no longer needed and can be removed.
-        //
-        // related issue: https://github.com/TanStack/query/issues/506
-        queryClient.setQueryData<InfiniteData<Download[]> | undefined>(
-          QueryKey.ADMIN_DOWNLOADS,
+        queryClient.setQueryData<InfiniteData<Download[]>>(
+          [QueryKeys.ADMIN_DOWNLOADS],
           (oldData) =>
             oldData && {
               ...oldData,
@@ -510,7 +460,7 @@ export const useAdminUpdateDownloadStatus = (): UseMutationResult<
         );
 
         return () =>
-          queryClient.setQueryData(QueryKey.ADMIN_DOWNLOADS, prevDownloads);
+          queryClient.setQueryData([QueryKeys.ADMIN_DOWNLOADS], prevDownloads);
       },
 
       onError: (error, _, rollback) => {
@@ -519,7 +469,7 @@ export const useAdminUpdateDownloadStatus = (): UseMutationResult<
       },
 
       onSettled: () => {
-        queryClient.invalidateQueries(QueryKey.ADMIN_DOWNLOADS);
+        queryClient.invalidateQueries([QueryKeys.ADMIN_DOWNLOADS]);
       },
     }
   );
@@ -532,23 +482,22 @@ export const useAdminUpdateDownloadStatus = (): UseMutationResult<
  */
 export const useDownloadPercentageComplete = <T = DownloadProgress>({
   download,
+  idsUrl,
   ...queryOptions
-}: { download: Download } & UseQueryOptions<
+}: { download: Download; idsUrl: string } & UseQueryOptions<
   DownloadProgress,
   AxiosError,
   T,
   string[]
 >): UseQueryResult<T, AxiosError> => {
-  const { accessMethods } = React.useContext(DownloadSettingsContext);
   const preparedId = download.preparedId;
-  const idsUrl = accessMethods[download.transport]?.idsUrl;
 
   return useQuery(
-    [QueryKey.DOWNLOAD_PROGRESS, preparedId ?? ''], // undefined preparedId is handled in downloadProgressIndicator & disables the query anyway
+    [QueryKeys.DOWNLOAD_PROGRESS, preparedId ?? ''], // undefined preparedId is handled in downloadProgressIndicator & disables the query anyway
     () =>
       getPercentageComplete({
         preparedId: preparedId,
-        settings: { idsUrl: idsUrl ?? '' },
+        settings: { idsUrl },
       }),
     {
       onError: (error) => {
@@ -560,101 +509,74 @@ export const useDownloadPercentageComplete = <T = DownloadProgress>({
 };
 
 /**
- * Queries whether a cart is mintable.
- * @param cart The {@link Cart} that is checked
- */
-export const useIsCartMintable = (
-  cart: DownloadCartItem[] | undefined
-): UseQueryResult<
-  boolean,
-  AxiosError<{ detail: { msg: string }[] } | { detail: string }>
-> => {
-  const settings = React.useContext(DownloadSettingsContext);
-  const { doiMinterUrl } = settings;
-  const queryClient = useQueryClient();
-  const opts = queryClient.getDefaultOptions();
-  const retries =
-    typeof opts?.queries?.retry === 'number' ? opts.queries.retry : 3;
-
-  return useQuery(
-    ['ismintable', cart],
-    () => {
-      if (doiMinterUrl && cart && cart.length > 0)
-        return isCartMintable(cart, doiMinterUrl);
-      else return Promise.resolve(false);
-    },
-    {
-      onError: (error) => {
-        if (error.response?.status !== 403) log.error(error);
-        if (error.response?.status === 401) {
-          document.dispatchEvent(
-            new CustomEvent(MicroFrontendId, {
-              detail: {
-                type: InvalidateTokenType,
-                payload: {
-                  severity: 'error',
-                  message:
-                    localStorage.getItem('autoLogin') === 'true'
-                      ? 'Your session has expired, please reload the page'
-                      : 'Your session has expired, please login again',
-                },
-              },
-            })
-          );
-        }
-      },
-      retry: (failureCount, error) => {
-        // if we get 403 we know this is an legit response from the backend so don't bother retrying
-        // all other errors use default retry behaviour
-        if (error.response?.status === 403 || failureCount >= retries) {
-          return false;
-        } else {
-          return true;
-        }
-      },
-      refetchOnWindowFocus: false,
-      enabled: typeof doiMinterUrl !== 'undefined',
-    }
-  );
-};
-
-/**
- * Mints a cart
+ * Mints a draft of a cart
  * @param cart The {@link Cart} to mint
  * @param doiMetadata The required metadata for the DOI
  */
-export const useMintCart = (): UseMutationResult<
-  DoiResponse,
+export const useMintDraftCart = (): UseMutationResult<
+  DOIDraftResponse,
   AxiosError<{
     detail: { msg: string }[] | string;
   }>,
-  { cart: DownloadCartItem[]; doiMetadata: DoiMetadata }
+  { cart: DownloadCartItem[]; doiMetadata: DOIMetadata }
 > => {
   const settings = React.useContext(DownloadSettingsContext);
 
   return useMutation(
     ({ cart, doiMetadata }) => {
-      return mintCart(cart, doiMetadata, settings);
+      return mintDraftCart(cart, doiMetadata, settings);
     },
     {
       onError: (error) => {
-        log.error(error);
-        if (error.response?.status === 401) {
-          document.dispatchEvent(
-            new CustomEvent(MicroFrontendId, {
-              detail: {
-                type: InvalidateTokenType,
-                payload: {
-                  severity: 'error',
-                  message:
-                    localStorage.getItem('autoLogin') === 'true'
-                      ? 'Your session has expired, please reload the page'
-                      : 'Your session has expired, please login again',
-                },
-              },
-            })
-          );
-        }
+        handleDOIAPIError(error, undefined, undefined, true, true);
+      },
+    }
+  );
+};
+
+/**
+ * Publishes a draft data publication
+ * @param dataPublicationId The {@link DataPublication} to publish
+ */
+export const usePublishDraft = (): UseMutationResult<
+  DOIResponse,
+  AxiosError<{
+    detail: { msg: string }[] | string;
+  }>,
+  string
+> => {
+  const settings = React.useContext(DownloadSettingsContext);
+
+  return useMutation(
+    (dataPublicationId: string) => {
+      return publishDraftDOI(dataPublicationId, settings);
+    },
+    {
+      onError: handleDOIAPIError,
+    }
+  );
+};
+
+/**
+ * Deletes a draft data publication
+ * @param dataPublicationId The {@link DataPublication} to publish
+ */
+export const useDeleteDraft = (): UseMutationResult<
+  void,
+  AxiosError<{
+    detail: { msg: string }[] | string;
+  }>,
+  string
+> => {
+  const settings = React.useContext(DownloadSettingsContext);
+
+  return useMutation(
+    (dataPublicationId: string) => {
+      return deleteDraftDOI(dataPublicationId, settings);
+    },
+    {
+      onError: (error) => {
+        handleDOIAPIError(error, undefined, undefined, true, true);
       },
     }
   );
@@ -677,98 +599,4 @@ export const useCartUsers = (
       staleTime: Infinity,
     }
   );
-};
-
-/**
- * Checks whether a username belongs to an ICAT User
- * @param username The username that we're checking
- * @returns the {@link User} that matches the username, or 404
- */
-export const useCheckUser = (
-  username: string
-): UseQueryResult<User, AxiosError> => {
-  const settings = React.useContext(DownloadSettingsContext);
-  const queryClient = useQueryClient();
-  const opts = queryClient.getDefaultOptions();
-  const retries =
-    typeof opts?.queries?.retry === 'number' ? opts.queries.retry : 3;
-
-  return useQuery(
-    ['checkUser', username],
-    () => checkUser(username, settings),
-    {
-      onError: (error) => {
-        log.error(error);
-        if (error.response?.status === 401) {
-          document.dispatchEvent(
-            new CustomEvent(MicroFrontendId, {
-              detail: {
-                type: InvalidateTokenType,
-                payload: {
-                  severity: 'error',
-                  message:
-                    localStorage.getItem('autoLogin') === 'true'
-                      ? 'Your session has expired, please reload the page'
-                      : 'Your session has expired, please login again',
-                },
-              },
-            })
-          );
-        }
-      },
-      retry: (failureCount: number, error: AxiosError) => {
-        if (
-          // user not logged in, error code will log them out
-          error.response?.status === 401 ||
-          // email doesn't match user - don't retry as this is a correct response from the server
-          error.response?.status === 404 ||
-          // email is invalid - don't retry as this is correct response from the server
-          error.response?.status === 422 ||
-          failureCount >= retries
-        )
-          return false;
-        return true;
-      },
-      // set enabled false to only fetch on demand when the add creator button is pressed
-      enabled: false,
-      cacheTime: 0,
-    }
-  );
-};
-
-/**
- * Checks whether a DOI is valid and returns the DOI metadata
- * @param doi The DOI that we're checking
- * @returns the {@link RelatedDOI} that matches the username, or 404
- */
-export const useCheckDOI = (
-  doi: string
-): UseQueryResult<RelatedDOI, AxiosError> => {
-  const settings = React.useContext(DownloadSettingsContext);
-  const queryClient = useQueryClient();
-  const opts = queryClient.getDefaultOptions();
-  const retries =
-    typeof opts?.queries?.retry === 'number' ? opts.queries.retry : 3;
-
-  return useQuery(['checkDOI', doi], () => fetchDOI(doi, settings), {
-    retry: (failureCount: number, error: AxiosError) => {
-      if (
-        // DOI is invalid - don't retry as this is a correct response from the server
-        error.response?.status === 404 ||
-        failureCount >= retries
-      )
-        return false;
-      return true;
-    },
-    select: (doi) => ({
-      title: doi.attributes.titles[0].title,
-      identifier: doi.attributes.doi,
-      fullReference: '', // TODO: what should we put here?
-      relationType: '',
-      relatedItemType: '',
-    }),
-    // set enabled false to only fetch on demand when the add creator button is pressed
-    enabled: false,
-    cacheTime: 0,
-  });
 };

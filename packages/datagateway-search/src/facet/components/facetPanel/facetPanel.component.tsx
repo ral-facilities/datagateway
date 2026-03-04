@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Accordion as MuiAccordion,
   AccordionDetails,
@@ -10,7 +9,7 @@ import {
   styled,
   Typography,
 } from '@mui/material';
-import { ExpandMore } from '@mui/icons-material';
+import ExpandMore from '@mui/icons-material/ExpandMore';
 import ToggleableFilterItem from './toggleableFilterItem.component';
 import { FacetClassification } from '../../facet';
 import { useTranslation } from 'react-i18next';

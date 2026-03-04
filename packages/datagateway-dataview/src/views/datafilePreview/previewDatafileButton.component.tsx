@@ -1,8 +1,12 @@
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Box, IconButton, Tooltip } from '@mui/material';
-import { type Datafile } from 'datagateway-common';
-import React from 'react';
+import {
+  StateType,
+  readSciGatewayToken,
+  type Datafile,
+} from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { isDatafilePreviewable } from './datafileExtension';
 
@@ -20,14 +24,29 @@ function PreviewDatafileButton({
 
   const isSupported = isDatafilePreviewable(datafile);
 
+  const disableAnonDownload = useSelector(
+    (state: StateType) => state.dgcommon.features?.disableAnonDownload
+  );
+  const anonUserName = useSelector(
+    (state: StateType) => state.dgcommon.anonUserName
+  );
+
+  const username = readSciGatewayToken().username;
+  const loggedInAnonymously =
+    username === null || username === (anonUserName ?? 'anon/anon');
+
+  const disableIfAnon = disableAnonDownload && loggedInAnonymously;
+
   return (
     <Tooltip
       title={
-        t(
-          isSupported
-            ? 'datafiles.preview.preview_datafile'
-            : 'datafiles.preview.preview_unsupported'
-        ) as string
+        disableIfAnon
+          ? t('buttons.disallow_anon_tooltip')
+          : (t(
+              isSupported
+                ? 'datafiles.preview.preview_datafile'
+                : 'datafiles.preview.preview_unsupported'
+            ) as string)
       }
     >
       {/* Wrap the IconButton with a Box so that the tooltip can be triggered
@@ -36,7 +55,7 @@ function PreviewDatafileButton({
         <IconButton
           component={Link}
           to={`datafile/${datafile.id}`}
-          disabled={!isSupported}
+          disabled={disableIfAnon || !isSupported}
           aria-label={t('datafiles.preview.preview_datafile')}
         >
           <VisibilityIcon />

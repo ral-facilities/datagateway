@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Datafile details panel component renders correctly 1`] = `
+exports[`Datafile details panel component > renders correctly 1`] = `
 <DocumentFragment>
   <div
     data-testid="dls-datafile-details-panel"

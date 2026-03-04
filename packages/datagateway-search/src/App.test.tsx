@@ -1,36 +1,35 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
 import App from './App';
 import log from 'loglevel';
 import { render, screen, waitFor } from '@testing-library/react';
 import { configureApp, settingsLoaded } from './state/actions';
 
-jest.mock('loglevel').mock('./state/actions', () => ({
-  ...jest.requireActual('./state/actions'),
-  configureApp: jest.fn(),
-}));
+vi.mock('loglevel');
+vi.mock('./state/actions', async () => {
+  const originalModule = await vi.importActual('./state/actions');
+
+  return { ...originalModule, configureApp: vi.fn() };
+});
 
 describe('App', () => {
   beforeEach(() => {
-    jest.restoreAllMocks();
-    jest.clearAllMocks();
+    vi.restoreAllMocks();
 
     // pretend app is configured successfully
-    (configureApp as jest.MockedFn<typeof configureApp>).mockReturnValue(
-      async (dispatch) => {
-        dispatch(settingsLoaded());
-      }
-    );
+    vi.mocked(configureApp).mockReturnValue(async (dispatch) => {
+      dispatch(settingsLoaded());
+    });
   });
 
-  it('renders without crashing', () => {
-    const div = document.createElement('div');
-    ReactDOM.render(<App />, div);
-    ReactDOM.unmountComponentAtNode(div);
+  it('renders without crashing', async () => {
+    const { unmount } = render(<App />);
+
+    expect(await screen.findByText('Search data')).toBeInTheDocument();
+
+    unmount();
   });
 
   it('shows loading screen when configuring app', async () => {
-    (configureApp as jest.MockedFn<typeof configureApp>).mockReturnValue(
+    vi.mocked(configureApp).mockReturnValue(
       () =>
         new Promise((_) => {
           // never resolve the promise to pretend the app is still being configured
@@ -47,13 +46,13 @@ describe('App', () => {
     const error = 'test SearchPageContainer error';
 
     // throw an error in function used by searchPageContainer
-    jest
-      .spyOn(window.localStorage.__proto__, 'removeItem')
-      .mockImplementation(() => {
+    vi.spyOn(window.localStorage.__proto__, 'removeItem').mockImplementation(
+      () => {
         throw new Error(error);
-      });
+      }
+    );
 
-    jest.spyOn(console, 'error').mockImplementation(() => {
+    vi.spyOn(console, 'error').mockImplementation(() => {
       // suppress console error
     });
 

@@ -1,40 +1,38 @@
-import React from 'react';
+import Assessment from '@mui/icons-material/Assessment';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import Fingerprint from '@mui/icons-material/Fingerprint';
+import Public from '@mui/icons-material/Public';
+import Save from '@mui/icons-material/Save';
+import Subject from '@mui/icons-material/Subject';
 import {
-  Table,
-  investigationLink,
-  externalSiteLink,
-  Investigation,
   ColumnType,
-  useInvestigationsInfinite,
-  useInvestigationCount,
-  useIds,
-  useCart,
-  useAddToCart,
-  useRemoveFromCart,
+  Investigation,
+  InvestigationDetailsPanel,
+  ConnectedTable as Table,
+  externalSiteLink,
+  formatBytes,
+  investigationLink,
   parseSearchToQuery,
+  useAddToCart,
+  useCart,
+  useDateFilter,
+  useIds,
+  useInvestigationCount,
+  useInvestigationsInfinite,
+  useRemoveFromCart,
   useSort,
   useTextFilter,
-  useDateFilter,
-  InvestigationDetailsPanel,
-  formatBytes,
 } from 'datagateway-common';
-import { StateType } from '../../state/app.types';
-import { useSelector } from 'react-redux';
-import { TableCellProps, IndexRange } from 'react-virtualized';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import {
-  Subject,
-  Fingerprint,
-  Public,
-  Save,
-  Assessment,
-  CalendarToday,
-} from '@mui/icons-material';
+import { IndexRange, TableCellProps } from 'react-virtualized';
+import { StateType } from '../../state/app.types';
 
 const InvestigationTable = (): React.ReactElement => {
-  const selectAllSetting = useSelector(
-    (state: StateType) => state.dgdataview.selectAllSetting
+  const disableSelectAll = useSelector(
+    (state: StateType) => state.dgcommon.features?.disableSelectAll ?? false
   );
   const location = useLocation();
   const [t] = useTranslation();
@@ -53,10 +51,10 @@ const InvestigationTable = (): React.ReactElement => {
       }),
     },
   ]);
-  const { data: allIds, isLoading: allIdsLoading } = useIds(
+  const { data: allIds, isInitialLoading: allIdsLoading } = useIds(
     'investigation',
     undefined,
-    selectAllSetting
+    !disableSelectAll
   );
   const { data: cartItems, isLoading: cartLoading } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } =
@@ -84,11 +82,10 @@ const InvestigationTable = (): React.ReactElement => {
           (cartItem) =>
             cartItem.entityType === 'investigation' &&
             // if select all is disabled, it's safe to just pass the whole cart as selectedRows
-            (!selectAllSetting ||
-              (allIds && allIds.includes(cartItem.entityId)))
+            (disableSelectAll || (allIds && allIds.includes(cartItem.entityId)))
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, selectAllSetting, allIds]
+    [cartItems, disableSelectAll, allIds]
   );
 
   const textFilter = useTextFilter(filters);
@@ -210,7 +207,6 @@ const InvestigationTable = (): React.ReactElement => {
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}
-      disableSelectAll={!selectAllSetting}
       detailsPanel={InvestigationDetailsPanel}
       columns={columns}
     />

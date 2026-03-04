@@ -1,38 +1,31 @@
-import {
-  type Datafile,
-  type DownloadCartItem,
-  dGCommonInitialState,
-} from 'datagateway-common';
-import * as React from 'react';
-import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import type { StateType } from '../../state/app.types';
-import { initialState as dgDataViewInitialState } from '../../state/reducers/dgdataview.reducer';
-import DatafileTable from './datafileTable.component';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { createMemoryHistory, type History } from 'history';
-import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
-  findAllRows,
-  findColumnHeaderByName,
-} from '../../setupTests';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   render,
-  type RenderResult,
   screen,
   waitFor,
   within,
+  type RenderResult,
 } from '@testing-library/react';
-import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
+import axios, { type AxiosResponse } from 'axios';
+import {
+  dGCommonInitialState,
+  type Datafile,
+  type DownloadCartItem,
+} from 'datagateway-common';
 import {
   findCellInRow,
   findColumnIndexByName,
 } from 'datagateway-search/src/setupTests';
-import axios, { type AxiosResponse } from 'axios';
+import { createMemoryHistory, type History } from 'history';
+import { Provider } from 'react-redux';
+import { Router } from 'react-router-dom';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { findAllRows, findColumnHeaderByName } from '../../setupTests';
+import type { StateType } from '../../state/app.types';
+import { initialState as dgDataViewInitialState } from '../../state/reducers/dgdataview.reducer';
+import DatafileTable from './datafileTable.component';
 
 describe('Datafile table component', () => {
   const mockStore = configureStore([thunk]);
@@ -40,7 +33,7 @@ describe('Datafile table component', () => {
   let rowData: Datafile[];
   let cartItems: DownloadCartItem[];
   let history: History;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
   let holder: HTMLElement;
 
   const renderComponent = (): RenderResult =>
@@ -82,7 +75,7 @@ describe('Datafile table component', () => {
       })
     );
 
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/\/user\/cart\/$/.test(url)) {
@@ -109,7 +102,7 @@ describe('Datafile table component', () => {
         return Promise.reject(`Endpoint not mocked: ${url}`);
       });
 
-    axios.post = jest
+    axios.post = vi
       .fn()
       .mockImplementation(
         (url: string, data: unknown): Promise<Partial<AxiosResponse>> => {
@@ -151,18 +144,21 @@ describe('Datafile table component', () => {
 
   afterEach(() => {
     document.body.removeChild(holder);
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly', async () => {
     renderComponent();
 
     let rows: HTMLElement[] = [];
-    await waitFor(async () => {
-      rows = await findAllRows();
-      // should have 1 row in the table
-      expect(rows).toHaveLength(1);
-    });
+    await waitFor(
+      async () => {
+        rows = await findAllRows();
+        // should have 1 row in the table
+        expect(rows).toHaveLength(1);
+      },
+      { timeout: 5_000 }
+    );
 
     const row = rows[0];
 
@@ -233,8 +229,6 @@ describe('Datafile table component', () => {
   });
 
   it('updates filter query params on date filter', async () => {
-    applyDatePickerWorkaround();
-
     renderComponent();
 
     const filterInput = await screen.findByRole('textbox', {
@@ -257,8 +251,6 @@ describe('Datafile table component', () => {
 
     expect(history.length).toBe(3);
     expect(history.location.search).toBe('?');
-
-    cleanupDatePickerWorkaround();
   });
 
   it('updates sort query params on sort', async () => {
@@ -321,9 +313,12 @@ describe('Datafile table component', () => {
 
     renderComponent();
     // wait for rows to show up
-    await waitFor(async () => {
-      expect(await findAllRows()).toHaveLength(1);
-    });
+    await waitFor(
+      async () => {
+        expect(await findAllRows()).toHaveLength(1);
+      },
+      { timeout: 5_000 }
+    );
 
     const selectAllCheckbox = await screen.findByRole('checkbox', {
       name: 'select all rows',
@@ -334,13 +329,16 @@ describe('Datafile table component', () => {
   });
 
   it('no select all checkbox appears if selectAllSetting is false', async () => {
-    state.dgdataview.selectAllSetting = false;
+    state.dgcommon.features = { disableSelectAll: true };
 
     renderComponent();
     // wait for rows to show up
-    await waitFor(async () => {
-      expect(await findAllRows()).toHaveLength(1);
-    });
+    await waitFor(
+      async () => {
+        expect(await findAllRows()).toHaveLength(1);
+      },
+      { timeout: 5_000 }
+    );
 
     await waitFor(() => {
       expect(
@@ -354,10 +352,13 @@ describe('Datafile table component', () => {
 
     // wait for rows to show up
     let rows: HTMLElement[] = [];
-    await waitFor(async () => {
-      rows = await findAllRows();
-      expect(rows).toHaveLength(1);
-    });
+    await waitFor(
+      async () => {
+        rows = await findAllRows();
+        expect(rows).toHaveLength(1);
+      },
+      { timeout: 5_000 }
+    );
 
     expect(
       within(rows[0]).getByRole('button', { name: 'buttons.download' })
@@ -369,10 +370,13 @@ describe('Datafile table component', () => {
 
     // wait for rows to show up
     let rows: HTMLElement[] = [];
-    await waitFor(async () => {
-      rows = await findAllRows();
-      expect(rows).toHaveLength(1);
-    });
+    await waitFor(
+      async () => {
+        rows = await findAllRows();
+        expect(rows).toHaveLength(1);
+      },
+      { timeout: 5_000 }
+    );
 
     expect(screen.queryByTestId('datafile-details-panel')).toBeNull();
 

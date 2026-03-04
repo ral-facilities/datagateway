@@ -1,38 +1,41 @@
-import React from 'react';
+import {
+  UseQueryOptions,
+  UseQueryResult,
+  useQueries,
+  useQuery,
+} from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
+import { isValid } from 'date-fns';
+import format from 'date-fns/format';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import {
   AdditionalFilters,
-  FiltersType,
-  SortType,
-  Order,
-  Filter,
-  QueryParams,
-  ViewsType,
+  DOIViewType,
   Entity,
+  Filter,
+  FiltersType,
+  Order,
+  QueryParams,
+  SortType,
   UpdateMethod,
+  ViewsType,
 } from '../app.types';
-import {
-  useQueries,
-  useQuery,
-  UseQueryOptions,
-  UseQueryResult,
-} from 'react-query';
 import handleICATError from '../handleICATError';
 import { readSciGatewayToken } from '../parseTokens';
-import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
-import format from 'date-fns/format';
-import { isValid } from 'date-fns';
 import { useRetryICATErrors } from './retryICATErrors';
 
 export * from './cart';
-export * from './facilityCycles';
-export * from './instruments';
-export * from './investigations';
 export * from './datafiles';
 export * from './dataPublications';
 export * from './datasets';
+export * from './dois';
+export * from './facilityCycles';
+export * from './generic';
+export * from './instruments';
+export * from './investigations';
 export * from './lucene';
 
 /**
@@ -72,6 +75,7 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
   const endDateString = query.get('endDate');
   const currentTab = query.get('currentTab');
   const restrict = query.get('restrict');
+  const doiType = query.get('doiType') as DOIViewType;
 
   // Parse filters in the query.
   const parsedFilters: FiltersType = {};
@@ -131,6 +135,7 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
     endDate: endDate,
     currentTab: currentTab ? currentTab : 'investigation',
     restrict: restrict === 'true',
+    doiType,
   };
 
   return params;
@@ -952,5 +957,7 @@ export const useCustomFilterCount = (
   // since we strongly type the queries object anyway
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  return useQueries(queryConfigs);
+  return useQueries({
+    queries: queryConfigs,
+  });
 };

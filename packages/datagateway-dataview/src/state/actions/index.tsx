@@ -1,39 +1,27 @@
-import { ActionType, ThunkResult } from '../app.types';
 import {
-  FeatureSwitches,
-  FeatureSwitchesPayload,
-  ConfigureFeatureSwitchesType,
-  BreadcrumbSettings,
-  ConfigureBreadcrumbSettingsPayload,
-  ConfigureBreadcrumbSettingsType,
-  SettingsLoadedType,
-  ConfigureSelectAllSettingPayload,
-  ConfigureSelectAllSettingType,
-  ConfigurePluginHostSettingPayload,
-  ConfigurePluginHostSettingType,
-  ConfigureFacilityImageSettingPayload,
-  ConfigureFacilityImageSettingType,
-} from './actions.types';
-import {
-  loadUrls,
+  loadAnonUserName,
   loadFacilityName,
+  loadFeatureSwitches,
   loadQueryRetries,
-  loadAccessMethods,
+  loadUrls,
 } from 'datagateway-common';
 import { Action } from 'redux';
 import { settings } from '../../settings';
+import { ActionType, ThunkResult } from '../app.types';
+import {
+  BreadcrumbSettings,
+  ConfigureBreadcrumbSettingsPayload,
+  ConfigureBreadcrumbSettingsType,
+  ConfigureFacilityImageSettingPayload,
+  ConfigureFacilityImageSettingType,
+  ConfigurePIRoleSettingType,
+  ConfigurePluginHostSettingPayload,
+  ConfigurePluginHostSettingType,
+  SettingsLoadedType,
+} from './actions.types';
 
 export const settingsLoaded = (): Action => ({
   type: SettingsLoadedType,
-});
-
-export const loadFeatureSwitches = (
-  featureSwitches: FeatureSwitches
-): ActionType<FeatureSwitchesPayload> => ({
-  type: ConfigureFeatureSwitchesType,
-  payload: {
-    switches: featureSwitches,
-  },
 });
 
 export const loadBreadcrumbSettings = (
@@ -42,15 +30,6 @@ export const loadBreadcrumbSettings = (
   type: ConfigureBreadcrumbSettingsType,
   payload: {
     settings: breadcrumbSettings,
-  },
-});
-
-export const loadSelectAllSetting = (
-  selectAllSetting: boolean
-): ActionType<ConfigureSelectAllSettingPayload> => ({
-  type: ConfigureSelectAllSettingType,
-  payload: {
-    settings: selectAllSetting,
   },
 });
 
@@ -72,6 +51,15 @@ export const loadFacilityImageSetting = (
   },
 });
 
+export const loadPIRoleSetting = (
+  PIRoleSetting: string | undefined
+): ActionType<ConfigurePluginHostSettingPayload> => ({
+  type: ConfigurePIRoleSettingType,
+  payload: {
+    settings: PIRoleSetting ?? 'PI', // if it's not defined in the settings default to PI
+  },
+});
+
 export const configureApp = (): ThunkResult<Promise<void>> => {
   return async (dispatch) => {
     const settingsResult = await settings;
@@ -83,12 +71,19 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
         dispatch(loadFeatureSwitches(settingsResult['features']));
       }
 
+      if (settingsResult?.['anonUserName'] !== undefined) {
+        dispatch(loadAnonUserName(settingsResult['anonUserName']));
+      }
+
       dispatch(
         loadUrls({
           idsUrl: settingsResult['idsUrl'],
           apiUrl: settingsResult['apiUrl'],
           downloadApiUrl: settingsResult['downloadApiUrl'],
           icatUrl: '', // we currently don't need icatUrl in dataview so just pass empty string for now
+          doiMinterUrl: settingsResult['doiMinterUrl'],
+          dataCiteUrl: settingsResult['dataCiteUrl'],
+          bioportalUrl: settingsResult['bioportalUrl'],
         })
       );
 
@@ -96,17 +91,9 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
         dispatch(loadQueryRetries(settingsResult['queryRetries']));
       }
 
-      if (settingsResult?.['accessMethods'] !== undefined) {
-        dispatch(loadAccessMethods(settingsResult['accessMethods']));
-      }
-
       // Dispatch the action to load the breadcrumb settings (optional settings).
       if (settingsResult?.['breadcrumbs'] !== undefined) {
         dispatch(loadBreadcrumbSettings(settingsResult['breadcrumbs']));
-      }
-
-      if (settingsResult?.['selectAllSetting'] !== undefined) {
-        dispatch(loadSelectAllSetting(settingsResult['selectAllSetting']));
       }
 
       if (settingsResult?.['pluginHost'] !== undefined) {
@@ -116,6 +103,8 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
       if (settingsResult?.['facilityImageURL'] !== undefined) {
         dispatch(loadFacilityImageSetting(settingsResult['facilityImageURL']));
       }
+
+      dispatch(loadPIRoleSetting(settingsResult['PIRole']));
 
       dispatch(settingsLoaded());
     }

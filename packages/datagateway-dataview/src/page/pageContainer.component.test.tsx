@@ -1,75 +1,71 @@
-import * as React from 'react';
-import thunk from 'redux-thunk';
-import configureStore from 'redux-mock-store';
-import { StateType } from '../state/app.types';
-import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
 import {
   dGCommonInitialState,
   DownloadCartItem,
   readSciGatewayToken,
 } from 'datagateway-common';
-import {
-  createLocation,
-  createMemoryHistory,
-  createPath,
-  History,
-} from 'history';
-import { Router } from 'react-router-dom';
+import { createMemoryHistory, createPath, History } from 'history';
+import { generatePath, Router } from 'react-router-dom';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { StateType } from '../state/app.types';
+import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
 
-import PageContainer, { paths } from './pageContainer.component';
-import {
-  checkInstrumentId as unmockedCheckInstrumentId,
-  checkInvestigationId as unmockedCheckInvestigationId,
-} from './idCheckFunctions';
-import axios, { AxiosResponse } from 'axios';
 import {
   QueryClient,
   QueryClientProvider,
   useIsFetching,
   useQueryClient,
-} from 'react-query';
-import { Provider } from 'react-redux';
+} from '@tanstack/react-query';
 import {
+  act,
   render,
-  type RenderResult,
   screen,
   waitFor,
   within,
+  type RenderResult,
 } from '@testing-library/react';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
+import { Provider } from 'react-redux';
+import {
+  checkInstrumentId as unmockedCheckInstrumentId,
+  checkInvestigationId as unmockedCheckInvestigationId,
+} from './idCheckFunctions';
+import PageContainer, { paths } from './pageContainer.component';
 
-jest.mock('loglevel');
-jest.mock('./idCheckFunctions');
-const checkInstrumentId = jest.mocked(unmockedCheckInstrumentId);
-const checkInvestigationId = jest.mocked(unmockedCheckInvestigationId);
+vi.mock('loglevel');
+vi.mock('./idCheckFunctions');
+const checkInstrumentId = vi.mocked(unmockedCheckInstrumentId);
+const checkInvestigationId = vi.mocked(unmockedCheckInvestigationId);
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
     // mock table and cardview to opt out of rendering them in these tests as there's no need
-    Table: jest.fn(() => 'MockedTable'),
-    CardView: jest.fn(() => 'MockedCardView'),
-    readSciGatewayToken: jest.fn(() => originalModule.readSciGatewayToken()),
+    Table: vi.fn(() => 'MockedTable'),
+    CardView: vi.fn(() => 'MockedCardView'),
+    readSciGatewayToken: vi.fn(() =>
+      (originalModule.readSciGatewayToken as typeof readSciGatewayToken)()
+    ),
   };
 });
 
-jest.mock('react-query', () => ({
+vi.mock('@tanstack/react-query', async () => ({
   __esModule: true,
-  ...jest.requireActual('react-query'),
-  useQueryClient: jest.fn(() => ({
-    getQueryData: jest.fn(() => 0),
+  ...(await vi.importActual('@tanstack/react-query')),
+  useQueryClient: vi.fn(() => ({
+    getQueryData: vi.fn(() => 0),
   })),
-  useIsFetching: jest.fn(() => 0),
+  useIsFetching: vi.fn(() => 0),
 }));
 
 describe('PageContainer - Tests', () => {
   let queryClient: QueryClient;
   let history: History;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
   let cartItems: DownloadCartItem[];
   let holder: HTMLElement;
 
@@ -80,10 +76,6 @@ describe('PageContainer - Tests', () => {
     const state: StateType = {
       dgcommon: dGCommonInitialState,
       dgdataview: dgDataViewInitialState,
-      router: {
-        action: 'POP',
-        location: { ...createLocation('/'), query: {} },
-      },
     };
     const mockStore = configureStore([thunk]);
     const testStore = mockStore(state);
@@ -104,6 +96,7 @@ describe('PageContainer - Tests', () => {
       initialEntries: ['/'],
     });
     user = userEvent.setup();
+    cartItems = [];
 
     // @ts-expect-error we need it this way
     delete window.location;
@@ -113,7 +106,7 @@ describe('PageContainer - Tests', () => {
     // below code keeps window.location in sync with history changes
     // (needed because useUpdateQueryParam uses window.location not history)
     const historyReplace = history.replace;
-    const historyReplaceSpy = jest.spyOn(history, 'replace');
+    const historyReplaceSpy = vi.spyOn(history, 'replace');
     historyReplaceSpy.mockImplementation((args) => {
       historyReplace(args);
       if (typeof args === 'string') {
@@ -125,7 +118,7 @@ describe('PageContainer - Tests', () => {
       }
     });
     const historyPush = history.push;
-    const historyPushSpy = jest.spyOn(history, 'push');
+    const historyPushSpy = vi.spyOn(history, 'push');
     historyPushSpy.mockImplementation((args) => {
       historyPush(args);
       if (typeof args === 'string') {
@@ -141,11 +134,11 @@ describe('PageContainer - Tests', () => {
     holder.setAttribute('id', 'datagateway-search');
     document.body.appendChild(holder);
 
-    (useQueryClient as jest.Mock).mockReturnValue({
-      getQueryData: jest.fn(() => 0),
+    vi.mocked(useQueryClient, { partial: true }).mockReturnValue({
+      getQueryData: vi.fn(() => 0),
     });
 
-    (axios.get as jest.Mock).mockImplementation(
+    vi.mocked(axios.get).mockImplementation(
       (url: string): Promise<Partial<AxiosResponse>> => {
         if (url.includes('count')) {
           return Promise.resolve({ data: 0 });
@@ -180,8 +173,8 @@ describe('PageContainer - Tests', () => {
 
   it('displays the correct entity count', async () => {
     history.replace(paths.toggle.investigation);
-    (useQueryClient as jest.Mock).mockReturnValue({
-      getQueryData: jest.fn(() => 101),
+    vi.mocked(useQueryClient, { partial: true }).mockReturnValue({
+      getQueryData: vi.fn(() => 101),
     });
 
     renderComponent();
@@ -200,7 +193,9 @@ describe('PageContainer - Tests', () => {
 
     expect(history.location.pathname).toBe('/search/data');
 
-    history.push('/browse/instrument');
+    act(() => {
+      history.push('/browse/instrument');
+    });
 
     await user.click(
       await screen.findByRole('button', { name: 'view-search' })
@@ -208,7 +203,9 @@ describe('PageContainer - Tests', () => {
 
     expect(history.location.pathname).toBe('/search/isis');
 
-    history.push('/browse/proposal');
+    act(() => {
+      history.push('/browse/proposal');
+    });
 
     await user.click(
       await screen.findByRole('button', { name: 'view-search' })
@@ -236,10 +233,10 @@ describe('PageContainer - Tests', () => {
   });
 
   it('display loading bar when loading true', async () => {
-    (useIsFetching as jest.Mock).mockReturnValue(1);
+    vi.mocked(useIsFetching).mockReturnValue(1);
     renderComponent();
     expect(await screen.findByRole('progressbar')).toBeInTheDocument();
-    (useIsFetching as jest.Mock).mockReturnValue(0);
+    vi.mocked(useIsFetching).mockReturnValue(0);
   });
 
   it('display clear filters button and clear for filters onClick', async () => {
@@ -266,7 +263,7 @@ describe('PageContainer - Tests', () => {
         '"%7D%2C"title"%3A%7B"value"%3A"test"%2C"type"%3A"include"%7D%7D&sort=%7B%22startDate%22%3A%22desc%22%7D'
     );
     const response = { username: 'SomePerson' };
-    (readSciGatewayToken as jest.Mock).mockReturnValue(response);
+    vi.mocked(readSciGatewayToken, { partial: true }).mockReturnValue(response);
     renderComponent();
 
     await user.click(
@@ -281,7 +278,7 @@ describe('PageContainer - Tests', () => {
         '%22%7D%7D&sort=%7B%22startDate%22%3A%22desc%22%7D'
     );
 
-    (readSciGatewayToken as jest.Mock).mockClear();
+    vi.mocked(readSciGatewayToken).mockClear();
   });
 
   it('display disabled clear filters button', async () => {
@@ -295,7 +292,7 @@ describe('PageContainer - Tests', () => {
 
   it('display filter warning on datafile table', async () => {
     history.replace('/browse/investigation/1/dataset/25/datafile');
-    (checkInvestigationId as jest.Mock).mockResolvedValueOnce(true);
+    vi.mocked(checkInvestigationId).mockResolvedValueOnce(true);
 
     renderComponent();
 
@@ -320,12 +317,44 @@ describe('PageContainer - Tests', () => {
   });
 
   it('displays role selector when on My Data route', async () => {
+    const response = { username: 'SomePerson' };
+    vi.mocked(readSciGatewayToken, { partial: true }).mockReturnValue(response);
     history.replace(paths.myData.root);
 
     renderComponent();
 
     expect(
-      await screen.findByRole('button', { name: 'my_data_table.role_selector' })
+      await screen.findByRole('combobox', {
+        name: 'my_data_table.role_selector',
+      })
+    ).toBeInTheDocument();
+  });
+
+  it('displays doi type selector when on My DOIs route', async () => {
+    const response = { username: 'SomePerson' };
+    vi.mocked(readSciGatewayToken, { partial: true }).mockReturnValue(response);
+    history.replace(paths.dataPublications.dls.myDOIs);
+
+    renderComponent();
+
+    expect(
+      await screen.findByRole('group', {
+        name: 'my_doi_table.type_button_group_aria_label',
+      })
+    ).toBeInTheDocument();
+  });
+
+  it('displays doi type selector when on All DOIs route', async () => {
+    const response = { username: 'SomePerson' };
+    vi.mocked(readSciGatewayToken, { partial: true }).mockReturnValue(response);
+    history.replace(paths.dataPublications.dls.allDOIs);
+
+    renderComponent();
+
+    expect(
+      await screen.findByRole('group', {
+        name: 'all_doi_table.type_button_group_aria_label',
+      })
     ).toBeInTheDocument();
   });
 
@@ -350,12 +379,15 @@ describe('PageContainer - Tests', () => {
   });
 
   it('do not use StyledRouting component on landing pages', async () => {
-    (checkInstrumentId as jest.Mock).mockResolvedValueOnce(true);
-    (useQueryClient as jest.Mock).mockReturnValue({
-      getQueryData: jest.fn(),
+    vi.mocked(checkInstrumentId).mockResolvedValueOnce(true);
+    vi.mocked(useQueryClient, { partial: true }).mockReturnValue({
+      getQueryData: vi.fn(),
     });
     history.replace(
-      `${paths.dataPublications.landing.isisDataPublicationLanding}`
+      generatePath(paths.dataPublications.landing.isisDataPublicationLanding, {
+        instrumentId: 1,
+        dataPublicationId: 2,
+      })
     );
 
     renderComponent();
@@ -366,11 +398,15 @@ describe('PageContainer - Tests', () => {
     expect(screen.queryByTestId('styled-routing')).toBeNull();
   });
 
-  it('set view to card if cardview stored in localstorage', () => {
+  it('set view to card if cardview stored in localstorage', async () => {
     localStorage.setItem('dataView', 'card');
     history.replace(paths.toggle.investigation);
 
     renderComponent();
+
+    expect(
+      await screen.findByRole('button', { name: 'page view app.view_table' })
+    ).toBeInTheDocument();
 
     expect(history.location.search).toBe('?view=card');
 
@@ -379,7 +415,7 @@ describe('PageContainer - Tests', () => {
 
   it('displays warning label when browsing data anonymously', async () => {
     const response = { username: 'anon/anon' };
-    (readSciGatewayToken as jest.Mock).mockReturnValue(response);
+    vi.mocked(readSciGatewayToken, { partial: true }).mockReturnValue(response);
 
     renderComponent();
 
@@ -389,9 +425,15 @@ describe('PageContainer - Tests', () => {
   });
 
   it('displays warning label when browsing study hierarchy', async () => {
-    history.replace(paths.dataPublications.toggle.isisDataPublication);
+    history.replace(
+      generatePath(paths.dataPublications.toggle.isisDataPublication, {
+        instrumentId: 1,
+      })
+    );
     const response = { username: 'SomePerson' };
-    (readSciGatewayToken as jest.Mock).mockReturnValueOnce(response);
+    vi.mocked(readSciGatewayToken, { partial: true }).mockReturnValueOnce(
+      response
+    );
 
     renderComponent();
 
@@ -402,7 +444,9 @@ describe('PageContainer - Tests', () => {
 
   it('does not display warning label when logged in', async () => {
     const response = { username: 'SomePerson' };
-    (readSciGatewayToken as jest.Mock).mockReturnValueOnce(response);
+    vi.mocked(readSciGatewayToken, { partial: true }).mockReturnValueOnce(
+      response
+    );
 
     renderComponent();
 
@@ -456,7 +500,12 @@ describe('PageContainer - Tests', () => {
   });
 
   it('shows breadcrumb according to the current path', async () => {
-    history.replace('/browse/instrument/1/facilityCycle/1/investigation');
+    history.replace(
+      generatePath(paths.toggle.isisInvestigation, {
+        instrumentId: 1,
+        facilityCycleId: 1,
+      })
+    );
     renderComponent();
 
     expect(await screen.findByText('breadcrumbs.home')).toBeInTheDocument();
@@ -464,7 +513,9 @@ describe('PageContainer - Tests', () => {
     expect(baseBreadcrumb).toHaveAttribute('href', '/browse/instrument');
     expect(baseBreadcrumb).toHaveTextContent('breadcrumbs.instrument');
 
-    const breadcrumbs = screen.getAllByTestId(/^Breadcrumb-hierarchy-\d+$/);
+    const breadcrumbs = await screen.findAllByTestId(
+      /^Breadcrumb-hierarchy-\d+$/
+    );
     expect(breadcrumbs[0]).toHaveAttribute(
       'href',
       '/browse/instrument/1/facilityCycle'

@@ -1,17 +1,19 @@
+import { Grid, Paper, Typography } from '@mui/material';
 import {
   ColumnType,
   DLSVisitDetailsPanel,
-  externalSiteLink,
-  formatBytes,
-  buildDatasetTableUrlForInvestigation,
+  DetailsPanelProps,
   FACILITY_NAME,
-  InvestigationDetailsPanel,
   ISISInvestigationDetailsPanel,
-  parseSearchToQuery,
+  InvestigationDetailsPanel,
   SearchFilter,
   SearchResponse,
   SearchResultSource,
-  Table,
+  ConnectedTable as Table,
+  buildDatasetTableUrlForInvestigation,
+  externalSiteLink,
+  formatBytes,
+  parseSearchToQuery,
   tableLink,
   useAddToCart,
   useCart,
@@ -19,18 +21,17 @@ import {
   useRemoveFromCart,
   useSort,
 } from 'datagateway-common';
-import { TableCellProps } from 'react-virtualized';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { Grid, Paper, Typography } from '@mui/material';
-import { StateType } from '../state/app.types';
+import { useHistory, useLocation } from 'react-router-dom';
+import { TableCellProps } from 'react-virtualized';
 import FacetPanel from '../facet/components/facetPanel/facetPanel.component';
-import { facetClassificationFromSearchResponses } from '../facet/facet';
 import SelectedFilterChips from '../facet/components/selectedFilterChips.component';
+import { facetClassificationFromSearchResponses } from '../facet/facet';
 import useFacetFilters from '../facet/useFacetFilters';
 import { useSearchResultCounter } from '../searchTabs/useSearchResultCounter';
-import React from 'react';
+import { StateType } from '../state/app.types';
 
 interface InvestigationTableProps {
   hierarchy: string;
@@ -56,8 +57,8 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
   } = queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
-  const selectAllSetting = useSelector(
-    (state: StateType) => state.dgsearch.selectAllSetting
+  const disableSelectAll = useSelector(
+    (state: StateType) => state.dgcommon.features?.disableSelectAll ?? false
   );
 
   const minNumResults = useSelector(
@@ -155,10 +156,9 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
 
   const handleSort = useSort();
 
-  const loadMoreRows = React.useCallback(
-    (_) => fetchNextPage(),
-    [fetchNextPage]
-  );
+  const loadMoreRows: NonNullable<
+    React.ComponentProps<typeof Table>['loadMoreRows']
+  > = React.useCallback((_) => fetchNextPage(), [fetchNextPage]);
 
   const removeFilterChip = (
     dimension: string,
@@ -174,11 +174,11 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
           (cartItem) =>
             cartItem.entityType === 'investigation' &&
             // if select all is disabled, it's safe to just pass the whole cart as selectedRows
-            (!selectAllSetting ||
+            (disableSelectAll ||
               (aggregatedIds && aggregatedIds.includes(cartItem.entityId)))
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, selectAllSetting, aggregatedIds]
+    [cartItems, disableSelectAll, aggregatedIds]
   );
 
   const columns: ColumnType[] = React.useMemo(
@@ -283,53 +283,54 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
     [t, hierarchy]
   );
 
-  const detailsPanel = React.useCallback(
-    ({ rowData, detailsPanelResize }) => {
-      switch (hierarchy) {
-        case FACILITY_NAME.isis:
-          const investigation = rowData as SearchResultSource;
-          const url = buildDatasetTableUrlForInvestigation({
-            facilityName: hierarchy,
-            investigation: {
-              id: investigation.id,
-              name: investigation.name,
-              instrumentId:
-                investigation.investigationinstrument?.[0]?.['instrument.id'],
-              facilityCycleId:
-                investigation.investigationfacilitycycle?.[0]?.[
-                  'facilityCycle.id'
-                ],
-            },
-          });
-          return (
-            <ISISInvestigationDetailsPanel
-              rowData={rowData}
-              detailsPanelResize={detailsPanelResize}
-              viewDatasets={() => {
-                if (url) push(url);
-              }}
-            />
-          );
+  const detailsPanel: React.ComponentType<DetailsPanelProps> =
+    React.useCallback(
+      ({ rowData, detailsPanelResize }) => {
+        switch (hierarchy) {
+          case FACILITY_NAME.isis:
+            const investigation = rowData as SearchResultSource;
+            const url = buildDatasetTableUrlForInvestigation({
+              facilityName: hierarchy,
+              investigation: {
+                id: investigation.id,
+                name: investigation.name,
+                instrumentId:
+                  investigation.investigationinstrument?.[0]?.['instrument.id'],
+                facilityCycleId:
+                  investigation.investigationfacilitycycle?.[0]?.[
+                    'facilityCycle.id'
+                  ],
+              },
+            });
+            return (
+              <ISISInvestigationDetailsPanel
+                rowData={rowData}
+                detailsPanelResize={detailsPanelResize}
+                viewDatasets={() => {
+                  if (url) push(url);
+                }}
+              />
+            );
 
-        case FACILITY_NAME.dls:
-          return (
-            <DLSVisitDetailsPanel
-              rowData={rowData}
-              detailsPanelResize={detailsPanelResize}
-            />
-          );
+          case FACILITY_NAME.dls:
+            return (
+              <DLSVisitDetailsPanel
+                rowData={rowData}
+                detailsPanelResize={detailsPanelResize}
+              />
+            );
 
-        default:
-          return (
-            <InvestigationDetailsPanel
-              rowData={rowData}
-              detailsPanelResize={detailsPanelResize}
-            />
-          );
-      }
-    },
-    [hierarchy, push]
-  );
+          default:
+            return (
+              <InvestigationDetailsPanel
+                rowData={rowData}
+                detailsPanelResize={detailsPanelResize}
+              />
+            );
+        }
+      },
+      [hierarchy, push]
+    );
 
   if (currentTab !== 'investigation') return null;
 
@@ -395,7 +396,7 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
                   data={aggregatedSource}
                   loadMoreRows={loadMoreRows}
                   totalRowCount={
-                    aggregatedSource?.length + (hasNextPage ? 1 : 0) ?? 0
+                    aggregatedSource.length + (hasNextPage ? 1 : 0)
                   }
                   sort={{}}
                   onSort={handleSort}
@@ -406,7 +407,6 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
                     aggregatedIds,
                     onCheck: addToCart,
                     onUncheck: removeFromCart,
-                    disableSelectAll: !selectAllSetting,
                   })}
                   shortHeader={true}
                 />

@@ -1,10 +1,9 @@
 import {
-  MicroFrontendId,
   Datafile,
   Dataset,
   Instrument,
   Investigation,
-  DownloadSettingsAccessMethod,
+  MicroFrontendId,
 } from '../../app.types';
 import { DlsDatasetDetailsPanelTab } from '../../detailsPanels/dls/datasetDetailsPanel.component';
 import { DlsVisitDetailsPanelTab } from '../../detailsPanels/dls/visitDetailsPanel.component';
@@ -27,8 +26,10 @@ export const ConfigureFacilityNameType =
   'datagateway_common:configure_facility_name';
 export const ConfigureURLsType = 'datagateway_common:configure_urls';
 export const ConfigureQueryRetriesType = 'datagateway_common:configure_retries';
-export const ConfigureAccessMethodsType =
-  'datagateway_common:configure_access_methods';
+export const ConfigureFeatureSwitchesType =
+  'datagateway_dataview:configure_feature_switches';
+export const ConfigureAnonUserNameType =
+  'datagateway_dataview:configure_anon_username';
 
 export const IsisDatafileDetailsPanelChangeTabType =
   'datagateway_common:isis_datafile_details_panel_change_tab';
@@ -47,8 +48,14 @@ export interface ConfigureFacilityNamePayload {
   facilityName: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface FeatureSwitches {}
+export interface FeatureSwitchesPayload {
+  switches: FeatureSwitches;
+}
+
+export interface FeatureSwitches {
+  disableAnonDownload?: boolean;
+  disableSelectAll?: boolean;
+}
 
 export interface ConfigureUrlsPayload {
   urls: URLs;
@@ -58,8 +65,8 @@ export interface ConfigureQueryRetriesPayload {
   queryRetries?: number;
 }
 
-export interface ConfigureAccessMethodsPayload {
-  accessMethods?: DownloadSettingsAccessMethod;
+export interface ConfigureAnonUserNamePayload {
+  anonUserName?: string;
 }
 
 export interface URLs {
@@ -67,6 +74,9 @@ export interface URLs {
   apiUrl: string;
   downloadApiUrl: string;
   icatUrl: string;
+  doiMinterUrl?: string;
+  dataCiteUrl?: string;
+  bioportalUrl?: string;
 }
 
 export interface PluginRoute {
@@ -75,6 +85,7 @@ export interface PluginRoute {
   displayName: string;
   admin?: boolean;
   hideFromMenu?: boolean;
+  unauthorised?: boolean;
   order: number;
 }
 

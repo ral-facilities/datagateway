@@ -13,9 +13,9 @@ describe('PageContainer Component', () => {
 
   beforeEach(() => {
     cy.login();
+    cy.clearDownloadCart();
     cy.intercept('**/investigations/*').as('getInvestigations');
     cy.visit('/browse/investigation/').wait('@getInvestigations');
-    cy.clearDownloadCart();
   });
 
   it('should be able to click clear filters button to clear filters', () => {
@@ -108,8 +108,15 @@ describe('PageContainer Component', () => {
     cy.window()
       .then((window) => {
         const windowWidth = window.innerWidth;
-        // Account for select and details column widths
-        columnWidth = (windowWidth - 40 - 40) / 8;
+
+        const table =
+          window.document.querySelector<HTMLElement>('[role="rowgroup"]');
+        const scrollBarWidth = table
+          ? table.offsetWidth - table.clientWidth
+          : 0;
+
+        // Account for select and details column widths & scroll bar
+        columnWidth = (windowWidth - 40 - 40 - scrollBarWidth) / 8;
       })
       .then(() => expect(columnWidth).to.not.equal(0));
 
@@ -163,6 +170,9 @@ describe('PageContainer Component', () => {
   });
 
   it('should display table tooltips correctly (and be dismissable by pressing esc)', () => {
+    cy.findByRole('progressbar').should('not.exist');
+    cy.contains('No results found').should('not.exist');
+
     cy.get('[data-testid="investigation-table-title"]')
       .first()
       .as('firstTitle')
@@ -175,13 +185,23 @@ describe('PageContainer Component', () => {
   });
 
   it('should not table display tooltips after column resizing', () => {
+    cy.findByRole('progressbar').should('not.exist');
+    cy.contains('No results found').should('not.exist');
+
     let columnWidth = 0;
 
     cy.window()
       .then((window) => {
         const windowWidth = window.innerWidth;
-        // Account for select and details column widths
-        columnWidth = (windowWidth - 40 - 40) / 8;
+
+        const table =
+          window.document.querySelector<HTMLElement>('[role="rowgroup"]');
+        const scrollBarWidth = table
+          ? table.offsetWidth - table.clientWidth
+          : 0;
+
+        // Account for select and details column widths & scroll bar
+        columnWidth = (windowWidth - 40 - 40 - scrollBarWidth) / 8;
       })
       .then(() => expect(columnWidth).to.not.equal(0));
 
@@ -208,17 +228,27 @@ describe('PageContainer Component', () => {
       .first()
       .as('firstTitle')
       .trigger('mouseover', { force: true });
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(1_000);
     cy.get('@firstTitle').get('[role="tooltip"]').should('not.exist');
   });
 
   it('should not display table tooltips after making the window bigger', () => {
+    cy.findByRole('progressbar').should('not.exist');
+    cy.contains('No results found').should('not.exist');
+
     cy.viewport(10000, 750);
+
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(1_000);
 
     cy.get('[data-testid="investigation-table-title"]')
       .first()
       .as('firstTitle')
       .trigger('mouseover', { force: true });
 
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(1_000);
     cy.get('@firstTitle').get('[role="tooltip"]').should('not.exist');
   });
 });

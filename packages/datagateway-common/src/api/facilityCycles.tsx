@@ -12,7 +12,7 @@ import {
   UseQueryResult,
   useInfiniteQuery,
   UseInfiniteQueryResult,
-} from 'react-query';
+} from '@tanstack/react-query';
 import { useRetryICATErrors } from './retryICATErrors';
 
 const fetchFacilityCycles = (
@@ -81,8 +81,8 @@ export const useAllFacilityCycles = (
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const retryICATErrors = useRetryICATErrors();
 
-  return useQuery<FacilityCycle[], AxiosError, FacilityCycle[], string>(
-    'facilityCycle',
+  return useQuery<FacilityCycle[], AxiosError, FacilityCycle[], string[]>(
+    ['facilityCycle'],
     () => fetchAllFacilityCycles(apiUrl),
     {
       onError: (error) => {

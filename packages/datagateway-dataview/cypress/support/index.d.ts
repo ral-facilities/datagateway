@@ -9,5 +9,16 @@ declare namespace Cypress {
       user?: string
     ): Cypress.Chainable<Cypress.Response>;
     clearDownloadCart(): Cypress.Chainable<Cypress.Response>;
+    seedDownloadCart(cartItems: string[]): Cypress.Chainable<Cypress.Response>;
+    seedUserGeneratedDataPublication(
+      title?: string
+    ): Cypress.Chainable<Cypress.Response>;
+    clearDataPublications(ids: string[]): Cypress.Chainable<Cypress.Response>;
+    seedSessionDataPublication(
+      recreateSessionDPIfExists: boolean
+    ): Cypress.Chainable<Cypress.Response>;
+
+    dumpAliases(store: Record<string, unknown>, aliases?: string[]): void;
+    restoreAliases(store: Record<string, unknown>, aliases?: string[]): void;
   }
 }

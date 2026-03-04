@@ -1,18 +1,19 @@
+import GetApp from '@mui/icons-material/GetApp';
 import {
   Button,
   ButtonProps,
   IconButton,
   IconButtonProps,
 } from '@mui/material';
-import { GetApp } from '@mui/icons-material';
-import { downloadDatafile } from '../api/datafiles';
-import { downloadDataset } from '../api/datasets';
-import { downloadInvestigation } from '../api/investigations';
-import { StateType } from '../state/app.types';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
+import { downloadDatafile } from '../api/datafiles';
+import { downloadDataset } from '../api/datasets';
+import { downloadInvestigation } from '../api/investigations';
 import { StyledTooltip } from '../arrowtooltip.component';
+import { readSciGatewayToken } from '../parseTokens';
+import { StateType } from '../state/app.types';
 
 export interface DownloadButtonProps {
   entityType: 'investigation' | 'dataset' | 'datafile';
@@ -29,6 +30,12 @@ const DownloadButton: React.FC<DownloadButtonProps> = (
 
   const [t] = useTranslation();
   const idsUrl = useSelector((state: StateType) => state.dgcommon.urls.idsUrl);
+  const disableAnonDownload = useSelector(
+    (state: StateType) => state.dgcommon.features?.disableAnonDownload
+  );
+  const anonUserName = useSelector(
+    (state: StateType) => state.dgcommon.anonUserName
+  );
 
   const downloadData = (
     entityType: 'investigation' | 'dataset' | 'datafile',
@@ -43,6 +50,12 @@ const DownloadButton: React.FC<DownloadButtonProps> = (
       downloadDatafile(idsUrl, entityId, entityName);
     }
   };
+
+  const username = readSciGatewayToken().username;
+  const loggedInAnonymously =
+    username === null || username === (anonUserName ?? 'anon/anon');
+
+  const disableIfAnon = disableAnonDownload && loggedInAnonymously;
 
   const BaseDownloadButton = React.useCallback(
     (props: ButtonProps & IconButtonProps): React.ReactElement => {
@@ -78,7 +91,9 @@ const DownloadButton: React.FC<DownloadButtonProps> = (
   return (
     <StyledTooltip
       title={
-        entitySize <= 0
+        disableIfAnon
+          ? t('buttons.disallow_anon_tooltip')
+          : entitySize <= 0
           ? t<string, string>('buttons.unable_to_download_tooltip')
           : ''
       }
@@ -91,7 +106,7 @@ const DownloadButton: React.FC<DownloadButtonProps> = (
           onClick={() => {
             downloadData(entityType, entityId, entityName);
           }}
-          disabled={entitySize <= 0}
+          disabled={disableIfAnon || entitySize <= 0}
         />
       </span>
     </StyledTooltip>

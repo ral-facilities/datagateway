@@ -1,12 +1,10 @@
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import CheckBoxOutlineBlank from '@mui/icons-material/CheckBoxOutlineBlank';
+import { Checkbox, SxProps, TableCell } from '@mui/material';
 import React from 'react';
-import { TableCellProps } from 'react-virtualized';
-import { TableCell, Checkbox, SxProps } from '@mui/material';
-import {
-  CheckBoxOutlineBlank,
-  CheckBox as CheckBoxIcon,
-} from '@mui/icons-material';
-import { Entity, ICATEntity } from '../../app.types';
 import { useTranslation } from 'react-i18next';
+import { TableCellProps } from 'react-virtualized';
+import { Entity, ICATEntity } from '../../app.types';
 import { StyledTooltip } from '../../arrowtooltip.component';
 
 type SelectCellProps = TableCellProps & {
@@ -19,6 +17,7 @@ type SelectCellProps = TableCellProps & {
   setLastChecked: (newLastChecked: number) => void;
   loading: boolean;
   parentSelected: boolean;
+  disableIfAnon?: boolean;
 };
 
 const SelectCell = React.memo((props: SelectCellProps): React.ReactElement => {
@@ -34,6 +33,7 @@ const SelectCell = React.memo((props: SelectCellProps): React.ReactElement => {
     rowIndex,
     loading,
     parentSelected,
+    disableIfAnon,
   } = props;
   const { t } = useTranslation();
 
@@ -47,7 +47,9 @@ const SelectCell = React.memo((props: SelectCellProps): React.ReactElement => {
     >
       <StyledTooltip
         title={
-          !loading && !parentSelected && typeof selectedRows === 'undefined'
+          disableIfAnon
+            ? t('buttons.disallow_anon_tooltip')
+            : !loading && !parentSelected && typeof selectedRows === 'undefined'
             ? t<string, string>('buttons.cart_loading_failed_tooltip')
             : loading
             ? t<string, string>('buttons.cart_loading_tooltip')
@@ -69,7 +71,10 @@ const SelectCell = React.memo((props: SelectCellProps): React.ReactElement => {
               'aria-label': `select row ${rowIndex}`,
             }}
             disabled={
-              loading || parentSelected || typeof selectedRows === 'undefined'
+              disableIfAnon ||
+              loading ||
+              parentSelected ||
+              typeof selectedRows === 'undefined'
             }
             icon={<CheckBoxOutlineBlank fontSize="small" />}
             checkedIcon={<CheckBoxIcon fontSize="small" />}

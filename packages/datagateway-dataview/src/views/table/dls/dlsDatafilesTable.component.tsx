@@ -1,27 +1,30 @@
-import React from 'react';
-import { Subject, Explore, Save, CalendarToday } from '@mui/icons-material';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import Explore from '@mui/icons-material/Explore';
+import Save from '@mui/icons-material/Save';
+import Subject from '@mui/icons-material/Subject';
 import {
-  Table,
-  formatBytes,
+  ColumnType,
+  DLSDatafileDetailsPanel,
   Datafile,
+  ConnectedTable as Table,
+  formatBytes,
+  parseSearchToQuery,
+  useAddToCart,
+  useCart,
   useDatafileCount,
   useDatafilesInfinite,
-  parseSearchToQuery,
-  useTextFilter,
   useDateFilter,
-  ColumnType,
-  useSort,
   useIds,
-  useCart,
-  useAddToCart,
   useRemoveFromCart,
-  DLSDatafileDetailsPanel,
+  useSort,
+  useTextFilter,
 } from 'datagateway-common';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { StateType } from '../../../state/app.types';
+import { useLocation } from 'react-router-dom';
 import { IndexRange } from 'react-virtualized';
+import { StateType } from '../../../state/app.types';
 
 interface DLSDatafilesTableProps {
   datasetId: string;
@@ -37,8 +40,8 @@ const DLSDatafilesTable = (
 
   const location = useLocation();
 
-  const selectAllSetting = useSelector(
-    (state: StateType) => state.dgdataview.selectAllSetting
+  const disableSelectAll = useSelector(
+    (state: StateType) => state.dgcommon.features?.disableSelectAll ?? false
   );
 
   const { filters, sort } = React.useMemo(
@@ -50,7 +53,7 @@ const DLSDatafilesTable = (
   const dateFilter = useDateFilter(filters);
   const handleSort = useSort();
 
-  const { data: allIds, isLoading: allIdsLoading } = useIds(
+  const { data: allIds, isInitialLoading: allIdsLoading } = useIds(
     'datafile',
     [
       {
@@ -58,7 +61,7 @@ const DLSDatafilesTable = (
         filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
       },
     ],
-    selectAllSetting
+    !disableSelectAll
   );
   const { data: cartItems, isLoading: cartLoading } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } =
@@ -149,11 +152,10 @@ const DLSDatafilesTable = (
           (cartItem) =>
             cartItem.entityType === 'datafile' &&
             // if select all is disabled, it's safe to just pass the whole cart as selectedRows
-            (!selectAllSetting ||
-              (allIds && allIds.includes(cartItem.entityId)))
+            (disableSelectAll || (allIds && allIds.includes(cartItem.entityId)))
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, selectAllSetting, allIds]
+    [cartItems, disableSelectAll, allIds]
   );
 
   const isParentSelected = React.useMemo(() => {
@@ -184,7 +186,6 @@ const DLSDatafilesTable = (
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}
-      disableSelectAll={!selectAllSetting}
       detailsPanel={DLSDatafileDetailsPanel}
       columns={columns}
     />

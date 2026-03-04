@@ -1,4 +1,3 @@
-import * as React from 'react';
 import ISISInstrumentsTable from './isisInstrumentsTable.component';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import { StateType } from '../../../state/app.types';
@@ -9,7 +8,7 @@ import {
   useInstrumentsInfinite,
 } from 'datagateway-common';
 import configureStore from 'redux-mock-store';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { Router } from 'react-router-dom';
@@ -20,7 +19,6 @@ import {
   screen,
   within,
 } from '@testing-library/react';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 import {
   findAllRows,
@@ -28,15 +26,16 @@ import {
   findColumnHeaderByName,
   findColumnIndexByName,
 } from '../../../setupTests';
+import axios, { AxiosResponse } from 'axios';
 
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    useInstrumentCount: jest.fn(),
-    useInstrumentsInfinite: jest.fn(),
+    useInstrumentCount: vi.fn(),
+    useInstrumentsInfinite: vi.fn(),
   };
 });
 
@@ -45,7 +44,7 @@ describe('ISIS Instruments table component', () => {
   let state: StateType;
   let rowData: Instrument[];
   let history: History;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (dataPublication = false): RenderResult => {
     const store = mockStore(state);
@@ -88,18 +87,30 @@ describe('ISIS Instruments table component', () => {
       })
     );
 
-    (useInstrumentCount as jest.Mock).mockReturnValue({
+    vi.mocked(useInstrumentCount, { partial: true }).mockReturnValue({
       data: 1,
       isLoading: false,
     });
-    (useInstrumentsInfinite as jest.Mock).mockReturnValue({
-      data: { pages: [rowData] },
-      fetchNextPage: jest.fn(),
+    vi.mocked(useInstrumentsInfinite, { partial: true }).mockReturnValue({
+      data: { pages: [rowData], pageParams: [] },
+      fetchNextPage: vi.fn(),
     });
+
+    axios.get = vi
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/\/instruments$/.test(url)) {
+          return Promise.resolve({
+            data: rowData,
+          });
+        }
+
+        return Promise.reject(`Endpoint not mocked: ${url}`);
+      });
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly', async () => {
@@ -177,8 +188,11 @@ describe('ISIS Instruments table component', () => {
     expect(history.location.search).toBe('?');
   });
 
-  it('uses default sort', () => {
+  it('uses default sort', async () => {
     renderComponent();
+
+    expect(await screen.findAllByRole('gridcell')).toBeTruthy();
+
     expect(history.length).toBe(1);
     expect(history.location.search).toBe(
       `?sort=${encodeURIComponent('{"fullName":"asc"}')}`
@@ -236,8 +250,10 @@ describe('ISIS Instruments table component', () => {
   });
 
   it('renders fine with incomplete data', () => {
-    (useInstrumentCount as jest.Mock).mockReturnValueOnce({});
-    (useInstrumentsInfinite as jest.Mock).mockReturnValueOnce({});
+    vi.mocked(useInstrumentCount, { partial: true }).mockReturnValueOnce({});
+    vi.mocked(useInstrumentsInfinite, { partial: true }).mockReturnValueOnce(
+      {}
+    );
 
     expect(() => renderComponent()).not.toThrowError();
   });

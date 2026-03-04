@@ -1,8 +1,8 @@
 import { Divider, Grid, styled, Tab, Tabs, Typography } from '@mui/material';
+import { format, parse } from 'date-fns';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { formatBytes } from '../../table/cellRenderers/cellContentRenderers';
 import { useInvestigationDetails } from '../../api';
 import { Entity, Investigation } from '../../app.types';
 import {
@@ -11,8 +11,8 @@ import {
 } from '../../state/actions/actions.types';
 import type { StateType } from '../../state/app.types';
 import type { Action } from '../../state/reducers/createReducer';
-import { format, parse } from 'date-fns';
-import QueueVisitButton from '../../views/queueVisitButton.component';
+import { formatBytes } from '../../table/cellRenderers/cellContentRenderers';
+import { QueueVisitButton } from '../../views/queueButtons.component';
 
 const StyledGrid = styled(Grid)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -100,7 +100,7 @@ const VisitDetailsPanel = (
         indicatorColor="secondary"
         scrollButtons="auto"
         value={selectedTab ?? DEFAULT_TAB}
-        onChange={(event, newValue) => changeTab(newValue)}
+        onChange={(_event, newValue) => changeTab(newValue)}
         aria-label={t('investigations.details.tabs_label')}
       >
         <Tab
@@ -154,6 +154,9 @@ const VisitDetailsPanel = (
               <b>{investigationData.name}</b>
             </Typography>
             <StyledDivider />
+          </Grid>
+          <Grid item xs>
+            <QueueVisitButton investigation={investigationData} />
           </Grid>
           <Grid item xs>
             <Typography variant="overline">
@@ -217,9 +220,6 @@ const VisitDetailsPanel = (
             <Typography>
               <b>{formatBytes(investigationData.fileSize)}</b>
             </Typography>
-          </Grid>
-          <Grid item xs mt={1}>
-            <QueueVisitButton investigation={investigationData} />
           </Grid>
         </StyledGrid>
       </div>

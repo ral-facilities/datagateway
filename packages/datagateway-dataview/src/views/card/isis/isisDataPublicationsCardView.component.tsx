@@ -14,7 +14,8 @@ import {
   useDataPublicationCount,
   useTextFilter,
 } from 'datagateway-common';
-import { Public, CalendarToday } from '@mui/icons-material';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import Public from '@mui/icons-material/Public';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { Link as MuiLink } from '@mui/material';

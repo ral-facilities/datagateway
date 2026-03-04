@@ -1,9 +1,8 @@
-import * as React from 'react';
-import { render, screen } from '@testing-library/react';
-import SortSelectComponent from './sortSelect.component';
-import { MemoryRouter, Router } from 'react-router-dom';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { createMemoryHistory } from 'history';
+import { MemoryRouter, Router } from 'react-router-dom';
+import SortSelectComponent from './sortSelect.component';
 
 describe('sortSelect', () => {
   it('renders correctly', async () => {
@@ -16,7 +15,7 @@ describe('sortSelect', () => {
     );
 
     // open the dropdown menu
-    await user.click(screen.getByRole('button', { name: /sort.label/ }));
+    await user.click(screen.getByRole('combobox', { name: 'sort.label' }));
 
     expect(
       await screen.findByRole('option', { name: 'sort.date_desc' })
@@ -46,7 +45,7 @@ describe('sortSelect', () => {
     );
 
     // open the dropdown menu
-    await user.click(screen.getByRole('button', { name: /sort.label/ }));
+    await user.click(screen.getByRole('combobox', { name: 'sort.label' }));
     await user.selectOptions(screen.getByRole('listbox'), [
       screen.getByRole('option', { name: 'sort.date_desc' }),
     ]);
@@ -58,7 +57,7 @@ describe('sortSelect', () => {
     );
 
     // open the dropdown menu
-    await user.click(screen.getByRole('button', { name: /sort.label/ }));
+    await user.click(screen.getByRole('combobox', { name: 'sort.label' }));
     await user.selectOptions(screen.getByRole('listbox'), [
       screen.getByRole('option', { name: 'sort.name_asc' }),
     ]);
@@ -87,7 +86,9 @@ describe('sortSelect', () => {
     );
 
     expect(
-      screen.getByRole('button', { name: 'sort.label sort.size_asc' })
+      within(screen.getByRole('combobox', { name: 'sort.label' })).getByText(
+        'sort.size_asc'
+      )
     ).toBeInTheDocument();
   });
 });

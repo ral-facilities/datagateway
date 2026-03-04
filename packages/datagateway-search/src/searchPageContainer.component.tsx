@@ -1,6 +1,4 @@
 import React from 'react';
-import ResizeObserver from 'resize-observer-polyfill';
-import { StateType } from './state/app.types';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Link,
@@ -10,26 +8,27 @@ import {
   useHistory,
   useLocation,
 } from 'react-router-dom';
+import { StateType } from './state/app.types';
 
 import { Grid, Paper, styled } from '@mui/material';
 
-import SearchBoxContainer from './searchBoxContainer.component';
-import SearchBoxContainerSide from './searchBoxContainerSide.component';
-import SearchTabs from './searchTabs/searchTabs.component';
 import {
   ClearFiltersButton,
   FiltersType,
-  parseSearchToQuery,
-  parseQueryToSearch,
-  readSciGatewayToken,
   SelectionAlert,
+  ViewButton,
+  ViewsType,
+  parseQueryToSearch,
+  parseSearchToQuery,
+  readSciGatewayToken,
   useCart,
   usePushQueryParams,
   useUpdateQueryParam,
   useUpdateView,
-  ViewButton,
-  ViewsType,
 } from 'datagateway-common';
+import SearchBoxContainer from './searchBoxContainer.component';
+import SearchBoxContainerSide from './searchBoxContainerSide.component';
+import SearchTabs from './searchTabs/searchTabs.component';
 import {
   setDatafileTab,
   setDatasetTab,
@@ -204,6 +203,9 @@ const SearchPageContainer: React.FC = () => {
   const searchableEntities = useSelector(
     (state: StateType) => state.dgsearch.searchableEntities
   );
+  const anonUserName = useSelector(
+    (state: StateType) => state.dgcommon.anonUserName
+  );
 
   const dispatch = useDispatch();
 
@@ -275,7 +277,8 @@ const SearchPageContainer: React.FC = () => {
   );
 
   const username = readSciGatewayToken().username;
-  const loggedInAnonymously = username === null || username === 'anon/anon';
+  const loggedInAnonymously =
+    username === null || username === (anonUserName ?? 'anon/anon');
 
   const [shouldRestrictSearch, setShouldRestrictSearch] = React.useState(
     // restrict should be false if logged in as anon

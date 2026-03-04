@@ -1,10 +1,8 @@
-import type { RouterState } from 'connected-react-router';
 import type { AnyAction } from 'redux';
 import type { ThunkAction } from 'redux-thunk';
 import type {
   Datafile,
   Dataset,
-  DownloadSettingsAccessMethod,
   Instrument,
   Investigation,
 } from '../app.types';
@@ -14,13 +12,14 @@ import type { IsisDatafileDetailsPanelTab } from '../detailsPanels/isis/datafile
 import type { IsisDatasetDetailsPanelTab } from '../detailsPanels/isis/datasetDetailsPanel.component';
 import type { IsisInstrumentDetailsPanelTab } from '../detailsPanels/isis/instrumentDetailsPanel.component';
 import type { IsisInvestigationDetailsPanelTab } from '../detailsPanels/isis/investigationDetailsPanel.component';
-import type { URLs } from './actions/actions.types';
+import type { FeatureSwitches, URLs } from './actions/actions.types';
 
 export interface DGCommonState {
   facilityName: string;
   urls: URLs;
-  accessMethods?: DownloadSettingsAccessMethod;
   queryRetries?: number;
+  features?: FeatureSwitches;
+  anonUserName?: string;
   isisDatafileDetailsPanel: Record<
     Datafile['id'],
     {
@@ -61,7 +60,6 @@ export interface DGCommonState {
 
 export interface StateType {
   dgcommon: DGCommonState;
-  router: RouterState;
 }
 
 export interface ActionType<T> {

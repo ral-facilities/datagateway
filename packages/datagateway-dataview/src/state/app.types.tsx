@@ -1,20 +1,16 @@
-import type { ThunkAction } from 'redux-thunk';
-import type { AnyAction } from 'redux';
 import type { DGCommonState } from 'datagateway-common';
+import type { AnyAction } from 'redux';
+import type { ThunkAction } from 'redux-thunk';
 import type { DatafilePreviewerState } from '../views/datafilePreview/state/reducer';
-import type {
-  FeatureSwitches,
-  BreadcrumbSettings,
-} from './actions/actions.types';
+import type { BreadcrumbSettings } from './actions/actions.types';
 
 export interface DGDataViewState {
   facilityImageURL: string;
-  features: FeatureSwitches;
   breadcrumbSettings: BreadcrumbSettings[];
   settingsLoaded: boolean;
-  selectAllSetting: boolean;
   pluginHost: string;
   datafilePreviewer: DatafilePreviewerState;
+  PIRole: string;
 }
 
 export interface EntityCache {

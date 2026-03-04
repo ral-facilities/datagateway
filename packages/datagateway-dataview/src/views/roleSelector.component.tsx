@@ -5,19 +5,19 @@ import {
   Select,
   SelectChangeEvent,
 } from '@mui/material';
+import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import {
   handleICATError,
   InvestigationUser,
   parseSearchToQuery,
   readSciGatewayToken,
-  useRetryICATErrors,
   StateType,
   usePushFilter,
+  useRetryICATErrors,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { UseQueryResult, useQuery } from 'react-query';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 
@@ -96,7 +96,7 @@ const RoleSelector: React.FC = () => {
     <FormControl
       id="role-selector"
       variant="standard"
-      sx={{ margin: 1, minWidth: '100px' }}
+      sx={{ minWidth: '100px' }}
     >
       <InputLabel id="my-data-table-role-selector-label">
         {t('my_data_table.role_selector')}

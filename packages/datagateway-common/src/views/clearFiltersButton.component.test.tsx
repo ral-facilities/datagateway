@@ -1,25 +1,23 @@
-import * as React from 'react';
-import configureStore from 'redux-mock-store';
-import { initialState as dGCommonInitialState } from '../state/reducers/dgcommon.reducer';
-import { StateType } from '../state/app.types';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { render, screen, type RenderResult } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { StateType } from '../state/app.types';
+import { initialState as dGCommonInitialState } from '../state/reducers/dgcommon.reducer';
 import ClearFiltersButton, {
   ClearFilterProps,
 } from './clearFiltersButton.component';
-import { render, screen, type RenderResult } from '@testing-library/react';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
-import userEvent from '@testing-library/user-event';
 
 describe('Generic clear filters button', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let props: ClearFilterProps;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
-  const handleButtonClearFilters = jest.fn();
+  const handleButtonClearFilters = vi.fn();
 
   const renderComponent = (props: ClearFilterProps): RenderResult => {
     const store = mockStore(state);
@@ -44,19 +42,13 @@ describe('Generic clear filters button', () => {
     state = JSON.parse(
       JSON.stringify({
         dgdataview: {}, //Dont need to fill, since not part of the test
-        dgcommon: {
-          ...dGCommonInitialState,
-          urls: {
-            ...dGCommonInitialState.urls,
-            idsUrl: 'https://www.example.com/ids',
-          },
-        },
+        dgcommon: dGCommonInitialState,
       })
     );
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     handleButtonClearFilters.mockClear();
   });
 

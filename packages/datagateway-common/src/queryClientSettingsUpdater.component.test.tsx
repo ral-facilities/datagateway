@@ -1,11 +1,10 @@
 import React from 'react';
 import { render, RenderResult } from '@testing-library/react';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { initialState as dGCommonInitialState } from './state/reducers/dgcommon.reducer';
 import { StateType } from './state/app.types';
-import { createLocation } from 'history';
 import configureStore from 'redux-mock-store';
 import {
   QueryClientSettingsUpdater,
@@ -38,7 +37,7 @@ describe('QueryClientSettingsUpdater', () => {
   };
 
   beforeEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('syncs retry prop to query client when it updates', async () => {
@@ -71,10 +70,6 @@ describe('QueryClientSettingsUpdater', () => {
 describe('QueryClientSettingsUpdaterRedux', () => {
   const initialState: StateType = {
     dgcommon: dGCommonInitialState,
-    router: {
-      action: 'POP',
-      location: { ...createLocation('/'), query: {} },
-    },
   };
   const renderComponent = (
     state: StateType = initialState,
@@ -101,7 +96,7 @@ describe('QueryClientSettingsUpdaterRedux', () => {
   };
 
   beforeEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('syncs retry setting to query client when it updates', async () => {

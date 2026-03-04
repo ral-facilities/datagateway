@@ -1,27 +1,26 @@
-import { act, renderHook } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import axios, { AxiosError } from 'axios';
 import {
-  useCart,
+  getDefaultFileName,
   useAddToCart,
+  useCart,
+  useDownload,
+  useDownloadTypes,
+  useQueueAllowed,
+  useQueueDataCollection,
+  useQueueVisit,
   useRemoveFromCart,
   useSubmitCart,
-  useDownloadTypeStatuses,
-  useQueueAllowed,
-  useQueueVisit,
-  getDefaultFileName,
-  useDownload,
 } from '.';
 import { DownloadCart } from '../app.types';
 import handleICATError from '../handleICATError';
 import { createReactQueryWrapper } from '../setupTests';
-import { QueryClient } from 'react-query';
-import { NotificationType } from '../state/actions/actions.types';
 
-jest.mock('../handleICATError');
+vi.mock('../handleICATError');
 
 describe('Cart api functions', () => {
   let mockData: DownloadCart;
-  const getElementByIdSpy = jest.spyOn(document, 'getElementById');
+  const getElementByIdSpy = vi.spyOn(document, 'getElementById');
 
   beforeEach(() => {
     mockData = {
@@ -45,24 +44,24 @@ describe('Cart api functions', () => {
   });
 
   afterEach(() => {
-    (axios.get as jest.Mock).mockClear();
-    (axios.post as jest.Mock).mockClear();
-    (axios.delete as jest.Mock).mockClear();
-    (handleICATError as jest.Mock).mockClear();
-    (getElementByIdSpy as jest.Mock).mockClear();
+    vi.mocked(axios.get).mockClear();
+    vi.mocked(axios.post).mockClear();
+    vi.mocked(axios.delete).mockClear();
+    vi.mocked(handleICATError).mockClear();
+    vi.mocked(getElementByIdSpy).mockClear();
   });
 
   describe('useCart', () => {
     it('sends axios request to fetch cart and returns successful response', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: mockData,
       });
 
-      const { result, waitFor } = renderHook(() => useCart(), {
+      const { result } = renderHook(() => useCart(), {
         wrapper: createReactQueryWrapper(),
       });
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/topcat/user/cart/TEST',
@@ -82,20 +81,22 @@ describe('Cart api functions', () => {
         wrapper: createReactQueryWrapper(),
       });
 
-      expect(result.current.isIdle).toBe(true);
+      expect(result.current.status).toBe('loading');
+      expect(result.current.fetchStatus).toBe('idle');
+
       expect(axios.get).not.toHaveBeenCalled();
     });
 
     it('sends axios request to fetch cart and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error message',
       });
 
-      const { result, waitFor } = renderHook(() => useCart(), {
+      const { result } = renderHook(() => useCart(), {
         wrapper: createReactQueryWrapper(),
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       expect(handleICATError).toHaveBeenCalledWith({
         message: 'Test error message',
@@ -105,11 +106,11 @@ describe('Cart api functions', () => {
 
   describe('useAddToCart', () => {
     it('sends axios request to add item to cart once mutate function is called and returns successful response', async () => {
-      (axios.post as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.post).mockResolvedValue({
         data: mockData,
       });
 
-      const { result, waitFor } = renderHook(() => useAddToCart('dataset'), {
+      const { result } = renderHook(() => useAddToCart('dataset'), {
         wrapper: createReactQueryWrapper(),
       });
 
@@ -118,7 +119,7 @@ describe('Cart api functions', () => {
 
       result.current.mutate([1, 2]);
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       const params = new URLSearchParams();
       params.append('sessionId', '');
@@ -132,7 +133,7 @@ describe('Cart api functions', () => {
     });
 
     it('sends axios request to add item to cart once mutate function is called and calls handleICATError on failure, with a retry on code 431', async () => {
-      (axios.post as jest.MockedFunction<typeof axios.post>)
+      vi.mocked(axios.post)
         .mockRejectedValueOnce({
           response: {
             status: 431,
@@ -143,7 +144,7 @@ describe('Cart api functions', () => {
           message: 'Test error message',
         });
 
-      const { result, waitFor } = renderHook(() => useAddToCart('dataset'), {
+      const { result } = renderHook(() => useAddToCart('dataset'), {
         wrapper: createReactQueryWrapper(),
       });
 
@@ -152,7 +153,9 @@ describe('Cart api functions', () => {
 
       result.current.mutate([1, 2]);
 
-      await waitFor(() => result.current.isError, { timeout: 2000 });
+      await waitFor(() => expect(result.current.isError).toBe(true), {
+        timeout: 2000,
+      });
 
       expect(result.current.failureCount).toBe(2);
       expect(handleICATError).toHaveBeenCalledTimes(1);
@@ -164,23 +167,20 @@ describe('Cart api functions', () => {
 
   describe('useRemoveFromCart', () => {
     it('sends axios request to remove item from cart once mutate function is called and returns successful response', async () => {
-      (axios.post as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.post).mockResolvedValue({
         data: mockData,
       });
 
-      const { result, waitFor } = renderHook(
-        () => useRemoveFromCart('dataset'),
-        {
-          wrapper: createReactQueryWrapper(),
-        }
-      );
+      const { result } = renderHook(() => useRemoveFromCart('dataset'), {
+        wrapper: createReactQueryWrapper(),
+      });
 
       expect(axios.get).not.toHaveBeenCalled();
       expect(result.current.isIdle).toBe(true);
 
       result.current.mutate([1, 2]);
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       const params = new URLSearchParams();
       params.append('sessionId', '');
@@ -196,7 +196,7 @@ describe('Cart api functions', () => {
     });
 
     it('sends axios request to remove item from cart once mutate function is called and calls handleICATError on failure, with a retry on code 431', async () => {
-      (axios.post as jest.MockedFunction<typeof axios.post>)
+      vi.mocked(axios.post)
         .mockRejectedValueOnce({
           response: {
             status: 431,
@@ -207,19 +207,18 @@ describe('Cart api functions', () => {
           message: 'Test error message',
         });
 
-      const { result, waitFor } = renderHook(
-        () => useRemoveFromCart('dataset'),
-        {
-          wrapper: createReactQueryWrapper(),
-        }
-      );
+      const { result } = renderHook(() => useRemoveFromCart('dataset'), {
+        wrapper: createReactQueryWrapper(),
+      });
 
       expect(axios.post).not.toHaveBeenCalled();
       expect(result.current.isIdle).toBe(true);
 
       result.current.mutate([1, 2]);
 
-      await waitFor(() => result.current.isError, { timeout: 2000 });
+      await waitFor(() => expect(result.current.isError).toBe(true), {
+        timeout: 2000,
+      });
 
       expect(result.current.failureCount).toBe(2);
       expect(handleICATError).toHaveBeenCalledTimes(1);
@@ -231,15 +230,15 @@ describe('Cart api functions', () => {
 
   describe('useSubmitCart', () => {
     it('should submit cart and clear cart on success', async () => {
-      axios.post = jest.fn().mockResolvedValue({ data: { downloadId: 123 } });
-      axios.get = jest
+      axios.post = vi.fn().mockResolvedValue({ data: { downloadId: 123 } });
+      axios.get = vi
         .fn()
         .mockResolvedValueOnce({
           data: mockData,
         })
         .mockResolvedValueOnce({ data: { cartItems: [] } });
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => ({
           useSubmitCart: useSubmitCart(
             'LILS',
@@ -251,7 +250,7 @@ describe('Cart api functions', () => {
       );
 
       // wait for the cart to finish loading
-      await waitFor(() => result.current.useCart.isSuccess);
+      await waitFor(() => expect(result.current.useCart.isSuccess).toBe(true));
       // submit the cart
       result.current.useSubmitCart.mutate({
         emailAddress: 'cat@dog.com',
@@ -259,18 +258,20 @@ describe('Cart api functions', () => {
         transport: 'https',
       });
       // wait for cart submission to finish
-      await waitFor(() => result.current.useSubmitCart.isSuccess);
+      await waitFor(() =>
+        expect(result.current.useSubmitCart.isSuccess).toBe(true)
+      );
 
       expect(result.current.useCart.data).toEqual([]);
     });
 
     it('should error if api returns successful response with no downloadId', async () => {
-      axios.post = jest.fn().mockResolvedValue({ data: {} });
-      axios.get = jest.fn().mockResolvedValueOnce({
+      axios.post = vi.fn().mockResolvedValue({ data: {} });
+      axios.get = vi.fn().mockResolvedValueOnce({
         data: mockData,
       });
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => ({
           useSubmitCart: useSubmitCart(
             'LILS',
@@ -282,7 +283,7 @@ describe('Cart api functions', () => {
       );
 
       // wait for the cart to finish loading
-      await waitFor(() => result.current.useCart.isSuccess);
+      await waitFor(() => expect(result.current.useCart.isSuccess).toBe(true));
       // submit the cart
       result.current.useSubmitCart.mutate({
         emailAddress: '',
@@ -290,7 +291,9 @@ describe('Cart api functions', () => {
         transport: 'https',
       });
 
-      await waitFor(() => result.current.useSubmitCart.isError);
+      await waitFor(() =>
+        expect(result.current.useSubmitCart.isError).toBe(true)
+      );
 
       expect(handleICATError).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -300,14 +303,14 @@ describe('Cart api functions', () => {
     });
 
     it('should call handleICATError when an error is encountered', async () => {
-      axios.post = jest.fn().mockRejectedValue({
+      axios.post = vi.fn().mockRejectedValue({
         message: 'test error message',
       });
-      axios.get = jest.fn().mockResolvedValueOnce({
+      axios.get = vi.fn().mockResolvedValueOnce({
         data: mockData,
       });
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => ({
           useSubmitCart: useSubmitCart(
             'LILS',
@@ -318,13 +321,15 @@ describe('Cart api functions', () => {
         { wrapper: createReactQueryWrapper() }
       );
 
-      await waitFor(() => result.current.useCart.isSuccess);
+      await waitFor(() => expect(result.current.useCart.isSuccess).toBe(true));
       result.current.useSubmitCart.mutate({
         emailAddress: 'a@b.c',
         fileName: 'test-file',
         transport: 'https',
       });
-      await waitFor(() => result.current.useSubmitCart.isError);
+      await waitFor(() =>
+        expect(result.current.useSubmitCart.isError).toBe(true)
+      );
 
       expect(handleICATError).toHaveBeenCalledWith({
         message: 'test error message',
@@ -334,11 +339,11 @@ describe('Cart api functions', () => {
 
   describe('useDownload', () => {
     it('sends axios request to fetch download and returns successful response', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: [{ id: 1, fileName: 'test' }],
       });
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           useDownload({
             id: 1,
@@ -350,7 +355,7 @@ describe('Cart api functions', () => {
         }
       );
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/topcat/user/downloads',
@@ -365,12 +370,12 @@ describe('Cart api functions', () => {
       expect(result.current.data).toEqual({ id: 1, fileName: 'test' });
     });
 
-    it('sends axios request to fetch cart and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
+    it('sends axios request to fetch download and calls handleICATError on failure', async () => {
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error message',
       });
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           useDownload({
             id: 1,
@@ -382,7 +387,7 @@ describe('Cart api functions', () => {
         }
       );
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       expect(handleICATError).toHaveBeenCalledWith({
         message: 'Test error message',
@@ -390,150 +395,90 @@ describe('Cart api functions', () => {
     });
   });
 
-  describe('useDownloadTypeStatuses', () => {
-    const downloadTypes = ['https', 'globus'];
-
-    let queryClient: QueryClient;
-
-    beforeAll(() => {
-      queryClient = new QueryClient();
-    });
-
-    afterEach(() => {
-      queryClient.clear();
-    });
-
-    it('should query statuses of download types', async () => {
-      axios.get = jest.fn().mockResolvedValue({
+  describe('useDownloadTypes', () => {
+    it('sends axios request to fetch download types and returns successful response', async () => {
+      vi.mocked(axios.get).mockResolvedValue({
         data: {
-          disabled: false,
-          message: '',
+          https: {
+            idsUrl: 'https://example.https-ids.com',
+            disabled: false,
+            message: '',
+            displayName: 'HTTPS',
+            description: '',
+          },
+          globus: {
+            idsUrl: 'https://example.globus-ids.com',
+            disabled: false,
+            message: '',
+            displayName: 'Globus',
+            description: '',
+          },
         },
       });
 
-      const { result, waitFor } = renderHook(
-        () =>
-          useDownloadTypeStatuses({
-            downloadTypes,
-            facilityName: 'LILS',
-            downloadApiUrl: 'https://example.com/downloadApiUrl',
-          }),
-        { wrapper: createReactQueryWrapper() }
+      const { result } = renderHook(
+        () => useDownloadTypes('TEST', 'https://example.com/topcat'),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
       );
 
-      await waitFor(() => result.current.every((query) => query.isSuccess));
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      const data = result.current.map(({ data }) => data);
-      expect(data).toEqual([
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://example.com/topcat/user/downloadType/status',
         {
-          type: 'https',
-          disabled: false,
-          message: '',
-        },
-        {
-          type: 'globus',
-          disabled: false,
-          message: '',
-        },
-      ]);
-    });
-
-    it('should dispatch event with the error messages of download type queries with errors', async () => {
-      axios.get = jest
-        .fn()
-        .mockResolvedValueOnce({
-          data: {
-            disabled: false,
-            message: '',
-          },
-        })
-        .mockImplementationOnce(() =>
-          Promise.reject({
-            message: 'Test error message',
-          })
-        );
-
-      const dispatchEventSpy = jest.spyOn(document, 'dispatchEvent');
-
-      const { result, waitFor } = renderHook(
-        () =>
-          useDownloadTypeStatuses({
-            downloadTypes,
-            facilityName: 'LILS',
-            downloadApiUrl: 'https://example.com/downloadApiUrl',
-          }),
-        { wrapper: createReactQueryWrapper() }
-      );
-
-      await waitFor(() =>
-        result.current.every((query) => query.isSuccess || query.isError)
-      );
-
-      expect((dispatchEventSpy.mock.calls[0][0] as CustomEvent).detail).toEqual(
-        {
-          type: NotificationType,
-          payload: {
-            severity: 'error',
-            message:
-              'downloadConfirmDialog.access_method_error {method:GLOBUS}',
+          params: {
+            sessionId: null,
+            facilityName: 'TEST',
           },
         }
       );
-    });
-
-    it('should refetch data on every hook call', async () => {
-      axios.get = jest.fn().mockResolvedValue({
-        data: {
+      expect(result.current.data).toEqual({
+        https: {
+          idsUrl: 'https://example.https-ids.com/ids',
           disabled: false,
           message: '',
+          displayName: 'HTTPS',
+          description: '',
+        },
+        globus: {
+          idsUrl: 'https://example.globus-ids.com/ids',
+          disabled: false,
+          message: '',
+          displayName: 'Globus',
+          description: '',
         },
       });
+    });
 
-      const wrapper = createReactQueryWrapper();
+    it('sends axios request to fetch download types and calls handleICATError on failure', async () => {
+      vi.mocked(axios.get).mockRejectedValue({
+        message: 'Test error message',
+      });
 
-      const { result, waitFor } = renderHook(
-        () =>
-          useDownloadTypeStatuses({
-            downloadTypes: ['https'],
-            facilityName: 'LILS',
-            downloadApiUrl: 'https://example.com/downloadApiUrl',
-          }),
-        { wrapper }
+      const { result } = renderHook(
+        () => useDownloadTypes('TEST', 'https://example.com/topcat'),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
       );
 
-      await waitFor(() => result.current.every((query) => query.isSuccess));
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(result.current[0].isStale).toBe(true);
-      expect(axios.get).toHaveBeenCalledTimes(1);
-
-      await act(async () => {
-        const { result: newResult } = renderHook(
-          () =>
-            useDownloadTypeStatuses({
-              downloadTypes: ['https'],
-              facilityName: 'LILS',
-              downloadApiUrl: 'https://example.com/downloadApiUrl',
-            }),
-          { wrapper }
-        );
-
-        await waitFor(() =>
-          newResult.current.every((query) => query.isSuccess)
-        );
-
-        expect(newResult.current[0].isStale).toBe(true);
-        expect(axios.get).toHaveBeenCalledTimes(2);
+      expect(handleICATError).toHaveBeenCalledWith({
+        message: 'Test error message',
       });
     });
   });
 
   describe('useQueueAllowed', () => {
     it('sends axios request to check if the user has permission to use the queue and returns successful response', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: true,
       });
 
-      const { result, waitFor } = renderHook(() => useQueueAllowed(), {
+      const { result } = renderHook(() => useQueueAllowed(), {
         wrapper: createReactQueryWrapper(),
       });
 
@@ -552,11 +497,11 @@ describe('Cart api functions', () => {
     });
 
     it('sends axios request to fetch cart and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error message',
       });
 
-      const { result, waitFor } = renderHook(() => useQueueAllowed(), {
+      const { result } = renderHook(() => useQueueAllowed(), {
         wrapper: createReactQueryWrapper(),
       });
 
@@ -570,7 +515,7 @@ describe('Cart api functions', () => {
 
   describe('useQueueVisit', () => {
     it('should submit visit to the queue', async () => {
-      axios.post = jest.fn().mockResolvedValue({ data: ['123', '456'] });
+      axios.post = vi.fn().mockResolvedValue({ data: ['123', '456'] });
 
       const params = {
         sessionId: '',
@@ -585,7 +530,7 @@ describe('Cart api functions', () => {
         searchParams.append(paramName, paramValue);
       });
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           useQueueVisit(params.facilityName, 'https://example.com/downloadApi'),
         {
@@ -598,7 +543,7 @@ describe('Cart api functions', () => {
         emailAddress: params.email,
         fileName: params.fileName,
         transport: params.transport,
-        visitId: params.visitId,
+        entityId: params.visitId,
       });
       // wait for mutation to finish to finish
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
@@ -611,11 +556,11 @@ describe('Cart api functions', () => {
     });
 
     it('should call handleICATError when an error is encountered', async () => {
-      axios.post = jest.fn().mockRejectedValue({
+      axios.post = vi.fn().mockRejectedValue({
         message: 'test error message',
       });
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useQueueVisit('LILS', 'https://example.com/downloadApi'),
         {
           wrapper: createReactQueryWrapper(),
@@ -626,7 +571,78 @@ describe('Cart api functions', () => {
         emailAddress: 'a@b.c',
         fileName: 'test-file',
         transport: 'https',
-        visitId: 'VISIT_1',
+        entityId: 'VISIT_1',
+      });
+      await waitFor(() => expect(result.current.isError).toBe(true));
+
+      expect(handleICATError).toHaveBeenCalledWith({
+        message: 'test error message',
+      });
+    });
+  });
+
+  describe('useQueueDataCollection', () => {
+    it('should submit data collection to the queue', async () => {
+      axios.post = vi.fn().mockResolvedValue({ data: ['123', '456'] });
+
+      const params = {
+        sessionId: '',
+        transport: 'https',
+        email: 'cat@dog.com',
+        fileName: 'test-file',
+        dataCollectionId: '1',
+        facilityName: 'TEST',
+      };
+      const searchParams = new URLSearchParams();
+      Object.entries(params).forEach(([paramName, paramValue]) => {
+        searchParams.append(paramName, paramValue);
+      });
+
+      const { result } = renderHook(
+        () =>
+          useQueueDataCollection(
+            params.facilityName,
+            'https://example.com/downloadApi'
+          ),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      // submit the cart
+      result.current.mutate({
+        emailAddress: params.email,
+        fileName: params.fileName,
+        transport: params.transport,
+        entityId: params.dataCollectionId,
+      });
+      // wait for mutation to finish to finish
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+      expect(axios.post).toHaveBeenCalledWith(
+        `https://example.com/downloadApi/user/queue/dataCollection`,
+        searchParams
+      );
+      expect(result.current.data).toEqual(['123', '456']);
+    });
+
+    it('should call handleICATError when an error is encountered', async () => {
+      axios.post = vi.fn().mockRejectedValue({
+        message: 'test error message',
+      });
+
+      const { result } = renderHook(
+        () => useQueueDataCollection('LILS', 'https://example.com/downloadApi'),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+
+      result.current.mutate({
+        emailAddress: 'a@b.c',
+        fileName: 'test-file',
+        transport: 'https',
+        entityId: '1',
       });
       await waitFor(() => expect(result.current.isError).toBe(true));
 
@@ -639,21 +655,33 @@ describe('Cart api functions', () => {
 
 describe('getDefaultFileName', () => {
   afterEach(() => {
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   it('should render substitutions correctly ', async () => {
-    const t = jest.fn().mockReturnValue('facilityName_visitId');
     expect(
-      getDefaultFileName(t, { facilityName: 'LILS', visitId: '1' })
+      getDefaultFileName('facilityName_visitId', {
+        facilityName: 'LILS',
+        visitId: '1',
+      })
     ).toEqual('LILS_1');
   });
 
+  it('should render substitutions correctly (DataCollection)', async () => {
+    expect(
+      getDefaultFileName('facilityName_DataCollectionid', {
+        facilityName: 'LILS',
+        id: '1',
+      })
+    ).toEqual('LILS_DataCollection1');
+  });
+
   it('should format dates if present', async () => {
-    jest.useFakeTimers().setSystemTime(new Date('2025-03-25 14:00:00'));
-    const t = jest.fn().mockReturnValue('facilityName_yyyy-MM-dd_HH-mm-ss');
-    expect(getDefaultFileName(t, { facilityName: 'LILS' })).toEqual(
-      'LILS_2025-03-25_14-00-00'
-    );
+    vi.useFakeTimers().setSystemTime(new Date('2025-03-25 14:00:00'));
+    expect(
+      getDefaultFileName('facilityName_yyyy-MM-dd_HH-mm-ss', {
+        facilityName: 'LILS',
+      })
+    ).toEqual('LILS_2025-03-25_14-00-00');
   });
 });

@@ -1,55 +1,54 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
-  render,
   RenderResult,
+  act,
+  render,
   screen,
   waitForElementToBeRemoved,
   within,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { fetchDownloadCart } from 'datagateway-common';
-import { createMemoryHistory, MemoryHistory } from 'history';
-import * as React from 'react';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
-import { Router } from 'react-router-dom';
-import { DownloadSettingsContext } from '../ConfigProvider';
-import { mockCartItems, mockedSettings } from '../testData';
+import axios, { AxiosResponse } from 'axios';
 import {
-  checkUser,
+  DOIIdentifierType,
   DOIRelationType,
   DOIResourceType,
-  fetchDOI,
+  DataCiteDOI,
+  User,
+  fetchDownloadCart,
+} from 'datagateway-common';
+import { MemoryHistory, createMemoryHistory } from 'history';
+import { Router } from 'react-router-dom';
+import { DownloadSettingsContext } from '../ConfigProvider';
+import {
+  deleteDraftDOI,
   getCartUsers,
-  isCartMintable,
-  mintCart,
+  mintDraftCart,
+  publishDraftDOI,
 } from '../downloadApi';
+import { flushPromises } from '../setupTests';
+import { mockCartItems, mockedSettings } from '../testData';
 import DOIGenerationForm from './DOIGenerationForm.component';
 
-setLogger({
-  log: console.log,
-  warn: console.warn,
-  error: jest.fn(),
-});
-
-jest.mock('datagateway-common', () => {
-  const originalModule = jest.requireActual('datagateway-common');
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
 
   return {
     __esModule: true,
     ...originalModule,
-    fetchDownloadCart: jest.fn(),
+    fetchDownloadCart: vi.fn(),
   };
 });
 
-jest.mock('../downloadApi', () => {
-  const originalModule = jest.requireActual('../downloadApi');
+vi.mock('../downloadApi', async () => {
+  const originalModule = await vi.importActual('../downloadApi');
 
   return {
     ...originalModule,
-    isCartMintable: jest.fn(),
-    getCartUsers: jest.fn(),
-    checkUser: jest.fn(),
-    mintCart: jest.fn(),
-    fetchDOI: jest.fn(),
+    getCartUsers: vi.fn(),
+    mintDraftCart: vi.fn(),
+    publishDraftDOI: vi.fn(),
+    deleteDraftDOI: vi.fn(),
   };
 });
 
@@ -59,6 +58,12 @@ const createTestQueryClient = (): QueryClient =>
       queries: {
         retry: false,
       },
+    },
+    // silence react-query errors
+    logger: {
+      log: console.log,
+      warn: console.warn,
+      error: vi.fn(),
     },
   });
 
@@ -82,25 +87,109 @@ const renderComponent = (
 describe('DOI generation form component', () => {
   let user: ReturnType<typeof userEvent.setup>;
 
+  let mockUser: User;
+  let mockDOIResponse: { data: DataCiteDOI };
+  let mockDraftResponse: Awaited<ReturnType<typeof mintDraftCart>>;
+
   beforeEach(() => {
     user = userEvent.setup();
 
-    (
-      fetchDownloadCart as jest.MockedFunction<typeof fetchDownloadCart>
-    ).mockResolvedValue(mockCartItems);
+    mockUser = {
+      id: 2,
+      name: '2',
+      fullName: 'User 2',
+      email: 'user2@example.com',
+      affiliation: 'Example 2 Uni',
+    };
+    mockDOIResponse = {
+      data: {
+        id: '1',
+        type: 'DOI',
+        attributes: {
+          doi: 'related.doi.1',
+          titles: [{ title: 'Related DOI 1' }],
+          url: 'www.example.com',
+          // minimum data to not error
+          descriptions: [],
+          creators: [],
+          contributors: [],
+          relatedIdentifiers: [],
+          publisher: {
+            name: 'test',
+            publisherIdentifier: null,
+            publisherIdentifierScheme: null,
+            schemeUri: null,
+          },
+          publicationYear: 2025,
+          dates: [],
+          types: {
+            resourceType: 'Experimental Datasets',
+            resourceTypeGeneral: 'Other',
+          },
+          rightsList: [],
+          geoLocations: [],
+          fundingReferences: [],
+          subjects: [],
+          sizes: [],
+          identifiers: [],
+          alternateIdentifiers: [],
+          language: null,
+          formats: [],
+          relatedItems: [],
+          version: '1',
+        },
+        relationships: [],
+      },
+    };
+    mockDraftResponse = {
+      concept: {
+        data_publication_id: '1',
+        attributes: {
+          doi: 'pid',
+          // minimum data to not error
+          titles: [],
+          descriptions: [],
+          creators: [],
+          contributors: [],
+          relatedIdentifiers: [],
+          publisher: {
+            name: 'test',
+            publisherIdentifier: null,
+            publisherIdentifierScheme: null,
+            schemeUri: null,
+          },
+          publicationYear: 2025,
+          dates: [],
+          types: {
+            resourceType: 'Experimental Datasets',
+            resourceTypeGeneral: 'Other',
+          },
+          rightsList: [],
+          geoLocations: [],
+          fundingReferences: [],
+          subjects: [],
+          sizes: [],
+          url: 'https://example.com',
+          identifiers: [],
+          alternateIdentifiers: [],
+          language: null,
+          formats: [],
+          relatedItems: [],
+          version: '1',
+        },
+      },
+    };
 
-    (
-      isCartMintable as jest.MockedFunction<typeof isCartMintable>
-    ).mockResolvedValue(true);
+    vi.mocked(fetchDownloadCart).mockResolvedValue(mockCartItems);
 
-    // mock mint cart error to test dialog can be closed after it errors
-    (mintCart as jest.MockedFunction<typeof mintCart>).mockRejectedValue(
-      'error'
-    );
+    vi.mocked(mintDraftCart).mockResolvedValue(mockDraftResponse);
 
-    (
-      getCartUsers as jest.MockedFunction<typeof getCartUsers>
-    ).mockResolvedValue([
+    // mock publish draft error to test dialog can be closed after it errors
+    vi.mocked(publishDraftDOI).mockRejectedValue('error');
+
+    vi.mocked(deleteDraftDOI).mockResolvedValue();
+
+    vi.mocked(getCartUsers).mockResolvedValue([
       {
         id: 1,
         name: '1',
@@ -110,31 +199,73 @@ describe('DOI generation form component', () => {
       },
     ]);
 
-    (checkUser as jest.MockedFunction<typeof checkUser>).mockResolvedValue({
-      id: 2,
-      name: '2',
-      fullName: 'User 2',
-      email: 'user2@example.com',
-      affiliation: 'Example 2 Uni',
-    });
+    axios.get = vi
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/\/user\/.*/.test(url)) {
+          return Promise.resolve({
+            data: mockUser,
+          });
+        } else if (/\/dois\/.*/.test(url)) {
+          return Promise.resolve({
+            data: mockDOIResponse,
+          });
+        } else if (/\/search.*/.test(url)) {
+          return Promise.resolve({
+            data: {
+              collection: [
+                {
+                  '@id': 'http://purl.org/pan-science/PaNET/1',
+                  prefLabel: `technique1`,
+                  synonym: ['1'],
+                  links: {
+                    descendants: `https://example.com/1/descendants`,
+                  },
+                },
+              ],
+            },
+          });
+        } else if (/\/descendants/.test(url)) {
+          return Promise.resolve({
+            data: {
+              collection: [
+                {
+                  '@id': 'http://purl.org/pan-science/PaNET/2',
+                  prefLabel: `technique2`,
+                  synonym: ['2'],
+                  links: {
+                    descendants: `https://example.com/2/descendants`,
+                  },
+                },
+              ],
+            },
+          });
+        } else {
+          return Promise.reject(`Endpoint not mocked: ${url}`);
+        }
+      });
 
-    (fetchDOI as jest.MockedFunction<typeof fetchDOI>).mockResolvedValue({
-      id: '1',
-      type: 'DOI',
-      attributes: {
-        doi: 'related.doi.1',
-        titles: [{ title: 'Related DOI 1' }],
-        url: 'www.example.com',
-      },
-    });
+    axios.post = vi
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/\/ismintable$/.test(url)) {
+          return Promise.resolve({ status: 200 });
+        } else {
+          return Promise.reject(`Endpoint not mocked: ${url}`);
+        }
+      });
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should redirect back to /download if user directly accesses the url', async () => {
     const { history } = renderComponent(createMemoryHistory());
+
+    await act(async () => {
+      await flushPromises();
+    });
 
     expect(history.location).toMatchObject({ pathname: '/download' });
   });
@@ -143,7 +274,7 @@ describe('DOI generation form component', () => {
     renderComponent();
 
     expect(
-      screen.getByRole('button', { name: 'acceptDataPolicy.accept' })
+      await screen.findByRole('button', { name: 'acceptDataPolicy.accept' })
     ).toBeInTheDocument();
     expect(
       screen.queryByText('DOIGenerationForm.page_header')
@@ -168,6 +299,52 @@ describe('DOI generation form component', () => {
       'd'
     );
 
+    await user.type(
+      screen.getByRole('combobox', { name: 'DOIGenerationForm.subjects' }),
+      'subject{enter}'
+    );
+
+    // technique selector
+
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.add_technique' })
+    );
+
+    await user.type(
+      await screen.findByRole('combobox', {
+        name: 'DOIGenerationForm.technique_selector_label',
+      }),
+      '1'
+    );
+
+    await user.click(
+      await screen.findByRole('option', {
+        name: 'technique1 (1)',
+      })
+    );
+
+    await user.click(
+      await screen.findByRole('cell', {
+        name: 'technique1 (1)',
+      })
+    );
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.technique_dialog_confirm_button',
+      })
+    );
+
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'DOIGenerationForm.generate_DOI',
+      })
+    );
+
+    // expect confirmation page to appear, confirm submission
+
+    await screen.findByText('DOIGenerationForm.review_metadata');
+
     await user.click(
       screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
     );
@@ -180,7 +357,7 @@ describe('DOI generation form component', () => {
 
     await user.click(
       screen.getByRole('button', {
-        name: 'downloadConfirmDialog.close_arialabel',
+        name: 'DOIConfirmDialog.close_aria_label',
       })
     );
 
@@ -189,7 +366,7 @@ describe('DOI generation form component', () => {
         name: 'DOIConfirmDialog.dialog_title',
       })
     );
-  });
+  }, 60_000);
 
   it('should not let the user submit a mint request if required fields are missing but can submit once all are filled in', async () => {
     renderComponent();
@@ -227,7 +404,9 @@ describe('DOI generation form component', () => {
     );
 
     await user.click(
-      screen.getByRole('button', { name: 'DOIGenerationForm.add_contributor' })
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.add_contributor',
+      })
     );
 
     // missing contributor type
@@ -236,8 +415,8 @@ describe('DOI generation form component', () => {
     ).toBeDisabled();
 
     await user.click(
-      screen.getByRole('button', {
-        name: /DOIGenerationForm.creator_type/i,
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.creator_type',
       })
     );
     await user.click(
@@ -245,12 +424,16 @@ describe('DOI generation form component', () => {
     );
 
     await user.type(
-      screen.getByRole('textbox', { name: 'DOIGenerationForm.related_doi' }),
+      screen.getByRole('textbox', {
+        name: 'DOIGenerationForm.related_identifier',
+      }),
       '1'
     );
 
     await user.click(
-      screen.getByRole('button', { name: 'DOIGenerationForm.add_related_doi' })
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.add_related_doi',
+      })
     );
 
     // missing relationship type
@@ -259,11 +442,13 @@ describe('DOI generation form component', () => {
     ).toBeDisabled();
 
     await user.click(
-      screen.getByRole('button', {
-        name: /DOIGenerationForm.related_doi_relationship/i,
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.related_identifier_relationship',
       })
     );
-    await user.click(await screen.findByRole('option', { name: 'IsCitedBy' }));
+    await user.click(
+      await screen.findByRole('option', { name: DOIRelationType.IsCitedBy })
+    );
 
     // missing resource type
     expect(
@@ -271,17 +456,70 @@ describe('DOI generation form component', () => {
     ).toBeDisabled();
 
     await user.click(
-      screen.getByRole('button', {
-        name: /DOIGenerationForm.related_doi_resource_type/i,
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.related_identifier_resource_type',
       })
     );
-    await user.click(await screen.findByRole('option', { name: 'Journal' }));
+    await user.click(
+      await screen.findByRole('option', { name: DOIResourceType.Journal })
+    );
+
+    // missing technique
+    expect(
+      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+    ).toBeDisabled();
+
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.add_technique' })
+    );
+
+    await user.type(
+      await screen.findByRole('combobox', {
+        name: 'DOIGenerationForm.technique_selector_label',
+      }),
+      '1'
+    );
+
+    await user.click(
+      await screen.findByRole('option', {
+        name: 'technique1 (1)',
+      })
+    );
+
+    await user.click(
+      await screen.findByRole('cell', {
+        name: 'technique1 (1)',
+      })
+    );
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.technique_dialog_confirm_button',
+      })
+    );
+
+    // missing subject
+    expect(
+      // use findBy here as we need to wait for technique dialog to disappear
+      await screen.findByRole('button', {
+        name: 'DOIGenerationForm.generate_DOI',
+      })
+    ).toBeDisabled();
+
+    await user.type(
+      screen.getByRole('combobox', { name: 'DOIGenerationForm.subjects' }),
+      's{enter}'
+    );
 
     await user.click(
       screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
     );
 
-    expect(mintCart).toHaveBeenCalledWith(
+    // expect confirmation page to appear, confirm submission
+
+    await screen.findByText('DOIGenerationForm.review_metadata');
+
+    expect(mintDraftCart).toHaveBeenCalledWith(
       mockCartItems,
       {
         title: 't',
@@ -293,21 +531,127 @@ describe('DOI generation form component', () => {
         related_items: [
           {
             title: 'Related DOI 1',
-            fullReference: '',
             identifier: 'related.doi.1',
+            relatedIdentifierType: DOIIdentifierType.DOI,
             relationType: DOIRelationType.IsCitedBy,
             relatedItemType: DOIResourceType.Journal,
+          },
+        ],
+        subjects: [
+          {
+            subject: 's',
+            schemeUri: null,
+            valueUri: null,
+            subjectScheme: null,
+            classificationCode: null,
+          },
+          {
+            subject: 'technique1',
+            schemeUri: 'http://purl.org/pan-science/PaNET/',
+            valueUri: 'http://purl.org/pan-science/PaNET/1',
+            subjectScheme:
+              'Photon and Neutron Experimental Techniques (PaNET) ontology',
+            classificationCode: null,
           },
         ],
       },
       expect.any(Object)
     );
-  });
+
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+    );
+
+    expect(publishDraftDOI).toHaveBeenCalledWith('1', expect.anything());
+  }, 60_000);
+
+  it('should let the user go back from the confirmation page', async () => {
+    renderComponent();
+
+    // accept data policy
+    await user.click(
+      screen.getByRole('button', { name: 'acceptDataPolicy.accept' })
+    );
+
+    expect(
+      await screen.findByText('DOIGenerationForm.page_header')
+    ).toBeInTheDocument();
+
+    await user.type(
+      screen.getByRole('textbox', { name: 'DOIGenerationForm.title' }),
+      't'
+    );
+
+    await user.type(
+      screen.getByRole('textbox', { name: 'DOIGenerationForm.description' }),
+      'd'
+    );
+
+    await user.type(
+      screen.getByRole('combobox', { name: 'DOIGenerationForm.subjects' }),
+      'subject{enter}'
+    );
+
+    // technique selector
+
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.add_technique' })
+    );
+
+    await user.type(
+      await screen.findByRole('combobox', {
+        name: 'DOIGenerationForm.technique_selector_label',
+      }),
+      '1'
+    );
+
+    await user.click(
+      await screen.findByRole('option', {
+        name: 'technique1 (1)',
+      })
+    );
+
+    await user.click(
+      await screen.findByRole('cell', {
+        name: 'technique1 (1)',
+      })
+    );
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.technique_dialog_confirm_button',
+      })
+    );
+
+    await user.click(
+      // use findBy to wait for technique dialog to disappear
+      await screen.findByRole('button', {
+        name: 'DOIGenerationForm.generate_DOI',
+      })
+    );
+
+    // expect confirmation page to appear, confirm submission
+
+    await screen.findByText('DOIGenerationForm.review_metadata');
+    expect(
+      screen.queryByText('DOIGenerationForm.page_header')
+    ).not.toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.back_button' })
+    );
+
+    expect(
+      await screen.findByText('DOIGenerationForm.page_header')
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText('DOIGenerationForm.review_metadata')
+    ).not.toBeInTheDocument();
+    expect(deleteDraftDOI).toHaveBeenCalledWith('1', expect.anything());
+  }, 60_000);
 
   it('should not let the user submit a mint request if cart fails to load', async () => {
-    (
-      fetchDownloadCart as jest.MockedFunction<typeof fetchDownloadCart>
-    ).mockRejectedValue({ message: 'error' });
+    vi.mocked(fetchDownloadCart).mockRejectedValue({ message: 'error' });
     renderComponent();
 
     // accept data policy
@@ -323,18 +667,58 @@ describe('DOI generation form component', () => {
     await user.type(
       screen.getByRole('textbox', { name: 'DOIGenerationForm.description' }),
       'd'
+    );
+
+    await user.type(
+      screen.getByRole('combobox', { name: 'DOIGenerationForm.subjects' }),
+      'subject{enter}'
+    );
+
+    // technique selector
+
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.add_technique' })
+    );
+
+    await user.type(
+      await screen.findByRole('combobox', {
+        name: 'DOIGenerationForm.technique_selector_label',
+      }),
+      '1'
+    );
+
+    await user.click(
+      await screen.findByRole('option', {
+        name: 'technique1 (1)',
+      })
+    );
+
+    await user.click(
+      await screen.findByRole('cell', {
+        name: 'technique1 (1)',
+      })
+    );
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.technique_dialog_confirm_button',
+      })
+    );
+
+    await waitForElementToBeRemoved(() =>
+      screen.queryByRole('dialog', {
+        name: 'DOIGenerationForm.technique_dialog_title',
+      })
     );
 
     // missing cart
     expect(
       screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
     ).toBeDisabled();
-  });
+  }, 60_000);
 
   it('should not let the user submit a mint request if cart is empty', async () => {
-    (
-      fetchDownloadCart as jest.MockedFunction<typeof fetchDownloadCart>
-    ).mockResolvedValue([]);
+    vi.mocked(fetchDownloadCart).mockResolvedValue([]);
     renderComponent();
 
     // accept data policy
@@ -350,18 +734,58 @@ describe('DOI generation form component', () => {
     await user.type(
       screen.getByRole('textbox', { name: 'DOIGenerationForm.description' }),
       'd'
+    );
+
+    await user.type(
+      screen.getByRole('combobox', { name: 'DOIGenerationForm.subjects' }),
+      'subject{enter}'
+    );
+
+    // technique selector
+
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.add_technique' })
+    );
+
+    await user.type(
+      await screen.findByRole('combobox', {
+        name: 'DOIGenerationForm.technique_selector_label',
+      }),
+      '1'
+    );
+
+    await user.click(
+      await screen.findByRole('option', {
+        name: 'technique1 (1)',
+      })
+    );
+
+    await user.click(
+      await screen.findByRole('cell', {
+        name: 'technique1 (1)',
+      })
+    );
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.technique_dialog_confirm_button',
+      })
+    );
+
+    await waitForElementToBeRemoved(() =>
+      screen.queryByRole('dialog', {
+        name: 'DOIGenerationForm.technique_dialog_title',
+      })
     );
 
     // empty cart
     expect(
       screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
     ).toBeDisabled();
-  });
+  }, 60_000);
 
   it('should not let the user submit a mint request if no users selected', async () => {
-    (
-      getCartUsers as jest.MockedFunction<typeof getCartUsers>
-    ).mockResolvedValue([]);
+    vi.mocked(getCartUsers).mockResolvedValue([]);
     renderComponent();
 
     // accept data policy
@@ -377,6 +801,48 @@ describe('DOI generation form component', () => {
     await user.type(
       screen.getByRole('textbox', { name: 'DOIGenerationForm.description' }),
       'd'
+    );
+
+    await user.type(
+      screen.getByRole('combobox', { name: 'DOIGenerationForm.subjects' }),
+      'subject{enter}'
+    );
+
+    // technique selector
+
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.add_technique' })
+    );
+
+    await user.type(
+      await screen.findByRole('combobox', {
+        name: 'DOIGenerationForm.technique_selector_label',
+      }),
+      '1'
+    );
+
+    await user.click(
+      await screen.findByRole('option', {
+        name: 'technique1 (1)',
+      })
+    );
+
+    await user.click(
+      await screen.findByRole('cell', {
+        name: 'technique1 (1)',
+      })
+    );
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.technique_dialog_confirm_button',
+      })
+    );
+
+    await waitForElementToBeRemoved(() =>
+      screen.queryByRole('dialog', {
+        name: 'DOIGenerationForm.technique_dialog_title',
+      })
     );
 
     // no users
@@ -391,7 +857,7 @@ describe('DOI generation form component', () => {
     expect(
       screen.getByRole('button', { name: 'DOIGenerationForm.add_contributor' })
     ).toBeDisabled();
-  });
+  }, 60_000);
 
   it('should let the user change cart tabs', async () => {
     renderComponent();
@@ -420,9 +886,7 @@ describe('DOI generation form component', () => {
 
   describe('only displays cart tabs if the corresponding entity type exists in the cart: ', () => {
     it('investigations', async () => {
-      (
-        fetchDownloadCart as jest.MockedFunction<typeof fetchDownloadCart>
-      ).mockResolvedValue([mockCartItems[0]]);
+      vi.mocked(fetchDownloadCart).mockResolvedValue([mockCartItems[0]]);
 
       renderComponent();
 
@@ -455,9 +919,7 @@ describe('DOI generation form component', () => {
     });
 
     it('datasets', async () => {
-      (
-        fetchDownloadCart as jest.MockedFunction<typeof fetchDownloadCart>
-      ).mockResolvedValue([mockCartItems[2]]);
+      vi.mocked(fetchDownloadCart).mockResolvedValue([mockCartItems[2]]);
 
       renderComponent();
 
@@ -488,9 +950,7 @@ describe('DOI generation form component', () => {
     });
 
     it('datafiles', async () => {
-      (
-        fetchDownloadCart as jest.MockedFunction<typeof fetchDownloadCart>
-      ).mockResolvedValue([mockCartItems[3]]);
+      vi.mocked(fetchDownloadCart).mockResolvedValue([mockCartItems[3]]);
 
       renderComponent();
 

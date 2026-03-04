@@ -1,10 +1,10 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:base",
+    "config:recommended",
     "schedule:nonOfficeHours",
     ":maintainLockFilesWeekly",
-    "npm:unpublishSafe",
+    "security:minimumReleaseAgeNpm",
     "helpers:pinGitHubActionDigests"
   ],
   "postUpdateOptions": ["yarnDedupeHighest"],

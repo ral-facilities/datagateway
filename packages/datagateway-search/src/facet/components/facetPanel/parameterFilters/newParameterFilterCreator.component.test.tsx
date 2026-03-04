@@ -1,13 +1,13 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
+import { DatasearchType, dGCommonInitialState } from 'datagateway-common';
 import * as React from 'react';
 import { Provider } from 'react-redux';
 import createMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { DatasearchType, dGCommonInitialState } from 'datagateway-common';
-import { QueryClient, QueryClientProvider } from 'react-query';
 import NewParameterFilterCreator from './newParameterFilterCreator.component';
-import axios, { AxiosResponse } from 'axios';
 
 describe('NewParameterFilterCreator', () => {
   const TEST_ENTITY_NAME: DatasearchType = 'Investigation';
@@ -31,7 +31,7 @@ describe('NewParameterFilterCreator', () => {
   }
 
   beforeEach(() => {
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/\/facet\/documents$/.test(url)) {
@@ -57,8 +57,8 @@ describe('NewParameterFilterCreator', () => {
         entityName={TEST_ENTITY_NAME}
         parameterNames={TEST_PARAMETER_NAMES}
         allIds={TEST_IDS}
-        onAddFilter={jest.fn()}
-        onClose={jest.fn()}
+        onAddFilter={vi.fn()}
+        onClose={vi.fn()}
       />,
       {
         wrapper: Wrapper,
@@ -66,17 +66,13 @@ describe('NewParameterFilterCreator', () => {
     );
 
     expect(
-      screen.getByRole('button', {
-        // have to use regex with case-insensitive option here instead of regular string
-        // because for some reason even though testing-library *says* it can't find the element by string
-        // in the actual error message it shows the matching element with the exact same label and casing
-        // but somehow this works
-        name: /parameterFilters.creator.labels.parameterNameSelect /i,
+      screen.getByRole('combobox', {
+        name: 'parameterFilters.creator.labels.parameterNameSelect',
       })
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('button', {
-        name: /parameterFilters.creator.labels.parameterValueTypeSelect /i,
+      screen.getByRole('combobox', {
+        name: 'parameterFilters.creator.labels.parameterValueTypeSelect',
       })
     ).toBeInTheDocument();
 
@@ -93,8 +89,8 @@ describe('NewParameterFilterCreator', () => {
         entityName={TEST_ENTITY_NAME}
         parameterNames={TEST_PARAMETER_NAMES}
         allIds={TEST_IDS}
-        onAddFilter={jest.fn()}
-        onClose={jest.fn()}
+        onAddFilter={vi.fn()}
+        onClose={vi.fn()}
       />,
       {
         wrapper: Wrapper,
@@ -116,8 +112,8 @@ describe('NewParameterFilterCreator', () => {
         entityName={TEST_ENTITY_NAME}
         parameterNames={TEST_PARAMETER_NAMES}
         allIds={TEST_IDS}
-        onAddFilter={jest.fn()}
-        onClose={jest.fn()}
+        onAddFilter={vi.fn()}
+        onClose={vi.fn()}
       />,
       {
         wrapper: Wrapper,
@@ -125,12 +121,8 @@ describe('NewParameterFilterCreator', () => {
     );
 
     await user.click(
-      screen.getByRole('button', {
-        // have to use regex with case-insensitive option here instead of regular string
-        // because for some reason even though testing-library *says* it can't find the element by string
-        // in the actual error message it shows the matching element with the exact same label and casing
-        // but somehow this works
-        name: /parameterFilters.creator.labels.parameterNameSelect /i,
+      screen.getByRole('combobox', {
+        name: 'parameterFilters.creator.labels.parameterNameSelect',
       })
     );
     await user.selectOptions(
@@ -155,8 +147,8 @@ describe('NewParameterFilterCreator', () => {
         entityName={TEST_ENTITY_NAME}
         parameterNames={TEST_PARAMETER_NAMES}
         allIds={TEST_IDS}
-        onAddFilter={jest.fn()}
-        onClose={jest.fn()}
+        onAddFilter={vi.fn()}
+        onClose={vi.fn()}
       />,
       {
         wrapper: Wrapper,
@@ -164,12 +156,8 @@ describe('NewParameterFilterCreator', () => {
     );
 
     await user.click(
-      screen.getByRole('button', {
-        // have to use regex with case-insensitive option here instead of regular string
-        // because for some reason even though testing-library *says* it can't find the element by string
-        // in the actual error message it shows the matching element with the exact same label and casing
-        // but somehow this works
-        name: /parameterFilters.creator.labels.parameterValueTypeSelect /i,
+      screen.getByRole('combobox', {
+        name: 'parameterFilters.creator.labels.parameterValueTypeSelect',
       })
     );
     await user.selectOptions(
@@ -196,8 +184,8 @@ describe('NewParameterFilterCreator', () => {
         entityName={TEST_ENTITY_NAME}
         parameterNames={TEST_PARAMETER_NAMES}
         allIds={TEST_IDS}
-        onAddFilter={jest.fn()}
-        onClose={jest.fn()}
+        onAddFilter={vi.fn()}
+        onClose={vi.fn()}
       />,
       {
         wrapper: Wrapper,
@@ -206,8 +194,8 @@ describe('NewParameterFilterCreator', () => {
 
     // select parameter name
     await user.click(
-      screen.getByRole('button', {
-        name: /parameterFilters.creator.labels.parameterNameSelect /i,
+      screen.getByRole('combobox', {
+        name: 'parameterFilters.creator.labels.parameterNameSelect',
       })
     );
     await user.selectOptions(
@@ -218,8 +206,8 @@ describe('NewParameterFilterCreator', () => {
     );
     // select parameter value type
     await user.click(
-      screen.getByRole('button', {
-        name: /parameterFilters.creator.labels.parameterValueTypeSelect /i,
+      screen.getByRole('combobox', {
+        name: 'parameterFilters.creator.labels.parameterValueTypeSelect',
       })
     );
 
@@ -236,8 +224,8 @@ describe('NewParameterFilterCreator', () => {
     ).toBeInTheDocument();
 
     await user.click(
-      screen.getByRole('button', {
-        name: /parameterFilters.creator.labels.parameterValueTypeSelect /i,
+      screen.getByRole('combobox', {
+        name: 'parameterFilters.creator.labels.parameterValueTypeSelect',
       })
     );
     await user.selectOptions(
@@ -253,8 +241,8 @@ describe('NewParameterFilterCreator', () => {
     ).toBeInTheDocument();
 
     await user.click(
-      screen.getByRole('button', {
-        name: /parameterFilters.creator.labels.parameterValueTypeSelect /i,
+      screen.getByRole('combobox', {
+        name: 'parameterFilters.creator.labels.parameterValueTypeSelect',
       })
     );
     await user.selectOptions(
@@ -270,7 +258,7 @@ describe('NewParameterFilterCreator', () => {
 
   it('calls onAddFilter callback when a filter is added', async () => {
     const user = userEvent.setup();
-    const onAddFilter = jest.fn();
+    const onAddFilter = vi.fn();
 
     render(
       <NewParameterFilterCreator
@@ -278,7 +266,7 @@ describe('NewParameterFilterCreator', () => {
         parameterNames={TEST_PARAMETER_NAMES}
         allIds={TEST_IDS}
         onAddFilter={onAddFilter}
-        onClose={jest.fn()}
+        onClose={vi.fn()}
       />,
       {
         wrapper: Wrapper,
@@ -287,8 +275,8 @@ describe('NewParameterFilterCreator', () => {
 
     // select parameter name
     await user.click(
-      screen.getByRole('button', {
-        name: /parameterFilters.creator.labels.parameterNameSelect /i,
+      screen.getByRole('combobox', {
+        name: 'parameterFilters.creator.labels.parameterNameSelect',
       })
     );
     await user.selectOptions(
@@ -299,8 +287,8 @@ describe('NewParameterFilterCreator', () => {
     );
     // select parameter value type
     await user.click(
-      screen.getByRole('button', {
-        name: /parameterFilters.creator.labels.parameterValueTypeSelect /i,
+      screen.getByRole('combobox', {
+        name: 'parameterFilters.creator.labels.parameterValueTypeSelect',
       })
     );
     await user.selectOptions(
@@ -313,8 +301,8 @@ describe('NewParameterFilterCreator', () => {
     );
 
     await user.click(
-      screen.getByRole('button', {
-        name: /parameterFilters.creator.labels.parameterStringSelect /i,
+      screen.getByRole('combobox', {
+        name: 'parameterFilters.creator.labels.parameterStringSelect',
       })
     );
     await user.selectOptions(
@@ -344,7 +332,7 @@ describe('NewParameterFilterCreator', () => {
 
   it('resets parameter filter when requested by the parameter value selector', async () => {
     const user = userEvent.setup();
-    const onAddFilter = jest.fn();
+    const onAddFilter = vi.fn();
 
     render(
       <NewParameterFilterCreator
@@ -352,7 +340,7 @@ describe('NewParameterFilterCreator', () => {
         parameterNames={TEST_PARAMETER_NAMES}
         allIds={TEST_IDS}
         onAddFilter={onAddFilter}
-        onClose={jest.fn()}
+        onClose={vi.fn()}
       />,
       {
         wrapper: Wrapper,
@@ -361,8 +349,8 @@ describe('NewParameterFilterCreator', () => {
 
     // select parameter name
     await user.click(
-      screen.getByRole('button', {
-        name: /parameterFilters.creator.labels.parameterNameSelect /i,
+      screen.getByRole('combobox', {
+        name: 'parameterFilters.creator.labels.parameterNameSelect',
       })
     );
     await user.selectOptions(
@@ -373,8 +361,8 @@ describe('NewParameterFilterCreator', () => {
     );
     // select parameter value type
     await user.click(
-      screen.getByRole('button', {
-        name: /parameterFilters.creator.labels.parameterValueTypeSelect /i,
+      screen.getByRole('combobox', {
+        name: 'parameterFilters.creator.labels.parameterValueTypeSelect',
       })
     );
     await user.selectOptions(

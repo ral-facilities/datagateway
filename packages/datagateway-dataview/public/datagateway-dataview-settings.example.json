@@ -1,11 +1,18 @@
 {
   "facilityName": "Generic",
   "facilityImageURL": "",
-  "features": {},
+  "features": {
+    "disableAnonDownload": false,
+    "disableSelectAll": false
+  },
   "idsUrl": "example.ids.url",
   "apiUrl": "example.api.url",
   "downloadApiUrl": "example.download.api.url",
-  "selectAllSetting": true,
+  "doiMinterUrl": null,
+  "dataCiteUrl": null,
+  "bioportalUrl": "/bioportal",
+  "anonUserName": "anon/anon",
+  "PIRole": "PI",
   "helpSteps": [
     {
       "target": "#plugin-link--browse-investigation",
@@ -107,12 +114,21 @@
       "section": "Homepage",
       "link": "/datagateway",
       "displayName": "DataGateway",
+      "unauthorised": true,
+      "hideFromMenu": true,
       "order": 0
     },
     {
       "section": "Browse",
       "link": "/doi-redirect",
       "displayName": "DOI Redirect",
+      "order": 0,
+      "hideFromMenu": true
+    },
+    {
+      "section": "Redirect",
+      "link": "/redirect",
+      "displayName": "Redirect",
       "order": 0,
       "hideFromMenu": true
     },
@@ -142,15 +158,27 @@
     },
     {
       "section": "Browse",
+      "link": "/browse/dataPublication",
+      "displayName": "DataPublications",
+      "order": 5
+    },
+    {
+      "section": "Browse",
       "link": "/my-data/DLS?sort={\"startDate\":\"desc\"}",
       "displayName": "My Data DLS",
-      "order": 5
+      "order": 6
     },
     {
       "section": "Browse",
       "link": "/my-data/ISIS?sort={\"startDate\":\"desc\"}",
       "displayName": "My Data ISIS",
-      "order": 6
+      "order": 7
+    },
+    {
+      "section": "Browse",
+      "link": "/my-dois/DLS",
+      "displayName": "My DOIs DLS",
+      "order": 8
     }
   ],
   "breadcrumbs": [

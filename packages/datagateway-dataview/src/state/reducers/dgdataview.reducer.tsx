@@ -3,45 +3,32 @@ import {
   datafilePreviewerInitialState,
   datafilePreviewerReducer,
 } from '../../views/datafilePreview/state/reducer';
-import { DGDataViewState } from '../app.types';
 import {
-  FeatureSwitchesPayload,
-  ConfigureFeatureSwitchesType,
   ConfigureBreadcrumbSettingsPayload,
   ConfigureBreadcrumbSettingsType,
-  SettingsLoadedType,
-  ConfigureSelectAllSettingPayload,
-  ConfigureSelectAllSettingType,
-  ConfigurePluginHostSettingPayload,
-  ConfigurePluginHostSettingType,
   ConfigureFacilityImageSettingPayload,
   ConfigureFacilityImageSettingType,
+  ConfigurePIRoleSettingPayload,
+  ConfigurePIRoleSettingType,
+  ConfigurePluginHostSettingPayload,
+  ConfigurePluginHostSettingType,
+  SettingsLoadedType,
 } from '../actions/actions.types';
+import { DGDataViewState } from '../app.types';
 
 export const initialState: DGDataViewState = {
-  features: {},
   breadcrumbSettings: [],
   settingsLoaded: false,
-  selectAllSetting: true,
   pluginHost: '',
   facilityImageURL: '',
   datafilePreviewer: datafilePreviewerInitialState,
+  PIRole: 'PI',
 };
 
 export function handleSettingsLoaded(state: DGDataViewState): DGDataViewState {
   return {
     ...state,
     settingsLoaded: true,
-  };
-}
-
-export function handleConfigureFeatureSwitches(
-  state: DGDataViewState,
-  payload: FeatureSwitchesPayload
-): DGDataViewState {
-  return {
-    ...state,
-    features: payload.switches,
   };
 }
 
@@ -54,16 +41,6 @@ export function handleConfigureBreadcrumbSettings(
   return {
     ...state,
     breadcrumbSettings: payload.settings,
-  };
-}
-
-export function handleConfigureSelectAllSetting(
-  state: DGDataViewState,
-  payload: ConfigureSelectAllSettingPayload
-): DGDataViewState {
-  return {
-    ...state,
-    selectAllSetting: payload.settings,
   };
 }
 
@@ -87,13 +64,22 @@ export function handleConfigureFacilityImageSetting(
   };
 }
 
+export function handleConfigurePIRoleSetting(
+  state: DGDataViewState,
+  payload: ConfigurePIRoleSettingPayload
+): DGDataViewState {
+  return {
+    ...state,
+    PIRole: payload.settings,
+  };
+}
+
 const DGDataViewReducer = createReducer(initialState, {
   [SettingsLoadedType]: handleSettingsLoaded,
-  [ConfigureFeatureSwitchesType]: handleConfigureFeatureSwitches,
   [ConfigureBreadcrumbSettingsType]: handleConfigureBreadcrumbSettings,
-  [ConfigureSelectAllSettingType]: handleConfigureSelectAllSetting,
   [ConfigurePluginHostSettingType]: handleConfigurePluginHostSetting,
   [ConfigureFacilityImageSettingType]: handleConfigureFacilityImageSetting,
+  [ConfigurePIRoleSettingType]: handleConfigurePIRoleSetting,
   ...datafilePreviewerReducer,
 });
 

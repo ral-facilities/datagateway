@@ -1,14 +1,19 @@
 import * as React from 'react';
-import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 import { StateType } from '../state/app.types';
 
-import { Router } from 'react-router-dom';
-import PageRouting from './pageRouting.component';
-import { Provider } from 'react-redux';
-import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
 import { DataPublication, dGCommonInitialState } from 'datagateway-common';
+import { Provider } from 'react-redux';
+import { Router } from 'react-router-dom';
+import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
+import PageRouting from './pageRouting.component';
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { act, render, screen } from '@testing-library/react';
+import axios from 'axios';
+import { History, createMemoryHistory } from 'history';
+import { findColumnHeaderByName, flushPromises } from '../setupTests';
 import {
   checkDatasetId as unmockedCheckDatasetId,
   checkInstrumentAndFacilityCycleId as unmockedCheckInstrumentAndFacilityCycleId,
@@ -17,23 +22,17 @@ import {
   checkProposalName as unmockedCheckProposalName,
   checkStudyDataPublicationId as unmockedCheckStudyDataPublicationId,
 } from './idCheckFunctions';
-import { findColumnHeaderByName, flushPromises } from '../setupTests';
-import { act } from 'react-dom/test-utils';
-import axios from 'axios';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { createMemoryHistory, History } from 'history';
-import { render, screen } from '@testing-library/react';
 
-jest.mock('loglevel');
-jest.mock('./idCheckFunctions');
-const checkDatasetId = jest.mocked(unmockedCheckDatasetId);
-const checkInstrumentAndFacilityCycleId = jest.mocked(
+vi.mock('loglevel');
+vi.mock('./idCheckFunctions');
+const checkDatasetId = vi.mocked(unmockedCheckDatasetId);
+const checkInstrumentAndFacilityCycleId = vi.mocked(
   unmockedCheckInstrumentAndFacilityCycleId
 );
-const checkInstrumentId = jest.mocked(unmockedCheckInstrumentId);
-const checkInvestigationId = jest.mocked(unmockedCheckInvestigationId);
-const checkProposalName = jest.mocked(unmockedCheckProposalName);
-const checkStudyDataPublicationId = jest.mocked(
+const checkInstrumentId = vi.mocked(unmockedCheckInstrumentId);
+const checkInvestigationId = vi.mocked(unmockedCheckInvestigationId);
+const checkProposalName = vi.mocked(unmockedCheckProposalName);
+const checkStudyDataPublicationId = vi.mocked(
   unmockedCheckStudyDataPublicationId
 );
 
@@ -89,7 +88,10 @@ const DLSRoutes = {
   datasets: '/browse/proposal/INVESTIGATION 1/investigation/1/dataset',
   datafiles:
     '/browse/proposal/INVESTIGATION 1/investigation/1/dataset/1/datafile',
+  dataPublicationLanding: '/browse/dataPublication/1',
   mydata: '/my-data/DLS',
+  mydois: '/my-dois/DLS',
+  alldois: '/browse/dataPublication',
 };
 
 describe('PageTable', () => {
@@ -122,7 +124,7 @@ describe('PageTable', () => {
       })
     );
 
-    (axios.get as jest.Mock).mockImplementation((url: string) => {
+    vi.mocked(axios.get).mockImplementation((url: string) => {
       if (url.includes('count')) {
         return Promise.resolve({ data: 0 });
       } else if (url.includes('datapublications')) {
@@ -151,7 +153,7 @@ describe('PageTable', () => {
           ],
         });
       } else {
-        return Promise.resolve({ data: [] });
+        return Promise.resolve({ data: [{ id: 1, name: '1' }] });
       }
     });
     checkInstrumentAndFacilityCycleId.mockImplementation(() =>
@@ -165,7 +167,7 @@ describe('PageTable', () => {
   });
 
   afterEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
   });
 
   describe('Generic', () => {
@@ -769,7 +771,7 @@ describe('PageTable', () => {
       );
 
       expect(
-        await screen.findByText('datafiles.preview.invalid_datafile')
+        await screen.findByText('datafiles.preview.cannot_preview')
       ).toBeInTheDocument();
     });
 
@@ -1157,7 +1159,7 @@ describe('PageTable', () => {
       );
 
       expect(
-        await screen.findByText('datafiles.preview.invalid_datafile')
+        await screen.findByText('datafiles.preview.cannot_preview')
       ).toBeInTheDocument();
     });
 
@@ -1219,6 +1221,67 @@ describe('PageTable', () => {
 
     it('redirects to login page when not signed in (DLSMyDataTable) ', () => {
       history.push(DLSRoutes.mydata);
+
+      render(
+        <PageRouting
+          loggedInAnonymously
+          view="table"
+          location={history.location}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(history.location.pathname).toBe('/login');
+    });
+
+    it('renders DLSMyDOIsTable for DLS my dois route', async () => {
+      history.push(DLSRoutes.mydois);
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(
+        await findColumnHeaderByName('datapublications.title')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datapublications.pid')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datapublications.publication_date')
+      ).toBeInTheDocument();
+    });
+
+    it('renders DLSMyDOIsTable for DLS all dois route', async () => {
+      history.push(DLSRoutes.alldois);
+
+      render(
+        <PageRouting
+          view="table"
+          location={history.location}
+          loggedInAnonymously={false}
+        />,
+        { wrapper: Wrapper }
+      );
+
+      expect(
+        await findColumnHeaderByName('datapublications.title')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datapublications.pid')
+      ).toBeInTheDocument();
+      expect(
+        await findColumnHeaderByName('datapublications.publication_date')
+      ).toBeInTheDocument();
+    });
+
+    it('redirects to login page when not signed in (DLSMyDOIsTable) ', () => {
+      history.push(DLSRoutes.mydois);
 
       render(
         <PageRouting
@@ -1434,5 +1497,22 @@ describe('PageTable', () => {
 
       expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
+  });
+
+  it('renders DLSDataPublicationLanding for DLS dataPublications route', async () => {
+    history.push(DLSRoutes.dataPublicationLanding);
+
+    render(
+      <PageRouting
+        view={null}
+        location={history.location}
+        loggedInAnonymously={false}
+      />,
+      { wrapper: Wrapper }
+    );
+
+    expect(
+      await screen.findByTestId('dls-dataPublication-landing')
+    ).toBeInTheDocument();
   });
 });

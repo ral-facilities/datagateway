@@ -1,12 +1,12 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Search text box component tests renders correctly 1`] = `
+exports[`Search text box component tests > renders correctly 1`] = `
 <DocumentFragment>
   <div
     class="MuiFormControl-root MuiFormControl-marginNormal MuiFormControl-fullWidth MuiTextField-root tour-search-textfield css-17vbkzs-MuiFormControl-root-MuiTextField-root"
   >
     <label
-      class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-colorSecondary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined css-1v4qvbo-MuiFormLabel-root-MuiInputLabel-root"
+      class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeMedium MuiInputLabel-outlined MuiFormLabel-colorSecondary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeMedium MuiInputLabel-outlined css-1v4qvbo-MuiFormLabel-root-MuiInputLabel-root"
       data-shrink="false"
       for="filled-search"
       id="filled-search-label"
@@ -27,10 +27,10 @@ exports[`Search text box component tests renders correctly 1`] = `
       />
       <fieldset
         aria-hidden="true"
-        class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
+        class="MuiOutlinedInput-notchedOutline css-r01yff-MuiNotchedOutlined-root-MuiOutlinedInput-notchedOutline"
       >
         <legend
-          class="css-yjsfm1"
+          class="css-njhac4-MuiNotchedOutlined-root"
         >
           <span>
             searchBox.search_text

@@ -1,22 +1,21 @@
-import {
-  CalendarToday,
-  Fingerprint,
-  Person,
-  Public,
-  Save,
-  Subject,
-} from '@mui/icons-material';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import Fingerprint from '@mui/icons-material/Fingerprint';
+import Person from '@mui/icons-material/Person';
+import Public from '@mui/icons-material/Public';
+import Save from '@mui/icons-material/Save';
+import Subject from '@mui/icons-material/Subject';
 import {
   AdditionalFilters,
   ColumnType,
+  DetailsPanelProps,
   DownloadButton,
+  ISISInvestigationDetailsPanel,
+  Investigation,
+  ConnectedTable as Table,
+  TableActionProps,
   externalSiteLink,
   formatBytes,
-  Investigation,
-  ISISInvestigationDetailsPanel,
   parseSearchToQuery,
-  Table,
-  TableActionProps,
   tableLink,
   useAddToCart,
   useCart,
@@ -45,9 +44,10 @@ const ISISInvestigationsTable = (
   props: ISISInvestigationsTableProps
 ): React.ReactElement => {
   const { instrumentId, facilityCycleId } = props;
-  const selectAllSetting = useSelector(
-    (state: StateType) => state.dgdataview.selectAllSetting
+  const disableSelectAll = useSelector(
+    (state: StateType) => state.dgcommon.features?.disableSelectAll ?? false
   );
+  const PIRole = useSelector((state: StateType) => state.dgdataview.PIRole);
   const location = useLocation();
   const { push } = useHistory();
   const [t] = useTranslation();
@@ -110,10 +110,10 @@ const ISISInvestigationsTable = (
     undefined,
     isMounted
   );
-  const { data: allIds, isLoading: allIdsLoading } = useIds(
+  const { data: allIds, isInitialLoading: allIdsLoading } = useIds(
     'investigation',
     investigationQueryFilters,
-    selectAllSetting
+    !disableSelectAll
   );
   const { data: cartItems, isLoading: cartLoading } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } =
@@ -128,11 +128,10 @@ const ISISInvestigationsTable = (
           (cartItem) =>
             cartItem.entityType === 'investigation' &&
             // if select all is disabled, it's safe to just pass the whole cart as selectedRows
-            (!selectAllSetting ||
-              (allIds && allIds.includes(cartItem.entityId)))
+            (disableSelectAll || (allIds && allIds.includes(cartItem.entityId)))
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, selectAllSetting, allIds]
+    [cartItems, disableSelectAll, allIds]
   );
 
   /* istanbul ignore next */
@@ -151,25 +150,29 @@ const ISISInvestigationsTable = (
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
   const handleSort = useSort();
-  const principalExperimenterFilter = usePrincipalExperimenterFilter(filters);
+  const principalExperimenterFilter = usePrincipalExperimenterFilter(
+    filters,
+    PIRole
+  );
 
   const loadMoreRows = React.useCallback(
     (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
     [fetchNextPage]
   );
 
-  const detailsPanel = React.useCallback(
-    ({ rowData, detailsPanelResize }) => (
-      <ISISInvestigationDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        viewDatasets={(id: number) =>
-          push(`${location.pathname}/${id}/dataset`)
-        }
-      />
-    ),
-    [push, location.pathname]
-  );
+  const detailsPanel: React.ComponentType<DetailsPanelProps> =
+    React.useCallback(
+      ({ rowData, detailsPanelResize }) => (
+        <ISISInvestigationDetailsPanel
+          rowData={rowData}
+          detailsPanelResize={detailsPanelResize}
+          viewDatasets={(id: number) =>
+            push(`${location.pathname}/${id}/dataset`)
+          }
+        />
+      ),
+      [push, location.pathname]
+    );
 
   const columns: ColumnType[] = React.useMemo(
     () => [
@@ -235,7 +238,7 @@ const ISISInvestigationsTable = (
           const investigationData = cellProps.rowData as Investigation;
           const principal_investigators =
             investigationData?.investigationUsers?.filter(
-              (iu) => iu.role === 'principal_experimenter'
+              (iu) => iu.role === PIRole
             );
           if (principal_investigators && principal_investigators.length !== 0) {
             return principal_investigators?.[0].user?.fullName;
@@ -267,6 +270,7 @@ const ISISInvestigationsTable = (
       dateFilter,
       location.pathname,
       view,
+      PIRole,
     ]
   );
 
@@ -287,7 +291,6 @@ const ISISInvestigationsTable = (
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}
-      disableSelectAll={!selectAllSetting}
       detailsPanel={detailsPanel}
       actions={[
         ({ rowData }: TableActionProps) => (

@@ -1,0 +1,36 @@
+import CloseIcon from '@mui/icons-material/Close';
+import {
+  DialogTitle as MuiDialogTitle,
+  IconButton,
+  Typography,
+} from '@mui/material';
+import React from 'react';
+
+interface DialogTitleProps {
+  id?: string;
+  onClose?: () => void;
+  children?: React.ReactNode;
+  closeAriaLabel: string;
+}
+
+const DialogTitle = (props: DialogTitleProps): React.ReactElement => {
+  const { children, onClose, closeAriaLabel, ...other } = props;
+
+  return (
+    <MuiDialogTitle sx={{ margin: 0, padding: 2 }} {...other}>
+      <Typography sx={{ fontSize: '1.25rem' }}>{children}</Typography>
+      {onClose && (
+        <IconButton
+          aria-label={closeAriaLabel}
+          sx={{ position: 'absolute', right: 2, top: 2, color: 'grey[500]' }}
+          onClick={onClose}
+          size="large"
+        >
+          <CloseIcon />
+        </IconButton>
+      )}
+    </MuiDialogTitle>
+  );
+};
+
+export default DialogTitle;

@@ -8,9 +8,6 @@ export default defineConfig({
   },
   e2e: {
     setupNodeEvents(on, config) {
-      on('task', {
-        failed: require('cypress-failed-log/src/failed')(),
-      });
       on('before:browser:launch', (browser, launchOptions) => {
         if (browser.family === 'chromium' && browser.name !== 'electron') {
           // Set pointer type to fine so that date inputs work properly

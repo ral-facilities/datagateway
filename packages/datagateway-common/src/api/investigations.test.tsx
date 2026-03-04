@@ -1,19 +1,18 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import axios from 'axios';
-import { createMemoryHistory, History } from 'history';
+import { History, createMemoryHistory } from 'history';
 import { Investigation } from '../app.types';
 import handleICATError from '../handleICATError';
 import { createReactQueryWrapper } from '../setupTests';
 import {
   downloadInvestigation,
-  useInvestigation,
   useInvestigationCount,
   useInvestigationDetails,
   useInvestigationsInfinite,
   useInvestigationsPaginated,
 } from './investigations';
 
-jest.mock('../handleICATError');
+vi.mock('../handleICATError');
 
 describe('investigation api functions', () => {
   let mockData: Investigation[] = [];
@@ -55,81 +54,18 @@ describe('investigation api functions', () => {
   });
 
   afterEach(() => {
-    (handleICATError as jest.Mock).mockClear();
-    (axios.get as jest.Mock).mockClear();
-    jest.useRealTimers();
-  });
-
-  describe('useInvestigation', () => {
-    it('sends axios request to fetch investigation by ID and returns successful response', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
-        data: [mockData[0]],
-      });
-
-      const { result, waitFor } = renderHook(
-        () =>
-          useInvestigation(1, [
-            {
-              filterType: 'include',
-              filterValue: JSON.stringify({
-                investigationInstruments: 'instrument',
-              }),
-            },
-          ]),
-        {
-          wrapper: createReactQueryWrapper(),
-        }
-      );
-
-      await waitFor(() => result.current.isSuccess);
-
-      params.append('order', JSON.stringify('id asc'));
-      params.append(
-        'where',
-        JSON.stringify({
-          id: { eq: 1 },
-        })
-      );
-      params.append(
-        'include',
-        JSON.stringify({
-          investigationInstruments: 'instrument',
-        })
-      );
-
-      expect(axios.get).toHaveBeenCalledWith(
-        'https://example.com/api/investigations',
-        expect.objectContaining({
-          params,
-        })
-      );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
-        params.toString()
-      );
-      expect(result.current.data).toEqual([mockData[0]]);
-    });
-
-    it('sends axios request to fetch ids and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
-        message: 'Test error',
-      });
-      const { result, waitFor } = renderHook(() => useInvestigation(1), {
-        wrapper: createReactQueryWrapper(),
-      });
-
-      await waitFor(() => result.current.isError);
-
-      expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
-    });
+    vi.mocked(handleICATError).mockClear();
+    vi.mocked(axios.get).mockClear();
+    vi.useRealTimers();
   });
 
   describe('useInvestigationsPaginated', () => {
     it('sends axios request to fetch paginated investigations and returns successful response', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: mockData,
       });
 
-      const { result, waitFor, rerender } = renderHook(
+      const { result } = renderHook(
         () =>
           useInvestigationsPaginated([
             {
@@ -144,7 +80,7 @@ describe('investigation api functions', () => {
         }
       );
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       params.append('order', JSON.stringify('name asc'));
       params.append('order', JSON.stringify('title desc'));
@@ -170,28 +106,29 @@ describe('investigation api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data).toEqual(mockData);
 
-      // test that order of sort object triggers new query
-      history.push(
-        '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
-      );
-      rerender();
+      act(() => {
+        // test that order of sort object triggers new query
+        history.push(
+          '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
+        );
+      });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      expect(axios.get as jest.Mock).toHaveBeenCalledTimes(2);
+      expect(vi.mocked(axios.get)).toHaveBeenCalledTimes(2);
     });
 
     it('sends axios request to fetch paginated investigations and returns successful response when ignoreIDSort is true', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: mockData,
       });
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           useInvestigationsPaginated(
             [
@@ -209,7 +146,7 @@ describe('investigation api functions', () => {
         }
       );
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       params.append('order', JSON.stringify('name asc'));
       params.append('order', JSON.stringify('title desc'));
@@ -234,24 +171,21 @@ describe('investigation api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data).toEqual(mockData);
     });
 
     it('sends axios request to fetch paginated investigations and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
-      const { result, waitFor } = renderHook(
-        () => useInvestigationsPaginated(),
-        {
-          wrapper: createReactQueryWrapper(),
-        }
-      );
+      const { result } = renderHook(() => useInvestigationsPaginated(), {
+        wrapper: createReactQueryWrapper(),
+      });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       params.append('order', JSON.stringify('id asc'));
       params.append('skip', JSON.stringify(0));
@@ -263,7 +197,7 @@ describe('investigation api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
@@ -272,13 +206,13 @@ describe('investigation api functions', () => {
 
   describe('useInvestigationsInfinite', () => {
     it('sends axios request to fetch infinite investigations and returns successful response', async () => {
-      (axios.get as jest.Mock).mockImplementation((url, options) =>
+      vi.mocked(axios.get).mockImplementation((url, options) =>
         options.params.get('skip') === '0'
           ? Promise.resolve({ data: mockData[0] })
           : Promise.resolve({ data: mockData[1] })
       );
 
-      const { result, waitFor, rerender } = renderHook(
+      const { result } = renderHook(
         () =>
           useInvestigationsInfinite([
             {
@@ -293,7 +227,7 @@ describe('investigation api functions', () => {
         }
       );
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       params.append('order', JSON.stringify('name asc'));
       params.append('order', JSON.stringify('title desc'));
@@ -319,18 +253,16 @@ describe('investigation api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data.pages).toStrictEqual([mockData[0]]);
 
-      result.current.fetchNextPage({
+      await result.current.fetchNextPage({
         pageParam: { startIndex: 50, stopIndex: 74 },
       });
 
-      await waitFor(() => result.current.isFetching);
-
-      await waitFor(() => !result.current.isFetching);
+      await waitFor(() => expect(result.current.isFetching).toBe(false));
 
       expect(axios.get).toHaveBeenNthCalledWith(
         2,
@@ -341,7 +273,7 @@ describe('investigation api functions', () => {
       );
       params.set('skip', JSON.stringify(50));
       params.set('limit', JSON.stringify(25));
-      expect((axios.get as jest.Mock).mock.calls[1][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[1][1].params.toString()).toBe(
         params.toString()
       );
 
@@ -350,25 +282,26 @@ describe('investigation api functions', () => {
         mockData[1],
       ]);
 
-      // test that order of sort object triggers new query
-      history.push(
-        '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}'
-      );
-      rerender();
+      act(() => {
+        // test that order of sort object triggers new query
+        history.push(
+          '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}'
+        );
+      });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      expect(axios.get as jest.Mock).toHaveBeenCalledTimes(3);
+      expect(vi.mocked(axios.get)).toHaveBeenCalledTimes(3);
     });
 
     it('sends axios request to fetch infinite investigations and returns successful response when ignoreIDSort is true', async () => {
-      (axios.get as jest.Mock).mockImplementation((url, options) =>
+      vi.mocked(axios.get).mockImplementation((url, options) =>
         options.params.get('skip') === '0'
           ? Promise.resolve({ data: mockData[0] })
           : Promise.resolve({ data: mockData[1] })
       );
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           useInvestigationsInfinite(
             [
@@ -386,7 +319,7 @@ describe('investigation api functions', () => {
         }
       );
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       params.append('order', JSON.stringify('name asc'));
       params.append('order', JSON.stringify('title desc'));
@@ -411,18 +344,16 @@ describe('investigation api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data.pages).toStrictEqual([mockData[0]]);
 
-      result.current.fetchNextPage({
+      await result.current.fetchNextPage({
         pageParam: { startIndex: 50, stopIndex: 74 },
       });
 
-      await waitFor(() => result.current.isFetching);
-
-      await waitFor(() => !result.current.isFetching);
+      await waitFor(() => expect(result.current.isFetching).toBe(false));
 
       expect(axios.get).toHaveBeenNthCalledWith(
         2,
@@ -433,7 +364,7 @@ describe('investigation api functions', () => {
       );
       params.set('skip', JSON.stringify(50));
       params.set('limit', JSON.stringify(25));
-      expect((axios.get as jest.Mock).mock.calls[1][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[1][1].params.toString()).toBe(
         params.toString()
       );
 
@@ -444,17 +375,14 @@ describe('investigation api functions', () => {
     });
 
     it('sends axios request to fetch infinite investigations and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
-      const { result, waitFor } = renderHook(
-        () => useInvestigationsInfinite(),
-        {
-          wrapper: createReactQueryWrapper(),
-        }
-      );
+      const { result } = renderHook(() => useInvestigationsInfinite(), {
+        wrapper: createReactQueryWrapper(),
+      });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       params.append('order', JSON.stringify('id asc'));
       params.append('skip', JSON.stringify(0));
@@ -466,7 +394,7 @@ describe('investigation api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
@@ -475,11 +403,11 @@ describe('investigation api functions', () => {
 
   describe('useInvestigationCount', () => {
     it('sends axios request to fetch investigation count and returns successful response', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: mockData.length,
       });
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           useInvestigationCount([
             {
@@ -492,7 +420,7 @@ describe('investigation api functions', () => {
         }
       );
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       params.append(
         'where',
@@ -508,21 +436,21 @@ describe('investigation api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data).toEqual(mockData.length);
     });
 
     it('sends axios request to fetch investigation count and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
+      vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
-      const { result, waitFor } = renderHook(() => useInvestigationCount(), {
+      const { result } = renderHook(() => useInvestigationCount(), {
         wrapper: createReactQueryWrapper(),
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/api/investigations/count',
@@ -530,7 +458,7 @@ describe('investigation api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
@@ -539,20 +467,21 @@ describe('investigation api functions', () => {
 
   describe('useInvestigationDetails', () => {
     it('sends axios request to fetch investigation details and returns successful response', async () => {
-      (axios.get as jest.Mock).mockResolvedValue({
+      vi.mocked(axios.get).mockResolvedValue({
         data: [mockData[0]],
       });
 
-      const { result, waitFor } = renderHook(() => useInvestigationDetails(1), {
+      const { result } = renderHook(() => useInvestigationDetails(1), {
         wrapper: createReactQueryWrapper(),
       });
 
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
+      params.append('order', JSON.stringify('id asc'));
       params.append(
         'where',
         JSON.stringify({
-          id: { eq: 1 },
+          id: { eq: '1' },
         })
       );
       params.append(
@@ -571,30 +500,29 @@ describe('investigation api functions', () => {
           params,
         })
       );
-      expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data).toEqual(mockData[0]);
     });
 
     it('sends axios request to fetch investigation details and calls handleICATError on failure', async () => {
-      (axios.get as jest.Mock).mockRejectedValue({
-        message: 'Test error',
-      });
-      const { result, waitFor } = renderHook(() => useInvestigationDetails(1), {
+      const error = axios.AxiosError.from(new Error('Test error'));
+      vi.mocked(axios.get).mockRejectedValue(error);
+      const { result } = renderHook(() => useInvestigationDetails(1), {
         wrapper: createReactQueryWrapper(),
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
+      expect(handleICATError).toHaveBeenCalledWith(error);
     });
   });
 
   describe('downloadInvestigation', () => {
     it('clicks on IDS link upon downloadInvestigation action', async () => {
-      jest.spyOn(document, 'createElement');
-      jest.spyOn(document.body, 'appendChild');
+      vi.spyOn(document, 'createElement');
+      vi.spyOn(document.body, 'appendChild');
 
       downloadInvestigation('https://www.example.com/ids', 1, 'test');
 

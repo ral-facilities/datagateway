@@ -1,21 +1,22 @@
-import {
-  Assessment,
-  CalendarToday,
-  Fingerprint,
-  Public,
-  Save,
-  Subject,
-} from '@mui/icons-material';
+import Assessment from '@mui/icons-material/Assessment';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import Fingerprint from '@mui/icons-material/Fingerprint';
+import Public from '@mui/icons-material/Public';
+import Save from '@mui/icons-material/Save';
+import Subject from '@mui/icons-material/Subject';
 import {
   ColumnType,
-  externalSiteLink,
+  DetailsPanelProps,
   FACILITY_NAME,
-  formatBytes,
-  Investigation,
   ISISInvestigationDetailsPanel,
+  Investigation,
+  ConnectedTable as Table,
+  buildDatasetTableUrlForInvestigation,
+  buildInvestigationLandingUrl,
+  externalSiteLink,
+  formatBytes,
   parseSearchToQuery,
   readSciGatewayToken,
-  Table,
   tableLink,
   useAddToCart,
   useCart,
@@ -27,10 +28,6 @@ import {
   useSort,
   useTextFilter,
 } from 'datagateway-common';
-import {
-  buildDatasetTableUrlForInvestigation,
-  buildInvestigationLandingUrl,
-} from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
@@ -39,8 +36,8 @@ import { IndexRange, TableCellProps } from 'react-virtualized';
 import { StateType } from '../../../state/app.types';
 
 const ISISMyDataTable = (): React.ReactElement => {
-  const selectAllSetting = useSelector(
-    (state: StateType) => state.dgdataview.selectAllSetting
+  const disableSelectAll = useSelector(
+    (state: StateType) => state.dgcommon.features?.disableSelectAll ?? false
   );
   const location = useLocation();
   const { push } = useHistory();
@@ -94,7 +91,7 @@ const ISISMyDataTable = (): React.ReactElement => {
     undefined,
     isMounted
   );
-  const { data: allIds, isLoading: allIdsLoading } = useIds(
+  const { data: allIds, isInitialLoading: allIdsLoading } = useIds(
     'investigation',
     [
       {
@@ -104,7 +101,7 @@ const ISISMyDataTable = (): React.ReactElement => {
         }),
       },
     ],
-    selectAllSetting
+    !disableSelectAll
   );
   const { data: cartItems, isLoading: cartLoading } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } =
@@ -119,11 +116,10 @@ const ISISMyDataTable = (): React.ReactElement => {
           (cartItem) =>
             cartItem.entityType === 'investigation' &&
             // if select all is disabled, it's safe to just pass the whole cart as selectedRows
-            (!selectAllSetting ||
-              (allIds && allIds.includes(cartItem.entityId)))
+            (disableSelectAll || (allIds && allIds.includes(cartItem.entityId)))
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, selectAllSetting, allIds]
+    [cartItems, disableSelectAll, allIds]
   );
 
   /* istanbul ignore next */
@@ -148,24 +144,25 @@ const ISISMyDataTable = (): React.ReactElement => {
     [fetchNextPage]
   );
 
-  const detailsPanel = React.useCallback(
-    ({ rowData, detailsPanelResize }) => {
-      const datasetTableUrl = buildDatasetTableUrlForInvestigation({
-        facilityName: FACILITY_NAME.isis,
-        investigation: rowData as Investigation,
-      });
-      return (
-        <ISISInvestigationDetailsPanel
-          rowData={rowData}
-          detailsPanelResize={detailsPanelResize}
-          viewDatasets={() => {
-            if (datasetTableUrl) push(datasetTableUrl);
-          }}
-        />
-      );
-    },
-    [push]
-  );
+  const detailsPanel: React.ComponentType<DetailsPanelProps> =
+    React.useCallback(
+      ({ rowData, detailsPanelResize }) => {
+        const datasetTableUrl = buildDatasetTableUrlForInvestigation({
+          facilityName: FACILITY_NAME.isis,
+          investigation: rowData as Investigation,
+        });
+        return (
+          <ISISInvestigationDetailsPanel
+            rowData={rowData}
+            detailsPanelResize={detailsPanelResize}
+            viewDatasets={() => {
+              if (datasetTableUrl) push(datasetTableUrl);
+            }}
+          />
+        );
+      },
+      [push]
+    );
 
   const columns: ColumnType[] = React.useMemo(
     () => [
@@ -284,7 +281,6 @@ const ISISMyDataTable = (): React.ReactElement => {
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}
-      disableSelectAll={!selectAllSetting}
       detailsPanel={detailsPanel}
       columns={columns}
     />

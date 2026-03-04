@@ -93,13 +93,13 @@ describe('Admin Download Status', () => {
     cy.contains('[role="button"]', 'Availability').click({ shiftKey: true });
     cy.get('[aria-sort="ascending"]').should('have.length', 2);
 
-    cy.get('[aria-rowindex="2"] [aria-colindex="6"]').should(
+    cy.get('[aria-rowindex="1"] [aria-colindex="6"]').should(
       'have.text',
       'Available'
     );
-    cy.get('[aria-rowindex="3"] [aria-colindex="6"]').should(
+    cy.get('[aria-rowindex="4"] [aria-colindex="6"]').should(
       'have.text',
-      'Expired'
+      'Restoring from tape'
     );
 
     // should replace previous sort when clicked without shift
@@ -174,7 +174,7 @@ describe('Admin Download Status', () => {
 
     cy.get('@methodFilter')
       .parent()
-      .findByRole('button', { name: 'include, exclude or exact' })
+      .findByRole('combobox', { name: 'include, exclude or exact' })
       .as('methodFilterOptionsButton')
       .click();
 
@@ -237,7 +237,7 @@ describe('Admin Download Status', () => {
       .first()
       .click();
 
-    cy.findByRole('button', { name: /Filter by Deleted/ }).as(
+    cy.findByRole('combobox', { name: 'Filter by Deleted' }).as(
       'isDeletedFilter'
     );
     cy.get('@isDeletedFilter').click();

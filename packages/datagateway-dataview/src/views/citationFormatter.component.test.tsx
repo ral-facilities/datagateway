@@ -1,20 +1,19 @@
-import React from 'react';
-import CitationFormatter from './citationFormatter.component';
-import axios from 'axios';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   render,
-  type RenderResult,
   screen,
   waitFor,
   within,
+  type RenderResult,
 } from '@testing-library/react';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
+import axios from 'axios';
+import React from 'react';
+import CitationFormatter from './citationFormatter.component';
 
 describe('Citation formatter component tests', () => {
   let queryClient: QueryClient;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
 
   const props = {
     doi: 'test',
@@ -46,7 +45,7 @@ describe('Citation formatter component tests', () => {
   });
 
   afterEach(() => {
-    (axios.get as jest.Mock).mockClear();
+    vi.mocked(axios.get).mockClear();
   });
 
   it('renders correctly', async () => {
@@ -111,7 +110,7 @@ describe('Citation formatter component tests', () => {
   });
 
   it('sends axios request to fetch a formatted citation when a format is selected', async () => {
-    (axios.get as jest.Mock).mockResolvedValue({
+    vi.mocked(axios.get).mockResolvedValue({
       data: 'This is a test',
     });
 
@@ -123,7 +122,7 @@ describe('Citation formatter component tests', () => {
         await screen.findByLabelText(
           'datapublications.details.citation_formatter.select_arialabel'
         )
-      ).getByRole('button')
+      ).getByRole('combobox')
     );
     // then select the format2 option
     await user.click(await screen.findByRole('option', { name: 'format2' }));
@@ -139,7 +138,7 @@ describe('Citation formatter component tests', () => {
         params,
       })
     );
-    expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+    expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
       params.toString()
     );
 
@@ -155,7 +154,7 @@ describe('Citation formatter component tests', () => {
     renderComponent(props);
 
     // Mock the clipboard object
-    const testWriteText = jest.spyOn(navigator.clipboard, 'writeText');
+    const testWriteText = vi.spyOn(navigator.clipboard, 'writeText');
 
     expect(
       await screen.findByText(
@@ -180,9 +179,9 @@ describe('Citation formatter component tests', () => {
   });
 
   it('displays error message when axios request to fetch a formatted citation fails', async () => {
-    console.error = jest.fn();
+    console.error = vi.fn();
 
-    (axios.get as jest.Mock).mockRejectedValueOnce({
+    vi.mocked(axios.get).mockRejectedValueOnce({
       message: 'error',
     });
 
@@ -194,7 +193,7 @@ describe('Citation formatter component tests', () => {
         await screen.findByLabelText(
           'datapublications.details.citation_formatter.select_arialabel'
         )
-      ).getByRole('button')
+      ).getByRole('combobox')
     );
     // then select the format2 option
     await user.click(await screen.findByRole('option', { name: 'format2' }));
@@ -210,7 +209,7 @@ describe('Citation formatter component tests', () => {
         params,
       })
     );
-    expect((axios.get as jest.Mock).mock.calls[0][1].params.toString()).toBe(
+    expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
       params.toString()
     );
 
@@ -227,12 +226,12 @@ describe('Citation formatter component tests', () => {
   });
 
   it('displays loading spinner while waiting for a response from DataCite', async () => {
-    console.error = jest.fn();
+    console.error = vi.fn();
 
     let reject = (): void => {
       // no-op
     };
-    (axios.get as jest.Mock).mockReturnValueOnce(
+    vi.mocked(axios.get).mockReturnValueOnce(
       new Promise((_, _reject) => {
         reject = _reject;
       })
@@ -246,7 +245,7 @@ describe('Citation formatter component tests', () => {
         await screen.findByLabelText(
           'datapublications.details.citation_formatter.select_arialabel'
         )
-      ).getByRole('button')
+      ).getByRole('combobox')
     );
     // then select the format2 option
     await user.click(await screen.findByRole('option', { name: 'format2' }));

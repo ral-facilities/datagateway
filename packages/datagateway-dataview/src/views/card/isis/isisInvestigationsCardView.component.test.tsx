@@ -1,37 +1,33 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  act,
+  render,
+  screen,
+  within,
+  type RenderResult,
+} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import axios, { type AxiosResponse } from 'axios';
 import { dGCommonInitialState, type Investigation } from 'datagateway-common';
-import * as React from 'react';
+import { createMemoryHistory, type History } from 'history';
 import { Provider } from 'react-redux';
-import { generatePath, Router } from 'react-router-dom';
+import { Router, generatePath } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import type { MockInstance } from 'vitest';
+import { paths } from '../../../page/pageContainer.component';
+import { flushPromises } from '../../../setupTests';
 import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import ISISInvestigationsCardView from './isisInvestigationsCardView.component';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { createMemoryHistory, type History } from 'history';
-import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
-  flushPromises,
-} from '../../../setupTests';
-import {
-  render,
-  type RenderResult,
-  screen,
-  within,
-} from '@testing-library/react';
-import type { UserEvent } from '@testing-library/user-event/setup/setup';
-import userEvent from '@testing-library/user-event';
-import axios, { type AxiosResponse } from 'axios';
-import { paths } from '../../../page/pageContainer.component';
 
 describe('ISIS Investigations - Card View', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let cardData: Investigation[];
   let history: History;
-  let replaceSpy: jest.SpyInstance;
-  let user: UserEvent;
+  let replaceSpy: MockInstance;
+  let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult =>
     render(
@@ -107,7 +103,7 @@ describe('ISIS Investigations - Card View', () => {
           },
           {
             id: 3,
-            role: 'principal_experimenter',
+            role: 'PI',
             user: { id: 3, name: 'testpi', fullName: 'Test PI' },
           },
         ],
@@ -121,7 +117,7 @@ describe('ISIS Investigations - Card View', () => {
         }),
       ],
     });
-    replaceSpy = jest.spyOn(history, 'replace');
+    replaceSpy = vi.spyOn(history, 'replace');
     user = userEvent.setup();
 
     state = JSON.parse(
@@ -131,7 +127,7 @@ describe('ISIS Investigations - Card View', () => {
       })
     );
 
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/\/investigations\/count$/.test(url)) {
@@ -162,11 +158,11 @@ describe('ISIS Investigations - Card View', () => {
       });
 
     // Prevent error logging
-    window.scrollTo = jest.fn();
+    window.scrollTo = vi.fn();
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders investigations as cards', async () => {
@@ -203,7 +199,7 @@ describe('ISIS Investigations - Card View', () => {
   });
 
   it('renders no card if no investigation is returned', async () => {
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/\/investigations\/count$/.test(url)) {
@@ -234,7 +230,10 @@ describe('ISIS Investigations - Card View', () => {
       });
 
     renderComponent();
-    await flushPromises();
+
+    await act(async () => {
+      await flushPromises();
+    });
 
     expect(screen.queryAllByTestId('card')).toHaveLength(0);
   });
@@ -276,8 +275,6 @@ describe('ISIS Investigations - Card View', () => {
   });
 
   it('updates filter query params on date filter', async () => {
-    applyDatePickerWorkaround();
-
     renderComponent();
 
     // click on button to show advanced filters
@@ -301,8 +298,6 @@ describe('ISIS Investigations - Card View', () => {
     await user.keyboard('{Delete}');
 
     expect(history.location.search).toBe('?');
-
-    cleanupDatePickerWorkaround();
   });
 
   it('displays the correct user as the PI ', async () => {
@@ -310,17 +305,20 @@ describe('ISIS Investigations - Card View', () => {
     expect(await screen.findByText('Test PI')).toBeInTheDocument();
   });
 
-  it('uses default sort', () => {
+  it('uses default sort', async () => {
     renderComponent();
+
+    expect(await screen.findByTestId('card')).toBeInTheDocument();
+
     expect(history.length).toBe(1);
     expect(replaceSpy).toHaveBeenCalledWith({
       search: `?sort=${encodeURIComponent('{"startDate":"desc"}')}`,
     });
 
     // check that the data request is sent only once after mounting
-    const datafilesCalls = (axios.get as jest.Mock).mock.calls.filter(
-      (call) => call[0] === '/investigations'
-    );
+    const datafilesCalls = vi
+      .mocked(axios.get)
+      .mock.calls.filter((call) => call[0] === '/investigations');
     expect(datafilesCalls).toHaveLength(1);
   });
 

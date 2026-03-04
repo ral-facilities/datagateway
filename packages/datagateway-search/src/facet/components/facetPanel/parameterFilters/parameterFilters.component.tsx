@@ -7,7 +7,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { Add } from '@mui/icons-material';
+import Add from '@mui/icons-material/Add';
 import type {
   DatasearchType,
   NestedFilter,

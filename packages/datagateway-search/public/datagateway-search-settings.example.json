@@ -4,7 +4,11 @@
   "apiUrl": "example.api.url",
   "downloadApiUrl": "example.download.api.url",
   "icatUrl": "example.icat.url",
-  "selectAllSetting": true,
+  "features": {
+    "disableAnonDownload": false,
+    "disableSelectAll": false
+  },
+  "anonUserName": "anon/anon",
   "searchableEntities": ["investigation", "dataset", "datafile"],
   "maxNumResults": 300,
   "helpSteps": [

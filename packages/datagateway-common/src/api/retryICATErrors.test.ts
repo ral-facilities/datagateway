@@ -1,11 +1,11 @@
 import { AxiosError } from 'axios';
 import { useRetryICATErrors } from './retryICATErrors';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { createReactQueryWrapper } from '../setupTests';
-import { QueryClient } from 'react-query';
+import { QueryClient } from '@tanstack/react-query';
 
 // have to unmock here as we mock "globally" in setupTests.tsx
-jest.unmock('./retryICATErrors');
+vi.unmock('./retryICATErrors');
 
 describe('retryICATErrors', () => {
   let error: AxiosError;
@@ -30,7 +30,7 @@ describe('retryICATErrors', () => {
       },
       name: 'Test error name',
       message: 'Test error message',
-      toJSON: jest.fn(),
+      toJSON: vi.fn(),
     };
   });
 

@@ -1,25 +1,25 @@
-import * as React from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  render,
+  screen,
+  waitFor,
+  type RenderResult,
+} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
+import { Provider } from 'react-redux';
+import { MemoryRouter } from 'react-router-dom';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { DownloadCartItem } from '../app.types';
+import * as parseTokens from '../parseTokens';
+import { StateType } from '../state/app.types';
+import { initialState as dGCommonInitialState } from '../state/reducers/dgcommon.reducer';
 import AddToCartButton, {
   AddToCartButtonProps,
 } from './addToCartButton.component';
-import configureStore from 'redux-mock-store';
-import { initialState as dGCommonInitialState } from '../state/reducers/dgcommon.reducer';
-import { StateType } from '../state/app.types';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
-import { MemoryRouter } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import axios, { AxiosResponse } from 'axios';
-import {
-  render,
-  type RenderResult,
-  screen,
-  waitFor,
-} from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { DownloadCartItem } from '../app.types';
 
-jest.mock('../handleICATError');
+vi.mock('../handleICATError');
 
 describe('Generic add to cart button', () => {
   const mockStore = configureStore([thunk]);
@@ -33,7 +33,18 @@ describe('Generic add to cart button', () => {
     return render(
       <Provider store={store}>
         <MemoryRouter>
-          <QueryClientProvider client={new QueryClient()}>
+          <QueryClientProvider
+            client={
+              new QueryClient({
+                // silence react-query errors
+                logger: {
+                  log: console.log,
+                  warn: console.warn,
+                  error: vi.fn(),
+                },
+              })
+            }
+          >
             <AddToCartButton {...props} />
           </QueryClientProvider>
         </MemoryRouter>
@@ -57,7 +68,7 @@ describe('Generic add to cart button', () => {
     holder.setAttribute('id', 'datagateway-dataview');
     document.body.appendChild(holder);
 
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/.*\/user\/cart\/.*$/.test(url)) {
@@ -68,7 +79,7 @@ describe('Generic add to cart button', () => {
         return Promise.reject(`Endpoint not mocked: ${url}`);
       });
 
-    axios.post = jest
+    axios.post = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (/.*\/user\/cart\/.*\/cartItems/.test(url)) {
@@ -82,7 +93,7 @@ describe('Generic add to cart button', () => {
 
   afterEach(() => {
     document.body.removeChild(holder);
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly', async () => {
@@ -97,8 +108,34 @@ describe('Generic add to cart button', () => {
     ).toBeInTheDocument();
   });
 
+  it('renders as disabled when logged in as anon and disableAnonDownload is true', async () => {
+    state.dgcommon.features = { disableAnonDownload: true };
+    vi.spyOn(parseTokens, 'readSciGatewayToken').mockReturnValue({
+      username: 'anon/anon',
+      sessionId: 'abcdef',
+    });
+
+    renderComponent({
+      allIds: [1],
+      entityId: 1,
+      entityType: 'investigation',
+    });
+
+    const addToCartButton = await screen.findByRole('button', {
+      name: 'buttons.add_to_cart',
+    });
+
+    expect(addToCartButton).toBeDisabled();
+
+    await user.hover(addToCartButton.parentElement);
+
+    expect(
+      await screen.findByText('buttons.disallow_anon_tooltip')
+    ).toBeInTheDocument();
+  });
+
   it('renders as disabled when cart is loading', async () => {
-    axios.get = jest.fn().mockReturnValue(
+    axios.get = vi.fn().mockReturnValue(
       new Promise((_) => {
         // never resolve the promise to pretend the query is loading
       })
@@ -124,7 +161,7 @@ describe('Generic add to cart button', () => {
   });
 
   it('renders as disabled with tooltip when cart does not load', async () => {
-    axios.get = jest.fn().mockRejectedValue({
+    axios.get = vi.fn().mockRejectedValue({
       message: 'Test error message',
     });
 
@@ -192,7 +229,7 @@ describe('Generic add to cart button', () => {
       ).not.toBeDisabled();
     });
 
-    axios.post = jest.fn().mockResolvedValue({
+    axios.post = vi.fn().mockResolvedValue({
       data: {
         cartItems: [
           {
@@ -213,7 +250,7 @@ describe('Generic add to cart button', () => {
   });
 
   it('calls removeFromCart on button press with item already in cart', async () => {
-    axios.get = jest.fn().mockResolvedValue({
+    axios.get = vi.fn().mockResolvedValue({
       data: {
         cartItems: [
           {
@@ -237,7 +274,7 @@ describe('Generic add to cart button', () => {
       await screen.findByRole('button', { name: 'buttons.remove_from_cart' })
     ).toBeInTheDocument();
 
-    axios.post = jest.fn().mockResolvedValue({
+    axios.post = vi.fn().mockResolvedValue({
       data: {
         cartItems: [],
       },

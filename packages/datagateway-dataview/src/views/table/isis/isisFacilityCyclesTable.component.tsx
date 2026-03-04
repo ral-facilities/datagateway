@@ -1,20 +1,21 @@
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import Subject from '@mui/icons-material/Subject';
 import {
   ColumnType,
   FacilityCycle,
+  ConnectedTable as Table,
   parseSearchToQuery,
+  tableLink,
+  useDateFilter,
   useFacilityCycleCount,
   useFacilityCyclesInfinite,
   useSort,
   useTextFilter,
-  useDateFilter,
-  Table,
-  tableLink,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { IndexRange, TableCellProps } from 'react-virtualized';
 import { useLocation } from 'react-router-dom';
-import { Subject, CalendarToday } from '@mui/icons-material';
+import { IndexRange, TableCellProps } from 'react-virtualized';
 
 interface ISISFacilityCyclesTableProps {
   instrumentId: string;

@@ -3,7 +3,6 @@ import {
   DownloadCartItem,
   Investigation,
 } from 'datagateway-common';
-import * as React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
@@ -11,19 +10,14 @@ import thunk from 'redux-thunk';
 import type { StateType } from '../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../state/reducers/dgdataview.reducer';
 import InvestigationCardView from './investigationCardView.component';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createMemoryHistory, type History } from 'history';
-import {
-  applyDatePickerWorkaround,
-  cleanupDatePickerWorkaround,
-} from '../../setupTests';
 import {
   render,
   type RenderResult,
   screen,
   within,
 } from '@testing-library/react';
-import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 
@@ -32,7 +26,7 @@ describe('Investigation - Card View', () => {
   let state: StateType;
   let cardData: Investigation[];
   let history: History;
-  let user: UserEvent;
+  let user: ReturnType<typeof userEvent.setup>;
   let cartItems: DownloadCartItem[];
 
   const renderComponent = (): RenderResult =>
@@ -72,7 +66,7 @@ describe('Investigation - Card View', () => {
       })
     );
 
-    axios.get = jest
+    axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
         if (url.includes('/investigations/count')) {
@@ -97,11 +91,11 @@ describe('Investigation - Card View', () => {
       });
 
     // Prevent error logging
-    window.scrollTo = jest.fn();
+    window.scrollTo = vi.fn();
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders investigations as cards', async () => {
@@ -245,8 +239,6 @@ describe('Investigation - Card View', () => {
   });
 
   it('updates filter query params on date filter', async () => {
-    applyDatePickerWorkaround();
-
     renderComponent();
 
     await user.click(
@@ -269,8 +261,6 @@ describe('Investigation - Card View', () => {
     await user.keyboard('{Delete}');
 
     expect(history.location.search).toBe('?');
-
-    cleanupDatePickerWorkaround();
   });
 
   it('updates sort query params on sort', async () => {

@@ -1,31 +1,26 @@
-import * as React from 'react';
-import DatasetSearchTable from './datasetSearchTable.component';
-import { initialState } from '../state/reducers/dgsearch.reducer';
-import configureStore from 'redux-mock-store';
-import type { StateType } from '../state/app.types';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
+  render,
+  screen,
+  waitFor,
+  within,
+  type RenderResult,
+} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import axios, { AxiosRequestConfig, type AxiosResponse } from 'axios';
+import {
+  FACILITY_NAME,
   dGCommonInitialState,
   type DownloadCartItem,
   type LuceneSearchParams,
   type SearchResponse,
   type SearchResult,
-  FACILITY_NAME,
 } from 'datagateway-common';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
-import { QueryClient, QueryClientProvider } from 'react-query';
 import { createMemoryHistory, type History } from 'history';
+import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
-import {
-  render,
-  type RenderResult,
-  screen,
-  waitFor,
-  within,
-} from '@testing-library/react';
-import axios, { AxiosRequestConfig, type AxiosResponse } from 'axios';
-import { mockDataset } from '../testData';
-import userEvent from '@testing-library/user-event';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 import {
   findAllRows,
   findCellInRow,
@@ -33,6 +28,10 @@ import {
   findColumnIndexByName,
   queryAllRows,
 } from '../setupTests';
+import type { StateType } from '../state/app.types';
+import { initialState } from '../state/reducers/dgsearch.reducer';
+import { mockDataset } from '../testData';
+import DatasetSearchTable from './datasetSearchTable.component';
 
 // ====================== FIXTURES ======================
 
@@ -173,8 +172,8 @@ describe('Dataset table component', () => {
       results: mockSearchResults,
     };
 
-    axios.get = jest.fn().mockImplementation(mockAxiosGet);
-    axios.post = jest.fn().mockImplementation((url: string) => {
+    axios.get = vi.fn().mockImplementation(mockAxiosGet);
+    axios.post = vi.fn().mockImplementation((url: string) => {
       if (/.*\/user\/cart\/.*\/cartItems$/.test(url)) {
         return Promise.resolve({ data: { cartItems } });
       }
@@ -183,7 +182,7 @@ describe('Dataset table component', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('disables the search query if dataset search is disabled', async () => {
@@ -214,6 +213,10 @@ describe('Dataset table component', () => {
 
     expect(
       queryClient.getQueryState(['search', 'Dataset'], { exact: false })?.status
+    ).toBe('loading');
+    expect(
+      queryClient.getQueryState(['search', 'Dataset'], { exact: false })
+        ?.fetchStatus
     ).toBe('idle');
 
     expect(queryAllRows()).toHaveLength(0);
@@ -666,8 +669,8 @@ describe('Dataset table component', () => {
     expect(selectAllCheckbox).toHaveAttribute('data-indeterminate', 'false');
   });
 
-  it('no select all checkbox appears and no fetchAllIds sent if selectAllSetting is false', async () => {
-    state.dgsearch.selectAllSetting = false;
+  it('no select all checkbox appears and no fetchAllIds sent if disableSelectAll is true', async () => {
+    state.dgcommon.features = { disableSelectAll: true };
 
     renderComponent();
 
@@ -740,7 +743,7 @@ describe('Dataset table component', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders fine with incomplete data', () => {
+  it('renders fine with incomplete data', async () => {
     // this can happen when navigating between tables and the previous table's state still exists
     searchResponse = {
       results: [
@@ -755,6 +758,9 @@ describe('Dataset table component', () => {
     };
 
     expect(() => renderComponent()).not.toThrowError();
+    await waitFor(async () => {
+      expect(await findAllRows()).toHaveLength(1);
+    });
   });
 
   it('renders generic link correctly', async () => {

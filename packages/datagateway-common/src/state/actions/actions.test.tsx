@@ -1,10 +1,16 @@
-import { loadUrls, loadFacilityName, loadAccessMethods } from '.';
 import {
-  ConfigureURLsType,
-  ConfigureFacilityNameType,
-  ConfigureAccessMethodsType,
-} from './actions.types';
+  loadAnonUserName,
+  loadFacilityName,
+  loadFeatureSwitches,
+  loadUrls,
+} from '.';
 import { resetActions } from '../../setupTests';
+import {
+  ConfigureAnonUserNameType,
+  ConfigureFacilityNameType,
+  ConfigureFeatureSwitchesType,
+  ConfigureURLsType,
+} from './actions.types';
 
 describe('Actions', () => {
   afterEach(() => {
@@ -37,11 +43,19 @@ describe('Actions', () => {
     });
   });
 
-  it('given JSON loadAccessMethods returns a ConfigureAccessMethodsType with ConfigureAccessMethodsPayload', () => {
-    const action = loadAccessMethods({});
-    expect(action.type).toEqual(ConfigureAccessMethodsType);
+  it('given JSON loadFeatureSwitches returns a ConfigureFeatureSwitchesType with ConfigureFeatureSwitchesPayload', () => {
+    const action = loadFeatureSwitches({ disableAnonDownload: true });
+    expect(action.type).toEqual(ConfigureFeatureSwitchesType);
     expect(action.payload).toEqual({
-      accessMethods: {},
+      switches: { disableAnonDownload: true },
+    });
+  });
+
+  it('given JSON loadAnonUserName returns a ConfigureAnonUserNameType with ConfigureAnonUserNamePayload', () => {
+    const action = loadAnonUserName('anon');
+    expect(action.type).toEqual(ConfigureAnonUserNameType);
+    expect(action.payload).toEqual({
+      anonUserName: 'anon',
     });
   });
 });

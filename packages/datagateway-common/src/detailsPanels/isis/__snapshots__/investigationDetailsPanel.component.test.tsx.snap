@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Investigation details panel component should check if multiple publications result in change of title to plural version 1`] = `
+exports[`Investigation details panel component > should check if multiple publications result in change of title to plural version 1`] = `
 <DocumentFragment>
   <div
     data-testid="isis-investigation-details-panel"
@@ -11,7 +11,7 @@ exports[`Investigation details panel component should check if multiple publicat
       class="MuiTabs-root css-1ujnqem-MuiTabs-root"
     >
       <div
-        class="MuiTabs-scrollableX MuiTabs-hideScrollbar css-agdkjh-MuiTabs-scrollbarSize"
+        class="MuiTabs-scrollableX MuiTabs-hideScrollbar css-oqr85h"
         style="width: 99px; height: 99px; position: absolute; top: -9999px; overflow: scroll;"
       />
       <div
@@ -141,7 +141,7 @@ exports[`Investigation details panel component should check if multiple publicat
             class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
           >
             <a
-              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
+              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
               data-testid="investigation-details-panel-pid-link"
               href="https://doi.org/Data Publication Study Pid"
             >
@@ -161,7 +161,7 @@ exports[`Investigation details panel component should check if multiple publicat
             class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
           >
             <a
-              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
+              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
               data-testid="investigation-details-panel-doi-link"
               href="https://doi.org/doi 1"
             >
@@ -245,7 +245,7 @@ exports[`Investigation details panel component should check if multiple publicat
 </DocumentFragment>
 `;
 
-exports[`Investigation details panel component should check if multiple samples result in change of title to plural version 1`] = `
+exports[`Investigation details panel component > should check if multiple samples result in change of title to plural version 1`] = `
 <DocumentFragment>
   <div
     data-testid="isis-investigation-details-panel"
@@ -256,7 +256,7 @@ exports[`Investigation details panel component should check if multiple samples 
       class="MuiTabs-root css-1ujnqem-MuiTabs-root"
     >
       <div
-        class="MuiTabs-scrollableX MuiTabs-hideScrollbar css-agdkjh-MuiTabs-scrollbarSize"
+        class="MuiTabs-scrollableX MuiTabs-hideScrollbar css-oqr85h"
         style="width: 99px; height: 99px; position: absolute; top: -9999px; overflow: scroll;"
       />
       <div
@@ -386,7 +386,7 @@ exports[`Investigation details panel component should check if multiple samples 
             class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
           >
             <a
-              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
+              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
               data-testid="investigation-details-panel-pid-link"
               href="https://doi.org/Data Publication Study Pid"
             >
@@ -406,7 +406,7 @@ exports[`Investigation details panel component should check if multiple samples 
             class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
           >
             <a
-              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
+              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
               data-testid="investigation-details-panel-doi-link"
               href="https://doi.org/doi 1"
             >
@@ -490,7 +490,7 @@ exports[`Investigation details panel component should check if multiple samples 
 </DocumentFragment>
 `;
 
-exports[`Investigation details panel component should gracefully handles dataCollectionInvestigations without dataPublications and InvestigationUsers without Users 1`] = `
+exports[`Investigation details panel component > should gracefully handles dataCollectionInvestigations without dataPublications and InvestigationUsers without Users 1`] = `
 <DocumentFragment>
   <div
     data-testid="isis-investigation-details-panel"
@@ -501,7 +501,7 @@ exports[`Investigation details panel component should gracefully handles dataCol
       class="MuiTabs-root css-1ujnqem-MuiTabs-root"
     >
       <div
-        class="MuiTabs-scrollableX MuiTabs-hideScrollbar css-agdkjh-MuiTabs-scrollbarSize"
+        class="MuiTabs-scrollableX MuiTabs-hideScrollbar css-oqr85h"
         style="width: 99px; height: 99px; position: absolute; top: -9999px; overflow: scroll;"
       />
       <div
@@ -631,7 +631,7 @@ exports[`Investigation details panel component should gracefully handles dataCol
             class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
           >
             <a
-              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
+              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
               data-testid="investigation-details-panel-doi-link"
               href="https://doi.org/doi 1"
             >
@@ -693,7 +693,7 @@ exports[`Investigation details panel component should gracefully handles dataCol
 </DocumentFragment>
 `;
 
-exports[`Investigation details panel component should render correctly 1`] = `
+exports[`Investigation details panel component > should render correctly 1`] = `
 <DocumentFragment>
   <div
     data-testid="isis-investigation-details-panel"
@@ -704,7 +704,7 @@ exports[`Investigation details panel component should render correctly 1`] = `
       class="MuiTabs-root css-1ujnqem-MuiTabs-root"
     >
       <div
-        class="MuiTabs-scrollableX MuiTabs-hideScrollbar css-agdkjh-MuiTabs-scrollbarSize"
+        class="MuiTabs-scrollableX MuiTabs-hideScrollbar css-oqr85h"
         style="width: 99px; height: 99px; position: absolute; top: -9999px; overflow: scroll;"
       />
       <div
@@ -820,7 +820,7 @@ exports[`Investigation details panel component should render correctly 1`] = `
             class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
           >
             <a
-              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
+              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
               data-testid="investigation-details-panel-pid-link"
               href="https://doi.org/Data Publication Study Pid"
             >
@@ -840,7 +840,7 @@ exports[`Investigation details panel component should render correctly 1`] = `
             class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
           >
             <a
-              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
+              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
               data-testid="investigation-details-panel-doi-link"
               href="https://doi.org/doi 1"
             >
@@ -886,7 +886,7 @@ exports[`Investigation details panel component should render correctly 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Investigation details panel component should render user, sample and publication tabs when present in the data 1`] = `
+exports[`Investigation details panel component > should render user, sample and publication tabs when present in the data 1`] = `
 <DocumentFragment>
   <div
     data-testid="isis-investigation-details-panel"
@@ -897,7 +897,7 @@ exports[`Investigation details panel component should render user, sample and pu
       class="MuiTabs-root css-1ujnqem-MuiTabs-root"
     >
       <div
-        class="MuiTabs-scrollableX MuiTabs-hideScrollbar css-agdkjh-MuiTabs-scrollbarSize"
+        class="MuiTabs-scrollableX MuiTabs-hideScrollbar css-oqr85h"
         style="width: 99px; height: 99px; position: absolute; top: -9999px; overflow: scroll;"
       />
       <div
@@ -1055,7 +1055,7 @@ exports[`Investigation details panel component should render user, sample and pu
             class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
           >
             <a
-              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
+              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
               data-testid="investigation-details-panel-pid-link"
               href="https://doi.org/Data Publication Study Pid"
             >
@@ -1075,7 +1075,7 @@ exports[`Investigation details panel component should render user, sample and pu
             class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
           >
             <a
-              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
+              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
               data-testid="investigation-details-panel-doi-link"
               href="https://doi.org/doi 1"
             >

@@ -1,3 +1,5 @@
+import { FeatureSwitches, PluginRoute } from './state/actions/actions.types';
+
 // Parent app name and token in localstorage.
 export const MicroFrontendId = 'scigateway';
 export const MicroFrontendToken = `${MicroFrontendId}:token`;
@@ -13,6 +15,29 @@ export const FACILITY_NAME = {
 } as const;
 
 export type FacilityName = typeof FACILITY_NAME[keyof typeof FACILITY_NAME];
+
+export interface CommonSettings {
+  facilityName: string;
+  apiUrl: string;
+  downloadApiUrl: string;
+  idsUrl: string;
+  icatUrl: string;
+  routes: PluginRoute[];
+  helpSteps?: { target: string; content: string }[];
+  pluginHost?: string;
+  queryRetries?: number;
+}
+
+export interface DOISettings {
+  doiMinterUrl?: string;
+  dataCiteUrl?: string;
+  bioportalUrl?: string;
+}
+
+export type DataviewSearchCommonSettings = CommonSettings & {
+  features?: FeatureSwitches;
+  anonUserName?: string;
+};
 
 // TODO: type entities properly; DownloadCartItem does not
 //       include string indexing due to DownloadCartTableItem
@@ -101,6 +126,7 @@ export interface User {
   fullName?: string;
   email?: string;
   affiliation?: string;
+  orcidId?: string;
 }
 
 export interface Sample {
@@ -147,12 +173,12 @@ export interface InvestigationType {
 
 export interface DataCollectionDatafile {
   id: number;
-  datafile: Datafile;
+  datafile?: Datafile;
 }
 
 export interface DataCollectionDataset {
   id: number;
-  dataset: Dataset;
+  dataset?: Dataset;
 }
 
 export interface DataCollectionInvestigation {
@@ -169,15 +195,30 @@ export interface DataCollection {
   dataPublications?: DataPublication[];
 }
 
+export interface Affiliation {
+  id: number;
+  name: string;
+  user?: DataPublicationUser;
+}
+
 export interface DataPublicationUser {
   id: number;
   contributorType: string;
   fullName: string;
+  user?: User;
+  email?: string;
+  affiliations?: Affiliation[];
 }
 
 export interface DataPublicationType {
   id: number;
   name: string;
+}
+
+export interface DataPublicationDate {
+  id: number;
+  dateType: string;
+  date: string;
 }
 
 export interface DataPublication {
@@ -186,11 +227,35 @@ export interface DataPublication {
   title: string;
   facility?: Facility;
   description?: string;
-  publicationDate?: string;
+  publicationDate?: string | null;
   users?: DataPublicationUser[];
   content?: DataCollection;
   type?: DataPublicationType;
+  relatedItems?: RelatedItem[];
+  dates?: DataPublicationDate[];
 }
+
+/** The related identifier type that gets used in the related identifier picker component & what is sent to the doi minter api */
+export type RelatedIdentifier = Pick<
+  RelatedItem,
+  'title' | 'fullReference' | 'identifier'
+> & {
+  relationType: DOIRelationType | '';
+  relatedItemType?: DOIResourceType;
+  relatedIdentifierType: DOIIdentifierType;
+};
+
+/** The ICAT RelatedItem type */
+export type RelatedItem = {
+  title?: string;
+  fullReference?: string;
+  identifier: string;
+  relationType: DOIRelationType;
+  relatedItemType?: DOIResourceType;
+  id: number;
+  publication?: DataPublication;
+  createTime: string;
+};
 
 interface InstrumentScientist {
   id: number;
@@ -422,6 +487,14 @@ export interface SortType {
 
 export type ViewsType = 'table' | 'card' | null;
 
+export type DOIViewType =
+  | 'minter'
+  | 'user'
+  | 'session'
+  | 'openSession'
+  | 'closedSession'
+  | null;
+
 export interface QueryParams {
   sort: SortType;
   filters: FiltersType;
@@ -437,21 +510,295 @@ export interface QueryParams {
   endDate: Date | null;
   currentTab: string;
   restrict: boolean;
+  doiType: DOIViewType;
 }
 
-/**
- * Describes the status of a download type.
- */
-export interface DownloadTypeStatus {
+export enum ContributorType {
+  Minter = 'Minter',
+  Creator = 'Creator',
+  ContactPerson = 'ContactPerson',
+  DataCollector = 'DataCollector',
+  DataCurator = 'DataCurator',
+  DataManager = 'DataManager',
+  Distributor = 'Distributor',
+  Editor = 'Editor',
+  HostingInstitution = 'HostingInstitution',
+  Producer = 'Producer',
+  ProjectLeader = 'ProjectLeader',
+  ProjectManager = 'ProjectManager',
+  ProjectMember = 'ProjectMember',
+  RegistrationAgency = 'RegistrationAgency',
+  RelatedPerson = 'RelatedPerson',
+  Researcher = 'Researcher',
+  ResearchGroup = 'ResearchGroup',
+  RightsHolder = 'RightsHolder',
+  Sponsor = 'Sponsor',
+  Supervisor = 'Supervisor',
+  WorkPackageLeader = 'WorkPackageLeader',
+  Other = 'Other',
+}
+
+export enum DOIRelationType {
+  IsCitedBy = 'IsCitedBy',
+  Cites = 'Cites',
+  IsSupplementTo = 'IsSupplementTo',
+  IsSupplementedBy = 'IsSupplementedBy',
+  IsContinuedBy = 'IsContinuedBy',
+  Continues = 'Continues',
+  IsDescribedBy = 'IsDescribedBy',
+  Describes = 'Describes',
+  HasMetadata = 'HasMetadata',
+  IsMetadataFor = 'IsMetadataFor',
+  HasVersion = 'HasVersion',
+  IsVersionOf = 'IsVersionOf',
+  IsNewVersionOf = 'IsNewVersionOf',
+  IsPreviousVersionOf = 'IsPreviousVersionOf',
+  IsPartOf = 'IsPartOf',
+  HasPart = 'HasPart',
+  IsPublishedIn = 'IsPublishedIn',
+  IsReferencedBy = 'IsReferencedBy',
+  References = 'References',
+  IsDocumentedBy = 'IsDocumentedBy',
+  Documents = 'Documents',
+  IsCompiledBy = 'IsCompiledBy',
+  Compiles = 'Compiles',
+  IsVariantFormOf = 'IsVariantFormOf',
+  IsOriginalFormOf = 'IsOriginalFormOf',
+  IsIdenticalTo = 'IsIdenticalTo',
+  IsReviewedBy = 'IsReviewedBy',
+  Reviews = 'Reviews',
+  IsDerivedFrom = 'IsDerivedFrom',
+  IsSourceOf = 'IsSourceOf',
+  IsRequiredBy = 'IsRequiredBy',
+  Requires = 'Requires',
+  Obsoletes = 'Obsoletes',
+  IsObsoletedBy = 'IsObsoletedBy',
+  Collects = 'Collects',
+  IsCollectedBy = 'IsCollectedBy',
+}
+
+export enum DOIResourceType {
+  Audiovisual = 'Audiovisual',
+  Book = 'Book',
+  BookChapter = 'BookChapter',
+  Collection = 'Collection',
+  ComputationalNotebook = 'ComputationalNotebook',
+  ConferencePaper = 'ConferencePaper',
+  ConferenceProceeding = 'ConferenceProceeding',
+  DataPaper = 'DataPaper',
+  Dataset = 'Dataset',
+  Dissertation = 'Dissertation',
+  Event = 'Event',
+  Image = 'Image',
+  InteractiveResource = 'InteractiveResource',
+  Instrument = 'Instrument',
+  Journal = 'Journal',
+  JournalArticle = 'JournalArticle',
+  Model = 'Model',
+  OutputManagementPlan = 'OutputManagementPlan',
+  PeerReview = 'PeerReview',
+  PhysicalObject = 'PhysicalObject',
+  Preprint = 'Preprint',
+  Report = 'Report',
+  Service = 'Service',
+  Software = 'Software',
+  Sound = 'Sound',
+  Standard = 'Standard',
+  Text = 'Text',
+  Workflow = 'Workflow',
+  Other = 'Other',
+}
+
+export enum DOIIdentifierType {
+  ARK = 'ARK',
+  arXiv = 'arXiv',
+  bibcode = 'bibcode',
+  DOI = 'DOI',
+  EAN13 = 'EAN13',
+  EISSN = 'EISSN',
+  Handle = 'Handle',
+  IGSN = 'IGSN',
+  ISBN = 'ISBN',
+  ISSN = 'ISSN',
+  ISTC = 'ISTC',
+  LISSN = 'LISSN',
+  LSID = 'LSID',
+  PMID = 'PMID',
+  PURL = 'PURL',
+  UPC = 'UPC',
+  URL = 'URL',
+  URN = 'URN',
+  w3id = 'w3id',
+}
+
+export interface DOIMetadata {
+  title: string;
+  description: string;
+  creators?: { username: string; contributor_type: ContributorType }[];
+  related_items: RelatedIdentifier[];
+  subjects: DOISubject[];
+}
+
+export interface DOICreator {
+  name: string;
+  nameType: string;
+  givenName: string;
+  familyName: string;
+  nameIdentifiers: {
+    nameIdentifier: string;
+    nameIdentifierScheme: string;
+    schemeUri: string | null;
+  }[];
+  affiliation: (
+    | {
+        affiliationIdentifier: string | null;
+        affiliation: string;
+        affiliationIdentifierScheme: string | null;
+        schemeUri: string | null;
+      }
+    | string
+  )[];
+}
+
+export type DOIContributor = DOICreator & {
+  contributorType: Exclude<
+    ContributorType,
+    ContributorType.Creator | ContributorType.Minter
+  >;
+};
+
+export interface DOIRelatedIdentifier {
+  relatedIdentifier: string;
+  relatedIdentifierType: DOIIdentifierType;
+  relationType: DOIRelationType;
+  resourceTypeGeneral: DOIResourceType;
+  relatedMetadataScheme: null;
+  schemeUri: null;
+  schemeType: null;
+}
+
+export interface DOIRelatedItem {
+  relatedItemType: DOIResourceType;
+  relationType: DOIRelationType;
+  titles: {
+    title: string;
+  }[];
+}
+
+export interface DOISubject {
+  subject: string;
+  subjectScheme?: string | null;
+  schemeUri?: string | null;
+  valueUri?: string | null;
+  classificationCode?: string | null;
+}
+
+export interface DataCiteDOI {
+  id: string;
   type: string;
+  attributes: DataciteMetadata; // DataciteMetadata isn't the complete type of attributes here, just the attributes that are returned from the DOI api
+  relationships: unknown; // we don't use this so don't bother typing for now
+}
+
+export interface DataCiteResponse {
+  data: DataCiteDOI;
+}
+
+export interface DataciteMetadata {
+  publisher: {
+    name: string;
+    publisherIdentifier: string | null;
+    publisherIdentifierScheme: string | null;
+    schemeUri: string | null;
+  };
+  publicationYear: number;
+  dates: {
+    date: string;
+    dateType: string;
+    dateInformation: string | null;
+  }[];
+  types: {
+    resourceType: string;
+    resourceTypeGeneral: string;
+  };
+  rightsList: {
+    rights: string;
+    rightsUri: string | null;
+    rightsIdentifier: string | null;
+    rightsIdentifierScheme: string | null;
+    schemeUri: string | null;
+  }[];
+  geoLocations: {
+    geoLocationPlace: string | null;
+    geoLocationPoint: {
+      pointLatitude: number | null;
+      pointLongitude: number | null;
+    };
+  }[];
+  fundingReferences: {
+    funderName: string;
+    funderIdentifier: string | null;
+    funderIdentifierType: string | null;
+    schemeUri: string | null;
+    awardUri: string | null;
+    awardTitle: string | null;
+    awardNumber: string;
+  }[];
+  url: string;
+  identifiers: {
+    identifier: string;
+    identifierType: DOIIdentifierType;
+  }[];
+  creators: DOICreator[];
+  titles: {
+    title: string;
+  }[];
+  subjects: DOISubject[];
+  contributors: DOIContributor[];
+  language: string | null;
+  alternateIdentifiers: never[];
+  relatedIdentifiers: DOIRelatedIdentifier[];
+  sizes: string[];
+  formats: never[];
+  version: string;
+  descriptions: {
+    description: string;
+    descriptionType: string;
+  }[];
+  relatedItems: DOIRelatedItem[];
+  doi: string;
+}
+
+export interface DOIResponse {
+  concept: DOIResult;
+  version: DOIResult;
+}
+
+export type DOIDraftResponse = Pick<DOIResponse, 'concept'>;
+export type DOIDraftVersionResponse = Pick<DOIResponse, 'version'>;
+
+export interface DOIResult {
+  data_publication_id: string;
+  attributes: DataciteMetadata;
+}
+
+export interface AccessMethods {
+  [type: string]: DownloadTypeInfo;
+}
+
+export interface DownloadTypeInfo {
+  idsUrl: string;
+  displayName: string;
+  description: string;
   disabled: boolean;
   message: string;
 }
 
-export interface DownloadSettingsAccessMethod {
-  [type: string]: {
-    idsUrl: string;
-    displayName?: string;
-    description?: string;
+export interface BioPortalTerm {
+  prefLabel: string;
+  synonym?: string[];
+  '@id': string;
+  links: {
+    descendants: string;
   };
 }

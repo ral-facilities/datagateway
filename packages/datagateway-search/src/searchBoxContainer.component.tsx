@@ -1,15 +1,15 @@
-import React from 'react';
 import { Box, Grid, Link, styled, Theme, Typography } from '@mui/material';
-import SelectDates from './search/datePicker.component';
-import CheckboxesGroup from './search/checkBoxes.component';
-import SearchButton from './search/searchButton.component';
-import SearchTextBox from './search/searchTextBox.component';
-import AdvancedHelpDialogue from './search/advancedHelpDialogue.component';
+import { Location } from 'history';
+import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
-import SortSelectComponent from './search/sortSelect.component';
+import AdvancedHelpDialog from './search/advancedHelpDialog.component';
+import CheckboxesGroup from './search/checkBoxes.component';
+import SelectDates from './search/datePicker.component';
 import MyDataCheckBox from './search/myDataCheckBox.component';
-import { Location } from 'history';
+import SearchButton from './search/searchButton.component';
+import SearchTextBox from './search/searchTextBox.component';
+import SortSelectComponent from './search/sortSelect.component';
 
 const ContainerBox = styled(Box)(({ theme }) => ({
   maxWidth: '1920px',
@@ -134,7 +134,7 @@ const SearchBoxContainer = (
             </Link>
             .
           </Trans>{' '}
-          <AdvancedHelpDialogue />
+          <AdvancedHelpDialog />
         </Typography>
       </div>
     </ContainerBox>

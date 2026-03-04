@@ -1,4 +1,17 @@
+import AddIcon from '@mui/icons-material/Add';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import SortIcon from '@mui/icons-material/Sort';
+import {
+  Box,
+  Divider,
+  SxProps,
+  TableCell,
+  TableSortLabel,
+  Typography,
+} from '@mui/material';
 import React from 'react';
+import Draggable from 'react-draggable';
+import { TableHeaderProps } from 'react-virtualized';
 import {
   Filter,
   FiltersType,
@@ -6,20 +19,7 @@ import {
   SortType,
   UpdateMethod,
 } from '../../app.types';
-import { TableHeaderProps } from 'react-virtualized';
-import {
-  TableCell,
-  TableSortLabel,
-  Box,
-  Typography,
-  Divider,
-  SxProps,
-} from '@mui/material';
 import { StyledTooltip } from '../../arrowtooltip.component';
-import Draggable from 'react-draggable';
-import SortIcon from '@mui/icons-material/Sort';
-import AddIcon from '@mui/icons-material/Add';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 
 const DataHeader = (
   props: TableHeaderProps & {
@@ -33,7 +33,7 @@ const DataHeader = (
     ) => void;
     resizeColumn: (dataKey: string, deltaX: number) => void;
     labelString: string;
-    icon?: React.ComponentType<unknown>;
+    icon?: React.ElementType;
     filterComponent?: (
       label: string,
       dataKey: string,
@@ -135,6 +135,8 @@ const DataHeader = (
     </Typography>
   );
 
+  const dividerRef = React.useRef(null);
+
   return (
     <TableCell
       size="small"
@@ -162,9 +164,12 @@ const DataHeader = (
       </div>
       <Draggable
         axis="none"
-        onDrag={(event, { deltaX }) => resizeColumn(dataKey, deltaX)}
+        nodeRef={dividerRef}
+        offsetParent={document.body}
+        onDrag={(_event, { deltaX }) => resizeColumn(dataKey, deltaX)}
       >
         <div
+          ref={dividerRef}
           style={{
             marginLeft: 18,
             paddingLeft: '4px',
