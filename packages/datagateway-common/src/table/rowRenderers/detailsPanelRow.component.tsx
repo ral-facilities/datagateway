@@ -19,11 +19,13 @@ const ExpandableRow = (
     rowData,
     style,
   } = props;
+  const { width, ...otherStyles } = style;
 
   return (
     <Box
       sx={{
-        ...style,
+        // have to spread otherStyles not style here as we don't want to apply the width to this component
+        ...otherStyles,
         display: 'flex',
         flexDirection: 'column',
       }}
@@ -39,7 +41,7 @@ const ExpandableRow = (
         style={{
           marginRight: 'auto',
           marginLeft: 10,
-          maxWidth: style.width - 10,
+          maxWidth: width - 10,
         }}
       >
         <DetailsPanel
