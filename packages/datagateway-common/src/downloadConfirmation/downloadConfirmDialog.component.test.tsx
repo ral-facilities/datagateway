@@ -23,12 +23,6 @@ const createTestQueryClient = (): QueryClient =>
         retry: false,
       },
     },
-    // silence react-query errors
-    logger: {
-      log: console.log,
-      warn: console.warn,
-      error: vi.fn(),
-    },
   });
 
 describe('DownloadConfirmDialog', () => {

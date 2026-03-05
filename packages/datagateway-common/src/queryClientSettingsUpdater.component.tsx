@@ -1,7 +1,49 @@
+import { QueryCache, QueryClient } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 import React from 'react';
-import { QueryClient } from '@tanstack/react-query';
-import { StateType } from './state/app.types';
 import { useSelector } from 'react-redux';
+import { handleDOIAPIError } from './api/dois';
+import { LuceneError, handleLuceneError } from './api/lucene';
+import handleICATError from './handleICATError';
+import { StateType } from './state/app.types';
+
+declare module '@tanstack/react-query' {
+  interface Register {
+    queryMeta: {
+      icatError?: boolean;
+      luceneError?: boolean;
+      DOIAPIError?: boolean;
+      broadcastCondition?: (error: AxiosError) => boolean;
+      logCondition?: (error: AxiosError) => boolean;
+      useEntityErrorHandler?: (error: Error) => void;
+    };
+  }
+}
+
+export const queryCacheConfig: ConstructorParameters<typeof QueryCache>[0] = {
+  onError: (error, query) => {
+    // TODO: is it better to move these to be error handlers like useEntityErrorHandler?
+    if (query.meta?.icatError === true) {
+      const axiosError = error as AxiosError;
+      handleICATError(axiosError, query.meta?.broadcastCondition?.(axiosError));
+    }
+    if (query.meta?.luceneError === true) {
+      handleLuceneError(error as AxiosError<LuceneError>);
+    }
+    if (query.meta?.DOIAPIError === true) {
+      const axiosError = error as AxiosError<{
+        detail: { msg: string }[] | string;
+      }>;
+      handleDOIAPIError(
+        axiosError,
+        query.meta.logCondition?.(axiosError),
+        query.meta.broadcastCondition?.(axiosError)
+      );
+    }
+    if (query.meta?.useEntityErrorHandler)
+      query.meta.useEntityErrorHandler(error);
+  },
+};
 
 export const QueryClientSettingsUpdater: React.FC<{
   queryRetries: number | undefined;
@@ -15,6 +57,7 @@ export const QueryClientSettingsUpdater: React.FC<{
       queryClient.setDefaultOptions({
         ...opts,
         queries: { ...opts.queries, retry: queryRetries },
+        // TODO: set query cache here? or do it in individual queryclients?
       });
     }
   }, [queryClient, queryRetries]);

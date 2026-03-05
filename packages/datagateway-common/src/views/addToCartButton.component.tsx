@@ -30,7 +30,7 @@ const AddToCartButton: React.FC<AddToCartButtonCombinedProps> = (
     (state: StateType) => state.dgcommon.anonUserName
   );
 
-  const { data: cartItems, isLoading: cartLoading } = useCart();
+  const { data: cartItems, isPending: cartLoading } = useCart();
   const { mutate: addToCart } = useAddToCart(entityType);
   const { mutate: removeFromCart } = useRemoveFromCart(entityType);
 
@@ -67,14 +67,14 @@ const AddToCartButton: React.FC<AddToCartButtonCombinedProps> = (
         disableIfAnon
           ? t('buttons.disallow_anon_tooltip')
           : !cartLoading &&
-            !isParentSelected &&
-            typeof selectedIds === 'undefined'
-          ? t<string, string>('buttons.cart_loading_failed_tooltip')
-          : cartLoading
-          ? t<string, string>('buttons.cart_loading_tooltip')
-          : isParentSelected
-          ? t<string, string>('buttons.parent_selected_tooltip')
-          : ''
+              !isParentSelected &&
+              typeof selectedIds === 'undefined'
+            ? t<string, string>('buttons.cart_loading_failed_tooltip')
+            : cartLoading
+              ? t<string, string>('buttons.cart_loading_tooltip')
+              : isParentSelected
+                ? t<string, string>('buttons.parent_selected_tooltip')
+                : ''
       }
       placement="bottom"
     >

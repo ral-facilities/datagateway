@@ -135,7 +135,7 @@ describe('PageContainer - Tests', () => {
     document.body.appendChild(holder);
 
     vi.mocked(useQueryClient, { partial: true }).mockReturnValue({
-      getQueryData: vi.fn(() => 0),
+      getQueriesData: vi.fn(() => [[[], 0]] as [[], never][]),
     });
 
     vi.mocked(axios.get).mockImplementation(
@@ -174,7 +174,7 @@ describe('PageContainer - Tests', () => {
   it('displays the correct entity count', async () => {
     history.replace(paths.toggle.investigation);
     vi.mocked(useQueryClient, { partial: true }).mockReturnValue({
-      getQueryData: vi.fn(() => 101),
+      getQueriesData: vi.fn(() => [[[], 101]] as [[], never][]),
     });
 
     renderComponent();

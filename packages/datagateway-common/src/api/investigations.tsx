@@ -1,5 +1,4 @@
 import {
-  UseInfiniteQueryResult,
   UseQueryResult,
   useInfiniteQuery,
   useQuery,
@@ -7,7 +6,6 @@ import {
 import axios, { AxiosError } from 'axios';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import type { IndexRange } from 'react-virtualized';
 import { getApiParams, parseSearchToQuery } from '.';
 import type {
   AdditionalFilters,
@@ -15,9 +13,9 @@ import type {
   Investigation,
   SortType,
 } from '../app.types';
-import handleICATError from '../handleICATError';
 import { readSciGatewayToken } from '../parseTokens';
 import { StateType } from '../state/app.types';
+import { INFINITE_SCROLL_BATCH_SIZE } from '../table/table.component';
 import { useEntity } from './generic';
 import { useRetryICATErrors } from './retryICATErrors';
 
@@ -27,19 +25,14 @@ export const fetchInvestigations = (
     sort: SortType;
     filters: FiltersType;
   },
+  skipAndLimit: { skip: number; limit: number },
   additionalFilters?: AdditionalFilters,
-  offsetParams?: IndexRange,
   ignoreIDSort?: boolean
 ): Promise<Investigation[]> => {
   const params = getApiParams(sortAndFilters, ignoreIDSort);
 
-  if (offsetParams) {
-    params.append('skip', JSON.stringify(offsetParams.startIndex));
-    params.append(
-      'limit',
-      JSON.stringify(offsetParams.stopIndex - offsetParams.startIndex + 1)
-    );
-  }
+  params.append('skip', JSON.stringify(skipAndLimit.skip));
+  params.append('limit', JSON.stringify(skipAndLimit.limit));
 
   additionalFilters?.forEach((filter) => {
     params.append(filter.filterType, filter.filterValue);
@@ -61,29 +54,14 @@ export const useInvestigationsPaginated = (
   additionalFilters?: AdditionalFilters,
   ignoreIDSort?: boolean,
   isMounted?: boolean
-): UseQueryResult<Investigation[], AxiosError> => {
+) => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters, sort, page, results } = parseSearchToQuery(location.search);
   const retryICATErrors = useRetryICATErrors();
 
-  return useQuery<
-    Investigation[],
-    AxiosError,
-    Investigation[],
-    [
-      string,
-      {
-        sort: string;
-        filters: FiltersType;
-        page: number;
-        results: number;
-      },
-      AdditionalFilters?,
-      boolean?
-    ]
-  >(
-    [
+  return useQuery({
+    queryKey: [
       'investigation',
       {
         sort: JSON.stringify(sort), // need to stringify sort as property order is important!
@@ -93,67 +71,65 @@ export const useInvestigationsPaginated = (
       },
       additionalFilters,
       ignoreIDSort,
-    ],
-    (params) => {
+      apiUrl,
+    ] as const,
+
+    queryFn: (params) => {
       const { page, results } = params.queryKey[1];
-      const startIndex = (page - 1) * results;
-      const stopIndex = startIndex + results - 1;
+      const skip = (page - 1) * results;
+      const limit = skip + results;
       return fetchInvestigations(
         apiUrl,
         { sort, filters },
-        additionalFilters,
         {
-          startIndex,
-          stopIndex,
+          skip,
+          limit,
         },
+        additionalFilters,
         ignoreIDSort
       );
     },
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-      enabled: isMounted ?? true,
-    }
-  );
+    meta: { icatError: true },
+    retry: retryICATErrors,
+    enabled: isMounted ?? true,
+  });
 };
 
 export const useInvestigationsInfinite = (
   additionalFilters?: AdditionalFilters,
   ignoreIDSort?: boolean,
   isMounted?: boolean
-): UseInfiniteQueryResult<Investigation[], AxiosError> => {
+) => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters, sort } = parseSearchToQuery(location.search);
   const retryICATErrors = useRetryICATErrors();
 
-  return useInfiniteQuery(
-    [
+  return useInfiniteQuery({
+    queryKey: [
       'investigation',
       { sort: JSON.stringify(sort), filters }, // need to stringify sort as property order is important!
       additionalFilters,
       ignoreIDSort,
+      apiUrl,
     ],
-    (params) => {
-      const offsetParams = params.pageParam ?? { startIndex: 0, stopIndex: 49 };
-      return fetchInvestigations(
+    queryFn: (params) =>
+      fetchInvestigations(
         apiUrl,
         { sort, filters },
+        params.pageParam,
         additionalFilters,
-        offsetParams,
         ignoreIDSort
-      );
-    },
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-      enabled: isMounted ?? true,
-    }
-  );
+      ),
+    getNextPageParam: (_lastPage, _allPages, lastPageParam) => ({
+      skip: lastPageParam.limit,
+      limit: lastPageParam.limit + INFINITE_SCROLL_BATCH_SIZE,
+    }),
+    initialPageParam: { skip: 0, limit: 50 },
+    meta: { icatError: true },
+    retry: retryICATErrors,
+    enabled: isMounted ?? true,
+  });
 };
 
 export const fetchInvestigationCount = (
@@ -182,30 +158,27 @@ export const fetchInvestigationCount = (
 
 export const useInvestigationCount = (
   additionalFilters?: AdditionalFilters
-): UseQueryResult<number, AxiosError> => {
+) => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const filters = parseSearchToQuery(location.search).filters;
   const retryICATErrors = useRetryICATErrors();
 
-  return useQuery<
-    number,
-    AxiosError,
-    number,
-    [string, string, { filters: FiltersType }, AdditionalFilters?]
-  >(
-    ['count', 'investigation', { filters }, additionalFilters],
-    (params) => {
+  return useQuery({
+    queryKey: [
+      'count',
+      'investigation',
+      { filters },
+      additionalFilters,
+      apiUrl,
+    ] as const,
+    queryFn: (params) => {
       const { filters } = params.queryKey[2];
       return fetchInvestigationCount(apiUrl, filters, additionalFilters);
     },
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-    }
-  );
+    meta: { icatError: true },
+    retry: retryICATErrors,
+  });
 };
 
 export const useInvestigationDetails = (

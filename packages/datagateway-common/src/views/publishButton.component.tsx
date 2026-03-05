@@ -36,7 +36,7 @@ const PublishButton: React.FC<PublishButtonProps> = (props) => {
 
   const isPublishSuccess = status === 'success';
 
-  const isPublishLoading = status === 'loading';
+  const isPublishLoading = status === 'pending';
 
   const queryClient = useQueryClient();
 

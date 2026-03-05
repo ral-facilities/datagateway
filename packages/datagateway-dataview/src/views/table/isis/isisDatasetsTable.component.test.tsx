@@ -91,7 +91,7 @@ describe('ISIS Dataset table component', () => {
 
     vi.mocked(useCart, { partial: true }).mockReturnValue({
       data: [],
-      isLoading: false,
+      isPending: false,
     });
     vi.mocked(useDatasetCount, { partial: true }).mockReturnValue({
       data: 0,
@@ -102,15 +102,15 @@ describe('ISIS Dataset table component', () => {
     });
     vi.mocked(useIds, { partial: true }).mockReturnValue({
       data: [1],
-      isLoading: false,
+      isPending: false,
     });
     vi.mocked(useAddToCart, { partial: true }).mockReturnValue({
       mutate: vi.fn(),
-      isLoading: false,
+      isPending: false,
     });
     vi.mocked(useRemoveFromCart, { partial: true }).mockReturnValue({
       mutate: vi.fn(),
-      isLoading: false,
+      isPending: false,
     });
     axios.get = vi
       .fn()
@@ -208,7 +208,7 @@ describe('ISIS Dataset table component', () => {
     const addToCart = vi.fn();
     vi.mocked(useAddToCart, { partial: true }).mockReturnValue({
       mutate: addToCart,
-      isLoading: false,
+      isPending: false,
     });
     renderComponent();
 
@@ -230,13 +230,13 @@ describe('ISIS Dataset table component', () => {
           parentEntities: [],
         },
       ],
-      isLoading: false,
+      isPending: false,
     });
 
     const removeFromCart = vi.fn();
     vi.mocked(useRemoveFromCart, { partial: true }).mockReturnValue({
       mutate: removeFromCart,
-      isLoading: false,
+      isPending: false,
     });
 
     renderComponent();
@@ -266,7 +266,7 @@ describe('ISIS Dataset table component', () => {
           parentEntities: [],
         },
       ],
-      isLoading: false,
+      isPending: false,
     });
 
     renderComponent();

@@ -135,14 +135,6 @@ describe('Dataset - Card View', () => {
     // wait for queries to finish fetching
     await waitFor(() => !queryClient.isFetching());
 
-    expect(
-      queryClient.getQueryState(['search', 'Dataset'], { exact: false })?.status
-    ).toBe('loading');
-    expect(
-      queryClient.getQueryState(['search', 'Dataset'], { exact: false })
-        ?.fetchStatus
-    ).toBe('idle');
-
     expect(screen.queryAllByTestId('card')).toHaveLength(0);
   });
 

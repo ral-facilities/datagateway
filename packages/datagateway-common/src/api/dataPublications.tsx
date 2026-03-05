@@ -1,11 +1,5 @@
-import {
-  UseInfiniteQueryResult,
-  UseQueryOptions,
-  UseQueryResult,
-  useInfiniteQuery,
-  useQuery,
-} from '@tanstack/react-query';
-import axios, { AxiosError } from 'axios';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { IndexRange } from 'react-virtualized';
@@ -18,9 +12,9 @@ import {
   Investigation,
   SortType,
 } from '../app.types';
-import handleICATError from '../handleICATError';
 import { readSciGatewayToken } from '../parseTokens';
 import { StateType } from '../state/app.types';
+import { INFINITE_SCROLL_BATCH_SIZE } from '../table/table.component';
 import { fetchDatafileCountQuery, fetchDatafiles } from './datafiles';
 import { fetchDatasetCountQuery, fetchDatasets } from './datasets';
 import { getApiParams, parseSearchToQuery } from './index';
@@ -72,28 +66,14 @@ const fetchDataPublications = (
 export const useDataPublicationsPaginated = (
   additionalFilters?: AdditionalFilters,
   isMounted?: boolean
-): UseQueryResult<DataPublication[], AxiosError> => {
+) => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters, sort, page, results } = parseSearchToQuery(location.search);
   const retryICATErrors = useRetryICATErrors();
 
-  return useQuery<
-    DataPublication[],
-    AxiosError,
-    DataPublication[],
-    [
-      string,
-      {
-        sort: string;
-        filters: FiltersType;
-        page: number;
-        results: number;
-      },
-      AdditionalFilters?
-    ]
-  >(
-    [
+  return useQuery({
+    queryKey: [
       'dataPublication',
       {
         sort: JSON.stringify(sort), // need to stringify sort as property order is important!
@@ -102,8 +82,10 @@ export const useDataPublicationsPaginated = (
         results: results ?? 10,
       },
       additionalFilters,
-    ],
-    (params) => {
+      apiUrl,
+    ] as const,
+
+    queryFn: (params) => {
       const { page, results } = params.queryKey[1];
       const startIndex = (page - 1) * results;
       const stopIndex = startIndex + results - 1;
@@ -117,65 +99,56 @@ export const useDataPublicationsPaginated = (
         }
       );
     },
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-      enabled: isMounted ?? true,
-    }
-  );
+    meta: { icatError: true },
+    retry: retryICATErrors,
+    enabled: isMounted ?? true,
+  });
 };
 
 export const useDataPublicationsInfinite = (
   additionalFilters?: AdditionalFilters,
   isMounted?: boolean
-): UseInfiniteQueryResult<DataPublication[], AxiosError> => {
+) => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters, sort } = parseSearchToQuery(location.search);
   const retryICATErrors = useRetryICATErrors();
 
-  return useInfiniteQuery(
-    [
+  return useInfiniteQuery({
+    queryKey: [
       'dataPublication',
       { sort: JSON.stringify(sort), filters }, // need to stringify sort as property order is important!
       additionalFilters,
+      apiUrl,
     ],
-    (params) => {
-      const offsetParams = params.pageParam ?? { startIndex: 0, stopIndex: 49 };
-      return fetchDataPublications(
+    queryFn: (params) =>
+      fetchDataPublications(
         apiUrl,
         { sort, filters },
         additionalFilters,
-        offsetParams
-      );
-    },
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-      enabled: isMounted ?? true,
-    }
-  );
+        params.pageParam
+      ),
+    getNextPageParam: (_lastPage, _allPages, lastPageParam) => ({
+      startIndex: lastPageParam.stopIndex + 1,
+      stopIndex: lastPageParam.stopIndex + INFINITE_SCROLL_BATCH_SIZE,
+    }),
+    initialPageParam: { startIndex: 0, stopIndex: 49 },
+    meta: { icatError: true },
+    retry: retryICATErrors,
+    enabled: isMounted ?? true,
+  });
 };
 
 export const useDataPublication = (
   dataPublicationId?: number,
-  queryOptions?: UseQueryOptions<
-    DataPublication[],
-    AxiosError,
-    DataPublication,
-    [string, number]
-  >
-): UseQueryResult<DataPublication, AxiosError> => {
+  enabled?: boolean
+) => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const retryICATErrors = useRetryICATErrors();
 
-  return useQuery(
-    ['dataPublication', dataPublicationId ?? -1],
-    () => {
+  return useQuery({
+    queryKey: ['dataPublication', dataPublicationId ?? -1, apiUrl],
+    queryFn: () => {
       return fetchDataPublications(apiUrl, { sort: {}, filters: {} }, [
         {
           filterType: 'where',
@@ -211,76 +184,53 @@ export const useDataPublication = (
         },
       ]);
     },
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-      enabled: typeof dataPublicationId !== 'undefined',
-      select: (data) => data[0],
-      ...queryOptions,
-    }
-  );
+    meta: { icatError: true },
+    retry: retryICATErrors,
+    enabled: enabled ?? typeof dataPublicationId !== 'undefined',
+    select: (data) => data[0],
+  });
 };
 
 export const useDataPublicationsByFilters = (
   additionalFilters: AdditionalFilters,
-  queryOptions?: UseQueryOptions<
-    DataPublication[],
-    AxiosError,
-    DataPublication[],
-    [string, AdditionalFilters]
-  >
-): UseQueryResult<DataPublication[], AxiosError> => {
+  enabled?: boolean
+) => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const retryICATErrors = useRetryICATErrors();
 
-  return useQuery(
-    ['dataPublication', additionalFilters],
-    (_params) => {
+  return useQuery({
+    queryKey: ['dataPublication', additionalFilters, apiUrl],
+    queryFn: (_params) => {
       return fetchDataPublications(
         apiUrl,
         { sort: {}, filters: {} },
         additionalFilters
       );
     },
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-      ...queryOptions,
-    }
-  );
+    meta: { icatError: true },
+    retry: retryICATErrors,
+    enabled,
+  });
 };
 
 export const useDataPublicationContent = (
   dataPublicationId: string,
   entityType: 'investigation' | 'dataset' | 'datafile'
-): UseInfiniteQueryResult<
-  (Investigation | Dataset | Datafile)[],
-  AxiosError
-> => {
+) => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters, sort } = parseSearchToQuery(location.search);
   const retryICATErrors = useRetryICATErrors();
 
-  return useInfiniteQuery<
-    (Investigation | Dataset | Datafile)[],
-    AxiosError,
-    (Investigation | Dataset | Datafile)[],
-    [string, string, string, { sort: SortType; filters: FiltersType }]
-  >(
-    [
+  return useInfiniteQuery({
+    queryKey: [
       'dataPublicationContent',
       entityType,
       dataPublicationId,
       { sort, filters },
-    ],
-    (params) => {
+    ] as const,
+    queryFn: (params): Promise<Investigation[] | Dataset[] | Datafile[]> => {
       const { sort, filters } = params.queryKey[3];
-      const offsetParams = params.pageParam ?? { startIndex: 0, stopIndex: 49 };
       if (entityType === 'investigation') {
         return fetchInvestigations(
           apiUrl,
@@ -300,7 +250,7 @@ export const useDataPublicationContent = (
               }),
             },
           ],
-          offsetParams
+          params.pageParam
         );
       }
       if (entityType === 'dataset') {
@@ -317,7 +267,7 @@ export const useDataPublicationContent = (
               }),
             },
           ],
-          offsetParams
+          params.pageParam
         );
       }
       if (entityType === 'datafile') {
@@ -334,34 +284,40 @@ export const useDataPublicationContent = (
               }),
             },
           ],
-          offsetParams
+          params.pageParam
         );
       } else {
         // shouldn't happen - just feels better to explicity check entityType
         return Promise.reject();
       }
     },
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-    }
-  );
+    getNextPageParam: (_lastPage, _allPages, lastPageParam) => ({
+      startIndex: lastPageParam.stopIndex + 1,
+      stopIndex: lastPageParam.stopIndex + INFINITE_SCROLL_BATCH_SIZE,
+    }),
+    initialPageParam: { startIndex: 0, stopIndex: 49 },
+    meta: { icatError: true },
+    retry: retryICATErrors,
+  });
 };
 
 export const useDataPublicationContentCount = (
   dataPublicationId: string,
   entityType: 'investigation' | 'dataset' | 'datafile'
-): UseQueryResult<number, AxiosError> => {
+) => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters } = parseSearchToQuery(location.search);
   const retryICATErrors = useRetryICATErrors();
 
-  return useQuery(
-    ['dataPublicationContentCount', entityType, dataPublicationId, filters],
-    () => {
+  return useQuery({
+    queryKey: [
+      'dataPublicationContentCount',
+      entityType,
+      dataPublicationId,
+      filters,
+    ],
+    queryFn: () => {
       if (entityType === 'investigation') {
         return fetchInvestigationCount(apiUrl, filters, [
           {
@@ -401,13 +357,9 @@ export const useDataPublicationContentCount = (
         return Promise.reject();
       }
     },
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-    }
-  );
+    meta: { icatError: true },
+    retry: retryICATErrors,
+  });
 };
 
 const fetchDataPublicationCount = (
@@ -438,28 +390,25 @@ const fetchDataPublicationCount = (
 
 export const useDataPublicationCount = (
   additionalFilters?: AdditionalFilters
-): UseQueryResult<number, AxiosError> => {
+) => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters } = parseSearchToQuery(location.search);
   const retryICATErrors = useRetryICATErrors();
 
-  return useQuery<
-    number,
-    AxiosError,
-    number,
-    [string, string, { filters: FiltersType }, AdditionalFilters?]
-  >(
-    ['count', 'dataPublication', { filters }, additionalFilters],
-    (params) => {
+  return useQuery({
+    queryKey: [
+      'count',
+      'dataPublication',
+      { filters },
+      additionalFilters,
+      apiUrl,
+    ] as const,
+    queryFn: (params) => {
       const { filters } = params.queryKey[2];
       return fetchDataPublicationCount(apiUrl, filters, additionalFilters);
     },
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-    }
-  );
+    meta: { icatError: true },
+    retry: retryICATErrors,
+  });
 };
