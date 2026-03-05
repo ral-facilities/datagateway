@@ -4880,7 +4880,7 @@ __metadata:
     eslint: 8.57.1
     eslint-config-prettier: 10.1.5
     eslint-config-react-app: 7.0.0
-    eslint-plugin-cypress: 2.15.1
+    eslint-plugin-cypress: 6.1.0
     eslint-plugin-prettier: 4.2.1
     hex-to-rgba: 2.0.1
     history: 4.10.1
@@ -4958,7 +4958,7 @@ __metadata:
     eslint: 8.57.1
     eslint-config-prettier: 10.1.5
     eslint-config-react-app: 7.0.0
-    eslint-plugin-cypress: 2.15.1
+    eslint-plugin-cypress: 6.1.0
     eslint-plugin-prettier: 4.2.1
     express: 4.22.1
     history: 4.10.1
@@ -5031,7 +5031,7 @@ __metadata:
     eslint: 8.57.1
     eslint-config-prettier: 10.1.5
     eslint-config-react-app: 7.0.0
-    eslint-plugin-cypress: 2.15.1
+    eslint-plugin-cypress: 6.1.0
     eslint-plugin-prettier: 4.2.1
     express: 4.22.1
     fastq: ^1.19.1
@@ -5106,7 +5106,7 @@ __metadata:
     eslint: 8.57.1
     eslint-config-prettier: 10.1.5
     eslint-config-react-app: 7.0.0
-    eslint-plugin-cypress: 2.15.1
+    eslint-plugin-cypress: 6.1.0
     eslint-plugin-prettier: 4.2.1
     express: 4.22.1
     history: 4.10.1
@@ -5901,14 +5901,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-cypress@npm:2.15.1":
-  version: 2.15.1
-  resolution: "eslint-plugin-cypress@npm:2.15.1"
+"eslint-plugin-cypress@npm:6.1.0":
+  version: 6.1.0
+  resolution: "eslint-plugin-cypress@npm:6.1.0"
   dependencies:
-    globals: ^13.20.0
+    globals: ^17.3.0
   peerDependencies:
-    eslint: ">= 3.2.1"
-  checksum: 3e66fa9a943fff52eaf3758250a63c2a0f8ffd60c50572beaf3688b33a55fbf0060d18ef32bc26abb57aef070517db827c22fd3d607582861d464970f95e550e
+    eslint: ">=9"
+  checksum: 97cde21c1a206bfbd955e4600170c0211564f87bb5cc74e7854f9ffebaba669e390313dcb52c2d426432865a4ccc1d68bd53de371040bdd3391e8b63c5fa77c7
   languageName: node
   linkType: hard
 
@@ -6829,12 +6829,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"globals@npm:^13.19.0, globals@npm:^13.20.0":
+"globals@npm:^13.19.0":
   version: 13.24.0
   resolution: "globals@npm:13.24.0"
   dependencies:
     type-fest: ^0.20.2
   checksum: 56066ef058f6867c04ff203b8a44c15b038346a62efbc3060052a1016be9f56f4cf0b2cd45b74b22b81e521a889fc7786c73691b0549c2f3a6e825b3d394f43c
+  languageName: node
+  linkType: hard
+
+"globals@npm:^17.3.0":
+  version: 17.4.0
+  resolution: "globals@npm:17.4.0"
+  checksum: 456f0d844ef7d502c41ae7ae07e602491fb7ac5e8b37c7c2fcf1419974321e27a35b94249168a7e521fcf09105b32b8f85cedc63b6b90cc8a594d1c281c2f5cd
   languageName: node
   linkType: hard
 
