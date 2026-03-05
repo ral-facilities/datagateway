@@ -1,5 +1,4 @@
 import {
-  UseInfiniteQueryResult,
   UseQueryResult,
   useInfiniteQuery,
   useQuery,
@@ -15,9 +14,9 @@ import {
   FiltersType,
   SortType,
 } from '../app.types';
-import handleICATError from '../handleICATError';
 import { readSciGatewayToken } from '../parseTokens';
 import { StateType } from '../state/app.types';
+import { INFINITE_SCROLL_BATCH_SIZE } from '../table/table.component';
 import { useRetryICATErrors } from './retryICATErrors';
 
 export const fetchDatasets = (
@@ -58,28 +57,14 @@ export const fetchDatasets = (
 export const useDatasetsPaginated = (
   additionalFilters?: AdditionalFilters,
   isMounted?: boolean
-): UseQueryResult<Dataset[], AxiosError> => {
+) => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters, sort, page, results } = parseSearchToQuery(location.search);
   const retryICATErrors = useRetryICATErrors();
 
-  return useQuery<
-    Dataset[],
-    AxiosError,
-    Dataset[],
-    [
-      string,
-      {
-        sort: string;
-        filters: FiltersType;
-        page: number;
-        results: number;
-      },
-      AdditionalFilters?
-    ]
-  >(
-    [
+  return useQuery({
+    queryKey: [
       'dataset',
       {
         sort: JSON.stringify(sort), // need to stringify sort as property order is important!
@@ -88,8 +73,9 @@ export const useDatasetsPaginated = (
         results: results ?? 10,
       },
       additionalFilters,
-    ],
-    (params) => {
+      apiUrl,
+    ] as const,
+    queryFn: (params) => {
       const { page, results } = params.queryKey[1];
       const startIndex = (page - 1) * results;
       const stopIndex = startIndex + results - 1;
@@ -98,44 +84,44 @@ export const useDatasetsPaginated = (
         stopIndex,
       });
     },
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-      enabled: isMounted ?? true,
-    }
-  );
+    meta: { icatError: true },
+    retry: retryICATErrors,
+    enabled: isMounted ?? true,
+  });
 };
 
 export const useDatasetsInfinite = (
   additionalFilters?: AdditionalFilters,
   isMounted?: boolean
-): UseInfiniteQueryResult<Dataset[], AxiosError> => {
+) => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters, sort } = parseSearchToQuery(location.search);
   const retryICATErrors = useRetryICATErrors();
 
-  return useInfiniteQuery(
-    ['dataset', { sort: JSON.stringify(sort), filters }, additionalFilters], // need to stringify sort as property order is important!
-    (params) => {
-      const offsetParams = params.pageParam ?? { startIndex: 0, stopIndex: 49 };
-      return fetchDatasets(
+  return useInfiniteQuery({
+    queryKey: [
+      'dataset',
+      { sort: JSON.stringify(sort), filters },
+      additionalFilters,
+      apiUrl,
+    ], // need to stringify sort as property order is important!
+    queryFn: (params) =>
+      fetchDatasets(
         apiUrl,
         { sort, filters },
         additionalFilters,
-        offsetParams
-      );
-    },
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-      enabled: isMounted ?? true,
-    }
-  );
+        params.pageParam
+      ),
+    getNextPageParam: (_lastPage, _allPages, lastPageParam) => ({
+      startIndex: lastPageParam.stopIndex + 1,
+      stopIndex: lastPageParam.stopIndex + INFINITE_SCROLL_BATCH_SIZE,
+    }),
+    initialPageParam: { startIndex: 0, stopIndex: 49 },
+    meta: { icatError: true },
+    retry: retryICATErrors,
+    enabled: isMounted ?? true,
+  });
 };
 
 export const fetchDatasetCountQuery = (
@@ -162,32 +148,27 @@ export const fetchDatasetCountQuery = (
     .then((response) => response.data);
 };
 
-export const useDatasetCount = (
-  additionalFilters?: AdditionalFilters
-): UseQueryResult<number, AxiosError> => {
+export const useDatasetCount = (additionalFilters?: AdditionalFilters) => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const filters = parseSearchToQuery(location.search).filters;
   const retryICATErrors = useRetryICATErrors();
 
-  return useQuery<
-    number,
-    AxiosError,
-    number,
-    [string, string, { filters: FiltersType }, AdditionalFilters?]
-  >(
-    ['count', 'dataset', { filters }, additionalFilters],
-    (params) => {
+  return useQuery({
+    queryKey: [
+      'count',
+      'dataset',
+      { filters },
+      additionalFilters,
+      apiUrl,
+    ] as const,
+    queryFn: (params) => {
       const { filters } = params.queryKey[2];
       return fetchDatasetCountQuery(apiUrl, filters, additionalFilters);
     },
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-    }
-  );
+    meta: { icatError: true },
+    retry: retryICATErrors,
+  });
 };
 
 export const useDatasetDetails = (

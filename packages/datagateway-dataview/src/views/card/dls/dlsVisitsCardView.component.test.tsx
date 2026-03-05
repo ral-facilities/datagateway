@@ -69,11 +69,11 @@ describe('DLS Visits - Card View', () => {
 
     vi.mocked(useInvestigationCount, { partial: true }).mockReturnValue({
       data: 1,
-      isLoading: false,
+      isPending: false,
     });
     vi.mocked(useInvestigationsPaginated, { partial: true }).mockReturnValue({
       data: cardData,
-      isLoading: false,
+      isPending: false,
     });
 
     axios.get = vi

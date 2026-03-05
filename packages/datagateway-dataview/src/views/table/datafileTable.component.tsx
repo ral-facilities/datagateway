@@ -52,7 +52,7 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
   const handleSort = useSort();
-  const { data: allIds, isInitialLoading: allIdsLoading } = useIds(
+  const { data: allIds, isPending: allIdsLoading } = useIds(
     'datafile',
     [
       {
@@ -62,10 +62,10 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
     ],
     !disableSelectAll
   );
-  const { data: cartItems, isLoading: cartLoading } = useCart();
-  const { mutate: addToCart, isLoading: addToCartLoading } =
+  const { data: cartItems, isPending: cartLoading } = useCart();
+  const { mutate: addToCart, isPending: addToCartLoading } =
     useAddToCart('datafile');
-  const { mutate: removeFromCart, isLoading: removeFromCartLoading } =
+  const { mutate: removeFromCart, isPending: removeFromCartLoading } =
     useRemoveFromCart('datafile');
 
   const { data: totalDataCount } = useDatafileCount([
@@ -83,7 +83,7 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
   ]);
 
   const loadMoreRows = React.useCallback(
-    (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
+    (_offsetParams: IndexRange) => fetchNextPage(),
     [fetchNextPage]
   );
 

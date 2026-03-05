@@ -4,14 +4,16 @@ import Public from '@mui/icons-material/Public';
 import Save from '@mui/icons-material/Save';
 import { Link as MuiLink } from '@mui/material';
 import {
+  AddToCartButton,
   CardView,
-  formatFilterCount,
   Investigation,
+  formatBytes,
+  formatFilterCount,
   investigationLink,
   parseSearchToQuery,
-  useDateFilter,
   useCustomFilter,
   useCustomFilterCount,
+  useDateFilter,
   useInvestigationCount,
   useInvestigationsPaginated,
   usePushFilter,
@@ -19,8 +21,6 @@ import {
   usePushResults,
   useSort,
   useTextFilter,
-  AddToCartButton,
-  formatBytes,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -42,10 +42,10 @@ const InvestigationCardView = (): React.ReactElement => {
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
-  const { data: totalDataCount, isLoading: countLoading } =
+  const { data: totalDataCount, isPending: countLoading } =
     useInvestigationCount();
 
-  const { isLoading: dataLoading, data } = useInvestigationsPaginated([
+  const { isPending: dataLoading, data } = useInvestigationsPaginated([
     {
       filterType: 'include',
       filterValue: JSON.stringify('type'),

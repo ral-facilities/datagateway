@@ -86,7 +86,7 @@ const DLSVisitsTable = (props: DLSVisitsTableProps): React.ReactElement => {
   const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
-    (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
+    (_offsetParams: IndexRange) => fetchNextPage(),
     [fetchNextPage]
   );
 

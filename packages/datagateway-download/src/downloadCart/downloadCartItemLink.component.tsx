@@ -1,8 +1,8 @@
 import { Link as MuiLink } from '@mui/material';
-import type { DownloadCartItem } from 'datagateway-common';
 import { useQuery } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
+import type { DownloadCartItem } from 'datagateway-common';
 import pLimit from 'p-limit';
+import { Link } from 'react-router-dom';
 
 type LinkBuilder = () => Promise<string | null>;
 
@@ -17,7 +17,10 @@ function DownloadCartItemLink({
   cartItem,
   linkBuilder,
 }: DownloadCartItemLinkProps): JSX.Element {
-  const { data: link } = useQuery(['cartItemLink', cartItem.id], {
+  const { data: link } = useQuery({
+    // link builder is not serialisable and can't be passed in query key
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps
+    queryKey: ['cartItemLink', cartItem.id],
     queryFn: () => cartLinkLimit(linkBuilder),
     staleTime: Infinity,
   });

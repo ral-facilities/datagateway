@@ -1,11 +1,19 @@
 import React from 'react';
 
+import Assessment from '@mui/icons-material/Assessment';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import Save from '@mui/icons-material/Save';
+import { Typography } from '@mui/material';
 import {
+  ArrowTooltip,
   CardView,
   CardViewDetails,
+  DLSVisitDetailsPanel,
   Investigation,
-  tableLink,
+  formatBytes,
+  nestedValue,
   parseSearchToQuery,
+  tableLink,
   useDateFilter,
   useInvestigationCount,
   useInvestigationsPaginated,
@@ -14,17 +22,9 @@ import {
   usePushResults,
   useSort,
   useTextFilter,
-  nestedValue,
-  ArrowTooltip,
-  DLSVisitDetailsPanel,
-  formatBytes,
 } from 'datagateway-common';
-import Assessment from '@mui/icons-material/Assessment';
-import CalendarToday from '@mui/icons-material/CalendarToday';
-import Save from '@mui/icons-material/Save';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import { Typography } from '@mui/material';
 
 interface DLSVisitsCVProps {
   proposalName: string;
@@ -56,14 +56,14 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
     setIsMounted(true);
   }, []);
 
-  const { data: totalDataCount, isLoading: countLoading } =
+  const { data: totalDataCount, isPending: countLoading } =
     useInvestigationCount([
       {
         filterType: 'where',
         filterValue: JSON.stringify({ name: { eq: proposalName } }),
       },
     ]);
-  const { isLoading: dataLoading, data } = useInvestigationsPaginated(
+  const { isPending: dataLoading, data } = useInvestigationsPaginated(
     [
       {
         filterType: 'where',

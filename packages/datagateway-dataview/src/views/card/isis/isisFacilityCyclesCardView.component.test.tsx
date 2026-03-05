@@ -1,21 +1,21 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { render, RenderResult, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import {
   dGCommonInitialState,
   FacilityCycle,
   useFacilityCycleCount,
   useFacilityCyclesPaginated,
 } from 'datagateway-common';
+import { createMemoryHistory, History } from 'history';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import type { MockInstance } from 'vitest';
 import { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import ISISFacilityCyclesCardView from './isisFacilityCyclesCardView.component';
-import { createMemoryHistory, History } from 'history';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render, RenderResult, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import type { MockInstance } from 'vitest';
 
 vi.mock('datagateway-common', async () => {
   const originalModule = await vi.importActual('datagateway-common');
@@ -67,11 +67,11 @@ describe('ISIS Facility Cycles - Card View', () => {
 
     vi.mocked(useFacilityCycleCount, { partial: true }).mockReturnValue({
       data: 1,
-      isLoading: false,
+      isPending: false,
     });
     vi.mocked(useFacilityCyclesPaginated, { partial: true }).mockReturnValue({
       data: cardData,
-      isLoading: false,
+      isPending: false,
     });
 
     // Prevent error logging

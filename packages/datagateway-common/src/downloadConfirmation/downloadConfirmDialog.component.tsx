@@ -16,7 +16,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatBytes } from '../table/cellRenderers/cellContentRenderers';
 
-import { UseMutateFunction } from '@tanstack/react-query';
+import { UseMutateFunction, useQueryClient } from '@tanstack/react-query';
 import {
   QueueDataCollectionParams,
   QueueVisitParams,
@@ -114,18 +114,17 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   const {
     data: submitDownloadData,
     mutate: submitDownload,
-    isLoading: isSubmittingDownload,
+    isPending: isSubmittingDownload,
     isSuccess: isDownloadSubmittedSuccessfully,
     isError: hasSubmitDownloadFailed,
     reset: resetSubmitDownloadMutation,
-  } = submitDownloadHook(facilityName, downloadApiUrl, undefined);
+  } = submitDownloadHook(facilityName, downloadApiUrl);
 
   // query download after cart is submitted
   const {
     data: downloadInfo,
     isSuccess: isDownloadInfoAvailable,
     isError: isDownloadInfoUnavailable,
-    remove: resetDownloadQuery,
   } = useDownload({
     id: typeof submitDownloadData === 'number' ? submitDownloadData : -1,
     facilityName,
@@ -133,6 +132,8 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     enabled:
       typeof submitDownloadData === 'number' && isDownloadSubmittedSuccessfully,
   });
+
+  const queryClient = useQueryClient();
 
   /**
    * Sorted download types based on whether they are disabled.
@@ -177,12 +178,13 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
   React.useEffect(() => {
     if (props.open) {
-      resetDownloadQuery();
+      // TODO: do we need this?
+      queryClient.removeQueries({ queryKey: ['download'] });
       resetSubmitDownloadMutation();
       setDownloadName('');
       setEmailAddress('');
     }
-  }, [props.open, resetDownloadQuery, resetSubmitDownloadMutation]);
+  }, [props.open, queryClient, resetSubmitDownloadMutation]);
 
   React.useEffect(() => {
     if (props.open) {

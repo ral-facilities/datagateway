@@ -36,7 +36,6 @@ describe('Generic add to cart button', () => {
           <QueryClientProvider
             client={
               new QueryClient({
-                // silence react-query errors
                 logger: {
                   log: console.log,
                   warn: console.warn,
