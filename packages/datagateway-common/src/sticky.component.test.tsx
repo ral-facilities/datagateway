@@ -1,7 +1,6 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
-import Sticky from './sticky.component';
 import useSticky from './hooks/useSticky';
+import Sticky from './sticky.component';
 
 vi.mock('./hooks/useSticky', () => ({
   __esModule: true,

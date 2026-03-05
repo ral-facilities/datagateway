@@ -287,9 +287,7 @@ export const VirtualizedTable = React.memo(
     );
 
     const detailsPanelResize = React.useCallback((): void => {
-      if (tableRef) {
-        tableRef.recomputeRowHeights();
-      }
+      tableRef?.recomputeRowHeights();
     }, [tableRef]);
 
     React.useEffect(detailsPanelResize, [
@@ -325,12 +323,10 @@ export const VirtualizedTable = React.memo(
     );
     const renderRow: TableRowRenderer = React.useCallback(
       (props) => {
-        // eslint-disable-next-line react/prop-types
         if (detailsPanel && props.index === expandedIndex) {
           return (
             <DetailsPanelRow
               {...props}
-              // eslint-disable-next-line react/prop-types
               key={props.key}
               detailsPanel={detailsPanel}
               detailPanelRef={detailPanelRef}
@@ -347,15 +343,13 @@ export const VirtualizedTable = React.memo(
     const resizeColumn = React.useCallback(
       (dataKey: string, deltaX: number): void => {
         const thisColumn = widthProps[dataKey];
-        thisColumn.flexGrow = 0;
-        thisColumn.flexShrink = 0;
-        thisColumn.width = Math.max(
-          thisColumn.width + deltaX,
-          dataColumnMinWidth
-        );
         setWidthProps({
           ...widthProps,
-          [dataKey]: thisColumn,
+          [dataKey]: {
+            flexGrow: 0,
+            flexShrink: 0,
+            width: Math.max(thisColumn.width + deltaX, dataColumnMinWidth),
+          },
         });
       },
       [widthProps, setWidthProps]
@@ -410,6 +404,7 @@ export const VirtualizedTable = React.memo(
                 <StyledTable
                   ref={(ref: Table | null) => {
                     if (ref !== null) {
+                      // eslint-disable-next-line react-hooks/immutability
                       tableRef = ref;
                     }
                     return registerChild(ref);

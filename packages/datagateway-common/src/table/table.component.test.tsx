@@ -26,6 +26,7 @@ describe('Table component', () => {
         id: 1,
         TEST1: 'test1',
         TEST2: 2,
+        name: '1',
       },
     ],
     loadMoreRows: vi.fn(),
@@ -38,7 +39,7 @@ describe('Table component', () => {
         dataKey: 'TEST1',
         filterComponent: function textFilter(
           label: string,
-          dataKey: string
+          _dataKey: string
         ): React.ReactElement {
           return (
             <TextColumnFilter
@@ -93,8 +94,8 @@ describe('Table component', () => {
     const sortedTableProps = {
       ...tableProps,
       columns: [
-        { ...tableProps.columns[0], defaultSort: 'asc' },
-        { ...tableProps.columns[1], defaultSort: 'desc' },
+        { ...tableProps.columns[0], defaultSort: 'asc' as const },
+        { ...tableProps.columns[1], defaultSort: 'desc' as const },
       ],
     };
     render(<Table {...sortedTableProps} />);
@@ -265,7 +266,7 @@ describe('Table component', () => {
       columns: [
         {
           ...tableProps.columns[0],
-          defaultFilter: { value: 'x', type: 'include' },
+          defaultFilter: { value: 'x', type: 'include' as const },
         },
       ],
       onDefaultFilter: undefined,
@@ -290,7 +291,7 @@ describe('Table component', () => {
       columns: [
         {
           ...tableProps.columns[0],
-          defaultFilter: { value: 'x', type: 'include' },
+          defaultFilter: { value: 'x', type: 'include' as const },
         },
       ],
       onDefaultFilter: vi.fn(),
@@ -342,7 +343,8 @@ describe('Table component', () => {
       });
       expect(selectAll).toBeInTheDocument();
       expect(selectAll).toBeDisabled();
-      await user.hover(selectAll.parentElement?.parentElement);
+      // eslint-disable-next-line testing-library/no-node-access
+      await user.hover(selectAll.parentElement!.parentElement!);
       expect(
         await screen.findByText('buttons.disallow_anon_tooltip')
       ).toBeInTheDocument();
@@ -354,7 +356,8 @@ describe('Table component', () => {
       });
       expect(checkbox).toBeInTheDocument();
       expect(checkbox).toBeDisabled();
-      await user.hover(checkbox.parentElement?.parentElement);
+      // eslint-disable-next-line testing-library/no-node-access
+      await user.hover(checkbox.parentElement!.parentElement!);
       expect(
         await screen.findByText('buttons.disallow_anon_tooltip')
       ).toBeInTheDocument();

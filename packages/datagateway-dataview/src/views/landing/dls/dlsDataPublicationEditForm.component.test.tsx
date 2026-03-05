@@ -751,7 +751,7 @@ describe('DOI edit form component', () => {
     // expect any items in the cart already in the data pub aren't shown in chosen
 
     expect(
-      await within(choices).queryByRole('listitem', {
+      within(choices).queryByRole('listitem', {
         name: investigation.name,
       })
     ).not.toBeInTheDocument();

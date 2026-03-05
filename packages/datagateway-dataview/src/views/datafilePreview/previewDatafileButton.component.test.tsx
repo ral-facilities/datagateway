@@ -124,7 +124,7 @@ describe('PreviewDatafileButton', () => {
       })
     ).toHaveAttribute('aria-disabled', 'true');
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    // eslint-disable-next-line testing-library/no-node-access
     await user.hover(previewButton.parentElement!);
 
     expect(

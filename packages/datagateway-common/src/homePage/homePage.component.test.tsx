@@ -1,7 +1,6 @@
-import React from 'react';
-import HomePage, { HomePageProps } from './homePage.component';
 import { render } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import HomePage, { HomePageProps } from './homePage.component';
 
 describe('Home page component', () => {
   let props: HomePageProps;

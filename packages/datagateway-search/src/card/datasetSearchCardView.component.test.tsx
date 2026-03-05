@@ -1,23 +1,23 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import type { RenderResult } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
 import {
-  dGCommonInitialState,
+  FACILITY_NAME,
   SearchResponse,
   SearchResult,
   SearchResultSource,
-  FACILITY_NAME,
+  dGCommonInitialState,
 } from 'datagateway-common';
+import { MemoryHistory, createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../state/app.types';
-import DatasetSearchCardView from './datasetSearchCardView.component';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { createMemoryHistory, MemoryHistory } from 'history';
 import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
-import type { RenderResult } from '@testing-library/react';
-import { render, screen, waitFor, within } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import axios, { AxiosResponse } from 'axios';
+import DatasetSearchCardView from './datasetSearchCardView.component';
 
 describe('Dataset - Card View', () => {
   let state: StateType;
@@ -130,9 +130,7 @@ describe('Dataset - Card View', () => {
 
     renderComponent();
 
-    expect(
-      screen.queryByTestId('dataset-search-card-view')
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('dataset-search-card-view')).toBeInTheDocument();
 
     // wait for queries to finish fetching
     await waitFor(() => !queryClient.isFetching());

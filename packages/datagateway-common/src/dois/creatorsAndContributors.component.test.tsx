@@ -33,7 +33,6 @@ describe('DOI generation form component', () => {
 
   const TestComponent: React.FC = () => {
     const [selectedUsers, changeSelectedUsers] = React.useState(
-      // eslint-disable-next-line react/prop-types
       props.selectedUsers
     );
 

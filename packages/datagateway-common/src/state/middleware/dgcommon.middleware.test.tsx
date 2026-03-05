@@ -1,16 +1,16 @@
-import DGCommonMiddleware, { listenToMessages } from './dgcommon.middleware';
-import * as middlewareMock from './dgcommon.middleware';
+import axios from 'axios';
+import log from 'loglevel';
 import { AnyAction } from 'redux';
 import configureStore, {
-  MockStoreEnhanced,
   MockStoreCreator,
+  MockStoreEnhanced,
 } from 'redux-mock-store';
-import log from 'loglevel';
 import {
-  RequestPluginRerenderType,
   RegisterRouteType,
+  RequestPluginRerenderType,
 } from '../actions/actions.types';
-import axios from 'axios';
+import * as middlewareMock from './dgcommon.middleware';
+import DGCommonMiddleware, { listenToMessages } from './dgcommon.middleware';
 
 describe('DGCommon middleware', () => {
   let events: CustomEvent<AnyAction>[] = [];
@@ -36,7 +36,7 @@ describe('DGCommon middleware', () => {
     };
 
     document.addEventListener = vi.fn(
-      (id: string, inputHandler: (event: Event) => void) => {
+      (_id: string, inputHandler: (event: Event) => void) => {
         handler = inputHandler;
       }
     );

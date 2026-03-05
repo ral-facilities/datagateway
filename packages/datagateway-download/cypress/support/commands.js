@@ -66,7 +66,7 @@ const parseJwt = (token) => {
   const base64Url = token.split('.')[1];
   const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
   const payload = decodeURIComponent(
-    atob(base64).replace(/(.)/g, function (m, p) {
+    atob(base64).replace(/(.)/g, function (_m, p) {
       var code = p.charCodeAt(0).toString(16).toUpperCase();
       return '%' + ('00' + code).slice(-2);
     })
@@ -110,8 +110,8 @@ Cypress.Commands.add('login', (credentials, user) => {
             username: user
               ? user
               : body.mechanism === 'anon'
-              ? 'anon/anon'
-              : 'Michael222',
+                ? 'anon/anon'
+                : 'Michael222',
           };
           const jwt = jsrsasign.KJUR.jws.JWS.sign(
             'HS256',
@@ -144,7 +144,7 @@ Cypress.Commands.add('seedDownloadCart', () => {
   const entities = ['investigation', 'dataset', 'datafile'];
   const items = Array(60)
     .fill()
-    .map((value, index) => `${entities[index % 2]} ${index}`)
+    .map((_value, index) => `${entities[index % 2]} ${index}`)
     .join(', ');
 
   return cy.request('datagateway-download-settings.json').then((response) => {
@@ -406,7 +406,6 @@ Cypress.Commands.add('clearDownloads', () => {
 
 Cypress.Commands.add('dumpAliases', function (store, aliases) {
   if (aliases == null) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { currentTest, test, _runnable, ...rest } = this;
     Object.assign(store, rest);
   } else {

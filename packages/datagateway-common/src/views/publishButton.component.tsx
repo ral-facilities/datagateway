@@ -49,7 +49,6 @@ const PublishButton: React.FC<PublishButtonProps> = (props) => {
           // invalidate data publication info query
           if (
             query.queryKey[0] === 'dataPublication' &&
-            // eslint-disable-next-line eqeqeq
             query.queryKey[1] == dataPublication.id
           )
             return true;
@@ -57,7 +56,6 @@ const PublishButton: React.FC<PublishButtonProps> = (props) => {
           // invalidate data publication datacite info query
           if (
             query.queryKey[0] === 'doi' &&
-            // eslint-disable-next-line eqeqeq
             query.queryKey[1] == dataPublication.pid
           )
             return true;
@@ -66,7 +64,6 @@ const PublishButton: React.FC<PublishButtonProps> = (props) => {
           if (
             (query.queryKey[0] === 'dataPublicationContent' ||
               query.queryKey[0] === 'dataPublicationContentCount') &&
-            // eslint-disable-next-line eqeqeq
             query.queryKey[2] == dataPublication.id
           )
             return true;

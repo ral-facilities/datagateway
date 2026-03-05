@@ -2,41 +2,41 @@ import CalendarToday from '@mui/icons-material/CalendarToday';
 import ConfirmationNumber from '@mui/icons-material/ConfirmationNumber';
 import Fingerprint from '@mui/icons-material/Fingerprint';
 import Save from '@mui/icons-material/Save';
+import { Grid, Paper, Typography, styled } from '@mui/material';
 import {
   AddToCartButton,
   CardView,
-  DatasetDetailsPanel,
   DLSDatasetDetailsPanel,
+  DatasetDetailsPanel,
   DownloadButton,
-  formatBytes,
+  FACILITY_NAME,
   ISISDatasetDetailsPanel,
-  parseSearchToQuery,
   SearchFilter,
   SearchResponse,
   SearchResultSource,
+  buildDatafileTableUrlForDataset,
+  buildDatasetLandingUrl,
+  buildDatasetTableUrlForInvestigation,
+  buildInvestigationLandingUrl,
+  formatBytes,
+  parseSearchToQuery,
   tableLink,
   useLuceneSearchInfinite,
   usePushDatasetFilter,
   usePushPage,
   usePushResults,
   useSort,
-  buildDatafileTableUrlForDataset,
-  buildDatasetLandingUrl,
-  buildDatasetTableUrlForInvestigation,
-  buildInvestigationLandingUrl,
-  FACILITY_NAME,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Grid, Paper, styled, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
-import { StateType } from '../state/app.types';
 import FacetPanel from '../facet/components/facetPanel/facetPanel.component';
-import { facetClassificationFromSearchResponses } from '../facet/facet';
 import SelectedFilterChips from '../facet/components/selectedFilterChips.component';
+import { facetClassificationFromSearchResponses } from '../facet/facet';
 import useFacetFilters from '../facet/useFacetFilters';
 import { useSearchResultCounter } from '../searchTabs/useSearchResultCounter';
+import { StateType } from '../state/app.types';
 
 interface DatasetCardViewProps {
   hierarchy: string;
@@ -316,7 +316,7 @@ const DatasetCardView: React.FC<DatasetCardViewProps> = (props) => {
   const moreInformation = React.useCallback(
     (dataset: SearchResultSource) => {
       switch (hierarchy) {
-        case FACILITY_NAME.isis:
+        case FACILITY_NAME.isis: {
           let datasetsUrl: string | null = null;
           if (dataset['investigation.id'] && dataset['investigation.name']) {
             const formattedDataset = {
@@ -344,7 +344,7 @@ const DatasetCardView: React.FC<DatasetCardViewProps> = (props) => {
               }}
             />
           );
-
+        }
         case FACILITY_NAME.dls:
           return <DLSDatasetDetailsPanel rowData={dataset} />;
 

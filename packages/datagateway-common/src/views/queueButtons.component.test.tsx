@@ -183,7 +183,7 @@ describe('Queue buttons', () => {
       expect(button).toBeDisabled();
 
       await user.hover(
-        await screen.getByLabelText('buttons.unable_to_queue_tooltip')
+        screen.getByLabelText('buttons.unable_to_queue_tooltip')
       );
 
       expect(
@@ -204,7 +204,7 @@ describe('Queue buttons', () => {
       expect(button).toBeDisabled();
 
       await user.hover(
-        await screen.getByLabelText('buttons.disallow_closed_tooltip')
+        screen.getByLabelText('buttons.disallow_closed_tooltip')
       );
 
       expect(
@@ -234,9 +234,7 @@ describe('Queue buttons', () => {
 
       expect(button).toBeDisabled();
 
-      await user.hover(
-        await screen.getByLabelText('buttons.disallow_anon_tooltip')
-      );
+      await user.hover(screen.getByLabelText('buttons.disallow_anon_tooltip'));
 
       expect(
         await screen.findByText('buttons.disallow_anon_tooltip')

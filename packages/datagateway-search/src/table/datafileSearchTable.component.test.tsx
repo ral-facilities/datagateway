@@ -546,17 +546,13 @@ describe('Datafile search table component', () => {
 
     await user.click(checkbox);
 
-    await waitFor(() => {
-      expect(checkbox).toBeChecked();
-      expect(cartItems).toHaveLength(1);
-    });
+    expect(checkbox).toBeChecked();
+    expect(cartItems).toHaveLength(1);
 
     await user.click(checkbox);
 
-    await waitFor(() => {
-      expect(checkbox).not.toBeChecked();
-      expect(cartItems).toHaveLength(0);
-    });
+    expect(checkbox).not.toBeChecked();
+    expect(cartItems).toHaveLength(0);
   });
 
   it('selected rows only considers relevant cart items', async () => {

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
 import '@testing-library/jest-dom';
 import { screen, within } from '@testing-library/react';
 import { dGCommonInitialState } from 'datagateway-common';

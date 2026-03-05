@@ -132,55 +132,55 @@ describe('DownloadConfirmDialog', () => {
 
   it('renders correctly', async () => {
     props.isTwoLevel = false;
-    const wrapper = renderWrapper();
+    renderWrapper();
 
     expect(
-      await wrapper.findByText('downloadConfirmDialog.access_method_info', {
+      await screen.findByText('downloadConfirmDialog.access_method_info', {
         exact: false,
       })
     );
 
     expect(
-      await wrapper.findByLabelText('downloadConfirmDialog.dialog_arialabel')
+      await screen.findByLabelText('downloadConfirmDialog.dialog_arialabel')
     ).toMatchSnapshot();
   });
 
   it('should not load the download speed/time table when isTwoLevel is true', async () => {
     props.isTwoLevel = true;
-    const wrapper = renderWrapper();
+    renderWrapper();
 
     expect(
-      await wrapper.findByText('downloadConfirmDialog.access_method_info', {
+      await screen.findByText('downloadConfirmDialog.access_method_info', {
         exact: false,
       })
     );
 
     expect(
-      await wrapper.findByLabelText('downloadConfirmDialog.dialog_arialabel')
+      await screen.findByLabelText('downloadConfirmDialog.dialog_arialabel')
     ).toMatchSnapshot();
   });
 
   it('renders correctly with no size', async () => {
     props.isTwoLevel = false;
     props.totalSize = undefined;
-    const wrapper = renderWrapper();
+    renderWrapper();
 
     expect(
-      wrapper.queryByText('downloadConfirmDialog.download_size')
+      screen.queryByText('downloadConfirmDialog.download_size')
     ).not.toBeInTheDocument();
   });
 
   it('renders correctly with 0 size', async () => {
     props.isTwoLevel = false;
     props.totalSize = 0;
-    const wrapper = renderWrapper();
+    renderWrapper();
 
     expect(
-      await wrapper.findByText('downloadConfirmDialog.download_size', {
+      await screen.findByText('downloadConfirmDialog.download_size', {
         exact: false,
       })
     ).toBeInTheDocument();
-    expect(await wrapper.findByText('0 B')).toBeInTheDocument();
+    expect(await screen.findByText('0 B')).toBeInTheDocument();
   });
 
   it('should prevent a download if a selected access method is disabled', async () => {

@@ -70,13 +70,13 @@ describe('DownloadRequestResult', () => {
       expect(
         screen.queryByText('downloadConfirmDialog.confirmation_download_name')
       ).toBeNull();
-      expect(
-        screen.queryByText('downloadConfirmDialog.confirmation_email')
-      ).toBeNull();
-      expect(
-        screen.queryByText('downloadConfirmDialog.confirmation_access_method')
-      ).toBeNull();
     });
+    expect(
+      screen.queryByText('downloadConfirmDialog.confirmation_email')
+    ).toBeNull();
+    expect(
+      screen.queryByText('downloadConfirmDialog.confirmation_access_method')
+    ).toBeNull();
   });
 
   it('should not show email address or name info if none is given', async () => {
@@ -97,16 +97,12 @@ describe('DownloadRequestResult', () => {
       expect(
         screen.queryByText('downloadConfirmDialog.confirmation_email')
       ).toBeNull();
-      expect(
-        screen.queryByText(mockDownloadRequestInfo.emailAddress)
-      ).toBeNull();
-      expect(
-        screen.queryByText('downloadConfirmDialog.confirmation_download_name')
-      ).toBeNull();
-      expect(
-        screen.queryByText(mockDownloadRequestInfo.downloadName)
-      ).toBeNull();
     });
+    expect(screen.queryByText(mockDownloadRequestInfo.emailAddress)).toBeNull();
+    expect(
+      screen.queryByText('downloadConfirmDialog.confirmation_download_name')
+    ).toBeNull();
+    expect(screen.queryByText(mockDownloadRequestInfo.downloadName)).toBeNull();
   });
 
   it('should redirect to download status tab when user clicks on view download', async () => {

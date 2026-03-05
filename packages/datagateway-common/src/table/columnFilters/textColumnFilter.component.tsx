@@ -55,19 +55,11 @@ const TextColumnFilter = (props: {
     setType(type);
   };
 
-  // keep track of previous prop value so we know to update if it changes
-  // this means that programmatic calls to pushFilter update the input
-  const prevPropValueRef = React.useRef(propValue);
-  React.useEffect(() => {
-    prevPropValueRef.current = propValue;
-  }, [propValue]);
-  const prevPropValue = prevPropValueRef.current;
-
-  React.useEffect(() => {
-    if (prevPropValue !== propValue) {
-      setInputValue(propValue ?? '');
-    }
-  }, [propValue, prevPropValue]);
+  const [prevPropValue, setPrevPropValue] = React.useState(propValue);
+  if (prevPropValue !== propValue) {
+    setPrevPropValue(propValue);
+    setInputValue(propValue ?? '');
+  }
 
   return (
     <div>

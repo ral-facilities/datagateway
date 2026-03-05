@@ -45,13 +45,13 @@ function searchResultCountsReducer(
   action: SearchResultCountAction
 ): SearchResultCounts {
   switch (action.type) {
-    case 'RESET_SEARCH_RESULT_COUNT':
+    case 'RESET_SEARCH_RESULT_COUNT': {
       // make a copy of the current state
       // and remove the search result count of the given data search type.
       const next: SearchResultCounts = { ...state };
       delete next[action.payload];
       return next;
-
+    }
     case 'UPDATE_SEARCH_RESULT_COUNT':
       return {
         ...state,
@@ -89,7 +89,7 @@ const SearchResultCountDispatch = React.createContext<
  */
 function useSearchResultCounts(): [
   SearchResultCounts,
-  React.Dispatch<SearchResultCountAction>
+  React.Dispatch<SearchResultCountAction>,
 ] {
   return React.useReducer(searchResultCountsReducer, {});
 }
@@ -141,13 +141,13 @@ function useSearchResultCounter({
 }
 
 export {
-  useSearchResultCounts,
-  useSearchResultCounter,
   SearchResultCountDispatch,
+  useSearchResultCounter,
+  useSearchResultCounts,
 };
 export type {
+  ResetSearchResultCountAction,
   SearchResultCount,
   SearchResultCountAction,
   UpdateSearchResultCountAction,
-  ResetSearchResultCountAction,
 };

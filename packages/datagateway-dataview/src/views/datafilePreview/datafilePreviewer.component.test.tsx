@@ -1,15 +1,15 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   fireEvent,
   render,
-  type RenderResult,
   screen,
   waitFor,
+  type RenderResult,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios, { type AxiosRequestConfig } from 'axios';
 import { downloadDatafile } from 'datagateway-common';
 import type { Datafile } from 'datagateway-common/lib/app.types';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 import { combineReducers, createStore, type Store } from 'redux';
@@ -360,13 +360,13 @@ describe('DatafilePreviewer', () => {
       // should not be able to see the datafile details
       await waitFor(() => {
         expect(screen.queryByText(mockDatafile.name)).toBeNull();
-        expect(screen.queryByText(mockDatafile.description)).toBeNull();
-        expect(screen.queryByText(mockDatafile.location)).toBeNull();
-        // formatted size of the datafile
-        expect(screen.queryByText('100 B')).toBeNull();
-        expect(screen.queryByText(mockDatafile.datafileModTime)).toBeNull();
-        expect(screen.queryByText(mockDatafile.datafileCreateTime)).toBeNull();
       });
+      expect(screen.queryByText(mockDatafile.description)).toBeNull();
+      expect(screen.queryByText(mockDatafile.location)).toBeNull();
+      // formatted size of the datafile
+      expect(screen.queryByText('100 B')).toBeNull();
+      expect(screen.queryByText(mockDatafile.datafileModTime)).toBeNull();
+      expect(screen.queryByText(mockDatafile.datafileCreateTime)).toBeNull();
     });
 
     it('shows the details pane when it is switched back on', async () => {

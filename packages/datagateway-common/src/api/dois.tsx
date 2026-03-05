@@ -380,10 +380,9 @@ export const usePublishDraftVersion = (): UseMutationResult<
             // invalidate the data publication content table queries
             (query.queryKey[0] === 'dataPublicationContent' &&
               // use double equals to ignore difference between 1 and "1"
-              // eslint-disable-next-line eqeqeq
+
               query.queryKey[2] == contentDataPublicationId) ||
             (query.queryKey[0] === 'dataPublicationContentCount' &&
-              // eslint-disable-next-line eqeqeq
               query.queryKey[2] == contentDataPublicationId),
         });
       },
@@ -622,9 +621,9 @@ export const fetchDescendantPANETTechniques = (
 ): Promise<BioPortalTerm[]> => {
   const descendantsPath = new URL(descendantsUrl).pathname;
   return axios
-    .get<BioPortalResponse | never[]>(
-      `${bioportalUrl}${descendantsPath}?pagesize=500&format=json&include=prefLabel,synonym&display_context=false`
-    )
+    .get<
+      BioPortalResponse | never[]
+    >(`${bioportalUrl}${descendantsPath}?pagesize=500&format=json&include=prefLabel,synonym&display_context=false`)
     .then((response) => {
       return 'collection' in response.data ? response.data.collection : [];
     });

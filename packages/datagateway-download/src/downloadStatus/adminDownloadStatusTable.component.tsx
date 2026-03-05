@@ -109,11 +109,12 @@ const AdminDownloadStatusTable: React.FC = () => {
               case 'exact':
                 queryOffset += ` AND download.${column} = '${filterValue}'`;
                 break;
-              default:
+              default: {
                 const exhaustiveCheck: never = filter.type;
                 throw new Error(
                   `Unhandled text filter type: ${exhaustiveCheck}`
                 );
+              }
             }
           }
         }
@@ -432,9 +433,8 @@ const AdminDownloadStatusTable: React.FC = () => {
                     shiftDown?: boolean
                   ) => {
                     if (order) {
-                      shiftDown
-                        ? setSort({ ...sort, [column]: order })
-                        : setSort({ [column]: order });
+                      if (shiftDown) setSort({ ...sort, [column]: order });
+                      else setSort({ [column]: order });
                     } else {
                       const { [column]: order, ...restOfSort } = sort;
                       setSort(restOfSort);

@@ -258,7 +258,7 @@ describe('Dataset table component', () => {
 
     await user.click(accordion);
 
-    const filterPanel = await screen.getByLabelText(
+    const filterPanel = screen.getByLabelText(
       'facetDimensionLabel.Dataset.name filter panel'
     );
 
@@ -806,15 +806,13 @@ describe('Dataset table component', () => {
 
     renderComponent(FACILITY_NAME.isis);
 
-    await waitFor(async () => {
-      // the title should not be rendered as a link...
-      expect(
-        screen.queryByRole('link', { name: 'Dataset test name' })
-      ).toBeNull();
-      // ...but it should still be rendered as a normal text
-      expect(screen.getByText('Dataset test name')).toBeInTheDocument();
-    });
-    expect(await screen.findByText('10 B')).toBeInTheDocument();
+    // title should rendered as a normal text
+    expect(await screen.findByText('Dataset test name')).toBeInTheDocument();
+    // but not a link
+    expect(
+      screen.queryByRole('link', { name: 'Dataset test name' })
+    ).toBeNull();
+    expect(screen.getByText('10 B')).toBeInTheDocument();
   });
 
   it('does not render ISIS link when facilityCycleId cannot be found', async () => {
@@ -830,14 +828,12 @@ describe('Dataset table component', () => {
 
     renderComponent(FACILITY_NAME.isis);
 
-    await waitFor(async () => {
-      // the title should not be rendered as a link...
-      expect(
-        screen.queryByRole('link', { name: 'Dataset test name' })
-      ).toBeNull();
-      // ...but it should still be rendered as a normal text
-      expect(screen.getByText('Dataset test name')).toBeInTheDocument();
-    });
+    // title should rendered as a normal text
+    expect(await screen.findByText('Dataset test name')).toBeInTheDocument();
+    // but not a link
+    expect(
+      screen.queryByRole('link', { name: 'Dataset test name' })
+    ).toBeNull();
   });
 
   it('displays only the dataset name when there is no generic investigation to link to', async () => {
@@ -857,14 +853,12 @@ describe('Dataset table component', () => {
 
     renderComponent('data');
 
-    await waitFor(async () => {
-      // the title should not be rendered as a link...
-      expect(
-        screen.queryByRole('link', { name: 'Dataset test name' })
-      ).toBeNull();
-      // ...but it should still be rendered as a normal text
-      expect(screen.getByText('Dataset test name')).toBeInTheDocument();
-    });
+    // title should rendered as a normal text
+    expect(await screen.findByText('Dataset test name')).toBeInTheDocument();
+    // but not a link
+    expect(
+      screen.queryByRole('link', { name: 'Dataset test name' })
+    ).toBeNull();
   });
 
   it('displays only the dataset name when there is no DLS investigation to link to', async () => {
@@ -889,14 +883,12 @@ describe('Dataset table component', () => {
     );
     renderComponent(FACILITY_NAME.dls);
 
-    await waitFor(async () => {
-      // the title should not be rendered as a link...
-      expect(
-        screen.queryByRole('link', { name: 'Dataset test name' })
-      ).toBeNull();
-      // ...but it should still be rendered as a normal text
-      expect(screen.getByText('Dataset test name')).toBeInTheDocument();
-    });
+    // title should rendered as a normal text
+    expect(await screen.findByText('Dataset test name')).toBeInTheDocument();
+    // but not a link
+    expect(
+      screen.queryByRole('link', { name: 'Dataset test name' })
+    ).toBeNull();
   });
 
   it('displays only the dataset name when there is no ISIS investigation to link to', async () => {
@@ -921,13 +913,11 @@ describe('Dataset table component', () => {
     );
     renderComponent(FACILITY_NAME.isis);
 
-    await waitFor(async () => {
-      // the title should not be rendered as a link...
-      expect(
-        screen.queryByRole('link', { name: 'Dataset test name' })
-      ).toBeNull();
-      // ...but it should still be rendered as a normal text
-      expect(screen.getByText('Dataset test name')).toBeInTheDocument();
-    });
+    // title should rendered as a normal text
+    expect(await screen.findByText('Dataset test name')).toBeInTheDocument();
+    // but not a link
+    expect(
+      screen.queryByRole('link', { name: 'Dataset test name' })
+    ).toBeNull();
   });
 });

@@ -183,11 +183,9 @@ describe('DownloadProgressIndicator', () => {
 
     renderComponent();
 
-    await waitFor(async () => {
-      const progressBar = await screen.findByRole('progressbar');
-      expect(progressBar).toBeInTheDocument();
-      expect(progressBar).toHaveAttribute('aria-valuenow', '20');
-    });
+    const progressBar = await screen.findByRole('progressbar');
+    expect(progressBar).toBeInTheDocument();
+    expect(progressBar).toHaveAttribute('aria-valuenow', '20');
     expect(screen.getByText('20%')).toBeInTheDocument();
   });
 

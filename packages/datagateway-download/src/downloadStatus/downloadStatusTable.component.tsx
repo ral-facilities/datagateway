@@ -188,9 +188,10 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
             case 'exact':
               satisfiedFilters.push(tableValue.toLowerCase() === filterKeyword);
               break;
-            default:
+            default: {
               const exhaustiveCheck: never = filter.type;
               throw new Error(`Unhandled text filter type: ${exhaustiveCheck}`);
+            }
           }
 
           continue;
@@ -355,9 +356,8 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
               shiftDown?: boolean
             ) => {
               if (order) {
-                shiftDown
-                  ? setSort({ ...sort, [column]: order })
-                  : setSort({ [column]: order });
+                if (shiftDown) setSort({ ...sort, [column]: order });
+                else setSort({ [column]: order });
               } else {
                 const { [column]: order, ...restOfSort } = sort;
                 setSort(restOfSort);

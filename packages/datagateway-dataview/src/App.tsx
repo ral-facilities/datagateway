@@ -33,7 +33,7 @@ if (import.meta.env.MODE === 'development') {
   middleware.push(logger);
 }
 
-/* eslint-disable no-underscore-dangle, @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const composeEnhancers =
   (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 

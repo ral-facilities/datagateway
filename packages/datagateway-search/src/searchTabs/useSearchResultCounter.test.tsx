@@ -1,4 +1,4 @@
-import { renderHook, waitFor } from '@testing-library/react';
+import { renderHook } from '@testing-library/react';
 import * as React from 'react';
 import type { MockedFunction } from 'vitest';
 import { mockSearchResponses } from '../testData';
@@ -42,15 +42,13 @@ describe('useSearchResultCounter', () => {
       }
     );
 
-    waitFor(() => {
-      expect(mockDispatch).toHaveBeenLastCalledWith({
-        type: 'UPDATE_SEARCH_RESULT_COUNT',
-        payload: {
-          type: 'Investigation',
-          count: 3,
-          hasMore: false,
-        },
-      });
+    expect(mockDispatch).toHaveBeenLastCalledWith({
+      type: 'UPDATE_SEARCH_RESULT_COUNT',
+      payload: {
+        type: 'Investigation',
+        count: 3,
+        hasMore: false,
+      },
     });
   });
 
@@ -70,7 +68,7 @@ describe('useSearchResultCounter', () => {
     expect(mockDispatch).not.toBeCalled();
   });
 
-  it('resets search result count when isFetching is set to true', async () => {
+  it('resets search result count when isFetching is set to true', () => {
     const { rerender } = renderHook(
       (props: Partial<Parameters<typeof useSearchResultCounter>[0]>) =>
         useSearchResultCounter({
@@ -85,26 +83,22 @@ describe('useSearchResultCounter', () => {
       }
     );
 
-    await waitFor(() => {
-      expect(mockDispatch).toHaveBeenLastCalledWith({
-        type: 'UPDATE_SEARCH_RESULT_COUNT',
-        payload: {
-          type: 'Investigation',
-          count: 3,
-          hasMore: false,
-        },
-      });
+    expect(mockDispatch).toHaveBeenLastCalledWith({
+      type: 'UPDATE_SEARCH_RESULT_COUNT',
+      payload: {
+        type: 'Investigation',
+        count: 3,
+        hasMore: false,
+      },
     });
 
     rerender({
       isFetching: true,
     });
 
-    await waitFor(() => {
-      expect(mockDispatch).toHaveBeenLastCalledWith({
-        type: 'RESET_SEARCH_RESULT_COUNT',
-        payload: 'Investigation',
-      });
+    expect(mockDispatch).toHaveBeenLastCalledWith({
+      type: 'RESET_SEARCH_RESULT_COUNT',
+      payload: 'Investigation',
     });
   });
 
@@ -120,15 +114,13 @@ describe('useSearchResultCounter', () => {
       { wrapper: Wrapper }
     );
 
-    waitFor(() => {
-      expect(mockDispatch).toHaveBeenCalledWith({
-        type: 'UPDATE_SEARCH_RESULT_COUNT',
-        payload: {
-          type: 'Investigation',
-          count: 3,
-          hasMore: true,
-        },
-      });
+    expect(mockDispatch).toHaveBeenCalledWith({
+      type: 'UPDATE_SEARCH_RESULT_COUNT',
+      payload: {
+        type: 'Investigation',
+        count: 3,
+        hasMore: true,
+      },
     });
   });
 
@@ -143,19 +135,17 @@ describe('useSearchResultCounter', () => {
       { wrapper: Wrapper }
     );
 
-    waitFor(() => {
-      expect(mockDispatch).toHaveBeenCalledWith({
-        type: 'UPDATE_SEARCH_RESULT_COUNT',
-        payload: {
-          type: 'Investigation',
-          count: 3,
-          hasMore: false,
-        },
-      });
+    expect(mockDispatch).toHaveBeenCalledWith({
+      type: 'UPDATE_SEARCH_RESULT_COUNT',
+      payload: {
+        type: 'Investigation',
+        count: 3,
+        hasMore: false,
+      },
     });
   });
 
-  it('dispatches the same search result count after fetching and the same search responses are given', async () => {
+  it('dispatches the same search result count after fetching and the same search responses are given', () => {
     const { rerender } = renderHook(
       (props: Partial<Parameters<typeof useSearchResultCounter>[0]>) =>
         useSearchResultCounter({
@@ -168,24 +158,20 @@ describe('useSearchResultCounter', () => {
       { wrapper: Wrapper }
     );
 
-    await waitFor(() => {
-      expect(mockDispatch).toHaveBeenLastCalledWith({
-        type: 'UPDATE_SEARCH_RESULT_COUNT',
-        payload: {
-          type: 'Investigation',
-          count: 3,
-          hasMore: false,
-        },
-      });
+    expect(mockDispatch).toHaveBeenLastCalledWith({
+      type: 'UPDATE_SEARCH_RESULT_COUNT',
+      payload: {
+        type: 'Investigation',
+        count: 3,
+        hasMore: false,
+      },
     });
 
     rerender({ isFetching: true });
 
-    await waitFor(() => {
-      expect(mockDispatch).toHaveBeenLastCalledWith({
-        type: 'RESET_SEARCH_RESULT_COUNT',
-        payload: 'Investigation',
-      });
+    expect(mockDispatch).toHaveBeenLastCalledWith({
+      type: 'RESET_SEARCH_RESULT_COUNT',
+      payload: 'Investigation',
     });
 
     rerender({
@@ -193,15 +179,13 @@ describe('useSearchResultCounter', () => {
       searchResponses: mockSearchResponses,
     });
 
-    await waitFor(() => {
-      expect(mockDispatch).toHaveBeenLastCalledWith({
-        type: 'UPDATE_SEARCH_RESULT_COUNT',
-        payload: {
-          type: 'Investigation',
-          count: 3,
-          hasMore: false,
-        },
-      });
+    expect(mockDispatch).toHaveBeenLastCalledWith({
+      type: 'UPDATE_SEARCH_RESULT_COUNT',
+      payload: {
+        type: 'Investigation',
+        count: 3,
+        hasMore: false,
+      },
     });
   });
 });

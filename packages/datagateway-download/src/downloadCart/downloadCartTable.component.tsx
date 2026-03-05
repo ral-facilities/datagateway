@@ -137,7 +137,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
           ...item,
           size: fileSizesAndCounts?.[index]?.data?.fileSize ?? -1,
           fileCount: fileSizesAndCounts?.[index]?.data?.fileCount ?? -1,
-        } as DownloadCartTableItem)
+        }) as DownloadCartTableItem
     );
     const filteredData = sizeAndCountAddedData?.filter((item) => {
       for (const [key, value] of Object.entries(filters)) {
@@ -155,9 +155,10 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
             case 'exact':
               if (tableValue !== value.value) return false;
               break;
-            default:
+            default: {
               const exhaustiveCheck: never = value.type;
               throw new Error(`Unhandled text filter type: ${exhaustiveCheck}`);
+            }
           }
         }
       }
@@ -301,9 +302,8 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     React.useCallback(
       (column, order, _, shiftDown) => {
         if (order) {
-          shiftDown
-            ? setSort({ ...sort, [column]: order })
-            : setSort({ [column]: order });
+          if (shiftDown) setSort({ ...sort, [column]: order });
+          else setSort({ [column]: order });
         } else {
           const { [column]: order, ...restOfSort } = sort;
           setSort(restOfSort);
@@ -633,8 +633,8 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                         cartMintabilityLoading
                           ? t('downloadCart.mintability_loading')
                           : !mintable
-                          ? t('downloadCart.not_mintable')
-                          : ''
+                            ? t('downloadCart.not_mintable')
+                            : ''
                       }
                       onMouseEnter={() => setGenerateDOIButtonHover(true)}
                       onMouseLeave={() => setGenerateDOIButtonHover(false)}
