@@ -1444,7 +1444,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.14.6, @babel/runtime@npm:^7.16.3, @babel/runtime@npm:^7.17.2, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.20.6, @babel/runtime@npm:^7.20.7, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.23.2, @babel/runtime@npm:^7.23.9, @babel/runtime@npm:^7.24.6, @babel/runtime@npm:^7.26.0, @babel/runtime@npm:^7.28.6, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.14.6, @babel/runtime@npm:^7.16.3, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.20.6, @babel/runtime@npm:^7.20.7, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.23.2, @babel/runtime@npm:^7.23.9, @babel/runtime@npm:^7.24.6, @babel/runtime@npm:^7.26.0, @babel/runtime@npm:^7.28.4, @babel/runtime@npm:^7.28.6, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
   version: 7.28.6
   resolution: "@babel/runtime@npm:7.28.6"
   checksum: 42d8a868c2fc2e9a77927945a6daa7ec03c7ea49e611e0d15442933cdabb12f20e3a6849c729259076c10a4247adec229331d1f94c2d0073ea0979d7853e29fd
@@ -4884,7 +4884,7 @@ __metadata:
     eslint-plugin-prettier: 4.2.1
     hex-to-rgba: 2.0.1
     history: 4.10.1
-    i18next: 22.0.3
+    i18next: 25.8.14
     jsdom: 26.1.0
     lint-staged: 16.2.7
     lodash.debounce: 4.0.8
@@ -4962,7 +4962,7 @@ __metadata:
     eslint-plugin-prettier: 4.2.1
     express: 4.22.1
     history: 4.10.1
-    i18next: 22.0.3
+    i18next: 25.8.14
     i18next-browser-languagedetector: 8.2.0
     i18next-http-backend: 3.0.2
     jsdom: 26.1.0
@@ -5036,7 +5036,7 @@ __metadata:
     express: 4.22.1
     fastq: ^1.19.1
     history: 4.10.1
-    i18next: 22.0.3
+    i18next: 25.8.14
     i18next-browser-languagedetector: 8.2.0
     i18next-http-backend: 3.0.2
     jsdom: 26.1.0
@@ -5110,7 +5110,7 @@ __metadata:
     eslint-plugin-prettier: 4.2.1
     express: 4.22.1
     history: 4.10.1
-    i18next: 22.0.3
+    i18next: 25.8.14
     i18next-browser-languagedetector: 8.2.0
     i18next-http-backend: 3.0.2
     jsdom: 26.1.0
@@ -7140,12 +7140,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next@npm:22.0.3":
-  version: 22.0.3
-  resolution: "i18next@npm:22.0.3"
+"i18next@npm:25.8.14":
+  version: 25.8.14
+  resolution: "i18next@npm:25.8.14"
   dependencies:
-    "@babel/runtime": ^7.17.2
-  checksum: 0ae40923e81f366c6e30126fad070b9188ee567374eb8046dc43ca9dd8bf3c4a3751c2e4c3f60f8d5cfcdb1925b884580cbb6cabfffba684f37c22a019d7f2b2
+    "@babel/runtime": ^7.28.4
+  peerDependencies:
+    typescript: ^5
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: cb6ed2cb699e3c86440c68ffafa473293fbb2f87ae48a2c34a7ee5e5c5a4544cd02254d71047f1603f42dc1a1f8b02e0a446a90c0523d5150e7dca5a4ba7755c
   languageName: node
   linkType: hard
 
