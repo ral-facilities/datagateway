@@ -31,7 +31,7 @@
     "eslint-plugin-cypress": "2.15.1",
     "eslint-plugin-prettier": "4.2.1",
     "history": "4.10.1",
-    "i18next": "22.0.3",
+    "i18next": "25.8.14",
     "i18next-browser-languagedetector": "8.2.0",
     "i18next-http-backend": "3.0.2",
     "jsrsasign": "11.1.0",
