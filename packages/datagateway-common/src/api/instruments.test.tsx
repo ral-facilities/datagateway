@@ -2,7 +2,7 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import axios from 'axios';
 import { History, createMemoryHistory } from 'history';
 import { Instrument } from '../app.types';
-import handleICATError from '../handleICATError';
+import * as handleICATError from '../handleICATError';
 import { createReactQueryWrapper } from '../setupTests';
 import {
   useInstrumentCount,
@@ -11,12 +11,14 @@ import {
   useInstrumentsPaginated,
 } from './instruments';
 
-vi.mock('../handleICATError');
-
 describe('instrument api functions', () => {
   let mockData: Instrument[] = [];
   let history: History;
   let params: URLSearchParams;
+  const handleICATErrorSpy = vi
+    .spyOn(handleICATError, 'default')
+    .mockImplementation(vi.fn());
+
   beforeEach(() => {
     mockData = [
       {
@@ -37,7 +39,7 @@ describe('instrument api functions', () => {
   });
 
   afterEach(() => {
-    vi.mocked(handleICATError).mockClear();
+    vi.mocked(handleICATErrorSpy).mockClear();
     vi.mocked(axios.get).mockClear();
   });
 
@@ -71,7 +73,7 @@ describe('instrument api functions', () => {
           params,
         })
       );
-      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data).toEqual(mockData);
@@ -118,10 +120,15 @@ describe('instrument api functions', () => {
           params,
         })
       );
-      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
-      expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
+      expect(handleICATErrorSpy).toHaveBeenCalledWith(
+        {
+          message: 'Test error',
+        },
+        undefined
+      );
     });
   });
 
@@ -157,14 +164,12 @@ describe('instrument api functions', () => {
           params,
         })
       );
-      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
-      expect(result.current.data.pages).toStrictEqual([mockData[0]]);
+      expect(result.current.data?.pages).toStrictEqual([mockData[0]]);
 
-      await result.current.fetchNextPage({
-        pageParam: { startIndex: 50, stopIndex: 74 },
-      });
+      await result.current.fetchNextPage();
 
       await waitFor(() => expect(result.current.isFetching).toBe(false));
 
@@ -177,11 +182,11 @@ describe('instrument api functions', () => {
       );
       params.set('skip', JSON.stringify(50));
       params.set('limit', JSON.stringify(25));
-      expect(vi.mocked(axios.get).mock.calls[1][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[1][1]?.params.toString()).toBe(
         params.toString()
       );
 
-      expect(result.current.data.pages).toStrictEqual([
+      expect(result.current.data?.pages).toStrictEqual([
         mockData[0],
         mockData[1],
       ]);
@@ -228,10 +233,15 @@ describe('instrument api functions', () => {
           params,
         })
       );
-      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
-      expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
+      expect(handleICATErrorSpy).toHaveBeenCalledWith(
+        {
+          message: 'Test error',
+        },
+        undefined
+      );
     });
   });
 
@@ -260,7 +270,7 @@ describe('instrument api functions', () => {
           params,
         })
       );
-      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data).toEqual(mockData.length);
@@ -282,10 +292,15 @@ describe('instrument api functions', () => {
           params,
         })
       );
-      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
-      expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
+      expect(handleICATErrorSpy).toHaveBeenCalledWith(
+        {
+          message: 'Test error',
+        },
+        undefined
+      );
     });
   });
 
@@ -318,7 +333,7 @@ describe('instrument api functions', () => {
           params,
         })
       );
-      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data).toEqual(mockData[0]);
@@ -334,7 +349,12 @@ describe('instrument api functions', () => {
 
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
+      expect(handleICATErrorSpy).toHaveBeenCalledWith(
+        {
+          message: 'Test error',
+        },
+        undefined
+      );
     });
   });
 });

@@ -1,17 +1,16 @@
 import { AxiosError } from 'axios';
 import log from 'loglevel';
-import handleICATError from './handleICATError';
 import { AnyAction } from 'redux';
+import handleICATError from './handleICATError';
 import {
-  NotificationType,
   InvalidateTokenType,
+  NotificationType,
 } from './state/actions/actions.types';
-
-vi.mock('loglevel');
 
 describe('handleICATError', () => {
   let error: AxiosError;
   let events: CustomEvent<AnyAction>[] = [];
+  const logErrorSpy = vi.spyOn(log, 'error').mockReturnValue();
 
   beforeEach(() => {
     events = [];
@@ -40,7 +39,7 @@ describe('handleICATError', () => {
   it('logs an error and sends a notification to SciGateway', () => {
     handleICATError(error);
 
-    expect(log.error).toHaveBeenCalledWith(
+    expect(logErrorSpy).toHaveBeenCalledWith(
       'Test error message (response data)'
     );
     expect(events.length).toBe(1);
@@ -71,7 +70,7 @@ describe('handleICATError', () => {
 
     handleICATError(error);
 
-    expect(log.error).toHaveBeenCalledWith('Test error message');
+    expect(logErrorSpy).toHaveBeenCalledWith('Test error message');
     expect(events.length).toBe(1);
     expect(events[0].detail).toEqual({
       type: NotificationType,
@@ -93,7 +92,7 @@ describe('handleICATError', () => {
 
     handleICATError(error);
 
-    expect(log.error).toHaveBeenCalledWith('Network Error');
+    expect(logErrorSpy).toHaveBeenCalledWith('Network Error');
     expect(events.length).toBe(1);
     expect(events[0].detail).toEqual({
       type: NotificationType,
@@ -107,7 +106,7 @@ describe('handleICATError', () => {
   it('just logs an error if broadcast is false', () => {
     handleICATError(error, false);
 
-    expect(log.error).toHaveBeenCalledWith(
+    expect(logErrorSpy).toHaveBeenCalledWith(
       'Test error message (response data)'
     );
     expect(events.length).toBe(0);
@@ -127,7 +126,7 @@ describe('handleICATError', () => {
       error.response.status = 403;
       handleICATError(error, false);
 
-      expect(log.error).toHaveBeenCalledWith(
+      expect(logErrorSpy).toHaveBeenCalledWith(
         'Test error message (response data)'
       );
       expect(events.length).toBe(1);
@@ -149,7 +148,7 @@ describe('handleICATError', () => {
         error.response.status = 403;
         handleICATError(error);
 
-        expect(log.error).toHaveBeenCalledWith(
+        expect(logErrorSpy).toHaveBeenCalledWith(
           'Test error message (response data)'
         );
         expect(localStorage.getItem).toBeCalledWith('autoLogin');
@@ -169,7 +168,7 @@ describe('handleICATError', () => {
         };
         handleICATError(error);
 
-        expect(log.error).toHaveBeenCalledWith(
+        expect(logErrorSpy).toHaveBeenCalledWith(
           'Unable to find user by sessionid: null'
         );
         expect(localStorage.getItem).toBeCalledWith('autoLogin');
@@ -197,7 +196,7 @@ describe('handleICATError', () => {
         error.response.status = 403;
         handleICATError(error);
 
-        expect(log.error).toHaveBeenCalledWith(
+        expect(logErrorSpy).toHaveBeenCalledWith(
           'Test error message (response data)'
         );
         expect(localStorage.getItem).toBeCalledWith('autoLogin');
@@ -217,7 +216,7 @@ describe('handleICATError', () => {
         };
         handleICATError(error);
 
-        expect(log.error).toHaveBeenCalledWith(
+        expect(logErrorSpy).toHaveBeenCalledWith(
           'Unable to find user by sessionid: null'
         );
         expect(localStorage.getItem).toBeCalledWith('autoLogin');

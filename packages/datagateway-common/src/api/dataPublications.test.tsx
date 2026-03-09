@@ -2,7 +2,7 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import axios from 'axios';
 import { History, createMemoryHistory } from 'history';
 import { DataPublication } from '../app.types';
-import handleICATError from '../handleICATError';
+import * as handleICATError from '../handleICATError';
 import { createReactQueryWrapper } from '../setupTests';
 import {
   useDataPublication,
@@ -14,12 +14,14 @@ import {
   useDataPublicationsPaginated,
 } from './dataPublications';
 
-vi.mock('../handleICATError');
-
 describe('data publications api functions', () => {
   let mockData: DataPublication[] = [];
   let history: History;
   let params: URLSearchParams;
+  const handleICATErrorSpy = vi
+    .spyOn(handleICATError, 'default')
+    .mockImplementation(vi.fn());
+
   beforeEach(() => {
     mockData = [
       {
@@ -42,7 +44,7 @@ describe('data publications api functions', () => {
   });
 
   afterEach(() => {
-    vi.mocked(handleICATError).mockClear();
+    vi.mocked(handleICATErrorSpy).mockClear();
     vi.mocked(axios.get).mockClear();
   });
 
@@ -116,7 +118,7 @@ describe('data publications api functions', () => {
       expect(vi.mocked(axios.get)).toHaveBeenCalledTimes(2);
     });
 
-    it('sends axios request to fetch paginated data publications and calls handleICATError on failure', async () => {
+    it('sends axios request to fetch paginated data publications and calls handleICATErrorSpy on failure', async () => {
       vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
@@ -139,7 +141,12 @@ describe('data publications api functions', () => {
       expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
-      expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
+      expect(handleICATErrorSpy).toHaveBeenCalledWith(
+        {
+          message: 'Test error',
+        },
+        undefined
+      );
     });
   });
 
@@ -203,9 +210,7 @@ describe('data publications api functions', () => {
       );
       expect(result.current.data?.pages).toStrictEqual([mockData[0]]);
 
-      await result.current.fetchNextPage({
-        pageParam: { startIndex: 50, stopIndex: 74 },
-      });
+      await result.current.fetchNextPage();
 
       await waitFor(() => expect(result.current.isFetching).toBe(false));
 
@@ -239,7 +244,7 @@ describe('data publications api functions', () => {
       expect(vi.mocked(axios.get)).toHaveBeenCalledTimes(3);
     });
 
-    it('sends axios request to fetch infinite data publications and calls handleICATError on failure', async () => {
+    it('sends axios request to fetch infinite data publications and calls handleICATErrorSpy on failure', async () => {
       vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
@@ -262,7 +267,12 @@ describe('data publications api functions', () => {
       expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
-      expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
+      expect(handleICATErrorSpy).toHaveBeenCalledWith(
+        {
+          message: 'Test error',
+        },
+        undefined
+      );
     });
   });
 
@@ -324,7 +334,7 @@ describe('data publications api functions', () => {
       expect(result.current.data).toEqual(mockData[0]);
     });
 
-    it('sends axios request to fetch a single data publication and calls handleICATError on failure', async () => {
+    it('sends axios request to fetch a single data publication and calls handleICATErrorSpy on failure', async () => {
       vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
@@ -377,7 +387,12 @@ describe('data publications api functions', () => {
       expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
-      expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
+      expect(handleICATErrorSpy).toHaveBeenCalledWith(
+        {
+          message: 'Test error',
+        },
+        undefined
+      );
     });
   });
 
@@ -422,7 +437,7 @@ describe('data publications api functions', () => {
       expect(result.current.data).toEqual(mockData);
     });
 
-    it('sends axios request to fetch a single data publication and calls handleICATError on failure', async () => {
+    it('sends axios request to fetch a single data publication and calls handleICATErrorSpy on failure', async () => {
       vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
@@ -454,7 +469,12 @@ describe('data publications api functions', () => {
       expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
-      expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
+      expect(handleICATErrorSpy).toHaveBeenCalledWith(
+        {
+          message: 'Test error',
+        },
+        undefined
+      );
     });
   });
 
@@ -512,7 +532,7 @@ describe('data publications api functions', () => {
       expect(result.current.data).toEqual(mockData.length);
     });
 
-    it('sends axios request to fetch data publication count and calls handleICATError on failure', async () => {
+    it('sends axios request to fetch data publication count and calls handleICATErrorSpy on failure', async () => {
       vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
@@ -531,7 +551,12 @@ describe('data publications api functions', () => {
       expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
-      expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
+      expect(handleICATErrorSpy).toHaveBeenCalledWith(
+        {
+          message: 'Test error',
+        },
+        undefined
+      );
     });
   });
 
@@ -589,9 +614,7 @@ describe('data publications api functions', () => {
       );
       expect(result.current.data?.pages).toStrictEqual([mockData[0]]);
 
-      result.current.fetchNextPage({
-        pageParam: { startIndex: 50, stopIndex: 74 },
-      });
+      result.current.fetchNextPage();
 
       await waitFor(() => result.current.isFetching);
 
@@ -708,7 +731,7 @@ describe('data publications api functions', () => {
       expect(result.current.data?.pages).toStrictEqual([mockData[0]]);
     });
 
-    it("sends axios request to fetch a data publication's content and calls handleICATError on failure", async () => {
+    it("sends axios request to fetch a data publication's content and calls handleICATErrorSpy on failure", async () => {
       vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
@@ -742,7 +765,12 @@ describe('data publications api functions', () => {
       expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
-      expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
+      expect(handleICATErrorSpy).toHaveBeenCalledWith(
+        {
+          message: 'Test error',
+        },
+        undefined
+      );
     });
   });
 
@@ -870,7 +898,7 @@ describe('data publications api functions', () => {
       expect(result.current.data).toEqual(mockData.length);
     });
 
-    it('sends axios request to fetch data publication datafile count and calls handleICATError on failure', async () => {
+    it('sends axios request to fetch data publication datafile count and calls handleICATErrorSpy on failure', async () => {
       vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
@@ -901,7 +929,12 @@ describe('data publications api functions', () => {
       expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
-      expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
+      expect(handleICATErrorSpy).toHaveBeenCalledWith(
+        {
+          message: 'Test error',
+        },
+        undefined
+      );
     });
   });
 });

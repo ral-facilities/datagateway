@@ -17,9 +17,8 @@ describe('datafile api functions', () => {
   let mockData: Datafile[] = [];
   let history: History;
   let params: URLSearchParams;
-  const handleICATErrorSpy = vi
-    .spyOn(handleICATError, 'default')
-    .mockImplementation(vi.fn());
+  let handleICATErrorSpy: ReturnType<typeof vi.spyOn>;
+
   beforeEach(() => {
     mockData = [
       {
@@ -45,10 +44,12 @@ describe('datafile api functions', () => {
       ],
     });
     params = new URLSearchParams();
+    handleICATErrorSpy = vi
+      .spyOn(handleICATError, 'default')
+      .mockImplementation(vi.fn());
   });
 
   afterEach(() => {
-    vi.mocked(handleICATErrorSpy).mockClear();
     vi.mocked(axios.get).mockClear();
     vi.restoreAllMocks();
   });
@@ -379,7 +380,7 @@ describe('datafile api functions', () => {
 
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(handleICATErrorSpy).toHaveBeenCalledWith(error, undefined);
+      expect(handleICATErrorSpy).toHaveBeenCalledWith(error);
     });
   });
 

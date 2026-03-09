@@ -25,7 +25,7 @@ describe('DOI Confirm Dialog component', () => {
     user = userEvent.setup();
     props = {
       open: true,
-      mintingStatus: 'loading',
+      mintingStatus: 'pending',
       data: undefined,
       error: null,
       setClose: vi.fn(),
@@ -36,7 +36,7 @@ describe('DOI Confirm Dialog component', () => {
     vi.clearAllMocks();
   });
 
-  it('should show loading indicator when mintingStatus is loading', async () => {
+  it('should show loading indicator when mintingStatus is pending', async () => {
     renderComponent();
 
     expect(screen.getByRole('progressbar')).toBeInTheDocument();

@@ -381,7 +381,7 @@ describe('PageContainer - Tests', () => {
   it('do not use StyledRouting component on landing pages', async () => {
     vi.mocked(checkInstrumentId).mockResolvedValueOnce(true);
     vi.mocked(useQueryClient, { partial: true }).mockReturnValue({
-      getQueryData: vi.fn(),
+      getQueriesData: vi.fn(),
     });
     history.replace(
       generatePath(paths.dataPublications.landing.isisDataPublicationLanding, {

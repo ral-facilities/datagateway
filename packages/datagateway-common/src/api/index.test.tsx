@@ -10,7 +10,7 @@ import {
   QueryParams,
   SortType,
 } from '../app.types';
-import handleICATError from '../handleICATError';
+import * as handleICATError from '../handleICATError';
 import { createReactQueryWrapper } from '../setupTests';
 import {
   getApiParams,
@@ -36,11 +36,16 @@ import {
   useUpdateView,
 } from './index';
 
-vi.mock('../handleICATError');
-
 describe('generic api functions', () => {
+  let handleICATErrorSpy: ReturnType<typeof vi.spyOn>;
+
+  beforeEach(() => {
+    handleICATErrorSpy = vi
+      .spyOn(handleICATError, 'default')
+      .mockImplementation(vi.fn());
+  });
+
   afterEach(() => {
-    vi.mocked(handleICATError).mockClear();
     vi.mocked(axios.get).mockClear();
   });
 
@@ -1016,7 +1021,7 @@ describe('generic api functions', () => {
           params,
         })
       );
-      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data).toEqual([1, 2, 3]);
@@ -1030,7 +1035,7 @@ describe('generic api functions', () => {
         }
       );
 
-      expect(result.current.status).toBe('loading');
+      expect(result.current.status).toBe('pending');
       expect(result.current.fetchStatus).toBe('idle');
 
       expect(axios.get).not.toHaveBeenCalled();
@@ -1046,7 +1051,12 @@ describe('generic api functions', () => {
 
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
+      expect(handleICATErrorSpy).toHaveBeenCalledWith(
+        {
+          message: 'Test error',
+        },
+        undefined
+      );
     });
   });
 
@@ -1077,7 +1087,7 @@ describe('generic api functions', () => {
           params,
         })
       );
-      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data).toEqual(['1', '2', '3']);
@@ -1096,7 +1106,12 @@ describe('generic api functions', () => {
 
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
+      expect(handleICATErrorSpy).toHaveBeenCalledWith(
+        {
+          message: 'Test error',
+        },
+        undefined
+      );
     });
   });
 
@@ -1134,7 +1149,7 @@ describe('generic api functions', () => {
           params,
         })
       );
-      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
 
@@ -1151,7 +1166,7 @@ describe('generic api functions', () => {
           params,
         })
       );
-      expect(vi.mocked(axios.get).mock.calls[1][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[1][1]?.params.toString()).toBe(
         params.toString()
       );
 
@@ -1168,7 +1183,7 @@ describe('generic api functions', () => {
           params,
         })
       );
-      expect(vi.mocked(axios.get).mock.calls[2][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[2][1]?.params.toString()).toBe(
         params.toString()
       );
 
@@ -1195,7 +1210,7 @@ describe('generic api functions', () => {
         expect(result.current.every((query) => query.isError)).toBe(true)
       );
 
-      expect(handleICATError).toHaveBeenCalledTimes(3);
+      expect(handleICATErrorSpy).toHaveBeenCalledTimes(3);
       expect(result.current.map((query) => query.error)).toEqual(
         Array(3).fill({ message: 'Test error' })
       );

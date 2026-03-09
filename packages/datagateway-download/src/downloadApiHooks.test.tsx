@@ -1,11 +1,15 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import axios, { AxiosError } from 'axios';
+import * as dgCommon from 'datagateway-common';
 import {
   ContributorType,
   Download,
-  handleDOIAPIError,
-  handleICATError,
+  queryCacheConfig,
 } from 'datagateway-common';
 import { createMemoryHistory } from 'history';
 import * as React from 'react';
@@ -30,17 +34,6 @@ import {
 } from './downloadApiHooks';
 import { mockCartItems, mockDownloadItems, mockedSettings } from './testData';
 
-vi.mock('datagateway-common', async () => {
-  const originalModule = await vi.importActual('datagateway-common');
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    retryICATErrors: vi.fn().mockReturnValue(false),
-    handleDOIAPIError: vi.fn(),
-  };
-});
-
 const createTestQueryClient = (): QueryClient =>
   new QueryClient({
     defaultOptions: {
@@ -50,6 +43,7 @@ const createTestQueryClient = (): QueryClient =>
         retryDelay: 0,
       },
     },
+    queryCache: new QueryCache(queryCacheConfig),
   });
 
 const createReactQueryWrapper = (
@@ -82,6 +76,9 @@ describe('Download API react-query hooks test', () => {
   let events: CustomEvent<{
     detail: { type: string; payload?: unknown };
   }>[] = [];
+
+  const handleICATErrorSpy = vi.spyOn(dgCommon, 'handleICATError');
+  const handleDOIAPIErrorSpy = vi.spyOn(dgCommon, 'handleDOIAPIError');
 
   beforeEach(() => {
     events = [];
@@ -210,8 +207,8 @@ describe('Download API react-query hooks test', () => {
         { params: { sessionId: null, items: '*' } }
       );
       expect(result.current.failureCount).toBe(2);
-      expect(handleICATError).toHaveBeenCalledTimes(1);
-      expect(handleICATError).toHaveBeenCalledWith({
+      expect(handleICATErrorSpy).toHaveBeenCalledTimes(1);
+      expect(handleICATErrorSpy).toHaveBeenCalledWith({
         message: 'Test error message',
       });
     });
@@ -280,8 +277,8 @@ describe('Download API react-query hooks test', () => {
         { params: { sessionId: null, items: 'investigation 1' } }
       );
       expect(result.current.failureCount).toBe(2);
-      expect(handleICATError).toHaveBeenCalledTimes(1);
-      expect(handleICATError).toHaveBeenCalledWith({
+      expect(handleICATErrorSpy).toHaveBeenCalledTimes(1);
+      expect(handleICATErrorSpy).toHaveBeenCalledWith({
         message: 'Test error message',
       });
     });
@@ -521,7 +518,7 @@ describe('Download API react-query hooks test', () => {
       });
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(handleICATError).toHaveBeenCalledWith({
+      expect(handleICATErrorSpy).toHaveBeenCalledWith({
         message: 'Test error message',
       });
     });
@@ -784,7 +781,7 @@ describe('Download API react-query hooks test', () => {
       });
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(handleICATError).toHaveBeenCalledWith({
+      expect(handleICATErrorSpy).toHaveBeenCalledWith({
         message: 'Test error message',
       });
     });
@@ -869,15 +866,14 @@ describe('Download API react-query hooks test', () => {
       await waitFor(() =>
         expect(result.current.useAdminDownloads.isSuccess).toBe(true)
       );
-      result.current.useAdminUpdateDownloadStatus.mutate({
-        downloadId: 1,
-        status: 'PREPARING',
-      });
-      await waitFor(() =>
-        expect(result.current.useAdminUpdateDownloadStatus.isError).toBe(true)
-      );
+      await expect(
+        result.current.useAdminUpdateDownloadStatus.mutateAsync({
+          downloadId: 1,
+          status: 'PREPARING',
+        })
+      ).rejects.toThrowError();
 
-      expect(handleICATError).toHaveBeenCalledWith({
+      expect(handleICATErrorSpy).toHaveBeenCalledWith({
         message: 'Test error message',
       });
       expect(result.current.useAdminDownloads.data?.pages).toEqual([
@@ -998,7 +994,7 @@ describe('Download API react-query hooks test', () => {
       });
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(handleDOIAPIError).toHaveBeenCalledWith(error, true, true);
+      expect(handleDOIAPIErrorSpy).toHaveBeenCalledWith(error, true, true);
       expect(axios.post).toHaveBeenCalledWith(
         `${mockedSettings.doiMinterUrl}/draft`,
         {
@@ -1073,7 +1069,7 @@ describe('Download API react-query hooks test', () => {
       });
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(handleDOIAPIError).toHaveBeenCalledWith(error, true, true);
+      expect(handleDOIAPIErrorSpy).toHaveBeenCalledWith(error, true, true);
       expect(axios.put).toHaveBeenCalledWith(
         `${mockedSettings.doiMinterUrl}/draft/1/publish`,
         undefined,
@@ -1120,7 +1116,7 @@ describe('Download API react-query hooks test', () => {
       });
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(handleDOIAPIError).toHaveBeenCalledWith(error, true, true);
+      expect(handleDOIAPIErrorSpy).toHaveBeenCalledWith(error, true, true);
       expect(axios.delete).toHaveBeenCalledWith(
         `${mockedSettings.doiMinterUrl}/draft/1`,
         { headers: { Authorization: 'Bearer null' } }

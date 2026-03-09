@@ -1,24 +1,26 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
 import axios, { type AxiosError } from 'axios';
+import type { DeepPartial } from 'redux';
 import {
   LUCENE_ERROR_CODE,
+  useLuceneFacet,
+  useLuceneSearchInfinite,
   type LuceneError,
   type LuceneSearchParams,
-  useLuceneSearchInfinite,
-  useLuceneFacet,
 } from '.';
-import handleICATError from '../handleICATError';
-import { createReactQueryWrapper } from '../setupTests';
 import type { FiltersType } from '../app.types';
+import * as handleICATError from '../handleICATError';
+import { createReactQueryWrapper } from '../setupTests';
 import { NotificationType } from '../state/actions/actions.types';
-import type { DeepPartial } from 'redux';
-
-vi.mock('../handleICATError');
 
 describe('Lucene actions', () => {
+  const handleICATErrorSpy = vi
+    .spyOn(handleICATError, 'default')
+    .mockImplementation(vi.fn());
+
   afterEach(() => {
     vi.mocked(axios.get).mockClear();
-    vi.mocked(handleICATError).mockClear();
+    vi.mocked(handleICATErrorSpy).mockClear();
   });
 
   describe('useLuceneSearchInfinite', () => {
@@ -382,7 +384,7 @@ describe('Lucene actions', () => {
 
         await waitFor(() => expect(result.current.isError).toBe(true));
 
-        expect(handleICATError).toHaveBeenCalledWith(axiosError);
+        expect(handleICATErrorSpy).toHaveBeenCalledWith(axiosError);
       });
 
       it('for other types of errors', async () => {
@@ -414,7 +416,7 @@ describe('Lucene actions', () => {
 
         await waitFor(() => expect(result.current.isError).toBe(true));
 
-        expect(handleICATError).toHaveBeenCalledWith(axiosError);
+        expect(handleICATErrorSpy).toHaveBeenCalledWith(axiosError);
       });
 
       it('for other internal errors', async () => {
@@ -446,7 +448,7 @@ describe('Lucene actions', () => {
 
         await waitFor(() => expect(result.current.isError).toBe(true));
 
-        expect(handleICATError).toHaveBeenCalledWith(axiosError);
+        expect(handleICATErrorSpy).toHaveBeenCalledWith(axiosError);
       });
     });
   });
@@ -464,9 +466,12 @@ describe('Lucene actions', () => {
 
       const { result } = renderHook(
         () =>
-          useLuceneFacet('Investigation', facets, filters, {
-            select: (data) => data.results,
-          }),
+          useLuceneFacet(
+            'Investigation',
+            facets,
+            filters,
+            (data) => data.results
+          ),
         { wrapper: createReactQueryWrapper() }
       );
 
@@ -501,7 +506,7 @@ describe('Lucene actions', () => {
 
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(handleICATError).toHaveBeenCalledWith('error');
+      expect(handleICATErrorSpy).toHaveBeenCalledWith('error', undefined);
     });
   });
 });

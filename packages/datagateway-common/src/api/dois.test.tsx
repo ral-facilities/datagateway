@@ -25,9 +25,6 @@ import {
   NotificationType,
 } from '../state/actions/actions.types';
 
-vi.mock('loglevel');
-vi.mock('../handleICATError');
-
 describe('handleDOIAPIError', () => {
   const localStorageGetItemMock = vi.spyOn(
     window.localStorage.__proto__,
@@ -39,6 +36,7 @@ describe('handleDOIAPIError', () => {
   let error: AxiosError<{
     detail: { msg: string }[] | string;
   }>;
+  let logErrorSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
     events = [];
@@ -69,6 +67,7 @@ describe('handleDOIAPIError', () => {
       message: 'Test error message',
       toJSON: vi.fn(),
     };
+    logErrorSpy = vi.spyOn(log, 'error').mockReturnValue();
   });
 
   afterEach(() => {
@@ -83,7 +82,7 @@ describe('handleDOIAPIError', () => {
 
     handleDOIAPIError(error);
 
-    expect(log.error).toHaveBeenCalledWith(
+    expect(logErrorSpy).toHaveBeenCalledWith(
       error.response?.data?.detail?.[0]?.msg
     );
     expect(events.length).toBe(1);
@@ -101,9 +100,9 @@ describe('handleDOIAPIError', () => {
       return name === 'autoLogin' ? 'false' : null;
     });
 
-    handleDOIAPIError(error, undefined, undefined, false);
+    handleDOIAPIError(error, false);
 
-    expect(log.error).not.toHaveBeenCalled();
+    expect(logErrorSpy).not.toHaveBeenCalled();
     expect(events.length).toBe(1);
     expect(events[0].detail).toEqual({
       type: InvalidateTokenType,
@@ -120,18 +119,18 @@ describe('handleDOIAPIError', () => {
       error.response.data.detail =
         'Test error message (response data) (string detail)';
     }
-    handleDOIAPIError(error, undefined, undefined, true);
+    handleDOIAPIError(error, true);
 
-    expect(log.error).toHaveBeenCalledWith(error.response.data.detail);
+    expect(logErrorSpy).toHaveBeenCalledWith(error.response.data.detail);
     expect(events.length).toBe(0);
   });
 
   it('should handle other errors by broadcasting a message if broadcast condition is true', async () => {
     error.response = undefined;
 
-    handleDOIAPIError(error, undefined, undefined, false, true);
+    handleDOIAPIError(error, false, true);
 
-    expect(log.error).not.toHaveBeenCalled();
+    expect(logErrorSpy).not.toHaveBeenCalled();
     expect(events.length).toBe(1);
     expect(events[0].detail).toEqual({
       type: NotificationType,
@@ -195,6 +194,12 @@ describe('isMintabilityErrorExpected', () => {
 });
 
 describe('doi api functions', () => {
+  let logErrorSpy: ReturnType<typeof vi.spyOn>;
+
+  beforeEach(() => {
+    logErrorSpy = vi.spyOn(log, 'error').mockReturnValue();
+  });
+
   afterEach(() => {
     vi.clearAllMocks();
   });
@@ -211,7 +216,7 @@ describe('doi api functions', () => {
           wrapper: createReactQueryWrapper(),
         }
       );
-      expect(result.current.status).toBe('loading');
+      expect(result.current.status).toBe('pending');
       expect(result.current.fetchStatus).toBe('idle');
       act(() => {
         result.current.refetch();
@@ -239,14 +244,14 @@ describe('doi api functions', () => {
           wrapper: createReactQueryWrapper(),
         }
       );
-      expect(result.current.status).toBe('loading');
+      expect(result.current.status).toBe('pending');
       expect(result.current.fetchStatus).toBe('idle');
       act(() => {
         result.current.refetch();
       });
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(log.error).toHaveBeenCalledWith(error.message);
+      expect(logErrorSpy).toHaveBeenCalledWith(error.message);
       expect(axios.get).toHaveBeenCalledTimes(1);
     });
 
@@ -265,14 +270,14 @@ describe('doi api functions', () => {
           wrapper: createReactQueryWrapper(),
         }
       );
-      expect(result.current.status).toBe('loading');
+      expect(result.current.status).toBe('pending');
       expect(result.current.fetchStatus).toBe('idle');
       act(() => {
         result.current.refetch();
       });
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(log.error).toHaveBeenCalledWith(error.message);
+      expect(logErrorSpy).toHaveBeenCalledWith(error.message);
       expect(axios.get).toHaveBeenCalledTimes(1);
     });
 
@@ -291,14 +296,14 @@ describe('doi api functions', () => {
           wrapper: createReactQueryWrapper(),
         }
       );
-      expect(result.current.status).toBe('loading');
+      expect(result.current.status).toBe('pending');
       expect(result.current.fetchStatus).toBe('idle');
       act(() => {
         result.current.refetch();
       });
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(log.error).toHaveBeenCalledWith(error.message);
+      expect(logErrorSpy).toHaveBeenCalledWith(error.message);
       expect(axios.get).toHaveBeenCalledTimes(1);
     });
 
@@ -317,14 +322,14 @@ describe('doi api functions', () => {
           wrapper: createReactQueryWrapper(),
         }
       );
-      expect(result.current.status).toBe('loading');
+      expect(result.current.status).toBe('pending');
       expect(result.current.fetchStatus).toBe('idle');
       act(() => {
         result.current.refetch();
       });
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(log.error).toHaveBeenCalledWith(error.message);
+      expect(logErrorSpy).toHaveBeenCalledWith(error.message);
       expect(axios.get).toHaveBeenCalledTimes(4);
     });
   });
@@ -409,7 +414,7 @@ describe('doi api functions', () => {
       });
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(log.error).toHaveBeenCalledWith(error.message);
+      expect(logErrorSpy).toHaveBeenCalledWith(error.message);
 
       expect(axios.post).toHaveBeenCalledWith(
         expect.stringContaining('/draft/pid/version'),
@@ -497,7 +502,7 @@ describe('doi api functions', () => {
       });
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(log.error).toHaveBeenCalledWith(error.message);
+      expect(logErrorSpy).toHaveBeenCalledWith(error.message);
       expect(axios.put).toHaveBeenCalledWith(
         expect.stringContaining('/draft/pid/version/new.version.pid/publish'),
         undefined,
@@ -551,7 +556,7 @@ describe('doi api functions', () => {
       });
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(log.error).toHaveBeenCalledWith(error.message);
+      expect(logErrorSpy).toHaveBeenCalledWith(error.message);
       expect(axios.delete).toHaveBeenCalledWith(
         expect.stringContaining('/draft/pid/version/new.version.pid'),
         { headers: { Authorization: 'Bearer null' } }
@@ -621,7 +626,7 @@ describe('doi api functions', () => {
         { wrapper: createReactQueryWrapper() }
       );
 
-      expect(result.current.status).toBe('loading');
+      expect(result.current.status).toBe('pending');
       expect(result.current.fetchStatus).toBe('idle');
       expect(axios.post).not.toHaveBeenCalled();
     });
@@ -672,7 +677,7 @@ describe('doi api functions', () => {
       );
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(log.error).not.toHaveBeenCalled();
+      expect(logErrorSpy).not.toHaveBeenCalled();
       expect(axios.post).toHaveBeenCalledTimes(1);
     });
   });
@@ -723,7 +728,7 @@ describe('doi api functions', () => {
       });
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(log.error).toHaveBeenCalledWith(error.message);
+      expect(logErrorSpy).toHaveBeenCalledWith(error.message);
       expect(axios.put).toHaveBeenCalledWith(
         expect.stringContaining('/open/1'),
         {},
@@ -764,7 +769,7 @@ describe('useDOI', () => {
       wrapper: createReactQueryWrapper(),
     });
 
-    expect(result.current.status).toBe('loading');
+    expect(result.current.status).toBe('pending');
     expect(result.current.fetchStatus).toBe('idle');
     expect(axios.get).not.toHaveBeenCalled();
   });
@@ -860,7 +865,7 @@ describe('BioPortal API functions', () => {
         }
       );
 
-      expect(result.current.status).toBe('loading');
+      expect(result.current.status).toBe('pending');
       expect(result.current.fetchStatus).toBe('idle');
       expect(axios.get).not.toHaveBeenCalled();
     });
@@ -926,7 +931,7 @@ describe('BioPortal API functions', () => {
         }
       );
 
-      expect(result.current.status).toBe('loading');
+      expect(result.current.status).toBe('pending');
       expect(result.current.fetchStatus).toBe('idle');
       expect(axios.get).not.toHaveBeenCalled();
     });
@@ -939,7 +944,7 @@ describe('BioPortal API functions', () => {
         }
       );
 
-      expect(result.current.status).toBe('loading');
+      expect(result.current.status).toBe('pending');
       expect(result.current.fetchStatus).toBe('idle');
       expect(axios.get).not.toHaveBeenCalled();
     });

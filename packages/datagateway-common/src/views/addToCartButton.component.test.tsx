@@ -19,8 +19,6 @@ import AddToCartButton, {
   AddToCartButtonProps,
 } from './addToCartButton.component';
 
-vi.mock('../handleICATError');
-
 describe('Generic add to cart button', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
@@ -33,17 +31,7 @@ describe('Generic add to cart button', () => {
     return render(
       <Provider store={store}>
         <MemoryRouter>
-          <QueryClientProvider
-            client={
-              new QueryClient({
-                logger: {
-                  log: console.log,
-                  warn: console.warn,
-                  error: vi.fn(),
-                },
-              })
-            }
-          >
+          <QueryClientProvider client={new QueryClient()}>
             <AddToCartButton {...props} />
           </QueryClientProvider>
         </MemoryRouter>
