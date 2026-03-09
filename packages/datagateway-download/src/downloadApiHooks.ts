@@ -5,7 +5,6 @@ import {
   useMutation,
   useQueries,
   useQuery,
-  useQueryClient,
 } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import {
@@ -90,7 +89,6 @@ export const useCart = () => {
 };
 
 export const useRemoveAllFromCart = () => {
-  const queryClient = useQueryClient();
   const settings = React.useContext(DownloadSettingsContext);
   const { facilityName, downloadApiUrl } = settings;
 
@@ -98,8 +96,8 @@ export const useRemoveAllFromCart = () => {
     mutationFn: () =>
       removeAllDownloadCartItems({ facilityName, downloadApiUrl }),
 
-    onSuccess: () => {
-      queryClient.setQueriesData({ queryKey: [QueryKeys.CART] }, []);
+    onSuccess: (_data, _variables, _onMutateResult, context) => {
+      context.client.setQueriesData({ queryKey: [QueryKeys.CART] }, []);
     },
 
     retry: (failureCount: number, error: AxiosError) => {
@@ -118,7 +116,6 @@ export const useRemoveAllFromCart = () => {
 };
 
 export const useRemoveEntityFromCart = () => {
-  const queryClient = useQueryClient();
   const settings = React.useContext(DownloadSettingsContext);
   const { facilityName, downloadApiUrl } = settings;
 
@@ -135,8 +132,8 @@ export const useRemoveEntityFromCart = () => {
         downloadApiUrl,
       }),
 
-    onSuccess: (data) => {
-      queryClient.setQueriesData({ queryKey: [QueryKeys.CART] }, data);
+    onSuccess: (data, _variables, _onMutateResult, context) => {
+      context.client.setQueriesData({ queryKey: [QueryKeys.CART] }, data);
     },
 
     retry: (failureCount: number, error: AxiosError) => {
@@ -234,7 +231,6 @@ export interface UseDownloadDeletedParams {
  * A React query that provides a mutation for deleting a download item.
  */
 export const useDownloadOrRestoreDownload = () => {
-  const queryClient = useQueryClient();
   // Load the download settings for use.
   const downloadSettings = React.useContext(DownloadSettingsContext);
 
@@ -245,13 +241,13 @@ export const useDownloadOrRestoreDownload = () => {
         downloadApiUrl: downloadSettings.downloadApiUrl,
       }),
 
-    onMutate: ({ downloadId, deleted }) => {
-      const prevDownloads = queryClient.getQueriesData({
+    onMutate: ({ downloadId, deleted }, context) => {
+      const prevDownloads = context.client.getQueriesData({
         queryKey: QueryKeys.DOWNLOADS,
       });
 
       if (deleted) {
-        queryClient.setQueriesData<Download[]>(
+        context.client.setQueriesData<Download[]>(
           { queryKey: [QueryKeys.DOWNLOADS] },
           (oldDownloads) =>
             oldDownloads &&
@@ -259,14 +255,15 @@ export const useDownloadOrRestoreDownload = () => {
         );
       }
 
-      return () =>
-        queryClient.setQueriesData(
-          { queryKey: [QueryKeys.DOWNLOADS] },
-          prevDownloads
-        );
+      return { prevDownloads };
     },
 
-    onSuccess: async (_, { downloadId, deleted }) => {
+    onSuccess: async (
+      _data,
+      { downloadId, deleted },
+      _onMutateResult,
+      context
+    ) => {
       if (!deleted) {
         // download is restored (un-deleted), fetch the download info
         const restoredDownload = await getDownload(
@@ -276,7 +273,7 @@ export const useDownloadOrRestoreDownload = () => {
         );
 
         if (restoredDownload) {
-          queryClient.setQueriesData<Download[]>(
+          context.client.setQueriesData<Download[]>(
             { queryKey: [QueryKeys.DOWNLOADS] },
             (downloads) => downloads && [...downloads, restoredDownload]
           );
@@ -284,9 +281,13 @@ export const useDownloadOrRestoreDownload = () => {
       }
     },
 
-    onError: (error: AxiosError, _, rollback) => {
+    onError: (error: AxiosError, _, onMutateResult, context) => {
       handleICATError(error);
-      if (rollback) rollback();
+      if (onMutateResult)
+        context.client.setQueriesData(
+          { queryKey: [QueryKeys.DOWNLOADS] },
+          onMutateResult.prevDownloads
+        );
     },
 
     retry: (failureCount, error) => {
@@ -385,15 +386,15 @@ export const useAdminDownloads = ({
           facilityName: downloadSettings.facilityName,
           downloadApiUrl: downloadSettings.downloadApiUrl,
         },
-        `${buildQueryOffset(filters, sort, downloadSettings.facilityName)} LIMIT ${pageParam.startIndex}, ${
-          pageParam.stopIndex - pageParam.startIndex + 1
+        `${buildQueryOffset(filters, sort, downloadSettings.facilityName)} LIMIT ${pageParam.skip}, ${
+          pageParam.limit
         }`
       ),
     getNextPageParam: (_lastPage, _allPages, lastPageParam) => ({
-      startIndex: lastPageParam.stopIndex + 1,
-      stopIndex: lastPageParam.stopIndex + INFINITE_SCROLL_BATCH_SIZE,
+      skip: lastPageParam.skip + lastPageParam.limit,
+      limit: INFINITE_SCROLL_BATCH_SIZE,
     }),
-    initialPageParam: { startIndex: 0, stopIndex: 49 },
+    initialPageParam: { skip: 0, limit: 50 },
     meta: { icatError: true },
   });
 };
@@ -407,7 +408,6 @@ export interface AdminDownloadDeletedParams {
  * A React hook that provides a mutation function for deleting/restoring admin downloads.
  */
 export const useAdminDownloadDeleted = () => {
-  const queryClient = useQueryClient();
   // Load the download settings for use.
   const downloadSettings = React.useContext(DownloadSettingsContext);
 
@@ -418,7 +418,7 @@ export const useAdminDownloadDeleted = () => {
         downloadApiUrl: downloadSettings.downloadApiUrl,
       }),
 
-    onSuccess: async (_, { downloadId }) => {
+    onSuccess: async (_, { downloadId }, _onMutateResult, context) => {
       const downloads = await fetchAdminDownloads(
         {
           facilityName: downloadSettings.facilityName,
@@ -428,8 +428,8 @@ export const useAdminDownloadDeleted = () => {
       );
       if (downloads.length > 0) {
         const updatedDownload = downloads[0];
-        queryClient.setQueriesData<InfiniteData<Download[]>>(
-          { queryKey: [QueryKeys.ADMIN_DOWNLOADS] },
+        context.client.setQueriesData<InfiniteData<Download[]>>(
+          { queryKey: [QueryKeys.ADMIN_DOWNLOADS], type: 'active' },
           (oldData) =>
             oldData && {
               ...oldData,
@@ -449,9 +449,10 @@ export const useAdminDownloadDeleted = () => {
       handleICATError(error);
     },
 
-    onSettled: () => {
-      queryClient.invalidateQueries({
+    onSettled: (_data, _error, _variables, _onMutateResult, context) => {
+      context.client.invalidateQueries({
         queryKey: [QueryKeys.ADMIN_DOWNLOADS],
+        type: 'active',
       });
     },
   });
@@ -466,7 +467,6 @@ export interface AdminUpdateDownloadStatusParams {
 }
 
 export const useAdminUpdateDownloadStatus = () => {
-  const queryClient = useQueryClient();
   // Load the download settings for use.
   const downloadSettings = React.useContext(DownloadSettingsContext);
 
@@ -477,14 +477,18 @@ export const useAdminUpdateDownloadStatus = () => {
         downloadApiUrl: downloadSettings.downloadApiUrl,
       }),
 
-    onMutate: ({ downloadId, status }) => {
-      const prevDownloads = queryClient.getQueriesData({
+    onMutate: ({ downloadId, status }, context) => {
+      const prevDownloads = context.client.getQueriesData<
+        InfiniteData<Download[]>
+      >({
         queryKey: [QueryKeys.ADMIN_DOWNLOADS],
+        type: 'active',
       });
 
-      queryClient.setQueriesData<InfiniteData<Download[]>>(
+      context.client.setQueriesData<InfiniteData<Download[]>>(
         {
           queryKey: [QueryKeys.ADMIN_DOWNLOADS],
+          type: 'active',
         },
         (oldData) =>
           oldData && {
@@ -497,23 +501,25 @@ export const useAdminUpdateDownloadStatus = () => {
           }
       );
 
-      return () =>
-        queryClient.setQueriesData(
-          {
-            queryKey: [QueryKeys.ADMIN_DOWNLOADS],
-          },
-          prevDownloads
-        );
+      return { prevDownloads };
     },
 
-    onError: (error: AxiosError, _, rollback) => {
+    onError: (error: AxiosError, _, onMutateResult, context) => {
       handleICATError(error);
-      if (rollback) rollback();
+      if (onMutateResult) {
+        onMutateResult.prevDownloads.forEach(([queryKey, prevDownload]) => {
+          context.client.setQueryData<InfiniteData<Download[]>>(
+            queryKey,
+            prevDownload
+          );
+        });
+      }
     },
 
-    onSettled: () => {
-      queryClient.invalidateQueries({
+    onSettled: (_data, _error, _variables, _onMutateResult, context) => {
+      context.client.invalidateQueries({
         queryKey: [QueryKeys.ADMIN_DOWNLOADS],
+        type: 'active',
       });
     },
   });

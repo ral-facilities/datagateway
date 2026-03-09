@@ -11,6 +11,7 @@ import type {
   AdditionalFilters,
   FiltersType,
   Investigation,
+  SkipAndLimitType,
   SortType,
 } from '../app.types';
 import { readSciGatewayToken } from '../parseTokens';
@@ -25,14 +26,16 @@ export const fetchInvestigations = (
     sort: SortType;
     filters: FiltersType;
   },
-  skipAndLimit: { skip: number; limit: number },
   additionalFilters?: AdditionalFilters,
+  skipAndLimit?: SkipAndLimitType,
   ignoreIDSort?: boolean
 ): Promise<Investigation[]> => {
   const params = getApiParams(sortAndFilters, ignoreIDSort);
 
-  params.append('skip', JSON.stringify(skipAndLimit.skip));
-  params.append('limit', JSON.stringify(skipAndLimit.limit));
+  if (skipAndLimit) {
+    params.append('skip', JSON.stringify(skipAndLimit.skip));
+    params.append('limit', JSON.stringify(skipAndLimit.limit));
+  }
 
   additionalFilters?.forEach((filter) => {
     params.append(filter.filterType, filter.filterValue);
@@ -77,15 +80,15 @@ export const useInvestigationsPaginated = (
     queryFn: (params) => {
       const { page, results } = params.queryKey[1];
       const skip = (page - 1) * results;
-      const limit = skip + results;
+      const limit = results;
       return fetchInvestigations(
         apiUrl,
         { sort, filters },
+        additionalFilters,
         {
           skip,
           limit,
         },
-        additionalFilters,
         ignoreIDSort
       );
     },
@@ -117,13 +120,13 @@ export const useInvestigationsInfinite = (
       fetchInvestigations(
         apiUrl,
         { sort, filters },
-        params.pageParam,
         additionalFilters,
+        params.pageParam,
         ignoreIDSort
       ),
     getNextPageParam: (_lastPage, _allPages, lastPageParam) => ({
-      skip: lastPageParam.limit,
-      limit: lastPageParam.limit + INFINITE_SCROLL_BATCH_SIZE,
+      skip: lastPageParam.skip + lastPageParam.limit,
+      limit: INFINITE_SCROLL_BATCH_SIZE,
     }),
     initialPageParam: { skip: 0, limit: 50 },
     meta: { icatError: true },

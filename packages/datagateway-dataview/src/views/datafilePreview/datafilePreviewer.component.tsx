@@ -108,7 +108,7 @@ function DatafilePreviewer({
 
   const {
     data: datafile,
-    isPending: isPendingMetadata,
+    isLoading: isLoadingMetadata,
     error: loadDatafileMetaError,
   } = useDatafileDetails(datafileId, undefined, !Number.isNaN(datafileId));
 
@@ -196,7 +196,7 @@ function DatafilePreviewer({
         code: 'METADATA_UNAVAILABLE',
         errorMessage: loadDatafileMetaError.message,
       });
-    } else if (!isPendingMetadata && !datafileExtension) {
+    } else if (!isLoadingMetadata && !datafileExtension) {
       // if datafile metadata is loaded but datafile extension is null
       // then we know the datafile doesn't have an extension
       setStatus({ code: 'UNKNOWN_EXTENSION' });
@@ -216,13 +216,13 @@ function DatafilePreviewer({
   }, [
     datafileContent,
     datafileExtension,
-    isPendingMetadata,
+    isLoadingMetadata,
     loadDatafileContentError,
     loadDatafileMetaError,
     supportsExtension,
   ]);
 
-  if (isPendingMetadata) {
+  if (isLoadingMetadata) {
     return (
       <Stack alignItems="center" justifyContent="center" spacing={2}>
         <CircularProgress />

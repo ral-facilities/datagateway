@@ -328,7 +328,6 @@ type UsePublishDraftVersionVariables = {
  * @param dataPublicationId The {@link DataPublication} to publish
  */
 export const usePublishDraftVersion = () => {
-  const queryClient = useQueryClient();
   const doiMinterUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.doiMinterUrl
   );
@@ -353,10 +352,12 @@ export const usePublishDraftVersion = () => {
     },
     onSuccess: (
       data,
-      { contentDataPublicationId }: UsePublishDraftVersionVariables
+      { contentDataPublicationId }: UsePublishDraftVersionVariables,
+      _onMutateResult,
+      context
     ) => {
       // resetQueries instead of invalidateQueries as otherwise invalidateQueries shows out-of-date data
-      queryClient.resetQueries({
+      context.client.resetQueries({
         predicate: (query) =>
           // invalidate the my DOIs page query
           (query.queryKey[0] === 'dataPublication' &&

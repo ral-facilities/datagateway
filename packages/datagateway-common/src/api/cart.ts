@@ -1,9 +1,4 @@
-import {
-  UseQueryResult,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { UseQueryResult, useMutation, useQuery } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
@@ -90,7 +85,6 @@ export const useCart = () => {
 export const useAddToCart = (
   entityType: 'investigation' | 'dataset' | 'datafile'
 ) => {
-  const queryClient = useQueryClient();
   const downloadApiUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.downloadApiUrl
   );
@@ -105,8 +99,8 @@ export const useAddToCart = (
         downloadApiUrl,
       }),
 
-    onSuccess: (data) => {
-      queryClient.setQueriesData({ queryKey: ['cart'] }, data);
+    onSuccess: (data, _variables, _onMutateResult, context) => {
+      context.client.setQueriesData({ queryKey: ['cart'] }, data);
     },
 
     retry: (failureCount, error) => {
@@ -127,7 +121,6 @@ export const useAddToCart = (
 export const useRemoveFromCart = (
   entityType: 'investigation' | 'dataset' | 'datafile'
 ) => {
-  const queryClient = useQueryClient();
   const downloadApiUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.downloadApiUrl
   );
@@ -147,8 +140,8 @@ export const useRemoveFromCart = (
         true
       ),
 
-    onSuccess: (data) => {
-      queryClient.setQueriesData({ queryKey: ['cart'] }, data);
+    onSuccess: (data, _variables, _onMutateResult, context) => {
+      context.client.setQueriesData({ queryKey: ['cart'] }, data);
     },
 
     retry: (failureCount, error) => {
@@ -283,12 +276,6 @@ export const getDefaultFileName = (
   return defaultName;
 };
 
-/**
- * Defines the function that when called will roll back any optimistic changes
- * performed during a mutation.
- */
-type RollbackFunction = () => void;
-
 export interface SubmitCartParams {
   transport: string;
   emailAddress: string;
@@ -302,7 +289,6 @@ export interface SubmitCartParams {
  * to query more info.
  */
 export const useSubmitCart = (facilityName: string, downloadApiUrl: string) => {
-  const queryClient = useQueryClient();
   const [t] = useTranslation();
 
   return useMutation({
@@ -329,13 +315,12 @@ export const useSubmitCart = (facilityName: string, downloadApiUrl: string) => {
       );
     },
 
-    onError: (error: AxiosError, _, rollback?: RollbackFunction) => {
+    onError: (error: AxiosError) => {
       handleICATError(error);
-      if (rollback) rollback();
     },
 
-    onSettled: () => {
-      queryClient.invalidateQueries({
+    onSettled: (_data, _error, _variables, _onMutateResult, context) => {
+      context.client.invalidateQueries({
         queryKey: ['cart'],
       });
     },
@@ -502,9 +487,8 @@ export const useQueueVisit = (facilityName: string, downloadApiUrl: string) => {
         downloadApiUrl
       ),
 
-    onError: (error: AxiosError, _, rollback?: RollbackFunction) => {
+    onError: (error: AxiosError) => {
       handleICATError(error);
-      if (rollback) rollback();
     },
   });
 };
@@ -573,9 +557,8 @@ export const useQueueDataCollection = (
         downloadApiUrl
       ),
 
-    onError: (error: AxiosError, _, rollback?: RollbackFunction) => {
+    onError: (error: AxiosError) => {
       handleICATError(error);
-      if (rollback) rollback();
     },
   });
 };

@@ -2,9 +2,13 @@ import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { IndexRange } from 'react-virtualized';
 import { getApiParams, parseSearchToQuery } from '.';
-import { FacilityCycle, FiltersType, SortType } from '../app.types';
+import {
+  FacilityCycle,
+  FiltersType,
+  SkipAndLimitType,
+  SortType,
+} from '../app.types';
 import { readSciGatewayToken } from '../parseTokens';
 import { StateType } from '../state/app.types';
 import { INFINITE_SCROLL_BATCH_SIZE } from '../table/table.component';
@@ -17,16 +21,13 @@ const fetchFacilityCycles = (
     sort: SortType;
     filters: FiltersType;
   },
-  offsetParams?: IndexRange
+  skipAndLimit?: SkipAndLimitType
 ): Promise<FacilityCycle[]> => {
   const params = getApiParams(sortAndFilters);
 
-  if (offsetParams) {
-    params.append('skip', JSON.stringify(offsetParams.startIndex));
-    params.append(
-      'limit',
-      JSON.stringify(offsetParams.stopIndex - offsetParams.startIndex + 1)
-    );
+  if (skipAndLimit) {
+    params.append('skip', JSON.stringify(skipAndLimit.skip));
+    params.append('limit', JSON.stringify(skipAndLimit.limit));
   }
 
   params.append(
@@ -107,15 +108,15 @@ export const useFacilityCyclesPaginated = (
     ] as const,
     queryFn: (params) => {
       const { page, results } = params.queryKey[2];
-      const startIndex = (page - 1) * results;
-      const stopIndex = startIndex + results - 1;
+      const skip = (page - 1) * results;
+      const limit = results;
       return fetchFacilityCycles(
         apiUrl,
         instrumentId,
         { sort, filters },
         {
-          startIndex,
-          stopIndex,
+          skip,
+          limit,
         }
       );
     },
@@ -150,10 +151,10 @@ export const useFacilityCyclesInfinite = (
         params.pageParam
       ),
     getNextPageParam: (_lastPage, _allPages, lastPageParam) => ({
-      startIndex: lastPageParam.stopIndex + 1,
-      stopIndex: lastPageParam.stopIndex + INFINITE_SCROLL_BATCH_SIZE,
+      skip: lastPageParam.skip + lastPageParam.limit,
+      limit: INFINITE_SCROLL_BATCH_SIZE,
     }),
-    initialPageParam: { startIndex: 0, stopIndex: 49 },
+    initialPageParam: { skip: 0, limit: 50 },
     meta: { icatError: true },
     retry: retryICATErrors,
     enabled: isMounted ?? true,

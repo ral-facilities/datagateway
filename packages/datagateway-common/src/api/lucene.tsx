@@ -288,7 +288,7 @@ export const useLuceneFacet = <TSelectData,>(
   datasearchType: DatasearchType,
   facetRequests: FacetRequest[],
   facetFilters: FiltersType,
-  selectFn: (data: SearchResponse) => TSelectData
+  selectFn?: (data: SearchResponse) => TSelectData
 ) => {
   const icatUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.icatUrl
@@ -330,7 +330,7 @@ export const useLuceneSearchInfinite = <
     select?: (
       data: InfiniteData<SearchResponse, SearchAfter | undefined>
     ) => TSelectData;
-  }
+  } = {}
 ) => {
   const icatUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.icatUrl
