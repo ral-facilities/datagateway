@@ -405,14 +405,13 @@ export const useQueueAllowed = (): UseQueryResult<boolean, AxiosError> => {
   );
   const retryICATErrors = useRetryICATErrors();
   return useQuery({
+    // put session id in query key to ensure we refresh if user logs out and logs in as new user
     queryKey: [
       'isQueueAllowed',
       readSciGatewayToken().sessionId,
       facilityName,
       downloadApiUrl,
     ],
-
-    // put session id in here to ensure we refresh if user logs out and logs in as new user
     queryFn: () =>
       fetchQueueAllowed({
         facilityName,

@@ -22,7 +22,6 @@ declare module '@tanstack/react-query' {
 
 export const queryCacheConfig: ConstructorParameters<typeof QueryCache>[0] = {
   onError: (error, query) => {
-    // TODO: is it better to move these to be error handlers like useEntityErrorHandler?
     if (query.meta?.icatError === true) {
       const axiosError = error as AxiosError;
       handleICATError(axiosError, query.meta?.broadcastCondition?.(axiosError));
@@ -57,7 +56,6 @@ export const QueryClientSettingsUpdater: React.FC<{
       queryClient.setDefaultOptions({
         ...opts,
         queries: { ...opts.queries, retry: queryRetries },
-        // TODO: set query cache here? or do it in individual queryclients?
       });
     }
   }, [queryClient, queryRetries]);

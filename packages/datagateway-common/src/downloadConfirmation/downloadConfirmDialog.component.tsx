@@ -16,7 +16,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatBytes } from '../table/cellRenderers/cellContentRenderers';
 
-import { UseMutateFunction, useQueryClient } from '@tanstack/react-query';
+import { UseMutateFunction } from '@tanstack/react-query';
 import {
   QueueDataCollectionParams,
   QueueVisitParams,
@@ -133,8 +133,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       typeof submitDownloadData === 'number' && isDownloadSubmittedSuccessfully,
   });
 
-  const queryClient = useQueryClient();
-
   /**
    * Sorted download types based on whether they are disabled.
    */
@@ -178,13 +176,11 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
   React.useEffect(() => {
     if (props.open) {
-      // TODO: do we need this?
-      queryClient.removeQueries({ queryKey: ['download'] });
       resetSubmitDownloadMutation();
       setDownloadName('');
       setEmailAddress('');
     }
-  }, [props.open, queryClient, resetSubmitDownloadMutation]);
+  }, [props.open, resetSubmitDownloadMutation]);
 
   React.useEffect(() => {
     if (props.open) {

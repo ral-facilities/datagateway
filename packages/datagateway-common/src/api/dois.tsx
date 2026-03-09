@@ -132,7 +132,7 @@ export const useCheckUser = (
     },
     // set enabled false to only fetch on demand when the add creator button is pressed
     enabled: false,
-    gcTime: 0, // TODO: is this really supposed to be cacheTime or is it supposed to be staleTime?
+    staleTime: 0,
   });
 };
 
@@ -215,7 +215,7 @@ export const useCheckDOI = (doi: string, dataCiteUrl: string | undefined) => {
       }) satisfies RelatedIdentifier as RelatedIdentifier,
     // set enabled false to only fetch on demand when the add creator button is pressed
     enabled: false,
-    gcTime: 0, // TODO: is this really supposed to be cacheTime or is it supposed to be staleTime?
+    staleTime: 0,
   });
 };
 

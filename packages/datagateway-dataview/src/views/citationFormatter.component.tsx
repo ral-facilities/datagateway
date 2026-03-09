@@ -87,8 +87,6 @@ const useCitation = (
         else throw new Error('No DOI was supplied');
       }
     },
-
-    gcTime: Infinity, // TODO: is this really supposed to be cacheTime or is it supposed to be staleTime?
   });
 };
 
