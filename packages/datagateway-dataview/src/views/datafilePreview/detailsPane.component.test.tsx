@@ -1,4 +1,4 @@
-import { render, type RenderResult, screen } from '@testing-library/react';
+import { render, screen, type RenderResult } from '@testing-library/react';
 import type { Datafile } from 'datagateway-common';
 import DatafilePreviewerContext from './datafilePreviewerContext';
 import DetailsPane from './detailsPane.component';
@@ -144,6 +144,7 @@ describe('DetailsPane', () => {
 
   it('should show nothing if the datafile previewer context is not given', () => {
     const { container } = render(<DetailsPane />);
+    // eslint-disable-next-line testing-library/no-node-access
     expect(container.children).toHaveLength(0);
   });
 });

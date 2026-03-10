@@ -1,9 +1,8 @@
-import React from 'react';
-import { createTheme } from '@mui/material/styles';
-import DGThemeProvider from './dgThemeProvider.component';
-import { render, screen } from '@testing-library/react';
 import { Box } from '@mui/material';
+import { createTheme } from '@mui/material/styles';
+import { render, screen } from '@testing-library/react';
 import { MicroFrontendId } from './app.types';
+import DGThemeProvider from './dgThemeProvider.component';
 import { SendThemeOptionsType } from './state/actions/actions.types';
 
 describe('DGThemeProvider', () => {

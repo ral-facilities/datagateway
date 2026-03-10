@@ -298,12 +298,16 @@ describe('ISIS Data Publication Landing page', () => {
 
     // actions for investigations should be visible
     expect(
+      // eslint-disable-next-line testing-library/no-node-access
       document.getElementById('add-to-cart-btn-investigation-1')
     ).toBeInTheDocument();
+    // eslint-disable-next-line testing-library/no-node-access
     expect(document.getElementById('download-btn-1')).toBeInTheDocument();
     expect(
+      // eslint-disable-next-line testing-library/no-node-access
       document.getElementById('add-to-cart-btn-investigation-2')
     ).toBeInTheDocument();
+    // eslint-disable-next-line testing-library/no-node-access
     expect(document.getElementById('download-btn-2')).toBeInTheDocument();
   });
 
@@ -350,12 +354,16 @@ describe('ISIS Data Publication Landing page', () => {
 
     // actions for investigations should not be visible
     expect(
+      // eslint-disable-next-line testing-library/no-node-access
       document.getElementById('add-to-cart-btn-investigation-1')
     ).not.toBeInTheDocument();
+    // eslint-disable-next-line testing-library/no-node-access
     expect(document.getElementById('download-btn-1')).not.toBeInTheDocument();
     expect(
+      // eslint-disable-next-line testing-library/no-node-access
       document.getElementById('add-to-cart-btn-investigation-2')
     ).not.toBeInTheDocument();
+    // eslint-disable-next-line testing-library/no-node-access
     expect(document.getElementById('download-btn-2')).not.toBeInTheDocument();
   });
 
@@ -366,6 +374,7 @@ describe('ISIS Data Publication Landing page', () => {
       await screen.findByTestId('landing-dataPublication-user-0')
     ).toBeInTheDocument();
 
+    // eslint-disable-next-line testing-library/no-node-access
     expect(document.getElementById('dataPublication-5')).toMatchInlineSnapshot(`
       <script
         id="dataPublication-5"

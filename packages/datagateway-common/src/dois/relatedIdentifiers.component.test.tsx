@@ -32,7 +32,6 @@ describe('Related identifiers form component', () => {
 
   const TestComponent: React.FC = () => {
     const [relatedIdentifiers, changeRelatedIdentifiers] = React.useState(
-      // eslint-disable-next-line react/prop-types
       props.relatedIdentifiers
     );
 

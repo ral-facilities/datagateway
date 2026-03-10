@@ -1,13 +1,13 @@
 import {
   act,
   render,
-  type RenderResult,
   screen,
   waitFor,
+  type RenderResult,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { downloadDatafile } from 'datagateway-common';
-import { createMemoryHistory, History } from 'history';
+import { History, createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
 import { MemoryRouter, Router } from 'react-router-dom';
 import type { Store } from 'redux';
@@ -81,6 +81,7 @@ describe('ActionButtons', () => {
         </MemoryRouter>
       </Provider>
     );
+    // eslint-disable-next-line testing-library/no-node-access
     expect(container.children).toHaveLength(0);
   });
 

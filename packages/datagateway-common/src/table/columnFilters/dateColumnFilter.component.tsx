@@ -83,9 +83,7 @@ const CustomTextField: React.FC<TextFieldProps> = (renderProps) => {
   const { invalidDateRange, errorText, filterByTime, ...inputProps } =
     renderProps.inputProps ?? {};
 
-  const error =
-    // eslint-disable-next-line react/prop-types
-    (renderProps.error || invalidDateRange) ?? undefined;
+  const error = (renderProps.error || invalidDateRange) ?? undefined;
 
   // Display correct helper text depending on whether filtering by time
   const [fieldType, fieldFormat] = filterByTime
@@ -114,15 +112,15 @@ const DateColumnFilter = (props: DateColumnFilterProps): React.ReactElement => {
     props.defaultFilter?.startDate
       ? new Date(props.defaultFilter.startDate)
       : props.value?.startDate
-      ? new Date(props.value.startDate)
-      : null
+        ? new Date(props.value.startDate)
+        : null
   );
   const [endDate, setEndDate] = useState(
     props.defaultFilter?.endDate
       ? new Date(props.defaultFilter.endDate)
       : props.value?.endDate
-      ? new Date(props.value.endDate)
-      : null
+        ? new Date(props.value.endDate)
+        : null
   );
 
   const invalidDateRange = startDate && endDate && isBefore(endDate, startDate);

@@ -18,7 +18,7 @@ describe('DataGateway HomePage', () => {
     cy.go('back');
 
     cy.origin('https://www.isis.stfc.ac.uk/about/', () => {
-      cy.on('uncaught:exception', (e) => {
+      cy.on('uncaught:exception', (_e) => {
         return false;
       });
     });

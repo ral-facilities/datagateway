@@ -92,7 +92,7 @@ export function useEntity(
     [entityName, entityField, fieldValue, includeFilter],
     async (_) => {
       switch (entityName) {
-        case 'investigation':
+        case 'investigation': {
           const investigations = await fetchInvestigations(
             apiUrl,
             { sort: {}, filters: {} },
@@ -109,7 +109,8 @@ export function useEntity(
             throw Error(
               `Unable to identify single ${entityName} with ${entityField} matching ${fieldValue}`
             );
-        case 'dataset':
+        }
+        case 'dataset': {
           const datasets = await fetchDatasets(
             apiUrl,
             { sort: {}, filters: {} },
@@ -127,7 +128,8 @@ export function useEntity(
             throw Error(
               `Unable to identify single ${entityName} with ${entityField} matching ${fieldValue}`
             );
-        case 'datafile':
+        }
+        case 'datafile': {
           const datafiles = await fetchDatafiles(
             apiUrl,
             { sort: {}, filters: {} },
@@ -144,6 +146,7 @@ export function useEntity(
             throw Error(
               `Unable to identify single ${entityName} with ${entityField} matching ${fieldValue}`
             );
+        }
         default:
           throw Error(
             'Entity type not one of investigation, dataset or datafile'

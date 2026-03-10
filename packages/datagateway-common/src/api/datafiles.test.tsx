@@ -145,7 +145,7 @@ describe('datafile api functions', () => {
 
   describe('useDatafilesInfinite', () => {
     it('sends axios request to fetch infinite datafiles and returns successful response', async () => {
-      vi.mocked(axios.get).mockImplementation((url, options) =>
+      vi.mocked(axios.get).mockImplementation((_url, options) =>
         options?.params.get('skip') === '0'
           ? Promise.resolve({ data: mockData[0] })
           : Promise.resolve({ data: mockData[1] })
@@ -379,7 +379,7 @@ describe('datafile api functions', () => {
         (data) =>
           ({
             text: () => Promise.resolve(data?.[0] as string),
-          } as unknown as Blob)
+          }) as unknown as Blob
       );
 
       const { result } = renderHook(

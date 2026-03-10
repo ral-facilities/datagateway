@@ -96,6 +96,8 @@ const DLSMyDataTable = (): React.ReactElement => {
     [fetchNextPage]
   );
 
+  const [currentDate] = React.useState(() => new Date(Date.now()));
+
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
@@ -157,7 +159,7 @@ const DLSMyDataTable = (): React.ReactElement => {
         filterComponent: dateFilter,
         defaultSort: 'desc',
         defaultFilter: {
-          endDate: `${new Date(Date.now()).toISOString().split('T')[0]}`,
+          endDate: `${currentDate.toISOString().split('T')[0]}`,
         },
       },
       {
@@ -168,7 +170,7 @@ const DLSMyDataTable = (): React.ReactElement => {
         filterComponent: dateFilter,
       },
     ],
-    [t, dateFilter, textFilter, view]
+    [t, textFilter, dateFilter, currentDate, view]
   );
 
   return (

@@ -154,13 +154,13 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     () =>
       dataciteData?.attributes.subjects.reduce(
         (result: [BioPortalTerm[], string[]], element) => {
-          element.valueUri && element.subjectScheme?.includes('PaNET')
-            ? result[0].push({
-                '@id': element.valueUri,
-                prefLabel: element.subject,
-                links: { descendants: '' }, // just put empty string here - it's not needed for display
-              })
-            : result[1].push(element.subject);
+          if (element.valueUri && element.subjectScheme?.includes('PaNET'))
+            result[0].push({
+              '@id': element.valueUri,
+              prefLabel: element.subject,
+              links: { descendants: '' }, // just put empty string here - it's not needed for display
+            });
+          else result[1].push(element.subject);
 
           return result;
         },
@@ -385,52 +385,53 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
           },
         ]
       : isVersionDOI
-      ? [
-          {
-            content: function dataPublicationPidFormat(
-              entity: DataPublication
-            ) {
-              return <StyledDOI doi={entity.pid} />;
+        ? [
+            {
+              content: function dataPublicationPidFormat(
+                entity: DataPublication
+              ) {
+                return <StyledDOI doi={entity.pid} />;
+              },
+              label: t('datapublications.pid'),
             },
-            label: t('datapublications.pid'),
-          },
-          {
-            content: function dataPublicationPidFormat(
-              _entity: DataPublication
-            ) {
-              const conceptPid = data?.relatedItems?.filter(
-                (relatedItem) =>
-                  relatedItem.relationType === DOIRelationType.IsVersionOf
-              )?.[0]?.identifier;
-              if (conceptPid) return <StyledDOI doi={conceptPid} />;
+            {
+              content: function dataPublicationPidFormat(
+                _entity: DataPublication
+              ) {
+                const conceptPid = data?.relatedItems?.filter(
+                  (relatedItem) =>
+                    relatedItem.relationType === DOIRelationType.IsVersionOf
+                )?.[0]?.identifier;
+                if (conceptPid) return <StyledDOI doi={conceptPid} />;
+              },
+              label: `${t('datapublications.concept')} ${t(
+                'datapublications.pid'
+              )}`,
             },
-            label: `${t('datapublications.concept')} ${t(
-              'datapublications.pid'
-            )}`,
-          },
-        ]
-      : [
-          {
-            content: function dataPublicationPidFormat(
-              _entity: DataPublication
-            ) {
-              if (latestVersionPid) return <StyledDOI doi={latestVersionPid} />;
+          ]
+        : [
+            {
+              content: function dataPublicationPidFormat(
+                _entity: DataPublication
+              ) {
+                if (latestVersionPid)
+                  return <StyledDOI doi={latestVersionPid} />;
+              },
+              label: `${t('datapublications.latest_version')} ${t(
+                'datapublications.pid'
+              )}`,
             },
-            label: `${t('datapublications.latest_version')} ${t(
-              'datapublications.pid'
-            )}`,
-          },
-          {
-            content: function dataPublicationPidFormat(
-              entity: DataPublication
-            ) {
-              return <StyledDOI doi={entity.pid} />;
+            {
+              content: function dataPublicationPidFormat(
+                entity: DataPublication
+              ) {
+                return <StyledDOI doi={entity.pid} />;
+              },
+              label: `${t('datapublications.concept')} ${t(
+                'datapublications.pid'
+              )}`,
             },
-            label: `${t('datapublications.concept')} ${t(
-              'datapublications.pid'
-            )}`,
-          },
-        ]),
+          ]),
     {
       content: (dataPublication: DataPublication) =>
         dataPublication.publicationDate?.slice(0, 10) ?? '',

@@ -393,7 +393,9 @@ function uniqBy<T>(array: T[], key: (item: T) => number | string): T[] {
   const seen: Record<number | string, boolean> = {};
   return array.filter(function (item) {
     const k = key(item);
-    return seen.hasOwnProperty(k) ? false : (seen[k] = true);
+    return Object.prototype.hasOwnProperty.call(seen, k)
+      ? false
+      : (seen[k] = true);
   });
 }
 

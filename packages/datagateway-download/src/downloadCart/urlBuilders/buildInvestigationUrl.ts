@@ -1,6 +1,6 @@
 import {
-  type AdditionalFilters,
   fetchInvestigations,
+  type AdditionalFilters,
   type Investigation,
 } from 'datagateway-common';
 
@@ -88,7 +88,7 @@ async function buildInvestigationUrl({
   if (!investigation) return null;
 
   switch (facilityName) {
-    case 'ISIS':
+    case 'ISIS': {
       const instrument =
         investigation?.investigationInstruments?.[0]?.instrument;
       if (!instrument) return null;
@@ -98,7 +98,7 @@ async function buildInvestigationUrl({
       if (!facilityCycle) return null;
 
       return `/browse/instrument/${instrument.id}/facilityCycle/${facilityCycle.id}/investigation/${investigation.id}/dataset`;
-
+    }
     case 'DLS':
       return `/browse/proposal/${investigation.name}/investigation/${investigation.id}/dataset`;
   }

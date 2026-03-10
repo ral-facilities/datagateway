@@ -31,7 +31,7 @@ const parseJwt = (token) => {
   const base64Url = token.split('.')[1];
   const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
   const payload = decodeURIComponent(
-    atob(base64).replace(/(.)/g, function (m, p) {
+    atob(base64).replace(/(.)/g, function (_m, p) {
       var code = p.charCodeAt(0).toString(16).toUpperCase();
       return '%' + ('00' + code).slice(-2);
     })
@@ -76,8 +76,8 @@ Cypress.Commands.add('login', (credentials, user) => {
               body.mechanism === 'anon'
                 ? 'anon/anon'
                 : user
-                ? user
-                : 'Michael222',
+                  ? user
+                  : 'Michael222',
           };
           const jwt = jsrsasign.KJUR.jws.JWS.sign(
             'HS256',
@@ -250,7 +250,7 @@ Cypress.Commands.add('seedDownloadCart', (cartItems) => {
     const entities = ['investigation', 'dataset', 'datafile'];
     items = Array(60)
       .fill()
-      .map((value, index) => `${entities[index % 2]} ${index}`)
+      .map((_value, index) => `${entities[index % 2]} ${index}`)
       .join(', ');
   } else {
     items = cartItems.join(', ');
@@ -280,7 +280,6 @@ Cypress.Commands.add('seedDownloadCart', (cartItems) => {
 
 Cypress.Commands.add('dumpAliases', function (store, aliases) {
   if (aliases == null) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { currentTest, test, _runnable, ...rest } = this;
     Object.assign(store, rest);
   } else {

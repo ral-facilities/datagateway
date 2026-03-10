@@ -23,6 +23,40 @@ export interface DownloadButtonProps {
   variant?: 'text' | 'outlined' | 'contained' | 'icon';
 }
 
+const BaseDownloadButton: React.FC<
+  { label?: string } & Pick<DownloadButtonProps, 'variant' | 'entityId'> &
+    Omit<ButtonProps, 'variant'> &
+    IconButtonProps
+> = (props) => {
+  const [t] = useTranslation();
+  const { label, variant, entityId, ...restProps } = props;
+
+  const commonProps = {
+    id: `download-btn-${entityId}`,
+    'aria-label': t('buttons.download'),
+    className: 'tour-dataview-download',
+    ...restProps,
+  };
+
+  if (variant === 'icon')
+    return (
+      <IconButton size={'small'} {...commonProps}>
+        <GetApp />
+      </IconButton>
+    );
+  return (
+    <Button
+      variant={variant ?? 'contained'}
+      color="primary"
+      startIcon={<GetApp />}
+      disableElevation
+      {...commonProps}
+    >
+      {t('buttons.download')}
+    </Button>
+  );
+};
+
 const DownloadButton: React.FC<DownloadButtonProps> = (
   props: DownloadButtonProps
 ) => {
@@ -57,36 +91,6 @@ const DownloadButton: React.FC<DownloadButtonProps> = (
 
   const disableIfAnon = disableAnonDownload && loggedInAnonymously;
 
-  const BaseDownloadButton = React.useCallback(
-    (props: ButtonProps & IconButtonProps): React.ReactElement => {
-      const OurButton = (props: ButtonProps): React.ReactElement => (
-        <Button
-          variant={variant && variant !== 'icon' ? variant : 'contained'}
-          color="primary"
-          startIcon={<GetApp />}
-          disableElevation
-          {...props}
-        >
-          {t('buttons.download')}
-        </Button>
-      );
-      const OurIconButton = (props: IconButtonProps): React.ReactElement => (
-        <IconButton size={'small'} {...props}>
-          <GetApp />
-        </IconButton>
-      );
-      const ButtonToUse = variant === 'icon' ? OurIconButton : OurButton;
-      return (
-        <ButtonToUse
-          id={`download-btn-${entityId}`}
-          aria-label={t('buttons.download')}
-          className="tour-dataview-download"
-          {...props}
-        />
-      );
-    },
-    [variant, t, entityId]
-  );
   if (!entityName) return null;
   return (
     <StyledTooltip
@@ -94,8 +98,8 @@ const DownloadButton: React.FC<DownloadButtonProps> = (
         disableIfAnon
           ? t('buttons.disallow_anon_tooltip')
           : entitySize <= 0
-          ? t<string, string>('buttons.unable_to_download_tooltip')
-          : ''
+            ? t<string, string>('buttons.unable_to_download_tooltip')
+            : ''
       }
       id={`tooltip-${entityId}`}
       placement="left"
@@ -103,6 +107,8 @@ const DownloadButton: React.FC<DownloadButtonProps> = (
     >
       <span style={variant !== 'icon' ? { margin: 'auto' } : {}}>
         <BaseDownloadButton
+          variant={variant}
+          entityId={entityId}
           onClick={() => {
             downloadData(entityType, entityId, entityName);
           }}

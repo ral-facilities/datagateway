@@ -206,8 +206,8 @@ describe('investigation api functions', () => {
 
   describe('useInvestigationsInfinite', () => {
     it('sends axios request to fetch infinite investigations and returns successful response', async () => {
-      vi.mocked(axios.get).mockImplementation((url, options) =>
-        options.params.get('skip') === '0'
+      vi.mocked(axios.get).mockImplementation((_url, options) =>
+        options?.params.get('skip') === '0'
           ? Promise.resolve({ data: mockData[0] })
           : Promise.resolve({ data: mockData[1] })
       );
@@ -295,8 +295,8 @@ describe('investigation api functions', () => {
     });
 
     it('sends axios request to fetch infinite investigations and returns successful response when ignoreIDSort is true', async () => {
-      vi.mocked(axios.get).mockImplementation((url, options) =>
-        options.params.get('skip') === '0'
+      vi.mocked(axios.get).mockImplementation((_url, options) =>
+        options?.params.get('skip') === '0'
           ? Promise.resolve({ data: mockData[0] })
           : Promise.resolve({ data: mockData[1] })
       );

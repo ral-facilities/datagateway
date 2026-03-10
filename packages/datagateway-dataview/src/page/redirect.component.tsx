@@ -117,33 +117,33 @@ export const GenericRedirect: React.FC = () => {
           }
         : undefined
       : entityName === 'dataset'
-      ? {
-          filterType: 'include',
-          filterValue: JSON.stringify([
-            'investigation',
-            ...(isISIS
-              ? [
-                  'investigation.investigationInstruments.instrument',
-                  'investigation.investigationFacilityCycles.facilityCycle',
-                ]
-              : []),
-          ]),
-        }
-      : entityName === 'datafile'
-      ? {
-          filterType: 'include',
-          filterValue: JSON.stringify([
-            'dataset.investigation',
-            'dataset',
-            ...(isISIS
-              ? [
-                  'dataset.investigation.investigationInstruments.instrument',
-                  'dataset.investigation.investigationFacilityCycles.facilityCycle',
-                ]
-              : []),
-          ]),
-        }
-      : undefined
+        ? {
+            filterType: 'include',
+            filterValue: JSON.stringify([
+              'investigation',
+              ...(isISIS
+                ? [
+                    'investigation.investigationInstruments.instrument',
+                    'investigation.investigationFacilityCycles.facilityCycle',
+                  ]
+                : []),
+            ]),
+          }
+        : entityName === 'datafile'
+          ? {
+              filterType: 'include',
+              filterValue: JSON.stringify([
+                'dataset.investigation',
+                'dataset',
+                ...(isISIS
+                  ? [
+                      'dataset.investigation.investigationInstruments.instrument',
+                      'dataset.investigation.investigationFacilityCycles.facilityCycle',
+                    ]
+                  : []),
+              ]),
+            }
+          : undefined
   );
 
   const redirectUrl =
@@ -154,22 +154,21 @@ export const GenericRedirect: React.FC = () => {
           facilityName,
         })
       : entityName === 'dataset'
-      ? buildDatafileTableUrlForDataset({
-          dataset: entity as Dataset,
-          facilityName,
-        })
-      : entityName === 'datafile'
-      ? buildDatafileTableUrlForDataset({
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          dataset: (entity as Datafile).dataset!,
-          facilityName,
-          queryParams: new URLSearchParams({
-            filters: JSON.stringify({
-              name: { value: entity.name, type: 'exact' },
-            }),
-          }),
-        })
-      : null);
+        ? buildDatafileTableUrlForDataset({
+            dataset: entity as Dataset,
+            facilityName,
+          })
+        : entityName === 'datafile'
+          ? buildDatafileTableUrlForDataset({
+              dataset: (entity as Datafile).dataset!,
+              facilityName,
+              queryParams: new URLSearchParams({
+                filters: JSON.stringify({
+                  name: { value: entity.name, type: 'exact' },
+                }),
+              }),
+            })
+          : null);
 
   return (
     <RedirectComponent

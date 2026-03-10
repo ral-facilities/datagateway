@@ -34,6 +34,36 @@ interface QueueEntityButtonProps {
   customDisallowedConditions?: { disallowed: boolean; message: string }[];
 }
 
+const BaseQueueButton: React.FC<
+  { iconButton?: boolean; label?: string } & ButtonProps & IconButtonProps
+> = (props) => {
+  const [t] = useTranslation();
+  const { iconButton, label, ...restProps } = props;
+
+  if (iconButton)
+    return (
+      <IconButton
+        aria-label={t(label ?? 'buttons.queue_visit')}
+        size={'small'}
+        {...restProps}
+      >
+        <GetApp />
+      </IconButton>
+    );
+  return (
+    <Button
+      aria-label={t(label ?? 'buttons.queue_visit')}
+      variant="contained"
+      color="primary"
+      startIcon={<RestoreOutlined />}
+      disableElevation
+      {...restProps}
+    >
+      {t(label ?? 'buttons.queue_visit')}
+    </Button>
+  );
+};
+
 const QueueEntityButton: React.FC<QueueEntityButtonProps> = (props) => {
   const {
     entityId,
@@ -67,35 +97,6 @@ const QueueEntityButton: React.FC<QueueEntityButtonProps> = (props) => {
 
   const [showConfirmation, setShowConfirmation] = React.useState(false);
 
-  const BaseQueueButton = React.useCallback(
-    (props: ButtonProps & IconButtonProps): React.ReactElement => {
-      const OurButton = (props: ButtonProps): React.ReactElement => (
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<RestoreOutlined />}
-          disableElevation
-          {...props}
-        >
-          {t(label ?? 'buttons.queue_visit')}
-        </Button>
-      );
-      const OurIconButton = (props: IconButtonProps): React.ReactElement => (
-        <IconButton size={'small'} {...props}>
-          <GetApp />
-        </IconButton>
-      );
-      const ButtonToUse = iconButton ? OurIconButton : OurButton;
-      return (
-        <ButtonToUse
-          aria-label={t(label ?? 'buttons.queue_visit')}
-          {...props}
-        />
-      );
-    },
-    [iconButton, t, label]
-  );
-
   const username = readSciGatewayToken().username;
   const loggedInAnonymously =
     username === null || username === (anonUserName ?? 'anon/anon');
@@ -120,16 +121,18 @@ const QueueEntityButton: React.FC<QueueEntityButtonProps> = (props) => {
           customDisallowedReason
             ? customDisallowedReason.message
             : disableIfAnon
-            ? t('buttons.disallow_anon_tooltip')
-            : !isQueueAllowed && disallowedBehaviour === 'disable'
-            ? t('buttons.unable_to_queue_tooltip')
-            : ''
+              ? t('buttons.disallow_anon_tooltip')
+              : !isQueueAllowed && disallowedBehaviour === 'disable'
+                ? t('buttons.unable_to_queue_tooltip')
+                : ''
         }
         placement="bottom"
         arrow
       >
         <span style={iconButton ? { margin: 'auto' } : {}}>
           <BaseQueueButton
+            iconButton={iconButton}
+            label={label}
             onClick={() => {
               // refetch the download types when opening the dialogue to ensure statuses are up to date
               refetchDownloadTypes();

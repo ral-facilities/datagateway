@@ -45,7 +45,6 @@ import PageRouting from './pageRouting.component';
 import { DoiRedirect, GenericRedirect } from './redirect.component';
 import TranslatedHomePage from './translatedHomePage.component';
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const getTablePaperStyle = (
   displayFilterMessage: boolean,
   tablePaperHeight: string
@@ -205,8 +204,8 @@ const NavBar = React.memo(
     const landingPages = isDataPublication
       ? paths.dataPublications.landing
       : isISISRoute
-      ? paths.landing
-      : [];
+        ? paths.landing
+        : [];
     const landingPageEntities = Object.values(landingPages).map(
       (x) => x.split('/')[x.split('/').length - 2]
     );
@@ -398,9 +397,8 @@ const StyledRouting = (props: {
   );
 
   React.useEffect(() => {
-    breadcrumbDiv
-      ? setBreadcrumbHeight(`${breadcrumbDiv.clientHeight}px`)
-      : setBreadcrumbHeight('30px');
+    if (breadcrumbDiv) setBreadcrumbHeight(`${breadcrumbDiv.clientHeight}px`);
+    else setBreadcrumbHeight('30px');
   }, [breadcrumbDiv, breadcrumbDiv?.clientHeight]);
 
   // Footer is 36px
@@ -551,8 +549,8 @@ const getToggle = (pathname: string, view: ViewsType): boolean => {
         ? true
         : false
       : getView() === 'card'
-      ? true
-      : false
+        ? true
+        : false
     : false;
 };
 
@@ -598,7 +596,8 @@ const DataviewPageContainer: React.FC = () => {
   });
 
   React.useEffect(() => {
-    loading ? setlinearProgressHeight('4px') : setlinearProgressHeight('0px');
+    if (loading) setlinearProgressHeight('4px');
+    else setlinearProgressHeight('0px');
   }, [loading]);
 
   const isCountFetchingNum = useIsFetching(['count'], {

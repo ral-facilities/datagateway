@@ -33,16 +33,13 @@ type DatePickerCombinedProps = DatePickerProps & DatePickerStoreProps;
 const CustomTextField: React.FC<TextFieldProps> = (props) => {
   const { invalidDateRange, t, sideLayout, ...inputProps } =
     props.inputProps ?? {};
-  const error =
-    // eslint-disable-next-line react/prop-types
-    (props.error || invalidDateRange) ?? undefined;
+  const error = (props.error || invalidDateRange) ?? undefined;
   let helperText = t('searchBox.invalid_date_message');
   if (invalidDateRange) helperText = t('searchBox.invalid_date_range_message');
   return (
     <TextField
       {...props}
       inputProps={{
-        // eslint-disable-next-line react/prop-types
         ...inputProps,
       }}
       sx={
@@ -51,12 +48,11 @@ const CustomTextField: React.FC<TextFieldProps> = (props) => {
             ? {}
             : { py: 1, width: '178px' }
           : sideLayout
-          ? { py: 1, px: 0 }
-          : { pl: 1, py: 1, width: '178px' }
+            ? { py: 1, px: 0 }
+            : { pl: 1, py: 1, width: '178px' }
       }
       variant="outlined"
       error={error}
-      // eslint-disable-next-line react/prop-types
       {...(error && { helperText: helperText })}
     />
   );

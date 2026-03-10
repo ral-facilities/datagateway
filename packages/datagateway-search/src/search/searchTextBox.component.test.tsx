@@ -1,12 +1,17 @@
-import { StateType } from '../state/app.types';
-import { Provider } from 'react-redux';
-import configureStore from 'redux-mock-store';
-import SearchTextBox from './searchTextBox.component';
-import thunk from 'redux-thunk';
-import { initialState } from '../state/reducers/dgsearch.reducer';
+import {
+  fireEvent,
+  render,
+  RenderResult,
+  screen,
+} from '@testing-library/react';
 import { createMemoryHistory, History } from 'history';
+import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
-import { fireEvent, render, RenderResult } from '@testing-library/react';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { StateType } from '../state/app.types';
+import { initialState } from '../state/reducers/dgsearch.reducer';
+import SearchTextBox from './searchTextBox.component';
 
 vi.mock('loglevel');
 
@@ -56,13 +61,13 @@ describe('Search text box component tests', () => {
   });
 
   it('renders correctly', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.asFragment()).toMatchSnapshot();
+    const view = createWrapper();
+    expect(view.asFragment()).toMatchSnapshot();
   });
 
   it('initiates search when user presses enter key', async () => {
-    const wrapper = createWrapper();
-    const input = await wrapper.findByLabelText(
+    createWrapper();
+    const input = await screen.findByLabelText(
       'searchBox.search_text_arialabel'
     );
     fireEvent.change(input, { target: { value: 'test' } });

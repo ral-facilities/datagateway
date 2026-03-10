@@ -58,8 +58,8 @@ describe('useFacetFilters', () => {
       expect(result.current.selectedFacetFilters).toEqual({
         'investigation.type.name': ['experiment'],
       });
-      expect(history.location.search).toEqual('');
     });
+    expect(history.location.search).toEqual('');
 
     act(() => {
       result.current.addFacetFilter({
@@ -73,8 +73,8 @@ describe('useFacetFilters', () => {
       expect(result.current.selectedFacetFilters).toEqual({
         'investigation.type.name': ['experiment', 'calibration'],
       });
-      expect(history.location.search).toEqual('');
     });
+    expect(history.location.search).toEqual('');
 
     act(() => {
       result.current.addFacetFilter({
@@ -89,8 +89,8 @@ describe('useFacetFilters', () => {
         'investigation.type.name': ['experiment', 'calibration'],
         'investigationparameter.type.name': ['run_number_after'],
       });
-      expect(history.location.search).toEqual('');
     });
+    expect(history.location.search).toEqual('');
   });
 
   it('adds filters and apply the changes immediately when applyImmediately set to true', async () => {
@@ -106,17 +106,16 @@ describe('useFacetFilters', () => {
       });
     });
 
+    let selectedFilters: unknown = {
+      'investigation.type.name': ['experiment'],
+    };
+
+    let searchParams = new URLSearchParams();
+    searchParams.append('filters', JSON.stringify(selectedFilters));
     await waitFor(() => {
-      const selectedFilters = {
-        'investigation.type.name': ['experiment'],
-      };
-
-      const searchParams = new URLSearchParams();
-      searchParams.append('filters', JSON.stringify(selectedFilters));
-
       expect(result.current.selectedFacetFilters).toEqual(selectedFilters);
-      expect(history.location.search).toEqual(`?${searchParams.toString()}`);
     });
+    expect(history.location.search).toEqual(`?${searchParams.toString()}`);
 
     act(() => {
       result.current.addFacetFilter({
@@ -126,18 +125,17 @@ describe('useFacetFilters', () => {
       });
     });
 
+    selectedFilters = {
+      'investigation.type.name': ['experiment'],
+      'investigationparameter.type.name': ['bcat_inv_str'],
+    };
+
+    searchParams = new URLSearchParams();
+    searchParams.append('filters', JSON.stringify(selectedFilters));
     await waitFor(() => {
-      const selectedFilters = {
-        'investigation.type.name': ['experiment'],
-        'investigationparameter.type.name': ['bcat_inv_str'],
-      };
-
-      const searchParams = new URLSearchParams();
-      searchParams.append('filters', JSON.stringify(selectedFilters));
-
       expect(result.current.selectedFacetFilters).toEqual(selectedFilters);
-      expect(history.location.search).toEqual(`?${searchParams.toString()}`);
     });
+    expect(history.location.search).toEqual(`?${searchParams.toString()}`);
   });
 
   it('removes filters without applying the changes', async () => {
@@ -177,8 +175,8 @@ describe('useFacetFilters', () => {
           'run_number_after',
         ],
       });
-      expect(history.location.search).toEqual(searchParamStr);
     });
+    expect(history.location.search).toEqual(searchParamStr);
 
     act(() => {
       result.current.removeFacetFilter({
@@ -194,8 +192,8 @@ describe('useFacetFilters', () => {
           'run_number_after',
         ],
       });
-      expect(history.location.search).toEqual(searchParamStr);
     });
+    expect(history.location.search).toEqual(searchParamStr);
 
     act(() => {
       result.current.removeFacetFilter({
@@ -208,12 +206,12 @@ describe('useFacetFilters', () => {
       expect(result.current.selectedFacetFilters).toEqual({
         'investigationparameter.type.name': ['run_number_after'],
       });
-      expect(history.location.search).toEqual(searchParamStr);
     });
+    expect(history.location.search).toEqual(searchParamStr);
   });
 
   it('removes filters and apply the changes immediately when applyImmediately set to true', async () => {
-    const searchParams = new URLSearchParams();
+    let searchParams = new URLSearchParams();
     searchParams.append(
       'filters',
       JSON.stringify({
@@ -250,8 +248,8 @@ describe('useFacetFilters', () => {
           'run_number_after',
         ],
       });
-      expect(history.location.search).toEqual(searchParamStr);
     });
+    expect(history.location.search).toEqual(searchParamStr);
 
     act(() => {
       result.current.removeFacetFilter({
@@ -261,20 +259,17 @@ describe('useFacetFilters', () => {
       });
     });
 
+    const selectedFilters = {
+      'investigationparameter.type.name': ['bcat_inv_str', 'run_number_after'],
+    };
+
+    searchParams = new URLSearchParams();
+    searchParams.append('filters', JSON.stringify(selectedFilters));
+
     await waitFor(() => {
-      const selectedFilters = {
-        'investigationparameter.type.name': [
-          'bcat_inv_str',
-          'run_number_after',
-        ],
-      };
-
-      const searchParams = new URLSearchParams();
-      searchParams.append('filters', JSON.stringify(selectedFilters));
-
       expect(result.current.selectedFacetFilters).toEqual(selectedFilters);
-      expect(history.location.search).toEqual(`?${searchParams.toString()}`);
     });
+    expect(history.location.search).toEqual(`?${searchParams.toString()}`);
   });
 
   it('applies the update filters to the URL when requested', async () => {
@@ -324,10 +319,10 @@ describe('useFacetFilters', () => {
 
     await waitFor(() => {
       expect(history.location.search).toEqual(`?${newSearchParams.toString()}`);
-      expect(result.current.selectedFacetFilters).toEqual({
-        'investigation.type.name': ['experiment', 'calibration'],
-        'investigationparameter.type.name': ['run_number_after'],
-      });
+    });
+    expect(result.current.selectedFacetFilters).toEqual({
+      'investigation.type.name': ['experiment', 'calibration'],
+      'investigationparameter.type.name': ['run_number_after'],
     });
   });
 });

@@ -1,24 +1,31 @@
 import Assessment from '@mui/icons-material/Assessment';
 import CalendarToday from '@mui/icons-material/CalendarToday';
-import Public from '@mui/icons-material/Public';
 import Fingerprint from '@mui/icons-material/Fingerprint';
+import Public from '@mui/icons-material/Public';
 import Save from '@mui/icons-material/Save';
+import {
+  Grid,
+  Link as MuiLink,
+  Paper,
+  Typography,
+  styled,
+} from '@mui/material';
 import {
   AddToCartButton,
   ArrowTooltip,
-  buildDatasetTableUrlForInvestigation,
   CardView,
   DLSVisitDetailsPanel,
   DownloadButton,
-  formatBytes,
   FACILITY_NAME,
+  ISISInvestigationDetailsPanel,
   Investigation,
   InvestigationDetailsPanel,
-  ISISInvestigationDetailsPanel,
-  parseSearchToQuery,
   SearchFilter,
   SearchResponse,
   SearchResultSource,
+  buildDatasetTableUrlForInvestigation,
+  formatBytes,
+  parseSearchToQuery,
   tableLink,
   useLuceneSearchInfinite,
   usePushInvestigationFilter,
@@ -28,21 +35,14 @@ import {
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Grid,
-  Link as MuiLink,
-  Paper,
-  styled,
-  Typography,
-} from '@mui/material';
 import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
-import { StateType } from '../state/app.types';
-import useFacetFilters from '../facet/useFacetFilters';
 import FacetPanel from '../facet/components/facetPanel/facetPanel.component';
-import { facetClassificationFromSearchResponses } from '../facet/facet';
 import SelectedFilterChips from '../facet/components/selectedFilterChips.component';
+import { facetClassificationFromSearchResponses } from '../facet/facet';
+import useFacetFilters from '../facet/useFacetFilters';
 import { useSearchResultCounter } from '../searchTabs/useSearchResultCounter';
+import { StateType } from '../state/app.types';
 
 interface InvestigationCardProps {
   hierarchy: string;
@@ -305,7 +305,7 @@ const InvestigationCardView: React.FC<InvestigationCardProps> = (props) => {
   const moreInformation = React.useCallback(
     (investigation: SearchResultSource) => {
       switch (hierarchy) {
-        case FACILITY_NAME.isis:
+        case FACILITY_NAME.isis: {
           const url = buildDatasetTableUrlForInvestigation({
             investigation: {
               id: investigation.id,
@@ -327,6 +327,7 @@ const InvestigationCardView: React.FC<InvestigationCardProps> = (props) => {
               }}
             />
           );
+        }
 
         case FACILITY_NAME.dls:
           return <DLSVisitDetailsPanel rowData={investigation} />;

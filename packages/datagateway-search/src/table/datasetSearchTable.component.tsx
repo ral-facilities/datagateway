@@ -322,7 +322,7 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
     React.useCallback(
       ({ rowData, detailsPanelResize }) => {
         switch (hierarchy) {
-          case FACILITY_NAME.isis:
+          case FACILITY_NAME.isis: {
             const dataset = rowData as SearchResultSource;
             let url: string | null = null;
             if (dataset['investigation.id'] && dataset['investigation.name']) {
@@ -354,6 +354,7 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
                 }}
               />
             );
+          }
 
           case FACILITY_NAME.dls:
             return (

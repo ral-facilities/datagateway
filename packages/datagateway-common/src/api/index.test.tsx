@@ -1,6 +1,6 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
 import axios from 'axios';
-import { createMemoryHistory, History } from 'history';
+import { History, createMemoryHistory } from 'history';
 import React from 'react';
 import { Router } from 'react-router-dom';
 import type { MockInstance } from 'vitest';
@@ -1103,9 +1103,9 @@ describe('generic api functions', () => {
   describe('useCustomFilterCount', () => {
     it('sends axios request to fetch filter counts and returns successful response', async () => {
       const filterKey = 'title';
-      vi.mocked(axios.get).mockImplementation((url, options) =>
+      vi.mocked(axios.get).mockImplementation((_url, options) =>
         Promise.resolve({
-          data: JSON.parse(options.params.get('where'))[filterKey].eq ?? 0,
+          data: JSON.parse(options?.params.get('where'))[filterKey].eq ?? 0,
         })
       );
 

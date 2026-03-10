@@ -1,8 +1,8 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
+  RenderResult,
   act,
   render,
-  RenderResult,
   screen,
   waitForElementToBeRemoved,
   within,
@@ -46,9 +46,8 @@ describe('Techniques & Subjects selector component', () => {
   >;
 
   const TestComponent: React.FC = () => {
-    // eslint-disable-next-line react/prop-types
     const [subjects, setSubjects] = React.useState(props.subjects);
-    // eslint-disable-next-line react/prop-types
+
     const [techniques, setTechniques] = React.useState(props.techniques);
 
     return (
@@ -217,9 +216,8 @@ describe('Techniques & Subjects selector component', () => {
     // delete existing techniques using clear button
     await user.click(
       within(
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         screen.getByRole('combobox', { name: 'DOIGenerationForm.techniques' })
-          .parentElement!
+          .parentElement! // eslint-disable-line testing-library/no-node-access
       ).getByLabelText('Clear')
     );
     expect(
@@ -259,7 +257,7 @@ describe('Techniques & Subjects selector component', () => {
 
     // test we debounce properly
     expect(
-      await screen.queryByRole('option', {
+      screen.queryByRole('option', {
         name: 'technique 1 (1)',
       })
     ).not.toBeInTheDocument();

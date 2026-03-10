@@ -1,18 +1,18 @@
-import React from 'react';
-import { Collapse, Typography, Link, Grid, Box, styled } from '@mui/material';
-import { CardViewDetails } from './cardView.component';
-import SubjectIcon from '@mui/icons-material/Subject';
-import FingerprintIcon from '@mui/icons-material/Fingerprint';
-import PublicIcon from '@mui/icons-material/Public';
-import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import ExploreIcon from '@mui/icons-material/Explore';
-import SaveIcon from '@mui/icons-material/Save';
+import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import DescriptionIcon from '@mui/icons-material/Description';
+import ExploreIcon from '@mui/icons-material/Explore';
+import FingerprintIcon from '@mui/icons-material/Fingerprint';
 import LinkIcon from '@mui/icons-material/Link';
 import PersonIcon from '@mui/icons-material/Person';
+import PublicIcon from '@mui/icons-material/Public';
+import SaveIcon from '@mui/icons-material/Save';
+import SubjectIcon from '@mui/icons-material/Subject';
+import { Box, Collapse, Grid, Link, Typography, styled } from '@mui/material';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { CardViewDetails } from './cardView.component';
 
 const FilterDiv = styled('div')({
   padding: '5px',

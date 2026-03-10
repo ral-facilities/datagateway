@@ -1,4 +1,4 @@
-import { fireEvent, render } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import SearchButton from './searchButton.component';
 
 vi.mock('loglevel');
@@ -11,17 +11,13 @@ describe('Search Button component tests', () => {
   });
 
   it('renders correctly', () => {
-    const wrapper = render(
-      <SearchButton initiateSearch={testInitiateSearch} />
-    );
-    expect(wrapper.asFragment()).toMatchSnapshot();
+    const view = render(<SearchButton initiateSearch={testInitiateSearch} />);
+    expect(view.asFragment()).toMatchSnapshot();
   });
 
   it('initiates search when user clicks button', async () => {
-    const wrapper = render(
-      <SearchButton initiateSearch={testInitiateSearch} />
-    );
-    const button = await wrapper.findByLabelText(
+    render(<SearchButton initiateSearch={testInitiateSearch} />);
+    const button = await screen.findByLabelText(
       'searchBox.search_button_arialabel'
     );
     fireEvent.click(button);

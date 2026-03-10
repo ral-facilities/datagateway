@@ -24,14 +24,14 @@
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
-import jsrsasign from 'jsrsasign';
 import '@testing-library/cypress/add-commands';
+import jsrsasign from 'jsrsasign';
 
 const parseJwt = (token) => {
   const base64Url = token.split('.')[1];
   const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
   const payload = decodeURIComponent(
-    atob(base64).replace(/(.)/g, function (m, p) {
+    atob(base64).replace(/(.)/g, function (_m, p) {
       var code = p.charCodeAt(0).toString(16).toUpperCase();
       return '%' + ('00' + code).slice(-2);
     })

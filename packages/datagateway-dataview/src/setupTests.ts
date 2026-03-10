@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
 import '@testing-library/jest-dom';
 // Blob implementation in jsdom is not complete (https://github.com/jsdom/jsdom/issues/2555)
 // node blob implementation fills in the gap
