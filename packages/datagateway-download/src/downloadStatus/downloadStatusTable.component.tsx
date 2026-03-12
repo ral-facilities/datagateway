@@ -54,13 +54,11 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
   }>({});
   const {
     data: downloads,
-    isLoading,
+    isPending,
     isFetched,
     refetch: refetchDownloads,
     dataUpdatedAt,
-  } = useDownloads({
-    select: (data) => data.map(formatDownload),
-  });
+  } = useDownloads((data) => data.map(formatDownload));
 
   const { data: accessMethods } = useDownloadTypes(
     settings.facilityName,
@@ -75,8 +73,9 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
 
   const refreshTable = useCallback(async () => {
     await Promise.all([
-      // mark download progress queries as invalid so that react-query will refetch them as well.
-      queryClient.invalidateQueries([QueryKeys.DOWNLOAD_PROGRESS]),
+      queryClient.invalidateQueries({
+        queryKey: [QueryKeys.DOWNLOAD_PROGRESS],
+      }),
       refetchDownloads(),
     ]);
     setRefreshTable(false);
@@ -283,7 +282,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
   return (
     <Grid container direction="column">
       {/* Show loading progress if data is still being loaded */}
-      {isLoading && (
+      {isPending && (
         <Grid item xs={12}>
           <LinearProgress color="secondary" />
         </Grid>
@@ -294,7 +293,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
         <Paper
           sx={{
             height: `calc(100vh - 64px - 36px - 48px - 48px${
-              isLoading ? ' - 4px' : ''
+              isPending ? ' - 4px' : ''
             } - (1.75rem + 40px))`,
             minHeight: 230,
             overflowX: 'auto',
@@ -364,7 +363,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
               }
             }}
             data={sortedAndFilteredData}
-            loading={isLoading}
+            loading={isPending}
             // Pass in a custom actions column width to fit both buttons.
             actionsWidth={100}
             actions={[
@@ -423,7 +422,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
               function RemoveButton({
                 rowData,
               }: TableActionProps): JSX.Element {
-                const { isLoading: isDeleting, mutate: downloadDeleted } =
+                const { isPending: isDeleting, mutate: downloadDeleted } =
                   useDownloadOrRestoreDownload();
                 const downloadItem = rowData as FormattedDownload;
                 // const [isDeleting, setIsDeleting] = React.useState(false);

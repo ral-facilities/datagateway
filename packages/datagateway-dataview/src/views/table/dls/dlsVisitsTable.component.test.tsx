@@ -8,12 +8,12 @@ import {
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 import {
-  dGCommonInitialState,
   Investigation,
+  dGCommonInitialState,
   useInvestigationCount,
   useInvestigationsInfinite,
 } from 'datagateway-common';
-import { createMemoryHistory, History } from 'history';
+import { History, createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
@@ -96,11 +96,11 @@ describe('DLS Visits table component', () => {
 
     vi.mocked(useInvestigationCount, { partial: true }).mockReturnValue({
       data: 1,
-      isLoading: false,
+      isPending: false,
     });
     vi.mocked(useInvestigationsInfinite, { partial: true }).mockReturnValue({
       data: { pages: [rowData], pageParams: [] },
-      isLoading: false,
+      isPending: false,
     });
 
     axios.get = vi
@@ -328,7 +328,7 @@ describe('DLS Visits table component', () => {
           ],
           pageParams: [],
         },
-        isLoading: false,
+        isPending: false,
       }
     );
 
@@ -340,7 +340,7 @@ describe('DLS Visits table component', () => {
   it('renders fine if no investigation instrument is returned', async () => {
     vi.mocked(useInvestigationCount, { partial: true }).mockReturnValue({
       data: 1,
-      isLoading: false,
+      isPending: false,
     });
     vi.mocked(useInvestigationsInfinite, { partial: true }).mockReturnValue({
       data: {
@@ -354,7 +354,7 @@ describe('DLS Visits table component', () => {
         ],
         pageParams: [],
       },
-      isLoading: false,
+      isPending: false,
     });
 
     renderComponent();

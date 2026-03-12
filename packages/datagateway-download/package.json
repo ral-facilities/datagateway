@@ -8,8 +8,8 @@
     "@emotion/styled": "11.14.1",
     "@mui/icons-material": "5.18.0",
     "@mui/material": "5.18.0",
-    "@tanstack/react-query": "4.43.0",
-    "@tanstack/react-query-devtools": "4.43.0",
+    "@tanstack/react-query": "5.90.21",
+    "@tanstack/react-query-devtools": "5.91.3",
     "@types/jsrsasign": "10.5.2",
     "@types/lodash.chunk": "4.2.6",
     "@types/node": "24.10.13",
@@ -48,6 +48,7 @@
   },
   "devDependencies": {
     "@dotenvx/dotenvx": "1.52.0",
+    "@tanstack/eslint-plugin-query": "5.91.4",
     "@testing-library/cypress": "10.1.0",
     "@testing-library/dom": "10.4.1",
     "@testing-library/jest-dom": "6.9.1",

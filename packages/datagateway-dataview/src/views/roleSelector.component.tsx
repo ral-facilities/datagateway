@@ -5,14 +5,13 @@ import {
   Select,
   SelectChangeEvent,
 } from '@mui/material';
-import { useQuery, UseQueryResult } from '@tanstack/react-query';
+import { UseQueryResult, useQuery } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import {
-  handleICATError,
   InvestigationUser,
+  StateType,
   parseSearchToQuery,
   readSciGatewayToken,
-  StateType,
   usePushFilter,
   useRetryICATErrors,
 } from 'datagateway-common';
@@ -50,16 +49,12 @@ export const useRoles = (
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const retryICATErrors = useRetryICATErrors();
 
-  return useQuery<string[], AxiosError, string[], [string, string]>(
-    ['roles', username],
-    () => fetchRoles(apiUrl, username),
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-    }
-  );
+  return useQuery({
+    queryKey: ['roles', username, apiUrl],
+    queryFn: () => fetchRoles(apiUrl, username),
+    meta: { icatError: true },
+    retry: retryICATErrors,
+  });
 };
 
 const RoleSelector: React.FC = () => {

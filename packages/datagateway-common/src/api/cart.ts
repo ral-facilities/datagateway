@@ -1,12 +1,4 @@
-import {
-  UseMutationOptions,
-  UseMutationResult,
-  UseQueryOptions,
-  UseQueryResult,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { UseQueryResult, useMutation, useQuery } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
@@ -60,7 +52,7 @@ const addOrRemoveFromCart = (
     .then((response) => response.data.cartItems);
 };
 
-export const useCart = (): UseQueryResult<DownloadCartItem[], AxiosError> => {
+export const useCart = () => {
   const downloadApiUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.downloadApiUrl
   );
@@ -68,30 +60,31 @@ export const useCart = (): UseQueryResult<DownloadCartItem[], AxiosError> => {
     (state: StateType) => state.dgcommon.facilityName
   );
   const retryICATErrors = useRetryICATErrors();
-  return useQuery(
-    ['cart'],
-    () =>
+  return useQuery({
+    queryKey: ['cart', facilityName, downloadApiUrl],
+
+    queryFn: () =>
       fetchDownloadCart({
         facilityName,
         downloadApiUrl,
       }),
-    {
-      enabled:
-        document.getElementById('datagateway-dataview') !== null ||
-        document.getElementById('datagateway-search') !== null,
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-      staleTime: 0,
-    }
-  );
+
+    enabled:
+      document.getElementById('datagateway-dataview') !== null ||
+      document.getElementById('datagateway-search') !== null,
+
+    meta: {
+      icatError: true,
+    },
+
+    retry: retryICATErrors,
+    staleTime: 0,
+  });
 };
 
 export const useAddToCart = (
   entityType: 'investigation' | 'dataset' | 'datafile'
-): UseMutationResult<DownloadCartItem[], AxiosError, number[]> => {
-  const queryClient = useQueryClient();
+) => {
   const downloadApiUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.downloadApiUrl
   );
@@ -99,35 +92,35 @@ export const useAddToCart = (
     (state: StateType) => state.dgcommon.facilityName
   );
 
-  return useMutation(
-    (entityIds: number[]) =>
+  return useMutation({
+    mutationFn: (entityIds: number[]) =>
       addOrRemoveFromCart(entityType, entityIds, {
         facilityName,
         downloadApiUrl,
       }),
-    {
-      onSuccess: (data) => {
-        queryClient.setQueryData(['cart'], data);
-      },
-      retry: (failureCount, error) => {
-        // if we get 431 we know this is an intermittent error so retry
-        if (error.response?.status === 431 && failureCount < 3) {
-          return true;
-        } else {
-          return false;
-        }
-      },
-      onError: (error) => {
-        handleICATError(error);
-      },
-    }
-  );
+
+    onSuccess: (data, _variables, _onMutateResult, context) => {
+      context.client.setQueriesData({ queryKey: ['cart'] }, data);
+    },
+
+    retry: (failureCount, error) => {
+      // if we get 431 we know this is an intermittent error so retry
+      if (error.response?.status === 431 && failureCount < 3) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+
+    onError: (error: AxiosError) => {
+      handleICATError(error);
+    },
+  });
 };
 
 export const useRemoveFromCart = (
   entityType: 'investigation' | 'dataset' | 'datafile'
-): UseMutationResult<DownloadCartItem[], AxiosError, number[]> => {
-  const queryClient = useQueryClient();
+) => {
   const downloadApiUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.downloadApiUrl
   );
@@ -135,8 +128,8 @@ export const useRemoveFromCart = (
     (state: StateType) => state.dgcommon.facilityName
   );
 
-  return useMutation(
-    (entityIds: number[]) =>
+  return useMutation({
+    mutationFn: (entityIds: number[]) =>
       addOrRemoveFromCart(
         entityType,
         entityIds,
@@ -146,23 +139,24 @@ export const useRemoveFromCart = (
         },
         true
       ),
-    {
-      onSuccess: (data) => {
-        queryClient.setQueryData(['cart'], data);
-      },
-      retry: (failureCount, error) => {
-        // if we get 431 we know this is an intermittent error so retry
-        if (error.response?.status === 431 && failureCount < 3) {
-          return true;
-        } else {
-          return false;
-        }
-      },
-      onError: (error) => {
-        handleICATError(error);
-      },
-    }
-  );
+
+    onSuccess: (data, _variables, _onMutateResult, context) => {
+      context.client.setQueriesData({ queryKey: ['cart'] }, data);
+    },
+
+    retry: (failureCount, error) => {
+      // if we get 431 we know this is an intermittent error so retry
+      if (error.response?.status === 431 && failureCount < 3) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+
+    onError: (error: AxiosError) => {
+      handleICATError(error);
+    },
+  });
 };
 
 export const getDownloadTypes: (
@@ -188,19 +182,17 @@ export const getDownloadTypes: (
 export const useDownloadTypes = (
   facilityName: string,
   downloadApiUrl: string
-): UseQueryResult<AccessMethods, AxiosError> => {
+) => {
   const retryICATErrors = useRetryICATErrors();
 
-  return useQuery(
-    ['downloadtypes'],
-    () => getDownloadTypes(facilityName, downloadApiUrl),
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-    }
-  );
+  return useQuery({
+    queryKey: ['downloadtypes', facilityName, downloadApiUrl],
+    queryFn: () => getDownloadTypes(facilityName, downloadApiUrl),
+
+    meta: { icatError: true },
+
+    retry: retryICATErrors,
+  });
 };
 
 export type SubmitCartZipType = 'ZIP' | 'ZIP_AND_COMPRESS';
@@ -284,12 +276,6 @@ export const getDefaultFileName = (
   return defaultName;
 };
 
-/**
- * Defines the function that when called will roll back any optimistic changes
- * performed during a mutation.
- */
-type RollbackFunction = () => void;
-
 export interface SubmitCartParams {
   transport: string;
   emailAddress: string;
@@ -302,26 +288,16 @@ export interface SubmitCartParams {
  * Returns the download id for the submitted cart, which can then be used
  * to query more info.
  */
-export const useSubmitCart = (
-  facilityName: string,
-  downloadApiUrl: string,
-  options?: UseMutationOptions<
-    number,
-    AxiosError,
-    SubmitCartParams,
-    RollbackFunction
-  >
-): UseMutationResult<
-  number,
-  AxiosError,
-  SubmitCartParams,
-  RollbackFunction
-> => {
-  const queryClient = useQueryClient();
+export const useSubmitCart = (facilityName: string, downloadApiUrl: string) => {
   const [t] = useTranslation();
 
-  return useMutation(
-    ({ transport, emailAddress, fileName: userFileName, zipType }) => {
+  return useMutation({
+    mutationFn: ({
+      transport,
+      emailAddress,
+      fileName: userFileName,
+      zipType,
+    }: SubmitCartParams) => {
       let fileName = userFileName;
       if (!fileName) {
         fileName = getDefaultFileName(
@@ -338,19 +314,17 @@ export const useSubmitCart = (
         zipType
       );
     },
-    {
-      onError: (error, _, rollback) => {
-        handleICATError(error);
-        if (rollback) rollback();
-      },
 
-      onSettled: () => {
-        queryClient.invalidateQueries(['cart']);
-      },
+    onError: (error: AxiosError) => {
+      handleICATError(error);
+    },
 
-      ...(options ?? {}),
-    }
-  );
+    onSettled: (_data, _error, _variables, _onMutateResult, context) => {
+      context.client.invalidateQueries({
+        queryKey: ['cart'],
+      });
+    },
+  });
 };
 
 export const getDownload: (
@@ -377,7 +351,6 @@ export interface UseDownloadParams {
 
 /**
  * A React hook that fetches a single download with the given id.
- * useQuery options can be passed in, which will override the default used.
  *
  * Example:
  * ```
@@ -391,28 +364,20 @@ export const useDownload = ({
   id,
   facilityName,
   downloadApiUrl,
-  ...queryOptions
-}: UseDownloadParams &
-  UseQueryOptions<
-    Download,
-    AxiosError,
-    Download,
-    ['download', number]
-  >): UseQueryResult<Download, AxiosError> => {
+  enabled,
+}: UseDownloadParams & { enabled?: boolean }) => {
   // Load the download settings for use.
   const retryICATErrors = useRetryICATErrors();
 
-  return useQuery(
-    ['download', id],
-    () => getDownload(id, facilityName, downloadApiUrl),
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-      ...queryOptions,
-    }
-  );
+  return useQuery({
+    queryKey: ['download', id, facilityName, downloadApiUrl],
+    queryFn: () => getDownload(id, facilityName, downloadApiUrl),
+
+    meta: { icatError: true },
+
+    retry: retryICATErrors,
+    enabled,
+  });
 };
 
 export const fetchQueueAllowed = (config: {
@@ -439,21 +404,25 @@ export const useQueueAllowed = (): UseQueryResult<boolean, AxiosError> => {
     (state: StateType) => state.dgcommon.facilityName
   );
   const retryICATErrors = useRetryICATErrors();
-  return useQuery(
-    ['isQueueAllowed', readSciGatewayToken().sessionId], // put session id in here to ensure we refresh if user logs out and logs in as new user
-    () =>
+  return useQuery({
+    // put session id in query key to ensure we refresh if user logs out and logs in as new user
+    queryKey: [
+      'isQueueAllowed',
+      readSciGatewayToken().sessionId,
+      facilityName,
+      downloadApiUrl,
+    ],
+    queryFn: () =>
       fetchQueueAllowed({
         facilityName,
         downloadApiUrl,
       }),
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-      staleTime: Infinity,
-    }
-  );
+
+    meta: { icatError: true },
+
+    retry: retryICATErrors,
+    staleTime: Infinity,
+  });
 };
 
 export const queueVisit: (
@@ -488,8 +457,10 @@ export const queueVisit: (
     });
 };
 
-export interface QueueVisitParams
-  extends Pick<SubmitCartParams, 'emailAddress' | 'transport' | 'fileName'> {
+export interface QueueVisitParams extends Pick<
+  SubmitCartParams,
+  'emailAddress' | 'transport' | 'fileName'
+> {
   entityId: string;
 }
 
@@ -498,23 +469,14 @@ export interface QueueVisitParams
  * Returns the list of download ids for the submitted visit,
  * which can then be used to query more info.
  */
-export const useQueueVisit = (
-  facilityName: string,
-  downloadApiUrl: string,
-  options?: UseMutationOptions<
-    string[],
-    AxiosError,
-    QueueVisitParams,
-    RollbackFunction
-  >
-): UseMutationResult<
-  string[],
-  AxiosError,
-  QueueVisitParams,
-  RollbackFunction
-> => {
-  return useMutation(
-    ({ transport, emailAddress, fileName, entityId }) =>
+export const useQueueVisit = (facilityName: string, downloadApiUrl: string) => {
+  return useMutation({
+    mutationFn: ({
+      transport,
+      emailAddress,
+      fileName,
+      entityId,
+    }: QueueVisitParams) =>
       queueVisit(
         entityId,
         transport,
@@ -523,14 +485,11 @@ export const useQueueVisit = (
         facilityName,
         downloadApiUrl
       ),
-    {
-      onError: (error, _, rollback) => {
-        handleICATError(error);
-        if (rollback) rollback();
-      },
-      ...(options ?? {}),
-    }
-  );
+
+    onError: (error: AxiosError) => {
+      handleICATError(error);
+    },
+  });
 };
 
 export const queueDataCollection: (
@@ -565,8 +524,10 @@ export const queueDataCollection: (
     });
 };
 
-export interface QueueDataCollectionParams
-  extends Pick<SubmitCartParams, 'emailAddress' | 'transport' | 'fileName'> {
+export interface QueueDataCollectionParams extends Pick<
+  SubmitCartParams,
+  'emailAddress' | 'transport' | 'fileName'
+> {
   entityId: string;
 }
 
@@ -577,21 +538,15 @@ export interface QueueDataCollectionParams
  */
 export const useQueueDataCollection = (
   facilityName: string,
-  downloadApiUrl: string,
-  options?: UseMutationOptions<
-    string[],
-    AxiosError,
-    QueueVisitParams,
-    RollbackFunction
-  >
-): UseMutationResult<
-  string[],
-  AxiosError,
-  QueueVisitParams,
-  RollbackFunction
-> => {
-  return useMutation(
-    ({ transport, emailAddress, fileName, entityId }) =>
+  downloadApiUrl: string
+) => {
+  return useMutation({
+    mutationFn: ({
+      transport,
+      emailAddress,
+      fileName,
+      entityId,
+    }: QueueVisitParams) =>
       queueDataCollection(
         entityId,
         transport,
@@ -600,12 +555,9 @@ export const useQueueDataCollection = (
         facilityName,
         downloadApiUrl
       ),
-    {
-      onError: (error, _, rollback) => {
-        handleICATError(error);
-        if (rollback) rollback();
-      },
-      ...(options ?? {}),
-    }
-  );
+
+    onError: (error: AxiosError) => {
+      handleICATError(error);
+    },
+  });
 };

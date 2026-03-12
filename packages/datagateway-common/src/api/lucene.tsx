@@ -1,10 +1,7 @@
 import {
-  UseQueryOptions,
+  InfiniteData,
   useInfiniteQuery,
   useQuery,
-  type UseInfiniteQueryOptions,
-  type UseInfiniteQueryResult,
-  type UseQueryResult,
 } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import { format, set } from 'date-fns';
@@ -125,7 +122,7 @@ export interface LuceneError {
 /**
  * Provides special handling for some Lucene errors. For all other ICAT/Lucene errors, the error is forwarded to handleICATError.
  */
-const handleLuceneError = (error: AxiosError<LuceneError>): void => {
+export const handleLuceneError = (error: AxiosError<LuceneError>): void => {
   const errorResponse = error.response;
   if (!errorResponse) {
     handleICATError(error);
@@ -291,25 +288,22 @@ export const useLuceneFacet = <TSelectData,>(
   datasearchType: DatasearchType,
   facetRequests: FacetRequest[],
   facetFilters: FiltersType,
-  options: UseQueryOptions<
-    SearchResponse,
-    AxiosError,
-    TSelectData,
-    [string, DatasearchType, FacetRequest[], FiltersType]
-  > = {}
-): UseQueryResult<TSelectData, AxiosError> => {
+  selectFn?: (data: SearchResponse) => TSelectData
+) => {
   const icatUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.icatUrl
   );
 
-  return useQuery<
-    SearchResponse,
-    AxiosError,
-    TSelectData,
-    [string, DatasearchType, FacetRequest[], FiltersType]
-  >(
-    ['facet', datasearchType, facetRequests, facetFilters],
-    (queryFunctionContext) => {
+  return useQuery({
+    queryKey: [
+      'facet',
+      datasearchType,
+      facetRequests,
+      facetFilters,
+      icatUrl,
+    ] as const,
+
+    queryFn: (queryFunctionContext) => {
       return fetchLuceneFacets(
         queryFunctionContext.queryKey[1],
         queryFunctionContext.queryKey[2],
@@ -317,27 +311,27 @@ export const useLuceneFacet = <TSelectData,>(
         { icatUrl }
       );
     },
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      ...options,
-    }
-  );
+    meta: { icatError: true },
+    select: selectFn,
+  });
 };
 
-export const useLuceneSearchInfinite = (
+export const useLuceneSearchInfinite = <
+  TSelectData = InfiniteData<SearchResponse, SearchAfter | undefined>,
+>(
   datasearchType: DatasearchType,
   luceneParams: LuceneSearchParams,
   facetFilters: FiltersType,
-  options?: UseInfiniteQueryOptions<
-    SearchResponse,
-    AxiosError<LuceneError>,
-    SearchResponse,
-    SearchResponse,
-    [string, DatasearchType, LuceneSearchParams]
-  >
-): UseInfiniteQueryResult<SearchResponse, AxiosError<LuceneError>> => {
+  {
+    enabled,
+    select,
+  }: {
+    enabled?: boolean;
+    select?: (
+      data: InfiniteData<SearchResponse, SearchAfter | undefined>
+    ) => TSelectData;
+  } = {}
+) => {
   const icatUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.icatUrl
   );
@@ -356,22 +350,20 @@ export const useLuceneSearchInfinite = (
   }
   const retryICATErrors = useRetryICATErrors();
 
-  return useInfiniteQuery(
-    ['search', datasearchType, apiLuceneParams],
-    ({ pageParam }) =>
+  return useInfiniteQuery({
+    queryKey: ['search', datasearchType, apiLuceneParams, icatUrl],
+    queryFn: ({ pageParam }) =>
       fetchLuceneData(
         datasearchType,
         { ...apiLuceneParams, search_after: pageParam },
         { icatUrl }
       ),
-    {
-      onError: (error: AxiosError<LuceneError>) => {
-        handleLuceneError(error);
-      },
-      retry: retryICATErrors,
-      getNextPageParam: (lastPage, _) => lastPage.search_after,
-      refetchOnWindowFocus: false,
-      ...(options ?? {}),
-    }
-  );
+    getNextPageParam: (lastPage, _) => lastPage.search_after,
+    initialPageParam: undefined as SearchAfter | undefined,
+    meta: { luceneError: true },
+    retry: retryICATErrors,
+    refetchOnWindowFocus: false,
+    enabled,
+    select,
+  });
 };

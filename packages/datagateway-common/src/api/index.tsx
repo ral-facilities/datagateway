@@ -1,10 +1,10 @@
 import {
-  UseQueryOptions,
   UseQueryResult,
+  queryOptions,
   useQueries,
   useQuery,
 } from '@tanstack/react-query';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import { isValid } from 'date-fns';
 import format from 'date-fns/format';
 import React from 'react';
@@ -22,7 +22,6 @@ import {
   UpdateMethod,
   ViewsType,
 } from '../app.types';
-import handleICATError from '../handleICATError';
 import { readSciGatewayToken } from '../parseTokens';
 import { StateType } from '../state/app.types';
 import { useRetryICATErrors } from './retryICATErrors';
@@ -725,31 +724,27 @@ export const useIds = (
   entityType: 'investigation' | 'dataset' | 'datafile',
   additionalFilters?: AdditionalFilters,
   enabled = true
-): UseQueryResult<number[], Error> => {
+) => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters } = parseSearchToQuery(location.search);
   const retryICATErrors = useRetryICATErrors();
 
-  return useQuery<
-    number[],
-    AxiosError,
-    number[],
-    [string, { filters: FiltersType }, AdditionalFilters?]
-  >(
-    [`${entityType}Ids`, { filters }, additionalFilters],
-    (params) => {
+  return useQuery({
+    queryKey: [
+      `${entityType}Ids`,
+      { filters },
+      additionalFilters,
+      apiUrl,
+    ] as const,
+    queryFn: (params) => {
       const { filters } = params.queryKey[1];
       return fetchIds(apiUrl, entityType, filters, additionalFilters);
     },
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-      enabled,
-    }
-  );
+    meta: { icatError: true },
+    retry: retryICATErrors,
+    enabled,
+  });
 };
 
 const fetchFilter = (
@@ -808,33 +803,17 @@ export const useCustomFilter = (
     filterType: 'where' | 'distinct' | 'include';
     filterValue: string;
   }[]
-): UseQueryResult<string[], Error> => {
+) => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const retryICATErrors = useRetryICATErrors();
 
-  return useQuery<
-    string[],
-    AxiosError,
-    string[],
-    [
-      'investigation' | 'dataset' | 'datafile',
-      string,
-      {
-        filterType: 'where' | 'distinct' | 'include';
-        filterValue: string;
-      }[]?,
-    ]
-  >(
-    [entityType, filterKey, additionalFilters],
-    ({ queryKey }) =>
+  return useQuery({
+    queryKey: [entityType, filterKey, additionalFilters, apiUrl] as const,
+    queryFn: ({ queryKey }) =>
       fetchFilter(apiUrl, queryKey[0], queryKey[1], queryKey[2]),
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-    }
-  );
+    meta: { icatError: true },
+    retry: retryICATErrors,
+  });
 };
 
 export const formatFilterCount = (
@@ -893,40 +872,22 @@ export const useCustomFilterCount = (
     filterType: 'where' | 'distinct' | 'include';
     filterValue: string;
   }[]
-): UseQueryResult<number, AxiosError>[] => {
+) => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const retryICATErrors = useRetryICATErrors();
 
-  const queryConfigs: UseQueryOptions<
-    number,
-    AxiosError,
-    number,
-    [
-      string,
-      (
-        | 'investigation'
-        | 'dataset'
-        | 'datafile'
-        | 'facilityCycle'
-        | 'instrument'
-        | 'facility'
-        | 'dataPublication'
-      ),
-      string,
-      string,
-      AdditionalFilters?,
-    ]
-  >[] = React.useMemo(() => {
+  const queryConfigs = React.useMemo(() => {
     const ids = filterIds ?? [];
 
     return ids.map((filterId) => {
-      return {
+      return queryOptions({
         queryKey: [
           'filterCount',
           entityType,
           filterKey,
           filterId,
           additionalFilters,
+          apiUrl,
         ],
         queryFn: () =>
           fetchFilterCountQuery(apiUrl, entityType, [
@@ -938,12 +899,10 @@ export const useCustomFilterCount = (
             },
             ...(additionalFilters ?? []),
           ]),
-        onError: (error) => {
-          handleICATError(error, false);
-        },
+        meta: { icatError: true },
         retry: retryICATErrors,
         staleTime: Infinity,
-      };
+      });
     });
   }, [
     filterIds,
@@ -954,10 +913,6 @@ export const useCustomFilterCount = (
     apiUrl,
   ]);
 
-  // useQueries doesn't allow us to specify type info, so ignore this line
-  // since we strongly type the queries object anyway
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
   return useQueries({
     queries: queryConfigs,
   });

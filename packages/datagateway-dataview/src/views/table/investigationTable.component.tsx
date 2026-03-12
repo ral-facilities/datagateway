@@ -51,15 +51,15 @@ const InvestigationTable = (): React.ReactElement => {
       }),
     },
   ]);
-  const { data: allIds, isInitialLoading: allIdsLoading } = useIds(
+  const { data: allIds, isPending: allIdsLoading } = useIds(
     'investigation',
     undefined,
     !disableSelectAll
   );
-  const { data: cartItems, isLoading: cartLoading } = useCart();
-  const { mutate: addToCart, isLoading: addToCartLoading } =
+  const { data: cartItems, isPending: cartLoading } = useCart();
+  const { mutate: addToCart, isPending: addToCartLoading } =
     useAddToCart('investigation');
-  const { mutate: removeFromCart, isLoading: removeFromCartLoading } =
+  const { mutate: removeFromCart, isPending: removeFromCartLoading } =
     useRemoveFromCart('investigation');
 
   /* istanbul ignore next */
@@ -93,7 +93,7 @@ const InvestigationTable = (): React.ReactElement => {
   const handleSort = useSort();
 
   const loadMoreRows = React.useCallback(
-    (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
+    (_offsetParams: IndexRange) => fetchNextPage(),
     [fetchNextPage]
   );
 

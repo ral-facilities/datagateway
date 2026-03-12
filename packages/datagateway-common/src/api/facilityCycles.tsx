@@ -1,18 +1,17 @@
-import axios, { AxiosError } from 'axios';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { IndexRange } from 'react-virtualized';
 import { getApiParams, parseSearchToQuery } from '.';
-import handleICATError from '../handleICATError';
-import { readSciGatewayToken } from '../parseTokens';
-import { FiltersType, FacilityCycle, SortType } from '../app.types';
-import { StateType } from '../state/app.types';
 import {
-  useQuery,
-  UseQueryResult,
-  useInfiniteQuery,
-  UseInfiniteQueryResult,
-} from '@tanstack/react-query';
+  FacilityCycle,
+  FiltersType,
+  SkipAndLimitType,
+  SortType,
+} from '../app.types';
+import { readSciGatewayToken } from '../parseTokens';
+import { StateType } from '../state/app.types';
+import { INFINITE_SCROLL_BATCH_SIZE } from '../table/table.component';
 import { useRetryICATErrors } from './retryICATErrors';
 
 const fetchFacilityCycles = (
@@ -22,16 +21,13 @@ const fetchFacilityCycles = (
     sort: SortType;
     filters: FiltersType;
   },
-  offsetParams?: IndexRange
+  skipAndLimit?: SkipAndLimitType
 ): Promise<FacilityCycle[]> => {
   const params = getApiParams(sortAndFilters);
 
-  if (offsetParams) {
-    params.append('skip', JSON.stringify(offsetParams.startIndex));
-    params.append(
-      'limit',
-      JSON.stringify(offsetParams.stopIndex - offsetParams.startIndex + 1)
-    );
+  if (skipAndLimit) {
+    params.append('skip', JSON.stringify(skipAndLimit.skip));
+    params.append('limit', JSON.stringify(skipAndLimit.limit));
   }
 
   params.append(
@@ -75,50 +71,30 @@ export const fetchAllFacilityCycles = (
     });
 };
 
-export const useAllFacilityCycles = (
-  enabled?: boolean
-): UseQueryResult<FacilityCycle[], AxiosError> => {
+export const useAllFacilityCycles = (enabled?: boolean) => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const retryICATErrors = useRetryICATErrors();
 
-  return useQuery<FacilityCycle[], AxiosError, FacilityCycle[], string[]>(
-    ['facilityCycle'],
-    () => fetchAllFacilityCycles(apiUrl),
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-      enabled,
-    }
-  );
+  return useQuery({
+    queryKey: ['facilityCycle', apiUrl],
+    queryFn: () => fetchAllFacilityCycles(apiUrl),
+    meta: { icatError: true },
+    retry: retryICATErrors,
+    enabled,
+  });
 };
 
 export const useFacilityCyclesPaginated = (
   instrumentId: number,
   isMounted?: boolean
-): UseQueryResult<FacilityCycle[], AxiosError> => {
+) => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters, sort, page, results } = parseSearchToQuery(location.search);
   const retryICATErrors = useRetryICATErrors();
 
-  return useQuery<
-    FacilityCycle[],
-    AxiosError,
-    FacilityCycle[],
-    [
-      string,
-      number,
-      {
-        sort: string;
-        filters: FiltersType;
-        page: number;
-        results: number;
-      }
-    ]
-  >(
-    [
+  return useQuery({
+    queryKey: [
       'facilityCycle',
       instrumentId,
       {
@@ -127,59 +103,62 @@ export const useFacilityCyclesPaginated = (
         page: page ?? 1,
         results: results ?? 10,
       },
-    ],
-    (params) => {
+
+      apiUrl,
+    ] as const,
+    queryFn: (params) => {
       const { page, results } = params.queryKey[2];
-      const startIndex = (page - 1) * results;
-      const stopIndex = startIndex + results - 1;
+      const skip = (page - 1) * results;
+      const limit = results;
       return fetchFacilityCycles(
         apiUrl,
         instrumentId,
         { sort, filters },
         {
-          startIndex,
-          stopIndex,
+          skip,
+          limit,
         }
       );
     },
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-      enabled: isMounted ?? true,
-    }
-  );
+    meta: { icatError: true },
+    retry: retryICATErrors,
+    enabled: isMounted ?? true,
+  });
 };
 
 export const useFacilityCyclesInfinite = (
   instrumentId: number,
   isMounted?: boolean
-): UseInfiniteQueryResult<FacilityCycle[], AxiosError> => {
+) => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters, sort } = parseSearchToQuery(location.search);
   const retryICATErrors = useRetryICATErrors();
 
-  return useInfiniteQuery(
-    ['facilityCycle', instrumentId, { sort: JSON.stringify(sort), filters }],
-    (params) => {
-      const offsetParams = params.pageParam ?? { startIndex: 0, stopIndex: 49 };
-      return fetchFacilityCycles(
+  return useInfiniteQuery({
+    queryKey: [
+      'facilityCycle',
+      instrumentId,
+      { sort: JSON.stringify(sort), filters },
+
+      apiUrl,
+    ],
+    queryFn: (params) =>
+      fetchFacilityCycles(
         apiUrl,
         instrumentId,
         { sort, filters },
-        offsetParams
-      );
-    },
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-      enabled: isMounted ?? true,
-    }
-  );
+        params.pageParam
+      ),
+    getNextPageParam: (_lastPage, _allPages, lastPageParam) => ({
+      skip: lastPageParam.skip + lastPageParam.limit,
+      limit: INFINITE_SCROLL_BATCH_SIZE,
+    }),
+    initialPageParam: { skip: 0, limit: 50 },
+    meta: { icatError: true },
+    retry: retryICATErrors,
+    enabled: isMounted ?? true,
+  });
 };
 
 const fetchFacilityCycleCount = (
@@ -217,30 +196,25 @@ const fetchFacilityCycleCount = (
     });
 };
 
-export const useFacilityCycleCount = (
-  instrumentId: number
-): UseQueryResult<number, AxiosError> => {
+export const useFacilityCycleCount = (instrumentId: number) => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters } = parseSearchToQuery(location.search);
   const retryICATErrors = useRetryICATErrors();
 
-  return useQuery<
-    number,
-    AxiosError,
-    number,
-    [string, string, number, { filters: FiltersType }]
-  >(
-    ['count', 'facilityCycle', instrumentId, { filters }],
-    (params) => {
+  return useQuery({
+    queryKey: [
+      'count',
+      'facilityCycle',
+      instrumentId,
+      { filters },
+      apiUrl,
+    ] as const,
+    queryFn: (params) => {
       const { filters } = params.queryKey[3];
       return fetchFacilityCycleCount(apiUrl, instrumentId, filters);
     },
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-    }
-  );
+    meta: { icatError: true },
+    retry: retryICATErrors,
+  });
 };

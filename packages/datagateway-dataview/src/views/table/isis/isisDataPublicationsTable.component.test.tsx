@@ -1,13 +1,22 @@
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 
-import type { StateType } from '../../../state/app.types';
-import { dGCommonInitialState, type DataPublication } from 'datagateway-common';
-import configureStore from 'redux-mock-store';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
-import { generatePath, Router } from 'react-router-dom';
+import {
+  render,
+  screen,
+  waitFor,
+  within,
+  type RenderResult,
+} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
+import { dGCommonInitialState, type DataPublication } from 'datagateway-common';
 import { createMemoryHistory, type History } from 'history';
+import { Provider } from 'react-redux';
+import { Router, generatePath } from 'react-router-dom';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { paths } from '../../../page/pageContainer.component';
 import {
   findAllRows,
   findCellInRow,
@@ -15,17 +24,8 @@ import {
   findColumnIndexByName,
   findRowAt,
 } from '../../../setupTests';
-import {
-  render,
-  type RenderResult,
-  screen,
-  within,
-  waitFor,
-} from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import type { StateType } from '../../../state/app.types';
 import ISISDataPublicationsTable from './isisDataPublicationsTable.component';
-import axios, { AxiosResponse } from 'axios';
-import { paths } from '../../../page/pageContainer.component';
 
 describe('ISIS Data Publication table component', () => {
   const mockStore = configureStore([thunk]);
@@ -116,7 +116,7 @@ describe('ISIS Data Publication table component', () => {
           case '/datapublications/count':
             return Promise.resolve({
               data: 1,
-              isLoading: false,
+              isPending: false,
             });
           default:
             return Promise.reject(`Endpoint not mocked: ${url}`);

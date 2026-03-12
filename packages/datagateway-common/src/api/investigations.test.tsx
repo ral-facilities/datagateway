@@ -2,7 +2,7 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import axios from 'axios';
 import { History, createMemoryHistory } from 'history';
 import { Investigation } from '../app.types';
-import handleICATError from '../handleICATError';
+import * as handleICATError from '../handleICATError';
 import { createReactQueryWrapper } from '../setupTests';
 import {
   downloadInvestigation,
@@ -12,12 +12,14 @@ import {
   useInvestigationsPaginated,
 } from './investigations';
 
-vi.mock('../handleICATError');
-
 describe('investigation api functions', () => {
   let mockData: Investigation[] = [];
   let history: History;
   let params: URLSearchParams;
+  const handleICATErrorSpy = vi
+    .spyOn(handleICATError, 'default')
+    .mockImplementation(vi.fn());
+
   beforeEach(() => {
     mockData = [
       {
@@ -54,7 +56,7 @@ describe('investigation api functions', () => {
   });
 
   afterEach(() => {
-    vi.mocked(handleICATError).mockClear();
+    vi.mocked(handleICATErrorSpy).mockClear();
     vi.mocked(axios.get).mockClear();
     vi.useRealTimers();
   });
@@ -106,7 +108,7 @@ describe('investigation api functions', () => {
           params,
         })
       );
-      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data).toEqual(mockData);
@@ -171,7 +173,7 @@ describe('investigation api functions', () => {
           params,
         })
       );
-      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data).toEqual(mockData);
@@ -197,10 +199,15 @@ describe('investigation api functions', () => {
           params,
         })
       );
-      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
-      expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
+      expect(handleICATErrorSpy).toHaveBeenCalledWith(
+        {
+          message: 'Test error',
+        },
+        undefined
+      );
     });
   });
 
@@ -253,14 +260,12 @@ describe('investigation api functions', () => {
           params,
         })
       );
-      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
-      expect(result.current.data.pages).toStrictEqual([mockData[0]]);
+      expect(result.current.data?.pages).toStrictEqual([mockData[0]]);
 
-      await result.current.fetchNextPage({
-        pageParam: { startIndex: 50, stopIndex: 74 },
-      });
+      await result.current.fetchNextPage();
 
       await waitFor(() => expect(result.current.isFetching).toBe(false));
 
@@ -273,11 +278,11 @@ describe('investigation api functions', () => {
       );
       params.set('skip', JSON.stringify(50));
       params.set('limit', JSON.stringify(25));
-      expect(vi.mocked(axios.get).mock.calls[1][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[1][1]?.params.toString()).toBe(
         params.toString()
       );
 
-      expect(result.current.data.pages).toStrictEqual([
+      expect(result.current.data?.pages).toStrictEqual([
         mockData[0],
         mockData[1],
       ]);
@@ -344,14 +349,12 @@ describe('investigation api functions', () => {
           params,
         })
       );
-      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
-      expect(result.current.data.pages).toStrictEqual([mockData[0]]);
+      expect(result.current.data?.pages).toStrictEqual([mockData[0]]);
 
-      await result.current.fetchNextPage({
-        pageParam: { startIndex: 50, stopIndex: 74 },
-      });
+      await result.current.fetchNextPage();
 
       await waitFor(() => expect(result.current.isFetching).toBe(false));
 
@@ -364,11 +367,11 @@ describe('investigation api functions', () => {
       );
       params.set('skip', JSON.stringify(50));
       params.set('limit', JSON.stringify(25));
-      expect(vi.mocked(axios.get).mock.calls[1][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[1][1]?.params.toString()).toBe(
         params.toString()
       );
 
-      expect(result.current.data.pages).toStrictEqual([
+      expect(result.current.data?.pages).toStrictEqual([
         mockData[0],
         mockData[1],
       ]);
@@ -394,10 +397,15 @@ describe('investigation api functions', () => {
           params,
         })
       );
-      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
-      expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
+      expect(handleICATErrorSpy).toHaveBeenCalledWith(
+        {
+          message: 'Test error',
+        },
+        undefined
+      );
     });
   });
 
@@ -436,7 +444,7 @@ describe('investigation api functions', () => {
           params,
         })
       );
-      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data).toEqual(mockData.length);
@@ -458,10 +466,15 @@ describe('investigation api functions', () => {
           params,
         })
       );
-      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
-      expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
+      expect(handleICATErrorSpy).toHaveBeenCalledWith(
+        {
+          message: 'Test error',
+        },
+        undefined
+      );
     });
   });
 
@@ -500,7 +513,7 @@ describe('investigation api functions', () => {
           params,
         })
       );
-      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data).toEqual(mockData[0]);
@@ -515,7 +528,7 @@ describe('investigation api functions', () => {
 
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(handleICATError).toHaveBeenCalledWith(error);
+      expect(handleICATErrorSpy).toHaveBeenCalledWith(error);
     });
   });
 

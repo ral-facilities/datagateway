@@ -1,25 +1,19 @@
-import type {
-  UseInfiniteQueryResult,
-  UseQueryOptions,
-  UseQueryResult,
-} from '@tanstack/react-query';
+import type { UseQueryResult } from '@tanstack/react-query';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import axios, { AxiosError, AxiosProgressEvent } from 'axios';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { IndexRange } from 'react-virtualized';
 import { getApiParams, parseSearchToQuery, useEntity } from '.';
 import {
   AdditionalFilters,
   Datafile,
-  Dataset,
   FiltersType,
-  Investigation,
+  SkipAndLimitType,
   SortType,
 } from '../app.types';
-import handleICATError from '../handleICATError';
 import { readSciGatewayToken } from '../parseTokens';
 import { StateType } from '../state/app.types';
+import { INFINITE_SCROLL_BATCH_SIZE } from '../table/table.component';
 import { useRetryICATErrors } from './retryICATErrors';
 
 export const fetchDatafiles = (
@@ -29,16 +23,13 @@ export const fetchDatafiles = (
     filters: FiltersType;
   },
   additionalFilters?: AdditionalFilters,
-  offsetParams?: IndexRange
+  skipAndLimit?: SkipAndLimitType
 ): Promise<Datafile[]> => {
   const params = getApiParams(sortAndFilters);
 
-  if (offsetParams) {
-    params.append('skip', JSON.stringify(offsetParams.startIndex));
-    params.append(
-      'limit',
-      JSON.stringify(offsetParams.stopIndex - offsetParams.startIndex + 1)
-    );
+  if (skipAndLimit) {
+    params.append('skip', JSON.stringify(skipAndLimit.skip));
+    params.append('limit', JSON.stringify(skipAndLimit.limit));
   }
 
   additionalFilters?.forEach((filter) => {
@@ -66,22 +57,8 @@ export const useDatafilesPaginated = (
   const { filters, sort, page, results } = parseSearchToQuery(location.search);
   const retryICATErrors = useRetryICATErrors();
 
-  return useQuery<
-    Datafile[],
-    AxiosError,
-    Datafile[],
-    [
-      string,
-      {
-        sort: string;
-        filters: FiltersType;
-        page: number;
-        results: number;
-      },
-      AdditionalFilters?
-    ]
-  >(
-    [
+  return useQuery({
+    queryKey: [
       'datafile',
       {
         sort: JSON.stringify(sort), // need to stringify sort as property order is important!
@@ -90,54 +67,58 @@ export const useDatafilesPaginated = (
         results: results ?? 10,
       },
       additionalFilters,
-    ],
-    (params) => {
+      apiUrl,
+    ] as const,
+
+    queryFn: (params) => {
       const { page, results } = params.queryKey[1];
-      const startIndex = (page - 1) * results;
-      const stopIndex = startIndex + results - 1;
+      const skip = (page - 1) * results;
+      const limit = results;
       return fetchDatafiles(apiUrl, { sort, filters }, additionalFilters, {
-        startIndex,
-        stopIndex,
+        skip,
+        limit,
       });
     },
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-      enabled: isMounted ?? true,
-    }
-  );
+
+    meta: { icatError: true },
+
+    retry: retryICATErrors,
+    enabled: isMounted ?? true,
+  });
 };
 
 export const useDatafilesInfinite = (
   additionalFilters?: AdditionalFilters,
   isMounted?: boolean
-): UseInfiniteQueryResult<Datafile[], AxiosError> => {
+) => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
   const { filters, sort } = parseSearchToQuery(location.search);
   const retryICATErrors = useRetryICATErrors();
 
-  return useInfiniteQuery(
-    ['datafile', { sort: JSON.stringify(sort), filters }, additionalFilters], // need to stringify sort as property order is important!
-    (params) => {
-      const offsetParams = params.pageParam ?? { startIndex: 0, stopIndex: 49 };
-      return fetchDatafiles(
+  return useInfiniteQuery({
+    queryKey: [
+      'datafile',
+      { sort: JSON.stringify(sort), filters }, // need to stringify sort as property order is important!
+      additionalFilters,
+      apiUrl,
+    ],
+    queryFn: (params) =>
+      fetchDatafiles(
         apiUrl,
         { sort, filters },
         additionalFilters,
-        offsetParams
-      );
-    },
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-      enabled: isMounted ?? true,
-    }
-  );
+        params.pageParam
+      ),
+    getNextPageParam: (_lastPage, _allPages, lastPageParam) => ({
+      skip: lastPageParam.skip + lastPageParam.limit,
+      limit: INFINITE_SCROLL_BATCH_SIZE,
+    }),
+    initialPageParam: { skip: 0, limit: 50 },
+    meta: { icatError: true },
+    retry: retryICATErrors,
+    enabled: isMounted ?? true,
+  });
 };
 
 export const fetchDatafileCountQuery = (
@@ -164,33 +145,28 @@ export const fetchDatafileCountQuery = (
     .then((response) => response.data);
 };
 
-export const useDatafileCount = (
-  additionalFilters?: AdditionalFilters
-): UseQueryResult<number, AxiosError> => {
+export const useDatafileCount = (additionalFilters?: AdditionalFilters) => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const location = useLocation();
 
   const filters = parseSearchToQuery(location.search).filters;
   const retryICATErrors = useRetryICATErrors();
 
-  return useQuery<
-    number,
-    AxiosError,
-    number,
-    [string, string, { filters: FiltersType }, AdditionalFilters?]
-  >(
-    ['count', 'datafile', { filters }, additionalFilters],
-    (params) => {
+  return useQuery({
+    queryKey: [
+      'count',
+      'datafile',
+      { filters },
+      additionalFilters,
+      apiUrl,
+    ] as const,
+    queryFn: (params) => {
       const { filters } = params.queryKey[2];
       return fetchDatafileCountQuery(apiUrl, filters, additionalFilters);
     },
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      retry: retryICATErrors,
-    }
-  );
+    meta: { icatError: true },
+    retry: retryICATErrors,
+  });
 };
 
 export const useDatafileDetails = (
@@ -199,17 +175,14 @@ export const useDatafileDetails = (
     filterType: 'include';
     filterValue: string;
   },
-  options?: UseQueryOptions<Datafile, AxiosError>
+  enabled?: boolean
 ): UseQueryResult<Datafile, AxiosError> => {
   return useEntity(
     'datafile',
     'id',
     datafileId.toString(),
     includeFilter,
-    options as UseQueryOptions<
-      Datafile | Investigation | Dataset,
-      AxiosError | Error
-    >
+    enabled
   );
 };
 
@@ -251,35 +224,30 @@ const downloadDatafileToMemory = ({
 export const useDatafileContent = ({
   datafileId,
   onDownloadProgress,
-  ...queryOptions
+  enabled,
 }: {
   datafileId: Datafile['id'];
   onDownloadProgress: (progressEvent: AxiosProgressEvent) => void;
-} & UseQueryOptions<
-  Blob,
-  AxiosError,
-  Blob,
-  ['datafile', 'content', number]
->): UseQueryResult<Blob, AxiosError> => {
+  enabled?: boolean;
+}) => {
   const idsUrl = useSelector<StateType, string>(
     (state) => state.dgcommon.urls.idsUrl
   );
 
-  return useQuery(
-    ['datafile', 'content', datafileId],
-    () =>
+  return useQuery({
+    // can't track onDownloadProgress in the query key as it's non-serialisable
+    // so ignore warning
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps
+    queryKey: ['datafile', 'content', datafileId],
+    queryFn: () =>
       downloadDatafileToMemory({
         idsUrl,
         datafileId,
         onDownloadProgress,
       }),
-    {
-      onError: (error) => {
-        handleICATError(error);
-      },
-      ...queryOptions,
-    }
-  );
+    meta: { icatError: true },
+    enabled,
+  });
 };
 
 /**

@@ -1,5 +1,4 @@
 import {
-  UseMutationResult,
   UseQueryResult,
   useMutation,
   useQuery,
@@ -32,8 +31,6 @@ export const handleDOIAPIError = (
   error: AxiosError<{
     detail: { msg: string }[] | string;
   }>,
-  _variables?: unknown,
-  _context?: unknown,
   logCondition?: boolean,
   broadcastCondition?: boolean
 ): void => {
@@ -90,7 +87,7 @@ export const handleDOIAPIError = (
 export const checkUser = (
   username: string,
   doiMinterUrl: string | undefined
-): Promise<User | AxiosError> => {
+): Promise<User> => {
   return axios
     .get(`${doiMinterUrl}/user/${username}`, {
       headers: {
@@ -110,35 +107,33 @@ export const checkUser = (
 export const useCheckUser = (
   username: string,
   doiMinterUrl: string | undefined
-): UseQueryResult<User, AxiosError> => {
+) => {
   const queryClient = useQueryClient();
   const opts = queryClient.getDefaultOptions();
   const retries =
     typeof opts?.queries?.retry === 'number' ? opts.queries.retry : 3;
 
-  return useQuery(
-    ['checkUser', username],
-    () => checkUser(username, doiMinterUrl),
-    {
-      onError: handleDOIAPIError,
-      retry: (failureCount: number, error: AxiosError) => {
-        if (
-          // user not logged in, error code will log them out
-          error.response?.status === 401 ||
-          // email doesn't match user - don't retry as this is a correct response from the server
-          error.response?.status === 404 ||
-          // email is invalid - don't retry as this is correct response from the server
-          error.response?.status === 422 ||
-          failureCount >= retries
-        )
-          return false;
-        return true;
-      },
-      // set enabled false to only fetch on demand when the add creator button is pressed
-      enabled: false,
-      cacheTime: 0,
-    }
-  );
+  return useQuery({
+    queryKey: ['checkUser', username, doiMinterUrl],
+    queryFn: () => checkUser(username, doiMinterUrl),
+    meta: { icatError: true },
+    retry: (failureCount: number, error: AxiosError) => {
+      if (
+        // user not logged in, error code will log them out
+        error.response?.status === 401 ||
+        // email doesn't match user - don't retry as this is a correct response from the server
+        error.response?.status === 404 ||
+        // email is invalid - don't retry as this is correct response from the server
+        error.response?.status === 422 ||
+        failureCount >= retries
+      )
+        return false;
+      return true;
+    },
+    // set enabled false to only fetch on demand when the add creator button is pressed
+    enabled: false,
+    staleTime: 0,
+  });
 };
 
 /**
@@ -172,7 +167,9 @@ export const useDOI = (
   const retries =
     typeof opts?.queries?.retry === 'number' ? opts.queries.retry : 3;
 
-  return useQuery(['doi', doi], () => fetchDOI(doi ?? '', dataCiteUrl), {
+  return useQuery({
+    queryKey: ['doi', doi, dataCiteUrl],
+    queryFn: () => fetchDOI(doi ?? '', dataCiteUrl),
     retry: (failureCount: number, error: AxiosError) => {
       if (
         // DOI is invalid - don't retry as this is a correct response from the server
@@ -191,16 +188,15 @@ export const useDOI = (
  * @param doi The DOI that we're checking
  * @returns the {@link RelatedIdentifier} that matches the username, or 404
  */
-export const useCheckDOI = (
-  doi: string,
-  dataCiteUrl: string | undefined
-): UseQueryResult<RelatedIdentifier, AxiosError> => {
+export const useCheckDOI = (doi: string, dataCiteUrl: string | undefined) => {
   const queryClient = useQueryClient();
   const opts = queryClient.getDefaultOptions();
   const retries =
     typeof opts?.queries?.retry === 'number' ? opts.queries.retry : 3;
 
-  return useQuery(['checkDOI', doi], () => fetchDOI(doi, dataCiteUrl), {
+  return useQuery({
+    queryKey: ['checkDOI', doi, dataCiteUrl],
+    queryFn: () => fetchDOI(doi, dataCiteUrl),
     retry: (failureCount: number, error: AxiosError) => {
       if (
         // DOI is invalid - don't retry as this is a correct response from the server
@@ -210,15 +206,16 @@ export const useCheckDOI = (
         return false;
       return true;
     },
-    select: (doi) => ({
-      title: doi.attributes.titles[0].title,
-      identifier: doi.attributes.doi,
-      relatedIdentifierType: DOIIdentifierType.DOI,
-      relationType: '',
-    }),
+    select: (doi) =>
+      ({
+        title: doi.attributes.titles[0].title,
+        identifier: doi.attributes.doi,
+        relatedIdentifierType: DOIIdentifierType.DOI,
+        relationType: '',
+      }) satisfies RelatedIdentifier as RelatedIdentifier,
     // set enabled false to only fetch on demand when the add creator button is pressed
     enabled: false,
-    cacheTime: 0,
+    staleTime: 0,
   });
 };
 
@@ -263,27 +260,25 @@ export const draftVersionDOI = (
  * @param cart The {@link Cart} to mint
  * @param doiMetadata The required metadata for the DOI
  */
-export const useDraftVersionDOI = (): UseMutationResult<
-  DOIDraftVersionResponse,
-  AxiosError<{
-    detail: { msg: string }[] | string;
-  }>,
-  {
-    contentDataPublicationId: string;
-    content: {
-      investigation_ids: number[];
-      dataset_ids: number[];
-      datafile_ids: number[];
-    };
-    doiMetadata: DOIMetadata;
-  }
-> => {
+export const useDraftVersionDOI = () => {
   const doiMinterUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.doiMinterUrl
   );
 
-  return useMutation(
-    ({ contentDataPublicationId, content, doiMetadata }) => {
+  return useMutation({
+    mutationFn: ({
+      contentDataPublicationId,
+      content,
+      doiMetadata,
+    }: {
+      contentDataPublicationId: string;
+      content: {
+        investigation_ids: number[];
+        dataset_ids: number[];
+        datafile_ids: number[];
+      };
+      doiMetadata: DOIMetadata;
+    }) => {
       return draftVersionDOI(
         contentDataPublicationId,
         content,
@@ -291,12 +286,15 @@ export const useDraftVersionDOI = (): UseMutationResult<
         doiMinterUrl
       );
     },
-    {
-      onError: (error) => {
-        handleDOIAPIError(error, undefined, undefined, true, true);
-      },
-    }
-  );
+
+    onError: (
+      error: AxiosError<{
+        detail: { msg: string }[] | string;
+      }>
+    ) => {
+      handleDOIAPIError(error, true, true);
+    },
+  });
 };
 
 /**
@@ -329,65 +327,66 @@ type UsePublishDraftVersionVariables = {
  * Publishes a draft data publication
  * @param dataPublicationId The {@link DataPublication} to publish
  */
-export const usePublishDraftVersion = (): UseMutationResult<
-  DOIResponse,
-  AxiosError<{
-    detail: { msg: string }[] | string;
-  }>,
-  UsePublishDraftVersionVariables
-> => {
-  const queryClient = useQueryClient();
+export const usePublishDraftVersion = () => {
   const doiMinterUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.doiMinterUrl
   );
   const username = readSciGatewayToken().username;
 
-  return useMutation(
-    ({ contentDataPublicationId, draftVersionDataPublicationId }) => {
-      return publishDraftVersionDOI(
+  return useMutation({
+    mutationFn: ({
+      contentDataPublicationId,
+      draftVersionDataPublicationId,
+    }: UsePublishDraftVersionVariables) =>
+      publishDraftVersionDOI(
         contentDataPublicationId,
         draftVersionDataPublicationId,
         doiMinterUrl
-      );
+      ),
+    onError: (
+      error: AxiosError<{
+        detail: { msg: string }[] | string;
+      }>
+    ) => {
+      handleDOIAPIError(error, true, true);
     },
-    {
-      onError: handleDOIAPIError,
-      onSuccess: (
-        data,
-        { contentDataPublicationId }: UsePublishDraftVersionVariables
-      ) => {
-        // resetQueries instead of invalidateQueries as otherwise invalidateQueries shows out-of-date data
-        queryClient.resetQueries({
-          predicate: (query) =>
-            // invalidate the my DOIs page query
-            (query.queryKey[0] === 'dataPublication' &&
-              username !== null &&
-              typeof query.queryKey[2] !== 'undefined' &&
-              JSON.stringify(query.queryKey[2]).includes(username) &&
-              JSON.stringify(query.queryKey[2]).includes('User-defined')) ||
-            // invalidate the data publication info query
-            (query.queryKey[0] === 'dataPublication' &&
-              typeof query.queryKey[1] !== 'undefined' &&
-              JSON.stringify(query.queryKey[1]).includes(
-                contentDataPublicationId
-              )) ||
-            // invalidate the data publication datacite info query
-            (query.queryKey[0] === 'doi' &&
-              typeof query.queryKey[1] !== 'undefined' &&
-              JSON.stringify(query.queryKey[1]).includes(
-                data.concept.attributes.doi
-              )) ||
-            // invalidate the data publication content table queries
-            (query.queryKey[0] === 'dataPublicationContent' &&
-              // use double equals to ignore difference between 1 and "1"
+    onSuccess: (
+      data,
+      { contentDataPublicationId }: UsePublishDraftVersionVariables,
+      _onMutateResult,
+      context
+    ) => {
+      // resetQueries instead of invalidateQueries as otherwise invalidateQueries shows out-of-date data
+      context.client.resetQueries({
+        predicate: (query) =>
+          // invalidate the my DOIs page query
+          (query.queryKey[0] === 'dataPublication' &&
+            username !== null &&
+            typeof query.queryKey[2] !== 'undefined' &&
+            JSON.stringify(query.queryKey[2]).includes(username) &&
+            JSON.stringify(query.queryKey[2]).includes('User-defined')) ||
+          // invalidate the data publication info query
+          (query.queryKey[0] === 'dataPublication' &&
+            typeof query.queryKey[1] !== 'undefined' &&
+            JSON.stringify(query.queryKey[1]).includes(
+              contentDataPublicationId
+            )) ||
+          // invalidate the data publication datacite info query
+          (query.queryKey[0] === 'doi' &&
+            typeof query.queryKey[1] !== 'undefined' &&
+            JSON.stringify(query.queryKey[1]).includes(
+              data.concept.attributes.doi
+            )) ||
+          // invalidate the data publication content table queries
+          (query.queryKey[0] === 'dataPublicationContent' &&
+            // use double equals to ignore difference between 1 and "1"
 
-              query.queryKey[2] == contentDataPublicationId) ||
-            (query.queryKey[0] === 'dataPublicationContentCount' &&
-              query.queryKey[2] == contentDataPublicationId),
-        });
-      },
-    }
-  );
+            query.queryKey[2] == contentDataPublicationId) ||
+          (query.queryKey[0] === 'dataPublicationContentCount' &&
+            query.queryKey[2] == contentDataPublicationId),
+      });
+    },
+  });
 };
 
 /**
@@ -412,31 +411,31 @@ export const deleteDraftVersionDOI = (
  * Deletes a draft version data publication
  * @param dataPublicationId The {@link DataPublication} to publish
  */
-export const useDeleteDraftVersion = (): UseMutationResult<
-  void,
-  AxiosError<{
-    detail: { msg: string }[] | string;
-  }>,
-  UsePublishDraftVersionVariables
-> => {
+export const useDeleteDraftVersion = () => {
   const doiMinterUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.doiMinterUrl
   );
 
-  return useMutation(
-    ({ contentDataPublicationId, draftVersionDataPublicationId }) => {
+  return useMutation({
+    mutationFn: ({
+      contentDataPublicationId,
+      draftVersionDataPublicationId,
+    }: UsePublishDraftVersionVariables) => {
       return deleteDraftVersionDOI(
         contentDataPublicationId,
         draftVersionDataPublicationId,
         doiMinterUrl
       );
     },
-    {
-      onError: (error) => {
-        handleDOIAPIError(error, undefined, undefined, true, true);
-      },
-    }
-  );
+
+    onError: (
+      error: AxiosError<{
+        detail: { msg: string }[] | string;
+      }>
+    ) => {
+      handleDOIAPIError(error, true, true);
+    },
+  });
 };
 
 /**
@@ -508,36 +507,40 @@ export const useIsCartMintable = (
   const retries =
     typeof opts?.queries?.retry === 'number' ? opts.queries.retry : 3;
 
-  return useQuery(
-    ['ismintable', cart],
-    () => {
+  return useQuery({
+    queryKey: ['ismintable', cart, doiMinterUrl],
+    queryFn: () => {
       if (doiMinterUrl && cart && cart.length > 0)
         return isCartMintable(cart, doiMinterUrl);
       else return Promise.resolve(false);
     },
-    {
-      onError: (error) => {
-        handleDOIAPIError(
-          error,
-          undefined,
-          undefined,
-          // don't broadcast or log "expected" errors
-          !isMintabilityErrorExpected(error),
-          !isMintabilityErrorExpected(error)
-        );
-      },
-      retry: (failureCount, error) => {
-        // don't bother retrying "expected" errors - all other errors use default retry behaviour
-        if (isMintabilityErrorExpected(error) || failureCount >= retries) {
-          return false;
-        } else {
-          return true;
-        }
-      },
-      refetchOnWindowFocus: false,
-      enabled: typeof doiMinterUrl !== 'undefined',
-    }
-  );
+    meta: {
+      DOIAPIError: true,
+      // don't broadcast or log "expected" errors
+      broadcastCondition: (error) =>
+        !isMintabilityErrorExpected(
+          error as AxiosError<{
+            detail: { msg: string }[] | string;
+          }>
+        ),
+      logCondition: (error) =>
+        !isMintabilityErrorExpected(
+          error as AxiosError<{
+            detail: { msg: string }[] | string;
+          }>
+        ),
+    },
+    retry: (failureCount, error) => {
+      // don't bother retrying "expected" errors - all other errors use default retry behaviour
+      if (isMintabilityErrorExpected(error) || failureCount >= retries) {
+        return false;
+      } else {
+        return true;
+      }
+    },
+    refetchOnWindowFocus: false,
+    enabled: typeof doiMinterUrl !== 'undefined',
+  });
 };
 
 export const openDataPublication: (
@@ -558,25 +561,22 @@ export const openDataPublication: (
 /**
  * A React hook for opening a session DOI.
  */
-export const useOpenDataPublication = (): UseMutationResult<
-  void,
-  AxiosError<{
-    detail: { msg: string }[] | string;
-  }>,
-  { dataPublicationId: string }
-> => {
+export const useOpenDataPublication = () => {
   const doiMinterUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.doiMinterUrl
   );
-  return useMutation(
-    ({ dataPublicationId }) =>
+  return useMutation({
+    mutationFn: ({ dataPublicationId }: { dataPublicationId: string }) =>
       openDataPublication(dataPublicationId, doiMinterUrl),
-    {
-      onError: (error) => {
-        handleDOIAPIError(error, undefined, undefined, true, true);
-      },
-    }
-  );
+
+    onError: (
+      error: AxiosError<{
+        detail: { msg: string }[] | string;
+      }>
+    ) => {
+      handleDOIAPIError(error, true, true);
+    },
+  });
 };
 
 export interface BioPortalResponse {
@@ -638,14 +638,12 @@ export const useSearchPANETTechniques = (
   searchText: string,
   bioportalUrl: string | undefined
 ): UseQueryResult<BioPortalTerm[], AxiosError> => {
-  return useQuery(
-    ['SearchPANETTechniques', searchText],
-    () => fetchPANETTechniquesFromSearchText(searchText, bioportalUrl),
-    {
-      staleTime: Infinity,
-      enabled: typeof bioportalUrl !== 'undefined',
-    }
-  );
+  return useQuery({
+    queryKey: ['SearchPANETTechniques', searchText, bioportalUrl],
+    queryFn: () => fetchPANETTechniquesFromSearchText(searchText, bioportalUrl),
+    staleTime: Infinity,
+    enabled: typeof bioportalUrl !== 'undefined',
+  });
 };
 
 /**
@@ -657,19 +655,16 @@ export const useGetDescendantTechniques = (
   selectedTechnique: BioPortalTerm | null,
   bioportalUrl: string | undefined
 ): UseQueryResult<BioPortalTerm[], AxiosError> => {
-  return useQuery(
-    ['getDescendantTechniques', selectedTechnique],
-    () =>
+  return useQuery({
+    queryKey: ['getDescendantTechniques', selectedTechnique, bioportalUrl],
+    queryFn: () =>
       selectedTechnique
         ? fetchDescendantPANETTechniques(
             selectedTechnique?.links.descendants,
             bioportalUrl
           )
         : Promise.resolve([]),
-    {
-      staleTime: Infinity,
-      enabled:
-        selectedTechnique !== null && typeof bioportalUrl !== 'undefined',
-    }
-  );
+    staleTime: Infinity,
+    enabled: selectedTechnique !== null && typeof bioportalUrl !== 'undefined',
+  });
 };

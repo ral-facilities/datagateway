@@ -114,18 +114,17 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   const {
     data: submitDownloadData,
     mutate: submitDownload,
-    isLoading: isSubmittingDownload,
+    isPending: isSubmittingDownload,
     isSuccess: isDownloadSubmittedSuccessfully,
     isError: hasSubmitDownloadFailed,
     reset: resetSubmitDownloadMutation,
-  } = submitDownloadHook(facilityName, downloadApiUrl, undefined);
+  } = submitDownloadHook(facilityName, downloadApiUrl);
 
   // query download after cart is submitted
   const {
     data: downloadInfo,
     isSuccess: isDownloadInfoAvailable,
     isError: isDownloadInfoUnavailable,
-    remove: resetDownloadQuery,
   } = useDownload({
     id: typeof submitDownloadData === 'number' ? submitDownloadData : -1,
     facilityName,
@@ -177,12 +176,11 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
   React.useEffect(() => {
     if (props.open) {
-      resetDownloadQuery();
       resetSubmitDownloadMutation();
       setDownloadName('');
       setEmailAddress('');
     }
-  }, [props.open, resetDownloadQuery, resetSubmitDownloadMutation]);
+  }, [props.open, resetSubmitDownloadMutation]);
 
   React.useEffect(() => {
     if (props.open) {
