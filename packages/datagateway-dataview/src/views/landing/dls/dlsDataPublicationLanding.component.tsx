@@ -29,7 +29,6 @@ import {
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
 import CitationFormatter from '../../citationFormatter.component';
 import Branding from './dlsBranding.component';
 import DLSDataPublicationContentTable from './dlsDataPublicationContentTable.component';
@@ -40,6 +39,7 @@ import DLSDataPublicationVersionPanel, {
 // TODO: when vite 6, explore no-inline w/ pluginHost vs inline as we have to inline in vite 5
 import ORCIDIdLogo from 'datagateway-common/src/images/ORCID-iD_icon_unauth_vector.svg';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { StateType } from '../../../state/app.types';
 
 const Subheading = styled(Typography)(({ theme }) => ({
@@ -138,7 +138,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
 
   const PIRole = useSelector((state: StateType) => state.dgdataview.PIRole);
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [currentTab, setCurrentTab] = React.useState<'details' | 'content'>(
     'details'
@@ -557,8 +557,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                       <IconButton
                         sx={{ ml: 'auto' }}
                         onClick={() =>
-                          history.push({
-                            pathname: `${dataPublicationId}/edit`,
+                          navigate(`${dataPublicationId}/edit`, {
                             state: { fromEdit: true },
                           })
                         }
@@ -727,4 +726,10 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   );
 };
 
-export default LandingPage;
+const DLSDataPublicationLandingPage = () => {
+  const { dataPublicationId = '' } = useParams();
+
+  return <LandingPage dataPublicationId={dataPublicationId} />;
+};
+
+export default DLSDataPublicationLandingPage;

@@ -12,7 +12,7 @@ import {
 } from 'datagateway-common';
 import log from 'loglevel';
 import React from 'react';
-import { Redirect, useLocation, useParams } from 'react-router-dom';
+import { Navigate, useLocation, useParams } from 'react-router-dom';
 import { paths } from './pageContainer.component';
 
 export const RedirectComponent: React.FC<{
@@ -39,7 +39,7 @@ export const RedirectComponent: React.FC<{
 
   return (
     <Preloader loading={loading}>
-      <Redirect to={redirectUrl} />
+      <Navigate to={redirectUrl} replace={true} />
     </Preloader>
   );
 };

@@ -11,6 +11,7 @@ import {
   formatBytes,
   parseSearchToQuery,
   tableLink,
+  useDataPublication,
   useDatasetCount,
   useDatasetsPaginated,
   useDateFilter,
@@ -22,7 +23,13 @@ import {
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import {
+  checkInstrumentAndFacilityCycleId,
+  checkInstrumentId,
+  checkStudyDataPublicationId,
+} from '../../../page/idCheckFunctions';
+import WithIdCheck from '../../../page/withIdCheck';
 
 const ActionButtonsContainer = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -33,18 +40,18 @@ const ActionButtonsContainer = styled('div')(({ theme }) => ({
   },
 }));
 
-interface ISISDatasetCardViewProps {
+interface BaseISISDatasetCardViewProps {
   investigationId: string;
 }
 
-const ISISDatasetsCardView = (
-  props: ISISDatasetCardViewProps
+const BaseISISDatasetsCardView = (
+  props: BaseISISDatasetCardViewProps
 ): React.ReactElement => {
   const { investigationId } = props;
 
   const [t] = useTranslation();
   const location = useLocation();
-  const { push } = useHistory();
+  const navigate = useNavigate();
 
   const { filters, view, sort, page, results } = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -163,11 +170,11 @@ const ISISDatasetsCardView = (
           const url = view
             ? `${location.pathname}/${id}/datafile?view=${view}`
             : `${location.pathname}/${id}/datafile`;
-          push(url);
+          navigate(url);
         }}
       />
     ),
-    [push, location.pathname, view]
+    [navigate, location.pathname, view]
   );
 
   return (
@@ -191,6 +198,50 @@ const ISISDatasetsCardView = (
       moreInformation={moreInformation}
       buttons={buttons}
     />
+  );
+};
+
+const ISISDatasetsCardView = (props: {
+  dataPublication: boolean;
+}): React.ReactElement => {
+  const {
+    instrumentId = '',
+    instrumentChildId = '',
+    investigationId = '',
+  } = useParams();
+  const { data, isPending } = useDataPublication(
+    parseInt(investigationId),
+    props.dataPublication
+  );
+
+  const dataPublicationInvestigationId =
+    data?.content?.dataCollectionInvestigations?.[0]?.investigation?.id;
+
+  const checkingPromise = props.dataPublication
+    ? Promise.all([
+        checkInstrumentId(parseInt(instrumentId), parseInt(instrumentChildId)),
+        checkStudyDataPublicationId(
+          parseInt(instrumentChildId),
+          parseInt(investigationId)
+        ),
+        ...(isPending ? [new Promise(() => undefined)] : []),
+      ]).then((values) => !values.includes(false))
+    : checkInstrumentAndFacilityCycleId(
+        parseInt(instrumentId),
+        parseInt(instrumentChildId),
+        parseInt(investigationId)
+      );
+
+  return (
+    <WithIdCheck checkingPromise={checkingPromise}>
+      <BaseISISDatasetsCardView
+        investigationId={
+          dataPublicationInvestigationId
+            ? dataPublicationInvestigationId.toString()
+            : investigationId
+        }
+      />
+    </WithIdCheck>
   );
 };
 

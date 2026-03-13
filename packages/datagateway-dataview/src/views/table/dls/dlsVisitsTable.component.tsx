@@ -18,14 +18,16 @@ import {
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 
-interface DLSVisitsTableProps {
+interface BaseDLSVisitsTableProps {
   proposalName: string;
 }
 
-const DLSVisitsTable = (props: DLSVisitsTableProps): React.ReactElement => {
+const BaseDLSVisitsTable = (
+  props: BaseDLSVisitsTableProps
+): React.ReactElement => {
   const { proposalName } = props;
 
   const [t] = useTranslation();
@@ -157,6 +159,11 @@ const DLSVisitsTable = (props: DLSVisitsTableProps): React.ReactElement => {
       columns={columns}
     />
   );
+};
+
+const DLSVisitsTable = () => {
+  const { proposalName = '' } = useParams();
+  return <BaseDLSVisitsTable proposalName={proposalName} />;
 };
 
 export default DLSVisitsTable;

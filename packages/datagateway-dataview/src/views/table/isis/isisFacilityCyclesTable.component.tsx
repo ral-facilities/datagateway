@@ -14,15 +14,15 @@ import {
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 
-interface ISISFacilityCyclesTableProps {
+interface BaseISISFacilityCyclesTableProps {
   instrumentId: string;
 }
 
-const ISISFacilityCyclesTable = (
-  props: ISISFacilityCyclesTableProps
+const BaseISISFacilityCyclesTable = (
+  props: BaseISISFacilityCyclesTableProps
 ): React.ReactElement => {
   const { instrumentId } = props;
 
@@ -113,6 +113,11 @@ const ISISFacilityCyclesTable = (
       columns={columns}
     />
   );
+};
+
+const ISISFacilityCyclesTable = () => {
+  const { instrumentId = '' } = useParams();
+  return <BaseISISFacilityCyclesTable instrumentId={instrumentId} />;
 };
 
 export default ISISFacilityCyclesTable;

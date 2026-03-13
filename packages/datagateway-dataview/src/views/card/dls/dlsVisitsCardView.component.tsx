@@ -24,13 +24,15 @@ import {
   useTextFilter,
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 
-interface DLSVisitsCVProps {
+interface BaseDLSVisitsCVProps {
   proposalName: string;
 }
 
-const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
+const BaseDLSVisitsCardView = (
+  props: BaseDLSVisitsCVProps
+): React.ReactElement => {
   const { proposalName } = props;
 
   const [t] = useTranslation();
@@ -171,6 +173,11 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
       )}
     />
   );
+};
+
+const DLSVisitsCardView = () => {
+  const { proposalName = '' } = useParams();
+  return <BaseDLSVisitsCardView proposalName={proposalName} />;
 };
 
 export default DLSVisitsCardView;

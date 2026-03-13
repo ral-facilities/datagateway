@@ -1,3 +1,7 @@
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import CheckCircle from '@mui/icons-material/CheckCircle';
+import Public from '@mui/icons-material/Public';
+import Save from '@mui/icons-material/Save';
 import {
   Divider,
   Grid,
@@ -8,23 +12,27 @@ import {
   Tabs,
   Typography,
 } from '@mui/material';
-import CalendarToday from '@mui/icons-material/CalendarToday';
-import CheckCircle from '@mui/icons-material/CheckCircle';
-import Public from '@mui/icons-material/Public';
-import Save from '@mui/icons-material/Save';
 import {
-  Dataset,
-  formatBytes,
-  parseSearchToQuery,
-  useDatasetDetails,
   AddToCartButton,
-  DownloadButton,
   ArrowTooltip,
+  Dataset,
+  DownloadButton,
+  formatBytes,
   getTooltipText,
+  parseSearchToQuery,
+  useDataPublication,
+  useDatasetDetails,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import {
+  checkInstrumentAndFacilityCycleId,
+  checkInstrumentId,
+  checkInvestigationId,
+  checkStudyDataPublicationId,
+} from '../../../page/idCheckFunctions';
+import WithIdCheck from '../../../page/withIdCheck';
 import Branding from './isisBranding.component';
 
 const Subheading = styled(Typography)(({ theme }) => ({
@@ -66,9 +74,11 @@ interface LandingPageProps {
   datasetId: string;
 }
 
-const LandingPage = (props: LandingPageProps): React.ReactElement => {
+export const BaseISISDatasetLandingPage = (
+  props: LandingPageProps
+): React.ReactElement => {
   const [t] = useTranslation();
-  const { push } = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
   const { view } = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -145,7 +155,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 id="dataset-datafiles-tab"
                 label={t('datasets.details.datafiles')}
                 onClick={() =>
-                  push(
+                  navigate(
                     view
                       ? `${location.pathname}/datafile?view=${view}`
                       : `${location.pathname}/datafile`
@@ -221,4 +231,49 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   );
 };
 
-export default LandingPage;
+const ISISDatasetLandingPage = (props: {
+  dataPublication: boolean;
+}): React.ReactElement => {
+  const {
+    instrumentId = '',
+    instrumentChildId = '',
+    investigationId = '',
+    datasetId = '',
+  } = useParams();
+  const { data, isPending } = useDataPublication(
+    parseInt(investigationId),
+    props.dataPublication
+  );
+  const dataPublicationInvestigationId =
+    data?.content?.dataCollectionInvestigations?.[0]?.investigation?.id;
+
+  const checkingPromise = props.dataPublication
+    ? Promise.all([
+        checkInstrumentId(parseInt(instrumentId), parseInt(instrumentChildId)),
+        checkStudyDataPublicationId(
+          parseInt(instrumentChildId),
+          parseInt(investigationId)
+        ),
+        checkInvestigationId(
+          dataPublicationInvestigationId ?? -1,
+          parseInt(datasetId)
+        ),
+        ...(isPending ? [new Promise(() => undefined)] : []),
+      ]).then((values) => !values.includes(false))
+    : Promise.all([
+        checkInstrumentAndFacilityCycleId(
+          parseInt(instrumentId),
+          parseInt(instrumentChildId),
+          parseInt(investigationId)
+        ),
+        checkInvestigationId(parseInt(investigationId), parseInt(datasetId)),
+      ]).then((values) => !values.includes(false));
+
+  return (
+    <WithIdCheck checkingPromise={checkingPromise}>
+      <BaseISISDatasetLandingPage datasetId={datasetId} />
+    </WithIdCheck>
+  );
+};
+
+export default ISISDatasetLandingPage;

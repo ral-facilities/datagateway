@@ -24,16 +24,20 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { IndexRange } from 'react-virtualized';
+import { checkInvestigationId } from '../../page/idCheckFunctions';
+import WithIdCheck from '../../page/withIdCheck';
 import type { StateType } from '../../state/app.types';
 
-interface DatafileTableProps {
+interface BaseDatafileTableProps {
   datasetId: string;
   investigationId: string;
 }
 
-const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
+export const BaseDatafileTable = (
+  props: BaseDatafileTableProps
+): React.ReactElement => {
   const { datasetId, investigationId } = props;
 
   const [t] = useTranslation();
@@ -187,6 +191,23 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
       ]}
       columns={columns}
     />
+  );
+};
+
+const DatafileTable = () => {
+  const { investigationId = '', datasetId = '' } = useParams();
+  return (
+    <WithIdCheck
+      checkingPromise={checkInvestigationId(
+        parseInt(investigationId),
+        parseInt(datasetId)
+      )}
+    >
+      <BaseDatafileTable
+        datasetId={datasetId}
+        investigationId={investigationId}
+      />
+    </WithIdCheck>
   );
 };
 

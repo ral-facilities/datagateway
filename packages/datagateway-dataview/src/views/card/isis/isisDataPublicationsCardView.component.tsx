@@ -18,15 +18,15 @@ import {
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 
-interface ISISDataPublicationsCVProps {
+interface BaseISISDataPublicationsCVProps {
   instrumentId: string;
   studyDataPublicationId?: string;
 }
 
-const ISISDataPublicationsCardView = (
-  props: ISISDataPublicationsCVProps
+const BaseISISDataPublicationsCardView = (
+  props: BaseISISDataPublicationsCVProps
 ): React.ReactElement => {
   const { instrumentId, studyDataPublicationId } = props;
 
@@ -220,6 +220,16 @@ const ISISDataPublicationsCardView = (
       title={title}
       description={description}
       information={information}
+    />
+  );
+};
+
+const ISISDataPublicationsCardView = () => {
+  const { instrumentId = '', studyDataPublicationId = '' } = useParams();
+  return (
+    <BaseISISDataPublicationsCardView
+      instrumentId={instrumentId}
+      studyDataPublicationId={studyDataPublicationId}
     />
   );
 };

@@ -22,14 +22,18 @@ import React from 'react';
 
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
+import { checkProposalName } from '../../../page/idCheckFunctions';
+import WithIdCheck from '../../../page/withIdCheck';
 
-interface DLSDatasetsCVProps {
+interface BaseDLSDatasetsCVProps {
   proposalName: string;
   investigationId: string;
 }
 
-const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
+const BaseDLSDatasetsCardView = (
+  props: BaseDLSDatasetsCVProps
+): React.ReactElement => {
   const { proposalName, investigationId } = props;
 
   const [t] = useTranslation();
@@ -181,6 +185,23 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
       )}
       buttons={buttons}
     />
+  );
+};
+
+const DLSDatasetsCardView = () => {
+  const { proposalName = '', investigationId = '' } = useParams();
+  return (
+    <WithIdCheck
+      checkingPromise={checkProposalName(
+        proposalName,
+        parseInt(investigationId)
+      )}
+    >
+      <BaseDLSDatasetsCardView
+        proposalName={proposalName}
+        investigationId={investigationId}
+      />
+    </WithIdCheck>
   );
 };
 

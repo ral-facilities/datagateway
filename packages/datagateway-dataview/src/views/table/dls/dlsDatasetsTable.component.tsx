@@ -23,16 +23,20 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { IndexRange, TableCellProps } from 'react-virtualized';
+import { checkProposalName } from '../../../page/idCheckFunctions';
+import WithIdCheck from '../../../page/withIdCheck';
 import { StateType } from '../../../state/app.types';
 
-interface DLSDatasetsTableProps {
+interface BaseDLSDatasetsTableProps {
   proposalName: string;
   investigationId: string;
 }
 
-const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
+const BaseDLSDatasetsTable = (
+  props: BaseDLSDatasetsTableProps
+): React.ReactElement => {
   const { investigationId, proposalName } = props;
 
   const [t] = useTranslation();
@@ -204,6 +208,23 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
       detailsPanel={DLSDatasetDetailsPanel}
       columns={columns}
     />
+  );
+};
+
+const DLSDatasetsTable = () => {
+  const { proposalName = '', investigationId = '' } = useParams();
+  return (
+    <WithIdCheck
+      checkingPromise={checkProposalName(
+        proposalName,
+        parseInt(investigationId)
+      )}
+    >
+      <BaseDLSDatasetsTable
+        proposalName={proposalName}
+        investigationId={investigationId}
+      />
+    </WithIdCheck>
   );
 };
 

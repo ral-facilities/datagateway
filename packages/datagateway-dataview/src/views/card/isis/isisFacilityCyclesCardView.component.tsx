@@ -16,14 +16,14 @@ import {
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 
-interface ISISFacilityCyclesCVProps {
+interface BaseISISFacilityCyclesCVProps {
   instrumentId: string;
 }
 
-const ISISFacilityCyclesCardView = (
-  props: ISISFacilityCyclesCVProps
+const BaseISISFacilityCyclesCardView = (
+  props: BaseISISFacilityCyclesCVProps
 ): React.ReactElement => {
   const { instrumentId } = props;
   const [t] = useTranslation();
@@ -119,6 +119,11 @@ const ISISFacilityCyclesCardView = (
       information={information}
     />
   );
+};
+
+const ISISFacilityCyclesCardView = () => {
+  const { instrumentId = '' } = useParams();
+  return <BaseISISFacilityCyclesCardView instrumentId={instrumentId} />;
 };
 
 export default ISISFacilityCyclesCardView;

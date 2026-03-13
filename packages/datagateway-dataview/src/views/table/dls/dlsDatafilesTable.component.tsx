@@ -22,17 +22,22 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { IndexRange } from 'react-virtualized';
+import {
+  checkInvestigationId,
+  checkProposalName,
+} from '../../../page/idCheckFunctions';
+import WithIdCheck from '../../../page/withIdCheck';
 import { StateType } from '../../../state/app.types';
 
-interface DLSDatafilesTableProps {
+interface BaseDLSDatafilesTableProps {
   datasetId: string;
   investigationId: string;
 }
 
-const DLSDatafilesTable = (
-  props: DLSDatafilesTableProps
+const BaseDLSDatafilesTable = (
+  props: BaseDLSDatafilesTableProps
 ): React.ReactElement => {
   const { datasetId, investigationId } = props;
 
@@ -189,6 +194,27 @@ const DLSDatafilesTable = (
       detailsPanel={DLSDatafileDetailsPanel}
       columns={columns}
     />
+  );
+};
+
+const DLSDatafilesTable = () => {
+  const {
+    proposalName = '',
+    investigationId = '',
+    datasetId = '',
+  } = useParams();
+  return (
+    <WithIdCheck
+      checkingPromise={Promise.all([
+        checkProposalName(proposalName, parseInt(investigationId)),
+        checkInvestigationId(parseInt(investigationId), parseInt(datasetId)),
+      ]).then((values) => !values.includes(false))}
+    >
+      <BaseDLSDatafilesTable
+        investigationId={investigationId}
+        datasetId={datasetId}
+      />
+    </WithIdCheck>
   );
 };
 

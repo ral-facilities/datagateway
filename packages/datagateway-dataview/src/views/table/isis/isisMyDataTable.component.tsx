@@ -31,7 +31,7 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { StateType } from '../../../state/app.types';
 
@@ -40,7 +40,7 @@ const ISISMyDataTable = (): React.ReactElement => {
     (state: StateType) => state.dgcommon.features?.disableSelectAll ?? false
   );
   const location = useLocation();
-  const { push } = useHistory();
+  const navigate = useNavigate();
   const [t] = useTranslation();
   const username = readSciGatewayToken().username || '';
 
@@ -156,12 +156,12 @@ const ISISMyDataTable = (): React.ReactElement => {
             rowData={rowData}
             detailsPanelResize={detailsPanelResize}
             viewDatasets={() => {
-              if (datasetTableUrl) push(datasetTableUrl);
+              if (datasetTableUrl) navigate(datasetTableUrl);
             }}
           />
         );
       },
-      [push]
+      [navigate]
     );
 
   const columns: ColumnType[] = React.useMemo(

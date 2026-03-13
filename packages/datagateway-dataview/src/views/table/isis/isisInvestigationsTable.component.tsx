@@ -31,17 +31,17 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { StateType } from '../../../state/app.types';
 
-interface ISISInvestigationsTableProps {
+interface BaseISISInvestigationsTableProps {
   instrumentId: string;
   facilityCycleId: string;
 }
 
-const ISISInvestigationsTable = (
-  props: ISISInvestigationsTableProps
+const BaseISISInvestigationsTable = (
+  props: BaseISISInvestigationsTableProps
 ): React.ReactElement => {
   const { instrumentId, facilityCycleId } = props;
   const disableSelectAll = useSelector(
@@ -49,7 +49,7 @@ const ISISInvestigationsTable = (
   );
   const PIRole = useSelector((state: StateType) => state.dgdataview.PIRole);
   const location = useLocation();
-  const { push } = useHistory();
+  const navigate = useNavigate();
   const [t] = useTranslation();
 
   const { filters, view, sort } = React.useMemo(
@@ -167,11 +167,11 @@ const ISISInvestigationsTable = (
           rowData={rowData}
           detailsPanelResize={detailsPanelResize}
           viewDatasets={(id: number) =>
-            push(`${location.pathname}/${id}/dataset`)
+            navigate(`${location.pathname}/${id}/dataset`)
           }
         />
       ),
-      [push, location.pathname]
+      [navigate, location.pathname]
     );
 
   const columns: ColumnType[] = React.useMemo(
@@ -304,6 +304,16 @@ const ISISInvestigationsTable = (
         ),
       ]}
       columns={columns}
+    />
+  );
+};
+
+const ISISInvestigationsTable = () => {
+  const { instrumentId = '', facilityCycleId = '' } = useParams();
+  return (
+    <BaseISISInvestigationsTable
+      instrumentId={instrumentId}
+      facilityCycleId={facilityCycleId}
     />
   );
 };

@@ -21,15 +21,15 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { IndexRange } from 'react-virtualized';
 import { StateType } from '../../state/app.types';
 
-interface DatasetTableProps {
+interface BaseDatasetTableProps {
   investigationId: string;
 }
 
-const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
+const BaseDatasetTable = (props: BaseDatasetTableProps): React.ReactElement => {
   const { investigationId } = props;
 
   const [t] = useTranslation();
@@ -184,6 +184,11 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
       columns={columns}
     />
   );
+};
+
+const DatasetTable = () => {
+  const { investigationId = '' } = useParams();
+  return <BaseDatasetTable investigationId={investigationId} />;
 };
 
 export default DatasetTable;

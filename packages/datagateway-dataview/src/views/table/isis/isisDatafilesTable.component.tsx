@@ -13,6 +13,7 @@ import {
   parseSearchToQuery,
   useAddToCart,
   useCart,
+  useDataPublication,
   useDatafileCount,
   useDatafilesInfinite,
   useDateFilter,
@@ -24,18 +25,25 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { IndexRange } from 'react-virtualized';
+import {
+  checkInstrumentAndFacilityCycleId,
+  checkInstrumentId,
+  checkInvestigationId,
+  checkStudyDataPublicationId,
+} from '../../../page/idCheckFunctions';
+import WithIdCheck from '../../../page/withIdCheck';
 import { StateType } from '../../../state/app.types';
 import PreviewDatafileButton from '../../datafilePreview/previewDatafileButton.component';
 
-interface ISISDatafilesTableProps {
+interface BaseISISDatafilesTableProps {
   datasetId: string;
   investigationId: string;
 }
 
-const ISISDatafilesTable = (
-  props: ISISDatafilesTableProps
+const BaseISISDatafilesTable = (
+  props: BaseISISDatafilesTableProps
 ): React.ReactElement => {
   const { datasetId, investigationId } = props;
 
@@ -207,6 +215,56 @@ const ISISDatafilesTable = (
       ]}
       columns={columns}
     />
+  );
+};
+
+const ISISDatafilesTable = (props: { dataPublication: boolean }) => {
+  const {
+    instrumentId = '',
+    instrumentChildId = '',
+    investigationId = '',
+    datasetId = '',
+  } = useParams();
+  const { data, isPending } = useDataPublication(
+    parseInt(investigationId),
+    props.dataPublication
+  );
+  const dataPublicationInvestigationId =
+    data?.content?.dataCollectionInvestigations?.[0]?.investigation?.id;
+
+  const checkingPromise = props.dataPublication
+    ? Promise.all([
+        checkInstrumentId(parseInt(instrumentId), parseInt(instrumentChildId)),
+        checkStudyDataPublicationId(
+          parseInt(instrumentChildId),
+          parseInt(investigationId)
+        ),
+        checkInvestigationId(
+          dataPublicationInvestigationId ?? -1,
+          parseInt(datasetId)
+        ),
+        ...(isPending ? [new Promise(() => undefined)] : []),
+      ]).then((values) => !values.includes(false))
+    : Promise.all([
+        checkInstrumentAndFacilityCycleId(
+          parseInt(instrumentId),
+          parseInt(instrumentChildId),
+          parseInt(investigationId)
+        ),
+        checkInvestigationId(parseInt(investigationId), parseInt(datasetId)),
+      ]).then((values) => !values.includes(false));
+
+  return (
+    <WithIdCheck checkingPromise={checkingPromise}>
+      <BaseISISDatafilesTable
+        datasetId={datasetId}
+        investigationId={
+          dataPublicationInvestigationId
+            ? dataPublicationInvestigationId.toString()
+            : investigationId
+        }
+      />
+    </WithIdCheck>
   );
 };
 

@@ -18,15 +18,15 @@ import { IndexRange, TableCellProps } from 'react-virtualized';
 import CalendarToday from '@mui/icons-material/CalendarToday';
 import Fingerprint from '@mui/icons-material/Fingerprint';
 import Public from '@mui/icons-material/Public';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 
-interface ISISDataPublicationsTableProps {
+interface BaseISISDataPublicationsTableProps {
   instrumentId: string;
   studyDataPublicationId?: string;
 }
 
-const ISISDataPublicationsTable = (
-  props: ISISDataPublicationsTableProps
+const BaseISISDataPublicationsTable = (
+  props: BaseISISDataPublicationsTableProps
 ): React.ReactElement => {
   const { instrumentId, studyDataPublicationId } = props;
 
@@ -222,6 +222,16 @@ const ISISDataPublicationsTable = (
       sort={sort}
       onSort={handleSort}
       columns={columns}
+    />
+  );
+};
+
+const ISISDataPublicationsTable = () => {
+  const { instrumentId = '', studyDataPublicationId = '' } = useParams();
+  return (
+    <BaseISISDataPublicationsTable
+      instrumentId={instrumentId}
+      studyDataPublicationId={studyDataPublicationId}
     />
   );
 };

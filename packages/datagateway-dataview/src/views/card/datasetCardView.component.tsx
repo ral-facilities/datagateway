@@ -17,13 +17,15 @@ import {
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 
-interface DatasetCardViewProps {
+interface BaseDatasetCardViewProps {
   investigationId: string;
 }
 
-const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
+const BaseDatasetCardView = (
+  props: BaseDatasetCardViewProps
+): React.ReactElement => {
   const { investigationId } = props;
 
   const [t] = useTranslation();
@@ -139,6 +141,12 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
       buttons={buttons}
     />
   );
+};
+
+const DatasetCardView = () => {
+  const { investigationId } = useParams();
+  if (investigationId)
+    return <BaseDatasetCardView investigationId={investigationId} />;
 };
 
 export default DatasetCardView;

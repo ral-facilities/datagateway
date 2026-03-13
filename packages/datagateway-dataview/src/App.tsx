@@ -25,7 +25,7 @@ import { createLogger } from 'redux-logger';
 import thunk, { ThunkDispatch } from 'redux-thunk';
 import './App.css';
 import { saveApiUrlMiddleware } from './page/idCheckFunctions';
-import PageContainer from './page/pageContainer.component';
+import ConnectedPageRouting from './page/pageRouting.component';
 import { configureApp } from './state/actions';
 import { StateType } from './state/app.types';
 import AppReducer from './state/reducers/app.reducer';
@@ -148,7 +148,7 @@ class App extends React.Component<unknown, { hasError: boolean }> {
                         <Preloader loading={true}>Finished loading</Preloader>
                       }
                     >
-                      <PageContainer />
+                      <ConnectedPageRouting />
                     </React.Suspense>
                   </ConnectedPreloader>
                 </DGThemeProvider>
