@@ -39,7 +39,7 @@
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-i18next": "12.3.1",
-    "react-router-dom": "5.3.4",
+    "react-router-dom": "7.13.1",
     "react-virtualized": "9.22.6",
     "single-spa-react": "5.1.4",
     "tslib": "2.8.1",
