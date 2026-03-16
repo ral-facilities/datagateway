@@ -281,7 +281,7 @@ describe('DLS - User Generated Data Publication Landing', () => {
     cy.get('[aria-label="Download Data Publication"]').click();
 
     cy.get('[aria-label="Download confirmation dialog"]').should('exist');
-    cy.contains('Download Size: 90.11 MB').should('be.visible');
+    cy.contains('Download Size: 1.71 GB').should('be.visible');
     // set transport
     cy.get('#confirm-access-method').select('HTTPS');
 
