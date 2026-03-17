@@ -3591,7 +3591,7 @@ __metadata:
     date-fns: 2.30.0
     eslint: 9.39.3
     eslint-config-prettier: 10.1.8
-    eslint-plugin-cypress: 6.1.0
+    eslint-plugin-cypress: 6.2.0
     eslint-plugin-jsx-a11y: 6.10.2
     eslint-plugin-react: 7.37.5
     eslint-plugin-react-hooks: 7.0.1
@@ -3670,7 +3670,7 @@ __metadata:
     date-fns: 2.30.0
     eslint: 9.39.3
     eslint-config-prettier: 10.1.8
-    eslint-plugin-cypress: 6.1.0
+    eslint-plugin-cypress: 6.2.0
     eslint-plugin-jsx-a11y: 6.10.2
     eslint-plugin-react: 7.37.5
     eslint-plugin-react-hooks: 7.0.1
@@ -3744,7 +3744,7 @@ __metadata:
     date-fns-tz: 2.0.0
     eslint: 9.39.3
     eslint-config-prettier: 10.1.8
-    eslint-plugin-cypress: 6.1.0
+    eslint-plugin-cypress: 6.2.0
     eslint-plugin-jsx-a11y: 6.10.2
     eslint-plugin-react: 7.37.5
     eslint-plugin-react-hooks: 7.0.1
@@ -3820,7 +3820,7 @@ __metadata:
     date-fns: 2.30.0
     eslint: 9.39.3
     eslint-config-prettier: 10.1.8
-    eslint-plugin-cypress: 6.1.0
+    eslint-plugin-cypress: 6.2.0
     eslint-plugin-jsx-a11y: 6.10.2
     eslint-plugin-react: 7.37.5
     eslint-plugin-react-hooks: 7.0.1
@@ -4559,14 +4559,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-cypress@npm:6.1.0":
-  version: 6.1.0
-  resolution: "eslint-plugin-cypress@npm:6.1.0"
+"eslint-plugin-cypress@npm:6.2.0":
+  version: 6.2.0
+  resolution: "eslint-plugin-cypress@npm:6.2.0"
   dependencies:
     globals: ^17.3.0
   peerDependencies:
     eslint: ">=9"
-  checksum: 97cde21c1a206bfbd955e4600170c0211564f87bb5cc74e7854f9ffebaba669e390313dcb52c2d426432865a4ccc1d68bd53de371040bdd3391e8b63c5fa77c7
+  checksum: 946bf898a4a96607ec9de25a5f9adf7974add8e8f00093704618cb0142a3d31c9d75ace72f2460bf396547c502924ca2cc03828c9148a41d3ee91b8b24e87e6e
   languageName: node
   linkType: hard
 
