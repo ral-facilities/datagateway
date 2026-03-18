@@ -2268,9 +2268,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vitejs/plugin-react@npm:5.1.4":
-  version: 5.1.4
-  resolution: "@vitejs/plugin-react@npm:5.1.4"
+"@vitejs/plugin-react@npm:5.2.0":
+  version: 5.2.0
+  resolution: "@vitejs/plugin-react@npm:5.2.0"
   dependencies:
     "@babel/core": ^7.29.0
     "@babel/plugin-transform-react-jsx-self": ^7.27.1
@@ -2279,8 +2279,8 @@ __metadata:
     "@types/babel__core": ^7.20.5
     react-refresh: ^0.18.0
   peerDependencies:
-    vite: ^4.2.0 || ^5.0.0 || ^6.0.0 || ^7.0.0
-  checksum: fa0832372e66ea4574d4bdc3b9ce8a2d8694213b155e362b203c750c3dbbb3ce722eca5b8d659c983208fef17ccd41e6937addf4dd0caf45506184e4fd99373e
+    vite: ^4.2.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0
+  checksum: 91434432cdda08ce6aba4a1ae0de36699c8cc58ab9c0b25318a515e84cf89fba3193448b0e1532854331ab4124db1823288a9e74a24945e8f49d54462d42d460
   languageName: node
   linkType: hard
 
@@ -3583,7 +3583,7 @@ __metadata:
     "@types/react": 18.3.28
     "@types/react-router-dom": 5.3.3
     "@types/react-virtualized": 9.22.2
-    "@vitejs/plugin-react": 5.1.4
+    "@vitejs/plugin-react": 5.2.0
     "@vitest/coverage-v8": 3.2.3
     axios: 1.13.5
     browserslist: 4.28.1
@@ -3659,7 +3659,7 @@ __metadata:
     "@types/react-virtualized": 9.22.2
     "@types/redux-logger": 3.0.8
     "@types/redux-mock-store": 1.5.0
-    "@vitejs/plugin-react": 5.1.4
+    "@vitejs/plugin-react": 5.2.0
     "@vitest/coverage-v8": 3.2.3
     axios: 1.13.5
     browserslist: 4.28.1
@@ -3732,7 +3732,7 @@ __metadata:
     "@types/react-dom": 18.3.7
     "@types/react-router-dom": 5.3.3
     "@types/react-virtualized": 9.22.2
-    "@vitejs/plugin-react": 5.1.4
+    "@vitejs/plugin-react": 5.2.0
     "@vitest/coverage-v8": 3.2.3
     axios: 1.13.5
     browserslist: 4.28.1
@@ -3809,7 +3809,7 @@ __metadata:
     "@types/react-virtualized": 9.22.2
     "@types/redux-logger": 3.0.8
     "@types/redux-mock-store": 1.5.0
-    "@vitejs/plugin-react": 5.1.4
+    "@vitejs/plugin-react": 5.2.0
     "@vitest/coverage-v8": 3.2.3
     axios: 1.13.5
     browserslist: 4.28.1
