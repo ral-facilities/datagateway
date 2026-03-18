@@ -66,7 +66,7 @@
     "eslint-plugin-testing-library": "7.16.0",
     "globals": "17.4.0",
     "jsdom": "26.1.0",
-    "lint-staged": "16.2.7",
+    "lint-staged": "16.4.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-router-dom": "5.3.4",
