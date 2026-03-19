@@ -2938,15 +2938,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"braces@npm:^3.0.3":
-  version: 3.0.3
-  resolution: "braces@npm:3.0.3"
-  dependencies:
-    fill-range: ^7.1.1
-  checksum: b95aa0b3bd909f6cd1720ffcf031aeaf46154dd88b4da01f9a1d3f7ea866a79eba76a6d01cbc3c422b2ee5cdc39a4f02491058d5df0d7bf6e6a162a832df1f69
-  languageName: node
-  linkType: hard
-
 "browserslist-config-single-spa@npm:^1.0.1":
   version: 1.0.1
   resolution: "browserslist-config-single-spa@npm:1.0.1"
@@ -3284,7 +3275,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:^14.0.2":
+"commander@npm:^14.0.3":
   version: 14.0.3
   resolution: "commander@npm:14.0.3"
   checksum: b8440159124aefbb02784a8996cd0481d8ce503d8d3cd413f4289d06db7e912c36b511277c2faba62f59152dd9ff79239d75e3b9400d9402851878994201d429
@@ -3601,7 +3592,7 @@ __metadata:
     history: 4.10.1
     i18next: 22.0.3
     jsdom: 26.1.0
-    lint-staged: 16.2.7
+    lint-staged: 16.4.0
     lodash.debounce: 4.0.8
     loglevel: 1.9.1
     prettier: 3.8.1
@@ -3683,7 +3674,7 @@ __metadata:
     i18next-http-backend: 3.0.2
     jsdom: 26.1.0
     jsrsasign: 11.1.0
-    lint-staged: 16.2.7
+    lint-staged: 16.4.0
     lodash.debounce: 4.0.8
     lodash.memoize: 4.1.2
     loglevel: 1.9.1
@@ -3758,7 +3749,7 @@ __metadata:
     i18next-http-backend: 3.0.2
     jsdom: 26.1.0
     jsrsasign: 11.1.0
-    lint-staged: 16.2.7
+    lint-staged: 16.4.0
     lodash.chunk: 4.2.0
     loglevel: 1.9.1
     p-limit: 7.3.0
@@ -3833,7 +3824,7 @@ __metadata:
     i18next-http-backend: 3.0.2
     jsdom: 26.1.0
     jsrsasign: 11.1.0
-    lint-staged: 16.2.7
+    lint-staged: 16.4.0
     lodash.isequal: 4.5.0
     loglevel: 1.9.1
     prettier: 3.8.1
@@ -5014,15 +5005,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fill-range@npm:^7.1.1":
-  version: 7.1.1
-  resolution: "fill-range@npm:7.1.1"
-  dependencies:
-    to-regex-range: ^5.0.1
-  checksum: b4abfbca3839a3d55e4ae5ec62e131e2e356bf4859ce8480c64c4876100f4df292a63e5bb1618e1d7460282ca2b305653064f01654474aa35c68000980f17798
-  languageName: node
-  linkType: hard
-
 "finalhandler@npm:~1.3.1":
   version: 1.3.2
   resolution: "finalhandler@npm:1.3.2"
@@ -5997,13 +5979,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-number@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "is-number@npm:7.0.0"
-  checksum: 456ac6f8e0f3111ed34668a624e45315201dff921e5ac181f8ec24923b99e9f32ca1a194912dc79d539c97d33dba17dc635202ff0b2cf98326f608323276d27a
-  languageName: node
-  linkType: hard
-
 "is-path-inside@npm:^3.0.2":
   version: 3.0.3
   resolution: "is-path-inside@npm:3.0.3"
@@ -6464,20 +6439,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lint-staged@npm:16.2.7":
-  version: 16.2.7
-  resolution: "lint-staged@npm:16.2.7"
+"lint-staged@npm:16.4.0":
+  version: 16.4.0
+  resolution: "lint-staged@npm:16.4.0"
   dependencies:
-    commander: ^14.0.2
+    commander: ^14.0.3
     listr2: ^9.0.5
-    micromatch: ^4.0.8
-    nano-spawn: ^2.0.0
-    pidtree: ^0.6.0
+    picomatch: ^4.0.3
     string-argv: ^0.3.2
-    yaml: ^2.8.1
+    tinyexec: ^1.0.4
+    yaml: ^2.8.2
   bin:
     lint-staged: bin/lint-staged.js
-  checksum: fbf234787ed1f6fe9e754c03ef64571ef09d68e4ebce21141a85972e5b7c00fee9d00a4c892db3c00ddc22e8b0c337d757734a4df4848661469b7591f14cbc24
+  checksum: 72e9e0089556722a509db70579a10451ac7dd976b15b704a7b419caaed9404f14bbc5fb6d29d4d05075531113fb261a8728911b29c65c5960084d4b79a2d074b
   languageName: node
   linkType: hard
 
@@ -6775,16 +6749,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"micromatch@npm:^4.0.8":
-  version: 4.0.8
-  resolution: "micromatch@npm:4.0.8"
-  dependencies:
-    braces: ^3.0.3
-    picomatch: ^2.3.1
-  checksum: 79920eb634e6f400b464a954fcfa589c4e7c7143209488e44baf627f9affc8b1e306f41f4f0deedde97e69cb725920879462d3e750ab3bd3c1aed675bb3a8966
-  languageName: node
-  linkType: hard
-
 "mime-db@npm:1.52.0":
   version: 1.52.0
   resolution: "mime-db@npm:1.52.0"
@@ -6978,13 +6942,6 @@ __metadata:
   version: 2.1.3
   resolution: "ms@npm:2.1.3"
   checksum: aa92de608021b242401676e35cfa5aa42dd70cbdc082b916da7fb925c542173e36bce97ea3e804923fe92c0ad991434e4a38327e15a1b5b5f945d66df615ae6d
-  languageName: node
-  linkType: hard
-
-"nano-spawn@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "nano-spawn@npm:2.0.0"
-  checksum: 48223f6f5b2ab3f7562d0e6e85abb9b9c4ee52f5c096bd50012c0776664ddc63cd2602c9e4dc3d6cd47ae5189e9c71b51afb2d44b2746d8ca80cb52fc8013904
   languageName: node
   linkType: hard
 
@@ -7458,26 +7415,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"picomatch@npm:^2.3.1":
-  version: 2.3.1
-  resolution: "picomatch@npm:2.3.1"
-  checksum: 050c865ce81119c4822c45d3c84f1ced46f93a0126febae20737bd05ca20589c564d6e9226977df859ed5e03dc73f02584a2b0faad36e896936238238b0446cf
-  languageName: node
-  linkType: hard
-
 "picomatch@npm:^4.0.2, picomatch@npm:^4.0.3":
   version: 4.0.3
   resolution: "picomatch@npm:4.0.3"
   checksum: 6817fb74eb745a71445debe1029768de55fd59a42b75606f478ee1d0dc1aa6e78b711d041a7c9d5550e042642029b7f373dc1a43b224c4b7f12d23436735dba0
-  languageName: node
-  linkType: hard
-
-"pidtree@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "pidtree@npm:0.6.0"
-  bin:
-    pidtree: bin/pidtree.js
-  checksum: 8fbc073ede9209dd15e80d616e65eb674986c93be49f42d9ddde8dbbd141bb53d628a7ca4e58ab5c370bb00383f67d75df59a9a226dede8fa801267a7030c27a
   languageName: node
   linkType: hard
 
@@ -8985,6 +8926,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tinyexec@npm:^1.0.4":
+  version: 1.0.4
+  resolution: "tinyexec@npm:1.0.4"
+  checksum: b1b8693116d26296eaf60e398e36fe52a1831df8e44098a29d5c331731f5c8f140fba49303f3b6960cc82cc2f9eadfe44b4aeb09405c8bbec58f6b8d05fb1723
+  languageName: node
+  linkType: hard
+
 "tinyglobby@npm:^0.2.14, tinyglobby@npm:^0.2.15":
   version: 0.2.15
   resolution: "tinyglobby@npm:0.2.15"
@@ -9038,15 +8986,6 @@ __metadata:
   version: 0.2.5
   resolution: "tmp@npm:0.2.5"
   checksum: 9d18e58060114154939930457b9e198b34f9495bcc05a343bc0a0a29aa546d2c1c2b343dae05b87b17c8fde0af93ab7d8fe8574a8f6dc2cd8fd3f2ca1ad0d8e1
-  languageName: node
-  linkType: hard
-
-"to-regex-range@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "to-regex-range@npm:5.0.1"
-  dependencies:
-    is-number: ^7.0.0
-  checksum: f76fa01b3d5be85db6a2a143e24df9f60dd047d151062d0ba3df62953f2f697b16fe5dad9b0ac6191c7efc7b1d9dcaa4b768174b7b29da89d4428e64bc0a20ed
   languageName: node
   linkType: hard
 
@@ -9857,12 +9796,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yaml@npm:^2.8.1":
-  version: 2.8.1
-  resolution: "yaml@npm:2.8.1"
+"yaml@npm:^2.8.2":
+  version: 2.8.2
+  resolution: "yaml@npm:2.8.2"
   bin:
     yaml: bin.mjs
-  checksum: 35b46150d48bc1da2fd5b1521a48a4fa36d68deaabe496f3c3fa9646d5796b6b974f3930a02c4b5aee6c85c860d7d7f79009416724465e835f40b87898c36de4
+  checksum: 5ffd9f23bc7a450129cbd49dcf91418988f154ede10c83fd28ab293661ac2783c05da19a28d76a22cbd77828eae25d4bd7453f9a9fe2d287d085d72db46fd105
   languageName: node
   linkType: hard
 
