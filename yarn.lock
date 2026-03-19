@@ -210,10 +210,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.14.6, @babel/runtime@npm:^7.17.2, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.20.6, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.23.2, @babel/runtime@npm:^7.23.9, @babel/runtime@npm:^7.24.6, @babel/runtime@npm:^7.26.0, @babel/runtime@npm:^7.28.6, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
-  version: 7.28.6
-  resolution: "@babel/runtime@npm:7.28.6"
-  checksum: 42d8a868c2fc2e9a77927945a6daa7ec03c7ea49e611e0d15442933cdabb12f20e3a6849c729259076c10a4247adec229331d1f94c2d0073ea0979d7853e29fd
+"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.14.6, @babel/runtime@npm:^7.17.2, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.23.2, @babel/runtime@npm:^7.23.9, @babel/runtime@npm:^7.24.6, @babel/runtime@npm:^7.26.0, @babel/runtime@npm:^7.28.4, @babel/runtime@npm:^7.28.6, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
+  version: 7.29.2
+  resolution: "@babel/runtime@npm:7.29.2"
+  checksum: d5548d1165de8995f8afc93a5694b8625409be16cd1f2250ac13e331335858ddac3cb9fd278e6c43956a130101a2203f09417938a1a96f9fb70f02b4b4172e1d
   languageName: node
   linkType: hard
 
@@ -3599,7 +3599,7 @@ __metadata:
     react: 18.3.1
     react-dom: 18.3.1
     react-draggable: 4.5.0
-    react-i18next: 12.3.1
+    react-i18next: 16.5.8
     react-redux: 8.1.3
     react-router-dom: 5.3.4
     react-test-renderer: 17.0.2
@@ -3681,7 +3681,7 @@ __metadata:
     prettier: 3.8.1
     react: 18.3.1
     react-dom: 18.3.1
-    react-i18next: 12.3.1
+    react-i18next: 16.5.8
     react-redux: 8.1.3
     react-router-dom: 5.3.4
     react-virtualized: 9.22.6
@@ -3758,7 +3758,7 @@ __metadata:
     prettier: 3.8.1
     react: 18.3.1
     react-dom: 18.3.1
-    react-i18next: 12.3.1
+    react-i18next: 16.5.8
     react-router-dom: 5.3.4
     react-virtualized: 9.22.6
     single-spa-react: 5.1.4
@@ -3830,7 +3830,7 @@ __metadata:
     prettier: 3.8.1
     react: 18.3.1
     react-dom: 18.3.1
-    react-i18next: 12.3.1
+    react-i18next: 16.5.8
     react-redux: 8.1.3
     react-router-dom: 5.3.4
     react-virtualized: 9.22.6
@@ -7621,21 +7621,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-i18next@npm:12.3.1":
-  version: 12.3.1
-  resolution: "react-i18next@npm:12.3.1"
+"react-i18next@npm:16.5.8":
+  version: 16.5.8
+  resolution: "react-i18next@npm:16.5.8"
   dependencies:
-    "@babel/runtime": ^7.20.6
+    "@babel/runtime": ^7.28.4
     html-parse-stringify: ^3.0.1
+    use-sync-external-store: ^1.6.0
   peerDependencies:
-    i18next: ">= 19.0.0"
+    i18next: ">= 25.6.2"
     react: ">= 16.8.0"
+    typescript: ^5
   peerDependenciesMeta:
     react-dom:
       optional: true
     react-native:
       optional: true
-  checksum: fe3f360e5184bc63861734e94bf625a09b9ec0d28fab41779a68758af258fd1737dde25ff7a88ddb66c1571a3e3de5b3403825a91b4949bf9832a00615acb87a
+    typescript:
+      optional: true
+  checksum: 5f675f467e432a41afb39965240f4c142367e173d39a25d723d06dbd5894ae78e3f809b8a3e58b6e57702c83e5252c6046ce3722b9e8fba068a8dc41f39824b8
   languageName: node
   linkType: hard
 
