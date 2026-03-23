@@ -1,9 +1,8 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
 import axios from 'axios';
-import { History, createMemoryHistory } from 'history';
 import React from 'react';
-import { Router } from 'react-router-dom';
-import type { MockInstance } from 'vitest';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { MockInstance } from 'vitest';
 import {
   FiltersType,
   Investigation,
@@ -340,20 +339,22 @@ describe('generic api functions', () => {
   });
 
   describe('push functions', () => {
-    let history: History;
     let wrapper: React.JSXElementConstructor<{
-      children: React.ReactElement;
+      children: React.ReactNode;
     }>;
-    let pushSpy: MockInstance<typeof history.push>;
-    let replaceSpy: MockInstance<typeof history.replace>;
+    let router: ReturnType<typeof createBrowserRouter>;
+    let navigateSpy: MockInstance<typeof router.navigate>;
     beforeEach(() => {
-      history = createMemoryHistory();
-      pushSpy = vi.spyOn(history, 'push');
-      replaceSpy = vi.spyOn(history, 'replace');
-      const newWrapper: React.JSXElementConstructor<{
-        children: React.ReactElement;
-      }> = ({ children }) => <Router history={history}>{children}</Router>;
-      wrapper = newWrapper;
+      wrapper = ({ children }) => {
+        router = createBrowserRouter([{ path: '*', element: children }]);
+        navigateSpy = vi.spyOn(router, 'navigate');
+        return (
+          <RouterProvider
+            router={router}
+            future={{ v7_startTransition: true }}
+          />
+        );
+      };
     });
 
     afterEach(() => {
@@ -361,6 +362,7 @@ describe('generic api functions', () => {
       vi.resetModules();
       window.history.pushState({}, 'Test', '/');
       vi.doUnmock('./index.tsx');
+      navigateSpy.mockClear();
     });
 
     describe('useSort', () => {
@@ -373,9 +375,12 @@ describe('generic api functions', () => {
           result.current('name', 'asc', 'push');
         });
 
-        expect(pushSpy).toHaveBeenCalledWith({
-          search: `?sort=${encodeURIComponent('{"name":"asc"}')}`,
-        });
+        expect(navigateSpy).toHaveBeenCalledWith(
+          {
+            search: `?sort=${encodeURIComponent('{"name":"asc"}')}`,
+          },
+          expect.objectContaining({ replace: false })
+        );
       });
 
       it('returns callback that can replace the sort with a new one in the url query', () => {
@@ -387,9 +392,12 @@ describe('generic api functions', () => {
           result.current('name', 'asc', 'replace');
         });
 
-        expect(replaceSpy).toHaveBeenCalledWith({
-          search: `?sort=${encodeURIComponent('{"name":"asc"}')}`,
-        });
+        expect(navigateSpy).toHaveBeenCalledWith(
+          {
+            search: `?sort=${encodeURIComponent('{"name":"asc"}')}`,
+          },
+          expect.objectContaining({ replace: true })
+        );
       });
 
       it('returns callback that when called removes a null sort from the url query', () => {
@@ -406,9 +414,12 @@ describe('generic api functions', () => {
           result.current('name', null, 'push');
         });
 
-        expect(pushSpy).toHaveBeenCalledWith({
-          search: '?',
-        });
+        expect(navigateSpy).toHaveBeenCalledWith(
+          {
+            search: '?',
+          },
+          expect.objectContaining({ replace: false })
+        );
       });
 
       it('returns callback that, when called without shift modifier, replaces sort with the new one', () => {
@@ -425,9 +436,12 @@ describe('generic api functions', () => {
           result.current('title', 'asc', 'push', false);
         });
 
-        expect(pushSpy).toHaveBeenCalledWith({
-          search: `?sort=${encodeURIComponent('{"title":"asc"}')}`,
-        });
+        expect(navigateSpy).toHaveBeenCalledWith(
+          {
+            search: `?sort=${encodeURIComponent('{"title":"asc"}')}`,
+          },
+          expect.objectContaining({ replace: false })
+        );
       });
 
       it('returns callback that, when called with shift modifier, appends new sort to the existing one', () => {
@@ -445,9 +459,12 @@ describe('generic api functions', () => {
           result.current('title', 'asc', 'push', true);
         });
 
-        expect(pushSpy).toHaveBeenCalledWith({
-          search: `?sort=${encodeURIComponent('{"name":"asc","title":"asc"}')}`,
-        });
+        expect(navigateSpy).toHaveBeenCalledWith(
+          {
+            search: `?sort=${encodeURIComponent('{"name":"asc","title":"asc"}')}`,
+          },
+          expect.objectContaining({ replace: false })
+        );
       });
     });
 
@@ -461,11 +478,14 @@ describe('generic api functions', () => {
           result.current('name', { value: 'test', type: 'include' });
         });
 
-        expect(pushSpy).toHaveBeenCalledWith({
-          search: `?filters=${encodeURIComponent(
-            '{"name":{"value":"test","type":"include"}}'
-          )}`,
-        });
+        expect(navigateSpy).toHaveBeenCalledWith(
+          {
+            search: `?filters=${encodeURIComponent(
+              '{"name":{"value":"test","type":"include"}}'
+            )}`,
+          },
+          expect.objectContaining({ replace: false })
+        );
       });
 
       it('returns callback that when called removes a null sort from the url query', () => {
@@ -485,9 +505,12 @@ describe('generic api functions', () => {
           result.current('name', null);
         });
 
-        expect(pushSpy).toHaveBeenCalledWith({
-          search: '?',
-        });
+        expect(navigateSpy).toHaveBeenCalledWith(
+          {
+            search: '?',
+          },
+          expect.objectContaining({ replace: false })
+        );
       });
 
       it('can pass a filter prefix to the callback', () => {
@@ -499,11 +522,14 @@ describe('generic api functions', () => {
           result.current('name', { value: 'test', type: 'include' });
         });
 
-        expect(pushSpy).toHaveBeenCalledWith({
-          search: `?filters=${encodeURIComponent(
-            '{"prefix.name":{"value":"test","type":"include"}}'
-          )}`,
-        });
+        expect(navigateSpy).toHaveBeenCalledWith(
+          {
+            search: `?filters=${encodeURIComponent(
+              '{"prefix.name":{"value":"test","type":"include"}}'
+            )}`,
+          },
+          expect.objectContaining({ replace: false })
+        );
 
         vi.doMock('./index.tsx', async () => ({
           ...(await vi.importActual('./index.tsx')),
@@ -517,9 +543,12 @@ describe('generic api functions', () => {
           result.current('name', null);
         });
 
-        expect(pushSpy).toHaveBeenCalledWith({
-          search: '?',
-        });
+        expect(navigateSpy).toHaveBeenCalledWith(
+          {
+            search: '?',
+          },
+          expect.objectContaining({ replace: false })
+        );
       });
     });
 
@@ -536,11 +565,14 @@ describe('generic api functions', () => {
           ]);
         });
 
-        expect(pushSpy).toHaveBeenCalledWith({
-          search: `?filters=${encodeURIComponent(
-            '{"name":{"value":"test","type":"include"},"title":{"value":"test2","type":"include"}}'
-          )}`,
-        });
+        expect(navigateSpy).toHaveBeenCalledWith(
+          {
+            search: `?filters=${encodeURIComponent(
+              '{"name":{"value":"test","type":"include"},"title":{"value":"test2","type":"include"}}'
+            )}`,
+          },
+          expect.any(Object)
+        );
       });
 
       it('returns callback that when called removes multiple null filters from the url query', () => {
@@ -563,9 +595,12 @@ describe('generic api functions', () => {
           ]);
         });
 
-        expect(pushSpy).toHaveBeenCalledWith({
-          search: '?',
-        });
+        expect(navigateSpy).toHaveBeenCalledWith(
+          {
+            search: '?',
+          },
+          expect.any(Object)
+        );
       });
     });
 
@@ -579,7 +614,7 @@ describe('generic api functions', () => {
           result.current(1);
         });
 
-        expect(pushSpy).toHaveBeenCalledWith('?page=1');
+        expect(navigateSpy).toHaveBeenCalledWith('?page=1', expect.any(Object));
       });
     });
 
@@ -593,7 +628,10 @@ describe('generic api functions', () => {
           result.current(10);
         });
 
-        expect(pushSpy).toHaveBeenCalledWith('?results=10');
+        expect(navigateSpy).toHaveBeenCalledWith(
+          '?results=10',
+          expect.any(Object)
+        );
       });
     });
 
@@ -618,10 +656,13 @@ describe('generic api functions', () => {
           });
         });
 
-        expect(pushSpy).toHaveBeenCalledWith({
-          search:
-            '?filters=%7B%22name%22%3A%7B%22value%22%3A%22test%22%2C%22type%22%3A%22include%22%7D%2C%22title%22%3A%7B%22value%22%3A%22test2%22%2C%22type%22%3A%22include%22%7D%7D',
-        });
+        expect(navigateSpy).toHaveBeenCalledWith(
+          {
+            search:
+              '?filters=%7B%22name%22%3A%7B%22value%22%3A%22test%22%2C%22type%22%3A%22include%22%7D%2C%22title%22%3A%7B%22value%22%3A%22test2%22%2C%22type%22%3A%22include%22%7D%7D',
+          },
+          expect.objectContaining({ replace: false })
+        );
       });
 
       it('returns callback that when called removes all sorts from the url query (push)', () => {
@@ -641,9 +682,12 @@ describe('generic api functions', () => {
           result.current({ name: 'asc' });
         });
 
-        expect(pushSpy).toHaveBeenCalledWith({
-          search: '?sort=%7B%22name%22%3A%22asc%22%7D',
-        });
+        expect(navigateSpy).toHaveBeenCalledWith(
+          {
+            search: '?sort=%7B%22name%22%3A%22asc%22%7D',
+          },
+          expect.objectContaining({ replace: false })
+        );
       });
 
       it('returns callback that when called removes page number from the url query (push)', () => {
@@ -663,9 +707,12 @@ describe('generic api functions', () => {
           result.current(2);
         });
 
-        expect(pushSpy).toHaveBeenCalledWith({
-          search: '?page=2',
-        });
+        expect(navigateSpy).toHaveBeenCalledWith(
+          {
+            search: '?page=2',
+          },
+          expect.objectContaining({ replace: false })
+        );
       });
 
       it('returns callback that when called removes results number from the url query (push)', () => {
@@ -685,9 +732,12 @@ describe('generic api functions', () => {
           result.current(10);
         });
 
-        expect(pushSpy).toHaveBeenCalledWith({
-          search: '?results=10',
-        });
+        expect(navigateSpy).toHaveBeenCalledWith(
+          {
+            search: '?results=10',
+          },
+          expect.objectContaining({ replace: false })
+        );
       });
 
       it('returns callback that when called removes all filters from the url query (replace)', () => {
@@ -710,10 +760,13 @@ describe('generic api functions', () => {
           });
         });
 
-        expect(replaceSpy).toHaveBeenCalledWith({
-          search:
-            '?filters=%7B%22name%22%3A%7B%22value%22%3A%22test%22%2C%22type%22%3A%22include%22%7D%2C%22title%22%3A%7B%22value%22%3A%22test2%22%2C%22type%22%3A%22include%22%7D%7D',
-        });
+        expect(navigateSpy).toHaveBeenCalledWith(
+          {
+            search:
+              '?filters=%7B%22name%22%3A%7B%22value%22%3A%22test%22%2C%22type%22%3A%22include%22%7D%2C%22title%22%3A%7B%22value%22%3A%22test2%22%2C%22type%22%3A%22include%22%7D%7D',
+          },
+          expect.objectContaining({ replace: true })
+        );
       });
 
       it('returns callback that when called removes all sorts from the url query (replace)', () => {
@@ -733,9 +786,12 @@ describe('generic api functions', () => {
           result.current({ name: 'asc' });
         });
 
-        expect(replaceSpy).toHaveBeenCalledWith({
-          search: '?sort=%7B%22name%22%3A%22asc%22%7D',
-        });
+        expect(navigateSpy).toHaveBeenCalledWith(
+          {
+            search: '?sort=%7B%22name%22%3A%22asc%22%7D',
+          },
+          expect.objectContaining({ replace: true })
+        );
       });
 
       it('returns callback that when called removes page number from the url query (replace)', () => {
@@ -755,9 +811,12 @@ describe('generic api functions', () => {
           result.current(2);
         });
 
-        expect(replaceSpy).toHaveBeenCalledWith({
-          search: '?page=2',
-        });
+        expect(navigateSpy).toHaveBeenCalledWith(
+          {
+            search: '?page=2',
+          },
+          expect.objectContaining({ replace: true })
+        );
       });
 
       it('returns callback that when called removes results number from the url query (replace)', () => {
@@ -777,9 +836,12 @@ describe('generic api functions', () => {
           result.current(10);
         });
 
-        expect(replaceSpy).toHaveBeenCalledWith({
-          search: '?results=10',
-        });
+        expect(navigateSpy).toHaveBeenCalledWith(
+          {
+            search: '?results=10',
+          },
+          expect.objectContaining({ replace: true })
+        );
       });
     });
 
@@ -793,7 +855,10 @@ describe('generic api functions', () => {
           result.current('table');
         });
 
-        expect(pushSpy).toHaveBeenCalledWith('?view=table');
+        expect(navigateSpy).toHaveBeenCalledWith(
+          '?view=table',
+          expect.objectContaining({ replace: false })
+        );
       });
 
       it('returns callback that when called replaces the current view with a new one in the url query', () => {
@@ -805,7 +870,10 @@ describe('generic api functions', () => {
           result.current('table');
         });
 
-        expect(replaceSpy).toHaveBeenCalledWith('?view=table');
+        expect(navigateSpy).toHaveBeenCalledWith(
+          '?view=table',
+          expect.objectContaining({ replace: true })
+        );
       });
     });
 
@@ -819,9 +887,12 @@ describe('generic api functions', () => {
           result.current('test');
         });
 
-        expect(pushSpy).toHaveBeenCalledWith({
-          search: '?searchText=test',
-        });
+        expect(navigateSpy).toHaveBeenCalledWith(
+          {
+            search: '?searchText=test',
+          },
+          expect.any(Object)
+        );
       });
     });
 
@@ -835,8 +906,9 @@ describe('generic api functions', () => {
           result.current(false, false, false);
         });
 
-        expect(pushSpy).toHaveBeenCalledWith(
-          '?dataset=false&datafile=false&investigation=false'
+        expect(navigateSpy).toHaveBeenCalledWith(
+          '?dataset=false&datafile=false&investigation=false',
+          expect.any(Object)
         );
       });
     });
@@ -851,8 +923,9 @@ describe('generic api functions', () => {
           result.current(new Date('2021-10-17T00:00:00Z'));
         });
 
-        expect(pushSpy).toHaveBeenCalledWith(
-          expect.stringContaining('?startDate=2021-10-17')
+        expect(navigateSpy).toHaveBeenCalledWith(
+          expect.stringContaining('?startDate=2021-10-17'),
+          expect.any(Object)
         );
       });
       it('returns callback that when called with null can remove startDate from the url query', () => {
@@ -865,7 +938,7 @@ describe('generic api functions', () => {
           result.current(null);
         });
 
-        expect(pushSpy).toHaveBeenLastCalledWith('?');
+        expect(navigateSpy).toHaveBeenCalledWith('?', expect.any(Object));
       });
     });
 
@@ -879,8 +952,9 @@ describe('generic api functions', () => {
           result.current(new Date('2021-10-25T00:00:00Z'));
         });
 
-        expect(pushSpy).toHaveBeenCalledWith(
-          expect.stringContaining('?endDate=2021-10-25')
+        expect(navigateSpy).toHaveBeenCalledWith(
+          expect.stringContaining('?endDate=2021-10-25'),
+          expect.any(Object)
         );
       });
       it('returns callback that when called with null can remove endDate from the url query', () => {
@@ -893,17 +967,17 @@ describe('generic api functions', () => {
           result.current(null);
         });
 
-        expect(pushSpy).toHaveBeenLastCalledWith('?');
+        expect(navigateSpy).toHaveBeenCalledWith('?', expect.any(Object));
       });
     });
 
     describe('usePushQueryParams', () => {
       it('returns callback that when called pushes query params to the url query', () => {
-        history.replace({
-          search:
-            '?view=table&searchText=testText&datafile=false&startDate=2021-10-17&endDate=2021-10-25',
-        });
-        replaceSpy.mockClear();
+        window.history.replaceState(
+          {},
+          '',
+          '/?view=table&searchText=testText&datafile=false&startDate=2021-10-17&endDate=2021-10-25'
+        );
 
         const { result } = renderHook(() => usePushQueryParams(), {
           wrapper,
@@ -922,10 +996,13 @@ describe('generic api functions', () => {
           });
         });
 
-        expect(pushSpy).toHaveBeenCalledWith({
-          search:
-            '?view=card&searchText=newText&dataset=false&investigation=false&endDate=2021-10-25&currentTab=dataset&restrict=true',
-        });
+        expect(navigateSpy).toHaveBeenCalledWith(
+          {
+            search:
+              '?view=card&searchText=newText&dataset=false&investigation=false&endDate=2021-10-25&currentTab=dataset&restrict=true',
+          },
+          expect.any(Object)
+        );
       });
     });
 
@@ -939,9 +1016,12 @@ describe('generic api functions', () => {
           result.current('name', 'asc', 'push');
         });
 
-        expect(pushSpy).toHaveBeenCalledWith({
-          search: `?sort=${encodeURIComponent('{"name":"asc"}')}`,
-        });
+        expect(navigateSpy).toHaveBeenCalledWith(
+          {
+            search: `?sort=${encodeURIComponent('{"name":"asc"}')}`,
+          },
+          expect.objectContaining({ replace: false })
+        );
       });
 
       it('returns callback that can replace the sort with a new one in the url query', () => {
@@ -953,9 +1033,12 @@ describe('generic api functions', () => {
           result.current('name', 'asc', 'replace');
         });
 
-        expect(replaceSpy).toHaveBeenCalledWith({
-          search: `?sort=${encodeURIComponent('{"name":"asc"}')}`,
-        });
+        expect(navigateSpy).toHaveBeenCalledWith(
+          {
+            search: `?sort=${encodeURIComponent('{"name":"asc"}')}`,
+          },
+          expect.objectContaining({ replace: true })
+        );
       });
 
       it('returns callback that when called removes a null sort from the url query', () => {
@@ -972,9 +1055,12 @@ describe('generic api functions', () => {
           result.current('name', null, 'push');
         });
 
-        expect(pushSpy).toHaveBeenCalledWith({
-          search: '?',
-        });
+        expect(navigateSpy).toHaveBeenCalledWith(
+          {
+            search: '?',
+          },
+          expect.objectContaining({ replace: false })
+        );
       });
     });
 
@@ -988,7 +1074,10 @@ describe('generic api functions', () => {
           result.current(true);
         });
 
-        expect(pushSpy).toHaveBeenCalledWith('?restrict=true');
+        expect(navigateSpy).toHaveBeenCalledWith(
+          '?restrict=true',
+          expect.any(Object)
+        );
       });
     });
   });

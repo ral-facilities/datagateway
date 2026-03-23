@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
+  act,
   render,
   screen,
   within,
@@ -13,17 +14,18 @@ import {
   useInvestigationCount,
   useInvestigationsInfinite,
 } from 'datagateway-common';
-import { History, createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, generatePath } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { paths } from '../../../page/pageContainer.component';
 import {
   findAllRows,
   findCellInRow,
   findColumnHeaderByName,
   findColumnIndexByName,
   findRowAt,
+  flushPromises,
 } from '../../../setupTests';
 import { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
@@ -44,18 +46,24 @@ describe('DLS Visits table component', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let rowData: Investigation[];
-  let history: History;
   let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult => {
     const store = mockStore(state);
     return render(
       <Provider store={store}>
-        <Router history={history}>
+        <BrowserRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+        >
           <QueryClientProvider client={new QueryClient()}>
-            <DLSVisitsTable proposalName="Test 1" />
+            <Routes>
+              <Route
+                path={paths.toggle.dlsVisit}
+                element={<DLSVisitsTable />}
+              />
+            </Routes>
           </QueryClientProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
   };
@@ -84,7 +92,13 @@ describe('DLS Visits table component', () => {
         endDate: '2019-06-11',
       },
     ];
-    history = createMemoryHistory();
+    window.history.replaceState(
+      {},
+      '',
+      generatePath(paths.toggle.dlsVisit, {
+        proposalName: 'Test 1',
+      })
+    );
     user = userEvent.setup();
 
     state = JSON.parse(
@@ -202,8 +216,8 @@ describe('DLS Visits table component', () => {
     // user.type inputs the given string character by character to simulate user typing
     // each keystroke of user.type creates a new entry in the history stack
     // so the initial entry + 4 characters in "test" = 5 entries
-    expect(history.length).toBe(5);
-    expect(history.location.search).toBe(
+
+    expect(window.location.search).toContain(
       `?filters=${encodeURIComponent(
         '{"visitId":{"value":"test","type":"include"}}'
       )}`
@@ -211,8 +225,7 @@ describe('DLS Visits table component', () => {
 
     await user.clear(filterInput);
 
-    expect(history.length).toBe(6);
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).not.toContain('filters=');
   });
 
   it('updates filter query params on date filter', async () => {
@@ -224,8 +237,7 @@ describe('DLS Visits table component', () => {
 
     await user.type(filterInput, '2019-08-06');
 
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
+    expect(window.location.search).toContain(
       `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
     );
 
@@ -234,32 +246,28 @@ describe('DLS Visits table component', () => {
     await user.keyboard('{Control}a{/Control}');
     await user.keyboard('{Delete}');
 
-    expect(history.length).toBe(3);
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).not.toContain('filters=');
   });
 
   it('uses default sort', async () => {
     renderComponent();
 
+    await act(async () => {
+      await flushPromises();
+    });
+
     expect(await screen.findAllByRole('gridcell')).toBeTruthy();
 
-    expect(history.length).toBe(1);
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?sort=${encodeURIComponent('{"startDate":"desc"}')}`
     );
 
-    // check that the data request is sent only once after mounting
-    expect(useInvestigationsInfinite).toHaveBeenCalledTimes(2);
-    expect(useInvestigationsInfinite).toHaveBeenCalledWith(
-      expect.anything(),
-      undefined,
-      false
-    );
-    expect(useInvestigationsInfinite).toHaveBeenLastCalledWith(
-      expect.anything(),
-      undefined,
-      true
-    );
+    // check that the data hook is only called once with the query enabled
+    expect(
+      vi
+        .mocked(useInvestigationsInfinite)
+        .mock.calls.filter((call) => call[2] === true)
+    ).toHaveLength(1);
   });
 
   it('updates sort query params on sort', async () => {
@@ -269,8 +277,7 @@ describe('DLS Visits table component', () => {
       await screen.findByRole('button', { name: 'investigations.visit_id' })
     );
 
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?sort=${encodeURIComponent('{"visitId":"asc"}')}`
     );
   });

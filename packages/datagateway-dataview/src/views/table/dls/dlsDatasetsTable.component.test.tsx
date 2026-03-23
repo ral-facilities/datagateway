@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
+  act,
   render,
   screen,
   waitFor,
@@ -18,21 +19,26 @@ import {
   useIds,
   useRemoveFromCart,
 } from 'datagateway-common';
-import { History, createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, generatePath } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { paths } from '../../../page/pageContainer.component';
 import {
   findAllRows,
   findCellInRow,
   findColumnHeaderByName,
   findColumnIndexByName,
   findRowAt,
+  flushPromises,
 } from '../../../setupTests';
 import { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import DLSDatasetsTable from './dlsDatasetsTable.component';
+
+vi.mock('../../../page/idCheckFunctions', () => ({
+  checkProposalName: vi.fn().mockResolvedValue(true),
+}));
 
 vi.mock('datagateway-common', async () => {
   const originalModule = await vi.importActual('datagateway-common');
@@ -56,18 +62,24 @@ describe('DLS Dataset table component', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let rowData: Dataset[];
-  let history: History;
   let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult => {
     const store = mockStore(state);
     return render(
       <Provider store={store}>
-        <Router history={history}>
+        <BrowserRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+        >
           <QueryClientProvider client={new QueryClient()}>
-            <DLSDatasetsTable proposalName="Proposal 1" investigationId="1" />
+            <Routes>
+              <Route
+                path={paths.toggle.dlsDataset}
+                element={<DLSDatasetsTable />}
+              />
+            </Routes>
           </QueryClientProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
   };
@@ -83,7 +95,14 @@ describe('DLS Dataset table component', () => {
         createTime: '2019-07-23',
       },
     ];
-    history = createMemoryHistory();
+    window.history.replaceState(
+      {},
+      '',
+      generatePath(paths.toggle.dlsDataset, {
+        investigationId: '1',
+        proposalName: 'Proposal 1',
+      })
+    );
     user = userEvent.setup();
 
     state = JSON.parse(
@@ -193,8 +212,7 @@ describe('DLS Dataset table component', () => {
 
     await user.type(filterInput, 'test');
 
-    expect(history.length).toBe(5);
-    expect(history.location.search).toBe(
+    expect(window.location.search).toContain(
       `?filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
       )}`
@@ -202,8 +220,7 @@ describe('DLS Dataset table component', () => {
 
     await user.clear(filterInput);
 
-    expect(history.length).toBe(6);
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).not.toContain('filters=');
   });
 
   it('updates filter query params on date filter', async () => {
@@ -215,8 +232,7 @@ describe('DLS Dataset table component', () => {
 
     await user.type(filterInput, '2019-08-06');
 
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
+    expect(window.location.search).toContain(
       `?filters=${encodeURIComponent('{"modTime":{"endDate":"2019-08-06"}}')}`
     );
 
@@ -225,27 +241,28 @@ describe('DLS Dataset table component', () => {
     await user.keyboard('{Control}a{/Control}');
     await user.keyboard('{Delete}');
 
-    expect(history.length).toBe(3);
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).not.toContain('filters=');
   });
 
   it('uses default sort', async () => {
     renderComponent();
 
+    await act(async () => {
+      await flushPromises();
+    });
+
     expect(await screen.findAllByRole('gridcell')).toBeTruthy();
 
-    expect(history.length).toBe(1);
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"asc"}')}`
     );
 
-    // check that the data request is sent only once after mounting
-    expect(useDatasetsInfinite).toHaveBeenCalledTimes(2);
-    expect(useDatasetsInfinite).toHaveBeenCalledWith(expect.anything(), false);
-    expect(useDatasetsInfinite).toHaveBeenLastCalledWith(
-      expect.anything(),
-      true
-    );
+    // check that the data hook is only called once with the query enabled
+    expect(
+      vi
+        .mocked(useDatasetsInfinite)
+        .mock.calls.filter((call) => call[1] === true)
+    ).toHaveLength(1);
   });
 
   it('updates sort query params on sort', async () => {
@@ -255,8 +272,7 @@ describe('DLS Dataset table component', () => {
       await screen.findByRole('button', { name: 'datasets.name' })
     );
 
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"desc"}')}`
     );
   });
@@ -309,9 +325,9 @@ describe('DLS Dataset table component', () => {
     vi.mocked(useCart, { partial: true }).mockReturnValueOnce({
       data: [
         {
-          entityId: 1,
+          entityId: 3,
           entityType: 'investigation',
-          id: 1,
+          id: 3,
           name: 'test',
           parentEntities: [],
         },

@@ -52,7 +52,9 @@ function renderComponent(): RenderResult {
 
   return render(
     <QueryClientProvider client={createQueryClient()}>
-      <MemoryRouter>
+      <MemoryRouter
+        future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+      >
         <Provider store={store}>
           <DatafilePreviewer datafileId={mockDatafile.id} />
         </Provider>

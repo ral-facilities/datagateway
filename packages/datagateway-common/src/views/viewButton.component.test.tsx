@@ -13,14 +13,11 @@ import ViewButton from './viewButton.component';
 describe('Generic view button', () => {
   let state: StateType;
 
-  function Wrapper({
-    children,
-  }: {
-    children: React.ReactElement;
-  }): JSX.Element {
+  function Wrapper({ children }: { children: React.ReactNode }): JSX.Element {
     return (
       <Provider store={configureStore([thunk])(state)}>
         <MemoryRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
           initialEntries={[
             {
               key: 'testKey',

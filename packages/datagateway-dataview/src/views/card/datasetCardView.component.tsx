@@ -144,9 +144,8 @@ const BaseDatasetCardView = (
 };
 
 const DatasetCardView = () => {
-  const { investigationId } = useParams();
-  if (investigationId)
-    return <BaseDatasetCardView investigationId={investigationId} />;
+  const { investigationId = '' } = useParams();
+  return <BaseDatasetCardView investigationId={investigationId} />;
 };
 
 export default DatasetCardView;

@@ -19,9 +19,8 @@ import {
   DownloadCartItem,
   dGCommonInitialState,
 } from 'datagateway-common';
-import { History, createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
-import { Router, generatePath } from 'react-router-dom';
+import { MemoryRouter, Route, Routes, generatePath } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { paths } from '../../../page/pageContainer.component';
@@ -41,17 +40,31 @@ const createTestQueryClient = (): QueryClient =>
 describe('DOI edit form component', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
-  let history: History;
   let holder: HTMLElement;
+  let initialEntries: React.ComponentProps<
+    typeof MemoryRouter
+  >['initialEntries'];
 
   const renderComponent = (): RenderResult =>
     render(
       <Provider store={mockStore(state)}>
-        <Router history={history}>
+        <MemoryRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+          initialEntries={initialEntries}
+        >
           <QueryClientProvider client={createTestQueryClient()}>
-            <DLSDataPublicationEditForm dataPublicationId="1" />
+            <Routes>
+              <Route
+                path={`${paths.landing.dlsDataPublicationLanding}/edit`}
+                element={<DLSDataPublicationEditForm />}
+              />
+              <Route
+                path={paths.landing.dlsDataPublicationLanding}
+                element={<div data-testid="mock-landing-page"></div>}
+              />
+            </Routes>
           </QueryClientProvider>
-        </Router>
+        </MemoryRouter>
       </Provider>
     );
 
@@ -269,19 +282,17 @@ describe('DOI edit form component', () => {
       })
     );
 
-    history = createMemoryHistory({
-      initialEntries: [
-        {
-          pathname: generatePath(
-            paths.landing.dlsDataPublicationLanding + '/edit',
-            {
-              dataPublicationId: '1',
-            }
-          ),
-          state: { fromEdit: true },
-        },
-      ],
-    });
+    initialEntries = [
+      {
+        pathname: generatePath(
+          `${paths.landing.dlsDataPublicationLanding}/edit`,
+          {
+            dataPublicationId: '1',
+          }
+        ),
+        state: { fromEdit: true },
+      },
+    ];
 
     user = userEvent.setup();
 
@@ -419,14 +430,14 @@ describe('DOI edit form component', () => {
   });
 
   it('should redirect back to landing page if user directly accesses the url', async () => {
-    history = createMemoryHistory();
-    renderComponent();
-
-    expect(history.location).toMatchObject({
-      pathname: generatePath(paths.landing.dlsDataPublicationLanding, {
+    initialEntries = [
+      generatePath(`${paths.landing.dlsDataPublicationLanding}/edit`, {
         dataPublicationId: '1',
       }),
-    });
+    ];
+    renderComponent();
+
+    expect(screen.getByTestId('mock-landing-page'));
   });
 
   it('should default fill the form with existing info and let the user change these and submit a mint request', async () => {

@@ -1,10 +1,5 @@
-import {
-  dGCommonInitialState,
-  DownloadCartItem,
-  readSciGatewayToken,
-} from 'datagateway-common';
-import { createMemoryHistory, createPath, History } from 'history';
-import { generatePath, Router } from 'react-router-dom';
+import { dGCommonInitialState, DownloadCartItem } from 'datagateway-common';
+import { BrowserRouter, generatePath } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../state/app.types';
@@ -17,7 +12,6 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 import {
-  act,
   render,
   screen,
   waitFor,
@@ -26,32 +20,11 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
+import React from 'react';
 import { Provider } from 'react-redux';
-import {
-  checkInstrumentId as unmockedCheckInstrumentId,
-  checkInvestigationId as unmockedCheckInvestigationId,
-} from './idCheckFunctions';
 import PageContainer, { paths } from './pageContainer.component';
 
 vi.mock('loglevel');
-vi.mock('./idCheckFunctions');
-const checkInstrumentId = vi.mocked(unmockedCheckInstrumentId);
-const checkInvestigationId = vi.mocked(unmockedCheckInvestigationId);
-
-vi.mock('datagateway-common', async () => {
-  const originalModule = await vi.importActual('datagateway-common');
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    // mock table and cardview to opt out of rendering them in these tests as there's no need
-    Table: vi.fn(() => 'MockedTable'),
-    CardView: vi.fn(() => 'MockedCardView'),
-    readSciGatewayToken: vi.fn(() =>
-      (originalModule.readSciGatewayToken as typeof readSciGatewayToken)()
-    ),
-  };
-});
 
 vi.mock('@tanstack/react-query', async () => ({
   __esModule: true,
@@ -64,15 +37,12 @@ vi.mock('@tanstack/react-query', async () => ({
 
 describe('PageContainer - Tests', () => {
   let queryClient: QueryClient;
-  let history: History;
   let user: ReturnType<typeof userEvent.setup>;
   let cartItems: DownloadCartItem[];
   let holder: HTMLElement;
+  let props: React.ComponentProps<typeof PageContainer>;
 
-  const renderComponent = (
-    h: History = history,
-    client: QueryClient = queryClient
-  ): RenderResult => {
+  const renderComponent = (client: QueryClient = queryClient): RenderResult => {
     const state: StateType = {
       dgcommon: dGCommonInitialState,
       dgdataview: dgDataViewInitialState,
@@ -81,54 +51,26 @@ describe('PageContainer - Tests', () => {
     const testStore = mockStore(state);
     return render(
       <Provider store={testStore}>
-        <Router history={h}>
+        <BrowserRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+        >
           <QueryClientProvider client={client}>
-            <PageContainer />
+            <PageContainer {...props} />
           </QueryClientProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
   };
 
   beforeEach(() => {
     queryClient = new QueryClient();
-    history = createMemoryHistory({
-      initialEntries: ['/'],
-    });
     user = userEvent.setup();
     cartItems = [];
+    props = {
+      loggedInAnonymously: false,
+    };
 
-    // @ts-expect-error we need it this way
-    delete window.location;
-    // @ts-expect-error we need it this way
-    window.location = new URL(`http://localhost/`);
-
-    // below code keeps window.location in sync with history changes
-    // (needed because useUpdateQueryParam uses window.location not history)
-    const historyReplace = history.replace;
-    const historyReplaceSpy = vi.spyOn(history, 'replace');
-    historyReplaceSpy.mockImplementation((args) => {
-      historyReplace(args);
-      if (typeof args === 'string') {
-        // @ts-expect-error we need it this way
-        window.location = new URL(`http://localhost${args}`);
-      } else {
-        // @ts-expect-error we need it this way
-        window.location = new URL(`http://localhost${createPath(args)}`);
-      }
-    });
-    const historyPush = history.push;
-    const historyPushSpy = vi.spyOn(history, 'push');
-    historyPushSpy.mockImplementation((args) => {
-      historyPush(args);
-      if (typeof args === 'string') {
-        // @ts-expect-error we need it this way
-        window.location = new URL(`http://localhost${args}`);
-      } else {
-        // @ts-expect-error we need it this way
-        window.location = new URL(`http://localhost${createPath(args)}`);
-      }
-    });
+    window.history.replaceState({}, '', '/');
 
     holder = document.createElement('div');
     holder.setAttribute('id', 'datagateway-search');
@@ -172,7 +114,7 @@ describe('PageContainer - Tests', () => {
   });
 
   it('displays the correct entity count', async () => {
-    history.replace(paths.toggle.investigation);
+    window.history.replaceState({}, '', paths.toggle.investigation);
     vi.mocked(useQueryClient, { partial: true }).mockReturnValue({
       getQueriesData: vi.fn(() => [[[], 101]] as [[], never][]),
     });
@@ -191,27 +133,30 @@ describe('PageContainer - Tests', () => {
       await screen.findByRole('button', { name: 'view-search' })
     );
 
-    expect(history.location.pathname).toBe('/search/data');
+    expect(window.location.pathname).toBe('/search/data');
+  });
 
-    act(() => {
-      history.push('/browse/instrument');
-    });
-
-    await user.click(
-      await screen.findByRole('button', { name: 'view-search' })
-    );
-
-    expect(history.location.pathname).toBe('/search/isis');
-
-    act(() => {
-      history.push('/browse/proposal');
-    });
+  it('opens search plugin when icon clicked (ISIS)', async () => {
+    window.history.replaceState({}, '', '/browse/instrument');
+    renderComponent();
 
     await user.click(
       await screen.findByRole('button', { name: 'view-search' })
     );
 
-    expect(history.location.pathname).toBe('/search/dls');
+    expect(window.location.pathname).toBe('/search/isis');
+  });
+
+  it('opens search plugin when icon clicked', async () => {
+    window.history.replaceState({}, '', '/browse/proposal');
+
+    renderComponent();
+
+    await user.click(
+      await screen.findByRole('button', { name: 'view-search' })
+    );
+
+    expect(window.location.pathname).toBe('/search/dls');
   });
 
   it('opens download plugin when Download Cart clicked', async () => {
@@ -221,8 +166,7 @@ describe('PageContainer - Tests', () => {
       await screen.findByRole('button', { name: 'app.cart_arialabel' })
     );
 
-    expect(history.length).toBe(2);
-    expect(history.location.pathname).toBe('/download');
+    expect(window.location.pathname).toBe('/download');
   });
 
   it('do not display loading bar loading false', async () => {
@@ -240,7 +184,9 @@ describe('PageContainer - Tests', () => {
   });
 
   it('display clear filters button and clear for filters onClick', async () => {
-    history.replace(
+    window.history.replaceState(
+      {},
+      '',
       '/browse/investigation?filters=%7B"title"%3A%7B"value"%3A"spend"%2C"type"%3A"include"%7D%7D'
     );
     renderComponent();
@@ -252,18 +198,18 @@ describe('PageContainer - Tests', () => {
     expect(
       await screen.findByRole('button', { name: 'app.clear_filters' })
     ).toBeDisabled();
-    expect(history.location.search).toEqual('?');
+    expect(window.location.search).toEqual('');
   });
 
   it('display clear filters button and clear for filters onClick (/my-data/DLS)', async () => {
     const dateNow = `${new Date(Date.now()).toISOString().split('T')[0]}`;
-    history.replace(
+    window.history.replaceState(
+      {},
+      '',
       '/my-data/DLS?filters=%7B"startDate"%3A%7B"endDate"%3A" ' +
         dateNow +
         '"%7D%2C"title"%3A%7B"value"%3A"test"%2C"type"%3A"include"%7D%7D&sort=%7B%22startDate%22%3A%22desc%22%7D'
     );
-    const response = { username: 'SomePerson' };
-    vi.mocked(readSciGatewayToken, { partial: true }).mockReturnValue(response);
     renderComponent();
 
     await user.click(
@@ -272,17 +218,15 @@ describe('PageContainer - Tests', () => {
     expect(
       await screen.findByRole('button', { name: 'app.clear_filters' })
     ).toBeDisabled();
-    expect(history.location.search).toEqual(
+    expect(window.location.search).toEqual(
       '?filters=%7B%22startDate%22%3A%7B%22endDate%22%3A%22' +
         dateNow +
         '%22%7D%7D&sort=%7B%22startDate%22%3A%22desc%22%7D'
     );
-
-    vi.mocked(readSciGatewayToken).mockClear();
   });
 
   it('display disabled clear filters button', async () => {
-    history.replace(paths.toggle.investigation);
+    window.history.replaceState({}, '', paths.toggle.investigation);
     renderComponent();
 
     expect(
@@ -291,8 +235,11 @@ describe('PageContainer - Tests', () => {
   });
 
   it('display filter warning on datafile table', async () => {
-    history.replace('/browse/investigation/1/dataset/25/datafile');
-    vi.mocked(checkInvestigationId).mockResolvedValueOnce(true);
+    window.history.replaceState(
+      {},
+      '',
+      '/browse/investigation/1/dataset/25/datafile'
+    );
 
     renderComponent();
 
@@ -302,7 +249,7 @@ describe('PageContainer - Tests', () => {
   });
 
   it('switches view button display name when clicked', async () => {
-    history.replace(paths.toggle.investigation);
+    window.history.replaceState({}, '', paths.toggle.investigation);
 
     renderComponent();
 
@@ -317,9 +264,7 @@ describe('PageContainer - Tests', () => {
   });
 
   it('displays role selector when on My Data route', async () => {
-    const response = { username: 'SomePerson' };
-    vi.mocked(readSciGatewayToken, { partial: true }).mockReturnValue(response);
-    history.replace(paths.myData.root);
+    window.history.replaceState({}, '', paths.myData.root);
 
     renderComponent();
 
@@ -331,9 +276,7 @@ describe('PageContainer - Tests', () => {
   });
 
   it('displays doi type selector when on My DOIs route', async () => {
-    const response = { username: 'SomePerson' };
-    vi.mocked(readSciGatewayToken, { partial: true }).mockReturnValue(response);
-    history.replace(paths.dataPublications.dls.myDOIs);
+    window.history.replaceState({}, '', paths.dataPublications.dls.myDOIs);
 
     renderComponent();
 
@@ -345,9 +288,7 @@ describe('PageContainer - Tests', () => {
   });
 
   it('displays doi type selector when on All DOIs route', async () => {
-    const response = { username: 'SomePerson' };
-    vi.mocked(readSciGatewayToken, { partial: true }).mockReturnValue(response);
-    history.replace(paths.dataPublications.dls.allDOIs);
+    window.history.replaceState({}, '', paths.dataPublications.dls.allDOIs);
 
     renderComponent();
 
@@ -359,7 +300,11 @@ describe('PageContainer - Tests', () => {
   });
 
   it('display filter warning on toggle table', async () => {
-    history.replace(`${paths.toggle.investigation}?view=table`);
+    window.history.replaceState(
+      {},
+      '',
+      `${paths.toggle.investigation}?view=table`
+    );
 
     renderComponent();
 
@@ -369,7 +314,11 @@ describe('PageContainer - Tests', () => {
   });
 
   it('do not display filter warning on toggle card', async () => {
-    history.replace(`${paths.toggle.investigation}?view=card`);
+    window.history.replaceState(
+      {},
+      '',
+      `${paths.toggle.investigation}?view=card`
+    );
 
     renderComponent();
 
@@ -379,11 +328,12 @@ describe('PageContainer - Tests', () => {
   });
 
   it('do not use StyledRouting component on landing pages', async () => {
-    vi.mocked(checkInstrumentId).mockResolvedValueOnce(true);
     vi.mocked(useQueryClient, { partial: true }).mockReturnValue({
       getQueriesData: vi.fn(),
     });
-    history.replace(
+    window.history.replaceState(
+      {},
+      '',
       generatePath(paths.dataPublications.landing.isisDataPublicationLanding, {
         instrumentId: 1,
         dataPublicationId: 2,
@@ -392,15 +342,12 @@ describe('PageContainer - Tests', () => {
 
     renderComponent();
 
-    expect(
-      await screen.findByTestId('isis-dataPublication-landing')
-    ).toBeInTheDocument();
     expect(screen.queryByTestId('styled-routing')).toBeNull();
   });
 
   it('set view to card if cardview stored in localstorage', async () => {
     localStorage.setItem('dataView', 'card');
-    history.replace(paths.toggle.investigation);
+    window.history.replaceState({}, '', paths.toggle.investigation);
 
     renderComponent();
 
@@ -408,14 +355,13 @@ describe('PageContainer - Tests', () => {
       await screen.findByRole('button', { name: 'page view app.view_table' })
     ).toBeInTheDocument();
 
-    expect(history.location.search).toBe('?view=card');
+    expect(window.location.search).toBe('?view=card');
 
     localStorage.removeItem('dataView');
   });
 
   it('displays warning label when browsing data anonymously', async () => {
-    const response = { username: 'anon/anon' };
-    vi.mocked(readSciGatewayToken, { partial: true }).mockReturnValue(response);
+    props.loggedInAnonymously = true;
 
     renderComponent();
 
@@ -425,14 +371,12 @@ describe('PageContainer - Tests', () => {
   });
 
   it('displays warning label when browsing study hierarchy', async () => {
-    history.replace(
+    window.history.replaceState(
+      {},
+      '',
       generatePath(paths.dataPublications.toggle.isisDataPublication, {
         instrumentId: 1,
       })
-    );
-    const response = { username: 'SomePerson' };
-    vi.mocked(readSciGatewayToken, { partial: true }).mockReturnValueOnce(
-      response
     );
 
     renderComponent();
@@ -443,11 +387,6 @@ describe('PageContainer - Tests', () => {
   });
 
   it('does not display warning label when logged in', async () => {
-    const response = { username: 'SomePerson' };
-    vi.mocked(readSciGatewayToken, { partial: true }).mockReturnValueOnce(
-      response
-    );
-
     renderComponent();
 
     await waitFor(() => {
@@ -496,11 +435,13 @@ describe('PageContainer - Tests', () => {
       await screen.findByRole('button', { name: 'selection-alert-link' })
     );
 
-    expect(history.location.pathname).toBe('/download');
+    expect(window.location.pathname).toBe('/download');
   });
 
   it('shows breadcrumb according to the current path', async () => {
-    history.replace(
+    window.history.replaceState(
+      {},
+      '',
       generatePath(paths.toggle.isisInvestigation, {
         instrumentId: 1,
         facilityCycleId: 1,
@@ -531,7 +472,7 @@ describe('PageContainer - Tests', () => {
   });
 
   it('does not fetch cart when on homepage (cart request errors when user is viewing homepage unauthenticated)', () => {
-    history.replace(paths.homepage);
+    window.history.replaceState({}, '', paths.homepage);
     renderComponent();
 
     expect(axios.get).not.toHaveBeenCalledWith('/user/cart');

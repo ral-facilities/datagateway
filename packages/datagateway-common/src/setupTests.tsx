@@ -4,10 +4,9 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query';
 import '@testing-library/jest-dom';
-import { History, createMemoryHistory } from 'history';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import type { Action } from 'redux';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -99,7 +98,6 @@ export const createTestQueryClient = (): QueryClient =>
   });
 
 export const createReactQueryWrapper = (
-  history: History = createMemoryHistory(),
   queryClient: QueryClient = createTestQueryClient()
 ): React.JSXElementConstructor<{ children: React.ReactNode }> => {
   const state = {
@@ -123,11 +121,13 @@ export const createReactQueryWrapper = (
     children: React.ReactNode;
   }> = ({ children }) => (
     <Provider store={mockStore(state)}>
-      <Router history={history}>
+      <BrowserRouter
+        future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+      >
         <QueryClientProvider client={queryClient}>
           {children}
         </QueryClientProvider>
-      </Router>
+      </BrowserRouter>
     </Provider>
   );
   return wrapper;

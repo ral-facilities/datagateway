@@ -1,6 +1,7 @@
-import { act, renderHook, waitFor } from '@testing-library/react';
+import { renderHook, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import axios from 'axios';
-import { History, createMemoryHistory } from 'history';
+import { Link } from 'react-router-dom';
 import { FacilityCycle } from '../app.types';
 import * as handleICATError from '../handleICATError';
 import { createReactQueryWrapper } from '../setupTests';
@@ -13,13 +14,14 @@ import {
 
 describe('facility cycle api functions', () => {
   let mockData: FacilityCycle[] = [];
-  let history: History;
   let params: URLSearchParams;
+  let user: ReturnType<typeof userEvent.setup>;
   const handleICATErrorSpy = vi
     .spyOn(handleICATError, 'default')
     .mockImplementation(vi.fn());
 
   beforeEach(() => {
+    user = userEvent.setup();
     mockData = [
       {
         id: 1,
@@ -36,11 +38,7 @@ describe('facility cycle api functions', () => {
         endDate: '2019-07-04',
       },
     ];
-    history = createMemoryHistory({
-      initialEntries: [
-        '/?sort={"name":"asc","title":"desc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20',
-      ],
-    });
+    window.history.replaceState({}, '', '/');
     params = new URLSearchParams();
   });
 
@@ -92,9 +90,26 @@ describe('facility cycle api functions', () => {
       vi.mocked(axios.get).mockResolvedValue({
         data: mockData,
       });
+      window.history.replaceState(
+        {},
+        '',
+        '/?sort={"name":"asc","title":"desc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
+      );
 
       const { result } = renderHook(() => useFacilityCyclesPaginated(1), {
-        wrapper: createReactQueryWrapper(history),
+        wrapper: ({ children }) => {
+          const Wrapper = createReactQueryWrapper();
+          return (
+            <Wrapper>
+              <>
+                {children}
+                <Link to='/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'>
+                  Test link
+                </Link>
+              </>
+            </Wrapper>
+          );
+        },
       });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
@@ -135,12 +150,8 @@ describe('facility cycle api functions', () => {
       );
       expect(result.current.data).toEqual(mockData);
 
-      act(() => {
-        // test that order of sort object triggers new query
-        history.push(
-          '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
-        );
-      });
+      // test that order of sort object triggers new query
+      await user.click(screen.getByRole('link'));
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
@@ -197,9 +208,26 @@ describe('facility cycle api functions', () => {
           ? Promise.resolve({ data: mockData[0] })
           : Promise.resolve({ data: mockData[1] })
       );
+      window.history.replaceState(
+        {},
+        '',
+        '/?sort={"name":"asc","title":"desc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
+      );
 
       const { result } = renderHook(() => useFacilityCyclesInfinite(1), {
-        wrapper: createReactQueryWrapper(history),
+        wrapper: ({ children }) => {
+          const Wrapper = createReactQueryWrapper();
+          return (
+            <Wrapper>
+              <>
+                {children}
+                <Link to='/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}'>
+                  Test link
+                </Link>
+              </>
+            </Wrapper>
+          );
+        },
       });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
@@ -262,12 +290,8 @@ describe('facility cycle api functions', () => {
         mockData[1],
       ]);
 
-      act(() => {
-        // test that order of sort object triggers new query
-        history.push(
-          '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}'
-        );
-      });
+      // test that order of sort object triggers new query
+      await user.click(screen.getByRole('link'));
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
@@ -322,9 +346,14 @@ describe('facility cycle api functions', () => {
       vi.mocked(axios.get).mockResolvedValue({
         data: mockData.length,
       });
+      window.history.replaceState(
+        {},
+        '',
+        '/?sort={"name":"asc","title":"desc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
+      );
 
       const { result } = renderHook(() => useFacilityCycleCount(1), {
-        wrapper: createReactQueryWrapper(history),
+        wrapper: createReactQueryWrapper(),
       });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));

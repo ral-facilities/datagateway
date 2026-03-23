@@ -33,7 +33,11 @@ describe('Cell content renderers', () => {
   describe('datasetLink', () => {
     it('renders correctly', () => {
       render(
-        <MemoryRouter>{datasetLink('1', 2, 'test', 'card')}</MemoryRouter>
+        <MemoryRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+        >
+          {datasetLink('1', 2, 'test', 'card')}
+        </MemoryRouter>
       );
       expect(screen.getByRole('link', { name: 'test' })).toHaveAttribute(
         'href',
@@ -45,7 +49,11 @@ describe('Cell content renderers', () => {
   describe('investigationLink', () => {
     it('renders correctly', () => {
       render(
-        <MemoryRouter>{investigationLink(1, 'test', 'card')}</MemoryRouter>
+        <MemoryRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+        >
+          {investigationLink(1, 'test', 'card')}
+        </MemoryRouter>
       );
       expect(screen.getByRole('link', { name: 'test' })).toHaveAttribute(
         'href',
@@ -57,7 +65,9 @@ describe('Cell content renderers', () => {
   describe('tableLink', () => {
     it('renders correctly', () => {
       render(
-        <MemoryRouter>
+        <MemoryRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+        >
           {tableLink('/test/url', 'test text', 'table')}
         </MemoryRouter>
       );
@@ -69,7 +79,11 @@ describe('Cell content renderers', () => {
 
     it('renders correctly without view', () => {
       render(
-        <MemoryRouter>{tableLink('/test/url', 'test text')}</MemoryRouter>
+        <MemoryRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+        >
+          {tableLink('/test/url', 'test text')}
+        </MemoryRouter>
       );
       expect(screen.getByRole('link', { name: 'test text' })).toHaveAttribute(
         'href',
@@ -79,7 +93,9 @@ describe('Cell content renderers', () => {
 
     it('renders correctly with object location', () => {
       render(
-        <MemoryRouter>
+        <MemoryRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+        >
           {tableLink(
             { pathname: '/test/url', search: '?test=true' },
             'test text',

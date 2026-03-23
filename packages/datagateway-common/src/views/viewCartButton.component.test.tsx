@@ -21,6 +21,7 @@ describe('Generic cart button', () => {
     return render(
       <Provider store={store}>
         <MemoryRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
           initialEntries={[
             {
               key: 'testKey',

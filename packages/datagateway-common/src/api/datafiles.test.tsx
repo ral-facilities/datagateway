@@ -1,6 +1,7 @@
-import { act, renderHook, waitFor } from '@testing-library/react';
+import { renderHook, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import axios from 'axios';
-import { History, createMemoryHistory } from 'history';
+import { Link } from 'react-router-dom';
 import { Datafile } from '../app.types';
 import * as handleICATError from '../handleICATError';
 import { createReactQueryWrapper } from '../setupTests';
@@ -15,11 +16,12 @@ import {
 
 describe('datafile api functions', () => {
   let mockData: Datafile[] = [];
-  let history: History;
   let params: URLSearchParams;
   let handleICATErrorSpy: ReturnType<typeof vi.spyOn>;
+  let user: ReturnType<typeof userEvent.setup>;
 
   beforeEach(() => {
+    user = userEvent.setup();
     mockData = [
       {
         id: 1,
@@ -38,11 +40,7 @@ describe('datafile api functions', () => {
         createTime: '2019-06-10',
       },
     ];
-    history = createMemoryHistory({
-      initialEntries: [
-        '/?sort={"name":"asc","title":"desc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20',
-      ],
-    });
+    window.history.replaceState({}, '', '/');
     params = new URLSearchParams();
     handleICATErrorSpy = vi
       .spyOn(handleICATError, 'default')
@@ -59,6 +57,11 @@ describe('datafile api functions', () => {
       vi.mocked(axios.get).mockResolvedValue({
         data: mockData,
       });
+      window.history.replaceState(
+        {},
+        '',
+        '/?sort={"name":"asc","title":"desc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
+      );
 
       const { result } = renderHook(
         () =>
@@ -71,7 +74,19 @@ describe('datafile api functions', () => {
             },
           ]),
         {
-          wrapper: createReactQueryWrapper(history),
+          wrapper: ({ children }) => {
+            const Wrapper = createReactQueryWrapper();
+            return (
+              <Wrapper>
+                <>
+                  {children}
+                  <Link to='/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'>
+                    Test link
+                  </Link>
+                </>
+              </Wrapper>
+            );
+          },
         }
       );
 
@@ -106,12 +121,8 @@ describe('datafile api functions', () => {
       );
       expect(result.current.data).toEqual(mockData);
 
-      act(() => {
-        // test that order of sort object triggers new query
-        history.push(
-          '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
-        );
-      });
+      // test that order of sort object triggers new query
+      await user.click(screen.getByRole('link'));
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
@@ -157,6 +168,11 @@ describe('datafile api functions', () => {
           ? Promise.resolve({ data: mockData[0] })
           : Promise.resolve({ data: mockData[1] })
       );
+      window.history.replaceState(
+        {},
+        '',
+        '/?sort={"name":"asc","title":"desc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
+      );
 
       const { result } = renderHook(
         () =>
@@ -169,7 +185,19 @@ describe('datafile api functions', () => {
             },
           ]),
         {
-          wrapper: createReactQueryWrapper(history),
+          wrapper: ({ children }) => {
+            const Wrapper = createReactQueryWrapper();
+            return (
+              <Wrapper>
+                <>
+                  {children}
+                  <Link to='/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}'>
+                    Test link
+                  </Link>
+                </>
+              </Wrapper>
+            );
+          },
         }
       );
 
@@ -226,12 +254,7 @@ describe('datafile api functions', () => {
         mockData[1],
       ]);
 
-      act(() => {
-        // test that order of sort object triggers new query
-        history.push(
-          '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}'
-        );
-      });
+      await user.click(screen.getByRole('link'));
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
@@ -275,6 +298,11 @@ describe('datafile api functions', () => {
       vi.mocked(axios.get).mockResolvedValue({
         data: mockData.length,
       });
+      window.history.replaceState(
+        {},
+        '',
+        '/?sort={"name":"asc","title":"desc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
+      );
 
       const { result } = renderHook(
         () =>
@@ -285,7 +313,7 @@ describe('datafile api functions', () => {
             },
           ]),
         {
-          wrapper: createReactQueryWrapper(history),
+          wrapper: createReactQueryWrapper(),
         }
       );
 

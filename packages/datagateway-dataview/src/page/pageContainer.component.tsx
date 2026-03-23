@@ -501,13 +501,15 @@ const getToggle = (pathname: string, view: ViewsType): boolean => {
     : false;
 };
 
-const PageContainer = (props: {
-  loggedInAnonymously: boolean;
-  view: ViewsType;
-}) => {
-  const { loggedInAnonymously, view } = props;
+const PageContainer = (props: { loggedInAnonymously: boolean }) => {
+  const { loggedInAnonymously } = props;
   const location = useLocation();
   const navigate = useNavigate();
+
+  const { view } = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
 
   const prevLocationRef = React.useRef(location);
   const [totalDataCount, setTotalDataCount] = React.useState(0);
@@ -648,7 +650,6 @@ const PageContainer = (props: {
       <StyledGrid container>
         <Grid item xs={12} style={{ marginTop: '10px', marginBottom: '10px' }}>
           <StyledGrid container alignItems="baseline">
-            {/* Toggle between the table and card view */}
             <Grid container item alignItems="end">
               {Object.values(paths.myData).some(
                 (pathPattern) =>
@@ -666,6 +667,7 @@ const PageContainer = (props: {
                 paths.dataPublications.dls.allDOIs,
                 location.pathname
               ) !== null && <DOITypeSelector type="allDOIs" />}
+              {/* Toggle between the table and card view */}
               {Object.values(togglePaths).some(
                 (pathPattern) =>
                   matchPath(pathPattern, location.pathname) !== null

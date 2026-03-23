@@ -16,7 +16,9 @@ describe('HomePage', () => {
 
   it('translated homepage renders correctly', () => {
     render(
-      <MemoryRouter>
+      <MemoryRouter
+        future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+      >
         <HomePage {...props} />
       </MemoryRouter>
     );

@@ -1,42 +1,42 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
-  dGCommonInitialState,
+  render,
+  screen,
+  within,
+  type RenderResult,
+} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
+import {
   DownloadCartItem,
   Investigation,
+  dGCommonInitialState,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import type { StateType } from '../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../state/reducers/dgdataview.reducer';
 import InvestigationCardView from './investigationCardView.component';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { createMemoryHistory, type History } from 'history';
-import {
-  render,
-  type RenderResult,
-  screen,
-  within,
-} from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import axios, { AxiosResponse } from 'axios';
 
 describe('Investigation - Card View', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let cardData: Investigation[];
-  let history: History;
   let user: ReturnType<typeof userEvent.setup>;
   let cartItems: DownloadCartItem[];
 
   const renderComponent = (): RenderResult =>
     render(
       <Provider store={mockStore(state)}>
-        <Router history={history}>
+        <BrowserRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+        >
           <QueryClientProvider client={new QueryClient()}>
             <InvestigationCardView />
           </QueryClientProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
 
@@ -56,7 +56,6 @@ describe('Investigation - Card View', () => {
         endDate: '2020-01-02',
       },
     ];
-    history = createMemoryHistory();
     user = userEvent.setup();
 
     state = JSON.parse(
@@ -227,7 +226,7 @@ describe('Investigation - Card View', () => {
 
     await user.type(filter, 'test');
 
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"title":{"value":"test","type":"include"}}'
       )}`
@@ -235,7 +234,7 @@ describe('Investigation - Card View', () => {
 
     await user.clear(filter);
 
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).toBe('');
   });
 
   it('updates filter query params on date filter', async () => {
@@ -251,7 +250,7 @@ describe('Investigation - Card View', () => {
 
     await user.type(filter, '2019-08-06');
 
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
     );
 
@@ -260,7 +259,7 @@ describe('Investigation - Card View', () => {
     await user.keyboard('{Control}a{/Control}');
     await user.keyboard('{Delete}');
 
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).toBe('');
   });
 
   it('updates sort query params on sort', async () => {
@@ -272,7 +271,7 @@ describe('Investigation - Card View', () => {
       })
     );
 
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?sort=${encodeURIComponent('{"title":"asc"}')}`
     );
   });

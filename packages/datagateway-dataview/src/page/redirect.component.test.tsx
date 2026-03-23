@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, type RenderResult } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import {
   Datafile,
   Dataset,
@@ -7,9 +8,8 @@ import {
   NotificationType,
   useEntity,
 } from 'datagateway-common';
-import { History, createLocation, createMemoryHistory } from 'history';
 import log from 'loglevel';
-import { Route, Router } from 'react-router-dom';
+import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import { AnyAction } from 'redux';
 import { paths } from './pageContainer.component';
 import { DoiRedirect, GenericRedirect } from './redirect.component';
@@ -25,7 +25,6 @@ vi.mock('datagateway-common', async () => {
 });
 
 describe('Redirect component', () => {
-  let history: History;
   let mockInvestigationData: Investigation;
   let mockDatasetData: Dataset;
   let mockDatafileData: Datafile;
@@ -102,25 +101,26 @@ describe('Redirect component', () => {
   describe('DOI Redirect component', () => {
     function renderComponent(): RenderResult {
       return render(
-        <Router history={history}>
+        <BrowserRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+        >
           <QueryClientProvider client={new QueryClient()}>
-            <Route path={paths.doiRedirect}>
-              <DoiRedirect />
-            </Route>
+            <Routes>
+              <Route path={paths.doiRedirect} element={<DoiRedirect />} />
+              <Route path={'*'} element={null} />
+            </Routes>
           </QueryClientProvider>
-        </Router>
+        </BrowserRouter>
       );
     }
 
     beforeEach(() => {
-      history = createMemoryHistory({
-        initialEntries: [createLocation('/doi-redirect/LILS/investigation/1')],
-      });
+      window.history.replaceState({}, '', '/doi-redirect/LILS/investigation/1');
     });
 
     it('redirects to correct link when everything loads correctly', async () => {
       renderComponent();
-      expect(history.location.pathname).toBe(
+      expect(window.location.pathname).toBe(
         '/browse/instrument/2/facilityCycle/3/investigation/1/dataset'
       );
     });
@@ -149,7 +149,7 @@ describe('Redirect component', () => {
       });
       renderComponent();
 
-      expect(history.location.pathname).toBe('/datagateway');
+      expect(window.location.pathname).toBe('/datagateway');
       expect(log.error).toHaveBeenCalledWith('Invalid redirect');
       expect(events.length).toBe(1);
       expect(events[0].detail).toEqual({
@@ -164,32 +164,53 @@ describe('Redirect component', () => {
   });
 
   describe('Generic Redirect component', () => {
+    let stateTestLinkLocation = '';
     function renderComponent(): RenderResult {
       return render(
-        <Router history={history}>
+        <BrowserRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+        >
           <QueryClientProvider client={new QueryClient()}>
-            <Route path={paths.genericRedirect}>
-              <GenericRedirect />
-            </Route>
+            <Routes>
+              <Route
+                path={paths.genericRedirect}
+                element={<GenericRedirect />}
+              />
+              <Route
+                path={'/state-test'}
+                element={
+                  <Link
+                    to={stateTestLinkLocation}
+                    state={{ fromDataPublication: true }}
+                  >
+                    Test link
+                  </Link>
+                }
+              />
+              <Route path={'*'} element={null} />
+            </Routes>
           </QueryClientProvider>
-        </Router>
+        </BrowserRouter>
       );
     }
 
     beforeEach(() => {
-      history = createMemoryHistory({
-        initialEntries: [createLocation('/redirect/LILS/investigation/name/1')],
-      });
+      stateTestLinkLocation = '';
+      window.history.replaceState(
+        {},
+        '',
+        '/redirect/LILS/investigation/name/1'
+      );
     });
 
     it('redirects to correct link when everything loads correctly', async () => {
-      history.replace('/redirect/LILS/datafile/name/3');
+      window.history.replaceState({}, '', '/redirect/LILS/datafile/name/3');
 
       renderComponent();
-      expect(history.location.pathname).toBe(
+      expect(window.location.pathname).toBe(
         '/browse/investigation/1/dataset/2/datafile'
       );
-      expect(history.location.search).toBe(
+      expect(window.location.search).toBe(
         `?filters=${encodeURIComponent(
           '{"name":{"value":"datafile3","type":"exact"}}'
         )}`
@@ -201,14 +222,15 @@ describe('Redirect component', () => {
         {
           filterType: 'include',
           filterValue: JSON.stringify(['dataset.investigation', 'dataset']),
-        }
+        },
+        true
       );
     });
 
     it('redirects to correct link when everything loads correctly (ISIS hierarchy)', async () => {
-      history.replace('/redirect/ISIS/dataset/name/2');
+      window.history.replaceState({}, '', '/redirect/ISIS/dataset/name/2');
       renderComponent();
-      expect(history.location.pathname).toBe(
+      expect(window.location.pathname).toBe(
         '/browse/instrument/2/facilityCycle/3/investigation/1/dataset/2/datafile'
       );
       expect(vi.mocked(useEntity, { partial: true })).toHaveBeenCalledWith(
@@ -222,28 +244,34 @@ describe('Redirect component', () => {
             'investigation.investigationInstruments.instrument',
             'investigation.investigationFacilityCycles.facilityCycle',
           ]),
-        }
+        },
+        true
       );
     });
 
     it('redirects to correct link when everything loads correctly (DLS hierarchy)', async () => {
-      history.replace('/redirect/DLS/investigation/visitId/1');
+      window.history.replaceState(
+        {},
+        '',
+        '/redirect/DLS/investigation/visitId/1'
+      );
       renderComponent();
-      expect(history.location.pathname).toBe(
+      expect(window.location.pathname).toBe(
         '/browse/proposal/investigation1/investigation/1/dataset'
       );
       expect(vi.mocked(useEntity, { partial: true })).toHaveBeenCalledWith(
         'investigation',
         'visitId',
         '1',
-        undefined
+        undefined,
+        true
       );
     });
 
     it('redirects to correct link when everything loads correctly (DLS hierarchy at dataset level)', async () => {
-      history.replace('/redirect/DLS/dataset/name/2');
+      window.history.replaceState({}, '', '/redirect/DLS/dataset/name/2');
       renderComponent();
-      expect(history.location.pathname).toBe(
+      expect(window.location.pathname).toBe(
         '/browse/proposal/investigation1/investigation/1/dataset/2/datafile'
       );
       expect(vi.mocked(useEntity, { partial: true })).toHaveBeenCalledWith(
@@ -253,12 +281,13 @@ describe('Redirect component', () => {
         {
           filterType: 'include',
           filterValue: JSON.stringify(['investigation']),
-        }
+        },
+        true
       );
     });
 
     it('displays loading spinner when things are loading', async () => {
-      history.replace('/redirect/ISIS/datafile/name/3');
+      window.history.replaceState({}, '', '/redirect/ISIS/datafile/name/3');
       vi.mocked(useEntity, { partial: true }).mockReturnValue({
         data: undefined,
         isPending: true,
@@ -279,12 +308,17 @@ describe('Redirect component', () => {
             'dataset.investigation.investigationInstruments.instrument',
             'dataset.investigation.investigationFacilityCycles.facilityCycle',
           ]),
-        }
+        },
+        true
       );
     });
 
     it('throws error and redirects to homepage if no investigation is returned', async () => {
-      history.replace('/redirect/ISIS/investigation/name/1');
+      window.history.replaceState(
+        {},
+        '',
+        '/redirect/ISIS/investigation/name/1'
+      );
       const events: CustomEvent[] = [];
 
       document.dispatchEvent = (e: Event) => {
@@ -307,9 +341,10 @@ describe('Redirect component', () => {
             investigationInstruments: 'instrument',
             investigationFacilityCycles: 'facilityCycle',
           }),
-        }
+        },
+        true
       );
-      expect(history.location.pathname).toBe('/datagateway');
+      expect(window.location.pathname).toBe('/datagateway');
       expect(log.error).toHaveBeenCalledWith('Invalid redirect');
       expect(events.length).toBe(1);
       expect(events[0].detail).toEqual({
@@ -323,10 +358,8 @@ describe('Redirect component', () => {
     });
 
     it('throws error and redirects to homepage if no investigation is returned with fromDataPublication true', async () => {
-      history.replace({
-        pathname: '/redirect/DLS/investigation/id/1',
-        state: { fromDataPublication: true },
-      });
+      stateTestLinkLocation = '/redirect/DLS/investigation/id/1';
+      window.history.replaceState({}, '', '/state-test');
       const events: CustomEvent[] = [];
 
       document.dispatchEvent = (e: Event) => {
@@ -337,15 +370,18 @@ describe('Redirect component', () => {
         data: undefined,
         isPending: false,
       });
+      const user = userEvent.setup();
       renderComponent();
+      await user.click(screen.getByRole('link'));
 
       expect(vi.mocked(useEntity, { partial: true })).toHaveBeenCalledWith(
         'investigation',
         'id',
         '1',
-        undefined
+        undefined,
+        true
       );
-      expect(history.location.pathname).toBe('/datagateway');
+      expect(window.location.pathname).toBe('/datagateway');
       expect(log.error).toHaveBeenCalledWith('Invalid redirect');
       expect(events.length).toBe(1);
       expect(events[0].detail).toEqual({

@@ -16,17 +16,19 @@ const WithIdCheck: React.FC<{
   const [t] = useTranslation();
 
   React.useEffect(() => {
-    checkingPromise
-      .then((valid) => {
-        setValid(valid);
-      })
-      .catch(() => {
-        setValid(false);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [checkingPromise]);
+    // only want to run then/catch handlers on promise once, so only run when promise finally has not run
+    if (loading)
+      checkingPromise
+        .then((valid) => {
+          setValid(valid);
+        })
+        .catch(() => {
+          setValid(false);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+  }, [checkingPromise, loading]);
 
   const location = useLocation();
 

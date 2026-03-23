@@ -44,13 +44,19 @@ const DLSMyDataTable = (): React.ReactElement => {
     },
   ]);
 
-  // isMounted is used to disable queries when the component isn't fully mounted.
-  // It prevents the request being sent twice if default sort/filter is set.
-  // It is not needed for cards/tables that don't have default sort/filter.
-  const [isMounted, setIsMounted] = React.useState(false);
+  // isInitialised is used to disable queries when the component isn't fully initialised.
+  // It prevents the request being sent twice if default sort is set.
+  // It is not needed for cards/tables that don't have default sort.
+  const [isInitialised, setIsInitialised] = React.useState(false);
+
   React.useEffect(() => {
-    setIsMounted(true);
-  }, []);
+    if (
+      !isInitialised &&
+      Object.keys(sort).length > 0 &&
+      Object.keys(filters).length > 0
+    )
+      setIsInitialised(true);
+  }, [filters, isInitialised, sort]);
 
   const { fetchNextPage, data } = useInvestigationsInfinite(
     [
@@ -70,7 +76,7 @@ const DLSMyDataTable = (): React.ReactElement => {
       },
     ],
     undefined,
-    isMounted
+    isInitialised
   );
 
   /* istanbul ignore next */

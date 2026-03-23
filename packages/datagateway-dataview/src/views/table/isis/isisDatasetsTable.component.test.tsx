@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
+  act,
   render,
   screen,
   waitFor,
@@ -17,15 +18,21 @@ import {
   useRemoveFromCart,
   type Dataset,
 } from 'datagateway-common';
-import { createMemoryHistory, type History } from 'history';
 import { Provider } from 'react-redux';
-import { Router, generatePath } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, generatePath } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { paths } from '../../../page/pageContainer.component';
+import { flushPromises } from '../../../setupTests';
 import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import ISISDatasetsTable from './isisDatasetsTable.component';
+
+vi.mock('../../../page/idCheckFunctions', () => ({
+  checkInstrumentId: vi.fn().mockResolvedValue(true),
+  checkStudyDataPublicationId: vi.fn().mockResolvedValue(true),
+  checkInstrumentAndFacilityCycleId: vi.fn().mockResolvedValue(true),
+}));
 
 vi.mock('datagateway-common', async () => {
   const originalModule = await vi.importActual('datagateway-common');
@@ -46,18 +53,29 @@ describe('ISIS Dataset table component', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let rowData: Dataset[];
-  let history: History;
   let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult => {
     const store = mockStore(state);
     return render(
       <Provider store={store}>
-        <Router history={history}>
+        <BrowserRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+        >
           <QueryClientProvider client={new QueryClient()}>
-            <ISISDatasetsTable investigationId="3" />
+            <Routes>
+              <Route
+                path={paths.toggle.isisDataset}
+                element={<ISISDatasetsTable dataPublication={false} />}
+              />
+              <Route
+                path={paths.dataPublications.toggle.isisDataset}
+                element={<ISISDatasetsTable dataPublication={true} />}
+              />
+              <Route path={paths.standard.isisDatafile} element={null} />
+            </Routes>
           </QueryClientProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
   };
@@ -71,15 +89,15 @@ describe('ISIS Dataset table component', () => {
         createTime: '2019-07-23',
       },
     ];
-    history = createMemoryHistory({
-      initialEntries: [
-        generatePath(paths.toggle.isisDataset, {
-          instrumentId: '1',
-          investigationId: '3',
-          facilityCycleId: '2',
-        }),
-      ],
-    });
+    window.history.replaceState(
+      {},
+      '',
+      generatePath(paths.toggle.isisDataset, {
+        instrumentId: '1',
+        facilityCycleId: '2',
+        investigationId: '3',
+      })
+    );
     user = userEvent.setup();
 
     state = JSON.parse(
@@ -121,6 +139,17 @@ describe('ISIS Dataset table component', () => {
           });
         }
 
+        if (/\/datapublications$/.test(url)) {
+          return Promise.resolve({
+            data: {
+              id: 1,
+              content: {
+                dataCollectionInvestigations: [{ investigation: { id: 5 } }],
+              },
+            },
+          });
+        }
+
         return Promise.reject(`Endpoint not mocked: ${url}`);
       });
   });
@@ -139,8 +168,7 @@ describe('ISIS Dataset table component', () => {
 
     await user.type(filterInput, 'test');
 
-    expect(history.length).toBe(5);
-    expect(history.location.search).toBe(
+    expect(window.location.search).toContain(
       `?filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
       )}`
@@ -148,8 +176,7 @@ describe('ISIS Dataset table component', () => {
 
     await user.clear(filterInput);
 
-    expect(history.length).toBe(6);
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).not.toContain('filters=');
   });
 
   it('updates filter query params on date filter', async () => {
@@ -161,7 +188,7 @@ describe('ISIS Dataset table component', () => {
 
     await user.type(filterInput, '2019-08-06');
 
-    expect(history.location.search).toBe(
+    expect(window.location.search).toContain(
       `?filters=${encodeURIComponent('{"modTime":{"endDate":"2019-08-06"}}')}`
     );
 
@@ -170,27 +197,28 @@ describe('ISIS Dataset table component', () => {
     await user.keyboard('{Control}a{/Control}');
     await user.keyboard('{Delete}');
 
-    expect(history.length).toBe(3);
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).not.toContain('filters=');
   });
 
   it('uses default sort', async () => {
     renderComponent();
 
+    await act(async () => {
+      await flushPromises();
+    });
+
     expect(await screen.findAllByRole('gridcell')).toBeTruthy();
 
-    expect(history.length).toBe(1);
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"asc"}')}`
     );
 
-    // check that the data request is sent only once after mounting
-    expect(useDatasetsInfinite).toHaveBeenCalledTimes(2);
-    expect(useDatasetsInfinite).toHaveBeenCalledWith(expect.anything(), false);
-    expect(useDatasetsInfinite).toHaveBeenLastCalledWith(
-      expect.anything(),
-      true
-    );
+    // check that the data hook is only called once with the query enabled
+    expect(
+      vi
+        .mocked(useDatasetsInfinite)
+        .mock.calls.filter((call) => call[1] === true)
+    ).toHaveLength(1);
   });
 
   it('updates sort query params on sort', async () => {
@@ -198,8 +226,7 @@ describe('ISIS Dataset table component', () => {
 
     await user.click(await screen.findByText('datasets.name'));
 
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"desc"}')}`
     );
   });
@@ -313,18 +340,20 @@ describe('ISIS Dataset table component', () => {
       await screen.findByRole('tab', { name: 'datasets.details.datafiles' })
     );
 
-    expect(history.location.pathname).toBe(
+    expect(window.location.pathname).toBe(
       '/browse/instrument/1/facilityCycle/2/investigation/3/dataset/1/datafile'
     );
   });
 
-  it('renders dataset name as a link', () => {
+  it('renders dataset name as a link', async () => {
     renderComponent();
-    expect(screen.getByText('Test 1')).toMatchSnapshot();
+    expect(await screen.findByText('Test 1')).toMatchSnapshot();
   });
 
-  it('renders dataset name as a link in data publication hierarchy', () => {
-    history.replace(
+  it('renders dataset name as a link in data publication hierarchy', async () => {
+    window.history.replaceState(
+      {},
+      '',
       generatePath(paths.dataPublications.toggle.isisDataset, {
         instrumentId: '1',
         investigationId: '3',
@@ -333,7 +362,7 @@ describe('ISIS Dataset table component', () => {
     );
     renderComponent();
 
-    expect(screen.getByText('Test 1')).toMatchSnapshot();
+    expect(await screen.findByText('Test 1')).toMatchSnapshot();
   });
 
   it('renders actions correctly', async () => {

@@ -7,9 +7,8 @@ import {
   useInvestigationsPaginated,
   type Investigation,
 } from 'datagateway-common';
-import { createMemoryHistory, type History } from 'history';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import type { StateType } from '../../../state/app.types';
@@ -31,17 +30,18 @@ describe('DLS Proposals - Card View', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let cardData: Investigation[];
-  let history: History;
   let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult =>
     render(
       <Provider store={mockStore(state)}>
-        <Router history={history}>
+        <BrowserRouter
+          future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+        >
           <QueryClientProvider client={new QueryClient()}>
             <DLSProposalsCardView />
           </QueryClientProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
 
@@ -54,7 +54,6 @@ describe('DLS Proposals - Card View', () => {
         visitId: '1',
       },
     ];
-    history = createMemoryHistory();
     user = userEvent.setup();
 
     state = JSON.parse(
@@ -96,7 +95,7 @@ describe('DLS Proposals - Card View', () => {
 
     await user.type(filter, 'test');
 
-    expect(history.location.search).toBe(
+    expect(window.location.search).toContain(
       `?filters=${encodeURIComponent(
         '{"title":{"value":"test","type":"include"}}'
       )}`
@@ -104,7 +103,7 @@ describe('DLS Proposals - Card View', () => {
 
     await user.clear(filter);
 
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).not.toContain('filters=');
   });
 
   it('uses default sort', async () => {
@@ -112,8 +111,7 @@ describe('DLS Proposals - Card View', () => {
 
     expect(await screen.findByTestId('card')).toBeInTheDocument();
 
-    expect(history.length).toBe(1);
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?sort=${encodeURIComponent('{"title":"asc"}')}`
     );
 

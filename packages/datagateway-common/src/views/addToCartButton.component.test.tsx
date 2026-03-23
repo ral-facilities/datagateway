@@ -30,7 +30,9 @@ describe('Generic add to cart button', () => {
     const store = mockStore(state);
     return render(
       <Provider store={store}>
-        <MemoryRouter>
+        <MemoryRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+        >
           <QueryClientProvider client={new QueryClient()}>
             <AddToCartButton {...props} />
           </QueryClientProvider>

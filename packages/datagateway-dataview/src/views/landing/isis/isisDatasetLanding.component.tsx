@@ -236,7 +236,8 @@ const ISISDatasetLandingPage = (props: {
 }): React.ReactElement => {
   const {
     instrumentId = '',
-    instrumentChildId = '',
+    facilityCycleId = '',
+    dataPublicationId = '',
     investigationId = '',
     datasetId = '',
   } = useParams();
@@ -249,9 +250,9 @@ const ISISDatasetLandingPage = (props: {
 
   const checkingPromise = props.dataPublication
     ? Promise.all([
-        checkInstrumentId(parseInt(instrumentId), parseInt(instrumentChildId)),
+        checkInstrumentId(parseInt(instrumentId), parseInt(dataPublicationId)),
         checkStudyDataPublicationId(
-          parseInt(instrumentChildId),
+          parseInt(dataPublicationId),
           parseInt(investigationId)
         ),
         checkInvestigationId(
@@ -263,7 +264,7 @@ const ISISDatasetLandingPage = (props: {
     : Promise.all([
         checkInstrumentAndFacilityCycleId(
           parseInt(instrumentId),
-          parseInt(instrumentChildId),
+          parseInt(facilityCycleId),
           parseInt(investigationId)
         ),
         checkInvestigationId(parseInt(investigationId), parseInt(datasetId)),

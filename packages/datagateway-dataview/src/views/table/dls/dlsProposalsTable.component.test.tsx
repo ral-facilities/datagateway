@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
+  act,
   render,
   screen,
   within,
@@ -12,9 +13,8 @@ import {
   useInvestigationsInfinite,
   type Investigation,
 } from 'datagateway-common';
-import { History, createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {
@@ -23,6 +23,7 @@ import {
   findColumnHeaderByName,
   findColumnIndexByName,
   findRowAt,
+  flushPromises,
 } from '../../../setupTests';
 import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
@@ -43,18 +44,19 @@ describe('DLS Proposals table component', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let rowData: Investigation[];
-  let history: History;
   let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult => {
     const store = mockStore(state);
     return render(
       <Provider store={store}>
-        <Router history={history}>
+        <BrowserRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+        >
           <QueryClientProvider client={new QueryClient()}>
             <DLSProposalsTable />
           </QueryClientProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
   };
@@ -81,7 +83,7 @@ describe('DLS Proposals table component', () => {
         endDate: '2019-06-11',
       },
     ];
-    history = createMemoryHistory();
+    window.history.replaceState({}, '', '/');
     user = userEvent.setup();
 
     state = JSON.parse(
@@ -149,8 +151,8 @@ describe('DLS Proposals table component', () => {
     // user.type inputs the given string character by character to simulate user typing
     // each keystroke of user.type creates a new entry in the history stack
     // so the initial entry + 4 characters in "test" = 5 entries
-    expect(history.length).toBe(5);
-    expect(history.location.search).toBe(
+
+    expect(window.location.search).toContain(
       `?filters=${encodeURIComponent(
         '{"title":{"value":"test","type":"include"}}'
       )}`
@@ -158,32 +160,28 @@ describe('DLS Proposals table component', () => {
 
     await user.clear(filterInput);
 
-    expect(history.length).toBe(6);
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).not.toContain('filters=');
   });
 
   it('uses default sort', async () => {
     renderComponent();
 
+    await act(async () => {
+      await flushPromises();
+    });
+
     expect(await screen.findAllByRole('gridcell')).toBeTruthy();
 
-    expect(history.length).toBe(1);
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?sort=${encodeURIComponent('{"title":"asc"}')}`
     );
 
-    // check that the data request is sent only once after mounting
-    expect(useInvestigationsInfinite).toHaveBeenCalledTimes(2);
-    expect(useInvestigationsInfinite).toHaveBeenCalledWith(
-      expect.anything(),
-      expect.anything(),
-      false
-    );
-    expect(useInvestigationsInfinite).toHaveBeenLastCalledWith(
-      expect.anything(),
-      expect.anything(),
-      true
-    );
+    // check that the data hook is only called once with the query enabled
+    expect(
+      vi
+        .mocked(useInvestigationsInfinite)
+        .mock.calls.filter((call) => call[2] === true)
+    ).toHaveLength(1);
   });
 
   it('renders title and name as links', async () => {

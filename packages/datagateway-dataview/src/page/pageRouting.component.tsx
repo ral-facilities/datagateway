@@ -63,12 +63,7 @@ const PageRouting = ({ view, loggedInAnonymously }: PageRoutingProps) => {
   return (
     <Routes>
       <Route
-        element={
-          <PageContainer
-            loggedInAnonymously={loggedInAnonymously}
-            view={view}
-          />
-        }
+        element={<PageContainer loggedInAnonymously={loggedInAnonymously} />}
       >
         <Route path={paths.homepage} element={<TranslatedHomePage />} />
         <Route path={paths.doiRedirect} element={<DoiRedirect />} />

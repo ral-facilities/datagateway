@@ -31,7 +31,9 @@ describe('PreviewDatafileButton', () => {
     const store = mockStore(state);
     return render(
       <Provider store={store}>
-        <MemoryRouter>
+        <MemoryRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+        >
           <PreviewDatafileButton {...props} />
         </MemoryRouter>
       </Provider>

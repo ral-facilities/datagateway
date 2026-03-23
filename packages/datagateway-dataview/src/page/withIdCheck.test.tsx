@@ -44,7 +44,12 @@ describe('WithIdCheck', () => {
       </WithIdCheck>,
       {
         wrapper: ({ children }) => (
-          <MemoryRouter initialEntries={['/']}>{children}</MemoryRouter>
+          <MemoryRouter
+            future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+            initialEntries={['/']}
+          >
+            {children}
+          </MemoryRouter>
         ),
       }
     );
@@ -59,7 +64,12 @@ describe('WithIdCheck', () => {
       </WithIdCheck>,
       {
         wrapper: ({ children }) => (
-          <MemoryRouter initialEntries={['/']}>{children}</MemoryRouter>
+          <MemoryRouter
+            future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+            initialEntries={['/']}
+          >
+            {children}
+          </MemoryRouter>
         ),
       }
     );
@@ -79,6 +89,7 @@ describe('WithIdCheck', () => {
       {
         wrapper: ({ children }) => (
           <MemoryRouter
+            future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
             initialEntries={['/browse/investigation/2/dataset/1/datafile']}
           >
             {children}
@@ -102,6 +113,7 @@ describe('WithIdCheck', () => {
       {
         wrapper: ({ children }) => (
           <MemoryRouter
+            future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
             initialEntries={['/browse/investigation/2/dataset/1/datafile']}
           >
             {children}

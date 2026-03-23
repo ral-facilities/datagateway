@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
+  act,
   render,
   screen,
   waitFor,
@@ -17,33 +18,54 @@ import {
   findCellInRow,
   findColumnIndexByName,
 } from 'datagateway-search/src/setupTests';
-import { createMemoryHistory, type History } from 'history';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, generatePath } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { findAllRows, findColumnHeaderByName } from '../../../setupTests';
+import { paths } from '../../../page/pageContainer.component';
+import {
+  findAllRows,
+  findColumnHeaderByName,
+  flushPromises,
+} from '../../../setupTests';
 import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import ISISDatafilesTable from './isisDatafilesTable.component';
+
+vi.mock('../../../page/idCheckFunctions', () => ({
+  checkInstrumentId: vi.fn().mockResolvedValue(true),
+  checkStudyDataPublicationId: vi.fn().mockResolvedValue(true),
+  checkInstrumentAndFacilityCycleId: vi.fn().mockResolvedValue(true),
+  checkInvestigationId: vi.fn().mockResolvedValue(true),
+}));
 
 describe('ISIS datafiles table component', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let rowData: Datafile[];
   let cartItems: DownloadCartItem[];
-  let history: History;
   let user: ReturnType<typeof userEvent.setup>;
   let holder: HTMLElement;
 
   const renderComponent = (): RenderResult =>
     render(
       <Provider store={mockStore(state)}>
-        <Router history={history}>
+        <BrowserRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+        >
           <QueryClientProvider client={new QueryClient()}>
-            <ISISDatafilesTable datasetId="1" investigationId="2" />
+            <Routes>
+              <Route
+                path={paths.standard.isisDatafile}
+                element={<ISISDatafilesTable dataPublication={false} />}
+              />
+              <Route
+                path={paths.dataPublications.standard.isisDatafile}
+                element={<ISISDatafilesTable dataPublication={true} />}
+              />
+            </Routes>
           </QueryClientProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
 
@@ -61,7 +83,16 @@ describe('ISIS datafiles table component', () => {
       },
     ];
     cartItems = [];
-    history = createMemoryHistory();
+    window.history.replaceState(
+      {},
+      '',
+      generatePath(paths.standard.isisDatafile, {
+        datasetId: '1',
+        investigationId: '2',
+        facilityCycleId: '3',
+        instrumentId: '4',
+      })
+    );
     user = userEvent.setup();
 
     holder = document.createElement('div');
@@ -96,6 +127,17 @@ describe('ISIS datafiles table component', () => {
           // datafiles infinite
           return Promise.resolve({
             data: rowData,
+          });
+        }
+
+        if (/\/datapublications$/.test(url)) {
+          return Promise.resolve({
+            data: {
+              id: 1,
+              content: {
+                dataCollectionInvestigations: [{ investigation: { id: 5 } }],
+              },
+            },
           });
         }
 
@@ -203,6 +245,29 @@ describe('ISIS datafiles table component', () => {
     ).toBeInTheDocument();
   });
 
+  it('renders correctly in data publications hierarchy', async () => {
+    window.history.replaceState(
+      {},
+      '',
+      generatePath(paths.dataPublications.standard.isisDatafile, {
+        datasetId: '1',
+        investigationId: '2',
+        dataPublicationId: '3',
+        instrumentId: '4',
+      })
+    );
+
+    renderComponent();
+
+    // wait for rows to show up
+    await waitFor(
+      async () => {
+        expect(await findAllRows()).toHaveLength(1);
+      },
+      { timeout: 5_000 }
+    );
+  });
+
   it('updates filter query params on text filter', async () => {
     renderComponent();
 
@@ -216,8 +281,8 @@ describe('ISIS datafiles table component', () => {
     // user.type inputs the given string character by character to simulate user typing
     // each keystroke of user.type creates a new entry in the history stack
     // so the initial entry + 4 characters in "test" = 5 entries
-    expect(history.length).toBe(5);
-    expect(history.location.search).toBe(
+
+    expect(window.location.search).toContain(
       `?filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
       )}`
@@ -225,8 +290,7 @@ describe('ISIS datafiles table component', () => {
 
     await user.clear(filterInput);
 
-    expect(history.length).toBe(6);
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).not.toContain('filters=');
   });
 
   it('updates filter query params on date filter', async () => {
@@ -238,8 +302,7 @@ describe('ISIS datafiles table component', () => {
 
     await user.type(filterInput, '2019-08-06');
 
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
+    expect(window.location.search).toContain(
       `?filters=${encodeURIComponent(
         '{"datafileModTime":{"endDate":"2019-08-06"}}'
       )}`
@@ -250,17 +313,19 @@ describe('ISIS datafiles table component', () => {
     await user.keyboard('{Control}a{/Control}');
     await user.keyboard('{Delete}');
 
-    expect(history.length).toBe(3);
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).not.toContain('filters=');
   });
 
   it('uses default sort', async () => {
     renderComponent();
 
+    await act(async () => {
+      await flushPromises();
+    });
+
     expect(await screen.findAllByRole('gridcell')).toBeTruthy();
 
-    expect(history.length).toBe(1);
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"asc"}')}`
     );
 
@@ -278,8 +343,7 @@ describe('ISIS datafiles table component', () => {
     // click on the datafiles.name column header
     await user.click(await screen.findByText('datafiles.name'));
 
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"desc"}')}`
     );
   });

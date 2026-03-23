@@ -27,7 +27,7 @@ import {
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 
 interface DLSDataPublicationContentTableProps {
@@ -49,15 +49,13 @@ const DLSDataPublicationContentTable = (
   ): void => {
     setCurrentTab(newValue);
     // remove any applied sorts/filters on tab change
-    history.replace({
-      search: '',
-    });
+    navigate({ search: '' }, { replace: true });
   };
 
   const [t] = useTranslation();
 
   const location = useLocation();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const { filters, sort } = React.useMemo(
     () => parseSearchToQuery(location.search),

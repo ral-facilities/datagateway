@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
+  act,
   render,
   screen,
   waitFor,
@@ -13,12 +14,10 @@ import {
   dGCommonInitialState,
   type Investigation,
 } from 'datagateway-common';
-import { createMemoryHistory, type History } from 'history';
 import { Provider } from 'react-redux';
-import { Router, generatePath } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, generatePath } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import type { MockInstance } from 'vitest';
 import { paths } from '../../../page/pageContainer.component';
 import {
   findAllRows,
@@ -26,6 +25,7 @@ import {
   findColumnHeaderByName,
   findColumnIndexByName,
   findRowAt,
+  flushPromises,
 } from '../../../setupTests';
 import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
@@ -35,8 +35,6 @@ describe('ISIS Investigations table component', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let rowData: Investigation[];
-  let history: History;
-  let replaceSpy: MockInstance;
   let user: ReturnType<typeof userEvent.setup>;
   let cartItems: DownloadCartItem[];
   let holder: HTMLElement;
@@ -45,11 +43,18 @@ describe('ISIS Investigations table component', () => {
     const store = mockStore(state);
     return render(
       <Provider store={store}>
-        <Router history={history}>
+        <BrowserRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+        >
           <QueryClientProvider client={new QueryClient()}>
-            <ISISInvestigationsTable instrumentId="4" facilityCycleId="5" />
+            <Routes>
+              <Route
+                path={paths.toggle.isisInvestigation}
+                element={<ISISInvestigationsTable />}
+              />
+            </Routes>
           </QueryClientProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
   };
@@ -120,15 +125,14 @@ describe('ISIS Investigations table component', () => {
         endDate: '2019-06-11',
       },
     ];
-    history = createMemoryHistory({
-      initialEntries: [
-        generatePath(paths.toggle.isisInvestigation, {
-          instrumentId: '4',
-          facilityCycleId: '5',
-        }),
-      ],
-    });
-    replaceSpy = vi.spyOn(history, 'replace');
+    window.history.replaceState(
+      {},
+      '',
+      generatePath(paths.toggle.isisInvestigation, {
+        instrumentId: '4',
+        facilityCycleId: '5',
+      })
+    );
     user = userEvent.setup();
 
     holder = document.createElement('div');
@@ -331,8 +335,8 @@ describe('ISIS Investigations table component', () => {
     // user.type inputs the given string character by character to simulate user typing
     // each keystroke of user.type creates a new entry in the history stack
     // so the initial entry + 4 characters in "test" = 5 entries
-    expect(history.length).toBe(5);
-    expect(history.location.search).toBe(
+
+    expect(window.location.search).toContain(
       `?filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
       )}`
@@ -340,8 +344,7 @@ describe('ISIS Investigations table component', () => {
 
     await user.clear(filterInput);
 
-    expect(history.length).toBe(6);
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).not.toContain('filters=');
   });
 
   it('updates filter query params on date filter', async () => {
@@ -353,8 +356,7 @@ describe('ISIS Investigations table component', () => {
 
     await user.type(filterInput, '2019-08-06');
 
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
+    expect(window.location.search).toContain(
       `?filters=${encodeURIComponent(
         '{"startDate":{"startDate":"2019-08-06"}}'
       )}`
@@ -365,21 +367,23 @@ describe('ISIS Investigations table component', () => {
     await user.keyboard('{Control}a{/Control}');
     await user.keyboard('{Delete}');
 
-    expect(history.length).toBe(3);
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).not.toContain('filters=');
   });
 
   it('uses default sort', async () => {
     renderComponent();
 
-    expect(await screen.findAllByRole('gridcell')).toBeTruthy();
-
-    expect(history.length).toBe(1);
-    expect(replaceSpy).toHaveBeenCalledWith({
-      search: `?sort=${encodeURIComponent('{"startDate":"desc"}')}`,
+    await act(async () => {
+      await flushPromises();
     });
 
-    // check that the data request is sent only once after mounting
+    expect(await screen.findAllByRole('gridcell')).toBeTruthy();
+
+    expect(window.location.search).toBe(
+      `?sort=${encodeURIComponent('{"startDate":"desc"}')}`
+    );
+
+    // check that the data request is sent only once after mounting & default sort is set
     const datafilesCalls = vi
       .mocked(axios.get)
       .mock.calls.filter((call) => call[0] === '/investigations');
@@ -394,8 +398,7 @@ describe('ISIS Investigations table component', () => {
       await screen.findByRole('button', { name: 'investigations.title' })
     );
 
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?sort=${encodeURIComponent('{"title":"asc"}')}`
     );
   });

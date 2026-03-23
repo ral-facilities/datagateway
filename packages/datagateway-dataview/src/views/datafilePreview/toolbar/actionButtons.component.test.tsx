@@ -7,9 +7,8 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { downloadDatafile } from 'datagateway-common';
-import { History, createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
-import { MemoryRouter, Router } from 'react-router-dom';
+import { BrowserRouter, MemoryRouter } from 'react-router-dom';
 import type { Store } from 'redux';
 import { combineReducers, createStore } from 'redux';
 import type { StateType } from '../../../state/app.types';
@@ -28,11 +27,9 @@ vi.mock('datagateway-common', async () => ({
 function renderComponent({
   context,
   store,
-  history,
 }: {
   context?: DatafilePreviewerContextShape;
   store: Store;
-  history: History;
 }): RenderResult {
   const mockContext: DatafilePreviewerContextShape = context ?? {
     datafile: mockDatafile,
@@ -40,11 +37,13 @@ function renderComponent({
 
   return render(
     <Provider store={store}>
-      <Router history={history}>
+      <BrowserRouter
+        future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+      >
         <DatafilePreviewerContext.Provider value={mockContext}>
           <ActionButtons />
         </DatafilePreviewerContext.Provider>
-      </Router>
+      </BrowserRouter>
     </Provider>
   );
 }
@@ -52,7 +51,6 @@ function renderComponent({
 describe('ActionButtons', () => {
   let user: ReturnType<typeof userEvent.setup>;
   let store: Store<StateType>;
-  let history: History;
 
   beforeEach(() => {
     user = userEvent.setup();
@@ -66,7 +64,7 @@ describe('ActionButtons', () => {
         dgdataview: DGDataViewReducer,
       })
     );
-    history = createMemoryHistory();
+    window.history.replaceState({}, '', '/');
   });
 
   afterEach(() => {
@@ -76,7 +74,9 @@ describe('ActionButtons', () => {
   it('should not show anything when datafile previewer context is not provided', () => {
     const { container } = render(
       <Provider store={store}>
-        <MemoryRouter>
+        <MemoryRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+        >
           <ActionButtons />
         </MemoryRouter>
       </Provider>
@@ -87,11 +87,13 @@ describe('ActionButtons', () => {
 
   it('should have a back button that brings the users back to the datafile table when clicked', async () => {
     // pretend the user visited the datafile previewer directly through the URL.
-    history.replace(
+    window.history.replaceState(
+      {},
+      '',
       '/browse/instrument/33/facilityCycle/89981656/investigation/91429827/dataset/91429833/datafile/91445688'
     );
 
-    renderComponent({ store, history });
+    renderComponent({ store });
 
     await user.click(
       screen.getByRole('button', {
@@ -99,7 +101,7 @@ describe('ActionButtons', () => {
       })
     );
 
-    expect(history.location.pathname).toBe(
+    expect(window.location.pathname).toBe(
       '/browse/instrument/33/facilityCycle/89981656/investigation/91429827/dataset/91429833/datafile'
     );
   });
@@ -108,7 +110,6 @@ describe('ActionButtons', () => {
     it('lets users download the currently previewed datafile', async () => {
       renderComponent({
         store,
-        history,
         context: {
           datafile: mockDatafile,
           datafileContent: new Blob(['hello']),
@@ -127,7 +128,6 @@ describe('ActionButtons', () => {
 
       renderComponent({
         store,
-        history,
         context: {
           datafile: datafileWithNoLocation,
           datafileContent: new Blob(['hello']),
@@ -162,7 +162,7 @@ describe('ActionButtons', () => {
       .spyOn(navigator.clipboard, 'writeText')
       .mockImplementationOnce(() => Promise.resolve());
 
-    renderComponent({ store, history });
+    renderComponent({ store });
 
     await user.click(
       screen.getByRole('button', {
@@ -195,7 +195,6 @@ describe('ActionButtons', () => {
   it('should have a zoom in button that increases the zoom level of the datafile previewer when clicked', async () => {
     renderComponent({
       store,
-      history,
     });
 
     await user.click(
@@ -212,7 +211,6 @@ describe('ActionButtons', () => {
   it('should have a zoom out button that decreases the zoom level of the datafile previewer when clicked', async () => {
     renderComponent({
       store,
-      history,
     });
 
     await user.click(
@@ -228,7 +226,6 @@ describe('ActionButtons', () => {
     it('that is hidden when the zoom level of the datafile previewer is at the default value', () => {
       renderComponent({
         store,
-        history,
       });
 
       expect(
@@ -241,7 +238,6 @@ describe('ActionButtons', () => {
     it('that is shown when the zoom level of the datafile previewer is changed and resets it when clicked', async () => {
       renderComponent({
         store,
-        history,
       });
 
       // click the zoom in button to change the zoom level

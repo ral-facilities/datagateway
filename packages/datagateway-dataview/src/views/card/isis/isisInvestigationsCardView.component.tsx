@@ -92,13 +92,14 @@ const BaseISISInvestigationsCardView = (
     },
   ];
 
-  // isMounted is used to disable queries when the component isn't fully mounted.
+  // isInitialised is used to disable queries when the component isn't fully initialised.
   // It prevents the request being sent twice if default sort is set.
   // It is not needed for cards/tables that don't have default sort.
-  const [isMounted, setIsMounted] = React.useState(false);
+  const [isInitialised, setIsInitialised] = React.useState(false);
+
   React.useEffect(() => {
-    setIsMounted(true);
-  }, []);
+    if (!isInitialised && Object.keys(sort).length > 0) setIsInitialised(true);
+  }, [isInitialised, sort]);
 
   const { data: totalDataCount, isPending: countLoading } =
     useInvestigationCount(investigationQueryFilters);
@@ -123,7 +124,7 @@ const BaseISISInvestigationsCardView = (
       },
     ],
     undefined,
-    isMounted
+    isInitialised
   );
 
   const title: CardViewDetails = React.useMemo(

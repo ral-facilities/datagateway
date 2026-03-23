@@ -1,6 +1,7 @@
-import { act, renderHook, waitFor } from '@testing-library/react';
+import { renderHook, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import axios from 'axios';
-import { History, createMemoryHistory } from 'history';
+import { Link } from 'react-router-dom';
 import { DataPublication } from '../app.types';
 import * as handleICATError from '../handleICATError';
 import { createReactQueryWrapper } from '../setupTests';
@@ -16,13 +17,14 @@ import {
 
 describe('data publications api functions', () => {
   let mockData: DataPublication[] = [];
-  let history: History;
   let params: URLSearchParams;
+  let user: ReturnType<typeof userEvent.setup>;
   const handleICATErrorSpy = vi
     .spyOn(handleICATError, 'default')
     .mockImplementation(vi.fn());
 
   beforeEach(() => {
+    user = userEvent.setup();
     mockData = [
       {
         id: 1,
@@ -35,11 +37,7 @@ describe('data publications api functions', () => {
         title: 'Test 2',
       },
     ];
-    history = createMemoryHistory({
-      initialEntries: [
-        '/?sort={"name":"asc","title":"desc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20',
-      ],
-    });
+    window.history.replaceState({}, '', '/');
     params = new URLSearchParams();
   });
 
@@ -53,6 +51,11 @@ describe('data publications api functions', () => {
       vi.mocked(axios.get).mockResolvedValue({
         data: mockData,
       });
+      window.history.replaceState(
+        {},
+        '',
+        '/?sort={"name":"asc","title":"desc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
+      );
 
       const { result } = renderHook(
         () =>
@@ -68,7 +71,19 @@ describe('data publications api functions', () => {
             },
           ]),
         {
-          wrapper: createReactQueryWrapper(history),
+          wrapper: ({ children }) => {
+            const Wrapper = createReactQueryWrapper();
+            return (
+              <Wrapper>
+                <>
+                  {children}
+                  <Link to='/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'>
+                    Test link
+                  </Link>
+                </>
+              </Wrapper>
+            );
+          },
         }
       );
 
@@ -106,12 +121,8 @@ describe('data publications api functions', () => {
       );
       expect(result.current.data).toEqual(mockData);
 
-      act(() => {
-        // test that order of sort object triggers new query
-        history.push(
-          '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
-        );
-      });
+      // test that order of sort object triggers new query
+      await user.click(screen.getByRole('link'));
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
@@ -157,6 +168,11 @@ describe('data publications api functions', () => {
           ? Promise.resolve({ data: mockData[0] })
           : Promise.resolve({ data: mockData[1] })
       );
+      window.history.replaceState(
+        {},
+        '',
+        '/?sort={"name":"asc","title":"desc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
+      );
 
       const { result } = renderHook(
         () =>
@@ -172,7 +188,19 @@ describe('data publications api functions', () => {
             },
           ]),
         {
-          wrapper: createReactQueryWrapper(history),
+          wrapper: ({ children }) => {
+            const Wrapper = createReactQueryWrapper();
+            return (
+              <Wrapper>
+                <>
+                  {children}
+                  <Link to='/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}'>
+                    Test link
+                  </Link>
+                </>
+              </Wrapper>
+            );
+          },
         }
       );
 
@@ -232,12 +260,8 @@ describe('data publications api functions', () => {
         mockData[1],
       ]);
 
-      act(() => {
-        // test that order of sort object triggers new query
-        history.push(
-          '/?sort={"title":"desc", "name":"asc"}&filters={"name":{"value":"test","type":"include"}}'
-        );
-      });
+      // test that order of sort object triggers new query
+      await user.click(screen.getByRole('link'));
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
@@ -281,9 +305,14 @@ describe('data publications api functions', () => {
       vi.mocked(axios.get).mockResolvedValue({
         data: mockData,
       });
+      window.history.replaceState(
+        {},
+        '',
+        '/?sort={"name":"asc","title":"desc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
+      );
 
       const { result } = renderHook(() => useDataPublication(1), {
-        wrapper: createReactQueryWrapper(history),
+        wrapper: createReactQueryWrapper(),
       });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
@@ -409,6 +438,11 @@ describe('data publications api functions', () => {
           name: { eq: 'test' },
         })
       );
+      window.history.replaceState(
+        {},
+        '',
+        '/?sort={"name":"asc","title":"desc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
+      );
 
       const { result } = renderHook(
         () =>
@@ -419,7 +453,7 @@ describe('data publications api functions', () => {
             },
           ]),
         {
-          wrapper: createReactQueryWrapper(history),
+          wrapper: createReactQueryWrapper(),
         }
       );
 
@@ -445,6 +479,12 @@ describe('data publications api functions', () => {
       params.append('order', JSON.stringify('id asc'));
       params.append('include', '"type"');
 
+      window.history.replaceState(
+        {},
+        '',
+        '/?sort={"name":"asc","title":"desc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
+      );
+
       const { result } = renderHook(
         () =>
           useDataPublicationsByFilters([
@@ -454,7 +494,7 @@ describe('data publications api functions', () => {
             },
           ]),
         {
-          wrapper: createReactQueryWrapper(history),
+          wrapper: createReactQueryWrapper(),
         }
       );
 
@@ -483,6 +523,11 @@ describe('data publications api functions', () => {
       vi.mocked(axios.get).mockResolvedValue({
         data: mockData.length,
       });
+      window.history.replaceState(
+        {},
+        '',
+        '/?sort={"name":"asc","title":"desc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
+      );
 
       const { result } = renderHook(
         () =>
@@ -498,7 +543,7 @@ describe('data publications api functions', () => {
             },
           ]),
         {
-          wrapper: createReactQueryWrapper(history),
+          wrapper: createReactQueryWrapper(),
         }
       );
 
@@ -567,11 +612,16 @@ describe('data publications api functions', () => {
           ? Promise.resolve({ data: mockData[0] })
           : Promise.resolve({ data: mockData[1] })
       );
+      window.history.replaceState(
+        {},
+        '',
+        '/?sort={"name":"asc","title":"desc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
+      );
 
       const { result } = renderHook(
         () => useDataPublicationContent('1', 'investigation'),
         {
-          wrapper: createReactQueryWrapper(history),
+          wrapper: createReactQueryWrapper(),
         }
       );
 
@@ -643,11 +693,16 @@ describe('data publications api functions', () => {
       vi.mocked(axios.get).mockImplementation((_url, _options) =>
         Promise.resolve({ data: mockData[0] })
       );
+      window.history.replaceState(
+        {},
+        '',
+        '/?sort={"name":"asc","title":"desc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
+      );
 
       const { result } = renderHook(
         () => useDataPublicationContent('1', 'dataset'),
         {
-          wrapper: createReactQueryWrapper(history),
+          wrapper: createReactQueryWrapper(),
         }
       );
 
@@ -689,11 +744,16 @@ describe('data publications api functions', () => {
       vi.mocked(axios.get).mockImplementation((_url, _options) =>
         Promise.resolve({ data: mockData[0] })
       );
+      window.history.replaceState(
+        {},
+        '',
+        '/?sort={"name":"asc","title":"desc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
+      );
 
       const { result } = renderHook(
         () => useDataPublicationContent('1', 'datafile'),
         {
-          wrapper: createReactQueryWrapper(history),
+          wrapper: createReactQueryWrapper(),
         }
       );
 
@@ -779,11 +839,16 @@ describe('data publications api functions', () => {
       vi.mocked(axios.get).mockResolvedValue({
         data: mockData.length,
       });
+      window.history.replaceState(
+        {},
+        '',
+        '/?sort={"name":"asc","title":"desc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
+      );
 
       const { result } = renderHook(
         () => useDataPublicationContentCount('1', 'investigation'),
         {
-          wrapper: createReactQueryWrapper(history),
+          wrapper: createReactQueryWrapper(),
         }
       );
 
@@ -820,11 +885,16 @@ describe('data publications api functions', () => {
       vi.mocked(axios.get).mockResolvedValue({
         data: mockData.length,
       });
+      window.history.replaceState(
+        {},
+        '',
+        '/?sort={"name":"asc","title":"desc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
+      );
 
       const { result } = renderHook(
         () => useDataPublicationContentCount('1', 'dataset'),
         {
-          wrapper: createReactQueryWrapper(history),
+          wrapper: createReactQueryWrapper(),
         }
       );
 
@@ -861,11 +931,16 @@ describe('data publications api functions', () => {
       vi.mocked(axios.get).mockResolvedValue({
         data: mockData.length,
       });
+      window.history.replaceState(
+        {},
+        '',
+        '/?sort={"name":"asc","title":"desc"}&filters={"name":{"value":"test","type":"include"}}&page=2&results=20'
+      );
 
       const { result } = renderHook(
         () => useDataPublicationContentCount('1', 'datafile'),
         {
-          wrapper: createReactQueryWrapper(history),
+          wrapper: createReactQueryWrapper(),
         }
       );
 

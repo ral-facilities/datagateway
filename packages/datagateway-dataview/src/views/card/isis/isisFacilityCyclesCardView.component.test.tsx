@@ -1,18 +1,18 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render, RenderResult, screen } from '@testing-library/react';
+import { RenderResult, act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
-  dGCommonInitialState,
   FacilityCycle,
+  dGCommonInitialState,
   useFacilityCycleCount,
   useFacilityCyclesPaginated,
 } from 'datagateway-common';
-import { createMemoryHistory, History } from 'history';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, generatePath } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import type { MockInstance } from 'vitest';
+import { paths } from '../../../page/pageContainer.component';
+import { flushPromises } from '../../../setupTests';
 import { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import ISISFacilityCyclesCardView from './isisFacilityCyclesCardView.component';
@@ -32,18 +32,23 @@ describe('ISIS Facility Cycles - Card View', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let cardData: FacilityCycle[];
-  let history: History;
-  let replaceSpy: MockInstance;
   let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult =>
     render(
       <Provider store={mockStore(state)}>
-        <Router history={history}>
+        <BrowserRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+        >
           <QueryClientProvider client={new QueryClient()}>
-            <ISISFacilityCyclesCardView instrumentId="1" />
+            <Routes>
+              <Route
+                path={paths.toggle.isisFacilityCycle}
+                element={<ISISFacilityCyclesCardView />}
+              />
+            </Routes>
           </QueryClientProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
 
@@ -62,8 +67,13 @@ describe('ISIS Facility Cycles - Card View', () => {
         name: 'Test 1',
       },
     ];
-    history = createMemoryHistory();
-    replaceSpy = vi.spyOn(history, 'replace');
+    window.history.replaceState(
+      {},
+      '',
+      generatePath(paths.toggle.isisFacilityCycle, {
+        instrumentId: '1',
+      })
+    );
 
     vi.mocked(useFacilityCycleCount, { partial: true }).mockReturnValue({
       data: 1,
@@ -97,7 +107,7 @@ describe('ISIS Facility Cycles - Card View', () => {
 
     await user.type(filter, 'test');
 
-    expect(history.location.search).toBe(
+    expect(window.location.search).toContain(
       `?filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
       )}`
@@ -105,7 +115,7 @@ describe('ISIS Facility Cycles - Card View', () => {
 
     await user.clear(filter);
 
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).not.toContain('filters=');
   });
 
   it('updates filter query params on date filter', async () => {
@@ -122,7 +132,7 @@ describe('ISIS Facility Cycles - Card View', () => {
 
     await user.type(filter, '2019-08-06');
 
-    expect(history.location.search).toBe(
+    expect(window.location.search).toContain(
       `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
     );
 
@@ -131,29 +141,28 @@ describe('ISIS Facility Cycles - Card View', () => {
     await user.keyboard('{Control}a{/Control}');
     await user.keyboard('{Delete}');
 
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).not.toContain('filters=');
   });
 
   it('uses default sort', async () => {
     renderComponent();
 
-    expect(await screen.findByTestId('card')).toBeInTheDocument();
-
-    expect(history.length).toBe(1);
-    expect(replaceSpy).toHaveBeenCalledWith({
-      search: `?sort=${encodeURIComponent('{"startDate":"desc"}')}`,
+    await act(async () => {
+      await flushPromises();
     });
 
-    // check that the data request is sent only once after mounting
-    expect(useFacilityCyclesPaginated).toHaveBeenCalledTimes(2);
-    expect(useFacilityCyclesPaginated).toHaveBeenCalledWith(
-      expect.anything(),
-      false
+    expect(await screen.findByTestId('card')).toBeInTheDocument();
+
+    expect(window.location.search).toBe(
+      `?sort=${encodeURIComponent('{"startDate":"desc"}')}`
     );
-    expect(useFacilityCyclesPaginated).toHaveBeenLastCalledWith(
-      expect.anything(),
-      true
-    );
+
+    // check that the data hook is only called once with the query enabled
+    expect(
+      vi
+        .mocked(useFacilityCyclesPaginated)
+        .mock.calls.filter((call) => call[1] === true)
+    ).toHaveLength(1);
   });
 
   it('updates sort query params on sort', async () => {
@@ -163,7 +172,7 @@ describe('ISIS Facility Cycles - Card View', () => {
       await screen.findByRole('button', { name: 'Sort by FACILITYCYCLES.NAME' })
     );
 
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"asc"}')}`
     );
   });

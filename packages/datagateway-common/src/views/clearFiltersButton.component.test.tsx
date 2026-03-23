@@ -23,7 +23,10 @@ describe('Generic clear filters button', () => {
     const store = mockStore(state);
     return render(
       <Provider store={store}>
-        <MemoryRouter initialEntries={[{ key: 'testKey', pathname: '/' }]}>
+        <MemoryRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+          initialEntries={[{ key: 'testKey', pathname: '/' }]}
+        >
           <QueryClientProvider client={new QueryClient()}>
             <ClearFiltersButton {...props} />
           </QueryClientProvider>

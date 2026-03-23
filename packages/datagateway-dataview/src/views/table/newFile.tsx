@@ -27,10 +27,6 @@ import type { StateType } from '../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../state/reducers/dgdataview.reducer';
 import DatafileTable from './datafileTable.component';
 
-vi.mock('../../page/idCheckFunctions', () => ({
-  checkInvestigationId: vi.fn().mockResolvedValue(true),
-}));
-
 describe('Datafile table component', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
@@ -48,7 +44,7 @@ describe('Datafile table component', () => {
           <QueryClientProvider client={new QueryClient()}>
             <Routes>
               <Route
-                path={paths.standard.datafile}
+                path={paths.standard.isisDatafile}
                 element={<DatafileTable />}
               />
             </Routes>
@@ -75,7 +71,7 @@ describe('Datafile table component', () => {
     window.history.replaceState(
       {},
       '',
-      generatePath(paths.standard.datafile, {
+      generatePath(paths.standard.isisDatafile, {
         datasetId: '1',
         investigationId: '2',
       })
@@ -174,7 +170,7 @@ describe('Datafile table component', () => {
         // should have 1 row in the table
         expect(rows).toHaveLength(1);
       },
-      { timeout: 5_000 }
+      { timeout: 5000 }
     );
 
     const row = rows[0];
@@ -232,7 +228,6 @@ describe('Datafile table component', () => {
     // user.type inputs the given string character by character to simulate user typing
     // each keystroke of user.type creates a new entry in the history stack
     // so the initial entry + 4 characters in "test" = 5 entries
-
     expect(window.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
@@ -330,7 +325,7 @@ describe('Datafile table component', () => {
       async () => {
         expect(await findAllRows()).toHaveLength(1);
       },
-      { timeout: 5_000 }
+      { timeout: 5000 }
     );
 
     const selectAllCheckbox = await screen.findByRole('checkbox', {
@@ -350,7 +345,7 @@ describe('Datafile table component', () => {
       async () => {
         expect(await findAllRows()).toHaveLength(1);
       },
-      { timeout: 5_000 }
+      { timeout: 5000 }
     );
 
     await waitFor(() => {
@@ -370,7 +365,7 @@ describe('Datafile table component', () => {
         rows = await findAllRows();
         expect(rows).toHaveLength(1);
       },
-      { timeout: 5_000 }
+      { timeout: 5000 }
     );
 
     expect(
@@ -388,7 +383,7 @@ describe('Datafile table component', () => {
         rows = await findAllRows();
         expect(rows).toHaveLength(1);
       },
-      { timeout: 5_000 }
+      { timeout: 5000 }
     );
 
     expect(screen.queryByTestId('datafile-details-panel')).toBeNull();

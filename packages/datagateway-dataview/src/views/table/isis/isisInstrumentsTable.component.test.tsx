@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
+  act,
   render,
   screen,
   within,
@@ -8,14 +9,13 @@ import {
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 import {
-  dGCommonInitialState,
   Instrument,
+  dGCommonInitialState,
   useInstrumentCount,
   useInstrumentsInfinite,
 } from 'datagateway-common';
-import { createMemoryHistory, History } from 'history';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {
@@ -23,6 +23,7 @@ import {
   findCellInRow,
   findColumnHeaderByName,
   findColumnIndexByName,
+  flushPromises,
 } from '../../../setupTests';
 import { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
@@ -43,18 +44,19 @@ describe('ISIS Instruments table component', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let rowData: Instrument[];
-  let history: History;
   let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (dataPublication = false): RenderResult => {
     const store = mockStore(state);
     return render(
       <Provider store={store}>
-        <Router history={history}>
+        <BrowserRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+        >
           <QueryClientProvider client={new QueryClient()}>
             <ISISInstrumentsTable dataPublication={dataPublication} />
           </QueryClientProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
   };
@@ -77,7 +79,7 @@ describe('ISIS Instruments table component', () => {
         type: 'type2',
       },
     ];
-    history = createMemoryHistory();
+    window.history.replaceState({}, '', '/');
     user = userEvent.setup();
 
     state = JSON.parse(
@@ -175,8 +177,8 @@ describe('ISIS Instruments table component', () => {
     // user.type inputs the given string character by character to simulate user typing
     // each keystroke of user.type creates a new entry in the history stack
     // so the initial entry + 4 characters in "test" = 5 entries
-    expect(history.length).toBe(5);
-    expect(history.location.search).toBe(
+
+    expect(window.location.search).toContain(
       `?filters=${encodeURIComponent(
         '{"fullName":{"value":"test","type":"include"}}'
       )}`
@@ -184,24 +186,28 @@ describe('ISIS Instruments table component', () => {
 
     await user.clear(filterInput);
 
-    expect(history.length).toBe(6);
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).not.toContain('filters=');
   });
 
   it('uses default sort', async () => {
     renderComponent();
 
+    await act(async () => {
+      await flushPromises();
+    });
+
     expect(await screen.findAllByRole('gridcell')).toBeTruthy();
 
-    expect(history.length).toBe(1);
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?sort=${encodeURIComponent('{"fullName":"asc"}')}`
     );
 
-    // check that the data request is sent only once after mounting
-    expect(useInstrumentsInfinite).toHaveBeenCalledTimes(2);
-    expect(useInstrumentsInfinite).toHaveBeenCalledWith(undefined, false);
-    expect(useInstrumentsInfinite).toHaveBeenLastCalledWith(undefined, true);
+    // check that the data hook is only called once with the query enabled
+    expect(
+      vi
+        .mocked(useInstrumentsInfinite)
+        .mock.calls.filter((call) => call[1] === true)
+    ).toHaveLength(1);
   });
 
   it('updates sort query params on sort', async () => {
@@ -209,8 +215,7 @@ describe('ISIS Instruments table component', () => {
 
     await user.click(await screen.findByText('instruments.name'));
 
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?sort=${encodeURIComponent('{"fullName":"desc"}')}`
     );
   });

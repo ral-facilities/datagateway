@@ -17,9 +17,8 @@ import {
   findCellInRow,
   findColumnIndexByName,
 } from 'datagateway-search/src/setupTests';
-import { createMemoryHistory, type History } from 'history';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { findAllRows, findColumnHeaderByName } from '../../setupTests';
@@ -32,7 +31,6 @@ describe('Investigation table component', () => {
   let state: StateType;
   let rowData: Investigation[];
   let cartItems: DownloadCartItem[];
-  let history: History;
   let user: ReturnType<typeof userEvent.setup>;
   let holder: HTMLElement;
 
@@ -40,11 +38,13 @@ describe('Investigation table component', () => {
     const store = mockStore(state);
     return render(
       <Provider store={store}>
-        <Router history={history}>
+        <BrowserRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+        >
           <QueryClientProvider client={new QueryClient()}>
             <InvestigationTable />
           </QueryClientProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
   };
@@ -74,8 +74,6 @@ describe('Investigation table component', () => {
         endDate: '2019-07-24',
       },
     ];
-    history = createMemoryHistory();
-
     holder = document.createElement('div');
     holder.setAttribute('id', 'datagateway-dataview');
     document.body.appendChild(holder);
@@ -275,8 +273,7 @@ describe('Investigation table component', () => {
 
     await user.type(filterInput, 'test');
 
-    expect(history.length).toBe(5);
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
       )}`
@@ -284,8 +281,7 @@ describe('Investigation table component', () => {
 
     await user.clear(filterInput);
 
-    expect(history.length).toBe(6);
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).toBe('');
   });
 
   it('updates filter query params on date filter', async () => {
@@ -297,8 +293,7 @@ describe('Investigation table component', () => {
 
     await user.type(filterInput, '2019-08-06');
 
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"startDate":{"startDate":"2019-08-06"}}'
       )}`
@@ -309,8 +304,7 @@ describe('Investigation table component', () => {
     await user.keyboard('{Control}a{/Control}');
     await user.keyboard('{Delete}');
 
-    expect(history.length).toBe(3);
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).toBe('');
   });
 
   it('updates sort query params on sort', async () => {
@@ -318,8 +312,7 @@ describe('Investigation table component', () => {
 
     await user.click(screen.getByText('investigations.title'));
 
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?sort=${encodeURIComponent('{"title":"asc"}')}`
     );
   });

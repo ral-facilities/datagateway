@@ -21,7 +21,12 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { Navigate, useLocation } from 'react-router-dom';
+import {
+  Navigate,
+  generatePath,
+  useLocation,
+  useParams,
+} from 'react-router-dom';
 import { paths } from '../../../page/pageContainer.component';
 import { StateType } from '../../../state/app.types';
 import DLSDataPublicationDataEditor, {
@@ -362,9 +367,11 @@ const BaseDLSDataPublicationEditForm: React.FC<
 
   // redirect if the user tries to access the link directly instead of from the edit button
   if (!locationState?.fromEdit) {
-    const landingPageUrl = paths.landing.dlsDataPublicationLanding.replace(
-      ':dataPublicationId',
-      dataPublicationId
+    const landingPageUrl = generatePath(
+      paths.landing.dlsDataPublicationLanding,
+      {
+        dataPublicationId,
+      }
     );
     return <Navigate to={landingPageUrl} replace={true} />;
   }

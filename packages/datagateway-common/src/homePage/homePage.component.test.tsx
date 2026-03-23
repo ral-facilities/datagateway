@@ -21,7 +21,9 @@ describe('Home page component', () => {
 
   it('homepage renders correctly', () => {
     const { asFragment } = render(
-      <MemoryRouter>
+      <MemoryRouter
+        future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+      >
         <HomePage {...props} />
       </MemoryRouter>
     );

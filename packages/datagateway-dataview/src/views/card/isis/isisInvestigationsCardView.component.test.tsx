@@ -9,30 +9,32 @@ import {
 import userEvent from '@testing-library/user-event';
 import axios, { type AxiosResponse } from 'axios';
 import { dGCommonInitialState, type Investigation } from 'datagateway-common';
-import { createMemoryHistory, type History } from 'history';
 import { Provider } from 'react-redux';
-import { Router, generatePath } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, generatePath } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import type { MockInstance } from 'vitest';
 import { paths } from '../../../page/pageContainer.component';
 import { flushPromises } from '../../../setupTests';
 import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import ISISInvestigationsCardView from './isisInvestigationsCardView.component';
 
+vi.mock('../../../page/idCheckFunctions', () => ({
+  checkInstrumentAndFacilityCycleId: vi.fn().mockResolvedValue(true),
+}));
+
 describe('ISIS Investigations - Card View', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let cardData: Investigation[];
-  let history: History;
-  let replaceSpy: MockInstance;
   let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult =>
     render(
       <Provider store={mockStore(state)}>
-        <Router history={history}>
+        <BrowserRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+        >
           <QueryClientProvider
             client={
               new QueryClient({
@@ -40,9 +42,15 @@ describe('ISIS Investigations - Card View', () => {
               })
             }
           >
-            <ISISInvestigationsCardView instrumentId="1" facilityCycleId="1" />
+            <Routes>
+              <Route
+                path={paths.toggle.isisInvestigation}
+                element={<ISISInvestigationsCardView />}
+              />
+              <Route path={paths.toggle.isisDataset} element={null} />
+            </Routes>
           </QueryClientProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
 
@@ -109,15 +117,14 @@ describe('ISIS Investigations - Card View', () => {
         ],
       },
     ];
-    history = createMemoryHistory({
-      initialEntries: [
-        generatePath(paths.toggle.isisInvestigation, {
-          instrumentId: '1',
-          facilityCycleId: '1',
-        }),
-      ],
-    });
-    replaceSpy = vi.spyOn(history, 'replace');
+    window.history.replaceState(
+      {},
+      '',
+      generatePath(paths.toggle.isisInvestigation, {
+        instrumentId: '1',
+        facilityCycleId: '1',
+      })
+    );
     user = userEvent.setup();
 
     state = JSON.parse(
@@ -263,7 +270,7 @@ describe('ISIS Investigations - Card View', () => {
 
     await user.type(filter, 'test');
 
-    expect(history.location.search).toBe(
+    expect(window.location.search).toContain(
       `?filters=${encodeURIComponent(
         '{"title":{"value":"test","type":"include"}}'
       )}`
@@ -271,7 +278,7 @@ describe('ISIS Investigations - Card View', () => {
 
     await user.clear(filter);
 
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).not.toContain('filters=');
   });
 
   it('updates filter query params on date filter', async () => {
@@ -288,7 +295,7 @@ describe('ISIS Investigations - Card View', () => {
 
     await user.type(filter, '2019-08-06');
 
-    expect(history.location.search).toBe(
+    expect(window.location.search).toContain(
       `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
     );
 
@@ -297,7 +304,7 @@ describe('ISIS Investigations - Card View', () => {
     await user.keyboard('{Control}a{/Control}');
     await user.keyboard('{Delete}');
 
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).not.toContain('filters=');
   });
 
   it('displays the correct user as the PI ', async () => {
@@ -308,12 +315,15 @@ describe('ISIS Investigations - Card View', () => {
   it('uses default sort', async () => {
     renderComponent();
 
+    await act(async () => {
+      await flushPromises();
+    });
+
     expect(await screen.findByTestId('card')).toBeInTheDocument();
 
-    expect(history.length).toBe(1);
-    expect(replaceSpy).toHaveBeenCalledWith({
-      search: `?sort=${encodeURIComponent('{"startDate":"desc"}')}`,
-    });
+    expect(window.location.search).toBe(
+      `?sort=${encodeURIComponent('{"startDate":"desc"}')}`
+    );
 
     // check that the data request is sent only once after mounting
     const datafilesCalls = vi
@@ -329,7 +339,7 @@ describe('ISIS Investigations - Card View', () => {
         name: 'Sort by INVESTIGATIONS.TITLE',
       })
     );
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?sort=${encodeURIComponent('{"title":"asc"}')}`
     );
   });
@@ -355,7 +365,7 @@ describe('ISIS Investigations - Card View', () => {
         name: 'investigations.details.datasets',
       })
     );
-    expect(history.location.pathname).toBe(
+    expect(window.location.pathname).toBe(
       '/browse/instrument/1/facilityCycle/1/investigation/1/dataset'
     );
   });

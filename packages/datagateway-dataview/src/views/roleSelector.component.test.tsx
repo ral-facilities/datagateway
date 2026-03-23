@@ -3,11 +3,11 @@ import { render, screen, type RenderResult } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios from 'axios';
 import {
-  dGCommonInitialState,
   InvestigationUser,
+  StateType,
+  dGCommonInitialState,
   parseSearchToQuery,
   readSciGatewayToken,
-  StateType,
   usePushFilter,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
@@ -39,7 +39,9 @@ describe('Role Selector', () => {
   const renderComponent = (): RenderResult =>
     render(
       <Provider store={mockStore(state)}>
-        <MemoryRouter>
+        <MemoryRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+        >
           <QueryClientProvider client={new QueryClient()}>
             <RoleSelector />
           </QueryClientProvider>

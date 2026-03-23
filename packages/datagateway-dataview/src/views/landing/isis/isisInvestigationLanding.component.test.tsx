@@ -14,9 +14,8 @@ import {
   useDataPublicationsByFilters,
   useEntity,
 } from 'datagateway-common';
-import { History, createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
-import { Router, generatePath } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, generatePath } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { paths } from '../../../page/pageContainer.component';
@@ -36,23 +35,41 @@ vi.mock('datagateway-common', async () => {
   };
 });
 
+vi.mock('../../../page/idCheckFunctions', () => ({
+  checkInstrumentId: vi.fn().mockResolvedValue(true),
+  checkStudyDataPublicationId: vi.fn().mockResolvedValue(true),
+  checkInstrumentAndFacilityCycleId: vi.fn().mockResolvedValue(true),
+}));
+
 describe('ISIS Investigation Landing page', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
-  let history: History;
   let user: ReturnType<typeof userEvent.setup>;
 
-  const renderComponent = (dataPublication = false): RenderResult =>
+  const renderComponent = (): RenderResult =>
     render(
       <Provider store={mockStore(state)}>
-        <Router history={history}>
+        <BrowserRouter
+          future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+        >
           <QueryClientProvider client={new QueryClient()}>
-            <ISISInvestigationLanding
-              investigationId="1"
-              dataPublication={dataPublication}
-            />
+            <Routes>
+              <Route
+                path={paths.dataPublications.landing.isisInvestigationLanding}
+                element={<ISISInvestigationLanding dataPublication={true} />}
+              />
+              <Route
+                path={paths.landing.isisInvestigationLanding}
+                element={<ISISInvestigationLanding dataPublication={false} />}
+              />
+              <Route path={paths.toggle.isisDataset} element={null} />
+              <Route
+                path={paths.dataPublications.toggle.isisDataset}
+                element={null}
+              />
+            </Routes>
           </QueryClientProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
 
@@ -157,15 +174,15 @@ describe('ISIS Investigation Landing page', () => {
       })
     );
     state.dgdataview.pluginHost = '/test/';
-    history = createMemoryHistory({
-      initialEntries: [
-        generatePath(paths.landing.isisInvestigationLanding, {
-          instrumentId: '4',
-          facilityCycleId: '5',
-          investigationId: '1',
-        }),
-      ],
-    });
+    window.history.replaceState(
+      {},
+      '',
+      generatePath(paths.landing.isisInvestigationLanding, {
+        instrumentId: '4',
+        facilityCycleId: '5',
+        investigationId: '1',
+      })
+    );
     user = userEvent.setup();
 
     initialInvestigationData = {
@@ -420,14 +437,16 @@ describe('ISIS Investigation Landing page', () => {
   });
 
   it('renders correctly for data publication hierarchy', async () => {
-    history.replace(
+    window.history.replaceState(
+      {},
+      '',
       generatePath(paths.dataPublications.landing.isisInvestigationLanding, {
         instrumentId: '4',
         dataPublicationId: '5',
         investigationId: '1',
       })
     );
-    renderComponent(true);
+    renderComponent();
 
     // branding should be visible
     expect(
@@ -545,14 +564,16 @@ describe('ISIS Investigation Landing page', () => {
       initialDataPublicationData.content.dataCollectionInvestigations[0].investigation =
         undefined;
 
-    history.replace(
+    window.history.replaceState(
+      {},
+      '',
       generatePath(paths.dataPublications.landing.isisInvestigationLanding, {
         instrumentId: '4',
         dataPublicationId: '5',
         investigationId: '1',
       })
     );
-    renderComponent(true);
+    renderComponent();
 
     expect(
       await screen.findByText('Description not provided')
@@ -588,7 +609,7 @@ describe('ISIS Investigation Landing page', () => {
       renderComponent();
 
       expect(
-        screen.getByRole('link', { name: 'datasets.dataset: dataset 1' })
+        await screen.findByRole('link', { name: 'datasets.dataset: dataset 1' })
       ).toHaveAttribute(
         'href',
         '/browse/instrument/4/facilityCycle/5/investigation/1/dataset/1'
@@ -600,17 +621,21 @@ describe('ISIS Investigation Landing page', () => {
         })
       );
 
-      expect(history.location.pathname).toBe(
+      expect(window.location.pathname).toBe(
         '/browse/instrument/4/facilityCycle/5/investigation/1/dataset'
       );
     });
 
     it('for facility cycle hierarchy and cards view', async () => {
-      history.replace({ search: '?view=card' });
+      window.history.replaceState(
+        {},
+        '',
+        `${window.location.pathname}?view=card`
+      );
       renderComponent();
 
       expect(
-        screen.getByRole('link', { name: 'datasets.dataset: dataset 1' })
+        await screen.findByRole('link', { name: 'datasets.dataset: dataset 1' })
       ).toHaveAttribute(
         'href',
         '/browse/instrument/4/facilityCycle/5/investigation/1/dataset/1?view=card'
@@ -622,24 +647,26 @@ describe('ISIS Investigation Landing page', () => {
         })
       );
 
-      expect(history.location.pathname).toBe(
+      expect(window.location.pathname).toBe(
         '/browse/instrument/4/facilityCycle/5/investigation/1/dataset'
       );
-      expect(history.location.search).toBe('?view=card');
+      expect(window.location.search).toBe('?view=card');
     });
 
     it('for data publication hierarchy and normal view', async () => {
-      history.replace(
+      window.history.replaceState(
+        {},
+        '',
         generatePath(paths.dataPublications.landing.isisInvestigationLanding, {
           instrumentId: '4',
           dataPublicationId: '5',
           investigationId: '1',
         })
       );
-      renderComponent(true);
+      renderComponent();
 
       expect(
-        screen.getByRole('link', { name: 'datasets.dataset: dataset 1' })
+        await screen.findByRole('link', { name: 'datasets.dataset: dataset 1' })
       ).toHaveAttribute(
         'href',
         '/browseDataPublications/instrument/4/dataPublication/5/investigation/1/dataset/1'
@@ -651,27 +678,28 @@ describe('ISIS Investigation Landing page', () => {
         })
       );
 
-      expect(history.location.pathname).toBe(
+      expect(window.location.pathname).toBe(
         '/browseDataPublications/instrument/4/dataPublication/5/investigation/1/dataset'
       );
     });
 
     it('for data publication hierarchy and cards view', async () => {
-      history.replace({
-        pathname: generatePath(
+      window.history.replaceState(
+        {},
+        '',
+        `${generatePath(
           paths.dataPublications.landing.isisInvestigationLanding,
           {
             instrumentId: '4',
             dataPublicationId: '5',
             investigationId: '1',
           }
-        ),
-        search: '?view=card',
-      });
-      renderComponent(true);
+        )}?view=card`
+      );
+      renderComponent();
 
       expect(
-        screen.getByRole('link', { name: 'datasets.dataset: dataset 1' })
+        await screen.findByRole('link', { name: 'datasets.dataset: dataset 1' })
       ).toHaveAttribute(
         'href',
         '/browseDataPublications/instrument/4/dataPublication/5/investigation/1/dataset/1?view=card'
@@ -683,10 +711,10 @@ describe('ISIS Investigation Landing page', () => {
         })
       );
 
-      expect(history.location.pathname).toBe(
+      expect(window.location.pathname).toBe(
         '/browseDataPublications/instrument/4/dataPublication/5/investigation/1/dataset'
       );
-      expect(history.location.search).toBe('?view=card');
+      expect(window.location.search).toBe('?view=card');
     });
   });
 });

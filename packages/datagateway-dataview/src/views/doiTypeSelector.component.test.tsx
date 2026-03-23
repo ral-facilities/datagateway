@@ -25,7 +25,9 @@ describe('DOI Type Selector', () => {
     type: React.ComponentProps<typeof DOITypeSelector>['type']
   ): RenderResult =>
     render(
-      <MemoryRouter>
+      <MemoryRouter
+        future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+      >
         <DOITypeSelector type={type} />
       </MemoryRouter>
     );

@@ -1,14 +1,14 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, type RenderResult } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
 import {
   Dataset,
   dGCommonInitialState,
   useDatasetDetails,
 } from 'datagateway-common';
-import { History, createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
-import { Router, generatePath } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, generatePath } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { paths } from '../../../page/pageContainer.component';
@@ -27,20 +27,42 @@ vi.mock('datagateway-common', async () => {
   };
 });
 
+vi.mock('../../../page/idCheckFunctions', () => ({
+  checkInstrumentId: vi.fn().mockResolvedValue(true),
+  checkInvestigationId: vi.fn().mockResolvedValue(true),
+  checkStudyDataPublicationId: vi.fn().mockResolvedValue(true),
+  checkInstrumentAndFacilityCycleId: vi.fn().mockResolvedValue(true),
+}));
+
 describe('ISIS Dataset Landing page', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
-  let history: History;
   let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult =>
     render(
       <Provider store={mockStore(state)}>
-        <Router history={history}>
+        <BrowserRouter
+          future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+        >
           <QueryClientProvider client={new QueryClient()}>
-            <ISISDatasetLanding datasetId="87" />
+            <Routes>
+              <Route
+                path={paths.dataPublications.landing.isisDatasetLanding}
+                element={<ISISDatasetLanding dataPublication={true} />}
+              />
+              <Route
+                path={paths.landing.isisDatasetLanding}
+                element={<ISISDatasetLanding dataPublication={false} />}
+              />
+              <Route path={paths.standard.isisDatafile} element={null} />
+              <Route
+                path={paths.dataPublications.standard.isisDatafile}
+                element={null}
+              />
+            </Routes>
           </QueryClientProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
 
@@ -69,21 +91,38 @@ describe('ISIS Dataset Landing page', () => {
       })
     );
     state.dgdataview.pluginHost = '/test/';
-    history = createMemoryHistory({
-      initialEntries: [
-        generatePath(paths.landing.isisDatasetLanding, {
-          instrumentId: '4',
-          investigationId: '1',
-          facilityCycleId: '5',
-          datasetId: '87',
-        }),
-      ],
-    });
+    window.history.replaceState(
+      {},
+      '',
+      generatePath(paths.landing.isisDatasetLanding, {
+        instrumentId: '4',
+        investigationId: '1',
+        facilityCycleId: '5',
+        datasetId: '87',
+      })
+    );
     user = userEvent.setup();
 
     vi.mocked(useDatasetDetails, { partial: true }).mockReturnValue({
       data: initialData,
     });
+
+    axios.get = vi
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/\/datapublications$/.test(url)) {
+          return Promise.resolve({
+            data: {
+              id: 1,
+              content: {
+                dataCollectionInvestigations: [{ investigation: { id: 1 } }],
+              },
+            },
+          });
+        }
+
+        return Promise.reject(`Endpoint not mocked: ${url}`);
+      });
   });
 
   afterEach(() => {
@@ -98,27 +137,33 @@ describe('ISIS Dataset Landing page', () => {
         await screen.findByRole('tab', { name: 'datasets.details.datafiles' })
       );
 
-      expect(history.location.pathname).toBe(
+      expect(window.location.pathname).toBe(
         '/browse/instrument/4/facilityCycle/5/investigation/1/dataset/87/datafile'
       );
     });
 
     it('for facility cycle hierarchy and cards view', async () => {
-      history.replace({ search: '?view=card' });
+      window.history.replaceState(
+        {},
+        '',
+        `${window.location.pathname}?view=card`
+      );
       renderComponent();
 
       await user.click(
         await screen.findByRole('tab', { name: 'datasets.details.datafiles' })
       );
 
-      expect(history.location.pathname).toBe(
+      expect(window.location.pathname).toBe(
         '/browse/instrument/4/facilityCycle/5/investigation/1/dataset/87/datafile'
       );
-      expect(history.location.search).toBe('?view=card');
+      expect(window.location.search).toBe('?view=card');
     });
 
     it('for data publication hierarchy and normal view', async () => {
-      history.replace(
+      window.history.replaceState(
+        {},
+        '',
         generatePath(paths.dataPublications.landing.isisDatasetLanding, {
           instrumentId: '4',
           investigationId: '1',
@@ -132,34 +177,32 @@ describe('ISIS Dataset Landing page', () => {
         await screen.findByRole('tab', { name: 'datasets.details.datafiles' })
       );
 
-      expect(history.location.pathname).toBe(
+      expect(window.location.pathname).toBe(
         '/browseDataPublications/instrument/4/dataPublication/5/investigation/1/dataset/87/datafile'
       );
     });
 
     it('for data publication hierarchy and cards view', async () => {
-      history.replace({
-        pathname: generatePath(
-          paths.dataPublications.landing.isisDatasetLanding,
-          {
-            instrumentId: '4',
-            investigationId: '1',
-            dataPublicationId: '5',
-            datasetId: '87',
-          }
-        ),
-        search: '?view=card',
-      });
+      window.history.replaceState(
+        {},
+        '',
+        `${generatePath(paths.dataPublications.landing.isisDatasetLanding, {
+          instrumentId: '4',
+          investigationId: '1',
+          dataPublicationId: '5',
+          datasetId: '87',
+        })}?view=card`
+      );
       renderComponent();
 
       await user.click(
         await screen.findByRole('tab', { name: 'datasets.details.datafiles' })
       );
 
-      expect(history.location.pathname).toBe(
+      expect(window.location.pathname).toBe(
         '/browseDataPublications/instrument/4/dataPublication/5/investigation/1/dataset/87/datafile'
       );
-      expect(history.location.search).toBe('?view=card');
+      expect(window.location.search).toBe('?view=card');
     });
   });
 
