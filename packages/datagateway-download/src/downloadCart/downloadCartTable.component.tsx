@@ -648,10 +648,8 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                           color="primary"
                           disabled={cartMintabilityLoading || !mintable}
                           component={RouterLink}
-                          to={{
-                            pathname: '/download/mint',
-                            state: { fromCart: true },
-                          }}
+                          to={'/download/mint'}
+                          state={{ fromCart: true }}
                         >
                           {t('downloadCart.generate_DOI')}
                         </Button>

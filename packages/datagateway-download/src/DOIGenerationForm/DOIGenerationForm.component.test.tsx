@@ -1,7 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   RenderResult,
-  act,
   render,
   screen,
   waitForElementToBeRemoved,
@@ -17,8 +16,7 @@ import {
   User,
   fetchDownloadCart,
 } from 'datagateway-common';
-import { MemoryHistory, createMemoryHistory } from 'history';
-import { Router } from 'react-router-dom';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import {
   deleteDraftDOI,
@@ -26,7 +24,6 @@ import {
   mintDraftCart,
   publishDraftDOI,
 } from '../downloadApi';
-import { flushPromises } from '../setupTests';
 import { mockCartItems, mockedSettings } from '../testData';
 import DOIGenerationForm from './DOIGenerationForm.component';
 
@@ -62,21 +59,30 @@ const createTestQueryClient = (): QueryClient =>
   });
 
 const renderComponent = (
-  history = createMemoryHistory({
-    initialEntries: [{ pathname: '/download/mint', state: { fromCart: true } }],
-  })
-): RenderResult & { history: MemoryHistory } => ({
-  history,
-  ...render(
+  initialEntries: React.ComponentProps<
+    typeof MemoryRouter
+  >['initialEntries'] = [
+    { pathname: '/download/mint', state: { fromCart: true } },
+  ]
+): RenderResult =>
+  render(
     <QueryClientProvider client={createTestQueryClient()}>
       <DownloadSettingsContext.Provider value={mockedSettings}>
-        <Router history={history}>
-          <DOIGenerationForm />
-        </Router>
+        <MemoryRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+          initialEntries={initialEntries}
+        >
+          <Routes>
+            <Route path="/download/mint" element={<DOIGenerationForm />} />
+            <Route
+              path="/download"
+              element={<div data-testid="mock-cart-page"></div>}
+            />
+          </Routes>
+        </MemoryRouter>
       </DownloadSettingsContext.Provider>
     </QueryClientProvider>
-  ),
-});
+  );
 
 describe('DOI generation form component', () => {
   let user: ReturnType<typeof userEvent.setup>;
@@ -255,13 +261,9 @@ describe('DOI generation form component', () => {
   });
 
   it('should redirect back to /download if user directly accesses the url', async () => {
-    const { history } = renderComponent(createMemoryHistory());
+    renderComponent(['/download/mint']);
 
-    await act(async () => {
-      await flushPromises();
-    });
-
-    expect(history.location).toMatchObject({ pathname: '/download' });
+    expect(await screen.findByTestId('mock-cart-page'));
   });
 
   it('should render the data policy before loading the form', async () => {

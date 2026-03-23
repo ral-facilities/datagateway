@@ -11,8 +11,7 @@ import {
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 import { fetchDownloadCart } from 'datagateway-common';
-import { MemoryHistory, createMemoryHistory } from 'history';
-import { Router } from 'react-router-dom';
+import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import {
   downloadPreparedCart,
@@ -55,25 +54,35 @@ const createTestQueryClient = (): QueryClient =>
     },
   });
 
-const renderComponent = (): RenderResult & { history: MemoryHistory } => {
-  const history = createMemoryHistory();
-  return {
-    history: history,
-    ...render(
-      <QueryClientProvider client={createTestQueryClient()}>
-        <DownloadSettingsContext.Provider value={mockedSettings}>
-          <Router history={history}>
-            <DownloadCartTable statusTabRedirect={vi.fn()} />
-          </Router>
-        </DownloadSettingsContext.Provider>
-      </QueryClientProvider>
-    ),
-  };
+// used to verify the location state is correct
+const MockMintPage = () => {
+  const { state } = useLocation();
+  return <div data-testid="mock-mint-page">{JSON.stringify(state)}</div>;
+};
+
+const renderComponent = (settings = mockedSettings): RenderResult => {
+  return render(
+    <QueryClientProvider client={createTestQueryClient()}>
+      <DownloadSettingsContext.Provider value={settings}>
+        <MemoryRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+          initialEntries={['/download']}
+        >
+          <Routes>
+            <Route
+              path="/download"
+              element={<DownloadCartTable statusTabRedirect={vi.fn()} />}
+            />
+            <Route path="/download/mint" element={<MockMintPage />} />
+          </Routes>
+        </MemoryRouter>
+      </DownloadSettingsContext.Provider>
+    </QueryClientProvider>
+  );
 };
 
 describe('Download cart table component', () => {
   let holder: HTMLElement | null;
-  let queryClient: QueryClient;
   let user: ReturnType<typeof userEvent.setup>;
   let mintabilityResponse: Promise<Partial<AxiosResponse>>;
 
@@ -86,7 +95,6 @@ describe('Download cart table component', () => {
 
   beforeEach(() => {
     user = userEvent.setup();
-    queryClient = new QueryClient();
 
     //https://stackoverflow.com/questions/43694975/jest-enzyme-using-mount-document-getelementbyid-returns-null-on-componen
     holder = document.createElement('div');
@@ -488,20 +496,10 @@ describe('Download cart table component', () => {
     ).toBeNull();
 
     resetDOM();
-    render(
-      <QueryClientProvider client={queryClient}>
-        <DownloadSettingsContext.Provider
-          value={{
-            ...mockedSettings,
-            totalSizeMax: 1,
-          }}
-        >
-          <Router history={createMemoryHistory()}>
-            <DownloadCartTable statusTabRedirect={vi.fn()} />
-          </Router>
-        </DownloadSettingsContext.Provider>
-      </QueryClientProvider>
-    );
+    renderComponent({
+      ...mockedSettings,
+      totalSizeMax: 1,
+    });
 
     expect(
       await screen.findByText(
@@ -511,20 +509,10 @@ describe('Download cart table component', () => {
     ).toBeTruthy();
 
     resetDOM();
-    render(
-      <QueryClientProvider client={queryClient}>
-        <DownloadSettingsContext.Provider
-          value={{
-            ...mockedSettings,
-            fileCountMax: 1,
-          }}
-        >
-          <Router history={createMemoryHistory()}>
-            <DownloadCartTable statusTabRedirect={vi.fn()} />
-          </Router>
-        </DownloadSettingsContext.Provider>
-      </QueryClientProvider>
-    );
+    renderComponent({
+      ...mockedSettings,
+      fileCountMax: 1,
+    });
 
     expect(
       await screen.findByText(
@@ -535,21 +523,11 @@ describe('Download cart table component', () => {
   });
 
   it('does not display error alerts if file/size limits are not set', async () => {
-    render(
-      <QueryClientProvider client={queryClient}>
-        <DownloadSettingsContext.Provider
-          value={{
-            ...mockedSettings,
-            fileCountMax: undefined,
-            totalSizeMax: undefined,
-          }}
-        >
-          <Router history={createMemoryHistory()}>
-            <DownloadCartTable statusTabRedirect={vi.fn()} />
-          </Router>
-        </DownloadSettingsContext.Provider>
-      </QueryClientProvider>
-    );
+    renderComponent({
+      ...mockedSettings,
+      fileCountMax: undefined,
+      totalSizeMax: undefined,
+    });
 
     await waitFor(() => {
       expect(
@@ -571,7 +549,7 @@ describe('Download cart table component', () => {
   });
 
   it('should go to DOI generation form when Generate DOI button is clicked', async () => {
-    const { history } = renderComponent();
+    renderComponent();
 
     const mintButton = await screen.findByRole('link', {
       name: 'downloadCart.generate_DOI',
@@ -580,17 +558,16 @@ describe('Download cart table component', () => {
 
     await user.click(mintButton);
 
-    expect(history.location).toMatchObject({
-      pathname: '/download/mint',
-      state: { fromCart: true },
-    });
+    expect(screen.getByTestId('mock-mint-page')).toHaveTextContent(
+      '{"fromCart":true}'
+    );
   });
 
   it('should disable Generate DOI button when mintability is loading', async () => {
     mintabilityResponse = new Promise((_) => {
       // do nothing, simulating pending promise to test loading state
     });
-    const { history } = renderComponent();
+    renderComponent();
 
     const generateDOIButton = screen
       .getByRole('link', { name: 'downloadCart.generate_DOI' })
@@ -605,10 +582,7 @@ describe('Download cart table component', () => {
 
     await user.click(generateDOIButton);
 
-    expect(history.location).not.toMatchObject({
-      pathname: '/download/mint',
-      state: { fromCart: true },
-    });
+    expect(screen.queryByTestId('mock-mint-page')).not.toBeInTheDocument();
   });
 
   it('should disable Generate DOI button when cart is not mintable', async () => {
@@ -621,7 +595,7 @@ describe('Download cart table component', () => {
     // have to assert here to suppress vitest complaining about the mintabilityResponse promise rejection
     await expect(mintabilityResponse).rejects.toThrow();
 
-    const { history } = renderComponent();
+    renderComponent();
 
     const generateDOIButton = screen
       .getByRole('link', { name: 'downloadCart.generate_DOI' })
@@ -645,10 +619,7 @@ describe('Download cart table component', () => {
 
     await user.click(generateDOIButton);
 
-    expect(history.location).not.toMatchObject({
-      pathname: '/download/mint',
-      state: { fromCart: true },
-    });
+    expect(screen.queryByTestId('mock-mint-page')).not.toBeInTheDocument();
 
     await user.unhover(generateDOIButton);
     for (const row of tableRows) {
