@@ -1,14 +1,12 @@
-import { StateType } from '../state/app.types';
-import { Provider } from 'react-redux';
-import configureStore from 'redux-mock-store';
-import SelectDates from './datePicker.component';
-import thunk from 'redux-thunk';
-import { Router } from 'react-router-dom';
-import { initialState } from '../state/reducers/dgsearch.reducer';
-import { createMemoryHistory, History } from 'history';
-import { render, type RenderResult, screen } from '@testing-library/react';
+import { render, screen, type RenderResult } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { MockInstance } from 'vitest';
+import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { StateType } from '../state/app.types';
+import { initialState } from '../state/reducers/dgsearch.reducer';
+import SelectDates from './datePicker.component';
 
 vi.mock('loglevel');
 
@@ -16,23 +14,22 @@ describe('DatePicker component tests', () => {
   let state: StateType;
   const mockStore = configureStore([thunk]);
   let testStore: ReturnType<typeof mockStore>;
-  let history: History;
-  let pushSpy: MockInstance;
 
   const testInitiateSearch = vi.fn();
 
-  const renderComponent = (h: History = history): RenderResult =>
+  const renderComponent = (): RenderResult =>
     render(
       <Provider store={testStore}>
-        <Router history={h}>
+        <BrowserRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+        >
           <SelectDates initiateSearch={testInitiateSearch} />
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
 
   beforeEach(() => {
-    history = createMemoryHistory();
-    pushSpy = vi.spyOn(history, 'push');
+    window.history.replaceState({}, '', '/');
 
     state = JSON.parse(JSON.stringify({ dgsearch: initialState }));
 
@@ -55,7 +52,9 @@ describe('DatePicker component tests', () => {
   });
 
   it('renders correctly', async () => {
-    history.replace(
+    window.history.replaceState(
+      {},
+      '',
       '/?searchText=&investigation=false&startDate=2021-10-26&endDate=2021-10-28'
     );
 
@@ -81,7 +80,7 @@ describe('DatePicker component tests', () => {
     });
 
     it('pushes URL with new start date value when user types number into Start Date input', async () => {
-      history.replace('/?searchText=&investigation=false');
+      window.history.replaceState({}, '', '/?searchText=&investigation=false');
 
       renderComponent();
       const startDateInput = await screen.findByRole('textbox', {
@@ -90,11 +89,13 @@ describe('DatePicker component tests', () => {
 
       await user.type(startDateInput, '2012-01-01');
 
-      expect(pushSpy).toHaveBeenCalledWith('?startDate=2012-01-01');
+      expect(window.location.search).toContain('startDate=2012-01-01');
     });
 
     it('initiates search with valid start and end dates', async () => {
-      history.replace(
+      window.history.replaceState(
+        {},
+        '',
         '/?searchText=&investigation=false&startDate=2012-01-01&endDate=2013-01-01'
       );
 
@@ -109,7 +110,11 @@ describe('DatePicker component tests', () => {
     });
 
     it('initiates search with valid start date and empty end date', async () => {
-      history.replace('/?searchText=&investigation=false&startDate=2012-01-01');
+      window.history.replaceState(
+        {},
+        '',
+        '/?searchText=&investigation=false&startDate=2012-01-01'
+      );
 
       renderComponent();
       const startDateInput = await screen.findByRole('textbox', {
@@ -122,7 +127,11 @@ describe('DatePicker component tests', () => {
     });
 
     it('initiates search with valid end date and empty start date', async () => {
-      history.replace('/?searchText=&investigation=false&endDate=2012-01-01');
+      window.history.replaceState(
+        {},
+        '',
+        '/?searchText=&investigation=false&endDate=2012-01-01'
+      );
 
       renderComponent();
       const startDateInput = await screen.findByRole('textbox', {
@@ -135,7 +144,7 @@ describe('DatePicker component tests', () => {
     });
 
     it('initiates search with empty start and end dates', async () => {
-      history.replace('/?searchText=&investigation=false');
+      window.history.replaceState({}, '', '/?searchText=&investigation=false');
 
       renderComponent();
       const startDateInput = await screen.findByRole('textbox', {
@@ -149,7 +158,7 @@ describe('DatePicker component tests', () => {
 
     // In v6, date pickers don't allow invalid dates to be entered
     it('displays error message when an invalid date is entered', async () => {
-      history.replace('/?searchText=&investigation=false');
+      window.history.replaceState({}, '', '/?searchText=&investigation=false');
 
       renderComponent();
       const startDateInput = await screen.findByRole('textbox', {
@@ -164,7 +173,7 @@ describe('DatePicker component tests', () => {
     });
 
     it('displays error message when a date after the maximum date is entered', async () => {
-      history.replace('/?searchText=&investigation=false');
+      window.history.replaceState({}, '', '/?searchText=&investigation=false');
 
       renderComponent();
       const startDateInput = await screen.findByRole('textbox', {
@@ -179,7 +188,11 @@ describe('DatePicker component tests', () => {
     });
 
     it('displays error message when a date after the end date is entered', async () => {
-      history.replace('/?searchText=&investigation=false&endDate=2011-11-21');
+      window.history.replaceState(
+        {},
+        '',
+        '/?searchText=&investigation=false&endDate=2011-11-21'
+      );
 
       renderComponent();
       const startDateInput = await screen.findByRole('textbox', {
@@ -199,7 +212,11 @@ describe('DatePicker component tests', () => {
     });
 
     it('invalid date in URL is ignored', async () => {
-      history.replace('/?searchText=&investigation=false&startDate=2011-14-21');
+      window.history.replaceState(
+        {},
+        '',
+        '/?searchText=&investigation=false&startDate=2011-14-21'
+      );
 
       renderComponent();
       const startDateInput = await screen.findByRole('textbox', {
@@ -218,7 +235,7 @@ describe('DatePicker component tests', () => {
     });
 
     it('pushes URL with new end date value when user types number into Start Date input', async () => {
-      history.replace('/?searchText=&investigation=false');
+      window.history.replaceState({}, '', '/?searchText=&investigation=false');
 
       renderComponent();
       const endDateInput = await screen.findByRole('textbox', {
@@ -227,11 +244,13 @@ describe('DatePicker component tests', () => {
 
       await user.type(endDateInput, '2000 01 01');
 
-      expect(pushSpy).toHaveBeenCalledWith('?endDate=2000-01-01');
+      expect(window.location.search).toContain('endDate=2000-01-01');
     });
 
     it('initiates search with valid start and end dates', async () => {
-      history.replace(
+      window.history.replaceState(
+        {},
+        '',
         '/?searchText=&investigation=false&startDate=2012-01-01&endDate=2013-01-01'
       );
 
@@ -246,7 +265,11 @@ describe('DatePicker component tests', () => {
     });
 
     it('initiates search with valid start date and empty end date', async () => {
-      history.replace('/?searchText=&investigation=false&startDate=2012-01-01');
+      window.history.replaceState(
+        {},
+        '',
+        '/?searchText=&investigation=false&startDate=2012-01-01'
+      );
 
       renderComponent();
       const endDateInput = await screen.findByRole('textbox', {
@@ -259,7 +282,11 @@ describe('DatePicker component tests', () => {
     });
 
     it('initiates search with valid end date and empty start date', async () => {
-      history.replace('/?searchText=&investigation=false&endDate=2012-01-01');
+      window.history.replaceState(
+        {},
+        '',
+        '/?searchText=&investigation=false&endDate=2012-01-01'
+      );
 
       renderComponent();
       const endDateInput = await screen.findByRole('textbox', {
@@ -272,7 +299,7 @@ describe('DatePicker component tests', () => {
     });
 
     it('initiates search with empty start and end dates', async () => {
-      history.replace('/?searchText=&investigation=false');
+      window.history.replaceState({}, '', '/?searchText=&investigation=false');
 
       renderComponent();
       const endDateInput = await screen.findByRole('textbox', {
@@ -286,7 +313,7 @@ describe('DatePicker component tests', () => {
 
     // In v6, date pickers don't allow invalid dates to be entered
     it('displays error message when an invalid date is entered', async () => {
-      history.replace('/?searchText=&investigation=false');
+      window.history.replaceState({}, '', '/?searchText=&investigation=false');
 
       renderComponent();
       const endDateInput = await screen.findByRole('textbox', {
@@ -301,7 +328,7 @@ describe('DatePicker component tests', () => {
     });
 
     it('displays error message when a date before the minimum date is entered', async () => {
-      history.replace('/?searchText=&investigation=false');
+      window.history.replaceState({}, '', '/?searchText=&investigation=false');
 
       renderComponent();
       const endDateInput = await screen.findByRole('textbox', {
@@ -316,7 +343,11 @@ describe('DatePicker component tests', () => {
     });
 
     it('displays error message when a date before the start date is entered', async () => {
-      history.replace('/?searchText=&investigation=false&startDate=2011-11-21');
+      window.history.replaceState(
+        {},
+        '',
+        '/?searchText=&investigation=false&startDate=2011-11-21'
+      );
 
       renderComponent();
       const endDateInput = await screen.findByRole('textbox', {
@@ -336,7 +367,11 @@ describe('DatePicker component tests', () => {
     });
 
     it('invalid date in URL is ignored', async () => {
-      history.replace('/?searchText=&investigation=false&endDate=2011-14-21');
+      window.history.replaceState(
+        {},
+        '',
+        '/?searchText=&investigation=false&endDate=2011-14-21'
+      );
 
       renderComponent();
       const endDateInput = await screen.findByRole('textbox', {

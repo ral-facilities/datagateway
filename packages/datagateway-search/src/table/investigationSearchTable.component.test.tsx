@@ -15,9 +15,8 @@ import {
   type SearchResponse,
   type SearchResult,
 } from 'datagateway-common';
-import { createMemoryHistory, type History } from 'history';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {
@@ -36,7 +35,6 @@ describe('Investigation Search Table component', () => {
   const mockStore = configureStore([thunk]);
   let container: HTMLDivElement;
   let state: StateType;
-  let history: History;
   let user: ReturnType<typeof userEvent.setup>;
   let queryClient: QueryClient;
 
@@ -47,11 +45,13 @@ describe('Investigation Search Table component', () => {
   const renderComponent = (hierarchy?: string): RenderResult => {
     return render(
       <Provider store={mockStore(state)}>
-        <Router history={history}>
+        <BrowserRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+        >
           <QueryClientProvider client={queryClient}>
             <InvestigationSearchTable hierarchy={hierarchy ?? ''} />
           </QueryClientProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>,
       {
         container: document.body.appendChild(container),
@@ -118,11 +118,11 @@ describe('Investigation Search Table component', () => {
   beforeEach(() => {
     user = userEvent.setup();
 
-    history = createMemoryHistory({
-      initialEntries: [
-        { search: 'searchText=test search&currentTab=investigation' },
-      ],
-    });
+    window.history.replaceState(
+      {},
+      '',
+      '/search/data?searchText=test search&currentTab=investigation'
+    );
     queryClient = new QueryClient({
       defaultOptions: {
         queries: { retry: false },
@@ -193,10 +193,13 @@ describe('Investigation Search Table component', () => {
   });
 
   it('disables the search query if investigation search is disabled', async () => {
-    const searchParams = new URLSearchParams(history.location.search);
+    const searchParams = new URLSearchParams(window.location.search);
     searchParams.append('investigation', 'false');
-    history.replace({ search: `?${searchParams.toString()}` });
-
+    window.history.replaceState(
+      {},
+      '',
+      `${window.location.pathname}?${searchParams.toString()}`
+    );
     renderComponent();
 
     // check that column headers are shown correctly.
@@ -522,15 +525,18 @@ describe('Investigation Search Table component', () => {
   });
 
   it('applies filters already present in the URL on first render', async () => {
-    const searchParams = new URLSearchParams(history.location.search);
+    const searchParams = new URLSearchParams(window.location.search);
     searchParams.append(
       'filters',
       JSON.stringify({
         'Investigation.type.name': ['experiment'],
       })
     );
-    history.replace({ search: `?${searchParams.toString()}` });
-
+    window.history.replaceState(
+      {},
+      '',
+      `${window.location.pathname}?${searchParams.toString()}`
+    );
     renderComponent();
 
     // when filters are applied
@@ -565,15 +571,18 @@ describe('Investigation Search Table component', () => {
   });
 
   it('allows filters to be removed through the facet filter panel', async () => {
-    const searchParams = new URLSearchParams(history.location.search);
+    const searchParams = new URLSearchParams(window.location.search);
     searchParams.append(
       'filters',
       JSON.stringify({
         'Investigation.type.name': ['experiment'],
       })
     );
-    history.replace({ search: `?${searchParams.toString()}` });
-
+    window.history.replaceState(
+      {},
+      '',
+      `${window.location.pathname}?${searchParams.toString()}`
+    );
     renderComponent();
 
     const selectedFilterChips = await screen.findByLabelText('selectedFilters');
@@ -633,15 +642,18 @@ describe('Investigation Search Table component', () => {
   });
 
   it('allows filters to be removed by removing filter chips', async () => {
-    const searchParams = new URLSearchParams(history.location.search);
+    const searchParams = new URLSearchParams(window.location.search);
     searchParams.append(
       'filters',
       JSON.stringify({
         'Investigation.type.name': ['calibration'],
       })
     );
-    history.replace({ search: `?${searchParams.toString()}` });
-
+    window.history.replaceState(
+      {},
+      '',
+      `${window.location.pathname}?${searchParams.toString()}`
+    );
     renderComponent();
 
     // when filters are applied
@@ -818,7 +830,7 @@ describe('Investigation Search Table component', () => {
       })
     );
 
-    expect(history.location.pathname).toBe(
+    expect(window.location.pathname).toBe(
       '/browse/instrument/3/facilityCycle/5/investigation/1/dataset'
     );
   });

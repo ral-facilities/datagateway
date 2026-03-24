@@ -28,7 +28,9 @@ function renderComponent({
 }): RenderResult {
   return render(
     <Provider store={configureStore([thunk])(initialState)}>
-      <MemoryRouter>
+      <MemoryRouter
+        future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+      >
         <AdvancedHelpDialog />
       </MemoryRouter>
     </Provider>

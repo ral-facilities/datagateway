@@ -36,7 +36,7 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import FacetPanel from '../facet/components/facetPanel/facetPanel.component';
 import SelectedFilterChips from '../facet/components/selectedFilterChips.component';
 import { facetClassificationFromSearchResponses } from '../facet/facet';
@@ -62,7 +62,7 @@ const InvestigationCardView: React.FC<InvestigationCardProps> = (props) => {
 
   const [t] = useTranslation();
   const location = useLocation();
-  const { push } = useHistory();
+  const navigate = useNavigate();
 
   const queryParams = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -78,8 +78,8 @@ const InvestigationCardView: React.FC<InvestigationCardProps> = (props) => {
     restrict,
     investigation,
     currentTab,
+    searchText,
   } = queryParams;
-  const searchText = queryParams.searchText ? queryParams.searchText : '';
 
   const handleSort = useSort();
   const pushFilter = usePushInvestigationFilter();
@@ -98,7 +98,7 @@ const InvestigationCardView: React.FC<InvestigationCardProps> = (props) => {
     useLuceneSearchInfinite(
       'Investigation',
       {
-        searchText,
+        searchText: searchText ?? '',
         startDate,
         endDate,
         sort,
@@ -122,7 +122,7 @@ const InvestigationCardView: React.FC<InvestigationCardProps> = (props) => {
         ],
       },
       currentTab === 'investigation' ? filters : {},
-      { enabled: investigation }
+      { enabled: investigation && searchText !== null }
     );
 
   function mapSource(response: SearchResponse): SearchResultSource[] {
@@ -323,7 +323,7 @@ const InvestigationCardView: React.FC<InvestigationCardProps> = (props) => {
             <ISISInvestigationDetailsPanel
               rowData={investigation}
               viewDatasets={() => {
-                if (url) push(url);
+                if (url) navigate(url);
               }}
             />
           );
@@ -336,7 +336,7 @@ const InvestigationCardView: React.FC<InvestigationCardProps> = (props) => {
           return <InvestigationDetailsPanel rowData={investigation} />;
       }
     },
-    [hierarchy, push]
+    [hierarchy, navigate]
   );
 
   const removeFilterChip = (

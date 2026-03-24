@@ -10,9 +10,8 @@ import {
   SearchResultSource,
   dGCommonInitialState,
 } from 'datagateway-common';
-import { MemoryHistory, createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../state/app.types';
@@ -24,17 +23,18 @@ describe('Dataset - Card View', () => {
   let cardData: SearchResultSource;
   let searchResult: SearchResult;
   let searchResponse: SearchResponse;
-  let history: MemoryHistory;
   let queryClient: QueryClient;
 
   function renderComponent({ hierarchy = '' } = {}): RenderResult {
     return render(
       <Provider store={configureStore([thunk])(state)}>
-        <Router history={history}>
+        <BrowserRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+        >
           <QueryClientProvider client={queryClient}>
             <DatasetSearchCardView hierarchy={hierarchy} />
           </QueryClientProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
   }
@@ -93,14 +93,11 @@ describe('Dataset - Card View', () => {
     searchResponse = {
       results: [searchResult],
     };
-    history = createMemoryHistory({
-      initialEntries: [
-        {
-          pathname: '/search/data',
-          search: '?currentTab=dataset',
-        },
-      ],
-    });
+    window.history.replaceState(
+      {},
+      '',
+      '/search/data?searchText=test search&currentTab=dataset'
+    );
     queryClient = new QueryClient({
       defaultOptions: {
         queries: { retry: false },
@@ -124,9 +121,13 @@ describe('Dataset - Card View', () => {
   });
 
   it('disables the search query if dataset search is disabled', async () => {
-    const searchParams = new URLSearchParams(history.location.search);
+    const searchParams = new URLSearchParams(window.location.search);
     searchParams.append('dataset', 'false');
-    history.replace({ search: `?${searchParams.toString()}` });
+    window.history.replaceState(
+      {},
+      '',
+      `${window.location.pathname}?${searchParams.toString()}`
+    );
 
     renderComponent();
 
@@ -353,7 +354,7 @@ describe('Dataset - Card View', () => {
       within(panel).getByRole('tab', { name: 'datasets.details.datafiles' })
     );
 
-    expect(history.location.pathname).toBe(
+    expect(window.location.pathname).toBe(
       '/browse/instrument/4/facilityCycle/6/investigation/2/dataset/1/datafile'
     );
   });

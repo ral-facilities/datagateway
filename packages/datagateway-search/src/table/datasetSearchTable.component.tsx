@@ -27,7 +27,7 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import type { IndexRange, TableCellProps } from 'react-virtualized';
 import FacetPanel from '../facet/components/facetPanel/facetPanel.component';
 import SelectedFilterChips from '../facet/components/selectedFilterChips.component';
@@ -42,7 +42,7 @@ interface DatasetTableProps {
 
 const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
   const location = useLocation();
-  const { push } = useHistory();
+  const navigate = useNavigate();
   const queryParams = React.useMemo(
     () => parseSearchToQuery(location.search),
     [location.search]
@@ -95,7 +95,7 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
       },
       currentTab === 'dataset' ? filters : {},
       {
-        enabled: dataset,
+        enabled: dataset && searchText !== null,
         // this select removes the facet count for the InvestigationInstrument.instrument.name
         // facet since the number is confusing for datafiles
         select: (data) => ({
@@ -352,7 +352,7 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
                 rowData={rowData}
                 detailsPanelResize={detailsPanelResize}
                 viewDatafiles={() => {
-                  if (url) push(url);
+                  if (url) navigate(url);
                 }}
               />
             );
@@ -375,7 +375,7 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
             );
         }
       },
-      [hierarchy, push]
+      [hierarchy, navigate]
     );
 
   if (currentTab !== 'dataset') return null;

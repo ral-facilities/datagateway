@@ -11,9 +11,8 @@ import {
   StateType,
   dGCommonInitialState,
 } from 'datagateway-common';
-import { MemoryHistory, createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
@@ -24,17 +23,18 @@ describe('Investigation - Card View', () => {
   let cardData: SearchResultSource;
   let searchResult: SearchResult;
   let searchResponse: SearchResponse;
-  let history: MemoryHistory;
   let queryClient: QueryClient;
 
   function renderComponent({ hierarchy = '' } = {}): RenderResult {
     return render(
       <Provider store={configureStore([thunk])(state)}>
-        <Router history={history}>
+        <BrowserRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+        >
           <QueryClientProvider client={queryClient}>
             <InvestigationSearchCardView hierarchy={hierarchy} />
           </QueryClientProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
   }
@@ -99,11 +99,12 @@ describe('Investigation - Card View', () => {
     searchResponse = {
       results: [searchResult],
     };
-    history = createMemoryHistory({
-      initialEntries: [
-        { search: 'searchText=test search&currentTab=investigation' },
-      ],
-    });
+    window.history.replaceState(
+      {},
+      '',
+      '/search/data?searchText=test search&currentTab=investigation'
+    );
+
     queryClient = new QueryClient({
       defaultOptions: {
         queries: { retry: false },
@@ -126,9 +127,13 @@ describe('Investigation - Card View', () => {
   });
 
   it('disables the search query if investigation search is disabled', async () => {
-    const searchParams = new URLSearchParams(history.location.search);
+    const searchParams = new URLSearchParams(window.location.search);
     searchParams.append('investigation', 'false');
-    history.replace({ search: `?${searchParams.toString()}` });
+    window.history.replaceState(
+      {},
+      '',
+      `${window.location.pathname}?${searchParams.toString()}`
+    );
 
     renderComponent();
 
@@ -294,7 +299,7 @@ describe('Investigation - Card View', () => {
     );
 
     await waitFor(() => {
-      expect(history.location.pathname).toBe(
+      expect(window.location.pathname).toBe(
         '/browse/instrument/4/facilityCycle/6/investigation/1/dataset'
       );
     });

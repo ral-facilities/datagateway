@@ -1,11 +1,11 @@
-import React from 'react';
 import {
   FiltersType,
   parseSearchToQuery,
   SearchFilter,
 } from 'datagateway-common';
-import { useHistory, useLocation } from 'react-router-dom';
 import isEqual from 'lodash.isequal';
+import React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function useFacetFilters(): {
   selectedFacetFilters: FiltersType;
@@ -23,7 +23,7 @@ function useFacetFilters(): {
   haveUnappliedFilters: boolean;
 } {
   const location = useLocation();
-  const { push } = useHistory();
+  const navigate = useNavigate();
   const { filters } = React.useMemo(
     () => parseSearchToQuery(location.search),
     [location.search]
@@ -104,8 +104,8 @@ function useFacetFilters(): {
   const applyFacetFilters = React.useCallback((): void => {
     const searchParams = new URLSearchParams(location.search);
     searchParams.set('filters', JSON.stringify(selectedFacetFilters));
-    push({ search: `?${searchParams.toString()}` });
-  }, [location.search, push, selectedFacetFilters]);
+    navigate({ search: `?${searchParams.toString()}` });
+  }, [location.search, navigate, selectedFacetFilters]);
 
   React.useEffect(() => {
     setSelectedFacetFilters(filters);

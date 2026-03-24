@@ -24,7 +24,9 @@ describe('SearchBoxContainer - Tests', () => {
   ): RenderResult {
     return render(
       <Provider store={configureStore([thunk])(state)}>
-        <MemoryRouter>
+        <MemoryRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+        >
           <SearchBoxContainer
             restrict={false}
             initiateSearch={vi.fn()}
@@ -117,7 +119,9 @@ describe('SearchBoxContainerSide - Tests', () => {
   ): RenderResult {
     return render(
       <Provider store={configureStore([thunk])(state)}>
-        <MemoryRouter>
+        <MemoryRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+        >
           <SearchBoxContainerSide
             restrict={false}
             initiateSearch={vi.fn()}

@@ -133,7 +133,9 @@ class App extends React.Component<unknown, { hasError: boolean }> {
       return (
         <div className="App">
           <Provider store={this.store}>
-            <BrowserRouter>
+            <BrowserRouter
+              future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+            >
               <QueryClientProvider client={queryClient}>
                 <QueryClientSettingsUpdaterRedux queryClient={queryClient} />
                 <DGThemeProvider>
