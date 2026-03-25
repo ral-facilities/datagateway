@@ -81,15 +81,10 @@ describe('DLS - All DOIs Table', () => {
   it('should be able to sort by all sort directions on single and multiple columns', () => {
     cy.contains('User-created DOI').click();
 
-    //Revert the default sort
-    cy.contains('[role="button"]', 'Publication Date')
-      .as('dateSortButton')
-      .click();
-
     // ascending order
     cy.contains('[role="button"]', 'Title').as('titleSortButton').click();
 
-    cy.get('[aria-sort="ascending"]').should('exist');
+    cy.contains('[aria-sort="ascending"]', 'Title').should('exist');
     cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
     cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
       'Test DOI Title 1'

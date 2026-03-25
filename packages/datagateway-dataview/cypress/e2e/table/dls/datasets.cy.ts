@@ -50,8 +50,11 @@ describe('DLS - Datasets Table', () => {
 
   it('should be able to sort by all sort directions on single and multiple columns', () => {
     // Revert the default sort
+    cy.contains('[aria-sort="ascending"]', 'Name').should('exist');
     cy.contains('[role="button"]', 'Name').as('nameSortButton').click();
+    cy.contains('[aria-sort="descending"]', 'Name').should('exist');
     cy.get('@nameSortButton').click();
+    cy.contains('[aria-sort]', 'Name').should('not.exist');
 
     // ascending order
     cy.get('@nameSortButton').click();
@@ -98,20 +101,19 @@ describe('DLS - Datasets Table', () => {
 
     // should replace previous sort when clicked without shift
     cy.contains('[role="button"]', 'Modified Time').click();
+    cy.contains('[aria-sort="ascending"]', 'Modified Time').should('exist');
     cy.contains('[role="button"]', 'Modified Time').click();
-    cy.get('[aria-sort="descending"]').should('have.length', 1);
+    cy.contains('[aria-sort="descending"]', 'Modified Time').should('exist');
     cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 61');
   });
 
   it('should change icons when sorting on a column', () => {
-    // clear default sort
-    cy.contains('[role="button"]', 'Name').click();
-    cy.contains('[role="button"]', 'Name').click();
-
-    cy.get('[data-testid="SortIcon"]').should('have.length', 5);
+    cy.get('[data-testid="SortIcon"]').should('have.length', 4);
 
     // check icon when clicking on a column
     cy.contains('[role="button"]', 'Create Time').click();
+
+    cy.contains('[aria-sort="ascending"]', 'Create Time').should('exist');
     cy.get('[data-testid="ArrowDownwardIcon"]').should('have.length', 1);
     cy.get('.MuiTableSortLabel-iconDirectionAsc').should('exist');
 

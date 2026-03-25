@@ -53,17 +53,11 @@ describe('ISIS - Datafiles Table', () => {
   });
 
   it('should be able to sort by all sort directions on single and multiple columns', () => {
-    //Revert the default sort
-    cy.contains('[role="button"]', 'Modified Time')
-      .as('timeSortButton')
-      .click();
-    cy.wait('@datafilesOrder', { timeout: 10000 });
-
     // ascending order
     cy.contains('[role="button"]', 'Location').as('locationSortButton').click();
     cy.wait('@datafilesOrder', { timeout: 10000 });
 
-    cy.get('[aria-sort="ascending"]').should('exist');
+    cy.contains('[aria-sort="ascending"]', 'Location').should('exist');
     cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
     cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
       '/add/go/interview.png'
@@ -97,7 +91,7 @@ describe('ISIS - Datafiles Table', () => {
     );
 
     // multiple columns (shift click)
-    cy.get('@timeSortButton').click();
+    cy.contains('[role="button"]', 'Modified Time').click();
     cy.wait('@datafilesOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'Name')
       .as('nameSortButton')
@@ -117,14 +111,12 @@ describe('ISIS - Datafiles Table', () => {
   });
 
   it('should change icons when sorting on a column', () => {
-    // clear default sort
-    cy.contains('[role="button"]', 'Name').click();
-    cy.contains('[role="button"]', 'Name').click();
-
-    cy.get('[data-testid="SortIcon"]').should('have.length', 4);
+    cy.get('[data-testid="SortIcon"]').should('have.length', 3);
 
     // check icon when clicking on a column
     cy.contains('[role="button"]', 'Location').click();
+
+    cy.contains('[aria-sort="ascending"]', 'Location').should('exist');
     cy.get('[data-testid="ArrowDownwardIcon"]').should('have.length', 1);
     cy.get('.MuiTableSortLabel-iconDirectionAsc').should('exist');
 
