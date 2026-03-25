@@ -110,7 +110,6 @@ describe('ISIS - Datafiles Table', () => {
 
     // should replace previous sort when clicked without shift
     cy.contains('[role="button"]', 'Location').click();
-    cy.wait('@datafilesOrder', { timeout: 10000 });
     cy.get('[aria-sort="ascending"]').should('have.length', 1);
     cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
       '/add/go/interview.png'

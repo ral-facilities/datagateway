@@ -104,6 +104,11 @@ describe('DLS - Datafiles Table', () => {
 
     // check icon when clicking on a column
     cy.contains('[role="button"]', 'Location').click();
+
+    // wait for data to load as going to quick gives false positive due to the default sort still existing
+    cy.get('[role="progressbar"]').should('exist');
+    cy.get('[role="progressbar"]').should('not.exist');
+
     cy.get('[data-testid="ArrowDownwardIcon"]').should('have.length', 1);
     cy.get('.MuiTableSortLabel-iconDirectionAsc').should('exist');
 

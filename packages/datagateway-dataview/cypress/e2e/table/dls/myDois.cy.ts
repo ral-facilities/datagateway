@@ -221,6 +221,10 @@ describe('DLS - MyDOIs Table', () => {
         cy.title().should('equal', 'DataGateway DataView');
         cy.get('#datagateway-dataview').should('be.visible');
 
+        // wait for default sort to get applied before changing the DOI type
+        // which also updates the URL and can cause a race condition
+        cy.get('[aria-sort="descending"]').should('exist');
+
         cy.contains('Am listed on the session DOI').click();
 
         //Default sort

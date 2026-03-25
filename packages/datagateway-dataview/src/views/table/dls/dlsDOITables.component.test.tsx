@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
+  act,
   render,
   screen,
   within,
@@ -26,6 +27,7 @@ import {
   findColumnHeaderByName,
   findColumnIndexByName,
   findRowAt,
+  flushPromises,
 } from '../../../setupTests';
 import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
@@ -188,7 +190,10 @@ describe('DLS DOI table components', () => {
         },
       ];
       expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
-      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
+      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(
+        filterParams,
+        true
+      );
 
       const rows = await findAllRows();
       expect(rows).toHaveLength(2);
@@ -277,7 +282,10 @@ describe('DLS DOI table components', () => {
         },
       ];
       expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
-      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
+      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(
+        filterParams,
+        true
+      );
     });
 
     it('supplies the correct filter params for session doiType', async () => {
@@ -299,7 +307,10 @@ describe('DLS DOI table components', () => {
         },
       ];
       expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
-      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
+      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(
+        filterParams,
+        true
+      );
     });
 
     it('supplies the correct filter params for openSession doiType', async () => {
@@ -321,7 +332,10 @@ describe('DLS DOI table components', () => {
         },
       ];
       expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
-      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
+      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(
+        filterParams,
+        true
+      );
     });
 
     it('supplies the correct filter params for closedSession doiType', async () => {
@@ -343,7 +357,10 @@ describe('DLS DOI table components', () => {
         },
       ];
       expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
-      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
+      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(
+        filterParams,
+        true
+      );
     });
 
     it('updates filter query params on text filter', async () => {
@@ -388,6 +405,27 @@ describe('DLS DOI table components', () => {
       await user.keyboard('{Delete}');
 
       expect(window.location.search).not.toContain('filters=');
+    });
+
+    it('uses default sort', async () => {
+      renderComponent();
+
+      await act(async () => {
+        await flushPromises();
+      });
+
+      expect(await screen.findAllByRole('gridcell')).toBeTruthy();
+
+      expect(window.location.search).toBe(
+        `?sort=${encodeURIComponent('{"publicationDate":"desc"}')}`
+      );
+
+      // check that the data hook is only called once with the query enabled
+      expect(
+        vi
+          .mocked(useDataPublicationsInfinite)
+          .mock.calls.filter((call) => call[1] === true)
+      ).toHaveLength(1);
     });
 
     it('updates sort query params on sort', async () => {
@@ -443,7 +481,10 @@ describe('DLS DOI table components', () => {
       ];
 
       expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
-      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
+      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(
+        filterParams,
+        true
+      );
 
       const rows = await findAllRows();
       expect(rows).toHaveLength(2);
@@ -526,7 +567,10 @@ describe('DLS DOI table components', () => {
         },
       ];
       expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
-      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
+      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(
+        filterParams,
+        true
+      );
     });
 
     it('supplies the correct filter params for openSession doiType', async () => {
@@ -542,7 +586,10 @@ describe('DLS DOI table components', () => {
         },
       ];
       expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
-      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
+      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(
+        filterParams,
+        true
+      );
     });
 
     it('supplies the correct filter params for closedSession doiType', async () => {
@@ -558,7 +605,10 @@ describe('DLS DOI table components', () => {
         },
       ];
       expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
-      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
+      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(
+        filterParams,
+        true
+      );
     });
   });
 });

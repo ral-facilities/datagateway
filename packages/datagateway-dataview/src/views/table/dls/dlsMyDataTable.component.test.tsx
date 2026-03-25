@@ -219,6 +219,13 @@ describe('DLS MyData table component', () => {
     expect(window.location.search).toContain(
       `sort=${encodeURIComponent(JSON.stringify({ startDate: 'desc' }))}`
     );
+
+    // check that the data hook is only called once with the query enabled
+    expect(
+      vi
+        .mocked(useInvestigationsInfinite)
+        .mock.calls.filter((call) => call[2] === true)
+    ).toHaveLength(1);
   });
 
   it('updates filter query params on text filter', async () => {
