@@ -109,11 +109,11 @@ const DLSDataPublicationContentTable = (
           filterComponent: textFilter,
           cellContentRenderer: (cellProps: TableCellProps) =>
             tableLink(
-              {
-                pathname: `/redirect/DLS/investigation/id/${cellProps.rowData.id}`,
-                state: { fromDataPublication: true },
-              },
-              cellProps.rowData.visitId
+              `/redirect/DLS/investigation/id/${cellProps.rowData.id}`,
+              cellProps.rowData.visitId,
+              undefined,
+              undefined,
+              { fromDataPublication: true }
             ),
         },
         {
@@ -160,11 +160,11 @@ const DLSDataPublicationContentTable = (
           filterComponent: textFilter,
           cellContentRenderer: (cellProps: TableCellProps) =>
             tableLink(
-              {
-                pathname: `/redirect/DLS/dataset/id/${cellProps.rowData.id}`,
-                state: { fromDataPublication: true },
-              },
-              cellProps.rowData.name
+              `/redirect/DLS/dataset/id/${cellProps.rowData.id}`,
+              cellProps.rowData.name,
+              undefined,
+              undefined,
+              { fromDataPublication: true }
             ),
         },
         {
@@ -202,11 +202,11 @@ const DLSDataPublicationContentTable = (
           filterComponent: textFilter,
           cellContentRenderer: (cellProps: TableCellProps) =>
             tableLink(
-              {
-                pathname: `/redirect/DLS/datafile/id/${cellProps.rowData.id}`,
-                state: { fromDataPublication: true },
-              },
-              cellProps.rowData.name
+              `/redirect/DLS/datafile/id/${cellProps.rowData.id}`,
+              cellProps.rowData.name,
+              undefined,
+              undefined,
+              { fromDataPublication: true }
             ),
         },
         {

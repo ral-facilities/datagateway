@@ -69,12 +69,14 @@ export function tableLink(
   linkLocation: React.ComponentProps<typeof RouterLink>['to'],
   linkText: string,
   view?: ViewsType,
-  testid?: string
+  testid?: string,
+  linkState?: React.ComponentProps<typeof RouterLink>['state']
 ): React.ReactElement {
   return (
     <Link
       component={RouterLink}
       to={appendView(linkLocation, view)}
+      state={linkState}
       data-testid={testid}
     >
       {linkText}

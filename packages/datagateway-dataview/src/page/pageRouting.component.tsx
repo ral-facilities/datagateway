@@ -62,13 +62,12 @@ interface PageRoutingProps {
 const PageRouting = ({ view, loggedInAnonymously }: PageRoutingProps) => {
   return (
     <Routes>
+      <Route path={paths.homepage} element={<TranslatedHomePage />} />
+      <Route path={paths.doiRedirect} element={<DoiRedirect />} />
+      <Route path={paths.genericRedirect} element={<GenericRedirect />} />
       <Route
         element={<PageContainer loggedInAnonymously={loggedInAnonymously} />}
       >
-        <Route path={paths.homepage} element={<TranslatedHomePage />} />
-        <Route path={paths.doiRedirect} element={<DoiRedirect />} />
-
-        <Route path={paths.genericRedirect} element={<GenericRedirect />} />
         <Route
           path="/"
           element={

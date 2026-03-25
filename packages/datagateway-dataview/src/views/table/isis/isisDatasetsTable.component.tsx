@@ -241,7 +241,8 @@ const BaseISISDatasetsTable = (
 const ISISDatasetsTable = (props: { dataPublication: boolean }) => {
   const {
     instrumentId = '',
-    instrumentChildId = '',
+    dataPublicationId = '',
+    facilityCycleId = '',
     investigationId = '',
   } = useParams();
   const { data, isPending } = useDataPublication(
@@ -254,16 +255,16 @@ const ISISDatasetsTable = (props: { dataPublication: boolean }) => {
 
   const checkingPromise = props.dataPublication
     ? Promise.all([
-        checkInstrumentId(parseInt(instrumentId), parseInt(instrumentChildId)),
+        checkInstrumentId(parseInt(instrumentId), parseInt(dataPublicationId)),
         checkStudyDataPublicationId(
-          parseInt(instrumentChildId),
+          parseInt(dataPublicationId),
           parseInt(investigationId)
         ),
         ...(isPending ? [new Promise(() => undefined)] : []),
       ]).then((values) => !values.includes(false))
     : checkInstrumentAndFacilityCycleId(
         parseInt(instrumentId),
-        parseInt(instrumentChildId),
+        parseInt(facilityCycleId),
         parseInt(investigationId)
       );
 

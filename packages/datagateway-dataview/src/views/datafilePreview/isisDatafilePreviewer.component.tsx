@@ -13,7 +13,8 @@ import DatafilePreviewer from './datafilePreviewer.component';
 export const ISISDatafilePreviewer = (props: { dataPublication: boolean }) => {
   const {
     instrumentId = '',
-    instrumentChildId = '',
+    facilityCycleId = '',
+    dataPublicationId = '',
     investigationId = '',
     datasetId = '',
     datafileId = '',
@@ -28,9 +29,9 @@ export const ISISDatafilePreviewer = (props: { dataPublication: boolean }) => {
 
   const checkingPromise = props.dataPublication
     ? Promise.all([
-        checkInstrumentId(parseInt(instrumentId), parseInt(instrumentChildId)),
+        checkInstrumentId(parseInt(instrumentId), parseInt(dataPublicationId)),
         checkStudyDataPublicationId(
-          parseInt(instrumentChildId),
+          parseInt(dataPublicationId),
           parseInt(investigationId)
         ),
         checkInvestigationId(
@@ -43,7 +44,7 @@ export const ISISDatafilePreviewer = (props: { dataPublication: boolean }) => {
     : Promise.all([
         checkInstrumentAndFacilityCycleId(
           parseInt(instrumentId),
-          parseInt(instrumentChildId),
+          parseInt(facilityCycleId),
           parseInt(investigationId)
         ),
         checkInvestigationId(parseInt(investigationId), parseInt(datasetId)),
