@@ -12,7 +12,7 @@ import {
 } from 'datagateway-common';
 import log from 'loglevel';
 import React from 'react';
-import { Navigate, useLocation, useParams } from 'react-router-dom';
+import { Navigate, useLocation, useParams } from 'react-router';
 import { paths } from './pageContainer.component';
 
 export const RedirectComponent: React.FC<{

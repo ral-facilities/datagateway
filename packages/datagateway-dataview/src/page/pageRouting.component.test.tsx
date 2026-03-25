@@ -9,7 +9,7 @@ import {
   readSciGatewayToken,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
 import PageRouting from './pageRouting.component';
 
@@ -120,9 +120,7 @@ describe('PageTable', () => {
     });
     return (
       <Provider store={mockStore(state)}>
-        <BrowserRouter
-          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-        >
+        <BrowserRouter>
           <QueryClientProvider client={client}>{children}</QueryClientProvider>
         </BrowserRouter>
       </Provider>

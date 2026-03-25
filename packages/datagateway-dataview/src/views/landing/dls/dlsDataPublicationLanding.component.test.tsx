@@ -27,7 +27,7 @@ import {
   Routes,
   generatePath,
   useLocation,
-} from 'react-router-dom';
+} from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { paths } from '../../../page/pageContainer.component';
@@ -62,10 +62,7 @@ describe('DLS Data Publication Landing page', () => {
   const renderComponent = (): RenderResult =>
     render(
       <Provider store={mockStore(state)}>
-        <MemoryRouter
-          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-          initialEntries={initialEntries}
-        >
+        <MemoryRouter initialEntries={initialEntries}>
           <QueryClientProvider client={new QueryClient()}>
             <Routes>
               <Route

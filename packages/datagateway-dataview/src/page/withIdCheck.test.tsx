@@ -1,6 +1,6 @@
 import { act, render } from '@testing-library/react';
 import React from 'react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import type { Mock, MockInstance } from 'vitest';
 import { flushPromises } from '../setupTests';
 import WithIdCheck from './withIdCheck';
@@ -44,12 +44,7 @@ describe('WithIdCheck', () => {
       </WithIdCheck>,
       {
         wrapper: ({ children }) => (
-          <MemoryRouter
-            future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-            initialEntries={['/']}
-          >
-            {children}
-          </MemoryRouter>
+          <MemoryRouter initialEntries={['/']}>{children}</MemoryRouter>
         ),
       }
     );
@@ -64,12 +59,7 @@ describe('WithIdCheck', () => {
       </WithIdCheck>,
       {
         wrapper: ({ children }) => (
-          <MemoryRouter
-            future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-            initialEntries={['/']}
-          >
-            {children}
-          </MemoryRouter>
+          <MemoryRouter initialEntries={['/']}>{children}</MemoryRouter>
         ),
       }
     );
@@ -89,7 +79,6 @@ describe('WithIdCheck', () => {
       {
         wrapper: ({ children }) => (
           <MemoryRouter
-            future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
             initialEntries={['/browse/investigation/2/dataset/1/datafile']}
           >
             {children}
@@ -113,7 +102,6 @@ describe('WithIdCheck', () => {
       {
         wrapper: ({ children }) => (
           <MemoryRouter
-            future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
             initialEntries={['/browse/investigation/2/dataset/1/datafile']}
           >
             {children}

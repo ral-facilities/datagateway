@@ -8,7 +8,7 @@ import {
 } from 'datagateway-common';
 import * as React from 'react';
 import { Provider } from 'react-redux';
-import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useNavigate } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import type { StateType } from '../state/app.types';
@@ -155,9 +155,7 @@ describe('SearchTabs', () => {
     children: React.ReactNode;
   }): JSX.Element => (
     <Provider store={mockStore(state)}>
-      <BrowserRouter
-        future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-      >
+      <BrowserRouter>
         <QueryClientProvider client={new QueryClient()}>
           <Routes>
             <Route

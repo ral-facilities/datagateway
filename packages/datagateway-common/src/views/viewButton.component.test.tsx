@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as React from 'react';
 import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import type { StateType } from '../state/app.types';
@@ -17,7 +17,6 @@ describe('Generic view button', () => {
     return (
       <Provider store={configureStore([thunk])(state)}>
         <MemoryRouter
-          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
           initialEntries={[
             {
               key: 'testKey',

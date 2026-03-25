@@ -8,7 +8,7 @@ import {
 import userEvent from '@testing-library/user-event';
 import { downloadDatafile } from 'datagateway-common';
 import { Provider } from 'react-redux';
-import { BrowserRouter, MemoryRouter } from 'react-router-dom';
+import { BrowserRouter, MemoryRouter } from 'react-router';
 import type { Store } from 'redux';
 import { combineReducers, createStore } from 'redux';
 import type { StateType } from '../../../state/app.types';
@@ -37,9 +37,7 @@ function renderComponent({
 
   return render(
     <Provider store={store}>
-      <BrowserRouter
-        future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-      >
+      <BrowserRouter>
         <DatafilePreviewerContext.Provider value={mockContext}>
           <ActionButtons />
         </DatafilePreviewerContext.Provider>
@@ -74,9 +72,7 @@ describe('ActionButtons', () => {
   it('should not show anything when datafile previewer context is not provided', () => {
     const { container } = render(
       <Provider store={store}>
-        <MemoryRouter
-          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-        >
+        <MemoryRouter>
           <ActionButtons />
         </MemoryRouter>
       </Provider>

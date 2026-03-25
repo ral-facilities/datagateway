@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import HomePage, { HomePageProps } from './homePage.component';
 
 describe('Home page component', () => {
@@ -21,9 +21,7 @@ describe('Home page component', () => {
 
   it('homepage renders correctly', () => {
     const { asFragment } = render(
-      <MemoryRouter
-        future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-      >
+      <MemoryRouter>
         <HomePage {...props} />
       </MemoryRouter>
     );

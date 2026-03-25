@@ -14,7 +14,7 @@ import {
   type DownloadCartItem,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
-import { BrowserRouter, Link } from 'react-router-dom';
+import { BrowserRouter, Link } from 'react-router';
 import type { DeepPartial } from 'redux';
 import { applyMiddleware, compose, createStore } from 'redux';
 import configureStore from 'redux-mock-store';
@@ -77,13 +77,7 @@ describe('usePushCurrentTab', () => {
 
   it('returns callback that when called pushes a new tab to the url query', () => {
     const { result } = renderHook(() => usePushCurrentTab(), {
-      wrapper: ({ children }) => (
-        <BrowserRouter
-          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-        >
-          {children}
-        </BrowserRouter>
-      ),
+      wrapper: ({ children }) => <BrowserRouter>{children}</BrowserRouter>,
     });
 
     act(() => {
@@ -101,13 +95,7 @@ describe('usePushCurrentTab', () => {
     );
 
     const { result } = renderHook(() => usePushCurrentTab(), {
-      wrapper: ({ children }) => (
-        <BrowserRouter
-          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-        >
-          {children}
-        </BrowserRouter>
-      ),
+      wrapper: ({ children }) => <BrowserRouter>{children}</BrowserRouter>,
     });
 
     localStorageGetItemMock.mockImplementation((name) => {
@@ -146,9 +134,7 @@ describe('SearchPageContainer - Tests', () => {
   function renderComponent(): RenderResult {
     return render(
       <Provider store={configureStore([thunk])(state)}>
-        <BrowserRouter
-          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-        >
+        <BrowserRouter>
           <QueryClientProvider client={queryClient}>
             <SearchPageContainer />
           </QueryClientProvider>
@@ -889,9 +875,7 @@ describe('SearchPageContainer - Tests', () => {
         <Provider
           store={createStore(AppReducer(), compose(applyMiddleware(thunk)))}
         >
-          <BrowserRouter
-            future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-          >
+          <BrowserRouter>
             <QueryClientProvider client={queryClient}>
               <SearchPageContainer />
               {/* Test link to update search params mid-test */}

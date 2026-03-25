@@ -18,7 +18,7 @@ import log from 'loglevel';
 import React from 'react';
 import { Translation } from 'react-i18next';
 import { Provider, connect } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 import { AnyAction, Store, applyMiddleware, compose, createStore } from 'redux';
 import { createLogger } from 'redux-logger';
 import thunk, { ThunkDispatch } from 'redux-thunk';
@@ -133,9 +133,7 @@ class App extends React.Component<unknown, { hasError: boolean }> {
       return (
         <div className="App">
           <Provider store={this.store}>
-            <BrowserRouter
-              future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-            >
+            <BrowserRouter>
               <QueryClientProvider client={queryClient}>
                 <QueryClientSettingsUpdaterRedux queryClient={queryClient} />
                 <DGThemeProvider>

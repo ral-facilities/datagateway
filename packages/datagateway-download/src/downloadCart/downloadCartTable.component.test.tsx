@@ -11,7 +11,7 @@ import {
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 import { fetchDownloadCart } from 'datagateway-common';
-import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
+import { MemoryRouter, Route, Routes, useLocation } from 'react-router';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import {
   downloadPreparedCart,
@@ -64,10 +64,7 @@ const renderComponent = (settings = mockedSettings): RenderResult => {
   return render(
     <QueryClientProvider client={createTestQueryClient()}>
       <DownloadSettingsContext.Provider value={settings}>
-        <MemoryRouter
-          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-          initialEntries={['/download']}
-        >
+        <MemoryRouter initialEntries={['/download']}>
           <Routes>
             <Route
               path="/download"

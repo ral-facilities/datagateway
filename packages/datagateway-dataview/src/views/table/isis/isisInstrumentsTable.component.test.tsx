@@ -15,7 +15,7 @@ import {
   useInstrumentsInfinite,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {
@@ -50,9 +50,7 @@ describe('ISIS Instruments table component', () => {
     const store = mockStore(state);
     return render(
       <Provider store={store}>
-        <BrowserRouter
-          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-        >
+        <BrowserRouter>
           <QueryClientProvider client={new QueryClient()}>
             <ISISInstrumentsTable dataPublication={dataPublication} />
           </QueryClientProvider>

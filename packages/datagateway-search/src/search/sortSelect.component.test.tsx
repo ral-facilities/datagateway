@@ -1,14 +1,12 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 import SortSelectComponent from './sortSelect.component';
 
 describe('sortSelect', () => {
   const renderComponent = () =>
     render(
-      <BrowserRouter
-        future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-      >
+      <BrowserRouter>
         <SortSelectComponent />
       </BrowserRouter>
     );

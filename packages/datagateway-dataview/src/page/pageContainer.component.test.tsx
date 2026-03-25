@@ -1,5 +1,5 @@
 import { dGCommonInitialState, DownloadCartItem } from 'datagateway-common';
-import { BrowserRouter, generatePath } from 'react-router-dom';
+import { BrowserRouter, generatePath } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../state/app.types';
@@ -51,9 +51,7 @@ describe('PageContainer - Tests', () => {
     const testStore = mockStore(state);
     return render(
       <Provider store={testStore}>
-        <BrowserRouter
-          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-        >
+        <BrowserRouter>
           <QueryClientProvider client={client}>
             <PageContainer {...props} />
           </QueryClientProvider>

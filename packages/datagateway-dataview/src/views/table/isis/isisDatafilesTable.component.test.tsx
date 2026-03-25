@@ -19,7 +19,7 @@ import {
   findColumnIndexByName,
 } from 'datagateway-search/src/setupTests';
 import { Provider } from 'react-redux';
-import { BrowserRouter, Route, Routes, generatePath } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, generatePath } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { paths } from '../../../page/pageContainer.component';
@@ -50,9 +50,7 @@ describe('ISIS datafiles table component', () => {
   const renderComponent = (): RenderResult =>
     render(
       <Provider store={mockStore(state)}>
-        <BrowserRouter
-          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-        >
+        <BrowserRouter>
           <QueryClientProvider client={new QueryClient()}>
             <Routes>
               <Route

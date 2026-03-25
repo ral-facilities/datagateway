@@ -23,7 +23,7 @@ import CalendarToday from '@mui/icons-material/CalendarToday';
 import Fingerprint from '@mui/icons-material/Fingerprint';
 import Save from '@mui/icons-material/Save';
 import Subject from '@mui/icons-material/Subject';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 
 const DLSMyDataTable = (): React.ReactElement => {
   const [t] = useTranslation();

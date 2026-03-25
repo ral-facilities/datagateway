@@ -5,7 +5,7 @@ import {
 } from 'datagateway-common';
 import isEqual from 'lodash.isequal';
 import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
 
 function useFacetFilters(): {
   selectedFacetFilters: FiltersType;

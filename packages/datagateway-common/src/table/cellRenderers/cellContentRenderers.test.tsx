@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter, useLocation } from 'react-router-dom';
+import { MemoryRouter, useLocation } from 'react-router';
 import {
   datasetLink,
   formatBytes,
@@ -34,11 +34,7 @@ describe('Cell content renderers', () => {
   describe('datasetLink', () => {
     it('renders correctly', () => {
       render(
-        <MemoryRouter
-          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-        >
-          {datasetLink('1', 2, 'test', 'card')}
-        </MemoryRouter>
+        <MemoryRouter>{datasetLink('1', 2, 'test', 'card')}</MemoryRouter>
       );
       expect(screen.getByRole('link', { name: 'test' })).toHaveAttribute(
         'href',
@@ -50,11 +46,7 @@ describe('Cell content renderers', () => {
   describe('investigationLink', () => {
     it('renders correctly', () => {
       render(
-        <MemoryRouter
-          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-        >
-          {investigationLink(1, 'test', 'card')}
-        </MemoryRouter>
+        <MemoryRouter>{investigationLink(1, 'test', 'card')}</MemoryRouter>
       );
       expect(screen.getByRole('link', { name: 'test' })).toHaveAttribute(
         'href',
@@ -66,9 +58,7 @@ describe('Cell content renderers', () => {
   describe('tableLink', () => {
     it('renders correctly', () => {
       render(
-        <MemoryRouter
-          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-        >
+        <MemoryRouter>
           {tableLink('/test/url', 'test text', 'table')}
         </MemoryRouter>
       );
@@ -80,11 +70,7 @@ describe('Cell content renderers', () => {
 
     it('renders correctly without view', () => {
       render(
-        <MemoryRouter
-          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-        >
-          {tableLink('/test/url', 'test text')}
-        </MemoryRouter>
+        <MemoryRouter>{tableLink('/test/url', 'test text')}</MemoryRouter>
       );
       expect(screen.getByRole('link', { name: 'test text' })).toHaveAttribute(
         'href',
@@ -94,9 +80,7 @@ describe('Cell content renderers', () => {
 
     it('renders correctly with object location', () => {
       render(
-        <MemoryRouter
-          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-        >
+        <MemoryRouter>
           {tableLink(
             { pathname: '/test/url', search: '?test=true' },
             'test text',
@@ -118,9 +102,7 @@ describe('Cell content renderers', () => {
       const user = userEvent.setup();
 
       render(
-        <MemoryRouter
-          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-        >
+        <MemoryRouter>
           {tableLink('/test/url', 'test text', undefined, undefined, {
             test: true,
           })}

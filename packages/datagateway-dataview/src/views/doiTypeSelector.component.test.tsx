@@ -2,7 +2,7 @@ import { render, screen, type RenderResult } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { parseSearchToQuery, usePushQueryParams } from 'datagateway-common';
 import React from 'react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import DOITypeSelector from './doiTypeSelector.component';
 
 vi.mock('datagateway-common', async () => {
@@ -25,9 +25,7 @@ describe('DOI Type Selector', () => {
     type: React.ComponentProps<typeof DOITypeSelector>['type']
   ): RenderResult =>
     render(
-      <MemoryRouter
-        future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-      >
+      <MemoryRouter>
         <DOITypeSelector type={type} />
       </MemoryRouter>
     );

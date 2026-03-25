@@ -11,7 +11,7 @@ import {
   usePushFilter,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
@@ -39,9 +39,7 @@ describe('Role Selector', () => {
   const renderComponent = (): RenderResult =>
     render(
       <Provider store={mockStore(state)}>
-        <MemoryRouter
-          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-        >
+        <MemoryRouter>
           <QueryClientProvider client={new QueryClient()}>
             <RoleSelector />
           </QueryClientProvider>

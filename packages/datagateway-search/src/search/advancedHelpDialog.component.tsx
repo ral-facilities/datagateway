@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router';
 
 const Section = styled('section')(({ theme }) => ({
   marginTop: theme.spacing(4),

@@ -7,7 +7,7 @@ import {
   type StateType,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import PreviewDatafileButton, {
@@ -31,9 +31,7 @@ describe('PreviewDatafileButton', () => {
     const store = mockStore(state);
     return render(
       <Provider store={store}>
-        <MemoryRouter
-          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-        >
+        <MemoryRouter>
           <PreviewDatafileButton {...props} />
         </MemoryRouter>
       </Provider>

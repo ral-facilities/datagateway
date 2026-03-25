@@ -18,7 +18,7 @@ import { IndexRange, TableCellProps } from 'react-virtualized';
 import CalendarToday from '@mui/icons-material/CalendarToday';
 import Fingerprint from '@mui/icons-material/Fingerprint';
 import Public from '@mui/icons-material/Public';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router';
 
 interface BaseISISDataPublicationsTableProps {
   instrumentId: string;

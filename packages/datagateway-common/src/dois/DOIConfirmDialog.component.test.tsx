@@ -1,7 +1,7 @@
 import { render, RenderResult, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as React from 'react';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 import DOIConfirmDialog from './DOIConfirmDialog.component';
 
 describe('DOI Confirm Dialog component', () => {
@@ -10,9 +10,7 @@ describe('DOI Confirm Dialog component', () => {
 
   const renderComponent = (): RenderResult =>
     render(
-      <BrowserRouter
-        future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-      >
+      <BrowserRouter>
         <DOIConfirmDialog {...props} />
       </BrowserRouter>
     );

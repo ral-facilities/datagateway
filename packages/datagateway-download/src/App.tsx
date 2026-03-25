@@ -12,7 +12,7 @@ import {
   queryCacheConfig,
 } from 'datagateway-common';
 import React, { Component } from 'react';
-import { Link, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { Link, Route, BrowserRouter as Router, Routes } from 'react-router';
 
 import ConfigProvider, { DownloadSettingsContext } from './ConfigProvider';
 import DOIGenerationForm from './DOIGenerationForm/DOIGenerationForm.component';

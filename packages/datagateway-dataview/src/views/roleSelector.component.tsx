@@ -18,7 +18,7 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 
 const fetchRoles = (apiUrl: string, username: string): Promise<string[]> => {
   const params = new URLSearchParams();

@@ -13,7 +13,7 @@ import {
   dGCommonInitialState,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import type { StateType } from '../../state/app.types';
@@ -30,9 +30,7 @@ describe('Investigation - Card View', () => {
   const renderComponent = (): RenderResult =>
     render(
       <Provider store={mockStore(state)}>
-        <BrowserRouter
-          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-        >
+        <BrowserRouter>
           <QueryClientProvider client={new QueryClient()}>
             <InvestigationCardView />
           </QueryClientProvider>

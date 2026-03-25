@@ -2,7 +2,7 @@ import BugReport from '@mui/icons-material/BugReport';
 import { CircularProgress, Grid, Link, Typography } from '@mui/material';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router';
 
 const containerStyle = { height: '100%' };
 

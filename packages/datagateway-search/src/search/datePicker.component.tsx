@@ -1,14 +1,3 @@
-import React, { useState } from 'react';
-import { connect } from 'react-redux';
-import { StateType } from '../state/app.types';
-import { useTranslation } from 'react-i18next';
-import {
-  parseSearchToQuery,
-  usePushSearchEndDate,
-  usePushSearchStartDate,
-} from 'datagateway-common';
-import { useLocation } from 'react-router-dom';
-import { isBefore, isValid } from 'date-fns';
 import {
   TextField,
   TextFieldProps,
@@ -16,9 +5,20 @@ import {
   createTheme,
   useTheme,
 } from '@mui/material';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import {
+  parseSearchToQuery,
+  usePushSearchEndDate,
+  usePushSearchStartDate,
+} from 'datagateway-common';
+import { isBefore, isValid } from 'date-fns';
 import { enGB } from 'date-fns/locale';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { connect } from 'react-redux';
+import { useLocation } from 'react-router';
+import { StateType } from '../state/app.types';
 
 interface DatePickerProps {
   initiateSearch: () => void;

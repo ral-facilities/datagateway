@@ -21,7 +21,7 @@ import {
   findColumnIndexByName,
 } from 'datagateway-search/src/setupTests';
 import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { findAllRows, findColumnHeaderByName } from '../../../setupTests';
@@ -42,9 +42,7 @@ describe('DataPublication content table component', () => {
   const renderComponent = (): RenderResult =>
     render(
       <Provider store={mockStore(state)}>
-        <BrowserRouter
-          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-        >
+        <BrowserRouter>
           <QueryClientProvider client={new QueryClient()}>
             <DLSDataPublicationContentTable dataPublicationId="1" />
           </QueryClientProvider>

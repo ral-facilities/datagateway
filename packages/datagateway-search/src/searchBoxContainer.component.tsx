@@ -1,7 +1,7 @@
 import { Box, Grid, Link, styled, Theme, Typography } from '@mui/material';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router';
 import AdvancedHelpDialog from './search/advancedHelpDialog.component';
 import CheckboxesGroup from './search/checkBoxes.component';
 import SelectDates from './search/datePicker.component';

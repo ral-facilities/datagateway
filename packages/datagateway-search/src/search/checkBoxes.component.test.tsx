@@ -6,7 +6,7 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import type { StateType } from '../state/app.types';
@@ -24,9 +24,7 @@ describe('Checkbox component tests', () => {
   function renderComponent(): RenderResult {
     return render(
       <Provider store={testStore}>
-        <BrowserRouter
-          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-        >
+        <BrowserRouter>
           <CheckBoxesGroup />
         </BrowserRouter>
       </Provider>

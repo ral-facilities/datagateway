@@ -8,7 +8,7 @@ import {
   type Investigation,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import type { StateType } from '../../../state/app.types';
@@ -35,9 +35,7 @@ describe('DLS Proposals - Card View', () => {
   const renderComponent = (): RenderResult =>
     render(
       <Provider store={mockStore(state)}>
-        <BrowserRouter
-          future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
-        >
+        <BrowserRouter>
           <QueryClientProvider client={new QueryClient()}>
             <DLSProposalsCardView />
           </QueryClientProvider>

@@ -8,7 +8,7 @@ import {
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { DownloadCartItem } from '../app.types';
@@ -30,9 +30,7 @@ describe('Generic add to cart button', () => {
     const store = mockStore(state);
     return render(
       <Provider store={store}>
-        <MemoryRouter
-          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-        >
+        <MemoryRouter>
           <QueryClientProvider client={new QueryClient()}>
             <AddToCartButton {...props} />
           </QueryClientProvider>

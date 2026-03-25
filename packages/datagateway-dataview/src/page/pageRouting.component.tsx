@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { Link, Navigate, Route, Routes, useLocation } from 'react-router';
 
 import DatafileTable from '../views/table/datafileTable.component';
 import DatasetTable from '../views/table/datasetTable.component';

@@ -16,7 +16,7 @@ import {
   User,
   fetchDownloadCart,
 } from 'datagateway-common';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { MemoryRouter, Route, Routes } from 'react-router';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import {
   deleteDraftDOI,
@@ -68,10 +68,7 @@ const renderComponent = (
   render(
     <QueryClientProvider client={createTestQueryClient()}>
       <DownloadSettingsContext.Provider value={mockedSettings}>
-        <MemoryRouter
-          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-          initialEntries={initialEntries}
-        >
+        <MemoryRouter initialEntries={initialEntries}>
           <Routes>
             <Route path="/download/mint" element={<DOIGenerationForm />} />
             <Route

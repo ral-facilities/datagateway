@@ -27,7 +27,7 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
 import type { IndexRange, TableCellProps } from 'react-virtualized';
 import FacetPanel from '../facet/components/facetPanel/facetPanel.component';
 import SelectedFilterChips from '../facet/components/selectedFilterChips.component';

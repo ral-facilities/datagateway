@@ -39,7 +39,7 @@ import DLSDataPublicationVersionPanel, {
 // TODO: when vite 6, explore no-inline w/ pluginHost vs inline as we have to inline in vite 5
 import ORCIDIdLogo from 'datagateway-common/src/images/ORCID-iD_icon_unauth_vector.svg';
 import { useSelector } from 'react-redux';
-import { generatePath, useNavigate, useParams } from 'react-router-dom';
+import { generatePath, useNavigate, useParams } from 'react-router';
 import { paths } from '../../../page/pageContainer.component';
 import { StateType } from '../../../state/app.types';
 

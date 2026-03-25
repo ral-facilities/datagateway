@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import {
   TranslatedHomePage as HomePage,
   TranslatedHomePageStateProps,
@@ -16,9 +16,7 @@ describe('HomePage', () => {
 
   it('translated homepage renders correctly', () => {
     render(
-      <MemoryRouter
-        future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-      >
+      <MemoryRouter>
         <HomePage {...props} />
       </MemoryRouter>
     );

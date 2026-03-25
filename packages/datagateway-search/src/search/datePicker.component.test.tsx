@@ -1,7 +1,7 @@
 import { render, screen, type RenderResult } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../state/app.types';
@@ -20,9 +20,7 @@ describe('DatePicker component tests', () => {
   const renderComponent = (): RenderResult =>
     render(
       <Provider store={testStore}>
-        <BrowserRouter
-          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-        >
+        <BrowserRouter>
           <SelectDates initiateSearch={testInitiateSearch} />
         </BrowserRouter>
       </Provider>

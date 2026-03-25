@@ -12,7 +12,7 @@ import { CartProps, ViewCartButton, ViewsType } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import DatasetCardView from '../card/datasetSearchCardView.component';
 import InvestigationCardView from '../card/investigationSearchCardView.component';
 import type { StateType } from '../state/app.types';

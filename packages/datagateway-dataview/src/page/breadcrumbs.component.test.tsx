@@ -8,7 +8,7 @@ import {
 import axios from 'axios';
 import { dGCommonInitialState } from 'datagateway-common';
 import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import type { StateType } from '../state/app.types';
@@ -66,9 +66,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
     return render(
       <Provider store={mockStore(state)}>
         <QueryClientProvider client={new QueryClient()}>
-          <BrowserRouter
-            future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-          >
+          <BrowserRouter>
             <PageBreadcrumbs landingPageEntities={landingPageEntities} />
           </BrowserRouter>
         </QueryClientProvider>

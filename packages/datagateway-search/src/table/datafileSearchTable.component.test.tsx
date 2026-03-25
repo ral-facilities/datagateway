@@ -16,7 +16,7 @@ import {
   dGCommonInitialState,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {
@@ -44,9 +44,7 @@ describe('Datafile search table component', () => {
   const renderComponent = (hierarchy?: string): RenderResult =>
     render(
       <Provider store={mockStore(state)}>
-        <BrowserRouter
-          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-        >
+        <BrowserRouter>
           <QueryClientProvider client={queryClient}>
             <DatafileSearchTable hierarchy={hierarchy ?? ''} />
           </QueryClientProvider>

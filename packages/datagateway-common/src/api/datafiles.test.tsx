@@ -1,7 +1,7 @@
 import { renderHook, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { Datafile } from '../app.types';
 import * as handleICATError from '../handleICATError';
 import { createReactQueryWrapper } from '../setupTests';
@@ -507,6 +507,9 @@ describe('datafile api functions', () => {
     it('should create a download for the datafile with a server URL', async () => {
       vi.spyOn(document, 'createElement');
       vi.spyOn(document.body, 'appendChild');
+      vi.spyOn(window.URL, 'createObjectURL').mockImplementation(
+        () => 'downloadDatafileTestObjectUrl'
+      );
 
       downloadDatafile('https://www.example.com/ids', 1, 'test');
 
@@ -521,6 +524,9 @@ describe('datafile api functions', () => {
     it('should create a download for the datafile with the given Blob content', async () => {
       vi.spyOn(document, 'createElement');
       vi.spyOn(document.body, 'appendChild');
+      vi.spyOn(window.URL, 'createObjectURL').mockImplementation(
+        () => 'downloadDatafileTestObjectUrl2'
+      );
 
       downloadDatafile(
         'https://www.example.com/ids',
@@ -531,7 +537,7 @@ describe('datafile api functions', () => {
 
       expect(document.createElement).toHaveBeenCalledWith('a');
       const link = document.createElement('a');
-      link.href = 'testObjectUrl';
+      link.href = 'downloadDatafileTestObjectUrl2';
       link.download = 'test';
       link.target = '_blank';
       link.style.display = 'none';

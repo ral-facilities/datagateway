@@ -26,7 +26,7 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import {
   checkInstrumentAndFacilityCycleId,

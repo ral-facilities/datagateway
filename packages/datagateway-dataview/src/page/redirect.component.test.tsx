@@ -9,7 +9,7 @@ import {
   useEntity,
 } from 'datagateway-common';
 import log from 'loglevel';
-import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Link, Route, Routes } from 'react-router';
 import { AnyAction } from 'redux';
 import { paths } from './pageContainer.component';
 import { DoiRedirect, GenericRedirect } from './redirect.component';
@@ -101,9 +101,7 @@ describe('Redirect component', () => {
   describe('DOI Redirect component', () => {
     function renderComponent(): RenderResult {
       return render(
-        <BrowserRouter
-          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-        >
+        <BrowserRouter>
           <QueryClientProvider client={new QueryClient()}>
             <Routes>
               <Route path={paths.doiRedirect} element={<DoiRedirect />} />
@@ -167,9 +165,7 @@ describe('Redirect component', () => {
     let stateTestLinkLocation = '';
     function renderComponent(): RenderResult {
       return render(
-        <BrowserRouter
-          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-        >
+        <BrowserRouter>
           <QueryClientProvider client={new QueryClient()}>
             <Routes>
               <Route

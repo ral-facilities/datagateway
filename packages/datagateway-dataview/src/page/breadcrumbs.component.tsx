@@ -22,7 +22,7 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router';
 import { StateType } from '../state/app.types';
 
 interface BreadcrumbProps {

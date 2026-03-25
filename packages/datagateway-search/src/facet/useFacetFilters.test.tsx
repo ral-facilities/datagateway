@@ -1,7 +1,7 @@
 import { act, renderHook, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as React from 'react';
-import { BrowserRouter, useNavigate } from 'react-router-dom';
+import { BrowserRouter, useNavigate } from 'react-router';
 import useFacetFilters from './useFacetFilters';
 
 describe('useFacetFilters', () => {
@@ -20,9 +20,7 @@ describe('useFacetFilters', () => {
 
   function Wrapper({ children }: { children: React.ReactNode }): JSX.Element {
     return (
-      <BrowserRouter
-        future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-      >
+      <BrowserRouter>
         <>
           {children}
           <ChangeSearchParamsButton />

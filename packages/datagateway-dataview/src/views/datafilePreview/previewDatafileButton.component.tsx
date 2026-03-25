@@ -7,7 +7,7 @@ import {
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { isDatafilePreviewable } from './datafileExtension';
 
 export interface PreviewDatafileButtonProps {

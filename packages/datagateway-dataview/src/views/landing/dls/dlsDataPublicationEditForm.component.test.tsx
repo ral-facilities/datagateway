@@ -20,7 +20,7 @@ import {
   dGCommonInitialState,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
-import { MemoryRouter, Route, Routes, generatePath } from 'react-router-dom';
+import { MemoryRouter, Route, Routes, generatePath } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { paths } from '../../../page/pageContainer.component';
@@ -48,10 +48,7 @@ describe('DOI edit form component', () => {
   const renderComponent = (): RenderResult =>
     render(
       <Provider store={mockStore(state)}>
-        <MemoryRouter
-          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-          initialEntries={initialEntries}
-        >
+        <MemoryRouter initialEntries={initialEntries}>
           <QueryClientProvider client={createTestQueryClient()}>
             <Routes>
               <Route

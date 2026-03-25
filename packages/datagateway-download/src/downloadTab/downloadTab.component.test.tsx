@@ -3,7 +3,7 @@ import { RenderResult, act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 import { fetchDownloadCart } from 'datagateway-common';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import {
   downloadDeleted,
@@ -70,9 +70,7 @@ describe('DownloadTab', () => {
   const renderComponent = (): RenderResult => {
     const queryClient = new QueryClient();
     return render(
-      <MemoryRouter
-        future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-      >
+      <MemoryRouter>
         <DownloadSettingsContext.Provider value={mockedSettings}>
           <QueryClientProvider client={queryClient}>
             <DownloadTabs />

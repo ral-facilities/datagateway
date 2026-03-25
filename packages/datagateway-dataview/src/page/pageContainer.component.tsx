@@ -26,7 +26,7 @@ import {
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Outlet, matchPath, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, matchPath, useLocation, useNavigate } from 'react-router';
 import DOITypeSelector from '../views/doiTypeSelector.component';
 import RoleSelector from '../views/roleSelector.component';
 import PageBreadcrumbs from './breadcrumbs.component';

@@ -1,4 +1,3 @@
- 
 import '@testing-library/jest-dom';
 import failOnConsole from 'vitest-fail-on-console';
 
@@ -19,14 +18,6 @@ vi.stubGlobal(
     disconnect: vi.fn(),
   }))
 );
-
-function noOp(): void {
-  // required as work-around for jsdom environment not implementing window.URL.createObjectURL method
-}
-
-if (typeof window.URL.createObjectURL === 'undefined') {
-  Object.defineProperty(window.URL, 'createObjectURL', { value: noOp });
-}
 
 export const flushPromises = (): Promise<void> =>
   new Promise((resolve) => setTimeout(resolve));

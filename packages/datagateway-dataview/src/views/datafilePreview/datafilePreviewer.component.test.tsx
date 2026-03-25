@@ -11,7 +11,7 @@ import axios, { type AxiosRequestConfig } from 'axios';
 import { downloadDatafile } from 'datagateway-common';
 import type { Datafile } from 'datagateway-common/lib/app.types';
 import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import { combineReducers, createStore, type Store } from 'redux';
 import DGDataViewReducer from '../../state/reducers/dgdataview.reducer';
 import DatafilePreviewer from './datafilePreviewer.component';
@@ -52,9 +52,7 @@ function renderComponent(): RenderResult {
 
   return render(
     <QueryClientProvider client={createQueryClient()}>
-      <MemoryRouter
-        future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-      >
+      <MemoryRouter>
         <Provider store={store}>
           <DatafilePreviewer datafileId={mockDatafile.id} />
         </Provider>

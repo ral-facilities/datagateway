@@ -24,7 +24,7 @@ import Fingerprint from '@mui/icons-material/Fingerprint';
 import Lock from '@mui/icons-material/Lock';
 import Public from '@mui/icons-material/Public';
 import { Chip } from '@mui/material';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 
 interface DLSBaseDOIsTableProps {
   filterParams: AdditionalFilters;

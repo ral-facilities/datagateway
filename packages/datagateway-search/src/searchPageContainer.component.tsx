@@ -1,12 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Link,
-  Route,
-  Routes,
-  useLocation,
-  useNavigate,
-} from 'react-router-dom';
+import { Link, Route, Routes, useLocation, useNavigate } from 'react-router';
 import { StateType } from './state/app.types';
 
 import { Grid, Paper, styled } from '@mui/material';

@@ -13,7 +13,7 @@ import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 import { dGCommonInitialState, type DataPublication } from 'datagateway-common';
 import { Provider } from 'react-redux';
-import { BrowserRouter, Route, Routes, generatePath } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, generatePath } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { paths } from '../../../page/pageContainer.component';
@@ -57,9 +57,7 @@ describe('ISIS Data Publication table component', () => {
     const store = mockStore(state);
     return render(
       <Provider store={store}>
-        <BrowserRouter
-          future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
-        >
+        <BrowserRouter>
           <QueryClientProvider client={new QueryClient()}>
             <Routes>
               <Route

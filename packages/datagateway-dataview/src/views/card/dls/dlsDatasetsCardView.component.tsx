@@ -22,7 +22,7 @@ import React from 'react';
 
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router';
 import { checkProposalName } from '../../../page/idCheckFunctions';
 import WithIdCheck from '../../../page/withIdCheck';
 

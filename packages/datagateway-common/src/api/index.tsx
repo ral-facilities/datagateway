@@ -9,7 +9,7 @@ import { isValid } from 'date-fns';
 import format from 'date-fns/format';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
 import {
   AdditionalFilters,
   DOIViewType,

@@ -16,7 +16,7 @@ import {
   type SearchResult,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {
@@ -45,9 +45,7 @@ describe('Investigation Search Table component', () => {
   const renderComponent = (hierarchy?: string): RenderResult => {
     return render(
       <Provider store={mockStore(state)}>
-        <BrowserRouter
-          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-        >
+        <BrowserRouter>
           <QueryClientProvider client={queryClient}>
             <InvestigationSearchTable hierarchy={hierarchy ?? ''} />
           </QueryClientProvider>

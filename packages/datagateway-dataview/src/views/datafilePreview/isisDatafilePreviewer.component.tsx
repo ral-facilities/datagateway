@@ -1,5 +1,5 @@
 import { useDataPublication } from 'datagateway-common';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import {
   checkDatasetId,
   checkInstrumentAndFacilityCycleId,

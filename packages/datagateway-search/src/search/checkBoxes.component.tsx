@@ -13,7 +13,7 @@ import { parseSearchToQuery, usePushSearchToggles } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 import { StateType } from '../state/app.types';
 
 const ITEM_HEIGHT = 48;

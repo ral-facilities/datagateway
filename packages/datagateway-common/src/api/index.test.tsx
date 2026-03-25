@@ -1,7 +1,7 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
 import axios from 'axios';
 import React from 'react';
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { RouterProvider, createBrowserRouter } from 'react-router';
 import { MockInstance } from 'vitest';
 import {
   FiltersType,
@@ -348,12 +348,7 @@ describe('generic api functions', () => {
       wrapper = ({ children }) => {
         router = createBrowserRouter([{ path: '*', element: children }]);
         navigateSpy = vi.spyOn(router, 'navigate');
-        return (
-          <RouterProvider
-            router={router}
-            future={{ v7_startTransition: true }}
-          />
-        );
+        return <RouterProvider router={router} />;
       };
     });
 

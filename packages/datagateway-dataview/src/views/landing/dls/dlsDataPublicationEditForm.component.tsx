@@ -21,12 +21,7 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import {
-  Navigate,
-  generatePath,
-  useLocation,
-  useParams,
-} from 'react-router-dom';
+import { Navigate, generatePath, useLocation, useParams } from 'react-router';
 import { paths } from '../../../page/pageContainer.component';
 import { StateType } from '../../../state/app.types';
 import DLSDataPublicationDataEditor, {

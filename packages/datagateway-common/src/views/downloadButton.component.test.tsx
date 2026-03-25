@@ -16,7 +16,7 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import thunk from 'redux-thunk';
 import * as parseTokens from '../parseTokens';
 import { StateType } from '../state/app.types';
@@ -34,9 +34,7 @@ describe('Generic download button', () => {
     const store = mockStore(state);
     return render(
       <Provider store={store}>
-        <MemoryRouter
-          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
-        >
+        <MemoryRouter>
           <QueryClientProvider client={new QueryClient()}>
             <DownloadButton {...props} />
           </QueryClientProvider>

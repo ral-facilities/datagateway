@@ -1,7 +1,7 @@
 import { renderHook, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { Investigation } from '../app.types';
 import * as handleICATError from '../handleICATError';
 import { createReactQueryWrapper } from '../setupTests';
