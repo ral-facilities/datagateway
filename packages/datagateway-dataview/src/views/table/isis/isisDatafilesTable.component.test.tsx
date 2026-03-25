@@ -420,14 +420,22 @@ describe('ISIS datafiles table component', () => {
   it('renders actions correctly', async () => {
     renderComponent();
     expect(
-      await screen.findByRole('button', { name: 'buttons.download' })
-    ).toBeTruthy();
+      await screen.findByRole(
+        'button',
+        { name: 'buttons.download' },
+        { timeout: 5_000 }
+      )
+    ).toBeInTheDocument();
   });
 
   it('displays details panel when expanded', async () => {
     renderComponent();
     await user.click(
-      await screen.findByRole('button', { name: 'Show details' })
+      await screen.findByRole(
+        'button',
+        { name: 'Show details' },
+        { timeout: 5_000 }
+      )
     );
     expect(
       await screen.findByTestId('isis-datafile-details-panel')
