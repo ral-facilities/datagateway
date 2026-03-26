@@ -30,7 +30,7 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
 import FacetPanel from '../facet/components/facetPanel/facetPanel.component';
 import SelectedFilterChips from '../facet/components/selectedFilterChips.component';
 import { facetClassificationFromSearchResponses } from '../facet/facet';
@@ -56,7 +56,7 @@ const DatasetCardView: React.FC<DatasetCardViewProps> = (props) => {
   const { hierarchy } = props;
 
   const location = useLocation();
-  const { push } = useHistory();
+  const navigate = useNavigate();
   const queryParams = React.useMemo(
     () => parseSearchToQuery(location.search),
     [location.search]
@@ -71,8 +71,8 @@ const DatasetCardView: React.FC<DatasetCardViewProps> = (props) => {
     restrict,
     dataset,
     currentTab,
+    searchText,
   } = queryParams;
-  const searchText = queryParams.searchText ? queryParams.searchText : '';
 
   const minNumResults = useSelector(
     (state: StateType) => state.dgsearch.minNumResults
@@ -86,7 +86,7 @@ const DatasetCardView: React.FC<DatasetCardViewProps> = (props) => {
     useLuceneSearchInfinite(
       'Dataset',
       {
-        searchText,
+        searchText: searchText ?? '',
         startDate,
         endDate,
         sort,
@@ -107,7 +107,7 @@ const DatasetCardView: React.FC<DatasetCardViewProps> = (props) => {
       },
       currentTab === 'dataset' ? filters : {},
       {
-        enabled: dataset,
+        enabled: dataset && searchText !== null,
         // this select removes the facet count for the InvestigationInstrument.instrument.name
         // facet since the number is confusing for datafiles
         select: (data) => ({
@@ -342,7 +342,7 @@ const DatasetCardView: React.FC<DatasetCardViewProps> = (props) => {
             <ISISDatasetDetailsPanel
               rowData={dataset}
               viewDatafiles={() => {
-                if (datasetsUrl) push(datasetsUrl);
+                if (datasetsUrl) navigate(datasetsUrl);
               }}
             />
           );
@@ -354,7 +354,7 @@ const DatasetCardView: React.FC<DatasetCardViewProps> = (props) => {
           return <DatasetDetailsPanel rowData={dataset} />;
       }
     },
-    [hierarchy, push]
+    [hierarchy, navigate]
   );
 
   const buttons = React.useMemo(

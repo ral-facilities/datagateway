@@ -38,16 +38,11 @@ describe('DLS - Datafiles Table', () => {
   });
 
   it('should be able to sort by all sort directions on single and multiple columns', () => {
-    // Revert the default sort
-    cy.contains('[role="button"]', 'Name').as('nameSortButton').click();
-    cy.get('@nameSortButton').click();
-    cy.wait('@datafilesOrder', { timeout: 10000 });
-
     // ascending order
     cy.contains('[role="button"]', 'Location').as('locationSortButton').click();
     cy.wait('@datafilesOrder', { timeout: 10000 });
 
-    cy.get('[aria-sort="ascending"]').should('exist');
+    cy.contains('[aria-sort="ascending"]', 'Location').should('exist');
     cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
     cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
       '/analysis/unit/bank.tiff'
@@ -84,7 +79,9 @@ describe('DLS - Datafiles Table', () => {
     // multiple columns (shift click)
     cy.contains('[role="button"]', 'Create Time').click();
     cy.wait('@datafilesOrder', { timeout: 10000 });
-    cy.get('@nameSortButton').click({ shiftKey: true });
+    cy.contains('[role="button"]', 'Name')
+      .as('nameSortButton')
+      .click({ shiftKey: true });
     cy.wait('@datafilesOrder', { timeout: 10000 });
     cy.get('@nameSortButton').click({ shiftKey: true });
     cy.wait('@datafilesOrder', { timeout: 10000 });
@@ -104,6 +101,8 @@ describe('DLS - Datafiles Table', () => {
 
     // check icon when clicking on a column
     cy.contains('[role="button"]', 'Location').click();
+
+    cy.contains('[aria-sort="ascending"]', 'Location').should('exist');
     cy.get('[data-testid="ArrowDownwardIcon"]').should('have.length', 1);
     cy.get('.MuiTableSortLabel-iconDirectionAsc').should('exist');
 

@@ -88,7 +88,7 @@ describe('retryICATErrors', () => {
     const {
       result: { current: retryICATErrors },
     } = renderHook(() => useRetryICATErrors(), {
-      wrapper: createReactQueryWrapper(undefined, testQueryClient),
+      wrapper: createReactQueryWrapper(testQueryClient),
     });
 
     let result = retryICATErrors(0, error);
@@ -107,7 +107,7 @@ describe('retryICATErrors', () => {
     const {
       result: { current: retryICATErrors },
     } = renderHook(() => useRetryICATErrors(), {
-      wrapper: createReactQueryWrapper(undefined, testQueryClient),
+      wrapper: createReactQueryWrapper(testQueryClient),
     });
 
     let result = retryICATErrors(2, error);

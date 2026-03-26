@@ -9,7 +9,7 @@ import { MutationStatus } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { DOIResponse } from '../app.types';
 
 import DialogContent from '../dialogContent.component';

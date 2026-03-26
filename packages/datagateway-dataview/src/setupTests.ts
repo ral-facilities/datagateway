@@ -20,10 +20,6 @@ vi.setConfig({ testTimeout: 20_000 });
 // and https://github.com/testing-library/user-event/issues/1115
 vi.stubGlobal('jest', { advanceTimersByTime: vi.advanceTimersByTime.bind(vi) });
 
-function noOp(): void {
-  // required as work-around for jsdom environment not implementing window.URL.createObjectURL method
-}
-
 // Add in ResizeObserver as it's not in jsdom's environment
 vi.stubGlobal(
   'ResizeObserver',
@@ -33,10 +29,6 @@ vi.stubGlobal(
     disconnect: vi.fn(),
   }))
 );
-
-if (typeof window.URL.createObjectURL === 'undefined') {
-  Object.defineProperty(window.URL, 'createObjectURL', { value: noOp });
-}
 
 // these are used for testing async actions
 export let actions: Action[] = [];

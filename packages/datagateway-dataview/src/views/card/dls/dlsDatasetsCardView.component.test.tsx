@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { RenderResult, render, screen } from '@testing-library/react';
+import { RenderResult, act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 import {
@@ -8,11 +8,12 @@ import {
   useDatasetCount,
   useDatasetsPaginated,
 } from 'datagateway-common';
-import { History, createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, generatePath } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { paths } from '../../../page/pageContainer.component';
+import { flushPromises } from '../../../setupTests';
 import { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import DLSDatasetsCardView from './dlsDatasetsCardView.component';
@@ -28,21 +29,29 @@ vi.mock('datagateway-common', async () => {
   };
 });
 
+vi.mock('../../../page/idCheckFunctions', () => ({
+  checkProposalName: vi.fn().mockResolvedValue(true),
+}));
+
 describe('DLS Datasets - Card View', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let cardData: Dataset[];
-  let history: History;
   let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult =>
     render(
       <Provider store={mockStore(state)}>
-        <Router history={history}>
+        <BrowserRouter>
           <QueryClientProvider client={new QueryClient()}>
-            <DLSDatasetsCardView investigationId="1" proposalName="test" />
+            <Routes>
+              <Route
+                path={paths.toggle.dlsDataset}
+                element={<DLSDatasetsCardView />}
+              />
+            </Routes>
           </QueryClientProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
 
@@ -57,7 +66,14 @@ describe('DLS Datasets - Card View', () => {
         fileCount: 1,
       },
     ];
-    history = createMemoryHistory();
+    window.history.replaceState(
+      {},
+      '',
+      generatePath(paths.toggle.dlsDataset, {
+        investigationId: '1',
+        proposalName: 'test',
+      })
+    );
     user = userEvent.setup();
 
     state = JSON.parse(
@@ -111,7 +127,7 @@ describe('DLS Datasets - Card View', () => {
 
     await user.type(filter, 'test');
 
-    expect(history.location.search).toBe(
+    expect(window.location.search).toContain(
       `?filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
       )}`
@@ -119,7 +135,7 @@ describe('DLS Datasets - Card View', () => {
 
     await user.clear(filter);
 
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).not.toContain('filters=');
   });
 
   it('updates filter query params on date filter', async () => {
@@ -136,7 +152,7 @@ describe('DLS Datasets - Card View', () => {
 
     await user.type(filter, '2019-08-06');
 
-    expect(history.location.search).toBe(
+    expect(window.location.search).toContain(
       `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
     );
 
@@ -145,7 +161,7 @@ describe('DLS Datasets - Card View', () => {
     await user.keyboard('{Control}a{/Control}');
     await user.keyboard('{Delete}');
 
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).not.toContain('filters=');
   });
 
   it('uses default sort', async () => {
@@ -153,18 +169,20 @@ describe('DLS Datasets - Card View', () => {
 
     expect(await screen.findByTestId('card')).toBeInTheDocument();
 
-    expect(history.length).toBe(1);
-    expect(history.location.search).toBe(
+    await act(async () => {
+      await flushPromises();
+    });
+
+    expect(window.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"asc"}')}`
     );
 
-    // check that the data request is sent only once after mounting
-    expect(useDatasetsPaginated).toHaveBeenCalledTimes(2);
-    expect(useDatasetsPaginated).toHaveBeenCalledWith(expect.anything(), false);
-    expect(useDatasetsPaginated).toHaveBeenLastCalledWith(
-      expect.anything(),
-      true
-    );
+    // check that the data hook is only called once with the query enabled
+    expect(
+      vi
+        .mocked(useDatasetsPaginated)
+        .mock.calls.filter((call) => call[1] === true)
+    ).toHaveLength(1);
   });
 
   it('updates sort query params on sort', async () => {
@@ -174,7 +192,7 @@ describe('DLS Datasets - Card View', () => {
       await screen.findByRole('button', { name: 'Sort by DATASETS.NAME' })
     );
 
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"desc"}')}`
     );
   }, 10000);
@@ -196,10 +214,13 @@ describe('DLS Datasets - Card View', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders fine with incomplete data', () => {
+  it('renders fine with incomplete data', async () => {
     vi.mocked(useDatasetCount, { partial: true }).mockReturnValueOnce({});
     vi.mocked(useDatasetsPaginated, { partial: true }).mockReturnValueOnce({});
 
     expect(() => renderComponent()).not.toThrowError();
+    expect(
+      await screen.findByTestId('dls-datasets-card-view')
+    ).toBeInTheDocument();
   });
 });

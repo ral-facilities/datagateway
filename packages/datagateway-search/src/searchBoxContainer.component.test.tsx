@@ -2,7 +2,7 @@ import type { RenderResult } from '@testing-library/react';
 import { render, screen, within } from '@testing-library/react';
 import * as React from 'react';
 import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import type { DeepPartial } from 'redux';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';

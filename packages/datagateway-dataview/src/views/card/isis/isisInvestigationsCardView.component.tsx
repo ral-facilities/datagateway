@@ -29,7 +29,7 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import { StateType } from '../../../state/app.types';
 
 const ActionButtonsContainer = styled('div')(({ theme }) => ({
@@ -41,19 +41,19 @@ const ActionButtonsContainer = styled('div')(({ theme }) => ({
   },
 }));
 
-interface ISISInvestigationsCardViewProps {
+interface BaseISISInvestigationsCardViewProps {
   instrumentId: string;
   facilityCycleId: string;
 }
 
-const ISISInvestigationsCardView = (
-  props: ISISInvestigationsCardViewProps
+const BaseISISInvestigationsCardView = (
+  props: BaseISISInvestigationsCardViewProps
 ): React.ReactElement => {
   const { instrumentId, facilityCycleId } = props;
 
   const [t] = useTranslation();
   const location = useLocation();
-  const { push } = useHistory();
+  const navigate = useNavigate();
 
   const { filters, view, sort, page, results } = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -92,13 +92,14 @@ const ISISInvestigationsCardView = (
     },
   ];
 
-  // isMounted is used to disable queries when the component isn't fully mounted.
+  // isInitialised is used to disable queries when the component isn't fully initialised.
   // It prevents the request being sent twice if default sort is set.
   // It is not needed for cards/tables that don't have default sort.
-  const [isMounted, setIsMounted] = React.useState(false);
+  const [isInitialised, setIsInitialised] = React.useState(false);
+
   React.useEffect(() => {
-    setIsMounted(true);
-  }, []);
+    if (!isInitialised && Object.keys(sort).length > 0) setIsInitialised(true);
+  }, [isInitialised, sort]);
 
   const { data: totalDataCount, isPending: countLoading } =
     useInvestigationCount(investigationQueryFilters);
@@ -123,7 +124,7 @@ const ISISInvestigationsCardView = (
       },
     ],
     undefined,
-    isMounted
+    isInitialised
   );
 
   const title: CardViewDetails = React.useMemo(
@@ -256,11 +257,11 @@ const ISISInvestigationsCardView = (
           const url = view
             ? `${location.pathname}/${id}/dataset?view=${view}`
             : `${location.pathname}/${id}/dataset`;
-          push(url);
+          navigate(url);
         }}
       />
     ),
-    [location.pathname, push, view]
+    [location.pathname, navigate, view]
   );
 
   return (
@@ -283,6 +284,16 @@ const ISISInvestigationsCardView = (
       information={information}
       moreInformation={moreInformation}
       buttons={buttons}
+    />
+  );
+};
+
+const ISISInvestigationsCardView = () => {
+  const { instrumentId = '', facilityCycleId = '' } = useParams();
+  return (
+    <BaseISISInvestigationsCardView
+      instrumentId={instrumentId}
+      facilityCycleId={facilityCycleId}
     />
   );
 };

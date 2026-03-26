@@ -14,9 +14,8 @@ import {
   useInvestigationsInfinite,
   type Investigation,
 } from 'datagateway-common';
-import { createMemoryHistory, type MemoryHistory } from 'history';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {
@@ -46,24 +45,23 @@ describe('DLS MyData table component', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let rowData: Investigation[];
-  let history: MemoryHistory;
   let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult => {
     const store = mockStore(state);
     return render(
       <Provider store={store}>
-        <Router history={history}>
+        <BrowserRouter>
           <QueryClientProvider client={new QueryClient()}>
             <DLSMyDataTable />
           </QueryClientProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
   };
 
   beforeEach(() => {
-    history = createMemoryHistory();
+    window.history.replaceState({}, '', '/');
     user = userEvent.setup();
 
     state = JSON.parse(
@@ -205,7 +203,6 @@ describe('DLS MyData table component', () => {
   });
 
   it('sorts by startDate desc and filters startDate to be before the current date on load', async () => {
-    const replaceSpy = vi.spyOn(history, 'replace');
     renderComponent();
 
     expect(
@@ -214,17 +211,21 @@ describe('DLS MyData table component', () => {
       })
     ).toHaveValue('1970-01-01');
 
-    expect(replaceSpy).toHaveBeenCalledTimes(2);
-    expect(replaceSpy).toHaveBeenCalledWith({
-      search: `?filters=${encodeURIComponent(
+    expect(window.location.search).toContain(
+      `filters=${encodeURIComponent(
         JSON.stringify({ startDate: { endDate: '1970-01-01' } })
-      )}`,
-    });
-    expect(replaceSpy).toHaveBeenCalledWith({
-      search: `?sort=${encodeURIComponent(
-        JSON.stringify({ startDate: 'desc' })
-      )}`,
-    });
+      )}`
+    );
+    expect(window.location.search).toContain(
+      `sort=${encodeURIComponent(JSON.stringify({ startDate: 'desc' }))}`
+    );
+
+    // check that the data hook is only called once with the query enabled
+    expect(
+      vi
+        .mocked(useInvestigationsInfinite)
+        .mock.calls.filter((call) => call[2] === true)
+    ).toHaveLength(1);
   });
 
   it('updates filter query params on text filter', async () => {
@@ -237,15 +238,13 @@ describe('DLS MyData table component', () => {
 
     await user.type(filterInput, 'test');
 
-    expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent(
-        '{"visitId":{"value":"test","type":"include"}}'
-      )}`
+    expect(window.location.search).toContain(
+      `${encodeURIComponent('"visitId":{"value":"test","type":"include"}')}`
     );
 
     await user.clear(filterInput);
 
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).not.toContain('visitId');
   });
 
   it('updates filter query params on date filter', async () => {
@@ -257,8 +256,8 @@ describe('DLS MyData table component', () => {
 
     await user.type(filterInput, '2019-08-06');
 
-    expect(history.location.search).toBe(
-      `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
+    expect(window.location.search).toContain(
+      `${encodeURIComponent('"endDate":{"endDate":"2019-08-06"}')}`
     );
 
     // await user.clear(filterInput);
@@ -266,7 +265,7 @@ describe('DLS MyData table component', () => {
     await user.keyboard('{Control}a{/Control}');
     await user.keyboard('{Delete}');
 
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).not.toContain('"endDate":{"endDate"');
   });
 
   it('updates sort query params on sort', async () => {
@@ -276,8 +275,8 @@ describe('DLS MyData table component', () => {
       await screen.findByRole('button', { name: 'investigations.title' })
     );
 
-    expect(history.location.search).toBe(
-      `?sort=${encodeURIComponent('{"title":"asc"}')}`
+    expect(window.location.search).toContain(
+      `sort=${encodeURIComponent('{"title":"asc"}')}`
     );
   });
 

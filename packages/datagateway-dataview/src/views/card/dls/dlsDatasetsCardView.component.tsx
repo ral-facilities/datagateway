@@ -22,14 +22,18 @@ import React from 'react';
 
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router';
+import { checkProposalName } from '../../../page/idCheckFunctions';
+import WithIdCheck from '../../../page/withIdCheck';
 
-interface DLSDatasetsCVProps {
+interface BaseDLSDatasetsCVProps {
   proposalName: string;
   investigationId: string;
 }
 
-const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
+const BaseDLSDatasetsCardView = (
+  props: BaseDLSDatasetsCVProps
+): React.ReactElement => {
   const { proposalName, investigationId } = props;
 
   const [t] = useTranslation();
@@ -47,13 +51,14 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
-  // isMounted is used to disable queries when the component isn't fully mounted.
+  // isInitialised is used to disable queries when the component isn't fully initialised.
   // It prevents the request being sent twice if default sort is set.
   // It is not needed for cards/tables that don't have default sort.
-  const [isMounted, setIsMounted] = React.useState(false);
+  const [isInitialised, setIsInitialised] = React.useState(false);
+
   React.useEffect(() => {
-    setIsMounted(true);
-  }, []);
+    if (!isInitialised && Object.keys(sort).length > 0) setIsInitialised(true);
+  }, [isInitialised, sort]);
 
   const { data: totalDataCount, isPending: countLoading } = useDatasetCount([
     {
@@ -72,7 +77,7 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
         }),
       },
     ],
-    isMounted
+    isInitialised
   );
 
   const title: CardViewDetails = React.useMemo(
@@ -181,6 +186,23 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
       )}
       buttons={buttons}
     />
+  );
+};
+
+const DLSDatasetsCardView = () => {
+  const { proposalName = '', investigationId = '' } = useParams();
+  return (
+    <WithIdCheck
+      checkingPromise={checkProposalName(
+        proposalName,
+        parseInt(investigationId)
+      )}
+    >
+      <BaseDLSDatasetsCardView
+        proposalName={proposalName}
+        investigationId={investigationId}
+      />
+    </WithIdCheck>
   );
 };
 

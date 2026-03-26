@@ -35,7 +35,13 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router';
+import {
+  checkInstrumentAndFacilityCycleId,
+  checkInstrumentId,
+  checkStudyDataPublicationId,
+} from '../../../page/idCheckFunctions';
+import WithIdCheck from '../../../page/withIdCheck';
 import { StateType } from '../../../state/app.types';
 import CitationFormatter from '../../citationFormatter.component';
 import Branding from './isisBranding.component';
@@ -159,7 +165,7 @@ const CommonLandingPage = (
   props: CommonLandingPageProps
 ): React.ReactElement => {
   const [t] = useTranslation();
-  const { push } = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
   const { view } = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -413,7 +419,7 @@ const CommonLandingPage = (
                     id="investigation-datasets-tab"
                     label={t('investigations.details.datasets')}
                     onClick={() =>
-                      push(
+                      navigate(
                         view
                           ? `${location.pathname}/dataset?view=${view}`
                           : `${location.pathname}/dataset`
@@ -438,8 +444,8 @@ const CommonLandingPage = (
                   ? data.summary
                   : 'Description not provided'
                 : data?.description && data.description !== 'null'
-                ? data.description
-                : 'Description not provided'}
+                  ? data.description
+                  : 'Description not provided'}
             </Typography>
             {formattedUsers.length > 0 && (
               <div>
@@ -650,7 +656,9 @@ const CommonLandingPage = (
   );
 };
 
-const LandingPage = (props: LandingPageProps): React.ReactElement => {
+export const BaseISISInvestigationLandingPage = (
+  props: LandingPageProps
+): React.ReactElement => {
   if (props.dataPublication) {
     return <InvestigationDataPublicationLandingPage {...props} />;
   } else {
@@ -658,4 +666,36 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   }
 };
 
-export default LandingPage;
+const ISISInvestigationLandingPage = (props: { dataPublication: boolean }) => {
+  const {
+    instrumentId = '',
+    dataPublicationId = '',
+    facilityCycleId = '',
+    investigationId = '',
+  } = useParams();
+  const checkingPromise = props.dataPublication
+    ? Promise.all([
+        checkInstrumentId(parseInt(instrumentId), parseInt(dataPublicationId)),
+        checkStudyDataPublicationId(
+          parseInt(dataPublicationId),
+          parseInt(investigationId)
+        ),
+      ]).then((values) => !values.includes(false))
+    : checkInstrumentAndFacilityCycleId(
+        parseInt(instrumentId),
+        parseInt(facilityCycleId),
+        parseInt(investigationId)
+      );
+
+  return (
+    <WithIdCheck checkingPromise={checkingPromise}>
+      <BaseISISInvestigationLandingPage
+        dataPublication={props.dataPublication}
+        // for dataPublication views, investigationId = investigationDataPublicationId
+        investigationId={investigationId}
+      />
+    </WithIdCheck>
+  );
+};
+
+export default ISISInvestigationLandingPage;

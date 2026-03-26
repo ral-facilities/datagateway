@@ -24,7 +24,7 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
 import { TableCellProps } from 'react-virtualized';
 import FacetPanel from '../facet/components/facetPanel/facetPanel.component';
 import SelectedFilterChips from '../facet/components/selectedFilterChips.component';
@@ -41,7 +41,7 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
   const { hierarchy } = props;
 
   const location = useLocation();
-  const { push } = useHistory();
+  const navigate = useNavigate();
   const queryParams = React.useMemo(
     () => parseSearchToQuery(location.search),
     [location.search]
@@ -54,8 +54,8 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
     restrict,
     investigation,
     currentTab,
+    searchText,
   } = queryParams;
-  const searchText = queryParams.searchText ? queryParams.searchText : '';
 
   const disableSelectAll = useSelector(
     (state: StateType) => state.dgcommon.features?.disableSelectAll ?? false
@@ -75,7 +75,7 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
     useLuceneSearchInfinite(
       'Investigation',
       {
-        searchText,
+        searchText: searchText ?? '',
         startDate,
         endDate,
         sort,
@@ -100,7 +100,7 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
       },
       currentTab === 'investigation' ? filters : {},
 
-      { enabled: investigation }
+      { enabled: investigation && searchText !== null }
     );
   const { data: cartItems, isPending: cartLoading } = useCart();
   const { mutate: addToCart, isPending: addToCartLoading } =
@@ -307,7 +307,7 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
                 rowData={rowData}
                 detailsPanelResize={detailsPanelResize}
                 viewDatasets={() => {
-                  if (url) push(url);
+                  if (url) navigate(url);
                 }}
               />
             );
@@ -330,7 +330,7 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
             );
         }
       },
-      [hierarchy, push]
+      [hierarchy, navigate]
     );
 
   if (currentTab !== 'investigation') return null;

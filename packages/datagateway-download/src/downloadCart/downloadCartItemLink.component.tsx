@@ -2,7 +2,7 @@ import { Link as MuiLink } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import type { DownloadCartItem } from 'datagateway-common';
 import pLimit from 'p-limit';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 type LinkBuilder = () => Promise<string | null>;
 

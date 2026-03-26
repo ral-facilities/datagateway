@@ -23,7 +23,7 @@ import {
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Redirect, useLocation } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import {
   useCart,
@@ -103,7 +103,7 @@ const DOIGenerationForm: React.FC = () => {
     }
   }, [cart]);
 
-  const location = useLocation<{ fromCart: boolean } | undefined>();
+  const location = useLocation();
 
   const [t] = useTranslation();
 
@@ -181,8 +181,8 @@ const DOIGenerationForm: React.FC = () => {
   }, [deleteDraft, draftDataPublicationId]);
 
   // redirect if the user tries to access the link directly instead of from the cart
-  if (!location.state?.fromCart) {
-    return <Redirect to="/download" />;
+  if (!(location.state as { fromCart: boolean } | undefined)?.fromCart) {
+    return <Navigate replace to="/download" />;
   }
 
   return (

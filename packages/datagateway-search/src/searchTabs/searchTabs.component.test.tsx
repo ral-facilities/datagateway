@@ -1,15 +1,14 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { act, render, screen, within } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios';
 import {
   dGCommonInitialState,
   type DatasearchType,
   type SearchResponse,
 } from 'datagateway-common';
-import { createMemoryHistory, type History } from 'history';
 import * as React from 'react';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useNavigate } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import type { StateType } from '../state/app.types';
@@ -21,7 +20,6 @@ import SearchTabs from './searchTabs.component';
 
 describe('SearchTabs', () => {
   let state: StateType;
-  let history: History;
   let user: ReturnType<typeof userEvent.setup>;
   const mockStore = configureStore([thunk]);
   let searchParams: URLSearchParams;
@@ -142,31 +140,47 @@ describe('SearchTabs', () => {
     return Promise.reject(`Endpoint not mocked: ${url}`);
   };
 
+  const ChangeSearchParamsButton = () => {
+    const navigate = useNavigate();
+    return (
+      <button onClick={() => navigate({ search: searchParams.toString() })}>
+        Change search params
+      </button>
+    );
+  };
+
   const Wrapper = ({
     children,
   }: {
     children: React.ReactNode;
   }): JSX.Element => (
     <Provider store={mockStore(state)}>
-      <Router history={history}>
+      <BrowserRouter>
         <QueryClientProvider client={new QueryClient()}>
-          {children}
+          <Routes>
+            <Route
+              path="/search/:hierarchy"
+              element={
+                <>
+                  {children}
+                  <ChangeSearchParamsButton />
+                </>
+              }
+            />
+          </Routes>
         </QueryClientProvider>
-      </Router>
+      </BrowserRouter>
     </Provider>
   );
 
   beforeEach(() => {
     searchParams = new URLSearchParams();
     searchParams.append('searchText', 'test');
-    history = createMemoryHistory({
-      initialEntries: [
-        {
-          pathname: '/search/data',
-          search: searchParams.toString(),
-        },
-      ],
-    });
+    window.history.replaceState(
+      {},
+      '',
+      `/search/data?${searchParams.toString()}`
+    );
     user = userEvent.setup();
 
     state = JSON.parse(
@@ -202,7 +216,6 @@ describe('SearchTabs', () => {
       <SearchTabs
         view="table"
         containerHeight="100"
-        hierarchy="data"
         onTabChange={vi.fn()}
         currentTab="investigation"
         cartItems={[]}
@@ -254,7 +267,6 @@ describe('SearchTabs', () => {
       <SearchTabs
         view="table"
         containerHeight="100"
-        hierarchy="data"
         onTabChange={vi.fn()}
         currentTab="investigation"
         cartItems={[]}
@@ -293,7 +305,6 @@ describe('SearchTabs', () => {
       <SearchTabs
         view="table"
         containerHeight="100"
-        hierarchy="data"
         onTabChange={vi.fn()}
         currentTab="dataset"
         cartItems={[]}
@@ -302,9 +313,9 @@ describe('SearchTabs', () => {
     );
     searchParams.set('currentTab', 'dataset');
 
-    act(() => {
-      history.replace({ search: searchParams.toString() });
-    });
+    await user.click(
+      screen.getByRole('button', { name: 'Change search params' })
+    );
 
     expect(
       screen.queryByTestId('investigation-search-table')
@@ -318,7 +329,6 @@ describe('SearchTabs', () => {
       <SearchTabs
         view="table"
         containerHeight="100"
-        hierarchy="data"
         onTabChange={vi.fn()}
         currentTab="datafile"
         cartItems={[]}
@@ -327,9 +337,9 @@ describe('SearchTabs', () => {
     );
     searchParams.set('currentTab', 'datafile');
 
-    act(() => {
-      history.replace({ search: searchParams.toString() });
-    });
+    await user.click(
+      screen.getByRole('button', { name: 'Change search params' })
+    );
 
     expect(
       screen.queryByTestId('investigation-search-table')
@@ -354,7 +364,6 @@ describe('SearchTabs', () => {
       <SearchTabs
         view="card"
         containerHeight="100"
-        hierarchy="data"
         onTabChange={vi.fn()}
         currentTab="investigation"
         cartItems={[]}
@@ -396,7 +405,6 @@ describe('SearchTabs', () => {
       <SearchTabs
         view="card"
         containerHeight="100"
-        hierarchy="data"
         onTabChange={vi.fn()}
         currentTab="dataset"
         cartItems={[]}
@@ -404,9 +412,9 @@ describe('SearchTabs', () => {
       />
     );
     searchParams.set('currentTab', 'dataset');
-    act(() => {
-      history.replace({ search: searchParams.toString() });
-    });
+    await user.click(
+      screen.getByRole('button', { name: 'Change search params' })
+    );
 
     expect(
       screen.queryByTestId('investigation-search-card-view')
@@ -420,7 +428,6 @@ describe('SearchTabs', () => {
       <SearchTabs
         view="card"
         containerHeight="100"
-        hierarchy="data"
         onTabChange={vi.fn()}
         currentTab="datafile"
         cartItems={[]}
@@ -428,9 +435,9 @@ describe('SearchTabs', () => {
       />
     );
     searchParams.set('currentTab', 'datafile');
-    act(() => {
-      history.replace({ search: searchParams.toString() });
-    });
+    await user.click(
+      screen.getByRole('button', { name: 'Change search params' })
+    );
 
     expect(
       screen.queryByTestId('investigation-search-card-view')
@@ -451,16 +458,17 @@ describe('SearchTabs', () => {
       },
     };
 
-    const onTabChange = vi.fn((newTab) => {
+    const onTabChange = vi.fn(async (newTab) => {
       searchParams.set('currentTab', newTab);
-      history.replace({ search: searchParams.toString() });
+      await user.click(
+        screen.getByRole('button', { name: 'Change search params' })
+      );
     });
 
     const { rerender } = render(
       <SearchTabs
         view="table"
         containerHeight="100"
-        hierarchy="data"
         onTabChange={onTabChange}
         currentTab="investigation"
         cartItems={[]}
@@ -494,7 +502,6 @@ describe('SearchTabs', () => {
       <SearchTabs
         view="table"
         containerHeight="100"
-        hierarchy="data"
         onTabChange={onTabChange}
         currentTab="dataset"
         cartItems={[]}
@@ -536,7 +543,6 @@ describe('SearchTabs', () => {
       <SearchTabs
         view="card"
         containerHeight="100"
-        hierarchy="data"
         onTabChange={vi.fn()}
         currentTab="investigation"
         cartItems={[]}
@@ -579,7 +585,6 @@ describe('SearchTabs', () => {
       <SearchTabs
         view="card"
         containerHeight="100"
-        hierarchy="data"
         onTabChange={vi.fn()}
         currentTab="investigation"
         cartItems={[]}
@@ -611,7 +616,6 @@ describe('SearchTabs', () => {
       <SearchTabs
         view="card"
         containerHeight="100"
-        hierarchy="data"
         onTabChange={vi.fn()}
         currentTab="investigation"
         cartItems={[]}

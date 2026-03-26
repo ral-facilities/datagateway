@@ -2,7 +2,7 @@ import BugReport from '@mui/icons-material/BugReport';
 import { CircularProgress, Grid, Link, Typography } from '@mui/material';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router';
 
 const containerStyle = { height: '100%' };
 
@@ -16,17 +16,19 @@ const WithIdCheck: React.FC<{
   const [t] = useTranslation();
 
   React.useEffect(() => {
-    checkingPromise
-      .then((valid) => {
-        setValid(valid);
-      })
-      .catch(() => {
-        setValid(false);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [checkingPromise]);
+    // only want to run then/catch handlers on promise once, so only run when promise finally has not run
+    if (loading)
+      checkingPromise
+        .then((valid) => {
+          setValid(valid);
+        })
+        .catch(() => {
+          setValid(false);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+  }, [checkingPromise, loading]);
 
   const location = useLocation();
 

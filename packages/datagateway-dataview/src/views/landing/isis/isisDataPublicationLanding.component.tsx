@@ -27,7 +27,9 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router';
+import { checkInstrumentId } from '../../../page/idCheckFunctions';
+import WithIdCheck from '../../../page/withIdCheck';
 import { StateType } from '../../../state/app.types';
 import CitationFormatter from '../../citationFormatter.component';
 import Branding from './isisBranding.component';
@@ -166,7 +168,7 @@ const LinkedInvestigation = (
 
 const LandingPage = (props: LandingPageProps): React.ReactElement => {
   const [t] = useTranslation();
-  const { push } = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
   const { view } = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -387,7 +389,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 id="datapublication-investigations-tab"
                 label={t('datapublications.details.investigations')}
                 onClick={() =>
-                  push(
+                  navigate(
                     view
                       ? `${location.pathname}/investigation?view=${view}`
                       : `${location.pathname}/investigation`
@@ -486,4 +488,19 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   );
 };
 
-export default LandingPage;
+const ISISDataPublicationLandingPage = () => {
+  const { instrumentId = '', dataPublicationId = '' } = useParams();
+
+  return (
+    <WithIdCheck
+      checkingPromise={checkInstrumentId(
+        parseInt(instrumentId),
+        parseInt(dataPublicationId)
+      )}
+    >
+      <LandingPage dataPublicationId={dataPublicationId} />
+    </WithIdCheck>
+  );
+};
+
+export default ISISDataPublicationLandingPage;

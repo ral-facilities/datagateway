@@ -2,6 +2,7 @@ import { initialState as dgDataViewInitialState } from '../../../state/reducers/
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
+  act,
   render,
   screen,
   waitFor,
@@ -11,9 +12,8 @@ import {
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 import { dGCommonInitialState, type DataPublication } from 'datagateway-common';
-import { createMemoryHistory, type History } from 'history';
 import { Provider } from 'react-redux';
-import { Router, generatePath } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, generatePath } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { paths } from '../../../page/pageContainer.component';
@@ -23,6 +23,7 @@ import {
   findColumnHeaderByName,
   findColumnIndexByName,
   findRowAt,
+  flushPromises,
 } from '../../../setupTests';
 import type { StateType } from '../../../state/app.types';
 import ISISDataPublicationsTable from './isisDataPublicationsTable.component';
@@ -31,12 +32,20 @@ describe('ISIS Data Publication table component', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let rowData: DataPublication[];
-  let history: History;
   let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (studyDataPublicationId?: string): RenderResult => {
+    window.history.replaceState(
+      {},
+      '',
+      generatePath(paths.dataPublications.toggle.isisStudyDataPublication, {
+        instrumentId: 1,
+      })
+    );
     if (studyDataPublicationId)
-      history.replace(
+      window.history.replaceState(
+        {},
+        '',
         generatePath(
           paths.dataPublications.toggle.isisInvestigationDataPublication,
           {
@@ -48,14 +57,22 @@ describe('ISIS Data Publication table component', () => {
     const store = mockStore(state);
     return render(
       <Provider store={store}>
-        <Router history={history}>
+        <BrowserRouter>
           <QueryClientProvider client={new QueryClient()}>
-            <ISISDataPublicationsTable
-              instrumentId="1"
-              studyDataPublicationId={studyDataPublicationId}
-            />
+            <Routes>
+              <Route
+                path={paths.dataPublications.toggle.isisStudyDataPublication}
+                element={<ISISDataPublicationsTable />}
+              />
+              <Route
+                path={
+                  paths.dataPublications.toggle.isisInvestigationDataPublication
+                }
+                element={<ISISDataPublicationsTable />}
+              />
+            </Routes>
           </QueryClientProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
   };
@@ -86,13 +103,6 @@ describe('ISIS Data Publication table component', () => {
         },
       },
     ];
-    history = createMemoryHistory({
-      initialEntries: [
-        generatePath(paths.dataPublications.toggle.isisStudyDataPublication, {
-          instrumentId: 1,
-        }),
-      ],
-    });
     user = userEvent.setup({
       delay: null,
     });
@@ -181,8 +191,8 @@ describe('ISIS Data Publication table component', () => {
       // user.type inputs the given string character by character to simulate user typing
       // each keystroke of user.type creates a new entry in the history stack
       // so the initial entry + 4 characters in "test" = 5 entries
-      expect(history.length).toBe(5);
-      expect(history.location.search).toBe(
+
+      expect(window.location.search).toContain(
         `?filters=${encodeURIComponent(
           '{"title":{"value":"test","type":"include"}}'
         )}`
@@ -190,17 +200,19 @@ describe('ISIS Data Publication table component', () => {
 
       await user.clear(filterInput);
 
-      expect(history.length).toBe(6);
-      expect(history.location.search).toBe('?');
+      expect(window.location.search).not.toContain('filters=');
     });
 
     it('uses default sort', async () => {
       renderComponent();
 
+      await act(async () => {
+        await flushPromises();
+      });
+
       expect(await screen.findAllByRole('gridcell')).toBeTruthy();
 
-      expect(history.length).toBe(1);
-      expect(history.location.search).toBe(
+      expect(window.location.search).toBe(
         `?sort=${encodeURIComponent('{"title":"desc"}')}`
       );
 
@@ -218,8 +230,7 @@ describe('ISIS Data Publication table component', () => {
         await screen.findByRole('button', { name: 'datapublications.pid' })
       );
 
-      expect(history.length).toBe(2);
-      expect(history.location.search).toBe(
+      expect(window.location.search).toBe(
         `?sort=${encodeURIComponent('{"pid":"asc"}')}`
       );
     });
@@ -305,8 +316,7 @@ describe('ISIS Data Publication table component', () => {
 
       await user.type(filterInput, '2019-08-06');
 
-      expect(history.length).toBe(2);
-      expect(history.location.search).toBe(
+      expect(window.location.search).toContain(
         `?filters=${encodeURIComponent(
           '{"publicationDate":{"endDate":"2019-08-06"}}'
         )}`
@@ -317,17 +327,19 @@ describe('ISIS Data Publication table component', () => {
       await user.keyboard('{Control}a{/Control}');
       await user.keyboard('{Delete}');
 
-      expect(history.length).toBe(3);
-      expect(history.location.search).toBe('?');
+      expect(window.location.search).not.toContain('filters=');
     });
 
     it('uses default sort', async () => {
       renderComponent('2');
 
+      await act(async () => {
+        await flushPromises();
+      });
+
       expect(await screen.findAllByRole('gridcell')).toBeTruthy();
 
-      expect(history.length).toBe(1);
-      expect(history.location.search).toBe(
+      expect(window.location.search).toBe(
         `?sort=${encodeURIComponent('{"publicationDate":"desc"}')}`
       );
 

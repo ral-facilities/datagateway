@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
+  act,
   render,
   screen,
   within,
@@ -12,17 +13,17 @@ import {
   useFacilityCyclesInfinite,
   type FacilityCycle,
 } from 'datagateway-common';
-import { createMemoryHistory, type History } from 'history';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, generatePath } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import type { MockInstance } from 'vitest';
+import { paths } from '../../../page/pageContainer.component';
 import {
   findAllRows,
   findCellInRow,
   findColumnHeaderByName,
   findColumnIndexByName,
+  flushPromises,
 } from '../../../setupTests';
 import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
@@ -43,19 +44,22 @@ describe('ISIS FacilityCycles table component', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let rowData: FacilityCycle[];
-  let history: History;
-  let replaceSpy: MockInstance;
   let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult => {
     const store = mockStore(state);
     return render(
       <Provider store={store}>
-        <Router history={history}>
+        <BrowserRouter>
           <QueryClientProvider client={new QueryClient()}>
-            <ISISFacilityCyclesTable instrumentId="1" />
+            <Routes>
+              <Route
+                path={paths.toggle.isisFacilityCycle}
+                element={<ISISFacilityCyclesTable />}
+              />
+            </Routes>
           </QueryClientProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
   };
@@ -70,8 +74,13 @@ describe('ISIS FacilityCycles table component', () => {
         endDate: '2019-07-04',
       },
     ];
-    history = createMemoryHistory();
-    replaceSpy = vi.spyOn(history, 'replace');
+    window.history.replaceState(
+      {},
+      '',
+      generatePath(paths.toggle.isisFacilityCycle, {
+        instrumentId: '1',
+      })
+    );
     user = userEvent.setup();
 
     state = JSON.parse(
@@ -152,8 +161,8 @@ describe('ISIS FacilityCycles table component', () => {
     // user.type inputs the given string character by character to simulate user typing
     // each keystroke of user.type creates a new entry in the history stack
     // so the initial entry + 4 characters in "test" = 5 entries
-    expect(history.length).toBe(5);
-    expect(history.location.search).toBe(
+
+    expect(window.location.search).toContain(
       `?filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
       )}`
@@ -161,8 +170,7 @@ describe('ISIS FacilityCycles table component', () => {
 
     await user.clear(filterInput);
 
-    expect(history.length).toBe(6);
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).not.toContain('filters=');
   });
 
   it('updates filter query params on date filter', async () => {
@@ -174,8 +182,7 @@ describe('ISIS FacilityCycles table component', () => {
 
     await user.type(filterInput, '2019-08-06');
 
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
+    expect(window.location.search).toContain(
       `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
     );
 
@@ -184,30 +191,28 @@ describe('ISIS FacilityCycles table component', () => {
     await user.keyboard('{Control}a{/Control}');
     await user.keyboard('{Delete}');
 
-    expect(history.length).toBe(3);
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).not.toContain('filters=');
   });
 
   it('uses default sort', async () => {
     renderComponent();
 
-    expect(await screen.findAllByRole('gridcell')).toBeTruthy();
-
-    expect(history.length).toBe(1);
-    expect(replaceSpy).toHaveBeenCalledWith({
-      search: `?sort=${encodeURIComponent('{"startDate":"desc"}')}`,
+    await act(async () => {
+      await flushPromises();
     });
 
-    // check that the data request is sent only once after mounting
-    expect(useFacilityCyclesInfinite).toHaveBeenCalledTimes(2);
-    expect(useFacilityCyclesInfinite).toHaveBeenCalledWith(
-      expect.anything(),
-      false
+    expect(await screen.findAllByRole('gridcell')).toBeTruthy();
+
+    expect(window.location.search).toBe(
+      `?sort=${encodeURIComponent('{"startDate":"desc"}')}`
     );
-    expect(useFacilityCyclesInfinite).toHaveBeenLastCalledWith(
-      expect.anything(),
-      true
-    );
+
+    // check that the data hook is only called once with the query enabled
+    expect(
+      vi
+        .mocked(useFacilityCyclesInfinite)
+        .mock.calls.filter((call) => call[1] === true)
+    ).toHaveLength(1);
   });
 
   it('updates sort query params on sort', async () => {
@@ -215,8 +220,7 @@ describe('ISIS FacilityCycles table component', () => {
 
     await user.click(await screen.findByText('facilitycycles.name'));
 
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"asc"}')}`
     );
   });

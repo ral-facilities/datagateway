@@ -20,30 +20,16 @@ import {
   ViewCartButton,
   ViewsType,
   parseSearchToQuery,
-  readSciGatewayToken,
   useCart,
   useUpdateQueryParam,
   useUpdateView,
 } from 'datagateway-common';
-import { Location as LocationType } from 'history';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
-import {
-  Route,
-  Switch as SwitchRouting,
-  matchPath,
-  useHistory,
-  useLocation,
-  useRouteMatch,
-} from 'react-router-dom';
-import { StateType } from '../state/app.types';
+import { Outlet, matchPath, useLocation, useNavigate } from 'react-router';
 import DOITypeSelector from '../views/doiTypeSelector.component';
 import RoleSelector from '../views/roleSelector.component';
 import PageBreadcrumbs from './breadcrumbs.component';
-import PageRouting from './pageRouting.component';
-import { DoiRedirect, GenericRedirect } from './redirect.component';
-import TranslatedHomePage from './translatedHomePage.component';
 
 const getTablePaperStyle = (
   displayFilterMessage: boolean,
@@ -195,12 +181,14 @@ const NavBar = React.memo(
     } & CartProps
   ): React.ReactElement => {
     const [t] = useTranslation();
-    const isDataPublication =
-      useRouteMatch([
-        ...Object.values(paths.dataPublications.toggle),
-        ...Object.values(paths.dataPublications.standard),
-      ]) !== null;
-    const isISISRoute = useRouteMatch(isisPaths) !== null;
+    const { pathname } = useLocation();
+    const isDataPublication = [
+      ...Object.values(paths.dataPublications.toggle),
+      ...Object.values(paths.dataPublications.standard),
+    ].some((pathPattern) => matchPath(pathPattern, pathname) !== null);
+    const isISISRoute = isisPaths.some(
+      (pathPattern) => matchPath(pathPattern, pathname) !== null
+    );
     const landingPages = isDataPublication
       ? paths.dataPublications.landing
       : isISISRoute
@@ -220,18 +208,11 @@ const NavBar = React.memo(
             xs
             aria-label="page-breadcrumbs"
           >
-            {/* don't show breadcrumbs on /my-data or dls landing pages - only on browse */}
-            <SwitchRouting>
-              <Route
-                path={[
-                  paths.landing.dlsDataPublicationLanding,
-                  paths.dataPublications.dls.allDOIs,
-                ]}
-              />
-              <Route path={[paths.root, paths.dataPublications.root]}>
-                <PageBreadcrumbs landingPageEntities={landingPageEntities} />
-              </Route>
-            </SwitchRouting>
+            {/* show breadcrumbs on browse routes */}
+            {[paths.root, paths.dataPublications.root].some(
+              (pathPattern) =>
+                matchPath({ path: pathPattern, end: false }, pathname) !== null
+            ) && <PageBreadcrumbs landingPageEntities={landingPageEntities} />}
           </Grid>
 
           {props.loggedInAnonymously || isDataPublication ? (
@@ -293,9 +274,8 @@ const NavBar = React.memo(
 
           {/* The table entity count has a size of 2 (or 3 for xs screens); the
             breadcrumbs will take the remainder of the space. */}
-          <Route
-            exact
-            path={Object.values(paths.myData).concat(
+          {Object.values(paths.myData)
+            .concat(
               [
                 paths.dataPublications.dls.allDOIs,
                 paths.dataPublications.dls.myDOIs,
@@ -304,35 +284,34 @@ const NavBar = React.memo(
               Object.values(paths.standard),
               Object.values(paths.dataPublications.toggle),
               Object.values(paths.dataPublications.standard)
-            )}
-            render={() => {
-              return (
-                <Grid
-                  className="tour-dataview-results"
-                  sx={{ textAlign: 'center' }}
-                  item
-                  sm={2}
-                  xs={3}
-                  aria-label="view-count"
-                >
-                  <Paper
-                    square
-                    sx={{
-                      backgroundColor: 'inherit',
-                      height: '100%',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <Typography variant="h6" component="h3">
-                      <b>{t('app.results')}:</b> {props.entityCount}
-                    </Typography>
-                  </Paper>
-                </Grid>
-              );
-            }}
-          />
+            )
+            .some(
+              (pathPattern) => matchPath(pathPattern, pathname) !== null
+            ) && (
+            <Grid
+              className="tour-dataview-results"
+              sx={{ textAlign: 'center' }}
+              item
+              sm={2}
+              xs={3}
+              aria-label="view-count"
+            >
+              <Paper
+                square
+                sx={{
+                  backgroundColor: 'inherit',
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                }}
+              >
+                <Typography variant="h6" component="h3">
+                  <b>{t('app.results')}:</b> {props.entityCount}
+                </Typography>
+              </Paper>
+            </Grid>
+          )}
           <Paper
             square
             sx={{
@@ -375,20 +354,10 @@ NavBar.displayName = 'NavBar';
 
 const StyledRouting = (props: {
   viewStyle: ViewsType;
-  view: ViewsType;
-  location: LocationType;
   displayFilterMessage: boolean;
-  loggedInAnonymously: boolean;
   linearProgressHeight: string;
 }): React.ReactElement => {
-  const {
-    view,
-    location,
-    viewStyle,
-    displayFilterMessage,
-    loggedInAnonymously,
-    linearProgressHeight,
-  } = props;
+  const { viewStyle, displayFilterMessage, linearProgressHeight } = props;
 
   const breadcrumbDiv = document.getElementById('breadcrumbs');
 
@@ -431,11 +400,7 @@ const StyledRouting = (props: {
         sx={viewStyle === 'card' ? cardPaperStyle : tableClassStyle}
         className="tour-dataview-data"
       >
-        <PageRouting
-          loggedInAnonymously={loggedInAnonymously}
-          view={view}
-          location={location}
-        />
+        <Outlet />
       </Paper>
     </div>
   );
@@ -446,72 +411,54 @@ const ViewRouting = React.memo(
     view: ViewsType;
     loadedCount: boolean;
     totalDataCount: number;
-    location: LocationType;
-    loggedInAnonymously: boolean;
     linearProgressHeight: string;
   }): React.ReactElement => {
-    const {
-      view,
-      loadedCount,
-      totalDataCount,
-      location,
-      loggedInAnonymously,
-      linearProgressHeight,
-    } = props;
+    const { view, loadedCount, totalDataCount, linearProgressHeight } = props;
     const displayFilterMessage =
       loadedCount &&
       totalDataCount === 0 &&
-      !matchPath(location.pathname, {
-        path: Object.values(paths.preview),
-        exact: true,
-      }) &&
-      !matchPath(location.pathname, {
-        path: paths.landing.dlsDataPublicationLanding + '/edit',
-        exact: true,
-      });
+      Object.values(paths.preview).every(
+        (pathPattern) => matchPath(pathPattern, location.pathname) === null
+      ) &&
+      !matchPath(
+        paths.landing.dlsDataPublicationLanding + '/edit',
+        location.pathname
+      );
+
+    /* For "landing" paths, don't use a containing Paper */
+    if (
+      [
+        ...Object.values(paths.landing),
+        ...Object.values(paths.dataPublications.landing),
+        ...Object.values(paths.preview),
+      ].some(
+        (pathPattern) => matchPath(pathPattern, location.pathname) !== null
+      )
+    )
+      return <Outlet />;
+
+    /* For "toggle" paths, check state for the current view to determine styling */
+    if (
+      togglePaths.some(
+        (pathPattern) => matchPath(pathPattern, location.pathname) !== null
+      )
+    )
+      return (
+        <StyledRouting
+          viewStyle={view}
+          displayFilterMessage={displayFilterMessage}
+          linearProgressHeight={linearProgressHeight}
+        />
+      );
+
+    /* Otherwise, use the paper styling for tables*/
 
     return (
-      <SwitchRouting>
-        {/* For "landing" paths, don't use a containing Paper */}
-        <Route
-          exact
-          path={[
-            ...Object.values(paths.landing),
-            ...Object.values(paths.dataPublications.landing),
-            ...Object.values(paths.preview),
-          ]}
-          render={() => (
-            <PageRouting
-              loggedInAnonymously={loggedInAnonymously}
-              view={view}
-              location={location}
-            />
-          )}
-        />
-        {/* For "toggle" paths, check state for the current view to determine styling */}
-        <Route exact path={togglePaths}>
-          <StyledRouting
-            viewStyle={view}
-            view={view}
-            location={location}
-            loggedInAnonymously={loggedInAnonymously}
-            displayFilterMessage={displayFilterMessage}
-            linearProgressHeight={linearProgressHeight}
-          />
-        </Route>
-
-        {/* Otherwise, use the paper styling for tables*/}
-        <Route>
-          <StyledRouting
-            viewStyle={'table'}
-            view={view}
-            location={location}
-            loggedInAnonymously={loggedInAnonymously}
-            displayFilterMessage={displayFilterMessage}
-            linearProgressHeight={linearProgressHeight}
-          />
-        </Route>
-      </SwitchRouting>
+      <StyledRouting
+        viewStyle={'table'}
+        displayFilterMessage={displayFilterMessage}
+        linearProgressHeight={linearProgressHeight}
+      />
     );
   }
 );
@@ -554,17 +501,17 @@ const getToggle = (pathname: string, view: ViewsType): boolean => {
     : false;
 };
 
-const DataviewPageContainer: React.FC = () => {
+const PageContainer = (props: { loggedInAnonymously: boolean }) => {
+  const { loggedInAnonymously } = props;
   const location = useLocation();
-  const { push } = useHistory();
-  const anonUserName = useSelector(
-    (state: StateType) => state.dgcommon.anonUserName
-  );
-  const prevLocationRef = React.useRef(location);
+  const navigate = useNavigate();
+
   const { view } = React.useMemo(
     () => parseSearchToQuery(location.search),
     [location.search]
   );
+
+  const prevLocationRef = React.useRef(location);
   const [totalDataCount, setTotalDataCount] = React.useState(0);
 
   // exclude size and count queries from showing the linear progress bar for performance
@@ -622,22 +569,27 @@ const DataviewPageContainer: React.FC = () => {
     pushView(nextView);
   }, [pushView, view]);
 
-  const navigateToDownload = React.useCallback(() => push('/download'), [push]);
+  const navigateToDownload = React.useCallback(
+    () => navigate('/download'),
+    [navigate]
+  );
 
-  const isisRouteMatch = useRouteMatch(isisPaths);
-  const dlsRouteMatch = useRouteMatch(dlsPaths);
-  const isISISRoute = isisRouteMatch !== null;
-  const isDLSRoute = dlsRouteMatch !== null;
+  const isISISRoute = isisPaths.some(
+    (pathPattern) => matchPath(pathPattern, location.pathname) !== null
+  );
+  const isDLSRoute = dlsPaths.some(
+    (pathPattern) => matchPath(pathPattern, location.pathname) !== null
+  );
 
   const navigateToSearch = React.useCallback(() => {
     if (isISISRoute) {
-      return push('/search/isis');
+      return navigate('/search/isis');
     } else if (isDLSRoute) {
-      return push('/search/dls');
+      return navigate('/search/dls');
     } else {
-      return push('/search/data');
+      return navigate('/search/data');
     }
-  }, [push, isISISRoute, isDLSRoute]);
+  }, [navigate, isISISRoute, isDLSRoute]);
 
   React.useEffect(() => {
     prevLocationRef.current = location;
@@ -657,11 +609,6 @@ const DataviewPageContainer: React.FC = () => {
       replaceView('card');
     }
   }, [location.pathname, view, prevView, prevLocation.pathname, replaceView]);
-
-  // Determine whether logged in anonymously (assume this if username is null)
-  const username = readSciGatewayToken().username;
-  const loggedInAnonymously =
-    username === null || username === (anonUserName ?? 'anon/anon');
 
   const { filters } = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -703,48 +650,35 @@ const DataviewPageContainer: React.FC = () => {
       <StyledGrid container>
         <Grid item xs={12} style={{ marginTop: '10px', marginBottom: '10px' }}>
           <StyledGrid container alignItems="baseline">
-            {/* Toggle between the table and card view */}
             <Grid container item alignItems="end">
-              <Route
-                exact
-                path={Object.values(paths.myData)}
-                render={() => (
-                  <Grid item ml={1} xs="auto">
-                    <RoleSelector />
-                  </Grid>
-                )}
-              />
-              <Route
-                exact
-                path={paths.dataPublications.dls.myDOIs}
-                render={() => (
-                  // doesn't need a grid item wrapper as it's already got a grid
-                  <DOITypeSelector type="myDOIs" />
-                )}
-              />
-              <Route
-                exact
-                path={paths.dataPublications.dls.allDOIs}
-                render={() => (
-                  // doesn't need a grid item wrapper as it's already got a grid
-                  <DOITypeSelector type="allDOIs" />
-                )}
-              />
-              <Route
-                exact
-                path={togglePaths}
-                render={() => (
-                  <Grid item ml={1} xs="auto">
-                    <ViewButton
-                      viewCards={view === 'card'}
-                      handleButtonChange={handleButtonChange}
-                    />
-                  </Grid>
-                )}
-              />
-              <Route
-                exact
-                path={Object.values(paths.myData).concat(
+              {Object.values(paths.myData).some(
+                (pathPattern) =>
+                  matchPath(pathPattern, location.pathname) !== null
+              ) && (
+                <Grid item ml={1} xs="auto">
+                  <RoleSelector />
+                </Grid>
+              )}
+              {matchPath(
+                paths.dataPublications.dls.myDOIs,
+                location.pathname
+              ) !== null && <DOITypeSelector type="myDOIs" />}
+              {matchPath(
+                paths.dataPublications.dls.allDOIs,
+                location.pathname
+              ) !== null && <DOITypeSelector type="allDOIs" />}
+              {/* Toggle between the table and card view */}
+              {Object.values(togglePaths).some(
+                (pathPattern) =>
+                  matchPath(pathPattern, location.pathname) !== null
+              ) && (
+                <ViewButton
+                  viewCards={view === 'card'}
+                  handleButtonChange={handleButtonChange}
+                />
+              )}
+              {Object.values(paths.myData)
+                .concat(
                   [
                     paths.dataPublications.dls.allDOIs,
                     paths.dataPublications.dls.myDOIs,
@@ -753,16 +687,18 @@ const DataviewPageContainer: React.FC = () => {
                   Object.values(paths.standard),
                   Object.values(paths.dataPublications.toggle),
                   Object.values(paths.dataPublications.standard)
-                )}
-                render={() => (
-                  <Grid item ml={1} xs="auto">
-                    <ClearFiltersButton
-                      handleButtonClearFilters={handleButtonClearFilters}
-                      disabled={disabled}
-                    />
-                  </Grid>
-                )}
-              />
+                )
+                .some(
+                  (pathPattern) =>
+                    matchPath(pathPattern, location.pathname) !== null
+                ) && (
+                <Grid item ml={1} xs="auto">
+                  <ClearFiltersButton
+                    handleButtonClearFilters={handleButtonClearFilters}
+                    disabled={disabled}
+                  />
+                </Grid>
+              )}
             </Grid>
             <Grid item xs={true}>
               <SelectionAlert
@@ -789,36 +725,13 @@ const DataviewPageContainer: React.FC = () => {
         <Grid item xs={12} aria-label="page-view">
           <ViewRouting
             view={view}
-            location={location}
             loadedCount={loadedCount}
-            loggedInAnonymously={loggedInAnonymously}
             totalDataCount={totalDataCount ?? 0}
             linearProgressHeight={linearProgressHeight}
           />
         </Grid>
       </StyledGrid>
     </Paper>
-  );
-};
-
-const PageContainer: React.FC = () => {
-  const location = useLocation();
-
-  return (
-    <SwitchRouting location={location}>
-      {/* Load the homepage */}
-      <Route exact path={paths.homepage} component={TranslatedHomePage} />
-      <Route exact path={paths.doiRedirect}>
-        <DoiRedirect />
-      </Route>
-      <Route path={paths.genericRedirect}>
-        <GenericRedirect />
-      </Route>
-      {/* Load the standard dataview pageContainer */}
-      <Route>
-        <DataviewPageContainer />
-      </Route>
-    </SwitchRouting>
   );
 };
 

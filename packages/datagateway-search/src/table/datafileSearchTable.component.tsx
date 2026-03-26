@@ -25,7 +25,7 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 import type { TableCellProps } from 'react-virtualized';
 import FacetPanel from '../facet/components/facetPanel/facetPanel.component';
 import SelectedFilterChips from '../facet/components/selectedFilterChips.component';
@@ -46,9 +46,16 @@ const DatafileSearchTable: React.FC<DatafileSearchTableProps> = (props) => {
     () => parseSearchToQuery(location.search),
     [location.search]
   );
-  const { startDate, endDate, sort, filters, restrict, datafile, currentTab } =
-    queryParams;
-  const searchText = queryParams.searchText ? queryParams.searchText : '';
+  const {
+    startDate,
+    endDate,
+    sort,
+    filters,
+    restrict,
+    datafile,
+    currentTab,
+    searchText,
+  } = queryParams;
 
   const disableSelectAll = useSelector(
     (state: StateType) => state.dgcommon.features?.disableSelectAll ?? false
@@ -66,7 +73,7 @@ const DatafileSearchTable: React.FC<DatafileSearchTableProps> = (props) => {
     useLuceneSearchInfinite(
       'Datafile',
       {
-        searchText,
+        searchText: searchText ?? '',
         startDate,
         endDate,
         sort,
@@ -87,7 +94,7 @@ const DatafileSearchTable: React.FC<DatafileSearchTableProps> = (props) => {
       },
       currentTab === 'datafile' ? filters : {},
       {
-        enabled: datafile,
+        enabled: datafile && searchText !== null,
         // this select removes the facet count for the InvestigationInstrument.instrument.name
         // facet since the number is confusing for datafiles
         select: (data) => ({

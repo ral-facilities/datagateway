@@ -24,7 +24,7 @@ import Fingerprint from '@mui/icons-material/Fingerprint';
 import Lock from '@mui/icons-material/Lock';
 import Public from '@mui/icons-material/Public';
 import { Chip } from '@mui/material';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 
 interface DLSBaseDOIsTableProps {
   filterParams: AdditionalFilters;
@@ -43,7 +43,19 @@ const DLSBaseDOIsTable = (props: DLSBaseDOIsTableProps): React.ReactElement => {
    */
   const { data: totalDataCount } = useDataPublicationCount(filterParams);
 
-  const { fetchNextPage, data } = useDataPublicationsInfinite(filterParams);
+  // isInitialised is used to disable queries when the component isn't fully initialised.
+  // It prevents the request being sent twice if default sort is set.
+  // It is not needed for cards/tables that don't have default sort.
+  const [isInitialised, setIsInitialised] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!isInitialised && Object.keys(sort).length > 0) setIsInitialised(true);
+  }, [filters, isInitialised, sort]);
+
+  const { fetchNextPage, data } = useDataPublicationsInfinite(
+    filterParams,
+    isInitialised
+  );
 
   /* istanbul ignore next */
   const aggregatedData: DataPublication[] = React.useMemo(() => {

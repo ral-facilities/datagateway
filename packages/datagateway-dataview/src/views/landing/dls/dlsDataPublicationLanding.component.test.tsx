@@ -20,15 +20,20 @@ import {
   dGCommonInitialState,
   readSciGatewayToken,
 } from 'datagateway-common';
-import { History, createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
-import { Router, generatePath } from 'react-router-dom';
+import {
+  MemoryRouter,
+  Route,
+  Routes,
+  generatePath,
+  useLocation,
+} from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { paths } from '../../../page/pageContainer.component';
 import { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
-import DLSDataPublicationLanding from './dlsDataPublicationLanding.component';
+import DLSDataPublicationLandingPage from './dlsDataPublicationLanding.component';
 
 vi.mock('datagateway-common', async () => {
   const originalModule = await vi.importActual('datagateway-common');
@@ -40,20 +45,37 @@ vi.mock('datagateway-common', async () => {
   };
 });
 
+// used to verify the location state is correct
+const MockEditPage = () => {
+  const { state } = useLocation();
+  return <div data-testid="mock-edit-page">{JSON.stringify(state)}</div>;
+};
+
 describe('DLS Data Publication Landing page', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
-  let history: History;
   let user: UserEvent;
+  let initialEntries: React.ComponentProps<
+    typeof MemoryRouter
+  >['initialEntries'];
 
   const renderComponent = (): RenderResult =>
     render(
       <Provider store={mockStore(state)}>
-        <Router history={history}>
+        <MemoryRouter initialEntries={initialEntries}>
           <QueryClientProvider client={new QueryClient()}>
-            <DLSDataPublicationLanding dataPublicationId="1" />
+            <Routes>
+              <Route
+                path={paths.landing.dlsDataPublicationLanding}
+                element={<DLSDataPublicationLandingPage />}
+              />
+              <Route
+                path={`${paths.landing.dlsDataPublicationLanding}/edit`}
+                element={<MockEditPage />}
+              />
+            </Routes>
           </QueryClientProvider>
-        </Router>
+        </MemoryRouter>
       </Provider>
     );
 
@@ -276,13 +298,11 @@ describe('DLS Data Publication Landing page', () => {
       })
     );
 
-    history = createMemoryHistory({
-      initialEntries: [
-        generatePath(paths.landing.dlsDataPublicationLanding, {
-          dataPublicationId: '1',
-        }),
-      ],
-    });
+    initialEntries = [
+      generatePath(paths.landing.dlsDataPublicationLanding, {
+        dataPublicationId: '1',
+      }),
+    ];
     user = userEvent.setup();
 
     axios.get = vi
@@ -443,12 +463,9 @@ describe('DLS Data Publication Landing page', () => {
       })
     );
 
-    expect(history.location).toMatchObject({
-      pathname: `${generatePath(paths.landing.dlsDataPublicationLanding, {
-        dataPublicationId: '1',
-      })}/edit`,
-      state: { fromEdit: true },
-    });
+    expect(screen.getByTestId('mock-edit-page')).toHaveTextContent(
+      '{"fromEdit":true}'
+    );
   });
 
   it('renders download button & clicking it opens download dialogue', async () => {

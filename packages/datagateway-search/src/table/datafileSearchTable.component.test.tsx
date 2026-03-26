@@ -15,9 +15,8 @@ import {
   SearchResultSource,
   dGCommonInitialState,
 } from 'datagateway-common';
-import { History, createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {
@@ -35,7 +34,6 @@ import DatafileSearchTable from './datafileSearchTable.component';
 describe('Datafile search table component', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
-  let history: History;
   let queryClient: QueryClient;
   let user: ReturnType<typeof userEvent.setup>;
   let cartItems: DownloadCartItem[];
@@ -46,11 +44,11 @@ describe('Datafile search table component', () => {
   const renderComponent = (hierarchy?: string): RenderResult =>
     render(
       <Provider store={mockStore(state)}>
-        <Router history={history}>
+        <BrowserRouter>
           <QueryClientProvider client={queryClient}>
             <DatafileSearchTable hierarchy={hierarchy ?? ''} />
           </QueryClientProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
 
@@ -113,11 +111,11 @@ describe('Datafile search table component', () => {
   }
 
   beforeEach(() => {
-    history = createMemoryHistory({
-      initialEntries: [
-        { search: '?searchText=test search&currentTab=datafile' },
-      ],
-    });
+    window.history.replaceState(
+      {},
+      '',
+      '/search/data?searchText=test search&currentTab=datafile'
+    );
     user = userEvent.setup();
     queryClient = new QueryClient({
       defaultOptions: {
@@ -215,9 +213,13 @@ describe('Datafile search table component', () => {
   });
 
   it('disables the search query if datafile search is disabled', async () => {
-    const searchParams = new URLSearchParams(history.location.search);
+    const searchParams = new URLSearchParams(window.location.search);
     searchParams.append('datafile', 'false');
-    history.replace({ search: `?${searchParams.toString()}` });
+    window.history.replaceState(
+      {},
+      '',
+      `${window.location.pathname}?${searchParams.toString()}`
+    );
 
     renderComponent();
 
@@ -377,15 +379,18 @@ describe('Datafile search table component', () => {
   });
 
   it('applies filters already present in the URL on first render', async () => {
-    const searchParams = new URLSearchParams(history.location.search);
+    const searchParams = new URLSearchParams(window.location.search);
     searchParams.append(
       'filters',
       JSON.stringify({
         'Datafile.datafileFormat.name': ['txt'],
       })
     );
-    history.replace({ search: `?${searchParams.toString()}` });
-
+    window.history.replaceState(
+      {},
+      '',
+      `${window.location.pathname}?${searchParams.toString()}`
+    );
     renderComponent();
 
     // when filters are applied
@@ -412,15 +417,18 @@ describe('Datafile search table component', () => {
   });
 
   it('allows filters to be removed through the facet filter panel', async () => {
-    const searchParams = new URLSearchParams(history.location.search);
+    const searchParams = new URLSearchParams(window.location.search);
     searchParams.append(
       'filters',
       JSON.stringify({
         'Datafile.datafileFormat.name': ['txt'],
       })
     );
-    history.replace({ search: `?${searchParams.toString()}` });
-
+    window.history.replaceState(
+      {},
+      '',
+      `${window.location.pathname}?${searchParams.toString()}`
+    );
     renderComponent();
 
     // when filters are applied
@@ -474,15 +482,18 @@ describe('Datafile search table component', () => {
   });
 
   it('allows filters to be removed by removing filter chips', async () => {
-    const searchParams = new URLSearchParams(history.location.search);
+    const searchParams = new URLSearchParams(window.location.search);
     searchParams.append(
       'filters',
       JSON.stringify({
         'Datafile.datafileFormat.name': ['txt'],
       })
     );
-    history.replace({ search: `?${searchParams.toString()}` });
-
+    window.history.replaceState(
+      {},
+      '',
+      `${window.location.pathname}?${searchParams.toString()}`
+    );
     renderComponent();
 
     // when filters are applied

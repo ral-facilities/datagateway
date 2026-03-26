@@ -14,6 +14,7 @@ import {
   tableLink,
   useAddToCart,
   useCart,
+  useDataPublication,
   useDatasetCount,
   useDatasetsInfinite,
   useDateFilter,
@@ -25,16 +26,22 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import { IndexRange, TableCellProps } from 'react-virtualized';
+import {
+  checkInstrumentAndFacilityCycleId,
+  checkInstrumentId,
+  checkStudyDataPublicationId,
+} from '../../../page/idCheckFunctions';
+import WithIdCheck from '../../../page/withIdCheck';
 import { StateType } from '../../../state/app.types';
 
-interface ISISDatasetsTableProps {
+interface BaseISISDatasetsTableProps {
   investigationId: string;
 }
 
-const ISISDatasetsTable = (
-  props: ISISDatasetsTableProps
+const BaseISISDatasetsTable = (
+  props: BaseISISDatasetsTableProps
 ): React.ReactElement => {
   const { investigationId } = props;
 
@@ -42,7 +49,7 @@ const ISISDatasetsTable = (
 
   const location = useLocation();
 
-  const { push } = useHistory();
+  const navigate = useNavigate();
 
   const disableSelectAll = useSelector(
     (state: StateType) => state.dgcommon.features?.disableSelectAll ?? false
@@ -84,13 +91,14 @@ const ISISDatasetsTable = (
     },
   ]);
 
-  // isMounted is used to disable queries when the component isn't fully mounted.
+  // isInitialised is used to disable queries when the component isn't fully initialised.
   // It prevents the request being sent twice if default sort is set.
   // It is not needed for cards/tables that don't have default sort.
-  const [isMounted, setIsMounted] = React.useState(false);
+  const [isInitialised, setIsInitialised] = React.useState(false);
+
   React.useEffect(() => {
-    setIsMounted(true);
-  }, []);
+    if (!isInitialised && Object.keys(sort).length > 0) setIsInitialised(true);
+  }, [isInitialised, sort]);
 
   const { fetchNextPage, data } = useDatasetsInfinite(
     [
@@ -101,7 +109,7 @@ const ISISDatasetsTable = (
         }),
       },
     ],
-    isMounted
+    isInitialised
   );
 
   const loadMoreRows = React.useCallback(
@@ -188,11 +196,11 @@ const ISISDatasetsTable = (
           rowData={rowData}
           detailsPanelResize={detailsPanelResize}
           viewDatafiles={(id: number) =>
-            push(`${location.pathname}/${id}/datafile`)
+            navigate(`${location.pathname}/${id}/datafile`)
           }
         />
       ),
-      [location.pathname, push]
+      [location.pathname, navigate]
     );
 
   return (
@@ -227,6 +235,49 @@ const ISISDatasetsTable = (
       ]}
       columns={columns}
     />
+  );
+};
+
+const ISISDatasetsTable = (props: { dataPublication: boolean }) => {
+  const {
+    instrumentId = '',
+    dataPublicationId = '',
+    facilityCycleId = '',
+    investigationId = '',
+  } = useParams();
+  const { data, isPending } = useDataPublication(
+    parseInt(investigationId),
+    props.dataPublication
+  );
+
+  const dataPublicationInvestigationId =
+    data?.content?.dataCollectionInvestigations?.[0]?.investigation?.id;
+
+  const checkingPromise = props.dataPublication
+    ? Promise.all([
+        checkInstrumentId(parseInt(instrumentId), parseInt(dataPublicationId)),
+        checkStudyDataPublicationId(
+          parseInt(dataPublicationId),
+          parseInt(investigationId)
+        ),
+        ...(isPending ? [new Promise(() => undefined)] : []),
+      ]).then((values) => !values.includes(false))
+    : checkInstrumentAndFacilityCycleId(
+        parseInt(instrumentId),
+        parseInt(facilityCycleId),
+        parseInt(investigationId)
+      );
+
+  return (
+    <WithIdCheck checkingPromise={checkingPromise}>
+      <BaseISISDatasetsTable
+        investigationId={
+          dataPublicationInvestigationId
+            ? dataPublicationInvestigationId.toString()
+            : investigationId
+        }
+      />
+    </WithIdCheck>
   );
 };
 

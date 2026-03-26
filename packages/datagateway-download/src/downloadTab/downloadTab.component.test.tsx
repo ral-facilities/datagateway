@@ -3,8 +3,7 @@ import { RenderResult, act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 import { fetchDownloadCart } from 'datagateway-common';
-import { History, createMemoryHistory } from 'history';
-import { Router } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import {
   downloadDeleted,
@@ -29,12 +28,10 @@ vi.mock('datagateway-common', async () => {
 vi.mock('../downloadApi');
 
 describe('DownloadTab', () => {
-  let history: History;
   let holder;
   let user: ReturnType<typeof userEvent.setup>;
 
   beforeEach(() => {
-    history = createMemoryHistory();
     user = userEvent.setup();
 
     holder = document.createElement('div');
@@ -73,13 +70,13 @@ describe('DownloadTab', () => {
   const renderComponent = (): RenderResult => {
     const queryClient = new QueryClient();
     return render(
-      <Router history={history}>
+      <MemoryRouter>
         <DownloadSettingsContext.Provider value={mockedSettings}>
           <QueryClientProvider client={queryClient}>
             <DownloadTabs />
           </QueryClientProvider>
         </DownloadSettingsContext.Provider>
-      </Router>
+      </MemoryRouter>
     );
   };
 

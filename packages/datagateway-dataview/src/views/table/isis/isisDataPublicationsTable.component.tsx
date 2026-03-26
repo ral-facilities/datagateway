@@ -18,15 +18,15 @@ import { IndexRange, TableCellProps } from 'react-virtualized';
 import CalendarToday from '@mui/icons-material/CalendarToday';
 import Fingerprint from '@mui/icons-material/Fingerprint';
 import Public from '@mui/icons-material/Public';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router';
 
-interface ISISDataPublicationsTableProps {
+interface BaseISISDataPublicationsTableProps {
   instrumentId: string;
   studyDataPublicationId?: string;
 }
 
-const ISISDataPublicationsTable = (
-  props: ISISDataPublicationsTableProps
+const BaseISISDataPublicationsTable = (
+  props: BaseISISDataPublicationsTableProps
 ): React.ReactElement => {
   const { instrumentId, studyDataPublicationId } = props;
 
@@ -80,13 +80,14 @@ const ISISDataPublicationsTable = (
         ]),
   ]);
 
-  // isMounted is used to disable queries when the component isn't fully mounted.
+  // isInitialised is used to disable queries when the component isn't fully initialised.
   // It prevents the request being sent twice if default sort is set.
   // It is not needed for cards/tables that don't have default sort.
-  const [isMounted, setIsMounted] = React.useState(false);
+  const [isInitialised, setIsInitialised] = React.useState(false);
+
   React.useEffect(() => {
-    setIsMounted(true);
-  }, []);
+    if (!isInitialised && Object.keys(sort).length > 0) setIsInitialised(true);
+  }, [isInitialised, sort]);
 
   const { fetchNextPage, data } = useDataPublicationsInfinite(
     [
@@ -130,7 +131,7 @@ const ISISDataPublicationsTable = (
             },
           ]),
     ],
-    isMounted
+    isInitialised
   );
 
   /* istanbul ignore next */
@@ -222,6 +223,16 @@ const ISISDataPublicationsTable = (
       sort={sort}
       onSort={handleSort}
       columns={columns}
+    />
+  );
+};
+
+const ISISDataPublicationsTable = () => {
+  const { instrumentId = '', studyDataPublicationId = '' } = useParams();
+  return (
+    <BaseISISDataPublicationsTable
+      instrumentId={instrumentId}
+      studyDataPublicationId={studyDataPublicationId}
     />
   );
 };

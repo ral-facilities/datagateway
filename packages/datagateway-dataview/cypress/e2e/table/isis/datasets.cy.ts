@@ -48,21 +48,22 @@ describe('ISIS - Datasets Table', () => {
   });
 
   it('should be able to sort by all sort directions on single and multiple columns', () => {
+    cy.contains('[aria-sort="ascending"]', 'Name').should('exist');
     //Revert the default sort
-    cy.contains('[role="button"]', 'Create Time').as('timeSortButton').click();
-    cy.wait('@datasetsOrder', { timeout: 10000 });
+    cy.contains('[role="button"]', 'Name').as('nameSortButton').click();
+    cy.contains('[aria-sort="descending"]', 'Name').should('exist');
+    cy.get('@nameSortButton').click();
+    cy.get('[aria-sort]').should('not.exist');
 
     // ascending order
     cy.contains('[role="button"]', 'Name').as('nameSortButton').click();
-    cy.wait('@datasetsOrder', { timeout: 10000 });
 
-    cy.get('[aria-sort="ascending"]').should('exist');
+    cy.contains('[aria-sort="ascending"]', 'Name').should('exist');
     cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
     cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 19');
 
     // descending order
     cy.get('@nameSortButton').click();
-    cy.wait('@datasetsOrder', { timeout: 10000 });
 
     cy.get('[aria-sort="descending"]').should('exist');
     cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
@@ -85,29 +86,26 @@ describe('ISIS - Datasets Table', () => {
     cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 19');
 
     // multiple columns (shift click)
-    cy.get('@timeSortButton').click();
-    cy.wait('@datasetsOrder', { timeout: 10000 });
+    cy.contains('[role="button"]', 'Create Time').click();
     cy.get('@nameSortButton').click({ shiftKey: true });
-    cy.wait('@datasetsOrder', { timeout: 10000 });
 
     cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 19');
 
     // should replace previous sort when clicked without shift
     cy.contains('[role="button"]', 'Modified Time').click();
+    cy.contains('[aria-sort="ascending"]', 'Modified Time').should('exist');
     cy.contains('[role="button"]', 'Modified Time').click();
     cy.get('[aria-sort="descending"]').should('have.length', 1);
     cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 79');
   });
 
   it('should change icons when sorting on a column', () => {
-    // clear default sort
-    cy.contains('[role="button"]', 'Name').click();
-    cy.contains('[role="button"]', 'Name').click();
-
-    cy.get('[data-testid="SortIcon"]').should('have.length', 4);
+    cy.get('[data-testid="SortIcon"]').should('have.length', 3);
 
     // check icon when clicking on a column
     cy.contains('[role="button"]', 'Create Time').click();
+
+    cy.contains('[aria-sort="ascending"]', 'Create Time').should('exist');
     cy.get('[data-testid="ArrowDownwardIcon"]').should('have.length', 1);
     cy.get('.MuiTableSortLabel-iconDirectionAsc').should('exist');
 

@@ -1,26 +1,41 @@
-import { act, renderHook, waitFor } from '@testing-library/react';
-import { MemoryHistory, createMemoryHistory } from 'history';
+import { act, renderHook, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import * as React from 'react';
-import { Router } from 'react-router-dom';
+import { BrowserRouter, useNavigate } from 'react-router';
 import useFacetFilters from './useFacetFilters';
 
 describe('useFacetFilters', () => {
-  let history: MemoryHistory;
+  let buttonSearchParams: URLSearchParams;
+
+  const ChangeSearchParamsButton = () => {
+    const navigate = useNavigate();
+    return (
+      <button
+        onClick={() => navigate({ search: buttonSearchParams.toString() })}
+      >
+        Change search params
+      </button>
+    );
+  };
 
   function Wrapper({ children }: { children: React.ReactNode }): JSX.Element {
-    return <Router history={history}>{children}</Router>;
+    return (
+      <BrowserRouter>
+        <>
+          {children}
+          <ChangeSearchParamsButton />
+        </>
+      </BrowserRouter>
+    );
   }
 
   beforeEach(() => {
-    history = createMemoryHistory();
+    window.history.replaceState({}, '', '/');
+    buttonSearchParams = new URLSearchParams();
   });
 
-  it('stores the currently selected filters', () => {
-    const { result, rerender } = renderHook(() => useFacetFilters(), {
-      wrapper: Wrapper,
-    });
-    // should be empty initially
-    expect(result.current.selectedFacetFilters).toEqual({});
+  it('stores the currently selected filters', async () => {
+    const user = userEvent.setup();
 
     const searchParam = new URLSearchParams();
     searchParam.append(
@@ -29,12 +44,15 @@ describe('useFacetFilters', () => {
         'investigation.type.name': ['experiment'],
       })
     );
+    buttonSearchParams = searchParam;
 
-    act(() => {
-      history.push({ search: `?${searchParam.toString()}` });
+    const { result } = renderHook(() => useFacetFilters(), {
+      wrapper: Wrapper,
     });
+    // should be empty initially
+    expect(result.current.selectedFacetFilters).toEqual({});
 
-    rerender();
+    await user.click(screen.getByRole('button'));
 
     expect(result.current.selectedFacetFilters).toEqual({
       'investigation.type.name': ['experiment'],
@@ -59,7 +77,7 @@ describe('useFacetFilters', () => {
         'investigation.type.name': ['experiment'],
       });
     });
-    expect(history.location.search).toEqual('');
+    expect(window.location.search).toEqual('');
 
     act(() => {
       result.current.addFacetFilter({
@@ -74,7 +92,7 @@ describe('useFacetFilters', () => {
         'investigation.type.name': ['experiment', 'calibration'],
       });
     });
-    expect(history.location.search).toEqual('');
+    expect(window.location.search).toEqual('');
 
     act(() => {
       result.current.addFacetFilter({
@@ -90,7 +108,7 @@ describe('useFacetFilters', () => {
         'investigationparameter.type.name': ['run_number_after'],
       });
     });
-    expect(history.location.search).toEqual('');
+    expect(window.location.search).toEqual('');
   });
 
   it('adds filters and apply the changes immediately when applyImmediately set to true', async () => {
@@ -115,7 +133,7 @@ describe('useFacetFilters', () => {
     await waitFor(() => {
       expect(result.current.selectedFacetFilters).toEqual(selectedFilters);
     });
-    expect(history.location.search).toEqual(`?${searchParams.toString()}`);
+    expect(window.location.search).toEqual(`?${searchParams.toString()}`);
 
     act(() => {
       result.current.addFacetFilter({
@@ -135,7 +153,7 @@ describe('useFacetFilters', () => {
     await waitFor(() => {
       expect(result.current.selectedFacetFilters).toEqual(selectedFilters);
     });
-    expect(history.location.search).toEqual(`?${searchParams.toString()}`);
+    expect(window.location.search).toEqual(`?${searchParams.toString()}`);
   });
 
   it('removes filters without applying the changes', async () => {
@@ -152,7 +170,11 @@ describe('useFacetFilters', () => {
     );
 
     const searchParamStr = `?${searchParams.toString()}`;
-    history.replace({ search: searchParamStr });
+    window.history.replaceState(
+      {},
+      '',
+      `${window.location.pathname}${searchParamStr}`
+    );
 
     const { result } = renderHook(() => useFacetFilters(), {
       wrapper: Wrapper,
@@ -176,7 +198,7 @@ describe('useFacetFilters', () => {
         ],
       });
     });
-    expect(history.location.search).toEqual(searchParamStr);
+    expect(window.location.search).toEqual(searchParamStr);
 
     act(() => {
       result.current.removeFacetFilter({
@@ -193,7 +215,7 @@ describe('useFacetFilters', () => {
         ],
       });
     });
-    expect(history.location.search).toEqual(searchParamStr);
+    expect(window.location.search).toEqual(searchParamStr);
 
     act(() => {
       result.current.removeFacetFilter({
@@ -207,7 +229,7 @@ describe('useFacetFilters', () => {
         'investigationparameter.type.name': ['run_number_after'],
       });
     });
-    expect(history.location.search).toEqual(searchParamStr);
+    expect(window.location.search).toEqual(searchParamStr);
   });
 
   it('removes filters and apply the changes immediately when applyImmediately set to true', async () => {
@@ -225,7 +247,11 @@ describe('useFacetFilters', () => {
 
     const searchParamStr = `?${searchParams.toString()}`;
 
-    history.replace({ search: searchParamStr });
+    window.history.replaceState(
+      {},
+      '',
+      `${window.location.pathname}${searchParamStr}`
+    );
 
     const { result } = renderHook(() => useFacetFilters(), {
       wrapper: Wrapper,
@@ -249,7 +275,7 @@ describe('useFacetFilters', () => {
         ],
       });
     });
-    expect(history.location.search).toEqual(searchParamStr);
+    expect(window.location.search).toEqual(searchParamStr);
 
     act(() => {
       result.current.removeFacetFilter({
@@ -269,7 +295,7 @@ describe('useFacetFilters', () => {
     await waitFor(() => {
       expect(result.current.selectedFacetFilters).toEqual(selectedFilters);
     });
-    expect(history.location.search).toEqual(`?${searchParams.toString()}`);
+    expect(window.location.search).toEqual(`?${searchParams.toString()}`);
   });
 
   it('applies the update filters to the URL when requested', async () => {
@@ -284,7 +310,11 @@ describe('useFacetFilters', () => {
         ],
       })
     );
-    history.replace({ search: `?${searchParams.toString()}` });
+    window.history.replaceState(
+      {},
+      '',
+      `${window.location.pathname}?${searchParams.toString()}`
+    );
 
     const { result } = renderHook(() => useFacetFilters(), {
       wrapper: Wrapper,
@@ -318,7 +348,7 @@ describe('useFacetFilters', () => {
     );
 
     await waitFor(() => {
-      expect(history.location.search).toEqual(`?${newSearchParams.toString()}`);
+      expect(window.location.search).toEqual(`?${newSearchParams.toString()}`);
     });
     expect(result.current.selectedFacetFilters).toEqual({
       'investigation.type.name': ['experiment', 'calibration'],

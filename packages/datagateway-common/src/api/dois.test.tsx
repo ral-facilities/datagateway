@@ -451,7 +451,7 @@ describe('doi api functions', () => {
       const resetQueriesSpy = vi.spyOn(queryClient, 'resetQueries');
 
       const { result } = renderHook(() => usePublishDraftVersion(), {
-        wrapper: createReactQueryWrapper(undefined, queryClient),
+        wrapper: createReactQueryWrapper(queryClient),
       });
 
       act(() => {

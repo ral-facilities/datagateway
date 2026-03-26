@@ -7,9 +7,8 @@ import {
   useDataPublication,
   useDataPublicationsByFilters,
 } from 'datagateway-common';
-import { History, createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
-import { Router, generatePath } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, generatePath } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { paths } from '../../../page/pageContainer.component';
@@ -28,20 +27,34 @@ vi.mock('datagateway-common', async () => {
   };
 });
 
+vi.mock('../../../page/idCheckFunctions', () => ({
+  checkInstrumentId: vi.fn().mockResolvedValue(true),
+}));
+
 describe('ISIS Data Publication Landing page', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
-  let history: History;
   let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult =>
     render(
       <Provider store={mockStore(state)}>
-        <Router history={history}>
+        <BrowserRouter>
           <QueryClientProvider client={new QueryClient()}>
-            <ISISDataPublicationLanding dataPublicationId="5" />
+            <Routes>
+              <Route
+                path={paths.dataPublications.landing.isisDataPublicationLanding}
+                element={<ISISDataPublicationLanding />}
+              />
+              <Route
+                path={
+                  paths.dataPublications.toggle.isisInvestigationDataPublication
+                }
+                element={null}
+              />
+            </Routes>
           </QueryClientProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
 
@@ -129,17 +142,14 @@ describe('ISIS Data Publication Landing page', () => {
     );
     state.dgdataview.pluginHost = '/test/';
 
-    history = createMemoryHistory({
-      initialEntries: [
-        generatePath(
-          paths.dataPublications.landing.isisDataPublicationLanding,
-          {
-            instrumentId: '4',
-            dataPublicationId: '5',
-          }
-        ),
-      ],
-    });
+    window.history.replaceState(
+      {},
+      '',
+      generatePath(paths.dataPublications.landing.isisDataPublicationLanding, {
+        instrumentId: '4',
+        dataPublicationId: '5',
+      })
+    );
     user = userEvent.setup();
 
     initialStudyDataPublicationData = {
@@ -200,30 +210,34 @@ describe('ISIS Data Publication Landing page', () => {
       renderComponent();
 
       await user.click(
-        screen.getByRole('tab', {
+        await screen.findByRole('tab', {
           name: 'datapublications.details.investigations',
         })
       );
 
-      expect(history.location.pathname).toBe(
+      expect(window.location.pathname).toBe(
         '/browseDataPublications/instrument/4/dataPublication/5/investigation'
       );
     });
 
     it('in cards view', async () => {
-      history.replace({ search: '?view=card' });
+      window.history.replaceState(
+        {},
+        '',
+        `${window.location.pathname}?view=card`
+      );
       renderComponent();
 
       await user.click(
-        screen.getByRole('tab', {
+        await screen.findByRole('tab', {
           name: 'datapublications.details.investigations',
         })
       );
 
-      expect(history.location.pathname).toBe(
+      expect(window.location.pathname).toBe(
         '/browseDataPublications/instrument/4/dataPublication/5/investigation'
       );
-      expect(history.location.search).toBe('?view=card');
+      expect(window.location.search).toBe('?view=card');
     });
   });
 

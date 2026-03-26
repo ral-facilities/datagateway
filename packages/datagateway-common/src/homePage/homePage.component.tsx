@@ -4,7 +4,7 @@ import { Avatar, Box, Button, Grid, Paper, alpha, styled } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 export interface HomePageProps {
   logo: string;
@@ -99,9 +99,9 @@ const BrowseDecal = styled('div', {
       theme.palette.mode === 'light'
         ? `url(${decal2Image})`
         : // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (theme as any).colours?.type === 'default'
-        ? `url(${decal2DarkImage})`
-        : `url(${decal2DarkHCImage})`,
+          (theme as any).colours?.type === 'default'
+          ? `url(${decal2DarkImage})`
+          : `url(${decal2DarkHCImage})`,
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'top left',
     backgroundSize: 'auto 100%',

@@ -17,11 +17,11 @@ import {
   findCellInRow,
   findColumnIndexByName,
 } from 'datagateway-search/src/setupTests';
-import { createMemoryHistory, type History } from 'history';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, generatePath } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { paths } from '../../page/pageContainer.component';
 import { findAllRows, findColumnHeaderByName } from '../../setupTests';
 import type { StateType } from '../../state/app.types';
 import { initialState } from '../../state/reducers/dgdataview.reducer';
@@ -32,7 +32,6 @@ describe('Dataset table component', () => {
   let state: StateType;
   let rowData: Dataset[];
   let cartItems: DownloadCartItem[];
-  let history: History;
   let user: ReturnType<typeof userEvent.setup>;
   let holder: HTMLElement;
 
@@ -40,11 +39,13 @@ describe('Dataset table component', () => {
     const store = mockStore(state);
     return render(
       <Provider store={store}>
-        <Router history={history}>
+        <BrowserRouter>
           <QueryClientProvider client={new QueryClient()}>
-            <DatasetTable investigationId="1" />
+            <Routes>
+              <Route path={paths.toggle.dataset} element={<DatasetTable />} />
+            </Routes>
           </QueryClientProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
   };
@@ -62,7 +63,13 @@ describe('Dataset table component', () => {
         createTime: '2019-07-23',
       },
     ];
-    history = createMemoryHistory();
+    window.history.replaceState(
+      {},
+      '',
+      generatePath(paths.toggle.dataset, {
+        investigationId: '1',
+      })
+    );
 
     holder = document.createElement('div');
     holder.setAttribute('id', 'datagateway-dataview');
@@ -218,8 +225,7 @@ describe('Dataset table component', () => {
 
     await user.type(filterInput, 'test');
 
-    expect(history.length).toBe(5);
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
       )}`
@@ -227,8 +233,7 @@ describe('Dataset table component', () => {
 
     await user.clear(filterInput);
 
-    expect(history.length).toBe(6);
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).toBe('');
   });
 
   it('updates filter query params on date filter', async () => {
@@ -240,8 +245,7 @@ describe('Dataset table component', () => {
 
     await user.type(filterInput, '2019-08-06');
 
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?filters=${encodeURIComponent('{"modTime":{"endDate":"2019-08-06"}}')}`
     );
 
@@ -250,8 +254,7 @@ describe('Dataset table component', () => {
     await user.keyboard('{Control}a{/Control}');
     await user.keyboard('{Delete}');
 
-    expect(history.length).toBe(3);
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).toBe('');
   });
 
   it('updates sort query params on sort', async () => {
@@ -261,8 +264,7 @@ describe('Dataset table component', () => {
       await screen.findByRole('button', { name: 'datasets.name' })
     );
 
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"asc"}')}`
     );
   });

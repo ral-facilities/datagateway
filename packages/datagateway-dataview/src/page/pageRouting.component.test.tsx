@@ -3,16 +3,19 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../state/app.types';
 
-import { DataPublication, dGCommonInitialState } from 'datagateway-common';
+import {
+  DataPublication,
+  dGCommonInitialState,
+  readSciGatewayToken,
+} from 'datagateway-common';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
 import PageRouting from './pageRouting.component';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { act, render, screen } from '@testing-library/react';
 import axios from 'axios';
-import { History, createMemoryHistory } from 'history';
 import { findColumnHeaderByName, flushPromises } from '../setupTests';
 import {
   checkDatasetId as unmockedCheckDatasetId,
@@ -23,6 +26,17 @@ import {
   checkStudyDataPublicationId as unmockedCheckStudyDataPublicationId,
 } from './idCheckFunctions';
 
+vi.mock('datagateway-common', async () => {
+  const originalModule = await vi.importActual('datagateway-common');
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    readSciGatewayToken: vi.fn(() =>
+      (originalModule.readSciGatewayToken as typeof readSciGatewayToken)()
+    ),
+  };
+});
 vi.mock('loglevel');
 vi.mock('./idCheckFunctions');
 const checkDatasetId = vi.mocked(unmockedCheckDatasetId);
@@ -96,7 +110,6 @@ const DLSRoutes = {
 
 describe('PageTable', () => {
   let state: StateType;
-  let history: History;
 
   function Wrapper({ children }: { children: React.ReactNode }): JSX.Element {
     const mockStore = configureStore([thunk]);
@@ -107,16 +120,14 @@ describe('PageTable', () => {
     });
     return (
       <Provider store={mockStore(state)}>
-        <Router history={history}>
+        <BrowserRouter>
           <QueryClientProvider client={client}>{children}</QueryClientProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
   }
 
   beforeEach(() => {
-    history = createMemoryHistory();
-
     state = JSON.parse(
       JSON.stringify({
         dgdataview: dgDataViewInitialState,
@@ -127,6 +138,9 @@ describe('PageTable', () => {
     vi.mocked(axios.get).mockImplementation((url: string) => {
       if (url.includes('count')) {
         return Promise.resolve({ data: 0 });
+      } else if (url.match(/^\/[a-zA-Z]+\/\d+/) || url.includes('findone')) {
+        // request for single entity e.g. breadcrumb request
+        return Promise.resolve({ data: { id: 1, name: '1', title: '1' } });
       } else if (url.includes('datapublications')) {
         // this is so that routes can convert from data pub id -> investigation id
         return Promise.resolve({
@@ -152,8 +166,10 @@ describe('PageTable', () => {
             } satisfies DataPublication,
           ],
         });
+      } else if (url.includes('investigationusers')) {
+        return Promise.resolve({ data: [{ id: 1, role: 'role' }] });
       } else {
-        return Promise.resolve({ data: [{ id: 1, name: '1' }] });
+        return Promise.resolve({ data: [{ id: 1, name: '1', title: '1' }] });
       }
     });
     checkInstrumentAndFacilityCycleId.mockImplementation(() =>
@@ -172,18 +188,11 @@ describe('PageTable', () => {
 
   describe('Generic', () => {
     it('renders PageTable correctly', () => {
-      history.push('/');
+      window.history.replaceState({}, '', '/');
 
-      render(
-        <PageRouting
-          view="table"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        {
-          wrapper: Wrapper,
-        }
-      );
+      render(<PageRouting />, {
+        wrapper: Wrapper,
+      });
 
       expect(
         screen.getByRole('link', { name: 'Browse investigations' })
@@ -191,16 +200,9 @@ describe('PageTable', () => {
     });
 
     it('renders PageCard correctly', () => {
-      history.push('/');
+      window.history.replaceState({}, '', '/?view=card');
 
-      render(
-        <PageRouting
-          view="card"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
-      );
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(
         screen.getByRole('link', { name: 'Browse investigations' })
@@ -208,18 +210,11 @@ describe('PageTable', () => {
     });
 
     it('renders InvestigationTable for generic investigations route', async () => {
-      history.push(genericRoutes['investigations']);
+      window.history.replaceState({}, '', genericRoutes['investigations']);
 
-      render(
-        <PageRouting
-          view="table"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        {
-          wrapper: Wrapper,
-        }
-      );
+      render(<PageRouting />, {
+        wrapper: Wrapper,
+      });
 
       expect(
         await findColumnHeaderByName('investigations.title')
@@ -248,16 +243,13 @@ describe('PageTable', () => {
     });
 
     it('renders InvestigationCardView for generic investigations route', async () => {
-      history.push(genericRoutes.investigations);
-
-      render(
-        <PageRouting
-          view="card"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
+      window.history.replaceState(
+        {},
+        '',
+        `${genericRoutes.investigations}?view=card`
       );
+
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(
         await screen.findByTestId('investigation-card-view')
@@ -265,18 +257,11 @@ describe('PageTable', () => {
     });
 
     it('renders DatasetTable for generic datasets route', async () => {
-      history.push(genericRoutes['datasets']);
+      window.history.replaceState({}, '', genericRoutes['datasets']);
 
-      render(
-        <PageRouting
-          view="table"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        {
-          wrapper: Wrapper,
-        }
-      );
+      render(<PageRouting />, {
+        wrapper: Wrapper,
+      });
 
       expect(await findColumnHeaderByName('datasets.name')).toBeInTheDocument();
       expect(
@@ -291,16 +276,13 @@ describe('PageTable', () => {
     });
 
     it('renders DatasetCardView for generic datasets route', async () => {
-      history.push(genericRoutes.datasets);
-
-      render(
-        <PageRouting
-          view="card"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
+      window.history.replaceState(
+        {},
+        '',
+        `${genericRoutes.datasets}?view=card`
       );
+
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(
         await screen.findByTestId('dataset-card-view')
@@ -308,18 +290,11 @@ describe('PageTable', () => {
     });
 
     it('renders DatafileTable for generic datafiles route', async () => {
-      history.push(genericRoutes['datafiles']);
+      window.history.replaceState({}, '', genericRoutes['datafiles']);
 
-      render(
-        <PageRouting
-          view="table"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        {
-          wrapper: Wrapper,
-        }
-      );
+      render(<PageRouting />, {
+        wrapper: Wrapper,
+      });
 
       expect(
         await findColumnHeaderByName('datafiles.name')
@@ -337,18 +312,11 @@ describe('PageTable', () => {
 
     it('does not render DatafileTable for incorrect generic datafiles route', async () => {
       checkInvestigationId.mockImplementation(() => Promise.resolve(false));
-      history.push(genericRoutes['datafiles']);
+      window.history.replaceState({}, '', genericRoutes['datafiles']);
 
-      render(
-        <PageRouting
-          view="table"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        {
-          wrapper: Wrapper,
-        }
-      );
+      render(<PageRouting />, {
+        wrapper: Wrapper,
+      });
 
       expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
@@ -356,18 +324,15 @@ describe('PageTable', () => {
 
   describe('ISIS', () => {
     it('renders ISISMyDataTable for ISIS my data route', async () => {
-      history.push(ISISRoutes['mydata']);
+      vi.mocked(readSciGatewayToken).mockReturnValue({
+        username: 'SomePerson',
+        sessionId: '',
+      });
+      window.history.replaceState({}, '', ISISRoutes['mydata']);
 
-      render(
-        <PageRouting
-          view="table"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        {
-          wrapper: Wrapper,
-        }
-      );
+      render(<PageRouting />, {
+        wrapper: Wrapper,
+      });
 
       expect(
         await findColumnHeaderByName('investigations.title')
@@ -396,35 +361,27 @@ describe('PageTable', () => {
     });
 
     it('redirects to login page when not signed in (ISISMyDataTable) ', () => {
-      history.push(ISISRoutes['mydata']);
+      // react-router will warn that /login doesn't match a route
+      vi.spyOn(console, 'warn').mockImplementation(() => {});
+      vi.mocked(readSciGatewayToken).mockReturnValue({
+        username: 'anon/anon',
+        sessionId: '',
+      });
+      window.history.replaceState({}, '', ISISRoutes['mydata']);
 
-      render(
-        <PageRouting
-          loggedInAnonymously
-          view="table"
-          location={history.location}
-        />,
-        {
-          wrapper: Wrapper,
-        }
-      );
+      render(<PageRouting />, {
+        wrapper: Wrapper,
+      });
 
-      expect(history.location.pathname).toBe('/login');
+      expect(window.location.pathname).toBe('/login');
     });
 
     it('renders ISISInstrumentsTable for ISIS instruments route', async () => {
-      history.push(ISISRoutes['instruments']);
+      window.history.replaceState({}, '', ISISRoutes['instruments']);
 
-      render(
-        <PageRouting
-          view="table"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        {
-          wrapper: Wrapper,
-        }
-      );
+      render(<PageRouting />, {
+        wrapper: Wrapper,
+      });
 
       expect(
         await findColumnHeaderByName('instruments.name')
@@ -435,16 +392,13 @@ describe('PageTable', () => {
     });
 
     it('renders ISISInstrumentsCardView for ISIS instruments route', async () => {
-      history.push(ISISRoutes.instruments);
-
-      render(
-        <PageRouting
-          view="card"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
+      window.history.replaceState(
+        {},
+        '',
+        `${ISISRoutes.instruments}?view=card`
       );
+
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(
         await screen.findByTestId('isis-instruments-card-view')
@@ -452,18 +406,11 @@ describe('PageTable', () => {
     });
 
     it('renders ISISFacilityCyclesTable for ISIS facilityCycles route', async () => {
-      history.push(ISISRoutes['facilityCycles']);
+      window.history.replaceState({}, '', ISISRoutes['facilityCycles']);
 
-      render(
-        <PageRouting
-          view="table"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        {
-          wrapper: Wrapper,
-        }
-      );
+      render(<PageRouting />, {
+        wrapper: Wrapper,
+      });
 
       expect(
         await findColumnHeaderByName('facilitycycles.name')
@@ -477,16 +424,13 @@ describe('PageTable', () => {
     });
 
     it('renders ISISFacilityCyclesCardView for ISIS facilityCycles route', async () => {
-      history.push(ISISRoutes.facilityCycles);
-
-      render(
-        <PageRouting
-          view="card"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
+      window.history.replaceState(
+        {},
+        '',
+        `${ISISRoutes.facilityCycles}?view=card`
       );
+
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(
         await screen.findByTestId('isis-facility-card-view')
@@ -494,18 +438,11 @@ describe('PageTable', () => {
     });
 
     it('renders ISISInvestigationsTable for ISIS investigations route', async () => {
-      history.push(ISISRoutes['investigations']);
+      window.history.replaceState({}, '', ISISRoutes['investigations']);
 
-      render(
-        <PageRouting
-          view="table"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        {
-          wrapper: Wrapper,
-        }
-      );
+      render(<PageRouting />, {
+        wrapper: Wrapper,
+      });
 
       expect(
         await findColumnHeaderByName('investigations.title')
@@ -531,16 +468,13 @@ describe('PageTable', () => {
     });
 
     it('renders ISISInvestigationsCardView for ISIS investigations route', async () => {
-      history.push(ISISRoutes.investigations);
-
-      render(
-        <PageRouting
-          view="card"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
+      window.history.replaceState(
+        {},
+        '',
+        `${ISISRoutes.investigations}?view=card`
       );
+
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(
         await screen.findByTestId('isis-investigations-card-view')
@@ -548,18 +482,15 @@ describe('PageTable', () => {
     });
 
     it('renders ISISInvestigationLanding for ISIS investigation route', async () => {
-      history.push(ISISRoutes['landing']['investigation']);
-
-      render(
-        <PageRouting
-          view={null}
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        {
-          wrapper: Wrapper,
-        }
+      window.history.replaceState(
+        {},
+        '',
+        ISISRoutes['landing']['investigation']
       );
+
+      render(<PageRouting />, {
+        wrapper: Wrapper,
+      });
 
       expect(
         await screen.findByLabelText('branding-title')
@@ -571,16 +502,9 @@ describe('PageTable', () => {
         Promise.resolve(false)
       );
 
-      history.push(ISISRoutes.landing.investigation);
+      window.history.replaceState({}, '', ISISRoutes.landing.investigation);
 
-      render(
-        <PageRouting
-          view={null}
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
-      );
+      render(<PageRouting />, { wrapper: Wrapper });
 
       await act(async () => {
         await flushPromises();
@@ -590,16 +514,9 @@ describe('PageTable', () => {
     });
 
     it('renders ISISDatasetsTable for ISIS datasets route', async () => {
-      history.push(ISISRoutes.datasets);
+      window.history.replaceState({}, '', ISISRoutes.datasets);
 
-      render(
-        <PageRouting
-          view="table"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
-      );
+      render(<PageRouting />, { wrapper: Wrapper });
 
       await act(async () => {
         await flushPromises();
@@ -620,16 +537,9 @@ describe('PageTable', () => {
         Promise.resolve(false)
       );
 
-      history.push(ISISRoutes.datasets);
+      window.history.replaceState({}, '', ISISRoutes.datasets);
 
-      render(
-        <PageRouting
-          view="table"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
-      );
+      render(<PageRouting />, { wrapper: Wrapper });
 
       await act(async () => {
         await flushPromises();
@@ -639,16 +549,9 @@ describe('PageTable', () => {
     });
 
     it('renders ISISDatasetsCardview for ISIS datasets route', async () => {
-      history.push(ISISRoutes.datasets);
+      window.history.replaceState({}, '', `${ISISRoutes.datasets}?view=card`);
 
-      render(
-        <PageRouting
-          view="card"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
-      );
+      render(<PageRouting />, { wrapper: Wrapper });
 
       await act(async () => {
         await flushPromises();
@@ -662,31 +565,17 @@ describe('PageTable', () => {
         Promise.resolve(false)
       );
 
-      history.push(ISISRoutes.datasets);
+      window.history.replaceState({}, '', `${ISISRoutes.datasets}?view=card`);
 
-      render(
-        <PageRouting
-          view="card"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
-      );
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
 
     it('renders ISISDatasetLanding for ISIS dataset route', async () => {
-      history.push(ISISRoutes.landing.dataset);
+      window.history.replaceState({}, '', ISISRoutes.landing.dataset);
 
-      render(
-        <PageRouting
-          view={null}
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
-      );
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(
         await screen.findByTestId('isis-dataset-landing')
@@ -698,31 +587,17 @@ describe('PageTable', () => {
         Promise.resolve(false)
       );
 
-      history.push(ISISRoutes.landing.dataset);
+      window.history.replaceState({}, '', ISISRoutes.landing.dataset);
 
-      render(
-        <PageRouting
-          view={null}
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
-      );
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
 
     it('renders ISISDatafilesTable for ISIS datafiles route', async () => {
-      history.push(ISISRoutes.datafiles);
+      window.history.replaceState({}, '', ISISRoutes.datafiles);
 
-      render(
-        <PageRouting
-          view="table"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
-      );
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(
         await findColumnHeaderByName('datafiles.name')
@@ -744,31 +619,17 @@ describe('PageTable', () => {
       );
       checkInvestigationId.mockImplementation(() => Promise.resolve(false));
 
-      history.push(ISISRoutes.datafiles);
+      window.history.replaceState({}, '', ISISRoutes.datafiles);
 
-      render(
-        <PageRouting
-          view="table"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
-      );
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
 
     it('renders DatafilePreviewer for ISIS datafiles previewer route', async () => {
-      history.push(ISISRoutes.datafilePreview);
+      window.history.replaceState({}, '', ISISRoutes.datafilePreview);
 
-      render(
-        <PageRouting
-          view="table"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
-      );
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(
         await screen.findByText('datafiles.preview.cannot_preview')
@@ -782,16 +643,9 @@ describe('PageTable', () => {
       checkInvestigationId.mockImplementation(() => Promise.resolve(false));
       checkDatasetId.mockImplementation(() => Promise.resolve(false));
 
-      history.push(ISISRoutes.datafilePreview);
+      window.history.replaceState({}, '', ISISRoutes.datafilePreview);
 
-      render(
-        <PageRouting
-          view="table"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
-      );
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
@@ -799,16 +653,13 @@ describe('PageTable', () => {
 
   describe('ISIS Data Publication Hierarchy', () => {
     it('renders ISISInstrumentsTable for ISIS instruments route in Data Publication Hierarchy', async () => {
-      history.push(ISISDataPublicationsRoutes.instruments);
-
-      render(
-        <PageRouting
-          view="table"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
+      window.history.replaceState(
+        {},
+        '',
+        ISISDataPublicationsRoutes.instruments
       );
+
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(
         await findColumnHeaderByName('instruments.name')
@@ -819,16 +670,13 @@ describe('PageTable', () => {
     });
 
     it('renders ISISInstrumentsCardView for ISIS instruments route in Data Publication Hierarchy', async () => {
-      history.push(ISISDataPublicationsRoutes.instruments);
-
-      render(
-        <PageRouting
-          view="card"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
+      window.history.replaceState(
+        {},
+        '',
+        `${ISISDataPublicationsRoutes.instruments}?view=card`
       );
+
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(
         await screen.findByTestId('isis-instruments-card-view')
@@ -836,16 +684,13 @@ describe('PageTable', () => {
     });
 
     it('renders ISISDataPublicationsTable for ISIS dataPublications route in Data Publication Hierarchy', async () => {
-      history.push(ISISDataPublicationsRoutes['dataPublications']);
-
-      render(
-        <PageRouting
-          view="table"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
+      window.history.replaceState(
+        {},
+        '',
+        ISISDataPublicationsRoutes['dataPublications']
       );
+
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(
         await findColumnHeaderByName('datapublications.title')
@@ -856,16 +701,13 @@ describe('PageTable', () => {
     });
 
     it('renders ISISDataPublicationsCardView for ISIS dataPublications route in Data Publication Hierarchy', async () => {
-      history.push(ISISDataPublicationsRoutes.dataPublications);
-
-      render(
-        <PageRouting
-          view="card"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
+      window.history.replaceState(
+        {},
+        '',
+        `${ISISDataPublicationsRoutes.dataPublications}?view=card`
       );
+
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(
         await screen.findByTestId('isis-dataPublications-card-view')
@@ -873,16 +715,13 @@ describe('PageTable', () => {
     });
 
     it('renders ISISDataPublicationLanding for ISIS dataPublications route for Data Publication Hierarchy', async () => {
-      history.push(ISISDataPublicationsRoutes.landing.dataPublication);
-
-      render(
-        <PageRouting
-          view={null}
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
+      window.history.replaceState(
+        {},
+        '',
+        ISISDataPublicationsRoutes.landing.dataPublication
       );
+
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(
         await screen.findByTestId('isis-dataPublication-landing')
@@ -892,31 +731,25 @@ describe('PageTable', () => {
     it('does not render ISISDataPublicationLanding for incorrect ISIS dataPublications route for Data Publication Hierarchy', async () => {
       checkInstrumentId.mockImplementation(() => Promise.resolve(false));
 
-      history.push(ISISDataPublicationsRoutes.landing.dataPublication);
-
-      render(
-        <PageRouting
-          view={null}
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
+      window.history.replaceState(
+        {},
+        '',
+        ISISDataPublicationsRoutes.landing.dataPublication
       );
+
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
 
     it('renders ISISInvestigationsTable for ISIS investigations route in Data Publication Hierarchy', async () => {
-      history.push(ISISDataPublicationsRoutes.investigations);
-
-      render(
-        <PageRouting
-          view="table"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
+      window.history.replaceState(
+        {},
+        '',
+        ISISDataPublicationsRoutes.investigations
       );
+
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(
         await findColumnHeaderByName('datapublications.title')
@@ -930,16 +763,13 @@ describe('PageTable', () => {
     });
 
     it('renders ISISInvestigationsCardView for ISIS investigations route in Data Publication Hierarchy', async () => {
-      history.push(ISISDataPublicationsRoutes.investigations);
-
-      render(
-        <PageRouting
-          view="card"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
+      window.history.replaceState(
+        {},
+        '',
+        `${ISISDataPublicationsRoutes.investigations}?view=card`
       );
+
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(
         await screen.findByTestId('isis-dataPublications-card-view')
@@ -947,16 +777,9 @@ describe('PageTable', () => {
     });
 
     it('renders ISISDatasetsTable for ISIS datasets route in Data Publication Hierarchy', async () => {
-      history.push(ISISDataPublicationsRoutes.datasets);
+      window.history.replaceState({}, '', ISISDataPublicationsRoutes.datasets);
 
-      render(
-        <PageRouting
-          view="table"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
-      );
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(await findColumnHeaderByName('datasets.name')).toBeInTheDocument();
       expect(await findColumnHeaderByName('datasets.size')).toBeInTheDocument();
@@ -974,31 +797,21 @@ describe('PageTable', () => {
         Promise.resolve(false)
       );
 
-      history.push(ISISDataPublicationsRoutes.datasets);
+      window.history.replaceState({}, '', ISISDataPublicationsRoutes.datasets);
 
-      render(
-        <PageRouting
-          view="table"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
-      );
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
 
     it('renders ISISInvestigationLanding for ISIS investigation route for Data Publication Hierarchy', async () => {
-      history.push(ISISDataPublicationsRoutes.landing.investigation);
-
-      render(
-        <PageRouting
-          view={null}
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
+      window.history.replaceState(
+        {},
+        '',
+        ISISDataPublicationsRoutes.landing.investigation
       );
+
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(
         await screen.findByTestId('isis-investigation-landing')
@@ -1011,31 +824,25 @@ describe('PageTable', () => {
         Promise.resolve(false)
       );
 
-      history.push(ISISDataPublicationsRoutes.landing.investigation);
-
-      render(
-        <PageRouting
-          view={null}
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
+      window.history.replaceState(
+        {},
+        '',
+        ISISDataPublicationsRoutes.landing.investigation
       );
+
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
 
     it('renders ISISDatasetsCardView for ISIS datasets route in Data Publication Hierarchy', async () => {
-      history.push(ISISDataPublicationsRoutes.datasets);
-
-      render(
-        <PageRouting
-          view="card"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
+      window.history.replaceState(
+        {},
+        '',
+        `${ISISDataPublicationsRoutes.datasets}?view=card`
       );
+
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(
         await screen.findByTestId('isis-datasets-card-view')
@@ -1048,31 +855,25 @@ describe('PageTable', () => {
         Promise.resolve(false)
       );
 
-      history.push(ISISDataPublicationsRoutes.datasets);
-
-      render(
-        <PageRouting
-          view="card"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
+      window.history.replaceState(
+        {},
+        '',
+        `${ISISDataPublicationsRoutes.datasets}?view=card`
       );
+
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
 
     it('renders ISISDatasetLanding for ISIS dataset route for Data Publication Hierarchy', async () => {
-      history.push(ISISDataPublicationsRoutes.landing.dataset);
-
-      render(
-        <PageRouting
-          view={null}
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
+      window.history.replaceState(
+        {},
+        '',
+        ISISDataPublicationsRoutes.landing.dataset
       );
+
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(
         await screen.findByTestId('isis-dataset-landing')
@@ -1085,31 +886,21 @@ describe('PageTable', () => {
         Promise.resolve(false)
       );
 
-      history.push(ISISDataPublicationsRoutes.landing.dataset);
-
-      render(
-        <PageRouting
-          view={null}
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
+      window.history.replaceState(
+        {},
+        '',
+        ISISDataPublicationsRoutes.landing.dataset
       );
+
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
 
     it('renders ISISDatafilesTable for ISIS datafiles route in Data Publication Hierarchy', async () => {
-      history.push(ISISDataPublicationsRoutes.datafiles);
+      window.history.replaceState({}, '', ISISDataPublicationsRoutes.datafiles);
 
-      render(
-        <PageRouting
-          view="table"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
-      );
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(
         await findColumnHeaderByName('datafiles.name')
@@ -1132,31 +923,21 @@ describe('PageTable', () => {
       );
       checkInvestigationId.mockImplementation(() => Promise.resolve(false));
 
-      history.push(ISISDataPublicationsRoutes.datafiles);
+      window.history.replaceState({}, '', ISISDataPublicationsRoutes.datafiles);
 
-      render(
-        <PageRouting
-          view="table"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
-      );
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
 
     it('renders DatafilePreviewer for ISIS datafile preview route in Data Publication Hierarchy', async () => {
-      history.push(ISISDataPublicationsRoutes.datafilePreview);
-
-      render(
-        <PageRouting
-          view="table"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
+      window.history.replaceState(
+        {},
+        '',
+        ISISDataPublicationsRoutes.datafilePreview
       );
+
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(
         await screen.findByText('datafiles.preview.cannot_preview')
@@ -1171,16 +952,13 @@ describe('PageTable', () => {
       checkInvestigationId.mockImplementation(() => Promise.resolve(false));
       checkDatasetId.mockImplementation(() => Promise.resolve(false));
 
-      history.push(ISISDataPublicationsRoutes.datafilePreview);
-
-      render(
-        <PageRouting
-          view="table"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
+      window.history.replaceState(
+        {},
+        '',
+        ISISDataPublicationsRoutes.datafilePreview
       );
+
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
@@ -1188,16 +966,14 @@ describe('PageTable', () => {
 
   describe('DLS', () => {
     it('renders DLSMyDataTable for DLS my data route', async () => {
-      history.push(DLSRoutes.mydata);
+      vi.mocked(readSciGatewayToken).mockReturnValue({
+        username: 'SomePerson',
+        sessionId: '',
+      });
 
-      render(
-        <PageRouting
-          view="table"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
-      );
+      window.history.replaceState({}, '', DLSRoutes.mydata);
+
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(
         await findColumnHeaderByName('investigations.title')
@@ -1220,31 +996,28 @@ describe('PageTable', () => {
     });
 
     it('redirects to login page when not signed in (DLSMyDataTable) ', () => {
-      history.push(DLSRoutes.mydata);
+      // react-router will warn that /login doesn't match a route
+      vi.spyOn(console, 'warn').mockImplementation(() => {});
+      vi.mocked(readSciGatewayToken).mockReturnValue({
+        username: 'anon/anon',
+        sessionId: '',
+      });
+      window.history.replaceState({}, '', DLSRoutes.mydata);
 
-      render(
-        <PageRouting
-          loggedInAnonymously
-          view="table"
-          location={history.location}
-        />,
-        { wrapper: Wrapper }
-      );
+      render(<PageRouting />, { wrapper: Wrapper });
 
-      expect(history.location.pathname).toBe('/login');
+      expect(window.location.pathname).toBe('/login');
     });
 
     it('renders DLSMyDOIsTable for DLS my dois route', async () => {
-      history.push(DLSRoutes.mydois);
+      vi.mocked(readSciGatewayToken).mockReturnValue({
+        username: 'SomePerson',
+        sessionId: '',
+      });
 
-      render(
-        <PageRouting
-          view="table"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
-      );
+      window.history.replaceState({}, '', DLSRoutes.mydois);
+
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(
         await findColumnHeaderByName('datapublications.title')
@@ -1257,17 +1030,10 @@ describe('PageTable', () => {
       ).toBeInTheDocument();
     });
 
-    it('renders DLSMyDOIsTable for DLS all dois route', async () => {
-      history.push(DLSRoutes.alldois);
+    it('renders DLSAllDOIsTable for DLS all dois route', async () => {
+      window.history.replaceState({}, '', DLSRoutes.alldois);
 
-      render(
-        <PageRouting
-          view="table"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
-      );
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(
         await findColumnHeaderByName('datapublications.title')
@@ -1281,31 +1047,23 @@ describe('PageTable', () => {
     });
 
     it('redirects to login page when not signed in (DLSMyDOIsTable) ', () => {
-      history.push(DLSRoutes.mydois);
+      // react-router will warn that /login doesn't match a route
+      vi.spyOn(console, 'warn').mockImplementation(() => {});
+      vi.mocked(readSciGatewayToken).mockReturnValue({
+        username: 'anon/anon',
+        sessionId: '',
+      });
+      window.history.replaceState({}, '', DLSRoutes.mydois);
 
-      render(
-        <PageRouting
-          loggedInAnonymously
-          view="table"
-          location={history.location}
-        />,
-        { wrapper: Wrapper }
-      );
+      render(<PageRouting />, { wrapper: Wrapper });
 
-      expect(history.location.pathname).toBe('/login');
+      expect(window.location.pathname).toBe('/login');
     });
 
     it('renders DLSProposalTable for DLS proposal route', async () => {
-      history.push(DLSRoutes.proposals);
+      window.history.replaceState({}, '', DLSRoutes.proposals);
 
-      render(
-        <PageRouting
-          view="table"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
-      );
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(
         await findColumnHeaderByName('investigations.title')
@@ -1316,16 +1074,9 @@ describe('PageTable', () => {
     });
 
     it('renders DLSProposalCardView for DLS proposal route', async () => {
-      history.push(DLSRoutes.proposals);
+      window.history.replaceState({}, '', `${DLSRoutes.proposals}?view=card`);
 
-      render(
-        <PageRouting
-          view="card"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
-      );
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(
         await screen.findByTestId('dls-proposals-card-view')
@@ -1333,16 +1084,9 @@ describe('PageTable', () => {
     });
 
     it('renders DLSVisitsTable for DLS investigations route', async () => {
-      history.push(DLSRoutes.investigations);
+      window.history.replaceState({}, '', DLSRoutes.investigations);
 
-      render(
-        <PageRouting
-          view="table"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
-      );
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(
         await findColumnHeaderByName('investigations.visit_id')
@@ -1362,16 +1106,13 @@ describe('PageTable', () => {
     });
 
     it('renders DLSVisitsCardView for DLS investigations route', async () => {
-      history.push(DLSRoutes.investigations);
-
-      render(
-        <PageRouting
-          view="card"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
+      window.history.replaceState(
+        {},
+        '',
+        `${DLSRoutes.investigations}?view=card`
       );
+
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(
         await screen.findByTestId('dls-visits-card-view')
@@ -1379,16 +1120,9 @@ describe('PageTable', () => {
     });
 
     it('renders DLSDatasetsTable for DLS datasets route', async () => {
-      history.push(DLSRoutes.datasets);
+      window.history.replaceState({}, '', DLSRoutes.datasets);
 
-      render(
-        <PageRouting
-          view="table"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
-      );
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(await findColumnHeaderByName('datasets.name')).toBeInTheDocument();
       expect(
@@ -1406,31 +1140,17 @@ describe('PageTable', () => {
     it('does not render DLSDatasetsTable for incorrect DLS datasets route', async () => {
       checkProposalName.mockImplementation(() => Promise.resolve(false));
 
-      history.push(DLSRoutes.datasets);
+      window.history.replaceState({}, '', DLSRoutes.datasets);
 
-      render(
-        <PageRouting
-          view="table"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
-      );
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
 
     it('renders DLSDatasetsCardView for DLS datasets route', async () => {
-      history.push(DLSRoutes.datasets);
+      window.history.replaceState({}, '', `${DLSRoutes.datasets}?view=card`);
 
-      render(
-        <PageRouting
-          view="card"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
-      );
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(
         await screen.findByTestId('dls-datasets-card-view')
@@ -1440,31 +1160,17 @@ describe('PageTable', () => {
     it('does not render DLSDatasetsCardView for incorrect DLS datasets route', async () => {
       checkProposalName.mockImplementation(() => Promise.resolve(false));
 
-      history.push(DLSRoutes.datasets);
+      window.history.replaceState({}, '', `${DLSRoutes.datasets}?view=card`);
 
-      render(
-        <PageRouting
-          view="card"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
-      );
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
 
     it('renders DLSDatafilesTable for DLS datafiles route', async () => {
-      history.push(DLSRoutes.datafiles);
+      window.history.replaceState({}, '', DLSRoutes.datafiles);
 
-      render(
-        <PageRouting
-          view="table"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
-      );
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(
         await findColumnHeaderByName('datafiles.name')
@@ -1484,32 +1190,18 @@ describe('PageTable', () => {
       checkProposalName.mockImplementation(() => Promise.resolve(false));
       checkInvestigationId.mockImplementation(() => Promise.resolve(false));
 
-      history.push(DLSRoutes.datafiles);
+      window.history.replaceState({}, '', `${DLSRoutes.datafiles}?view=card`);
 
-      render(
-        <PageRouting
-          view="card"
-          location={history.location}
-          loggedInAnonymously={false}
-        />,
-        { wrapper: Wrapper }
-      );
+      render(<PageRouting />, { wrapper: Wrapper });
 
       expect(await screen.findByText('loading.oops')).toBeInTheDocument();
     });
   });
 
   it('renders DLSDataPublicationLanding for DLS dataPublications route', async () => {
-    history.push(DLSRoutes.dataPublicationLanding);
+    window.history.replaceState({}, '', DLSRoutes.dataPublicationLanding);
 
-    render(
-      <PageRouting
-        view={null}
-        location={history.location}
-        loggedInAnonymously={false}
-      />,
-      { wrapper: Wrapper }
-    );
+    render(<PageRouting />, { wrapper: Wrapper });
 
     expect(
       await screen.findByTestId('dls-dataPublication-landing')

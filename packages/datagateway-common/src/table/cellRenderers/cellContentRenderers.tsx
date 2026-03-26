@@ -1,6 +1,6 @@
 import { Link } from '@mui/material';
 import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router';
 import type { ViewsType } from '../../app.types';
 
 export function formatBytes(bytes: number | undefined): string {
@@ -69,12 +69,14 @@ export function tableLink(
   linkLocation: React.ComponentProps<typeof RouterLink>['to'],
   linkText: string,
   view?: ViewsType,
-  testid?: string
+  testid?: string,
+  linkState?: React.ComponentProps<typeof RouterLink>['state']
 ): React.ReactElement {
   return (
     <Link
       component={RouterLink}
       to={appendView(linkLocation, view)}
+      state={linkState}
       data-testid={testid}
     >
       {linkText}

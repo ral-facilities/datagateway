@@ -14,7 +14,7 @@ import {
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 
 const DLSProposalsCardView = (): React.ReactElement => {
   const [t] = useTranslation();
@@ -31,13 +31,14 @@ const DLSProposalsCardView = (): React.ReactElement => {
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
-  // isMounted is used to disable queries when the component isn't fully mounted.
+  // isInitialised is used to disable queries when the component isn't fully initialised.
   // It prevents the request being sent twice if default sort is set.
   // It is not needed for cards/tables that don't have default sort.
-  const [isMounted, setIsMounted] = React.useState(false);
+  const [isInitialised, setIsInitialised] = React.useState(false);
+
   React.useEffect(() => {
-    setIsMounted(true);
-  }, []);
+    if (!isInitialised && Object.keys(sort).length > 0) setIsInitialised(true);
+  }, [isInitialised, sort]);
 
   const { data: totalDataCount, isPending: countLoading } =
     useInvestigationCount([
@@ -56,7 +57,7 @@ const DLSProposalsCardView = (): React.ReactElement => {
     // Do not add order by id as id is not a distinct field above and will otherwise
     // cause missing results
     true,
-    isMounted
+    isInitialised
   );
 
   const title: CardViewDetails = React.useMemo(

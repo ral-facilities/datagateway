@@ -31,7 +31,7 @@ import {
 } from 'datagateway-common';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import {
   useCart,
@@ -648,10 +648,8 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                           color="primary"
                           disabled={cartMintabilityLoading || !mintable}
                           component={RouterLink}
-                          to={{
-                            pathname: '/download/mint',
-                            state: { fromCart: true },
-                          }}
+                          to={'/download/mint'}
+                          state={{ fromCart: true }}
                         >
                           {t('downloadCart.generate_DOI')}
                         </Button>

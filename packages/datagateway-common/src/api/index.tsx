@@ -9,7 +9,7 @@ import { isValid } from 'date-fns';
 import format from 'date-fns/format';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
 import {
   AdditionalFilters,
   DOIViewType,
@@ -198,19 +198,19 @@ export const usePushQueryParams = (): ((
   newQueryParams: Partial<QueryParams>
 ) => void) => {
   const location = useLocation();
-  const { push } = useHistory();
+  const navigate = useNavigate();
 
   return React.useCallback(
     (newQueryParams: Partial<QueryParams>) => {
       const currentQueryParams = parseSearchToQuery(location.search);
-      push({
+      navigate({
         search: `?${parseQueryToSearch({
           ...currentQueryParams,
           ...newQueryParams,
         }).toString()}`,
       });
     },
-    [location.search, push]
+    [location.search, navigate]
   );
 };
 
@@ -321,7 +321,7 @@ export const useSort = (): ((
   updateMethod: UpdateMethod,
   shiftDown?: boolean
 ) => void) => {
-  const { push, replace } = useHistory();
+  const navigate = useNavigate();
 
   return React.useCallback(
     (
@@ -356,11 +356,14 @@ export const useSort = (): ((
           },
         };
       }
-      (updateMethod === 'push' ? push : replace)({
-        search: `?${parseQueryToSearch(query).toString()}`,
-      });
+      navigate(
+        {
+          search: `?${parseQueryToSearch(query).toString()}`,
+        },
+        { replace: updateMethod === 'replace' }
+      );
     },
-    [push, replace]
+    [navigate]
   );
 };
 
@@ -369,7 +372,7 @@ export const useSingleSort = (): ((
   order: Order | null,
   updateMethod: UpdateMethod
 ) => void) => {
-  const { push, replace } = useHistory();
+  const navigate = useNavigate();
 
   return React.useCallback(
     (
@@ -391,11 +394,14 @@ export const useSingleSort = (): ((
           },
         };
       }
-      (updateMethod === 'push' ? push : replace)({
-        search: `?${parseQueryToSearch(query).toString()}`,
-      });
+      navigate(
+        {
+          search: `?${parseQueryToSearch(query).toString()}`,
+        },
+        { replace: updateMethod === 'replace' }
+      );
     },
-    [push, replace]
+    [navigate]
   );
 };
 
@@ -403,7 +409,7 @@ const useFilter = (
   updateMethod: UpdateMethod,
   filterPrefix?: string
 ): ((filterKey: string, filter: Filter | null) => void) => {
-  const { push, replace } = useHistory();
+  const navigate = useNavigate();
 
   return React.useCallback(
     (filterKey: string, filter: Filter | null) => {
@@ -430,11 +436,14 @@ const useFilter = (
           },
         };
       }
-      (updateMethod === 'push' ? push : replace)({
-        search: `?${parseQueryToSearch(query).toString()}`,
-      });
+      navigate(
+        {
+          search: `?${parseQueryToSearch(query).toString()}`,
+        },
+        { replace: updateMethod === 'replace' }
+      );
     },
-    [filterPrefix, push, replace, updateMethod]
+    [filterPrefix, navigate, updateMethod]
   );
 };
 
@@ -468,7 +477,7 @@ export const usePushDatafileFilter = (): ((
 export const usePushFilters = (): ((
   filters: { filterKey: string; filter: Filter | null }[]
 ) => void) => {
-  const { push } = useHistory();
+  const navigate = useNavigate();
   return React.useCallback(
     (filters: { filterKey: string; filter: Filter | null }[]) => {
       let query = parseSearchToQuery(window.location.search);
@@ -494,9 +503,9 @@ export const usePushFilters = (): ((
           };
         }
       });
-      push({ search: `?${parseQueryToSearch(query).toString()}` });
+      navigate({ search: `?${parseQueryToSearch(query).toString()}` });
     },
-    [push]
+    [navigate]
   );
 };
 
@@ -504,8 +513,7 @@ export const useUpdateQueryParam = (
   type: 'filters' | 'sort' | 'page' | 'results',
   updateMethod: 'push' | 'replace'
 ): ((param: FiltersType | SortType | number | null) => void) => {
-  const { push, replace } = useHistory();
-  const functionToUse = updateMethod === 'push' ? push : replace;
+  const navigate = useNavigate();
   return React.useCallback(
     (param: FiltersType | SortType | number | null) => {
       // need to use window.location.search and not useLocation to ensure we have the most
@@ -522,14 +530,17 @@ export const useUpdateQueryParam = (
         query.results = param as number | null;
       }
 
-      functionToUse({ search: `?${parseQueryToSearch(query).toString()}` });
+      navigate(
+        { search: `?${parseQueryToSearch(query).toString()}` },
+        { replace: updateMethod === 'replace' }
+      );
     },
-    [type, functionToUse]
+    [type, navigate, updateMethod]
   );
 };
 
 export const usePushPage = (): ((page: number) => void) => {
-  const { push } = useHistory();
+  const navigate = useNavigate();
 
   return React.useCallback(
     (page: number) => {
@@ -537,14 +548,14 @@ export const usePushPage = (): ((page: number) => void) => {
         ...parseSearchToQuery(window.location.search),
         page,
       };
-      push(`?${parseQueryToSearch(query).toString()}`);
+      navigate(`?${parseQueryToSearch(query).toString()}`);
     },
-    [push]
+    [navigate]
   );
 };
 
 export const usePushResults = (): ((results: number) => void) => {
-  const { push } = useHistory();
+  const navigate = useNavigate();
 
   return React.useCallback(
     (results: number) => {
@@ -552,17 +563,16 @@ export const usePushResults = (): ((results: number) => void) => {
         ...parseSearchToQuery(window.location.search),
         results,
       };
-      push(`?${parseQueryToSearch(query).toString()}`);
+      navigate(`?${parseQueryToSearch(query).toString()}`);
     },
-    [push]
+    [navigate]
   );
 };
 
 export const useUpdateView = (
   updateMethod: UpdateMethod
 ): ((view: ViewsType) => void) => {
-  const { push, replace } = useHistory();
-  const functionToUse = updateMethod === 'push' ? push : replace;
+  const navigate = useNavigate();
 
   return React.useCallback(
     (view: ViewsType) => {
@@ -570,15 +580,17 @@ export const useUpdateView = (
         ...parseSearchToQuery(window.location.search),
         view,
       };
-      functionToUse(`?${parseQueryToSearch(query).toString()}`);
+      navigate(`?${parseQueryToSearch(query).toString()}`, {
+        replace: updateMethod === 'replace',
+      });
     },
-    [functionToUse]
+    [navigate, updateMethod]
   );
 };
 
 export const usePushSearchText = (): ((searchText: string) => void) => {
   const location = useLocation();
-  const { push } = useHistory();
+  const navigate = useNavigate();
 
   return React.useCallback(
     (searchText: string) => {
@@ -586,11 +598,11 @@ export const usePushSearchText = (): ((searchText: string) => void) => {
         ...parseSearchToQuery(location.search),
         searchText,
       };
-      push({
+      navigate({
         search: `?${parseQueryToSearch(query).toString()}`,
       });
     },
-    [location.search, push]
+    [location.search, navigate]
   );
 };
 
@@ -600,7 +612,7 @@ export const usePushSearchToggles = (): ((
   investigation: boolean
 ) => void) => {
   const location = useLocation();
-  const { push } = useHistory();
+  const navigate = useNavigate();
 
   return React.useCallback(
     (dataset: boolean, datafile: boolean, investigation: boolean) => {
@@ -610,16 +622,16 @@ export const usePushSearchToggles = (): ((
         datafile,
         investigation,
       };
-      push(`?${parseQueryToSearch(query).toString()}`);
+      navigate(`?${parseQueryToSearch(query).toString()}`);
     },
-    [location.search, push]
+    [location.search, navigate]
   );
 };
 
 export const usePushSearchStartDate = (): ((
   startDate: Date | null
 ) => void) => {
-  const { push } = useHistory();
+  const navigate = useNavigate();
 
   return React.useCallback(
     (startDate: Date | null) => {
@@ -629,21 +641,21 @@ export const usePushSearchStartDate = (): ((
           ...parseSearchToQuery(window.location.search),
           startDate,
         };
-        push(`?${parseQueryToSearch(query).toString()}`);
+        navigate(`?${parseQueryToSearch(query).toString()}`);
       } else {
         const searchParams = parseQueryToSearch(
           parseSearchToQuery(window.location.search)
         );
         searchParams.delete('startDate');
-        push(`?${searchParams.toString()}`);
+        navigate(`?${searchParams.toString()}`);
       }
     },
-    [push]
+    [navigate]
   );
 };
 
 export const usePushSearchEndDate = (): ((endDate: Date | null) => void) => {
-  const { push } = useHistory();
+  const navigate = useNavigate();
 
   return React.useCallback(
     (endDate: Date | null) => {
@@ -653,22 +665,22 @@ export const usePushSearchEndDate = (): ((endDate: Date | null) => void) => {
           ...parseSearchToQuery(window.location.search),
           endDate,
         };
-        push(`?${parseQueryToSearch(query).toString()}`);
+        navigate(`?${parseQueryToSearch(query).toString()}`);
       } else {
         const searchParams = parseQueryToSearch(
           parseSearchToQuery(window.location.search)
         );
         searchParams.delete('endDate');
-        push(`?${searchParams.toString()}`);
+        navigate(`?${searchParams.toString()}`);
       }
     },
-    [push]
+    [navigate]
   );
 };
 
 export const usePushSearchRestrict = (): ((restrict: boolean) => void) => {
   const location = useLocation();
-  const { push } = useHistory();
+  const navigate = useNavigate();
 
   return React.useCallback(
     (restrict: boolean) => {
@@ -676,9 +688,9 @@ export const usePushSearchRestrict = (): ((restrict: boolean) => void) => {
         ...parseSearchToQuery(location.search),
         restrict,
       };
-      push(`?${parseQueryToSearch(query).toString()}`);
+      navigate(`?${parseQueryToSearch(query).toString()}`);
     },
-    [location.search, push]
+    [location.search, navigate]
   );
 };
 

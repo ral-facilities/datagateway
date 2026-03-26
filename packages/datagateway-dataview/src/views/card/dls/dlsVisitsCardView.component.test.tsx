@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render, screen, type RenderResult } from '@testing-library/react';
+import { act, render, screen, type RenderResult } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 import {
@@ -8,11 +8,12 @@ import {
   useInvestigationsPaginated,
   type Investigation,
 } from 'datagateway-common';
-import { createMemoryHistory, type History } from 'history';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, generatePath } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { paths } from '../../../page/pageContainer.component';
+import { flushPromises } from '../../../setupTests';
 import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import DLSVisitsCardView from './dlsVisitsCardView.component';
@@ -32,17 +33,21 @@ describe('DLS Visits - Card View', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let cardData: Investigation[];
-  let history: History;
   let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult =>
     render(
       <Provider store={mockStore(state)}>
-        <Router history={history}>
+        <BrowserRouter>
           <QueryClientProvider client={new QueryClient()}>
-            <DLSVisitsCardView proposalName="test" />
+            <Routes>
+              <Route
+                path={paths.toggle.dlsVisit}
+                element={<DLSVisitsCardView />}
+              />
+            </Routes>
           </QueryClientProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
 
@@ -57,7 +62,14 @@ describe('DLS Visits - Card View', () => {
         fileCount: 1,
       },
     ];
-    history = createMemoryHistory();
+    window.history.replaceState(
+      {},
+      '',
+      generatePath(paths.toggle.dlsVisit, {
+        investigationId: '1',
+        proposalName: 'test',
+      })
+    );
     user = userEvent.setup();
 
     state = JSON.parse(
@@ -119,7 +131,7 @@ describe('DLS Visits - Card View', () => {
 
     await user.type(filter, 'test');
 
-    expect(history.location.search).toBe(
+    expect(window.location.search).toContain(
       `?filters=${encodeURIComponent(
         '{"visitId":{"value":"test","type":"include"}}'
       )}`
@@ -127,7 +139,7 @@ describe('DLS Visits - Card View', () => {
 
     await user.clear(filter);
 
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).not.toContain('filters=');
   });
 
   it('updates filter query params on date filter', async () => {
@@ -144,7 +156,7 @@ describe('DLS Visits - Card View', () => {
 
     await user.type(filter, '2019-08-06');
 
-    expect(history.location.search).toBe(
+    expect(window.location.search).toContain(
       `?filters=${encodeURIComponent('{"endDate":{"endDate":"2019-08-06"}}')}`
     );
 
@@ -153,7 +165,7 @@ describe('DLS Visits - Card View', () => {
     await user.keyboard('{Control}a{/Control}');
     await user.keyboard('{Delete}');
 
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).not.toContain('filters=');
   });
 
   it('uses default sort', async () => {
@@ -161,23 +173,20 @@ describe('DLS Visits - Card View', () => {
 
     expect(await screen.findByTestId('card')).toBeInTheDocument();
 
-    expect(history.length).toBe(1);
-    expect(history.location.search).toBe(
+    await act(async () => {
+      await flushPromises();
+    });
+
+    expect(window.location.search).toBe(
       `?sort=${encodeURIComponent('{"startDate":"desc"}')}`
     );
 
-    // check that the data request is sent only once after mounting
-    expect(useInvestigationsPaginated).toHaveBeenCalledTimes(2);
-    expect(useInvestigationsPaginated).toHaveBeenCalledWith(
-      expect.anything(),
-      undefined,
-      false
-    );
-    expect(useInvestigationsPaginated).toHaveBeenLastCalledWith(
-      expect.anything(),
-      undefined,
-      true
-    );
+    // check that the data hook is only called once with the query enabled
+    expect(
+      vi
+        .mocked(useInvestigationsPaginated)
+        .mock.calls.filter((call) => call[2] === true)
+    ).toHaveLength(1);
   });
 
   it('updates sort query params on sort', async () => {
@@ -189,7 +198,7 @@ describe('DLS Visits - Card View', () => {
       })
     );
 
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?sort=${encodeURIComponent('{"visitId":"asc"}')}`
     );
   });

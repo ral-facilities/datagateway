@@ -1,6 +1,6 @@
 import { act, render } from '@testing-library/react';
 import React from 'react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import type { Mock, MockInstance } from 'vitest';
 import { flushPromises } from '../setupTests';
 import WithIdCheck from './withIdCheck';

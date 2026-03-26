@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Box,
   LinearProgress,
@@ -8,16 +7,18 @@ import {
   Tabs,
   tabsClasses,
 } from '@mui/material';
-import { CartProps, ViewCartButton, ViewsType } from 'datagateway-common';
-import { useTranslation } from 'react-i18next';
 import { useIsFetching } from '@tanstack/react-query';
+import { CartProps, ViewCartButton, ViewsType } from 'datagateway-common';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import type { StateType } from '../state/app.types';
-import InvestigationSearchTable from '../table/investigationSearchTable.component';
-import InvestigationCardView from '../card/investigationSearchCardView.component';
-import DatafileSearchTable from '../table/datafileSearchTable.component';
+import { useParams } from 'react-router';
 import DatasetCardView from '../card/datasetSearchCardView.component';
+import InvestigationCardView from '../card/investigationSearchCardView.component';
+import type { StateType } from '../state/app.types';
+import DatafileSearchTable from '../table/datafileSearchTable.component';
 import DatasetSearchTable from '../table/datasetSearchTable.component';
+import InvestigationSearchTable from '../table/investigationSearchTable.component';
 import SearchTabLabel from './searchTabLabel.component';
 import {
   SearchResultCount,
@@ -78,7 +79,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
   backgroundColor: (theme as any).colours?.tabsGrey,
 }));
 
-export interface SearchTabsProps {
+export interface BaseSearchTabsProps {
   view: ViewsType;
   containerHeight: string;
   hierarchy: string;
@@ -86,7 +87,7 @@ export interface SearchTabsProps {
   currentTab: string;
 }
 
-const SearchTabs = ({
+const BaseSearchTabs = ({
   view,
   containerHeight,
   hierarchy,
@@ -94,7 +95,7 @@ const SearchTabs = ({
   currentTab,
   cartItems,
   navigateToDownload,
-}: SearchTabsProps & CartProps): React.ReactElement => {
+}: BaseSearchTabsProps & CartProps): React.ReactElement => {
   const isDatasetTabEnabled = useSelector(
     (state: StateType) => state.dgsearch.tabs.datasetTab
   );
@@ -270,6 +271,13 @@ const SearchTabs = ({
       </SearchResultCountDispatch.Provider>
     </div>
   );
+};
+
+const SearchTabs = (
+  props: Omit<BaseSearchTabsProps, 'hierarchy'> & CartProps
+) => {
+  const { hierarchy = '' } = useParams();
+  return <BaseSearchTabs hierarchy={hierarchy} {...props} />;
 };
 
 export default SearchTabs;

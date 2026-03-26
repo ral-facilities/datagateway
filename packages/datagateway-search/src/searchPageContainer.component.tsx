@@ -1,13 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Link,
-  Route,
-  RouteComponentProps,
-  Switch,
-  useHistory,
-  useLocation,
-} from 'react-router-dom';
+import { Link, Route, Routes, useLocation, useNavigate } from 'react-router';
 import { StateType } from './state/app.types';
 
 import { Grid, Paper, styled } from '@mui/material';
@@ -89,7 +82,7 @@ const getResults = (searchableEntities: string): number | null => {
 };
 
 export const usePushCurrentTab = (): ((newCurrentTab: string) => void) => {
-  const { push } = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
   const { filters, page, results, currentTab } = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -117,9 +110,9 @@ export const usePushCurrentTab = (): ((newCurrentTab: string) => void) => {
         results: newResults,
         currentTab: newCurrentTab,
       };
-      push(`?${parseQueryToSearch(query).toString()}`);
+      navigate(`?${parseQueryToSearch(query).toString()}`);
     },
-    [currentTab, filters, page, push, results]
+    [currentTab, filters, page, navigate, results]
   );
 };
 
@@ -244,8 +237,8 @@ const SearchPageContainer: React.FC = () => {
     (isFirstRender || checkedBoxes.includes(queryParams.currentTab))
       ? queryParams.currentTab
       : checkedBoxes.length !== 0
-      ? checkedBoxes[0]
-      : searchableEntities[0];
+        ? checkedBoxes[0]
+        : searchableEntities[0];
 
   //Do not allow these to be searched if they are not searchable (prevents URL
   //forcing them to be searched)
@@ -394,9 +387,12 @@ const SearchPageContainer: React.FC = () => {
   const containerHeight = `calc(100vh - 64px - 36px - ${searchBoxHeight}px - 8px - 49px - 2px)`;
 
   const { data: cartItems } = useCart();
-  const { push } = useHistory();
+  const navigate = useNavigate();
 
-  const navigateToDownload = React.useCallback(() => push('/download'), [push]);
+  const navigateToDownload = React.useCallback(
+    () => navigate('/download'),
+    [navigate]
+  );
 
   const disabled = Object.keys(queryParams.filters).length === 0;
 
@@ -407,15 +403,11 @@ const SearchPageContainer: React.FC = () => {
   };
 
   return (
-    <Switch>
-      <Route
-        exact
-        path="/"
-        render={() => <Link to="/search/data">Search data</Link>}
-      />
+    <Routes>
+      <Route path="/" element={<Link to="/search/data">Search data</Link>} />
       <Route
         path="/search/:hierarchy"
-        render={({ match }: RouteComponentProps<{ hierarchy: string }>) => (
+        element={
           <Grid
             container
             direction={sideLayout ? 'row' : 'column'}
@@ -500,7 +492,6 @@ const SearchPageContainer: React.FC = () => {
                     <SearchTabs
                       view={view}
                       containerHeight={containerHeight}
-                      hierarchy={match.params.hierarchy}
                       onTabChange={pushCurrentTab}
                       currentTab={currentTab}
                       cartItems={cartItems ?? []}
@@ -511,9 +502,9 @@ const SearchPageContainer: React.FC = () => {
               </div>
             )}
           </Grid>
-        )}
+        }
       />
-    </Switch>
+    </Routes>
   );
 };
 
