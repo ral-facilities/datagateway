@@ -79,6 +79,7 @@ describe('DLS - All DOIs Table', () => {
   });
 
   it('should be able to sort by all sort directions on single and multiple columns', () => {
+    cy.get('[aria-sort="descending"]').should('exist');
     cy.contains('User-created DOI').click();
 
     // ascending order
@@ -117,6 +118,7 @@ describe('DLS - All DOIs Table', () => {
   });
 
   it('should be able to filter with text & date filters on multiple columns', () => {
+    cy.get('[aria-sort="descending"]').should('exist');
     cy.contains('User-created DOI').click();
 
     // test text filter
