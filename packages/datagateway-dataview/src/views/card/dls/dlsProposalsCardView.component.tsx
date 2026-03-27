@@ -1,10 +1,9 @@
-import React from 'react';
 import {
   CardView,
   CardViewDetails,
   Investigation,
-  tableLink,
   parseSearchToQuery,
+  tableLink,
   useInvestigationCount,
   useInvestigationsPaginated,
   usePushFilter,
@@ -13,6 +12,7 @@ import {
   useSort,
   useTextFilter,
 } from 'datagateway-common';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 
@@ -39,14 +39,14 @@ const DLSProposalsCardView = (): React.ReactElement => {
     setIsMounted(true);
   }, []);
 
-  const { data: totalDataCount, isLoading: countLoading } =
+  const { data: totalDataCount, isPending: countLoading } =
     useInvestigationCount([
       {
         filterType: 'distinct',
         filterValue: JSON.stringify(['name', 'title']),
       },
     ]);
-  const { isLoading: dataLoading, data } = useInvestigationsPaginated(
+  const { isPending: dataLoading, data } = useInvestigationsPaginated(
     [
       {
         filterType: 'distinct',

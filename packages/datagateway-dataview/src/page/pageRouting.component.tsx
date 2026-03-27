@@ -70,11 +70,9 @@ const SafeISISDatafilesTable = (props: {
   datasetId: string;
   dataPublication: boolean;
 }): React.ReactElement => {
-  const { data, isLoading } = useDataPublication(
+  const { data, isPending } = useDataPublication(
     parseInt(props.investigationId),
-    {
-      enabled: props.dataPublication,
-    }
+    props.dataPublication
   );
   const dataPublicationInvestigationId =
     data?.content?.dataCollectionInvestigations?.[0]?.investigation?.id;
@@ -93,7 +91,7 @@ const SafeISISDatafilesTable = (props: {
           dataPublicationInvestigationId ?? -1,
           parseInt(props.datasetId)
         ),
-        ...(isLoading ? [new Promise(() => undefined)] : []),
+        ...(isPending ? [new Promise(() => undefined)] : []),
       ]).then((values) => !values.includes(false))
     : Promise.all([
         checkInstrumentAndFacilityCycleId(
@@ -128,11 +126,9 @@ const SafeISISDatasetLanding = (props: {
   datasetId: string;
   dataPublication: boolean;
 }): React.ReactElement => {
-  const { data, isLoading } = useDataPublication(
+  const { data, isPending } = useDataPublication(
     parseInt(props.investigationId),
-    {
-      enabled: props.dataPublication,
-    }
+    props.dataPublication
   );
   const dataPublicationInvestigationId =
     data?.content?.dataCollectionInvestigations?.[0]?.investigation?.id;
@@ -151,7 +147,7 @@ const SafeISISDatasetLanding = (props: {
           dataPublicationInvestigationId ?? -1,
           parseInt(props.datasetId)
         ),
-        ...(isLoading ? [new Promise(() => undefined)] : []),
+        ...(isPending ? [new Promise(() => undefined)] : []),
       ]).then((values) => !values.includes(false))
     : Promise.all([
         checkInstrumentAndFacilityCycleId(
@@ -178,11 +174,10 @@ const SafeISISDatasetsTable = (props: {
   investigationId: string;
   dataPublication: boolean;
 }): React.ReactElement => {
-  const { data, isLoading } = useDataPublication(
+  const { data, isPending } = useDataPublication(
     parseInt(props.investigationId),
-    {
-      enabled: props.dataPublication,
-    }
+
+    props.dataPublication
   );
 
   const dataPublicationInvestigationId =
@@ -198,7 +193,7 @@ const SafeISISDatasetsTable = (props: {
           parseInt(props.instrumentChildId),
           parseInt(props.investigationId)
         ),
-        ...(isLoading ? [new Promise(() => undefined)] : []),
+        ...(isPending ? [new Promise(() => undefined)] : []),
       ]).then((values) => !values.includes(false))
     : checkInstrumentAndFacilityCycleId(
         parseInt(props.instrumentId),
@@ -225,11 +220,9 @@ const SafeISISDatasetsCardView = (props: {
   investigationId: string;
   dataPublication: boolean;
 }): React.ReactElement => {
-  const { data, isLoading } = useDataPublication(
+  const { data, isPending } = useDataPublication(
     parseInt(props.investigationId),
-    {
-      enabled: props.dataPublication,
-    }
+    props.dataPublication
   );
 
   const dataPublicationInvestigationId =
@@ -245,7 +238,7 @@ const SafeISISDatasetsCardView = (props: {
           parseInt(props.instrumentChildId),
           parseInt(props.investigationId)
         ),
-        ...(isLoading ? [new Promise(() => undefined)] : []),
+        ...(isPending ? [new Promise(() => undefined)] : []),
       ]).then((values) => !values.includes(false))
     : checkInstrumentAndFacilityCycleId(
         parseInt(props.instrumentId),
@@ -311,11 +304,9 @@ const SafeDatafilePreviewer = (props: {
   datasetId: string;
   datafileId: string;
 }): React.ReactElement => {
-  const { data, isLoading } = useDataPublication(
+  const { data, isPending } = useDataPublication(
     parseInt(props.investigationId),
-    {
-      enabled: props.dataPublication,
-    }
+    props.dataPublication
   );
 
   const dataPublicationInvestigationId =
@@ -336,7 +327,7 @@ const SafeDatafilePreviewer = (props: {
           parseInt(props.datasetId)
         ),
         checkDatasetId(parseInt(props.datasetId), parseInt(props.datafileId)),
-        ...(isLoading ? [new Promise(() => undefined)] : []),
+        ...(isPending ? [new Promise(() => undefined)] : []),
       ]).then((values) => !values.includes(false))
     : Promise.all([
         checkInstrumentAndFacilityCycleId(

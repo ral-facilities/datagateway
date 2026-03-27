@@ -1,4 +1,4 @@
-import React from 'react';
+import CalendarToday from '@mui/icons-material/CalendarToday';
 import {
   CardView,
   CardViewDetails,
@@ -14,7 +14,7 @@ import {
   useSort,
   useTextFilter,
 } from 'datagateway-common';
-import CalendarToday from '@mui/icons-material/CalendarToday';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 
@@ -49,9 +49,9 @@ const ISISFacilityCyclesCardView = (
     setIsMounted(true);
   }, []);
 
-  const { data: totalDataCount, isLoading: countLoading } =
+  const { data: totalDataCount, isPending: countLoading } =
     useFacilityCycleCount(parseInt(instrumentId));
-  const { isLoading: dataLoading, data } = useFacilityCyclesPaginated(
+  const { isPending: dataLoading, data } = useFacilityCyclesPaginated(
     parseInt(instrumentId),
     isMounted
   );

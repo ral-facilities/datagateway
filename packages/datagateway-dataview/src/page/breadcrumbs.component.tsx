@@ -6,22 +6,21 @@ import {
   styled,
   Typography,
 } from '@mui/material';
+import {
+  queryOptions,
+  useQueries,
+  UseQueryResult,
+} from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import {
   ArrowTooltip,
   EntityTypes,
-  handleICATError,
   parseSearchToQuery,
   readSciGatewayToken,
   useRetryICATErrors,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  UseQueryResult,
-  useQueries,
-  UseQueryOptions,
-} from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import { StateType } from '../state/app.types';
@@ -80,7 +79,7 @@ const fetchEntityInformation = async (
 const useEntityInformation = (
   currentPathnames: string[],
   landingPageEntities?: string[]
-): UseQueryResult<{ displayName: string; url: string }, AxiosError>[] => {
+) => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const breadcrumbSettings = useSelector(
     (state: StateType) => state.dgdataview.breadcrumbSettings
@@ -88,12 +87,7 @@ const useEntityInformation = (
   const retryICATErrors = useRetryICATErrors();
 
   const queryConfigs = React.useMemo(() => {
-    const queryConfigs: UseQueryOptions<
-      string,
-      AxiosError,
-      { displayName: string; url: string },
-      ['entityInfo', string, string]
-    >[] = [];
+    const queryConfigs = [];
 
     const pathLength = currentPathnames.length;
     for (let index = 1; index < pathLength; index += 2) {
@@ -116,8 +110,8 @@ const useEntityInformation = (
           entity === 'investigation'
             ? 'title'
             : entity === 'dataPublication'
-            ? 'title'
-            : 'name';
+              ? 'title'
+              : 'name';
 
         // this is the field we use to lookup the relevant entity in ICAT - it's usually ID
         // but for DLS proposals this will be name
@@ -170,24 +164,29 @@ const useEntityInformation = (
             JSON.stringify({ [requestQueryField]: { eq: entityId } });
         }
 
-        queryConfigs.push({
-          queryKey: ['entityInfo', requestEntityUrl, requestEntityField],
-          queryFn: () =>
-            fetchEntityInformation(
-              apiUrl,
+        queryConfigs.push(
+          queryOptions({
+            queryKey: [
+              'entityInfo',
               requestEntityUrl,
-              requestEntityField
-            ),
-          onError: (error) => {
-            handleICATError(error, false);
-          },
-          retry: retryICATErrors,
-          staleTime: Infinity,
-          select: (data: string) => ({
-            displayName: data,
-            url: link,
-          }),
-        });
+              requestEntityField,
+              apiUrl,
+            ],
+            queryFn: () =>
+              fetchEntityInformation(
+                apiUrl,
+                requestEntityUrl,
+                requestEntityField
+              ),
+            meta: { icatError: true, broadcastCondition: () => false },
+            retry: retryICATErrors,
+            staleTime: Infinity,
+            select: (data: string) => ({
+              displayName: data,
+              url: link,
+            }),
+          })
+        );
       }
     }
 
@@ -200,14 +199,8 @@ const useEntityInformation = (
     apiUrl,
   ]);
 
-  // useQueries doesn't allow us to specify type info, so ignore this line
-  // since we strongly type the queries object anyway
-  // we also need to prettier-ignore to make sure we don't wrap onto next line
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  // prettier-ignore
   return useQueries({
-    queries: queryConfigs
+    queries: queryConfigs,
   });
 };
 

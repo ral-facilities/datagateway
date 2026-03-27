@@ -214,8 +214,6 @@ describe('DataPublication content table component', () => {
   it('renders investigations correctly', async () => {
     renderComponent();
 
-    expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
-
     let rows: HTMLElement[] = [];
     await waitFor(async () => {
       rows = await findAllRows();
@@ -224,6 +222,8 @@ describe('DataPublication content table component', () => {
     });
 
     const row = rows[0];
+
+    expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
 
     expect(
       await findColumnHeaderByName('investigations.visit_id')

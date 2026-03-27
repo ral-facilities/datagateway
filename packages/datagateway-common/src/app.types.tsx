@@ -14,7 +14,7 @@ export const FACILITY_NAME = {
   lils: 'LILS',
 } as const;
 
-export type FacilityName = typeof FACILITY_NAME[keyof typeof FACILITY_NAME];
+export type FacilityName = (typeof FACILITY_NAME)[keyof typeof FACILITY_NAME];
 
 export interface CommonSettings {
   facilityName: string;
@@ -483,6 +483,11 @@ export type AdditionalFilters = {
 
 export interface SortType {
   [column: string]: Order;
+}
+
+export interface SkipAndLimitType {
+  skip: number;
+  limit: number;
 }
 
 export type ViewsType = 'table' | 'card' | null;

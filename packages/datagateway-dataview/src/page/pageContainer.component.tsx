@@ -587,12 +587,13 @@ const DataviewPageContainer: React.FC = () => {
   // the count can fall behind
   // eslint-disable-next-line react-hooks/exhaustive-deps
   React.useEffect(() => {
-    const count =
-      queryClient.getQueryData<number>(['count'], {
-        exact: false,
-        type: 'active',
-      }) ?? 0;
-    if (count !== totalDataCount) setTotalDataCount(count);
+    const count = (queryClient.getQueriesData<number>({
+      queryKey: ['count'],
+      exact: false,
+      type: 'active',
+    }) ?? 0)?.[0]?.[1];
+    if (typeof count !== 'undefined' && count !== totalDataCount)
+      setTotalDataCount(count);
   });
 
   React.useEffect(() => {
@@ -600,7 +601,8 @@ const DataviewPageContainer: React.FC = () => {
     else setlinearProgressHeight('0px');
   }, [loading]);
 
-  const isCountFetchingNum = useIsFetching(['count'], {
+  const isCountFetchingNum = useIsFetching({
+    queryKey: ['count'],
     exact: false,
   });
   const loadedCount = isCountFetchingNum === 0;
@@ -698,7 +700,6 @@ const DataviewPageContainer: React.FC = () => {
         navigateToDownload={navigateToDownload}
         loggedInAnonymously={loggedInAnonymously}
       />
-
       <StyledGrid container>
         <Grid item xs={12} style={{ marginTop: '10px', marginBottom: '10px' }}>
           <StyledGrid container alignItems="baseline">

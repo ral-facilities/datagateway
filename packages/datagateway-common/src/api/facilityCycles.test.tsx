@@ -2,7 +2,7 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import axios from 'axios';
 import { History, createMemoryHistory } from 'history';
 import { FacilityCycle } from '../app.types';
-import handleICATError from '../handleICATError';
+import * as handleICATError from '../handleICATError';
 import { createReactQueryWrapper } from '../setupTests';
 import {
   useAllFacilityCycles,
@@ -11,12 +11,14 @@ import {
   useFacilityCyclesPaginated,
 } from './facilityCycles';
 
-vi.mock('../handleICATError');
-
 describe('facility cycle api functions', () => {
   let mockData: FacilityCycle[] = [];
   let history: History;
   let params: URLSearchParams;
+  const handleICATErrorSpy = vi
+    .spyOn(handleICATError, 'default')
+    .mockImplementation(vi.fn());
+
   beforeEach(() => {
     mockData = [
       {
@@ -43,7 +45,7 @@ describe('facility cycle api functions', () => {
   });
 
   afterEach(() => {
-    vi.mocked(handleICATError).mockClear();
+    vi.mocked(handleICATErrorSpy).mockClear();
     vi.mocked(axios.get).mockClear();
   });
 
@@ -68,7 +70,7 @@ describe('facility cycle api functions', () => {
       expect(result.current.data).toEqual(mockData);
     });
 
-    it('sends axios request to fetch all facility cycles and calls handleICATError on failure', async () => {
+    it('sends axios request to fetch all facility cycles and calls handleICATErrorSpy on failure', async () => {
       vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
@@ -78,7 +80,10 @@ describe('facility cycle api functions', () => {
 
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
+      expect(handleICATErrorSpy).toHaveBeenCalledWith(
+        { message: 'Test error' },
+        undefined
+      );
     });
   });
 
@@ -125,7 +130,7 @@ describe('facility cycle api functions', () => {
           params,
         })
       );
-      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data).toEqual(mockData);
@@ -142,7 +147,7 @@ describe('facility cycle api functions', () => {
       expect(vi.mocked(axios.get)).toHaveBeenCalledTimes(2);
     });
 
-    it('sends axios request to fetch paginated facility cycles and calls handleICATError on failure', async () => {
+    it('sends axios request to fetch paginated facility cycles and calls handleICATErrorSpy on failure', async () => {
       vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
@@ -175,10 +180,13 @@ describe('facility cycle api functions', () => {
           params,
         })
       );
-      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
-      expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
+      expect(handleICATErrorSpy).toHaveBeenCalledWith(
+        { message: 'Test error' },
+        undefined
+      );
     });
   });
 
@@ -227,14 +235,12 @@ describe('facility cycle api functions', () => {
           params,
         })
       );
-      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
-      expect(result.current.data.pages).toStrictEqual([mockData[0]]);
+      expect(result.current.data?.pages).toStrictEqual([mockData[0]]);
 
-      await result.current.fetchNextPage({
-        pageParam: { startIndex: 50, stopIndex: 74 },
-      });
+      await result.current.fetchNextPage();
 
       await waitFor(() => expect(result.current.isFetching).toBe(false));
 
@@ -247,11 +253,11 @@ describe('facility cycle api functions', () => {
       );
       params.set('skip', JSON.stringify(50));
       params.set('limit', JSON.stringify(25));
-      expect(vi.mocked(axios.get).mock.calls[1][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[1][1]?.params.toString()).toBe(
         params.toString()
       );
 
-      expect(result.current.data.pages).toStrictEqual([
+      expect(result.current.data?.pages).toStrictEqual([
         mockData[0],
         mockData[1],
       ]);
@@ -268,7 +274,7 @@ describe('facility cycle api functions', () => {
       expect(vi.mocked(axios.get)).toHaveBeenCalledTimes(3);
     });
 
-    it('sends axios request to fetch infinite facility cycles and calls handleICATError on failure', async () => {
+    it('sends axios request to fetch infinite facility cycles and calls handleICATErrorSpy on failure', async () => {
       vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
@@ -301,10 +307,13 @@ describe('facility cycle api functions', () => {
           params,
         })
       );
-      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
-      expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
+      expect(handleICATErrorSpy).toHaveBeenCalledWith(
+        { message: 'Test error' },
+        undefined
+      );
     });
   });
 
@@ -347,13 +356,13 @@ describe('facility cycle api functions', () => {
           params,
         })
       );
-      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
       expect(result.current.data).toEqual(mockData.length);
     });
 
-    it('sends axios request to fetch facility cycle count and calls handleICATError on failure', async () => {
+    it('sends axios request to fetch facility cycle count and calls handleICATErrorSpy on failure', async () => {
       vi.mocked(axios.get).mockRejectedValue({
         message: 'Test error',
       });
@@ -384,10 +393,13 @@ describe('facility cycle api functions', () => {
           params,
         })
       );
-      expect(vi.mocked(axios.get).mock.calls[0][1].params.toString()).toBe(
+      expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
-      expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
+      expect(handleICATErrorSpy).toHaveBeenCalledWith(
+        { message: 'Test error' },
+        undefined
+      );
     });
   });
 });

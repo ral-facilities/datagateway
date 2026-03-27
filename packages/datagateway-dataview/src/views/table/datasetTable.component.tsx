@@ -49,7 +49,7 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
   const dateFilter = useDateFilter(filters);
   const handleSort = useSort();
 
-  const { data: allIds, isInitialLoading: allIdsLoading } = useIds(
+  const { data: allIds, isPending: allIdsLoading } = useIds(
     'dataset',
     [
       {
@@ -61,10 +61,10 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
     ],
     !disableSelectAll
   );
-  const { data: cartItems, isLoading: cartLoading } = useCart();
-  const { mutate: addToCart, isLoading: addToCartLoading } =
+  const { data: cartItems, isPending: cartLoading } = useCart();
+  const { mutate: addToCart, isPending: addToCartLoading } =
     useAddToCart('dataset');
-  const { mutate: removeFromCart, isLoading: removeFromCartLoading } =
+  const { mutate: removeFromCart, isPending: removeFromCartLoading } =
     useRemoveFromCart('dataset');
 
   const { data: totalDataCount } = useDatasetCount([
@@ -86,7 +86,7 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
   ]);
 
   const loadMoreRows = React.useCallback(
-    (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
+    (_offsetParams: IndexRange) => fetchNextPage(),
     [fetchNextPage]
   );
 

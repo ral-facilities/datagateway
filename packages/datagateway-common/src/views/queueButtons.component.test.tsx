@@ -21,8 +21,6 @@ import {
   QueueVisitButton,
 } from './queueButtons.component';
 
-vi.mock('../handleICATError');
-
 describe('Queue buttons', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;

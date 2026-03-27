@@ -102,10 +102,10 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
 
       { enabled: investigation }
     );
-  const { data: cartItems, isLoading: cartLoading } = useCart();
-  const { mutate: addToCart, isLoading: addToCartLoading } =
+  const { data: cartItems, isPending: cartLoading } = useCart();
+  const { mutate: addToCart, isPending: addToCartLoading } =
     useAddToCart('investigation');
-  const { mutate: removeFromCart, isLoading: removeFromCartLoading } =
+  const { mutate: removeFromCart, isPending: removeFromCartLoading } =
     useRemoveFromCart('investigation');
 
   const {

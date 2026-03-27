@@ -145,9 +145,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   );
   const { dataPublicationId } = props;
 
-  const { data, isInitialLoading } = useDataPublication(
-    parseInt(dataPublicationId)
-  );
+  const { data, isPending } = useDataPublication(parseInt(dataPublicationId));
   const { data: dataciteData } = useDOI(data?.pid);
 
   const [techniques, subjects] = React.useMemo(
@@ -471,7 +469,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       }}
       data-testid="dls-dataPublication-landing"
     >
-      {isInitialLoading ? (
+      {isPending ? (
         <div style={{ textAlign: 'center' }}>
           <CircularProgress />
         </div>

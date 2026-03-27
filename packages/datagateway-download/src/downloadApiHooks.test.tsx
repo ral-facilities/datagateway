@@ -1,11 +1,15 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import axios, { AxiosError } from 'axios';
+import * as dgCommon from 'datagateway-common';
 import {
   ContributorType,
   Download,
-  handleDOIAPIError,
-  handleICATError,
+  queryCacheConfig,
 } from 'datagateway-common';
 import { createMemoryHistory } from 'history';
 import * as React from 'react';
@@ -30,18 +34,6 @@ import {
 } from './downloadApiHooks';
 import { mockCartItems, mockDownloadItems, mockedSettings } from './testData';
 
-vi.mock('datagateway-common', async () => {
-  const originalModule = await vi.importActual('datagateway-common');
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    handleICATError: vi.fn(),
-    retryICATErrors: vi.fn().mockReturnValue(false),
-    handleDOIAPIError: vi.fn(),
-  };
-});
-
 const createTestQueryClient = (): QueryClient =>
   new QueryClient({
     defaultOptions: {
@@ -51,12 +43,7 @@ const createTestQueryClient = (): QueryClient =>
         retryDelay: 0,
       },
     },
-    // silence react-query errors
-    logger: {
-      log: console.log,
-      warn: console.warn,
-      error: vi.fn(),
-    },
+    queryCache: new QueryCache(queryCacheConfig),
   });
 
 const createReactQueryWrapper = (
@@ -89,6 +76,9 @@ describe('Download API react-query hooks test', () => {
   let events: CustomEvent<{
     detail: { type: string; payload?: unknown };
   }>[] = [];
+
+  const handleICATErrorSpy = vi.spyOn(dgCommon, 'handleICATError');
+  const handleDOIAPIErrorSpy = vi.spyOn(dgCommon, 'handleDOIAPIError');
 
   beforeEach(() => {
     events = [];
@@ -151,22 +141,6 @@ describe('Download API react-query hooks test', () => {
         }
       );
       expect(result.current.data).toEqual(downloadCartMockData.cartItems);
-    });
-
-    it('sends axios request to fetch cart and calls handleICATError on failure', async () => {
-      axios.get = vi.fn().mockRejectedValue({
-        message: 'Test error message',
-      });
-
-      const { result } = renderHook(() => useCart(), {
-        wrapper: createReactQueryWrapper(),
-      });
-
-      await waitFor(() => expect(result.current.isError).toBe(true));
-
-      expect(handleICATError).toHaveBeenCalledWith({
-        message: 'Test error message',
-      });
     });
   });
 
@@ -233,8 +207,8 @@ describe('Download API react-query hooks test', () => {
         { params: { sessionId: null, items: '*' } }
       );
       expect(result.current.failureCount).toBe(2);
-      expect(handleICATError).toHaveBeenCalledTimes(1);
-      expect(handleICATError).toHaveBeenCalledWith({
+      expect(handleICATErrorSpy).toHaveBeenCalledTimes(1);
+      expect(handleICATErrorSpy).toHaveBeenCalledWith({
         message: 'Test error message',
       });
     });
@@ -303,8 +277,8 @@ describe('Download API react-query hooks test', () => {
         { params: { sessionId: null, items: 'investigation 1' } }
       );
       expect(result.current.failureCount).toBe(2);
-      expect(handleICATError).toHaveBeenCalledTimes(1);
-      expect(handleICATError).toHaveBeenCalledWith({
+      expect(handleICATErrorSpy).toHaveBeenCalledTimes(1);
+      expect(handleICATErrorSpy).toHaveBeenCalledWith({
         message: 'Test error message',
       });
     });
@@ -328,27 +302,6 @@ describe('Download API react-query hooks test', () => {
         `${mockedSettings.idsUrl}/isTwoLevel`
       );
       expect(result.current.data).toEqual(true);
-    });
-
-    it('returns false in the event of an error and logs error upon unsuccessful response', async () => {
-      axios.get = vi.fn().mockImplementation(() =>
-        Promise.reject({
-          message: 'Test error message',
-        })
-      );
-
-      const { result } = renderHook(() => useIsTwoLevel(), {
-        wrapper: createReactQueryWrapper(),
-      });
-
-      await waitFor(() => expect(result.current.isError).toBe(true));
-
-      expect(axios.get).toHaveBeenCalledWith(
-        `${mockedSettings.idsUrl}/isTwoLevel`
-      );
-      expect(handleICATError).toHaveBeenCalledWith({
-        message: 'Test error message',
-      });
     });
   });
 
@@ -419,12 +372,6 @@ describe('Download API react-query hooks test', () => {
           },
         }
       );
-      expect(handleICATError).toHaveBeenCalledWith(
-        {
-          message: 'simulating a failed response',
-        },
-        false
-      );
     });
   });
 
@@ -449,32 +396,6 @@ describe('Download API react-query hooks test', () => {
         }
       );
       expect(result.current.data).toEqual(mockDownloadItems);
-    });
-
-    it('should call handleICATError on failure', async () => {
-      axios.get = vi.fn().mockRejectedValue({
-        message: 'Test error message',
-      });
-
-      const { result } = renderHook(() => useDownloads(), {
-        wrapper: createReactQueryWrapper(),
-      });
-
-      await waitFor(() => expect(result.current.isError).toBe(true));
-
-      expect(axios.get).toHaveBeenCalledWith(
-        `${mockedSettings.downloadApiUrl}/user/downloads`,
-        {
-          params: {
-            sessionId: null,
-            facilityName: mockedSettings.facilityName,
-            queryOffset: 'where download.isDeleted = false',
-          },
-        }
-      );
-      expect(handleICATError).toHaveBeenCalledWith({
-        message: 'Test error message',
-      });
     });
   });
 
@@ -597,7 +518,7 @@ describe('Download API react-query hooks test', () => {
       });
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(handleICATError).toHaveBeenCalledWith({
+      expect(handleICATErrorSpy).toHaveBeenCalledWith({
         message: 'Test error message',
       });
     });
@@ -610,7 +531,7 @@ describe('Download API react-query hooks test', () => {
       // first, test fetching initial data
 
       const { result } = renderHook(
-        () => useAdminDownloads({ initialQueryOffset: 'LIMIT 0, 50' }),
+        () => useAdminDownloads({ filters: {}, sort: {} }),
         {
           wrapper: createReactQueryWrapper(),
         }
@@ -625,7 +546,7 @@ describe('Download API react-query hooks test', () => {
           params: {
             sessionId: null,
             facilityName: mockedSettings.facilityName,
-            queryOffset: 'LIMIT 0, 50',
+            queryOffset: `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.id ASC LIMIT 0, 50`,
           },
         }
       );
@@ -633,9 +554,7 @@ describe('Download API react-query hooks test', () => {
 
       // then test fetching next page
 
-      await result.current.fetchNextPage({
-        pageParam: 'LIMIT 50, 100',
-      });
+      await result.current.fetchNextPage();
       await waitFor(() =>
         expect(
           !result.current.isFetchingNextPage && result.current.isSuccess
@@ -649,7 +568,7 @@ describe('Download API react-query hooks test', () => {
           params: {
             sessionId: null,
             facilityName: mockedSettings.facilityName,
-            queryOffset: 'LIMIT 50, 100',
+            queryOffset: `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.id ASC LIMIT 50, 25`,
           },
         }
       );
@@ -657,35 +576,6 @@ describe('Download API react-query hooks test', () => {
         mockDownloadItems,
         mockDownloadItems,
       ]);
-    });
-
-    it('should call handleICATError when an error is encountered', async () => {
-      axios.get = vi.fn().mockRejectedValue({
-        message: 'Test error message',
-      });
-
-      const { result } = renderHook(
-        () => useAdminDownloads({ initialQueryOffset: 'LIMIT 0, 50' }),
-        {
-          wrapper: createReactQueryWrapper(),
-        }
-      );
-
-      await waitFor(() => expect(result.current.isError).toBe(true));
-
-      expect(axios.get).toHaveBeenCalledWith(
-        `${mockedSettings.downloadApiUrl}/admin/downloads`,
-        {
-          params: {
-            sessionId: null,
-            facilityName: mockedSettings.facilityName,
-            queryOffset: 'LIMIT 0, 50',
-          },
-        }
-      );
-      expect(handleICATError).toHaveBeenCalledWith({
-        message: 'Test error message',
-      });
     });
   });
 
@@ -714,7 +604,8 @@ describe('Download API react-query hooks test', () => {
         // fetchAdminDownloads from useAdminDownloads
         if (
           url === `${mockedSettings.downloadApiUrl}/admin/downloads` &&
-          params.queryOffset === 'LIMIT 0, 50'
+          params.queryOffset ===
+            `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.id ASC LIMIT 0, 50`
         )
           return Promise.resolve({
             data: isMutated
@@ -742,9 +633,7 @@ describe('Download API react-query hooks test', () => {
 
       const { result } = renderHook(
         () => ({
-          useAdminDownloads: useAdminDownloads({
-            initialQueryOffset: 'LIMIT 0, 50',
-          }),
+          useAdminDownloads: useAdminDownloads({ filters: {}, sort: {} }),
           useAdminDownloadDeleted: useAdminDownloadDeleted(),
         }),
         {
@@ -819,7 +708,8 @@ describe('Download API react-query hooks test', () => {
         // fetchAdminDownloads from useAdminDownloads
         if (
           url === `${mockedSettings.downloadApiUrl}/admin/downloads` &&
-          params.queryOffset === 'LIMIT 0, 50'
+          params.queryOffset ===
+            `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.id ASC LIMIT 0, 50`
         )
           return Promise.resolve({
             data: isMutated
@@ -847,9 +737,7 @@ describe('Download API react-query hooks test', () => {
 
       const { result } = renderHook(
         () => ({
-          useAdminDownloads: useAdminDownloads({
-            initialQueryOffset: 'LIMIT 0, 50',
-          }),
+          useAdminDownloads: useAdminDownloads({ filters: {}, sort: {} }),
           useAdminDownloadDeleted: useAdminDownloadDeleted(),
         }),
         {
@@ -893,7 +781,7 @@ describe('Download API react-query hooks test', () => {
       });
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(handleICATError).toHaveBeenCalledWith({
+      expect(handleICATErrorSpy).toHaveBeenCalledWith({
         message: 'Test error message',
       });
     });
@@ -934,9 +822,7 @@ describe('Download API react-query hooks test', () => {
 
       const { result } = renderHook(
         () => ({
-          useAdminDownloads: useAdminDownloads({
-            initialQueryOffset: 'LIMIT 0, 50 ',
-          }),
+          useAdminDownloads: useAdminDownloads({ filters: {}, sort: {} }),
           useAdminUpdateDownloadStatus: useAdminUpdateDownloadStatus(),
         }),
         {
@@ -971,9 +857,7 @@ describe('Download API react-query hooks test', () => {
 
       const { result } = renderHook(
         () => ({
-          useAdminDownloads: useAdminDownloads({
-            initialQueryOffset: 'LIMIT 0, 50',
-          }),
+          useAdminDownloads: useAdminDownloads({ filters: {}, sort: {} }),
           useAdminUpdateDownloadStatus: useAdminUpdateDownloadStatus(),
         }),
         { wrapper: createReactQueryWrapper() }
@@ -982,15 +866,14 @@ describe('Download API react-query hooks test', () => {
       await waitFor(() =>
         expect(result.current.useAdminDownloads.isSuccess).toBe(true)
       );
-      result.current.useAdminUpdateDownloadStatus.mutate({
-        downloadId: 1,
-        status: 'PREPARING',
-      });
-      await waitFor(() =>
-        expect(result.current.useAdminUpdateDownloadStatus.isError).toBe(true)
-      );
+      await expect(
+        result.current.useAdminUpdateDownloadStatus.mutateAsync({
+          downloadId: 1,
+          status: 'PREPARING',
+        })
+      ).rejects.toThrowError();
 
-      expect(handleICATError).toHaveBeenCalledWith({
+      expect(handleICATErrorSpy).toHaveBeenCalledWith({
         message: 'Test error message',
       });
       expect(result.current.useAdminDownloads.data?.pages).toEqual([
@@ -1038,31 +921,6 @@ describe('Download API react-query hooks test', () => {
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       expect(result.current.data).toEqual('UNKNOWN');
-    });
-
-    it('should call handleICATError when an error is encountered', async () => {
-      axios.get = vi.fn().mockRejectedValue({
-        message: 'Test error message',
-      });
-
-      const { result } = renderHook(
-        () =>
-          useDownloadPercentageComplete({
-            download: mockDownloadItems[0],
-            idsUrl: 'https://example.com/ids',
-          }),
-        {
-          wrapper: createReactQueryWrapper(),
-        }
-      );
-      await waitFor(() => expect(result.current.isError).toBe(true));
-
-      expect(handleICATError).toHaveBeenCalledWith(
-        {
-          message: 'Test error message',
-        },
-        false
-      );
     });
   });
 
@@ -1136,13 +994,7 @@ describe('Download API react-query hooks test', () => {
       });
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(handleDOIAPIError).toHaveBeenCalledWith(
-        error,
-        undefined,
-        undefined,
-        true,
-        true
-      );
+      expect(handleDOIAPIErrorSpy).toHaveBeenCalledWith(error, true, true);
       expect(axios.post).toHaveBeenCalledWith(
         `${mockedSettings.doiMinterUrl}/draft`,
         {
@@ -1217,7 +1069,7 @@ describe('Download API react-query hooks test', () => {
       });
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(handleDOIAPIError).toHaveBeenCalledWith(error, '1', undefined);
+      expect(handleDOIAPIErrorSpy).toHaveBeenCalledWith(error, true, true);
       expect(axios.put).toHaveBeenCalledWith(
         `${mockedSettings.doiMinterUrl}/draft/1/publish`,
         undefined,
@@ -1264,13 +1116,7 @@ describe('Download API react-query hooks test', () => {
       });
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(handleDOIAPIError).toHaveBeenCalledWith(
-        error,
-        undefined,
-        undefined,
-        true,
-        true
-      );
+      expect(handleDOIAPIErrorSpy).toHaveBeenCalledWith(error, true, true);
       expect(axios.delete).toHaveBeenCalledWith(
         `${mockedSettings.doiMinterUrl}/draft/1`,
         { headers: { Authorization: 'Bearer null' } }

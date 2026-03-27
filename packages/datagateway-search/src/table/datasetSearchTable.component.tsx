@@ -100,42 +100,44 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
         // facet since the number is confusing for datafiles
         select: (data) => ({
           ...data,
-          pages: data.pages.map((searchResponse) => ({
-            ...searchResponse,
-            dimensions: {
-              ...searchResponse.dimensions,
-              ...(searchResponse.dimensions?.[
-                'InvestigationInstrument.instrument.name'
-              ]
-                ? {
-                    'InvestigationInstrument.instrument.name': Object.keys(
-                      searchResponse.dimensions?.[
-                        'InvestigationInstrument.instrument.name'
-                      ]
-                    ).reduce(
-                      (
-                        accumulator: { [key: string]: undefined },
-                        current: string
-                      ) => {
-                        accumulator[current] = undefined;
-                        return accumulator;
-                      },
-                      {}
-                    ),
-                  }
-                : {}),
-            },
-          })),
+          pages: data.pages.map(
+            (searchResponse): SearchResponse => ({
+              ...searchResponse,
+              dimensions: {
+                ...searchResponse.dimensions,
+                ...(searchResponse.dimensions?.[
+                  'InvestigationInstrument.instrument.name'
+                ]
+                  ? {
+                      'InvestigationInstrument.instrument.name': Object.keys(
+                        searchResponse.dimensions?.[
+                          'InvestigationInstrument.instrument.name'
+                        ]
+                      ).reduce(
+                        (
+                          accumulator: { [key: string]: undefined },
+                          current: string
+                        ) => {
+                          accumulator[current] = undefined;
+                          return accumulator;
+                        },
+                        {}
+                      ),
+                    }
+                  : {}),
+              },
+            })
+          ),
         }),
       }
     );
 
   const [t] = useTranslation();
 
-  const { data: cartItems, isLoading: cartLoading } = useCart();
-  const { mutate: addToCart, isLoading: addToCartLoading } =
+  const { data: cartItems, isPending: cartLoading } = useCart();
+  const { mutate: addToCart, isPending: addToCartLoading } =
     useAddToCart('dataset');
-  const { mutate: removeFromCart, isLoading: removeFromCartLoading } =
+  const { mutate: removeFromCart, isPending: removeFromCartLoading } =
     useRemoveFromCart('dataset');
 
   const {

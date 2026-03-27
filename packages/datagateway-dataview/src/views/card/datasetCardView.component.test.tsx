@@ -1,25 +1,25 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
-  type Dataset,
+  render,
+  screen,
+  within,
+  type RenderResult,
+} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import {
   dGCommonInitialState,
   useDatasetCount,
   useDatasetsPaginated,
+  type Dataset,
 } from 'datagateway-common';
+import { createMemoryHistory, type History } from 'history';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import type { StateType } from '../../state/app.types';
-import DatasetCardView from './datasetCardView.component';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { createMemoryHistory, type History } from 'history';
 import { initialState as dgDataViewInitialState } from '../../state/reducers/dgdataview.reducer';
-import {
-  render,
-  type RenderResult,
-  screen,
-  within,
-} from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import DatasetCardView from './datasetCardView.component';
 
 vi.mock('datagateway-common', async () => {
   const originalModule = await vi.importActual('datagateway-common');
@@ -74,11 +74,11 @@ describe('Dataset - Card View', () => {
 
     vi.mocked(useDatasetCount, { partial: true }).mockReturnValue({
       data: 1,
-      isLoading: false,
+      isPending: false,
     });
     vi.mocked(useDatasetsPaginated, { partial: true }).mockReturnValue({
       data: cardData,
-      isLoading: false,
+      isPending: false,
     });
 
     window.scrollTo = vi.fn();

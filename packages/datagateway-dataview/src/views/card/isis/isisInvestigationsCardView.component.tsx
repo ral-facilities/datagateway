@@ -100,9 +100,9 @@ const ISISInvestigationsCardView = (
     setIsMounted(true);
   }, []);
 
-  const { data: totalDataCount, isLoading: countLoading } =
+  const { data: totalDataCount, isPending: countLoading } =
     useInvestigationCount(investigationQueryFilters);
-  const { data, isLoading: dataLoading } = useInvestigationsPaginated(
+  const { data, isPending: dataLoading } = useInvestigationsPaginated(
     [
       ...investigationQueryFilters,
       {

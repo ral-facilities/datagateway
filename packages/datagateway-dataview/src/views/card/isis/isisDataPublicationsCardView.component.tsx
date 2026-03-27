@@ -1,24 +1,24 @@
-import React from 'react';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import Public from '@mui/icons-material/Public';
+import { Link as MuiLink } from '@mui/material';
 import {
   CardView,
   CardViewDetails,
-  parseSearchToQuery,
   DataPublication,
+  parseSearchToQuery,
   tableLink,
+  useDataPublicationCount,
+  useDataPublicationsPaginated,
   useDateFilter,
   usePushFilter,
   usePushPage,
   usePushResults,
   useSort,
-  useDataPublicationsPaginated,
-  useDataPublicationCount,
   useTextFilter,
 } from 'datagateway-common';
-import CalendarToday from '@mui/icons-material/CalendarToday';
-import Public from '@mui/icons-material/Public';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import { Link as MuiLink } from '@mui/material';
 
 interface ISISDataPublicationsCVProps {
   instrumentId: string;
@@ -53,7 +53,7 @@ const ISISDataPublicationsCardView = (
     setIsMounted(true);
   }, []);
 
-  const { data: totalDataCount, isLoading: countLoading } =
+  const { data: totalDataCount, isPending: countLoading } =
     useDataPublicationCount([
       {
         filterType: 'where',
@@ -96,7 +96,7 @@ const ISISDataPublicationsCardView = (
           ]),
     ]);
 
-  const { isLoading: dataLoading, data } = useDataPublicationsPaginated(
+  const { isPending: dataLoading, data } = useDataPublicationsPaginated(
     [
       {
         filterType: 'where',

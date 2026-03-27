@@ -1,32 +1,32 @@
-import ISISInstrumentsTable from './isisInstrumentsTable.component';
-import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
-import { StateType } from '../../../state/app.types';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  render,
+  screen,
+  within,
+  type RenderResult,
+} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
 import {
   dGCommonInitialState,
   Instrument,
   useInstrumentCount,
   useInstrumentsInfinite,
 } from 'datagateway-common';
-import configureStore from 'redux-mock-store';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
-import { Router } from 'react-router-dom';
 import { createMemoryHistory, History } from 'history';
-import {
-  render,
-  type RenderResult,
-  screen,
-  within,
-} from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { Provider } from 'react-redux';
+import { Router } from 'react-router-dom';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 import {
   findAllRows,
   findCellInRow,
   findColumnHeaderByName,
   findColumnIndexByName,
 } from '../../../setupTests';
-import axios, { AxiosResponse } from 'axios';
+import { StateType } from '../../../state/app.types';
+import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
+import ISISInstrumentsTable from './isisInstrumentsTable.component';
 
 vi.mock('datagateway-common', async () => {
   const originalModule = await vi.importActual('datagateway-common');
@@ -89,7 +89,7 @@ describe('ISIS Instruments table component', () => {
 
     vi.mocked(useInstrumentCount, { partial: true }).mockReturnValue({
       data: 1,
-      isLoading: false,
+      isPending: false,
     });
     vi.mocked(useInstrumentsInfinite, { partial: true }).mockReturnValue({
       data: { pages: [rowData], pageParams: [] },
@@ -219,9 +219,7 @@ describe('ISIS Instruments table component', () => {
     renderComponent();
 
     await user.click(
-      (
-        await screen.findAllByRole('button', { name: 'Show details' })
-      )[0]
+      (await screen.findAllByRole('button', { name: 'Show details' }))[0]
     );
 
     expect(

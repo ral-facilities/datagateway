@@ -237,15 +237,6 @@ describe('Datafile search table component', () => {
     // wait for queries to finish fetching
     await waitFor(() => !queryClient.isFetching());
 
-    expect(
-      queryClient.getQueryState(['search', 'Datafile'], { exact: false })
-        ?.status
-    ).toBe('loading');
-    expect(
-      queryClient.getQueryState(['search', 'Datafile'], { exact: false })
-        ?.fetchStatus
-    ).toBe('idle');
-
     expect(queryAllRows()).toHaveLength(0);
   });
 

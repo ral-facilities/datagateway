@@ -1,20 +1,25 @@
 import {
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import {
   DGThemeProvider,
   MicroFrontendId,
   Preloader,
   RequestPluginRerenderType,
+  queryCacheConfig,
 } from 'datagateway-common';
 import React, { Component } from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom';
+import { Link, Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 
 import ConfigProvider, { DownloadSettingsContext } from './ConfigProvider';
 import DOIGenerationForm from './DOIGenerationForm/DOIGenerationForm.component';
 import AdminDownloadStatusTable from './downloadStatus/adminDownloadStatusTable.component';
 
-import DownloadTabs from './downloadTab/downloadTab.component';
 import { QueryClientSettingsUpdater } from 'datagateway-common';
+import DownloadTabs from './downloadTab/downloadTab.component';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -23,6 +28,7 @@ const queryClient = new QueryClient({
       staleTime: 300000,
     },
   },
+  queryCache: new QueryCache(queryCacheConfig),
 });
 
 export const QueryClientSettingsUpdaterContext: React.FC<{

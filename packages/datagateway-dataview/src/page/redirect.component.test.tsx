@@ -79,17 +79,17 @@ describe('Redirect component', () => {
       if (entityName === 'investigation')
         return {
           data: mockInvestigationData,
-          isLoading: false,
+          isPending: false,
         };
       if (entityName === 'dataset')
         return {
           data: mockDatasetData,
-          isLoading: false,
+          isPending: false,
         };
       if (entityName === 'datafile')
         return {
           data: mockDatafileData,
-          isLoading: false,
+          isPending: false,
         };
       else return {};
     });
@@ -128,7 +128,7 @@ describe('Redirect component', () => {
     it('displays loading spinner when things are loading', async () => {
       vi.mocked(useEntity, { partial: true }).mockReturnValue({
         data: undefined,
-        isLoading: true,
+        isPending: true,
       });
 
       renderComponent();
@@ -145,7 +145,7 @@ describe('Redirect component', () => {
       };
       vi.mocked(useEntity, { partial: true }).mockReturnValue({
         data: undefined,
-        isLoading: false,
+        isPending: false,
       });
       renderComponent();
 
@@ -261,7 +261,7 @@ describe('Redirect component', () => {
       history.replace('/redirect/ISIS/datafile/name/3');
       vi.mocked(useEntity, { partial: true }).mockReturnValue({
         data: undefined,
-        isLoading: true,
+        isPending: true,
       });
 
       renderComponent();
@@ -293,7 +293,7 @@ describe('Redirect component', () => {
       };
       vi.mocked(useEntity, { partial: true }).mockReturnValue({
         data: undefined,
-        isLoading: false,
+        isPending: false,
       });
       renderComponent();
 
@@ -335,7 +335,7 @@ describe('Redirect component', () => {
       };
       vi.mocked(useEntity, { partial: true }).mockReturnValue({
         data: undefined,
-        isLoading: false,
+        isPending: false,
       });
       renderComponent();
 

@@ -1,32 +1,32 @@
-import ISISFacilityCyclesTable from './isisFacilityCyclesTable.component';
-import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
-import type { StateType } from '../../../state/app.types';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  render,
+  screen,
+  within,
+  type RenderResult,
+} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import {
   dGCommonInitialState,
-  type FacilityCycle,
   useFacilityCycleCount,
   useFacilityCyclesInfinite,
+  type FacilityCycle,
 } from 'datagateway-common';
-import configureStore from 'redux-mock-store';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
-import { Router } from 'react-router-dom';
 import { createMemoryHistory, type History } from 'history';
+import { Provider } from 'react-redux';
+import { Router } from 'react-router-dom';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import type { MockInstance } from 'vitest';
 import {
   findAllRows,
   findCellInRow,
   findColumnHeaderByName,
   findColumnIndexByName,
 } from '../../../setupTests';
-import {
-  render,
-  type RenderResult,
-  screen,
-  within,
-} from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import type { MockInstance } from 'vitest';
+import type { StateType } from '../../../state/app.types';
+import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
+import ISISFacilityCyclesTable from './isisFacilityCyclesTable.component';
 
 vi.mock('datagateway-common', async () => {
   const originalModule = await vi.importActual('datagateway-common');
@@ -83,7 +83,7 @@ describe('ISIS FacilityCycles table component', () => {
 
     vi.mocked(useFacilityCycleCount, { partial: true }).mockReturnValue({
       data: 1,
-      isLoading: false,
+      isPending: false,
     });
     vi.mocked(useFacilityCyclesInfinite, { partial: true }).mockReturnValue({
       data: { pages: [rowData], pageParams: [] },

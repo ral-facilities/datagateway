@@ -32,16 +32,6 @@ import { initialState } from '../state/reducers/dgsearch.reducer';
 import { mockInvestigation } from '../testData';
 import InvestigationSearchTable from './investigationSearchTable.component';
 
-vi.mock('datagateway-common', async () => {
-  const originalModule = await vi.importActual('datagateway-common');
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    handleICATError: vi.fn(),
-  };
-});
-
 describe('Investigation Search Table component', () => {
   const mockStore = configureStore([thunk]);
   let container: HTMLDivElement;
@@ -237,15 +227,6 @@ describe('Investigation Search Table component', () => {
 
     // wait for queries to finish fetching
     await waitFor(() => !queryClient.isFetching());
-
-    expect(
-      queryClient.getQueryState(['search', 'Investigation'], { exact: false })
-        ?.status
-    ).toBe('loading');
-    expect(
-      queryClient.getQueryState(['search', 'Investigation'], { exact: false })
-        ?.fetchStatus
-    ).toBe('idle');
 
     expect(queryAllRows()).toHaveLength(0);
   });

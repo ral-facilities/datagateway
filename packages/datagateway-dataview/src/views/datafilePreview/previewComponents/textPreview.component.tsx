@@ -1,6 +1,6 @@
 import { styled, Typography } from '@mui/material';
-import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../../state/app.types';
 import type { PreviewComponentProps } from './previewComponents';
@@ -64,12 +64,14 @@ function TextPreview({
   );
   const [t] = useTranslation();
   const {
-    isLoading: isReadingContent,
+    isPending: isReadingContent,
     isError: isReadContentError,
     data: textContent,
-  } = useQuery(['datafile', datafile.id, 'textContent'], () =>
-    datafileContent.text()
-  );
+  } = useQuery({
+    queryKey: ['datafile', datafile.id, 'textContent'],
+
+    queryFn: () => datafileContent.text(),
+  });
 
   if (isReadingContent) {
     return (

@@ -6,15 +6,6 @@ import { getDownload, useQueueVisit, useSubmitCart } from '../api';
 import DownloadConfirmDialog from './downloadConfirmDialog.component';
 
 vi.mock('../downloadApi');
-vi.mock('datagateway-common', async () => {
-  const originalModule = await vi.importActual('datagateway-common');
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    handleICATError: vi.fn(),
-  };
-});
 
 const createTestQueryClient = (): QueryClient =>
   new QueryClient({
@@ -22,12 +13,6 @@ const createTestQueryClient = (): QueryClient =>
       queries: {
         retry: false,
       },
-    },
-    // silence react-query errors
-    logger: {
-      log: console.log,
-      warn: console.warn,
-      error: vi.fn(),
     },
   });
 

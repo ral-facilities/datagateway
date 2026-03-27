@@ -13,14 +13,15 @@ import {
   useSubmitCart,
 } from '.';
 import { DownloadCart } from '../app.types';
-import handleICATError from '../handleICATError';
+import * as handleICATError from '../handleICATError';
 import { createReactQueryWrapper } from '../setupTests';
-
-vi.mock('../handleICATError');
 
 describe('Cart api functions', () => {
   let mockData: DownloadCart;
   const getElementByIdSpy = vi.spyOn(document, 'getElementById');
+  const handleICATErrorSpy = vi
+    .spyOn(handleICATError, 'default')
+    .mockImplementation(vi.fn());
 
   beforeEach(() => {
     mockData = {
@@ -47,7 +48,7 @@ describe('Cart api functions', () => {
     vi.mocked(axios.get).mockClear();
     vi.mocked(axios.post).mockClear();
     vi.mocked(axios.delete).mockClear();
-    vi.mocked(handleICATError).mockClear();
+    vi.mocked(handleICATErrorSpy).mockClear();
     vi.mocked(getElementByIdSpy).mockClear();
   });
 
@@ -81,7 +82,7 @@ describe('Cart api functions', () => {
         wrapper: createReactQueryWrapper(),
       });
 
-      expect(result.current.status).toBe('loading');
+      expect(result.current.status).toBe('pending');
       expect(result.current.fetchStatus).toBe('idle');
 
       expect(axios.get).not.toHaveBeenCalled();
@@ -98,9 +99,12 @@ describe('Cart api functions', () => {
 
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(handleICATError).toHaveBeenCalledWith({
-        message: 'Test error message',
-      });
+      expect(handleICATErrorSpy).toHaveBeenCalledWith(
+        {
+          message: 'Test error message',
+        },
+        undefined
+      );
     });
   });
 
@@ -158,8 +162,8 @@ describe('Cart api functions', () => {
       });
 
       expect(result.current.failureCount).toBe(2);
-      expect(handleICATError).toHaveBeenCalledTimes(1);
-      expect(handleICATError).toHaveBeenCalledWith({
+      expect(handleICATErrorSpy).toHaveBeenCalledTimes(1);
+      expect(handleICATErrorSpy).toHaveBeenCalledWith({
         message: 'Test error message',
       });
     });
@@ -221,8 +225,8 @@ describe('Cart api functions', () => {
       });
 
       expect(result.current.failureCount).toBe(2);
-      expect(handleICATError).toHaveBeenCalledTimes(1);
-      expect(handleICATError).toHaveBeenCalledWith({
+      expect(handleICATErrorSpy).toHaveBeenCalledTimes(1);
+      expect(handleICATErrorSpy).toHaveBeenCalledWith({
         message: 'Test error message',
       });
     });
@@ -295,7 +299,7 @@ describe('Cart api functions', () => {
         expect(result.current.useSubmitCart.isError).toBe(true)
       );
 
-      expect(handleICATError).toHaveBeenCalledWith(
+      expect(handleICATErrorSpy).toHaveBeenCalledWith(
         expect.objectContaining({
           message: 'No downloadId returned from submitCart request',
         })
@@ -331,7 +335,7 @@ describe('Cart api functions', () => {
         expect(result.current.useSubmitCart.isError).toBe(true)
       );
 
-      expect(handleICATError).toHaveBeenCalledWith({
+      expect(handleICATErrorSpy).toHaveBeenCalledWith({
         message: 'test error message',
       });
     });
@@ -389,9 +393,12 @@ describe('Cart api functions', () => {
 
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(handleICATError).toHaveBeenCalledWith({
-        message: 'Test error message',
-      });
+      expect(handleICATErrorSpy).toHaveBeenCalledWith(
+        {
+          message: 'Test error message',
+        },
+        undefined
+      );
     });
   });
 
@@ -466,9 +473,12 @@ describe('Cart api functions', () => {
 
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(handleICATError).toHaveBeenCalledWith({
-        message: 'Test error message',
-      });
+      expect(handleICATErrorSpy).toHaveBeenCalledWith(
+        {
+          message: 'Test error message',
+        },
+        undefined
+      );
     });
   });
 
@@ -507,9 +517,12 @@ describe('Cart api functions', () => {
 
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(handleICATError).toHaveBeenCalledWith({
-        message: 'Test error message',
-      });
+      expect(handleICATErrorSpy).toHaveBeenCalledWith(
+        {
+          message: 'Test error message',
+        },
+        undefined
+      );
     });
   });
 
@@ -575,7 +588,7 @@ describe('Cart api functions', () => {
       });
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(handleICATError).toHaveBeenCalledWith({
+      expect(handleICATErrorSpy).toHaveBeenCalledWith({
         message: 'test error message',
       });
     });
@@ -646,7 +659,7 @@ describe('Cart api functions', () => {
       });
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(handleICATError).toHaveBeenCalledWith({
+      expect(handleICATErrorSpy).toHaveBeenCalledWith({
         message: 'test error message',
       });
     });

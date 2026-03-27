@@ -1,8 +1,4 @@
-import {
-  UseQueryOptions,
-  UseQueryResult,
-  useQuery,
-} from '@tanstack/react-query';
+import { UseQueryResult, useQuery } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import { useSelector } from 'react-redux';
 import {
@@ -12,7 +8,7 @@ import {
   MicroFrontendId,
 } from '../app.types';
 import handleICATError from '../handleICATError';
-import { NotificationType } from '../state/actions/actions.types';
+import { NotificationType } from '../main';
 import { StateType } from '../state/app.types';
 import { fetchDatafiles } from './datafiles';
 import { fetchDatasets } from './datasets';
@@ -28,10 +24,7 @@ export function useEntity(
     filterType: 'include';
     filterValue: string;
   },
-  options?: UseQueryOptions<
-    Investigation | Dataset | Datafile,
-    AxiosError | Error
-  >
+  enabled?: boolean
 ): UseQueryResult<Investigation, AxiosError>;
 export function useEntity(
   entityName: 'dataset',
@@ -41,10 +34,7 @@ export function useEntity(
     filterType: 'include';
     filterValue: string;
   },
-  options?: UseQueryOptions<
-    Investigation | Dataset | Datafile,
-    AxiosError | Error
-  >
+  enabled?: boolean
 ): UseQueryResult<Dataset, AxiosError>;
 export function useEntity(
   entityName: 'datafile',
@@ -54,10 +44,7 @@ export function useEntity(
     filterType: 'include';
     filterValue: string;
   },
-  options?: UseQueryOptions<
-    Investigation | Dataset | Datafile,
-    AxiosError | Error
-  >
+  enabled?: boolean
 ): UseQueryResult<Datafile, AxiosError>;
 export function useEntity(
   entityName: 'investigation' | 'dataset' | 'datafile',
@@ -67,10 +54,7 @@ export function useEntity(
     filterType: 'include';
     filterValue: string;
   },
-  options?: UseQueryOptions<
-    Investigation | Dataset | Datafile,
-    AxiosError | Error
-  >
+  enabled?: boolean
 ): UseQueryResult<Investigation | Dataset | Datafile, AxiosError | Error>;
 export function useEntity(
   entityName: 'investigation' | 'dataset' | 'datafile',
@@ -80,17 +64,15 @@ export function useEntity(
     filterType: 'include';
     filterValue: string;
   },
-  options?: UseQueryOptions<
-    Investigation | Dataset | Datafile,
-    AxiosError | Error
-  >
+  enabled?: boolean
 ): UseQueryResult<Investigation | Dataset | Datafile, AxiosError | Error> {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const retryICATErrors = useRetryICATErrors();
 
-  return useQuery<Investigation | Dataset | Datafile, AxiosError | Error>(
-    [entityName, entityField, fieldValue, includeFilter],
-    async (_) => {
+  return useQuery({
+    queryKey: [entityName, entityField, fieldValue, includeFilter],
+
+    queryFn: async (_) => {
       switch (entityName) {
         case 'investigation': {
           const investigations = await fetchInvestigations(
@@ -153,9 +135,9 @@ export function useEntity(
           );
       }
     },
-    {
-      onError: (error) => {
-        // only handle an ICAT error for axios errors aka not the "not found" errors we list above
+    meta: {
+      useEntityErrorHandler: (error) => {
+        // only handle an ICAT error for axios errors aka not the "not found" errors
         if (axios.isAxiosError(error)) handleICATError(error);
         else {
           document.dispatchEvent(
@@ -171,12 +153,12 @@ export function useEntity(
           );
         }
       },
-      retry: (failureCount, error) => {
-        if (axios.isAxiosError(error))
-          return retryICATErrors(failureCount, error);
-        else return false;
-      },
-      ...options,
-    }
-  );
+    },
+    retry: (failureCount, error) => {
+      if (axios.isAxiosError(error))
+        return retryICATErrors(failureCount, error);
+      else return false;
+    },
+    enabled,
+  });
 }

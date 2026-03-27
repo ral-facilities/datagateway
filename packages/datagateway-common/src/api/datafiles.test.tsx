@@ -2,7 +2,7 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import axios from 'axios';
 import { History, createMemoryHistory } from 'history';
 import { Datafile } from '../app.types';
-import handleICATError from '../handleICATError';
+import * as handleICATError from '../handleICATError';
 import { createReactQueryWrapper } from '../setupTests';
 import {
   downloadDatafile,
@@ -13,12 +13,12 @@ import {
   useDatafilesPaginated,
 } from './datafiles';
 
-vi.mock('../handleICATError');
-
 describe('datafile api functions', () => {
   let mockData: Datafile[] = [];
   let history: History;
   let params: URLSearchParams;
+  let handleICATErrorSpy: ReturnType<typeof vi.spyOn>;
+
   beforeEach(() => {
     mockData = [
       {
@@ -44,10 +44,12 @@ describe('datafile api functions', () => {
       ],
     });
     params = new URLSearchParams();
+    handleICATErrorSpy = vi
+      .spyOn(handleICATError, 'default')
+      .mockImplementation(vi.fn());
   });
 
   afterEach(() => {
-    vi.mocked(handleICATError).mockClear();
     vi.mocked(axios.get).mockClear();
     vi.restoreAllMocks();
   });
@@ -139,7 +141,12 @@ describe('datafile api functions', () => {
       expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
-      expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
+      expect(handleICATErrorSpy).toHaveBeenCalledWith(
+        {
+          message: 'Test error',
+        },
+        undefined
+      );
     });
   });
 
@@ -197,9 +204,7 @@ describe('datafile api functions', () => {
       );
       expect(result.current.data?.pages).toStrictEqual([mockData[0]]);
 
-      await result.current.fetchNextPage({
-        pageParam: { startIndex: 50, stopIndex: 74 },
-      });
+      await result.current.fetchNextPage();
 
       await waitFor(() => expect(result.current.isFetching).toBe(false));
 
@@ -256,7 +261,12 @@ describe('datafile api functions', () => {
       expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
-      expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
+      expect(handleICATErrorSpy).toHaveBeenCalledWith(
+        {
+          message: 'Test error',
+        },
+        undefined
+      );
     });
   });
 
@@ -320,7 +330,12 @@ describe('datafile api functions', () => {
       expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
         params.toString()
       );
-      expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
+      expect(handleICATErrorSpy).toHaveBeenCalledWith(
+        {
+          message: 'Test error',
+        },
+        undefined
+      );
     });
   });
 
@@ -365,7 +380,7 @@ describe('datafile api functions', () => {
 
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(handleICATError).toHaveBeenCalledWith(error);
+      expect(handleICATErrorSpy).toHaveBeenCalledWith(error);
     });
   });
 
@@ -451,7 +466,12 @@ describe('datafile api functions', () => {
 
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(handleICATError).toHaveBeenCalledWith({ message: 'Test error' });
+      expect(handleICATErrorSpy).toHaveBeenCalledWith(
+        {
+          message: 'Test error',
+        },
+        undefined
+      );
     });
   });
 
