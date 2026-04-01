@@ -3440,9 +3440,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cypress@npm:15.12.0":
-  version: 15.12.0
-  resolution: "cypress@npm:15.12.0"
+"cypress@npm:15.13.0":
+  version: 15.13.0
+  resolution: "cypress@npm:15.13.0"
   dependencies:
     "@cypress/request": ^3.0.10
     "@cypress/xvfb": ^1.2.4
@@ -3489,7 +3489,7 @@ __metadata:
     yauzl: ^2.10.0
   bin:
     cypress: bin/cypress
-  checksum: bd685dfb76cc25c6982f3fe2ade154d688907885f126447ff74cac939c16c99ea04145ac3e8325112b5e8a0ee4081816da4f604bb10f1e1c1d832b82a57288f8
+  checksum: 60425bdcd85373874c725da392dc4beded48043298b2b22bda055fc616ace8803f2386ef282372d0fb2639ee639e1a09ca7c1e9b1e50555fc1fc6dc5308ef28c
   languageName: node
   linkType: hard
 
@@ -3656,7 +3656,7 @@ __metadata:
     browserslist: 4.28.1
     browserslist-to-esbuild: 2.1.1
     cross-env: 10.1.0
-    cypress: 15.12.0
+    cypress: 15.13.0
     datagateway-common: ^3.0.0
     date-fns: 2.30.0
     eslint: 9.39.3
@@ -3729,7 +3729,7 @@ __metadata:
     browserslist: 4.28.1
     browserslist-to-esbuild: 2.1.1
     cross-env: 10.1.0
-    cypress: 15.12.0
+    cypress: 15.13.0
     datagateway-common: ^3.0.0
     date-fns: 2.30.0
     date-fns-tz: 2.0.0
@@ -3806,7 +3806,7 @@ __metadata:
     browserslist: 4.28.1
     browserslist-to-esbuild: 2.1.1
     cross-env: 10.1.0
-    cypress: 15.12.0
+    cypress: 15.13.0
     datagateway-common: ^3.0.0
     date-fns: 2.30.0
     eslint: 9.39.3
