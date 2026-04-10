@@ -2808,14 +2808,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:1.14.0, axios@npm:^1.13.2":
-  version: 1.14.0
-  resolution: "axios@npm:1.14.0"
+"axios@npm:1.15.0, axios@npm:^1.13.2":
+  version: 1.15.0
+  resolution: "axios@npm:1.15.0"
   dependencies:
     follow-redirects: ^1.15.11
     form-data: ^4.0.5
     proxy-from-env: ^2.1.0
-  checksum: 505d21ea777e7613ec61dc2ca92647a55878b6c86ae268e791747fb199913e68b1a9bdb9faa5a72eb59dcefc5e93c2579636504b84dbfed59aa9a680ade749e6
+  checksum: 95a8455554867a083ab3772fcadba42a22ec4bb546dccc66011556d837a07e544ae006675a30a5c43453f3e37e7c0982e934cec482c06b75abead2a2c157448a
   languageName: node
   linkType: hard
 
@@ -3576,7 +3576,7 @@ __metadata:
     "@types/react-virtualized": 9.22.2
     "@vitejs/plugin-react": 5.2.0
     "@vitest/coverage-v8": 3.2.3
-    axios: 1.14.0
+    axios: 1.15.0
     browserslist: 4.28.1
     browserslist-to-esbuild: 2.1.1
     date-fns: 2.30.0
@@ -3652,7 +3652,7 @@ __metadata:
     "@types/redux-mock-store": 1.5.0
     "@vitejs/plugin-react": 5.2.0
     "@vitest/coverage-v8": 3.2.3
-    axios: 1.14.0
+    axios: 1.15.0
     browserslist: 4.28.1
     browserslist-to-esbuild: 2.1.1
     cross-env: 10.1.0
@@ -3725,7 +3725,7 @@ __metadata:
     "@types/react-virtualized": 9.22.2
     "@vitejs/plugin-react": 5.2.0
     "@vitest/coverage-v8": 3.2.3
-    axios: 1.14.0
+    axios: 1.15.0
     browserslist: 4.28.1
     browserslist-to-esbuild: 2.1.1
     cross-env: 10.1.0
@@ -3802,7 +3802,7 @@ __metadata:
     "@types/redux-mock-store": 1.5.0
     "@vitejs/plugin-react": 5.2.0
     "@vitest/coverage-v8": 3.2.3
-    axios: 1.14.0
+    axios: 1.15.0
     browserslist: 4.28.1
     browserslist-to-esbuild: 2.1.1
     cross-env: 10.1.0
