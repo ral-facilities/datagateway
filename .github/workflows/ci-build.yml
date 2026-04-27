@@ -81,7 +81,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
-          python-version: 3.9
+          python-version: 3.11
           architecture: x64
 
       # ICAT Ansible clone and install dependencies
@@ -167,16 +167,17 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-          ref: v9.0.3
+          ref: port-over-to-fastapi-#519
 
       # DataGateway API file setup
       - name: Create search_api_mapping.json
         run: cp datagateway-api/datagateway_api/search_api_mapping.json.example datagateway-api/datagateway_api/search_api_mapping.json
-      - name: Create log file
-        run: touch datagateway-api/datagateway_api/logs.log
 
       - name: Create config.yaml
         run: cp datagateway-api/datagateway_api/config.yaml.example datagateway-api/datagateway_api/config.yaml
+
+      - name: Create logging.ini
+        run: cp datagateway-api/datagateway_api/logging.example.ini datagateway-api/datagateway_api/logging.ini
 
       # DataGateway API dependencies
       - name: Install Poetry
@@ -241,7 +242,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
-          python-version: 3.9
+          python-version: 3.11
           architecture: x64
 
       # ICAT Ansible clone and install dependencies
@@ -337,16 +338,17 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-          ref: v9.0.3
+          ref: port-over-to-fastapi-#519
 
       # DataGateway API file setup
       - name: Create search_api_mapping.json
         run: cp datagateway-api/datagateway_api/search_api_mapping.json.example datagateway-api/datagateway_api/search_api_mapping.json
-      - name: Create log file
-        run: touch datagateway-api/datagateway_api/logs.log
 
       - name: Create config.yaml
         run: cp datagateway-api/datagateway_api/config.yaml.example datagateway-api/datagateway_api/config.yaml
+
+      - name: Create logging.ini
+        run: cp datagateway-api/datagateway_api/logging.example.ini datagateway-api/datagateway_api/logging.ini
 
       # DataGateway API dependencies
       - name: Install Poetry
@@ -411,7 +413,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
-          python-version: 3.9
+          python-version: 3.11
           architecture: x64
 
       # ICAT Ansible clone and install dependencies
@@ -474,16 +476,17 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-          ref: v9.0.3
+          ref: port-over-to-fastapi-#519
 
       # DataGateway API file setup
       - name: Create search_api_mapping.json
         run: cp datagateway-api/datagateway_api/search_api_mapping.json.example datagateway-api/datagateway_api/search_api_mapping.json
-      - name: Create log file
-        run: touch datagateway-api/datagateway_api/logs.log
 
       - name: Create config.yaml
         run: cp datagateway-api/datagateway_api/config.yaml.example datagateway-api/datagateway_api/config.yaml
+
+      - name: Create logging.ini
+        run: cp datagateway-api/datagateway_api/logging.example.ini datagateway-api/datagateway_api/logging.ini
 
       # DataGateway API dependencies
       - name: Install Poetry
