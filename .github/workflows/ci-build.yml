@@ -167,7 +167,7 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-          ref: port-over-to-fastapi-#519
+          ref: v11.0.0
 
       # DataGateway API file setup
       - name: Create search_api_mapping.json
@@ -338,7 +338,7 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-          ref: port-over-to-fastapi-#519
+          ref: v11.0.0
 
       # DataGateway API file setup
       - name: Create search_api_mapping.json
@@ -476,7 +476,7 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-          ref: port-over-to-fastapi-#519
+          ref: v11.0.0
 
       # DataGateway API file setup
       - name: Create search_api_mapping.json
