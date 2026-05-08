@@ -12,5 +12,10 @@
   "separateMinorPatch": true,
   "patch": {
     "enabled": false
+  },
+  "vulnerabilityAlerts": {
+    "patch": {
+      "enabled": true
+    }
   }
 }
