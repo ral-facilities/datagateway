@@ -3396,12 +3396,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-fetch@npm:4.0.0":
-  version: 4.0.0
-  resolution: "cross-fetch@npm:4.0.0"
+"cross-fetch@npm:4.1.0":
+  version: 4.1.0
+  resolution: "cross-fetch@npm:4.1.0"
   dependencies:
-    node-fetch: ^2.6.12
-  checksum: ecca4f37ffa0e8283e7a8a590926b66713a7ef7892757aa36c2d20ffa27b0ac5c60dcf453119c809abe5923fc0bae3702a4d896bfb406ef1077b0d0018213e24
+    node-fetch: ^2.7.0
+  checksum: c02fa85d59f83e50dbd769ee472c9cc984060c403ee5ec8654659f61a525c1a655eef1c7a35e365c1a107b4e72d76e786718b673d1cb3c97f61d4644cb0a9f9d
   languageName: node
   linkType: hard
 
@@ -3671,7 +3671,7 @@ __metadata:
     history: 4.10.1
     i18next: 22.0.3
     i18next-browser-languagedetector: 8.2.0
-    i18next-http-backend: 3.0.2
+    i18next-http-backend: 3.0.5
     jsdom: 26.1.0
     jsrsasign: 11.1.1
     lint-staged: 16.4.0
@@ -3746,7 +3746,7 @@ __metadata:
     history: 4.10.1
     i18next: 22.0.3
     i18next-browser-languagedetector: 8.2.0
-    i18next-http-backend: 3.0.2
+    i18next-http-backend: 3.0.5
     jsdom: 26.1.0
     jsrsasign: 11.1.1
     lint-staged: 16.4.0
@@ -3821,7 +3821,7 @@ __metadata:
     history: 4.10.1
     i18next: 22.0.3
     i18next-browser-languagedetector: 8.2.0
-    i18next-http-backend: 3.0.2
+    i18next-http-backend: 3.0.5
     jsdom: 26.1.0
     jsrsasign: 11.1.1
     lint-staged: 16.4.0
@@ -5660,12 +5660,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next-http-backend@npm:3.0.2":
-  version: 3.0.2
-  resolution: "i18next-http-backend@npm:3.0.2"
+"i18next-http-backend@npm:3.0.5":
+  version: 3.0.5
+  resolution: "i18next-http-backend@npm:3.0.5"
   dependencies:
-    cross-fetch: 4.0.0
-  checksum: 08522b4cadf000991b54513259b2b619cd2d58747dbf3af7c0f668895bcd18ab2ca1ead7581d0f2d5a222f039dc262ff52e6a74fd2d9d021c8218aa2fc42a18d
+    cross-fetch: 4.1.0
+  checksum: ea684ec842736cd609edce2d6701e375911711166e97537fdd44a290ea252868be92b684c9c1cf033d0f216162e0dd51d839ac6daffc182cd8bb17637ac86d07
   languageName: node
   linkType: hard
 
@@ -6980,7 +6980,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:^2.6.12":
+"node-fetch@npm:^2.7.0":
   version: 2.7.0
   resolution: "node-fetch@npm:2.7.0"
   dependencies:
