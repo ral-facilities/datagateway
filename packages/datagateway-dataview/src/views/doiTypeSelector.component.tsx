@@ -49,7 +49,11 @@ const DOITypeSelector = (props: DOITypeSelectorProps): React.ReactElement => {
         </Grid>
         <Grid item>
           <ToggleButtonGroup
-            value={doiType ?? (type === 'myDOIs' ? 'minter' : 'session')}
+            value={
+              (doiType === 'openSession' || doiType === 'closedSession'
+                ? 'session'
+                : doiType) ?? (type === 'myDOIs' ? 'minter' : 'session')
+            }
             exclusive
             onChange={handleType}
             aria-labelledby="doi-type-selector-label"
@@ -74,10 +78,10 @@ const DOITypeSelector = (props: DOITypeSelectorProps): React.ReactElement => {
           </ToggleButtonGroup>
         </Grid>
       </Grid>
-      {/* TODO: uncomment when we can query datagateway-api for is null/is not null */}
-      {/* {(doiType === 'session' ||
+      {(doiType === 'session' ||
         doiType === 'closedSession' ||
-        doiType === 'openSession') && (
+        doiType === 'openSession' ||
+        (type === 'allDOIs' && doiType === null)) && (
         <Grid container item direction="column" xs="auto">
           <Grid item>
             <Typography component={'label'} id="doi-type-selector-label">
@@ -112,7 +116,7 @@ const DOITypeSelector = (props: DOITypeSelectorProps): React.ReactElement => {
             </ToggleButtonGroup>
           </Grid>
         </Grid>
-      )} */}
+      )}
     </Grid>
   );
 };

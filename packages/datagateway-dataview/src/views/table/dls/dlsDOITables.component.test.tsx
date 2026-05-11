@@ -9,7 +9,6 @@ import userEvent from '@testing-library/user-event';
 import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import {
   ContributorType,
-  DOIRelationType,
   dGCommonInitialState,
   readSciGatewayToken,
   useDataPublicationCount,
@@ -167,24 +166,7 @@ describe('DLS DOI table components', () => {
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'relatedItems.relationType': {
-              eq: DOIRelationType.HasVersion,
-            },
-          }),
-        },
-        {
-          filterType: 'distinct',
-          filterValue: JSON.stringify([
-            'id',
-            'title',
-            'pid',
-            'publicationDate',
-          ]),
-        },
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'type.name': { eq: 'User-defined' },
+            'type.name': { eq: 'User-defined-concept' },
           }),
         },
       ];
@@ -256,24 +238,7 @@ describe('DLS DOI table components', () => {
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'relatedItems.relationType': {
-              eq: DOIRelationType.HasVersion,
-            },
-          }),
-        },
-        {
-          filterType: 'distinct',
-          filterValue: JSON.stringify([
-            'id',
-            'title',
-            'pid',
-            'publicationDate',
-          ]),
-        },
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'type.name': { eq: 'User-defined' },
+            'type.name': { eq: 'User-defined-concept' },
           }),
         },
       ];
@@ -505,24 +470,7 @@ describe('DLS DOI table components', () => {
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'relatedItems.relationType': {
-              eq: DOIRelationType.HasVersion,
-            },
-          }),
-        },
-        {
-          filterType: 'distinct',
-          filterValue: JSON.stringify([
-            'id',
-            'title',
-            'pid',
-            'publicationDate',
-          ]),
-        },
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'type.name': { eq: 'User-defined' },
+            'type.name': { eq: 'User-defined-concept' },
           }),
         },
       ];
