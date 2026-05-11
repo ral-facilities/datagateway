@@ -1,24 +1,26 @@
-import React from 'react';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import Public from '@mui/icons-material/Public';
+import { Link as MuiLink } from '@mui/material';
 import {
   CardView,
   CardViewDetails,
-  parseSearchToQuery,
   DataPublication,
+  StateType,
+  parseSearchToQuery,
   tableLink,
+  useDataPublicationCount,
+  useDataPublicationsPaginated,
   useDateFilter,
   usePushFilter,
   usePushPage,
   usePushResults,
   useSort,
-  useDataPublicationsPaginated,
-  useDataPublicationCount,
   useTextFilter,
 } from 'datagateway-common';
-import CalendarToday from '@mui/icons-material/CalendarToday';
-import Public from '@mui/icons-material/Public';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { Link as MuiLink } from '@mui/material';
 
 interface ISISDataPublicationsCVProps {
   instrumentId: string;
@@ -32,6 +34,10 @@ const ISISDataPublicationsCardView = (
 
   const [t] = useTranslation();
   const location = useLocation();
+
+  const doiHandleUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.doiHandleUrl
+  );
 
   const { filters, view, sort, page, results } = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -172,7 +178,7 @@ const ISISDataPublicationsCardView = (
           return (
             entity?.pid && (
               <MuiLink
-                href={`https://doi.org/${entity.pid}`}
+                href={`${doiHandleUrl}/${entity.pid}`}
                 data-testid="landing-datapublication-card-pid-link"
               >
                 {entity.pid}
@@ -199,7 +205,7 @@ const ISISDataPublicationsCardView = (
           ] as CardViewDetails[])
         : []),
     ],
-    [dateFilter, studyDataPublicationId, t, textFilter]
+    [dateFilter, doiHandleUrl, studyDataPublicationId, t, textFilter]
   );
 
   return (

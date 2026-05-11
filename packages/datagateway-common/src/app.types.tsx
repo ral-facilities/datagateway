@@ -14,7 +14,7 @@ export const FACILITY_NAME = {
   lils: 'LILS',
 } as const;
 
-export type FacilityName = typeof FACILITY_NAME[keyof typeof FACILITY_NAME];
+export type FacilityName = (typeof FACILITY_NAME)[keyof typeof FACILITY_NAME];
 
 export interface CommonSettings {
   facilityName: string;
@@ -31,6 +31,7 @@ export interface CommonSettings {
 export interface DOISettings {
   doiMinterUrl?: string;
   dataCiteUrl?: string;
+  doiHandleUrl?: string;
   bioportalUrl?: string;
 }
 

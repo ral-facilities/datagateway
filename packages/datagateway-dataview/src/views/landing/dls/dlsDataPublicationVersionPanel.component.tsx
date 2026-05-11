@@ -15,7 +15,10 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyledDOI } from './dlsDataPublicationLanding.component';
 
-type DLSDataPublicationVersionPanelProps = { dataPublicationId: string };
+type DLSDataPublicationVersionPanelProps = {
+  dataPublicationId: string;
+  doiHandleUrl: string;
+};
 
 // sorts by create time descending i.e. newer is at the start of the array
 export const sortVersions = (a: RelatedItem, b: RelatedItem): number => {
@@ -29,7 +32,7 @@ export const sortVersions = (a: RelatedItem, b: RelatedItem): number => {
 const DLSDataPublicationVersionPanel: React.FC<
   DLSDataPublicationVersionPanelProps
 > = (props) => {
-  const { dataPublicationId } = props;
+  const { dataPublicationId, doiHandleUrl } = props;
 
   const [t] = useTranslation();
   const { data } = useDataPublication(parseInt(dataPublicationId));
@@ -62,7 +65,10 @@ const DLSDataPublicationVersionPanel: React.FC<
                   </Typography>
                 </Grid>
                 <Grid item xs>
-                  <StyledDOI doi={relatedItem.identifier} />
+                  <StyledDOI
+                    doi={relatedItem.identifier}
+                    doiHandleUrl={doiHandleUrl}
+                  />
                 </Grid>
               </Grid>
             ))}

@@ -33,6 +33,7 @@ type RelatedIdentifiersProps = {
     React.SetStateAction<RelatedIdentifier[]>
   >;
   dataCiteUrl: string | undefined;
+  doiHandleUrl: string;
   disabled: boolean;
 };
 
@@ -41,6 +42,7 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
     relatedIdentifiers,
     changeRelatedIdentifiers,
     dataCiteUrl,
+    doiHandleUrl,
     disabled,
   } = props;
   const [t] = useTranslation();
@@ -211,7 +213,7 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
                           title={relatedIdentifier.title}
                         >
                           <Link
-                            href={`https://doi.org/${relatedIdentifier.identifier}`}
+                            href={`${doiHandleUrl}/${relatedIdentifier.identifier}`}
                           >
                             {relatedIdentifier.identifier}
                           </Link>

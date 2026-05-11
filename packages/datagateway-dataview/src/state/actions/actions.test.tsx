@@ -105,6 +105,7 @@ describe('Actions', () => {
       doiMinterUrl: 'doi',
       dataCiteUrl: 'datacite',
       bioportalUrl: 'bioportalUrl',
+      doiHandleUrl: 'doiHandleUrl',
       PIRole: 'principal_experimenter',
       queryRetries: 1,
       breadcrumbs: [
@@ -137,6 +138,7 @@ describe('Actions', () => {
         apiUrl: 'api',
         downloadApiUrl: 'download-api',
         icatUrl: '',
+        doiHandleUrl: 'doiHandleUrl',
         doiMinterUrl: 'doi',
         dataCiteUrl: 'datacite',
         bioportalUrl: 'bioportalUrl',
@@ -186,6 +188,15 @@ describe('Actions', () => {
       actions.every(({ type }) => type !== ConfigureQueryRetriesType)
     ).toBe(true);
 
+    expect(actions).toContainEqual(
+      loadUrls({
+        idsUrl: 'ids',
+        apiUrl: 'api',
+        downloadApiUrl: 'download-api',
+        icatUrl: '',
+        doiHandleUrl: 'https://doi.org',
+      })
+    );
     expect(actions).toContainEqual(loadPIRoleSetting(undefined));
 
     expect(actions).toContainEqual(settingsLoaded());

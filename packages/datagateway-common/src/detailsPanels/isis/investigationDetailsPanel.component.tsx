@@ -1,13 +1,13 @@
-import React from 'react';
 import {
-  Typography,
-  Grid,
   Divider,
-  Tabs,
-  Tab,
+  Grid,
   Link as MuiLink,
+  Tab,
+  Tabs,
+  Typography,
   styled,
 } from '@mui/material';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useInvestigationDetails } from '../../api';
@@ -60,6 +60,9 @@ const InvestigationDetailsPanel = (
   >(
     (state) =>
       data && state.dgcommon.isisInvestigationDetailsPanel[data.id]?.selectedTab
+  );
+  const doiHandleUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.doiHandleUrl
   );
   const dispatch = useDispatch();
 
@@ -202,7 +205,7 @@ const InvestigationDetailsPanel = (
               </Typography>
               <Typography>
                 <MuiLink
-                  href={`https://doi.org/${studyDataPublication.pid}`}
+                  href={`${doiHandleUrl}/${studyDataPublication.pid}`}
                   data-testid="investigation-details-panel-pid-link"
                 >
                   {studyDataPublication.pid}
@@ -217,7 +220,7 @@ const InvestigationDetailsPanel = (
             <Typography>
               {investigationData.doi && investigationData.doi !== 'null' ? (
                 <MuiLink
-                  href={`https://doi.org/${investigationData.doi}`}
+                  href={`${doiHandleUrl}/${investigationData.doi}`}
                   data-testid="investigation-details-panel-doi-link"
                 >
                   {investigationData.doi}

@@ -76,9 +76,12 @@ const StyledDOISpan = styled('span')({
   },
 });
 
-export const StyledDOI: React.FC<{ doi: string }> = ({ doi }) => (
+export const StyledDOI: React.FC<{ doi: string; doiHandleUrl: string }> = ({
+  doi,
+  doiHandleUrl,
+}) => (
   <StyledDOILink
-    href={`https://doi.org/${doi}`}
+    href={`${doiHandleUrl}/${doi}`}
     data-testid="landing-dataPublication-pid-link"
   >
     DOI <StyledDOISpan>{doi}</StyledDOISpan>
@@ -137,7 +140,9 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   const [t] = useTranslation();
 
   const PIRole = useSelector((state: StateType) => state.dgdataview.PIRole);
-
+  const doiHandleUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.doiHandleUrl
+  );
   const history = useHistory();
 
   const [currentTab, setCurrentTab] = React.useState<'details' | 'content'>(
@@ -248,8 +253,8 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       structuredDataScript.innerHTML = JSON.stringify({
         '@context': 'http://schema.org',
         '@type': 'Dataset',
-        '@id': pid ? `https://doi.org/${pid}` : '',
-        url: pid ? `https://doi.org/${pid}` : '',
+        '@id': pid ? `${doiHandleUrl}/${pid}` : '',
+        url: pid ? `${doiHandleUrl}/${pid}` : '',
         identifier: pid,
         name: title,
         description: description,
@@ -338,6 +343,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     data?.relatedItems,
     subjects,
     techniques,
+    doiHandleUrl,
   ]);
 
   const instruments = dataciteData
@@ -358,7 +364,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
             content: function dataPublicationPidFormat(
               entity: DataPublication
             ) {
-              return <StyledDOI doi={entity.pid} />;
+              return <StyledDOI doi={entity.pid} doiHandleUrl={doiHandleUrl} />;
             },
             label: t('datapublications.pid'),
           },
@@ -390,7 +396,9 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               content: function dataPublicationPidFormat(
                 entity: DataPublication
               ) {
-                return <StyledDOI doi={entity.pid} />;
+                return (
+                  <StyledDOI doi={entity.pid} doiHandleUrl={doiHandleUrl} />
+                );
               },
               label: t('datapublications.pid'),
             },
@@ -402,7 +410,10 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                   (relatedItem) =>
                     relatedItem.relationType === DOIRelationType.IsVersionOf
                 )?.[0]?.identifier;
-                if (conceptPid) return <StyledDOI doi={conceptPid} />;
+                if (conceptPid)
+                  return (
+                    <StyledDOI doi={conceptPid} doiHandleUrl={doiHandleUrl} />
+                  );
               },
               label: `${t('datapublications.concept')} ${t(
                 'datapublications.pid'
@@ -415,7 +426,12 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 _entity: DataPublication
               ) {
                 if (latestVersionPid)
-                  return <StyledDOI doi={latestVersionPid} />;
+                  return (
+                    <StyledDOI
+                      doi={latestVersionPid}
+                      doiHandleUrl={doiHandleUrl}
+                    />
+                  );
               },
               label: `${t('datapublications.latest_version')} ${t(
                 'datapublications.pid'
@@ -425,7 +441,9 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               content: function dataPublicationPidFormat(
                 entity: DataPublication
               ) {
-                return <StyledDOI doi={entity.pid} />;
+                return (
+                  <StyledDOI doi={entity.pid} doiHandleUrl={doiHandleUrl} />
+                );
               },
               label: `${t('datapublications.concept')} ${t(
                 'datapublications.pid'
@@ -706,12 +724,16 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                     )
                 )}
                 <Grid item sx={{ pt: '0px !important' }}>
-                  <DLSDataPublicationRelatedIdentifiersPanel doi={data?.pid} />
+                  <DLSDataPublicationRelatedIdentifiersPanel
+                    doi={data?.pid}
+                    doiHandleUrl={doiHandleUrl}
+                  />
                 </Grid>
                 {isConceptDOI && (
                   <Grid item sx={{ pt: '0px !important' }}>
                     <DLSDataPublicationVersionPanel
                       dataPublicationId={dataPublicationId}
+                      doiHandleUrl={doiHandleUrl}
                     />
                   </Grid>
                 )}

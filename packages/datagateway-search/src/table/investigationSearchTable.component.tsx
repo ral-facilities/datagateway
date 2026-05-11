@@ -69,6 +69,10 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
     (state: StateType) => state.dgsearch.maxNumResults
   );
 
+  const doiHandleUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.doiHandleUrl
+  );
+
   const [t] = useTranslation();
 
   const { fetchNextPage, data, hasNextPage, isFetching } =
@@ -228,7 +232,7 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
               cellContentRenderer: (cellProps: TableCellProps) => {
                 const investigation = cellProps.rowData as SearchResultSource;
                 return externalSiteLink(
-                  `https://doi.org/${investigation.doi}`,
+                  `${doiHandleUrl}/${investigation.doi}`,
                   investigation.doi,
                   'investigation-search-table-doi-link'
                 );
@@ -280,7 +284,7 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
         disableSort: true,
       },
     ],
-    [t, hierarchy]
+    [t, hierarchy, doiHandleUrl]
   );
 
   const detailsPanel: React.ComponentType<DetailsPanelProps> =

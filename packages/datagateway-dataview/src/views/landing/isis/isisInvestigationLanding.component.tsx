@@ -166,6 +166,9 @@ const CommonLandingPage = (
     [location.search]
   );
   const PIRole = useSelector((state: StateType) => state.dgdataview.PIRole);
+  const doiHandleUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.doiHandleUrl
+  );
   const [value, setValue] = React.useState<'details'>('details');
   const { data, studyDataPublication } = props;
 
@@ -234,7 +237,7 @@ const CommonLandingPage = (
             return (
               data.doi &&
               externalSiteLink(
-                `https://doi.org/${data.doi}`,
+                `${doiHandleUrl}/${data.doi}`,
                 data.doi,
                 'isis-investigation-landing-doi-link'
               )
@@ -254,7 +257,7 @@ const CommonLandingPage = (
             return (
               studyDataPublication &&
               externalSiteLink(
-                `https://doi.org/${studyDataPublication.pid}`,
+                `${doiHandleUrl}/${studyDataPublication.pid}`,
                 studyDataPublication.pid,
                 'isis-investigations-landing-parent-doi-link'
               )
@@ -307,7 +310,7 @@ const CommonLandingPage = (
             return (
               data?.pid &&
               externalSiteLink(
-                `https://doi.org/${data.pid}`,
+                `${doiHandleUrl}/${data.pid}`,
                 data.pid,
                 'isis-investigation-landing-doi-link'
               )
@@ -322,7 +325,7 @@ const CommonLandingPage = (
               studyDataPublication &&
               studyDataPublication?.pid &&
               externalSiteLink(
-                `https://doi.org/${studyDataPublication.pid}`,
+                `${doiHandleUrl}/${studyDataPublication.pid}`,
                 studyDataPublication.pid,
                 'isis-investigations-landing-parent-doi-link'
               )
@@ -370,7 +373,7 @@ const CommonLandingPage = (
             return (
               entity?.doi &&
               externalSiteLink(
-                `https://doi.org/${entity.doi}`,
+                `${doiHandleUrl}/${entity.doi}`,
                 entity.doi,
                 'landing-study-doi-link'
               )
@@ -438,8 +441,8 @@ const CommonLandingPage = (
                   ? data.summary
                   : 'Description not provided'
                 : data?.description && data.description !== 'null'
-                ? data.description
-                : 'Description not provided'}
+                  ? data.description
+                  : 'Description not provided'}
             </Typography>
             {formattedUsers.length > 0 && (
               <div>

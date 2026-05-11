@@ -60,6 +60,9 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
   const bioportalUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.bioportalUrl
   );
+  const doiHandleUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.doiHandleUrl
+  );
 
   const { data: dataPublication } = useDataPublication(
     parseInt(dataPublicationId)
@@ -378,6 +381,7 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
             onConfirmClick={handleConfirmClick}
             deleteLoading={deleteVersionDraftStatus === 'loading'}
             publishLoading={publishingVersionStatus === 'loading'}
+            doiHandleUrl={doiHandleUrl}
           />
         ) : (
           <Box>
@@ -413,6 +417,7 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
                   dataCiteUrl={dataCiteUrl}
                   doiMinterUrl={doiMinterUrl}
                   bioportalUrl={bioportalUrl}
+                  doiHandleUrl={doiHandleUrl}
                   title={title}
                   setTitle={setTitle}
                   description={description}

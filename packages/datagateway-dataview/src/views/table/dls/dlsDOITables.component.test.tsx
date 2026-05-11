@@ -285,6 +285,12 @@ describe('DLS DOI table components', () => {
             'type.name': { eq: 'Investigation' },
           }),
         },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            publicationDate: { isnull: false },
+          }),
+        },
       ];
       expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
       expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
@@ -305,6 +311,12 @@ describe('DLS DOI table components', () => {
           filterType: 'where',
           filterValue: JSON.stringify({
             'type.name': { eq: 'Investigation' },
+          }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            publicationDate: { isnull: true },
           }),
         },
       ];

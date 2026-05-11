@@ -64,6 +64,7 @@ describe('Related identifiers form component', () => {
       ],
       changeRelatedIdentifiers: vi.fn(),
       dataCiteUrl: 'example.com',
+      doiHandleUrl: 'https://doi.org',
       disabled: false,
     };
 
