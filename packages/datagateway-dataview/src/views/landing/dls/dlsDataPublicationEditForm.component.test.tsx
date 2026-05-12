@@ -68,7 +68,8 @@ describe('DOI edit form component', () => {
   const users = [
     {
       id: 1,
-      contributorType: ContributorType.Minter,
+      contributorType: ContributorType.Creator,
+      orderKey: '0',
       fullName: 'John Smith',
       user: {
         id: 1,

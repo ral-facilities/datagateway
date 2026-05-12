@@ -1,7 +1,6 @@
 import {
   AdditionalFilters,
   ColumnType,
-  ContributorType,
   DataPublication,
   StateType,
   ConnectedTable as Table,
@@ -228,8 +227,8 @@ export const DLSMyDOIsTable = (): React.ReactElement => {
                 {
                   filterType: 'where',
                   filterValue: JSON.stringify({
-                    'users.contributorType': {
-                      eq: ContributorType.Minter,
+                    'users.orderKey': {
+                      eq: '0',
                     },
                   }),
                 },

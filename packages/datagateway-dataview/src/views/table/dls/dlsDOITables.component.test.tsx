@@ -70,7 +70,8 @@ describe('DLS DOI table components', () => {
         users: [
           {
             id: 1,
-            contributorType: ContributorType.Minter,
+            contributorType: ContributorType.Creator,
+            orderKey: '0',
             fullName: 'John Smith',
           },
         ],
@@ -158,8 +159,8 @@ describe('DLS DOI table components', () => {
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'users.contributorType': {
-              eq: ContributorType.Minter,
+            'users.orderKey': {
+              eq: '0',
             },
           }),
         },

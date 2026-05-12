@@ -29,26 +29,23 @@ export type ContributorUser = User & {
 /**
  * A compare function for {@link ContributorUser ContributorUser} intended to be used with {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort Array.sort}
  *
- * This basically ensures we order {@link ContributorType.Minter Minters} before {@link ContributorType.Creator Creators} and {@link ContributorType.Creator Creators} before other {@link ContributorType ContributorTypes}
+ * This basically ensures we order {@link ContributorType.Creator Creators} before other {@link ContributorType ContributorTypes}
  * @param a first user for comparison
  * @param b second user for comparison
  * @returns either 1, -1 or 0 to indicate a before b, a after b and a == b respectively
  */
-const compareUsers = (a: ContributorUser, b: ContributorUser): number => {
+const compareCreatorsAndContributors = (
+  a: ContributorUser,
+  b: ContributorUser
+): number => {
   if (
-    (a.contributor_type === ContributorType.Minter &&
-      b.contributor_type !== ContributorType.Minter) ||
-    (a.contributor_type === ContributorType.Creator &&
-      b.contributor_type !== ContributorType.Creator &&
-      b.contributor_type !== ContributorType.Minter)
+    a.contributor_type === ContributorType.Creator &&
+    b.contributor_type !== ContributorType.Creator
   ) {
     return -1;
   } else if (
-    (b.contributor_type === ContributorType.Minter &&
-      a.contributor_type !== ContributorType.Minter) ||
-    (b.contributor_type === ContributorType.Creator &&
-      a.contributor_type !== ContributorType.Creator &&
-      a.contributor_type !== ContributorType.Minter)
+    b.contributor_type === ContributorType.Creator &&
+    a.contributor_type !== ContributorType.Creator
   ) {
     return 1;
   } else return 0;
@@ -219,16 +216,15 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
                   </TableCell>
                 </TableRow>
               )}
-              {[...selectedUsers] // need to spread so we don't alter underlying array
-                .sort(compareUsers)
+              {selectedUsers
+                .toSorted(compareCreatorsAndContributors)
                 .map((user) => (
                   <TableRow key={user.id}>
                     <TableCell>{user.fullName}</TableCell>
                     <TableCell>{user?.affiliation}</TableCell>
                     <TableCell>{user?.email}</TableCell>
                     <TableCell>
-                      {user.contributor_type === ContributorType.Creator ||
-                      user.contributor_type === ContributorType.Minter ? (
+                      {user.contributor_type === ContributorType.Creator ? (
                         user.contributor_type
                       ) : (
                         <FormControl
@@ -266,9 +262,7 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
                           >
                             {Object.values(ContributorType)
                               .filter(
-                                (value) =>
-                                  value !== ContributorType.Creator &&
-                                  value !== ContributorType.Minter
+                                (value) => value !== ContributorType.Creator
                               )
                               .map((type) => {
                                 return (

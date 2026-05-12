@@ -209,6 +209,7 @@ export interface DataPublicationUser {
   user?: User;
   email?: string;
   affiliations?: Affiliation[];
+  orderKey?: string;
 }
 
 export interface DataPublicationType {
@@ -515,7 +516,6 @@ export interface QueryParams {
 }
 
 export enum ContributorType {
-  Minter = 'Minter',
   Creator = 'Creator',
   ContactPerson = 'ContactPerson',
   DataCollector = 'DataCollector',
@@ -662,10 +662,7 @@ export interface DOICreator {
 }
 
 export type DOIContributor = DOICreator & {
-  contributorType: Exclude<
-    ContributorType,
-    ContributorType.Creator | ContributorType.Minter
-  >;
+  contributorType: Exclude<ContributorType, ContributorType.Creator>;
 };
 
 export interface DOIRelatedIdentifier {

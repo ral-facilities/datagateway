@@ -333,7 +333,7 @@ describe('doi api functions', () => {
     const doiMetadata = {
       title: 'Test title',
       description: 'Test description',
-      creators: [{ username: '1', contributor_type: ContributorType.Minter }],
+      creators: [{ username: '1', contributor_type: ContributorType.Creator }],
       related_items: [],
       subjects: [],
     };
