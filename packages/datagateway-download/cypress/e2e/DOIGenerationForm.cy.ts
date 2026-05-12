@@ -7,7 +7,7 @@ describe('DOI Generation form', () => {
   const store = {};
   before(() => {
     cy.login({ username: 'root', password: 'pw', mechanism: 'simple' });
-    cy.seedSessionDataPublication(false).as('sessionDataPublication');
+    cy.seedSessionDataPublication().as('sessionDataPublication');
     cy.dumpAliases(store);
   });
 

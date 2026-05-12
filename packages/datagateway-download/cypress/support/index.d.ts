@@ -20,9 +20,10 @@ declare namespace Cypress {
     clearDataPublicationsByIds(
       ids: string[]
     ): Cypress.Chainable<Cypress.Response>;
-    seedSessionDataPublication(
-      recreateSessionDPIfExists: boolean
-    ): Cypress.Chainable<Cypress.Response>;
+    seedSessionDataPublication(params?: {
+      id?: number;
+      recreateSessionDPIfExists?: boolean;
+    }): Cypress.Chainable<Cypress.Response>;
 
     addCartItem(cartItem: string): Cypress.Chainable<Cypress.Response>;
 

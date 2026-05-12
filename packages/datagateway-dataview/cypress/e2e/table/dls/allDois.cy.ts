@@ -8,7 +8,8 @@ describe('DLS - All DOIs Table', () => {
 
   before(() => {
     cy.login({ username: 'root', password: 'pw', mechanism: 'simple' });
-    cy.seedSessionDataPublication(false).as('sessionDataPublication');
+    cy.seedSessionDataPublication({ id: 15 }).as('sessionDataPublication1');
+    cy.seedSessionDataPublication({ id: 21 }).as('sessionDataPublication2');
 
     cy.login(
       {
@@ -27,6 +28,11 @@ describe('DLS - All DOIs Table', () => {
     cy.seedUserGeneratedDataPublication('Test DOI Title 2').as(
       'dataPublication2'
     );
+
+    cy.get<SessionMintResponse>('@sessionDataPublication1').then((dp) =>
+      cy.openSessionDataPublication(dp.body.data_publication_id)
+    );
+
     cy.dumpAliases(store);
   });
 
@@ -44,14 +50,19 @@ describe('DLS - All DOIs Table', () => {
     cy.login({ username: 'root', password: 'pw', mechanism: 'simple' });
     cy.get<UserDefinedMintResponse>('@dataPublication1').then((dp1) => {
       cy.get<UserDefinedMintResponse>('@dataPublication2').then((dp2) => {
-        cy.get<SessionMintResponse>('@sessionDataPublication').then((dp3) => {
-          cy.clearDataPublications([
-            dp1.body.concept.data_publication_id,
-            dp1.body.version.data_publication_id,
-            dp2.body.concept.data_publication_id,
-            dp2.body.version.data_publication_id,
-            dp3.body.data_publication_id,
-          ]);
+        cy.get<SessionMintResponse>('@sessionDataPublication1').then((dp3) => {
+          cy.get<SessionMintResponse>('@sessionDataPublication2').then(
+            (dp4) => {
+              cy.clearDataPublications([
+                dp1.body.concept.data_publication_id,
+                dp1.body.version.data_publication_id,
+                dp2.body.concept.data_publication_id,
+                dp2.body.version.data_publication_id,
+                dp3.body.data_publication_id,
+                dp4.body.data_publication_id,
+              ]);
+            }
+          );
         });
       });
     });
@@ -71,7 +82,7 @@ describe('DLS - All DOIs Table', () => {
   it('should be able to click a data publication to see its landing page', () => {
     cy.contains('72: Star enter wide nearly off.').click({ force: true });
 
-    cy.get('@sessionDataPublication')
+    cy.get('@sessionDataPublication1')
       .its('body.data_publication_id')
       .then((id) =>
         cy.location('pathname').should('eq', `/browse/dataPublication/${id}`)
@@ -162,5 +173,25 @@ describe('DLS - All DOIs Table', () => {
     );
 
     cy.get('[aria-rowcount="0"]').should('exist');
+  });
+
+  it('should be able to filter by if the DOI is open or closed', () => {
+    cy.contains('Session DOI').should('have.attr', 'aria-pressed', 'true');
+
+    cy.contains('Open or Closed').should('have.attr', 'aria-pressed', 'true');
+
+    cy.get('[aria-rowcount="2"]').should('exist');
+
+    cy.contains(/^Open$/).click();
+
+    cy.get('[aria-rowcount="1"]').should('exist');
+
+    cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains('72');
+
+    cy.contains(/^Closed$/).click();
+
+    cy.get('[aria-rowcount="1"]').should('exist');
+
+    cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains('78');
   });
 });

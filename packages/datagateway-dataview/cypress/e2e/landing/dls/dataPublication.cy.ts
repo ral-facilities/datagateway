@@ -13,7 +13,7 @@ describe('DLS - User Generated Data Publication Landing', () => {
 
   before(() => {
     cy.login({ username: 'root', password: 'pw', mechanism: 'simple' });
-    cy.seedSessionDataPublication(false).as('sessionDataPublication');
+    cy.seedSessionDataPublication().as('sessionDataPublication');
     cy.dumpAliases(store);
   });
 
@@ -432,7 +432,9 @@ describe('DLS - Session Data Publication Landing', () => {
       password: 'pw',
       mechanism: 'simple',
     });
-    cy.seedSessionDataPublication(true).as('sessionDataPublication');
+    cy.seedSessionDataPublication({ recreateSessionDPIfExists: true }).as(
+      'sessionDataPublication'
+    );
     cy.login(
       {
         username: 'Chris481',
