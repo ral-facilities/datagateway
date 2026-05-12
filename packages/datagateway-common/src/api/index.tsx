@@ -135,7 +135,7 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
     endDate: endDate,
     currentTab: currentTab ? currentTab : 'investigation',
     restrict: restrict === 'true',
-    doiType,
+    doiType: doiType,
   };
 
   return params;

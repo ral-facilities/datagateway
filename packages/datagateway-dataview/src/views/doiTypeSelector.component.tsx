@@ -84,7 +84,7 @@ const DOITypeSelector = (props: DOITypeSelectorProps): React.ReactElement => {
         (type === 'allDOIs' && doiType === null)) && (
         <Grid container item direction="column" xs="auto">
           <Grid item>
-            <Typography component={'label'} id="doi-type-selector-label">
+            <Typography component={'label'} id="doi-open-selector-label">
               {type === 'myDOIs'
                 ? t('my_doi_table.open_button_group_aria_label')
                 : t('all_doi_table.open_button_group_aria_label')}
@@ -92,10 +92,10 @@ const DOITypeSelector = (props: DOITypeSelectorProps): React.ReactElement => {
           </Grid>
           <Grid item>
             <ToggleButtonGroup
-              value={doiType}
+              value={doiType ?? 'session'}
               exclusive
               onChange={handleType}
-              aria-labelledby="doi-type-selector-label"
+              aria-labelledby="doi-open-selector-label"
               size="small"
             >
               <ToggleButton value="session" sx={{ p: '3px 7px' }}>
