@@ -336,6 +336,7 @@ export const mockedSettings: DownloadSettings = {
   downloadApiUrl: 'https://example.com/downloadApi',
   idsUrl: 'https://example.com/ids',
   doiMinterUrl: 'https://example.com/doiMinter',
+  doiHandleUrl: 'https://doi.org',
   dataCiteUrl: 'https://example.com/dataCite',
   bioportalUrl: 'https://example.com/bioPortal',
   fileCountMax: 5000,
