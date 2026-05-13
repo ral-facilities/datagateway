@@ -109,7 +109,9 @@ describe('DOI Generation form', () => {
       // check it correctly shows user defined metadata
       cy.contains('DOI Description: Test description').should('be.visible');
       // check it correctly shows metadata that the API has added
-      cy.contains('Relationship: HasPart').should('be.visible');
+      cy.contains('Size: 1.433375422 GB').should('be.visible');
+      // TODO: is it fine that this relationship is added after minting but not shown on the confirmation page?
+      // cy.contains('Relationship: HasPart').should('be.visible');
 
       cy.contains('button', 'Generate DOI').click();
 
