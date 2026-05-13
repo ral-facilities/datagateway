@@ -23,6 +23,14 @@ export default defineConfig({
         // whatever you return here becomes the launchOptions
         return launchOptions;
       });
+
+      return fetch(config.baseUrl + '/datagateway-search-settings.json')
+        .then((response) => response.json())
+        .then((data) => {
+          const doiHandleUrl = data.doiHandleUrl ?? 'https://doi.org';
+          config.expose = { ...config.expose, doiHandleUrl };
+          return config;
+        });
     },
     baseUrl: 'http://127.0.0.1:3000',
   },

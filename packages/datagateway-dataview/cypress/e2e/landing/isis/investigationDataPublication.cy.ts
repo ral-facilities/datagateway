@@ -14,7 +14,11 @@ describe('ISIS - Investigation Data Publication Landing', () => {
       .should('be.visible');
     cy.get('#investigation-details-panel')
       .contains('a', '0-686-22941-X')
-      .should('have.attr', 'href', 'https://doi.org/0-686-22941-X');
+      .should(
+        'have.attr',
+        'href',
+        `${Cypress.expose('doiHandleUrl')}/0-686-22941-X`
+      );
     cy.get('#investigation-details-panel')
       .contains('INSTRUMENT 13')
       .should('be.visible');
@@ -62,7 +66,11 @@ describe('ISIS - Investigation Data Publication Landing', () => {
       .should('be.visible');
     cy.get('#investigation-details-panel')
       .contains('a', '0-686-22941-X')
-      .should('have.attr', 'href', 'https://doi.org/0-686-22941-X');
+      .should(
+        'have.attr',
+        'href',
+        `${Cypress.expose('doiHandleUrl')}/0-686-22941-X`
+      );
     cy.get('#investigation-details-panel')
       .contains('INSTRUMENT 13')
       .should('not.exist');
@@ -105,7 +113,7 @@ describe('ISIS - Investigation Data Publication Landing', () => {
 
     cy.contains('10.5286/ISIS.E.RB1810842').should('be.visible');
     cy.get('[data-testid="citation-formatter-citation"]').contains(
-      'STFC ISIS Neutron and Muon Source, https://doi.org/10.5286/ISIS.E.RB1810842'
+      `STFC ISIS Neutron and Muon Source, ${Cypress.expose('doiHandleUrl')}/10.5286/ISIS.E.RB1810842`
     );
 
     cy.get('#citation-formatter').click();
@@ -135,7 +143,7 @@ describe('ISIS - Investigation Data Publication Landing', () => {
 
     //Default citation
     cy.get('[data-testid="citation-formatter-citation"]').contains(
-      'STFC ISIS Neutron and Muon Source, https://doi.org/invaliddoi'
+      `STFC ISIS Neutron and Muon Source, ${Cypress.expose('doiHandleUrl')}/invaliddoi`
     );
 
     cy.get('#citation-formatter').click();

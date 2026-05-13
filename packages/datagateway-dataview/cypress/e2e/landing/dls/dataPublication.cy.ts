@@ -108,7 +108,7 @@ describe('DLS - User Generated Data Publication Landing', () => {
       cy.contains('a', dp.body.concept.attributes.doi).should(
         'have.attr',
         'href',
-        `https://doi.org/${dp.body.concept.attributes.doi}`
+        `${Cypress.expose('doiHandleUrl')}/${dp.body.concept.attributes.doi}`
       );
     });
   });
@@ -327,14 +327,14 @@ describe('DLS - User Generated Data Publication Landing', () => {
       )
         .first()
         .contains(
-          `STFC ISIS Neutron and Muon Source, https://doi.org/${response.body.version.attributes.doi}`
+          `STFC ISIS Neutron and Muon Source, ${Cypress.expose('doiHandleUrl')}/${response.body.version.attributes.doi}`
         );
       cy.get(
         '[data-testid="Concept-Data-Citation-citation-formatter-citation"]'
       )
         .last()
         .contains(
-          `STFC ISIS Neutron and Muon Source, https://doi.org/${response.body.concept.attributes.doi}`
+          `STFC ISIS Neutron and Muon Source, ${Cypress.expose('doiHandleUrl')}/${response.body.concept.attributes.doi}`
         );
     });
 
@@ -392,14 +392,14 @@ describe('DLS - User Generated Data Publication Landing', () => {
       )
         .first()
         .contains(
-          `STFC ISIS Neutron and Muon Source, https://doi.org/${response.body.version.attributes.doi}`
+          `STFC ISIS Neutron and Muon Source, ${Cypress.expose('doiHandleUrl')}/${response.body.version.attributes.doi}`
         );
       cy.get(
         '[data-testid="Concept-Data-Citation-citation-formatter-citation"]'
       )
         .last()
         .contains(
-          `STFC ISIS Neutron and Muon Source, https://doi.org/${response.body.concept.attributes.doi}`
+          `STFC ISIS Neutron and Muon Source, ${Cypress.expose('doiHandleUrl')}/${response.body.concept.attributes.doi}`
         );
     });
 
@@ -481,7 +481,7 @@ describe('DLS - Session Data Publication Landing', () => {
       cy.contains('a', dp.body.attributes.doi).should(
         'have.attr',
         'href',
-        `https://doi.org/${dp.body.attributes.doi}`
+        `${Cypress.expose('doiHandleUrl')}/${dp.body.attributes.doi}`
       );
     });
   });

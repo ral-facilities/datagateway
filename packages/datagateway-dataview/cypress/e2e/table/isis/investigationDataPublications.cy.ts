@@ -66,7 +66,7 @@ describe('ISIS - Investigation Data Publication Table', () => {
       .then(($doi) => {
         const doi = $doi.text();
 
-        const url = `https://doi.org/${doi}`;
+        const url = `${Cypress.expose('doiHandleUrl')}/${doi}`;
 
         cy.get('[data-testid="isis-datapublication-table-doi-link"]')
           .first()
