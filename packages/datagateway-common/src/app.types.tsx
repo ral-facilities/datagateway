@@ -489,13 +489,7 @@ export interface SortType {
 
 export type ViewsType = 'table' | 'card' | null;
 
-export type DOIViewType =
-  | 'minter'
-  | 'user'
-  | 'session'
-  | 'openSession'
-  | 'closedSession'
-  | null;
+export type DOIViewType = 'minter' | 'user' | 'session' | 'all';
 
 export interface QueryParams {
   sort: SortType;
@@ -512,7 +506,7 @@ export interface QueryParams {
   endDate: Date | null;
   currentTab: string;
   restrict: boolean;
-  doiType: DOIViewType;
+  doiType: { view: DOIViewType; open?: boolean } | null;
 }
 
 export enum ContributorType {

@@ -53,8 +53,14 @@ describe('DOI Type Selector', () => {
     ).toBeInTheDocument();
     expect(
       screen.getByRole('button', {
-        name: 'my_doi_table.minter',
+        name: 'my_doi_table.all',
         pressed: true,
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
+        name: 'my_doi_table.minter',
+        pressed: false,
       })
     ).toBeInTheDocument();
     expect(
@@ -73,13 +79,19 @@ describe('DOI Type Selector', () => {
 
   it('displays myDOIs button groups correctly with session DOI type selected', () => {
     vi.mocked(parseSearchToQuery, { partial: true }).mockReturnValue({
-      doiType: 'openSession',
+      doiType: { view: 'session', open: true },
     });
     renderComponent('myDOIs');
 
     expect(
       screen.getByRole('group', {
         name: 'my_doi_table.type_button_group_aria_label',
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
+        name: 'my_doi_table.all',
+        pressed: false,
       })
     ).toBeInTheDocument();
     expect(
@@ -142,6 +154,12 @@ describe('DOI Type Selector', () => {
     ).not.toBeInTheDocument();
     expect(
       screen.getByRole('button', {
+        name: 'all_doi_table.all',
+        pressed: true,
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
         name: 'all_doi_table.user',
         pressed: false,
       })
@@ -149,7 +167,7 @@ describe('DOI Type Selector', () => {
     expect(
       screen.getByRole('button', {
         name: 'all_doi_table.session',
-        pressed: true,
+        pressed: false,
       })
     ).toBeInTheDocument();
 
@@ -179,7 +197,7 @@ describe('DOI Type Selector', () => {
     ).toBeInTheDocument();
   });
 
-  it('updates filters when a button is clicked', async () => {
+  it('updates filters when a type button is clicked', async () => {
     renderComponent('myDOIs');
 
     await user.click(
@@ -188,12 +206,62 @@ describe('DOI Type Selector', () => {
       })
     );
 
-    expect(mockPushQueryParams).toHaveBeenCalledWith({ doiType: 'session' });
+    expect(mockPushQueryParams).toHaveBeenCalledWith({
+      doiType: { view: 'session' },
+    });
+  });
+
+  it('updates filters when open button is clicked', async () => {
+    vi.mocked(parseSearchToQuery, { partial: true }).mockReturnValue({
+      doiType: { view: 'all', open: true },
+    });
+    renderComponent('myDOIs');
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'my_doi_table.open_or_closed',
+      })
+    );
+
+    expect(mockPushQueryParams).toHaveBeenCalledWith({
+      doiType: { view: 'all' },
+    });
+  });
+
+  it('updates filters when open and closed button is clicked', async () => {
+    renderComponent('allDOIs');
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'all_doi_table.open',
+      })
+    );
+
+    expect(mockPushQueryParams).toHaveBeenCalledWith({
+      doiType: { view: 'all', open: true },
+    });
+  });
+
+  it('updates filters when user or minter button is clicked after open or closed is selected', async () => {
+    vi.mocked(parseSearchToQuery, { partial: true }).mockReturnValue({
+      doiType: { view: 'all', open: false },
+    });
+    renderComponent('myDOIs');
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'my_doi_table.minter',
+      })
+    );
+
+    expect(mockPushQueryParams).toHaveBeenCalledWith({
+      doiType: { view: 'minter' },
+    });
   });
 
   it('parses current doiType from query params correctly', async () => {
     vi.mocked(parseSearchToQuery, { partial: true }).mockReturnValue({
-      doiType: 'user',
+      doiType: { view: 'user' },
     });
 
     renderComponent('myDOIs');

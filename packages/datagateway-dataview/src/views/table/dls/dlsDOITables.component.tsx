@@ -144,101 +144,70 @@ export const DLSMyDOIsTable = (): React.ReactElement => {
     [location.search]
   );
 
-  const params =
-    doiType === 'session'
-      ? [
-          {
-            filterType: 'where',
-            filterValue: JSON.stringify({
-              'users.user.name': { eq: username },
-            }),
+  const params: AdditionalFilters = [
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'users.user.name': { eq: username },
+      }),
+    },
+  ];
+
+  if (doiType === null || doiType.view === 'all')
+    params.push({
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'type.name': {
+          in: ['Investigation', 'User-defined-concept'],
+        },
+      }),
+    });
+  else if (doiType.view === 'session')
+    params.push({
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'type.name': { eq: 'Investigation' },
+      }),
+    });
+  else if (doiType.view === 'user')
+    params.push({
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'type.name': { eq: 'User-defined-concept' },
+      }),
+    });
+  else if (doiType.view === 'minter')
+    params.push(
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'users.orderKey': {
+            eq: '0',
           },
-          {
-            filterType: 'where',
-            filterValue: JSON.stringify({
-              'type.name': { eq: 'Investigation' },
-            }),
-          },
-        ]
-      : doiType === 'openSession'
-        ? [
-            {
-              filterType: 'where',
-              filterValue: JSON.stringify({
-                'users.user.name': { eq: username },
-              }),
-            },
-            {
-              filterType: 'where',
-              filterValue: JSON.stringify({
-                'type.name': { eq: 'Investigation' },
-              }),
-            },
-            {
-              filterType: 'where',
-              filterValue: JSON.stringify({
-                publicationDate: { isnull: false },
-              }),
-            },
-          ]
-        : doiType === 'closedSession'
-          ? [
-              {
-                filterType: 'where',
-                filterValue: JSON.stringify({
-                  'users.user.name': { eq: username },
-                }),
-              },
-              {
-                filterType: 'where',
-                filterValue: JSON.stringify({
-                  'type.name': { eq: 'Investigation' },
-                }),
-              },
-              {
-                filterType: 'where',
-                filterValue: JSON.stringify({
-                  publicationDate: { isnull: true },
-                }),
-              },
-            ]
-          : doiType === 'user'
-            ? [
-                {
-                  filterType: 'where',
-                  filterValue: JSON.stringify({
-                    'users.user.name': { eq: username },
-                  }),
-                },
-                {
-                  filterType: 'where',
-                  filterValue: JSON.stringify({
-                    'type.name': { eq: 'User-defined-concept' },
-                  }),
-                },
-              ]
-            : [
-                {
-                  filterType: 'where',
-                  filterValue: JSON.stringify({
-                    'users.user.name': { eq: username },
-                  }),
-                },
-                {
-                  filterType: 'where',
-                  filterValue: JSON.stringify({
-                    'users.orderKey': {
-                      eq: '0',
-                    },
-                  }),
-                },
-                {
-                  filterType: 'where',
-                  filterValue: JSON.stringify({
-                    'type.name': { eq: 'User-defined-concept' },
-                  }),
-                },
-              ];
+        }),
+      },
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({
+          'type.name': { eq: 'User-defined-concept' },
+        }),
+      }
+    );
+
+  if (doiType?.open === true)
+    params.push({
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        publicationDate: { isnull: false },
+      }),
+    });
+  else if (doiType?.open === false)
+    params.push({
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        publicationDate: { isnull: true },
+      }),
+    });
 
   return <DLSBaseDOIsTable filterParams={params} />;
 };
@@ -251,53 +220,46 @@ export const DLSAllDOIsTable = (): React.ReactElement => {
     [location.search]
   );
 
-  const params =
-    doiType === 'user' || doiType === 'minter'
-      ? [
-          {
-            filterType: 'where',
-            filterValue: JSON.stringify({
-              'type.name': { eq: 'User-defined-concept' },
-            }),
-          },
-        ]
-      : doiType === 'openSession'
-        ? [
-            {
-              filterType: 'where',
-              filterValue: JSON.stringify({
-                'type.name': { eq: 'Investigation' },
-              }),
-            },
-            {
-              filterType: 'where',
-              filterValue: JSON.stringify({
-                publicationDate: { isnull: false },
-              }),
-            },
-          ]
-        : doiType === 'closedSession'
-          ? [
-              {
-                filterType: 'where',
-                filterValue: JSON.stringify({
-                  'type.name': { eq: 'Investigation' },
-                }),
-              },
-              {
-                filterType: 'where',
-                filterValue: JSON.stringify({
-                  publicationDate: { isnull: true },
-                }),
-              },
-            ]
-          : [
-              {
-                filterType: 'where',
-                filterValue: JSON.stringify({
-                  'type.name': { eq: 'Investigation' },
-                }),
-              },
-            ];
+  const params: AdditionalFilters = [];
+
+  if (doiType === null || doiType.view === 'all')
+    params.push({
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'type.name': {
+          in: ['Investigation', 'User-defined-concept'],
+        },
+      }),
+    });
+  else if (doiType.view === 'session')
+    params.push({
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'type.name': { eq: 'Investigation' },
+      }),
+    });
+  else if (doiType.view === 'user')
+    params.push({
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'type.name': { eq: 'User-defined-concept' },
+      }),
+    });
+
+  if (doiType?.open === true)
+    params.push({
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        publicationDate: { isnull: false },
+      }),
+    });
+  else if (doiType?.open === false)
+    params.push({
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        publicationDate: { isnull: true },
+      }),
+    });
+
   return <DLSBaseDOIsTable filterParams={params} />;
 };

@@ -83,11 +83,7 @@ describe('DLS - MyDOIs Table', () => {
         cy.get('[aria-sort="descending"]').should('exist');
         cy.get('.MuiTableSortLabel-iconDirectionDesc').should('be.visible');
 
-        cy.contains('Minted the user-created DOI').should(
-          'have.attr',
-          'aria-pressed',
-          'true'
-        );
+        cy.contains('All').should('have.attr', 'aria-pressed', 'true');
       });
 
       it('should be able to click an data publication to see its landing page', () => {
@@ -103,6 +99,7 @@ describe('DLS - MyDOIs Table', () => {
       });
 
       it('should be able to sort by all sort directions on single and multiple columns', () => {
+        cy.contains('Minted the user-created DOI').click();
         //Revert the default sort
         cy.contains('[role="button"]', 'Publication Date')
           .as('dateSortButton')
