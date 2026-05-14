@@ -624,8 +624,16 @@ exports[`Visit details panel component > should gracefully handles Investigation
         <span
           class="MuiTypography-root MuiTypography-overline css-b3fch5-MuiTypography-root"
         >
-          investigations.details.users.name {count:1}
+          investigations.details.users.name {count:0}
         </span>
+        <p
+          class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          data-testid="visit-details-panel-no-name"
+        >
+          <b>
+            investigations.details.users.no_name
+          </b>
+        </p>
       </div>
     </div>
   </div>
@@ -1062,6 +1070,7 @@ exports[`Visit details panel component > should render user, sample and publicat
             <b>
               Louise Davies
             </b>
+             (Investigator, Local Contact)
           </p>
         </div>
         <div
@@ -1073,6 +1082,7 @@ exports[`Visit details panel component > should render user, sample and publicat
             <b>
               Louise
             </b>
+             (Investigator)
           </p>
         </div>
       </div>

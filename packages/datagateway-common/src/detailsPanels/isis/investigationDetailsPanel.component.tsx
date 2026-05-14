@@ -1,13 +1,13 @@
-import React from 'react';
 import {
-  Typography,
-  Grid,
   Divider,
-  Tabs,
-  Tab,
+  Grid,
   Link as MuiLink,
+  Tab,
+  Tabs,
+  Typography,
   styled,
 } from '@mui/material';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useInvestigationDetails } from '../../api';
@@ -16,6 +16,7 @@ import type { IsisInvestigationDetailsPanelChangeTabPayload } from '../../state/
 import { IsisInvestigationDetailsPanelChangeTabType } from '../../state/actions/actions.types';
 import type { StateType } from '../../state/app.types';
 import type { Action } from '../../state/reducers/createReducer';
+import { dedupeInvestigationUsers } from '../../utils';
 
 const DEFAULT_TAB: IsisInvestigationDetailsPanelTab = 'details';
 
@@ -99,6 +100,10 @@ const InvestigationDetailsPanel = (
       (dci) => dci.dataCollection?.dataPublications?.[0]?.type?.name === 'study'
     )?.[0]?.dataCollection?.dataPublications?.[0];
 
+  const dedupedInvestigationUsers = investigationData.investigationUsers
+    ? dedupeInvestigationUsers(investigationData.investigationUsers)
+    : undefined;
+
   return (
     <div
       data-testid="isis-investigation-details-panel"
@@ -120,7 +125,7 @@ const InvestigationDetailsPanel = (
           label={t('investigations.details.label')}
           value="details"
         />
-        {investigationData.investigationUsers && (
+        {dedupedInvestigationUsers && (
           <Tab
             id="investigation-users-tab"
             aria-controls="investigation-users-panel"
@@ -255,7 +260,7 @@ const InvestigationDetailsPanel = (
           </Grid>
         </StyledGrid>
       </div>
-      {investigationData.investigationUsers && (
+      {dedupedInvestigationUsers && (
         <div
           id="investigation-users-panel"
           aria-labelledby="investigation-users-tab"
@@ -265,26 +270,21 @@ const InvestigationDetailsPanel = (
           <StyledGrid container direction="column">
             <Typography variant="overline">
               {t('investigations.details.users.name', {
-                count: investigationData.investigationUsers.length,
+                count: dedupedInvestigationUsers.length,
               })}
             </Typography>
-            {investigationData.investigationUsers.length > 0 ? (
-              investigationData.investigationUsers.map((investigationUser) => {
-                if (investigationUser.user) {
-                  return (
-                    <Grid key={investigationUser.user.id} item xs>
-                      <Typography>
-                        <b>
-                          {investigationUser.user.fullName ||
-                            investigationUser.user.name}
-                        </b>
-                      </Typography>
-                    </Grid>
-                  );
-                } else {
-                  return null;
-                }
-              })
+            {dedupedInvestigationUsers.length > 0 ? (
+              dedupedInvestigationUsers.map((investigationUser) => (
+                <Grid key={investigationUser.user.id} item xs>
+                  <Typography>
+                    <b>
+                      {investigationUser.user.fullName ||
+                        investigationUser.user.name}
+                    </b>
+                    {` (${investigationUser.roles.join(', ')})`}
+                  </Typography>
+                </Grid>
+              ))
             ) : (
               <Typography data-testid="investigation-details-panel-no-name">
                 <b>{t('investigations.details.users.no_name')}</b>
