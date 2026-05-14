@@ -9,6 +9,7 @@ import type {
   DownloadCart,
   DownloadCartItem,
   Investigation,
+  InvestigationUser,
   User,
 } from 'datagateway-common';
 import { readSciGatewayToken } from 'datagateway-common';
@@ -335,7 +336,7 @@ const fetchEntityUsers = (
   apiUrl: string,
   entityId: number,
   entityType: 'investigation' | 'dataset' | 'datafile'
-): Promise<User[]> => {
+): Promise<InvestigationUser[]> => {
   const params = new URLSearchParams();
   params.append('where', JSON.stringify({ id: { eq: entityId } }));
 
@@ -363,60 +364,51 @@ const fetchEntityUsers = (
     })
     .then((response) => {
       const entity = response.data[0];
-      if (entityType === 'investigation') {
-        return (entity as Investigation).investigationUsers?.map(
-          (iUser) => iUser.user
-        ) as User[];
-      }
-      if (entityType === 'dataset') {
-        return (entity as Dataset).investigation?.investigationUsers?.map(
-          (iUser) => iUser.user
-        ) as User[];
-      }
+      if (entityType === 'investigation')
+        return (entity as Investigation).investigationUsers ?? [];
+      if (entityType === 'dataset')
+        return (entity as Dataset).investigation?.investigationUsers ?? [];
       if (entityType === 'datafile')
         return (
-          entity as Datafile
-        ).dataset?.investigation?.investigationUsers?.map(
-          (iUser) => iUser.user
-        ) as User[];
+          (entity as Datafile).dataset?.investigation?.investigationUsers ?? []
+        );
+
       return [];
     });
 };
-
-/**
- * Deduplicates items in an array
- * @param array Array to make unique
- * @param key Function to apply to an array item that returns a primitive that keys that item
- * @returns a deduplicated array
- */
-function uniqBy<T>(array: T[], key: (item: T) => number | string): T[] {
-  const seen: Record<number | string, boolean> = {};
-  return array.filter(function (item) {
-    const k = key(item);
-    return Object.prototype.hasOwnProperty.call(seen, k)
-      ? false
-      : (seen[k] = true);
-  });
-}
 
 /**
  * Returns a list of users from ICAT which are InvestigationUsers for each item in the cart
  */
 export const getCartUsers = async (
   cart: DownloadCartItem[],
-  settings: Pick<DownloadSettings, 'apiUrl'>
+  settings: Pick<DownloadSettings, 'apiUrl' | 'localContactRole'>
 ): Promise<User[]> => {
-  let users: User[] = [];
+  let investigationUsers: InvestigationUser[] = [];
   for (const cartItem of cart) {
     const entityUsers = await fetchEntityUsers(
       settings.apiUrl,
       cartItem.entityId,
       cartItem.entityType
     );
-    users = users.concat(entityUsers);
+    investigationUsers = investigationUsers.concat(entityUsers);
   }
 
-  users = uniqBy(users, (item) => item.id);
+  const seen = new Set();
 
-  return users;
+  // filter out local contacts and duplicates, and return User array
+  return (
+    investigationUsers.flatMap((iu) => {
+      if (!iu.user) return [];
+      if (
+        new RegExp(settings.localContactRole).test(iu.role) ||
+        seen.has(iu.user.id)
+      ) {
+        return [];
+      } else {
+        seen.add(iu.user.id);
+        return [iu.user];
+      }
+    }) ?? []
+  );
 };

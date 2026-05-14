@@ -6,6 +6,7 @@ export type DataviewSettings = DataviewSearchCommonSettings &
     facilityImageURL?: string;
     breadcrumbs?: BreadcrumbSettings[];
     PIRole?: string;
+    localContactRole?: string;
   };
 
 export let settings: Promise<DataviewSettings | void>;

@@ -341,6 +341,7 @@ export const mockedSettings: DownloadSettings = {
   bioportalUrl: 'https://example.com/bioPortal',
   fileCountMax: 5000,
   totalSizeMax: 1000000000000,
+  localContactRole: 'local_contact|DataCollector',
   uiFeatures: {
     downloadProgress: false,
   },

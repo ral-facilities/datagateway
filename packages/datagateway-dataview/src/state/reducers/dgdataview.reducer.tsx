@@ -8,6 +8,8 @@ import {
   ConfigureBreadcrumbSettingsType,
   ConfigureFacilityImageSettingPayload,
   ConfigureFacilityImageSettingType,
+  ConfigureLocalContactRoleSettingPayload,
+  ConfigureLocalContactRoleSettingType,
   ConfigurePIRoleSettingPayload,
   ConfigurePIRoleSettingType,
   ConfigurePluginHostSettingPayload,
@@ -23,6 +25,7 @@ export const initialState: DGDataViewState = {
   facilityImageURL: '',
   datafilePreviewer: datafilePreviewerInitialState,
   PIRole: 'PI',
+  localContactRole: 'local_contact|DataCollector',
 };
 
 export function handleSettingsLoaded(state: DGDataViewState): DGDataViewState {
@@ -74,12 +77,24 @@ export function handleConfigurePIRoleSetting(
   };
 }
 
+export function handleConfigureLocalContactRoleSetting(
+  state: DGDataViewState,
+  payload: ConfigureLocalContactRoleSettingPayload
+): DGDataViewState {
+  return {
+    ...state,
+    localContactRole: payload.settings,
+  };
+}
+
 const DGDataViewReducer = createReducer(initialState, {
   [SettingsLoadedType]: handleSettingsLoaded,
   [ConfigureBreadcrumbSettingsType]: handleConfigureBreadcrumbSettings,
   [ConfigurePluginHostSettingType]: handleConfigurePluginHostSetting,
   [ConfigureFacilityImageSettingType]: handleConfigureFacilityImageSetting,
   [ConfigurePIRoleSettingType]: handleConfigurePIRoleSetting,
+  [ConfigureLocalContactRoleSettingType]:
+    handleConfigureLocalContactRoleSetting,
   ...datafilePreviewerReducer,
 });
 

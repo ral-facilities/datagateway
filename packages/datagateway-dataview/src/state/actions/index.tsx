@@ -14,6 +14,9 @@ import {
   ConfigureBreadcrumbSettingsType,
   ConfigureFacilityImageSettingPayload,
   ConfigureFacilityImageSettingType,
+  ConfigureLocalContactRoleSettingPayload,
+  ConfigureLocalContactRoleSettingType,
+  ConfigurePIRoleSettingPayload,
   ConfigurePIRoleSettingType,
   ConfigurePluginHostSettingPayload,
   ConfigurePluginHostSettingType,
@@ -53,10 +56,19 @@ export const loadFacilityImageSetting = (
 
 export const loadPIRoleSetting = (
   PIRoleSetting: string | undefined
-): ActionType<ConfigurePluginHostSettingPayload> => ({
+): ActionType<ConfigurePIRoleSettingPayload> => ({
   type: ConfigurePIRoleSettingType,
   payload: {
     settings: PIRoleSetting ?? 'PI', // if it's not defined in the settings default to PI
+  },
+});
+
+export const loadLocalContactRoleSetting = (
+  localContactRoleSetting: string | undefined
+): ActionType<ConfigureLocalContactRoleSettingPayload> => ({
+  type: ConfigureLocalContactRoleSettingType,
+  payload: {
+    settings: localContactRoleSetting ?? 'local_contact|DataCollector', // if it's not defined in the settings default to local_contact|DataCollector
   },
 });
 
@@ -106,6 +118,7 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
       }
 
       dispatch(loadPIRoleSetting(settingsResult['PIRole']));
+      dispatch(loadLocalContactRoleSetting(settingsResult['localContactRole']));
 
       dispatch(settingsLoaded());
     }

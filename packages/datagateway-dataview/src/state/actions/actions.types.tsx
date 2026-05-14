@@ -7,6 +7,8 @@ export const ConfigureFacilityImageSettingType =
   'datagateway_dataview:configure_facility_image';
 export const ConfigurePIRoleSettingType =
   'datagateway_dataview:configure_pi_role';
+export const ConfigureLocalContactRoleSettingType =
+  'datagateway_dataview:configure_local_contact_role';
 export const SettingsLoadedType = 'datagateway_dataview:settings_loaded';
 
 export interface ConfigureBreadcrumbSettingsPayload {
@@ -22,6 +24,10 @@ export interface ConfigureFacilityImageSettingPayload {
 }
 
 export interface ConfigurePIRoleSettingPayload {
+  settings: string;
+}
+
+export interface ConfigureLocalContactRoleSettingPayload {
   settings: string;
 }
 

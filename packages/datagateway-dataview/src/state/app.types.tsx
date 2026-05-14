@@ -11,6 +11,7 @@ export interface DGDataViewState {
   pluginHost: string;
   datafilePreviewer: DatafilePreviewerState;
   PIRole: string;
+  localContactRole: string;
 }
 
 export interface EntityCache {

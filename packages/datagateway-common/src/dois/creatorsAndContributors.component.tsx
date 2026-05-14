@@ -55,13 +55,20 @@ type CreatorsAndContributorsProps = {
   selectedUsers: ContributorUser[];
   changeSelectedUsers: React.Dispatch<React.SetStateAction<ContributorUser[]>>;
   doiMinterUrl: string | undefined;
+  localContactRole: string;
   disabled: boolean;
 };
 
 const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
   props
 ) => {
-  const { selectedUsers, changeSelectedUsers, doiMinterUrl, disabled } = props;
+  const {
+    selectedUsers,
+    changeSelectedUsers,
+    doiMinterUrl,
+    localContactRole,
+    disabled,
+  } = props;
   const [t] = useTranslation();
   const [username, setUsername] = React.useState('');
   const [usernameError, setUsernameError] = React.useState('');
@@ -262,7 +269,9 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
                           >
                             {Object.values(ContributorType)
                               .filter(
-                                (value) => value !== ContributorType.Creator
+                                (value) =>
+                                  value !== ContributorType.Creator &&
+                                  !new RegExp(localContactRole).test(value)
                               )
                               .map((type) => {
                                 return (

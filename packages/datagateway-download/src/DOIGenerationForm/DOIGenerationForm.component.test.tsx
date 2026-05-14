@@ -419,9 +419,7 @@ describe('DOI generation form component', () => {
         name: 'DOIGenerationForm.creator_type',
       })
     );
-    await user.click(
-      await screen.findByRole('option', { name: 'DataCollector' })
-    );
+    await user.click(await screen.findByRole('option', { name: 'Editor' }));
 
     await user.type(
       screen.getByRole('textbox', {
@@ -526,7 +524,7 @@ describe('DOI generation form component', () => {
         description: 'd',
         creators: [
           { username: '1', contributor_type: 'Creator' },
-          { username: '2', contributor_type: 'DataCollector' },
+          { username: '2', contributor_type: 'Editor' },
         ],
         related_items: [
           {

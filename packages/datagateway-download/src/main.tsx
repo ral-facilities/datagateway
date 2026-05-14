@@ -153,6 +153,8 @@ export const fetchSettings = (): Promise<DownloadSettings | void> => {
       if (settings.bioportalUrl === null) settings.bioportalUrl = undefined;
       if (typeof settings.doiHandleUrl === 'undefined')
         settings.doiHandleUrl = 'https://doi.org';
+      if (typeof settings.localContactRole === 'undefined')
+        settings.localContactRole = 'local_contact|DataCollector';
 
       // have to typecast as TS can't see that we've eliminated null from the above properties
       // see: https://github.com/microsoft/TypeScript/issues/50651

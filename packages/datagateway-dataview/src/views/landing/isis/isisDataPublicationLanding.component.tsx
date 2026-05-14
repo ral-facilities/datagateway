@@ -173,6 +173,9 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     [location.search]
   );
   const PIRole = useSelector((state: StateType) => state.dgdataview.PIRole);
+  const localContactRole = useSelector(
+    (state: StateType) => state.dgdataview.localContactRole
+  );
   const doiHandleUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.doiHandleUrl
   );
@@ -236,24 +239,21 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       // Only keep users where we have their fullName
       const fullname = user.fullName;
       if (fullname) {
-        switch (user.contributorType) {
-          case PIRole:
-            principals.push({
-              fullName: fullname,
-              contributorType: 'Principal Investigator',
-            });
-            break;
-          case 'local_contact':
-            contacts.push({
-              fullName: fullname,
-              contributorType: 'Local Contact',
-            });
-            break;
-          default:
-            experimenters.push({
-              fullName: fullname,
-              contributorType: 'Experimenter',
-            });
+        if (new RegExp(PIRole).test(user.contributorType)) {
+          principals.push({
+            fullName: fullname,
+            contributorType: t('datapublications.principal_investigator'),
+          });
+        } else if (new RegExp(localContactRole).test(user.contributorType)) {
+          contacts.push({
+            fullName: fullname,
+            contributorType: t('datapublications.local_contact'),
+          });
+        } else {
+          experimenters.push({
+            fullName: fullname,
+            contributorType: t('datapublications.experimenter'),
+          });
         }
       }
     });
@@ -262,8 +262,8 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     principals.sort((a, b) => a.fullName.localeCompare(b.fullName));
     contacts.sort((a, b) => a.fullName.localeCompare(b.fullName));
     experimenters.sort((a, b) => a.fullName.localeCompare(b.fullName));
-    return principals.concat(contacts, experimenters);
-  }, [PIRole, studyDataPublication?.users]);
+    return principals.concat(experimenters, contacts);
+  }, [PIRole, localContactRole, studyDataPublication?.users, t]);
 
   React.useEffect(() => {
     const scriptId = `dataPublication-${dataPublicationId}`;

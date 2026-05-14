@@ -200,8 +200,8 @@ const ISISInvestigationsCardView = (
         disableSort: true,
         content: function Content(investigation: Investigation) {
           const principal_investigators =
-            investigation?.investigationUsers?.filter(
-              (iu) => iu.role === PIRole
+            investigation?.investigationUsers?.filter((iu) =>
+              new RegExp(PIRole).test(iu.role)
             );
           let principal_investigator = '';
           if (principal_investigators && principal_investigators.length !== 0) {

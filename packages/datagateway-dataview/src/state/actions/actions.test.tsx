@@ -10,6 +10,7 @@ import {
   configureApp,
   loadBreadcrumbSettings,
   loadFacilityImageSetting,
+  loadLocalContactRoleSetting,
   loadPIRoleSetting,
   loadPluginHostSetting,
   settingsLoaded,
@@ -18,6 +19,7 @@ import { actions, dispatch, getState, resetActions } from '../../setupTests';
 import {
   ConfigureBreadcrumbSettingsType,
   ConfigureFacilityImageSettingType,
+  ConfigureLocalContactRoleSettingType,
   ConfigurePIRoleSettingType,
   ConfigurePluginHostSettingType,
   SettingsLoadedType,
@@ -95,7 +97,23 @@ describe('Actions', () => {
     });
   });
 
-  it('settings are loaded and facilityName, loadFeatureSwitches, loadUrls, loadQueryRetries, loadBreadcrumbSettings, loadSelectAllSetting, loadPIRoleSetting and settingsLoaded actions are sent', async () => {
+  it('given string loadLocalContactRoleSetting returns a ConfigureLocalContactRoleSettingType with ConfigureLocalContactRoleSettingPayload', () => {
+    const action = loadLocalContactRoleSetting('local_contact');
+    expect(action.type).toEqual(ConfigureLocalContactRoleSettingType);
+    expect(action.payload).toEqual({
+      settings: 'local_contact',
+    });
+  });
+
+  it('given undefined loadLocalContactRoleSetting returns a ConfigureLocalContactRoleSettingType with default ConfigureLocalContactRoleSettingPayload', () => {
+    const action = loadLocalContactRoleSetting(undefined);
+    expect(action.type).toEqual(ConfigureLocalContactRoleSettingType);
+    expect(action.payload).toEqual({
+      settings: 'local_contact|DataCollector',
+    });
+  });
+
+  it('settings are loaded and facilityName, loadFeatureSwitches, loadUrls, loadQueryRetries, loadBreadcrumbSettings, loadSelectAllSetting, loadPIRoleSetting, loadLocalContactRoleSetting and settingsLoaded actions are sent', async () => {
     mockSettingsGetter.mockReturnValue({
       facilityName: 'Generic',
       facilityImageURL: 'test-image.jpg',
@@ -107,6 +125,7 @@ describe('Actions', () => {
       bioportalUrl: 'bioportalUrl',
       doiHandleUrl: 'doiHandleUrl',
       PIRole: 'principal_experimenter',
+      localContactRole: 'local_contact',
       queryRetries: 1,
       breadcrumbs: [
         {
@@ -128,7 +147,7 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState, null);
 
-    expect(actions.length).toEqual(9);
+    expect(actions.length).toEqual(10);
     expect(actions).toContainEqual(loadFacilityName('Generic'));
     expect(actions).toContainEqual(loadFacilityImageSetting('test-image.jpg'));
     expect(actions).toContainEqual(loadFeatureSwitches({}));
@@ -158,6 +177,9 @@ describe('Actions', () => {
     );
     expect(actions).toContainEqual(loadQueryRetries(1));
     expect(actions).toContainEqual(loadPIRoleSetting('principal_experimenter'));
+    expect(actions).toContainEqual(
+      loadLocalContactRoleSetting('local_contact')
+    );
   });
 
   it("doesn't send loadQueryRetries, loadBreadcrumbSettings, loadPluginHostSetting, loadFacilityImageSetting and loadFeatureSwitches actions when they're not defined", async () => {
@@ -171,7 +193,7 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState, null);
 
-    expect(actions.length).toEqual(4);
+    expect(actions.length).toEqual(5);
     expect(
       actions.every(({ type }) => type !== ConfigureBreadcrumbSettingsType)
     ).toBe(true);
@@ -198,6 +220,7 @@ describe('Actions', () => {
       })
     );
     expect(actions).toContainEqual(loadPIRoleSetting(undefined));
+    expect(actions).toContainEqual(loadLocalContactRoleSetting(undefined));
 
     expect(actions).toContainEqual(settingsLoaded());
   });

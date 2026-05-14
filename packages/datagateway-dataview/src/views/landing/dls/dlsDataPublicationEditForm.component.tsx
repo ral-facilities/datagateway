@@ -64,6 +64,9 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
   const doiHandleUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.doiHandleUrl
   );
+  const localContactRole = useSelector(
+    (state: StateType) => state.dgdataview.localContactRole
+  );
 
   const { data: dataPublication } = useDataPublication(
     parseInt(dataPublicationId)
@@ -436,6 +439,7 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
                   disableMintButton={false}
                   mintLoading={mintDraftVersionStatus === 'loading'}
                   onMintClick={handleMintClick}
+                  localContactRole={localContactRole}
                 />
               </Grid>
             </Paper>

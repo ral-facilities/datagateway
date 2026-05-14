@@ -17,6 +17,7 @@ import {
 } from '@mui/material';
 import {
   BioPortalTerm,
+  ContributorType,
   DOIRelationType,
   DataPublication,
   DataPublicationUser,
@@ -165,7 +166,9 @@ TabPanel.displayName = 'TabPanel';
 const LandingPage = (props: LandingPageProps): React.ReactElement => {
   const [t] = useTranslation();
 
-  const PIRole = useSelector((state: StateType) => state.dgdataview.PIRole);
+  const localContactRole = useSelector(
+    (state: StateType) => state.dgdataview.localContactRole
+  );
   const doiHandleUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.doiHandleUrl
   );
@@ -238,8 +241,10 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               fullName: fullname,
               contributorType:
                 user.orderKey === '0'
-                  ? 'Principal Investigator'
-                  : user.contributorType,
+                  ? t('datapublications.principal_investigator')
+                  : new RegExp(localContactRole).test(user.contributorType)
+                    ? t('datapublications.local_contact')
+                    : user.contributorType,
               orcidId: user.user?.orcidId,
               affiliations: user.affiliations,
             });
@@ -248,7 +253,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     }
 
     return formattedUsers;
-  }, [data]);
+  }, [data, localContactRole, t]);
 
   React.useEffect(() => {
     // only add structured data for concept DOI landing pages or session DOI pages
@@ -297,26 +302,61 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
             url: t('doi_constants.publisher.url'),
           },
         },
-        creator: formattedUsers.map((user) => {
-          return {
-            '@type': 'Person',
-            name: user.fullName,
-            ...(user.orcidId
-              ? {
-                  sameAs: user.orcidId.startsWith('https://')
-                    ? user.orcidId
-                    : `https://orcid.org/${user.orcidId}`,
-                }
-              : {}),
-            ...(user.affiliations && user.affiliations.length > 0
-              ? {
-                  affiliation: user.affiliations.map((a) => ({
-                    name: a.name,
-                  })),
-                }
-              : {}),
-          };
-        }),
+        creator: formattedUsers
+          .filter(
+            (u) =>
+              u.contributorType === ContributorType.Creator ||
+              u.contributorType === t('datapublications.principal_investigator')
+          )
+          .map((user) => {
+            return {
+              '@type': 'Person',
+              name: user.fullName,
+              ...(user.orcidId
+                ? {
+                    sameAs: user.orcidId.startsWith('https://')
+                      ? user.orcidId
+                      : `https://orcid.org/${user.orcidId}`,
+                  }
+                : {}),
+              ...(user.affiliations && user.affiliations.length > 0
+                ? {
+                    affiliation: user.affiliations.map((a) => ({
+                      name: a.name,
+                    })),
+                  }
+                : {}),
+            };
+          }),
+        contributor: formattedUsers
+          .filter(
+            (u) =>
+              !(
+                u.contributorType === ContributorType.Creator ||
+                u.contributorType ===
+                  t('datapublications.principal_investigator')
+              )
+          )
+          .map((user) => {
+            return {
+              '@type': 'Person',
+              name: user.fullName,
+              ...(user.orcidId
+                ? {
+                    sameAs: user.orcidId.startsWith('https://')
+                      ? user.orcidId
+                      : `https://orcid.org/${user.orcidId}`,
+                  }
+                : {}),
+              ...(user.affiliations && user.affiliations.length > 0
+                ? {
+                    affiliation: user.affiliations.map((a) => ({
+                      name: a.name,
+                    })),
+                  }
+                : {}),
+            };
+          }),
         includedInDataCatalog: {
           '@type': 'DataCatalog',
           url: t('doi_constants.content_url'),
@@ -574,10 +614,10 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 {/* Only let PIs publish DOIs & only if it's an unopened session DOI */}
                 {isSessionDOI &&
                   !data?.publicationDate &&
-                  data?.content?.dataCollectionInvestigations?.[0]?.investigation?.investigationUsers?.some(
+                  data.users?.some(
                     (user) =>
                       user.user?.name === readSciGatewayToken().username &&
-                      user.role === PIRole
+                      user.orderKey === '0'
                   ) && (
                     <Grid item xs="auto" alignSelf="center">
                       <PublishButton dataPublication={data} />
