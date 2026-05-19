@@ -31,6 +31,7 @@ export const initialState: DGCommonState = {
     apiUrl: '',
     downloadApiUrl: '',
     icatUrl: '',
+    doiHandleUrl: 'https://doi.org',
   },
   facilityName: '',
   isisDatafileDetailsPanel: {},

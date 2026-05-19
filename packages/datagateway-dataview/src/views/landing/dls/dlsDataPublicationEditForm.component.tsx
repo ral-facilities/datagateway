@@ -27,6 +27,7 @@ import { StateType } from '../../../state/app.types';
 import DLSDataPublicationDataEditor, {
   TransferListItem,
 } from './dlsDataPublicationDataEditor.component';
+import { compareDataPublicationUsersByOrderKey } from './dlsDataPublicationLanding.component';
 
 interface DLSDataPublicationEditFormProps {
   dataPublicationId: string;
@@ -59,6 +60,9 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
   );
   const bioportalUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.bioportalUrl
+  );
+  const doiHandleUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.doiHandleUrl
   );
 
   const { data: dataPublication } = useDataPublication(
@@ -107,14 +111,16 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
       setTitle(dataPublication.title);
       setDescription(dataPublication.description ?? '');
       setSelectedUsers(
-        dataPublication.users?.map((user) => ({
-          id: user.id,
-          fullName: user.fullName,
-          name: user.user?.name ?? user.fullName, // we're in trouble if user.user.name is undefined...
-          contributor_type: user.contributorType as ContributorType,
-          email: user.email,
-          affiliation: user.affiliations?.[0]?.name,
-        })) ?? []
+        dataPublication.users
+          ?.toSorted(compareDataPublicationUsersByOrderKey)
+          .map((user) => ({
+            id: user.id,
+            fullName: user.fullName,
+            name: user.user?.name ?? user.fullName, // we're in trouble if user.user.name is undefined...
+            contributor_type: user.contributorType as ContributorType,
+            email: user.email,
+            affiliation: user.affiliations?.[0]?.name,
+          })) ?? []
       );
     }
   }, [dataPublication]);
@@ -378,6 +384,7 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
             onConfirmClick={handleConfirmClick}
             deleteLoading={deleteVersionDraftStatus === 'loading'}
             publishLoading={publishingVersionStatus === 'loading'}
+            doiHandleUrl={doiHandleUrl}
           />
         ) : (
           <Box>
@@ -413,6 +420,7 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
                   dataCiteUrl={dataCiteUrl}
                   doiMinterUrl={doiMinterUrl}
                   bioportalUrl={bioportalUrl}
+                  doiHandleUrl={doiHandleUrl}
                   title={title}
                   setTitle={setTitle}
                   description={description}

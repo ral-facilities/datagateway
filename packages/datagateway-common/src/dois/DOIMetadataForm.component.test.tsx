@@ -34,7 +34,7 @@ describe('DOI generation form component', () => {
       description: 'description',
       setDescription: vi.fn(),
       selectedUsers: [
-        { id: 1, name: 'test', contributor_type: ContributorType.Minter },
+        { id: 1, name: 'test', contributor_type: ContributorType.Creator },
       ],
       setSelectedUsers: vi.fn(),
       relatedIdentifiers: [
@@ -132,7 +132,7 @@ describe('DOI generation form component', () => {
 
     // relatedIdentifiers has empty relationtypes or relatedItemtypes
     props.selectedUsers = [
-      { id: 1, name: 'test', contributor_type: ContributorType.Minter },
+      { id: 1, name: 'test', contributor_type: ContributorType.Creator },
     ];
     props.relatedIdentifiers = [
       {

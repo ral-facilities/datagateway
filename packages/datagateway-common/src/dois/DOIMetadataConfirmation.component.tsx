@@ -16,6 +16,7 @@ type DOIMetadataConfirmationProps = {
   publishLoading: boolean;
   onConfirmClick: () => void;
   onBackClick: () => void;
+  doiHandleUrl: string;
 };
 
 const CreatorsAndContributorsMetadata: React.FC<{
@@ -85,7 +86,12 @@ const CreatorsAndContributorsMetadata: React.FC<{
 const DOIMetadataConfirmation: React.FC<DOIMetadataConfirmationProps> = (
   props
 ) => {
-  const { draftMetadata: metadata, onConfirmClick, onBackClick } = props;
+  const {
+    draftMetadata: metadata,
+    onConfirmClick,
+    onBackClick,
+    doiHandleUrl,
+  } = props;
   const [t] = useTranslation();
 
   if (typeof metadata === 'undefined') return <CircularProgress />;
@@ -178,7 +184,7 @@ const DOIMetadataConfirmation: React.FC<DOIMetadataConfirmationProps> = (
                     <Typography>
                       {t('DOIGenerationForm.related_identifier_identifier')}:{' '}
                       {relatedIdentifierType === DOIIdentifierType.DOI ? (
-                        <Link href={`https://doi.org/${relatedIdentifier}`}>
+                        <Link href={`${doiHandleUrl}/${relatedIdentifier}`}>
                           {relatedIdentifier}
                         </Link>
                       ) : relatedIdentifierType === DOIIdentifierType.URL ? (

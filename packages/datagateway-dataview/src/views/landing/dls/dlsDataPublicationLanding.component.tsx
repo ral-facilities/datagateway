@@ -17,7 +17,6 @@ import {
 } from '@mui/material';
 import {
   BioPortalTerm,
-  ContributorType,
   DOIRelationType,
   DataPublication,
   DataPublicationUser,
@@ -76,9 +75,12 @@ const StyledDOISpan = styled('span')({
   },
 });
 
-export const StyledDOI: React.FC<{ doi: string }> = ({ doi }) => (
+export const StyledDOI: React.FC<{ doi: string; doiHandleUrl: string }> = ({
+  doi,
+  doiHandleUrl,
+}) => (
   <StyledDOILink
-    href={`https://doi.org/${doi}`}
+    href={`${doiHandleUrl}/${doi}`}
     data-testid="landing-dataPublication-pid-link"
   >
     DOI <StyledDOISpan>{doi}</StyledDOISpan>
@@ -102,6 +104,33 @@ export type FormattedUser = Pick<
   'contributorType' | 'fullName' | 'affiliations'
 > &
   Pick<NonNullable<DataPublicationUser['user']>, 'orcidId'>;
+
+/**
+ * A compare function for {@link DataPublicationUser DataPublicationUser} intended to be used with {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort Array.sort}
+ *
+ * @param a first user for comparison
+ * @param b second user for comparison
+ * @returns either 1, -1 or 0 to indicate a before b, a after b and a == b respectively
+ */
+export const compareDataPublicationUsersByOrderKey = (
+  a: DataPublicationUser,
+  b: DataPublicationUser
+): number => {
+  const aOrderKeyNumber = parseInt(a?.orderKey ?? 'NaN');
+  const bOrderKeyNumber = parseInt(b?.orderKey ?? 'NaN');
+
+  if (
+    (!Number.isNaN(aOrderKeyNumber) && Number.isNaN(bOrderKeyNumber)) ||
+    aOrderKeyNumber < bOrderKeyNumber
+  ) {
+    return -1;
+  } else if (
+    (!Number.isNaN(bOrderKeyNumber) && Number.isNaN(aOrderKeyNumber)) ||
+    bOrderKeyNumber < aOrderKeyNumber
+  ) {
+    return 1;
+  } else return 0;
+};
 
 interface LandingPageProps {
   dataPublicationId: string;
@@ -137,7 +166,9 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   const [t] = useTranslation();
 
   const PIRole = useSelector((state: StateType) => state.dgdataview.PIRole);
-
+  const doiHandleUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.doiHandleUrl
+  );
   const history = useHistory();
 
   const [currentTab, setCurrentTab] = React.useState<'details' | 'content'>(
@@ -193,39 +224,30 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     .sort(sortVersions)?.[0]?.identifier;
 
   const formattedUsers = React.useMemo(() => {
-    const principals: FormattedUser[] = [];
-    const experimenters: FormattedUser[] = [];
+    const formattedUsers: FormattedUser[] = [];
 
     if (data?.users) {
       const dataPublicationUsers = data.users;
-      dataPublicationUsers.forEach((user) => {
-        // Only keep users where we have their fullName
-        const fullname = user.fullName;
-        if (fullname) {
-          switch (user.contributorType) {
-            case ContributorType.Minter:
-              principals.push({
-                fullName: fullname,
-                contributorType: 'Principal Investigator',
-                orcidId: user.user?.orcidId,
-                affiliations: user.affiliations,
-              });
-              break;
-            default:
-              experimenters.push({
-                fullName: fullname,
-                contributorType: user.contributorType,
-                orcidId: user.user?.orcidId,
-                affiliations: user.affiliations,
-              });
+      dataPublicationUsers
+        .sort(compareDataPublicationUsersByOrderKey)
+        .forEach((user) => {
+          // Only keep users where we have their fullName
+          const fullname = user.fullName;
+          if (fullname) {
+            formattedUsers.push({
+              fullName: fullname,
+              contributorType:
+                user.orderKey === '0'
+                  ? 'Principal Investigator'
+                  : user.contributorType,
+              orcidId: user.user?.orcidId,
+              affiliations: user.affiliations,
+            });
           }
-        }
-      });
+        });
     }
-    // Ensure PIs are listed first, and sort within roles for consistency
-    principals.sort((a, b) => a.fullName.localeCompare(b.fullName));
-    experimenters.sort((a, b) => a.fullName.localeCompare(b.fullName));
-    return principals.concat(experimenters);
+
+    return formattedUsers;
   }, [data]);
 
   React.useEffect(() => {
@@ -248,8 +270,8 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       structuredDataScript.innerHTML = JSON.stringify({
         '@context': 'http://schema.org',
         '@type': 'Dataset',
-        '@id': pid ? `https://doi.org/${pid}` : '',
-        url: pid ? `https://doi.org/${pid}` : '',
+        '@id': pid ? `${doiHandleUrl}/${pid}` : '',
+        url: pid ? `${doiHandleUrl}/${pid}` : '',
         identifier: pid,
         name: title,
         description: description,
@@ -338,6 +360,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     data?.relatedItems,
     subjects,
     techniques,
+    doiHandleUrl,
   ]);
 
   const instruments = dataciteData
@@ -358,7 +381,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
             content: function dataPublicationPidFormat(
               entity: DataPublication
             ) {
-              return <StyledDOI doi={entity.pid} />;
+              return <StyledDOI doi={entity.pid} doiHandleUrl={doiHandleUrl} />;
             },
             label: t('datapublications.pid'),
           },
@@ -390,7 +413,9 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               content: function dataPublicationPidFormat(
                 entity: DataPublication
               ) {
-                return <StyledDOI doi={entity.pid} />;
+                return (
+                  <StyledDOI doi={entity.pid} doiHandleUrl={doiHandleUrl} />
+                );
               },
               label: t('datapublications.pid'),
             },
@@ -402,7 +427,10 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                   (relatedItem) =>
                     relatedItem.relationType === DOIRelationType.IsVersionOf
                 )?.[0]?.identifier;
-                if (conceptPid) return <StyledDOI doi={conceptPid} />;
+                if (conceptPid)
+                  return (
+                    <StyledDOI doi={conceptPid} doiHandleUrl={doiHandleUrl} />
+                  );
               },
               label: `${t('datapublications.concept')} ${t(
                 'datapublications.pid'
@@ -415,7 +443,12 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 _entity: DataPublication
               ) {
                 if (latestVersionPid)
-                  return <StyledDOI doi={latestVersionPid} />;
+                  return (
+                    <StyledDOI
+                      doi={latestVersionPid}
+                      doiHandleUrl={doiHandleUrl}
+                    />
+                  );
               },
               label: `${t('datapublications.latest_version')} ${t(
                 'datapublications.pid'
@@ -425,7 +458,9 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               content: function dataPublicationPidFormat(
                 entity: DataPublication
               ) {
-                return <StyledDOI doi={entity.pid} />;
+                return (
+                  <StyledDOI doi={entity.pid} doiHandleUrl={doiHandleUrl} />
+                );
               },
               label: `${t('datapublications.concept')} ${t(
                 'datapublications.pid'
@@ -553,7 +588,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                   data?.users?.some(
                     (user) =>
                       user.user?.name === readSciGatewayToken().username &&
-                      user.contributorType === ContributorType.Minter
+                      user.orderKey === '0'
                   ) && (
                     <Grid item xs="auto" alignSelf="center">
                       <IconButton
@@ -706,12 +741,16 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                     )
                 )}
                 <Grid item sx={{ pt: '0px !important' }}>
-                  <DLSDataPublicationRelatedIdentifiersPanel doi={data?.pid} />
+                  <DLSDataPublicationRelatedIdentifiersPanel
+                    doi={data?.pid}
+                    doiHandleUrl={doiHandleUrl}
+                  />
                 </Grid>
                 {isConceptDOI && (
                   <Grid item sx={{ pt: '0px !important' }}>
                     <DLSDataPublicationVersionPanel
                       dataPublicationId={dataPublicationId}
+                      doiHandleUrl={doiHandleUrl}
                     />
                   </Grid>
                 )}

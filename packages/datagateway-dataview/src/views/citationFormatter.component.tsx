@@ -12,9 +12,10 @@ import {
 } from '@mui/material';
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
-import { Mark } from 'datagateway-common';
+import { Mark, StateType } from 'datagateway-common';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 import { FormattedUser } from './landing/isis/isisDataPublicationLanding.component';
 
 const Subheading = styled(Typography)(({ theme }) => ({
@@ -56,6 +57,9 @@ const useCitation = (
   locale: string
 ): UseQueryResult<string> => {
   const { doi, formattedUsers, title, startDate } = citationProps;
+  const doiHandleUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.doiHandleUrl
+  );
 
   return useQuery<string, AxiosError>(
     [formattedUsers, title, startDate, publisherName, doi, format, locale],
@@ -70,7 +74,7 @@ const useCitation = (
         if (startDate) citation += `${startDate.slice(0, 4)}: `;
         if (title) citation += `${title}, `;
         citation += publisherName;
-        if (doi) citation += `, https://doi.org/${doi}`;
+        if (doi) citation += `, ${doiHandleUrl}/${doi}`;
 
         return citation;
       } else {

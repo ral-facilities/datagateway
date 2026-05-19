@@ -27,6 +27,7 @@ type DOIMetadataFormProps = {
   doiMinterUrl: string | undefined; // this is because since it loads from settings it is technically undefined at some point
   dataCiteUrl: string | undefined;
   bioportalUrl: string | undefined;
+  doiHandleUrl: string;
   techniques: BioPortalTerm[];
   setTechniques: React.Dispatch<React.SetStateAction<BioPortalTerm[]>>;
   subjects: string[];
@@ -52,6 +53,7 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
     doiMinterUrl,
     dataCiteUrl,
     bioportalUrl,
+    doiHandleUrl,
     mintLoading,
     ...gridProps
   } = props;
@@ -112,6 +114,7 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
           relatedIdentifiers={relatedIdentifiers}
           changeRelatedIdentifiers={setRelatedIdentifiers}
           dataCiteUrl={dataCiteUrl}
+          doiHandleUrl={doiHandleUrl}
           disabled={mintLoading}
         />
       </Grid>

@@ -3,7 +3,8 @@ import React from 'react';
 import { settings } from './settings';
 
 export type DownloadSettings = Omit<CommonSettings, 'icatUrl'> &
-  DOISettings & {
+  Omit<DOISettings, 'doiHandleUrl'> &
+  Required<Pick<DOISettings, 'doiHandleUrl'>> & {
     fileCountMax?: number;
     totalSizeMax?: number;
 
@@ -24,6 +25,7 @@ const initialConfiguration: DownloadSettings = {
   downloadApiUrl: '',
   idsUrl: '',
   doiMinterUrl: '',
+  doiHandleUrl: 'https://doi.org',
   fileCountMax: undefined,
   totalSizeMax: undefined,
   routes: [],

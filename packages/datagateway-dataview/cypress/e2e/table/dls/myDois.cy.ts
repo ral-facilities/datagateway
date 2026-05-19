@@ -17,7 +17,7 @@ describe('DLS - MyDOIs Table', () => {
 
       before(() => {
         cy.login({ username: 'root', password: 'pw', mechanism: 'simple' });
-        cy.seedSessionDataPublication(false).as('sessionDataPublication');
+        cy.seedSessionDataPublication().as('sessionDataPublication');
 
         cy.login(
           {
@@ -190,7 +190,7 @@ describe('DLS - MyDOIs Table', () => {
 
       before(() => {
         cy.login({ username: 'root', password: 'pw', mechanism: 'simple' });
-        cy.seedSessionDataPublication(false).as('sessionDataPublication');
+        cy.seedSessionDataPublication().as('sessionDataPublication');
         cy.dumpAliases(store);
       });
 

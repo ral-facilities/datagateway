@@ -49,7 +49,11 @@ describe('ISIS - Study Data Publication Landing', () => {
 
     cy.get('[data-testid="isis-dataPublication-landing"]')
       .contains('a', '1-64379-596-1')
-      .should('have.attr', 'href', 'https://doi.org/1-64379-596-1');
+      .should(
+        'have.attr',
+        'href',
+        `${Cypress.expose('doiHandleUrl')}/1-64379-596-1`
+      );
 
     cy.get('[data-testid="landing-datapublication-part-label"').should(
       'have.length',
@@ -125,7 +129,7 @@ describe('ISIS - Study Data Publication Landing', () => {
     cy.get('#datagateway-dataview').should('be.visible');
     cy.contains('10.5286/ISIS.E.RB1810842').should('be.visible');
     cy.get('[data-testid="citation-formatter-citation"]').contains(
-      'STFC ISIS Neutron and Muon Source, https://doi.org/10.5286/ISIS.E.RB1810842'
+      `STFC ISIS Neutron and Muon Source, ${Cypress.expose('doiHandleUrl')}/10.5286/ISIS.E.RB1810842`
     );
 
     cy.get('#citation-formatter').click();
@@ -156,7 +160,7 @@ describe('ISIS - Study Data Publication Landing', () => {
 
     //Default citation
     cy.get('[data-testid="citation-formatter-citation"]').contains(
-      'STFC ISIS Neutron and Muon Source, https://doi.org/invaliddoi'
+      `STFC ISIS Neutron and Muon Source, ${Cypress.expose('doiHandleUrl')}/invaliddoi`
     );
 
     cy.get('#citation-formatter').click();

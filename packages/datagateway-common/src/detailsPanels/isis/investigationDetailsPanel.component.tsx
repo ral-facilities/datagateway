@@ -62,6 +62,9 @@ const InvestigationDetailsPanel = (
     (state) =>
       data && state.dgcommon.isisInvestigationDetailsPanel[data.id]?.selectedTab
   );
+  const doiHandleUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.doiHandleUrl
+  );
   const dispatch = useDispatch();
 
   const changeTab = React.useCallback(
@@ -207,7 +210,7 @@ const InvestigationDetailsPanel = (
               </Typography>
               <Typography>
                 <MuiLink
-                  href={`https://doi.org/${studyDataPublication.pid}`}
+                  href={`${doiHandleUrl}/${studyDataPublication.pid}`}
                   data-testid="investigation-details-panel-pid-link"
                 >
                   {studyDataPublication.pid}
@@ -222,7 +225,7 @@ const InvestigationDetailsPanel = (
             <Typography>
               {investigationData.doi && investigationData.doi !== 'null' ? (
                 <MuiLink
-                  href={`https://doi.org/${investigationData.doi}`}
+                  href={`${doiHandleUrl}/${investigationData.doi}`}
                   data-testid="investigation-details-panel-doi-link"
                 >
                   {investigationData.doi}

@@ -9,7 +9,6 @@ import userEvent from '@testing-library/user-event';
 import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import {
   ContributorType,
-  DOIRelationType,
   dGCommonInitialState,
   readSciGatewayToken,
   useDataPublicationCount,
@@ -71,7 +70,8 @@ describe('DLS DOI table components', () => {
         users: [
           {
             id: 1,
-            contributorType: ContributorType.Minter,
+            contributorType: ContributorType.Creator,
+            orderKey: '0',
             fullName: 'John Smith',
           },
         ],
@@ -159,32 +159,15 @@ describe('DLS DOI table components', () => {
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'users.contributorType': {
-              eq: ContributorType.Minter,
+            'users.orderKey': {
+              eq: '0',
             },
           }),
         },
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'relatedItems.relationType': {
-              eq: DOIRelationType.HasVersion,
-            },
-          }),
-        },
-        {
-          filterType: 'distinct',
-          filterValue: JSON.stringify([
-            'id',
-            'title',
-            'pid',
-            'publicationDate',
-          ]),
-        },
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'type.name': { eq: 'User-defined' },
+            'type.name': { eq: 'User-defined-concept' },
           }),
         },
       ];
@@ -256,24 +239,7 @@ describe('DLS DOI table components', () => {
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'relatedItems.relationType': {
-              eq: DOIRelationType.HasVersion,
-            },
-          }),
-        },
-        {
-          filterType: 'distinct',
-          filterValue: JSON.stringify([
-            'id',
-            'title',
-            'pid',
-            'publicationDate',
-          ]),
-        },
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'type.name': { eq: 'User-defined' },
+            'type.name': { eq: 'User-defined-concept' },
           }),
         },
       ];
@@ -320,6 +286,12 @@ describe('DLS DOI table components', () => {
             'type.name': { eq: 'Investigation' },
           }),
         },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            publicationDate: { isnull: false },
+          }),
+        },
       ];
       expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
       expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
@@ -340,6 +312,12 @@ describe('DLS DOI table components', () => {
           filterType: 'where',
           filterValue: JSON.stringify({
             'type.name': { eq: 'Investigation' },
+          }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            publicationDate: { isnull: true },
           }),
         },
       ];
@@ -505,24 +483,7 @@ describe('DLS DOI table components', () => {
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'relatedItems.relationType': {
-              eq: DOIRelationType.HasVersion,
-            },
-          }),
-        },
-        {
-          filterType: 'distinct',
-          filterValue: JSON.stringify([
-            'id',
-            'title',
-            'pid',
-            'publicationDate',
-          ]),
-        },
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'type.name': { eq: 'User-defined' },
+            'type.name': { eq: 'User-defined-concept' },
           }),
         },
       ];

@@ -14,12 +14,13 @@ import { StyledDOI } from './dlsDataPublicationLanding.component';
 
 type DLSDataPublicationRelatedIdentifiersPanelProps = {
   doi: string | undefined;
+  doiHandleUrl: string;
 };
 
 const DLSDataPublicationRelatedIdentifiersPanel: React.FC<
   DLSDataPublicationRelatedIdentifiersPanelProps
 > = (props) => {
-  const { doi } = props;
+  const { doi, doiHandleUrl } = props;
 
   const [t] = useTranslation();
   const { data } = useDOI(doi);
@@ -71,7 +72,10 @@ const DLSDataPublicationRelatedIdentifiersPanel: React.FC<
                   </Grid>
                   <Grid item xs maxWidth="300px !important">
                     {relatedIdentifierType === DOIIdentifierType.DOI ? (
-                      <StyledDOI doi={relatedIdentifier} />
+                      <StyledDOI
+                        doi={relatedIdentifier}
+                        doiHandleUrl={doiHandleUrl}
+                      />
                     ) : relatedIdentifierType === DOIIdentifierType.URL ? (
                       <Link href={relatedIdentifier}>{relatedIdentifier}</Link>
                     ) : (

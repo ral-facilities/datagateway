@@ -10,6 +10,9 @@ import userEvent from '@testing-library/user-event';
 import axios from 'axios';
 import React from 'react';
 import CitationFormatter from './citationFormatter.component';
+import { StateType, dGCommonReducer } from 'datagateway-common';
+import { Provider } from 'react-redux';
+import { createStore, combineReducers } from 'redux';
 
 describe('Citation formatter component tests', () => {
   let queryClient: QueryClient;
@@ -28,9 +31,15 @@ describe('Citation formatter component tests', () => {
     componentProps: React.ComponentProps<typeof CitationFormatter>
   ): RenderResult =>
     render(
-      <QueryClientProvider client={queryClient}>
-        <CitationFormatter {...componentProps} />
-      </QueryClientProvider>
+      <Provider
+        store={createStore(
+          combineReducers<Partial<StateType>>({ dgcommon: dGCommonReducer })
+        )}
+      >
+        <QueryClientProvider client={queryClient}>
+          <CitationFormatter {...componentProps} />
+        </QueryClientProvider>
+      </Provider>
     );
 
   beforeEach(() => {

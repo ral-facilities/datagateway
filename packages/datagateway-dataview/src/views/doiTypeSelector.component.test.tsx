@@ -35,7 +35,7 @@ describe('DOI Type Selector', () => {
 
     vi.mocked(usePushQueryParams).mockReturnValue(mockPushQueryParams);
     vi.mocked(parseSearchToQuery, { partial: true }).mockReturnValue({
-      doiType: undefined,
+      doiType: null,
     });
   });
 
@@ -71,6 +71,62 @@ describe('DOI Type Selector', () => {
     ).toBeInTheDocument();
   });
 
+  it('displays myDOIs button groups correctly with session DOI type selected', () => {
+    vi.mocked(parseSearchToQuery, { partial: true }).mockReturnValue({
+      doiType: 'openSession',
+    });
+    renderComponent('myDOIs');
+
+    expect(
+      screen.getByRole('group', {
+        name: 'my_doi_table.type_button_group_aria_label',
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
+        name: 'my_doi_table.minter',
+        pressed: false,
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
+        name: 'my_doi_table.user',
+        pressed: false,
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
+        name: 'my_doi_table.session',
+        pressed: true,
+      })
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByRole('group', {
+        name: 'my_doi_table.open_button_group_aria_label',
+      })
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByRole('button', {
+        name: 'my_doi_table.open_or_closed',
+        pressed: false,
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
+        name: 'my_doi_table.open',
+        pressed: true,
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
+        name: 'my_doi_table.closed',
+        pressed: false,
+      })
+    ).toBeInTheDocument();
+  });
+
   it('displays button group correctly for all dois type', () => {
     renderComponent('allDOIs');
 
@@ -94,6 +150,31 @@ describe('DOI Type Selector', () => {
       screen.getByRole('button', {
         name: 'all_doi_table.session',
         pressed: true,
+      })
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByRole('group', {
+        name: 'all_doi_table.open_button_group_aria_label',
+      })
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByRole('button', {
+        name: 'all_doi_table.open_or_closed',
+        pressed: true,
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
+        name: 'all_doi_table.open',
+        pressed: false,
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
+        name: 'all_doi_table.closed',
+        pressed: false,
       })
     ).toBeInTheDocument();
   });

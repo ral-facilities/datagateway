@@ -4,14 +4,17 @@ import Public from '@mui/icons-material/Public';
 import Save from '@mui/icons-material/Save';
 import { Link as MuiLink } from '@mui/material';
 import {
+  AddToCartButton,
   CardView,
-  formatFilterCount,
   Investigation,
+  StateType,
+  formatBytes,
+  formatFilterCount,
   investigationLink,
   parseSearchToQuery,
-  useDateFilter,
   useCustomFilter,
   useCustomFilterCount,
+  useDateFilter,
   useInvestigationCount,
   useInvestigationsPaginated,
   usePushFilter,
@@ -19,16 +22,19 @@ import {
   usePushResults,
   useSort,
   useTextFilter,
-  AddToCartButton,
-  formatBytes,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 
 const InvestigationCardView = (): React.ReactElement => {
   const [t] = useTranslation();
   const location = useLocation();
+
+  const doiHandleUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.doiHandleUrl
+  );
 
   const { filters, view, sort, page, results } = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -104,7 +110,7 @@ const InvestigationCardView = (): React.ReactElement => {
           return (
             entity?.doi && (
               <MuiLink
-                href={`https://doi.org/${entity.doi}`}
+                href={`${doiHandleUrl}/${entity.doi}`}
                 data-testid="investigation-card-doi-link"
               >
                 {entity.doi}
@@ -149,7 +155,7 @@ const InvestigationCardView = (): React.ReactElement => {
         filterComponent: dateFilter,
       },
     ],
-    [dateFilter, t, textFilter]
+    [dateFilter, doiHandleUrl, t, textFilter]
   );
 
   const buttons = React.useMemo(

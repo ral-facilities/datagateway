@@ -83,6 +83,7 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
           icatUrl: '', // we currently don't need icatUrl in dataview so just pass empty string for now
           doiMinterUrl: settingsResult['doiMinterUrl'],
           dataCiteUrl: settingsResult['dataCiteUrl'],
+          doiHandleUrl: settingsResult['doiHandleUrl'] ?? 'https://doi.org',
           bioportalUrl: settingsResult['bioportalUrl'],
         })
       );

@@ -1,9 +1,8 @@
 import {
   AdditionalFilters,
   ColumnType,
-  ContributorType,
-  DOIRelationType,
   DataPublication,
+  StateType,
   ConnectedTable as Table,
   externalSiteLink,
   parseSearchToQuery,
@@ -24,6 +23,7 @@ import Fingerprint from '@mui/icons-material/Fingerprint';
 import Lock from '@mui/icons-material/Lock';
 import Public from '@mui/icons-material/Public';
 import { Chip } from '@mui/material';
+import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 
 interface DLSBaseDOIsTableProps {
@@ -33,6 +33,9 @@ const DLSBaseDOIsTable = (props: DLSBaseDOIsTableProps): React.ReactElement => {
   const { filterParams } = props;
   const location = useLocation();
   const [t] = useTranslation();
+  const doiHandleUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.doiHandleUrl
+  );
 
   const { filters, view, sort } = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -90,7 +93,7 @@ const DLSBaseDOIsTable = (props: DLSBaseDOIsTableProps): React.ReactElement => {
           const dataPublicationData = cellProps.rowData as DataPublication;
           if (dataPublicationData?.pid) {
             return externalSiteLink(
-              `https://doi.org/${dataPublicationData.pid}`,
+              `${doiHandleUrl}/${dataPublicationData.pid}`,
               dataPublicationData.pid,
               'dls-datapublication-table-doi-link'
             );
@@ -118,7 +121,7 @@ const DLSBaseDOIsTable = (props: DLSBaseDOIsTableProps): React.ReactElement => {
         defaultSort: 'desc',
       },
     ];
-  }, [t, textFilter, dateFilter, view]);
+  }, [t, textFilter, dateFilter, view, doiHandleUrl]);
 
   return (
     <Table
@@ -141,9 +144,6 @@ export const DLSMyDOIsTable = (): React.ReactElement => {
     [location.search]
   );
 
-  /** TODO do we want to display concept dois instead of latest version DOIs (like Zenodo does iirc?)
-   * Is there a nicer way of checking for version vs concept? idk
-   */
   const params =
     doiType === 'session'
       ? [
@@ -161,116 +161,84 @@ export const DLSMyDOIsTable = (): React.ReactElement => {
           },
         ]
       : doiType === 'openSession'
-      ? [
-          {
-            filterType: 'where',
-            filterValue: JSON.stringify({
-              'users.user.name': { eq: username },
-            }),
-          },
-          {
-            filterType: 'where',
-            filterValue: JSON.stringify({
-              'type.name': { eq: 'Investigation' },
-            }),
-          },
-          // TODO: add back in when we can query for is not null
-          // {
-          //   filterType: 'where',
-          //   filterValue: JSON.stringify({
-          //     publicationDate: { neq: null },
-          //   }),
-          // },
-        ]
-      : doiType === 'closedSession'
-      ? [
-          {
-            filterType: 'where',
-            filterValue: JSON.stringify({
-              'users.user.name': { eq: username },
-            }),
-          },
-          {
-            filterType: 'where',
-            filterValue: JSON.stringify({
-              'type.name': { eq: 'Investigation' },
-            }),
-          },
-          // TODO: add back in when we can query for is null
-          // {
-          //   filterType: 'where',
-          //   filterValue: JSON.stringify({
-          //     publicationDate: { eq: null },
-          //   }),
-          // },
-        ]
-      : doiType === 'user'
-      ? [
-          {
-            filterType: 'where',
-            filterValue: JSON.stringify({
-              'users.user.name': { eq: username },
-            }),
-          },
-          {
-            filterType: 'where',
-            filterValue: JSON.stringify({
-              'relatedItems.relationType': { eq: DOIRelationType.HasVersion },
-            }),
-          },
-          {
-            filterType: 'distinct',
-            filterValue: JSON.stringify([
-              'id',
-              'title',
-              'pid',
-              'publicationDate',
-            ]),
-          },
-          {
-            filterType: 'where',
-            filterValue: JSON.stringify({
-              'type.name': { eq: 'User-defined' },
-            }),
-          },
-        ]
-      : [
-          {
-            filterType: 'where',
-            filterValue: JSON.stringify({
-              'users.user.name': { eq: username },
-            }),
-          },
-          {
-            filterType: 'where',
-            filterValue: JSON.stringify({
-              'users.contributorType': {
-                eq: ContributorType.Minter,
+        ? [
+            {
+              filterType: 'where',
+              filterValue: JSON.stringify({
+                'users.user.name': { eq: username },
+              }),
+            },
+            {
+              filterType: 'where',
+              filterValue: JSON.stringify({
+                'type.name': { eq: 'Investigation' },
+              }),
+            },
+            {
+              filterType: 'where',
+              filterValue: JSON.stringify({
+                publicationDate: { isnull: false },
+              }),
+            },
+          ]
+        : doiType === 'closedSession'
+          ? [
+              {
+                filterType: 'where',
+                filterValue: JSON.stringify({
+                  'users.user.name': { eq: username },
+                }),
               },
-            }),
-          },
-          {
-            filterType: 'where',
-            filterValue: JSON.stringify({
-              'relatedItems.relationType': { eq: DOIRelationType.HasVersion },
-            }),
-          },
-          {
-            filterType: 'distinct',
-            filterValue: JSON.stringify([
-              'id',
-              'title',
-              'pid',
-              'publicationDate',
-            ]),
-          },
-          {
-            filterType: 'where',
-            filterValue: JSON.stringify({
-              'type.name': { eq: 'User-defined' },
-            }),
-          },
-        ];
+              {
+                filterType: 'where',
+                filterValue: JSON.stringify({
+                  'type.name': { eq: 'Investigation' },
+                }),
+              },
+              {
+                filterType: 'where',
+                filterValue: JSON.stringify({
+                  publicationDate: { isnull: true },
+                }),
+              },
+            ]
+          : doiType === 'user'
+            ? [
+                {
+                  filterType: 'where',
+                  filterValue: JSON.stringify({
+                    'users.user.name': { eq: username },
+                  }),
+                },
+                {
+                  filterType: 'where',
+                  filterValue: JSON.stringify({
+                    'type.name': { eq: 'User-defined-concept' },
+                  }),
+                },
+              ]
+            : [
+                {
+                  filterType: 'where',
+                  filterValue: JSON.stringify({
+                    'users.user.name': { eq: username },
+                  }),
+                },
+                {
+                  filterType: 'where',
+                  filterValue: JSON.stringify({
+                    'users.orderKey': {
+                      eq: '0',
+                    },
+                  }),
+                },
+                {
+                  filterType: 'where',
+                  filterValue: JSON.stringify({
+                    'type.name': { eq: 'User-defined-concept' },
+                  }),
+                },
+              ];
 
   return <DLSBaseDOIsTable filterParams={params} />;
 };
@@ -289,64 +257,47 @@ export const DLSAllDOIsTable = (): React.ReactElement => {
           {
             filterType: 'where',
             filterValue: JSON.stringify({
-              'relatedItems.relationType': { eq: DOIRelationType.HasVersion },
-            }),
-          },
-          {
-            filterType: 'distinct',
-            filterValue: JSON.stringify([
-              'id',
-              'title',
-              'pid',
-              'publicationDate',
-            ]),
-          },
-          {
-            filterType: 'where',
-            filterValue: JSON.stringify({
-              'type.name': { eq: 'User-defined' },
+              'type.name': { eq: 'User-defined-concept' },
             }),
           },
         ]
       : doiType === 'openSession'
-      ? [
-          {
-            filterType: 'where',
-            filterValue: JSON.stringify({
-              'type.name': { eq: 'Investigation' },
-            }),
-          },
-          // TODO: add back in when we can query for is not null
-          // {
-          //   filterType: 'where',
-          //   filterValue: JSON.stringify({
-          //     publicationDate: { neq: null },
-          //   }),
-          // },
-        ]
-      : doiType === 'closedSession'
-      ? [
-          {
-            filterType: 'where',
-            filterValue: JSON.stringify({
-              'type.name': { eq: 'Investigation' },
-            }),
-          },
-          // TODO: add back in when we can query for is null
-          // {
-          //   filterType: 'where',
-          //   filterValue: JSON.stringify({
-          //     publicationDate: { eq: null },
-          //   }),
-          // },
-        ]
-      : [
-          {
-            filterType: 'where',
-            filterValue: JSON.stringify({
-              'type.name': { eq: 'Investigation' },
-            }),
-          },
-        ];
+        ? [
+            {
+              filterType: 'where',
+              filterValue: JSON.stringify({
+                'type.name': { eq: 'Investigation' },
+              }),
+            },
+            {
+              filterType: 'where',
+              filterValue: JSON.stringify({
+                publicationDate: { isnull: false },
+              }),
+            },
+          ]
+        : doiType === 'closedSession'
+          ? [
+              {
+                filterType: 'where',
+                filterValue: JSON.stringify({
+                  'type.name': { eq: 'Investigation' },
+                }),
+              },
+              {
+                filterType: 'where',
+                filterValue: JSON.stringify({
+                  publicationDate: { isnull: true },
+                }),
+              },
+            ]
+          : [
+              {
+                filterType: 'where',
+                filterValue: JSON.stringify({
+                  'type.name': { eq: 'Investigation' },
+                }),
+              },
+            ];
   return <DLSBaseDOIsTable filterParams={params} />;
 };

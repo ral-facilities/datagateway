@@ -94,6 +94,10 @@ const InvestigationCardView: React.FC<InvestigationCardProps> = (props) => {
     (state: StateType) => state.dgsearch.maxNumResults
   );
 
+  const doiHandleUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.doiHandleUrl
+  );
+
   const { data, isLoading, isFetching, hasNextPage, fetchNextPage, refetch } =
     useLuceneSearchInfinite(
       'Investigation',
@@ -221,7 +225,7 @@ const InvestigationCardView: React.FC<InvestigationCardProps> = (props) => {
                 return (
                   entity?.doi && (
                     <MuiLink
-                      href={`https://doi.org/${entity.doi}`}
+                      href={`${doiHandleUrl}/${entity.doi}`}
                       data-testid="investigation-search-card-doi-link"
                     >
                       {entity.doi}
@@ -299,7 +303,7 @@ const InvestigationCardView: React.FC<InvestigationCardProps> = (props) => {
         disableSort: true,
       },
     ],
-    [t, hierarchy]
+    [hierarchy, t, doiHandleUrl]
   );
 
   const moreInformation = React.useCallback(

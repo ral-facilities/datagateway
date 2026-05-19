@@ -173,6 +173,9 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     [location.search]
   );
   const PIRole = useSelector((state: StateType) => state.dgdataview.PIRole);
+  const doiHandleUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.doiHandleUrl
+  );
 
   const [value, setValue] = React.useState<'details'>('details');
   const { dataPublicationId } = props;
@@ -277,8 +280,8 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     structuredDataScript.innerHTML = JSON.stringify({
       '@context': 'http://schema.org',
       '@type': 'Dataset',
-      '@id': pid ? `https://doi.org/${pid}` : '',
-      url: pid ? `https://doi.org/${pid}` : '',
+      '@id': pid ? `${doiHandleUrl}/${pid}` : '',
+      url: pid ? `${doiHandleUrl}/${pid}` : '',
       identifier: pid,
       name: title,
       description: description,
@@ -325,6 +328,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     description,
     formattedUsers,
     investigationDataPublications,
+    doiHandleUrl,
   ]);
 
   const shortInfo = [
@@ -333,7 +337,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         return (
           entity?.pid && (
             <MuiLink
-              href={`https://doi.org/${entity.pid}`}
+              href={`${doiHandleUrl}/${entity.pid}`}
               data-testid="landing-dataPublication-pid-link"
             >
               {entity.pid}
