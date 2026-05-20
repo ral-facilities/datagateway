@@ -76,7 +76,7 @@ describe('DLS - All DOIs Table', () => {
     cy.get('[aria-sort="descending"]').should('exist');
     cy.get('.MuiTableSortLabel-iconDirectionDesc').should('be.visible');
 
-    cy.contains('Session DOI').should('have.attr', 'aria-pressed', 'true');
+    cy.contains('All').should('have.attr', 'aria-pressed', 'true');
   });
 
   it('should be able to click a data publication to see its landing page', () => {
@@ -90,8 +90,6 @@ describe('DLS - All DOIs Table', () => {
   });
 
   it('should be able to sort by all sort directions on single and multiple columns', () => {
-    cy.contains('User-created DOI').click();
-
     //Revert the default sort
     cy.contains('[role="button"]', 'Publication Date')
       .as('dateSortButton')
@@ -102,9 +100,7 @@ describe('DLS - All DOIs Table', () => {
 
     cy.get('[aria-sort="ascending"]').should('exist');
     cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
-    cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
-      'Test DOI Title 1'
-    );
+    cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains('72: Star');
 
     // descending order
     cy.get('@titleSortButton').click();
@@ -125,16 +121,12 @@ describe('DLS - All DOIs Table', () => {
     cy.get('[data-testid="SortIcon"]').should('have.length', 3);
     cy.get('[data-testid="ArrowUpwardIcon"]').should('not.exist');
 
-    cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
-      'Test DOI Title 1'
-    );
+    cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains('72: Star');
 
     // can't test multiple sort as no fields are the same that a shift-click would re-sort
   });
 
   it('should be able to filter with text & date filters on multiple columns', () => {
-    cy.contains('User-created DOI').click();
-
     // test text filter
     cy.get('[aria-label="Filter by Title"]').type('random text', {
       delay: 0,
@@ -175,23 +167,29 @@ describe('DLS - All DOIs Table', () => {
     cy.get('[aria-rowcount="0"]').should('exist');
   });
 
-  it('should be able to filter by if the DOI is open or closed', () => {
-    cy.contains('Session DOI').should('have.attr', 'aria-pressed', 'true');
+  it('should be able to filter by type and if the DOI is open or closed', () => {
+    cy.contains('All').should('have.attr', 'aria-pressed', 'true');
 
     cy.contains('Open or Closed').should('have.attr', 'aria-pressed', 'true');
 
-    cy.get('[aria-rowcount="2"]').should('exist');
+    cy.get('[aria-rowcount="4"]').should('exist');
 
     cy.contains(/^Open$/).click();
 
-    cy.get('[aria-rowcount="1"]').should('exist');
-
-    cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains('72');
+    cy.get('[aria-rowcount="3"]').should('exist');
+    cy.contains('Test DOI Title 2').should('exist');
+    cy.contains('Test DOI Title 1').should('exist');
+    cy.contains('72: Star').should('exist');
 
     cy.contains(/^Closed$/).click();
 
     cy.get('[aria-rowcount="1"]').should('exist');
+    cy.contains('78: Across').should('exist');
 
-    cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains('78');
+    cy.contains('User-created DOIs').click();
+
+    cy.get('[aria-rowcount="2"]').should('exist');
+    cy.contains('Test DOI Title 1').should('exist');
+    cy.contains('Test DOI Title 2').should('exist');
   });
 });

@@ -32,9 +32,31 @@ const DOITypeSelector = (props: DOITypeSelectorProps): React.ReactElement => {
 
   const handleType = (
     _event: React.MouseEvent<HTMLElement>,
-    newType: NonNullable<DOIViewType>
+    newType: DOIViewType | null
   ): void => {
-    pushQueryParams({ doiType: newType });
+    if (newType !== null)
+      pushQueryParams({
+        doiType: {
+          view: newType,
+          open:
+            newType === 'minter' || newType === 'user'
+              ? undefined
+              : doiType?.open,
+        },
+      });
+  };
+
+  const handleOpenOrClosed = (
+    _event: React.MouseEvent<HTMLElement>,
+    newOpenOrClosed: boolean | 'undefined' | null
+  ): void => {
+    if (newOpenOrClosed !== null)
+      pushQueryParams({
+        doiType: {
+          view: doiType?.view ?? 'all',
+          open: newOpenOrClosed === 'undefined' ? undefined : newOpenOrClosed,
+        },
+      });
   };
 
   return (
@@ -49,17 +71,18 @@ const DOITypeSelector = (props: DOITypeSelectorProps): React.ReactElement => {
         </Grid>
         <Grid item>
           <ToggleButtonGroup
-            value={
-              (doiType === 'openSession' || doiType === 'closedSession'
-                ? 'session'
-                : doiType) ?? (type === 'myDOIs' ? 'minter' : 'session')
-            }
+            value={doiType?.view ?? 'all'}
             exclusive
             onChange={handleType}
             aria-labelledby="doi-type-selector-label"
             size="small"
           >
             {/* Padding values to make these buttons the same height as the clear filters button */}
+            <ToggleButton value="all" sx={{ p: '3px 7px' }}>
+              {type === 'myDOIs'
+                ? t('my_doi_table.all')
+                : t('all_doi_table.all')}
+            </ToggleButton>
             {type === 'myDOIs' && (
               <ToggleButton value="minter" sx={{ p: '3px 7px' }}>
                 {t('my_doi_table.minter')}
@@ -78,10 +101,9 @@ const DOITypeSelector = (props: DOITypeSelectorProps): React.ReactElement => {
           </ToggleButtonGroup>
         </Grid>
       </Grid>
-      {(doiType === 'session' ||
-        doiType === 'closedSession' ||
-        doiType === 'openSession' ||
-        (type === 'allDOIs' && doiType === null)) && (
+      {(doiType === null ||
+        doiType.view === 'all' ||
+        doiType.view === 'session') && (
         <Grid container item direction="column" xs="auto">
           <Grid item>
             <Typography component={'label'} id="doi-open-selector-label">
@@ -92,23 +114,23 @@ const DOITypeSelector = (props: DOITypeSelectorProps): React.ReactElement => {
           </Grid>
           <Grid item>
             <ToggleButtonGroup
-              value={doiType ?? 'session'}
+              value={doiType?.open ?? 'undefined'}
               exclusive
-              onChange={handleType}
+              onChange={handleOpenOrClosed}
               aria-labelledby="doi-open-selector-label"
               size="small"
             >
-              <ToggleButton value="session" sx={{ p: '3px 7px' }}>
+              <ToggleButton value={'undefined'} sx={{ p: '3px 7px' }}>
                 {type === 'myDOIs'
                   ? t('my_doi_table.open_or_closed')
                   : t('all_doi_table.open_or_closed')}
               </ToggleButton>
-              <ToggleButton value="openSession" sx={{ p: '3px 7px' }}>
+              <ToggleButton value={true} sx={{ p: '3px 7px' }}>
                 {type === 'myDOIs'
                   ? t('my_doi_table.open')
                   : t('all_doi_table.open')}
               </ToggleButton>
-              <ToggleButton value="closedSession" sx={{ p: '3px 7px' }}>
+              <ToggleButton value={false} sx={{ p: '3px 7px' }}>
                 {type === 'myDOIs'
                   ? t('my_doi_table.closed')
                   : t('all_doi_table.closed')}
