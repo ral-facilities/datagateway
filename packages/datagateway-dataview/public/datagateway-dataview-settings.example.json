@@ -13,6 +13,7 @@
   "bioportalUrl": "/bioportal",
   "anonUserName": "anon/anon",
   "PIRole": "PI",
+  "localContactRole": "local_contact|DataCollector",
   "helpSteps": [
     {
       "target": "#plugin-link--browse-investigation",

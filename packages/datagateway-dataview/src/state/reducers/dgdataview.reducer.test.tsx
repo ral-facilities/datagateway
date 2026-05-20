@@ -1,6 +1,7 @@
 import {
   loadBreadcrumbSettings,
   loadFacilityImageSetting,
+  loadLocalContactRoleSetting,
   loadPIRoleSetting,
   loadPluginHostSetting,
   settingsLoaded,
@@ -83,5 +84,16 @@ describe('dgdataview reducer', () => {
     );
 
     expect(updatedState.PIRole).toEqual('principal_experimenter');
+  });
+
+  it('should set loadLocalContactRoleSetting when configuring action is sent', () => {
+    expect(state.localContactRole).toEqual('local_contact|DataCollector');
+
+    const updatedState = DGDataViewReducer(
+      state,
+      loadLocalContactRoleSetting('local_contact')
+    );
+
+    expect(updatedState.localContactRole).toEqual('local_contact');
   });
 });

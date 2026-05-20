@@ -374,11 +374,11 @@ describe('DOI Generation form', () => {
 
       cy.contains('label', 'Contributor Type').parent().click();
 
-      cy.contains('DataCollector').click();
+      cy.contains('Researcher').click();
 
       // check that contributor info doesn't break the API
       cy.contains('button', 'Generate DOI').click();
-      cy.contains('Contributor Type: DataCollector', { timeout: 10000 }).should(
+      cy.contains('Contributor Type: Researcher', { timeout: 10000 }).should(
         'be.visible'
       );
 

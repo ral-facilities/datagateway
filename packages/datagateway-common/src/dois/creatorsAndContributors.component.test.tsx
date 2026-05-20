@@ -79,6 +79,7 @@ describe('DOI generation form component', () => {
       changeSelectedUsers: vi.fn(),
       doiMinterUrl: 'example.com',
       disabled: false,
+      localContactRole: 'local_contact|DataCollector',
     };
 
     mockUser = {
@@ -310,13 +311,18 @@ describe('DOI generation form component', () => {
         name: 'DOIGenerationForm.creator_type',
       })
     );
-    await user.click(
-      await screen.findByRole('option', { name: 'DataCollector' })
-    );
+    const selectedRole = await screen.findByRole('option', { name: 'Editor' });
+    expect(
+      screen.queryByRole('option', { name: 'DataCollector' })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('option', { name: 'Creator' })
+    ).not.toBeInTheDocument();
+    await user.click(selectedRole);
 
     expect(screen.queryByRole('option')).not.toBeInTheDocument();
     // check that the option is actually selected in the table even after the menu closes
-    expect(screen.getByText('DataCollector')).toBeInTheDocument();
+    expect(screen.getByText('Editor')).toBeInTheDocument();
   });
 
   it('should disable all fields/buttons when disabled is true', () => {

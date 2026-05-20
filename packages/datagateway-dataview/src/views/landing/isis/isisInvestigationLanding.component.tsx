@@ -166,6 +166,9 @@ const CommonLandingPage = (
     [location.search]
   );
   const PIRole = useSelector((state: StateType) => state.dgdataview.PIRole);
+  const localContactRole = useSelector(
+    (state: StateType) => state.dgdataview.localContactRole
+  );
   const doiHandleUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.doiHandleUrl
   );
@@ -188,18 +191,24 @@ const CommonLandingPage = (
         // Only keep users where we have their fullName
         const fullname = user.fullName;
         if (fullname) {
-          switch (user.role) {
-            case PIRole:
-              principals.push({
-                fullName: fullname,
-                role: 'Principal Investigator',
-              });
-              break;
-            case 'local_contact':
-              contacts.push({ fullName: fullname, role: 'Local Contact' });
-              break;
-            default:
-              experimenters.push({ fullName: fullname, role: 'Experimenter' });
+          if (user.role && new RegExp(PIRole).test(user.role)) {
+            principals.push({
+              fullName: fullname,
+              role: t('datapublications.principal_investigator'),
+            });
+          } else if (
+            user.role &&
+            new RegExp(localContactRole).test(user.role)
+          ) {
+            contacts.push({
+              fullName: fullname,
+              contributorType: t('datapublications.local_contact'),
+            });
+          } else {
+            experimenters.push({
+              fullName: fullname,
+              contributorType: t('datapublications.experimenter'),
+            });
           }
         }
       });
@@ -208,8 +217,8 @@ const CommonLandingPage = (
     principals.sort((a, b) => a.fullName.localeCompare(b.fullName));
     contacts.sort((a, b) => a.fullName.localeCompare(b.fullName));
     experimenters.sort((a, b) => a.fullName.localeCompare(b.fullName));
-    return principals.concat(contacts, experimenters);
-  }, [PIRole, data, isInvestigation]);
+    return principals.concat(experimenters, contacts);
+  }, [PIRole, data, isInvestigation, localContactRole, t]);
 
   const formattedPublications = React.useMemo(() => {
     if (isInvestigation && data.publications) {

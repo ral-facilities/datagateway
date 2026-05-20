@@ -240,8 +240,8 @@ const ISISInvestigationsTable = (
         cellContentRenderer: (cellProps: TableCellProps) => {
           const investigationData = cellProps.rowData as Investigation;
           const principal_investigators =
-            investigationData?.investigationUsers?.filter(
-              (iu) => iu.role === PIRole
+            investigationData?.investigationUsers?.filter((iu) =>
+              new RegExp(PIRole).test(iu.role)
             );
           if (principal_investigators && principal_investigators.length !== 0) {
             return principal_investigators?.[0].user?.fullName;

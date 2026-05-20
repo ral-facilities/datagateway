@@ -58,6 +58,8 @@ describe('DOI generation form component', () => {
       doiMinterUrl: 'https://example.com/doi-minter',
       dataCiteUrl: 'https://example.com/datacite',
       bioportalUrl: 'https://example.com/bioportal',
+      doiHandleUrl: 'https://doi.org',
+      localContactRole: 'local_contact|DataCollector',
     };
   });
 

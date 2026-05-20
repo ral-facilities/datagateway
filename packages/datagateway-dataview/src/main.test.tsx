@@ -34,6 +34,7 @@ describe('index - fetchSettings', () => {
         },
       ],
       PIRole: 'principal_experimenter',
+      localContactRole: 'local_contact',
       downloadApiUrl: 'download-api',
       selectAllSetting: false,
       routes: [

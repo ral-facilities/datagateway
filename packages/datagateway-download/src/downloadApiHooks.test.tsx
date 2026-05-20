@@ -1288,6 +1288,7 @@ describe('Download API react-query hooks test', () => {
                 investigationUsers: [
                   { user: { id: 1, name: 'user 1' } },
                   { user: { id: 2, name: 'user 2' } },
+                  { id: 1 }, // missing user, should be filtered out
                 ],
               },
             ],
@@ -1301,6 +1302,7 @@ describe('Download API react-query hooks test', () => {
                   investigationUsers: [
                     { user: { id: 2, name: 'user 2' } },
                     { user: { id: 3, name: 'user 3' } },
+                    { user: { id: 4, name: 'user 4' }, role: 'local_contact' },
                   ],
                 },
               },
@@ -1316,6 +1318,10 @@ describe('Download API react-query hooks test', () => {
                     investigationUsers: [
                       { user: { id: 3, name: 'user 3' } },
                       { user: { id: 4, name: 'user 4' } },
+                      {
+                        user: { id: 5, name: 'user 5' },
+                        role: 'local_contact',
+                      },
                     ],
                   },
                 },
@@ -1332,7 +1338,7 @@ describe('Download API react-query hooks test', () => {
       });
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      // data should be deduped
+      // data should be deduped & local contacts removed
       expect(result.current.data).toEqual([
         { id: 1, name: 'user 1' },
         { id: 2, name: 'user 2' },

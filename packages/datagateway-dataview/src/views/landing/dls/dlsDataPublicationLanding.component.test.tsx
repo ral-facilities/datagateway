@@ -75,7 +75,7 @@ describe('DLS Data Publication Landing page', () => {
     },
     {
       id: 2,
-      contributorType: 'Experimenter',
+      contributorType: ContributorType.Creator,
       fullName: 'Jane Smith',
       orderKey: '2',
       user: {
@@ -87,14 +87,20 @@ describe('DLS Data Publication Landing page', () => {
     },
     {
       id: 3,
-      contributorType: 'Experimenter',
+      contributorType: ContributorType.Creator,
       fullName: 'Jesse Smith',
       orderKey: '1',
     },
     {
       id: 4,
-      contributorType: 'Experimenter',
+      contributorType: ContributorType.Creator,
       fullName: '',
+    },
+    {
+      id: 3,
+      contributorType: ContributorType.DataCollector,
+      fullName: 'Joan Smith',
+      orderKey: '2',
     },
   ];
 
@@ -108,8 +114,6 @@ describe('DLS Data Publication Landing page', () => {
     },
   ];
 
-  const investigationUsers = [{ id: 1, user: users[0].user, role: 'PI' }];
-
   const investigation = {
     id: 1,
     title: 'Title 1',
@@ -119,7 +123,6 @@ describe('DLS Data Publication Landing page', () => {
     doi: 'doi 1',
     size: 1,
     investigationInstruments: investigationInstrument,
-    investigationUsers,
     startDate: '2023-07-20',
     endDate: '2023-07-21',
   };
@@ -370,7 +373,9 @@ describe('DLS Data Publication Landing page', () => {
 
     expect(
       await screen.findByTestId('landing-dataPublication-user-0')
-    ).toHaveTextContent('Principal Investigator: John Smith(ABC Uni, XYZ Org)');
+    ).toHaveTextContent(
+      'datapublications.principal_investigator: John Smith(ABC Uni, XYZ Org)'
+    );
     expect(
       within(screen.getByTestId('landing-dataPublication-user-0')).getByTestId(
         'landing-dataPublication-orcidId-link'
@@ -378,10 +383,13 @@ describe('DLS Data Publication Landing page', () => {
     ).toHaveAttribute('href', 'https://orcid.org/123456');
     expect(
       await screen.findByTestId('landing-dataPublication-user-1')
-    ).toHaveTextContent('Experimenter: Jesse Smith');
+    ).toHaveTextContent(`${ContributorType.Creator}: Jesse Smith`);
     expect(
       await screen.findByTestId('landing-dataPublication-user-2')
-    ).toHaveTextContent('Experimenter: Jane Smith');
+    ).toHaveTextContent(`${ContributorType.Creator}: Jane Smith`);
+    expect(
+      await screen.findByTestId('landing-dataPublication-user-3')
+    ).toHaveTextContent('datapublications.local_contact: Joan Smith');
 
     expect(
       screen.getByRole('link', { name: 'technique 1' })
@@ -763,7 +771,7 @@ describe('DLS Data Publication Landing page', () => {
         id="dataPublication-1"
         type="application/ld+json"
       >
-        {"@context":"http://schema.org","@type":"Dataset","@id":"https://doi.org/doi 1","url":"https://doi.org/doi 1","identifier":"doi 1","name":"Title","description":"foo bar","keywords":["subject 1","subject 2",{"name":"technique 1","identifier":"http://purl.org/pan-science/PaNET/1","url":"http://purl.org/pan-science/PaNET/1","inDefinedTermSet":"http://purl.org/pan-science/PaNET/"},{"name":"technique 2","identifier":"http://purl.org/pan-science/PaNET/2","url":"http://purl.org/pan-science/PaNET/2","inDefinedTermSet":"http://purl.org/pan-science/PaNET/"}],"publisher":{"@type":"Organization","url":"doi_constants.publisher.url","name":"doi_constants.publisher.name","logo":"doi_constants.publisher.logo","contactPoint":{"@type":"ContactPoint","contactType":"customer service","email":"doi_constants.publisher.email","url":"doi_constants.publisher.url"}},"creator":[{"@type":"Person","name":"John Smith","sameAs":"https://orcid.org/123456","affiliation":[{"name":"ABC Uni"},{"name":"XYZ Org"}]},{"@type":"Person","name":"Jesse Smith"},{"@type":"Person","name":"Jane Smith","sameAs":"https://orcid.org/234567"}],"includedInDataCatalog":{"@type":"DataCatalog","url":"doi_constants.content_url"},"license":{"@type":"URL","url":"doi_constants.license.url","name":"doi_constants.license.name"},"isAccessibleForFree":true,"hasPart":["doi 1"],"isPartOf":["doi 2"]}
+        {"@context":"http://schema.org","@type":"Dataset","@id":"https://doi.org/doi 1","url":"https://doi.org/doi 1","identifier":"doi 1","name":"Title","description":"foo bar","keywords":["subject 1","subject 2",{"name":"technique 1","identifier":"http://purl.org/pan-science/PaNET/1","url":"http://purl.org/pan-science/PaNET/1","inDefinedTermSet":"http://purl.org/pan-science/PaNET/"},{"name":"technique 2","identifier":"http://purl.org/pan-science/PaNET/2","url":"http://purl.org/pan-science/PaNET/2","inDefinedTermSet":"http://purl.org/pan-science/PaNET/"}],"publisher":{"@type":"Organization","url":"doi_constants.publisher.url","name":"doi_constants.publisher.name","logo":"doi_constants.publisher.logo","contactPoint":{"@type":"ContactPoint","contactType":"customer service","email":"doi_constants.publisher.email","url":"doi_constants.publisher.url"}},"creator":[{"@type":"Person","name":"John Smith","sameAs":"https://orcid.org/123456","affiliation":[{"name":"ABC Uni"},{"name":"XYZ Org"}]},{"@type":"Person","name":"Jesse Smith"},{"@type":"Person","name":"Jane Smith","sameAs":"https://orcid.org/234567"}],"contributor":[{"@type":"Person","name":"Joan Smith"}],"includedInDataCatalog":{"@type":"DataCatalog","url":"doi_constants.content_url"},"license":{"@type":"URL","url":"doi_constants.license.url","name":"doi_constants.license.name"},"isAccessibleForFree":true,"hasPart":["doi 1"],"isPartOf":["doi 2"]}
       </script>
     `);
   });
