@@ -705,12 +705,28 @@ describe('DOI edit form component', () => {
         name: 'unmintable cart investigation',
         parentEntities: [],
       },
+      {
+        entityId: 6,
+        entityType: 'dataset',
+        id: 3,
+        name: 'unmintable cart dataset',
+        parentEntities: [],
+      },
+      {
+        entityId: 7,
+        entityType: 'datafile',
+        id: 3,
+        name: 'unmintable cart datafile',
+        parentEntities: [],
+      },
     ];
     mintabilityResponse = Promise.reject({
       response: {
         status: 403,
         data: {
-          detail: '[5]',
+          investigation_ids: { '5': 'Unable to mint' },
+          dataset_ids: { '6': 'Unable to mint' },
+          datafile_ids: { '7': 'Unable to mint' },
         },
       },
     });
@@ -764,6 +780,24 @@ describe('DOI edit form component', () => {
         await user.click(
           await within(choices).findByRole('checkbox', {
             name: 'unmintable cart investigation',
+          })
+        )
+    ).rejects.toThrow();
+
+    await expect(
+      async () =>
+        await user.click(
+          await within(choices).findByRole('checkbox', {
+            name: 'unmintable cart dataset',
+          })
+        )
+    ).rejects.toThrow();
+
+    await expect(
+      async () =>
+        await user.click(
+          await within(choices).findByRole('checkbox', {
+            name: 'unmintable cart datafile',
           })
         )
     ).rejects.toThrow();

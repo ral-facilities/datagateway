@@ -3,7 +3,6 @@ import axios, { AxiosError, AxiosHeaders } from 'axios';
 import log from 'loglevel';
 import {
   handleDOIAPIError,
-  isMintabilityErrorExpected,
   useCheckUser,
   useDOI,
   useDeleteDraftVersion,
@@ -140,57 +139,6 @@ describe('handleDOIAPIError', () => {
         message: 'Network Error, please reload the page or try again later',
       },
     });
-  });
-});
-
-// Entities do not belong to an existing session DOI: [15]
-//
-describe('isMintabilityErrorExpected', () => {
-  it("returns true if 403 error if the user isn't the PI", () => {
-    const error = {
-      response: {
-        status: 403,
-        data: { detail: 'User is not PI for: [1]' },
-      },
-    };
-
-    expect(isMintabilityErrorExpected(error)).toBe(true);
-  });
-
-  it('returns true if 400 error mentioning session DOIs for no session DOI error', () => {
-    const error = {
-      response: {
-        status: 400,
-        data: {
-          detail: 'Entities do not belong to an existing session DOI: [1]',
-        },
-      },
-    };
-
-    expect(isMintabilityErrorExpected(error)).toBe(true);
-  });
-
-  it('returns false for other error codes', () => {
-    const error = {
-      response: {
-        status: 422,
-      },
-    };
-
-    expect(isMintabilityErrorExpected(error)).toBe(false);
-  });
-
-  it('returns false for other 400 errors', () => {
-    const error = {
-      response: {
-        status: 400,
-        data: {
-          details: 'other error',
-        },
-      },
-    };
-
-    expect(isMintabilityErrorExpected(error)).toBe(false);
   });
 });
 
@@ -652,6 +600,28 @@ describe('doi api functions', () => {
 
       expect(result.current.data).toEqual(false);
       expect(axios.post).not.toHaveBeenCalled();
+    });
+
+    it('should log and retry unexpected errors', async () => {
+      const error = {
+        message: 'Test error message',
+        response: {
+          status: 400,
+        },
+      };
+      axios.post = vi.fn().mockRejectedValue(error);
+
+      const { result } = renderHook(
+        () =>
+          useIsCartMintable(mockCartItems, 'https://example.com/doi-minter'),
+        {
+          wrapper: createReactQueryWrapper(),
+        }
+      );
+      await waitFor(() => expect(result.current.isError).toBe(true));
+
+      expect(log.error).toHaveBeenCalled();
+      expect(axios.post).toHaveBeenCalledTimes(4);
     });
 
     it('should not log expected errors or retry them', async () => {
