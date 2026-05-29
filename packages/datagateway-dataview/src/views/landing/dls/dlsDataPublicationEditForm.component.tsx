@@ -232,17 +232,13 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
   const { isLoading: cartMintabilityLoading, error: mintableError } =
     useIsCartMintable(cart, doiMinterUrl);
 
-  const unmintableEntityIDs: number[] | undefined = React.useMemo(
+  const unmintableEntityIDs = React.useMemo(
     () =>
       mintableError !== null &&
       isMintabilityErrorExpected(mintableError) &&
-      typeof mintableError?.response?.data?.detail === 'string'
-        ? JSON.parse(
-            mintableError.response.data.detail.substring(
-              mintableError.response.data.detail.indexOf('['),
-              mintableError.response.data.detail.lastIndexOf(']') + 1
-            )
-          )
+      mintableError?.response?.data &&
+      'investigation_ids' in mintableError.response.data
+        ? mintableError.response.data
         : undefined,
     [mintableError]
   );
@@ -266,7 +262,18 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
             id: cartItem.entityId,
             label: cartItem.name,
             entityType: cartItem.entityType,
-            disabled: unmintableEntityIDs?.includes(cartItem.entityId),
+            disabled:
+              cartItem.entityType === 'datafile'
+                ? typeof unmintableEntityIDs?.datafile_ids?.[
+                    cartItem.entityId
+                  ] !== 'undefined'
+                : cartItem.entityType === 'dataset'
+                  ? typeof unmintableEntityIDs?.dataset_ids?.[
+                      cartItem.entityId
+                    ] !== 'undefined'
+                  : typeof unmintableEntityIDs?.investigation_ids?.[
+                      cartItem.entityId
+                    ] !== 'undefined',
           }))
       );
       setLoadedUnselectedContent(true);
