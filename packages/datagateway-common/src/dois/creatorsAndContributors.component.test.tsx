@@ -24,7 +24,7 @@ const createTestQueryClient = (): QueryClient =>
     },
   });
 
-describe('DOI generation form component', () => {
+describe('Creators and contributors component', () => {
   let user: ReturnType<typeof userEvent.setup>;
 
   let props: React.ComponentProps<typeof CreatorsAndContributors>;
@@ -70,7 +70,8 @@ describe('DOI generation form component', () => {
         {
           id: 2,
           name: '2',
-          fullName: 'User 2',
+          givenName: 'User',
+          familyName: '2',
           email: 'user2@example.com',
           affiliation: 'Example 2 Uni',
           contributor_type: ContributorType.Creator,
@@ -80,12 +81,12 @@ describe('DOI generation form component', () => {
       doiMinterUrl: 'example.com',
       disabled: false,
       localContactRole: 'local_contact|DataCollector',
+      showErrors: false,
     };
 
     mockUser = {
       id: 3,
       name: '3',
-      fullName: 'User 3',
       email: 'user3@example.com',
       affiliation: 'Example 3 Uni',
     };
@@ -175,7 +176,7 @@ describe('DOI generation form component', () => {
         .getAllByRole('row')
         .slice(1) // ignores the header row
     ).toHaveLength(3);
-    expect(screen.getByRole('cell', { name: 'User 3' })).toBeInTheDocument();
+    expect(screen.getByRole('cell', { name: '3' })).toBeInTheDocument();
     expect(screen.getAllByRole('cell', { name: 'Creator' }).length).toBe(3);
 
     // test errors on duplicate user
@@ -268,6 +269,7 @@ describe('DOI generation form component', () => {
   });
 
   it('should let the user add contributors & select their contributor type', async () => {
+    props.showErrors = true;
     renderComponent();
 
     expect(
@@ -298,13 +300,20 @@ describe('DOI generation form component', () => {
         .getAllByRole('row')
         .slice(1) // ignores the header row
     ).toHaveLength(3);
-    expect(screen.getByRole('cell', { name: 'User 3' })).toBeInTheDocument();
+    expect(screen.getByRole('cell', { name: '3' })).toBeInTheDocument();
 
     expect(
       screen.getByRole('combobox', {
         name: 'DOIGenerationForm.creator_type',
       })
     ).toBeInTheDocument();
+
+    // should be in an error state as no role is selected
+    expect(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.creator_type',
+      })
+    ).toHaveClass('Mui-error');
 
     await user.click(
       screen.getByRole('combobox', {
@@ -321,6 +330,11 @@ describe('DOI generation form component', () => {
     await user.click(selectedRole);
 
     expect(screen.queryByRole('option')).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.creator_type',
+      })
+    ).not.toHaveClass('Mui-error');
     // check that the option is actually selected in the table even after the menu closes
     expect(screen.getByText('Editor')).toBeInTheDocument();
   });

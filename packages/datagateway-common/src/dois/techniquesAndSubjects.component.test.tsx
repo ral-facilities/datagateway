@@ -75,6 +75,8 @@ describe('Techniques & Subjects selector component', () => {
       setTechniques: vi.fn(),
       bioportalUrl: 'https://example.com/bioportal',
       disabled: false,
+      subjectError: false,
+      techniqueError: false,
     };
 
     mockSearchResponse = Promise.resolve({
@@ -154,6 +156,20 @@ describe('Techniques & Subjects selector component', () => {
     expect(
       screen.getByRole('button', { name: 'DOIGenerationForm.add_technique' })
     ).toBeDisabled();
+  });
+
+  it('renders inputs as errored when passed the error props', () => {
+    props.techniqueError = true;
+    props.subjectError = true;
+
+    renderComponent();
+    expect(
+      screen.getByRole('combobox', { name: 'DOIGenerationForm.subjects' })
+    ).toHaveAttribute('aria-invalid', 'true');
+
+    expect(
+      screen.getByRole('combobox', { name: 'DOIGenerationForm.techniques' })
+    ).toHaveAttribute('aria-invalid', 'true');
   });
 
   it('lets you edit subjects', async () => {

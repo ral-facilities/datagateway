@@ -66,6 +66,7 @@ describe('Related identifiers form component', () => {
       dataCiteUrl: 'example.com',
       doiHandleUrl: 'https://doi.org',
       disabled: false,
+      showErrors: false,
     };
 
     mockDOIResponse = {
@@ -224,6 +225,7 @@ describe('Related identifiers form component', () => {
   });
 
   it('should let the user add related non-dois + lets you change the relation type + resource type + identifier type', async () => {
+    props.showErrors = true;
     props.relatedIdentifiers = [];
     renderComponent();
 
@@ -256,6 +258,12 @@ describe('Related identifiers form component', () => {
     expect(screen.getByText('URL')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'non.doi' })).toBeInTheDocument();
 
+    expect(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.related_identifier_relationship',
+      })
+    ).toHaveClass('Mui-error');
+
     await user.click(
       screen.getByRole('combobox', {
         name: 'DOIGenerationForm.related_identifier_relationship',
@@ -269,6 +277,11 @@ describe('Related identifiers form component', () => {
     // check that the option is actually selected in the table even after the menu closes
     expect(screen.getByText('IsSupplementedBy')).toBeInTheDocument();
 
+    expect(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.related_identifier_resource_type',
+      })
+    ).toHaveClass('Mui-error');
     await user.click(
       screen.getByRole('combobox', {
         name: 'DOIGenerationForm.related_identifier_resource_type',

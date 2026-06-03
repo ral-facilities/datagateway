@@ -21,7 +21,7 @@ import {
 } from '@mui/material';
 import debounce from 'lodash.debounce';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import {
   useGetDescendantTechniques,
   useSearchPANETTechniques,
@@ -101,8 +101,8 @@ const TechniqueSelector: React.FC<{
               ? // don't bother translating as this should be a developer focused message i.e. that they haven't configured DGW correctly
                 "Can't fetch techniques as BioPortal API URL not specified"
               : isError
-              ? t('DOIGenerationForm.bioportal_search_error')
-              : undefined
+                ? t('DOIGenerationForm.bioportal_search_error')
+                : undefined
           }
         />
       )}
@@ -163,7 +163,12 @@ const TechniqueDialog: React.FC<{
         <Grid container direction="column" spacing={1}>
           <Grid item>
             <Typography>
-              {t('DOIGenerationForm.technique_dialog_initial_help')}
+              <Trans
+                i18nKey="DOIGenerationForm.technique_dialog_initial_help"
+                components={{
+                  Link: <Link />,
+                }}
+              />
             </Typography>
           </Grid>
           <Grid item>
@@ -177,9 +182,12 @@ const TechniqueDialog: React.FC<{
             <>
               <Grid item>
                 <Typography>
-                  {t(
-                    'DOIGenerationForm.technique_dialog_select_technique_help'
-                  )}
+                  <Trans
+                    i18nKey="DOIGenerationForm.technique_dialog_select_technique_help"
+                    components={{
+                      Link: <Link />,
+                    }}
+                  />
                 </Typography>
               </Grid>
               {isError && (
@@ -217,7 +225,10 @@ const TechniqueDialog: React.FC<{
                         </TableCell>
                         <TableCell>
                           {
-                            <Link href={initiallySelectedTechnique['@id']}>
+                            <Link
+                              href={initiallySelectedTechnique['@id']}
+                              target="_blank"
+                            >
                               {initiallySelectedTechnique['@id']}
                             </Link>
                           }
@@ -231,7 +242,11 @@ const TechniqueDialog: React.FC<{
                         >
                           <TableCell>{getTechniqueDisplayName(t)}</TableCell>
                           <TableCell>
-                            {<Link href={t['@id']}>{t['@id']}</Link>}
+                            {
+                              <Link href={t['@id']} target="_blank">
+                                {t['@id']}
+                              </Link>
+                            }
                           </TableCell>
                         </TableRow>
                       ))}
@@ -265,8 +280,10 @@ const TechniqueDialog: React.FC<{
 const TechniquesAndSubjects: React.FC<{
   techniques: BioPortalTerm[];
   setTechniques: React.Dispatch<React.SetStateAction<BioPortalTerm[]>>;
+  techniqueError: boolean;
   subjects: string[];
   setSubjects: React.Dispatch<React.SetStateAction<string[]>>;
+  subjectError: boolean;
   disabled: boolean;
   bioportalUrl: string | undefined;
 }> = (props) => {
@@ -274,8 +291,10 @@ const TechniquesAndSubjects: React.FC<{
   const {
     techniques,
     setTechniques,
+    techniqueError,
     subjects,
     setSubjects,
+    subjectError,
     disabled,
     bioportalUrl,
   } = props;
@@ -308,7 +327,14 @@ const TechniquesAndSubjects: React.FC<{
           </Grid>
           <Grid item>
             <Tooltip
-              title={t('DOIGenerationForm.techniques_subjects_help_tooltip')}
+              title={
+                <Trans
+                  i18nKey="DOIGenerationForm.techniques_subjects_help_tooltip"
+                  components={{
+                    Link: <Link />,
+                  }}
+                />
+              }
             >
               <HelpOutlineIcon fontSize="small" />
             </Tooltip>
@@ -340,6 +366,7 @@ const TechniquesAndSubjects: React.FC<{
                       sx: { caretColor: 'transparent', cursor: 'default' },
                     }}
                     required={true}
+                    error={techniqueError}
                   />
                 )}
                 getOptionLabel={getTechniqueDisplayName}
@@ -374,6 +401,7 @@ const TechniquesAndSubjects: React.FC<{
               multiple
               options={[]}
               freeSolo
+              autoSelect
               renderTags={(value: readonly string[], getTagProps) =>
                 value.map((option: string, index: number) => {
                   const { key, ...tagProps } = getTagProps({ index });
@@ -401,6 +429,7 @@ const TechniquesAndSubjects: React.FC<{
                       backgroundColor: 'background.default',
                     },
                   }}
+                  error={subjectError}
                 />
               )}
               disabled={disabled}

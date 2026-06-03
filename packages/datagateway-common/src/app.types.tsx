@@ -125,6 +125,8 @@ export interface User {
   id: number;
   name: string;
   fullName?: string;
+  givenName?: string;
+  familyName?: string;
   email?: string;
   affiliation?: string;
   orcidId?: string;

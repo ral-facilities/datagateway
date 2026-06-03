@@ -1,3 +1,4 @@
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import {
   Button,
   FormControl,
@@ -13,11 +14,12 @@ import {
   TableHead,
   TableRow,
   TextField,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import { AxiosError } from 'axios';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { useCheckDOI } from '../api/dois';
 import {
   DOIIdentifierType,
@@ -35,6 +37,7 @@ type RelatedIdentifiersProps = {
   dataCiteUrl: string | undefined;
   doiHandleUrl: string;
   disabled: boolean;
+  showErrors: boolean;
 };
 
 const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
@@ -44,6 +47,7 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
     dataCiteUrl,
     doiHandleUrl,
     disabled,
+    showErrors,
   } = props;
   const [t] = useTranslation();
   const [relatedIdentiferInputText, setRelatedIdentifierInputText] =
@@ -68,14 +72,30 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
       variant="outlined"
     >
       <Grid container direction="row" spacing={1}>
-        <Grid item>
-          <Typography
-            variant="h6"
-            component="h4"
-            id="related-identifiers-label"
-          >
-            {t('DOIGenerationForm.related_identifiers')}
-          </Typography>
+        <Grid container item alignItems="end" spacing={0.5}>
+          <Grid item>
+            <Typography
+              variant="h6"
+              component="h4"
+              id="related-identifiers-label"
+            >
+              {t('DOIGenerationForm.related_identifiers')}
+            </Typography>
+          </Grid>
+          <Grid item>
+            <Tooltip
+              title={
+                <Trans
+                  i18nKey="DOIGenerationForm.related_identifiers_help_tooltip"
+                  components={{
+                    Link: <Link />,
+                  }}
+                />
+              }
+            >
+              <HelpOutlineIcon fontSize="small" />
+            </Tooltip>
+          </Grid>
         </Grid>
         <Grid
           container
@@ -214,13 +234,17 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
                         >
                           <Link
                             href={`${doiHandleUrl}/${relatedIdentifier.identifier}`}
+                            target="_blank"
                           >
                             {relatedIdentifier.identifier}
                           </Link>
                         </StyledTooltip>
                       ) : relatedIdentifier.relatedIdentifierType ===
                         DOIIdentifierType.URL ? (
-                        <Link href={relatedIdentifier.identifier}>
+                        <Link
+                          href={relatedIdentifier.identifier}
+                          target="_blank"
+                        >
                           {relatedIdentifier.identifier}
                         </Link>
                       ) : (
@@ -303,6 +327,9 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
                         required
                         sx={{ minWidth: 150 }}
                         disabled={disabled}
+                        error={
+                          showErrors && relatedIdentifier.relationType === ''
+                        }
                       >
                         <InputLabel
                           id={`${relatedIdentifier.identifier.replaceAll(
@@ -366,6 +393,10 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
                         required
                         sx={{ minWidth: 150 }}
                         disabled={disabled}
+                        error={
+                          showErrors &&
+                          relatedIdentifier.relatedItemType === undefined
+                        }
                       >
                         <InputLabel
                           id={`${relatedIdentifier.identifier.replaceAll(

@@ -1,9 +1,11 @@
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import {
   Button,
   CircularProgress,
   FormControl,
   Grid,
   InputLabel,
+  Link,
   MenuItem,
   Paper,
   Select,
@@ -13,11 +15,12 @@ import {
   TableHead,
   TableRow,
   TextField,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import { AxiosError } from 'axios';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { useCheckUser } from '../api/dois';
 import { ContributorType, User } from '../app.types';
 import { readSciGatewayToken } from '../parseTokens';
@@ -57,6 +60,7 @@ type CreatorsAndContributorsProps = {
   doiMinterUrl: string | undefined;
   localContactRole: string;
   disabled: boolean;
+  showErrors: boolean;
 };
 
 const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
@@ -68,6 +72,7 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
     doiMinterUrl,
     localContactRole,
     disabled,
+    showErrors,
   } = props;
   const [t] = useTranslation();
   const [username, setUsername] = React.useState('');
@@ -133,10 +138,26 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
       variant="outlined"
     >
       <Grid container direction="row" spacing={1}>
-        <Grid item>
-          <Typography variant="h6" component="h4" id="creators-label">
-            {t('DOIGenerationForm.creators_and_contributors')}
-          </Typography>
+        <Grid container item alignItems="end" spacing={0.5}>
+          <Grid item>
+            <Typography variant="h6" component="h4" id="creators-label">
+              {t('DOIGenerationForm.creators_and_contributors')}
+            </Typography>
+          </Grid>
+          <Grid item>
+            <Tooltip
+              title={
+                <Trans
+                  i18nKey="DOIGenerationForm.creators_contributors_help_tooltip"
+                  components={{
+                    Link: <Link />,
+                  }}
+                />
+              }
+            >
+              <HelpOutlineIcon fontSize="small" />
+            </Tooltip>
+          </Grid>
         </Grid>
         <Grid
           container
@@ -227,7 +248,12 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
                 .toSorted(compareCreatorsAndContributors)
                 .map((user) => (
                   <TableRow key={user.id}>
-                    <TableCell>{user.fullName}</TableCell>
+                    <TableCell>
+                      {user.fullName ??
+                        (user.givenName && user.familyName
+                          ? `${user.givenName} ${user.familyName}`
+                          : user.name)}
+                    </TableCell>
                     <TableCell>{user?.affiliation}</TableCell>
                     <TableCell>{user?.email}</TableCell>
                     <TableCell>
@@ -240,6 +266,7 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
                           required
                           sx={{ minWidth: 180 }}
                           disabled={disabled}
+                          error={showErrors && user.contributor_type === ''}
                         >
                           <InputLabel
                             id={`${user.id}-contributor-type-select-label`}
