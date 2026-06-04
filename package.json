@@ -13,6 +13,14 @@
     "@types/react": "18.3.28",
     "@types/react-dom": "18.3.7"
   },
+  "dependenciesMeta": {
+    "cypress": {
+      "built": true
+    },
+    "esbuild": {
+      "built": true
+    }
+  },
   "scripts": {
     "build": "yarn workspaces foreach --all --interlaced --verbose --parallel --jobs 3 --exclude datagateway-common run build",
     "lint": "yarn workspaces foreach --all --interlaced --verbose --parallel --jobs 4 run lint:js",

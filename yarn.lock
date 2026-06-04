@@ -3854,6 +3854,11 @@ __metadata:
   resolution: "datagateway@workspace:."
   dependencies:
     husky: "npm:9.1.7"
+  dependenciesMeta:
+    cypress:
+      built: true
+    esbuild:
+      built: true
   languageName: unknown
   linkType: soft
 
