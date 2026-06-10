@@ -196,7 +196,7 @@ describe('DLS - User Generated Data Publication Landing', () => {
 
     cy.contains('Done').click();
 
-    cy.contains('button', 'Generate DOI').click();
+    cy.contains('button', 'Review DOI metadata').click();
 
     cy.contains('Please review the metadata', { timeout: 10000 }).should(
       'exist'

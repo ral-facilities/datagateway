@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-// eslint-disable-next-line no-use-before-define
 import React from 'react';
 import * as reactI18next from 'react-i18next';
 
@@ -9,7 +7,11 @@ const hasChildren = (node) =>
 const getChildren = (node) =>
   node && node.children ? node.children : node.props && node.props.children;
 
-const renderNodes = (reactNodes) => {
+const renderNodes = (i18nKey, reactNodes) => {
+  if (typeof reactNodes === 'undefined') {
+    return i18nKey;
+  }
+
   if (typeof reactNodes === 'string') {
     return reactNodes;
   }
@@ -53,15 +55,12 @@ const applyTranslation = (Component) => {
   return applyProps;
 };
 
+// eslint-disable-next-line no-undef
 module.exports = {
   // this mock makes sure any components using the translate HoC receive the t function as a prop
   withTranslation: () => (Component) => applyTranslation(Component),
-  Trans: ({ children }) => renderNodes(children),
-  Translation: ({ children }) =>
-    children(
-      (k, o) => (o ? `${k} ${JSON.stringify(o).replace(/"/g, '')}` : k),
-      { i18n: {} }
-    ),
+  Trans: ({ i18nKey, children }) => renderNodes(i18nKey, children),
+  Translation: ({ children }) => children((k) => k, { i18n: {} }),
   useTranslation: () => useMock,
 
   // mock if needed

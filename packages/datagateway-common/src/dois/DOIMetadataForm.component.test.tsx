@@ -91,20 +91,63 @@ describe('DOI generation form component', () => {
     expect(props.setDescription).toHaveBeenCalledWith('description2');
   });
 
-  it('should disable mint button at correct times', () => {
+  it('should call onMintClick when mint button pressed with no errors', async () => {
+    renderComponent();
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.review_metadata_button',
+      })
+    );
+
+    expect(props.onMintClick).toHaveBeenCalled();
+  });
+
+  it('should show errors and disable mint button at correct times', async () => {
     const { rerender } = renderComponent();
 
     expect(
-      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.review_metadata_button',
+      })
     ).not.toBeDisabled();
 
+    // selectedUsers is empty
+    const prevSelectedUsers = props.selectedUsers;
+    props.selectedUsers = [];
+    rerender(<DOIMetadataForm {...props} />);
+
+    // should be disabled without having to click the button to prompt errors
+    // as no users indicates the list of users is loading
+    expect(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.review_metadata_button',
+      })
+    ).toBeDisabled();
+
     // title is empty
+    props.selectedUsers = prevSelectedUsers;
     props.title = '';
     rerender(<DOIMetadataForm {...props} />);
 
+    // click on button to show errors
+    await user.click(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.review_metadata_button',
+      })
+    );
+
+    // button should be disabled after initial click to trigger errors to show
     expect(
-      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.review_metadata_button',
+      })
     ).toBeDisabled();
+    expect(
+      screen.getByRole('textbox', {
+        name: 'DOIGenerationForm.title',
+      })
+    ).toHaveAttribute('aria-invalid', 'true');
 
     // description is empty
     props.title = 'test';
@@ -112,24 +155,24 @@ describe('DOI generation form component', () => {
     rerender(<DOIMetadataForm {...props} />);
 
     expect(
-      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.review_metadata_button',
+      })
     ).toBeDisabled();
-
-    // selectedUsers is empty
-    props.description = 'test';
-    props.selectedUsers = [];
-    rerender(<DOIMetadataForm {...props} />);
-
     expect(
-      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
-    ).toBeDisabled();
+      screen.getByRole('textbox', {
+        name: 'DOIGenerationForm.description',
+      })
+    ).toHaveAttribute('aria-invalid', 'true');
 
     // selectedUsers has empty contributor type
     props.selectedUsers = [{ id: 1, name: 'test', contributor_type: '' }];
     rerender(<DOIMetadataForm {...props} />);
 
     expect(
-      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.review_metadata_button',
+      })
     ).toBeDisabled();
 
     // relatedIdentifiers has empty relationtypes or relatedItemtypes
@@ -154,7 +197,9 @@ describe('DOI generation form component', () => {
     rerender(<DOIMetadataForm {...props} />);
 
     expect(
-      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.review_metadata_button',
+      })
     ).toBeDisabled();
 
     // disableMintButton is set to true
@@ -171,7 +216,9 @@ describe('DOI generation form component', () => {
     rerender(<DOIMetadataForm {...props} />);
 
     expect(
-      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.review_metadata_button',
+      })
     ).toBeDisabled();
 
     // empty subjects
@@ -180,7 +227,9 @@ describe('DOI generation form component', () => {
     rerender(<DOIMetadataForm {...props} />);
 
     expect(
-      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.review_metadata_button',
+      })
     ).toBeDisabled();
 
     // empty techniques
@@ -189,7 +238,9 @@ describe('DOI generation form component', () => {
     rerender(<DOIMetadataForm {...props} />);
 
     expect(
-      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.review_metadata_button',
+      })
     ).toBeDisabled();
   });
 
@@ -198,7 +249,9 @@ describe('DOI generation form component', () => {
     renderComponent();
 
     expect(
-      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.review_metadata_button',
+      })
     ).toBeDisabled();
     expect(screen.getByRole('progressbar')).toBeInTheDocument();
 

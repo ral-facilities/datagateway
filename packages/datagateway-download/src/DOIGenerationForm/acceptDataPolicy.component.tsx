@@ -1,6 +1,6 @@
-import { Button, Grid, Paper, Typography } from '@mui/material';
+import { Button, Grid, Link, Paper, Typography } from '@mui/material';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 
 type AcceptDataPolicyProps = {
   acceptDataPolicy: () => void;
@@ -26,9 +26,13 @@ const AcceptDataPolicy: React.FC<AcceptDataPolicyProps> = (props) => {
       >
         <Grid container flexDirection="column">
           <Grid item>
-            {/* TODO: write data policy text */}
             <Typography variant="body2">
-              {t('acceptDataPolicy.data_policy')}
+              <Trans
+                i18nKey="acceptDataPolicy.data_policy"
+                components={{
+                  Link: <Link />,
+                }}
+              />
             </Typography>
           </Grid>
           <Grid item alignSelf="end">

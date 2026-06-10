@@ -102,7 +102,7 @@
   },
   "acceptDataPolicy": {
     "accept": "Accept",
-    "data_policy": "Accept data policy: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum lore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+    "data_policy": "Accept data policy: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum lore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. This is a <Link href=\"https://example.com/\">link to example.com</Link>."
   },
   "DOIGenerationForm": {
     "page_header": "Generate DOI",
@@ -125,6 +125,7 @@
     "technique_pid": "PID",
     "add_technique": "Add technique",
     "creators_and_contributors": "Creators & Contributors",
+    "creators_contributors_help_tooltip": "Please ensure the people associated with this DOI are correct. You can add users via their Fed ID or via their ORCiD. Please select the Add Creator button if the person was a main researcher, otherwise select Add Contributor and specify their contributor type",
     "creators": "Creators",
     "contributors": "Contributors",
     "username": "Username",
@@ -137,6 +138,7 @@
     "creator_action": "Action",
     "delete_creator": "Delete",
     "related_identifiers": "Related Identifiers",
+    "related_identifiers_help_tooltip": "Please add any related resources that should be associated with this DOI. Please select the Add DOI button if you are adding a DOI, otherwise select the Add Other to add a different resource type (e.g. URL). Once you have added a resource, you will need to select the type of the resource, and how it is related to this DOI.",
     "related_identifier": "Identifier (e.g. DOI, URL)",
     "add_related_doi": "Add DOI",
     "add_related_other": "Add Other",
@@ -147,6 +149,7 @@
     "related_identifier_action": "Action",
     "delete_related_identifier": "Delete",
     "generate_DOI": "Generate DOI",
+    "review_metadata_button": "Review DOI metadata",
     "cart_tabs_aria_label": "cart tabs",
     "cart_tab_investigations": "Investigations",
     "cart_tab_datasets": "Datasets",

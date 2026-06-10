@@ -337,7 +337,7 @@ describe('DOI generation form component', () => {
 
     await user.click(
       await screen.findByRole('button', {
-        name: 'DOIGenerationForm.generate_DOI',
+        name: 'DOIGenerationForm.review_metadata_button',
       })
     );
 
@@ -376,9 +376,18 @@ describe('DOI generation form component', () => {
       screen.getByRole('button', { name: 'acceptDataPolicy.accept' })
     );
 
+    // click button to trigger errors
+    await user.click(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.review_metadata_button',
+      })
+    );
+
     // missing title
     expect(
-      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.review_metadata_button',
+      })
     ).toBeDisabled();
 
     await user.type(
@@ -388,7 +397,9 @@ describe('DOI generation form component', () => {
 
     // missing description
     expect(
-      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.review_metadata_button',
+      })
     ).toBeDisabled();
 
     await user.type(
@@ -411,7 +422,9 @@ describe('DOI generation form component', () => {
 
     // missing contributor type
     expect(
-      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.review_metadata_button',
+      })
     ).toBeDisabled();
 
     await user.click(
@@ -436,7 +449,9 @@ describe('DOI generation form component', () => {
 
     // missing relationship type
     expect(
-      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.review_metadata_button',
+      })
     ).toBeDisabled();
 
     await user.click(
@@ -450,7 +465,9 @@ describe('DOI generation form component', () => {
 
     // missing resource type
     expect(
-      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.review_metadata_button',
+      })
     ).toBeDisabled();
 
     await user.click(
@@ -464,7 +481,9 @@ describe('DOI generation form component', () => {
 
     // missing technique
     expect(
-      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.review_metadata_button',
+      })
     ).toBeDisabled();
 
     await user.click(
@@ -500,7 +519,7 @@ describe('DOI generation form component', () => {
     expect(
       // use findBy here as we need to wait for technique dialog to disappear
       await screen.findByRole('button', {
-        name: 'DOIGenerationForm.generate_DOI',
+        name: 'DOIGenerationForm.review_metadata_button',
       })
     ).toBeDisabled();
 
@@ -510,7 +529,9 @@ describe('DOI generation form component', () => {
     );
 
     await user.click(
-      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.review_metadata_button',
+      })
     );
 
     // expect confirmation page to appear, confirm submission
@@ -624,7 +645,7 @@ describe('DOI generation form component', () => {
     await user.click(
       // use findBy to wait for technique dialog to disappear
       await screen.findByRole('button', {
-        name: 'DOIGenerationForm.generate_DOI',
+        name: 'DOIGenerationForm.review_metadata_button',
       })
     );
 
@@ -711,7 +732,9 @@ describe('DOI generation form component', () => {
 
     // missing cart
     expect(
-      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.review_metadata_button',
+      })
     ).toBeDisabled();
   }, 60_000);
 
@@ -778,7 +801,9 @@ describe('DOI generation form component', () => {
 
     // empty cart
     expect(
-      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.review_metadata_button',
+      })
     ).toBeDisabled();
   }, 60_000);
 
@@ -845,7 +870,9 @@ describe('DOI generation form component', () => {
 
     // no users
     expect(
-      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.review_metadata_button',
+      })
     ).toBeDisabled();
 
     // expect add user + add contributor buttons to also be disabled

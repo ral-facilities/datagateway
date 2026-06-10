@@ -577,7 +577,9 @@ describe('DOI edit form component', () => {
     // submit edited data publication
 
     await user.click(
-      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.review_metadata_button',
+      })
     );
 
     expect(axios.post).toHaveBeenCalledWith(
@@ -669,7 +671,9 @@ describe('DOI edit form component', () => {
     );
 
     await user.click(
-      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.review_metadata_button',
+      })
     );
 
     // expect confirmation page to appear, confirm submission
@@ -854,7 +858,9 @@ describe('DOI edit form component', () => {
     // submit edited data publication
 
     await user.click(
-      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.review_metadata_button',
+      })
     );
 
     expect(axios.post).toHaveBeenCalledWith(

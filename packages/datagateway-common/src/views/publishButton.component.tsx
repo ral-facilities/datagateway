@@ -5,11 +5,12 @@ import {
   Dialog,
   Grid,
   IconButton,
+  Link,
   Typography,
 } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { useOpenDataPublication } from '../api';
 import { DataPublication } from '../app.types';
 import { StyledTooltip } from '../arrowtooltip.component';
@@ -113,9 +114,13 @@ const PublishButton: React.FC<PublishButtonProps> = (props) => {
             {!showRequestResult ? (
               <Grid container flexDirection="column">
                 <Grid item>
-                  {/* TODO: write data policy text */}
                   <Typography variant="body2">
-                    {t('DOIPublishConfirmDialog.data_policy')}
+                    <Trans
+                      i18nKey="DOIPublishConfirmDialog.data_policy"
+                      components={{
+                        Link: <Link />,
+                      }}
+                    />
                   </Typography>
                 </Grid>
                 <Grid item alignSelf="end">
