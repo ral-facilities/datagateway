@@ -72,7 +72,7 @@
     "react-router-dom": "5.3.4",
     "react-test-renderer": "17.0.2",
     "typescript-eslint": "8.56.1",
-    "vitest": "3.2.3",
+    "vitest": "3.2.6",
     "vitest-fail-on-console": "0.10.1"
   },
   "scripts": {
