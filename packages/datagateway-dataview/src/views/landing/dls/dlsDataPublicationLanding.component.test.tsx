@@ -281,6 +281,7 @@ describe('DLS Data Publication Landing page', () => {
         dgcommon: { ...dGCommonInitialState, accessMethods: {} },
       })
     );
+    state.dgdataview.landingPageLogo = 'DLS';
 
     history = createMemoryHistory({
       initialEntries: [
@@ -343,6 +344,16 @@ describe('DLS Data Publication Landing page', () => {
 
   it('renders correctly', async () => {
     renderComponent();
+
+    // renders branding correctly
+    expect(
+      await screen.findByRole('img', {
+        name: 'doi_constants.branding.logo_alt_text',
+      })
+    ).toHaveAttribute(
+      'src',
+      expect.stringMatching(/(.*)DLS-logo-white-text\.png/)
+    );
 
     // displays doi + link correctly
     expect(
@@ -427,7 +438,9 @@ describe('DLS Data Publication Landing page', () => {
       await screen.findByRole('link', { name: 'DOI doi 1' })
     ).toHaveAttribute('href', 'https://doi.org/doi 1');
 
-    expect(screen.getByText('Description not provided')).toBeInTheDocument();
+    expect(
+      screen.getByText('doi_constants.no_description')
+    ).toBeInTheDocument();
 
     expect(screen.queryByText('datapublications.details.users')).toBeNull();
     expect(
