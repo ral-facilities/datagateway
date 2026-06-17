@@ -31,7 +31,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import CitationFormatter from '../../citationFormatter.component';
-import Branding from './dlsBranding.component';
+import Branding from '../branding.component';
 import DLSDataPublicationContentTable from './dlsDataPublicationContentTable.component';
 import DLSDataPublicationRelatedIdentifiersPanel from './dlsDataPublicationRelatedIdentifiersPanel.component';
 import DLSDataPublicationVersionPanel, {
@@ -41,6 +41,7 @@ import DLSDataPublicationVersionPanel, {
 import ORCIDIdLogo from 'datagateway-common/src/images/ORCID-iD_icon_unauth_vector.svg';
 import { useSelector } from 'react-redux';
 import { StateType } from '../../../state/app.types';
+import StyledDOILink from '../StyledDOILink.component';
 
 const Subheading = styled(Typography)(({ theme }) => ({
   marginTop: theme.spacing(1),
@@ -57,35 +58,8 @@ const ShortInfoValue = styled(Typography)({
   textOverflow: 'ellipsis',
 });
 
-const StyledDOILink = styled('a')({
-  display: 'inline-flex',
-  backgroundColor: '#000',
-  color: '#fff',
-  textDecoration: 'none',
-  paddingLeft: '5px',
-  borderRadius: '5px',
-  overflow: 'hidden',
-});
-
-const StyledDOISpan = styled('span')({
-  backgroundColor: '#09c',
-  padding: '0 5px',
-  marginLeft: '5px',
-  '&:hover': {
-    backgroundColor: '#006a8d',
-  },
-});
-
-export const StyledDOI: React.FC<{ doi: string; doiHandleUrl: string }> = ({
-  doi,
-  doiHandleUrl,
-}) => (
-  <StyledDOILink
-    href={`${doiHandleUrl}/${doi}`}
-    data-testid="landing-dataPublication-pid-link"
-  >
-    DOI <StyledDOISpan>{doi}</StyledDOISpan>
-  </StyledDOILink>
+const StyledDOI = (props: React.ComponentProps<typeof StyledDOILink>) => (
+  <StyledDOILink {...props} testId="landing-dataPublication-pid-link" />
 );
 
 export const ORCIDLink: React.FC<{ orcidId: string }> = ({ orcidId }) => (
@@ -216,8 +190,8 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     () =>
       data?.description && data?.description !== 'null'
         ? data?.description
-        : 'Description not provided',
-    [data]
+        : t('doi_constants.no_description'),
+    [data?.description, t]
   );
 
   const latestVersionPid = data?.relatedItems
@@ -553,7 +527,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       ) : (
         <Grid container sx={{ padding: 0.5 }}>
           <Grid item xs={12}>
-            <Branding />
+            <Branding landingPageType="data" />
           </Grid>
           <Grid container item xs={12}>
             <Paper

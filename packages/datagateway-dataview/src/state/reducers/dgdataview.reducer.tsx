@@ -8,6 +8,8 @@ import {
   ConfigureBreadcrumbSettingsType,
   ConfigureFacilityImageSettingPayload,
   ConfigureFacilityImageSettingType,
+  ConfigureLandingPageLogoSettingPayload,
+  ConfigureLandingPageLogoSettingType,
   ConfigureLocalContactRoleSettingPayload,
   ConfigureLocalContactRoleSettingType,
   ConfigurePIRoleSettingPayload,
@@ -67,6 +69,16 @@ export function handleConfigureFacilityImageSetting(
   };
 }
 
+export function handleConfigureLandingPageLogoSetting(
+  state: DGDataViewState,
+  payload: ConfigureLandingPageLogoSettingPayload
+): DGDataViewState {
+  return {
+    ...state,
+    landingPageLogo: payload.settings,
+  };
+}
+
 export function handleConfigurePIRoleSetting(
   state: DGDataViewState,
   payload: ConfigurePIRoleSettingPayload
@@ -92,6 +104,7 @@ const DGDataViewReducer = createReducer(initialState, {
   [ConfigureBreadcrumbSettingsType]: handleConfigureBreadcrumbSettings,
   [ConfigurePluginHostSettingType]: handleConfigurePluginHostSetting,
   [ConfigureFacilityImageSettingType]: handleConfigureFacilityImageSetting,
+  [ConfigureLandingPageLogoSettingType]: handleConfigureLandingPageLogoSetting,
   [ConfigurePIRoleSettingType]: handleConfigurePIRoleSetting,
   [ConfigureLocalContactRoleSettingType]:
     handleConfigureLocalContactRoleSetting,

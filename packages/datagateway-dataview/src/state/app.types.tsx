@@ -6,6 +6,7 @@ import type { BreadcrumbSettings } from './actions/actions.types';
 
 export interface DGDataViewState {
   facilityImageURL: string;
+  landingPageLogo?: 'STFC' | 'DLS' | string;
   breadcrumbSettings: BreadcrumbSettings[];
   settingsLoaded: boolean;
   pluginHost: string;

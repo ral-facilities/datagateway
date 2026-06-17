@@ -32,6 +32,13 @@
     "description": "Description",
     "type": "Type",
     "url": "URL",
+    "pid": "DOI",
+    "start_date": "Start Date",
+    "end_date": "End Date",
+    "owner": "Owner",
+    "owner_value": "Science and Technology Facilities Council (<Link href='https://ror.org/057g20z61'>https://ror.org/057g20z61</Link>)",
+    "manufacturer": "Manufacturer",
+    "manufacturer_value": "ISIS Neutron and Muon Source (<Link href='https://ror.org/01t8fg661'>https://ror.org/01t8fg661</Link>)",
     "details": {
       "tabs_label": "Instrument Details",
       "label": "Instrument Details",
@@ -381,6 +388,7 @@
     "warning_message_session_token": "Please remember that your selection will be lost after 2 hours of inactivity on this site"
   },
   "doi_constants": {
+    "no_description": "Description not provided",
     "keywords": [
       "STFC > ISIS",
       "STFC > ISIS > SYNCHROTRON",
@@ -396,7 +404,9 @@
     },
     "branding": {
       "title": "ISIS Neutron and Muon Source",
-      "body": "This is a page describing data taken during an experiment at the ISIS Neutron and Muon Source. Information about the ISIS Neutron and Muon Source can be found at <a href='https://www.isis.stfc.ac.uk'>https://www.isis.stfc.ac.uk</a>."
+      "body_data": "This is a page describing data taken during an experiment at the ISIS Neutron and Muon Source. Information about the ISIS Neutron and Muon Source can be found at <Link href='https://www.isis.stfc.ac.uk'>https://www.isis.stfc.ac.uk</Link>.",
+      "body_instrument": "This is a page describing an instrument at the ISIS Neutron and Muon Source. Information about the ISIS Neutron and Muon Source can be found at <Link href='https://www.isis.stfc.ac.uk'>https://www.isis.stfc.ac.uk</Link>.",
+      "logo_alt_text": "ISIS Logo"
     },
     "license": {
       "url": "https://creativecommons.org/licenses/by/4.0/",

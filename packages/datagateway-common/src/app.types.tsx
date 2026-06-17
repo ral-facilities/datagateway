@@ -112,6 +112,9 @@ export interface Instrument {
   url?: string;
   instrumentScientists?: InstrumentScientist[];
   facility?: Facility;
+  pid?: string;
+  startDate?: string;
+  endDate?: string;
 }
 
 export interface InvestigationUser {
