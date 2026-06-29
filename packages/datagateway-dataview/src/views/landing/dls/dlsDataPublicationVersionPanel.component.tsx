@@ -13,7 +13,7 @@ import {
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyledDOI } from './dlsDataPublicationLanding.component';
+import StyledDOI from '../StyledDOILink.component';
 
 type DLSDataPublicationVersionPanelProps = {
   dataPublicationId: string;
@@ -68,6 +68,7 @@ const DLSDataPublicationVersionPanel: React.FC<
                   <StyledDOI
                     doi={relatedItem.identifier}
                     doiHandleUrl={doiHandleUrl}
+                    testId="landing-dataPublication-pid-link"
                   />
                 </Grid>
               </Grid>

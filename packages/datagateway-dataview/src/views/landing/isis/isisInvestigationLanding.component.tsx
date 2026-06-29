@@ -38,7 +38,7 @@ import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import { StateType } from '../../../state/app.types';
 import CitationFormatter from '../../citationFormatter.component';
-import Branding from './isisBranding.component';
+import Branding from '../branding.component';
 
 const Subheading = styled(Typography)(({ theme }) => ({
   marginTop: theme.spacing(1),
@@ -401,7 +401,7 @@ const CommonLandingPage = (
     >
       <Grid container sx={{ padding: 0.5 }}>
         <Grid item xs={12}>
-          <Branding />
+          <Branding landingPageType="data" />
         </Grid>
         <Grid item xs={12}>
           <Paper square elevation={0} sx={{ mx: -1.5, px: 1.5 }}>
@@ -448,10 +448,10 @@ const CommonLandingPage = (
               {isInvestigation
                 ? data.summary && data.summary !== 'null'
                   ? data.summary
-                  : 'Description not provided'
+                  : t('doi_constants.no_description')
                 : data?.description && data.description !== 'null'
                   ? data.description
-                  : 'Description not provided'}
+                  : t('doi_constants.no_description')}
             </Typography>
             {formattedUsers.length > 0 && (
               <div>

@@ -30,7 +30,7 @@ import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import { StateType } from '../../../state/app.types';
 import CitationFormatter from '../../citationFormatter.component';
-import Branding from './isisBranding.component';
+import Branding from '../branding.component';
 
 const Subheading = styled(Typography)(({ theme }) => ({
   marginTop: theme.spacing(1),
@@ -226,8 +226,8 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       investigationDataPublications?.[0]?.description &&
       investigationDataPublications?.[0]?.description !== 'null'
         ? investigationDataPublications?.[0]?.description
-        : 'Description not provided',
-    [investigationDataPublications]
+        : t('doi_constants.no_description'),
+    [investigationDataPublications, t]
   );
 
   const formattedUsers = React.useMemo(() => {
@@ -371,7 +371,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     >
       <Grid container sx={{ padding: 0.5 }}>
         <Grid item xs={12}>
-          <Branding />
+          <Branding landingPageType="data" />
         </Grid>
         <Grid item xs={12}>
           <Paper square elevation={0} sx={{ mx: -1.5, px: 1.5 }}>

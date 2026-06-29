@@ -5,6 +5,8 @@ export const ConfigurePluginHostSettingType =
   'datagateway_dataview:configure_plugin_host';
 export const ConfigureFacilityImageSettingType =
   'datagateway_dataview:configure_facility_image';
+export const ConfigureLandingPageLogoSettingType =
+  'datagateway_dataview:configure_landing_page_logo';
 export const ConfigurePIRoleSettingType =
   'datagateway_dataview:configure_pi_role';
 export const ConfigureLocalContactRoleSettingType =
@@ -21,6 +23,10 @@ export interface ConfigurePluginHostSettingPayload {
 
 export interface ConfigureFacilityImageSettingPayload {
   settings: string;
+}
+
+export interface ConfigureLandingPageLogoSettingPayload {
+  settings: 'STFC' | 'DLS' | string;
 }
 
 export interface ConfigurePIRoleSettingPayload {

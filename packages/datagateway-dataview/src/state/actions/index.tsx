@@ -14,6 +14,8 @@ import {
   ConfigureBreadcrumbSettingsType,
   ConfigureFacilityImageSettingPayload,
   ConfigureFacilityImageSettingType,
+  ConfigureLandingPageLogoSettingPayload,
+  ConfigureLandingPageLogoSettingType,
   ConfigureLocalContactRoleSettingPayload,
   ConfigureLocalContactRoleSettingType,
   ConfigurePIRoleSettingPayload,
@@ -51,6 +53,15 @@ export const loadFacilityImageSetting = (
   type: ConfigureFacilityImageSettingType,
   payload: {
     settings: facilityImageSetting,
+  },
+});
+
+export const loadLandingPageLogoSetting = (
+  landingPageLogoSetting: string
+): ActionType<ConfigureLandingPageLogoSettingPayload> => ({
+  type: ConfigureLandingPageLogoSettingType,
+  payload: {
+    settings: landingPageLogoSetting,
   },
 });
 
@@ -115,6 +126,10 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
 
       if (settingsResult?.['facilityImageURL'] !== undefined) {
         dispatch(loadFacilityImageSetting(settingsResult['facilityImageURL']));
+      }
+
+      if (settingsResult?.['landingPageLogo'] !== undefined) {
+        dispatch(loadLandingPageLogoSetting(settingsResult['landingPageLogo']));
       }
 
       dispatch(loadPIRoleSetting(settingsResult['PIRole']));

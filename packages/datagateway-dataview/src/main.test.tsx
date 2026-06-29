@@ -22,6 +22,7 @@ describe('index - fetchSettings', () => {
     const settingsResult = {
       facilityName: 'Generic',
       facilityImageURL: 'test-image.jpg',
+      landingPageLogo: 'DLS',
       features: {},
       idsUrl: 'ids',
       apiUrl: 'api',
