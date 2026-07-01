@@ -304,7 +304,7 @@
   "loading": {
     "verifying": "Verifying URL",
     "oops": "Oops!",
-    "message": "We're sorry, it seems as though the URL you requested is attempting to fetch incorrect data. Please double check your URL, navigate back via the breadcrumbs or <2>go back to the top level</2>.",
+    "message": "We're sorry, it seems as though the URL you requested is attempting to fetch incorrect data or data you do not have permission to access. Please check you are logged in as the correct user, double check your URL, navigate back via the breadcrumbs or <LinkToTopLevel>go back to the top level</LinkToTopLevel>.",
     "filter_message": "No results found with current filters applied, please modify filter settings and try again."
   },
   "buttons": {
