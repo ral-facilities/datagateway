@@ -128,6 +128,7 @@ describe('ISIS Data Publication Landing page', () => {
       })
     );
     state.dgdataview.pluginHost = '/test/';
+    state.dgdataview.landingPageLogo = 'STFC';
 
     history = createMemoryHistory({
       initialEntries: [
@@ -232,7 +233,9 @@ describe('ISIS Data Publication Landing page', () => {
 
     // renders branding correctly
     expect(
-      await screen.findByRole('img', { name: 'STFC Logo' })
+      await screen.findByRole('img', {
+        name: 'doi_constants.branding.logo_alt_text',
+      })
     ).toHaveAttribute(
       'src',
       expect.stringMatching(/(.*)stfc-logo-white-text\.png/)
@@ -253,13 +256,13 @@ describe('ISIS Data Publication Landing page', () => {
     // renders users correctly
     expect(
       await screen.findByTestId('landing-dataPublication-user-0')
-    ).toHaveTextContent('Principal Investigator: John Smith');
+    ).toHaveTextContent('datapublications.principal_investigator: John Smith');
     expect(
       await screen.findByTestId('landing-dataPublication-user-1')
-    ).toHaveTextContent('Local Contact: Jane Smith');
+    ).toHaveTextContent('datapublications.experimenter: Jesse Smith');
     expect(
       await screen.findByTestId('landing-dataPublication-user-2')
-    ).toHaveTextContent('Experimenter: Jesse Smith');
+    ).toHaveTextContent('datapublications.local_contact: Jane Smith');
 
     // renders parts (investigations) correctly
     expect(
@@ -332,7 +335,7 @@ describe('ISIS Data Publication Landing page', () => {
     renderComponent();
 
     expect(
-      await screen.findByText('Description not provided')
+      await screen.findByText('doi_constants.no_description')
     ).toBeInTheDocument();
 
     expect(screen.queryByText('investigations.details.users.label')).toBeNull();
@@ -380,7 +383,7 @@ describe('ISIS Data Publication Landing page', () => {
         id="dataPublication-5"
         type="application/ld+json"
       >
-        {"@context":"http://schema.org","@type":"Dataset","@id":"https://doi.org/doi 1","url":"https://doi.org/doi 1","identifier":"doi 1","name":"Title 1","description":"foo bar","keywords":"doi_constants.keywords","publisher":{"@type":"Organization","url":"doi_constants.publisher.url","name":"doi_constants.publisher.name","logo":"doi_constants.publisher.logo","contactPoint":{"@type":"ContactPoint","contactType":"customer service","email":"doi_constants.publisher.email","url":"doi_constants.publisher.url"}},"creator":[{"@type":"Person","name":"John Smith"},{"@type":"Person","name":"Jane Smith"},{"@type":"Person","name":"Jesse Smith"}],"includedInDataCatalog":{"@type":"DataCatalog","url":"doi_constants.content_url"},"license":{"@type":"URL","url":"doi_constants.license.url","name":"doi_constants.license.name"},"isAccessibleForFree":true,"hasPart":["investigation doi 1.1","investigation doi 1.2"]}
+        {"@context":"http://schema.org","@type":"Dataset","@id":"https://doi.org/doi 1","url":"https://doi.org/doi 1","identifier":"doi 1","name":"Title 1","description":"foo bar","keywords":"doi_constants.keywords","publisher":{"@type":"Organization","url":"doi_constants.publisher.url","name":"doi_constants.publisher.name","logo":"doi_constants.publisher.logo","contactPoint":{"@type":"ContactPoint","contactType":"customer service","email":"doi_constants.publisher.email","url":"doi_constants.publisher.url"}},"creator":[{"@type":"Person","name":"John Smith"},{"@type":"Person","name":"Jesse Smith"},{"@type":"Person","name":"Jane Smith"}],"includedInDataCatalog":{"@type":"DataCatalog","url":"doi_constants.content_url"},"license":{"@type":"URL","url":"doi_constants.license.url","name":"doi_constants.license.name"},"isAccessibleForFree":true,"hasPart":["investigation doi 1.1","investigation doi 1.2"]}
       </script>
     `);
   });

@@ -13,6 +13,7 @@
   "dataCiteUrl": "https://api.test.datacite.org",
   "bioportalUrl": "/bioportal",
   "PIRole": "PI",
+  "localContactRole": "local_contact|DataCollector",
   "breadcrumbs": [
     {
       "matchEntity": "proposal",

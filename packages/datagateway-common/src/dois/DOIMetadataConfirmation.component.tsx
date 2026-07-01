@@ -16,6 +16,7 @@ type DOIMetadataConfirmationProps = {
   publishLoading: boolean;
   onConfirmClick: () => void;
   onBackClick: () => void;
+  doiHandleUrl: string;
 };
 
 const CreatorsAndContributorsMetadata: React.FC<{
@@ -64,7 +65,10 @@ const CreatorsAndContributorsMetadata: React.FC<{
                     <Typography>
                       {nameIdentifier.nameIdentifierScheme}:{' '}
                       {nameIdentifier.nameIdentifier.startsWith('http') ? (
-                        <Link href={nameIdentifier.nameIdentifier}>
+                        <Link
+                          href={nameIdentifier.nameIdentifier}
+                          target="_blank"
+                        >
                           {nameIdentifier.nameIdentifier}
                         </Link>
                       ) : (
@@ -85,7 +89,12 @@ const CreatorsAndContributorsMetadata: React.FC<{
 const DOIMetadataConfirmation: React.FC<DOIMetadataConfirmationProps> = (
   props
 ) => {
-  const { draftMetadata: metadata, onConfirmClick, onBackClick } = props;
+  const {
+    draftMetadata: metadata,
+    onConfirmClick,
+    onBackClick,
+    doiHandleUrl,
+  } = props;
   const [t] = useTranslation();
 
   if (typeof metadata === 'undefined') return <CircularProgress />;
@@ -137,7 +146,9 @@ const DOIMetadataConfirmation: React.FC<DOIMetadataConfirmationProps> = (
                   <Grid item>
                     <Typography>
                       {t('DOIGenerationForm.subject_schemeUri')}:{' '}
-                      <Link href={subject.schemeUri}>{subject.schemeUri}</Link>
+                      <Link href={subject.schemeUri} target="_blank">
+                        {subject.schemeUri}
+                      </Link>
                     </Typography>
                   </Grid>
                 )}
@@ -145,7 +156,9 @@ const DOIMetadataConfirmation: React.FC<DOIMetadataConfirmationProps> = (
                   <Grid item>
                     <Typography>
                       {t('DOIGenerationForm.subject_valueUri')}:{' '}
-                      <Link href={subject.valueUri}>{subject.valueUri}</Link>
+                      <Link href={subject.valueUri} target="_blank">
+                        {subject.valueUri}
+                      </Link>
                     </Typography>
                   </Grid>
                 )}
@@ -178,11 +191,14 @@ const DOIMetadataConfirmation: React.FC<DOIMetadataConfirmationProps> = (
                     <Typography>
                       {t('DOIGenerationForm.related_identifier_identifier')}:{' '}
                       {relatedIdentifierType === DOIIdentifierType.DOI ? (
-                        <Link href={`https://doi.org/${relatedIdentifier}`}>
+                        <Link
+                          href={`${doiHandleUrl}/${relatedIdentifier}`}
+                          target="_blank"
+                        >
                           {relatedIdentifier}
                         </Link>
                       ) : relatedIdentifierType === DOIIdentifierType.URL ? (
-                        <Link href={relatedIdentifier}>
+                        <Link href={relatedIdentifier} target="_blank">
                           {relatedIdentifier}
                         </Link>
                       ) : (
@@ -257,7 +273,7 @@ const DOIMetadataConfirmation: React.FC<DOIMetadataConfirmationProps> = (
               <Grid item>
                 <Typography>
                   {t('DOIGenerationForm.publisherSchemeURI')}:{' '}
-                  <Link href={metadata.publisher.schemeUri}>
+                  <Link href={metadata.publisher.schemeUri} target="_blank">
                     {metadata.publisher.schemeUri}
                   </Link>
                 </Typography>
@@ -345,7 +361,9 @@ const DOIMetadataConfirmation: React.FC<DOIMetadataConfirmationProps> = (
                     <Grid item>
                       <Typography>
                         {t('DOIGenerationForm.rightsURI')}:{' '}
-                        <Link href={rightsUri}>{rightsUri}</Link>
+                        <Link href={rightsUri} target="_blank">
+                          {rightsUri}
+                        </Link>
                       </Typography>
                     </Grid>
                   )}
@@ -369,7 +387,9 @@ const DOIMetadataConfirmation: React.FC<DOIMetadataConfirmationProps> = (
                     <Grid item>
                       <Typography>
                         {t('DOIGenerationForm.rightsSchemeURI')}:{' '}
-                        <Link href={schemeUri}>{schemeUri}</Link>
+                        <Link href={schemeUri} target="_blank">
+                          {schemeUri}
+                        </Link>
                       </Typography>
                     </Grid>
                   )}
@@ -439,7 +459,9 @@ const DOIMetadataConfirmation: React.FC<DOIMetadataConfirmationProps> = (
                   <Grid item>
                     <Typography>
                       {t('DOIGenerationForm.funderSchemeURI')}:{' '}
-                      <Link href={funder.schemeUri}>{funder.schemeUri}</Link>
+                      <Link href={funder.schemeUri} target="_blank">
+                        {funder.schemeUri}
+                      </Link>
                     </Typography>
                   </Grid>
                 )}
@@ -447,7 +469,9 @@ const DOIMetadataConfirmation: React.FC<DOIMetadataConfirmationProps> = (
                   <Grid item>
                     <Typography>
                       {t('DOIGenerationForm.awardURI')}:{' '}
-                      <Link href={funder.awardUri}>{funder.awardUri}</Link>
+                      <Link href={funder.awardUri} target="_blank">
+                        {funder.awardUri}
+                      </Link>
                     </Typography>
                   </Grid>
                 )}

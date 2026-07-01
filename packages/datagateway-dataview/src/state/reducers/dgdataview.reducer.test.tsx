@@ -1,6 +1,8 @@
 import {
   loadBreadcrumbSettings,
   loadFacilityImageSetting,
+  loadLandingPageLogoSetting,
+  loadLocalContactRoleSetting,
   loadPIRoleSetting,
   loadPluginHostSetting,
   settingsLoaded,
@@ -74,6 +76,17 @@ describe('dgdataview reducer', () => {
     expect(updatedState.facilityImageURL).toEqual('test-image.jpg');
   });
 
+  it('should set landingPageLogo when configuring action is sent', () => {
+    expect(state.landingPageLogo).toEqual(undefined);
+
+    const updatedState = DGDataViewReducer(
+      state,
+      loadLandingPageLogoSetting('DLS')
+    );
+
+    expect(updatedState.landingPageLogo).toEqual('DLS');
+  });
+
   it('should set loadPIRoleSetting when configuring action is sent', () => {
     expect(state.PIRole).toEqual('PI');
 
@@ -83,5 +96,16 @@ describe('dgdataview reducer', () => {
     );
 
     expect(updatedState.PIRole).toEqual('principal_experimenter');
+  });
+
+  it('should set loadLocalContactRoleSetting when configuring action is sent', () => {
+    expect(state.localContactRole).toEqual('local_contact|DataCollector');
+
+    const updatedState = DGDataViewReducer(
+      state,
+      loadLocalContactRoleSetting('local_contact')
+    );
+
+    expect(updatedState.localContactRole).toEqual('local_contact');
   });
 });

@@ -562,7 +562,7 @@ describe('PageTable', () => {
       );
 
       expect(
-        await screen.findByLabelText('branding-title')
+        await screen.findByText('doi_constants.branding.title')
       ).toBeInTheDocument();
     });
 

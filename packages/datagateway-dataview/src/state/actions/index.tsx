@@ -14,6 +14,11 @@ import {
   ConfigureBreadcrumbSettingsType,
   ConfigureFacilityImageSettingPayload,
   ConfigureFacilityImageSettingType,
+  ConfigureLandingPageLogoSettingPayload,
+  ConfigureLandingPageLogoSettingType,
+  ConfigureLocalContactRoleSettingPayload,
+  ConfigureLocalContactRoleSettingType,
+  ConfigurePIRoleSettingPayload,
   ConfigurePIRoleSettingType,
   ConfigurePluginHostSettingPayload,
   ConfigurePluginHostSettingType,
@@ -51,12 +56,30 @@ export const loadFacilityImageSetting = (
   },
 });
 
+export const loadLandingPageLogoSetting = (
+  landingPageLogoSetting: string
+): ActionType<ConfigureLandingPageLogoSettingPayload> => ({
+  type: ConfigureLandingPageLogoSettingType,
+  payload: {
+    settings: landingPageLogoSetting,
+  },
+});
+
 export const loadPIRoleSetting = (
   PIRoleSetting: string | undefined
-): ActionType<ConfigurePluginHostSettingPayload> => ({
+): ActionType<ConfigurePIRoleSettingPayload> => ({
   type: ConfigurePIRoleSettingType,
   payload: {
     settings: PIRoleSetting ?? 'PI', // if it's not defined in the settings default to PI
+  },
+});
+
+export const loadLocalContactRoleSetting = (
+  localContactRoleSetting: string | undefined
+): ActionType<ConfigureLocalContactRoleSettingPayload> => ({
+  type: ConfigureLocalContactRoleSettingType,
+  payload: {
+    settings: localContactRoleSetting ?? 'local_contact|DataCollector', // if it's not defined in the settings default to local_contact|DataCollector
   },
 });
 
@@ -83,6 +106,7 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
           icatUrl: '', // we currently don't need icatUrl in dataview so just pass empty string for now
           doiMinterUrl: settingsResult['doiMinterUrl'],
           dataCiteUrl: settingsResult['dataCiteUrl'],
+          doiHandleUrl: settingsResult['doiHandleUrl'] ?? 'https://doi.org',
           bioportalUrl: settingsResult['bioportalUrl'],
         })
       );
@@ -104,7 +128,12 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
         dispatch(loadFacilityImageSetting(settingsResult['facilityImageURL']));
       }
 
+      if (settingsResult?.['landingPageLogo'] !== undefined) {
+        dispatch(loadLandingPageLogoSetting(settingsResult['landingPageLogo']));
+      }
+
       dispatch(loadPIRoleSetting(settingsResult['PIRole']));
+      dispatch(loadLocalContactRoleSetting(settingsResult['localContactRole']));
 
       dispatch(settingsLoaded());
     }

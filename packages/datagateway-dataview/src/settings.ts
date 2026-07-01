@@ -4,8 +4,10 @@ import { BreadcrumbSettings } from './state/actions/actions.types';
 export type DataviewSettings = DataviewSearchCommonSettings &
   DOISettings & {
     facilityImageURL?: string;
+    landingPageLogo?: 'STFC' | 'DLS' | string;
     breadcrumbs?: BreadcrumbSettings[];
     PIRole?: string;
+    localContactRole?: string;
   };
 
 export let settings: Promise<DataviewSettings | void>;

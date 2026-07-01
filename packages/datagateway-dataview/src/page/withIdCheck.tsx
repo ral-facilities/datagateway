@@ -76,18 +76,19 @@ const WithIdCheck: React.FC<{
               variant="body1"
               sx={{ maxWidth: '600px', textAlign: 'center' }}
             >
-              <Trans t={t} i18nKey="loading.message">
-                We&#39;re sorry, it seems as though the URL you requested is
-                attempting to fetch incorrect data. Please double check your
-                URL, navigate back via the breadcrumbs or{' '}
-                <Link
-                  component={RouterLink}
-                  to={location.pathname.split('/').slice(0, 3).join('/')}
-                >
-                  go back to the top level
-                </Link>
-                .
-              </Trans>
+              <Trans
+                t={t}
+                i18nKey="loading.message"
+                components={{
+                  Link: <Link />,
+                  LinkToTopLevel: (
+                    <Link
+                      component={RouterLink}
+                      to={location.pathname.split('/').slice(0, 3).join('/')}
+                    />
+                  ),
+                }}
+              ></Trans>
             </Typography>
           </Grid>
         </Grid>

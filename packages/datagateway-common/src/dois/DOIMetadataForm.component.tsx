@@ -27,6 +27,8 @@ type DOIMetadataFormProps = {
   doiMinterUrl: string | undefined; // this is because since it loads from settings it is technically undefined at some point
   dataCiteUrl: string | undefined;
   bioportalUrl: string | undefined;
+  doiHandleUrl: string;
+  localContactRole: string;
   techniques: BioPortalTerm[];
   setTechniques: React.Dispatch<React.SetStateAction<BioPortalTerm[]>>;
   subjects: string[];
@@ -52,11 +54,35 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
     doiMinterUrl,
     dataCiteUrl,
     bioportalUrl,
+    doiHandleUrl,
     mintLoading,
+    localContactRole,
     ...gridProps
   } = props;
 
   const [t] = useTranslation();
+
+  const [showErrors, setShowErrors] = React.useState(false);
+
+  const titleError = title.length === 0;
+  const descriptionError = description.length === 0;
+  const usersError = selectedUsers.some((user) => user.contributor_type === '');
+  const relatedIdentifiersError = relatedIdentifiers.some(
+    (relatedIdentifier) =>
+      relatedIdentifier.relationType === '' ||
+      relatedIdentifier.relatedItemType === undefined ||
+      relatedIdentifier.relatedIdentifierType === undefined // should never happen
+  );
+  const subjectError = subjects.length === 0;
+  const techniqueError = techniques.length === 0;
+
+  const validationError =
+    titleError ||
+    usersError ||
+    descriptionError ||
+    relatedIdentifiersError ||
+    subjectError ||
+    techniqueError;
 
   return (
     <Grid
@@ -79,6 +105,7 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
           required
           fullWidth
           color="secondary"
+          error={showErrors && titleError}
           value={title}
           onChange={(event) => setTitle(event.target.value)}
           disabled={mintLoading}
@@ -92,6 +119,7 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
           rows={4}
           fullWidth
           color="secondary"
+          error={showErrors && descriptionError}
           value={description}
           onChange={(event) => setDescription(event.target.value)}
           disabled={mintLoading}
@@ -101,8 +129,10 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
         <TechniquesAndSubjects
           techniques={techniques}
           setTechniques={setTechniques}
+          techniqueError={showErrors && techniqueError}
           subjects={subjects}
           setSubjects={setSubjects}
+          subjectError={showErrors && subjectError}
           disabled={mintLoading}
           bioportalUrl={bioportalUrl}
         />
@@ -112,7 +142,9 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
           relatedIdentifiers={relatedIdentifiers}
           changeRelatedIdentifiers={setRelatedIdentifiers}
           dataCiteUrl={dataCiteUrl}
+          doiHandleUrl={doiHandleUrl}
           disabled={mintLoading}
+          showErrors={showErrors}
         />
       </Grid>
       <Grid item>
@@ -120,7 +152,9 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
           selectedUsers={selectedUsers}
           changeSelectedUsers={setSelectedUsers}
           doiMinterUrl={doiMinterUrl}
+          localContactRole={localContactRole}
           disabled={mintLoading}
+          showErrors={showErrors}
         />
       </Grid>
       <Grid item alignSelf="flex-end">
@@ -131,22 +165,18 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
           loading={mintLoading}
           disabled={
             disableMintButton ||
-            title.length === 0 ||
-            description.length === 0 ||
-            selectedUsers.length === 0 ||
-            selectedUsers.some((user) => user.contributor_type === '') ||
-            relatedIdentifiers.some(
-              (relatedIdentifier) =>
-                relatedIdentifier.relationType === '' ||
-                relatedIdentifier.relatedItemType === undefined ||
-                relatedIdentifier.relatedIdentifierType === undefined // should never happen
-            ) ||
-            subjects.length === 0 ||
-            techniques.length === 0
+            selectedUsers.length === 0 || // disable whilst users are loading
+            (validationError && showErrors)
           }
-          onClick={onMintClick}
+          onClick={() => {
+            if (validationError) {
+              setShowErrors(true);
+            } else {
+              onMintClick();
+            }
+          }}
         >
-          {t('DOIGenerationForm.generate_DOI')}
+          {t('DOIGenerationForm.review_metadata_button')}
         </LoadingButton>
       </Grid>
     </Grid>

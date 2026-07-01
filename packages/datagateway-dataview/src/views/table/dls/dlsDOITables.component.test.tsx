@@ -9,7 +9,6 @@ import userEvent from '@testing-library/user-event';
 import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import {
   ContributorType,
-  DOIRelationType,
   dGCommonInitialState,
   readSciGatewayToken,
   useDataPublicationCount,
@@ -71,7 +70,8 @@ describe('DLS DOI table components', () => {
         users: [
           {
             id: 1,
-            contributorType: ContributorType.Minter,
+            contributorType: ContributorType.Creator,
+            orderKey: '0',
             fullName: 'John Smith',
           },
         ],
@@ -159,32 +159,7 @@ describe('DLS DOI table components', () => {
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'users.contributorType': {
-              eq: ContributorType.Minter,
-            },
-          }),
-        },
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'relatedItems.relationType': {
-              eq: DOIRelationType.HasVersion,
-            },
-          }),
-        },
-        {
-          filterType: 'distinct',
-          filterValue: JSON.stringify([
-            'id',
-            'title',
-            'pid',
-            'publicationDate',
-          ]),
-        },
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'type.name': { eq: 'User-defined' },
+            'type.name': { in: ['Investigation', 'User-defined-concept'] },
           }),
         },
       ];
@@ -242,8 +217,8 @@ describe('DLS DOI table components', () => {
       ).toBeInTheDocument();
     });
 
-    it('supplies the correct filter params for user doiType', async () => {
-      history.replace('?doiType=user');
+    it('supplies the correct filter params for minter doiType', async () => {
+      history.replace('?doiType={"view":"minter"}');
       renderComponent();
 
       const filterParams = [
@@ -256,24 +231,15 @@ describe('DLS DOI table components', () => {
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'relatedItems.relationType': {
-              eq: DOIRelationType.HasVersion,
+            'users.orderKey': {
+              eq: '0',
             },
           }),
         },
         {
-          filterType: 'distinct',
-          filterValue: JSON.stringify([
-            'id',
-            'title',
-            'pid',
-            'publicationDate',
-          ]),
-        },
-        {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'type.name': { eq: 'User-defined' },
+            'type.name': { eq: 'User-defined-concept' },
           }),
         },
       ];
@@ -281,8 +247,30 @@ describe('DLS DOI table components', () => {
       expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
     });
 
-    it('supplies the correct filter params for session doiType', async () => {
-      history.replace('?doiType=session');
+    it('supplies the correct filter params for user doiType', async () => {
+      history.replace('?doiType={"view":"user"}');
+      renderComponent();
+
+      const filterParams = [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'users.user.name': { eq: 'testUser' },
+          }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'type.name': { eq: 'User-defined-concept' },
+          }),
+        },
+      ];
+      expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
+      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
+    });
+
+    it('supplies the correct filter params for open session doiType', async () => {
+      history.replace('?doiType={"view":"session","open":true}');
       renderComponent();
 
       const filterParams = [
@@ -298,13 +286,19 @@ describe('DLS DOI table components', () => {
             'type.name': { eq: 'Investigation' },
           }),
         },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            publicationDate: { isnull: false },
+          }),
+        },
       ];
       expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
       expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
     });
 
-    it('supplies the correct filter params for openSession doiType', async () => {
-      history.replace('?doiType=openSession');
+    it('supplies the correct filter params for closed session doiType', async () => {
+      history.replace('?doiType={"view":"session","open":false}');
       renderComponent();
 
       const filterParams = [
@@ -320,26 +314,10 @@ describe('DLS DOI table components', () => {
             'type.name': { eq: 'Investigation' },
           }),
         },
-      ];
-      expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
-      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
-    });
-
-    it('supplies the correct filter params for closedSession doiType', async () => {
-      history.replace('?doiType=closedSession');
-      renderComponent();
-
-      const filterParams = [
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'users.user.name': { eq: 'testUser' },
-          }),
-        },
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'type.name': { eq: 'Investigation' },
+            publicationDate: { isnull: true },
           }),
         },
       ];
@@ -438,7 +416,7 @@ describe('DLS DOI table components', () => {
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'type.name': { eq: 'Investigation' },
+            'type.name': { in: ['Investigation', 'User-defined-concept'] },
           }),
         },
       ];
@@ -498,31 +476,14 @@ describe('DLS DOI table components', () => {
     });
 
     it('supplies the correct filter params for user doiType', async () => {
-      history.replace('?doiType=user');
+      history.replace('?doiType={"view":"user"}');
       renderComponent();
 
       const filterParams = [
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'relatedItems.relationType': {
-              eq: DOIRelationType.HasVersion,
-            },
-          }),
-        },
-        {
-          filterType: 'distinct',
-          filterValue: JSON.stringify([
-            'id',
-            'title',
-            'pid',
-            'publicationDate',
-          ]),
-        },
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'type.name': { eq: 'User-defined' },
+            'type.name': { eq: 'User-defined-concept' },
           }),
         },
       ];
@@ -530,8 +491,8 @@ describe('DLS DOI table components', () => {
       expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
     });
 
-    it('supplies the correct filter params for openSession doiType', async () => {
-      history.replace('?doiType=openSession');
+    it('supplies the correct filter params for open session doiType', async () => {
+      history.replace('?doiType={"view":"session","open":true}');
       renderComponent();
 
       const filterParams = [
@@ -539,6 +500,12 @@ describe('DLS DOI table components', () => {
           filterType: 'where',
           filterValue: JSON.stringify({
             'type.name': { eq: 'Investigation' },
+          }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            publicationDate: { isnull: false },
           }),
         },
       ];
@@ -547,7 +514,7 @@ describe('DLS DOI table components', () => {
     });
 
     it('supplies the correct filter params for closedSession doiType', async () => {
-      history.replace('?doiType=closedSession');
+      history.replace('?doiType={"view":"session","open":false}');
       renderComponent();
 
       const filterParams = [
@@ -555,6 +522,12 @@ describe('DLS DOI table components', () => {
           filterType: 'where',
           filterValue: JSON.stringify({
             'type.name': { eq: 'Investigation' },
+          }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            publicationDate: { isnull: true },
           }),
         },
       ];

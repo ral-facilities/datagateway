@@ -122,6 +122,15 @@ describe('Visit details panel component', () => {
         },
       },
       {
+        id: 6,
+        role: 'Local Contact',
+        user: {
+          id: 5,
+          name: 'Louise',
+          fullName: 'Louise Davies',
+        },
+      },
+      {
         id: 9,
         role: 'Investigator',
         user: {

@@ -23,6 +23,7 @@ describe('Actions', () => {
       apiUrl: 'api',
       downloadApiUrl: 'download-api',
       icatUrl: 'icat',
+      doiHandleUrl: 'https://doi.org',
     });
     expect(action.type).toEqual(ConfigureURLsType);
     expect(action.payload).toEqual({
@@ -31,6 +32,7 @@ describe('Actions', () => {
         apiUrl: 'api',
         downloadApiUrl: 'download-api',
         icatUrl: 'icat',
+        doiHandleUrl: 'https://doi.org',
       },
     });
   });

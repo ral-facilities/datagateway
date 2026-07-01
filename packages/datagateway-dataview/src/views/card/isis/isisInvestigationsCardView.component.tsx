@@ -61,6 +61,9 @@ const ISISInvestigationsCardView = (
   );
 
   const PIRole = useSelector((state: StateType) => state.dgdataview.PIRole);
+  const doiHandleUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.doiHandleUrl
+  );
 
   const textFilter = useTextFilter(filters);
   const dateFilter = useDateFilter(filters);
@@ -169,7 +172,7 @@ const ISISInvestigationsCardView = (
             )?.[0]?.dataCollection?.dataPublications?.[0];
           if (studyDataPublication) {
             return externalSiteLink(
-              `https://doi.org/${studyDataPublication.pid}`,
+              `${doiHandleUrl}/${studyDataPublication.pid}`,
               studyDataPublication.pid,
               'isis-investigations-card-doi-link'
             );
@@ -197,8 +200,8 @@ const ISISInvestigationsCardView = (
         disableSort: true,
         content: function Content(investigation: Investigation) {
           const principal_investigators =
-            investigation?.investigationUsers?.filter(
-              (iu) => iu.role === PIRole
+            investigation?.investigationUsers?.filter((iu) =>
+              new RegExp(PIRole).test(iu.role)
             );
           let principal_investigator = '';
           if (principal_investigators && principal_investigators.length !== 0) {
@@ -224,7 +227,14 @@ const ISISInvestigationsCardView = (
         filterComponent: dateFilter,
       },
     ],
-    [PIRole, dateFilter, principalExperimenterFilter, t, textFilter]
+    [
+      PIRole,
+      dateFilter,
+      doiHandleUrl,
+      principalExperimenterFilter,
+      t,
+      textFilter,
+    ]
   );
 
   const buttons = React.useMemo(

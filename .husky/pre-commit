@@ -1,1 +1,1 @@
-yarn workspaces foreach --interlaced --verbose --jobs 1 run pre-commit
+yarn workspaces foreach --all --interlaced --verbose --jobs 1 run pre-commit

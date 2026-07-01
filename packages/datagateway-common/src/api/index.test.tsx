@@ -99,7 +99,7 @@ describe('generic api functions', () => {
   describe('parseSearchToQuery', () => {
     it('parses query string successfully', () => {
       const query =
-        '?view=table&search=test&page=1&results=10&filters={"name"%3A{"value"%3A"test"%2C"type"%3A"include"}}&sort={"name"%3A"asc"}&doiType=session';
+        '?view=table&search=test&page=1&results=10&filters={"name"%3A{"value"%3A"test"%2C"type"%3A"include"}}&sort={"name"%3A"asc"}&doiType={"view"%3A"session","open"%3Atrue}';
 
       expect(parseSearchToQuery(query)).toEqual({
         view: 'table',
@@ -116,7 +116,7 @@ describe('generic api functions', () => {
         startDate: null,
         endDate: null,
         currentTab: 'investigation',
-        doiType: 'session',
+        doiType: { view: 'session', open: true },
       });
     });
 

@@ -51,9 +51,13 @@ const DOIGenerationForm: React.FC = () => {
   >('investigation');
   const [showMintConfirmation, setShowMintConfirmation] = React.useState(false);
 
-  const { doiMinterUrl, dataCiteUrl, bioportalUrl } = React.useContext(
-    DownloadSettingsContext
-  );
+  const {
+    doiMinterUrl,
+    dataCiteUrl,
+    bioportalUrl,
+    doiHandleUrl,
+    localContactRole,
+  } = React.useContext(DownloadSettingsContext);
 
   const handleTabChange = (
     _event: React.SyntheticEvent,
@@ -196,6 +200,7 @@ const DOIGenerationForm: React.FC = () => {
               onConfirmClick={handleConfirmClick}
               deleteLoading={deleteDraftStatus === 'loading'}
               publishLoading={publishingStatus === 'loading'}
+              doiHandleUrl={doiHandleUrl}
             />
           ) : (
             <Box>
@@ -301,6 +306,7 @@ const DOIGenerationForm: React.FC = () => {
                     dataCiteUrl={dataCiteUrl}
                     doiMinterUrl={doiMinterUrl}
                     bioportalUrl={bioportalUrl}
+                    doiHandleUrl={doiHandleUrl}
                     title={title}
                     setTitle={setTitle}
                     description={description}
@@ -318,6 +324,7 @@ const DOIGenerationForm: React.FC = () => {
                     }
                     mintLoading={mintingDraftStatus === 'loading'}
                     onMintClick={handleMintClick}
+                    localContactRole={localContactRole}
                   />
                 </Grid>
               </Paper>

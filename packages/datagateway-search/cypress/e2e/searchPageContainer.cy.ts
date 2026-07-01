@@ -69,7 +69,7 @@ describe('SearchPageContainer Component', () => {
         .then(($doi) => {
           const doi = $doi.text();
 
-          const url = `https://doi.org/${doi}`;
+          const url = `${Cypress.expose('doiHandleUrl')}/${doi}`;
 
           cy.get('[data-testid="investigation-search-table-doi-link"]')
             .first()
@@ -155,7 +155,7 @@ describe('SearchPageContainer Component', () => {
         .then(($doi) => {
           const doi = $doi.text();
 
-          const url = `https://doi.org/${doi}`;
+          const url = `${Cypress.expose('doiHandleUrl')}/${doi}`;
 
           cy.get('[data-testid="investigation-search-card-doi-link"]')
             .first()

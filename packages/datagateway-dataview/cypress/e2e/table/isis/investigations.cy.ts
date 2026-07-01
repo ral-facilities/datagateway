@@ -48,7 +48,7 @@ describe('ISIS - Investigations Table', () => {
       .then(($doi) => {
         const doi = $doi.text();
 
-        const url = `https://doi.org/${doi}`;
+        const url = `${Cypress.expose('doiHandleUrl')}/${doi}`;
 
         cy.get('[data-testid="isis-investigations-table-doi-link"]')
           .first()
@@ -162,7 +162,7 @@ describe('ISIS - Investigations Table', () => {
         .then(($pid) => {
           const pid = $pid.text();
 
-          const url = `https://doi.org/${pid}`;
+          const url = `${Cypress.expose('doiHandleUrl')}/${pid}`;
 
           cy.get('[data-testid="investigation-details-panel-pid-link"]')
             .first()
@@ -176,7 +176,7 @@ describe('ISIS - Investigations Table', () => {
         .then(($doi) => {
           const doi = $doi.text();
 
-          const url = `https://doi.org/${doi}`;
+          const url = `${Cypress.expose('doiHandleUrl')}/${doi}`;
 
           cy.get('[data-testid="investigation-details-panel-doi-link"]')
             .first()

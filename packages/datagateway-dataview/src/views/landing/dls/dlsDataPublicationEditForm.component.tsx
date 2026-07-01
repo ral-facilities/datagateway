@@ -27,6 +27,7 @@ import { StateType } from '../../../state/app.types';
 import DLSDataPublicationDataEditor, {
   TransferListItem,
 } from './dlsDataPublicationDataEditor.component';
+import { compareDataPublicationUsersByOrderKey } from './dlsDataPublicationLanding.component';
 
 interface DLSDataPublicationEditFormProps {
   dataPublicationId: string;
@@ -59,6 +60,12 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
   );
   const bioportalUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.bioportalUrl
+  );
+  const doiHandleUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.doiHandleUrl
+  );
+  const localContactRole = useSelector(
+    (state: StateType) => state.dgdataview.localContactRole
   );
 
   const { data: dataPublication } = useDataPublication(
@@ -107,14 +114,16 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
       setTitle(dataPublication.title);
       setDescription(dataPublication.description ?? '');
       setSelectedUsers(
-        dataPublication.users?.map((user) => ({
-          id: user.id,
-          fullName: user.fullName,
-          name: user.user?.name ?? user.fullName, // we're in trouble if user.user.name is undefined...
-          contributor_type: user.contributorType as ContributorType,
-          email: user.email,
-          affiliation: user.affiliations?.[0]?.name,
-        })) ?? []
+        dataPublication.users
+          ?.toSorted(compareDataPublicationUsersByOrderKey)
+          .map((user) => ({
+            id: user.id,
+            fullName: user.fullName,
+            name: user.user?.name ?? user.fullName, // we're in trouble if user.user.name is undefined...
+            contributor_type: user.contributorType as ContributorType,
+            email: user.email,
+            affiliation: user.affiliations?.[0]?.name,
+          })) ?? []
       );
     }
   }, [dataPublication]);
@@ -223,17 +232,13 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
   const { isLoading: cartMintabilityLoading, error: mintableError } =
     useIsCartMintable(cart, doiMinterUrl);
 
-  const unmintableEntityIDs: number[] | undefined = React.useMemo(
+  const unmintableEntityIDs = React.useMemo(
     () =>
       mintableError !== null &&
       isMintabilityErrorExpected(mintableError) &&
-      typeof mintableError?.response?.data?.detail === 'string'
-        ? JSON.parse(
-            mintableError.response.data.detail.substring(
-              mintableError.response.data.detail.indexOf('['),
-              mintableError.response.data.detail.lastIndexOf(']') + 1
-            )
-          )
+      mintableError?.response?.data &&
+      'investigation_ids' in mintableError.response.data
+        ? mintableError.response.data
         : undefined,
     [mintableError]
   );
@@ -257,7 +262,18 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
             id: cartItem.entityId,
             label: cartItem.name,
             entityType: cartItem.entityType,
-            disabled: unmintableEntityIDs?.includes(cartItem.entityId),
+            disabled:
+              cartItem.entityType === 'datafile'
+                ? typeof unmintableEntityIDs?.datafile_ids?.[
+                    cartItem.entityId
+                  ] !== 'undefined'
+                : cartItem.entityType === 'dataset'
+                  ? typeof unmintableEntityIDs?.dataset_ids?.[
+                      cartItem.entityId
+                    ] !== 'undefined'
+                  : typeof unmintableEntityIDs?.investigation_ids?.[
+                      cartItem.entityId
+                    ] !== 'undefined',
           }))
       );
       setLoadedUnselectedContent(true);
@@ -378,6 +394,7 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
             onConfirmClick={handleConfirmClick}
             deleteLoading={deleteVersionDraftStatus === 'loading'}
             publishLoading={publishingVersionStatus === 'loading'}
+            doiHandleUrl={doiHandleUrl}
           />
         ) : (
           <Box>
@@ -413,6 +430,7 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
                   dataCiteUrl={dataCiteUrl}
                   doiMinterUrl={doiMinterUrl}
                   bioportalUrl={bioportalUrl}
+                  doiHandleUrl={doiHandleUrl}
                   title={title}
                   setTitle={setTitle}
                   description={description}
@@ -428,6 +446,7 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
                   disableMintButton={false}
                   mintLoading={mintDraftVersionStatus === 'loading'}
                   onMintClick={handleMintClick}
+                  localContactRole={localContactRole}
                 />
               </Grid>
             </Paper>

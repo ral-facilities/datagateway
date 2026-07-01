@@ -39,6 +39,7 @@ import {
 } from 'react-router-dom';
 import { StateType } from '../state/app.types';
 import DOITypeSelector from '../views/doiTypeSelector.component';
+import InstrumentLandingPage from '../views/landing/instrumentLanding.component';
 import RoleSelector from '../views/roleSelector.component';
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageRouting from './pageRouting.component';
@@ -89,6 +90,7 @@ export const paths = {
   homepage: '/datagateway',
   root: '/browse',
   doiRedirect: '/doi-redirect/:facilityName/:entityName/:entityId',
+  instrumentLandingPage: '/instrument/:instrumentId',
   genericRedirect:
     '/redirect/:facilityName/:entityName/:entityField/:fieldValue',
   myData: {
@@ -812,6 +814,9 @@ const PageContainer: React.FC = () => {
       </Route>
       <Route path={paths.genericRedirect}>
         <GenericRedirect />
+      </Route>
+      <Route path={paths.instrumentLandingPage}>
+        <InstrumentLandingPage />
       </Route>
       {/* Load the standard dataview pageContainer */}
       <Route>

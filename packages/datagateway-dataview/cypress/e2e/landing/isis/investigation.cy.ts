@@ -27,7 +27,7 @@ describe('ISIS - Investigation Landing', () => {
       .then(($doi) => {
         const doi = $doi.text();
 
-        const url = `https://doi.org/${doi}`;
+        const url = `${Cypress.expose('doiHandleUrl')}/${doi}`;
 
         cy.get('[data-testid="isis-investigation-landing-doi-link"]')
           .first()
@@ -41,7 +41,7 @@ describe('ISIS - Investigation Landing', () => {
       .then(($doi) => {
         const doi = $doi.text();
 
-        const url = `https://doi.org/${doi}`;
+        const url = `${Cypress.expose('doiHandleUrl')}/${doi}`;
 
         cy.get('[data-testid="isis-investigations-landing-parent-doi-link"]')
           .first()
@@ -154,7 +154,7 @@ describe('ISIS - Investigation Landing', () => {
     cy.get('#datagateway-dataview').should('be.visible');
     cy.contains('10.5286/ISIS.E.RB1810842').should('be.visible');
     cy.get('[data-testid="citation-formatter-citation"]').contains(
-      'STFC ISIS Neutron and Muon Source, https://doi.org/10.5286/ISIS.E.RB1810842'
+      `STFC ISIS Neutron and Muon Source, ${Cypress.expose('doiHandleUrl')}/10.5286/ISIS.E.RB1810842`
     );
 
     cy.get('#citation-formatter').click();
@@ -191,7 +191,7 @@ describe('ISIS - Investigation Landing', () => {
 
     //Default citation
     cy.get('[data-testid="citation-formatter-citation"]').contains(
-      '2019: Test 1, STFC ISIS Neutron and Muon Source, https://doi.org/invaliddoi'
+      `2019: Test 1, STFC ISIS Neutron and Muon Source, ${Cypress.expose('doiHandleUrl')}/invaliddoi`
     );
 
     cy.get('#citation-formatter').click();

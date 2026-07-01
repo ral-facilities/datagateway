@@ -22,6 +22,7 @@ describe('index - fetchSettings', () => {
     const settingsResult = {
       facilityName: 'Generic',
       facilityImageURL: 'test-image.jpg',
+      landingPageLogo: 'DLS',
       features: {},
       idsUrl: 'ids',
       apiUrl: 'api',
@@ -34,6 +35,7 @@ describe('index - fetchSettings', () => {
         },
       ],
       PIRole: 'principal_experimenter',
+      localContactRole: 'local_contact',
       downloadApiUrl: 'download-api',
       selectAllSetting: false,
       routes: [

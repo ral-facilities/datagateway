@@ -475,19 +475,9 @@ export const isCartMintable = async (
   return status === 200;
 };
 
-// these are "expected" errors i.e. user not a PI or no session DOI
-export const isMintabilityErrorExpected = (
-  error: AxiosError<{
-    detail: { msg: string }[] | string;
-  }>
-): boolean => {
-  return (
-    error.response?.status === 403 ||
-    (error.response?.status === 400 &&
-    typeof error.response?.data?.detail === 'string'
-      ? error.response.data.detail.includes('session DOI')
-      : false)
-  );
+// these are "expected" errors i.e. user not a PI, no session DOI or incorrect data type
+export const isMintabilityErrorExpected = (error: AxiosError): boolean => {
+  return error.response?.status === 403;
 };
 
 /**
@@ -499,9 +489,16 @@ export const useIsCartMintable = (
   doiMinterUrl: string | undefined
 ): UseQueryResult<
   boolean,
-  AxiosError<{
-    detail: { msg: string }[] | string;
-  }>
+  AxiosError<
+    | {
+        detail: { msg: string }[] | string;
+      }
+    | {
+        investigation_ids: Record<string, string>;
+        dataset_ids: Record<string, string>;
+        datafile_ids: Record<string, string>;
+      }
+  >
 > => {
   const queryClient = useQueryClient();
   const opts = queryClient.getDefaultOptions();
@@ -517,14 +514,14 @@ export const useIsCartMintable = (
     },
     {
       onError: (error) => {
-        handleDOIAPIError(
-          error,
-          undefined,
-          undefined,
-          // don't broadcast or log "expected" errors
-          !isMintabilityErrorExpected(error),
-          !isMintabilityErrorExpected(error)
-        );
+        if (!isMintabilityErrorExpected(error))
+          handleDOIAPIError(
+            error as AxiosError<{
+              detail: { msg: string }[] | string;
+            }>,
+            undefined,
+            undefined
+          );
       },
       retry: (failureCount, error) => {
         // don't bother retrying "expected" errors - all other errors use default retry behaviour

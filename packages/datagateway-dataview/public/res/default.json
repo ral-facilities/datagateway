@@ -32,6 +32,13 @@
     "description": "Description",
     "type": "Type",
     "url": "URL",
+    "pid": "DOI",
+    "start_date": "Start Date",
+    "end_date": "End Date",
+    "owner": "Owner",
+    "owner_value": "Science and Technology Facilities Council (<Link href='https://ror.org/057g20z61'>https://ror.org/057g20z61</Link>)",
+    "manufacturer": "Manufacturer",
+    "manufacturer_value": "ISIS Neutron and Muon Source (<Link href='https://ror.org/01t8fg661'>https://ror.org/01t8fg661</Link>)",
     "details": {
       "tabs_label": "Instrument Details",
       "label": "Instrument Details",
@@ -65,6 +72,9 @@
     "dates": "Dates",
     "publication_date": "Publication Date",
     "content_tab_label": "View Content",
+    "principal_investigator": "Principal Investigator",
+    "experimenter": "Experimenter",
+    "local_contact": "Local Contact",
     "content_tab_entity_tabs_aria_label": "content tabs",
     "open": "Open",
     "closed": "Closed",
@@ -278,7 +288,8 @@
     "open_button_group_aria_label": "Select Session DOIs which are",
     "open_or_closed": "Open or Closed",
     "open": "Open",
-    "closed": "Closed"
+    "closed": "Closed",
+    "all": "All"
   },
   "all_doi_table": {
     "type_button_group_aria_label": "Select DOI type",
@@ -287,12 +298,13 @@
     "open_button_group_aria_label": "Select Session DOIs which are",
     "open_or_closed": "Open or Closed",
     "open": "Open",
-    "closed": "Closed"
+    "closed": "Closed",
+    "all": "All"
   },
   "loading": {
     "verifying": "Verifying URL",
     "oops": "Oops!",
-    "message": "We're sorry, it seems as though the URL you requested is attempting to fetch incorrect data. Please double check your URL, navigate back via the breadcrumbs or <2>go back to the top level</2>.",
+    "message": "We're sorry, it seems as though the URL you requested is attempting to fetch incorrect data or data you do not have permission to access. Please check you are logged in as the correct user, double check your URL, navigate back via the breadcrumbs or <LinkToTopLevel>go back to the top level</LinkToTopLevel>.",
     "filter_message": "No results found with current filters applied, please modify filter settings and try again."
   },
   "buttons": {
@@ -376,6 +388,7 @@
     "warning_message_session_token": "Please remember that your selection will be lost after 2 hours of inactivity on this site"
   },
   "doi_constants": {
+    "no_description": "Description not provided",
     "keywords": [
       "STFC > ISIS",
       "STFC > ISIS > SYNCHROTRON",
@@ -391,7 +404,9 @@
     },
     "branding": {
       "title": "ISIS Neutron and Muon Source",
-      "body": "This is a page describing data taken during an experiment at the ISIS Neutron and Muon Source. Information about the ISIS Neutron and Muon Source can be found at <a href='https://www.isis.stfc.ac.uk'>https://www.isis.stfc.ac.uk</a>."
+      "body_data": "This is a page describing data taken during an experiment at the ISIS Neutron and Muon Source. Information about the ISIS Neutron and Muon Source can be found at <Link href='https://www.isis.stfc.ac.uk'>https://www.isis.stfc.ac.uk</Link>.",
+      "body_instrument": "This is a page describing an instrument at the ISIS Neutron and Muon Source. Information about the ISIS Neutron and Muon Source can be found at <Link href='https://www.isis.stfc.ac.uk'>https://www.isis.stfc.ac.uk</Link>.",
+      "logo_alt_text": "ISIS Logo"
     },
     "license": {
       "url": "https://creativecommons.org/licenses/by/4.0/",
@@ -420,6 +435,7 @@
     "technique_pid": "PID",
     "add_technique": "Add technique",
     "creators_and_contributors": "Creators & Contributors",
+    "creators_contributors_help_tooltip": "Please ensure the people associated with this DOI are correct. You can add users via their Fed ID or via their ORCiD. Please select the Add Creator button if the person was a main researcher, otherwise select Add Contributor and specify their contributor type",
     "creators": "Creators",
     "contributors": "Contributors",
     "username": "Username",
@@ -432,6 +448,7 @@
     "creator_action": "Action",
     "delete_creator": "Delete",
     "related_identifiers": "Related Identifiers",
+    "related_identifiers_help_tooltip": "Please add any related resources that should be associated with this DOI. Please select the Add DOI button if you are adding a DOI, otherwise select the Add Other to add a different resource type (e.g. URL). Once you have added a resource, you will need to select the type of the resource, and how it is related to this DOI.",
     "related_identifier": "Identifier (e.g. DOI, URL)",
     "add_related_doi": "Add DOI",
     "add_related_other": "Add Other",
@@ -441,6 +458,7 @@
     "related_identifier_identifier_type": "Identifier Type",
     "related_identifier_action": "Action",
     "delete_related_identifier": "Delete",
+    "review_metadata_button": "Review DOI metadata",
     "generate_DOI": "Generate DOI",
     "cart_tabs_aria_label": "cart tabs",
     "cart_tab_investigations": "Investigations",
@@ -491,14 +509,13 @@
     "concept_doi_label": "Concept DOI",
     "version_doi_label": "Version DOI",
     "error_label": "Error",
-    "view_data_publication": "View Data Publication",
-    "close_aria_label": "Close mint confirm dialogue"
+    "view_data_publication": "View Data Publication"
   },
   "DOIPublishConfirmDialog": {
     "dialog_title": "Publish Data Publication",
     "close_aria_label": "Close publish data publication dialogue",
     "accept": "Accept & publish data publication",
-    "data_policy": "Accept data policy: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum lore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    "data_policy": "Accept data policy: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum lore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. This is a <Link href=\"https://example.com/\">link to example.com</Link>.",
     "publish_success": "Publish was successful",
     "publish_error": "Publish was unsuccessful",
     "publish_loading": "Loading..."

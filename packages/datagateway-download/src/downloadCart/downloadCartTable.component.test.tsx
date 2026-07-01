@@ -620,7 +620,11 @@ describe('Download cart table component', () => {
   it('should disable Generate DOI button when cart is not mintable', async () => {
     mintabilityResponse = Promise.reject({
       response: {
-        data: { detail: 'Not allowed to mint the following items: [2,4]' },
+        data: {
+          investigation_ids: { '2': 'Unable to mint' },
+          dataset_ids: { '3': 'Unable to mint' },
+          datafile_ids: { '4': 'Unable to mint' },
+        },
         status: 403,
       },
     });
@@ -645,9 +649,9 @@ describe('Download cart table component', () => {
       .filter((e) => e.hasAttribute('aria-rowindex'));
     const muiErrorColor = createTheme().palette.error.main;
     expect(tableRows[1]).toHaveStyle(`background-color: ${muiErrorColor}`);
+    expect(tableRows[2]).toHaveStyle(`background-color: ${muiErrorColor}`);
     expect(tableRows[3]).toHaveStyle(`background-color: ${muiErrorColor}`);
     expect(tableRows[0]).not.toHaveStyle(`background-color: ${muiErrorColor}`);
-    expect(tableRows[2]).not.toHaveStyle(`background-color: ${muiErrorColor}`);
 
     await user.click(generateDOIButton);
 

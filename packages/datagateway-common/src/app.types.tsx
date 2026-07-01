@@ -14,7 +14,7 @@ export const FACILITY_NAME = {
   lils: 'LILS',
 } as const;
 
-export type FacilityName = typeof FACILITY_NAME[keyof typeof FACILITY_NAME];
+export type FacilityName = (typeof FACILITY_NAME)[keyof typeof FACILITY_NAME];
 
 export interface CommonSettings {
   facilityName: string;
@@ -31,6 +31,7 @@ export interface CommonSettings {
 export interface DOISettings {
   doiMinterUrl?: string;
   dataCiteUrl?: string;
+  doiHandleUrl?: string;
   bioportalUrl?: string;
 }
 
@@ -111,6 +112,9 @@ export interface Instrument {
   url?: string;
   instrumentScientists?: InstrumentScientist[];
   facility?: Facility;
+  pid?: string;
+  startDate?: string;
+  endDate?: string;
 }
 
 export interface InvestigationUser {
@@ -124,6 +128,8 @@ export interface User {
   id: number;
   name: string;
   fullName?: string;
+  givenName?: string;
+  familyName?: string;
   email?: string;
   affiliation?: string;
   orcidId?: string;
@@ -208,6 +214,7 @@ export interface DataPublicationUser {
   user?: User;
   email?: string;
   affiliations?: Affiliation[];
+  orderKey?: string;
 }
 
 export interface DataPublicationType {
@@ -487,13 +494,7 @@ export interface SortType {
 
 export type ViewsType = 'table' | 'card' | null;
 
-export type DOIViewType =
-  | 'minter'
-  | 'user'
-  | 'session'
-  | 'openSession'
-  | 'closedSession'
-  | null;
+export type DOIViewType = 'minter' | 'user' | 'session' | 'all';
 
 export interface QueryParams {
   sort: SortType;
@@ -510,11 +511,10 @@ export interface QueryParams {
   endDate: Date | null;
   currentTab: string;
   restrict: boolean;
-  doiType: DOIViewType;
+  doiType: { view: DOIViewType; open?: boolean } | null;
 }
 
 export enum ContributorType {
-  Minter = 'Minter',
   Creator = 'Creator',
   ContactPerson = 'ContactPerson',
   DataCollector = 'DataCollector',
@@ -661,10 +661,7 @@ export interface DOICreator {
 }
 
 export type DOIContributor = DOICreator & {
-  contributorType: Exclude<
-    ContributorType,
-    ContributorType.Creator | ContributorType.Minter
-  >;
+  contributorType: Exclude<ContributorType, ContributorType.Creator>;
 };
 
 export interface DOIRelatedIdentifier {
