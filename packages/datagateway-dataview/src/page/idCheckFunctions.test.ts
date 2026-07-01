@@ -1,15 +1,20 @@
+import axios from 'axios';
 import {
+  BroadcastSignOutType,
+  ConfigureURLsType,
+  MicroFrontendId,
+  handleICATError,
+} from 'datagateway-common';
+import configureStore from 'redux-mock-store';
+import {
+  checkDatasetId,
+  checkInstrumentAndFacilityCycleId,
+  checkInstrumentId,
   checkInvestigationId,
   checkProposalName,
-  checkInstrumentAndFacilityCycleId,
-  saveApiUrlMiddleware,
-  checkInstrumentId,
   checkStudyDataPublicationId,
-  checkDatasetId,
+  saveApiUrlMiddleware,
 } from './idCheckFunctions';
-import axios from 'axios';
-import { handleICATError, ConfigureURLsType } from 'datagateway-common';
-import configureStore from 'redux-mock-store';
 
 vi.mock('datagateway-common', async () => {
   const originalModule = await vi.importActual('datagateway-common');
@@ -21,14 +26,17 @@ vi.mock('datagateway-common', async () => {
   };
 });
 
-vi.mock('lodash.memoize', () => ({
-  default: (fn: (args: unknown) => unknown) => fn,
-}));
-
 describe('ID check functions', () => {
   afterEach(() => {
     vi.mocked(axios.get).mockClear();
     vi.mocked(handleICATError).mockClear();
+
+    checkDatasetId.cache.clear?.();
+    checkProposalName.cache.clear?.();
+    checkInstrumentId.cache.clear?.();
+    checkStudyDataPublicationId.cache.clear?.();
+    checkInstrumentAndFacilityCycleId.cache.clear?.();
+    checkInvestigationId.cache.clear?.();
   });
 
   it('saveApiUrlMiddleware sets apiUrl on ConfigureUrls action', async () => {
@@ -52,6 +60,7 @@ describe('ID check functions', () => {
       headers: { Authorization: 'Bearer null' },
     });
     vi.mocked(axios.get).mockClear();
+    checkInvestigationId.cache.clear?.();
 
     saveApiUrlMiddleware(store)(store.dispatch)({
       type: ConfigureURLsType,
@@ -69,6 +78,39 @@ describe('ID check functions', () => {
       type: ConfigureURLsType,
       payload: { urls: { apiUrl: '' } },
     });
+  });
+
+  it('clears caches on BroadcastSignOutType message', async () => {
+    const datasetCacheClearSpy = vi.spyOn(checkDatasetId.cache, 'clear');
+    const proposalCacheClearSpy = vi.spyOn(checkProposalName.cache, 'clear');
+    const instrumentCacheClearSpy = vi.spyOn(checkInstrumentId.cache, 'clear');
+    const dataPublicationCacheClearSpy = vi.spyOn(
+      checkStudyDataPublicationId.cache,
+      'clear'
+    );
+    const facilityCycleCacheClearSpy = vi.spyOn(
+      checkInstrumentAndFacilityCycleId.cache,
+      'clear'
+    );
+    const investigationCacheClearSpy = vi.spyOn(
+      checkInvestigationId.cache,
+      'clear'
+    );
+
+    document.dispatchEvent(
+      new CustomEvent(MicroFrontendId, {
+        detail: {
+          type: BroadcastSignOutType,
+        },
+      })
+    );
+
+    expect(datasetCacheClearSpy).toHaveBeenCalled();
+    expect(proposalCacheClearSpy).toHaveBeenCalled();
+    expect(instrumentCacheClearSpy).toHaveBeenCalled();
+    expect(dataPublicationCacheClearSpy).toHaveBeenCalled();
+    expect(facilityCycleCacheClearSpy).toHaveBeenCalled();
+    expect(investigationCacheClearSpy).toHaveBeenCalled();
   });
 
   describe('checkInvestigationId', () => {
