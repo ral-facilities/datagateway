@@ -81,8 +81,12 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
-          python-version: '3.10'
+          python-version: 3.11
           architecture: x64
+      - name: Install uv
+        uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
+        with:
+          version: '0.11.21'
 
       # ICAT Ansible clone and install dependencies
       - name: Checkout icat-ansible
@@ -167,32 +171,31 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-          ref: v10.0.0
+          ref: v11.1.0
 
       # DataGateway API file setup
       - name: Create search_api_mapping.json
         run: cp datagateway-api/datagateway_api/search_api_mapping.json.example datagateway-api/datagateway_api/search_api_mapping.json
-      - name: Create log file
-        run: touch datagateway-api/datagateway_api/logs.log
 
       - name: Create config.yaml
         run: cp datagateway-api/datagateway_api/config.yaml.example datagateway-api/datagateway_api/config.yaml
 
+      - name: Create logging.ini
+        run: cp datagateway-api/datagateway_api/logging.example.ini datagateway-api/datagateway_api/logging.ini
+
       # DataGateway API dependencies
-      - name: Install Poetry
-        run: pip install poetry
       - name: Install dependencies
-        run: cd datagateway-api/; poetry install
+        run: cd datagateway-api/; uv sync
       - name: Add dummy data to icatdb
         run: |
-          cd datagateway-api/; poetry run python -m util.icat_db_generator
+          cd datagateway-api/; uv run python -m util.icat_db_generator
 
       - name: Start API
-        run: cd datagateway-api/; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
+        run: cd datagateway-api/; nohup uv run python -m datagateway_api.main > api-output.txt &
 
       # DOI minter setup
       - name: Adding 'User-defined' and 'Investigation' DataPublicationTypes (needed for DOI minting api)
-        run: cd datagateway-api/; poetry run python ../.github/add_doi_datapublicationtype.py
+        run: cd datagateway-api/; uv run python ../.github/add_doi_datapublicationtype.py
 
       - name: 'Add password to env file'
         run: echo DATACITE_PASSWORD=${{ secrets.DATACITE_PASSWORD }} >> ./.github/config.env
@@ -241,8 +244,12 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
-          python-version: '3.10'
+          python-version: 3.11
           architecture: x64
+      - name: Install uv
+        uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
+        with:
+          version: '0.11.21'
 
       # ICAT Ansible clone and install dependencies
       - name: Checkout icat-ansible
@@ -337,32 +344,31 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-          ref: v10.0.0
+          ref: v11.1.0
 
       # DataGateway API file setup
       - name: Create search_api_mapping.json
         run: cp datagateway-api/datagateway_api/search_api_mapping.json.example datagateway-api/datagateway_api/search_api_mapping.json
-      - name: Create log file
-        run: touch datagateway-api/datagateway_api/logs.log
 
       - name: Create config.yaml
         run: cp datagateway-api/datagateway_api/config.yaml.example datagateway-api/datagateway_api/config.yaml
 
+      - name: Create logging.ini
+        run: cp datagateway-api/datagateway_api/logging.example.ini datagateway-api/datagateway_api/logging.ini
+
       # DataGateway API dependencies
-      - name: Install Poetry
-        run: pip install poetry
       - name: Install dependencies
-        run: cd datagateway-api/; poetry install
+        run: cd datagateway-api/; uv sync
       - name: Add dummy data to icatdb
         run: |
-          cd datagateway-api/; poetry run python -m util.icat_db_generator
+          cd datagateway-api/; uv run python -m util.icat_db_generator
 
       - name: Start API
-        run: cd datagateway-api/; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
+        run: cd datagateway-api/; nohup uv run python -m datagateway_api.main > api-output.txt &
 
       # DOI minter setup
       - name: Adding 'User-defined' and 'Investigation' DataPublicationTypes (needed for DOI minting api)
-        run: cd datagateway-api/; poetry run python ../.github/add_doi_datapublicationtype.py
+        run: cd datagateway-api/; uv run python ../.github/add_doi_datapublicationtype.py
 
       - name: 'Add password to env file'
         run: echo DATACITE_PASSWORD=${{ secrets.DATACITE_PASSWORD }} >> ./.github/config.env
@@ -411,8 +417,12 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
-          python-version: '3.10'
+          python-version: 3.11
           architecture: x64
+      - name: Install uv
+        uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
+        with:
+          version: '0.11.21'
 
       # ICAT Ansible clone and install dependencies
       - name: Checkout icat-ansible
@@ -474,27 +484,26 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-          ref: v10.0.0
+          ref: v11.1.0
 
       # DataGateway API file setup
       - name: Create search_api_mapping.json
         run: cp datagateway-api/datagateway_api/search_api_mapping.json.example datagateway-api/datagateway_api/search_api_mapping.json
-      - name: Create log file
-        run: touch datagateway-api/datagateway_api/logs.log
 
       - name: Create config.yaml
         run: cp datagateway-api/datagateway_api/config.yaml.example datagateway-api/datagateway_api/config.yaml
 
+      - name: Create logging.ini
+        run: cp datagateway-api/datagateway_api/logging.example.ini datagateway-api/datagateway_api/logging.ini
+
       # DataGateway API dependencies
-      - name: Install Poetry
-        run: pip install poetry
       - name: Install dependencies
-        run: cd datagateway-api/; poetry install
+        run: cd datagateway-api/; uv sync
       - name: Add dummy data to icatdb
         run: |
-          cd datagateway-api/; poetry run python -m util.icat_db_generator
+          cd datagateway-api/; uv run python -m util.icat_db_generator
       - name: Add ICAT rules & public steps
-        run: cd datagateway-api/; poetry run python ../.github/add_icat_rules.py
+        run: cd datagateway-api/; uv run python ../.github/add_icat_rules.py
 
       # Recreate Lucene indexes
       - name: Use icatadmin to reindex all indexes
@@ -503,7 +512,7 @@ jobs:
         run: sleep 30
 
       - name: Start API
-        run: cd datagateway-api/; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
+        run: cd datagateway-api/; nohup uv run python -m datagateway_api.main > api-output.txt &
 
       # E2E tests
       - name: Setup Node.js
