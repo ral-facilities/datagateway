@@ -335,6 +335,7 @@ describe('DLS Data Publication Landing page', () => {
     vi.mocked(readSciGatewayToken).mockReturnValue({
       sessionId: 'abcdef',
       username: 'John1',
+      token: '1234abcdef',
     });
   });
 
@@ -504,6 +505,7 @@ describe('DLS Data Publication Landing page', () => {
     vi.mocked(readSciGatewayToken).mockReturnValueOnce({
       sessionId: 'abcdef',
       username: 'Jane2',
+      token: '1234abcdef',
     });
     renderComponent();
 

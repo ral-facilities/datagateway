@@ -230,6 +230,7 @@ describe('SearchPageContainer - Tests', () => {
     vi.mocked(readSciGatewayToken).mockReturnValue({
       sessionId: null,
       username: 'test',
+      token: null,
     });
   });
 
@@ -1287,6 +1288,7 @@ describe('SearchPageContainer - Tests', () => {
     vi.mocked(readSciGatewayToken).mockReturnValue({
       sessionId: null,
       username: 'anon/anon',
+      token: null,
     });
 
     const user = userEvent.setup();
