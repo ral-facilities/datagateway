@@ -120,6 +120,7 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
       if (typeof parsed.view === 'string') {
         parsedDOIType = { view: parsed.view };
         if (typeof parsed.open === 'boolean') parsedDOIType.open = parsed.open;
+        if (typeof parsed.pi === 'boolean') parsedDOIType.pi = parsed.pi;
       }
     } catch (_e) {
       console.error('doiType query param provided in an incorrect format.');

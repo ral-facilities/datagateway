@@ -38,10 +38,8 @@ const DOITypeSelector = (props: DOITypeSelectorProps): React.ReactElement => {
       pushQueryParams({
         doiType: {
           view: newType,
-          open:
-            newType === 'minter' || newType === 'user'
-              ? undefined
-              : doiType?.open,
+          open: newType === 'user' ? undefined : doiType?.open,
+          pi: newType === 'all' ? undefined : doiType?.pi,
         },
       });
   };
@@ -55,10 +53,24 @@ const DOITypeSelector = (props: DOITypeSelectorProps): React.ReactElement => {
         doiType: {
           view: doiType?.view ?? 'all',
           open: newOpenOrClosed === 'undefined' ? undefined : newOpenOrClosed,
+          pi: doiType?.pi,
         },
       });
   };
 
+  const handlePIorAny = (
+    _event: React.MouseEvent<HTMLElement>,
+    newPIorAny: boolean | 'undefined' | null
+  ): void => {
+    if (newPIorAny !== null)
+      pushQueryParams({
+        doiType: {
+          view: doiType?.view ?? 'all',
+          open: doiType?.open,
+          pi: newPIorAny === 'undefined' ? undefined : newPIorAny,
+        },
+      });
+  };
   return (
     <Grid container item direction="row" xs="auto" spacing={1}>
       <Grid container item direction="column" ml={1} xs="auto">
@@ -83,11 +95,7 @@ const DOITypeSelector = (props: DOITypeSelectorProps): React.ReactElement => {
                 ? t('my_doi_table.all')
                 : t('all_doi_table.all')}
             </ToggleButton>
-            {type === 'myDOIs' && (
-              <ToggleButton value="minter" sx={{ p: '3px 7px' }}>
-                {t('my_doi_table.minter')}
-              </ToggleButton>
-            )}
+
             <ToggleButton value="user" sx={{ p: '3px 7px' }}>
               {type === 'myDOIs'
                 ? t('my_doi_table.user')
@@ -134,6 +142,46 @@ const DOITypeSelector = (props: DOITypeSelectorProps): React.ReactElement => {
                 {type === 'myDOIs'
                   ? t('my_doi_table.closed')
                   : t('all_doi_table.closed')}
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </Grid>
+        </Grid>
+      )}
+
+      {(doiType === null ||
+        doiType.view === 'all' ||
+        doiType.view === 'session' ||
+        doiType.view === 'user') && (
+        <Grid container item direction="column" xs="auto">
+          <Grid item>
+            <Typography component={'label'} id="doi-pi-selector-label">
+              {type === 'myDOIs'
+                ? t('my_doi_table.pi_button_group_aria_label')
+                : t('all_doi_table.pi_button_group_aria_label')}
+            </Typography>
+          </Grid>
+          <Grid item>
+            <ToggleButtonGroup
+              value={doiType?.pi ?? 'undefined'}
+              exclusive
+              onChange={handlePIorAny}
+              aria-labelledby="doi-pi-selector-label"
+              size="small"
+            >
+              <ToggleButton value={'undefined'} sx={{ p: '3px 7px' }}>
+                {type === 'myDOIs'
+                  ? t('my_doi_table.pi_or_any')
+                  : t('all_doi_table.pi_or_any')}
+              </ToggleButton>
+              <ToggleButton value={true} sx={{ p: '3px 7px' }}>
+                {type === 'myDOIs'
+                  ? t('my_doi_table.pi')
+                  : t('all_doi_table.pi')}
+              </ToggleButton>
+              <ToggleButton value={false} sx={{ p: '3px 7px' }}>
+                {type === 'myDOIs'
+                  ? t('my_doi_table.any')
+                  : t('all_doi_table.any')}
               </ToggleButton>
             </ToggleButtonGroup>
           </Grid>
