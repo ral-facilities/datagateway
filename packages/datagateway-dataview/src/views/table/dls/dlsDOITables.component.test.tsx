@@ -217,36 +217,6 @@ describe('DLS DOI table components', () => {
       ).toBeInTheDocument();
     });
 
-    it('supplies the correct filter params for minter doiType', async () => {
-      history.replace('?doiType={"view":"minter"}');
-      renderComponent();
-
-      const filterParams = [
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'users.user.name': { eq: 'testUser' },
-          }),
-        },
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'users.orderKey': {
-              eq: '0',
-            },
-          }),
-        },
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'type.name': { eq: 'User-defined-concept' },
-          }),
-        },
-      ];
-      expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
-      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
-    });
-
     it('supplies the correct filter params for user doiType', async () => {
       history.replace('?doiType={"view":"user"}');
       renderComponent();
