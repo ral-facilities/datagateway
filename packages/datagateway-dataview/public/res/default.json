@@ -281,7 +281,7 @@
     "all_roles": "All"
   },
   "my_doi_table": {
-    "type_button_group_aria_label": "Select DOIs type",
+    "type_button_group_aria_label": "Select DOI type",
     "user": "User-defined DOIs",
     "session": "Session DOIs",
     "open_button_group_aria_label": "Select Session DOIs which are",
@@ -302,11 +302,7 @@
     "open_or_closed": "Open or Closed",
     "open": "Open",
     "closed": "Closed",
-    "all": "All",
-    "pi_button_group_aria_label": "Select DOIs which roles are",    
-    "pi_or_any": "All",
-    "pi": "Principal Investigator",
-    "any": "Others"
+    "all": "All"
   },
   "loading": {
     "verifying": "Verifying URL",

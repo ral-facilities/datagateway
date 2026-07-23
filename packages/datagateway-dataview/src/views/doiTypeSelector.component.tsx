@@ -148,45 +148,38 @@ const DOITypeSelector = (props: DOITypeSelectorProps): React.ReactElement => {
         </Grid>
       )}
 
-      {(doiType === null ||
-        doiType.view === 'all' ||
-        doiType.view === 'session' ||
-        doiType.view === 'user') && (
-        <Grid container item direction="column" xs="auto">
-          <Grid item>
-            <Typography component={'label'} id="doi-pi-selector-label">
-              {type === 'myDOIs'
-                ? t('my_doi_table.pi_button_group_aria_label')
-                : t('all_doi_table.pi_button_group_aria_label')}
-            </Typography>
+      {type === 'myDOIs' &&
+        (doiType === null ||
+          doiType.view === 'all' ||
+          doiType.view === 'session' ||
+          doiType.view === 'user') && (
+          <Grid container item direction="column" xs="auto">
+            <Grid item>
+              <Typography component={'label'} id="doi-pi-selector-label">
+                {t('my_doi_table.pi_button_group_aria_label')}
+              </Typography>
+            </Grid>
+            <Grid item>
+              <ToggleButtonGroup
+                value={doiType?.pi ?? 'undefined'}
+                exclusive
+                onChange={handlePIorAny}
+                aria-labelledby="doi-pi-selector-label"
+                size="small"
+              >
+                <ToggleButton value={'undefined'} sx={{ p: '3px 7px' }}>
+                  {t('my_doi_table.pi_or_any')}
+                </ToggleButton>
+                <ToggleButton value={true} sx={{ p: '3px 7px' }}>
+                  {t('my_doi_table.pi')}
+                </ToggleButton>
+                <ToggleButton value={false} sx={{ p: '3px 7px' }}>
+                  {t('my_doi_table.any')}
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </Grid>
           </Grid>
-          <Grid item>
-            <ToggleButtonGroup
-              value={doiType?.pi ?? 'undefined'}
-              exclusive
-              onChange={handlePIorAny}
-              aria-labelledby="doi-pi-selector-label"
-              size="small"
-            >
-              <ToggleButton value={'undefined'} sx={{ p: '3px 7px' }}>
-                {type === 'myDOIs'
-                  ? t('my_doi_table.pi_or_any')
-                  : t('all_doi_table.pi_or_any')}
-              </ToggleButton>
-              <ToggleButton value={true} sx={{ p: '3px 7px' }}>
-                {type === 'myDOIs'
-                  ? t('my_doi_table.pi')
-                  : t('all_doi_table.pi')}
-              </ToggleButton>
-              <ToggleButton value={false} sx={{ p: '3px 7px' }}>
-                {type === 'myDOIs'
-                  ? t('my_doi_table.any')
-                  : t('all_doi_table.any')}
-              </ToggleButton>
-            </ToggleButtonGroup>
-          </Grid>
-        </Grid>
-      )}
+        )}
     </Grid>
   );
 };
