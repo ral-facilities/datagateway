@@ -99,7 +99,7 @@ describe('DLS - MyDOIs Table', () => {
       });
 
       it('should be able to sort by all sort directions on single and multiple columns', () => {
-        cy.contains('Minted the user-created DOI').click();
+        cy.contains('Principal Investigator').click();
         //Revert the default sort
         cy.contains('[role="button"]', 'Publication Date')
           .as('dateSortButton')
@@ -218,7 +218,7 @@ describe('DLS - MyDOIs Table', () => {
         cy.title().should('equal', 'DataGateway DataView');
         cy.get('#datagateway-dataview').should('be.visible');
 
-        cy.contains('Am listed on the session DOI').click();
+        cy.contains('Session DOIs').click();
 
         //Default sort
         cy.get('[aria-sort="descending"]').should('exist');
