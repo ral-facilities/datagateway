@@ -100,6 +100,7 @@ describe('DLS - MyDOIs Table', () => {
 
       it('should be able to sort by all sort directions on single and multiple columns', () => {
         cy.contains('Principal Investigator').click();
+        cy.contains('User-defined DOIs').click();
         //Revert the default sort
         cy.contains('[role="button"]', 'Publication Date')
           .as('dateSortButton')
