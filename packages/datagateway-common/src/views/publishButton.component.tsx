@@ -114,7 +114,7 @@ const PublishButton: React.FC<PublishButtonProps> = (props) => {
             {!showRequestResult ? (
               <Grid container flexDirection="column">
                 <Grid item>
-                  <Typography variant="body2">
+                  <Typography variant="body2" align="left">
                     <Trans
                       i18nKey="DOIPublishConfirmDialog.data_policy"
                       components={{
