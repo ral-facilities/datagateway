@@ -110,6 +110,7 @@ describe('PreviewDatafileButton', () => {
     vi.mocked(readSciGatewayToken).mockReturnValue({
       sessionId: 'abcdef',
       username: 'anon/anon',
+      token: '1234abcdef',
     });
 
     renderComponent({ datafile: mockDatafile });
