@@ -18,7 +18,9 @@ describe('DLS - MyDOIs Table', () => {
       before(() => {
         cy.login({ username: 'root', password: 'pw', mechanism: 'simple' });
         cy.seedSessionDataPublication().as('sessionDataPublication');
-
+        cy.seedSessionDataPublication({ id: 14 }).as(
+          'sessionDataPublication14'
+        );
         cy.login(
           {
             username: 'Chris481',
@@ -36,6 +38,23 @@ describe('DLS - MyDOIs Table', () => {
         cy.seedUserGeneratedDataPublication('Test DOI Title 2').as(
           'dataPublication2'
         );
+
+        cy.login(
+          {
+            username: 'Amy14',
+            password: 'pw',
+            mechanism: 'simple',
+          },
+          'Amy14'
+        );
+
+        // can seed the user defined DP in before rather than beforeEach as myDOI page is read-only
+        cy.seedUserGeneratedDataPublication(
+          'Test DOI Title 3',
+          [{ username: 'Chris481' }],
+          [14],
+          []
+        ).as('dataPublication3');
         cy.dumpAliases(store);
       });
 
@@ -60,17 +79,26 @@ describe('DLS - MyDOIs Table', () => {
         cy.login({ username: 'root', password: 'pw', mechanism: 'simple' });
         cy.get<UserDefinedMintResponse>('@dataPublication1').then((dp1) => {
           cy.get<UserDefinedMintResponse>('@dataPublication2').then((dp2) => {
-            cy.get<SessionMintResponse>('@sessionDataPublication').then(
-              (dp3) => {
-                cy.clearDataPublications([
-                  dp1.body.concept.data_publication_id,
-                  dp1.body.version.data_publication_id,
-                  dp2.body.concept.data_publication_id,
-                  dp2.body.version.data_publication_id,
-                  dp3.body.data_publication_id,
-                ]);
-              }
-            );
+            cy.get<UserDefinedMintResponse>('@dataPublication3').then((dp3) => {
+              cy.get<SessionMintResponse>('@sessionDataPublication').then(
+                (dp4) => {
+                  cy.get<SessionMintResponse>('@sessionDataPublication14').then(
+                    (dp5) => {
+                      cy.clearDataPublications([
+                        dp1.body.concept.data_publication_id,
+                        dp1.body.version.data_publication_id,
+                        dp2.body.concept.data_publication_id,
+                        dp2.body.version.data_publication_id,
+                        dp3.body.concept.data_publication_id,
+                        dp3.body.version.data_publication_id,
+                        dp4.body.data_publication_id,
+                        dp5.body.data_publication_id,
+                      ]);
+                    }
+                  );
+                }
+              );
+            });
           });
         });
       });
@@ -180,6 +208,13 @@ describe('DLS - MyDOIs Table', () => {
         );
 
         cy.get('[aria-rowcount="0"]').should('exist');
+      });
+
+      it('should be able filter the Principal Investigator toggle button to show only sessions which they are not the PI', () => {
+        cy.contains('Others').click();
+        cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
+          'Test DOI Title 3'
+        );
       });
     });
 
