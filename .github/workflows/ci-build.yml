@@ -295,6 +295,14 @@ jobs:
       - name: Removing authenticator prefix for simple auth
         run: |
           sed -i 's/mechanism = simple/!mechanism = simple/' /home/runner/install/authn.simple/run.properties
+      - name: Adding Amy14 user
+        run: |
+          sed -i '/user\.list/ s/$/ Amy14/' /home/runner/install/authn.simple/run.properties
+      - name: Adding Amy14 user password
+        run: |
+          echo "user.Amy14.password = pw" >> /home/runner/install/authn.simple/run.properties
+        run: |
+          sed -i 's/mechanism = simple/!mechanism = simple/' /home/runner/install/authn.simple/run.properties
       - name: Adding Chris481 user
         run: |
           sed -i '/user\.list/ s/$/ Chris481/' /home/runner/install/authn.simple/run.properties
