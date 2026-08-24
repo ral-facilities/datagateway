@@ -71,6 +71,30 @@ describe('DOI Type Selector', () => {
     ).toBeInTheDocument();
   });
 
+  expect(
+    screen.getByRole('group', {
+      name: 'my_doi_table.pi_button_group_aria_label',
+    })
+  ).toBeInTheDocument();
+  expect(
+    screen.getByRole('button', {
+      name: 'my_doi_table.pi_or_any',
+      pressed: true,
+    })
+  ).toBeInTheDocument();
+  expect(
+    screen.getByRole('button', {
+      name: 'my_doi_table.pi',
+      pressed: false,
+    })
+  ).toBeInTheDocument();
+  expect(
+    screen.getByRole('button', {
+      name: 'my_doi_table.any',
+      pressed: false,
+    })
+  ).toBeInTheDocument();
+
   it('displays myDOIs button groups correctly with session DOI type selected', () => {
     vi.mocked(parseSearchToQuery, { partial: true }).mockReturnValue({
       doiType: { view: 'session', open: true },
@@ -126,6 +150,30 @@ describe('DOI Type Selector', () => {
       })
     ).toBeInTheDocument();
   });
+
+  expect(
+    screen.getByRole('group', {
+      name: 'my_doi_table.pi_button_group_aria_label',
+    })
+  ).toBeInTheDocument();
+  expect(
+    screen.getByRole('button', {
+      name: 'my_doi_table.pi_or_any',
+      pressed: true,
+    })
+  ).toBeInTheDocument();
+  expect(
+    screen.getByRole('button', {
+      name: 'my_doi_table.pi',
+      pressed: false,
+    })
+  ).toBeInTheDocument();
+  expect(
+    screen.getByRole('button', {
+      name: 'my_doi_table.any',
+      pressed: false,
+    })
+  ).toBeInTheDocument();
 
   it('displays button group correctly for all dois type', () => {
     renderComponent('allDOIs');

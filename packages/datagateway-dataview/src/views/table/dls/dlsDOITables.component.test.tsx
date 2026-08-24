@@ -295,6 +295,56 @@ describe('DLS DOI table components', () => {
       expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
     });
 
+    it('supplies the correct filter params for when user is PI PI button', async () => {
+      history.replace('?doiType={"pi":true}');
+      renderComponent();
+
+      const filterParams = [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'users.user.name': { eq: 'testUser' },
+          }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'users.orderKey': {
+              eq: '0',
+            },
+          }),
+        },
+      ];
+
+      expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
+      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
+    });
+
+    it('supplies the correct filter params for when user is not PI PI button', async () => {
+      history.replace('?doiType={"pi":false}');
+      renderComponent();
+
+      const filterParams = [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'users.user.name': { eq: 'testUser' },
+          }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'users.orderKey': {
+              neq: '0',
+            },
+          }),
+        },
+      ];
+
+      expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
+      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
+    });
+
     it('updates filter query params on text filter', async () => {
       renderComponent();
 
