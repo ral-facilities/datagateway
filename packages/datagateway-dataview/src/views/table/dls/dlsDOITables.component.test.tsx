@@ -296,7 +296,7 @@ describe('DLS DOI table components', () => {
     });
 
     it('supplies the correct filter params for when user is PI PI button', async () => {
-      history.replace('?doiType={"pi":true}');
+      history.replace('?doiType={"view":"all","open": null,"pi":true}');
       renderComponent();
 
       const filterParams = [
@@ -304,6 +304,12 @@ describe('DLS DOI table components', () => {
           filterType: 'where',
           filterValue: JSON.stringify({
             'users.user.name': { eq: 'testUser' },
+          }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'type.name': { in: ['Investigation', 'User-defined-concept'] },
           }),
         },
         {
@@ -321,7 +327,7 @@ describe('DLS DOI table components', () => {
     });
 
     it('supplies the correct filter params for when user is not PI PI button', async () => {
-      history.replace('?doiType={"pi":false}');
+      history.replace('?doiType={"view":"all","open": null,"pi":false}');
       renderComponent();
 
       const filterParams = [
@@ -329,6 +335,12 @@ describe('DLS DOI table components', () => {
           filterType: 'where',
           filterValue: JSON.stringify({
             'users.user.name': { eq: 'testUser' },
+          }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'type.name': { in: ['Investigation', 'User-defined-concept'] },
           }),
         },
         {

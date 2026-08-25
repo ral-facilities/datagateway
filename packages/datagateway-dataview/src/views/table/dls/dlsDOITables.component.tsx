@@ -193,35 +193,19 @@ export const DLSMyDOIsTable = (): React.ReactElement => {
     });
 
   if (doiType?.pi === true)
-    params.push(
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'users.orderKey': { eq: '0' },
-        }),
-      },
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'users.user.name': { eq: username },
-        }),
-      }
-    );
+    params.push({
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'users.orderKey': { eq: '0' },
+      }),
+    });
   else if (doiType?.pi === false)
-    params.push(
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'users.orderKey': { neq: '0' },
-        }),
-      },
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'users.user.name': { eq: username },
-        }),
-      }
-    );
+    params.push({
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'users.orderKey': { neq: '0' },
+      }),
+    });
   return <DLSBaseDOIsTable filterParams={params} />;
 };
 
