@@ -277,10 +277,13 @@ const TechniqueDialog: React.FC<{
   );
 };
 
-const TechniquesAndSubjects: React.FC<{
+const TechniquesSamplesSubjects: React.FC<{
   techniques: BioPortalTerm[];
   setTechniques: React.Dispatch<React.SetStateAction<BioPortalTerm[]>>;
   techniqueError: boolean;
+  samples: string[];
+  setSamples: React.Dispatch<React.SetStateAction<string[]>>;
+  sampleError: boolean;
   subjects: string[];
   setSubjects: React.Dispatch<React.SetStateAction<string[]>>;
   subjectError: boolean;
@@ -292,6 +295,9 @@ const TechniquesAndSubjects: React.FC<{
     techniques,
     setTechniques,
     techniqueError,
+    samples,
+    setSamples,
+    sampleError,
     subjects,
     setSubjects,
     subjectError,
@@ -301,6 +307,9 @@ const TechniquesAndSubjects: React.FC<{
 
   const [isTechniqueDialogOpen, setIsTechniqueDialogOpen] =
     React.useState(false);
+
+  const [subjectsString, setSubjectsString] = React.useState('');
+  const [samplesString, setSamplesString] = React.useState('');
 
   return (
     <Paper
@@ -396,44 +405,117 @@ const TechniquesAndSubjects: React.FC<{
               />
             </Grid>
           </Grid>
-          <Grid item xs={12}>
-            <Autocomplete
-              multiple
-              options={[]}
-              freeSolo
-              autoSelect
-              renderTags={(value: readonly string[], getTagProps) =>
-                value.map((option: string, index: number) => {
-                  const { key, ...tagProps } = getTagProps({ index });
-                  return (
-                    <Chip
-                      variant="outlined"
-                      label={option}
-                      key={key}
-                      {...tagProps}
-                    />
-                  );
-                })
-              }
-              value={subjects}
-              onChange={(_event, value) => setSubjects(value)}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label={t('DOIGenerationForm.subjects')}
-                  required={true}
-                  color="secondary"
-                  InputProps={{
-                    ...params.InputProps,
-                    sx: {
-                      backgroundColor: 'background.default',
-                    },
-                  }}
-                  error={subjectError}
-                />
-              )}
-              disabled={disabled}
-            />
+          <Grid container item xs={12} alignItems="center" spacing={1}>
+            <Grid item xs>
+              <Autocomplete
+                multiple
+                options={[]}
+                freeSolo
+                renderTags={(value: readonly string[], getTagProps) =>
+                  value.map((option: string, index: number) => {
+                    const { key, ...tagProps } = getTagProps({ index });
+                    return (
+                      <Chip
+                        variant="outlined"
+                        label={option}
+                        key={key}
+                        {...tagProps}
+                      />
+                    );
+                  })
+                }
+                value={samples}
+                inputValue={samplesString}
+                onInputChange={(_event, value) => setSamplesString(value)}
+                onChange={(_event, value) => {
+                  setSamples(value);
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label={t('DOIGenerationForm.samples')}
+                    required={true}
+                    color="secondary"
+                    InputProps={{
+                      ...params.InputProps,
+                      sx: {
+                        backgroundColor: 'background.default',
+                      },
+                    }}
+                    error={sampleError}
+                  />
+                )}
+                disabled={disabled}
+              />
+            </Grid>
+            <Grid item xs="auto">
+              <Button
+                variant="contained"
+                onClick={() => {
+                  setSamples([...samples, samplesString]);
+                  setSamplesString('');
+                }}
+                disabled={disabled}
+              >
+                {t('DOIGenerationForm.add_sample')}
+              </Button>
+            </Grid>
+          </Grid>
+          <Grid container item xs={12} alignItems="center" spacing={1}>
+            <Grid item xs>
+              <Autocomplete
+                multiple
+                options={[]}
+                freeSolo
+                renderTags={(value: readonly string[], getTagProps) =>
+                  value.map((option: string, index: number) => {
+                    const { key, ...tagProps } = getTagProps({ index });
+                    return (
+                      <Chip
+                        variant="outlined"
+                        label={option}
+                        key={key}
+                        {...tagProps}
+                      />
+                    );
+                  })
+                }
+                value={subjects}
+                inputValue={subjectsString}
+                onInputChange={(_event, value) => setSubjectsString(value)}
+                onChange={(_event, value) => {
+                  setSubjects(value);
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label={t('DOIGenerationForm.subjects_label')}
+                    required={true}
+                    color="secondary"
+                    InputProps={{
+                      ...params.InputProps,
+                      sx: {
+                        backgroundColor: 'background.default',
+                      },
+                    }}
+                    error={subjectError}
+                  />
+                )}
+                disabled={disabled}
+              />
+            </Grid>
+            <Grid item xs="auto">
+              <Button
+                variant="contained"
+                onClick={() => {
+                  setSubjects([...subjects, subjectsString]);
+                  setSubjectsString('');
+                }}
+                disabled={disabled}
+              >
+                {t('DOIGenerationForm.add_subject')}
+              </Button>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
@@ -441,4 +523,4 @@ const TechniquesAndSubjects: React.FC<{
   );
 };
 
-export default TechniquesAndSubjects;
+export default TechniquesSamplesSubjects;

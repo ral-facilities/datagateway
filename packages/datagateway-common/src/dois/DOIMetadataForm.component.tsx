@@ -8,7 +8,7 @@ import CreatorsAndContributors, {
   ContributorUser,
 } from './creatorsAndContributors.component';
 import RelatedIdentifiers from './relatedIdentifiers.component';
-import TechniquesAndSubjects from './techniquesAndSubjects.component';
+import TechniquesSamplesSubjects from './techniquesSamplesSubjects.component';
 
 type DOIMetadataFormProps = {
   title: string;
@@ -31,6 +31,8 @@ type DOIMetadataFormProps = {
   localContactRole: string;
   techniques: BioPortalTerm[];
   setTechniques: React.Dispatch<React.SetStateAction<BioPortalTerm[]>>;
+  samples: string[];
+  setSamples: React.Dispatch<React.SetStateAction<string[]>>;
   subjects: string[];
   setSubjects: React.Dispatch<React.SetStateAction<string[]>>;
 } & React.ComponentProps<typeof Grid>;
@@ -47,6 +49,8 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
     setRelatedIdentifiers,
     techniques,
     setTechniques,
+    samples,
+    setSamples,
     subjects,
     setSubjects,
     disableMintButton,
@@ -75,6 +79,7 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
   );
   const subjectError = subjects.length === 0;
   const techniqueError = techniques.length === 0;
+  const sampleError = samples.length === 0;
 
   const validationError =
     titleError ||
@@ -82,7 +87,8 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
     descriptionError ||
     relatedIdentifiersError ||
     subjectError ||
-    techniqueError;
+    techniqueError ||
+    sampleError;
 
   return (
     <Grid
@@ -126,10 +132,13 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
         />
       </Grid>
       <Grid item>
-        <TechniquesAndSubjects
+        <TechniquesSamplesSubjects
           techniques={techniques}
           setTechniques={setTechniques}
           techniqueError={showErrors && techniqueError}
+          samples={samples}
+          setSamples={setSamples}
+          sampleError={showErrors && sampleError}
           subjects={subjects}
           setSubjects={setSubjects}
           subjectError={showErrors && subjectError}

@@ -45,6 +45,7 @@ const DOIGenerationForm: React.FC = () => {
   const [title, setTitle] = React.useState('');
   const [description, setDescription] = React.useState('');
   const [techniques, setTechniques] = React.useState<BioPortalTerm[]>([]);
+  const [samples, setSamples] = React.useState<string[]>([]);
   const [subjects, setSubjects] = React.useState<string[]>([]);
   const [currentTab, setCurrentTab] = React.useState<
     'investigation' | 'dataset' | 'datafile'
@@ -142,6 +143,13 @@ const DOIGenerationForm: React.FC = () => {
               valueUri: null,
               classificationCode: null,
             })),
+            ...samples.map((s) => ({
+              subject: `sample:${s}`,
+              subjectScheme: null,
+              schemeUri: null,
+              valueUri: null,
+              classificationCode: null,
+            })),
             ...techniques.map((t) => ({
               subject: t.prefLabel,
               subjectScheme:
@@ -161,6 +169,7 @@ const DOIGenerationForm: React.FC = () => {
     description,
     mintDraftCart,
     relatedIdentifiers,
+    samples,
     selectedUsers,
     subjects,
     techniques,
@@ -317,6 +326,8 @@ const DOIGenerationForm: React.FC = () => {
                     setRelatedIdentifiers={setRelatedIdentifiers}
                     techniques={techniques}
                     setTechniques={setTechniques}
+                    samples={samples}
+                    setSamples={setSamples}
                     subjects={subjects}
                     setSubjects={setSubjects}
                     disableMintButton={

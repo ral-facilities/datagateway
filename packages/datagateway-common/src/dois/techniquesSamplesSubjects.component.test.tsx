@@ -12,9 +12,9 @@ import axios, { AxiosResponse } from 'axios';
 import React from 'react';
 import { BioPortalResponse } from '../api/dois';
 import { createBioPortalTerm } from '../setupTests';
-import TechniquesAndSubjects, {
+import TechniquesSamplesSubjects, {
   AUTOCOMPLETE_DEBOUNCE_DELAY,
-} from './techniquesAndSubjects.component';
+} from './techniquesSamplesSubjects.component';
 
 vi.useFakeTimers({ toFake: ['Date', 'setTimeout', 'clearTimeout'] });
 
@@ -33,10 +33,10 @@ const createTestQueryClient = (): QueryClient =>
     },
   });
 
-describe('Techniques & Subjects selector component', () => {
+describe('Techniques, Samples & Subjects selector component', () => {
   let user: ReturnType<typeof userEvent.setup>;
 
-  let props: React.ComponentProps<typeof TechniquesAndSubjects>;
+  let props: React.ComponentProps<typeof TechniquesSamplesSubjects>;
 
   let mockSearchResponse: Promise<
     Partial<AxiosResponse<Partial<BioPortalResponse>>>
@@ -52,7 +52,7 @@ describe('Techniques & Subjects selector component', () => {
 
     return (
       <QueryClientProvider client={createTestQueryClient()}>
-        <TechniquesAndSubjects
+        <TechniquesSamplesSubjects
           {...props}
           subjects={subjects}
           setSubjects={setSubjects}
