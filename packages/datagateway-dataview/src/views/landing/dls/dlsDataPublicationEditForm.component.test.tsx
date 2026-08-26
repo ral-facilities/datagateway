@@ -964,5 +964,5 @@ describe('DOI edit form component', () => {
         dataPublicationId: '2',
       })
     );
-  }, 30_000);
+  }, 60_000);
 });

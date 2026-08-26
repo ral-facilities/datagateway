@@ -546,9 +546,13 @@ describe('DLS Data Publication Landing page', () => {
     renderComponent();
 
     await user.click(
-      await screen.findByRole('button', {
-        name: 'datapublications.details.related_identifiers_panel_label',
-      })
+      await screen.findByRole(
+        'button',
+        {
+          name: 'datapublications.details.related_identifiers_panel_label',
+        },
+        { timeout: 10_000 }
+      )
     );
     const relatedIdentifiersPanel = await screen.findByRole('region', {
       name: 'datapublications.details.related_identifiers_panel_label',

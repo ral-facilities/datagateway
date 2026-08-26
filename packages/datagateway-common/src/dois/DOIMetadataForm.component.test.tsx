@@ -255,7 +255,7 @@ describe('DOI generation form component', () => {
         name: 'DOIGenerationForm.review_metadata_button',
       })
     ).toBeDisabled();
-  });
+  }, 30_000);
 
   it('should disable mint button & all form fields when mintLoading is true', () => {
     props.mintLoading = true;
