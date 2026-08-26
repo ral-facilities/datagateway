@@ -242,6 +242,10 @@ describe('DOI Generation form', () => {
       // check that subject info displays correctly in confirmation page
       cy.contains('button', 'Review DOI metadata').click();
 
+      cy.contains('Please review the metadata', { timeout: 10000 }).should(
+        'be.visible'
+      );
+
       cy.contains('Subject: subject1').should('be.visible');
       cy.contains('Subject: subject3').should('be.visible');
       cy.contains('Subject: subject2').should('not.exist');
@@ -297,9 +301,13 @@ describe('DOI Generation form', () => {
       // check that sample info displays correctly in confirmation page
       cy.contains('button', 'Review DOI metadata').click();
 
-      cy.contains('Subject: sample1').should('be.visible');
-      cy.contains('Subject: sample3').should('be.visible');
-      cy.contains('Subject: sample2').should('not.exist');
+      cy.contains('Please review the metadata', { timeout: 10000 }).should(
+        'be.visible'
+      );
+
+      cy.contains('Subject: sample:sample1').should('be.visible');
+      cy.contains('Subject: sample:sample3').should('be.visible');
+      cy.contains('Subject: sample:sample2').should('not.exist');
 
       cy.contains('button', 'Generate DOI').click();
 
@@ -374,6 +382,10 @@ describe('DOI Generation form', () => {
 
       // check that technique info displays correctly in confirmation page
       cy.contains('button', 'Review DOI metadata').click();
+
+      cy.contains('Please review the metadata', { timeout: 10000 }).should(
+        'be.visible'
+      );
 
       cy.contains('Subject: x-ray standing wave').should('be.visible');
       cy.contains(
@@ -483,9 +495,10 @@ describe('DOI Generation form', () => {
 
       // check that contributor info doesn't break the API
       cy.contains('button', 'Review DOI metadata').click();
-      cy.contains('Contributor Type: Researcher', { timeout: 10000 }).should(
+      cy.contains('Please review the metadata', { timeout: 10000 }).should(
         'be.visible'
       );
+      cy.contains('Contributor Type: Researcher').should('be.visible');
 
       cy.contains('button', 'Generate DOI').click();
 
@@ -613,7 +626,11 @@ describe('DOI Generation form', () => {
       // check that related DOIs info doesn't break the API
       cy.contains('button', 'Review DOI metadata').click();
 
-      cy.contains('div', 'Identifier: 10.17596/w76y-4s92', { timeout: 10000 })
+      cy.contains('Please review the metadata', { timeout: 10000 }).should(
+        'be.visible'
+      );
+
+      cy.contains('div', 'Identifier: 10.17596/w76y-4s92')
         .as('relatedDOI')
         .should('exist');
       cy.get('@relatedDOI')
@@ -693,7 +710,11 @@ describe('DOI Generation form', () => {
       // check that related DOIs info doesn't break the API
       cy.contains('button', 'Review DOI metadata').click();
 
-      cy.contains('div', 'Identifier: my.identifier', { timeout: 10000 })
+      cy.contains('Please review the metadata', { timeout: 10000 }).should(
+        'be.visible'
+      );
+
+      cy.contains('div', 'Identifier: my.identifier')
         .as('relatedItem')
         .should('exist');
       cy.get('@relatedItem')
