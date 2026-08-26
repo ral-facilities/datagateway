@@ -91,6 +91,11 @@ describe('DOI Generation form', () => {
         'aria-invalid',
         'true'
       );
+      cy.findByRole('combobox', { name: 'Samples' }).should(
+        'have.attr',
+        'aria-invalid',
+        'true'
+      );
     });
 
     it('should let user generate DOI when fields are filled', () => {
@@ -104,6 +109,9 @@ describe('DOI Generation form', () => {
 
       // add a subject
       cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
+
+      // add a sample
+      cy.findByRole('combobox', { name: 'Samples' }).type('sample1{enter}');
 
       // add a technique
       cy.findByRole('button', { name: 'Add technique' }).click();
@@ -157,6 +165,9 @@ describe('DOI Generation form', () => {
       // add a subject
       cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
 
+      // add a sample
+      cy.findByRole('combobox', { name: 'Samples' }).type('sample1{enter}');
+
       // add a technique
       cy.findByRole('button', { name: 'Add technique' }).click();
       cy.findByRole('combobox', { name: 'Select technique' }).type('x-ray');
@@ -195,6 +206,9 @@ describe('DOI Generation form', () => {
         .first()
         .type('Test description');
 
+      // add a sample
+      cy.findByRole('combobox', { name: 'Samples' }).type('sample1{enter}');
+
       // add a technique
       cy.findByRole('button', { name: 'Add technique' }).click();
       cy.findByRole('combobox', { name: 'Select technique' }).type('x-ray');
@@ -211,8 +225,8 @@ describe('DOI Generation form', () => {
       // add a subject
       cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
       cy.findByRole('combobox', { name: 'Subjects' }).type('subject2{enter}');
-      cy.findByRole('combobox', { name: 'Subjects' }).type('subject3'); // test that subject can be added by blurring
-      cy.findByRole('combobox', { name: 'Subjects' }).blur();
+      cy.findByRole('combobox', { name: 'Subjects' }).type('subject3'); // test that subject can be added by clicking the button
+      cy.findByRole('button', { name: 'Add subject' }).click();
 
       cy.findByRole('button', { name: 'subject1' }).should('be.visible');
       cy.findByRole('button', { name: 'subject2' }).should('be.visible');
@@ -239,6 +253,61 @@ describe('DOI Generation form', () => {
       );
     });
 
+    it('should let user add and remove samples', () => {
+      cy.contains('DOI Title').parent().find('input').type('Test title');
+      cy.contains('DOI Description')
+        .parent()
+        .find('textarea')
+        .first()
+        .type('Test description');
+
+      // add a subject
+      cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
+
+      // add a technique
+      cy.findByRole('button', { name: 'Add technique' }).click();
+      cy.findByRole('combobox', { name: 'Select technique' }).type('x-ray');
+      cy.findByRole('option', {
+        name: 'x-ray standing wave (XSW)',
+        timeout: 10_000,
+      }).click();
+      cy.findByRole('cell', {
+        name: 'borrmann effect',
+        timeout: 10_000,
+      }).click();
+      cy.findByRole('button', { name: 'Confirm' }).click();
+
+      // add a sample
+      cy.findByRole('combobox', { name: 'Samples' }).type('sample1{enter}');
+      cy.findByRole('combobox', { name: 'Samples' }).type('sample2{enter}');
+      cy.findByRole('combobox', { name: 'Samples' }).type('sample3'); // test that sample can be added by clicking the button
+      cy.findByRole('button', { name: 'Add sample' }).click();
+
+      cy.findByRole('button', { name: 'sample1' }).should('be.visible');
+      cy.findByRole('button', { name: 'sample2' }).should('be.visible');
+      cy.findByRole('button', { name: 'sample3' }).should('be.visible');
+
+      cy.findByRole('combobox', { name: 'Samples' }).click();
+      cy.findByRole('combobox', { name: 'Samples' }).type(
+        '{leftArrow}{leftArrow}{del}'
+      );
+
+      cy.findByRole('button', { name: 'sample2' }).should('not.exist');
+
+      // check that sample info displays correctly in confirmation page
+      cy.contains('button', 'Review DOI metadata').click();
+
+      cy.contains('Subject: sample1').should('be.visible');
+      cy.contains('Subject: sample3').should('be.visible');
+      cy.contains('Subject: sample2').should('not.exist');
+
+      cy.contains('button', 'Generate DOI').click();
+
+      cy.contains('Mint was successful', { timeout: 10000 }).should(
+        'be.visible'
+      );
+    });
+
     it('should let user add and remove techniques', () => {
       cy.contains('DOI Title').parent().find('input').type('Test title');
       cy.contains('DOI Description')
@@ -249,6 +318,9 @@ describe('DOI Generation form', () => {
 
       // add a subject
       cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
+
+      // add a sample
+      cy.findByRole('combobox', { name: 'Samples' }).type('sample1{enter}');
 
       // add a technique
       cy.findByRole('button', { name: 'Add technique' }).click();
@@ -330,6 +402,9 @@ describe('DOI Generation form', () => {
       // add a subject
       cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
 
+      // add a sample
+      cy.findByRole('combobox', { name: 'Samples' }).type('sample1{enter}');
+
       // add a technique
       cy.findByRole('button', { name: 'Add technique' }).click();
       cy.findByRole('combobox', { name: 'Select technique' }).type('x-ray');
@@ -373,6 +448,8 @@ describe('DOI Generation form', () => {
         .type('Test description');
       // add a subject
       cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
+      // add a sample
+      cy.findByRole('combobox', { name: 'Samples' }).type('sample1{enter}');
 
       // add a technique
       cy.findByRole('button', { name: 'Add technique' }).click();
@@ -426,6 +503,8 @@ describe('DOI Generation form', () => {
         .type('Test description');
       // add a subject
       cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
+      // add a sample
+      cy.findByRole('combobox', { name: 'Samples' }).type('sample1{enter}');
 
       // add a technique
       cy.findByRole('button', { name: 'Add technique' }).click();
@@ -481,6 +560,8 @@ describe('DOI Generation form', () => {
         .type('Test description');
       // add a subject
       cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
+      // add a sample
+      cy.findByRole('combobox', { name: 'Samples' }).type('sample1{enter}');
 
       // add a technique
       cy.findByRole('button', { name: 'Add technique' }).click();
@@ -563,6 +644,8 @@ describe('DOI Generation form', () => {
         .type('Test description');
       // add a subject
       cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
+      // add a sample
+      cy.findByRole('combobox', { name: 'Samples' }).type('sample1{enter}');
 
       // add a technique
       cy.findByRole('button', { name: 'Add technique' }).click();
