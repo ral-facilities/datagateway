@@ -47,7 +47,7 @@ describe('Techniques, Samples & Subjects selector component', () => {
 
   const TestComponent: React.FC = () => {
     const [subjects, setSubjects] = React.useState(props.subjects);
-
+    const [samples, setSamples] = React.useState(props.samples);
     const [techniques, setTechniques] = React.useState(props.techniques);
 
     return (
@@ -58,6 +58,8 @@ describe('Techniques, Samples & Subjects selector component', () => {
           setSubjects={setSubjects}
           techniques={techniques}
           setTechniques={setTechniques}
+          samples={samples}
+          setSamples={setSamples}
         />
       </QueryClientProvider>
     );
@@ -71,12 +73,15 @@ describe('Techniques, Samples & Subjects selector component', () => {
     props = {
       subjects: ['subject 1', 'subject 2'],
       setSubjects: vi.fn(),
+      samples: ['sample 1', 'sample 2'],
+      setSamples: vi.fn(),
       techniques: [createBioPortalTerm(1, ['1']), createBioPortalTerm(2)],
       setTechniques: vi.fn(),
       bioportalUrl: 'https://example.com/bioportal',
       disabled: false,
       subjectError: false,
       techniqueError: false,
+      sampleError: false,
     };
 
     mockSearchResponse = Promise.resolve({
@@ -120,13 +125,29 @@ describe('Techniques, Samples & Subjects selector component', () => {
   it('renders correctly', () => {
     renderComponent();
     expect(
-      screen.getByRole('combobox', { name: 'DOIGenerationForm.subjects' })
+      screen.getByRole('combobox', { name: 'DOIGenerationForm.subjects_label' })
     ).toBeInTheDocument();
     expect(
       screen.getByRole('button', { name: 'subject 1' })
     ).toBeInTheDocument();
     expect(
       screen.getByRole('button', { name: 'subject 2' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'DOIGenerationForm.add_subject' })
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByRole('combobox', { name: 'DOIGenerationForm.samples' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'sample 1' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'sample 2' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'DOIGenerationForm.add_sample' })
     ).toBeInTheDocument();
 
     expect(
@@ -147,7 +168,17 @@ describe('Techniques, Samples & Subjects selector component', () => {
     props.disabled = true;
     renderComponent();
     expect(
-      screen.getByRole('combobox', { name: 'DOIGenerationForm.subjects' })
+      screen.getByRole('combobox', { name: 'DOIGenerationForm.subjects_label' })
+    ).toBeDisabled();
+    expect(
+      screen.getByRole('button', { name: 'DOIGenerationForm.add_subject' })
+    ).toBeDisabled();
+
+    expect(
+      screen.getByRole('combobox', { name: 'DOIGenerationForm.samples' })
+    ).toBeDisabled();
+    expect(
+      screen.getByRole('button', { name: 'DOIGenerationForm.add_sample' })
     ).toBeDisabled();
 
     expect(
@@ -161,10 +192,15 @@ describe('Techniques, Samples & Subjects selector component', () => {
   it('renders inputs as errored when passed the error props', () => {
     props.techniqueError = true;
     props.subjectError = true;
+    props.sampleError = true;
 
     renderComponent();
     expect(
-      screen.getByRole('combobox', { name: 'DOIGenerationForm.subjects' })
+      screen.getByRole('combobox', { name: 'DOIGenerationForm.subjects_label' })
+    ).toHaveAttribute('aria-invalid', 'true');
+
+    expect(
+      screen.getByRole('combobox', { name: 'DOIGenerationForm.samples' })
     ).toHaveAttribute('aria-invalid', 'true');
 
     expect(
@@ -183,7 +219,9 @@ describe('Techniques, Samples & Subjects selector component', () => {
     ).toBeInTheDocument();
 
     await user.type(
-      screen.getByRole('combobox', { name: 'DOIGenerationForm.subjects' }),
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.subjects_label',
+      }),
       '{backspace}'
     );
 
@@ -192,22 +230,159 @@ describe('Techniques, Samples & Subjects selector component', () => {
     ).not.toBeInTheDocument();
 
     await user.type(
-      screen.getByRole('combobox', { name: 'DOIGenerationForm.subjects' }),
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.subjects_label',
+      }),
       'subject 3'
     );
 
     expect(
-      screen.getByRole('combobox', { name: 'DOIGenerationForm.subjects' })
+      screen.getByRole('combobox', { name: 'DOIGenerationForm.subjects_label' })
     ).toHaveValue('subject 3');
 
     await user.type(
-      screen.getByRole('combobox', { name: 'DOIGenerationForm.subjects' }),
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.subjects_label',
+      }),
       '{enter}'
     );
 
     expect(
       screen.getByRole('button', { name: 'subject 3' })
     ).toBeInTheDocument();
+
+    await user.type(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.subjects_label',
+      }),
+      'subject 4'
+    );
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.add_subject',
+      })
+    );
+
+    expect(
+      screen.getByRole('button', { name: 'subject 4' })
+    ).toBeInTheDocument();
+  });
+
+  it('lets you edit samples', async () => {
+    renderComponent();
+
+    expect(
+      screen.getByRole('button', { name: 'sample 1' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'sample 2' })
+    ).toBeInTheDocument();
+
+    await user.type(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.samples',
+      }),
+      '{backspace}'
+    );
+
+    expect(
+      screen.queryByRole('button', { name: 'sample 2' })
+    ).not.toBeInTheDocument();
+
+    await user.type(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.samples',
+      }),
+      'sample 3'
+    );
+
+    expect(
+      screen.getByRole('combobox', { name: 'DOIGenerationForm.samples' })
+    ).toHaveValue('sample 3');
+
+    await user.type(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.samples',
+      }),
+      '{enter}'
+    );
+
+    expect(
+      screen.getByRole('button', { name: 'sample 3' })
+    ).toBeInTheDocument();
+
+    await user.type(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.samples',
+      }),
+      'sample 4'
+    );
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.add_sample',
+      })
+    );
+
+    expect(
+      screen.getByRole('button', { name: 'sample 4' })
+    ).toBeInTheDocument();
+  });
+
+  it('does not let you add a subject starting with sample:', async () => {
+    renderComponent();
+    await user.type(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.subjects_label',
+      }),
+      'sample:subject 3'
+    );
+
+    expect(
+      screen.getByRole('combobox', { name: 'DOIGenerationForm.subjects_label' })
+    ).toHaveAttribute('aria-invalid', 'true');
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.add_sample',
+      })
+    );
+
+    expect(
+      screen.queryByRole('button', { name: 'sample:subject 3' })
+    ).not.toBeInTheDocument();
+
+    await user.type(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.subjects_label',
+      }),
+      '{enter}'
+    );
+
+    expect(
+      screen.queryByRole('button', { name: 'sample:subject 3' })
+    ).not.toBeInTheDocument();
+  });
+
+  it('does not let you add a empty samples or subjects', async () => {
+    renderComponent();
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.add_sample',
+      })
+    );
+
+    expect(props.setSamples).not.toHaveBeenCalled();
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.add_sample',
+      })
+    );
+
+    expect(props.setSubjects).not.toHaveBeenCalled();
   });
 
   it('lets you delete techniques', async () => {

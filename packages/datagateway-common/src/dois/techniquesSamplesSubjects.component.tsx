@@ -452,8 +452,10 @@ const TechniquesSamplesSubjects: React.FC<{
               <Button
                 variant="contained"
                 onClick={() => {
-                  setSamples([...samples, samplesString]);
-                  setSamplesString('');
+                  if (samplesString.length > 0) {
+                    setSamples([...samples, samplesString]);
+                    setSamplesString('');
+                  }
                 }}
                 disabled={disabled}
               >
@@ -484,7 +486,7 @@ const TechniquesSamplesSubjects: React.FC<{
                 inputValue={subjectsString}
                 onInputChange={(_event, value) => setSubjectsString(value)}
                 onChange={(_event, value) => {
-                  setSubjects(value);
+                  if (!subjectsString.startsWith('sample:')) setSubjects(value);
                 }}
                 renderInput={(params) => (
                   <TextField
@@ -498,7 +500,7 @@ const TechniquesSamplesSubjects: React.FC<{
                         backgroundColor: 'background.default',
                       },
                     }}
-                    error={subjectError}
+                    error={subjectError || subjectsString.startsWith('sample:')}
                   />
                 )}
                 disabled={disabled}
@@ -508,8 +510,13 @@ const TechniquesSamplesSubjects: React.FC<{
               <Button
                 variant="contained"
                 onClick={() => {
-                  setSubjects([...subjects, subjectsString]);
-                  setSubjectsString('');
+                  if (
+                    subjectsString.length > 0 &&
+                    !subjectsString.startsWith('sample:')
+                  ) {
+                    setSubjects([...subjects, subjectsString]);
+                    setSubjectsString('');
+                  }
                 }}
                 disabled={disabled}
               >

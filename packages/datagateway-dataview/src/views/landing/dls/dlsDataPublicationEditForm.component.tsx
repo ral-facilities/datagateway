@@ -330,6 +330,9 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
             ...subjects.map((s) => ({
               subject: s,
             })),
+            ...samples.map((s) => ({
+              subject: `sample:${s}`,
+            })),
             ...techniques.map((t) => ({
               subject: t.prefLabel,
               subjectScheme:
@@ -350,6 +353,7 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
     description,
     mintDraftVersionDOI,
     relatedIdentifiers,
+    samples,
     selectedUsers,
     subjects,
     techniques,

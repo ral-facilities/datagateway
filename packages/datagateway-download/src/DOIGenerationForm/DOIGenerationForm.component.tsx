@@ -138,17 +138,9 @@ const DOIGenerationForm: React.FC = () => {
           subjects: [
             ...subjects.map((s) => ({
               subject: s,
-              subjectScheme: null,
-              schemeUri: null,
-              valueUri: null,
-              classificationCode: null,
             })),
             ...samples.map((s) => ({
               subject: `sample:${s}`,
-              subjectScheme: null,
-              schemeUri: null,
-              valueUri: null,
-              classificationCode: null,
             })),
             ...techniques.map((t) => ({
               subject: t.prefLabel,
@@ -156,7 +148,6 @@ const DOIGenerationForm: React.FC = () => {
                 'Photon and Neutron Experimental Techniques (PaNET) ontology',
               schemeUri: 'http://purl.org/pan-science/PaNET/',
               valueUri: t['@id'],
-              classificationCode: null,
             })),
           ],
         },
