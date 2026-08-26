@@ -211,7 +211,6 @@ export const DLSMyDOIsTable = (): React.ReactElement => {
 
 export const DLSAllDOIsTable = (): React.ReactElement => {
   const location = useLocation();
-  const username = readSciGatewayToken().username || '';
 
   const { doiType } = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -258,37 +257,6 @@ export const DLSAllDOIsTable = (): React.ReactElement => {
         publicationDate: { isnull: true },
       }),
     });
-
-  if (doiType?.pi === true)
-    params.push(
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'users.orderKey': { eq: '0' },
-        }),
-      },
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'users.user.name': { eq: username },
-        }),
-      }
-    );
-  else if (doiType?.pi === false)
-    params.push(
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'users.orderKey': { neq: '0' },
-        }),
-      },
-      {
-        filterType: 'where',
-        filterValue: JSON.stringify({
-          'users.user.name': { eq: username },
-        }),
-      }
-    );
 
   return <DLSBaseDOIsTable filterParams={params} />;
 };
