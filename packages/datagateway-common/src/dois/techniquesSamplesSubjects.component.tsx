@@ -237,6 +237,7 @@ const TechniqueDialog: React.FC<{
                       {descendantTechniques?.map((t) => (
                         <TableRow
                           key={t['@id']}
+                          sx={{ cursor: 'pointer' }}
                           onClick={(_event) => setSelectedTechnique(t)}
                           selected={selectedTechnique === t}
                         >
