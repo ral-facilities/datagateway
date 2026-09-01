@@ -289,7 +289,7 @@
     "open": "Open",
     "closed": "Closed",
     "all": "All",
-    "pi_button_group_aria_label": "Select DOIs which I am",
+    "pi_button_group_aria_label": "Select DOIs where I am",
     "pi_or_any": "Any role",
     "pi": "Principal Investigator",
     "any": "Other role"
