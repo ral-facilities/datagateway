@@ -289,16 +289,16 @@
     "open": "Open",
     "closed": "Closed",
     "all": "All",
-    "pi_button_group_aria_label": "Select DOIs which roles are",
-    "pi_or_any": "All",
+    "pi_button_group_aria_label": "Select DOIs which I am",
+    "pi_or_any": "Any role",
     "pi": "Principal Investigator",
-    "any": "Others"
+    "any": "Other role"
   },
   "all_doi_table": {
     "type_button_group_aria_label": "Select DOI type",
     "user": "User-defined DOIs",
     "session": "Session DOIs",
-    "open_button_group_aria_label": "Select Session DOIs which are",
+    "open_button_group_aria_label": "Select DOIs which are",
     "open_or_closed": "Open or Closed",
     "open": "Open",
     "closed": "Closed",
