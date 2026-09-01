@@ -211,7 +211,7 @@ describe('DLS - MyDOIs Table', () => {
       });
 
       it('should be able filter the Principal Investigator toggle button to show only sessions which they are not the PI', () => {
-        cy.contains('Other Role').click();
+        cy.contains('Other role').click();
         cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
           'Test DOI Title 3'
         );
