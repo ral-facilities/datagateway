@@ -67,6 +67,9 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
   const localContactRole = useSelector(
     (state: StateType) => state.dgdataview.localContactRole
   );
+  const disableContributor = useSelector(
+    (state: StateType) => state.dgdataview.uiFeatures.disableContributor
+  );
 
   const { data: dataPublication } = useDataPublication(
     parseInt(dataPublicationId)
@@ -447,6 +450,7 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
                   mintLoading={mintDraftVersionStatus === 'loading'}
                   onMintClick={handleMintClick}
                   localContactRole={localContactRole}
+                  disableContributor={disableContributor}
                 />
               </Grid>
             </Paper>
