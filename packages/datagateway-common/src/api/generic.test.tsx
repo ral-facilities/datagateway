@@ -315,7 +315,7 @@ describe('generic api functions', () => {
 
         await waitFor(() => expect(result.current.isError).toBe(true));
 
-        expect(handleICATError).toHaveBeenCalledWith(error);
+        expect(handleICATError).toHaveBeenCalledWith(error, true);
       });
 
       it('for datasets', async () => {
@@ -328,7 +328,7 @@ describe('generic api functions', () => {
 
         await waitFor(() => expect(result.current.isError).toBe(true));
 
-        expect(handleICATError).toHaveBeenCalledWith(error);
+        expect(handleICATError).toHaveBeenCalledWith(error, true);
       });
 
       it('for datafiles', async () => {
@@ -340,7 +340,7 @@ describe('generic api functions', () => {
         );
         await waitFor(() => expect(result.current.isError).toBe(true));
 
-        expect(handleICATError).toHaveBeenCalledWith(error);
+        expect(handleICATError).toHaveBeenCalledWith(error, true);
       });
     });
   });
