@@ -300,8 +300,21 @@ describe('DOI generation form component', () => {
     );
 
     await user.type(
-      screen.getByRole('combobox', { name: 'DOIGenerationForm.subjects' }),
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.subjects_label',
+      }),
       'subject{enter}'
+    );
+
+    await user.type(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.samples',
+      }),
+      'sample'
+    );
+
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.add_sample' })
     );
 
     // technique selector
@@ -525,7 +538,27 @@ describe('DOI generation form component', () => {
     ).toBeDisabled();
 
     await user.type(
-      screen.getByRole('combobox', { name: 'DOIGenerationForm.subjects' }),
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.subjects_label',
+      }),
+      's'
+    );
+
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.add_subject' })
+    );
+
+    // missing subject
+    expect(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.review_metadata_button',
+      })
+    ).toBeDisabled();
+
+    await user.type(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.samples',
+      }),
       's{enter}'
     );
 
@@ -561,20 +594,14 @@ describe('DOI generation form component', () => {
           },
         ],
         subjects: [
-          {
-            subject: 's',
-            schemeUri: null,
-            valueUri: null,
-            subjectScheme: null,
-            classificationCode: null,
-          },
+          { subject: 's' },
+          { subject: 'sample:s' },
           {
             subject: 'technique1',
             schemeUri: 'http://purl.org/pan-science/PaNET/',
             valueUri: 'http://purl.org/pan-science/PaNET/1',
             subjectScheme:
               'Photon and Neutron Experimental Techniques (PaNET) ontology',
-            classificationCode: null,
           },
         ],
       },
@@ -586,7 +613,7 @@ describe('DOI generation form component', () => {
     );
 
     expect(publishDraftDOI).toHaveBeenCalledWith('1', expect.anything());
-  }, 60_000);
+  }, 90_000);
 
   it('should let the user go back from the confirmation page', async () => {
     renderComponent();
@@ -611,8 +638,17 @@ describe('DOI generation form component', () => {
     );
 
     await user.type(
-      screen.getByRole('combobox', { name: 'DOIGenerationForm.subjects' }),
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.subjects_label',
+      }),
       'subject{enter}'
+    );
+
+    await user.type(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.samples',
+      }),
+      'sample{enter}'
     );
 
     // technique selector
@@ -693,8 +729,17 @@ describe('DOI generation form component', () => {
     );
 
     await user.type(
-      screen.getByRole('combobox', { name: 'DOIGenerationForm.subjects' }),
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.subjects_label',
+      }),
       'subject{enter}'
+    );
+
+    await user.type(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.samples',
+      }),
+      'sample{enter}'
     );
 
     // technique selector
@@ -762,8 +807,17 @@ describe('DOI generation form component', () => {
     );
 
     await user.type(
-      screen.getByRole('combobox', { name: 'DOIGenerationForm.subjects' }),
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.subjects_label',
+      }),
       'subject{enter}'
+    );
+
+    await user.type(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.samples',
+      }),
+      'sample{enter}'
     );
 
     // technique selector
@@ -831,8 +885,17 @@ describe('DOI generation form component', () => {
     );
 
     await user.type(
-      screen.getByRole('combobox', { name: 'DOIGenerationForm.subjects' }),
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.subjects_label',
+      }),
       'subject{enter}'
+    );
+
+    await user.type(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.samples',
+      }),
+      'sample{enter}'
     );
 
     // technique selector

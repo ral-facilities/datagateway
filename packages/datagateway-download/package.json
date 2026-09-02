@@ -18,7 +18,7 @@
     "@types/react-router-dom": "5.3.3",
     "@types/react-virtualized": "9.22.2",
     "@vitejs/plugin-react": "5.2.0",
-    "axios": "1.16.0",
+    "axios": "1.18.0",
     "browserslist": "4.28.1",
     "browserslist-to-esbuild": "2.1.1",
     "datagateway-common": "^3.0.0",
@@ -71,7 +71,7 @@
     "lint-staged": "16.4.0",
     "start-server-and-test": "~2.1.0",
     "typescript-eslint": "8.56.1",
-    "vitest": "3.2.3",
+    "vitest": "3.2.6",
     "vitest-fail-on-console": "0.10.1"
   },
   "scripts": {

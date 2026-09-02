@@ -59,12 +59,6 @@ describe('DOI Type Selector', () => {
     ).toBeInTheDocument();
     expect(
       screen.getByRole('button', {
-        name: 'my_doi_table.minter',
-        pressed: false,
-      })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', {
         name: 'my_doi_table.user',
         pressed: false,
       })
@@ -72,6 +66,30 @@ describe('DOI Type Selector', () => {
     expect(
       screen.getByRole('button', {
         name: 'my_doi_table.session',
+        pressed: false,
+      })
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByRole('group', {
+        name: 'my_doi_table.pi_button_group_aria_label',
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
+        name: 'my_doi_table.pi_or_any',
+        pressed: true,
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
+        name: 'my_doi_table.pi',
+        pressed: false,
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
+        name: 'my_doi_table.any',
         pressed: false,
       })
     ).toBeInTheDocument();
@@ -91,12 +109,6 @@ describe('DOI Type Selector', () => {
     expect(
       screen.getByRole('button', {
         name: 'my_doi_table.all',
-        pressed: false,
-      })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', {
-        name: 'my_doi_table.minter',
         pressed: false,
       })
     ).toBeInTheDocument();
@@ -137,6 +149,30 @@ describe('DOI Type Selector', () => {
         pressed: false,
       })
     ).toBeInTheDocument();
+
+    expect(
+      screen.getByRole('group', {
+        name: 'my_doi_table.pi_button_group_aria_label',
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
+        name: 'my_doi_table.pi_or_any',
+        pressed: true,
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
+        name: 'my_doi_table.pi',
+        pressed: false,
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
+        name: 'my_doi_table.any',
+        pressed: false,
+      })
+    ).toBeInTheDocument();
   });
 
   it('displays button group correctly for all dois type', () => {
@@ -147,11 +183,6 @@ describe('DOI Type Selector', () => {
         name: 'all_doi_table.type_button_group_aria_label',
       })
     ).toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', {
-        name: /minter/,
-      })
-    ).not.toBeInTheDocument();
     expect(
       screen.getByRole('button', {
         name: 'all_doi_table.all',
@@ -242,23 +273,6 @@ describe('DOI Type Selector', () => {
     });
   });
 
-  it('updates filters when user or minter button is clicked after open or closed is selected', async () => {
-    vi.mocked(parseSearchToQuery, { partial: true }).mockReturnValue({
-      doiType: { view: 'all', open: false },
-    });
-    renderComponent('myDOIs');
-
-    await user.click(
-      screen.getByRole('button', {
-        name: 'my_doi_table.minter',
-      })
-    );
-
-    expect(mockPushQueryParams).toHaveBeenCalledWith({
-      doiType: { view: 'minter' },
-    });
-  });
-
   it('parses current doiType from query params correctly', async () => {
     vi.mocked(parseSearchToQuery, { partial: true }).mockReturnValue({
       doiType: { view: 'user' },
@@ -270,12 +284,6 @@ describe('DOI Type Selector', () => {
       screen.getByRole('button', {
         name: 'my_doi_table.user',
         pressed: true,
-      })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', {
-        name: 'my_doi_table.minter',
-        pressed: false,
       })
     ).toBeInTheDocument();
     expect(

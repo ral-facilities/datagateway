@@ -174,6 +174,10 @@ describe('DLS - User Generated Data Publication Landing', () => {
     // add a subject
     cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
 
+    // add a sample
+    cy.findByRole('combobox', { name: 'Samples' }).type('sample1');
+    cy.findByRole('button', { name: 'Add sample' }).click();
+
     // add a technique
     cy.findByRole('button', { name: 'Add technique' }).click();
     cy.findByRole('combobox', { name: 'Select technique' }).type('x-ray');
@@ -234,6 +238,7 @@ describe('DLS - User Generated Data Publication Landing', () => {
     cy.contains('Randy Beasley').should('be.visible');
     cy.contains('a', 'borrmann effect').should('be.visible');
     cy.contains('subject1').should('be.visible');
+    cy.contains('sample1').should('be.visible');
 
     cy.get('[data-testid="landing-dataPublication-pid-link"]')
       .first()

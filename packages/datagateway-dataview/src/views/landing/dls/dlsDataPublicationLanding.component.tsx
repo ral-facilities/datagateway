@@ -158,22 +158,24 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   );
   const { data: dataciteData } = useDOI(data?.pid);
 
-  const [techniques, subjects] = React.useMemo(
+  const [techniques, samples, subjects] = React.useMemo(
     () =>
       dataciteData?.attributes.subjects.reduce(
-        (result: [BioPortalTerm[], string[]], element) => {
+        (result: [BioPortalTerm[], string[], string[]], element) => {
           if (element.valueUri && element.subjectScheme?.includes('PaNET'))
             result[0].push({
               '@id': element.valueUri,
               prefLabel: element.subject,
               links: { descendants: '' }, // just put empty string here - it's not needed for display
             });
-          else result[1].push(element.subject);
+          else if (element.subject.startsWith('sample:'))
+            result[1].push(element.subject.replace('sample:', ''));
+          else result[2].push(element.subject);
 
           return result;
         },
-        [[], []]
-      ) ?? [[], []],
+        [[], [], []]
+      ) ?? [[], [], []],
     [dataciteData?.attributes.subjects]
   );
 
@@ -256,6 +258,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         description: description,
         keywords: [
           ...subjects,
+          ...samples.map((sample) => sample.replace('sample:', '')),
           ...techniques.map((technique) => ({
             name: technique.prefLabel,
             identifier: technique['@id'],
@@ -375,6 +378,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     subjects,
     techniques,
     doiHandleUrl,
+    samples,
   ]);
 
   const instruments = dataciteData
@@ -654,6 +658,18 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                         <MuiLink href={t['@id']}>{t.prefLabel}</MuiLink>
                       </React.Fragment>
                     ))}
+                  </div>
+                )}
+
+                {samples.length > 0 && (
+                  <div>
+                    <Subheading
+                      variant="h6"
+                      data-testid="landing-dataPublication-samples-label"
+                    >
+                      {t('datapublications.details.samples')}
+                    </Subheading>
+                    {samples.join(', ')}
                   </div>
                 )}
 
