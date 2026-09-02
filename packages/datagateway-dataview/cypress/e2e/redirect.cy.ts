@@ -13,7 +13,14 @@ describe('Redirect', () => {
       );
     });
 
-    it('should redirect to homepage if invalid id', () => {
+    it('should redirect to login if redirect request errors', () => {
+      cy.visit('/doi-redirect/LILS/investigation/100000000000');
+
+      cy.url().should('include', '/login');
+    });
+
+    it('should redirect to homepage if redirect request errors when logged in', () => {
+      cy.login({ username: 'root', password: 'pw', mechanism: 'simple' });
       cy.visit('/doi-redirect/LILS/investigation/100000000000');
 
       cy.url().should('include', '/datagateway');
@@ -30,7 +37,14 @@ describe('Redirect', () => {
       );
     });
 
-    it('should redirect to homepage if invalid id', () => {
+    it('should redirect to login if redirect request errors', () => {
+      cy.visit('/redirect/DLS/investigation/visitId/INVALID');
+
+      cy.url().should('include', '/login');
+    });
+
+    it('should redirect to homepage if redirect request errors when logged in', () => {
+      cy.login({ username: 'root', password: 'pw', mechanism: 'simple' });
       cy.visit('/redirect/DLS/investigation/visitId/INVALID');
 
       cy.url().should('include', '/datagateway');
