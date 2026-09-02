@@ -217,36 +217,6 @@ describe('DLS DOI table components', () => {
       ).toBeInTheDocument();
     });
 
-    it('supplies the correct filter params for minter doiType', async () => {
-      history.replace('?doiType={"view":"minter"}');
-      renderComponent();
-
-      const filterParams = [
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'users.user.name': { eq: 'testUser' },
-          }),
-        },
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'users.orderKey': {
-              eq: '0',
-            },
-          }),
-        },
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'type.name': { eq: 'User-defined-concept' },
-          }),
-        },
-      ];
-      expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
-      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
-    });
-
     it('supplies the correct filter params for user doiType', async () => {
       history.replace('?doiType={"view":"user"}');
       renderComponent();
@@ -321,6 +291,68 @@ describe('DLS DOI table components', () => {
           }),
         },
       ];
+      expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
+      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
+    });
+
+    it('supplies the correct filter params for when user is PI PI button', async () => {
+      history.replace('?doiType={"view":"all","open": null,"pi":true}');
+      renderComponent();
+
+      const filterParams = [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'users.user.name': { eq: 'testUser' },
+          }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'type.name': { in: ['Investigation', 'User-defined-concept'] },
+          }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'users.orderKey': {
+              eq: '0',
+            },
+          }),
+        },
+      ];
+
+      expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
+      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
+    });
+
+    it('supplies the correct filter params for when user is not PI PI button', async () => {
+      history.replace('?doiType={"view":"all","open": null,"pi":false}');
+      renderComponent();
+
+      const filterParams = [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'users.user.name': { eq: 'testUser' },
+          }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'type.name': { in: ['Investigation', 'User-defined-concept'] },
+          }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'users.orderKey': {
+              neq: '0',
+            },
+          }),
+        },
+      ];
+
       expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
       expect(useDataPublicationsInfinite).toHaveBeenCalledWith(filterParams);
     });

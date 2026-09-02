@@ -249,6 +249,7 @@ export const fetchLuceneData = async (
   queryParams.append('minCount', `${params.minCount ? params.minCount : 10}`);
   queryParams.append('maxCount', `${params.maxCount ? params.maxCount : 100}`);
   queryParams.append('restrict', `${!!params.restrict}`);
+  queryParams.append('JWT', readSciGatewayToken().token ?? '');
 
   return axios
     .get(`${settings.icatUrl}/search/documents`, {

@@ -47,6 +47,7 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
   const [description, setDescription] = React.useState('');
   const [techniques, setTechniques] = React.useState<BioPortalTerm[]>([]);
   const [subjects, setSubjects] = React.useState<string[]>([]);
+  const [samples, setSamples] = React.useState<string[]>([]);
 
   const [showMintConfirmation, setShowMintConfirmation] = React.useState(false);
   const [showMetadataConfirmation, setShowMetadataConfirmation] =
@@ -153,6 +154,7 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
           ) ?? []
       );
       const originalSubjects: string[] = [];
+      const originalSamples: string[] = [];
       const originalTechniques: BioPortalTerm[] = [];
       dataciteData.attributes.subjects.forEach((s) => {
         if (s.valueUri && s.subjectScheme?.includes('PaNET')) {
@@ -161,11 +163,14 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
             prefLabel: s.subject,
             links: { descendants: '' }, // just put empty string here - it's not needed once it's selected
           });
+        } else if (s.subject.startsWith('sample:')) {
+          originalSamples.push(s.subject.replace('sample:', ''));
         } else {
           originalSubjects.push(s.subject);
         }
       });
       setSubjects(originalSubjects);
+      setSamples(originalSamples);
       setTechniques(originalTechniques);
     }
   }, [dataciteData]);
@@ -328,6 +333,9 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
             ...subjects.map((s) => ({
               subject: s,
             })),
+            ...samples.map((s) => ({
+              subject: `sample:${s}`,
+            })),
             ...techniques.map((t) => ({
               subject: t.prefLabel,
               subjectScheme:
@@ -348,6 +356,7 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
     description,
     mintDraftVersionDOI,
     relatedIdentifiers,
+    samples,
     selectedUsers,
     subjects,
     techniques,
@@ -444,6 +453,8 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
                   setRelatedIdentifiers={setRelatedIdentifiers}
                   techniques={techniques}
                   setTechniques={setTechniques}
+                  samples={samples}
+                  setSamples={setSamples}
                   subjects={subjects}
                   setSubjects={setSubjects}
                   disableMintButton={false}

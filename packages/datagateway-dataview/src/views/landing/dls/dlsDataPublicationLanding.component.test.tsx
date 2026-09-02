@@ -209,6 +209,8 @@ describe('DLS Data Publication Landing page', () => {
         subjects: [
           { subject: 'subject 1' },
           { subject: 'subject 2' },
+          { subject: 'sample:sample 1' },
+          { subject: 'sample:sample 2' },
           {
             subject: 'technique 1',
             schemeUri: 'http://purl.org/pan-science/PaNET/',
@@ -335,6 +337,7 @@ describe('DLS Data Publication Landing page', () => {
     vi.mocked(readSciGatewayToken).mockReturnValue({
       sessionId: 'abcdef',
       username: 'John1',
+      token: '1234abcdef',
     });
   });
 
@@ -411,6 +414,8 @@ describe('DLS Data Publication Landing page', () => {
 
     expect(screen.getByText('subject 1, subject 2')).toBeInTheDocument();
 
+    expect(screen.getByText('sample 1, sample 2')).toBeInTheDocument();
+
     // two citation formatters
     expect(
       screen.getByText(
@@ -447,6 +452,7 @@ describe('DLS Data Publication Landing page', () => {
       screen.queryByText('datapublications.details.techniques')
     ).toBeNull();
     expect(screen.queryByText('datapublications.details.subjects')).toBeNull();
+    expect(screen.queryByText('datapublications.details.samples')).toBeNull();
   });
 
   it('renders correctly whilst loading', async () => {
@@ -504,6 +510,7 @@ describe('DLS Data Publication Landing page', () => {
     vi.mocked(readSciGatewayToken).mockReturnValueOnce({
       sessionId: 'abcdef',
       username: 'Jane2',
+      token: '1234abcdef',
     });
     renderComponent();
 
@@ -539,9 +546,13 @@ describe('DLS Data Publication Landing page', () => {
     renderComponent();
 
     await user.click(
-      await screen.findByRole('button', {
-        name: 'datapublications.details.related_identifiers_panel_label',
-      })
+      await screen.findByRole(
+        'button',
+        {
+          name: 'datapublications.details.related_identifiers_panel_label',
+        },
+        { timeout: 10_000 }
+      )
     );
     const relatedIdentifiersPanel = await screen.findByRole('region', {
       name: 'datapublications.details.related_identifiers_panel_label',
@@ -784,7 +795,7 @@ describe('DLS Data Publication Landing page', () => {
         id="dataPublication-1"
         type="application/ld+json"
       >
-        {"@context":"http://schema.org","@type":"Dataset","@id":"https://doi.org/doi 1","url":"https://doi.org/doi 1","identifier":"doi 1","name":"Title","description":"foo bar","keywords":["subject 1","subject 2",{"name":"technique 1","identifier":"http://purl.org/pan-science/PaNET/1","url":"http://purl.org/pan-science/PaNET/1","inDefinedTermSet":"http://purl.org/pan-science/PaNET/"},{"name":"technique 2","identifier":"http://purl.org/pan-science/PaNET/2","url":"http://purl.org/pan-science/PaNET/2","inDefinedTermSet":"http://purl.org/pan-science/PaNET/"}],"publisher":{"@type":"Organization","url":"doi_constants.publisher.url","name":"doi_constants.publisher.name","logo":"doi_constants.publisher.logo","contactPoint":{"@type":"ContactPoint","contactType":"customer service","email":"doi_constants.publisher.email","url":"doi_constants.publisher.url"}},"creator":[{"@type":"Person","name":"John Smith","sameAs":"https://orcid.org/123456","affiliation":[{"name":"ABC Uni"},{"name":"XYZ Org"}]},{"@type":"Person","name":"Jesse Smith"},{"@type":"Person","name":"Jane Smith","sameAs":"https://orcid.org/234567"}],"contributor":[{"@type":"Person","name":"Joan Smith"}],"includedInDataCatalog":{"@type":"DataCatalog","url":"doi_constants.content_url"},"license":{"@type":"URL","url":"doi_constants.license.url","name":"doi_constants.license.name"},"isAccessibleForFree":true,"hasPart":["doi 1"],"isPartOf":["doi 2"]}
+        {"@context":"http://schema.org","@type":"Dataset","@id":"https://doi.org/doi 1","url":"https://doi.org/doi 1","identifier":"doi 1","name":"Title","description":"foo bar","keywords":["subject 1","subject 2","sample 1","sample 2",{"name":"technique 1","identifier":"http://purl.org/pan-science/PaNET/1","url":"http://purl.org/pan-science/PaNET/1","inDefinedTermSet":"http://purl.org/pan-science/PaNET/"},{"name":"technique 2","identifier":"http://purl.org/pan-science/PaNET/2","url":"http://purl.org/pan-science/PaNET/2","inDefinedTermSet":"http://purl.org/pan-science/PaNET/"}],"publisher":{"@type":"Organization","url":"doi_constants.publisher.url","name":"doi_constants.publisher.name","logo":"doi_constants.publisher.logo","contactPoint":{"@type":"ContactPoint","contactType":"customer service","email":"doi_constants.publisher.email","url":"doi_constants.publisher.url"}},"creator":[{"@type":"Person","name":"John Smith","sameAs":"https://orcid.org/123456","affiliation":[{"name":"ABC Uni"},{"name":"XYZ Org"}]},{"@type":"Person","name":"Jesse Smith"},{"@type":"Person","name":"Jane Smith","sameAs":"https://orcid.org/234567"}],"contributor":[{"@type":"Person","name":"Joan Smith"}],"includedInDataCatalog":{"@type":"DataCatalog","url":"doi_constants.content_url"},"license":{"@type":"URL","url":"doi_constants.license.url","name":"doi_constants.license.name"},"isAccessibleForFree":true,"hasPart":["doi 1"],"isPartOf":["doi 2"]}
       </script>
     `);
   });

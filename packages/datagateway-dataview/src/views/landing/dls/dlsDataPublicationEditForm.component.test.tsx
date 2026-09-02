@@ -205,6 +205,8 @@ describe('DOI edit form component', () => {
         subjects: [
           { subject: 'subject 1' },
           { subject: 'subject 2' },
+          { subject: 'sample:sample 1' },
+          { subject: 'sample:sample 2' },
           {
             subject: 'technique 1',
             schemeUri: 'http://purl.org/pan-science/PaNET/',
@@ -576,12 +578,33 @@ describe('DOI edit form component', () => {
     ).toBeInTheDocument();
 
     await user.type(
-      screen.getByRole('combobox', { name: 'DOIGenerationForm.subjects' }),
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.subjects_label',
+      }),
       '{backspace}'
     );
 
     expect(
       screen.queryByRole('button', { name: 'subject 2' })
+    ).not.toBeInTheDocument();
+
+    // editing samples
+    expect(
+      screen.getByRole('button', { name: 'sample 1' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'sample 2' })
+    ).toBeInTheDocument();
+
+    await user.type(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.samples',
+      }),
+      '{backspace}'
+    );
+
+    expect(
+      screen.queryByRole('button', { name: 'sample 2' })
     ).not.toBeInTheDocument();
 
     // editing techniques
@@ -647,6 +670,7 @@ describe('DOI edit form component', () => {
           })),
           subjects: [
             { subject: 'subject 1' },
+            { subject: 'sample:sample 1' },
             {
               subject: 'technique 1',
               schemeUri: 'http://purl.org/pan-science/PaNET/',
@@ -923,6 +947,8 @@ describe('DOI edit form component', () => {
           subjects: [
             { subject: 'subject 1' },
             { subject: 'subject 2' },
+            { subject: 'sample:sample 1' },
+            { subject: 'sample:sample 2' },
             {
               subject: 'technique 1',
               schemeUri: 'http://purl.org/pan-science/PaNET/',
@@ -974,5 +1000,5 @@ describe('DOI edit form component', () => {
         dataPublicationId: '2',
       })
     );
-  }, 30_000);
+  }, 60_000);
 });
