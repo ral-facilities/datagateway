@@ -17,6 +17,7 @@ export type DownloadSettings = Omit<CommonSettings, 'icatUrl'> &
        * Enables download progress to be displayed in download status tables when set to true.
        */
       downloadProgress: boolean;
+      disableContributor: boolean;
     };
   };
 
@@ -34,6 +35,7 @@ const initialConfiguration: DownloadSettings = {
   helpSteps: [],
   uiFeatures: {
     downloadProgress: false,
+    disableContributor: true,
   },
 };
 
