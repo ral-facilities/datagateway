@@ -57,6 +57,7 @@ const DOIGenerationForm: React.FC = () => {
     bioportalUrl,
     doiHandleUrl,
     localContactRole,
+    uiFeatures,
   } = React.useContext(DownloadSettingsContext);
 
   const handleTabChange = (
@@ -325,6 +326,7 @@ const DOIGenerationForm: React.FC = () => {
                     mintLoading={mintingDraftStatus === 'loading'}
                     onMintClick={handleMintClick}
                     localContactRole={localContactRole}
+                    disableContributor={uiFeatures.disableContributor}
                   />
                 </Grid>
               </Paper>

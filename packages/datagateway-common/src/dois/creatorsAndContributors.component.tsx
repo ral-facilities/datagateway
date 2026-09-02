@@ -61,6 +61,7 @@ type CreatorsAndContributorsProps = {
   localContactRole: string;
   disabled: boolean;
   showErrors: boolean;
+  disableContributor: boolean;
 };
 
 const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
@@ -73,6 +74,7 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
     localContactRole,
     disabled,
     showErrors,
+    disableContributor,
   } = props;
   const [t] = useTranslation();
   const [username, setUsername] = React.useState('');
@@ -206,15 +208,17 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
                 {t('DOIGenerationForm.add_creator')}
               </Button>
             </Grid>
-            <Grid item>
-              <Button
-                variant="contained"
-                onClick={handleAddCreatorOrContributorClick(false)}
-                disabled={selectedUsers.length === 0 || disabled}
-              >
-                {t('DOIGenerationForm.add_contributor')}
-              </Button>
-            </Grid>
+            {disableContributor === false && (
+              <Grid item>
+                <Button
+                  variant="contained"
+                  onClick={handleAddCreatorOrContributorClick(false)}
+                  disabled={selectedUsers.length === 0 || disabled}
+                >
+                  {t('DOIGenerationForm.add_contributor')}
+                </Button>
+              </Grid>
+            )}
           </Grid>
         </Grid>
         <Grid item>
@@ -232,7 +236,9 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
                   {t('DOIGenerationForm.creator_affiliation')}
                 </TableCell>
                 <TableCell>{t('DOIGenerationForm.creator_email')}</TableCell>
-                <TableCell>{t('DOIGenerationForm.creator_type')}</TableCell>
+                {disableContributor === false && (
+                  <TableCell>{t('DOIGenerationForm.creator_type')}</TableCell>
+                )}
                 <TableCell>{t('DOIGenerationForm.creator_action')}</TableCell>
               </TableRow>
             </TableHead>
@@ -256,61 +262,63 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
                     </TableCell>
                     <TableCell>{user?.affiliation}</TableCell>
                     <TableCell>{user?.email}</TableCell>
-                    <TableCell>
-                      {user.contributor_type === ContributorType.Creator ? (
-                        user.contributor_type
-                      ) : (
-                        <FormControl
-                          fullWidth
-                          size="small"
-                          required
-                          sx={{ minWidth: 180 }}
-                          disabled={disabled}
-                          error={showErrors && user.contributor_type === ''}
-                        >
-                          <InputLabel
-                            id={`${user.id}-contributor-type-select-label`}
+                    {disableContributor === false && (
+                      <TableCell>
+                        {user.contributor_type === ContributorType.Creator ? (
+                          user.contributor_type
+                        ) : (
+                          <FormControl
+                            fullWidth
+                            size="small"
+                            required
+                            sx={{ minWidth: 180 }}
+                            disabled={disabled}
+                            error={showErrors && user.contributor_type === ''}
                           >
-                            {t('DOIGenerationForm.creator_type')}
-                          </InputLabel>
-                          <Select
-                            labelId={`${user.id}-contributor-type-select-label`}
-                            value={user.contributor_type}
-                            label={t('DOIGenerationForm.creator_type')}
-                            onChange={(event) => {
-                              changeSelectedUsers((selectedUsers) => {
-                                return selectedUsers.map((u) => {
-                                  if (u.id === user.id) {
-                                    return {
-                                      ...u,
-                                      contributor_type: event.target.value as
-                                        | ContributorType
-                                        | '',
-                                    };
-                                  } else {
-                                    return u;
-                                  }
+                            <InputLabel
+                              id={`${user.id}-contributor-type-select-label`}
+                            >
+                              {t('DOIGenerationForm.creator_type')}
+                            </InputLabel>
+                            <Select
+                              labelId={`${user.id}-contributor-type-select-label`}
+                              value={user.contributor_type}
+                              label={t('DOIGenerationForm.creator_type')}
+                              onChange={(event) => {
+                                changeSelectedUsers((selectedUsers) => {
+                                  return selectedUsers.map((u) => {
+                                    if (u.id === user.id) {
+                                      return {
+                                        ...u,
+                                        contributor_type: event.target.value as
+                                          | ContributorType
+                                          | '',
+                                      };
+                                    } else {
+                                      return u;
+                                    }
+                                  });
                                 });
-                              });
-                            }}
-                          >
-                            {Object.values(ContributorType)
-                              .filter(
-                                (value) =>
-                                  value !== ContributorType.Creator &&
-                                  !new RegExp(localContactRole).test(value)
-                              )
-                              .map((type) => {
-                                return (
-                                  <MenuItem key={type} value={type}>
-                                    {type}
-                                  </MenuItem>
-                                );
-                              })}
-                          </Select>
-                        </FormControl>
-                      )}
-                    </TableCell>
+                              }}
+                            >
+                              {Object.values(ContributorType)
+                                .filter(
+                                  (value) =>
+                                    value !== ContributorType.Creator &&
+                                    !new RegExp(localContactRole).test(value)
+                                )
+                                .map((type) => {
+                                  return (
+                                    <MenuItem key={type} value={type}>
+                                      {type}
+                                    </MenuItem>
+                                  );
+                                })}
+                            </Select>
+                          </FormControl>
+                        )}
+                      </TableCell>
+                    )}
                     <TableCell>
                       <Button
                         size="small"

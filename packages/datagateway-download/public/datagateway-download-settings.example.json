@@ -55,6 +55,7 @@
   ],
   "pluginHost": "http://localhost:3000",
   "uiFeatures": {
-    "downloadProgress": false
+    "downloadProgress": false,
+    "disableContributor": true
   }
 }
