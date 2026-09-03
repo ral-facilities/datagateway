@@ -720,6 +720,7 @@ describe('Admin Download Status Table', () => {
         ...mockedSettings,
         uiFeatures: {
           downloadProgress: true,
+          disableContributor: true,
         },
       },
     });
@@ -748,6 +749,7 @@ describe('Admin Download Status Table', () => {
         ...mockedSettings,
         uiFeatures: {
           downloadProgress: true,
+          disableContributor: true,
         },
       },
     });

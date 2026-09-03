@@ -68,6 +68,9 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
   const localContactRole = useSelector(
     (state: StateType) => state.dgdataview.localContactRole
   );
+  const disableContributor = useSelector(
+    (state: StateType) => state.dgdataview.uiFeatures.disableContributor
+  );
 
   const { data: dataPublication } = useDataPublication(
     parseInt(dataPublicationId)
@@ -411,6 +414,9 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
             <Typography variant="h5" component="h2" color="textPrimary">
               {t('DOIGenerationForm.page_header')}
             </Typography>
+            <Typography variant="body1" component="p" color="textPrimary">
+              {t('DOIGenerationForm.page_description')}
+            </Typography>
             <Paper sx={{ padding: 1 }}>
               {/* use row-reverse, justifyContent start and the "wrong" order of components to make overflow layout nice
                   i.e. data summary presented at top before DOI form, but in non-overflow
@@ -458,6 +464,7 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
                   mintLoading={mintDraftVersionStatus === 'loading'}
                   onMintClick={handleMintClick}
                   localContactRole={localContactRole}
+                  disableContributor={disableContributor}
                 />
               </Grid>
             </Paper>

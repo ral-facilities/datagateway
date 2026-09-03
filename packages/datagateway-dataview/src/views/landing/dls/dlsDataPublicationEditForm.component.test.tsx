@@ -65,30 +65,51 @@ describe('DOI edit form component', () => {
   let initialData: DataPublication;
   let initialDataCiteData: DataCiteDOI;
 
-  const users = [
-    {
-      id: 1,
-      contributorType: ContributorType.Creator,
-      orderKey: '0',
-      fullName: 'John Smith',
-      user: {
-        id: 1,
-        name: 'John1',
-      },
-      email: 'user1@example.com',
-      affiliations: [{ id: 1, name: 'Example Uni' }],
-    },
-    {
-      id: 2,
-      contributorType: ContributorType.Creator,
-      fullName: 'Jane Smith',
-    },
-    {
-      id: 3,
-      contributorType: ContributorType.Editor,
-      fullName: 'Jesse Smith',
-    },
-  ] satisfies DataPublicationUser[];
+  const users =
+    dgDataViewInitialState.uiFeatures.disableContributor === false
+      ? ([
+          {
+            id: 1,
+            contributorType: ContributorType.Creator,
+            orderKey: '0',
+            fullName: 'John Smith',
+            user: {
+              id: 1,
+              name: 'John1',
+            },
+            email: 'user1@example.com',
+            affiliations: [{ id: 1, name: 'Example Uni' }],
+          },
+          {
+            id: 2,
+            contributorType: ContributorType.Creator,
+            fullName: 'Jane Smith',
+          },
+          {
+            id: 3,
+            contributorType: ContributorType.Editor,
+            fullName: 'Jesse Smith',
+          },
+        ] satisfies DataPublicationUser[])
+      : ([
+          {
+            id: 1,
+            contributorType: ContributorType.Creator,
+            orderKey: '0',
+            fullName: 'John Smith',
+            user: {
+              id: 1,
+              name: 'John1',
+            },
+            email: 'user1@example.com',
+            affiliations: [{ id: 1, name: 'Example Uni' }],
+          },
+          {
+            id: 2,
+            contributorType: ContributorType.Creator,
+            fullName: 'Jane Smith',
+          },
+        ] satisfies DataPublicationUser[]);
 
   const investigationInstrument = [
     {
@@ -504,6 +525,8 @@ describe('DOI edit form component', () => {
     ).not.toBeInTheDocument();
 
     // editing users
+    let n =
+      dgDataViewInitialState.uiFeatures.disableContributor === false ? 3 : 2;
     expect(
       within(
         screen.getByRole('table', {
@@ -512,7 +535,7 @@ describe('DOI edit form component', () => {
       )
         .getAllByRole('row')
         .slice(1) // ignores the header row
-    ).toHaveLength(3);
+    ).toHaveLength(n);
     expect(
       screen.getByRole('cell', { name: 'user1@example.com' })
     ).toBeInTheDocument();
@@ -522,7 +545,7 @@ describe('DOI edit form component', () => {
         name: 'DOIGenerationForm.delete_creator',
       })[1]
     );
-
+    n -= 1;
     expect(
       within(
         screen.getByRole('table', {
@@ -531,16 +554,20 @@ describe('DOI edit form component', () => {
       )
         .getAllByRole('row')
         .slice(1) // ignores the header row
-    ).toHaveLength(2);
+    ).toHaveLength(n);
 
-    await user.click(
-      screen.getByRole('combobox', {
-        name: 'DOIGenerationForm.creator_type',
-      })
-    );
-    await user.click(
-      await screen.findByRole('option', { name: ContributorType.ProjectLeader })
-    );
+    if (dgDataViewInitialState.uiFeatures.disableContributor === false) {
+      await user.click(
+        screen.getByRole('combobox', {
+          name: 'DOIGenerationForm.creator_type',
+        })
+      );
+      await user.click(
+        await screen.findByRole('option', {
+          name: ContributorType.ProjectLeader,
+        })
+      );
+    }
 
     // editing subjects
     expect(
@@ -614,13 +641,22 @@ describe('DOI edit form component', () => {
         metadata: {
           title: 'Title1',
           description: 'foo bar2',
-          creators: [
-            users[0],
-            { ...users[2], contributorType: ContributorType.ProjectLeader },
-          ].map((user) => ({
-            username: user.user?.name ?? user.fullName,
-            contributor_type: user.contributorType,
-          })),
+          creators:
+            dgDataViewInitialState.uiFeatures.disableContributor === false
+              ? [
+                  users[0],
+                  {
+                    ...users[2],
+                    contributorType: ContributorType.ProjectLeader,
+                  },
+                ].map((user) => ({
+                  username: user.user?.name ?? user.fullName,
+                  contributor_type: user.contributorType,
+                }))
+              : [users[0]].map((user) => ({
+                  username: user.user?.name ?? user.fullName,
+                  contributor_type: user.contributorType,
+                })),
           related_items: [
             {
               ...initialDataCiteData.attributes.relatedIdentifiers?.[0],

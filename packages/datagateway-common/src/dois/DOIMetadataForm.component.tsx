@@ -29,6 +29,7 @@ type DOIMetadataFormProps = {
   bioportalUrl: string | undefined;
   doiHandleUrl: string;
   localContactRole: string;
+  disableContributor: boolean;
   techniques: BioPortalTerm[];
   setTechniques: React.Dispatch<React.SetStateAction<BioPortalTerm[]>>;
   samples: string[];
@@ -61,6 +62,7 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
     doiHandleUrl,
     mintLoading,
     localContactRole,
+    disableContributor,
     ...gridProps
   } = props;
 
@@ -164,6 +166,7 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
           localContactRole={localContactRole}
           disabled={mintLoading}
           showErrors={showErrors}
+          disableContributor={disableContributor}
         />
       </Grid>
       <Grid item alignSelf="flex-end">
