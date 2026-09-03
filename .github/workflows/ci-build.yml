@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repo
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
       - name: Setup Node.js
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
@@ -69,7 +69,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repo
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
       - name: Add apt repo
         run: sudo add-apt-repository universe
       - name: Setup Java
@@ -90,7 +90,7 @@ jobs:
 
       # ICAT Ansible clone and install dependencies
       - name: Checkout icat-ansible
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           repository: icatproject-contrib/icat-ansible
           ref: datagateway-download-api-3.2.0
@@ -173,7 +173,7 @@ jobs:
           cd /home/runner/install/datagateway-download-api/ && python ./setup -vv install
 
       - name: Checkout datagateway-api
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
@@ -238,7 +238,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repo
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
       - name: Add apt repo
         run: sudo add-apt-repository universe
       - name: Setup Java
@@ -259,7 +259,7 @@ jobs:
 
       # ICAT Ansible clone and install dependencies
       - name: Checkout icat-ansible
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           repository: icatproject-contrib/icat-ansible
           ref: datagateway-download-api-3.2.0
@@ -352,7 +352,7 @@ jobs:
         run: rm -f login_output
 
       - name: Checkout datagateway-api
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
@@ -417,7 +417,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repo
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
       - name: Add apt repo
         run: sudo add-apt-repository universe
       - name: Setup Java
@@ -438,7 +438,7 @@ jobs:
 
       # ICAT Ansible clone and install dependencies
       - name: Checkout icat-ansible
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           repository: icatproject-contrib/icat-ansible
           ref: datagateway-download-api-3.2.0
@@ -492,7 +492,7 @@ jobs:
           cd /home/runner/install/icat.server/ && ./setup -vv install
 
       - name: Checkout datagateway-api
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
@@ -558,7 +558,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repo
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
 
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
