@@ -93,7 +93,6 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           repository: icatproject-contrib/icat-ansible
-          ref: datagateway-download-api-3.2.0
           path: icat-ansible
       - name: Install Ansible (ensure we're using the system python)
         run: /usr/bin/python3 -m pip install -r icat-ansible/requirements.txt
@@ -207,7 +206,7 @@ jobs:
         run: echo DATACITE_PASSWORD=${{ secrets.DATACITE_PASSWORD }} >> ./.github/config.env
 
       - name: Run minting api
-        run: docker run --env-file ./.github/config.env -p 8000:8000 --add-host host.docker.internal:host-gateway -d harbor.stfc.ac.uk/icat/doi-mint-api:106_related_identifier_order
+        run: docker run --env-file ./.github/config.env -p 8000:8000 --add-host host.docker.internal:host-gateway -d harbor.stfc.ac.uk/icat/doi-mint-api:v0.5.0
 
       # E2E tests
       - name: Setup Node.js
@@ -262,7 +261,6 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           repository: icatproject-contrib/icat-ansible
-          ref: datagateway-download-api-3.2.0
           path: icat-ansible
       - name: Install Ansible (ensure we're using the system python)
         run: /usr/bin/python3 -m pip install -r icat-ansible/requirements.txt
@@ -386,7 +384,7 @@ jobs:
         run: echo DATACITE_PASSWORD=${{ secrets.DATACITE_PASSWORD }} >> ./.github/config.env
 
       - name: Run minting api
-        run: docker run --env-file ./.github/config.env -p 8000:8000 --add-host host.docker.internal:host-gateway -d harbor.stfc.ac.uk/icat/doi-mint-api:106_related_identifier_order
+        run: docker run --env-file ./.github/config.env -p 8000:8000 --add-host host.docker.internal:host-gateway -d harbor.stfc.ac.uk/icat/doi-mint-api:v0.5.0
 
       # E2E tests
       - name: Setup Node.js
@@ -441,7 +439,6 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           repository: icatproject-contrib/icat-ansible
-          ref: datagateway-download-api-3.2.0
           path: icat-ansible
       - name: Install Ansible (ensure we're using the system python)
         run: /usr/bin/python3 -m pip install -r icat-ansible/requirements.txt
@@ -456,12 +453,6 @@ jobs:
       - name: Replace default payara user with Actions user
         run: |
           sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml
-      - name: Change icat.server version
-        run: |
-          echo "icat_server_version: '6.1.0-SNAPSHOT'" >> icat-ansible/group_vars/all/vars.yml
-      - name: Change icat.lucene version
-        run: |
-          echo "icat_lucene_version: '3.0.0-SNAPSHOT'" >> icat-ansible/group_vars/all/vars.yml
       - name: Amending roles
         run: |
           sed -i 's/role: authn_uows_isis/role: authn_anon/' icat-ansible/icat_test_hosts.yml
