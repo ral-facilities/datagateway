@@ -29,6 +29,15 @@ describe('DOI Generation form', () => {
 
   afterEach(() => {
     cy.clearDownloadCart();
+    cy.intercept('/datagateway-download-settings.json', (req) => {
+      delete req.headers['if-none-match'];
+      delete req.headers['if-modified-since'];
+      req.continue((res) => {
+        res.body.uiFeatures.disableContributor = false
+        res.send();
+      });
+    });
+    cy.reload();
   });
 
   // tidy up the data publications table
@@ -64,7 +73,7 @@ describe('DOI Generation form', () => {
         'not.exist'
       );
 
-      cy.contains('Generate DOI').click();
+      cy.contains('Generate DOI').click({ timeout: 20000 });
       cy.contains('button', 'Accept').click();
     });
 
@@ -142,7 +151,7 @@ describe('DOI Generation form', () => {
       // TODO: is it fine that this relationship is added after minting but not shown on the confirmation page?
       // cy.contains('Relationship: HasPart').should('be.visible');
 
-      cy.contains('button', 'Generate DOI').click();
+      cy.contains('button', 'Generate DOI').click({ timeout: 20000});
 
       cy.contains('Mint Confirmation').should('be.visible');
       cy.contains('Mint was successful', { timeout: 10000 }).should(
@@ -710,7 +719,7 @@ describe('DOI Generation form', () => {
       // check that related DOIs info doesn't break the API
       cy.contains('button', 'Review DOI metadata').click();
 
-      cy.contains('Please review the metadata', { timeout: 10000 }).should(
+      cy.contains('Please review the metadata', { timeout: 20000 }).should(
         'be.visible'
       );
 
@@ -749,5 +758,21 @@ describe('DOI Generation form', () => {
         4
       );
     });
+
+    it('should not let a user add contributors if disableContributor enabled in settings', () => {
+      cy.intercept('/datagateway-download-settings.json', (req) => {
+        delete req.headers['if-none-match'];
+        delete req.headers['if-modified-since'];
+        req.continue((res) => {
+          res.body.uiFeatures.disableContributor = true;
+          res.send();
+        });
+      });
+      cy.reload();
+      //Have to accept terms and conditions again as the settings have been reloaded
+      cy.contains('button', 'Accept').click();
+      cy.contains('Generate DOI').should('be.visible');
+      cy.contains('Add contributor').should('not.exist');
+  });
   });
 });

@@ -54,5 +54,7 @@
       "order": 0
     }
   ],
-  "uiFeatures": []
+  "uiFeatures": {
+    "disableContributor": false
+  }
 }
