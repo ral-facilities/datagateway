@@ -1,16 +1,28 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render, screen, type RenderResult } from '@testing-library/react';
+import {
+  render,
+  screen,
+  waitFor,
+  type RenderResult,
+} from '@testing-library/react';
+import axios, { AxiosResponse } from 'axios';
 import {
   Datafile,
   Dataset,
   Investigation,
   NotificationType,
-  useEntity,
+  dGCommonInitialState,
+  readSciGatewayToken,
 } from 'datagateway-common';
 import { History, createLocation, createMemoryHistory } from 'history';
 import log from 'loglevel';
+import { Provider } from 'react-redux';
 import { Route, Router } from 'react-router-dom';
 import { AnyAction } from 'redux';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { StateType } from '../state/app.types';
+import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
 import { paths } from './pageContainer.component';
 import { DoiRedirect, GenericRedirect } from './redirect.component';
 
@@ -20,7 +32,9 @@ vi.mock('datagateway-common', async () => {
   return {
     __esModule: true,
     ...originalModule,
-    useEntity: vi.fn(),
+    readSciGatewayToken: vi
+      .fn()
+      .mockReturnValue({ sessionId: 'abcdef', username: 'test' }),
   };
 });
 
@@ -29,8 +43,17 @@ describe('Redirect component', () => {
   let mockInvestigationData: Investigation;
   let mockDatasetData: Dataset;
   let mockDatafileData: Datafile;
+  const mockStore = configureStore([thunk]);
+  let state: StateType;
 
   beforeEach(() => {
+    state = JSON.parse(
+      JSON.stringify({
+        dgcommon: dGCommonInitialState,
+        dgdataview: dgDataViewInitialState,
+      })
+    );
+
     mockInvestigationData = {
       id: 1,
       name: 'investigation1',
@@ -75,40 +98,46 @@ describe('Redirect component', () => {
       createTime: '2022-04-02 00:00:00',
     };
 
-    vi.mocked(useEntity, { partial: true }).mockImplementation((entityName) => {
-      if (entityName === 'investigation')
-        return {
-          data: mockInvestigationData,
-          isLoading: false,
-        };
-      if (entityName === 'dataset')
-        return {
-          data: mockDatasetData,
-          isLoading: false,
-        };
-      if (entityName === 'datafile')
-        return {
-          data: mockDatafileData,
-          isLoading: false,
-        };
-      else return {};
-    });
+    axios.get = vi
+      .fn()
+      .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
+        if (/\/investigations$/.test(url)) {
+          return Promise.resolve({
+            data: [mockInvestigationData],
+          });
+        }
+        if (/\/datasets$/.test(url)) {
+          return Promise.resolve({
+            data: [mockDatasetData],
+          });
+        }
+        if (/\/datafiles$/.test(url)) {
+          return Promise.resolve({
+            data: [mockDatafileData],
+          });
+        }
+
+        return Promise.reject(`Endpoint not mocked: ${url}`);
+      });
   });
 
   afterEach(() => {
     vi.clearAllMocks();
+    sessionStorage.clear();
   });
 
   describe('DOI Redirect component', () => {
     function renderComponent(): RenderResult {
       return render(
-        <Router history={history}>
-          <QueryClientProvider client={new QueryClient()}>
-            <Route path={paths.doiRedirect}>
-              <DoiRedirect />
-            </Route>
-          </QueryClientProvider>
-        </Router>
+        <Provider store={mockStore(state)}>
+          <Router history={history}>
+            <QueryClientProvider client={new QueryClient()}>
+              <Route path={paths.doiRedirect}>
+                <DoiRedirect />
+              </Route>
+            </QueryClientProvider>
+          </Router>
+        </Provider>
       );
     }
 
@@ -120,16 +149,21 @@ describe('Redirect component', () => {
 
     it('redirects to correct link when everything loads correctly', async () => {
       renderComponent();
-      expect(history.location.pathname).toBe(
-        '/browse/instrument/2/facilityCycle/3/investigation/1/dataset'
+      await waitFor(() =>
+        expect(history.location.pathname).toBe(
+          '/browse/instrument/2/facilityCycle/3/investigation/1/dataset'
+        )
       );
     });
 
     it('displays loading spinner when things are loading', async () => {
-      vi.mocked(useEntity, { partial: true }).mockReturnValue({
-        data: undefined,
-        isLoading: true,
-      });
+      vi.mocked(axios.get).mockImplementation(
+        () =>
+          new Promise((_) => {
+            // do nothing, simulating pending promise
+            // to test loading state
+          })
+      );
 
       renderComponent();
 
@@ -143,13 +177,17 @@ describe('Redirect component', () => {
         events.push(e as CustomEvent<AnyAction>);
         return true;
       };
-      vi.mocked(useEntity, { partial: true }).mockReturnValue({
-        data: undefined,
-        isLoading: false,
-      });
+      vi.mocked(axios.get).mockResolvedValue({ data: undefined });
+      vi.spyOn(console, 'error').mockImplementation(() => {});
+
       renderComponent();
 
-      expect(history.location.pathname).toBe('/datagateway');
+      await waitFor(() =>
+        expect(history.location.pathname).toBe('/datagateway')
+      );
+      expect(log.error).toHaveBeenCalledWith(
+        'Unable to identify single investigation with id matching 1'
+      );
       expect(log.error).toHaveBeenCalledWith('Invalid redirect');
       expect(events.length).toBe(1);
       expect(events[0].detail).toEqual({
@@ -166,13 +204,15 @@ describe('Redirect component', () => {
   describe('Generic Redirect component', () => {
     function renderComponent(): RenderResult {
       return render(
-        <Router history={history}>
-          <QueryClientProvider client={new QueryClient()}>
-            <Route path={paths.genericRedirect}>
-              <GenericRedirect />
-            </Route>
-          </QueryClientProvider>
-        </Router>
+        <Provider store={mockStore(state)}>
+          <Router history={history}>
+            <QueryClientProvider client={new QueryClient()}>
+              <Route path={paths.genericRedirect}>
+                <GenericRedirect />
+              </Route>
+            </QueryClientProvider>
+          </Router>
+        </Provider>
       );
     }
 
@@ -186,101 +226,119 @@ describe('Redirect component', () => {
       history.replace('/redirect/LILS/datafile/name/3');
 
       renderComponent();
-      expect(history.location.pathname).toBe(
-        '/browse/investigation/1/dataset/2/datafile'
+      await waitFor(() =>
+        expect(history.location.pathname).toBe(
+          '/browse/investigation/1/dataset/2/datafile'
+        )
       );
       expect(history.location.search).toBe(
         `?filters=${encodeURIComponent(
           '{"name":{"value":"datafile3","type":"exact"}}'
         )}`
       );
-      expect(vi.mocked(useEntity, { partial: true })).toHaveBeenCalledWith(
-        'datafile',
-        'name',
-        '3',
-        {
-          filterType: 'include',
-          filterValue: JSON.stringify(['dataset.investigation', 'dataset']),
-        }
+      const params = new URLSearchParams();
+      params.append('order', '"id asc"');
+      params.append('where', JSON.stringify({ name: { eq: '3' } }));
+      params.append(
+        'include',
+        JSON.stringify(['dataset.investigation', 'dataset'])
       );
+      expect(axios.get).toHaveBeenCalledWith('/datafiles', {
+        params,
+        headers: { Authorization: 'Bearer null' },
+      });
     });
 
     it('redirects to correct link when everything loads correctly (ISIS hierarchy)', async () => {
       history.replace('/redirect/ISIS/dataset/name/2');
       renderComponent();
-      expect(history.location.pathname).toBe(
-        '/browse/instrument/2/facilityCycle/3/investigation/1/dataset/2/datafile'
+      await waitFor(() =>
+        expect(history.location.pathname).toBe(
+          '/browse/instrument/2/facilityCycle/3/investigation/1/dataset/2/datafile'
+        )
       );
-      expect(vi.mocked(useEntity, { partial: true })).toHaveBeenCalledWith(
-        'dataset',
-        'name',
-        '2',
-        {
-          filterType: 'include',
-          filterValue: JSON.stringify([
-            'investigation',
-            'investigation.investigationInstruments.instrument',
-            'investigation.investigationFacilityCycles.facilityCycle',
-          ]),
-        }
+      const params = new URLSearchParams();
+      params.append('order', '"id asc"');
+      params.append('where', JSON.stringify({ name: { eq: '2' } }));
+      params.append(
+        'include',
+        JSON.stringify([
+          'investigation',
+          'investigation.investigationInstruments.instrument',
+          'investigation.investigationFacilityCycles.facilityCycle',
+        ])
       );
+      expect(axios.get).toHaveBeenCalledWith('/datasets', {
+        params,
+        headers: { Authorization: 'Bearer null' },
+      });
     });
 
     it('redirects to correct link when everything loads correctly (DLS hierarchy)', async () => {
       history.replace('/redirect/DLS/investigation/visitId/1');
       renderComponent();
-      expect(history.location.pathname).toBe(
-        '/browse/proposal/investigation1/investigation/1/dataset'
+      await waitFor(() =>
+        expect(history.location.pathname).toBe(
+          '/browse/proposal/investigation1/investigation/1/dataset'
+        )
       );
-      expect(vi.mocked(useEntity, { partial: true })).toHaveBeenCalledWith(
-        'investigation',
-        'visitId',
-        '1',
-        undefined
-      );
+      const params = new URLSearchParams();
+      params.append('order', '"id asc"');
+      params.append('where', JSON.stringify({ visitId: { eq: '1' } }));
+      expect(axios.get).toHaveBeenCalledWith('/investigations', {
+        params,
+        headers: { Authorization: 'Bearer null' },
+      });
     });
 
     it('redirects to correct link when everything loads correctly (DLS hierarchy at dataset level)', async () => {
       history.replace('/redirect/DLS/dataset/name/2');
       renderComponent();
-      expect(history.location.pathname).toBe(
-        '/browse/proposal/investigation1/investigation/1/dataset/2/datafile'
+      await waitFor(() =>
+        expect(history.location.pathname).toBe(
+          '/browse/proposal/investigation1/investigation/1/dataset/2/datafile'
+        )
       );
-      expect(vi.mocked(useEntity, { partial: true })).toHaveBeenCalledWith(
-        'dataset',
-        'name',
-        '2',
-        {
-          filterType: 'include',
-          filterValue: JSON.stringify(['investigation']),
-        }
-      );
+      const params = new URLSearchParams();
+      params.append('order', '"id asc"');
+      params.append('where', JSON.stringify({ name: { eq: '2' } }));
+      params.append('include', JSON.stringify(['investigation']));
+      expect(axios.get).toHaveBeenCalledWith('/datasets', {
+        params,
+        headers: { Authorization: 'Bearer null' },
+      });
     });
 
     it('displays loading spinner when things are loading', async () => {
       history.replace('/redirect/ISIS/datafile/name/3');
-      vi.mocked(useEntity, { partial: true }).mockReturnValue({
-        data: undefined,
-        isLoading: true,
-      });
+      vi.mocked(axios.get).mockImplementation(
+        () =>
+          new Promise((_) => {
+            // do nothing, simulating pending promise
+            // to test loading state
+          })
+      );
 
       renderComponent();
 
       expect(screen.getByRole('progressbar')).toBeInTheDocument();
-      expect(vi.mocked(useEntity, { partial: true })).toHaveBeenCalledWith(
-        'datafile',
-        'name',
-        '3',
-        {
-          filterType: 'include',
-          filterValue: JSON.stringify([
-            'dataset.investigation',
-            'dataset',
-            'dataset.investigation.investigationInstruments.instrument',
-            'dataset.investigation.investigationFacilityCycles.facilityCycle',
-          ]),
-        }
+
+      const params = new URLSearchParams();
+      params.append('order', '"id asc"');
+      params.append('where', JSON.stringify({ name: { eq: '3' } }));
+      params.append(
+        'include',
+        JSON.stringify([
+          'dataset.investigation',
+          'dataset',
+          'dataset.investigation.investigationInstruments.instrument',
+          'dataset.investigation.investigationFacilityCycles.facilityCycle',
+        ])
       );
+      expect(axios.get).toHaveBeenCalledWith('/datafiles', {
+        params,
+        headers: { Authorization: 'Bearer null' },
+      });
     });
 
     it('throws error and redirects to homepage if no investigation is returned', async () => {
@@ -291,25 +349,32 @@ describe('Redirect component', () => {
         events.push(e as CustomEvent<AnyAction>);
         return true;
       };
-      vi.mocked(useEntity, { partial: true }).mockReturnValue({
-        data: undefined,
-        isLoading: false,
-      });
+      vi.mocked(axios.get).mockResolvedValue({ data: undefined });
+      vi.spyOn(console, 'error').mockImplementation(() => {});
+
       renderComponent();
 
-      expect(vi.mocked(useEntity, { partial: true })).toHaveBeenCalledWith(
-        'investigation',
-        'name',
-        '1',
-        {
-          filterType: 'include',
-          filterValue: JSON.stringify({
-            investigationInstruments: 'instrument',
-            investigationFacilityCycles: 'facilityCycle',
-          }),
-        }
+      await waitFor(() =>
+        expect(history.location.pathname).toBe('/datagateway')
       );
-      expect(history.location.pathname).toBe('/datagateway');
+      const params = new URLSearchParams();
+      params.append('order', '"id asc"');
+      params.append('where', JSON.stringify({ name: { eq: '1' } }));
+      params.append(
+        'include',
+        JSON.stringify({
+          investigationInstruments: 'instrument',
+          investigationFacilityCycles: 'facilityCycle',
+        })
+      );
+      expect(axios.get).toHaveBeenCalledWith('/investigations', {
+        params,
+        headers: { Authorization: 'Bearer null' },
+      });
+
+      expect(log.error).toHaveBeenCalledWith(
+        'Unable to identify single investigation with name matching 1'
+      );
       expect(log.error).toHaveBeenCalledWith('Invalid redirect');
       expect(events.length).toBe(1);
       expect(events[0].detail).toEqual({
@@ -333,19 +398,25 @@ describe('Redirect component', () => {
         events.push(e as CustomEvent<AnyAction>);
         return true;
       };
-      vi.mocked(useEntity, { partial: true }).mockReturnValue({
-        data: undefined,
-        isLoading: false,
-      });
+      vi.mocked(axios.get).mockResolvedValue({ data: undefined });
+      vi.spyOn(console, 'error').mockImplementation(() => {});
+
       renderComponent();
 
-      expect(vi.mocked(useEntity, { partial: true })).toHaveBeenCalledWith(
-        'investigation',
-        'id',
-        '1',
-        undefined
+      await waitFor(() =>
+        expect(history.location.pathname).toBe('/datagateway')
       );
-      expect(history.location.pathname).toBe('/datagateway');
+      const params = new URLSearchParams();
+      params.append('order', '"id asc"');
+      params.append('where', JSON.stringify({ id: { eq: '1' } }));
+      expect(axios.get).toHaveBeenCalledWith('/investigations', {
+        params,
+        headers: { Authorization: 'Bearer null' },
+      });
+
+      expect(log.error).toHaveBeenCalledWith(
+        'Unable to identify single investigation with id matching 1'
+      );
       expect(log.error).toHaveBeenCalledWith('Invalid redirect');
       expect(events.length).toBe(1);
       expect(events[0].detail).toEqual({
@@ -355,6 +426,48 @@ describe('Redirect component', () => {
           message: `Cannot redirect to the investigation matching the given id: 1. It may not be published and you don't have permission to see it yet, or you may not have read access for other reasons`,
         },
       });
+    });
+
+    it('does not throw error and redirects to login page if no investigation is returned and user is logged in anonymously', async () => {
+      state.dgcommon.anonUserName = 'anon';
+      vi.mocked(readSciGatewayToken).mockReturnValue({
+        username: 'anon',
+        sessionId: 'abcdef',
+        token: '1234abcdef',
+      });
+      history.replace('/redirect/ISIS/investigation/name/1');
+      const events: CustomEvent[] = [];
+
+      document.dispatchEvent = (e: Event) => {
+        events.push(e as CustomEvent<AnyAction>);
+        return true;
+      };
+      vi.mocked(axios.get).mockResolvedValue({ data: undefined });
+      vi.spyOn(console, 'error').mockImplementation(() => {});
+
+      renderComponent();
+
+      await waitFor(() => expect(history.location.pathname).toBe('/login'));
+
+      const params = new URLSearchParams();
+      params.append('order', '"id asc"');
+      params.append('where', JSON.stringify({ name: { eq: '1' } }));
+      params.append(
+        'include',
+        JSON.stringify({
+          investigationInstruments: 'instrument',
+          investigationFacilityCycles: 'facilityCycle',
+        })
+      );
+      expect(axios.get).toHaveBeenCalledWith('/investigations', {
+        params,
+        headers: { Authorization: 'Bearer null' },
+      });
+
+      expect(log.error).toHaveBeenCalledExactlyOnceWith(
+        'Unable to identify single investigation with name matching 1'
+      );
+      expect(events.length).toBe(0);
     });
   });
 });
