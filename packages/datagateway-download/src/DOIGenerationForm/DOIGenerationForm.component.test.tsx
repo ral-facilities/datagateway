@@ -427,27 +427,26 @@ describe('DOI generation form component', () => {
       '2'
     );
 
-    if (mockedSettings.uiFeatures.disableContributor === false) {
-      await user.click(
-        screen.getByRole('button', {
-          name: 'DOIGenerationForm.add_contributor',
-        })
-      );
+    await user.click(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.add_contributor',
+      })
+    );
 
-      // missing contributor type
-      expect(
-        screen.getByRole('button', {
-          name: 'DOIGenerationForm.review_metadata_button',
-        })
-      ).toBeDisabled();
+    // missing contributor type
+    expect(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.review_metadata_button',
+      })
+    ).toBeDisabled();
 
-      await user.click(
-        screen.getByRole('combobox', {
-          name: 'DOIGenerationForm.creator_type',
-        })
-      );
-      await user.click(await screen.findByRole('option', { name: 'Editor' }));
-    }
+    await user.click(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.creator_type',
+      })
+    );
+    await user.click(await screen.findByRole('option', { name: 'Editor' }));
+
     await user.type(
       screen.getByRole('textbox', {
         name: 'DOIGenerationForm.related_identifier',
@@ -577,13 +576,10 @@ describe('DOI generation form component', () => {
       {
         title: 't',
         description: 'd',
-        creators:
-          mockedSettings.uiFeatures.disableContributor === false
-            ? [
-                { username: '1', contributor_type: 'Creator' },
-                { username: '2', contributor_type: 'Editor' },
-              ]
-            : [{ username: '1', contributor_type: 'Creator' }],
+        creators: [
+          { username: '1', contributor_type: 'Creator' },
+          { username: '2', contributor_type: 'Editor' },
+        ],
         related_items: [
           {
             title: 'Related DOI 1',
@@ -946,13 +942,11 @@ describe('DOI generation form component', () => {
     expect(
       screen.getByRole('button', { name: 'DOIGenerationForm.add_creator' })
     ).toBeDisabled();
-    if (mockedSettings.uiFeatures.disableContributor === false) {
-      expect(
-        screen.getByRole('button', {
-          name: 'DOIGenerationForm.add_contributor',
-        })
-      ).toBeDisabled();
-    }
+    expect(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.add_contributor',
+      })
+    ).toBeDisabled();
   }, 60_000);
 
   it('should let the user change cart tabs', async () => {
@@ -1077,5 +1071,17 @@ describe('DOI generation form component', () => {
         })
       ).toBeInTheDocument();
     });
+  });
+
+  it('should not show the add contributor button if the feature is disabled', async () => {
+    mockedSettings.uiFeatures.disableContributor = true;
+    renderComponent();
+    // accept data policy
+    await user.click(
+      screen.getByRole('button', { name: 'acceptDataPolicy.accept' })
+    );
+    expect(
+      screen.queryByText(`DOIGenerationForm.add_contributor`)
+    ).not.toBeInTheDocument();
   });
 });
