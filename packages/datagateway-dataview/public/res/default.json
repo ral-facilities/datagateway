@@ -420,6 +420,7 @@
   },
   "DOIGenerationForm": {
     "page_header": "Generate DOI",
+    "page_description": "By editing this DOI, you are creating a new version of the DOI, a new version DOI identifier will be generated for this. The previous version will remain unchanged, both will come under the same concept DOI. Please ensure you have filled in all required fields before generating a DOI.",
     "data_header": "Data",
     "form_header": "Details",
     "title": "DOI Title",
