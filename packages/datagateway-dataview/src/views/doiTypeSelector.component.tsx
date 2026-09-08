@@ -109,32 +109,34 @@ const DOITypeSelector = (props: DOITypeSelectorProps): React.ReactElement => {
           </ToggleButtonGroup>
         </Grid>
       </Grid>
-      <Grid container item direction="column" xs="auto">
-        <Grid item>
-          <Typography component={'label'} id="doi-pi-selector-label">
-            {t('my_doi_table.pi_button_group_aria_label')}
-          </Typography>
+      {type === 'myDOIs' && (
+        <Grid container item direction="column" xs="auto">
+          <Grid item>
+            <Typography component={'label'} id="doi-pi-selector-label">
+              {t('my_doi_table.pi_button_group_aria_label')}
+            </Typography>
+          </Grid>
+          <Grid item>
+            <ToggleButtonGroup
+              value={doiType?.pi ?? 'undefined'}
+              exclusive
+              onChange={handlePIorAny}
+              aria-labelledby="doi-pi-selector-label"
+              size="small"
+            >
+              <ToggleButton value={'undefined'} sx={{ p: '3px 7px' }}>
+                {t('my_doi_table.pi_or_any')}
+              </ToggleButton>
+              <ToggleButton value={true} sx={{ p: '3px 7px' }}>
+                {t('my_doi_table.pi')}
+              </ToggleButton>
+              <ToggleButton value={false} sx={{ p: '3px 7px' }}>
+                {t('my_doi_table.any')}
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </Grid>
         </Grid>
-        <Grid item>
-          <ToggleButtonGroup
-            value={doiType?.pi ?? 'undefined'}
-            exclusive
-            onChange={handlePIorAny}
-            aria-labelledby="doi-pi-selector-label"
-            size="small"
-          >
-            <ToggleButton value={'undefined'} sx={{ p: '3px 7px' }}>
-              {t('my_doi_table.pi_or_any')}
-            </ToggleButton>
-            <ToggleButton value={true} sx={{ p: '3px 7px' }}>
-              {t('my_doi_table.pi')}
-            </ToggleButton>
-            <ToggleButton value={false} sx={{ p: '3px 7px' }}>
-              {t('my_doi_table.any')}
-            </ToggleButton>
-          </ToggleButtonGroup>
-        </Grid>
-      </Grid>
+      )}
       {(doiType === null ||
         doiType.view === 'all' ||
         doiType.view === 'session') && (
