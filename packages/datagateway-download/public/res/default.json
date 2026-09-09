@@ -125,7 +125,7 @@
     "technique_pid": "PID",
     "add_technique": "Add technique",
     "creators_and_contributors": "Creators",
-    "creators_contributors_help_tooltip": "Please ensure the people associated with this DOI are correct. You can add users via their Fed ID or via their ORCiD. ",
+    "creators_contributors_help_tooltip": "Please ensure the people associated with this DOI are correct. You can add users via their Fed ID or via their ORCiD. Please select the Add Creator button if the person was a main researcher, otherwise select Add Contributor and specify their contributor type.",
     "samples": "Samples",
     "subjects_label": "Subjects",
     "add_subject": "Add subject",
