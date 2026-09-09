@@ -84,7 +84,7 @@ describe('ISIS - Study Data Publication Cards', () => {
       .then(($pid) => {
         const pid = $pid.text();
 
-        const url = `https://doi.org/${pid}`;
+        const url = `${Cypress.expose('doiHandleUrl')}/${pid}`;
 
         cy.get('[data-testid="card"]')
           .first()

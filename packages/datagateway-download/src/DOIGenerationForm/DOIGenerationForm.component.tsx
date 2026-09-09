@@ -45,15 +45,20 @@ const DOIGenerationForm: React.FC = () => {
   const [title, setTitle] = React.useState('');
   const [description, setDescription] = React.useState('');
   const [techniques, setTechniques] = React.useState<BioPortalTerm[]>([]);
+  const [samples, setSamples] = React.useState<string[]>([]);
   const [subjects, setSubjects] = React.useState<string[]>([]);
   const [currentTab, setCurrentTab] = React.useState<
     'investigation' | 'dataset' | 'datafile'
   >('investigation');
   const [showMintConfirmation, setShowMintConfirmation] = React.useState(false);
 
-  const { doiMinterUrl, dataCiteUrl, bioportalUrl } = React.useContext(
-    DownloadSettingsContext
-  );
+  const {
+    doiMinterUrl,
+    dataCiteUrl,
+    bioportalUrl,
+    doiHandleUrl,
+    localContactRole,
+  } = React.useContext(DownloadSettingsContext);
 
   const handleTabChange = (
     _event: React.SyntheticEvent,
@@ -133,10 +138,9 @@ const DOIGenerationForm: React.FC = () => {
           subjects: [
             ...subjects.map((s) => ({
               subject: s,
-              subjectScheme: null,
-              schemeUri: null,
-              valueUri: null,
-              classificationCode: null,
+            })),
+            ...samples.map((s) => ({
+              subject: `sample:${s}`,
             })),
             ...techniques.map((t) => ({
               subject: t.prefLabel,
@@ -144,7 +148,6 @@ const DOIGenerationForm: React.FC = () => {
                 'Photon and Neutron Experimental Techniques (PaNET) ontology',
               schemeUri: 'http://purl.org/pan-science/PaNET/',
               valueUri: t['@id'],
-              classificationCode: null,
             })),
           ],
         },
@@ -157,6 +160,7 @@ const DOIGenerationForm: React.FC = () => {
     description,
     mintDraftCart,
     relatedIdentifiers,
+    samples,
     selectedUsers,
     subjects,
     techniques,
@@ -196,6 +200,7 @@ const DOIGenerationForm: React.FC = () => {
               onConfirmClick={handleConfirmClick}
               deleteLoading={deleteDraftStatus === 'pending'}
               publishLoading={publishingStatus === 'pending'}
+              doiHandleUrl={doiHandleUrl}
             />
           ) : (
             <Box>
@@ -301,6 +306,7 @@ const DOIGenerationForm: React.FC = () => {
                     dataCiteUrl={dataCiteUrl}
                     doiMinterUrl={doiMinterUrl}
                     bioportalUrl={bioportalUrl}
+                    doiHandleUrl={doiHandleUrl}
                     title={title}
                     setTitle={setTitle}
                     description={description}
@@ -311,6 +317,8 @@ const DOIGenerationForm: React.FC = () => {
                     setRelatedIdentifiers={setRelatedIdentifiers}
                     techniques={techniques}
                     setTechniques={setTechniques}
+                    samples={samples}
+                    setSamples={setSamples}
                     subjects={subjects}
                     setSubjects={setSubjects}
                     disableMintButton={
@@ -318,6 +326,7 @@ const DOIGenerationForm: React.FC = () => {
                     }
                     mintLoading={mintingDraftStatus === 'pending'}
                     onMintClick={handleMintClick}
+                    localContactRole={localContactRole}
                   />
                 </Grid>
               </Paper>

@@ -13,7 +13,7 @@ describe('DLS - User Generated Data Publication Landing', () => {
 
   before(() => {
     cy.login({ username: 'root', password: 'pw', mechanism: 'simple' });
-    cy.seedSessionDataPublication(false).as('sessionDataPublication');
+    cy.seedSessionDataPublication().as('sessionDataPublication');
     cy.dumpAliases(store);
   });
 
@@ -108,7 +108,7 @@ describe('DLS - User Generated Data Publication Landing', () => {
       cy.contains('a', dp.body.concept.attributes.doi).should(
         'have.attr',
         'href',
-        `https://doi.org/${dp.body.concept.attributes.doi}`
+        `${Cypress.expose('doiHandleUrl')}/${dp.body.concept.attributes.doi}`
       );
     });
   });
@@ -174,6 +174,10 @@ describe('DLS - User Generated Data Publication Landing', () => {
     // add a subject
     cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
 
+    // add a sample
+    cy.findByRole('combobox', { name: 'Samples' }).type('sample1');
+    cy.findByRole('button', { name: 'Add sample' }).click();
+
     // add a technique
     cy.findByRole('button', { name: 'Add technique' }).click();
     cy.findByRole('combobox', { name: 'Select technique' }).type('x-ray');
@@ -196,7 +200,7 @@ describe('DLS - User Generated Data Publication Landing', () => {
 
     cy.contains('Done').click();
 
-    cy.contains('button', 'Generate DOI').click();
+    cy.contains('button', 'Review DOI metadata').click();
 
     cy.contains('Please review the metadata', { timeout: 10000 }).should(
       'exist'
@@ -234,6 +238,7 @@ describe('DLS - User Generated Data Publication Landing', () => {
     cy.contains('Randy Beasley').should('be.visible');
     cy.contains('a', 'borrmann effect').should('be.visible');
     cy.contains('subject1').should('be.visible');
+    cy.contains('sample1').should('be.visible');
 
     cy.get('[data-testid="landing-dataPublication-pid-link"]')
       .first()
@@ -327,14 +332,14 @@ describe('DLS - User Generated Data Publication Landing', () => {
       )
         .first()
         .contains(
-          `STFC ISIS Neutron and Muon Source, https://doi.org/${response.body.version.attributes.doi}`
+          `STFC ISIS Neutron and Muon Source, ${Cypress.expose('doiHandleUrl')}/${response.body.version.attributes.doi}`
         );
       cy.get(
         '[data-testid="Concept-Data-Citation-citation-formatter-citation"]'
       )
         .last()
         .contains(
-          `STFC ISIS Neutron and Muon Source, https://doi.org/${response.body.concept.attributes.doi}`
+          `STFC ISIS Neutron and Muon Source, ${Cypress.expose('doiHandleUrl')}/${response.body.concept.attributes.doi}`
         );
     });
 
@@ -392,14 +397,14 @@ describe('DLS - User Generated Data Publication Landing', () => {
       )
         .first()
         .contains(
-          `STFC ISIS Neutron and Muon Source, https://doi.org/${response.body.version.attributes.doi}`
+          `STFC ISIS Neutron and Muon Source, ${Cypress.expose('doiHandleUrl')}/${response.body.version.attributes.doi}`
         );
       cy.get(
         '[data-testid="Concept-Data-Citation-citation-formatter-citation"]'
       )
         .last()
         .contains(
-          `STFC ISIS Neutron and Muon Source, https://doi.org/${response.body.concept.attributes.doi}`
+          `STFC ISIS Neutron and Muon Source, ${Cypress.expose('doiHandleUrl')}/${response.body.concept.attributes.doi}`
         );
     });
 
@@ -432,7 +437,9 @@ describe('DLS - Session Data Publication Landing', () => {
       password: 'pw',
       mechanism: 'simple',
     });
-    cy.seedSessionDataPublication(true).as('sessionDataPublication');
+    cy.seedSessionDataPublication({ recreateSessionDPIfExists: true }).as(
+      'sessionDataPublication'
+    );
     cy.login(
       {
         username: 'Chris481',
@@ -479,7 +486,7 @@ describe('DLS - Session Data Publication Landing', () => {
       cy.contains('a', dp.body.attributes.doi).should(
         'have.attr',
         'href',
-        `https://doi.org/${dp.body.attributes.doi}`
+        `${Cypress.expose('doiHandleUrl')}/${dp.body.attributes.doi}`
       );
     });
   });

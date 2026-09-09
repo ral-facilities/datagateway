@@ -33,10 +33,10 @@ export {
 export { default as AdvancedFilter } from './card/advancedFilter.component';
 export { default as CardView } from './card/cardView.component';
 export type {
-  CardViewDetails,
   CVCustomFilters,
   CVFilterInfo,
   CVSelectedFilter,
+  CardViewDetails,
 } from './card/cardView.component';
 
 export * from './api/index';
@@ -91,15 +91,17 @@ export { default as ISISDatasetDetailsPanel } from './detailsPanels/isis/dataset
 export { default as ISISInstrumentDetailsPanel } from './detailsPanels/isis/instrumentDetailsPanel.component';
 export { default as ISISInvestigationDetailsPanel } from './detailsPanels/isis/investigationDetailsPanel.component';
 
-export type { ContributorUser } from './dois/creatorsAndContributors.component';
 export { default as DOIConfirmDialog } from './dois/DOIConfirmDialog.component';
 export { default as DOIMetadataConfirmation } from './dois/DOIMetadataConfirmation.component';
 export { default as DOIMetadataForm } from './dois/DOIMetadataForm.component';
+export type { ContributorUser } from './dois/creatorsAndContributors.component';
 
 export { default as DialogContent } from './dialogContent.component';
 export { default as DialogTitle } from './dialogTitle.component';
 
 export * from './urlBuilders';
+
+export * from './utils';
 
 // const root = ReactDOM.createRoot(document.getElementById('root'));
 // root.render(<App />);

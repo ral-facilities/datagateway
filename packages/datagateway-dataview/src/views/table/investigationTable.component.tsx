@@ -36,6 +36,9 @@ const InvestigationTable = (): React.ReactElement => {
   );
   const location = useLocation();
   const [t] = useTranslation();
+  const doiHandleUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.doiHandleUrl
+  );
 
   const { filters, view, sort } = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -133,7 +136,7 @@ const InvestigationTable = (): React.ReactElement => {
         cellContentRenderer: (cellProps: TableCellProps) => {
           const investigationData = cellProps.rowData as Investigation;
           return externalSiteLink(
-            `https://doi.org/${investigationData.doi}`,
+            `${doiHandleUrl}/${investigationData.doi}`,
             investigationData.doi,
             'investigation-table-doi-link'
           );
@@ -187,7 +190,7 @@ const InvestigationTable = (): React.ReactElement => {
         },
       },
     ],
-    [t, textFilter, dateFilter, view]
+    [t, textFilter, dateFilter, view, doiHandleUrl]
   );
 
   return (

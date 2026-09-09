@@ -1,4 +1,5 @@
 import { DGDataViewState } from '../../../state/app.types';
+import { initialState } from '../../../state/reducers/dgdataview.reducer';
 import {
   decDatafilePreviewerZoomLevel,
   incDatafilePreviewerZoomLevel,
@@ -11,11 +12,7 @@ describe('Datafile previewer reducers', () => {
 
   beforeEach(() => {
     state = {
-      breadcrumbSettings: [],
-      facilityImageURL: '',
-      pluginHost: '',
-      settingsLoaded: false,
-      PIRole: 'PI',
+      ...initialState,
       datafilePreviewer: {
         zoomLevel: 100,
         isDetailsPaneShown: false,
@@ -30,12 +27,7 @@ describe('Datafile previewer reducers', () => {
           shouldShow: true,
         });
 
-        expect(newState).toEqual<DGDataViewState>({
-          breadcrumbSettings: [],
-          facilityImageURL: '',
-          pluginHost: '',
-          settingsLoaded: false,
-          PIRole: 'PI',
+        expect(newState).toMatchObject({
           datafilePreviewer: {
             zoomLevel: 100,
             isDetailsPaneShown: true,
@@ -48,12 +40,7 @@ describe('Datafile previewer reducers', () => {
   describe('incDatafilePreviewerZoomLevel', () => {
     it('should produce a new state with the zoom level of the datafile previewer equal to previous zoom level + predefined increment step', () => {
       const newState = incDatafilePreviewerZoomLevel(state);
-      expect(newState).toEqual<DGDataViewState>({
-        breadcrumbSettings: [],
-        facilityImageURL: '',
-        pluginHost: '',
-        settingsLoaded: false,
-        PIRole: 'PI',
+      expect(newState).toMatchObject({
         datafilePreviewer: {
           zoomLevel: 110,
           isDetailsPaneShown: false,
@@ -65,12 +52,7 @@ describe('Datafile previewer reducers', () => {
   describe('decDatafilePreviewerZoomLevel', () => {
     it('should produce a new state with the zoom level of the datafile previewer equal to previous zoom level - predefined increment step', () => {
       const newState = decDatafilePreviewerZoomLevel(state);
-      expect(newState).toEqual<DGDataViewState>({
-        breadcrumbSettings: [],
-        facilityImageURL: '',
-        pluginHost: '',
-        settingsLoaded: false,
-        PIRole: 'PI',
+      expect(newState).toMatchObject({
         datafilePreviewer: {
           zoomLevel: 90,
           isDetailsPaneShown: false,
@@ -82,23 +64,14 @@ describe('Datafile previewer reducers', () => {
   describe('resetDatafilePreviewerZoomLevel', () => {
     it('should produce a new state with the zoom level of the datafile previewer set to the default value', () => {
       state = {
-        breadcrumbSettings: [],
-        facilityImageURL: '',
-        pluginHost: '',
-        settingsLoaded: false,
-        PIRole: 'PI',
+        ...state,
         datafilePreviewer: {
           zoomLevel: 80,
           isDetailsPaneShown: false,
         },
       };
       const newState = resetDatafilePreviewerZoomLevel(state);
-      expect(newState).toEqual<DGDataViewState>({
-        breadcrumbSettings: [],
-        facilityImageURL: '',
-        pluginHost: '',
-        settingsLoaded: false,
-        PIRole: 'PI',
+      expect(newState).toMatchObject({
         datafilePreviewer: {
           zoomLevel: 100,
           isDetailsPaneShown: false,

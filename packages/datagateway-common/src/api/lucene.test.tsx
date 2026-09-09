@@ -71,6 +71,7 @@ describe('Lucene actions', () => {
       params.append('minCount', '10');
       params.append('maxCount', '100');
       params.append('restrict', 'false');
+      params.append('JWT', '');
 
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/icat/search/documents',
@@ -116,7 +117,7 @@ describe('Lucene actions', () => {
       params.append('minCount', '10');
       params.append('maxCount', '300');
       params.append('restrict', 'false');
-
+      params.append('JWT', '');
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/icat/search/documents',
         {
@@ -161,7 +162,7 @@ describe('Lucene actions', () => {
       params.append('minCount', '10');
       params.append('maxCount', '300');
       params.append('restrict', 'false');
-
+      params.append('JWT', '');
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/icat/search/documents',
         {
@@ -201,7 +202,7 @@ describe('Lucene actions', () => {
       params.append('minCount', '10');
       params.append('maxCount', '300');
       params.append('restrict', 'false');
-
+      params.append('JWT', '');
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/icat/search/documents',
         {
@@ -249,6 +250,7 @@ describe('Lucene actions', () => {
       params.append('minCount', '10');
       params.append('maxCount', '100');
       params.append('restrict', 'false');
+      params.append('JWT', '');
 
       // second call is the fetch next page call
       expect(axios.get).toHaveBeenNthCalledWith(

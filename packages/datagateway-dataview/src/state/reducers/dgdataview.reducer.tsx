@@ -8,6 +8,10 @@ import {
   ConfigureBreadcrumbSettingsType,
   ConfigureFacilityImageSettingPayload,
   ConfigureFacilityImageSettingType,
+  ConfigureLandingPageLogoSettingPayload,
+  ConfigureLandingPageLogoSettingType,
+  ConfigureLocalContactRoleSettingPayload,
+  ConfigureLocalContactRoleSettingType,
   ConfigurePIRoleSettingPayload,
   ConfigurePIRoleSettingType,
   ConfigurePluginHostSettingPayload,
@@ -23,6 +27,7 @@ export const initialState: DGDataViewState = {
   facilityImageURL: '',
   datafilePreviewer: datafilePreviewerInitialState,
   PIRole: 'PI',
+  localContactRole: 'local_contact|DataCollector',
 };
 
 export function handleSettingsLoaded(state: DGDataViewState): DGDataViewState {
@@ -64,6 +69,16 @@ export function handleConfigureFacilityImageSetting(
   };
 }
 
+export function handleConfigureLandingPageLogoSetting(
+  state: DGDataViewState,
+  payload: ConfigureLandingPageLogoSettingPayload
+): DGDataViewState {
+  return {
+    ...state,
+    landingPageLogo: payload.settings,
+  };
+}
+
 export function handleConfigurePIRoleSetting(
   state: DGDataViewState,
   payload: ConfigurePIRoleSettingPayload
@@ -74,12 +89,25 @@ export function handleConfigurePIRoleSetting(
   };
 }
 
+export function handleConfigureLocalContactRoleSetting(
+  state: DGDataViewState,
+  payload: ConfigureLocalContactRoleSettingPayload
+): DGDataViewState {
+  return {
+    ...state,
+    localContactRole: payload.settings,
+  };
+}
+
 const DGDataViewReducer = createReducer(initialState, {
   [SettingsLoadedType]: handleSettingsLoaded,
   [ConfigureBreadcrumbSettingsType]: handleConfigureBreadcrumbSettings,
   [ConfigurePluginHostSettingType]: handleConfigurePluginHostSetting,
   [ConfigureFacilityImageSettingType]: handleConfigureFacilityImageSetting,
+  [ConfigureLandingPageLogoSettingType]: handleConfigureLandingPageLogoSetting,
   [ConfigurePIRoleSettingType]: handleConfigurePIRoleSetting,
+  [ConfigureLocalContactRoleSettingType]:
+    handleConfigureLocalContactRoleSetting,
   ...datafilePreviewerReducer,
 });
 

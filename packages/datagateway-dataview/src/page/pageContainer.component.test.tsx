@@ -356,6 +356,11 @@ describe('PageContainer - Tests', () => {
         name: 'all_doi_table.type_button_group_aria_label',
       })
     ).toBeInTheDocument();
+    expect(
+      await screen.findByRole('group', {
+        name: 'all_doi_table.open_button_group_aria_label',
+      })
+    ).toBeInTheDocument();
   });
 
   it('display filter warning on toggle table', async () => {

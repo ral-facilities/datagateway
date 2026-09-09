@@ -1,9 +1,11 @@
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import {
   Button,
   CircularProgress,
   FormControl,
   Grid,
   InputLabel,
+  Link,
   MenuItem,
   Paper,
   Select,
@@ -13,11 +15,12 @@ import {
   TableHead,
   TableRow,
   TextField,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import { AxiosError } from 'axios';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { useCheckUser } from '../api/dois';
 import { ContributorType, User } from '../app.types';
 import { readSciGatewayToken } from '../parseTokens';
@@ -29,26 +32,23 @@ export type ContributorUser = User & {
 /**
  * A compare function for {@link ContributorUser ContributorUser} intended to be used with {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort Array.sort}
  *
- * This basically ensures we order {@link ContributorType.Minter Minters} before {@link ContributorType.Creator Creators} and {@link ContributorType.Creator Creators} before other {@link ContributorType ContributorTypes}
+ * This basically ensures we order {@link ContributorType.Creator Creators} before other {@link ContributorType ContributorTypes}
  * @param a first user for comparison
  * @param b second user for comparison
  * @returns either 1, -1 or 0 to indicate a before b, a after b and a == b respectively
  */
-const compareUsers = (a: ContributorUser, b: ContributorUser): number => {
+const compareCreatorsAndContributors = (
+  a: ContributorUser,
+  b: ContributorUser
+): number => {
   if (
-    (a.contributor_type === ContributorType.Minter &&
-      b.contributor_type !== ContributorType.Minter) ||
-    (a.contributor_type === ContributorType.Creator &&
-      b.contributor_type !== ContributorType.Creator &&
-      b.contributor_type !== ContributorType.Minter)
+    a.contributor_type === ContributorType.Creator &&
+    b.contributor_type !== ContributorType.Creator
   ) {
     return -1;
   } else if (
-    (b.contributor_type === ContributorType.Minter &&
-      a.contributor_type !== ContributorType.Minter) ||
-    (b.contributor_type === ContributorType.Creator &&
-      a.contributor_type !== ContributorType.Creator &&
-      a.contributor_type !== ContributorType.Minter)
+    b.contributor_type === ContributorType.Creator &&
+    a.contributor_type !== ContributorType.Creator
   ) {
     return 1;
   } else return 0;
@@ -58,13 +58,22 @@ type CreatorsAndContributorsProps = {
   selectedUsers: ContributorUser[];
   changeSelectedUsers: React.Dispatch<React.SetStateAction<ContributorUser[]>>;
   doiMinterUrl: string | undefined;
+  localContactRole: string;
   disabled: boolean;
+  showErrors: boolean;
 };
 
 const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
   props
 ) => {
-  const { selectedUsers, changeSelectedUsers, doiMinterUrl, disabled } = props;
+  const {
+    selectedUsers,
+    changeSelectedUsers,
+    doiMinterUrl,
+    localContactRole,
+    disabled,
+    showErrors,
+  } = props;
   const [t] = useTranslation();
   const [username, setUsername] = React.useState('');
   const [usernameError, setUsernameError] = React.useState('');
@@ -129,10 +138,26 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
       variant="outlined"
     >
       <Grid container direction="row" spacing={1}>
-        <Grid item>
-          <Typography variant="h6" component="h4" id="creators-label">
-            {t('DOIGenerationForm.creators_and_contributors')}
-          </Typography>
+        <Grid container item alignItems="end" spacing={0.5}>
+          <Grid item>
+            <Typography variant="h6" component="h4" id="creators-label">
+              {t('DOIGenerationForm.creators_and_contributors')}
+            </Typography>
+          </Grid>
+          <Grid item>
+            <Tooltip
+              title={
+                <Trans
+                  i18nKey="DOIGenerationForm.creators_contributors_help_tooltip"
+                  components={{
+                    Link: <Link />,
+                  }}
+                />
+              }
+            >
+              <HelpOutlineIcon fontSize="small" />
+            </Tooltip>
+          </Grid>
         </Grid>
         <Grid
           container
@@ -219,16 +244,20 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
                   </TableCell>
                 </TableRow>
               )}
-              {[...selectedUsers] // need to spread so we don't alter underlying array
-                .sort(compareUsers)
+              {selectedUsers
+                .toSorted(compareCreatorsAndContributors)
                 .map((user) => (
                   <TableRow key={user.id}>
-                    <TableCell>{user.fullName}</TableCell>
+                    <TableCell>
+                      {user.fullName ??
+                        (user.givenName && user.familyName
+                          ? `${user.givenName} ${user.familyName}`
+                          : user.name)}
+                    </TableCell>
                     <TableCell>{user?.affiliation}</TableCell>
                     <TableCell>{user?.email}</TableCell>
                     <TableCell>
-                      {user.contributor_type === ContributorType.Creator ||
-                      user.contributor_type === ContributorType.Minter ? (
+                      {user.contributor_type === ContributorType.Creator ? (
                         user.contributor_type
                       ) : (
                         <FormControl
@@ -237,6 +266,7 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
                           required
                           sx={{ minWidth: 180 }}
                           disabled={disabled}
+                          error={showErrors && user.contributor_type === ''}
                         >
                           <InputLabel
                             id={`${user.id}-contributor-type-select-label`}
@@ -268,7 +298,7 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
                               .filter(
                                 (value) =>
                                   value !== ContributorType.Creator &&
-                                  value !== ContributorType.Minter
+                                  !new RegExp(localContactRole).test(value)
                               )
                               .map((type) => {
                                 return (

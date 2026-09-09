@@ -1,3 +1,7 @@
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import CheckCircle from '@mui/icons-material/CheckCircle';
+import Public from '@mui/icons-material/Public';
+import Save from '@mui/icons-material/Save';
 import {
   Divider,
   Grid,
@@ -8,24 +12,22 @@ import {
   Tabs,
   Typography,
 } from '@mui/material';
-import CalendarToday from '@mui/icons-material/CalendarToday';
-import CheckCircle from '@mui/icons-material/CheckCircle';
-import Public from '@mui/icons-material/Public';
-import Save from '@mui/icons-material/Save';
 import {
-  Dataset,
-  formatBytes,
-  parseSearchToQuery,
-  useDatasetDetails,
   AddToCartButton,
-  DownloadButton,
   ArrowTooltip,
+  Dataset,
+  DownloadButton,
+  formatBytes,
   getTooltipText,
+  parseSearchToQuery,
+  StateType,
+  useDatasetDetails,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
-import Branding from './isisBranding.component';
+import Branding from '../branding.component';
 
 const Subheading = styled(Typography)(({ theme }) => ({
   marginTop: theme.spacing(1),
@@ -74,6 +76,9 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     () => parseSearchToQuery(location.search),
     [location.search]
   );
+  const doiHandleUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.doiHandleUrl
+  );
   const [value, setValue] = React.useState<'details'>('details');
   const { datasetId } = props;
 
@@ -85,7 +90,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         return (
           entity?.doi && (
             <MuiLink
-              href={`https://doi.org/${entity.doi}`}
+              href={`${doiHandleUrl}/${entity.doi}`}
               data-testid="isis-dataset-landing-doi-link"
             >
               {entity.doi}
@@ -125,7 +130,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     <Paper data-testid="isis-dataset-landing" sx={{ margin: 1, padding: 1 }}>
       <Grid container sx={{ padding: 0.5 }}>
         <Grid item xs={12}>
-          <Branding />
+          <Branding landingPageType="data" />
         </Grid>
         <Grid item xs={12}>
           <Paper square elevation={0} sx={{ mx: -1.5, px: 1.5 }}>

@@ -7,7 +7,7 @@ describe('DOI Generation form', () => {
   const store = {};
   before(() => {
     cy.login({ username: 'root', password: 'pw', mechanism: 'simple' });
-    cy.seedSessionDataPublication(false).as('sessionDataPublication');
+    cy.seedSessionDataPublication().as('sessionDataPublication');
     cy.dumpAliases(store);
   });
 
@@ -69,7 +69,33 @@ describe('DOI Generation form', () => {
     });
 
     it('should not let user generate DOI when fields are still unfilled', () => {
-      cy.contains('button', 'Generate DOI').should('be.disabled');
+      cy.contains('button', 'Review DOI metadata').click();
+      cy.contains('button', 'Review DOI metadata').should('be.disabled');
+      cy.findByRole('textbox', { name: 'DOI Title' }).should(
+        'have.attr',
+        'aria-invalid',
+        'true'
+      );
+      cy.findByRole('textbox', { name: 'DOI Description' }).should(
+        'have.attr',
+        'aria-invalid',
+        'true'
+      );
+      cy.findByRole('combobox', { name: 'Techniques' }).should(
+        'have.attr',
+        'aria-invalid',
+        'true'
+      );
+      cy.findByRole('combobox', { name: 'Subjects' }).should(
+        'have.attr',
+        'aria-invalid',
+        'true'
+      );
+      cy.findByRole('combobox', { name: 'Samples' }).should(
+        'have.attr',
+        'aria-invalid',
+        'true'
+      );
     });
 
     it('should let user generate DOI when fields are filled', () => {
@@ -84,6 +110,9 @@ describe('DOI Generation form', () => {
       // add a subject
       cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
 
+      // add a sample
+      cy.findByRole('combobox', { name: 'Samples' }).type('sample1{enter}');
+
       // add a technique
       cy.findByRole('button', { name: 'Add technique' }).click();
       cy.findByRole('combobox', { name: 'Select technique' }).type('x-ray');
@@ -97,7 +126,7 @@ describe('DOI Generation form', () => {
       }).click();
       cy.findByRole('button', { name: 'Confirm' }).click();
 
-      cy.contains('button', 'Generate DOI').click();
+      cy.contains('button', 'Review DOI metadata').click();
 
       // expect confirmation page
 
@@ -109,7 +138,9 @@ describe('DOI Generation form', () => {
       // check it correctly shows user defined metadata
       cy.contains('DOI Description: Test description').should('be.visible');
       // check it correctly shows metadata that the API has added
-      cy.contains('Relationship: HasPart').should('be.visible');
+      cy.contains('Size: 1.433375422 GB').should('be.visible');
+      // TODO: is it fine that this relationship is added after minting but not shown on the confirmation page?
+      // cy.contains('Relationship: HasPart').should('be.visible');
 
       cy.contains('button', 'Generate DOI').click();
 
@@ -134,6 +165,9 @@ describe('DOI Generation form', () => {
       // add a subject
       cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
 
+      // add a sample
+      cy.findByRole('combobox', { name: 'Samples' }).type('sample1{enter}');
+
       // add a technique
       cy.findByRole('button', { name: 'Add technique' }).click();
       cy.findByRole('combobox', { name: 'Select technique' }).type('x-ray');
@@ -147,7 +181,7 @@ describe('DOI Generation form', () => {
       }).click();
       cy.findByRole('button', { name: 'Confirm' }).click();
 
-      cy.contains('button', 'Generate DOI').click();
+      cy.contains('button', 'Review DOI metadata').click();
 
       // expect confirmation page
 
@@ -172,6 +206,9 @@ describe('DOI Generation form', () => {
         .first()
         .type('Test description');
 
+      // add a sample
+      cy.findByRole('combobox', { name: 'Samples' }).type('sample1{enter}');
+
       // add a technique
       cy.findByRole('button', { name: 'Add technique' }).click();
       cy.findByRole('combobox', { name: 'Select technique' }).type('x-ray');
@@ -188,7 +225,8 @@ describe('DOI Generation form', () => {
       // add a subject
       cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
       cy.findByRole('combobox', { name: 'Subjects' }).type('subject2{enter}');
-      cy.findByRole('combobox', { name: 'Subjects' }).type('subject3{enter}');
+      cy.findByRole('combobox', { name: 'Subjects' }).type('subject3'); // test that subject can be added by clicking the button
+      cy.findByRole('button', { name: 'Add subject' }).click();
 
       cy.findByRole('button', { name: 'subject1' }).should('be.visible');
       cy.findByRole('button', { name: 'subject2' }).should('be.visible');
@@ -202,11 +240,74 @@ describe('DOI Generation form', () => {
       cy.findByRole('button', { name: 'subject2' }).should('not.exist');
 
       // check that subject info displays correctly in confirmation page
-      cy.contains('button', 'Generate DOI').click();
+      cy.contains('button', 'Review DOI metadata').click();
+
+      cy.contains('Please review the metadata', { timeout: 10000 }).should(
+        'be.visible'
+      );
 
       cy.contains('Subject: subject1').should('be.visible');
       cy.contains('Subject: subject3').should('be.visible');
       cy.contains('Subject: subject2').should('not.exist');
+
+      cy.contains('button', 'Generate DOI').click();
+
+      cy.contains('Mint was successful', { timeout: 10000 }).should(
+        'be.visible'
+      );
+    });
+
+    it('should let user add and remove samples', () => {
+      cy.contains('DOI Title').parent().find('input').type('Test title');
+      cy.contains('DOI Description')
+        .parent()
+        .find('textarea')
+        .first()
+        .type('Test description');
+
+      // add a subject
+      cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
+
+      // add a technique
+      cy.findByRole('button', { name: 'Add technique' }).click();
+      cy.findByRole('combobox', { name: 'Select technique' }).type('x-ray');
+      cy.findByRole('option', {
+        name: 'x-ray standing wave (XSW)',
+        timeout: 10_000,
+      }).click();
+      cy.findByRole('cell', {
+        name: 'borrmann effect',
+        timeout: 10_000,
+      }).click();
+      cy.findByRole('button', { name: 'Confirm' }).click();
+
+      // add a sample
+      cy.findByRole('combobox', { name: 'Samples' }).type('sample1{enter}');
+      cy.findByRole('combobox', { name: 'Samples' }).type('sample2{enter}');
+      cy.findByRole('combobox', { name: 'Samples' }).type('sample3'); // test that sample can be added by clicking the button
+      cy.findByRole('button', { name: 'Add sample' }).click();
+
+      cy.findByRole('button', { name: 'sample1' }).should('be.visible');
+      cy.findByRole('button', { name: 'sample2' }).should('be.visible');
+      cy.findByRole('button', { name: 'sample3' }).should('be.visible');
+
+      cy.findByRole('combobox', { name: 'Samples' }).click();
+      cy.findByRole('combobox', { name: 'Samples' }).type(
+        '{leftArrow}{leftArrow}{del}'
+      );
+
+      cy.findByRole('button', { name: 'sample2' }).should('not.exist');
+
+      // check that sample info displays correctly in confirmation page
+      cy.contains('button', 'Review DOI metadata').click();
+
+      cy.contains('Please review the metadata', { timeout: 10000 }).should(
+        'be.visible'
+      );
+
+      cy.contains('Subject: sample:sample1').should('be.visible');
+      cy.contains('Subject: sample:sample3').should('be.visible');
+      cy.contains('Subject: sample:sample2').should('not.exist');
 
       cy.contains('button', 'Generate DOI').click();
 
@@ -225,6 +326,9 @@ describe('DOI Generation form', () => {
 
       // add a subject
       cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
+
+      // add a sample
+      cy.findByRole('combobox', { name: 'Samples' }).type('sample1{enter}');
 
       // add a technique
       cy.findByRole('button', { name: 'Add technique' }).click();
@@ -277,7 +381,11 @@ describe('DOI Generation form', () => {
       cy.findByRole('button', { name: 'borrmann effect' }).should('not.exist');
 
       // check that technique info displays correctly in confirmation page
-      cy.contains('button', 'Generate DOI').click();
+      cy.contains('button', 'Review DOI metadata').click();
+
+      cy.contains('Please review the metadata', { timeout: 10000 }).should(
+        'be.visible'
+      );
 
       cy.contains('Subject: x-ray standing wave').should('be.visible');
       cy.contains(
@@ -306,6 +414,9 @@ describe('DOI Generation form', () => {
       // add a subject
       cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
 
+      // add a sample
+      cy.findByRole('combobox', { name: 'Samples' }).type('sample1{enter}');
+
       // add a technique
       cy.findByRole('button', { name: 'Add technique' }).click();
       cy.findByRole('combobox', { name: 'Select technique' }).type('x-ray');
@@ -320,7 +431,7 @@ describe('DOI Generation form', () => {
       cy.findByRole('button', { name: 'Confirm' }).click();
 
       // wait for users to load
-      cy.contains('button', 'Generate DOI').should('not.be.disabled');
+      cy.contains('button', 'Review DOI metadata').should('not.be.disabled');
 
       cy.contains('Username').parent().find('input').type('Michael222');
       cy.contains('button', 'Add Creator').click();
@@ -335,10 +446,12 @@ describe('DOI Generation form', () => {
       cy.contains('Randy').parent().contains('button', 'Delete').click();
       cy.contains('Randy').should('not.exist');
 
-      cy.contains('button', 'Generate DOI').should('not.be.disabled');
+      cy.contains('button', 'Review DOI metadata').should('not.be.disabled');
     });
 
     it('should let user add contributors and select their contributor type', () => {
+      // click button to trigger errors
+      cy.contains('button', 'Review DOI metadata').click();
       cy.contains('DOI Title').parent().find('input').type('Test title');
       cy.contains('DOI Description')
         .parent()
@@ -347,6 +460,8 @@ describe('DOI Generation form', () => {
         .type('Test description');
       // add a subject
       cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
+      // add a sample
+      cy.findByRole('combobox', { name: 'Samples' }).type('sample1{enter}');
 
       // add a technique
       cy.findByRole('button', { name: 'Add technique' }).click();
@@ -362,23 +477,28 @@ describe('DOI Generation form', () => {
       cy.findByRole('button', { name: 'Confirm' }).click();
 
       // wait for users to load
-      cy.contains('button', 'Generate DOI').should('not.be.disabled');
+      cy.contains('button', 'Review DOI metadata').should('not.be.disabled');
 
       cy.contains('Username').parent().find('input').type('Michael222');
       cy.contains('button', 'Add Contributor').click();
 
       // shouldn't let users submit DOIs without selecting a contributor type
-      cy.contains('button', 'Generate DOI').should('be.disabled');
+      cy.contains('button', 'Review DOI metadata').should('be.disabled');
 
+      cy.contains('label', 'Contributor Type')
+        .parent()
+        .find('input')
+        .should('have.attr', 'aria-invalid', 'true');
       cy.contains('label', 'Contributor Type').parent().click();
 
-      cy.contains('DataCollector').click();
+      cy.contains('Researcher').click();
 
       // check that contributor info doesn't break the API
-      cy.contains('button', 'Generate DOI').click();
-      cy.contains('Contributor Type: DataCollector', { timeout: 10000 }).should(
+      cy.contains('button', 'Review DOI metadata').click();
+      cy.contains('Please review the metadata', { timeout: 10000 }).should(
         'be.visible'
       );
+      cy.contains('Contributor Type: Researcher').should('be.visible');
 
       cy.contains('button', 'Generate DOI').click();
 
@@ -396,6 +516,8 @@ describe('DOI Generation form', () => {
         .type('Test description');
       // add a subject
       cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
+      // add a sample
+      cy.findByRole('combobox', { name: 'Samples' }).type('sample1{enter}');
 
       // add a technique
       cy.findByRole('button', { name: 'Add technique' }).click();
@@ -411,7 +533,7 @@ describe('DOI Generation form', () => {
       cy.findByRole('button', { name: 'Confirm' }).click();
 
       // wait for users to load
-      cy.contains('button', 'Generate DOI').should('not.be.disabled');
+      cy.contains('button', 'Review DOI metadata').should('not.be.disabled');
 
       cy.get('table[aria-labelledby="creators-label"] tbody tr').should(
         'have.length',
@@ -437,10 +559,12 @@ describe('DOI Generation form', () => {
         'No record found: No ICAT User found with name invalid'
       ).should('be.visible');
 
-      cy.contains('button', 'Generate DOI').should('not.be.disabled');
+      cy.contains('button', 'Review DOI metadata').should('not.be.disabled');
     });
 
     it('should let user add a related DOI and select their relation & resource type', () => {
+      // click button to trigger errors
+      cy.contains('button', 'Review DOI metadata').click();
       cy.contains('DOI Title').parent().find('input').type('Test title');
       cy.contains('DOI Description')
         .parent()
@@ -449,6 +573,8 @@ describe('DOI Generation form', () => {
         .type('Test description');
       // add a subject
       cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
+      // add a sample
+      cy.findByRole('combobox', { name: 'Samples' }).type('sample1{enter}');
 
       // add a technique
       cy.findByRole('button', { name: 'Add technique' }).click();
@@ -464,7 +590,7 @@ describe('DOI Generation form', () => {
       cy.findByRole('button', { name: 'Confirm' }).click();
 
       // wait for users to load
-      cy.contains('button', 'Generate DOI').should('not.be.disabled');
+      cy.contains('button', 'Review DOI metadata').should('not.be.disabled');
 
       // DOI from https://support.datacite.org/docs/testing-guide
       cy.contains('Identifier (e.g. DOI, URL)')
@@ -474,23 +600,37 @@ describe('DOI Generation form', () => {
       cy.contains('button', 'Add DOI').click();
 
       // shouldn't let users submit DOIs without selecting a relation or resource type
-      cy.contains('button', 'Generate DOI').should('be.disabled');
+      cy.contains('button', 'Review DOI metadata').should('be.disabled');
+
+      cy.contains('label', 'Resource Type')
+        .parent()
+        .find('input')
+        .should('have.attr', 'aria-invalid', 'true');
 
       cy.contains('label', 'Resource Type').parent().click();
 
       cy.contains('Journal').click();
 
       // shouldn't let users submit DOIs without selecting a relation type
-      cy.contains('button', 'Generate DOI').should('be.disabled');
+      cy.contains('button', 'Review DOI metadata').should('be.disabled');
+
+      cy.contains('label', 'Relationship')
+        .parent()
+        .find('input')
+        .should('have.attr', 'aria-invalid', 'true');
 
       cy.contains('label', 'Relationship').parent().click();
 
       cy.contains('IsCitedBy').click();
 
       // check that related DOIs info doesn't break the API
-      cy.contains('button', 'Generate DOI').click();
+      cy.contains('button', 'Review DOI metadata').click();
 
-      cy.contains('div', 'Identifier: 10.17596/w76y-4s92', { timeout: 10000 })
+      cy.contains('Please review the metadata', { timeout: 10000 }).should(
+        'be.visible'
+      );
+
+      cy.contains('div', 'Identifier: 10.17596/w76y-4s92')
         .as('relatedDOI')
         .should('exist');
       cy.get('@relatedDOI')
@@ -511,6 +651,8 @@ describe('DOI Generation form', () => {
     });
 
     it('should let user add a non-DOI related identifier and select their relation, identifier & resource type', () => {
+      // click button to trigger errors
+      cy.contains('button', 'Review DOI metadata').click();
       cy.contains('DOI Title').parent().find('input').type('Test title');
       cy.contains('DOI Description')
         .parent()
@@ -519,6 +661,8 @@ describe('DOI Generation form', () => {
         .type('Test description');
       // add a subject
       cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
+      // add a sample
+      cy.findByRole('combobox', { name: 'Samples' }).type('sample1{enter}');
 
       // add a technique
       cy.findByRole('button', { name: 'Add technique' }).click();
@@ -534,7 +678,7 @@ describe('DOI Generation form', () => {
       cy.findByRole('button', { name: 'Confirm' }).click();
 
       // wait for users to load
-      cy.contains('button', 'Generate DOI').should('not.be.disabled');
+      cy.contains('button', 'Review DOI metadata').should('not.be.disabled');
 
       // DOI from https://support.datacite.org/docs/testing-guide
       cy.contains('Identifier (e.g. DOI, URL)')
@@ -544,7 +688,7 @@ describe('DOI Generation form', () => {
       cy.contains('button', 'Add Other').click();
 
       // shouldn't let users submit DOIs without selecting a relation or resource type
-      cy.contains('button', 'Generate DOI').should('be.disabled');
+      cy.contains('button', 'Review DOI metadata').should('be.disabled');
 
       // expect it defaults to a URL
       cy.contains('a', 'my.identifier');
@@ -557,16 +701,20 @@ describe('DOI Generation form', () => {
       cy.contains('ComputationalNotebook').click();
 
       // shouldn't let users submit DOIs without selecting a relation type
-      cy.contains('button', 'Generate DOI').should('be.disabled');
+      cy.contains('button', 'Review DOI metadata').should('be.disabled');
 
       cy.contains('label', 'Relationship').parent().click();
 
       cy.contains('IsSupplementedBy').click();
 
       // check that related DOIs info doesn't break the API
-      cy.contains('button', 'Generate DOI').click();
+      cy.contains('button', 'Review DOI metadata').click();
 
-      cy.contains('div', 'Identifier: my.identifier', { timeout: 10000 })
+      cy.contains('Please review the metadata', { timeout: 10000 }).should(
+        'be.visible'
+      );
+
+      cy.contains('div', 'Identifier: my.identifier')
         .as('relatedItem')
         .should('exist');
       cy.get('@relatedItem')

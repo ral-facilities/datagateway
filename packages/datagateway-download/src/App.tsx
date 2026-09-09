@@ -5,6 +5,7 @@ import {
 } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import {
+  BroadcastSignOutType,
   DGThemeProvider,
   MicroFrontendId,
   Preloader,
@@ -29,6 +30,13 @@ const queryClient = new QueryClient({
     },
   },
   queryCache: new QueryCache(queryCacheConfig),
+});
+
+document.addEventListener(MicroFrontendId, (e) => {
+  const action = (e as CustomEvent).detail;
+  if (action.type === BroadcastSignOutType) {
+    queryClient.clear();
+  }
 });
 
 export const QueryClientSettingsUpdaterContext: React.FC<{

@@ -12,7 +12,6 @@ import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import {
   AdditionalFilters,
-  DOIViewType,
   Entity,
   Filter,
   FiltersType,
@@ -74,7 +73,7 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
   const endDateString = query.get('endDate');
   const currentTab = query.get('currentTab');
   const restrict = query.get('restrict');
-  const doiType = query.get('doiType') as DOIViewType;
+  const doiType = query.get('doiType');
 
   // Parse filters in the query.
   const parsedFilters: FiltersType = {};
@@ -112,6 +111,21 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
     }
   }
 
+  let parsedDOIType: QueryParams['doiType'] = null;
+  if (doiType) {
+    try {
+      const parsed = JSON.parse(doiType);
+
+      if (typeof parsed.view === 'string') {
+        parsedDOIType = { view: parsed.view };
+        if (typeof parsed.open === 'boolean') parsedDOIType.open = parsed.open;
+        if (typeof parsed.pi === 'boolean') parsedDOIType.pi = parsed.pi;
+      }
+    } catch (_e) {
+      console.error('doiType query param provided in an incorrect format.');
+    }
+  }
+
   let startDate = null;
   let endDate = null;
 
@@ -134,7 +148,7 @@ export const parseSearchToQuery = (queryParams: string): QueryParams => {
     endDate: endDate,
     currentTab: currentTab ? currentTab : 'investigation',
     restrict: restrict === 'true',
-    doiType,
+    doiType: parsedDOIType,
   };
 
   return params;
@@ -154,6 +168,8 @@ export const parseQueryToSearch = (query: QueryParams): URLSearchParams => {
     if (v !== null && q !== 'filters' && q !== 'sort') {
       if ((q === 'startDate' || q === 'endDate') && isValid(v)) {
         queryParams.append(q, format(v, 'yyyy-MM-dd'));
+      } else if (q === 'doiType' && v !== null) {
+        queryParams.append('doiType', JSON.stringify(v));
       } else if (
         //Take default value of these as true, so don't put in url if this is the case
         !(

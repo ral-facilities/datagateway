@@ -26,10 +26,10 @@ describe('Datafile search tab', () => {
     cy.findByRole('button', { name: 'Submit search' }).click();
 
     cy.findByRole('tab', { name: 'Datafile' }).within(() => {
-      cy.findByText('2').should('exist');
+      cy.findByText('3').should('exist');
     });
 
-    cy.get('[role="row"][aria-rowindex]').should('have.length', 2);
+    cy.get('[role="row"][aria-rowindex]').should('have.length', 3);
 
     cy.findByRole('button', { name: 'Toggle Format filter panel' }).click();
 
@@ -103,7 +103,7 @@ describe('Datafile search tab', () => {
     // click on search button
     cy.findByRole('button', { name: 'Submit search' }).click();
 
-    cy.get('[role="row"][aria-rowindex]').should('have.length', 2);
+    cy.get('[role="row"][aria-rowindex]').should('have.length', 3);
 
     cy.get('[role="row"][aria-rowindex]')
       .first()
@@ -128,7 +128,7 @@ describe('Datafile search tab', () => {
     // click on search button
     cy.findByRole('button', { name: 'Submit search' }).click();
 
-    cy.get('[role="row"][aria-rowindex]').should('have.length', 2);
+    cy.get('[role="row"][aria-rowindex]').should('have.length', 3);
 
     cy.get('[role="row"][aria-rowindex]')
       .first()
@@ -137,9 +137,9 @@ describe('Datafile search tab', () => {
       });
 
     cy.findByTestId('datafile-details-panel').within(() => {
-      cy.findByText('Datafile 1302').should('exist');
-      cy.findByText('32.89 MB').should('exist');
-      cy.findByText('/memory/dog/experience.jpg').should('exist');
+      cy.findByText('Datafile 38').should('exist');
+      cy.findByText('187.27 MB').should('exist');
+      cy.findByText('/born/hear/big.bmp').should('exist');
     });
   });
 
@@ -174,7 +174,7 @@ describe('Datafile search tab', () => {
     cy.findAllByRole('button', { name: 'Apply' }).click();
 
     // the search result should be filtered
-    cy.get('[role="row"][aria-rowindex]').should('have.length', 3);
+    cy.get('[role="row"][aria-rowindex]').should('have.length', 4);
 
     // check that filter chips are displayed
     cy.findByTestId('tabpanel-datafile').within(() => {
@@ -301,7 +301,7 @@ describe('Datafile search tab', () => {
           .should('exist')
           .within(() => {
             cy.findByRole('checkbox').should('not.be.checked');
-            cy.findByText('3').should('exist');
+            cy.findByText('4').should('exist');
           });
       });
 

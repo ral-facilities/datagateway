@@ -69,6 +69,7 @@ describe('ISIS Dataset Landing page', () => {
       })
     );
     state.dgdataview.pluginHost = '/test/';
+    state.dgdataview.landingPageLogo = 'STFC';
     history = createMemoryHistory({
       initialEntries: [
         generatePath(paths.landing.isisDatasetLanding, {
@@ -172,7 +173,9 @@ describe('ISIS Dataset Landing page', () => {
 
     // renders branding correctly
     expect(
-      await screen.findByRole('img', { name: 'STFC Logo' })
+      await screen.findByRole('img', {
+        name: 'doi_constants.branding.logo_alt_text',
+      })
     ).toHaveAttribute(
       'src',
       expect.stringMatching(/(.*)stfc-logo-white-text\.png/)
