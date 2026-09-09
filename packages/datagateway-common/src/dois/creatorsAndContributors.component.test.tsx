@@ -82,7 +82,7 @@ describe('Creators and contributors component', () => {
       disabled: false,
       localContactRole: 'local_contact|DataCollector',
       showErrors: false,
-      disableContributor: true,
+      disableContributor: false,
     };
 
     mockUser = {
@@ -148,202 +148,194 @@ describe('Creators and contributors component', () => {
 
   it('should let the user add creators (but not duplicate users or if checkUser fails)', async () => {
     renderComponent();
-    if (props.disableContributor === false) {
-      expect(
-        within(
-          screen.getByRole('table', {
-            name: 'DOIGenerationForm.creators_and_contributors',
-          })
-        )
-          .getAllByRole('row')
-          .slice(1) // ignores the header row
-      ).toHaveLength(2);
+    expect(
+      within(
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.creators_and_contributors',
+        })
+      )
+        .getAllByRole('row')
+        .slice(1) // ignores the header row
+    ).toHaveLength(2);
 
-      await user.type(
-        screen.getByRole('textbox', { name: 'DOIGenerationForm.username' }),
-        '3'
-      );
+    await user.type(
+      screen.getByRole('textbox', { name: 'DOIGenerationForm.username' }),
+      '3'
+    );
 
-      await user.click(
-        screen.getByRole('button', { name: 'DOIGenerationForm.add_creator' })
-      );
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.add_creator' })
+    );
 
-      expect(
-        within(
-          screen.getByRole('table', {
-            name: 'DOIGenerationForm.creators_and_contributors',
-          })
-        )
-          .getAllByRole('row')
-          .slice(1) // ignores the header row
-      ).toHaveLength(3);
-      expect(screen.getByRole('cell', { name: '3' })).toBeInTheDocument();
-      expect(screen.getAllByRole('cell', { name: 'Creator' }).length).toBe(3);
+    expect(
+      within(
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.creators_and_contributors',
+        })
+      )
+        .getAllByRole('row')
+        .slice(1) // ignores the header row
+    ).toHaveLength(3);
+    expect(screen.getByRole('cell', { name: '3' })).toBeInTheDocument();
+    expect(screen.getAllByRole('cell', { name: 'Creator' }).length).toBe(3);
 
-      // test errors on duplicate user
-      await user.type(
-        screen.getByRole('textbox', { name: 'DOIGenerationForm.username' }),
-        '3'
-      );
+    // test errors on duplicate user
+    await user.type(
+      screen.getByRole('textbox', { name: 'DOIGenerationForm.username' }),
+      '3'
+    );
 
-      await user.click(
-        screen.getByRole('button', { name: 'DOIGenerationForm.add_creator' })
-      );
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.add_creator' })
+    );
 
-      expect(
-        within(
-          screen.getByRole('table', {
-            name: 'DOIGenerationForm.creators_and_contributors',
-          })
-        )
-          .getAllByRole('row')
-          .slice(1) // ignores the header row
-      ).toHaveLength(3);
-      expect(screen.getByText('Cannot add duplicate user')).toBeInTheDocument();
-      expect(
-        screen.getByRole('textbox', { name: 'DOIGenerationForm.username' })
-      ).toHaveValue('');
+    expect(
+      within(
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.creators_and_contributors',
+        })
+      )
+        .getAllByRole('row')
+        .slice(1) // ignores the header row
+    ).toHaveLength(3);
+    expect(screen.getByText('Cannot add duplicate user')).toBeInTheDocument();
+    expect(
+      screen.getByRole('textbox', { name: 'DOIGenerationForm.username' })
+    ).toHaveValue('');
 
-      // test errors with various API error responses
-      vi.mocked(axios.get).mockRejectedValueOnce({
-        response: {
-          data: { detail: 'error msg' },
-          status: 404,
-        },
-      });
+    // test errors with various API error responses
+    vi.mocked(axios.get).mockRejectedValueOnce({
+      response: {
+        data: { detail: 'error msg' },
+        status: 404,
+      },
+    });
 
-      await user.type(
-        screen.getByRole('textbox', { name: 'DOIGenerationForm.username' }),
-        '4'
-      );
+    await user.type(
+      screen.getByRole('textbox', { name: 'DOIGenerationForm.username' }),
+      '4'
+    );
 
-      await user.click(
-        screen.getByRole('button', { name: 'DOIGenerationForm.add_creator' })
-      );
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.add_creator' })
+    );
 
-      expect(await screen.findByText('error msg')).toBeInTheDocument();
-      expect(
-        within(
-          screen.getByRole('table', {
-            name: 'DOIGenerationForm.creators_and_contributors',
-          })
-        )
-          .getAllByRole('row')
-          .slice(1) // ignores the header row
-      ).toHaveLength(3);
+    expect(await screen.findByText('error msg')).toBeInTheDocument();
+    expect(
+      within(
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.creators_and_contributors',
+        })
+      )
+        .getAllByRole('row')
+        .slice(1) // ignores the header row
+    ).toHaveLength(3);
 
-      vi.mocked(axios.get).mockRejectedValue({
-        response: { data: { detail: [{ msg: 'error msg 2' }] }, status: 404 },
-      });
-      await user.click(
-        screen.getByRole('button', { name: 'DOIGenerationForm.add_creator' })
-      );
+    vi.mocked(axios.get).mockRejectedValue({
+      response: { data: { detail: [{ msg: 'error msg 2' }] }, status: 404 },
+    });
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.add_creator' })
+    );
 
-      expect(await screen.findByText('error msg 2')).toBeInTheDocument();
-      expect(
-        within(
-          screen.getByRole('table', {
-            name: 'DOIGenerationForm.creators_and_contributors',
-          })
-        )
-          .getAllByRole('row')
-          .slice(1) // ignores the header row
-      ).toHaveLength(3);
+    expect(await screen.findByText('error msg 2')).toBeInTheDocument();
+    expect(
+      within(
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.creators_and_contributors',
+        })
+      )
+        .getAllByRole('row')
+        .slice(1) // ignores the header row
+    ).toHaveLength(3);
 
-      vi.mocked(axios.get).mockRejectedValueOnce({
-        response: { status: 422 },
-      });
-      await user.click(
-        screen.getByRole('button', { name: 'DOIGenerationForm.add_creator' })
-      );
+    vi.mocked(axios.get).mockRejectedValueOnce({
+      response: { status: 422 },
+    });
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.add_creator' })
+    );
 
-      expect(await screen.findByText('Error')).toBeInTheDocument();
-      expect(
-        within(
-          screen.getByRole('table', {
-            name: 'DOIGenerationForm.creators_and_contributors',
-          })
-        )
-          .getAllByRole('row')
-          .slice(1) // ignores the header row
-      ).toHaveLength(3);
-    }
+    expect(await screen.findByText('Error')).toBeInTheDocument();
+    expect(
+      within(
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.creators_and_contributors',
+        })
+      )
+        .getAllByRole('row')
+        .slice(1) // ignores the header row
+    ).toHaveLength(3);
   });
 
   it('should let the user add contributors & select their contributor type', async () => {
     props.showErrors = true;
     renderComponent();
-    if (props.disableContributor == false) {
-      expect(
-        within(
-          screen.getByRole('table', {
-            name: 'DOIGenerationForm.creators_and_contributors',
-          })
-        )
-          .getAllByRole('row')
-          .slice(1) // ignores the header row
-      ).toHaveLength(2);
-
-      await user.type(
-        screen.getByRole('textbox', { name: 'DOIGenerationForm.username' }),
-        '3'
-      );
-
-      await user.click(
-        screen.getByRole('button', {
-          name: 'DOIGenerationForm.add_contributor',
+    expect(
+      within(
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.creators_and_contributors',
         })
-      );
+      )
+        .getAllByRole('row')
+        .slice(1) // ignores the header row
+    ).toHaveLength(2);
 
-      expect(
-        within(
-          screen.getByRole('table', {
-            name: 'DOIGenerationForm.creators_and_contributors',
-          })
-        )
-          .getAllByRole('row')
-          .slice(1) // ignores the header row
-      ).toHaveLength(3);
-      expect(screen.getByRole('cell', { name: '3' })).toBeInTheDocument();
+    await user.type(
+      screen.getByRole('textbox', { name: 'DOIGenerationForm.username' }),
+      '3'
+    );
 
-      expect(
-        screen.getByRole('combobox', {
-          name: 'DOIGenerationForm.creator_type',
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.add_contributor' })
+    );
+
+    expect(
+      within(
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.creators_and_contributors',
         })
-      ).toBeInTheDocument();
+      )
+        .getAllByRole('row')
+        .slice(1) // ignores the header row
+    ).toHaveLength(3);
+    expect(screen.getByRole('cell', { name: '3' })).toBeInTheDocument();
 
-      // should be in an error state as no role is selected
-      expect(
-        screen.getByRole('combobox', {
-          name: 'DOIGenerationForm.creator_type',
-        })
-      ).toHaveClass('Mui-error');
+    expect(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.creator_type',
+      })
+    ).toBeInTheDocument();
 
-      await user.click(
-        screen.getByRole('combobox', {
-          name: 'DOIGenerationForm.creator_type',
-        })
-      );
-      const selectedRole = await screen.findByRole('option', {
-        name: 'Editor',
-      });
-      expect(
-        screen.queryByRole('option', { name: 'DataCollector' })
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByRole('option', { name: 'Creator' })
-      ).not.toBeInTheDocument();
-      await user.click(selectedRole);
+    // should be in an error state as no role is selected
+    expect(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.creator_type',
+      })
+    ).toHaveClass('Mui-error');
 
-      expect(screen.queryByRole('option')).not.toBeInTheDocument();
-      expect(
-        screen.getByRole('combobox', {
-          name: 'DOIGenerationForm.creator_type',
-        })
-      ).not.toHaveClass('Mui-error');
-      // check that the option is actually selected in the table even after the menu closes
-      expect(screen.getByText('Editor')).toBeInTheDocument();
-    }
+    await user.click(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.creator_type',
+      })
+    );
+    const selectedRole = await screen.findByRole('option', { name: 'Editor' });
+    expect(
+      screen.queryByRole('option', { name: 'DataCollector' })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('option', { name: 'Creator' })
+    ).not.toBeInTheDocument();
+    await user.click(selectedRole);
+
+    expect(screen.queryByRole('option')).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.creator_type',
+      })
+    ).not.toHaveClass('Mui-error');
+    // check that the option is actually selected in the table even after the menu closes
+    expect(screen.getByText('Editor')).toBeInTheDocument();
   });
 
   it('should disable all fields/buttons when disabled is true', () => {
@@ -366,19 +358,17 @@ describe('Creators and contributors component', () => {
         name: 'DOIGenerationForm.add_creator',
       })
     ).toBeDisabled();
-    if (props.disableContributor === false) {
-      expect(
-        screen.getByRole('button', {
-          name: 'DOIGenerationForm.add_contributor',
-        })
-      ).toBeDisabled();
+    expect(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.add_contributor',
+      })
+    ).toBeDisabled();
 
-      expect(
-        screen.getByRole('combobox', {
-          name: 'DOIGenerationForm.creator_type',
-        })
-      ).toHaveAttribute('aria-disabled', 'true');
-    }
+    expect(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.creator_type',
+      })
+    ).toHaveAttribute('aria-disabled', 'true');
   });
 
   it('should show loading spinner if no users provided (as there should always be at least the Minter once it has loaded)', () => {
