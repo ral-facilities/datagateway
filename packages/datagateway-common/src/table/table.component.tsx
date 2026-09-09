@@ -39,6 +39,7 @@ const detailsColumnWidth = 40;
 const actionsColumnDefaultWidth = 70;
 const scrollBarHeight = 17;
 const dataColumnMinWidth = 84;
+export const INFINITE_SCROLL_BATCH_SIZE = 25;
 
 const StyledTable = styled(Table)(({ theme }) => ({
   fontFamily: theme.typography.fontFamily,
@@ -398,7 +399,7 @@ export const VirtualizedTable = React.memo(
               isRowLoaded={isRowLoaded}
               loadMoreRows={loadMoreRows}
               rowCount={rowCount}
-              minimumBatchSize={25}
+              minimumBatchSize={INFINITE_SCROLL_BATCH_SIZE}
             >
               {({ onRowsRendered, registerChild }) => (
                 <StyledTable

@@ -77,12 +77,12 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     useDownloadTypes(facilityName, downloadApiUrl);
   const { data: isTwoLevel } = useIsTwoLevel();
   const { mutate: removeDownloadCartItem } = useRemoveEntityFromCart();
-  const { mutate: removeAllDownloadCartItems, isLoading: removingAll } =
+  const { mutate: removeAllDownloadCartItems, isPending: removingAll } =
     useRemoveAllFromCart();
   const { data: cartItems, isFetching: isFetchingCart } = useCart();
   const {
     data: mintable,
-    isLoading: cartMintabilityLoading,
+    isPending: cartMintabilityLoading,
     error: mintableError,
   } = useIsCartMintable(cartItems, doiMinterUrl);
 
@@ -107,7 +107,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   }, [fileSizesAndCounts]);
 
   const fileSizesAndCountsLoading = fileSizesAndCounts.some(
-    (query) => query?.isLoading
+    (query) => query?.isPending
   );
 
   const [t] = useTranslation();
@@ -383,7 +383,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     (query) => query.data?.fileSize === 0 || query.data?.fileCount === 0
   );
 
-  const isLoading = isFetchingCart;
+  const isPending = isFetchingCart;
 
   return (
     <>
@@ -444,7 +444,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
         <div>
           <Grid container direction="column">
             {/* Show loading progress if data is still being loaded */}
-            {isLoading && (
+            {isPending && (
               <Grid item xs={12}>
                 <LinearProgress color="secondary" />
               </Grid>
@@ -462,7 +462,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                     (totalSizeMax && totalSize > totalSizeMax)
                       ? ' - 2rem'
                       : ''
-                  }${isLoading ? ' - 4px' : ''} - (1.75 * 0.875rem + 12px))`,
+                  }${isPending ? ' - 4px' : ''} - (1.75 * 0.875rem + 12px))`,
                   minHeight: 230,
                   overflowX: 'auto',
                   // handle the highlight of unmintable entities
@@ -487,7 +487,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                   sort={sort}
                   onSort={onSort}
                   data={sortedAndFilteredData ?? []}
-                  loading={isLoading}
+                  loading={isPending}
                   actions={actions}
                 />
               </Paper>

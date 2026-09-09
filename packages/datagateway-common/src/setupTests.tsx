@@ -1,4 +1,8 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query';
 import '@testing-library/jest-dom';
 import { History, createMemoryHistory } from 'history';
 import React from 'react';
@@ -9,6 +13,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import failOnConsole from 'vitest-fail-on-console';
 import { BioPortalTerm } from './app.types';
+import { queryCacheConfig } from './queryClientSettingsUpdater.component';
 import type { StateType } from './state/app.types';
 import { initialState } from './state/reducers/dgcommon.reducer';
 
@@ -90,12 +95,7 @@ export const createTestQueryClient = (): QueryClient =>
         retryDelay: 0,
       },
     },
-    // silence react-query errors
-    logger: {
-      log: console.log,
-      warn: console.warn,
-      error: vi.fn(),
-    },
+    queryCache: new QueryCache(queryCacheConfig),
   });
 
 export const createReactQueryWrapper = (

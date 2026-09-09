@@ -36,7 +36,7 @@ const DOIConfirmDialog: React.FC<DOIConfirmDialogProps> = (
 
   const isMintSuccess = mintingStatus === 'success';
 
-  const isMintLoading = mintingStatus === 'loading';
+  const isMintLoading = mintingStatus === 'pending';
 
   const [t] = useTranslation();
 

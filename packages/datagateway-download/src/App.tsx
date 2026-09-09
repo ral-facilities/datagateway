@@ -1,4 +1,8 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import {
   BroadcastSignOutType,
@@ -6,6 +10,7 @@ import {
   MicroFrontendId,
   Preloader,
   RequestPluginRerenderType,
+  queryCacheConfig,
 } from 'datagateway-common';
 import React, { Component } from 'react';
 import { Link, Route, BrowserRouter as Router, Switch } from 'react-router-dom';
@@ -24,6 +29,7 @@ const queryClient = new QueryClient({
       staleTime: 300000,
     },
   },
+  queryCache: new QueryCache(queryCacheConfig),
 });
 
 document.addEventListener(MicroFrontendId, (e) => {

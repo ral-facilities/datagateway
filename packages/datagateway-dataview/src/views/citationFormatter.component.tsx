@@ -11,7 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import { Mark, StateType } from 'datagateway-common';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -61,9 +61,18 @@ const useCitation = (
     (state: StateType) => state.dgcommon.urls.doiHandleUrl
   );
 
-  return useQuery<string, AxiosError>(
-    [formattedUsers, title, startDate, publisherName, doi, format, locale],
-    () => {
+  return useQuery({
+    queryKey: [
+      formattedUsers,
+      title,
+      startDate,
+      publisherName,
+      doi,
+      format,
+      locale,
+    ],
+
+    queryFn: () => {
       //Default citation format (No use of DataCite)
       if (format === 'default') {
         let citation = '';
@@ -82,10 +91,7 @@ const useCitation = (
         else throw new Error('No DOI was supplied');
       }
     },
-    {
-      cacheTime: Infinity,
-    }
-  );
+  });
 };
 
 const CitationFormatter = (

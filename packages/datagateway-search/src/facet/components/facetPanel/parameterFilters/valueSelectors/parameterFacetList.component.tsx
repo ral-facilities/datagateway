@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   CircularProgress,
   ListItemText,
@@ -8,15 +7,16 @@ import {
   Typography,
 } from '@mui/material';
 import {
+  useLuceneFacet,
   type FacetRequest,
   type FiltersType,
-  useLuceneFacet,
 } from 'datagateway-common';
-import type { ParameterValueFacet } from '../parameterFilterTypes';
-import parameterFacetsFromSearchResponse from '../parameterFacetsFromSearchResponse';
-import ParameterValueSelectorProps from './parameterValueSelectorProps';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ExtraSmallChip } from '../../toggleableFilterItem.component';
+import parameterFacetsFromSearchResponse from '../parameterFacetsFromSearchResponse';
+import type { ParameterValueFacet } from '../parameterFilterTypes';
+import ParameterValueSelectorProps from './parameterValueSelectorProps';
 
 function ParameterFacetList({
   entityName,
@@ -33,16 +33,14 @@ function ParameterFacetList({
     },
   ];
 
-  const { data: facets, isLoading: isLoadingFacets } = useLuceneFacet(
+  const { data: facets, isPending: isLoadingFacets } = useLuceneFacet(
     entityName,
     facetRequests,
     {
       [`${entityName.toLowerCase()}.id`]: allIds,
       'type.name': parameterName,
     } as FiltersType,
-    {
-      select: parameterFacetsFromSearchResponse,
-    }
+    parameterFacetsFromSearchResponse
   );
 
   const [selectedFacet, setSelectedFacet] =

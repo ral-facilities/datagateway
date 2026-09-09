@@ -68,10 +68,10 @@ const DLSDataPublicationContentTable = (
   const dateFilter = useDateFilter(filters);
   const handleSort = useSort();
 
-  const { data: cartItems, isLoading: cartLoading } = useCart();
-  const { mutate: addToCart, isLoading: addToCartLoading } =
+  const { data: cartItems, isPending: cartLoading } = useCart();
+  const { mutate: addToCart, isPending: addToCartLoading } =
     useAddToCart(currentTab);
-  const { mutate: removeFromCart, isLoading: removeFromCartLoading } =
+  const { mutate: removeFromCart, isPending: removeFromCartLoading } =
     useRemoveFromCart(currentTab);
 
   const { data: totalDataCount } = useDataPublicationContentCount(
@@ -85,7 +85,7 @@ const DLSDataPublicationContentTable = (
   );
 
   const loadMoreRows = React.useCallback(
-    (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
+    (_offsetParams: IndexRange) => fetchNextPage(),
     [fetchNextPage]
   );
 

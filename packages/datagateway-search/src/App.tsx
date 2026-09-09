@@ -1,16 +1,25 @@
 import {
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import {
+  BroadcastSignOutType,
   DGCommonMiddleware,
   DGThemeProvider,
   MicroFrontendId,
   Preloader,
-  BroadcastSignOutType,
-  RequestPluginRerenderType,
   QueryClientSettingsUpdaterRedux,
+  RequestPluginRerenderType,
+  queryCacheConfig,
 } from 'datagateway-common';
 import log from 'loglevel';
 import React from 'react';
-import { connect, Provider } from 'react-redux';
-import { AnyAction, applyMiddleware, compose, createStore, Store } from 'redux';
+import { Translation } from 'react-i18next';
+import { Provider, connect } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
+import { AnyAction, Store, applyMiddleware, compose, createStore } from 'redux';
 import { createLogger } from 'redux-logger';
 import thunk, { ThunkDispatch } from 'redux-thunk';
 import './App.css';
@@ -18,10 +27,6 @@ import SearchPageContainer from './searchPageContainer.component';
 import { configureApp } from './state/actions';
 import { StateType } from './state/app.types';
 import AppReducer from './state/reducers/app.reducer';
-import { Translation } from 'react-i18next';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { BrowserRouter } from 'react-router-dom';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const composeEnhancers =
@@ -51,6 +56,7 @@ const queryClient = new QueryClient({
       staleTime: 300000,
     },
   },
+  queryCache: new QueryCache(queryCacheConfig),
 });
 
 document.addEventListener(MicroFrontendId, (e) => {

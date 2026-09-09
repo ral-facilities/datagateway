@@ -1,9 +1,10 @@
-import { Link } from '@mui/material';
 import LinkIcon from '@mui/icons-material/Link';
 import Title from '@mui/icons-material/Title';
+import { Link } from '@mui/material';
 import {
   CardView,
   CardViewDetails,
+  ISISInstrumentDetailsPanel,
   Instrument,
   parseSearchToQuery,
   tableLink,
@@ -14,7 +15,6 @@ import {
   usePushResults,
   useSort,
   useTextFilter,
-  ISISInstrumentDetailsPanel,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -50,9 +50,9 @@ const ISISInstrumentsCardView = (
     setIsMounted(true);
   }, []);
 
-  const { data: totalDataCount, isLoading: countLoading } =
+  const { data: totalDataCount, isPending: countLoading } =
     useInstrumentCount();
-  const { isLoading: dataLoading, data } = useInstrumentsPaginated(
+  const { isPending: dataLoading, data } = useInstrumentsPaginated(
     undefined,
     isMounted
   );

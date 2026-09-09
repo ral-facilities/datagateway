@@ -98,7 +98,7 @@ const InvestigationCardView: React.FC<InvestigationCardProps> = (props) => {
     (state: StateType) => state.dgcommon.urls.doiHandleUrl
   );
 
-  const { data, isLoading, isFetching, hasNextPage, fetchNextPage, refetch } =
+  const { data, isPending, isFetching, hasNextPage, fetchNextPage, refetch } =
     useLuceneSearchInfinite(
       'Investigation',
       {
@@ -437,8 +437,8 @@ const InvestigationCardView: React.FC<InvestigationCardProps> = (props) => {
                   onFilter={pushFilter}
                   onSort={handleSort}
                   onResultsChange={pushResults}
-                  loadedData={!isLoading}
-                  loadedCount={!isLoading}
+                  loadedData={!isPending}
+                  loadedCount={!isPending}
                   filters={{}}
                   sort={sort}
                   page={page}

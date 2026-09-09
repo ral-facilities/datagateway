@@ -1,21 +1,21 @@
-import React from 'react';
-import ConfirmationNumber from '@mui/icons-material/ConfirmationNumber';
 import CalendarToday from '@mui/icons-material/CalendarToday';
+import ConfirmationNumber from '@mui/icons-material/ConfirmationNumber';
 import {
+  AddToCartButton,
   CardView,
   Dataset,
   datasetLink,
   parseSearchToQuery,
-  useDateFilter,
   useDatasetCount,
   useDatasetsPaginated,
+  useDateFilter,
   usePushFilter,
   usePushPage,
   usePushResults,
   useSort,
   useTextFilter,
-  AddToCartButton,
 } from 'datagateway-common';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 
@@ -41,7 +41,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
-  const { data: totalDataCount, isLoading: countLoading } = useDatasetCount([
+  const { data: totalDataCount, isPending: countLoading } = useDatasetCount([
     {
       filterType: 'where',
       filterValue: JSON.stringify({
@@ -49,7 +49,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
       }),
     },
   ]);
-  const { isLoading: dataLoading, data } = useDatasetsPaginated([
+  const { isPending: dataLoading, data } = useDatasetsPaginated([
     {
       filterType: 'where',
       filterValue: JSON.stringify({

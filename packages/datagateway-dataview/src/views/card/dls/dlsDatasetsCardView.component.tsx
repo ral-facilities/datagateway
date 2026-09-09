@@ -1,24 +1,24 @@
-import React from 'react';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import Save from '@mui/icons-material/Save';
 import {
+  AddToCartButton,
   CardView,
   CardViewDetails,
+  DLSDatasetDetailsPanel,
   Dataset,
-  tableLink,
+  formatBytes,
   parseSearchToQuery,
-  useDateFilter,
+  tableLink,
   useDatasetCount,
   useDatasetsPaginated,
+  useDateFilter,
   usePushFilter,
   usePushPage,
   usePushResults,
   useSort,
   useTextFilter,
-  AddToCartButton,
-  DLSDatasetDetailsPanel,
-  formatBytes,
 } from 'datagateway-common';
-import CalendarToday from '@mui/icons-material/CalendarToday';
-import Save from '@mui/icons-material/Save';
+import React from 'react';
 
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import { useTranslation } from 'react-i18next';
@@ -55,7 +55,7 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
     setIsMounted(true);
   }, []);
 
-  const { data: totalDataCount, isLoading: countLoading } = useDatasetCount([
+  const { data: totalDataCount, isPending: countLoading } = useDatasetCount([
     {
       filterType: 'where',
       filterValue: JSON.stringify({
@@ -63,7 +63,7 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
       }),
     },
   ]);
-  const { data, isLoading: dataLoading } = useDatasetsPaginated(
+  const { data, isPending: dataLoading } = useDatasetsPaginated(
     [
       {
         filterType: 'where',

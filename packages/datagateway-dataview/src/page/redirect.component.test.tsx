@@ -185,9 +185,6 @@ describe('Redirect component', () => {
       await waitFor(() =>
         expect(history.location.pathname).toBe('/datagateway')
       );
-      expect(log.error).toHaveBeenCalledWith(
-        'Unable to identify single investigation with id matching 1'
-      );
       expect(log.error).toHaveBeenCalledWith('Invalid redirect');
       expect(events.length).toBe(1);
       expect(events[0].detail).toEqual({
@@ -372,9 +369,6 @@ describe('Redirect component', () => {
         headers: { Authorization: 'Bearer null' },
       });
 
-      expect(log.error).toHaveBeenCalledWith(
-        'Unable to identify single investigation with name matching 1'
-      );
       expect(log.error).toHaveBeenCalledWith('Invalid redirect');
       expect(events.length).toBe(1);
       expect(events[0].detail).toEqual({
@@ -414,9 +408,6 @@ describe('Redirect component', () => {
         headers: { Authorization: 'Bearer null' },
       });
 
-      expect(log.error).toHaveBeenCalledWith(
-        'Unable to identify single investigation with id matching 1'
-      );
       expect(log.error).toHaveBeenCalledWith('Invalid redirect');
       expect(events.length).toBe(1);
       expect(events[0].detail).toEqual({
@@ -464,9 +455,7 @@ describe('Redirect component', () => {
         headers: { Authorization: 'Bearer null' },
       });
 
-      expect(log.error).toHaveBeenCalledExactlyOnceWith(
-        'Unable to identify single investigation with name matching 1'
-      );
+      expect(log.error).not.toHaveBeenCalled();
       expect(events.length).toBe(0);
     });
   });

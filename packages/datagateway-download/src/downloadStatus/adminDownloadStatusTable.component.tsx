@@ -72,74 +72,17 @@ const AdminDownloadStatusTable: React.FC = () => {
   // whether this is component's first render.
   const isFirstRender = useRef(true);
 
-  const buildQueryOffset = useCallback(() => {
-    let queryOffset = `WHERE download.facilityName = '${settings.facilityName}'`;
-    for (const [column, filter] of Object.entries(filters)) {
-      if (typeof filter === 'object') {
-        if (!Array.isArray(filter)) {
-          if ('startDate' in filter || 'endDate' in filter) {
-            const startDate = filter.startDate
-              ? `${filter.startDate}`
-              : '0001-01-01 00:00:00';
-            const endDate = filter.endDate
-              ? `${filter.endDate}`
-              : '9999-12-31 23:59:00';
-
-            queryOffset += ` AND download.${column} BETWEEN {ts '${startDate}'} AND {ts '${endDate}'}`;
-          }
-
-          if ('type' in filter && filter.type) {
-            // As UPPER is used need to pass text filters in upper case to avoid case sensitivity
-            // also need to escape single quotes
-            const filterValue =
-              typeof filter.value === 'string'
-                ? filter.type !== 'exact'
-                  ? (filter.value as string).toUpperCase().replaceAll("'", "''")
-                  : filter.value.replaceAll("'", "''")
-                : filter.value;
-
-            // use switch statement to ensure TS can detect we cover all cases
-            switch (filter.type) {
-              case 'include':
-                queryOffset += ` AND UPPER(download.${column}) LIKE CONCAT('%', '${filterValue}', '%')`;
-                break;
-              case 'exclude':
-                queryOffset += ` AND UPPER(download.${column}) NOT LIKE CONCAT('%', '${filterValue}', '%')`;
-                break;
-              case 'exact':
-                queryOffset += ` AND download.${column} = '${filterValue}'`;
-                break;
-              default: {
-                const exhaustiveCheck: never = filter.type;
-                throw new Error(
-                  `Unhandled text filter type: ${exhaustiveCheck}`
-                );
-              }
-            }
-          }
-        }
-      }
-    }
-
-    queryOffset += ' ORDER BY';
-    for (const [column, order] of Object.entries(sort)) {
-      queryOffset += ` download.${column} ${order},`;
-    }
-    queryOffset += ' download.id ASC';
-
-    return queryOffset;
-  }, [filters, settings.facilityName, sort]);
-
   const {
     data,
-    isLoading,
+    isPending,
     isFetched,
     isRefetching,
     fetchNextPage,
     refetch: refetchDownloads,
     dataUpdatedAt,
   } = useAdminDownloads({
-    initialQueryOffset: `${buildQueryOffset()} LIMIT 0, 50`,
+    sort,
+    filters,
   });
 
   const { data: accessMethods } = useDownloadTypes(
@@ -148,19 +91,15 @@ const AdminDownloadStatusTable: React.FC = () => {
   );
 
   const fetchMoreData = useCallback(
-    (offsetParams: IndexRange) =>
-      fetchNextPage({
-        pageParam: `${buildQueryOffset()} LIMIT ${offsetParams.startIndex}, ${
-          offsetParams.stopIndex - offsetParams.startIndex + 1
-        }`,
-      }),
-    [buildQueryOffset, fetchNextPage]
+    (_offsetParams: IndexRange) => fetchNextPage(),
+    [fetchNextPage]
   );
 
   const refreshTable = useCallback(async () => {
     await Promise.all([
-      // mark download progress queries as invalid so that react-query will refetch them as well.
-      queryClient.invalidateQueries([QueryKeys.DOWNLOAD_PROGRESS]),
+      queryClient.invalidateQueries({
+        queryKey: [QueryKeys.DOWNLOAD_PROGRESS],
+      }),
       refetchDownloads(),
     ]);
     setRefreshDownloads(false);
@@ -325,7 +264,7 @@ const AdminDownloadStatusTable: React.FC = () => {
         <Grid item xs>
           <Grid container direction="column">
             {/* Show loading progress if data is still being loaded */}
-            {(isLoading || isRefetching) && (
+            {(isPending || isRefetching) && (
               <Grid item xs={12}>
                 <LinearProgress color="secondary" />
               </Grid>
@@ -336,7 +275,7 @@ const AdminDownloadStatusTable: React.FC = () => {
               <Paper
                 style={{
                   height: `calc(100vh - 64px - 36px - 48px - (3rem * 1.167) - 32px - (1.75rem + 40px)${
-                    isLoading || isRefetching ? '' : ' - 4px'
+                    isPending || isRefetching ? '' : ' - 4px'
                   })`,
                   minHeight: 230,
                   overflowX: 'auto',
@@ -441,7 +380,7 @@ const AdminDownloadStatusTable: React.FC = () => {
                     }
                   }}
                   data={tableItems}
-                  loading={isLoading}
+                  loading={isPending}
                   loadMoreRows={fetchMoreData}
                   totalRowCount={Number.MAX_SAFE_INTEGER}
                   actionsWidth={100}

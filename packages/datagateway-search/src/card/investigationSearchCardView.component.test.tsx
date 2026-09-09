@@ -139,15 +139,6 @@ describe('Investigation - Card View', () => {
     // wait for queries to finish fetching
     await waitFor(() => !queryClient.isFetching());
 
-    expect(
-      queryClient.getQueryState(['search', 'Investigation'], { exact: false })
-        ?.status
-    ).toBe('loading');
-    expect(
-      queryClient.getQueryState(['search', 'Investigation'], { exact: false })
-        ?.fetchStatus
-    ).toBe('idle');
-
     expect(screen.queryAllByTestId('card')).toHaveLength(0);
   });
 

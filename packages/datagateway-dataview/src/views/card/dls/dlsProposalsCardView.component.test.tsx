@@ -1,9 +1,13 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { render, screen, type RenderResult } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import {
   dGCommonInitialState,
-  type Investigation,
   useInvestigationCount,
   useInvestigationsPaginated,
+  type Investigation,
 } from 'datagateway-common';
+import { createMemoryHistory, type History } from 'history';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
@@ -11,10 +15,6 @@ import thunk from 'redux-thunk';
 import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import DLSProposalsCardView from './dlsProposalsCardView.component';
-import { createMemoryHistory, type History } from 'history';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render, type RenderResult, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 vi.mock('datagateway-common', async () => {
   const originalModule = await vi.importActual('datagateway-common');
@@ -66,11 +66,11 @@ describe('DLS Proposals - Card View', () => {
 
     vi.mocked(useInvestigationCount, { partial: true }).mockReturnValue({
       data: 1,
-      isLoading: false,
+      isPending: false,
     });
     vi.mocked(useInvestigationsPaginated, { partial: true }).mockReturnValue({
       data: cardData,
-      isLoading: false,
+      isPending: false,
     });
 
     // Prevent error logging

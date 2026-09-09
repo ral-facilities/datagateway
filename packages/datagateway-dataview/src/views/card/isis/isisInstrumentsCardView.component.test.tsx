@@ -1,9 +1,14 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { render, screen, type RenderResult } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import axios, { AxiosResponse } from 'axios';
 import {
   dGCommonInitialState,
-  type Instrument,
   useInstrumentCount,
   useInstrumentsPaginated,
+  type Instrument,
 } from 'datagateway-common';
+import { createMemoryHistory, type History } from 'history';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
@@ -11,11 +16,6 @@ import thunk from 'redux-thunk';
 import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import ISISInstrumentsCardView from './isisInstrumentsCardView.component';
-import { createMemoryHistory, type History } from 'history';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render, type RenderResult, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import axios, { AxiosResponse } from 'axios';
 
 vi.mock('datagateway-common', async () => {
   const originalModule = await vi.importActual('datagateway-common');
@@ -65,11 +65,11 @@ describe('ISIS Instruments - Card View', () => {
 
     vi.mocked(useInstrumentCount, { partial: true }).mockReturnValue({
       data: 1,
-      isLoading: false,
+      isPending: false,
     });
     vi.mocked(useInstrumentsPaginated, { partial: true }).mockReturnValue({
       data: cardData,
-      isLoading: false,
+      isPending: false,
     });
 
     axios.get = vi

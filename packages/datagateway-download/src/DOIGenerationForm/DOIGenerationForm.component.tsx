@@ -198,8 +198,8 @@ const DOIGenerationForm: React.FC = () => {
               draftMetadata={mintDraftData?.concept.attributes}
               onBackClick={handleBackClick}
               onConfirmClick={handleConfirmClick}
-              deleteLoading={deleteDraftStatus === 'loading'}
-              publishLoading={publishingStatus === 'loading'}
+              deleteLoading={deleteDraftStatus === 'pending'}
+              publishLoading={publishingStatus === 'pending'}
               doiHandleUrl={doiHandleUrl}
             />
           ) : (
@@ -324,7 +324,7 @@ const DOIGenerationForm: React.FC = () => {
                     disableMintButton={
                       typeof cart === 'undefined' || cart.length === 0
                     }
-                    mintLoading={mintingDraftStatus === 'loading'}
+                    mintLoading={mintingDraftStatus === 'pending'}
                     onMintClick={handleMintClick}
                     localContactRole={localContactRole}
                   />

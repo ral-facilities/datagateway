@@ -92,7 +92,7 @@ const DLSMyDataTable = (): React.ReactElement => {
   const handleDefaultFilter = useReplaceFilter();
 
   const loadMoreRows = React.useCallback(
-    (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
+    (_offsetParams: IndexRange) => fetchNextPage(),
     [fetchNextPage]
   );
 

@@ -59,7 +59,7 @@ const ISISDataPublicationsCardView = (
     setIsMounted(true);
   }, []);
 
-  const { data: totalDataCount, isLoading: countLoading } =
+  const { data: totalDataCount, isPending: countLoading } =
     useDataPublicationCount([
       {
         filterType: 'where',
@@ -102,7 +102,7 @@ const ISISDataPublicationsCardView = (
           ]),
     ]);
 
-  const { isLoading: dataLoading, data } = useDataPublicationsPaginated(
+  const { isPending: dataLoading, data } = useDataPublicationsPaginated(
     [
       {
         filterType: 'where',

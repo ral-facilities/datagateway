@@ -108,11 +108,9 @@ function DatafilePreviewer({
 
   const {
     data: datafile,
-    isInitialLoading: isLoadingMetadata,
+    isLoading: isLoadingMetadata,
     error: loadDatafileMetaError,
-  } = useDatafileDetails(datafileId, undefined, {
-    enabled: !Number.isNaN(datafileId),
-  });
+  } = useDatafileDetails(datafileId, undefined, !Number.isNaN(datafileId));
 
   const datafileExtension = datafile && extensionOf(datafile);
   const supportsExtension =

@@ -82,7 +82,7 @@ const DatasetCardView: React.FC<DatasetCardViewProps> = (props) => {
     (state: StateType) => state.dgsearch.maxNumResults
   );
 
-  const { data, isLoading, isFetching, hasNextPage, fetchNextPage, refetch } =
+  const { data, isPending, isFetching, hasNextPage, fetchNextPage, refetch } =
     useLuceneSearchInfinite(
       'Dataset',
       {
@@ -112,32 +112,34 @@ const DatasetCardView: React.FC<DatasetCardViewProps> = (props) => {
         // facet since the number is confusing for datafiles
         select: (data) => ({
           ...data,
-          pages: data.pages.map((searchResponse) => ({
-            ...searchResponse,
-            dimensions: {
-              ...searchResponse.dimensions,
-              ...(searchResponse.dimensions?.[
-                'InvestigationInstrument.instrument.name'
-              ]
-                ? {
-                    'InvestigationInstrument.instrument.name': Object.keys(
-                      searchResponse.dimensions?.[
-                        'InvestigationInstrument.instrument.name'
-                      ]
-                    ).reduce(
-                      (
-                        accumulator: { [key: string]: undefined },
-                        current: string
-                      ) => {
-                        accumulator[current] = undefined;
-                        return accumulator;
-                      },
-                      {}
-                    ),
-                  }
-                : {}),
-            },
-          })),
+          pages: data.pages.map(
+            (searchResponse): SearchResponse => ({
+              ...searchResponse,
+              dimensions: {
+                ...searchResponse.dimensions,
+                ...(searchResponse.dimensions?.[
+                  'InvestigationInstrument.instrument.name'
+                ]
+                  ? {
+                      'InvestigationInstrument.instrument.name': Object.keys(
+                        searchResponse.dimensions?.[
+                          'InvestigationInstrument.instrument.name'
+                        ]
+                      ).reduce(
+                        (
+                          accumulator: { [key: string]: undefined },
+                          current: string
+                        ) => {
+                          accumulator[current] = undefined;
+                          return accumulator;
+                        },
+                        {}
+                      ),
+                    }
+                  : {}),
+              },
+            })
+          ),
         }),
       }
     );
@@ -457,8 +459,8 @@ const DatasetCardView: React.FC<DatasetCardViewProps> = (props) => {
                   onFilter={pushFilter}
                   onSort={handleSort}
                   onResultsChange={pushResults}
-                  loadedData={!isLoading}
-                  loadedCount={!isLoading}
+                  loadedData={!isPending}
+                  loadedCount={!isPending}
                   filters={{}}
                   sort={{}}
                   page={page}

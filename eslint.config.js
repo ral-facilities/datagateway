@@ -1,4 +1,5 @@
 import eslint from '@eslint/js';
+import queryPlugin from '@tanstack/eslint-plugin-query';
 import prettierPlugin from 'eslint-config-prettier/flat';
 import cypressPlugin from 'eslint-plugin-cypress';
 import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
@@ -17,6 +18,7 @@ export default defineConfig(
   reactPlugin.configs.flat['jsx-runtime'],
   reactHooksPlugin.configs.flat.recommended,
   jsxA11yPlugin.flatConfigs.recommended,
+  queryPlugin.configs['flat/recommended'],
   // See https://github.com/prettier/eslint-config-prettier put last
   prettierPlugin,
   {

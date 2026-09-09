@@ -69,7 +69,7 @@ type DoiRedirectRouteParams = {
 export const DoiRedirect: React.FC = () => {
   const { entityName, entityId } = useParams<DoiRedirectRouteParams>();
 
-  const { data: investigation, isLoading: isInvestigationLoading } = useEntity(
+  const { data: investigation, isPending: isInvestigationLoading } = useEntity(
     'investigation',
     'id',
     entityId,
@@ -80,7 +80,7 @@ export const DoiRedirect: React.FC = () => {
         investigationFacilityCycles: 'facilityCycle',
       }),
     },
-    {},
+    true,
     true
   );
 
@@ -120,7 +120,7 @@ export const GenericRedirect: React.FC = () => {
   const isISIS =
     facilityName.toLowerCase() === FACILITY_NAME.isis.toLowerCase();
 
-  const { data: entity, isLoading: isEntityLoading } = useEntity(
+  const { data: entity, isPending: isEntityLoading } = useEntity(
     entityName,
     entityField,
     decodeURIComponent(fieldValue), // call decodeURIComponent here to e.g. allow URL encoding of slashes to search for datafile locations etc.
@@ -162,7 +162,7 @@ export const GenericRedirect: React.FC = () => {
               ]),
             }
           : undefined,
-    {},
+    true,
     true
   );
 

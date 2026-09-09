@@ -492,6 +492,11 @@ export interface SortType {
   [column: string]: Order;
 }
 
+export interface SkipAndLimitType {
+  skip: number;
+  limit: number;
+}
+
 export type ViewsType = 'table' | 'card' | null;
 
 export type DOIViewType = 'user' | 'session' | 'all';

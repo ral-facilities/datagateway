@@ -106,7 +106,7 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
       },
       { filterType: 'order', filterValue: JSON.stringify('createTime desc') },
     ],
-    { enabled: !!dataPublication?.pid }
+    !!dataPublication?.pid
   );
   const versionDataPublication = versionDataPublications?.[0];
 
@@ -234,7 +234,7 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
     useDeleteDraftVersion();
 
   const { data: cart } = useCart();
-  const { isLoading: cartMintabilityLoading, error: mintableError } =
+  const { isPending: cartMintabilityLoading, error: mintableError } =
     useIsCartMintable(cart, doiMinterUrl);
 
   const unmintableEntityIDs = React.useMemo(
@@ -401,8 +401,8 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
             draftMetadata={mintDraftVersionData?.version.attributes}
             onBackClick={handleBackClick}
             onConfirmClick={handleConfirmClick}
-            deleteLoading={deleteVersionDraftStatus === 'loading'}
-            publishLoading={publishingVersionStatus === 'loading'}
+            deleteLoading={deleteVersionDraftStatus === 'pending'}
+            publishLoading={publishingVersionStatus === 'pending'}
             doiHandleUrl={doiHandleUrl}
           />
         ) : (
@@ -458,7 +458,7 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
                   subjects={subjects}
                   setSubjects={setSubjects}
                   disableMintButton={false}
-                  mintLoading={mintDraftVersionStatus === 'loading'}
+                  mintLoading={mintDraftVersionStatus === 'pending'}
                   onMintClick={handleMintClick}
                   localContactRole={localContactRole}
                 />
