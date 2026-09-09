@@ -301,21 +301,53 @@
     "show_less": "Show less"
   },
   "advanced_search_help": {
-    "search_help_label": "See all <2>search options</2>.",
+    "search_help_label": "See <2>advanced search tips</2>.",
     "close_button_arialabel": "Close",
     "title": "Advanced Search Tips",
-    "description": "Searching the metadata catalogue using one or more words should be intuitive, with the most relevant matches appearing first. However, there is a powerful syntax that supports more advanced use cases, which are described below.",
+    "description": "Searching the metadata catalogue using one or more words can be achieved by simply typing them into the search bar, the most relevant matches will appear first. However, those with access to large volumes of data will find the powerful syntax described below can enable highly targeted and efficient searches to be created. Many aspects of the search syntax are described below, starting with some common searches examples.",
     "examples": {
       "title": "Examples",
-      "description": "Below are a few examples of common searches and how they can be crafted to execute efficiently for those with access to large volumes of data:",
+      "description": "Below are some common searches, substitute the example visits, datasets etc with your own:",
       "examples": [
         {
-          "name": "To search for a visit and partial location",
-          "value": "+visitId:\"nt20-8\" +location:\"jpegs/pg1/\""
+          "name": "To search for a dataset using visit and dataset",
+          "value": "visitId:\"<your visit>\" AND name:\"<your dataset>\""
         },
         {
-          "name": "To search for a visit, partial location and filename ext",
-          "value": "+visitId:\"nt20-8\" +location:\" jpegs/pg1/\" +(location:jpeg location:*.jpeg)"
+         "name": "e.g.",
+          "value": "visitId:\"nt20-8\" AND name:\"trypsin_10_dnafiles\"" 
+        },
+        {
+          "name":"To search for a dataset using visit and partial dataset",
+          "value": "visitId:\"<your visit>\" AND name:<your dataset>"
+        },
+        {
+          "name": "e.g.",
+          "value": "visitId:\"nt20-8\" AND name:trypsin_10*"
+        },
+        {
+          "name": "To search for files using a visit and file type",
+          "value": "visitId:\"<your visit>\" AND location.fileName:<file type>"
+        },
+        {
+         "name": "e.g.",
+          "value": "visitId: \"nt20-8\" AND location.fileName:txt"
+        },
+        {
+          "name": "To search for files using a visit, partial location and file type",
+          "value": "visitId:\"<your visit>\" AND location: \"<partial location>\" AND location.fileName:<file type>"
+        },
+        {
+          "name": "e.g.",
+          "value": "visitId: \"nt20-8\" AND location: \"trypsin_10_dnafiles\" AND location.fileName:txt"
+        },
+        {
+          "name": "To search for a specific files with visit and partial location",
+          "value": "visitId:\"<your visit>\" AND location: \"<file name>\""
+        },
+        {
+          "name": "e.g.",
+          "value": "visitId: \"nt20-8\" AND location: \"trypsin_10_dnafiles/dna_log.txt\""
         }
       ]
     },
@@ -359,21 +391,20 @@
     },
     "special_characters": {
       "title": "Special characters",
-      "description": "In addition to whitespace, there are other characters used to split <strong>terms</strong> based on context. A <strong>.</strong> character is treated as a separator only when between a mixture of letters and numbers, but is preserved when in-between two letters or two numbers. <strong>-</strong> is always treated as a separator, and <strong>_</strong> is not treated as a separator. Separators cannot be used in the same term as a wildcard, as wildcard queries will not be able to match across terms. For example, a*f will not match abc-def because two comparisons are against abc and def, and neither match.<br/> <br/> When building a <strong>phrase</strong> using quotes, other special characters in the <strong>phrase</strong> will not perform their special function and instead are treated as white space."
+      "description": "In addition to whitespace, there are other characters used to split <strong>terms</strong> based on context. The following applies to all text fields except the location field(s) for a Datafile, which have special handling (see below). A <strong>.</strong> character is treated as a separator only when between a mixture of letters and numbers, but is preserved when in-between two letters or two numbers. <strong>-</strong> is always treated as a separator, and <strong>_</strong> is not treated as a separator. Separators cannot be used in the same term as a wildcard, as wildcard queries will not be able to match across terms. For example, a*f will not match abc-def because two comparisons are against abc and def, and neither match.<br/> <br/> When building a <strong>phrase</strong> using quotes, other special characters in the <strong>phrase</strong> will not perform their special function and instead are treated as white space."
     },
     "file_paths": {
       "title": "File paths",
-      "description": "The fact that file paths often contain slashes separating directories, dashes within directory names, and dots before extensions can make searching challenging, especially in combination with wildcards. As paths and the intended use case differ, a one size fits all approach is not possible, but there are some techniques that can be used.<br/> <br/> When searching for an exact match for full or partial path without wildcards, field targeting (see below) and quoting will give the most efficient query. This will escape all slashes and other separators, but also ensure that you only get results containing all terms, i.e. every directory specified in order. For example, <6>location:\"path/to/directory\"</6>.<br/> <br/> To use wildcards in combination with other separators, manually replace the latter with whitespace and consider if AND/OR logic should be used, so instead of a??-def, <13>+a?? +def</13> or <17>a?? def</17> would be needed for AND/OR logic respectively.<br/> <br/> Finally, when matching file extensions, the approach will differ depending on whether the extension is preceded by a number or a letter. For numbers, to match a name with any extension (or vice versa) the extension/name can be omitted. <25>1234.dat</25> is stored as two terms, 1234 and dat, so one can be matched independently of the other. For letters, wildcards must be used. To match a file named abcd.dat either <29>abcd.*</29> or <33>*.dat</33> can be used, however please note that the latter trailing wildcard can take a long time to evaluate.",
+      "description": "To allow file paths to be searched, special syntax is applied to three different fields: location, location.fileName and location.exact.<br/> <br/><strong>location</strong><br/>For this field, the only separator character is <strong>/</strong>. This means each subdirectory, and the complete file name, can be matched independently. <6>location:\"path/to/directory\"</6> and <13>location:directory</13> are both valid ways of searching for a single or sequence of directories in the filepath. Wildcards can be used within a single subdirectory, but will not cross into the next child directory. For example <strong>path*directory</strong> will not match, but <strong>dir*</strong> will. This field is one of those searched by default if no field is specified.<br/> <br/><strong>location.fileName</strong><br/>This field uses the just the file name (whatever follows the final <strong>/</strong>) and splits it by <strong>.</strong> to make it easier to search for files with the same root but different extensions <6>location.fileName:run_1234</6> would match both \"run_1234.txt\" and \"run_1234.nxs\"), or the same extension but different roots <6>location.fileName:txt</6> would match both \"run_1234.txt\" and \"run_5678.txt\"). This field is one of those searched by default if no field is specified.<br/> <br/><strong>location.exact</strong><br/>Finally, this field allows exact and hierarchical matches on the absolute file path. All files that start with the search term will be returned, and wildcards can be used to match multiple subdirectories if needed. Unlike the location field, this means an incomplete or relative path cannot be provided. <6>location.exact:/dls/i00/data/202?</6> would match everything at instrument i00 in any folder for the 2020s. Note that to be effective this requires knowledge of the file hierarchy and may lead to poor performance if a lot of results match, so consider combining this with other terms to make a more specific query. This field is NOT searched by default if no field is specified.",
       "link1": "?searchText=location%3A\"path%2Fto%2Fdirectory\"",
-      "link2": "?searchText=%2Ba%3F%3F+%2Bdef",
-      "link3": "?searchText=a%3F%3F+def",
-      "link4": "?searchText=1234.dat",
-      "link5": "?searchText=abcd.%3F*",
-      "link6": "?searchText=*.dat"
+      "link2": "?searchText=location%3Adirectory",
+      "link3": "?searchText=location.filename%3Arun_1234",
+      "link4": "?searchText=location.filename%3Atxt",
+      "link5": "?searchText=location.exact%3A%2Fdls%2Fi00%2Fdata%2F202%3F"
     },
     "fields": {
       "title": "Fields",
-      "description": "By default, <strong>terms</strong> are applied to several <strong>fields</strong> of the metadata. However more specific searches are possible based on the list of supported <strong>fields</strong> below (note that not all <strong>fields</strong> will always have a value and the <strong>fields</strong> differ between entities). For example, to find results that mention calibration in their summary but not their title, search for <16>summary:calibration -title:calibration</16><br/> <br/> <strong>Investigation</strong><22><0>title</0><1>summary</1><2>name</2><3>type.name</3><4>visitId</4><5>facility.name</5><6>doi </6></22><strong>Dataset</strong><24><0>name</0><1>description</1><2>type.name</2><3>visitId</3><4>sample.name</4><5>sample.type.name</5><6>doi </6></24><strong>Datafile</strong><26><0>name</0><1>description</1><2>location</2><3>datafileFormat.name</3><4>visitId</4><5>sample.name</5><6>sample.type.name</6><7>doi </7></26>",
+      "description":"By default, <strong>terms</strong> are applied to several <strong>fields</strong> of the metadata. However more specific searches are possible based on the list of supported <strong>fields</strong> below (note that not all <strong>fields</strong> will always have a value and the <strong>fields</strong> differ between entities). For example, to find results that mention calibration in their summary but not their title, search for <16>summary:calibration -title:calibration</16><br/> <br/><strong>Visit</strong><22><0>title</0><1>summary</1><2>name</2><3>type.name</3><4>visitId</4><5>sample.name</5><6>sample.type.name</6></22><strong>Dataset</strong><24><0>name</0><1>description</1><2>type.name</2><3>visitId</3></24><strong>Datafile</strong><26><0>name</0><1>description</1><2>visitId</2><3>location</3><4>location.fileName</4><5>location.exact</5></26>",
       "link1": "?searchText=summary%3Acalibration+-title%3Acalibration"
     },
     "footer": "Further information on searching can be found <2>here</2>."

@@ -418,77 +418,84 @@ const AdvancedHelpDialog = (): React.ReactElement => {
                 t={t}
                 i18nKey="advanced_search_help.file_paths.description"
               >
-                The fact that file paths often contain slashes separating
-                directories, dashes within directory names, and dots before
-                extensions can make searching challenging, especially in
-                combination with wildcards. As paths and the intended use case
-                differ, a one size fits all approach is not possible, but there
-                are some techniques that can be used.
+                To allow file paths to be searched, special syntax is applied to
+                three different fields: location, location.fileName and
+                location.exact.
                 <br /> <br />
-                When searching for an exact match for full or partial path
-                without wildcards, field targeting (see below) and quoting will
-                give the most efficient query. This will escape all slashes and
-                other separators, but also ensure that you only get results
-                containing all terms, i.e. every directory specified in order.
-                For example,{' '}
+                <strong>location</strong>
+                <br />
+                For this field, the only separator character is{' '}
+                <strong>/</strong>. This means each subdirectory, and the
+                complete file name, can be matched independently.{' '}
                 <Link
                   component={RouterLink}
                   to={t('advanced_search_help.file_paths.link1')}
                   onClick={handleClose}
                 >
                   location:&quot;path/to/directory&quot;
-                </Link>
-                .<br /> <br /> To use wildcards in combination with other
-                separators, manually replace the latter with whitespace and
-                consider if AND/OR logic should be used, so instead of a??-def,{' '}
+                </Link>{' '}
+                and{' '}
                 <Link
                   component={RouterLink}
                   to={t('advanced_search_help.file_paths.link2')}
                   onClick={handleClose}
                 >
-                  +a?? +def
+                  location:directory
                 </Link>{' '}
-                or{' '}
+                and are both valid ways of searching for a single or sequence of
+                directories in the filepath. Wildcards can be used within a
+                single subdirectory, but will not cross into the next child
+                directory. For example <strong> path*directory</strong> will not
+                match, but <strong> dir*</strong> will. This field is one of
+                those searched by default if no field is specified.
+                <br /> <br />
+                <strong>location.fileName</strong>
+                <br />
+                This field uses the just the file name (whatever follows the
+                final /) and splits it by <strong>.</strong> to make it easier
+                to search for files with the same root but different extensions
+                (
                 <Link
                   component={RouterLink}
                   to={t('advanced_search_help.file_paths.link3')}
                   onClick={handleClose}
                 >
-                  a?? def
+                  location.fileName:txt
                 </Link>{' '}
-                would be needed for AND/OR logic respectively.
-                <br /> <br /> Finally, when matching file extensions, the
-                approach will differ depending on whether the extension is
-                preceded by a number or a letter. For numbers, to match a name
-                with any extension (or vice versa) the extension/name can be
-                omitted.{' '}
+                would match both &quot;run_5678.txt&quot; and
+                &quot;run_1234.nxs&quot;), or the same extension but different
+                roots (
                 <Link
                   component={RouterLink}
                   to={t('advanced_search_help.file_paths.link4')}
                   onClick={handleClose}
                 >
-                  1234.dat
+                  location.fileName:txt
                 </Link>{' '}
-                is stored as two terms, 1234 and dat, so one can be matched
-                independently of the other. For letters, wildcards must be used.
-                To match a file named abcd.dat either{' '}
+                would match both &quot;run_1234.txt&quot; and
+                &quot;run_5678.txt&quot;). This field is one of those searched
+                by default if no field is specified.
+                <br /> <br />
+                <strong>location.exact</strong>
+                <br />
+                Finally, this field allows exact and hierarchical matches on the
+                absolute file path. All files that start with the search term
+                will be returned, and wildcards can be used to match multiple
+                subdirectories if needed. Unlike the location field, this means
+                an incomplete or relative path cannot be provided.{' '}
                 <Link
                   component={RouterLink}
                   to={t('advanced_search_help.file_paths.link5')}
                   onClick={handleClose}
                 >
-                  abcd.*
+                  location.exact:/dls/i00/data/202?
                 </Link>{' '}
-                or{' '}
-                <Link
-                  component={RouterLink}
-                  to={t('advanced_search_help.file_paths.link6')}
-                  onClick={handleClose}
-                >
-                  *.dat
-                </Link>{' '}
-                can be used, however please note that the latter, trailing
-                wildcard can take a long time to evaluate.
+                would match everything st instrument i00 in any folder for the
+                2020s. Note that to be effective this requires knowledge of the
+                file heirachy and may lead to poor performance if a lot of
+                results match, so consider combining this with other terms to
+                make a more specific query. This field is NOT searched by
+                default if no field is specified.
               </Trans>
             </SectionText>
           </Section>
