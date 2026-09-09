@@ -28,7 +28,7 @@ export const initialState: DGDataViewState = {
   datafilePreviewer: datafilePreviewerInitialState,
   PIRole: 'PI',
   localContactRole: 'local_contact|DataCollector',
-  uiFeatures: {
+  features: {
     disableContributor: false,
   },
 };

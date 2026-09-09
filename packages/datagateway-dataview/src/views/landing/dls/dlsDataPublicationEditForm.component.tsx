@@ -69,7 +69,7 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
     (state: StateType) => state.dgdataview.localContactRole
   );
   const disableContributor = useSelector(
-    (state: StateType) => state.dgdataview.uiFeatures.disableContributor
+    (state: StateType) => state.dgdataview.features.disableContributor
   );
 
   const { data: dataPublication } = useDataPublication(

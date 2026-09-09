@@ -13,7 +13,7 @@ export interface DGDataViewState {
   datafilePreviewer: DatafilePreviewerState;
   PIRole: string;
   localContactRole: string;
-  uiFeatures: {
+  features: {
     disableContributor: boolean;
   };
 }
