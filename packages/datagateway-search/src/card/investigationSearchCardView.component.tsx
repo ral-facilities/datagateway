@@ -121,7 +121,10 @@ const InvestigationCardView: React.FC<InvestigationCardProps> = (props) => {
           },
           {
             target: 'InvestigationInstrument',
-            dimensions: [{ dimension: 'instrument.name' }],
+            dimensions: [
+              { dimension: 'instrument.name' },
+              { dimension: 'instrument.fullName' },
+            ],
           },
         ],
       },

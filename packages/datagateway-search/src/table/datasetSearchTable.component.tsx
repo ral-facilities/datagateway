@@ -89,15 +89,18 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
           },
           {
             target: 'InvestigationInstrument',
-            dimensions: [{ dimension: 'instrument.name' }],
+            dimensions: [
+              { dimension: 'instrument.name' },
+              { dimension: 'instrument.fullName' },
+            ],
           },
         ],
       },
       currentTab === 'dataset' ? filters : {},
       {
         enabled: dataset,
-        // this select removes the facet count for the InvestigationInstrument.instrument.name
-        // facet since the number is confusing for datafiles
+        // this select removes the facet count for the InvestigationInstrument.instrument.name/fullName
+        // facet since the number is confusing for datasets
         select: (data) => ({
           ...data,
           pages: data.pages.map((searchResponse) => ({
@@ -111,6 +114,26 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
                     'InvestigationInstrument.instrument.name': Object.keys(
                       searchResponse.dimensions?.[
                         'InvestigationInstrument.instrument.name'
+                      ]
+                    ).reduce(
+                      (
+                        accumulator: { [key: string]: undefined },
+                        current: string
+                      ) => {
+                        accumulator[current] = undefined;
+                        return accumulator;
+                      },
+                      {}
+                    ),
+                  }
+                : {}),
+              ...(searchResponse.dimensions?.[
+                'InvestigationInstrument.instrument.fullName'
+              ]
+                ? {
+                    'InvestigationInstrument.instrument.fullName': Object.keys(
+                      searchResponse.dimensions?.[
+                        'InvestigationInstrument.instrument.fullName'
                       ]
                     ).reduce(
                       (

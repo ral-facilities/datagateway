@@ -93,6 +93,8 @@ const LinkedInvestigation = (
     {
       content: (entity: DataPublication) =>
         entity.content?.dataCollectionInvestigations?.[0]?.investigation
+          ?.investigationInstruments?.[0]?.instrument?.fullName ??
+        entity.content?.dataCollectionInvestigations?.[0]?.investigation
           ?.investigationInstruments?.[0]?.instrument?.name,
       label: t('investigations.instrument'),
       icon: <Assessment sx={shortInfoIconStyle} />,
