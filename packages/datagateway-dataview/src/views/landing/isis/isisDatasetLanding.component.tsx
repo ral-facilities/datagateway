@@ -20,11 +20,13 @@ import {
   formatBytes,
   getTooltipText,
   parseSearchToQuery,
+  StateType,
   useDataPublication,
   useDatasetDetails,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import {
   checkInstrumentAndFacilityCycleId,
@@ -33,7 +35,7 @@ import {
   checkStudyDataPublicationId,
 } from '../../../page/idCheckFunctions';
 import WithIdCheck from '../../../page/withIdCheck';
-import Branding from './isisBranding.component';
+import Branding from '../branding.component';
 
 const Subheading = styled(Typography)(({ theme }) => ({
   marginTop: theme.spacing(1),
@@ -84,6 +86,9 @@ export const BaseISISDatasetLandingPage = (
     () => parseSearchToQuery(location.search),
     [location.search]
   );
+  const doiHandleUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.doiHandleUrl
+  );
   const [value, setValue] = React.useState<'details'>('details');
   const { datasetId } = props;
 
@@ -95,7 +100,7 @@ export const BaseISISDatasetLandingPage = (
         return (
           entity?.doi && (
             <MuiLink
-              href={`https://doi.org/${entity.doi}`}
+              href={`${doiHandleUrl}/${entity.doi}`}
               data-testid="isis-dataset-landing-doi-link"
             >
               {entity.doi}
@@ -135,7 +140,7 @@ export const BaseISISDatasetLandingPage = (
     <Paper data-testid="isis-dataset-landing" sx={{ margin: 1, padding: 1 }}>
       <Grid container sx={{ padding: 0.5 }}>
         <Grid item xs={12}>
-          <Branding />
+          <Branding landingPageType="data" />
         </Grid>
         <Grid item xs={12}>
           <Paper square elevation={0} sx={{ mx: -1.5, px: 1.5 }}>

@@ -1,6 +1,7 @@
 import {
   ColumnType,
   DataPublication,
+  StateType,
   ConnectedTable as Table,
   externalSiteLink,
   parseSearchToQuery,
@@ -18,6 +19,7 @@ import { IndexRange, TableCellProps } from 'react-virtualized';
 import CalendarToday from '@mui/icons-material/CalendarToday';
 import Fingerprint from '@mui/icons-material/Fingerprint';
 import Public from '@mui/icons-material/Public';
+import { useSelector } from 'react-redux';
 import { useLocation, useParams } from 'react-router';
 
 interface BaseISISDataPublicationsTableProps {
@@ -32,6 +34,9 @@ const BaseISISDataPublicationsTable = (
 
   const location = useLocation();
   const [t] = useTranslation();
+  const doiHandleUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.doiHandleUrl
+  );
 
   const { filters, view, sort } = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -181,7 +186,7 @@ const BaseISISDataPublicationsTable = (
           const dataPublicationData = cellProps.rowData as DataPublication;
           if (dataPublicationData?.pid) {
             return externalSiteLink(
-              `https://doi.org/${dataPublicationData.pid}`,
+              `${doiHandleUrl}/${dataPublicationData.pid}`,
               dataPublicationData.pid,
               'isis-datapublication-table-doi-link'
             );
@@ -213,6 +218,7 @@ const BaseISISDataPublicationsTable = (
     dateFilter,
     location.pathname,
     view,
+    doiHandleUrl,
   ]);
 
   return (

@@ -73,7 +73,8 @@ describe('DOI edit form component', () => {
   const users = [
     {
       id: 1,
-      contributorType: ContributorType.Minter,
+      contributorType: ContributorType.Creator,
+      orderKey: '0',
       fullName: 'John Smith',
       user: {
         id: 1,
@@ -188,6 +189,8 @@ describe('DOI edit form component', () => {
         subjects: [
           { subject: 'subject 1' },
           { subject: 'subject 2' },
+          { subject: 'sample:sample 1' },
+          { subject: 'sample:sample 2' },
           {
             subject: 'technique 1',
             schemeUri: 'http://purl.org/pan-science/PaNET/',
@@ -551,12 +554,33 @@ describe('DOI edit form component', () => {
     ).toBeInTheDocument();
 
     await user.type(
-      screen.getByRole('combobox', { name: 'DOIGenerationForm.subjects' }),
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.subjects_label',
+      }),
       '{backspace}'
     );
 
     expect(
       screen.queryByRole('button', { name: 'subject 2' })
+    ).not.toBeInTheDocument();
+
+    // editing samples
+    expect(
+      screen.getByRole('button', { name: 'sample 1' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'sample 2' })
+    ).toBeInTheDocument();
+
+    await user.type(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.samples',
+      }),
+      '{backspace}'
+    );
+
+    expect(
+      screen.queryByRole('button', { name: 'sample 2' })
     ).not.toBeInTheDocument();
 
     // editing techniques
@@ -579,7 +603,9 @@ describe('DOI edit form component', () => {
     // submit edited data publication
 
     await user.click(
-      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.review_metadata_button',
+      })
     );
 
     expect(axios.post).toHaveBeenCalledWith(
@@ -611,6 +637,7 @@ describe('DOI edit form component', () => {
           })),
           subjects: [
             { subject: 'subject 1' },
+            { subject: 'sample:sample 1' },
             {
               subject: 'technique 1',
               schemeUri: 'http://purl.org/pan-science/PaNET/',
@@ -671,7 +698,9 @@ describe('DOI edit form component', () => {
     );
 
     await user.click(
-      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.review_metadata_button',
+      })
     );
 
     // expect confirmation page to appear, confirm submission
@@ -707,12 +736,28 @@ describe('DOI edit form component', () => {
         name: 'unmintable cart investigation',
         parentEntities: [],
       },
+      {
+        entityId: 6,
+        entityType: 'dataset',
+        id: 3,
+        name: 'unmintable cart dataset',
+        parentEntities: [],
+      },
+      {
+        entityId: 7,
+        entityType: 'datafile',
+        id: 3,
+        name: 'unmintable cart datafile',
+        parentEntities: [],
+      },
     ];
     mintabilityResponse = Promise.reject({
       response: {
         status: 403,
         data: {
-          detail: '[5]',
+          investigation_ids: { '5': 'Unable to mint' },
+          dataset_ids: { '6': 'Unable to mint' },
+          datafile_ids: { '7': 'Unable to mint' },
         },
       },
     });
@@ -770,6 +815,24 @@ describe('DOI edit form component', () => {
         )
     ).rejects.toThrow();
 
+    await expect(
+      async () =>
+        await user.click(
+          await within(choices).findByRole('checkbox', {
+            name: 'unmintable cart dataset',
+          })
+        )
+    ).rejects.toThrow();
+
+    await expect(
+      async () =>
+        await user.click(
+          await within(choices).findByRole('checkbox', {
+            name: 'unmintable cart datafile',
+          })
+        )
+    ).rejects.toThrow();
+
     // remove existing item
     await user.click(
       await within(chosen).findByRole('listitem', {
@@ -822,7 +885,9 @@ describe('DOI edit form component', () => {
     // submit edited data publication
 
     await user.click(
-      screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.review_metadata_button',
+      })
     );
 
     expect(axios.post).toHaveBeenCalledWith(
@@ -849,6 +914,8 @@ describe('DOI edit form component', () => {
           subjects: [
             { subject: 'subject 1' },
             { subject: 'subject 2' },
+            { subject: 'sample:sample 1' },
+            { subject: 'sample:sample 2' },
             {
               subject: 'technique 1',
               schemeUri: 'http://purl.org/pan-science/PaNET/',
@@ -900,5 +967,5 @@ describe('DOI edit form component', () => {
         dataPublicationId: '2',
       })
     );
-  }, 30_000);
+  }, 60_000);
 });

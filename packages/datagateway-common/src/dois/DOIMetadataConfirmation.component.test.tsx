@@ -208,6 +208,7 @@ describe('DOI metadata confirmation component', () => {
       onConfirmClick: vi.fn(),
       deleteLoading: false,
       publishLoading: false,
+      doiHandleUrl: 'https://doi.org',
     };
   });
 

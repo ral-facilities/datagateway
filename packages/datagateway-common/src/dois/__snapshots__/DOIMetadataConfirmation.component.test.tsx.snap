@@ -97,6 +97,7 @@ exports[`DOI metadata confirmation component > should display the provided draft
             <a
               class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
               href="https://example.com/technique"
+              target="_blank"
             >
               https://example.com/technique
             </a>
@@ -112,6 +113,7 @@ exports[`DOI metadata confirmation component > should display the provided draft
             <a
               class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
               href="https://example.com/technique/1"
+              target="_blank"
             >
               https://example.com/technique/1
             </a>
@@ -149,6 +151,7 @@ exports[`DOI metadata confirmation component > should display the provided draft
             <a
               class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
               href="https://example.com/technique"
+              target="_blank"
             >
               https://example.com/technique
             </a>
@@ -164,6 +167,7 @@ exports[`DOI metadata confirmation component > should display the provided draft
             <a
               class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
               href="https://example.com/technique/2"
+              target="_blank"
             >
               https://example.com/technique/2
             </a>
@@ -196,6 +200,7 @@ exports[`DOI metadata confirmation component > should display the provided draft
             <a
               class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
               href="https://doi.org/related.doi"
+              target="_blank"
             >
               related.doi
             </a>
@@ -242,6 +247,7 @@ exports[`DOI metadata confirmation component > should display the provided draft
             <a
               class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
               href="https://example.com/related-url"
+              target="_blank"
             >
               https://example.com/related-url
             </a>
@@ -426,6 +432,7 @@ exports[`DOI metadata confirmation component > should display the provided draft
               <a
                 class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
                 href="https://orcid.org/123"
+                target="_blank"
               >
                 https://orcid.org/123
               </a>
@@ -486,6 +493,7 @@ exports[`DOI metadata confirmation component > should display the provided draft
             <a
               class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
               href="https://example.com/publisher"
+              target="_blank"
             >
               https://example.com/publisher
             </a>
@@ -638,6 +646,7 @@ exports[`DOI metadata confirmation component > should display the provided draft
             <a
               class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
               href="https://example.com/rights"
+              target="_blank"
             >
               https://example.com/rights
             </a>
@@ -671,6 +680,7 @@ exports[`DOI metadata confirmation component > should display the provided draft
             <a
               class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
               href="https://example.com/rights-scheme"
+              target="_blank"
             >
               https://example.com/rights-scheme
             </a>
@@ -781,6 +791,7 @@ exports[`DOI metadata confirmation component > should display the provided draft
             <a
               class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
               href="https://example.com/funder"
+              target="_blank"
             >
               https://example.com/funder
             </a>
@@ -796,6 +807,7 @@ exports[`DOI metadata confirmation component > should display the provided draft
             <a
               class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
               href="https://example.com/award"
+              target="_blank"
             >
               https://example.com/award
             </a>

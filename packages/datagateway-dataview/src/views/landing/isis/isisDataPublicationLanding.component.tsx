@@ -32,7 +32,7 @@ import { checkInstrumentId } from '../../../page/idCheckFunctions';
 import WithIdCheck from '../../../page/withIdCheck';
 import { StateType } from '../../../state/app.types';
 import CitationFormatter from '../../citationFormatter.component';
-import Branding from './isisBranding.component';
+import Branding from '../branding.component';
 
 const Subheading = styled(Typography)(({ theme }) => ({
   marginTop: theme.spacing(1),
@@ -175,6 +175,12 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     [location.search]
   );
   const PIRole = useSelector((state: StateType) => state.dgdataview.PIRole);
+  const localContactRole = useSelector(
+    (state: StateType) => state.dgdataview.localContactRole
+  );
+  const doiHandleUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.doiHandleUrl
+  );
 
   const [value, setValue] = React.useState<'details'>('details');
   const { dataPublicationId } = props;
@@ -222,8 +228,8 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       investigationDataPublications?.[0]?.description &&
       investigationDataPublications?.[0]?.description !== 'null'
         ? investigationDataPublications?.[0]?.description
-        : 'Description not provided',
-    [investigationDataPublications]
+        : t('doi_constants.no_description'),
+    [investigationDataPublications, t]
   );
 
   const formattedUsers = React.useMemo(() => {
@@ -235,24 +241,21 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       // Only keep users where we have their fullName
       const fullname = user.fullName;
       if (fullname) {
-        switch (user.contributorType) {
-          case PIRole:
-            principals.push({
-              fullName: fullname,
-              contributorType: 'Principal Investigator',
-            });
-            break;
-          case 'local_contact':
-            contacts.push({
-              fullName: fullname,
-              contributorType: 'Local Contact',
-            });
-            break;
-          default:
-            experimenters.push({
-              fullName: fullname,
-              contributorType: 'Experimenter',
-            });
+        if (new RegExp(PIRole).test(user.contributorType)) {
+          principals.push({
+            fullName: fullname,
+            contributorType: t('datapublications.principal_investigator'),
+          });
+        } else if (new RegExp(localContactRole).test(user.contributorType)) {
+          contacts.push({
+            fullName: fullname,
+            contributorType: t('datapublications.local_contact'),
+          });
+        } else {
+          experimenters.push({
+            fullName: fullname,
+            contributorType: t('datapublications.experimenter'),
+          });
         }
       }
     });
@@ -261,8 +264,8 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     principals.sort((a, b) => a.fullName.localeCompare(b.fullName));
     contacts.sort((a, b) => a.fullName.localeCompare(b.fullName));
     experimenters.sort((a, b) => a.fullName.localeCompare(b.fullName));
-    return principals.concat(contacts, experimenters);
-  }, [PIRole, studyDataPublication?.users]);
+    return principals.concat(experimenters, contacts);
+  }, [PIRole, localContactRole, studyDataPublication?.users, t]);
 
   React.useEffect(() => {
     const scriptId = `dataPublication-${dataPublicationId}`;
@@ -279,8 +282,8 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     structuredDataScript.innerHTML = JSON.stringify({
       '@context': 'http://schema.org',
       '@type': 'Dataset',
-      '@id': pid ? `https://doi.org/${pid}` : '',
-      url: pid ? `https://doi.org/${pid}` : '',
+      '@id': pid ? `${doiHandleUrl}/${pid}` : '',
+      url: pid ? `${doiHandleUrl}/${pid}` : '',
       identifier: pid,
       name: title,
       description: description,
@@ -327,6 +330,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     description,
     formattedUsers,
     investigationDataPublications,
+    doiHandleUrl,
   ]);
 
   const shortInfo = [
@@ -335,7 +339,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         return (
           entity?.pid && (
             <MuiLink
-              href={`https://doi.org/${entity.pid}`}
+              href={`${doiHandleUrl}/${entity.pid}`}
               data-testid="landing-dataPublication-pid-link"
             >
               {entity.pid}
@@ -369,7 +373,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     >
       <Grid container sx={{ padding: 0.5 }}>
         <Grid item xs={12}>
-          <Branding />
+          <Branding landingPageType="data" />
         </Grid>
         <Grid item xs={12}>
           <Paper square elevation={0} sx={{ mx: -1.5, px: 1.5 }}>

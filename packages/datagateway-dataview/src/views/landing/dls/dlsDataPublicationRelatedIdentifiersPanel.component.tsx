@@ -10,16 +10,17 @@ import {
 import { DOIIdentifierType, useDOI } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyledDOI } from './dlsDataPublicationLanding.component';
+import StyledDOI from '../StyledDOILink.component';
 
 type DLSDataPublicationRelatedIdentifiersPanelProps = {
   doi: string | undefined;
+  doiHandleUrl: string;
 };
 
 const DLSDataPublicationRelatedIdentifiersPanel: React.FC<
   DLSDataPublicationRelatedIdentifiersPanelProps
 > = (props) => {
-  const { doi } = props;
+  const { doi, doiHandleUrl } = props;
 
   const [t] = useTranslation();
   const { data } = useDOI(doi);
@@ -71,7 +72,11 @@ const DLSDataPublicationRelatedIdentifiersPanel: React.FC<
                   </Grid>
                   <Grid item xs maxWidth="300px !important">
                     {relatedIdentifierType === DOIIdentifierType.DOI ? (
-                      <StyledDOI doi={relatedIdentifier} />
+                      <StyledDOI
+                        doi={relatedIdentifier}
+                        doiHandleUrl={doiHandleUrl}
+                        testId="landing-dataPublication-pid-link"
+                      />
                     ) : relatedIdentifierType === DOIIdentifierType.URL ? (
                       <Link href={relatedIdentifier}>{relatedIdentifier}</Link>
                     ) : (

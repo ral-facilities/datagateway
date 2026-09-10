@@ -10,7 +10,6 @@ import userEvent from '@testing-library/user-event';
 import type { UserEvent } from '@testing-library/user-event/setup/setup';
 import {
   ContributorType,
-  DOIRelationType,
   dGCommonInitialState,
   readSciGatewayToken,
   useDataPublicationCount,
@@ -72,7 +71,8 @@ describe('DLS DOI table components', () => {
         users: [
           {
             id: 1,
-            contributorType: ContributorType.Minter,
+            contributorType: ContributorType.Creator,
+            orderKey: '0',
             fullName: 'John Smith',
           },
         ],
@@ -160,32 +160,7 @@ describe('DLS DOI table components', () => {
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'users.contributorType': {
-              eq: ContributorType.Minter,
-            },
-          }),
-        },
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'relatedItems.relationType': {
-              eq: DOIRelationType.HasVersion,
-            },
-          }),
-        },
-        {
-          filterType: 'distinct',
-          filterValue: JSON.stringify([
-            'id',
-            'title',
-            'pid',
-            'publicationDate',
-          ]),
-        },
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'type.name': { eq: 'User-defined' },
+            'type.name': { in: ['Investigation', 'User-defined-concept'] },
           }),
         },
       ];
@@ -247,7 +222,7 @@ describe('DLS DOI table components', () => {
     });
 
     it('supplies the correct filter params for user doiType', async () => {
-      window.history.replaceState({}, '', '/?doiType=user');
+      window.history.replaceState({}, '', '/?doiType={"view":"user"}');
       renderComponent();
 
       const filterParams = [
@@ -260,27 +235,118 @@ describe('DLS DOI table components', () => {
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'relatedItems.relationType': {
-              eq: DOIRelationType.HasVersion,
+            'type.name': { eq: 'User-defined-concept' },
+          }),
+        },
+      ];
+      expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
+      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(
+        filterParams,
+        true
+      );
+    });
+
+    it('supplies the correct filter params for open session doiType', async () => {
+      window.history.replaceState(
+        {},
+        '',
+        '?doiType={"view":"session","open":true}'
+      );
+      renderComponent();
+
+      const filterParams = [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'users.user.name': { eq: 'testUser' },
+          }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'type.name': { eq: 'Investigation' },
+          }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            publicationDate: { isnull: false },
+          }),
+        },
+      ];
+      expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
+      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(
+        filterParams,
+        true
+      );
+    });
+
+    it('supplies the correct filter params for closed session doiType', async () => {
+      window.history.replaceState(
+        {},
+        '',
+        '?doiType={"view":"session","open":false}'
+      );
+      renderComponent();
+
+      const filterParams = [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'users.user.name': { eq: 'testUser' },
+          }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'type.name': { eq: 'Investigation' },
+          }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            publicationDate: { isnull: true },
+          }),
+        },
+      ];
+      expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
+      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(
+        filterParams,
+        true
+      );
+    });
+
+    it('supplies the correct filter params for when user is PI PI button', async () => {
+      window.history.replaceState(
+        {},
+        '',
+        '?doiType={"view":"all","open": null,"pi":true}'
+      );
+      renderComponent();
+
+      const filterParams = [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'users.user.name': { eq: 'testUser' },
+          }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'type.name': { in: ['Investigation', 'User-defined-concept'] },
+          }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'users.orderKey': {
+              eq: '0',
             },
           }),
         },
-        {
-          filterType: 'distinct',
-          filterValue: JSON.stringify([
-            'id',
-            'title',
-            'pid',
-            'publicationDate',
-          ]),
-        },
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'type.name': { eq: 'User-defined' },
-          }),
-        },
       ];
+
       expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
       expect(useDataPublicationsInfinite).toHaveBeenCalledWith(
         filterParams,
@@ -288,8 +354,12 @@ describe('DLS DOI table components', () => {
       );
     });
 
-    it('supplies the correct filter params for session doiType', async () => {
-      window.history.replaceState({}, '', '/?doiType=session');
+    it('supplies the correct filter params for when user is not PI PI button', async () => {
+      window.history.replaceState(
+        {},
+        '',
+        '?doiType={"view":"all","open": null,"pi":false}'
+      );
       renderComponent();
 
       const filterParams = [
@@ -302,57 +372,15 @@ describe('DLS DOI table components', () => {
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'type.name': { eq: 'Investigation' },
-          }),
-        },
-      ];
-      expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
-      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(
-        filterParams,
-        true
-      );
-    });
-
-    it('supplies the correct filter params for openSession doiType', async () => {
-      window.history.replaceState({}, '', '/?doiType=openSession');
-      renderComponent();
-
-      const filterParams = [
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'users.user.name': { eq: 'testUser' },
+            'type.name': { in: ['Investigation', 'User-defined-concept'] },
           }),
         },
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'type.name': { eq: 'Investigation' },
-          }),
-        },
-      ];
-      expect(useDataPublicationCount).toHaveBeenCalledWith(filterParams);
-      expect(useDataPublicationsInfinite).toHaveBeenCalledWith(
-        filterParams,
-        true
-      );
-    });
-
-    it('supplies the correct filter params for closedSession doiType', async () => {
-      window.history.replaceState({}, '', '/?doiType=closedSession');
-      renderComponent();
-
-      const filterParams = [
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'users.user.name': { eq: 'testUser' },
-          }),
-        },
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'type.name': { eq: 'Investigation' },
+            'users.orderKey': {
+              neq: '0',
+            },
           }),
         },
       ];
@@ -475,7 +503,7 @@ describe('DLS DOI table components', () => {
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'type.name': { eq: 'Investigation' },
+            'type.name': { in: ['Investigation', 'User-defined-concept'] },
           }),
         },
       ];
@@ -538,31 +566,14 @@ describe('DLS DOI table components', () => {
     });
 
     it('supplies the correct filter params for user doiType', async () => {
-      window.history.replaceState({}, '', '/?doiType=user');
+      window.history.replaceState({}, '', '?doiType={"view":"user"}');
       renderComponent();
 
       const filterParams = [
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'relatedItems.relationType': {
-              eq: DOIRelationType.HasVersion,
-            },
-          }),
-        },
-        {
-          filterType: 'distinct',
-          filterValue: JSON.stringify([
-            'id',
-            'title',
-            'pid',
-            'publicationDate',
-          ]),
-        },
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'type.name': { eq: 'User-defined' },
+            'type.name': { eq: 'User-defined-concept' },
           }),
         },
       ];
@@ -573,8 +584,12 @@ describe('DLS DOI table components', () => {
       );
     });
 
-    it('supplies the correct filter params for openSession doiType', async () => {
-      window.history.replaceState({}, '', '/?doiType=openSession');
+    it('supplies the correct filter params for open session doiType', async () => {
+      window.history.replaceState(
+        {},
+        '',
+        '?doiType={"view":"session","open":true}'
+      );
       renderComponent();
 
       const filterParams = [
@@ -582,6 +597,12 @@ describe('DLS DOI table components', () => {
           filterType: 'where',
           filterValue: JSON.stringify({
             'type.name': { eq: 'Investigation' },
+          }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            publicationDate: { isnull: false },
           }),
         },
       ];
@@ -593,7 +614,11 @@ describe('DLS DOI table components', () => {
     });
 
     it('supplies the correct filter params for closedSession doiType', async () => {
-      window.history.replaceState({}, '', '/?doiType=closedSession');
+      window.history.replaceState(
+        {},
+        '',
+        '/?doiType={"view":"session","open":false}'
+      );
       renderComponent();
 
       const filterParams = [
@@ -601,6 +626,12 @@ describe('DLS DOI table components', () => {
           filterType: 'where',
           filterValue: JSON.stringify({
             'type.name': { eq: 'Investigation' },
+          }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            publicationDate: { isnull: true },
           }),
         },
       ];

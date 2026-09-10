@@ -3,9 +3,11 @@ import React from 'react';
 import { settings } from './settings';
 
 export type DownloadSettings = Omit<CommonSettings, 'icatUrl'> &
-  DOISettings & {
+  Omit<DOISettings, 'doiHandleUrl'> &
+  Required<Pick<DOISettings, 'doiHandleUrl'>> & {
     fileCountMax?: number;
     totalSizeMax?: number;
+    localContactRole: string;
 
     /**
      * A map of UI flags that can toggle certain UI features..
@@ -24,8 +26,10 @@ const initialConfiguration: DownloadSettings = {
   downloadApiUrl: '',
   idsUrl: '',
   doiMinterUrl: '',
+  doiHandleUrl: 'https://doi.org',
   fileCountMax: undefined,
   totalSizeMax: undefined,
+  localContactRole: 'local_contact|DataCollector',
   routes: [],
   helpSteps: [],
   uiFeatures: {

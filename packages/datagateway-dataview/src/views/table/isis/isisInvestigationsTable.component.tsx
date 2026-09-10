@@ -48,6 +48,9 @@ const BaseISISInvestigationsTable = (
     (state: StateType) => state.dgcommon.features?.disableSelectAll ?? false
   );
   const PIRole = useSelector((state: StateType) => state.dgdataview.PIRole);
+  const doiHandleUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.doiHandleUrl
+  );
   const location = useLocation();
   const navigate = useNavigate();
   const [t] = useTranslation();
@@ -213,7 +216,7 @@ const BaseISISInvestigationsTable = (
             )?.[0]?.dataCollection?.dataPublications?.[0];
           if (studyDataPublication) {
             return externalSiteLink(
-              `https://doi.org/${studyDataPublication.pid}`,
+              `${doiHandleUrl}/${studyDataPublication.pid}`,
               studyDataPublication.pid,
               'isis-investigations-table-doi-link'
             );
@@ -238,8 +241,8 @@ const BaseISISInvestigationsTable = (
         cellContentRenderer: (cellProps: TableCellProps) => {
           const investigationData = cellProps.rowData as Investigation;
           const principal_investigators =
-            investigationData?.investigationUsers?.filter(
-              (iu) => iu.role === PIRole
+            investigationData?.investigationUsers?.filter((iu) =>
+              new RegExp(PIRole).test(iu.role)
             );
           if (principal_investigators && principal_investigators.length !== 0) {
             return principal_investigators?.[0].user?.fullName;
@@ -271,6 +274,7 @@ const BaseISISInvestigationsTable = (
       dateFilter,
       location.pathname,
       view,
+      doiHandleUrl,
       PIRole,
     ]
   );

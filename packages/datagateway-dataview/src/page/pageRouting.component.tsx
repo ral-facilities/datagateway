@@ -48,6 +48,7 @@ import { useSelector } from 'react-redux';
 import DLSVisitsCardView from '../views/card/dls/dlsVisitsCardView.component';
 import { ISISDatafilePreviewer } from '../views/datafilePreview/isisDatafilePreviewer.component';
 import DLSDataPublicationEditForm from '../views/landing/dls/dlsDataPublicationEditForm.component';
+import InstrumentLandingPage from '../views/landing/instrumentLanding.component';
 import ISISDatasetLandingPage from '../views/landing/isis/isisDatasetLanding.component';
 import DLSVisitsTable from '../views/table/dls/dlsVisitsTable.component';
 import PageContainer, { paths } from './pageContainer.component';
@@ -59,12 +60,29 @@ interface PageRoutingProps {
   loggedInAnonymously: boolean;
 }
 
+const RedirectIfNotLoggedIn: React.FC<{
+  component: React.ReactNode;
+  loggedInAnonymously: boolean;
+}> = ({ component, loggedInAnonymously }) => {
+  const location = useLocation();
+  if (loggedInAnonymously === true) {
+    sessionStorage.setItem('referrer', location.pathname);
+    return <Navigate to={'/login'} />;
+  } else {
+    return component;
+  }
+};
+
 const PageRouting = ({ view, loggedInAnonymously }: PageRoutingProps) => {
   return (
     <Routes>
       <Route path={paths.homepage} element={<TranslatedHomePage />} />
       <Route path={paths.doiRedirect} element={<DoiRedirect />} />
       <Route path={paths.genericRedirect} element={<GenericRedirect />} />
+      <Route
+        path={paths.instrumentLandingPage}
+        element={<InstrumentLandingPage />}
+      />
       <Route
         element={<PageContainer loggedInAnonymously={loggedInAnonymously} />}
       >
@@ -86,33 +104,30 @@ const PageRouting = ({ view, loggedInAnonymously }: PageRoutingProps) => {
         <Route
           path={paths.myData.dls}
           element={
-            loggedInAnonymously === true ? (
-              <Navigate to={'/login'} />
-            ) : (
-              <DLSMyDataTable />
-            )
+            <RedirectIfNotLoggedIn
+              component={<DLSMyDataTable />}
+              loggedInAnonymously={loggedInAnonymously}
+            />
           }
         />
 
         <Route
           path={paths.myData.isis}
           element={
-            loggedInAnonymously === true ? (
-              <Navigate to={'/login'} />
-            ) : (
-              <ISISMyDataTable />
-            )
+            <RedirectIfNotLoggedIn
+              component={<ISISMyDataTable />}
+              loggedInAnonymously={loggedInAnonymously}
+            />
           }
         />
 
         <Route
           path={paths.dataPublications.dls.myDOIs}
           element={
-            loggedInAnonymously === true ? (
-              <Navigate to={'/login'} />
-            ) : (
-              <DLSMyDOIsTable />
-            )
+            <RedirectIfNotLoggedIn
+              component={<DLSMyDOIsTable />}
+              loggedInAnonymously={loggedInAnonymously}
+            />
           }
         />
 

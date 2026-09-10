@@ -5,6 +5,7 @@ import {
   CardView,
   CardViewDetails,
   DataPublication,
+  StateType,
   parseSearchToQuery,
   tableLink,
   useDataPublicationCount,
@@ -18,6 +19,7 @@ import {
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 import { useLocation, useParams } from 'react-router';
 
 interface BaseISISDataPublicationsCVProps {
@@ -32,6 +34,10 @@ const BaseISISDataPublicationsCardView = (
 
   const [t] = useTranslation();
   const location = useLocation();
+
+  const doiHandleUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.doiHandleUrl
+  );
 
   const { filters, view, sort, page, results } = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -173,7 +179,7 @@ const BaseISISDataPublicationsCardView = (
           return (
             entity?.pid && (
               <MuiLink
-                href={`https://doi.org/${entity.pid}`}
+                href={`${doiHandleUrl}/${entity.pid}`}
                 data-testid="landing-datapublication-card-pid-link"
               >
                 {entity.pid}
@@ -200,7 +206,7 @@ const BaseISISDataPublicationsCardView = (
           ] as CardViewDetails[])
         : []),
     ],
-    [dateFilter, studyDataPublicationId, t, textFilter]
+    [dateFilter, doiHandleUrl, studyDataPublicationId, t, textFilter]
   );
 
   return (

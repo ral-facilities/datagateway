@@ -225,73 +225,67 @@ Cypress.Commands.add('clearDataPublicationsByIds', (ids) => {
   });
 });
 
-Cypress.Commands.add(
-  'seedSessionDataPublication',
-  (recreateSessionDPIfExists) => {
-    return cy
-      .request('datagateway-download-settings.json')
-      .then((settingsResponse) => {
-        const settings = settingsResponse.body;
-        return cy
-          .request({
-            method: 'GET',
-            url: `${settings.apiUrl}/datapublications?where=%7B%0A%20%20%22title%22%3A%20%7B%0A%20%20%20%20%22like%22%3A%20%2272%3A%20Star%22%0A%20%20%7D%0A%7D&order=%22id%20asc%22`,
-            headers: {
-              Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
-            },
-          })
-          .then((dp_response) => {
-            if (
-              Array.isArray(dp_response.body) &&
-              dp_response.body.length > 0
-            ) {
-              // existing session data publication
-              if (recreateSessionDPIfExists) {
-                // recreate
-                return cy
-                  .request({
-                    method: 'DELETE',
-                    url: `${settings.apiUrl}/datapublications/${dp_response.body[0].id}`,
+Cypress.Commands.add('seedSessionDataPublication', (params) => {
+  const { id = 15, recreateSessionDPIfExists = false } = params ?? {};
+
+  return cy
+    .request('datagateway-download-settings.json')
+    .then((settingsResponse) => {
+      const settings = settingsResponse.body;
+      return cy
+        .request({
+          method: 'GET',
+          url: `${settings.apiUrl}/datapublications?where={"content.dataCollectionInvestigations.investigation.id":{"eq":${id}}}&where={"type.name":{"eq":"Investigation"}}&order="id asc"`,
+          headers: {
+            Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+          },
+        })
+        .then((dp_response) => {
+          if (Array.isArray(dp_response.body) && dp_response.body.length > 0) {
+            // existing session data publication
+            if (recreateSessionDPIfExists) {
+              // recreate
+              return cy
+                .request({
+                  method: 'DELETE',
+                  url: `${settings.apiUrl}/datapublications/${dp_response.body[0].id}`,
+                  headers: {
+                    Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+                  },
+                })
+                .then(() => {
+                  return cy.request({
+                    method: 'POST',
+                    url: `${settings.doiMinterUrl}/mint/investigation/${id}`,
                     headers: {
                       Authorization: `Bearer ${
                         readSciGatewayToken().sessionId
                       }`,
                     },
-                  })
-                  .then(() => {
-                    return cy.request({
-                      method: 'POST',
-                      url: `${settings.doiMinterUrl}/mint/investigation/15`,
-                      headers: {
-                        Authorization: `Bearer ${
-                          readSciGatewayToken().sessionId
-                        }`,
-                      },
-                    });
                   });
-                // otherwise, do nothing but still return expected session mint response
-              } else
-                return {
-                  ...dp_response,
-                  body: {
-                    data_publication_id: dp_response.body[0].id,
-                    attributes: { doi: dp_response.body[0].pid },
-                  },
-                };
-            } else {
-              // no existing session data publication
-              return cy.request({
-                method: 'POST',
-                url: `${settings.doiMinterUrl}/mint/investigation/15`,
-                headers: {
-                  Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+                });
+              // otherwise, do nothing but still return expected session mint response
+            } else
+              return {
+                ...dp_response,
+                body: {
+                  data_publication_id: dp_response.body[0].id,
+                  attributes: { doi: dp_response.body[0].pid },
                 },
-              });
-            }
-          });
-      });
-  }
-);
+              };
+          } else {
+            // no existing session data publication
+            return cy.request({
+              method: 'POST',
+              url: `${settings.doiMinterUrl}/mint/investigation/${id}`,
+              headers: {
+                Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+              },
+            });
+          }
+        });
+    });
+});
 
 Cypress.Commands.add('addCartItem', (cartItem) => {
   return cy.request('datagateway-download-settings.json').then((response) => {

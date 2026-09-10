@@ -184,6 +184,7 @@ describe('PageTable', () => {
 
   afterEach(() => {
     vi.resetAllMocks();
+    sessionStorage.clear();
   });
 
   describe('Generic', () => {
@@ -327,6 +328,7 @@ describe('PageTable', () => {
       vi.mocked(readSciGatewayToken).mockReturnValue({
         username: 'SomePerson',
         sessionId: '',
+        token: '',
       });
       window.history.replaceState({}, '', ISISRoutes['mydata']);
 
@@ -366,6 +368,7 @@ describe('PageTable', () => {
       vi.mocked(readSciGatewayToken).mockReturnValue({
         username: 'anon/anon',
         sessionId: '',
+        token: '',
       });
       window.history.replaceState({}, '', ISISRoutes['mydata']);
 
@@ -374,6 +377,7 @@ describe('PageTable', () => {
       });
 
       expect(window.location.pathname).toBe('/login');
+      expect(sessionStorage.getItem('referrer')).toBe(ISISRoutes['mydata']);
     });
 
     it('renders ISISInstrumentsTable for ISIS instruments route', async () => {
@@ -493,7 +497,7 @@ describe('PageTable', () => {
       });
 
       expect(
-        await screen.findByLabelText('branding-title')
+        await screen.findByText('doi_constants.branding.title')
       ).toBeInTheDocument();
     });
 
@@ -969,6 +973,7 @@ describe('PageTable', () => {
       vi.mocked(readSciGatewayToken).mockReturnValue({
         username: 'SomePerson',
         sessionId: '',
+        token: '',
       });
 
       window.history.replaceState({}, '', DLSRoutes.mydata);
@@ -1001,18 +1006,21 @@ describe('PageTable', () => {
       vi.mocked(readSciGatewayToken).mockReturnValue({
         username: 'anon/anon',
         sessionId: '',
+        token: '',
       });
       window.history.replaceState({}, '', DLSRoutes.mydata);
 
       render(<PageRouting />, { wrapper: Wrapper });
 
       expect(window.location.pathname).toBe('/login');
+      expect(sessionStorage.getItem('referrer')).toBe(DLSRoutes.mydata);
     });
 
     it('renders DLSMyDOIsTable for DLS my dois route', async () => {
       vi.mocked(readSciGatewayToken).mockReturnValue({
         username: 'SomePerson',
         sessionId: '',
+        token: '',
       });
 
       window.history.replaceState({}, '', DLSRoutes.mydois);
@@ -1052,12 +1060,14 @@ describe('PageTable', () => {
       vi.mocked(readSciGatewayToken).mockReturnValue({
         username: 'anon/anon',
         sessionId: '',
+        token: '',
       });
       window.history.replaceState({}, '', DLSRoutes.mydois);
 
       render(<PageRouting />, { wrapper: Wrapper });
 
       expect(window.location.pathname).toBe('/login');
+      expect(sessionStorage.getItem('referrer')).toBe(DLSRoutes.mydois);
     });
 
     it('renders DLSProposalTable for DLS proposal route', async () => {

@@ -21,7 +21,7 @@ import {
 } from '@mui/material';
 import debounce from 'lodash.debounce';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import {
   useGetDescendantTechniques,
   useSearchPANETTechniques,
@@ -101,8 +101,8 @@ const TechniqueSelector: React.FC<{
               ? // don't bother translating as this should be a developer focused message i.e. that they haven't configured DGW correctly
                 "Can't fetch techniques as BioPortal API URL not specified"
               : isError
-              ? t('DOIGenerationForm.bioportal_search_error')
-              : undefined
+                ? t('DOIGenerationForm.bioportal_search_error')
+                : undefined
           }
         />
       )}
@@ -163,7 +163,12 @@ const TechniqueDialog: React.FC<{
         <Grid container direction="column" spacing={1}>
           <Grid item>
             <Typography>
-              {t('DOIGenerationForm.technique_dialog_initial_help')}
+              <Trans
+                i18nKey="DOIGenerationForm.technique_dialog_initial_help"
+                components={{
+                  Link: <Link />,
+                }}
+              />
             </Typography>
           </Grid>
           <Grid item>
@@ -177,9 +182,12 @@ const TechniqueDialog: React.FC<{
             <>
               <Grid item>
                 <Typography>
-                  {t(
-                    'DOIGenerationForm.technique_dialog_select_technique_help'
-                  )}
+                  <Trans
+                    i18nKey="DOIGenerationForm.technique_dialog_select_technique_help"
+                    components={{
+                      Link: <Link />,
+                    }}
+                  />
                 </Typography>
               </Grid>
               {isError && (
@@ -217,7 +225,10 @@ const TechniqueDialog: React.FC<{
                         </TableCell>
                         <TableCell>
                           {
-                            <Link href={initiallySelectedTechnique['@id']}>
+                            <Link
+                              href={initiallySelectedTechnique['@id']}
+                              target="_blank"
+                            >
                               {initiallySelectedTechnique['@id']}
                             </Link>
                           }
@@ -226,12 +237,17 @@ const TechniqueDialog: React.FC<{
                       {descendantTechniques?.map((t) => (
                         <TableRow
                           key={t['@id']}
+                          sx={{ cursor: 'pointer' }}
                           onClick={(_event) => setSelectedTechnique(t)}
                           selected={selectedTechnique === t}
                         >
                           <TableCell>{getTechniqueDisplayName(t)}</TableCell>
                           <TableCell>
-                            {<Link href={t['@id']}>{t['@id']}</Link>}
+                            {
+                              <Link href={t['@id']} target="_blank">
+                                {t['@id']}
+                              </Link>
+                            }
                           </TableCell>
                         </TableRow>
                       ))}
@@ -262,11 +278,16 @@ const TechniqueDialog: React.FC<{
   );
 };
 
-const TechniquesAndSubjects: React.FC<{
+const TechniquesSamplesSubjects: React.FC<{
   techniques: BioPortalTerm[];
   setTechniques: React.Dispatch<React.SetStateAction<BioPortalTerm[]>>;
+  techniqueError: boolean;
+  samples: string[];
+  setSamples: React.Dispatch<React.SetStateAction<string[]>>;
+  sampleError: boolean;
   subjects: string[];
   setSubjects: React.Dispatch<React.SetStateAction<string[]>>;
+  subjectError: boolean;
   disabled: boolean;
   bioportalUrl: string | undefined;
 }> = (props) => {
@@ -274,14 +295,22 @@ const TechniquesAndSubjects: React.FC<{
   const {
     techniques,
     setTechniques,
+    techniqueError,
+    samples,
+    setSamples,
+    sampleError,
     subjects,
     setSubjects,
+    subjectError,
     disabled,
     bioportalUrl,
   } = props;
 
   const [isTechniqueDialogOpen, setIsTechniqueDialogOpen] =
     React.useState(false);
+
+  const [subjectsString, setSubjectsString] = React.useState('');
+  const [samplesString, setSamplesString] = React.useState('');
 
   return (
     <Paper
@@ -308,7 +337,14 @@ const TechniquesAndSubjects: React.FC<{
           </Grid>
           <Grid item>
             <Tooltip
-              title={t('DOIGenerationForm.techniques_subjects_help_tooltip')}
+              title={
+                <Trans
+                  i18nKey="DOIGenerationForm.techniques_subjects_help_tooltip"
+                  components={{
+                    Link: <Link />,
+                  }}
+                />
+              }
             >
               <HelpOutlineIcon fontSize="small" />
             </Tooltip>
@@ -340,6 +376,7 @@ const TechniquesAndSubjects: React.FC<{
                       sx: { caretColor: 'transparent', cursor: 'default' },
                     }}
                     required={true}
+                    error={techniqueError}
                   />
                 )}
                 getOptionLabel={getTechniqueDisplayName}
@@ -369,42 +406,124 @@ const TechniquesAndSubjects: React.FC<{
               />
             </Grid>
           </Grid>
-          <Grid item xs={12}>
-            <Autocomplete
-              multiple
-              options={[]}
-              freeSolo
-              renderTags={(value: readonly string[], getTagProps) =>
-                value.map((option: string, index: number) => {
-                  const { key, ...tagProps } = getTagProps({ index });
-                  return (
-                    <Chip
-                      variant="outlined"
-                      label={option}
-                      key={key}
-                      {...tagProps}
-                    />
-                  );
-                })
-              }
-              value={subjects}
-              onChange={(_event, value) => setSubjects(value)}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label={t('DOIGenerationForm.subjects')}
-                  required={true}
-                  color="secondary"
-                  InputProps={{
-                    ...params.InputProps,
-                    sx: {
-                      backgroundColor: 'background.default',
-                    },
-                  }}
-                />
-              )}
-              disabled={disabled}
-            />
+          <Grid container item xs={12} alignItems="center" spacing={1}>
+            <Grid item xs>
+              <Autocomplete
+                multiple
+                options={[]}
+                freeSolo
+                renderTags={(value: readonly string[], getTagProps) =>
+                  value.map((option: string, index: number) => {
+                    const { key, ...tagProps } = getTagProps({ index });
+                    return (
+                      <Chip
+                        variant="outlined"
+                        label={option}
+                        key={key}
+                        {...tagProps}
+                      />
+                    );
+                  })
+                }
+                value={samples}
+                inputValue={samplesString}
+                onInputChange={(_event, value) => setSamplesString(value)}
+                onChange={(_event, value) => {
+                  setSamples(value);
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label={t('DOIGenerationForm.samples')}
+                    required={true}
+                    color="secondary"
+                    InputProps={{
+                      ...params.InputProps,
+                      sx: {
+                        backgroundColor: 'background.default',
+                      },
+                    }}
+                    error={sampleError}
+                  />
+                )}
+                disabled={disabled}
+              />
+            </Grid>
+            <Grid item xs="auto">
+              <Button
+                variant="contained"
+                onClick={() => {
+                  if (samplesString.length > 0) {
+                    setSamples([...samples, samplesString]);
+                    setSamplesString('');
+                  }
+                }}
+                disabled={disabled}
+              >
+                {t('DOIGenerationForm.add_sample')}
+              </Button>
+            </Grid>
+          </Grid>
+          <Grid container item xs={12} alignItems="center" spacing={1}>
+            <Grid item xs>
+              <Autocomplete
+                multiple
+                options={[]}
+                freeSolo
+                renderTags={(value: readonly string[], getTagProps) =>
+                  value.map((option: string, index: number) => {
+                    const { key, ...tagProps } = getTagProps({ index });
+                    return (
+                      <Chip
+                        variant="outlined"
+                        label={option}
+                        key={key}
+                        {...tagProps}
+                      />
+                    );
+                  })
+                }
+                value={subjects}
+                inputValue={subjectsString}
+                onInputChange={(_event, value) => setSubjectsString(value)}
+                onChange={(_event, value) => {
+                  if (!subjectsString.startsWith('sample:')) setSubjects(value);
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label={t('DOIGenerationForm.subjects_label')}
+                    required={true}
+                    color="secondary"
+                    InputProps={{
+                      ...params.InputProps,
+                      sx: {
+                        backgroundColor: 'background.default',
+                      },
+                    }}
+                    error={subjectError || subjectsString.startsWith('sample:')}
+                  />
+                )}
+                disabled={disabled}
+              />
+            </Grid>
+            <Grid item xs="auto">
+              <Button
+                variant="contained"
+                onClick={() => {
+                  if (
+                    subjectsString.length > 0 &&
+                    !subjectsString.startsWith('sample:')
+                  ) {
+                    setSubjects([...subjects, subjectsString]);
+                    setSubjectsString('');
+                  }
+                }}
+                disabled={disabled}
+              >
+                {t('DOIGenerationForm.add_subject')}
+              </Button>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
@@ -412,4 +531,4 @@ const TechniquesAndSubjects: React.FC<{
   );
 };
 
-export default TechniquesAndSubjects;
+export default TechniquesSamplesSubjects;

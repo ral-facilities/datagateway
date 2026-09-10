@@ -102,5 +102,7 @@ export { default as DialogTitle } from './dialogTitle.component';
 export * from './urlBuilders';
 export * from './utils';
 
+export * from './utils';
+
 // const root = ReactDOM.createRoot(document.getElementById('root'));
 // root.render(<App />);

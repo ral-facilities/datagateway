@@ -18,7 +18,7 @@ describe('ISIS - Dataset Landing', () => {
       .then(($doi) => {
         const doi = $doi.text();
 
-        const url = `https://doi.org/${doi}`;
+        const url = `${Cypress.expose('doiHandleUrl')}/${doi}`;
 
         cy.get('[data-testid="isis-dataset-landing-doi-link"]')
           .first()

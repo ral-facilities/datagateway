@@ -412,7 +412,7 @@ describe('dataset api functions', () => {
 
       await waitFor(() => expect(result.current.isError).toBe(true));
 
-      expect(handleICATErrorSpy).toHaveBeenCalledWith(error);
+      expect(handleICATErrorSpy).toHaveBeenCalledWith(error, true);
     });
   });
 

@@ -31,7 +31,7 @@ describe('ISIS - Investigations Cards', () => {
       .then(($doi) => {
         const doi = $doi.text();
 
-        const url = `https://doi.org/${doi}`;
+        const url = `${Cypress.expose('doiHandleUrl')}/${doi}`;
 
         cy.get('[data-testid="card"]')
           .first()
@@ -76,7 +76,7 @@ describe('ISIS - Investigations Cards', () => {
       .then(($pid) => {
         const pid = $pid.text();
 
-        const url = `https://doi.org/${pid}`;
+        const url = `${Cypress.expose('doiHandleUrl')}/${pid}`;
 
         cy.get('[data-testid="card"]')
           .first()
@@ -94,7 +94,7 @@ describe('ISIS - Investigations Cards', () => {
       .then(($doi) => {
         const doi = $doi.text();
 
-        const url = `https://doi.org/${doi}`;
+        const url = `${Cypress.expose('doiHandleUrl')}/${doi}`;
 
         cy.get('[data-testid="card"]')
           .first()

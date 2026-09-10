@@ -172,6 +172,7 @@ describe('ISIS Investigation Landing page', () => {
       })
     );
     state.dgdataview.pluginHost = '/test/';
+    state.dgdataview.landingPageLogo = 'STFC';
     window.history.replaceState(
       {},
       '',
@@ -291,10 +292,14 @@ describe('ISIS Investigation Landing page', () => {
 
     // branding should be visible
     expect(
-      await screen.findByRole('img', { name: 'STFC Logo' })
+      await screen.findByRole('img', {
+        name: 'doi_constants.branding.logo_alt_text',
+      })
     ).toBeInTheDocument();
     expect(
-      await screen.findByRole('img', { name: 'STFC Logo' })
+      await screen.findByRole('img', {
+        name: 'doi_constants.branding.logo_alt_text',
+      })
     ).toHaveAttribute(
       'src',
       expect.stringMatching(/\/(.*)stfc-logo-white-text\.png/)
@@ -418,7 +423,9 @@ describe('ISIS Investigation Landing page', () => {
     renderComponent();
 
     expect(await screen.findByText('Test title 1')).toBeInTheDocument();
-    expect(screen.getByText('Description not provided')).toBeInTheDocument();
+    expect(
+      screen.getByText('doi_constants.no_description')
+    ).toBeInTheDocument();
 
     // no investigation samples, so show no samples message
     expect(
@@ -448,10 +455,14 @@ describe('ISIS Investigation Landing page', () => {
 
     // branding should be visible
     expect(
-      await screen.findByRole('img', { name: 'STFC Logo' })
+      await screen.findByRole('img', {
+        name: 'doi_constants.branding.logo_alt_text',
+      })
     ).toBeInTheDocument();
     expect(
-      await screen.findByRole('img', { name: 'STFC Logo' })
+      await screen.findByRole('img', {
+        name: 'doi_constants.branding.logo_alt_text',
+      })
     ).toHaveAttribute(
       'src',
       expect.stringMatching(/(.*)stfc-logo-white-text\.png/)
@@ -574,7 +585,7 @@ describe('ISIS Investigation Landing page', () => {
     renderComponent();
 
     expect(
-      await screen.findByText('Description not provided')
+      await screen.findByText('doi_constants.no_description')
     ).toBeInTheDocument();
 
     expect(

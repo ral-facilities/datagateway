@@ -1,6 +1,7 @@
 {
   "facilityName": "Generic",
   "facilityImageURL": "",
+  "landingPageLogo": "STFC",
   "features": {
     "disableAnonDownload": false,
     "disableSelectAll": false
@@ -13,6 +14,7 @@
   "bioportalUrl": "/bioportal",
   "anonUserName": "anon/anon",
   "PIRole": "PI",
+  "localContactRole": "local_contact|DataCollector",
   "helpSteps": [
     {
       "target": "#plugin-link--browse-investigation",
@@ -129,6 +131,13 @@
       "section": "Redirect",
       "link": "/redirect",
       "displayName": "Redirect",
+      "order": 0,
+      "hideFromMenu": true
+    },
+    {
+      "section": "Browse",
+      "link": "/instrument",
+      "displayName": "Instrument Landing Pages",
       "order": 0,
       "hideFromMenu": true
     },

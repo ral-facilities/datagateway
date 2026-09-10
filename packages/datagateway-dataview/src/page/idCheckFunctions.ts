@@ -1,12 +1,14 @@
 import axios, { AxiosResponse } from 'axios';
 import {
-  handleICATError,
-  Investigation,
+  BroadcastSignOutType,
   ConfigureURLsType,
+  Investigation,
+  MicroFrontendId,
+  handleICATError,
   readSciGatewayToken,
 } from 'datagateway-common';
-import { Middleware, Dispatch, AnyAction } from 'redux';
 import memoize from 'lodash.memoize';
+import { AnyAction, Dispatch, Middleware } from 'redux';
 
 let apiUrl = '';
 
@@ -186,7 +188,7 @@ export const checkInstrumentId = memoize(
   (...args) => JSON.stringify(args)
 );
 
-export const unmemoizedCheckProposalName = (
+const unmemoizedCheckProposalName = (
   proposalName: string,
   investigationId: number
 ): Promise<boolean> => {
@@ -247,3 +249,16 @@ const unmemoizedCheckDatasetId = (
 export const checkDatasetId = memoize(unmemoizedCheckDatasetId, (...args) =>
   JSON.stringify(args)
 );
+
+// clear caches when the user signs out - prepares for if they sign in as a different user. E.g. anon -> authenticated
+document.addEventListener(MicroFrontendId, (e) => {
+  const action = (e as CustomEvent).detail;
+  if (action.type === BroadcastSignOutType) {
+    checkDatasetId.cache.clear?.();
+    checkProposalName.cache.clear?.();
+    checkInstrumentId.cache.clear?.();
+    checkStudyDataPublicationId.cache.clear?.();
+    checkInstrumentAndFacilityCycleId.cache.clear?.();
+    checkInvestigationId.cache.clear?.();
+  }
+});

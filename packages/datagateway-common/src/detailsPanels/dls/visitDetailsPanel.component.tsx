@@ -1,5 +1,5 @@
 import { Divider, Grid, styled, Tab, Tabs, Typography } from '@mui/material';
-import { format, parse } from 'date-fns';
+import { format, isValid, isMatch, parse } from 'date-fns';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,6 +12,7 @@ import {
 import type { StateType } from '../../state/app.types';
 import type { Action } from '../../state/reducers/createReducer';
 import { formatBytes } from '../../table/cellRenderers/cellContentRenderers';
+import { dedupeInvestigationUsers } from '../../utils';
 import { QueueVisitButton } from '../../views/queueButtons.component';
 
 const StyledGrid = styled(Grid)(({ theme }) => ({
@@ -84,9 +85,19 @@ const VisitDetailsPanel = (
   }, [data, selectedTab, changeTab]);
 
   function formatParameterDateTimeValue(dateTime: string): string {
-    const date = parse(dateTime, 'yyyy-MM-dd HH:mm:ssXXX', new Date());
-    return format(date, 'yyyy-MM-dd');
+    const formatWithoutSubseconds = 'yyyy-MM-dd HH:mm:ssXXX';
+    const formatWithSubseconds = 'yyyy-MM-dd HH:mm:ss.SSSSSSXXX';
+
+    const date = isMatch(dateTime, formatWithSubseconds)
+      ? parse(dateTime, formatWithSubseconds, new Date())
+      : parse(dateTime, formatWithoutSubseconds, new Date());
+
+    return isValid(date) ? format(date, 'yyyy-MM-dd') : date.toString();
   }
+
+  const dedupedInvestigationUsers = investigationData.investigationUsers
+    ? dedupeInvestigationUsers(investigationData.investigationUsers)
+    : undefined;
 
   return (
     <div
@@ -109,7 +120,7 @@ const VisitDetailsPanel = (
           label={t('investigations.details.label')}
           value="details"
         />
-        {investigationData.investigationUsers && (
+        {dedupedInvestigationUsers && (
           <Tab
             id="visit-users-tab"
             aria-controls="visit-users-panel"
@@ -223,7 +234,7 @@ const VisitDetailsPanel = (
           </Grid>
         </StyledGrid>
       </div>
-      {investigationData.investigationUsers && (
+      {dedupedInvestigationUsers && (
         <div
           id="visit-users-panel"
           aria-labelledby="visit-users-tab"
@@ -233,26 +244,21 @@ const VisitDetailsPanel = (
           <StyledGrid container direction="column">
             <Typography variant="overline">
               {t('investigations.details.users.name', {
-                count: investigationData.investigationUsers.length,
+                count: dedupedInvestigationUsers.length,
               })}
             </Typography>
-            {investigationData.investigationUsers.length > 0 ? (
-              investigationData.investigationUsers.map((investigationUser) => {
-                if (investigationUser.user) {
-                  return (
-                    <Grid key={investigationUser.user.id} item xs>
-                      <Typography>
-                        <b>
-                          {investigationUser.user.fullName ||
-                            investigationUser.user.name}
-                        </b>
-                      </Typography>
-                    </Grid>
-                  );
-                } else {
-                  return null;
-                }
-              })
+            {dedupedInvestigationUsers.length > 0 ? (
+              dedupedInvestigationUsers.map((investigationUser) => (
+                <Grid key={investigationUser.user.id} item xs>
+                  <Typography>
+                    <b>
+                      {investigationUser.user.fullName ||
+                        investigationUser.user.name}
+                    </b>
+                    {` (${investigationUser.roles.join(', ')})`}
+                  </Typography>
+                </Grid>
+              ))
             ) : (
               <Typography data-testid="visit-details-panel-no-name">
                 <b>{t('investigations.details.users.no_name')}</b>

@@ -6,21 +6,37 @@ import {
   MicroFrontendId,
   NotificationType,
   Preloader,
+  StateType,
   buildDatafileTableUrlForDataset,
   buildDatasetTableUrlForInvestigation,
+  readSciGatewayToken,
   useEntity,
 } from 'datagateway-common';
 import log from 'loglevel';
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Navigate, useLocation, useParams } from 'react-router';
 import { paths } from './pageContainer.component';
 
 export const RedirectComponent: React.FC<{
-  redirectUrl: string;
+  redirectUrl: string | null;
   loading: boolean;
   errorMessage?: string;
 }> = (props) => {
   const { redirectUrl, loading, errorMessage: error } = props;
+
+  const { pathname } = useLocation();
+  const anonUserName = useSelector(
+    (state: StateType) => state.dgcommon.anonUserName
+  );
+  const username = readSciGatewayToken().username;
+  const loggedInAnonymously =
+    username === null || username === (anonUserName ?? 'anon/anon');
+
+  if (loggedInAnonymously === true && typeof error !== 'undefined') {
+    sessionStorage.setItem('referrer', pathname);
+    return <Navigate to={'/login'} />;
+  }
 
   if (error) {
     log.error('Invalid redirect');
@@ -39,7 +55,7 @@ export const RedirectComponent: React.FC<{
 
   return (
     <Preloader loading={loading}>
-      <Navigate to={redirectUrl} replace={true} />
+      <Navigate to={redirectUrl ?? paths.homepage} replace={true} />
     </Preloader>
   );
 };
@@ -64,7 +80,9 @@ export const DoiRedirect: React.FC = () => {
         investigationInstruments: 'instrument',
         investigationFacilityCycles: 'facilityCycle',
       }),
-    }
+    },
+    true,
+    true
   );
 
   const redirectUrl = investigation
@@ -76,7 +94,7 @@ export const DoiRedirect: React.FC = () => {
 
   return (
     <RedirectComponent
-      redirectUrl={redirectUrl ?? paths.homepage}
+      redirectUrl={redirectUrl}
       loading={isInvestigationLoading}
       errorMessage={
         !isInvestigationLoading && !investigation
@@ -150,36 +168,38 @@ export const GenericRedirect: React.FC = () => {
               ]),
             }
           : undefined,
-    typeof entityName !== 'undefined'
+    typeof entityName !== 'undefined',
+    true
   );
 
   const redirectUrl =
-    entity &&
-    (entityName === 'investigation'
-      ? buildDatasetTableUrlForInvestigation({
-          investigation: entity as Investigation,
-          facilityName,
-        })
-      : entityName === 'dataset'
-        ? buildDatafileTableUrlForDataset({
-            dataset: entity as Dataset,
+    (entity &&
+      (entityName === 'investigation'
+        ? buildDatasetTableUrlForInvestigation({
+            investigation: entity as Investigation,
             facilityName,
           })
-        : entityName === 'datafile'
+        : entityName === 'dataset'
           ? buildDatafileTableUrlForDataset({
-              dataset: (entity as Datafile).dataset!,
+              dataset: entity as Dataset,
               facilityName,
-              queryParams: new URLSearchParams({
-                filters: JSON.stringify({
-                  name: { value: entity.name, type: 'exact' },
-                }),
-              }),
             })
-          : null);
+          : entityName === 'datafile'
+            ? buildDatafileTableUrlForDataset({
+                dataset: (entity as Datafile).dataset!,
+                facilityName,
+                queryParams: new URLSearchParams({
+                  filters: JSON.stringify({
+                    name: { value: entity.name, type: 'exact' },
+                  }),
+                }),
+              })
+            : null)) ??
+    null;
 
   return (
     <RedirectComponent
-      redirectUrl={redirectUrl ?? paths.homepage}
+      redirectUrl={redirectUrl}
       loading={isEntityLoading}
       errorMessage={
         !isEntityLoading && !entity

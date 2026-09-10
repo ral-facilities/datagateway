@@ -44,7 +44,7 @@ import {
 import WithIdCheck from '../../../page/withIdCheck';
 import { StateType } from '../../../state/app.types';
 import CitationFormatter from '../../citationFormatter.component';
-import Branding from './isisBranding.component';
+import Branding from '../branding.component';
 
 const Subheading = styled(Typography)(({ theme }) => ({
   marginTop: theme.spacing(1),
@@ -172,6 +172,12 @@ const CommonLandingPage = (
     [location.search]
   );
   const PIRole = useSelector((state: StateType) => state.dgdataview.PIRole);
+  const localContactRole = useSelector(
+    (state: StateType) => state.dgdataview.localContactRole
+  );
+  const doiHandleUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.doiHandleUrl
+  );
   const [value, setValue] = React.useState<'details'>('details');
   const { data, studyDataPublication } = props;
 
@@ -191,18 +197,24 @@ const CommonLandingPage = (
         // Only keep users where we have their fullName
         const fullname = user.fullName;
         if (fullname) {
-          switch (user.role) {
-            case PIRole:
-              principals.push({
-                fullName: fullname,
-                role: 'Principal Investigator',
-              });
-              break;
-            case 'local_contact':
-              contacts.push({ fullName: fullname, role: 'Local Contact' });
-              break;
-            default:
-              experimenters.push({ fullName: fullname, role: 'Experimenter' });
+          if (user.role && new RegExp(PIRole).test(user.role)) {
+            principals.push({
+              fullName: fullname,
+              role: t('datapublications.principal_investigator'),
+            });
+          } else if (
+            user.role &&
+            new RegExp(localContactRole).test(user.role)
+          ) {
+            contacts.push({
+              fullName: fullname,
+              contributorType: t('datapublications.local_contact'),
+            });
+          } else {
+            experimenters.push({
+              fullName: fullname,
+              contributorType: t('datapublications.experimenter'),
+            });
           }
         }
       });
@@ -211,8 +223,8 @@ const CommonLandingPage = (
     principals.sort((a, b) => a.fullName.localeCompare(b.fullName));
     contacts.sort((a, b) => a.fullName.localeCompare(b.fullName));
     experimenters.sort((a, b) => a.fullName.localeCompare(b.fullName));
-    return principals.concat(contacts, experimenters);
-  }, [PIRole, data, isInvestigation]);
+    return principals.concat(experimenters, contacts);
+  }, [PIRole, data, isInvestigation, localContactRole, t]);
 
   const formattedPublications = React.useMemo(() => {
     if (isInvestigation && data.publications) {
@@ -240,7 +252,7 @@ const CommonLandingPage = (
             return (
               data.doi &&
               externalSiteLink(
-                `https://doi.org/${data.doi}`,
+                `${doiHandleUrl}/${data.doi}`,
                 data.doi,
                 'isis-investigation-landing-doi-link'
               )
@@ -260,7 +272,7 @@ const CommonLandingPage = (
             return (
               studyDataPublication &&
               externalSiteLink(
-                `https://doi.org/${studyDataPublication.pid}`,
+                `${doiHandleUrl}/${studyDataPublication.pid}`,
                 studyDataPublication.pid,
                 'isis-investigations-landing-parent-doi-link'
               )
@@ -313,7 +325,7 @@ const CommonLandingPage = (
             return (
               data?.pid &&
               externalSiteLink(
-                `https://doi.org/${data.pid}`,
+                `${doiHandleUrl}/${data.pid}`,
                 data.pid,
                 'isis-investigation-landing-doi-link'
               )
@@ -328,7 +340,7 @@ const CommonLandingPage = (
               studyDataPublication &&
               studyDataPublication?.pid &&
               externalSiteLink(
-                `https://doi.org/${studyDataPublication.pid}`,
+                `${doiHandleUrl}/${studyDataPublication.pid}`,
                 studyDataPublication.pid,
                 'isis-investigations-landing-parent-doi-link'
               )
@@ -376,7 +388,7 @@ const CommonLandingPage = (
             return (
               entity?.doi &&
               externalSiteLink(
-                `https://doi.org/${entity.doi}`,
+                `${doiHandleUrl}/${entity.doi}`,
                 entity.doi,
                 'landing-study-doi-link'
               )
@@ -395,7 +407,7 @@ const CommonLandingPage = (
     >
       <Grid container sx={{ padding: 0.5 }}>
         <Grid item xs={12}>
-          <Branding />
+          <Branding landingPageType="data" />
         </Grid>
         <Grid item xs={12}>
           <Paper square elevation={0} sx={{ mx: -1.5, px: 1.5 }}>
@@ -442,10 +454,10 @@ const CommonLandingPage = (
               {isInvestigation
                 ? data.summary && data.summary !== 'null'
                   ? data.summary
-                  : 'Description not provided'
+                  : t('doi_constants.no_description')
                 : data?.description && data.description !== 'null'
                   ? data.description
-                  : 'Description not provided'}
+                  : t('doi_constants.no_description')}
             </Typography>
             {formattedUsers.length > 0 && (
               <div>

@@ -190,26 +190,41 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     return filteredData?.sort(sortCartItems);
   }, [cartItems, fileSizesAndCounts, filters, sort]);
 
-  const unmintableEntityIDs: number[] | undefined = React.useMemo(
+  const unmintableEntityIDs = React.useMemo(
     () =>
       mintableError !== null &&
       isMintabilityErrorExpected(mintableError) &&
-      typeof mintableError?.response?.data?.detail === 'string'
-        ? JSON.parse(
-            mintableError.response.data.detail.substring(
-              mintableError.response.data.detail.indexOf('['),
-              mintableError.response.data.detail.lastIndexOf(']') + 1
-            )
-          )
+      mintableError?.response?.data &&
+      'investigation_ids' in mintableError.response.data
+        ? mintableError.response.data
         : undefined,
     [mintableError]
   );
 
   const unmintableRowIDs = React.useMemo(() => {
     if (unmintableEntityIDs && sortedAndFilteredData) {
-      return unmintableEntityIDs.map((id) =>
-        sortedAndFilteredData.findIndex((entity) => entity.entityId === id)
-      );
+      return Object.keys(unmintableEntityIDs.investigation_ids)
+        .map((id) =>
+          sortedAndFilteredData.findIndex(
+            (entity) =>
+              entity.entityType === 'investigation' &&
+              `${entity.entityId}` === id
+          )
+        )
+        .concat(
+          Object.keys(unmintableEntityIDs.dataset_ids).map((id) =>
+            sortedAndFilteredData.findIndex(
+              (entity) =>
+                entity.entityType === 'dataset' && `${entity.entityId}` === id
+            )
+          ),
+          Object.keys(unmintableEntityIDs.datafile_ids).map((id) =>
+            sortedAndFilteredData.findIndex(
+              (entity) =>
+                entity.entityType === 'datafile' && `${entity.entityId}` === id
+            )
+          )
+        );
     } else {
       return [];
     }

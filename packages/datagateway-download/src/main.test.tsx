@@ -26,6 +26,7 @@ describe('index - fetchSettings', () => {
       downloadApiUrl: 'download-api',
       dataCiteUrl: 'datacite',
       doiMinterUrl: 'doi-minter',
+      doiHandleUrl: 'doi-handle-url',
       fileCountMax: 5000,
       totalSizeMax: 1000000000000,
       routes: [
@@ -112,8 +113,13 @@ describe('index - fetchSettings', () => {
     );
     const settings = await fetchSettings();
 
-    const { dataCiteUrl, doiMinterUrl, ...expectedSettingsResult } =
+    const { dataCiteUrl, doiMinterUrl, ...excludedUrlsSettingsResult } =
       settingsResult;
+
+    const expectedSettingsResult = {
+      ...excludedUrlsSettingsResult,
+      doiHandleUrl: 'https://doi.org',
+    };
 
     expect(JSON.stringify(settings)).toEqual(
       JSON.stringify(expectedSettingsResult)

@@ -43,6 +43,9 @@ const ISISMyDataTable = (): React.ReactElement => {
   const navigate = useNavigate();
   const [t] = useTranslation();
   const username = readSciGatewayToken().username || '';
+  const doiHandleUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.doiHandleUrl
+  );
 
   const { filters, view, sort } = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -197,7 +200,7 @@ const ISISMyDataTable = (): React.ReactElement => {
               ?.dataPublications?.[0]
           ) {
             return externalSiteLink(
-              `https://doi.org/${investigationData.dataCollectionInvestigations?.[0]?.dataCollection?.dataPublications?.[0].pid}`,
+              `${doiHandleUrl}/${investigationData.dataCollectionInvestigations?.[0]?.dataCollection?.dataPublications?.[0].pid}`,
               investigationData.dataCollectionInvestigations?.[0]
                 ?.dataCollection?.dataPublications?.[0].pid,
               'isis-mydata-table-doi-link'
@@ -262,7 +265,7 @@ const ISISMyDataTable = (): React.ReactElement => {
         filterComponent: dateFilter,
       },
     ],
-    [t, textFilter, dateFilter, view]
+    [t, textFilter, dateFilter, view, doiHandleUrl]
   );
 
   return (

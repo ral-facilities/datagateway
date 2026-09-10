@@ -4,7 +4,7 @@ export default defineConfig({
   video: false,
   retries: {
     runMode: 3,
-    openMode: 1,
+    openMode: 0,
   },
   e2e: {
     setupNodeEvents(on, config) {

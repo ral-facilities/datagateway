@@ -75,6 +75,7 @@ export const paths = {
   homepage: '/datagateway',
   root: '/browse',
   doiRedirect: '/doi-redirect/:facilityName/:entityName/:entityId',
+  instrumentLandingPage: '/instrument/:instrumentId',
   genericRedirect:
     '/redirect/:facilityName/:entityName/:entityField/:fieldValue',
   myData: {

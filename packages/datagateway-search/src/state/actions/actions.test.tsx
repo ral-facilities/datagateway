@@ -54,6 +54,7 @@ describe('Actions', () => {
       apiUrl: 'api',
       downloadApiUrl: 'download-api',
       icatUrl: 'icat',
+      doiHandleUrl: 'doiHandleUrl',
       queryRetries: 0,
       features: {},
       searchableEntities: ['investigation', 'dataset', 'datafile'],
@@ -70,6 +71,7 @@ describe('Actions', () => {
         apiUrl: 'api',
         downloadApiUrl: 'download-api',
         icatUrl: 'icat',
+        doiHandleUrl: 'doiHandleUrl',
       })
     );
     expect(actions).toContainEqual(loadFeatureSwitches({}));
@@ -106,6 +108,15 @@ describe('Actions', () => {
     expect(
       actions.every(({ type }) => type !== ConfigureQueryRetriesType)
     ).toBe(true);
+    expect(actions).toContainEqual(
+      loadUrls({
+        idsUrl: 'ids',
+        apiUrl: 'api',
+        downloadApiUrl: 'download-api',
+        icatUrl: 'icat',
+        doiHandleUrl: 'https://doi.org',
+      })
+    );
 
     expect(actions).toContainEqual(settingsLoaded());
   });

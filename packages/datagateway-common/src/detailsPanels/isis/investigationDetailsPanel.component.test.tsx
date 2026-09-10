@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render, RenderResult, screen, waitFor } from '@testing-library/react';
+import { RenderResult, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios from 'axios';
 import { Provider } from 'react-redux';
@@ -144,6 +144,15 @@ describe('Investigation details panel component', () => {
       {
         id: 4,
         role: 'Investigator',
+        user: {
+          id: 5,
+          name: 'Louise',
+          fullName: 'Louise Davies',
+        },
+      },
+      {
+        id: 6,
+        role: 'Local Contact',
         user: {
           id: 5,
           name: 'Louise',

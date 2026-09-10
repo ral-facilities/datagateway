@@ -45,6 +45,7 @@ function generateURLSearchParams({
   minCount = '10',
   maxCount = '100',
   restrict = 'false',
+  token = '',
 }): URLSearchParams {
   const params = new URLSearchParams();
   params.append('sessionId', sessionId);
@@ -52,6 +53,7 @@ function generateURLSearchParams({
   params.append('minCount', minCount);
   params.append('maxCount', maxCount);
   params.append('restrict', restrict);
+  params.append('JWT', token);
   return params;
 }
 
@@ -191,6 +193,7 @@ describe('SearchPageContainer - Tests', () => {
     vi.mocked(readSciGatewayToken).mockReturnValue({
       sessionId: null,
       username: 'test',
+      token: null,
     });
   });
 
@@ -1284,6 +1287,7 @@ describe('SearchPageContainer - Tests', () => {
     vi.mocked(readSciGatewayToken).mockReturnValue({
       sessionId: null,
       username: 'anon/anon',
+      token: null,
     });
 
     const user = userEvent.setup();
